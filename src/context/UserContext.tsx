@@ -50,7 +50,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const entries = Object.entries(pillars) as [PillarType, number][];
     return entries.reduce((weakest, [pillar, value]) => {
       return value < pillars[weakest] ? pillar : weakest;
-    }, 'experience' as PillarType);
+    }, 'computational' as PillarType);
   };
 
   const assignMentor = () => {
@@ -59,11 +59,11 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       // For now, we're creating a fictional mentor with strength in the user's weakest area
       const mentorPillars: XimaPillars = {
-        experience: 5,
-        intelligence: 5,
-        motivation: 5,
-        attitude: 5,
-        analysis: 5
+        computational: 5,
+        communication: 5,
+        knowledge: 5,
+        creativity: 5,
+        drive: 5
       };
       
       // Boost the mentor's specialty to maximum

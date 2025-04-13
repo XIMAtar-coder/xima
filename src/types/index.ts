@@ -23,11 +23,11 @@ export interface AvatarFeature {
 }
 
 export interface XimaPillars {
-  experience: number;
-  intelligence: number;
-  motivation: number;
-  attitude: number;
-  analysis: number;
+  computational: number;
+  communication: number;
+  knowledge: number;
+  creativity: number;
+  drive: number;
 }
 
 export type PillarType = keyof XimaPillars;

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { useUser } from '../context/UserContext';
-import { ChevronRight, BarChart3, BookOpen, Zap, HeartHandshake, PieChart } from 'lucide-react';
+import { ChevronRight, BarChart3, MessageSquare, BookOpen, Sparkles, Zap } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -73,33 +73,33 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {[
               {
-                name: 'Experience',
-                description: 'Your professional journey and skills acquired along the way',
+                name: 'Computational Power',
+                description: 'Analytical skills, data processing, and technology problem-solving',
                 icon: <BarChart3 className="text-blue-500" size={32} />,
                 color: 'bg-blue-50 border-blue-200'
               },
               {
-                name: 'Intelligence',
-                description: 'How you learn, solve problems, and apply knowledge',
-                icon: <BookOpen className="text-indigo-500" size={32} />,
+                name: 'Communication',
+                description: 'Social interaction and conveying ideas clearly and persuasively',
+                icon: <MessageSquare className="text-indigo-500" size={32} />,
                 color: 'bg-indigo-50 border-indigo-200'
               },
               {
-                name: 'Motivation',
-                description: 'What drives you and how you sustain your energy',
-                icon: <Zap className="text-red-500" size={32} />,
+                name: 'Knowledge',
+                description: 'Depth of understanding and ability to apply information effectively',
+                icon: <BookOpen className="text-red-500" size={32} />,
                 color: 'bg-red-50 border-red-200'
               },
               {
-                name: 'Attitude',
-                description: 'Your approach to work, challenges, and collaboration',
-                icon: <HeartHandshake className="text-green-500" size={32} />,
+                name: 'Creativity',
+                description: 'Generating new ideas from novel experiences and existing knowledge',
+                icon: <Sparkles className="text-green-500" size={32} />,
                 color: 'bg-green-50 border-green-200'
               },
               {
-                name: 'Analysis',
-                description: 'Your critical thinking and decision-making process',
-                icon: <PieChart className="text-amber-500" size={32} />,
+                name: 'Drive',
+                description: 'Motivation and determination to take initiative and sustain momentum',
+                icon: <Zap className="text-amber-500" size={32} />,
                 color: 'bg-amber-50 border-amber-200'
               }
             ].map((pillar, index) => (

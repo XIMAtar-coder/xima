@@ -9,29 +9,29 @@ interface XimaScoreCardProps {
 }
 
 const pillarInfo = {
-  experience: {
-    label: 'Experience',
-    description: 'Professional and life experiences that shape your capabilities',
+  computational: {
+    label: 'Computational Power',
+    description: 'Analytical skills, data processing capabilities, and ability to use technology to solve complex problems',
     color: 'from-blue-400 to-blue-500'
   },
-  intelligence: {
-    label: 'Intelligence',
-    description: 'Cognitive abilities, problem-solving and learning capacity',
+  communication: {
+    label: 'Communication',
+    description: 'Effective social interaction, emotional intelligence, and ability to convey ideas clearly and persuasively',
     color: 'from-indigo-400 to-indigo-500'
   },
-  motivation: {
-    label: 'Motivation',
-    description: 'Drive, ambition and passion for your work and growth',
+  knowledge: {
+    label: 'Knowledge',
+    description: 'Depth and breadth of understanding in various domains and ability to apply information effectively',
     color: 'from-red-400 to-red-500'
   },
-  attitude: {
-    label: 'Attitude',
-    description: 'Approach to challenges, teamwork and workplace relations',
+  creativity: {
+    label: 'Creativity',
+    description: 'Cognitive and emotional ability to generate new ideas by integrating novel experiences with existing knowledge',
     color: 'from-green-400 to-green-500'
   },
-  analysis: {
-    label: 'Analysis',
-    description: 'Critical thinking, data interpretation and decision making',
+  drive: {
+    label: 'Drive',
+    description: 'Intrinsic motivation and determination to take initiative, create action, and sustain momentum',
     color: 'from-amber-400 to-amber-500'
   }
 };
