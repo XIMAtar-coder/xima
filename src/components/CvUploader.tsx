@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload, FileText, Check, AlertCircle } from 'lucide-react';
+import { Upload, FileText, Check } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
 interface CvUploaderProps {
@@ -73,7 +73,7 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
   };
 
   return (
-    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+    <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center bg-white">
       <input
         type="file"
         ref={fileInputRef}
@@ -88,12 +88,12 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
             <FileText size={48} className="text-gray-400" />
           </div>
           <div>
-            <h3 className="text-lg font-medium">Upload your CV</h3>
+            <h3 className="text-lg font-medium text-gray-800">Upload your CV</h3>
             <p className="text-sm text-gray-500 mt-1">PDF format only, max 5MB</p>
           </div>
           <Button 
             onClick={triggerFileInput}
-            className="bg-xima-purple hover:bg-xima-dark-purple"
+            className="bg-[#4171d6] hover:bg-[#2950a3]"
           >
             <Upload size={16} className="mr-2" />
             Select File
@@ -107,12 +107,13 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
             </div>
           </div>
           <div>
-            <h3 className="text-lg font-medium">CV Uploaded!</h3>
+            <h3 className="text-lg font-medium text-gray-800">CV Uploaded!</h3>
             <p className="text-sm text-gray-500 mt-1">{file.name}</p>
           </div>
           <Button 
             variant="outline"
             onClick={triggerFileInput}
+            className="border-gray-300 text-gray-700"
           >
             Change File
           </Button>
@@ -120,10 +121,10 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
       ) : (
         <div className="space-y-4">
           <div className="flex justify-center">
-            <FileText size={32} className="text-xima-purple" />
+            <FileText size={32} className="text-[#4171d6]" />
           </div>
           <div>
-            <h3 className="text-lg font-medium">{file.name}</h3>
+            <h3 className="text-lg font-medium text-gray-800">{file.name}</h3>
             <p className="text-sm text-gray-500 mt-1">
               {(file.size / 1024 / 1024).toFixed(2)} MB
             </p>
@@ -133,13 +134,14 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
               variant="outline"
               onClick={triggerFileInput}
               disabled={uploading}
+              className="border-gray-300 text-gray-700"
             >
               Change
             </Button>
             <Button 
               onClick={handleUpload}
               disabled={uploading}
-              className="bg-xima-purple hover:bg-xima-dark-purple"
+              className="bg-[#4171d6] hover:bg-[#2950a3]"
             >
               {uploading ? (
                 <>

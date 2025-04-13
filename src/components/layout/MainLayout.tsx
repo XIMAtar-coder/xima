@@ -21,11 +21,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
   }, [requireAuth, isAuthenticated, navigate]);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="w-full py-4 px-6 border-b flex justify-between items-center">
+    <div className="min-h-screen flex flex-col bg-[#f9fafc]">
+      <header className="w-full py-4 px-6 flex justify-between items-center bg-white shadow-sm">
         <div className="flex items-center gap-2">
           <h1 
-            className="text-2xl font-bold xima-gradient text-transparent bg-clip-text cursor-pointer"
+            className="text-2xl font-bold text-[#4171d6] cursor-pointer"
             onClick={() => navigate('/')}
           >
             XIMA
@@ -37,7 +37,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
             <Button
               variant="ghost"
               size="sm"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 text-gray-700"
               onClick={() => navigate('/profile')}
             >
               <UserIcon size={16} />
@@ -58,6 +58,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
               variant="ghost" 
               size="sm"
               onClick={() => navigate('/login')}
+              className="text-gray-700"
             >
               Login
             </Button>
@@ -65,7 +66,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
               variant="default" 
               size="sm"
               onClick={() => navigate('/register')}
-              className="bg-xima-purple hover:bg-xima-dark-purple"
+              className="bg-[#4171d6] hover:bg-[#2950a3]"
             >
               Register
             </Button>
@@ -77,7 +78,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
         {children}
       </main>
 
-      <footer className="w-full py-4 px-6 border-t text-center text-sm text-gray-500">
+      <footer className="w-full py-4 px-6 border-t text-center text-sm text-gray-500 bg-white">
         &copy; {new Date().getFullYear()} XIMA - Matching Quality in Jobs
       </footer>
     </div>

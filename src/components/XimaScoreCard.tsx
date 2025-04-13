@@ -12,27 +12,27 @@ const pillarInfo = {
   experience: {
     label: 'Experience',
     description: 'Professional and life experiences that shape your capabilities',
-    color: 'from-blue-400 to-blue-600'
+    color: 'from-blue-400 to-blue-500'
   },
   intelligence: {
     label: 'Intelligence',
     description: 'Cognitive abilities, problem-solving and learning capacity',
-    color: 'from-purple-400 to-purple-600'
+    color: 'from-indigo-400 to-indigo-500'
   },
   motivation: {
     label: 'Motivation',
     description: 'Drive, ambition and passion for your work and growth',
-    color: 'from-red-400 to-red-600'
+    color: 'from-red-400 to-red-500'
   },
   attitude: {
     label: 'Attitude',
     description: 'Approach to challenges, teamwork and workplace relations',
-    color: 'from-green-400 to-green-600'
+    color: 'from-green-400 to-green-500'
   },
   analysis: {
     label: 'Analysis',
     description: 'Critical thinking, data interpretation and decision making',
-    color: 'from-amber-400 to-amber-600'
+    color: 'from-amber-400 to-amber-500'
   }
 };
 
@@ -43,17 +43,17 @@ const XimaScoreCard: React.FC<XimaScoreCardProps> = ({ pillars, compact = false 
 
   if (compact) {
     return (
-      <div className="p-4 rounded-lg xima-card-gradient shadow-md">
-        <h3 className="text-lg font-medium mb-3">XIMA Score</h3>
+      <div className="p-4 rounded-lg bg-white shadow-sm border border-gray-100">
+        <h3 className="text-lg font-medium mb-3 text-gray-800">XIMA Score</h3>
         <div className="space-y-2">
           {Object.keys(pillars).map((pillar) => (
             <div key={pillar} className="flex items-center gap-2">
-              <span className="text-sm w-24 font-medium">{pillarInfo[pillar as PillarType].label}</span>
+              <span className="text-sm w-24 font-medium text-gray-700">{pillarInfo[pillar as PillarType].label}</span>
               <Progress 
                 value={getPillarScore(pillar as PillarType)} 
                 className={`h-2 bg-gray-100 bg-gradient-to-r ${pillarInfo[pillar as PillarType].color}`} 
               />
-              <span className="text-xs font-medium">{pillars[pillar as PillarType]}/10</span>
+              <span className="text-xs font-medium text-gray-600">{pillars[pillar as PillarType]}/10</span>
             </div>
           ))}
         </div>
@@ -62,14 +62,14 @@ const XimaScoreCard: React.FC<XimaScoreCardProps> = ({ pillars, compact = false 
   }
 
   return (
-    <div className="p-6 rounded-lg xima-card-gradient shadow-md">
-      <h2 className="text-xl font-bold mb-4">XIMA Scorecard</h2>
+    <div className="p-6 rounded-lg bg-white shadow-sm border border-gray-100">
+      <h2 className="text-xl font-bold mb-4 text-gray-800">XIMA Scorecard</h2>
       <div className="space-y-6">
         {Object.keys(pillars).map((pillar) => (
           <div key={pillar} className="space-y-2">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium">{pillarInfo[pillar as PillarType].label}</h3>
-              <span className="text-sm font-bold">{pillars[pillar as PillarType]}/10</span>
+              <h3 className="text-lg font-medium text-gray-800">{pillarInfo[pillar as PillarType].label}</h3>
+              <span className="text-sm font-bold text-[#4171d6]">{pillars[pillar as PillarType]}/10</span>
             </div>
             <p className="text-sm text-gray-600 mb-2">{pillarInfo[pillar as PillarType].description}</p>
             <Progress 

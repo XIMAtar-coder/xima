@@ -86,9 +86,9 @@ const Login = () => {
   return (
     <MainLayout>
       <div className="container max-w-md mx-auto pt-8">
-        <Card className="border-0 shadow-lg">
+        <Card className="border-0 shadow-sm">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">Welcome back</CardTitle>
+            <CardTitle className="text-2xl font-bold text-center text-gray-800">Welcome back</CardTitle>
             <CardDescription className="text-center">
               Log in to continue your XIMA journey
             </CardDescription>
@@ -103,6 +103,7 @@ const Login = () => {
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="border-gray-200 focus:border-[#4171d6] focus:ring-[#4171d6]"
                 />
               </div>
               
@@ -111,7 +112,7 @@ const Login = () => {
                   <Label htmlFor="password">Password</Label>
                   <Button 
                     variant="link" 
-                    className="p-0 h-auto text-xs text-xima-purple hover:text-xima-dark-purple"
+                    className="p-0 h-auto text-xs text-[#4171d6] hover:text-[#2950a3]"
                   >
                     Forgot password?
                   </Button>
@@ -122,12 +123,13 @@ const Login = () => {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="border-gray-200 focus:border-[#4171d6] focus:ring-[#4171d6]"
                 />
               </div>
               
               <Button 
                 type="submit" 
-                className="w-full bg-xima-purple hover:bg-xima-dark-purple"
+                className="w-full bg-[#4171d6] hover:bg-[#2950a3]"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -146,7 +148,7 @@ const Login = () => {
               Don't have an account?{" "}
               <Button 
                 variant="link" 
-                className="p-0 h-auto text-xima-purple hover:text-xima-dark-purple"
+                className="p-0 h-auto text-[#4171d6] hover:text-[#2950a3]"
                 onClick={() => navigate('/register')}
               >
                 Sign up
