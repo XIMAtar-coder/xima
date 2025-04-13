@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout';
@@ -49,11 +48,11 @@ const Login = () => {
         email: email,
         profileComplete: true,
         pillars: {
-          experience: 7,
-          intelligence: 8,
-          motivation: 6,
-          attitude: 9,
-          analysis: 5
+          computational: 5,
+          communication: 6,
+          knowledge: 7,
+          creativity: 8,
+          drive: 9
         },
         avatar: {
           animal: 'Fox',

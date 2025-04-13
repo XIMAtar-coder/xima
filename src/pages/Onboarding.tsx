@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout';
@@ -14,11 +13,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowRight, Check } from 'lucide-react';
 
 const initialPillars: XimaPillars = {
-  experience: 5,
-  intelligence: 5,
-  motivation: 5,
-  attitude: 5,
-  analysis: 5
+  computational: 0,
+  communication: 0,
+  knowledge: 0,
+  creativity: 0,
+  drive: 0
 };
 
 const animalAvatars = [
@@ -84,11 +83,11 @@ const Onboarding = () => {
       
       // Create initial random pillars
       const initialPillarAnalysis: XimaPillars = {
-        experience: Math.floor(Math.random() * 5) + 3, // 3-7
-        intelligence: Math.floor(Math.random() * 5) + 3, // 3-7
-        motivation: Math.floor(Math.random() * 5) + 3, // 3-7
-        attitude: Math.floor(Math.random() * 5) + 3, // 3-7
-        analysis: Math.floor(Math.random() * 5) + 3, // 3-7
+        computational: Math.floor(Math.random() * 5) + 3, // 3-7
+        communication: Math.floor(Math.random() * 5) + 3, // 3-7
+        knowledge: Math.floor(Math.random() * 5) + 3, // 3-7
+        creativity: Math.floor(Math.random() * 5) + 3, // 3-7
+        drive: Math.floor(Math.random() * 5) + 3, // 3-7
       };
       
       setPillars(initialPillarAnalysis);
@@ -132,11 +131,11 @@ const Onboarding = () => {
     setTimeout(() => {
       // Create new random pillars (slightly improved from initial)
       const finalPillarAnalysis: XimaPillars = {
-        experience: Math.min(pillars.experience + Math.floor(Math.random() * 3), 10),
-        intelligence: Math.min(pillars.intelligence + Math.floor(Math.random() * 3), 10),
-        motivation: Math.min(pillars.motivation + Math.floor(Math.random() * 3), 10),
-        attitude: Math.min(pillars.attitude + Math.floor(Math.random() * 3), 10),
-        analysis: Math.min(pillars.analysis + Math.floor(Math.random() * 3), 10),
+        computational: Math.min(pillars.computational + Math.floor(Math.random() * 3), 10),
+        communication: Math.min(pillars.communication + Math.floor(Math.random() * 3), 10),
+        knowledge: Math.min(pillars.knowledge + Math.floor(Math.random() * 3), 10),
+        creativity: Math.min(pillars.creativity + Math.floor(Math.random() * 3), 10),
+        drive: Math.min(pillars.drive + Math.floor(Math.random() * 3), 10),
       };
       
       // Find animal based on highest score
@@ -149,19 +148,19 @@ const Onboarding = () => {
       
       // Simplistic mapping of highest pillar to animal
       switch(highestPillar.key) {
-        case 'experience':
+        case 'computational':
           animalName = 'Elephant';
           break;
-        case 'intelligence':
+        case 'communication':
           animalName = 'Owl';
           break;
-        case 'motivation':
+        case 'knowledge':
           animalName = 'Wolf';
           break;
-        case 'attitude':
+        case 'creativity':
           animalName = 'Dolphin';
           break;
-        case 'analysis':
+        case 'drive':
           animalName = 'Fox';
           break;
       }
