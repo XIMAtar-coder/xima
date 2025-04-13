@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useUser } from '../../context/UserContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { LogOut, User as UserIcon } from 'lucide-react';
 
@@ -30,6 +30,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
           >
             XIMA
           </h1>
+          
+          <nav className="hidden md:flex ml-10 space-x-6">
+            <Link to="/" className="text-gray-700 hover:text-[#4171d6] text-sm font-medium">
+              Home
+            </Link>
+            <Link to="/how-it-works" className="text-gray-700 hover:text-[#4171d6] text-sm font-medium">
+              How It Works
+            </Link>
+            <Link to="/about" className="text-gray-700 hover:text-[#4171d6] text-sm font-medium">
+              About
+            </Link>
+          </nav>
         </div>
         
         {isAuthenticated ? (
