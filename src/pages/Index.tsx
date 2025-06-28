@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout';
@@ -24,31 +23,20 @@ const Index = () => {
             </p>
             
             <div className="flex flex-wrap gap-4 pt-4">
-              {isAuthenticated ? (
-                <Button 
-                  size="lg"
-                  className="bg-[#4171d6] hover:bg-[#2950a3] shadow-sm"
-                  onClick={() => navigate('/profile')}
-                >
-                  Continue Your Journey
-                  <ChevronRight size={18} className="ml-2" />
-                </Button>
-              ) : (
-                <Button 
-                  size="lg"
-                  className="bg-[#4171d6] hover:bg-[#2950a3] shadow-sm"
-                  onClick={() => navigate('/register')}
-                >
-                  Start Your Journey
-                  <ChevronRight size={18} className="ml-2" />
-                </Button>
-              )}
+              <Button 
+                size="lg"
+                className="bg-[#4171d6] hover:bg-[#2950a3] shadow-lg text-lg px-8 py-4"
+                onClick={() => navigate('/ximatar-journey')}
+              >
+                Get Your Ximatar Now!
+                <ChevronRight size={20} className="ml-2" />
+              </Button>
               
               <Button 
                 variant="outline" 
                 size="lg"
                 onClick={() => navigate('/about')}
-                className="border-gray-300 text-gray-700 shadow-sm"
+                className="border-gray-300 text-gray-700 shadow-sm px-8 py-4"
               >
                 Learn More
               </Button>
@@ -59,9 +47,9 @@ const Index = () => {
             <div className="relative w-full max-w-md">
               <div className="absolute inset-0 bg-[#4171d6] rounded-full filter blur-3xl opacity-10 animate-pulse-slow"></div>
               <img 
-                src="/placeholder.svg" 
-                alt="XIMA Illustration" 
-                className="relative z-10 w-full h-auto"
+                src="/lovable-uploads/ae79af7a-e780-4f42-8fbf-529eb1e4d1f8.png" 
+                alt="XIMA Logo" 
+                className="relative z-10 w-full h-auto max-w-sm mx-auto"
               />
             </div>
           </div>
@@ -122,15 +110,13 @@ const Index = () => {
             and found their perfect career match with XIMA.
           </p>
           
-          {!isAuthenticated && (
-            <Button 
-              size="lg"
-              className="bg-[#4171d6] hover:bg-[#2950a3] shadow-sm"
-              onClick={() => navigate('/register')}
-            >
-              Get Started Now
-            </Button>
-          )}
+          <Button 
+            size="lg"
+            className="bg-[#4171d6] hover:bg-[#2950a3] shadow-lg text-lg px-8 py-4"
+            onClick={() => navigate('/ximatar-journey')}
+          >
+            Get Your Ximatar Now!
+          </Button>
         </div>
       </div>
     </MainLayout>

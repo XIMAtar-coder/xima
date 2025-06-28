@@ -24,12 +24,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
     <div className="min-h-screen flex flex-col bg-[#f9fafc]">
       <header className="w-full py-4 px-6 flex justify-between items-center bg-white shadow-sm">
         <div className="flex items-center gap-2">
-          <h1 
-            className="text-2xl font-bold text-[#4171d6] cursor-pointer"
+          <div 
+            className="flex items-center gap-3 cursor-pointer"
             onClick={() => navigate('/')}
           >
-            XIMA
-          </h1>
+            <img 
+              src="/lovable-uploads/ae79af7a-e780-4f42-8fbf-529eb1e4d1f8.png" 
+              alt="XIMA Logo" 
+              className="h-10 w-auto"
+            />
+          </div>
           
           <nav className="hidden md:flex ml-10 space-x-6">
             <Link to="/" className="text-gray-700 hover:text-[#4171d6] text-sm font-medium">

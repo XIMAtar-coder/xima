@@ -1,0 +1,170 @@
+
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import MainLayout from '../components/layout/MainLayout';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { useUser } from '../context/UserContext';
+import { ArrowRight, ArrowLeft, Check, Upload, FileText, Calendar, User } from 'lucide-react';
+import BaselineAssessment from '../components/ximatar-journey/BaselineAssessment';
+import XimatarAssessment from '../components/ximatar-journey/XimatarAssessment';
+import ResultsComparison from '../components/ximatar-journey/ResultsComparison';
+import MentorBooking from '../components/ximatar-journey/MentorBooking';
+
+const XimatarJourney = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { user, isAuthenticated } = useUser();
+  
+  const [currentStep, setCurrentStep] = useState(1);
+  const [baselineCompleted, setBaselineCompleted] = useState(false);
+  const [assessmentCompleted, setAssessmentCompleted] = useState(false);
+  const [resultsViewed, setResultsViewed] = useState(false);
+  const [cvUploaded, setCvUploaded] = useState(false);
+
+  const steps = [
+    { number: 1, title: 'Baseline Assessment', icon: <FileText size={20} /> },
+    { number: 2, title: 'Create Your Ximatar', icon: <User size={20} /> },
+    { number: 3, title: 'Get Your Results', icon: <Check size={20} /> },
+    { number: 4, title: 'Start Your Journey', icon: <Calendar size={20} /> }
+  ];
+
+  const handleStepComplete = (step: number) => {
+    switch (step) {
+      case 1:
+        setBaselineCompleted(true);
+        setCurrentStep(2);
+        break;
+      case 2:
+        setAssessmentCompleted(true);
+        setCurrentStep(3);
+        break;
+      case 3:
+        setResultsViewed(true);
+        setCurrentStep(4);
+        break;
+      case 4:
+        if (!isAuthenticated) {
+          toast({
+            title: "Registration Required",
+            description: "Please register to book a mentor call",
+            variant: "destructive"
+          });
+          navigate('/register');
+          return;
+        }
+        break;
+    }
+  };
+
+  const goBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  return (
+    <MainLayout>
+      <div className="container max-w-5xl mx-auto pt-4">
+        <div className="text-center mb-8">
+          <img 
+            src="/lovable-uploads/ae79af7a-e780-4f42-8fbf-529eb1e4d1f8.png" 
+            alt="XIMA Logo" 
+            className="h-16 w-auto mx-auto mb-4"
+          />
+          <h1 className="text-4xl font-bold mb-2">Your Ximatar Journey</h1>
+          <p className="text-gray-600 text-lg">
+            Discover your professional strengths through our comprehensive assessment
+          </p>
+        </div>
+        
+        {/* Progress Steps */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center relative">
+            {steps.map((step, index) => (
+              <div key={step.number} className="flex flex-col items-center z-10 relative">
+                <div 
+                  className={`w-12 h-12 rounded-full flex items-center justify-center border-2 
+                    ${currentStep === step.number 
+                      ? 'bg-[#4171d6] border-[#4171d6] text-white' 
+                      : currentStep > step.number
+                        ? 'bg-green-500 border-green-500 text-white'
+                        : 'bg-white border-gray-300 text-gray-400'
+                    }`}
+                >
+                  {currentStep > step.number ? <Check size={20} /> : step.icon}
+                </div>
+                <span 
+                  className={`text-sm mt-2 text-center max-w-20
+                    ${currentStep === step.number 
+                      ? 'text-[#4171d6] font-medium' 
+                      : currentStep > step.number
+                        ? 'text-green-600 font-medium'
+                        : 'text-gray-500'
+                    }`}
+                >
+                  {step.title}
+                </span>
+              </div>
+            ))}
+            
+            <div className="absolute h-1 bg-gray-200 top-6 left-0 right-0 z-0">
+              <div 
+                className="h-full bg-[#4171d6] transition-all duration-300"
+                style={{ 
+                  width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` 
+                }}
+              ></div>
+            </div>
+          </div>
+        </div>
+        
+        <Card className="p-8 shadow-lg border-0">
+          {currentStep === 1 && (
+            <BaselineAssessment 
+              onComplete={handleStepComplete}
+              onCvUpload={setCvUploaded}
+            />
+          )}
+          
+          {currentStep === 2 && (
+            <XimatarAssessment 
+              onComplete={handleStepComplete}
+            />
+          )}
+          
+          {currentStep === 3 && (
+            <ResultsComparison 
+              onComplete={handleStepComplete}
+              hasCv={cvUploaded}
+            />
+          )}
+          
+          {currentStep === 4 && (
+            <MentorBooking />
+          )}
+        </Card>
+        
+        {/* Navigation */}
+        <div className="flex justify-between mt-6">
+          <Button 
+            variant="outline" 
+            onClick={goBack}
+            disabled={currentStep === 1}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft size={16} />
+            Back
+          </Button>
+          
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            Step {currentStep} of {steps.length}
+          </div>
+        </div>
+      </div>
+    </MainLayout>
+  );
+};
+
+export default XimatarJourney;
