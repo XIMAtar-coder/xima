@@ -1,19 +1,25 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import MainLayout from '../components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import { useUser } from '../context/UserContext';
 import XimaAvatar from '../components/XimaAvatar';
 import XimaScoreCard from '../components/XimaScoreCard';
-import { Award, Clock, FileText, MessageSquare } from 'lucide-react';
+import { Award, Clock, FileText, MessageSquare, Calendar as CalendarIcon, CheckCircle } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const Profile = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useUser();
+  const { t } = useTranslation();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [selectedTime, setSelectedTime] = useState<string>('');
+  const [bookingConfirmed, setBookingConfirmed] = useState(false);
   
   React.useEffect(() => {
     if (!isAuthenticated) {
@@ -29,19 +35,47 @@ const Profile = () => {
   if (!user) {
     return null;
   }
+
+  const matchedProfessional = {
+    name: "Dr. Sarah Chen",
+    title: "Senior Business Strategist",
+    specialization: "Communication & Leadership",
+    bio: "Expert in organizational communication and team dynamics with 15+ years of experience in consulting.",
+    avatar: {
+      animal: 'Eagle',
+      image: '/placeholder.svg',
+      features: [
+        { name: 'Vision', description: 'Strategic thinking and long-term planning', strength: 9 },
+        { name: 'Leadership', description: 'Natural ability to guide and inspire others', strength: 8 },
+        { name: 'Focus', description: 'Laser-sharp attention to detail', strength: 7 }
+      ]
+    }
+  };
+
+  const timeSlots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
   
+  const handleBooking = () => {
+    if (selectedDate && selectedTime) {
+      setBookingConfirmed(true);
+    }
+  };
+
+  const handleTimeSelect = (time: string) => {
+    setSelectedTime(time);
+  };
+
   return (
     <MainLayout requireAuth>
       <div className="container max-w-5xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold">Your XIMA Dashboard</h1>
-          <p className="text-gray-600">Manage your professional profile and see your match potential</p>
+          <h1 className="text-3xl font-bold">{t('dashboard.title')}</h1>
+          <p className="text-gray-600">{t('dashboard.subtitle')}</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card className="col-span-1 shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Your XIMATAR</CardTitle>
+              <CardTitle className="text-lg">{t('dashboard.your_ximatar')}</CardTitle>
             </CardHeader>
             <CardContent className="flex justify-center pt-2">
               {user.avatar && (
@@ -52,7 +86,7 @@ const Profile = () => {
           
           <Card className="col-span-2 shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">XIMA Score</CardTitle>
+              <CardTitle className="text-lg">{t('dashboard.xima_score')}</CardTitle>
             </CardHeader>
             <CardContent className="pt-2">
               {user.pillars && (
@@ -61,6 +95,183 @@ const Profile = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Matched Professional Section */}
+        <Card className="shadow-sm mb-8">
+          <CardHeader>
+            <CardTitle>{t('dashboard.matched_professional')}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="md:w-1/3 flex justify-center">
+                <XimaAvatar avatar={matchedProfessional.avatar} size="lg" showDetails />
+              </div>
+              
+              <div className="md:w-2/3 space-y-4">
+                <div>
+                  <h3 className="text-2xl font-bold">{matchedProfessional.name}</h3>
+                  <p className="text-lg text-gray-600">{matchedProfessional.title}</p>
+                  <p className="text-sm text-[#4171d6] font-medium">{matchedProfessional.specialization}</p>
+                </div>
+                
+                <p className="text-gray-600">{matchedProfessional.bio}</p>
+                
+                <Button 
+                  className="bg-[#4171d6] hover:bg-[#2950a3]"
+                  onClick={() => document.getElementById('booking-section')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  {t('dashboard.book_appointment')}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Booking Section */}
+        <Card className="shadow-sm mb-8" id="booking-section">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CalendarIcon size={24} />
+              {t('dashboard.booking.title')}
+            </CardTitle>
+            <p className="text-gray-600">
+              {t('dashboard.booking.subtitle', { name: matchedProfessional.name })}
+            </p>
+          </CardHeader>
+          <CardContent>
+            {!bookingConfirmed ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-medium mb-3">{t('dashboard.booking.select_date')}</h4>
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={setSelectedDate}
+                    disabled={(date) => date < new Date()}
+                    className="rounded-md border"
+                  />
+                </div>
+                
+                <div>
+                  <h4 className="font-medium mb-3">{t('dashboard.booking.select_time')}</h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    {timeSlots.map((time) => (
+                      <Button
+                        key={time}
+                        variant={selectedTime === time ? "default" : "outline"}
+                        onClick={() => handleTimeSelect(time)}
+                        className={selectedTime === time ? "bg-[#4171d6] hover:bg-[#2950a3]" : ""}
+                      >
+                        {time}
+                      </Button>
+                    ))}
+                  </div>
+                  
+                  {selectedDate && selectedTime && (
+                    <div className="mt-6">
+                      <Button 
+                        onClick={handleBooking}
+                        className="w-full bg-[#4171d6] hover:bg-[#2950a3]"
+                      >
+                        {t('dashboard.booking.confirm_booking')}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-green-600 mb-2">
+                  {t('dashboard.booking.booking_confirmed')}
+                </h3>
+                
+                <div className="bg-green-50 p-6 rounded-lg max-w-md mx-auto">
+                  <h4 className="font-medium mb-3">{t('dashboard.booking.session_details')}</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>{t('dashboard.booking.date')}:</span>
+                      <span>{selectedDate?.toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>{t('dashboard.booking.time')}:</span>
+                      <span>{selectedTime}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>{t('dashboard.booking.duration')}:</span>
+                      <span>15 {t('mentor.intro_call').split(' ')[0]}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>{t('dashboard.booking.type')}:</span>
+                      <span>{t('dashboard.booking.video_call')}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex gap-3 justify-center mt-6">
+                  <Button variant="outline" onClick={() => setBookingConfirmed(false)}>
+                    {t('dashboard.booking.reschedule')}
+                  </Button>
+                  <Button variant="outline">
+                    {t('dashboard.booking.cancel_booking')}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* CV vs Assessment Comparison */}
+        <Card className="shadow-sm mb-8">
+          <CardHeader>
+            <CardTitle>{t('dashboard.cv_assessment_comparison')}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {user.pillars ? (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <p className="text-gray-600">
+                    {t('dashboard.assessment_date', { date: new Date().toLocaleDateString() })}
+                  </p>
+                  <Button variant="outline">
+                    {t('dashboard.view_full_comparison')}
+                  </Button>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-medium mb-3">{t('results.baseline_vs_final')}</h4>
+                    <XimaScoreCard 
+                      pillars={{
+                        computational: 6,
+                        communication: 5,
+                        knowledge: 8,
+                        creativity: 4,
+                        drive: 7
+                      }} 
+                      compact 
+                    />
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-medium mb-3">{t('results.full_assessment')}</h4>
+                    <XimaScoreCard pillars={user.pillars} compact />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-500 mb-4">{t('dashboard.no_assessment')}</p>
+                <Button 
+                  onClick={() => navigate('/ximatar-journey')}
+                  className="bg-[#4171d6] hover:bg-[#2950a3]"
+                >
+                  {t('dashboard.take_assessment')}
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
         
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid grid-cols-4 md:w-auto w-full">
@@ -73,11 +284,11 @@ const Profile = () => {
           <TabsContent value="overview" className="space-y-6">
             <Card className="shadow-sm">
               <CardHeader>
-                <CardTitle>Welcome, {user.name}</CardTitle>
+                <CardTitle>{t('dashboard.welcome', { name: user.name })}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <p>
-                  Your XIMA profile is now active. Below you'll find your overall stats and next steps to improve your match quality.
+                  {t('dashboard.overview_description')}
                 </p>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

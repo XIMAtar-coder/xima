@@ -1,11 +1,14 @@
+
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowRight, TrendingUp, BarChart, User } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import XimaScoreCard from '../XimaScoreCard';
 import XimaAvatar from '../XimaAvatar';
-import { XimaPillars, Avatar } from '../../types';
+import { ArrowRight, CheckCircle } from 'lucide-react';
+import { XimaPillars } from '../../types';
 
 interface ResultsComparisonProps {
   onComplete: (step: number) => void;
@@ -13,91 +16,60 @@ interface ResultsComparisonProps {
 }
 
 const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv }) => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(true);
-  const [baselinePillars, setBaselinePillars] = useState<XimaPillars | null>(null);
-  const [finalPillars, setFinalPillars] = useState<XimaPillars | null>(null);
-  const [ximatar, setXimatar] = useState<Avatar | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(true);
+  const [showResults, setShowResults] = useState(false);
 
-  useEffect(() => {
-    // Simulate processing results
-    setTimeout(() => {
-      // Generate baseline pillars (if CV was uploaded)
-      if (hasCv) {
-        setBaselinePillars({
-          computational: Math.floor(Math.random() * 4) + 4, // 4-7
-          communication: Math.floor(Math.random() * 4) + 4,
-          knowledge: Math.floor(Math.random() * 4) + 4,
-          creativity: Math.floor(Math.random() * 4) + 4,
-          drive: Math.floor(Math.random() * 4) + 4,
-        });
-      }
-
-      // Generate final assessment pillars (higher scores)
-      const finalResults: XimaPillars = {
-        computational: Math.floor(Math.random() * 3) + 7, // 7-9
-        communication: Math.floor(Math.random() * 3) + 7,
-        knowledge: Math.floor(Math.random() * 3) + 7,
-        creativity: Math.floor(Math.random() * 3) + 7,
-        drive: Math.floor(Math.random() * 3) + 7,
-      };
-      setFinalPillars(finalResults);
-
-      // Generate Ximatar based on highest pillar
-      const highestPillar = Object.entries(finalResults).reduce(
-        (max, [key, value]) => value > max.value ? { key, value } : max,
-        { key: '', value: 0 }
-      );
-
-      const animalMap: Record<string, string> = {
-        computational: 'Elephant',
-        communication: 'Dolphin',
-        knowledge: 'Owl',
-        creativity: 'Fox',
-        drive: 'Lion'
-      };
-
-      const animal = animalMap[highestPillar.key] || 'Wolf';
-      
-      setXimatar({
-        animal,
-        image: '/placeholder.svg',
-        features: [
-          { 
-            name: highestPillar.key.charAt(0).toUpperCase() + highestPillar.key.slice(1), 
-            description: `Exceptional ${highestPillar.key} capabilities`, 
-            strength: highestPillar.value 
-          },
-          { 
-            name: 'Adaptability', 
-            description: 'Quick to adjust to new situations', 
-            strength: 8 
-          },
-          { 
-            name: 'Leadership', 
-            description: 'Natural ability to guide others', 
-            strength: 7 
-          }
-        ]
-      });
-
-      setLoading(false);
-    }, 3000);
-  }, [hasCv]);
-
-  const handleContinue = () => {
-    onComplete(3);
+  // Mock data for demonstration
+  const baselinePillars: XimaPillars = {
+    computational: 6,
+    communication: 5,
+    knowledge: 8,
+    creativity: 4,
+    drive: 7
   };
 
-  if (loading) {
+  const finalPillars: XimaPillars = {
+    computational: 7,
+    communication: 8,
+    knowledge: 8,
+    creativity: 9,
+    drive: 8
+  };
+
+  const avatar = {
+    animal: 'Fox',
+    image: '/placeholder.svg',
+    features: [
+      { name: 'Adaptability', description: 'Quick to learn and adjust to new environments', strength: 8 },
+      { name: 'Focus', description: 'Maintains concentration on tasks', strength: 6 },
+      { name: 'Creativity', description: 'Finds unique solutions to problems', strength: 7 }
+    ]
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAnalyzing(false);
+      setShowResults(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleContinue = () => {
+    navigate('/profile');
+  };
+
+  if (isAnalyzing) {
     return (
-      <div className="text-center space-y-6 py-12">
-        <div className="w-16 h-16 border-4 border-[#4171d6] border-t-transparent rounded-full animate-spin mx-auto"></div>
+      <div className="text-center space-y-6">
+        <div className="flex justify-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#4171d6]"></div>
+        </div>
         <div>
           <h2 className="text-2xl font-bold mb-2">{t('results.analyzing')}</h2>
-          <p className="text-gray-600">
-            {t('results.analyzing_subtitle')}
-          </p>
+          <p className="text-gray-600">{t('results.analyzing_subtitle')}</p>
         </div>
       </div>
     );
@@ -105,105 +77,92 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
   return (
     <div className="space-y-8">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">{t('results.title')}</h2>
-        <p className="text-gray-600 text-lg">
-          {hasCv 
-            ? t('results.subtitle_with_cv')
-            : t('results.subtitle_without_cv')
-          }
+      <div className="text-center space-y-4">
+        <h2 className="text-3xl font-bold">{t('results.title')}</h2>
+        <p className="text-gray-600">
+          {hasCv ? t('results.subtitle_with_cv') : t('results.subtitle_without_cv')}
         </p>
       </div>
 
-      {/* Ximatar Display */}
-      {ximatar && (
-        <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-0">
-          <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="md:w-1/3 flex justify-center">
-              <XimaAvatar avatar={ximatar} size="lg" showDetails />
+      {/* Ximatar Avatar Section */}
+      <Card className="p-8 text-center">
+        <h3 className="text-2xl font-bold mb-4">
+          {t('results.your_animal', { animal: avatar.animal })}
+        </h3>
+        <div className="flex justify-center mb-6">
+          <XimaAvatar avatar={avatar} size="lg" showDetails />
+        </div>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          {t('results.animal_description')}
+        </p>
+      </Card>
+
+      {/* Comparison Section */}
+      {hasCv && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="p-6">
+            <div className="text-center mb-4">
+              <Badge variant="outline" className="mb-2">
+                {t('results.baseline_vs_final')}
+              </Badge>
+              <h3 className="text-lg font-semibold">{t('results.baseline_description')}</h3>
             </div>
-            <div className="md:w-2/3 space-y-4">
-              <h3 className="text-2xl font-bold">{t('results.your_animal', { animal: ximatar.animal })}</h3>
-              <p className="text-gray-600">
-                {t('results.animal_description')}
-              </p>
-              <div className="space-y-2">
-                {ximatar.features.slice(0, 2).map((feature, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-[#4171d6] rounded-full"></div>
-                    <span className="text-sm">
-                      <strong>{feature.name}:</strong> {feature.description}
-                    </span>
-                  </div>
-                ))}
-              </div>
+            <XimaScoreCard pillars={baselinePillars} compact />
+          </Card>
+
+          <Card className="p-6">
+            <div className="text-center mb-4">
+              <Badge className="mb-2 bg-[#4171d6]">
+                {t('results.full_assessment')}
+              </Badge>
+              <h3 className="text-lg font-semibold">{t('results.full_description')}</h3>
             </div>
-          </div>
+            <XimaScoreCard pillars={finalPillars} compact />
+          </Card>
+        </div>
+      )}
+
+      {/* Single Assessment Results */}
+      {!hasCv && (
+        <Card className="p-8">
+          <XimaScoreCard pillars={finalPillars} />
         </Card>
       )}
 
-      {/* Results Comparison */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {hasCv && baselinePillars && (
-          <Card className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <BarChart className="text-gray-600" size={20} />
-              <h3 className="text-xl font-bold">{t('results.baseline_vs_final')}</h3>
-            </div>
-            <XimaScoreCard pillars={baselinePillars} compact />
-            <p className="text-sm text-gray-500 mt-2">
-              {t('results.baseline_description')}
-            </p>
-          </Card>
-        )}
-        
-        {finalPillars && (
-          <Card className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <User className="text-[#4171d6]" size={20} />
-              <h3 className="text-xl font-bold">{t('results.full_assessment')}</h3>
-            </div>
-            <XimaScoreCard pillars={finalPillars} compact />
-            <p className="text-sm text-gray-500 mt-2">
-              {t('results.full_description')}
-            </p>
-          </Card>
-        )}
-      </div>
-
-      {/* Insights */}
-      {hasCv && baselinePillars && finalPillars && (
-        <Card className="p-6 bg-green-50 border-green-200">
-          <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="text-green-600" size={20} />
-            <h3 className="text-xl font-bold text-green-800">{t('results.key_insights')}</h3>
-          </div>
-          <div className="space-y-3">
-            <p className="text-green-700">
-              {t('results.insights_intro')}
-            </p>
-            <ul className="space-y-2 text-sm text-green-700">
-              <li className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-green-600 rounded-full"></div>
-                {t('results.insight_1')}
+      {/* Insights Section */}
+      {hasCv && (
+        <Card className="p-6">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <CheckCircle className="text-green-500" size={24} />
+            {t('results.key_insights')}
+          </h3>
+          
+          <div className="space-y-4">
+            <p className="text-gray-600">{t('results.insights_intro')}</p>
+            
+            <ul className="space-y-3">
+              <li className="flex items-start gap-3">
+                <div className="w-2 h-2 rounded-full bg-[#4171d6] mt-2 flex-shrink-0"></div>
+                <span>{t('results.insight_1')}</span>
               </li>
-              <li className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-green-600 rounded-full"></div>
-                {t('results.insight_2')}
+              <li className="flex items-start gap-3">
+                <div className="w-2 h-2 rounded-full bg-[#4171d6] mt-2 flex-shrink-0"></div>
+                <span>{t('results.insight_2')}</span>
               </li>
-              <li className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-green-600 rounded-full"></div>
-                {t('results.insight_3')}
+              <li className="flex items-start gap-3">
+                <div className="w-2 h-2 rounded-full bg-[#4171d6] mt-2 flex-shrink-0"></div>
+                <span>{t('results.insight_3')}</span>
               </li>
             </ul>
           </div>
         </Card>
       )}
 
+      {/* Continue Button */}
       <div className="text-center">
         <Button 
-          size="lg"
           onClick={handleContinue}
+          size="lg"
           className="bg-[#4171d6] hover:bg-[#2950a3] px-8 py-4"
         >
           {t('results.continue_journey')}

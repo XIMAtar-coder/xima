@@ -72,7 +72,65 @@
     "required": "This field is required",
     "characters": "characters",
     "next_question": "Next Question",
-    "completing": "Completing Assessment..."
+    "completing": "Completing Assessment...",
+    "questions": {
+      "q1": {
+        "category": "Computational Power",
+        "question": "When faced with a complex data set, what is your first approach?",
+        "options": [
+          "Break it down into smaller, manageable parts",
+          "Look for patterns and trends immediately",
+          "Seek tools or software to help analyze it",
+          "Consult with others who have similar experience"
+        ]
+      },
+      "q2": {
+        "category": "Communication",
+        "question": "In a team meeting, how do you typically contribute?",
+        "options": [
+          "I listen carefully and ask clarifying questions",
+          "I share ideas and build on others' suggestions",
+          "I take notes and summarize key points",
+          "I focus on actionable next steps"
+        ]
+      },
+      "q3": {
+        "category": "Knowledge",
+        "question": "How do you prefer to learn new skills?",
+        "options": [
+          "Through hands-on practice and experimentation",
+          "By reading comprehensive guides and documentation",
+          "Through structured courses and formal training",
+          "By learning from mentors and experienced colleagues"
+        ]
+      },
+      "q4": {
+        "category": "Creativity",
+        "question": "When solving a problem, you tend to:",
+        "options": [
+          "Think of multiple unconventional solutions",
+          "Combine existing ideas in new ways",
+          "Build upon proven methods with improvements",
+          "Seek inspiration from different industries or fields"
+        ]
+      },
+      "q5": {
+        "category": "Drive",
+        "question": "What motivates you most in your work?",
+        "options": [
+          "Achieving challenging goals and targets",
+          "Making a positive impact on others",
+          "Continuous learning and growth",
+          "Recognition and advancement opportunities"
+        ]
+      },
+      "open1": {
+        "question": "Describe a professional situation where you felt most successful. What made it successful and what was your specific contribution?"
+      },
+      "open2": {
+        "question": "What is your biggest professional challenge or area where you'd like to grow? How do you plan to address it?"
+      }
+    }
   },
   "results": {
     "title": "Your Ximatar Results",
@@ -90,7 +148,7 @@
     "insight_1": "Enhanced understanding of your creative problem-solving abilities",
     "insight_2": "Deeper insight into your communication and collaboration style", 
     "insight_3": "Better understanding of your intrinsic motivation and drive",
-    "continue_journey": "Start Your Xima Journey",
+    "continue_journey": "Go to Dashboard",
     "analyzing": "Analyzing Your Results",
     "analyzing_subtitle": "We're comparing your assessments and creating your personalized Ximatar..."
   },
@@ -114,6 +172,37 @@
     "flexible_scheduling": "Flexible scheduling",
     "personalized_guidance": "Personalized guidance",
     "selected": "Selected"
+  },
+  "dashboard": {
+    "title": "Your XIMA Dashboard",
+    "subtitle": "Manage your professional profile and see your match potential",
+    "your_ximatar": "Your XIMATAR",
+    "xima_score": "XIMA Score",
+    "welcome": "Welcome, {{name}}",
+    "overview_description": "Your XIMA profile is now active. Below you'll find your overall stats and next steps to improve your match quality.",
+    "matched_professional": "Your Matched Professional",
+    "book_appointment": "Book Appointment",
+    "cv_assessment_comparison": "CV vs Assessment Comparison",
+    "assessment_date": "Assessment completed on {{date}}",
+    "view_full_comparison": "View Full Comparison",
+    "no_assessment": "No assessment completed yet",
+    "take_assessment": "Take Assessment",
+    "booking": {
+      "title": "Book a Session",
+      "subtitle": "Schedule a consultation with {{name}}",
+      "select_date": "Select Date",
+      "select_time": "Select Time",
+      "confirm_booking": "Confirm Booking",
+      "booking_confirmed": "Booking Confirmed!",
+      "session_details": "Session Details",
+      "date": "Date",
+      "time": "Time",
+      "duration": "Duration",
+      "type": "Type",
+      "video_call": "Video Call",
+      "cancel_booking": "Cancel",
+      "reschedule": "Reschedule"
+    }
   },
   "about": {
     "title": "About XIMA",
@@ -215,7 +304,7 @@
     "password_length": "Password must be at least 6 characters",
     "passwords_match": "Passwords do not match",
     "registration_success": "Registration successful!",
-    "welcome_message": "Welcome to XIMA. Let's complete your profile.",
+    "welcome_message": "Welcome to XIMA. You can now access your dashboard.",
     "registration_failed": "Registration failed",
     "try_again": "Please try again later"
   },

@@ -72,7 +72,65 @@
     "required": "Questo campo è obbligatorio",
     "characters": "caratteri",
     "next_question": "Prossima Domanda",
-    "completing": "Completamento Valutazione..."
+    "completing": "Completamento Valutazione...",
+    "questions": {
+      "q1": {
+        "category": "Potenza Computazionale",
+        "question": "Di fronte a un dataset complesso, qual è il tuo primo approccio?",
+        "options": [
+          "Lo suddivido in parti più piccole e gestibili",
+          "Cerco immediatamente pattern e tendenze",
+          "Cerco strumenti o software per aiutarmi ad analizzarlo",
+          "Consulto altri che hanno esperienza simile"
+        ]
+      },
+      "q2": {
+        "category": "Comunicazione",
+        "question": "In una riunione di team, come contribuisci tipicamente?",
+        "options": [
+          "Ascolto attentamente e faccio domande chiarificatrici",
+          "Condivido idee e costruisco sui suggerimenti degli altri",
+          "Prendo appunti e riassumo i punti chiave",
+          "Mi concentro sui prossimi passi concreti"
+        ]
+      },
+      "q3": {
+        "category": "Conoscenza",
+        "question": "Come preferisci imparare nuove competenze?",
+        "options": [
+          "Attraverso la pratica diretta e la sperimentazione",
+          "Leggendo guide complete e documentazione",
+          "Attraverso corsi strutturati e formazione formale",
+          "Imparando da mentor e colleghi esperti"
+        ]
+      },
+      "q4": {
+        "category": "Creatività",
+        "question": "Quando risolvi un problema, tendi a:",
+        "options": [
+          "Pensare a soluzioni multiple e non convenzionali",
+          "Combinare idee esistenti in modi nuovi",
+          "Costruire su metodi comprovati con miglioramenti",
+          "Cercare ispirazione da settori o campi diversi"
+        ]
+      },
+      "q5": {
+        "category": "Determinazione",
+        "question": "Cosa ti motiva di più nel tuo lavoro?",
+        "options": [
+          "Raggiungere obiettivi e target impegnativi",
+          "Avere un impatto positivo sugli altri",
+          "Apprendimento continuo e crescita",
+          "Riconoscimento e opportunità di avanzamento"
+        ]
+      },
+      "open1": {
+        "question": "Descrivi una situazione professionale in cui ti sei sentito più riuscito. Cosa l'ha resa un successo e qual è stato il tuo contributo specifico?"
+      },
+      "open2": {
+        "question": "Qual è la tua più grande sfida professionale o area in cui vorresti crescere? Come pensi di affrontarla?"
+      }
+    }
   },
   "results": {
     "title": "I Tuoi Risultati Ximatar",
@@ -90,7 +148,7 @@
     "insight_1": "Migliore comprensione delle tue capacità creative di risoluzione problemi",
     "insight_2": "Approfondimento del tuo stile di comunicazione e collaborazione",
     "insight_3": "Migliore comprensione della tua motivazione intrinseca e determinazione",
-    "continue_journey": "Inizia il Tuo Percorso Xima",
+    "continue_journey": "Vai alla Dashboard",
     "analyzing": "Analizzando i Tuoi Risultati",
     "analyzing_subtitle": "Stiamo confrontando le tue valutazioni e creando il tuo Ximatar personalizzato..."
   },
@@ -114,6 +172,37 @@
     "flexible_scheduling": "Programmazione flessibile",
     "personalized_guidance": "Guida personalizzata",
     "selected": "Selezionato"
+  },
+  "dashboard": {
+    "title": "La Tua Dashboard XIMA",
+    "subtitle": "Gestisci il tuo profilo professionale e vedi il tuo potenziale di corrispondenza",
+    "your_ximatar": "Il Tuo XIMATAR",
+    "xima_score": "Punteggio XIMA",
+    "welcome": "Benvenuto, {{name}}",
+    "overview_description": "Il tuo profilo XIMA è ora attivo. Di seguito troverai le tue statistiche generali e i prossimi passi per migliorare la qualità delle tue corrispondenze.",
+    "matched_professional": "Il Tuo Professionista Abbinato",
+    "book_appointment": "Prenota Appuntamento",
+    "cv_assessment_comparison": "Confronto CV vs Valutazione",
+    "assessment_date": "Valutazione completata il {{date}}",
+    "view_full_comparison": "Visualizza Confronto Completo",
+    "no_assessment": "Nessuna valutazione completata ancora",
+    "take_assessment": "Fai la Valutazione",
+    "booking": {
+      "title": "Prenota una Sessione",
+      "subtitle": "Programma una consulenza con {{name}}",
+      "select_date": "Seleziona Data",
+      "select_time": "Seleziona Orario",
+      "confirm_booking": "Conferma Prenotazione",
+      "booking_confirmed": "Prenotazione Confermata!",
+      "session_details": "Dettagli Sessione",
+      "date": "Data",
+      "time": "Orario",
+      "duration": "Durata",
+      "type": "Tipo",
+      "video_call": "Chiamata Video",
+      "cancel_booking": "Annulla",
+      "reschedule": "Riprogramma"
+    }
   },
   "about": {
     "title": "Chi Siamo - XIMA",
@@ -215,7 +304,7 @@
     "password_length": "La password deve essere di almeno 6 caratteri",
     "passwords_match": "Le password non corrispondono",
     "registration_success": "Registrazione riuscita!",
-    "welcome_message": "Benvenuto su XIMA. Completiamo il tuo profilo.",
+    "welcome_message": "Benvenuto su XIMA. Ora puoi accedere alla tua dashboard.",
     "registration_failed": "Registrazione fallita",
     "try_again": "Per favore riprova più tardi"
   },

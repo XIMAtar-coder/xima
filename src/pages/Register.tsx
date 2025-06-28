@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +29,7 @@ const Register = () => {
   
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/onboarding');
+      navigate('/profile');
     }
   }, [isAuthenticated, navigate]);
   
@@ -82,7 +83,7 @@ const Register = () => {
         description: t('register.welcome_message'),
       });
       
-      navigate('/onboarding');
+      navigate('/profile');
     } catch (error) {
       toast({
         title: t('register.registration_failed'),
