@@ -1,9 +1,9 @@
-import React from 'react';
-import { useUser } from '../../context/UserContext';
-import { useNavigate, Link } from 'react-router-dom';
+
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { LogOut, User as UserIcon } from 'lucide-react';
+import { useUser } from '../../context/UserContext';
 import LanguageSwitcher from '../LanguageSwitcher';
 
 interface MainLayoutProps {
@@ -12,56 +12,61 @@ interface MainLayoutProps {
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }) => {
-  const { user, logout, isAuthenticated } = useUser();
   const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useUser();
   const { t } = useTranslation();
-  
-  React.useEffect(() => {
+
+  useEffect(() => {
     if (requireAuth && !isAuthenticated) {
       navigate('/login');
     }
   }, [requireAuth, isAuthenticated, navigate]);
 
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <header className="bg-white shadow-sm border-b border-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <nav className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
-              <Link to="/" className="flex items-center space-x-2">
+              <button onClick={() => navigate('/')} className="flex items-center space-x-2">
                 <img 
-                  src="/lovable-uploads/ae79af7a-e780-4f42-8fbf-529eb1e4d1f8.png" 
-                  alt="XIMA Logo" 
-                  className="h-10 w-auto"
+                  src="/lovable-uploads/29354704-151e-4e3c-a9ae-adfe07e62896.png" 
+                  alt="XIMA" 
+                  className="h-8 w-auto"
                 />
-              </Link>
+              </button>
               
-              <nav className="hidden md:flex space-x-6">
-                <Link 
-                  to="/" 
-                  className="text-gray-700 hover:text-[#4171d6] font-medium transition-colors"
+              <div className="hidden md:flex space-x-6">
+                <button 
+                  onClick={() => navigate('/')}
+                  className="text-gray-700 hover:text-[#4171d6] transition-colors"
                 >
                   {t('nav.home')}
-                </Link>
-                <Link 
-                  to="/how-it-works" 
-                  className="text-gray-700 hover:text-[#4171d6] font-medium transition-colors"
+                </button>
+                <button 
+                  onClick={() => navigate('/how-it-works')}
+                  className="text-gray-700 hover:text-[#4171d6] transition-colors"
                 >
                   {t('nav.how_it_works')}
-                </Link>
-                <Link 
-                  to="/about" 
-                  className="text-gray-700 hover:text-[#4171d6] font-medium transition-colors"
+                </button>
+                <button 
+                  onClick={() => navigate('/about')}
+                  className="text-gray-700 hover:text-[#4171d6] transition-colors"
                 >
                   {t('nav.about')}
-                </Link>
-              </nav>
+                </button>
+              </div>
             </div>
             
             <div className="flex items-center space-x-4">
               <LanguageSwitcher />
               
-              {isAuthenticated ? (
+              {isAuthenticated && user ? (
                 <div className="flex items-center space-x-4">
                   <Button 
                     variant="ghost"
@@ -70,9 +75,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                   >
                     {t('nav.profile')}
                   </Button>
+                  <Button 
+                    variant="outline"
+                    onClick={handleLogout}
+                    className="border-gray-300 text-gray-700 hover:border-[#4171d6] hover:text-[#4171d6]"
+                  >
+                    Logout
+                  </Button>
                 </div>
               ) : (
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-3">
                   <Button 
                     variant="ghost"
                     onClick={() => navigate('/login')}
@@ -91,15 +103,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
             </div>
           </div>
         </div>
-      </header>
+      </nav>
       
-      <main className="flex-1 py-8">
+      <main className="flex-1">
         {children}
       </main>
       
-      <footer className="bg-gray-50 border-t border-gray-200 py-4">
-        <div className="container mx-auto px-4 text-center text-gray-600">
-          <p>&copy; 2024 {t('footer.copyright')}</p>
+      <footer className="bg-gray-100 py-8 mt-16">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-gray-600">
+            © 2024 {t('footer.copyright')}
+          </p>
         </div>
       </footer>
     </div>

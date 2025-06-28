@@ -18,13 +18,29 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => 
   const [openAnswers, setOpenAnswers] = useState<Record<string, string>>({});
   const [isCompleting, setIsCompleting] = useState(false);
 
-  // Define questions using translation keys
+  // Define all 21 multiple choice questions
   const questions = [
     { id: 1, key: 'q1' },
     { id: 2, key: 'q2' },
     { id: 3, key: 'q3' },
     { id: 4, key: 'q4' },
-    { id: 5, key: 'q5' }
+    { id: 5, key: 'q5' },
+    { id: 6, key: 'q6' },
+    { id: 7, key: 'q7' },
+    { id: 8, key: 'q8' },
+    { id: 9, key: 'q9' },
+    { id: 10, key: 'q10' },
+    { id: 11, key: 'q11' },
+    { id: 12, key: 'q12' },
+    { id: 13, key: 'q13' },
+    { id: 14, key: 'q14' },
+    { id: 15, key: 'q15' },
+    { id: 16, key: 'q16' },
+    { id: 17, key: 'q17' },
+    { id: 18, key: 'q18' },
+    { id: 19, key: 'q19' },
+    { id: 20, key: 'q20' },
+    { id: 21, key: 'q21' }
   ];
 
   const openQuestions = [

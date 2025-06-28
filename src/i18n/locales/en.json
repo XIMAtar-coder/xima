@@ -1,4 +1,3 @@
-
 {
   "nav": {
     "home": "Home",
@@ -124,6 +123,166 @@
           "Recognition and advancement opportunities"
         ]
       },
+      "q6": {
+        "category": "Computational Power",
+        "question": "How do you evaluate the effectiveness of a technical solution?",
+        "options": [
+          "Measure performance and specific metrics",
+          "Compare alternatives and run A/B tests",
+          "Gather feedback from end users",
+          "Verify it meets all requirements"
+        ]
+      },
+      "q7": {
+        "category": "Communication",
+        "question": "How do you handle conflicts or disagreements at work?",
+        "options": [
+          "Find common ground and shared solutions",
+          "Present facts and data to support my position",
+          "Facilitate discussion between involved parties",
+          "Propose practical compromises"
+        ]
+      },
+      "q8": {
+        "category": "Knowledge",
+        "question": "When you encounter conflicting information?",
+        "options": [
+          "Research additional sources to verify",
+          "Analyze the credibility of original sources",
+          "Consult experts in the specific field",
+          "Test empirically when possible"
+        ]
+      },
+      "q9": {
+        "category": "Creativity",
+        "question": "How do you generate new ideas for projects?",
+        "options": [
+          "Brainstorming and creative sessions",
+          "Study success cases from other industries",
+          "Experiment with prototypes and mockups",
+          "Collaborate with diverse teams"
+        ]
+      },
+      "q10": {
+        "category": "Drive",
+        "question": "How do you maintain motivation during long projects?",
+        "options": [
+          "Set milestones and celebrate progress",
+          "Keep focus on the final goal",
+          "Vary activities to avoid monotony",
+          "Seek support and feedback from team"
+        ]
+      },
+      "q11": {
+        "category": "Computational Power",
+        "question": "How do you approach automating repetitive processes?",
+        "options": [
+          "Identify patterns and create custom scripts",
+          "Use existing tools and adapt them",
+          "Analyze cost-benefit before automating",
+          "Collaborate with technical experts to implement"
+        ]
+      },
+      "q12": {
+        "category": "Communication",
+        "question": "How do you adapt your communication style to different audiences?",
+        "options": [
+          "Study the background and needs of the audience",
+          "Use examples and analogies relevant to their context",
+          "Modify the level of technical detail",
+          "Ask for feedback to ensure I'm being clear"
+        ]
+      },
+      "q13": {
+        "category": "Knowledge",
+        "question": "How do you organize and share acquired knowledge?",
+        "options": [
+          "Create structured and searchable documentation",
+          "Organize training sessions for the team",
+          "Develop practical guides and tutorials",
+          "Maintain databases of best practices"
+        ]
+      },
+      "q14": {
+        "category": "Creativity",
+        "question": "How do you overcome creative blocks?",
+        "options": [
+          "Change environment and seek new perspectives",
+          "Brainstorm with colleagues",
+          "Research inspiration from unrelated fields",
+          "Take strategic breaks and return to the problem later"
+        ]
+      },
+      "q15": {
+        "category": "Drive",
+        "question": "How do you react to failures or setbacks?",
+        "options": [
+          "Analyze what went wrong to learn",
+          "Focus quickly on the next opportunity",
+          "Seek feedback from mentors or experienced colleagues",
+          "Readapt strategy while maintaining the goal"
+        ]
+      },
+      "q16": {
+        "category": "Computational Power",
+        "question": "How do you handle large amounts of data to analyze?",
+        "options": [
+          "Use visualization tools to identify patterns",
+          "Segment data into logical categories",
+          "Apply statistical techniques to find correlations",
+          "Create automated dashboards for continuous monitoring"
+        ]
+      },
+      "q17": {
+        "category": "Communication",
+        "question": "How do you present complex results to non-technical stakeholders?",
+        "options": [
+          "Use charts and intuitive visualizations",
+          "Focus on business results, not technical details",
+          "Tell a story that connects data to concrete impacts",
+          "Prepare executive summaries with key points"
+        ]
+      },
+      "q18": {
+        "category": "Knowledge",
+        "question": "How do you stay updated in your areas of expertise?",
+        "options": [
+          "Follow industry publications and research",
+          "Participate in specialized conferences and webinars",
+          "Join professional communities and forums",
+          "Experiment with new tools and technologies"
+        ]
+      },
+      "q19": {
+        "category": "Creativity",
+        "question": "How do you balance innovation and practicality in your projects?",
+        "options": [
+          "Test innovative ideas on a small scale first",
+          "Maintain a portfolio of projects at different risk levels",
+          "Seek continuous feedback to validate creative directions",
+          "Establish clear criteria to evaluate new ideas"
+        ]
+      },
+      "q20": {
+        "category": "Drive",
+        "question": "How do you define and pursue long-term goals?",
+        "options": [
+          "Create detailed roadmaps with intermediate milestones",
+          "Establish quantifiable metrics to measure progress",
+          "Regularly review and adapt strategy",
+          "Maintain constant focus despite distractions"
+        ]
+      },
+      "q21": {
+        "category": "Computational Power",
+        "question": "How do you evaluate the implementation of new technologies?",
+        "options": [
+          "Conduct thorough cost-benefit analysis",
+          "Test on pilot projects before full adoption",
+          "Evaluate impact on existing processes and teams",
+          "Research case studies and industry best practices"
+        ]
+      },
       "open1": {
         "question": "Describe a professional situation where you felt most successful. What made it successful and what was your specific contribution?"
       },
@@ -148,9 +307,10 @@
     "insight_1": "Enhanced understanding of your creative problem-solving abilities",
     "insight_2": "Deeper insight into your communication and collaboration style", 
     "insight_3": "Better understanding of your intrinsic motivation and drive",
-    "continue_journey": "Go to Dashboard",
+    "continue_journey": "Register to Continue",
     "analyzing": "Analyzing Your Results",
-    "analyzing_subtitle": "We're comparing your assessments and creating your personalized Ximatar..."
+    "analyzing_subtitle": "We're comparing your assessments and creating your personalized Ximatar...",
+    "registration_prompt": "Register to access your full profile and book a call with your matched expert."
   },
   "mentor": {
     "title": "Start Your Xima Journey",
@@ -258,8 +418,8 @@
     "title": "Your Ximatar Journey",
     "subtitle": "Discover your professional strengths through our comprehensive assessment",
     "step": "Step",
-    "step_1": "Baseline Assessment",
-    "step_2": "Create Your Ximatar", 
+    "step_1": "CV Analysis", 
+    "step_2": "Create Your Ximatar",
     "step_3": "Get Your Results",
     "step_4": "Start Your Journey",
     "back": "Back"

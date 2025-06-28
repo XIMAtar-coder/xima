@@ -1,4 +1,3 @@
-
 {
   "nav": {
     "home": "Home",
@@ -124,6 +123,166 @@
           "Riconoscimento e opportunità di avanzamento"
         ]
       },
+      "q6": {
+        "category": "Potenza Computazionale",
+        "question": "Come valuti l'efficacia di una soluzione tecnica?",
+        "options": [
+          "Misuro performance e metriche specifiche",
+          "Confronto alternative e faccio test A/B",
+          "Chiedo feedback agli utenti finali",
+          "Verifico se soddisfa tutti i requisiti"
+        ]
+      },
+      "q7": {
+        "category": "Comunicazione",
+        "question": "Come gestisci conflitti o disaccordi professionali?",
+        "options": [
+          "Cerco un terreno comune e soluzioni condivise",
+          "Presento fatti e dati per supportare la mia posizione",
+          "Facilito la discussione tra le parti coinvolte",
+          "Propongo compromessi pratici"
+        ]
+      },
+      "q8": {
+        "category": "Conoscenza",
+        "question": "Quando ti trovi di fronte a informazioni contrastanti?",
+        "options": [
+          "Ricerco fonti aggiuntive per verificare",
+          "Analizzo la credibilità delle fonti originali",
+          "Consulto esperti nel campo specifico",
+          "Testo empiricamente quando possibile"
+        ]
+      },
+      "q9": {
+        "category": "Creatività",
+        "question": "Come generi nuove idee per progetti?",
+        "options": [
+          "Brainstorming e sessioni creative",
+          "Studio casi di successo in altri settori",
+          "Sperimento con prototipi e mockup",
+          "Collaboro con team diversificati"
+        ]
+      },
+      "q10": {
+        "category": "Determinazione",
+        "question": "Come mantieni la motivazione durante progetti lunghi?",
+        "options": [
+          "Stabilisco milestone e celebro i progressi",
+          "Mantengo focus sull'obiettivo finale",
+          "Vario le attività per evitare monotonia",
+          "Cerco supporto e feedback dal team"
+        ]
+      },
+      "q11": {
+        "category": "Potenza Computazionale",
+        "question": "Come approcci l'automazione di processi ripetitivi?",
+        "options": [
+          "Identifico pattern e creo script personalizzati",
+          "Utilizzo strumenti esistenti e li adatto",
+          "Analizzo costi-benefici prima di automatizzare",
+          "Collaboro con esperti tecnici per implementare"
+        ]
+      },
+      "q12": {
+        "category": "Comunicazione",
+        "question": "Come adatti il tuo stile comunicativo a pubblici diversi?",
+        "options": [
+          "Studio il background e le esigenze dell'audience",
+          "Uso esempi e analogie pertinenti al loro contesto",
+          "Modifico il livello di dettaglio tecnico",
+          "Chiedo feedback per assicurarmi di essere chiaro"
+        ]
+      },
+      "q13": {
+        "category": "Conoscenza",
+        "question": "Come organizzi e condividi la conoscenza acquisita?",
+        "options": [
+          "Creo documentazione strutturata e ricercabile",
+          "Organizzo sessioni di formazione per il team",
+          "Sviluppo guide e tutorial pratici",
+          "Mantengo database di best practices"
+        ]
+      },
+      "q14": {
+        "category": "Creatività",
+        "question": "Come superi i blocchi creativi?",
+        "options": [
+          "Cambio ambiente e cerco nuove prospettive",
+          "Faccio brainstorming con colleghi",
+          "Ricerco ispirazioni in campi non correlati",
+          "Prendo pause strategiche e torno al problema dopo"
+        ]
+      },
+      "q15": {
+        "category": "Determinazione",
+        "question": "Come reagisci ai fallimenti o agli insuccessi?",
+        "options": [
+          "Analizzo cosa è andato storto per imparare",
+          "Mi concentro rapidamente sulla prossima opportunità",
+          "Cerco feedback da mentori o colleghi esperti",
+          "Riadatto la strategia mantenendo l'obiettivo"
+        ]
+      },
+      "q16": {
+        "category": "Potenza Computazionale",
+        "question": "Come gestisci grandi quantità di dati da analizzare?",
+        "options": [
+          "Uso strumenti di visualizzazione per identificare pattern",
+          "Segmento i dati in categorie logiche",
+          "Applico tecniche statistiche per trovare correlazioni",
+          "Creo dashboard automatizzati per monitoraggio continuo"
+        ]
+      },
+      "q17": {
+        "category": "Comunicazione",
+        "question": "Come presenti risultati complessi a stakeholder non tecnici?",
+        "options": [
+          "Uso grafici e visualizzazioni intuitive",
+          "Focus sui risultati di business, non sui dettagli tecnici",
+          "Racconto una storia che collega dati a impatti concreti",
+          "Preparo sommari esecutivi con punti chiave"
+        ]
+      },
+      "q18": {
+        "category": "Conoscenza",
+        "question": "Come rimani aggiornato nelle tue aree di competenza?",
+        "options": [
+          "Seguo pubblicazioni e ricerche del settore",
+          "Partecipo a conferenze e webinar specializzati",
+          "Faccio parte di comunità professionali e forum",
+          "Sperimento con nuovi strumenti e tecnologie"
+        ]
+      },
+      "q19": {
+        "category": "Creatività",
+        "question": "Come bilanci innovazione e praticità nei tuoi progetti?",
+        "options": [
+          "Testo idee innovative su scala ridotta prima",
+          "Mantengo un portfolio di progetti a diversi livelli di rischio",
+          "Cerco feedback continuo per validare direzioni creative",
+          "Stabilisco criteri chiari per valutare nuove idee"
+        ]
+      },
+      "q20": {
+        "category": "Determinazione",
+        "question": "Come definisci e persegui obiettivi a lungo termine?",
+        "options": [
+          "Creo roadmap dettagliate con milestone intermedi",
+          "Stabilisco metriche quantificabili per misurare progresso",
+          "Rivedo e adatto regolarmente la strategia",
+          "Mantengo focus costante nonostante distrazioni"
+        ]
+      },
+      "q21": {
+        "category": "Potenza Computazionale",
+        "question": "Come valuti l'implementazione di nuove tecnologie?",
+        "options": [
+          "Faccio analisi costi-benefici approfondite",
+          "Testo su progetti pilota prima dell'adozione completa",
+          "Valuto impatto su processi e team esistenti",
+          "Ricerco case studies e best practices del settore"
+        ]
+      },
       "open1": {
         "question": "Descrivi una situazione professionale in cui ti sei sentito più riuscito. Cosa l'ha resa un successo e qual è stato il tuo contributo specifico?"
       },
@@ -148,9 +307,10 @@
     "insight_1": "Migliore comprensione delle tue capacità creative di risoluzione problemi",
     "insight_2": "Approfondimento del tuo stile di comunicazione e collaborazione",
     "insight_3": "Migliore comprensione della tua motivazione intrinseca e determinazione",
-    "continue_journey": "Vai alla Dashboard",
+    "continue_journey": "Registrati per Continuare",
     "analyzing": "Analizzando i Tuoi Risultati",
-    "analyzing_subtitle": "Stiamo confrontando le tue valutazioni e creando il tuo Ximatar personalizzato..."
+    "analyzing_subtitle": "Stiamo confrontando le tue valutazioni e creando il tuo Ximatar personalizzato...",
+    "registration_prompt": "Registrati per accedere al tuo profilo completo e prenotare una chiamata con il tuo esperto abbinato."
   },
   "mentor": {
     "title": "Inizia il Tuo Percorso Xima",

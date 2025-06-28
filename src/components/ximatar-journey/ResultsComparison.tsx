@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import XimaScoreCard from '../XimaScoreCard';
 import XimaAvatar from '../XimaAvatar';
-import { ArrowRight, CheckCircle } from 'lucide-react';
+import { ArrowRight, CheckCircle, UserPlus } from 'lucide-react';
 import { XimaPillars } from '../../types';
 
 interface ResultsComparisonProps {
@@ -48,6 +48,23 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     ]
   };
 
+  // Matched professional based on assessment results
+  const matchedProfessional = {
+    name: "Dr. Sarah Chen",
+    title: "Senior Business Strategist",
+    specialization: "Communication & Leadership Development",
+    bio: "Expert in organizational communication and team dynamics with 15+ years of experience helping professionals unlock their potential.",
+    avatar: {
+      animal: 'Eagle',
+      image: '/placeholder.svg',
+      features: [
+        { name: 'Vision', description: 'Strategic thinking and long-term planning', strength: 9 },
+        { name: 'Leadership', description: 'Natural ability to guide and inspire others', strength: 8 },
+        { name: 'Focus', description: 'Laser-sharp attention to detail', strength: 7 }
+      ]
+    }
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsAnalyzing(false);
@@ -57,8 +74,8 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     return () => clearTimeout(timer);
   }, []);
 
-  const handleContinue = () => {
-    navigate('/profile');
+  const handleRegisterToContinue = () => {
+    navigate('/register');
   };
 
   if (isAnalyzing) {
@@ -95,6 +112,32 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         <p className="text-gray-600 max-w-2xl mx-auto">
           {t('results.animal_description')}
         </p>
+      </Card>
+
+      {/* Matched Professional Section */}
+      <Card className="p-8">
+        <h3 className="text-2xl font-bold mb-6 text-center">Your Matched Expert</h3>
+        <div className="flex flex-col md:flex-row gap-6 items-center">
+          <div className="md:w-1/3 flex justify-center">
+            <XimaAvatar avatar={matchedProfessional.avatar} size="lg" showDetails />
+          </div>
+          
+          <div className="md:w-2/3 space-y-4 text-center md:text-left">
+            <div>
+              <h4 className="text-2xl font-bold">{matchedProfessional.name}</h4>
+              <p className="text-lg text-gray-600">{matchedProfessional.title}</p>
+              <p className="text-sm text-[#4171d6] font-medium">{matchedProfessional.specialization}</p>
+            </div>
+            
+            <p className="text-gray-600">{matchedProfessional.bio}</p>
+            
+            <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+              <Badge variant="outline">15+ Years Experience</Badge>
+              <Badge variant="outline">Communication Expert</Badge>
+              <Badge variant="outline">Leadership Coach</Badge>
+            </div>
+          </div>
+        </div>
       </Card>
 
       {/* Comparison Section */}
@@ -158,17 +201,23 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         </Card>
       )}
 
-      {/* Continue Button */}
-      <div className="text-center">
+      {/* Registration Prompt */}
+      <Card className="p-8 text-center bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-[#4171d6]">
+        <UserPlus size={48} className="mx-auto mb-4 text-[#4171d6]" />
+        <h3 className="text-2xl font-bold mb-4">{t('results.continue_journey')}</h3>
+        <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+          {t('results.registration_prompt')}
+        </p>
+        
         <Button 
-          onClick={handleContinue}
+          onClick={handleRegisterToContinue}
           size="lg"
           className="bg-[#4171d6] hover:bg-[#2950a3] px-8 py-4"
         >
-          {t('results.continue_journey')}
+          Create Free Account
           <ArrowRight size={20} className="ml-2" />
         </Button>
-      </div>
+      </Card>
     </div>
   );
 };

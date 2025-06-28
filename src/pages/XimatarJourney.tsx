@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +11,6 @@ import { ArrowRight, ArrowLeft, Check, Upload, FileText, Calendar, User } from '
 import BaselineAssessment from '../components/ximatar-journey/BaselineAssessment';
 import XimatarAssessment from '../components/ximatar-journey/XimatarAssessment';
 import ResultsComparison from '../components/ximatar-journey/ResultsComparison';
-import MentorBooking from '../components/ximatar-journey/MentorBooking';
 
 const XimatarJourney = () => {
   const navigate = useNavigate();
@@ -27,8 +27,7 @@ const XimatarJourney = () => {
   const steps = [
     { number: 1, title: t('journey.step_1'), icon: <FileText size={20} /> },
     { number: 2, title: t('journey.step_2'), icon: <User size={20} /> },
-    { number: 3, title: t('journey.step_3'), icon: <Check size={20} /> },
-    { number: 4, title: t('journey.step_4'), icon: <Calendar size={20} /> }
+    { number: 3, title: t('journey.step_3'), icon: <Check size={20} /> }
   ];
 
   const handleStepComplete = (step: number) => {
@@ -43,18 +42,7 @@ const XimatarJourney = () => {
         break;
       case 3:
         setResultsViewed(true);
-        setCurrentStep(4);
-        break;
-      case 4:
-        if (!isAuthenticated) {
-          toast({
-            title: "Registration Required",
-            description: "Please register to book a mentor call",
-            variant: "destructive"
-          });
-          navigate('/register');
-          return;
-        }
+        // Results component will handle navigation to registration
         break;
     }
   };
@@ -70,7 +58,7 @@ const XimatarJourney = () => {
       <div className="container max-w-5xl mx-auto pt-4">
         <div className="text-center mb-8">
           <img 
-            src="/lovable-uploads/ae79af7a-e780-4f42-8fbf-529eb1e4d1f8.png" 
+            src="/lovable-uploads/29354704-151e-4e3c-a9ae-adfe07e62896.png" 
             alt="XIMA Logo" 
             className="h-16 w-auto mx-auto mb-4"
           />
@@ -141,28 +129,26 @@ const XimatarJourney = () => {
               hasCv={cvUploaded}
             />
           )}
-          
-          {currentStep === 4 && (
-            <MentorBooking />
-          )}
         </Card>
         
         {/* Navigation */}
-        <div className="flex justify-between mt-6">
-          <Button 
-            variant="outline" 
-            onClick={goBack}
-            disabled={currentStep === 1}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft size={16} />
-            {t('journey.back')}
-          </Button>
-          
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            {t('journey.step')} {currentStep} {t('assessment.of')} {steps.length}
+        {currentStep < 3 && (
+          <div className="flex justify-between mt-6">
+            <Button 
+              variant="outline" 
+              onClick={goBack}
+              disabled={currentStep === 1}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft size={16} />
+              {t('journey.back')}
+            </Button>
+            
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              {t('journey.step')} {currentStep} {t('assessment.of')} {steps.length}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </MainLayout>
   );
