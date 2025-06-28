@@ -2,8 +2,10 @@
 import React from 'react';
 import { useUser } from '../../context/UserContext';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { LogOut, User as UserIcon } from 'lucide-react';
+import LanguageSwitcher from '../LanguageSwitcher';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -13,6 +15,7 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }) => {
   const { user, logout, isAuthenticated } = useUser();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (requireAuth && !isAuthenticated) {
@@ -37,57 +40,61 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
           
           <nav className="hidden md:flex ml-10 space-x-6">
             <Link to="/" className="text-gray-700 hover:text-[#4171d6] text-sm font-medium">
-              Home
+              {t('nav.home')}
             </Link>
             <Link to="/how-it-works" className="text-gray-700 hover:text-[#4171d6] text-sm font-medium">
-              How It Works
+              {t('nav.how_it_works')}
             </Link>
             <Link to="/about" className="text-gray-700 hover:text-[#4171d6] text-sm font-medium">
-              About
+              {t('nav.about')}
             </Link>
           </nav>
         </div>
         
-        {isAuthenticated ? (
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="flex items-center gap-2 text-gray-700"
-              onClick={() => navigate('/profile')}
-            >
-              <UserIcon size={16} />
-              <span>{user?.name}</span>
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={logout}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              <LogOut size={16} />
-            </Button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => navigate('/login')}
-              className="text-gray-700"
-            >
-              Login
-            </Button>
-            <Button 
-              variant="default" 
-              size="sm"
-              onClick={() => navigate('/register')}
-              className="bg-[#4171d6] hover:bg-[#2950a3]"
-            >
-              Register
-            </Button>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          
+          {isAuthenticated ? (
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2 text-gray-700"
+                onClick={() => navigate('/profile')}
+              >
+                <UserIcon size={16} />
+                <span>{user?.name}</span>
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={logout}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <LogOut size={16} />
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate('/login')}
+                className="text-gray-700"
+              >
+                {t('nav.login')}
+              </Button>
+              <Button 
+                variant="default" 
+                size="sm"
+                onClick={() => navigate('/register')}
+                className="bg-[#4171d6] hover:bg-[#2950a3]"
+              >
+                {t('nav.register')}
+              </Button>
+            </div>
+          )}
+        </div>
       </header>
 
       <main className="flex-1 py-6 px-4 md:px-6">
@@ -95,7 +102,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
       </main>
 
       <footer className="w-full py-4 px-6 border-t text-center text-sm text-gray-500 bg-white">
-        &copy; {new Date().getFullYear()} XIMA - Matching Quality in Jobs
+        &copy; {new Date().getFullYear()} {t('footer.copyright')}
       </footer>
     </div>
   );

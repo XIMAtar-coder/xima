@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
@@ -17,6 +18,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
   const [uploadComplete, setUploadComplete] = useState(false);
   const [dataConsent, setDataConsent] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,9 +80,9 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">Baseline Assessment</h2>
+        <h2 className="text-3xl font-bold mb-4">{t('baseline.title')}</h2>
         <p className="text-gray-600 text-lg">
-          Upload your CV for a personalized baseline assessment, or skip to start with the full assessment
+          {t('baseline.subtitle')}
         </p>
       </div>
 
@@ -99,15 +101,15 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
               <div className="text-center space-y-4">
                 <FileText size={48} className="text-gray-400 mx-auto" />
                 <div>
-                  <h3 className="text-lg font-medium">Upload Your CV</h3>
-                  <p className="text-sm text-gray-500">PDF format only, max 5MB</p>
+                  <h3 className="text-lg font-medium">{t('baseline.upload_cv')}</h3>
+                  <p className="text-sm text-gray-500">{t('baseline.file_format')}</p>
                 </div>
                 <Button 
                   onClick={() => fileInputRef.current?.click()}
                   className="bg-[#4171d6] hover:bg-[#2950a3]"
                 >
                   <Upload size={16} className="mr-2" />
-                  Select CV File
+                  {t('baseline.select_file')}
                 </Button>
               </div>
             ) : (
@@ -124,7 +126,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
                 >
-                  Change File
+                  {t('baseline.change_file')}
                 </Button>
               </div>
             )}
@@ -136,11 +138,9 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
                 <AlertCircle className="text-blue-600 mt-0.5" size={20} />
                 <div className="space-y-3">
                   <div>
-                    <h4 className="font-medium text-blue-900">Data Storage Confirmation</h4>
+                    <h4 className="font-medium text-blue-900">{t('baseline.data_consent_title')}</h4>
                     <p className="text-sm text-blue-800">
-                      Your CV will be processed and stored securely to create your baseline assessment. 
-                      We use this information to understand your professional background and provide 
-                      personalized insights.
+                      {t('baseline.data_consent_text')}
                     </p>
                   </div>
                   
@@ -154,7 +154,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
                       htmlFor="data-consent" 
                       className="text-sm text-blue-900 cursor-pointer"
                     >
-                      I consent to the storage and processing of my CV data
+                      {t('baseline.consent_checkbox')}
                     </label>
                   </div>
                 </div>
@@ -169,7 +169,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
               className="flex items-center gap-2"
             >
               <SkipForward size={16} />
-              Skip for Now
+              {t('baseline.skip_for_now')}
             </Button>
             
             {file && (
@@ -181,12 +181,12 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
                 {uploading ? (
                   <>
                     <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    Processing...
+                    {t('baseline.processing')}
                   </>
                 ) : (
                   <>
                     <Upload size={16} className="mr-2" />
-                    Upload & Continue
+                    {t('baseline.upload_continue')}
                   </>
                 )}
               </Button>
@@ -200,10 +200,9 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
           </div>
           
           <div>
-            <h3 className="text-2xl font-bold text-green-800 mb-2">Baseline Assessment Complete!</h3>
+            <h3 className="text-2xl font-bold text-green-800 mb-2">{t('baseline.complete_title')}</h3>
             <p className="text-gray-600">
-              Your CV has been analyzed and your baseline profile is ready. 
-              Let's now create your complete Ximatar through our comprehensive assessment.
+              {t('baseline.complete_text')}
             </p>
           </div>
           
@@ -212,7 +211,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
             onClick={handleContinue}
             className="bg-[#4171d6] hover:bg-[#2950a3]"
           >
-            Continue to Ximatar Assessment
+            {t('baseline.continue_assessment')}
           </Button>
         </div>
       )}

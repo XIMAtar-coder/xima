@@ -1,0 +1,76 @@
+
+{
+  "nav": {
+    "home": "Home",
+    "how_it_works": "Come Funziona",
+    "about": "Chi Siamo",
+    "login": "Accedi",
+    "register": "Registrati",
+    "profile": "Profilo"
+  },
+  "hero": {
+    "title": "XIMA - Qualità nel Matching Lavorativo",
+    "subtitle": "Scopri il tuo potenziale professionale con la nostra piattaforma di valutazione innovativa",
+    "cta": "Ottieni il Tuo Ximatar Ora!",
+    "learn_more": "Scopri di Più"
+  },
+  "baseline": {
+    "title": "Valutazione Baseline",
+    "subtitle": "Carica il tuo CV per una valutazione baseline personalizzata, oppure salta per iniziare con la valutazione completa",
+    "upload_cv": "Carica il Tuo CV",
+    "file_format": "Solo formato PDF, max 5MB",
+    "select_file": "Seleziona File CV",
+    "change_file": "Cambia File",
+    "data_consent_title": "Conferma Archiviazione Dati",
+    "data_consent_text": "Il tuo CV verrà elaborato e archiviato in modo sicuro per creare la tua valutazione baseline. Utilizziamo queste informazioni per comprendere il tuo background professionale e fornire insights personalizzati.",
+    "consent_checkbox": "Acconsento all'archiviazione e al trattamento dei dati del mio CV",
+    "skip_for_now": "Salta per Ora",
+    "upload_continue": "Carica e Continua",
+    "processing": "Elaborazione...",
+    "complete_title": "Valutazione Baseline Completata!",
+    "complete_text": "Il tuo CV è stato analizzato e il tuo profilo baseline è pronto. Ora creiamo il tuo Ximatar completo attraverso la nostra valutazione comprensiva.",
+    "continue_assessment": "Continua alla Valutazione Ximatar"
+  },
+  "assessment": {
+    "title": "Crea il Tuo Ximatar",
+    "subtitle": "Completa la nostra valutazione comprensiva per scoprire i tuoi punti di forza professionali",
+    "question": "Domanda",
+    "of": "di",
+    "previous": "Precedente",
+    "next": "Successiva",
+    "complete_assessment": "Completa Valutazione",
+    "open_question": "Domanda Aperta",
+    "placeholder": "Scrivi la tua risposta qui...",
+    "required": "Questo campo è obbligatorio"
+  },
+  "results": {
+    "title": "I Tuoi Risultati Ximatar",
+    "subtitle": "Ecco il tuo profilo professionale basato sulla valutazione",
+    "your_animal": "Il Tuo Animale Ximatar",
+    "baseline_vs_final": "Baseline vs Valutazione Finale",
+    "baseline_only": "Risultati Valutazione",
+    "improvement": "Miglioramento",
+    "pillars": {
+      "computational": "Potenza Computazionale",
+      "communication": "Comunicazione",
+      "knowledge": "Conoscenza",
+      "creativity": "Creatività",
+      "drive": "Determinazione"
+    },
+    "continue_journey": "Continua il Tuo Percorso"
+  },
+  "mentor": {
+    "title": "Inizia il Tuo Percorso Xima",
+    "subtitle": "Prenota una chiamata di 15 minuti con uno dei nostri mentor esperti per discutere i tuoi risultati e i prossimi passi",
+    "login_required": "Devi essere loggato per prenotare una sessione con un mentor",
+    "login_button": "Accedi per Prenotare Sessione",
+    "select_mentor": "Seleziona il Tuo Mentor",
+    "book_session": "Prenota Sessione 15min"
+  },
+  "footer": {
+    "copyright": "XIMA - Qualità nel Matching Lavorativo"
+  },
+  "language": {
+    "switch_to": "Passa a {{language}}"
+  }
+}

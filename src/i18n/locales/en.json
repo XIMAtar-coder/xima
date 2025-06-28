@@ -1,0 +1,76 @@
+
+{
+  "nav": {
+    "home": "Home",
+    "how_it_works": "How It Works",
+    "about": "About",
+    "login": "Login",
+    "register": "Register",
+    "profile": "Profile"
+  },
+  "hero": {
+    "title": "XIMA - Matching Quality in Jobs",
+    "subtitle": "Discover your professional potential with our innovative assessment platform",
+    "cta": "Get Your Ximatar Now!",
+    "learn_more": "Learn More"
+  },
+  "baseline": {
+    "title": "Baseline Assessment",
+    "subtitle": "Upload your CV for a personalized baseline assessment, or skip to start with the full assessment",
+    "upload_cv": "Upload Your CV",
+    "file_format": "PDF format only, max 5MB",
+    "select_file": "Select CV File",
+    "change_file": "Change File",
+    "data_consent_title": "Data Storage Confirmation",
+    "data_consent_text": "Your CV will be processed and stored securely to create your baseline assessment. We use this information to understand your professional background and provide personalized insights.",
+    "consent_checkbox": "I consent to the storage and processing of my CV data",
+    "skip_for_now": "Skip for Now",
+    "upload_continue": "Upload & Continue",
+    "processing": "Processing...",
+    "complete_title": "Baseline Assessment Complete!",
+    "complete_text": "Your CV has been analyzed and your baseline profile is ready. Let's now create your complete Ximatar through our comprehensive assessment.",
+    "continue_assessment": "Continue to Ximatar Assessment"
+  },
+  "assessment": {
+    "title": "Create Your Ximatar",
+    "subtitle": "Complete our comprehensive assessment to discover your professional strengths",
+    "question": "Question",
+    "of": "of",
+    "previous": "Previous",
+    "next": "Next",
+    "complete_assessment": "Complete Assessment",
+    "open_question": "Open Question",
+    "placeholder": "Type your answer here...",
+    "required": "This field is required"
+  },
+  "results": {
+    "title": "Your Ximatar Results",
+    "subtitle": "Here's your professional profile based on the assessment",
+    "your_animal": "Your Ximatar Animal",
+    "baseline_vs_final": "Baseline vs Final Assessment",
+    "baseline_only": "Assessment Results",
+    "improvement": "Improvement",
+    "pillars": {
+      "computational": "Computational Power",
+      "communication": "Communication",
+      "knowledge": "Knowledge", 
+      "creativity": "Creativity",
+      "drive": "Drive"
+    },
+    "continue_journey": "Continue Your Journey"
+  },
+  "mentor": {
+    "title": "Start Your Xima Journey",
+    "subtitle": "Book a 15-minute call with one of our expert mentors to discuss your results and next steps",
+    "login_required": "You need to be logged in to book a mentor session",
+    "login_button": "Login to Book Session",
+    "select_mentor": "Select Your Mentor",
+    "book_session": "Book 15min Session"
+  },
+  "footer": {
+    "copyright": "XIMA - Matching Quality in Jobs"
+  },
+  "language": {
+    "switch_to": "Switch to {{language}}"
+  }
+}
