@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, FileText, Check, AlertCircle, Skip } from 'lucide-react';
+import { Upload, FileText, Check, AlertCircle, SkipForward } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 
 interface BaselineAssessmentProps {
@@ -69,6 +69,10 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
 
   const handleContinue = () => {
     onComplete(1);
+  };
+
+  const handleConsentChange = (checked: boolean | 'indeterminate') => {
+    setDataConsent(checked === true);
   };
 
   return (
@@ -144,7 +148,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
                     <Checkbox 
                       id="data-consent"
                       checked={dataConsent}
-                      onCheckedChange={setDataConsent}
+                      onCheckedChange={handleConsentChange}
                     />
                     <label 
                       htmlFor="data-consent" 
@@ -164,7 +168,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
               onClick={handleSkip}
               className="flex items-center gap-2"
             >
-              <Skip size={16} />
+              <SkipForward size={16} />
               Skip for Now
             </Button>
             

@@ -24,7 +24,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       // Generate baseline pillars (if CV was uploaded)
       if (hasCv) {
         setBaselinePillars({
-          'computational power': Math.floor(Math.random() * 4) + 4, // 4-7
+          computational: Math.floor(Math.random() * 4) + 4, // 4-7
           communication: Math.floor(Math.random() * 4) + 4,
           knowledge: Math.floor(Math.random() * 4) + 4,
           creativity: Math.floor(Math.random() * 4) + 4,
@@ -34,7 +34,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       // Generate final assessment pillars (higher scores)
       const finalResults: XimaPillars = {
-        'computational power': Math.floor(Math.random() * 3) + 7, // 7-9
+        computational: Math.floor(Math.random() * 3) + 7, // 7-9
         communication: Math.floor(Math.random() * 3) + 7,
         knowledge: Math.floor(Math.random() * 3) + 7,
         creativity: Math.floor(Math.random() * 3) + 7,
@@ -49,11 +49,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       );
 
       const animalMap: Record<string, string> = {
-        'computational power': 'Elephant',
-        'communication': 'Dolphin',
-        'knowledge': 'Owl',
-        'creativity': 'Fox',
-        'drive': 'Lion'
+        computational: 'Elephant',
+        communication: 'Dolphin',
+        knowledge: 'Owl',
+        creativity: 'Fox',
+        drive: 'Lion'
       };
 
       const animal = animalMap[highestPillar.key] || 'Wolf';
