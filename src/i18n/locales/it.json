@@ -9,10 +9,38 @@
     "profile": "Profilo"
   },
   "hero": {
-    "title": "XIMA - Qualità nel Matching Lavorativo",
-    "subtitle": "Scopri il tuo potenziale professionale con la nostra piattaforma di valutazione innovativa",
+    "title": "Scopri il Tuo Sé Professionale",
+    "subtitle": "XIMA ti aiuta a comprendere i tuoi punti di forza e debolezza professionali attraverso il nostro sistema di valutazione unico a 5 pilastri, abbinandoti alle opportunità di carriera perfette.",
     "cta": "Ottieni il Tuo Ximatar Ora!",
     "learn_more": "Scopri di Più"
+  },
+  "pillars": {
+    "title": "I 5 Pilastri di XIMA",
+    "computational": {
+      "name": "Potenza Computazionale",
+      "description": "Competenze analitiche, elaborazione dati e risoluzione di problemi tecnologici"
+    },
+    "communication": {
+      "name": "Comunicazione",
+      "description": "Interazione sociale e trasmissione di idee in modo chiaro e persuasivo"
+    },
+    "knowledge": {
+      "name": "Conoscenza",
+      "description": "Profondità di comprensione e capacità di applicare informazioni efficacemente"
+    },
+    "creativity": {
+      "name": "Creatività",
+      "description": "Generare nuove idee da esperienze innovative e conoscenze esistenti"
+    },
+    "drive": {
+      "name": "Determinazione",
+      "description": "Motivazione e determinazione per prendere iniziative e mantenere lo slancio"
+    }
+  },
+  "cta_section": {
+    "title": "Sblocca il Tuo Potenziale Professionale",
+    "subtitle": "Unisciti a migliaia di professionisti che hanno scoperto i loro veri punti di forza e trovato la loro corrispondenza di carriera perfetta con XIMA.",
+    "button": "Ottieni il Tuo Ximatar Ora!"
   },
   "baseline": {
     "title": "Valutazione Baseline",
@@ -40,32 +68,161 @@
     "next": "Successiva",
     "complete_assessment": "Completa Valutazione",
     "open_question": "Domanda Aperta",
-    "placeholder": "Scrivi la tua risposta qui...",
-    "required": "Questo campo è obbligatorio"
+    "placeholder": "Condividi i tuoi pensieri qui... (minimo 50 caratteri)",
+    "required": "Questo campo è obbligatorio",
+    "characters": "caratteri",
+    "next_question": "Prossima Domanda",
+    "completing": "Completamento Valutazione..."
   },
   "results": {
     "title": "I Tuoi Risultati Ximatar",
     "subtitle": "Ecco il tuo profilo professionale basato sulla valutazione",
-    "your_animal": "Il Tuo Animale Ximatar",
-    "baseline_vs_final": "Baseline vs Valutazione Finale",
-    "baseline_only": "Risultati Valutazione",
-    "improvement": "Miglioramento",
-    "pillars": {
-      "computational": "Potenza Computazionale",
-      "communication": "Comunicazione",
-      "knowledge": "Conoscenza",
-      "creativity": "Creatività",
-      "drive": "Determinazione"
-    },
-    "continue_journey": "Continua il Tuo Percorso"
+    "subtitle_with_cv": "Ecco come la tua valutazione comprensiva si confronta con la baseline del tuo CV",
+    "subtitle_without_cv": "La tua valutazione Ximatar comprensiva è completa",
+    "your_animal": "Incontra il Tuo Ximatar: Il {{animal}}",
+    "animal_description": "Il tuo Ximatar rappresenta la tua identità professionale unica, combinando le tue caratteristiche più forti in un simbolo potente delle tue capacità.",
+    "baseline_vs_final": "Baseline CV",
+    "full_assessment": "Valutazione Completa",
+    "baseline_description": "Basato sulla tua esperienza professionale",
+    "full_description": "Basato su valutazione comprensiva",
+    "key_insights": "Insights Chiave",
+    "insights_intro": "La tua valutazione comprensiva ha rivelato punti di forza che non erano completamente catturati nel tuo CV:",
+    "insight_1": "Migliore comprensione delle tue capacità creative di risoluzione problemi",
+    "insight_2": "Approfondimento del tuo stile di comunicazione e collaborazione",
+    "insight_3": "Migliore comprensione della tua motivazione intrinseca e determinazione",
+    "continue_journey": "Inizia il Tuo Percorso Xima",
+    "analyzing": "Analizzando i Tuoi Risultati",
+    "analyzing_subtitle": "Stiamo confrontando le tue valutazioni e creando il tuo Ximatar personalizzato..."
   },
   "mentor": {
     "title": "Inizia il Tuo Percorso Xima",
-    "subtitle": "Prenota una chiamata di 15 minuti con uno dei nostri mentor esperti per discutere i tuoi risultati e i prossimi passi",
-    "login_required": "Devi essere loggato per prenotare una sessione con un mentor",
+    "subtitle": "Scegli il tuo mentor per una chiamata introduttiva personalizzata di 15 minuti",
+    "login_required": "Registrazione richiesta: Per favore registrati per prenotare una chiamata con un mentor",
     "login_button": "Accedi per Prenotare Sessione",
-    "select_mentor": "Seleziona il Tuo Mentor",
-    "book_session": "Prenota Sessione 15min"
+    "select_mentor": "Seleziona un mentor sopra per continuare",
+    "book_session": "Prenota Chiamata 15min con {{name}}",
+    "book_title": "Prenota la Tua Chiamata con il Mentor",
+    "book_subtitle": "Programma una chiamata introduttiva di 15 minuti con {{name}}",
+    "calendly_title": "Integrazione Calendly",
+    "calendly_description": "In un'implementazione reale, questo incorporerebbe il widget Calendly per {{name}}",
+    "calendly_url": "URL Calendly: {{url}}",
+    "calendly_duration": "Durata: 15 minuti",
+    "calendly_type": "Tipo: Chiamata video introduttiva",
+    "open_calendly": "Apri Calendly (Demo)",
+    "choose_different": "Scegli Mentor Diverso",
+    "intro_call": "Chiamata introduttiva 15min",
+    "flexible_scheduling": "Programmazione flessibile",
+    "personalized_guidance": "Guida personalizzata",
+    "selected": "Selezionato"
+  },
+  "about": {
+    "title": "Chi Siamo - XIMA",
+    "subtitle": "Rivoluzionando il processo di matching lavorativo attraverso una valutazione professionale approfondita",
+    "match_problem_title": "Il Problema della Qualità del Matching",
+    "match_problem_subtitle": "Nel mercato del lavoro di oggi, sia i datori di lavoro che i candidati affrontano sfide significative nel trovare la giusta corrispondenza.",
+    "match_problem_description": "I processi di assunzione tradizionali spesso non riescono a identificare le migliori corrispondenze tra professionisti e opportunità. I curriculum e i colloqui forniscono un insight limitato sul vero potenziale di un candidato, mentre le descrizioni lavorative raramente catturano l'essenza reale di un ruolo o della cultura aziendale.",
+    "match_leads_to": "Questo disallineamento porta a:",
+    "mismatch_1": "Alto turnover dei dipendenti",
+    "mismatch_2": "Ridotta soddisfazione lavorativa",
+    "mismatch_3": "Minore produttività",
+    "mismatch_4": "Spreco di risorse nel reclutamento",
+    "mismatch_5": "Opportunità perse per entrambe le parti",
+    "solution_description": "XIMA è stato sviluppato per affrontare questo problema fondamentale creando un framework di valutazione comprensivo che guarda oltre le qualifiche superficiali agli attributi centrali che determinano il successo professionale.",
+    "approach_title": "L'Approccio XIMA",
+    "five_pillars_title": "I 5 Pilastri",
+    "five_pillars_description": "XIMA valuta i professionisti attraverso cinque dimensioni fondamentali che insieme forniscono una visione comprensiva del loro potenziale:",
+    "experience_pillar": "Esperienza: Storia professionale, competenze e conoscenze acquisite",
+    "intelligence_pillar": "Intelligenza: Capacità cognitive, capacità di apprendimento e risoluzione problemi",
+    "motivation_pillar": "Motivazione: Spinta, ambizione e ciò che energizza l'individuo",
+    "attitude_pillar": "Atteggiamento: Approccio al lavoro, alle sfide e alla collaborazione",
+    "analysis_pillar": "Analisi: Pensiero critico, presa di decisioni e ragionamento",
+    "ximatar_title": "Il XIMATAR",
+    "ximatar_description": "La valutazione di ogni professionista risulta in un XIMATAR unico - una rappresentazione visiva della loro identità professionale usando caratteristiche animali che evidenziano i loro punti di forza e aree di sviluppo.",
+    "why_animals_title": "Perché gli Animali?",
+    "why_animals_description": "Gli avatar animali forniscono rappresentazioni intuitive e memorabili di tratti professionali complessi. Proprio come ogni specie animale ha sviluppato adattamenti unici per prosperare nel suo ambiente, ogni professionista ha sviluppato capacità distinte che li rendono preziosi in contesti specifici.",
+    "features_title": "Caratteristiche e Morfologia",
+    "features_description": "L'aspetto di ogni XIMATAR riflette i risultati della valutazione dell'individuo, con caratteristiche fisiche che rappresentano diversi punti di forza, capacità e aree di crescita potenziale.",
+    "mentor_matching_title": "Matching con Mentor",
+    "mentor_matching_description": "Basato sul XIMATAR, XIMA abbina i professionisti con mentor che hanno punti di forza complementari, consentendo sviluppo mirato nelle aree di opportunità.",
+    "benefits_title": "Come XIMA Ti Beneficia",
+    "job_seekers_title": "Per Chi Cerca Lavoro",
+    "job_seekers_1": "Scopri i tuoi veri punti di forza professionali",
+    "job_seekers_2": "Ottieni corrispondenze con opportunità dove prospererai",
+    "job_seekers_3": "Ricevi guida di sviluppo personalizzata",
+    "job_seekers_4": "Connettiti con mentor che completano il tuo profilo",
+    "job_seekers_5": "Aumenta la soddisfazione lavorativa e la progressione di carriera",
+    "employers_title": "Per i Datori di Lavoro",
+    "employers_1": "Trova candidati che si adattano veramente alle tue esigenze",
+    "employers_2": "Riduci il turnover e i costi di reclutamento",
+    "employers_3": "Costruisci team più efficaci e complementari",
+    "employers_4": "Migliora l'engagement e la produttività dei dipendenti",
+    "employers_5": "Gestione e sviluppo del talento basata sui dati",
+    "ready_title": "Pronto a Scoprire il Tuo XIMATAR?",
+    "ready_subtitle": "Unisciti a migliaia di professionisti che hanno trovato la loro corrispondenza di carriera perfetta attraverso XIMA.",
+    "get_started": "Inizia Ora"
+  },
+  "how_it_works": {
+    "title": "Come Funziona XIMA",
+    "subtitle": "Il nostro approccio unico per risolvere il Problema della Qualità del Matching nel mercato del lavoro"
+  },
+  "journey": {
+    "title": "Il Tuo Percorso Ximatar",
+    "subtitle": "Scopri i tuoi punti di forza professionali attraverso la nostra valutazione comprensiva",
+    "step": "Passo",
+    "step_1": "Valutazione Baseline",
+    "step_2": "Crea il Tuo Ximatar",
+    "step_3": "Ottieni i Tuoi Risultati",
+    "step_4": "Inizia il Tuo Percorso",
+    "back": "Indietro"
+  },
+  "login": {
+    "title": "Bentornato",
+    "subtitle": "Accedi per continuare il tuo percorso XIMA",
+    "email": "Email",
+    "email_placeholder": "tua@email.com",
+    "password": "Password",
+    "password_placeholder": "Inserisci la tua password",
+    "forgot_password": "Password dimenticata?",
+    "login_button": "Accedi",
+    "logging_in": "Accesso in corso...",
+    "no_account": "Non hai un account?",
+    "sign_up": "Registrati",
+    "login_success": "Accesso riuscito!",
+    "welcome_back": "Bentornato su XIMA.",
+    "login_failed": "Accesso fallito",
+    "invalid_credentials": "Email o password non validi",
+    "enter_both": "Per favore inserisci sia email che password"
+  },
+  "register": {
+    "title": "Crea un account",
+    "subtitle": "Unisciti a XIMA per scoprire il tuo potenziale professionale",
+    "full_name": "Nome Completo",
+    "name_placeholder": "Inserisci il tuo nome completo",
+    "email": "Email",
+    "email_placeholder": "tua@email.com",
+    "password": "Password",
+    "password_placeholder": "Crea una password",
+    "confirm_password": "Conferma Password",
+    "confirm_placeholder": "Conferma la tua password",
+    "create_account": "Crea Account",
+    "creating_account": "Creazione account...",
+    "have_account": "Hai già un account?",
+    "log_in": "Accedi",
+    "name_required": "Il nome è obbligatorio",
+    "email_required": "L'email è obbligatoria",
+    "email_invalid": "L'email non è valida",
+    "password_required": "La password è obbligatoria",
+    "password_length": "La password deve essere di almeno 6 caratteri",
+    "passwords_match": "Le password non corrispondono",
+    "registration_success": "Registrazione riuscita!",
+    "welcome_message": "Benvenuto su XIMA. Completiamo il tuo profilo.",
+    "registration_failed": "Registrazione fallita",
+    "try_again": "Per favore riprova più tardi"
+  },
+  "not_found": {
+    "title": "404",
+    "message": "Ops! Pagina non trovata",
+    "return_home": "Torna alla Home"
   },
   "footer": {
     "copyright": "XIMA - Qualità nel Matching Lavorativo"

@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowRight, TrendingUp, BarChart, User } from 'lucide-react';
@@ -13,6 +13,7 @@ interface ResultsComparisonProps {
 }
 
 const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [baselinePillars, setBaselinePillars] = useState<XimaPillars | null>(null);
   const [finalPillars, setFinalPillars] = useState<XimaPillars | null>(null);
@@ -93,9 +94,9 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       <div className="text-center space-y-6 py-12">
         <div className="w-16 h-16 border-4 border-[#4171d6] border-t-transparent rounded-full animate-spin mx-auto"></div>
         <div>
-          <h2 className="text-2xl font-bold mb-2">Analyzing Your Results</h2>
+          <h2 className="text-2xl font-bold mb-2">{t('results.analyzing')}</h2>
           <p className="text-gray-600">
-            We're comparing your assessments and creating your personalized Ximatar...
+            {t('results.analyzing_subtitle')}
           </p>
         </div>
       </div>
@@ -105,11 +106,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">Your Ximatar Results</h2>
+        <h2 className="text-3xl font-bold mb-4">{t('results.title')}</h2>
         <p className="text-gray-600 text-lg">
           {hasCv 
-            ? "Here's how your comprehensive assessment compares to your CV baseline"
-            : "Your comprehensive Ximatar assessment is complete"
+            ? t('results.subtitle_with_cv')
+            : t('results.subtitle_without_cv')
           }
         </p>
       </div>
@@ -122,10 +123,9 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
               <XimaAvatar avatar={ximatar} size="lg" showDetails />
             </div>
             <div className="md:w-2/3 space-y-4">
-              <h3 className="text-2xl font-bold">Meet Your Ximatar: The {ximatar.animal}</h3>
+              <h3 className="text-2xl font-bold">{t('results.your_animal', { animal: ximatar.animal })}</h3>
               <p className="text-gray-600">
-                Your Ximatar represents your unique professional identity, combining your strongest 
-                characteristics into a powerful symbol of your capabilities.
+                {t('results.animal_description')}
               </p>
               <div className="space-y-2">
                 {ximatar.features.slice(0, 2).map((feature, index) => (
@@ -148,11 +148,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <BarChart className="text-gray-600" size={20} />
-              <h3 className="text-xl font-bold">CV Baseline</h3>
+              <h3 className="text-xl font-bold">{t('results.baseline_vs_final')}</h3>
             </div>
             <XimaScoreCard pillars={baselinePillars} compact />
             <p className="text-sm text-gray-500 mt-2">
-              Based on your professional experience
+              {t('results.baseline_description')}
             </p>
           </Card>
         )}
@@ -161,11 +161,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <User className="text-[#4171d6]" size={20} />
-              <h3 className="text-xl font-bold">Full Assessment</h3>
+              <h3 className="text-xl font-bold">{t('results.full_assessment')}</h3>
             </div>
             <XimaScoreCard pillars={finalPillars} compact />
             <p className="text-sm text-gray-500 mt-2">
-              Based on comprehensive evaluation
+              {t('results.full_description')}
             </p>
           </Card>
         )}
@@ -176,24 +176,24 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         <Card className="p-6 bg-green-50 border-green-200">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="text-green-600" size={20} />
-            <h3 className="text-xl font-bold text-green-800">Key Insights</h3>
+            <h3 className="text-xl font-bold text-green-800">{t('results.key_insights')}</h3>
           </div>
           <div className="space-y-3">
             <p className="text-green-700">
-              Your comprehensive assessment revealed strengths that weren't fully captured in your CV:
+              {t('results.insights_intro')}
             </p>
             <ul className="space-y-2 text-sm text-green-700">
               <li className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-green-600 rounded-full"></div>
-                Enhanced understanding of your creative problem-solving abilities
+                {t('results.insight_1')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-green-600 rounded-full"></div>
-                Deeper insight into your communication and collaboration style
+                {t('results.insight_2')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-green-600 rounded-full"></div>
-                Better understanding of your intrinsic motivation and drive
+                {t('results.insight_3')}
               </li>
             </ul>
           </div>
@@ -206,7 +206,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           onClick={handleContinue}
           className="bg-[#4171d6] hover:bg-[#2950a3] px-8 py-4"
         >
-          Start Your Xima Journey
+          {t('results.continue_journey')}
           <ArrowRight size={20} className="ml-2" />
         </Button>
       </div>

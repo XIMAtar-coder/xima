@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import MainLayout from '../components/layout/MainLayout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { setUser, isAuthenticated } = useUser();
+  const { t } = useTranslation();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,8 +30,8 @@ const Login = () => {
     
     if (!email || !password) {
       toast({
-        title: "Invalid credentials",
-        description: "Please enter both email and password",
+        title: t('login.invalid_credentials'),
+        description: t('login.enter_both'),
         variant: "destructive"
       });
       return;
@@ -66,15 +68,15 @@ const Login = () => {
       });
       
       toast({
-        title: "Login successful!",
-        description: "Welcome back to XIMA."
+        title: t('login.login_success'),
+        description: t('login.welcome_back')
       });
       
       navigate('/profile');
     } catch (error) {
       toast({
-        title: "Login failed",
-        description: "Invalid email or password",
+        title: t('login.login_failed'),
+        description: t('login.invalid_credentials'),
         variant: "destructive"
       });
     } finally {
@@ -87,19 +89,19 @@ const Login = () => {
       <div className="container max-w-md mx-auto pt-8">
         <Card className="border-0 shadow-sm">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center text-gray-800">Welcome back</CardTitle>
+            <CardTitle className="text-2xl font-bold text-center text-gray-800">{t('login.title')}</CardTitle>
             <CardDescription className="text-center">
-              Log in to continue your XIMA journey
+              {t('login.subtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('login.email')}</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder={t('login.email_placeholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="border-gray-200 focus:border-[#4171d6] focus:ring-[#4171d6]"
@@ -108,18 +110,18 @@ const Login = () => {
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">{t('login.password')}</Label>
                   <Button 
                     variant="link" 
                     className="p-0 h-auto text-xs text-[#4171d6] hover:text-[#2950a3]"
                   >
-                    Forgot password?
+                    {t('login.forgot_password')}
                   </Button>
                 </div>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder={t('login.password_placeholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="border-gray-200 focus:border-[#4171d6] focus:ring-[#4171d6]"
@@ -134,23 +136,23 @@ const Login = () => {
                 {isSubmitting ? (
                   <>
                     <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    Logging in...
+                    {t('login.logging_in')}
                   </>
                 ) : (
-                  "Log in"
+                  t('login.login_button')
                 )}
               </Button>
             </form>
           </CardContent>
           <CardFooter className="flex justify-center">
             <p className="text-sm text-gray-500">
-              Don't have an account?{" "}
+              {t('login.no_account')}{" "}
               <Button 
                 variant="link" 
                 className="p-0 h-auto text-[#4171d6] hover:text-[#2950a3]"
                 onClick={() => navigate('/register')}
               >
-                Sign up
+                {t('login.sign_up')}
               </Button>
             </p>
           </CardFooter>

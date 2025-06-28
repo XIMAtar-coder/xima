@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -258,6 +258,7 @@ const openQuestions = [
 ];
 
 const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => {
+  const { t } = useTranslation();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [openAnswers, setOpenAnswers] = useState<Record<string, string>>({});
@@ -304,15 +305,15 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => 
   return (
     <div className="space-y-6">
       <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold">Create Your Ximatar</h2>
+        <h2 className="text-3xl font-bold">{t('assessment.title')}</h2>
         <p className="text-gray-600">
-          Complete our comprehensive assessment to discover your unique professional profile
+          {t('assessment.subtitle')}
         </p>
         
         <div className="space-y-2">
           <Progress value={progress} className="h-2" />
           <p className="text-sm text-gray-500">
-            Question {currentQuestion + 1} of {totalQuestions}
+            {t('assessment.question')} {currentQuestion + 1} {t('assessment.of')} {totalQuestions}
           </p>
         </div>
       </div>
@@ -362,7 +363,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => 
           <div className="space-y-6">
             <div className="space-y-3">
               <div className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                Open Question {currentQuestion - questions.length + 1}
+                {t('assessment.open_question')} {currentQuestion - questions.length + 1}
               </div>
               <h3 className="text-xl font-medium">
                 {currentOpenQuestion.question}
@@ -370,7 +371,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => 
             </div>
             
             <Textarea
-              placeholder="Share your thoughts here... (minimum 50 characters)"
+              placeholder={t('assessment.placeholder')}
               value={openAnswers[currentOpenQuestion.id] || ''}
               onChange={(e) => handleOpenAnswerChange(currentOpenQuestion.id, e.target.value)}
               className="min-h-[150px] resize-none"
@@ -378,7 +379,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => 
             
             <div className="flex justify-between items-center">
               <p className="text-sm text-gray-500">
-                {openAnswers[currentOpenQuestion.id]?.length || 0} characters
+                {openAnswers[currentOpenQuestion.id]?.length || 0} {t('assessment.characters')}
               </p>
               
               {currentQuestion === totalQuestions - 1 ? (
@@ -390,11 +391,11 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => 
                   {isCompleting ? (
                     <>
                       <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      Completing Assessment...
+                      {t('assessment.completing')}
                     </>
                   ) : (
                     <>
-                      Complete Assessment
+                      {t('assessment.complete_assessment')}
                       <ArrowRight size={16} className="ml-2" />
                     </>
                   )}
@@ -405,7 +406,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => 
                   disabled={!canProceed()}
                   className="bg-[#4171d6] hover:bg-[#2950a3]"
                 >
-                  Next Question
+                  {t('assessment.next_question')}
                   <ArrowRight size={16} className="ml-2" />
                 </Button>
               )}

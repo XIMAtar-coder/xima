@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import MainLayout from '../components/layout/MainLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,7 @@ const XimatarJourney = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
+  const { t } = useTranslation();
   
   const [currentStep, setCurrentStep] = useState(1);
   const [baselineCompleted, setBaselineCompleted] = useState(false);
@@ -24,10 +25,10 @@ const XimatarJourney = () => {
   const [cvUploaded, setCvUploaded] = useState(false);
 
   const steps = [
-    { number: 1, title: 'Baseline Assessment', icon: <FileText size={20} /> },
-    { number: 2, title: 'Create Your Ximatar', icon: <User size={20} /> },
-    { number: 3, title: 'Get Your Results', icon: <Check size={20} /> },
-    { number: 4, title: 'Start Your Journey', icon: <Calendar size={20} /> }
+    { number: 1, title: t('journey.step_1'), icon: <FileText size={20} /> },
+    { number: 2, title: t('journey.step_2'), icon: <User size={20} /> },
+    { number: 3, title: t('journey.step_3'), icon: <Check size={20} /> },
+    { number: 4, title: t('journey.step_4'), icon: <Calendar size={20} /> }
   ];
 
   const handleStepComplete = (step: number) => {
@@ -73,9 +74,9 @@ const XimatarJourney = () => {
             alt="XIMA Logo" 
             className="h-16 w-auto mx-auto mb-4"
           />
-          <h1 className="text-4xl font-bold mb-2">Your Ximatar Journey</h1>
+          <h1 className="text-4xl font-bold mb-2">{t('journey.title')}</h1>
           <p className="text-gray-600 text-lg">
-            Discover your professional strengths through our comprehensive assessment
+            {t('journey.subtitle')}
           </p>
         </div>
         
@@ -155,11 +156,11 @@ const XimatarJourney = () => {
             className="flex items-center gap-2"
           >
             <ArrowLeft size={16} />
-            Back
+            {t('journey.back')}
           </Button>
           
           <div className="flex items-center gap-2 text-sm text-gray-500">
-            Step {currentStep} of {steps.length}
+            {t('journey.step')} {currentStep} {t('assessment.of')} {steps.length}
           </div>
         </div>
       </div>

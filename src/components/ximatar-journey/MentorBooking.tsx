@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useUser } from '../../context/UserContext';
@@ -64,6 +64,7 @@ const MentorBooking: React.FC = () => {
   const [showCalendly, setShowCalendly] = useState(false);
   const { isAuthenticated } = useUser();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleMentorSelect = (mentorId: string) => {
     if (!isAuthenticated) {
@@ -84,9 +85,9 @@ const MentorBooking: React.FC = () => {
     return (
       <div className="space-y-6">
         <div className="text-center">
-          <h2 className="text-3xl font-bold mb-4">Book Your Mentor Call</h2>
+          <h2 className="text-3xl font-bold mb-4">{t('mentor.book_title')}</h2>
           <p className="text-gray-600">
-            Schedule a 15-minute introduction call with {selectedMentorData.name}
+            {t('mentor.book_subtitle', { name: selectedMentorData.name })}
           </p>
         </div>
 
@@ -102,21 +103,21 @@ const MentorBooking: React.FC = () => {
           {/* Calendly Embed Simulation */}
           <div className="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center bg-gray-50">
             <Calendar size={48} className="text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">Calendly Integration</h3>
+            <h3 className="text-lg font-medium mb-2">{t('mentor.calendly_title')}</h3>
             <p className="text-gray-600 mb-4">
-              In a real implementation, this would embed the Calendly widget for {selectedMentorData.name}
+              {t('mentor.calendly_description', { name: selectedMentorData.name })}
             </p>
             <div className="space-y-2 text-sm text-gray-500">
-              <p>Calendly URL: {selectedMentorData.calendlyUrl}</p>
-              <p>Duration: 15 minutes</p>
-              <p>Type: Video call introduction</p>
+              <p>{t('mentor.calendly_url', { url: selectedMentorData.calendlyUrl })}</p>
+              <p>{t('mentor.calendly_duration')}</p>
+              <p>{t('mentor.calendly_type')}</p>
             </div>
             
             <Button 
               className="mt-4 bg-[#4171d6] hover:bg-[#2950a3]"
               onClick={() => window.open(selectedMentorData.calendlyUrl, '_blank')}
             >
-              Open Calendly (Demo)
+              {t('mentor.open_calendly')}
             </Button>
           </div>
 
@@ -125,7 +126,7 @@ const MentorBooking: React.FC = () => {
             onClick={() => setShowCalendly(false)}
             className="w-full mt-4"
           >
-            Choose Different Mentor
+            {t('mentor.choose_different')}
           </Button>
         </Card>
       </div>
@@ -135,14 +136,14 @@ const MentorBooking: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">Start Your Xima Journey</h2>
+        <h2 className="text-3xl font-bold mb-4">{t('mentor.title')}</h2>
         <p className="text-gray-600 text-lg">
-          Choose your mentor for a personalized 15-minute introduction call
+          {t('mentor.subtitle')}
         </p>
         {!isAuthenticated && (
           <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-blue-800">
-              <strong>Registration required:</strong> Please register to book a mentor call
+              {t('mentor.login_required')}
             </p>
           </div>
         )}
@@ -173,22 +174,22 @@ const MentorBooking: React.FC = () => {
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Clock size={16} />
-                  <span>15-minute intro call</span>
+                  <span>{t('mentor.intro_call')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Calendar size={16} />
-                  <span>Flexible scheduling</span>
+                  <span>{t('mentor.flexible_scheduling')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <User size={16} />
-                  <span>Personalized guidance</span>
+                  <span>{t('mentor.personalized_guidance')}</span>
                 </div>
               </div>
 
               {selectedMentor === mentor.id && (
                 <div className="flex items-center justify-center gap-2 text-[#4171d6] font-medium">
                   <CheckCircle size={16} />
-                  <span>Selected</span>
+                  <span>{t('mentor.selected')}</span>
                 </div>
               )}
             </div>
@@ -203,7 +204,7 @@ const MentorBooking: React.FC = () => {
             onClick={handleBookCall}
             className="bg-[#4171d6] hover:bg-[#2950a3] px-8 py-4"
           >
-            Book 15min Call with {selectedMentorData?.name}
+            {t('mentor.book_session', { name: selectedMentorData?.name })}
             <Calendar size={20} className="ml-2" />
           </Button>
         </div>
@@ -211,7 +212,7 @@ const MentorBooking: React.FC = () => {
 
       {!selectedMentor && (
         <div className="text-center">
-          <p className="text-gray-500">Select a mentor above to continue</p>
+          <p className="text-gray-500">{t('mentor.select_mentor')}</p>
         </div>
       )}
     </div>

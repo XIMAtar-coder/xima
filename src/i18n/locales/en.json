@@ -9,10 +9,38 @@
     "profile": "Profile"
   },
   "hero": {
-    "title": "XIMA - Matching Quality in Jobs",
-    "subtitle": "Discover your professional potential with our innovative assessment platform",
+    "title": "Discover Your Professional Self",
+    "subtitle": "XIMA helps you understand your professional strengths and weaknesses through our unique 5-pillar assessment system, matching you with the perfect career opportunities.",
     "cta": "Get Your Ximatar Now!",
     "learn_more": "Learn More"
+  },
+  "pillars": {
+    "title": "The 5 Pillars of XIMA",
+    "computational": {
+      "name": "Computational Power",
+      "description": "Analytical skills, data processing, and technology problem-solving"
+    },
+    "communication": {
+      "name": "Communication", 
+      "description": "Social interaction and conveying ideas clearly and persuasively"
+    },
+    "knowledge": {
+      "name": "Knowledge",
+      "description": "Depth of understanding and ability to apply information effectively"
+    },
+    "creativity": {
+      "name": "Creativity",
+      "description": "Generating new ideas from novel experiences and existing knowledge"
+    },
+    "drive": {
+      "name": "Drive",
+      "description": "Motivation and determination to take initiative and sustain momentum"
+    }
+  },
+  "cta_section": {
+    "title": "Unlock Your Professional Potential",
+    "subtitle": "Join thousands of professionals who have discovered their true strengths and found their perfect career match with XIMA.",
+    "button": "Get Your Ximatar Now!"
   },
   "baseline": {
     "title": "Baseline Assessment",
@@ -40,32 +68,161 @@
     "next": "Next",
     "complete_assessment": "Complete Assessment",
     "open_question": "Open Question",
-    "placeholder": "Type your answer here...",
-    "required": "This field is required"
+    "placeholder": "Share your thoughts here... (minimum 50 characters)",
+    "required": "This field is required",
+    "characters": "characters",
+    "next_question": "Next Question",
+    "completing": "Completing Assessment..."
   },
   "results": {
     "title": "Your Ximatar Results",
     "subtitle": "Here's your professional profile based on the assessment",
-    "your_animal": "Your Ximatar Animal",
-    "baseline_vs_final": "Baseline vs Final Assessment",
-    "baseline_only": "Assessment Results",
-    "improvement": "Improvement",
-    "pillars": {
-      "computational": "Computational Power",
-      "communication": "Communication",
-      "knowledge": "Knowledge", 
-      "creativity": "Creativity",
-      "drive": "Drive"
-    },
-    "continue_journey": "Continue Your Journey"
+    "subtitle_with_cv": "Here's how your comprehensive assessment compares to your CV baseline",
+    "subtitle_without_cv": "Your comprehensive Ximatar assessment is complete",
+    "your_animal": "Meet Your Ximatar: The {{animal}}",
+    "animal_description": "Your Ximatar represents your unique professional identity, combining your strongest characteristics into a powerful symbol of your capabilities.",
+    "baseline_vs_final": "CV Baseline",
+    "full_assessment": "Full Assessment",
+    "baseline_description": "Based on your professional experience",
+    "full_description": "Based on comprehensive evaluation",
+    "key_insights": "Key Insights",
+    "insights_intro": "Your comprehensive assessment revealed strengths that weren't fully captured in your CV:",
+    "insight_1": "Enhanced understanding of your creative problem-solving abilities",
+    "insight_2": "Deeper insight into your communication and collaboration style", 
+    "insight_3": "Better understanding of your intrinsic motivation and drive",
+    "continue_journey": "Start Your Xima Journey",
+    "analyzing": "Analyzing Your Results",
+    "analyzing_subtitle": "We're comparing your assessments and creating your personalized Ximatar..."
   },
   "mentor": {
     "title": "Start Your Xima Journey",
-    "subtitle": "Book a 15-minute call with one of our expert mentors to discuss your results and next steps",
-    "login_required": "You need to be logged in to book a mentor session",
+    "subtitle": "Choose your mentor for a personalized 15-minute introduction call",
+    "login_required": "Registration required: Please register to book a mentor call",
     "login_button": "Login to Book Session",
-    "select_mentor": "Select Your Mentor",
-    "book_session": "Book 15min Session"
+    "select_mentor": "Select a mentor above to continue",
+    "book_session": "Book 15min Call with {{name}}",
+    "book_title": "Book Your Mentor Call",
+    "book_subtitle": "Schedule a 15-minute introduction call with {{name}}",
+    "calendly_title": "Calendly Integration",
+    "calendly_description": "In a real implementation, this would embed the Calendly widget for {{name}}",
+    "calendly_url": "Calendly URL: {{url}}",
+    "calendly_duration": "Duration: 15 minutes",
+    "calendly_type": "Type: Video call introduction",
+    "open_calendly": "Open Calendly (Demo)",
+    "choose_different": "Choose Different Mentor",
+    "intro_call": "15-minute intro call",
+    "flexible_scheduling": "Flexible scheduling",
+    "personalized_guidance": "Personalized guidance",
+    "selected": "Selected"
+  },
+  "about": {
+    "title": "About XIMA",
+    "subtitle": "Revolutionizing the job matching process through deep professional assessment",
+    "match_problem_title": "The Match Quality Problem",
+    "match_problem_subtitle": "In today's job market, both employers and job seekers face significant challenges in finding the right fit.",
+    "match_problem_description": "Traditional hiring processes often fail to identify the best matches between professionals and opportunities. Resumes and interviews provide limited insight into a candidate's true potential, while job descriptions rarely capture the real essence of a role or company culture.",
+    "match_leads_to": "This mismatch leads to:",
+    "mismatch_1": "High employee turnover",
+    "mismatch_2": "Reduced job satisfaction", 
+    "mismatch_3": "Lower productivity",
+    "mismatch_4": "Wasted resources in recruitment",
+    "mismatch_5": "Missed opportunities for both parties",
+    "solution_description": "XIMA was developed to address this fundamental problem by creating a comprehensive assessment framework that looks beyond surface qualifications to the core attributes that determine professional success.",
+    "approach_title": "The XIMA Approach",
+    "five_pillars_title": "The 5 Pillars",
+    "five_pillars_description": "XIMA evaluates professionals across five fundamental dimensions that together provide a comprehensive view of their potential:",
+    "experience_pillar": "Experience: Professional history, skills, and knowledge acquired",
+    "intelligence_pillar": "Intelligence: Cognitive abilities, learning capacity, and problem-solving",
+    "motivation_pillar": "Motivation: Drive, ambition, and what energizes the individual",
+    "attitude_pillar": "Attitude: Approach to work, challenges, and collaboration",
+    "analysis_pillar": "Analysis: Critical thinking, decision making, and reasoning",
+    "ximatar_title": "The XIMATAR",
+    "ximatar_description": "Every professional's assessment results in a unique XIMATAR - a visual representation of their professional identity using animal characteristics that highlight their strengths and areas for development.",
+    "why_animals_title": "Why Animals?",
+    "why_animals_description": "Animal avatars provide intuitive, memorable representations of complex professional traits. Just as each animal species has evolved unique adaptations to thrive in its environment, each professional has developed distinct capabilities that make them valuable in specific contexts.",
+    "features_title": "Features and Morphology",
+    "features_description": "Each XIMATAR's appearance reflects the individual's assessment results, with physical features representing different strengths, capabilities, and potential growth areas.",
+    "mentor_matching_title": "Mentor Matching",
+    "mentor_matching_description": "Based on the XIMATAR, XIMA pairs professionals with mentors who have complementary strengths, enabling targeted development in areas of opportunity.",
+    "benefits_title": "How XIMA Benefits You",
+    "job_seekers_title": "For Job Seekers",
+    "job_seekers_1": "Discover your true professional strengths",
+    "job_seekers_2": "Get matched with opportunities where you'll thrive",
+    "job_seekers_3": "Receive personalized development guidance",
+    "job_seekers_4": "Connect with mentors who complement your profile",
+    "job_seekers_5": "Increase job satisfaction and career progression",
+    "employers_title": "For Employers",
+    "employers_1": "Find candidates who truly fit your needs",
+    "employers_2": "Reduce turnover and recruitment costs",
+    "employers_3": "Build more effective and complementary teams",
+    "employers_4": "Improve employee engagement and productivity",
+    "employers_5": "Data-driven talent management and development",
+    "ready_title": "Ready to Discover Your XIMATAR?",
+    "ready_subtitle": "Join thousands of professionals who have found their perfect career match through XIMA.",
+    "get_started": "Get Started Now"
+  },
+  "how_it_works": {
+    "title": "How XIMA Works",
+    "subtitle": "Our unique approach to solving the Match Quality Problem in the job market"
+  },
+  "journey": {
+    "title": "Your Ximatar Journey",
+    "subtitle": "Discover your professional strengths through our comprehensive assessment",
+    "step": "Step",
+    "step_1": "Baseline Assessment",
+    "step_2": "Create Your Ximatar", 
+    "step_3": "Get Your Results",
+    "step_4": "Start Your Journey",
+    "back": "Back"
+  },
+  "login": {
+    "title": "Welcome back",
+    "subtitle": "Log in to continue your XIMA journey",
+    "email": "Email",
+    "email_placeholder": "your@email.com",
+    "password": "Password",
+    "password_placeholder": "Enter your password",
+    "forgot_password": "Forgot password?",
+    "login_button": "Log in",
+    "logging_in": "Logging in...",
+    "no_account": "Don't have an account?",
+    "sign_up": "Sign up",
+    "login_success": "Login successful!",
+    "welcome_back": "Welcome back to XIMA.",
+    "login_failed": "Login failed",
+    "invalid_credentials": "Invalid email or password",
+    "enter_both": "Please enter both email and password"
+  },
+  "register": {
+    "title": "Create an account",
+    "subtitle": "Join XIMA to discover your professional potential",
+    "full_name": "Full Name",
+    "name_placeholder": "Enter your full name",
+    "email": "Email",
+    "email_placeholder": "your@email.com",
+    "password": "Password",
+    "password_placeholder": "Create a password",
+    "confirm_password": "Confirm Password",
+    "confirm_placeholder": "Confirm your password",
+    "create_account": "Create Account",
+    "creating_account": "Creating account...",
+    "have_account": "Already have an account?",
+    "log_in": "Log in",
+    "name_required": "Name is required",
+    "email_required": "Email is required",
+    "email_invalid": "Email is invalid",
+    "password_required": "Password is required",
+    "password_length": "Password must be at least 6 characters",
+    "passwords_match": "Passwords do not match",
+    "registration_success": "Registration successful!",
+    "welcome_message": "Welcome to XIMA. Let's complete your profile.",
+    "registration_failed": "Registration failed",
+    "try_again": "Please try again later"
+  },
+  "not_found": {
+    "title": "404",
+    "message": "Oops! Page not found",
+    "return_home": "Return to Home"
   },
   "footer": {
     "copyright": "XIMA - Matching Quality in Jobs"

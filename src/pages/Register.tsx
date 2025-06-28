@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import MainLayout from '../components/layout/MainLayout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { registerUser, isAuthenticated } = useUser();
+  const { t } = useTranslation();
   
   const [formData, setFormData] = useState<RegistrationForm>({
     name: '',
@@ -35,23 +36,23 @@ const Register = () => {
     const newErrors: Partial<RegistrationForm> = {};
     
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = t('register.name_required');
     }
     
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('register.email_required');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = t('register.email_invalid');
     }
     
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('register.password_required');
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = t('register.password_length');
     }
     
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('register.passwords_match');
     }
     
     setErrors(newErrors);
@@ -77,15 +78,15 @@ const Register = () => {
       registerUser(formData.name, formData.email);
       
       toast({
-        title: "Registration successful!",
-        description: "Welcome to XIMA. Let's complete your profile.",
+        title: t('register.registration_success'),
+        description: t('register.welcome_message'),
       });
       
       navigate('/onboarding');
     } catch (error) {
       toast({
-        title: "Registration failed",
-        description: "Please try again later",
+        title: t('register.registration_failed'),
+        description: t('register.try_again'),
         variant: "destructive"
       });
     } finally {
@@ -98,19 +99,19 @@ const Register = () => {
       <div className="container max-w-md mx-auto pt-8">
         <Card className="border-0 shadow-lg">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">Create an account</CardTitle>
+            <CardTitle className="text-2xl font-bold text-center">{t('register.title')}</CardTitle>
             <CardDescription className="text-center">
-              Join XIMA to discover your professional potential
+              {t('register.subtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name">{t('register.full_name')}</Label>
                 <Input
                   id="name"
                   name="name"
-                  placeholder="Enter your full name"
+                  placeholder={t('register.name_placeholder')}
                   value={formData.name}
                   onChange={handleChange}
                   className={errors.name ? "border-red-500" : ""}
@@ -121,12 +122,12 @@ const Register = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('register.email')}</Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder={t('register.email_placeholder')}
                   value={formData.email}
                   onChange={handleChange}
                   className={errors.email ? "border-red-500" : ""}
@@ -137,12 +138,12 @@ const Register = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('register.password')}</Label>
                 <Input
                   id="password"
                   name="password"
                   type="password"
-                  placeholder="Create a password"
+                  placeholder={t('register.password_placeholder')}
                   value={formData.password}
                   onChange={handleChange}
                   className={errors.password ? "border-red-500" : ""}
@@ -153,12 +154,12 @@ const Register = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">{t('register.confirm_password')}</Label>
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
                   type="password"
-                  placeholder="Confirm your password"
+                  placeholder={t('register.confirm_placeholder')}
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className={errors.confirmPassword ? "border-red-500" : ""}
@@ -170,29 +171,29 @@ const Register = () => {
               
               <Button 
                 type="submit" 
-                className="w-full bg-xima-purple hover:bg-xima-dark-purple"
+                className="w-full bg-[#4171d6] hover:bg-[#2950a3]"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   <>
                     <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    Creating account...
+                    {t('register.creating_account')}
                   </>
                 ) : (
-                  "Create Account"
+                  t('register.create_account')
                 )}
               </Button>
             </form>
           </CardContent>
           <CardFooter className="flex justify-center">
             <p className="text-sm text-gray-500">
-              Already have an account?{" "}
+              {t('register.have_account')}{" "}
               <Button 
                 variant="link" 
-                className="p-0 h-auto text-xima-purple hover:text-xima-dark-purple"
+                className="p-0 h-auto text-[#4171d6] hover:text-[#2950a3]"
                 onClick={() => navigate('/login')}
               >
-                Log in
+                {t('register.log_in')}
               </Button>
             </p>
           </CardFooter>
