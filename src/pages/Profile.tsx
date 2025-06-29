@@ -116,7 +116,7 @@ const Profile = () => {
                       {t(`pillars.${pillar}.name`)}
                     </h3>
                     <div className="text-3xl font-bold text-[#4171d6] mb-2">
-                      {Math.round(score * 10)}/100
+                      {Math.round(Number(score) * 10)}/100
                     </div>
                     <p className="text-sm text-gray-600">
                       {t(`pillars.${pillar}.description`)}
