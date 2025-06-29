@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
+import Booking from "./pages/Booking";
 import XimatarJourney from "./pages/XimatarJourney";
 import NotFound from "./pages/NotFound";
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/booking" element={<Booking />} />
             <Route path="/ximatar-journey" element={<XimatarJourney />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
