@@ -5,7 +5,8 @@
     "about": "About",
     "login": "Login",
     "register": "Register",
-    "profile": "Profile"
+    "profile": "Profile",
+    "logout": "Logout"
   },
   "hero": {
     "title": "Discover Your Professional Self",
@@ -310,7 +311,29 @@
     "continue_journey": "Register to Continue",
     "analyzing": "Analyzing Your Results",
     "analyzing_subtitle": "We're comparing your assessments and creating your personalized Ximatar...",
-    "registration_prompt": "Register to access your full profile and book a call with your matched expert."
+    "registration_prompt": "Register to access your full profile and book a call with your matched expert.",
+    "fox_animal": "Fox",
+    "eagle_animal": "Eagle",
+    "adaptability": "Adaptability",
+    "adaptability_desc": "Quick to learn and adjust to new environments",
+    "focus": "Focus", 
+    "focus_desc": "Maintains concentration on tasks",
+    "creativity_trait": "Creativity",
+    "creativity_desc": "Finds unique solutions to problems",
+    "business_strategist": "Senior Business Strategist",
+    "communication_leadership": "Communication & Leadership Development",
+    "expert_bio": "Expert in organizational communication and team dynamics with 15+ years of experience helping professionals unlock their potential.",
+    "vision": "Vision",
+    "vision_desc": "Strategic thinking and long-term planning",
+    "leadership": "Leadership",
+    "leadership_desc": "Natural ability to guide and inspire others",
+    "matched_expert": "Your Matched Expert",
+    "experience_badge": "15+ Years Experience",
+    "communication_expert": "Communication Expert",
+    "leadership_coach": "Leadership Coach",
+    "book_appointment": "Book Appointment",
+    "register_to_book": "Register to Book",
+    "create_account": "Create Free Account"
   },
   "mentor": {
     "title": "Start Your Xima Journey",
@@ -478,5 +501,43 @@
   },
   "language": {
     "switch_to": "Switch to {{language}}"
+  },
+  "process": {
+    "title": "How XIMA Works",
+    "step1": {
+      "title": "Upload CV",
+      "description": "Share your professional background for baseline assessment"
+    },
+    "step2": {
+      "title": "Complete Assessment",
+      "description": "Answer questions about your skills and preferences"
+    },
+    "step3": {
+      "title": "Get Your Ximatar",
+      "description": "Receive your unique professional animal avatar"
+    },
+    "step4": {
+      "title": "Connect with Expert",
+      "description": "Book a call with your matched professional mentor"
+    }
+  },
+  "avatar_explanation": {
+    "title": "Your Professional Animal Identity",
+    "description": "Each Ximatar represents unique professional traits and capabilities, helping you understand your strengths and connect with the right opportunities.",
+    "eagle": {
+      "title": "The Eagle",
+      "description": "Strategic vision and leadership focus"
+    },
+    "fox": {
+      "title": "The Fox", 
+      "description": "Adaptability and creative problem-solving"
+    },
+    "wolf": {
+      "title": "The Wolf",
+      "description": "Team collaboration and persistent drive"
+    }
+  },
+  "xima_score": {
+    "tooltip": "Your XIMA Score represents the average of your five pillar assessments, showing your overall professional development level on a scale of 1-10."
   }
 }

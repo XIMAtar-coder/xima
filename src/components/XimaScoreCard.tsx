@@ -1,85 +1,124 @@
 
 import React from 'react';
-import { XimaPillars, PillarType } from '../types';
+import { useTranslation } from 'react-i18n';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { XimaPillars } from '../types';
+import { Info } from 'lucide-react';
 
 interface XimaScoreCardProps {
   pillars: XimaPillars;
   compact?: boolean;
+  showTooltip?: boolean;
 }
 
-const pillarInfo = {
-  computational: {
-    label: 'Computational Power',
-    description: 'Analytical skills, data processing capabilities, and ability to use technology to solve complex problems',
-    color: 'from-blue-400 to-blue-500'
-  },
-  communication: {
-    label: 'Communication',
-    description: 'Effective social interaction, emotional intelligence, and ability to convey ideas clearly and persuasively',
-    color: 'from-indigo-400 to-indigo-500'
-  },
-  knowledge: {
-    label: 'Knowledge',
-    description: 'Depth and breadth of understanding in various domains and ability to apply information effectively',
-    color: 'from-red-400 to-red-500'
-  },
-  creativity: {
-    label: 'Creativity',
-    description: 'Cognitive and emotional ability to generate new ideas by integrating novel experiences with existing knowledge',
-    color: 'from-green-400 to-green-500'
-  },
-  drive: {
-    label: 'Drive',
-    description: 'Intrinsic motivation and determination to take initiative, create action, and sustain momentum',
-    color: 'from-amber-400 to-amber-500'
-  }
-};
+const XimaScoreCard: React.FC<XimaScoreCardProps> = ({ pillars, compact = false, showTooltip = true }) => {
+  const { t } = useTranslation();
 
-const XimaScoreCard: React.FC<XimaScoreCardProps> = ({ pillars, compact = false }) => {
-  const getPillarScore = (pillar: PillarType) => {
-    return pillars[pillar] * 10; // Convert 0-10 scale to percentage
+  const pillarColors = {
+    computational: '#3b82f6', // blue
+    communication: '#10b981', // green
+    knowledge: '#f59e0b', // amber
+    creativity: '#8b5cf6', // purple
+    drive: '#ef4444' // red
   };
+
+  const pillarData = [
+    { key: 'computational', value: pillars.computational },
+    { key: 'communication', value: pillars.communication },
+    { key: 'knowledge', value: pillars.knowledge },
+    { key: 'creativity', value: pillars.creativity },
+    { key: 'drive', value: pillars.drive }
+  ];
+
+  const averageScore = Math.round(
+    (pillars.computational + pillars.communication + pillars.knowledge + pillars.creativity + pillars.drive) / 5
+  );
 
   if (compact) {
     return (
-      <div className="p-4 rounded-lg bg-white shadow-sm border border-gray-100">
-        <h3 className="text-lg font-medium mb-3 text-gray-800">XIMA Score</h3>
-        <div className="space-y-2">
-          {Object.keys(pillars).map((pillar) => (
-            <div key={pillar} className="flex items-center gap-2">
-              <span className="text-sm w-24 font-medium text-gray-700">{pillarInfo[pillar as PillarType].label}</span>
-              <Progress 
-                value={getPillarScore(pillar as PillarType)} 
-                className={`h-2 bg-gray-100 bg-gradient-to-r ${pillarInfo[pillar as PillarType].color}`} 
-              />
-              <span className="text-xs font-medium text-gray-600">{pillars[pillar as PillarType]}/10</span>
+      <Card className="p-4">
+        <div className="space-y-3">
+          {pillarData.map((pillar) => (
+            <div key={pillar.key} className="flex items-center justify-between">
+              <span className="text-sm font-medium">
+                {t(`pillars.${pillar.key}.name`)}
+              </span>
+              <div className="flex items-center gap-2 w-32">
+                <Progress 
+                  value={pillar.value * 10} 
+                  className="h-2 bg-gray-200"
+                  style={{
+                    '--progress-foreground': pillarColors[pillar.key as keyof typeof pillarColors]
+                  } as React.CSSProperties}
+                />
+                <span className="text-sm font-bold w-6 text-right">
+                  {pillar.value}
+                </span>
+              </div>
             </div>
           ))}
         </div>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div className="p-6 rounded-lg bg-white shadow-sm border border-gray-100">
-      <h2 className="text-xl font-bold mb-4 text-gray-800">XIMA Scorecard</h2>
-      <div className="space-y-6">
-        {Object.keys(pillars).map((pillar) => (
-          <div key={pillar} className="space-y-2">
+    <Card>
+      <CardHeader className="text-center">
+        <CardTitle className="flex items-center justify-center gap-2">
+          {t('dashboard.xima_score')}
+          {showTooltip && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Info size={16} className="text-gray-400" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="max-w-xs">
+                    {t('xima_score.tooltip')}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </CardTitle>
+        <div className="text-4xl font-bold text-[#4171d6]">
+          {averageScore}/10
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {pillarData.map((pillar) => (
+          <div key={pillar.key} className="space-y-2">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium text-gray-800">{pillarInfo[pillar as PillarType].label}</h3>
-              <span className="text-sm font-bold text-[#4171d6]">{pillars[pillar as PillarType]}/10</span>
+              <span className="font-medium">
+                {t(`pillars.${pillar.key}.name`)}
+              </span>
+              <span className="font-bold text-lg">
+                {pillar.value}/10
+              </span>
             </div>
-            <p className="text-sm text-gray-600 mb-2">{pillarInfo[pillar as PillarType].description}</p>
-            <Progress 
-              value={getPillarScore(pillar as PillarType)} 
-              className={`h-3 bg-gray-100 bg-gradient-to-r ${pillarInfo[pillar as PillarType].color}`} 
-            />
+            <div className="relative">
+              <Progress 
+                value={pillar.value * 10} 
+                className="h-3 bg-gray-200"
+              />
+              <div 
+                className="absolute top-0 left-0 h-3 rounded-full transition-all duration-300"
+                style={{
+                  width: `${pillar.value * 10}%`,
+                  backgroundColor: pillarColors[pillar.key as keyof typeof pillarColors]
+                }}
+              />
+            </div>
+            <p className="text-sm text-gray-600">
+              {t(`pillars.${pillar.key}.description`)}
+            </p>
           </div>
         ))}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

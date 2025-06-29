@@ -1,82 +1,50 @@
 
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { FileText, Lightbulb, UserPlus, UserCheck, Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Card } from '@/components/ui/card';
+import { FileText, Brain, Users, Target } from 'lucide-react';
 
 const Process = () => {
+  const { t } = useTranslation();
+
+  const steps = [
+    {
+      icon: <FileText size={32} className="text-[#4171d6]" />,
+      title: t('process.step1.title'),
+      description: t('process.step1.description')
+    },
+    {
+      icon: <Brain size={32} className="text-[#4171d6]" />,
+      title: t('process.step2.title'),
+      description: t('process.step2.description')
+    },
+    {
+      icon: <Users size={32} className="text-[#4171d6]" />,
+      title: t('process.step3.title'),
+      description: t('process.step3.description')
+    },
+    {
+      icon: <Target size={32} className="text-[#4171d6]" />,
+      title: t('process.step4.title'),
+      description: t('process.step4.description')
+    }
+  ];
+
   return (
-    <Card className="xima-card-gradient overflow-hidden mb-12 border-0 shadow-md">
-      <CardContent className="p-8">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">The Process</h2>
-        
-        <div className="space-y-8">
-          <div className="flex flex-col md:flex-row items-start gap-4">
-            <div className="bg-white p-3 rounded-full shadow-sm">
-              <FileText className="text-[#4171d6] h-6 w-6" />
+    <div className="mb-12">
+      <h2 className="text-3xl font-bold text-center mb-8">{t('process.title')}</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {steps.map((step, index) => (
+          <Card key={index} className="p-6 text-center hover:shadow-lg transition-shadow">
+            <div className="flex justify-center mb-4">
+              {step.icon}
             </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">1. Upload Your CV</h3>
-              <p className="text-gray-600">
-                XIMA begins by analyzing your CV to establish a baseline understanding of your skills and experience.
-                Our advanced AI analyzes your professional history, education, projects, and more.
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex flex-col md:flex-row items-start gap-4">
-            <div className="bg-white p-3 rounded-full shadow-sm">
-              <Lightbulb className="text-[#4171d6] h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">2. Complete The Assessment</h3>
-              <p className="text-gray-600">
-                Take our comprehensive assessment that evaluates you across the 5 XIMA pillars: Computational Power, Communication, 
-                Knowledge, Creativity, and Drive. This holistic approach provides a deeper view of your professional identity.
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex flex-col md:flex-row items-start gap-4">
-            <div className="bg-white p-3 rounded-full shadow-sm">
-              <UserPlus className="text-[#4171d6] h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">3. Discover Your XIMATAR</h3>
-              <p className="text-gray-600">
-                Based on your assessment, we create your unique XIMATAR - an animal avatar that represents your professional strengths 
-                and areas for growth. Each animal characteristic symbolizes different aspects of your professional self.
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex flex-col md:flex-row items-start gap-4">
-            <div className="bg-white p-3 rounded-full shadow-sm">
-              <UserCheck className="text-[#4171d6] h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">4. Connect With Mentors</h3>
-              <p className="text-gray-600">
-                XIMA pairs you with mentors whose strengths complement your growth areas. This strategic matching 
-                helps you develop the skills most critical to your professional advancement.
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex flex-col md:flex-row items-start gap-4">
-            <div className="bg-white p-3 rounded-full shadow-sm">
-              <Users className="text-[#4171d6] h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">5. Find Perfect Job Matches</h3>
-              <p className="text-gray-600">
-                With your comprehensive XIMA profile, we match you with job opportunities where you'll truly thrive. 
-                Our matching algorithm considers not just skills but all 5 pillars to ensure optimal job fit.
-              </p>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+            <h3 className="text-lg font-semibold mb-3">{step.title}</h3>
+            <p className="text-gray-600 text-sm">{step.description}</p>
+          </Card>
+        ))}
+      </div>
+    </div>
   );
 };
 

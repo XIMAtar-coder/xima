@@ -1,29 +1,30 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { ArrowRight } from 'lucide-react';
 
 const CallToAction = () => {
   const navigate = useNavigate();
-  
+  const { t } = useTranslation();
+
   return (
-    <div className="text-center mb-16">
-      <h2 className="text-3xl font-bold mb-6">Ready to Find Your Perfect Match?</h2>
-      <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-        Join thousands of professionals who have discovered their true strengths
-        and found their perfect career match with XIMA.
+    <Card className="p-8 text-center bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-[#4171d6]">
+      <h2 className="text-3xl font-bold mb-4">{t('cta_section.title')}</h2>
+      <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
+        {t('cta_section.subtitle')}
       </p>
-      
       <Button 
+        onClick={() => navigate('/ximatar-journey')}
         size="lg"
-        className="bg-[#4171d6] hover:bg-[#2950a3] shadow-sm"
-        onClick={() => navigate('/register')}
+        className="bg-[#4171d6] hover:bg-[#2950a3] px-8 py-4"
       >
-        Begin Your Journey
-        <ArrowRight size={18} className="ml-2" />
+        {t('cta_section.button')}
+        <ArrowRight size={20} className="ml-2" />
       </Button>
-    </div>
+    </Card>
   );
 };
 

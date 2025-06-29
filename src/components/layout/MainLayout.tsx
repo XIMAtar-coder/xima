@@ -37,7 +37,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                 <img 
                   src="/lovable-uploads/29354704-151e-4e3c-a9ae-adfe07e62896.png" 
                   alt="XIMA" 
-                  className="h-8 w-auto"
+                  className="h-10 w-auto"
                 />
               </button>
               
@@ -80,7 +80,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                     onClick={handleLogout}
                     className="border-gray-300 text-gray-700 hover:border-[#4171d6] hover:text-[#4171d6]"
                   >
-                    Logout
+                    {t('nav.logout')}
                   </Button>
                 </div>
               ) : (

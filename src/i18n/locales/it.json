@@ -4,8 +4,9 @@
     "how_it_works": "Come Funziona",
     "about": "Chi Siamo",
     "login": "Accedi",
-    "register": "Registrati",
-    "profile": "Profilo"
+    "register": "Registrati", 
+    "profile": "Profilo",
+    "logout": "Esci"
   },
   "hero": {
     "title": "Scopri il Tuo Sé Professionale",
@@ -310,7 +311,29 @@
     "continue_journey": "Registrati per Continuare",
     "analyzing": "Analizzando i Tuoi Risultati",
     "analyzing_subtitle": "Stiamo confrontando le tue valutazioni e creando il tuo Ximatar personalizzato...",
-    "registration_prompt": "Registrati per accedere al tuo profilo completo e prenotare una chiamata con il tuo esperto abbinato."
+    "registration_prompt": "Registrati per accedere al tuo profilo completo e prenotare una chiamata con il tuo esperto abbinato.",
+    "fox_animal": "Volpe",
+    "eagle_animal": "Aquila", 
+    "adaptability": "Adattabilità",
+    "adaptability_desc": "Veloce nell'apprendere e adattarsi a nuovi ambienti",
+    "focus": "Concentrazione",
+    "focus_desc": "Mantiene la concentrazione sui compiti",
+    "creativity_trait": "Creatività",
+    "creativity_desc": "Trova soluzioni uniche ai problemi",
+    "business_strategist": "Senior Business Strategist",
+    "communication_leadership": "Sviluppo Comunicazione e Leadership",
+    "expert_bio": "Esperta in comunicazione organizzativa e dinamiche di team con oltre 15 anni di esperienza nell'aiutare i professionisti a sbloccare il loro potenziale.",
+    "vision": "Visione",
+    "vision_desc": "Pensiero strategico e pianificazione a lungo termine",
+    "leadership": "Leadership",
+    "leadership_desc": "Capacità naturale di guidare e ispirare gli altri",
+    "matched_expert": "Il Tuo Esperto Abbinato",
+    "experience_badge": "15+ Anni di Esperienza",
+    "communication_expert": "Esperto Comunicazione",
+    "leadership_coach": "Coach Leadership",
+    "book_appointment": "Prenota Appuntamento",
+    "register_to_book": "Registrati per Prenotare", 
+    "create_account": "Crea Account Gratuito"
   },
   "mentor": {
     "title": "Inizia il Tuo Percorso Xima",
@@ -478,5 +501,86 @@
   },
   "language": {
     "switch_to": "Passa a {{language}}"
+  },
+  "process": {
+    "title": "Come Funziona XIMA",
+    "step1": {
+      "title": "Carica CV",
+      "description": "Condividi il tuo background professionale per la valutazione baseline"
+    },
+    "step2": {
+      "title": "Completa la Valutazione",
+      "description": "Rispondi alle domande sulle tue competenze e preferenze"
+    },
+    "step3": {
+      "title": "Ottieni il Tuo Ximatar",
+      "description": "Ricevi il tuo avatar animale professionale unico"
+    },
+    "step4": {
+      "title": "Connettiti con l'Esperto",
+      "description": "Prenota una chiamata con il tuo mentor professionale abbinato"
+    }
+  },
+  "avatar_explanation": {
+    "title": "La Tua Identità Animale Professionale",
+    "description": "Ogni Ximatar rappresenta tratti e capacità professionali uniche, aiutandoti a comprendere i tuoi punti di forza e connetterti con le opportunità giuste.",
+    "eagle": {
+      "title": "L'Aquila",
+      "description": "Visione strategica e focus sulla leadership"
+    },
+    "fox": {
+      "title": "La Volpe",
+      "description": "Adattabilità e risoluzione creativa dei problemi"
+    },
+    "wolf": {
+      "title": "Il Lupo",
+      "description": "Collaborazione di squadra e determinazione persistente"
+    }
+  },
+  "xima_score": {
+    "tooltip": "Il tuo Punteggio XIMA rappresenta la media delle tue cinque valutazioni pilastro, mostrando il tuo livello complessivo di sviluppo professionale su una scala da 1 a 10."
+  },
+  "results": {
+    "title": "I Tuoi Risultati Ximatar",
+    "subtitle": "Ecco il tuo profilo professionale basato sulla valutazione",
+    "subtitle_with_cv": "Ecco come la tua valutazione comprensiva si confronta con la baseline del tuo CV",
+    "subtitle_without_cv": "La tua valutazione Ximatar comprensiva è completa",
+    "your_animal": "Incontra il Tuo Ximatar: Il {{animal}}",
+    "animal_description": "Il tuo Ximatar rappresenta la tua identità professionale unica, combinando le tue caratteristiche più forti in un simbolo potente delle tue capacità.",
+    "baseline_vs_final": "Baseline CV",
+    "full_assessment": "Valutazione Completa",
+    "baseline_description": "Basato sulla tua esperienza professionale",
+    "full_description": "Basato su valutazione comprensiva",
+    "key_insights": "Insights Chiave",
+    "insights_intro": "La tua valutazione comprensiva ha rivelato punti di forza che non erano completamente catturati nel tuo CV:",
+    "insight_1": "Migliore comprensione delle tue capacità creative di risoluzione problemi",
+    "insight_2": "Approfondimento del tuo stile di comunicazione e collaborazione",
+    "insight_3": "Migliore comprensione della tua motivazione intrinseca e determinazione",
+    "continue_journey": "Registrati per Continuare",
+    "analyzing": "Analizzando i Tuoi Risultati",
+    "analyzing_subtitle": "Stiamo confrontando le tue valutazioni e creando il tuo Ximatar personalizzato...",
+    "registration_prompt": "Registrati per accedere al tuo profilo completo e prenotare una chiamata con il tuo esperto abbinato.",
+    "fox_animal": "Volpe",
+    "eagle_animal": "Aquila", 
+    "adaptability": "Adattabilità",
+    "adaptability_desc": "Veloce nell'apprendere e adattarsi a nuovi ambienti",
+    "focus": "Concentrazione",
+    "focus_desc": "Mantiene la concentrazione sui compiti",
+    "creativity_trait": "Creatività",
+    "creativity_desc": "Trova soluzioni uniche ai problemi",
+    "business_strategist": "Senior Business Strategist",
+    "communication_leadership": "Sviluppo Comunicazione e Leadership",
+    "expert_bio": "Esperta in comunicazione organizzativa e dinamiche di team con oltre 15 anni di esperienza nell'aiutare i professionisti a sbloccare il loro potenziale.",
+    "vision": "Visione",
+    "vision_desc": "Pensiero strategico e pianificazione a lungo termine",
+    "leadership": "Leadership",
+    "leadership_desc": "Capacità naturale di guidare e ispirare gli altri",
+    "matched_expert": "Il Tuo Esperto Abbinato",
+    "experience_badge": "15+ Anni di Esperienza",
+    "communication_expert": "Esperto Comunicazione",
+    "leadership_coach": "Coach Leadership",
+    "book_appointment": "Prenota Appuntamento",
+    "register_to_book": "Registrati per Prenotare", 
+    "create_account": "Crea Account Gratuito"
   }
 }

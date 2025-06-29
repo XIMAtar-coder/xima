@@ -9,6 +9,7 @@ import XimaScoreCard from '../XimaScoreCard';
 import XimaAvatar from '../XimaAvatar';
 import { ArrowRight, CheckCircle, UserPlus } from 'lucide-react';
 import { XimaPillars } from '../../types';
+import { useUser } from '../../context/UserContext';
 
 interface ResultsComparisonProps {
   onComplete: (step: number) => void;
@@ -18,10 +19,11 @@ interface ResultsComparisonProps {
 const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { isAuthenticated } = useUser();
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [showResults, setShowResults] = useState(false);
 
-  // Mock data for demonstration
+  // Mock data for demonstration with proper animal images
   const baselinePillars: XimaPillars = {
     computational: 6,
     communication: 5,
@@ -39,28 +41,28 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   };
 
   const avatar = {
-    animal: 'Fox',
-    image: '/placeholder.svg',
+    animal: t('results.fox_animal'),
+    image: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
     features: [
-      { name: 'Adaptability', description: 'Quick to learn and adjust to new environments', strength: 8 },
-      { name: 'Focus', description: 'Maintains concentration on tasks', strength: 6 },
-      { name: 'Creativity', description: 'Finds unique solutions to problems', strength: 7 }
+      { name: t('results.adaptability'), description: t('results.adaptability_desc'), strength: 8 },
+      { name: t('results.focus'), description: t('results.focus_desc'), strength: 6 },
+      { name: t('results.creativity_trait'), description: t('results.creativity_desc'), strength: 7 }
     ]
   };
 
   // Matched professional based on assessment results
   const matchedProfessional = {
     name: "Dr. Sarah Chen",
-    title: "Senior Business Strategist",
-    specialization: "Communication & Leadership Development",
-    bio: "Expert in organizational communication and team dynamics with 15+ years of experience helping professionals unlock their potential.",
+    title: t('results.business_strategist'),
+    specialization: t('results.communication_leadership'),
+    bio: t('results.expert_bio'),
     avatar: {
-      animal: 'Eagle',
-      image: '/placeholder.svg',
+      animal: t('results.eagle_animal'),
+      image: 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=400&h=400&fit=crop&crop=face',
       features: [
-        { name: 'Vision', description: 'Strategic thinking and long-term planning', strength: 9 },
-        { name: 'Leadership', description: 'Natural ability to guide and inspire others', strength: 8 },
-        { name: 'Focus', description: 'Laser-sharp attention to detail', strength: 7 }
+        { name: t('results.vision'), description: t('results.vision_desc'), strength: 9 },
+        { name: t('results.leadership'), description: t('results.leadership_desc'), strength: 8 },
+        { name: t('results.focus'), description: t('results.focus_desc'), strength: 7 }
       ]
     }
   };
@@ -76,6 +78,14 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
   const handleRegisterToContinue = () => {
     navigate('/register');
+  };
+
+  const handleBookingClick = () => {
+    if (isAuthenticated) {
+      navigate('/profile');
+    } else {
+      handleRegisterToContinue();
+    }
   };
 
   if (isAnalyzing) {
@@ -116,7 +126,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       {/* Matched Professional Section */}
       <Card className="p-8">
-        <h3 className="text-2xl font-bold mb-6 text-center">Your Matched Expert</h3>
+        <h3 className="text-2xl font-bold mb-6 text-center">{t('results.matched_expert')}</h3>
         <div className="flex flex-col md:flex-row gap-6 items-center">
           <div className="md:w-1/3 flex justify-center">
             <XimaAvatar avatar={matchedProfessional.avatar} size="lg" showDetails />
@@ -132,10 +142,18 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
             <p className="text-gray-600">{matchedProfessional.bio}</p>
             
             <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-              <Badge variant="outline">15+ Years Experience</Badge>
-              <Badge variant="outline">Communication Expert</Badge>
-              <Badge variant="outline">Leadership Coach</Badge>
+              <Badge variant="outline">{t('results.experience_badge')}</Badge>
+              <Badge variant="outline">{t('results.communication_expert')}</Badge>
+              <Badge variant="outline">{t('results.leadership_coach')}</Badge>
             </div>
+
+            <Button 
+              onClick={handleBookingClick}
+              className="bg-[#4171d6] hover:bg-[#2950a3] mt-4"
+            >
+              {isAuthenticated ? t('results.book_appointment') : t('results.register_to_book')}
+              <ArrowRight size={16} className="ml-2" />
+            </Button>
           </div>
         </div>
       </Card>
@@ -168,56 +186,29 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       {/* Single Assessment Results */}
       {!hasCv && (
         <Card className="p-8">
-          <XimaScoreCard pillars={finalPillars} />
+          <XimaScoreCard pillars={finalPillars} showTooltip />
         </Card>
       )}
 
-      {/* Insights Section */}
-      {hasCv && (
-        <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <CheckCircle className="text-green-500" size={24} />
-            {t('results.key_insights')}
-          </h3>
+      {/* Registration Prompt - only show if not authenticated */}
+      {!isAuthenticated && (
+        <Card className="p-8 text-center bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-[#4171d6]">
+          <UserPlus size={48} className="mx-auto mb-4 text-[#4171d6]" />
+          <h3 className="text-2xl font-bold mb-4">{t('results.continue_journey')}</h3>
+          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+            {t('results.registration_prompt')}
+          </p>
           
-          <div className="space-y-4">
-            <p className="text-gray-600">{t('results.insights_intro')}</p>
-            
-            <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 rounded-full bg-[#4171d6] mt-2 flex-shrink-0"></div>
-                <span>{t('results.insight_1')}</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 rounded-full bg-[#4171d6] mt-2 flex-shrink-0"></div>
-                <span>{t('results.insight_2')}</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-2 h-2 rounded-full bg-[#4171d6] mt-2 flex-shrink-0"></div>
-                <span>{t('results.insight_3')}</span>
-              </li>
-            </ul>
-          </div>
+          <Button 
+            onClick={handleRegisterToContinue}
+            size="lg"
+            className="bg-[#4171d6] hover:bg-[#2950a3] px-8 py-4"
+          >
+            {t('results.create_account')}
+            <ArrowRight size={20} className="ml-2" />
+          </Button>
         </Card>
       )}
-
-      {/* Registration Prompt */}
-      <Card className="p-8 text-center bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-[#4171d6]">
-        <UserPlus size={48} className="mx-auto mb-4 text-[#4171d6]" />
-        <h3 className="text-2xl font-bold mb-4">{t('results.continue_journey')}</h3>
-        <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-          {t('results.registration_prompt')}
-        </p>
-        
-        <Button 
-          onClick={handleRegisterToContinue}
-          size="lg"
-          className="bg-[#4171d6] hover:bg-[#2950a3] px-8 py-4"
-        >
-          Create Free Account
-          <ArrowRight size={20} className="ml-2" />
-        </Button>
-      </Card>
     </div>
   );
 };
