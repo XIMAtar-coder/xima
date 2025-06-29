@@ -29,33 +29,13 @@ const Register = () => {
   
   React.useEffect(() => {
     if (isAuthenticated) {
-      // Check if user came from assessment flow with complete data
+      // Check if user came from assessment flow
       const savedSelection = localStorage.getItem('selectedProfessional');
       if (savedSelection) {
-        const selectionData = JSON.parse(savedSelection);
-        // Clear the stored selection
+        // Clear the stored selection and go to dashboard with data
         localStorage.removeItem('selectedProfessional');
-        
-        // Check if this includes full assessment data
-        if (selectionData.assessmentResults && selectionData.userAvatar) {
-          // Full assessment flow - go to legacy dashboard
-          navigate('/profile', { 
-            state: {
-              selectedProfessional: selectionData.professional,
-              assessmentResults: selectionData.assessmentResults,
-              userAvatar: selectionData.userAvatar
-            }
-          });
-        } else {
-          // Just professional selection without assessment - go to booking
-          navigate('/booking', { 
-            state: { 
-              professional: selectionData.professional 
-            }
-          });
-        }
+        navigate('/profile', { state: JSON.parse(savedSelection) });
       } else {
-        // Regular registration flow
         navigate('/profile');
       }
     }
@@ -111,7 +91,15 @@ const Register = () => {
         description: t('register.welcome_message'),
       });
       
-      // The useEffect will handle the navigation based on stored data
+      // Check if user came from assessment flow
+      const savedSelection = localStorage.getItem('selectedProfessional');
+      if (savedSelection) {
+        // User came from assessment, will be handled by useEffect
+        // The useEffect will redirect to dashboard with the saved data
+      } else {
+        // Regular registration flow
+        navigate('/profile');
+      }
     } catch (error) {
       toast({
         title: t('register.registration_failed'),
