@@ -1,283 +1,580 @@
-
 {
   "nav": {
     "home": "Home",
-    "about": "About",
     "how_it_works": "How It Works",
+    "about": "About",
     "login": "Login",
     "register": "Register",
     "profile": "Profile",
     "logout": "Logout"
   },
   "hero": {
-    "title": "Discover Your Professional Potential with XIMA",
-    "subtitle": "Transform your career with personalized AI-powered assessments and expert mentorship",
-    "cta_primary": "Start Your Journey",
-    "cta_secondary": "Learn More"
+    "title": "Discover Your Professional Self",
+    "subtitle": "XIMA helps you understand your professional strengths and weaknesses through our unique 5-pillar assessment system, matching you with the perfect career opportunities.",
+    "cta": "Get Your Ximatar Now!",
+    "learn_more": "Learn More"
   },
-  "features": {
-    "title": "Why Choose XIMA?",
-    "ai_assessment": {
-      "title": "AI-Powered Assessment",
-      "description": "Our advanced algorithm analyzes your skills across five key pillars"
+  "pillars": {
+    "title": "The 5 Pillars of XIMA",
+    "computational": {
+      "name": "Computational Power",
+      "description": "Analytical skills, data processing, and technology problem-solving"
     },
-    "personalized_avatar": {
-      "title": "Your XIMAtar",
-      "description": "Get a unique professional avatar that represents your strengths"
+    "communication": {
+      "name": "Communication", 
+      "description": "Social interaction and conveying ideas clearly and persuasively"
     },
-    "expert_matching": {
-      "title": "Expert Matching",
-      "description": "Connect with professionals who complement your profile"
+    "knowledge": {
+      "name": "Knowledge",
+      "description": "Depth of understanding and ability to apply information effectively"
+    },
+    "creativity": {
+      "name": "Creativity",
+      "description": "Generating new ideas from novel experiences and existing knowledge"
+    },
+    "drive": {
+      "name": "Drive",
+      "description": "Motivation and determination to take initiative and sustain momentum"
     }
   },
+  "cta_section": {
+    "title": "Unlock Your Professional Potential",
+    "subtitle": "Join thousands of professionals who have discovered their true strengths and found their perfect career match with XIMA.",
+    "button": "Get Your Ximatar Now!"
+  },
+  "baseline": {
+    "title": "Baseline Assessment",
+    "subtitle": "Upload your CV for a personalized baseline assessment, or skip to start with the full assessment",
+    "upload_cv": "Upload Your CV",
+    "file_format": "PDF format only, max 5MB",
+    "select_file": "Select CV File",
+    "change_file": "Change File",
+    "data_consent_title": "Data Storage Confirmation",
+    "data_consent_text": "Your CV will be processed and stored securely to create your baseline assessment. We use this information to understand your professional background and provide personalized insights.",
+    "consent_checkbox": "I consent to the storage and processing of my CV data",
+    "skip_for_now": "Skip for Now",
+    "upload_continue": "Upload & Continue",
+    "processing": "Processing...",
+    "complete_title": "Baseline Assessment Complete!",
+    "complete_text": "Your CV has been analyzed and your baseline profile is ready. Let's now create your complete Ximatar through our comprehensive assessment.",
+    "continue_assessment": "Continue to Ximatar Assessment"
+  },
+  "assessment": {
+    "title": "Create Your Ximatar",
+    "subtitle": "Complete our comprehensive assessment to discover your professional strengths",
+    "question": "Question",
+    "of": "of",
+    "previous": "Previous",
+    "next": "Next",
+    "complete_assessment": "Complete Assessment",
+    "open_question": "Open Question",
+    "placeholder": "Share your thoughts here... (minimum 50 characters)",
+    "required": "This field is required",
+    "characters": "characters",
+    "next_question": "Next Question",
+    "completing": "Completing Assessment...",
+    "questions": {
+      "q1": {
+        "category": "Computational Power",
+        "question": "When faced with a complex data set, what is your first approach?",
+        "options": [
+          "Break it down into smaller, manageable parts",
+          "Look for patterns and trends immediately",
+          "Seek tools or software to help analyze it",
+          "Consult with others who have similar experience"
+        ]
+      },
+      "q2": {
+        "category": "Communication",
+        "question": "In a team meeting, how do you typically contribute?",
+        "options": [
+          "I listen carefully and ask clarifying questions",
+          "I share ideas and build on others' suggestions",
+          "I take notes and summarize key points",
+          "I focus on actionable next steps"
+        ]
+      },
+      "q3": {
+        "category": "Knowledge",
+        "question": "How do you prefer to learn new skills?",
+        "options": [
+          "Through hands-on practice and experimentation",
+          "By reading comprehensive guides and documentation",
+          "Through structured courses and formal training",
+          "By learning from mentors and experienced colleagues"
+        ]
+      },
+      "q4": {
+        "category": "Creativity",
+        "question": "When solving a problem, you tend to:",
+        "options": [
+          "Think of multiple unconventional solutions",
+          "Combine existing ideas in new ways",
+          "Build upon proven methods with improvements",
+          "Seek inspiration from different industries or fields"
+        ]
+      },
+      "q5": {
+        "category": "Drive",
+        "question": "What motivates you most in your work?",
+        "options": [
+          "Achieving challenging goals and targets",
+          "Making a positive impact on others",
+          "Continuous learning and growth",
+          "Recognition and advancement opportunities"
+        ]
+      },
+      "q6": {
+        "category": "Computational Power",
+        "question": "How do you evaluate the effectiveness of a technical solution?",
+        "options": [
+          "Measure performance and specific metrics",
+          "Compare alternatives and run A/B tests",
+          "Gather feedback from end users",
+          "Verify it meets all requirements"
+        ]
+      },
+      "q7": {
+        "category": "Communication",
+        "question": "How do you handle conflicts or disagreements at work?",
+        "options": [
+          "Find common ground and shared solutions",
+          "Present facts and data to support my position",
+          "Facilitate discussion between involved parties",
+          "Propose practical compromises"
+        ]
+      },
+      "q8": {
+        "category": "Knowledge",
+        "question": "When you encounter conflicting information?",
+        "options": [
+          "Research additional sources to verify",
+          "Analyze the credibility of original sources",
+          "Consult experts in the specific field",
+          "Test empirically when possible"
+        ]
+      },
+      "q9": {
+        "category": "Creativity",
+        "question": "How do you generate new ideas for projects?",
+        "options": [
+          "Brainstorming and creative sessions",
+          "Study success cases from other industries",
+          "Experiment with prototypes and mockups",
+          "Collaborate with diverse teams"
+        ]
+      },
+      "q10": {
+        "category": "Drive",
+        "question": "How do you maintain motivation during long projects?",
+        "options": [
+          "Set milestones and celebrate progress",
+          "Keep focus on the final goal",
+          "Vary activities to avoid monotony",
+          "Seek support and feedback from team"
+        ]
+      },
+      "q11": {
+        "category": "Computational Power",
+        "question": "How do you approach automating repetitive processes?",
+        "options": [
+          "Identify patterns and create custom scripts",
+          "Use existing tools and adapt them",
+          "Analyze cost-benefit before automating",
+          "Collaborate with technical experts to implement"
+        ]
+      },
+      "q12": {
+        "category": "Communication",
+        "question": "How do you adapt your communication style to different audiences?",
+        "options": [
+          "Study the background and needs of the audience",
+          "Use examples and analogies relevant to their context",
+          "Modify the level of technical detail",
+          "Ask for feedback to ensure I'm being clear"
+        ]
+      },
+      "q13": {
+        "category": "Knowledge",
+        "question": "How do you organize and share acquired knowledge?",
+        "options": [
+          "Create structured and searchable documentation",
+          "Organize training sessions for the team",
+          "Develop practical guides and tutorials",
+          "Maintain databases of best practices"
+        ]
+      },
+      "q14": {
+        "category": "Creativity",
+        "question": "How do you overcome creative blocks?",
+        "options": [
+          "Change environment and seek new perspectives",
+          "Brainstorm with colleagues",
+          "Research inspiration from unrelated fields",
+          "Take strategic breaks and return to the problem later"
+        ]
+      },
+      "q15": {
+        "category": "Drive",
+        "question": "How do you react to failures or setbacks?",
+        "options": [
+          "Analyze what went wrong to learn",
+          "Focus quickly on the next opportunity",
+          "Seek feedback from mentors or experienced colleagues",
+          "Readapt strategy while maintaining the goal"
+        ]
+      },
+      "q16": {
+        "category": "Computational Power",
+        "question": "How do you handle large amounts of data to analyze?",
+        "options": [
+          "Use visualization tools to identify patterns",
+          "Segment data into logical categories",
+          "Apply statistical techniques to find correlations",
+          "Create automated dashboards for continuous monitoring"
+        ]
+      },
+      "q17": {
+        "category": "Communication",
+        "question": "How do you present complex results to non-technical stakeholders?",
+        "options": [
+          "Use charts and intuitive visualizations",
+          "Focus on business results, not technical details",
+          "Tell a story that connects data to concrete impacts",
+          "Prepare executive summaries with key points"
+        ]
+      },
+      "q18": {
+        "category": "Knowledge",
+        "question": "How do you stay updated in your areas of expertise?",
+        "options": [
+          "Follow industry publications and research",
+          "Participate in specialized conferences and webinars",
+          "Join professional communities and forums",
+          "Experiment with new tools and technologies"
+        ]
+      },
+      "q19": {
+        "category": "Creativity",
+        "question": "How do you balance innovation and practicality in your projects?",
+        "options": [
+          "Test innovative ideas on a small scale first",
+          "Maintain a portfolio of projects at different risk levels",
+          "Seek continuous feedback to validate creative directions",
+          "Establish clear criteria to evaluate new ideas"
+        ]
+      },
+      "q20": {
+        "category": "Drive",
+        "question": "How do you define and pursue long-term goals?",
+        "options": [
+          "Create detailed roadmaps with intermediate milestones",
+          "Establish quantifiable metrics to measure progress",
+          "Regularly review and adapt strategy",
+          "Maintain constant focus despite distractions"
+        ]
+      },
+      "q21": {
+        "category": "Computational Power",
+        "question": "How do you evaluate the implementation of new technologies?",
+        "options": [
+          "Conduct thorough cost-benefit analysis",
+          "Test on pilot projects before full adoption",
+          "Evaluate impact on existing processes and teams",
+          "Research case studies and industry best practices"
+        ]
+      },
+      "open1": {
+        "question": "Describe a professional situation where you felt most successful. What made it successful and what was your specific contribution?"
+      },
+      "open2": {
+        "question": "What is your biggest professional challenge or area where you'd like to grow? How do you plan to address it?"
+      }
+    }
+  },
+  "results": {
+    "title": "Your Ximatar Results",
+    "subtitle": "Here's your professional profile based on the assessment",
+    "subtitle_with_cv": "Here's how your comprehensive assessment compares to your CV baseline",
+    "subtitle_without_cv": "Your comprehensive Ximatar assessment is complete",
+    "your_animal": "Meet Your Ximatar: The {{animal}}",
+    "animal_description": "Your Ximatar represents your unique professional identity, combining your strongest characteristics into a powerful symbol of your capabilities.",
+    "baseline_vs_final": "CV Baseline",
+    "full_assessment": "Full Assessment",
+    "baseline_description": "Based on your professional experience",
+    "full_description": "Based on comprehensive evaluation",
+    "key_insights": "Key Insights",
+    "insights_intro": "Your comprehensive assessment revealed strengths that weren't fully captured in your CV:",
+    "insight_1": "Enhanced understanding of your creative problem-solving abilities",
+    "insight_2": "Deeper insight into your communication and collaboration style", 
+    "insight_3": "Better understanding of your intrinsic motivation and drive",
+    "continue_journey": "Register to Continue",
+    "analyzing": "Analyzing Your Results",
+    "analyzing_subtitle": "We're comparing your assessments and creating your personalized Ximatar...",
+    "registration_prompt": "Register to access your full profile and book a call with your matched expert.",
+    "fox_animal": "Fox",
+    "eagle_animal": "Eagle",
+    "adaptability": "Adaptability",
+    "adaptability_desc": "Quick to learn and adjust to new environments",
+    "focus": "Focus", 
+    "focus_desc": "Maintains concentration on tasks",
+    "creativity_trait": "Creativity",
+    "creativity_desc": "Finds unique solutions to problems",
+    "business_strategist": "Senior Business Strategist",
+    "communication_leadership": "Communication & Leadership Development",
+    "expert_bio": "Expert in organizational communication and team dynamics with 15+ years of experience helping professionals unlock their potential.",
+    "vision": "Vision",
+    "vision_desc": "Strategic thinking and long-term planning",
+    "leadership": "Leadership",
+    "leadership_desc": "Natural ability to guide and inspire others",
+    "matched_expert": "Your Matched Expert",
+    "experience_badge": "15+ Years Experience",
+    "communication_expert": "Communication Expert",
+    "leadership_coach": "Leadership Coach",
+    "book_appointment": "Book Appointment",
+    "register_to_book": "Register to Book",
+    "create_account": "Create Free Account",
+    "choose_your_expert": "Choose Your Expert",
+    "expert_selection_subtitle": "Select the professional who best matches your profile and goals",
+    "technical_lead": "Senior Technical Lead",
+    "computational_analytics": "Computational Power & Analytics",
+    "technical_expert_bio": "Expert in data science and technical leadership with 12+ years of experience in complex problem solving.",
+    "creative_director": "Creative Innovation Director", 
+    "innovation_creativity": "Innovation & Creative Strategy",
+    "creative_expert_bio": "Specializes in creative problem-solving and innovation strategies with 10+ years in design thinking.",
+    "wolf_animal": "Wolf",
+    "dolphin_animal": "Dolphin",
+    "analytical_thinking": "Analytical Thinking",
+    "analytical_desc": "Deep analytical and logical reasoning skills",
+    "problem_solving": "Problem Solving",
+    "problem_solving_desc": "Systematic approach to complex challenges",
+    "technical_leadership": "Technical Leadership",
+    "technical_leadership_desc": "Guides technical teams and projects",
+    "creative_thinking": "Creative Thinking",
+    "creative_thinking_desc": "Innovative approach to problem solving",
+    "innovation": "Innovation",
+    "innovation_desc": "Drives creative solutions and new ideas",
+    "collaboration": "Collaboration",
+    "collaboration_desc": "Works effectively with diverse teams",
+    "match": "Match",
+    "selected": "Selected",
+    "proceed_to_dashboard": "Proceed to Dashboard",
+    "register_to_continue": "Register to Continue",
+    "select_professional_prompt": "Please select a professional above to continue",
+    "baseline_assessment": "CV Baseline"
+  },
+  "mentor": {
+    "title": "Start Your Xima Journey",
+    "subtitle": "Choose your mentor for a personalized 15-minute introduction call",
+    "login_required": "Registration required: Please register to book a mentor call",
+    "login_button": "Login to Book Session",
+    "select_mentor": "Select a mentor above to continue",
+    "book_session": "Book 15min Call with {{name}}",
+    "book_title": "Book Your Mentor Call",
+    "book_subtitle": "Schedule a 15-minute introduction call with {{name}}",
+    "calendly_title": "Calendly Integration",
+    "calendly_description": "In a real implementation, this would embed the Calendly widget for {{name}}",
+    "calendly_url": "Calendly URL: {{url}}",
+    "calendly_duration": "Duration: 15 minutes",
+    "calendly_type": "Type: Video call introduction",
+    "open_calendly": "Open Calendly (Demo)",
+    "choose_different": "Choose Different Mentor",
+    "intro_call": "15-minute intro call",
+    "flexible_scheduling": "Flexible scheduling",
+    "personalized_guidance": "Personalized guidance",
+    "selected": "Selected"
+  },
+  "dashboard": {
+    "title": "Your XIMA Dashboard",
+    "subtitle": "Manage your professional profile and see your match potential",
+    "your_ximatar": "Your XIMATAR",
+    "xima_score": "XIMA Score",
+    "welcome": "Welcome, {{name}}",
+    "overview_description": "Your XIMA profile is now active. Below you'll find your overall stats and next steps to improve your match quality.",
+    "matched_professional": "Your Matched Professional",
+    "book_appointment": "Book Appointment",
+    "cv_assessment_comparison": "CV vs Assessment Comparison",
+    "assessment_date": "Assessment completed on {{date}}",
+    "view_full_comparison": "View Full Comparison",
+    "no_assessment": "No assessment completed yet",
+    "take_assessment": "Take Assessment",
+    "booking": {
+      "title": "Book a Session",
+      "subtitle": "Schedule a consultation with {{name}}",
+      "select_date": "Select Date",
+      "select_time": "Select Time",
+      "confirm_booking": "Confirm Booking",
+      "booking_confirmed": "Booking Confirmed!",
+      "session_details": "Session Details",
+      "date": "Date",
+      "time": "Time",
+      "duration": "Duration",
+      "type": "Type",
+      "video_call": "Video Call",
+      "cancel_booking": "Cancel",
+      "reschedule": "Reschedule",
+      "booking_system": "Booking System",
+      "coming_soon": "Booking functionality will be available soon"
+    },
+    "access_required": "Access Required",
+    "please_login": "Please log in to access your dashboard",
+    "user": "User",
+    "get_started": "Get Started",
+    "assessment_prompt": "Complete your XIMAtar assessment to unlock your full profile",
+    "profile_info": "Profile Information",
+    "member_since": "Member since"
+  },
+  "about": {
+    "title": "About XIMA",
+    "subtitle": "Revolutionizing the job matching process through deep professional assessment",
+    "match_problem_title": "The Match Quality Problem",
+    "match_problem_subtitle": "In today's job market, both employers and job seekers face significant challenges in finding the right fit.",
+    "match_problem_description": "Traditional hiring processes often fail to identify the best matches between professionals and opportunities. Resumes and interviews provide limited insight into a candidate's true potential, while job descriptions rarely capture the real essence of a role or company culture.",
+    "match_leads_to": "This mismatch leads to:",
+    "mismatch_1": "High employee turnover",
+    "mismatch_2": "Reduced job satisfaction", 
+    "mismatch_3": "Lower productivity",
+    "mismatch_4": "Wasted resources in recruitment",
+    "mismatch_5": "Missed opportunities for both parties",
+    "solution_description": "XIMA was developed to address this fundamental problem by creating a comprehensive assessment framework that looks beyond surface qualifications to the core attributes that determine professional success.",
+    "approach_title": "The XIMA Approach",
+    "five_pillars_title": "The 5 Pillars",
+    "five_pillars_description": "XIMA evaluates professionals across five fundamental dimensions that together provide a comprehensive view of their potential:",
+    "experience_pillar": "Experience: Professional history, skills, and knowledge acquired",
+    "intelligence_pillar": "Intelligence: Cognitive abilities, learning capacity, and problem-solving",
+    "motivation_pillar": "Motivation: Drive, ambition, and what energizes the individual",
+    "attitude_pillar": "Attitude: Approach to work, challenges, and collaboration",
+    "analysis_pillar": "Analysis: Critical thinking, decision making, and reasoning",
+    "ximatar_title": "The XIMATAR",
+    "ximatar_description": "Every professional's assessment results in a unique XIMATAR - a visual representation of their professional identity using animal characteristics that highlight their strengths and areas for development.",
+    "why_animals_title": "Why Animals?",
+    "why_animals_description": "Animal avatars provide intuitive, memorable representations of complex professional traits. Just as each animal species has evolved unique adaptations to thrive in its environment, each professional has developed distinct capabilities that make them valuable in specific contexts.",
+    "features_title": "Features and Morphology",
+    "features_description": "Each XIMATAR's appearance reflects the individual's assessment results, with physical features representing different strengths, capabilities, and potential growth areas.",
+    "mentor_matching_title": "Mentor Matching",
+    "mentor_matching_description": "Based on the XIMATAR, XIMA pairs professionals with mentors who have complementary strengths, enabling targeted development in areas of opportunity.",
+    "benefits_title": "How XIMA Benefits You",
+    "job_seekers_title": "For Job Seekers",
+    "job_seekers_1": "Discover your true professional strengths",
+    "job_seekers_2": "Get matched with opportunities where you'll thrive",
+    "job_seekers_3": "Receive personalized development guidance",
+    "job_seekers_4": "Connect with mentors who complement your profile",
+    "job_seekers_5": "Increase job satisfaction and career progression",
+    "employers_title": "For Employers",
+    "employers_1": "Find candidates who truly fit your needs",
+    "employers_2": "Reduce turnover and recruitment costs",
+    "employers_3": "Build more effective and complementary teams",
+    "employers_4": "Improve employee engagement and productivity",
+    "employers_5": "Data-driven talent management and development",
+    "ready_title": "Ready to Discover Your XIMATAR?",
+    "ready_subtitle": "Join thousands of professionals who have found their perfect career match through XIMA.",
+    "get_started": "Get Started Now"
+  },
+  "how_it_works": {
+    "title": "How XIMA Works",
+    "subtitle": "Our unique approach to solving the Match Quality Problem in the job market"
+  },
+  "journey": {
+    "title": "Your Ximatar Journey",
+    "subtitle": "Discover your professional strengths through our comprehensive assessment",
+    "step": "Step",
+    "step_1": "CV Analysis", 
+    "step_2": "Create Your Ximatar",
+    "step_3": "Get Your Results",
+    "step_4": "Start Your Journey",
+    "back": "Back"
+  },
   "login": {
-    "title": "Welcome Back",
-    "subtitle": "Sign in to your XIMA account",
+    "title": "Welcome back",
+    "subtitle": "Log in to continue your XIMA journey",
     "email": "Email",
+    "email_placeholder": "your@email.com",
     "password": "Password",
-    "sign_in": "Sign In",
-    "signing_in": "Signing in...",
+    "password_placeholder": "Enter your password",
+    "forgot_password": "Forgot password?",
+    "login_button": "Log in",
+    "logging_in": "Logging in...",
     "no_account": "Don't have an account?",
-    "register_here": "Register here",
-    "email_required": "Email is required",
-    "email_invalid": "Please enter a valid email",
-    "password_required": "Password is required",
+    "sign_up": "Sign up",
+    "login_success": "Login successful!",
+    "welcome_back": "Welcome back to XIMA.",
     "login_failed": "Login failed",
-    "try_again": "Please try again"
+    "invalid_credentials": "Invalid email or password",
+    "enter_both": "Please enter both email and password"
   },
   "register": {
-    "title": "Join XIMA",
-    "subtitle": "Create your account to get started",
+    "title": "Create an account",
+    "subtitle": "Join XIMA to discover your professional potential",
     "full_name": "Full Name",
+    "name_placeholder": "Enter your full name",
     "email": "Email",
+    "email_placeholder": "your@email.com",
     "password": "Password",
+    "password_placeholder": "Create a password",
     "confirm_password": "Confirm Password",
+    "confirm_placeholder": "Confirm your password",
     "create_account": "Create Account",
     "creating_account": "Creating account...",
     "have_account": "Already have an account?",
     "log_in": "Log in",
     "name_required": "Name is required",
     "email_required": "Email is required",
-    "email_invalid": "Please enter a valid email",
+    "email_invalid": "Email is invalid",
     "password_required": "Password is required",
     "password_length": "Password must be at least 6 characters",
-    "passwords_match": "Passwords must match",
+    "passwords_match": "Passwords do not match",
     "registration_success": "Registration successful!",
-    "welcome_message": "Welcome to XIMA!",
+    "welcome_message": "Welcome to XIMA. You can now access your dashboard.",
     "registration_failed": "Registration failed",
-    "try_again": "Please try again",
-    "name_placeholder": "Enter your full name",
-    "email_placeholder": "Enter your email",
-    "password_placeholder": "Enter your password",
-    "confirm_placeholder": "Confirm your password"
+    "try_again": "Please try again later"
   },
-  "dashboard": {
-    "welcome": "Welcome, {{name}}!",
-    "user": "User",
-    "overview_description": "Here's your personalized XIMA overview",
-    "access_required": "Access Required",
-    "please_login": "Please log in to view your dashboard",
-    "your_ximatar": "Your XIMAtar",
-    "xima_score": "XIMA Score",
-    "matched_professional": "Your Matched Professional",
-    "matched_professional_short": "Your Professional",
-    "book_appointment": "Book Appointment",
-    "book_appointment_short": "Book Session",
-    "get_started": "Get Started",
-    "assessment_prompt": "Take your XIMA assessment to unlock your professional potential",
-    "take_assessment": "Take Assessment",
-    "profile_info": "Profile Information",
-    "member_since": "Member since",
-    "booking": {
-      "booking_system": "Booking System",
-      "coming_soon": "Appointment booking will be available soon!"
-    },
-    "go_to_dashboard": "Go to Your Dashboard",
-    "legacy_title": "Your XIMA Dashboard",
-    "legacy_subtitle": "Manage your professional profile and view your potential for growth",
-    "welcome_back": "Welcome, {{name}}",
-    "profile_active_description": "Your XIMA profile is active. Follow your general statistics and next steps to improve your skill correspondence.",
-    "match_quality": "Match Quality",
-    "assessments_completed": "Assessments",
-    "active": "Active",
-    "mentor_status": "Mentor",
-    "next_step": "Next Step",
-    "complete_intelligence_assessment": "Complete Intelligence Assessment",
-    "development_plan": "Development Plan",
-    "enhance_analysis_skills": "Enhance Analysis Skills",
-    "communication_workshop": "Communication Workshop",
-    "leadership_fundamentals": "Leadership Fundamentals",
-    "priority": "Priority",
-    "recommended": "Recommended",
-    "optional": "Optional",
-    "view_full_development_plan": "View Full Development Plan",
-    "your_mentor": "Your Mentor",
-    "creativity_specialist": "Creativity Specialist",
-    "specialist_in_creativity": "Specialist in creativity",
-    "upcoming_session": "Upcoming Session",
-    "no_session_scheduled": "No session scheduled yet",
-    "message_your_mentor": "Message Your Mentor",
-    "cv_vs_evaluation_comparison": "CV vs Evaluation Comparison",
-    "baseline_cv": "Baseline CV",
-    "complete_evaluation": "Complete Evaluation",
-    "view_complete_comparison": "View Complete Comparison"
+  "not_found": {
+    "title": "404",
+    "message": "Oops! Page not found",
+    "return_home": "Return to Home"
   },
-  "pillars": {
-    "computational": {
-      "name": "Computational",
-      "description": "Logical thinking and problem-solving abilities"
+  "footer": {
+    "copyright": "XIMA - Matching Quality in Jobs"
+  },
+  "language": {
+    "switch_to": "Switch to {{language}}"
+  },
+  "process": {
+    "title": "How XIMA Works",
+    "step1": {
+      "title": "Upload CV",
+      "description": "Share your professional background for baseline assessment"
     },
-    "communication": {
-      "name": "Communication",
-      "description": "Ability to express ideas clearly and effectively"
+    "step2": {
+      "title": "Complete Assessment",
+      "description": "Answer questions about your skills and preferences"
     },
-    "knowledge": {
-      "name": "Knowledge",
-      "description": "Depth and breadth of professional expertise"
+    "step3": {
+      "title": "Get Your Ximatar",
+      "description": "Receive your unique professional animal avatar"
     },
-    "creativity": {
-      "name": "Creativity",
-      "description": "Innovation and creative problem-solving skills"
+    "step4": {
+      "title": "Connect with Expert",
+      "description": "Book a call with your matched professional mentor"
+    }
+  },
+  "avatar_explanation": {
+    "title": "Your Professional Animal Identity",
+    "description": "Each Ximatar represents unique professional traits and capabilities, helping you understand your strengths and connect with the right opportunities.",
+    "eagle": {
+      "title": "The Eagle",
+      "description": "Strategic vision and leadership focus"
     },
-    "drive": {
-      "name": "Drive",
-      "description": "Motivation and determination to achieve goals"
+    "fox": {
+      "title": "The Fox", 
+      "description": "Adaptability and creative problem-solving"
+    },
+    "wolf": {
+      "title": "The Wolf",
+      "description": "Team collaboration and persistent drive"
     }
   },
   "xima_score": {
-    "tooltip": "Your XIMA Score represents your overall professional potential across all five pillars"
-  },
-  "about": {
-    "title": "About XIMA",
-    "subtitle": "Revolutionizing professional development through AI-powered assessments",
-    "mission_title": "Our Mission",
-    "mission_text": "XIMA empowers professionals to discover their true potential and connect with the right mentors to accelerate their career growth.",
-    "vision_title": "Our Vision",
-    "vision_text": "We envision a world where every professional has access to personalized guidance and mentorship, regardless of their background or location.",
-    "values_title": "Our Values",
-    "values": {
-      "innovation": {
-        "title": "Innovation",
-        "description": "We leverage cutting-edge AI technology to provide unique insights"
-      },
-      "personalization": {
-        "title": "Personalization",
-        "description": "Every assessment and recommendation is tailored to the individual"
-      },
-      "growth": {
-        "title": "Growth",
-        "description": "We believe in continuous learning and professional development"
-      }
-    }
-  },
-  "how_it_works": {
-    "title": "How XIMA Works",
-    "subtitle": "Your journey to professional excellence in three simple steps",
-    "steps": {
-      "assessment": {
-        "title": "Take the Assessment",
-        "description": "Complete our comprehensive evaluation that analyzes your professional capabilities across five key pillars."
-      },
-      "avatar": {
-        "title": "Get Your XIMAtar",
-        "description": "Receive a personalized professional avatar that represents your unique strengths and characteristics."
-      },
-      "matching": {
-        "title": "Connect with Experts",
-        "description": "Get matched with professional mentors who can help you grow in your areas of opportunity."
-      }
-    },
-    "pillars_title": "The Five XIMA Pillars",
-    "pillars_subtitle": "Our assessment evaluates you across these key professional dimensions",
-    "avatar_title": "Your Professional Avatar",
-    "avatar_subtitle": "Each XIMAtar represents a unique combination of professional traits",
-    "cta_title": "Ready to Discover Your Professional Potential?",
-    "cta_subtitle": "Join thousands of professionals who have already started their XIMA journey",
-    "get_started": "Get Started Now"
-  },
-  "ximatar_journey": {
-    "title": "Your XIMAtar Journey",
-    "upload_cv": "Upload Your CV",
-    "take_assessment": "Take Full Assessment",
-    "cv_description": "Get a quick baseline assessment by uploading your CV",
-    "assessment_description": "Complete our comprehensive 23-question assessment for detailed insights"
-  },
-  "assessment": {
-    "title": "XIMA Assessment",
-    "question_progress": "Question {{current}} of {{total}}",
-    "previous": "Previous",
-    "next": "Next",
-    "submit": "Submit Assessment",
-    "please_select": "Please select an answer to continue"
-  },
-  "results": {
-    "title": "Your XIMA Results",
-    "subtitle_with_cv": "Here's how your full assessment compares to your CV baseline",
-    "subtitle_without_cv": "Here are your comprehensive XIMA assessment results",
-    "analyzing": "Analyzing Your Results",
-    "analyzing_subtitle": "Our AI is processing your responses to generate your personalized XIMAtar and professional insights...",
-    "your_animal": "You are a {{animal}}",
-    "animal_description": "Your XIMAtar represents your unique professional characteristics and strengths.",
-    "baseline_assessment": "CV Baseline",
-    "baseline_description": "Based on your CV",
-    "full_assessment": "Full Assessment",
-    "full_description": "Based on comprehensive evaluation",
-    "choose_your_expert": "Choose Your Professional Match",
-    "expert_selection_subtitle": "Select the professional who best aligns with your goals and development needs.",
-    "match": "Match",
-    "selected": "Selected",
-    "proceed_to_dashboard": "Proceed to Dashboard",
-    "register_to_continue": "Register to Continue",
-    "select_professional_prompt": "Please select a professional to continue",
-    "fox_animal": "Fox",
-    "eagle_animal": "Eagle",
-    "wolf_animal": "Wolf",
-    "dolphin_animal": "Dolphin",
-    "business_strategist": "Senior Business Strategist",
-    "technical_lead": "Technical Lead",
-    "creative_director": "Creative Director", 
-    "communication_leadership": "Communication & Leadership",
-    "computational_analytics": "Computational & Analytics",
-    "innovation_creativity": "Innovation & Creativity",
-    "expert_bio": "Expert in organizational communication and team dynamics with 15+ years of experience in consulting.",
-    "technical_expert_bio": "Senior technical leader specializing in data analysis and computational problem-solving.",
-    "creative_expert_bio": "Award-winning creative director with expertise in innovation and design thinking.",
-    "adaptability": "Adaptability",
-    "adaptability_desc": "Quick to adapt to new situations",
-    "focus": "Focus",
-    "focus_desc": "Laser-sharp attention to detail",
-    "creativity_trait": "Creativity",
-    "creativity_desc": "Natural ability to find creative solutions",
-    "vision": "Vision",
-    "vision_desc": "Strategic and forward-thinking leader",
-    "leadership": "Leadership",
-    "leadership_desc": "Natural ability to guide and inspire teams",
-    "analytical_thinking": "Analytical Thinking",
-    "analytical_desc": "Excellent at breaking down complex problems",
-    "problem_solving": "Problem Solving",
-    "problem_solving_desc": "Systematic approach to finding solutions",
-    "technical_leadership": "Technical Leadership",
-    "technical_leadership_desc": "Leads technical teams effectively",
-    "creative_thinking": "Creative Thinking",
-    "creative_thinking_desc": "Generates innovative ideas and solutions",
-    "innovation": "Innovation",
-    "innovation_desc": "Drives innovative approaches and methodologies",
-    "collaboration": "Collaboration",
-    "collaboration_desc": "Excellent at working with diverse teams"
-  },
-  "booking": {
-    "title": "Book Your Session",
-    "subtitle": "Schedule a consultation with {{professionalName}}",
-    "select_date": "Select Date",
-    "select_time": "Select Time",
-    "book_session": "Book Session",
-    "booking_success": "Booking Confirmed!",
-    "booking_success_message": "Your session has been scheduled successfully.",
-    "booking_error": "Booking Failed",
-    "booking_error_message": "Please try again or contact support.",
-    "please_select_date": "Please select a date",
-    "please_select_time": "Please select a time",
-    "available_times": "Available Times",
-    "no_times_available": "No times available for this date"
+    "tooltip": "Your XIMA Score represents the average of your five pillar assessments, showing your overall professional development level on a scale of 1-10."
   }
 }
