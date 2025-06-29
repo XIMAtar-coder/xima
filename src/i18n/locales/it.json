@@ -4,15 +4,15 @@
     "how_it_works": "Come Funziona",
     "about": "Chi Siamo",
     "login": "Accedi",
-    "register": "Registrati", 
+    "register": "Registrati",
     "profile": "Profilo",
     "logout": "Esci"
   },
   "hero": {
     "title": "Scopri il Tuo Sé Professionale",
-    "subtitle": "XIMA ti aiuta a comprendere i tuoi punti di forza e debolezza professionali attraverso il nostro sistema di valutazione unico a 5 pilastri, abbinandoti alle opportunità di carriera perfette.",
+    "subtitle": "XIMA ti aiuta a comprendere i tuoi punti di forza e di debolezza professionali attraverso il nostro unico sistema di valutazione a 5 pilastri, abbinandoti alle opportunità di carriera perfette.",
     "cta": "Ottieni il Tuo Ximatar Ora!",
-    "learn_more": "Scopri di Più"
+    "learn_more": "Scopri di più"
   },
   "pillars": {
     "title": "I 5 Pilastri di XIMA",
@@ -22,66 +22,66 @@
     },
     "communication": {
       "name": "Comunicazione",
-      "description": "Interazione sociale e trasmissione di idee in modo chiaro e persuasivo"
+      "description": "Interazione sociale e capacità di trasmettere idee in modo chiaro e persuasivo"
     },
     "knowledge": {
       "name": "Conoscenza",
-      "description": "Profondità di comprensione e capacità di applicare informazioni efficacemente"
+      "description": "Profondità di comprensione e capacità di applicare efficacemente le informazioni"
     },
     "creativity": {
       "name": "Creatività",
-      "description": "Generare nuove idee da esperienze innovative e conoscenze esistenti"
+      "description": "Generazione di nuove idee da esperienze innovative e conoscenze esistenti"
     },
     "drive": {
-      "name": "Determinazione",
-      "description": "Motivazione e determinazione per prendere iniziative e mantenere lo slancio"
+      "name": "Motivazione",
+      "description": "Spinta e determinazione a prendere iniziativa e mantenere lo slancio"
     }
   },
   "cta_section": {
     "title": "Sblocca il Tuo Potenziale Professionale",
-    "subtitle": "Unisciti a migliaia di professionisti che hanno scoperto i loro veri punti di forza e trovato la loro corrispondenza di carriera perfetta con XIMA.",
+    "subtitle": "Unisciti a migliaia di professionisti che hanno scoperto i loro veri punti di forza e trovato la loro corrispondenza perfetta con XIMA.",
     "button": "Ottieni il Tuo Ximatar Ora!"
   },
   "baseline": {
-    "title": "Valutazione Baseline",
-    "subtitle": "Carica il tuo CV per una valutazione baseline personalizzata, oppure salta per iniziare con la valutazione completa",
+    "title": "Valutazione di Base",
+    "subtitle": "Carica il tuo CV per una valutazione di base personalizzata, oppure salta per iniziare con la valutazione completa",
     "upload_cv": "Carica il Tuo CV",
-    "file_format": "Solo formato PDF, max 5MB",
-    "select_file": "Seleziona File CV",
+    "file_format": "Solo formato PDF, massimo 5MB",
+    "select_file": "Seleziona il File CV",
     "change_file": "Cambia File",
-    "data_consent_title": "Conferma Archiviazione Dati",
-    "data_consent_text": "Il tuo CV verrà elaborato e archiviato in modo sicuro per creare la tua valutazione baseline. Utilizziamo queste informazioni per comprendere il tuo background professionale e fornire insights personalizzati.",
-    "consent_checkbox": "Acconsento all'archiviazione e al trattamento dei dati del mio CV",
+    "data_consent_title": "Conferma di Conservazione Dati",
+    "data_consent_text": "Il tuo CV sarà elaborato e conservato in modo sicuro per creare la tua valutazione di base. Utilizziamo queste informazioni per comprendere il tuo background professionale e fornire approfondimenti personalizzati.",
+    "consent_checkbox": "Acconsento alla conservazione e al trattamento dei dati del mio CV",
     "skip_for_now": "Salta per Ora",
     "upload_continue": "Carica e Continua",
     "processing": "Elaborazione...",
-    "complete_title": "Valutazione Baseline Completata!",
-    "complete_text": "Il tuo CV è stato analizzato e il tuo profilo baseline è pronto. Ora creiamo il tuo Ximatar completo attraverso la nostra valutazione comprensiva.",
-    "continue_assessment": "Continua alla Valutazione Ximatar"
+    "complete_title": "Valutazione di Base Completata!",
+    "complete_text": "Il tuo CV è stato analizzato e il tuo profilo di base è pronto. Ora creiamo il tuo Ximatar completo attraverso la nostra valutazione approfondita.",
+    "continue_assessment": "Continua con la Valutazione Ximatar"
   },
   "assessment": {
     "title": "Crea il Tuo Ximatar",
-    "subtitle": "Completa la nostra valutazione comprensiva per scoprire i tuoi punti di forza professionali",
+    "subtitle": "Completa la nostra valutazione approfondita per scoprire i tuoi punti di forza professionali",
     "question": "Domanda",
     "of": "di",
     "previous": "Precedente",
     "next": "Successiva",
-    "complete_assessment": "Completa Valutazione",
+    "complete_assessment": "Completa la Valutazione",
     "open_question": "Domanda Aperta",
     "placeholder": "Condividi i tuoi pensieri qui... (minimo 50 caratteri)",
     "required": "Questo campo è obbligatorio",
     "characters": "caratteri",
-    "next_question": "Prossima Domanda",
+    "next_question": "Domanda Successiva",
     "completing": "Completamento Valutazione...",
     "questions": {
       "q1": {
         "category": "Potenza Computazionale",
-        "question": "Di fronte a un dataset complesso, qual è il tuo primo approccio?",
+        "question": "Di fronte a un set di dati complesso, qual è il tuo primo approccio?",
         "options": [
-          "Lo suddivido in parti più piccole e gestibili",
-          "Cerco immediatamente pattern e tendenze",
-          "Cerco strumenti o software per aiutarmi ad analizzarlo",
-          "Consulto altri che hanno esperienza simile"
+          "Scomporlo in parti più piccole e gestibili",
+          "Cercare immediatamente modelli e tendenze",
+          "Cercare strumenti o software per aiutare nell'analisi",
+          "Consultare altri con esperienza simile"
         ]
       },
       "q2": {
@@ -89,38 +89,38 @@
         "question": "In una riunione di team, come contribuisci tipicamente?",
         "options": [
           "Ascolto attentamente e faccio domande chiarificatrici",
-          "Condivido idee e costruisco sui suggerimenti degli altri",
+          "Condivido idee e costruisco sulle proposte altrui",
           "Prendo appunti e riassumo i punti chiave",
           "Mi concentro sui prossimi passi concreti"
         ]
       },
       "q3": {
         "category": "Conoscenza",
-        "question": "Come preferisci imparare nuove competenze?",
+        "question": "Come preferisci apprendere nuove competenze?",
         "options": [
-          "Attraverso la pratica diretta e la sperimentazione",
-          "Leggendo guide complete e documentazione",
+          "Attraverso pratica e sperimentazione diretta",
+          "Leggendo guide e documentazioni complete",
           "Attraverso corsi strutturati e formazione formale",
-          "Imparando da mentor e colleghi esperti"
+          "Imparando da mentori e colleghi esperti"
         ]
       },
       "q4": {
         "category": "Creatività",
         "question": "Quando risolvi un problema, tendi a:",
         "options": [
-          "Pensare a soluzioni multiple e non convenzionali",
+          "Pensare a molteplici soluzioni non convenzionali",
           "Combinare idee esistenti in modi nuovi",
-          "Costruire su metodi comprovati con miglioramenti",
+          "Migliorare metodi comprovati con innovazioni",
           "Cercare ispirazione da settori o campi diversi"
         ]
       },
       "q5": {
-        "category": "Determinazione",
+        "category": "Motivazione",
         "question": "Cosa ti motiva di più nel tuo lavoro?",
         "options": [
-          "Raggiungere obiettivi e target impegnativi",
+          "Raggiungere obiettivi sfidanti",
           "Avere un impatto positivo sugli altri",
-          "Apprendimento continuo e crescita",
+          "Apprendimento e crescita continui",
           "Riconoscimento e opportunità di avanzamento"
         ]
       },
@@ -128,27 +128,27 @@
         "category": "Potenza Computazionale",
         "question": "Come valuti l'efficacia di una soluzione tecnica?",
         "options": [
-          "Misuro performance e metriche specifiche",
+          "Misuro prestazioni e metriche specifiche",
           "Confronto alternative e faccio test A/B",
-          "Chiedo feedback agli utenti finali",
-          "Verifico se soddisfa tutti i requisiti"
+          "Raccolgo feedback dagli utenti finali",
+          "Verifico che soddisfi tutti i requisiti"
         ]
       },
       "q7": {
         "category": "Comunicazione",
-        "question": "Come gestisci conflitti o disaccordi professionali?",
+        "question": "Come gestisci conflitti o disaccordi sul lavoro?",
         "options": [
-          "Cerco un terreno comune e soluzioni condivise",
-          "Presento fatti e dati per supportare la mia posizione",
+          "Trovo un terreno comune e soluzioni condivise",
+          "Presento fatti e dati a supporto della mia posizione",
           "Facilito la discussione tra le parti coinvolte",
           "Propongo compromessi pratici"
         ]
       },
       "q8": {
         "category": "Conoscenza",
-        "question": "Quando ti trovi di fronte a informazioni contrastanti?",
+        "question": "Quando incontri informazioni contrastanti?",
         "options": [
-          "Ricerco fonti aggiuntive per verificare",
+          "Cerco fonti aggiuntive per verificare",
           "Analizzo la credibilità delle fonti originali",
           "Consulto esperti nel campo specifico",
           "Testo empiricamente quando possibile"
@@ -156,40 +156,40 @@
       },
       "q9": {
         "category": "Creatività",
-        "question": "Come generi nuove idee per progetti?",
+        "question": "Come generi nuove idee per i progetti?",
         "options": [
-          "Brainstorming e sessioni creative",
-          "Studio casi di successo in altri settori",
-          "Sperimento con prototipi e mockup",
+          "Sessioni di brainstorming e creatività",
+          "Studio casi di successo da altri settori",
+          "Sperimentazione con prototipi e mockup",
           "Collaboro con team diversificati"
         ]
       },
       "q10": {
-        "category": "Determinazione",
+        "category": "Motivazione",
         "question": "Come mantieni la motivazione durante progetti lunghi?",
         "options": [
-          "Stabilisco milestone e celebro i progressi",
-          "Mantengo focus sull'obiettivo finale",
-          "Vario le attività per evitare monotonia",
+          "Fisso traguardi e celebro i progressi",
+          "Mantengo il focus sull'obiettivo finale",
+          "Varie attività per evitare monotonia",
           "Cerco supporto e feedback dal team"
         ]
       },
       "q11": {
         "category": "Potenza Computazionale",
-        "question": "Come approcci l'automazione di processi ripetitivi?",
+        "question": "Come affronti l'automazione di processi ripetitivi?",
         "options": [
-          "Identifico pattern e creo script personalizzati",
-          "Utilizzo strumenti esistenti e li adatto",
+          "Identifico modelli e creo script personalizzati",
+          "Uso strumenti esistenti e li adatto",
           "Analizzo costi-benefici prima di automatizzare",
           "Collaboro con esperti tecnici per implementare"
         ]
       },
       "q12": {
         "category": "Comunicazione",
-        "question": "Come adatti il tuo stile comunicativo a pubblici diversi?",
+        "question": "Come adatti il tuo stile comunicativo a diversi pubblici?",
         "options": [
-          "Studio il background e le esigenze dell'audience",
-          "Uso esempi e analogie pertinenti al loro contesto",
+          "Studio il background e le esigenze del pubblico",
+          "Uso esempi e analogie rilevanti per il contesto",
           "Modifico il livello di dettaglio tecnico",
           "Chiedo feedback per assicurarmi di essere chiaro"
         ]
@@ -200,8 +200,8 @@
         "options": [
           "Creo documentazione strutturata e ricercabile",
           "Organizzo sessioni di formazione per il team",
-          "Sviluppo guide e tutorial pratici",
-          "Mantengo database di best practices"
+          "Sviluppo guide pratiche e tutorial",
+          "Mantengo database di best practice"
         ]
       },
       "q14": {
@@ -209,26 +209,26 @@
         "question": "Come superi i blocchi creativi?",
         "options": [
           "Cambio ambiente e cerco nuove prospettive",
-          "Faccio brainstorming con colleghi",
-          "Ricerco ispirazioni in campi non correlati",
-          "Prendo pause strategiche e torno al problema dopo"
+          "Brainstorming con colleghi",
+          "Cerco ispirazione in campi non correlati",
+          "Faccio pause strategiche e torno al problema dopo"
         ]
       },
       "q15": {
-        "category": "Determinazione",
-        "question": "Come reagisci ai fallimenti o agli insuccessi?",
+        "category": "Motivazione",
+        "question": "Come reagisci a fallimenti o battute d'arresto?",
         "options": [
           "Analizzo cosa è andato storto per imparare",
           "Mi concentro rapidamente sulla prossima opportunità",
           "Cerco feedback da mentori o colleghi esperti",
-          "Riadatto la strategia mantenendo l'obiettivo"
+          "Adatto la strategia mantenendo l'obiettivo"
         ]
       },
       "q16": {
         "category": "Potenza Computazionale",
         "question": "Come gestisci grandi quantità di dati da analizzare?",
         "options": [
-          "Uso strumenti di visualizzazione per identificare pattern",
+          "Uso strumenti di visualizzazione per identificare modelli",
           "Segmento i dati in categorie logiche",
           "Applico tecniche statistiche per trovare correlazioni",
           "Creo dashboard automatizzati per monitoraggio continuo"
@@ -239,136 +239,164 @@
         "question": "Come presenti risultati complessi a stakeholder non tecnici?",
         "options": [
           "Uso grafici e visualizzazioni intuitive",
-          "Focus sui risultati di business, non sui dettagli tecnici",
+          "Mi concentro sui risultati di business, non sui dettagli tecnici",
           "Racconto una storia che collega dati a impatti concreti",
-          "Preparo sommari esecutivi con punti chiave"
+          "Preparo sintesi esecutive con punti chiave"
         ]
       },
       "q18": {
         "category": "Conoscenza",
-        "question": "Come rimani aggiornato nelle tue aree di competenza?",
+        "question": "Come ti tieni aggiornato nelle tue aree di competenza?",
         "options": [
-          "Seguo pubblicazioni e ricerche del settore",
+          "Seguo pubblicazioni e ricerche di settore",
           "Partecipo a conferenze e webinar specializzati",
-          "Faccio parte di comunità professionali e forum",
-          "Sperimento con nuovi strumenti e tecnologie"
+          "Mi unisco a comunità e forum professionali",
+          "Sperimentò nuovi strumenti e tecnologie"
         ]
       },
       "q19": {
         "category": "Creatività",
         "question": "Come bilanci innovazione e praticità nei tuoi progetti?",
         "options": [
-          "Testo idee innovative su scala ridotta prima",
+          "Testo idee innovative su piccola scala prima",
           "Mantengo un portfolio di progetti a diversi livelli di rischio",
           "Cerco feedback continuo per validare direzioni creative",
           "Stabilisco criteri chiari per valutare nuove idee"
         ]
       },
       "q20": {
-        "category": "Determinazione",
+        "category": "Motivazione",
         "question": "Come definisci e persegui obiettivi a lungo termine?",
         "options": [
-          "Creo roadmap dettagliate con milestone intermedi",
-          "Stabilisco metriche quantificabili per misurare progresso",
+          "Creo roadmap dettagliate con traguardi intermedi",
+          "Stabilisco metriche quantificabili per misurare i progressi",
           "Rivedo e adatto regolarmente la strategia",
-          "Mantengo focus costante nonostante distrazioni"
+          "Mantengo costante il focus nonostante distrazioni"
         ]
       },
       "q21": {
         "category": "Potenza Computazionale",
         "question": "Come valuti l'implementazione di nuove tecnologie?",
         "options": [
-          "Faccio analisi costi-benefici approfondite",
+          "Conduco analisi costi-benefici approfondite",
           "Testo su progetti pilota prima dell'adozione completa",
-          "Valuto impatto su processi e team esistenti",
-          "Ricerco case studies e best practices del settore"
+          "Valuto l'impatto su processi e team esistenti",
+          "Studio casi di studio e best practice di settore"
         ]
       },
       "open1": {
-        "question": "Descrivi una situazione professionale in cui ti sei sentito più riuscito. Cosa l'ha resa un successo e qual è stato il tuo contributo specifico?"
+        "question": "Descrivi una situazione professionale in cui ti sei sentito più riuscito. Cosa l'ha resa tale e qual è stato il tuo contributo specifico?"
       },
       "open2": {
-        "question": "Qual è la tua più grande sfida professionale o area in cui vorresti crescere? Come pensi di affrontarla?"
+        "question": "Qual è la tua sfida professionale più grande o l'area in cui vorresti crescere? Come pensi di affrontarla?"
       }
     }
   },
   "results": {
     "title": "I Tuoi Risultati Ximatar",
     "subtitle": "Ecco il tuo profilo professionale basato sulla valutazione",
-    "subtitle_with_cv": "Ecco come la tua valutazione comprensiva si confronta con la baseline del tuo CV",
-    "subtitle_without_cv": "La tua valutazione Ximatar comprensiva è completa",
+    "subtitle_with_cv": "Ecco come la tua valutazione completa si confronta con la baseline del tuo CV",
+    "subtitle_without_cv": "La tua valutazione completa Ximatar è terminata",
     "your_animal": "Incontra il Tuo Ximatar: Il {{animal}}",
     "animal_description": "Il tuo Ximatar rappresenta la tua identità professionale unica, combinando le tue caratteristiche più forti in un simbolo potente delle tue capacità.",
     "baseline_vs_final": "Baseline CV",
     "full_assessment": "Valutazione Completa",
     "baseline_description": "Basato sulla tua esperienza professionale",
-    "full_description": "Basato su valutazione comprensiva",
-    "key_insights": "Insights Chiave",
-    "insights_intro": "La tua valutazione comprensiva ha rivelato punti di forza che non erano completamente catturati nel tuo CV:",
-    "insight_1": "Migliore comprensione delle tue capacità creative di risoluzione problemi",
-    "insight_2": "Approfondimento del tuo stile di comunicazione e collaborazione",
-    "insight_3": "Migliore comprensione della tua motivazione intrinseca e determinazione",
+    "full_description": "Basato su una valutazione approfondita",
+    "key_insights": "Approfondimenti Chiave",
+    "insights_intro": "La tua valutazione completa ha rivelato punti di forza non completamente catturati nel tuo CV:",
+    "insight_1": "Comprensione migliorata delle tue capacità creative di problem solving",
+    "insight_2": "Approfondimento sul tuo stile di comunicazione e collaborazione",
+    "insight_3": "Migliore comprensione della tua motivazione intrinseca e spinta",
     "continue_journey": "Registrati per Continuare",
-    "analyzing": "Analizzando i Tuoi Risultati",
+    "analyzing": "Analisi dei Tuoi Risultati",
     "analyzing_subtitle": "Stiamo confrontando le tue valutazioni e creando il tuo Ximatar personalizzato...",
     "registration_prompt": "Registrati per accedere al tuo profilo completo e prenotare una chiamata con il tuo esperto abbinato.",
     "fox_animal": "Volpe",
-    "eagle_animal": "Aquila", 
+    "eagle_animal": "Aquila",
     "adaptability": "Adattabilità",
-    "adaptability_desc": "Veloce nell'apprendere e adattarsi a nuovi ambienti",
+    "adaptability_desc": "Rapido ad apprendere e adattarsi a nuovi ambienti",
     "focus": "Concentrazione",
     "focus_desc": "Mantiene la concentrazione sui compiti",
     "creativity_trait": "Creatività",
     "creativity_desc": "Trova soluzioni uniche ai problemi",
     "business_strategist": "Senior Business Strategist",
     "communication_leadership": "Sviluppo Comunicazione e Leadership",
-    "expert_bio": "Esperta in comunicazione organizzativa e dinamiche di team con oltre 15 anni di esperienza nell'aiutare i professionisti a sbloccare il loro potenziale.",
+    "expert_bio": "Esperto in comunicazione organizzativa e dinamiche di team con oltre 15 anni di esperienza nell'aiutare i professionisti a sbloccare il loro potenziale.",
     "vision": "Visione",
     "vision_desc": "Pensiero strategico e pianificazione a lungo termine",
     "leadership": "Leadership",
     "leadership_desc": "Capacità naturale di guidare e ispirare gli altri",
     "matched_expert": "Il Tuo Esperto Abbinato",
-    "experience_badge": "15+ Anni di Esperienza",
-    "communication_expert": "Esperto Comunicazione",
-    "leadership_coach": "Coach Leadership",
+    "experience_badge": "Oltre 15 Anni di Esperienza",
+    "communication_expert": "Esperto di Comunicazione",
+    "leadership_coach": "Coach di Leadership",
     "book_appointment": "Prenota Appuntamento",
-    "register_to_book": "Registrati per Prenotare", 
-    "create_account": "Crea Account Gratuito"
+    "register_to_book": "Registrati per Prenotare",
+    "create_account": "Crea Account Gratuito",
+    "choose_your_expert": "Scegli il Tuo Esperto",
+    "expert_selection_subtitle": "Seleziona il professionista che meglio si adatta al tuo profilo e ai tuoi obiettivi",
+    "technical_lead": "Senior Technical Lead",
+    "computational_analytics": "Potenza Computazionale e Analytics",
+    "technical_expert_bio": "Esperto in data science e leadership tecnica con oltre 12 anni di esperienza nella risoluzione di problemi complessi.",
+    "creative_director": "Direttore Innovazione Creativa",
+    "innovation_creativity": "Innovazione e Strategia Creativa",
+    "creative_expert_bio": "Specializzato nella risoluzione creativa dei problemi e strategie innovative con oltre 10 anni nel design thinking.",
+    "wolf_animal": "Lupo",
+    "dolphin_animal": "Delfino",
+    "analytical_thinking": "Pensiero Analitico",
+    "analytical_desc": "Capacità di ragionamento analitico e logico profondo",
+    "problem_solving": "Risoluzione Problemi",
+    "problem_solving_desc": "Approccio sistematico alle sfide complesse",
+    "technical_leadership": "Leadership Tecnica",
+    "technical_leadership_desc": "Guida team e progetti tecnici",
+    "creative_thinking": "Pensiero Creativo",
+    "creative_thinking_desc": "Approccio innovativo alla risoluzione dei problemi",
+    "innovation": "Innovazione",
+    "innovation_desc": "Promuove soluzioni creative e nuove idee",
+    "collaboration": "Collaborazione",
+    "collaboration_desc": "Lavora efficacemente con team diversi",
+    "match": "Compatibilità",
+    "selected": "Selezionato",
+    "proceed_to_dashboard": "Vai alla Dashboard",
+    "register_to_continue": "Registrati per Continuare",
+    "select_professional_prompt": "Seleziona un professionista sopra per continuare",
+    "baseline_assessment": "Baseline CV"
   },
   "mentor": {
-    "title": "Inizia il Tuo Percorso Xima",
-    "subtitle": "Scegli il tuo mentor per una chiamata introduttiva personalizzata di 15 minuti",
-    "login_required": "Registrazione richiesta: Per favore registrati per prenotare una chiamata con un mentor",
-    "login_button": "Accedi per Prenotare Sessione",
-    "select_mentor": "Seleziona un mentor sopra per continuare",
-    "book_session": "Prenota Chiamata 15min con {{name}}",
-    "book_title": "Prenota la Tua Chiamata con il Mentor",
+    "title": "Inizia il Tuo Viaggio Xima",
+    "subtitle": "Scegli il tuo mentore per una chiamata introduttiva personalizzata di 15 minuti",
+    "login_required": "Registrazione richiesta: per favore registrati per prenotare una chiamata con il mentore",
+    "login_button": "Accedi per Prenotare la Sessione",
+    "select_mentor": "Seleziona un mentore sopra per continuare",
+    "book_session": "Prenota chiamata di 15 minuti con {{name}}",
+    "book_title": "Prenota la Tua Chiamata con il Mentore",
     "book_subtitle": "Programma una chiamata introduttiva di 15 minuti con {{name}}",
     "calendly_title": "Integrazione Calendly",
-    "calendly_description": "In un'implementazione reale, questo incorporerebbe il widget Calendly per {{name}}",
+    "calendly_description": "In una implementazione reale, questo incorporerebbe il widget Calendly per {{name}}",
     "calendly_url": "URL Calendly: {{url}}",
     "calendly_duration": "Durata: 15 minuti",
     "calendly_type": "Tipo: Chiamata video introduttiva",
     "open_calendly": "Apri Calendly (Demo)",
-    "choose_different": "Scegli Mentor Diverso",
-    "intro_call": "Chiamata introduttiva 15min",
+    "choose_different": "Scegli un Mentore Diverso",
+    "intro_call": "Chiamata introduttiva di 15 minuti",
     "flexible_scheduling": "Programmazione flessibile",
     "personalized_guidance": "Guida personalizzata",
     "selected": "Selezionato"
   },
   "dashboard": {
     "title": "La Tua Dashboard XIMA",
-    "subtitle": "Gestisci il tuo profilo professionale e vedi il tuo potenziale di corrispondenza",
+    "subtitle": "Gestisci il tuo profilo professionale e visualizza il tuo potenziale di abbinamento",
     "your_ximatar": "Il Tuo XIMATAR",
     "xima_score": "Punteggio XIMA",
     "welcome": "Benvenuto, {{name}}",
-    "overview_description": "Il tuo profilo XIMA è ora attivo. Di seguito troverai le tue statistiche generali e i prossimi passi per migliorare la qualità delle tue corrispondenze.",
+    "overview_description": "Il tuo profilo XIMA è ora attivo. Qui sotto trovi le tue statistiche generali e i prossimi passi per migliorare la qualità del tuo abbinamento.",
     "matched_professional": "Il Tuo Professionista Abbinato",
     "book_appointment": "Prenota Appuntamento",
     "cv_assessment_comparison": "Confronto CV vs Valutazione",
     "assessment_date": "Valutazione completata il {{date}}",
     "view_full_comparison": "Visualizza Confronto Completo",
-    "no_assessment": "Nessuna valutazione completata ancora",
+    "no_assessment": "Nessuna valutazione completata",
     "take_assessment": "Fai la Valutazione",
     "booking": {
       "title": "Prenota una Sessione",
@@ -384,74 +412,83 @@
       "type": "Tipo",
       "video_call": "Chiamata Video",
       "cancel_booking": "Annulla",
-      "reschedule": "Riprogramma"
-    }
+      "reschedule": "Riprogramma",
+      "booking_system": "Sistema di Prenotazione",
+      "coming_soon": "La funzionalità di prenotazione sarà disponibile presto"
+    },
+    "access_required": "Accesso Richiesto",
+    "please_login": "Effettua il login per accedere alla tua dashboard",
+    "user": "Utente",
+    "get_started": "Inizia",
+    "assessment_prompt": "Completa la tua valutazione XIMAtar per sbloccare il tuo profilo completo",
+    "profile_info": "Informazioni Profilo",
+    "member_since": "Membro dal"
   },
   "about": {
-    "title": "Chi Siamo - XIMA",
-    "subtitle": "Rivoluzionando il processo di matching lavorativo attraverso una valutazione professionale approfondita",
-    "match_problem_title": "Il Problema della Qualità del Matching",
-    "match_problem_subtitle": "Nel mercato del lavoro di oggi, sia i datori di lavoro che i candidati affrontano sfide significative nel trovare la giusta corrispondenza.",
-    "match_problem_description": "I processi di assunzione tradizionali spesso non riescono a identificare le migliori corrispondenze tra professionisti e opportunità. I curriculum e i colloqui forniscono un insight limitato sul vero potenziale di un candidato, mentre le descrizioni lavorative raramente catturano l'essenza reale di un ruolo o della cultura aziendale.",
-    "match_leads_to": "Questo disallineamento porta a:",
+    "title": "Chi Siamo",
+    "subtitle": "Rivoluzionare il processo di abbinamento lavorativo attraverso una valutazione professionale profonda",
+    "match_problem_title": "Il Problema della Qualità dell'Abbinamento",
+    "match_problem_subtitle": "Nel mercato del lavoro odierno, sia i datori di lavoro che i candidati affrontano sfide significative nel trovare la corrispondenza giusta.",
+    "match_problem_description": "I processi di assunzione tradizionali spesso non riescono a identificare le migliori corrispondenze tra professionisti e opportunità. Curriculum e colloqui forniscono una visione limitata del vero potenziale di un candidato, mentre le descrizioni dei ruoli raramente catturano l'essenza reale di una posizione o della cultura aziendale.",
+    "match_leads_to": "Questa discrepanza porta a:",
     "mismatch_1": "Alto turnover dei dipendenti",
     "mismatch_2": "Ridotta soddisfazione lavorativa",
     "mismatch_3": "Minore produttività",
     "mismatch_4": "Spreco di risorse nel reclutamento",
     "mismatch_5": "Opportunità perse per entrambe le parti",
-    "solution_description": "XIMA è stato sviluppato per affrontare questo problema fondamentale creando un framework di valutazione comprensivo che guarda oltre le qualifiche superficiali agli attributi centrali che determinano il successo professionale.",
+    "solution_description": "XIMA è stato sviluppato per affrontare questo problema fondamentale creando un quadro di valutazione completo che va oltre le qualifiche superficiali per analizzare gli attributi chiave che determinano il successo professionale.",
     "approach_title": "L'Approccio XIMA",
     "five_pillars_title": "I 5 Pilastri",
-    "five_pillars_description": "XIMA valuta i professionisti attraverso cinque dimensioni fondamentali che insieme forniscono una visione comprensiva del loro potenziale:",
-    "experience_pillar": "Esperienza: Storia professionale, competenze e conoscenze acquisite",
-    "intelligence_pillar": "Intelligenza: Capacità cognitive, capacità di apprendimento e risoluzione problemi",
-    "motivation_pillar": "Motivazione: Spinta, ambizione e ciò che energizza l'individuo",
-    "attitude_pillar": "Atteggiamento: Approccio al lavoro, alle sfide e alla collaborazione",
-    "analysis_pillar": "Analisi: Pensiero critico, presa di decisioni e ragionamento",
+    "five_pillars_description": "XIMA valuta i professionisti attraverso cinque dimensioni fondamentali che insieme forniscono una visione completa del loro potenziale:",
+    "experience_pillar": "Esperienza: storia professionale, competenze e conoscenze acquisite",
+    "intelligence_pillar": "Intelligenza: capacità cognitive, capacità di apprendimento e problem solving",
+    "motivation_pillar": "Motivazione: spinta, ambizione e ciò che energizza l'individuo",
+    "attitude_pillar": "Atteggiamento: approccio al lavoro, alle sfide e alla collaborazione",
+    "analysis_pillar": "Analisi: pensiero critico, presa di decisioni e ragionamento",
     "ximatar_title": "Il XIMATAR",
-    "ximatar_description": "La valutazione di ogni professionista risulta in un XIMATAR unico - una rappresentazione visiva della loro identità professionale usando caratteristiche animali che evidenziano i loro punti di forza e aree di sviluppo.",
+    "ximatar_description": "La valutazione di ogni professionista genera un XIMATAR unico - una rappresentazione visiva della loro identità professionale usando caratteristiche animali che evidenziano punti di forza e aree di sviluppo.",
     "why_animals_title": "Perché gli Animali?",
-    "why_animals_description": "Gli avatar animali forniscono rappresentazioni intuitive e memorabili di tratti professionali complessi. Proprio come ogni specie animale ha sviluppato adattamenti unici per prosperare nel suo ambiente, ogni professionista ha sviluppato capacità distinte che li rendono preziosi in contesti specifici.",
+    "why_animals_description": "Gli avatar animali forniscono rappresentazioni intuitive e memorabili di tratti professionali complessi. Proprio come ogni specie animale ha evoluto adattamenti unici per prosperare nel proprio ambiente, ogni professionista ha sviluppato capacità distinte che lo rendono prezioso in contesti specifici.",
     "features_title": "Caratteristiche e Morfologia",
-    "features_description": "L'aspetto di ogni XIMATAR riflette i risultati della valutazione dell'individuo, con caratteristiche fisiche che rappresentano diversi punti di forza, capacità e aree di crescita potenziale.",
-    "mentor_matching_title": "Matching con Mentor",
-    "mentor_matching_description": "Basato sul XIMATAR, XIMA abbina i professionisti con mentor che hanno punti di forza complementari, consentendo sviluppo mirato nelle aree di opportunità.",
-    "benefits_title": "Come XIMA Ti Beneficia",
-    "job_seekers_title": "Per Chi Cerca Lavoro",
+    "features_description": "L'aspetto di ogni XIMATAR riflette i risultati della valutazione individuale, con caratteristiche fisiche che rappresentano diversi punti di forza, capacità e potenziali aree di crescita.",
+    "mentor_matching_title": "Abbinamento con Mentori",
+    "mentor_matching_description": "Basandosi sul XIMATAR, XIMA abbina i professionisti con mentori che hanno punti di forza complementari, permettendo uno sviluppo mirato nelle aree di opportunità.",
+    "benefits_title": "Come XIMA Ti Aiuta",
+    "job_seekers_title": "Per i Cercatori di Lavoro",
     "job_seekers_1": "Scopri i tuoi veri punti di forza professionali",
-    "job_seekers_2": "Ottieni corrispondenze con opportunità dove prospererai",
-    "job_seekers_3": "Ricevi guida di sviluppo personalizzata",
-    "job_seekers_4": "Connettiti con mentor che completano il tuo profilo",
-    "job_seekers_5": "Aumenta la soddisfazione lavorativa e la progressione di carriera",
+    "job_seekers_2": "Vieni abbinato a opportunità dove prospererai",
+    "job_seekers_3": "Ricevi indicazioni personalizzate per lo sviluppo",
+    "job_seekers_4": "Connettiti con mentori che completano il tuo profilo",
+    "job_seekers_5": "Aumenta soddisfazione lavorativa e progressione di carriera",
     "employers_title": "Per i Datori di Lavoro",
     "employers_1": "Trova candidati che si adattano veramente alle tue esigenze",
-    "employers_2": "Riduci il turnover e i costi di reclutamento",
+    "employers_2": "Riduci turnover e costi di reclutamento",
     "employers_3": "Costruisci team più efficaci e complementari",
-    "employers_4": "Migliora l'engagement e la produttività dei dipendenti",
-    "employers_5": "Gestione e sviluppo del talento basata sui dati",
+    "employers_4": "Migliora coinvolgimento e produttività dei dipendenti",
+    "employers_5": "Gestione e sviluppo del talento basati sui dati",
     "ready_title": "Pronto a Scoprire il Tuo XIMATAR?",
-    "ready_subtitle": "Unisciti a migliaia di professionisti che hanno trovato la loro corrispondenza di carriera perfetta attraverso XIMA.",
+    "ready_subtitle": "Unisciti a migliaia di professionisti che hanno trovato la loro corrispondenza perfetta con XIMA.",
     "get_started": "Inizia Ora"
   },
   "how_it_works": {
     "title": "Come Funziona XIMA",
-    "subtitle": "Il nostro approccio unico per risolvere il Problema della Qualità del Matching nel mercato del lavoro"
+    "subtitle": "Il nostro approccio unico per risolvere il problema della qualità dell'abbinamento nel mercato del lavoro"
   },
   "journey": {
-    "title": "Il Tuo Percorso Ximatar",
-    "subtitle": "Scopri i tuoi punti di forza professionali attraverso la nostra valutazione comprensiva",
+    "title": "Il Tuo Viaggio Ximatar",
+    "subtitle": "Scopri i tuoi punti di forza professionali attraverso la nostra valutazione completa",
     "step": "Passo",
-    "step_1": "Valutazione Baseline",
+    "step_1": "Analisi CV",
     "step_2": "Crea il Tuo Ximatar",
-    "step_3": "Ottieni i Tuoi Risultati",
-    "step_4": "Inizia il Tuo Percorso",
+    "step_3": "Ricevi i Tuoi Risultati",
+    "step_4": "Inizia il Tuo Viaggio",
     "back": "Indietro"
   },
   "login": {
     "title": "Bentornato",
-    "subtitle": "Accedi per continuare il tuo percorso XIMA",
+    "subtitle": "Accedi per continuare il tuo viaggio XIMA",
     "email": "Email",
-    "email_placeholder": "tua@email.com",
+    "email_placeholder": "tuo@email.com",
     "password": "Password",
     "password_placeholder": "Inserisci la tua password",
     "forgot_password": "Password dimenticata?",
@@ -463,15 +500,15 @@
     "welcome_back": "Bentornato su XIMA.",
     "login_failed": "Accesso fallito",
     "invalid_credentials": "Email o password non validi",
-    "enter_both": "Per favore inserisci sia email che password"
+    "enter_both": "Inserisci sia email che password"
   },
   "register": {
-    "title": "Crea un account",
+    "title": "Crea un Account",
     "subtitle": "Unisciti a XIMA per scoprire il tuo potenziale professionale",
     "full_name": "Nome Completo",
     "name_placeholder": "Inserisci il tuo nome completo",
     "email": "Email",
-    "email_placeholder": "tua@email.com",
+    "email_placeholder": "tuo@email.com",
     "password": "Password",
     "password_placeholder": "Crea una password",
     "confirm_password": "Conferma Password",
@@ -482,7 +519,7 @@
     "log_in": "Accedi",
     "name_required": "Il nome è obbligatorio",
     "email_required": "L'email è obbligatoria",
-    "email_invalid": "L'email non è valida",
+    "email_invalid": "Email non valida",
     "password_required": "La password è obbligatoria",
     "password_length": "La password deve essere di almeno 6 caratteri",
     "passwords_match": "Le password non corrispondono",
@@ -497,7 +534,7 @@
     "return_home": "Torna alla Home"
   },
   "footer": {
-    "copyright": "XIMA - Qualità nel Matching Lavorativo"
+    "copyright": "XIMA - Qualità dell'Abbinamento nel Lavoro"
   },
   "language": {
     "switch_to": "Passa a {{language}}"
@@ -506,81 +543,38 @@
     "title": "Come Funziona XIMA",
     "step1": {
       "title": "Carica CV",
-      "description": "Condividi il tuo background professionale per la valutazione baseline"
+      "description": "Condividi il tuo background professionale per la valutazione di base"
     },
     "step2": {
       "title": "Completa la Valutazione",
-      "description": "Rispondi alle domande sulle tue competenze e preferenze"
+      "description": "Rispondi a domande sulle tue competenze e preferenze"
     },
     "step3": {
-      "title": "Ottieni il Tuo Ximatar",
+      "title": "Ricevi il Tuo Ximatar",
       "description": "Ricevi il tuo avatar animale professionale unico"
     },
     "step4": {
-      "title": "Connettiti con l'Esperto",
-      "description": "Prenota una chiamata con il tuo mentor professionale abbinato"
+      "title": "Connettiti con un Esperto",
+      "description": "Prenota una chiamata con il tuo mentore professionale abbinato"
     }
   },
   "avatar_explanation": {
     "title": "La Tua Identità Animale Professionale",
-    "description": "Ogni Ximatar rappresenta tratti e capacità professionali uniche, aiutandoti a comprendere i tuoi punti di forza e connetterti con le opportunità giuste.",
+    "description": "Ogni Ximatar rappresenta tratti e capacità professionali unici, aiutandoti a comprendere i tuoi punti di forza e a connetterti con le opportunità giuste.",
     "eagle": {
       "title": "L'Aquila",
       "description": "Visione strategica e focus sulla leadership"
     },
     "fox": {
       "title": "La Volpe",
-      "description": "Adattabilità e risoluzione creativa dei problemi"
+      "description": "Adattabilità e problem solving creativo"
     },
     "wolf": {
       "title": "Il Lupo",
-      "description": "Collaborazione di squadra e determinazione persistente"
+      "description": "Collaborazione di squadra e spinta persistente"
     }
   },
   "xima_score": {
-    "tooltip": "Il tuo Punteggio XIMA rappresenta la media delle tue cinque valutazioni pilastro, mostrando il tuo livello complessivo di sviluppo professionale su una scala da 1 a 10."
-  },
-  "results": {
-    "title": "I Tuoi Risultati Ximatar",
-    "subtitle": "Ecco il tuo profilo professionale basato sulla valutazione",
-    "subtitle_with_cv": "Ecco come la tua valutazione comprensiva si confronta con la baseline del tuo CV",
-    "subtitle_without_cv": "La tua valutazione Ximatar comprensiva è completa",
-    "your_animal": "Incontra il Tuo Ximatar: Il {{animal}}",
-    "animal_description": "Il tuo Ximatar rappresenta la tua identità professionale unica, combinando le tue caratteristiche più forti in un simbolo potente delle tue capacità.",
-    "baseline_vs_final": "Baseline CV",
-    "full_assessment": "Valutazione Completa",
-    "baseline_description": "Basato sulla tua esperienza professionale",
-    "full_description": "Basato su valutazione comprensiva",
-    "key_insights": "Insights Chiave",
-    "insights_intro": "La tua valutazione comprensiva ha rivelato punti di forza che non erano completamente catturati nel tuo CV:",
-    "insight_1": "Migliore comprensione delle tue capacità creative di risoluzione problemi",
-    "insight_2": "Approfondimento del tuo stile di comunicazione e collaborazione",
-    "insight_3": "Migliore comprensione della tua motivazione intrinseca e determinazione",
-    "continue_journey": "Registrati per Continuare",
-    "analyzing": "Analizzando i Tuoi Risultati",
-    "analyzing_subtitle": "Stiamo confrontando le tue valutazioni e creando il tuo Ximatar personalizzato...",
-    "registration_prompt": "Registrati per accedere al tuo profilo completo e prenotare una chiamata con il tuo esperto abbinato.",
-    "fox_animal": "Volpe",
-    "eagle_animal": "Aquila", 
-    "adaptability": "Adattabilità",
-    "adaptability_desc": "Veloce nell'apprendere e adattarsi a nuovi ambienti",
-    "focus": "Concentrazione",
-    "focus_desc": "Mantiene la concentrazione sui compiti",
-    "creativity_trait": "Creatività",
-    "creativity_desc": "Trova soluzioni uniche ai problemi",
-    "business_strategist": "Senior Business Strategist",
-    "communication_leadership": "Sviluppo Comunicazione e Leadership",
-    "expert_bio": "Esperta in comunicazione organizzativa e dinamiche di team con oltre 15 anni di esperienza nell'aiutare i professionisti a sbloccare il loro potenziale.",
-    "vision": "Visione",
-    "vision_desc": "Pensiero strategico e pianificazione a lungo termine",
-    "leadership": "Leadership",
-    "leadership_desc": "Capacità naturale di guidare e ispirare gli altri",
-    "matched_expert": "Il Tuo Esperto Abbinato",
-    "experience_badge": "15+ Anni di Esperienza",
-    "communication_expert": "Esperto Comunicazione",
-    "leadership_coach": "Coach Leadership",
-    "book_appointment": "Prenota Appuntamento",
-    "register_to_book": "Registrati per Prenotare", 
-    "create_account": "Crea Account Gratuito"
+    "tooltip": "Il tuo punteggio XIMA rappresenta la media delle valutazioni dei cinque pilastri, mostrando il tuo livello complessivo di sviluppo professionale su una scala da 1 a 10."
   }
 }

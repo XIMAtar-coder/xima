@@ -29,7 +29,15 @@ const Register = () => {
   
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/profile');
+      // Check if user came from assessment flow
+      const savedSelection = localStorage.getItem('selectedProfessional');
+      if (savedSelection) {
+        // Clear the stored selection and go to dashboard with data
+        localStorage.removeItem('selectedProfessional');
+        navigate('/profile', { state: JSON.parse(savedSelection) });
+      } else {
+        navigate('/profile');
+      }
     }
   }, [isAuthenticated, navigate]);
   
@@ -83,7 +91,15 @@ const Register = () => {
         description: t('register.welcome_message'),
       });
       
-      navigate('/profile');
+      // Check if user came from assessment flow
+      const savedSelection = localStorage.getItem('selectedProfessional');
+      if (savedSelection) {
+        // User came from assessment, will be handled by useEffect
+        // The useEffect will redirect to dashboard with the saved data
+      } else {
+        // Regular registration flow
+        navigate('/profile');
+      }
     } catch (error) {
       toast({
         title: t('register.registration_failed'),
