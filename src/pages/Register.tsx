@@ -14,7 +14,7 @@ import { RegistrationForm } from '../types';
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { registerUser, isAuthenticated } = useUser();
+  const { signUp, isAuthenticated } = useUser();
   const { t } = useTranslation();
   
   const [formData, setFormData] = useState<RegistrationForm>({
@@ -84,7 +84,16 @@ const Register = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      registerUser(formData.name, formData.email);
+      const { error } = await signUp(formData.email, formData.password, formData.name);
+      
+      if (error) {
+        toast({
+          title: t('register.registration_failed'),
+          description: error.message,
+          variant: "destructive"
+        });
+        return;
+      }
       
       toast({
         title: t('register.registration_success'),

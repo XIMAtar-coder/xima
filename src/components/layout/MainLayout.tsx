@@ -13,7 +13,7 @@ interface MainLayoutProps {
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }) => {
   const navigate = useNavigate();
-  const { user, isAuthenticated, logout } = useUser();
+  const { user, isAuthenticated, signOut } = useUser();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -22,8 +22,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
     }
   }, [requireAuth, isAuthenticated, navigate]);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await signOut();
     navigate('/');
   };
 

@@ -1,16 +1,19 @@
 
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import { User as AuthUser, Session } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 import { User, XimaPillars, Avatar, Mentor, PillarType } from '../types';
 
 interface UserContextType {
   user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
-  registerUser: (name: string, email: string) => void;
+  session: Session | null;
+  signUp: (email: string, password: string, name: string) => Promise<{ error: any }>;
+  signIn: (email: string, password: string) => Promise<{ error: any }>;
   updateUserProfile: (userData: Partial<User>) => void;
   updatePillars: (pillars: XimaPillars) => void;
   updateAvatar: (avatar: Avatar) => void;
   assignMentor: () => void;
-  logout: () => void;
+  signOut: () => Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -18,14 +21,72 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
 
-  const registerUser = (name: string, email: string) => {
-    setUser({
-      id: Date.now().toString(),
-      name,
-      email,
-      profileComplete: false
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session);
+        if (session?.user) {
+          await loadUserProfile(session.user.id);
+        } else {
+          setUser(null);
+        }
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session?.user) {
+        loadUserProfile(session.user.id);
+      }
     });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const loadUserProfile = async (userId: string) => {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    if (profile) {
+      setUser({
+        id: profile.user_id,
+        name: profile.name || '',
+        email: '',
+        profileComplete: profile.profile_complete || false,
+        pillars: profile.pillars ? profile.pillars as unknown as XimaPillars : undefined,
+        avatar: profile.avatar ? profile.avatar as unknown as Avatar : undefined,
+        mentor: profile.mentor ? profile.mentor as unknown as Mentor : undefined
+      });
+    }
+  };
+
+  const signUp = async (email: string, password: string, name: string) => {
+    const redirectUrl = `${window.location.origin}/`;
+    
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: { name }
+      }
+    });
+    return { error };
+  };
+
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+    return { error };
   };
 
   const updateUserProfile = (userData: Partial<User>) => {
@@ -91,22 +152,23 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const logout = () => {
-    setUser(null);
+  const signOut = async () => {
+    await supabase.auth.signOut();
   };
 
   return (
     <UserContext.Provider
       value={{
         user,
-        setUser,
-        registerUser,
+        session,
+        signUp,
+        signIn,
         updateUserProfile,
         updatePillars,
         updateAvatar,
         assignMentor,
-        logout,
-        isAuthenticated: !!user
+        signOut,
+        isAuthenticated: !!session
       }}
     >
       {children}

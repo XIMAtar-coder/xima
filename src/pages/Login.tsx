@@ -12,7 +12,7 @@ import { useUser } from '../context/UserContext';
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { setUser, isAuthenticated } = useUser();
+  const { signIn, isAuthenticated } = useUser();
   const { t } = useTranslation();
   
   const [email, setEmail] = useState('');
@@ -40,39 +40,21 @@ const Login = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { error } = await signIn(email, password);
       
-      // For demo purposes, we'll create a mock user
-      setUser({
-        id: '1',
-        name: 'Demo User',
-        email: email,
-        profileComplete: true,
-        pillars: {
-          computational: 5,
-          communication: 6,
-          knowledge: 7,
-          creativity: 8,
-          drive: 9
-        },
-        avatar: {
-          animal: 'Fox',
-          image: '/placeholder.svg',
-          features: [
-            { name: 'Adaptability', description: 'Quick to learn and adjust to new environments', strength: 8 },
-            { name: 'Focus', description: 'Maintains concentration on tasks', strength: 6 },
-            { name: 'Creativity', description: 'Finds unique solutions to problems', strength: 7 }
-          ]
-        }
-      });
-      
-      toast({
-        title: t('login.login_success'),
-        description: t('login.welcome_back')
-      });
-      
-      navigate('/profile');
+      if (error) {
+        toast({
+          title: t('login.login_failed'),
+          description: error.message,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: t('login.login_success'),
+          description: t('login.welcome_back')
+        });
+        navigate('/profile');
+      }
     } catch (error) {
       toast({
         title: t('login.login_failed'),
