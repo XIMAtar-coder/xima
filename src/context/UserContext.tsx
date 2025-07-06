@@ -26,10 +26,13 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         setSession(session);
         if (session?.user) {
-          await loadUserProfile(session.user.id);
+          // Use setTimeout to prevent deadlock in auth state change
+          setTimeout(() => {
+            loadUserProfile(session.user.id);
+          }, 0);
         } else {
           setUser(null);
         }
@@ -48,6 +51,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const loadUserProfile = async (userId: string) => {
+    // Get user email from session
+    const { data: { session } } = await supabase.auth.getSession();
+    
     const { data: profile } = await supabase
       .from('profiles')
       .select('*')
@@ -58,7 +64,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setUser({
         id: profile.user_id,
         name: profile.name || '',
-        email: '',
+        email: session?.user?.email || '',
         profileComplete: profile.profile_complete || false,
         pillars: profile.pillars ? profile.pillars as unknown as XimaPillars : undefined,
         avatar: profile.avatar ? profile.avatar as unknown as Avatar : undefined,

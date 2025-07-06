@@ -14,6 +14,7 @@ import Register from "./pages/Register";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import XimatarJourney from "./pages/XimatarJourney";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/ximatar-journey" element={<XimatarJourney />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
