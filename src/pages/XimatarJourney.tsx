@@ -58,7 +58,7 @@ const XimatarJourney = () => {
       <div className="container max-w-5xl mx-auto pt-4">
         <div className="text-center mb-8">
           <img 
-            src="/lovable-uploads/29354704-151e-4e3c-a9ae-adfe07e62896.png" 
+            src="/lovable-uploads/b0df6e4e-eb14-46ad-9f03-6707af82d4c6.png" 
             alt="XIMA Logo" 
             className="h-16 w-auto mx-auto mb-4"
           />

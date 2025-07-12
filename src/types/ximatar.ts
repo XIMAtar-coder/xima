@@ -38,7 +38,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Natural leadership', 'Strategic thinking', 'Decision making', 'Goal-oriented'],
     weaknesses: ['Can be overly dominant', 'May overlook details', 'Impatient with others'],
     idealRoles: ['CEO', 'Project Lead', 'Executive', 'Team Leader'],
-    image: '/lovable-uploads/29354704-151e-4e3c-a9ae-adfe07e62896.png', // Lion image
+    image: '/lovable-uploads/29354704-151e-4e3c-a9ae-adfe07e62896.png', // Lion avatar - placeholder for now
     personality: {
       en: {
         description: 'The Lion XIMAtar represents natural born leaders who thrive in positions of authority. They are strategic thinkers who can see the big picture and make decisive choices under pressure.',

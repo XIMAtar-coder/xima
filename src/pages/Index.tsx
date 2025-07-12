@@ -49,7 +49,7 @@ const Index = () => {
             <div className="relative w-full max-w-md">
               <div className="absolute inset-0 bg-[#4171d6] rounded-full filter blur-3xl opacity-10 animate-pulse-slow"></div>
               <img 
-                src="/lovable-uploads/ae79af7a-e780-4f42-8fbf-529eb1e4d1f8.png" 
+                src="/lovable-uploads/b0df6e4e-eb14-46ad-9f03-6707af82d4c6.png" 
                 alt="XIMA Logo" 
                 className="relative z-10 w-full h-auto max-w-sm mx-auto"
               />

@@ -35,7 +35,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
             <div className="flex items-center space-x-8">
               <button onClick={() => navigate('/')} className="flex items-center space-x-2">
                 <img 
-                  src="/lovable-uploads/29354704-151e-4e3c-a9ae-adfe07e62896.png" 
+                  src="/lovable-uploads/b0df6e4e-eb14-46ad-9f03-6707af82d4c6.png" 
                   alt="XIMA" 
                   className="h-10 w-auto"
                 />
