@@ -84,6 +84,22 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         data: { name }
       }
     });
+
+    // Send verification email
+    if (!error) {
+      try {
+        await supabase.functions.invoke('send-verification-email', {
+          body: {
+            email,
+            name,
+            verificationUrl: redirectUrl
+          }
+        });
+      } catch (emailError) {
+        console.error('Failed to send verification email:', emailError);
+      }
+    }
+
     return { error };
   };
 
