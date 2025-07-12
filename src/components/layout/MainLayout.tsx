@@ -33,11 +33,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
-              <button onClick={() => navigate('/')} className="flex items-center space-x-2">
+              <button onClick={() => navigate('/')} className="flex items-center space-x-2 group">
                 <img 
                   src="/lovable-uploads/b0df6e4e-eb14-46ad-9f03-6707af82d4c6.png" 
                   alt="XIMA" 
-                  className="h-10 w-auto"
+                  className="h-10 w-auto transition-all duration-300 filter drop-shadow-sm group-hover:drop-shadow-md group-hover:brightness-110"
                 />
               </button>
               
