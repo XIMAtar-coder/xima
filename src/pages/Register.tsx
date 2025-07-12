@@ -81,9 +81,6 @@ const Register = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
       const { error } = await signUp(formData.email, formData.password, formData.name);
       
       if (error) {
@@ -100,15 +97,11 @@ const Register = () => {
         description: t('register.welcome_message'),
       });
       
-      // Check if user came from assessment flow
-      const savedSelection = localStorage.getItem('selectedProfessional');
-      if (savedSelection) {
-        // User came from assessment, will be handled by useEffect
-        // The useEffect will redirect to dashboard with the saved data
-      } else {
-        // Regular registration flow
+      // Wait a moment for auth state to update, then redirect
+      setTimeout(() => {
         navigate('/profile');
-      }
+      }, 1000);
+      
     } catch (error) {
       toast({
         title: t('register.registration_failed'),
