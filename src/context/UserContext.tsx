@@ -14,6 +14,7 @@ interface UserContextType {
   updateAvatar: (avatar: Avatar) => void;
   assignMentor: () => void;
   signOut: () => Promise<void>;
+  updateUser: (updates: Partial<User>) => void;
   isAuthenticated: boolean;
 }
 
@@ -175,6 +176,12 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     await supabase.auth.signOut();
   };
 
+  const updateUser = (updates: Partial<User>) => {
+    if (user) {
+      setUser(prev => prev ? { ...prev, ...updates } : null);
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -187,6 +194,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         updateAvatar,
         assignMentor,
         signOut,
+        updateUser,
         isAuthenticated: !!session
       }}
     >

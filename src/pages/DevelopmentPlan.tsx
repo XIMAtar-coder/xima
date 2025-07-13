@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import MainLayout from '../components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +11,7 @@ import { CheckCircle, Clock, Target, BookOpen, Award } from 'lucide-react';
 
 const DevelopmentPlan = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { user } = useUser();
   const [completedTests, setCompletedTests] = useState<number[]>([]);
 
@@ -77,13 +79,17 @@ const DevelopmentPlan = () => {
   ];
 
   const handleStartTest = (testId: number) => {
-    // In a real app, this would navigate to the test
-    console.log('Starting test:', testId);
-    // Simulate test completion
-    setTimeout(() => {
-      setCompletedTests(prev => [...prev, testId]);
-      // Update user's skill scores based on test results
-    }, 2000);
+    const testRoutes = {
+      1: '/test/data-analysis',
+      2: '/test/logical-problem-solving', 
+      3: '/test/presentation-skills',
+      4: '/test/creative-thinking'
+    };
+    
+    const route = testRoutes[testId as keyof typeof testRoutes];
+    if (route) {
+      navigate(route);
+    }
   };
 
   const getPriorityColor = (priority: string) => {

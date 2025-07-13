@@ -16,6 +16,10 @@ import Profile from "./pages/Profile";
 import XimatarJourney from "./pages/XimatarJourney";
 import XimaChat from "./pages/XimaChat";
 import DevelopmentPlan from "./pages/DevelopmentPlan";
+import TestDataAnalysis from "./pages/TestDataAnalysis";
+import TestLogicalProblemSolving from "./pages/TestLogicalProblemSolving";
+import TestPresentationSkills from "./pages/TestPresentationSkills";
+import TestCreativeThinking from "./pages/TestCreativeThinking";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
@@ -37,8 +41,12 @@ const App = () => (
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/ximatar-journey" element={<XimatarJourney />} />
-            <Route path="/xima-chat" element={<XimaChat />} />
+            <Route path="/chat" element={<XimaChat />} />
             <Route path="/development-plan" element={<DevelopmentPlan />} />
+            <Route path="/test/data-analysis" element={<TestDataAnalysis />} />
+            <Route path="/test/logical-problem-solving" element={<TestLogicalProblemSolving />} />
+            <Route path="/test/presentation-skills" element={<TestPresentationSkills />} />
+            <Route path="/test/creative-thinking" element={<TestCreativeThinking />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
