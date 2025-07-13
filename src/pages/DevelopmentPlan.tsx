@@ -17,14 +17,14 @@ const DevelopmentPlan = () => {
   const developmentPlan = [
     {
       id: 1,
-      title: 'Enhance Analytical Skills',
+      title: t('development.enhance_analytical_skills'),
       description: 'Strengthen your computational thinking and data analysis capabilities',
       priority: 'high',
       estimatedTime: '2-3 weeks',
       tests: [
         {
           id: 1,
-          title: 'Data Analysis Fundamentals',
+          title: t('development.data_analysis_fundamentals'),
           description: 'Test your ability to interpret complex datasets',
           questions: 10,
           timeLimit: 30,
@@ -32,7 +32,7 @@ const DevelopmentPlan = () => {
         },
         {
           id: 2,
-          title: 'Logical Problem Solving',
+          title: t('development.logical_problem_solving'),
           description: 'Evaluate systematic approach to complex problems',
           questions: 15,
           timeLimit: 45,
@@ -42,14 +42,14 @@ const DevelopmentPlan = () => {
     },
     {
       id: 2,
-      title: 'Communication Workshop',
+      title: t('development.communication_workshop'),
       description: 'Improve your presentation and interpersonal communication skills',
       priority: 'medium',
       estimatedTime: '3-4 weeks',
       tests: [
         {
           id: 3,
-          title: 'Presentation Skills Assessment',
+          title: t('development.presentation_skills_assessment'),
           description: 'Evaluate your ability to present complex ideas clearly',
           questions: 12,
           timeLimit: 40,
@@ -59,14 +59,14 @@ const DevelopmentPlan = () => {
     },
     {
       id: 3,
-      title: 'Creative Innovation Training',
+      title: t('development.creative_innovation_training'),
       description: 'Develop your creative problem-solving and innovation mindset',
       priority: 'low',
       estimatedTime: '1-2 weeks',
       tests: [
         {
           id: 4,
-          title: 'Creative Thinking Challenge',
+          title: t('development.creative_thinking_challenge'),
           description: 'Test your ability to generate innovative solutions',
           questions: 8,
           timeLimit: 35,
@@ -113,13 +113,13 @@ const DevelopmentPlan = () => {
       <div className="container max-w-6xl mx-auto pt-6 space-y-8">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold">Development Plan</h1>
+            <h1 className="text-3xl font-bold">{t('development.title')}</h1>
             <p className="text-muted-foreground">
-              Personalized growth path based on your assessment results
+              {t('development.subtitle')}
             </p>
           </div>
           <Button variant="outline" onClick={() => window.history.back()}>
-            ← Back to Dashboard
+            ← {t('common.back')} to Dashboard
           </Button>
         </div>
 
@@ -128,28 +128,28 @@ const DevelopmentPlan = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Target className="h-5 w-5" />
-              Overall Progress
+              {t('development.overall_progress')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="flex justify-between text-sm">
-                <span>Tests Completed</span>
+                <span>{t('development.tests_completed')}</span>
                 <span>{completedCount} of {totalTests}</span>
               </div>
               <Progress value={overallProgress} className="h-3" />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{completedCount}</div>
-                  <div className="text-sm text-muted-foreground">Tests Completed</div>
+                  <div className="text-sm text-muted-foreground">{t('development.tests_completed')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{totalTests - completedCount}</div>
-                  <div className="text-sm text-muted-foreground">Tests Remaining</div>
+                  <div className="text-sm text-muted-foreground">{t('development.tests_remaining')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{Math.round(overallProgress)}%</div>
-                  <div className="text-sm text-muted-foreground">Progress</div>
+                  <div className="text-sm text-muted-foreground">{t('development.progress')}</div>
                 </div>
               </div>
             </div>
@@ -200,15 +200,15 @@ const DevelopmentPlan = () => {
                         <CardContent className="pt-0">
                           <div className="space-y-2 text-xs text-muted-foreground">
                             <div className="flex justify-between">
-                              <span>Questions:</span>
+                              <span>{t('development.questions')}:</span>
                               <span>{test.questions}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span>Time Limit:</span>
+                              <span>{t('development.time_limit')}:</span>
                               <span>{test.timeLimit} minutes</span>
                             </div>
                             <div className="flex justify-between">
-                              <span>Skill Area:</span>
+                              <span>{t('development.skill_area')}:</span>
                               <span className="capitalize">{test.skillArea}</span>
                             </div>
                           </div>
@@ -221,10 +221,10 @@ const DevelopmentPlan = () => {
                             {isCompleted ? (
                               <>
                                 <Award className="h-4 w-4 mr-1" />
-                                Completed
+                                {t('development.completed')}
                               </>
                             ) : (
-                              'Start Test'
+                              t('development.start_test')
                             )}
                           </Button>
                         </CardContent>
@@ -240,24 +240,24 @@ const DevelopmentPlan = () => {
         {/* Recommendations */}
         <Card>
           <CardHeader>
-            <CardTitle>Next Steps</CardTitle>
+            <CardTitle>{t('development.next_steps')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h3 className="font-medium text-blue-900">Focus on High Priority Areas</h3>
+                <h3 className="font-medium text-blue-900">{t('development.focus_high_priority')}</h3>
                 <p className="text-sm text-blue-700 mt-1">
                   Start with analytical skills tests to maximize your computational power score.
                 </p>
               </div>
               <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <h3 className="font-medium text-green-900">Schedule Regular Practice</h3>
+                <h3 className="font-medium text-green-900">{t('development.schedule_practice')}</h3>
                 <p className="text-sm text-green-700 mt-1">
                   Complete 1-2 tests per week for optimal skill development and retention.
                 </p>
               </div>
               <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                <h3 className="font-medium text-purple-900">Connect with Your Mentor</h3>
+                <h3 className="font-medium text-purple-900">{t('development.connect_mentor')}</h3>
                 <p className="text-sm text-purple-700 mt-1">
                   Discuss your progress and get personalized advice on areas for improvement.
                 </p>

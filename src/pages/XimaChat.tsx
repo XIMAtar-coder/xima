@@ -15,6 +15,7 @@ const XimaChat = () => {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [message, setMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [messages, setMessages] = useState<any[]>([]);
 
   // Mock data for connected users with different XIMAtar types
   const connectedUsers = [
@@ -52,28 +53,39 @@ const XimaChat = () => {
     user.specialty.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const mockMessages = [
+  // Initialize welcome message when user is selected
+  const getWelcomeMessage = (user: any) => [
     {
-      id: 1,
-      senderId: selectedUser?.id,
-      text: "Hi! I saw your computational skills profile. I'm working on a data visualization project and could use some insights.",
-      timestamp: new Date(Date.now() - 30000),
+      id: 'welcome-1',
+      senderId: user.id,
+      text: t('chat.welcome_message'),
+      timestamp: new Date(Date.now() - 60000),
       isOwn: false
-    },
-    {
-      id: 2,
-      senderId: 'me',
-      text: "Hello! I'd be happy to help. What specific challenges are you facing with the visualization?",
-      timestamp: new Date(Date.now() - 15000),
-      isOwn: true
     }
   ];
 
   const handleSendMessage = () => {
     if (message.trim() && selectedUser) {
-      // In a real app, this would send the message
-      console.log('Sending message:', message, 'to user:', selectedUser.name);
+      const newMessage = {
+        id: Date.now(),
+        senderId: 'me',
+        text: message,
+        timestamp: new Date(),
+        isOwn: true
+      };
+      
+      setMessages(prev => [...prev, newMessage]);
       setMessage('');
+      
+      console.log('Sending message:', message, 'to user:', selectedUser.name);
+    }
+  };
+
+  // Set initial messages when user is selected
+  const handleUserSelect = (user: any) => {
+    setSelectedUser(user);
+    if (!messages.some(msg => msg.senderId === user.id)) {
+      setMessages(getWelcomeMessage(user));
     }
   };
 
@@ -81,9 +93,9 @@ const XimaChat = () => {
     <MainLayout>
       <div className="container max-w-7xl mx-auto pt-6">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold">XIMA Chat</h1>
+          <h1 className="text-3xl font-bold">{t('chat.title')}</h1>
           <p className="text-muted-foreground">
-            Connect with professionals who complement your skillset
+            {t('chat.subtitle')}
           </p>
         </div>
 
@@ -91,12 +103,12 @@ const XimaChat = () => {
           {/* Users List */}
           <Card className="lg:col-span-1">
             <CardHeader>
-              <CardTitle className="text-lg">Connected Professionals</CardTitle>
+              <CardTitle className="text-lg">{t('chat.connected_professionals')}</CardTitle>
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
                   <Input
-                    placeholder="Search professionals..."
+                    placeholder={t('chat.search_professionals')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"
@@ -118,7 +130,7 @@ const XimaChat = () => {
                           ? 'border-primary bg-primary/5'
                           : 'border-border hover:border-primary/50'
                       }`}
-                      onClick={() => setSelectedUser(user)}
+                      onClick={() => handleUserSelect(user)}
                     >
                       <div className="flex items-start gap-3">
                         <div className="w-12 h-12 flex-shrink-0">
@@ -178,7 +190,7 @@ const XimaChat = () => {
                 <CardContent className="p-0">
                   <ScrollArea className="h-[400px] p-4">
                     <div className="space-y-4">
-                      {mockMessages.map((msg) => (
+                      {messages.map((msg) => (
                         <div
                           key={msg.id}
                           className={`flex ${msg.isOwn ? 'justify-end' : 'justify-start'}`}
@@ -202,7 +214,7 @@ const XimaChat = () => {
                   <div className="p-4 border-t">
                     <div className="flex gap-2">
                       <Input
-                        placeholder="Type your message..."
+                        placeholder={t('chat.type_message')}
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
@@ -218,9 +230,9 @@ const XimaChat = () => {
             ) : (
               <CardContent className="h-full flex items-center justify-center">
                 <div className="text-center">
-                  <h3 className="text-lg font-medium mb-2">Select a Professional</h3>
+                  <h3 className="text-lg font-medium mb-2">{t('chat.select_professional')}</h3>
                   <p className="text-muted-foreground">
-                    Choose someone from your connections to start a conversation
+                    {t('chat.choose_connection')}
                   </p>
                 </div>
               </CardContent>

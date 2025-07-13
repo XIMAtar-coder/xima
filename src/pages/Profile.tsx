@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -7,7 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Trophy, MessageSquare, TrendingUp, User, Target, ChevronRight, ArrowRight, Clock, BookOpen, CheckCircle, AlertCircle } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Calendar, Trophy, MessageSquare, TrendingUp, User, Target, ChevronRight, ArrowRight, Clock, BookOpen, CheckCircle, AlertCircle, Upload, Info } from 'lucide-react';
 import { XimatarDisplay } from '@/components/XimatarDisplay';
 import XimaScoreCard from '@/components/XimaScoreCard';
 import { getXIMAtarByAssessment } from '@/utils/ximatarUtils';
@@ -23,6 +24,31 @@ const Profile = () => {
   const [selectedDate, setSelectedDate] = useState<string>('2025-07-15');
   const [selectedTime, setSelectedTime] = useState<string>('10:00');
   const [bookingStatus, setBookingStatus] = useState<'idle' | 'pending' | 'confirmed'>('idle');
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Get complementary XIMAtar for mentor (different from user's)
+  const getComplementaryXimatar = (userXimatar: XIMAtar | null) => {
+    if (!userXimatar || !user?.pillars) return null;
+    
+    // Find user's weakest pillar and create mentor with strength in that area
+    const pillars = user.pillars;
+    const weakestPillar = Object.entries(pillars).reduce((min, [key, value]) => 
+      (value as number) < (pillars[min[0] as keyof typeof pillars] as number) ? [key, value] : min
+    )[0] as keyof typeof pillars;
+    
+    // Create complementary scores
+    const complementaryPillars = {
+      computational: 5,
+      communication: 5,
+      knowledge: 5,
+      creativity: 5,
+      drive: 5
+    };
+    complementaryPillars[weakestPillar] = 9; // Strong in user's weak area
+    
+    return getXIMAtarByAssessment(complementaryPillars);
+  };
 
   // Mock data for dashboard - using actual user data when available
   const mockDashboardData = {
@@ -49,9 +75,11 @@ const Profile = () => {
       drive: 0
     },
     mentor: {
-      name: 'Dr. Sarah Chen',
-      status: 'Connected',
-      lastMessage: '2 days ago'
+      name: user?.mentor ? 'Dr. Alex Rivera' : null,
+      title: 'Strategic Development Specialist',
+      status: user?.mentor ? 'Connected' : 'Not Assigned',
+      lastMessage: '2 days ago',
+      ximatar: user?.pillars ? getComplementaryXimatar(getXIMAtarByAssessment(user.pillars as any)) : null
     },
     nextSteps: [
       { action: 'Complete personality assessment', completed: !!user?.pillars },
@@ -59,12 +87,27 @@ const Profile = () => {
       { action: 'Review development plan', completed: false }
     ],
     baselineScores: {
-      computational: 60,
-      communication: 80,
-      knowledge: 60,
-      creativity: 40,
-      drive: 70
+      computational: 6,
+      communication: 8,
+      knowledge: 6,
+      creativity: 4,
+      drive: 7
     }
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfileImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const getSkillTooltip = (skill: string) => {
+    return t(`profile.${skill.toLowerCase()}_tooltip`);
   };
 
   useEffect(() => {
@@ -133,7 +176,7 @@ const Profile = () => {
             </div>
 
             <p className="text-muted-foreground text-lg mt-6">
-              {t('profile.welcome_description')}
+              {t('profile.dashboard_description')}
             </p>
           </div>
 
@@ -175,9 +218,9 @@ const Profile = () => {
                 <span className="text-sm font-bold text-primary">{t('profile.next_step')}</span>
               </div>
               <p className="text-xs text-muted-foreground">
-                {dashboardData.nextSteps.find(step => !step.completed)?.action || t('profile.all_complete')}
+                {dashboardData.nextSteps.find((step: any) => !step.completed)?.action || t('profile.all_complete')}
               </p>
-              {dashboardData.nextSteps.some(step => !step.completed) && (
+              {dashboardData.nextSteps.some((step: any) => !step.completed) && (
                 <Badge variant="outline" className="mt-1">
                   <AlertCircle size={12} className="mr-1" />
                   Pending
@@ -212,18 +255,46 @@ const Profile = () => {
               <CardHeader>
                 <CardTitle>{t('profile.your_ximatar')}</CardTitle>
               </CardHeader>
-              <CardContent className="text-center">
-                {dashboardData.user.currentXimatar ? (
-                  <XimatarDisplay 
-                    ximatar={dashboardData.user.currentXimatar} 
-                    size="lg" 
-                    showDescription={true} 
+              <CardContent className="text-center space-y-4">
+                <div className="relative">
+                  {dashboardData.user.currentXimatar ? (
+                    <XimatarDisplay 
+                      ximatar={dashboardData.user.currentXimatar} 
+                      size="lg" 
+                      showDescription={true} 
+                    />
+                  ) : (
+                    <div className="w-32 h-32 mx-auto mb-4 rounded-full border-4 border-primary/20 bg-muted flex items-center justify-center">
+                      <span className="text-muted-foreground">{t('profile.no_assessment')}</span>
+                    </div>
+                  )}
+                  
+                  {/* Profile Image Overlay */}
+                  {profileImage && (
+                    <div className="absolute top-0 right-0 w-16 h-16 rounded-full border-2 border-white overflow-hidden">
+                      <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                </div>
+                
+                {/* Upload Profile Photo */}
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
                   />
-                ) : (
-                  <div className="w-32 h-32 mx-auto mb-4 rounded-full border-4 border-primary/20 bg-muted flex items-center justify-center">
-                    <span className="text-muted-foreground">{t('profile.no_assessment')}</span>
-                  </div>
-                )}
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Upload size={16} className="mr-2" />
+                    {t('profile.upload_profile_photo')}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
@@ -348,7 +419,37 @@ const Profile = () => {
                 <CardTitle>{t('profile.xima_score')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <XimaScoreCard pillars={dashboardData.ximaScores} />
+                <TooltipProvider>
+                  <div className="space-y-4">
+                    <div className="text-center mb-4">
+                      <div className="text-3xl font-bold text-primary">
+                        {Math.round(Object.values(dashboardData.ximaScores).reduce((a: number, b: any) => a + Number(b), 0) / 5 * 10) / 10}/10
+                      </div>
+                      <div className="text-sm text-muted-foreground">{t('profile.xima_score')}</div>
+                    </div>
+                    
+                    {Object.entries(dashboardData.ximaScores).map(([skill, score]) => (
+                      <div key={skill} className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex items-center gap-2 cursor-help">
+                                <span className="text-sm font-medium">{t(`profile.${skill}`)}</span>
+                                <Info size={14} className="text-muted-foreground" />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="max-w-xs">{getSkillTooltip(skill)}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <span className="text-sm font-bold">{Number(score)}/10</span>
+                        </div>
+                        <Progress value={((score as number) / 10) * 100} className="h-2" />
+                      </div>
+                    ))}
+                  </div>
+                </TooltipProvider>
+                
                 <div className="mt-4 pt-4 border-t space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">{t('profile.match_quality')}</span>
@@ -396,82 +497,112 @@ const Profile = () => {
                   <CardTitle className="text-lg">{t('profile.your_mentor')}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-                      <span className="text-primary-foreground text-xs">SC</span>
+                  {dashboardData.mentor.name ? (
+                    <>
+                      <div className="flex items-center space-x-3 mb-3">
+                        {dashboardData.mentor.ximatar ? (
+                          <div className="w-12 h-12">
+                            <XimatarDisplay 
+                              ximatar={dashboardData.mentor.ximatar} 
+                              size="sm" 
+                              showDescription={false} 
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
+                            <span className="text-primary-foreground text-xs">AR</span>
+                          </div>
+                        )}
+                        <div>
+                          <div className="font-medium text-sm">{dashboardData.mentor.name}</div>
+                          <div className="text-xs text-muted-foreground">{dashboardData.mentor.title}</div>
+                        </div>
+                      </div>
+                      <div className="text-xs text-muted-foreground mb-3">
+                        Status: {dashboardData.mentor.status} • Last message: {dashboardData.mentor.lastMessage}
+                      </div>
+                      <Button 
+                        size="sm" 
+                        className="w-full"
+                        onClick={() => navigate('/xima-chat')}
+                      >
+                        {t('profile.message_mentor')}
+                      </Button>
+                    </>
+                  ) : (
+                    <div className="text-center">
+                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-muted flex items-center justify-center">
+                        <User className="w-6 h-6 text-muted-foreground" />
+                      </div>
+                      <div className="text-sm font-medium mb-2">{t('profile.discover_mentor')}</div>
+                      <div className="text-xs text-muted-foreground mb-3">
+                        Complete your assessment to get matched with a complementary mentor
+                      </div>
+                      <Button size="sm" variant="outline" className="w-full" disabled>
+                        Coming Soon
+                      </Button>
                     </div>
-                    <div>
-                      <div className="font-medium text-sm">{dashboardData.mentor.name}</div>
-                      <div className="text-xs text-muted-foreground">{t('profile.mentor_specialty')}</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-muted-foreground mb-3">
-                    <div>{t('profile.last_message')}: {dashboardData.mentor.lastMessage}</div>
-                    <div>{t('profile.status')}: {dashboardData.mentor.status}</div>
-                  </div>
-                  <Button 
-                    size="sm" 
-                    className="w-full"
-                    onClick={() => navigate('/xima-chat')}
-                  >
-                    {t('profile.message_mentor')}
-                  </Button>
+                  )}
                 </CardContent>
               </Card>
             </div>
           </div>
         </div>
 
-        {/* Bottom Section - Confronto CV vs Valutazione */}
+        {/* CV vs Assessment Comparison */}
         <Card>
           <CardHeader>
-            <CardTitle>{t('profile.cv_vs_assessment')}</CardTitle>
+            <CardTitle>{t('profile.cv_assessment_comparison')}</CardTitle>
             <CardDescription>
-              {t('profile.assessment_completed')} | {new Date().toLocaleDateString()} | 
-              <Button variant="link" className="p-0 h-auto ml-1">
+              Assessment completed | 12/07/2025 | 
+              <Button variant="link" className="p-0 h-auto text-primary ml-1">
                 {t('profile.view_full_comparison')}
               </Button>
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-2 gap-6">
               <div>
-                <h3 className="font-medium mb-4">{t('profile.baseline_cv')}</h3>
+                <h4 className="text-sm font-medium mb-3 text-blue-600">{t('profile.baseline_cv')}</h4>
                 <div className="space-y-3">
-                  {Object.entries(dashboardData.baselineScores).map(([key, value]) => (
-                    <div key={key} className="flex justify-between items-center">
-                      <span className="text-sm">{t(`profile.${key}`)}</span>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-24 h-2 bg-muted rounded">
-                          <div 
-                            className="h-full bg-primary rounded" 
-                            style={{ width: `${(value as number)}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-sm">{Math.round((value as number) / 10)}/10</span>
+                  {Object.entries(dashboardData.baselineScores).map(([skill, score]) => (
+                    <div key={skill} className="space-y-1">
+                      <div className="flex justify-between text-xs">
+                        <span>{t(`profile.${skill}`)}</span>
+                        <span>{Number(score)}/10</span>
                       </div>
+                      <Progress value={((score as number) / 10) * 100} className="h-2 bg-blue-100">
+                        <div className="bg-blue-500 h-full transition-all" style={{width: `${((score as number) / 10) * 100}%`}} />
+                      </Progress>
                     </div>
                   ))}
                 </div>
               </div>
-
               <div>
-                <h3 className="font-medium mb-4">{t('profile.complete_assessment')}</h3>
+                <h4 className="text-sm font-medium mb-3 text-green-600">{t('profile.complete_assessment')}</h4>
                 <div className="space-y-3">
-                  {Object.entries(dashboardData.ximaScores).map(([key, value]) => (
-                    <div key={key} className="flex justify-between items-center">
-                      <span className="text-sm">{t(`profile.${key}`)}</span>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-24 h-2 bg-muted rounded">
-                          <div 
-                            className="h-full bg-primary rounded" 
-                            style={{ width: `${(value as number)}%` }}
-                          ></div>
+                  {Object.entries(dashboardData.ximaScores).map(([skill, score]) => {
+                    const baseScore = dashboardData.baselineScores[skill] as number;
+                    const delta = (score as number) - baseScore;
+                    return (
+                      <div key={skill} className="space-y-1">
+                        <div className="flex justify-between text-xs">
+                          <span>{t(`profile.${skill}`)}</span>
+                          <div className="flex items-center gap-1">
+                            <span>{Number(score)}/10</span>
+                            {delta !== 0 && (
+                              <span className={`text-xs ${delta > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                ({delta > 0 ? '+' : ''}{delta})
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        <span className="text-sm">{Math.round((value as number) / 10)}/10</span>
+                        <Progress value={((score as number) / 10) * 100} className="h-2 bg-green-100">
+                          <div className="bg-green-500 h-full transition-all" style={{width: `${((score as number) / 10) * 100}%`}} />
+                        </Progress>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
