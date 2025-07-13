@@ -147,7 +147,7 @@ const DevelopmentPlan = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{completedCount}</div>
-                  <div className="text-sm text-muted-foreground">{t('development.tests_completed')}</div>
+                  <div className="text-sm text-muted-foreground">{t('development tests completed')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{totalTests - completedCount}</div>
