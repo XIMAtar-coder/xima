@@ -540,10 +540,15 @@ const Profile = () => {
                       </div>
                       <div className="text-sm font-medium mb-2">{t('profile.discover_mentor')}</div>
                       <div className="text-xs text-muted-foreground mb-3">
-                        Complete your assessment to get matched with a complementary mentor
+                        Connect with a mentor who complements your skills
                       </div>
-                      <Button size="sm" variant="outline" className="w-full" disabled>
-                        Coming Soon
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => navigate('/xima-chat')}
+                      >
+                        {t('profile.discover_mentor')}
                       </Button>
                     </div>
                   )}

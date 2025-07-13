@@ -619,13 +619,31 @@
     "last_message": "Last message",
     "status": "Status",
     "message_mentor": "Message Your Mentor",
-    "cv_vs_assessment": "CV vs Assessment Comparison",
-    "assessment_completed": "Assessment completed",
-    "view_full_comparison": "View Full Comparison",
-    "baseline_cv": "Baseline CV",
-    "complete_assessment": "Complete Assessment"
-  },
-  "common": {
-    "back": "Back"
-  }
-}
+     "cv_vs_assessment": "CV vs Assessment Comparison",
+     "assessment_completed": "Assessment completed",
+     "view_full_comparison": "View Full Comparison",
+     "baseline_cv": "Baseline CV",
+     "complete_assessment": "Complete Assessment",
+     "discover_mentor": "Discover your mentor",
+     "chat_with_mentor": "Chat with your mentor",
+     "discovery_mode": "Discovery Mode"
+   },
+   "chat": {
+     "title": "XIMA Chat", 
+     "search_placeholder": "Search professionals...",
+     "no_conversations": "No conversations yet. Select a professional to start chatting.",
+     "start_conversation": "Start a conversation with a professional",
+     "type_message": "Type your message...",
+     "send": "Send",
+     "online": "Online",
+     "away": "Away",
+     "offline": "Offline",
+     "welcome_message": "Welcome to XIMA! How can I support you?",
+     "connected_professionals": "Connected Professionals",
+     "best_match": "Best Match",
+     "mentor_response": "Thank you for your message! I'll get back to you shortly with some insights."
+   },
+   "common": {
+     "back": "Back"
+   }
+ }

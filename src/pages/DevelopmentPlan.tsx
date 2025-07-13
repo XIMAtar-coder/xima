@@ -124,8 +124,8 @@ const DevelopmentPlan = () => {
               {t('development.subtitle')}
             </p>
           </div>
-          <Button variant="outline" onClick={() => window.history.back()}>
-            ← {t('common.back')} to Dashboard
+          <Button variant="outline" onClick={() => navigate('/')}>
+            ← {t('common.back')}
           </Button>
         </div>
 

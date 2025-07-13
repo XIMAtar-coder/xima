@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send, Search, Filter } from 'lucide-react';
+import { Send, Search, Filter, Star } from 'lucide-react';
 import { XimatarDisplay } from '@/components/XimatarDisplay';
 import { getXIMAtarByAssessment } from '@/utils/ximatarUtils';
 
@@ -26,7 +26,8 @@ const XimaChat = () => {
       lastSeen: '2 minutes ago',
       status: 'online',
       specialty: 'Data Analytics',
-      strengthAreas: ['Computational Power', 'Knowledge']
+      strengthAreas: ['Computational Power', 'Knowledge'],
+      isBestMatch: true
     },
     {
       id: 2,
@@ -35,7 +36,8 @@ const XimaChat = () => {
       lastSeen: '1 hour ago',
       status: 'away',
       specialty: 'Creative Direction',
-      strengthAreas: ['Communication', 'Creativity']
+      strengthAreas: ['Communication', 'Creativity'],
+      isBestMatch: false
     },
     {
       id: 3,
@@ -44,7 +46,8 @@ const XimaChat = () => {
       lastSeen: '30 minutes ago',
       status: 'online',
       specialty: 'Strategic Planning',
-      strengthAreas: ['Knowledge', 'Drive']
+      strengthAreas: ['Knowledge', 'Drive'],
+      isBestMatch: false
     }
   ];
 
@@ -53,109 +56,113 @@ const XimaChat = () => {
     user.specialty.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Initialize welcome message when user is selected
-  const getWelcomeMessage = (user: any) => [
-    {
-      id: 'welcome-1',
-      senderId: user.id,
-      text: t('chat.welcome_message'),
-      timestamp: new Date(Date.now() - 60000),
-      isOwn: false
-    }
-  ];
+  const getWelcomeMessage = (user: any) => {
+    return t('chat.welcome_message');
+  };
 
   const handleSendMessage = () => {
     if (message.trim() && selectedUser) {
       const newMessage = {
         id: Date.now(),
-        senderId: 'me',
         text: message,
-        timestamp: new Date(),
-        isOwn: true
+        sender: 'You',
+        timestamp: new Date().toLocaleTimeString(),
+        type: 'sent'
       };
       
       setMessages(prev => [...prev, newMessage]);
       setMessage('');
       
-      console.log('Sending message:', message, 'to user:', selectedUser.name);
+      // Simulate response after a short delay
+      setTimeout(() => {
+        const response = {
+          id: Date.now() + 1,
+          text: t('chat.mentor_response'),
+          sender: selectedUser.name,
+          timestamp: new Date().toLocaleTimeString(),
+          type: 'received'
+        };
+        setMessages(prev => [...prev, response]);
+      }, 1000);
     }
   };
 
-  // Set initial messages when user is selected
   const handleUserSelect = (user: any) => {
     setSelectedUser(user);
-    if (!messages.some(msg => msg.senderId === user.id)) {
-      setMessages(getWelcomeMessage(user));
+    
+    // Initialize with welcome message if no messages exist for this user
+    if (messages.length === 0) {
+      const welcomeMessage = {
+        id: Date.now(),
+        text: getWelcomeMessage(user),
+        sender: user.name,
+        timestamp: new Date().toLocaleTimeString(),
+        type: 'received'
+      };
+      setMessages([welcomeMessage]);
     }
   };
 
   return (
     <MainLayout>
       <div className="container max-w-7xl mx-auto pt-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">{t('chat.title')}</h1>
-          <p className="text-muted-foreground">
-            {t('chat.subtitle')}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
-          {/* Users List */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[80vh]">
+          {/* Left Sidebar - Connected Users */}
           <Card className="lg:col-span-1">
-            <CardHeader>
-              <CardTitle className="text-lg">{t('chat.connected_professionals')}</CardTitle>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
-                  <Input
-                    placeholder={t('chat.search_professionals')}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-                <Button variant="outline" size="icon">
-                  <Filter size={16} />
-                </Button>
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2">
+                <Filter className="h-5 w-5" />
+                {t('chat.connected_professionals')}
+              </CardTitle>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder={t('chat.search_placeholder')}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
               </div>
             </CardHeader>
-            <CardContent>
-              <ScrollArea className="h-[400px]">
-                <div className="space-y-3">
+            <CardContent className="p-0">
+              <ScrollArea className="h-[500px]">
+                <div className="space-y-1 p-4">
                   {filteredUsers.map((user) => (
                     <div
                       key={user.id}
-                      className={`p-3 rounded-lg border cursor-pointer transition-colors ${
-                        selectedUser?.id === user.id
-                          ? 'border-primary bg-primary/5'
-                          : 'border-border hover:border-primary/50'
+                      className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                        selectedUser?.id === user.id 
+                          ? 'bg-primary/10 border-2 border-primary' 
+                          : 'hover:bg-muted'
                       }`}
                       onClick={() => handleUserSelect(user)}
                     >
-                      <div className="flex items-start gap-3">
+                      <div className="flex items-start space-x-3">
                         <div className="w-12 h-12 flex-shrink-0">
-                          <XimatarDisplay
-                            ximatar={user.ximatar}
-                            size="sm"
-                            showDescription={false}
+                          <XimatarDisplay 
+                            ximatar={user.ximatar} 
+                            size="sm" 
+                            showDescription={false} 
                           />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <h3 className="font-medium text-sm truncate">{user.name}</h3>
-                            <div className={`w-2 h-2 rounded-full ${
-                              user.status === 'online' ? 'bg-green-500' : 'bg-yellow-500'
-                            }`} />
+                            <p className="text-sm font-medium truncate">{user.name}</p>
+                            {user.isBestMatch && (
+                              <div className="flex items-center gap-1">
+                                <Star className="h-3 w-3 text-yellow-500 fill-current" />
+                                <span className="text-xs text-yellow-600">{t('chat.best_match')}</span>
+                              </div>
+                            )}
                           </div>
-                          <p className="text-xs text-muted-foreground">{user.specialty}</p>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {user.strengthAreas.slice(0, 2).map((area) => (
-                              <Badge key={area} variant="secondary" className="text-xs">
-                                {area}
-                              </Badge>
-                            ))}
+                          <p className="text-xs text-muted-foreground truncate">{user.specialty}</p>
+                          <div className="flex items-center justify-between mt-1">
+                            <Badge variant={user.status === 'online' ? 'default' : 'secondary'} className="text-xs">
+                              {t(`chat.${user.status}`)}
+                            </Badge>
+                            <span className="text-xs text-muted-foreground">{user.lastSeen}</span>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1">{user.lastSeen}</p>
                         </div>
                       </div>
                     </div>
@@ -165,75 +172,89 @@ const XimaChat = () => {
             </CardContent>
           </Card>
 
-          {/* Chat Area */}
-          <Card className="lg:col-span-2">
+          {/* Right Side - Chat Area */}
+          <Card className="lg:col-span-3">
             {selectedUser ? (
               <>
+                {/* Chat Header */}
                 <CardHeader className="border-b">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10">
-                      <XimatarDisplay
-                        ximatar={selectedUser.ximatar}
-                        size="sm"
-                        showDescription={false}
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12">
+                      <XimatarDisplay 
+                        ximatar={selectedUser.ximatar} 
+                        size="sm" 
+                        showDescription={false} 
                       />
                     </div>
                     <div>
-                      <h3 className="font-medium">{selectedUser.name}</h3>
+                      <div className="flex items-center gap-2">
+                        <CardTitle className="text-lg">{selectedUser.name}</CardTitle>
+                        {selectedUser.isBestMatch && (
+                          <Badge variant="outline" className="text-xs">
+                            <Star className="h-3 w-3 mr-1" />
+                            {t('chat.best_match')}
+                          </Badge>
+                        )}
+                      </div>
                       <p className="text-sm text-muted-foreground">{selectedUser.specialty}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Strong in: {selectedUser.strengthAreas.join(', ')}
+                      </p>
                     </div>
-                    <div className={`ml-auto w-3 h-3 rounded-full ${
-                      selectedUser.status === 'online' ? 'bg-green-500' : 'bg-yellow-500'
-                    }`} />
                   </div>
                 </CardHeader>
+
+                {/* Chat Messages */}
                 <CardContent className="p-0">
                   <ScrollArea className="h-[400px] p-4">
                     <div className="space-y-4">
                       {messages.map((msg) => (
                         <div
                           key={msg.id}
-                          className={`flex ${msg.isOwn ? 'justify-end' : 'justify-start'}`}
+                          className={`flex ${msg.type === 'sent' ? 'justify-end' : 'justify-start'}`}
                         >
                           <div
                             className={`max-w-[70%] p-3 rounded-lg ${
-                              msg.isOwn
+                              msg.type === 'sent'
                                 ? 'bg-primary text-primary-foreground'
                                 : 'bg-muted'
                             }`}
                           >
                             <p className="text-sm">{msg.text}</p>
-                            <p className="text-xs opacity-70 mt-1">
-                              {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            <p className={`text-xs mt-1 ${
+                              msg.type === 'sent' ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                            }`}>
+                              {msg.sender} • {msg.timestamp}
                             </p>
                           </div>
                         </div>
                       ))}
                     </div>
                   </ScrollArea>
-                  <div className="p-4 border-t">
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder={t('chat.type_message')}
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                        className="flex-1"
-                      />
-                      <Button onClick={handleSendMessage} disabled={!message.trim()}>
-                        <Send size={16} />
-                      </Button>
-                    </div>
-                  </div>
                 </CardContent>
+
+                {/* Chat Input */}
+                <div className="border-t p-4">
+                  <div className="flex space-x-2">
+                    <Input
+                      type="text"
+                      placeholder={t('chat.type_message')}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                      className="flex-1"
+                    />
+                    <Button onClick={handleSendMessage} disabled={!message.trim()}>
+                      <Send className="h-4 w-4" />
+                      <span className="sr-only">{t('chat.send')}</span>
+                    </Button>
+                  </div>
+                </div>
               </>
             ) : (
-              <CardContent className="h-full flex items-center justify-center">
-                <div className="text-center">
-                  <h3 className="text-lg font-medium mb-2">{t('chat.select_professional')}</h3>
-                  <p className="text-muted-foreground">
-                    {t('chat.choose_connection')}
-                  </p>
+              <CardContent className="flex items-center justify-center h-full">
+                <div className="text-center text-muted-foreground py-8">
+                  {t('chat.no_conversations')}
                 </div>
               </CardContent>
             )}

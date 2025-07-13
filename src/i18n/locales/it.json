@@ -626,7 +626,70 @@
   "xima_score": {
     "tooltip": "Il tuo punteggio XIMA rappresenta la media delle valutazioni dei cinque pilastri, mostrando il tuo livello complessivo di sviluppo professionale su una scala da 1 a 10."
   },
-  "common": {
-    "back": "Indietro"
-  }
-}
+   "profile": {
+     "dashboard_title": "La Tua Dashboard XIMA",
+     "dashboard_description": "Gestisci il tuo profilo professionale",
+     "your_ximatar": "Il Tuo XIMATAR",
+     "matched_professional": "Il Tuo Professionista Abbinato",
+     "book_appointment": "Prenota Appuntamento",
+     "book_session": "Prenota una Sessione",
+     "select_date": "Seleziona Data",
+     "select_time": "Seleziona Ora",
+     "confirm_booking": "Conferma Prenotazione",
+     "xima_score": "Punteggio XIMA",
+     "match_quality": "Qualità della Corrispondenza",
+     "assessment_completion": "Completamento Valutazione",
+     "mentor_status": "Connesso",
+     "next_step": "Prossimo Passo",
+     "all_complete": "Tutto Completo",
+     "computational": "Potenza Computazionale",
+     "communication": "Comunicazione",
+     "knowledge": "Conoscenza",
+     "creativity": "Creatività",
+     "drive": "Spinta",
+     "no_assessment": "Nessuna valutazione completata",
+     "complete_personality_assessment": "Completa valutazione della personalità",
+     "connected": "Connesso",
+     "pending": "In Attesa",
+     "confirmed": "Confermato",
+     "development_plan": "Piano di Sviluppo",
+     "enhance_analysis": "Migliora le Abilità di Analisi",
+     "communication_workshop": "Workshop di Comunicazione",
+     "leadership_fundamentals": "Fondamenti di Leadership",
+     "priority": "Priorità",
+     "recommended": "Raccomandato",
+     "optional": "Opzionale",
+     "view_full_plan": "Visualizza Piano di Sviluppo Completo",
+     "your_mentor": "Il Tuo Mentore",
+     "mentor_specialty": "Specialista in Comunicazione",
+     "last_message": "Ultimo messaggio",
+     "status": "Stato",
+     "message_mentor": "Messaggio al Tuo Mentore",
+     "cv_vs_assessment": "Confronto CV vs Valutazione",
+     "assessment_completed": "Valutazione completata",
+     "view_full_comparison": "Visualizza Confronto Completo",
+     "baseline_cv": "CV di Base",
+     "complete_assessment": "Completa Valutazione",
+     "discover_mentor": "Scopri il tuo mentore",
+     "chat_with_mentor": "Chatta con il tuo mentore",
+     "discovery_mode": "Modalità Scoperta"
+   },
+   "chat": {
+     "title": "XIMA Chat",
+     "search_placeholder": "Cerca professionisti...",
+     "no_conversations": "Nessuna conversazione ancora. Seleziona un professionista per iniziare a chattare.",
+     "start_conversation": "Inizia una conversazione con un professionista",
+     "type_message": "Scrivi il tuo messaggio...",
+     "send": "Invia",
+     "online": "Online",
+     "away": "Assente",
+     "offline": "Offline",
+     "welcome_message": "Benvenuto su XIMA! Come posso aiutarti?",
+     "connected_professionals": "Professionisti Connessi",
+     "best_match": "Migliore Corrispondenza",
+     "mentor_response": "Grazie per il tuo messaggio! Ti risponderò presto con alcuni consigli."
+   },
+   "common": {
+     "back": "Indietro"
+   }
+ }
