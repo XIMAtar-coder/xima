@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Trophy, MessageSquare, TrendingUp, User, Target, ChevronRight, ArrowRight, Clock, BookOpen } from 'lucide-react';
+import { Calendar, Trophy, MessageSquare, TrendingUp, User, Target, ChevronRight, ArrowRight, Clock, BookOpen, CheckCircle, AlertCircle } from 'lucide-react';
 import { XimatarDisplay } from '@/components/XimatarDisplay';
 import XimaScoreCard from '@/components/XimaScoreCard';
 import { getXIMAtarByAssessment } from '@/utils/ximatarUtils';
@@ -17,8 +17,12 @@ const Profile = () => {
   const { user, isAuthenticated } = useUser();
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [showFullDashboard, setShowFullDashboard] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string>('2025-07-15');
+  const [selectedTime, setSelectedTime] = useState<string>('10:00');
+  const [bookingStatus, setBookingStatus] = useState<'idle' | 'pending' | 'confirmed'>('idle');
 
   // Mock data for dashboard - using actual user data when available
   const mockDashboardData = {
@@ -151,20 +155,34 @@ const Profile = () => {
               <p className="text-sm text-muted-foreground">{t('profile.assessment_completion')}</p>
             </Card>
             
-            <Card className="text-center p-4">
+            <Card className="text-center p-4 cursor-pointer hover:bg-muted/50 transition-colors">
               <div className="flex items-center justify-center mb-2">
                 <MessageSquare className="text-primary mr-2" size={20} />
-                <span className="text-2xl font-bold text-primary">{dashboardData.mentor.status}</span>
+                <span className="text-2xl font-bold text-primary">{t('profile.connected')}</span>
               </div>
               <p className="text-sm text-muted-foreground">{t('profile.mentor_status')}</p>
+              {dashboardData.mentor.status === 'Connected' && (
+                <Badge variant="secondary" className="mt-1">
+                  <CheckCircle size={12} className="mr-1" />
+                  Active
+                </Badge>
+              )}
             </Card>
             
-            <Card className="text-center p-4">
+            <Card className="text-center p-4 cursor-pointer hover:bg-muted/50 transition-colors">
               <div className="flex items-center justify-center mb-2">
                 <Clock className="text-primary mr-2" size={20} />
                 <span className="text-sm font-bold text-primary">{t('profile.next_step')}</span>
               </div>
-              <p className="text-xs text-muted-foreground">{dashboardData.nextSteps.find(step => !step.completed)?.action || t('profile.all_complete')}</p>
+              <p className="text-xs text-muted-foreground">
+                {dashboardData.nextSteps.find(step => !step.completed)?.action || t('profile.all_complete')}
+              </p>
+              {dashboardData.nextSteps.some(step => !step.completed) && (
+                <Badge variant="outline" className="mt-1">
+                  <AlertCircle size={12} className="mr-1" />
+                  Pending
+                </Badge>
+              )}
             </Card>
           </div>
         </div>
@@ -209,12 +227,19 @@ const Profile = () => {
               </CardContent>
             </Card>
 
-            {/* Il Tuo Professionista Abbinato */}
+            {/* Combined Professional & Booking Section */}
             <Card>
               <CardHeader>
-                <CardTitle>{t('profile.matched_professional')}</CardTitle>
+                <CardTitle className="flex items-center justify-between">
+                  <span>{t('profile.matched_professional')}</span>
+                  <Badge variant={bookingStatus === 'confirmed' ? 'default' : 'secondary'}>
+                    {bookingStatus === 'confirmed' ? t('profile.confirmed') : t('profile.pending')}
+                  </Badge>
+                </CardTitle>
+                <CardDescription>Your matched professional and booking interface</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-6">
+                {/* Professional Info */}
                 <div className="flex items-start space-x-4">
                   {dashboardData.user.matchedProfessional.ximatar ? (
                     <div className="w-20 h-20 flex-shrink-0">
@@ -234,49 +259,83 @@ const Profile = () => {
                     <p className="text-sm text-muted-foreground">{dashboardData.user.matchedProfessional.title}</p>
                     <p className="text-sm text-primary">{dashboardData.user.matchedProfessional.specialty}</p>
                     <p className="text-xs text-muted-foreground mt-2">{dashboardData.user.matchedProfessional.bio}</p>
-                    <Button size="sm" className="mt-3">
-                      {t('profile.book_appointment')}
-                    </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
 
-            {/* Prenota una Sessione */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Calendar className="mr-2" size={20} />
-                  {t('profile.book_session')}
-                </CardTitle>
-                <CardDescription>{t('profile.book_session_description', { name: dashboardData.user.matchedProfessional.name })}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h4 className="font-medium mb-2">{t('profile.select_date')}</h4>
-                    <div className="bg-muted p-3 rounded text-center cursor-pointer hover:bg-muted/80 transition-colors">
-                      <div className="text-sm text-muted-foreground">July 2025</div>
-                      <div className="mt-2">
-                        <div className="inline-block bg-primary text-primary-foreground px-2 py-1 rounded text-sm">15</div>
+                {/* Booking Interface */}
+                <div className="border-t pt-4">
+                  <div className="flex items-center mb-4">
+                    <Calendar className="mr-2" size={20} />
+                    <h4 className="font-medium">{t('profile.book_session')}</h4>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h5 className="font-medium mb-2">{t('profile.select_date')}</h5>
+                      <div className="space-y-2">
+                        {['2025-07-15', '2025-07-16', '2025-07-17'].map((date) => (
+                          <div
+                            key={date}
+                            className={`p-3 rounded border cursor-pointer transition-colors ${
+                              selectedDate === date 
+                                ? 'border-primary bg-primary/5' 
+                                : 'border-border hover:border-primary/50'
+                            }`}
+                            onClick={() => setSelectedDate(date)}
+                          >
+                            <div className="text-sm font-medium">
+                              {new Date(date).toLocaleDateString('en-US', { 
+                                weekday: 'long', 
+                                month: 'short', 
+                                day: 'numeric' 
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h5 className="font-medium mb-2">{t('profile.select_time')}</h5>
+                      <div className="space-y-1">
+                        {['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'].map((time) => (
+                          <div
+                            key={time}
+                            className={`flex justify-between py-2 px-3 rounded border cursor-pointer transition-colors ${
+                              selectedTime === time 
+                                ? 'border-primary bg-primary/5' 
+                                : 'border-border hover:border-primary/50'
+                            }`}
+                            onClick={() => setSelectedTime(time)}
+                          >
+                            <span>{time}</span>
+                            <span className="text-primary">
+                              {selectedTime === time ? '✓' : '○'}
+                            </span>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
-                  <div>
-                    <h4 className="font-medium mb-2">{t('profile.select_time')}</h4>
-                    <div className="space-y-1 text-sm">
-                      {['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'].map((time) => (
-                        <div key={time} className="flex justify-between py-1 px-2 rounded hover:bg-muted cursor-pointer transition-colors">
-                          <span>{time}</span>
-                          <span className="text-primary">✓</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  
+                  <Button 
+                    className="w-full mt-4" 
+                    onClick={() => {
+                      setBookingStatus('confirmed');
+                      // Here you would normally make an API call
+                    }}
+                    disabled={bookingStatus === 'confirmed'}
+                  >
+                    {bookingStatus === 'confirmed' ? (
+                      <>
+                        <CheckCircle className="mr-2" size={16} />
+                        Session Confirmed for {selectedDate} at {selectedTime}
+                      </>
+                    ) : (
+                      t('profile.confirm_booking')
+                    )}
+                  </Button>
                 </div>
-                <Button className="w-full mt-4">
-                  {t('profile.confirm_booking')}
-                </Button>
               </CardContent>
             </Card>
           </div>
@@ -322,7 +381,11 @@ const Profile = () => {
                     <span className="text-sm">{t('profile.leadership_fundamentals')}</span>
                     <Badge variant="outline" className="text-xs">{t('profile.optional')}</Badge>
                   </div>
-                  <Button size="sm" className="w-full mt-3">
+                  <Button 
+                    size="sm" 
+                    className="w-full mt-3"
+                    onClick={() => navigate('/development-plan')}
+                  >
                     {t('profile.view_full_plan')}
                   </Button>
                 </CardContent>
@@ -346,7 +409,11 @@ const Profile = () => {
                     <div>{t('profile.last_message')}: {dashboardData.mentor.lastMessage}</div>
                     <div>{t('profile.status')}: {dashboardData.mentor.status}</div>
                   </div>
-                  <Button size="sm" className="w-full">
+                  <Button 
+                    size="sm" 
+                    className="w-full"
+                    onClick={() => navigate('/xima-chat')}
+                  >
                     {t('profile.message_mentor')}
                   </Button>
                 </CardContent>

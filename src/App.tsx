@@ -14,6 +14,8 @@ import Register from "./pages/Register";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import XimatarJourney from "./pages/XimatarJourney";
+import XimaChat from "./pages/XimaChat";
+import DevelopmentPlan from "./pages/DevelopmentPlan";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
@@ -35,6 +37,8 @@ const App = () => (
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/ximatar-journey" element={<XimatarJourney />} />
+            <Route path="/xima-chat" element={<XimaChat />} />
+            <Route path="/development-plan" element={<DevelopmentPlan />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
