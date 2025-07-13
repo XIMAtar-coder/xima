@@ -576,5 +576,30 @@
   },
   "xima_score": {
     "tooltip": "Your XIMA Score represents the average of your five pillar assessments, showing your overall professional development level on a scale of 1-10."
+  },
+  "profile": {
+    "welcome": "Welcome",
+    "view_dashboard": "View Dashboard",
+    "dashboard_title": "Your XIMA Dashboard",
+    "dashboard_description": "Manage your professional profile",
+    "your_ximatar": "Your XIMATAR",
+    "matched_professional": "Your Matched Professional",
+    "book_appointment": "Book Appointment",
+    "book_session": "Book a Session",
+    "select_date": "Select Date",
+    "select_time": "Select Time",
+    "confirm_booking": "Confirm Booking",
+    "xima_score": "XIMA Score",
+    "match_quality": "Match Quality",
+    "assessment_completion": "Assessment Completion",
+    "computational": "Computational Power",
+    "communication": "Communication",
+    "knowledge": "Knowledge",
+    "creativity": "Creativity",
+    "drive": "Drive",
+    "no_assessment": "No assessment completed"
+  },
+  "common": {
+    "back": "Back"
   }
 }

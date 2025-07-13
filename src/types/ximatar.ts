@@ -38,7 +38,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Natural leadership', 'Strategic thinking', 'Decision making', 'Goal-oriented'],
     weaknesses: ['Can be overly dominant', 'May overlook details', 'Impatient with others'],
     idealRoles: ['CEO', 'Project Lead', 'Executive', 'Team Leader'],
-    image: '/lovable-uploads/29354704-151e-4e3c-a9ae-adfe07e62896.png', // Lion avatar - placeholder for now
+    image: '/lovable-uploads/5851d5c4-d732-41e0-9bfb-ab9317a49978.png', // Lion avatar
     personality: {
       en: {
         description: 'The Lion XIMAtar represents natural born leaders who thrive in positions of authority. They are strategic thinkers who can see the big picture and make decisive choices under pressure.',
@@ -94,7 +94,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Team building', 'Emotional intelligence', 'Conflict resolution', 'Motivation'],
     weaknesses: ['May avoid difficult conversations', 'Can be too accommodating', 'Struggles with tough decisions'],
     idealRoles: ['HR', 'Coach', 'Team Facilitator', 'Counselor'],
-    image: '/placeholder.svg', // Placeholder for Dolphin
+    image: '/lovable-uploads/ae79af7a-e780-4f42-8fbf-529eb1e4d1f8.png', // Dolphin avatar
     personality: {
       en: {
         description: 'The Dolphin XIMAtar represents natural team facilitators who excel at bringing people together and creating harmonious work environments. They are highly empathetic and skilled at understanding team dynamics.',
@@ -122,7 +122,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Sales ability', 'Adaptability', 'Creative solutions', 'Networking'],
     weaknesses: ['May be overly opportunistic', 'Can lack follow-through', 'Risk of being manipulative'],
     idealRoles: ['Sales', 'Marketing', 'Business Development', 'Entrepreneur'],
-    image: '/placeholder.svg', // Placeholder for Fox
+    image: '/lovable-uploads/c070e0d9-286c-45cb-9a35-39b053c368a5.png', // Fox avatar
     personality: {
       en: {
         description: 'The Fox XIMAtar represents clever opportunists who excel at identifying and seizing business opportunities. They are persuasive, adaptable, and skilled at finding creative solutions to challenges.',
@@ -150,7 +150,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Reliability', 'Risk management', 'Consistency', 'Team protection'],
     weaknesses: ['Can be resistant to change', 'May be overly cautious', 'Struggles with innovation'],
     idealRoles: ['Operations', 'Risk Management', 'Security', 'Quality Control'],
-    image: '/placeholder.svg', // Placeholder for Bear
+    image: '/lovable-uploads/e4b1fc80-fed1-4028-8bd7-f71eb4cc5ec1.png', // Bear avatar
     personality: {
       en: {
         description: 'The Bear XIMAtar represents reliable guardians who excel at protecting teams and maintaining stability. They are loyal, dependable, and skilled at managing risks and ensuring consistent operations.',
@@ -178,7 +178,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Independent work', 'Creative solutions', 'Technical expertise', 'Innovation'],
     weaknesses: ['May struggle with teamwork', 'Can be too independent', 'Difficulty with collaboration'],
     idealRoles: ['Developer', 'Designer', 'Specialist', 'Researcher'],
-    image: '/placeholder.svg', // Placeholder for Cat
+    image: '/lovable-uploads/67baf1dd-15f8-4951-ba4b-1594b4aeab60.png', // Cat avatar
     personality: {
       en: {
         description: 'The Cat XIMAtar represents independent specialists who excel at working autonomously and developing innovative solutions. They are curious, analytical, and prefer to work with precision and creativity.',
@@ -206,7 +206,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['High productivity', 'Organization', 'Consistency', 'Process optimization'],
     weaknesses: ['May be too rigid', 'Can struggle with creativity', 'Difficulty with change'],
     idealRoles: ['Admin', 'Logistics', 'Operations', 'Project Coordinator'],
-    image: '/placeholder.svg', // Placeholder for Bee
+    image: '/lovable-uploads/ce92fde6-0154-448f-a838-27aba2b74061.png', // Bee avatar
     personality: {
       en: {
         description: 'The Bee XIMAtar represents productive workers who excel at efficient execution and maintaining high standards. They are disciplined, organized, and skilled at optimizing processes and workflows.',
@@ -234,7 +234,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Communication', 'Public speaking', 'Team motivation', 'Networking'],
     weaknesses: ['May talk too much', 'Can be easily distracted', 'Difficulty with detailed work'],
     idealRoles: ['PR', 'Customer Success', 'Training', 'Event Management'],
-    image: '/placeholder.svg', // Placeholder for Parrot
+    image: '/lovable-uploads/4fbccddd-ecd3-4ccc-8b2b-1c66d3df46fd.png', // Parrot avatar
     personality: {
       en: {
         description: 'The Parrot XIMAtar represents natural communicators who excel at expressing ideas and energizing teams. They are charismatic, social, and skilled at building relationships and inspiring others.',
@@ -262,7 +262,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Strategic planning', 'Long-term thinking', 'Wisdom', 'Mentoring'],
     weaknesses: ['May be slow to act', 'Can be resistant to quick changes', 'Overthinks decisions'],
     idealRoles: ['Strategy', 'Governance', 'Advisory', 'Senior Leadership'],
-    image: '/placeholder.svg', // Placeholder for Elephant
+    image: '/lovable-uploads/f561bed6-0ac5-4d79-a209-02d60bae5d59.png', // Elephant avatar
     personality: {
       en: {
         description: 'The Elephant XIMAtar represents wise strategists who excel at long-term planning and creating lasting impact. They are reflective, patient, and skilled at seeing the bigger picture and mentoring others.',
@@ -290,7 +290,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Team coordination', 'Tactical planning', 'Adaptability', 'Loyalty'],
     weaknesses: ['May struggle without team', 'Can be too dependent on others', 'Difficulty with solo leadership'],
     idealRoles: ['Squad Leader', 'Agile Coach', 'Team Coordinator', 'Project Manager'],
-    image: '/placeholder.svg', // Placeholder for Wolf
+    image: '/lovable-uploads/fccaa05e-ddf8-473a-9b02-f46939f468fe.png', // Wolf avatar
     personality: {
       en: {
         description: 'The Wolf XIMAtar represents tactical team players who excel at coordinating group efforts and adapting to changing circumstances. They are collaborative, loyal, and skilled at bringing out the best in their pack.',
@@ -318,7 +318,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Adaptability', 'Quick learning', 'Versatility', 'Environmental awareness'],
     weaknesses: ['May lack consistency', 'Can be seen as unreliable', 'Difficulty with specialization'],
     idealRoles: ['Startup', 'Consultant', 'Business Analyst', 'Change Manager'],
-    image: '/placeholder.svg', // Placeholder for Chameleon
+    image: '/lovable-uploads/9d4f2e93-8d4c-4169-b089-2c42b9102855.png', // Chameleon avatar
     personality: {
       en: {
         description: 'The Chameleon XIMAtar represents adaptive operators who excel at quickly adjusting to new environments and learning new skills. They are versatile, perceptive, and skilled at reading situations and adapting accordingly.',
@@ -346,7 +346,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Work ethic', 'Consistency', 'Reliability', 'Perseverance'],
     weaknesses: ['May be resistant to change', 'Can be overly focused on work', 'Difficulty with innovation'],
     idealRoles: ['Execution', 'Support', 'Implementation', 'Operations'],
-    image: '/placeholder.svg', // Placeholder for Horse
+    image: '/lovable-uploads/b8f42a43-f428-481e-aa5f-8c643ce46287.png', // Horse avatar
     personality: {
       en: {
         description: 'The Horse XIMAtar represents reliable drivers who excel at consistent execution and delivering results. They are hardworking, resilient, and skilled at maintaining steady progress toward goals.',

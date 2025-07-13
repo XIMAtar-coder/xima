@@ -83,11 +83,18 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     });
 
-    // For development/testing, we'll auto-confirm users
-    // In production, you may want to require email confirmation
-    if (!error && data.user && !data.user.email_confirmed_at) {
-      // User is created but needs confirmation - for now, sign them in directly
-      console.log('User created successfully, attempting auto sign-in');
+    // For development/testing, auto sign-in after successful registration
+    if (!error && data.user) {
+      // The user is created, now sign them in directly
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      if (signInError) {
+        console.error('Auto sign-in failed:', signInError);
+        return { error: signInError };
+      }
     }
 
     return { error };
