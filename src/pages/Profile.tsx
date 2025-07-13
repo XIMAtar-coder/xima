@@ -423,7 +423,11 @@ const Profile = () => {
                   <div className="space-y-4">
                     <div className="text-center mb-4">
                       <div className="text-3xl font-bold text-primary">
-                        {Math.round(Object.values(dashboardData.ximaScores).reduce((a: number, b: any) => a + Number(b), 0) / 5 * 10) / 10}/10
+                        {(() => {
+                          const scores = Object.values(dashboardData.ximaScores) as number[];
+                          const average = scores.reduce((sum, score) => sum + score, 0) / scores.length;
+                          return Math.round(average * 10) / 10;
+                        })()}/10
                       </div>
                       <div className="text-sm text-muted-foreground">{t('profile.xima_score')}</div>
                     </div>
