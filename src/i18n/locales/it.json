@@ -689,7 +689,10 @@
      "best_match": "Migliore Corrispondenza",
      "mentor_response": "Grazie per il tuo messaggio! Ti risponderò presto con alcuni consigli."
    },
-   "common": {
-     "back": "Indietro"
-   }
+    "common": {
+      "back": "Indietro"
+    },
+    "development": {
+      "back_to_dashboard": "Torna alla tua Dashboard"
+    }
  }

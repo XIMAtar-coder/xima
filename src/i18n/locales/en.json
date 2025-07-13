@@ -643,7 +643,10 @@
      "best_match": "Best Match",
      "mentor_response": "Thank you for your message! I'll get back to you shortly with some insights."
    },
-   "common": {
-     "back": "Back"
-   }
+    "common": {
+      "back": "Back"
+    },
+    "development": {
+      "back_to_dashboard": "Back to your Dashboard"
+    }
  }

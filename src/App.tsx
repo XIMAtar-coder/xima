@@ -41,7 +41,7 @@ const App = () => (
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/ximatar-journey" element={<XimatarJourney />} />
-            <Route path="/chat" element={<XimaChat />} />
+            <Route path="/xima-chat" element={<XimaChat />} />
             <Route path="/development-plan" element={<DevelopmentPlan />} />
             <Route path="/test/data-analysis" element={<TestDataAnalysis />} />
             <Route path="/test/logical-problem-solving" element={<TestLogicalProblemSolving />} />
