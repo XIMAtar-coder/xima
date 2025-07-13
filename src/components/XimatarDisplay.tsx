@@ -33,7 +33,6 @@ export const XimatarDisplay: React.FC<XimatarDisplayProps> = ({
       </div>
       <div>
         <h3 className="font-semibold text-lg">{ximatar.title}</h3>
-        <p className="text-sm text-muted-foreground">{ximatar.animal}</p>
         {showDescription && (
           <p className="text-sm mt-2 max-w-xs">
             {ximatar.personality[lang].description}
