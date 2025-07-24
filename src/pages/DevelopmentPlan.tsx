@@ -134,7 +134,7 @@ const DevelopmentPlan = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Target className="h-5 w-5" />
-              {t('development overall progress')}
+              {t('development.overall_progress')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -147,7 +147,7 @@ const DevelopmentPlan = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{completedCount}</div>
-                  <div className="text-sm text-muted-foreground">{t('development tests completed')}</div>
+                  <div className="text-sm text-muted-foreground">{t('development.tests_completed')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{totalTests - completedCount}</div>
