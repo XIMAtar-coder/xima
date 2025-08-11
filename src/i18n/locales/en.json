@@ -665,5 +665,48 @@
     "action_tests": "Development Plan tests",
     "action_chat": "Open XIMA Chat",
     "action_comparison": "View comparison"
+  },
+  "opportunity": {
+    "title": "Opportunity Details",
+    "match_score": "Match score",
+    "location": "Location",
+    "labels": {
+      "required_skills": "Required key skills"
+    },
+    "actions": {
+      "apply": "Apply on company site",
+      "save": "Save to my opportunities",
+      "share": "Share",
+      "apply_notice": "You are leaving XIMA to apply on the company’s official site."
+    },
+    "sections": {
+      "role_fit": "Role fit",
+      "company_profile": "Company profile",
+      "community_sentiment": "Community sentiment"
+    },
+    "role_fit": {
+      "pillars_contribution": "Pillars contribution",
+      "ximatar_traits": "XIMAtar traits match"
+    },
+    "company": {
+      "description": "Description",
+      "size": "Size",
+      "industry": "Industry",
+      "hq": "Headquarters",
+      "website": "Website",
+      "careers": "Careers page"
+    },
+    "sentiment": {
+      "overall": "Overall sentiment",
+      "pros": "Pros",
+      "cons": "Cons",
+      "recent_highlights": "Recent highlights",
+      "empty": "No community insights yet."
+    },
+    "toasts": {
+      "saved": "Saved to your opportunities",
+      "shared": "Link copied to clipboard",
+      "share_failed": "Unable to share right now"
+    }
   }
 }

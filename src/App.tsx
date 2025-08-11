@@ -24,6 +24,7 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import { XimAIProvider } from "./context/XimAIProvider";
 import { ChatWidget } from "./components/ximai/ChatWidget";
+import OpportunityDetails from "./pages/OpportunityDetails";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const App = () => (
               <Route path="/test/logical-problem-solving" element={<TestLogicalProblemSolving />} />
               <Route path="/test/presentation-skills" element={<TestPresentationSkills />} />
               <Route path="/test/creative-thinking" element={<TestCreativeThinking />} />
+              <Route path="/opportunity/:id" element={<OpportunityDetails />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

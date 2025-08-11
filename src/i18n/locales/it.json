@@ -711,5 +711,48 @@
     "action_tests": "Test Piano di Sviluppo",
     "action_chat": "Apri XIMA Chat",
     "action_comparison": "Vedi confronto"
+  },
+  "opportunity": {
+    "title": "Dettagli Opportunità",
+    "match_score": "Punteggio compatibilità",
+    "location": "Località",
+    "labels": {
+      "required_skills": "Competenze richieste"
+    },
+    "actions": {
+      "apply": "Candidati sul sito dell'azienda",
+      "save": "Salva nelle mie opportunità",
+      "share": "Condividi",
+      "apply_notice": "Stai lasciando XIMA per candidarti sul sito ufficiale dell’azienda."
+    },
+    "sections": {
+      "role_fit": "Adesione al ruolo",
+      "company_profile": "Profilo azienda",
+      "community_sentiment": "Sentimento della comunità"
+    },
+    "role_fit": {
+      "pillars_contribution": "Contributo dei pilastri",
+      "ximatar_traits": "Corrispondenza tratti XIMAtar"
+    },
+    "company": {
+      "description": "Descrizione",
+      "size": "Dimensioni",
+      "industry": "Settore",
+      "hq": "Sede",
+      "website": "Sito web",
+      "careers": "Pagina carriere"
+    },
+    "sentiment": {
+      "overall": "Sentimento complessivo",
+      "pros": "Pro",
+      "cons": "Contro",
+      "recent_highlights": "Evidenze recenti",
+      "empty": "Nessuna informazione dalla comunità al momento."
+    },
+    "toasts": {
+      "saved": "Salvata nelle tue opportunità",
+      "shared": "Link copiato negli appunti",
+      "share_failed": "Impossibile condividere ora"
+    }
   }
 }

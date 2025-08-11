@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1",
+    "title": "Data Analyst",
+    "company": "Aurora Insights",
+    "location": "Milan, IT",
+    "skills": ["data", "analysis", "sql", "presentation"],
+    "sourceUrl": "https://example.com/jobs/1",
+    "summary": "Analyze datasets to deliver insights for business teams and stakeholders.",
+    "idealXimatar": ["owl", "elephant"],
+    "companyProfile": {
+      "description": "Aurora Insights provides data-driven decision support for European enterprises.",
+      "size": "200-500",
+      "industry": "Analytics",
+      "hq": "Milan, IT",
+      "website": "https://aurora.example.com",
+      "careersUrl": "https://aurora.example.com/careers"
+    }
+  },
+  {
+    "id": "2",
+    "title": "Product Marketing Manager",
+    "company": "NovaTech",
+    "location": "Remote",
+    "skills": ["communication", "storytelling", "strategy", "ownership"],
+    "sourceUrl": "https://example.com/jobs/2",
+    "summary": "Own product positioning and go-to-market narratives across channels.",
+    "idealXimatar": ["parrot", "fox"],
+    "companyProfile": {
+      "description": "NovaTech builds tools that help teams collaborate effectively.",
+      "size": "500-1000",
+      "industry": "Software",
+      "hq": "Berlin, DE",
+      "website": "https://novatech.example.com",
+      "careersUrl": "https://novatech.example.com/careers"
+    }
+  },
+  {
+    "id": "3",
+    "title": "UX Designer",
+    "company": "BlueWave Studio",
+    "location": "Rome, IT",
+    "skills": ["design", "creativity", "research", "communication"],
+    "sourceUrl": "https://example.com/jobs/3",
+    "summary": "Design intuitive experiences backed by research and rapid iteration.",
+    "idealXimatar": ["cat", "dolphin"],
+    "companyProfile": {
+      "description": "BlueWave is a boutique design studio focused on user-centered products.",
+      "size": "50-100",
+      "industry": "Design",
+      "hq": "Rome, IT",
+      "website": "https://bluewave.example.com",
+      "careersUrl": "https://bluewave.example.com/careers"
+    }
+  }
+]
