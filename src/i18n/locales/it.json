@@ -716,7 +716,16 @@
     "action_booking": "Apri prenotazione",
     "action_tests": "Test Piano di Sviluppo",
     "action_chat": "Apri XIMA Chat",
-    "action_comparison": "Vedi confronto"
+    "action_comparison": "Vedi confronto",
+    "preview": {
+      "open": "Apri XIM‑AI",
+      "open_help": "Apri aiuto XIM‑AI",
+      "default": "Hai bisogno di aiuto o indicazioni? Sono qui.",
+      "dashboard": "Serve aiuto a capire i punteggi o prenotare una sessione?",
+      "dev_plan": "Domande su test o priorità?",
+      "opportunity": "Vuoi consigli su questo ruolo o azienda?",
+      "chat": "Suggerimenti per conversare o trovare il miglior mentore."
+    }
   },
   "opportunity": {
     "title": "Dettagli Opportunità",

@@ -23,7 +23,7 @@ import TestCreativeThinking from "./pages/TestCreativeThinking";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import { XimAIProvider } from "./context/XimAIProvider";
-import { ChatWidget } from "./components/ximai/ChatWidget";
+import ChatEntry from "./components/ximai/ChatEntry";
 import OpportunityDetails from "./pages/OpportunityDetails";
 
 const queryClient = new QueryClient();
@@ -57,7 +57,7 @@ const App = () => (
               <Route path="/admin" element={<Admin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <ChatWidget />
+            <ChatEntry />
           </XimAIProvider>
         </BrowserRouter>
       </TooltipProvider>

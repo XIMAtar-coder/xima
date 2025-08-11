@@ -17,14 +17,14 @@ interface Message {
   created_at?: string;
 }
 
-export const ChatWidget: React.FC = () => {
+export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (open: boolean) => void; hideLauncher?: boolean }> = ({ controlledOpen, onOpenChange, hideLauncher }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   
   const { user } = useUser();
   const xim = useXimAI();
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(controlledOpen ?? false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -38,6 +38,7 @@ export const ChatWidget: React.FC = () => {
   };
 
   useEffect(() => { if (open) scrollToBottom(); }, [open, messages.length]);
+  useEffect(() => { if (controlledOpen !== undefined) setOpen(controlledOpen); }, [controlledOpen]);
 
   // Ensure a conversation exists for this user
   useEffect(() => {
@@ -179,22 +180,27 @@ export const ChatWidget: React.FC = () => {
 
   return (
     <>
-      <button
-        aria-label={t('ximai.aria_open')}
-        className={`${positionClasses} ${btnPosition} shadow-lg`}
-        onClick={() => setOpen(true)}
-      >
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground hover:opacity-90 transition">
-          <Bot className="w-4 h-4" />
-          <span className="font-medium">XIM‑AI</span>
-        </div>
-      </button>
+      {!hideLauncher && (
+        <button
+          aria-label={t('ximai.aria_open')}
+          className={`${positionClasses} ${btnPosition} shadow-lg`}
+          onClick={() => setOpen(true)}
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground hover:opacity-90 transition">
+            <Bot className="w-4 h-4" />
+            <span className="font-medium">XIM‑AI</span>
+          </div>
+        </button>
+      )}
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent aria-label={t('ximai.aria_dialog')} className="max-w-xl p-0 overflow-hidden">
+      <Dialog open={open} onOpenChange={(v) => { setOpen(v); onOpenChange?.(v); }}>
+        <DialogContent aria-label={t('ximai.aria_dialog')} className="max-w-xl p-0 overflow-hidden rounded-2xl shadow-xl" style={{ boxShadow: "0 12px 32px -12px hsl(var(--foreground)/0.2)" }}>
           <DialogHeader className="border-b px-4 py-3">
             <DialogTitle className="flex items-center justify-between">
-              <span>XIM‑AI</span>
+              <span className="flex items-center gap-2">
+                <Bot className="w-5 h-5" />
+                <span className="text-base font-medium">XIM‑AI</span>
+              </span>
               <div className="flex items-center gap-2">
                 <label htmlFor="ximai-lang" className="sr-only">{t('ximai.bot_language')}</label>
                 <select
@@ -210,16 +216,16 @@ export const ChatWidget: React.FC = () => {
                 <Button variant="ghost" size="icon" aria-label={t('ximai.clear_history')} onClick={handleClear}>
                   <Trash className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="icon" aria-label={t('ximai.close')} onClick={() => setOpen(false)}>
+                <Button variant="ghost" size="icon" aria-label={t('ximai.close')} onClick={() => { setOpen(false); onOpenChange?.(false); }}>
                   <X className="w-4 h-4" />
                 </Button>
               </div>
             </DialogTitle>
           </DialogHeader>
 
-          <div className="grid grid-rows-[1fr_auto] h-[480px]">
+          <div className="grid grid-rows-[1fr_auto]" style={{ maxHeight: '80vh' }}>
             <ScrollArea className="p-4">
-              <div className="space-y-3">
+              <div className="space-y-3" role="log" aria-live="polite">
                 {messages.map((m) => (
                   <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${m.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>

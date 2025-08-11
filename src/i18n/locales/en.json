@@ -670,8 +670,18 @@
     "action_booking": "Open booking",
     "action_tests": "Development Plan tests",
     "action_chat": "Open XIMA Chat",
-    "action_comparison": "View comparison"
+    "action_comparison": "View comparison",
+    "preview": {
+      "open": "Open XIM‑AI",
+      "open_help": "Open XIM‑AI help",
+      "default": "Need help or guidance? I'm here.",
+      "dashboard": "Need help understanding your scores or booking a session?",
+      "dev_plan": "Questions about tests or priorities?",
+      "opportunity": "Want tips on this role or company?",
+      "chat": "Get conversation tips or find the best mentor."
+    }
   },
+  "ximai_preview": {},
   "opportunity": {
     "title": "Opportunity Details",
     "match_score": "Match score",
