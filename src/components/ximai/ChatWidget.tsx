@@ -238,7 +238,7 @@ export const ChatWidget: React.FC = () => {
                 <Button variant="outline" size="sm" onClick={() => navigate('/ximatar-journey?open=booking')}>{t('ximai.action_booking')}</Button>
                 <Button variant="outline" size="sm" onClick={() => navigate('/development-plan')}>{t('ximai.action_tests')}</Button>
                 <Button variant="outline" size="sm" onClick={() => navigate('/chat')}>{t('ximai.action_chat')}</Button>
-                <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>{t('profile.title')}</Button>
+                <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>{t('dashboard.title')}</Button>
               </div>
             </div>
           </div>
