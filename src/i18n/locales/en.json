@@ -671,6 +671,7 @@
     "action_tests": "Development Plan tests",
     "action_chat": "Open XIMA Chat",
     "action_comparison": "View comparison",
+    "login_required": "You need to log in to access this feature. Please sign in or create an account.",
     "preview": {
       "open": "Open XIM‑AI",
       "open_help": "Open XIM‑AI help",

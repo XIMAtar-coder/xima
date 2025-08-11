@@ -717,6 +717,7 @@
     "action_tests": "Test Piano di Sviluppo",
     "action_chat": "Apri XIMA Chat",
     "action_comparison": "Vedi confronto",
+    "login_required": "Devi accedere per usare questa funzione. Effettua il login o crea un account.",
     "preview": {
       "open": "Apri XIM‑AI",
       "open_help": "Apri aiuto XIM‑AI",

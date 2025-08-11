@@ -15,13 +15,14 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   created_at?: string;
+  kind?: 'text' | 'auth-cta';
 }
 
 export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (open: boolean) => void; hideLauncher?: boolean }> = ({ controlledOpen, onOpenChange, hideLauncher }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   
-  const { user } = useUser();
+  const { user, isAuthenticated } = useUser();
   const xim = useXimAI();
 
   const [open, setOpen] = useState(controlledOpen ?? false);
@@ -95,8 +96,24 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
     visibleSections: xim.visibleSections,
   }), [xim.route, botLang, xim.user, xim.scores, xim.visibleSections]);
 
+  const promptLoginCta = async () => {
+    const msg = t('ximai.login_required');
+    setMessages((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), role: 'assistant', content: msg },
+      { id: crypto.randomUUID(), role: 'assistant', content: '', kind: 'auth-cta' },
+    ]);
+    if (conversationId) {
+      await supabase.from('ai_messages').insert({
+        conversation_id: conversationId,
+        role: 'assistant',
+        content: msg
+      });
+    }
+  };
+
   const sendMessage = async () => {
-    if (!input.trim() || !conversationId || !user?.id) return;
+    if (!input.trim()) return;
     const text = input.trim();
 
     // Simple deep-link commands (/go /dashboard, /chat, /development-plan, /opportunity <id>, /booking)
@@ -105,14 +122,19 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
       navigate(path);
       setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: `→ ${path}` }]);
     };
-    if (cmd === '/go /dashboard' || cmd === '/dashboard') { setInput(''); nav('/dashboard'); return; }
-    if (cmd === '/go /chat' || cmd === '/chat') { setInput(''); nav('/chat?start=best'); return; }
-    if (cmd === '/go /development-plan' || cmd === '/development-plan') { setInput(''); nav('/development-plan'); return; }
+    const protectedNav = async (path: string) => {
+      if (!isAuthenticated) { setInput(''); await promptLoginCta(); return; }
+      setInput(''); nav(path);
+    };
+
+    if (cmd === '/go /dashboard' || cmd === '/dashboard') { await protectedNav('/dashboard'); return; }
+    if (cmd === '/go /chat' || cmd === '/chat') { await protectedNav('/chat?start=best'); return; }
+    if (cmd === '/go /development-plan' || cmd === '/development-plan') { await protectedNav('/development-plan'); return; }
     if (cmd.startsWith('/opportunity')) {
       const id = cmd.split(' ').at(1);
       if (id) { setInput(''); nav(`/opportunity/${id}`); return; }
     }
-    if (cmd === '/booking') { setInput(''); nav('/ximatar-journey?open=booking'); return; }
+    if (cmd === '/booking') { await protectedNav('/ximatar-journey?open=booking'); return; }
 
     setInput('');
 
@@ -120,19 +142,21 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
     setMessages((prev) => [...prev, { id: localId, role: 'user', content: text }]);
     scrollToBottom();
 
-    // Persist user message
-    await supabase.from('ai_messages').insert({
-      conversation_id: conversationId,
-      role: 'user',
-      content: text,
-      metadata: ({ context: {
-        route: contextPayload.route,
-        lang: contextPayload.lang,
-        user: contextPayload.user,
-        scores: contextPayload.scores ? { ...contextPayload.scores } : null,
-        visibleSections: Array.isArray(contextPayload.visibleSections) ? [...contextPayload.visibleSections] : []
-      } } as unknown) as any
-    });
+    // Persist user message when logged in
+    if (conversationId && user?.id) {
+      await supabase.from('ai_messages').insert({
+        conversation_id: conversationId,
+        role: 'user',
+        content: text,
+        metadata: ({ context: {
+          route: contextPayload.route,
+          lang: contextPayload.lang,
+          user: contextPayload.user,
+          scores: contextPayload.scores ? { ...contextPayload.scores } : null,
+          visibleSections: Array.isArray(contextPayload.visibleSections) ? [...contextPayload.visibleSections] : []
+        } } as unknown) as any
+      });
+    }
 
     setSending(true);
     try {
@@ -144,11 +168,13 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
       const reply = (data as any)?.generatedText || t('ximai.fallback_reply');
       setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: reply }]);
 
-      await supabase.from('ai_messages').insert({
-        conversation_id: conversationId,
-        role: 'assistant',
-        content: reply
-      });
+      if (conversationId && user?.id) {
+        await supabase.from('ai_messages').insert({
+          conversation_id: conversationId,
+          role: 'assistant',
+          content: reply
+        });
+      }
     } catch (e) {
       console.error('AI call failed', e);
       const reply = t('ximai.not_configured');
@@ -228,9 +254,18 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
               <div className="space-y-3" role="log" aria-live="polite">
                 {messages.map((m) => (
                   <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${m.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-                      {m.content}
-                    </div>
+                    {m.kind === 'auth-cta' ? (
+                      <div className="max-w-[80%] rounded-2xl px-3 py-2 text-sm bg-muted">
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="secondary" onClick={() => navigate('/login')}>{t('nav.login')}</Button>
+                          <Button size="sm" onClick={() => navigate('/register')}>{t('nav.register')}</Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${m.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                        {m.content}
+                      </div>
+                    )}
                   </div>
                 ))}
                 {sending && (
@@ -256,11 +291,22 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                 </Button>
               </div>
 
-              <div className="flex flex-wrap gap-2">
-                <Button variant="outline" size="sm" onClick={() => navigate('/ximatar-journey?open=booking')}>{t('ximai.action_booking')}</Button>
-                <Button variant="outline" size="sm" onClick={() => navigate('/development-plan')}>{t('ximai.action_tests')}</Button>
-                <Button variant="outline" size="sm" onClick={() => navigate('/chat')}>{t('ximai.action_chat')}</Button>
-                <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>{t('dashboard.title')}</Button>
+              <div className="flex flex-wrap gap-2 min-h-9">
+                {isAuthenticated ? (
+                  <>
+                    <Button variant="outline" size="sm" onClick={() => navigate('/ximatar-journey?open=booking')}>{t('ximai.action_booking')}</Button>
+                    <Button variant="outline" size="sm" onClick={() => navigate('/development-plan')}>{t('ximai.action_tests')}</Button>
+                    <Button variant="outline" size="sm" onClick={() => navigate('/chat')}>{t('ximai.action_chat')}</Button>
+                    <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>{t('dashboard.title')}</Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="outline" size="sm" onClick={() => navigate('/about')}>{t('nav.about')}</Button>
+                    <Button variant="outline" size="sm" onClick={() => navigate('/how-it-works')}>{t('nav.how_it_works')}</Button>
+                    <Button variant="outline" size="sm" onClick={() => navigate('/login')}>{t('nav.login')}</Button>
+                    <Button variant="default" size="sm" onClick={() => navigate('/register')}>{t('nav.register')}</Button>
+                  </>
+                )}
               </div>
             </div>
           </div>
