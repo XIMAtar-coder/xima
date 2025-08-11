@@ -223,7 +223,8 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
       <Dialog open={open} onOpenChange={(v) => { setOpen(v); onOpenChange?.(v); }}>
         <DialogContent 
           aria-label={t('ximai.aria_dialog')} 
-          className="max-w-xl p-0 overflow-hidden rounded-3xl border-0 ximai-premium-shadow bg-background/98 backdrop-blur-xl"
+          className="max-w-xl p-0 overflow-hidden ximai-premium-shadow bg-background/98 backdrop-blur-sm"
+          style={{ borderRadius: '24px' }}
         >
           <DialogHeader className="border-b border-border/10 px-5 py-4">
             <DialogTitle className="flex items-center justify-between">
@@ -241,8 +242,9 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                   value={botLang}
                   onChange={(e) => xim.setLang(e.target.value)}
                 >
-                  <option value="en">English</option>
                   <option value="it">Italiano</option>
+                  <option value="en">English</option>
+                  <option value="es">Español</option>
                 </select>
                 <Button 
                   variant="ghost" 

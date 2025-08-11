@@ -6,13 +6,17 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 // Import translation files
 import enTranslations from './locales/en.json';
 import itTranslations from './locales/it.json';
+import esTranslations from './locales/es.json';
 
 const resources = {
+  it: {
+    translation: itTranslations
+  },
   en: {
     translation: enTranslations
   },
-  it: {
-    translation: itTranslations
+  es: {
+    translation: esTranslations
   }
 };
 
@@ -21,7 +25,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en',
+    fallbackLng: 'it', // Italian as default
     debug: false,
     
     detection: {

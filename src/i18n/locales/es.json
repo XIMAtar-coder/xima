@@ -1,0 +1,364 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "how_it_works": "Cómo Funciona",
+    "about": "Acerca de",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "profile": "Perfil",
+    "logout": "Cerrar Sesión"
+  },
+  "hero": {
+    "title": "Descubre tu potencial profesional",
+    "subtitle": "Con XIMA, puedes descubrir tu verdadera identidad profesional y conectar con las oportunidades perfectas.",
+    "cta_discover": "Descubre tu XIMAtar",
+    "cta_learn_more": "Aprende Más"
+  },
+  "pillars": {
+    "power": "Poder Computacional",
+    "power_desc": "Tu capacidad para procesar información, pensar analíticamente y resolver problemas complejos.",
+    "communication": "Comunicación",
+    "communication_desc": "Tu habilidad para expresar ideas, colaborar y conectar con otros de manera efectiva.",
+    "knowledge": "Conocimiento",
+    "knowledge_desc": "Tu comprensión técnica, conocimiento del dominio y experiencia en áreas específicas.",
+    "creativity": "Creatividad",
+    "creativity_desc": "Tu capacidad para pensar fuera de lo convencional, innovar y generar soluciones originales.",
+    "drive": "Impulso",
+    "drive_desc": "Tu motivación, ambición y determinación para alcanzar objetivos y superar desafíos."
+  },
+  "cta": {
+    "title": "¿Listo para descubrir tu potencial?",
+    "description": "Únete a miles de profesionales que han transformado sus carreras con XIMA.",
+    "button": "Comenzar Mi Evaluación"
+  },
+  "baseline": {
+    "title": "Evaluación Inicial",
+    "upload_cv": "Subir CV",
+    "cv_formats": "Formatos soportados: PDF, DOC, DOCX (máx. 10MB)",
+    "data_consent": "Al subir tu CV, consientes el procesamiento de tus datos profesionales para la evaluación.",
+    "upload_button": "Seleccionar Archivo",
+    "uploading": "Subiendo...",
+    "upload_success": "¡CV subido exitosamente!"
+  },
+  "assessment": {
+    "title": "Evaluación XIMAtar",
+    "question_of": "Pregunta {{current}} de {{total}}",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "submit": "Enviar Evaluación",
+    "save_progress": "Guardar Progreso",
+    "loading": "Cargando...",
+    "category_logic": "Resolución Lógica de Problemas",
+    "category_creativity": "Pensamiento Creativo",
+    "category_communication": "Habilidades de Comunicación",
+    "category_analysis": "Análisis de Datos",
+    "category_drive": "Impulso y Motivación",
+    "questions": {
+      "logic": [
+        {
+          "question": "Al enfrentar un problema complejo en el trabajo, tu primer paso es:",
+          "options": [
+            "Dividir el problema en partes más pequeñas y manejables",
+            "Buscar soluciones similares que se hayan usado antes",
+            "Reunir a un equipo para lluvia de ideas",
+            "Sumergirme y experimentar con diferentes enfoques"
+          ]
+        },
+        {
+          "question": "¿Cómo manejas situaciones donde los datos son incompletos o contradictorios?",
+          "options": [
+            "Busco fuentes de datos adicionales antes de proceder",
+            "Uso mi experiencia para llenar los vacíos",
+            "Documento las incertidumbres y procedo con precaución",
+            "Creo múltiples escenarios basados en diferentes suposiciones"
+          ]
+        }
+      ],
+      "creativity": [
+        {
+          "question": "Al proponer una nueva idea en el trabajo, típicamente:",
+          "options": [
+            "Presento un plan detallado con pasos de implementación",
+            "Comparto el concepto y colaboro en el desarrollo",
+            "Construyo un prototipo o demostración",
+            "Busco feedback antes de desarrollar más"
+          ]
+        },
+        {
+          "question": "Tu enfoque para la innovación se describe mejor como:",
+          "options": [
+            "Evolución sistemática de ideas existentes",
+            "Saltos creativos e intuición",
+            "Colaboración e ideas colectivas",
+            "Experimentación y iteración rápida"
+          ]
+        }
+      ]
+    },
+    "open_questions": [
+      {
+        "id": "leadership_experience",
+        "question": "Describe una situación donde tomaste la iniciativa para liderar un proyecto o equipo. ¿Cuáles fueron los desafíos y cómo los superaste?",
+        "placeholder": "Comparte tu experiencia de liderazgo..."
+      },
+      {
+        "id": "creative_solution",
+        "question": "Cuéntanos sobre una vez que tuviste que idear una solución creativa para un problema difícil. ¿Cuál fue tu proceso de pensamiento?",
+        "placeholder": "Describe tu enfoque creativo para resolver problemas..."
+      }
+    ]
+  },
+  "results": {
+    "title": "Tus Resultados XIMAtar",
+    "your_ximatar": "Tu XIMAtar",
+    "score_breakdown": "Desglose de Puntuación",
+    "strengths": "Fortalezas",
+    "areas_for_growth": "Áreas de Crecimiento",
+    "recommended_roles": "Roles Recomendados",
+    "expert_match": "Coincidencia de Experto",
+    "book_session": "Reservar Sesión",
+    "ximatar_types": {
+      "eagle": "Águila",
+      "wolf": "Lobo",
+      "dolphin": "Delfín",
+      "owl": "Búho",
+      "lion": "León"
+    },
+    "ximatar_descriptions": {
+      "eagle": "Visionario estratégico con excelente vista panorámica y capacidades de liderazgo.",
+      "wolf": "Colaborador fuerte con excelentes instintos de trabajo en equipo y lealtad.",
+      "dolphin": "Comunicador altamente inteligente con fuertes habilidades sociales y adaptabilidad.",
+      "owl": "Pensador analítico con profunda sabiduría y excelentes habilidades para resolver problemas.",
+      "lion": "Líder natural con fuerte presencia y capacidad para inspirar a otros."
+    }
+  },
+  "mentor": {
+    "title": "Reservar Sesión de Mentoría",
+    "select_expert": "Seleccionar Experto",
+    "expert_specialty": "Especialidad: {{specialty}}",
+    "expert_experience": "{{years}} años de experiencia",
+    "book_session": "Reservar Sesión",
+    "session_duration": "Duración: 45 minutos",
+    "session_price": "Precio: Gratuito",
+    "calendly_placeholder": "El widget de Calendly aparecerá aquí"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Bienvenido de vuelta",
+    "your_ximatar": "Tu XIMAtar",
+    "xima_score": "Puntuación XIMA",
+    "matched_professional": "Profesional Coincidente",
+    "book_session": "Reservar Sesión",
+    "development_plan": "Plan de Desarrollo",
+    "job_matches": "Coincidencias de Trabajo",
+    "recent_activity": "Actividad Reciente",
+    "assessment_completed": "Evaluación completada",
+    "profile_updated": "Perfil actualizado",
+    "session_booked": "Sesión reservada",
+    "perfect_ximater_title": "Podrías ser el XIMAter perfecto para...",
+    "match_quality": "Calidad de Coincidencia",
+    "assessment_completion": "Finalización de Evaluación"
+  },
+  "about": {
+    "title": "Acerca de XIMA",
+    "problem_title": "El Problema",
+    "problem_desc": "La calidad de las coincidencias trabajo-candidato sigue siendo baja. Los currículos no capturan la verdadera esencia de una persona, y los algoritmos de coincidencia tradicionales se quedan cortos.",
+    "solution_title": "Nuestra Solución",
+    "solution_desc": "XIMA va más allá de los currículos para entender tu verdadera identidad profesional a través de evaluaciones integrales y análisis de IA.",
+    "pillars_title": "Los Cinco Pilares de XIMA",
+    "ximatar_title": "Tu XIMAtar",
+    "ximatar_desc": "Tu identidad animal profesional única que representa tus fortalezas, estilo de trabajo y potencial.",
+    "benefits_title": "Beneficios",
+    "benefits_jobseekers": "Para Buscadores de Empleo: Descubre tu verdadero potencial y conecta con oportunidades perfectas.",
+    "benefits_employers": "Para Empleadores: Encuentra candidatos que realmente encajen con tu cultura y necesidades."
+  },
+  "how_it_works": {
+    "title": "Cómo Funciona",
+    "step1": "Completa la Evaluación",
+    "step1_desc": "Responde a nuestra evaluación integral que mide los cinco pilares de XIMA.",
+    "step2": "Descubre tu XIMAtar",
+    "step2_desc": "Recibe tu identidad animal profesional única basada en tus fortalezas.",
+    "step3": "Conecta con Oportunidades",
+    "step3_desc": "Encuentra trabajos y mentores perfectamente alineados con tu perfil.",
+    "step4": "Crece Profesionalmente",
+    "step4_desc": "Desarrolla tus habilidades con planes de desarrollo personalizados."
+  },
+  "ximatar_journey": {
+    "title": "Tu Viaje XIMAtar",
+    "baseline_assessment": "Evaluación Inicial",
+    "ximatar_assessment": "Evaluación XIMAtar",
+    "results_comparison": "Comparación de Resultados",
+    "mentor_booking": "Reserva de Mentor"
+  },
+  "login": {
+    "title": "Iniciar Sesión",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "login_button": "Iniciar Sesión",
+    "signup_link": "¿No tienes cuenta? Regístrate",
+    "forgot_password": "¿Olvidaste tu contraseña?",
+    "invalid_credentials": "Credenciales inválidas"
+  },
+  "register": {
+    "title": "Crear Cuenta",
+    "first_name": "Nombre",
+    "last_name": "Apellido",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirm_password": "Confirmar Contraseña",
+    "register_button": "Crear Cuenta",
+    "login_link": "¿Ya tienes cuenta? Inicia sesión",
+    "password_mismatch": "Las contraseñas no coinciden",
+    "email_exists": "El correo ya está registrado"
+  },
+  "not_found": {
+    "title": "Página No Encontrada",
+    "description": "La página que buscas no existe.",
+    "back_home": "Volver al Inicio"
+  },
+  "footer": {
+    "copyright": "© 2024 XIMA. Todos los derechos reservados."
+  },
+  "language": {
+    "switch_to": "Cambiar a {{language}}"
+  },
+  "process": {
+    "step1_title": "Subir CV",
+    "step1_desc": "Comienza subiendo tu currículum para una evaluación inicial.",
+    "step2_title": "Completar Evaluación",
+    "step2_desc": "Responde nuestra evaluación integral de los cinco pilares.",
+    "step3_title": "Descubrir XIMAtar",
+    "step3_desc": "Recibe tu identidad animal profesional única.",
+    "step4_title": "Conectar & Crecer",
+    "step4_desc": "Encuentra oportunidades perfectas y desarrolla tus habilidades."
+  },
+  "avatar_explanation": {
+    "title": "Tu Identidad Animal Profesional",
+    "description": "Cada XIMAtar representa un conjunto único de fortalezas profesionales y características de personalidad que te definen en el lugar de trabajo.",
+    "eagle_traits": "Visionario, Estratégico, Orientado al liderazgo",
+    "wolf_traits": "Colaborativo, Leal, Fuerte trabajo en equipo",
+    "dolphin_traits": "Comunicativo, Adaptable, Socialmente inteligente",
+    "owl_traits": "Analítico, Sabio, Solucionador de problemas",
+    "lion_traits": "Líder natural, Carismático, Inspirador"
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "personal_info": "Información Personal",
+    "xima_score": "Puntuación XIMA",
+    "ximatar": "XIMAtar",
+    "recent_assessments": "Evaluaciones Recientes",
+    "development_plan": "Plan de Desarrollo",
+    "mentor_sessions": "Sesiones de Mentoría",
+    "job_preferences": "Preferencias de Trabajo"
+  },
+  "xima_score_tooltip": {
+    "computational_power": "Tu capacidad para procesar información compleja y resolver problemas analíticos",
+    "communication": "Tu efectividad para expresar ideas y colaborar con otros",
+    "knowledge": "Tu comprensión técnica y experiencia en el dominio",
+    "creativity": "Tu capacidad para innovar y pensar creativamente",
+    "drive": "Tu motivación y determinación para alcanzar objetivos"
+  },
+  "development": {
+    "title": "Plan de Desarrollo",
+    "back_to_dashboard": "Volver al Dashboard",
+    "enhance_analytical_skills": "Mejorar Habilidades Analíticas",
+    "enhance_communication": "Mejorar Comunicación",
+    "boost_creativity": "Impulsar Creatividad",
+    "increase_drive": "Aumentar Impulso",
+    "expand_knowledge": "Expandir Conocimiento",
+    "start_test": "Comenzar Prueba",
+    "tests_completed": "Pruebas Completadas",
+    "progress": "Progreso",
+    "skill_assessment": "Evaluación de Habilidades",
+    "personalized_recommendations": "Recomendaciones Personalizadas",
+    "track_improvement": "Seguir Mejora"
+  },
+  "ximai": {
+    "aria_open": "Abrir chat XIM-AI",
+    "aria_dialog": "Diálogo de chat XIM-AI",
+    "bot_language": "Idioma del bot",
+    "clear_history": "Limpiar historial",
+    "close": "Cerrar",
+    "thinking": "Pensando...",
+    "input_placeholder": "Escribe tu mensaje...",
+    "send": "Enviar",
+    "welcome_message": "¡Hola! Soy XIM-AI, tu asistente personal de XIMA. ¿En qué puedo ayudarte hoy?",
+    "action_booking": "Reservar Sesión",
+    "action_tests": "Pruebas de Desarrollo",
+    "action_chat": "Chat XIMA",
+    "login_required": "Necesitas iniciar sesión para acceder a esta función. Por favor, inicia sesión o crea una cuenta.",
+    "fallback_reply": "Lo siento, no pude procesar tu solicitud en este momento. Por favor, inténtalo de nuevo.",
+    "not_configured": "Lo siento, el servicio de chat no está configurado correctamente.",
+    "preview": {
+      "dashboard": "¿Necesitas ayuda para entender tus puntuaciones o reservar una sesión?",
+      "about": "Aprende cómo XIMA puede transformar tu carrera profesional.",
+      "how_it_works": "Descubre el proceso paso a paso de XIMA.",
+      "development": "Obtén orientación sobre tu plan de desarrollo personalizado.",
+      "profile": "Gestiona tu perfil y configuraciones de XIMA.",
+      "chat": "Conecta con profesionales que coincidan con tu XIMAtar.",
+      "opportunity": "Explora oportunidades de trabajo adaptadas a ti.",
+      "default": "¿Tienes preguntas sobre XIMA? ¡Estoy aquí para ayudar!"
+    },
+    "open": "Abrir"
+  },
+  "chat": {
+    "title": "Chat XIMA",
+    "search_placeholder": "Buscar profesionales...",
+    "no_selection": "Selecciona un profesional para comenzar a chatear",
+    "best_match": "Mejor Coincidencia",
+    "message_placeholder": "Escribe un mensaje...",
+    "send": "Enviar",
+    "online": "En línea",
+    "offline": "Desconectado",
+    "typing": "Escribiendo...",
+    "welcome_message": "¡Hola! Soy XIM-AI, tu asistente personal de XIMA. ¿En qué puedo ayudarte hoy?"
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "warning": "Advertencia",
+    "info": "Información"
+  },
+  "errors": {
+    "generic": "Ocurrió un error inesperado",
+    "auth_required": "Debes iniciar sesión para acceder a esta página",
+    "not_found": "La página o recurso solicitado no fue encontrado",
+    "network": "Error de conexión. Verifica tu internet e inténtalo de nuevo",
+    "validation": "Por favor, verifica los datos ingresados"
+  },
+  "empty": {
+    "no_data": "No hay datos disponibles",
+    "complete_assessment": "Completa tu evaluación para ver los resultados",
+    "no_messages": "No hay mensajes aún",
+    "no_matches": "No se encontraron coincidencias"
+  },
+  "opportunity": {
+    "view": "Ver Oportunidad",
+    "apply": "Aplicar",
+    "save": "Guardar",
+    "share": "Compartir",
+    "location": "Ubicación",
+    "salary": "Salario",
+    "type": "Tipo",
+    "experience": "Experiencia",
+    "skills": "Habilidades",
+    "description": "Descripción",
+    "requirements": "Requisitos",
+    "benefits": "Beneficios",
+    "company": "Empresa",
+    "posted": "Publicado",
+    "deadline": "Fecha límite",
+    "match_score": "Puntuación de Coincidencia",
+    "sentiment_title": "Análisis de Sentimientos",
+    "sentiment_positive": "Positivo",
+    "sentiment_neutral": "Neutral",
+    "sentiment_negative": "Negativo"
+  }
+}

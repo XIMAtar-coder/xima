@@ -23,14 +23,14 @@ export const ChatEntry: React.FC = () => {
 
   return (
     <div data-ximai-skip>
-      {/* Premium Launcher */}
+      {/* Minimal Premium Launcher */}
       <button
         ref={launcherRef}
         aria-label="Open XIM‑AI chat"
         className="fixed z-50 md:bottom-6 md:right-6 bottom-4 left-1/2 -translate-x-1/2 md:translate-x-0 
                    ximai-launcher-shadow ximai-hover-scale ximai-tap-scale ximai-safe-area
-                   bg-background border border-border/20 backdrop-blur-xl
-                   transition-all duration-200 ease-out"
+                   bg-background/95 backdrop-blur-sm
+                   transition-all duration-150 ease-out"
         onMouseEnter={() => setMounted(true)}
         onFocus={() => setMounted(true)}
         onClick={openChat}

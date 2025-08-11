@@ -96,21 +96,24 @@
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-/* Premium XIM-AI Design Tokens */
+/* Premium XIM-AI Design Tokens - Minimal Shadow Treatment */
 .ximai-premium-shadow {
-  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.15);
+  border: 1px solid hsl(var(--border) / 0.3);
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
 }
 
 .ximai-launcher-shadow {
-  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.12), 0 4px 8px -2px rgba(0, 0, 0, 0.08);
+  border: 1px solid hsl(var(--border) / 0.2);
+  box-shadow: 0 1px 3px -1px rgba(0, 0, 0, 0.06);
 }
 
 .ximai-popup-shadow {
-  box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.15), 0 4px 12px -4px rgba(0, 0, 0, 0.1);
+  border: 1px solid hsl(var(--border) / 0.25);
+  box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.08);
 }
 
 .ximai-message-shadow {
-  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.08);
+  /* No shadow - rely on background contrast */
 }
 
 .ximai-hover-scale {
@@ -119,7 +122,8 @@
 
 .ximai-hover-scale:hover {
   transform: scale(1.01);
-  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.18);
+  /* Minimal shadow increase */
+  box-shadow: 0 2px 12px -4px rgba(0, 0, 0, 0.08);
 }
 
 .ximai-tap-scale:active {

@@ -154,14 +154,16 @@ export const TokenPreview: React.FC<{ onOpenChat: () => void }> = ({ onOpenChat 
         minWidth: 280,
         maxWidth: 360,
         zIndex: 45,
-        padding: 12,
-        borderRadius: 16,
-        boxShadow: "var(--shadow-elegant, 0 10px 30px -10px hsl(var(--primary) / 0.18))",
-        background: "hsl(var(--card))",
-        color: "hsl(var(--card-foreground))",
+        padding: 16,
+        borderRadius: 20,
+        border: "1px solid hsl(var(--border) / 0.25)",
+        boxShadow: "0 4px 12px -4px rgba(0, 0, 0, 0.08)",
+        background: "hsl(var(--background) / 0.95)",
+        backdropFilter: "blur(8px)",
+        color: "hsl(var(--foreground))",
         opacity: visible ? 1 : 0,
         transform: visible ? "scale(1)" : "scale(0.98)",
-        transition: "opacity 160ms ease, transform 160ms ease",
+        transition: "opacity 150ms ease, transform 150ms ease",
       }}
       className="animate-fade-in"
       role="dialog"

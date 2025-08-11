@@ -11,8 +11,9 @@ import {
 import { Globe } from 'lucide-react';
 
 const languages = [
+  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
   { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'it', name: 'Italiano', flag: '🇮🇹' }
+  { code: 'es', name: 'Español', flag: '🇪🇸' }
 ];
 
 const LanguageSwitcher: React.FC = () => {
