@@ -97,6 +97,22 @@ export const ChatWidget: React.FC = () => {
   const sendMessage = async () => {
     if (!input.trim() || !conversationId || !user?.id) return;
     const text = input.trim();
+
+    // Simple deep-link commands (/go /dashboard, /chat, /development-plan, /opportunity <id>, /booking)
+    const cmd = text.toLowerCase();
+    const nav = (path: string) => {
+      navigate(path);
+      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: `→ ${path}` }]);
+    };
+    if (cmd === '/go /dashboard' || cmd === '/dashboard') { setInput(''); nav('/dashboard'); return; }
+    if (cmd === '/go /chat' || cmd === '/chat') { setInput(''); nav('/chat?start=best'); return; }
+    if (cmd === '/go /development-plan' || cmd === '/development-plan') { setInput(''); nav('/development-plan'); return; }
+    if (cmd.startsWith('/opportunity')) {
+      const id = cmd.split(' ').at(1);
+      if (id) { setInput(''); nav(`/opportunity/${id}`); return; }
+    }
+    if (cmd === '/booking') { setInput(''); nav('/ximatar-journey?open=booking'); return; }
+
     setInput('');
 
     const localId = crypto.randomUUID();

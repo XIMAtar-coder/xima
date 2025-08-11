@@ -312,6 +312,42 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_opportunities: {
+        Row: {
+          company: string | null
+          created_at: string
+          id: string
+          job_id: string
+          location: string | null
+          skills: string[] | null
+          source_url: string | null
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          id?: string
+          job_id: string
+          location?: string | null
+          skills?: string[] | null
+          source_url?: string | null
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          id?: string
+          job_id?: string
+          location?: string | null
+          skills?: string[] | null
+          source_url?: string | null
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
