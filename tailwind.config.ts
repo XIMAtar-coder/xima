@@ -103,12 +103,53 @@ export default {
 						transform: 'translateY(0)'
 					}
 				},
-				'pulse-slow': {
+				'fade-scale-in': {
+					'0%': {
+						opacity: '0',
+						transform: 'scale(0.96) translateY(8px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'scale(1) translateY(0)'
+					}
+				},
+				'fade-scale-out': {
+					'0%': {
+						opacity: '1',
+						transform: 'scale(1) translateY(0)'
+					},
+					'100%': {
+						opacity: '0',
+						transform: 'scale(0.96) translateY(8px)'
+					}
+				},
+				'pulse-gentle': {
 					'0%, 100%': {
-						opacity: '1'
+						opacity: '1',
+						transform: 'scale(1)'
 					},
 					'50%': {
-						opacity: '0.8'
+						opacity: '0.85',
+						transform: 'scale(1.02)'
+					}
+				},
+				'wave-flow': {
+					'0%': {
+						transform: 'translateX(-100%)'
+					},
+					'50%': {
+						transform: 'translateX(0%)'
+					},
+					'100%': {
+						transform: 'translateX(100%)'
+					}
+				},
+				'typing-dots': {
+					'0%, 60%, 100%': {
+						transform: 'translateY(0)'
+					},
+					'30%': {
+						transform: 'translateY(-8px)'
 					}
 				}
 			},
@@ -116,7 +157,11 @@ export default {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.5s ease-out',
-				'pulse-slow': 'pulse-slow 3s infinite'
+				'fade-scale-in': 'fade-scale-in 180ms cubic-bezier(0.4, 0, 0.2, 1)',
+				'fade-scale-out': 'fade-scale-out 150ms cubic-bezier(0.4, 0, 0.2, 1)',
+				'pulse-gentle': 'pulse-gentle 3s infinite',
+				'wave-flow': 'wave-flow 2s ease-in-out infinite',
+				'typing-dots': 'typing-dots 1.4s infinite ease-in-out'
 			}
 		}
 	},

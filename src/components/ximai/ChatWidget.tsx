@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useUser } from '@/context/UserContext';
 import { useXimAI } from '@/context/XimAIProvider';
 import { supabase } from '@/integrations/supabase/client';
+import AssistantAvatar from './AssistantAvatar';
 
 interface Message {
   id: string;
@@ -220,29 +221,45 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
       )}
 
       <Dialog open={open} onOpenChange={(v) => { setOpen(v); onOpenChange?.(v); }}>
-        <DialogContent aria-label={t('ximai.aria_dialog')} className="max-w-xl p-0 overflow-hidden rounded-2xl shadow-xl" style={{ boxShadow: "0 12px 32px -12px hsl(var(--foreground)/0.2)" }}>
-          <DialogHeader className="border-b px-4 py-3">
+        <DialogContent 
+          aria-label={t('ximai.aria_dialog')} 
+          className="max-w-xl p-0 overflow-hidden rounded-3xl border-0 ximai-premium-shadow bg-background/98 backdrop-blur-xl"
+        >
+          <DialogHeader className="border-b border-border/10 px-5 py-4">
             <DialogTitle className="flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <Bot className="w-5 h-5" />
-                <span className="text-base font-medium">XIM‑AI</span>
+              <span className="flex items-center gap-3">
+                <AssistantAvatar size={28} isActive={sending} isThinking={sending} />
+                <span className="text-lg font-medium tracking-tight">XIM‑AI</span>
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <label htmlFor="ximai-lang" className="sr-only">{t('ximai.bot_language')}</label>
                 <select
                   id="ximai-lang"
                   aria-label={t('ximai.bot_language')}
-                  className="border rounded px-2 py-1 text-sm"
+                  className="border border-border/20 rounded-xl px-3 py-1.5 text-sm bg-background/50 
+                             focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all duration-150"
                   value={botLang}
                   onChange={(e) => xim.setLang(e.target.value)}
                 >
                   <option value="en">English</option>
                   <option value="it">Italiano</option>
                 </select>
-                <Button variant="ghost" size="icon" aria-label={t('ximai.clear_history')} onClick={handleClear}>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  aria-label={t('ximai.clear_history')} 
+                  onClick={handleClear}
+                  className="h-8 w-8 rounded-xl hover:bg-muted/50 transition-colors duration-150"
+                >
                   <Trash className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="icon" aria-label={t('ximai.close')} onClick={() => { setOpen(false); onOpenChange?.(false); }}>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  aria-label={t('ximai.close')} 
+                  onClick={() => { setOpen(false); onOpenChange?.(false); }}
+                  className="h-8 w-8 rounded-xl hover:bg-muted/50 transition-colors duration-150"
+                >
                   <X className="w-4 h-4" />
                 </Button>
               </div>
@@ -250,61 +267,157 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
           </DialogHeader>
 
           <div className="grid grid-rows-[1fr_auto]" style={{ maxHeight: '80vh' }}>
-            <ScrollArea className="p-4">
-              <div className="space-y-3" role="log" aria-live="polite">
+            <ScrollArea className="px-5 py-4">
+              <div className="space-y-4" role="log" aria-live="polite">
                 {messages.map((m) => (
                   <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     {m.kind === 'auth-cta' ? (
-                      <div className="max-w-[80%] rounded-2xl px-3 py-2 text-sm bg-muted">
+                      <div className="max-w-[85%] rounded-3xl px-4 py-3 text-sm bg-muted/50 ximai-message-shadow">
                         <div className="flex gap-2">
-                          <Button size="sm" variant="secondary" onClick={() => navigate('/login')}>{t('nav.login')}</Button>
-                          <Button size="sm" onClick={() => navigate('/register')}>{t('nav.register')}</Button>
+                          <Button 
+                            size="sm" 
+                            variant="secondary" 
+                            onClick={() => navigate('/login')}
+                            className="rounded-xl text-xs font-medium ximai-tap-scale"
+                          >
+                            {t('nav.login')}
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            onClick={() => navigate('/register')}
+                            className="rounded-xl text-xs font-medium ximai-tap-scale"
+                          >
+                            {t('nav.register')}
+                          </Button>
                         </div>
                       </div>
                     ) : (
-                      <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${m.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                      <div 
+                        className={`max-w-[85%] rounded-3xl px-4 py-3 text-sm font-normal leading-relaxed ximai-message-shadow
+                          ${m.role === 'user' 
+                            ? 'bg-primary text-primary-foreground ml-8' 
+                            : 'bg-muted/40 text-foreground/90 mr-8'
+                          }`}
+                      >
                         {m.content}
                       </div>
                     )}
                   </div>
                 ))}
                 {sending && (
-                  <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                    <Loader2 className="w-4 h-4 animate-spin" /> {t('ximai.thinking')}
+                  <div className="flex items-center gap-3 text-muted-foreground text-sm font-medium ml-2">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-primary/60 rounded-full animate-typing-dots" style={{ animationDelay: '0ms' }} />
+                      <div className="w-2 h-2 bg-primary/60 rounded-full animate-typing-dots" style={{ animationDelay: '150ms' }} />
+                      <div className="w-2 h-2 bg-primary/60 rounded-full animate-typing-dots" style={{ animationDelay: '300ms' }} />
+                    </div>
+                    <span>{t('ximai.thinking')}</span>
                   </div>
                 )}
                 <div ref={listRef} />
               </div>
             </ScrollArea>
 
-            <div className="border-t p-3 space-y-3">
-              <div className="flex gap-2">
+            <div className="border-t border-border/10 px-5 py-4 space-y-4 bg-background/50">
+              <div className="flex gap-3">
                 <Input
                   placeholder={t('ximai.input_placeholder')}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') sendMessage(); }}
                   aria-label={t('ximai.input_placeholder')}
+                  className="rounded-2xl border-border/20 bg-background/80 px-4 py-2.5 text-sm
+                             focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all duration-150
+                             placeholder:text-muted-foreground/60"
                 />
-                <Button onClick={sendMessage} disabled={!input.trim() || sending} aria-label={t('ximai.send')}>
+                <Button 
+                  onClick={sendMessage} 
+                  disabled={!input.trim() || sending} 
+                  aria-label={t('ximai.send')}
+                  className="rounded-2xl px-4 py-2.5 ximai-tap-scale bg-primary hover:bg-primary/90 
+                             transition-all duration-150 disabled:opacity-50"
+                >
                   <MessageSquareIcon className="w-4 h-4" />
                 </Button>
               </div>
 
-              <div className="flex flex-wrap gap-2 min-h-9">
+              <div className="flex flex-wrap gap-2 min-h-8">
                 {isAuthenticated ? (
                   <>
-                    <Button variant="outline" size="sm" onClick={() => navigate('/ximatar-journey?open=booking')}>{t('ximai.action_booking')}</Button>
-                    <Button variant="outline" size="sm" onClick={() => navigate('/development-plan')}>{t('ximai.action_tests')}</Button>
-                    <Button variant="outline" size="sm" onClick={() => navigate('/chat')}>{t('ximai.action_chat')}</Button>
-                    <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>{t('dashboard.title')}</Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => navigate('/ximatar-journey?open=booking')}
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
+                    >
+                      {t('ximai.action_booking')}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => navigate('/development-plan')}
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
+                    >
+                      {t('ximai.action_tests')}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => navigate('/chat')}
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
+                    >
+                      {t('ximai.action_chat')}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => navigate('/dashboard')}
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
+                    >
+                      {t('dashboard.title')}
+                    </Button>
                   </>
                 ) : (
                   <>
-                    <Button variant="outline" size="sm" onClick={() => navigate('/about')}>{t('nav.about')}</Button>
-                    <Button variant="outline" size="sm" onClick={() => navigate('/how-it-works')}>{t('nav.how_it_works')}</Button>
-                    <Button variant="outline" size="sm" onClick={() => navigate('/login')}>{t('nav.login')}</Button>
-                    <Button variant="default" size="sm" onClick={() => navigate('/register')}>{t('nav.register')}</Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => navigate('/about')}
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
+                    >
+                      {t('nav.about')}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => navigate('/how-it-works')}
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
+                    >
+                      {t('nav.how_it_works')}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => navigate('/login')}
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
+                    >
+                      {t('nav.login')}
+                    </Button>
+                    <Button 
+                      variant="default" 
+                      size="sm" 
+                      onClick={() => navigate('/register')}
+                      className="rounded-2xl text-xs font-medium ximai-tap-scale transition-all duration-150"
+                    >
+                      {t('nav.register')}
+                    </Button>
                   </>
                 )}
               </div>
