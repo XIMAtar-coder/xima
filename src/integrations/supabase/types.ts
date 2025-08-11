@@ -10,10 +10,75 @@ export type Database = {
   // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "12.2.12 (cd3cf9e)"
   }
   public: {
     Tables: {
+      ai_conversations: {
+        Row: {
+          cleared_at: string | null
+          created_at: string
+          id: string
+          language: string
+          metadata: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cleared_at?: string | null
+          created_at?: string
+          id?: string
+          language?: string
+          metadata?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cleared_at?: string | null
+          created_at?: string
+          id?: string
+          language?: string
+          metadata?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          role: Database["public"]["Enums"]["ai_message_role"]
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          role: Database["public"]["Enums"]["ai_message_role"]
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          role?: Database["public"]["Enums"]["ai_message_role"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       appointments: {
         Row: {
           created_at: string
@@ -255,7 +320,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      ai_message_role: "user" | "assistant" | "system" | "tool"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -382,6 +447,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      ai_message_role: ["user", "assistant", "system", "tool"],
+    },
   },
 } as const
