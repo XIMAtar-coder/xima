@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const createCanonical = (href: string) => {
   let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
@@ -123,8 +124,24 @@ export default function OpportunityDetails() {
     window.open(job.sourceUrl, "_blank", "noopener,noreferrer");
   };
 
-  const handleSave = () => {
-    toast({ description: t("opportunity.toasts.saved") });
+  const handleSave = async () => {
+    if (!job || !user?.id) return;
+    try {
+      const client: any = supabase as any;
+      const { error } = await client.from('saved_opportunities').upsert({
+        user_id: user.id,
+        job_id: job.id,
+        title: job.title,
+        company: job.company,
+        location: job.location,
+        skills: job.skills,
+        source_url: job.sourceUrl
+      }, { onConflict: 'user_id,job_id' });
+      if (error) throw error;
+      toast({ description: t("opportunity.toasts.saved") });
+    } catch {
+      toast({ description: t("opportunity.toasts.share_failed") });
+    }
   };
 
   const handleShare = async () => {

@@ -52,6 +52,8 @@ const App = () => (
               <Route path="/test/presentation-skills" element={<TestPresentationSkills />} />
               <Route path="/test/creative-thinking" element={<TestCreativeThinking />} />
               <Route path="/opportunity/:id" element={<OpportunityDetails />} />
+              <Route path="/dashboard" element={<Profile />} />
+              <Route path="/chat" element={<XimaChat />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

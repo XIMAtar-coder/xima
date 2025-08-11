@@ -626,7 +626,13 @@
      "complete_assessment": "Complete Assessment",
      "discover_mentor": "Discover your mentor",
      "chat_with_mentor": "Chat with your mentor",
-     "discovery_mode": "Discovery Mode"
+     "discovery_mode": "Discovery Mode",
+     "job_matches_title": "You could be the perfect Ximater for…",
+     "job_matches_empty": "No matches yet. Complete assessments to see opportunities.",
+     "view_opportunity": "View Opportunity",
+     "match": "Match",
+     "refresh": "Refresh",
+     "loading": "Loading..."
    },
    "chat": {
      "title": "XIMA Chat", 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MainLayout from '../components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Send, Search, Filter, Star } from 'lucide-react';
 import { XimatarDisplay } from '@/components/XimatarDisplay';
 import { getXIMAtarByAssessment } from '@/utils/ximatarUtils';
+import { useSearchParams } from 'react-router-dom';
 
 const XimaChat = () => {
   const { t } = useTranslation();
@@ -16,6 +17,7 @@ const XimaChat = () => {
   const [message, setMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [messages, setMessages] = useState<any[]>([]);
+  const [searchParams] = useSearchParams();
 
   // Mock data for connected users with different XIMAtar types
   const connectedUsers = [
@@ -50,6 +52,15 @@ const XimaChat = () => {
       isBestMatch: false
     }
   ];
+
+  // Auto-open best match via deep link (?start=best)
+  useEffect(() => {
+    if (searchParams.get('start') === 'best') {
+      const best = connectedUsers.find(u => u.isBestMatch);
+      if (best) handleUserSelect(best);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filteredUsers = connectedUsers.filter(user =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

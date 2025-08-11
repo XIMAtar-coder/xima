@@ -663,8 +663,8 @@
      "your_mentor": "Il Tuo Mentore",
      "mentor_specialty": "Specialista in Comunicazione",
      "last_message": "Ultimo messaggio",
-     "status": "Stato",
-     "message_mentor": "Messaggio al Tuo Mentore",
+    "status": "Stato",
+    "message_mentor": "Messaggio al Tuo Mentore",
      "cv_vs_assessment": "Confronto CV vs Valutazione",
      "assessment_completed": "Valutazione completata",
      "view_full_comparison": "Visualizza Confronto Completo",
@@ -672,7 +672,13 @@
      "complete_assessment": "Completa Valutazione",
      "discover_mentor": "Scopri il tuo mentore",
      "chat_with_mentor": "Chatta con il tuo mentore",
-     "discovery_mode": "Modalità Scoperta"
+     "discovery_mode": "Modalità Scoperta",
+     "job_matches_title": "Potresti essere il Ximater perfetto per…",
+     "job_matches_empty": "Nessuna corrispondenza ancora. Completa le valutazioni per vedere le opportunità.",
+     "view_opportunity": "Vedi Opportunità",
+     "match": "Compatibilità",
+     "refresh": "Aggiorna",
+     "loading": "Caricamento..."
    },
    "chat": {
      "title": "XIMA Chat",

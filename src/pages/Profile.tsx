@@ -13,6 +13,8 @@ import { XimatarDisplay } from '@/components/XimatarDisplay';
 import XimaScoreCard from '@/components/XimaScoreCard';
 import { getXIMAtarByAssessment } from '@/utils/ximatarUtils';
 import { XIMAtar } from '@/types/ximatar';
+import { JobMatchesBlock } from '@/components/JobMatchesBlock';
+import { useJobMatches } from '@/hooks/useJobMatches';
 
 const Profile = () => {
   const { user, isAuthenticated } = useUser();
@@ -546,7 +548,7 @@ const Profile = () => {
                         size="sm" 
                         variant="outline" 
                         className="w-full"
-                        onClick={() => navigate('/xima-chat')}
+                        onClick={() => navigate('/chat?start=best')}
                       >
                         {t('profile.discover_mentor')}
                       </Button>
