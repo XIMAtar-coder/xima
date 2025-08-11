@@ -22,6 +22,8 @@ import TestPresentationSkills from "./pages/TestPresentationSkills";
 import TestCreativeThinking from "./pages/TestCreativeThinking";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import { XimAIProvider } from "./context/XimAIProvider";
+import { ChatWidget } from "./components/ximai/ChatWidget";
 
 const queryClient = new QueryClient();
 
@@ -32,24 +34,27 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/how-it-works" element={<HowItWorks />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/onboarding" element={<Onboarding />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/ximatar-journey" element={<XimatarJourney />} />
-            <Route path="/xima-chat" element={<XimaChat />} />
-            <Route path="/development-plan" element={<DevelopmentPlan />} />
-            <Route path="/test/data-analysis" element={<TestDataAnalysis />} />
-            <Route path="/test/logical-problem-solving" element={<TestLogicalProblemSolving />} />
-            <Route path="/test/presentation-skills" element={<TestPresentationSkills />} />
-            <Route path="/test/creative-thinking" element={<TestCreativeThinking />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <XimAIProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/ximatar-journey" element={<XimatarJourney />} />
+              <Route path="/xima-chat" element={<XimaChat />} />
+              <Route path="/development-plan" element={<DevelopmentPlan />} />
+              <Route path="/test/data-analysis" element={<TestDataAnalysis />} />
+              <Route path="/test/logical-problem-solving" element={<TestLogicalProblemSolving />} />
+              <Route path="/test/presentation-skills" element={<TestPresentationSkills />} />
+              <Route path="/test/creative-thinking" element={<TestCreativeThinking />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <ChatWidget />
+          </XimAIProvider>
         </BrowserRouter>
       </TooltipProvider>
     </UserProvider>

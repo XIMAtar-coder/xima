@@ -644,9 +644,26 @@
      "mentor_response": "Thank you for your message! I'll get back to you shortly with some insights."
    },
     "common": {
-      "back": "Back"
-    },
-    "development": {
-      "back_to_dashboard": "Back to your Dashboard"
-    }
- }
+    "back": "Back"
+  },
+  "development": {
+    "back_to_dashboard": "Back to your Dashboard"
+  },
+  "ximai": {
+    "aria_open": "Open XIM-AI chat",
+    "aria_dialog": "XIM-AI chat dialog",
+    "close": "Close",
+    "bot_language": "Bot language",
+    "clear_history": "Clear history",
+    "input_placeholder": "Type your message...",
+    "send": "Send",
+    "thinking": "Thinking...",
+    "fallback_reply": "I couldn't generate a response right now.",
+    "not_configured": "AI is not configured yet. Please try again later.",
+    "quick_actions": "Quick actions",
+    "action_booking": "Open booking",
+    "action_tests": "Development Plan tests",
+    "action_chat": "Open XIMA Chat",
+    "action_comparison": "View comparison"
+  }
+}

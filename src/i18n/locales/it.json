@@ -690,9 +690,26 @@
      "mentor_response": "Grazie per il tuo messaggio! Ti risponderò presto con alcuni consigli."
    },
     "common": {
-      "back": "Indietro"
-    },
-    "development": {
-      "back_to_dashboard": "Torna alla tua Dashboard"
-    }
- }
+    "back": "Indietro"
+  },
+  "development": {
+    "back_to_dashboard": "Torna alla tua Dashboard"
+  },
+  "ximai": {
+    "aria_open": "Apri chat XIM-AI",
+    "aria_dialog": "Dialogo chat XIM-AI",
+    "close": "Chiudi",
+    "bot_language": "Lingua del bot",
+    "clear_history": "Cancella cronologia",
+    "input_placeholder": "Scrivi il tuo messaggio...",
+    "send": "Invia",
+    "thinking": "Sto pensando...",
+    "fallback_reply": "Non sono riuscito a generare una risposta ora.",
+    "not_configured": "L'AI non è ancora configurata. Riprova più tardi.",
+    "quick_actions": "Azioni rapide",
+    "action_booking": "Apri prenotazione",
+    "action_tests": "Test Piano di Sviluppo",
+    "action_chat": "Apri XIMA Chat",
+    "action_comparison": "Vedi confronto"
+  }
+}
