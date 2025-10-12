@@ -250,6 +250,35 @@
         "open1": { "question": "Cuéntanos una pieza que cambió resultados. ¿Por qué funcionó?" },
         "open2": { "question": "¿Qué habilidad creativa más quieres mejorar este año y cómo?" }
       }
+    },
+    "service_ops": {
+      "title": "Crea tu XIMAtar",
+      "subtitle": "Completa nuestra evaluación para descubrir tus fortalezas profesionales",
+      "questions": {
+        "q1": { "category": "Potencia Computacional", "question": "Cuando bajan las métricas de servicio, primero:", "options": ["Segmento por turno/sede", "Verifico cumplimiento de procesos", "Comparo con histórico", "Compruebo integridad de datos"] },
+        "q2": { "category": "Comunicación", "question": "Atendiendo a un cliente difícil, tú:", "options": ["Escuchas y reflejas necesidades", "Explicas políticas en lenguaje claro", "Ofreces opciones y próximos pasos", "Escalas con contexto adecuado"] },
+        "q3": { "category": "Conocimiento", "question": "Para mantener procedimientos al día, tú:", "options": ["SOP claras", "Micro-formaciones periódicas", "Registrar cambios en base de conocimiento", "Recoger feedback de primera línea"] },
+        "q4": { "category": "Creatividad", "question": "Para mejorar un cuello de botella recurrente, tú:", "options": ["Rediseñas el flujo de trabajo", "Importas soluciones de otros equipos", "Pilotas un experimento de bajo riesgo", "Codiseñas con personal y usuarios"] },
+        "q5": { "category": "Impulso", "question": "En días de alta presión, tú:", "options": ["Te enfocas en tareas de alto impacto", "Apoyas activamente al equipo", "Rotas tareas para evitar fatiga", "Celebras pequeñas victorias"] },
+        "q6": { "category": "Potencia Computacional", "question": "Para planificar turnos eficaces, tú:", "options": ["Modelas demanda por hora", "Consideras mezcla de habilidades", "Incluyes buffers para picos", "Revisas restricciones y normas"] },
+        "q7": { "category": "Comunicación", "question": "Cuando cambian protocolos, tú:", "options": ["Explicas el porqué y el impacto", "Usas listas/visuals claros", "Ofreces canal de preguntas", "Apadrinas apoyo entre pares"] },
+        "q8": { "category": "Conocimiento", "question": "Para incorporar nuevo personal, tú:", "options": ["Guías paso a paso", "Sombra y autonomía gradual", "Micro-formaciones en tareas críticas", "Documentas errores comunes"] },
+        "q9": { "category": "Creatividad", "question": "Para mejorar la experiencia de servicio, tú:", "options": ["Rediseñar puntos de contacto", "Personalizar momentos clave", "Agilizar traspasos", "Probar nuevas herramientas"] },
+        "q10": { "category": "Impulso", "question": "Para mantener la moral, tú:", "options": ["Compartir metas y progreso", "Reconocer conductas útiles", "Rotar responsabilidades", "Apoyo rápido en bloqueos"] },
+        "q11": { "category": "Potencia Computacional", "question": "Para reducir errores, tú:", "options": ["Introducir checklists", "Estandarizar y 5S", "Automatizar pasos repetitivos", "Medir tipos y arreglar causas"] },
+        "q12": { "category": "Comunicación", "question": "En traspasos entre equipos/turnos, tú:", "options": ["Criterios claros de aceptación", "Plantillas de handoff concisas", "Alineaciones breves", "Dashboards compartidos"] },
+        "q13": { "category": "Conocimiento", "question": "Para capturar lecciones aprendidas, tú:", "options": ["Retros breves periódicas", "Publicar resúmenes simples", "FAQs buscables", "Responsables de mantener al día"] },
+        "q14": { "category": "Creatividad", "question": "Con fuertes restricciones, tú:", "options": ["Rediseñas la secuencia", "Reutilizas recursos creativamente", "Reordenas espacio/flujo", "Simplificas pasos del usuario"] },
+        "q15": { "category": "Impulso", "question": "Tras un fallo de servicio, tú:", "options": ["Revisión sin culpas", "Aviso transparente", "Plan de recuperación rápido", "Seguimiento hasta cierre"] },
+        "q16": { "category": "Potencia Computacional", "question": "Eligiendo una herramienta, tú:", "options": ["Ajuste a requisitos", "Piloto con grupo pequeño", "Coste/beneficio y riesgo", "Integración con sistemas"] },
+        "q17": { "category": "Comunicación", "question": "Para alinear turnos/equipos, tú:", "options": ["Dashboards claros", "Reuniones cortas", "Actualizaciones concisas", "Protocolos de radio/chat"] },
+        "q18": { "category": "Conocimiento", "question": "Para aprender una nueva regulación, tú:", "options": ["Guías oficiales", "Aclaraciones de expertos", "Checklist de cumplimiento", "Formación con ejemplos"] },
+        "q19": { "category": "Creatividad", "question": "Para mejorar accesibilidad, tú:", "options": ["Simplificar formularios/lenguaje", "Ofrecer formatos alternativos", "Rediseñar espacio/señalización", "Codiseñar con usuarios"] },
+        "q20": { "category": "Impulso", "question": "Para sostener la calidad en el tiempo, tú:", "options": ["SLA y auditorías", "Indicadores adelantados", "Ciclos de mejora", "Proteger tiempo de foco"] },
+        "q21": { "category": "Potencia Computacional", "question": "Al evaluar un cambio de proceso, tú:", "options": ["Definir métricas por adelantado", "Comparar datos antes/después", "Prueba controlada", "Documentar impacto y siguientes pasos"] },
+        "open1": { "question": "Describe una vez que mejoraste un proceso de servicio. ¿Qué cambió y cómo lo hiciste sostenible?" },
+        "open2": { "question": "¿Qué área de tu práctica operativa quieres hacer crecer este año y cuál es tu plan?" }
+      }
     }
   },
   "results": {

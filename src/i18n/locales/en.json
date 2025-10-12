@@ -848,6 +848,35 @@
         "open1": { "question": "Tell us about a piece you created that changed outcomes. Why did it work?" },
         "open2": { "question": "Which creative skill are you most driven to improve this year and how?" }
       }
+    },
+    "service_ops": {
+      "title": "Create Your XIMAtar",
+      "subtitle": "Complete our comprehensive assessment to discover your professional strengths",
+      "questions": {
+        "q1": { "category": "Computational Power", "question": "When service metrics dip, your first step is to:", "options": ["Segment by shift/location", "Check process compliance", "Compare with historical patterns", "Verify data integrity"] },
+        "q2": { "category": "Communication", "question": "Handling a difficult customer, you:", "options": ["Listen and reflect needs", "Clarify policies in plain language", "Offer options and next steps", "Escalate appropriately with context"] },
+        "q3": { "category": "Knowledge", "question": "Keeping procedures current, you:", "options": ["Maintain clear SOPs", "Run short refresh trainings", "Log changes in a knowledge base", "Collect frontline feedback regularly"] },
+        "q4": { "category": "Creativity", "question": "To improve a recurring bottleneck, you:", "options": ["Redesign the workflow", "Borrow solutions from other teams", "Pilot a low-risk experiment", "Co-create with staff and users"] },
+        "q5": { "category": "Drive", "question": "On high-pressure days, you:", "options": ["Focus on top-impact tasks", "Support teammates actively", "Rotate tasks to avoid fatigue", "Celebrate small wins"] },
+        "q6": { "category": "Computational Power", "question": "To schedule staff effectively, you:", "options": ["Model demand by hour", "Account for skill mix", "Plan buffers for spikes", "Review constraints and rules"] },
+        "q7": { "category": "Communication", "question": "When protocols change, you:", "options": ["Explain the why and impact", "Use clear checklists or visuals", "Offer a Q&A channel", "Pair people for peer support"] },
+        "q8": { "category": "Knowledge", "question": "Onboarding new staff, you:", "options": ["Use step-by-step guides", "Shadow then gradual independence", "Micro-trainings on critical tasks", "Document common pitfalls"] },
+        "q9": { "category": "Creativity", "question": "To improve service experience, you:", "options": ["Redesign touchpoints", "Personalize key moments", "Streamline handoffs", "Test new tools or aids"] },
+        "q10": { "category": "Drive", "question": "To maintain morale, you:", "options": ["Share goals and progress", "Recognize helpful behaviors", "Rotate responsibilities fairly", "Provide quick support on blockers"] },
+        "q11": { "category": "Computational Power", "question": "To reduce errors, you:", "options": ["Introduce checklists", "Standardize and 5S", "Automate repetitive steps", "Measure error types and fix causes"] },
+        "q12": { "category": "Communication", "question": "When teams hand off work, you:", "options": ["Define clear acceptance criteria", "Use concise handoff templates", "Hold quick alignment huddles", "Create shared dashboards"] },
+        "q13": { "category": "Knowledge", "question": "Capturing lessons learned, you:", "options": ["Run short retros regularly", "Publish simple summaries", "Create searchable FAQs", "Assign owners to keep content fresh"] },
+        "q14": { "category": "Creativity", "question": "To handle constraints, you:", "options": ["Design smarter sequencing", "Re-use resources creatively", "Rearrange space/tools flow", "Simplify user steps"] },
+        "q15": { "category": "Drive", "question": "After a service failure, you:", "options": ["Run a blameless review", "Notify stakeholders transparently", "Deliver a recovery plan fast", "Track follow-through to closure"] },
+        "q16": { "category": "Computational Power", "question": "Choosing a new tool, you:", "options": ["Score by requirements fit", "Pilot with a small group", "Evaluate cost/benefit and risk", "Check integration with systems"] },
+        "q17": { "category": "Communication", "question": "To align shifts/teams, you:", "options": ["Use clear dashboards", "Hold quick standups", "Send concise bullet updates", "Use radio/chat protocols"] },
+        "q18": { "category": "Knowledge", "question": "To learn a new regulation, you:", "options": ["Read official guidance", "Ask experts for clarifications", "Create a compliance checklist", "Train the team with examples"] },
+        "q19": { "category": "Creativity", "question": "To improve accessibility, you:", "options": ["Simplify forms/language", "Offer alternate formats", "Rework space/signage", "Co-design with users"] },
+        "q20": { "category": "Drive", "question": "To sustain long-term quality, you:", "options": ["Set SLAs and audits", "Track leading indicators", "Run improvement cycles", "Protect focus time for staff"] },
+        "q21": { "category": "Computational Power", "question": "Evaluating a process change, you:", "options": ["Define success metrics up front", "Compare before/after data", "Run a controlled trial", "Document impact and next steps"] },
+        "open1": { "question": "Describe a time you improved a service process. What changed and how did you make it stick?" },
+        "open2": { "question": "What area of your operations practice do you most want to grow this year, and what's your plan?" }
+      }
     }
   },
   "field": {
