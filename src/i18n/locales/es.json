@@ -193,6 +193,228 @@
     ]
   },
   "assessmentSets": {
+    "science_tech": {
+      "title": "Crea tu XIMAtar",
+      "subtitle": "Completa nuestra evaluación para descubrir tus fortalezas profesionales",
+      "questions": {
+        "q1": {
+          "category": "Potencia Computacional",
+          "question": "Frente a un conjunto de datos complejo, ¿cuál es tu primer enfoque?",
+          "options": [
+            "Dividirlo en partes más pequeñas y manejables",
+            "Buscar patrones y tendencias inmediatamente",
+            "Buscar herramientas o software para ayudar en el análisis",
+            "Consultar con otros que tengan experiencia similar"
+          ]
+        },
+        "q2": {
+          "category": "Comunicación",
+          "question": "En una reunión de equipo, ¿cómo contribuyes típicamente?",
+          "options": [
+            "Escucho atentamente y hago preguntas aclaratorias",
+            "Comparto ideas y construyo sobre las sugerencias de otros",
+            "Tomo notas y resumo los puntos clave",
+            "Me enfoco en los próximos pasos concretos"
+          ]
+        },
+        "q3": {
+          "category": "Conocimiento",
+          "question": "¿Cómo prefieres aprender nuevas habilidades?",
+          "options": [
+            "A través de práctica y experimentación directa",
+            "Leyendo guías y documentación completa",
+            "A través de cursos estructurados y formación formal",
+            "Aprendiendo de mentores y colegas experimentados"
+          ]
+        },
+        "q4": {
+          "category": "Creatividad",
+          "question": "Al resolver un problema, tiendes a:",
+          "options": [
+            "Pensar en múltiples soluciones no convencionales",
+            "Combinar ideas existentes de formas nuevas",
+            "Mejorar métodos probados con innovaciones",
+            "Buscar inspiración en diferentes industrias o campos"
+          ]
+        },
+        "q5": {
+          "category": "Impulso",
+          "question": "¿Qué te motiva más en tu trabajo?",
+          "options": [
+            "Alcanzar metas y objetivos desafiantes",
+            "Tener un impacto positivo en otros",
+            "Aprendizaje y crecimiento continuos",
+            "Reconocimiento y oportunidades de avance"
+          ]
+        },
+        "q6": {
+          "category": "Potencia Computacional",
+          "question": "¿Cómo evalúas la efectividad de una solución técnica?",
+          "options": [
+            "Mido el rendimiento y métricas específicas",
+            "Comparo alternativas y realizo pruebas A/B",
+            "Recopilo comentarios de usuarios finales",
+            "Verifico que cumpla todos los requisitos"
+          ]
+        },
+        "q7": {
+          "category": "Comunicación",
+          "question": "¿Cómo manejas conflictos o desacuerdos en el trabajo?",
+          "options": [
+            "Encuentro puntos en común y soluciones compartidas",
+            "Presento hechos y datos para apoyar mi posición",
+            "Facilito la discusión entre las partes involucradas",
+            "Propongo compromisos prácticos"
+          ]
+        },
+        "q8": {
+          "category": "Conocimiento",
+          "question": "¿Cuando encuentras información contradictoria?",
+          "options": [
+            "Investigo fuentes adicionales para verificar",
+            "Analizo la credibilidad de las fuentes originales",
+            "Consulto expertos en el campo específico",
+            "Pruebo empíricamente cuando es posible"
+          ]
+        },
+        "q9": {
+          "category": "Creatividad",
+          "question": "¿Cómo generas nuevas ideas para proyectos?",
+          "options": [
+            "Sesiones de lluvia de ideas y creatividad",
+            "Estudio casos de éxito de otras industrias",
+            "Experimento con prototipos y maquetas",
+            "Colaboro con equipos diversos"
+          ]
+        },
+        "q10": {
+          "category": "Impulso",
+          "question": "¿Cómo mantienes la motivación durante proyectos largos?",
+          "options": [
+            "Establezco hitos y celebro el progreso",
+            "Mantengo el enfoque en el objetivo final",
+            "Varía actividades para evitar la monotonía",
+            "Busco apoyo y retroalimentación del equipo"
+          ]
+        },
+        "q11": {
+          "category": "Potencia Computacional",
+          "question": "¿Cómo abordas la automatización de procesos repetitivos?",
+          "options": [
+            "Identifico patrones y creo scripts personalizados",
+            "Uso herramientas existentes y las adapto",
+            "Analizo costo-beneficio antes de automatizar",
+            "Colaboro con expertos técnicos para implementar"
+          ]
+        },
+        "q12": {
+          "category": "Comunicación",
+          "question": "¿Cómo adaptas tu estilo de comunicación a diferentes audiencias?",
+          "options": [
+            "Estudio el trasfondo y las necesidades de la audiencia",
+            "Uso ejemplos y analogías relevantes para su contexto",
+            "Modifico el nivel de detalle técnico",
+            "Pido retroalimentación para asegurarme de ser claro"
+          ]
+        },
+        "q13": {
+          "category": "Conocimiento",
+          "question": "¿Cómo organizas y compartes el conocimiento adquirido?",
+          "options": [
+            "Creo documentación estructurada y buscable",
+            "Organizo sesiones de capacitación para el equipo",
+            "Desarrollo guías prácticas y tutoriales",
+            "Mantengo bases de datos de mejores prácticas"
+          ]
+        },
+        "q14": {
+          "category": "Creatividad",
+          "question": "¿Cómo superas los bloqueos creativos?",
+          "options": [
+            "Cambio de ambiente y busco nuevas perspectivas",
+            "Lluvia de ideas con colegas",
+            "Busco inspiración en campos no relacionados",
+            "Tomo pausas estratégicas y vuelvo al problema después"
+          ]
+        },
+        "q15": {
+          "category": "Impulso",
+          "question": "¿Cómo reaccionas a fracasos o contratiempos?",
+          "options": [
+            "Analizo qué salió mal para aprender",
+            "Me enfoco rápidamente en la siguiente oportunidad",
+            "Busco retroalimentación de mentores o colegas experimentados",
+            "Readapto la estrategia manteniendo el objetivo"
+          ]
+        },
+        "q16": {
+          "category": "Potencia Computacional",
+          "question": "¿Cómo manejas grandes cantidades de datos para analizar?",
+          "options": [
+            "Uso herramientas de visualización para identificar patrones",
+            "Segmento los datos en categorías lógicas",
+            "Aplico técnicas estadísticas para encontrar correlaciones",
+            "Creo dashboards automatizados para monitoreo continuo"
+          ]
+        },
+        "q17": {
+          "category": "Comunicación",
+          "question": "¿Cómo presentas resultados complejos a partes interesadas no técnicas?",
+          "options": [
+            "Uso gráficos y visualizaciones intuitivas",
+            "Me enfoco en resultados de negocio, no en detalles técnicos",
+            "Cuento una historia que conecta datos con impactos concretos",
+            "Preparo resúmenes ejecutivos con puntos clave"
+          ]
+        },
+        "q18": {
+          "category": "Conocimiento",
+          "question": "¿Cómo te mantienes actualizado en tus áreas de experiencia?",
+          "options": [
+            "Sigo publicaciones e investigación de la industria",
+            "Participo en conferencias y webinars especializados",
+            "Me uno a comunidades y foros profesionales",
+            "Experimento con nuevas herramientas y tecnologías"
+          ]
+        },
+        "q19": {
+          "category": "Creatividad",
+          "question": "¿Cómo equilibras innovación y practicidad en tus proyectos?",
+          "options": [
+            "Pruebo ideas innovadoras a pequeña escala primero",
+            "Mantengo un portafolio de proyectos en diferentes niveles de riesgo",
+            "Busco retroalimentación continua para validar direcciones creativas",
+            "Establezco criterios claros para evaluar nuevas ideas"
+          ]
+        },
+        "q20": {
+          "category": "Impulso",
+          "question": "¿Cómo defines y persigues objetivos a largo plazo?",
+          "options": [
+            "Creo hojas de ruta detalladas con hitos intermedios",
+            "Establezco métricas cuantificables para medir el progreso",
+            "Reviso y adapto regularmente la estrategia",
+            "Mantengo el enfoque constante a pesar de las distracciones"
+          ]
+        },
+        "q21": {
+          "category": "Potencia Computacional",
+          "question": "¿Cómo evalúas la implementación de nuevas tecnologías?",
+          "options": [
+            "Realizo análisis exhaustivo de costo-beneficio",
+            "Pruebo en proyectos piloto antes de la adopción completa",
+            "Evalúo el impacto en procesos y equipos existentes",
+            "Investigo casos de estudio y mejores prácticas de la industria"
+          ]
+        },
+        "open1": {
+          "question": "Describe una situación profesional donde te sentiste más exitoso. ¿Qué la hizo exitosa y cuál fue tu contribución específica?"
+        },
+        "open2": {
+          "question": "¿Cuál es tu mayor desafío profesional o área donde te gustaría crecer? ¿Cómo planeas abordarlo?"
+        }
+      }
+    },
     "business_leadership": {
       "title": "Crea tu XIMAtar",
       "subtitle": "Completa nuestra evaluación para descubrir tus fortalezas profesionales",

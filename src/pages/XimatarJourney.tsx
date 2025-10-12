@@ -125,7 +125,7 @@ const XimatarJourney = () => {
           {currentStep === 2 && (
             <XimatarAssessment 
               onComplete={handleStepComplete}
-              assessmentSetKey={localStorage.getItem('preferred_field') || 'business_leadership'}
+              assessmentSetKey={(localStorage.getItem('preferred_field') as 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops') || 'science_tech'}
             />
           )}
           

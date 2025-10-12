@@ -16,7 +16,7 @@ interface XimatarAssessmentProps {
   assessmentSetKey?: string;
 }
 
-const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, assessmentSetKey = 'business_leadership' }) => {
+const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, assessmentSetKey = 'science_tech' }) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const { setAssessmentInProgress } = useAssessment();
@@ -28,8 +28,17 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
 
   useEffect(() => {
     setAssessmentInProgress(true);
+    
+    // Verification console log (dev-only)
+    if (process.env.NODE_ENV === 'development') {
+      console.info('[XIMA] Using assessment set:', assessmentSetKey, 'locale:', i18n.language);
+      const testKey = `assessmentSets.${assessmentSetKey}.questions.q1.question`;
+      const testValue = t(testKey);
+      console.info('[XIMA] Test translation for q1:', testValue.includes('assessmentSets') ? '❌ MISSING' : '✅ OK');
+    }
+    
     return () => setAssessmentInProgress(false);
-  }, [setAssessmentInProgress]);
+  }, [setAssessmentInProgress, assessmentSetKey, i18n.language, t]);
 
   // Define all 21 multiple choice questions
   const questions = [
