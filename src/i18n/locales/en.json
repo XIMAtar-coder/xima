@@ -819,6 +819,35 @@
         "open1": { "question": "Describe a leadership decision you are proud of. What trade-offs did you weigh and why?" },
         "open2": { "question": "What's your biggest growth edge as a leader, and how are you addressing it?" }
       }
+    },
+    "arts_creative": {
+      "title": "Create Your XIMAtar",
+      "subtitle": "Complete our comprehensive assessment to discover your professional strengths",
+      "questions": {
+        "q1": { "category": "Computational Power", "question": "When evaluating creative performance data, you first:", "options": ["Scan engagement vs objectives", "Compare formats and placements", "Analyze audience segments", "Check measurement integrity"] },
+        "q2": { "category": "Communication", "question": "Presenting a concept to non-designers, you:", "options": ["Tell the story behind choices", "Use visual before/after examples", "Relate benefits to business goals", "Invite questions to build clarity"] },
+        "q3": { "category": "Knowledge", "question": "How do you stay current in your craft?", "options": ["Study masters and case studies", "Learn new tools and workflows", "Take courses and critiques", "Join communities and share work"] },
+        "q4": { "category": "Creativity", "question": "Your idea generation habit is to:", "options": ["Produce many rough drafts fast", "Remix references into new forms", "Iterate on one promising direction", "Invite team co-creation early"] },
+        "q5": { "category": "Drive", "question": "When a deadline is tight, you:", "options": ["Time-box and ship a solid version", "Focus on the core narrative", "Reduce scope without losing impact", "Ask for support to remove blockers"] },
+        "q6": { "category": "Computational Power", "question": "To choose a campaign visual, you rely on:", "options": ["A/B tests on thumbnails", "Heatmaps or eye-tracking insights", "Historical performance patterns", "User research snapshots"] },
+        "q7": { "category": "Communication", "question": "Receiving critical feedback, you:", "options": ["Paraphrase to ensure understanding", "Ask for specific examples", "Discuss constraints and goals", "Propose a revision plan"] },
+        "q8": { "category": "Knowledge", "question": "Building domain knowledge for a client, you:", "options": ["Interview stakeholders", "Study brand guidelines deeply", "Analyze audience personas", "Review market and trend reports"] },
+        "q9": { "category": "Creativity", "question": "Unblocking a stalled concept, you:", "options": ["Switch mediums or constraints", "Seek inspiration from other arts", "Brainstorm with a diverse group", "Take a pause to reset perspective"] },
+        "q10": { "category": "Drive", "question": "Staying motivated on long projects, you:", "options": ["Track visible progress", "Celebrate small creative wins", "Alternate tasks to avoid fatigue", "Share drafts for encouragement"] },
+        "q11": { "category": "Computational Power", "question": "To allocate production budget, you:", "options": ["Model cost vs expected lift", "Prioritize high-impact assets", "Prototype cheaply first", "Reuse/adapt assets smartly"] },
+        "q12": { "category": "Communication", "question": "When teams misunderstand the brief, you:", "options": ["Reframe outcomes and success", "Show references to align taste", "Translate abstract goals to criteria", "Co-write a clarified brief"] },
+        "q13": { "category": "Knowledge", "question": "To document craft knowledge, you:", "options": ["Create reusable templates", "Publish internal guides", "Record short how-to videos", "Maintain a curated reference library"] },
+        "q14": { "category": "Creativity", "question": "To differentiate a brand visually, you:", "options": ["Invent a signature system", "Evolve typography and motion", "Craft a distinct narrative motif", "Experiment with sensory elements"] },
+        "q15": { "category": "Drive", "question": "After a concept is rejected, you:", "options": ["Extract lessons and iterate", "Pitch an alternate angle fast", "Ask for criteria you missed", "Refine and re-present"] },
+        "q16": { "category": "Computational Power", "question": "Choosing toolchains, you:", "options": ["Compare speed and compatibility", "Check collaboration features", "Evaluate learning curve", "Assess cost and licensing"] },
+        "q17": { "category": "Communication", "question": "To align with stakeholders, you:", "options": ["Use simple narrative arcs", "Show options with pros/cons", "Focus on audience impact", "Provide a concise one-pager"] },
+        "q18": { "category": "Knowledge", "question": "To learn a new domain quickly, you:", "options": ["Study landscape & competitors", "Review audience insights", "Interview subject-matter experts", "Shadow real users"] },
+        "q19": { "category": "Creativity", "question": "To produce original work, you:", "options": ["Set creative constraints", "Mash up unlikely references", "Prototype and test early", "Collaborate with other disciplines"] },
+        "q20": { "category": "Drive", "question": "Keeping long-term vision, you:", "options": ["Maintain a north-star board", "Set quarterly creative themes", "Schedule reflection windows", "Protect focus time"] },
+        "q21": { "category": "Computational Power", "question": "To judge asset quality at scale, you:", "options": ["Define measurable criteria", "Batch-review with checklists", "Sample test with audience", "Automate checks where possible"] },
+        "open1": { "question": "Tell us about a piece you created that changed outcomes. Why did it work?" },
+        "open2": { "question": "Which creative skill are you most driven to improve this year and how?" }
+      }
     }
   },
   "field": {

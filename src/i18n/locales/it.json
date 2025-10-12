@@ -864,6 +864,35 @@
         "open1": { "question": "Descrivi una decisione di leadership che ti rende orgoglioso/a. Quali compromessi hai valutato e perché?" },
         "open2": { "question": "Qual è la tua maggiore area di crescita come leader e come la stai affrontando?" }
       }
+    },
+    "arts_creative": {
+      "title": "Crea il tuo XIMAtar",
+      "subtitle": "Completa la nostra valutazione per scoprire i tuoi punti di forza professionali",
+      "questions": {
+        "q1": { "category": "Potenza Computazionale", "question": "Valutando dati di performance creativa, per prima cosa:", "options": ["Confronto con obiettivi", "Confronto formati/placement", "Analisi per segmenti", "Verifica della misurazione"] },
+        "q2": { "category": "Comunicazione", "question": "Presentando un concept a non designer, tu:", "options": ["Racconti la storia delle scelte", "Mostri esempi prima/dopo", "Colleghi benefici a obiettivi di business", "Inviti domande per chiarire"] },
+        "q3": { "category": "Conoscenza", "question": "Come resti aggiornato/a sulla tua disciplina?", "options": ["Studio maestri e case study", "Apprendo nuovi tool e workflow", "Seguo corsi e critiche", "Partecipo a community condividendo lavori"] },
+        "q4": { "category": "Creatività", "question": "Per generare idee, la tua abitudine è:", "options": ["Produrre molte bozze rapide", "Remixare riferimenti in forme nuove", "Iterare su una direzione promettente", "Co-creare presto col team"] },
+        "q5": { "category": "Motivazione", "question": "Con scadenza stretta, tu:", "options": ["Time-box e consegno una buona versione", "Focalizzo sulla narrativa centrale", "Ridimensiono senza perdere impatto", "Chiedo supporto per sblocchi"] },
+        "q6": { "category": "Potenza Computazionale", "question": "Per scegliere un visual di campagna, ti affidi a:", "options": ["A/B test sulle anteprime", "Heatmap/eye-tracking", "Pattern storici di performance", "Snapshot di ricerca utenti"] },
+        "q7": { "category": "Comunicazione", "question": "Ricevendo feedback critico, tu:", "options": ["Parafrasi per capire bene", "Chiedi esempi specifici", "Discuti vincoli e obiettivi", "Proponi un piano di revisione"] },
+        "q8": { "category": "Conoscenza", "question": "Per conoscere il dominio di un cliente, tu:", "options": ["Intervisti stakeholder", "Studi profondamente le brand guideline", "Analizzi le personas", "Rivedi report di trend"] },
+        "q9": { "category": "Creatività", "question": "Per sbloccare un concept fermo, tu:", "options": ["Cambi medium o vincoli", "Cerchi ispirazione in altre arti", "Brainstorm con gruppo eterogeneo", "Fai una pausa per resettare"] },
+        "q10": { "category": "Motivazione", "question": "Per restare motivato/a su progetti lunghi, tu:", "options": ["Tracci progressi visibili", "Celebri piccoli successi", "Alterni compiti per evitare fatica", "Condividi bozze per incoraggiamento"] },
+        "q11": { "category": "Potenza Computazionale", "question": "Per allocare il budget di produzione, tu:", "options": ["Modelli costo vs impatto atteso", "Dai priorità agli asset ad alto impatto", "Prototipi a basso costo prima", "Riusi/adatti asset in modo intelligente"] },
+        "q12": { "category": "Comunicazione", "question": "Quando il brief è frainteso, tu:", "options": ["Riformuli outcome e successo", "Mostri reference per allineare il gusto", "Traduci obiettivi astratti in criteri", "Risciacqui il brief insieme"] },
+        "q13": { "category": "Conoscenza", "question": "Per documentare il know-how, tu:", "options": ["Crei template riutilizzabili", "Pubblichi guide interne", "Registi brevi how-to video", "Mantieni librerie di riferimento"] },
+        "q14": { "category": "Creatività", "question": "Per differenziare il brand visivamente, tu:", "options": ["Inventi un sistema firma", "Evolvi tipografia e motion", "Crei un motivo narrativo distintivo", "Sperimenta elementi sensoriali"] },
+        "q15": { "category": "Motivazione", "question": "Dopo un concept rifiutato, tu:", "options": ["Estraggo lezioni e iter", "Propongo subito un'alternativa", "Chiedo i criteri mancati", "Raffino e ripresento"] },
+        "q16": { "category": "Potenza Computazionale", "question": "Scegliendo tool e pipeline, tu:", "options": ["Confronti velocità/compatibilità", "Verifichi collaborazione", "Valuti curva di apprendimento", "Consideri costi e licenze"] },
+        "q17": { "category": "Comunicazione", "question": "Per allinearti con gli stakeholder, tu:", "options": ["Usi archi narrativi semplici", "Mostri opzioni con pro/contro", "Metti l'impatto sul pubblico al centro", "Fornisci un one-pager sintetico"] },
+        "q18": { "category": "Conoscenza", "question": "Per apprendere velocemente un nuovo dominio, tu:", "options": ["Studi panorama e competitor", "Rivedi insight sull'audience", "Intervisti esperti", "Osservi gli utenti reali"] },
+        "q19": { "category": "Creatività", "question": "Per produrre lavoro originale, tu:", "options": ["Imposti vincoli creativi", "Unisci riferimenti improbabili", "Prototipi e testi presto", "Collabori con altre discipline"] },
+        "q20": { "category": "Motivazione", "question": "Per mantenere la visione a lungo termine, tu:", "options": ["Un north-star board", "Temi creativi trimestrali", "Finestre di riflessione pianificate", "Proteggi il tempo profondo"] },
+        "q21": { "category": "Potenza Computazionale", "question": "Per giudicare la qualità degli asset su larga scala, tu:", "options": ["Definisci criteri misurabili", "Revisioni a lotti con checklist", "Test campione col pubblico", "Automatizzi controlli dove possibile"] },
+        "open1": { "question": "Racconta un lavoro che ha cambiato gli esiti. Perché ha funzionato?" },
+        "open2": { "question": "Quale abilità creativa vuoi migliorare quest'anno e come?" }
+      }
     }
   },
   "field": {

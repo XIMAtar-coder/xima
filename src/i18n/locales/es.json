@@ -221,6 +221,35 @@
         "open1": { "question": "Describe una decisión de liderazgo de la que estés orgulloso/a. ¿Qué compromisos pesaste y por qué?" },
         "open2": { "question": "¿Cuál es tu mayor área de crecimiento como líder y cómo la estás abordando?" }
       }
+    },
+    "arts_creative": {
+      "title": "Crea tu XIMAtar",
+      "subtitle": "Completa nuestra evaluación para descubrir tus fortalezas profesionales",
+      "questions": {
+        "q1": { "category": "Potencia Computacional", "question": "Al evaluar datos de rendimiento creativo, primero:", "options": ["Comparo con objetivos", "Comparo formatos y ubicaciones", "Analizo segmentos de audiencia", "Verifico la medición"] },
+        "q2": { "category": "Comunicación", "question": "Al presentar un concepto a no diseñadores, tú:", "options": ["Cuentas la historia de las decisiones", "Muestras antes/después visuales", "Relacionas beneficios a objetivos", "Invitas preguntas para claridad"] },
+        "q3": { "category": "Conocimiento", "question": "¿Cómo te mantienes al día en tu disciplina?", "options": ["Estudio maestros y casos", "Aprendo nuevas herramientas", "Cursos y críticas", "Comunidades y compartir trabajo"] },
+        "q4": { "category": "Creatividad", "question": "Para generar ideas, sueles:", "options": ["Muchas maquetas rápidas", "Remixar referencias", "Iterar una dirección prometedora", "Cocrear temprano con el equipo"] },
+        "q5": { "category": "Impulso", "question": "Con plazo ajustado, tú:", "options": ["Time-boxing y versión sólida", "Centrarte en la narrativa clave", "Reducir alcance sin perder impacto", "Pedir apoyo para desbloques"] },
+        "q6": { "category": "Potencia Computacional", "question": "Para elegir un visual de campaña, te apoyas en:", "options": ["Tests A/B de miniaturas", "Heatmaps/eye-tracking", "Patrones históricos", "Investigación de usuarios"] },
+        "q7": { "category": "Comunicación", "question": "Al recibir feedback crítico, tú:", "options": ["Parafraseas para entender", "Pides ejemplos concretos", "Debates restricciones y metas", "Propones plan de revisión"] },
+        "q8": { "category": "Conocimiento", "question": "Para construir conocimiento del cliente:", "options": ["Entrevistas a interesados", "Estudio profundo de guías de marca", "Análisis de personas", "Revisión de tendencias de mercado"] },
+        "q9": { "category": "Creatividad", "question": "Para desbloquear un concepto estancado, tú:", "options": ["Cambiar medio o restricciones", "Inspirarte en otras artes", "Lluvia de ideas diversa", "Pausar para resetear"] },
+        "q10": { "category": "Impulso", "question": "Para mantener motivación en proyectos largos:", "options": ["Seguimiento del progreso", "Celebrar pequeñas victorias", "Alternar tareas", "Compartir borradores para ánimo"] },
+        "q11": { "category": "Potencia Computacional", "question": "Para asignar presupuesto de producción, tú:", "options": ["Modelo costo vs impacto", "Priorizar activos de alto impacto", "Prototipo barato primero", "Reutilizar/adaptar activos"] },
+        "q12": { "category": "Comunicación", "question": "Cuando se malinterpreta el brief, tú:", "options": ["Replanteas resultados y éxito", "Muestras referencias para alinear gustos", "Traduces objetivos a criterios", "Reescribes el brief conjuntamente"] },
+        "q13": { "category": "Conocimiento", "question": "Para documentar el oficio, tú:", "options": ["Plantillas reutilizables", "Guías internas", "Vídeos breves how-to", "Biblioteca de referencias"] },
+        "q14": { "category": "Creatividad", "question": "Para diferenciar visualmente una marca, tú:", "options": ["Sistema firma", "Tipografía y motion", "Motivo narrativo distintivo", "Elementos sensoriales"] },
+        "q15": { "category": "Impulso", "question": "Tras rechazar un concepto, tú:", "options": ["Lecciones y nueva iteración", "Propuesta alternativa rápida", "Criterios que faltaron", "Refinar y re-presentar"] },
+        "q16": { "category": "Potencia Computacional", "question": "Eligiendo herramientas y pipeline, tú:", "options": ["Velocidad/compatibilidad", "Colaboración", "Curva de aprendizaje", "Coste y licencias"] },
+        "q17": { "category": "Comunicación", "question": "Para alinear con stakeholders, tú:", "options": ["Arcos narrativos simples", "Opciones con pros/contras", "Impacto en audiencia", "One-pager conciso"] },
+        "q18": { "category": "Conocimiento", "question": "Para aprender rápido un dominio nuevo, tú:", "options": ["Panorama y competidores", "Insights de audiencia", "Expertos del tema", "Observar usuarios reales"] },
+        "q19": { "category": "Creatividad", "question": "Para producir obra original, tú:", "options": ["Fijar restricciones creativas", "Mezclar referencias improbables", "Prototipar y probar temprano", "Colaborar con otras disciplinas"] },
+        "q20": { "category": "Impulso", "question": "Para mantener visión a largo plazo, tú:", "options": ["Tablero estrella del norte", "Temas creativos trimestrales", "Ventanas de reflexión", "Proteger tiempo de foco"] },
+        "q21": { "category": "Potencia Computacional", "question": "Para juzgar calidad de activos a escala, tú:", "options": ["Criterios medibles", "Revisiones por lotes", "Tests con audiencia", "Automatizar controles"] },
+        "open1": { "question": "Cuéntanos una pieza que cambió resultados. ¿Por qué funcionó?" },
+        "open2": { "question": "¿Qué habilidad creativa más quieres mejorar este año y cómo?" }
+      }
     }
   },
   "results": {
