@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { scoreOpenResponse, type FieldKey } from '@/lib/scoring/openResponse';
 import { useToast } from '@/hooks/use-toast';
 import { useAssessment } from '@/contexts/AssessmentContext';
+import QuestionExample from '@/components/QuestionExample';
 
 interface XimatarAssessmentProps {
   onComplete: (step: number) => void;
@@ -182,8 +183,15 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
         {currentMultipleChoice && (
           <div className="space-y-6">
             <div className="space-y-3">
-              <div className="inline-block px-3 py-1 bg-[#2C6CFF] bg-opacity-10 text-[#2C6CFF] rounded-full text-sm font-medium">
-                {t(`${baseKey}.questions.${currentMultipleChoice.key}.category`)}
+              <div className="flex items-center justify-between gap-4">
+                <div className="inline-block px-3 py-1 bg-[#2C6CFF] bg-opacity-10 text-[#2C6CFF] rounded-full text-sm font-medium">
+                  {t(`${baseKey}.questions.${currentMultipleChoice.key}.category`)}
+                </div>
+                <QuestionExample
+                  assessmentSetKey={assessmentSetKey as 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops'}
+                  qKey={currentMultipleChoice.key}
+                  category={t(`${baseKey}.questions.${currentMultipleChoice.key}.category`)}
+                />
               </div>
               <h3 className="text-xl font-medium">
                 {t(`${baseKey}.questions.${currentMultipleChoice.key}.question`)}
@@ -222,8 +230,15 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
         {currentOpenQuestion && (
           <div className="space-y-6">
             <div className="space-y-3">
-              <div className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full text-sm font-medium">
-                {t('assessment.open_question')} {currentQuestion - questions.length + 1}
+              <div className="flex items-center justify-between gap-4">
+                <div className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full text-sm font-medium">
+                  {t('assessment.open_question')} {currentQuestion - questions.length + 1}
+                </div>
+                <QuestionExample
+                  assessmentSetKey={assessmentSetKey as 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops'}
+                  qKey={currentOpenQuestion.key}
+                  category="Creativity"
+                />
               </div>
               <h3 className="text-xl font-medium">
                 {t(`${baseKey}.questions.${currentOpenQuestion.key}.question`)}

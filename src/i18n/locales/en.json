@@ -137,6 +137,18 @@
     "characters": "characters",
     "next_question": "Next Question",
     "completing": "Completing Assessment...",
+    "example": {
+      "button": "Example",
+      "close": "Close",
+      "fallbackTitle": "Example",
+      "fallback": {
+        "Computational Power": "Example: you have a dataset with 50k rows. You segment by cohort, verify integrity, compare with historical data, and test a hypothesis before deciding.",
+        "Communication": "Example: you present a complex result using a simple chart, a 3-point summary, and clear next steps.",
+        "Knowledge": "Example: to learn a new domain, you map key players and reliable sources, read guidelines, and synthesize notes to share.",
+        "Creativity": "Example: you generate 10 quick drafts, select 2 options, run a small user test, and iterate on the best one.",
+        "Drive": "Example: you define weekly goals, track progress, and ask for feedback to unblock bottlenecks."
+      }
+    },
     "questions": {
       "q1": {
         "category": "Computational Power",
@@ -1010,6 +1022,20 @@
         },
         "open2": {
           "question": "What is your biggest professional challenge or area where you'd like to grow? How do you plan to address it?"
+        }
+      },
+      "examples": {
+        "q1": {
+          "title": "Example",
+          "body": "You have a user dataset with a 'churn' column. You start with basic cleaning, segment by cohort, and verify the impact of two campaigns over the last 90 days."
+        },
+        "q2": {
+          "title": "Example",
+          "body": "During a planning meeting, you listen to the team's concerns, ask questions to clarify constraints, and then synthesize shared priorities."
+        },
+        "q3": {
+          "title": "Example",
+          "body": "To learn React, you build a small app following the official documentation, experiment with components, and ask experienced colleagues for feedback."
         }
       }
     },

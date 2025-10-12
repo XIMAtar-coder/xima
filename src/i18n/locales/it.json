@@ -137,6 +137,18 @@
     "characters": "caratteri",
     "next_question": "Domanda Successiva",
     "completing": "Completamento Valutazione...",
+    "example": {
+      "button": "Esempio",
+      "close": "Chiudi",
+      "fallbackTitle": "Esempio",
+      "fallback": {
+        "Potenza Computazionale": "Esempio: hai un dataset con 50k righe. Suddividi per coorte, verifichi integrità, confronti con lo storico, e testi una ipotesi prima di decidere.",
+        "Comunicazione": "Esempio: presenti un risultato complesso usando un grafico semplice, una sintesi in 3 punti e chiari prossimi passi.",
+        "Conoscenza": "Esempio: per apprendere un nuovo dominio, mappi attori e fonti affidabili, leggi le linee guida e sintetizzi in note condivise.",
+        "Creatività": "Esempio: generi 10 bozze rapide, selezioni 2 opzioni, fai un piccolo test con utenti e iteri sulla migliore.",
+        "Impulso": "Esempio: definisci obiettivi settimanali, tracci i progressi e chiedi feedback per sbloccare i colli di bottiglia."
+      }
+    },
     "questions": {
       "q1": {
         "category": "Potenza Computazionale",
@@ -1055,6 +1067,20 @@
         },
         "open2": {
           "question": "Qual è la tua sfida professionale più grande o l'area in cui vorresti crescere? Come pensi di affrontarla?"
+        }
+      },
+      "examples": {
+        "q1": {
+          "title": "Esempio",
+          "body": "Hai un dataset utenti con colonna 'churn'. Inizi con una pulizia di base, segmenti per coorte, e verifichi l'impatto di due campagne sugli ultimi 90 giorni."
+        },
+        "q2": {
+          "title": "Esempio",
+          "body": "Durante una riunione di planning, ascolti le preoccupazioni del team, poni domande per chiarire i vincoli, e poi sintetizzi le priorità condivise."
+        },
+        "q3": {
+          "title": "Esempio",
+          "body": "Per imparare React, provi a costruire una piccola app seguendo la documentazione ufficiale, sperimenti con i componenti e chiedi feedback a colleghi esperti."
         }
       }
     },
