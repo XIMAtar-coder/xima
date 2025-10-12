@@ -6,6 +6,9 @@ import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { ArrowRight } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { scoreOpenResponse, type FieldKey } from '@/lib/scoring/openResponse';
+import { useToast } from '@/hooks/use-toast';
 
 interface XimatarAssessmentProps {
   onComplete: (step: number) => void;
@@ -13,11 +16,13 @@ interface XimatarAssessmentProps {
 }
 
 const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, assessmentSetKey = 'business_leadership' }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { toast } = useToast();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [openAnswers, setOpenAnswers] = useState<Record<string, string>>({});
   const [isCompleting, setIsCompleting] = useState(false);
+  const [attemptId] = useState(() => crypto.randomUUID()); // Generate once per assessment
 
   // Define all 21 multiple choice questions
   const questions = [
@@ -68,8 +73,60 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
     setOpenAnswers(prev => ({ ...prev, [questionId]: value }));
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     setIsCompleting(true);
+    
+    try {
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        // Score and persist open answers
+        const fieldKey = assessmentSetKey as FieldKey;
+        const language = (i18n.language?.slice(0, 2) || 'it') as 'it' | 'en' | 'es';
+        
+        const openResponses = (['open1', 'open2'] as const).map(openKey => {
+          const answer = openAnswers[openKey] || '';
+          const rubric = scoreOpenResponse({ 
+            text: answer, 
+            field: fieldKey, 
+            language, 
+            openKey 
+          });
+          
+          return {
+            user_id: user.id,
+            attempt_id: attemptId,
+            field_key: fieldKey,
+            language,
+            open_key: openKey,
+            answer,
+            score: rubric.total,
+            rubric
+          };
+        });
+
+        // Store open responses (non-blocking - continue even if this fails)
+        const { error } = await supabase
+          .from('assessment_open_responses')
+          .insert(openResponses);
+        
+        if (error) {
+          console.warn('Failed to store open responses:', error);
+        }
+        
+        // Store attempt_id in localStorage for results page
+        localStorage.setItem('current_attempt_id', attemptId);
+      }
+    } catch (error) {
+      console.error('Error completing assessment:', error);
+      toast({
+        title: t('common.error'),
+        description: 'Failed to save open responses, but continuing...',
+        variant: 'destructive'
+      });
+    }
+    
     setTimeout(() => {
       onComplete(2);
     }, 2000);

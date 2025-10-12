@@ -281,6 +281,20 @@
       }
     }
   },
+  "open_scoring": {
+    "title": "Puntuación de Respuestas Abiertas",
+    "why": "¿Por qué esta puntuación?",
+    "rubric_breakdown": "Desglose de la rúbrica",
+    "rubric": {
+      "length": "Profundidad y Extensión",
+      "relevance": "Relevancia del Campo",
+      "structure": "Estructura y Fluidez",
+      "specificity": "Especificidad y Evidencia",
+      "action": "Orientación a la Acción"
+    },
+    "note": "Las respuestas abiertas pueden influir hasta un 10% en los pilares seleccionados (Creatividad, Comunicación, Conocimiento e Impulso).",
+    "consider_elaborating": "Considera elaborar más para obtener más puntos (se recomiendan mínimo 50 palabras)."
+  },
   "results": {
     "title": "Tus Resultados XIMAtar",
     "your_ximatar": "Tu XIMAtar",

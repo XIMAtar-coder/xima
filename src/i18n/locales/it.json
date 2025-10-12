@@ -941,5 +941,19 @@
       "title": "Servizi e Operations",
       "desc": "Sanità, istruzione, hospitality, pubblico, supporto."
     }
+  },
+  "open_scoring": {
+    "title": "Punteggio Domande Aperte",
+    "why": "Perché questo punteggio?",
+    "rubric_breakdown": "Dettaglio della valutazione",
+    "rubric": {
+      "length": "Profondità e Lunghezza",
+      "relevance": "Rilevanza per il Campo",
+      "structure": "Struttura e Flusso",
+      "specificity": "Specificità ed Evidenze",
+      "action": "Orientamento all'Azione"
+    },
+    "note": "Le risposte aperte possono influenzare fino al 10% dei pilastri selezionati (Creatività, Comunicazione, Conoscenza e Motivazione).",
+    "consider_elaborating": "Considera di elaborare maggiormente per ottenere più punti (minimo 50 parole raccomandate)."
   }
 }

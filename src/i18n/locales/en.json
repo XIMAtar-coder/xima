@@ -896,5 +896,19 @@
       "title": "Service & Operations",
       "desc": "Healthcare, education, hospitality, public sector, support."
     }
+  },
+  "open_scoring": {
+    "title": "Open Answer Score",
+    "why": "Why this score?",
+    "rubric_breakdown": "Rubric breakdown",
+    "rubric": {
+      "length": "Depth & Length",
+      "relevance": "Field Relevance",
+      "structure": "Structure & Flow",
+      "specificity": "Specificity & Evidence",
+      "action": "Action Orientation"
+    },
+    "note": "Open answers can influence up to 10% of selected pillars (Creativity, Communication, Knowledge, and Drive).",
+    "consider_elaborating": "Consider elaborating to earn more points (minimum 50 words recommended)."
   }
 }

@@ -200,6 +200,45 @@ export type Database = {
         }
         Relationships: []
       }
+      assessment_open_responses: {
+        Row: {
+          answer: string
+          attempt_id: string
+          created_at: string
+          field_key: string
+          id: string
+          language: string
+          open_key: string
+          rubric: Json
+          score: number
+          user_id: string
+        }
+        Insert: {
+          answer: string
+          attempt_id: string
+          created_at?: string
+          field_key: string
+          id?: string
+          language?: string
+          open_key: string
+          rubric: Json
+          score: number
+          user_id: string
+        }
+        Update: {
+          answer?: string
+          attempt_id?: string
+          created_at?: string
+          field_key?: string
+          id?: string
+          language?: string
+          open_key?: string
+          rubric?: Json
+          score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       assessment_results: {
         Row: {
           assessment_id: string | null

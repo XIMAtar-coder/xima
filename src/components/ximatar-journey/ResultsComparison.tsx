@@ -7,9 +7,12 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import XimaScoreCard from '../XimaScoreCard';
 import XimaAvatar from '../XimaAvatar';
+import { OpenAnswerScore } from './OpenAnswerScore';
 import { ArrowRight, CheckCircle, UserPlus } from 'lucide-react';
 import { XimaPillars } from '../../types';
 import { useUser } from '../../context/UserContext';
+import { supabase } from '@/integrations/supabase/client';
+import type { Rubric } from '@/lib/scoring/openResponse';
 
 interface ResultsComparisonProps {
   onComplete: (step: number) => void;
@@ -19,10 +22,16 @@ interface ResultsComparisonProps {
 const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { isAuthenticated } = useUser();
+  const { isAuthenticated, user } = useUser();
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [selectedProfessional, setSelectedProfessional] = useState<string | null>(null);
+  const [openResponses, setOpenResponses] = useState<Array<{
+    open_key: 'open1' | 'open2';
+    answer: string;
+    score: number;
+    rubric: Rubric;
+  }>>([]);
 
   // Mock data for demonstration
   const baselinePillars: XimaPillars = {
@@ -114,6 +123,31 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
     return () => clearTimeout(timer);
   }, []);
+
+  // Fetch open responses
+  useEffect(() => {
+    const fetchOpenResponses = async () => {
+      if (!user?.id) return;
+      
+      const attemptId = localStorage.getItem('current_attempt_id');
+      if (!attemptId) return;
+
+      const { data, error } = await supabase
+        .from('assessment_open_responses')
+        .select('open_key, answer, score, rubric')
+        .eq('user_id', user.id)
+        .eq('attempt_id', attemptId)
+        .order('open_key', { ascending: true });
+
+      if (!error && data) {
+        setOpenResponses(data as any);
+      }
+    };
+
+    if (showResults) {
+      fetchOpenResponses();
+    }
+  }, [showResults, user]);
 
   const handleProfessionalSelect = (professionalId: string) => {
     setSelectedProfessional(professionalId);
@@ -264,9 +298,28 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       {/* Single Assessment Results */}
       {!hasCv && (
-        <Card className="p-8">
-          <XimaScoreCard pillars={finalPillars} showTooltip />
-        </Card>
+        <div className="space-y-6">
+          <Card className="p-8">
+            <XimaScoreCard pillars={finalPillars} showTooltip />
+          </Card>
+
+          {/* Open Answer Scores */}
+          {openResponses.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold text-center">{t('open_scoring.title')}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {openResponses.map((response) => (
+                  <OpenAnswerScore
+                    key={response.open_key}
+                    openKey={response.open_key}
+                    rubric={response.rubric}
+                    answer={response.answer}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
       {!selectedProfessional && (
