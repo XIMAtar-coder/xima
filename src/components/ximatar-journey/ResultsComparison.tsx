@@ -56,7 +56,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
   const userAvatar = {
     animal: t('results.fox_animal'),
-    image: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=400&fit=crop&crop=face',
+    image: '/ximatars/fox.png',
     features: [
       { name: t('results.adaptability'), description: t('results.adaptability_desc'), strength: 8 },
       { name: t('results.focus'), description: t('results.focus_desc'), strength: 6 },
