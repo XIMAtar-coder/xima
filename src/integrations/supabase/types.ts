@@ -138,6 +138,65 @@ export type Database = {
           },
         ]
       }
+      assessment_results: {
+        Row: {
+          assessment_id: string | null
+          computed_at: string
+          id: string
+          rationale: Json | null
+          total_score: number | null
+          user_id: string
+          ximatar_id: string | null
+        }
+        Insert: {
+          assessment_id?: string | null
+          computed_at?: string
+          id?: string
+          rationale?: Json | null
+          total_score?: number | null
+          user_id: string
+          ximatar_id?: string | null
+        }
+        Update: {
+          assessment_id?: string | null
+          computed_at?: string
+          id?: string
+          rationale?: Json | null
+          total_score?: number | null
+          user_id?: string
+          ximatar_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_results_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_results_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_results_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "assessment_results_ximatar_id_fkey"
+            columns: ["ximatar_id"]
+            isOneToOne: false
+            referencedRelation: "ximatars"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assessment_scores: {
         Row: {
           assessment_id: string
@@ -787,6 +846,38 @@ export type Database = {
         }
         Relationships: []
       }
+      pillar_scores: {
+        Row: {
+          assessment_result_id: string
+          created_at: string
+          id: string
+          pillar: string
+          score: number
+        }
+        Insert: {
+          assessment_result_id: string
+          created_at?: string
+          id?: string
+          pillar: string
+          score: number
+        }
+        Update: {
+          assessment_result_id?: string
+          created_at?: string
+          id?: string
+          pillar?: string
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pillar_scores_assessment_result_id_fkey"
+            columns: ["assessment_result_id"]
+            isOneToOne: false
+            referencedRelation: "assessment_results"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       professionals: {
         Row: {
           calendar_url: string | null
@@ -1097,6 +1188,68 @@ export type Database = {
           },
         ]
       }
+      ximatar_translations: {
+        Row: {
+          behavior: string | null
+          core_traits: string
+          ideal_roles: string | null
+          lang: Database["public"]["Enums"]["lang_code"]
+          title: string
+          weaknesses: string | null
+          ximatar_id: string
+        }
+        Insert: {
+          behavior?: string | null
+          core_traits: string
+          ideal_roles?: string | null
+          lang: Database["public"]["Enums"]["lang_code"]
+          title: string
+          weaknesses?: string | null
+          ximatar_id: string
+        }
+        Update: {
+          behavior?: string | null
+          core_traits?: string
+          ideal_roles?: string | null
+          lang?: Database["public"]["Enums"]["lang_code"]
+          title?: string
+          weaknesses?: string | null
+          ximatar_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ximatar_translations_ximatar_id_fkey"
+            columns: ["ximatar_id"]
+            isOneToOne: false
+            referencedRelation: "ximatars"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ximatars: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          label: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          label: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          label?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       v_dashboard: {
@@ -1121,6 +1274,10 @@ export type Database = {
       }
     }
     Functions: {
+      assign_ximatar: {
+        Args: { p_assessment: string; p_lang?: string; p_user: string }
+        Returns: string
+      }
       ensure_mentor_thread: {
         Args: { p_mentor: string; p_user: string }
         Returns: string
