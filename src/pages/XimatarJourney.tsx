@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'next-themes';
 import MainLayout from '../components/layout/MainLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,7 @@ const XimatarJourney = () => {
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const { t } = useTranslation();
+  const { resolvedTheme } = useTheme();
   
   const [currentStep, setCurrentStep] = useState(1);
   const [baselineCompleted, setBaselineCompleted] = useState(false);
@@ -53,12 +55,15 @@ const XimatarJourney = () => {
     }
   };
 
+  const isDark = resolvedTheme === 'dark';
+  const logoSrc = isDark ? '/assets/logo_dark.png' : '/assets/logo_light.png';
+
   return (
     <MainLayout>
       <div className="container max-w-5xl mx-auto pt-4">
         <div className="text-center mb-8">
           <img 
-            src="/lovable-uploads/b0df6e4e-eb14-46ad-9f03-6707af82d4c6.png" 
+            src={logoSrc}
             alt="XIMA Logo" 
             className="h-16 w-auto mx-auto mb-4"
           />
