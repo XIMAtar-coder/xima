@@ -1,11 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Upload, FileText, Check, AlertCircle, SkipForward } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import FieldSelector, { FieldKey } from '@/components/FieldSelector';
 
 interface BaselineAssessmentProps {
   onComplete: (step: number) => void;
@@ -17,9 +18,16 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
   const [uploading, setUploading] = useState(false);
   const [uploadComplete, setUploadComplete] = useState(false);
   const [dataConsent, setDataConsent] = useState(false);
+  const [field, setField] = useState<FieldKey | null>(null);
   const { toast } = useToast();
   const { t } = useTranslation();
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  // Load field from localStorage on mount
+  useEffect(() => {
+    const cached = localStorage.getItem('preferred_field') as FieldKey | null;
+    if (cached) setField(cached);
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -65,12 +73,26 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
   };
 
   const handleSkip = () => {
+    if (!field) return;
+    saveFieldPreference();
     onCvUpload(false);
     onComplete(1);
   };
 
   const handleContinue = () => {
+    if (!field) return;
+    saveFieldPreference();
     onComplete(1);
+  };
+
+  const saveFieldPreference = () => {
+    if (!field) return;
+    
+    // Save to localStorage (always works)
+    localStorage.setItem('preferred_field', field);
+    
+    // Note: Database column 'preferred_field' can be added in future migration
+    // For now, only localStorage is used
   };
 
   const handleConsentChange = (checked: boolean | 'indeterminate') => {
@@ -81,10 +103,15 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
     <div className="space-y-8">
       <div className="text-center">
         <h2 className="text-3xl font-bold mb-4">{t('baseline.title')}</h2>
-        <p className="text-gray-600 text-lg">
+        <p className="text-muted-foreground text-lg">
           {t('baseline.subtitle')}
         </p>
       </div>
+
+      {/* Field Selector - must be selected first */}
+      <Card className="p-6 border-2">
+        <FieldSelector value={field} onChange={setField} disabled={uploading} />
+      </Card>
 
       {!uploadComplete ? (
         <div className="space-y-6">
@@ -166,6 +193,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
             <Button 
               variant="outline"
               onClick={handleSkip}
+              disabled={!field || uploading}
               className="flex items-center gap-2"
             >
               <SkipForward size={16} />
@@ -175,7 +203,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
             {file && (
               <Button 
                 onClick={handleUpload}
-                disabled={uploading || !dataConsent}
+                disabled={!field || uploading || !dataConsent}
                 className="bg-[#4171d6] hover:bg-[#2950a3]"
               >
                 {uploading ? (
@@ -209,6 +237,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
           <Button 
             size="lg"
             onClick={handleContinue}
+            disabled={!field}
             className="bg-[#4171d6] hover:bg-[#2950a3]"
           >
             {t('baseline.continue_assessment')}

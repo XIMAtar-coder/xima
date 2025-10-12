@@ -121,6 +121,10 @@
   },
   "assessment": {
     "title": "Create Your Ximatar",
+    "choose_field": {
+      "title": "Select your field",
+      "subtitle": "Choose the professional area closest to your profile. The 5 XIMA pillars remain the same."
+    },
     "subtitle": "Complete our comprehensive assessment to discover your professional strengths",
     "question": "Question",
     "of": "of",
@@ -784,6 +788,24 @@
       "saved": "Saved to your opportunities",
       "shared": "Link copied to clipboard",
       "share_failed": "Unable to share right now"
+    }
+  },
+  "field": {
+    "science_tech": {
+      "title": "Science & Technology",
+      "desc": "Engineering, data, research, product, development."
+    },
+    "business_leadership": {
+      "title": "Business & Leadership",
+      "desc": "Strategy, management, consulting, sales, HR."
+    },
+    "arts_creative": {
+      "title": "Arts & Creative",
+      "desc": "Design, content, marketing creative, media, UX/UI."
+    },
+    "service_ops": {
+      "title": "Service & Operations",
+      "desc": "Healthcare, education, hospitality, public sector, support."
     }
   }
 }

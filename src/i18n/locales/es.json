@@ -113,6 +113,10 @@
   },
   "assessment": {
     "title": "Evaluación XIMAtar",
+    "choose_field": {
+      "title": "Selecciona tu campo",
+      "subtitle": "Elige el área profesional más cercana a tu perfil. Los 5 pilares de XIMA no cambian."
+    },
     "question_of": "Pregunta {{current}} de {{total}}",
     "next": "Siguiente",
     "previous": "Anterior",
@@ -289,6 +293,24 @@
   },
   "footer": {
     "copyright": "© 2024 XIMA. Todos los derechos reservados."
+  },
+  "field": {
+    "science_tech": {
+      "title": "Ciencia y Tecnología",
+      "desc": "Ingeniería, datos, investigación, producto, desarrollo."
+    },
+    "business_leadership": {
+      "title": "Negocios y Liderazgo",
+      "desc": "Estrategia, gestión, consultoría, ventas, RR. HH."
+    },
+    "arts_creative": {
+      "title": "Artes y Creatividad",
+      "desc": "Diseño, contenido, marketing creativo, medios, UX/UI."
+    },
+    "service_ops": {
+      "title": "Servicios y Operaciones",
+      "desc": "Salud, educación, hostelería, sector público, soporte."
+    }
   },
   "language": {
     "switch_to": "Cambiar a {{language}}"
