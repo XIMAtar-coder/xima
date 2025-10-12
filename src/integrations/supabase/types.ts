@@ -79,6 +79,41 @@ export type Database = {
           },
         ]
       }
+      answer_options: {
+        Row: {
+          id: string
+          next_question_code: string | null
+          option_index: number
+          question_id: string
+          value_label: string
+          weight: number | null
+        }
+        Insert: {
+          id: string
+          next_question_code?: string | null
+          option_index: number
+          question_id: string
+          value_label: string
+          weight?: number | null
+        }
+        Update: {
+          id?: string
+          next_question_code?: string | null
+          option_index?: number
+          question_id?: string
+          value_label?: string
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "answer_options_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "question_bank"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       appointments: {
         Row: {
           created_at: string
@@ -137,6 +172,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      assessment_flows: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          default: boolean
+          id: string
+          title_key: string | null
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          default?: boolean
+          id: string
+          title_key?: string | null
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          default?: boolean
+          id?: string
+          title_key?: string | null
+        }
+        Relationships: []
       }
       assessment_results: {
         Row: {
@@ -656,6 +718,84 @@ export type Database = {
           },
         ]
       }
+      flow_questions: {
+        Row: {
+          flow_id: string
+          id: string
+          position: number
+          question_id: string
+          section_id: string | null
+        }
+        Insert: {
+          flow_id: string
+          id?: string
+          position: number
+          question_id: string
+          section_id?: string | null
+        }
+        Update: {
+          flow_id?: string
+          id?: string
+          position?: number
+          question_id?: string
+          section_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flow_questions_flow_id_fkey"
+            columns: ["flow_id"]
+            isOneToOne: false
+            referencedRelation: "assessment_flows"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flow_questions_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "question_bank"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flow_questions_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "flow_sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flow_sections: {
+        Row: {
+          description_key: string | null
+          flow_id: string
+          id: string
+          section_index: number
+          title_key: string | null
+        }
+        Insert: {
+          description_key?: string | null
+          flow_id: string
+          id: string
+          section_index: number
+          title_key?: string | null
+        }
+        Update: {
+          description_key?: string | null
+          flow_id?: string
+          id?: string
+          section_index?: number
+          title_key?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flow_sections_flow_id_fkey"
+            columns: ["flow_id"]
+            isOneToOne: false
+            referencedRelation: "assessment_flows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       i18n_keys: {
         Row: {
           created_at: string | null
@@ -967,6 +1107,68 @@ export type Database = {
           ximatar?: Database["public"]["Enums"]["ximatar_type"] | null
         }
         Relationships: []
+      }
+      question_bank: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          id: string
+          level: string | null
+          pillar: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          id: string
+          level?: string | null
+          pillar: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          id?: string
+          level?: string | null
+          pillar?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
+      question_localizations: {
+        Row: {
+          helper: string | null
+          lang: string
+          prompt: string
+          question_id: string
+        }
+        Insert: {
+          helper?: string | null
+          lang: string
+          prompt: string
+          question_id: string
+        }
+        Update: {
+          helper?: string | null
+          lang?: string
+          prompt?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_localizations_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "question_bank"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       saved_opportunities: {
         Row: {
