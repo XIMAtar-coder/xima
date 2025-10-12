@@ -4,6 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
+export type FieldKey = 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops';
+
 type Professional = {
   id: string;
   full_name: string;
@@ -13,10 +15,12 @@ type Professional = {
   locale_bio: Record<string, string>;
   expertise_tags: string[] | null;
   compatibility_score: number | null;
+  field_keys: FieldKey[];
 };
 
-const PROFESSIONALS_DATA = [
+const PROFESSIONALS_DATA: Professional[] = [
   {
+    id: '1',
     full_name: 'Pietro Cozzi',
     title: 'Product & Growth Leader',
     linkedin_url: 'https://www.linkedin.com/in/pietro-cozzi/',
@@ -27,9 +31,11 @@ const PROFESSIONALS_DATA = [
       es: 'Líder de producto y crecimiento, enfoque en GTM y métricas'
     },
     expertise_tags: ['Leadership', 'GTM', 'Growth'],
-    compatibility_score: 95
+    compatibility_score: 95,
+    field_keys: ['business_leadership', 'arts_creative']
   },
   {
+    id: '2',
     full_name: 'Daniel Cracau',
     title: 'Technology & Strategy',
     linkedin_url: 'https://www.linkedin.com/in/daniel-cracau/',
@@ -40,9 +46,11 @@ const PROFESSIONALS_DATA = [
       es: 'Tecnología y estrategia, transformación digital'
     },
     expertise_tags: ['Technology', 'Strategy'],
-    compatibility_score: 91
+    compatibility_score: 91,
+    field_keys: ['science_tech', 'business_leadership']
   },
   {
+    id: '3',
     full_name: 'Roberta Fazzeri',
     title: 'People & Culture Advisor',
     linkedin_url: 'https://www.linkedin.com/in/roberta-fazzeri/',
@@ -53,24 +61,32 @@ const PROFESSIONALS_DATA = [
       es: 'Asesora de RRHH, cultura y desarrollo'
     },
     expertise_tags: ['HR', 'Culture', 'Coaching'],
-    compatibility_score: 93
+    compatibility_score: 93,
+    field_keys: ['service_ops', 'arts_creative']
   }
 ];
 
 export default function FeaturedProfessionals({ 
   limit = 3,
-  onSelect 
+  onSelect,
+  fieldKey
 }: { 
   limit?: number;
   onSelect?: (professional: any) => void;
+  fieldKey?: FieldKey;
 }) {
   const { i18n, t } = useTranslation();
 
   const locale = (i18n.language || 'it').slice(0, 2) as 'it' | 'en' | 'es';
 
+  // Filter professionals by field if provided
+  const filteredProfessionals = fieldKey 
+    ? PROFESSIONALS_DATA.filter(p => p.field_keys.includes(fieldKey))
+    : PROFESSIONALS_DATA;
+
   return (
     <div className="grid md:grid-cols-3 gap-4">
-      {PROFESSIONALS_DATA.slice(0, limit).map((p, idx) => {
+      {filteredProfessionals.slice(0, limit).map((p, idx) => {
         const bio = p.locale_bio[locale] || p.locale_bio.en || '';
         const score = p.compatibility_score ?? 90;
         
@@ -115,7 +131,7 @@ export default function FeaturedProfessionals({
               <Button
                 onClick={() => {
                   if (onSelect) {
-                    onSelect({ id: idx.toString(), ...p });
+                    onSelect(p);
                   }
                 }}
                 className="w-full"

@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import XimaScoreCard from '../XimaScoreCard';
 import XimaAvatar from '../XimaAvatar';
 import { OpenAnswerScore } from './OpenAnswerScore';
-import FeaturedProfessionals from '../FeaturedProfessionals';
+import FeaturedProfessionals, { type FieldKey } from '../FeaturedProfessionals';
 import { ArrowRight, CheckCircle, UserPlus } from 'lucide-react';
 import { XimaPillars } from '../../types';
 import { useUser } from '../../context/UserContext';
@@ -33,6 +33,9 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     score: number;
     rubric: Rubric;
   }>>([]);
+  const [selectedField] = useState<FieldKey>(() => {
+    return (localStorage.getItem('preferred_field') as FieldKey) || 'business_leadership';
+  });
 
   // Mock data for demonstration
   const baselinePillars: XimaPillars = {
@@ -169,6 +172,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         
         <FeaturedProfessionals 
           onSelect={handleProfessionalSelect}
+          fieldKey={selectedField}
         />
 
         {selectedProfessional && (
