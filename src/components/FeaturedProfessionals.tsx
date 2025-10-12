@@ -80,7 +80,7 @@ export default function FeaturedProfessionals({
               <div className="relative h-14 w-14 rounded-full overflow-hidden bg-muted flex-shrink-0">
                 {p.avatar_path ? (
                   <img
-                    src={`https://iyckvvnecpnldrxqmzta.supabase.co/storage/v1/object/public/avatars/${p.avatar_path.replace('public/avatars/', '')}`}
+                    src={`/${p.avatar_path}`}
                     alt={p.full_name}
                     className="h-full w-full object-cover"
                     onError={(e) => {
