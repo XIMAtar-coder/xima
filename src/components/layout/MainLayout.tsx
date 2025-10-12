@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useUser } from '../../context/UserContext';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { ThemeToggle } from '../ThemeToggle';
+import { useAssessment } from '../../contexts/AssessmentContext';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -17,6 +18,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
   const { user, isAuthenticated, signOut } = useUser();
   const { t, i18n } = useTranslation();
   const { theme, resolvedTheme } = useTheme();
+  const { assessmentInProgress } = useAssessment();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -41,6 +43,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
   const isDark = resolvedTheme === 'dark';
   const logoSrc = isDark ? '/assets/logo_dark.png' : '/assets/logo_light.png';
 
+  const handleLogoClick = () => {
+    if (assessmentInProgress) return;
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <nav 
@@ -61,8 +72,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
           <div className="flex justify-between items-center h-full">
             <div className="flex items-center space-x-8">
               <button 
-                onClick={() => navigate(`/${i18n.language}`)} 
-                className="flex items-center group logo-wrap"
+                onClick={handleLogoClick}
+                disabled={assessmentInProgress}
+                aria-disabled={assessmentInProgress}
+                className={`flex items-center group logo-wrap transition-opacity ${
+                  assessmentInProgress ? 'cursor-default opacity-70' : 'hover:opacity-90'
+                }`}
               >
                 <img 
                   src={logoSrc}

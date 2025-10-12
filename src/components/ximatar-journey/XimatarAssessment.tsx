@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -9,6 +9,7 @@ import { ArrowRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { scoreOpenResponse, type FieldKey } from '@/lib/scoring/openResponse';
 import { useToast } from '@/hooks/use-toast';
+import { useAssessment } from '@/contexts/AssessmentContext';
 
 interface XimatarAssessmentProps {
   onComplete: (step: number) => void;
@@ -18,11 +19,17 @@ interface XimatarAssessmentProps {
 const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, assessmentSetKey = 'business_leadership' }) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
+  const { setAssessmentInProgress } = useAssessment();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [openAnswers, setOpenAnswers] = useState<Record<string, string>>({});
   const [isCompleting, setIsCompleting] = useState(false);
   const [attemptId] = useState(() => crypto.randomUUID()); // Generate once per assessment
+
+  useEffect(() => {
+    setAssessmentInProgress(true);
+    return () => setAssessmentInProgress(false);
+  }, [setAssessmentInProgress]);
 
   // Define all 21 multiple choice questions
   const questions = [

@@ -26,6 +26,7 @@ import NotFound from "./pages/NotFound";
 import { XimAIProvider } from "./context/XimAIProvider";
 import ChatEntry from "./components/ximai/ChatEntry";
 import OpportunityDetails from "./pages/OpportunityDetails";
+import { AssessmentProvider } from "./contexts/AssessmentContext";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <UserProvider>
+        <AssessmentProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -63,6 +65,7 @@ const App = () => (
           </XimAIProvider>
         </BrowserRouter>
       </TooltipProvider>
+        </AssessmentProvider>
     </UserProvider>
     </ThemeProvider>
   </QueryClientProvider>
