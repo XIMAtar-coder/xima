@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
@@ -138,15 +138,45 @@ export type Database = {
           },
         ]
       }
+      assessment_scores: {
+        Row: {
+          assessment_id: string
+          pillar: string
+          score: number
+        }
+        Insert: {
+          assessment_id: string
+          pillar: string
+          score: number
+        }
+        Update: {
+          assessment_id?: string
+          pillar?: string
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_scores_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assessments: {
         Row: {
           assessment_type: string
           completed_at: string
           created_at: string
           id: string
+          level: string | null
+          meta: Json | null
           overall_score: number | null
           pillar_scores: Json | null
           recommendations: Json | null
+          source: string | null
+          started_at: string | null
           user_id: string
           xima_scores: Json
         }
@@ -155,9 +185,13 @@ export type Database = {
           completed_at?: string
           created_at?: string
           id?: string
+          level?: string | null
+          meta?: Json | null
           overall_score?: number | null
           pillar_scores?: Json | null
           recommendations?: Json | null
+          source?: string | null
+          started_at?: string | null
           user_id: string
           xima_scores: Json
         }
@@ -166,11 +200,276 @@ export type Database = {
           completed_at?: string
           created_at?: string
           id?: string
+          level?: string | null
+          meta?: Json | null
           overall_score?: number | null
           pillar_scores?: Json | null
           recommendations?: Json | null
+          source?: string | null
+          started_at?: string | null
           user_id?: string
           xima_scores?: Json
+        }
+        Relationships: []
+      }
+      bookings: {
+        Row: {
+          created_at: string | null
+          ends_at: string
+          id: string
+          professional_id: string
+          seeker_user_id: string
+          starts_at: string
+          status: string
+        }
+        Insert: {
+          created_at?: string | null
+          ends_at: string
+          id?: string
+          professional_id: string
+          seeker_user_id: string
+          starts_at: string
+          status?: string
+        }
+        Update: {
+          created_at?: string | null
+          ends_at?: string
+          id?: string
+          professional_id?: string
+          seeker_user_id?: string
+          starts_at?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_seeker_user_id_fkey"
+            columns: ["seeker_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_seeker_user_id_fkey"
+            columns: ["seeker_user_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      bot_events: {
+        Row: {
+          created_at: string | null
+          event_type: string | null
+          id: string
+          lang: Database["public"]["Enums"]["lang_code"] | null
+          payload: Json | null
+          route: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_type?: string | null
+          id?: string
+          lang?: Database["public"]["Enums"]["lang_code"] | null
+          payload?: Json | null
+          route?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: string | null
+          id?: string
+          lang?: Database["public"]["Enums"]["lang_code"] | null
+          payload?: Json | null
+          route?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bot_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bot_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      chat_messages: {
+        Row: {
+          body: string
+          created_at: string | null
+          edited_at: string | null
+          id: string
+          lang: Database["public"]["Enums"]["lang_code"] | null
+          sender_id: string
+          thread_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string | null
+          edited_at?: string | null
+          id?: string
+          lang?: Database["public"]["Enums"]["lang_code"] | null
+          sender_id: string
+          thread_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string | null
+          edited_at?: string | null
+          id?: string
+          lang?: Database["public"]["Enums"]["lang_code"] | null
+          sender_id?: string
+          thread_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "chat_messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "chat_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_participants: {
+        Row: {
+          role: string | null
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          role?: string | null
+          thread_id: string
+          user_id: string
+        }
+        Update: {
+          role?: string | null
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_participants_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "chat_threads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      chat_threads: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          id: string
+          is_group: boolean
+          topic: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          id?: string
+          is_group?: boolean
+          topic?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          id?: string
+          is_group?: boolean
+          topic?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_threads_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_threads_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      company_sentiment: {
+        Row: {
+          company: string
+          cons: string[] | null
+          highlights: string[] | null
+          id: string
+          overall_score: number | null
+          pros: string[] | null
+          sources: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          company: string
+          cons?: string[] | null
+          highlights?: string[] | null
+          id?: string
+          overall_score?: number | null
+          pros?: string[] | null
+          sources?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          company?: string
+          cons?: string[] | null
+          highlights?: string[] | null
+          id?: string
+          overall_score?: number | null
+          pros?: string[] | null
+          sources?: Json | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -215,6 +514,185 @@ export type Database = {
           virus_scan_status?: string | null
         }
         Relationships: []
+      }
+      devplan_items: {
+        Row: {
+          description_i18n_key: string | null
+          difficulty: string | null
+          id: string
+          key: string
+          pillar: string
+          title_i18n_key: string
+        }
+        Insert: {
+          description_i18n_key?: string | null
+          difficulty?: string | null
+          id?: string
+          key: string
+          pillar: string
+          title_i18n_key: string
+        }
+        Update: {
+          description_i18n_key?: string | null
+          difficulty?: string | null
+          id?: string
+          key?: string
+          pillar?: string
+          title_i18n_key?: string
+        }
+        Relationships: []
+      }
+      devplan_user_items: {
+        Row: {
+          created_at: string | null
+          devplan_item_id: string
+          id: string
+          last_result: Json | null
+          progress: number
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          devplan_item_id: string
+          id?: string
+          last_result?: Json | null
+          progress?: number
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          devplan_item_id?: string
+          id?: string
+          last_result?: Json | null
+          progress?: number
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "devplan_user_items_devplan_item_id_fkey"
+            columns: ["devplan_item_id"]
+            isOneToOne: false
+            referencedRelation: "devplan_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "devplan_user_items_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "devplan_user_items_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      i18n_keys: {
+        Row: {
+          created_at: string | null
+          key: string
+        }
+        Insert: {
+          created_at?: string | null
+          key: string
+        }
+        Update: {
+          created_at?: string | null
+          key?: string
+        }
+        Relationships: []
+      }
+      i18n_translations: {
+        Row: {
+          key: string
+          lang: Database["public"]["Enums"]["lang_code"]
+          text_value: string
+        }
+        Insert: {
+          key: string
+          lang: Database["public"]["Enums"]["lang_code"]
+          text_value: string
+        }
+        Update: {
+          key?: string
+          lang?: Database["public"]["Enums"]["lang_code"]
+          text_value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "i18n_translations_key_fkey"
+            columns: ["key"]
+            isOneToOne: false
+            referencedRelation: "i18n_keys"
+            referencedColumns: ["key"]
+          },
+        ]
+      }
+      mentor_matches: {
+        Row: {
+          assigned_by: string | null
+          created_at: string | null
+          id: string
+          mentee_user_id: string
+          mentor_user_id: string
+          reason: Json | null
+        }
+        Insert: {
+          assigned_by?: string | null
+          created_at?: string | null
+          id?: string
+          mentee_user_id: string
+          mentor_user_id: string
+          reason?: Json | null
+        }
+        Update: {
+          assigned_by?: string | null
+          created_at?: string | null
+          id?: string
+          mentee_user_id?: string
+          mentor_user_id?: string
+          reason?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_matches_mentee_user_id_fkey"
+            columns: ["mentee_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_matches_mentee_user_id_fkey"
+            columns: ["mentee_user_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "mentor_matches_mentor_user_id_fkey"
+            columns: ["mentor_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_matches_mentor_user_id_fkey"
+            columns: ["mentor_user_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
       mentors: {
         Row: {
@@ -276,39 +754,126 @@ export type Database = {
         }
         Relationships: []
       }
+      opportunities: {
+        Row: {
+          company: string
+          created_at: string | null
+          description: string | null
+          id: string
+          location: string | null
+          skills: string[] | null
+          source_url: string | null
+          title: string
+        }
+        Insert: {
+          company: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          location?: string | null
+          skills?: string[] | null
+          source_url?: string | null
+          title: string
+        }
+        Update: {
+          company?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          location?: string | null
+          skills?: string[] | null
+          source_url?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      professionals: {
+        Row: {
+          calendar_url: string | null
+          created_at: string | null
+          id: string
+          specialties: string[] | null
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          calendar_url?: string | null
+          created_at?: string | null
+          id?: string
+          specialties?: string[] | null
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          calendar_url?: string | null
+          created_at?: string | null
+          id?: string
+          specialties?: string[] | null
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professionals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professionals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar: Json | null
           created_at: string
+          email: string | null
+          full_name: string | null
           id: string
           mentor: Json | null
           name: string | null
           pillars: Json | null
+          preferred_lang: Database["public"]["Enums"]["lang_code"] | null
           profile_complete: boolean | null
           updated_at: string
           user_id: string
+          ximatar: Database["public"]["Enums"]["ximatar_type"] | null
         }
         Insert: {
           avatar?: Json | null
           created_at?: string
+          email?: string | null
+          full_name?: string | null
           id?: string
           mentor?: Json | null
           name?: string | null
           pillars?: Json | null
+          preferred_lang?: Database["public"]["Enums"]["lang_code"] | null
           profile_complete?: boolean | null
           updated_at?: string
           user_id: string
+          ximatar?: Database["public"]["Enums"]["ximatar_type"] | null
         }
         Update: {
           avatar?: Json | null
           created_at?: string
+          email?: string | null
+          full_name?: string | null
           id?: string
           mentor?: Json | null
           name?: string | null
           pillars?: Json | null
+          preferred_lang?: Database["public"]["Enums"]["lang_code"] | null
           profile_complete?: boolean | null
           updated_at?: string
           user_id?: string
+          ximatar?: Database["public"]["Enums"]["ximatar_type"] | null
         }
         Relationships: []
       }
@@ -348,15 +913,253 @@ export type Database = {
         }
         Relationships: []
       }
+      test_attempts: {
+        Row: {
+          completed_at: string | null
+          detail: Json | null
+          id: string
+          score_pct: number | null
+          started_at: string | null
+          test_id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          detail?: Json | null
+          id?: string
+          score_pct?: number | null
+          started_at?: string | null
+          test_id: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          detail?: Json | null
+          id?: string
+          score_pct?: number | null
+          started_at?: string | null
+          test_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_attempts_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "tests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "test_attempts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "test_attempts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      tests: {
+        Row: {
+          devplan_item_id: string | null
+          id: string
+          level: string | null
+          questions: Json
+          time_limit_seconds: number | null
+          title: string
+        }
+        Insert: {
+          devplan_item_id?: string | null
+          id?: string
+          level?: string | null
+          questions: Json
+          time_limit_seconds?: number | null
+          title: string
+        }
+        Update: {
+          devplan_item_id?: string | null
+          id?: string
+          level?: string | null
+          questions?: Json
+          time_limit_seconds?: number | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tests_devplan_item_id_fkey"
+            columns: ["devplan_item_id"]
+            isOneToOne: false
+            referencedRelation: "devplan_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_opportunity_matches: {
+        Row: {
+          created_at: string | null
+          match_score: number
+          opportunity_id: string
+          rationale: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          match_score: number
+          opportunity_id: string
+          rationale?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          match_score?: number
+          opportunity_id?: string
+          rationale?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_opportunity_matches_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_opportunity_matches_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_opportunity_matches_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      user_scores: {
+        Row: {
+          assessments_completed: number
+          communication: number
+          computational_power: number
+          creativity: number
+          drive: number
+          knowledge: number
+          match_quality_pct: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assessments_completed?: number
+          communication?: number
+          computational_power?: number
+          creativity?: number
+          drive?: number
+          knowledge?: number
+          match_quality_pct?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assessments_completed?: number
+          communication?: number
+          computational_power?: number
+          creativity?: number
+          drive?: number
+          knowledge?: number
+          match_quality_pct?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_scores_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_scores_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
     }
     Views: {
-      [_ in never]: never
+      v_dashboard: {
+        Row: {
+          assessments_completed: number | null
+          auth_user_id: string | null
+          avatar_url: Json | null
+          communication: number | null
+          computational_power: number | null
+          creativity: number | null
+          drive: number | null
+          email: string | null
+          full_name: string | null
+          knowledge: number | null
+          match_quality_pct: number | null
+          preferred_lang: Database["public"]["Enums"]["lang_code"] | null
+          top_matches: Json | null
+          user_id: string | null
+          ximatar: Database["public"]["Enums"]["ximatar_type"] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      ensure_mentor_thread: {
+        Args: { p_mentor: string; p_user: string }
+        Returns: string
+      }
+      log_bot_event: {
+        Args: {
+          p_lang: Database["public"]["Enums"]["lang_code"]
+          p_payload: Json
+          p_route: string
+          p_type: string
+          p_user: string
+        }
+        Returns: undefined
+      }
+      recompute_matches: {
+        Args: { p_user: string }
+        Returns: undefined
+      }
+      recompute_user_scores: {
+        Args: { p_user: string }
+        Returns: undefined
+      }
     }
     Enums: {
       ai_message_role: "user" | "assistant" | "system" | "tool"
+      lang_code: "it" | "en" | "es"
+      ximatar_type:
+        | "lion"
+        | "owl"
+        | "dolphin"
+        | "fox"
+        | "bear"
+        | "cat"
+        | "bee"
+        | "parrot"
+        | "elephant"
+        | "wolf"
+        | "chameleon"
+        | "horse"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -485,6 +1288,21 @@ export const Constants = {
   public: {
     Enums: {
       ai_message_role: ["user", "assistant", "system", "tool"],
+      lang_code: ["it", "en", "es"],
+      ximatar_type: [
+        "lion",
+        "owl",
+        "dolphin",
+        "fox",
+        "bear",
+        "cat",
+        "bee",
+        "parrot",
+        "elephant",
+        "wolf",
+        "chameleon",
+        "horse",
+      ],
     },
   },
 } as const
