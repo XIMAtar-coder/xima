@@ -790,6 +790,37 @@
       "share_failed": "Unable to share right now"
     }
   },
+  "assessmentSets": {
+    "business_leadership": {
+      "title": "Create Your XIMAtar",
+      "subtitle": "Complete our comprehensive assessment to discover your professional strengths",
+      "questions": {
+        "q1": { "category": "Computational Power", "question": "When reviewing a business KPI dashboard, what is your first step?", "options": ["Scan for anomalies vs targets", "Drill into segment breakdowns", "Compare with historical trends", "Export data to investigate offline"] },
+        "q2": { "category": "Communication", "question": "In an exec meeting with conflicting opinions, you typically:", "options": ["Synthesize and reframe the core issue", "Ask clarifying questions to align context", "Summarize decisions and next steps", "De-escalate and redirect to shared goals"] },
+        "q3": { "category": "Knowledge", "question": "How do you keep your market knowledge current?", "options": ["Read industry briefings weekly", "Follow analyst reports and competitors", "Attend conferences and webinars", "Run regular customer interviews"] },
+        "q4": { "category": "Creativity", "question": "Designing a new go-to-market motion, you prefer to:", "options": ["Prototype campaigns quickly", "Adapt proven playbooks", "Borrow ideas from adjacent industries", "Co-create with sales and product"] },
+        "q5": { "category": "Drive", "question": "What most sustains your momentum through a tough quarter?", "options": ["Clear milestones and scorecards", "Purpose and impact on customers", "Learning through iteration", "Recognition and visible wins"] },
+        "q6": { "category": "Computational Power", "question": "Faced with ambiguous revenue drops, you first:", "options": ["Segment by channel and cohort", "Correlate with pricing or promo changes", "Check attribution/measurement integrity", "Benchmark against seasonality"] },
+        "q7": { "category": "Communication", "question": "When a team resists a strategic change, you:", "options": ["Tell a compelling story with evidence", "Create forums to surface concerns", "Map stakeholders and tailor messages", "Negotiate phased adoption"] },
+        "q8": { "category": "Knowledge", "question": "Your approach to learning a new business model:", "options": ["Build a financial model end-to-end", "Read case studies across sectors", "Shadow operators doing the work", "Run a small pilot to learn"] },
+        "q9": { "category": "Creativity", "question": "To unlock growth in a saturated segment, you:", "options": ["Test a novel positioning angle", "Bundle/re-package offers creatively", "Create partnerships to reach new users", "Reinvent the onboarding experience"] },
+        "q10": { "category": "Drive", "question": "Under pressure with tight deadlines, you:", "options": ["Ruthlessly prioritize the 20% that matters", "Keep the team energized and focused", "Time-box experiments to learn fast", "Secure resources and unblock quickly"] },
+        "q11": { "category": "Computational Power", "question": "Evaluating a pricing change, you:", "options": ["Run sensitivity analyses", "A/B test price points", "Model elasticity by segment", "Validate with customer interviews"] },
+        "q12": { "category": "Communication", "question": "Communicating to non-experts, you mainly:", "options": ["Use visuals and analogies", "Tell a narrative with outcomes", "Provide executive summaries", "Offer clear calls to action"] },
+        "q13": { "category": "Knowledge", "question": "Institutional knowledge is best maintained by:", "options": ["Well-structured internal docs", "Regular training sessions", "Living playbooks with owners", "Communities of practice"] },
+        "q14": { "category": "Creativity", "question": "When plans stall, you spark ideas by:", "options": ["Rapid ideation sprints", "Cross-functional workshops", "Reverse-engineering competitor wins", "Inviting contrarian perspectives"] },
+        "q15": { "category": "Drive", "question": "After a failed initiative, you tend to:", "options": ["Do a blameless post-mortem", "Pivot quickly to a new path", "Seek mentoring on blind spots", "Refine the vision and persist"] },
+        "q16": { "category": "Computational Power", "question": "To forecast next quarter, you:", "options": ["Blend bottom-up with top-down models", "Stress-test scenarios", "Validate assumptions with sales", "Simulate capacity constraints"] },
+        "q17": { "category": "Communication", "question": "Presenting complex strategy, you:", "options": ["Tell a story tied to impact", "Use simple visuals", "Focus on trade-offs and choices", "Provide a one-page brief"] },
+        "q18": { "category": "Knowledge", "question": "To onboard into a new industry fast, you:", "options": ["Study regulations and economics", "Interview key stakeholders", "Map the value chain and incentives", "Analyze customer jobs-to-be-done"] },
+        "q19": { "category": "Creativity", "question": "To differentiate your brand, you:", "options": ["Create a distinct voice and POV", "Design signature experiences", "Co-create with your community", "Experiment with novel channels"] },
+        "q20": { "category": "Drive", "question": "Pursuing long-term outcomes, you:", "options": ["Set a clear roadmap and checkpoints", "Track leading and lagging indicators", "Review and adapt quarterly", "Shield focus from distractions"] },
+        "q21": { "category": "Computational Power", "question": "Evaluating a transformation program, you first:", "options": ["Define success metrics", "Pilot with a control group", "Assess org readiness and risk", "Study reference cases"] },
+        "open1": { "question": "Describe a leadership decision you are proud of. What trade-offs did you weigh and why?" },
+        "open2": { "question": "What's your biggest growth edge as a leader, and how are you addressing it?" }
+      }
+    }
+  },
   "field": {
     "science_tech": {
       "title": "Science & Technology",

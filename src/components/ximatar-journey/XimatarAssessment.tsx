@@ -9,9 +9,10 @@ import { ArrowRight } from 'lucide-react';
 
 interface XimatarAssessmentProps {
   onComplete: (step: number) => void;
+  assessmentSetKey?: string;
 }
 
-const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => {
+const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, assessmentSetKey = 'business_leadership' }) => {
   const { t } = useTranslation();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
@@ -86,12 +87,14 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => 
   const currentOpenQuestion = isOpenQuestion ? openQuestions[currentQuestion - questions.length] : null;
   const currentMultipleChoice = !isOpenQuestion ? questions[currentQuestion] : null;
 
+  const baseKey = `assessmentSets.${assessmentSetKey}`;
+  
   return (
     <div className="space-y-6">
       <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold">{t('assessment.title')}</h2>
-        <p className="text-gray-600">
-          {t('assessment.subtitle')}
+        <h2 className="text-3xl font-bold">{t(`${baseKey}.title`)}</h2>
+        <p className="text-gray-600 dark:text-gray-300">
+          {t(`${baseKey}.subtitle`)}
         </p>
         
         <div className="space-y-2">
@@ -106,11 +109,11 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => 
         {currentMultipleChoice && (
           <div className="space-y-6">
             <div className="space-y-3">
-              <div className="inline-block px-3 py-1 bg-[#4171d6] bg-opacity-10 text-[#4171d6] rounded-full text-sm font-medium">
-                {t(`assessment.questions.${currentMultipleChoice.key}.category`)}
+              <div className="inline-block px-3 py-1 bg-[#2C6CFF] bg-opacity-10 text-[#2C6CFF] rounded-full text-sm font-medium">
+                {t(`${baseKey}.questions.${currentMultipleChoice.key}.category`)}
               </div>
               <h3 className="text-xl font-medium">
-                {t(`assessment.questions.${currentMultipleChoice.key}.question`)}
+                {t(`${baseKey}.questions.${currentMultipleChoice.key}.question`)}
               </h3>
             </div>
             
@@ -119,23 +122,23 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => 
                 <button
                   key={index}
                   onClick={() => handleAnswerSelect(currentMultipleChoice.id, index)}
-                  className={`p-4 text-left rounded-lg border-2 transition-all hover:border-[#4171d6] hover:bg-blue-50 
+                  className={`p-4 text-left rounded-lg border-2 transition-all hover:border-[#2C6CFF] hover:bg-blue-50 dark:hover:bg-white/5
                     ${answers[currentMultipleChoice.id] === index 
-                      ? 'border-[#4171d6] bg-blue-50 text-[#4171d6]' 
-                      : 'border-gray-200 hover:border-[#4171d6]'
+                      ? 'border-[#2C6CFF] bg-blue-50 dark:bg-white/5 text-[#2C6CFF]' 
+                      : 'border-gray-200 dark:border-white/10 hover:border-[#2C6CFF]'
                     }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0
                       ${answers[currentMultipleChoice.id] === index 
-                        ? 'border-[#4171d6] bg-[#4171d6]' 
+                        ? 'border-[#2C6CFF] bg-[#2C6CFF]' 
                         : 'border-gray-300'
                       }`}>
                       {answers[currentMultipleChoice.id] === index && (
                         <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
                       )}
                     </div>
-                    <span>{t(`assessment.questions.${currentMultipleChoice.key}.options.${index}`)}</span>
+                    <span>{t(`${baseKey}.questions.${currentMultipleChoice.key}.options.${index}`)}</span>
                   </div>
                 </button>
               ))}
@@ -146,11 +149,11 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => 
         {currentOpenQuestion && (
           <div className="space-y-6">
             <div className="space-y-3">
-              <div className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+              <div className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full text-sm font-medium">
                 {t('assessment.open_question')} {currentQuestion - questions.length + 1}
               </div>
               <h3 className="text-xl font-medium">
-                {t(`assessment.questions.${currentOpenQuestion.key}.question`)}
+                {t(`${baseKey}.questions.${currentOpenQuestion.key}.question`)}
               </h3>
             </div>
             
@@ -170,7 +173,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => 
                 <Button 
                   onClick={handleComplete}
                   disabled={!canProceed() || isCompleting}
-                  className="bg-[#4171d6] hover:bg-[#2950a3]"
+                  className="bg-[#2C6CFF] hover:bg-[#2950a3]"
                 >
                   {isCompleting ? (
                     <>
@@ -188,7 +191,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete }) => 
                 <Button 
                   onClick={() => setCurrentQuestion(currentQuestion + 1)}
                   disabled={!canProceed()}
-                  className="bg-[#4171d6] hover:bg-[#2950a3]"
+                  className="bg-[#2C6CFF] hover:bg-[#2950a3]"
                 >
                   {t('assessment.next_question')}
                   <ArrowRight size={16} className="ml-2" />

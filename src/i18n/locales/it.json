@@ -835,6 +835,37 @@
       "share_failed": "Impossibile condividere ora"
     }
   },
+  "assessmentSets": {
+    "business_leadership": {
+      "title": "Crea il tuo XIMAtar",
+      "subtitle": "Completa la nostra valutazione per scoprire i tuoi punti di forza professionali",
+      "questions": {
+        "q1": { "category": "Potenza Computazionale", "question": "Davanti a una dashboard di KPI, qual è il tuo primo passo?", "options": ["Cercare anomalie rispetto agli obiettivi", "Approfondire i segmenti", "Confrontare con l'andamento storico", "Esportare i dati per analizzarli a parte"] },
+        "q2": { "category": "Comunicazione", "question": "In una riunione con opinioni in conflitto, di solito tu:", "options": ["Sintetizzi e riformuli il nodo del problema", "Fai domande per allineare il contesto", "Riepiloghi decisioni e prossimi passi", "Riduci la tensione e riporti a obiettivi comuni"] },
+        "q3": { "category": "Conoscenza", "question": "Come mantieni aggiornate le tue conoscenze di mercato?", "options": ["Leggo report di settore settimanali", "Seguo analisti e concorrenti", "Partecipo a conferenze e webinar", "Conduco interviste periodiche ai clienti"] },
+        "q4": { "category": "Creatività", "question": "Progettando un go-to-market, preferisci:", "options": ["Prototipare campagne velocemente", "Adattare playbook collaudati", "Prendere spunto da settori adiacenti", "Co-creare con sales e product"] },
+        "q5": { "category": "Motivazione", "question": "Cosa sostiene di più la tua energia in un trimestre difficile?", "options": ["Milestone e scorecard chiari", "Impatto positivo sui clienti", "Apprendimento continuo iterando", "Riconoscimento e vittorie visibili"] },
+        "q6": { "category": "Potenza Computazionale", "question": "Di fronte a cali di ricavi ambigui, per prima cosa:", "options": ["Segmento per canale e coorte", "Correlazione con prezzi/promozioni", "Verifico integrità dell'attribuzione", "Confronto con la stagionalità"] },
+        "q7": { "category": "Comunicazione", "question": "Se il team resiste a un cambio strategico, tu:", "options": ["Racconti una storia supportata da evidenze", "Crei spazi per far emergere obiezioni", "Mappi stakeholder e adatti i messaggi", "Proponi un'adozione per fasi"] },
+        "q8": { "category": "Conoscenza", "question": "Per apprendere un nuovo modello di business:", "options": ["Costruisco un modello finanziario completo", "Leggo casi studio cross-settore", "Affianco gli operatori sul campo", "Avvio un piccolo pilot per imparare"] },
+        "q9": { "category": "Creatività", "question": "Per sbloccare crescita in un segmento maturo, tu:", "options": ["Testi un posizionamento innovativo", "Riconfezioni l'offerta in modo creativo", "Crei partnership per nuovi utenti", "Reinventi l'onboarding"] },
+        "q10": { "category": "Motivazione", "question": "Sotto scadenze strette, tu:", "options": ["Dai priorità al 20% che conta", "Mantieni il team focalizzato", "Time-box per apprendere in fretta", "Sblocchi risorse rapidamente"] },
+        "q11": { "category": "Potenza Computazionale", "question": "Valutando un cambio di prezzo, tu:", "options": ["Fai analisi di sensibilità", "Testi A/B i price point", "Modelli l'elasticità per segmento", "Confermi con interviste ai clienti"] },
+        "q12": { "category": "Comunicazione", "question": "Comunicando a non esperti, principalmente:", "options": ["Usi visual e analogie", "Racconti una narrativa con impatto", "Forni executive summary", "Indichi call-to-action chiare"] },
+        "q13": { "category": "Conoscenza", "question": "La conoscenza istituzionale si mantiene meglio con:", "options": ["Documentazione strutturata", "Formazioni periodiche", "Playbook vivi con owner", "Community di pratica"] },
+        "q14": { "category": "Creatività", "question": "Quando i piani rallentano, generi idee con:", "options": ["Sprint di ideazione rapidi", "Workshop cross-funzionali", "Reverse-engineering dei competitor", "Prospettive controintuitive"] },
+        "q15": { "category": "Motivazione", "question": "Dopo un'iniziativa fallita, tendi a:", "options": ["Fare post-mortem senza colpe", "Pivotare rapidamente", "Cercare mentoring sui blind spot", "Raffinare la visione e insistere"] },
+        "q16": { "category": "Potenza Computazionale", "question": "Per prevedere il prossimo trimestre:", "options": ["Unisco bottom-up e top-down", "Stress-testo scenari", "Valido ipotesi con sales", "Simulo vincoli di capacità"] },
+        "q17": { "category": "Comunicazione", "question": "Presentando una strategia complessa, tu:", "options": ["Racconti una storia legata all'impatto", "Usi visual semplici", "Evidenzi trade-off e scelte", "Offri un one-pager"] },
+        "q18": { "category": "Conoscenza", "question": "Per entrare in un nuovo settore velocemente:", "options": ["Studio regole ed economia", "Intervisto stakeholder chiave", "Mappo value chain e incentivi", "Analizzo i jobs-to-be-done"] },
+        "q19": { "category": "Creatività", "question": "Per differenziare il brand, tu:", "options": ["Costruisci una voce distintiva", "Progetti esperienze firma", "Co-crei con la community", "Sperimenta canali nuovi"] },
+        "q20": { "category": "Motivazione", "question": "Puntando a risultati di lungo termine, tu:", "options": ["Definisci roadmap e checkpoint", "Tracci leading/lagging indicator", "Rivedi e adatti trimestralmente", "Proteggi il focus dalle distrazioni"] },
+        "q21": { "category": "Potenza Computazionale", "question": "Valutando un programma di trasformazione, prima:", "options": ["Definisci metriche di successo", "Piloti con gruppo di controllo", "Valuti readiness e rischi", "Studi casi di riferimento"] },
+        "open1": { "question": "Descrivi una decisione di leadership che ti rende orgoglioso/a. Quali compromessi hai valutato e perché?" },
+        "open2": { "question": "Qual è la tua maggiore area di crescita come leader e come la stai affrontando?" }
+      }
+    }
+  },
   "field": {
     "science_tech": {
       "title": "Scienza e Tecnologia",

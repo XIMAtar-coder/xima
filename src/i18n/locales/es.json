@@ -117,6 +117,15 @@
       "title": "Selecciona tu campo",
       "subtitle": "Elige el área profesional más cercana a tu perfil. Los 5 pilares de XIMA no cambian."
     },
+    "open_question": "Pregunta Abierta",
+    "placeholder": "Comparte tus pensamientos...",
+    "characters": "caracteres",
+    "next_question": "Siguiente Pregunta",
+    "complete_assessment": "Completar Evaluación",
+    "completing": "Completando...",
+    "question": "Pregunta",
+    "of": "de",
+    "subtitle": "Completa nuestra evaluación para descubrir tus fortalezas profesionales",
     "question_of": "Pregunta {{current}} de {{total}}",
     "next": "Siguiente",
     "previous": "Anterior",
@@ -182,6 +191,37 @@
         "placeholder": "Describe tu enfoque creativo para resolver problemas..."
       }
     ]
+  },
+  "assessmentSets": {
+    "business_leadership": {
+      "title": "Crea tu XIMAtar",
+      "subtitle": "Completa nuestra evaluación para descubrir tus fortalezas profesionales",
+      "questions": {
+        "q1": { "category": "Potencia Computacional", "question": "Al revisar un panel de KPIs, ¿cuál es tu primer paso?", "options": ["Detectar anomalías vs objetivos", "Profundizar por segmentos", "Comparar con tendencias históricas", "Exportar datos para análisis aparte"] },
+        "q2": { "category": "Comunicación", "question": "En una reunión con opiniones en conflicto, sueles:", "options": ["Sintetizar y replantear el problema", "Hacer preguntas para alinear contexto", "Resumir decisiones y próximos pasos", "Desescalar y volver a objetivos comunes"] },
+        "q3": { "category": "Conocimiento", "question": "¿Cómo mantienes tu conocimiento del mercado al día?", "options": ["Leo informes del sector", "Sigo analistas y competidores", "Asisto a conferencias y webinars", "Entrevisto regularmente a clientes"] },
+        "q4": { "category": "Creatividad", "question": "Al diseñar un go-to-market, prefieres:", "options": ["Prototipar campañas rápido", "Adaptar playbooks probados", "Tomar ideas de sectores adyacentes", "Cocrear con ventas y producto"] },
+        "q5": { "category": "Impulso", "question": "¿Qué mantiene más tu energía en un trimestre difícil?", "options": ["Hitos y scorecards claros", "Propósito e impacto en clientes", "Aprendizaje continuo iterando", "Reconocimiento y victorias visibles"] },
+        "q6": { "category": "Potencia Computacional", "question": "Ante caídas ambiguas de ingresos, primero:", "options": ["Segmento por canal/cohorte", "Correlaciono con precios/promos", "Verifico integridad de medición", "Comparo con estacionalidad"] },
+        "q7": { "category": "Comunicación", "question": "Si el equipo resiste un cambio, tú:", "options": ["Cuentas una historia con evidencia", "Creas foros para preocupaciones", "Mapeas stakeholders y adaptas mensajes", "Negocias adopción por fases"] },
+        "q8": { "category": "Conocimiento", "question": "Para aprender un modelo de negocio nuevo:", "options": ["Modelo financiero completo", "Casos de estudio cruzados", "Sombreo a operadores", "Un piloto pequeño para aprender"] },
+        "q9": { "category": "Creatividad", "question": "Para desbloquear crecimiento en un segmento saturado:", "options": ["Probar un posicionamiento nuevo", "Reempaquetar ofertas creativamente", "Crear alianzas para nuevos usuarios", "Reinventar el onboarding"] },
+        "q10": { "category": "Impulso", "question": "Bajo presión y plazos, tú:", "options": ["Priorizar el 20% clave", "Mantener al equipo enfocado", "Experimentos con límite de tiempo", "Asegurar recursos y desbloquear"] },
+        "q11": { "category": "Potencia Computacional", "question": "Al evaluar un cambio de precio, tú:", "options": ["Análisis de sensibilidad", "Tests A/B de precios", "Elasticidad por segmento", "Validación con entrevistas"] },
+        "q12": { "category": "Comunicación", "question": "Comunicando a no expertos, principalmente:", "options": ["Visuales y analogías", "Narrativa orientada a impacto", "Resúmenes ejecutivos", "Llamadas a la acción claras"] },
+        "q13": { "category": "Conocimiento", "question": "La memoria institucional se mantiene mejor con:", "options": ["Documentación estructurada", "Formaciones periódicas", "Playbooks vivos con owners", "Comunidades de práctica"] },
+        "q14": { "category": "Creatividad", "question": "Cuando los planes se estancan, generas ideas con:", "options": ["Sprints de ideación", "Talleres interfuncionales", "Ingeniería inversa de competidores", "Perspectivas contrarias"] },
+        "q15": { "category": "Impulso", "question": "Tras un fracaso, tiendes a:", "options": ["Post-mortem sin culpas", "Pivotar rápido", "Mentoría en puntos ciegos", "Refinar la visión y persistir"] },
+        "q16": { "category": "Potencia Computacional", "question": "Para pronosticar el próximo trimestre:", "options": ["Bottom-up + top-down", "Pruebas de estrés de escenarios", "Validación con ventas", "Simular restricciones de capacidad"] },
+        "q17": { "category": "Comunicación", "question": "Presentando estrategia compleja, tú:", "options": ["Historia ligada a impacto", "Visuales simples", "Enfoque en trade-offs y decisiones", "One-pager conciso"] },
+        "q18": { "category": "Conocimiento", "question": "Para entrar rápido en una industria:", "options": ["Regulación y economía", "Entrevistas a actores clave", "Mapa de cadena de valor e incentivos", "Análisis de jobs-to-be-done"] },
+        "q19": { "category": "Creatividad", "question": "Para diferenciar tu marca:", "options": ["Voz y punto de vista distintivos", "Experiencias firma", "Cocreación con comunidad", "Canales novedosos"] },
+        "q20": { "category": "Impulso", "question": "Buscando resultados a largo plazo, tú:", "options": ["Hoja de ruta y checkpoints", "Indicadores adelantados y rezagados", "Revisión trimestral", "Proteger el foco"] },
+        "q21": { "category": "Potencia Computacional", "question": "Al evaluar un programa de transformación, primero:", "options": ["Definir métricas de éxito", "Piloto con grupo de control", "Analizar preparación y riesgo", "Estudiar casos de referencia"] },
+        "open1": { "question": "Describe una decisión de liderazgo de la que estés orgulloso/a. ¿Qué compromisos pesaste y por qué?" },
+        "open2": { "question": "¿Cuál es tu mayor área de crecimiento como líder y cómo la estás abordando?" }
+      }
+    }
   },
   "results": {
     "title": "Tus Resultados XIMAtar",
