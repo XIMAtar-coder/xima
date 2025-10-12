@@ -565,5 +565,12 @@
     "sentiment_positive": "Positivo",
     "sentiment_neutral": "Neutral",
     "sentiment_negative": "Negativo"
+  },
+  "professionals": {
+    "title": "Elige a tu profesional",
+    "subtitle": "Selecciona el experto que mejor se adapta a tus objetivos",
+    "select": "Seleccionar",
+    "view_linkedin": "Ver en LinkedIn",
+    "compatibility": "Compatibilidad"
   }
 }

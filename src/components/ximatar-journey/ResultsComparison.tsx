@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import XimaScoreCard from '../XimaScoreCard';
 import XimaAvatar from '../XimaAvatar';
 import { OpenAnswerScore } from './OpenAnswerScore';
+import FeaturedProfessionals from '../FeaturedProfessionals';
 import { ArrowRight, CheckCircle, UserPlus } from 'lucide-react';
 import { XimaPillars } from '../../types';
 import { useUser } from '../../context/UserContext';
@@ -60,61 +61,6 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     ]
   };
 
-  // Three matched professionals to choose from
-  const matchedProfessionals = [
-    {
-      id: 'sarah',
-      name: 'Dr. Sarah Chen',
-      title: t('results.business_strategist'),
-      specialization: t('results.communication_leadership'),
-      bio: t('results.expert_bio'),
-      matchPercentage: 95,
-      avatar: {
-        animal: t('results.eagle_animal'),
-        image: 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=400&h=400&fit=crop&crop=face',
-        features: [
-          { name: t('results.vision'), description: t('results.vision_desc'), strength: 9 },
-          { name: t('results.leadership'), description: t('results.leadership_desc'), strength: 8 },
-          { name: t('results.focus'), description: t('results.focus_desc'), strength: 7 }
-        ]
-      }
-    },
-    {
-      id: 'marcus',
-      name: 'Marcus Rodriguez',
-      title: t('results.technical_lead'),
-      specialization: t('results.computational_analytics'),
-      bio: t('results.technical_expert_bio'),
-      matchPercentage: 88,
-      avatar: {
-        animal: t('results.wolf_animal'),
-        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
-        features: [
-          { name: t('results.analytical_thinking'), description: t('results.analytical_desc'), strength: 9 },
-          { name: t('results.problem_solving'), description: t('results.problem_solving_desc'), strength: 8 },
-          { name: t('results.technical_leadership'), description: t('results.technical_leadership_desc'), strength: 8 }
-        ]
-      }
-    },
-    {
-      id: 'elena',
-      name: 'Elena Rossi',
-      title: t('results.creative_director'),
-      specialization: t('results.innovation_creativity'),
-      bio: t('results.creative_expert_bio'),
-      matchPercentage: 92,
-      avatar: {
-        animal: t('results.dolphin_animal'),
-        image: 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=400&h=400&fit=crop&crop=face',
-        features: [
-          { name: t('results.creative_thinking'), description: t('results.creative_thinking_desc'), strength: 9 },
-          { name: t('results.innovation'), description: t('results.innovation_desc'), strength: 9 },
-          { name: t('results.collaboration'), description: t('results.collaboration_desc'), strength: 8 }
-        ]
-      }
-    }
-  ];
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsAnalyzing(false);
@@ -149,18 +95,22 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     }
   }, [showResults, user]);
 
-  const handleProfessionalSelect = (professionalId: string) => {
-    setSelectedProfessional(professionalId);
+  const handleProfessionalSelect = (professional: any) => {
+    setSelectedProfessional(professional.id);
+    // Store the full professional data for later use
+    localStorage.setItem('selected_professional_data', JSON.stringify(professional));
   };
 
   const handleProceedWithSelection = () => {
     if (!selectedProfessional) return;
     
+    const professionalData = JSON.parse(localStorage.getItem('selected_professional_data') || '{}');
+    
     if (isAuthenticated) {
       // User is already authenticated, go to dashboard
       navigate('/profile', { 
         state: { 
-          selectedProfessional: matchedProfessionals.find(p => p.id === selectedProfessional),
+          selectedProfessional: professionalData,
           assessmentResults: finalPillars,
           userAvatar: userAvatar
         }
@@ -168,7 +118,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     } else {
       // User needs to register, store selection and redirect
       localStorage.setItem('selectedProfessional', JSON.stringify({
-        professional: matchedProfessionals.find(p => p.id === selectedProfessional),
+        professional: professionalData,
         assessmentResults: finalPillars,
         userAvatar: userAvatar
       }));
@@ -214,48 +164,12 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       {/* Professional Selection Section */}
       <Card className="p-8">
-        <h3 className="text-2xl font-bold mb-6 text-center">{t('results.choose_your_expert')}</h3>
-        <p className="text-center text-gray-600 mb-8">{t('results.expert_selection_subtitle')}</p>
+        <h3 className="text-2xl font-bold mb-6 text-center">{t('professionals.title')}</h3>
+        <p className="text-center text-muted-foreground mb-8">{t('professionals.subtitle')}</p>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {matchedProfessionals.map((professional) => (
-            <Card 
-              key={professional.id}
-              className={`p-6 cursor-pointer transition-all hover:shadow-lg border-2
-                ${selectedProfessional === professional.id 
-                  ? 'border-[#4171d6] bg-blue-50' 
-                  : 'border-gray-200 hover:border-[#4171d6]'
-                }`}
-              onClick={() => handleProfessionalSelect(professional.id)}
-            >
-              <div className="space-y-4">
-                <div className="flex justify-center">
-                  <XimaAvatar avatar={professional.avatar} size="md" />
-                </div>
-                
-                <div className="text-center space-y-2">
-                  <div className="flex justify-center mb-2">
-                    <Badge className="bg-green-100 text-green-800">
-                      {professional.matchPercentage}% {t('results.match')}
-                    </Badge>
-                  </div>
-                  <h4 className="text-xl font-bold">{professional.name}</h4>
-                  <p className="text-sm text-[#4171d6] font-medium">{professional.title}</p>
-                  <p className="text-xs text-gray-600">{professional.specialization}</p>
-                </div>
-
-                <p className="text-sm text-gray-600 text-center">{professional.bio}</p>
-
-                {selectedProfessional === professional.id && (
-                  <div className="flex items-center justify-center gap-2 text-[#4171d6] font-medium">
-                    <CheckCircle size={16} />
-                    <span>{t('results.selected')}</span>
-                  </div>
-                )}
-              </div>
-            </Card>
-          ))}
-        </div>
+        <FeaturedProfessionals 
+          onSelect={handleProfessionalSelect}
+        />
 
         {selectedProfessional && (
           <div className="text-center mt-8">

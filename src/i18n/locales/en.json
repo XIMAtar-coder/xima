@@ -910,5 +910,12 @@
     },
     "note": "Open answers can influence up to 10% of selected pillars (Creativity, Communication, Knowledge, and Drive).",
     "consider_elaborating": "Consider elaborating to earn more points (minimum 50 words recommended)."
+  },
+  "professionals": {
+    "title": "Choose your professional",
+    "subtitle": "Select the expert who best matches your goals",
+    "select": "Select",
+    "view_linkedin": "View on LinkedIn",
+    "compatibility": "Match"
   }
 }

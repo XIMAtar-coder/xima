@@ -955,5 +955,12 @@
     },
     "note": "Le risposte aperte possono influenzare fino al 10% dei pilastri selezionati (Creatività, Comunicazione, Conoscenza e Motivazione).",
     "consider_elaborating": "Considera di elaborare maggiormente per ottenere più punti (minimo 50 parole raccomandate)."
+  },
+  "professionals": {
+    "title": "Scegli il tuo professionista",
+    "subtitle": "Seleziona il professionista più adatto ai tuoi obiettivi",
+    "select": "Seleziona",
+    "view_linkedin": "Vedi su LinkedIn",
+    "compatibility": "Compatibilità"
   }
 }
