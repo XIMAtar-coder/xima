@@ -19,11 +19,11 @@ const Index = () => {
         {/* Hero Section */}
         <div className="flex flex-col items-center text-center py-16 md:py-24 lg:py-32 space-y-8 animate-fade-in">
           <div className="w-full max-w-4xl space-y-6">
-            {/* Gradient accent line */}
+            {/* Gradient accent line - wider on desktop */}
             <div 
-              className="h-0.5 w-20 mx-auto rounded-full animate-fade-in"
+              className="h-0.5 w-20 md:w-28 mx-auto rounded-full gradient-accent"
               style={{
-                background: 'linear-gradient(90deg, #2C6CFF 0%, #22D3EE 100%)'
+                background: 'linear-gradient(90deg, hsl(var(--xima-blue)), hsl(var(--xima-teal)))'
               }}
             />
             
@@ -38,7 +38,7 @@ const Index = () => {
             <div className="flex flex-wrap justify-center gap-4 pt-6">
               <Button 
                 size="lg"
-                className="bg-gradient-to-r from-[#2C6CFF] to-[#22D3EE] text-white hover:opacity-90 transition-opacity shadow-lg text-base md:text-lg px-8 py-6 rounded-xl"
+                className="accent-gradient text-white hover:opacity-90 transition-opacity shadow-lg text-base md:text-lg px-8 py-6 rounded-xl dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08)_inset]"
                 onClick={() => navigate('/ximatar-journey')}
               >
                 {t('hero.cta')}
@@ -49,9 +49,9 @@ const Index = () => {
                 variant="outline" 
                 size="lg"
                 onClick={() => navigate('/about')}
-                className="border-2 text-base md:text-lg px-8 py-6 rounded-xl relative overflow-hidden group"
+                className="border-2 border-transparent text-base md:text-lg px-8 py-6 rounded-xl relative overflow-hidden group bg-gradient-to-r from-[hsl(var(--xima-blue))] to-[hsl(var(--xima-teal))] bg-clip-padding"
                 style={{
-                  borderImage: 'linear-gradient(90deg, #2C6CFF, #22D3EE) 1'
+                  borderImage: 'linear-gradient(90deg, hsl(var(--xima-blue)), hsl(var(--xima-teal))) 1'
                 }}
               >
                 <span className="relative z-10">{t('hero.learn_more')}</span>
@@ -70,7 +70,7 @@ const Index = () => {
           
           <Button 
             size="lg"
-            className="bg-gradient-to-r from-[#2C6CFF] to-[#22D3EE] text-white hover:opacity-90 transition-opacity shadow-lg text-base md:text-lg px-8 py-6 rounded-xl"
+            className="accent-gradient text-white hover:opacity-90 transition-opacity shadow-lg text-base md:text-lg px-8 py-6 rounded-xl dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08)_inset]"
             onClick={() => navigate('/ximatar-journey')}
           >
             {t('cta_section.button')}

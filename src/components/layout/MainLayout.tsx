@@ -44,23 +44,30 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
   return (
     <div className="min-h-screen bg-background">
       <nav 
-        className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-200 ease-out ${
+        className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-200 ease-out relative ${
           scrolled 
-            ? 'h-14 md:h-16 lg:h-[68px] bg-background/80 backdrop-blur-md border-border/50 shadow-sm' 
-            : 'h-14 md:h-16 lg:h-18 bg-background border-border/10'
+            ? 'h-14 md:h-16 lg:h-[68px] bg-card/80 backdrop-blur-md border-border/50 shadow-sm' 
+            : 'h-14 md:h-16 lg:h-18 bg-card border-border/30'
         }`}
       >
+        {/* Gradient accent border at bottom */}
+        <div 
+          className="absolute left-0 right-0 bottom-0 h-0.5 gradient-accent opacity-25"
+          style={{ 
+            background: 'linear-gradient(90deg, hsl(var(--xima-blue)), hsl(var(--xima-teal)))' 
+          }}
+        />
         <div className="container mx-auto px-4 h-full">
           <div className="flex justify-between items-center h-full">
             <div className="flex items-center space-x-8">
               <button 
                 onClick={() => navigate(`/${i18n.language}`)} 
-                className="flex items-center group"
+                className="flex items-center group logo-wrap"
               >
                 <img 
                   src={logoSrc}
                   alt="XIMA logo" 
-                  className={`transition-all duration-200 ease-out ${
+                  className={`transition-all duration-200 ease-out relative z-10 ${
                     scrolled 
                       ? 'h-8 md:h-10 lg:h-11' 
                       : 'h-10 md:h-12 lg:h-14'
@@ -71,19 +78,19 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
               <div className="hidden md:flex space-x-6">
                 <button 
                   onClick={() => navigate('/')}
-                  className="text-sm font-medium text-foreground/80 hover:text-foreground relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-gradient-to-r after:from-[#2C6CFF] after:to-[#22D3EE] after:transition-all after:duration-200"
+                  className="text-sm font-medium text-foreground/70 hover:text-foreground relative nav-link-gradient transition-colors"
                 >
                   {t('nav.home')}
                 </button>
                 <button 
                   onClick={() => navigate('/how-it-works')}
-                  className="text-sm font-medium text-foreground/80 hover:text-foreground relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-gradient-to-r after:from-[#2C6CFF] after:to-[#22D3EE] after:transition-all after:duration-200"
+                  className="text-sm font-medium text-foreground/70 hover:text-foreground relative nav-link-gradient transition-colors"
                 >
                   {t('nav.how_it_works')}
                 </button>
                 <button 
                   onClick={() => navigate('/about')}
-                  className="text-sm font-medium text-foreground/80 hover:text-foreground relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-gradient-to-r after:from-[#2C6CFF] after:to-[#22D3EE] after:transition-all after:duration-200"
+                  className="text-sm font-medium text-foreground/70 hover:text-foreground relative nav-link-gradient transition-colors"
                 >
                   {t('nav.about')}
                 </button>
@@ -126,7 +133,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                   <Button 
                     size="sm"
                     onClick={() => navigate('/register')}
-                    className="bg-gradient-to-r from-[#2C6CFF] to-[#22D3EE] text-white hover:opacity-90 transition-opacity"
+                    className="accent-gradient text-white hover:opacity-90 transition-opacity shadow-sm"
                   >
                     {t('nav.register')}
                   </Button>
@@ -141,14 +148,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
         {children}
       </main>
       
-      <footer className="bg-muted/30 py-8 mt-16 border-t border-border/50">
+      <footer className="bg-card/50 py-8 mt-16 border-t border-border/30">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center">
+            <div className="flex items-center logo-wrap">
               <img 
                 src={logoSrc}
                 alt="XIMA logo" 
-                className="h-8"
+                className="h-8 relative z-10"
               />
             </div>
             <p className="text-sm text-muted-foreground">
