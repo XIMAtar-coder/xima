@@ -15,20 +15,30 @@ const Index = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center gap-8 py-12">
-          <div className="md:w-1/2 space-y-6 animate-fade-in">
-            <h1 className="text-4xl md:text-5xl font-bold leading-tight text-gray-800">
+      <div className="container max-w-7xl mx-auto px-4">
+        {/* Hero Section */}
+        <div className="flex flex-col items-center text-center py-16 md:py-24 lg:py-32 space-y-8 animate-fade-in">
+          <div className="w-full max-w-4xl space-y-6">
+            {/* Gradient accent line */}
+            <div 
+              className="h-0.5 w-20 mx-auto rounded-full animate-fade-in"
+              style={{
+                background: 'linear-gradient(90deg, #2C6CFF 0%, #22D3EE 100%)'
+              }}
+            />
+            
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground">
               {t('hero.title')}
             </h1>
-            <p className="text-lg text-gray-600">
+            
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
               {t('hero.subtitle')}
             </p>
             
-            <div className="flex flex-wrap gap-4 pt-4">
+            <div className="flex flex-wrap justify-center gap-4 pt-6">
               <Button 
                 size="lg"
-                className="bg-[#4171d6] hover:bg-[#2950a3] shadow-lg text-lg px-8 py-4"
+                className="bg-gradient-to-r from-[#2C6CFF] to-[#22D3EE] text-white hover:opacity-90 transition-opacity shadow-lg text-base md:text-lg px-8 py-6 rounded-xl"
                 onClick={() => navigate('/ximatar-journey')}
               >
                 {t('hero.cta')}
@@ -39,21 +49,13 @@ const Index = () => {
                 variant="outline" 
                 size="lg"
                 onClick={() => navigate('/about')}
-                className="border-gray-300 text-gray-700 shadow-sm px-8 py-4"
+                className="border-2 text-base md:text-lg px-8 py-6 rounded-xl relative overflow-hidden group"
+                style={{
+                  borderImage: 'linear-gradient(90deg, #2C6CFF, #22D3EE) 1'
+                }}
               >
-                {t('hero.learn_more')}
+                <span className="relative z-10">{t('hero.learn_more')}</span>
               </Button>
-            </div>
-          </div>
-          
-          <div className="md:w-1/2 flex justify-center">
-            <div className="relative w-full max-w-md">
-              <div className="absolute inset-0 bg-[#4171d6] rounded-full filter blur-3xl opacity-10 animate-pulse-slow"></div>
-              <img 
-                src="/lovable-uploads/b0df6e4e-eb14-46ad-9f03-6707af82d4c6.png" 
-                alt="XIMA Logo" 
-                className="relative z-10 w-full h-auto max-w-sm mx-auto"
-              />
             </div>
           </div>
         </div>
@@ -61,17 +63,18 @@ const Index = () => {
         <PillarsShowcase />
         
         <div id="cta-section" className="py-16 text-center">
-          <h2 className="text-3xl font-bold mb-4 text-gray-800">{t('cta_section.title')}</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+          <h2 className="text-3xl font-bold mb-4 text-foreground">{t('cta_section.title')}</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
             {t('cta_section.subtitle')}
           </p>
           
           <Button 
             size="lg"
-            className="bg-[#4171d6] hover:bg-[#2950a3] shadow-lg text-lg px-8 py-4"
+            className="bg-gradient-to-r from-[#2C6CFF] to-[#22D3EE] text-white hover:opacity-90 transition-opacity shadow-lg text-base md:text-lg px-8 py-6 rounded-xl"
             onClick={() => navigate('/ximatar-journey')}
           >
             {t('cta_section.button')}
+            <ChevronRight size={20} className="ml-2" />
           </Button>
         </div>
       </div>
