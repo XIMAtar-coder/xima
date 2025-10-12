@@ -16,25 +16,85 @@
   },
   "pillars": {
     "title": "I 5 Pilastri di XIMA",
-    "computational": {
-      "name": "Potenza Computazionale",
-      "description": "Competenze analitiche, elaborazione dati e risoluzione di problemi tecnologici"
-    },
-    "communication": {
-      "name": "Comunicazione",
-      "description": "Interazione sociale e capacità di trasmettere idee in modo chiaro e persuasivo"
-    },
-    "knowledge": {
-      "name": "Conoscenza",
-      "description": "Profondità di comprensione e capacità di applicare efficacemente le informazioni"
-    },
-    "creativity": {
-      "name": "Creatività",
-      "description": "Generazione di nuove idee da esperienze innovative e conoscenze esistenti"
-    },
-    "drive": {
-      "name": "Motivazione",
-      "description": "Spinta e determinazione a prendere iniziativa e mantenere lo slancio"
+    "cta_primary": "Ottieni il tuo Ximatar ora",
+    "cta_secondary": "Scopri di più",
+    "example_label": "Esempio",
+    "items": {
+      "computational_power": {
+        "name": "Potenza Computazionale",
+        "tagline": "Analizza, elabora e risolvi problemi complessi con precisione",
+        "description": "La capacità di scomporre problemi complessi, analizzare dati e trovare soluzioni tecniche attraverso il pensiero logico e strutturato.",
+        "how_we_evaluate": [
+          "Risoluzione di problemi algoritmici e analisi dei dati",
+          "Capacità di automatizzare processi e ottimizzare flussi di lavoro",
+          "Pensiero sistemico e approccio metodico alle sfide tecniche"
+        ],
+        "tips": [
+          "Pratica con puzzle logici e sfide di programmazione",
+          "Sviluppa competenze in analisi dati e visualizzazione",
+          "Esplora strumenti di automazione e ottimizzazione"
+        ]
+      },
+      "communication": {
+        "name": "Comunicazione",
+        "tagline": "Connetti, persuadi e ispira attraverso parole e azioni",
+        "description": "L'arte di trasmettere idee in modo chiaro, costruire relazioni significative e influenzare positivamente attraverso interazioni efficaci.",
+        "how_we_evaluate": [
+          "Chiarezza espressiva e adattamento a diversi pubblici",
+          "Capacità di ascolto attivo e gestione dei conflitti",
+          "Efficacia nella presentazione e nella persuasione"
+        ],
+        "tips": [
+          "Pratica il public speaking e la presentazione",
+          "Sviluppa l'ascolto empatico e il feedback costruttivo",
+          "Studia tecniche di storytelling e comunicazione non verbale"
+        ]
+      },
+      "knowledge": {
+        "name": "Conoscenza",
+        "tagline": "Comprendi in profondità e applica il sapere con maestria",
+        "description": "La profondità di comprensione in aree specifiche e la capacità di acquisire, organizzare e applicare efficacemente le informazioni.",
+        "how_we_evaluate": [
+          "Ampiezza e profondità delle competenze specialistiche",
+          "Capacità di apprendimento continuo e trasferimento di conoscenze",
+          "Qualità della documentazione e condivisione del sapere"
+        ],
+        "tips": [
+          "Mantieni un diario di apprendimento e note strutturate",
+          "Insegna ad altri ciò che impari per consolidare la conoscenza",
+          "Esplora connessioni tra discipline diverse"
+        ]
+      },
+      "creativity": {
+        "name": "Creatività",
+        "tagline": "Innova, immagina e trasforma idee in realtà",
+        "description": "La capacità di generare idee originali, combinare concetti in modi nuovi e trovare soluzioni innovative a problemi esistenti.",
+        "how_we_evaluate": [
+          "Originalità nel problem-solving e generazione di idee",
+          "Capacità di pensiero laterale e connessioni inaspettate",
+          "Equilibrio tra innovazione e praticità nell'esecuzione"
+        ],
+        "tips": [
+          "Dedica tempo al brainstorming libero senza giudizio",
+          "Esplora campi e discipline completamente nuovi",
+          "Sperimenta con prototipi e approcci non convenzionali"
+        ]
+      },
+      "drive": {
+        "name": "Motivazione",
+        "tagline": "Persegui obiettivi con determinazione e resilienza",
+        "description": "La spinta interiore che ti mantiene focalizzato, la capacità di superare ostacoli e mantenere lo slancio verso i tuoi obiettivi.",
+        "how_we_evaluate": [
+          "Capacità di fissare e perseguire obiettivi a lungo termine",
+          "Resilienza di fronte a sfide e battute d'arresto",
+          "Iniziativa e proattività nell'affrontare nuove opportunità"
+        ],
+        "tips": [
+          "Stabilisci obiettivi SMART con traguardi intermedi celebrabili",
+          "Sviluppa routine e abitudini che supportano i tuoi obiettivi",
+          "Trova fonti di ispirazione e mantieni una visione chiara"
+        ]
+      }
     }
   },
   "cta_section": {

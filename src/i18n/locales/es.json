@@ -15,16 +15,87 @@
     "cta_learn_more": "Aprende Más"
   },
   "pillars": {
-    "power": "Poder Computacional",
-    "power_desc": "Tu capacidad para procesar información, pensar analíticamente y resolver problemas complejos.",
-    "communication": "Comunicación",
-    "communication_desc": "Tu habilidad para expresar ideas, colaborar y conectar con otros de manera efectiva.",
-    "knowledge": "Conocimiento",
-    "knowledge_desc": "Tu comprensión técnica, conocimiento del dominio y experiencia en áreas específicas.",
-    "creativity": "Creatividad",
-    "creativity_desc": "Tu capacidad para pensar fuera de lo convencional, innovar y generar soluciones originales.",
-    "drive": "Impulso",
-    "drive_desc": "Tu motivación, ambición y determinación para alcanzar objetivos y superar desafíos."
+    "title": "Los 5 Pilares de XIMA",
+    "cta_primary": "Obtén tu XIMAtar ahora",
+    "cta_secondary": "Aprende más",
+    "example_label": "Ejemplo",
+    "items": {
+      "computational_power": {
+        "name": "Poder Computacional",
+        "tagline": "Analiza, procesa y resuelve problemas complejos con precisión",
+        "description": "La capacidad de descomponer problemas complejos, analizar datos y encontrar soluciones técnicas mediante pensamiento lógico y estructurado.",
+        "how_we_evaluate": [
+          "Resolución de problemas algorítmicos y análisis de datos",
+          "Capacidad para automatizar procesos y optimizar flujos de trabajo",
+          "Pensamiento sistémico y enfoque metódico hacia desafíos técnicos"
+        ],
+        "tips": [
+          "Practica con rompecabezas lógicos y desafíos de programación",
+          "Desarrolla habilidades en análisis y visualización de datos",
+          "Explora herramientas de automatización y optimización"
+        ]
+      },
+      "communication": {
+        "name": "Comunicación",
+        "tagline": "Conecta, persuade e inspira a través de palabras y acciones",
+        "description": "El arte de transmitir ideas con claridad, construir relaciones significativas e influir positivamente a través de interacciones efectivas.",
+        "how_we_evaluate": [
+          "Claridad expresiva y adaptación a diferentes audiencias",
+          "Capacidad de escucha activa y gestión de conflictos",
+          "Efectividad en presentación y persuasión"
+        ],
+        "tips": [
+          "Practica hablar en público y presentaciones",
+          "Desarrolla escucha empática y retroalimentación constructiva",
+          "Estudia técnicas de storytelling y comunicación no verbal"
+        ]
+      },
+      "knowledge": {
+        "name": "Conocimiento",
+        "tagline": "Comprende profundamente y aplica la sabiduría con maestría",
+        "description": "La profundidad de comprensión en áreas específicas y la capacidad de adquirir, organizar y aplicar información de manera efectiva.",
+        "how_we_evaluate": [
+          "Amplitud y profundidad de experiencia especializada",
+          "Capacidad de aprendizaje continuo y transferencia de conocimiento",
+          "Calidad de documentación y compartición de conocimiento"
+        ],
+        "tips": [
+          "Mantén un diario de aprendizaje y notas estructuradas",
+          "Enseña a otros lo que aprendes para consolidar conocimiento",
+          "Explora conexiones entre diferentes disciplinas"
+        ]
+      },
+      "creativity": {
+        "name": "Creatividad",
+        "tagline": "Innova, imagina y transforma ideas en realidad",
+        "description": "La capacidad de generar ideas originales, combinar conceptos de nuevas formas y encontrar soluciones innovadoras a problemas existentes.",
+        "how_we_evaluate": [
+          "Originalidad en resolución de problemas y generación de ideas",
+          "Capacidad de pensamiento lateral y conexiones inesperadas",
+          "Equilibrio entre innovación y practicidad en la ejecución"
+        ],
+        "tips": [
+          "Dedica tiempo a la lluvia de ideas sin juicio",
+          "Explora campos y disciplinas completamente nuevos",
+          "Experimenta con prototipos y enfoques no convencionales"
+        ]
+      },
+      "drive": {
+        "name": "Impulso",
+        "tagline": "Persigue metas con determinación y resiliencia",
+        "description": "El impulso interno que te mantiene enfocado, la capacidad de superar obstáculos y mantener el impulso hacia tus objetivos.",
+        "how_we_evaluate": [
+          "Capacidad para establecer y perseguir objetivos a largo plazo",
+          "Resiliencia frente a desafíos y contratiempos",
+          "Iniciativa y proactividad al abordar nuevas oportunidades"
+        ],
+        "tips": [
+          "Establece objetivos SMART con hitos celebrables",
+          "Desarrolla rutinas y hábitos que apoyen tus objetivos",
+          "Encuentra fuentes de inspiración y mantén una visión clara"
+        ]
+      }
+    }
   },
   "cta": {
     "title": "¿Listo para descubrir tu potencial?",

@@ -16,25 +16,85 @@
   },
   "pillars": {
     "title": "The 5 Pillars of XIMA",
-    "computational": {
-      "name": "Computational Power",
-      "description": "Analytical skills, data processing, and technology problem-solving"
-    },
-    "communication": {
-      "name": "Communication", 
-      "description": "Social interaction and conveying ideas clearly and persuasively"
-    },
-    "knowledge": {
-      "name": "Knowledge",
-      "description": "Depth of understanding and ability to apply information effectively"
-    },
-    "creativity": {
-      "name": "Creativity",
-      "description": "Generating new ideas from novel experiences and existing knowledge"
-    },
-    "drive": {
-      "name": "Drive",
-      "description": "Motivation and determination to take initiative and sustain momentum"
+    "cta_primary": "Get your XIMAtar now",
+    "cta_secondary": "Learn more",
+    "example_label": "Example",
+    "items": {
+      "computational_power": {
+        "name": "Computational Power",
+        "tagline": "Analyze, process, and solve complex problems with precision",
+        "description": "The ability to break down complex problems, analyze data, and find technical solutions through logical and structured thinking.",
+        "how_we_evaluate": [
+          "Algorithmic problem-solving and data analysis",
+          "Ability to automate processes and optimize workflows",
+          "Systems thinking and methodical approach to technical challenges"
+        ],
+        "tips": [
+          "Practice with logic puzzles and programming challenges",
+          "Develop data analysis and visualization skills",
+          "Explore automation and optimization tools"
+        ]
+      },
+      "communication": {
+        "name": "Communication",
+        "tagline": "Connect, persuade, and inspire through words and actions",
+        "description": "The art of conveying ideas clearly, building meaningful relationships, and positively influencing through effective interactions.",
+        "how_we_evaluate": [
+          "Expressive clarity and adaptation to different audiences",
+          "Active listening and conflict management ability",
+          "Effectiveness in presentation and persuasion"
+        ],
+        "tips": [
+          "Practice public speaking and presentations",
+          "Develop empathetic listening and constructive feedback",
+          "Study storytelling and non-verbal communication techniques"
+        ]
+      },
+      "knowledge": {
+        "name": "Knowledge",
+        "tagline": "Understand deeply and apply wisdom with mastery",
+        "description": "The depth of understanding in specific areas and the ability to acquire, organize, and effectively apply information.",
+        "how_we_evaluate": [
+          "Breadth and depth of specialized expertise",
+          "Continuous learning ability and knowledge transfer",
+          "Quality of documentation and knowledge sharing"
+        ],
+        "tips": [
+          "Keep a learning journal and structured notes",
+          "Teach others what you learn to consolidate knowledge",
+          "Explore connections between different disciplines"
+        ]
+      },
+      "creativity": {
+        "name": "Creativity",
+        "tagline": "Innovate, imagine, and transform ideas into reality",
+        "description": "The capacity to generate original ideas, combine concepts in new ways, and find innovative solutions to existing problems.",
+        "how_we_evaluate": [
+          "Originality in problem-solving and idea generation",
+          "Lateral thinking ability and unexpected connections",
+          "Balance between innovation and practicality in execution"
+        ],
+        "tips": [
+          "Dedicate time to judgment-free brainstorming",
+          "Explore completely new fields and disciplines",
+          "Experiment with prototypes and unconventional approaches"
+        ]
+      },
+      "drive": {
+        "name": "Drive",
+        "tagline": "Pursue goals with determination and resilience",
+        "description": "The inner drive that keeps you focused, the ability to overcome obstacles and maintain momentum toward your goals.",
+        "how_we_evaluate": [
+          "Ability to set and pursue long-term goals",
+          "Resilience in the face of challenges and setbacks",
+          "Initiative and proactivity in tackling new opportunities"
+        ],
+        "tips": [
+          "Set SMART goals with celebratable milestones",
+          "Develop routines and habits that support your goals",
+          "Find sources of inspiration and maintain clear vision"
+        ]
+      }
     }
   },
   "cta_section": {
