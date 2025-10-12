@@ -1,7 +1,7 @@
 # XIMA Supabase Backend Documentation
 
 ## Overview
-Production-grade Supabase backend for the XIMA web application with comprehensive data persistence, security, and business logic.
+Production-grade Supabase backend for the XIMA web application with **content-first architecture**. All questions, flows, rules, tests, and UI copy are stored as editable content in the database—no code changes required to update assessments, add translations, or modify business logic.
 
 ## Architecture
 
@@ -9,9 +9,21 @@ Production-grade Supabase backend for the XIMA web application with comprehensiv
 
 #### Core Tables
 - **profiles** - Extended user profiles with XIMAtar assignment
-- **assessments** - User assessment records and metadata
-- **assessment_scores** - Detailed pillar scores (0-10 scale)
+- **assessments** - User assessment session records
+- **assessment_answers** - User responses to specific questions (what they actually answered)
+- **assessment_scores** - Computed pillar scores (0-10 scale)
 - **user_scores** - Current score snapshot for dashboard performance
+
+#### Content Management (Editable without code changes)
+- **question_bank** - Master question repository with pillar/level
+- **question_localizations** - Translated prompts and helpers (IT/EN/ES)
+- **answer_options** - Answer choices with weights and branching logic
+- **assessment_flows** - Named assessment sequences (e.g., '23Q onboarding')
+- **flow_sections** - Grouping sections within flows
+- **flow_questions** - Links questions to flows in order
+- **scoring_rules** - Editable scoring formulas (JSON)
+- **ximatar_rules** - XIMAtar assignment logic (JSON, no hardcoding)
+- **content_versions** - Version tracking for questions/rules/tests
 
 #### Mentoring System
 - **mentors** - Professional mentor profiles
@@ -33,13 +45,18 @@ Production-grade Supabase backend for the XIMA web application with comprehensiv
 
 #### Development Plan
 - **devplan_items** - Available skill-building activities
+- **dev_items_localizations** - Translated titles/descriptions for dev items
 - **devplan_user_items** - User progress tracking
-- **tests** - Assessment test definitions
+- **tests** - Test definitions with metadata
+- **test_questions** - Editable test questions with type/position
+- **test_answers** - Answer options with correct flags and weights
 - **test_attempts** - User test submissions
 
-#### Internationalization
+#### Internationalization & Configuration
 - **i18n_keys** - Translation key registry
 - **i18n_translations** - Multi-language content (IT/EN/ES)
+- **feature_flags** - Enable/disable features without deployment
+- **ui_copy_overrides** - Per-language UI text overrides
 
 #### Analytics
 - **bot_events** - Chatbot interaction tracking
@@ -57,14 +74,25 @@ lang_code: it | en | es
 
 ### Key Features
 
+#### Content-First Architecture
+**Zero-Code Content Updates**: All assessment questions, flows, rules, and tests are stored as database records. Content editors can:
+- Add/edit questions with multi-language support
+- Reorder questions in flows without code changes
+- Update scoring weights and XIMAtar assignment rules
+- Create new tests with custom questions
+- Toggle features on/off via feature flags
+- Version content changes for auditing
+
 #### Automated Score Processing
 When an assessment is completed:
-1. Trigger `on_assessment_complete` fires
-2. Function `recompute_user_scores` calculates pillar scores
-3. XIMAtar type assigned based on highest pillar
-4. Opportunity matches recalculated automatically
+1. User answers stored in `assessment_answers` table
+2. Trigger `on_assessment_complete` fires
+3. Function `recompute_user_scores` calculates pillar scores from answer weights
+4. XIMAtar type assigned based on `ximatar_rules` logic (editable)
+5. Opportunity matches recalculated automatically
 
-#### XIMAtar Assignment Logic
+#### XIMAtar Assignment Logic (Editable in `ximatar_rules`)
+Default logic:
 ```
 Computational Power (highest) → Owl
 Communication (highest) → Parrot
@@ -73,6 +101,7 @@ Creativity (highest) → Fox
 Drive (highest) → Horse
 Default → Wolf
 ```
+**Note**: This logic is stored as JSON in the database and can be modified by admins.
 
 ## Security
 
@@ -170,37 +199,80 @@ Returns:
 
 ## Usage Examples
 
-### Creating an Assessment
+### Fetching an Assessment Flow (Content-Driven)
 
 ```typescript
-// 1. Create assessment record
-const { data: assessment, error } = await supabase
+// Get the default assessment flow with questions
+const { data: flow } = await supabase
+  .from('assessment_flows')
+  .select(`
+    id,
+    code,
+    title_key,
+    flow_questions (
+      position,
+      question:question_bank (
+        id,
+        code,
+        pillar,
+        level,
+        question_localizations (
+          lang,
+          prompt,
+          helper
+        ),
+        answer_options (
+          option_index,
+          value_label,
+          weight
+        )
+      )
+    )
+  `)
+  .eq('is_default', true)
+  .eq('active', true)
+  .single()
+
+// Questions are ordered by position, ready to display
+const questions = flow.flow_questions
+  .sort((a, b) => a.position - b.position)
+  .map(fq => fq.question)
+```
+
+### Creating an Assessment & Recording Answers
+
+```typescript
+// 1. Create assessment session
+const { data: assessment } = await supabase
   .from('assessments')
   .insert({
     user_id: profileId,
-    source: 'onboarding',
-    level: 'beginner',
+    flow_code: 'onboarding_23q',
+    source: 'registration',
     started_at: new Date().toISOString()
   })
   .select()
   .single()
 
-// 2. Submit pillar scores
-await supabase.from('assessment_scores').insert([
-  { assessment_id: assessment.id, pillar: 'computational_power', score: 7.5 },
-  { assessment_id: assessment.id, pillar: 'communication', score: 8.0 },
-  { assessment_id: assessment.id, pillar: 'knowledge', score: 6.5 },
-  { assessment_id: assessment.id, pillar: 'creativity', score: 9.0 },
-  { assessment_id: assessment.id, pillar: 'drive', score: 7.0 }
-])
+// 2. Record each answer as user progresses
+await supabase.from('assessment_answers').insert({
+  assessment_id: assessment.id,
+  question_id: questionId,
+  option_index: selectedOptionIndex,
+  weight: selectedOption.weight
+})
 
-// 3. Mark as complete (triggers auto-processing)
+// 3. Mark as complete (triggers auto score calculation)
 await supabase
   .from('assessments')
   .update({ completed_at: new Date().toISOString() })
   .eq('id', assessment.id)
 
-// XIMAtar is now assigned and matches are computed
+// Trigger automatically:
+// - Aggregates weights by pillar into assessment_scores
+// - Updates user_scores with latest pillar values
+// - Assigns XIMAtar based on ximatar_rules logic
+// - Recomputes opportunity matches
 ```
 
 ### Fetching Opportunities with Matches
@@ -316,7 +388,14 @@ await supabase
 
 All high-traffic queries are indexed:
 - `assessments(user_id, completed_at DESC)`
+- `assessment_answers(assessment_id)` - NEW
 - `assessment_scores(assessment_id, pillar)`
+- `question_bank(pillar)` where active - NEW
+- `question_bank(code)` where active - NEW
+- `answer_options(question_id, option_index)` - NEW
+- `flow_questions(flow_id, position)` - NEW
+- `test_questions(test_id, position)` - NEW
+- `test_answers(test_question_id, option_index)` - NEW
 - `chat_messages(thread_id, created_at)`
 - `bookings(seeker_user_id, starts_at)`
 - `user_opportunity_matches(user_id, match_score DESC)`
@@ -336,13 +415,21 @@ Already configured in the project `.env` file.
 
 ## Seed Data
 
-Initial translations provided for:
-- XIMAtar names (IT/EN/ES)
-- Dashboard labels
-- Chat welcome messages
-- Mentor discovery copy
+### Included in Migration
+- **23Q Assessment Flow**: Default onboarding flow with 23 sample questions across all 5 pillars
+- **XIMAtar Rules**: Default max-pillar logic for all 12 animals (editable JSON)
+- **Answer Options**: 4-point Likert scale (0, 3.3, 6.7, 10 weights) for all sample questions
+- **Feature Flags**: Chat, mentoring, booking, dev plan flags (all enabled)
+- **i18n Keys**: Assessment, admin, and feature keys with IT/EN/ES translations
 
-Extend translations in `i18n_translations` table as needed.
+### How to Edit Content
+1. **Questions**: Update `question_localizations` for text, `answer_options` for choices/weights
+2. **Flows**: Add/remove questions in `flow_questions`, change order via `position`
+3. **Rules**: Edit `ximatar_rules.logic` JSON to change assignment algorithm
+4. **Translations**: Insert into `i18n_translations` for new languages or keys
+5. **Tests**: Add rows to `test_questions` and `test_answers` for new test content
+
+All changes take effect immediately—no code deployment required.
 
 ## Remaining Security Configuration
 
@@ -362,14 +449,65 @@ Migrations are automatically tracked in `supabase/migrations/`:
 
 ## Next Steps
 
-1. ✅ Database schema created
-2. ✅ RLS policies enforced
-3. ✅ Storage buckets configured
-4. ✅ Business logic functions deployed
-5. ⏳ Connect frontend to new tables
-6. ⏳ Migrate existing assessment data to new structure
-7. ⏳ Add seed data for development plan items
-8. ⏳ Configure Supabase Auth security settings
+1. ✅ Database schema created (content-first architecture)
+2. ✅ RLS policies enforced (all tables protected)
+3. ✅ Storage buckets configured (avatars, ximatar, uploads)
+4. ✅ Business logic functions deployed (scores, matches, XIMAtar)
+5. ✅ Seed data loaded (23Q flow, XIMAtar rules, feature flags, i18n)
+6. ⏳ **Frontend Integration**: Connect React components to new content tables
+7. ⏳ **Admin UI**: Build pages for editing questions/flows/rules (protected by RLS)
+8. ⏳ **Replace Hardcoded Questions**: Migrate from static question arrays to database queries
+9. ⏳ **Content Population**: Fill out complete 23Q with real questions and translations
+10. ⏳ **Configure Supabase Auth**: Enable OTP protection, leaked password detection
+
+## Admin Content Editing (Secure)
+
+To enable admin editing of questions, flows, and rules:
+
+1. **Create Admin Role** (see security instructions):
+```sql
+-- Create admin role enum
+create type public.app_role as enum ('admin', 'moderator', 'user');
+
+-- Create user_roles table
+create table public.user_roles (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade not null,
+  role app_role not null,
+  unique (user_id, role)
+);
+
+-- Security definer function to check roles
+create or replace function public.has_role(_user_id uuid, _role app_role)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.user_roles
+    where user_id = _user_id and role = _role
+  )
+$$;
+```
+
+2. **Add Admin Policies** to content tables:
+```sql
+-- Example: Allow admins to insert/update/delete questions
+create policy "question_bank: admin write" on public.question_bank
+  for all using (public.has_role(auth.uid(), 'admin'))
+  with check (public.has_role(auth.uid(), 'admin'));
+
+-- Repeat for: question_localizations, answer_options, assessment_flows,
+-- flow_sections, flow_questions, scoring_rules, ximatar_rules, etc.
+```
+
+3. **Build Admin UI** at `/admin` route with:
+   - Question editor (CRUD for question_bank + localizations)
+   - Flow builder (drag-drop question ordering)
+   - Rule editor (JSON schema for ximatar_rules and scoring_rules)
+   - Content version history viewer
 
 ## Support
 
