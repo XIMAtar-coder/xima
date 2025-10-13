@@ -243,8 +243,12 @@ export type Database = {
         Row: {
           assessment_id: string | null
           computed_at: string
+          field_key: string | null
           id: string
+          language: string
+          pillars: Json | null
           rationale: Json | null
+          top3: Json | null
           total_score: number | null
           user_id: string
           ximatar_id: string | null
@@ -252,8 +256,12 @@ export type Database = {
         Insert: {
           assessment_id?: string | null
           computed_at?: string
+          field_key?: string | null
           id?: string
+          language?: string
+          pillars?: Json | null
           rationale?: Json | null
+          top3?: Json | null
           total_score?: number | null
           user_id: string
           ximatar_id?: string | null
@@ -261,8 +269,12 @@ export type Database = {
         Update: {
           assessment_id?: string | null
           computed_at?: string
+          field_key?: string | null
           id?: string
+          language?: string
+          pillars?: Json | null
           rationale?: Json | null
+          top3?: Json | null
           total_score?: number | null
           user_id?: string
           ximatar_id?: string | null
@@ -1138,6 +1150,7 @@ export type Database = {
           updated_at: string
           user_id: string
           ximatar: Database["public"]["Enums"]["ximatar_type"] | null
+          ximatar_assigned_at: string | null
         }
         Insert: {
           avatar?: Json | null
@@ -1153,6 +1166,7 @@ export type Database = {
           updated_at?: string
           user_id: string
           ximatar?: Database["public"]["Enums"]["ximatar_type"] | null
+          ximatar_assigned_at?: string | null
         }
         Update: {
           avatar?: Json | null
@@ -1168,6 +1182,7 @@ export type Database = {
           updated_at?: string
           user_id?: string
           ximatar?: Database["public"]["Enums"]["ximatar_type"] | null
+          ximatar_assigned_at?: string | null
         }
         Relationships: []
       }
@@ -1498,6 +1513,7 @@ export type Database = {
           image_url: string | null
           label: string
           updated_at: string
+          vector: Json
         }
         Insert: {
           created_at?: string
@@ -1505,6 +1521,7 @@ export type Database = {
           image_url?: string | null
           label: string
           updated_at?: string
+          vector?: Json
         }
         Update: {
           created_at?: string
@@ -1512,6 +1529,7 @@ export type Database = {
           image_url?: string | null
           label?: string
           updated_at?: string
+          vector?: Json
         }
         Relationships: []
       }

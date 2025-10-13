@@ -119,6 +119,13 @@
     "complete_text": "Your CV has been analyzed and your baseline profile is ready. Let's now create your complete Ximatar through our comprehensive assessment.",
     "continue_assessment": "Continue to Ximatar Assessment"
   },
+  "ximatar": {
+    "your_ximatar": "Your XIMAtar",
+    "assigned_permanently": "Permanently assigned",
+    "replace_question": "Do you want to replace your XIMAtar with the new result?",
+    "keep": "Keep",
+    "replace": "Replace"
+  },
   "assessment": {
     "title": "Create Your Ximatar",
     "choose_field": {

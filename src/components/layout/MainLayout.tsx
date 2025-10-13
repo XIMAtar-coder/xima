@@ -7,6 +7,7 @@ import { useUser } from '../../context/UserContext';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { ThemeToggle } from '../ThemeToggle';
 import { useAssessment } from '../../contexts/AssessmentContext';
+import { supabase } from '@/integrations/supabase/client';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -20,12 +21,41 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
   const { theme, resolvedTheme } = useTheme();
   const { assessmentInProgress } = useAssessment();
   const [scrolled, setScrolled] = useState(false);
+  const [ximatarData, setXimatarData] = useState<{ name: string; image: string } | null>(null);
 
   useEffect(() => {
     if (requireAuth && !isAuthenticated) {
       navigate('/login');
     }
   }, [requireAuth, isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const fetchXimatar = async () => {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('ximatar')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (profile?.ximatar) {
+          const { data: ximatarType } = await supabase
+            .from('ximatars')
+            .select('label, image_url')
+            .eq('label', profile.ximatar)
+            .single();
+
+          if (ximatarType) {
+            setXimatarData({
+              name: ximatarType.label.charAt(0).toUpperCase() + ximatarType.label.slice(1),
+              image: ximatarType.image_url || ''
+            });
+          }
+        }
+      };
+      fetchXimatar();
+    }
+  }, [isAuthenticated, user]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -118,6 +148,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
               
               {isAuthenticated && user ? (
                 <div className="flex items-center space-x-3">
+                  {ximatarData && (
+                    <div className="hidden md:flex items-center gap-2 rounded-full border border-border/50 px-3 py-1.5 bg-card/50">
+                      <img 
+                        src={ximatarData.image.startsWith('/') ? ximatarData.image : `/${ximatarData.image}`} 
+                        alt={ximatarData.name} 
+                        className="h-6 w-6 rounded-full object-cover" 
+                      />
+                      <span className="text-sm font-medium text-foreground/80">{ximatarData.name}</span>
+                    </div>
+                  )}
                   <Button 
                     variant="ghost"
                     size="sm"

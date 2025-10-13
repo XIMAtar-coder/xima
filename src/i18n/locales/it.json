@@ -119,6 +119,13 @@
     "complete_text": "Il tuo CV è stato analizzato e il tuo profilo di base è pronto. Ora creiamo il tuo Ximatar completo attraverso la nostra valutazione approfondita.",
     "continue_assessment": "Continua con la Valutazione Ximatar"
   },
+  "ximatar": {
+    "your_ximatar": "Il tuo XIMAtar",
+    "assigned_permanently": "Assegnato in modo permanente",
+    "replace_question": "Vuoi sostituire il tuo XIMAtar con il nuovo risultato?",
+    "keep": "Mantieni",
+    "replace": "Sostituisci"
+  },
   "assessment": {
     "title": "Crea il Tuo Ximatar",
     "choose_field": {

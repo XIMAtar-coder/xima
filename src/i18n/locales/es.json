@@ -111,6 +111,13 @@
     "uploading": "Subiendo...",
     "upload_success": "¡CV subido exitosamente!"
   },
+  "ximatar": {
+    "your_ximatar": "Tu XIMAtar",
+    "assigned_permanently": "Asignado permanentemente",
+    "replace_question": "¿Quieres reemplazar tu XIMAtar con el nuevo resultado?",
+    "keep": "Mantener",
+    "replace": "Reemplazar"
+  },
   "assessment": {
     "title": "Evaluación XIMAtar",
     "choose_field": {
