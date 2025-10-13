@@ -21,7 +21,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
   const { theme, resolvedTheme } = useTheme();
   const { assessmentInProgress } = useAssessment();
   const [scrolled, setScrolled] = useState(false);
-  const [ximatarData, setXimatarData] = useState<{ name: string; image: string } | null>(null);
+  const [ximatarData, setXimatarData] = useState<{ name: string; image: string; updated_at?: string } | null>(null);
 
   useEffect(() => {
     if (requireAuth && !isAuthenticated) {
@@ -41,21 +41,26 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
         if (profile?.ximatar) {
           const { data: ximatarType } = await supabase
             .from('ximatars')
-            .select('label, image_url')
+            .select('label, image_url, updated_at, ximatar_translations(lang, title)')
             .eq('label', profile.ximatar)
             .single();
 
           if (ximatarType) {
+            const lang = i18n.language.slice(0, 2);
+            const translation = (ximatarType as any).ximatar_translations?.find((t: any) => t.lang === lang) 
+              || (ximatarType as any).ximatar_translations?.[0];
+            
             setXimatarData({
-              name: ximatarType.label.charAt(0).toUpperCase() + ximatarType.label.slice(1),
-              image: ximatarType.image_url || ''
+              name: translation?.title || ximatarType.label.charAt(0).toUpperCase() + ximatarType.label.slice(1),
+              image: ximatarType.image_url || '',
+              updated_at: ximatarType.updated_at
             });
           }
         }
       };
       fetchXimatar();
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, i18n.language]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -151,7 +156,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                   {ximatarData && (
                     <div className="hidden md:flex items-center gap-2 rounded-full border border-border/50 px-3 py-1.5 bg-card/50">
                       <img 
-                        src={ximatarData.image.startsWith('/') ? ximatarData.image : `/${ximatarData.image}`} 
+                        src={ximatarData.image.startsWith('http') ? ximatarData.image : `/${ximatarData.image.replace(/^public\//, '')}`}
                         alt={ximatarData.name} 
                         className="h-6 w-6 rounded-full object-cover" 
                       />

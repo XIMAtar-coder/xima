@@ -6,10 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import XimaScoreCard from '../XimaScoreCard';
-import XimaAvatar from '../XimaAvatar';
 import { OpenAnswerScore } from './OpenAnswerScore';
 import FeaturedProfessionals, { type FieldKey } from '../FeaturedProfessionals';
-import { ArrowRight, CheckCircle, UserPlus } from 'lucide-react';
+import ProfileXimatarBadge from '../ximatar/ProfileXimatarBadge';
+import { ArrowRight } from 'lucide-react';
 import { XimaPillars } from '../../types';
 import { useUser } from '../../context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -36,33 +36,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   const [selectedField] = useState<FieldKey>(() => {
     return (localStorage.getItem('preferred_field') as FieldKey) || 'business_leadership';
   });
-
-  // Mock data for demonstration
-  const baselinePillars: XimaPillars = {
-    computational: 6,
-    communication: 5,
-    knowledge: 8,
-    creativity: 4,
-    drive: 7
-  };
-
-  const finalPillars: XimaPillars = {
-    computational: 7,
-    communication: 8,
-    knowledge: 8,
-    creativity: 9,
-    drive: 8
-  };
-
-  const userAvatar = {
-    animal: t('results.fox_animal'),
-    image: '/ximatars/fox.png',
-    features: [
-      { name: t('results.adaptability'), description: t('results.adaptability_desc'), strength: 8 },
-      { name: t('results.focus'), description: t('results.focus_desc'), strength: 6 },
-      { name: t('results.creativity_trait'), description: t('results.creativity_desc'), strength: 7 }
-    ]
-  };
+  
+  // Fetch assigned XIMAtar and assessment results
+  const [assignedXimatar, setAssignedXimatar] = useState<any>(null);
+  const [assessmentPillars, setAssessmentPillars] = useState<XimaPillars | null>(null);
+  const [top3Matches, setTop3Matches] = useState<any[]>([]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -73,28 +51,92 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     return () => clearTimeout(timer);
   }, []);
 
-  // Fetch open responses
+  // Fetch assigned XIMAtar and assessment results
   useEffect(() => {
-    const fetchOpenResponses = async () => {
+    const fetchXimatarAndResults = async () => {
       if (!user?.id) return;
       
-      const attemptId = localStorage.getItem('current_attempt_id');
-      if (!attemptId) return;
-
-      const { data, error } = await supabase
-        .from('assessment_open_responses')
-        .select('open_key, answer, score, rubric')
+      // 1) Fetch assigned XIMAtar from profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('ximatar')
         .eq('user_id', user.id)
-        .eq('attempt_id', attemptId)
-        .order('open_key', { ascending: true });
+        .maybeSingle();
 
-      if (!error && data) {
-        setOpenResponses(data as any);
+      if (profile?.ximatar) {
+        // Fetch the full XIMAtar details by label
+        const { data: ximatarData } = await supabase
+          .from('ximatars')
+          .select(`
+            id,
+            label,
+            image_url,
+            updated_at,
+            vector,
+            ximatar_translations (
+              lang,
+              title,
+              core_traits
+            )
+          `)
+          .eq('label', profile.ximatar)
+          .single();
+
+        if (ximatarData) {
+          const lang = localStorage.getItem('i18nextLng') || 'it';
+          const translation = (ximatarData as any).ximatar_translations?.find((t: any) => t.lang === lang) 
+            || (ximatarData as any).ximatar_translations?.[0];
+          
+          setAssignedXimatar({
+            ...ximatarData,
+            name: translation?.title || ximatarData.label,
+            traits: translation?.core_traits ? JSON.parse(translation.core_traits) : []
+          });
+        }
+      }
+
+      // 2) Fetch latest assessment results for pillars and top-3
+      const { data: latestResult } = await supabase
+        .from('assessment_results')
+        .select('pillars, top3')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (latestResult?.pillars) {
+        const pillars = latestResult.pillars as any;
+        setAssessmentPillars({
+          computational: pillars.comp_power || 0,
+          communication: pillars.communication || 0,
+          knowledge: pillars.knowledge || 0,
+          creativity: pillars.creativity || 0,
+          drive: pillars.drive || 0
+        });
+      }
+
+      if (latestResult?.top3 && Array.isArray(latestResult.top3)) {
+        setTop3Matches(latestResult.top3);
+      }
+
+      // 3) Fetch open responses
+      const attemptId = localStorage.getItem('current_attempt_id');
+      if (attemptId) {
+        const { data: openData } = await supabase
+          .from('assessment_open_responses')
+          .select('open_key, answer, score, rubric')
+          .eq('user_id', user.id)
+          .eq('attempt_id', attemptId)
+          .order('open_key', { ascending: true });
+
+        if (openData) {
+          setOpenResponses(openData as any);
+        }
       }
     };
 
     if (showResults) {
-      fetchOpenResponses();
+      fetchXimatarAndResults();
     }
   }, [showResults, user]);
 
@@ -110,20 +152,20 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     const professionalData = JSON.parse(localStorage.getItem('selected_professional_data') || '{}');
     
     if (isAuthenticated) {
-      // User is already authenticated, go to dashboard
+      // User is already authenticated, go to profile/dashboard
       navigate('/profile', { 
         state: { 
           selectedProfessional: professionalData,
-          assessmentResults: finalPillars,
-          userAvatar: userAvatar
+          assessmentResults: assessmentPillars,
+          assignedXimatar
         }
       });
     } else {
       // User needs to register, store selection and redirect
       localStorage.setItem('selectedProfessional', JSON.stringify({
         professional: professionalData,
-        assessmentResults: finalPillars,
-        userAvatar: userAvatar
+        assessmentResults: assessmentPillars,
+        assignedXimatar
       }));
       navigate('/register');
     }
@@ -147,23 +189,43 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     <div className="space-y-8">
       <div className="text-center space-y-4">
         <h2 className="text-3xl font-bold">{t('results.title')}</h2>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           {hasCv ? t('results.subtitle_with_cv') : t('results.subtitle_without_cv')}
         </p>
       </div>
 
-      {/* User Avatar Section */}
-      <Card className="p-8 text-center">
-        <h3 className="text-2xl font-bold mb-4">
-          {t('results.your_animal', { animal: userAvatar.animal })}
-        </h3>
-        <div className="flex justify-center mb-6">
-          <XimaAvatar avatar={userAvatar} size="lg" showDetails />
-        </div>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          {t('results.animal_description')}
-        </p>
-      </Card>
+      {/* Assigned XIMAtar Section */}
+      {assignedXimatar && (
+        <Card className="p-6">
+          <div className="max-w-2xl mx-auto">
+            <ProfileXimatarBadge
+              name={assignedXimatar.name}
+              avatar_path={assignedXimatar.image_url}
+              updated_at={assignedXimatar.updated_at}
+              subtitle={t('ximatar.your_ximatar')}
+              traits={assignedXimatar.traits}
+              size="lg"
+              className="bg-card"
+            />
+            
+            {/* Top-3 Matches (optional) */}
+            {top3Matches.length > 0 && (
+              <div className="mt-6 pt-6 border-t">
+                <div className="text-sm text-muted-foreground mb-3">
+                  {t('ximatar.other_close_matches', 'Other close matches')}
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {top3Matches.map((match: any, idx: number) => (
+                    <Badge key={idx} variant="outline" className="text-xs">
+                      {match.key} ({(match.score * 100).toFixed(0)}%)
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </Card>
+      )}
 
       {/* Professional Selection Section */}
       <Card className="p-8">
@@ -189,54 +251,30 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         )}
       </Card>
 
-      {/* Comparison Section */}
-      {hasCv && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="p-6">
-            <div className="text-center mb-4">
-              <Badge variant="outline" className="mb-2">
-                {t('results.baseline_assessment')}
-              </Badge>
-              <h3 className="text-lg font-semibold">{t('results.baseline_description')}</h3>
-            </div>
-            <XimaScoreCard pillars={baselinePillars} compact />
-          </Card>
-
-          <Card className="p-6">
-            <div className="text-center mb-4">
-              <Badge className="mb-2 bg-[#4171d6]">
-                {t('results.full_assessment')}
-              </Badge>
-              <h3 className="text-lg font-semibold">{t('results.full_description')}</h3>
-            </div>
-            <XimaScoreCard pillars={finalPillars} compact />
-          </Card>
-        </div>
+      {/* Assessment Pillar Scores */}
+      {assessmentPillars && (
+        <Card className="p-8">
+          <h3 className="text-xl font-semibold text-center mb-6">
+            {t('results.your_scores', 'Your Scores')}
+          </h3>
+          <XimaScoreCard pillars={assessmentPillars} showTooltip />
+        </Card>
       )}
 
-      {/* Single Assessment Results */}
-      {!hasCv && (
-        <div className="space-y-6">
-          <Card className="p-8">
-            <XimaScoreCard pillars={finalPillars} showTooltip />
-          </Card>
-
-          {/* Open Answer Scores */}
-          {openResponses.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-center">{t('open_scoring.title')}</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {openResponses.map((response) => (
-                  <OpenAnswerScore
-                    key={response.open_key}
-                    openKey={response.open_key}
-                    rubric={response.rubric}
-                    answer={response.answer}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+      {/* Open Answer Scores */}
+      {openResponses.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold text-center">{t('open_scoring.title')}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {openResponses.map((response) => (
+              <OpenAnswerScore
+                key={response.open_key}
+                openKey={response.open_key}
+                rubric={response.rubric}
+                answer={response.answer}
+              />
+            ))}
+          </div>
         </div>
       )}
 

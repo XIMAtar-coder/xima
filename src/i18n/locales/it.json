@@ -124,7 +124,8 @@
     "assigned_permanently": "Assegnato in modo permanente",
     "replace_question": "Vuoi sostituire il tuo XIMAtar con il nuovo risultato?",
     "keep": "Mantieni",
-    "replace": "Sostituisci"
+    "replace": "Sostituisci",
+    "other_close_matches": "Altri profili affini"
   },
   "assessment": {
     "title": "Crea il Tuo Ximatar",
