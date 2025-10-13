@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { getAvatarUrl } from '@/lib/avatar';
 
 export type FieldKey = 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops';
 
@@ -16,55 +17,8 @@ type Professional = {
   expertise_tags: string[] | null;
   compatibility_score: number | null;
   field_keys: FieldKey[];
+  updated_at?: string | null;
 };
-
-const PROFESSIONALS_DATA: Professional[] = [
-  {
-    id: '1',
-    full_name: 'Pietro Cozzi',
-    title: 'Product & Growth Leader',
-    linkedin_url: 'https://www.linkedin.com/in/pietro-cozzi/',
-    avatar_path: 'public/avatars/pietro-cozzi.jpg',
-    locale_bio: {
-      it: 'Leader di prodotto e crescita, focus su GTM e metriche',
-      en: 'Product & growth leader focused on GTM and metrics',
-      es: 'Líder de producto y crecimiento, enfoque en GTM y métricas'
-    },
-    expertise_tags: ['Leadership', 'GTM', 'Growth'],
-    compatibility_score: 95,
-    field_keys: ['business_leadership', 'arts_creative']
-  },
-  {
-    id: '2',
-    full_name: 'Daniel Cracau',
-    title: 'Technology & Strategy',
-    linkedin_url: 'https://www.linkedin.com/in/daniel-cracau/',
-    avatar_path: 'public/avatars/daniel-cracau.jpg',
-    locale_bio: {
-      it: 'Tecnologia e strategia, trasformazione digitale',
-      en: 'Technology and strategy, digital transformation',
-      es: 'Tecnología y estrategia, transformación digital'
-    },
-    expertise_tags: ['Technology', 'Strategy'],
-    compatibility_score: 91,
-    field_keys: ['science_tech', 'business_leadership']
-  },
-  {
-    id: '3',
-    full_name: 'Roberta Fazzeri',
-    title: 'People & Culture Advisor',
-    linkedin_url: 'https://www.linkedin.com/in/roberta-fazzeri/',
-    avatar_path: 'public/avatars/roberta-fazzeri.jpg',
-    locale_bio: {
-      it: 'Consulente HR, cultura e sviluppo organizzativo',
-      en: 'HR advisor for culture and org development',
-      es: 'Asesora de RRHH, cultura y desarrollo'
-    },
-    expertise_tags: ['HR', 'Culture', 'Coaching'],
-    compatibility_score: 93,
-    field_keys: ['service_ops', 'arts_creative']
-  }
-];
 
 export default function FeaturedProfessionals({ 
   limit = 3,
@@ -76,27 +30,85 @@ export default function FeaturedProfessionals({
   fieldKey?: FieldKey;
 }) {
   const { i18n, t } = useTranslation();
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const locale = (i18n.language || 'it').slice(0, 2) as 'it' | 'en' | 'es';
 
+  useEffect(() => {
+    const fetchProfessionals = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('professionals')
+          .select('*')
+          .order('compatibility_score', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching professionals:', error);
+          return;
+        }
+        
+        if (data && data.length > 0) {
+          // Map the data to ensure it has the right shape
+          const mapped = data.map((p: any) => ({
+            id: p.id,
+            full_name: p.full_name || p.title || 'Unknown',
+            title: p.title || '',
+            linkedin_url: p.linkedin_url || '',
+            avatar_path: p.avatar_path,
+            locale_bio: p.locale_bio || {},
+            expertise_tags: p.expertise_tags || [],
+            compatibility_score: p.compatibility_score || 90,
+            field_keys: p.field_keys || [],
+            updated_at: p.updated_at
+          }));
+          setProfessionals(mapped);
+        }
+      } catch (error) {
+        console.error('Error fetching professionals:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfessionals();
+  }, []);
+
   // Filter professionals by field if provided
   const filteredProfessionals = fieldKey 
-    ? PROFESSIONALS_DATA.filter(p => p.field_keys.includes(fieldKey))
-    : PROFESSIONALS_DATA;
+    ? professionals.filter(p => p.field_keys?.includes(fieldKey))
+    : professionals;
+
+  if (loading) {
+    return (
+      <div className="grid md:grid-cols-3 gap-4">
+        {[1, 2, 3].map((i) => (
+          <Card key={i} className="p-6 animate-pulse">
+            <div className="h-14 w-14 rounded-full bg-muted mb-4" />
+            <div className="h-4 bg-muted rounded mb-2" />
+            <div className="h-3 bg-muted rounded" />
+          </Card>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="grid md:grid-cols-3 gap-4">
-      {filteredProfessionals.slice(0, limit).map((p, idx) => {
-        const bio = p.locale_bio[locale] || p.locale_bio.en || '';
+      {filteredProfessionals.slice(0, limit).map((p) => {
+        const bio = (typeof p.locale_bio === 'object' && p.locale_bio !== null)
+          ? (p.locale_bio[locale] || p.locale_bio.en || '')
+          : '';
         const score = p.compatibility_score ?? 90;
+        const avatarUrl = getAvatarUrl(p.avatar_path, p.updated_at);
         
         return (
-          <Card key={idx} className="p-6 flex flex-col gap-4">
+          <Card key={p.id} className="p-6 flex flex-col gap-4">
             <div className="flex items-center gap-4">
               <div className="relative h-14 w-14 rounded-full overflow-hidden bg-muted flex-shrink-0">
-                {p.avatar_path ? (
+                {avatarUrl ? (
                   <img
-                    src={`/${p.avatar_path}`}
+                    src={avatarUrl}
                     alt={p.full_name}
                     className="h-full w-full object-cover"
                     onError={(e) => {

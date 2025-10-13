@@ -1059,28 +1059,52 @@ export type Database = {
       }
       professionals: {
         Row: {
+          avatar_path: string | null
           calendar_url: string | null
+          compatibility_score: number | null
           created_at: string | null
+          expertise_tags: string[] | null
+          field_keys: string[] | null
+          full_name: string | null
           id: string
+          linkedin_url: string | null
+          locale_bio: Json | null
           specialties: string[] | null
           title: string | null
-          user_id: string
+          updated_at: string | null
+          user_id: string | null
         }
         Insert: {
+          avatar_path?: string | null
           calendar_url?: string | null
+          compatibility_score?: number | null
           created_at?: string | null
+          expertise_tags?: string[] | null
+          field_keys?: string[] | null
+          full_name?: string | null
           id?: string
+          linkedin_url?: string | null
+          locale_bio?: Json | null
           specialties?: string[] | null
           title?: string | null
-          user_id: string
+          updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
+          avatar_path?: string | null
           calendar_url?: string | null
+          compatibility_score?: number | null
           created_at?: string | null
+          expertise_tags?: string[] | null
+          field_keys?: string[] | null
+          full_name?: string | null
           id?: string
+          linkedin_url?: string | null
+          locale_bio?: Json | null
           specialties?: string[] | null
           title?: string | null
-          user_id?: string
+          updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
