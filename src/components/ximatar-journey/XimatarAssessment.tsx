@@ -190,7 +190,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
                 <QuestionExample
                   assessmentSetKey={assessmentSetKey as 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops'}
                   qKey={currentMultipleChoice.key}
-                  category={t(`${baseKey}.questions.${currentMultipleChoice.key}.category`)}
+                  categoryLabel={t(`${baseKey}.questions.${currentMultipleChoice.key}.category`)}
                 />
               </div>
               <h3 className="text-xl font-medium">
@@ -237,7 +237,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
                 <QuestionExample
                   assessmentSetKey={assessmentSetKey as 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops'}
                   qKey={currentOpenQuestion.key}
-                  category="Creativity"
+                  openFallbackCategory="creativity"
                 />
               </div>
               <h3 className="text-xl font-medium">

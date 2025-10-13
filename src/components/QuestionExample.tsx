@@ -2,28 +2,50 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { toCategoryId, CategoryId } from '@/lib/assessment/category';
+
+type FieldKey = 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops';
 
 type Props = {
-  assessmentSetKey: 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops';
-  qKey: string;           // 'q1'..'q21' | 'open1' | 'open2'
-  category?: string;      // localized category label used for fallback routing
+  assessmentSetKey: FieldKey;
+  qKey: string;               // 'q1'..'q21' | 'open1' | 'open2'
+  categoryLabel?: string;     // localized category label (for MC)
+  openFallbackCategory?: CategoryId; // default for open questions
   className?: string;
 };
 
-export default function QuestionExample({ assessmentSetKey, qKey, category, className }: Props) {
-  const { t } = useTranslation();
-  const [open, setOpen] = React.useState(false);
+export default function QuestionExample({
+  assessmentSetKey,
+  qKey,
+  categoryLabel,
+  openFallbackCategory = 'creativity',
+  className
+}: Props) {
+  const { t, i18n } = useTranslation();
 
-  const base = `assessmentSets.${assessmentSetKey}.examples.${qKey}`;
-  const title = t(`${base}.title`, { defaultValue: t('assessment.example.fallbackTitle') });
-  // load explicit example body from i18n if present; else fallback by category
-  let body = t(`${base}.body`, { defaultValue: '' });
+  const title = t(`assessmentSets.${assessmentSetKey}.examples.${qKey}.title`, {
+    defaultValue: t('assessment.example.fallbackTitle')
+  });
 
-  if (!body || body === `${base}.body`) {
-    // smart fallback: route by category (must match your localized category strings)
-    const fb = t(`assessment.example.fallback.${category || ''}`, { defaultValue: '' });
-    body = fb || t('assessment.example.fallback.Creativity'); // final safety fallback
+  // Level 1: per-question
+  let body = t(`assessmentSets.${assessmentSetKey}.examples.${qKey}.body`, { defaultValue: '' });
+
+  if (!body || body.startsWith('assessmentSets.')) {
+    // Resolve canonical category ID
+    const catId: CategoryId = categoryLabel
+      ? toCategoryId(categoryLabel, i18n.language)
+      : openFallbackCategory;
+
+    // Level 2: per-field category
+    body = t(`assessmentSets.${assessmentSetKey}.examplesByCategory.${catId}`, { defaultValue: '' });
+
+    // Level 3: global category fallback
+    if (!body || body.startsWith('assessmentSets.')) {
+      body = t(`assessment.example.fallback.${catId}`, { defaultValue: '' });
+    }
   }
+
+  const [open, setOpen] = React.useState(false);
 
   return (
     <div className={className}>

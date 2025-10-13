@@ -142,11 +142,11 @@
       "close": "Close",
       "fallbackTitle": "Example",
       "fallback": {
-        "Computational Power": "Example: you have a dataset with 50k rows. You segment by cohort, verify integrity, compare with historical data, and test a hypothesis before deciding.",
-        "Communication": "Example: you present a complex result using a simple chart, a 3-point summary, and clear next steps.",
-        "Knowledge": "Example: to learn a new domain, you map key players and reliable sources, read guidelines, and synthesize notes to share.",
-        "Creativity": "Example: you generate 10 quick drafts, select 2 options, run a small user test, and iterate on the best one.",
-        "Drive": "Example: you define weekly goals, track progress, and ask for feedback to unblock bottlenecks."
+        "comp_power": "Example: you have a dataset with 50k rows. You segment by cohort, verify integrity, compare with historical data, and test a hypothesis before deciding.",
+        "communication": "Example: you present a complex result using a simple chart, a 3-point summary, and clear next steps.",
+        "knowledge": "Example: to learn a new domain, you map key players and reliable sources, read guidelines, and synthesize notes to share.",
+        "creativity": "Example: you generate 10 quick drafts, select 2 options, run a small user test, and iterate on the best one.",
+        "drive": "Example: you define weekly goals, track progress, and ask for feedback to unblock bottlenecks."
       }
     },
     "questions": {
@@ -1037,6 +1037,13 @@
           "title": "Example",
           "body": "To learn React, you build a small app following the official documentation, experiment with components, and ask experienced colleagues for feedback."
         }
+      },
+      "examplesByCategory": {
+        "comp_power": "",
+        "communication": "",
+        "knowledge": "",
+        "creativity": "",
+        "drive": ""
       }
     },
     "business_leadership": {
@@ -1066,6 +1073,13 @@
         "q21": { "category": "Computational Power", "question": "Evaluating a transformation program, you first:", "options": ["Define success metrics", "Pilot with a control group", "Assess org readiness and risk", "Study reference cases"] },
         "open1": { "question": "Describe a leadership decision you are proud of. What trade-offs did you weigh and why?" },
         "open2": { "question": "What's your biggest growth edge as a leader, and how are you addressing it?" }
+      },
+      "examplesByCategory": {
+        "comp_power": "",
+        "communication": "",
+        "knowledge": "",
+        "creativity": "",
+        "drive": ""
       }
     },
     "arts_creative": {
@@ -1095,6 +1109,13 @@
         "q21": { "category": "Computational Power", "question": "To judge asset quality at scale, you:", "options": ["Define measurable criteria", "Batch-review with checklists", "Sample test with audience", "Automate checks where possible"] },
         "open1": { "question": "Tell us about a piece you created that changed outcomes. Why did it work?" },
         "open2": { "question": "Which creative skill are you most driven to improve this year and how?" }
+      },
+      "examplesByCategory": {
+        "comp_power": "",
+        "communication": "",
+        "knowledge": "",
+        "creativity": "",
+        "drive": ""
       }
     },
     "service_ops": {
@@ -1124,6 +1145,13 @@
         "q21": { "category": "Computational Power", "question": "Evaluating a process change, you:", "options": ["Define success metrics up front", "Compare before/after data", "Run a controlled trial", "Document impact and next steps"] },
         "open1": { "question": "Describe a time you improved a service process. What changed and how did you make it stick?" },
         "open2": { "question": "What area of your operations practice do you most want to grow this year, and what's your plan?" }
+      },
+      "examplesByCategory": {
+        "comp_power": "",
+        "communication": "",
+        "knowledge": "",
+        "creativity": "",
+        "drive": ""
       }
     }
   },

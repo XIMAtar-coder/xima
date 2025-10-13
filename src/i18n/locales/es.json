@@ -128,11 +128,11 @@
       "close": "Cerrar",
       "fallbackTitle": "Ejemplo",
       "fallback": {
-        "Poder Computacional": "Ejemplo: tienes un conjunto de datos con 50k filas. Segmentas por cohorte, verificas integridad, comparas con históricos y pruebas una hipótesis antes de decidir.",
-        "Comunicación": "Ejemplo: presentas un resultado complejo usando un gráfico simple, un resumen de 3 puntos y próximos pasos claros.",
-        "Conocimiento": "Ejemplo: para aprender un nuevo dominio, mapeas actores y fuentes confiables, lees las pautas y sintetizas en notas compartidas.",
-        "Creatividad": "Ejemplo: generas 10 borradores rápidos, seleccionas 2 opciones, haces una pequeña prueba con usuarios e iteras sobre la mejor.",
-        "Impulso": "Ejemplo: defines objetivos semanales, rastrear el progreso y pides retroalimentación para desbloquear cuellos de botella."
+        "comp_power": "Ejemplo: tienes un conjunto de datos con 50k filas. Segmentas por cohorte, verificas integridad, comparas con históricos y pruebas una hipótesis antes de decidir.",
+        "communication": "Ejemplo: presentas un resultado complejo usando un gráfico simple, un resumen de 3 puntos y próximos pasos claros.",
+        "knowledge": "Ejemplo: para aprender un nuevo dominio, mapeas actores y fuentes confiables, lees las pautas y sintetizas en notas compartidas.",
+        "creativity": "Ejemplo: generas 10 borradores rápidos, seleccionas 2 opciones, haces una pequeña prueba con usuarios e iteras sobre la mejor.",
+        "drive": "Ejemplo: defines objetivos semanales, rastrear el progreso y pides retroalimentación para desbloquear cuellos de botella."
       }
     },
     "question": "Pregunta",
@@ -439,6 +439,13 @@
           "title": "Ejemplo",
           "body": "Para aprender React, construyes una pequeña aplicación siguiendo la documentación oficial, experimentas con componentes y pides comentarios a colegas experimentados."
         }
+      },
+      "examplesByCategory": {
+        "comp_power": "",
+        "communication": "",
+        "knowledge": "",
+        "creativity": "",
+        "drive": ""
       }
     },
     "business_leadership": {
@@ -468,6 +475,13 @@
         "q21": { "category": "Potencia Computacional", "question": "Al evaluar un programa de transformación, primero:", "options": ["Definir métricas de éxito", "Piloto con grupo de control", "Analizar preparación y riesgo", "Estudiar casos de referencia"] },
         "open1": { "question": "Describe una decisión de liderazgo de la que estés orgulloso/a. ¿Qué compromisos pesaste y por qué?" },
         "open2": { "question": "¿Cuál es tu mayor área de crecimiento como líder y cómo la estás abordando?" }
+      },
+      "examplesByCategory": {
+        "comp_power": "",
+        "communication": "",
+        "knowledge": "",
+        "creativity": "",
+        "drive": ""
       }
     },
     "arts_creative": {
@@ -497,6 +511,13 @@
         "q21": { "category": "Potencia Computacional", "question": "Para juzgar calidad de activos a escala, tú:", "options": ["Criterios medibles", "Revisiones por lotes", "Tests con audiencia", "Automatizar controles"] },
         "open1": { "question": "Cuéntanos una pieza que cambió resultados. ¿Por qué funcionó?" },
         "open2": { "question": "¿Qué habilidad creativa más quieres mejorar este año y cómo?" }
+      },
+      "examplesByCategory": {
+        "comp_power": "",
+        "communication": "",
+        "knowledge": "",
+        "creativity": "",
+        "drive": ""
       }
     },
     "service_ops": {
@@ -526,6 +547,13 @@
         "q21": { "category": "Potencia Computacional", "question": "Al evaluar un cambio de proceso, tú:", "options": ["Definir métricas por adelantado", "Comparar datos antes/después", "Prueba controlada", "Documentar impacto y siguientes pasos"] },
         "open1": { "question": "Describe una vez que mejoraste un proceso de servicio. ¿Qué cambió y cómo lo hiciste sostenible?" },
         "open2": { "question": "¿Qué área de tu práctica operativa quieres hacer crecer este año y cuál es tu plan?" }
+      },
+      "examplesByCategory": {
+        "comp_power": "",
+        "communication": "",
+        "knowledge": "",
+        "creativity": "",
+        "drive": ""
       }
     }
   },
