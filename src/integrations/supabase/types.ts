@@ -1575,14 +1575,8 @@ export type Database = {
         }
         Returns: undefined
       }
-      recompute_matches: {
-        Args: { p_user: string }
-        Returns: undefined
-      }
-      recompute_user_scores: {
-        Args: { p_user: string }
-        Returns: undefined
-      }
+      recompute_matches: { Args: { p_user: string }; Returns: undefined }
+      recompute_user_scores: { Args: { p_user: string }; Returns: undefined }
     }
     Enums: {
       ai_message_role: "user" | "assistant" | "system" | "tool"
