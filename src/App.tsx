@@ -24,6 +24,7 @@ import TestLogicalProblemSolving from "./pages/TestLogicalProblemSolving";
 import TestPresentationSkills from "./pages/TestPresentationSkills";
 import TestCreativeThinking from "./pages/TestCreativeThinking";
 import Admin from "./pages/Admin";
+import Developer from "./pages/Developer";
 import NotFound from "./pages/NotFound";
 import { XimAIProvider } from "./context/XimAIProvider";
 import ChatEntry from "./components/ximai/ChatEntry";
@@ -63,6 +64,7 @@ const App = () => (
               <Route path="/dashboard" element={<Profile />} />
               <Route path="/chat" element={<XimaChat />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/developer" element={<Developer />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             {/* <ChatEntry /> */}

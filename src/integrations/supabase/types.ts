@@ -1417,6 +1417,27 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_scores: {
         Row: {
           assessments_completed: number
@@ -1565,6 +1586,14 @@ export type Database = {
         Args: { p_mentor: string; p_user: string }
         Returns: string
       }
+      get_admin_stats: { Args: never; Returns: Json }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       log_bot_event: {
         Args: {
           p_lang: Database["public"]["Enums"]["lang_code"]
@@ -1580,6 +1609,7 @@ export type Database = {
     }
     Enums: {
       ai_message_role: "user" | "assistant" | "system" | "tool"
+      app_role: "admin" | "user"
       lang_code: "it" | "en" | "es"
       ximatar_type:
         | "lion"
@@ -1722,6 +1752,7 @@ export const Constants = {
   public: {
     Enums: {
       ai_message_role: ["user", "assistant", "system", "tool"],
+      app_role: ["admin", "user"],
       lang_code: ["it", "en", "es"],
       ximatar_type: [
         "lion",
