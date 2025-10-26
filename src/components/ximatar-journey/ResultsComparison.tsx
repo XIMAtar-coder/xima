@@ -152,13 +152,13 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         }
       });
     } else {
-      // User needs to register, store selection and redirect to Italian journey
+      // User needs to register, store selection and go to registration
       localStorage.setItem('ximatar_journey_data', JSON.stringify({
         ximatar: assignedXimatar,
         professional: professionalData,
         pillars: assessmentPillars
       }));
-      navigate('/il-tuo-viaggio');
+      navigate('/register');
     }
   };
 
