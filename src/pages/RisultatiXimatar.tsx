@@ -6,11 +6,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import FeaturedProfessionals, { type FieldKey } from '@/components/FeaturedProfessionals';
-import XimaScoreCard from '@/components/XimaScoreCard';
 import { OpenAnswerScore } from '@/components/ximatar-journey/OpenAnswerScore';
-import { Badge } from '@/components/ui/badge';
+import { XimatarProfile } from '@/components/ximatar-journey/XimatarProfile';
+import { CVComparison } from '@/components/ximatar-journey/CVComparison';
 import { useTheme } from 'next-themes';
-import { getXimatarImageUrl } from '@/lib/ximatar/image';
 import type { Rubric } from '@/lib/scoring/openResponse';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,6 +22,7 @@ const RisultatiXimatar: React.FC = () => {
 
   const [assignedXimatar, setAssignedXimatar] = useState<any>(null);
   const [assessmentPillars, setAssessmentPillars] = useState<any>(null);
+  const [cvPillars, setCvPillars] = useState<any>(null);
   const [top3Matches, setTop3Matches] = useState<any[]>([]);
   const [openResponses, setOpenResponses] = useState<Array<{ open_key: 'open1' | 'open2'; answer: string; score: number; rubric: Rubric }>>([]);
   const [selectedProfessional, setSelectedProfessional] = useState<string | null>(null);
@@ -45,7 +45,10 @@ const RisultatiXimatar: React.FC = () => {
             ximatar_translations (
               lang,
               title,
-              core_traits
+              core_traits,
+              behavior,
+              weaknesses,
+              ideal_roles
             )
           )
         `)
@@ -76,6 +79,31 @@ const RisultatiXimatar: React.FC = () => {
       }
 
       if (latestResult?.top3 && Array.isArray(latestResult.top3)) setTop3Matches(latestResult.top3);
+
+      // Check for CV upload and baseline assessment
+      if (user?.id) {
+        const { data: cvData } = await supabase
+          .from('cv_uploads')
+          .select('analysis_results')
+          .eq('user_id', user.id)
+          .eq('analysis_status', 'completed')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (cvData?.analysis_results) {
+          const analysis = cvData.analysis_results as any;
+          if (analysis.pillars) {
+            setCvPillars({
+              computational: analysis.pillars.computational || 0,
+              communication: analysis.pillars.communication || 0,
+              knowledge: analysis.pillars.knowledge || 0,
+              creativity: analysis.pillars.creativity || 0,
+              drive: analysis.pillars.drive || 0
+            });
+          }
+        }
+      }
 
       // open answers by attempt
       const attemptId = localStorage.getItem('current_attempt_id');
@@ -115,75 +143,42 @@ const RisultatiXimatar: React.FC = () => {
       <div className="container max-w-6xl mx-auto py-8">
         <div className="text-center mb-8">
           <img src={logoSrc} alt="XIMA Logo" className="h-14 w-auto mx-auto mb-3" />
-          <h1 className="text-4xl font-bold mb-2">Il Tuo Viaggio Ximatar</h1>
-          <p className="text-muted-foreground">Scopri i tuoi punti di forza professionali attraverso la nostra valutazione completa</p>
+          <h1 className="text-4xl font-bold mb-2">{t('results.page_title')}</h1>
+          <p className="text-muted-foreground">{t('results.page_subtitle')}</p>
         </div>
 
-        {/* XIMAtar Reveal */}
+        {/* XIMAtar Profile with Strengths/Weaknesses */}
         {assignedXimatar && (
-          <Card className="p-8 mb-8">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold">I Tuoi Risultati Ximatar</h2>
-              <p className="text-muted-foreground">La tua valutazione completa Ximatar è terminata</p>
-            </div>
-            <div className="flex flex-col items-center gap-6">
-              <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-primary/20 bg-muted">
-                {assignedXimatar.image_url ? (
-                  <img
-                    src={getXimatarImageUrl(assignedXimatar.image_url, assignedXimatar.updated_at) || ''}
-                    alt={assignedXimatar.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground">?</div>
-                )}
-              </div>
-              <div className="text-center">
-                <h3 className="text-xl font-semibold mb-2">{assignedXimatar.name}</h3>
-                {assignedXimatar.traits?.length > 0 && (
-                  <div className="text-sm text-muted-foreground">{assignedXimatar.traits.join(' • ')}</div>
-                )}
-              </div>
-              {top3Matches.length > 0 && (
-                <div className="mt-2">
-                  <div className="text-sm text-muted-foreground text-center mb-2">Altri profili compatibili</div>
-                  <div className="flex gap-2 flex-wrap justify-center">
-                    {top3Matches.map((m: any, i: number) => (
-                      <Badge key={i} variant="outline" className="text-xs">{m.label || m.key} ({(m.score * 100).toFixed(0)}%)</Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </Card>
+          <div className="mb-8">
+            <XimatarProfile ximatar={assignedXimatar} top3Matches={top3Matches} />
+          </div>
+        )}
+
+        {/* CV vs Assessment Comparison */}
+        {assessmentPillars && (
+          <div className="mb-8">
+            <CVComparison cvPillars={cvPillars} assessmentPillars={assessmentPillars} />
+          </div>
         )}
 
         {/* Professionals */}
         <Card className="p-8 mb-8">
-          <h3 className="text-2xl font-bold mb-6 text-center">Scegli il tuo professionista</h3>
-          <p className="text-center text-muted-foreground mb-8">Seleziona il professionista più adatto ai tuoi obiettivi</p>
+          <h3 className="text-2xl font-bold mb-6 text-center">{t('professionals.select_title')}</h3>
+          <p className="text-center text-muted-foreground mb-8">{t('professionals.select_subtitle')}</p>
           <FeaturedProfessionals onSelect={handleProfessionalSelect} fieldKey={selectedField} />
           {selectedProfessional && (
             <div className="text-center mt-8">
               <Button size="lg" onClick={proceed}>
-                {isAuthenticated ? 'Vai al Profilo' : 'Registrati'}
+                {isAuthenticated ? t('results.go_to_profile') : t('results.register_now')}
               </Button>
             </div>
           )}
         </Card>
 
-        {/* Pillars */}
-        {assessmentPillars && (
-          <Card className="p-8 mb-8">
-            <h3 className="text-xl font-semibold text-center mb-6">I tuoi punteggi XIMA</h3>
-            <XimaScoreCard pillars={assessmentPillars} showTooltip />
-          </Card>
-        )}
-
         {/* Open answers */}
         {openResponses.length > 0 && (
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-center">Valutazione risposte aperte</h3>
+            <h3 className="text-xl font-semibold text-center">{t('results.open_responses_title')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {openResponses.map((response) => (
                 <OpenAnswerScore key={response.open_key} openKey={response.open_key} rubric={response.rubric} answer={response.answer} />
