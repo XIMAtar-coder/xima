@@ -91,6 +91,15 @@ const Register = () => {
         });
         return;
       }
+
+      // Check if there's XIMATAR journey data to save
+      const journeyData = localStorage.getItem('ximatar_journey_data');
+      if (journeyData) {
+        const data = JSON.parse(journeyData);
+        // Store it for the profile page to pick up
+        localStorage.setItem('pending_profile_data', journeyData);
+        localStorage.removeItem('ximatar_journey_data');
+      }
       
       toast({
         title: t('register.registration_success'),

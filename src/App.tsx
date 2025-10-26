@@ -15,6 +15,7 @@ import Register from "./pages/Register";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import XimatarJourney from "./pages/XimatarJourney";
+import IlTuoViaggio from "./pages/IlTuoViaggio";
 import XimaChat from "./pages/XimaChat";
 import DevelopmentPlan from "./pages/DevelopmentPlan";
 import TestDataAnalysis from "./pages/TestDataAnalysis";
@@ -49,6 +50,7 @@ const App = () => (
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/ximatar-journey" element={<XimatarJourney />} />
+              <Route path="/il-tuo-viaggio" element={<IlTuoViaggio />} />
               <Route path="/xima-chat" element={<XimaChat />} />
               <Route path="/development-plan" element={<DevelopmentPlan />} />
               <Route path="/test/data-analysis" element={<TestDataAnalysis />} />

@@ -62,6 +62,27 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       .single();
 
     if (profile) {
+      // Check if there's pending profile data from XIMATAR journey
+      const pendingData = localStorage.getItem('pending_profile_data');
+      if (pendingData) {
+        try {
+          const journeyData = JSON.parse(pendingData);
+          // Save XIMATAR and professional to profile
+          await supabase
+            .from('profiles')
+            .update({
+              ximatar: journeyData.ximatar?.label,
+              pillars: journeyData.pillars,
+              profile_complete: true
+            })
+            .eq('user_id', userId);
+          
+          localStorage.removeItem('pending_profile_data');
+        } catch (error) {
+          console.error('Error saving journey data:', error);
+        }
+      }
+
       setUser({
         id: profile.user_id,
         name: profile.name || '',
