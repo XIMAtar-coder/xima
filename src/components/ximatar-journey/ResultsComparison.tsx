@@ -14,6 +14,7 @@ import { XimaPillars } from '../../types';
 import { useUser } from '../../context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
 import type { Rubric } from '@/lib/scoring/openResponse';
+import { getXimatarImageUrl } from '@/lib/ximatar/image';
 
 interface ResultsComparisonProps {
   onComplete: (step: number) => void;
@@ -56,18 +57,14 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     const fetchXimatarAndResults = async () => {
       if (!user?.id) return;
       
-      // 1) Fetch assigned XIMAtar from profile
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('ximatar')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (profile?.ximatar) {
-        // Fetch the full XIMAtar details by label
-        const { data: ximatarData } = await supabase
-          .from('ximatars')
-          .select(`
+      // Fetch latest assessment result WITH ximatar join
+      const { data: latestResult } = await supabase
+        .from('assessment_results')
+        .select(`
+          pillars, 
+          top3,
+          ximatar_id,
+          ximatars (
             id,
             label,
             image_url,
@@ -78,31 +75,25 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
               title,
               core_traits
             )
-          `)
-          .eq('label', profile.ximatar)
-          .single();
-
-        if (ximatarData) {
-          const lang = localStorage.getItem('i18nextLng') || 'it';
-          const translation = (ximatarData as any).ximatar_translations?.find((t: any) => t.lang === lang) 
-            || (ximatarData as any).ximatar_translations?.[0];
-          
-          setAssignedXimatar({
-            ...ximatarData,
-            name: translation?.title || ximatarData.label,
-            traits: translation?.core_traits ? JSON.parse(translation.core_traits) : []
-          });
-        }
-      }
-
-      // 2) Fetch latest assessment results for pillars and top-3
-      const { data: latestResult } = await supabase
-        .from('assessment_results')
-        .select('pillars, top3')
+          )
+        `)
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
+        .order('computed_at', { ascending: false })
         .limit(1)
         .maybeSingle();
+
+      if (latestResult?.ximatars) {
+        const ximatarData = latestResult.ximatars as any;
+        const lang = localStorage.getItem('i18nextLng') || 'it';
+        const translation = ximatarData.ximatar_translations?.find((t: any) => t.lang === lang) 
+          || ximatarData.ximatar_translations?.[0];
+        
+        setAssignedXimatar({
+          ...ximatarData,
+          name: translation?.title || ximatarData.label,
+          traits: translation?.core_traits ? translation.core_traits.split(' – ') : []
+        });
+      }
 
       if (latestResult?.pillars) {
         const pillars = latestResult.pillars as any;
@@ -119,7 +110,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         setTop3Matches(latestResult.top3);
       }
 
-      // 3) Fetch open responses
+      // Fetch open responses
       const attemptId = localStorage.getItem('current_attempt_id');
       if (attemptId) {
         const { data: openData } = await supabase
@@ -196,28 +187,53 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       {/* Assigned XIMAtar Section */}
       {assignedXimatar && (
-        <Card className="p-6">
-          <div className="max-w-2xl mx-auto">
-            <ProfileXimatarBadge
-              name={assignedXimatar.name}
-              avatar_path={assignedXimatar.image_url}
-              updated_at={assignedXimatar.updated_at}
-              subtitle={t('ximatar.your_ximatar')}
-              traits={assignedXimatar.traits}
-              size="lg"
-              className="bg-card"
-            />
+        <Card className="p-8">
+          <div className="text-center mb-6">
+            <h3 className="text-2xl font-bold mb-2">
+              {t('ximatar.meet_your_ximatar', 'Incontra il Tuo Ximatar')}: {assignedXimatar.name}
+            </h3>
+          </div>
+          
+          <div className="max-w-3xl mx-auto">
+            <div className="flex flex-col items-center gap-6">
+              {/* XIMAtar Image - Large display */}
+              <div className="relative">
+                <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-primary/20 bg-muted">
+                  {assignedXimatar.image_url ? (
+                    <img 
+                      src={getXimatarImageUrl(assignedXimatar.image_url, assignedXimatar.updated_at) || ''} 
+                      alt={assignedXimatar.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                      ?
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* XIMAtar Name & Traits */}
+              <div className="text-center">
+                <h4 className="text-xl font-semibold mb-2">{assignedXimatar.name}</h4>
+                {assignedXimatar.traits && assignedXimatar.traits.length > 0 && (
+                  <div className="text-sm text-muted-foreground">
+                    {assignedXimatar.traits.join(' • ')}
+                  </div>
+                )}
+              </div>
+            </div>
             
             {/* Top-3 Matches (optional) */}
             {top3Matches.length > 0 && (
-              <div className="mt-6 pt-6 border-t">
-                <div className="text-sm text-muted-foreground mb-3">
-                  {t('ximatar.other_close_matches', 'Other close matches')}
+              <div className="mt-8 pt-6 border-t">
+                <div className="text-sm text-muted-foreground text-center mb-3">
+                  {t('ximatar.other_close_matches', 'Altri profili compatibili')}
                 </div>
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex gap-2 flex-wrap justify-center">
                   {top3Matches.map((match: any, idx: number) => (
                     <Badge key={idx} variant="outline" className="text-xs">
-                      {match.key} ({(match.score * 100).toFixed(0)}%)
+                      {match.label || match.key} ({(match.score * 100).toFixed(0)}%)
                     </Badge>
                   ))}
                 </div>
