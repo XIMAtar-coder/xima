@@ -5,71 +5,76 @@
 
 @layer base {
   :root {
-    /* Brand colors */
-    --xima-blue: 217 89% 59%;      /* #2C6CFF */
-    --xima-teal: 189 82% 54%;      /* #22D3EE */
+    /* XIMA Brand Colors */
+    --xima-primary: 215 100% 6%;     /* #0A0F1C - Primary dark */
+    --xima-secondary: 216 9% 69%;    /* #A3ABB5 - Secondary gray */
+    --xima-accent: 210 100% 62%;     /* #3A9FFF - Accent blue */
+    
+    /* Legacy brand colors for gradients */
+    --xima-blue: 210 100% 62%;       /* #3A9FFF */
+    --xima-teal: 189 82% 54%;        /* #22D3EE */
 
     /* Light theme */
-    --background: 216 33% 98%;      /* #F7F9FC - subtle brand tint */
-    --foreground: 222 60% 9%;       /* #0B1220 - ink */
+    --background: 210 33% 98%;       /* #F8F9FB - Subtle background */
+    --foreground: 215 100% 6%;       /* #0A0F1C - Primary text */
     
-    --card: 0 0% 100%;              /* #FFFFFF - clean surface */
-    --card-foreground: 222 60% 9%;
+    --card: 0 0% 100%;               /* #FFFFFF - Clean surface */
+    --card-foreground: 215 100% 6%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 60% 9%;
+    --popover-foreground: 215 100% 6%;
 
-    --primary: 217 89% 59%;         /* xima-blue */
+    --primary: 210 100% 62%;         /* xima-accent */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 18% 96%;
-    --secondary-foreground: 222 60% 9%;
+    --secondary: 216 9% 69%;         /* xima-secondary */
+    --secondary-foreground: 215 100% 6%;
 
-    --muted: 220 15% 93%;
-    --muted-foreground: 220 9% 46%;  /* #6B7280 */
+    --muted: 210 20% 93%;
+    --muted-foreground: 216 9% 45%;
 
-    --accent: 217 89% 97%;
-    --accent-foreground: 217 89% 59%;
+    --accent: 210 100% 97%;
+    --accent-foreground: 210 100% 62%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 222 15% 92%;           /* keyline */
-    --input: 222 15% 92%;
-    --ring: 217 89% 59%;
+    --border: 216 15% 90%;
+    --input: 216 15% 90%;
+    --ring: 210 100% 62%;
 
     --radius: 0.75rem;
   }
 
   .dark {
-    /* Dark theme - premium ink surface */
-    --background: 222 46% 9%;        /* #0F1420 - lifted from pure black */
-    --foreground: 216 100% 96%;      /* #EAF2FF - clear text */
+    /* Dark theme */
+    --background: 215 46% 10%;       /* Slightly lifted from primary */
+    --foreground: 210 100% 96%;
     
-    --card: 222 43% 12%;             /* #131A28 - surface */
-    --card-foreground: 216 100% 96%;
+    --card: 215 43% 14%;
+    --card-foreground: 210 100% 96%;
 
-    --popover: 222 43% 12%;
-    --popover-foreground: 216 100% 96%;
+    --popover: 215 43% 14%;
+    --popover-foreground: 210 100% 96%;
 
-    --primary: 217 89% 59%;          /* xima-blue */
-    --primary-foreground: 216 100% 96%;
+    --primary: 210 100% 62%;         /* xima-accent */
+    --primary-foreground: 210 100% 96%;
 
-    --secondary: 222 30% 18%;
-    --secondary-foreground: 216 100% 96%;
+    --secondary: 216 9% 69%;         /* xima-secondary */
+    --secondary-foreground: 210 100% 96%;
 
-    --muted: 222 30% 18%;
-    --muted-foreground: 218 27% 75%; /* #B8C2D9 */
+    --muted: 215 30% 20%;
+    --muted-foreground: 216 9% 75%;
 
-    --accent: 222 30% 18%;
-    --accent-foreground: 216 100% 96%;
+    --accent: 215 30% 20%;
+    --accent-foreground: 210 100% 96%;
 
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 222 30% 18%;           /* keyline-dark */
-    --input: 222 30% 18%;
-    --ring: 217 89% 59%;
+    --border: 215 30% 20%;
+    --input: 215 30% 20%;
+    --ring: 210 100% 62%;
   }
 }
 
@@ -79,7 +84,7 @@
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     font-feature-settings: "ss01", "ss02", "cv01", "cv03";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -87,17 +92,22 @@
     
     /* Light mode: subtle brand gradient wash */
     background: 
-      radial-gradient(1200px 600px at 20% -10%, hsl(var(--xima-blue) / 0.06), transparent 60%),
-      radial-gradient(1000px 500px at 85% 10%, hsl(var(--xima-teal) / 0.05), transparent 60%),
+      radial-gradient(1200px 600px at 20% -10%, hsl(var(--xima-accent) / 0.04), transparent 60%),
+      radial-gradient(1000px 500px at 85% 10%, hsl(var(--xima-teal) / 0.03), transparent 60%),
       hsl(var(--background));
   }
 
   .dark body {
     /* Dark mode: lifted premium ink with brand accent */
     background: 
-      radial-gradient(900px 480px at 25% -10%, hsl(var(--xima-blue) / 0.10), transparent 55%),
-      radial-gradient(900px 480px at 90% 0%, hsl(var(--xima-teal) / 0.08), transparent 55%),
+      radial-gradient(900px 480px at 25% -10%, hsl(var(--xima-accent) / 0.08), transparent 55%),
+      radial-gradient(900px 480px at 90% 0%, hsl(var(--xima-teal) / 0.06), transparent 55%),
       hsl(var(--background));
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-weight: 700;
   }
 }
 
@@ -118,9 +128,9 @@
   }
 }
 
-/* Brand gradient - XIMA blue → teal */
+/* Brand gradient - XIMA accent → teal */
 .xima-gradient, .accent-gradient {
-  background: linear-gradient(90deg, hsl(var(--xima-blue)) 0%, hsl(var(--xima-teal)) 100%);
+  background: linear-gradient(90deg, hsl(var(--xima-accent)) 0%, hsl(var(--xima-teal)) 100%);
 }
 
 /* Logo wrapper with soft halo */
@@ -136,7 +146,7 @@
   border-radius: 14px;
   background: radial-gradient(
     40% 40% at 50% 50%, 
-    hsl(var(--xima-blue) / 0.08), 
+    hsl(var(--xima-accent) / 0.08), 
     hsl(var(--xima-teal) / 0.06) 60%, 
     transparent 100%
   );
@@ -182,7 +192,7 @@
 /* Gradient accent line */
 .gradient-accent {
   height: 2px;
-  background: linear-gradient(90deg, hsl(var(--xima-blue) / 0.25), hsl(var(--xima-teal) / 0.25));
+  background: linear-gradient(90deg, hsl(var(--xima-accent) / 0.25), hsl(var(--xima-teal) / 0.25));
   border-radius: 2px;
   animation: fadeIn 0.4s ease-out;
 }
@@ -261,7 +271,7 @@
   left: 0;
   height: 2px;
   width: 0;
-  background: linear-gradient(90deg, hsl(var(--xima-blue)), hsl(var(--xima-teal)));
+  background: linear-gradient(90deg, hsl(var(--xima-accent)), hsl(var(--xima-teal)));
   transition: width 200ms ease-out;
 }
 
@@ -290,4 +300,41 @@
   .nav-link-gradient:hover::after {
     width: 0;
   }
+}
+
+/* Logo hover animation */
+.logo-hover {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.logo-hover:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+
+/* Watermark background */
+.watermark-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.watermark-bg::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 60%;
+  background-image: url('/src/assets/symbol.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dark .watermark-bg::before {
+  opacity: 0.02;
 }

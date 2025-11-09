@@ -7,6 +7,7 @@ import { useUser } from '../../context/UserContext';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { ThemeToggle } from '../ThemeToggle';
 import { useAssessment } from '../../contexts/AssessmentContext';
+import { Logo } from '../Logo';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -40,9 +41,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
     navigate('/');
   };
 
-  const isDark = resolvedTheme === 'dark';
-  const logoSrc = isDark ? '/assets/logo_dark.png' : '/assets/logo_light.png';
-
   const handleLogoClick = () => {
     if (assessmentInProgress) return;
     if (isAuthenticated) {
@@ -65,7 +63,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
         <div 
           className="absolute left-0 right-0 bottom-0 h-0.5 gradient-accent opacity-25"
           style={{ 
-            background: 'linear-gradient(90deg, hsl(var(--xima-blue)), hsl(var(--xima-teal)))' 
+            background: 'linear-gradient(90deg, hsl(var(--xima-accent)), hsl(var(--xima-teal)))' 
           }}
         />
         <div className="container mx-auto px-4 h-full">
@@ -75,17 +73,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                 onClick={handleLogoClick}
                 disabled={assessmentInProgress}
                 aria-disabled={assessmentInProgress}
-                className={`flex items-center group logo-wrap transition-opacity ${
-                  assessmentInProgress ? 'cursor-default opacity-70' : 'hover:opacity-90'
+                className={`flex items-center group logo-wrap ${
+                  assessmentInProgress ? 'cursor-default opacity-70' : 'logo-hover'
                 }`}
               >
-                <img 
-                  src={logoSrc}
+                <Logo 
+                  variant="full"
                   alt="XIMA logo" 
                   className={`transition-all duration-200 ease-out relative z-10 ${
                     scrolled 
-                      ? 'h-8 md:h-10 lg:h-11' 
-                      : 'h-10 md:h-12 lg:h-14'
+                      ? 'h-7 md:h-9 lg:h-10' 
+                      : 'h-9 md:h-11 lg:h-12'
                   }`}
                 />
               </button>
@@ -167,10 +165,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center logo-wrap">
-              <img 
-                src={logoSrc}
+              <Logo 
+                variant="full"
                 alt="XIMA logo" 
-                className="h-8 relative z-10"
+                className="h-7 relative z-10"
               />
             </div>
             <p className="text-sm text-muted-foreground">

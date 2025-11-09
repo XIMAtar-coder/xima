@@ -106,11 +106,11 @@ const Profile = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-7xl mx-auto py-8 space-y-8">
+      <div className="container max-w-7xl mx-auto py-8 space-y-8 watermark-bg">
         {/* Header */}
-        <div className="space-y-4">
+        <div className="space-y-4 relative z-10">
           <div className="flex items-center justify-between">
-            <h1 className="text-4xl font-bold flex items-center gap-3">
+            <h1 className="text-4xl font-bold flex items-center gap-3 font-heading">
               <Sparkles className="text-primary" />
               {t('profile.page_title', { name: user?.name || t('profile.user') })}
             </h1>
@@ -121,7 +121,7 @@ const Profile = () => {
         {/* Progress Bar */}
         <ProgressBar progress={assessmentData.progress} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
           {/* Left Column */}
           <div className="space-y-6">
             {/* XIMAtar Profile */}

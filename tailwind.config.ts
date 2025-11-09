@@ -64,12 +64,19 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				xima: {
-					purple: '#9b87f5',
-					'dark-purple': '#7E69AB',
-					'light-purple': '#E5DEFF',
-					gray: '#8E9196',
-					'dark-gray': '#403E43',
+					primary: '#0A0F1C',
+					secondary: '#A3ABB5',
+					accent: '#3A9FFF',
+					background: '#F8F9FB',
+					// Legacy colors for gradients
+					blue: '#3A9FFF',
+					teal: '#22D3EE',
 				}
+			},
+			fontFamily: {
+				'heading': ['Manrope', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+				'body': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+				'sans': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

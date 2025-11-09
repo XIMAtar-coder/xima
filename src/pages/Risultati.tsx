@@ -95,17 +95,17 @@ const Risultati = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-7xl mx-auto py-8 space-y-8">
+      <div className="container max-w-7xl mx-auto py-8 space-y-8 watermark-bg">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold">{t('results.page_title')}</h1>
+        <div className="text-center space-y-4 relative z-10">
+          <h1 className="text-4xl font-bold font-heading">{t('results.page_title')}</h1>
           <p className="text-xl text-muted-foreground">{t('results.page_subtitle')}</p>
         </div>
 
         {/* Progress Bar */}
         <ProgressBar progress={assessmentData.progress} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
           {/* Left Column */}
           <div className="space-y-6">
             {/* XIMAtar Profile */}

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +11,7 @@ import { ArrowRight, ArrowLeft, Check, Upload, FileText, Calendar, User } from '
 import BaselineAssessment from '../components/ximatar-journey/BaselineAssessment';
 import XimatarAssessment from '../components/ximatar-journey/XimatarAssessment';
 import ResultsComparison from '../components/ximatar-journey/ResultsComparison';
+import { Logo } from '../components/Logo';
 
 const XimatarJourney = () => {
   const navigate = useNavigate();
@@ -55,20 +55,17 @@ const XimatarJourney = () => {
     }
   };
 
-  const isDark = resolvedTheme === 'dark';
-  const logoSrc = isDark ? '/assets/logo_dark.png' : '/assets/logo_light.png';
-
   return (
     <MainLayout>
-      <div className="container max-w-5xl mx-auto pt-4">
-        <div className="text-center mb-8">
-          <img 
-            src={logoSrc}
+      <div className="container max-w-5xl mx-auto pt-4 watermark-bg">
+        <div className="text-center mb-8 relative z-10">
+          <Logo 
+            variant="full"
             alt="XIMA Logo" 
-            className="h-16 w-auto mx-auto mb-4"
+            className="h-14 w-auto mx-auto mb-4 logo-hover"
           />
-          <h1 className="text-4xl font-bold mb-2">{t('journey.title')}</h1>
-          <p className="text-gray-600 text-lg">
+          <h1 className="text-4xl font-bold mb-2 font-heading">{t('journey.title')}</h1>
+          <p className="text-muted-foreground text-lg">
             {t('journey.subtitle')}
           </p>
         </div>
