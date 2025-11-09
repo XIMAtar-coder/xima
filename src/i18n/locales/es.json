@@ -1,4 +1,74 @@
 {
+  "common": {
+    "login_required": "Inicio de sesión requerido",
+    "login": "Iniciar sesión",
+    "loading": "Cargando...",
+    "back": "Atrás"
+  },
+  "profile": {
+    "page_title": "Bienvenido, {{name}}",
+    "page_subtitle": "Aquí está tu perfil profesional y resultados de evaluación",
+    "user": "Usuario",
+    "your_ximatar": "Tu XIMAtar",
+    "job_matches": "Oportunidades Recomendadas",
+    "matched_professional": "Profesional Asignado",
+    "booking_pending": "Pendiente",
+    "booking_confirmed": "Confirmado",
+    "booking_cancelled": "Cancelado",
+    "book_session": "Reservar una Sesión",
+    "select_date": "Seleccionar Fecha",
+    "select_time": "Seleccionar Hora",
+    "confirm_booking": "Confirmar Reserva",
+    "booking_confirmed_message": "¡Tu sesión ha sido confirmada!",
+    "no_professional_matched": "Aún no hay profesional asignado",
+    "complete_assessment": "Completar Evaluación",
+    "recommended_opportunities": "Oportunidades Recomendadas"
+  },
+  "results": {
+    "page_title": "Tus Resultados",
+    "page_subtitle": "Aquí está tu evaluación completa de XIMAtar",
+    "your_ximatar": "Tu XIMAtar",
+    "core_traits": "Rasgos Principales",
+    "strengths": "Fortalezas",
+    "areas_for_growth": "Áreas de Mejora",
+    "ideal_roles": "Roles Ideales",
+    "cv_comparison_title": "Comparación CV vs Evaluación XIMA",
+    "assessment_scores": "Puntuaciones de Evaluación",
+    "biggest_improvement": "Mayor Mejora",
+    "proceed_to_profile": "Ir al Perfil",
+    "register_to_continue": "Registrarse para Continuar"
+  },
+  "progress": {
+    "journey_progress": "Progreso de Tu Viaje",
+    "assessment_complete": "Evaluación Completa",
+    "cv_uploaded": "CV Cargado",
+    "professional_selected": "Profesional Seleccionado"
+  },
+  "professionals": {
+    "select_title": "Selecciona Tu Profesional",
+    "select_subtitle": "Elige el profesional que mejor se adapte a tu camino de crecimiento"
+  },
+  "pillars": {
+    "computational": "Poder Computacional",
+    "communication": "Comunicación",
+    "knowledge": "Conocimiento",
+    "creativity": "Creatividad",
+    "drive": "Determinación"
+  },
+  "open_scoring": {
+    "title": "Puntuaciones de Preguntas Abiertas",
+    "why": "¿Por qué?",
+    "consider_elaborating": "Considera elaborar más tu respuesta",
+    "rubric_breakdown": "Desglose de Rúbrica",
+    "note": "Nota: Estas puntuaciones reflejan la calidad y completitud de tus respuestas",
+    "rubric": {
+      "length": "Longitud",
+      "relevance": "Relevancia",
+      "structure": "Estructura",
+      "specificity": "Especificidad",
+      "action": "Orientación a la Acción"
+    }
+  },
   "nav": {
     "home": "Inicio",
     "how_it_works": "Cómo Funciona",

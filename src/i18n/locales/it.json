@@ -500,7 +500,77 @@
     "profile_info": "Informazioni Profilo",
     "member_since": "Membro dal"
   },
+  "common": {
+    "login_required": "Accesso richiesto",
+    "login": "Accedi",
+    "loading": "Caricamento...",
+    "back": "Indietro"
+  },
   "profile": {
+    "page_title": "Benvenuto, {{name}}",
+    "page_subtitle": "Ecco il tuo profilo professionale e i risultati della valutazione",
+    "user": "Utente",
+    "your_ximatar": "Il tuo XIMAtar",
+    "job_matches": "Opportunità Consigliate",
+    "matched_professional": "Professionista Abbinato",
+    "booking_pending": "In Attesa",
+    "booking_confirmed": "Confermato",
+    "booking_cancelled": "Cancellato",
+    "book_session": "Prenota una Sessione",
+    "select_date": "Seleziona Data",
+    "select_time": "Seleziona Ora",
+    "confirm_booking": "Conferma Prenotazione",
+    "booking_confirmed_message": "La tua sessione è stata confermata!",
+    "no_professional_matched": "Nessun professionista abbinato ancora",
+    "complete_assessment": "Completa la Valutazione",
+    "recommended_opportunities": "Opportunità Raccomandate"
+  },
+  "results": {
+    "page_title": "I Tuoi Risultati",
+    "page_subtitle": "Ecco la tua valutazione XIMAtar completa",
+    "your_ximatar": "Il tuo XIMAtar",
+    "core_traits": "Tratti Distintivi",
+    "strengths": "Punti di Forza",
+    "areas_for_growth": "Aree di Crescita",
+    "ideal_roles": "Ruoli Ideali",
+    "cv_comparison_title": "Confronto CV vs Valutazione XIMA",
+    "assessment_scores": "Punteggi Valutazione",
+    "biggest_improvement": "Miglioramento Maggiore",
+    "proceed_to_profile": "Vai al Profilo",
+    "register_to_continue": "Registrati per Continuare"
+  },
+  "progress": {
+    "journey_progress": "Progresso del Tuo Percorso",
+    "assessment_complete": "Valutazione Completata",
+    "cv_uploaded": "CV Caricato",
+    "professional_selected": "Professionista Selezionato"
+  },
+  "professionals": {
+    "select_title": "Seleziona il Tuo Professionista",
+    "select_subtitle": "Scegli il professionista che meglio si adatta al tuo percorso di crescita"
+  },
+  "pillars": {
+    "computational": "Potenza Computazionale",
+    "communication": "Comunicazione",
+    "knowledge": "Conoscenza",
+    "creativity": "Creatività",
+    "drive": "Determinazione"
+  },
+  "open_scoring": {
+    "title": "Punteggi Domande Aperte",
+    "why": "Perché?",
+    "consider_elaborating": "Considera di elaborare di più la tua risposta",
+    "rubric_breakdown": "Dettaglio Rubrica",
+    "note": "Nota: Questi punteggi riflettono qualità e completezza delle tue risposte",
+    "rubric": {
+      "length": "Lunghezza",
+      "relevance": "Rilevanza",
+      "structure": "Struttura",
+      "specificity": "Specificità",
+      "action": "Orientamento all'Azione"
+    }
+  },
+  "old_profile": {
     "welcome": "Benvenuto",
     "view_dashboard": "Visualizza Dashboard",
     "welcome_description": "Esplora la tua dashboard per scoprire opportunità di crescita professionale e connetterti con esperti del settore.",

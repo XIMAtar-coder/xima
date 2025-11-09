@@ -1,4 +1,74 @@
 {
+  "common": {
+    "login_required": "Login Required",
+    "login": "Login",
+    "loading": "Loading...",
+    "back": "Back"
+  },
+  "profile": {
+    "page_title": "Welcome, {{name}}",
+    "page_subtitle": "Here's your professional profile and assessment results",
+    "user": "User",
+    "your_ximatar": "Your XIMAtar",
+    "job_matches": "Recommended Opportunities",
+    "matched_professional": "Matched Professional",
+    "booking_pending": "Pending",
+    "booking_confirmed": "Confirmed",
+    "booking_cancelled": "Cancelled",
+    "book_session": "Book a Session",
+    "select_date": "Select Date",
+    "select_time": "Select Time",
+    "confirm_booking": "Confirm Booking",
+    "booking_confirmed_message": "Your session has been confirmed!",
+    "no_professional_matched": "No professional matched yet",
+    "complete_assessment": "Complete Assessment",
+    "recommended_opportunities": "Recommended Opportunities"
+  },
+  "results": {
+    "page_title": "Your Results",
+    "page_subtitle": "Here's your complete XIMAtar assessment",
+    "your_ximatar": "Your XIMAtar",
+    "core_traits": "Core Traits",
+    "strengths": "Strengths",
+    "areas_for_growth": "Areas for Growth",
+    "ideal_roles": "Ideal Roles",
+    "cv_comparison_title": "CV vs XIMA Assessment Comparison",
+    "assessment_scores": "Assessment Scores",
+    "biggest_improvement": "Biggest Improvement",
+    "proceed_to_profile": "Go to Profile",
+    "register_to_continue": "Register to Continue"
+  },
+  "progress": {
+    "journey_progress": "Your Journey Progress",
+    "assessment_complete": "Assessment Complete",
+    "cv_uploaded": "CV Uploaded",
+    "professional_selected": "Professional Selected"
+  },
+  "professionals": {
+    "select_title": "Select Your Professional",
+    "select_subtitle": "Choose the professional that best fits your growth journey"
+  },
+  "pillars": {
+    "computational": "Computational Power",
+    "communication": "Communication",
+    "knowledge": "Knowledge",
+    "creativity": "Creativity",
+    "drive": "Drive"
+  },
+  "open_scoring": {
+    "title": "Open Question Scores",
+    "why": "Why?",
+    "consider_elaborating": "Consider elaborating more on your answer",
+    "rubric_breakdown": "Rubric Breakdown",
+    "note": "Note: These scores reflect the quality and completeness of your answers",
+    "rubric": {
+      "length": "Length",
+      "relevance": "Relevance",
+      "structure": "Structure",
+      "specificity": "Specificity",
+      "action": "Action Orientation"
+    }
+  },
   "nav": {
     "home": "Home",
     "how_it_works": "How It Works",
