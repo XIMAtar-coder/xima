@@ -332,38 +332,57 @@ const Profile = () => {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>{t('profile.matched_professional')}</span>
-                  <Badge variant={bookingStatus === 'confirmed' ? 'default' : 'secondary'}>
-                    {bookingStatus === 'confirmed' ? t('profile.confirmed') : t('profile.pending')}
-                  </Badge>
+                  {dashboardData.user.matchedProfessional && (
+                    <Badge variant={bookingStatus === 'confirmed' ? 'default' : 'secondary'}>
+                      {bookingStatus === 'confirmed' ? t('profile.confirmed') : t('profile.pending')}
+                    </Badge>
+                  )}
                 </CardTitle>
-                <CardDescription>Your matched professional and booking interface</CardDescription>
+                <CardDescription>
+                  {dashboardData.user.matchedProfessional 
+                    ? 'Your matched professional and booking interface'
+                    : 'Complete your assessment to get matched with a professional'}
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Professional Info */}
-                <div className="flex items-start space-x-4">
-                  {dashboardData.user.matchedProfessional.ximatar ? (
-                    <div className="w-20 h-20 flex-shrink-0">
-                      <XimatarDisplay 
-                        ximatar={dashboardData.user.matchedProfessional.ximatar} 
-                        size="sm" 
-                        showDescription={false} 
-                      />
+                {dashboardData.user.matchedProfessional ? (
+                  <>
+                    {/* Professional Info */}
+                    <div className="flex items-start space-x-4">
+                      {dashboardData.user.matchedProfessional?.ximatar ? (
+                        <div className="w-20 h-20 flex-shrink-0">
+                          <XimatarDisplay 
+                            ximatar={dashboardData.user.matchedProfessional.ximatar} 
+                            size="sm" 
+                            showDescription={false} 
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-20 h-20 rounded-full border-4 border-primary/20 bg-muted flex items-center justify-center flex-shrink-0">
+                          <User className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <h3 className="font-bold text-lg">{dashboardData.user.matchedProfessional.name}</h3>
+                        <p className="text-sm text-muted-foreground">{dashboardData.user.matchedProfessional.title}</p>
+                        <p className="text-sm text-primary">{dashboardData.user.matchedProfessional.specialty}</p>
+                        <p className="text-xs text-muted-foreground mt-2">{dashboardData.user.matchedProfessional.bio}</p>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="w-20 h-20 rounded-full border-4 border-primary/20 bg-muted flex items-center justify-center flex-shrink-0">
-                      <User className="w-8 h-8 text-muted-foreground" />
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <h3 className="font-bold text-lg">{dashboardData.user.matchedProfessional.name}</h3>
-                    <p className="text-sm text-muted-foreground">{dashboardData.user.matchedProfessional.title}</p>
-                    <p className="text-sm text-primary">{dashboardData.user.matchedProfessional.specialty}</p>
-                    <p className="text-xs text-muted-foreground mt-2">{dashboardData.user.matchedProfessional.bio}</p>
+                  </>
+                ) : (
+                  <div className="text-center py-8">
+                    <User className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground mb-4">No professional matched yet</p>
+                    <Button onClick={() => navigate('/risultati')}>
+                      Complete Assessment
+                    </Button>
                   </div>
-                </div>
+                )}
 
-                {/* Booking Interface */}
-                <div className="border-t pt-4">
+                {/* Booking Interface - Only show if professional is matched */}
+                {dashboardData.user.matchedProfessional && (
+                  <div className="border-t pt-4">
                   <div className="flex items-center mb-4">
                     <Calendar className="mr-2" size={20} />
                     <h4 className="font-medium">{t('profile.book_session')}</h4>
@@ -436,6 +455,7 @@ const Profile = () => {
                     )}
                   </Button>
                 </div>
+                )}
               </CardContent>
             </Card>
           </div>
