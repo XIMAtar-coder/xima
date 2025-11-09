@@ -37,9 +37,9 @@ export const CVComparisonCard: React.FC<CVComparisonCardProps> = ({
   const topImprovement = improvements[0];
 
   return (
-    <Card className={`fade-in ${className || ''}`}>
+    <Card className={`animate-[fade-in_0.5s_ease-out] hover:shadow-lg transition-shadow duration-300 ${className || ''}`}>
       <CardHeader>
-        <CardTitle>{cvPillars ? t('results.cv_comparison_title') : t('results.assessment_scores')}</CardTitle>
+        <CardTitle className="font-heading">{cvPillars ? t('results.cv_comparison_title') : t('results.assessment_scores')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {pillarKeys.map(key => {
@@ -54,7 +54,7 @@ export const CVComparisonCard: React.FC<CVComparisonCardProps> = ({
                   {t(`pillars.${key}`)}
                 </span>
                 {cvPillars && improvement > 0 && (
-                  <Badge variant="secondary" className="gap-1">
+                  <Badge variant="secondary" className="gap-1 bg-[#3A9FFF]/10 text-[#3A9FFF] border-[#3A9FFF]/20">
                     <TrendingUp size={12} />
                     +{improvement.toFixed(1)}
                   </Badge>
@@ -69,7 +69,7 @@ export const CVComparisonCard: React.FC<CVComparisonCardProps> = ({
                     <span className="text-xs font-medium w-8">{cvScore.toFixed(1)}</span>
                   </div>
                   <div className="flex gap-2 items-center">
-                    <span className="text-xs text-primary font-medium w-16">XIMA:</span>
+                    <span className="text-xs text-[#3A9FFF] font-medium w-16">XIMA:</span>
                     <Progress value={assessmentScore * 10} className="h-2 flex-1" />
                     <span className="text-xs font-medium w-8">{assessmentScore.toFixed(1)}</span>
                   </div>
@@ -85,10 +85,10 @@ export const CVComparisonCard: React.FC<CVComparisonCardProps> = ({
         })}
 
         {cvPillars && topImprovement && topImprovement.improvement > 0 && (
-          <div className="mt-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
+          <div className="mt-6 p-4 bg-[#3A9FFF]/10 rounded-lg border border-[#3A9FFF]/30">
             <p className="text-sm">
               <strong>{t('results.biggest_improvement')}:</strong> {t(`pillars.${topImprovement.key}`)} 
-              <span className="text-primary font-bold"> (+{topImprovement.improvement.toFixed(1)})</span>
+              <span className="text-[#3A9FFF] font-bold"> (+{topImprovement.improvement.toFixed(1)})</span>
             </p>
           </div>
         )}
