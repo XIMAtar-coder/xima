@@ -111,13 +111,6 @@
     "uploading": "Subiendo...",
     "upload_success": "¡CV subido exitosamente!"
   },
-  "ximatar": {
-    "your_ximatar": "Tu XIMAtar",
-    "assigned_permanently": "Asignado permanentemente",
-    "replace_question": "¿Quieres reemplazar tu XIMAtar con el nuevo resultado?",
-    "keep": "Mantener",
-    "replace": "Reemplazar"
-  },
   "assessment": {
     "title": "Evaluación XIMAtar",
     "choose_field": {
@@ -578,34 +571,7 @@
     "note": "Las respuestas abiertas pueden influir hasta un 10% en los pilares seleccionados (Creatividad, Comunicación, Conocimiento e Impulso).",
     "consider_elaborating": "Considera elaborar más para obtener más puntos (se recomiendan mínimo 50 palabras)."
   },
-  "professionals": {
-    "select_title": "Elige tu profesional",
-    "select_subtitle": "Selecciona el profesional más adecuado para tus objetivos"
-  },
   "results": {
-    "page_title": "Tus Resultados Ximatar",
-    "page_subtitle": "Descubre tu perfil profesional completo",
-    "your_ximatar_profile": "Tu Perfil Ximatar",
-    "ximatar_profile_description": "Descubre tus fortalezas únicas y áreas de crecimiento",
-    "strengths": "Fortalezas",
-    "areas_for_growth": "Áreas de Crecimiento",
-    "ideal_roles": "Roles Ideales",
-    "cv_comparison_title": "Comparación de Evaluación",
-    "cv_comparison_description_with_cv": "Tu evaluación completa vs tu CV",
-    "cv_comparison_description_without_cv": "Tus puntuaciones de la evaluación completa",
-    "cv_baseline": "Línea Base CV",
-    "full_assessment": "Evaluación Completa",
-    "from_cv": "Del CV",
-    "comprehensive": "Completa",
-    "your_xima_scores": "Tus Puntuaciones XIMA",
-    "key_insights": "Perspectivas Clave",
-    "assessment_revealed": "La evaluación destacó tu fortaleza en",
-    "insight_1": "Comprensión mejorada de tus capacidades creativas de resolución de problemas",
-    "insight_2": "Perspectiva más profunda sobre tu estilo de comunicación y colaboración",
-    "insight_3": "Mejor comprensión de tu motivación intrínseca e impulso",
-    "go_to_profile": "Ir al Perfil",
-    "register_now": "Registrarse",
-    "open_responses_title": "Evaluación de Respuestas Abiertas",
     "title": "Tus Resultados XIMAtar",
     "your_ximatar": "Tu XIMAtar",
     "score_breakdown": "Desglose de Puntuación",

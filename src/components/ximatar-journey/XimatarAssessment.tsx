@@ -98,10 +98,10 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
+        // Score and persist open answers
         const fieldKey = assessmentSetKey as FieldKey;
         const language = (i18n.language?.slice(0, 2) || 'it') as 'it' | 'en' | 'es';
         
-        // Score and persist open answers
         const openResponses = (['open1', 'open2'] as const).map(openKey => {
           const answer = openAnswers[openKey] || '';
           const rubric = scoreOpenResponse({ 
@@ -124,54 +124,13 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
         });
 
         // Store open responses (non-blocking - continue even if this fails)
-        await supabase
+        const { error } = await supabase
           .from('assessment_open_responses')
           .insert(openResponses);
-
-        // Compute pillar scores from all answers
-        const pillarCounts: Record<string, number> = {
-          comp_power: 0,
-          communication: 0,
-          knowledge: 0,
-          creativity: 0,
-          drive: 0
-        };
         
-        // Add MC question scores (distributed across pillars based on question type)
-        Object.entries(answers).forEach(([qKey, weight]) => {
-          const qNum = parseInt(qKey.replace('q', ''));
-          // Simple distribution: questions 1-5 → comp_power, 6-10 → comm, etc.
-          if (qNum <= 4) pillarCounts.comp_power += weight * 10;
-          else if (qNum <= 8) pillarCounts.communication += weight * 10;
-          else if (qNum <= 13) pillarCounts.knowledge += weight * 10;
-          else if (qNum <= 17) pillarCounts.creativity += weight * 10;
-          else pillarCounts.drive += weight * 10;
-        });
-
-        // Add open question scores
-        openResponses.forEach((resp, idx) => {
-          if (idx === 0) pillarCounts.creativity += resp.score * 10;
-          else pillarCounts.communication += resp.score * 10;
-        });
-
-        // Normalize to 0-100 scale
-        const totalQuestions = Object.keys(answers).length + 2;
-        const pillars = {
-          comp_power: Math.min(100, Math.round((pillarCounts.comp_power / totalQuestions))),
-          communication: Math.min(100, Math.round((pillarCounts.communication / totalQuestions))),
-          knowledge: Math.min(100, Math.round((pillarCounts.knowledge / totalQuestions))),
-          creativity: Math.min(100, Math.round((pillarCounts.creativity / totalQuestions))),
-          drive: Math.min(100, Math.round((pillarCounts.drive / totalQuestions)))
-        };
-
-        // Assign XIMAtar based on pillar scores
-        const { assignAndPersistXimatar } = await import('@/lib/ximatarAssignment');
-        await assignAndPersistXimatar({
-          userId: user.id,
-          fieldKey,
-          language,
-          pillars
-        });
+        if (error) {
+          console.warn('Failed to store open responses:', error);
+        }
         
         // Store attempt_id in localStorage for results page
         localStorage.setItem('current_attempt_id', attemptId);

@@ -15,8 +15,6 @@ import Register from "./pages/Register";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import XimatarJourney from "./pages/XimatarJourney";
-import IlTuoViaggio from "./pages/IlTuoViaggio";
-import RisultatiXimatar from "./pages/RisultatiXimatar";
 import XimaChat from "./pages/XimaChat";
 import DevelopmentPlan from "./pages/DevelopmentPlan";
 import TestDataAnalysis from "./pages/TestDataAnalysis";
@@ -24,7 +22,6 @@ import TestLogicalProblemSolving from "./pages/TestLogicalProblemSolving";
 import TestPresentationSkills from "./pages/TestPresentationSkills";
 import TestCreativeThinking from "./pages/TestCreativeThinking";
 import Admin from "./pages/Admin";
-import Developer from "./pages/Developer";
 import NotFound from "./pages/NotFound";
 import { XimAIProvider } from "./context/XimAIProvider";
 import ChatEntry from "./components/ximai/ChatEntry";
@@ -52,8 +49,6 @@ const App = () => (
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/ximatar-journey" element={<XimatarJourney />} />
-              <Route path="/risultati" element={<RisultatiXimatar />} />
-              <Route path="/il-tuo-viaggio" element={<IlTuoViaggio />} />
               <Route path="/xima-chat" element={<XimaChat />} />
               <Route path="/development-plan" element={<DevelopmentPlan />} />
               <Route path="/test/data-analysis" element={<TestDataAnalysis />} />
@@ -64,7 +59,6 @@ const App = () => (
               <Route path="/dashboard" element={<Profile />} />
               <Route path="/chat" element={<XimaChat />} />
               <Route path="/admin" element={<Admin />} />
-              <Route path="/developer" element={<Developer />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             {/* <ChatEntry /> */}

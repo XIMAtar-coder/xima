@@ -41,7 +41,6 @@ const XimatarJourney = () => {
       case 2:
         setAssessmentCompleted(true);
         setCurrentStep(3);
-        navigate('/risultati');
         break;
       case 3:
         setResultsViewed(true);

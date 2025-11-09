@@ -243,12 +243,8 @@ export type Database = {
         Row: {
           assessment_id: string | null
           computed_at: string
-          field_key: string | null
           id: string
-          language: string
-          pillars: Json | null
           rationale: Json | null
-          top3: Json | null
           total_score: number | null
           user_id: string
           ximatar_id: string | null
@@ -256,12 +252,8 @@ export type Database = {
         Insert: {
           assessment_id?: string | null
           computed_at?: string
-          field_key?: string | null
           id?: string
-          language?: string
-          pillars?: Json | null
           rationale?: Json | null
-          top3?: Json | null
           total_score?: number | null
           user_id: string
           ximatar_id?: string | null
@@ -269,12 +261,8 @@ export type Database = {
         Update: {
           assessment_id?: string | null
           computed_at?: string
-          field_key?: string | null
           id?: string
-          language?: string
-          pillars?: Json | null
           rationale?: Json | null
-          top3?: Json | null
           total_score?: number | null
           user_id?: string
           ximatar_id?: string | null
@@ -1150,7 +1138,6 @@ export type Database = {
           updated_at: string
           user_id: string
           ximatar: Database["public"]["Enums"]["ximatar_type"] | null
-          ximatar_assigned_at: string | null
         }
         Insert: {
           avatar?: Json | null
@@ -1166,7 +1153,6 @@ export type Database = {
           updated_at?: string
           user_id: string
           ximatar?: Database["public"]["Enums"]["ximatar_type"] | null
-          ximatar_assigned_at?: string | null
         }
         Update: {
           avatar?: Json | null
@@ -1182,7 +1168,6 @@ export type Database = {
           updated_at?: string
           user_id?: string
           ximatar?: Database["public"]["Enums"]["ximatar_type"] | null
-          ximatar_assigned_at?: string | null
         }
         Relationships: []
       }
@@ -1417,27 +1402,6 @@ export type Database = {
           },
         ]
       }
-      user_roles: {
-        Row: {
-          created_at: string | null
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
       user_scores: {
         Row: {
           assessments_completed: number
@@ -1534,7 +1498,6 @@ export type Database = {
           image_url: string | null
           label: string
           updated_at: string
-          vector: Json
         }
         Insert: {
           created_at?: string
@@ -1542,7 +1505,6 @@ export type Database = {
           image_url?: string | null
           label: string
           updated_at?: string
-          vector?: Json
         }
         Update: {
           created_at?: string
@@ -1550,7 +1512,6 @@ export type Database = {
           image_url?: string | null
           label?: string
           updated_at?: string
-          vector?: Json
         }
         Relationships: []
       }
@@ -1586,14 +1547,6 @@ export type Database = {
         Args: { p_mentor: string; p_user: string }
         Returns: string
       }
-      get_admin_stats: { Args: never; Returns: Json }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
       log_bot_event: {
         Args: {
           p_lang: Database["public"]["Enums"]["lang_code"]
@@ -1604,12 +1557,17 @@ export type Database = {
         }
         Returns: undefined
       }
-      recompute_matches: { Args: { p_user: string }; Returns: undefined }
-      recompute_user_scores: { Args: { p_user: string }; Returns: undefined }
+      recompute_matches: {
+        Args: { p_user: string }
+        Returns: undefined
+      }
+      recompute_user_scores: {
+        Args: { p_user: string }
+        Returns: undefined
+      }
     }
     Enums: {
       ai_message_role: "user" | "assistant" | "system" | "tool"
-      app_role: "admin" | "user"
       lang_code: "it" | "en" | "es"
       ximatar_type:
         | "lion"
@@ -1752,7 +1710,6 @@ export const Constants = {
   public: {
     Enums: {
       ai_message_role: ["user", "assistant", "system", "tool"],
-      app_role: ["admin", "user"],
       lang_code: ["it", "en", "es"],
       ximatar_type: [
         "lion",
