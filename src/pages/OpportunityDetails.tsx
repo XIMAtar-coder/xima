@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { getJobById, computeMatch, Job, MatchBreakdown } from "@/services/jobFeed";
+import { getJobById, Job } from "@/services/jobFeed";
 import { useUser } from "@/context/UserContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useJobInteractions } from "@/hooks/useJobInteractions";
+import { useDynamicMatchScore } from "@/hooks/useDynamicMatchScore";
+import { Check, Bookmark, Share2, ExternalLink } from "lucide-react";
 
 const createCanonical = (href: string) => {
   let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
@@ -28,7 +31,8 @@ export default function OpportunityDetails() {
   const { toast } = useToast();
 
   const [job, setJob] = useState<Job | null>(null);
-  const [match, setMatch] = useState<MatchBreakdown | null>(null);
+  const { match, loading: matchLoading } = useDynamicMatchScore(job);
+  const { trackInteraction, hasStatus } = useJobInteractions(id);
   const [sentiment, setSentiment] = useState<{
     overallScore?: number;
     pros?: string[];
@@ -47,12 +51,14 @@ export default function OpportunityDetails() {
         return;
       }
       setJob(j);
-      const m = computeMatch(user, j);
-      setMatch(m);
+
+      // Track page view
+      if (user?.id) {
+        trackInteraction(id, 'viewed');
+      }
 
       try {
-        // Try edge function for community sentiment (placeholder)
-        const { supabase } = await import("@/integrations/supabase/client");
+        // Try edge function for community sentiment
         const { data, error } = await supabase.functions.invoke("sentiment-aggregator", {
           body: { company: j.company }
         });
@@ -64,7 +70,7 @@ export default function OpportunityDetails() {
     return () => {
       mounted = false;
     };
-  }, [id, user]);
+  }, [id, user?.id]);
 
   // SEO: Title, meta description, canonical and JSON-LD
   useEffect(() => {
@@ -119,28 +125,28 @@ export default function OpportunityDetails() {
     script.text = JSON.stringify(jsonLd);
   }, [job]);
 
-  const handleApply = () => {
-    if (!job) return;
-    window.open(job.sourceUrl, "_blank", "noopener,noreferrer");
+  const handleApply = async () => {
+    if (!job || !id) return;
+    const success = await trackInteraction(id, 'applied');
+    if (success) {
+      window.open(job.sourceUrl, "_blank", "noopener,noreferrer");
+      toast({ 
+        title: t("opportunity.toasts.applied_title") || "Application tracked",
+        description: t("opportunity.toasts.applied") || "Your application has been recorded"
+      });
+    }
   };
 
   const handleSave = async () => {
-    if (!job || !user?.id) return;
-    try {
-      const client: any = supabase as any;
-      const { error } = await client.from('saved_opportunities').upsert({
-        user_id: user.id,
-        job_id: job.id,
-        title: job.title,
-        company: job.company,
-        location: job.location,
-        skills: job.skills,
-        source_url: job.sourceUrl
-      }, { onConflict: 'user_id,job_id' });
-      if (error) throw error;
-      toast({ description: t("opportunity.toasts.saved") });
-    } catch {
-      toast({ description: t("opportunity.toasts.share_failed") });
+    if (!job || !user?.id || !id) return;
+    const success = await trackInteraction(id, 'saved');
+    if (success) {
+      toast({ description: t("opportunity.toasts.saved") || "Opportunity saved!" });
+    } else {
+      toast({ 
+        variant: "destructive",
+        description: t("opportunity.toasts.save_failed") || "Failed to save opportunity"
+      });
     }
   };
 
@@ -163,33 +169,73 @@ export default function OpportunityDetails() {
 
   if (!job) return null;
 
+  const isSaved = id ? hasStatus(id, 'saved') : false;
+  const isApplied = id ? hasStatus(id, 'applied') : false;
+
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 animate-[fade-in_0.4s_ease-out]">
       <header className="mb-6">
-        <h1 className="text-2xl md:text-3xl font-semibold text-foreground">
+        <h1 className="text-2xl md:text-3xl font-heading font-bold text-foreground">
           {job.title}
         </h1>
-        <p className="text-muted-foreground mt-1">
-          {job.company} • {t("opportunity.location")}: {job.location}
+        <p className="text-[hsl(var(--xima-gray))] mt-1 flex items-center gap-2">
+          <span className="font-medium">{job.company}</span>
+          <span>•</span>
+          <span>{job.location}</span>
         </p>
-        {match && (
-          <div className="mt-3 flex items-center gap-3">
-            <span className="text-sm text-muted-foreground">{t("opportunity.match_score")}:</span>
-            <div className="flex items-center gap-2 min-w-[160px]">
-              <Progress value={match.score} />
-              <span className="text-sm font-medium">{match.score}%</span>
+        {match && !matchLoading && (
+          <div className="mt-4 p-4 bg-[hsl(var(--xima-accent))]/5 border border-[hsl(var(--xima-accent))]/20 rounded-xl">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-foreground">
+                {t("opportunity.match_score")}
+              </span>
+              <span className="text-2xl font-bold text-[hsl(var(--xima-accent))]">
+                {match.score}%
+              </span>
             </div>
+            <Progress 
+              value={match.score} 
+              className="h-2 bg-background"
+            />
+            <p className="text-xs text-[hsl(var(--xima-gray))] mt-2">
+              XIMA fit based on your strengths and traits
+            </p>
           </div>
         )}
       </header>
 
       <section aria-label="actions" className="mb-8">
         <div className="flex flex-wrap gap-3">
-          <Button onClick={handleApply}>{t("opportunity.actions.apply")}</Button>
-          <Button variant="secondary" onClick={handleSave}>{t("opportunity.actions.save")}</Button>
-          <Button variant="outline" onClick={handleShare}>{t("opportunity.actions.share")}</Button>
+          <Button 
+            onClick={handleApply}
+            disabled={isApplied}
+            className="bg-[hsl(var(--xima-accent))] hover:bg-[hsl(var(--xima-accent))]/90 text-white"
+          >
+            {isApplied ? (
+              <>
+                <Check className="w-4 h-4 mr-2" />
+                Applied
+              </>
+            ) : (
+              <>
+                <ExternalLink className="w-4 h-4 mr-2" />
+                {t("opportunity.actions.apply")}
+              </>
+            )}
+          </Button>
+          <Button 
+            variant="secondary" 
+            onClick={handleSave}
+            disabled={isSaved}
+          >
+            <Bookmark className={`w-4 h-4 mr-2 ${isSaved ? 'fill-current' : ''}`} />
+            {isSaved ? 'Saved' : t("opportunity.actions.save")}
+          </Button>
+          <Button variant="outline" onClick={handleShare}>
+            <Share2 className="w-4 h-4 mr-2" />
+            {t("opportunity.actions.share")}
+          </Button>
         </div>
-        <p className="sr-only">{t("opportunity.actions.apply_notice")}</p>
       </section>
 
       <main className="grid gap-6 md:grid-cols-3">
@@ -199,18 +245,29 @@ export default function OpportunityDetails() {
               <CardTitle>{t("opportunity.sections.role_fit")}</CardTitle>
             </CardHeader>
             <CardContent>
-              {match && (
+              {match && !matchLoading && (
                 <div className="space-y-4">
                   <div>
-                    <h3 className="font-medium mb-2">{t("opportunity.role_fit.pillars_contribution")}</h3>
+                    <h3 className="font-medium mb-3">{t("opportunity.role_fit.pillars_contribution")}</h3>
                     <div className="grid sm:grid-cols-2 gap-3">
-                      {match.pillars.map(p => (
-                        <div key={p.key} className="rounded-md border p-3">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-sm font-medium">{pillarName(p.key)}</span>
-                            <span className="text-sm text-muted-foreground">{Math.round(p.contribution)}%</span>
+                      {match.pillarContributions.map(p => (
+                        <div 
+                          key={p.pillar} 
+                          className="rounded-lg border border-[hsl(var(--xima-accent))]/20 p-3 bg-gradient-to-br from-background to-[hsl(var(--xima-accent))]/5"
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium">{pillarName(p.pillar)}</span>
+                            <span className="text-sm font-bold text-[hsl(var(--xima-accent))]">
+                              {Math.round(p.contribution)}%
+                            </span>
                           </div>
-                          <p className="text-sm text-muted-foreground">{pillarDesc(p.key)}</p>
+                          <div className="space-y-1">
+                            <div className="flex justify-between text-xs text-[hsl(var(--xima-gray))]">
+                              <span>Your score: {p.userScore}/10</span>
+                              <span>Weight: {Math.round(p.weight)}%</span>
+                            </div>
+                            <Progress value={p.contribution} className="h-1.5" />
+                          </div>
                         </div>
                       ))}
                     </div>

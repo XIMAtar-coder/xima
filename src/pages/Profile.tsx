@@ -16,6 +16,7 @@ import { JobMatchesBlock } from '@/components/JobMatchesBlock';
 import { useJobMatches } from '@/hooks/useJobMatches';
 import { supabase } from '@/integrations/supabase/client';
 import { ProfilePhotoUpload } from '@/components/ProfilePhotoUpload';
+import { MyOpportunitiesSection } from '@/components/opportunities/MyOpportunitiesSection';
 
 const Profile = () => {
   const { user, isAuthenticated } = useUser();
@@ -288,6 +289,9 @@ const Profile = () => {
             </div>
           </div>
         )}
+
+        {/* My Opportunities Section */}
+        <MyOpportunitiesSection />
 
         {/* Job Matches - Full Width */}
         {!jobsLoading && matches.length > 0 && (
