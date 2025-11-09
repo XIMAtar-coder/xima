@@ -95,7 +95,7 @@ const Risultati = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-7xl mx-auto py-8 space-y-8 watermark-bg">
+      <div className="container max-w-7xl mx-auto py-8 space-y-8 watermark-bg animate-[slide-up_0.4s_ease-out]">
         {/* Header */}
         <div className="text-center space-y-4 relative z-10">
           <h1 className="text-4xl font-bold font-heading">{t('results.page_title')}</h1>

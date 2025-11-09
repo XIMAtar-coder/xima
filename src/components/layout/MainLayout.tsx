@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { useUser } from '../../context/UserContext';
 import LanguageSwitcher from '../LanguageSwitcher';
-import { ThemeToggle } from '../ThemeToggle';
 import { useAssessment } from '../../contexts/AssessmentContext';
 import { Logo } from '../Logo';
 
@@ -17,8 +15,7 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }) => {
   const navigate = useNavigate();
   const { user, isAuthenticated, signOut } = useUser();
-  const { t, i18n } = useTranslation();
-  const { theme, resolvedTheme } = useTheme();
+  const { t } = useTranslation();
   const { assessmentInProgress } = useAssessment();
   const [scrolled, setScrolled] = useState(false);
 
@@ -78,59 +75,44 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                 }`}
               >
                 <Logo 
-                  variant="full"
+                  variant="symbol"
                   alt="XIMA logo" 
                   className={`transition-all duration-200 ease-out relative z-10 ${
                     scrolled 
-                      ? 'h-7 md:h-9 lg:h-10' 
-                      : 'h-9 md:h-11 lg:h-12'
+                      ? 'h-8 md:h-9' 
+                      : 'h-10 md:h-11'
                   }`}
                 />
               </button>
-              
-              <div className="hidden md:flex space-x-6">
-                <button 
-                  onClick={() => navigate('/')}
-                  className="text-sm font-medium text-foreground/70 hover:text-foreground relative nav-link-gradient transition-colors"
-                >
-                  {t('nav.home')}
-                </button>
-                <button 
-                  onClick={() => navigate('/how-it-works')}
-                  className="text-sm font-medium text-foreground/70 hover:text-foreground relative nav-link-gradient transition-colors"
-                >
-                  {t('nav.how_it_works')}
-                </button>
-                <button 
-                  onClick={() => navigate('/about')}
-                  className="text-sm font-medium text-foreground/70 hover:text-foreground relative nav-link-gradient transition-colors"
-                >
-                  {t('nav.about')}
-                </button>
-              </div>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <ThemeToggle />
+            <div className="flex items-center space-x-6">
               <LanguageSwitcher />
               
               {isAuthenticated && user ? (
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-6">
+                  <button 
+                    onClick={() => navigate('/profile')}
+                    className="text-sm font-body hover:text-[#3A9FFF] transition-colors"
+                    style={{ fontWeight: 500, letterSpacing: '0.05em' }}
+                  >
+                    Dashboard
+                  </button>
+                  <button 
+                    onClick={() => navigate('/risultati')}
+                    className="text-sm font-body hover:text-[#3A9FFF] transition-colors"
+                    style={{ fontWeight: 500, letterSpacing: '0.05em' }}
+                  >
+                    Risultati
+                  </button>
                   <Button 
                     variant="ghost"
                     size="sm"
-                    onClick={() => navigate('/profile')}
-                    className="text-foreground/80 hover:text-foreground"
-                  >
-                    {t('nav.profile')}
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    size="sm"
                     onClick={handleLogout}
-                    className="border-border/50 text-foreground/80 hover:text-foreground hover:border-border"
+                    className="font-body"
+                    style={{ fontWeight: 500, letterSpacing: '0.05em' }}
                   >
-                    {t('nav.logout')}
+                    Logout
                   </Button>
                 </div>
               ) : (
@@ -139,14 +121,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                     variant="ghost"
                     size="sm"
                     onClick={() => navigate('/login')}
-                    className="text-foreground/80 hover:text-foreground"
+                    className="font-body"
+                    style={{ fontWeight: 500, letterSpacing: '0.05em' }}
                   >
                     {t('nav.login')}
                   </Button>
                   <Button 
                     size="sm"
                     onClick={() => navigate('/register')}
-                    className="accent-gradient text-white hover:opacity-90 transition-opacity shadow-sm"
+                    className="accent-gradient text-white hover:opacity-90 transition-opacity shadow-sm font-body"
+                    style={{ fontWeight: 500, letterSpacing: '0.05em' }}
                   >
                     {t('nav.register')}
                   </Button>

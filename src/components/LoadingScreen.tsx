@@ -41,11 +41,16 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading = true }
           />
         </div>
         
+        {/* Progress bar */}
+        <div className="w-48 h-0.5 bg-muted rounded-full overflow-hidden">
+          <div className="h-full bg-[#3A9FFF] animate-[loading-bar_0.8s_ease-in-out_infinite]" />
+        </div>
+        
         {/* Loading dots */}
         <div className="flex gap-2">
-          <div className="w-2 h-2 rounded-full bg-primary animate-[pulse_1.4s_ease-in-out_infinite]" />
-          <div className="w-2 h-2 rounded-full bg-primary animate-[pulse_1.4s_ease-in-out_infinite_0.2s]" />
-          <div className="w-2 h-2 rounded-full bg-primary animate-[pulse_1.4s_ease-in-out_infinite_0.4s]" />
+          <div className="w-2 h-2 rounded-full bg-[#3A9FFF] animate-[pulse_1.4s_ease-in-out_infinite]" />
+          <div className="w-2 h-2 rounded-full bg-[#3A9FFF] animate-[pulse_1.4s_ease-in-out_infinite_0.2s]" />
+          <div className="w-2 h-2 rounded-full bg-[#3A9FFF] animate-[pulse_1.4s_ease-in-out_infinite_0.4s]" />
         </div>
       </div>
     </div>

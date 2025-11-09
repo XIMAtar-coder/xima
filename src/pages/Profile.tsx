@@ -106,7 +106,7 @@ const Profile = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-7xl mx-auto py-8 space-y-8 watermark-bg">
+      <div className="container max-w-7xl mx-auto py-8 space-y-8 watermark-bg animate-[slide-up_0.4s_ease-out]">
         {/* Header */}
         <div className="space-y-4 relative z-10">
           <div className="flex items-center justify-between">

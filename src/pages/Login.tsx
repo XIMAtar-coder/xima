@@ -68,34 +68,41 @@ const Login = () => {
   
   return (
     <MainLayout>
-      <div className="container max-w-md mx-auto pt-8">
-        <Card className="border-0 shadow-sm">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center text-gray-800">{t('login.title')}</CardTitle>
-            <CardDescription className="text-center">
+      <div className="container max-w-md mx-auto pt-8 pb-16">
+        <Card className="border-0 shadow-2xl bg-[#0A0F1C] text-white">
+          <CardHeader className="space-y-6 text-center">
+            <div className="flex justify-center">
+              <img 
+                src="/src/assets/logo_full.png" 
+                alt="XIMA Logo" 
+                className="h-12 w-auto"
+              />
+            </div>
+            <CardTitle className="text-2xl font-bold font-heading">{t('login.title')}</CardTitle>
+            <CardDescription className="text-[#A3ABB5]">
               {t('login.subtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">{t('login.email')}</Label>
+                <Label htmlFor="email" className="text-[#A3ABB5]">{t('login.email')}</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder={t('login.email_placeholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="border-gray-200 focus:border-[#4171d6] focus:ring-[#4171d6]"
+                  className="bg-[#1A1F2E] border-[#2A2F3E] text-white focus:border-[#3A9FFF] focus:ring-[#3A9FFF]"
                 />
               </div>
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password">{t('login.password')}</Label>
+                  <Label htmlFor="password" className="text-[#A3ABB5]">{t('login.password')}</Label>
                   <Button 
                     variant="link" 
-                    className="p-0 h-auto text-xs text-[#4171d6] hover:text-[#2950a3]"
+                    className="p-0 h-auto text-xs text-[#3A9FFF] hover:text-[#5AB4FF]"
                   >
                     {t('login.forgot_password')}
                   </Button>
@@ -106,13 +113,13 @@ const Login = () => {
                   placeholder={t('login.password_placeholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="border-gray-200 focus:border-[#4171d6] focus:ring-[#4171d6]"
+                  className="bg-[#1A1F2E] border-[#2A2F3E] text-white focus:border-[#3A9FFF] focus:ring-[#3A9FFF]"
                 />
               </div>
               
               <Button 
                 type="submit" 
-                className="w-full bg-[#4171d6] hover:bg-[#2950a3]"
+                className="w-full bg-[#3A9FFF] hover:bg-[#2A8FEF] text-white font-medium"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -124,14 +131,18 @@ const Login = () => {
                   t('login.login_button')
                 )}
               </Button>
+              
+              <p className="text-center text-sm text-[#A3ABB5] font-body pt-2">
+                Matching Quality in Jobs
+              </p>
             </form>
           </CardContent>
           <CardFooter className="flex justify-center">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[#A3ABB5]">
               {t('login.no_account')}{" "}
               <Button 
                 variant="link" 
-                className="p-0 h-auto text-[#4171d6] hover:text-[#2950a3]"
+                className="p-0 h-auto text-[#3A9FFF] hover:text-[#5AB4FF] hover:shadow-[0_0_15px_rgba(58,159,255,0.5)] transition-all duration-300"
                 onClick={() => navigate('/register')}
               >
                 {t('login.sign_up')}
