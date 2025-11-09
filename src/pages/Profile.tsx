@@ -15,6 +15,7 @@ import { OpenAnswerScore } from '@/components/ximatar-journey/OpenAnswerScore';
 import { JobMatchesBlock } from '@/components/JobMatchesBlock';
 import { useJobMatches } from '@/hooks/useJobMatches';
 import { supabase } from '@/integrations/supabase/client';
+import { ProfilePhotoUpload } from '@/components/ProfilePhotoUpload';
 
 const Profile = () => {
   const { user, isAuthenticated } = useUser();
@@ -124,6 +125,9 @@ const Profile = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
           {/* Left Column */}
           <div className="space-y-6">
+            {/* Profile Photo Upload */}
+            <ProfilePhotoUpload />
+            
             {/* XIMAtar Profile */}
             <XimatarProfileCard ximatar={assessmentData.ximatar} />
             
