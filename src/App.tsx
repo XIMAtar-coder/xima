@@ -4,8 +4,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
+import { LoadingScreen } from "./components/LoadingScreen";
+import { useState, useEffect } from "react";
 import './i18n'; // Initialize i18n
 import Index from "./pages/Index";
 import About from "./pages/About";
@@ -31,46 +33,78 @@ import { AssessmentProvider } from "./contexts/AssessmentContext";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <UserProvider>
-        <AssessmentProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-          <XimAIProvider>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/how-it-works" element={<HowItWorks />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/onboarding" element={<Onboarding />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/ximatar-journey" element={<XimatarJourney />} />
-              <Route path="/xima-chat" element={<XimaChat />} />
-              <Route path="/development-plan" element={<DevelopmentPlan />} />
-              <Route path="/test/data-analysis" element={<TestDataAnalysis />} />
-              <Route path="/test/logical-problem-solving" element={<TestLogicalProblemSolving />} />
-              <Route path="/test/presentation-skills" element={<TestPresentationSkills />} />
-              <Route path="/test/creative-thinking" element={<TestCreativeThinking />} />
-              <Route path="/opportunity/:id" element={<OpportunityDetails />} />
-              <Route path="/risultati" element={<Risultati />} />
-              <Route path="/dashboard" element={<Profile />} />
-              <Route path="/chat" element={<XimaChat />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            {/* <ChatEntry /> */}
-          </XimAIProvider>
-        </BrowserRouter>
-      </TooltipProvider>
-        </AssessmentProvider>
-    </UserProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+const AppContent = () => {
+  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    // Show loading on route change
+    setIsLoading(true);
+    const timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
+  return (
+    <>
+      <LoadingScreen isLoading={isLoading} />
+      <XimAIProvider>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/ximatar-journey" element={<XimatarJourney />} />
+          <Route path="/xima-chat" element={<XimaChat />} />
+          <Route path="/development-plan" element={<DevelopmentPlan />} />
+          <Route path="/test/data-analysis" element={<TestDataAnalysis />} />
+          <Route path="/test/logical-problem-solving" element={<TestLogicalProblemSolving />} />
+          <Route path="/test/presentation-skills" element={<TestPresentationSkills />} />
+          <Route path="/test/creative-thinking" element={<TestCreativeThinking />} />
+          <Route path="/opportunity/:id" element={<OpportunityDetails />} />
+          <Route path="/risultati" element={<Risultati />} />
+          <Route path="/dashboard" element={<Profile />} />
+          <Route path="/chat" element={<XimaChat />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        {/* <ChatEntry /> */}
+      </XimAIProvider>
+    </>
+  );
+};
+
+const App = () => {
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  useEffect(() => {
+    // Initial app load
+    const timer = setTimeout(() => setInitialLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <UserProvider>
+          <AssessmentProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <LoadingScreen isLoading={initialLoading} />
+              {!initialLoading && (
+                <BrowserRouter>
+                  <AppContent />
+                </BrowserRouter>
+              )}
+            </TooltipProvider>
+          </AssessmentProvider>
+        </UserProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
