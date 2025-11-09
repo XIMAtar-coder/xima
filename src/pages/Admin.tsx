@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '../context/UserContext';
+import { useAdminRole } from '@/hooks/useAdminRole';
 import { supabase } from '@/integrations/supabase/client';
 import { Users, FileText, Calendar, BarChart3, Settings, Shield } from 'lucide-react';
 import RecommendationAnalytics from '@/components/admin/RecommendationAnalytics';
@@ -15,6 +16,7 @@ const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
+  const { isAdmin, loading: adminLoading } = useAdminRole();
   const { t } = useTranslation();
   
   const [stats, setStats] = useState({
@@ -31,11 +33,16 @@ const Admin = () => {
       return;
     }
 
-    // Check if user is admin (you can register with admin@xima.com to get access)
-    if (user?.email?.toLowerCase() !== 'admin@xima.com') {
+    // Wait for admin check to complete
+    if (adminLoading) {
+      return;
+    }
+
+    // Check if user has admin role using secure server-side validation
+    if (!isAdmin) {
       toast({
         title: 'Access Denied',
-        description: 'You do not have admin privileges. Please register with admin@xima.com',
+        description: 'You do not have admin privileges',
         variant: 'destructive'
       });
       navigate('/profile');
@@ -43,7 +50,7 @@ const Admin = () => {
     }
 
     loadStats();
-  }, [isAuthenticated, user, navigate, toast]);
+  }, [isAuthenticated, isAdmin, adminLoading, navigate, toast]);
 
   const loadStats = async () => {
     try {
@@ -86,12 +93,12 @@ const Admin = () => {
     }
   };
 
-  if (loading) {
+  if (loading || adminLoading) {
     return (
       <MainLayout>
         <div className="container max-w-7xl mx-auto pt-8">
           <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#4171d6]"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary"></div>
           </div>
         </div>
       </MainLayout>
@@ -133,10 +140,10 @@ const Admin = () => {
             <Shield className="text-[#4171d6]" size={32} />
             <h1 className="text-4xl font-bold">Admin Dashboard</h1>
           </div>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Welcome, {user?.name}! Manage your XIMA platform from here.
           </p>
-          <Badge className="mt-2 bg-[#4171d6]">Administrator Access</Badge>
+          <Badge className="mt-2 bg-primary">Administrator Access</Badge>
         </div>
 
         {/* Statistics Cards */}
@@ -145,7 +152,7 @@ const Admin = () => {
             <Card key={index} className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">{stat.title}</p>
+                  <p className="text-sm text-muted-foreground mb-1">{stat.title}</p>
                   <p className="text-3xl font-bold">{stat.value}</p>
                 </div>
                 <div className={stat.color}>
@@ -173,7 +180,7 @@ const Admin = () => {
             </CardHeader>
             <CardContent className="p-0">
               <Button 
-                className="w-full bg-[#4171d6] hover:bg-[#2950a3]"
+                className="w-full"
                 onClick={() => toast({ title: 'Feature Coming Soon', description: 'User management interface will be available soon' })}
               >
                 Manage Users
@@ -193,7 +200,7 @@ const Admin = () => {
             </CardHeader>
             <CardContent className="p-0">
               <Button 
-                className="w-full bg-[#4171d6] hover:bg-[#2950a3]"
+                className="w-full"
                 onClick={() => toast({ title: 'Feature Coming Soon', description: 'Assessment analytics will be available soon' })}
               >
                 View Analytics
@@ -213,7 +220,7 @@ const Admin = () => {
             </CardHeader>
             <CardContent className="p-0">
               <Button 
-                className="w-full bg-[#4171d6] hover:bg-[#2950a3]"
+                className="w-full"
                 onClick={() => toast({ title: 'Feature Coming Soon', description: 'Platform settings will be available soon' })}
               >
                 Configure Settings

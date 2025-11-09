@@ -1608,6 +1608,17 @@ export type Database = {
       }
     }
     Functions: {
+      assign_first_admin: {
+        Args: { target_user_id: string }
+        Returns: undefined
+      }
+      assign_role_to_user: {
+        Args: {
+          target_role: Database["public"]["Enums"]["app_role"]
+          target_user_id: string
+        }
+        Returns: undefined
+      }
       assign_ximatar: {
         Args: { p_assessment: string; p_lang?: string; p_user: string }
         Returns: string
