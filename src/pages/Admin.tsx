@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useUser } from '../context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Users, FileText, Calendar, BarChart3, Settings, Shield } from 'lucide-react';
+import RecommendationAnalytics from '@/components/admin/RecommendationAnalytics';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -154,6 +155,9 @@ const Admin = () => {
             </Card>
           ))}
         </div>
+
+        {/* Recommendation Analytics */}
+        <RecommendationAnalytics />
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
