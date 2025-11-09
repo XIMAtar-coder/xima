@@ -15,6 +15,7 @@ import { getXIMAtarByAssessment } from '@/utils/ximatarUtils';
 import { XIMAtar } from '@/types/ximatar';
 import { JobMatchesBlock } from '@/components/JobMatchesBlock';
 import { useJobMatches } from '@/hooks/useJobMatches';
+import { supabase } from '@/integrations/supabase/client';
 
 const Profile = () => {
   const { user, isAuthenticated } = useUser();
@@ -52,18 +53,44 @@ const Profile = () => {
     return getXIMAtarByAssessment(complementaryPillars);
   };
 
+  // Fetch real professional data from database
+  const [professionalData, setProfessionalData] = useState<any>(null);
+  
+  useEffect(() => {
+    const fetchProfessional = async () => {
+      if (!user?.id) return;
+      
+      const { data: booking } = await supabase
+        .from('bookings')
+        .select(`
+          *,
+          professionals (*)
+        `)
+        .eq('seeker_user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      if (booking?.professionals) {
+        setProfessionalData(booking.professionals);
+      }
+    };
+    
+    fetchProfessional();
+  }, [user]);
+
   // Mock data for dashboard - using actual user data when available
   const mockDashboardData = {
     user: {
       name: user?.name || 'User',
       currentXimatar: user?.pillars ? getXIMAtarByAssessment(user.pillars as any) : null,
-      matchedProfessional: {
-        name: 'Dr. Sarah Chen',
-        title: 'Senior Business Strategist',
-        specialty: 'Communication & Leadership',
-        bio: 'Expert in organizational communication and team dynamics with 15+ years of experience in consulting.',
+      matchedProfessional: professionalData ? {
+        name: professionalData.full_name,
+        title: professionalData.title,
+        specialty: professionalData.specialties?.[0] || 'Professional',
+        bio: professionalData.locale_bio?.it || professionalData.locale_bio?.en || '',
         ximatar: user?.pillars ? getXIMAtarByAssessment(user.pillars as any) : null
-      }
+      } : null
     },
     scores: {
       matchQuality: 94,

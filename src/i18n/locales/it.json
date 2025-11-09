@@ -1237,6 +1237,17 @@
     "subtitle": "Seleziona il professionista più adatto ai tuoi obiettivi",
     "select": "Seleziona",
     "view_linkedin": "Vedi su LinkedIn",
-    "compatibility": "Compatibilità"
+    "compatibility": "Compatibilità",
+    "select_title": "Seleziona il Tuo Professionista",
+    "select_subtitle": "Scegli un esperto che ti guiderà nel tuo percorso di crescita"
+  },
+  "progress": {
+    "journey_progress": "Progresso del Tuo Percorso",
+    "assessment_complete": "Valutazione Completata",
+    "cv_uploaded": "CV Caricato",
+    "professional_selected": "Professionista Selezionato"
+  },
+  "open_scoring": {
+    "title": "Valutazione Domande Aperte"
   }
 }

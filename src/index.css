@@ -101,6 +101,23 @@
   }
 }
 
+@layer utilities {
+  .fade-in {
+    animation: fadeIn 0.6s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
 /* Brand gradient - XIMA blue → teal */
 .xima-gradient, .accent-gradient {
   background: linear-gradient(90deg, hsl(var(--xima-blue)) 0%, hsl(var(--xima-teal)) 100%);
