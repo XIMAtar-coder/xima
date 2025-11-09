@@ -273,6 +273,59 @@ export default function OpportunityDetails() {
                     </div>
                   </div>
 
+                  {/* Why This Role Fits You */}
+                  {match.ximatarMatch && (
+                    <div className="mt-6 p-4 bg-gradient-to-r from-[hsl(var(--xima-accent))]/10 to-[hsl(var(--xima-teal))]/10 border border-[hsl(var(--xima-accent))]/30 rounded-xl">
+                      <h3 className="font-heading font-semibold text-lg mb-3 flex items-center gap-2">
+                        <span className="text-2xl">✨</span>
+                        Why This Role Fits You
+                      </h3>
+                      <div className="space-y-2">
+                        {match.pillarContributions
+                          .filter(p => p.contribution >= 20)
+                          .slice(0, 3)
+                          .map((p) => {
+                            const pillarIcons: Record<string, string> = {
+                              computational: '🧠',
+                              communication: '🤝',
+                              knowledge: '📚',
+                              creativity: '🎨',
+                              drive: '🚀',
+                            };
+                            const pillarDescriptions: Record<string, string> = {
+                              computational: 'Strong alignment with your analytical thinking',
+                              communication: 'Matches your collaborative communication style',
+                              knowledge: 'Leverages your domain expertise and strategic vision',
+                              creativity: 'Aligns with your innovative problem-solving approach',
+                              drive: 'Perfect fit for your goal-oriented mindset',
+                            };
+                            return (
+                              <div key={p.pillar} className="flex items-start gap-3">
+                                <span className="text-2xl flex-shrink-0">{pillarIcons[p.pillar]}</span>
+                                <div>
+                                  <div className="font-medium capitalize">{pillarName(p.pillar)}</div>
+                                  <div className="text-sm text-[hsl(var(--xima-gray))]">
+                                    {pillarDescriptions[p.pillar]}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        {match.ximatarMatch && (
+                          <div className="flex items-start gap-3 mt-3 pt-3 border-t border-[hsl(var(--xima-accent))]/20">
+                            <span className="text-2xl flex-shrink-0">🎯</span>
+                            <div>
+                              <div className="font-medium">XIMAtar Match</div>
+                              <div className="text-sm text-[hsl(var(--xima-gray))]">
+                                This role is ideal for professionals with your personality archetype
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                   <div>
                     <h3 className="font-medium mb-2">{t("opportunity.role_fit.ximatar_traits")}</h3>
                     <div className="flex flex-wrap gap-2">

@@ -6,20 +6,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useJobInteractions } from '@/hooks/useJobInteractions';
-import { useJobMatches } from '@/hooks/useJobMatches';
+import { useJobRecommendations } from '@/hooks/useJobRecommendations';
 import { useUser } from '@/context/UserContext';
-import { Bookmark, CheckCircle2, TrendingUp, ExternalLink } from 'lucide-react';
+import { Bookmark, CheckCircle2, TrendingUp, ExternalLink, Sparkles } from 'lucide-react';
 
 export const MyOpportunitiesSection: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useUser();
   const { interactions, loading: interactionsLoading } = useJobInteractions();
-  const { matches, loading: matchesLoading } = useJobMatches(user);
+  const { recommendations, loading: recommendationsLoading, refresh } = useJobRecommendations();
 
   const savedJobs = interactions.filter((i) => i.status === 'saved');
   const appliedJobs = interactions.filter((i) => i.status === 'applied');
-  const recommendedJobs = matches.filter((m) => m.score >= 70);
 
   const renderJobCard = (
     jobId: string,
@@ -83,15 +82,25 @@ export const MyOpportunitiesSection: React.FC = () => {
 
   return (
     <Card className="w-full animate-[fade-in_0.5s_ease-out]">
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="font-heading text-2xl">My Opportunities</CardTitle>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={refresh}
+          disabled={recommendationsLoading}
+          className="gap-2"
+        >
+          <Sparkles className="w-4 h-4" />
+          Refresh
+        </Button>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="recommended" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="recommended">
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Recommended
+              <Sparkles className="w-4 h-4 mr-2" />
+              For You
             </TabsTrigger>
             <TabsTrigger value="saved">
               <Bookmark className="w-4 h-4 mr-2" />
@@ -104,25 +113,30 @@ export const MyOpportunitiesSection: React.FC = () => {
           </TabsList>
 
           <TabsContent value="recommended" className="space-y-4">
-            {matchesLoading ? (
-              <p className="text-center text-[hsl(var(--xima-gray))]">Loading recommendations...</p>
-            ) : recommendedJobs.length === 0 ? (
+            {recommendationsLoading ? (
+              <p className="text-center text-[hsl(var(--xima-gray))]">Generating your personalized recommendations...</p>
+            ) : recommendations.length === 0 ? (
               <div className="text-center py-8">
+                <Sparkles className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--xima-accent))]/40" />
                 <p className="text-[hsl(var(--xima-gray))] mb-4">
-                  Complete your XIMA assessment to get personalized job recommendations!
+                  Complete your XIMA assessment to unlock AI-powered job recommendations!
                 </p>
-                <Button onClick={() => navigate('/ximatar-journey')}>
+                <Button 
+                  onClick={() => navigate('/ximatar-journey')}
+                  className="bg-[hsl(var(--xima-accent))] hover:bg-[hsl(var(--xima-accent))]/90"
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
                   Start Assessment
                 </Button>
               </div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
-                {recommendedJobs.map((match) =>
+                {recommendations.map((rec) =>
                   renderJobCard(
-                    match.job.id,
-                    match.job.title,
-                    match.job.company,
-                    match.score,
+                    rec.job.id,
+                    rec.job.title,
+                    rec.job.company,
+                    rec.matchScore,
                     undefined
                   )
                 )}
