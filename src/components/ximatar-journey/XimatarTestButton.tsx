@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Loader2, X } from "lucide-react";
+import { Loader2, X, Download } from "lucide-react";
+import jsPDF from "jspdf";
 
 export const XimatarTestButton = () => {
   const [testing, setTesting] = useState(false);
@@ -40,6 +41,103 @@ export const XimatarTestButton = () => {
     }
   };
 
+  const exportToPDF = async () => {
+    if (!results) return;
+
+    try {
+      const pdf = new jsPDF();
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      let yPosition = 20;
+
+      // Title
+      pdf.setFontSize(20);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("XIMAtar Test Results Report", pageWidth / 2, yPosition, { align: "center" });
+      
+      yPosition += 15;
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(`Test Date: ${new Date().toLocaleDateString()}`, pageWidth / 2, yPosition, { align: "center" });
+      
+      yPosition += 10;
+      pdf.setFontSize(10);
+      pdf.text(`Successful Tests: ${results.successful}/${results.total}`, pageWidth / 2, yPosition, { align: "center" });
+      pdf.text(`Unique XIMAtars: ${results.uniqueXIMatars}/11`, pageWidth / 2, yPosition + 5, { align: "center" });
+
+      yPosition += 20;
+
+      // Results
+      for (const result of results.results) {
+        // Check if we need a new page
+        if (yPosition > pageHeight - 60) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+
+        // Draw border for each result
+        pdf.setDrawColor(200, 200, 200);
+        pdf.rect(15, yPosition - 5, pageWidth - 30, 50);
+
+        if (result.success) {
+          // XIMAtar name
+          pdf.setFontSize(14);
+          pdf.setFont("helvetica", "bold");
+          pdf.setTextColor(0, 128, 0);
+          pdf.text(result.assigned.toUpperCase(), 20, yPosition);
+          
+          pdf.setFontSize(9);
+          pdf.setFont("helvetica", "normal");
+          pdf.setTextColor(100, 100, 100);
+          pdf.text(`Target: ${result.pattern}`, 20, yPosition + 5);
+
+          // Pillar scores
+          pdf.setFontSize(8);
+          pdf.setTextColor(0, 0, 0);
+          let pillarY = yPosition + 12;
+          
+          Object.entries(result.pillars)
+            .sort(([, a]: any, [, b]: any) => b - a)
+            .forEach(([pillar, score]: [string, any]) => {
+              const pillarName = pillar.replace(/_/g, " ");
+              pdf.text(`${pillarName}: ${score}`, 25, pillarY);
+              
+              // Draw bar
+              const barWidth = (score / 10) * 60;
+              pdf.setFillColor(66, 113, 214);
+              pdf.rect(90, pillarY - 3, barWidth, 4, "F");
+              
+              pillarY += 5;
+            });
+        } else {
+          pdf.setFontSize(12);
+          pdf.setFont("helvetica", "bold");
+          pdf.setTextColor(220, 38, 38);
+          pdf.text(`${result.pattern} - FAILED`, 20, yPosition);
+          
+          pdf.setFontSize(9);
+          pdf.setFont("helvetica", "normal");
+          pdf.setTextColor(100, 100, 100);
+          pdf.text(`Error: ${result.error}`, 20, yPosition + 7);
+        }
+
+        yPosition += 55;
+      }
+
+      // Footer
+      const timestamp = new Date().toISOString();
+      pdf.setFontSize(8);
+      pdf.setTextColor(150, 150, 150);
+      pdf.text(`Generated: ${timestamp}`, pageWidth / 2, pageHeight - 10, { align: "center" });
+
+      pdf.save(`ximatar-test-results-${Date.now()}.pdf`);
+      toast.success("PDF exported successfully!");
+    } catch (error) {
+      console.error("Export error:", error);
+      toast.error("Failed to export PDF: " + String(error));
+    }
+  };
+
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-md">
       <Button
@@ -70,13 +168,24 @@ export const XimatarTestButton = () => {
                 Unique XIMAtars Assigned: {results.uniqueXIMatars}/11
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setResults(null)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={exportToPDF}
+                className="gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Export PDF
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setResults(null)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           
           <div className="overflow-y-auto p-4">
