@@ -7,8 +7,9 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, Target, CheckCircle, TrendingUp, Plus, ArrowRight } from 'lucide-react';
+import { Users, Target, CheckCircle, TrendingUp, Plus, ArrowRight, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { CandidateEngagement } from '@/components/business/CandidateEngagement';
 
 const BusinessDashboard = () => {
   const navigate = useNavigate();
@@ -244,6 +245,12 @@ const BusinessDashboard = () => {
             </Link>
           </CardContent>
         </Card>
+
+        {/* Candidate Engagement */}
+        <div>
+          <h2 className="text-2xl font-bold text-white mb-4">Candidate Engagement</h2>
+          <CandidateEngagement />
+        </div>
       </div>
     </BusinessLayout>
   );

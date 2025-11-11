@@ -39,6 +39,7 @@ import CreateChallenge from "./pages/business/CreateChallenge";
 import BusinessEvaluations from "./pages/business/Evaluations";
 import BusinessReports from "./pages/business/Reports";
 import BusinessSettings from "./pages/business/Settings";
+import BusinessJobs from "./pages/business/Jobs";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +88,7 @@ const AppContent = () => {
           <Route path="/business/evaluations" element={<BusinessEvaluations />} />
           <Route path="/business/reports" element={<BusinessReports />} />
           <Route path="/business/settings" element={<BusinessSettings />} />
+          <Route path="/business/jobs" element={<BusinessJobs />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         {/* <ChatEntry /> */}

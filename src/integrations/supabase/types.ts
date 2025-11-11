@@ -490,6 +490,7 @@ export type Database = {
           description: string | null
           difficulty: number | null
           id: string
+          is_public: boolean | null
           target_skills: string[] | null
           title: string
           updated_at: string | null
@@ -502,6 +503,7 @@ export type Database = {
           description?: string | null
           difficulty?: number | null
           id?: string
+          is_public?: boolean | null
           target_skills?: string[] | null
           title: string
           updated_at?: string | null
@@ -514,6 +516,7 @@ export type Database = {
           description?: string | null
           difficulty?: number | null
           id?: string
+          is_public?: boolean | null
           target_skills?: string[] | null
           title?: string
           updated_at?: string | null
@@ -1153,12 +1156,49 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string | null
+          recipient_id: string
+          related_id: string | null
+          sender_id: string | null
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          recipient_id: string
+          related_id?: string | null
+          sender_id?: string | null
+          title: string
+          type: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          recipient_id?: string
+          related_id?: string | null
+          sender_id?: string | null
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
       opportunities: {
         Row: {
           company: string
           created_at: string | null
           description: string | null
           id: string
+          is_public: boolean | null
           location: string | null
           skills: string[] | null
           source_url: string | null
@@ -1169,6 +1209,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
+          is_public?: boolean | null
           location?: string | null
           skills?: string[] | null
           source_url?: string | null
@@ -1179,6 +1220,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
+          is_public?: boolean | null
           location?: string | null
           skills?: string[] | null
           source_url?: string | null

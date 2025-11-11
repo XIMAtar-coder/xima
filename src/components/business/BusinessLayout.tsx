@@ -4,7 +4,7 @@ import { useUser } from '@/context/UserContext';
 import { Button } from '@/components/ui/button';
 import { 
   LayoutDashboard, Users, Target, FileText, BarChart3, 
-  Settings, LogOut, Menu, X, Building2 
+  Settings, LogOut, Menu, X, Building2, Briefcase
 } from 'lucide-react';
 
 interface BusinessLayoutProps {
@@ -26,6 +26,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
     { path: '/business/dashboard', icon: LayoutDashboard, label: 'Overview' },
     { path: '/business/candidates', icon: Users, label: 'Candidate Pool' },
     { path: '/business/challenges', icon: Target, label: 'Launch Challenges' },
+    { path: '/business/jobs', icon: Briefcase, label: 'Job Offers' },
     { path: '/business/evaluations', icon: FileText, label: 'Evaluations' },
     { path: '/business/reports', icon: BarChart3, label: 'Reports & Analytics' },
     { path: '/business/settings', icon: Settings, label: 'Settings' }

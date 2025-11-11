@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { useUser } from '../context/UserContext';
 import { ChevronRight } from 'lucide-react';
 import { PillarsShowcase } from '@/components/pillars/PillarsShowcase';
+import { RecommendedChallenges } from '@/components/opportunities/RecommendedChallenges';
+import { JobMatchesBlock } from '@/components/JobMatchesBlock';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -61,6 +63,26 @@ const Index = () => {
         </div>
         
         <PillarsShowcase />
+        
+        {isAuthenticated && (
+          <div className="py-16 space-y-12">
+            <div>
+              <h2 className="text-3xl font-bold mb-2 text-foreground">Recommended Challenges</h2>
+              <p className="text-muted-foreground mb-8">
+                Opportunities that match your XIMA profile
+              </p>
+              <RecommendedChallenges />
+            </div>
+            
+            <div>
+              <h2 className="text-3xl font-bold mb-2 text-foreground">Top Job Matches</h2>
+              <p className="text-muted-foreground mb-8">
+                Jobs tailored to your skills and XIMAtar
+              </p>
+              <JobMatchesBlock />
+            </div>
+          </div>
+        )}
         
         <div id="cta-section" className="py-16 text-center">
           <h2 className="text-3xl font-bold mb-4 text-foreground">{t('cta_section.title')}</h2>

@@ -8,6 +8,7 @@ import { useAssessment } from '../../contexts/AssessmentContext';
 import { Logo } from '../Logo';
 import { useUserHeaderData } from '@/hooks/useUserHeaderData';
 import { supabase } from '@/integrations/supabase/client';
+import { NotificationsDropdown } from '../NotificationsDropdown';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -114,6 +115,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
             
             <div className="flex items-center space-x-6">
               <LanguageSwitcher />
+              
+              {isAuthenticated && user && <NotificationsDropdown />}
               
               {isAuthenticated && user ? (
                 <div className="flex items-center space-x-6 animate-[fade-in_0.5s_ease-out]">
