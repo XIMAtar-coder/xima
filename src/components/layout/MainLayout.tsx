@@ -161,18 +161,32 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                       )}
                     </button>
                     {isAdmin && (
-                      <button 
-                        onClick={() => navigate('/admin')}
-                        className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
-                          location.pathname === '/admin' ? 'text-[hsl(var(--xima-accent))]' : ''
-                        }`}
-                        style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                      >
-                        Developer
-                        {location.pathname === '/admin' && (
-                          <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
-                        )}
-                      </button>
+                      <>
+                        <button 
+                          onClick={() => navigate('/analytics')}
+                          className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
+                            location.pathname === '/analytics' ? 'text-[hsl(var(--xima-accent))]' : ''
+                          }`}
+                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
+                        >
+                          Analytics
+                          {location.pathname === '/analytics' && (
+                            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
+                          )}
+                        </button>
+                        <button 
+                          onClick={() => navigate('/admin')}
+                          className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
+                            location.pathname === '/admin' ? 'text-[hsl(var(--xima-accent))]' : ''
+                          }`}
+                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
+                        >
+                          Developer
+                          {location.pathname === '/admin' && (
+                            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
+                          )}
+                        </button>
+                      </>
                     )}
                     <button 
                       onClick={() => navigate('/development-plan')}

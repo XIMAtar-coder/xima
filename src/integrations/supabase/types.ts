@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          action: string
+          context: Json | null
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          context?: Json | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          context?: Json | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       ai_conversations: {
         Row: {
           cleared_at: string | null
@@ -248,6 +275,7 @@ export type Database = {
           language: string
           pillars: Json | null
           rationale: Json | null
+          sentiment: number | null
           top3: Json | null
           total_score: number | null
           user_id: string
@@ -261,6 +289,7 @@ export type Database = {
           language?: string
           pillars?: Json | null
           rationale?: Json | null
+          sentiment?: number | null
           top3?: Json | null
           total_score?: number | null
           user_id: string
@@ -274,6 +303,7 @@ export type Database = {
           language?: string
           pillars?: Json | null
           rationale?: Json | null
+          sentiment?: number | null
           top3?: Json | null
           total_score?: number | null
           user_id?: string
@@ -1835,6 +1865,10 @@ export type Database = {
           p_user: string
         }
         Returns: undefined
+      }
+      log_user_activity: {
+        Args: { p_action: string; p_context?: Json; p_user_id: string }
+        Returns: string
       }
       recompute_matches: { Args: { p_user: string }; Returns: undefined }
       recompute_user_scores: { Args: { p_user: string }; Returns: undefined }

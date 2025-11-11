@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useJobInteractions } from "@/hooks/useJobInteractions";
 import { useDynamicMatchScore } from "@/hooks/useDynamicMatchScore";
 import { Check, Bookmark, Share2, ExternalLink } from "lucide-react";
+import { RoleCompatibilityPanel } from "@/components/opportunities/RoleCompatibilityPanel";
 
 const createCanonical = (href: string) => {
   let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
@@ -400,6 +401,13 @@ export default function OpportunityDetails() {
         </article>
 
         <aside className="md:col-span-1">
+          {/* Role Compatibility Panel */}
+          {user && id && (
+            <div className="mb-6">
+              <RoleCompatibilityPanel jobId={id} requiredSkills={job?.skills} />
+            </div>
+          )}
+          
           <Card>
             <CardHeader>
               <CardTitle>{t("opportunity.sections.company_profile")}</CardTitle>
