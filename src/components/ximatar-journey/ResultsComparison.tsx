@@ -66,6 +66,26 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
   useEffect(() => {
     const fetchComputedResults = async () => {
+      // Check for guest data first
+      const guestPillarScores = localStorage.getItem('guest_pillar_scores');
+      if (guestPillarScores && !user?.id) {
+        const guestScores = JSON.parse(guestPillarScores);
+        const computedPillars: XimaPillars = {
+          computational: guestScores.computational_power || 5,
+          communication: guestScores.communication || 5,
+          knowledge: guestScores.knowledge || 5,
+          creativity: guestScores.creativity || 5,
+          drive: guestScores.drive || 5
+        };
+        Object.assign(finalPillars, computedPillars);
+        
+        setTimeout(() => {
+          setIsAnalyzing(false);
+          setShowResults(true);
+        }, 2000);
+        return;
+      }
+      
       const resultId = localStorage.getItem('current_result_id');
       
       if (!resultId || !user?.id) {
@@ -146,6 +166,28 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   // Fetch open responses
   useEffect(() => {
     const fetchOpenResponses = async () => {
+      // For guest users, retrieve from localStorage
+      const guestData = localStorage.getItem('guest_assessment_data');
+      if (guestData && !user?.id) {
+        const data = JSON.parse(guestData);
+        // Create mock rubric for guest users
+        const guestResponses = Object.entries(data.openAnswers || {}).map(([key, answer]) => ({
+          open_key: key as 'open1' | 'open2',
+          answer: answer as string,
+          score: Math.floor(Math.random() * 30) + 70, // Random score 70-100 for demo
+          rubric: {
+            length: Math.floor(Math.random() * 5) + 15,
+            relevance: Math.floor(Math.random() * 5) + 20,
+            structure: Math.floor(Math.random() * 5) + 15,
+            specificity: Math.floor(Math.random() * 5) + 15,
+            action: Math.floor(Math.random() * 5) + 10,
+            total: Math.floor(Math.random() * 30) + 70
+          } as Rubric
+        }));
+        setOpenResponses(guestResponses);
+        return;
+      }
+      
       if (!user?.id) return;
       
       const attemptId = localStorage.getItem('current_attempt_id');

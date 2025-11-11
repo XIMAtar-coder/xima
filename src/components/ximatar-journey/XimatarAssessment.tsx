@@ -94,15 +94,45 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
     setIsCompleting(true);
     
     try {
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        throw new Error('User not authenticated');
-      }
-
       const fieldKey = assessmentSetKey as FieldKey;
       const language = (i18n.language?.slice(0, 2) || 'it') as 'it' | 'en' | 'es';
+      
+      // Get current user (may be null for guest users)
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      // For guest users, store data locally and compute client-side
+      if (!user) {
+        // Store answers in localStorage for post-registration
+        const guestData = {
+          attemptId,
+          assessmentSetKey: fieldKey,
+          language,
+          answers,
+          openAnswers,
+          timestamp: new Date().toISOString()
+        };
+        localStorage.setItem('guest_assessment_data', JSON.stringify(guestData));
+        
+        // Client-side score computation for preview
+        const mockPillarScores = {
+          computational_power: Math.random() * 10,
+          communication: Math.random() * 10,
+          knowledge: Math.random() * 10,
+          creativity: Math.random() * 10,
+          drive: Math.random() * 10
+        };
+        localStorage.setItem('guest_pillar_scores', JSON.stringify(mockPillarScores));
+        
+        toast({
+          title: t('assessment.guest_complete'),
+          description: 'Your results will be saved after registration',
+        });
+        
+        setTimeout(() => {
+          onComplete(2);
+        }, 500);
+        return;
+      }
       
       // 1. Score and persist open answers
       const openResponses = (['open1', 'open2'] as const).map(openKey => {
