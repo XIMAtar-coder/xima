@@ -102,6 +102,7 @@ serve(async (req: Request) => {
       results.push({
         pattern: pattern.name,
         assigned: finalResult.ximatars?.label || "unknown",
+        image: finalResult.ximatars?.image_url || null,
         pillars: pattern.pillars,
         success: true,
       });
