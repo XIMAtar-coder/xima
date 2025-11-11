@@ -34,12 +34,22 @@ serve(async (req: Request) => {
 
     const results: any[] = [];
 
+    // Get existing auth user
+    const { data: authData } = await supabase.auth.admin.listUsers();
+    
+    if (!authData || !authData.users || authData.users.length === 0) {
+      return new Response(
+        JSON.stringify({ error: "No users found in database. Please create at least one user first." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
+    }
+    
+    const testUserId = authData.users[0].id;
+    console.log(`Using test user: ${testUserId}`);
+
     // Test each pattern
     for (const pattern of testPatterns) {
       console.log(`Testing pattern: ${pattern.name}`);
-
-      // Create test user (or use existing test user)
-      const testUserId = crypto.randomUUID();
       
       // Create assessment result
       const { data: assessmentResult, error: resultError } = await supabase
