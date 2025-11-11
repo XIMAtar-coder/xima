@@ -2,3 +2,6 @@ project_id = "iyckvvnecpnldrxqmzta"
 
 [functions.sentiment-aggregator]
 verify_jwt = false
+
+[functions.test-ximatar-patterns]
+verify_jwt = false
