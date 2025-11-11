@@ -1849,6 +1849,25 @@ export type Database = {
         Returns: string
       }
       get_admin_stats: { Args: never; Returns: Json }
+      get_candidate_visibility: {
+        Args: never
+        Returns: {
+          communication: number
+          computational_power: number
+          computed_at: string
+          creativity: number
+          drive: number
+          evaluation_score: number
+          knowledge: number
+          pillar_average: number
+          rank: number
+          user_id: string
+          ximatar: Database["public"]["Enums"]["ximatar_type"]
+          ximatar_id: string
+          ximatar_image: string
+          ximatar_label: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
