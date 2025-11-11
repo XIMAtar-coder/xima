@@ -34,7 +34,7 @@ export const useSupabaseAssessmentData = () => {
       setData(prev => ({ ...prev, isLoading: true }));
 
       try {
-        // Fetch latest assessment result
+        // Fetch latest assessment result with computed data
         const { data: assessmentResult, error: assessmentError } = await supabase
           .from('assessment_results')
         .select(`
@@ -46,27 +46,40 @@ export const useSupabaseAssessmentData = () => {
             )
           `)
           .eq('user_id', user.id)
-          .order('computed_at', { ascending: false })
+          .eq('completed', true) // Only fetch completed assessments
+          .order('computed_at', { ascending: false, nullsFirst: false })
           .limit(1)
           .maybeSingle();
 
-        if (assessmentError) throw assessmentError;
+        if (assessmentError) {
+          console.error('Error fetching assessment:', assessmentError);
+          throw assessmentError;
+        }
 
-        // Fetch pillar scores
-        let pillars = null;
-        if (assessmentResult) {
-          const { data: pillarData } = await supabase
-            .from('pillar_scores')
-            .select('pillar, score')
-            .eq('assessment_result_id', assessmentResult.id);
+        if (!assessmentResult) {
+          console.log('No completed assessment found for user');
+          setData(prev => ({ ...prev, isLoading: false }));
+          return;
+        }
 
-          if (pillarData) {
-            pillars = pillarData.reduce((acc: any, { pillar, score }: any) => {
-              const key = pillar === 'computational_power' ? 'computational' : pillar;
-              acc[key] = score;
-              return acc;
-            }, {});
-          }
+        // Fetch pillar scores for this assessment
+        let pillars: any = null;
+        const { data: pillarData, error: pillarError } = await supabase
+          .from('pillar_scores')
+          .select('pillar, score')
+          .eq('assessment_result_id', assessmentResult.id);
+
+        if (pillarError) {
+          console.error('Error fetching pillar scores:', pillarError);
+        }
+
+        if (pillarData && pillarData.length > 0) {
+          pillars = pillarData.reduce((acc: any, { pillar, score }: any) => {
+            const key = pillar === 'computational_power' ? 'computational' : pillar;
+            acc[key] = score;
+            return acc;
+          }, {});
+          console.log('Fetched pillar scores:', pillars);
         }
 
         // Fetch open question scores
@@ -89,7 +102,7 @@ export const useSupabaseAssessmentData = () => {
 
         const cvPillars = cvData?.analysis_results ? (cvData.analysis_results as any).pillars : null;
 
-        // Fetch XIMAtar translations
+        // Fetch XIMAtar translations if available
         let ximatarWithTranslations = null;
         if (assessmentResult?.ximatars) {
           const { data: translations } = await supabase
@@ -107,18 +120,24 @@ export const useSupabaseAssessmentData = () => {
 
         // Calculate progress percentage
         let progress = 0;
-        if (assessmentResult) progress += 50;
+        if (assessmentResult && assessmentResult.computed_at) progress += 50;
         if (cvData) progress += 25;
         if (openResponses && openResponses.length > 0) progress += 25;
 
         setData({
           ximatar: ximatarWithTranslations,
-          pillars: (assessmentResult?.rationale as any)?.pillars || pillars || {},
+          pillars: pillars || {},
           openQuestionScores: openResponses || [],
           cvPillars,
-          professional: null, // Will be set separately
+          professional: null,
           isLoading: false,
           progress
+        });
+
+        console.log('Assessment data loaded:', {
+          hasXimatar: !!ximatarWithTranslations,
+          hasPillars: !!pillars,
+          totalScore: assessmentResult.total_score
         });
       } catch (error) {
         console.error('Error fetching assessment data:', error);

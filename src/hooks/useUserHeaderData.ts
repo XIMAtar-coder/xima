@@ -20,21 +20,23 @@ export const useUserHeaderData = (userId: string | undefined) => {
       }
 
       try {
-        // Fetch latest assessment result with ximatar
+        // Fetch latest completed assessment result with ximatar
         const { data: assessmentResult } = await supabase
           .from('assessment_results')
           .select(`
             total_score,
+            computed_at,
             ximatars (
               image_url
             )
           `)
           .eq('user_id', userId)
-          .order('computed_at', { ascending: false })
+          .eq('completed', true)
+          .order('computed_at', { ascending: false, nullsFirst: false })
           .limit(1)
           .maybeSingle();
 
-        if (assessmentResult) {
+        if (assessmentResult && assessmentResult.computed_at) {
           setData({
             ximatarImage: assessmentResult.ximatars?.image_url || null,
             totalScore: Math.round(assessmentResult.total_score || 0),

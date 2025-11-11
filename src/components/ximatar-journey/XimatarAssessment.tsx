@@ -97,92 +97,141 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
       // Get current user
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (user) {
-        // Score and persist open answers
-        const fieldKey = assessmentSetKey as FieldKey;
-        const language = (i18n.language?.slice(0, 2) || 'it') as 'it' | 'en' | 'es';
-        
-        const openResponses = (['open1', 'open2'] as const).map(openKey => {
-          const answer = openAnswers[openKey] || '';
-          const rubric = scoreOpenResponse({ 
-            text: answer, 
-            field: fieldKey, 
-            language, 
-            openKey 
-          });
-          
-          return {
-            user_id: user.id,
-            attempt_id: attemptId,
-            field_key: fieldKey,
-            language,
-            open_key: openKey,
-            answer,
-            score: rubric.total,
-            rubric
-          };
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const fieldKey = assessmentSetKey as FieldKey;
+      const language = (i18n.language?.slice(0, 2) || 'it') as 'it' | 'en' | 'es';
+      
+      // 1. Score and persist open answers
+      const openResponses = (['open1', 'open2'] as const).map(openKey => {
+        const answer = openAnswers[openKey] || '';
+        const rubric = scoreOpenResponse({ 
+          text: answer, 
+          field: fieldKey, 
+          language, 
+          openKey 
         });
-
-        // Store open responses
-        const { error: openError } = await supabase
-          .from('assessment_open_responses')
-          .insert(openResponses);
         
-        if (openError) {
-          console.warn('Failed to store open responses:', openError);
-        }
+        return {
+          user_id: user.id,
+          attempt_id: attemptId,
+          field_key: fieldKey,
+          language,
+          open_key: openKey,
+          answer,
+          score: rubric.total,
+          rubric
+        };
+      });
 
-        // Create assessment result with attempt_id and MC answers
-        const mcAnswersJson = Object.keys(answers).reduce((acc, key) => {
-          acc[key] = answers[parseInt(key)];
-          return acc;
-        }, {} as Record<string, number>);
+      const { error: openError } = await supabase
+        .from('assessment_open_responses')
+        .insert(openResponses);
+      
+      if (openError) {
+        console.warn('Failed to store open responses:', openError);
+      }
 
-        const { data: resultData, error: resultError } = await supabase
+      // 2. Create assessment result (not yet completed)
+      const { data: resultData, error: resultError } = await supabase
+        .from('assessment_results')
+        .insert({
+          user_id: user.id,
+          attempt_id: attemptId,
+          field_key: fieldKey,
+          language,
+          completed: false // Will be set to true after storing answers
+        })
+        .select()
+        .single();
+
+      if (resultError) {
+        throw resultError;
+      }
+
+      // 3. Store MC answers in assessment_answers table
+      // Map question IDs to pillars
+      const questionPillarMap: Record<number, string> = {
+        // Questions 1-5: Computational Power
+        1: 'computational_power', 2: 'computational_power', 3: 'computational_power', 
+        4: 'computational_power', 5: 'computational_power',
+        // Questions 6-10: Communication
+        6: 'communication', 7: 'communication', 8: 'communication', 
+        9: 'communication', 10: 'communication',
+        // Questions 11-14: Knowledge
+        11: 'knowledge', 12: 'knowledge', 13: 'knowledge', 14: 'knowledge',
+        // Questions 15-18: Creativity
+        15: 'creativity', 16: 'creativity', 17: 'creativity', 18: 'creativity',
+        // Questions 19-21: Drive
+        19: 'drive', 20: 'drive', 21: 'drive'
+      };
+
+      const answerRecords = Object.entries(answers).map(([qId, answerIdx]) => ({
+        result_id: resultData.id,
+        question_id: parseInt(qId),
+        answer_value: answerIdx,
+        pillar: questionPillarMap[parseInt(qId)] || 'knowledge',
+        weight: 1.0
+      }));
+
+      const { error: answersError } = await supabase
+        .from('assessment_answers')
+        .insert(answerRecords);
+
+      if (answersError) {
+        console.error('Failed to store assessment answers:', answersError);
+        throw answersError;
+      }
+
+      // 4. Mark assessment as completed (triggers server-side computation)
+      const { error: completeError } = await supabase
+        .from('assessment_results')
+        .update({ completed: true })
+        .eq('id', resultData.id);
+
+      if (completeError) {
+        console.error('Failed to mark assessment complete:', completeError);
+        throw completeError;
+      }
+
+      console.log('Assessment submitted successfully. Server is computing results...');
+
+      // 5. Wait for server computation (poll for computed_at)
+      let attempts = 0;
+      let computedResult = null;
+      
+      while (attempts < 15 && !computedResult) {
+        await new Promise(resolve => setTimeout(resolve, 800)); // Wait 800ms
+        
+        const { data: checkResult } = await supabase
           .from('assessment_results')
-          .insert({
-            user_id: user.id,
-            attempt_id: attemptId,
-            field_key: fieldKey,
-            language,
-            computed_at: new Date().toISOString()
-          })
-          .select()
+          .select('computed_at, ximatar_id')
+          .eq('id', resultData.id)
           .single();
 
-        if (resultError) {
-          throw resultError;
-        }
-
-        // Call function to compute pillar scores from MC answers
-        const { error: computeError } = await supabase.rpc(
-          'compute_pillar_scores_from_assessment',
-          {
-            p_result_id: resultData.id,
-            p_mc_answers: mcAnswersJson
-          }
-        );
-
-        if (computeError) {
-          console.error('Failed to compute pillar scores:', computeError);
-        }
-
-        // Call function to assign XIMAtar based on pillars
-        const { error: ximatarError } = await supabase.rpc(
-          'assign_ximatar_by_pillars',
-          {
-            p_result_id: resultData.id
-          }
-        );
-
-        if (ximatarError) {
-          console.error('Failed to assign XIMAtar:', ximatarError);
+        if (checkResult && checkResult.computed_at) {
+          computedResult = checkResult;
+          console.log('Computation complete!');
+          break;
         }
         
-        // Store attempt_id and result_id in localStorage for results page
-        localStorage.setItem('current_attempt_id', attemptId);
-        localStorage.setItem('current_result_id', resultData.id);
+        attempts++;
       }
+
+      if (!computedResult) {
+        console.warn('Server computation taking longer than expected');
+        toast({
+          title: t('assessment.computing'),
+          description: 'Your results are being processed. This may take a moment...',
+        });
+      }
+      
+      // Store result_id in localStorage for results page
+      localStorage.setItem('current_result_id', resultData.id);
+      localStorage.setItem('current_attempt_id', attemptId);
+      
     } catch (error) {
       console.error('Error completing assessment:', error);
       toast({
@@ -196,7 +245,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
     
     setTimeout(() => {
       onComplete(2);
-    }, 1000);
+    }, 500);
   };
 
   const canProceed = () => {

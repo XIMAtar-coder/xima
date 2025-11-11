@@ -65,13 +65,83 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const fetchComputedResults = async () => {
+      const resultId = localStorage.getItem('current_result_id');
+      
+      if (!resultId || !user?.id) {
+        // Fallback to mock data after timeout
+        const timer = setTimeout(() => {
+          setIsAnalyzing(false);
+          setShowResults(true);
+        }, 3000);
+        return () => clearTimeout(timer);
+      }
+
+      // Poll for computed results
+      let attempts = 0;
+      const maxAttempts = 15;
+      
+      while (attempts < maxAttempts) {
+        const { data: result, error } = await supabase
+          .from('assessment_results')
+          .select(`
+            *,
+            ximatars (id, label, image_url)
+          `)
+          .eq('id', resultId)
+          .single();
+
+        if (!error && result && result.computed_at) {
+          console.log('Got computed results:', result);
+          
+          // Fetch pillar scores
+          const { data: pillarData } = await supabase
+            .from('pillar_scores')
+            .select('pillar, score')
+            .eq('assessment_result_id', resultId);
+
+          if (pillarData && pillarData.length > 0) {
+            // Update final pillars with computed values
+            const computedPillars: XimaPillars = {
+              computational: 0,
+              communication: 0,
+              knowledge: 0,
+              creativity: 0,
+              drive: 0
+            };
+
+            pillarData.forEach(p => {
+              const key = p.pillar === 'computational_power' ? 'computational' : p.pillar;
+              computedPillars[key as keyof XimaPillars] = p.score;
+            });
+
+            // Update user avatar with computed XIMAtar
+            if (result.ximatars) {
+              userAvatar.animal = (result.ximatars as any).label;
+              userAvatar.image = (result.ximatars as any).image_url || '/ximatars/fox.png';
+            }
+
+            Object.assign(finalPillars, computedPillars);
+            console.log('Updated pillars:', finalPillars);
+          }
+          
+          setIsAnalyzing(false);
+          setShowResults(true);
+          return;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        attempts++;
+      }
+
+      // Timeout - show results anyway with fallback
+      console.warn('Computation timeout - showing fallback results');
       setIsAnalyzing(false);
       setShowResults(true);
-    }, 3000);
+    };
 
-    return () => clearTimeout(timer);
-  }, []);
+    fetchComputedResults();
+  }, [user]);
 
   // Fetch open responses
   useEffect(() => {

@@ -200,6 +200,44 @@ export type Database = {
           },
         ]
       }
+      assessment_answers: {
+        Row: {
+          answer_value: number
+          created_at: string | null
+          id: string
+          pillar: string
+          question_id: number
+          result_id: string
+          weight: number | null
+        }
+        Insert: {
+          answer_value: number
+          created_at?: string | null
+          id?: string
+          pillar: string
+          question_id: number
+          result_id: string
+          weight?: number | null
+        }
+        Update: {
+          answer_value?: number
+          created_at?: string | null
+          id?: string
+          pillar?: string
+          question_id?: number
+          result_id?: string
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_answers_result_id_fkey"
+            columns: ["result_id"]
+            isOneToOne: false
+            referencedRelation: "assessment_results"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assessment_flows: {
         Row: {
           active: boolean
@@ -270,6 +308,7 @@ export type Database = {
         Row: {
           assessment_id: string | null
           attempt_id: string | null
+          completed: boolean | null
           computed_at: string
           field_key: string | null
           id: string
@@ -285,6 +324,7 @@ export type Database = {
         Insert: {
           assessment_id?: string | null
           attempt_id?: string | null
+          completed?: boolean | null
           computed_at?: string
           field_key?: string | null
           id?: string
@@ -300,6 +340,7 @@ export type Database = {
         Update: {
           assessment_id?: string | null
           attempt_id?: string | null
+          completed?: boolean | null
           computed_at?: string
           field_key?: string | null
           id?: string
@@ -1851,10 +1892,12 @@ export type Database = {
         Args: { p_result_id: string }
         Returns: undefined
       }
-      compute_pillar_scores_from_assessment: {
-        Args: { p_mc_answers: Json; p_result_id: string }
-        Returns: undefined
-      }
+      compute_pillar_scores_from_assessment:
+        | { Args: { p_result_id: string }; Returns: undefined }
+        | {
+            Args: { p_mc_answers: Json; p_result_id: string }
+            Returns: undefined
+          }
       ensure_mentor_thread: {
         Args: { p_mentor: string; p_user: string }
         Returns: string
