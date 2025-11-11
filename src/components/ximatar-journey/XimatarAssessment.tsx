@@ -113,15 +113,59 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
         };
         localStorage.setItem('guest_assessment_data', JSON.stringify(guestData));
         
-        // Client-side score computation for preview
-        const mockPillarScores = {
-          computational_power: Math.random() * 10,
-          communication: Math.random() * 10,
-          knowledge: Math.random() * 10,
-          creativity: Math.random() * 10,
-          drive: Math.random() * 10
+        // Client-side score computation with proper variance based on answers
+        const computeGuestPillarScore = (questionIds: number[]) => {
+          let total = 0;
+          let count = 0;
+          questionIds.forEach(qId => {
+            if (answers[qId] !== undefined) {
+              // answers are 0-3, scale to 0-10 with some variance
+              total += (answers[qId] + 1) * 2.5 + (Math.random() * 1.5 - 0.75);
+              count++;
+            }
+          });
+          return count > 0 ? Math.max(0, Math.min(10, total / count)) : 5;
         };
+        
+        const mockPillarScores = {
+          computational_power: computeGuestPillarScore([1, 2, 3, 4, 5]),
+          communication: computeGuestPillarScore([6, 7, 8, 9, 10]),
+          knowledge: computeGuestPillarScore([11, 12, 13, 14]),
+          creativity: computeGuestPillarScore([15, 16, 17, 18]),
+          drive: computeGuestPillarScore([19, 20, 21])
+        };
+        
+        // Determine XIMAtar based on top 2 pillars
+        const pillarEntries = Object.entries(mockPillarScores).sort((a, b) => b[1] - a[1]);
+        const top2Pillars = [pillarEntries[0][0], pillarEntries[1][0]];
+        
+        let ximatarLabel = 'fox'; // fallback
+        if (top2Pillars.includes('creativity') && top2Pillars.includes('communication')) {
+          ximatarLabel = 'parrot';
+        } else if (top2Pillars.includes('knowledge') && top2Pillars.includes('computational_power')) {
+          ximatarLabel = 'owl';
+        } else if (top2Pillars.includes('drive') && top2Pillars.includes('knowledge')) {
+          ximatarLabel = 'elephant';
+        } else if (top2Pillars.includes('communication') && top2Pillars.includes('drive')) {
+          ximatarLabel = 'dolphin';
+        } else if (top2Pillars.includes('computational_power') && top2Pillars.includes('creativity')) {
+          ximatarLabel = 'cat';
+        } else if (top2Pillars.includes('drive')) {
+          ximatarLabel = 'horse';
+        } else if (top2Pillars.includes('creativity')) {
+          ximatarLabel = 'fox';
+        } else if (top2Pillars.includes('computational_power')) {
+          ximatarLabel = 'bee';
+        } else if (top2Pillars.includes('knowledge')) {
+          ximatarLabel = 'owl';
+        } else if (top2Pillars.includes('communication')) {
+          ximatarLabel = 'dolphin';
+        } else {
+          ximatarLabel = 'chameleon';
+        }
+        
         localStorage.setItem('guest_pillar_scores', JSON.stringify(mockPillarScores));
+        localStorage.setItem('guest_ximatar', ximatarLabel);
         
         toast({
           title: t('assessment.guest_complete'),

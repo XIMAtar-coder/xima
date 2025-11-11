@@ -68,16 +68,23 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     const fetchComputedResults = async () => {
       // Check for guest data first
       const guestPillarScores = localStorage.getItem('guest_pillar_scores');
+      const guestXimatar = localStorage.getItem('guest_ximatar');
       if (guestPillarScores && !user?.id) {
         const guestScores = JSON.parse(guestPillarScores);
         const computedPillars: XimaPillars = {
-          computational: guestScores.computational_power || 5,
-          communication: guestScores.communication || 5,
-          knowledge: guestScores.knowledge || 5,
-          creativity: guestScores.creativity || 5,
-          drive: guestScores.drive || 5
+          computational: Math.round(guestScores.computational_power * 10) / 10,
+          communication: Math.round(guestScores.communication * 10) / 10,
+          knowledge: Math.round(guestScores.knowledge * 10) / 10,
+          creativity: Math.round(guestScores.creativity * 10) / 10,
+          drive: Math.round(guestScores.drive * 10) / 10
         };
         Object.assign(finalPillars, computedPillars);
+        
+        // Update XIMAtar based on guest assignment
+        if (guestXimatar) {
+          userAvatar.animal = guestXimatar;
+          userAvatar.image = `/ximatars/${guestXimatar}.png`;
+        }
         
         setTimeout(() => {
           setIsAnalyzing(false);
