@@ -481,6 +481,155 @@ export type Database = {
           },
         ]
       }
+      business_challenges: {
+        Row: {
+          attachment_url: string | null
+          business_id: string
+          created_at: string | null
+          deadline: string | null
+          description: string | null
+          difficulty: number | null
+          id: string
+          target_skills: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          attachment_url?: string | null
+          business_id: string
+          created_at?: string | null
+          deadline?: string | null
+          description?: string | null
+          difficulty?: number | null
+          id?: string
+          target_skills?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          attachment_url?: string | null
+          business_id?: string
+          created_at?: string | null
+          deadline?: string | null
+          description?: string | null
+          difficulty?: number | null
+          id?: string
+          target_skills?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      business_profiles: {
+        Row: {
+          company_logo: string | null
+          company_name: string
+          created_at: string | null
+          default_challenge_difficulty: number | null
+          default_challenge_duration: number | null
+          hr_contact_email: string | null
+          id: string
+          updated_at: string | null
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          company_logo?: string | null
+          company_name: string
+          created_at?: string | null
+          default_challenge_difficulty?: number | null
+          default_challenge_duration?: number | null
+          hr_contact_email?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          company_logo?: string | null
+          company_name?: string
+          created_at?: string | null
+          default_challenge_difficulty?: number | null
+          default_challenge_duration?: number | null
+          hr_contact_email?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      candidate_challenges: {
+        Row: {
+          candidate_id: string
+          challenge_id: string
+          completed_at: string | null
+          created_at: string | null
+          feedback: string | null
+          id: string
+          score: number | null
+          status: string | null
+        }
+        Insert: {
+          candidate_id: string
+          challenge_id: string
+          completed_at?: string | null
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          score?: number | null
+          status?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          challenge_id?: string
+          completed_at?: string | null
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          score?: number | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidate_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "business_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      candidate_shortlist: {
+        Row: {
+          business_id: string
+          candidate_id: string
+          created_at: string | null
+          id: string
+          notes: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          business_id: string
+          candidate_id: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          business_id?: string
+          candidate_id?: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           body: string
@@ -1650,7 +1799,7 @@ export type Database = {
     }
     Enums: {
       ai_message_role: "user" | "assistant" | "system" | "tool"
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "business"
       lang_code: "it" | "en" | "es"
       ximatar_type:
         | "lion"
@@ -1793,7 +1942,7 @@ export const Constants = {
   public: {
     Enums: {
       ai_message_role: ["user", "assistant", "system", "tool"],
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "business"],
       lang_code: ["it", "en", "es"],
       ximatar_type: [
         "lion",

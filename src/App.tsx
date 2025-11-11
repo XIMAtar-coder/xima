@@ -30,6 +30,15 @@ import ChatEntry from "./components/ximai/ChatEntry";
 import OpportunityDetails from "./pages/OpportunityDetails";
 import Risultati from "./pages/Risultati";
 import { AssessmentProvider } from "./contexts/AssessmentContext";
+// Business Portal
+import BusinessRegister from "./pages/business/Register";
+import BusinessLogin from "./pages/business/Login";
+import BusinessDashboard from "./pages/business/Dashboard";
+import BusinessCandidates from "./pages/business/Candidates";
+import CreateChallenge from "./pages/business/CreateChallenge";
+import BusinessEvaluations from "./pages/business/Evaluations";
+import BusinessReports from "./pages/business/Reports";
+import BusinessSettings from "./pages/business/Settings";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +77,16 @@ const AppContent = () => {
           <Route path="/dashboard" element={<Profile />} />
           <Route path="/chat" element={<XimaChat />} />
           <Route path="/admin" element={<Admin />} />
+          {/* Business Portal Routes */}
+          <Route path="/business/register" element={<BusinessRegister />} />
+          <Route path="/business/login" element={<BusinessLogin />} />
+          <Route path="/business/dashboard" element={<BusinessDashboard />} />
+          <Route path="/business/candidates" element={<BusinessCandidates />} />
+          <Route path="/business/challenges" element={<BusinessDashboard />} />
+          <Route path="/business/challenges/new" element={<CreateChallenge />} />
+          <Route path="/business/evaluations" element={<BusinessEvaluations />} />
+          <Route path="/business/reports" element={<BusinessReports />} />
+          <Route path="/business/settings" element={<BusinessSettings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         {/* <ChatEntry /> */}
