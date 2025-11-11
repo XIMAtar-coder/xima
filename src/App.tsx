@@ -41,6 +41,7 @@ import BusinessReports from "./pages/business/Reports";
 import BusinessSettings from "./pages/business/Settings";
 import BusinessJobs from "./pages/business/Jobs";
 import CreateJobOffer from "./pages/business/CreateJobOffer";
+import JobCandidateMatching from "./pages/business/JobCandidateMatching";
 import Analytics from "./pages/Analytics";
 
 const queryClient = new QueryClient();
@@ -92,6 +93,7 @@ const AppContent = () => {
           <Route path="/business/settings" element={<BusinessSettings />} />
           <Route path="/business/jobs" element={<BusinessJobs />} />
           <Route path="/business/jobs/new" element={<CreateJobOffer />} />
+          <Route path="/business/jobs/:jobId/matches" element={<JobCandidateMatching />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -58,19 +58,20 @@ Deno.serve(async (req) => {
 
     console.log(`Generating recommendations for user: ${userId}`);
 
-    // 1. Fetch user's latest assessment
+    // 1. Fetch user's latest assessment with pillar scores
     const { data: assessmentData, error: assessmentError } = await supabase
       .from('assessment_results')
       .select(`
-        pillars,
-        ximatars (label)
+        id,
+        ximatar_id,
+        ximatars (label, id)
       `)
       .eq('user_id', userId)
       .order('computed_at', { ascending: false })
       .limit(1)
       .maybeSingle();
 
-    if (assessmentError || !assessmentData?.pillars) {
+    if (assessmentError || !assessmentData) {
       console.log('No assessment found for user:', userId);
       return new Response(
         JSON.stringify({ 
@@ -81,21 +82,71 @@ Deno.serve(async (req) => {
       );
     }
 
-    const userPillars = assessmentData.pillars as Record<string, number>;
+    // Fetch pillar scores for this assessment
+    const { data: pillarData, error: pillarError } = await supabase
+      .from('pillar_scores')
+      .select('pillar, score')
+      .eq('assessment_result_id', assessmentData.id);
+
+    if (pillarError || !pillarData || pillarData.length === 0) {
+      console.log('No pillar scores found for user:', userId);
+      return new Response(
+        JSON.stringify({ 
+          recommendations: [], 
+          message: 'Complete your XIMA assessment to get personalized recommendations' 
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Convert pillar data to object
+    const userPillars: Record<string, number> = {};
+    pillarData.forEach(p => {
+      const key = p.pillar === 'computational_power' ? 'computational' : p.pillar;
+      userPillars[key] = p.score;
+    });
+
     const userXimatar = (assessmentData.ximatars as any)?.label?.toLowerCase();
 
     console.log('User pillars:', userPillars);
     console.log('User ximatar:', userXimatar);
 
-    // 2. Fetch all jobs from jobs.json (static data source for now)
-    const jobsUrl = `${supabaseUrl.replace('https://', 'https://iyckvvnecpnldrxqmzta.')}/jobs.json`;
-    const jobsResponse = await fetch(jobsUrl);
+    // 2. Fetch opportunities from database
+    const { data: opportunities, error: jobsError } = await supabase
+      .from('opportunities')
+      .select('*')
+      .eq('is_public', true);
+
     let jobs: Job[] = [];
 
-    if (jobsResponse.ok) {
-      jobs = await jobsResponse.json();
-    } else {
-      // Fallback to in-memory jobs if file doesn't exist
+    if (!jobsError && opportunities) {
+      // Convert opportunities to Job format
+      jobs = opportunities.map(opp => ({
+        id: opp.id,
+        title: opp.title,
+        company: opp.company,
+        location: opp.location || 'Remote',
+        skills: opp.skills || [],
+        sourceUrl: opp.source_url || '',
+        summary: opp.description || '',
+        idealXimatar: [] as string[], // Will be computed dynamically
+      }));
+    }
+
+    // Fallback: Also fetch from jobs.json for additional opportunities
+    try {
+      const jobsUrl = `${supabaseUrl.replace('https://', 'https://iyckvvnecpnldrxqmzta.')}/jobs.json`;
+      const jobsResponse = await fetch(jobsUrl);
+      if (jobsResponse.ok) {
+        const staticJobs = await jobsResponse.json();
+        jobs = [...jobs, ...staticJobs];
+      }
+    } catch (e) {
+      console.warn('Could not fetch static jobs:', e);
+    }
+
+    // If still no jobs, use fallback
+    if (jobs.length === 0) {
       jobs = [
         {
           id: '1',
@@ -132,7 +183,7 @@ Deno.serve(async (req) => {
 
     console.log(`Loaded ${jobs.length} jobs`);
 
-    // 3. Calculate match scores
+    // 3. Calculate match scores with enhanced algorithm
     const recommendations = jobs.map((job) => {
       // Calculate pillar weights from skills
       const pillarWeights: Record<string, number> = {};
@@ -143,38 +194,84 @@ Deno.serve(async (req) => {
         }
       }
 
+      // Dynamic XIMAtar inference based on skill pillars
+      const inferredXimatar: string[] = [];
+      const dominantPillars = Object.entries(pillarWeights)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 2)
+        .map(([pillar]) => pillar);
+
+      // Map pillar combinations to XIMAtar types
+      if (dominantPillars.includes('creativity') && dominantPillars.includes('communication')) {
+        inferredXimatar.push('parrot', 'fox');
+      } else if (dominantPillars.includes('knowledge') && dominantPillars.includes('computational')) {
+        inferredXimatar.push('owl', 'elephant');
+      } else if (dominantPillars.includes('drive') && dominantPillars.includes('knowledge')) {
+        inferredXimatar.push('elephant', 'horse');
+      } else if (dominantPillars.includes('communication') && dominantPillars.includes('drive')) {
+        inferredXimatar.push('dolphin', 'parrot');
+      } else if (dominantPillars.includes('computational') && dominantPillars.includes('creativity')) {
+        inferredXimatar.push('cat', 'bee');
+      } else if (dominantPillars.includes('drive')) {
+        inferredXimatar.push('horse', 'lion', 'wolf');
+      } else if (dominantPillars.includes('creativity')) {
+        inferredXimatar.push('fox', 'cat');
+      } else if (dominantPillars.includes('computational')) {
+        inferredXimatar.push('owl', 'bee');
+      }
+
+      // Use provided idealXimatar or inferred
+      const targetXimatar = job.idealXimatar && job.idealXimatar.length > 0 
+        ? job.idealXimatar 
+        : inferredXimatar;
+
       const totalWeight = Object.values(pillarWeights).reduce((a, b) => a + b, 0) || 1;
 
-      // Compute weighted pillar score
+      // Compute weighted pillar score with alignment penalty/bonus
       let pillarScore = 0;
-      const pillarContributions: Array<{ pillar: string; weight: number; userScore: number }> = [];
+      const pillarContributions: Array<{ pillar: string; weight: number; userScore: number; contribution: number }> = [];
 
       for (const [pillar, weight] of Object.entries(pillarWeights)) {
         const normalizedWeight = weight / totalWeight;
         const userScore = userPillars[pillar] || 5;
         const normalizedUserScore = userScore / 10; // 0-1 range
-        const contribution = normalizedUserScore * normalizedWeight * 100;
+        
+        // Apply alignment bonus: reward high scores in required pillars
+        const alignmentBonus = normalizedUserScore > 0.7 ? 1.15 : 1.0;
+        const contribution = normalizedUserScore * normalizedWeight * 100 * alignmentBonus;
         pillarScore += contribution;
 
         pillarContributions.push({
           pillar,
           weight: normalizedWeight * 100,
           userScore,
+          contribution: Math.round(contribution),
         });
       }
 
-      // Ximatar match bonus
-      const ximatarMatch = job.idealXimatar?.includes(userXimatar || '') || false;
-      const ximatarBonus = ximatarMatch ? 15 : 0;
+      // XIMAtar match bonus
+      const ximatarMatch = targetXimatar.includes(userXimatar || '');
+      const ximatarBonus = ximatarMatch ? 20 : 0;
+
+      // Skill coverage bonus (how many required skills align with user strengths)
+      const skillCoverage = job.skills.length > 0 
+        ? (job.skills.filter(skill => {
+            const pillar = skillToPillar[skill.toLowerCase()];
+            return pillar && userPillars[pillar] >= 7;
+          }).length / job.skills.length) * 10
+        : 0;
 
       // Final score
-      const matchScore = Math.min(100, Math.round(pillarScore + ximatarBonus));
+      const rawScore = pillarScore + ximatarBonus + skillCoverage;
+      const matchScore = Math.min(100, Math.round(rawScore));
 
       return {
         job,
         matchScore,
         ximatarMatch,
         pillarContributions,
+        skillCoverage: Math.round(skillCoverage),
+        inferredXimatar: targetXimatar,
       };
     });
 
