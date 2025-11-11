@@ -323,9 +323,19 @@ const BusinessCandidates = () => {
               }}
               isShortlisted={candidate.isShortlisted}
               isSelected={selectedCandidates.includes(candidate.user_id)}
-              onSelect={(checked) => {
+              onSelect={async (checked) => {
                 if (checked) {
                   setSelectedCandidates([...selectedCandidates, candidate.user_id]);
+                  // Log candidate view
+                  try {
+                    await supabase.rpc('log_user_activity', {
+                      p_user_id: user?.id,
+                      p_action: 'candidate_view',
+                      p_context: { candidate_id: candidate.user_id }
+                    });
+                  } catch (err) {
+                    console.warn('Failed to log activity:', err);
+                  }
                 } else {
                   setSelectedCandidates(selectedCandidates.filter(id => id !== candidate.user_id));
                 }

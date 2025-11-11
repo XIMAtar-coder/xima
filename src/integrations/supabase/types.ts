@@ -269,6 +269,7 @@ export type Database = {
       assessment_results: {
         Row: {
           assessment_id: string | null
+          attempt_id: string | null
           computed_at: string
           field_key: string | null
           id: string
@@ -283,6 +284,7 @@ export type Database = {
         }
         Insert: {
           assessment_id?: string | null
+          attempt_id?: string | null
           computed_at?: string
           field_key?: string | null
           id?: string
@@ -297,6 +299,7 @@ export type Database = {
         }
         Update: {
           assessment_id?: string | null
+          attempt_id?: string | null
           computed_at?: string
           field_key?: string | null
           id?: string
@@ -1843,6 +1846,14 @@ export type Database = {
       assign_ximatar: {
         Args: { p_assessment: string; p_lang?: string; p_user: string }
         Returns: string
+      }
+      assign_ximatar_by_pillars: {
+        Args: { p_result_id: string }
+        Returns: undefined
+      }
+      compute_pillar_scores_from_assessment: {
+        Args: { p_mc_answers: Json; p_result_id: string }
+        Returns: undefined
       }
       ensure_mentor_thread: {
         Args: { p_mentor: string; p_user: string }

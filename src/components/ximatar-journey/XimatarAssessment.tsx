@@ -123,30 +123,80 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
           };
         });
 
-        // Store open responses (non-blocking - continue even if this fails)
-        const { error } = await supabase
+        // Store open responses
+        const { error: openError } = await supabase
           .from('assessment_open_responses')
           .insert(openResponses);
         
-        if (error) {
-          console.warn('Failed to store open responses:', error);
+        if (openError) {
+          console.warn('Failed to store open responses:', openError);
+        }
+
+        // Create assessment result with attempt_id and MC answers
+        const mcAnswersJson = Object.keys(answers).reduce((acc, key) => {
+          acc[key] = answers[parseInt(key)];
+          return acc;
+        }, {} as Record<string, number>);
+
+        const { data: resultData, error: resultError } = await supabase
+          .from('assessment_results')
+          .insert({
+            user_id: user.id,
+            attempt_id: attemptId,
+            field_key: fieldKey,
+            language,
+            computed_at: new Date().toISOString()
+          })
+          .select()
+          .single();
+
+        if (resultError) {
+          throw resultError;
+        }
+
+        // Call function to compute pillar scores from MC answers
+        const { error: computeError } = await supabase.rpc(
+          'compute_pillar_scores_from_assessment',
+          {
+            p_result_id: resultData.id,
+            p_mc_answers: mcAnswersJson
+          }
+        );
+
+        if (computeError) {
+          console.error('Failed to compute pillar scores:', computeError);
+        }
+
+        // Call function to assign XIMAtar based on pillars
+        const { error: ximatarError } = await supabase.rpc(
+          'assign_ximatar_by_pillars',
+          {
+            p_result_id: resultData.id
+          }
+        );
+
+        if (ximatarError) {
+          console.error('Failed to assign XIMAtar:', ximatarError);
         }
         
-        // Store attempt_id in localStorage for results page
+        // Store attempt_id and result_id in localStorage for results page
         localStorage.setItem('current_attempt_id', attemptId);
+        localStorage.setItem('current_result_id', resultData.id);
       }
     } catch (error) {
       console.error('Error completing assessment:', error);
       toast({
         title: t('common.error'),
-        description: 'Failed to save open responses, but continuing...',
+        description: 'Failed to complete assessment. Please try again.',
         variant: 'destructive'
       });
+      setIsCompleting(false);
+      return;
     }
     
     setTimeout(() => {
       onComplete(2);
-    }, 2000);
+    }, 1000);
   };
 
   const canProceed = () => {
