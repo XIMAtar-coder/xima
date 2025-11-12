@@ -118,7 +118,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           .eq('id', resultId)
           .single();
 
-        if (!error && result && result.computed_at) {
+        if (!error && result && result.ximatars && result.ximatar_id) {
           console.log('Got computed results:', result);
           
           // Fetch pillar scores
@@ -139,7 +139,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
             pillarData.forEach(p => {
               const key = p.pillar === 'computational_power' ? 'computational' : p.pillar;
-              computedPillars[key as keyof XimaPillars] = p.score;
+              computedPillars[key as keyof XimaPillars] = p.score as number;
             });
 
             // Update user avatar with computed XIMAtar
@@ -150,11 +150,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
             Object.assign(finalPillars, computedPillars);
             console.log('Updated pillars:', finalPillars);
+            
+            setIsAnalyzing(false);
+            setShowResults(true);
+            return;
           }
-          
-          setIsAnalyzing(false);
-          setShowResults(true);
-          return;
         }
 
         await new Promise(resolve => setTimeout(resolve, 1000));

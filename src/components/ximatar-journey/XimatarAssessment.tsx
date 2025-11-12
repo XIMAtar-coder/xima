@@ -285,7 +285,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
           .eq('id', resultData.id)
           .single();
 
-        if (checkResult && checkResult.computed_at) {
+        if (checkResult && checkResult.ximatar_id) {
           computedResult = checkResult;
           console.log('Computation complete!');
           break;
