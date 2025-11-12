@@ -33,6 +33,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     score: number;
     rubric: Rubric;
   }>>([]);
+  const [topPillars, setTopPillars] = useState<Array<{ name: string; score: number }>>([]);
   const [selectedField] = useState<FieldKey>(() => {
     return (localStorage.getItem('preferred_field') as FieldKey) || 'business_leadership';
   });
@@ -79,6 +80,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           drive: Math.round(guestScores.drive * 10) / 10
         };
         Object.assign(finalPillars, computedPillars);
+        
+        // Identify top 2 pillars
+        const pillarArray = Object.entries(computedPillars).map(([name, score]) => ({ name, score }));
+        pillarArray.sort((a, b) => b.score - a.score);
+        setTopPillars(pillarArray.slice(0, 2));
         
         // Update XIMAtar based on guest assignment
         if (guestXimatar) {
@@ -141,6 +147,16 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
               const key = p.pillar === 'computational_power' ? 'computational' : p.pillar;
               computedPillars[key as keyof XimaPillars] = p.score as number;
             });
+
+            // Identify top 2 pillars
+            const pillarArray = pillarData
+              .map(p => ({
+                name: p.pillar === 'computational_power' ? 'computational' : p.pillar,
+                score: p.score as number
+              }))
+              .sort((a, b) => b.score - a.score)
+              .slice(0, 2);
+            setTopPillars(pillarArray);
 
             // Update user avatar with computed XIMAtar
             if (result.ximatars) {
@@ -283,6 +299,29 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           {t('results.animal_description')}
         </p>
       </Card>
+
+      {/* Top Pillars Banner */}
+      {topPillars.length === 2 && (
+        <Card className="p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-primary" />
+              <span className="font-semibold text-lg">
+                {t('results.determined_by')}
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Badge variant="secondary" className="px-4 py-2 text-base capitalize">
+                {t(`pillars.${topPillars[0].name}`)} ({topPillars[0].score.toFixed(1)})
+              </Badge>
+              <span className="text-muted-foreground">+</span>
+              <Badge variant="secondary" className="px-4 py-2 text-base capitalize">
+                {t(`pillars.${topPillars[1].name}`)} ({topPillars[1].score.toFixed(1)})
+              </Badge>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* Professional Selection Section */}
       <Card className="p-8">
