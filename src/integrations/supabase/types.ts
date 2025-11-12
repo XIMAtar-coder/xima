@@ -366,14 +366,14 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "assessment_results_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "v_dashboard"
-            referencedColumns: ["user_id"]
+            referencedColumns: ["auth_user_id"]
           },
           {
             foreignKeyName: "assessment_results_ximatar_id_fkey"

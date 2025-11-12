@@ -47,6 +47,21 @@ serve(async (req: Request) => {
     const testUserId = authData.users[0].id;
     console.log(`Using test user: ${testUserId}`);
 
+    // Ensure a profile exists for this user (FK requirement)
+    const { data: profileRows } = await supabase
+      .from("profiles")
+      .select("user_id")
+      .eq("user_id", testUserId)
+      .limit(1);
+
+    if (!profileRows || profileRows.length === 0) {
+      await supabase.from("profiles").insert({
+        user_id: testUserId,
+        name: "XIMAtar Test User",
+        profile_complete: false
+      });
+    }
+
     // Test each pattern
     for (const pattern of testPatterns) {
       console.log(`Testing pattern: ${pattern.name}`);
