@@ -8,10 +8,12 @@ import { Progress } from '@/components/ui/progress';
 import { OpenAnswerScore } from './OpenAnswerScore';
 import FeaturedProfessionals, { type FieldKey } from '../FeaturedProfessionals';
 import { XimatarProfileCard } from '../results/XimatarProfileCard';
-import { ArrowRight, CheckCircle, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle, Sparkles, AlertCircle } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
+import { useXimatarsCatalog } from '@/hooks/useXimatarsCatalog';
 import type { Rubric } from '@/lib/scoring/openResponse';
+import { normalizeXimatarImageUrl } from '@/utils/normalizeXimatarImage';
 
 interface ResultsComparisonProps {
   onComplete: (step: number) => void;
@@ -24,10 +26,10 @@ interface XimatarData {
   image_url: string;
   translations: {
     title: string;
-    core_traits: string;
-    behavior: string;
-    weaknesses: string;
-    ideal_roles: string;
+    core_traits?: string;
+    behavior?: string;
+    weaknesses?: string;
+    ideal_roles?: string;
   };
 }
 
@@ -40,11 +42,13 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { isAuthenticated, user } = useUser();
+  const { catalogMap, loading: catalogLoading } = useXimatarsCatalog();
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [selectedProfessional, setSelectedProfessional] = useState<string | null>(null);
   const [ximatarData, setXimatarData] = useState<XimatarData | null>(null);
   const [pillarScores, setPillarScores] = useState<PillarScore[]>([]);
+  const [totalScore, setTotalScore] = useState<number | null>(null);
   const [openResponses, setOpenResponses] = useState<Array<{
     open_key: 'open1' | 'open2';
     answer: string;
@@ -55,14 +59,18 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   const [selectedField] = useState<FieldKey>(() => {
     return (localStorage.getItem('preferred_field') as FieldKey) || 'business_leadership';
   });
+  const [hasNoAssessment, setHasNoAssessment] = useState(false);
 
   useEffect(() => {
     const fetchComputedResults = async () => {
-      const currentLang = (i18n.language || 'it') as 'it' | 'en' | 'es';
+      if (catalogLoading) return;
+
+      const currentLang = (i18n.language || 'it').split('-')[0] as 'it' | 'en' | 'es';
       
       // Check for guest data first
       const guestPillarScores = localStorage.getItem('guest_pillar_scores');
       const guestXimatar = localStorage.getItem('guest_ximatar');
+      
       if (guestPillarScores && !user?.id) {
         const guestScores = JSON.parse(guestPillarScores);
         const scores: PillarScore[] = [
@@ -74,30 +82,28 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         ];
         setPillarScores(scores);
         
+        const total = scores.reduce((sum, s) => sum + s.score, 0);
+        setTotalScore(total);
+        
         // Identify top 2 pillars
         const sortedScores = [...scores].sort((a, b) => b.score - a.score);
         setTopPillars(sortedScores.slice(0, 2).map(s => ({ name: s.pillar, score: s.score })));
         
-        // Fetch XIMAtar data from database even for guests
-        if (guestXimatar) {
-          const { data: ximatarInfo } = await supabase
-            .from('ximatars')
-            .select(`
-              id,
-              label,
-              image_url,
-              ximatar_translations!inner(title, core_traits, behavior, weaknesses, ideal_roles)
-            `)
-            .eq('label', guestXimatar.toLowerCase())
-            .eq('ximatar_translations.lang', currentLang)
-            .single();
-
-          if (ximatarInfo && Array.isArray(ximatarInfo.ximatar_translations) && ximatarInfo.ximatar_translations.length > 0) {
+        // Use catalog for XIMAtar data
+        if (guestXimatar && catalogMap.has(guestXimatar.toLowerCase())) {
+          const catalogItem = catalogMap.get(guestXimatar.toLowerCase());
+          if (catalogItem) {
             setXimatarData({
-              id: ximatarInfo.id,
-              label: ximatarInfo.label,
-              image_url: ximatarInfo.image_url,
-              translations: ximatarInfo.ximatar_translations[0]
+              id: catalogItem.id,
+              label: catalogItem.label,
+              image_url: normalizeXimatarImageUrl(catalogItem.image_url),
+              translations: catalogItem.translation || {
+                title: '',
+                core_traits: '',
+                behavior: '',
+                weaknesses: '',
+                ideal_roles: ''
+              }
             });
           }
         }
@@ -105,77 +111,103 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         setTimeout(() => {
           setIsAnalyzing(false);
           setShowResults(true);
-        }, 2000);
+        }, 1500);
         return;
       }
       
-      const resultId = localStorage.getItem('current_result_id');
-      
-      if (!resultId || !user?.id) {
-        setTimeout(() => {
-          setIsAnalyzing(false);
-          setShowResults(true);
-        }, 2000);
+      if (!user?.id) {
+        setHasNoAssessment(true);
+        setIsAnalyzing(false);
         return;
       }
 
-      // Authenticated user - fetch real data
+      // Authenticated user - fetch latest assessment
+      const resultId = localStorage.getItem('current_result_id');
+      
       let attempts = 0;
       const maxAttempts = 10;
       const pollInterval = 2000;
 
       const pollResults = async (): Promise<boolean> => {
+        // Fetch the latest completed assessment
         const { data: result, error } = await supabase
           .from('assessment_results')
-          .select(`
-            id,
-            ximatar_id,
-            total_score,
-            computed_at,
-            ximatars!inner(
-              id,
-              label,
-              image_url,
-              ximatar_translations!inner(
-                title,
-                core_traits,
-                behavior,
-                weaknesses,
-                ideal_roles
-              )
-            )
-          `)
-          .eq('id', resultId)
-          .eq('ximatars.ximatar_translations.lang', currentLang)
-          .single();
+          .select('id, ximatar_id, total_score, computed_at')
+          .eq('user_id', user.id)
+          .eq('completed', true)
+          .order('computed_at', { ascending: false, nullsFirst: false })
+          .limit(1)
+          .maybeSingle();
 
-        if (error || !result || !result.ximatar_id) {
+        if (error) {
+          console.error('Error fetching assessment:', error);
           return false;
         }
 
-        // Get pillar scores
-        const { data: scores } = await supabase
+        if (!result || !result.ximatar_id) {
+          return false;
+        }
+
+        // Fetch XIMAtar info with translations
+        const { data: ximatarInfo, error: ximatarError } = await supabase
+          .from('ximatars')
+          .select(`
+            id,
+            label,
+            image_url,
+            ximatar_translations!inner(
+              title,
+              core_traits,
+              behavior,
+              weaknesses,
+              ideal_roles
+            )
+          `)
+          .eq('id', result.ximatar_id)
+          .eq('ximatar_translations.lang', currentLang)
+          .maybeSingle();
+
+        if (ximatarError) {
+          console.error('Error fetching XIMAtar:', ximatarError);
+          return false;
+        }
+
+        if (ximatarInfo) {
+          const translations = Array.isArray(ximatarInfo.ximatar_translations) 
+            ? ximatarInfo.ximatar_translations[0] 
+            : ximatarInfo.ximatar_translations;
+
+          setXimatarData({
+            id: ximatarInfo.id,
+            label: ximatarInfo.label,
+            image_url: normalizeXimatarImageUrl(ximatarInfo.image_url),
+            translations: translations || {
+              title: '',
+              core_traits: '',
+              behavior: '',
+              weaknesses: '',
+              ideal_roles: ''
+            }
+          });
+        }
+
+        // Fetch pillar scores
+        const { data: scores, error: scoresError } = await supabase
           .from('pillar_scores')
           .select('pillar, score')
-          .eq('assessment_result_id', resultId)
+          .eq('assessment_result_id', result.id)
           .order('score', { ascending: false });
+
+        if (scoresError) {
+          console.error('Error fetching pillar scores:', scoresError);
+        }
 
         if (scores && scores.length > 0) {
           setPillarScores(scores);
           setTopPillars(scores.slice(0, 2).map(s => ({ name: s.pillar, score: s.score })));
         }
 
-        // Set XIMAtar data
-        const ximatars: any = result.ximatars;
-        if (ximatars && Array.isArray(ximatars.ximatar_translations) && ximatars.ximatar_translations.length > 0) {
-          setXimatarData({
-            id: ximatars.id,
-            label: ximatars.label,
-            image_url: ximatars.image_url,
-            translations: ximatars.ximatar_translations[0]
-          });
-        }
-
+        setTotalScore(result.total_score);
         return true;
       };
 
@@ -190,7 +222,8 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         } else if (attempts < maxAttempts) {
           setTimeout(poll, pollInterval);
         } else {
-          console.warn('Max polling attempts reached');
+          console.warn('Max polling attempts reached - no assessment found');
+          setHasNoAssessment(true);
           setIsAnalyzing(false);
           setShowResults(true);
         }
@@ -200,7 +233,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     };
 
     fetchComputedResults();
-  }, [user, i18n.language]);
+  }, [user, i18n.language, catalogLoading, catalogMap]);
 
   // Fetch open responses
   useEffect(() => {
@@ -282,8 +315,25 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary"></div>
         </div>
         <div>
-          <h2 className="text-2xl font-bold mb-2">{t('results.analyzing')}</h2>
+          <h2 className="text-2xl font-bold mb-2 font-heading">{t('results.analyzing')}</h2>
           <p className="text-muted-foreground">{t('results.analyzing_subtitle')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (hasNoAssessment) {
+    return (
+      <div className="text-center space-y-6 py-12">
+        <div className="flex justify-center">
+          <AlertCircle className="h-16 w-16 text-muted-foreground" />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold mb-2 font-heading">{t('results.no_assessment')}</h2>
+          <p className="text-muted-foreground mb-6">{t('results.no_assessment_subtitle')}</p>
+          <Button onClick={() => navigate('/ximatar-journey')} size="lg">
+            {t('results.start_assessment')}
+          </Button>
         </div>
       </div>
     );
@@ -331,6 +381,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
               <Sparkles className="text-primary" />
               {t('results.assessment_scores')}
             </CardTitle>
+            {totalScore !== null && (
+              <p className="text-sm text-muted-foreground">
+                {t('results.total_score')}: <span className="font-bold text-primary">{totalScore.toFixed(1)}/50</span>
+              </p>
+            )}
           </CardHeader>
           <CardContent className="space-y-4">
             {pillarScores.map((pillar) => (
