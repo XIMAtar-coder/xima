@@ -59,28 +59,28 @@ export const XIMATAR_TYPES: XIMAtar[] = [
   {
     id: 'owl',
     name: 'Owl',
-    animal: 'Owl',
-    title: 'The Analyst',
-    description: 'Rational, precise, data-driven',
-    traits: ['Rational', 'Precise', 'Data-driven', 'Methodical', 'Thorough'],
-    strengths: ['Analytical thinking', 'Attention to detail', 'Problem solving', 'Research skills'],
-    weaknesses: ['Can be overly critical', 'May overthink decisions', 'Struggles with ambiguity'],
-    idealRoles: ['Analyst', 'Engineer', 'Researcher', 'Data Scientist'],
-    image: '/lovable-uploads/ae79af7a-e780-4f42-8fbf-529eb1e4d1f8.png', // Owl image
+    animal: 'owl',
+    title: 'The Analytical Thinker',
+    description: 'The Owl is a seeker of truth. Quietly powerful, they excel at making sense of complexity and using logic to guide decisions. Knowledge-driven, they transform data into insight and insight into foresight.',
+    traits: ['Wise', 'Analytical', 'Reflective', 'Detail-Oriented', 'Strategic'],
+    strengths: ['Analysis', 'Insight', 'Focus', 'Data-Driven Decision Making', 'Pattern Recognition'],
+    weaknesses: ['May overthink decisions', 'Can struggle with execution speed', 'Sometimes too cautious'],
+    idealRoles: ['Research Analyst', 'Data Scientist', 'Strategic Planner', 'Knowledge Manager', 'Risk Analyst', 'Compliance Officer'],
+    image: '/ximatars/owl.png',
     personality: {
       en: {
-        description: 'The Owl XIMAtar represents analytical minds who excel at processing information and finding logical solutions. They are methodical, precise, and driven by data and facts.',
-        traits: ['Rational', 'Precise', 'Data-driven', 'Methodical', 'Thorough'],
-        strengths: ['Exceptional analytical thinking', 'Attention to detail', 'Complex problem solving', 'Research and investigation skills', 'Logical reasoning'],
-        weaknesses: ['Can be overly critical', 'May overthink decisions', 'Struggles with ambiguous situations', 'Difficulty with quick decisions'],
-        idealRoles: ['Business Analyst', 'Software Engineer', 'Research Scientist', 'Data Scientist', 'Quality Assurance']
+        description: 'The Owl is a seeker of truth. Quietly powerful, they excel at making sense of complexity and using logic to guide decisions. Knowledge-driven, they transform data into insight and insight into foresight.',
+        traits: ['Wise', 'Analytical', 'Reflective', 'Detail-Oriented', 'Strategic'],
+        strengths: ['Analysis', 'Insight', 'Focus', 'Data-Driven Decision Making', 'Pattern Recognition'],
+        weaknesses: ['May overthink decisions', 'Can struggle with execution speed', 'Sometimes too cautious'],
+        idealRoles: ['Research Analyst', 'Data Scientist', 'Strategic Planner', 'Knowledge Manager', 'Risk Analyst', 'Compliance Officer']
       },
       it: {
-        description: 'Il XIMAtar Gufo rappresenta menti analitiche che eccellono nell\'elaborazione di informazioni e nella ricerca di soluzioni logiche. Sono metodici, precisi e guidati da dati e fatti.',
-        traits: ['Razionale', 'Preciso', 'Guidato dai dati', 'Metodico', 'Approfondito'],
-        strengths: ['Pensiero analitico eccezionale', 'Attenzione ai dettagli', 'Risoluzione di problemi complessi', 'Capacità di ricerca e investigazione', 'Ragionamento logico'],
-        weaknesses: ['Può essere eccessivamente critico', 'Può riflettere troppo sulle decisioni', 'Ha difficoltà con situazioni ambigue', 'Difficoltà con decisioni rapide'],
-        idealRoles: ['Analista di Business', 'Ingegnere Software', 'Ricercatore Scientifico', 'Data Scientist', 'Controllo Qualità']
+        description: 'Il Gufo è un cercatore di verità. Silenziosamente potente, eccelle nel dare senso alla complessità e nell\'usare la logica per guidare le decisioni. Guidato dalla conoscenza, trasforma i dati in intuizioni e le intuizioni in previsioni.',
+        traits: ['Saggio', 'Analitico', 'Riflessivo', 'Attento ai Dettagli', 'Strategico'],
+        strengths: ['Analisi', 'Intuizione', 'Concentrazione', 'Decisioni Basate sui Dati', 'Riconoscimento di Pattern'],
+        weaknesses: ['Può riflettere troppo sulle decisioni', 'Può avere difficoltà con la velocità di esecuzione', 'A volte troppo cauto'],
+        idealRoles: ['Analista di Ricerca', 'Data Scientist', 'Pianificatore Strategico', 'Knowledge Manager', 'Analista del Rischio', 'Responsabile Conformità']
       }
     }
   },
