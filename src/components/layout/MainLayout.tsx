@@ -9,6 +9,8 @@ import { Logo } from '../Logo';
 import { useUserHeaderData } from '@/hooks/useUserHeaderData';
 import { supabase } from '@/integrations/supabase/client';
 import { NotificationsDropdown } from '../NotificationsDropdown';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Menu } from 'lucide-react';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -23,6 +25,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
   const { assessmentInProgress } = useAssessment();
   const [scrolled, setScrolled] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const headerData = useUserHeaderData(user?.id);
 
   useEffect(() => {
@@ -111,12 +114,190 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                   }`}
                 />
               </button>
+              
+              {/* Public Navigation Links */}
+              <div className="hidden lg:flex items-center space-x-6">
+                <button 
+                  onClick={() => navigate('/how-it-works')}
+                  className={`text-sm font-medium hover:text-[hsl(var(--xima-accent))] transition-colors ${
+                    location.pathname === '/how-it-works' ? 'text-[hsl(var(--xima-accent))]' : 'text-muted-foreground'
+                  }`}
+                >
+                  {t('nav.how_it_works')}
+                </button>
+                <button 
+                  onClick={() => navigate('/about')}
+                  className={`text-sm font-medium hover:text-[hsl(var(--xima-accent))] transition-colors ${
+                    location.pathname === '/about' ? 'text-[hsl(var(--xima-accent))]' : 'text-muted-foreground'
+                  }`}
+                >
+                  {t('nav.about')}
+                </button>
+                <button 
+                  onClick={() => navigate('/ximatar-journey')}
+                  className={`text-sm font-medium hover:text-[hsl(var(--xima-accent))] transition-colors ${
+                    location.pathname === '/ximatar-journey' ? 'text-[hsl(var(--xima-accent))]' : 'text-muted-foreground'
+                  }`}
+                >
+                  {t('nav.assessments')}
+                </button>
+                <button 
+                  onClick={() => navigate('/business')}
+                  className={`text-sm font-medium hover:text-[hsl(var(--xima-accent))] transition-colors ${
+                    location.pathname === '/business' ? 'text-[hsl(var(--xima-accent))]' : 'text-muted-foreground'
+                  }`}
+                >
+                  {t('nav.business')}
+                </button>
+              </div>
             </div>
             
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-4">
               <LanguageSwitcher />
               
               {isAuthenticated && user && <NotificationsDropdown />}
+              
+              {!isAuthenticated && (
+                <div className="hidden md:flex items-center space-x-3">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => navigate('/login')}
+                    className="text-sm font-medium"
+                  >
+                    {t('nav.login')}
+                  </Button>
+                  <Button 
+                    size="sm"
+                    onClick={() => navigate('/business')}
+                    className="accent-gradient text-white hover:opacity-90 transition-opacity shadow-sm"
+                  >
+                    {t('nav.for_business')}
+                  </Button>
+                </div>
+              )}
+              
+              {/* Mobile Menu Button */}
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild className="lg:hidden">
+                  <Button variant="ghost" size="sm">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                  <nav className="flex flex-col space-y-4 mt-8">
+                    {/* Public Navigation */}
+                    <button
+                      onClick={() => {
+                        navigate('/how-it-works');
+                        setMobileMenuOpen(false);
+                      }}
+                      className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
+                    >
+                      {t('nav.how_it_works')}
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('/about');
+                        setMobileMenuOpen(false);
+                      }}
+                      className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
+                    >
+                      {t('nav.about')}
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('/ximatar-journey');
+                        setMobileMenuOpen(false);
+                      }}
+                      className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
+                    >
+                      {t('nav.assessments')}
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('/business');
+                        setMobileMenuOpen(false);
+                      }}
+                      className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
+                    >
+                      {t('nav.business')}
+                    </button>
+                    
+                    {/* Authenticated User Links */}
+                    {isAuthenticated && (
+                      <>
+                        <div className="border-t border-border pt-4 mt-4" />
+                        <button
+                          onClick={() => {
+                            navigate('/profile');
+                            setMobileMenuOpen(false);
+                          }}
+                          className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
+                        >
+                          Dashboard
+                        </button>
+                        <button
+                          onClick={() => {
+                            navigate('/risultati');
+                            setMobileMenuOpen(false);
+                          }}
+                          className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
+                        >
+                          Risultati
+                        </button>
+                        <button
+                          onClick={() => {
+                            navigate('/chat');
+                            setMobileMenuOpen(false);
+                          }}
+                          className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
+                        >
+                          Chat
+                        </button>
+                      </>
+                    )}
+                    
+                    {/* Auth Buttons */}
+                    <div className="border-t border-border pt-4 mt-4 space-y-3">
+                      {!isAuthenticated ? (
+                        <>
+                          <Button 
+                            onClick={() => {
+                              navigate('/login');
+                              setMobileMenuOpen(false);
+                            }}
+                            variant="outline"
+                            className="w-full"
+                          >
+                            {t('nav.login')}
+                          </Button>
+                          <Button 
+                            onClick={() => {
+                              navigate('/business');
+                              setMobileMenuOpen(false);
+                            }}
+                            className="w-full accent-gradient text-white"
+                          >
+                            {t('nav.for_business')}
+                          </Button>
+                        </>
+                      ) : (
+                        <Button 
+                          onClick={() => {
+                            handleLogout();
+                            setMobileMenuOpen(false);
+                          }}
+                          variant="outline"
+                          className="w-full"
+                        >
+                          Logout
+                        </Button>
+                      )}
+                    </div>
+                  </nav>
+                </SheetContent>
+              </Sheet>
               
               {isAuthenticated && user ? (
                 <div className="flex items-center space-x-6 animate-[fade-in_0.5s_ease-out]">

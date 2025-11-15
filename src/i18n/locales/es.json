@@ -73,16 +73,21 @@
     "home": "Inicio",
     "how_it_works": "Cómo Funciona",
     "about": "Acerca de",
+    "assessments": "Evaluaciones",
+    "business": "Negocios",
     "login": "Iniciar Sesión",
     "register": "Registrarse",
     "profile": "Perfil",
-    "logout": "Cerrar Sesión"
+    "logout": "Cerrar Sesión",
+    "for_business": "Para Empresas"
   },
   "hero": {
     "title": "Descubre tu potencial profesional",
     "subtitle": "Con XIMA, puedes descubrir tu verdadera identidad profesional y conectar con las oportunidades perfectas.",
     "cta_discover": "Descubre tu XIMAtar",
-    "cta_learn_more": "Aprende Más"
+    "cta_learn_more": "Aprende Más",
+    "for_business": "Para Empresas",
+    "login": "Iniciar Sesión"
   },
   "pillars": {
     "title": "Los 5 Pilares de XIMA",
@@ -927,5 +932,23 @@
     "select": "Seleccionar",
     "view_linkedin": "Ver en LinkedIn",
     "compatibility": "Compatibilidad"
+  },
+  "business": {
+    "hero_title": "Encuentra el Talento Perfecto",
+    "hero_subtitle": "Aprovecha la plataforma de evaluación avanzada de XIMA para identificar candidatos que realmente se ajusten a las necesidades de tu organización.",
+    "get_started": "Comenzar",
+    "sign_in": "Iniciar Sesión",
+    "features_title": "¿Por Qué Elegir XIMA para Empresas?",
+    "feature_1_title": "Emparejamiento Inteligente",
+    "feature_1_desc": "Nuestro sistema impulsado por IA empareja candidatos basándose en habilidades, personalidad y ajuste cultural.",
+    "feature_2_title": "Evaluaciones Integrales",
+    "feature_2_desc": "Evalúa candidatos a través de 5 pilares clave: Determinación, Poder Computacional, Comunicación, Creatividad y Conocimiento.",
+    "feature_3_title": "Análisis Basado en Datos",
+    "feature_3_desc": "Accede a análisis detallados e informes para tomar decisiones de contratación informadas.",
+    "feature_4_title": "Proceso Optimizado",
+    "feature_4_desc": "Reduce el tiempo de contratación con nuestro eficiente sistema de evaluación y emparejamiento de candidatos.",
+    "cta_title": "¿Listo para Transformar Tu Contratación?",
+    "cta_subtitle": "Únete a las empresas líderes que utilizan XIMA para construir equipos excepcionales.",
+    "start_free_trial": "Iniciar Prueba Gratuita"
   }
 }
