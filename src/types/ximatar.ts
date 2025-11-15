@@ -285,26 +285,26 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     name: 'Wolf',
     animal: 'Wolf',
     title: 'The Tactical Team Player',
-    description: 'Collaborative, adaptable, tribal',
-    traits: ['Collaborative', 'Adaptable', 'Tribal', 'Loyal', 'Strategic'],
-    strengths: ['Team coordination', 'Tactical planning', 'Adaptability', 'Loyalty'],
-    weaknesses: ['May struggle without team', 'Can be too dependent on others', 'Difficulty with solo leadership'],
-    idealRoles: ['Squad Leader', 'Agile Coach', 'Team Coordinator', 'Project Manager'],
-    image: '/lovable-uploads/fccaa05e-ddf8-473a-9b02-f46939f468fe.png', // Wolf avatar
+    description: 'Strategic, loyal, pack-oriented',
+    traits: ['Teamwork', 'Strategy', 'Integrity', 'Loyalty', 'Coordination'],
+    strengths: ['Teamwork', 'Strategy', 'Integrity', 'Loyalty'],
+    weaknesses: ['Rigidity in hierarchy', 'Difficulty when isolated', 'Group dependency'],
+    idealRoles: ['Scrum Master', 'Agile Coach', 'Team Coordinator', 'Project Manager', 'Squad Leader'],
+    image: '/ximatars/wolf.png',
     personality: {
       en: {
-        description: 'The Wolf XIMAtar represents tactical team players who excel at coordinating group efforts and adapting to changing circumstances. They are collaborative, loyal, and skilled at bringing out the best in their pack.',
-        traits: ['Collaborative', 'Adaptable', 'Tribal', 'Loyal', 'Strategic'],
-        strengths: ['Exceptional team coordination', 'Tactical planning abilities', 'High adaptability', 'Strong loyalty to team', 'Group motivation skills'],
-        weaknesses: ['May struggle without team support', 'Can be too dependent on group dynamics', 'Difficulty with solo leadership roles', 'May avoid individual accountability'],
-        idealRoles: ['Scrum Master', 'Agile Coach', 'Team Coordinator', 'Project Manager', 'Squad Leader']
+        description: 'The Wolf thrives in packs. They are strategic thinkers who value trust, loyalty, and well-defined roles. Wolves are natural team players, often emerging as respected coordinators or quiet leaders within a group.',
+        traits: ['Teamwork', 'Strategy', 'Integrity', 'Loyalty', 'Coordination'],
+        strengths: ['Exceptional team coordination', 'Tactical and strategic planning', 'High adaptability in group settings', 'Strong loyalty and integrity', 'Natural facilitation skills'],
+        weaknesses: ['Rigidity in hierarchy', 'Difficulty when isolated from team', 'Can be overly dependent on group dynamics', 'May avoid individual leadership'],
+        idealRoles: ['Scrum Master', 'Agile Coach', 'Team Coordinator', 'Project Manager', 'Squad Leader', 'Operations Manager']
       },
       it: {
-        description: 'Il XIMAtar Lupo rappresenta giocatori di squadra tattici che eccellono nel coordinare gli sforzi di gruppo e nell\'adattarsi a circostanze mutevoli. Sono collaborativi, leali e abili nel tirare fuori il meglio dal loro branco.',
-        traits: ['Collaborativo', 'Adattabile', 'Tribale', 'Leale', 'Strategico'],
-        strengths: ['Coordinamento di squadra eccezionale', 'Abilità di pianificazione tattica', 'Alta adattabilità', 'Forte lealtà verso il team', 'Capacità di motivazione di gruppo'],
-        weaknesses: ['Può avere difficoltà senza supporto del team', 'Può essere troppo dipendente dalle dinamiche di gruppo', 'Difficoltà con ruoli di leadership solitaria', 'Può evitare responsabilità individuali'],
-        idealRoles: ['Scrum Master', 'Agile Coach', 'Coordinatore Team', 'Project Manager', 'Squad Leader']
+        description: 'Il Lupo prospera nel branco. Sono pensatori strategici che valorizzano fiducia, lealtà e ruoli ben definiti. I Lupi sono giocatori di squadra naturali, spesso emergono come coordinatori rispettati o leader silenziosi all\'interno del gruppo.',
+        traits: ['Lavoro di squadra', 'Strategia', 'Integrità', 'Lealtà', 'Coordinamento'],
+        strengths: ['Coordinamento di squadra eccezionale', 'Pianificazione tattica e strategica', 'Alta adattabilità in contesti di gruppo', 'Forte lealtà e integrità', 'Abilità naturali di facilitazione'],
+        weaknesses: ['Rigidità nella gerarchia', 'Difficoltà quando isolati dal team', 'Possono essere eccessivamente dipendenti dalle dinamiche di gruppo', 'Possono evitare leadership individuale'],
+        idealRoles: ['Scrum Master', 'Agile Coach', 'Coordinatore Team', 'Project Manager', 'Squad Leader', 'Operations Manager']
       }
     }
   },
