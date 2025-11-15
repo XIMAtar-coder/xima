@@ -537,14 +537,19 @@
     "login_required": "Accesso richiesto",
     "login": "Accedi",
     "loading": "Caricamento...",
-    "back": "Indietro"
+    "back": "Indietro",
+    "error": "Errore"
   },
   "profile": {
     "page_title": "Benvenuto, {{name}}",
+    "welcome_name": "Benvenuto, {{name}}",
     "page_subtitle": "Ecco il tuo profilo professionale e i risultati della valutazione",
     "user": "Utente",
     "your_ximatar": "Il tuo XIMAtar",
-    "job_matches": "Opportunità Consigliate",
+    "your_mentor": "Il Tuo Mentore",
+    "book_15_min_session": "Prenota la tua sessione di 15 minuti",
+    "challenge_for_you": "Sfida per Te",
+    "this_week": "Questa Settimana",
     "matched_professional": "Professionista Abbinato",
     "booking_pending": "In Attesa",
     "booking_confirmed": "Confermato",
@@ -555,12 +560,11 @@
     "confirm_booking": "Conferma Prenotazione",
     "booking_confirmed_message": "La tua sessione è stata confermata!",
     "no_professional_matched": "Nessun professionista abbinato ancora",
-    "complete_assessment": "Completa la Valutazione",
-    "recommended_opportunities": "Opportunità Raccomandate"
+    "complete_assessment": "Completa la Valutazione"
   },
   "results": {
-    "page_title": "I Tuoi Risultati",
-    "page_subtitle": "Ecco la tua valutazione XIMAtar completa",
+    "title": "I Tuoi Risultati",
+    "subtitle": "Ecco la tua valutazione completa XIMAtar",
     "your_ximatar": "Il tuo XIMAtar",
     "core_traits": "Tratti Distintivi",
     "strengths": "Punti di Forza",
@@ -571,6 +575,15 @@
     "biggest_improvement": "Miglioramento Maggiore",
     "proceed_to_profile": "Vai al Profilo",
     "register_to_continue": "Registrati per Continuare"
+  },
+  "cv_analysis": {
+    "title": "Carica il Tuo CV per un'Analisi Avanzata",
+    "description": "Carica il tuo CV per ottenere approfondimenti personalizzati basati sulla tua esperienza professionale.",
+    "upload_button": "Carica CV",
+    "uploading": "Caricamento...",
+    "analyzing": "Analisi del tuo CV...",
+    "complete": "Analisi CV Completata!",
+    "success": "Il tuo CV è stato analizzato con successo."
   },
   "progress": {
     "journey_progress": "Progresso del Tuo Percorso",
