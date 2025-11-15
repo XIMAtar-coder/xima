@@ -200,27 +200,27 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     id: 'bee',
     name: 'Bee',
     animal: 'Bee',
-    title: 'The Productive Worker',
-    description: 'Disciplined, efficient, consistent',
-    traits: ['Disciplined', 'Efficient', 'Consistent', 'Organized', 'Dedicated'],
-    strengths: ['High productivity', 'Organization', 'Consistency', 'Process optimization'],
-    weaknesses: ['May be too rigid', 'Can struggle with creativity', 'Difficulty with change'],
-    idealRoles: ['Admin', 'Logistics', 'Operations', 'Project Coordinator'],
-    image: '/lovable-uploads/ce92fde6-0154-448f-a838-27aba2b74061.png', // Bee avatar
+    title: 'The Purposeful Contributor',
+    description: 'The Bee works with intention and commitment to the greater good. Thrives in structured environments and contributes tirelessly to team outcomes.',
+    traits: ['Diligent', 'Community-Driven', 'Purposeful', 'Disciplined', 'Structured'],
+    strengths: ['Discipline', 'Structure', 'Team Contribution', 'Process Adherence', 'Consistency'],
+    weaknesses: ['May resist improvisation', 'Needs a clear mission', 'Less comfortable with ambiguity'],
+    idealRoles: ['Operations Coordinator', 'Team Support Specialist', 'Process Manager', 'Customer Success', 'Administrative Roles'],
+    image: '/ximatars/bee.png',
     personality: {
       en: {
-        description: 'The Bee XIMAtar represents productive workers who excel at efficient execution and maintaining high standards. They are disciplined, organized, and skilled at optimizing processes and workflows.',
-        traits: ['Disciplined', 'Efficient', 'Consistent', 'Organized', 'Dedicated'],
-        strengths: ['Exceptional productivity levels', 'Strong organizational skills', 'Consistent quality output', 'Process optimization abilities', 'Attention to deadlines'],
-        weaknesses: ['May be too rigid in approach', 'Can struggle with creative tasks', 'Difficulty adapting to sudden changes', 'May resist new methodologies'],
-        idealRoles: ['Administrative Manager', 'Logistics Coordinator', 'Operations Specialist', 'Project Coordinator', 'Process Manager']
+        description: 'The Bee works with intention and commitment to the greater good. Thrives in structured environments and contributes tirelessly to shared outcomes. Disciplined and purpose-driven.',
+        traits: ['Diligent', 'Community-Driven', 'Purposeful', 'Disciplined', 'Structured'],
+        strengths: ['Discipline', 'Structure', 'Team Contribution', 'Process Adherence', 'Consistency'],
+        weaknesses: ['May resist improvisation', 'Needs a clear mission', 'Less comfortable with ambiguity', 'Prefers defined paths'],
+        idealRoles: ['Operations Coordinator', 'Team Support Specialist', 'Process Manager', 'Customer Success', 'Administrative Roles']
       },
       it: {
-        description: 'Il XIMAtar Ape rappresenta lavoratori produttivi che eccellono nell\'esecuzione efficiente e nel mantenere alti standard. Sono disciplinati, organizzati e abili nell\'ottimizzare processi e flussi di lavoro.',
-        traits: ['Disciplinato', 'Efficiente', 'Coerente', 'Organizzato', 'Dedicato'],
-        strengths: ['Livelli di produttività eccezionali', 'Forti capacità organizzative', 'Output di qualità coerente', 'Capacità di ottimizzazione processi', 'Attenzione alle scadenze'],
-        weaknesses: ['Può essere troppo rigido nell\'approccio', 'Può avere difficoltà con compiti creativi', 'Difficoltà ad adattarsi a cambi improvvisi', 'Può resistere a nuove metodologie'],
-        idealRoles: ['Manager Amministrativo', 'Coordinatore Logistica', 'Specialista Operazioni', 'Coordinatore Progetto', 'Manager Processi']
+        description: 'L\'Ape lavora con intenzione e impegno verso il bene comune. Prospera in ambienti strutturati e contribuisce instancabilmente ai risultati del team. Disciplinata e guidata dallo scopo.',
+        traits: ['Diligente', 'Orientato alla Comunità', 'Guidato dallo Scopo', 'Disciplinato', 'Strutturato'],
+        strengths: ['Disciplina', 'Struttura', 'Contributo al Team', 'Aderenza ai Processi', 'Costanza'],
+        weaknesses: ['Può resistere all\'improvvisazione', 'Ha bisogno di una missione chiara', 'Meno a suo agio con l\'ambiguità', 'Preferisce percorsi definiti'],
+        idealRoles: ['Coordinatore Operativo', 'Supporto Team', 'Manager dei Processi', 'Customer Success', 'Ruoli Amministrativi']
       }
     }
   },
