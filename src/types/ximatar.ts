@@ -341,26 +341,26 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     name: 'Horse',
     animal: 'Horse',
     title: 'The Reliable Driver',
-    description: 'Hardworking, consistent, resilient',
-    traits: ['Hardworking', 'Consistent', 'Resilient', 'Dependable', 'Enduring'],
-    strengths: ['Work ethic', 'Consistency', 'Reliability', 'Perseverance'],
-    weaknesses: ['May be resistant to change', 'Can be overly focused on work', 'Difficulty with innovation'],
-    idealRoles: ['Execution', 'Support', 'Implementation', 'Operations'],
-    image: '/lovable-uploads/b8f42a43-f428-481e-aa5f-8c643ce46287.png', // Horse avatar
+    description: 'Persistent, dutiful, goal-driven',
+    traits: ['Persistent', 'Dutiful', 'Goal-driven', 'Dependable', 'Enduring'],
+    strengths: ['Reliability', 'Endurance', 'Loyalty', 'Work ethic'],
+    weaknesses: ['Risk aversion', 'Low flexibility', 'Difficulty with change'],
+    idealRoles: ['Project Manager', 'Operations Lead', 'Logistics Coordinator', 'Quality Assurance'],
+    image: '/ximatars/horse.png',
     personality: {
       en: {
-        description: 'The Horse XIMAtar represents reliable drivers who excel at consistent execution and delivering results. They are hardworking, resilient, and skilled at maintaining steady progress toward goals.',
-        traits: ['Hardworking', 'Consistent', 'Resilient', 'Dependable', 'Enduring'],
-        strengths: ['Exceptional work ethic', 'Consistent performance', 'High reliability', 'Strong perseverance', 'Steady progress delivery'],
-        weaknesses: ['May be resistant to change', 'Can be overly focused on work', 'Difficulty with innovative thinking', 'May struggle with creative tasks'],
-        idealRoles: ['Implementation Manager', 'Operations Specialist', 'Support Team Lead', 'Execution Coordinator', 'Delivery Manager']
+        description: 'The Horse XIMAtar thrives on persistence and duty. Always moving forward, they are driven by goals and a strong work ethic. Others rely on them to carry the team across the finish line, no matter how hard the path.',
+        traits: ['Persistent', 'Dutiful', 'Goal-driven', 'Dependable', 'Enduring'],
+        strengths: ['Exceptional reliability', 'High endurance and stamina', 'Strong loyalty to team and goals', 'Unwavering work ethic', 'Steady progress delivery'],
+        weaknesses: ['Risk aversion', 'Low flexibility', 'Difficulty adapting to change', 'May struggle with creative exploration'],
+        idealRoles: ['Project Manager', 'Operations Lead', 'Logistics Coordinator', 'Quality Assurance Manager', 'Implementation Specialist']
       },
       it: {
-        description: 'Il XIMAtar Cavallo rappresenta conduttori affidabili che eccellono nell\'esecuzione coerente e nel fornire risultati. Sono laboriosi, resilienti e abili nel mantenere un progresso costante verso gli obiettivi.',
-        traits: ['Laborioso', 'Coerente', 'Resiliente', 'Affidabile', 'Duraturo'],
-        strengths: ['Etica del lavoro eccezionale', 'Performance coerente', 'Alta affidabilità', 'Forte perseveranza', 'Consegna di progresso costante'],
-        weaknesses: ['Può essere resistente al cambiamento', 'Può essere eccessivamente focalizzato sul lavoro', 'Difficoltà con il pensiero innovativo', 'Può avere difficoltà con compiti creativi'],
-        idealRoles: ['Manager Implementazione', 'Specialista Operazioni', 'Team Lead Support', 'Coordinatore Esecuzione', 'Delivery Manager']
+        description: 'Il XIMAtar Cavallo prospera sulla persistenza e il dovere. Sempre in movimento, sono guidati da obiettivi e una forte etica del lavoro. Gli altri fanno affidamento su di loro per portare il team al traguardo, non importa quanto difficile sia il percorso.',
+        traits: ['Persistente', 'Dovere', 'Orientato agli obiettivi', 'Affidabile', 'Resistente'],
+        strengths: ['Affidabilità eccezionale', 'Alta resistenza e energia', 'Forte lealtà al team e agli obiettivi', 'Etica del lavoro incrollabile', 'Consegna di progresso costante'],
+        weaknesses: ['Avversione al rischio', 'Bassa flessibilità', 'Difficoltà ad adattarsi al cambiamento', 'Può avere difficoltà con l\'esplorazione creativa'],
+        idealRoles: ['Project Manager', 'Responsabile Operazioni', 'Coordinatore Logistico', 'Manager Controllo Qualità', 'Specialista Implementazione']
       }
     }
   }
