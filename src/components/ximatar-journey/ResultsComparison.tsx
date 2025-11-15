@@ -1,16 +1,14 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import XimaScoreCard from '../XimaScoreCard';
-import XimaAvatar from '../XimaAvatar';
+import { Progress } from '@/components/ui/progress';
 import { OpenAnswerScore } from './OpenAnswerScore';
 import FeaturedProfessionals, { type FieldKey } from '../FeaturedProfessionals';
-import { ArrowRight, CheckCircle, UserPlus } from 'lucide-react';
-import { XimaPillars } from '../../types';
+import { XimatarProfileCard } from '../results/XimatarProfileCard';
+import { ArrowRight, CheckCircle, Sparkles } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
 import type { Rubric } from '@/lib/scoring/openResponse';
@@ -20,13 +18,33 @@ interface ResultsComparisonProps {
   hasCv: boolean;
 }
 
+interface XimatarData {
+  id: string;
+  label: string;
+  image_url: string;
+  translations: {
+    title: string;
+    core_traits: string;
+    behavior: string;
+    weaknesses: string;
+    ideal_roles: string;
+  };
+}
+
+interface PillarScore {
+  pillar: string;
+  score: number;
+}
+
 const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv }) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isAuthenticated, user } = useUser();
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [selectedProfessional, setSelectedProfessional] = useState<string | null>(null);
+  const [ximatarData, setXimatarData] = useState<XimatarData | null>(null);
+  const [pillarScores, setPillarScores] = useState<PillarScore[]>([]);
   const [openResponses, setOpenResponses] = useState<Array<{
     open_key: 'open1' | 'open2';
     answer: string;
@@ -38,58 +56,50 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     return (localStorage.getItem('preferred_field') as FieldKey) || 'business_leadership';
   });
 
-  // Mock data for demonstration
-  const baselinePillars: XimaPillars = {
-    computational: 6,
-    communication: 5,
-    knowledge: 8,
-    creativity: 4,
-    drive: 7
-  };
-
-  const finalPillars: XimaPillars = {
-    computational: 7,
-    communication: 8,
-    knowledge: 8,
-    creativity: 9,
-    drive: 8
-  };
-
-  const userAvatar = {
-    animal: t('results.fox_animal'),
-    image: '/ximatars/fox.png',
-    features: [
-      { name: t('results.adaptability'), description: t('results.adaptability_desc'), strength: 8 },
-      { name: t('results.focus'), description: t('results.focus_desc'), strength: 6 },
-      { name: t('results.creativity_trait'), description: t('results.creativity_desc'), strength: 7 }
-    ]
-  };
-
   useEffect(() => {
     const fetchComputedResults = async () => {
+      const currentLang = (i18n.language || 'it') as 'it' | 'en' | 'es';
+      
       // Check for guest data first
       const guestPillarScores = localStorage.getItem('guest_pillar_scores');
       const guestXimatar = localStorage.getItem('guest_ximatar');
       if (guestPillarScores && !user?.id) {
         const guestScores = JSON.parse(guestPillarScores);
-        const computedPillars: XimaPillars = {
-          computational: Math.round(guestScores.computational_power * 10) / 10,
-          communication: Math.round(guestScores.communication * 10) / 10,
-          knowledge: Math.round(guestScores.knowledge * 10) / 10,
-          creativity: Math.round(guestScores.creativity * 10) / 10,
-          drive: Math.round(guestScores.drive * 10) / 10
-        };
-        Object.assign(finalPillars, computedPillars);
+        const scores: PillarScore[] = [
+          { pillar: 'computational_power', score: guestScores.computational_power },
+          { pillar: 'communication', score: guestScores.communication },
+          { pillar: 'knowledge', score: guestScores.knowledge },
+          { pillar: 'creativity', score: guestScores.creativity },
+          { pillar: 'drive', score: guestScores.drive }
+        ];
+        setPillarScores(scores);
         
         // Identify top 2 pillars
-        const pillarArray = Object.entries(computedPillars).map(([name, score]) => ({ name, score }));
-        pillarArray.sort((a, b) => b.score - a.score);
-        setTopPillars(pillarArray.slice(0, 2));
+        const sortedScores = [...scores].sort((a, b) => b.score - a.score);
+        setTopPillars(sortedScores.slice(0, 2).map(s => ({ name: s.pillar, score: s.score })));
         
-        // Update XIMAtar based on guest assignment
+        // Fetch XIMAtar data from database even for guests
         if (guestXimatar) {
-          userAvatar.animal = guestXimatar;
-          userAvatar.image = `/ximatars/${guestXimatar}.png`;
+          const { data: ximatarInfo } = await supabase
+            .from('ximatars')
+            .select(`
+              id,
+              label,
+              image_url,
+              ximatar_translations!inner(title, core_traits, behavior, weaknesses, ideal_roles)
+            `)
+            .eq('label', guestXimatar.toLowerCase())
+            .eq('ximatar_translations.lang', currentLang)
+            .single();
+
+          if (ximatarInfo && Array.isArray(ximatarInfo.ximatar_translations) && ximatarInfo.ximatar_translations.length > 0) {
+            setXimatarData({
+              id: ximatarInfo.id,
+              label: ximatarInfo.label,
+              image_url: ximatarInfo.image_url,
+              translations: ximatarInfo.ximatar_translations[0]
+            });
+          }
         }
         
         setTimeout(() => {
@@ -102,103 +112,106 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       const resultId = localStorage.getItem('current_result_id');
       
       if (!resultId || !user?.id) {
-        // Fallback to mock data after timeout
-        const timer = setTimeout(() => {
+        setTimeout(() => {
           setIsAnalyzing(false);
           setShowResults(true);
-        }, 3000);
-        return () => clearTimeout(timer);
+        }, 2000);
+        return;
       }
 
-      // Poll for computed results
+      // Authenticated user - fetch real data
       let attempts = 0;
-      const maxAttempts = 15;
-      
-      while (attempts < maxAttempts) {
+      const maxAttempts = 10;
+      const pollInterval = 2000;
+
+      const pollResults = async (): Promise<boolean> => {
         const { data: result, error } = await supabase
           .from('assessment_results')
           .select(`
-            *,
-            ximatars (id, label, image_url)
+            id,
+            ximatar_id,
+            total_score,
+            computed_at,
+            ximatars!inner(
+              id,
+              label,
+              image_url,
+              ximatar_translations!inner(
+                title,
+                core_traits,
+                behavior,
+                weaknesses,
+                ideal_roles
+              )
+            )
           `)
           .eq('id', resultId)
+          .eq('ximatars.ximatar_translations.lang', currentLang)
           .single();
 
-        if (!error && result && result.ximatars && result.ximatar_id) {
-          console.log('Got computed results:', result);
-          
-          // Fetch pillar scores
-          const { data: pillarData } = await supabase
-            .from('pillar_scores')
-            .select('pillar, score')
-            .eq('assessment_result_id', resultId);
-
-          if (pillarData && pillarData.length > 0) {
-            // Update final pillars with computed values
-            const computedPillars: XimaPillars = {
-              computational: 0,
-              communication: 0,
-              knowledge: 0,
-              creativity: 0,
-              drive: 0
-            };
-
-            pillarData.forEach(p => {
-              const key = p.pillar === 'computational_power' ? 'computational' : p.pillar;
-              computedPillars[key as keyof XimaPillars] = p.score as number;
-            });
-
-            // Identify top 2 pillars
-            const pillarArray = pillarData
-              .map(p => ({
-                name: p.pillar === 'computational_power' ? 'computational' : p.pillar,
-                score: p.score as number
-              }))
-              .sort((a, b) => b.score - a.score)
-              .slice(0, 2);
-            setTopPillars(pillarArray);
-
-            // Update user avatar with computed XIMAtar
-            if (result.ximatars) {
-              userAvatar.animal = (result.ximatars as any).label;
-              const rawImageUrl = (result.ximatars as any).image_url;
-              userAvatar.image = rawImageUrl?.replace(/^public\//, '/') || '/ximatars/fox.png';
-            }
-
-            Object.assign(finalPillars, computedPillars);
-            console.log('Updated pillars:', finalPillars);
-            
-            setIsAnalyzing(false);
-            setShowResults(true);
-            return;
-          }
+        if (error || !result || !result.ximatar_id) {
+          return false;
         }
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        attempts++;
-      }
+        // Get pillar scores
+        const { data: scores } = await supabase
+          .from('pillar_scores')
+          .select('pillar, score')
+          .eq('assessment_result_id', resultId)
+          .order('score', { ascending: false });
 
-      // Timeout - show results anyway with fallback
-      console.warn('Computation timeout - showing fallback results');
-      setIsAnalyzing(false);
-      setShowResults(true);
+        if (scores && scores.length > 0) {
+          setPillarScores(scores);
+          setTopPillars(scores.slice(0, 2).map(s => ({ name: s.pillar, score: s.score })));
+        }
+
+        // Set XIMAtar data
+        const ximatars: any = result.ximatars;
+        if (ximatars && Array.isArray(ximatars.ximatar_translations) && ximatars.ximatar_translations.length > 0) {
+          setXimatarData({
+            id: ximatars.id,
+            label: ximatars.label,
+            image_url: ximatars.image_url,
+            translations: ximatars.ximatar_translations[0]
+          });
+        }
+
+        return true;
+      };
+
+      // Poll for results
+      const poll = async () => {
+        attempts++;
+        const success = await pollResults();
+        
+        if (success) {
+          setIsAnalyzing(false);
+          setShowResults(true);
+        } else if (attempts < maxAttempts) {
+          setTimeout(poll, pollInterval);
+        } else {
+          console.warn('Max polling attempts reached');
+          setIsAnalyzing(false);
+          setShowResults(true);
+        }
+      };
+
+      poll();
     };
 
     fetchComputedResults();
-  }, [user]);
+  }, [user, i18n.language]);
 
   // Fetch open responses
   useEffect(() => {
     const fetchOpenResponses = async () => {
-      // For guest users, retrieve from localStorage
       const guestData = localStorage.getItem('guest_assessment_data');
       if (guestData && !user?.id) {
         const data = JSON.parse(guestData);
-        // Create mock rubric for guest users
         const guestResponses = Object.entries(data.openAnswers || {}).map(([key, answer]) => ({
           open_key: key as 'open1' | 'open2',
           answer: answer as string,
-          score: Math.floor(Math.random() * 30) + 70, // Random score 70-100 for demo
+          score: Math.floor(Math.random() * 30) + 70,
           rubric: {
             length: Math.floor(Math.random() * 5) + 15,
             relevance: Math.floor(Math.random() * 5) + 20,
@@ -236,7 +249,6 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
   const handleProfessionalSelect = (professional: any) => {
     setSelectedProfessional(professional.id);
-    // Store the full professional data for later use
     localStorage.setItem('selected_professional_data', JSON.stringify(professional));
   };
 
@@ -246,20 +258,18 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     const professionalData = JSON.parse(localStorage.getItem('selected_professional_data') || '{}');
     
     if (isAuthenticated) {
-      // User is already authenticated, go to dashboard
       navigate('/profile', { 
         state: { 
           selectedProfessional: professionalData,
-          assessmentResults: finalPillars,
-          userAvatar: userAvatar
+          ximatarData: ximatarData,
+          pillarScores: pillarScores
         }
       });
     } else {
-      // User needs to register, store selection and redirect
       localStorage.setItem('selectedProfessional', JSON.stringify({
         professional: professionalData,
-        assessmentResults: finalPillars,
-        userAvatar: userAvatar
+        ximatarData: ximatarData,
+        pillarScores: pillarScores
       }));
       navigate('/register');
     }
@@ -269,11 +279,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     return (
       <div className="text-center space-y-6">
         <div className="flex justify-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#4171d6]"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary"></div>
         </div>
         <div>
           <h2 className="text-2xl font-bold mb-2">{t('results.analyzing')}</h2>
-          <p className="text-gray-600">{t('results.analyzing_subtitle')}</p>
+          <p className="text-muted-foreground">{t('results.analyzing_subtitle')}</p>
         </div>
       </div>
     );
@@ -282,26 +292,16 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   return (
     <div className="space-y-8">
       <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold">{t('results.title')}</h2>
-        <p className="text-gray-600">
+        <h2 className="text-3xl font-bold font-heading">{t('results.title')}</h2>
+        <p className="text-muted-foreground">
           {hasCv ? t('results.subtitle_with_cv') : t('results.subtitle_without_cv')}
         </p>
       </div>
 
-      {/* User Avatar Section */}
-      <Card className="p-8 text-center">
-        <h3 className="text-2xl font-bold mb-4">
-          {t('results.your_animal', { animal: userAvatar.animal })}
-        </h3>
-        <div className="flex justify-center mb-6">
-          <XimaAvatar avatar={userAvatar} size="lg" showDetails />
-        </div>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          {t('results.animal_description')}
-        </p>
-      </Card>
+      {ximatarData && (
+        <XimatarProfileCard ximatar={ximatarData} />
+      )}
 
-      {/* Top Pillars Banner */}
       {topPillars.length === 2 && (
         <Card className="p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
           <div className="flex items-center justify-center gap-3 flex-wrap">
@@ -313,20 +313,45 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
             </div>
             <div className="flex items-center gap-3">
               <Badge variant="secondary" className="px-4 py-2 text-base capitalize">
-                {t(`pillars.${topPillars[0].name}`)} ({topPillars[0].score.toFixed(1)})
+                {t(`pillars.${topPillars[0].name.replace('_', '')}`)} ({topPillars[0].score.toFixed(1)})
               </Badge>
               <span className="text-muted-foreground">+</span>
               <Badge variant="secondary" className="px-4 py-2 text-base capitalize">
-                {t(`pillars.${topPillars[1].name}`)} ({topPillars[1].score.toFixed(1)})
+                {t(`pillars.${topPillars[1].name.replace('_', '')}`)} ({topPillars[1].score.toFixed(1)})
               </Badge>
             </div>
           </div>
         </Card>
       )}
 
-      {/* Professional Selection Section */}
+      {pillarScores.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 font-heading">
+              <Sparkles className="text-primary" />
+              {t('results.assessment_scores')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {pillarScores.map((pillar) => (
+              <div key={pillar.pillar} className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium capitalize">
+                    {t(`pillars.${pillar.pillar.replace('_', '')}`)}
+                  </span>
+                  <span className="text-sm font-semibold text-primary">
+                    {pillar.score.toFixed(1)}/10
+                  </span>
+                </div>
+                <Progress value={pillar.score * 10} className="h-2" />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="p-8">
-        <h3 className="text-2xl font-bold mb-6 text-center">{t('professionals.title')}</h3>
+        <h3 className="text-2xl font-bold mb-6 text-center font-heading">{t('professionals.title')}</h3>
         <p className="text-center text-muted-foreground mb-8">{t('professionals.subtitle')}</p>
         
         <FeaturedProfessionals 
@@ -339,7 +364,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
             <Button 
               size="lg"
               onClick={handleProceedWithSelection}
-              className="bg-[#4171d6] hover:bg-[#2950a3] px-8 py-4"
+              className="px-8 py-4"
             >
               {isAuthenticated ? t('results.proceed_to_dashboard') : t('results.register_to_continue')}
               <ArrowRight size={20} className="ml-2" />
@@ -348,60 +373,21 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         )}
       </Card>
 
-      {/* Comparison Section */}
-      {hasCv && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="p-6">
-            <div className="text-center mb-4">
-              <Badge variant="outline" className="mb-2">
-                {t('results.baseline_assessment')}
-              </Badge>
-              <h3 className="text-lg font-semibold">{t('results.baseline_description')}</h3>
-            </div>
-            <XimaScoreCard pillars={baselinePillars} compact />
-          </Card>
-
-          <Card className="p-6">
-            <div className="text-center mb-4">
-              <Badge className="mb-2 bg-[#4171d6]">
-                {t('results.full_assessment')}
-              </Badge>
-              <h3 className="text-lg font-semibold">{t('results.full_description')}</h3>
-            </div>
-            <XimaScoreCard pillars={finalPillars} compact />
-          </Card>
-        </div>
-      )}
-
-      {/* Single Assessment Results */}
-      {!hasCv && (
+      {!hasCv && openResponses.length > 0 && (
         <div className="space-y-6">
           <Card className="p-8">
-            <XimaScoreCard pillars={finalPillars} showTooltip />
-          </Card>
-
-          {/* Open Answer Scores */}
-          {openResponses.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-center">{t('open_scoring.title')}</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {openResponses.map((response) => (
-                  <OpenAnswerScore
-                    key={response.open_key}
-                    openKey={response.open_key}
-                    rubric={response.rubric}
-                    answer={response.answer}
-                  />
-                ))}
-              </div>
+            <h3 className="text-2xl font-bold mb-6 text-center font-heading">{t('open_scoring.title')}</h3>
+            <div className="space-y-6">
+              {openResponses.map((response) => (
+                <OpenAnswerScore
+                  key={response.open_key}
+                  openKey={response.open_key}
+                  answer={response.answer}
+                  rubric={response.rubric}
+                />
+              ))}
             </div>
-          )}
-        </div>
-      )}
-
-      {!selectedProfessional && (
-        <div className="text-center">
-          <p className="text-gray-500">{t('results.select_professional_prompt')}</p>
+          </Card>
         </div>
       )}
     </div>
