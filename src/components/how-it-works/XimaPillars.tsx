@@ -38,6 +38,9 @@ const XimaPillars = () => {
   return (
     <div className="mb-12">
       <h2 className="text-3xl font-bold text-center mb-8">{t('pillars.title')}</h2>
+      <p className="text-center text-muted-foreground mb-8 max-w-3xl mx-auto">
+        {t('pillars.explanation')}
+      </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {pillars.map((pillar, index) => (
           <Card key={index} className="p-6 hover:shadow-lg transition-shadow">
@@ -45,7 +48,7 @@ const XimaPillars = () => {
               {pillar.icon}
               <h3 className="text-lg font-semibold">{pillar.name}</h3>
             </div>
-            <p className="text-gray-600 text-sm">{pillar.description}</p>
+            <p className="text-muted-foreground text-sm">{pillar.description}</p>
           </Card>
         ))}
       </div>

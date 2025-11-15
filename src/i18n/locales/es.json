@@ -91,6 +91,27 @@
   },
   "pillars": {
     "title": "Los 5 Pilares de XIMA",
+    "explanation": "Cada puntuación se calcula a partir de respuestas conductuales, elecciones situacionales, patrones cognitivos y análisis del estilo de escritura.",
+    "computational": {
+      "name": "Poder Computacional",
+      "description": "La capacidad de descomponer problemas complejos en pasos lógicos, usar datos y herramientas para encontrar soluciones eficientes y pensar sistemáticamente sobre los desafíos."
+    },
+    "communication": {
+      "name": "Comunicación",
+      "description": "Qué tan efectivamente expresas ideas, escuchas activamente, construyes relaciones significativas y colaboras con otros para lograr objetivos compartidos."
+    },
+    "knowledge": {
+      "name": "Conocimiento",
+      "description": "Tu profundidad de experiencia en áreas clave, capacidad para aprender continuamente y habilidad para aplicar lo que sabes a situaciones del mundo real."
+    },
+    "creativity": {
+      "name": "Creatividad",
+      "description": "Tu capacidad para generar ideas frescas, ver problemas desde nuevos ángulos, abrazar el pensamiento innovador y descubrir soluciones no convencionales."
+    },
+    "drive": {
+      "name": "Impulso",
+      "description": "Tu motivación interna para perseguir objetivos ambiciosos, recuperarte de contratiempos, tomar la iniciativa y mantener un fuerte compromiso con la excelencia."
+    },
     "cta_primary": "Obtén tu XIMAtar ahora",
     "cta_secondary": "Aprende más",
     "example_label": "Ejemplo",
