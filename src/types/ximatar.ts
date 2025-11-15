@@ -87,28 +87,28 @@ export const XIMATAR_TYPES: XIMAtar[] = [
   {
     id: 'dolphin',
     name: 'Dolphin',
-    animal: 'Dolphin',
+    animal: 'dolphin',
     title: 'The Team Facilitator',
-    description: 'Empathetic, morale-builder',
-    traits: ['Empathetic', 'Collaborative', 'Supportive', 'Intuitive', 'Harmonious'],
-    strengths: ['Team building', 'Emotional intelligence', 'Conflict resolution', 'Motivation'],
-    weaknesses: ['May avoid difficult conversations', 'Can be too accommodating', 'Struggles with tough decisions'],
-    idealRoles: ['HR', 'Coach', 'Team Facilitator', 'Counselor'],
-    image: '/lovable-uploads/ae79af7a-e780-4f42-8fbf-529eb1e4d1f8.png', // Dolphin avatar
+    description: 'The Dolphin radiates positivity. Socially attuned and emotionally intelligent, they thrive in collaborative settings and spread harmony. They are the ultimate team players with a natural touch for relationships.',
+    traits: ['Empathetic', 'Collaborative', 'Emotionally Intelligent', 'Harmonious', 'Social'],
+    strengths: ['Empathy', 'Collaboration', 'Emotional Insight', 'Team Building', 'Conflict Resolution'],
+    weaknesses: ['May avoid confrontation', 'Needs external motivation', 'Can be overly accommodating'],
+    idealRoles: ['HR Manager', 'Team Facilitator', 'Customer Support', 'Community Manager', 'Wellness Coach', 'Mediator'],
+    image: '/ximatars/dolphin.png',
     personality: {
       en: {
-        description: 'The Dolphin XIMAtar represents natural team facilitators who excel at bringing people together and creating harmonious work environments. They are highly empathetic and skilled at understanding team dynamics.',
-        traits: ['Empathetic', 'Collaborative', 'Supportive', 'Intuitive', 'Harmonious'],
-        strengths: ['Exceptional team building skills', 'High emotional intelligence', 'Conflict resolution abilities', 'Natural motivation skills', 'Creating inclusive environments'],
-        weaknesses: ['May avoid difficult conversations', 'Can be too accommodating', 'Struggles with tough decisions', 'May prioritize harmony over efficiency'],
-        idealRoles: ['HR Manager', 'Team Coach', 'Project Facilitator', 'Counselor', 'Training Coordinator']
+        description: 'The Dolphin radiates positivity. Socially attuned and emotionally intelligent, they thrive in collaborative settings and spread harmony. They are the ultimate team players with a natural touch for relationships.',
+        traits: ['Empathetic', 'Collaborative', 'Emotionally Intelligent', 'Harmonious', 'Social'],
+        strengths: ['Empathy', 'Collaboration', 'Emotional Insight', 'Team Building', 'Conflict Resolution'],
+        weaknesses: ['May avoid confrontation', 'Needs external motivation', 'Can be overly accommodating'],
+        idealRoles: ['HR Manager', 'Team Facilitator', 'Customer Support', 'Community Manager', 'Wellness Coach', 'Mediator']
       },
       it: {
-        description: 'Il XIMAtar Delfino rappresenta facilitatori di team naturali che eccellono nel riunire le persone e creare ambienti di lavoro armoniosi. Sono altamente empatici e abili nel comprendere le dinamiche di gruppo.',
-        traits: ['Empatico', 'Collaborativo', 'Supportivo', 'Intuitivo', 'Armonioso'],
-        strengths: ['Eccezionali capacità di team building', 'Alta intelligenza emotiva', 'Capacità di risoluzione conflitti', 'Capacità motivazionali naturali', 'Creazione di ambienti inclusivi'],
-        weaknesses: ['Può evitare conversazioni difficili', 'Può essere troppo accomodante', 'Ha difficoltà con decisioni difficili', 'Può prioritizzare l\'armonia sull\'efficienza'],
-        idealRoles: ['Manager HR', 'Team Coach', 'Facilitatore di Progetto', 'Consulente', 'Coordinatore Formazione']
+        description: 'Il Delfino irradia positività. Socialmente sintonizzato ed emotivamente intelligente, prospera in contesti collaborativi e diffonde armonia. È il compagno di squadra definitivo con un tocco naturale per le relazioni.',
+        traits: ['Empatico', 'Collaborativo', 'Emotivamente Intelligente', 'Armonioso', 'Sociale'],
+        strengths: ['Empatia', 'Collaborazione', 'Intuizione Emotiva', 'Team Building', 'Risoluzione dei Conflitti'],
+        weaknesses: ['Può evitare il confronto', 'Ha bisogno di motivazione esterna', 'Può essere eccessivamente accomodante'],
+        idealRoles: ['HR Manager', 'Facilitatore di Team', 'Supporto Clienti', 'Community Manager', 'Coach del Benessere', 'Mediatore']
       }
     }
   },
