@@ -57,17 +57,6 @@ const Index = () => {
               >
                 {t('hero.for_business')}
               </Button>
-              
-              {!isAuthenticated && (
-                <Button 
-                  variant="outline" 
-                  size="lg"
-                  onClick={() => navigate('/login')}
-                  className="text-base md:text-lg px-8 py-6 rounded-xl"
-                >
-                  {t('hero.login')}
-                </Button>
-              )}
             </div>
           </div>
         </div>
