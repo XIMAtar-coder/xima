@@ -32,10 +32,10 @@ serve(async (req) => {
 
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
     const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
     if (!SUPABASE_URL || !SERVICE_ROLE) throw new Error("Supabase env not configured");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
@@ -83,14 +83,14 @@ serve(async (req) => {
 
     const prompt = `Website: ${website}\n\nContent:\n${corpus}`;
 
-    const aiResp = await fetch("https://api.openai.com/v1/chat/completions", {
+    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: system },
           { role: "user", content: prompt },
@@ -102,8 +102,10 @@ serve(async (req) => {
 
     if (!aiResp.ok) {
       const t = await aiResp.text();
-      console.error("OpenAI error:", aiResp.status, t);
-      return json({ error: "OpenAI request failed" }, 500);
+      console.error("Lovable AI error:", aiResp.status, t);
+      if (aiResp.status === 429) return json({ error: "Rate limit exceeded. Please try again later." }, 429);
+      if (aiResp.status === 402) return json({ error: "AI credits exhausted. Please add credits in Settings." }, 402);
+      return json({ error: "AI request failed" }, 500);
     }
 
     const aiJson = await aiResp.json();
