@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Loader2, X, Download } from "lucide-react";
 import jsPDF from "jspdf";
 import { useXimatarsCatalog } from "@/hooks/useXimatarsCatalog";
+import { normalizeXimatarImageUrl } from "@/utils/normalizeXimatarImage";
 export const XimatarTestButton = () => {
   const [testing, setTesting] = useState(false);
   const [results, setResults] = useState<any>(null);
@@ -202,12 +203,12 @@ export const XimatarTestButton = () => {
                   {r.success ? (
                     <>
                       {(() => {
-                        const key = String(r.assigned || r.pattern || '').toLowerCase();
-                        const cat = catalogMap.get(key);
-                        const imageSrc = cat?.image_url
-                          ? String(cat.image_url).replace('public/', '/')
-                          : `/ximatars/${key}.png`;
-                        const title = cat?.translation?.title || (r.assigned || key);
+                        // Use the image directly from the test result (already correct from database)
+                        const imageSrc = normalizeXimatarImageUrl(r.image);
+                        const assignedLabel = String(r.assigned || '').toLowerCase();
+                        const cat = catalogMap.get(assignedLabel);
+                        const title = cat?.translation?.title || r.assigned || assignedLabel;
+                        
                         return (
                           <div className="flex flex-col items-center gap-2 mb-2">
                             <img
@@ -215,6 +216,7 @@ export const XimatarTestButton = () => {
                               alt={title}
                               className="w-16 h-16 object-contain"
                               onError={(e) => {
+                                console.error(`Failed to load image: ${imageSrc} for ${assignedLabel}`);
                                 (e.currentTarget as HTMLImageElement).src = '/ximatars/fox.png';
                               }}
                             />
