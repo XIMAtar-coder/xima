@@ -256,27 +256,27 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     id: 'elephant',
     name: 'Elephant',
     animal: 'Elephant',
-    title: 'The Long-Term Strategist',
-    description: 'Wise, legacy-minded, reflective',
-    traits: ['Wise', 'Legacy-minded', 'Reflective', 'Patient', 'Visionary'],
-    strengths: ['Strategic planning', 'Long-term thinking', 'Wisdom', 'Mentoring'],
-    weaknesses: ['May be slow to act', 'Can be resistant to quick changes', 'Overthinks decisions'],
-    idealRoles: ['Strategy', 'Governance', 'Advisory', 'Senior Leadership'],
-    image: '/lovable-uploads/f561bed6-0ac5-4d79-a209-02d60bae5d59.png', // Elephant avatar
+    title: 'The Wise Strategist',
+    description: 'Reflective, experienced, long-term thinker',
+    traits: ['Memory', 'Emotional Intelligence', 'Long-Term Thinking', 'Wisdom', 'Patience'],
+    strengths: ['Memory', 'Emotional Intelligence', 'Long-Term Thinking', 'Strategic planning'],
+    weaknesses: ['Resistance to rapid change', 'Cautious', 'Slow to act on urgency'],
+    idealRoles: ['Chief Strategy Officer', 'Board Member', 'Senior Advisor', 'Executive Coach', 'Governance Director'],
+    image: '/ximatars/elephant.png',
     personality: {
       en: {
-        description: 'The Elephant XIMAtar represents wise strategists who excel at long-term planning and creating lasting impact. They are reflective, patient, and skilled at seeing the bigger picture and mentoring others.',
-        traits: ['Wise', 'Legacy-minded', 'Reflective', 'Patient', 'Visionary'],
-        strengths: ['Exceptional strategic planning', 'Long-term visionary thinking', 'Deep wisdom and experience', 'Natural mentoring abilities', 'Institutional memory'],
-        weaknesses: ['May be slow to take action', 'Can be resistant to rapid changes', 'Tendency to overthink decisions', 'May struggle with urgent deadlines'],
-        idealRoles: ['Chief Strategy Officer', 'Board Member', 'Senior Advisor', 'Executive Coach', 'Governance Director']
+        description: 'The Elephant carries the weight of experience with grace. Slow to speak but deeply reflective, they remember what matters and act with foresight. Others turn to them for stability and perspective.',
+        traits: ['Memory', 'Emotional Intelligence', 'Long-Term Thinking', 'Wisdom', 'Patience'],
+        strengths: ['Exceptional strategic planning', 'Long-term visionary thinking', 'Deep wisdom and experience', 'Natural mentoring abilities', 'Institutional memory and recall'],
+        weaknesses: ['Resistance to rapid change', 'Cautious approach', 'May be slow to take action', 'Can overthink decisions', 'Struggles with urgent deadlines'],
+        idealRoles: ['Chief Strategy Officer', 'Board Member', 'Senior Advisor', 'Executive Coach', 'Governance Director', 'Strategic Consultant']
       },
       it: {
-        description: 'Il XIMAtar Elefante rappresenta strateghi saggi che eccellono nella pianificazione a lungo termine e nella creazione di un impatto duraturo. Sono riflessivi, pazienti e abili nel vedere il quadro generale e nel mentorare gli altri.',
-        traits: ['Saggio', 'Orientato al lascito', 'Riflessivo', 'Paziente', 'Visionario'],
-        strengths: ['Pianificazione strategica eccezionale', 'Pensiero visionario a lungo termine', 'Profonda saggezza ed esperienza', 'Capacità naturali di mentoring', 'Memoria istituzionale'],
-        weaknesses: ['Può essere lento nell\'agire', 'Può essere resistente a cambi rapidi', 'Tendenza a riflettere troppo sulle decisioni', 'Può avere difficoltà con scadenze urgenti'],
-        idealRoles: ['Chief Strategy Officer', 'Membro del Consiglio', 'Senior Advisor', 'Executive Coach', 'Direttore Governance']
+        description: 'L\'Elefante porta il peso dell\'esperienza con grazia. Lento nel parlare ma profondamente riflessivo, ricorda ciò che conta e agisce con lungimiranza. Altri si rivolgono a loro per stabilità e prospettiva.',
+        traits: ['Memoria', 'Intelligenza Emotiva', 'Pensiero a Lungo Termine', 'Saggezza', 'Pazienza'],
+        strengths: ['Pianificazione strategica eccezionale', 'Pensiero visionario a lungo termine', 'Profonda saggezza ed esperienza', 'Capacità naturali di mentoring', 'Memoria e richiamo istituzionali'],
+        weaknesses: ['Resistenza al cambiamento rapido', 'Approccio cauto', 'Può essere lento nell\'agire', 'Può riflettere troppo sulle decisioni', 'Fatica con scadenze urgenti'],
+        idealRoles: ['Chief Strategy Officer', 'Membro del Consiglio', 'Senior Advisor', 'Executive Coach', 'Direttore Governance', 'Consulente Strategico']
       }
     }
   },
