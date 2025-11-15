@@ -144,27 +144,27 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     id: 'bear',
     name: 'Bear',
     animal: 'Bear',
-    title: 'The Reliable Guardian',
-    description: 'Loyal, protective, stable',
-    traits: ['Loyal', 'Protective', 'Stable', 'Dependable', 'Patient'],
-    strengths: ['Reliability', 'Risk management', 'Consistency', 'Team protection'],
-    weaknesses: ['Can be resistant to change', 'May be overly cautious', 'Struggles with innovation'],
-    idealRoles: ['Operations', 'Risk Management', 'Security', 'Quality Control'],
-    image: '/lovable-uploads/e4b1fc80-fed1-4028-8bd7-f71eb4cc5ec1.png', // Bear avatar
+    title: 'The Grounded Protector',
+    description: 'The Bear acts with patience and stability. They move slowly but decisively. Others rely on them during pressure, trusting their strength and reliability.',
+    traits: ['Grounded', 'Strong', 'Protective', 'Patient', 'Stable'],
+    strengths: ['Resilience', 'Responsibility', 'Calm Under Pressure', 'Reliability', 'Steadfast'],
+    weaknesses: ['Slower to adapt', 'Prefers routine', 'May resist change'],
+    idealRoles: ['Operations Lead', 'Team Anchor', 'People Manager', 'Governance', 'Compliance', 'Security'],
+    image: '/ximatars/bear.png',
     personality: {
       en: {
-        description: 'The Bear XIMAtar represents reliable guardians who excel at protecting teams and maintaining stability. They are loyal, dependable, and skilled at managing risks and ensuring consistent operations.',
-        traits: ['Loyal', 'Protective', 'Stable', 'Dependable', 'Patient'],
-        strengths: ['Exceptional reliability', 'Risk management expertise', 'Consistent performance', 'Team protection instincts', 'Long-term stability'],
-        weaknesses: ['Can be resistant to change', 'May be overly cautious', 'Struggles with rapid innovation', 'May avoid taking risks'],
-        idealRoles: ['Operations Manager', 'Risk Management Specialist', 'Security Director', 'Quality Control Manager', 'Compliance Officer']
+        description: 'Moves slowly but decisively. Provides stability under pressure. Reliable and protective. The Bear acts with patience and stability, moving deliberately while maintaining calm in high-pressure situations.',
+        traits: ['Grounded', 'Strong', 'Protective', 'Patient', 'Stable'],
+        strengths: ['Resilience', 'Responsibility', 'Calm Under Pressure', 'Reliability', 'Steadfast Support'],
+        weaknesses: ['Slower to adapt', 'Prefers routine', 'May resist change', 'Less comfortable with rapid innovation'],
+        idealRoles: ['Operations Lead', 'Team Anchor', 'People Manager', 'Governance', 'Security/Compliance', 'Quality Assurance']
       },
       it: {
-        description: 'Il XIMAtar Orso rappresenta guardiani affidabili che eccellono nel proteggere i team e mantenere la stabilità. Sono leali, affidabili e abili nella gestione dei rischi e nel garantire operazioni coerenti.',
-        traits: ['Leale', 'Protettivo', 'Stabile', 'Affidabile', 'Paziente'],
-        strengths: ['Affidabilità eccezionale', 'Expertise nella gestione del rischio', 'Performance costante', 'Istinti di protezione del team', 'Stabilità a lungo termine'],
-        weaknesses: ['Può essere resistente al cambiamento', 'Può essere eccessivamente cauto', 'Ha difficoltà con l\'innovazione rapida', 'Può evitare di prendere rischi'],
-        idealRoles: ['Manager Operazioni', 'Specialista Gestione Rischi', 'Direttore Sicurezza', 'Manager Controllo Qualità', 'Responsabile Compliance']
+        description: 'Si muove lentamente ma con decisione. Porta stabilità sotto pressione. Affidabile e protettivo. L\'Orso agisce con pazienza e stabilità, muovendosi in modo deliberato mantenendo la calma nelle situazioni di alta pressione.',
+        traits: ['Solido', 'Forte', 'Protettivo', 'Paziente', 'Stabile'],
+        strengths: ['Resilienza', 'Responsabilità', 'Calma sotto pressione', 'Affidabilità', 'Supporto Costante'],
+        weaknesses: ['Lento ad adattarsi', 'Preferisce la routine', 'Può resistere al cambiamento', 'Meno a suo agio con innovazione rapida'],
+        idealRoles: ['Responsabile Operativo', 'Team Anchor', 'Manager', 'Governance', 'Sicurezza/Compliance', 'Controllo Qualità']
       }
     }
   },
