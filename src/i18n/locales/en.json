@@ -91,6 +91,27 @@
   },
   "pillars": {
     "title": "The 5 Pillars of XIMA",
+    "explanation": "Each score is computed from behavioral answers, situational choices, cognitive patterns, and writing style analysis.",
+    "computational": {
+      "name": "Computational Power",
+      "description": "The ability to break down complex problems into logical steps, use data and tools to find efficient solutions, and think systematically about challenges."
+    },
+    "communication": {
+      "name": "Communication",
+      "description": "How effectively you express ideas, listen actively, build meaningful relationships, and collaborate with others to achieve shared goals."
+    },
+    "knowledge": {
+      "name": "Knowledge",
+      "description": "Your depth of expertise in key areas, ability to learn continuously, and skill in applying what you know to real-world situations."
+    },
+    "creativity": {
+      "name": "Creativity",
+      "description": "Your capacity to generate fresh ideas, see problems from new angles, embrace innovative thinking, and discover unconventional solutions."
+    },
+    "drive": {
+      "name": "Drive",
+      "description": "Your inner motivation to pursue ambitious goals, bounce back from setbacks, take initiative, and maintain a strong commitment to excellence."
+    },
     "cta_primary": "Get your XIMAtar now",
     "cta_secondary": "Learn more",
     "example_label": "Example",

@@ -20,7 +20,28 @@
     "login": "Accedi"
   },
   "pillars": {
-    "title": "I 5 Pilastri di XIMA",
+    "title": "I Cinque Pilastri XIMA",
+    "explanation": "Ogni punteggio viene calcolato da risposte comportamentali, scelte situazionali, pattern cognitivi e analisi dello stile di scrittura.",
+    "computational": {
+      "name": "Potenza Computazionale",
+      "description": "La capacità di scomporre problemi complessi in passaggi logici, usare dati e strumenti per trovare soluzioni efficienti e pensare sistematicamente alle sfide."
+    },
+    "communication": {
+      "name": "Comunicazione",
+      "description": "Quanto efficacemente esprimi le idee, ascolti attivamente, costruisci relazioni significative e collabori con gli altri per raggiungere obiettivi condivisi."
+    },
+    "knowledge": {
+      "name": "Conoscenza",
+      "description": "La tua profondità di competenza in aree chiave, capacità di apprendere continuamente e abilità nell'applicare ciò che sai a situazioni reali."
+    },
+    "creativity": {
+      "name": "Creatività",
+      "description": "La tua capacità di generare idee fresche, vedere i problemi da nuove angolazioni, abbracciare il pensiero innovativo e scoprire soluzioni non convenzionali."
+    },
+    "drive": {
+      "name": "Motivazione",
+      "description": "La tua motivazione interiore a perseguire obiettivi ambiziosi, riprenderti dalle difficoltà, prendere l'iniziativa e mantenere un forte impegno verso l'eccellenza."
+    },
     "cta_primary": "Ottieni il tuo Ximatar ora",
     "cta_secondary": "Scopri di più",
     "example_label": "Esempio",

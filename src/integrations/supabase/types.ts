@@ -238,6 +238,42 @@ export type Database = {
           },
         ]
       }
+      assessment_cv_analysis: {
+        Row: {
+          created_at: string | null
+          cv_text: string | null
+          id: string
+          pillar_vector: Json | null
+          soft_skills: string[] | null
+          strengths: string[] | null
+          summary: string | null
+          user_id: string | null
+          ximatar_suggestions: string[] | null
+        }
+        Insert: {
+          created_at?: string | null
+          cv_text?: string | null
+          id?: string
+          pillar_vector?: Json | null
+          soft_skills?: string[] | null
+          strengths?: string[] | null
+          summary?: string | null
+          user_id?: string | null
+          ximatar_suggestions?: string[] | null
+        }
+        Update: {
+          created_at?: string | null
+          cv_text?: string | null
+          id?: string
+          pillar_vector?: Json | null
+          soft_skills?: string[] | null
+          strengths?: string[] | null
+          summary?: string | null
+          user_id?: string | null
+          ximatar_suggestions?: string[] | null
+        }
+        Relationships: []
+      }
       assessment_flows: {
         Row: {
           active: boolean
