@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.test-ximatar-patterns]
 verify_jwt = false
+
+[functions.generate-company-profile]
+verify_jwt = false

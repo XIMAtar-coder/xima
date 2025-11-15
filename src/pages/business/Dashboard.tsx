@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Users, Target, CheckCircle, TrendingUp, Plus, ArrowRight, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { CandidateEngagement } from '@/components/business/CandidateEngagement';
+import { CompanyProfileCard } from '@/components/business/CompanyProfileCard';
 
 const BusinessDashboard = () => {
   const navigate = useNavigate();
@@ -23,6 +24,9 @@ const BusinessDashboard = () => {
     activeChallenges: 0,
     completedChallenges: 0
   });
+  const [companyProfile, setCompanyProfile] = useState<any>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [businessProfile, setBusinessProfile] = useState<any>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -43,6 +47,8 @@ const BusinessDashboard = () => {
     }
 
     loadDashboardStats();
+    loadCompanyProfile();
+    loadBusinessProfile();
   }, [isAuthenticated, isBusiness, businessLoading, navigate, toast]);
 
   const loadDashboardStats = async () => {
@@ -97,6 +103,90 @@ const BusinessDashboard = () => {
     }
   };
 
+  const loadCompanyProfile = async () => {
+    if (!user?.id) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('company_profiles')
+        .select('*')
+        .eq('company_id', user.id)
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error loading company profile:', error);
+      } else {
+        setCompanyProfile(data);
+      }
+    } catch (error) {
+      console.error('Error loading company profile:', error);
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
+  const loadBusinessProfile = async () => {
+    if (!user?.id) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('business_profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error) {
+        console.error('Error loading business profile:', error);
+      } else {
+        setBusinessProfile(data);
+      }
+    } catch (error) {
+      console.error('Error loading business profile:', error);
+    }
+  };
+
+  const handleGenerateProfile = async () => {
+    if (!user?.id || !businessProfile) {
+      toast({
+        title: 'Error',
+        description: 'Missing user or business profile information',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setProfileLoading(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-company-profile', {
+        body: {
+          company_id: user.id,
+          company_name: businessProfile.company_name,
+          website: businessProfile.website
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success!',
+        description: 'Company profile generated successfully'
+      });
+
+      // Reload the profile
+      await loadCompanyProfile();
+    } catch (error: any) {
+      console.error('Error generating profile:', error);
+      toast({
+        title: 'Generation Failed',
+        description: error.message || 'Failed to generate company profile',
+        variant: 'destructive'
+      });
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
   if (loading || businessLoading) {
     return (
       <BusinessLayout>
@@ -148,13 +238,20 @@ const BusinessDashboard = () => {
   return (
     <BusinessLayout>
       <div className="space-y-8">
-        {/* Header */}
+         {/* Header */}
         <div>
           <h1 className="text-4xl font-bold text-white mb-2">Welcome Back!</h1>
           <p className="text-[#A3ABB5]">
             Manage your talent pipeline and launch new challenges
           </p>
         </div>
+
+        {/* Company Profile Section */}
+        <CompanyProfileCard
+          profile={companyProfile}
+          loading={profileLoading}
+          onGenerate={handleGenerateProfile}
+        />
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
