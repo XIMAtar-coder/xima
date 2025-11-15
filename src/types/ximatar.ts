@@ -228,27 +228,27 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     id: 'parrot',
     name: 'Parrot',
     animal: 'Parrot',
-    title: 'The Communicator',
-    description: 'Expressive, social, energizing',
-    traits: ['Expressive', 'Social', 'Energizing', 'Charismatic', 'Engaging'],
-    strengths: ['Communication', 'Public speaking', 'Team motivation', 'Networking'],
-    weaknesses: ['May talk too much', 'Can be easily distracted', 'Difficulty with detailed work'],
-    idealRoles: ['PR', 'Customer Success', 'Training', 'Event Management'],
-    image: '/lovable-uploads/4fbccddd-ecd3-4ccc-8b2b-1c66d3df46fd.png', // Parrot avatar
+    title: 'The Charismatic Communicator',
+    description: 'The Parrot brings color and charisma to every interaction. Gifted in communication, they spread ideas with passion and ease.',
+    traits: ['Storytelling', 'Motivation', 'Verbal Agility', 'Social Intelligence'],
+    strengths: ['Storytelling', 'Motivation', 'Verbal Agility', 'Social Intelligence'],
+    weaknesses: ['May prioritize expression over analysis', 'Can be overly talkative'],
+    idealRoles: ['Sales', 'Marketing', 'Public Speaking', 'Community Management', 'Brand Ambassador', 'Content Creator'],
+    image: '/ximatars/parrot.png',
     personality: {
       en: {
-        description: 'The Parrot XIMAtar represents natural communicators who excel at expressing ideas and energizing teams. They are charismatic, social, and skilled at building relationships and inspiring others.',
-        traits: ['Expressive', 'Social', 'Energizing', 'Charismatic', 'Engaging'],
-        strengths: ['Exceptional communication skills', 'Public speaking abilities', 'Team motivation and inspiration', 'Strong networking capabilities', 'Relationship building'],
-        weaknesses: ['May talk excessively', 'Can be easily distracted', 'Difficulty with detailed analytical work', 'May struggle with solitary tasks'],
-        idealRoles: ['Public Relations Manager', 'Customer Success Director', 'Training Coordinator', 'Event Manager', 'Communications Specialist']
+        description: 'Parrots bring energy and color to every conversation. They excel at spreading ideas with passion and connecting people through words. Natural storytellers who thrive in social environments.',
+        traits: ['Storytelling', 'Motivation', 'Verbal Agility', 'Social Intelligence'],
+        strengths: ['Exceptional storytelling abilities', 'Powerful motivation skills', 'Verbal agility and expression', 'Strong social intelligence', 'Natural networking'],
+        weaknesses: ['May prioritize expression over deep analysis', 'Can be overly talkative', 'Difficulty with analytical tasks', 'May struggle with solitary work'],
+        idealRoles: ['Sales Representative', 'Marketing Manager', 'Public Speaker', 'Community Manager', 'Brand Ambassador', 'Content Creator']
       },
       it: {
-        description: 'Il XIMAtar Pappagallo rappresenta comunicatori naturali che eccellono nell\'esprimere idee e nell\'energizzare i team. Sono carismatici, sociali e abili nel costruire relazioni e ispirare gli altri.',
-        traits: ['Espressivo', 'Sociale', 'Energizzante', 'Carismatico', 'Coinvolgente'],
-        strengths: ['Eccezionali capacità comunicative', 'Abilità nel parlare in pubblico', 'Motivazione e ispirazione del team', 'Forti capacità di networking', 'Costruzione di relazioni'],
-        weaknesses: ['Può parlare eccessivamente', 'Può essere facilmente distratto', 'Difficoltà con lavori analitici dettagliati', 'Può avere difficoltà con compiti solitari'],
-        idealRoles: ['Manager Relazioni Pubbliche', 'Direttore Customer Success', 'Coordinatore Formazione', 'Event Manager', 'Specialista Comunicazioni']
+        description: 'I Pappagalli portano energia e colore in ogni conversazione. Eccellono nel diffondere idee con passione e nel connettere le persone attraverso le parole. Narratori naturali che prosperano in ambienti sociali.',
+        traits: ['Narrazione', 'Motivazione', 'Agilità Verbale', 'Intelligenza Sociale'],
+        strengths: ['Eccezionali capacità di narrazione', 'Forti capacità motivazionali', 'Agilità verbale ed espressiva', 'Forte intelligenza sociale', 'Networking naturale'],
+        weaknesses: ['Può privilegiare l\'espressione rispetto all\'analisi profonda', 'Può essere eccessivamente loquace', 'Difficoltà con compiti analitici', 'Può avere difficoltà con il lavoro solitario'],
+        idealRoles: ['Rappresentante Vendite', 'Manager Marketing', 'Oratore Pubblico', 'Community Manager', 'Brand Ambassador', 'Content Creator']
       }
     }
   },
