@@ -2,15 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Loader2, X, Download } from "lucide-react";
 import jsPDF from "jspdf";
-
+import { useXimatarsCatalog } from "@/hooks/useXimatarsCatalog";
 export const XimatarTestButton = () => {
   const [testing, setTesting] = useState(false);
   const [results, setResults] = useState<any>(null);
-
+  const { catalogMap, loading } = useXimatarsCatalog();
   const runTest = async () => {
     setTesting(true);
     setResults(null);
@@ -165,7 +165,7 @@ export const XimatarTestButton = () => {
                 XIMAtar Test Results: {results.successful}/{results.total} successful
               </div>
               <div className="text-sm text-muted-foreground">
-                Unique XIMAtars Assigned: {results.uniqueXIMatars}/11
+                Unique XIMAtars Assigned: {results.uniqueXIMatars}/12
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -201,23 +201,30 @@ export const XimatarTestButton = () => {
                 >
                   {r.success ? (
                     <>
-                      <div className="flex flex-col items-center gap-2 mb-2">
-                        {r.image && (
-                          <img
-                            src={r.image}
-                            alt={r.assigned}
-                            className="w-16 h-16 object-contain"
-                          />
-                        )}
-                        <div className="text-center">
-                          <div className="font-semibold text-sm capitalize">
-                            {r.assigned}
+                      {(() => {
+                        const key = String(r.assigned || r.pattern || '').toLowerCase();
+                        const cat = catalogMap.get(key);
+                        const imageSrc = cat?.image_url
+                          ? String(cat.image_url).replace('public/', '/')
+                          : `/ximatars/${key}.png`;
+                        const title = cat?.translation?.title || (r.assigned || key);
+                        return (
+                          <div className="flex flex-col items-center gap-2 mb-2">
+                            <img
+                              src={imageSrc}
+                              alt={title}
+                              className="w-16 h-16 object-contain"
+                              onError={(e) => {
+                                (e.currentTarget as HTMLImageElement).src = '/ximatars/fox.png';
+                              }}
+                            />
+                            <div className="text-center">
+                              <div className="font-semibold text-sm capitalize">{title}</div>
+                              <div className="text-xs text-muted-foreground">Target: {r.pattern}</div>
+                            </div>
                           </div>
-                          <div className="text-xs text-muted-foreground">
-                            Target: {r.pattern}
-                          </div>
-                        </div>
-                      </div>
+                        );
+                      })()}
                       
                       <div className="space-y-1">
                         {Object.entries(r.pillars).map(([pillar, score]: [string, any]) => {
