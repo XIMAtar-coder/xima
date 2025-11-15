@@ -171,28 +171,28 @@ export const XIMATAR_TYPES: XIMAtar[] = [
   {
     id: 'cat',
     name: 'Cat',
-    animal: 'Cat',
+    animal: 'cat',
     title: 'The Independent Specialist',
-    description: 'Curious, analytical, autonomous',
-    traits: ['Curious', 'Analytical', 'Autonomous', 'Precise', 'Innovative'],
-    strengths: ['Independent work', 'Creative solutions', 'Technical expertise', 'Innovation'],
-    weaknesses: ['May struggle with teamwork', 'Can be too independent', 'Difficulty with collaboration'],
-    idealRoles: ['Developer', 'Designer', 'Specialist', 'Researcher'],
-    image: '/lovable-uploads/67baf1dd-15f8-4951-ba4b-1594b4aeab60.png', // Cat avatar
+    description: 'The Cat values freedom and discretion. Curious and highly selective, they invest their energy only where it matters. They excel when trusted to operate independently and follow their instincts.',
+    traits: ['Independent', 'Observant', 'Strategic', 'Selective', 'Focused'],
+    strengths: ['Focus', 'Strategic Thinking', 'Autonomy', 'Technical Expertise', 'Creative Problem-Solving'],
+    weaknesses: ['May resist collaboration or emotional openness', 'Can be aloof', 'Selective about engagement'],
+    idealRoles: ['Analyst', 'Solo Specialist', 'R&D', 'Technical Strategist', 'Creative Problem-Solver', 'Independent Consultant'],
+    image: '/ximatars/cat.png',
     personality: {
       en: {
-        description: 'The Cat XIMAtar represents independent specialists who excel at working autonomously and developing innovative solutions. They are curious, analytical, and prefer to work with precision and creativity.',
-        traits: ['Curious', 'Analytical', 'Autonomous', 'Precise', 'Innovative'],
-        strengths: ['Exceptional independent work abilities', 'Creative problem solving', 'Technical expertise', 'Innovation and experimentation', 'Attention to detail'],
-        weaknesses: ['May struggle with extensive teamwork', 'Can be too independent', 'Difficulty with collaborative processes', 'May resist micromanagement'],
-        idealRoles: ['Software Developer', 'UX/UI Designer', 'Technical Specialist', 'Research Scientist', 'Creative Director']
+        description: 'The Cat values freedom and discretion. Curious and highly selective, they invest their energy only where it matters. They excel when trusted to operate independently and follow their instincts. Silent observer. Precision-first. Works best with space and independence.',
+        traits: ['Independent', 'Observant', 'Strategic', 'Selective', 'Focused'],
+        strengths: ['Focus', 'Strategic Thinking', 'Autonomy', 'Technical Expertise', 'Creative Problem-Solving'],
+        weaknesses: ['May resist collaboration or emotional openness', 'Can be aloof', 'Selective about engagement'],
+        idealRoles: ['Analyst', 'Solo Specialist', 'R&D', 'Technical Strategist', 'Creative Problem-Solver', 'Independent Consultant']
       },
       it: {
-        description: 'Il XIMAtar Gatto rappresenta specialisti indipendenti che eccellono nel lavorare autonomamente e sviluppare soluzioni innovative. Sono curiosi, analitici e preferiscono lavorare con precisione e creatività.',
-        traits: ['Curioso', 'Analitico', 'Autonomo', 'Preciso', 'Innovativo'],
-        strengths: ['Eccezionali capacità di lavoro indipendente', 'Risoluzione creativa dei problemi', 'Expertise tecnica', 'Innovazione e sperimentazione', 'Attenzione ai dettagli'],
-        weaknesses: ['Può avere difficoltà con il teamwork esteso', 'Può essere troppo indipendente', 'Difficoltà con processi collaborativi', 'Può resistere alla microgestione'],
-        idealRoles: ['Sviluppatore Software', 'UX/UI Designer', 'Specialista Tecnico', 'Ricercatore Scientifico', 'Direttore Creativo']
+        description: 'Il Gatto valorizza la libertà e la discrezione. Curioso e selettivo, investe la propria energia solo dove serve davvero. Rende al massimo quando gli viene concessa autonomia e fiducia. Osservatore silenzioso. Precisione prima di tutto. Rende al massimo con spazio e indipendenza.',
+        traits: ['Indipendente', 'Osservatore', 'Strategico', 'Selettivo', 'Concentrato'],
+        strengths: ['Focus', 'Pensiero Strategico', 'Autonomia', 'Expertise Tecnica', 'Problem-Solving Creativo'],
+        weaknesses: ['Può resistere alla collaborazione o all\'apertura emotiva', 'Può essere distaccato', 'Selettivo nel coinvolgimento'],
+        idealRoles: ['Analista', 'Specialista Indipendente', 'R&D', 'Stratega Tecnico', 'Problem-Solver Creativo', 'Consulente Indipendente']
       }
     }
   },
