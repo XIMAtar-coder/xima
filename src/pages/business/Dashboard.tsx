@@ -158,10 +158,8 @@ const BusinessDashboard = () => {
     setProfileLoading(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('generate-company-profile', {
+      const { data, error } = await supabase.functions.invoke('analyze-company-profile', {
         body: {
-          company_id: user.id,
-          company_name: businessProfile.company_name,
           website: businessProfile.website
         }
       });

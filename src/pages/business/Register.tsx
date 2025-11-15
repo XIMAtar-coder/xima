@@ -75,6 +75,18 @@ const BusinessRegister = () => {
 
         if (profileError) throw profileError;
 
+        // Ensure a company_profiles row exists with website
+        const { error: cpError } = await supabase
+          .from('company_profiles')
+          .upsert(
+            {
+              company_id: authData.user.id,
+              website: formData.website
+            },
+            { onConflict: 'company_id' }
+          );
+        if (cpError) console.warn('company_profiles upsert warning:', cpError);
+
         // Trigger company profile generation (async, don't wait)
         supabase.functions.invoke('generate-company-profile', {
           body: {
