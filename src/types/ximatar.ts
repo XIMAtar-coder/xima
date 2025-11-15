@@ -313,26 +313,26 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     name: 'Chameleon',
     animal: 'Chameleon',
     title: 'The Adaptive Operator',
-    description: 'Fast learner, versatile, perceptive',
-    traits: ['Fast learner', 'Versatile', 'Perceptive', 'Flexible', 'Observant'],
-    strengths: ['Adaptability', 'Quick learning', 'Versatility', 'Environmental awareness'],
-    weaknesses: ['May lack consistency', 'Can be seen as unreliable', 'Difficulty with specialization'],
-    idealRoles: ['Startup', 'Consultant', 'Business Analyst', 'Change Manager'],
-    image: '/lovable-uploads/9d4f2e93-8d4c-4169-b089-2c42b9102855.png', // Chameleon avatar
+    description: 'Curious, analytical, fast learner',
+    traits: ['Flexibility', 'Learning Speed', 'Perception', 'Adaptability', 'Pattern Recognition'],
+    strengths: ['Flexibility', 'Learning Speed', 'Perception', 'Adaptability'],
+    weaknesses: ['May over-adapt', 'Lack of assertiveness', 'Identity diffusion'],
+    idealRoles: ['Analyst', 'Researcher', 'Consultant', 'Problem Solver', 'Strategic Advisor'],
+    image: '/ximatars/chameleon.png',
     personality: {
       en: {
-        description: 'The Chameleon XIMAtar represents adaptive operators who excel at quickly adjusting to new environments and learning new skills. They are versatile, perceptive, and skilled at reading situations and adapting accordingly.',
-        traits: ['Fast learner', 'Versatile', 'Perceptive', 'Flexible', 'Observant'],
-        strengths: ['Exceptional adaptability', 'Rapid learning capabilities', 'High versatility', 'Strong environmental awareness', 'Situational intelligence'],
-        weaknesses: ['May lack consistency in approach', 'Can be perceived as unreliable', 'Difficulty with deep specialization', 'May struggle with routine tasks'],
-        idealRoles: ['Startup Generalist', 'Management Consultant', 'Business Analyst', 'Change Management Specialist', 'Product Manager']
+        description: 'The Chameleon blends seamlessly into any context. Curious and analytical, they learn fast and adapt even faster. Their strength lies in spotting patterns others miss and navigating change with ease.',
+        traits: ['Flexibility', 'Learning Speed', 'Perception', 'Adaptability', 'Pattern Recognition'],
+        strengths: ['Exceptional flexibility and adaptability', 'Rapid learning capabilities', 'Strong perception and environmental awareness', 'Pattern recognition skills', 'Thrives in dynamic environments'],
+        weaknesses: ['May over-adapt to surroundings', 'Can lack strong personal identity', 'Struggles with assertiveness in conflict', 'Difficulty maintaining consistency'],
+        idealRoles: ['Analyst', 'Researcher', 'Management Consultant', 'Problem Solver', 'Strategic Advisor', 'Change Management Specialist']
       },
       it: {
-        description: 'Il XIMAtar Camaleonte rappresenta operatori adattivi che eccellono nel adattarsi rapidamente a nuovi ambienti e nell\'apprendere nuove competenze. Sono versatili, percettivi e abili nel leggere le situazioni e adattarsi di conseguenza.',
-        traits: ['Apprendimento rapido', 'Versatile', 'Percettivo', 'Flessibile', 'Osservatore'],
-        strengths: ['Adattabilità eccezionale', 'Capacità di apprendimento rapido', 'Alta versatilità', 'Forte consapevolezza ambientale', 'Intelligenza situazionale'],
-        weaknesses: ['Può mancare di consistenza nell\'approccio', 'Può essere percepito come inaffidabile', 'Difficoltà con specializzazione profonda', 'Può avere difficoltà con compiti di routine'],
-        idealRoles: ['Generalista Startup', 'Consulente di Management', 'Analista di Business', 'Specialista Change Management', 'Product Manager']
+        description: 'Il Camaleonte si fonde perfettamente in qualsiasi contesto. Curioso e analitico, impara velocemente e si adatta ancora più rapidamente. La sua forza sta nello scoprire schemi che altri non vedono e nel navigare il cambiamento con facilità.',
+        traits: ['Flessibilità', 'Velocità di Apprendimento', 'Percezione', 'Adattabilità', 'Riconoscimento Pattern'],
+        strengths: ['Flessibilità e adattabilità eccezionali', 'Capacità di apprendimento rapido', 'Forte percezione e consapevolezza ambientale', 'Abilità di riconoscimento pattern', 'Prospera in ambienti dinamici'],
+        weaknesses: ['Può adattarsi eccessivamente', 'Può mancare di forte identità personale', 'Fatica con l\'assertività nei conflitti', 'Difficoltà nel mantenere la consistenza'],
+        idealRoles: ['Analista', 'Ricercatore', 'Consulente di Management', 'Problem Solver', 'Consulente Strategico', 'Specialista Change Management']
       }
     }
   },
