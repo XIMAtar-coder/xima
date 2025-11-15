@@ -23,6 +23,17 @@ const BusinessRegister = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate website URL
+    if (!formData.website || !formData.website.match(/^https?:\/\/.+/)) {
+      toast({
+        title: 'Invalid Website',
+        description: 'Please enter a valid website URL starting with http:// or https://',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -64,9 +75,24 @@ const BusinessRegister = () => {
 
         if (profileError) throw profileError;
 
+        // Trigger company profile generation (async, don't wait)
+        supabase.functions.invoke('generate-company-profile', {
+          body: {
+            company_id: authData.user.id,
+            company_name: formData.companyName,
+            website: formData.website
+          }
+        }).then(({ data, error }) => {
+          if (error) {
+            console.error('Error generating company profile:', error);
+          } else {
+            console.log('Company profile generation initiated:', data);
+          }
+        });
+
         toast({
           title: 'Success!',
-          description: 'Business account created successfully. Please check your email to verify your account.',
+          description: 'Business account created successfully. Your company profile is being generated. Please check your email to verify your account.',
         });
 
         setTimeout(() => {
@@ -149,7 +175,7 @@ const BusinessRegister = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="website">Company Website (Optional)</Label>
+              <Label htmlFor="website">Company Website (Required)</Label>
               <div className="relative">
                 <Globe className="absolute left-3 top-3 text-muted-foreground" size={18} />
                 <Input
@@ -159,8 +185,14 @@ const BusinessRegister = () => {
                   className="pl-10"
                   value={formData.website}
                   onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                  required
+                  pattern="https?://.*"
+                  title="Please enter a valid URL starting with http:// or https://"
                 />
               </div>
+              <p className="text-xs text-muted-foreground">
+                Your company profile will be automatically generated from this website
+              </p>
             </div>
 
             <div className="space-y-2">

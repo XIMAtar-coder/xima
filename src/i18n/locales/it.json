@@ -1348,6 +1348,24 @@
     "feature_4_desc": "Riduci i tempi di assunzione con il nostro efficiente sistema di valutazione e abbinamento dei candidati.",
     "cta_title": "Pronto a Trasformare le Tue Assunzioni?",
     "cta_subtitle": "Unisciti alle aziende leader che utilizzano XIMA per costruire team eccezionali.",
-    "start_free_trial": "Inizia la Prova Gratuita"
+    "start_free_trial": "Inizia la Prova Gratuita",
+    "profile": {
+      "title": "Profilo Aziendale",
+      "no_profile": "Nessun profilo aziendale trovato",
+      "generate_description": "Lascia che XIMA analizzi il sito web della tua azienda e crei un profilo completo per migliorare l'abbinamento dei candidati.",
+      "generate_cta": "Genera Profilo Aziendale",
+      "regenerate_cta": "Rigenera Profilo",
+      "last_updated": "Ultimo aggiornamento",
+      "summary": "Riepilogo Aziendale",
+      "values": "Valori Fondamentali",
+      "operating_style": "Stile Operativo",
+      "communication_style": "Stile di Comunicazione",
+      "ideal_traits": "Tratti Ideali del Candidato",
+      "risk_areas": "Aree di Rischio Potenziali",
+      "pillar_vector": "Profilo dei Pilastri Aziendali",
+      "recommended_ximatars": "XIMAtar Consigliati",
+      "recommended_ximatars_description": "Questi XIMAtar hanno maggiori probabilità di prosperare nella tua organizzazione in base al tuo profilo aziendale.",
+      "alignment_score": "Indice di Allineamento"
+    }
   }
 }

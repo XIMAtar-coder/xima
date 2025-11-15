@@ -1292,6 +1292,24 @@
     "feature_4_desc": "Reduce time-to-hire with our efficient candidate evaluation and matching system.",
     "cta_title": "Ready to Transform Your Hiring?",
     "cta_subtitle": "Join leading companies using XIMA to build exceptional teams.",
-    "start_free_trial": "Start Free Trial"
+    "start_free_trial": "Start Free Trial",
+    "profile": {
+      "title": "Your Company Profile",
+      "no_profile": "No company profile found",
+      "generate_description": "Let XIMA analyze your company website and create a comprehensive profile to enhance candidate matching.",
+      "generate_cta": "Generate Company Profile",
+      "regenerate_cta": "Regenerate Profile",
+      "last_updated": "Last updated",
+      "summary": "Company Summary",
+      "values": "Core Values",
+      "operating_style": "Operating Style",
+      "communication_style": "Communication Style",
+      "ideal_traits": "Ideal Candidate Traits",
+      "risk_areas": "Potential Risk Areas",
+      "pillar_vector": "Company Pillar Profile",
+      "recommended_ximatars": "Recommended XIMAtars",
+      "recommended_ximatars_description": "These XIMAtars are most likely to thrive in your organization based on your company profile.",
+      "alignment_score": "Alignment Score"
+    }
   }
 }

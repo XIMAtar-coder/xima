@@ -838,6 +838,54 @@ export type Database = {
           },
         ]
       }
+      company_profiles: {
+        Row: {
+          communication_style: string | null
+          company_id: string
+          created_at: string | null
+          id: string
+          ideal_traits: string[] | null
+          operating_style: string | null
+          pillar_vector: Json
+          recommended_ximatars: string[] | null
+          risk_areas: string[] | null
+          summary: string | null
+          updated_at: string | null
+          values: string[] | null
+          website: string
+        }
+        Insert: {
+          communication_style?: string | null
+          company_id: string
+          created_at?: string | null
+          id?: string
+          ideal_traits?: string[] | null
+          operating_style?: string | null
+          pillar_vector?: Json
+          recommended_ximatars?: string[] | null
+          risk_areas?: string[] | null
+          summary?: string | null
+          updated_at?: string | null
+          values?: string[] | null
+          website: string
+        }
+        Update: {
+          communication_style?: string | null
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          ideal_traits?: string[] | null
+          operating_style?: string | null
+          pillar_vector?: Json
+          recommended_ximatars?: string[] | null
+          risk_areas?: string[] | null
+          summary?: string | null
+          updated_at?: string | null
+          values?: string[] | null
+          website?: string
+        }
+        Relationships: []
+      }
       company_sentiment: {
         Row: {
           company: string
