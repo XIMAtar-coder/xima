@@ -134,14 +134,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                   {t('nav.about')}
                 </button>
                 <button 
-                  onClick={() => navigate('/ximatar-journey')}
-                  className={`text-sm font-medium hover:text-[hsl(var(--xima-accent))] transition-colors ${
-                    location.pathname === '/ximatar-journey' ? 'text-[hsl(var(--xima-accent))]' : 'text-muted-foreground'
-                  }`}
-                >
-                  {t('nav.assessments')}
-                </button>
-                <button 
                   onClick={() => navigate('/business')}
                   className={`text-sm font-medium hover:text-[hsl(var(--xima-accent))] transition-colors ${
                     location.pathname === '/business' ? 'text-[hsl(var(--xima-accent))]' : 'text-muted-foreground'
@@ -204,15 +196,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                       className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
                     >
                       {t('nav.about')}
-                    </button>
-                    <button
-                      onClick={() => {
-                        navigate('/ximatar-journey');
-                        setMobileMenuOpen(false);
-                      }}
-                      className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
-                    >
-                      {t('nav.assessments')}
                     </button>
                     <button
                       onClick={() => {
