@@ -73,16 +73,21 @@
     "home": "Home",
     "how_it_works": "How It Works",
     "about": "About",
+    "assessments": "Assessments",
+    "business": "Business",
     "login": "Login",
     "register": "Register",
     "profile": "Profile",
-    "logout": "Logout"
+    "logout": "Logout",
+    "for_business": "For Business"
   },
   "hero": {
     "title": "Discover Your Professional Self",
     "subtitle": "XIMA helps you understand your professional strengths and weaknesses through our unique 5-pillar assessment system, matching you with the perfect career opportunities.",
     "cta": "Get Your Ximatar Now!",
-    "learn_more": "Learn More"
+    "learn_more": "Learn More",
+    "for_business": "For Business",
+    "login": "Login"
   },
   "pillars": {
     "title": "The 5 Pillars of XIMA",
@@ -1270,5 +1275,23 @@
     "select": "Select",
     "view_linkedin": "View on LinkedIn",
     "compatibility": "Match"
+  },
+  "business": {
+    "hero_title": "Find the Perfect Talent Match",
+    "hero_subtitle": "Leverage XIMA's advanced assessment platform to identify candidates who truly fit your organization's needs.",
+    "get_started": "Get Started",
+    "sign_in": "Sign In",
+    "features_title": "Why Choose XIMA for Business?",
+    "feature_1_title": "Smart Matching",
+    "feature_1_desc": "Our AI-powered system matches candidates based on skills, personality, and cultural fit.",
+    "feature_2_title": "Comprehensive Assessments",
+    "feature_2_desc": "Evaluate candidates across 5 key pillars: Drive, Computational Power, Communication, Creativity, and Knowledge.",
+    "feature_3_title": "Data-Driven Insights",
+    "feature_3_desc": "Access detailed analytics and reports to make informed hiring decisions.",
+    "feature_4_title": "Streamlined Process",
+    "feature_4_desc": "Reduce time-to-hire with our efficient candidate evaluation and matching system.",
+    "cta_title": "Ready to Transform Your Hiring?",
+    "cta_subtitle": "Join leading companies using XIMA to build exceptional teams.",
+    "start_free_trial": "Start Free Trial"
   }
 }

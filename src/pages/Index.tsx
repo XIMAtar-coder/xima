@@ -48,16 +48,26 @@ const Index = () => {
               </Button>
               
               <Button 
-                variant="outline" 
                 size="lg"
-                onClick={() => navigate('/about')}
-                className="border-2 border-transparent text-base md:text-lg px-8 py-6 rounded-xl relative overflow-hidden group bg-gradient-to-r from-[hsl(var(--xima-blue))] to-[hsl(var(--xima-teal))] bg-clip-padding"
+                onClick={() => navigate('/business')}
+                className="border-2 text-base md:text-lg px-8 py-6 rounded-xl bg-background hover:bg-accent transition-colors"
                 style={{
                   borderImage: 'linear-gradient(90deg, hsl(var(--xima-blue)), hsl(var(--xima-teal))) 1'
                 }}
               >
-                <span className="relative z-10">{t('hero.learn_more')}</span>
+                {t('hero.for_business')}
               </Button>
+              
+              {!isAuthenticated && (
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  onClick={() => navigate('/login')}
+                  className="text-base md:text-lg px-8 py-6 rounded-xl"
+                >
+                  {t('hero.login')}
+                </Button>
+              )}
             </div>
           </div>
         </div>

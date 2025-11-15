@@ -1,0 +1,20 @@
+{
+  "business": {
+    "hero_title": "Find the Perfect Talent Match",
+    "hero_subtitle": "Leverage XIMA's advanced assessment platform to identify candidates who truly fit your organization's needs.",
+    "get_started": "Get Started",
+    "sign_in": "Sign In",
+    "features_title": "Why Choose XIMA for Business?",
+    "feature_1_title": "Smart Matching",
+    "feature_1_desc": "Our AI-powered system matches candidates based on skills, personality, and cultural fit.",
+    "feature_2_title": "Comprehensive Assessments",
+    "feature_2_desc": "Evaluate candidates across 5 key pillars: Drive, Computational Power, Communication, Creativity, and Knowledge.",
+    "feature_3_title": "Data-Driven Insights",
+    "feature_3_desc": "Access detailed analytics and reports to make informed hiring decisions.",
+    "feature_4_title": "Streamlined Process",
+    "feature_4_desc": "Reduce time-to-hire with our efficient candidate evaluation and matching system.",
+    "cta_title": "Ready to Transform Your Hiring?",
+    "cta_subtitle": "Join leading companies using XIMA to build exceptional teams.",
+    "start_free_trial": "Start Free Trial"
+  }
+}

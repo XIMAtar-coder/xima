@@ -3,16 +3,21 @@
     "home": "Home",
     "how_it_works": "Come Funziona",
     "about": "Chi Siamo",
+    "assessments": "Valutazioni",
+    "business": "Business",
     "login": "Accedi",
     "register": "Registrati",
     "profile": "Profilo",
-    "logout": "Esci"
+    "logout": "Esci",
+    "for_business": "Per le Aziende"
   },
   "hero": {
     "title": "Scopri il Tuo Sé Professionale",
     "subtitle": "XIMA ti aiuta a comprendere i tuoi punti di forza e di debolezza professionali attraverso il nostro unico sistema di valutazione a 5 pilastri, abbinandoti alle opportunità di carriera perfette.",
     "cta": "Ottieni il Tuo Ximatar Ora!",
-    "learn_more": "Scopri di più"
+    "learn_more": "Scopri di più",
+    "for_business": "Per le Aziende",
+    "login": "Accedi"
   },
   "pillars": {
     "title": "I 5 Pilastri di XIMA",
@@ -1326,5 +1331,23 @@
   },
   "open_scoring": {
     "title": "Valutazione Domande Aperte"
+  },
+  "business": {
+    "hero_title": "Trova il Talento Perfetto",
+    "hero_subtitle": "Sfrutta la piattaforma di valutazione avanzata di XIMA per identificare candidati che si adattano davvero alle esigenze della tua organizzazione.",
+    "get_started": "Inizia",
+    "sign_in": "Accedi",
+    "features_title": "Perché Scegliere XIMA per le Aziende?",
+    "feature_1_title": "Matching Intelligente",
+    "feature_1_desc": "Il nostro sistema basato sull'IA abbina i candidati in base a competenze, personalità e adattamento culturale.",
+    "feature_2_title": "Valutazioni Complete",
+    "feature_2_desc": "Valuta i candidati attraverso 5 pilastri chiave: Motivazione, Potenza Computazionale, Comunicazione, Creatività e Conoscenza.",
+    "feature_3_title": "Analisi Basate sui Dati",
+    "feature_3_desc": "Accedi ad analisi dettagliate e report per prendere decisioni di assunzione informate.",
+    "feature_4_title": "Processo Ottimizzato",
+    "feature_4_desc": "Riduci i tempi di assunzione con il nostro efficiente sistema di valutazione e abbinamento dei candidati.",
+    "cta_title": "Pronto a Trasformare le Tue Assunzioni?",
+    "cta_subtitle": "Unisciti alle aziende leader che utilizzano XIMA per costruire team eccezionali.",
+    "start_free_trial": "Inizia la Prova Gratuita"
   }
 }
