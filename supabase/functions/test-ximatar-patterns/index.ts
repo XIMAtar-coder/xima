@@ -19,6 +19,7 @@ serve(async (req: Request) => {
 
     // Define test patterns for each XIMAtar
     const testPatterns = [
+      { name: "Lion", pillars: { drive: 9.5, communication: 8, computational_power: 7, knowledge: 7, creativity: 5 } },
       { name: "Parrot", pillars: { creativity: 9, communication: 9, computational_power: 5, knowledge: 5, drive: 5 } },
       { name: "Owl", pillars: { knowledge: 9, computational_power: 9, creativity: 5, communication: 5, drive: 5 } },
       { name: "Elephant", pillars: { drive: 9, knowledge: 9, creativity: 5, communication: 5, computational_power: 5 } },
