@@ -38,7 +38,7 @@ export const useUserHeaderData = (userId: string | undefined) => {
 
         if (assessmentResult && assessmentResult.computed_at) {
           setData({
-            ximatarImage: assessmentResult.ximatars?.image_url || null,
+            ximatarImage: assessmentResult.ximatars?.image_url?.replace(/^public\//, '/') || null,
             totalScore: Math.round(assessmentResult.total_score || 0),
             isLoading: false
           });

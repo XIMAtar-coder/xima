@@ -161,7 +161,8 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
             // Update user avatar with computed XIMAtar
             if (result.ximatars) {
               userAvatar.animal = (result.ximatars as any).label;
-              userAvatar.image = (result.ximatars as any).image_url || '/ximatars/fox.png';
+              const rawImageUrl = (result.ximatars as any).image_url;
+              userAvatar.image = rawImageUrl?.replace(/^public\//, '/') || '/ximatars/fox.png';
             }
 
             Object.assign(finalPillars, computedPillars);
