@@ -157,6 +157,12 @@ const BusinessDashboard = () => {
 
     setProfileLoading(true);
     
+    // Show progress toast
+    toast({
+      title: 'Generating Profile...',
+      description: 'Analyzing your company website with AI. This may take 10-30 seconds.',
+    });
+    
     try {
       const { data, error } = await supabase.functions.invoke('analyze-company-profile', {
         body: {
