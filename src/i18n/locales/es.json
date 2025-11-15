@@ -3,14 +3,19 @@
     "login_required": "Inicio de sesión requerido",
     "login": "Iniciar sesión",
     "loading": "Cargando...",
-    "back": "Atrás"
+    "back": "Atrás",
+    "error": "Error"
   },
   "profile": {
     "page_title": "Bienvenido, {{name}}",
+    "welcome_name": "Bienvenido, {{name}}",
     "page_subtitle": "Aquí está tu perfil profesional y resultados de evaluación",
     "user": "Usuario",
     "your_ximatar": "Tu XIMAtar",
-    "job_matches": "Oportunidades Recomendadas",
+    "your_mentor": "Tu Mentor",
+    "book_15_min_session": "Reserva tu sesión de 15 minutos",
+    "challenge_for_you": "Desafío para Ti",
+    "this_week": "Esta Semana",
     "matched_professional": "Profesional Asignado",
     "booking_pending": "Pendiente",
     "booking_confirmed": "Confirmado",
@@ -21,8 +26,20 @@
     "confirm_booking": "Confirmar Reserva",
     "booking_confirmed_message": "¡Tu sesión ha sido confirmada!",
     "no_professional_matched": "Aún no hay profesional asignado",
-    "complete_assessment": "Completar Evaluación",
-    "recommended_opportunities": "Oportunidades Recomendadas"
+    "complete_assessment": "Completar Evaluación"
+  },
+  "results": {
+    "title": "Tus Resultados",
+    "subtitle": "Aquí está tu evaluación completa de XIMAtar"
+  },
+  "cv_analysis": {
+    "title": "Sube Tu CV para Análisis Mejorado",
+    "description": "Sube tu CV para obtener insights personalizados basados en tu experiencia profesional.",
+    "upload_button": "Subir CV",
+    "uploading": "Subiendo...",
+    "analyzing": "Analizando tu CV...",
+    "complete": "¡Análisis de CV Completo!",
+    "success": "Tu CV ha sido analizado exitosamente."
   },
   "results": {
     "page_title": "Tus Resultados",

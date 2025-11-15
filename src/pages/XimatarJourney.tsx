@@ -115,10 +115,15 @@ const XimatarJourney = () => {
         
         <Card className="p-8 shadow-lg border-0">
           {currentStep === 1 && (
-            <BaselineAssessment 
-              onComplete={handleStepComplete}
-              onCvUpload={setCvUploaded}
-            />
+            <div className="space-y-6">
+              {isAuthenticated && user?.id && (
+                <CvAnalysisUpload userId={user.id} />
+              )}
+              <BaselineAssessment 
+                onComplete={handleStepComplete}
+                onCvUpload={setCvUploaded}
+              />
+            </div>
           )}
           
           {currentStep === 2 && (

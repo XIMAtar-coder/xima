@@ -7,10 +7,14 @@
   },
   "profile": {
     "page_title": "Welcome, {{name}}",
+    "welcome_name": "Welcome, {{name}}",
     "page_subtitle": "Here's your professional profile and assessment results",
     "user": "User",
     "your_ximatar": "Your XIMAtar",
-    "job_matches": "Recommended Opportunities",
+    "your_mentor": "Your Mentor",
+    "book_15_min_session": "Book your 15-minute session",
+    "challenge_for_you": "Challenge for You",
+    "this_week": "This Week",
     "matched_professional": "Matched Professional",
     "booking_pending": "Pending",
     "booking_confirmed": "Confirmed",
@@ -21,12 +25,11 @@
     "confirm_booking": "Confirm Booking",
     "booking_confirmed_message": "Your session has been confirmed!",
     "no_professional_matched": "No professional matched yet",
-    "complete_assessment": "Complete Assessment",
-    "recommended_opportunities": "Recommended Opportunities"
+    "complete_assessment": "Complete Assessment"
   },
   "results": {
-    "page_title": "Your Results",
-    "page_subtitle": "Here's your complete XIMAtar assessment",
+    "title": "Your Results",
+    "subtitle": "Here's your complete XIMAtar assessment",
     "your_ximatar": "Your XIMAtar",
     "core_traits": "Core Traits",
     "strengths": "Strengths",
@@ -37,6 +40,15 @@
     "biggest_improvement": "Biggest Improvement",
     "proceed_to_profile": "Go to Profile",
     "register_to_continue": "Register to Continue"
+  },
+  "cv_analysis": {
+    "title": "Upload Your CV for Enhanced Analysis",
+    "description": "Upload your CV to get personalized insights based on your professional experience.",
+    "upload_button": "Upload CV",
+    "uploading": "Uploading...",
+    "analyzing": "Analyzing your CV...",
+    "complete": "CV Analysis Complete!",
+    "success": "Your CV has been analyzed successfully."
   },
   "progress": {
     "journey_progress": "Your Journey Progress",
