@@ -1,3 +1,7 @@
+/**
+ * Static XIMAtar type definition for legacy compatibility
+ * @deprecated For new features, use useXimatarsCatalog hook to fetch dynamic data from Supabase
+ */
 export interface XIMAtar {
   id: string;
   name: string;
@@ -27,6 +31,11 @@ export interface XIMAtar {
   };
 }
 
+/**
+ * Static array of all 12 XIMAtar types with hardcoded translations
+ * @deprecated Use useXimatarsCatalog() hook instead for Supabase-driven catalog
+ * This static data is kept for legacy compatibility and as reference only
+ */
 export const XIMATAR_TYPES: XIMAtar[] = [
   {
     id: 'lion',

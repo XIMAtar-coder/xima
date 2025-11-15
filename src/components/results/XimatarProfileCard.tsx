@@ -14,7 +14,7 @@ export const XimatarProfileCard: React.FC<XimatarProfileCardProps> = ({ ximatar,
 
   if (!ximatar) return null;
 
-  const imageUrl = ximatar.image_url?.replace('public/', '/');
+  const imageUrl = ximatar.image_url?.replace(/^public\//, '/') || '/ximatars/fox.png';
   const translations = ximatar.translations;
   const currentLang = i18n.language || 'it';
 

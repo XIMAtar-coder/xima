@@ -1,10 +1,20 @@
 import { XIMATAR_TYPES, XIMAtar } from '@/types/ximatar';
 
+/**
+ * @deprecated Use useXimatarsCatalog hook instead for dynamic Supabase-driven data
+ * This static function is kept for legacy compatibility only
+ */
 export const getXIMAtarById = (id: string): XIMAtar | undefined => {
+  console.warn('getXIMAtarById is deprecated. Use useXimatarsCatalog hook instead.');
   return XIMATAR_TYPES.find(ximatar => ximatar.id === id);
 };
 
+/**
+ * @deprecated Assignment logic now handled by Supabase function assign_ximatar_by_pillars
+ * This function is kept for legacy client-side fallback only
+ */
 export const getXIMAtarByAssessment = (pillars: { [key: string]: number }): XIMAtar => {
+  console.warn('getXIMAtarByAssessment is deprecated. XIMAtar assignment handled by Supabase.');
   const { computational, communication, knowledge, creativity, drive } = pillars;
   
   // Find the highest scoring pillar
@@ -56,4 +66,8 @@ export const getXIMAtarByAssessment = (pillars: { [key: string]: number }): XIMA
   return getXIMAtarById('horse')!; // Horse - Reliable Driver
 };
 
+/**
+ * @deprecated Use useXimatarsCatalog hook instead
+ * Static export kept for backward compatibility only
+ */
 export { XIMATAR_TYPES };
