@@ -357,11 +357,13 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   return (
     <div className="space-y-8">
       {/* Storytelling Introduction */}
-      <Card className="p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 border-primary/10">
+      <Card className="p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 border-primary/10 animate-fade-in">
         <div className="text-center space-y-4">
-          <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
-          <h2 className="text-3xl font-bold font-heading">{t('results.title')}</h2>
-          <div className="prose prose-lg mx-auto text-muted-foreground max-w-2xl space-y-4">
+          <Sparkles className="h-12 w-12 text-primary mx-auto mb-4 animate-scale-in" />
+          <h2 className="text-3xl font-bold font-heading animate-fade-in" style={{ animationDelay: '100ms' }}>
+            {t('results.title')}
+          </h2>
+          <div className="prose prose-lg mx-auto text-muted-foreground max-w-2xl space-y-4 animate-fade-in" style={{ animationDelay: '200ms' }}>
             <p className="italic text-lg">{t('ximatar_intro.storytelling')}</p>
             <p>{t('ximatar_intro.explanation')}</p>
           </div>
@@ -370,46 +372,51 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       {/* XIMAtar Profile */}
       {ximatarData && (
-        <XimatarProfileCard ximatar={ximatarData} />
+        <div className="animate-fade-in" style={{ animationDelay: '300ms' }}>
+          <XimatarProfileCard ximatar={ximatarData} />
+        </div>
       )}
 
       {/* How Your XIMAtar Was Determined */}
       {strongestPillar && weakestPillar && (
-        <Card className="p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
+        <Card className="p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20 animate-fade-in" style={{ animationDelay: '400ms' }}>
           <h3 className="text-xl font-bold mb-4 text-center font-heading">{t('ximatar_intro.assignment_logic')}</h3>
           <div className="space-y-4">
-            <div className="flex items-center justify-center gap-3 flex-wrap">
+            <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '500ms' }}>
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
+                <CheckCircle className="h-5 w-5 text-green-500 animate-scale-in" />
                 <span className="font-semibold">{t('results.strongest_pillar')}:</span>
               </div>
-              <Badge variant="default" className="px-4 py-2 text-base capitalize">
+              <Badge variant="default" className="px-4 py-2 text-base capitalize hover-scale">
                 {t(`pillars.${strongestPillar.pillar === 'computational_power' ? 'computational' : strongestPillar.pillar}.name`)} ({strongestPillar.score.toFixed(1)})
               </Badge>
             </div>
             
-            <div className="flex items-center justify-center gap-3 flex-wrap">
+            <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '600ms' }}>
               <div className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-orange-500" />
+                <AlertCircle className="h-5 w-5 text-orange-500 animate-scale-in" />
                 <span className="font-semibold">{t('results.weakest_pillar')}:</span>
               </div>
-              <Badge variant="outline" className="px-4 py-2 text-base capitalize">
+              <Badge variant="outline" className="px-4 py-2 text-base capitalize hover-scale">
                 {t(`pillars.${weakestPillar.pillar === 'computational_power' ? 'computational' : weakestPillar.pillar}.name`)} ({weakestPillar.score.toFixed(1)})
               </Badge>
             </div>
 
-            <div className="flex items-center justify-center gap-3 flex-wrap">
+            <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '700ms' }}>
               <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
+                <Sparkles className="h-5 w-5 text-primary animate-scale-in" />
                 <span className="font-semibold">{t('results.drive_level')}:</span>
               </div>
               <Badge 
                 variant="secondary" 
-                className={`px-4 py-2 text-base capitalize ${
-                  driveLevel === 'high' ? 'bg-green-500/10 text-green-700 dark:text-green-400' :
-                  driveLevel === 'medium' ? 'bg-blue-500/10 text-blue-700 dark:text-blue-400' :
-                  'bg-orange-500/10 text-orange-700 dark:text-orange-400'
-                }`}
+                className={`
+                  px-4 py-2 text-base capitalize hover-scale
+                  transition-all duration-300
+                  ${driveLevel === 'high' ? 'bg-green-500/10 text-green-700 dark:text-green-400' :
+                    driveLevel === 'medium' ? 'bg-blue-500/10 text-blue-700 dark:text-blue-400' :
+                    'bg-orange-500/10 text-orange-700 dark:text-orange-400'
+                  }
+                `}
               >
                 {t(`ximatar_intro.drive_paths.${driveLevel}`)} ({driveScore.toFixed(1)})
               </Badge>
@@ -419,41 +426,137 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       )}
 
       {/* Drive Path Explanation */}
-      <Card className="p-6">
+      <Card className="p-6 overflow-hidden">
         <h3 className="text-xl font-bold mb-4 font-heading">{t('pillars.drive.name')}</h3>
         <p className="text-muted-foreground mb-4">{t('pillars.drive.description')}</p>
         <div className="space-y-3">
-          <div className={`p-4 rounded-lg border-2 ${driveLevel === 'high' ? 'bg-green-500/5 border-green-500/20' : 'border-border/50'}`}>
+          {/* High Drive */}
+          <div 
+            className={`
+              p-4 rounded-lg border-2 
+              transition-all duration-500 ease-out
+              ${driveLevel === 'high' 
+                ? 'bg-green-500/5 border-green-500/20 shadow-lg shadow-green-500/10 scale-[1.02] animate-fade-in' 
+                : 'border-border/50 hover:border-green-500/10 hover:bg-green-500/[0.02]'
+              }
+            `}
+            style={{
+              animation: driveLevel === 'high' ? 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) 1' : 'none'
+            }}
+          >
             <div className="flex items-center gap-2 mb-2">
-              <span className="font-semibold text-green-600 dark:text-green-400">{t('ximatar_intro.drive_paths.high')}</span>
-              {driveLevel === 'high' && <Badge variant="default" className="text-xs">{t('common.you', 'You')}</Badge>}
+              <span className={`
+                font-semibold text-green-600 dark:text-green-400
+                transition-all duration-300
+                ${driveLevel === 'high' ? 'scale-105' : ''}
+              `}>
+                {t('ximatar_intro.drive_paths.high')}
+              </span>
+              {driveLevel === 'high' && (
+                <Badge 
+                  variant="default" 
+                  className="text-xs animate-scale-in bg-green-600 hover:bg-green-700"
+                >
+                  {t('common.you', 'You')}
+                </Badge>
+              )}
             </div>
-            <p className="text-sm text-muted-foreground">{t('ximatar_intro.drive_paths.high_desc')}</p>
+            <p className={`
+              text-sm text-muted-foreground
+              transition-opacity duration-300
+              ${driveLevel === 'high' ? 'opacity-100' : 'opacity-75'}
+            `}>
+              {t('ximatar_intro.drive_paths.high_desc')}
+            </p>
           </div>
           
-          <div className={`p-4 rounded-lg border-2 ${driveLevel === 'medium' ? 'bg-blue-500/5 border-blue-500/20' : 'border-border/50'}`}>
+          {/* Medium Drive */}
+          <div 
+            className={`
+              p-4 rounded-lg border-2 
+              transition-all duration-500 ease-out
+              ${driveLevel === 'medium' 
+                ? 'bg-blue-500/5 border-blue-500/20 shadow-lg shadow-blue-500/10 scale-[1.02] animate-fade-in' 
+                : 'border-border/50 hover:border-blue-500/10 hover:bg-blue-500/[0.02]'
+              }
+            `}
+            style={{
+              animation: driveLevel === 'medium' ? 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) 1' : 'none'
+            }}
+          >
             <div className="flex items-center gap-2 mb-2">
-              <span className="font-semibold text-blue-600 dark:text-blue-400">{t('ximatar_intro.drive_paths.medium')}</span>
-              {driveLevel === 'medium' && <Badge variant="default" className="text-xs">{t('common.you', 'You')}</Badge>}
+              <span className={`
+                font-semibold text-blue-600 dark:text-blue-400
+                transition-all duration-300
+                ${driveLevel === 'medium' ? 'scale-105' : ''}
+              `}>
+                {t('ximatar_intro.drive_paths.medium')}
+              </span>
+              {driveLevel === 'medium' && (
+                <Badge 
+                  variant="default" 
+                  className="text-xs animate-scale-in bg-blue-600 hover:bg-blue-700"
+                >
+                  {t('common.you', 'You')}
+                </Badge>
+              )}
             </div>
-            <p className="text-sm text-muted-foreground">{t('ximatar_intro.drive_paths.medium_desc')}</p>
+            <p className={`
+              text-sm text-muted-foreground
+              transition-opacity duration-300
+              ${driveLevel === 'medium' ? 'opacity-100' : 'opacity-75'}
+            `}>
+              {t('ximatar_intro.drive_paths.medium_desc')}
+            </p>
           </div>
           
-          <div className={`p-4 rounded-lg border-2 ${driveLevel === 'low' ? 'bg-orange-500/5 border-orange-500/20' : 'border-border/50'}`}>
+          {/* Low Drive */}
+          <div 
+            className={`
+              p-4 rounded-lg border-2 
+              transition-all duration-500 ease-out
+              ${driveLevel === 'low' 
+                ? 'bg-orange-500/5 border-orange-500/20 shadow-lg shadow-orange-500/10 scale-[1.02] animate-fade-in' 
+                : 'border-border/50 hover:border-orange-500/10 hover:bg-orange-500/[0.02]'
+              }
+            `}
+            style={{
+              animation: driveLevel === 'low' ? 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) 1' : 'none'
+            }}
+          >
             <div className="flex items-center gap-2 mb-2">
-              <span className="font-semibold text-orange-600 dark:text-orange-400">{t('ximatar_intro.drive_paths.low')}</span>
-              {driveLevel === 'low' && <Badge variant="default" className="text-xs">{t('common.you', 'You')}</Badge>}
+              <span className={`
+                font-semibold text-orange-600 dark:text-orange-400
+                transition-all duration-300
+                ${driveLevel === 'low' ? 'scale-105' : ''}
+              `}>
+                {t('ximatar_intro.drive_paths.low')}
+              </span>
+              {driveLevel === 'low' && (
+                <Badge 
+                  variant="default" 
+                  className="text-xs animate-scale-in bg-orange-600 hover:bg-orange-700"
+                >
+                  {t('common.you', 'You')}
+                </Badge>
+              )}
             </div>
-            <p className="text-sm text-muted-foreground">{t('ximatar_intro.drive_paths.low_desc')}</p>
+            <p className={`
+              text-sm text-muted-foreground
+              transition-opacity duration-300
+              ${driveLevel === 'low' ? 'opacity-100' : 'opacity-75'}
+            `}>
+              {t('ximatar_intro.drive_paths.low_desc')}
+            </p>
           </div>
         </div>
       </Card>
 
       {pillarScores.length > 0 && (
-        <Card>
+        <Card className="animate-fade-in" style={{ animationDelay: '800ms' }}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-heading">
-              <Sparkles className="text-primary" />
+              <Sparkles className="text-primary animate-scale-in" />
               {t('results.assessment_scores')}
             </CardTitle>
             {totalScore !== null && (
@@ -463,7 +566,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
             )}
           </CardHeader>
           <CardContent className="space-y-4">
-            {pillarScores.map((pillar) => {
+            {pillarScores.map((pillar, index) => {
               // Map database pillar names to translation keys
               const pillarKeyMap: Record<string, string> = {
                 'computational_power': 'computational',
@@ -475,7 +578,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
               const translationKey = pillarKeyMap[pillar.pillar] || pillar.pillar;
               
               return (
-                <div key={pillar.pillar} className="space-y-2">
+                <div 
+                  key={pillar.pillar} 
+                  className="space-y-2 animate-fade-in"
+                  style={{ animationDelay: `${900 + (index * 100)}ms` }}
+                >
                   <div className="flex justify-between items-center">
                     <span className="font-medium capitalize">
                       {t(`pillars.${translationKey}.name`)}
@@ -484,7 +591,10 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                       {pillar.score.toFixed(1)}/10
                     </span>
                   </div>
-                  <Progress value={pillar.score * 10} className="h-2" />
+                  <Progress 
+                    value={pillar.score * 10} 
+                    className="h-2 transition-all duration-500" 
+                  />
                 </div>
               );
             })}
@@ -502,11 +612,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         />
 
         {selectedProfessional && (
-          <div className="text-center mt-8">
+          <div className="text-center mt-8 animate-scale-in">
             <Button 
               size="lg"
               onClick={handleProceedWithSelection}
-              className="px-8 py-4"
+              className="px-8 py-4 hover-scale"
             >
               {isAuthenticated ? t('results.proceed_to_dashboard') : t('results.register_to_continue')}
               <ArrowRight size={20} className="ml-2" />
@@ -516,17 +626,22 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       </Card>
 
       {!hasCv && openResponses.length > 0 && (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in" style={{ animationDelay: '1000ms' }}>
           <Card className="p-8">
             <h3 className="text-2xl font-bold mb-6 text-center font-heading">{t('open_scoring.title')}</h3>
             <div className="space-y-6">
-              {openResponses.map((response) => (
-                <OpenAnswerScore
+              {openResponses.map((response, index) => (
+                <div 
                   key={response.open_key}
-                  openKey={response.open_key}
-                  answer={response.answer}
-                  rubric={response.rubric}
-                />
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${1100 + (index * 100)}ms` }}
+                >
+                  <OpenAnswerScore
+                    openKey={response.open_key}
+                    answer={response.answer}
+                    rubric={response.rubric}
+                  />
+                </div>
               ))}
             </div>
           </Card>
@@ -534,9 +649,9 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       )}
 
       {/* Closing Message - The Compass */}
-      <Card className="p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 border-primary/10">
+      <Card className="p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 border-primary/10 animate-fade-in" style={{ animationDelay: '1200ms' }}>
         <div className="text-center space-y-4">
-          <p className="text-lg italic text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg italic text-muted-foreground max-w-2xl mx-auto animate-scale-in" style={{ animationDelay: '1300ms' }}>
             {t('ximatar_intro.compass')}
           </p>
         </div>
