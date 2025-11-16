@@ -610,23 +610,6 @@
     "no_professional_matched": "Nessun professionista abbinato ancora",
     "complete_assessment": "Completa la Valutazione"
   },
-    "no_assessment_title": "Completa la Tua Prima Valutazione XIMA",
-    "no_assessment_desc": "Completa la tua prima valutazione XIMA per sbloccare il tuo profilo professionale e scoprire il tuo archetipo XIMAtar",
-    "start_assessment": "Inizia Valutazione",
-    "pillar_breakdown": "Il Tuo Profilo dei Pilastri",
-    "your_score": "Il Tuo Punteggio",
-    "matched_professional": "Professionista Abbinato",
-    "booking_pending": "In Attesa",
-    "booking_confirmed": "Confermato",
-    "booking_cancelled": "Cancellato",
-    "book_session": "Prenota una Sessione",
-    "select_date": "Seleziona Data",
-    "select_time": "Seleziona Ora",
-    "confirm_booking": "Conferma Prenotazione",
-    "booking_confirmed_message": "La tua sessione è stata confermata!",
-    "no_professional_matched": "Nessun professionista abbinato ancora",
-    "complete_assessment": "Completa la Valutazione"
-  },
   "results": {
     "title": "I Tuoi Risultati",
     "subtitle": "Ecco la tua valutazione completa XIMAtar",
