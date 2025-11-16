@@ -106,6 +106,25 @@
     "for_business": "Para Empresas",
     "login": "Iniciar Sesión"
   },
+  "common": {
+    "you": "Tú",
+    "as_strength": "Como Fortaleza",
+    "as_weakness": "Como Debilidad"
+  },
+  "ximatar_intro": {
+    "storytelling": "No definimos a las personas con etiquetas. Revelamos la dinámica entre lo que las mueve, lo que las eleva y lo que las retiene",
+    "explanation": "En XIMA, un XIMAtar no es solo un reflejo de habilidades. Es un arquetipo viviente — construido desde la tensión entre tu máximo potencial, tu limitación actual y tu fuerza de voluntad interna",
+    "assignment_logic": "Cada XIMAtar se asigna basándose en: tu pilar más fuerte (tu ventaja), tu pilar más débil (tu punto de fricción), y tu nivel de Impulso (tu combustible interno)",
+    "compass": "Un XIMAtar no es una etiqueta — es una brújula. Muestra quién eres, qué da forma a tu progreso y qué elevará tu próximo capítulo",
+    "drive_paths": {
+      "high": "Alto Impulso",
+      "medium": "Impulso Medio",
+      "low": "Bajo Impulso",
+      "high_desc": "Ya activando el cambio — moviéndote con intención, tomando iniciativa y empujando límites",
+      "medium_desc": "Estable pero no aprovechado — capaz y consistente, con potencial sin explotar esperando ser encendido",
+      "low_desc": "Potencial aún latente — aún no movilizado, pero con energía latente que puede ser despertada"
+    }
+  },
   "pillars": {
     "title": "Los Cinco Pilares de la Inteligencia XIMA",
     "storytelling": "No definimos a las personas con etiquetas. Revelamos la dinámica entre lo que las mueve, lo que las eleva y lo que las retiene",
@@ -115,6 +134,10 @@
     "drive_paths": "Esto crea 12 arquetipos, cada uno expresado en tres caminos de Impulso: Alto Impulso — ya activando el cambio, Impulso Medio — estable pero no aprovechado, Bajo Impulso — potencial aún latente",
     "compass": "Un XIMAtar no es una etiqueta — es una brújula. Muestra quién eres, qué da forma a tu progreso y qué elevará tu próximo capítulo",
     "explanation": "Cada puntuación se calcula a partir de respuestas conductuales, elecciones situacionales, patrones cognitivos y análisis del estilo de escritura",
+    "detail_description": "Descripción",
+    "how_we_evaluate": "Cómo evaluamos",
+    "tips_to_improve": "Consejos para mejorar",
+    "visualization": "Visualización",
     "computational": {
       "name": "Poder Computacional",
       "description": "La capacidad de descomponer problemas complejos en pasos lógicos, usar datos y herramientas para encontrar soluciones eficientes y pensar sistemáticamente sobre los desafíos",

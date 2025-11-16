@@ -101,6 +101,25 @@
     "for_business": "For Business",
     "login": "Login"
   },
+  "common": {
+    "you": "You",
+    "as_strength": "As Strength",
+    "as_weakness": "As Weakness"
+  },
+  "ximatar_intro": {
+    "storytelling": "We don't define people with labels. We reveal the dynamic between what moves them, what lifts them, and what holds them back",
+    "explanation": "In XIMA, a XIMAtar is not just a reflection of abilities. It is a living archetype — built from the tension between your highest potential, your current limitation, and your internal force of will",
+    "assignment_logic": "Each XIMAtar is assigned based on: your strongest pillar (your edge), your weakest pillar (your friction point), and your Drive level (your inner fuel)",
+    "compass": "A XIMAtar is not a label — it is a compass. It shows who you are, what shapes your progress, and what will elevate your next chapter",
+    "drive_paths": {
+      "high": "High Drive",
+      "medium": "Medium Drive",
+      "low": "Low Drive",
+      "high_desc": "Already activating change — moving with intention, taking initiative, and pushing boundaries",
+      "medium_desc": "Stable but not leveraged — capable and consistent, with untapped potential waiting to be ignited",
+      "low_desc": "Potential still dormant — not yet mobilized, but with latent energy that can be awakened"
+    }
+  },
   "pillars": {
     "title": "The Five Pillars of XIMA Intelligence",
     "storytelling": "We don't define people with labels. We reveal the dynamic between what moves them, what lifts them, and what holds them back",
@@ -110,6 +129,10 @@
     "drive_paths": "This creates 12 archetypes, each expressed in three Drive-paths: High Drive — already activating change, Medium Drive — stable but not leveraged, Low Drive — potential still dormant",
     "compass": "A XIMAtar is not a label — it is a compass. It shows who you are, what shapes your progress, and what will elevate your next chapter",
     "explanation": "Each score is computed from behavioral answers, situational choices, cognitive patterns, and writing style analysis",
+    "detail_description": "Description",
+    "how_we_evaluate": "How we evaluate",
+    "tips_to_improve": "Tips to improve",
+    "visualization": "Visualization",
     "computational": {
       "name": "Computational Power",
       "description": "The ability to break down complex problems into logical steps, use data and tools to find efficient solutions, and think systematically about challenges",
