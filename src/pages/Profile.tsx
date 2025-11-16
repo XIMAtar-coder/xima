@@ -7,14 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Loader2, User, Sparkles, ArrowRight } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
-import { useSupabaseAssessmentData } from '@/hooks/useSupabaseAssessmentData';
+import { useProfileData } from '@/hooks/useProfileData';
 import { XimatarProfileCard } from '@/components/results/XimatarProfileCard';
-import { CVComparisonCard } from '@/components/results/CVComparisonCard';
-import { ProgressBar } from '@/components/results/ProgressBar';
-import { OpenAnswerScore } from '@/components/ximatar-journey/OpenAnswerScore';
-import { JobMatchesBlock } from '@/components/JobMatchesBlock';
-import { useJobMatches } from '@/hooks/useJobMatches';
-import { supabase } from '@/integrations/supabase/client';
 import { ProfilePhotoUpload } from '@/components/ProfilePhotoUpload';
 import { MentorSection } from '@/components/profile/MentorSection';
 import { PersonalizedChallenge } from '@/components/profile/PersonalizedChallenge';
@@ -24,45 +18,9 @@ const Profile = () => {
   const { user, isAuthenticated } = useUser();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const assessmentData = useSupabaseAssessmentData();
+  const profileData = useProfileData();
   
-  const [mentorData, setMentorData] = useState<any>(null);
-  const [fullName, setFullName] = useState<string>('');
-  const [driveLevel, setDriveLevel] = useState<'high' | 'medium' | 'low'>('medium');
   
-  // Calculate drive level from pillar scores
-  useEffect(() => {
-    if (assessmentData.pillars?.drive) {
-      const driveScore = assessmentData.pillars.drive;
-      if (driveScore >= 7.5) setDriveLevel('high');
-      else if (driveScore >= 5) setDriveLevel('medium');
-      else setDriveLevel('low');
-    }
-  }, [assessmentData.pillars]);
-  
-  // Fetch user profile with mentor
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user?.id) return;
-      
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name, mentor')
-        .eq('user_id', user.id)
-        .single();
-      
-      if (profile) {
-        setFullName(profile.full_name || user.name || '');
-        
-        if (profile.mentor) {
-          setMentorData(profile.mentor);
-        }
-      }
-    };
-    
-    fetchProfile();
-  }, [user]);
-
   if (!isAuthenticated) {
     return (
       <MainLayout>
@@ -74,12 +32,37 @@ const Profile = () => {
     );
   }
 
-  if (assessmentData.isLoading) {
+  if (profileData.isLoading) {
     return (
       <MainLayout>
         <div className="container max-w-4xl mx-auto py-12 flex flex-col items-center justify-center">
           <Loader2 className="animate-spin h-12 w-12 text-primary mb-4" />
           <p className="text-muted-foreground">{t('common.loading')}</p>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  // No assessment completed yet
+  if (!profileData.hasAssessment) {
+    return (
+      <MainLayout>
+        <div className="container max-w-4xl mx-auto py-12 space-y-8">
+          <Card className="text-center py-12">
+            <CardContent className="space-y-6">
+              <div className="flex justify-center">
+                <Sparkles className="h-24 w-24 text-primary opacity-50" />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold mb-4">{t('profile.no_assessment_title')}</h2>
+                <p className="text-muted-foreground text-lg mb-8">{t('profile.no_assessment_desc')}</p>
+              </div>
+              <Button size="lg" onClick={() => navigate('/ximatar-journey')}>
+                <Sparkles className="mr-2 h-5 w-5" />
+                {t('profile.start_assessment')}
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </MainLayout>
     );

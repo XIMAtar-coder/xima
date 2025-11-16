@@ -4,6 +4,11 @@ interface GuestAssessmentData {
   result_id?: string;
   ximatar_id?: string;
   ximatar_label?: string;
+  ximatar_name?: string;
+  ximatar_image?: string;
+  drive_level?: string;
+  strongest_pillar?: string;
+  weakest_pillar?: string;
   pillar_scores?: {
     computational_power: number;
     communication: number;
@@ -12,6 +17,8 @@ interface GuestAssessmentData {
     drive: number;
   };
   total_score?: number;
+  ximatar_storytelling?: string;
+  ximatar_growth_path?: string;
   assessment_data?: any;
 }
 
@@ -27,6 +34,13 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
     const guestResultId = localStorage.getItem('latest_assessment_result_id');
     const guestPillarScores = localStorage.getItem('guest_pillar_scores');
     const guestXimatar = localStorage.getItem('guest_ximatar');
+    const guestXimatarName = localStorage.getItem('guest_ximatar_name');
+    const guestXimatarImage = localStorage.getItem('guest_ximatar_image');
+    const guestDriveLevel = localStorage.getItem('guest_drive_level');
+    const guestStrongestPillar = localStorage.getItem('guest_strongest_pillar');
+    const guestWeakestPillar = localStorage.getItem('guest_weakest_pillar');
+    const guestStorytelling = localStorage.getItem('guest_ximatar_storytelling');
+    const guestGrowthPath = localStorage.getItem('guest_ximatar_growth_path');
     const guestAttemptId = localStorage.getItem('current_attempt_id');
 
     if (!guestResultId && !guestPillarScores && !guestXimatar) {
@@ -99,28 +113,49 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
       }
     }
 
-    // Update profiles table with XIMAtar
+    // Update profiles table with COMPLETE XIMAtar assessment data
     if (guestXimatar) {
-      // Get XIMAtar ID from label
+      // Get XIMAtar ID and full data from label
       const { data: ximatarData } = await supabase
         .from('ximatars')
-        .select('id')
+        .select('id, image_url')
         .eq('label', guestXimatar.toLowerCase())
         .single();
 
       if (ximatarData) {
+        // Prepare complete profile update with ALL assessment fields
+        const profileUpdate: any = {
+          ximatar: guestXimatar.toLowerCase() as any,
+          ximatar_id: ximatarData.id,
+          ximatar_assigned_at: new Date().toISOString(),
+          creation_source: 'assessment',
+          profile_complete: true
+        };
+
+        // Add optional fields if available
+        if (guestXimatarName) profileUpdate.ximatar_name = guestXimatarName;
+        if (guestXimatarImage) profileUpdate.ximatar_image = guestXimatarImage;
+        else if (ximatarData.image_url) profileUpdate.ximatar_image = ximatarData.image_url;
+        if (guestDriveLevel) profileUpdate.drive_level = guestDriveLevel;
+        if (guestStrongestPillar) profileUpdate.strongest_pillar = guestStrongestPillar;
+        if (guestWeakestPillar) profileUpdate.weakest_pillar = guestWeakestPillar;
+        if (guestStorytelling) profileUpdate.ximatar_storytelling = guestStorytelling;
+        if (guestGrowthPath) profileUpdate.ximatar_growth_path = guestGrowthPath;
+        
+        // Add pillar scores as JSONB
+        if (guestPillarScores) {
+          profileUpdate.pillar_scores = JSON.parse(guestPillarScores);
+        }
+
         const { error: profileError } = await supabase
           .from('profiles')
-          .update({
-            ximatar: guestXimatar.toLowerCase() as any,
-            ximatar_assigned_at: new Date().toISOString()
-          })
+          .update(profileUpdate)
           .eq('user_id', userId);
 
         if (profileError) {
-          console.error('Error updating profile with XIMAtar:', profileError);
+          console.error('Error updating profile with complete data:', profileError);
         } else {
-          console.log('Successfully updated profile with XIMAtar');
+          console.log('✅ Successfully updated profile with complete XIMAtar assessment data');
         }
 
         // Update assessment_result with ximatar_id if we have a result
@@ -137,9 +172,17 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
     localStorage.removeItem('latest_assessment_result_id');
     localStorage.removeItem('guest_pillar_scores');
     localStorage.removeItem('guest_ximatar');
+    localStorage.removeItem('guest_ximatar_name');
+    localStorage.removeItem('guest_ximatar_image');
+    localStorage.removeItem('guest_drive_level');
+    localStorage.removeItem('guest_strongest_pillar');
+    localStorage.removeItem('guest_weakest_pillar');
+    localStorage.removeItem('guest_ximatar_storytelling');
+    localStorage.removeItem('guest_ximatar_growth_path');
     localStorage.removeItem('guest_assessment_data');
+    localStorage.removeItem('current_attempt_id');
     
-    console.log('Assessment sync completed successfully');
+    console.log('✅ Assessment sync completed successfully - all data transferred to profile');
     return true;
 
   } catch (error) {

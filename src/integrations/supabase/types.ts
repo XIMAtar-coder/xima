@@ -1488,52 +1488,90 @@ export type Database = {
         Row: {
           avatar: Json | null
           created_at: string
+          creation_source: string | null
+          drive_level: string | null
           email: string | null
           full_name: string | null
           id: string
           mentor: Json | null
           name: string | null
+          pillar_scores: Json | null
           pillars: Json | null
           preferred_lang: Database["public"]["Enums"]["lang_code"] | null
           profile_complete: boolean | null
+          strongest_pillar: string | null
           updated_at: string
           user_id: string
+          weakest_pillar: string | null
           ximatar: Database["public"]["Enums"]["ximatar_type"] | null
           ximatar_assigned_at: string | null
+          ximatar_growth_path: string | null
+          ximatar_id: string | null
+          ximatar_image: string | null
+          ximatar_name: string | null
+          ximatar_storytelling: string | null
         }
         Insert: {
           avatar?: Json | null
           created_at?: string
+          creation_source?: string | null
+          drive_level?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
           mentor?: Json | null
           name?: string | null
+          pillar_scores?: Json | null
           pillars?: Json | null
           preferred_lang?: Database["public"]["Enums"]["lang_code"] | null
           profile_complete?: boolean | null
+          strongest_pillar?: string | null
           updated_at?: string
           user_id: string
+          weakest_pillar?: string | null
           ximatar?: Database["public"]["Enums"]["ximatar_type"] | null
           ximatar_assigned_at?: string | null
+          ximatar_growth_path?: string | null
+          ximatar_id?: string | null
+          ximatar_image?: string | null
+          ximatar_name?: string | null
+          ximatar_storytelling?: string | null
         }
         Update: {
           avatar?: Json | null
           created_at?: string
+          creation_source?: string | null
+          drive_level?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
           mentor?: Json | null
           name?: string | null
+          pillar_scores?: Json | null
           pillars?: Json | null
           preferred_lang?: Database["public"]["Enums"]["lang_code"] | null
           profile_complete?: boolean | null
+          strongest_pillar?: string | null
           updated_at?: string
           user_id?: string
+          weakest_pillar?: string | null
           ximatar?: Database["public"]["Enums"]["ximatar_type"] | null
           ximatar_assigned_at?: string | null
+          ximatar_growth_path?: string | null
+          ximatar_id?: string | null
+          ximatar_image?: string | null
+          ximatar_name?: string | null
+          ximatar_storytelling?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_ximatar_id_fkey"
+            columns: ["ximatar_id"]
+            isOneToOne: false
+            referencedRelation: "ximatars"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       question_bank: {
         Row: {
