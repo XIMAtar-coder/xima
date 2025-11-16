@@ -384,7 +384,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                 <span className="font-semibold">{t('results.strongest_pillar')}:</span>
               </div>
               <Badge variant="default" className="px-4 py-2 text-base capitalize">
-                {t(`pillars.${strongestPillar.pillar.replace('_', '')}`)} ({strongestPillar.score.toFixed(1)})
+                {t(`pillars.${strongestPillar.pillar === 'computational_power' ? 'computational' : strongestPillar.pillar}.name`)} ({strongestPillar.score.toFixed(1)})
               </Badge>
             </div>
             
@@ -394,7 +394,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                 <span className="font-semibold">{t('results.weakest_pillar')}:</span>
               </div>
               <Badge variant="outline" className="px-4 py-2 text-base capitalize">
-                {t(`pillars.${weakestPillar.pillar.replace('_', '')}`)} ({weakestPillar.score.toFixed(1)})
+                {t(`pillars.${weakestPillar.pillar === 'computational_power' ? 'computational' : weakestPillar.pillar}.name`)} ({weakestPillar.score.toFixed(1)})
               </Badge>
             </div>
 
@@ -420,13 +420,13 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       {/* Drive Path Explanation */}
       <Card className="p-6">
-        <h3 className="text-xl font-bold mb-4 font-heading">{t('pillars.drive')}</h3>
+        <h3 className="text-xl font-bold mb-4 font-heading">{t('pillars.drive.name')}</h3>
         <p className="text-muted-foreground mb-4">{t('pillars.drive.description')}</p>
         <div className="space-y-3">
           <div className={`p-4 rounded-lg border-2 ${driveLevel === 'high' ? 'bg-green-500/5 border-green-500/20' : 'border-border/50'}`}>
             <div className="flex items-center gap-2 mb-2">
               <span className="font-semibold text-green-600 dark:text-green-400">{t('ximatar_intro.drive_paths.high')}</span>
-              {driveLevel === 'high' && <Badge variant="default" className="text-xs">You</Badge>}
+              {driveLevel === 'high' && <Badge variant="default" className="text-xs">{t('common.you', 'You')}</Badge>}
             </div>
             <p className="text-sm text-muted-foreground">{t('ximatar_intro.drive_paths.high_desc')}</p>
           </div>
@@ -434,7 +434,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           <div className={`p-4 rounded-lg border-2 ${driveLevel === 'medium' ? 'bg-blue-500/5 border-blue-500/20' : 'border-border/50'}`}>
             <div className="flex items-center gap-2 mb-2">
               <span className="font-semibold text-blue-600 dark:text-blue-400">{t('ximatar_intro.drive_paths.medium')}</span>
-              {driveLevel === 'medium' && <Badge variant="default" className="text-xs">You</Badge>}
+              {driveLevel === 'medium' && <Badge variant="default" className="text-xs">{t('common.you', 'You')}</Badge>}
             </div>
             <p className="text-sm text-muted-foreground">{t('ximatar_intro.drive_paths.medium_desc')}</p>
           </div>
@@ -442,7 +442,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           <div className={`p-4 rounded-lg border-2 ${driveLevel === 'low' ? 'bg-orange-500/5 border-orange-500/20' : 'border-border/50'}`}>
             <div className="flex items-center gap-2 mb-2">
               <span className="font-semibold text-orange-600 dark:text-orange-400">{t('ximatar_intro.drive_paths.low')}</span>
-              {driveLevel === 'low' && <Badge variant="default" className="text-xs">You</Badge>}
+              {driveLevel === 'low' && <Badge variant="default" className="text-xs">{t('common.you', 'You')}</Badge>}
             </div>
             <p className="text-sm text-muted-foreground">{t('ximatar_intro.drive_paths.low_desc')}</p>
           </div>
@@ -463,19 +463,31 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
             )}
           </CardHeader>
           <CardContent className="space-y-4">
-            {pillarScores.map((pillar) => (
-              <div key={pillar.pillar} className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium capitalize">
-                    {t(`pillars.${pillar.pillar.replace('_', '')}`)}
-                  </span>
-                  <span className="text-sm font-semibold text-primary">
-                    {pillar.score.toFixed(1)}/10
-                  </span>
+            {pillarScores.map((pillar) => {
+              // Map database pillar names to translation keys
+              const pillarKeyMap: Record<string, string> = {
+                'computational_power': 'computational',
+                'communication': 'communication',
+                'knowledge': 'knowledge',
+                'creativity': 'creativity',
+                'drive': 'drive'
+              };
+              const translationKey = pillarKeyMap[pillar.pillar] || pillar.pillar;
+              
+              return (
+                <div key={pillar.pillar} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium capitalize">
+                      {t(`pillars.${translationKey}.name`)}
+                    </span>
+                    <span className="text-sm font-semibold text-primary">
+                      {pillar.score.toFixed(1)}/10
+                    </span>
+                  </div>
+                  <Progress value={pillar.score * 10} className="h-2" />
                 </div>
-                <Progress value={pillar.score * 10} className="h-2" />
-              </div>
-            ))}
+              );
+            })}
           </CardContent>
         </Card>
       )}

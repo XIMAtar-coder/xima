@@ -167,18 +167,18 @@ export function PillarsShowcase() {
                       {/* Description */}
                       <div>
                         <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground mb-2">
-                          Descrizione
+                          {t('pillars.detail_description', 'Description')}
                         </h4>
                         <p className="text-sm text-foreground leading-relaxed">{description}</p>
                         
                         {/* Strength & Weakness */}
                         <div className="mt-4 space-y-2">
                           <div className="text-xs">
-                            <span className="font-semibold text-green-600 dark:text-green-400">As Strength: </span>
+                            <span className="font-semibold text-green-600 dark:text-green-400">{t('common.as_strength')}: </span>
                             <span className="text-foreground">{t(`pillars.${pillar === 'computational_power' ? 'computational' : pillar}.as_strength`)}</span>
                           </div>
                           <div className="text-xs">
-                            <span className="font-semibold text-orange-600 dark:text-orange-400">As Weakness: </span>
+                            <span className="font-semibold text-orange-600 dark:text-orange-400">{t('common.as_weakness')}: </span>
                             <span className="text-foreground">{t(`pillars.${pillar === 'computational_power' ? 'computational' : pillar}.as_weakness`)}</span>
                           </div>
                         </div>
@@ -187,7 +187,7 @@ export function PillarsShowcase() {
                       {/* How we evaluate */}
                       <div>
                         <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground mb-2">
-                          Come valutiamo
+                          {t('pillars.how_we_evaluate', 'How we evaluate')}
                         </h4>
                         <ul className="space-y-2">
                           {howWeEval.map((item, i) => (
@@ -202,7 +202,7 @@ export function PillarsShowcase() {
                       {/* Tips */}
                       <div>
                         <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground mb-2">
-                          Suggerimenti per migliorare
+                          {t('pillars.tips_to_improve', 'Tips to improve')}
                         </h4>
                         <ul className="space-y-2">
                           {tips.map((item, i) => (
@@ -219,7 +219,7 @@ export function PillarsShowcase() {
                     <div className="mt-6 pt-6 border-t border-border">
                       <div className="flex items-center justify-between mb-4">
                         <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                          Visualizzazione
+                          {t('pillars.visualization', 'Visualization')}
                         </h4>
                         <div className="flex gap-2">
                           <button

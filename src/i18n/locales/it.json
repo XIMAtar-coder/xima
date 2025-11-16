@@ -19,6 +19,25 @@
     "for_business": "Per le Aziende",
     "login": "Accedi"
   },
+  "common": {
+    "you": "Tu",
+    "as_strength": "Come Punto di Forza",
+    "as_weakness": "Come Debolezza"
+  },
+  "ximatar_intro": {
+    "storytelling": "Non definiamo le persone con etichette. Riveliamo la dinamica tra ciò che le muove, ciò che le eleva e ciò che le trattiene",
+    "explanation": "In XIMA, un XIMAtar non è solo un riflesso delle capacità. È un archetipo vivente — costruito dalla tensione tra il tuo massimo potenziale, la tua limitazione attuale e la tua forza di volontà interiore",
+    "assignment_logic": "Ogni XIMAtar è assegnato in base a: il tuo pilastro più forte (il tuo vantaggio), il tuo pilastro più debole (il tuo punto di attrito), e il tuo livello di Spinta (il tuo carburante interiore)",
+    "compass": "Un XIMAtar non è un'etichetta — è una bussola. Mostra chi sei, cosa modella il tuo progresso e cosa eleverà il tuo prossimo capitolo",
+    "drive_paths": {
+      "high": "Alta Spinta",
+      "medium": "Media Spinta",
+      "low": "Bassa Spinta",
+      "high_desc": "Già attivando il cambiamento — muovendoti con intenzione, prendendo iniziativa e superando i limiti",
+      "medium_desc": "Stabile ma non sfruttata — capace e costante, con potenziale inespresso che attende di essere acceso",
+      "low_desc": "Potenziale ancora dormiente — non ancora mobilizzato, ma con energia latente che può essere risvegliata"
+    }
+  },
   "pillars": {
     "title": "I Cinque Pilastri dell'Intelligenza XIMA",
     "storytelling": "Non definiamo le persone con etichette. Riveliamo la dinamica tra ciò che le muove, ciò che le eleva e ciò che le trattiene",
@@ -28,6 +47,10 @@
     "drive_paths": "Questo crea 12 archetipi, ciascuno espresso in tre percorsi di Spinta: Alta Spinta — già attivando il cambiamento, Media Spinta — stabile ma non sfruttata, Bassa Spinta — potenziale ancora dormiente",
     "compass": "Un XIMAtar non è un'etichetta — è una bussola. Mostra chi sei, cosa modella il tuo progresso e cosa eleverà il tuo prossimo capitolo",
     "explanation": "Ogni punteggio è calcolato da risposte comportamentali, scelte situazionali, pattern cognitivi e analisi dello stile di scrittura",
+    "detail_description": "Descrizione",
+    "how_we_evaluate": "Come valutiamo",
+    "tips_to_improve": "Suggerimenti per migliorare",
+    "visualization": "Visualizzazione",
     "computational": {
       "name": "Potenza Computazionale",
       "description": "La capacità di scomporre problemi complessi in passaggi logici, utilizzare dati e strumenti per trovare soluzioni efficienti e pensare sistematicamente alle sfide",
