@@ -10,6 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '../context/UserContext';
 import { RegistrationForm } from '../types';
 import { Logo } from '@/components/Logo';
+import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -81,7 +82,7 @@ const Register = () => {
     setIsSubmitting(true);
     
     try {
-      const { error } = await signUp(formData.email, formData.password, formData.name);
+      const { data, error } = await signUp(formData.email, formData.password, formData.name);
       
       if (error) {
         toast({
@@ -92,15 +93,30 @@ const Register = () => {
         return;
       }
       
-      toast({
-        title: t('register.registration_success'),
-        description: t('register.welcome_message'),
-      });
+      // Get the newly created user ID
+      const newUserId = data?.user?.id;
       
-      // Wait a moment for auth state to update, then redirect
+      if (newUserId) {
+        // Sync guest assessment data to profile
+        const syncSuccess = await syncGuestAssessmentToProfile(newUserId);
+        
+        if (syncSuccess) {
+          toast({
+            title: t('register.registration_success'),
+            description: t('register.assessment_synced', 'Your assessment data has been saved to your profile'),
+          });
+        } else {
+          toast({
+            title: t('register.registration_success'),
+            description: t('register.welcome_message'),
+          });
+        }
+      }
+      
+      // Wait a moment for sync and auth state to update, then redirect
       setTimeout(() => {
         navigate('/profile');
-      }, 1000);
+      }, 1500);
       
     } catch (error) {
       toast({

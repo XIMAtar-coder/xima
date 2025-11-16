@@ -25,7 +25,12 @@
     "confirm_booking": "Confirm Booking",
     "booking_confirmed_message": "Your session has been confirmed!",
     "no_professional_matched": "No professional matched yet",
-    "complete_assessment": "Complete Assessment"
+    "complete_assessment": "Complete Assessment",
+    "no_assessment_title": "Complete Your First XIMA Assessment",
+    "no_assessment_desc": "Complete your first XIMA Assessment to unlock your professional blueprint and discover your XIMAtar archetype",
+    "start_assessment": "Start Assessment",
+    "pillar_breakdown": "Your Pillar Profile",
+    "your_score": "Your Score"
   },
   "results": {
     "title": "Your Results",

@@ -7,7 +7,7 @@ import { User, XimaPillars, Avatar, Mentor, PillarType } from '../types';
 interface UserContextType {
   user: User | null;
   session: Session | null;
-  signUp: (email: string, password: string, name: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, name: string) => Promise<{ data: any; error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   updateUserProfile: (userData: Partial<User>) => void;
   updatePillars: (pillars: XimaPillars) => void;
@@ -74,7 +74,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const signUp = async (email: string, password: string, name: string) => {
+  const signUp = async (email: string, password: string, name: string): Promise<{ data: any; error: any }> => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -94,11 +94,11 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       if (signInError) {
         console.error('Auto sign-in failed:', signInError);
-        return { error: signInError };
+        return { data, error: signInError };
       }
     }
 
-    return { error };
+    return { data, error };
   };
 
   const signIn = async (email: string, password: string) => {
