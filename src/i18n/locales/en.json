@@ -43,7 +43,13 @@
     "drive_level": "Drive Level",
     "pillar_scores": "Pillar Scores",
     "your_story": "Your Story",
-    "open_answers": "Your Open Answers"
+    "open_answers": "Your Open Answers",
+    "cv_analysis": "CV Analysis",
+    "cv_strengths": "Key Strengths from CV",
+    "soft_skills": "Soft Skills Identified",
+    "cv_vs_assessment": "CV vs Assessment Comparison",
+    "biggest_improvement": "Biggest Improvement",
+    "job_opportunities": "Your Job Opportunities"
   },
   "results": {
     "title": "Your Results",
