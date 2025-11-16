@@ -16,6 +16,11 @@
     "book_15_min_session": "Reserva tu sesión de 15 minutos",
     "challenge_for_you": "Desafío para Ti",
     "this_week": "Esta Semana",
+    "no_assessment_title": "Completa Tu Primera Evaluación XIMA",
+    "no_assessment_desc": "Completa tu primera evaluación XIMA para desbloquear tu perfil profesional y descubrir tu arquetipo XIMAtar",
+    "start_assessment": "Iniciar Evaluación",
+    "pillar_breakdown": "Tu Perfil de Pilares",
+    "your_score": "Tu Puntuación",
     "matched_professional": "Profesional Asignado",
     "booking_pending": "Pendiente",
     "booking_confirmed": "Confirmado",
@@ -837,7 +842,12 @@
     "register_button": "Crear Cuenta",
     "login_link": "¿Ya tienes cuenta? Inicia sesión",
     "password_mismatch": "Las contraseñas no coinciden",
-    "email_exists": "El correo ya está registrado"
+    "email_exists": "El correo ya está registrado",
+    "assessment_synced": "Los datos de tu evaluación se han guardado en tu perfil",
+    "registration_success": "Registro Exitoso",
+    "welcome_message": "Bienvenido a XIMA. Tu viaje comienza ahora",
+    "registration_failed": "Registro Fallido",
+    "try_again": "Por favor intenta nuevamente"
   },
   "not_found": {
     "title": "Página No Encontrada",
