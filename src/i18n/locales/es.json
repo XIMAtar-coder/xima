@@ -107,27 +107,44 @@
     "login": "Iniciar Sesión"
   },
   "pillars": {
-    "title": "Los 5 Pilares de XIMA",
-    "explanation": "Cada puntuación se calcula a partir de respuestas conductuales, elecciones situacionales, patrones cognitivos y análisis del estilo de escritura.",
+    "title": "Los Cinco Pilares de la Inteligencia XIMA",
+    "storytelling": "No definimos a las personas con etiquetas. Revelamos la dinámica entre lo que las mueve, lo que las eleva y lo que las retiene",
+    "ximatar_intro": "En XIMA, un XIMAtar no es solo un reflejo de habilidades. Es un arquetipo viviente — construido desde la tensión entre tu máximo potencial, tu limitación actual y tu fuerza de voluntad interna",
+    "dimensions_intro": "XIMA evalúa cinco dimensiones de inteligencia profesional",
+    "assignment_logic": "Cada XIMAtar se asigna basándose en: tu pilar más fuerte (tu ventaja), tu pilar más débil (tu punto de fricción), y tu nivel de Impulso (tu combustible interno)",
+    "drive_paths": "Esto crea 12 arquetipos, cada uno expresado en tres caminos de Impulso: Alto Impulso — ya activando el cambio, Impulso Medio — estable pero no aprovechado, Bajo Impulso — potencial aún latente",
+    "compass": "Un XIMAtar no es una etiqueta — es una brújula. Muestra quién eres, qué da forma a tu progreso y qué elevará tu próximo capítulo",
+    "explanation": "Cada puntuación se calcula a partir de respuestas conductuales, elecciones situacionales, patrones cognitivos y análisis del estilo de escritura",
     "computational": {
       "name": "Poder Computacional",
-      "description": "La capacidad de descomponer problemas complejos en pasos lógicos, usar datos y herramientas para encontrar soluciones eficientes y pensar sistemáticamente sobre los desafíos."
+      "description": "La capacidad de descomponer problemas complejos en pasos lógicos, usar datos y herramientas para encontrar soluciones eficientes y pensar sistemáticamente sobre los desafíos",
+      "as_strength": "Eres estructurado, preciso y rápido bajo presión",
+      "as_weakness": "Puedes tener dificultades con sistemas, evitar la complejidad o perder claridad"
     },
     "communication": {
       "name": "Comunicación",
-      "description": "Qué tan efectivamente expresas ideas, escuchas activamente, construyes relaciones significativas y colaboras con otros para lograr objetivos compartidos."
+      "description": "Cuán efectivamente expresas ideas, escuchas activamente, construyes relaciones significativas y colaboras con otros para lograr objetivos compartidos",
+      "as_strength": "Influencias, conectas e inspiras",
+      "as_weakness": "Puedes contenerte, perder claridad o tener dificultades para vocalizar tus pensamientos"
     },
     "knowledge": {
       "name": "Conocimiento",
-      "description": "Tu profundidad de experiencia en áreas clave, capacidad para aprender continuamente y habilidad para aplicar lo que sabes a situaciones del mundo real."
+      "description": "Tu profundidad de experiencia en áreas clave, capacidad de aprender continuamente y habilidad para aplicar lo que sabes a situaciones del mundo real",
+      "as_strength": "Sintetizas profundamente, conectas insights y fundamentas decisiones",
+      "as_weakness": "Puedes actuar sobre suposiciones, evitar la investigación o quedarte en la superficie"
     },
     "creativity": {
       "name": "Creatividad",
-      "description": "Tu capacidad para generar ideas frescas, ver problemas desde nuevos ángulos, abrazar el pensamiento innovador y descubrir soluciones no convencionales."
+      "description": "Tu capacidad para generar ideas frescas, ver problemas desde nuevos ángulos, abrazar el pensamiento innovador y descubrir soluciones no convencionales",
+      "as_strength": "Ves posibilidades, te adaptas fluidamente e innovas",
+      "as_weakness": "Puedes evitar el riesgo, preferir lo conocido o resistir la ideación"
     },
     "drive": {
       "name": "Impulso",
-      "description": "Tu motivación interna para perseguir objetivos ambiciosos, recuperarte de contratiempos, tomar la iniciativa y mantener un fuerte compromiso con la excelencia."
+      "description": "Tu motivación interna para perseguir objetivos ambiciosos, recuperarte de contratiempos, tomar iniciativa y mantener el compromiso con la excelencia",
+      "drive_note": "El Impulso no define la habilidad — define la trayectoria",
+      "as_strength": "Eres auto-motivado, resiliente y orientado a la acción",
+      "as_weakness": "Puedes dudar, retrasar la acción o carecer de impulso"
     },
     "cta_primary": "Obtén tu XIMAtar ahora",
     "cta_secondary": "Aprende más",

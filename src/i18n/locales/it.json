@@ -20,27 +20,44 @@
     "login": "Accedi"
   },
   "pillars": {
-    "title": "I Cinque Pilastri XIMA",
-    "explanation": "Ogni punteggio viene calcolato da risposte comportamentali, scelte situazionali, pattern cognitivi e analisi dello stile di scrittura.",
+    "title": "I Cinque Pilastri dell'Intelligenza XIMA",
+    "storytelling": "Non definiamo le persone con etichette. Riveliamo la dinamica tra ciò che le muove, ciò che le eleva e ciò che le trattiene",
+    "ximatar_intro": "In XIMA, un XIMAtar non è solo un riflesso delle capacità. È un archetipo vivente — costruito dalla tensione tra il tuo massimo potenziale, la tua limitazione attuale e la tua forza di volontà interiore",
+    "dimensions_intro": "XIMA valuta cinque dimensioni dell'intelligenza professionale",
+    "assignment_logic": "Ogni XIMAtar è assegnato in base a: il tuo pilastro più forte (il tuo vantaggio), il tuo pilastro più debole (il tuo punto di attrito), e il tuo livello di Spinta (il tuo carburante interiore)",
+    "drive_paths": "Questo crea 12 archetipi, ciascuno espresso in tre percorsi di Spinta: Alta Spinta — già attivando il cambiamento, Media Spinta — stabile ma non sfruttata, Bassa Spinta — potenziale ancora dormiente",
+    "compass": "Un XIMAtar non è un'etichetta — è una bussola. Mostra chi sei, cosa modella il tuo progresso e cosa eleverà il tuo prossimo capitolo",
+    "explanation": "Ogni punteggio è calcolato da risposte comportamentali, scelte situazionali, pattern cognitivi e analisi dello stile di scrittura",
     "computational": {
       "name": "Potenza Computazionale",
-      "description": "La capacità di scomporre problemi complessi in passaggi logici, usare dati e strumenti per trovare soluzioni efficienti e pensare sistematicamente alle sfide."
+      "description": "La capacità di scomporre problemi complessi in passaggi logici, utilizzare dati e strumenti per trovare soluzioni efficienti e pensare sistematicamente alle sfide",
+      "as_strength": "Sei strutturato, preciso e veloce sotto pressione",
+      "as_weakness": "Potresti avere difficoltà con i sistemi, evitare la complessità o perdere chiarezza"
     },
     "communication": {
       "name": "Comunicazione",
-      "description": "Quanto efficacemente esprimi le idee, ascolti attivamente, costruisci relazioni significative e collabori con gli altri per raggiungere obiettivi condivisi."
+      "description": "Quanto efficacemente esprimi idee, ascolti attivamente, costruisci relazioni significative e collabori con gli altri per raggiungere obiettivi condivisi",
+      "as_strength": "Influenzi, connetti e ispiri",
+      "as_weakness": "Potresti trattenerti, perdere chiarezza o avere difficoltà a vocalizzare i tuoi pensieri"
     },
     "knowledge": {
       "name": "Conoscenza",
-      "description": "La tua profondità di competenza in aree chiave, capacità di apprendere continuamente e abilità nell'applicare ciò che sai a situazioni reali."
+      "description": "La tua profondità di competenza in aree chiave, capacità di apprendere continuamente e abilità nell'applicare ciò che sai a situazioni reali",
+      "as_strength": "Sintetizzi profondamente, colleghi intuizioni e fondi decisioni",
+      "as_weakness": "Potresti agire su supposizioni, evitare la ricerca o rimanere in superficie"
     },
     "creativity": {
       "name": "Creatività",
-      "description": "La tua capacità di generare idee fresche, vedere i problemi da nuove angolazioni, abbracciare il pensiero innovativo e scoprire soluzioni non convenzionali."
+      "description": "La tua capacità di generare idee fresche, vedere i problemi da nuove angolazioni, abbracciare il pensiero innovativo e scoprire soluzioni non convenzionali",
+      "as_strength": "Vedi possibilità, ti adatti fluidamente e innovi",
+      "as_weakness": "Potresti evitare il rischio, preferire il conosciuto o resistere all'ideazione"
     },
     "drive": {
-      "name": "Motivazione",
-      "description": "La tua motivazione interiore a perseguire obiettivi ambiziosi, riprenderti dalle difficoltà, prendere l'iniziativa e mantenere un forte impegno verso l'eccellenza."
+      "name": "Spinta",
+      "description": "La tua motivazione interiore a perseguire obiettivi ambiziosi, riprenderti dalle battute d'arresto, prendere iniziativa e mantenere l'impegno verso l'eccellenza",
+      "drive_note": "La Spinta non definisce l'abilità — definisce la traiettoria",
+      "as_strength": "Sei auto-motivato, resiliente e orientato all'azione",
+      "as_weakness": "Potresti esitare, ritardare l'azione o mancare di slancio"
     },
     "cta_primary": "Ottieni il tuo Ximatar ora",
     "cta_secondary": "Scopri di più",

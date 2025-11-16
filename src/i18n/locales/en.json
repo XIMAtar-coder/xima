@@ -102,27 +102,44 @@
     "login": "Login"
   },
   "pillars": {
-    "title": "The 5 Pillars of XIMA",
-    "explanation": "Each score is computed from behavioral answers, situational choices, cognitive patterns, and writing style analysis.",
+    "title": "The Five Pillars of XIMA Intelligence",
+    "storytelling": "We don't define people with labels. We reveal the dynamic between what moves them, what lifts them, and what holds them back",
+    "ximatar_intro": "In XIMA, a XIMAtar is not just a reflection of abilities. It is a living archetype — built from the tension between your highest potential, your current limitation, and your internal force of will",
+    "dimensions_intro": "XIMA evaluates five dimensions of professional intelligence",
+    "assignment_logic": "Each XIMAtar is assigned based on: your strongest pillar (your edge), your weakest pillar (your friction point), and your Drive level (your inner fuel)",
+    "drive_paths": "This creates 12 archetypes, each expressed in three Drive-paths: High Drive — already activating change, Medium Drive — stable but not leveraged, Low Drive — potential still dormant",
+    "compass": "A XIMAtar is not a label — it is a compass. It shows who you are, what shapes your progress, and what will elevate your next chapter",
+    "explanation": "Each score is computed from behavioral answers, situational choices, cognitive patterns, and writing style analysis",
     "computational": {
       "name": "Computational Power",
-      "description": "The ability to break down complex problems into logical steps, use data and tools to find efficient solutions, and think systematically about challenges."
+      "description": "The ability to break down complex problems into logical steps, use data and tools to find efficient solutions, and think systematically about challenges",
+      "as_strength": "You are structured, precise, and fast under pressure",
+      "as_weakness": "You may struggle with systems, avoid complexity, or lose clarity"
     },
     "communication": {
       "name": "Communication",
-      "description": "How effectively you express ideas, listen actively, build meaningful relationships, and collaborate with others to achieve shared goals."
+      "description": "How effectively you express ideas, listen actively, build meaningful relationships, and collaborate with others to achieve shared goals",
+      "as_strength": "You influence, connect, and inspire",
+      "as_weakness": "You may hold back, lose clarity, or struggle to vocalize your thoughts"
     },
     "knowledge": {
       "name": "Knowledge",
-      "description": "Your depth of expertise in key areas, ability to learn continuously, and skill in applying what you know to real-world situations."
+      "description": "Your depth of expertise in key areas, ability to learn continuously, and skill in applying what you know to real-world situations",
+      "as_strength": "You synthesize deeply, connect insights, and ground decisions",
+      "as_weakness": "You may act on assumptions, avoid research, or stay on the surface"
     },
     "creativity": {
       "name": "Creativity",
-      "description": "Your capacity to generate fresh ideas, see problems from new angles, embrace innovative thinking, and discover unconventional solutions."
+      "description": "Your capacity to generate fresh ideas, see problems from new angles, embrace innovative thinking, and discover unconventional solutions",
+      "as_strength": "You see possibilities, adapt fluidly, and innovate",
+      "as_weakness": "You may avoid risk, prefer the known, or resist ideation"
     },
     "drive": {
       "name": "Drive",
-      "description": "Your inner motivation to pursue ambitious goals, bounce back from setbacks, take initiative, and maintain a strong commitment to excellence."
+      "description": "Your inner motivation to pursue ambitious goals, bounce back from setbacks, take initiative, and maintain commitment to excellence",
+      "drive_note": "Drive doesn't define skill — it defines trajectory",
+      "as_strength": "You are self-motivated, resilient, and action-oriented",
+      "as_weakness": "You may hesitate, delay action, or lack momentum"
     },
     "cta_primary": "Get your XIMAtar now",
     "cta_secondary": "Learn more",
