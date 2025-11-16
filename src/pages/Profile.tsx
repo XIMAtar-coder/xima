@@ -19,7 +19,7 @@ const Profile = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const profileData = useProfileData();
-  
+  console.log('[Profile] render profileData', profileData);
   
   if (!isAuthenticated) {
     return (
