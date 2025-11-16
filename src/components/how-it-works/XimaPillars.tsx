@@ -37,10 +37,15 @@ const XimaPillars = () => {
 
   return (
     <div className="mb-12">
-      <h2 className="text-3xl font-bold text-center mb-8">{t('pillars.title')}</h2>
-      <p className="text-center text-muted-foreground mb-8 max-w-3xl mx-auto">
-        {t('pillars.explanation')}
-      </p>
+      <h2 className="text-3xl font-bold text-center mb-4">{t('pillars.title')}</h2>
+      
+      <div className="max-w-3xl mx-auto space-y-4 text-center text-muted-foreground mb-8">
+        <p>{t('pillars.assignment_logic')}</p>
+        <p>{t('pillars.drive_paths')}</p>
+        <p className="italic font-medium">{t('pillars.compass')}</p>
+        <p className="text-sm mt-6">{t('pillars.explanation')}</p>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {pillars.map((pillar, index) => (
           <Card key={index} className="p-6 hover:shadow-lg transition-shadow">
@@ -48,7 +53,17 @@ const XimaPillars = () => {
               {pillar.icon}
               <h3 className="text-lg font-semibold">{pillar.name}</h3>
             </div>
-            <p className="text-muted-foreground text-sm">{pillar.description}</p>
+            <p className="text-muted-foreground text-sm mb-3">{pillar.description}</p>
+            {t(`pillars.${pillar.name.toLowerCase().replace(' ', '_')}.as_strength`) && (
+              <div className="space-y-2 text-xs">
+                <p className="text-green-600 dark:text-green-400">
+                  <strong>As Strength:</strong> {t(`pillars.${pillar.name.toLowerCase().replace(' ', '_')}.as_strength`)}
+                </p>
+                <p className="text-orange-600 dark:text-orange-400">
+                  <strong>As Weakness:</strong> {t(`pillars.${pillar.name.toLowerCase().replace(' ', '_')}.as_weakness`)}
+                </p>
+              </div>
+            )}
           </Card>
         ))}
       </div>

@@ -87,9 +87,22 @@ export function PillarsShowcase() {
   return (
     <section ref={sectionRef} className="py-16 px-4">
       <div className="container max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-6 text-foreground">
           {t('pillars.title')}
         </h2>
+
+        {/* Storytelling Section */}
+        <div className="max-w-3xl mx-auto text-center space-y-4 mb-12">
+          <p className="text-lg italic text-muted-foreground">
+            {t('pillars.storytelling')}
+          </p>
+          <p className="text-base text-muted-foreground">
+            {t('pillars.ximatar_intro')}
+          </p>
+          <p className="text-base font-medium text-foreground">
+            {t('pillars.dimensions_intro')}
+          </p>
+        </div>
 
         <div
           className={cn(
@@ -157,6 +170,18 @@ export function PillarsShowcase() {
                           Descrizione
                         </h4>
                         <p className="text-sm text-foreground leading-relaxed">{description}</p>
+                        
+                        {/* Strength & Weakness */}
+                        <div className="mt-4 space-y-2">
+                          <div className="text-xs">
+                            <span className="font-semibold text-green-600 dark:text-green-400">As Strength: </span>
+                            <span className="text-foreground">{t(`pillars.${pillar === 'computational_power' ? 'computational' : pillar}.as_strength`)}</span>
+                          </div>
+                          <div className="text-xs">
+                            <span className="font-semibold text-orange-600 dark:text-orange-400">As Weakness: </span>
+                            <span className="text-foreground">{t(`pillars.${pillar === 'computational_power' ? 'computational' : pillar}.as_weakness`)}</span>
+                          </div>
+                        </div>
                       </div>
 
                       {/* How we evaluate */}
@@ -315,6 +340,22 @@ export function PillarsShowcase() {
               </Card>
             );
           })}
+        </div>
+
+        {/* Bottom storytelling section */}
+        <div className="max-w-3xl mx-auto text-center space-y-4 mt-12 px-4">
+          <p className="text-base text-muted-foreground">
+            {t('pillars.assignment_logic')}
+          </p>
+          <p className="text-base text-muted-foreground">
+            {t('pillars.drive_paths')}
+          </p>
+          <p className="text-lg italic font-medium text-foreground mt-6">
+            {t('pillars.compass')}
+          </p>
+          <p className="text-sm text-muted-foreground mt-4">
+            {t('pillars.explanation')}
+          </p>
         </div>
       </div>
     </section>
