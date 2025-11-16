@@ -17,7 +17,7 @@
     "profile_photo": "Profile Photo",
     "upload_photo": "Upload Photo",
     "your_mentor": "Your Mentor",
-    "book_15_min_session": "Book your 15-minute session",
+    "book_15_min_session": "Book your 15 minute session",
     "challenge_for_you": "Challenge for You",
     "this_week": "This Week",
     "matched_professional": "Matched Professional",
@@ -51,7 +51,14 @@
     "soft_skills": "Soft Skills Identified",
     "cv_vs_assessment": "CV vs Assessment Comparison",
     "biggest_improvement": "Biggest Improvement",
-    "job_opportunities": "Your Job Opportunities"
+    "job_opportunities": "Your Job Opportunities",
+    "drive_level_high": "High Drive",
+    "drive_level_medium": "Medium Drive",
+    "drive_level_low": "Low Drive",
+    "change_photo": "Change Photo",
+    "uploading": "Uploading...",
+    "growth_area": "Growth Area",
+    "no_mentor_assigned": "Complete your first evaluation to receive a mentor"
   },
   "results": {
     "title": "Your Results",
