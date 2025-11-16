@@ -141,10 +141,8 @@ const Profile = () => {
 
             {/* Right Column */}
             <div className="space-y-6">
-              {/* Mentor Section */}
-              {profileData.mentor_profile && (
-                <MentorSection mentor={profileData.mentor_profile} />
-              )}
+              {/* Mentor Section - Always show */}
+              <MentorSection mentor={profileData.mentor_profile} />
 
               {/* Personalized Challenge */}
               {profileData.pillar_scores && user?.id && (
