@@ -16,6 +16,9 @@ import { PillarRadarChart } from '@/components/profile/PillarRadarChart';
 import { XimatarHeroCard } from '@/components/profile/XimatarHeroCard';
 import { StrengthFrictionSummary } from '@/components/profile/StrengthFrictionSummary';
 import { AssessmentOverviewCard } from '@/components/profile/AssessmentOverviewCard';
+import { OpenAnswerList } from '@/components/profile/OpenAnswerList';
+import { CVAnalysisCard } from '@/components/profile/CVAnalysisCard';
+import { MyOpportunitiesSection } from '@/components/opportunities/MyOpportunitiesSection';
 
 const Profile = () => {
   const { user, isAuthenticated } = useUser();
@@ -145,8 +148,26 @@ const Profile = () => {
               {profileData.ximatar && (
                 <XimatarProfileCard ximatar={profileData.ximatar} />
               )}
+
+              {/* Open Answers */}
+              {profileData.open_answers && profileData.open_answers.length > 0 && (
+                <OpenAnswerList openAnswers={profileData.open_answers} />
+              )}
+
+              {/* CV Analysis */}
+              {(profileData.cv_analysis || profileData.cv_pillar_scores) && (
+                <CVAnalysisCard 
+                  cvAnalysis={profileData.cv_analysis}
+                  cvPillarScores={profileData.cv_pillar_scores}
+                  assessmentPillarScores={profileData.pillar_scores}
+                />
+              )}
             </div>
           </div>
+
+          {/* Full Width Sections */}
+          {/* Job Opportunities */}
+          <MyOpportunitiesSection />
         </div>
       </div>
     </MainLayout>

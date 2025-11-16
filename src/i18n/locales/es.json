@@ -4,7 +4,9 @@
     "login": "Iniciar sesión",
     "loading": "Cargando...",
     "back": "Atrás",
-    "error": "Error"
+    "error": "Error",
+    "strongest": "Tu Ventaja",
+    "area_to_develop": "Área de Crecimiento"
   },
   "profile": {
     "page_title": "Bienvenido, {{name}}",
@@ -12,6 +14,7 @@
     "page_subtitle": "Aquí está tu perfil profesional y resultados de evaluación",
     "user": "Usuario",
     "your_ximatar": "Tu XIMAtar",
+    "ximatar_archetype": "Arquetipo XIMAtar",
     "your_mentor": "Tu Mentor",
     "book_15_min_session": "Reserva tu sesión de 15 minutos",
     "challenge_for_you": "Desafío para Ti",
@@ -31,7 +34,31 @@
     "confirm_booking": "Confirmar Reserva",
     "booking_confirmed_message": "¡Tu sesión ha sido confirmada!",
     "no_professional_matched": "Aún no hay profesional asignado",
-    "complete_assessment": "Completar Evaluación"
+    "complete_assessment": "Completar Evaluación",
+    "strength_friction": "Tu Ventaja y Puntos de Fricción",
+    "your_edge": "Tu Ventaja",
+    "friction_point": "Tu Punto de Fricción",
+    "growth_path": "Tu Camino de Crecimiento",
+    "assessment_overview": "Resumen de Evaluación",
+    "overall_score": "Puntuación General",
+    "drive_level": "Nivel de Determinación",
+    "pillar_scores": "Puntuaciones de Pilares",
+    "your_story": "Tu Historia",
+    "open_answers": "Tus Respuestas Abiertas",
+    "cv_analysis": "Análisis de CV",
+    "cv_strengths": "Fortalezas Clave del CV",
+    "soft_skills": "Habilidades Blandas Identificadas",
+    "cv_vs_assessment": "Comparación CV vs Evaluación",
+    "biggest_improvement": "Mayor Mejora",
+    "job_opportunities": "Tus Oportunidades Laborales",
+    "title": "Mi Perfil",
+    "personal_info": "Información Personal",
+    "xima_score": "Puntuación XIMA",
+    "ximatar": "XIMAtar",
+    "recent_assessments": "Evaluaciones Recientes",
+    "development_plan": "Plan de Desarrollo",
+    "mentor_sessions": "Sesiones de Mentoría",
+    "job_preferences": "Preferencias de Trabajo"
   },
   "results": {
     "title": "Tus Resultados",
@@ -896,16 +923,6 @@
     "dolphin_traits": "Comunicativo, Adaptable, Socialmente inteligente",
     "owl_traits": "Analítico, Sabio, Solucionador de problemas",
     "lion_traits": "Líder natural, Carismático, Inspirador"
-  },
-  "profile": {
-    "title": "Mi Perfil",
-    "personal_info": "Información Personal",
-    "xima_score": "Puntuación XIMA",
-    "ximatar": "XIMAtar",
-    "recent_assessments": "Evaluaciones Recientes",
-    "development_plan": "Plan de Desarrollo",
-    "mentor_sessions": "Sesiones de Mentoría",
-    "job_preferences": "Preferencias de Trabajo"
   },
   "xima_score_tooltip": {
     "computational_power": "Tu capacidad para procesar información compleja y resolver problemas analíticos",

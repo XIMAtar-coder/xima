@@ -84,20 +84,23 @@ export const useProfileData = (): ProfileData => {
 
   useEffect(() => {
     const load = async () => {
+      console.log('[useProfileData] LOAD START', { isAuthenticated, userId: user?.id });
+      
       try {
-        if (import.meta.env.DEV) console.debug('[useProfileData] start', { isAuthenticated, userId: user?.id });
         const { data: authUser } = await supabase.auth.getUser();
-        if (import.meta.env.DEV) console.debug('[useProfileData] auth.getUser', authUser?.user?.id);
+        console.log('[useProfileData] auth.getUser result', authUser?.user?.id);
       } catch (e) {
-        if (import.meta.env.DEV) console.warn('[useProfileData] getUser failed', e);
+        console.warn('[useProfileData] getUser failed', e);
       }
 
       if (!isAuthenticated || !user?.id) {
+        console.log('[useProfileData] No auth or user, stopping');
         setState((prev) => ({ ...prev, isLoading: false }));
         return;
       }
 
       try {
+        console.log('[useProfileData] Fetching profile for user:', user.id);
         // 1) Base profile
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
@@ -119,8 +122,10 @@ export const useProfileData = (): ProfileData => {
           .eq('user_id', user.id)
           .single();
 
+        console.log('[useProfileData] Profile query result:', { profile, profileError });
+
         if (profileError) {
-          if (import.meta.env.DEV) console.error('[useProfileData] profile error', profileError);
+          console.error('[useProfileData] profile error', profileError);
           setState((prev) => ({ ...prev, isLoading: false, error: profileError.message }));
           return;
         }
@@ -256,10 +261,10 @@ export const useProfileData = (): ProfileData => {
           error: null,
         };
 
-        if (import.meta.env.DEV) console.debug('[useProfileData] loaded', next);
+        console.log('[useProfileData] FINAL STATE UPDATE:', next);
         setState(next);
       } catch (err: any) {
-        if (import.meta.env.DEV) console.error('[useProfileData] unexpected', err);
+        console.error('[useProfileData] UNEXPECTED ERROR', err);
         setState((prev) => ({ ...prev, isLoading: false, error: err?.message || 'Unknown error' }));
       }
     };
