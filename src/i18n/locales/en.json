@@ -3,7 +3,9 @@
     "login_required": "Login Required",
     "login": "Login",
     "loading": "Loading...",
-    "back": "Back"
+    "back": "Back",
+    "strongest": "Your Edge",
+    "area_to_develop": "Growth Area"
   },
   "profile": {
     "page_title": "Welcome, {{name}}",
@@ -11,6 +13,7 @@
     "page_subtitle": "Here's your professional profile and assessment results",
     "user": "User",
     "your_ximatar": "Your XIMAtar",
+    "ximatar_archetype": "XIMAtar Archetype",
     "your_mentor": "Your Mentor",
     "book_15_min_session": "Book your 15-minute session",
     "challenge_for_you": "Challenge for You",
@@ -30,7 +33,17 @@
     "no_assessment_desc": "Complete your first XIMA Assessment to unlock your professional blueprint and discover your XIMAtar archetype",
     "start_assessment": "Start Assessment",
     "pillar_breakdown": "Your Pillar Profile",
-    "your_score": "Your Score"
+    "your_score": "Your Score",
+    "strength_friction": "Your Edge & Friction Points",
+    "your_edge": "Your Edge",
+    "friction_point": "Your Friction Point",
+    "growth_path": "Your Growth Path",
+    "assessment_overview": "Assessment Overview",
+    "overall_score": "Overall Score",
+    "drive_level": "Drive Level",
+    "pillar_scores": "Pillar Scores",
+    "your_story": "Your Story",
+    "open_answers": "Your Open Answers"
   },
   "results": {
     "title": "Your Results",
@@ -67,10 +80,31 @@
   },
   "pillars": {
     "computational": "Computational Power",
-    "communication": "Communication",
-    "knowledge": "Knowledge",
-    "creativity": "Creativity",
-    "drive": "Drive"
+    "computational_power": {
+      "name": "Computational Power",
+      "strength_description": "Your analytical thinking and problem-solving abilities are exceptional. You excel at breaking down complex problems and finding efficient solutions.",
+      "growth_description": "Focus on enhancing your analytical and technical skills through structured problem-solving exercises and technical learning."
+    },
+    "communication": {
+      "name": "Communication",
+      "strength_description": "You have a natural ability to articulate ideas clearly and engage with others effectively. Your communication style builds bridges and fosters collaboration.",
+      "growth_description": "Work on developing your presentation skills, active listening, and ability to adapt your communication style to different audiences."
+    },
+    "knowledge": {
+      "name": "Knowledge",
+      "strength_description": "Your depth of understanding and continuous learning mindset set you apart. You have a strong foundation that informs your decisions and actions.",
+      "growth_description": "Continue expanding your knowledge base through systematic learning, mentorship, and hands-on experience in diverse areas."
+    },
+    "creativity": {
+      "name": "Creativity",
+      "strength_description": "Your innovative thinking and ability to see possibilities others miss is a powerful asset. You bring fresh perspectives to challenges.",
+      "growth_description": "Nurture your creative abilities through experimentation, exposure to diverse ideas, and practicing ideation techniques."
+    },
+    "drive": {
+      "name": "Drive",
+      "strength_description": "Your motivation and determination to achieve goals is remarkable. You have the persistence and energy to push through challenges and deliver results.",
+      "growth_description": "Focus on sustaining your motivation through goal-setting, celebrating wins, and building resilience in the face of setbacks."
+    }
   },
   "open_scoring": {
     "title": "Open Question Scores",
