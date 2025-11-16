@@ -79,7 +79,7 @@ const Profile = () => {
           <div className="flex items-center justify-between">
             <h1 className="text-4xl font-bold flex items-center gap-3 font-heading">
               <Sparkles className="text-primary" />
-              {t('profile.welcome_name', { name: profileData.fullName || user?.name || t('profile.user') })}
+              {t('profile.welcome_name', { name: profileData.full_name || user?.name || t('profile.user') })}
             </h1>
           </div>
           <p className="text-xl text-muted-foreground">{t('profile.page_subtitle')}</p>
@@ -137,8 +137,8 @@ const Profile = () => {
               )}
 
               {/* Mentor Section */}
-              {profileData.mentor && (
-                <MentorSection mentor={profileData.mentor} />
+              {profileData.mentor_profile && (
+                <MentorSection mentor={profileData.mentor_profile} />
               )}
 
               {/* XIMAtar Profile Details */}
