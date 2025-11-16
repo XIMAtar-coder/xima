@@ -13,6 +13,9 @@ import { ProfilePhotoUpload } from '@/components/ProfilePhotoUpload';
 import { MentorSection } from '@/components/profile/MentorSection';
 import { PersonalizedChallenge } from '@/components/profile/PersonalizedChallenge';
 import { PillarRadarChart } from '@/components/profile/PillarRadarChart';
+import { XimatarHeroCard } from '@/components/profile/XimatarHeroCard';
+import { StrengthFrictionSummary } from '@/components/profile/StrengthFrictionSummary';
+import { AssessmentOverviewCard } from '@/components/profile/AssessmentOverviewCard';
 
 const Profile = () => {
   const { user, isAuthenticated } = useUser();
@@ -82,113 +85,47 @@ const Profile = () => {
           <p className="text-xl text-muted-foreground">{t('profile.page_subtitle')}</p>
         </div>
 
-        <div className="space-y-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
+        <div className="space-y-8 relative z-10">
+          {/* XIMAtar Hero Card - Full Width */}
+          <XimatarHeroCard 
+            ximatarName={profileData.ximatar_name}
+            ximatarImage={profileData.ximatar_image}
+            driveLevel={profileData.drive_level}
+            strongestPillar={profileData.strongest_pillar}
+            weakestPillar={profileData.weakest_pillar}
+            storytelling={profileData.ximatar_storytelling}
+          />
+
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Column */}
             <div className="space-y-6">
               {/* Profile Photo Upload */}
               <ProfilePhotoUpload />
               
-              {/* XIMAtar Profile */}
-              {profileData.ximatar && (
-                <XimatarProfileCard ximatar={profileData.ximatar} />
-              )}
-              
               {/* Pillar Radar Chart */}
               {profileData.pillar_scores && (
                 <PillarRadarChart pillars={profileData.pillar_scores} />
               )}
-              
-              {/* Drive Level Card */}
-              {profileData.drive_level && profileData.pillar_scores?.drive && (
-                <Card className="animate-fade-in">
-                  <CardHeader>
-                    <CardTitle className="font-heading">{t('pillars.drive.name')}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className={`
-                        p-4 rounded-lg border-2
-                        ${profileData.drive_level === 'high' ? 'bg-green-500/5 border-green-500/20' :
-                          profileData.drive_level === 'medium' ? 'bg-blue-500/5 border-blue-500/20' :
-                          'bg-orange-500/5 border-orange-500/20'
-                        }
-                      `}>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge 
-                            variant="default"
-                            className={`
-                              ${profileData.drive_level === 'high' ? 'bg-green-600' :
-                                profileData.drive_level === 'medium' ? 'bg-blue-600' :
-                                'bg-orange-600'
-                              }
-                            `}
-                          >
-                            {t(`ximatar_intro.drive_paths.${profileData.drive_level}`)}
-                          </Badge>
-                          <span className="text-sm font-semibold">{profileData.pillar_scores.drive.toFixed(1)}/10</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {profileData.ximatar_growth_path || t(`ximatar_intro.drive_paths.${profileData.drive_level}_desc`)}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+
+              {/* Assessment Overview */}
+              {profileData.pillar_scores && (
+                <AssessmentOverviewCard 
+                  pillarScores={profileData.pillar_scores}
+                  driveLevel={profileData.drive_level}
+                  storytelling={profileData.ximatar_storytelling}
+                />
               )}
             </div>
 
             {/* Right Column */}
             <div className="space-y-6">
-              {/* Storytelling */}
-              {profileData.ximatar_storytelling && (
-                <Card className="animate-fade-in">
-                  <CardHeader>
-                    <CardTitle className="font-heading">{t('ximatar_intro.your_story')}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {profileData.ximatar_storytelling}
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Strongest/Weakest Pillars */}
-              {(profileData.strongest_pillar || profileData.weakest_pillar) && (
-                <Card className="animate-fade-in">
-                  <CardHeader>
-                    <CardTitle className="font-heading">{t('profile.pillar_breakdown')}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {profileData.strongest_pillar && (
-                      <div>
-                        <Badge variant="default" className="mb-2 bg-green-600">
-                          {t('common.strongest')}
-                        </Badge>
-                        <p className="text-sm font-semibold">
-                          {t(`pillars.${profileData.strongest_pillar}.name`)}
-                        </p>
-                      </div>
-                    )}
-                    {profileData.weakest_pillar && (
-                      <div>
-                        <Badge variant="outline" className="mb-2">
-                          {t('common.area_to_develop')}
-                        </Badge>
-                        <p className="text-sm font-semibold">
-                          {t(`pillars.${profileData.weakest_pillar}.name`)}
-                        </p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Mentor Section */}
-              {profileData.mentor && (
-                <MentorSection mentor={profileData.mentor} />
-              )}
+              {/* Strength & Friction Summary */}
+              <StrengthFrictionSummary 
+                strongestPillar={profileData.strongest_pillar}
+                weakestPillar={profileData.weakest_pillar}
+                growthPath={profileData.ximatar_growth_path}
+              />
 
               {/* Personalized Challenge */}
               {profileData.pillar_scores && user?.id && (
@@ -197,6 +134,16 @@ const Profile = () => {
                   ximatarType={profileData.ximatar || undefined}
                   pillarScores={Object.entries(profileData.pillar_scores).map(([pillar, score]) => ({ pillar, score }))}
                 />
+              )}
+
+              {/* Mentor Section */}
+              {profileData.mentor && (
+                <MentorSection mentor={profileData.mentor} />
+              )}
+
+              {/* XIMAtar Profile Details */}
+              {profileData.ximatar && (
+                <XimatarProfileCard ximatar={profileData.ximatar} />
               )}
             </div>
           </div>

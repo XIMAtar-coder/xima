@@ -22,7 +22,13 @@
   "common": {
     "you": "Tu",
     "as_strength": "Come Punto di Forza",
-    "as_weakness": "Come Debolezza"
+    "as_weakness": "Come Debolezza",
+    "login_required": "Accesso Richiesto",
+    "login": "Accedi",
+    "loading": "Caricamento...",
+    "back": "Indietro",
+    "strongest": "Il Tuo Vantaggio",
+    "area_to_develop": "Area di Crescita"
   },
   "ximatar_intro": {
     "storytelling": "Non definiamo le persone con etichette. Riveliamo la dinamica tra ciò che le muove, ciò che le eleva e ciò che le trattiene",
@@ -55,32 +61,42 @@
       "name": "Potenza Computazionale",
       "description": "La capacità di scomporre problemi complessi in passaggi logici, utilizzare dati e strumenti per trovare soluzioni efficienti e pensare sistematicamente alle sfide",
       "as_strength": "Sei strutturato, preciso e veloce sotto pressione",
-      "as_weakness": "Potresti avere difficoltà con i sistemi, evitare la complessità o perdere chiarezza"
+      "as_weakness": "Potresti avere difficoltà con i sistemi, evitare la complessità o perdere chiarezza",
+      "strength_description": "Le tue capacità di pensiero analitico e risoluzione dei problemi sono eccezionali. Eccelli nello scomporre problemi complessi e trovare soluzioni efficienti.",
+      "growth_description": "Concentrati sul migliorare le tue competenze analitiche e tecniche attraverso esercizi strutturati di risoluzione dei problemi e apprendimento tecnico."
     },
     "communication": {
       "name": "Comunicazione",
       "description": "Quanto efficacemente esprimi idee, ascolti attivamente, costruisci relazioni significative e collabori con gli altri per raggiungere obiettivi condivisi",
       "as_strength": "Influenzi, connetti e ispiri",
-      "as_weakness": "Potresti trattenerti, perdere chiarezza o avere difficoltà a vocalizzare i tuoi pensieri"
+      "as_weakness": "Potresti trattenerti, perdere chiarezza o avere difficoltà a vocalizzare i tuoi pensieri",
+      "strength_description": "Hai una capacità naturale di articolare le idee chiaramente e coinvolgere efficacemente gli altri. Il tuo stile di comunicazione costruisce ponti e favorisce la collaborazione.",
+      "growth_description": "Lavora sullo sviluppo delle tue capacità di presentazione, ascolto attivo e abilità di adattare il tuo stile comunicativo a diversi pubblici."
     },
     "knowledge": {
       "name": "Conoscenza",
       "description": "La tua profondità di competenza in aree chiave, capacità di apprendere continuamente e abilità nell'applicare ciò che sai a situazioni reali",
       "as_strength": "Sintetizzi profondamente, colleghi intuizioni e fondi decisioni",
-      "as_weakness": "Potresti agire su supposizioni, evitare la ricerca o rimanere in superficie"
+      "as_weakness": "Potresti agire su supposizioni, evitare la ricerca o rimanere in superficie",
+      "strength_description": "La tua profondità di comprensione e mentalità di apprendimento continuo ti distinguono. Hai una base solida che informa le tue decisioni e azioni.",
+      "growth_description": "Continua ad espandere la tua base di conoscenze attraverso l'apprendimento sistematico, la mentorship e l'esperienza pratica in aree diverse."
     },
     "creativity": {
       "name": "Creatività",
       "description": "La tua capacità di generare idee fresche, vedere i problemi da nuove angolazioni, abbracciare il pensiero innovativo e scoprire soluzioni non convenzionali",
       "as_strength": "Vedi possibilità, ti adatti fluidamente e innovi",
-      "as_weakness": "Potresti evitare il rischio, preferire il conosciuto o resistere all'ideazione"
+      "as_weakness": "Potresti evitare il rischio, preferire il conosciuto o resistere all'ideazione",
+      "strength_description": "Il tuo pensiero innovativo e la capacità di vedere possibilità che altri non vedono è una risorsa potente. Porti prospettive fresche alle sfide.",
+      "growth_description": "Coltiva le tue capacità creative attraverso la sperimentazione, l'esposizione a idee diverse e la pratica di tecniche di ideazione."
     },
     "drive": {
       "name": "Spinta",
       "description": "La tua motivazione interiore a perseguire obiettivi ambiziosi, riprenderti dalle battute d'arresto, prendere iniziativa e mantenere l'impegno verso l'eccellenza",
       "drive_note": "La Spinta non definisce l'abilità — definisce la traiettoria",
       "as_strength": "Sei auto-motivato, resiliente e orientato all'azione",
-      "as_weakness": "Potresti esitare, ritardare l'azione o mancare di slancio"
+      "as_weakness": "Potresti esitare, ritardare l'azione o mancare di slancio",
+      "strength_description": "La tua motivazione e determinazione nel raggiungere gli obiettivi è notevole. Hai la perseveranza e l'energia per superare le sfide e ottenere risultati.",
+      "growth_description": "Concentrati sul mantenere la tua motivazione attraverso la definizione di obiettivi, la celebrazione dei successi e la costruzione di resilienza di fronte alle difficoltà."
     },
     "cta_primary": "Ottieni il tuo Ximatar ora",
     "cta_secondary": "Scopri di più",
@@ -589,6 +605,7 @@
     "page_subtitle": "Ecco il tuo profilo professionale e i risultati della valutazione",
     "user": "Utente",
     "your_ximatar": "Il tuo XIMAtar",
+    "ximatar_archetype": "Archetipo XIMAtar",
     "your_mentor": "Il Tuo Mentore",
     "book_15_min_session": "Prenota la tua sessione di 15 minuti",
     "challenge_for_you": "Sfida per Te",
@@ -608,7 +625,17 @@
     "confirm_booking": "Conferma Prenotazione",
     "booking_confirmed_message": "La tua sessione è stata confermata!",
     "no_professional_matched": "Nessun professionista abbinato ancora",
-    "complete_assessment": "Completa la Valutazione"
+    "complete_assessment": "Completa la Valutazione",
+    "strength_friction": "Il Tuo Vantaggio e Punti di Attrito",
+    "your_edge": "Il Tuo Vantaggio",
+    "friction_point": "Il Tuo Punto di Attrito",
+    "growth_path": "Il Tuo Percorso di Crescita",
+    "assessment_overview": "Panoramica della Valutazione",
+    "overall_score": "Punteggio Complessivo",
+    "drive_level": "Livello di Spinta",
+    "pillar_scores": "Punteggi dei Pilastri",
+    "your_story": "La Tua Storia",
+    "open_answers": "Le Tue Risposte Aperte"
   },
   "results": {
     "title": "I Tuoi Risultati",
