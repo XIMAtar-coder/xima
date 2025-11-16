@@ -164,8 +164,23 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
           ximatarLabel = 'chameleon';
         }
         
+        // Calculate drive level
+        const driveScore = mockPillarScores.drive;
+        const driveLevel = driveScore >= 7.5 ? 'high' : driveScore >= 5 ? 'medium' : 'low';
+        
+        // Find strongest and weakest pillars
+        const strongest = pillarEntries[0][0];
+        const weakest = pillarEntries[pillarEntries.length - 1][0];
+        
+        // Store ALL assessment data for sync after registration
         localStorage.setItem('guest_pillar_scores', JSON.stringify(mockPillarScores));
         localStorage.setItem('guest_ximatar', ximatarLabel);
+        localStorage.setItem('guest_ximatar_name', ximatarLabel.charAt(0).toUpperCase() + ximatarLabel.slice(1));
+        localStorage.setItem('guest_drive_level', driveLevel);
+        localStorage.setItem('guest_strongest_pillar', strongest);
+        localStorage.setItem('guest_weakest_pillar', weakest);
+        localStorage.setItem('guest_ximatar_storytelling', t('ximatar_intro.storytelling'));
+        localStorage.setItem('guest_ximatar_growth_path', t(`ximatar_intro.drive_paths.${driveLevel}_desc`));
         
         toast({
           title: t('assessment.guest_complete'),
