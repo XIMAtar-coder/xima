@@ -339,40 +339,115 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     );
   }
 
+  // Calculate Drive level
+  const driveScore = pillarScores.find(p => p.pillar === 'drive')?.score || 0;
+  const getDriveLevel = (score: number): 'high' | 'medium' | 'low' => {
+    if (score >= 7.5) return 'high';
+    if (score >= 5) return 'medium';
+    return 'low';
+  };
+  const driveLevel = getDriveLevel(driveScore);
+
+  // Get strongest and weakest pillars (excluding Drive)
+  const nonDrivePillars = pillarScores.filter(p => p.pillar !== 'drive');
+  const sortedPillars = [...nonDrivePillars].sort((a, b) => b.score - a.score);
+  const strongestPillar = sortedPillars[0];
+  const weakestPillar = sortedPillars[sortedPillars.length - 1];
+
   return (
     <div className="space-y-8">
-      <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold font-heading">{t('results.title')}</h2>
-        <p className="text-muted-foreground">
-          {hasCv ? t('results.subtitle_with_cv') : t('results.subtitle_without_cv')}
-        </p>
-      </div>
+      {/* Storytelling Introduction */}
+      <Card className="p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 border-primary/10">
+        <div className="text-center space-y-4">
+          <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
+          <h2 className="text-3xl font-bold font-heading">{t('results.title')}</h2>
+          <div className="prose prose-lg mx-auto text-muted-foreground max-w-2xl space-y-4">
+            <p className="italic text-lg">{t('ximatar_intro.storytelling')}</p>
+            <p>{t('ximatar_intro.explanation')}</p>
+          </div>
+        </div>
+      </Card>
 
+      {/* XIMAtar Profile */}
       {ximatarData && (
         <XimatarProfileCard ximatar={ximatarData} />
       )}
 
-      {topPillars.length === 2 && (
+      {/* How Your XIMAtar Was Determined */}
+      {strongestPillar && weakestPillar && (
         <Card className="p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-primary" />
-              <span className="font-semibold text-lg">
-                {t('results.determined_by')}
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Badge variant="secondary" className="px-4 py-2 text-base capitalize">
-                {t(`pillars.${topPillars[0].name.replace('_', '')}`)} ({topPillars[0].score.toFixed(1)})
+          <h3 className="text-xl font-bold mb-4 text-center font-heading">{t('ximatar_intro.assignment_logic')}</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span className="font-semibold">{t('results.strongest_pillar')}:</span>
+              </div>
+              <Badge variant="default" className="px-4 py-2 text-base capitalize">
+                {t(`pillars.${strongestPillar.pillar.replace('_', '')}`)} ({strongestPillar.score.toFixed(1)})
               </Badge>
-              <span className="text-muted-foreground">+</span>
-              <Badge variant="secondary" className="px-4 py-2 text-base capitalize">
-                {t(`pillars.${topPillars[1].name.replace('_', '')}`)} ({topPillars[1].score.toFixed(1)})
+            </div>
+            
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-orange-500" />
+                <span className="font-semibold">{t('results.weakest_pillar')}:</span>
+              </div>
+              <Badge variant="outline" className="px-4 py-2 text-base capitalize">
+                {t(`pillars.${weakestPillar.pillar.replace('_', '')}`)} ({weakestPillar.score.toFixed(1)})
+              </Badge>
+            </div>
+
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                <span className="font-semibold">{t('results.drive_level')}:</span>
+              </div>
+              <Badge 
+                variant="secondary" 
+                className={`px-4 py-2 text-base capitalize ${
+                  driveLevel === 'high' ? 'bg-green-500/10 text-green-700 dark:text-green-400' :
+                  driveLevel === 'medium' ? 'bg-blue-500/10 text-blue-700 dark:text-blue-400' :
+                  'bg-orange-500/10 text-orange-700 dark:text-orange-400'
+                }`}
+              >
+                {t(`ximatar_intro.drive_paths.${driveLevel}`)} ({driveScore.toFixed(1)})
               </Badge>
             </div>
           </div>
         </Card>
       )}
+
+      {/* Drive Path Explanation */}
+      <Card className="p-6">
+        <h3 className="text-xl font-bold mb-4 font-heading">{t('pillars.drive')}</h3>
+        <p className="text-muted-foreground mb-4">{t('pillars.drive.description')}</p>
+        <div className="space-y-3">
+          <div className={`p-4 rounded-lg border-2 ${driveLevel === 'high' ? 'bg-green-500/5 border-green-500/20' : 'border-border/50'}`}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-semibold text-green-600 dark:text-green-400">{t('ximatar_intro.drive_paths.high')}</span>
+              {driveLevel === 'high' && <Badge variant="default" className="text-xs">You</Badge>}
+            </div>
+            <p className="text-sm text-muted-foreground">{t('ximatar_intro.drive_paths.high_desc')}</p>
+          </div>
+          
+          <div className={`p-4 rounded-lg border-2 ${driveLevel === 'medium' ? 'bg-blue-500/5 border-blue-500/20' : 'border-border/50'}`}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-semibold text-blue-600 dark:text-blue-400">{t('ximatar_intro.drive_paths.medium')}</span>
+              {driveLevel === 'medium' && <Badge variant="default" className="text-xs">You</Badge>}
+            </div>
+            <p className="text-sm text-muted-foreground">{t('ximatar_intro.drive_paths.medium_desc')}</p>
+          </div>
+          
+          <div className={`p-4 rounded-lg border-2 ${driveLevel === 'low' ? 'bg-orange-500/5 border-orange-500/20' : 'border-border/50'}`}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-semibold text-orange-600 dark:text-orange-400">{t('ximatar_intro.drive_paths.low')}</span>
+              {driveLevel === 'low' && <Badge variant="default" className="text-xs">You</Badge>}
+            </div>
+            <p className="text-sm text-muted-foreground">{t('ximatar_intro.drive_paths.low_desc')}</p>
+          </div>
+        </div>
+      </Card>
 
       {pillarScores.length > 0 && (
         <Card>
@@ -445,6 +520,15 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           </Card>
         </div>
       )}
+
+      {/* Closing Message - The Compass */}
+      <Card className="p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 border-primary/10">
+        <div className="text-center space-y-4">
+          <p className="text-lg italic text-muted-foreground max-w-2xl mx-auto">
+            {t('ximatar_intro.compass')}
+          </p>
+        </div>
+      </Card>
     </div>
   );
 };
