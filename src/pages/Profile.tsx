@@ -9,7 +9,6 @@ import { Calendar, Loader2, User, Sparkles, ArrowRight } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { useProfileData } from '@/hooks/useProfileData';
 import { XimatarProfileCard } from '@/components/results/XimatarProfileCard';
-import { ProfilePhotoUpload } from '@/components/ProfilePhotoUpload';
 import { MentorSection } from '@/components/profile/MentorSection';
 import { PersonalizedChallenge } from '@/components/profile/PersonalizedChallenge';
 import { PillarRadarChart } from '@/components/profile/PillarRadarChart';
@@ -24,7 +23,13 @@ const Profile = () => {
   const { user, isAuthenticated } = useUser();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [refreshKey, setRefreshKey] = React.useState(0);
   const profileData = useProfileData();
+  
+  const handleAvatarUpdate = () => {
+    setRefreshKey(prev => prev + 1);
+  };
+
   console.log('[Profile] render profileData', profileData);
   
   if (!isAuthenticated) {
@@ -89,7 +94,7 @@ const Profile = () => {
         </div>
 
         <div className="space-y-8 relative z-10">
-          {/* XIMAtar Hero Card - Full Width */}
+          {/* XIMAtar Hero Card - Full Width with Profile Photo */}
           <XimatarHeroCard 
             ximatarName={profileData.ximatar_name}
             ximatarImage={profileData.ximatar_image}
@@ -97,14 +102,21 @@ const Profile = () => {
             strongestPillar={profileData.strongest_pillar}
             weakestPillar={profileData.weakest_pillar}
             storytelling={profileData.ximatar_storytelling}
+            fullName={profileData.full_name}
+            avatarUrl={(user?.avatar as any)?.image || null}
+            onAvatarUpdate={handleAvatarUpdate}
           />
 
           {/* Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Column */}
             <div className="space-y-6">
-              {/* Profile Photo Upload */}
-              <ProfilePhotoUpload />
+              {/* Strength & Friction Summary */}
+              <StrengthFrictionSummary 
+                strongestPillar={profileData.strongest_pillar}
+                weakestPillar={profileData.weakest_pillar}
+                growthPath={profileData.ximatar_growth_path}
+              />
               
               {/* Pillar Radar Chart */}
               {profileData.pillar_scores && (
@@ -119,16 +131,19 @@ const Profile = () => {
                   storytelling={profileData.ximatar_storytelling}
                 />
               )}
+
+              {/* Open Answers */}
+              {profileData.open_answers && profileData.open_answers.length > 0 && (
+                <OpenAnswerList openAnswers={profileData.open_answers} />
+              )}
             </div>
 
             {/* Right Column */}
             <div className="space-y-6">
-              {/* Strength & Friction Summary */}
-              <StrengthFrictionSummary 
-                strongestPillar={profileData.strongest_pillar}
-                weakestPillar={profileData.weakest_pillar}
-                growthPath={profileData.ximatar_growth_path}
-              />
+              {/* Mentor Section */}
+              {profileData.mentor_profile && (
+                <MentorSection mentor={profileData.mentor_profile} />
+              )}
 
               {/* Personalized Challenge */}
               {profileData.pillar_scores && user?.id && (
@@ -137,21 +152,6 @@ const Profile = () => {
                   ximatarType={profileData.ximatar || undefined}
                   pillarScores={Object.entries(profileData.pillar_scores).map(([pillar, score]) => ({ pillar, score }))}
                 />
-              )}
-
-              {/* Mentor Section */}
-              {profileData.mentor_profile && (
-                <MentorSection mentor={profileData.mentor_profile} />
-              )}
-
-              {/* XIMAtar Profile Details */}
-              {profileData.ximatar && (
-                <XimatarProfileCard ximatar={profileData.ximatar} />
-              )}
-
-              {/* Open Answers */}
-              {profileData.open_answers && profileData.open_answers.length > 0 && (
-                <OpenAnswerList openAnswers={profileData.open_answers} />
               )}
 
               {/* CV Analysis */}
