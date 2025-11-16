@@ -5,19 +5,29 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Calendar, ExternalLink } from 'lucide-react';
 
+interface MentorLike {
+  name?: string;
+  full_name?: string;
+  role?: string;
+  bio?: string;
+  avatar_url?: string;
+  photo_url?: string;
+  calendar_url?: string;
+  booking_link?: string;
+}
+
 interface MentorSectionProps {
-  mentor: {
-    name: string;
-    bio?: string;
-    avatar_url?: string;
-    calendar_url?: string;
-  } | null;
+  mentor: MentorLike | null;
 }
 
 export const MentorSection: React.FC<MentorSectionProps> = ({ mentor }) => {
   const { t } = useTranslation();
 
-  if (!mentor || !mentor.name) {
+  const displayName = mentor?.full_name || mentor?.name || '';
+  const photoUrl = mentor?.photo_url || mentor?.avatar_url || undefined;
+  const bookingLink = mentor?.booking_link || mentor?.calendar_url || undefined;
+
+  if (!mentor) {
     return (
       <Card>
         <CardHeader>
@@ -46,24 +56,28 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor }) => {
       <CardContent className="space-y-4">
         <div className="flex items-start gap-4">
           <Avatar className="h-16 w-16">
-            <AvatarImage src={mentor.avatar_url} alt={mentor.name} />
-            <AvatarFallback>{mentor.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={photoUrl} alt={displayName || t('profile.your_mentor', 'Your Mentor')} />
+            <AvatarFallback>{(displayName || '?').charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <h3 className="font-semibold text-lg">{mentor.name}</h3>
-            {mentor.bio && (
+            {displayName && (
+              <h3 className="font-semibold text-lg">{displayName}</h3>
+            )}
+            {mentor?.role && (
+              <p className="text-sm text-muted-foreground mt-1">{mentor.role}</p>
+            )}
+            {mentor?.bio && (
               <p className="text-sm text-muted-foreground mt-1">{mentor.bio}</p>
             )}
           </div>
         </div>
-        {mentor.calendar_url && (
-          <Button 
-            className="w-full" 
-            onClick={() => window.open(mentor.calendar_url, '_blank')}
-          >
-            <Calendar className="mr-2 h-4 w-4" />
-            {t('profile.book_15_min_session', 'Book your 15 minute session')}
-            <ExternalLink className="ml-2 h-4 w-4" />
+        {bookingLink && (
+          <Button asChild className="w-full">
+            <a href={bookingLink} target="_blank" rel="noopener noreferrer">
+              <Calendar className="mr-2 h-4 w-4" />
+              {t('profile.book_15_min_session', 'Book your 15 minute session')}
+              <ExternalLink className="ml-2 h-4 w-4" />
+            </a>
           </Button>
         )}
       </CardContent>
