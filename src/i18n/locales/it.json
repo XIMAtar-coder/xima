@@ -688,7 +688,14 @@
     "view_opportunity": "Vedi Opportunità",
     "match": "Compatibilità",
     "refresh": "Aggiorna",
-    "loading": "Caricamento..."
+    "loading": "Caricamento...",
+    "drive_level_high": "Alta Motivazione",
+    "drive_level_medium": "Media Motivazione",
+    "drive_level_low": "Bassa Motivazione",
+    "change_photo": "Cambia Foto",
+    "uploading": "Caricamento...",
+    "growth_area": "Area di Crescita",
+    "no_mentor_assigned": "Completa la tua prima valutazione per ricevere un mentore"
   },
   "results": {
     "title": "I Tuoi Risultati",

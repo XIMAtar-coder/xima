@@ -17,6 +17,9 @@ interface XimatarHeroCardProps {
   storytelling: string | null;
   fullName: string | null;
   avatarUrl: string | null;
+  pillarScores: {
+    drive?: number;
+  } | null;
   onAvatarUpdate?: () => void;
 }
 
@@ -29,6 +32,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
   storytelling,
   fullName,
   avatarUrl,
+  pillarScores,
   onAvatarUpdate
 }) => {
   const { t } = useTranslation();
@@ -102,21 +106,25 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
   };
 
   const driveLevelConfig = {
-    high: { color: 'bg-green-600', text: 'text-green-600', label: t('ximatar_intro.drive_paths.high', 'High Drive') },
-    medium: { color: 'bg-blue-600', text: 'text-blue-600', label: t('ximatar_intro.drive_paths.medium', 'Medium Drive') },
-    low: { color: 'bg-orange-600', text: 'text-orange-600', label: t('ximatar_intro.drive_paths.low', 'Low Drive') }
+    high: { color: 'bg-green-600', text: 'text-green-600', label: t('profile.drive_level_high', 'High Drive') },
+    medium: { color: 'bg-blue-600', text: 'text-blue-600', label: t('profile.drive_level_medium', 'Medium Drive') },
+    low: { color: 'bg-orange-600', text: 'text-orange-600', label: t('profile.drive_level_low', 'Low Drive') }
   };
 
   const driveConfig = driveLevel ? driveLevelConfig[driveLevel] : null;
+  
+  // Calculate drive percentage from pillar scores (0-10 scale -> 0-1)
+  const driveValue = pillarScores?.drive ?? 0;
+  const drivePercentage = Math.min(Math.max(driveValue / 10, 0), 1);
 
   return (
     <Card className="overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
-      <CardContent className="p-0">
-        <div className="grid md:grid-cols-[auto_1fr_auto] gap-6 p-8">
+      <CardContent className="p-8">
+        <div className="flex flex-col md:flex-row items-center gap-8">
           {/* Left: User Profile Photo */}
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-3">
             <div className="relative">
-              <div className="w-32 h-32 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center border-4 border-primary/20">
+              <div className="w-28 h-28 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center border-4 border-primary/20">
                 {currentAvatar ? (
                   <img
                     src={currentAvatar}
@@ -124,14 +132,14 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="text-3xl font-bold text-primary">
+                  <div className="text-2xl font-bold text-primary">
                     {getInitials()}
                   </div>
                 )}
               </div>
               {uploading && (
                 <div className="absolute inset-0 bg-background/80 rounded-full flex items-center justify-center">
-                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
                 </div>
               )}
             </div>
@@ -151,12 +159,12 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
               className="text-xs"
             >
               <Upload className="mr-1 h-3 w-3" />
-              {uploading ? 'Uploading...' : 'Change Photo'}
+              {uploading ? t('profile.uploading', 'Uploading...') : t('profile.change_photo', 'Change Photo')}
             </Button>
           </div>
 
           {/* Center: XIMAtar Info */}
-          <div className="space-y-6">
+          <div className="flex-1 space-y-4">
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="w-5 h-5 text-primary" />
@@ -164,14 +172,14 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
                   {t('profile.your_ximatar', 'Your XIMAtar')}
                 </span>
               </div>
-              <h2 className="text-3xl font-bold font-heading text-foreground">
+              <h2 className="text-2xl md:text-3xl font-bold font-heading text-foreground">
                 {ximatarName || t('profile.ximatar_archetype', 'XIMAtar Archetype')}
               </h2>
             </div>
 
             {/* Drive Level Badge */}
             {driveConfig && (
-              <Badge className={`${driveConfig.color} text-white px-4 py-1.5 text-sm`}>
+              <Badge className={`${driveConfig.color} text-white px-3 py-1 text-xs`}>
                 {driveConfig.label}
               </Badge>
             )}
@@ -184,13 +192,13 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
             )}
 
             {/* Strongest & Weakest Pillars */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               {strongestPillar && (
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-green-600">
                     <TrendingUp className="w-4 h-4" />
                     <span className="text-xs font-semibold uppercase tracking-wide">
-                      {t('common.strongest', 'Your Edge')}
+                      {t('profile.your_edge', 'Your Edge')}
                     </span>
                   </div>
                   <p className="text-sm font-medium capitalize">
@@ -204,7 +212,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
                   <div className="flex items-center gap-2 text-orange-600">
                     <AlertCircle className="w-4 h-4" />
                     <span className="text-xs font-semibold uppercase tracking-wide">
-                      {t('common.area_to_develop', 'Growth Area')}
+                      {t('profile.growth_area', 'Growth Area')}
                     </span>
                   </div>
                   <p className="text-sm font-medium capitalize">
@@ -217,51 +225,50 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
 
           {/* Right: XIMAtar Image with Drive Ring */}
           <div className="relative flex items-center justify-center">
-            <div className="relative">
+            <div className="relative w-32 h-32">
               {/* Drive Progress Ring */}
-              {driveLevel && (
-                <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 120 120">
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="54"
-                    fill="none"
-                    stroke="hsl(var(--muted))"
-                    strokeWidth="4"
-                  />
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="54"
-                    fill="none"
-                    stroke={
-                      driveLevel === 'high' ? 'hsl(142, 76%, 36%)' :
-                      driveLevel === 'medium' ? 'hsl(221, 83%, 53%)' :
-                      'hsl(25, 95%, 53%)'
-                    }
-                    strokeWidth="4"
-                    strokeDasharray={`${2 * Math.PI * 54}`}
-                    strokeDashoffset={`${2 * Math.PI * 54 * (1 - (
-                      driveLevel === 'high' ? 0.85 :
-                      driveLevel === 'medium' ? 0.55 :
-                      0.25
-                    ))}`}
-                    strokeLinecap="round"
-                    className="transition-all duration-1000"
-                  />
-                </svg>
-              )}
-              {ximatarImage ? (
-                <img 
-                  src={ximatarImage} 
-                  alt={ximatarName || 'XIMAtar'} 
-                  className="w-28 h-28 object-contain drop-shadow-2xl animate-fade-in relative z-10"
+              <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 120 120">
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="54"
+                  fill="none"
+                  stroke="hsl(var(--muted))"
+                  strokeWidth="4"
                 />
-              ) : (
-                <div className="w-28 h-28 rounded-full bg-muted flex items-center justify-center">
-                  <Sparkles className="w-12 h-12 text-muted-foreground" />
-                </div>
-              )}
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="54"
+                  fill="none"
+                  stroke={
+                    driveLevel === 'high' ? 'hsl(142, 76%, 36%)' :
+                    driveLevel === 'medium' ? 'hsl(221, 83%, 53%)' :
+                    'hsl(25, 95%, 53%)'
+                  }
+                  strokeWidth="4"
+                  strokeDasharray={`${2 * Math.PI * 54}`}
+                  strokeDashoffset={`${2 * Math.PI * 54 * (1 - drivePercentage)}`}
+                  strokeLinecap="round"
+                  className="transition-all duration-1000"
+                />
+              </svg>
+              {/* XIMAtar Image - Circular */}
+              <div className="absolute inset-0 flex items-center justify-center p-3">
+                {ximatarImage ? (
+                  <div className="w-full h-full rounded-full overflow-hidden bg-background border-2 border-primary/20">
+                    <img 
+                      src={ximatarImage} 
+                      alt={ximatarName || 'XIMAtar'} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-full rounded-full bg-muted flex items-center justify-center border-2 border-primary/20">
+                    <Sparkles className="w-10 h-10 text-muted-foreground" />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

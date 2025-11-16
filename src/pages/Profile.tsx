@@ -104,6 +104,7 @@ const Profile = () => {
             storytelling={profileData.ximatar_storytelling}
             fullName={profileData.full_name}
             avatarUrl={(user?.avatar as any)?.image || null}
+            pillarScores={profileData.pillar_scores}
             onAvatarUpdate={handleAvatarUpdate}
           />
 

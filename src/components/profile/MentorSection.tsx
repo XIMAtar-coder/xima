@@ -17,8 +17,22 @@ interface MentorSectionProps {
 export const MentorSection: React.FC<MentorSectionProps> = ({ mentor }) => {
   const { t } = useTranslation();
 
-  if (!mentor) {
-    return null;
+  if (!mentor || !mentor.name) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            {t('profile.your_mentor', 'Your Mentor')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 text-center py-8">
+          <p className="text-muted-foreground">
+            {t('profile.no_mentor_assigned', 'Complete your first evaluation to receive a mentor')}
+          </p>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -48,7 +62,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor }) => {
             onClick={() => window.open(mentor.calendar_url, '_blank')}
           >
             <Calendar className="mr-2 h-4 w-4" />
-            {t('profile.book_15_min_session', 'Book your 15-minute session')}
+            {t('profile.book_15_min_session', 'Book your 15 minute session')}
             <ExternalLink className="ml-2 h-4 w-4" />
           </Button>
         )}

@@ -60,7 +60,14 @@
     "recent_assessments": "Evaluaciones Recientes",
     "development_plan": "Plan de Desarrollo",
     "mentor_sessions": "Sesiones de Mentoría",
-    "job_preferences": "Preferencias de Trabajo"
+    "job_preferences": "Preferencias de Trabajo",
+    "drive_level_high": "Alta Motivación",
+    "drive_level_medium": "Motivación Media",
+    "drive_level_low": "Baja Motivación",
+    "change_photo": "Cambiar Foto",
+    "uploading": "Subiendo...",
+    "growth_area": "Área de Crecimiento",
+    "no_mentor_assigned": "Completa tu primera evaluación para recibir un mentor"
   },
   "results": {
     "title": "Tus Resultados",
