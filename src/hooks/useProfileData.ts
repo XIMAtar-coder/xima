@@ -23,6 +23,7 @@ interface ProfileData {
   mentor: any;
   hasAssessment: boolean;
   isLoading: boolean;
+  error: string | null;
 }
 
 /**
@@ -45,13 +46,22 @@ export const useProfileData = (): ProfileData => {
     ximatar_growth_path: null,
     mentor: null,
     hasAssessment: false,
-    isLoading: true
+    isLoading: true,
+    error: null
   });
 
   useEffect(() => {
     const fetchProfileData = async () => {
+      console.log('[useProfileData] start', { isAuthenticated, userId: user?.id });
+      try {
+        const { data: authUser } = await supabase.auth.getUser();
+        console.log('[useProfileData] supabase.auth.getUser()', authUser?.user?.id);
+      } catch (e) {
+        console.warn('[useProfileData] getUser failed', e);
+      }
+
       if (!isAuthenticated || !user?.id) {
-        setProfileData(prev => ({ ...prev, isLoading: false }));
+        setProfileData(prev => ({ ...prev, isLoading: false, error: null }));
         return;
       }
 
@@ -78,12 +88,13 @@ export const useProfileData = (): ProfileData => {
           .single();
 
         if (error) {
-          console.error('Error fetching profile:', error);
-          setProfileData(prev => ({ ...prev, isLoading: false }));
+          console.error('[useProfileData] Error fetching profile:', error);
+          setProfileData(prev => ({ ...prev, isLoading: false, error: error.message }));
           return;
         }
 
         if (profile) {
+          const pillarScores = (profile.pillar_scores as any) || null;
           setProfileData({
             fullName: profile.full_name || profile.name || user.name || '',
             ximatar: profile.ximatar,
@@ -91,21 +102,23 @@ export const useProfileData = (): ProfileData => {
             ximatar_name: profile.ximatar_name,
             ximatar_image: profile.ximatar_image,
             drive_level: profile.drive_level as 'high' | 'medium' | 'low' | null,
-            pillar_scores: profile.pillar_scores as any,
+            pillar_scores: pillarScores,
             strongest_pillar: profile.strongest_pillar,
             weakest_pillar: profile.weakest_pillar,
             ximatar_storytelling: profile.ximatar_storytelling,
             ximatar_growth_path: profile.ximatar_growth_path,
             mentor: profile.mentor,
-            hasAssessment: !!(profile.ximatar && profile.pillar_scores),
-            isLoading: false
+            hasAssessment: !!(profile.ximatar && pillarScores),
+            isLoading: false,
+            error: null
           });
+          console.log('[useProfileData] loaded profileData');
         } else {
-          setProfileData(prev => ({ ...prev, isLoading: false }));
+          setProfileData(prev => ({ ...prev, isLoading: false, error: null }));
         }
-      } catch (error) {
-        console.error('Unexpected error loading profile:', error);
-        setProfileData(prev => ({ ...prev, isLoading: false }));
+      } catch (error: any) {
+        console.error('[useProfileData] Unexpected error loading profile:', error);
+        setProfileData(prev => ({ ...prev, isLoading: false, error: error?.message || 'Unknown error' }));
       }
     };
 

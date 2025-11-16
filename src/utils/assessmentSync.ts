@@ -30,6 +30,12 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
   try {
     console.log('Starting assessment sync for user:', userId);
 
+    try {
+      const { data: authUser } = await supabase.auth.getUser();
+      console.log('[sync] auth.getUser', authUser?.user?.id, authUser?.user?.email);
+    } catch (e) {
+      console.warn('[sync] auth.getUser failed', e);
+    }
     // Check localStorage for guest assessment data
     const guestResultId = localStorage.getItem('latest_assessment_result_id');
     const guestPillarScores = localStorage.getItem('guest_pillar_scores');
@@ -113,6 +119,39 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
       }
     }
 
+    // Ensure a profile row exists for this user
+    let hasProfile = false;
+    try {
+      const { data: existingProfile, error: profileFetchError } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (existingProfile) hasProfile = true;
+      if (profileFetchError && profileFetchError.code !== 'PGRST116') {
+        console.warn('[sync] profile fetch error (ignored if not found):', profileFetchError);
+      }
+    } catch (e) {
+      console.warn('[sync] error checking existing profile', e);
+    }
+
+    if (!hasProfile) {
+      try {
+        const { data: authUser } = await supabase.auth.getUser();
+        const displayName = authUser?.user?.user_metadata?.name || authUser?.user?.email || '';
+        const { error: insertProfileError } = await supabase
+          .from('profiles')
+          .insert({ user_id: userId, name: displayName, profile_complete: false });
+        if (insertProfileError) {
+          console.error('[sync] error inserting profile row:', insertProfileError);
+        } else {
+          console.log('[sync] inserted new profile row');
+        }
+      } catch (e) {
+        console.error('[sync] unexpected error inserting profile', e);
+      }
+    }
+
     // Update profiles table with COMPLETE XIMAtar assessment data
     if (guestXimatar) {
       // Get XIMAtar ID and full data from label
@@ -144,7 +183,11 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         
         // Add pillar scores as JSONB
         if (guestPillarScores) {
-          profileUpdate.pillar_scores = JSON.parse(guestPillarScores);
+          try {
+            profileUpdate.pillar_scores = JSON.parse(guestPillarScores);
+          } catch (e) {
+            console.warn('[sync] invalid pillar_scores JSON, skipping');
+          }
         }
 
         const { error: profileError } = await supabase

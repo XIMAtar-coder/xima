@@ -11,6 +11,7 @@ import { useUser } from '../context/UserContext';
 import { RegistrationForm } from '../types';
 import { Logo } from '@/components/Logo';
 import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
+import { supabase } from '@/integrations/supabase/client';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -82,8 +83,10 @@ const Register = () => {
     setIsSubmitting(true);
     
     try {
+      console.log('[Register] submitting signUp');
       const { data, error } = await signUp(formData.email, formData.password, formData.name);
-      
+
+      console.log('[Register] signUp result', { userId: data?.user?.id, error });
       if (error) {
         toast({
           title: t('register.registration_failed'),
@@ -92,14 +95,21 @@ const Register = () => {
         });
         return;
       }
-      
+
       // Get the newly created user ID
       const newUserId = data?.user?.id;
-      
+      try {
+        const { data: authUser } = await supabase.auth.getUser();
+        console.log('[Register] auth.getUser after signUp', authUser?.user?.id);
+      } catch (e) {
+        console.warn('[Register] auth.getUser failed', e);
+      }
+
       if (newUserId) {
-        // Sync guest assessment data to profile
+        console.log('[Register] syncing guest assessment to profile for', newUserId);
+        // Sync guest assessment data to profile and wait for completion
         const syncSuccess = await syncGuestAssessmentToProfile(newUserId);
-        
+
         if (syncSuccess) {
           toast({
             title: t('register.registration_success'),
@@ -112,11 +122,9 @@ const Register = () => {
           });
         }
       }
-      
-      // Wait a moment for sync and auth state to update, then redirect
-      setTimeout(() => {
-        navigate('/profile');
-      }, 1500);
+
+      console.log('[Register] navigating to /profile after sync attempt');
+      navigate('/profile');
       
     } catch (error) {
       toast({
