@@ -48,6 +48,13 @@ interface ProfileData {
     summary?: string | null;
     strengths?: string[] | null;
     soft_skills?: string[] | null;
+    cv_comments?: {
+      computational_power?: string;
+      communication?: string;
+      knowledge?: string;
+      creativity?: string;
+      drive?: string;
+    } | null;
   } | null;
   hasAssessment: boolean;
   isLoading: boolean;
@@ -114,6 +121,7 @@ export const useProfileData = (): ProfileData => {
             drive_level,
             pillar_scores,
             cv_scores,
+            cv_comments,
             strongest_pillar,
             weakest_pillar,
             ximatar_storytelling,
@@ -257,6 +265,7 @@ export const useProfileData = (): ProfileData => {
             summary: cvAnalysisRes.data?.summary ?? null,
             strengths: cvAnalysisRes.data?.strengths ?? null,
             soft_skills: cvAnalysisRes.data?.soft_skills ?? null,
+            cv_comments: (profile?.cv_comments as any) ?? null,
           },
           hasAssessment: !!((profile?.ximatar || profile?.ximatar_id) && pillar_scores),
           isLoading: false,

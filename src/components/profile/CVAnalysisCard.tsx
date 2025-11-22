@@ -14,6 +14,13 @@ interface CVAnalysisCardProps {
     summary?: string | null;
     strengths?: string[] | null;
     soft_skills?: string[] | null;
+    cv_comments?: {
+      computational_power?: string;
+      communication?: string;
+      knowledge?: string;
+      creativity?: string;
+      drive?: string;
+    } | null;
   } | null;
   cvPillarScores: {
     computational_power: number;
@@ -293,12 +300,13 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
               </div>
             )}
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {pillarsToCompare.map((pillar) => {
                 const cvScoreRaw = cvPillarScores[pillar as keyof typeof cvPillarScores] || 0;
                 const cvScore = cvScoreRaw / 10; // Normalize from 0-100 to 0-10
                 const assessmentScore = assessmentPillarScores[pillar as keyof typeof assessmentPillarScores] || 0;
                 const diff = assessmentScore - cvScore;
+                const comment = cvAnalysis?.cv_comments?.[pillar as keyof typeof cvAnalysis.cv_comments];
                 
                 return (
                   <div key={pillar} className="space-y-2">
@@ -338,6 +346,11 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
                         <Progress value={assessmentScore * 10} className="h-2" />
                       </div>
                     </div>
+                    {comment && (
+                      <div className="mt-2 p-2 bg-muted/30 rounded text-xs text-muted-foreground italic">
+                        {comment}
+                      </div>
+                    )}
                   </div>
                 );
               })}

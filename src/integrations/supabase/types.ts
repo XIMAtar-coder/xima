@@ -1489,6 +1489,7 @@ export type Database = {
           avatar: Json | null
           created_at: string
           creation_source: string | null
+          cv_comments: Json | null
           cv_scores: Json | null
           drive_level: string | null
           email: string | null
@@ -1516,6 +1517,7 @@ export type Database = {
           avatar?: Json | null
           created_at?: string
           creation_source?: string | null
+          cv_comments?: Json | null
           cv_scores?: Json | null
           drive_level?: string | null
           email?: string | null
@@ -1543,6 +1545,7 @@ export type Database = {
           avatar?: Json | null
           created_at?: string
           creation_source?: string | null
+          cv_comments?: Json | null
           cv_scores?: Json | null
           drive_level?: string | null
           email?: string | null
