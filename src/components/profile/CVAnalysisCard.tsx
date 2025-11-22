@@ -36,12 +36,14 @@ interface CVAnalysisCardProps {
     creativity: number;
     drive: number;
   } | null;
+  onUploadSuccess?: () => void;
 }
 
 export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
   cvAnalysis,
   cvPillarScores,
-  assessmentPillarScores
+  assessmentPillarScores,
+  onUploadSuccess
 }) => {
   const { t } = useTranslation();
   const { user } = useUser();
@@ -109,10 +111,13 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
         throw new Error(data?.error || 'CV analysis failed');
       }
 
-      toast.success('CV analyzed successfully! Refreshing...');
+      toast.success('CV analyzed successfully! Your profile has been updated.');
+      setUploadError(null);
       
-      // Refresh the page to show new data
-      setTimeout(() => window.location.reload(), 1500);
+      // Trigger refresh without hard reload
+      if (onUploadSuccess) {
+        onUploadSuccess();
+      }
     } catch (error: any) {
       console.error('CV upload error:', error);
       const errorMsg = error.message || 'Failed to analyze CV';
