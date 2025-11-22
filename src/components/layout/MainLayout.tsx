@@ -282,7 +282,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                 </SheetContent>
               </Sheet>
               
-              {isAuthenticated && user ? (
+              {isAuthenticated && user && (
                 <div className="flex items-center space-x-6 animate-[fade-in_0.5s_ease-out]">
                   {/* Navigation Links */}
                   <div className="hidden md:flex items-center space-x-6">
@@ -392,26 +392,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                     style={{ fontWeight: 500, letterSpacing: '0.05em' }}
                   >
                     Logout
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-3">
-                  <Button 
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => navigate('/login')}
-                    className="font-body"
-                    style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                  >
-                    {t('nav.login')}
-                  </Button>
-                  <Button 
-                    size="sm"
-                    onClick={() => navigate('/register')}
-                    className="accent-gradient text-white hover:opacity-90 transition-opacity shadow-sm font-body"
-                    style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                  >
-                    {t('nav.register')}
                   </Button>
                 </div>
               )}
