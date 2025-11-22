@@ -115,6 +115,7 @@ Also provide:
 - summary: Brief 2-3 sentence professional summary
 - strengths: Array of 3-5 key strengths
 - soft_skills: Array of 3-5 soft skills identified
+- comments: Object with brief 1-2 sentence explanations for each pillar score
 
 Return ONLY valid JSON with this structure:
 {
@@ -125,12 +126,19 @@ Return ONLY valid JSON with this structure:
   "drive": <number 0-100>,
   "summary": "<string>",
   "strengths": ["<string>", "<string>", "<string>"],
-  "soft_skills": ["<string>", "<string>", "<string>"]
+  "soft_skills": ["<string>", "<string>", "<string>"],
+  "comments": {
+    "computational_power": "<explanation>",
+    "communication": "<explanation>",
+    "knowledge": "<explanation>",
+    "creativity": "<explanation>",
+    "drive": "<explanation>"
+  }
 }`
           },
           { 
             role: "user", 
-            content: `Analyze this CV and provide scores:\n\n${truncatedText}` 
+            content: `Analyze this CV and provide scores with explanations:\n\n${truncatedText}` 
           }
         ],
         response_format: { type: "json_object" }
@@ -170,12 +178,15 @@ Return ONLY valid JSON with this structure:
       drive: analysisResult.drive || 50
     };
 
+    const cv_comments = analysisResult.comments || {};
+    
     console.log("CV Scores:", cv_scores);
+    console.log("CV Comments:", cv_comments);
 
     // Update profile row (RLS safe)
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({ cv_scores })
+      .update({ cv_scores, cv_comments })
       .eq("user_id", user.id);
 
     if (updateError) {
@@ -205,6 +216,7 @@ Return ONLY valid JSON with this structure:
       JSON.stringify({ 
         success: true, 
         cv_scores,
+        cv_comments,
         summary: analysisResult.summary,
         strengths: analysisResult.strengths,
         soft_skills: analysisResult.soft_skills
