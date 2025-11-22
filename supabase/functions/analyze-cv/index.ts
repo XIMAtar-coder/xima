@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import OpenAI from "https://esm.sh/openai@4.20.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -86,34 +85,81 @@ serve(async (req) => {
     const truncatedText = text.substring(0, 10000);
     console.log("Extracted text length:", truncatedText.length);
 
-    // OpenAI scoring
-    const openai = new OpenAI({ apiKey: Deno.env.get("OPENAI_API_KEY") });
+    // Get Lovable AI API key
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY is not configured");
+    }
 
-    const aiResponse = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      response_format: { type: "json_object" },
-      messages: [
-        {
-          role: "system",
-          content: `Analyze this CV text and return JSON with these exact fields:
+    // Call Lovable AI for CV analysis
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          {
+            role: "system",
+            content: `You are a CV analyzer for the XIMA assessment system. Analyze CVs and score candidates on 5 pillars (0-100 scale):
+
+1. computational_power: Technical skills, problem-solving, analytical abilities
+2. communication: Language skills, presentation, written communication  
+3. knowledge: Education, certifications, domain expertise
+4. creativity: Innovative projects, creative solutions, unique approaches
+5. drive: Achievements, career progression, initiative, proactivity
+
+Also provide:
+- summary: Brief 2-3 sentence professional summary
+- strengths: Array of 3-5 key strengths
+- soft_skills: Array of 3-5 soft skills identified
+
+Return ONLY valid JSON with this structure:
 {
-  "computational_power": <score 0-100>,
-  "communication": <score 0-100>,
-  "knowledge": <score 0-100>,
-  "creativity": <score 0-100>,
-  "drive": <score 0-100>,
-  "summary": "<brief summary>",
-  "strengths": ["strength1", "strength2", "strength3"],
-  "soft_skills": ["skill1", "skill2", "skill3"]
-}
-Base scores on: technical skills, communication ability, education/expertise, innovative thinking, and achievements/initiative.`
-        },
-        { role: "user", content: truncatedText }
-      ]
+  "computational_power": <number 0-100>,
+  "communication": <number 0-100>,
+  "knowledge": <number 0-100>,
+  "creativity": <number 0-100>,
+  "drive": <number 0-100>,
+  "summary": "<string>",
+  "strengths": ["<string>", "<string>", "<string>"],
+  "soft_skills": ["<string>", "<string>", "<string>"]
+}`
+          },
+          { 
+            role: "user", 
+            content: `Analyze this CV and provide scores:\n\n${truncatedText}` 
+          }
+        ],
+        response_format: { type: "json_object" }
+      }),
     });
 
+    if (!aiResponse.ok) {
+      const errorText = await aiResponse.text();
+      console.error("Lovable AI error:", aiResponse.status, errorText);
+      
+      if (aiResponse.status === 429) {
+        return new Response(
+          JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }), 
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (aiResponse.status === 402) {
+        return new Response(
+          JSON.stringify({ error: "AI credits depleted. Please add credits to your workspace." }), 
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      
+      throw new Error(`AI analysis failed: ${aiResponse.status}`);
+    }
+
     console.log("AI analysis complete");
-    const analysisResult = JSON.parse(aiResponse.choices[0].message.content || "{}");
+    const aiData = await aiResponse.json();
+    const analysisResult = JSON.parse(aiData.choices[0].message.content || "{}");
     
     // Extract cv_scores (pillar scores)
     const cv_scores = {
@@ -123,6 +169,8 @@ Base scores on: technical skills, communication ability, education/expertise, in
       creativity: analysisResult.creativity || 50,
       drive: analysisResult.drive || 50
     };
+
+    console.log("CV Scores:", cv_scores);
 
     // Update profile row (RLS safe)
     const { error: updateError } = await supabase
@@ -146,9 +194,9 @@ Base scores on: technical skills, communication ability, education/expertise, in
       .insert({
         user_id: user.id,
         cv_text: truncatedText.substring(0, 5000),
-        summary: analysisResult.summary,
-        strengths: analysisResult.strengths,
-        soft_skills: analysisResult.soft_skills,
+        summary: analysisResult.summary || "CV analyzed successfully",
+        strengths: analysisResult.strengths || [],
+        soft_skills: analysisResult.soft_skills || [],
         pillar_vector: cv_scores,
         ximatar_suggestions: []
       });
