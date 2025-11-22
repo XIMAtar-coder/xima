@@ -31,20 +31,17 @@ serve(async (req) => {
       );
     }
 
-    // Extract JWT token from Bearer header
-    const jwt = authHeader.replace("Bearer ", "");
-    
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
-        headers: { authorization: authHeader },
+        headers: { Authorization: authHeader },
       },
       auth: {
         persistSession: false,
       },
     });
 
-    // Verify user is authenticated using the JWT token
-    const { data: { user }, error: authError } = await supabase.auth.getUser(jwt);
+    // Verify user is authenticated
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
     
     if (authError || !user) {
       console.error("Authentication failed:", authError);
