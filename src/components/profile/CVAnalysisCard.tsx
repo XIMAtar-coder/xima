@@ -65,36 +65,38 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
     setUploadError(null);
 
     try {
-      // Upload to Supabase Storage with proper folder structure
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `${user?.id}/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('cv-uploads')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: true
-        });
-
-      if (uploadError) throw uploadError;
-
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('cv-uploads')
-        .getPublicUrl(filePath);
-
-      // Call analyze-cv edge function
-      const { data, error: functionError } = await supabase.functions.invoke('analyze-cv', {
-        body: {
-          file_url: publicUrl,
-          lang: t('common.lang', 'it')
-        }
-      });
-
-      if (functionError) {
-        throw new Error(functionError.message || 'Failed to analyze CV');
+      // Get current session for authentication
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.access_token) {
+        throw new Error('No active session. Please log in again.');
       }
+
+      // Create FormData with the file
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Get Supabase URL
+      const supabaseUrl = 'https://iyckvvnecpnldrxqmzta.supabase.co';
+      
+      // Call analyze-cv edge function with FormData
+      const response = await fetch(
+        `${supabaseUrl}/functions/v1/analyze-cv`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Upload failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
 
       if (!data?.success) {
         throw new Error(data?.error || 'CV analysis failed');
@@ -109,7 +111,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
       const errorMsg = error.message || 'Failed to analyze CV';
       
       // Provide user-friendly error messages
-      if (errorMsg.includes('Authentication') || errorMsg.includes('log in')) {
+      if (errorMsg.includes('Authentication') || errorMsg.includes('log in') || errorMsg.includes('session')) {
         setUploadError('Authentication required. Please refresh the page and try again.');
         toast.error('Please log in again to upload your CV');
       } else if (errorMsg.includes('RLS') || errorMsg.includes('policy')) {
