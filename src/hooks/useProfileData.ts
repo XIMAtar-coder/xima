@@ -113,6 +113,7 @@ export const useProfileData = (): ProfileData => {
             ximatar_image,
             drive_level,
             pillar_scores,
+            cv_scores,
             strongest_pillar,
             weakest_pillar,
             ximatar_storytelling,
@@ -209,15 +210,16 @@ export const useProfileData = (): ProfileData => {
             }
           : null;
 
-        // CV pillar vector normalization
+        // CV pillar vector normalization (now from profiles.cv_scores)
         const pv = (cvAnalysisRes.data?.pillar_vector as any) || null;
-        const cv_pillar_scores = pv
+        const cvScores = (profile?.cv_scores as any) || pv;
+        const cv_pillar_scores = cvScores
           ? {
-              computational_power: Number(pv.computational_power ?? pv.computational ?? pv.comp_power ?? 0),
-              communication: Number(pv.communication ?? 0),
-              knowledge: Number(pv.knowledge ?? 0),
-              creativity: Number(pv.creativity ?? 0),
-              drive: Number(pv.drive ?? 0),
+              computational_power: Number(cvScores.computational_power ?? cvScores.comp_power ?? 0),
+              communication: Number(cvScores.communication ?? 0),
+              knowledge: Number(cvScores.knowledge ?? 0),
+              creativity: Number(cvScores.creativity ?? 0),
+              drive: Number(cvScores.drive ?? 0),
             }
           : null;
 

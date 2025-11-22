@@ -85,15 +85,20 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
         .getPublicUrl(filePath);
 
       // Call analyze-cv edge function
-      const { error: functionError } = await supabase.functions.invoke('analyze-cv', {
+      const { data, error: functionError } = await supabase.functions.invoke('analyze-cv', {
         body: {
           file_url: publicUrl,
-          lang: t('common.lang', 'it'),
-          user_id: user?.id
+          lang: t('common.lang', 'it')
         }
       });
 
-      if (functionError) throw functionError;
+      if (functionError) {
+        throw new Error(functionError.message || 'Failed to analyze CV');
+      }
+
+      if (!data?.success) {
+        throw new Error(data?.error || 'CV analysis failed');
+      }
 
       toast.success('CV analyzed successfully! Refreshing...');
       
@@ -101,8 +106,19 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
       setTimeout(() => window.location.reload(), 1500);
     } catch (error: any) {
       console.error('CV upload error:', error);
-      setUploadError(error.message || 'Failed to analyze CV');
-      toast.error('Failed to analyze CV. Please try again.');
+      const errorMsg = error.message || 'Failed to analyze CV';
+      
+      // Provide user-friendly error messages
+      if (errorMsg.includes('Authentication') || errorMsg.includes('log in')) {
+        setUploadError('Authentication required. Please refresh the page and try again.');
+        toast.error('Please log in again to upload your CV');
+      } else if (errorMsg.includes('RLS') || errorMsg.includes('policy')) {
+        setUploadError('Permission denied. Please ensure you are logged in.');
+        toast.error('Permission denied. Please refresh and try again.');
+      } else {
+        setUploadError(errorMsg);
+        toast.error(errorMsg);
+      }
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
