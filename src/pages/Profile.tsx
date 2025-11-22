@@ -24,10 +24,16 @@ const Profile = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [refreshKey, setRefreshKey] = React.useState(0);
-  const profileData = useProfileData();
+  const [profileRefreshKey, setProfileRefreshKey] = React.useState(0);
+  const profileData = useProfileData(profileRefreshKey);
   
   const handleAvatarUpdate = () => {
     setRefreshKey(prev => prev + 1);
+  };
+
+  const handleCVUploadSuccess = () => {
+    // Trigger profile data refresh without hard reload
+    setProfileRefreshKey(prev => prev + 1);
   };
 
   console.log('[Profile] render profileData', profileData);
@@ -154,13 +160,12 @@ const Profile = () => {
               )}
 
               {/* CV Analysis */}
-              {(profileData.cv_analysis || profileData.cv_pillar_scores) && (
-                <CVAnalysisCard 
-                  cvAnalysis={profileData.cv_analysis}
-                  cvPillarScores={profileData.cv_pillar_scores}
-                  assessmentPillarScores={profileData.pillar_scores}
-                />
-              )}
+              <CVAnalysisCard 
+                cvAnalysis={profileData.cv_analysis}
+                cvPillarScores={profileData.cv_pillar_scores}
+                assessmentPillarScores={profileData.pillar_scores}
+                onUploadSuccess={handleCVUploadSuccess}
+              />
             </div>
           </div>
 

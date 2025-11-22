@@ -64,7 +64,7 @@ interface ProfileData {
 /**
  * Robust hook to load the user's profile and related dynamic data
  */
-export const useProfileData = (): ProfileData => {
+export const useProfileData = (refreshTrigger?: number): ProfileData => {
   const { user, isAuthenticated } = useUser();
   const [state, setState] = useState<ProfileData>({
     full_name: '',
@@ -281,7 +281,7 @@ export const useProfileData = (): ProfileData => {
     };
 
     load();
-  }, [user?.id, isAuthenticated]);
+  }, [user?.id, isAuthenticated, refreshTrigger]);
 
   return state;
 };
