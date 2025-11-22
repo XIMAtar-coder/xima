@@ -1198,6 +1198,57 @@ export type Database = {
           },
         ]
       }
+      mentor_availability_slots: {
+        Row: {
+          booked_by: string | null
+          booking_id: string | null
+          created_at: string | null
+          end_time: string
+          id: string
+          is_booked: boolean | null
+          mentor_id: string
+          start_time: string
+          updated_at: string | null
+        }
+        Insert: {
+          booked_by?: string | null
+          booking_id?: string | null
+          created_at?: string | null
+          end_time: string
+          id?: string
+          is_booked?: boolean | null
+          mentor_id: string
+          start_time: string
+          updated_at?: string | null
+        }
+        Update: {
+          booked_by?: string | null
+          booking_id?: string | null
+          created_at?: string | null
+          end_time?: string
+          id?: string
+          is_booked?: boolean | null
+          mentor_id?: string
+          start_time?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_availability_slots_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_availability_slots_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "mentors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentor_matches: {
         Row: {
           assigned_by: string | null

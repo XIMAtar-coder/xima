@@ -21,3 +21,9 @@ verify_jwt = false
 [functions.fetch-user-challenges]
 verify_jwt = true
 
+[functions.fetch-mentor-availability]
+verify_jwt = true
+
+[functions.schedule-mentor-meeting]
+verify_jwt = true
+
