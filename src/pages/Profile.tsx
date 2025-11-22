@@ -25,6 +25,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [refreshKey, setRefreshKey] = React.useState(0);
   const [profileRefreshKey, setProfileRefreshKey] = React.useState(0);
+  const [mentorRefreshKey, setMentorRefreshKey] = React.useState(0);
   const profileData = useProfileData(profileRefreshKey);
   
   const handleAvatarUpdate = () => {
@@ -33,6 +34,11 @@ const Profile = () => {
 
   const handleCVUploadSuccess = () => {
     // Trigger profile data refresh without hard reload
+    setProfileRefreshKey(prev => prev + 1);
+  };
+
+  const handleMentorBookingSuccess = () => {
+    setMentorRefreshKey(prev => prev + 1);
     setProfileRefreshKey(prev => prev + 1);
   };
 
@@ -148,7 +154,10 @@ const Profile = () => {
             {/* Right Column */}
             <div className="space-y-6">
               {/* Mentor Section - Always show */}
-              <MentorSection mentor={profileData.mentor_profile} />
+              <MentorSection 
+                mentor={profileData.mentor_profile} 
+                onBookingSuccess={handleMentorBookingSuccess}
+              />
 
               {/* Personalized Challenge */}
               {profileData.pillar_scores && user?.id && (
