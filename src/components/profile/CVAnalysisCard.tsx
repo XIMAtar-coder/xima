@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { FileText, TrendingUp, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { FileText, TrendingUp, Sparkles, Upload, Loader2, AlertCircle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useUser } from '@/context/UserContext';
+import { toast } from 'sonner';
 
 interface CVAnalysisCardProps {
   cvAnalysis: {
@@ -33,19 +37,92 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
   assessmentPillarScores
 }) => {
   const { t } = useTranslation();
+  const { user } = useUser();
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  if (!cvAnalysis && !cvPillarScores) return null;
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword'];
+    if (!validTypes.includes(file.type)) {
+      setUploadError('Please upload a PDF or DOCX file');
+      toast.error('Invalid file type. Please upload a PDF or DOCX file.');
+      return;
+    }
+
+    // Validate file size (10MB max)
+    if (file.size > 10 * 1024 * 1024) {
+      setUploadError('File size must be less than 10MB');
+      toast.error('File size must be less than 10MB');
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadError(null);
+
+    try {
+      // Upload to Supabase Storage
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user?.id}-${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('cv-uploads')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('cv-uploads')
+        .getPublicUrl(filePath);
+
+      // Call analyze-cv edge function
+      const { error: functionError } = await supabase.functions.invoke('analyze-cv', {
+        body: {
+          file_url: publicUrl,
+          lang: t('common.lang', 'it'),
+          user_id: user?.id
+        }
+      });
+
+      if (functionError) throw functionError;
+
+      toast.success('CV analyzed successfully! Refreshing...');
+      
+      // Refresh the page to show new data
+      setTimeout(() => window.location.reload(), 1500);
+    } catch (error: any) {
+      console.error('CV upload error:', error);
+      setUploadError(error.message || 'Failed to analyze CV');
+      toast.error('Failed to analyze CV. Please try again.');
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
 
   const pillarsToCompare = ['computational_power', 'communication', 'knowledge', 'creativity', 'drive'];
   
-  // Calculate biggest improvement
+  // Calculate overall delta and biggest improvement
+  let overallDelta = 0;
   let biggestImprovement = { pillar: '', diff: 0 };
   if (cvPillarScores && assessmentPillarScores) {
     pillarsToCompare.forEach((pillar) => {
-      const cvScore = cvPillarScores[pillar as keyof typeof cvPillarScores] || 0;
+      const cvScore = (cvPillarScores[pillar as keyof typeof cvPillarScores] || 0) / 10; // Normalize to 0-10
       const assessmentScore = assessmentPillarScores[pillar as keyof typeof assessmentPillarScores] || 0;
       const diff = assessmentScore - cvScore;
-      if (diff > biggestImprovement.diff) {
+      overallDelta += diff;
+      if (Math.abs(diff) > Math.abs(biggestImprovement.diff)) {
         biggestImprovement = { pillar, diff };
       }
     });
@@ -54,12 +131,90 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
   return (
     <Card className="animate-fade-in">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 font-heading">
-          <FileText className="text-primary" />
-          {t('profile.cv_analysis', 'CV Analysis')}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FileText className="text-primary" />
+            <div>
+              <CardTitle className="font-heading">
+                {t('profile.cv_analysis', 'CV Analysis')}
+              </CardTitle>
+              {cvPillarScores && assessmentPillarScores && (
+                <p className={`text-sm mt-1 ${
+                  overallDelta > 0 ? 'text-green-600' : 
+                  overallDelta < 0 ? 'text-red-600' : 
+                  'text-muted-foreground'
+                }`}>
+                  Score Alignment: {overallDelta > 0 ? '+' : ''}{overallDelta.toFixed(1)} overall
+                </p>
+              )}
+            </div>
+          </div>
+          <div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+            <Button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              size="sm"
+              variant={cvAnalysis ? "outline" : "default"}
+            >
+              {isUploading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4 mr-2" />
+                  {cvAnalysis ? 'Re-upload CV' : 'Upload CV'}
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Error Message */}
+        {uploadError && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+            <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
+            <div>
+              <p className="text-sm text-red-800 font-medium">Upload Error</p>
+              <p className="text-sm text-red-600">{uploadError}</p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+                className="mt-2"
+              >
+                Try Again
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* No CV Message */}
+        {!cvAnalysis && !isUploading && !uploadError && (
+          <div className="p-6 bg-muted/30 rounded-lg border border-dashed border-muted-foreground/30 text-center">
+            <FileText className="w-12 h-12 mx-auto mb-3 text-muted-foreground/50" />
+            <p className="text-sm text-muted-foreground mb-3">
+              Upload your CV to compare your documented skills with your assessment results
+            </p>
+            <Button
+              onClick={() => fileInputRef.current?.click()}
+              variant="default"
+            >
+              <Upload className="w-4 h-4 mr-2" />
+              Upload CV
+            </Button>
+          </div>
+        )}
+
         {/* Summary */}
         {cvAnalysis?.summary && (
           <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
@@ -122,24 +277,48 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
 
             <div className="space-y-3">
               {pillarsToCompare.map((pillar) => {
-                const cvScore = cvPillarScores[pillar as keyof typeof cvPillarScores] || 0;
+                const cvScoreRaw = cvPillarScores[pillar as keyof typeof cvPillarScores] || 0;
+                const cvScore = cvScoreRaw / 10; // Normalize from 0-100 to 0-10
                 const assessmentScore = assessmentPillarScores[pillar as keyof typeof assessmentPillarScores] || 0;
                 const diff = assessmentScore - cvScore;
                 
                 return (
                   <div key={pillar} className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="capitalize">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="capitalize font-medium">
                         {t(`pillars.${pillar}.name`, pillar.replace('_', ' '))}
                       </span>
-                      <span className={`font-semibold ${diff > 0 ? 'text-green-600' : diff < 0 ? 'text-orange-600' : ''}`}>
-                        CV: {cvScore.toFixed(1)} → Assessment: {assessmentScore.toFixed(1)}
-                        {diff !== 0 && ` (${diff > 0 ? '+' : ''}${diff.toFixed(1)})`}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground">
+                          CV: {cvScore.toFixed(1)}
+                        </span>
+                        <span className="text-muted-foreground">→</span>
+                        <span className="font-semibold">
+                          Assessment: {assessmentScore.toFixed(1)}
+                        </span>
+                        {diff !== 0 && (
+                          <Badge 
+                            variant={diff > 0 ? "default" : "destructive"}
+                            className={`ml-2 ${
+                              diff > 0 ? 'bg-green-500 hover:bg-green-600' : 
+                              diff < 0 ? 'bg-red-500 hover:bg-red-600' : 
+                              'bg-gray-500'
+                            }`}
+                          >
+                            {diff > 0 ? '+' : ''}{diff.toFixed(1)}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Progress value={cvScore * 10} className="h-2 flex-1" />
-                      <Progress value={assessmentScore * 10} className="h-2 flex-1" />
+                    <div className="flex gap-3 items-center">
+                      <div className="flex-1">
+                        <p className="text-xs text-muted-foreground mb-1">CV Score</p>
+                        <Progress value={cvScore * 10} className="h-2" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs text-muted-foreground mb-1">Assessment Score</p>
+                        <Progress value={assessmentScore * 10} className="h-2" />
+                      </div>
                     </div>
                   </div>
                 );
