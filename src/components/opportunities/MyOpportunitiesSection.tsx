@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,7 +8,20 @@ import { Badge } from '@/components/ui/badge';
 import { useJobInteractions } from '@/hooks/useJobInteractions';
 import { useJobRecommendations } from '@/hooks/useJobRecommendations';
 import { useUser } from '@/context/UserContext';
-import { Bookmark, CheckCircle2, TrendingUp, ExternalLink, Sparkles } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { Bookmark, CheckCircle2, TrendingUp, ExternalLink, Sparkles, MapPin, Briefcase, RefreshCw, AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
+
+interface Opportunity {
+  id: string;
+  title: string;
+  company: string;
+  description: string | null;
+  location: string | null;
+  skills: string[] | null;
+  source_url: string | null;
+  created_at: string;
+}
 
 export const MyOpportunitiesSection: React.FC = () => {
   const { t } = useTranslation();
@@ -16,9 +29,98 @@ export const MyOpportunitiesSection: React.FC = () => {
   const { user } = useUser();
   const { interactions, loading: interactionsLoading } = useJobInteractions();
   const { recommendations, loading: recommendationsLoading, refresh } = useJobRecommendations();
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [opportunitiesLoading, setOpportunitiesLoading] = useState(true);
+  const [opportunitiesError, setOpportunitiesError] = useState<string | null>(null);
 
   const savedJobs = interactions.filter((i) => i.status === 'saved');
   const appliedJobs = interactions.filter((i) => i.status === 'applied');
+
+  const fetchOpportunities = async () => {
+    setOpportunitiesLoading(true);
+    setOpportunitiesError(null);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('fetch-opportunities');
+
+      if (error) throw error;
+
+      if (data?.success && data?.opportunities) {
+        setOpportunities(data.opportunities);
+      } else {
+        throw new Error('Invalid response format');
+      }
+    } catch (error: any) {
+      console.error('Error fetching opportunities:', error);
+      setOpportunitiesError(error.message || 'Failed to fetch opportunities');
+      toast.error('Failed to load job opportunities');
+    } finally {
+      setOpportunitiesLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOpportunities();
+  }, []);
+
+  const renderOpportunityCard = (opp: Opportunity) => (
+    <div 
+      key={opp.id} 
+      className="p-5 border border-[hsl(var(--xima-accent))]/20 rounded-lg bg-gradient-to-br from-background to-[hsl(var(--xima-accent))]/5 hover:shadow-lg transition-all duration-300"
+    >
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="min-w-0 flex-1">
+          <h3 className="font-heading font-semibold text-lg text-foreground mb-1">
+            {opp.title}
+          </h3>
+          <div className="flex items-center gap-2 text-sm text-[hsl(var(--xima-gray))] mb-2">
+            <Briefcase className="w-4 h-4" />
+            <span>{opp.company}</span>
+          </div>
+          {opp.location && (
+            <div className="flex items-center gap-2 text-sm text-[hsl(var(--xima-gray))]">
+              <MapPin className="w-4 h-4" />
+              <span>{opp.location}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {opp.description && (
+        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+          {opp.description}
+        </p>
+      )}
+
+      {opp.skills && opp.skills.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-3">
+          {opp.skills.slice(0, 4).map((skill, idx) => (
+            <Badge 
+              key={idx} 
+              variant="secondary" 
+              className="bg-[hsl(var(--xima-teal))]/10 text-[hsl(var(--xima-teal))]"
+            >
+              {skill}
+            </Badge>
+          ))}
+          {opp.skills.length > 4 && (
+            <Badge variant="outline" className="text-muted-foreground">
+              +{opp.skills.length - 4} more
+            </Badge>
+          )}
+        </div>
+      )}
+
+      <Button 
+        size="sm" 
+        onClick={() => navigate(`/opportunity/${opp.id}`)}
+        className="w-full bg-[hsl(var(--xima-accent))] hover:bg-[hsl(var(--xima-accent))]/90"
+      >
+        View Details
+        <ExternalLink className="w-4 h-4 ml-2" />
+      </Button>
+    </div>
+  );
 
   const renderJobCard = (
     jobId: string,
@@ -87,8 +189,11 @@ export const MyOpportunitiesSection: React.FC = () => {
         <Button
           variant="outline"
           size="sm"
-          onClick={refresh}
-          disabled={recommendationsLoading}
+          onClick={() => {
+            refresh();
+            fetchOpportunities();
+          }}
+          disabled={recommendationsLoading || opportunitiesLoading}
           className="gap-2"
         >
           <Sparkles className="w-4 h-4" />
@@ -113,33 +218,34 @@ export const MyOpportunitiesSection: React.FC = () => {
           </TabsList>
 
           <TabsContent value="recommended" className="space-y-4">
-            {recommendationsLoading ? (
-              <p className="text-center text-[hsl(var(--xima-gray))]">Generating your personalized recommendations...</p>
-            ) : recommendations.length === 0 ? (
+            {opportunitiesLoading ? (
               <div className="text-center py-8">
-                <Sparkles className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--xima-accent))]/40" />
-                <p className="text-[hsl(var(--xima-gray))] mb-4">
-                  Complete your XIMA assessment to unlock AI-powered job recommendations!
-                </p>
+                <RefreshCw className="w-8 h-8 mx-auto mb-3 text-[hsl(var(--xima-accent))] animate-spin" />
+                <p className="text-[hsl(var(--xima-gray))]">Loading job opportunities...</p>
+              </div>
+            ) : opportunitiesError ? (
+              <div className="text-center py-8">
+                <AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-500/40" />
+                <p className="text-red-600 mb-4">{opportunitiesError}</p>
                 <Button 
-                  onClick={() => navigate('/ximatar-journey')}
-                  className="bg-[hsl(var(--xima-accent))] hover:bg-[hsl(var(--xima-accent))]/90"
+                  onClick={fetchOpportunities}
+                  variant="outline"
+                  className="gap-2"
                 >
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Start Assessment
+                  <RefreshCw className="w-4 h-4" />
+                  Retry
                 </Button>
+              </div>
+            ) : opportunities.length === 0 ? (
+              <div className="text-center py-8">
+                <Briefcase className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--xima-accent))]/40" />
+                <p className="text-[hsl(var(--xima-gray))]">
+                  No job opportunities available at the moment. Check back soon!
+                </p>
               </div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
-                {recommendations.map((rec) =>
-                  renderJobCard(
-                    rec.job.id,
-                    rec.job.title,
-                    rec.job.company,
-                    rec.matchScore,
-                    undefined
-                  )
-                )}
+                {opportunities.map((opp) => renderOpportunityCard(opp))}
               </div>
             )}
           </TabsContent>
