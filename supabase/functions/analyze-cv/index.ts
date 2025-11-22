@@ -12,21 +12,39 @@ serve(async (req) => {
   }
 
   try {
-    // Initialize Supabase client with user's auth context
+    // Initialize Supabase client
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     
     // Get authorization header from request
     const authHeader = req.headers.get("authorization");
     
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({
+          error: "No authorization header provided. Please log in and try again.",
+        }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Extract JWT token from Bearer header
+    const jwt = authHeader.replace("Bearer ", "");
+    
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
-        headers: authHeader ? { authorization: authHeader } : {},
+        headers: { authorization: authHeader },
+      },
+      auth: {
+        persistSession: false,
       },
     });
 
-    // Verify user is authenticated
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    // Verify user is authenticated using the JWT token
+    const { data: { user }, error: authError } = await supabase.auth.getUser(jwt);
     
     if (authError || !user) {
       console.error("Authentication failed:", authError);
