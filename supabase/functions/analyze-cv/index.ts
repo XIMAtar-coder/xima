@@ -61,10 +61,10 @@ serve(async (req) => {
 
     console.log("Extracted text length:", cvText.length);
 
-    // Analyze with Lovable AI
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY not configured");
+    // Analyze with OpenAI
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY not configured");
     }
 
     const analysisPrompt = `You are a professional CV analyst. Analyze this CV and provide a structured response.
@@ -89,25 +89,26 @@ Provide your analysis in the following JSON format (respond ONLY with valid JSON
   "ximatar_suggestions": ["ximatar1", "ximatar2", "ximatar3"]
 }
 
-Base the pillar scores on:
+Base the pillar scores (0-100) on:
 - computational_power: technical skills, problem-solving, analytical abilities
 - communication: language skills, presentation, written communication
 - knowledge: education, certifications, domain expertise
 - creativity: innovative projects, creative solutions
 - drive: achievements, career progression, initiative`;
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a professional CV analyst. Always respond with valid JSON only." },
           { role: "user", content: analysisPrompt }
         ],
+        temperature: 0.7,
       }),
     });
 
