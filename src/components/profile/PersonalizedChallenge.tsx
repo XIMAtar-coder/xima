@@ -2,8 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { Sparkles, Loader2, Building2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+
+interface Challenge {
+  id: string;
+  title: string;
+  description: string;
+  difficulty: number;
+  reward: string;
+  companyName: string;
+  deadline: string;
+  matchScore: number;
+}
 
 interface PersonalizedChallengeProps {
   userId: string;
@@ -17,78 +29,64 @@ export const PersonalizedChallenge: React.FC<PersonalizedChallengeProps> = ({
   pillarScores,
 }) => {
   const { t, i18n } = useTranslation();
-  const [challenge, setChallenge] = useState<string | null>(null);
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const generateChallenge = async () => {
+    const fetchChallenges = async () => {
       try {
-        // Find weakest pillar
-        const sortedPillars = pillarScores
-          ? [...pillarScores].sort((a, b) => a.score - b.score)
-          : [];
-        const weakestPillar = sortedPillars[0]?.pillar || 'drive';
+        setLoading(true);
+        setError(null);
 
-        // Check if CV analysis exists
-        const { data: cvAnalysis } = await supabase
-          .from('assessment_cv_analysis')
-          .select('summary, pillar_vector')
-          .eq('user_id', userId)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          setError('Not authenticated');
+          setLoading(false);
+          return;
+        }
 
-        // Generate challenge based on context
-        const lang = i18n.language.split('-')[0];
-        const challengeContext = {
-          ximatar: ximatarType || 'unknown',
-          weakestPillar,
-          hasCv: !!cvAnalysis,
-          lang,
-        };
+        const { data, error } = await supabase.functions.invoke('fetch-user-challenges', {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`
+          }
+        });
 
-        // Generate context-aware challenge
-        const challenges: Record<string, Record<string, string>> = {
-          en: {
-            computational_power: `Tackle a complex problem this week: Break down a challenging task at work into smaller logical steps. Document your process and identify one way to automate or optimize it.`,
-            communication: `Practice active listening: In your next three conversations, focus entirely on understanding before responding. Ask clarifying questions and summarize what you heard.`,
-            knowledge: `Deep dive learning: Choose one skill relevant to your ${ximatarType} profile and spend 3 hours this week learning it thoroughly. Share what you learned with someone.`,
-            creativity: `Innovation challenge: Take a routine task and brainstorm 5 completely different ways to approach it. Try implementing the most promising idea.`,
-            drive: `Goal sprint: Set one ambitious but achievable goal for this week. Break it into daily actions and track your progress. Celebrate when you achieve it.`,
-          },
-          it: {
-            computational_power: `Affronta un problema complesso questa settimana: Scomponi un compito impegnativo al lavoro in passaggi logici più piccoli. Documenta il tuo processo e identifica un modo per automatizzarlo od ottimizzarlo.`,
-            communication: `Pratica l'ascolto attivo: Nelle tue prossime tre conversazioni, concentrati completamente sulla comprensione prima di rispondere. Fai domande di chiarimento e riassumi ciò che hai sentito.`,
-            knowledge: `Apprendimento approfondito: Scegli una competenza rilevante per il tuo profilo ${ximatarType} e dedica 3 ore questa settimana ad apprenderla a fondo. Condividi ciò che hai imparato con qualcuno.`,
-            creativity: `Sfida all'innovazione: Prendi un compito di routine e fai brainstorming di 5 modi completamente diversi per affrontarlo. Prova ad implementare l'idea più promettente.`,
-            drive: `Sprint dell'obiettivo: Stabilisci un obiettivo ambizioso ma raggiungibile per questa settimana. Suddividilo in azioni quotidiane e traccia i tuoi progressi. Celebra quando lo raggiungi.`,
-          },
-          es: {
-            computational_power: `Aborda un problema complejo esta semana: Descompón una tarea desafiante en el trabajo en pasos lógicos más pequeños. Documenta tu proceso e identifica una forma de automatizarlo u optimizarlo.`,
-            communication: `Practica la escucha activa: En tus próximas tres conversaciones, concéntrate completamente en comprender antes de responder. Haz preguntas aclaratorias y resume lo que escuchaste.`,
-            knowledge: `Aprendizaje profundo: Elige una habilidad relevante para tu perfil ${ximatarType} y dedica 3 horas esta semana a aprenderla a fondo. Comparte lo que aprendiste con alguien.`,
-            creativity: `Desafío de innovación: Toma una tarea rutinaria y haz una lluvia de ideas de 5 formas completamente diferentes de abordarla. Intenta implementar la idea más prometedora.`,
-            drive: `Sprint de objetivos: Establece un objetivo ambicioso pero alcanzable para esta semana. Divídelo en acciones diarias y rastrea tu progreso. Celebra cuando lo logres.`,
-          },
-        };
+        if (error) {
+          throw error;
+        }
 
-        const langChallenges = challenges[lang as keyof typeof challenges] || challenges.en;
-        const generatedChallenge =
-          langChallenges[weakestPillar as keyof typeof langChallenges] ||
-          langChallenges.drive;
-
-        setChallenge(generatedChallenge);
-      } catch (error) {
-        console.error('Error generating challenge:', error);
+        if (data?.success && data?.challenges) {
+          setChallenges(data.challenges);
+        } else {
+          setChallenges([]);
+        }
+      } catch (error: any) {
+        console.error('Error fetching challenges:', error);
+        setError(error.message || 'Failed to load challenges');
+        setChallenges([]);
       } finally {
         setLoading(false);
       }
     };
 
     if (userId) {
-      generateChallenge();
+      fetchChallenges();
     }
-  }, [userId, ximatarType, pillarScores, i18n.language]);
+  }, [userId]);
+
+  const handleNextChallenge = () => {
+    if (challenges.length > 0) {
+      setCurrentIndex((prev) => (prev + 1) % challenges.length);
+    }
+  };
+
+  const handlePrevChallenge = () => {
+    if (challenges.length > 0) {
+      setCurrentIndex((prev) => (prev - 1 + challenges.length) % challenges.length);
+    }
+  };
 
   if (loading) {
     return (
@@ -106,19 +104,83 @@ export const PersonalizedChallenge: React.FC<PersonalizedChallengeProps> = ({
     );
   }
 
+  const currentChallenge = challenges[currentIndex];
+
   return (
     <Card className="border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-primary" />
-          {t('profile.challenge_for_you', 'Challenge for You')}
+          {t('profile.challenge_for_you', 'Sfida per Te')}
           <Badge variant="secondary" className="ml-auto">
-            {t('profile.this_week', 'This Week')}
+            {t('profile.this_week', 'Questa Settimana')}
           </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-muted-foreground leading-relaxed">{challenge}</p>
+        {loading ? (
+          <div className="flex justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          </div>
+        ) : error ? (
+          <p className="text-muted-foreground text-center py-4">{error}</p>
+        ) : challenges.length === 0 ? (
+          <p className="text-muted-foreground text-center py-4">
+            {t('profile.no_challenges', 'Nessuna sfida disponibile questa settimana. Controlla più tardi!')}
+          </p>
+        ) : (
+          <div className="space-y-4">
+            <div className="space-y-3">
+              <div className="flex items-start justify-between gap-2">
+                <h4 className="font-semibold text-lg leading-tight">{currentChallenge.title}</h4>
+                <Badge variant="outline" className="shrink-0">
+                  {currentChallenge.matchScore}% Match
+                </Badge>
+              </div>
+              
+              <p className="text-muted-foreground leading-relaxed">
+                {currentChallenge.description}
+              </p>
+
+              <div className="flex items-center gap-4 text-sm text-muted-foreground pt-2">
+                <div className="flex items-center gap-1">
+                  <Building2 className="h-4 w-4" />
+                  <span>{currentChallenge.companyName}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="text-xs">
+                    Difficulty: {currentChallenge.difficulty}/5
+                  </Badge>
+                  <Badge variant="secondary" className="text-xs">
+                    {currentChallenge.reward}
+                  </Badge>
+                </div>
+              </div>
+            </div>
+
+            {challenges.length > 1 && (
+              <div className="flex items-center justify-between pt-4 border-t">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handlePrevChallenge}
+                >
+                  ← Previous
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                  {currentIndex + 1} / {challenges.length}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleNextChallenge}
+                >
+                  Next →
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

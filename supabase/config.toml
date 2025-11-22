@@ -17,3 +17,7 @@ verify_jwt = true
 
 [functions.fetch-opportunities]
 verify_jwt = false
+
+[functions.fetch-user-challenges]
+verify_jwt = true
+
