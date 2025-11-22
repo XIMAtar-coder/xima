@@ -12,18 +12,44 @@ serve(async (req) => {
   }
 
   try {
-    const { file_url, lang = "it", user_id } = await req.json();
+    // Initialize Supabase client with user's auth context
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    
+    // Get authorization header from request
+    const authHeader = req.headers.get("authorization");
+    
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: authHeader ? { authorization: authHeader } : {},
+      },
+    });
+
+    // Verify user is authenticated
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      console.error("Authentication failed:", authError);
+      return new Response(
+        JSON.stringify({
+          error: "Authentication required. Please log in and try again.",
+        }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    console.log("Authenticated user:", user.id);
+
+    const { file_url, lang = "it" } = await req.json();
 
     if (!file_url) {
       throw new Error("file_url is required");
     }
 
     console.log("Analyzing CV from URL:", file_url);
-
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Fetch the file
     const fileResponse = await fetch(file_url);
@@ -138,32 +164,51 @@ Base the pillar scores (0-100) on:
       throw new Error("Failed to parse AI analysis response");
     }
 
-    // Save to database
-    const { data: savedAnalysis, error: dbError } = await supabase
+    // Save to database - Update profiles table with CV scores
+    const { data: updatedProfile, error: dbError } = await supabase
+      .from("profiles")
+      .update({
+        cv_scores: analysis.pillar_vector,
+      })
+      .eq("user_id", user.id)
+      .select("cv_scores")
+      .single();
+
+    if (dbError) {
+      console.error("Database error:", dbError);
+      return new Response(
+        JSON.stringify({
+          error: `Failed to save CV analysis: ${dbError.message}. Please ensure you're logged in.`,
+        }),
+        {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Also save detailed analysis to assessment_cv_analysis for historical records
+    await supabase
       .from("assessment_cv_analysis")
       .insert({
-        user_id: user_id,
-        cv_text: cvText.substring(0, 5000), // Store first 5000 chars
+        user_id: user.id,
+        cv_text: cvText.substring(0, 5000),
         summary: analysis.summary,
         strengths: analysis.strengths,
         soft_skills: analysis.soft_skills,
         pillar_vector: analysis.pillar_vector,
         ximatar_suggestions: analysis.ximatar_suggestions,
-      })
-      .select()
-      .single();
+      });
 
-    if (dbError) {
-      console.error("Database error:", dbError);
-      throw new Error(`Failed to save analysis: ${dbError.message}`);
-    }
-
-    console.log("Analysis saved successfully");
+    console.log("CV analysis saved successfully for user:", user.id);
 
     return new Response(
       JSON.stringify({
         success: true,
-        analysis: savedAnalysis,
+        cv_scores: updatedProfile.cv_scores,
+        summary: analysis.summary,
+        strengths: analysis.strengths,
+        soft_skills: analysis.soft_skills,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -171,12 +216,18 @@ Base the pillar scores (0-100) on:
     );
   } catch (error) {
     console.error("Error in analyze-cv function:", error);
+    
+    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+    const statusCode = errorMessage.includes("Authentication") ? 401 : 
+                       errorMessage.includes("save") || errorMessage.includes("update") ? 403 : 500;
+    
     return new Response(
       JSON.stringify({
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: errorMessage,
+        details: "If this persists, please try logging out and back in, or contact support.",
       }),
       {
-        status: 500,
+        status: statusCode,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
