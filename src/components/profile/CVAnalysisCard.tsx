@@ -65,10 +65,10 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
     setUploadError(null);
 
     try {
-      // Upload to Supabase Storage
+      // Upload to Supabase Storage with proper folder structure
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user?.id}-${Date.now()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `${user?.id}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('cv-uploads')
