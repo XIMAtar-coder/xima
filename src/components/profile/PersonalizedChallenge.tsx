@@ -54,17 +54,21 @@ export const PersonalizedChallenge: React.FC<PersonalizedChallengeProps> = ({
         });
 
         if (error) {
-          throw error;
+          console.error('Edge function error:', error);
+          // Don't show error to user, just show no challenges
+          setChallenges([]);
+          setLoading(false);
+          return;
         }
 
-        if (data?.success && data?.challenges) {
-          setChallenges(data.challenges);
+        if (data?.success) {
+          setChallenges(data.challenges || []);
         } else {
           setChallenges([]);
         }
       } catch (error: any) {
         console.error('Error fetching challenges:', error);
-        setError(error.message || 'Failed to load challenges');
+        // Don't display error, just show no challenges available
         setChallenges([]);
       } finally {
         setLoading(false);
@@ -88,22 +92,6 @@ export const PersonalizedChallenge: React.FC<PersonalizedChallengeProps> = ({
     }
   };
 
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            {t('profile.challenge_for_you', 'Challenge for You')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
-        </CardContent>
-      </Card>
-    );
-  }
-
   const currentChallenge = challenges[currentIndex];
 
   return (
@@ -122,8 +110,6 @@ export const PersonalizedChallenge: React.FC<PersonalizedChallengeProps> = ({
           <div className="flex justify-center py-8">
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
           </div>
-        ) : error ? (
-          <p className="text-muted-foreground text-center py-4">{error}</p>
         ) : challenges.length === 0 ? (
           <p className="text-muted-foreground text-center py-4">
             {t('profile.no_challenges', 'Nessuna sfida disponibile questa settimana. Controlla più tardi!')}
