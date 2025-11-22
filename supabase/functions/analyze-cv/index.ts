@@ -66,14 +66,30 @@ serve(async (req) => {
 
     console.log("Analyzing CV from URL:", file_url);
 
-    // Fetch the file
-    const fileResponse = await fetch(file_url);
-    if (!fileResponse.ok) {
-      throw new Error(`Failed to fetch CV file: ${fileResponse.statusText}`);
+    // Extract file path from URL (format: .../storage/v1/object/public/cv-uploads/user_id/filename)
+    const urlParts = file_url.split('/cv-uploads/');
+    if (urlParts.length !== 2) {
+      throw new Error("Invalid file URL format");
+    }
+    const filePath = urlParts[1];
+    console.log("Extracted file path:", filePath);
+
+    // Download file from storage using service role client
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const serviceSupabase = createClient(supabaseUrl, serviceRoleKey);
+    
+    const { data: fileData, error: downloadError } = await serviceSupabase.storage
+      .from('cv-uploads')
+      .download(filePath);
+
+    if (downloadError || !fileData) {
+      console.error("Failed to download CV:", downloadError);
+      throw new Error(`Failed to download CV file: ${downloadError?.message || 'Unknown error'}`);
     }
 
-    const fileBuffer = await fileResponse.arrayBuffer();
-    const fileName = file_url.split("/").pop() || "cv.pdf";
+    console.log("Successfully downloaded CV file");
+    const fileBuffer = await fileData.arrayBuffer();
+    const fileName = filePath.split("/").pop() || "cv.pdf";
     
     // Extract text based on file type
     let cvText = "";
