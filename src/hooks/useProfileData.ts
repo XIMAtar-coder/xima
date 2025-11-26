@@ -112,6 +112,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select(`
+            id,
             full_name,
             name,
             ximatar,
@@ -139,12 +140,20 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           return;
         }
 
+        // Get profile ID for mentor_matches query
+        const profileId = profile?.id;
+        if (!profileId) {
+          console.error('[useProfileData] No profile ID found');
+          setState((prev) => ({ ...prev, isLoading: false, error: 'Profile not found' }));
+          return;
+        }
+
         // 2) Related data in parallel
         const [mentorMatchRes, openRespRes, latestResultRes, cvAnalysisRes] = await Promise.all([
           supabase
             .from('mentor_matches')
             .select('mentor_user_id')
-            .eq('mentee_user_id', user.id)
+            .eq('mentee_user_id', profileId)
             .order('created_at', { ascending: false })
             .limit(1)
             .maybeSingle(),
