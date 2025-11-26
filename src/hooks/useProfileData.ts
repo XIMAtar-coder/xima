@@ -171,10 +171,12 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             .maybeSingle(),
         ]);
 
-        const mentor_user_id = mentorMatchRes.data?.mentor_user_id || null;
+        const mentor_profile_id = mentorMatchRes.data?.mentor_user_id || null;
 
         // Optionally fetch mentor profile details if we have a match
         let mentor_profile: MentorProfile | null = null;
+        let mentor_user_id: string | null = null;
+        
         if (profile?.mentor) {
           const m = profile.mentor as any;
           mentor_profile = {
@@ -183,27 +185,38 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             avatar_url: m?.avatar_url ?? m?.profile_image_url ?? null,
             calendar_url: m?.calendar_url ?? null,
           };
-        } else if (mentor_user_id) {
-          const [mentorsRes, professionalsRes] = await Promise.all([
-            supabase
-              .from('mentors')
-              .select('name, bio, profile_image_url')
-              .eq('user_id', mentor_user_id)
-              .limit(1)
-              .maybeSingle(),
-            supabase
-              .from('professionals')
-              .select('calendar_url, full_name, avatar_path')
-              .eq('user_id', mentor_user_id)
-              .limit(1)
-              .maybeSingle(),
-          ]);
-          mentor_profile = {
-            name: mentorsRes.data?.name || professionalsRes.data?.full_name || '',
-            bio: mentorsRes.data?.bio || null,
-            avatar_url: mentorsRes.data?.profile_image_url || professionalsRes.data?.avatar_path || null,
-            calendar_url: professionalsRes.data?.calendar_url || null,
-          };
+        } else if (mentor_profile_id) {
+          // First get the auth user_id from the mentor's profile
+          const { data: mentorProfileData } = await supabase
+            .from('profiles')
+            .select('user_id')
+            .eq('id', mentor_profile_id)
+            .maybeSingle();
+          
+          mentor_user_id = mentorProfileData?.user_id || null;
+          
+          if (mentor_user_id) {
+            const [mentorsRes, professionalsRes] = await Promise.all([
+              supabase
+                .from('mentors')
+                .select('name, bio, profile_image_url')
+                .eq('user_id', mentor_user_id)
+                .limit(1)
+                .maybeSingle(),
+              supabase
+                .from('professionals')
+                .select('calendar_url, full_name, avatar_path')
+                .eq('user_id', mentor_user_id)
+                .limit(1)
+                .maybeSingle(),
+            ]);
+            mentor_profile = {
+              name: mentorsRes.data?.name || professionalsRes.data?.full_name || '',
+              bio: mentorsRes.data?.bio || null,
+              avatar_url: mentorsRes.data?.profile_image_url || professionalsRes.data?.avatar_path || null,
+              calendar_url: professionalsRes.data?.calendar_url || null,
+            };
+          }
         }
 
         // Normalize pillars from profile
