@@ -40,30 +40,29 @@ serve(async (req) => {
 
     console.log('[fetch-mentor-availability] User authenticated:', user.id);
 
-    // Get user's assigned mentor from mentor_matches
-    const { data: mentorMatch, error: matchError } = await supabase
-      .from('mentor_matches')
-      .select(`
-        mentor_user_id,
-        mentors!mentor_matches_mentor_user_id_fkey(id, name, profile_image_url, title, bio)
-      `)
-      .eq('mentee_user_id', user.id)
+    // Get user's profile to extract mentor info from profiles.mentor JSONB field
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('mentor, id')
+      .eq('user_id', user.id)
       .maybeSingle();
 
-    if (matchError) {
-      console.error('[fetch-mentor-availability] Match error:', matchError);
+    if (profileError || !profile) {
+      console.error('[fetch-mentor-availability] Profile error:', profileError);
       return new Response(
         JSON.stringify({ 
           success: true, 
           slots: [], 
-          message: "Error fetching mentor data" 
+          message: "Error fetching profile data" 
         }), 
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    if (!mentorMatch) {
-      console.log('[fetch-mentor-availability] No mentor assigned');
+    const mentorData = profile.mentor as any;
+    
+    if (!mentorData || !mentorData.id) {
+      console.log('[fetch-mentor-availability] No mentor assigned in profile');
       return new Response(
         JSON.stringify({ 
           success: true, 
@@ -75,23 +74,29 @@ serve(async (req) => {
       );
     }
 
-    const mentorInfo = mentorMatch.mentors as any;
-    const mentorId = mentorInfo?.id;
+    const mentorId = mentorData.id;
+    console.log('[fetch-mentor-availability] Mentor found:', mentorId);
 
-    if (!mentorId) {
-      console.log('[fetch-mentor-availability] Mentor ID not found');
-      return new Response(
-        JSON.stringify({ 
-          success: true, 
-          slots: [], 
-          mentor: null,
-          message: "Mentor data incomplete" 
-        }), 
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    // Fetch full mentor details from mentors table
+    const { data: mentorDetails, error: mentorError } = await supabase
+      .from('mentors')
+      .select('id, name, profile_image_url, title, bio')
+      .eq('id', mentorId)
+      .maybeSingle();
+
+    if (mentorError) {
+      console.error('[fetch-mentor-availability] Mentor details error:', mentorError);
     }
 
-    console.log('[fetch-mentor-availability] Mentor found:', mentorId);
+    const mentorInfo = mentorDetails || {
+      id: mentorId,
+      name: mentorData.name,
+      title: mentorData.title,
+      bio: mentorData.locale_bio?.en || mentorData.bio,
+      profile_image_url: mentorData.avatar_url
+    };
+
+    console.log('[fetch-mentor-availability] Mentor info:', mentorInfo.name);
 
     // Fetch available slots (not booked) for the next 30 days
     const now = new Date();

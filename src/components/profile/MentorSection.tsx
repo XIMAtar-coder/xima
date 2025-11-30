@@ -74,25 +74,45 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
   const fetchAvailability = async () => {
     setIsLoadingSlots(true);
     try {
+      console.log('[MentorSection] Fetching availability for mentor:', displayName);
+      
       const { data, error } = await supabase.functions.invoke('fetch-mentor-availability', {
         headers: {
           Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
         },
       });
 
+      console.log('[MentorSection] Availability response:', { data, error });
+
       if (error) {
-        console.error('Error fetching availability:', error);
+        console.error('[MentorSection] Error fetching availability:', error);
+        toast({
+          title: t('common.error'),
+          description: t('profile.error_fetching_slots', 'Error fetching availability'),
+          variant: 'destructive',
+        });
         return;
       }
 
       if (data?.success) {
+        console.log('[MentorSection] Slots received:', data.slots?.length || 0);
         setSlots(data.slots || []);
         if (data.mentor) {
           setMentorInfo(data.mentor);
         }
+        
+        // If no slots, show message
+        if (data.message && (!data.slots || data.slots.length === 0)) {
+          console.log('[MentorSection] No slots message:', data.message);
+        }
       }
     } catch (error) {
-      console.error('Error fetching availability:', error);
+      console.error('[MentorSection] Exception fetching availability:', error);
+      toast({
+        title: t('common.error'),
+        description: t('profile.error_fetching_slots', 'Error fetching availability'),
+        variant: 'destructive',
+      });
     } finally {
       setIsLoadingSlots(false);
     }
@@ -285,10 +305,16 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
             {isLoadingSlots ? (
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                <p className="text-sm text-muted-foreground ml-2">
+                  {t('profile.loading_availability', 'Loading availability...')}
+                </p>
               </div>
             ) : slots.length === 0 ? (
               <div className="text-center py-8 space-y-4">
                 <p className="text-muted-foreground">{t('profile.no_slots_available', 'No available slots at the moment')}</p>
+                <Button onClick={fetchAvailability} variant="outline" size="sm">
+                  {t('profile.retry', 'Retry')}
+                </Button>
                 {bookingLink && (
                   <Button asChild variant="outline">
                     <a href={bookingLink} target="_blank" rel="noopener noreferrer">

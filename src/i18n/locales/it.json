@@ -700,7 +700,17 @@
      "external_booking": "Prenota tramite calendario esterno",
      "view_full_calendar": "Visualizza calendario completo",
      "select_date": "Seleziona una data per visualizzare gli slot disponibili",
-     "no_slots_for_date": "Nessuno slot disponibile per questa data"
+     "no_slots_for_date": "Nessuno slot disponibile per questa data",
+     "loading_availability": "Caricamento disponibilità...",
+     "retry": "Riprova",
+     "error_fetching_slots": "Errore nel recupero della disponibilità",
+     "booking_failed": "Prenotazione fallita",
+     "booking_success": "Prenotazione confermata!",
+     "booking_success_desc": "La tua sessione di mentoring è stata programmata con successo",
+     "booking_with": "Stai prenotando una sessione con",
+     "duration_15": "Durata: 15 minuti",
+     "booking": "Prenotazione...",
+     "confirm": "Conferma Prenotazione"
    },
   "results": {
     "title": "I Tuoi Risultati",
