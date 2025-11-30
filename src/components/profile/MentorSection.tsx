@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, ExternalLink, Loader2, Clock, CheckCircle2 } from 'lucide-react';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { Calendar, ExternalLink, Loader2, Clock, CheckCircle2, Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -58,6 +59,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
   const [isBooking, setIsBooking] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   const displayName = mentor?.full_name || mentor?.name || '';
   const photoUrl = mentor?.photo_url || mentor?.avatar_url || undefined;
@@ -166,15 +168,37 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
     return date.toLocaleDateString('it-IT', { weekday: 'long', month: 'long', day: 'numeric' });
   };
 
-  // Group slots by date
-  const slotsByDate = slots.reduce((acc, slot) => {
-    const date = new Date(slot.start_time).toDateString();
-    if (!acc[date]) {
-      acc[date] = [];
+  // Get dates that have available slots
+  const datesWithSlots = slots.reduce((acc, slot) => {
+    const date = new Date(slot.start_time);
+    date.setHours(0, 0, 0, 0);
+    const dateStr = date.toDateString();
+    if (!acc.includes(dateStr)) {
+      acc.push(dateStr);
     }
-    acc[date].push(slot);
     return acc;
-  }, {} as Record<string, Slot[]>);
+  }, [] as string[]);
+
+  // Filter slots for selected date
+  const slotsForSelectedDate = selectedDate
+    ? slots.filter((slot) => {
+        const slotDate = new Date(slot.start_time);
+        slotDate.setHours(0, 0, 0, 0);
+        const selected = new Date(selectedDate);
+        selected.setHours(0, 0, 0, 0);
+        return slotDate.getTime() === selected.getTime();
+      })
+    : [];
+
+  // Disable dates that don't have slots
+  const disabledDates = (date: Date) => {
+    const dateStr = new Date(date).setHours(0, 0, 0, 0);
+    const hasSlot = datesWithSlots.some((slotDateStr) => {
+      const slotDate = new Date(slotDateStr).setHours(0, 0, 0, 0);
+      return slotDate === dateStr;
+    });
+    return !hasSlot || date < new Date(new Date().setHours(0, 0, 0, 0));
+  };
 
   if (!mentor) {
     return (
@@ -204,34 +228,57 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Mentor Info */}
-          <div className="flex items-start gap-4">
-            <Avatar className="h-16 w-16">
-              <AvatarImage src={photoUrl} alt={displayName || t('profile.your_mentor')} />
-              <AvatarFallback>{(displayName || '?').charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              {displayName && (
-                <h3 className="font-semibold text-lg">{displayName}</h3>
-              )}
-              {mentor?.role && (
-                <p className="text-sm text-muted-foreground mt-1">{mentor.role}</p>
-              )}
-              {mentor?.bio && (
-                <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{mentor.bio}</p>
-              )}
+          {/* Mentor Summary Panel */}
+          <div className="border border-border rounded-lg p-4 bg-muted/30">
+            <div className="flex items-start gap-4 mb-4">
+              <Avatar className="h-16 w-16 border-2 border-primary/20">
+                <AvatarImage src={photoUrl} alt={displayName || t('profile.your_mentor')} />
+                <AvatarFallback className="bg-primary/10 text-primary">{(displayName || '?').charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1">
+                {displayName && (
+                  <h3 className="font-semibold text-xl text-foreground">{displayName}</h3>
+                )}
+                {mentor?.role && (
+                  <p className="text-sm text-muted-foreground mt-1 font-medium">{mentor.role}</p>
+                )}
+              </div>
+            </div>
+            
+            {mentor?.bio && (
+              <div className="space-y-2">
+                <p className="text-sm text-foreground/90 leading-relaxed line-clamp-3">
+                  {mentor.bio}
+                </p>
+              </div>
+            )}
+            
+            {/* Key Strengths - Mock data, replace with actual mentor data when available */}
+            <div className="flex flex-wrap gap-2 mt-3">
+              <Badge variant="secondary" className="gap-1">
+                <Star className="h-3 w-3" />
+                Leadership
+              </Badge>
+              <Badge variant="secondary" className="gap-1">
+                <Star className="h-3 w-3" />
+                Communication
+              </Badge>
+              <Badge variant="secondary" className="gap-1">
+                <Star className="h-3 w-3" />
+                Strategy
+              </Badge>
             </div>
           </div>
 
-          {/* Available Slots */}
+          {/* Booking Calendar */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h4 className="font-medium flex items-center gap-2">
                 <Clock className="h-4 w-4" />
-                {t('profile.available_slots', 'Available Slots')} (15 min)
+                {t('profile.book_session', 'Book a Session')} (15 min)
               </h4>
               {slots.length > 0 && (
-                <Badge variant="secondary">{slots.length} available</Badge>
+                <Badge variant="secondary">{slots.length} slots available</Badge>
               )}
             </div>
 
@@ -240,10 +287,10 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
               </div>
             ) : slots.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <p>{t('profile.no_slots_available', 'No available slots at the moment')}</p>
+              <div className="text-center py-8 space-y-4">
+                <p className="text-muted-foreground">{t('profile.no_slots_available', 'No available slots at the moment')}</p>
                 {bookingLink && (
-                  <Button asChild variant="outline" className="mt-4">
+                  <Button asChild variant="outline">
                     <a href={bookingLink} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="mr-2 h-4 w-4" />
                       {t('profile.external_booking', 'Book via external calendar')}
@@ -252,14 +299,41 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
                 )}
               </div>
             ) : (
-              <div className="space-y-4 max-h-96 overflow-y-auto">
-                {Object.entries(slotsByDate).slice(0, 7).map(([date, dateSlots]) => (
-                  <div key={date} className="space-y-2">
-                    <p className="text-sm font-medium text-muted-foreground">
-                      {formatDate(dateSlots[0].start_time)}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {dateSlots.map((slot) => (
+              <div className="space-y-4">
+                {/* Calendar Widget */}
+                <div className="border border-border rounded-lg p-4 bg-card">
+                  <CalendarComponent
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={setSelectedDate}
+                    disabled={disabledDates}
+                    className="mx-auto"
+                    modifiers={{
+                      available: (date) => {
+                        const dateStr = new Date(date).setHours(0, 0, 0, 0);
+                        return datesWithSlots.some((slotDateStr) => {
+                          const slotDate = new Date(slotDateStr).setHours(0, 0, 0, 0);
+                          return slotDate === dateStr;
+                        });
+                      },
+                    }}
+                    modifiersClassNames={{
+                      available: 'bg-primary/10 font-semibold',
+                    }}
+                  />
+                </div>
+
+                {/* Available Time Slots for Selected Date */}
+                {selectedDate && slotsForSelectedDate.length > 0 && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium">
+                        {formatDate(selectedDate.toISOString())}
+                      </p>
+                      <Badge variant="outline">{slotsForSelectedDate.length} available</Badge>
+                    </div>
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                      {slotsForSelectedDate.map((slot) => (
                         <Button
                           key={slot.id}
                           variant="outline"
@@ -272,7 +346,19 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
                       ))}
                     </div>
                   </div>
-                ))}
+                )}
+
+                {selectedDate && slotsForSelectedDate.length === 0 && (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    {t('profile.no_slots_for_date', 'No available slots for this date')}
+                  </p>
+                )}
+
+                {!selectedDate && (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    {t('profile.select_date', 'Select a date to view available time slots')}
+                  </p>
+                )}
               </div>
             )}
           </div>

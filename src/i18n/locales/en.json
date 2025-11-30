@@ -923,7 +923,12 @@
      "view_opportunity": "View Opportunity",
      "match": "Match",
      "refresh": "Refresh",
-     "loading": "Loading..."
+     "loading": "Loading...",
+     "no_slots_available": "No available slots at the moment",
+     "external_booking": "Book via external calendar",
+     "view_full_calendar": "View full calendar",
+     "select_date": "Select a date to view available time slots",
+     "no_slots_for_date": "No available slots for this date"
    },
    "chat": {
      "title": "XIMA Chat", 
