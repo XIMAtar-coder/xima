@@ -182,11 +182,12 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
 
         const mentor_profile_id = mentorMatchRes.data?.mentor_user_id || null;
 
-        // Optionally fetch mentor profile details if we have a match
+        // Fetch mentor profile details
         let mentor_profile: MentorProfile | null = null;
         let mentor_user_id: string | null = null;
         
         if (profile?.mentor) {
+          // Use cached mentor data from profile
           const m = profile.mentor as any;
           mentor_profile = {
             name: m?.name ?? '',
@@ -194,37 +195,34 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             avatar_url: m?.avatar_url ?? m?.profile_image_url ?? null,
             calendar_url: m?.calendar_url ?? null,
           };
+          console.log('[useProfileData] Using cached mentor from profile:', mentor_profile.name);
         } else if (mentor_profile_id) {
-          // First get the auth user_id from the mentor's profile
-          const { data: mentorProfileData } = await supabase
-            .from('profiles')
-            .select('user_id')
+          // Fetch from professionals table (mentor_profile_id is actually the professional.id)
+          console.log('[useProfileData] Fetching mentor from professionals:', mentor_profile_id);
+          const { data: professionalData, error: profError } = await supabase
+            .from('professionals')
+            .select('id, user_id, full_name, title, avatar_path, calendar_url, locale_bio, specialties, xima_pillars')
             .eq('id', mentor_profile_id)
             .maybeSingle();
           
-          mentor_user_id = mentorProfileData?.user_id || null;
-          
-          if (mentor_user_id) {
-            const [mentorsRes, professionalsRes] = await Promise.all([
-              supabase
-                .from('mentors')
-                .select('name, bio, profile_image_url')
-                .eq('user_id', mentor_user_id)
-                .limit(1)
-                .maybeSingle(),
-              supabase
-                .from('professionals')
-                .select('calendar_url, full_name, avatar_path')
-                .eq('user_id', mentor_user_id)
-                .limit(1)
-                .maybeSingle(),
-            ]);
+          if (profError) {
+            console.error('[useProfileData] Error fetching professional:', profError);
+          } else if (professionalData) {
+            console.log('[useProfileData] Found professional:', professionalData.full_name);
+            mentor_user_id = professionalData.user_id;
+            
+            // Extract bio for current language (default to 'it')
+            const localeBio = professionalData.locale_bio as any;
+            const bio = localeBio?.it || localeBio?.en || null;
+            
             mentor_profile = {
-              name: mentorsRes.data?.name || professionalsRes.data?.full_name || '',
-              bio: mentorsRes.data?.bio || null,
-              avatar_url: mentorsRes.data?.profile_image_url || professionalsRes.data?.avatar_path || null,
-              calendar_url: professionalsRes.data?.calendar_url || null,
+              name: professionalData.full_name || '',
+              bio: bio,
+              avatar_url: professionalData.avatar_path || null,
+              calendar_url: professionalData.calendar_url || null,
             };
+          } else {
+            console.warn('[useProfileData] Professional not found for ID:', mentor_profile_id);
           }
         }
 

@@ -1289,20 +1289,6 @@ export type Database = {
             referencedRelation: "v_dashboard"
             referencedColumns: ["user_id"]
           },
-          {
-            foreignKeyName: "mentor_matches_mentor_user_id_fkey"
-            columns: ["mentor_user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mentor_matches_mentor_user_id_fkey"
-            columns: ["mentor_user_id"]
-            isOneToOne: false
-            referencedRelation: "v_dashboard"
-            referencedColumns: ["user_id"]
-          },
         ]
       }
       mentors: {
@@ -1485,6 +1471,7 @@ export type Database = {
           title: string | null
           updated_at: string | null
           user_id: string | null
+          xima_pillars: string[] | null
         }
         Insert: {
           avatar_path?: string | null
@@ -1501,6 +1488,7 @@ export type Database = {
           title?: string | null
           updated_at?: string | null
           user_id?: string | null
+          xima_pillars?: string[] | null
         }
         Update: {
           avatar_path?: string | null
@@ -1517,6 +1505,7 @@ export type Database = {
           title?: string | null
           updated_at?: string | null
           user_id?: string | null
+          xima_pillars?: string[] | null
         }
         Relationships: [
           {
