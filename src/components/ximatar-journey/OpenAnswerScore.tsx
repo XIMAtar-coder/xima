@@ -44,7 +44,7 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
       )}
 
       {expanded && (
-        <div className="space-y-2 pt-2 border-t">
+        <div className="space-y-4 pt-2 border-t">
           <p className="text-xs font-medium text-muted-foreground mb-2">
             {t('open_scoring.rubric_breakdown')}
           </p>
@@ -76,6 +76,30 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
               max={15}
             />
           </div>
+
+          {rubric.steveJobsExplanation && (
+            <div className="pt-3 border-t space-y-2">
+              <p className="text-xs font-semibold text-[#2C6CFF]">
+                {t('open_scoring.expert_insight')}
+              </p>
+              <p className="text-sm italic text-foreground leading-relaxed">
+                "{rubric.steveJobsExplanation}"
+              </p>
+            </div>
+          )}
+
+          {rubric.improvementSuggestions && rubric.improvementSuggestions.length > 0 && (
+            <div className="pt-3 border-t space-y-2">
+              <p className="text-xs font-semibold text-muted-foreground">
+                {t('open_scoring.suggestions')}
+              </p>
+              <ul className="text-sm space-y-1.5 list-disc list-inside text-foreground">
+                {rubric.improvementSuggestions.map((suggestion, idx) => (
+                  <li key={idx} className="leading-relaxed">{suggestion}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <p className="text-xs text-muted-foreground pt-2 border-t">
             {t('open_scoring.note')}

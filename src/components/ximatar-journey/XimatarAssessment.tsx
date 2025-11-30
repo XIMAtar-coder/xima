@@ -193,27 +193,69 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
         return;
       }
       
-      // 1. Score and persist open answers
-      const openResponses = (['open1', 'open2'] as const).map(openKey => {
-        const answer = openAnswers[openKey] || '';
-        const rubric = scoreOpenResponse({ 
-          text: answer, 
-          field: fieldKey, 
-          language, 
-          openKey 
-        });
-        
-        return {
-          user_id: user.id,
-          attempt_id: attemptId,
-          field_key: fieldKey,
-          language,
-          open_key: openKey,
-          answer,
-          score: rubric.total,
-          rubric
-        };
-      });
+      // 1. Score and persist open answers using AI
+      const openResponses = await Promise.all(
+        (['open1', 'open2'] as const).map(async (openKey) => {
+          const answer = openAnswers[openKey] || '';
+          
+          // Call edge function to analyze with Lovable AI
+          const { data: aiResult, error: aiError } = await supabase.functions.invoke(
+            'analyze-open-answer',
+            {
+              body: {
+                text: answer,
+                field: fieldKey,
+                language,
+                openKey
+              }
+            }
+          );
+
+          if (aiError) {
+            console.error('AI analysis error:', aiError);
+            // Fallback to local scoring if AI fails
+            const fallbackRubric = scoreOpenResponse({
+              text: answer,
+              field: fieldKey,
+              language,
+              openKey
+            });
+            
+            return {
+              user_id: user.id,
+              attempt_id: attemptId,
+              field_key: fieldKey,
+              language,
+              open_key: openKey,
+              answer,
+              score: fallbackRubric.total,
+              rubric: fallbackRubric
+            };
+          }
+
+          const rubric = {
+            length: aiResult.score_breakdown.length,
+            relevance: aiResult.score_breakdown.relevance,
+            structure: aiResult.score_breakdown.structure,
+            specificity: aiResult.score_breakdown.specificity,
+            action: aiResult.score_breakdown.action,
+            total: aiResult.score_total,
+            steveJobsExplanation: aiResult.steve_jobs_explanation,
+            improvementSuggestions: aiResult.improvement_suggestions
+          };
+
+          return {
+            user_id: user.id,
+            attempt_id: attemptId,
+            field_key: fieldKey,
+            language,
+            open_key: openKey,
+            answer: aiResult.cleaned_text || answer,
+            score: rubric.total,
+            rubric
+          };
+        })
+      );
 
       const { error: openError } = await supabase
         .from('assessment_open_responses')

@@ -8,6 +8,8 @@ export type Rubric = {
   specificity: number;  // 0–20
   action: number;       // 0–15
   total: number;        // 0–100
+  steveJobsExplanation?: string;  // Steve Jobs-style feedback
+  improvementSuggestions?: string[];  // Concrete improvement tips
 };
 
 const FIELD_KEYWORDS: Record<FieldKey, string[]> = {
