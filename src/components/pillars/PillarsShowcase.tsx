@@ -117,8 +117,13 @@ export function PillarsShowcase() {
             const name = t(`pillars.items.${pillar}.name`);
             const tagline = t(`pillars.items.${pillar}.tagline`);
             const description = t(`pillars.items.${pillar}.description`);
-            const howWeEval = t(`pillars.items.${pillar}.how_we_evaluate`, { returnObjects: true }) as string[];
-            const tips = t(`pillars.items.${pillar}.tips`, { returnObjects: true }) as string[];
+            
+            // Safely get arrays with fallback to empty array
+            const howWeEvalRaw = t(`pillars.items.${pillar}.how_we_evaluate`, { returnObjects: true });
+            const howWeEval = Array.isArray(howWeEvalRaw) ? howWeEvalRaw : [];
+            
+            const tipsRaw = t(`pillars.items.${pillar}.tips`, { returnObjects: true });
+            const tips = Array.isArray(tipsRaw) ? tipsRaw : [];
 
             return (
               <Card
