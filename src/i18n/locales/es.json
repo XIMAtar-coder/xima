@@ -61,14 +61,19 @@
     "development_plan": "Plan de Desarrollo",
     "mentor_sessions": "Sesiones de Mentoría",
     "job_preferences": "Preferencias de Trabajo",
-    "drive_level_high": "Alta Motivación",
-    "drive_level_medium": "Motivación Media",
-    "drive_level_low": "Baja Motivación",
-    "change_photo": "Cambiar Foto",
-    "uploading": "Subiendo...",
-    "growth_area": "Área de Crecimiento",
-    "no_mentor_assigned": "Completa tu primera evaluación para recibir un mentor"
-  },
+     "drive_level_high": "Alta Motivación",
+     "drive_level_medium": "Motivación Media",
+     "drive_level_low": "Baja Motivación",
+     "change_photo": "Cambiar Foto",
+     "uploading": "Subiendo...",
+     "growth_area": "Área de Crecimiento",
+     "no_mentor_assigned": "Completa tu primera evaluación para recibir un mentor",
+     "no_slots_available": "No hay espacios disponibles en este momento",
+     "external_booking": "Reservar mediante calendario externo",
+     "view_full_calendar": "Ver calendario completo",
+     "select_date": "Selecciona una fecha para ver los horarios disponibles",
+     "no_slots_for_date": "No hay espacios disponibles para esta fecha"
+   },
   "results": {
     "title": "Tus Resultados",
     "subtitle": "Aquí está tu evaluación completa de XIMAtar"
