@@ -852,6 +852,17 @@
     "step4": "Crece Profesionalmente",
     "step4_desc": "Desarrolla tus habilidades con planes de desarrollo personalizados."
   },
+  "journey": {
+    "title": "Tu Viaje Ximatar",
+    "subtitle": "Descubre tus fortalezas profesionales a través de nuestra evaluación integral",
+    "step": "Paso",
+    "step_1": "Análisis de CV",
+    "step_2": "Crea Tu Ximatar",
+    "step_3": "Obtén Tus Resultados",
+    "step_4": "Comienza Tu Viaje",
+    "back": "Atrás",
+    "choose_mentor_required": "Elige tu mentor para continuar"
+  },
   "ximatar_journey": {
     "title": "Tu Viaje XIMAtar",
     "baseline_assessment": "Evaluación Inicial",

@@ -858,7 +858,8 @@
     "step_2": "Crea il Tuo Ximatar",
     "step_3": "Ricevi i Tuoi Risultati",
     "step_4": "Inizia il Tuo Viaggio",
-    "back": "Indietro"
+    "back": "Indietro",
+    "choose_mentor_required": "Scegli il tuo mentore per continuare"
   },
   "login": {
     "title": "Bentornato",
