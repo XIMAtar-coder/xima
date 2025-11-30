@@ -44,8 +44,25 @@ const Risultati = () => {
     fetchPreferredField();
   }, [user]);
 
-  const handleProfessionalSelect = (professional: any) => {
+  const handleProfessionalSelect = async (professional: any) => {
     setSelectedProfessional(professional);
+    
+    // Call assign-mentor edge function to create the mentor match
+    if (user?.id) {
+      try {
+        const { data, error } = await supabase.functions.invoke('assign-mentor', {
+          body: { professional_id: professional.id },
+        });
+        
+        if (error) {
+          console.error('[Risultati] Error assigning mentor:', error);
+        } else if (data?.success) {
+          console.log('[Risultati] Mentor assigned successfully:', data.mentor);
+        }
+      } catch (error) {
+        console.error('[Risultati] Failed to assign mentor:', error);
+      }
+    }
   };
 
   const handleProceed = async () => {
