@@ -27,3 +27,5 @@ verify_jwt = true
 [functions.schedule-mentor-meeting]
 verify_jwt = true
 
+[functions.assign-mentor]
+verify_jwt = true

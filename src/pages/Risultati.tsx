@@ -45,14 +45,20 @@ const Risultati = () => {
   }, [user]);
 
   const handleProfessionalSelect = async (professional: any) => {
+    console.log('[Risultati] Professional selected:', professional);
+    console.log('[Risultati] user?.id:', user?.id);
+    
     setSelectedProfessional(professional);
     
     // Call assign-mentor edge function to create the mentor match
     if (user?.id) {
+      console.log('[Risultati] Calling assign-mentor edge function...');
       try {
         const { data, error } = await supabase.functions.invoke('assign-mentor', {
           body: { professional_id: professional.id },
         });
+        
+        console.log('[Risultati] Edge function response:', { data, error });
         
         if (error) {
           console.error('[Risultati] Error assigning mentor:', error);
@@ -62,6 +68,8 @@ const Risultati = () => {
       } catch (error) {
         console.error('[Risultati] Failed to assign mentor:', error);
       }
+    } else {
+      console.log('[Risultati] Not calling edge function - no user ID');
     }
   };
 
