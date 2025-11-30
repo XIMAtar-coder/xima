@@ -280,9 +280,26 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     }
   }, [showResults, user]);
 
-  const handleProfessionalSelect = (professional: any) => {
+  const handleProfessionalSelect = async (professional: any) => {
     setSelectedProfessional(professional.id);
     localStorage.setItem('selected_professional_data', JSON.stringify(professional));
+    
+    // Call assign-mentor edge function to create the mentor match
+    if (isAuthenticated && user?.id) {
+      try {
+        const { data, error } = await supabase.functions.invoke('assign-mentor', {
+          body: { professional_id: professional.id },
+        });
+        
+        if (error) {
+          console.error('[ResultsComparison] Error assigning mentor:', error);
+        } else if (data?.success) {
+          console.log('[ResultsComparison] Mentor assigned successfully:', data.mentor);
+        }
+      } catch (error) {
+        console.error('[ResultsComparison] Failed to assign mentor:', error);
+      }
+    }
   };
 
   const handleProceedWithSelection = () => {
