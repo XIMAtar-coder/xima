@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('[assign-mentor] Assigning professional:', professional_id);
+    console.log('[assign-mentor] Assigning mentor:', professional_id);
 
     // Create admin client for system operations (bypasses RLS)
     const supabaseAdmin = createClient(
@@ -84,25 +84,26 @@ Deno.serve(async (req) => {
 
     console.log('[assign-mentor] User profile ID:', profile.id);
 
-    // Verify professional exists (using admin client)
-    const { data: professional, error: professionalError } = await supabaseAdmin
-      .from('professionals')
-      .select('id, user_id, full_name, title, avatar_path, calendar_url, locale_bio, specialties, xima_pillars')
+    // Verify mentor exists in unified mentors table
+    const { data: mentor, error: mentorError } = await supabaseAdmin
+      .from('mentors')
+      .select('id, user_id, name, title, profile_image_url, bio, specialties, xima_pillars')
       .eq('id', professional_id)
+      .eq('is_active', true)
       .single();
 
-    if (professionalError || !professional) {
-      console.error('[assign-mentor] Professional not found:', professionalError);
+    if (mentorError || !mentor) {
+      console.error('[assign-mentor] Mentor not found:', mentorError);
       return new Response(
-        JSON.stringify({ error: 'Professional not found' }),
+        JSON.stringify({ error: 'Mentor not found' }),
         { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log('[assign-mentor] Found professional:', professional.full_name);
+    console.log('[assign-mentor] Found mentor:', mentor.name);
 
-    // Use professional.id as mentor_user_id (since professionals.user_id may be null)
-    const mentorUserId = professional.id;
+    // Use mentor.id as mentor_user_id
+    const mentorUserId = mentor.id;
 
     // Check if mentor match already exists
     const { data: existingMatch } = await supabaseAdmin
@@ -119,10 +120,10 @@ Deno.serve(async (req) => {
         .update({
           mentor_user_id: mentorUserId,
           reason: {
-            professional_name: professional.full_name,
-            professional_id: professional.id,
-            specialties: professional.specialties,
-            xima_pillars: professional.xima_pillars,
+            mentor_name: mentor.name,
+            mentor_id: mentor.id,
+            specialties: mentor.specialties,
+            xima_pillars: mentor.xima_pillars,
             assigned_at: new Date().toISOString(),
           },
         })
@@ -145,10 +146,10 @@ Deno.serve(async (req) => {
           mentor_user_id: mentorUserId,
           assigned_by: 'user_selection',
           reason: {
-            professional_name: professional.full_name,
-            professional_id: professional.id,
-            specialties: professional.specialties,
-            xima_pillars: professional.xima_pillars,
+            mentor_name: mentor.name,
+            mentor_id: mentor.id,
+            specialties: mentor.specialties,
+            xima_pillars: mentor.xima_pillars,
             assigned_at: new Date().toISOString(),
           },
         });
@@ -162,19 +163,18 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Update profile's mentor field with professional data (using admin client)
+    // Update profile's mentor field with mentor data (using admin client)
     const { error: profileUpdateError } = await supabaseAdmin
       .from('profiles')
       .update({
         mentor: {
-          id: professional.id,
-          name: professional.full_name,
-          title: professional.title,
-          avatar_url: professional.avatar_path,
-          calendar_url: professional.calendar_url,
-          locale_bio: professional.locale_bio,
-          specialties: professional.specialties,
-          xima_pillars: professional.xima_pillars,
+          id: mentor.id,
+          name: mentor.name,
+          title: mentor.title,
+          avatar_url: mentor.profile_image_url,
+          bio: mentor.bio,
+          specialties: mentor.specialties,
+          xima_pillars: mentor.xima_pillars,
         },
       })
       .eq('id', profile.id);
@@ -184,19 +184,19 @@ Deno.serve(async (req) => {
       // Not critical, continue
     }
 
-    console.log('[assign-mentor] Successfully assigned mentor:', professional.full_name);
+    console.log('[assign-mentor] Successfully assigned mentor:', mentor.name);
 
     return new Response(
       JSON.stringify({
         success: true,
         mentor: {
-          id: professional.id,
-          name: professional.full_name,
-          title: professional.title,
-          avatar_url: professional.avatar_path,
-          calendar_url: professional.calendar_url,
-          specialties: professional.specialties,
-          xima_pillars: professional.xima_pillars,
+          id: mentor.id,
+          name: mentor.name,
+          title: mentor.title,
+          avatar_url: mentor.profile_image_url,
+          bio: mentor.bio,
+          specialties: mentor.specialties,
+          xima_pillars: mentor.xima_pillars,
         },
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

@@ -39,33 +39,34 @@ export default function FeaturedProfessionals({
     const fetchProfessionals = async () => {
       try {
         const { data, error } = await supabase
-          .from('professionals')
-          .select('*')
-          .order('compatibility_score', { ascending: false });
+          .from('mentors')
+          .select('id, name, title, bio, profile_image_url, specialties, xima_pillars, rating, experience_years, is_active, updated_at')
+          .eq('is_active', true)
+          .order('rating', { ascending: false });
 
         if (error) {
-          console.error('Error fetching professionals:', error);
+          console.error('Error fetching mentors:', error);
           return;
         }
         
         if (data && data.length > 0) {
-          // Map the data to ensure it has the right shape
-          const mapped = data.map((p: any) => ({
-            id: p.id,
-            full_name: p.full_name || p.title || 'Unknown',
-            title: p.title || '',
-            linkedin_url: p.linkedin_url || '',
-            avatar_path: p.avatar_path,
-            locale_bio: p.locale_bio || {},
-            expertise_tags: p.expertise_tags || [],
-            compatibility_score: p.compatibility_score || 90,
-            field_keys: p.field_keys || [],
-            updated_at: p.updated_at
+          // Map mentors to professional format for compatibility
+          const mapped = data.map((m: any) => ({
+            id: m.id,
+            full_name: m.name || 'Unknown',
+            title: m.title || '',
+            linkedin_url: '', // Not stored in mentors
+            avatar_path: m.profile_image_url,
+            locale_bio: { en: m.bio || '', it: m.bio || '', es: m.bio || '' },
+            expertise_tags: m.specialties || [],
+            compatibility_score: m.rating ? Math.round(m.rating * 20) : 90, // Convert 5-star to percentage
+            field_keys: m.xima_pillars || [],
+            updated_at: m.updated_at
           }));
           setProfessionals(mapped);
         }
       } catch (error) {
-        console.error('Error fetching professionals:', error);
+        console.error('Error fetching mentors:', error);
       } finally {
         setLoading(false);
       }

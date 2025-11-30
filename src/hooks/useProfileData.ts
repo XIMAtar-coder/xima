@@ -197,32 +197,28 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           };
           console.log('[useProfileData] Using cached mentor from profile:', mentor_profile.name);
         } else if (mentor_profile_id) {
-          // Fetch from professionals table (mentor_profile_id is actually the professional.id)
-          console.log('[useProfileData] Fetching mentor from professionals:', mentor_profile_id);
-          const { data: professionalData, error: profError } = await supabase
-            .from('professionals')
-            .select('id, user_id, full_name, title, avatar_path, calendar_url, locale_bio, specialties, xima_pillars')
+          // Fetch from unified mentors table
+          console.log('[useProfileData] Fetching mentor from mentors table:', mentor_profile_id);
+          const { data: mentorData, error: profError } = await supabase
+            .from('mentors')
+            .select('id, user_id, name, title, profile_image_url, bio, specialties, xima_pillars')
             .eq('id', mentor_profile_id)
             .maybeSingle();
           
           if (profError) {
-            console.error('[useProfileData] Error fetching professional:', profError);
-          } else if (professionalData) {
-            console.log('[useProfileData] Found professional:', professionalData.full_name);
-            mentor_user_id = professionalData.user_id;
-            
-            // Extract bio for current language (default to 'it')
-            const localeBio = professionalData.locale_bio as any;
-            const bio = localeBio?.it || localeBio?.en || null;
+            console.error('[useProfileData] Error fetching mentor:', profError);
+          } else if (mentorData) {
+            console.log('[useProfileData] Found mentor:', mentorData.name);
+            mentor_user_id = mentorData.user_id;
             
             mentor_profile = {
-              name: professionalData.full_name || '',
-              bio: bio,
-              avatar_url: professionalData.avatar_path || null,
-              calendar_url: professionalData.calendar_url || null,
+              name: mentorData.name || '',
+              bio: mentorData.bio || null,
+              avatar_url: mentorData.profile_image_url || null,
+              calendar_url: null, // Booking via availability slots
             };
           } else {
-            console.warn('[useProfileData] Professional not found for ID:', mentor_profile_id);
+            console.warn('[useProfileData] Mentor not found for ID:', mentor_profile_id);
           }
         }
 
