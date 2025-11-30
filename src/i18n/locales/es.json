@@ -72,7 +72,17 @@
      "external_booking": "Reservar mediante calendario externo",
      "view_full_calendar": "Ver calendario completo",
      "select_date": "Selecciona una fecha para ver los horarios disponibles",
-     "no_slots_for_date": "No hay espacios disponibles para esta fecha"
+     "no_slots_for_date": "No hay espacios disponibles para esta fecha",
+     "loading_availability": "Cargando disponibilidad...",
+     "retry": "Reintentar",
+     "error_fetching_slots": "Error al obtener disponibilidad",
+     "booking_failed": "Reserva fallida",
+     "booking_success": "¡Reserva confirmada!",
+     "booking_success_desc": "Tu sesión de mentoría ha sido programada exitosamente",
+     "booking_with": "Estás reservando una sesión con",
+     "duration_15": "Duración: 15 minutos",
+     "booking": "Reservando...",
+     "confirm": "Confirmar Reserva"
    },
   "results": {
     "title": "Tus Resultados",

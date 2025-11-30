@@ -928,7 +928,17 @@
      "external_booking": "Book via external calendar",
      "view_full_calendar": "View full calendar",
      "select_date": "Select a date to view available time slots",
-     "no_slots_for_date": "No available slots for this date"
+     "no_slots_for_date": "No available slots for this date",
+     "loading_availability": "Loading availability...",
+     "retry": "Retry",
+     "error_fetching_slots": "Error fetching availability",
+     "booking_failed": "Booking failed",
+     "booking_success": "Booking confirmed!",
+     "booking_success_desc": "Your mentoring session has been scheduled successfully",
+     "booking_with": "You are booking a session with",
+     "duration_15": "Duration: 15 minutes",
+     "booking": "Booking...",
+     "confirm": "Confirm Booking"
    },
    "chat": {
      "title": "XIMA Chat", 
