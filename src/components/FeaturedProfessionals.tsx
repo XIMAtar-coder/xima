@@ -23,11 +23,13 @@ type Professional = {
 export default function FeaturedProfessionals({ 
   limit = 3,
   onSelect,
-  fieldKey
+  fieldKey,
+  selectedId
 }: { 
   limit?: number;
   onSelect?: (professional: any) => void;
   fieldKey?: FieldKey;
+  selectedId?: string;
 }) {
   const { i18n, t } = useTranslation();
   const [professionals, setProfessionals] = useState<Professional[]>([]);
@@ -102,11 +104,19 @@ export default function FeaturedProfessionals({
           : '';
         const score = p.compatibility_score ?? 90;
         const avatarUrl = getAvatarUrl(p.avatar_path, p.updated_at);
+        const specialties = p.expertise_tags || [];
+        const ximaPillars = p.field_keys || [];
+        const isSelected = selectedId === p.id;
         
         return (
-          <Card key={p.id} className="p-6 flex flex-col gap-4">
+          <Card 
+            key={p.id} 
+            className={`p-6 flex flex-col gap-4 hover:shadow-lg transition-all ${
+              isSelected ? 'ring-2 ring-primary shadow-xl' : ''
+            }`}
+          >
             <div className="flex items-center gap-4">
-              <div className="relative h-14 w-14 rounded-full overflow-hidden bg-muted flex-shrink-0">
+              <div className="relative h-16 w-16 rounded-full overflow-hidden bg-muted flex-shrink-0 ring-2 ring-primary/20">
                 {avatarUrl ? (
                   <img
                     src={avatarUrl}
@@ -117,19 +127,19 @@ export default function FeaturedProfessionals({
                       (e.target as HTMLImageElement).style.display = 'none';
                       const parent = (e.target as HTMLImageElement).parentElement;
                       if (parent) {
-                        parent.innerHTML = '<div class="h-full w-full flex items-center justify-center text-muted-foreground text-xl">' + 
+                        parent.innerHTML = '<div class="h-full w-full flex items-center justify-center text-muted-foreground text-xl font-semibold">' + 
                           p.full_name.charAt(0) + '</div>';
                       }
                     }}
                   />
                 ) : (
-                  <div className="h-full w-full flex items-center justify-center text-muted-foreground text-xl">
+                  <div className="h-full w-full flex items-center justify-center text-muted-foreground text-xl font-semibold">
                     {p.full_name.charAt(0)}
                   </div>
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <div className="font-semibold truncate">{p.full_name}</div>
+                <div className="font-semibold text-lg truncate">{p.full_name}</div>
                 <div className="text-sm text-muted-foreground truncate">{p.title}</div>
               </div>
             </div>
@@ -140,7 +150,41 @@ export default function FeaturedProfessionals({
 
             {bio && <p className="text-sm text-muted-foreground line-clamp-3">{bio}</p>}
 
-            <div className="mt-auto flex flex-col gap-2">
+            {/* Specialties */}
+            {specialties.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Specialties</p>
+                <div className="flex flex-wrap gap-1">
+                  {specialties.slice(0, 3).map((specialty, idx) => (
+                    <span 
+                      key={idx}
+                      className="text-xs px-2 py-1 rounded-md bg-secondary text-secondary-foreground"
+                    >
+                      {specialty}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* XIMA Pillars */}
+            {ximaPillars.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">XIMA Pillars</p>
+                <div className="flex flex-wrap gap-1">
+                  {ximaPillars.slice(0, 3).map((pillar, idx) => (
+                    <span 
+                      key={idx}
+                      className="text-xs px-2 py-1 rounded-md bg-primary/10 text-primary font-medium"
+                    >
+                      {pillar}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="mt-auto">
               <Button
                 onClick={() => {
                   if (onSelect) {
@@ -148,16 +192,10 @@ export default function FeaturedProfessionals({
                   }
                 }}
                 className="w-full"
+                size="lg"
+                variant={isSelected ? "default" : "outline"}
               >
-                {t('professionals.select')}
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => window.open(p.linkedin_url, '_blank', 'noopener,noreferrer')}
-                className="w-full"
-              >
-                {t('professionals.view_linkedin')}
+                {isSelected ? '✓ Selected' : t('professionals.select')}
               </Button>
             </div>
           </Card>

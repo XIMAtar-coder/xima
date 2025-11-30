@@ -741,9 +741,10 @@
     "cv_uploaded": "CV Caricato",
     "professional_selected": "Professionista Selezionato"
   },
-  "professionals": {
-    "select_title": "Seleziona il Tuo Professionista",
-    "select_subtitle": "Scegli il professionista che meglio si adatta al tuo percorso di crescita"
+  "mentors": {
+    "select_title": "Scegli il Tuo Mentore",
+    "select_subtitle": "Seleziona il mentore che guiderà il tuo percorso di crescita professionale",
+    "choose_to_continue": "Scegli il tuo mentore per continuare"
   },
   "pillars": {
     "computational": "Potenza Computazionale",
@@ -1449,8 +1450,8 @@
     "consider_elaborating": "Considera di elaborare maggiormente per ottenere più punti (minimo 50 parole raccomandate)."
   },
   "professionals": {
-    "title": "Scegli il tuo professionista",
-    "subtitle": "Seleziona il professionista più adatto ai tuoi obiettivi",
+    "title": "Scegli il tuo mentore",
+    "subtitle": "Seleziona il mentore più adatto ai tuoi obiettivi",
     "select": "Seleziona",
     "view_linkedin": "Vedi su LinkedIn",
     "compatibility": "Compatibilità",

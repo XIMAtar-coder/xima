@@ -117,9 +117,10 @@
     "cv_uploaded": "CV Cargado",
     "professional_selected": "Profesional Seleccionado"
   },
-  "professionals": {
-    "select_title": "Selecciona Tu Profesional",
-    "select_subtitle": "Elige el profesional que mejor se adapte a tu camino de crecimiento"
+  "mentors": {
+    "select_title": "Elige Tu Mentor",
+    "select_subtitle": "Selecciona el mentor que guiará tu camino de crecimiento profesional",
+    "choose_to_continue": "Elige tu mentor para continuar"
   },
   "pillars": {
     "computational": "Poder Computacional",
@@ -1072,8 +1073,8 @@
     "sentiment_negative": "Negativo"
   },
   "professionals": {
-    "title": "Elige a tu profesional",
-    "subtitle": "Selecciona el experto que mejor se adapta a tus objetivos",
+    "title": "Elige a tu mentor",
+    "subtitle": "Selecciona el mentor que mejor se adapta a tus objetivos",
     "select": "Seleccionar",
     "view_linkedin": "Ver en LinkedIn",
     "compatibility": "Compatibilidad"
