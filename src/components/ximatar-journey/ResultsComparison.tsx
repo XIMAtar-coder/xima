@@ -282,19 +282,19 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     }
   }, [showResults, user]);
 
-  const handleProfessionalSelect = async (professional: any) => {
-    console.log('[ResultsComparison] Professional selected:', professional);
+  const handleMentorSelect = async (mentor: any) => {
+    console.log('[ResultsComparison] Mentor selected:', mentor);
     console.log('[ResultsComparison] isAuthenticated:', isAuthenticated, 'user?.id:', user?.id);
     
-    setSelectedProfessional(professional.id);
-    localStorage.setItem('selected_professional_data', JSON.stringify(professional));
+    setSelectedProfessional(mentor.id);
+    localStorage.setItem('selected_professional_data', JSON.stringify(mentor));
     
     // Call assign-mentor edge function to create the mentor match
     if (isAuthenticated && user?.id) {
       console.log('[ResultsComparison] Calling assign-mentor edge function...');
       try {
         const { data, error } = await supabase.functions.invoke('assign-mentor', {
-          body: { professional_id: professional.id },
+          body: { professional_id: mentor.id },
         });
         
         console.log('[ResultsComparison] Edge function response:', { data, error });
@@ -644,12 +644,16 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       )}
 
       <Card className="p-8">
-        <h3 className="text-2xl font-bold mb-6 text-center font-heading">{t('professionals.title')}</h3>
-        <p className="text-center text-muted-foreground mb-8">{t('professionals.subtitle')}</p>
+        <div className="text-center mb-6">
+          <h3 className="text-2xl font-bold mb-2 font-heading">{t('professionals.title')}</h3>
+          <p className="text-muted-foreground mb-2">{t('professionals.subtitle')}</p>
+          <p className="text-sm font-medium text-primary">{t('mentors.choose_to_continue')}</p>
+        </div>
         
         <FeaturedProfessionals 
-          onSelect={handleProfessionalSelect}
+          onSelect={handleMentorSelect}
           fieldKey={selectedField}
+          selectedId={selectedProfessional}
         />
 
         {selectedProfessional && (

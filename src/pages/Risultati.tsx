@@ -44,18 +44,18 @@ const Risultati = () => {
     fetchPreferredField();
   }, [user]);
 
-  const handleProfessionalSelect = async (professional: any) => {
-    console.log('[Risultati] Professional selected:', professional);
+  const handleMentorSelect = async (mentor: any) => {
+    console.log('[Risultati] Mentor selected:', mentor);
     console.log('[Risultati] user?.id:', user?.id);
     
-    setSelectedProfessional(professional);
+    setSelectedProfessional(mentor);
     
     // Call assign-mentor edge function to create the mentor match
     if (user?.id) {
       console.log('[Risultati] Calling assign-mentor edge function...');
       try {
         const { data, error } = await supabase.functions.invoke('assign-mentor', {
-          body: { professional_id: professional.id },
+          body: { professional_id: mentor.id },
         });
         
         console.log('[Risultati] Edge function response:', { data, error });
@@ -76,19 +76,8 @@ const Risultati = () => {
   const handleProceed = async () => {
     if (!selectedProfessional) return;
 
-    // Store professional selection in database
-    if (user?.id && selectedProfessional.id) {
-      await supabase
-        .from('bookings')
-        .insert({
-          seeker_user_id: user.id,
-          professional_id: selectedProfessional.id,
-          status: 'pending',
-          starts_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-          ends_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 + 3600000).toISOString()
-        });
-    }
-
+    // Mentor assignment is already handled by handleMentorSelect
+    // Just navigate to the appropriate page
     if (isAuthenticated) {
       navigate('/profile');
     } else {
@@ -164,17 +153,19 @@ const Risultati = () => {
           </div>
         )}
 
-        {/* Professional Selection */}
+        {/* Mentor Selection */}
         <Card className="fade-in">
           <CardContent className="p-8 space-y-6">
             <div className="text-center space-y-2">
-              <h3 className="text-2xl font-bold">{t('professionals.select_title')}</h3>
-              <p className="text-muted-foreground">{t('professionals.select_subtitle')}</p>
+              <h3 className="text-2xl font-bold">{t('mentors.select_title')}</h3>
+              <p className="text-muted-foreground">{t('mentors.select_subtitle')}</p>
+              <p className="text-sm font-medium text-primary mt-2">{t('mentors.choose_to_continue')}</p>
             </div>
 
             <FeaturedProfessionals 
-              onSelect={handleProfessionalSelect}
+              onSelect={handleMentorSelect}
               fieldKey={selectedField}
+              selectedId={selectedProfessional?.id}
             />
 
             {selectedProfessional && (

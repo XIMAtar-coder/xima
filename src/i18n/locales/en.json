@@ -89,9 +89,10 @@
     "cv_uploaded": "CV Uploaded",
     "professional_selected": "Professional Selected"
   },
-  "professionals": {
-    "select_title": "Select Your Professional",
-    "select_subtitle": "Choose the professional that best fits your growth journey"
+  "mentors": {
+    "select_title": "Choose Your Mentor",
+    "select_subtitle": "Select the mentor who will guide your professional growth journey",
+    "choose_to_continue": "Choose your mentor to continue"
   },
   "pillars": {
     "computational": "Computational Power",
@@ -1418,8 +1419,8 @@
     "consider_elaborating": "Consider elaborating to earn more points (minimum 50 words recommended)."
   },
   "professionals": {
-    "title": "Choose your professional",
-    "subtitle": "Select the expert who best matches your goals",
+    "title": "Choose your mentor",
+    "subtitle": "Select the mentor who best matches your goals",
     "select": "Select",
     "view_linkedin": "View on LinkedIn",
     "compatibility": "Match"
