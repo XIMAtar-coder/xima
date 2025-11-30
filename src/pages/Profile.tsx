@@ -18,15 +18,75 @@ import { AssessmentOverviewCard } from '@/components/profile/AssessmentOverviewC
 import { OpenAnswerList } from '@/components/profile/OpenAnswerList';
 import { CVAnalysisCard } from '@/components/profile/CVAnalysisCard';
 import { MyOpportunitiesSection } from '@/components/opportunities/MyOpportunitiesSection';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const Profile = () => {
   const { user, isAuthenticated } = useUser();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [refreshKey, setRefreshKey] = React.useState(0);
   const [profileRefreshKey, setProfileRefreshKey] = React.useState(0);
   const [mentorRefreshKey, setMentorRefreshKey] = React.useState(0);
+  const [processingMentor, setProcessingMentor] = React.useState(false);
   const profileData = useProfileData(profileRefreshKey);
+  
+  // Process pending mentor assignment after registration
+  useEffect(() => {
+    const processPendingMentorAssignment = async () => {
+      if (!isAuthenticated || !user?.id || processingMentor) return;
+      
+      // Check if there's a selected professional from the journey
+      const selectedProfessionalData = localStorage.getItem('selected_professional_data');
+      if (!selectedProfessionalData) return;
+      
+      // Check if user already has a mentor
+      if (profileData.mentor_profile) {
+        console.log('[Profile] User already has a mentor, skipping assignment');
+        localStorage.removeItem('selected_professional_data');
+        return;
+      }
+      
+      try {
+        setProcessingMentor(true);
+        const professional = JSON.parse(selectedProfessionalData);
+        console.log('[Profile] Processing pending mentor assignment:', professional);
+        
+        const { data, error } = await supabase.functions.invoke('assign-mentor', {
+          body: { professional_id: professional.id },
+        });
+        
+        if (error) {
+          console.error('[Profile] Error assigning mentor:', error);
+          toast({
+            title: "Note",
+            description: "We'll assign your selected mentor shortly.",
+          });
+        } else if (data?.success) {
+          console.log('[Profile] Mentor assigned successfully:', data.mentor);
+          localStorage.removeItem('selected_professional_data');
+          toast({
+            title: "Success",
+            description: `${professional.full_name} has been assigned as your mentor!`,
+          });
+          // Refresh profile data to show the mentor
+          setProfileRefreshKey(prev => prev + 1);
+        }
+      } catch (error) {
+        console.error('[Profile] Failed to process mentor assignment:', error);
+      } finally {
+        setProcessingMentor(false);
+      }
+    };
+    
+    // Wait a bit for profile data to load before processing
+    const timeout = setTimeout(() => {
+      processPendingMentorAssignment();
+    }, 1000);
+    
+    return () => clearTimeout(timeout);
+  }, [isAuthenticated, user?.id, profileData.mentor_profile, processingMentor, toast]);
   
   const handleAvatarUpdate = () => {
     setRefreshKey(prev => prev + 1);

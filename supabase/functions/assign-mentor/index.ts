@@ -61,7 +61,13 @@ Deno.serve(async (req) => {
 
     console.log('[assign-mentor] Assigning professional:', professional_id);
 
-    // Get user's profile ID
+    // Create admin client for system operations (bypasses RLS)
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    );
+
+    // Get user's profile ID (using user client for security)
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('id')
@@ -78,10 +84,10 @@ Deno.serve(async (req) => {
 
     console.log('[assign-mentor] User profile ID:', profile.id);
 
-    // Verify professional exists
-    const { data: professional, error: professionalError } = await supabase
+    // Verify professional exists (using admin client)
+    const { data: professional, error: professionalError } = await supabaseAdmin
       .from('professionals')
-      .select('id, user_id, full_name, title, bio, avatar_path, calendar_url, specialties, xima_pillars')
+      .select('id, user_id, full_name, title, avatar_path, calendar_url, locale_bio, specialties, xima_pillars')
       .eq('id', professional_id)
       .single();
 
@@ -95,31 +101,26 @@ Deno.serve(async (req) => {
 
     console.log('[assign-mentor] Found professional:', professional.full_name);
 
-    // Get or create mentor's profile ID
-    let mentorProfileId = professional.user_id;
-
-    if (!mentorProfileId) {
-      console.log('[assign-mentor] Professional has no user_id, using professional.id as reference');
-      // For professionals without user_id, we'll use the professional.id directly
-      mentorProfileId = professional.id;
-    }
+    // Use professional.id as mentor_user_id (since professionals.user_id may be null)
+    const mentorUserId = professional.id;
 
     // Check if mentor match already exists
-    const { data: existingMatch } = await supabase
+    const { data: existingMatch } = await supabaseAdmin
       .from('mentor_matches')
       .select('id')
       .eq('mentee_user_id', profile.id)
-      .single();
+      .maybeSingle();
 
     if (existingMatch) {
       console.log('[assign-mentor] Updating existing mentor match:', existingMatch.id);
-      // Update existing match
-      const { error: updateError } = await supabase
+      // Update existing match using admin client
+      const { error: updateError } = await supabaseAdmin
         .from('mentor_matches')
         .update({
-          mentor_user_id: mentorProfileId,
+          mentor_user_id: mentorUserId,
           reason: {
             professional_name: professional.full_name,
+            professional_id: professional.id,
             specialties: professional.specialties,
             xima_pillars: professional.xima_pillars,
             assigned_at: new Date().toISOString(),
@@ -130,21 +131,22 @@ Deno.serve(async (req) => {
       if (updateError) {
         console.error('[assign-mentor] Error updating mentor match:', updateError);
         return new Response(
-          JSON.stringify({ error: 'Failed to update mentor assignment' }),
+          JSON.stringify({ error: 'Failed to update mentor assignment', details: updateError.message }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
     } else {
       console.log('[assign-mentor] Creating new mentor match');
-      // Create new match
-      const { error: insertError } = await supabase
+      // Create new match using admin client
+      const { error: insertError } = await supabaseAdmin
         .from('mentor_matches')
         .insert({
           mentee_user_id: profile.id,
-          mentor_user_id: mentorProfileId,
+          mentor_user_id: mentorUserId,
           assigned_by: 'user_selection',
           reason: {
             professional_name: professional.full_name,
+            professional_id: professional.id,
             specialties: professional.specialties,
             xima_pillars: professional.xima_pillars,
             assigned_at: new Date().toISOString(),
@@ -154,22 +156,23 @@ Deno.serve(async (req) => {
       if (insertError) {
         console.error('[assign-mentor] Error creating mentor match:', insertError);
         return new Response(
-          JSON.stringify({ error: 'Failed to create mentor assignment' }),
+          JSON.stringify({ error: 'Failed to create mentor assignment', details: insertError.message }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
     }
 
-    // Update profile's mentor field with professional data
-    const { error: profileUpdateError } = await supabase
+    // Update profile's mentor field with professional data (using admin client)
+    const { error: profileUpdateError } = await supabaseAdmin
       .from('profiles')
       .update({
         mentor: {
+          id: professional.id,
           name: professional.full_name,
           title: professional.title,
           avatar_url: professional.avatar_path,
           calendar_url: professional.calendar_url,
-          bio: professional.bio,
+          locale_bio: professional.locale_bio,
           specialties: professional.specialties,
           xima_pillars: professional.xima_pillars,
         },
