@@ -126,6 +126,8 @@
     "why": "Why?",
     "consider_elaborating": "Consider elaborating more on your answer",
     "rubric_breakdown": "Rubric Breakdown",
+    "expert_insight": "Expert Insight",
+    "suggestions": "How to Improve",
     "note": "Note: These scores reflect the quality and completeness of your answers",
     "rubric": {
       "length": "Length",
