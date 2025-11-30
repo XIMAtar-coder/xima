@@ -14,6 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useXimatarsCatalog } from '@/hooks/useXimatarsCatalog';
 import type { Rubric } from '@/lib/scoring/openResponse';
 import { normalizeXimatarImageUrl } from '@/utils/normalizeXimatarImage';
+import { useToast } from '@/hooks/use-toast';
 
 interface ResultsComparisonProps {
   onComplete: (step: number) => void;
@@ -42,6 +43,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { isAuthenticated, user } = useUser();
+  const { toast } = useToast();
   const { catalogMap, loading: catalogLoading } = useXimatarsCatalog();
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [showResults, setShowResults] = useState(false);
@@ -281,24 +283,46 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   }, [showResults, user]);
 
   const handleProfessionalSelect = async (professional: any) => {
+    console.log('[ResultsComparison] Professional selected:', professional);
+    console.log('[ResultsComparison] isAuthenticated:', isAuthenticated, 'user?.id:', user?.id);
+    
     setSelectedProfessional(professional.id);
     localStorage.setItem('selected_professional_data', JSON.stringify(professional));
     
     // Call assign-mentor edge function to create the mentor match
     if (isAuthenticated && user?.id) {
+      console.log('[ResultsComparison] Calling assign-mentor edge function...');
       try {
         const { data, error } = await supabase.functions.invoke('assign-mentor', {
           body: { professional_id: professional.id },
         });
         
+        console.log('[ResultsComparison] Edge function response:', { data, error });
+        
         if (error) {
           console.error('[ResultsComparison] Error assigning mentor:', error);
+          toast({
+            title: "Error",
+            description: "Failed to assign mentor. Please try again.",
+            variant: "destructive"
+          });
         } else if (data?.success) {
           console.log('[ResultsComparison] Mentor assigned successfully:', data.mentor);
+          toast({
+            title: "Success",
+            description: "Mentor assigned successfully!",
+          });
         }
       } catch (error) {
         console.error('[ResultsComparison] Failed to assign mentor:', error);
+        toast({
+          title: "Error", 
+          description: "Failed to assign mentor. Please try again.",
+          variant: "destructive"
+        });
       }
+    } else {
+      console.log('[ResultsComparison] Not calling edge function - user not authenticated or no user ID');
     }
   };
 
