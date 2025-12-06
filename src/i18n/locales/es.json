@@ -158,10 +158,10 @@
     "for_business": "Para Empresas"
   },
   "hero": {
-    "title": "Descubre tu potencial profesional",
-    "subtitle": "Con XIMA, puedes descubrir tu verdadera identidad profesional y conectar con las oportunidades perfectas.",
-    "cta_discover": "Descubre tu XIMAtar",
-    "cta_learn_more": "Aprende Más",
+    "title": "Descubre Tu Yo Profesional",
+    "subtitle": "XIMA te ayuda a comprender tus fortalezas y debilidades profesionales a través de nuestro sistema único de evaluación de 5 pilares, emparejándote con las oportunidades de carrera perfectas.",
+    "cta": "¡Obtén Tu XIMAtar Ahora!",
+    "learn_more": "Saber Más",
     "for_business": "Para Empresas",
     "login": "Iniciar Sesión"
   },
@@ -309,10 +309,20 @@
       }
     }
   },
-  "cta": {
-    "title": "¿Listo para descubrir tu potencial?",
-    "description": "Únete a miles de profesionales que han transformado sus carreras con XIMA.",
-    "button": "Comenzar Mi Evaluación"
+  "cta_section": {
+    "title": "Desbloquea Tu Potencial Profesional",
+    "subtitle": "Únete a miles de profesionales que han descubierto sus verdaderas fortalezas y encontrado su combinación perfecta de carrera con XIMA.",
+    "button": "¡Obtén Tu XIMAtar Ahora!"
+  },
+  "home": {
+    "recommended_challenges": {
+      "title": "Desafíos Recomendados",
+      "subtitle": "Oportunidades que coinciden con tu perfil XIMA"
+    },
+    "job_matches": {
+      "title": "Mejores Coincidencias de Empleo",
+      "subtitle": "Trabajos adaptados a tus habilidades y XIMAtar"
+    }
   },
   "baseline": {
     "title": "Evaluación Inicial",
