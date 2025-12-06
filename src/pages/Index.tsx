@@ -66,17 +66,17 @@ const Index = () => {
         {isAuthenticated && (
           <div className="py-16 space-y-12">
             <div>
-              <h2 className="text-3xl font-bold mb-2 text-foreground">Recommended Challenges</h2>
+              <h2 className="text-3xl font-bold mb-2 text-foreground">{t('home.recommended_challenges.title')}</h2>
               <p className="text-muted-foreground mb-8">
-                Opportunities that match your XIMA profile
+                {t('home.recommended_challenges.subtitle')}
               </p>
               <RecommendedChallenges />
             </div>
             
             <div>
-              <h2 className="text-3xl font-bold mb-2 text-foreground">Top Job Matches</h2>
+              <h2 className="text-3xl font-bold mb-2 text-foreground">{t('home.job_matches.title')}</h2>
               <p className="text-muted-foreground mb-8">
-                Jobs tailored to your skills and XIMAtar
+                {t('home.job_matches.subtitle')}
               </p>
               <JobMatchesBlock />
             </div>

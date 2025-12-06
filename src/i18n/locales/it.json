@@ -184,6 +184,16 @@
     "subtitle": "Unisciti a migliaia di professionisti che hanno scoperto i loro veri punti di forza e trovato la loro corrispondenza perfetta con XIMA.",
     "button": "Ottieni il Tuo Ximatar Ora!"
   },
+  "home": {
+    "recommended_challenges": {
+      "title": "Sfide Consigliate",
+      "subtitle": "Opportunità che corrispondono al tuo profilo XIMA"
+    },
+    "job_matches": {
+      "title": "Migliori Corrispondenze di Lavoro",
+      "subtitle": "Lavori su misura per le tue competenze e il tuo XIMAtar"
+    }
+  },
   "baseline": {
     "title": "Valutazione di Base",
     "subtitle": "Carica il tuo CV per una valutazione di base personalizzata, oppure salta per iniziare con la valutazione completa",

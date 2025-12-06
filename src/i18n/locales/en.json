@@ -307,6 +307,16 @@
     "subtitle": "Join thousands of professionals who have discovered their true strengths and found their perfect career match with XIMA.",
     "button": "Get Your Ximatar Now!"
   },
+  "home": {
+    "recommended_challenges": {
+      "title": "Recommended Challenges",
+      "subtitle": "Opportunities that match your XIMA profile"
+    },
+    "job_matches": {
+      "title": "Top Job Matches",
+      "subtitle": "Jobs tailored to your skills and XIMAtar"
+    }
+  },
   "baseline": {
     "title": "Baseline Assessment",
     "subtitle": "Upload your CV for a personalized baseline assessment, or skip to start with the full assessment",
