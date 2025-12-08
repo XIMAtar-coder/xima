@@ -610,15 +610,6 @@
     "profile_info": "Informazioni Profilo",
     "member_since": "Membro dal"
   },
-  "common": {
-    "login_required": "Accesso richiesto",
-    "login": "Accedi",
-    "loading": "Caricamento...",
-    "back": "Indietro",
-    "error": "Errore",
-    "strongest": "Il Tuo Vantaggio",
-    "area_to_develop": "Area di Crescita"
-  },
   "profile": {
     "page_title": "Benvenuto, {{name}}",
     "welcome_name": "Benvenuto, {{name}}!",
@@ -1006,9 +997,6 @@
      "best_match": "Migliore Corrispondenza",
      "mentor_response": "Grazie per il tuo messaggio! Ti risponderò presto con alcuni consigli."
    },
-    "common": {
-    "back": "Indietro"
-  },
   "development": {
     "back_to_dashboard": "Torna alla tua Dashboard"
   },
