@@ -11,7 +11,7 @@ import { ArrowRight, ArrowLeft, Check, Upload, FileText, Calendar, User } from '
 import BaselineAssessment from '../components/ximatar-journey/BaselineAssessment';
 import XimatarAssessment from '../components/ximatar-journey/XimatarAssessment';
 import ResultsComparison from '../components/ximatar-journey/ResultsComparison';
-import { XimatarTestButton } from '../components/ximatar-journey/XimatarTestButton';
+
 import { Logo } from '../components/Logo';
 import { CvAnalysisUpload } from '../components/ximatar-journey/CvAnalysisUpload';
 
@@ -170,7 +170,7 @@ const XimatarJourney = () => {
         )}
       </div>
       
-      <XimatarTestButton />
+      
     </MainLayout>
   );
 };
