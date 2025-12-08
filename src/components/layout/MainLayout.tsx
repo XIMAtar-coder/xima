@@ -126,6 +126,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                   {t('nav.how_it_works')}
                 </button>
                 <button 
+                  onClick={() => navigate('/assessment-guide')}
+                  className={`text-sm font-medium hover:text-[hsl(var(--xima-accent))] transition-colors ${
+                    location.pathname === '/assessment-guide' ? 'text-[hsl(var(--xima-accent))]' : 'text-muted-foreground'
+                  }`}
+                >
+                  {t('nav.guide')}
+                </button>
+                <button 
                   onClick={() => navigate('/about')}
                   className={`text-sm font-medium hover:text-[hsl(var(--xima-accent))] transition-colors ${
                     location.pathname === '/about' ? 'text-[hsl(var(--xima-accent))]' : 'text-muted-foreground'
@@ -187,6 +195,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                       className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
                     >
                       {t('nav.how_it_works')}
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('/assessment-guide');
+                        setMobileMenuOpen(false);
+                      }}
+                      className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
+                    >
+                      {t('nav.guide')}
                     </button>
                     <button
                       onClick={() => {
