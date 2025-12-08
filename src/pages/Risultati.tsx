@@ -11,7 +11,7 @@ import { XimatarProfileCard } from '@/components/results/XimatarProfileCard';
 import { CVComparisonCard } from '@/components/results/CVComparisonCard';
 import { ProgressBar } from '@/components/results/ProgressBar';
 import { OpenAnswerScore } from '@/components/ximatar-journey/OpenAnswerScore';
-import FeaturedProfessionals, { type FieldKey } from '@/components/FeaturedProfessionals';
+import FeaturedProfessionals from '@/components/FeaturedProfessionals';
 import { supabase } from '@/integrations/supabase/client';
 
 const Risultati = () => {
@@ -20,29 +20,15 @@ const Risultati = () => {
   const { user, isAuthenticated } = useUser();
   const assessmentData = useSupabaseAssessmentData();
   const [selectedProfessional, setSelectedProfessional] = useState<any>(null);
-  const [selectedField, setSelectedField] = useState<FieldKey>('business_leadership');
 
-  useEffect(() => {
-    // Get preferred field from profiles - using rationale json for now
-    const fetchPreferredField = async () => {
-      if (!user?.id) return;
-
-      const { data: assessmentResult } = await supabase
-        .from('assessment_results')
-        .select('rationale')
-        .eq('user_id', user.id)
-        .order('computed_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (assessmentResult?.rationale) {
-        const field = (assessmentResult.rationale as any)?.field_key;
-        if (field) setSelectedField(field as FieldKey);
-      }
-    };
-
-    fetchPreferredField();
-  }, [user]);
+  // Convert pillars object to array for recommendation engine
+  const pillarScores = assessmentData.pillars ? [
+    { pillar: 'computational_power', score: assessmentData.pillars.computational || 0 },
+    { pillar: 'communication', score: assessmentData.pillars.communication || 0 },
+    { pillar: 'knowledge', score: assessmentData.pillars.knowledge || 0 },
+    { pillar: 'creativity', score: assessmentData.pillars.creativity || 0 },
+    { pillar: 'drive', score: assessmentData.pillars.drive || 0 },
+  ] : [];
 
   const handleMentorSelect = async (mentor: any) => {
     console.log('[Risultati] Mentor selected:', mentor);
@@ -164,8 +150,9 @@ const Risultati = () => {
 
             <FeaturedProfessionals 
               onSelect={handleMentorSelect}
-              fieldKey={selectedField}
               selectedId={selectedProfessional?.id}
+              pillarScores={pillarScores}
+              ximatar={assessmentData.ximatar?.label}
             />
 
             {selectedProfessional && (
