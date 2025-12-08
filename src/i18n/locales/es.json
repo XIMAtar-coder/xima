@@ -874,12 +874,106 @@
         "open1": { "question": "Describe una vez que mejoraste un proceso de servicio. ¿Qué cambió y cómo lo hiciste sostenible?" },
         "open2": { "question": "¿Qué área de tu práctica operativa quieres hacer crecer este año y cuál es tu plan?" }
       },
+      "examples": {
+        "q1": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Segmentar por turno/sede):** Priorizas identificar dónde ocurren los problemas desglosando los datos por ubicación o periodo de tiempo. Esto te ayuda a aislar causas raíz rápidamente.\n\n**Opción B (Verificar cumplimiento):** Crees que la mayoría de caídas vienen de desviaciones del proceso. Revisar si los equipos siguieron los procedimientos es tu primer diagnóstico.\n\n**Opción C (Comparar histórico):** Contextualizas el rendimiento actual viendo si el patrón ha ocurrido antes, lo que podría revelar problemas estacionales o cíclicos.\n\n**Opción D (Comprobar integridad):** Desconfías de los datos hasta verificarlos. Datos erróneos llevan a conclusiones equivocadas.\n\n**Cómo responder:** Piensa en las últimas 3 veces que tus métricas bajaron. ¿Qué hiciste REALMENTE primero? Mira: https://www.youtube.com/watch?v=d4cKVgpHlCY"
+        },
+        "q2": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Escuchar y reflejar):** Crees que la mayoría de frustraciones se resuelven sintiéndose comprendido. Reflejar las preocupaciones del cliente baja la tensión.\n\n**Opción B (Explicar políticas):** Te enfocas en clarificar para que el cliente entienda las razones. Transparencia genera confianza.\n\n**Opción C (Ofrecer opciones):** Empoderas al cliente dándole alternativas. Esto transforma quejas en colaboración hacia soluciones.\n\n**Opción D (Escalar adecuadamente):** Sabes cuándo un tema excede tu autoridad y proporcionas contexto para que el siguiente nivel resuelva eficientemente.\n\n**Cómo responder:** Reflexiona sobre interacciones difíciles recientes. ¿Qué enfoque usaste naturalmente? Mira: https://www.youtube.com/watch?v=H4zTJDfMDo8"
+        },
+        "q3": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (SOP claras):** Crees que procedimientos documentados previenen errores. Los equipos necesitan referencias escritas.\n\n**Opción B (Micro-formaciones):** Prefieres formación activa sobre documentación pasiva. La gente aprende haciendo.\n\n**Opción C (Base de conocimiento):** Construyes sistemas buscables para que la información esté accesible cuando se necesite.\n\n**Opción D (Feedback de primera línea):** Involucras a quienes ejecutan los procesos en mejorarlos. Esto mejora adopción y calidad.\n\n**Cómo responder:** Elige el método que REALMENTE usas, no el que crees que sería ideal. Mira: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+        },
+        "q4": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Rediseñar flujo):** Crees que los cuellos de botella requieren cambios estructurales. A veces el proceso entero necesita repensar.\n\n**Opción B (Importar soluciones):** Miras cómo otros equipos resolvieron problemas similares. ¿Por qué reinventar la rueda?\n\n**Opción C (Pilotar experimento):** Prefieres tests pequeños antes de hacer grandes cambios. Reducir riesgo de errores costosos.\n\n**Opción D (Codiseñar):** Involucras a personal y usuarios porque crees que las mejores soluciones vienen de quienes experimentan el problema.\n\n**Cómo responder:** Piensa en la última mejora de proceso que hiciste. ¿Cuál de estos enfoques describe mejor tu método? Mira: https://www.youtube.com/watch?v=RfWgVWGEXZs"
+        },
+        "q5": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Enfocarte en alto impacto):** Bajo presión, priorizas despiadadamente. Haces primero lo que más importa.\n\n**Opción B (Apoyar al equipo):** Crees que el éxito del equipo importa más que el individual. Ayudar a otros les ayuda a todos.\n\n**Opción C (Rotar tareas):** Evitas el agotamiento variando las actividades. Cambiar de contexto mantiene la energía.\n\n**Opción D (Celebrar victorias):** Mantienes la moral reconociendo el progreso. Las pequeñas celebraciones construyen momentum.\n\n**Cómo responder:** Recuerda tu día de trabajo más estresante recientemente. ¿Cuál de estos comportamientos te describe mejor? Mira: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
+        },
+        "q6": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Modelar demanda):** Usas datos históricos para predecir necesidades de personal. Las decisiones basadas en datos optimizan recursos.\n\n**Opción B (Mezcla de habilidades):** Aseguras que cada turno tenga las competencias necesarias. Diversidad de habilidades crea resiliencia.\n\n**Opción C (Buffers para picos):** Planificas capacidad extra para variabilidad. La preparación previene caos.\n\n**Opción D (Revisar restricciones):** Verificas normativa y contratos primero. El cumplimiento antes de la optimización.\n\n**Cómo responder:** Cuando planificas turnos, ¿cuál es tu punto de partida habitual?"
+        },
+        "q7": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Explicar el porqué):** Crees que la gente acepta cambios cuando entiende las razones. El contexto reduce resistencia.\n\n**Opción B (Listas/visuals):** Haces la información fácil de escanear y recordar. La claridad visual acelera adopción.\n\n**Opción C (Canal de preguntas):** Proporcionas espacio seguro para aclarar dudas. Preguntas sin responder crean errores.\n\n**Opción D (Apoyo entre pares):** Usas compañeros experimentados para ayudar a otros. Peer support es más accesible.\n\n**Cómo responder:** Piensa en el último cambio de protocolo que comunicaste. ¿Qué método usaste? Mira: https://www.youtube.com/watch?v=eIho2S0ZahI"
+        },
+        "q8": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Guías paso a paso):** Crees que los nuevos necesitan instrucciones claras. La estructura reduce errores iniciales.\n\n**Opción B (Sombra y autonomía):** Prefieres aprendizaje experiencial con responsabilidad creciente gradual.\n\n**Opción C (Micro-formaciones):** Te enfocas primero en las tareas más críticas. Priorizar previene sobrecarga.\n\n**Opción D (Documentar errores):** Enseñas qué NO hacer para que los nuevos eviten trampas comunes.\n\n**Cómo responder:** Cuando incorporas a alguien nuevo, ¿cuál es tu primera prioridad? Mira: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+        },
+        "q9": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Rediseñar puntos de contacto):** Crees que las mejoras vienen de repensar cada interacción. Los momentos clave definen la experiencia.\n\n**Opción B (Personalizar momentos):** Te enfocas en hacer que los usuarios se sientan especiales. Las experiencias personalizadas generan lealtad.\n\n**Opción C (Agilizar traspasos):** Mejoras las transiciones entre equipos. Handoffs sin fricciones reducen tiempos de espera.\n\n**Opción D (Probar herramientas):** Buscas nuevas tecnologías que mejoren la capacidad. Las herramientas correctas multiplican el impacto.\n\n**Cómo responder:** Piensa en la última mejora de servicio que propusiste. ¿Cuál de estos enfoques usaste?"
+        },
+        "q10": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Metas y progreso):** Crees que la transparencia sobre objetivos construye compromiso. Saber hacia dónde vas motiva.\n\n**Opción B (Reconocer conductas):** Celebras comportamientos específicos, no solo resultados. El reconocimiento refuerza lo que quieres ver.\n\n**Opción C (Rotar responsabilidades):** Mantienes las cosas frescas dando variedad. La diversidad de tareas previene aburrimiento.\n\n**Opción D (Apoyo rápido):** Eliminas obstáculos inmediatamente. Bloqueos sin resolver frustran a los equipos.\n\n**Cómo responder:** Cuando la moral de tu equipo baja, ¿cuál es tu respuesta típica?"
+        },
+        "q11": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Checklists):** Crees que las listas de verificación previenen olvidos. La estandarización reduce errores humanos.\n\n**Opción B (Estandarizar y 5S):** Te enfocas en crear ambientes organizados. Lugares ordenados facilitan trabajo sin errores.\n\n**Opción C (Automatizar):** Eliminas oportunidades de error humano usando tecnología. La automatización mejora consistencia.\n\n**Opción D (Medir y arreglar causas):** Analizas patrones de error para eliminar causas raíz. Resolver síntomas no es suficiente.\n\n**Cómo responder:** Piensa en errores recurrentes en tu trabajo. ¿Cómo has intentado reducirlos? Mira: https://www.youtube.com/watch?v=M576WGiDBdQ"
+        },
+        "q12": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Criterios de aceptación):** Defines claramente cuándo un handoff está completo. Expectativas claras previenen disputas.\n\n**Opción B (Plantillas de handoff):** Usas formatos estándar para asegurar que nada se olvide. Las plantillas crean consistencia.\n\n**Opción C (Alineaciones breves):** Prefieres comunicación cara a cara para handoffs. Las conversaciones directas aclaran dudas rápido.\n\n**Opción D (Dashboards compartidos):** Usas herramientas visuales para transparencia. Información compartida reduce fricción.\n\n**Cómo responder:** Piensa en cómo haces traspasos entre turnos o equipos. ¿Cuál es tu método preferido?"
+        },
+        "q13": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Retros breves):** Crees en reflexión regular pero ligera. Mejora continua sin sobrecarga de reuniones.\n\n**Opción B (Resúmenes simples):** Documentas aprendizajes de forma accesible. Información fácil de digerir se usa más.\n\n**Opción C (FAQs buscables):** Construyes recursos auto-servicio. La gente debería poder encontrar respuestas sola.\n\n**Opción D (Responsables de actualizar):** Asignas ownership de documentación. Sin dueños claros, nada se actualiza.\n\n**Cómo responder:** Después de un proyecto o incidente, ¿cómo capturas lo aprendido? Mira: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+        },
+        "q14": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Rediseñar secuencia):** Crees que cambiar el orden de pasos puede desbloquear eficiencia. El flujo importa tanto como las tareas individuales.\n\n**Opción B (Reutilizar creativamente):** Encuentras nuevos usos para recursos existentes. La creatividad supera limitaciones presupuestarias.\n\n**Opción C (Reordenar espacio):** Crees que la distribución física impacta el rendimiento. Cambiar layouts puede mejorar flujo.\n\n**Opción D (Simplificar pasos):** Reduces la complejidad para el usuario. Menos pasos = menos errores y mejor experiencia.\n\n**Cómo responder:** Con recursos limitados, ¿cómo has encontrado soluciones? Mira: https://www.youtube.com/watch?v=f1yQTy1bQmc"
+        },
+        "q15": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Revisión sin culpas):** Crees en aprender de fallos sin señalar culpables. Ambientes seguros fomentan honestidad.\n\n**Opción B (Aviso transparente):** Comunicas proactivamente a los afectados. La honestidad preserva confianza.\n\n**Opción C (Plan de recuperación):** Te enfocas en solucionar antes que en analizar. Acción rápida minimiza daño.\n\n**Opción D (Seguimiento hasta cierre):** Aseguras que los problemas se resuelvan completamente. Las cosas no arregladas del todo vuelven.\n\n**Cómo responder:** Piensa en el último fallo de servicio que manejaste. ¿Cuál fue tu primera prioridad? Mira: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
+        },
+        "q16": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Ajuste a requisitos):** Evalúas si la herramienta hace lo que necesitas. Las features vencen al marketing.\n\n**Opción B (Piloto con grupo pequeño):** Pruebas antes de comprometerte. Los pilotos reducen riesgo de implementación.\n\n**Opción C (Coste/beneficio):** Calculas el ROI antes de decidir. Las inversiones deben justificarse.\n\n**Opción D (Integración):** Verificas que la nueva herramienta funcione con sistemas existentes. Herramientas aisladas crean trabajo extra.\n\n**Cómo responder:** Al evaluar software o herramientas, ¿cuál es tu primer criterio? Mira: https://www.youtube.com/watch?v=iVXW1r_ivjw"
+        },
+        "q17": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Dashboards):** Crees que visibilidad compartida alinea equipos. Lo que todos ven, todos entienden.\n\n**Opción B (Reuniones cortas):** Prefieres sincronización presencial regular. Las conversaciones directas resuelven ambigüedades.\n\n**Opción C (Actualizaciones concisas):** Comunicas de forma breve y enfocada. Menos ruido = más señal.\n\n**Opción D (Protocolos de chat):** Usas canales digitales estandarizados. Mensajes claros permiten respuestas rápidas.\n\n**Cómo responder:** ¿Cómo te coordinas típicamente con otros turnos o equipos? Mira: https://www.youtube.com/watch?v=eIho2S0ZahI"
+        },
+        "q18": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Guías oficiales):** Vas a la fuente primaria. La documentación oficial es la referencia definitiva.\n\n**Opción B (Aclaraciones de expertos):** Consultas a quienes ya dominan el tema. Los expertos pueden simplificar lo complejo.\n\n**Opción C (Checklist de cumplimiento):** Traduces la regulación a pasos accionables. Las listas hacen el cumplimiento manejable.\n\n**Opción D (Formación con ejemplos):** Aprendes mejor con casos prácticos. Los ejemplos concretos hacen las reglas reales.\n\n**Cómo responder:** Cuando necesitas aprender nueva normativa, ¿cuál es tu primer recurso? Mira: https://www.youtube.com/watch?v=5MgBikgcWnY"
+        },
+        "q19": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Simplificar formularios):** Crees que lenguaje simple y formularios cortos ayudan a más gente. La claridad es inclusión.\n\n**Opción B (Formatos alternativos):** Ofreces múltiples canales para diferentes necesidades. No todos acceden a la información igual.\n\n**Opción C (Rediseñar espacio):** Te enfocas en accesibilidad física. El entorno determina quién puede participar.\n\n**Opción D (Codiseñar con usuarios):** Involucras a quienes tienen necesidades especiales en el diseño. Nadie entiende mejor sus barreras.\n\n**Cómo responder:** ¿Qué has hecho para hacer tus servicios más accesibles?"
+        },
+        "q20": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (SLA y auditorías):** Crees que lo que se mide se gestiona. Los estándares formales mantienen consistencia.\n\n**Opción B (Indicadores adelantados):** Buscas señales tempranas de problemas. Prevenir es mejor que curar.\n\n**Opción C (Ciclos de mejora):** Implementas PDCA o similar. La mejora continua es un proceso, no un evento.\n\n**Opción D (Proteger tiempo de foco):** Aseguras espacio para trabajo profundo. Sin tiempo protegido, la calidad sufre.\n\n**Cómo responder:** ¿Cómo mantienes la calidad del servicio a lo largo del tiempo? Mira: https://www.youtube.com/watch?v=L4N1q4RNi9I"
+        },
+        "q21": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Métricas por adelantado):** Defines éxito antes de empezar. Criterios claros permiten evaluación objetiva.\n\n**Opción B (Antes/después):** Comparas resultados con baseline. Sin comparación, no sabes si mejoraste.\n\n**Opción C (Prueba controlada):** Usas grupos de control para aislar el efecto del cambio. El rigor previene atribuciones falsas.\n\n**Opción D (Documentar y próximos pasos):** Registras aprendizajes y defines acciones futuras. Los cambios deben construir sobre anteriores.\n\n**Cómo responder:** Al implementar cambios de proceso, ¿cómo mides su éxito? Mira: https://www.youtube.com/watch?v=iVXW1r_ivjw"
+        },
+        "open1": {
+          "title": "Cómo Responder Bien",
+          "body": "Describe una mejora específica con impacto medible usando el método STAR: Situación (contexto y desafío), Tarea (tu responsabilidad), Acción (pasos específicos que tomaste), Resultado (outcomes cuantificados). También explica cómo hiciste el cambio duradero: ¿Documentaste? ¿Entrenaste a otros? ¿Creaste sistemas?\n\nEjemplo: 'Vi que los tiempos de espera de clientes eran de 15 minutos de promedio. Analicé los patrones de llegada, reorganicé los turnos del personal y creé un sistema de triage para atención rápida. Los tiempos bajaron a 5 minutos. Para sostenerlo, documenté el proceso y entrené al equipo entrante.'\n\nMira: https://www.youtube.com/watch?v=0vNUxleEyoo"
+        },
+        "open2": {
+          "title": "Cómo Responder Bien",
+          "body": "Las respuestas fuertes muestran autoconciencia y plan de acción. Nombra un área genuina de crecimiento (no fortalezas disfrazadas como 'soy demasiado perfeccionista'). Describe pasos específicos que estás tomando.\n\nEjemplo: 'Quiero mejorar en gestión de conflictos de equipo. Tiendo a evitar conversaciones difíciles. Mi plan: tomar un curso de comunicación difícil, practicar con role-plays mensuales con mi supervisor, y pedir feedback después de cada conversación complicada.'\n\nMuestra que estás tomando responsabilidad activa de tu desarrollo. Mira: https://www.youtube.com/watch?v=tJxFZrMxT3s"
+        }
+      },
       "examplesByCategory": {
-        "comp_power": "",
-        "communication": "",
-        "knowledge": "",
-        "creativity": "",
-        "drive": ""
+        "comp_power": "Las preguntas de Potencia Computacional de Servicios evalúan tu capacidad de usar datos y sistemas para mejorar operaciones. Los top performers segmentan problemas sistemáticamente, validan calidad de datos y usan métricas para guiar decisiones. Buscan patrones en datos de servicio y construyen sistemas de medición que previenen errores en lugar de solo detectarlos.",
+        "communication": "Las preguntas de Comunicación de Servicios evalúan cómo interactúas con clientes, equipos y stakeholders. Los comunicadores efectivos escuchan activamente, adaptan su estilo a diferentes audiencias y proporcionan información clara durante cambios. Manejan situaciones difíciles con empatía mientras mantienen límites profesionales.",
+        "knowledge": "Las preguntas de Conocimiento de Servicios miden cómo mantienes y compartes expertise operativo. Los top performers documentan procedimientos claramente, crean sistemas de formación efectivos y capturan lecciones aprendidas. Construyen bases de conocimiento que sobreviven a la rotación de personal.",
+        "creativity": "Las preguntas de Creatividad de Servicios evalúan tu capacidad de mejorar procesos y experiencias con recursos limitados. Los pensadores creativos en servicios reutilizan recursos, simplifican flujos complejos e involucran a usuarios finales en el diseño. Encuentran soluciones innovadoras dentro de restricciones reales.",
+        "drive": "Las preguntas de Impulso de Servicios miden tu resiliencia y capacidad de mantener calidad bajo presión. Los profesionales de alto impulso mantienen la moral del equipo, aprenden de fallos sin culpar, y construyen sistemas de mejora continua. Equilibran la urgencia del día a día con objetivos a largo plazo."
       }
     }
   },
