@@ -155,7 +155,13 @@
     "register": "Registrarse",
     "profile": "Perfil",
     "logout": "Cerrar Sesión",
-    "for_business": "Para Empresas"
+    "for_business": "Para Empresas",
+    "dashboard": "Panel",
+    "results": "Resultados",
+    "chat": "Chat",
+    "analytics": "Analíticas",
+    "developer": "Desarrollador",
+    "tests": "Pruebas"
   },
   "hero": {
     "title": "Descubre Tu Yo Profesional",
@@ -197,6 +203,8 @@
     "how_we_evaluate": "Cómo evaluamos",
     "tips_to_improve": "Consejos para mejorar",
     "visualization": "Visualización",
+    "vis_bar": "Barra",
+    "vis_radar": "Radar",
     "computational": {
       "name": "Poder Computacional",
       "description": "La capacidad de descomponer problemas complejos en pasos lógicos, usar datos y herramientas para encontrar soluciones eficientes y pensar sistemáticamente sobre los desafíos",

@@ -218,7 +218,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                           }}
                           className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
                         >
-                          Dashboard
+                          {t('nav.dashboard')}
                         </button>
                         <button
                           onClick={() => {
@@ -227,7 +227,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                           }}
                           className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
                         >
-                          Risultati
+                          {t('nav.results')}
                         </button>
                         <button
                           onClick={() => {
@@ -236,7 +236,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                           }}
                           className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
                         >
-                          Chat
+                          {t('nav.chat')}
                         </button>
                       </>
                     )}
@@ -274,7 +274,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                           variant="outline"
                           className="w-full"
                         >
-                          Logout
+                          {t('nav.logout')}
                         </Button>
                       )}
                     </div>
@@ -295,7 +295,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                       }`}
                       style={{ fontWeight: 500, letterSpacing: '0.05em' }}
                     >
-                      Dashboard
+                      {t('nav.dashboard')}
                       {(location.pathname === '/profile' || location.pathname === '/dashboard') && (
                         <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
                       )}
@@ -307,7 +307,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                       }`}
                       style={{ fontWeight: 500, letterSpacing: '0.05em' }}
                     >
-                      Risultati
+                      {t('nav.results')}
                       {location.pathname === '/risultati' && (
                         <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
                       )}
@@ -319,7 +319,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                       }`}
                       style={{ fontWeight: 500, letterSpacing: '0.05em' }}
                     >
-                      Chat
+                      {t('nav.chat')}
                       {location.pathname === '/chat' && (
                         <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
                       )}
@@ -333,7 +333,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                           }`}
                           style={{ fontWeight: 500, letterSpacing: '0.05em' }}
                         >
-                          Analytics
+                          {t('nav.analytics')}
                           {location.pathname === '/analytics' && (
                             <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
                           )}
@@ -345,7 +345,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                           }`}
                           style={{ fontWeight: 500, letterSpacing: '0.05em' }}
                         >
-                          Developer
+                          {t('nav.developer')}
                           {location.pathname === '/admin' && (
                             <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
                           )}
@@ -361,7 +361,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                       }`}
                       style={{ fontWeight: 500, letterSpacing: '0.05em' }}
                     >
-                      Tests
+                      {t('nav.tests')}
                       {(location.pathname.startsWith('/test') || location.pathname === '/development-plan') && (
                         <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
                       )}
@@ -391,7 +391,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                     className="font-body bg-[hsl(var(--xima-accent))]/10 hover:bg-[hsl(var(--xima-accent))]/20 transition-all hover:shadow-lg hover:shadow-[hsl(var(--xima-accent))]/20"
                     style={{ fontWeight: 500, letterSpacing: '0.05em' }}
                   >
-                    Logout
+                    {t('nav.logout')}
                   </Button>
                 </div>
               )}
