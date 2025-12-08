@@ -1289,12 +1289,106 @@
         "open1": { "question": "Describe a leadership decision you are proud of. What trade-offs did you weigh and why?" },
         "open2": { "question": "What's your biggest growth edge as a leader, and how are you addressing it?" }
       },
+      "examples": {
+        "q1": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Scan for anomalies):** You prioritize quick detection of problems that need immediate attention. This indicates a crisis-prevention mindset.\n\n**Option B (Drill into segments):** You prefer understanding root causes by breaking data into meaningful groups. This shows analytical depth.\n\n**Option C (Compare with trends):** You contextualize current performance against history. This reveals pattern-recognition thinking.\n\n**Option D (Export offline):** You take time for deep analysis before conclusions. This suggests methodical, thorough processing.\n\n**How to answer:** Choose the option that describes what you ACTUALLY do first, not what you think is ideal. Watch: https://www.youtube.com/watch?v=d4cKVgpHlCY"
+        },
+        "q2": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Synthesize/reframe):** You lead by finding the underlying issue behind disagreements. This shows strategic facilitation.\n\n**Option B (Ask clarifying questions):** You believe misalignment often stems from different contexts. This shows diagnostic communication.\n\n**Option C (Summarize decisions):** You drive toward action and closure. This indicates execution-focused leadership.\n\n**Option D (De-escalate/redirect):** You prioritize team cohesion and shared purpose over winning arguments.\n\n**How to answer:** Think about your last 3 meetings with conflict. Which behavior did you naturally exhibit? Watch: https://www.youtube.com/watch?v=TP5xDjAMhQk"
+        },
+        "q3": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Industry briefings):** You prefer curated, synthesized information from trusted sources.\n\n**Option B (Analyst reports):** You want data-driven competitive intelligence and market analysis.\n\n**Option C (Conferences/webinars):** You value peer learning and networking alongside content.\n\n**Option D (Customer interviews):** You prioritize firsthand market signals over secondhand analysis.\n\n**How to answer:** Consider where you spent the most time learning about your market in the last quarter. Watch: https://www.youtube.com/watch?v=MnIPpUiTcRc"
+        },
+        "q4": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Prototype quickly):** You believe in testing ideas fast with real market feedback.\n\n**Option B (Adapt playbooks):** You prefer proven frameworks customized to your context.\n\n**Option C (Borrow from other industries):** You find innovation in cross-pollination of ideas.\n\n**Option D (Co-create with teams):** You believe the best strategies emerge from collaborative input.\n\n**How to answer:** Think about a recent go-to-market initiative. Which approach did you naturally gravitate toward? Watch: https://www.youtube.com/watch?v=QoAOzMTLP5s"
+        },
+        "q5": {
+          "title": "Understanding Your Motivation",
+          "body": "**Option A (Milestones/scorecards):** You're energized by measurable progress and clear targets.\n\n**Option B (Purpose/impact):** You draw energy from meaningful outcomes and customer success.\n\n**Option C (Learning/iteration):** You stay motivated by growth and skill development.\n\n**Option D (Recognition/wins):** You thrive on acknowledgment and visible accomplishments.\n\n**How to answer:** During your toughest quarter, what actually kept you going? Be honest about your intrinsic motivators. Watch: https://www.youtube.com/watch?v=u6XAPnuFjJc"
+        },
+        "q6": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Segment by channel/cohort):** You break problems into components to isolate root causes.\n\n**Option B (Correlate with changes):** You look for causation by examining what changed recently.\n\n**Option C (Check attribution):** You validate data quality before drawing conclusions.\n\n**Option D (Benchmark seasonality):** You contextualize against expected patterns.\n\n**How to answer:** When revenue unexpectedly dropped, what was your actual first instinct? Watch: https://www.youtube.com/watch?v=HCDP1rjy0Lk"
+        },
+        "q7": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Compelling story):** You influence through narrative and evidence-based persuasion.\n\n**Option B (Surface concerns):** You address resistance by creating space for honest dialogue.\n\n**Option C (Map stakeholders):** You tailor your approach based on individual motivations and concerns.\n\n**Option D (Phased adoption):** You reduce resistance by making change incremental and manageable.\n\n**How to answer:** Think about the last time a team resisted your proposal. How did you respond? Watch: https://www.youtube.com/watch?v=wV1FrqwZyKw"
+        },
+        "q8": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Build financial model):** You learn by constructing the economics from first principles.\n\n**Option B (Case studies):** You learn from others' successes and failures across contexts.\n\n**Option C (Shadow operators):** You learn by observing and doing alongside practitioners.\n\n**Option D (Run a pilot):** You learn by experimenting and getting direct feedback.\n\n**How to answer:** When you entered a new industry or business model, which method worked best for you? Watch: https://www.youtube.com/watch?v=MlJdMr3O5J4"
+        },
+        "q9": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Novel positioning):** You differentiate through unique messaging and market angle.\n\n**Option B (Bundle creatively):** You find value by combining or repackaging existing elements.\n\n**Option C (Partnerships):** You unlock growth through strategic alliances and distribution.\n\n**Option D (Reinvent onboarding):** You focus on reducing friction for new customers.\n\n**How to answer:** In a competitive market, which strategy have you actually employed successfully? Watch: https://www.youtube.com/watch?v=BzAdXyPYKQo"
+        },
+        "q10": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Ruthless prioritization):** You focus on the vital few tasks that drive most impact.\n\n**Option B (Energize team):** You lead by maintaining morale and collective focus.\n\n**Option C (Time-box experiments):** You balance urgency with learning by setting strict limits.\n\n**Option D (Secure resources):** You remove obstacles and ensure the team has what they need.\n\n**How to answer:** Under your most recent tight deadline, which behavior dominated your approach? Watch: https://www.youtube.com/watch?v=ZK-nFLFk4dA"
+        },
+        "q11": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Sensitivity analyses):** You model different scenarios to understand risk and upside.\n\n**Option B (A/B testing):** You prefer empirical evidence from controlled experiments.\n\n**Option C (Model elasticity):** You analyze how different segments respond to price changes.\n\n**Option D (Customer validation):** You test with real customer feedback before implementing.\n\n**How to answer:** When evaluating pricing, which method gives you the most confidence? Watch: https://www.youtube.com/watch?v=Gj5L9SYhoSE"
+        },
+        "q12": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Visuals/analogies):** You translate complexity into intuitive, relatable concepts.\n\n**Option B (Narrative/outcomes):** You connect information to stories with clear implications.\n\n**Option C (Executive summaries):** You distill information to key points for quick consumption.\n\n**Option D (Clear CTAs):** You always include specific next steps and decisions needed.\n\n**How to answer:** Think about your last presentation to non-experts. Which technique did you rely on most? Watch: https://www.youtube.com/watch?v=eIho2S0ZahI"
+        },
+        "q13": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Structured docs):** You believe in searchable, well-organized documentation.\n\n**Option B (Training sessions):** You prefer interactive, person-to-person knowledge transfer.\n\n**Option C (Living playbooks):** You maintain dynamic resources with clear ownership.\n\n**Option D (Communities of practice):** You build networks where knowledge flows organically.\n\n**How to answer:** What system has worked best for preserving knowledge in your teams? Watch: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+        },
+        "q14": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Ideation sprints):** You generate ideas through focused, time-boxed creative sessions.\n\n**Option B (Cross-functional workshops):** You bring diverse perspectives to unlock new thinking.\n\n**Option C (Reverse-engineer competitors):** You learn from what's working elsewhere in the market.\n\n**Option D (Contrarian perspectives):** You invite devil's advocates to challenge assumptions.\n\n**How to answer:** When plans stalled, which approach actually helped you break through? Watch: https://www.youtube.com/watch?v=K2vSQPh6MCE"
+        },
+        "q15": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Blameless post-mortem):** You focus on learning from failure without assigning blame.\n\n**Option B (Pivot quickly):** You move on rapidly to the next opportunity.\n\n**Option C (Seek mentoring):** You turn to experienced advisors to identify blind spots.\n\n**Option D (Refine and persist):** You iterate on the vision rather than abandoning it.\n\n**How to answer:** After your last significant failure, which response felt most natural? Watch: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
+        },
+        "q16": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Blend models):** You combine ground-up details with top-down market views.\n\n**Option B (Stress-test scenarios):** You model best/worst/likely cases to understand range.\n\n**Option C (Validate with sales):** You reality-check models with frontline insights.\n\n**Option D (Simulate constraints):** You model operational limits that affect outcomes.\n\n**How to answer:** Which method produces forecasts you trust most? Watch: https://www.youtube.com/watch?v=TDyB4eEzYE0"
+        },
+        "q17": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Story/impact):** You lead with narrative that connects to business outcomes.\n\n**Option B (Simple visuals):** You rely on clean graphics that speak for themselves.\n\n**Option C (Trade-offs/choices):** You frame decisions clearly with pros and cons.\n\n**Option D (One-page brief):** You distill everything to a single, comprehensive page.\n\n**How to answer:** How did you present your last complex strategy recommendation? Watch: https://www.youtube.com/watch?v=b1iGRaeNfn4"
+        },
+        "q18": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Regulations/economics):** You start with the structural forces shaping the industry.\n\n**Option B (Stakeholder interviews):** You learn from people who know the space intimately.\n\n**Option C (Value chain mapping):** You map how value flows and who captures it.\n\n**Option D (Jobs-to-be-done):** You focus on understanding customer needs and motivations.\n\n**How to answer:** When onboarding to your last new industry, which approach worked best? Watch: https://www.youtube.com/watch?v=Stc0beAxavY"
+        },
+        "q19": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Distinct voice/POV):** You differentiate through unique perspective and messaging.\n\n**Option B (Signature experiences):** You create memorable moments that define your brand.\n\n**Option C (Community co-creation):** You involve customers in shaping brand identity.\n\n**Option D (Novel channels):** You reach audiences through unexpected distribution.\n\n**How to answer:** Which differentiation strategy have you actually implemented successfully? Watch: https://www.youtube.com/watch?v=BzAdXyPYKQo"
+        },
+        "q20": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Roadmap/checkpoints):** You plan with clear milestones and review points.\n\n**Option B (Leading/lagging indicators):** You track both predictive and outcome metrics.\n\n**Option C (Quarterly reviews):** You adapt strategy regularly based on results.\n\n**Option D (Shield focus):** You protect long-term goals from short-term distractions.\n\n**How to answer:** Think about a multi-year goal you achieved. Which practice was most critical? Watch: https://www.youtube.com/watch?v=L4N1q4RNi9I"
+        },
+        "q21": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Define success metrics):** You start by clarifying how success will be measured.\n\n**Option B (Pilot with control):** You test changes in controlled conditions before scaling.\n\n**Option C (Assess readiness/risk):** You evaluate organizational capacity and potential obstacles.\n\n**Option D (Study references):** You learn from others who have done similar transformations.\n\n**How to answer:** When evaluating a major transformation, which step do you prioritize first? Watch: https://www.youtube.com/watch?v=iVXW1r_ivjw"
+        },
+        "open1": {
+          "title": "How to Answer Well",
+          "body": "Strong answers follow the STAR-L format: Situation, Task, Action, Result, Learning. Describe a specific decision with real stakes. Name the trade-offs explicitly (e.g., 'speed vs. thoroughness' or 'short-term revenue vs. long-term relationships'). Quantify outcomes when possible. Example: 'I chose to delay a product launch by 6 weeks to fix quality issues, trading short-term revenue for long-term brand trust. Result: 40% fewer support tickets and 15% higher NPS.' Watch: https://www.youtube.com/watch?v=0vNUxleEyoo"
+        },
+        "open2": {
+          "title": "How to Answer Well",
+          "body": "Show self-awareness by naming a genuine growth area, not a humble-brag. Describe specific actions you're taking. Example: 'I tend to over-index on data and delay decisions. I'm addressing this by setting decision deadlines upfront, practicing 'reversible decisions' thinking, and asking my team to flag when I'm analysis-paralyzed.' Demonstrate you're actively working on it. Watch: https://www.youtube.com/watch?v=tJxFZrMxT3s"
+        }
+      },
       "examplesByCategory": {
-        "comp_power": "",
-        "communication": "",
-        "knowledge": "",
-        "creativity": "",
-        "drive": ""
+        "comp_power": "Business Computational Power questions assess your ability to work with data, metrics, and analytical frameworks. Strong performers segment problems systematically, validate data quality, and use multiple analytical approaches before drawing conclusions.",
+        "communication": "Business Communication questions evaluate how you influence stakeholders, manage conflicts, and translate complex ideas for diverse audiences. Effective communicators adapt their style, lead with outcomes, and create alignment through structured dialogue.",
+        "knowledge": "Business Knowledge questions measure how you acquire market intelligence, maintain institutional memory, and learn new domains quickly. Top performers combine multiple learning methods and actively share knowledge to reinforce their own understanding.",
+        "creativity": "Business Creativity questions assess your ability to generate growth strategies, overcome stagnation, and find novel solutions to competitive challenges. Creative business leaders test ideas quickly, borrow from adjacent industries, and involve diverse perspectives.",
+        "drive": "Business Drive questions measure your resilience, goal-setting, and ability to maintain momentum through challenges. High-drive leaders set clear metrics, learn from failures systematically, and protect long-term focus from short-term distractions."
       }
     },
     "arts_creative": {
@@ -1325,12 +1419,106 @@
         "open1": { "question": "Tell us about a piece you created that changed outcomes. Why did it work?" },
         "open2": { "question": "Which creative skill are you most driven to improve this year and how?" }
       },
+      "examples": {
+        "q1": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Scan engagement vs objectives):** You prioritize measuring whether creative meets its intended goals first.\n\n**Option B (Compare formats/placements):** You analyze which creative formats and contexts perform best.\n\n**Option C (Analyze audience segments):** You look at how different audiences respond to the creative.\n\n**Option D (Check measurement integrity):** You validate data quality before drawing conclusions.\n\n**How to answer:** When reviewing campaign performance, what do you genuinely look at first? Watch: https://www.youtube.com/watch?v=0yCJMt9Mx9c"
+        },
+        "q2": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Story behind choices):** You explain the reasoning and creative rationale driving decisions.\n\n**Option B (Visual before/after):** You show tangible transformations that make the value visible.\n\n**Option C (Business goals):** You connect creative choices to outcomes stakeholders care about.\n\n**Option D (Invite questions):** You build understanding through interactive dialogue.\n\n**How to answer:** Think about your last presentation to non-creative stakeholders. Which approach did you naturally use? Watch: https://www.youtube.com/watch?v=eIho2S0ZahI"
+        },
+        "q3": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Masters/case studies):** You learn by studying excellence and analyzing what makes great work great.\n\n**Option B (New tools/workflows):** You stay current by mastering the latest creative technologies.\n\n**Option C (Courses/critiques):** You prefer structured learning with feedback from experts.\n\n**Option D (Communities/sharing):** You grow through peer exchange and putting your work out there.\n\n**How to answer:** Where have you actually spent time learning in the past month? Watch: https://www.youtube.com/watch?v=MlJdMr3O5J4"
+        },
+        "q4": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Many rough drafts):** You believe in quantity to find quality. Generate options fast, refine later.\n\n**Option B (Remix references):** You combine existing inspirations into something new.\n\n**Option C (Iterate one direction):** You prefer depth over breadth, refining one strong concept.\n\n**Option D (Team co-creation):** You involve others early to enrich ideas collaboratively.\n\n**How to answer:** When starting a new project, which approach is most natural for you? Watch: https://www.youtube.com/watch?v=K2vSQPh6MCE"
+        },
+        "q5": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Time-box/ship solid):** You balance quality with deadline reality, delivering complete work.\n\n**Option B (Core narrative):** You strip to essentials, protecting the central idea.\n\n**Option C (Reduce scope):** You cut features while preserving impact.\n\n**Option D (Ask for support):** You seek help removing obstacles rather than working around them.\n\n**How to answer:** Under your last tight deadline, which strategy did you actually use? Watch: https://www.youtube.com/watch?v=mNeXuCYiE0U"
+        },
+        "q6": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (A/B tests):** You let data from controlled experiments guide creative decisions.\n\n**Option B (Heatmaps/eye-tracking):** You use visual attention data to optimize engagement.\n\n**Option C (Historical patterns):** You rely on what has worked before in similar contexts.\n\n**Option D (User research):** You base decisions on qualitative understanding of your audience.\n\n**How to answer:** When choosing between creative options, which evidence do you trust most? Watch: https://www.youtube.com/watch?v=VQKMoT-6XSg"
+        },
+        "q7": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Paraphrase):** You confirm understanding by restating what you heard.\n\n**Option B (Ask for examples):** You seek specificity to understand the feedback deeply.\n\n**Option C (Discuss constraints):** You contextualize feedback within project realities.\n\n**Option D (Propose revision plan):** You move quickly to action with a clear path forward.\n\n**How to answer:** When receiving critical feedback, what is your instinctive first response? Watch: https://www.youtube.com/watch?v=wtl5UrrgU8c"
+        },
+        "q8": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Interview stakeholders):** You learn directly from people who know the client's world.\n\n**Option B (Brand guidelines):** You immerse in the visual and verbal identity deeply.\n\n**Option C (Audience personas):** You focus on understanding who you're creating for.\n\n**Option D (Market/trend reports):** You contextualize the client within their competitive landscape.\n\n**How to answer:** Starting a new client project, where do you invest time first? Watch: https://www.youtube.com/watch?v=Stc0beAxavY"
+        },
+        "q9": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Switch mediums/constraints):** You break blocks by changing the rules or tools.\n\n**Option B (Other arts inspiration):** You seek inspiration from adjacent creative disciplines.\n\n**Option C (Diverse brainstorm):** You bring in different perspectives to generate new angles.\n\n**Option D (Pause to reset):** You step away to let your subconscious work.\n\n**How to answer:** When you were last creatively stuck, which approach actually helped? Watch: https://www.youtube.com/watch?v=f1yQTy1bQmc"
+        },
+        "q10": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Track progress):** You stay motivated by seeing visible advancement.\n\n**Option B (Celebrate wins):** You maintain energy by acknowledging small creative victories.\n\n**Option C (Alternate tasks):** You prevent burnout by varying your activities.\n\n**Option D (Share drafts):** You get encouragement and accountability from others.\n\n**How to answer:** On long projects, what actually keeps you going? Watch: https://www.youtube.com/watch?v=mNeXuCYiE0U"
+        },
+        "q11": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Cost vs lift model):** You analyze ROI to allocate resources optimally.\n\n**Option B (Prioritize high-impact):** You focus budget on the assets that matter most.\n\n**Option C (Prototype first):** You test cheaply before committing significant resources.\n\n**Option D (Reuse/adapt):** You maximize value by repurposing existing assets.\n\n**How to answer:** When budgets are tight, which approach do you instinctively take? Watch: https://www.youtube.com/watch?v=M576WGiDBdQ"
+        },
+        "q12": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Reframe outcomes):** You clarify what success looks like in shared terms.\n\n**Option B (Show references):** You align expectations visually with concrete examples.\n\n**Option C (Translate to criteria):** You convert abstract goals into measurable requirements.\n\n**Option D (Co-write brief):** You involve stakeholders in defining the problem together.\n\n**How to answer:** When briefs cause confusion, how do you typically resolve it? Watch: https://www.youtube.com/watch?v=eIho2S0ZahI"
+        },
+        "q13": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Reusable templates):** You create systems that scale your knowledge.\n\n**Option B (Internal guides):** You document processes in written form.\n\n**Option C (How-to videos):** You capture knowledge in visual, accessible formats.\n\n**Option D (Reference library):** You curate inspiring examples and resources.\n\n**How to answer:** How do you actually preserve and share what you learn? Watch: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+        },
+        "q14": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Signature system):** You create unique visual language that becomes recognizable.\n\n**Option B (Typography/motion):** You differentiate through craft details and animation.\n\n**Option C (Narrative motif):** You build brand identity through storytelling elements.\n\n**Option D (Sensory elements):** You explore texture, sound, and multi-sensory design.\n\n**How to answer:** Which differentiation strategy have you successfully implemented? Watch: https://www.youtube.com/watch?v=G8w0rJhztJ4"
+        },
+        "q15": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Extract lessons):** You analyze what to do differently next time.\n\n**Option B (Pitch alternate fast):** You recover quickly with a new direction.\n\n**Option C (Ask what you missed):** You seek clarity on the evaluation criteria.\n\n**Option D (Refine/re-present):** You believe the concept was right but needs polish.\n\n**How to answer:** When your work was rejected, what was your natural response? Watch: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
+        },
+        "q16": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Speed/compatibility):** You prioritize workflow efficiency and integration.\n\n**Option B (Collaboration features):** You value how well tools support teamwork.\n\n**Option C (Learning curve):** You consider how quickly you and the team can adopt it.\n\n**Option D (Cost/licensing):** You evaluate the financial and legal implications.\n\n**How to answer:** When choosing new tools, which factor weighs most heavily? Watch: https://www.youtube.com/watch?v=M576WGiDBdQ"
+        },
+        "q17": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Narrative arcs):** You structure communication as a compelling story.\n\n**Option B (Options with pros/cons):** You present choices with clear trade-offs.\n\n**Option C (Audience impact):** You frame everything in terms of user/customer benefit.\n\n**Option D (Concise one-pager):** You distill complexity into a single, scannable document.\n\n**How to answer:** How do you typically structure stakeholder presentations? Watch: https://www.youtube.com/watch?v=b1iGRaeNfn4"
+        },
+        "q18": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Landscape/competitors):** You map the competitive and market context.\n\n**Option B (Audience insights):** You focus on understanding the people you're designing for.\n\n**Option C (Subject-matter experts):** You learn from people with deep domain knowledge.\n\n**Option D (Shadow users):** You observe real behavior in natural contexts.\n\n**How to answer:** Entering a new domain, which approach accelerates your learning most? Watch: https://www.youtube.com/watch?v=Stc0beAxavY"
+        },
+        "q19": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Creative constraints):** You use limitations to force novel solutions.\n\n**Option B (Unlikely references):** You combine unexpected sources for originality.\n\n**Option C (Prototype/test):** You validate ideas quickly with real feedback.\n\n**Option D (Cross-discipline collaboration):** You bring in perspectives from outside your field.\n\n**How to answer:** Which approach has produced your most original work? Watch: https://www.youtube.com/watch?v=G8w0rJhztJ4"
+        },
+        "q20": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (North-star board):** You maintain visual reminders of your long-term creative direction.\n\n**Option B (Quarterly themes):** You set periodic creative goals to guide your work.\n\n**Option C (Reflection windows):** You schedule time to evaluate and adjust your trajectory.\n\n**Option D (Protect focus time):** You guard deep work time against interruptions.\n\n**How to answer:** Which practice helps you maintain long-term creative vision? Watch: https://www.youtube.com/watch?v=L4N1q4RNi9I"
+        },
+        "q21": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Measurable criteria):** You define objective standards for quality assessment.\n\n**Option B (Batch review/checklists):** You use systematic processes to maintain consistency.\n\n**Option C (Sample test with audience):** You validate quality with real user feedback.\n\n**Option D (Automate checks):** You use technology to catch issues at scale.\n\n**How to answer:** Managing large volumes of creative work, which approach do you rely on? Watch: https://www.youtube.com/watch?v=VQKMoT-6XSg"
+        },
+        "open1": {
+          "title": "How to Answer Well",
+          "body": "Strong answers describe a specific piece with measurable impact. Use this structure: What you created, The challenge it addressed, Your specific creative choices, The measurable outcome. Example: 'I redesigned the checkout flow illustrations, moving from abstract to concrete product imagery. This increased conversion by 23% because users could visualize what they were buying.' Be specific about YOUR creative decisions. Watch: https://www.youtube.com/watch?v=0vNUxleEyoo"
+        },
+        "open2": {
+          "title": "How to Answer Well",
+          "body": "Name a genuine skill gap and describe active steps to close it. Avoid generic answers like 'get better at design.' Instead: 'I want to improve my motion design skills. I'm taking a 12-week animation course, practicing 30 minutes daily, and sharing progress in an online community for feedback.' Show specific actions and accountability. Watch: https://www.youtube.com/watch?v=tJxFZrMxT3s"
+        }
+      },
       "examplesByCategory": {
-        "comp_power": "",
-        "communication": "",
-        "knowledge": "",
-        "creativity": "",
-        "drive": ""
+        "comp_power": "Creative Computational Power questions assess your ability to use data and analytics to inform creative decisions. Strong performers validate assumptions with evidence, test creative options systematically, and balance intuition with measurable insights.",
+        "communication": "Creative Communication questions evaluate how you present ideas, receive feedback, and align stakeholders. Effective creative communicators translate abstract concepts into tangible examples and adapt their approach for different audiences.",
+        "knowledge": "Creative Knowledge questions measure how you stay current in your craft and build domain expertise. Top creative performers combine formal learning with community engagement and apply new techniques quickly to their work.",
+        "creativity": "Creative Creativity questions assess your idea generation process and ability to produce original work. Strong performers embrace constraints, seek diverse inspiration, and prototype quickly to validate creative directions.",
+        "drive": "Creative Drive questions measure your resilience, motivation, and ability to maintain creative momentum. High-drive creatives celebrate small wins, learn from rejection, and protect dedicated time for deep creative work."
       }
     },
     "service_ops": {
@@ -1361,12 +1549,106 @@
         "open1": { "question": "Describe a time you improved a service process. What changed and how did you make it stick?" },
         "open2": { "question": "What area of your operations practice do you most want to grow this year, and what's your plan?" }
       },
+      "examples": {
+        "q1": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Segment by shift/location):** You break down problems to isolate where issues are occurring.\n\n**Option B (Check process compliance):** You verify whether standard procedures are being followed.\n\n**Option C (Compare historical patterns):** You contextualize current performance against past trends.\n\n**Option D (Verify data integrity):** You validate that the metrics themselves are accurate.\n\n**How to answer:** When service KPIs dropped, what was your actual first instinct? Watch: https://www.youtube.com/watch?v=HCDP1rjy0Lk"
+        },
+        "q2": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Listen/reflect):** You prioritize understanding the customer's experience and emotions.\n\n**Option B (Clarify policies):** You explain rules and procedures in accessible language.\n\n**Option C (Offer options):** You provide choices and clear next steps for resolution.\n\n**Option D (Escalate with context):** You involve others when needed, with complete information.\n\n**How to answer:** Think about your last difficult customer interaction. Which approach did you naturally use? Watch: https://www.youtube.com/watch?v=CsgHMiOWsRA"
+        },
+        "q3": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Clear SOPs):** You maintain well-documented, up-to-date standard procedures.\n\n**Option B (Refresh trainings):** You run periodic skill updates for the team.\n\n**Option C (Knowledge base):** You log changes in searchable, accessible systems.\n\n**Option D (Frontline feedback):** You collect input from those doing the work daily.\n\n**How to answer:** How do you actually keep procedures current in your role? Watch: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+        },
+        "q4": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Redesign workflow):** You fundamentally rethink how work flows through the system.\n\n**Option B (Borrow solutions):** You adapt approaches that work in other contexts.\n\n**Option C (Pilot experiment):** You test small changes before full implementation.\n\n**Option D (Co-create):** You involve staff and users in developing solutions.\n\n**How to answer:** Facing a recurring bottleneck, which approach would you naturally try first? Watch: https://www.youtube.com/watch?v=K2vSQPh6MCE"
+        },
+        "q5": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Top-impact tasks):** You prioritize ruthlessly on what matters most.\n\n**Option B (Support teammates):** You help others succeed, knowing it benefits everyone.\n\n**Option C (Rotate tasks):** You prevent burnout by varying activities.\n\n**Option D (Celebrate wins):** You maintain energy by acknowledging progress.\n\n**How to answer:** On your most stressful day recently, which behavior did you exhibit? Watch: https://www.youtube.com/watch?v=ZK-nFLFk4dA"
+        },
+        "q6": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Model demand by hour):** You use data to predict staffing needs across time.\n\n**Option B (Skill mix):** You ensure the right combination of capabilities are scheduled.\n\n**Option C (Plan buffers):** You build in capacity for unexpected spikes.\n\n**Option D (Review constraints):** You account for rules and limitations affecting scheduling.\n\n**How to answer:** Creating schedules, which factor do you prioritize most? Watch: https://www.youtube.com/watch?v=M576WGiDBdQ"
+        },
+        "q7": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Explain why/impact):** You help people understand the reasoning behind changes.\n\n**Option B (Checklists/visuals):** You provide clear, easy-to-follow implementation guides.\n\n**Option C (Q&A channel):** You create space for questions and clarification.\n\n**Option D (Peer support):** You pair experienced staff with those learning new processes.\n\n**How to answer:** When introducing a new protocol, which approach works best for you? Watch: https://www.youtube.com/watch?v=wV1FrqwZyKw"
+        },
+        "q8": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Step-by-step guides):** You provide detailed, sequential instructions.\n\n**Option B (Shadow then independence):** You use observation followed by supervised practice.\n\n**Option C (Micro-trainings):** You focus on short, specific skill sessions.\n\n**Option D (Document pitfalls):** You warn about common mistakes upfront.\n\n**How to answer:** How do you typically bring new team members up to speed? Watch: https://www.youtube.com/watch?v=MlJdMr3O5J4"
+        },
+        "q9": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Redesign touchpoints):** You rethink how customers interact at key moments.\n\n**Option B (Personalize moments):** You make experiences feel individualized.\n\n**Option C (Streamline handoffs):** You reduce friction between service stages.\n\n**Option D (Test new tools):** You experiment with technology to enhance experience.\n\n**How to answer:** To improve service, which approach have you found most effective? Watch: https://www.youtube.com/watch?v=BzAdXyPYKQo"
+        },
+        "q10": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Share goals/progress):** You keep the team informed about objectives and advancement.\n\n**Option B (Recognize behaviors):** You acknowledge and reward helpful actions.\n\n**Option C (Rotate fairly):** You ensure workload is distributed equitably.\n\n**Option D (Quick support):** You remove obstacles that frustrate staff.\n\n**How to answer:** What actually works to maintain morale in your team? Watch: https://www.youtube.com/watch?v=mNeXuCYiE0U"
+        },
+        "q11": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Checklists):** You use step-by-step verification to prevent mistakes.\n\n**Option B (Standardize/5S):** You organize the work environment for clarity and efficiency.\n\n**Option C (Automate):** You use technology to eliminate human error on repetitive tasks.\n\n**Option D (Measure/fix causes):** You analyze error patterns and address root causes.\n\n**How to answer:** Which error-reduction method has worked best in your experience? Watch: https://www.youtube.com/watch?v=M576WGiDBdQ"
+        },
+        "q12": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Acceptance criteria):** You define clear standards for what constitutes complete work.\n\n**Option B (Handoff templates):** You use consistent formats for transferring work.\n\n**Option C (Alignment huddles):** You meet briefly to ensure everyone is on the same page.\n\n**Option D (Shared dashboards):** You make status visible to all parties.\n\n**How to answer:** How do you ensure smooth handoffs between teams or shifts? Watch: https://www.youtube.com/watch?v=eIho2S0ZahI"
+        },
+        "q13": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Short retros):** You run regular reflection sessions to capture learning.\n\n**Option B (Simple summaries):** You document key takeaways in accessible formats.\n\n**Option C (Searchable FAQs):** You build knowledge bases that are easy to navigate.\n\n**Option D (Assign owners):** You ensure someone is responsible for keeping content current.\n\n**How to answer:** How does your team actually capture and preserve lessons learned? Watch: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+        },
+        "q14": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Smarter sequencing):** You reorder work to flow more efficiently.\n\n**Option B (Re-use resources):** You find creative ways to get more from what you have.\n\n**Option C (Rearrange flow):** You optimize physical or digital workspace layout.\n\n**Option D (Simplify steps):** You reduce complexity for users and staff.\n\n**How to answer:** Facing constraints, which approach is most natural for you? Watch: https://www.youtube.com/watch?v=G8w0rJhztJ4"
+        },
+        "q15": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Blameless review):** You analyze what happened without assigning fault.\n\n**Option B (Notify transparently):** You communicate with stakeholders honestly and promptly.\n\n**Option C (Recovery plan fast):** You move quickly to resolve the situation.\n\n**Option D (Track to closure):** You follow through until the issue is fully resolved.\n\n**How to answer:** After a service failure, what is your priority? Watch: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
+        },
+        "q16": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Score by requirements):** You evaluate tools against a clear list of needs.\n\n**Option B (Pilot small group):** You test with a subset before broader rollout.\n\n**Option C (Cost/benefit/risk):** You analyze financial and operational implications.\n\n**Option D (Check integration):** You ensure the tool works with existing systems.\n\n**How to answer:** Selecting new tools, which criterion matters most to you? Watch: https://www.youtube.com/watch?v=iVXW1r_ivjw"
+        },
+        "q17": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Clear dashboards):** You use visual displays to keep everyone informed.\n\n**Option B (Quick standups):** You hold brief, regular alignment meetings.\n\n**Option C (Bullet updates):** You send concise written communications.\n\n**Option D (Radio/chat protocols):** You use real-time communication channels.\n\n**How to answer:** How do you typically keep shifts or teams aligned? Watch: https://www.youtube.com/watch?v=b1iGRaeNfn4"
+        },
+        "q18": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Official guidance):** You start with authoritative sources and documentation.\n\n**Option B (Expert clarifications):** You consult with people who understand the regulation.\n\n**Option C (Compliance checklist):** You create practical tools for implementation.\n\n**Option D (Train with examples):** You help the team understand through concrete cases.\n\n**How to answer:** Learning a new regulation, which approach works best for you? Watch: https://www.youtube.com/watch?v=Stc0beAxavY"
+        },
+        "q19": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Simplify forms/language):** You make information easier to understand for everyone.\n\n**Option B (Alternate formats):** You offer multiple ways to access information or service.\n\n**Option C (Rework space/signage):** You improve physical navigation and clarity.\n\n**Option D (Co-design with users):** You involve those who will use the service in designing it.\n\n**How to answer:** Which approach have you used to make services more accessible? Watch: https://www.youtube.com/watch?v=BzAdXyPYKQo"
+        },
+        "q20": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (SLAs/audits):** You set standards and check compliance systematically.\n\n**Option B (Leading indicators):** You track early warning signs before problems manifest.\n\n**Option C (Improvement cycles):** You run continuous improvement processes.\n\n**Option D (Protect focus time):** You guard staff time for quality-focused work.\n\n**How to answer:** What sustains quality over the long term in your experience? Watch: https://www.youtube.com/watch?v=L4N1q4RNi9I"
+        },
+        "q21": {
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Define metrics upfront):** You establish success criteria before making changes.\n\n**Option B (Compare before/after):** You measure the impact of changes with data.\n\n**Option C (Controlled trial):** You test changes in limited conditions first.\n\n**Option D (Document impact):** You record what changed and plan next steps.\n\n**How to answer:** Evaluating a process change, which step do you prioritize? Watch: https://www.youtube.com/watch?v=VQKMoT-6XSg"
+        },
+        "open1": {
+          "title": "How to Answer Well",
+          "body": "Strong answers describe a specific process improvement with measurable results. Structure: The problem (bottleneck, error rate, customer complaint), Your solution (what you changed), How you made it stick (training, documentation, metrics), The outcome (quantified improvement). Example: 'I reduced average wait time from 12 to 4 minutes by redesigning the triage flow and creating visual cues for staff. We sustained this by adding wait time to our daily dashboard.' Watch: https://www.youtube.com/watch?v=0vNUxleEyoo"
+        },
+        "open2": {
+          "title": "How to Answer Well",
+          "body": "Name a genuine operational skill you want to develop and describe specific actions. Avoid vague answers like 'get better at operations.' Instead: 'I want to improve my data analysis skills to make better staffing decisions. I enrolled in a Tableau course, I practice building dashboards weekly, and I meet monthly with our analytics team to review my work.' Show active learning. Watch: https://www.youtube.com/watch?v=tJxFZrMxT3s"
+        }
+      },
       "examplesByCategory": {
-        "comp_power": "",
-        "communication": "",
-        "knowledge": "",
-        "creativity": "",
-        "drive": ""
+        "comp_power": "Operations Computational Power questions assess your ability to use data for scheduling, error reduction, and process optimization. Strong performers segment problems systematically, use metrics to drive decisions, and validate changes with controlled experiments.",
+        "communication": "Operations Communication questions evaluate how you handle difficult situations, communicate changes, and coordinate teams. Effective operations communicators explain the 'why' behind changes and create clear channels for questions and feedback.",
+        "knowledge": "Operations Knowledge questions measure how you maintain procedures, onboard staff, and capture lessons learned. Top performers create searchable documentation, run regular training, and collect frontline feedback to keep knowledge current.",
+        "creativity": "Operations Creativity questions assess your ability to solve recurring problems and improve service experiences. Creative operations professionals test small changes, borrow solutions from other contexts, and involve staff in developing improvements.",
+        "drive": "Operations Drive questions measure your resilience under pressure and ability to sustain long-term quality. High-drive operations professionals prioritize ruthlessly, celebrate progress, and follow through systematically after failures."
       }
     }
   },
