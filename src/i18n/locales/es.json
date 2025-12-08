@@ -660,87 +660,87 @@
       "examples": {
         "q1": {
           "title": "Ejemplo Práctico",
-          "body": "Imagina que recibes un dataset con 50,000 registros de clientes. Un enfoque sólido es primero segmentarlo en grupos lógicos (por región, tipo de suscripción o fecha de registro), validar la calidad de los datos, y luego identificar patrones. Por ejemplo, podrías descubrir que los clientes que completan el onboarding en 48 horas tienen 3x mayor retención. Mira este video sobre pensamiento analítico: https://www.youtube.com/watch?v=ua-CiDNNj30"
+          "body": "Imagina que recibes un dataset con 50,000 registros de clientes.\n\n**Opción A:** Segmentar en grupos lógicos (por región, suscripción, fecha de registro)\n**Opción B:** Validar la calidad de los datos antes de analizar\n**Opción C:** Identificar patrones usando visualización\n**Opción D:** Combinar todos los enfoques sistemáticamente\n\n**Cómo responder:** Piensa en tu enfoque natural. Los clientes que completan onboarding en 48h tienen 3x mayor retención.\n\nMira este video sobre pensamiento analítico: https://www.youtube.com/watch?v=ua-CiDNNj30"
         },
         "q2": {
           "title": "Ejemplo Práctico",
-          "body": "En una reunión de sprint planning, los contribuyentes efectivos primero escuchan activamente para entender bloqueos y prioridades. Luego hacen preguntas clarificadoras como '¿Cuál es la métrica de éxito para esta feature?' antes de proponer soluciones. Este enfoque asegura alineación y reduce el retrabajo. Aprende más sobre participación efectiva: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          "body": "En una reunión de sprint planning, considera cómo contribuyes mejor.\n\n**Opción A:** Escuchar activamente para entender bloqueos y prioridades\n**Opción B:** Hacer preguntas clarificadoras como '¿Cuál es la métrica de éxito?'\n**Opción C:** Proponer soluciones basadas en experiencia previa\n**Opción D:** Documentar decisiones para alineación del equipo\n\n**Cómo responder:** Reflexiona sobre cómo aseguras alineación y reduces el retrabajo.\n\nAprende más sobre participación efectiva: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         },
         "q3": {
           "title": "Ejemplo Práctico",
-          "body": "Al aprender un nuevo framework como React, los aprendices más efectivos combinan documentación oficial con proyectos prácticos. Empieza con lo básico (componentes, props, state), construye una pequeña app de tareas, luego busca feedback de desarrolladores experimentados. La Técnica Feynman ayuda: explica conceptos en términos simples para probar tu comprensión. Mira: https://www.youtube.com/watch?v=MlJdMr3O5J4"
+          "body": "Al aprender un nuevo framework como React, considera tu estrategia de aprendizaje.\n\n**Opción A:** Documentación oficial primero, luego proyectos prácticos\n**Opción B:** Construir una pequeña app inmediatamente\n**Opción C:** Buscar feedback de desarrolladores experimentados\n**Opción D:** La Técnica Feynman: explicar conceptos en términos simples\n\n**Cómo responder:** Piensa en cómo equilibras teoría y práctica.\n\nMira: https://www.youtube.com/watch?v=MlJdMr3O5J4"
         },
         "q4": {
           "title": "Ejemplo Práctico",
-          "body": "Los solucionadores de problemas creativos usan técnicas como 'reverse brainstorming' (¿cómo podríamos empeorar este problema?) o buscan inspiración en industrias no relacionadas. Por ejemplo, una startup de salud podría tomar patrones UX de reservas de restaurantes para las citas. Prueba el método SCAMPER: Sustituir, Combinar, Adaptar, Modificar, Proponer otros usos, Eliminar, Revertir. Aprende más: https://www.youtube.com/watch?v=G8w0rJhztJ4"
+          "body": "Para resolver problemas creativamente, los equipos usan diferentes técnicas.\n\n**Opción A:** 'Reverse brainstorming' - ¿cómo empeoraríamos el problema?\n**Opción B:** Buscar inspiración en industrias no relacionadas\n**Opción C:** Método SCAMPER: Sustituir, Combinar, Adaptar, Modificar\n**Opción D:** Combinar múltiples perspectivas del equipo\n\n**Cómo responder:** Considera cómo generas ideas innovadoras naturalmente.\n\nAprende más: https://www.youtube.com/watch?v=G8w0rJhztJ4"
         },
         "q5": {
           "title": "Ejemplo Práctico",
-          "body": "Entender tu motivación principal ayuda a sostener el esfuerzo a largo plazo. Alguien motivado por el impacto podría seguir historias de éxito de clientes; alguien motivado por el crecimiento podría celebrar cada nueva habilidad aprendida. La investigación muestra que la motivación intrínseca (propósito, maestría, autonomía) supera las recompensas extrínsecas para trabajo complejo. Mira el resumen de Drive de Dan Pink: https://www.youtube.com/watch?v=u6XAPnuFjJc"
+          "body": "Entender tu motivación principal ayuda a sostener el esfuerzo.\n\n**Opción A:** Motivado por impacto - seguir historias de éxito de clientes\n**Opción B:** Motivado por crecimiento - celebrar cada nueva habilidad\n**Opción C:** Motivado por propósito - conectar trabajo con misión mayor\n**Opción D:** Motivado por autonomía - tener control sobre decisiones\n\n**Cómo responder:** Piensa en qué te energiza cuando enfrentas desafíos.\n\nMira el resumen de Drive de Dan Pink: https://www.youtube.com/watch?v=u6XAPnuFjJc"
         },
         "q6": {
           "title": "Ejemplo Práctico",
-          "body": "Al evaluar el éxito de una nueva feature, los top performers usan múltiples métodos: métricas cuantitativas (tasas de conversión, tiempo de completado), feedback cualitativo (entrevistas de usuarios), y análisis comparativo (A/B tests). Por ejemplo, prueba dos flujos de checkout con 5% del tráfico cada uno antes del rollout completo. Mira: https://www.youtube.com/watch?v=VQKMoT-6XSg"
+          "body": "Al evaluar el éxito de una nueva feature, considera tu enfoque.\n\n**Opción A:** Métricas cuantitativas (tasas de conversión, tiempo de completado)\n**Opción B:** Feedback cualitativo (entrevistas de usuarios)\n**Opción C:** Análisis comparativo (A/B tests)\n**Opción D:** Combinar múltiples métodos para una visión completa\n\n**Cómo responder:** Reflexiona sobre cómo defines y mides el éxito.\n\nMira: https://www.youtube.com/watch?v=VQKMoT-6XSg"
         },
         "q7": {
           "title": "Ejemplo Práctico",
-          "body": "En conflictos, los comunicadores expertos usan el enfoque 'intereses sobre posiciones'. En lugar de debatir '¿deberíamos usar React o Vue?', explora los intereses subyacentes: 'Necesitamos mantenibilidad y onboarding rápido.' Frecuentemente, los conflictos se disuelven cuando se entienden las necesidades subyacentes. Prueba el método DESC: Describe, Expresa, Especifica, Consecuencias. Aprende más: https://www.youtube.com/watch?v=CsgHMiOWsRA"
+          "body": "En conflictos de equipo, los comunicadores expertos usan diferentes enfoques.\n\n**Opción A:** Enfoque 'intereses sobre posiciones' - explorar necesidades subyacentes\n**Opción B:** Método DESC: Describe, Expresa, Especifica, Consecuencias\n**Opción C:** Escucha activa antes de responder\n**Opción D:** Buscar puntos en común como base para soluciones\n\n**Cómo responder:** Piensa en cómo manejas naturalmente los desacuerdos.\n\nAprende más: https://www.youtube.com/watch?v=CsgHMiOWsRA"
         },
         "q8": {
           "title": "Ejemplo Práctico",
-          "body": "Frente a investigaciones contradictorias (ej. 'el trabajo remoto aumenta productividad' vs. 'el trabajo remoto disminuye colaboración'), los analistas fuertes verifican credibilidad de fuentes, tamaños de muestra y contexto. Triangulan con múltiples fuentes y consideran ejecutar su propio pequeño experimento. Mira sobre pensamiento crítico: https://www.youtube.com/watch?v=6OLPL5p0fMg"
+          "body": "Frente a investigaciones contradictorias, considera tu proceso de análisis.\n\n**Opción A:** Verificar credibilidad de fuentes y tamaños de muestra\n**Opción B:** Considerar el contexto de cada estudio\n**Opción C:** Triangular con múltiples fuentes independientes\n**Opción D:** Ejecutar tu propio pequeño experimento para validar\n\n**Cómo responder:** Reflexiona sobre cómo evalúas información conflictiva.\n\nMira sobre pensamiento crítico: https://www.youtube.com/watch?v=6OLPL5p0fMg"
         },
         "q9": {
           "title": "Ejemplo Práctico",
-          "body": "Para generar ideas innovadoras, los equipos efectivos usan brainstorming estructurado: 10 minutos de ideación silenciosa (cantidad sobre calidad), luego agrupación de ideas similares, finalmente votación en las top 3 para prototipar. El Design Sprint de Google es excelente para esto. El input cross-funcional frecuentemente produce ideas revolucionarias. Mira: https://www.youtube.com/watch?v=K2vSQPh6MCE"
+          "body": "Para generar ideas innovadoras, los equipos usan brainstorming estructurado.\n\n**Opción A:** 10 minutos de ideación silenciosa (cantidad sobre calidad)\n**Opción B:** Agrupación de ideas similares\n**Opción C:** Votación en las top 3 para prototipar\n**Opción D:** Design Sprint de Google con input cross-funcional\n\n**Cómo responder:** Piensa en cómo contribuyes a sesiones de innovación.\n\nMira: https://www.youtube.com/watch?v=K2vSQPh6MCE"
         },
         "q10": {
           "title": "Ejemplo Práctico",
-          "body": "Los proyectos largos se benefician del seguimiento visible del progreso. Divide un proyecto de 6 meses en sprints de 2 semanas con entregables específicos. Celebra los hitos (primer prototipo, primer test de usuario, primeros 100 usuarios). La investigación muestra que el progreso es el motivador #1 para trabajadores del conocimiento. Lee sobre el Progress Principle. Mira: https://www.youtube.com/watch?v=mNeXuCYiE0U"
+          "body": "Los proyectos largos se benefician del seguimiento visible del progreso.\n\n**Opción A:** Dividir en sprints de 2 semanas con entregables específicos\n**Opción B:** Celebrar los hitos (primer prototipo, primeros usuarios)\n**Opción C:** Establecer métricas claras de progreso\n**Opción D:** Revisiones regulares para mantener momentum\n\n**Cómo responder:** Considera cómo mantienes motivación en proyectos extensos.\n\nMira: https://www.youtube.com/watch?v=mNeXuCYiE0U"
         },
         "q11": {
           "title": "Ejemplo Práctico",
-          "body": "Antes de automatizar, identifica el ROI: si una tarea toma 10 minutos diarios, son 40+ horas al año. Comienza documentando el proceso manual, luego identifica los pasos propensos a errores o que consumen tiempo. Herramientas como Zapier para no-code o scripts de Python pueden ahorrar cientos de horas. Mira: https://www.youtube.com/watch?v=M576WGiDBdQ"
+          "body": "Antes de automatizar, identifica el ROI de la mejora.\n\n**Opción A:** Calcular tiempo ahorrado (10 min/día = 40+ horas/año)\n**Opción B:** Documentar el proceso manual primero\n**Opción C:** Identificar pasos propensos a errores\n**Opción D:** Usar herramientas apropiadas (Zapier, Python scripts)\n\n**Cómo responder:** Piensa en cómo priorizas oportunidades de automatización.\n\nMira: https://www.youtube.com/watch?v=M576WGiDBdQ"
         },
         "q12": {
           "title": "Ejemplo Práctico",
-          "body": "Los grandes comunicadores adaptan su estilo: con ejecutivos, lidera con outcomes y decisiones necesarias; con ingenieros, incluye detalles técnicos y trade-offs; con clientes, enfócate en beneficios y usa lenguaje simple. El test '¿Y qué?' ayuda: después de cada punto, pregúntate '¿Por qué le importa a mi audiencia?' Mira: https://www.youtube.com/watch?v=eIho2S0ZahI"
+          "body": "Los grandes comunicadores adaptan su estilo a la audiencia.\n\n**Opción A:** Con ejecutivos, liderar con outcomes y decisiones\n**Opción B:** Con ingenieros, incluir detalles técnicos y trade-offs\n**Opción C:** Con clientes, enfocarse en beneficios y lenguaje simple\n**Opción D:** Usar el test '¿Y qué?' para cada punto\n\n**Cómo responder:** Reflexiona sobre cómo ajustas tu comunicación.\n\nMira: https://www.youtube.com/watch?v=eIho2S0ZahI"
         },
         "q13": {
           "title": "Ejemplo Práctico",
-          "body": "El intercambio efectivo de conocimiento combina documentación con aprendizaje interactivo. Crea wikis buscables para referencias, organiza sesiones 'lunch & learn' para discusión, y empareja seniors con juniors. El modelo 70-20-10: 70% experiencial, 20% social, 10% formación formal. Mira: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+          "body": "El intercambio efectivo de conocimiento combina múltiples métodos.\n\n**Opción A:** Crear wikis buscables para referencias\n**Opción B:** Organizar sesiones 'lunch & learn'\n**Opción C:** Emparejar seniors con juniors\n**Opción D:** Modelo 70-20-10: experiencial, social, formal\n\n**Cómo responder:** Piensa en cómo compartes y adquieres conocimiento.\n\nMira: https://www.youtube.com/watch?v=V55rCBT1Ouc"
         },
         "q14": {
           "title": "Ejemplo Práctico",
-          "body": "Para superar bloqueos creativos, la investigación muestra que cambiar el contexto ayuda: trabaja desde un lugar diferente, cambia a herramientas analógicas (lápiz y papel), o impón restricciones artificiales (resuélvelo en 5 palabras). Tomar pausas estratégicas permite al subconsciente procesar. El 'efecto de incubación' es real. Mira: https://www.youtube.com/watch?v=f1yQTy1bQmc"
+          "body": "Para superar bloqueos creativos, diferentes técnicas ayudan.\n\n**Opción A:** Cambiar el contexto (lugar diferente, herramientas analógicas)\n**Opción B:** Imponer restricciones artificiales\n**Opción C:** Tomar pausas estratégicas para incubación\n**Opción D:** Colaborar con perspectivas diferentes\n\n**Cómo responder:** Considera cómo desbloqueas tu creatividad.\n\nMira: https://www.youtube.com/watch?v=f1yQTy1bQmc"
         },
         "q15": {
           "title": "Ejemplo Práctico",
-          "body": "Después de contratiempos, los top performers conducen 'post-mortems sin culpas': ¿Qué pasó? ¿Cuáles fueron los factores contribuyentes? ¿Qué haremos diferente? Esto transforma los fracasos en oportunidades de aprendizaje. La cultura 'Day 1' de Amazon y la iteración rápida de SpaceX son ejemplos. Desarrolla una mentalidad de crecimiento. Mira: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
+          "body": "Después de contratiempos, los top performers aprenden sistemáticamente.\n\n**Opción A:** Conducir 'post-mortems sin culpas'\n**Opción B:** Preguntar '¿Qué haremos diferente?'\n**Opción C:** Transformar fracasos en oportunidades de aprendizaje\n**Opción D:** Desarrollar una mentalidad de crecimiento\n\n**Cómo responder:** Reflexiona sobre cómo procesas los contratiempos.\n\nMira: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
         },
         "q16": {
           "title": "Ejemplo Práctico",
-          "body": "Con datasets grandes, la visualización revela patrones que el ojo humano podría no ver. Comienza con distribuciones simples (histogramas), luego explora relaciones (scatter plots). Herramientas como Tableau, Power BI o matplotlib de Python ayudan. Segmenta los datos significativamente: por tiempo, geografía, tipo de usuario. Mira: https://www.youtube.com/watch?v=0yCJMt9Mx9c"
+          "body": "Con datasets grandes, la visualización revela patrones ocultos.\n\n**Opción A:** Comenzar con distribuciones simples (histogramas)\n**Opción B:** Explorar relaciones (scatter plots)\n**Opción C:** Usar herramientas como Tableau, Power BI, matplotlib\n**Opción D:** Segmentar datos significativamente (tiempo, geografía, usuario)\n\n**Cómo responder:** Piensa en tu enfoque para explorar datos complejos.\n\nMira: https://www.youtube.com/watch?v=0yCJMt9Mx9c"
         },
         "q17": {
           "title": "Ejemplo Práctico",
-          "body": "Para stakeholders no técnicos, lidera con el '¿y qué?' y el impacto en el negocio, no la metodología. Usa analogías que entiendan (ej. 'la tasa de conversión es como el porcentaje de visitantes que compran'). El Principio de la Pirámide: comienza con la conclusión, luego los puntos de soporte. Mira: https://www.youtube.com/watch?v=b1iGRaeNfn4"
+          "body": "Para stakeholders no técnicos, adapta tu presentación.\n\n**Opción A:** Liderar con el '¿y qué?' e impacto en negocio\n**Opción B:** Usar analogías familiares\n**Opción C:** Principio de la Pirámide: conclusión primero\n**Opción D:** Visualizaciones simples sobre tablas de datos\n\n**Cómo responder:** Reflexiona sobre cómo traduces complejidad técnica.\n\nMira: https://www.youtube.com/watch?v=b1iGRaeNfn4"
         },
         "q18": {
           "title": "Ejemplo Práctico",
-          "body": "Mantenerse actualizado requiere hábitos de aprendizaje intencionales. Dedica 'tiempo de aprendizaje' semanal (ej. viernes por la tarde). Sigue a thought leaders, suscríbete a newsletters, únete a comunidades. Aplica nuevo conocimiento dentro de 48 horas para retenerlo. El profesional 'en T': experiencia profunda en un área, conocimiento amplio en muchas. Mira: https://www.youtube.com/watch?v=5MgBikgcWnY"
+          "body": "Mantenerse actualizado requiere hábitos intencionales de aprendizaje.\n\n**Opción A:** Dedicar 'tiempo de aprendizaje' semanal\n**Opción B:** Seguir thought leaders y newsletters\n**Opción C:** Aplicar conocimiento nuevo dentro de 48 horas\n**Opción D:** Desarrollar perfil 'en T': profundidad + amplitud\n\n**Cómo responder:** Considera cómo te mantienes relevante en tu campo.\n\nMira: https://www.youtube.com/watch?v=5MgBikgcWnY"
         },
         "q19": {
           "title": "Ejemplo Práctico",
-          "body": "Balancea innovación con practicidad usando 'experimentos safe-to-fail'. Prueba nuevas ideas con pequeñas inversiones: una landing page antes de construir el producto, un prototipo antes del desarrollo completo. El '20% time' de Google y los 'two-pizza teams' de Amazon habilitan innovación a escala. Mira: https://www.youtube.com/watch?v=RfWgVWGEXZs"
+          "body": "Balancea innovación con practicidad usando experimentos controlados.\n\n**Opción A:** 'Experimentos safe-to-fail' con pequeñas inversiones\n**Opción B:** Landing page antes de construir el producto\n**Opción C:** Prototipo antes del desarrollo completo\n**Opción D:** '20% time' para exploración libre\n\n**Cómo responder:** Piensa en cómo equilibras riesgo e innovación.\n\nMira: https://www.youtube.com/watch?v=RfWgVWGEXZs"
         },
         "q20": {
           "title": "Ejemplo Práctico",
-          "body": "La definición efectiva de objetivos usa el framework SMART: Específico, Medible, Alcanzable, Relevante, Temporal. Divide objetivos anuales en OKRs trimestrales (Objectives and Key Results), luego en tareas semanales. Revisiones regulares (check-in semanal de 15 min, deep dive mensual) te mantienen en camino. Mira: https://www.youtube.com/watch?v=L4N1q4RNi9I"
+          "body": "La definición efectiva de objetivos usa frameworks estructurados.\n\n**Opción A:** Framework SMART: Específico, Medible, Alcanzable, Relevante, Temporal\n**Opción B:** OKRs trimestrales (Objectives and Key Results)\n**Opción C:** Dividir en tareas semanales manejables\n**Opción D:** Revisiones regulares (check-in semanal, deep dive mensual)\n\n**Cómo responder:** Reflexiona sobre cómo defines y persigues tus metas.\n\nMira: https://www.youtube.com/watch?v=L4N1q4RNi9I"
         },
         "q21": {
           "title": "Ejemplo Práctico",
-          "body": "Al evaluar nuevas tecnologías, usa un framework estructurado: 1) Define el problema claramente, 2) Investiga opciones y casos de estudio, 3) Ejecuta un pequeño piloto, 4) Mide resultados contra la baseline, 5) Toma la decisión go/no-go. Considera el costo total de propiedad, no solo el costo inicial. Mira: https://www.youtube.com/watch?v=iVXW1r_ivjw"
+          "body": "Al evaluar nuevas tecnologías, usa un framework estructurado.\n\n**Opción A:** Definir el problema claramente primero\n**Opción B:** Investigar opciones y casos de estudio\n**Opción C:** Ejecutar un pequeño piloto antes de comprometerte\n**Opción D:** Medir resultados contra la baseline\n\n**Cómo responder:** Considera cómo tomas decisiones tecnológicas informadas.\n\nMira: https://www.youtube.com/watch?v=iVXW1r_ivjw"
         },
         "open1": {
           "title": "Cómo Responder Bien",
