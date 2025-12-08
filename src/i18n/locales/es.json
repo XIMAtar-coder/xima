@@ -993,19 +993,6 @@
     "typing": "Escribiendo...",
     "welcome_message": "¡Hola! Soy XIM-AI, tu asistente personal de XIMA. ¿En qué puedo ayudarte hoy?"
   },
-  "common": {
-    "ok": "OK",
-    "cancel": "Cancelar",
-    "save": "Guardar",
-    "edit": "Editar",
-    "delete": "Eliminar",
-    "confirm": "Confirmar",
-    "loading": "Cargando...",
-    "error": "Error",
-    "success": "Éxito",
-    "warning": "Advertencia",
-    "info": "Información"
-  },
   "errors": {
     "generic": "Ocurrió un error inesperado",
     "auth_required": "Debes iniciar sesión para acceder a esta página",

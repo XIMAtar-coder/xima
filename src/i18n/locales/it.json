@@ -721,20 +721,6 @@
      "booking": "Prenotazione...",
      "confirm": "Conferma Prenotazione"
    },
-  "results": {
-    "title": "I Tuoi Risultati",
-    "subtitle": "Ecco la tua valutazione completa XIMAtar",
-    "your_ximatar": "Il tuo XIMAtar",
-    "core_traits": "Tratti Distintivi",
-    "strengths": "Punti di Forza",
-    "areas_for_growth": "Aree di Crescita",
-    "ideal_roles": "Ruoli Ideali",
-    "cv_comparison_title": "Confronto CV vs Valutazione XIMA",
-    "assessment_scores": "Punteggi Valutazione",
-    "biggest_improvement": "Miglioramento Maggiore",
-    "proceed_to_profile": "Vai al Profilo",
-    "register_to_continue": "Registrati per Continuare"
-  },
   "cv_analysis": {
     "title": "Carica il Tuo CV per un'Analisi Avanzata",
     "description": "Carica il tuo CV per ottenere approfondimenti personalizzati basati sulla tua esperienza professionale.",
@@ -754,13 +740,6 @@
     "select_title": "Scegli il Tuo Mentore",
     "select_subtitle": "Seleziona il mentore che guiderà il tuo percorso di crescita professionale",
     "choose_to_continue": "Scegli il tuo mentore per continuare"
-  },
-  "pillars": {
-    "computational": "Potenza Computazionale",
-    "communication": "Comunicazione",
-    "knowledge": "Conoscenza",
-    "creativity": "Creatività",
-    "drive": "Determinazione"
   },
   "open_scoring": {
     "title": "Punteggi Domande Aperte",
@@ -1463,15 +1442,6 @@
     "compatibility": "Compatibilità",
     "select_title": "Seleziona il Tuo Professionista",
     "select_subtitle": "Scegli un esperto che ti guiderà nel tuo percorso di crescita"
-  },
-  "progress": {
-    "journey_progress": "Progresso del Tuo Percorso",
-    "assessment_complete": "Valutazione Completata",
-    "cv_uploaded": "CV Caricato",
-    "professional_selected": "Professionista Selezionato"
-  },
-  "open_scoring": {
-    "title": "Valutazione Domande Aperte"
   },
   "business": {
     "hero_title": "Trova il Talento Perfetto",
