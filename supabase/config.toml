@@ -32,3 +32,6 @@ verify_jwt = true
 
 [functions.analyze-open-answer]
 verify_jwt = true
+
+[functions.recommend-mentors]
+verify_jwt = false

@@ -3,9 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { getAvatarUrl } from '@/lib/avatar';
 
-export type FieldKey = 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops';
+interface PillarScore {
+  pillar: string;
+  score: number;
+}
 
 type Professional = {
   id: string;
@@ -15,22 +19,27 @@ type Professional = {
   avatar_path: string | null;
   locale_bio: Record<string, string>;
   expertise_tags: string[] | null;
-  compatibility_score: number | null;
-  field_keys: FieldKey[];
+  compatibility_score: number;
+  xima_pillars: string[];
+  match_reasons: string[];
   updated_at?: string | null;
 };
+
+interface FeaturedProfessionalsProps {
+  limit?: number;
+  onSelect?: (professional: Professional) => void;
+  selectedId?: string;
+  pillarScores?: PillarScore[];
+  ximatar?: string;
+}
 
 export default function FeaturedProfessionals({ 
   limit = 3,
   onSelect,
-  fieldKey,
-  selectedId
-}: { 
-  limit?: number;
-  onSelect?: (professional: any) => void;
-  fieldKey?: FieldKey;
-  selectedId?: string;
-}) {
+  selectedId,
+  pillarScores,
+  ximatar
+}: FeaturedProfessionalsProps) {
   const { i18n, t } = useTranslation();
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,47 +49,85 @@ export default function FeaturedProfessionals({
   useEffect(() => {
     const fetchProfessionals = async () => {
       try {
-        const { data, error } = await supabase
-          .from('mentors')
-          .select('id, name, title, bio, profile_image_url, specialties, xima_pillars, rating, experience_years, is_active, updated_at')
-          .eq('is_active', true)
-          .order('rating', { ascending: false });
+        console.log('[FeaturedProfessionals] Fetching recommendations with:', { pillarScores, ximatar });
+        
+        // Call the recommend-mentors edge function
+        const { data, error } = await supabase.functions.invoke('recommend-mentors', {
+          body: { 
+            pillar_scores: pillarScores || [],
+            ximatar: ximatar || null
+          }
+        });
 
         if (error) {
-          console.error('Error fetching mentors:', error);
+          console.error('[FeaturedProfessionals] Error from edge function:', error);
+          // Fallback to direct query
+          await fetchDirectFromDatabase();
           return;
         }
         
-        if (data && data.length > 0) {
-          // Map mentors to professional format for compatibility
-          const mapped = data.map((m: any) => ({
+        console.log('[FeaturedProfessionals] Recommendations received:', data);
+        
+        if (data?.recommendations && data.recommendations.length > 0) {
+          const mapped = data.recommendations.map((m: any) => ({
             id: m.id,
             full_name: m.name || 'Unknown',
             title: m.title || '',
-            linkedin_url: '', // Not stored in mentors
+            linkedin_url: '',
             avatar_path: m.profile_image_url,
             locale_bio: { en: m.bio || '', it: m.bio || '', es: m.bio || '' },
             expertise_tags: m.specialties || [],
-            compatibility_score: m.rating ? Math.round(m.rating * 20) : 90, // Convert 5-star to percentage
-            field_keys: m.xima_pillars || [],
+            compatibility_score: m.compatibility_score || 85,
+            xima_pillars: m.xima_pillars || [],
+            match_reasons: m.match_reasons || [],
             updated_at: m.updated_at
           }));
           setProfessionals(mapped);
+        } else {
+          // Fallback to direct query if no recommendations
+          await fetchDirectFromDatabase();
         }
       } catch (error) {
-        console.error('Error fetching mentors:', error);
+        console.error('[FeaturedProfessionals] Error:', error);
+        await fetchDirectFromDatabase();
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProfessionals();
-  }, []);
+    const fetchDirectFromDatabase = async () => {
+      console.log('[FeaturedProfessionals] Falling back to direct database query');
+      const { data, error } = await supabase
+        .from('mentors')
+        .select('id, name, title, bio, profile_image_url, specialties, xima_pillars, rating, updated_at')
+        .eq('is_active', true)
+        .order('rating', { ascending: false });
 
-  // Filter professionals by field if provided
-  const filteredProfessionals = fieldKey 
-    ? professionals.filter(p => p.field_keys?.includes(fieldKey))
-    : professionals;
+      if (error) {
+        console.error('[FeaturedProfessionals] Error fetching mentors:', error);
+        return;
+      }
+      
+      if (data && data.length > 0) {
+        const mapped = data.map((m: any) => ({
+          id: m.id,
+          full_name: m.name || 'Unknown',
+          title: m.title || '',
+          linkedin_url: '',
+          avatar_path: m.profile_image_url,
+          locale_bio: { en: m.bio || '', it: m.bio || '', es: m.bio || '' },
+          expertise_tags: m.specialties || [],
+          compatibility_score: m.rating ? Math.round(m.rating * 20) : 85,
+          xima_pillars: m.xima_pillars || [],
+          match_reasons: [],
+          updated_at: m.updated_at
+        }));
+        setProfessionals(mapped);
+      }
+    };
+
+    fetchProfessionals();
+  }, [pillarScores, ximatar]);
 
   if (loading) {
     return (
@@ -98,14 +145,15 @@ export default function FeaturedProfessionals({
 
   return (
     <div className="grid md:grid-cols-3 gap-4">
-      {filteredProfessionals.slice(0, limit).map((p) => {
+      {professionals.slice(0, limit).map((p) => {
         const bio = (typeof p.locale_bio === 'object' && p.locale_bio !== null)
           ? (p.locale_bio[locale] || p.locale_bio.en || '')
           : '';
-        const score = p.compatibility_score ?? 90;
+        const score = p.compatibility_score;
         const avatarUrl = getAvatarUrl(p.avatar_path, p.updated_at);
         const specialties = p.expertise_tags || [];
-        const ximaPillars = p.field_keys || [];
+        const ximaPillars = p.xima_pillars || [];
+        const matchReasons = p.match_reasons || [];
         const isSelected = selectedId === p.id;
         
         return (
@@ -123,7 +171,6 @@ export default function FeaturedProfessionals({
                     alt={p.full_name}
                     className="h-full w-full object-cover"
                     onError={(e) => {
-                      // Fallback to placeholder
                       (e.target as HTMLImageElement).style.display = 'none';
                       const parent = (e.target as HTMLImageElement).parentElement;
                       if (parent) {
@@ -148,20 +195,35 @@ export default function FeaturedProfessionals({
               {score}% {t('professionals.compatibility')}
             </div>
 
+            {/* Match Reasons */}
+            {matchReasons.length > 0 && (
+              <div className="space-y-1">
+                {matchReasons.slice(0, 2).map((reason, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="text-primary">✓</span>
+                    <span>{reason}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {bio && <p className="text-sm text-muted-foreground line-clamp-3">{bio}</p>}
 
             {/* Specialties */}
             {specialties.length > 0 && (
               <div className="space-y-2">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Specialties</p>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  {t('professionals.specialties', 'Specialties')}
+                </p>
                 <div className="flex flex-wrap gap-1">
                   {specialties.slice(0, 3).map((specialty, idx) => (
-                    <span 
+                    <Badge 
                       key={idx}
-                      className="text-xs px-2 py-1 rounded-md bg-secondary text-secondary-foreground"
+                      variant="secondary"
+                      className="text-xs"
                     >
                       {specialty}
-                    </span>
+                    </Badge>
                   ))}
                 </div>
               </div>
@@ -170,15 +232,18 @@ export default function FeaturedProfessionals({
             {/* XIMA Pillars */}
             {ximaPillars.length > 0 && (
               <div className="space-y-2">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">XIMA Pillars</p>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  {t('professionals.xima_pillars', 'XIMA Pillars')}
+                </p>
                 <div className="flex flex-wrap gap-1">
                   {ximaPillars.slice(0, 3).map((pillar, idx) => (
-                    <span 
+                    <Badge 
                       key={idx}
-                      className="text-xs px-2 py-1 rounded-md bg-primary/10 text-primary font-medium"
+                      variant="outline"
+                      className="text-xs capitalize"
                     >
-                      {pillar}
-                    </span>
+                      {pillar.replace('_', ' ')}
+                    </Badge>
                   ))}
                 </div>
               </div>
@@ -186,16 +251,12 @@ export default function FeaturedProfessionals({
 
             <div className="mt-auto">
               <Button
-                onClick={() => {
-                  if (onSelect) {
-                    onSelect(p);
-                  }
-                }}
+                onClick={() => onSelect?.(p)}
                 className="w-full"
                 size="lg"
                 variant={isSelected ? "default" : "outline"}
               >
-                {isSelected ? '✓ Selected' : t('professionals.select')}
+                {isSelected ? `✓ ${t('professionals.selected', 'Selected')}` : t('professionals.select')}
               </Button>
             </div>
           </Card>

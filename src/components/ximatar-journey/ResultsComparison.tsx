@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { OpenAnswerScore } from './OpenAnswerScore';
-import FeaturedProfessionals, { type FieldKey } from '../FeaturedProfessionals';
+import FeaturedProfessionals from '../FeaturedProfessionals';
 import { XimatarProfileCard } from '../results/XimatarProfileCard';
 import { ArrowRight, CheckCircle, Sparkles, AlertCircle } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
@@ -58,9 +58,6 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     rubric: Rubric;
   }>>([]);
   const [topPillars, setTopPillars] = useState<Array<{ name: string; score: number }>>([]);
-  const [selectedField] = useState<FieldKey>(() => {
-    return (localStorage.getItem('preferred_field') as FieldKey) || 'business_leadership';
-  });
   const [hasNoAssessment, setHasNoAssessment] = useState(false);
 
   useEffect(() => {
@@ -652,8 +649,9 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         
         <FeaturedProfessionals 
           onSelect={handleMentorSelect}
-          fieldKey={selectedField}
-          selectedId={selectedProfessional}
+          selectedId={selectedProfessional || undefined}
+          pillarScores={pillarScores}
+          ximatar={ximatarData?.label}
         />
 
         {selectedProfessional && (
