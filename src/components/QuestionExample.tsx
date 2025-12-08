@@ -14,6 +14,62 @@ type Props = {
   className?: string;
 };
 
+// Simple markdown renderer for bold text and line breaks
+function renderMarkdown(text: string) {
+  if (!text) return null;
+  
+  // Split by double newlines for paragraphs
+  const paragraphs = text.split(/\n\n+/);
+  
+  return paragraphs.map((paragraph, pIdx) => {
+    // Split by single newlines within paragraph
+    const lines = paragraph.split(/\n/);
+    
+    return (
+      <div key={pIdx} className={pIdx > 0 ? 'mt-3' : ''}>
+        {lines.map((line, lIdx) => {
+          // Parse bold text (**text**)
+          const parts = line.split(/(\*\*[^*]+\*\*)/g);
+          
+          return (
+            <React.Fragment key={lIdx}>
+              {lIdx > 0 && <br />}
+              {parts.map((part, partIdx) => {
+                if (part.startsWith('**') && part.endsWith('**')) {
+                  return (
+                    <strong key={partIdx} className="font-semibold text-foreground">
+                      {part.slice(2, -2)}
+                    </strong>
+                  );
+                }
+                // Handle links - simple pattern for YouTube links
+                const linkPattern = /(https?:\/\/[^\s]+)/g;
+                const linkParts = part.split(linkPattern);
+                return linkParts.map((linkPart, linkIdx) => {
+                  if (linkPart.match(/^https?:\/\//)) {
+                    return (
+                      <a
+                        key={`${partIdx}-${linkIdx}`}
+                        href={linkPart}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline break-all"
+                      >
+                        {linkPart.includes('youtube') ? '🎥 Watch Video' : linkPart}
+                      </a>
+                    );
+                  }
+                  return <span key={`${partIdx}-${linkIdx}`}>{linkPart}</span>;
+                });
+              })}
+            </React.Fragment>
+          );
+        })}
+      </div>
+    );
+  });
+}
+
 export default function QuestionExample({
   assessmentSetKey,
   qKey,
@@ -64,13 +120,15 @@ export default function QuestionExample({
             <div className="text-sm font-semibold">{title}</div>
             <button
               onClick={() => setOpen(false)}
-              className="text-xs text-gray-600 dark:text-gray-400 hover:underline"
+              className="text-xs text-muted-foreground hover:underline"
               aria-label={t('assessment.example.close')}
             >
               {t('assessment.example.close')}
             </button>
           </div>
-          <p className="text-sm leading-6 text-gray-800 dark:text-gray-200">{body}</p>
+          <div className="text-sm leading-6 text-muted-foreground">
+            {renderMarkdown(body)}
+          </div>
         </Card>
       )}
     </div>
