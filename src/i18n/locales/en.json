@@ -1161,24 +1161,104 @@
       },
       "examples": {
         "q1": {
-          "title": "Example",
-          "body": "You have a user dataset with a 'churn' column. You start with basic cleaning, segment by cohort, and verify the impact of two campaigns over the last 90 days."
+          "title": "Practical Example",
+          "body": "Imagine you receive a dataset with 50,000 customer records. A strong approach is to first break it into logical segments (by region, subscription tier, or signup date), validate data quality, then identify patterns. For example, you might discover that customers who complete onboarding within 48 hours have 3x higher retention. Watch this video on data analysis thinking: https://www.youtube.com/watch?v=ua-CiDNNj30"
         },
         "q2": {
-          "title": "Example",
-          "body": "During a planning meeting, you listen to the team's concerns, ask questions to clarify constraints, and then synthesize shared priorities."
+          "title": "Practical Example",
+          "body": "In a sprint planning meeting, effective contributors first listen actively to understand blockers and priorities. Then they ask clarifying questions like 'What's the success metric for this feature?' before proposing solutions. This approach ensures alignment and reduces rework. Learn more about effective meeting participation: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         },
         "q3": {
-          "title": "Example",
-          "body": "To learn React, you build a small app following the official documentation, experiment with components, and ask experienced colleagues for feedback."
+          "title": "Practical Example",
+          "body": "When learning a new framework like React, the most effective learners combine official documentation with hands-on projects. Start with the basics (components, props, state), build a small todo app, then seek feedback from experienced developers. The Feynman Technique helps: explain concepts in simple terms to test your understanding. Watch: https://www.youtube.com/watch?v=MlJdMr3O5J4"
+        },
+        "q4": {
+          "title": "Practical Example",
+          "body": "Creative problem-solvers use techniques like 'reverse brainstorming' (how could we make this problem worse?) or look to unrelated industries for inspiration. For instance, a healthcare startup might borrow appointment booking UX patterns from restaurant reservation apps. Try the SCAMPER method: Substitute, Combine, Adapt, Modify, Put to other uses, Eliminate, Reverse. Learn more: https://www.youtube.com/watch?v=G8w0rJhztJ4"
+        },
+        "q5": {
+          "title": "Practical Example",
+          "body": "Understanding your core motivation helps sustain long-term effort. Someone driven by impact might track customer success stories; someone motivated by growth might celebrate each new skill learned. Research shows that intrinsic motivation (purpose, mastery, autonomy) outperforms extrinsic rewards for complex work. Watch Dan Pink's Drive summary: https://www.youtube.com/watch?v=u6XAPnuFjJc"
+        },
+        "q6": {
+          "title": "Practical Example",
+          "body": "When evaluating a new feature's success, top performers use multiple methods: quantitative metrics (conversion rates, time-to-complete), qualitative feedback (user interviews), and comparative analysis (A/B tests). For example, test two checkout flows with 5% of traffic each before full rollout. Watch: https://www.youtube.com/watch?v=VQKMoT-6XSg"
+        },
+        "q7": {
+          "title": "Practical Example",
+          "body": "In conflicts, skilled communicators use the 'interests over positions' approach. Instead of debating 'should we use React or Vue?', explore underlying interests: 'We need maintainability and fast onboarding.' Often, conflicts dissolve when underlying needs are understood. Try the DESC method: Describe, Express, Specify, Consequences. Learn more: https://www.youtube.com/watch?v=CsgHMiOWsRA"
+        },
+        "q8": {
+          "title": "Practical Example",
+          "body": "When faced with conflicting research (e.g., 'remote work increases productivity' vs. 'remote work decreases collaboration'), strong analysts check source credibility, sample sizes, and context. They triangulate with multiple sources and consider running their own small experiment. Watch on critical thinking: https://www.youtube.com/watch?v=6OLPL5p0fMg"
+        },
+        "q9": {
+          "title": "Practical Example",
+          "body": "To generate innovative ideas, effective teams use structured brainstorming: 10-minute silent ideation (quantity over quality), followed by clustering similar ideas, then voting on top 3 to prototype. Google's Design Sprint process is excellent for this. Cross-functional input often yields breakthrough ideas. Watch: https://www.youtube.com/watch?v=K2vSQPh6MCE"
+        },
+        "q10": {
+          "title": "Practical Example",
+          "body": "Long projects benefit from visible progress tracking. Break a 6-month project into 2-week sprints with specific deliverables. Celebrate milestones (first prototype, first user test, first 100 users). Research shows progress is the #1 motivator for knowledge workers. Read about the Progress Principle. Watch: https://www.youtube.com/watch?v=mNeXuCYiE0U"
+        },
+        "q11": {
+          "title": "Practical Example",
+          "body": "Before automating, identify the ROI: If a task takes 10 minutes daily, that's 40+ hours yearly. Start by documenting the manual process, then identify error-prone or time-consuming steps. Tools like Zapier for no-code or Python scripts for technical automation can save hundreds of hours. Watch: https://www.youtube.com/watch?v=M576WGiDBdQ"
+        },
+        "q12": {
+          "title": "Practical Example",
+          "body": "Great communicators adapt their style: with executives, lead with outcomes and decisions needed; with engineers, include technical details and trade-offs; with customers, focus on benefits and use simple language. The 'So What?' test helps: after each point, ask 'Why does my audience care?' Watch: https://www.youtube.com/watch?v=eIho2S0ZahI"
+        },
+        "q13": {
+          "title": "Practical Example",
+          "body": "Effective knowledge sharing combines documentation with interactive learning. Create searchable wikis for reference, host 'lunch & learn' sessions for discussion, and pair senior with junior team members. The 70-20-10 model: 70% experiential, 20% social, 10% formal training. Watch: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+        },
+        "q14": {
+          "title": "Practical Example",
+          "body": "To overcome creative blocks, research shows changing context helps: work from a different location, switch to analog tools (pen and paper), or impose artificial constraints (solve it in 5 words). Taking strategic breaks allows the subconscious to process. The 'incubation effect' is real. Watch: https://www.youtube.com/watch?v=f1yQTy1bQmc"
+        },
+        "q15": {
+          "title": "Practical Example",
+          "body": "After setbacks, high performers conduct 'blameless post-mortems': What happened? What were the contributing factors? What will we do differently? This transforms failures into learning opportunities. Amazon's 'Day 1' culture and SpaceX's rapid iteration are examples. Develop a growth mindset. Watch: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
+        },
+        "q16": {
+          "title": "Practical Example",
+          "body": "With large datasets, visualization reveals patterns human eyes might miss. Start with simple distributions (histograms), then explore relationships (scatter plots). Tools like Tableau, Power BI, or Python's matplotlib help. Segment data meaningfully: by time, geography, user type. Watch: https://www.youtube.com/watch?v=0yCJMt9Mx9c"
+        },
+        "q17": {
+          "title": "Practical Example",
+          "body": "For non-technical stakeholders, lead with the 'so what' and business impact, not methodology. Use analogies they understand (e.g., 'conversion rate is like the percentage of store visitors who buy'). The Pyramid Principle: start with conclusion, then supporting points. Watch: https://www.youtube.com/watch?v=b1iGRaeNfn4"
+        },
+        "q18": {
+          "title": "Practical Example",
+          "body": "Staying current requires intentional learning habits. Dedicate 'learning time' weekly (e.g., Friday afternoons). Follow thought leaders, subscribe to newsletters, join communities. Apply new knowledge within 48 hours to retain it. The 'T-shaped' professional: deep expertise in one area, broad knowledge across many. Watch: https://www.youtube.com/watch?v=5MgBikgcWnY"
+        },
+        "q19": {
+          "title": "Practical Example",
+          "body": "Balance innovation with practicality using 'safe-to-fail experiments.' Test new ideas with small investments: a landing page before building the product, a prototype before full development. Google's '20% time' and Amazon's 'two-pizza teams' enable innovation at scale. Watch: https://www.youtube.com/watch?v=RfWgVWGEXZs"
+        },
+        "q20": {
+          "title": "Practical Example",
+          "body": "Effective goal-setting uses the SMART framework: Specific, Measurable, Achievable, Relevant, Time-bound. Break yearly goals into quarterly OKRs (Objectives and Key Results), then weekly tasks. Regular reviews (weekly 15-min check-in, monthly deep dive) keep you on track. Watch: https://www.youtube.com/watch?v=L4N1q4RNi9I"
+        },
+        "q21": {
+          "title": "Practical Example",
+          "body": "When evaluating new technologies, use a structured framework: 1) Define the problem clearly, 2) Research options and case studies, 3) Run a small pilot, 4) Measure results against baseline, 5) Make go/no-go decision. Consider total cost of ownership, not just upfront cost. Watch: https://www.youtube.com/watch?v=iVXW1r_ivjw"
+        },
+        "open1": {
+          "title": "How to Answer Well",
+          "body": "Strong answers describe a specific situation with measurable impact. Use the STAR method: Situation (context), Task (your responsibility), Action (what you did), Result (outcomes with numbers if possible). Example: 'Led a team of 5 to reduce customer onboarding time from 2 weeks to 3 days, increasing activation by 40%.' Be specific about YOUR contribution, not just the team's success. Watch: https://www.youtube.com/watch?v=0vNUxleEyoo"
+        },
+        "open2": {
+          "title": "How to Answer Well",
+          "body": "Self-awareness is key here. Strong answers identify a genuine growth area and show proactive steps to improve. Avoid vague responses like 'I work too hard.' Instead: 'I struggle with delegating technical tasks. I'm addressing this by starting with small delegations, creating clear handoff documents, and scheduling weekly check-ins instead of daily ones.' Show you're taking ownership. Watch: https://www.youtube.com/watch?v=tJxFZrMxT3s"
         }
       },
       "examplesByCategory": {
-        "comp_power": "",
-        "communication": "",
-        "knowledge": "",
-        "creativity": "",
-        "drive": ""
+        "comp_power": "Computational Power questions assess your ability to analyze data, solve problems systematically, and use technology effectively. Strong performers break complex problems into steps, validate assumptions with data, and iterate based on results.",
+        "communication": "Communication questions evaluate how you express ideas, listen actively, and adapt your style to different audiences. Effective communicators lead with outcomes, use concrete examples, and seek feedback to ensure understanding.",
+        "knowledge": "Knowledge questions measure your depth of expertise and ability to learn continuously. Top performers maintain learning habits, share knowledge with others (which reinforces their own understanding), and apply new information quickly.",
+        "creativity": "Creativity questions assess your ability to generate novel ideas and find unconventional solutions. Creative thinkers embrace constraints, seek diverse perspectives, and prototype quickly to test ideas before committing resources.",
+        "drive": "Drive questions measure your motivation, resilience, and ability to pursue long-term goals. High-drive individuals set clear milestones, learn from setbacks, and maintain focus despite obstacles."
       }
     },
     "business_leadership": {

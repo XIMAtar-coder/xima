@@ -1273,24 +1273,104 @@
       },
       "examples": {
         "q1": {
-          "title": "Esempio",
-          "body": "Hai un dataset utenti con colonna 'churn'. Inizi con una pulizia di base, segmenti per coorte, e verifichi l'impatto di due campagne sugli ultimi 90 giorni."
+          "title": "Esempio Pratico",
+          "body": "Immagina di ricevere un dataset con 50.000 record di clienti. Un approccio efficace è prima segmentarlo in gruppi logici (per regione, tipo di abbonamento o data di iscrizione), validare la qualità dei dati, poi identificare pattern. Ad esempio, potresti scoprire che i clienti che completano l'onboarding entro 48 ore hanno una retention 3 volte superiore. Guarda questo video sull'analisi dati: https://www.youtube.com/watch?v=ua-CiDNNj30"
         },
         "q2": {
-          "title": "Esempio",
-          "body": "Durante una riunione di planning, ascolti le preoccupazioni del team, poni domande per chiarire i vincoli, e poi sintetizzi le priorità condivise."
+          "title": "Esempio Pratico",
+          "body": "In una riunione di sprint planning, i contributori efficaci prima ascoltano attivamente per capire blocchi e priorità. Poi fanno domande chiarificatrici come 'Qual è la metrica di successo per questa feature?' prima di proporre soluzioni. Questo approccio assicura allineamento e riduce il lavoro da rifare. Scopri di più sulla partecipazione efficace: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         },
         "q3": {
-          "title": "Esempio",
-          "body": "Per imparare React, provi a costruire una piccola app seguendo la documentazione ufficiale, sperimenti con i componenti e chiedi feedback a colleghi esperti."
+          "title": "Esempio Pratico",
+          "body": "Quando impari un nuovo framework come React, i learner più efficaci combinano documentazione ufficiale con progetti pratici. Parti dalle basi (componenti, props, state), costruisci una piccola todo app, poi cerca feedback da sviluppatori esperti. La Tecnica di Feynman aiuta: spiega i concetti in termini semplici per testare la tua comprensione. Guarda: https://www.youtube.com/watch?v=MlJdMr3O5J4"
+        },
+        "q4": {
+          "title": "Esempio Pratico",
+          "body": "I problem-solver creativi usano tecniche come il 'reverse brainstorming' (come potremmo peggiorare questo problema?) o cercano ispirazione in settori non correlati. Ad esempio, una startup sanitaria potrebbe prendere pattern UX di prenotazione ristoranti per gli appuntamenti. Prova il metodo SCAMPER: Sostituire, Combinare, Adattare, Modificare, Proporre altri usi, Eliminare, Invertire. Scopri di più: https://www.youtube.com/watch?v=G8w0rJhztJ4"
+        },
+        "q5": {
+          "title": "Esempio Pratico",
+          "body": "Capire la tua motivazione principale aiuta a sostenere lo sforzo a lungo termine. Chi è guidato dall'impatto potrebbe tracciare storie di successo dei clienti; chi è motivato dalla crescita potrebbe celebrare ogni nuova competenza appresa. La ricerca mostra che la motivazione intrinseca (scopo, padronanza, autonomia) supera le ricompense estrinseche per il lavoro complesso. Guarda il riassunto di Drive di Dan Pink: https://www.youtube.com/watch?v=u6XAPnuFjJc"
+        },
+        "q6": {
+          "title": "Esempio Pratico",
+          "body": "Quando valuti il successo di una nuova feature, i top performer usano metodi multipli: metriche quantitative (tassi di conversione, tempo di completamento), feedback qualitativo (interviste utenti) e analisi comparativa (A/B test). Ad esempio, testa due flussi di checkout col 5% del traffico ciascuno prima del rollout completo. Guarda: https://www.youtube.com/watch?v=VQKMoT-6XSg"
+        },
+        "q7": {
+          "title": "Esempio Pratico",
+          "body": "Nei conflitti, i comunicatori esperti usano l'approccio 'interessi invece che posizioni'. Invece di discutere 'dovremmo usare React o Vue?', esplora gli interessi sottostanti: 'Abbiamo bisogno di manutenibilità e onboarding veloce.' Spesso i conflitti si dissolvono quando i bisogni sottostanti sono compresi. Prova il metodo DESC: Descrivi, Esprimi, Specifica, Conseguenze. Scopri di più: https://www.youtube.com/watch?v=CsgHMiOWsRA"
+        },
+        "q8": {
+          "title": "Esempio Pratico",
+          "body": "Di fronte a ricerche contrastanti (es. 'il lavoro remoto aumenta la produttività' vs. 'il lavoro remoto diminuisce la collaborazione'), gli analisti forti verificano la credibilità delle fonti, le dimensioni dei campioni e il contesto. Triangolano con fonti multiple e considerano di condurre un proprio piccolo esperimento. Guarda sul pensiero critico: https://www.youtube.com/watch?v=6OLPL5p0fMg"
+        },
+        "q9": {
+          "title": "Esempio Pratico",
+          "body": "Per generare idee innovative, i team efficaci usano brainstorming strutturato: 10 minuti di ideazione silenziosa (quantità prima della qualità), poi raggruppamento delle idee simili, infine voto sulle top 3 da prototipare. Il Design Sprint di Google è eccellente per questo. L'input cross-funzionale spesso produce idee rivoluzionarie. Guarda: https://www.youtube.com/watch?v=K2vSQPh6MCE"
+        },
+        "q10": {
+          "title": "Esempio Pratico",
+          "body": "I progetti lunghi beneficiano del tracciamento visibile dei progressi. Suddividi un progetto di 6 mesi in sprint di 2 settimane con deliverable specifici. Celebra i milestone (primo prototipo, primo test utente, primi 100 utenti). La ricerca mostra che il progresso è il motivatore #1 per i knowledge worker. Leggi del Progress Principle. Guarda: https://www.youtube.com/watch?v=mNeXuCYiE0U"
+        },
+        "q11": {
+          "title": "Esempio Pratico",
+          "body": "Prima di automatizzare, identifica il ROI: se un task richiede 10 minuti al giorno, sono 40+ ore all'anno. Inizia documentando il processo manuale, poi identifica i passaggi error-prone o time-consuming. Strumenti come Zapier per no-code o script Python per automazione tecnica possono risparmiare centinaia di ore. Guarda: https://www.youtube.com/watch?v=M576WGiDBdQ"
+        },
+        "q12": {
+          "title": "Esempio Pratico",
+          "body": "I grandi comunicatori adattano il loro stile: con i dirigenti, parti dagli outcome e le decisioni necessarie; con gli ingegneri, includi dettagli tecnici e trade-off; con i clienti, concentrati sui benefici e usa linguaggio semplice. Il test 'E quindi?' aiuta: dopo ogni punto, chiediti 'Perché il mio pubblico dovrebbe interessarsene?' Guarda: https://www.youtube.com/watch?v=eIho2S0ZahI"
+        },
+        "q13": {
+          "title": "Esempio Pratico",
+          "body": "La condivisione efficace della conoscenza combina documentazione con apprendimento interattivo. Crea wiki ricercabili per i riferimenti, organizza sessioni 'lunch & learn' per la discussione, e abbina senior con junior. Il modello 70-20-10: 70% esperienziale, 20% sociale, 10% formazione formale. Guarda: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+        },
+        "q14": {
+          "title": "Esempio Pratico",
+          "body": "Per superare i blocchi creativi, la ricerca mostra che cambiare contesto aiuta: lavora da un luogo diverso, passa a strumenti analogici (penna e carta), o imponi vincoli artificiali (risolvilo in 5 parole). Fare pause strategiche permette al subconscio di elaborare. L''effetto incubazione' è reale. Guarda: https://www.youtube.com/watch?v=f1yQTy1bQmc"
+        },
+        "q15": {
+          "title": "Esempio Pratico",
+          "body": "Dopo le battute d'arresto, i top performer conducono 'post-mortem senza colpe': Cosa è successo? Quali sono stati i fattori contribuenti? Cosa faremo diversamente? Questo trasforma i fallimenti in opportunità di apprendimento. La cultura 'Day 1' di Amazon e l'iterazione rapida di SpaceX ne sono esempi. Sviluppa una mentalità di crescita. Guarda: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
+        },
+        "q16": {
+          "title": "Esempio Pratico",
+          "body": "Con dataset grandi, la visualizzazione rivela pattern che l'occhio umano potrebbe non vedere. Inizia con distribuzioni semplici (istogrammi), poi esplora relazioni (scatter plot). Strumenti come Tableau, Power BI o matplotlib di Python aiutano. Segmenta i dati in modo significativo: per tempo, geografia, tipo di utente. Guarda: https://www.youtube.com/watch?v=0yCJMt9Mx9c"
+        },
+        "q17": {
+          "title": "Esempio Pratico",
+          "body": "Per stakeholder non tecnici, parti dal 'e quindi' e dall'impatto sul business, non dalla metodologia. Usa analogie che capiscono (es. 'il tasso di conversione è come la percentuale di visitatori che acquistano'). Il Principio della Piramide: inizia con la conclusione, poi i punti di supporto. Guarda: https://www.youtube.com/watch?v=b1iGRaeNfn4"
+        },
+        "q18": {
+          "title": "Esempio Pratico",
+          "body": "Restare aggiornati richiede abitudini di apprendimento intenzionali. Dedica 'tempo di apprendimento' settimanale (es. venerdì pomeriggio). Segui thought leader, iscriviti a newsletter, unisciti a community. Applica le nuove conoscenze entro 48 ore per trattenerle. Il professionista 'a T': competenza profonda in un'area, conoscenza ampia su molte. Guarda: https://www.youtube.com/watch?v=5MgBikgcWnY"
+        },
+        "q19": {
+          "title": "Esempio Pratico",
+          "body": "Bilancia innovazione e praticità usando 'esperimenti safe-to-fail'. Testa nuove idee con piccoli investimenti: una landing page prima di costruire il prodotto, un prototipo prima dello sviluppo completo. Il '20% time' di Google e i 'two-pizza teams' di Amazon abilitano l'innovazione su scala. Guarda: https://www.youtube.com/watch?v=RfWgVWGEXZs"
+        },
+        "q20": {
+          "title": "Esempio Pratico",
+          "body": "La definizione efficace degli obiettivi usa il framework SMART: Specifico, Misurabile, Raggiungibile, Rilevante, Temporalmente definito. Suddividi gli obiettivi annuali in OKR trimestrali (Objectives and Key Results), poi in task settimanali. Review regolari (check-in settimanale di 15 min, deep dive mensile) ti mantengono in carreggiata. Guarda: https://www.youtube.com/watch?v=L4N1q4RNi9I"
+        },
+        "q21": {
+          "title": "Esempio Pratico",
+          "body": "Quando valuti nuove tecnologie, usa un framework strutturato: 1) Definisci chiaramente il problema, 2) Ricerca opzioni e casi studio, 3) Conduci un piccolo pilot, 4) Misura i risultati rispetto alla baseline, 5) Prendi la decisione go/no-go. Considera il costo totale di proprietà, non solo il costo iniziale. Guarda: https://www.youtube.com/watch?v=iVXW1r_ivjw"
+        },
+        "open1": {
+          "title": "Come Rispondere Bene",
+          "body": "Le risposte forti descrivono una situazione specifica con impatto misurabile. Usa il metodo STAR: Situazione (contesto), Task (responsabilità), Azione (cosa hai fatto), Risultato (outcome con numeri se possibile). Esempio: 'Ho guidato un team di 5 persone per ridurre il tempo di onboarding da 2 settimane a 3 giorni, aumentando l'activation del 40%.' Sii specifico sul TUO contributo, non solo sul successo del team. Guarda: https://www.youtube.com/watch?v=0vNUxleEyoo"
+        },
+        "open2": {
+          "title": "Come Rispondere Bene",
+          "body": "L'autoconsapevolezza è chiave qui. Le risposte forti identificano un'area di crescita genuina e mostrano passi proattivi per migliorare. Evita risposte vaghe come 'Lavoro troppo'. Invece: 'Faccio fatica a delegare i task tecnici. Sto affrontando questo iniziando con piccole deleghe, creando documenti di handoff chiari, e schedulando check-in settimanali invece che giornalieri.' Mostra che stai prendendo ownership. Guarda: https://www.youtube.com/watch?v=tJxFZrMxT3s"
         }
       },
       "examplesByCategory": {
-        "comp_power": "",
-        "communication": "",
-        "knowledge": "",
-        "creativity": "",
-        "drive": ""
+        "comp_power": "Le domande sulla Potenza Computazionale valutano la tua capacità di analizzare dati, risolvere problemi sistematicamente e usare la tecnologia efficacemente. I top performer scompongono i problemi complessi in passaggi, validano le assunzioni con i dati e iterano basandosi sui risultati.",
+        "communication": "Le domande sulla Comunicazione valutano come esprimi idee, ascolti attivamente e adatti il tuo stile a pubblici diversi. I comunicatori efficaci partono dagli outcome, usano esempi concreti e cercano feedback per assicurare la comprensione.",
+        "knowledge": "Le domande sulla Conoscenza misurano la profondità della tua expertise e la capacità di apprendere continuamente. I top performer mantengono abitudini di apprendimento, condividono la conoscenza con altri (che rinforza la loro stessa comprensione) e applicano rapidamente le nuove informazioni.",
+        "creativity": "Le domande sulla Creatività valutano la tua capacità di generare idee nuove e trovare soluzioni non convenzionali. I pensatori creativi abbracciano i vincoli, cercano prospettive diverse e prototipano rapidamente per testare le idee prima di impegnare risorse.",
+        "drive": "Le domande sulla Motivazione misurano la tua spinta, resilienza e capacità di perseguire obiettivi a lungo termine. Gli individui ad alta motivazione definiscono milestone chiari, imparano dalle battute d'arresto e mantengono il focus nonostante gli ostacoli."
       }
     },
     "business_leadership": {
