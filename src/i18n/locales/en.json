@@ -1161,96 +1161,96 @@
       },
       "examples": {
         "q1": {
-          "title": "Practical Example",
-          "body": "Imagine you receive a dataset with 50,000 customer records. A strong approach is to first break it into logical segments (by region, subscription tier, or signup date), validate data quality, then identify patterns. For example, you might discover that customers who complete onboarding within 48 hours have 3x higher retention. Watch this video on data analysis thinking: https://www.youtube.com/watch?v=ua-CiDNNj30"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Break into parts):** You prioritize systematic decomposition. Breaking complex datasets into logical segments (by region, customer type, time period) allows you to identify patterns more easily.\n\n**Option B (Look for patterns):** You trust your intuition to spot trends quickly. This works well when you have domain expertise.\n\n**Option C (Seek tools):** You leverage technology to handle complexity. Using the right tools can multiply your analytical power.\n\n**Option D (Consult others):** You value collaborative problem-solving. Learning from others' experience accelerates your understanding.\n\n**How to answer:** Choose what you ACTUALLY do first when facing new data. Watch: https://www.youtube.com/watch?v=ua-CiDNNj30"
         },
         "q2": {
-          "title": "Practical Example",
-          "body": "In a sprint planning meeting, effective contributors first listen actively to understand blockers and priorities. Then they ask clarifying questions like 'What's the success metric for this feature?' before proposing solutions. This approach ensures alignment and reduces rework. Learn more about effective meeting participation: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Listen and clarify):** You prioritize understanding before contributing. Asking clarifying questions ensures alignment.\n\n**Option B (Share and build):** You actively contribute ideas and enhance others' suggestions. Collaborative ideation energizes you.\n\n**Option C (Take notes and summarize):** You help the team by capturing and synthesizing information. Documentation creates shared understanding.\n\n**Option D (Focus on next steps):** You're action-oriented. Translating discussion into concrete tasks drives progress.\n\n**How to answer:** Think about your last 3 team meetings. What role did you naturally play? Watch: https://www.youtube.com/watch?v=TP5xDjAMhQk"
         },
         "q3": {
-          "title": "Practical Example",
-          "body": "When learning a new framework like React, the most effective learners combine official documentation with hands-on projects. Start with the basics (components, props, state), build a small todo app, then seek feedback from experienced developers. The Feynman Technique helps: explain concepts in simple terms to test your understanding. Watch: https://www.youtube.com/watch?v=MlJdMr3O5J4"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Hands-on practice):** You learn by doing. Building projects and experimenting cements your understanding faster than reading.\n\n**Option B (Guides and documentation):** You prefer comprehensive understanding before application. Thorough reading builds solid foundations.\n\n**Option C (Structured courses):** You value formal learning paths. Courses provide systematic coverage and validation.\n\n**Option D (Mentors and colleagues):** You learn best from people. Human guidance provides context that documentation lacks.\n\n**How to answer:** Think about the last skill you learned successfully. Which method did you use? Watch: https://www.youtube.com/watch?v=MlJdMr3O5J4"
         },
         "q4": {
-          "title": "Practical Example",
-          "body": "Creative problem-solvers use techniques like 'reverse brainstorming' (how could we make this problem worse?) or look to unrelated industries for inspiration. For instance, a healthcare startup might borrow appointment booking UX patterns from restaurant reservation apps. Try the SCAMPER method: Substitute, Combine, Adapt, Modify, Put to other uses, Eliminate, Reverse. Learn more: https://www.youtube.com/watch?v=G8w0rJhztJ4"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Unconventional solutions):** You naturally think outside the box. Generating multiple novel ideas before evaluating is your strength.\n\n**Option B (Combine existing ideas):** You're skilled at synthesis. Remixing proven concepts creates innovative results with lower risk.\n\n**Option C (Improve proven methods):** You build on what works. Incremental improvement is often more practical than reinvention.\n\n**Option D (Cross-industry inspiration):** You look beyond your field for ideas. Fresh perspectives from other domains unlock breakthroughs.\n\n**How to answer:** Recall a recent problem you solved creatively. Which approach did you use? Watch: https://www.youtube.com/watch?v=G8w0rJhztJ4"
         },
         "q5": {
-          "title": "Practical Example",
-          "body": "Understanding your core motivation helps sustain long-term effort. Someone driven by impact might track customer success stories; someone motivated by growth might celebrate each new skill learned. Research shows that intrinsic motivation (purpose, mastery, autonomy) outperforms extrinsic rewards for complex work. Watch Dan Pink's Drive summary: https://www.youtube.com/watch?v=u6XAPnuFjJc"
+          "title": "Understanding Your Motivation",
+          "body": "**Option A (Challenging goals):** Achievement energizes you. Hitting ambitious targets gives you deep satisfaction.\n\n**Option B (Positive impact):** Purpose drives you. Knowing your work helps others sustains your motivation.\n\n**Option C (Learning and growth):** Mastery motivates you. Developing new skills is intrinsically rewarding.\n\n**Option D (Recognition and advancement):** External validation fuels you. Career progress and acknowledgment matter to you.\n\n**How to answer:** All motivations are valid. Choose the one that MOST energizes you during difficult times. Watch: https://www.youtube.com/watch?v=u6XAPnuFjJc"
         },
         "q6": {
-          "title": "Practical Example",
-          "body": "When evaluating a new feature's success, top performers use multiple methods: quantitative metrics (conversion rates, time-to-complete), qualitative feedback (user interviews), and comparative analysis (A/B tests). For example, test two checkout flows with 5% of traffic each before full rollout. Watch: https://www.youtube.com/watch?v=VQKMoT-6XSg"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Measure metrics):** You rely on quantitative data. Specific performance numbers tell you if something works.\n\n**Option B (A/B tests):** You believe in comparative analysis. Testing alternatives reveals the best option empirically.\n\n**Option C (User feedback):** You prioritize qualitative insights. Understanding user experience matters more than raw numbers.\n\n**Option D (Requirements verification):** You check against specifications. Compliance with requirements is your baseline for success.\n\n**How to answer:** Think about a recent feature or solution you evaluated. Which method did you use first? Watch: https://www.youtube.com/watch?v=VQKMoT-6XSg"
         },
         "q7": {
-          "title": "Practical Example",
-          "body": "In conflicts, skilled communicators use the 'interests over positions' approach. Instead of debating 'should we use React or Vue?', explore underlying interests: 'We need maintainability and fast onboarding.' Often, conflicts dissolve when underlying needs are understood. Try the DESC method: Describe, Express, Specify, Consequences. Learn more: https://www.youtube.com/watch?v=CsgHMiOWsRA"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Find common ground):** You're a natural mediator. Identifying shared interests dissolves conflicts.\n\n**Option B (Present facts):** You rely on evidence. Data and facts cut through emotional disagreements.\n\n**Option C (Facilitate discussion):** You help others find solutions. Creating space for dialogue enables resolution.\n\n**Option D (Propose compromises):** You're pragmatic. Finding middle ground moves things forward.\n\n**How to answer:** Remember your last workplace disagreement. What was your instinctive approach? Watch: https://www.youtube.com/watch?v=CsgHMiOWsRA"
         },
         "q8": {
-          "title": "Practical Example",
-          "body": "When faced with conflicting research (e.g., 'remote work increases productivity' vs. 'remote work decreases collaboration'), strong analysts check source credibility, sample sizes, and context. They triangulate with multiple sources and consider running their own small experiment. Watch on critical thinking: https://www.youtube.com/watch?v=6OLPL5p0fMg"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Research more sources):** You triangulate information. Multiple sources reduce the risk of being misled.\n\n**Option B (Analyze credibility):** You evaluate sources critically. Understanding where information comes from matters.\n\n**Option C (Consult experts):** You defer to authority. Expert knowledge cuts through conflicting claims.\n\n**Option D (Test empirically):** You believe in evidence. When possible, running your own experiment is the gold standard.\n\n**How to answer:** Think about conflicting information you encountered recently. How did you resolve it? Watch: https://www.youtube.com/watch?v=6OLPL5p0fMg"
         },
         "q9": {
-          "title": "Practical Example",
-          "body": "To generate innovative ideas, effective teams use structured brainstorming: 10-minute silent ideation (quantity over quality), followed by clustering similar ideas, then voting on top 3 to prototype. Google's Design Sprint process is excellent for this. Cross-functional input often yields breakthrough ideas. Watch: https://www.youtube.com/watch?v=K2vSQPh6MCE"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Brainstorming sessions):** You thrive in creative group settings. Structured ideation generates quantity before quality.\n\n**Option B (Study success cases):** You learn from what works elsewhere. Case studies provide proven templates.\n\n**Option C (Prototypes and mockups):** You think by building. Tangible artifacts reveal possibilities faster than discussion.\n\n**Option D (Diverse teams):** You value varied perspectives. Cross-functional input yields breakthrough ideas.\n\n**How to answer:** When you need fresh ideas, which approach do you reach for first? Watch: https://www.youtube.com/watch?v=K2vSQPh6MCE"
         },
         "q10": {
-          "title": "Practical Example",
-          "body": "Long projects benefit from visible progress tracking. Break a 6-month project into 2-week sprints with specific deliverables. Celebrate milestones (first prototype, first user test, first 100 users). Research shows progress is the #1 motivator for knowledge workers. Read about the Progress Principle. Watch: https://www.youtube.com/watch?v=mNeXuCYiE0U"
+          "title": "Understanding Your Motivation",
+          "body": "**Option A (Set milestones):** You stay motivated through visible progress. Breaking projects into chunks with celebrations keeps energy high.\n\n**Option B (Focus on final goal):** You're vision-driven. Keeping the end result in mind sustains you through difficulties.\n\n**Option C (Vary activities):** You need novelty. Switching between tasks prevents burnout.\n\n**Option D (Seek team support):** You're energized by collaboration. Feedback and encouragement from others keeps you going.\n\n**How to answer:** Think about a long project you completed successfully. What kept you motivated? Watch: https://www.youtube.com/watch?v=mNeXuCYiE0U"
         },
         "q11": {
-          "title": "Practical Example",
-          "body": "Before automating, identify the ROI: If a task takes 10 minutes daily, that's 40+ hours yearly. Start by documenting the manual process, then identify error-prone or time-consuming steps. Tools like Zapier for no-code or Python scripts for technical automation can save hundreds of hours. Watch: https://www.youtube.com/watch?v=M576WGiDBdQ"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Identify patterns, create scripts):** You're a builder. Creating custom automation solutions from scratch fits your technical mindset.\n\n**Option B (Use and adapt tools):** You leverage existing solutions. Adapting proven tools is faster than building from scratch.\n\n**Option C (Analyze cost-benefit):** You're strategic. Not all automation is worth the investment, and you evaluate before acting.\n\n**Option D (Collaborate with experts):** You know when to ask for help. Technical experts can implement what you envision.\n\n**How to answer:** Think about a repetitive task you automated (or wanted to). Which approach did you take? Watch: https://www.youtube.com/watch?v=M576WGiDBdQ"
         },
         "q12": {
-          "title": "Practical Example",
-          "body": "Great communicators adapt their style: with executives, lead with outcomes and decisions needed; with engineers, include technical details and trade-offs; with customers, focus on benefits and use simple language. The 'So What?' test helps: after each point, ask 'Why does my audience care?' Watch: https://www.youtube.com/watch?v=eIho2S0ZahI"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Study the audience):** You research before communicating. Understanding background and needs shapes your message.\n\n**Option B (Use relevant examples):** You connect through relatable content. Context-appropriate analogies bridge understanding gaps.\n\n**Option C (Modify technical level):** You calibrate complexity. Matching detail level to audience expertise ensures comprehension.\n\n**Option D (Ask for feedback):** You verify understanding. Checking comprehension prevents miscommunication.\n\n**How to answer:** How do you typically prepare for presenting to different audiences? Watch: https://www.youtube.com/watch?v=eIho2S0ZahI"
         },
         "q13": {
-          "title": "Practical Example",
-          "body": "Effective knowledge sharing combines documentation with interactive learning. Create searchable wikis for reference, host 'lunch & learn' sessions for discussion, and pair senior with junior team members. The 70-20-10 model: 70% experiential, 20% social, 10% formal training. Watch: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Structured documentation):** You create searchable records. Well-organized documentation enables self-service knowledge access.\n\n**Option B (Training sessions):** You teach actively. Interactive learning transfers knowledge more effectively than reading.\n\n**Option C (Practical guides):** You focus on application. How-to content helps others execute immediately.\n\n**Option D (Best practice databases):** You systematize knowledge. Curated collections of proven approaches benefit the whole team.\n\n**How to answer:** When you learn something valuable, how do you typically share it? Watch: https://www.youtube.com/watch?v=V55rCBT1Ouc"
         },
         "q14": {
-          "title": "Practical Example",
-          "body": "To overcome creative blocks, research shows changing context helps: work from a different location, switch to analog tools (pen and paper), or impose artificial constraints (solve it in 5 words). Taking strategic breaks allows the subconscious to process. The 'incubation effect' is real. Watch: https://www.youtube.com/watch?v=f1yQTy1bQmc"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Change environment):** You break blocks by changing context. New settings stimulate fresh thinking.\n\n**Option B (Brainstorm with colleagues):** You unlock creativity through collaboration. Others' ideas spark your own.\n\n**Option C (Unrelated fields):** You seek cross-pollination. Inspiration from distant domains creates unique solutions.\n\n**Option D (Strategic breaks):** You trust incubation. Stepping away allows your subconscious to process.\n\n**How to answer:** Remember the last time you felt creatively stuck. What helped you break through? Watch: https://www.youtube.com/watch?v=f1yQTy1bQmc"
         },
         "q15": {
-          "title": "Practical Example",
-          "body": "After setbacks, high performers conduct 'blameless post-mortems': What happened? What were the contributing factors? What will we do differently? This transforms failures into learning opportunities. Amazon's 'Day 1' culture and SpaceX's rapid iteration are examples. Develop a growth mindset. Watch: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Analyze to learn):** You conduct post-mortems. Understanding what went wrong prevents future mistakes.\n\n**Option B (Move to next opportunity):** You're resilient. Quick pivoting maintains momentum.\n\n**Option C (Seek feedback):** You learn from others. Mentors and colleagues provide perspective you might miss.\n\n**Option D (Readapt strategy):** You're flexible but persistent. Changing approach while maintaining goals shows adaptive drive.\n\n**How to answer:** Think about your last significant setback. What was your first response? Watch: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
         },
         "q16": {
-          "title": "Practical Example",
-          "body": "With large datasets, visualization reveals patterns human eyes might miss. Start with simple distributions (histograms), then explore relationships (scatter plots). Tools like Tableau, Power BI, or Python's matplotlib help. Segment data meaningfully: by time, geography, user type. Watch: https://www.youtube.com/watch?v=0yCJMt9Mx9c"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Visualization tools):** You use visuals to spot patterns. Charts and graphs reveal insights that tables hide.\n\n**Option B (Segment into categories):** You organize before analyzing. Logical groupings make large datasets manageable.\n\n**Option C (Statistical techniques):** You apply formal methods. Statistical analysis finds hidden correlations.\n\n**Option D (Automated dashboards):** You build monitoring systems. Continuous visibility enables proactive response.\n\n**How to answer:** When you receive a large dataset, what's your first step? Watch: https://www.youtube.com/watch?v=0yCJMt9Mx9c"
         },
         "q17": {
-          "title": "Practical Example",
-          "body": "For non-technical stakeholders, lead with the 'so what' and business impact, not methodology. Use analogies they understand (e.g., 'conversion rate is like the percentage of store visitors who buy'). The Pyramid Principle: start with conclusion, then supporting points. Watch: https://www.youtube.com/watch?v=b1iGRaeNfn4"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Charts and visualizations):** You believe in visual communication. Intuitive graphics convey complex ideas quickly.\n\n**Option B (Business results focus):** You lead with outcomes. Non-technical audiences care about impact, not methods.\n\n**Option C (Tell a story):** You use narrative. Stories connecting data to real impacts are memorable and persuasive.\n\n**Option D (Executive summaries):** You prioritize brevity. Key points first, details available if needed.\n\n**How to answer:** When presenting to executives, which approach do you default to? Watch: https://www.youtube.com/watch?v=b1iGRaeNfn4"
         },
         "q18": {
-          "title": "Practical Example",
-          "body": "Staying current requires intentional learning habits. Dedicate 'learning time' weekly (e.g., Friday afternoons). Follow thought leaders, subscribe to newsletters, join communities. Apply new knowledge within 48 hours to retain it. The 'T-shaped' professional: deep expertise in one area, broad knowledge across many. Watch: https://www.youtube.com/watch?v=5MgBikgcWnY"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Publications and research):** You follow industry thought leadership. Reading keeps you informed of trends and developments.\n\n**Option B (Conferences and webinars):** You learn from events. Live sessions provide networking and Q&A opportunities.\n\n**Option C (Communities and forums):** You engage with peers. Discussion forums surface practical insights and problems.\n\n**Option D (Experiment with tools):** You learn by trying. Hands-on exploration of new technologies builds real skills.\n\n**How to answer:** How do you typically stay current in your field? Watch: https://www.youtube.com/watch?v=5MgBikgcWnY"
         },
         "q19": {
-          "title": "Practical Example",
-          "body": "Balance innovation with practicality using 'safe-to-fail experiments.' Test new ideas with small investments: a landing page before building the product, a prototype before full development. Google's '20% time' and Amazon's 'two-pizza teams' enable innovation at scale. Watch: https://www.youtube.com/watch?v=RfWgVWGEXZs"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Small-scale tests):** You de-risk innovation. Testing ideas on small scale before committing reduces waste.\n\n**Option B (Portfolio approach):** You balance risk. Maintaining projects at different risk levels ensures both stability and growth.\n\n**Option C (Continuous feedback):** You validate early and often. Regular feedback keeps creative work aligned with reality.\n\n**Option D (Clear evaluation criteria):** You set standards. Defined criteria help objectively assess which ideas to pursue.\n\n**How to answer:** When proposing something innovative, how do you balance risk? Watch: https://www.youtube.com/watch?v=RfWgVWGEXZs"
         },
         "q20": {
-          "title": "Practical Example",
-          "body": "Effective goal-setting uses the SMART framework: Specific, Measurable, Achievable, Relevant, Time-bound. Break yearly goals into quarterly OKRs (Objectives and Key Results), then weekly tasks. Regular reviews (weekly 15-min check-in, monthly deep dive) keep you on track. Watch: https://www.youtube.com/watch?v=L4N1q4RNi9I"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Detailed roadmaps):** You plan comprehensively. Breaking goals into milestones with timelines ensures steady progress.\n\n**Option B (Quantifiable metrics):** You measure progress. Numbers tell you if you're on track.\n\n**Option C (Regular review):** You adapt strategy. Periodic assessment allows course correction.\n\n**Option D (Maintain focus):** You're disciplined. Protecting your goals from distractions is your strength.\n\n**How to answer:** Think about a long-term goal you achieved. Which approach helped most? Watch: https://www.youtube.com/watch?v=L4N1q4RNi9I"
         },
         "q21": {
-          "title": "Practical Example",
-          "body": "When evaluating new technologies, use a structured framework: 1) Define the problem clearly, 2) Research options and case studies, 3) Run a small pilot, 4) Measure results against baseline, 5) Make go/no-go decision. Consider total cost of ownership, not just upfront cost. Watch: https://www.youtube.com/watch?v=iVXW1r_ivjw"
+          "title": "Understanding Your Approach",
+          "body": "**Option A (Cost-benefit analysis):** You evaluate ROI. Understanding total cost and expected benefit guides decisions.\n\n**Option B (Pilot projects):** You test before committing. Small-scale trials reveal real-world performance.\n\n**Option C (Impact on processes):** You consider ripple effects. New technology affects existing workflows and teams.\n\n**Option D (Case studies):** You learn from others. Industry examples show what works in practice.\n\n**How to answer:** When evaluating a new technology for adoption, what's your first step? Watch: https://www.youtube.com/watch?v=iVXW1r_ivjw"
         },
         "open1": {
           "title": "How to Answer Well",
-          "body": "Strong answers describe a specific situation with measurable impact. Use the STAR method: Situation (context), Task (your responsibility), Action (what you did), Result (outcomes with numbers if possible). Example: 'Led a team of 5 to reduce customer onboarding time from 2 weeks to 3 days, increasing activation by 40%.' Be specific about YOUR contribution, not just the team's success. Watch: https://www.youtube.com/watch?v=0vNUxleEyoo"
+          "body": "Strong answers describe a specific situation with measurable impact. Use the STAR method:\n\n**Situation:** Set the context (what was the challenge?)\n**Task:** Your specific responsibility\n**Action:** What YOU did (be specific about your contribution)\n**Result:** Outcomes with numbers if possible\n\nExample: 'Led a team of 5 to reduce customer onboarding time from 2 weeks to 3 days, increasing activation by 40%.'\n\nBe specific about YOUR contribution, not just the team's success. Watch: https://www.youtube.com/watch?v=0vNUxleEyoo"
         },
         "open2": {
           "title": "How to Answer Well",
-          "body": "Self-awareness is key here. Strong answers identify a genuine growth area and show proactive steps to improve. Avoid vague responses like 'I work too hard.' Instead: 'I struggle with delegating technical tasks. I'm addressing this by starting with small delegations, creating clear handoff documents, and scheduling weekly check-ins instead of daily ones.' Show you're taking ownership. Watch: https://www.youtube.com/watch?v=tJxFZrMxT3s"
+          "body": "Self-awareness is key here. Strong answers identify a genuine growth area and show proactive steps to improve.\n\nAvoid vague responses like 'I work too hard.' Instead, be specific:\n\n'I struggle with delegating technical tasks. I'm addressing this by:\n- Starting with small delegations\n- Creating clear handoff documents\n- Scheduling weekly check-ins instead of daily ones'\n\nShow you're taking ownership of your development. Watch: https://www.youtube.com/watch?v=tJxFZrMxT3s"
         }
       },
       "examplesByCategory": {
