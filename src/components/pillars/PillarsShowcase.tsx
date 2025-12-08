@@ -239,7 +239,7 @@ export function PillarsShowcase() {
                                 : 'bg-muted text-muted-foreground hover:bg-muted/80'
                             )}
                           >
-                            Barra
+                            {t('pillars.vis_bar', 'Bar')}
                           </button>
                           <button
                             onClick={(e) => {
@@ -253,7 +253,7 @@ export function PillarsShowcase() {
                                 : 'bg-muted text-muted-foreground hover:bg-muted/80'
                             )}
                           >
-                            Radar
+                            {t('pillars.vis_radar', 'Radar')}
                           </button>
                         </div>
                       </div>

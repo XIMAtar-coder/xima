@@ -5,7 +5,10 @@
     "loading": "Loading...",
     "back": "Back",
     "strongest": "Your Edge",
-    "area_to_develop": "Growth Area"
+    "area_to_develop": "Growth Area",
+    "you": "You",
+    "as_strength": "As Strength",
+    "as_weakness": "As Weakness"
   },
   "profile": {
     "page_title": "Welcome, {{name}}",
@@ -148,7 +151,13 @@
     "register": "Register",
     "profile": "Profile",
     "logout": "Logout",
-    "for_business": "For Business"
+    "for_business": "For Business",
+    "dashboard": "Dashboard",
+    "results": "Results",
+    "chat": "Chat",
+    "analytics": "Analytics",
+    "developer": "Developer",
+    "tests": "Tests"
   },
   "hero": {
     "title": "Discover Your Professional Self",
@@ -157,11 +166,6 @@
     "learn_more": "Learn More",
     "for_business": "For Business",
     "login": "Login"
-  },
-  "common": {
-    "you": "You",
-    "as_strength": "As Strength",
-    "as_weakness": "As Weakness"
   },
   "ximatar_intro": {
     "storytelling": "We don't define people with labels. We reveal the dynamic between what moves them, what lifts them, and what holds them back",
@@ -190,6 +194,8 @@
     "how_we_evaluate": "How we evaluate",
     "tips_to_improve": "Tips to improve",
     "visualization": "Visualization",
+    "vis_bar": "Bar",
+    "vis_radar": "Radar",
     "computational": {
       "name": "Computational Power",
       "description": "The ability to break down complex problems into logical steps, use data and tools to find efficient solutions, and think systematically about challenges",

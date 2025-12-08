@@ -9,7 +9,13 @@
     "register": "Registrati",
     "profile": "Profilo",
     "logout": "Esci",
-    "for_business": "Per le Aziende"
+    "for_business": "Per le Aziende",
+    "dashboard": "Dashboard",
+    "results": "Risultati",
+    "chat": "Chat",
+    "analytics": "Analytics",
+    "developer": "Sviluppatore",
+    "tests": "Test"
   },
   "hero": {
     "title": "Scopri il Tuo Sé Professionale",
@@ -57,6 +63,8 @@
     "how_we_evaluate": "Come valutiamo",
     "tips_to_improve": "Suggerimenti per migliorare",
     "visualization": "Visualizzazione",
+    "vis_bar": "Barra",
+    "vis_radar": "Radar",
     "computational": {
       "name": "Potenza Computazionale",
       "description": "La capacità di scomporre problemi complessi in passaggi logici, utilizzare dati e strumenti per trovare soluzioni efficienti e pensare sistematicamente alle sfide",
