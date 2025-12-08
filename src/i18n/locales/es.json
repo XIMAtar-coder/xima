@@ -1241,5 +1241,70 @@
     "cta_title": "¿Listo para Transformar Tu Contratación?",
     "cta_subtitle": "Únete a las empresas líderes que utilizan XIMA para construir equipos excepcionales.",
     "start_free_trial": "Iniciar Prueba Gratuita"
+  },
+  "guide": {
+    "badge": "Guía de Evaluación",
+    "title": "Cómo Funciona la Evaluación XIMAtar",
+    "subtitle": "Descubre tu arquetipo profesional único a través de nuestro sistema de evaluación integral basado en 5 pilares fundamentales.",
+    "journey_title": "Tu Recorrido de Evaluación",
+    "step": "Paso",
+    "step1": {
+      "title": "Carga de CV",
+      "description": "Carga tu CV para un análisis IA de tu experiencia profesional y habilidades."
+    },
+    "step2": {
+      "title": "Evaluación Inicial",
+      "description": "Selecciona tu campo y completa la evaluación inicial con preguntas de opción múltiple."
+    },
+    "step3": {
+      "title": "Evaluación Profunda",
+      "description": "Responde 21 preguntas más respuestas abiertas para revelar tu perfil único."
+    },
+    "step4": {
+      "title": "Asignación XIMAtar",
+      "description": "Recibe tu arquetipo XIMAtar personalizado basado en tus puntuaciones de pilares."
+    },
+    "pillars_title": "Los 5 Pilares XIMA",
+    "pillars_description": "Cada pilar representa una dimensión fundamental de capacidad profesional. Tu combinación única determina tu XIMAtar.",
+    "pillars": {
+      "computational": "Pensamiento analítico, resolución de problemas y toma de decisiones basada en datos.",
+      "communication": "Claridad de expresión, escucha activa y diálogo colaborativo.",
+      "knowledge": "Experiencia en dominio, aprendizaje continuo y aplicación de sabiduría.",
+      "creativity": "Innovación, pensamiento lateral y generación de soluciones novedosas.",
+      "drive": "Motivación, resiliencia y determinación orientada a objetivos."
+    },
+    "scoring_title": "Ejemplo de Puntuaciones de Pilares",
+    "scoring_description": "Cada pilar recibe una puntuación de 0-10 basada en tus respuestas. Aquí hay un perfil de ejemplo:",
+    "result": "Resultado",
+    "result_explanation": "Con Creatividad más alta (9.1) y fuerte Poder Computacional (8.2), este perfil corresponde al arquetipo Zorro - un Oportunista Estratégico que destaca en la resolución innovadora de problemas.",
+    "ximatars_title": "Los 12 Arquetipos XIMAtar",
+    "ximatars_description": "Cada XIMAtar representa una combinación única de fortalezas y estilo de trabajo. Descubre qué arquetipo corresponde a tu perfil.",
+    "ximatars": {
+      "lion": "Líder Ejecutivo",
+      "fox": "Oportunista Estratégico",
+      "owl": "Analista Sabio",
+      "dolphin": "Facilitador de Equipos",
+      "cat": "Especialista Independiente",
+      "bear": "Guardián Confiable",
+      "bee": "Trabajador Productivo",
+      "wolf": "Jugador de Equipo Táctico",
+      "parrot": "Comunicador Expresivo",
+      "elephant": "Estratega a Largo Plazo",
+      "horse": "Impulsor Confiable",
+      "chameleon": "Operador Adaptativo"
+    },
+    "logic_title": "Cómo Funciona la Asignación XIMAtar",
+    "logic_step1": "Cálculo de Puntuaciones de Pilares",
+    "logic_step1_desc": "Tus respuestas a 21 preguntas de opción múltiple y 2 preguntas abiertas se analizan para calcular puntuaciones para cada uno de los 5 pilares.",
+    "logic_step2": "Coincidencia de Patrones",
+    "logic_step2_desc": "Tu perfil de pilares se compara con los vectores ideales para cada uno de los 12 XIMatars usando algoritmos de distancia y coincidencia ponderada.",
+    "logic_step3": "Bonus del Pilar Dominante",
+    "logic_step3_desc": "Se aplica un bonus del 25% cuando tu pilar más fuerte se alinea con la característica principal de un XIMAtar, asegurando coincidencias auténticas.",
+    "logic_step4": "Asignación Final",
+    "logic_step4_desc": "El XIMAtar con la coincidencia más cercana a tu perfil único se convierte en tu arquetipo, junto con insights personalizados sobre tus fortalezas y áreas de crecimiento.",
+    "cta_title": "¿Listo para Descubrir tu XIMAtar?",
+    "cta_description": "Comienza tu recorrido de evaluación ahora y desbloquea insights personalizados sobre tu potencial profesional.",
+    "cta_button": "Iniciar Evaluación",
+    "learn_more": "Saber Más"
   }
 }

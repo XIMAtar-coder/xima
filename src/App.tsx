@@ -44,6 +44,7 @@ import BusinessJobs from "./pages/business/Jobs";
 import CreateJobOffer from "./pages/business/CreateJobOffer";
 import JobCandidateMatching from "./pages/business/JobCandidateMatching";
 import Analytics from "./pages/Analytics";
+import AssessmentGuide from "./pages/AssessmentGuide";
 
 const queryClient = new QueryClient();
 
@@ -80,6 +81,7 @@ const AppContent = () => {
           <Route path="/test/creative-thinking" element={<TestCreativeThinking />} />
           <Route path="/opportunity/:id" element={<OpportunityDetails />} />
           <Route path="/risultati" element={<Risultati />} />
+          <Route path="/assessment-guide" element={<AssessmentGuide />} />
           <Route path="/dashboard" element={<Profile />} />
           <Route path="/chat" element={<XimaChat />} />
           <Route path="/admin" element={<Admin />} />

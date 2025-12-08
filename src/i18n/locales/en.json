@@ -1712,5 +1712,70 @@
       "recommended_ximatars_description": "These XIMAtars are most likely to thrive in your organization based on your company profile.",
       "alignment_score": "Alignment Score"
     }
+  },
+  "guide": {
+    "badge": "Assessment Guide",
+    "title": "How XIMAtar Assessment Works",
+    "subtitle": "Discover your unique professional archetype through our comprehensive assessment system based on 5 core pillars.",
+    "journey_title": "Your Assessment Journey",
+    "step": "Step",
+    "step1": {
+      "title": "CV Upload",
+      "description": "Upload your CV for AI-powered analysis of your professional experience and skills."
+    },
+    "step2": {
+      "title": "Baseline Assessment",
+      "description": "Select your field and complete the initial evaluation with multiple-choice questions."
+    },
+    "step3": {
+      "title": "Deep Assessment",
+      "description": "Answer 21 questions plus open responses to reveal your unique profile."
+    },
+    "step4": {
+      "title": "XIMAtar Assignment",
+      "description": "Receive your personalized XIMAtar archetype based on your pillar scores."
+    },
+    "pillars_title": "The 5 XIMA Pillars",
+    "pillars_description": "Each pillar represents a core dimension of professional capability. Your unique combination determines your XIMAtar.",
+    "pillars": {
+      "computational": "Analytical thinking, problem-solving, and data-driven decision making.",
+      "communication": "Clarity of expression, active listening, and collaborative dialogue.",
+      "knowledge": "Domain expertise, continuous learning, and wisdom application.",
+      "creativity": "Innovation, lateral thinking, and novel solution generation.",
+      "drive": "Motivation, resilience, and goal-oriented determination."
+    },
+    "scoring_title": "Example Pillar Scores",
+    "scoring_description": "Each pillar is scored from 0-10 based on your assessment responses. Here's an example profile:",
+    "result": "Result",
+    "result_explanation": "With highest Creativity (9.1) and strong Computational Power (8.2), this profile matches the Fox archetype - a Strategic Opportunist who excels at innovative problem-solving.",
+    "ximatars_title": "The 12 XIMAtar Archetypes",
+    "ximatars_description": "Each XIMAtar represents a unique combination of strengths and work style. Discover which archetype matches your profile.",
+    "ximatars": {
+      "lion": "Executive Leader",
+      "fox": "Strategic Opportunist",
+      "owl": "Wise Analyst",
+      "dolphin": "Team Facilitator",
+      "cat": "Independent Specialist",
+      "bear": "Reliable Guardian",
+      "bee": "Productive Worker",
+      "wolf": "Tactical Team Player",
+      "parrot": "Expressive Communicator",
+      "elephant": "Long-Term Strategist",
+      "horse": "Reliable Driver",
+      "chameleon": "Adaptive Operator"
+    },
+    "logic_title": "How XIMAtar Assignment Works",
+    "logic_step1": "Pillar Score Calculation",
+    "logic_step1_desc": "Your responses to 21 multiple-choice questions and 2 open-ended questions are analyzed to calculate scores for each of the 5 pillars.",
+    "logic_step2": "Pattern Matching",
+    "logic_step2_desc": "Your pillar profile is compared against the ideal vectors for each of the 12 XIMatars using distance algorithms and weighted matching.",
+    "logic_step3": "Dominant Pillar Bonus",
+    "logic_step3_desc": "A 25% matching bonus is applied when your strongest pillar aligns with a XIMAtar's primary characteristic, ensuring authentic matches.",
+    "logic_step4": "Final Assignment",
+    "logic_step4_desc": "The XIMAtar with the closest match to your unique profile becomes your archetype, along with personalized insights about your strengths and growth areas.",
+    "cta_title": "Ready to Discover Your XIMAtar?",
+    "cta_description": "Start your assessment journey now and unlock personalized insights about your professional potential.",
+    "cta_button": "Start Assessment",
+    "learn_more": "Learn More"
   }
 }
