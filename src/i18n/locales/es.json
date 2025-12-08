@@ -787,12 +787,21 @@
         "open1": { "question": "Describe una decisión de liderazgo de la que estés orgulloso/a. ¿Qué compromisos pesaste y por qué?" },
         "open2": { "question": "¿Cuál es tu mayor área de crecimiento como líder y cómo la estás abordando?" }
       },
+      "examples": {
+        "q1": { "title": "Entendiendo Tu Enfoque", "body": "**Opción A (Detectar anomalías):** Priorizas la detección rápida de problemas.\n\n**Opción B (Profundizar segmentos):** Prefieres entender causas raíz.\n\n**Opción C (Comparar histórico):** Contextualizas el rendimiento actual.\n\n**Opción D (Exportar offline):** Te tomas tiempo para análisis profundo.\n\n**Cómo responder:** Elige lo que REALMENTE haces primero. Mira: https://www.youtube.com/watch?v=d4cKVgpHlCY" },
+        "q2": { "title": "Entendiendo Tu Enfoque", "body": "**Opción A (Sintetizar):** Lideras encontrando el problema subyacente.\n\n**Opción B (Preguntas para alinear):** Crees que el desalineamiento viene de contextos diferentes.\n\n**Opción C (Resumir decisiones):** Te orientas hacia la acción.\n\n**Opción D (Desescalar):** Priorizas la cohesión del equipo.\n\n**Cómo responder:** Piensa en tus últimas 3 reuniones con conflicto. ¿Qué comportamiento mostraste?" },
+        "q3": { "title": "Entendiendo Tu Enfoque", "body": "**Opción A (Informes del sector):** Prefieres información curada y sintetizada.\n\n**Opción B (Analistas/competidores):** Quieres inteligencia competitiva basada en datos.\n\n**Opción C (Conferencias/webinars):** Valoras el aprendizaje entre pares.\n\n**Opción D (Entrevistas a clientes):** Priorizas señales de mercado de primera mano." },
+        "q4": { "title": "Entendiendo Tu Enfoque", "body": "**Opción A (Prototipar rápido):** Crees en probar ideas rápidamente.\n\n**Opción B (Adaptar playbooks):** Prefieres frameworks probados.\n\n**Opción C (Ideas de otros sectores):** Encuentras innovación en cross-polinización.\n\n**Opción D (Cocrear):** Crees que las mejores estrategias emergen del input colaborativo." },
+        "q5": { "title": "Entendiendo Tu Motivación", "body": "**Opción A (Hitos/scorecards):** Te energiza el progreso medible.\n\n**Opción B (Propósito/impacto):** Sacas energía de outcomes significativos.\n\n**Opción C (Aprendizaje/iteración):** Te motiva el crecimiento.\n\n**Opción D (Reconocimiento/victorias):** Prosperas con el reconocimiento." },
+        "open1": { "title": "Cómo Responder Bien", "body": "Sigue el formato STAR-L: Situación, Tarea, Acción, Resultado, Aprendizaje. Describe una decisión específica con stakes reales. Nombra los trade-offs explícitamente. Cuantifica outcomes cuando sea posible. Mira: https://www.youtube.com/watch?v=0vNUxleEyoo" },
+        "open2": { "title": "Cómo Responder Bien", "body": "Muestra autoconciencia nombrando un área de crecimiento genuina. Describe acciones específicas que estás tomando. Ejemplo: 'Tiendo a excederme en datos y retrasar decisiones. Lo estoy abordando poniendo deadlines de decisión por adelantado.' Mira: https://www.youtube.com/watch?v=tJxFZrMxT3s" }
+      },
       "examplesByCategory": {
-        "comp_power": "",
-        "communication": "",
-        "knowledge": "",
-        "creativity": "",
-        "drive": ""
+        "comp_power": "Las preguntas de Potencia Computacional de Negocios evalúan tu capacidad de trabajar con datos, métricas y frameworks analíticos. Los top performers segmentan problemas sistemáticamente y validan calidad de datos.",
+        "communication": "Las preguntas de Comunicación de Negocios evalúan cómo influencias stakeholders y gestionas conflictos. Los comunicadores efectivos adaptan su estilo y lideran con outcomes.",
+        "knowledge": "Las preguntas de Conocimiento de Negocios miden cómo adquieres inteligencia de mercado. Los top performers combinan métodos múltiples y comparten conocimiento activamente.",
+        "creativity": "Las preguntas de Creatividad de Negocios evalúan tu capacidad de generar estrategias de crecimiento. Los líderes creativos prueban ideas rápidamente e involucran perspectivas diversas.",
+        "drive": "Las preguntas de Impulso de Negocios miden tu resiliencia y establecimiento de metas. Los líderes de alto impulso aprenden de los fracasos y protegen el foco a largo plazo."
       }
     },
     "arts_creative": {
@@ -823,12 +832,18 @@
         "open1": { "question": "Cuéntanos una pieza que cambió resultados. ¿Por qué funcionó?" },
         "open2": { "question": "¿Qué habilidad creativa más quieres mejorar este año y cómo?" }
       },
+      "examples": {
+        "q1": { "title": "Entendiendo Tu Enfoque", "body": "**Opción A (Comparar objetivos):** Priorizas medir si el creativo cumple metas.\n\n**Opción B (Formatos/ubicaciones):** Analizas qué formatos funcionan mejor.\n\n**Opción C (Segmentos audiencia):** Miras cómo responden diferentes audiencias.\n\n**Opción D (Verificar medición):** Validas calidad de datos primero." },
+        "q2": { "title": "Entendiendo Tu Enfoque", "body": "**Opción A (Historia de decisiones):** Explicas el razonamiento y lógica creativa.\n\n**Opción B (Antes/después visual):** Muestras transformaciones tangibles.\n\n**Opción C (Objetivos de negocio):** Conectas elecciones a outcomes que importan.\n\n**Opción D (Invitar preguntas):** Construyes comprensión a través del diálogo." },
+        "open1": { "title": "Cómo Responder Bien", "body": "Describe una pieza específica con impacto medible: Qué creaste, El desafío, Tus elecciones creativas, El outcome. Ejemplo: 'Rediseñé las ilustraciones del checkout de abstractas a imágenes concretas. Esto aumentó la conversión un 23%.' Mira: https://www.youtube.com/watch?v=0vNUxleEyoo" },
+        "open2": { "title": "Cómo Responder Bien", "body": "Nombra un gap de habilidad genuino y describe pasos activos. Evita respuestas genéricas. Ejemplo: 'Quiero mejorar en motion design. Estoy tomando un curso de 12 semanas, practico 30 min diarios y comparto progreso en una comunidad online.' Mira: https://www.youtube.com/watch?v=tJxFZrMxT3s" }
+      },
       "examplesByCategory": {
-        "comp_power": "",
-        "communication": "",
-        "knowledge": "",
-        "creativity": "",
-        "drive": ""
+        "comp_power": "Las preguntas de Potencia Computacional Creativa evalúan tu capacidad de usar datos para informar decisiones creativas. Los top performers validan suposiciones con evidencia.",
+        "communication": "Las preguntas de Comunicación Creativa evalúan cómo presentas ideas y recibes feedback. Los comunicadores creativos traducen conceptos abstractos en ejemplos tangibles.",
+        "knowledge": "Las preguntas de Conocimiento Creativo miden cómo te mantienes actualizado en tu oficio. Los top performers combinan aprendizaje formal con comunidad.",
+        "creativity": "Las preguntas de Creatividad evalúan tu proceso de generación de ideas. Los performers fuertes abrazan restricciones y prototipan rápidamente.",
+        "drive": "Las preguntas de Impulso Creativo miden resiliencia y capacidad de mantener momentum. Los creativos de alto impulso celebran pequeñas victorias y protegen tiempo para trabajo profundo."
       }
     },
     "service_ops": {
