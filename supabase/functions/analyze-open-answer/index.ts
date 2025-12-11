@@ -6,6 +6,32 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Language-specific prompts for natural, clean output
+const LANGUAGE_CONFIGS: Record<string, { name: string; feedbackStyle: string; toneGuidance: string }> = {
+  en: {
+    name: 'English',
+    feedbackStyle: 'Write in clear, inspiring English. Be direct yet warm.',
+    toneGuidance: 'Use motivational language that encourages growth. Avoid jargon.'
+  },
+  it: {
+    name: 'Italian',
+    feedbackStyle: 'Scrivi in italiano chiaro e ispirante. Sii diretto ma caloroso.',
+    toneGuidance: 'Usa un linguaggio motivazionale che incoraggi la crescita. Evita il gergo tecnico.'
+  },
+  es: {
+    name: 'Spanish',
+    feedbackStyle: 'Escribe en español claro e inspirador. Sé directo pero cálido.',
+    toneGuidance: 'Usa un lenguaje motivacional que fomente el crecimiento. Evita la jerga.'
+  }
+};
+
+const FIELD_CONTEXTS: Record<string, string> = {
+  science_tech: 'science, technology, engineering, data analysis, and technical problem-solving',
+  business_leadership: 'business strategy, leadership, management, and organizational development',
+  arts_creative: 'creative arts, design, storytelling, and artistic expression',
+  service_ops: 'service delivery, operations, customer experience, and process optimization'
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -26,59 +52,80 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Clean the input text
+    // Clean the input text thoroughly
     const cleanedText = text
-      .replace(/[._]{2,}/g, ' ') // Remove repeated dots/underscores
-      .replace(/\s+/g, ' ')       // Normalize whitespace
+      .replace(/[._]{2,}/g, ' ')
+      .replace(/\s+/g, ' ')
+      .replace(/^\s*[._]+\s*/g, '')
+      .replace(/\s*[._]+\s*$/g, '')
       .trim();
 
-    console.log('Analyzing answer with Lovable AI:', { field, language, openKey, textLength: cleanedText.length });
+    const langConfig = LANGUAGE_CONFIGS[language] || LANGUAGE_CONFIGS.en;
+    const fieldContext = FIELD_CONTEXTS[field] || 'professional skills';
 
-    const systemPrompt = `You are an expert assessment evaluator. Analyze open-ended professional answers and score them across multiple criteria.
+    console.log('Analyzing answer with Lovable AI:', { 
+      field, 
+      language, 
+      openKey, 
+      textLength: cleanedText.length,
+      wordCount: cleanedText.split(/\s+/).filter(Boolean).length
+    });
 
-Your task:
-1. Evaluate the answer based on these rubric criteria (return scores out of the max for each):
-   - length (0-20): Reward 80-250 words, penalize too short or too long
-   - relevance (0-25): How well does the answer relate to the field (${field})?
-   - structure (0-20): Is it well-organized with clear beginning, middle, end?
-   - specificity (0-20): Does it include concrete details, numbers, examples?
-   - action (0-15): Does it demonstrate proactive thinking and impact?
+    const systemPrompt = `You are a supportive career coach and assessment expert. Your role is to evaluate open-ended professional answers with empathy, insight, and constructive guidance.
 
-2. Provide a Steve Jobs-style explanation (2-4 sentences):
-   - Be visionary and inspiring
-   - Use clear, simple, high-impact language
-   - Focus on ONE key insight about what would elevate this answer
-   - Explain why improving this matters for professional growth
+CRITICAL RULES:
+- ALWAYS respond in ${langConfig.name}. Every word of your response must be in ${langConfig.name}.
+- ${langConfig.feedbackStyle}
+- ${langConfig.toneGuidance}
+- Never use placeholder text, dots, underscores, or technical artifacts in your response.
+- Write naturally as if speaking to a motivated professional who wants to grow.
 
-3. Give 2-3 concrete improvement suggestions as bullet points
+EVALUATION CONTEXT:
+- Field: ${fieldContext}
+- Question type: ${openKey === 'open1' ? 'Creative thinking and problem-solving approach' : 'Goal-setting and professional drive'}
 
-Return ONLY valid JSON in this exact format:
+SCORING CRITERIA (be fair but encouraging):
+1. CLARITY (0-20): How clear and well-articulated is the response? Can the reader easily understand the main points?
+2. DEPTH (0-25): Does the answer show thoughtful analysis? Does it go beyond surface-level thinking?
+3. RELEVANCE (0-20): How well does the answer relate to the professional field and question context?
+4. COHERENCE (0-20): Is the answer well-organized with logical flow from start to finish?
+5. INSIGHT (0-15): Does the answer demonstrate unique perspective, self-awareness, or actionable thinking?
+
+YOUR RESPONSE STRUCTURE:
+Provide a JSON object with:
+1. "score_breakdown": numeric scores for each criterion
+2. "explanation": A warm, 2-3 sentence explanation of the score that highlights what the person did well AND where they can grow. Be specific and encouraging.
+3. "suggestions": 2-3 practical, actionable tips written in a friendly, coaching tone. Each should be a complete, helpful sentence.
+
+Return ONLY valid JSON:
 {
   "score_breakdown": {
-    "length": 18,
-    "relevance": 22,
-    "structure": 15,
-    "specificity": 19,
-    "action": 14
+    "clarity": 16,
+    "depth": 20,
+    "relevance": 17,
+    "coherence": 15,
+    "insight": 12
   },
-  "steve_jobs_explanation": "The answer shows promise, but it's missing the wow factor. Great ideas need specificity—real numbers, real outcomes, real impact. When you add those details, you don't just tell a story, you make people believe in your vision.",
-  "improvement_suggestions": [
-    "Add specific metrics or outcomes to demonstrate impact",
-    "Structure your response with a clear beginning, middle, and conclusion",
-    "Include concrete examples from your experience"
+  "explanation": "Your response shows genuine self-awareness and a clear understanding of your strengths. You could take it to the next level by adding a specific example that brings your ideas to life.",
+  "suggestions": [
+    "Try including one concrete example from your experience to illustrate your main point",
+    "Consider adding what specific outcome or result you achieved",
+    "Think about connecting your approach to a broader professional goal"
   ]
 }`;
 
-    const userPrompt = `Field: ${field}
-Question Type: ${openKey}
-Language: ${language}
+    const userPrompt = `Evaluate this open-ended professional assessment answer.
 
 Answer to evaluate:
 """
 ${cleanedText}
 """
 
-Analyze this answer and provide scoring + Steve Jobs-style feedback.`;
+Remember: 
+- Respond entirely in ${langConfig.name}
+- Be encouraging but honest
+- Focus on growth potential
+- Keep suggestions practical and specific`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -92,7 +139,6 @@ Analyze this answer and provide scoring + Steve Jobs-style feedback.`;
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
         ],
-        temperature: 0.7,
       }),
     });
 
@@ -131,7 +177,6 @@ Analyze this answer and provide scoring + Steve Jobs-style feedback.`;
     // Parse the AI response
     let parsedResult;
     try {
-      // Extract JSON from markdown code blocks if present
       const jsonMatch = aiContent.match(/```json\s*([\s\S]*?)\s*```/) || 
                         aiContent.match(/```\s*([\s\S]*?)\s*```/);
       const jsonString = jsonMatch ? jsonMatch[1] : aiContent;
@@ -144,29 +189,47 @@ Analyze this answer and provide scoring + Steve Jobs-style feedback.`;
       );
     }
 
-    // Calculate total score
+    // Map new criteria to legacy format for backward compatibility
     const breakdown = parsedResult.score_breakdown;
-    const total = (breakdown.length || 0) + 
-                  (breakdown.relevance || 0) + 
-                  (breakdown.structure || 0) + 
-                  (breakdown.specificity || 0) + 
-                  (breakdown.action || 0);
+    const mappedBreakdown = {
+      length: Math.round(breakdown.clarity || 0),        // clarity -> length slot
+      relevance: Math.round(breakdown.depth || 0),       // depth -> relevance slot  
+      structure: Math.round(breakdown.relevance || 0),   // relevance -> structure slot
+      specificity: Math.round(breakdown.coherence || 0), // coherence -> specificity slot
+      action: Math.round(breakdown.insight || 0)         // insight -> action slot
+    };
+
+    const total = mappedBreakdown.length + 
+                  mappedBreakdown.relevance + 
+                  mappedBreakdown.structure + 
+                  mappedBreakdown.specificity + 
+                  mappedBreakdown.action;
+
+    // Clean any artifacts from the explanation and suggestions
+    const cleanText = (str: string) => {
+      if (!str) return '';
+      return str
+        .replace(/[._]{2,}/g, ' ')
+        .replace(/^\s*[._]+/g, '')
+        .replace(/[._]+\s*$/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    };
 
     const result = {
-      score_total: Math.round(total),
-      score_breakdown: {
-        length: Math.round(breakdown.length || 0),
-        relevance: Math.round(breakdown.relevance || 0),
-        structure: Math.round(breakdown.structure || 0),
-        specificity: Math.round(breakdown.specificity || 0),
-        action: Math.round(breakdown.action || 0),
-      },
-      steve_jobs_explanation: parsedResult.steve_jobs_explanation || "",
-      improvement_suggestions: parsedResult.improvement_suggestions || [],
+      score_total: Math.round(Math.min(100, total)),
+      score_breakdown: mappedBreakdown,
+      steve_jobs_explanation: cleanText(parsedResult.explanation || ""),
+      improvement_suggestions: (parsedResult.suggestions || []).map(cleanText).filter(Boolean),
       cleaned_text: cleanedText
     };
 
-    console.log('Analysis complete:', { total: result.score_total });
+    console.log('Analysis complete:', { 
+      total: result.score_total, 
+      language,
+      explanationLength: result.steve_jobs_explanation.length,
+      suggestionsCount: result.improvement_suggestions.length
+    });
 
     return new Response(
       JSON.stringify(result),

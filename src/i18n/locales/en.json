@@ -99,18 +99,18 @@
   },
   "open_scoring": {
     "title": "Open Question Scores",
-    "why": "Why?",
-    "consider_elaborating": "Consider elaborating more on your answer",
-    "rubric_breakdown": "Rubric Breakdown",
-    "expert_insight": "Expert Insight",
-    "suggestions": "How to Improve",
-    "note": "Note: These scores reflect the quality and completeness of your answers",
+    "why": "Why this score?",
+    "consider_elaborating": "Consider elaborating more for higher scores (minimum 50 words recommended).",
+    "rubric_breakdown": "Score Breakdown",
+    "expert_insight": "Your Personalized Feedback",
+    "suggestions": "Tips to Improve",
+    "note": "Open answers can influence up to 10% of selected pillars (Creativity, Communication, Knowledge, and Drive).",
     "rubric": {
-      "length": "Length",
-      "relevance": "Relevance",
-      "structure": "Structure",
-      "specificity": "Specificity",
-      "action": "Action Orientation"
+      "length": "Clarity",
+      "relevance": "Depth",
+      "structure": "Relevance",
+      "specificity": "Coherence",
+      "action": "Insight"
     }
   },
   "nav": {

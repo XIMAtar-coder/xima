@@ -165,17 +165,17 @@
   "open_scoring": {
     "title": "Puntuación de Respuestas Abiertas",
     "why": "¿Por qué esta puntuación?",
-    "consider_elaborating": "Considera elaborar más para obtener más puntos (se recomiendan mínimo 50 palabras).",
-    "rubric_breakdown": "Desglose de la rúbrica",
-    "expert_insight": "Perspectiva Experta",
-    "suggestions": "Cómo Mejorar",
+    "consider_elaborating": "Considera elaborar más para obtener más puntos (mínimo 50 palabras recomendadas).",
+    "rubric_breakdown": "Desglose de Puntuación",
+    "expert_insight": "Tu Feedback Personalizado",
+    "suggestions": "Consejos para Mejorar",
     "note": "Las respuestas abiertas pueden influir hasta un 10% en los pilares seleccionados (Creatividad, Comunicación, Conocimiento e Impulso).",
     "rubric": {
-      "length": "Profundidad y Extensión",
-      "relevance": "Relevancia del Campo",
-      "structure": "Estructura y Fluidez",
-      "specificity": "Especificidad y Evidencia",
-      "action": "Orientación a la Acción"
+      "length": "Claridad",
+      "relevance": "Profundidad",
+      "structure": "Relevancia",
+      "specificity": "Coherencia",
+      "action": "Perspicacia"
     }
   },
   "ximatar_intro": {
