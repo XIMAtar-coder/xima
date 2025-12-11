@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import MainLayout from '../components/layout/MainLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,6 +17,7 @@ import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, Cart
 
 const Admin = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const { isAdmin, loading: adminLoading } = useAdminRole();
@@ -51,8 +53,8 @@ const Admin = () => {
     // Check if user has admin role using secure server-side validation
     if (!isAdmin) {
       toast({
-        title: 'Access Denied',
-        description: 'You do not have admin privileges',
+        title: t('admin.access_denied'),
+        description: t('admin.no_privileges'),
         variant: 'destructive'
       });
       navigate('/profile');
