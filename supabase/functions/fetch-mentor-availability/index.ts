@@ -254,8 +254,11 @@ serve(async (req) => {
     let calendarMentorId = mentorId; // Track which mentor's calendar we're using
 
     // If assigned mentor doesn't have a Google Calendar, find a fallback mentor who does
+    let fallbackMentorName: string | null = null;
+    
     if (serviceAccountJson && !calendarId) {
       console.log('[fetch-mentor-availability] Assigned mentor has no Google Calendar, searching for fallback...');
+      console.log('[fetch-mentor-availability] Assigned mentor availability:', JSON.stringify(mentorInfo.availability));
       
       // Query all mentors with a google_calendar_id in their availability JSONB
       const { data: mentorsWithCalendar, error: fallbackError } = await supabase
@@ -263,20 +266,31 @@ serve(async (req) => {
         .select('id, name, availability')
         .eq('is_active', true);
       
+      console.log('[fetch-mentor-availability] Found mentors:', mentorsWithCalendar?.length, 'Error:', fallbackError?.message);
+      
       if (!fallbackError && mentorsWithCalendar) {
         // Find first mentor with a valid google_calendar_id
-        const fallbackMentor = mentorsWithCalendar.find(m => {
+        for (const m of mentorsWithCalendar) {
           const avail = m.availability as any;
-          return avail?.google_calendar_id;
-        });
-        
-        if (fallbackMentor) {
-          calendarId = (fallbackMentor.availability as any).google_calendar_id;
-          calendarMentorId = fallbackMentor.id;
-          usedFallbackMentor = true;
-          console.log('[fetch-mentor-availability] Using fallback mentor calendar:', fallbackMentor.name, calendarId);
+          console.log('[fetch-mentor-availability] Checking mentor:', m.name, 'availability:', JSON.stringify(avail));
+          if (avail?.google_calendar_id) {
+            calendarId = avail.google_calendar_id;
+            calendarMentorId = m.id;
+            fallbackMentorName = m.name;
+            usedFallbackMentor = true;
+            console.log('[fetch-mentor-availability] Using fallback mentor calendar:', m.name, 'calendarId:', calendarId);
+            break;
+          }
         }
       }
+      
+      if (!calendarId) {
+        console.log('[fetch-mentor-availability] No fallback mentor with Google Calendar found');
+      }
+    } else if (calendarId) {
+      console.log('[fetch-mentor-availability] Assigned mentor has Google Calendar:', calendarId);
+    } else {
+      console.log('[fetch-mentor-availability] No service account configured');
     }
 
     if (serviceAccountJson && calendarId) {
@@ -356,13 +370,16 @@ serve(async (req) => {
         },
         calendarSource,
         calendarMentorId: calendarSource.includes('google_calendar') ? calendarMentorId : null,
-        calendarMentorName: usedFallbackMentor ? 'Fallback Mentor' : mentorInfo.name,
+        calendarMentorName: usedFallbackMentor ? fallbackMentorName : mentorInfo.name,
         debug: {
           assignedMentorId: mentorId,
           assignedMentorName: mentorInfo.name,
           calendarMentorId: calendarMentorId,
+          calendarMentorName: usedFallbackMentor ? fallbackMentorName : mentorInfo.name,
           usedFallback: usedFallbackMentor,
-          source: calendarSource
+          source: calendarSource,
+          googleCalendarId: calendarId || null,
+          serviceAccountConfigured: !!serviceAccountJson
         },
         message: formattedSlots.length ? null : "No available slots at the moment"
       }), 
