@@ -54,8 +54,11 @@ interface DebugInfo {
   assignedMentorId: string;
   assignedMentorName: string;
   calendarMentorId: string;
+  calendarMentorName?: string;
   usedFallback: boolean;
   source: string;
+  googleCalendarId?: string | null;
+  serviceAccountConfigured?: boolean;
 }
 
 export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingSuccess }) => {
@@ -305,8 +308,11 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
               <p className="font-semibold text-yellow-600 mb-2">🔧 Debug: Calendar Source</p>
               <div className="space-y-1 text-muted-foreground">
                 <p><span className="text-foreground">Source:</span> {debugInfo.source}</p>
+                <p><span className="text-foreground">Service Account:</span> {debugInfo.serviceAccountConfigured ? '✅ Configured' : '❌ Missing'}</p>
                 <p><span className="text-foreground">Assigned Mentor:</span> {debugInfo.assignedMentorName} ({debugInfo.assignedMentorId?.slice(0, 8)}...)</p>
-                <p><span className="text-foreground">Calendar From:</span> {debugInfo.usedFallback ? '⚠️ FALLBACK' : '✅ Same mentor'} ({debugInfo.calendarMentorId?.slice(0, 8)}...)</p>
+                <p><span className="text-foreground">Calendar From:</span> {debugInfo.usedFallback ? `⚠️ FALLBACK (${debugInfo.calendarMentorName})` : '✅ Same mentor'}</p>
+                <p><span className="text-foreground">Calendar Mentor ID:</span> {debugInfo.calendarMentorId?.slice(0, 8) || 'N/A'}...</p>
+                <p><span className="text-foreground">Google Calendar ID:</span> {debugInfo.googleCalendarId || '❌ None'}</p>
               </div>
             </div>
           )}
