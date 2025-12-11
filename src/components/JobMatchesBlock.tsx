@@ -41,7 +41,7 @@ export const JobMatchesBlock: React.FC = () => {
               onClick={() => navigate('/ximatar-journey')}
               className="mt-2"
             >
-              Take Assessment
+              {t('opportunities.take_assessment')}
             </Button>
           </div>
         )}
@@ -63,7 +63,7 @@ export const JobMatchesBlock: React.FC = () => {
                       {recommendation.ximatarMatch && (
                         <Badge variant="secondary" className="bg-primary/10 text-primary">
                           <Sparkles className="h-3 w-3 mr-1" />
-                          XIMAtar Match
+                          {t('opportunities.ximatar_match')}
                         </Badge>
                       )}
                     </div>
@@ -75,7 +75,7 @@ export const JobMatchesBlock: React.FC = () => {
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <div className="text-xs text-muted-foreground mb-1">Match</div>
+                    <div className="text-xs text-muted-foreground mb-1">{t('opportunities.match')}</div>
                     <div className={`text-2xl font-bold ${
                       recommendation.matchScore >= 85 ? 'text-green-600' :
                       recommendation.matchScore >= 70 ? 'text-blue-600' :
@@ -95,7 +95,7 @@ export const JobMatchesBlock: React.FC = () => {
                 </div>
                 <div className="mt-3 flex items-center justify-between">
                   <div className="text-xs text-muted-foreground">
-                    Skill Coverage: {recommendation.skillCoverage}%
+                    {t('opportunities.skill_coverage')}: {recommendation.skillCoverage}%
                   </div>
                   <Button size="sm" onClick={() => navigate(`/opportunity/${recommendation.job.id}`)}>
                     {t('profile.view_opportunity')}

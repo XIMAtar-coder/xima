@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 const CreateChallenge = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
@@ -68,16 +70,16 @@ const CreateChallenge = () => {
       }
 
       toast({
-        title: 'Success!',
-        description: `Challenge created and assigned to ${selectedCandidates.length} candidate(s)`,
+        title: t('business_portal.success'),
+        description: t('business_portal.challenge_created', { count: selectedCandidates.length }),
       });
 
       navigate('/business/challenges');
     } catch (error: any) {
       console.error('Error creating challenge:', error);
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to create challenge',
+        title: t('business_portal.error'),
+        description: error.message || t('business_portal.failed_create_challenge'),
         variant: 'destructive'
       });
     } finally {
@@ -86,11 +88,11 @@ const CreateChallenge = () => {
   };
 
   const difficultyLevels = [
-    { value: 1, label: 'Beginner', color: 'bg-green-500' },
-    { value: 2, label: 'Easy', color: 'bg-blue-500' },
-    { value: 3, label: 'Medium', color: 'bg-yellow-500' },
-    { value: 4, label: 'Hard', color: 'bg-orange-500' },
-    { value: 5, label: 'Expert', color: 'bg-red-500' }
+    { value: 1, label: t('business_portal.beginner'), color: 'bg-green-500' },
+    { value: 2, label: t('business_portal.easy'), color: 'bg-blue-500' },
+    { value: 3, label: t('business_portal.medium'), color: 'bg-yellow-500' },
+    { value: 4, label: t('business_portal.hard'), color: 'bg-orange-500' },
+    { value: 5, label: t('business_portal.expert'), color: 'bg-red-500' }
   ];
 
   return (
@@ -98,13 +100,13 @@ const CreateChallenge = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Create New Challenge</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">{t('business_portal.create_challenge')}</h1>
           <p className="text-[#A3ABB5]">
-            Design a custom challenge to evaluate candidates' skills
+            {t('business_portal.design_challenge')}
           </p>
           {selectedCandidates.length > 0 && (
             <Badge className="mt-2 bg-[#3A9FFF]/20 text-[#3A9FFF]">
-              Will be assigned to {selectedCandidates.length} candidate(s)
+              {t('business_portal.will_be_assigned', { count: selectedCandidates.length })}
             </Badge>
           )}
         </div>
@@ -114,19 +116,19 @@ const CreateChallenge = () => {
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Target className="text-[#3A9FFF]" />
-                Challenge Details
+                {t('business_portal.challenge_details')}
               </CardTitle>
               <CardDescription className="text-[#A3ABB5]">
-                Provide information about the challenge you want to create
+                {t('business_portal.provide_info')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Title */}
               <div className="space-y-2">
-                <Label htmlFor="title" className="text-white">Challenge Title *</Label>
+                <Label htmlFor="title" className="text-white">{t('business_portal.challenge_title')}</Label>
                 <Input
                   id="title"
-                  placeholder="e.g., Frontend Development Challenge"
+                  placeholder={t('business_portal.title_placeholder')}
                   className="bg-[#0A0F1C] border-[#3A9FFF]/20 text-white"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -136,10 +138,10 @@ const CreateChallenge = () => {
 
               {/* Description */}
               <div className="space-y-2">
-                <Label htmlFor="description" className="text-white">Description</Label>
+                <Label htmlFor="description" className="text-white">{t('business_portal.description')}</Label>
                 <Textarea
                   id="description"
-                  placeholder="Describe what candidates need to do..."
+                  placeholder={t('business_portal.description_placeholder')}
                   rows={5}
                   className="bg-[#0A0F1C] border-[#3A9FFF]/20 text-white"
                   value={formData.description}
@@ -149,10 +151,10 @@ const CreateChallenge = () => {
 
               {/* Target Skills */}
               <div className="space-y-2">
-                <Label htmlFor="targetSkills" className="text-white">Target Skills</Label>
+                <Label htmlFor="targetSkills" className="text-white">{t('business_portal.target_skills')}</Label>
                 <Input
                   id="targetSkills"
-                  placeholder="React, TypeScript, API Integration (comma separated)"
+                  placeholder={t('business_portal.skills_placeholder')}
                   className="bg-[#0A0F1C] border-[#3A9FFF]/20 text-white"
                   value={formData.targetSkills}
                   onChange={(e) => setFormData({ ...formData, targetSkills: e.target.value })}
@@ -163,7 +165,7 @@ const CreateChallenge = () => {
               <div className="space-y-2">
                 <Label htmlFor="deadline" className="text-white flex items-center gap-2">
                   <Calendar size={16} />
-                  Deadline
+                  {t('business_portal.deadline')}
                 </Label>
                 <Input
                   id="deadline"
@@ -178,7 +180,7 @@ const CreateChallenge = () => {
               <div className="space-y-3">
                 <Label className="text-white flex items-center gap-2">
                   <TrendingUp size={16} />
-                  Difficulty Level
+                  {t('business_portal.difficulty_level')}
                 </Label>
                 <div className="grid grid-cols-5 gap-3">
                   {difficultyLevels.map((level) => (
@@ -204,7 +206,7 @@ const CreateChallenge = () => {
               <div className="space-y-2">
                 <Label htmlFor="attachmentUrl" className="text-white flex items-center gap-2">
                   <LinkIcon size={16} />
-                  Attachment URL (Optional)
+                  {t('business_portal.attachment_url')}
                 </Label>
                 <Input
                   id="attachmentUrl"
@@ -223,7 +225,7 @@ const CreateChallenge = () => {
                   className="flex-1 bg-[#3A9FFF] hover:bg-[#3A9FFF]/90"
                   disabled={loading}
                 >
-                  {loading ? 'Creating...' : 'Create Challenge'}
+                  {loading ? t('business_portal.creating') : t('business_portal.create_challenge_btn')}
                 </Button>
                 <Button
                   type="button"
@@ -231,7 +233,7 @@ const CreateChallenge = () => {
                   className="border-[#3A9FFF]/30"
                   onClick={() => navigate('/business/challenges')}
                 >
-                  Cancel
+                  {t('business_portal.cancel')}
                 </Button>
               </div>
             </CardContent>

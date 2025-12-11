@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Building2, Globe, Mail, Save, Clock, TrendingUp } from 'lucide-react';
 
 const BusinessSettings = () => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
@@ -47,8 +49,8 @@ const BusinessSettings = () => {
     } catch (error) {
       console.error('Error loading profile:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to load company profile',
+        title: t('business_portal.error'),
+        description: t('business_portal.failed_load_profile'),
         variant: 'destructive'
       });
     }
@@ -73,14 +75,14 @@ const BusinessSettings = () => {
       if (error) throw error;
 
       toast({
-        title: 'Success!',
-        description: 'Settings updated successfully'
+        title: t('business_portal.success'),
+        description: t('business_portal.settings_updated')
       });
     } catch (error: any) {
       console.error('Error updating settings:', error);
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to update settings',
+        title: t('business_portal.error'),
+        description: error.message || t('business_portal.failed_update_settings'),
         variant: 'destructive'
       });
     } finally {
@@ -93,8 +95,8 @@ const BusinessSettings = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
-          <p className="text-[#A3ABB5]">Manage your company profile and preferences</p>
+          <h1 className="text-3xl font-bold text-white mb-2">{t('business_portal.settings')}</h1>
+          <p className="text-[#A3ABB5]">{t('business_portal.manage_preferences')}</p>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -103,15 +105,15 @@ const BusinessSettings = () => {
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Building2 className="text-[#3A9FFF]" />
-                Company Information
+                {t('business_portal.company_info')}
               </CardTitle>
               <CardDescription className="text-[#A3ABB5]">
-                Update your company details
+                {t('business_portal.update_details')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="companyName" className="text-white">Company Name</Label>
+                <Label htmlFor="companyName" className="text-white">{t('business_portal.company_name')}</Label>
                 <Input
                   id="companyName"
                   placeholder="Acme Corporation"
@@ -125,7 +127,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label htmlFor="website" className="text-white flex items-center gap-2">
                   <Globe size={16} />
-                  Website
+                  {t('business_portal.website')}
                 </Label>
                 <Input
                   id="website"
@@ -140,7 +142,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label htmlFor="hrContactEmail" className="text-white flex items-center gap-2">
                   <Mail size={16} />
-                  HR Contact Email
+                  {t('business_portal.hr_contact_email')}
                 </Label>
                 <Input
                   id="hrContactEmail"
@@ -157,16 +159,16 @@ const BusinessSettings = () => {
           {/* Challenge Defaults */}
           <Card className="bg-gradient-to-br from-[#0F1419] to-[#0A0F1C] border-[#3A9FFF]/20 mb-6">
             <CardHeader>
-              <CardTitle className="text-white">Challenge Defaults</CardTitle>
+              <CardTitle className="text-white">{t('business_portal.challenge_defaults')}</CardTitle>
               <CardDescription className="text-[#A3ABB5]">
-                Set default parameters for new challenges
+                {t('business_portal.default_parameters')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="duration" className="text-white flex items-center gap-2">
                   <Clock size={16} />
-                  Default Duration (days)
+                  {t('business_portal.default_duration')}
                 </Label>
                 <Input
                   id="duration"
@@ -182,7 +184,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label htmlFor="difficulty" className="text-white flex items-center gap-2">
                   <TrendingUp size={16} />
-                  Default Difficulty (1-5)
+                  {t('business_portal.default_difficulty')}
                 </Label>
                 <Input
                   id="difficulty"
@@ -204,7 +206,7 @@ const BusinessSettings = () => {
             disabled={loading}
           >
             <Save className="mr-2" size={16} />
-            {loading ? 'Saving...' : 'Save Settings'}
+            {loading ? t('business_portal.saving') : t('business_portal.save_settings')}
           </Button>
         </form>
       </div>
