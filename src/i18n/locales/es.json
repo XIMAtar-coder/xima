@@ -1138,18 +1138,79 @@
   },
   "development": {
     "title": "Plan de Desarrollo",
+    "subtitle": "Ruta de aprendizaje personalizada basada en tu evaluación XIMA",
     "back_to_dashboard": "Volver al Dashboard",
-    "enhance_analytical_skills": "Mejorar Habilidades Analíticas",
-    "enhance_communication": "Mejorar Comunicación",
-    "boost_creativity": "Impulsar Creatividad",
-    "increase_drive": "Aumentar Impulso",
-    "expand_knowledge": "Expandir Conocimiento",
-    "start_test": "Comenzar Prueba",
+    "overall_progress": "Progreso General",
     "tests_completed": "Pruebas Completadas",
+    "tests_remaining": "Pruebas Restantes",
     "progress": "Progreso",
-    "skill_assessment": "Evaluación de Habilidades",
-    "personalized_recommendations": "Recomendaciones Personalizadas",
-    "track_improvement": "Seguir Mejora"
+    "areas": {
+      "analytical": {
+        "title": "Mejorar Habilidades Analíticas",
+        "description": "Fortalece tu pensamiento computacional y capacidades de análisis de datos"
+      },
+      "communication": {
+        "title": "Taller de Comunicación",
+        "description": "Mejora tus habilidades de presentación y comunicación interpersonal"
+      },
+      "creative": {
+        "title": "Entrenamiento en Innovación Creativa",
+        "description": "Desarrolla la resolución creativa de problemas y mentalidad innovadora"
+      }
+    },
+    "tests": {
+      "data_analysis": {
+        "title": "Fundamentos de Análisis de Datos",
+        "description": "Evalúa tu capacidad para interpretar conjuntos de datos complejos"
+      },
+      "logical_problem_solving": {
+        "title": "Resolución Lógica de Problemas",
+        "description": "Evalúa el enfoque sistemático para problemas complejos"
+      },
+      "presentation_skills": {
+        "title": "Evaluación de Habilidades de Presentación",
+        "description": "Evalúa tu capacidad para presentar ideas complejas claramente"
+      },
+      "creative_thinking": {
+        "title": "Desafío de Pensamiento Creativo",
+        "description": "Evalúa tu capacidad para generar soluciones innovadoras"
+      }
+    },
+    "priority": {
+      "high": "Prioritario",
+      "medium": "Recomendado",
+      "low": "Opcional"
+    },
+    "questions": "Preguntas",
+    "time_limit": "Límite de Tiempo",
+    "minutes": "minutos",
+    "skill_area": "Área de Habilidad",
+    "skill_areas": {
+      "computational": "Computacional",
+      "communication": "Comunicación",
+      "creativity": "Creatividad"
+    },
+    "start_test": "Iniciar Prueba",
+    "completed": "Completado",
+    "next_steps": "Próximos Pasos",
+    "recommendations": {
+      "focus_priority": {
+        "title": "Enfócate en Elementos Prioritarios",
+        "description": "Comienza con las pruebas de habilidades analíticas para maximizar tu puntuación de poder computacional."
+      },
+      "schedule_practice": {
+        "title": "Programa Práctica Regular",
+        "description": "Completa 1-2 pruebas por semana para un desarrollo óptimo de habilidades."
+      },
+      "connect_mentor": {
+        "title": "Conecta con Tu Mentor",
+        "description": "Discute tu progreso y recibe consejos personalizados sobre áreas de mejora."
+      }
+    },
+    "estimated_time": "Tiempo Estimado",
+    "no_tests_available": "No hay pruebas disponibles en este momento",
+    "expand_section": "Expandir sección",
+    "collapse_section": "Contraer sección"
   },
   "ximai": {
     "aria_open": "Abrir chat XIM-AI",

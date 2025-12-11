@@ -986,7 +986,80 @@
      "mentor_response": "Grazie per il tuo messaggio! Ti risponderò presto con alcuni consigli."
    },
   "development": {
-    "back_to_dashboard": "Torna alla tua Dashboard"
+    "title": "Piano di Sviluppo",
+    "subtitle": "Percorso di apprendimento personalizzato basato sulla tua valutazione XIMA",
+    "back_to_dashboard": "Torna alla Dashboard",
+    "overall_progress": "Progresso Generale",
+    "tests_completed": "Test Completati",
+    "tests_remaining": "Test Rimanenti",
+    "progress": "Progresso",
+    "areas": {
+      "analytical": {
+        "title": "Potenzia le Abilità Analitiche",
+        "description": "Rafforza il pensiero computazionale e le capacità di analisi dei dati"
+      },
+      "communication": {
+        "title": "Workshop Comunicazione",
+        "description": "Migliora le tue capacità di presentazione e comunicazione interpersonale"
+      },
+      "creative": {
+        "title": "Training Innovazione Creativa",
+        "description": "Sviluppa il problem-solving creativo e la mentalità innovativa"
+      }
+    },
+    "tests": {
+      "data_analysis": {
+        "title": "Fondamenti Analisi Dati",
+        "description": "Testa la tua capacità di interpretare dataset complessi"
+      },
+      "logical_problem_solving": {
+        "title": "Problem Solving Logico",
+        "description": "Valuta l'approccio sistematico a problemi complessi"
+      },
+      "presentation_skills": {
+        "title": "Valutazione Capacità Presentazione",
+        "description": "Valuta la tua capacità di presentare idee complesse chiaramente"
+      },
+      "creative_thinking": {
+        "title": "Sfida Pensiero Creativo",
+        "description": "Testa la tua capacità di generare soluzioni innovative"
+      }
+    },
+    "priority": {
+      "high": "Priorità",
+      "medium": "Consigliato",
+      "low": "Opzionale"
+    },
+    "questions": "Domande",
+    "time_limit": "Limite Tempo",
+    "minutes": "minuti",
+    "skill_area": "Area Competenza",
+    "skill_areas": {
+      "computational": "Computazionale",
+      "communication": "Comunicazione",
+      "creativity": "Creatività"
+    },
+    "start_test": "Inizia Test",
+    "completed": "Completato",
+    "next_steps": "Prossimi Passi",
+    "recommendations": {
+      "focus_priority": {
+        "title": "Concentrati sugli Elementi Prioritari",
+        "description": "Inizia con i test di abilità analitiche per massimizzare il punteggio di potenza computazionale."
+      },
+      "schedule_practice": {
+        "title": "Pianifica Pratica Regolare",
+        "description": "Completa 1-2 test a settimana per uno sviluppo ottimale delle competenze."
+      },
+      "connect_mentor": {
+        "title": "Connettiti con il Tuo Mentore",
+        "description": "Discuti i tuoi progressi e ricevi consigli personalizzati sulle aree di miglioramento."
+      }
+    },
+    "estimated_time": "Tempo Stimato",
+    "no_tests_available": "Nessun test disponibile al momento",
+    "expand_section": "Espandi sezione",
+    "collapse_section": "Comprimi sezione"
   },
   "ximai": {
     "aria_open": "Apri chat XIM-AI",
