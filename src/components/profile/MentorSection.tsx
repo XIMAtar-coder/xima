@@ -50,6 +50,14 @@ interface MentorSectionProps {
   onBookingSuccess?: () => void;
 }
 
+interface DebugInfo {
+  assignedMentorId: string;
+  assignedMentorName: string;
+  calendarMentorId: string;
+  usedFallback: boolean;
+  source: string;
+}
+
 export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingSuccess }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -60,6 +68,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
 
   const displayName = mentor?.full_name || mentor?.name || '';
   const photoUrl = mentor?.photo_url || mentor?.avatar_url || undefined;
@@ -96,9 +105,13 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
 
       if (data?.success) {
         console.log('[MentorSection] Slots received:', data.slots?.length || 0);
+        console.log('[MentorSection] Debug info:', data.debug);
         setSlots(data.slots || []);
         if (data.mentor) {
           setMentorInfo(data.mentor);
+        }
+        if (data.debug) {
+          setDebugInfo(data.debug);
         }
         
         // If no slots, show message
@@ -285,6 +298,18 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
               </div>
             )}
           </div>
+
+          {/* Debug Info Panel */}
+          {debugInfo && (
+            <div className="border border-dashed border-yellow-500/50 rounded-lg p-3 bg-yellow-500/5 text-xs font-mono">
+              <p className="font-semibold text-yellow-600 mb-2">🔧 Debug: Calendar Source</p>
+              <div className="space-y-1 text-muted-foreground">
+                <p><span className="text-foreground">Source:</span> {debugInfo.source}</p>
+                <p><span className="text-foreground">Assigned Mentor:</span> {debugInfo.assignedMentorName} ({debugInfo.assignedMentorId?.slice(0, 8)}...)</p>
+                <p><span className="text-foreground">Calendar From:</span> {debugInfo.usedFallback ? '⚠️ FALLBACK' : '✅ Same mentor'} ({debugInfo.calendarMentorId?.slice(0, 8)}...)</p>
+              </div>
+            </div>
+          )}
 
           {/* Booking Calendar */}
           <div className="space-y-4">
