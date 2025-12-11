@@ -50,15 +50,6 @@ interface MentorSectionProps {
   onBookingSuccess?: () => void;
 }
 
-interface DebugInfo {
-  assignedMentorId: string;
-  assignedMentorName: string;
-  source: string;
-  googleCalendarDisabled?: boolean;
-  slotsGenerated?: number;
-  slotDuration?: string;
-  slotRange?: string;
-}
 
 export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingSuccess }) => {
   const { t } = useTranslation();
@@ -70,7 +61,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
+  
 
   const displayName = mentor?.full_name || mentor?.name || '';
   const photoUrl = mentor?.photo_url || mentor?.avatar_url || undefined;
@@ -111,9 +102,6 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
         setSlots(data.slots || []);
         if (data.mentor) {
           setMentorInfo(data.mentor);
-        }
-        if (data.debug) {
-          setDebugInfo(data.debug);
         }
         
         // If no slots, show message
@@ -301,20 +289,6 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
             )}
           </div>
 
-          {/* Debug Info Panel */}
-          {debugInfo && (
-            <div className="border border-dashed border-purple-500/50 rounded-lg p-3 bg-purple-500/5 text-xs font-mono">
-              <p className="font-semibold text-purple-600 mb-2">🔧 Debug: Fake Calendar Mode</p>
-              <div className="space-y-1 text-muted-foreground">
-                <p><span className="text-foreground">Source:</span> <span className="text-purple-500 font-semibold">{debugInfo.source}</span></p>
-                <p><span className="text-foreground">Google Calendar:</span> <span className="text-yellow-500">⏸️ Disabled</span></p>
-                <p><span className="text-foreground">Mentor:</span> {debugInfo.assignedMentorName}</p>
-                <p><span className="text-foreground">Slots Generated:</span> <span className="text-green-500 font-semibold">{debugInfo.slotsGenerated}</span></p>
-                <p><span className="text-foreground">Duration:</span> {debugInfo.slotDuration}</p>
-                <p><span className="text-foreground">Range:</span> {debugInfo.slotRange}</p>
-              </div>
-            </div>
-          )}
 
           {/* Booking Calendar */}
           <div className="space-y-4">
