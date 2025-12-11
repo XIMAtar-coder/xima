@@ -355,6 +355,15 @@ serve(async (req) => {
           avatar_url: mentorInfo.profile_image_url
         },
         calendarSource,
+        calendarMentorId: calendarSource.includes('google_calendar') ? calendarMentorId : null,
+        calendarMentorName: usedFallbackMentor ? 'Fallback Mentor' : mentorInfo.name,
+        debug: {
+          assignedMentorId: mentorId,
+          assignedMentorName: mentorInfo.name,
+          calendarMentorId: calendarMentorId,
+          usedFallback: usedFallbackMentor,
+          source: calendarSource
+        },
         message: formattedSlots.length ? null : "No available slots at the moment"
       }), 
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
