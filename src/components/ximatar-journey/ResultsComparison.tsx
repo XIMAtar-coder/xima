@@ -59,6 +59,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   }>>([]);
   const [topPillars, setTopPillars] = useState<Array<{ name: string; score: number }>>([]);
   const [hasNoAssessment, setHasNoAssessment] = useState(false);
+  const [fieldKey, setFieldKey] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchComputedResults = async () => {
@@ -264,13 +265,15 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       const { data, error } = await supabase
         .from('assessment_open_responses')
-        .select('open_key, answer, score, rubric')
+        .select('open_key, answer, score, rubric, field_key')
         .eq('user_id', user.id)
         .eq('attempt_id', attemptId)
         .order('open_key', { ascending: true });
 
-      if (!error && data) {
+      if (!error && data && data.length > 0) {
         setOpenResponses(data as any);
+        // Set fieldKey from the first response
+        setFieldKey(data[0].field_key);
       }
     };
 
@@ -683,6 +686,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                     openKey={response.open_key}
                     answer={response.answer}
                     rubric={response.rubric}
+                    fieldKey={fieldKey || undefined}
                   />
                 </div>
               ))}
