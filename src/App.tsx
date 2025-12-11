@@ -29,7 +29,7 @@ import NotFound from "./pages/NotFound";
 import { XimAIProvider } from "./context/XimAIProvider";
 import ChatEntry from "./components/ximai/ChatEntry";
 import OpportunityDetails from "./pages/OpportunityDetails";
-import Risultati from "./pages/Risultati";
+
 import { AssessmentProvider } from "./contexts/AssessmentContext";
 // Business Portal
 import BusinessRegister from "./pages/business/Register";
@@ -80,7 +80,7 @@ const AppContent = () => {
           <Route path="/test/presentation-skills" element={<TestPresentationSkills />} />
           <Route path="/test/creative-thinking" element={<TestCreativeThinking />} />
           <Route path="/opportunity/:id" element={<OpportunityDetails />} />
-          <Route path="/risultati" element={<Risultati />} />
+          
           <Route path="/assessment-guide" element={<AssessmentGuide />} />
           <Route path="/dashboard" element={<Profile />} />
           <Route path="/chat" element={<XimaChat />} />
