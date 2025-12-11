@@ -59,6 +59,9 @@ interface DebugInfo {
   source: string;
   googleCalendarId?: string | null;
   serviceAccountConfigured?: boolean;
+  serviceAccountValid?: boolean;
+  googleCalendarAttempted?: boolean;
+  googleCalendarError?: string | null;
 }
 
 export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingSuccess }) => {
@@ -308,11 +311,15 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
               <p className="font-semibold text-yellow-600 mb-2">🔧 Debug: Calendar Source</p>
               <div className="space-y-1 text-muted-foreground">
                 <p><span className="text-foreground">Source:</span> {debugInfo.source}</p>
-                <p><span className="text-foreground">Service Account:</span> {debugInfo.serviceAccountConfigured ? '✅ Configured' : '❌ Missing'}</p>
+                <p><span className="text-foreground">Google API Called:</span> {debugInfo.googleCalendarAttempted ? '✅ Yes' : '❌ No'}</p>
+                <p><span className="text-foreground">Service Account:</span> {debugInfo.serviceAccountConfigured ? (debugInfo.serviceAccountValid ? '✅ Valid JSON' : '⚠️ Invalid JSON') : '❌ Missing'}</p>
                 <p><span className="text-foreground">Assigned Mentor:</span> {debugInfo.assignedMentorName} ({debugInfo.assignedMentorId?.slice(0, 8)}...)</p>
                 <p><span className="text-foreground">Calendar From:</span> {debugInfo.usedFallback ? `⚠️ FALLBACK (${debugInfo.calendarMentorName})` : '✅ Same mentor'}</p>
                 <p><span className="text-foreground">Calendar Mentor ID:</span> {debugInfo.calendarMentorId?.slice(0, 8) || 'N/A'}...</p>
                 <p><span className="text-foreground">Google Calendar ID:</span> {debugInfo.googleCalendarId || '❌ None'}</p>
+                {debugInfo.googleCalendarError && (
+                  <p className="text-red-500 mt-2"><span className="text-foreground">Error:</span> {debugInfo.googleCalendarError}</p>
+                )}
               </div>
             </div>
           )}
