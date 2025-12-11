@@ -293,37 +293,64 @@ serve(async (req) => {
       console.log('[fetch-mentor-availability] No service account configured');
     }
 
+    let googleCalendarAttempted = false;
+    let googleCalendarError: string | null = null;
+    let serviceAccountValid = false;
+
     if (serviceAccountJson && calendarId) {
+      googleCalendarAttempted = true;
+      
+      // First, validate the service account JSON
+      let serviceAccount: any;
       try {
-        console.log('[fetch-mentor-availability] Fetching from Google Calendar:', calendarId);
-        const serviceAccount = JSON.parse(serviceAccountJson);
-        const accessToken = await getGoogleAccessToken(serviceAccount);
+        serviceAccount = JSON.parse(serviceAccountJson);
+        serviceAccountValid = !!(serviceAccount.client_email && serviceAccount.private_key);
+        console.log('[fetch-mentor-availability] Service account parsed successfully:', {
+          hasClientEmail: !!serviceAccount.client_email,
+          hasPrivateKey: !!serviceAccount.private_key,
+          clientEmail: serviceAccount.client_email?.substring(0, 20) + '...'
+        });
+      } catch (parseError: any) {
+        googleCalendarError = `Invalid service account JSON: ${parseError.message}`;
+        console.error('[fetch-mentor-availability] Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON:', parseError.message);
+        console.error('[fetch-mentor-availability] Service account value starts with:', serviceAccountJson.substring(0, 50));
+      }
 
-        const now = new Date();
-        const futureDate = new Date();
-        futureDate.setDate(futureDate.getDate() + 14);
+      if (serviceAccountValid && serviceAccount) {
+        try {
+          console.log('[fetch-mentor-availability] Fetching from Google Calendar:', calendarId);
+          const accessToken = await getGoogleAccessToken(serviceAccount);
+          console.log('[fetch-mentor-availability] Got Google access token successfully');
 
-        const busyTimes = await getGoogleCalendarBusyTimes(
-          accessToken,
-          calendarId,
-          now.toISOString(),
-          futureDate.toISOString()
-        );
+          const now = new Date();
+          const futureDate = new Date();
+          futureDate.setDate(futureDate.getDate() + 14);
 
-        console.log('[fetch-mentor-availability] Busy times found:', busyTimes.length);
-        
-        slots = generateAvailableSlots(busyTimes);
-        calendarSource = usedFallbackMentor ? 'google_calendar_fallback' : 'google_calendar';
-        console.log('[fetch-mentor-availability] Generated slots from Google Calendar:', slots.length, usedFallbackMentor ? '(fallback)' : '');
-      } catch (googleError: any) {
-        console.error('[fetch-mentor-availability] Google Calendar error:', googleError.message);
-        // Fall back to database slots
+          const busyTimes = await getGoogleCalendarBusyTimes(
+            accessToken,
+            calendarId,
+            now.toISOString(),
+            futureDate.toISOString()
+          );
+
+          console.log('[fetch-mentor-availability] Busy times found:', busyTimes.length);
+          
+          slots = generateAvailableSlots(busyTimes);
+          calendarSource = usedFallbackMentor ? 'google_calendar_fallback' : 'google_calendar';
+          console.log('[fetch-mentor-availability] Generated slots from Google Calendar:', slots.length, usedFallbackMentor ? '(fallback)' : '');
+        } catch (googleError: any) {
+          googleCalendarError = googleError.message;
+          console.error('[fetch-mentor-availability] Google Calendar API error:', googleError.message);
+          // Do NOT fall back to database when we have a calendar ID - the calendar is the source of truth
+          // Return empty slots with error information instead
+        }
       }
     }
 
-    // If no Google Calendar slots, try database slots for the assigned mentor
-    if (slots.length === 0) {
-      console.log('[fetch-mentor-availability] Falling back to database slots');
+    // ONLY use database slots if NO Google Calendar is configured
+    // When a calendar ID exists, Google Calendar is the authoritative source
+    if (!calendarId && slots.length === 0) {
+      console.log('[fetch-mentor-availability] No Google Calendar configured, using database slots');
       const now = new Date();
       const futureDate = new Date();
       futureDate.setDate(futureDate.getDate() + 30);
@@ -345,6 +372,9 @@ serve(async (req) => {
         }));
         calendarSource = 'database';
       }
+    } else if (calendarId && slots.length === 0) {
+      console.log('[fetch-mentor-availability] Google Calendar configured but no slots available (or API error)');
+      calendarSource = 'google_calendar_empty';
     }
 
     console.log('[fetch-mentor-availability] Total slots:', slots.length, 'source:', calendarSource);
@@ -379,9 +409,14 @@ serve(async (req) => {
           usedFallback: usedFallbackMentor,
           source: calendarSource,
           googleCalendarId: calendarId || null,
-          serviceAccountConfigured: !!serviceAccountJson
+          serviceAccountConfigured: !!serviceAccountJson,
+          serviceAccountValid: serviceAccountValid,
+          googleCalendarAttempted: googleCalendarAttempted,
+          googleCalendarError: googleCalendarError
         },
-        message: formattedSlots.length ? null : "No available slots at the moment"
+        message: googleCalendarError 
+          ? `Calendar API error: ${googleCalendarError}. Please check GOOGLE_SERVICE_ACCOUNT_JSON secret.`
+          : (formattedSlots.length ? null : "No available slots at the moment")
       }), 
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
