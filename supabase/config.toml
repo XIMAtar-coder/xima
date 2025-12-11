@@ -35,3 +35,6 @@ verify_jwt = true
 
 [functions.recommend-mentors]
 verify_jwt = false
+
+[functions.get-field-averages]
+verify_jwt = false
