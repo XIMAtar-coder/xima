@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,6 +15,7 @@ import { CompanyProfileCard } from '@/components/business/CompanyProfileCard';
 
 const BusinessDashboard = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: businessLoading } = useBusinessRole();
@@ -38,8 +40,8 @@ const BusinessDashboard = () => {
 
     if (!isBusiness) {
       toast({
-        title: 'Access Denied',
-        description: 'You do not have business access',
+        title: t('business.dashboard.access_denied'),
+        description: t('business.dashboard.no_access'),
         variant: 'destructive'
       });
       navigate('/login');
@@ -49,29 +51,25 @@ const BusinessDashboard = () => {
     loadDashboardStats();
     loadCompanyProfile();
     loadBusinessProfile();
-  }, [isAuthenticated, isBusiness, businessLoading, navigate, toast]);
+  }, [isAuthenticated, isBusiness, businessLoading, navigate, toast, t]);
 
   const loadDashboardStats = async () => {
     try {
-      // Get total available candidates (users who completed assessment)
       const { count: candidatesCount } = await supabase
         .from('assessment_results')
         .select('*', { count: 'exact', head: true });
 
-      // Get shortlisted candidates
       const { count: shortlistedCount } = await supabase
         .from('candidate_shortlist')
         .select('*', { count: 'exact', head: true })
         .eq('business_id', user?.id);
 
-      // Get active challenges
       const { count: activeChallengesCount } = await supabase
         .from('business_challenges')
         .select('*', { count: 'exact', head: true })
         .eq('business_id', user?.id)
         .gte('deadline', new Date().toISOString());
 
-      // Get business challenges first
       const { data: businessChallenges } = await supabase
         .from('business_challenges')
         .select('id')
@@ -79,7 +77,6 @@ const BusinessDashboard = () => {
 
       const challengeIds = businessChallenges?.map(c => c.id) || [];
 
-      // Get completed challenges count
       let completedCount = 0;
       if (challengeIds.length > 0) {
         const { count } = await supabase
@@ -148,8 +145,8 @@ const BusinessDashboard = () => {
   const handleGenerateProfile = async () => {
     if (!user?.id || !businessProfile) {
       toast({
-        title: 'Error',
-        description: 'Missing user or business profile information',
+        title: t('business.dashboard.error'),
+        description: t('business.dashboard.missing_info'),
         variant: 'destructive'
       });
       return;
@@ -157,10 +154,9 @@ const BusinessDashboard = () => {
 
     setProfileLoading(true);
     
-    // Show progress toast
     toast({
-      title: 'Generating Profile...',
-      description: 'Analyzing your company website with AI. This may take 10-30 seconds.',
+      title: t('business.dashboard.generating_profile'),
+      description: t('business.dashboard.generating_profile_desc'),
     });
     
     try {
@@ -173,17 +169,16 @@ const BusinessDashboard = () => {
       if (error) throw error;
 
       toast({
-        title: 'Success!',
-        description: 'Company profile generated successfully'
+        title: t('business.dashboard.success'),
+        description: t('business.dashboard.profile_generated')
       });
 
-      // Reload the profile
       await loadCompanyProfile();
     } catch (error: any) {
       console.error('Error generating profile:', error);
       toast({
-        title: 'Generation Failed',
-        description: error.message || 'Failed to generate company profile',
+        title: t('business.dashboard.generation_failed'),
+        description: error.message || t('business.dashboard.generation_failed_desc'),
         variant: 'destructive'
       });
     } finally {
@@ -196,8 +191,8 @@ const BusinessDashboard = () => {
       <BusinessLayout>
         <div className="flex justify-center items-center min-h-[60vh]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#3A9FFF] mx-auto mb-4"></div>
-            <p className="text-[#A3ABB5]">Loading dashboard...</p>
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">{t('business.dashboard.loading')}</p>
           </div>
         </div>
       </BusinessLayout>
@@ -206,15 +201,15 @@ const BusinessDashboard = () => {
 
   const statCards = [
     {
-      title: 'Available Candidates',
+      title: t('business.dashboard.available_candidates'),
       value: stats.totalCandidates,
       icon: <Users size={24} />,
-      color: 'text-[#3A9FFF]',
-      bgColor: 'bg-[#3A9FFF]/10',
+      color: 'text-primary',
+      bgColor: 'bg-primary/10',
       link: '/business/candidates'
     },
     {
-      title: 'Shortlisted',
+      title: t('business.dashboard.shortlisted'),
       value: stats.shortlisted,
       icon: <CheckCircle size={24} />,
       color: 'text-green-500',
@@ -222,7 +217,7 @@ const BusinessDashboard = () => {
       link: '/business/candidates'
     },
     {
-      title: 'Active Challenges',
+      title: t('business.dashboard.active_challenges'),
       value: stats.activeChallenges,
       icon: <Target size={24} />,
       color: 'text-purple-500',
@@ -230,7 +225,7 @@ const BusinessDashboard = () => {
       link: '/business/challenges'
     },
     {
-      title: 'Completed',
+      title: t('business.dashboard.completed'),
       value: stats.completedChallenges,
       icon: <TrendingUp size={24} />,
       color: 'text-orange-500',
@@ -244,9 +239,9 @@ const BusinessDashboard = () => {
       <div className="space-y-8">
          {/* Header */}
         <div>
-          <h1 className="text-4xl font-bold text-white mb-2">Welcome Back!</h1>
-          <p className="text-[#A3ABB5]">
-            Manage your talent pipeline and launch new challenges
+          <h1 className="text-4xl font-bold text-foreground mb-2">{t('business.dashboard.welcome')}</h1>
+          <p className="text-muted-foreground">
+            {t('business.dashboard.subtitle')}
           </p>
         </div>
 
@@ -262,7 +257,7 @@ const BusinessDashboard = () => {
           {statCards.map((stat, index) => (
             <Card
               key={index}
-              className="bg-gradient-to-br from-[#0F1419] to-[#0A0F1C] border-[#3A9FFF]/20 hover:border-[#3A9FFF]/40 transition-all hover:scale-105"
+              className="bg-gradient-to-br from-card to-card/80 border-primary/20 hover:border-primary/40 transition-all hover:scale-105"
             >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
@@ -270,13 +265,13 @@ const BusinessDashboard = () => {
                     <div className={stat.color}>{stat.icon}</div>
                   </div>
                   <Link to={stat.link}>
-                    <Button variant="ghost" size="icon" className="hover:bg-[#3A9FFF]/10">
-                      <ArrowRight size={18} className="text-[#A3ABB5]" />
+                    <Button variant="ghost" size="icon" className="hover:bg-primary/10">
+                      <ArrowRight size={18} className="text-muted-foreground" />
                     </Button>
                   </Link>
                 </div>
-                <h3 className="text-3xl font-bold text-white mb-1">{stat.value}</h3>
-                <p className="text-sm text-[#A3ABB5]">{stat.title}</p>
+                <h3 className="text-3xl font-bold text-foreground mb-1">{stat.value}</h3>
+                <p className="text-sm text-muted-foreground">{stat.title}</p>
               </CardContent>
             </Card>
           ))}
@@ -284,35 +279,35 @@ const BusinessDashboard = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="bg-gradient-to-br from-[#0F1419] to-[#0A0F1C] border-[#3A9FFF]/20">
+          <Card className="bg-gradient-to-br from-card to-card/80 border-primary/20">
             <CardHeader>
-              <CardTitle className="text-white">Find Top Talent</CardTitle>
-              <CardDescription className="text-[#A3ABB5]">
-                Browse through our pool of assessed candidates and find the perfect match for your team
+              <CardTitle className="text-foreground">{t('business.dashboard.find_talent_title')}</CardTitle>
+              <CardDescription className="text-muted-foreground">
+                {t('business.dashboard.find_talent_desc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Link to="/business/candidates">
-                <Button className="w-full bg-[#3A9FFF] hover:bg-[#3A9FFF]/90">
+                <Button className="w-full bg-primary hover:bg-primary/90">
                   <Users size={18} className="mr-2" />
-                  Browse Candidates
+                  {t('business.dashboard.browse_candidates')}
                 </Button>
               </Link>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-[#0F1419] to-[#0A0F1C] border-[#3A9FFF]/20">
+          <Card className="bg-gradient-to-br from-card to-card/80 border-primary/20">
             <CardHeader>
-              <CardTitle className="text-white">Launch New Challenge</CardTitle>
-              <CardDescription className="text-[#A3ABB5]">
-                Create custom challenges to evaluate candidates' skills and problem-solving abilities
+              <CardTitle className="text-foreground">{t('business.dashboard.launch_challenge_title')}</CardTitle>
+              <CardDescription className="text-muted-foreground">
+                {t('business.dashboard.launch_challenge_desc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Link to="/business/challenges/new">
-                <Button className="w-full bg-gradient-to-r from-purple-500 to-[#3A9FFF] hover:opacity-90">
+                <Button className="w-full bg-gradient-to-r from-purple-500 to-primary hover:opacity-90">
                   <Plus size={18} className="mr-2" />
-                  Create Challenge
+                  {t('business.dashboard.create_challenge')}
                 </Button>
               </Link>
             </CardContent>
@@ -320,28 +315,28 @@ const BusinessDashboard = () => {
         </div>
 
         {/* Recent Activity */}
-        <Card className="bg-gradient-to-br from-[#0F1419] to-[#0A0F1C] border-[#3A9FFF]/20">
+        <Card className="bg-gradient-to-br from-card to-card/80 border-primary/20">
           <CardHeader>
-            <CardTitle className="text-white">Getting Started</CardTitle>
-            <CardDescription className="text-[#A3ABB5]">
-              Complete these steps to maximize your hiring success
+            <CardTitle className="text-foreground">{t('business.dashboard.getting_started')}</CardTitle>
+            <CardDescription className="text-muted-foreground">
+              {t('business.dashboard.getting_started_desc')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-[#3A9FFF]/10 border border-[#3A9FFF]/20">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/10 border border-primary/20">
               <CheckCircle className="text-green-500" size={20} />
-              <span className="text-white">Account created successfully</span>
+              <span className="text-foreground">{t('business.dashboard.account_created')}</span>
             </div>
             <Link to="/business/candidates">
-              <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#3A9FFF]/10 border border-[#3A9FFF]/20 hover:border-[#3A9FFF]/40 transition-all cursor-pointer">
-                <div className="w-5 h-5 rounded-full border-2 border-[#A3ABB5]" />
-                <span className="text-[#A3ABB5]">Browse and shortlist candidates</span>
+              <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all cursor-pointer">
+                <div className="w-5 h-5 rounded-full border-2 border-muted-foreground" />
+                <span className="text-muted-foreground">{t('business.dashboard.browse_shortlist')}</span>
               </div>
             </Link>
             <Link to="/business/challenges/new">
-              <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#3A9FFF]/10 border border-[#3A9FFF]/20 hover:border-[#3A9FFF]/40 transition-all cursor-pointer">
-                <div className="w-5 h-5 rounded-full border-2 border-[#A3ABB5]" />
-                <span className="text-[#A3ABB5]">Create your first challenge</span>
+              <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all cursor-pointer">
+                <div className="w-5 h-5 rounded-full border-2 border-muted-foreground" />
+                <span className="text-muted-foreground">{t('business.dashboard.create_first_challenge')}</span>
               </div>
             </Link>
           </CardContent>
@@ -349,7 +344,7 @@ const BusinessDashboard = () => {
 
         {/* Candidate Engagement */}
         <div>
-          <h2 className="text-2xl font-bold text-white mb-4">Candidate Engagement</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-4">{t('business.dashboard.candidate_engagement')}</h2>
           <CandidateEngagement />
         </div>
       </div>

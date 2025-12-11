@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -31,6 +32,7 @@ interface Candidate {
 
 const BusinessCandidates = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: businessLoading } = useBusinessRole();
@@ -56,19 +58,16 @@ const BusinessCandidates = () => {
   useEffect(() => {
     let filtered = [...candidates];
 
-    // Apply XIMAtar filter
     if (ximatarFilter !== 'all') {
       filtered = filtered.filter(c => c.ximatar_label?.toLowerCase() === ximatarFilter.toLowerCase());
     }
 
-    // Apply search
     if (searchTerm) {
       filtered = filtered.filter(c =>
         c.ximatar_label?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Apply sort
     filtered.sort((a, b) => {
       if (sortBy === 'score') {
         return b.evaluation_score - a.evaluation_score;
@@ -82,12 +81,10 @@ const BusinessCandidates = () => {
 
   const loadCandidates = async () => {
     try {
-      // Fetch from candidate_visibility view using raw query
       const { data: candidatesData, error } = await supabase.rpc('get_candidate_visibility');
 
       if (error) throw error;
 
-      // Get shortlisted candidates
       const { data: shortlisted } = await supabase
         .from('candidate_shortlist')
         .select('candidate_id')
@@ -95,7 +92,6 @@ const BusinessCandidates = () => {
 
       const shortlistedIds = new Set(shortlisted?.map(s => s.candidate_id) || []);
 
-      // Map to include shortlist status and ensure proper types
       const candidatesWithShortlist: Candidate[] = (candidatesData || []).map((candidate: any) => ({
         user_id: candidate.user_id,
         ximatar_label: candidate.ximatar_label || 'Unknown',
@@ -111,7 +107,6 @@ const BusinessCandidates = () => {
         isShortlisted: shortlistedIds.has(candidate.user_id)
       }));
 
-      // Log activity
       try {
         await supabase.rpc('log_user_activity', {
           p_user_id: user?.id,
@@ -127,8 +122,8 @@ const BusinessCandidates = () => {
     } catch (error) {
       console.error('Error loading candidates:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to load candidates',
+        title: t('common.error'),
+        description: t('business.candidates.failed_update'),
         variant: 'destructive'
       });
     } finally {
@@ -159,14 +154,14 @@ const BusinessCandidates = () => {
 
       loadCandidates();
       toast({
-        title: candidate.isShortlisted ? 'Removed from shortlist' : 'Added to shortlist',
-        description: `Candidate has been ${candidate.isShortlisted ? 'removed from' : 'added to'} your shortlist`
+        title: candidate.isShortlisted ? t('business.candidates.removed_from_shortlist') : t('business.candidates.added_single'),
+        description: candidate.isShortlisted ? t('business.candidates.candidate_removed') : t('business.candidates.candidate_added')
       });
     } catch (error) {
       console.error('Error updating shortlist:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to update shortlist',
+        title: t('common.error'),
+        description: t('business.candidates.failed_update'),
         variant: 'destructive'
       });
     }
@@ -175,8 +170,8 @@ const BusinessCandidates = () => {
   const handleBulkAction = async (action: string) => {
     if (selectedCandidates.length === 0) {
       toast({
-        title: 'No candidates selected',
-        description: 'Please select candidates first',
+        title: t('business.candidates.no_selection'),
+        description: t('business.candidates.select_first'),
         variant: 'destructive'
       });
       return;
@@ -195,8 +190,8 @@ const BusinessCandidates = () => {
           .upsert(inserts);
 
         toast({
-          title: 'Success',
-          description: `${selectedCandidates.length} candidates added to shortlist`
+          title: t('business.dashboard.success'),
+          description: `${selectedCandidates.length} ${t('business.candidates.added_to_shortlist')}`
         });
       } else if (action === 'challenge') {
         navigate('/business/challenges/new', { state: { selectedCandidates } });
@@ -207,8 +202,8 @@ const BusinessCandidates = () => {
     } catch (error) {
       console.error('Error performing bulk action:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to perform action',
+        title: t('common.error'),
+        description: t('business.candidates.failed_action'),
         variant: 'destructive'
       });
     }
@@ -218,7 +213,7 @@ const BusinessCandidates = () => {
     return (
       <BusinessLayout>
         <div className="flex justify-center items-center min-h-[60vh]">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#3A9FFF]"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary"></div>
         </div>
       </BusinessLayout>
     );
@@ -230,9 +225,9 @@ const BusinessCandidates = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Candidate Pool</h1>
-            <p className="text-[#A3ABB5]">
-              {filteredCandidates.length} assessed candidates available
+            <h1 className="text-3xl font-bold text-foreground mb-2">{t('business.candidates.title')}</h1>
+            <p className="text-muted-foreground">
+              {filteredCandidates.length} {t('business.candidates.available')}
             </p>
           </div>
           {selectedCandidates.length > 0 && (
@@ -240,17 +235,17 @@ const BusinessCandidates = () => {
               <Button
                 onClick={() => handleBulkAction('shortlist')}
                 variant="outline"
-                className="border-[#3A9FFF]/30"
+                className="border-primary/30"
               >
                 <Star className="mr-2" size={16} />
-                Shortlist ({selectedCandidates.length})
+                {t('business.candidates.shortlist_action')} ({selectedCandidates.length})
               </Button>
               <Button
                 onClick={() => handleBulkAction('challenge')}
-                className="bg-[#3A9FFF] hover:bg-[#3A9FFF]/90"
+                className="bg-primary hover:bg-primary/90"
               >
                 <Target className="mr-2" size={16} />
-                Invite to Challenge
+                {t('business.candidates.invite_action')}
               </Button>
             </div>
           )}
@@ -263,7 +258,7 @@ const BusinessCandidates = () => {
               <div className="flex-1 min-w-[200px] relative">
                 <Search className="absolute left-3 top-3 text-muted-foreground" size={18} />
                 <Input
-                  placeholder="Search by XIMAtar..."
+                  placeholder={t('business.candidates.search_placeholder')}
                   className="pl-10"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -272,10 +267,10 @@ const BusinessCandidates = () => {
               <Select value={ximatarFilter} onValueChange={setXimatarFilter}>
                 <SelectTrigger className="w-[180px]">
                   <Filter className="mr-2" size={16} />
-                  <SelectValue placeholder="XIMAtar Type" />
+                  <SelectValue placeholder={t('business.candidates.filter_type')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="all">{t('business.candidates.all_types')}</SelectItem>
                   <SelectItem value="owl">Owl</SelectItem>
                   <SelectItem value="parrot">Parrot</SelectItem>
                   <SelectItem value="elephant">Elephant</SelectItem>
@@ -293,11 +288,11 @@ const BusinessCandidates = () => {
               <Select value={sortBy} onValueChange={(value: 'score' | 'pillar') => setSortBy(value)}>
                 <SelectTrigger className="w-[180px]">
                   <ArrowUpDown className="mr-2" size={16} />
-                  <SelectValue placeholder="Sort by" />
+                  <SelectValue placeholder={t('business.candidates.sort_by')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="score">Evaluation Score</SelectItem>
-                  <SelectItem value="pillar">Pillar Average</SelectItem>
+                  <SelectItem value="score">{t('business.candidates.evaluation_score')}</SelectItem>
+                  <SelectItem value="pillar">{t('business.candidates.pillar_average')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -326,7 +321,6 @@ const BusinessCandidates = () => {
               onSelect={async (checked) => {
                 if (checked) {
                   setSelectedCandidates([...selectedCandidates, candidate.user_id]);
-                  // Log candidate view
                   try {
                     await supabase.rpc('log_user_activity', {
                       p_user_id: user?.id,
@@ -349,7 +343,7 @@ const BusinessCandidates = () => {
         {filteredCandidates.length === 0 && (
           <Card className="bg-card border-border">
             <CardContent className="p-12 text-center">
-              <p className="text-muted-foreground text-lg">No candidates found matching your criteria</p>
+              <p className="text-muted-foreground text-lg">{t('business.candidates.no_candidates')}</p>
             </CardContent>
           </Card>
         )}
