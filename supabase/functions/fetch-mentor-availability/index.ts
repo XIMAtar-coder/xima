@@ -6,145 +6,31 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Generate JWT for Google API authentication using service account
-async function getGoogleAccessToken(serviceAccount: any): Promise<string> {
-  const header = { alg: "RS256", typ: "JWT" };
-  const now = Math.floor(Date.now() / 1000);
-  const claim = {
-    iss: serviceAccount.client_email,
-    scope: "https://www.googleapis.com/auth/calendar.readonly",
-    aud: "https://oauth2.googleapis.com/token",
-    exp: now + 3600,
-    iat: now,
-  };
-
-  const encoder = new TextEncoder();
-  
-  // Base64URL encode
-  const base64url = (data: Uint8Array | string): string => {
-    const str = typeof data === 'string' ? data : new TextDecoder().decode(data);
-    return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  };
-
-  const headerB64 = base64url(JSON.stringify(header));
-  const claimB64 = base64url(JSON.stringify(claim));
-  const signatureInput = `${headerB64}.${claimB64}`;
-
-  // Import private key and sign
-  const pemContents = serviceAccount.private_key
-    .replace('-----BEGIN PRIVATE KEY-----', '')
-    .replace('-----END PRIVATE KEY-----', '')
-    .replace(/\s/g, '');
-  
-  const binaryKey = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
-  
-  const cryptoKey = await crypto.subtle.importKey(
-    'pkcs8',
-    binaryKey,
-    { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
-    false,
-    ['sign']
-  );
-
-  const signature = await crypto.subtle.sign(
-    'RSASSA-PKCS1-v1_5',
-    cryptoKey,
-    encoder.encode(signatureInput)
-  );
-
-  const signatureB64 = base64url(new Uint8Array(signature));
-  const jwt = `${signatureInput}.${signatureB64}`;
-
-  // Exchange JWT for access token
-  const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-      assertion: jwt,
-    }),
-  });
-
-  const tokenData = await tokenResponse.json();
-  if (!tokenData.access_token) {
-    console.error('[Google Auth] Token exchange failed:', tokenData);
-    throw new Error('Failed to get Google access token');
-  }
-
-  return tokenData.access_token;
-}
-
-// Fetch busy times from Google Calendar
-async function getGoogleCalendarBusyTimes(
-  accessToken: string,
-  calendarId: string,
-  timeMin: string,
-  timeMax: string
-): Promise<{ start: string; end: string }[]> {
-  const response = await fetch(
-    'https://www.googleapis.com/calendar/v3/freeBusy',
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        timeMin,
-        timeMax,
-        items: [{ id: calendarId }],
-      }),
-    }
-  );
-
-  const data = await response.json();
-  
-  if (data.error) {
-    console.error('[Google Calendar] FreeBusy error:', data.error);
-    return [];
-  }
-
-  return data.calendars?.[calendarId]?.busy || [];
-}
-
-// Generate 15-minute slots for the next 14 days (weekdays 9:00-18:00)
-function generateAvailableSlots(busyTimes: { start: string; end: string }[]): { start: string; end: string; id: string }[] {
-  const slots: { start: string; end: string; id: string }[] = [];
+// Generate fake availability slots for next 7 days (09:00-18:00, 1-hour intervals, weekdays only)
+function generateFakeAvailabilitySlots(): { id: string; start: string; end: string }[] {
+  const slots: { id: string; start: string; end: string }[] = [];
   const now = new Date();
-  const slotDuration = 15 * 60 * 1000; // 15 minutes in ms
+  const slotDuration = 60 * 60 * 1000; // 1 hour in ms
 
-  for (let day = 1; day <= 14; day++) {
+  for (let day = 1; day <= 7; day++) {
     const date = new Date(now);
     date.setDate(now.getDate() + day);
     
     // Skip weekends
     if (date.getDay() === 0 || date.getDay() === 6) continue;
 
-    // Generate slots from 9:00 to 18:00
+    // Generate 1-hour slots from 9:00 to 18:00
     for (let hour = 9; hour < 18; hour++) {
-      for (let minute = 0; minute < 60; minute += 15) {
-        const slotStart = new Date(date);
-        slotStart.setHours(hour, minute, 0, 0);
-        
-        const slotEnd = new Date(slotStart.getTime() + slotDuration);
+      const slotStart = new Date(date);
+      slotStart.setHours(hour, 0, 0, 0);
+      
+      const slotEnd = new Date(slotStart.getTime() + slotDuration);
 
-        // Check if slot conflicts with busy times
-        const isConflict = busyTimes.some(busy => {
-          const busyStart = new Date(busy.start).getTime();
-          const busyEnd = new Date(busy.end).getTime();
-          const start = slotStart.getTime();
-          const end = slotEnd.getTime();
-          return (start < busyEnd && end > busyStart);
-        });
-
-        if (!isConflict) {
-          slots.push({
-            id: `slot-${slotStart.toISOString()}`,
-            start: slotStart.toISOString(),
-            end: slotEnd.toISOString(),
-          });
-        }
-      }
+      slots.push({
+        id: `fake-slot-${slotStart.toISOString()}`,
+        start: slotStart.toISOString(),
+        end: slotEnd.toISOString(),
+      });
     }
   }
 
@@ -244,140 +130,14 @@ serve(async (req) => {
 
     console.log('[fetch-mentor-availability] Mentor info:', mentorInfo.name);
 
-    // Try to get Google Calendar availability
-    let slots: { id: string; start: string; end: string }[] = [];
-    let calendarSource = 'database';
-    let usedFallbackMentor = false;
-
-    const serviceAccountJson = Deno.env.get("GOOGLE_SERVICE_ACCOUNT_JSON");
-    let calendarId = (mentorInfo.availability as any)?.google_calendar_id;
-    let calendarMentorId = mentorId; // Track which mentor's calendar we're using
-
-    // If assigned mentor doesn't have a Google Calendar, find a fallback mentor who does
-    let fallbackMentorName: string | null = null;
+    // TEMPORARY: Google Calendar integration disabled
+    // Always generate fake availability slots for all mentors
+    console.log('[fetch-mentor-availability] Google Calendar DISABLED - generating fake slots');
     
-    if (serviceAccountJson && !calendarId) {
-      console.log('[fetch-mentor-availability] Assigned mentor has no Google Calendar, searching for fallback...');
-      console.log('[fetch-mentor-availability] Assigned mentor availability:', JSON.stringify(mentorInfo.availability));
-      
-      // Query all mentors with a google_calendar_id in their availability JSONB
-      const { data: mentorsWithCalendar, error: fallbackError } = await supabase
-        .from('mentors')
-        .select('id, name, availability')
-        .eq('is_active', true);
-      
-      console.log('[fetch-mentor-availability] Found mentors:', mentorsWithCalendar?.length, 'Error:', fallbackError?.message);
-      
-      if (!fallbackError && mentorsWithCalendar) {
-        // Find first mentor with a valid google_calendar_id
-        for (const m of mentorsWithCalendar) {
-          const avail = m.availability as any;
-          console.log('[fetch-mentor-availability] Checking mentor:', m.name, 'availability:', JSON.stringify(avail));
-          if (avail?.google_calendar_id) {
-            calendarId = avail.google_calendar_id;
-            calendarMentorId = m.id;
-            fallbackMentorName = m.name;
-            usedFallbackMentor = true;
-            console.log('[fetch-mentor-availability] Using fallback mentor calendar:', m.name, 'calendarId:', calendarId);
-            break;
-          }
-        }
-      }
-      
-      if (!calendarId) {
-        console.log('[fetch-mentor-availability] No fallback mentor with Google Calendar found');
-      }
-    } else if (calendarId) {
-      console.log('[fetch-mentor-availability] Assigned mentor has Google Calendar:', calendarId);
-    } else {
-      console.log('[fetch-mentor-availability] No service account configured');
-    }
+    const slots = generateFakeAvailabilitySlots();
+    const calendarSource = 'fake_generated';
 
-    let googleCalendarAttempted = false;
-    let googleCalendarError: string | null = null;
-    let serviceAccountValid = false;
-
-    if (serviceAccountJson && calendarId) {
-      googleCalendarAttempted = true;
-      
-      // First, validate the service account JSON
-      let serviceAccount: any;
-      try {
-        serviceAccount = JSON.parse(serviceAccountJson);
-        serviceAccountValid = !!(serviceAccount.client_email && serviceAccount.private_key);
-        console.log('[fetch-mentor-availability] Service account parsed successfully:', {
-          hasClientEmail: !!serviceAccount.client_email,
-          hasPrivateKey: !!serviceAccount.private_key,
-          clientEmail: serviceAccount.client_email?.substring(0, 20) + '...'
-        });
-      } catch (parseError: any) {
-        googleCalendarError = `Invalid service account JSON: ${parseError.message}`;
-        console.error('[fetch-mentor-availability] Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON:', parseError.message);
-        console.error('[fetch-mentor-availability] Service account value starts with:', serviceAccountJson.substring(0, 50));
-      }
-
-      if (serviceAccountValid && serviceAccount) {
-        try {
-          console.log('[fetch-mentor-availability] Fetching from Google Calendar:', calendarId);
-          const accessToken = await getGoogleAccessToken(serviceAccount);
-          console.log('[fetch-mentor-availability] Got Google access token successfully');
-
-          const now = new Date();
-          const futureDate = new Date();
-          futureDate.setDate(futureDate.getDate() + 14);
-
-          const busyTimes = await getGoogleCalendarBusyTimes(
-            accessToken,
-            calendarId,
-            now.toISOString(),
-            futureDate.toISOString()
-          );
-
-          console.log('[fetch-mentor-availability] Busy times found:', busyTimes.length);
-          
-          slots = generateAvailableSlots(busyTimes);
-          calendarSource = usedFallbackMentor ? 'google_calendar_fallback' : 'google_calendar';
-          console.log('[fetch-mentor-availability] Generated slots from Google Calendar:', slots.length, usedFallbackMentor ? '(fallback)' : '');
-        } catch (googleError: any) {
-          googleCalendarError = googleError.message;
-          console.error('[fetch-mentor-availability] Google Calendar API error:', googleError.message);
-          // Do NOT fall back to database when we have a calendar ID - the calendar is the source of truth
-          // Return empty slots with error information instead
-        }
-      }
-    }
-
-    // ONLY use database slots if NO Google Calendar is configured
-    // When a calendar ID exists, Google Calendar is the authoritative source
-    if (!calendarId && slots.length === 0) {
-      console.log('[fetch-mentor-availability] No Google Calendar configured, using database slots');
-      const now = new Date();
-      const futureDate = new Date();
-      futureDate.setDate(futureDate.getDate() + 30);
-
-      const { data: dbSlots, error: slotsError } = await supabase
-        .from('mentor_availability_slots')
-        .select('id, start_time, end_time, is_booked')
-        .eq('mentor_id', mentorId)
-        .eq('is_booked', false)
-        .gte('start_time', now.toISOString())
-        .lte('start_time', futureDate.toISOString())
-        .order('start_time', { ascending: true });
-
-      if (!slotsError && dbSlots) {
-        slots = dbSlots.map(s => ({
-          id: s.id,
-          start: s.start_time,
-          end: s.end_time,
-        }));
-        calendarSource = 'database';
-      }
-    } else if (calendarId && slots.length === 0) {
-      console.log('[fetch-mentor-availability] Google Calendar configured but no slots available (or API error)');
-      calendarSource = 'google_calendar_empty';
-    }
-
-    console.log('[fetch-mentor-availability] Total slots:', slots.length, 'source:', calendarSource);
+    console.log('[fetch-mentor-availability] Generated fake slots:', slots.length);
 
     // Transform slots for frontend
     const formattedSlots = slots.map(s => ({
@@ -399,24 +159,16 @@ serve(async (req) => {
           avatar_url: mentorInfo.profile_image_url
         },
         calendarSource,
-        calendarMentorId: calendarSource.includes('google_calendar') ? calendarMentorId : null,
-        calendarMentorName: usedFallbackMentor ? fallbackMentorName : mentorInfo.name,
         debug: {
           assignedMentorId: mentorId,
           assignedMentorName: mentorInfo.name,
-          calendarMentorId: calendarMentorId,
-          calendarMentorName: usedFallbackMentor ? fallbackMentorName : mentorInfo.name,
-          usedFallback: usedFallbackMentor,
           source: calendarSource,
-          googleCalendarId: calendarId || null,
-          serviceAccountConfigured: !!serviceAccountJson,
-          serviceAccountValid: serviceAccountValid,
-          googleCalendarAttempted: googleCalendarAttempted,
-          googleCalendarError: googleCalendarError
+          googleCalendarDisabled: true,
+          slotsGenerated: formattedSlots.length,
+          slotDuration: '1 hour',
+          slotRange: 'Next 7 weekdays, 09:00-18:00'
         },
-        message: googleCalendarError 
-          ? `Calendar API error: ${googleCalendarError}. Please check GOOGLE_SERVICE_ACCOUNT_JSON secret.`
-          : (formattedSlots.length ? null : "No available slots at the moment")
+        message: null
       }), 
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
