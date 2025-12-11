@@ -239,15 +239,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                         </button>
                         <button
                           onClick={() => {
-                            navigate('/risultati');
-                            setMobileMenuOpen(false);
-                          }}
-                          className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
-                        >
-                          {t('nav.results')}
-                        </button>
-                        <button
-                          onClick={() => {
                             navigate('/chat');
                             setMobileMenuOpen(false);
                           }}
@@ -314,18 +305,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
                     >
                       {t('nav.dashboard')}
                       {(location.pathname === '/profile' || location.pathname === '/dashboard') && (
-                        <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
-                      )}
-                    </button>
-                    <button 
-                      onClick={() => navigate('/risultati')}
-                      className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
-                        location.pathname === '/risultati' ? 'text-[hsl(var(--xima-accent))]' : ''
-                      }`}
-                      style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                    >
-                      {t('nav.results')}
-                      {location.pathname === '/risultati' && (
                         <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
                       )}
                     </button>
