@@ -247,9 +247,37 @@ serve(async (req) => {
     // Try to get Google Calendar availability
     let slots: { id: string; start: string; end: string }[] = [];
     let calendarSource = 'database';
+    let usedFallbackMentor = false;
 
     const serviceAccountJson = Deno.env.get("GOOGLE_SERVICE_ACCOUNT_JSON");
-    const calendarId = (mentorInfo.availability as any)?.google_calendar_id;
+    let calendarId = (mentorInfo.availability as any)?.google_calendar_id;
+    let calendarMentorId = mentorId; // Track which mentor's calendar we're using
+
+    // If assigned mentor doesn't have a Google Calendar, find a fallback mentor who does
+    if (serviceAccountJson && !calendarId) {
+      console.log('[fetch-mentor-availability] Assigned mentor has no Google Calendar, searching for fallback...');
+      
+      // Query all mentors with a google_calendar_id in their availability JSONB
+      const { data: mentorsWithCalendar, error: fallbackError } = await supabase
+        .from('mentors')
+        .select('id, name, availability')
+        .eq('is_active', true);
+      
+      if (!fallbackError && mentorsWithCalendar) {
+        // Find first mentor with a valid google_calendar_id
+        const fallbackMentor = mentorsWithCalendar.find(m => {
+          const avail = m.availability as any;
+          return avail?.google_calendar_id;
+        });
+        
+        if (fallbackMentor) {
+          calendarId = (fallbackMentor.availability as any).google_calendar_id;
+          calendarMentorId = fallbackMentor.id;
+          usedFallbackMentor = true;
+          console.log('[fetch-mentor-availability] Using fallback mentor calendar:', fallbackMentor.name, calendarId);
+        }
+      }
+    }
 
     if (serviceAccountJson && calendarId) {
       try {
@@ -271,15 +299,15 @@ serve(async (req) => {
         console.log('[fetch-mentor-availability] Busy times found:', busyTimes.length);
         
         slots = generateAvailableSlots(busyTimes);
-        calendarSource = 'google_calendar';
-        console.log('[fetch-mentor-availability] Generated slots from Google Calendar:', slots.length);
+        calendarSource = usedFallbackMentor ? 'google_calendar_fallback' : 'google_calendar';
+        console.log('[fetch-mentor-availability] Generated slots from Google Calendar:', slots.length, usedFallbackMentor ? '(fallback)' : '');
       } catch (googleError: any) {
         console.error('[fetch-mentor-availability] Google Calendar error:', googleError.message);
         // Fall back to database slots
       }
     }
 
-    // If no Google Calendar slots, try database slots
+    // If no Google Calendar slots, try database slots for the assigned mentor
     if (slots.length === 0) {
       console.log('[fetch-mentor-availability] Falling back to database slots');
       const now = new Date();
