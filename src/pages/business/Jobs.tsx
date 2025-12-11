@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
@@ -23,6 +24,7 @@ interface Job {
 
 export default function Jobs() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: roleLoading } = useBusinessRole();
   const { toast } = useToast();
@@ -67,15 +69,15 @@ export default function Jobs() {
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: `Job ${!currentVisibility ? 'published' : 'unpublished'} successfully`,
+        title: t('jobs.success'),
+        description: !currentVisibility ? t('jobs.job_published') : t('jobs.job_unpublished'),
       });
 
       fetchJobs();
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "Failed to update job visibility",
+        title: t('jobs.error'),
+        description: error.message || t('jobs.failed_update_visibility'),
         variant: "destructive"
       });
     }
@@ -99,14 +101,14 @@ export default function Jobs() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Job Offers</h1>
+            <h1 className="text-3xl font-bold">{t('jobs.title')}</h1>
             <p className="text-muted-foreground mt-1">
-              Manage and publish job opportunities for candidates
+              {t('jobs.subtitle')}
             </p>
           </div>
           <Button onClick={() => navigate('/business/jobs/new')}>
             <Plus className="h-4 w-4 mr-2" />
-            Create Job Offer
+            {t('jobs.create_job')}
           </Button>
         </div>
 
@@ -114,13 +116,13 @@ export default function Jobs() {
           <Card>
             <CardContent className="p-12 text-center">
               <Briefcase className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">No job offers yet</h3>
+              <h3 className="text-lg font-semibold mb-2">{t('jobs.no_jobs_title')}</h3>
               <p className="text-muted-foreground mb-4">
-                Create your first job offer to start attracting candidates
+                {t('jobs.no_jobs_desc')}
               </p>
               <Button onClick={() => navigate('/business/jobs/new')}>
                 <Plus className="h-4 w-4 mr-2" />
-                Create Job Offer
+                {t('jobs.create_job')}
               </Button>
             </CardContent>
           </Card>
@@ -134,7 +136,7 @@ export default function Jobs() {
                       <div className="flex items-center gap-2 mb-2">
                         <CardTitle className="text-xl">{job.title}</CardTitle>
                         <Badge variant={job.is_public ? 'default' : 'secondary'}>
-                          {job.is_public ? 'Published' : 'Draft'}
+                          {job.is_public ? t('jobs.published') : t('jobs.draft')}
                         </Badge>
                       </div>
                       <CardDescription className="flex items-center gap-4">
@@ -157,14 +159,14 @@ export default function Jobs() {
                         onClick={() => toggleJobVisibility(job.id, job.is_public)}
                       >
                         <Eye className="h-4 w-4 mr-1" />
-                        {job.is_public ? 'Unpublish' : 'Publish'}
+                        {job.is_public ? t('jobs.unpublish') : t('jobs.publish')}
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => navigate(`/opportunities/${job.id}`)}
                       >
-                        View Details
+                        {t('jobs.view_details')}
                       </Button>
                     </div>
                   </div>
@@ -183,7 +185,7 @@ export default function Jobs() {
                       ))}
                       {job.skills.length > 5 && (
                         <Badge variant="outline" className="text-xs">
-                          +{job.skills.length - 5} more
+                          {t('jobs.more_skills', { count: job.skills.length - 5 })}
                         </Badge>
                       )}
                     </div>
@@ -192,7 +194,7 @@ export default function Jobs() {
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Users className="h-4 w-4" />
-                      View candidate matches
+                      {t('jobs.view_candidate_matches')}
                     </span>
                   </div>
                 </CardContent>
