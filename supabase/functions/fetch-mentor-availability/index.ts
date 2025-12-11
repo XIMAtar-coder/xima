@@ -6,6 +6,151 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Generate JWT for Google API authentication using service account
+async function getGoogleAccessToken(serviceAccount: any): Promise<string> {
+  const header = { alg: "RS256", typ: "JWT" };
+  const now = Math.floor(Date.now() / 1000);
+  const claim = {
+    iss: serviceAccount.client_email,
+    scope: "https://www.googleapis.com/auth/calendar.readonly",
+    aud: "https://oauth2.googleapis.com/token",
+    exp: now + 3600,
+    iat: now,
+  };
+
+  const encoder = new TextEncoder();
+  
+  // Base64URL encode
+  const base64url = (data: Uint8Array | string): string => {
+    const str = typeof data === 'string' ? data : new TextDecoder().decode(data);
+    return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  };
+
+  const headerB64 = base64url(JSON.stringify(header));
+  const claimB64 = base64url(JSON.stringify(claim));
+  const signatureInput = `${headerB64}.${claimB64}`;
+
+  // Import private key and sign
+  const pemContents = serviceAccount.private_key
+    .replace('-----BEGIN PRIVATE KEY-----', '')
+    .replace('-----END PRIVATE KEY-----', '')
+    .replace(/\s/g, '');
+  
+  const binaryKey = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
+  
+  const cryptoKey = await crypto.subtle.importKey(
+    'pkcs8',
+    binaryKey,
+    { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+
+  const signature = await crypto.subtle.sign(
+    'RSASSA-PKCS1-v1_5',
+    cryptoKey,
+    encoder.encode(signatureInput)
+  );
+
+  const signatureB64 = base64url(new Uint8Array(signature));
+  const jwt = `${signatureInput}.${signatureB64}`;
+
+  // Exchange JWT for access token
+  const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      assertion: jwt,
+    }),
+  });
+
+  const tokenData = await tokenResponse.json();
+  if (!tokenData.access_token) {
+    console.error('[Google Auth] Token exchange failed:', tokenData);
+    throw new Error('Failed to get Google access token');
+  }
+
+  return tokenData.access_token;
+}
+
+// Fetch busy times from Google Calendar
+async function getGoogleCalendarBusyTimes(
+  accessToken: string,
+  calendarId: string,
+  timeMin: string,
+  timeMax: string
+): Promise<{ start: string; end: string }[]> {
+  const response = await fetch(
+    'https://www.googleapis.com/calendar/v3/freeBusy',
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        timeMin,
+        timeMax,
+        items: [{ id: calendarId }],
+      }),
+    }
+  );
+
+  const data = await response.json();
+  
+  if (data.error) {
+    console.error('[Google Calendar] FreeBusy error:', data.error);
+    return [];
+  }
+
+  return data.calendars?.[calendarId]?.busy || [];
+}
+
+// Generate 15-minute slots for the next 14 days (weekdays 9:00-18:00)
+function generateAvailableSlots(busyTimes: { start: string; end: string }[]): { start: string; end: string; id: string }[] {
+  const slots: { start: string; end: string; id: string }[] = [];
+  const now = new Date();
+  const slotDuration = 15 * 60 * 1000; // 15 minutes in ms
+
+  for (let day = 1; day <= 14; day++) {
+    const date = new Date(now);
+    date.setDate(now.getDate() + day);
+    
+    // Skip weekends
+    if (date.getDay() === 0 || date.getDay() === 6) continue;
+
+    // Generate slots from 9:00 to 18:00
+    for (let hour = 9; hour < 18; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        const slotStart = new Date(date);
+        slotStart.setHours(hour, minute, 0, 0);
+        
+        const slotEnd = new Date(slotStart.getTime() + slotDuration);
+
+        // Check if slot conflicts with busy times
+        const isConflict = busyTimes.some(busy => {
+          const busyStart = new Date(busy.start).getTime();
+          const busyEnd = new Date(busy.end).getTime();
+          const start = slotStart.getTime();
+          const end = slotEnd.getTime();
+          return (start < busyEnd && end > busyStart);
+        });
+
+        if (!isConflict) {
+          slots.push({
+            id: `slot-${slotStart.toISOString()}`,
+            start: slotStart.toISOString(),
+            end: slotEnd.toISOString(),
+          });
+        }
+      }
+    }
+  }
+
+  return slots;
+}
+
 serve(async (req) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
@@ -40,7 +185,7 @@ serve(async (req) => {
 
     console.log('[fetch-mentor-availability] User authenticated:', user.id);
 
-    // Get user's profile to extract mentor info from profiles.mentor JSONB field
+    // Get user's profile to extract mentor info
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('mentor, id')
@@ -77,10 +222,10 @@ serve(async (req) => {
     const mentorId = mentorData.id;
     console.log('[fetch-mentor-availability] Mentor found:', mentorId);
 
-    // Fetch full mentor details from mentors table
+    // Fetch mentor details from unified mentors table
     const { data: mentorDetails, error: mentorError } = await supabase
       .from('mentors')
-      .select('id, name, profile_image_url, title, bio')
+      .select('id, name, profile_image_url, title, bio, availability')
       .eq('id', mentorId)
       .maybeSingle();
 
@@ -90,53 +235,90 @@ serve(async (req) => {
 
     const mentorInfo = mentorDetails || {
       id: mentorId,
-      name: mentorData.name,
+      name: mentorData.name || mentorData.full_name,
       title: mentorData.title,
       bio: mentorData.locale_bio?.en || mentorData.bio,
-      profile_image_url: mentorData.avatar_url
+      profile_image_url: mentorData.avatar_url || mentorData.avatar_path,
+      availability: null
     };
 
     console.log('[fetch-mentor-availability] Mentor info:', mentorInfo.name);
 
-    // Fetch available slots (not booked) for the next 30 days
-    const now = new Date();
-    const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 30);
+    // Try to get Google Calendar availability
+    let slots: { id: string; start: string; end: string }[] = [];
+    let calendarSource = 'database';
 
-    const { data: slots, error: slotsError } = await supabase
-      .from('mentor_availability_slots')
-      .select('id, start_time, end_time, is_booked')
-      .eq('mentor_id', mentorId)
-      .eq('is_booked', false)
-      .gte('start_time', now.toISOString())
-      .lte('start_time', futureDate.toISOString())
-      .order('start_time', { ascending: true });
+    const serviceAccountJson = Deno.env.get("GOOGLE_SERVICE_ACCOUNT_JSON");
+    const calendarId = (mentorInfo.availability as any)?.google_calendar_id;
 
-    if (slotsError) {
-      console.error('[fetch-mentor-availability] Error fetching slots:', slotsError);
-      return new Response(
-        JSON.stringify({ 
-          success: true, 
-          slots: [], 
-          mentor: {
-            id: mentorId,
-            name: mentorInfo.name,
-            title: mentorInfo.title,
-            bio: mentorInfo.bio,
-            avatar_url: mentorInfo.profile_image_url
-          },
-          message: "No availability slots found" 
-        }), 
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    if (serviceAccountJson && calendarId) {
+      try {
+        console.log('[fetch-mentor-availability] Fetching from Google Calendar:', calendarId);
+        const serviceAccount = JSON.parse(serviceAccountJson);
+        const accessToken = await getGoogleAccessToken(serviceAccount);
+
+        const now = new Date();
+        const futureDate = new Date();
+        futureDate.setDate(futureDate.getDate() + 14);
+
+        const busyTimes = await getGoogleCalendarBusyTimes(
+          accessToken,
+          calendarId,
+          now.toISOString(),
+          futureDate.toISOString()
+        );
+
+        console.log('[fetch-mentor-availability] Busy times found:', busyTimes.length);
+        
+        slots = generateAvailableSlots(busyTimes);
+        calendarSource = 'google_calendar';
+        console.log('[fetch-mentor-availability] Generated slots from Google Calendar:', slots.length);
+      } catch (googleError: any) {
+        console.error('[fetch-mentor-availability] Google Calendar error:', googleError.message);
+        // Fall back to database slots
+      }
     }
 
-    console.log('[fetch-mentor-availability] Found slots:', slots?.length || 0);
+    // If no Google Calendar slots, try database slots
+    if (slots.length === 0) {
+      console.log('[fetch-mentor-availability] Falling back to database slots');
+      const now = new Date();
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + 30);
+
+      const { data: dbSlots, error: slotsError } = await supabase
+        .from('mentor_availability_slots')
+        .select('id, start_time, end_time, is_booked')
+        .eq('mentor_id', mentorId)
+        .eq('is_booked', false)
+        .gte('start_time', now.toISOString())
+        .lte('start_time', futureDate.toISOString())
+        .order('start_time', { ascending: true });
+
+      if (!slotsError && dbSlots) {
+        slots = dbSlots.map(s => ({
+          id: s.id,
+          start: s.start_time,
+          end: s.end_time,
+        }));
+        calendarSource = 'database';
+      }
+    }
+
+    console.log('[fetch-mentor-availability] Total slots:', slots.length, 'source:', calendarSource);
+
+    // Transform slots for frontend
+    const formattedSlots = slots.map(s => ({
+      id: s.id,
+      start_time: s.start,
+      end_time: s.end,
+      is_booked: false
+    }));
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        slots: slots || [],
+        slots: formattedSlots,
         mentor: {
           id: mentorId,
           name: mentorInfo.name,
@@ -144,7 +326,8 @@ serve(async (req) => {
           bio: mentorInfo.bio,
           avatar_url: mentorInfo.profile_image_url
         },
-        message: slots?.length ? null : "No available slots at the moment"
+        calendarSource,
+        message: formattedSlots.length ? null : "No available slots at the moment"
       }), 
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
