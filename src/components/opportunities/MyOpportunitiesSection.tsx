@@ -105,7 +105,7 @@ export const MyOpportunitiesSection: React.FC = () => {
           ))}
           {opp.skills.length > 4 && (
             <Badge variant="outline" className="text-muted-foreground">
-              +{opp.skills.length - 4} more
+              {t('opportunities.more_skills', { count: opp.skills.length - 4 })}
             </Badge>
           )}
         </div>
@@ -116,7 +116,7 @@ export const MyOpportunitiesSection: React.FC = () => {
         onClick={() => navigate(`/opportunity/${opp.id}`)}
         className="w-full bg-[hsl(var(--xima-accent))] hover:bg-[hsl(var(--xima-accent))]/90"
       >
-        View Details
+        {t('opportunities.view_details')}
         <ExternalLink className="w-4 h-4 ml-2" />
       </Button>
     </div>
@@ -145,7 +145,7 @@ export const MyOpportunitiesSection: React.FC = () => {
             <span className="text-2xl font-bold text-[hsl(var(--xima-accent))]">
               {matchScore}%
             </span>
-            <span className="text-xs text-[hsl(var(--xima-gray))]">Match</span>
+            <span className="text-xs text-[hsl(var(--xima-gray))]">{t('opportunities.match')}</span>
           </div>
         )}
       </div>
@@ -154,19 +154,19 @@ export const MyOpportunitiesSection: React.FC = () => {
         {status === 'saved' && (
           <Badge variant="secondary" className="bg-[hsl(var(--xima-teal))]/10 text-[hsl(var(--xima-teal))]">
             <Bookmark className="w-3 h-3 mr-1 fill-current" />
-            Saved
+            {t('opportunities.saved')}
           </Badge>
         )}
         {status === 'applied' && (
           <Badge variant="secondary" className="bg-green-500/10 text-green-600">
             <CheckCircle2 className="w-3 h-3 mr-1" />
-            Applied
+            {t('opportunities.applied')}
           </Badge>
         )}
         {matchScore && matchScore >= 80 && (
           <Badge variant="secondary" className="bg-[hsl(var(--xima-accent))]/10 text-[hsl(var(--xima-accent))]">
             <TrendingUp className="w-3 h-3 mr-1" />
-            Top Match
+            {t('opportunities.top_match')}
           </Badge>
         )}
       </div>
@@ -176,7 +176,7 @@ export const MyOpportunitiesSection: React.FC = () => {
         onClick={() => navigate(`/opportunity/${jobId}`)}
         className="w-full bg-[hsl(var(--xima-accent))] hover:bg-[hsl(var(--xima-accent))]/90"
       >
-        View Details
+        {t('opportunities.view_details')}
         <ExternalLink className="w-4 h-4 ml-2" />
       </Button>
     </div>
@@ -185,7 +185,7 @@ export const MyOpportunitiesSection: React.FC = () => {
   return (
     <Card className="w-full animate-[fade-in_0.5s_ease-out]">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="font-heading text-2xl">My Opportunities</CardTitle>
+        <CardTitle className="font-heading text-2xl">{t('opportunities.my_opportunities')}</CardTitle>
         <Button
           variant="outline"
           size="sm"
@@ -197,7 +197,7 @@ export const MyOpportunitiesSection: React.FC = () => {
           className="gap-2"
         >
           <Sparkles className="w-4 h-4" />
-          Refresh
+          {t('opportunities.refresh')}
         </Button>
       </CardHeader>
       <CardContent>
@@ -205,23 +205,23 @@ export const MyOpportunitiesSection: React.FC = () => {
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="recommended">
               <Sparkles className="w-4 h-4 mr-2" />
-              For You
+              {t('opportunities.for_you')}
             </TabsTrigger>
             <TabsTrigger value="saved">
               <Bookmark className="w-4 h-4 mr-2" />
-              Saved
+              {t('opportunities.saved')}
             </TabsTrigger>
             <TabsTrigger value="applied">
               <CheckCircle2 className="w-4 h-4 mr-2" />
-              Applied
+              {t('opportunities.applied')}
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="recommended" className="space-y-4">
             {opportunitiesLoading ? (
               <div className="text-center py-8">
-                <RefreshCw className="w-8 h-8 mx-auto mb-3 text-[hsl(var(--xima-accent))] animate-spin" />
-                <p className="text-[hsl(var(--xima-gray))]">Loading job opportunities...</p>
+              <RefreshCw className="w-8 h-8 mx-auto mb-3 text-[hsl(var(--xima-accent))] animate-spin" />
+                <p className="text-[hsl(var(--xima-gray))]">{t('opportunities.loading_jobs')}</p>
               </div>
             ) : opportunitiesError ? (
               <div className="text-center py-8">
@@ -233,14 +233,14 @@ export const MyOpportunitiesSection: React.FC = () => {
                   className="gap-2"
                 >
                   <RefreshCw className="w-4 h-4" />
-                  Retry
+                  {t('opportunities.retry')}
                 </Button>
               </div>
             ) : opportunities.length === 0 ? (
               <div className="text-center py-8">
-                <Briefcase className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--xima-accent))]/40" />
-                <p className="text-[hsl(var(--xima-gray))]">
-                  No job opportunities available at the moment. Check back soon!
+              <Briefcase className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--xima-accent))]/40" />
+              <p className="text-[hsl(var(--xima-gray))]">
+                {t('opportunities.no_jobs_available')}
                 </p>
               </div>
             ) : (
@@ -252,10 +252,10 @@ export const MyOpportunitiesSection: React.FC = () => {
 
           <TabsContent value="saved" className="space-y-4">
             {interactionsLoading ? (
-              <p className="text-center text-[hsl(var(--xima-gray))]">Loading saved opportunities...</p>
+              <p className="text-center text-[hsl(var(--xima-gray))]">{t('opportunities.loading_saved')}</p>
             ) : savedJobs.length === 0 ? (
               <p className="text-center text-[hsl(var(--xima-gray))] py-8">
-                No saved opportunities yet. Browse recommended jobs to get started!
+                {t('opportunities.no_saved')}
               </p>
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
@@ -274,10 +274,10 @@ export const MyOpportunitiesSection: React.FC = () => {
 
           <TabsContent value="applied" className="space-y-4">
             {interactionsLoading ? (
-              <p className="text-center text-[hsl(var(--xima-gray))]">Loading applications...</p>
+              <p className="text-center text-[hsl(var(--xima-gray))]">{t('opportunities.loading_applications')}</p>
             ) : appliedJobs.length === 0 ? (
               <p className="text-center text-[hsl(var(--xima-gray))] py-8">
-                No applications yet. Start applying to opportunities that match your XIMA profile!
+                {t('opportunities.no_applications')}
               </p>
             ) : (
               <div className="grid gap-4 md:grid-cols-2">

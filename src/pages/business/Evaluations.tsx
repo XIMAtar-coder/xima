@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -18,6 +19,7 @@ interface Evaluation {
 }
 
 const BusinessEvaluations = () => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { user } = useUser();
   const [loading, setLoading] = useState(true);
@@ -82,8 +84,8 @@ const BusinessEvaluations = () => {
     } catch (error) {
       console.error('Error loading evaluations:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to load evaluations',
+        title: t('business_portal.error'),
+        description: t('business_portal.failed_load_profile'),
         variant: 'destructive'
       });
     } finally {
@@ -133,9 +135,9 @@ const BusinessEvaluations = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Tests & Evaluations</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">{t('business_portal.tests_evaluations')}</h1>
           <p className="text-[#A3ABB5]">
-            Review and evaluate candidate challenge submissions
+            {t('business_portal.review_submissions')}
           </p>
         </div>
 
@@ -144,9 +146,9 @@ const BusinessEvaluations = () => {
           <Card className="bg-gradient-to-br from-[#0F1419] to-[#0A0F1C] border-[#3A9FFF]/20">
             <CardContent className="p-12 text-center">
               <FileText className="mx-auto mb-4 text-[#A3ABB5]" size={48} />
-              <p className="text-[#A3ABB5] text-lg mb-2">No evaluations yet</p>
+              <p className="text-[#A3ABB5] text-lg mb-2">{t('business_portal.no_evaluations')}</p>
               <p className="text-[#A3ABB5] text-sm">
-                Create challenges and invite candidates to get started
+                {t('business_portal.create_challenges_invite')}
               </p>
             </CardContent>
           </Card>
@@ -178,13 +180,13 @@ const BusinessEvaluations = () => {
                     <div className="flex gap-6">
                       {evaluation.score !== null && evaluation.score !== undefined && (
                         <div>
-                          <p className="text-xs text-[#A3ABB5] mb-1">Score</p>
+                          <p className="text-xs text-[#A3ABB5] mb-1">{t('business_portal.score')}</p>
                           <p className="text-lg font-bold text-white">{evaluation.score.toFixed(1)}</p>
                         </div>
                       )}
                       {evaluation.completed_at && (
                         <div>
-                          <p className="text-xs text-[#A3ABB5] mb-1">Completed</p>
+                          <p className="text-xs text-[#A3ABB5] mb-1">{t('business_portal.completed')}</p>
                           <p className="text-sm text-white">
                             {new Date(evaluation.completed_at).toLocaleDateString()}
                           </p>
@@ -196,12 +198,12 @@ const BusinessEvaluations = () => {
                         className="bg-[#3A9FFF] hover:bg-[#3A9FFF]/90"
                         onClick={() => {
                           toast({
-                            title: 'Coming Soon',
-                            description: 'Detailed evaluation interface in development'
+                            title: t('admin.coming_soon'),
+                            description: t('business_portal.coming_soon_evaluation')
                           });
                         }}
                       >
-                        Review & Score
+                        {t('business_portal.review_score')}
                       </Button>
                     )}
                   </div>
