@@ -273,21 +273,17 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
               </div>
             )}
             
-            {/* Key Strengths - Mock data, replace with actual mentor data when available */}
-            <div className="flex flex-wrap gap-2 mt-3">
-              <Badge variant="secondary" className="gap-1">
-                <Star className="h-3 w-3" />
-                Leadership
-              </Badge>
-              <Badge variant="secondary" className="gap-1">
-                <Star className="h-3 w-3" />
-                Communication
-              </Badge>
-              <Badge variant="secondary" className="gap-1">
-                <Star className="h-3 w-3" />
-                Strategy
-              </Badge>
-            </div>
+            {/* Key Strengths from mentor info */}
+            {mentorInfo?.title && (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {mentorInfo.title.split(/[,&]/).slice(0, 3).map((specialty, idx) => (
+                  <Badge key={idx} variant="secondary" className="gap-1">
+                    <Star className="h-3 w-3" />
+                    {specialty.trim()}
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Booking Calendar */}
@@ -298,7 +294,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
                 {t('profile.book_session', 'Book a Session')} (15 min)
               </h4>
               {slots.length > 0 && (
-                <Badge variant="secondary">{slots.length} slots available</Badge>
+                <Badge variant="secondary">{slots.length} {t('profile.slots_available', 'slots available')}</Badge>
               )}
             </div>
 
@@ -356,7 +352,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
                       <p className="text-sm font-medium">
                         {formatDate(selectedDate.toISOString())}
                       </p>
-                      <Badge variant="outline">{slotsForSelectedDate.length} available</Badge>
+                      <Badge variant="outline">{slotsForSelectedDate.length} {t('profile.available', 'available')}</Badge>
                     </div>
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                       {slotsForSelectedDate.map((slot) => (
