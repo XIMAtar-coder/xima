@@ -1001,7 +1001,11 @@
       "message_sent": "Messaggio inviato",
       "new_message": "Nuovo messaggio",
       "connecting": "Connessione in corso...",
-      "connection_error": "Errore di connessione"
+      "connection_error": "Errore di connessione",
+      "recent": "Recenti",
+      "search_results": "Risultati ricerca",
+      "loading_conversations": "Caricamento conversazioni...",
+      "no_conversations": "Nessuna conversazione"
     },
   "development": {
     "title": "Piano di Sviluppo",
