@@ -997,7 +997,9 @@
       "login_required": "Accedi per usare la chat",
       "sending": "Invio in corso...",
       "message_sent": "Messaggio inviato",
-      "new_message": "Nuovo messaggio"
+      "new_message": "Nuovo messaggio",
+      "connecting": "Connessione in corso...",
+      "connection_error": "Errore di connessione"
     },
   "development": {
     "title": "Piano di Sviluppo",

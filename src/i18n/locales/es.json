@@ -1267,7 +1267,9 @@
     "login_required": "Inicia sesión para acceder al chat",
     "sending": "Enviando...",
     "message_sent": "Mensaje enviado",
-    "new_message": "Nuevo mensaje"
+    "new_message": "Nuevo mensaje",
+    "connecting": "Conectando...",
+    "connection_error": "Error de conexión"
   },
   "errors": {
     "generic": "Ocurrió un error inesperado",
