@@ -17,7 +17,6 @@ const XimaChat = () => {
   const { t } = useTranslation();
   const { user } = useUser();
   const [message, setMessage] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const { 
@@ -25,13 +24,16 @@ const XimaChat = () => {
     messages, 
     selectedUser, 
     selectedThread,
-    loading, 
+    searchQuery,
+    searching,
+    hasSearched,
     sending,
     fetchError,
     sendError,
     threadError,
     openThread, 
     sendMessage,
+    handleSearchChange,
     clearSendError
   } = useRealtimeChat(user?.id);
 
@@ -48,12 +50,6 @@ const XimaChat = () => {
       toast.error(threadError);
     }
   }, [threadError]);
-
-  // Filter users by search
-  const filteredUsers = users.filter(u =>
-    u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    u.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -113,6 +109,17 @@ const XimaChat = () => {
     return `/ximatars/${ximatar}.png`;
   };
 
+  // Determine empty state message
+  const getEmptyStateMessage = () => {
+    if (searchQuery.length < 2) {
+      return t('chat.search_hint');
+    }
+    if (hasSearched && users.length === 0) {
+      return t('chat.no_users_found');
+    }
+    return null;
+  };
+
   if (!user) {
     return (
       <MainLayout>
@@ -121,19 +128,6 @@ const XimaChat = () => {
             <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
             <p className="text-muted-foreground">{t('chat.login_required')}</p>
           </Card>
-        </div>
-      </MainLayout>
-    );
-  }
-
-  if (loading) {
-    return (
-      <MainLayout>
-        <div className="container max-w-7xl mx-auto pt-6 flex items-center justify-center h-[80vh]">
-          <div className="text-center">
-            <Loader2 className="animate-spin h-12 w-12 text-primary mx-auto mb-4" />
-            <p className="text-muted-foreground">{t('chat.loading')}</p>
-          </div>
         </div>
       </MainLayout>
     );
@@ -156,7 +150,7 @@ const XimaChat = () => {
                   type="text"
                   placeholder={t('chat.search_users')}
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                   className="pl-10"
                 />
               </div>
@@ -170,13 +164,18 @@ const XimaChat = () => {
                       <p className="text-sm font-medium">{t('chat.error_loading')}</p>
                       <p className="text-xs mt-1 text-muted-foreground">{fetchError}</p>
                     </div>
-                  ) : filteredUsers.length === 0 ? (
+                  ) : searching ? (
                     <div className="text-center py-8 text-muted-foreground">
-                      <User className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">{searchQuery ? t('chat.no_users_found') : t('chat.no_other_users')}</p>
+                      <Loader2 className="h-8 w-8 mx-auto mb-2 animate-spin" />
+                      <p className="text-sm">{t('chat.searching')}</p>
+                    </div>
+                  ) : users.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Search className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">{getEmptyStateMessage()}</p>
                     </div>
                   ) : (
-                    filteredUsers.map((chatUser) => (
+                    users.map((chatUser) => (
                       <div
                         key={chatUser.id}
                         className={cn(
