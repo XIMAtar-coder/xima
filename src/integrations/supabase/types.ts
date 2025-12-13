@@ -2090,6 +2090,10 @@ export type Database = {
           ximatar_label: string
         }[]
       }
+      get_profile_id_for_auth_user: {
+        Args: { p_auth_uid: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
