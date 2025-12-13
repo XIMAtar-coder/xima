@@ -15,9 +15,10 @@ import { Menu } from 'lucide-react';
 interface MainLayoutProps {
   children: React.ReactNode;
   requireAuth?: boolean;
+  fullHeight?: boolean; // For pages like chat that need fixed viewport height
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, fullHeight = false }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, isAuthenticated, signOut } = useUser();
@@ -78,7 +79,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`bg-background ${fullHeight ? 'h-screen flex flex-col overflow-hidden' : 'min-h-screen'}`}>
       <nav 
         className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-200 ease-out relative ${
           scrolled 
@@ -396,26 +397,28 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false }
         </div>
       </nav>
       
-      <main className="flex-1 pt-14 md:pt-16 lg:pt-18">
+      <main className={`pt-14 md:pt-16 lg:pt-18 ${fullHeight ? 'flex-1 overflow-hidden' : 'flex-1'}`}>
         {children}
       </main>
       
-      <footer className="bg-card/50 py-8 mt-16 border-t border-border/30">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center logo-wrap">
-              <Logo 
-                variant="full"
-                alt="XIMA logo" 
-                className="h-7 relative z-10"
-              />
+      {!fullHeight && (
+        <footer className="bg-card/50 py-8 mt-16 border-t border-border/30">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="flex items-center logo-wrap">
+                <Logo 
+                  variant="full"
+                  alt="XIMA logo" 
+                  className="h-7 relative z-10"
+                />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                © 2024 {t('footer.copyright')}
+              </p>
             </div>
-            <p className="text-sm text-muted-foreground">
-              © 2024 {t('footer.copyright')}
-            </p>
           </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 };
