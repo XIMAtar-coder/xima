@@ -44,7 +44,33 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [sendError, setSendError] = useState<string | null>(null);
   const [threadError, setThreadError] = useState<string | null>(null);
+  const [currentProfileId, setCurrentProfileId] = useState<string | null>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Fetch current user's profile.id on mount
+  useEffect(() => {
+    if (!currentUserId) {
+      setCurrentProfileId(null);
+      return;
+    }
+
+    const fetchProfileId = async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', currentUserId)
+        .maybeSingle();
+
+      if (error) {
+        console.error('[useRealtimeChat] Error fetching profile id:', error);
+      } else if (data) {
+        setCurrentProfileId(data.id);
+        console.log('[useRealtimeChat] Current profile id:', data.id);
+      }
+    };
+
+    fetchProfileId();
+  }, [currentUserId]);
 
   // Search users with debounce
   const searchUsers = useCallback(async (query: string) => {
@@ -290,14 +316,14 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
   }, [currentUserId, fetchMessages]);
   // Send a message with optimistic update
   const sendMessage = useCallback(async (body: string): Promise<boolean> => {
-    if (!selectedThread || !currentUserId || !body.trim()) {
-      console.log('[useRealtimeChat] sendMessage: Missing required data', { selectedThread, currentUserId, hasBody: !!body.trim() });
+    if (!selectedThread || !currentProfileId || !body.trim()) {
+      console.log('[useRealtimeChat] sendMessage: Missing required data', { selectedThread, currentProfileId, hasBody: !!body.trim() });
       return false;
     }
 
     console.log('[useRealtimeChat] Sending message:', { 
       thread_id: selectedThread, 
-      sender_id: currentUserId, 
+      sender_id: currentProfileId, 
       body: body.trim().substring(0, 50) + '...' 
     });
 
@@ -309,7 +335,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     const optimisticMessage: ChatMessage = {
       id: optimisticId,
       thread_id: selectedThread,
-      sender_id: currentUserId,
+      sender_id: currentProfileId,
       body: body.trim(),
       created_at: new Date().toISOString(),
       sender: { name: 'You' }
@@ -323,7 +349,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
         .from('chat_messages')
         .insert({
           thread_id: selectedThread,
-          sender_id: currentUserId,
+          sender_id: currentProfileId,
           body: body.trim()
         })
         .select()
@@ -355,7 +381,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     } finally {
       setSending(false);
     }
-  }, [selectedThread, currentUserId]);
+  }, [selectedThread, currentProfileId]);
 
   // Subscribe to real-time messages
   useEffect(() => {
