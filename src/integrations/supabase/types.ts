@@ -2097,6 +2097,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_thread_participant: {
+        Args: { p_thread_id: string; p_user_id: string }
+        Returns: boolean
+      }
       log_bot_event: {
         Args: {
           p_lang: Database["public"]["Enums"]["lang_code"]
