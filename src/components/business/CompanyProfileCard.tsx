@@ -107,7 +107,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
               {t('business.profile.values')}
             </h4>
             <div className="flex flex-wrap gap-2">
-              {profile.values.map((value, idx) => (
+              {(profile.values || []).map((value, idx) => (
                 <Badge key={idx} variant="secondary" className="bg-[hsl(var(--xima-accent))]/10 text-[hsl(var(--xima-accent))]">
                   {value}
                 </Badge>
@@ -138,21 +138,21 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
               {t('business.profile.ideal_traits')}
             </h4>
             <ul className="list-disc list-inside space-y-1 text-foreground">
-              {profile.ideal_traits.map((trait, idx) => (
+              {(profile.ideal_traits || []).map((trait, idx) => (
                 <li key={idx}>{trait}</li>
               ))}
             </ul>
           </div>
 
           {/* Risk Areas */}
-          {profile.risk_areas.length > 0 && (
+          {(profile.risk_areas || []).length > 0 && (
             <div>
               <h4 className="font-semibold text-sm text-muted-foreground mb-2 flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4" />
                 {t('business.profile.risk_areas')}
               </h4>
               <ul className="list-disc list-inside space-y-1 text-foreground">
-                {profile.risk_areas.map((risk, idx) => (
+                {(profile.risk_areas || []).map((risk, idx) => (
                   <li key={idx}>{risk}</li>
                 ))}
               </ul>
@@ -191,7 +191,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
               {t('business.profile.recommended_ximatars')}
             </h4>
             <div className="flex flex-wrap gap-3">
-              {profile.recommended_ximatars.map((ximatar) => (
+              {(profile.recommended_ximatars || []).map((ximatar) => (
                 <div
                   key={ximatar}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted border border-border"

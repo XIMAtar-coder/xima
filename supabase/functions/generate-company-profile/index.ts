@@ -97,7 +97,7 @@ Deno.serve(async (req) => {
         pillar_vector: profile.pillar_vector,
         recommended_ximatars: profile.recommended_ximatars,
         updated_at: new Date().toISOString()
-      })
+      }, { onConflict: 'company_id' })
       .select()
       .single();
 
