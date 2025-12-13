@@ -884,7 +884,9 @@
       "login_required": "Please log in to access chat",
       "sending": "Sending...",
       "message_sent": "Message sent",
-      "new_message": "New message"
+      "new_message": "New message",
+      "connecting": "Connecting...",
+      "connection_error": "Connection Error"
     },
   "development": {
     "title": "Development Plan",

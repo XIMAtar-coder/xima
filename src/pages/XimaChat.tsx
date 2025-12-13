@@ -7,10 +7,11 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Send, Search, Loader2, User, MessageCircle, Check, CheckCheck, Clock } from 'lucide-react';
+import { Send, Search, Loader2, User, MessageCircle, Check, CheckCheck, Clock, AlertCircle } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { useRealtimeChat, ChatMessage } from '@/hooks/useRealtimeChat';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const XimaChat = () => {
   const { t } = useTranslation();
@@ -23,12 +24,30 @@ const XimaChat = () => {
     users, 
     messages, 
     selectedUser, 
+    selectedThread,
     loading, 
     sending,
     fetchError,
+    sendError,
+    threadError,
     openThread, 
-    sendMessage 
+    sendMessage,
+    clearSendError
   } = useRealtimeChat(user?.id);
+
+  // Show errors as toasts
+  useEffect(() => {
+    if (sendError) {
+      toast.error(sendError);
+      clearSendError();
+    }
+  }, [sendError, clearSendError]);
+
+  useEffect(() => {
+    if (threadError) {
+      toast.error(threadError);
+    }
+  }, [threadError]);
 
   // Filter users by search
   const filteredUsers = users.filter(u =>
@@ -45,7 +64,10 @@ const XimaChat = () => {
     if (!message.trim() || sending) return;
     const msg = message;
     setMessage('');
-    await sendMessage(msg);
+    const success = await sendMessage(msg);
+    if (!success) {
+      setMessage(msg); // Restore message on failure
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -231,7 +253,22 @@ const XimaChat = () => {
                 {/* Chat Messages */}
                 <CardContent className="flex-1 p-0 overflow-hidden">
                   <ScrollArea className="h-full p-4">
-                    {messages.length === 0 ? (
+                    {threadError ? (
+                      <div className="flex items-center justify-center h-full text-center">
+                        <div>
+                          <AlertCircle className="h-12 w-12 mx-auto mb-3 text-destructive/50" />
+                          <p className="text-destructive">{t('chat.connection_error')}</p>
+                          <p className="text-sm text-muted-foreground mt-1">{threadError}</p>
+                        </div>
+                      </div>
+                    ) : !selectedThread ? (
+                      <div className="flex items-center justify-center h-full text-center">
+                        <div>
+                          <Loader2 className="h-8 w-8 mx-auto mb-3 text-primary animate-spin" />
+                          <p className="text-muted-foreground">{t('chat.connecting')}</p>
+                        </div>
+                      </div>
+                    ) : messages.length === 0 ? (
                       <div className="flex items-center justify-center h-full text-center">
                         <div>
                           <MessageCircle className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />

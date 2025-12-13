@@ -36,6 +36,8 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const [sendError, setSendError] = useState<string | null>(null);
+  const [threadError, setThreadError] = useState<string | null>(null);
 
   // Fetch all users except current user
   useEffect(() => {
@@ -94,19 +96,30 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
 
   // Fetch or create thread with selected user
   const openThread = useCallback(async (otherUserId: string) => {
-    if (!currentUserId) return;
+    if (!currentUserId) {
+      console.log('[useRealtimeChat] openThread: No currentUserId');
+      return;
+    }
     
+    console.log('[useRealtimeChat] openThread called:', { currentUserId, otherUserId });
     setSelectedUserId(otherUserId);
     setMessages([]);
+    setThreadError(null);
 
     try {
       // Try to find existing thread between these two users
-      const { data: myThreads } = await supabase
+      const { data: myThreads, error: threadsError } = await supabase
         .from('chat_participants')
         .select('thread_id')
         .eq('user_id', currentUserId);
 
-      if (myThreads) {
+      if (threadsError) {
+        console.error('[useRealtimeChat] Error fetching my threads:', threadsError);
+      }
+
+      console.log('[useRealtimeChat] My threads:', myThreads);
+
+      if (myThreads && myThreads.length > 0) {
         for (const pt of myThreads) {
           const { data: otherParticipant } = await supabase
             .from('chat_participants')
@@ -116,7 +129,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
             .maybeSingle();
 
           if (otherParticipant) {
-            // Found existing thread
+            console.log('[useRealtimeChat] Found existing thread:', pt.thread_id);
             setSelectedThread(pt.thread_id);
             await fetchMessages(pt.thread_id);
             return;
@@ -124,6 +137,8 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
         }
       }
 
+      console.log('[useRealtimeChat] Creating new thread...');
+      
       // Create new thread
       const { data: newThread, error: threadError } = await supabase
         .from('chat_threads')
@@ -137,8 +152,11 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
 
       if (threadError) {
         console.error('[useRealtimeChat] Error creating thread:', threadError);
+        setThreadError(`Failed to create conversation: ${threadError.message}`);
         return;
       }
+
+      console.log('[useRealtimeChat] Created thread:', newThread);
 
       if (newThread) {
         // Add both participants
@@ -151,13 +169,17 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
 
         if (participantError) {
           console.error('[useRealtimeChat] Error adding participants:', participantError);
+          setThreadError(`Failed to add participants: ${participantError.message}`);
+          return;
         }
 
+        console.log('[useRealtimeChat] Added participants successfully');
         setSelectedThread(newThread.id);
         setMessages([]);
       }
     } catch (err) {
       console.error('[useRealtimeChat] Exception in openThread:', err);
+      setThreadError('An unexpected error occurred');
     }
   }, [currentUserId]);
 
@@ -205,26 +227,70 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     }
   }, []);
 
-  // Send a message
-  const sendMessage = useCallback(async (body: string) => {
-    if (!selectedThread || !currentUserId || !body.trim()) return;
+  // Send a message with optimistic update
+  const sendMessage = useCallback(async (body: string): Promise<boolean> => {
+    if (!selectedThread || !currentUserId || !body.trim()) {
+      console.log('[useRealtimeChat] sendMessage: Missing required data', { selectedThread, currentUserId, hasBody: !!body.trim() });
+      return false;
+    }
+
+    console.log('[useRealtimeChat] Sending message:', { 
+      thread_id: selectedThread, 
+      sender_id: currentUserId, 
+      body: body.trim().substring(0, 50) + '...' 
+    });
 
     setSending(true);
+    setSendError(null);
+
+    // Create optimistic message
+    const optimisticId = `optimistic-${Date.now()}`;
+    const optimisticMessage: ChatMessage = {
+      id: optimisticId,
+      thread_id: selectedThread,
+      sender_id: currentUserId,
+      body: body.trim(),
+      created_at: new Date().toISOString(),
+      sender: { name: 'You' }
+    };
+
+    // Add optimistic message immediately
+    setMessages(prev => [...prev, optimisticMessage]);
+
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('chat_messages')
         .insert({
           thread_id: selectedThread,
           sender_id: currentUserId,
           body: body.trim()
-        });
+        })
+        .select()
+        .single();
 
       if (error) {
         console.error('[useRealtimeChat] Error sending message:', error);
+        setSendError(`Failed to send: ${error.message}`);
+        // Remove optimistic message on error
+        setMessages(prev => prev.filter(m => m.id !== optimisticId));
+        return false;
       }
-      // Message will appear via realtime subscription
+
+      console.log('[useRealtimeChat] Message sent successfully:', data);
+      
+      // Replace optimistic message with real one (realtime will also fire, but we handle duplicates)
+      setMessages(prev => prev.map(m => 
+        m.id === optimisticId 
+          ? { ...m, id: data.id } 
+          : m
+      ));
+      
+      return true;
     } catch (err) {
       console.error('[useRealtimeChat] Exception sending message:', err);
+      setSendError('An unexpected error occurred');
+      setMessages(prev => prev.filter(m => m.id !== optimisticId));
+      return false;
     } finally {
       setSending(false);
     }
@@ -269,10 +335,17 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
               : { name: 'User' }
           };
 
-          setMessages(prev => [...prev, messageWithSender]);
+          // Avoid duplicates (in case optimistic update already added it)
+          setMessages(prev => {
+            const exists = prev.some(m => m.id === newMsg.id);
+            if (exists) return prev;
+            return [...prev, messageWithSender];
+          });
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('[useRealtimeChat] Subscription status:', status);
+      });
 
     return () => {
       console.log('[useRealtimeChat] Unsubscribing from thread:', selectedThread);
@@ -291,7 +364,10 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     loading,
     sending,
     fetchError,
+    sendError,
+    threadError,
     openThread,
-    sendMessage
+    sendMessage,
+    clearSendError: () => setSendError(null)
   };
 };
