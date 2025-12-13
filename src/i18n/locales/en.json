@@ -1830,6 +1830,8 @@
       "missing_info": "Missing user or business profile information",
       "complete_profile_title": "Complete Your Profile",
       "complete_profile_desc": "Complete your company profile to unlock all features and improve candidate matching.",
+      "profile_complete_title": "Profile Complete",
+      "profile_complete_desc": "Your company profile is fully set up. You're ready to find the best candidates.",
       "company_name": "Company Name",
       "website": "Website",
       "hr_contact": "HR Contact",
