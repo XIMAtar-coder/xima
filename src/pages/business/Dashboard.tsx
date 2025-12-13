@@ -8,7 +8,8 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, Target, CheckCircle, TrendingUp, Plus, ArrowRight, Briefcase } from 'lucide-react';
+import { Users, Target, CheckCircle, TrendingUp, Plus, ArrowRight, Briefcase, AlertCircle } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 import { Link } from 'react-router-dom';
 import { CandidateEngagement } from '@/components/business/CandidateEngagement';
 import { CompanyProfileCard } from '@/components/business/CompanyProfileCard';
@@ -234,6 +235,22 @@ const BusinessDashboard = () => {
     }
   ];
 
+  // Calculate profile completeness
+  const calculateProfileCompleteness = () => {
+    let score = 0;
+    const total = 4;
+    
+    if (businessProfile?.company_name) score++;
+    if (businessProfile?.website) score++;
+    if (businessProfile?.hr_contact_email) score++;
+    if (companyProfile) score++;
+    
+    return { score, total, percentage: Math.round((score / total) * 100) };
+  };
+  
+  const profileCompleteness = calculateProfileCompleteness();
+  const isProfileIncomplete = profileCompleteness.percentage < 100;
+
   return (
     <BusinessLayout>
       <div className="space-y-8">
@@ -244,6 +261,52 @@ const BusinessDashboard = () => {
             {t('business.dashboard.subtitle')}
           </p>
         </div>
+
+        {/* Profile Completeness Banner */}
+        {isProfileIncomplete && (
+          <Card className="border-amber-500/50 bg-amber-500/5">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-4">
+                <div className="p-2 rounded-full bg-amber-500/20">
+                  <AlertCircle className="h-5 w-5 text-amber-500" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-foreground mb-1">
+                    {t('business.dashboard.complete_profile_title')}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    {t('business.dashboard.complete_profile_desc')}
+                  </p>
+                  <div className="flex items-center gap-4 mb-3">
+                    <Progress value={profileCompleteness.percentage} className="flex-1 h-2" />
+                    <span className="text-sm font-medium text-foreground">
+                      {profileCompleteness.percentage}%
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                    <span className={businessProfile?.company_name ? 'text-green-500' : ''}>
+                      {businessProfile?.company_name ? '✓' : '○'} {t('business.dashboard.company_name')}
+                    </span>
+                    <span className={businessProfile?.website ? 'text-green-500' : ''}>
+                      {businessProfile?.website ? '✓' : '○'} {t('business.dashboard.website')}
+                    </span>
+                    <span className={businessProfile?.hr_contact_email ? 'text-green-500' : ''}>
+                      {businessProfile?.hr_contact_email ? '✓' : '○'} {t('business.dashboard.hr_contact')}
+                    </span>
+                    <span className={companyProfile ? 'text-green-500' : ''}>
+                      {companyProfile ? '✓' : '○'} {t('business.dashboard.ai_profile')}
+                    </span>
+                  </div>
+                </div>
+                <Link to="/business/settings">
+                  <Button variant="outline" size="sm" className="shrink-0">
+                    {t('business.dashboard.edit_profile')}
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Company Profile Section */}
         <CompanyProfileCard

@@ -25,7 +25,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'it', // Italian as default
+    fallbackLng: ['en', 'it'], // Fallback chain: try 'en' first, then 'it'
     debug: false,
     
     detection: {
@@ -36,6 +36,12 @@ i18n
     interpolation: {
       escapeValue: false,
     },
+    
+    // Handle language variants (e.g., en-GB -> en)
+    load: 'languageOnly',
+    
+    // Return key if translation not found (for debugging)
+    returnEmptyString: false,
   });
 
 export default i18n;

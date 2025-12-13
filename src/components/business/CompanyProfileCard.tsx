@@ -160,30 +160,46 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           )}
 
           {/* Pillar Vector */}
-          <div>
-            <h4 className="font-semibold text-sm text-muted-foreground mb-3 flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
-              {t('business.profile.pillar_vector')}
-            </h4>
-            <div className="space-y-3">
-              {Object.entries(profile.pillar_vector).map(([pillar, value]) => (
-                <div key={pillar}>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="capitalize text-foreground">
-                      {t(`pillars.${pillar === 'comp_power' ? 'computational' : pillar}`)}
-                    </span>
-                    <span className="font-medium text-[hsl(var(--xima-accent))]">{value}/100</span>
-                  </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[hsl(var(--xima-accent))] transition-all duration-500"
-                      style={{ width: `${value}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
+          {profile.pillar_vector && (
+            <div>
+              <h4 className="font-semibold text-sm text-muted-foreground mb-3 flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
+                {t('business.profile.pillar_vector')}
+              </h4>
+              <div className="space-y-3">
+                {Object.entries(profile.pillar_vector).map(([pillar, value]) => {
+                  // Map pillar keys to translation keys with safe fallbacks
+                  const pillarKeyMap: Record<string, string> = {
+                    'drive': 'drive',
+                    'comp_power': 'computational',
+                    'communication': 'communication',
+                    'creativity': 'creativity',
+                    'knowledge': 'knowledge'
+                  };
+                  const translationKey = pillarKeyMap[pillar] || pillar;
+                  // Get the pillar name safely - use .name subkey since pillars.* are objects
+                  const pillarName = t(`pillars.${translationKey}.name`, { defaultValue: pillar.replace('_', ' ') });
+                  
+                  return (
+                    <div key={pillar}>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="capitalize text-foreground">
+                          {pillarName}
+                        </span>
+                        <span className="font-medium text-[hsl(var(--xima-accent))]">{value as number}/100</span>
+                      </div>
+                      <div className="h-2 bg-muted rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[hsl(var(--xima-accent))] transition-all duration-500"
+                          style={{ width: `${value as number}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Recommended XIMAtars */}
           <div>
