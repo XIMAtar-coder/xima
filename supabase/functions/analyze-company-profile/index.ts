@@ -110,28 +110,46 @@ serve(async (req) => {
 
     const aiJson = await aiResp.json();
     const content = aiJson?.choices?.[0]?.message?.content || "{}";
+    console.log("AI raw response:", content);
 
     let analysis: any;
     try {
-      analysis = JSON.parse(safeJsonFromText(content));
-    } catch {
+      const jsonStr = safeJsonFromText(content);
+      console.log("Extracted JSON:", jsonStr);
+      analysis = JSON.parse(jsonStr);
+    } catch (parseErr) {
+      console.error("JSON parse error, using fallback:", parseErr);
       analysis = fallbackAnalysis(corpus);
     }
 
-    const pillar_vector = computePillars(analysis);
-    const recommended_ximatars = suggestXimatars(pillar_vector, analysis);
+    // Ensure all required fields have values
+    const normalizedAnalysis = {
+      summary: analysis.summary || "Company profile generated from website analysis.",
+      values: toArray(analysis.values).length > 0 ? toArray(analysis.values) : ["Innovation", "Quality"],
+      operating_style: analysis.operating_style || "Professional and results-oriented.",
+      communication_style: analysis.communication_style || "Clear and collaborative.",
+      ideal_traits: toArray(analysis.ideal_traits).length > 0 ? toArray(analysis.ideal_traits) : ["Problem-solving", "Teamwork"],
+      risk_areas: toArray(analysis.risk_areas),
+    };
+
+    console.log("Normalized analysis:", normalizedAnalysis);
+
+    const pillar_vector = computePillars(normalizedAnalysis);
+    const recommended_ximatars = suggestXimatars(pillar_vector, normalizedAnalysis);
+
+    console.log("Upserting profile for company_id:", company_id);
 
     // Ensure a row exists, then update with full analysis
     const { error: upsertErr } = await supabase.from("company_profiles").upsert(
       {
         company_id,
         website,
-        summary: analysis.summary || "",
-        values: toArray(analysis.values),
-        operating_style: analysis.operating_style || "",
-        communication_style: analysis.communication_style || "",
-        ideal_traits: toArray(analysis.ideal_traits),
-        risk_areas: toArray(analysis.risk_areas),
+        summary: normalizedAnalysis.summary,
+        values: normalizedAnalysis.values,
+        operating_style: normalizedAnalysis.operating_style,
+        communication_style: normalizedAnalysis.communication_style,
+        ideal_traits: normalizedAnalysis.ideal_traits,
+        risk_areas: normalizedAnalysis.risk_areas,
         pillar_vector,
         recommended_ximatars,
         updated_at: new Date().toISOString(),
@@ -144,6 +162,7 @@ serve(async (req) => {
       return json({ error: "Failed to store profile" }, 500);
     }
 
+    console.log("Profile saved successfully");
     return json({ success: true });
   } catch (e) {
     console.error("analyze_company_profile error:", e);
@@ -186,8 +205,29 @@ function toArray(x: any): string[] {
 }
 
 function safeJsonFromText(s: string) {
-  const m = s.match(/\{[\s\S]*\}$/);
+  // Try to extract JSON from markdown code blocks first
+  const codeBlockMatch = s.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (codeBlockMatch) {
+    const extracted = codeBlockMatch[1].trim();
+    const jsonMatch = extracted.match(/\{[\s\S]*\}/);
+    return jsonMatch ? jsonMatch[0] : "{}";
+  }
+  // Otherwise find any JSON object
+  const m = s.match(/\{[\s\S]*\}/);
   return m ? m[0] : "{}";
+}
+
+function fallbackAnalysis(corpus: string) {
+  // Extract basic info when AI parsing fails
+  const sentences = corpus.split(/[.!?]+/).filter(s => s.trim().length > 20);
+  return {
+    summary: sentences.slice(0, 2).join('. ').slice(0, 300) || "Company profile analysis pending.",
+    values: ["Innovation", "Quality", "Customer Focus"],
+    operating_style: "Results-oriented with focus on efficiency",
+    communication_style: "Professional and collaborative",
+    ideal_traits: ["Adaptability", "Problem-solving", "Team collaboration"],
+    risk_areas: ["Rapid scaling challenges", "Market competition"],
+  };
 }
 
 function computePillars(a: any) {
