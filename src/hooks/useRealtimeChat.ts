@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { RealtimeChannel } from '@supabase/supabase-js';
 
@@ -28,71 +28,102 @@ export interface ChatMessage {
   };
 }
 
+const MIN_SEARCH_LENGTH = 2;
+const DEBOUNCE_MS = 400;
+const MAX_RESULTS = 15;
+
 export const useRealtimeChat = (currentUserId: string | undefined) => {
   const [users, setUsers] = useState<ChatUser[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [selectedThread, setSelectedThread] = useState<string | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searching, setSearching] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const [sending, setSending] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [sendError, setSendError] = useState<string | null>(null);
   const [threadError, setThreadError] = useState<string | null>(null);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Fetch all users except current user
-  useEffect(() => {
-    const fetchUsers = async () => {
-      if (!currentUserId) {
-        console.log('[useRealtimeChat] No currentUserId provided, skipping user fetch');
-        setLoading(false);
-        return;
+  // Search users with debounce
+  const searchUsers = useCallback(async (query: string) => {
+    if (!currentUserId) return;
+    
+    // Clear results if query too short
+    if (query.length < MIN_SEARCH_LENGTH) {
+      setUsers([]);
+      setHasSearched(false);
+      return;
+    }
+
+    setSearching(true);
+    setFetchError(null);
+
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, user_id, name, full_name, email, avatar, ximatar')
+        .neq('user_id', currentUserId)
+        .or(`full_name.ilike.%${query}%,name.ilike.%${query}%,email.ilike.%${query}%`)
+        .limit(MAX_RESULTS);
+
+      if (error) {
+        console.error('[useRealtimeChat] Search error:', error);
+        setFetchError(`Search failed: ${error.message}`);
+        setUsers([]);
+      } else if (data) {
+        const mappedUsers = data
+          .filter(user => user.user_id)
+          .map((user) => ({
+            id: user.user_id,
+            name: user.full_name || user.name || user.email?.split('@')[0] || `User ${user.user_id?.slice(0, 6)}`,
+            email: user.email || '',
+            avatar: user.avatar,
+            ximatar: user.ximatar,
+            status: 'offline' as const,
+            unreadCount: 0
+          }));
+        setUsers(mappedUsers);
       }
-
-      setFetchError(null);
-      console.log('[useRealtimeChat] Fetching users for currentUserId:', currentUserId);
-
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('id, user_id, name, full_name, email, avatar, ximatar')
-          .neq('user_id', currentUserId);
-
-        if (error) {
-          console.error('[useRealtimeChat] Error fetching users:', error);
-          setFetchError(`Query failed: ${error.message}`);
-          setLoading(false);
-          return;
-        }
-
-        console.log('[useRealtimeChat] Raw data from profiles:', data);
-
-        if (data && data.length > 0) {
-          const mappedUsers = data
-            .filter(user => user.user_id) // Ensure user_id exists
-            .map((user) => ({
-              id: user.user_id,
-              name: user.full_name || user.name || user.email?.split('@')[0] || `User ${user.user_id?.slice(0, 6)}`,
-              email: user.email || '',
-              avatar: user.avatar,
-              ximatar: user.ximatar,
-              status: 'offline' as const,
-              unreadCount: 0
-            }));
-          console.log('[useRealtimeChat] Mapped users:', mappedUsers.length);
-          setUsers(mappedUsers);
-        } else {
-          console.log('[useRealtimeChat] No other users found in database');
-          setUsers([]);
-        }
-      } catch (err) {
-        console.error('[useRealtimeChat] Exception:', err);
-        setFetchError('An unexpected error occurred');
-      }
-      setLoading(false);
-    };
-
-    fetchUsers();
+      setHasSearched(true);
+    } catch (err) {
+      console.error('[useRealtimeChat] Search exception:', err);
+      setFetchError('Search failed unexpectedly');
+      setUsers([]);
+      setHasSearched(true);
+    } finally {
+      setSearching(false);
+    }
   }, [currentUserId]);
+
+  // Debounced search handler
+  const handleSearchChange = useCallback((query: string) => {
+    setSearchQuery(query);
+    
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    if (query.length < MIN_SEARCH_LENGTH) {
+      setUsers([]);
+      setHasSearched(false);
+      return;
+    }
+
+    debounceRef.current = setTimeout(() => {
+      searchUsers(query);
+    }, DEBOUNCE_MS);
+  }, [searchUsers]);
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
 
   // Fetch or create thread with selected user
   const openThread = useCallback(async (otherUserId: string) => {
@@ -361,13 +392,16 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     messages,
     selectedThread,
     selectedUser,
-    loading,
+    searchQuery,
+    searching,
+    hasSearched,
     sending,
     fetchError,
     sendError,
     threadError,
     openThread,
     sendMessage,
+    handleSearchChange,
     clearSendError: () => setSendError(null)
   };
 };
