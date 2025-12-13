@@ -125,95 +125,6 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     };
   }, []);
 
-  // Fetch or create thread with selected user
-  const openThread = useCallback(async (otherUserId: string) => {
-    if (!currentUserId) {
-      console.log('[useRealtimeChat] openThread: No currentUserId');
-      return;
-    }
-    
-    console.log('[useRealtimeChat] openThread called:', { currentUserId, otherUserId });
-    setSelectedUserId(otherUserId);
-    setMessages([]);
-    setThreadError(null);
-
-    try {
-      // Try to find existing thread between these two users
-      const { data: myThreads, error: threadsError } = await supabase
-        .from('chat_participants')
-        .select('thread_id')
-        .eq('user_id', currentUserId);
-
-      if (threadsError) {
-        console.error('[useRealtimeChat] Error fetching my threads:', threadsError);
-      }
-
-      console.log('[useRealtimeChat] My threads:', myThreads);
-
-      if (myThreads && myThreads.length > 0) {
-        for (const pt of myThreads) {
-          const { data: otherParticipant } = await supabase
-            .from('chat_participants')
-            .select('user_id')
-            .eq('thread_id', pt.thread_id)
-            .eq('user_id', otherUserId)
-            .maybeSingle();
-
-          if (otherParticipant) {
-            console.log('[useRealtimeChat] Found existing thread:', pt.thread_id);
-            setSelectedThread(pt.thread_id);
-            await fetchMessages(pt.thread_id);
-            return;
-          }
-        }
-      }
-
-      console.log('[useRealtimeChat] Creating new thread...');
-      
-      // Create new thread
-      const { data: newThread, error: threadError } = await supabase
-        .from('chat_threads')
-        .insert({
-          created_by: currentUserId,
-          is_group: false,
-          topic: 'direct'
-        })
-        .select()
-        .single();
-
-      if (threadError) {
-        console.error('[useRealtimeChat] Error creating thread:', threadError);
-        setThreadError(`Failed to create conversation: ${threadError.message}`);
-        return;
-      }
-
-      console.log('[useRealtimeChat] Created thread:', newThread);
-
-      if (newThread) {
-        // Add both participants
-        const { error: participantError } = await supabase
-          .from('chat_participants')
-          .insert([
-            { thread_id: newThread.id, user_id: currentUserId },
-            { thread_id: newThread.id, user_id: otherUserId }
-          ]);
-
-        if (participantError) {
-          console.error('[useRealtimeChat] Error adding participants:', participantError);
-          setThreadError(`Failed to add participants: ${participantError.message}`);
-          return;
-        }
-
-        console.log('[useRealtimeChat] Added participants successfully');
-        setSelectedThread(newThread.id);
-        setMessages([]);
-      }
-    } catch (err) {
-      console.error('[useRealtimeChat] Exception in openThread:', err);
-      setThreadError('An unexpected error occurred');
-    }
-  }, [currentUserId]);
-
   // Fetch messages for a thread
   const fetchMessages = useCallback(async (threadId: string) => {
     try {
@@ -258,6 +169,125 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     }
   }, []);
 
+  // Fetch or create thread with selected user
+  const openThread = useCallback(async (otherUserId: string) => {
+    if (!currentUserId) {
+      console.log('[useRealtimeChat] openThread: No currentUserId');
+      return;
+    }
+    
+    console.log('[useRealtimeChat] openThread called:', { currentUserId, otherUserId });
+    setSelectedUserId(otherUserId);
+    setMessages([]);
+    setThreadError(null);
+
+    try {
+      // First, get the profile.id for the current user (created_by references profiles.id, not auth.uid)
+      const { data: currentProfile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', currentUserId)
+        .maybeSingle();
+
+      if (profileError || !currentProfile) {
+        console.error('[useRealtimeChat] Error fetching current profile:', profileError);
+        setThreadError('Could not find your profile');
+        return;
+      }
+
+      const profileId = currentProfile.id;
+      console.log('[useRealtimeChat] Current profile id:', profileId);
+
+      // Try to find existing thread between these two users
+      const { data: myThreads, error: threadsError } = await supabase
+        .from('chat_participants')
+        .select('thread_id')
+        .eq('user_id', profileId);
+
+      if (threadsError) {
+        console.error('[useRealtimeChat] Error fetching my threads:', threadsError);
+      }
+
+      console.log('[useRealtimeChat] My threads:', myThreads);
+
+      // Get other user's profile.id
+      const { data: otherProfile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', otherUserId)
+        .maybeSingle();
+
+      const otherProfileId = otherProfile?.id;
+      console.log('[useRealtimeChat] Other profile id:', otherProfileId);
+
+      if (!otherProfileId) {
+        setThreadError('Could not find the other user');
+        return;
+      }
+
+      if (myThreads && myThreads.length > 0) {
+        for (const pt of myThreads) {
+          const { data: otherParticipant } = await supabase
+            .from('chat_participants')
+            .select('user_id')
+            .eq('thread_id', pt.thread_id)
+            .eq('user_id', otherProfileId)
+            .maybeSingle();
+
+          if (otherParticipant) {
+            console.log('[useRealtimeChat] Found existing thread:', pt.thread_id);
+            setSelectedThread(pt.thread_id);
+            await fetchMessages(pt.thread_id);
+            return;
+          }
+        }
+      }
+
+      console.log('[useRealtimeChat] Creating new thread...');
+      
+      // Create new thread with profile.id as created_by
+      const { data: newThread, error: threadError } = await supabase
+        .from('chat_threads')
+        .insert({
+          created_by: profileId,
+          is_group: false,
+          topic: 'direct'
+        })
+        .select()
+        .single();
+
+      if (threadError) {
+        console.error('[useRealtimeChat] Error creating thread:', threadError);
+        setThreadError(`Failed to create conversation: ${threadError.message}`);
+        return;
+      }
+
+      console.log('[useRealtimeChat] Created thread:', newThread);
+
+      if (newThread) {
+        // Add both participants using profile.id
+        const { error: participantError } = await supabase
+          .from('chat_participants')
+          .insert([
+            { thread_id: newThread.id, user_id: profileId },
+            { thread_id: newThread.id, user_id: otherProfileId }
+          ]);
+
+        if (participantError) {
+          console.error('[useRealtimeChat] Error adding participants:', participantError);
+          setThreadError(`Failed to add participants: ${participantError.message}`);
+          return;
+        }
+
+        console.log('[useRealtimeChat] Added participants successfully');
+        setSelectedThread(newThread.id);
+        setMessages([]);
+      }
+    } catch (err) {
+      console.error('[useRealtimeChat] Exception in openThread:', err);
+      setThreadError('An unexpected error occurred');
+    }
+  }, [currentUserId, fetchMessages]);
   // Send a message with optimistic update
   const sendMessage = useCallback(async (body: string): Promise<boolean> => {
     if (!selectedThread || !currentUserId || !body.trim()) {
