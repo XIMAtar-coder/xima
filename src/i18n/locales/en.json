@@ -1827,7 +1827,14 @@
       "generation_failed": "Generation Failed",
       "generation_failed_desc": "Failed to generate company profile",
       "error": "Error",
-      "missing_info": "Missing user or business profile information"
+      "missing_info": "Missing user or business profile information",
+      "complete_profile_title": "Complete Your Profile",
+      "complete_profile_desc": "Complete your company profile to unlock all features and improve candidate matching.",
+      "company_name": "Company Name",
+      "website": "Website",
+      "hr_contact": "HR Contact",
+      "ai_profile": "AI Profile",
+      "edit_profile": "Edit Profile"
     },
     "candidates": {
       "title": "Candidate Pool",

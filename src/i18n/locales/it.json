@@ -1748,7 +1748,14 @@
       "generation_failed": "Generazione Fallita",
       "generation_failed_desc": "Impossibile generare il profilo aziendale",
       "error": "Errore",
-      "missing_info": "Informazioni utente o profilo aziendale mancanti"
+      "missing_info": "Informazioni utente o profilo aziendale mancanti",
+      "complete_profile_title": "Completa il Tuo Profilo",
+      "complete_profile_desc": "Completa il profilo aziendale per sbloccare tutte le funzionalità e migliorare l'abbinamento dei candidati.",
+      "company_name": "Nome Azienda",
+      "website": "Sito Web",
+      "hr_contact": "Contatto HR",
+      "ai_profile": "Profilo IA",
+      "edit_profile": "Modifica Profilo"
     },
     "candidates": {
       "title": "Pool di Candidati",

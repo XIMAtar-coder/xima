@@ -1365,7 +1365,14 @@
       "generation_failed": "Generación Fallida",
       "generation_failed_desc": "No se pudo generar el perfil de empresa",
       "error": "Error",
-      "missing_info": "Falta información del usuario o perfil empresarial"
+      "missing_info": "Falta información del usuario o perfil empresarial",
+      "complete_profile_title": "Completa Tu Perfil",
+      "complete_profile_desc": "Completa tu perfil de empresa para desbloquear todas las funciones y mejorar la coincidencia de candidatos.",
+      "company_name": "Nombre de Empresa",
+      "website": "Sitio Web",
+      "hr_contact": "Contacto RR.HH.",
+      "ai_profile": "Perfil IA",
+      "edit_profile": "Editar Perfil"
     },
     "candidates": {
       "title": "Grupo de Candidatos",
