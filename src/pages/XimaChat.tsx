@@ -122,8 +122,8 @@ const XimaChat = () => {
 
   if (!user) {
     return (
-      <MainLayout>
-        <div className="container max-w-7xl mx-auto pt-6 flex items-center justify-center h-[80vh]">
+      <MainLayout fullHeight>
+        <div className="h-full flex items-center justify-center">
           <Card className="p-8 text-center">
             <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
             <p className="text-muted-foreground">{t('chat.login_required')}</p>
@@ -134,11 +134,12 @@ const XimaChat = () => {
   }
 
   return (
-    <MainLayout>
-      <div className="container max-w-7xl mx-auto pt-6 pb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 h-[calc(100vh-180px)] min-h-[500px]">
-          {/* Left Sidebar - User List */}
-          <Card className="lg:col-span-1 flex flex-col">
+    <MainLayout fullHeight>
+      <div className="h-full flex flex-col overflow-hidden">
+        <div className="flex-1 container max-w-7xl mx-auto px-4 py-4 overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 h-full">
+            {/* Left Sidebar - User List */}
+            <Card className="lg:col-span-1 flex flex-col min-h-0 overflow-hidden">
             <CardHeader className="pb-3 flex-shrink-0">
               <CardTitle className="flex items-center gap-2 text-base">
                 <MessageCircle className="h-5 w-5 text-primary" />
@@ -220,7 +221,7 @@ const XimaChat = () => {
           </Card>
 
           {/* Right Side - Chat Area */}
-          <Card className="lg:col-span-3 flex flex-col">
+          <Card className="lg:col-span-3 flex flex-col min-h-0 overflow-hidden">
             {selectedUser ? (
               <>
                 {/* Chat Header */}
@@ -250,108 +251,110 @@ const XimaChat = () => {
                 </CardHeader>
 
                 {/* Chat Messages */}
-                <CardContent className="flex-1 p-0 overflow-hidden">
-                  <ScrollArea className="h-full p-4">
-                    {threadError ? (
-                      <div className="flex items-center justify-center h-full text-center">
-                        <div>
-                          <AlertCircle className="h-12 w-12 mx-auto mb-3 text-destructive/50" />
-                          <p className="text-destructive">{t('chat.connection_error')}</p>
-                          <p className="text-sm text-muted-foreground mt-1">{threadError}</p>
+                <CardContent className="flex-1 p-0 min-h-0 overflow-hidden">
+                  <ScrollArea className="h-full">
+                    <div className="p-4">
+                      {threadError ? (
+                        <div className="flex items-center justify-center h-full text-center py-12">
+                          <div>
+                            <AlertCircle className="h-12 w-12 mx-auto mb-3 text-destructive/50" />
+                            <p className="text-destructive">{t('chat.connection_error')}</p>
+                            <p className="text-sm text-muted-foreground mt-1">{threadError}</p>
+                          </div>
                         </div>
-                      </div>
-                    ) : !selectedThread ? (
-                      <div className="flex items-center justify-center h-full text-center">
-                        <div>
-                          <Loader2 className="h-8 w-8 mx-auto mb-3 text-primary animate-spin" />
-                          <p className="text-muted-foreground">{t('chat.connecting')}</p>
+                      ) : !selectedThread ? (
+                        <div className="flex items-center justify-center h-full text-center py-12">
+                          <div>
+                            <Loader2 className="h-8 w-8 mx-auto mb-3 text-primary animate-spin" />
+                            <p className="text-muted-foreground">{t('chat.connecting')}</p>
+                          </div>
                         </div>
-                      </div>
-                    ) : messages.length === 0 ? (
-                      <div className="flex items-center justify-center h-full text-center">
-                        <div>
-                          <MessageCircle className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
-                          <p className="text-muted-foreground">{t('chat.no_messages')}</p>
-                          <p className="text-sm text-muted-foreground/70 mt-1">{t('chat.start_conversation')}</p>
+                      ) : messages.length === 0 ? (
+                        <div className="flex items-center justify-center h-full text-center py-12">
+                          <div>
+                            <MessageCircle className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
+                            <p className="text-muted-foreground">{t('chat.no_messages')}</p>
+                            <p className="text-sm text-muted-foreground/70 mt-1">{t('chat.start_conversation')}</p>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        {messages.map((msg, idx) => {
-                          const isSent = msg.sender_id === user?.id;
-                          const showTimestamp = idx === 0 || 
-                            new Date(msg.created_at).getTime() - new Date(messages[idx-1].created_at).getTime() > 300000;
-                          
-                          return (
-                            <React.Fragment key={msg.id}>
-                              {showTimestamp && (
-                                <div className="flex justify-center">
-                                  <span className="text-xs text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">
-                                    {formatMessageTime(msg.created_at)}
-                                  </span>
-                                </div>
-                              )}
-                              <div
-                                className={cn(
-                                  "flex animate-in fade-in-0 slide-in-from-bottom-2 duration-300",
-                                  isSent ? "justify-end" : "justify-start"
+                      ) : (
+                        <div className="space-y-4">
+                          {messages.map((msg, idx) => {
+                            const isSent = msg.sender_id === user?.id;
+                            const showTimestamp = idx === 0 || 
+                              new Date(msg.created_at).getTime() - new Date(messages[idx-1].created_at).getTime() > 300000;
+                            
+                            return (
+                              <React.Fragment key={msg.id}>
+                                {showTimestamp && (
+                                  <div className="flex justify-center">
+                                    <span className="text-xs text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">
+                                      {formatMessageTime(msg.created_at)}
+                                    </span>
+                                  </div>
                                 )}
-                              >
-                                <div className={cn(
-                                  "flex items-end gap-2 max-w-[75%]",
-                                  isSent ? "flex-row-reverse" : ""
-                                )}>
-                                  {!isSent && (
-                                    <Avatar className="h-7 w-7 flex-shrink-0">
-                                      {selectedUser.ximatar ? (
-                                        <AvatarImage 
-                                          src={getXimatarImage(selectedUser.ximatar)} 
-                                          alt={msg.sender?.name} 
-                                        />
-                                      ) : null}
-                                      <AvatarFallback className="text-xs bg-muted">
-                                        {getInitials(msg.sender?.name || 'U')}
-                                      </AvatarFallback>
-                                    </Avatar>
+                                <div
+                                  className={cn(
+                                    "flex animate-in fade-in-0 slide-in-from-bottom-2 duration-300",
+                                    isSent ? "justify-end" : "justify-start"
                                   )}
-                                  <div
-                                    className={cn(
-                                      "p-3 rounded-2xl",
-                                      isSent
-                                        ? "bg-primary text-primary-foreground rounded-br-md"
-                                        : "bg-muted rounded-bl-md"
+                                >
+                                  <div className={cn(
+                                    "flex items-end gap-2 max-w-[75%]",
+                                    isSent ? "flex-row-reverse" : ""
+                                  )}>
+                                    {!isSent && (
+                                      <Avatar className="h-7 w-7 flex-shrink-0">
+                                        {selectedUser.ximatar ? (
+                                          <AvatarImage 
+                                            src={getXimatarImage(selectedUser.ximatar)} 
+                                            alt={msg.sender?.name} 
+                                          />
+                                        ) : null}
+                                        <AvatarFallback className="text-xs bg-muted">
+                                          {getInitials(msg.sender?.name || 'U')}
+                                        </AvatarFallback>
+                                      </Avatar>
                                     )}
-                                  >
-                                    <p className="text-sm whitespace-pre-wrap break-words">{msg.body}</p>
-                                    <div className={cn(
-                                      "flex items-center gap-1 mt-1",
-                                      isSent ? "justify-end" : "justify-start"
-                                    )}>
-                                      <span className={cn(
-                                        "text-[10px]",
-                                        isSent ? "text-primary-foreground/70" : "text-muted-foreground"
-                                      )}>
-                                        {new Date(msg.created_at).toLocaleTimeString([], { 
-                                          hour: '2-digit', 
-                                          minute: '2-digit' 
-                                        })}
-                                      </span>
-                                      {isSent && (
-                                        <CheckCheck className={cn(
-                                          "h-3 w-3",
-                                          "text-primary-foreground/70"
-                                        )} />
+                                    <div
+                                      className={cn(
+                                        "p-3 rounded-2xl",
+                                        isSent
+                                          ? "bg-primary text-primary-foreground rounded-br-md"
+                                          : "bg-muted rounded-bl-md"
                                       )}
+                                    >
+                                      <p className="text-sm whitespace-pre-wrap break-words">{msg.body}</p>
+                                      <div className={cn(
+                                        "flex items-center gap-1 mt-1",
+                                        isSent ? "justify-end" : "justify-start"
+                                      )}>
+                                        <span className={cn(
+                                          "text-[10px]",
+                                          isSent ? "text-primary-foreground/70" : "text-muted-foreground"
+                                        )}>
+                                          {new Date(msg.created_at).toLocaleTimeString([], { 
+                                            hour: '2-digit', 
+                                            minute: '2-digit' 
+                                          })}
+                                        </span>
+                                        {isSent && (
+                                          <CheckCheck className={cn(
+                                            "h-3 w-3",
+                                            "text-primary-foreground/70"
+                                          )} />
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                            </React.Fragment>
-                          );
-                        })}
-                        <div ref={messagesEndRef} />
-                      </div>
-                    )}
+                              </React.Fragment>
+                            );
+                          })}
+                          <div ref={messagesEndRef} />
+                        </div>
+                      )}
+                    </div>
                   </ScrollArea>
                 </CardContent>
 
@@ -396,6 +399,7 @@ const XimaChat = () => {
               </CardContent>
             )}
           </Card>
+          </div>
         </div>
       </div>
     </MainLayout>
