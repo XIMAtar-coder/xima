@@ -1894,7 +1894,8 @@
       "pillar_vector": "Company Pillar Profile",
       "recommended_ximatars": "Recommended XIMAtars",
       "recommended_ximatars_description": "These XIMAtars are most likely to thrive in your organization based on your company profile.",
-      "alignment_score": "Alignment Score"
+      "alignment_score": "Alignment Score",
+      "not_generated": "Not generated yet. Click 'Regenerate Profile' to analyze your company website."
     }
   },
   "guide": {

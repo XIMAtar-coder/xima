@@ -1815,7 +1815,8 @@
       "pillar_vector": "Profilo dei Pilastri Aziendali",
       "recommended_ximatars": "XIMAtar Consigliati",
       "recommended_ximatars_description": "Questi XIMAtar hanno maggiori probabilità di prosperare nella tua organizzazione in base al tuo profilo aziendale.",
-      "alignment_score": "Indice di Allineamento"
+      "alignment_score": "Indice di Allineamento",
+      "not_generated": "Non ancora generato. Clicca 'Rigenera Profilo' per analizzare il sito web della tua azienda."
     }
   },
   "guide": {

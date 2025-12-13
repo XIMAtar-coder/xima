@@ -1432,7 +1432,8 @@
       "pillar_vector": "Perfil de Pilares de la Empresa",
       "recommended_ximatars": "XIMAtars Recomendados",
       "recommended_ximatars_description": "Estos XIMAtars tienen más probabilidades de prosperar en tu organización según tu perfil empresarial.",
-      "alignment_score": "Puntuación de Alineación"
+      "alignment_score": "Puntuación de Alineación",
+      "not_generated": "Aún no generado. Haz clic en 'Regenerar Perfil' para analizar el sitio web de tu empresa."
     }
   },
   "guide": {

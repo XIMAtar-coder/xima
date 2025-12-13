@@ -98,7 +98,11 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
             <h4 className="font-semibold text-sm text-muted-foreground mb-2">
               {t('business.profile.summary')}
             </h4>
-            <p className="text-foreground leading-relaxed">{profile.summary}</p>
+            {profile.summary ? (
+              <p className="text-foreground leading-relaxed">{profile.summary}</p>
+            ) : (
+              <p className="text-muted-foreground italic">{t('business.profile.not_generated')}</p>
+            )}
           </div>
 
           {/* Values */}
@@ -106,13 +110,17 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
             <h4 className="font-semibold text-sm text-muted-foreground mb-2">
               {t('business.profile.values')}
             </h4>
-            <div className="flex flex-wrap gap-2">
-              {(profile.values || []).map((value, idx) => (
-                <Badge key={idx} variant="secondary" className="bg-[hsl(var(--xima-accent))]/10 text-[hsl(var(--xima-accent))]">
-                  {value}
-                </Badge>
-              ))}
-            </div>
+            {(profile.values || []).length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {profile.values.map((value, idx) => (
+                  <Badge key={idx} variant="secondary" className="bg-[hsl(var(--xima-accent))]/10 text-[hsl(var(--xima-accent))]">
+                    {value}
+                  </Badge>
+                ))}
+              </div>
+            ) : (
+              <p className="text-muted-foreground italic">{t('business.profile.not_generated')}</p>
+            )}
           </div>
 
           {/* Operating & Communication Style */}
@@ -121,13 +129,21 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
               <h4 className="font-semibold text-sm text-muted-foreground mb-2">
                 {t('business.profile.operating_style')}
               </h4>
-              <p className="text-foreground">{profile.operating_style}</p>
+              {profile.operating_style ? (
+                <p className="text-foreground">{profile.operating_style}</p>
+              ) : (
+                <p className="text-muted-foreground italic">{t('business.profile.not_generated')}</p>
+              )}
             </div>
             <div>
               <h4 className="font-semibold text-sm text-muted-foreground mb-2">
                 {t('business.profile.communication_style')}
               </h4>
-              <p className="text-foreground">{profile.communication_style}</p>
+              {profile.communication_style ? (
+                <p className="text-foreground">{profile.communication_style}</p>
+              ) : (
+                <p className="text-muted-foreground italic">{t('business.profile.not_generated')}</p>
+              )}
             </div>
           </div>
 
