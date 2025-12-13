@@ -888,7 +888,11 @@
       "message_sent": "Message sent",
       "new_message": "New message",
       "connecting": "Connecting...",
-      "connection_error": "Connection Error"
+      "connection_error": "Connection Error",
+      "recent": "Recent",
+      "search_results": "Search Results",
+      "loading_conversations": "Loading conversations...",
+      "no_conversations": "No conversations yet"
     },
   "development": {
     "title": "Development Plan",

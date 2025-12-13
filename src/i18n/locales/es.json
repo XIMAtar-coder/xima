@@ -1271,7 +1271,11 @@
     "message_sent": "Mensaje enviado",
     "new_message": "Nuevo mensaje",
     "connecting": "Conectando...",
-    "connection_error": "Error de conexión"
+    "connection_error": "Error de conexión",
+    "recent": "Recientes",
+    "search_results": "Resultados de búsqueda",
+    "loading_conversations": "Cargando conversaciones...",
+    "no_conversations": "Sin conversaciones"
   },
   "errors": {
     "generic": "Ocurrió un error inesperado",

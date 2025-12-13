@@ -32,9 +32,18 @@ const MIN_SEARCH_LENGTH = 2;
 const DEBOUNCE_MS = 400;
 const MAX_RESULTS = 15;
 
+export interface RecentThread {
+  thread_id: string;
+  other_user: ChatUser;
+  last_message?: string;
+  last_message_time?: string;
+}
+
 export const useRealtimeChat = (currentUserId: string | undefined) => {
   const [users, setUsers] = useState<ChatUser[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [recentThreads, setRecentThreads] = useState<RecentThread[]>([]);
+  const [loadingThreads, setLoadingThreads] = useState(false);
   const [selectedThread, setSelectedThread] = useState<string | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,6 +80,102 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
 
     fetchProfileId();
   }, [currentUserId]);
+
+  // Fetch recent conversation threads
+  const fetchRecentThreads = useCallback(async () => {
+    if (!currentProfileId) return;
+    
+    setLoadingThreads(true);
+    console.log('[useRealtimeChat] Fetching recent threads for profile:', currentProfileId);
+
+    try {
+      // Get threads the user participates in
+      const { data: myParticipations, error: partError } = await supabase
+        .from('chat_participants')
+        .select('thread_id')
+        .eq('user_id', currentProfileId);
+
+      if (partError) {
+        console.error('[useRealtimeChat] Error fetching participations:', partError);
+        return;
+      }
+
+      if (!myParticipations || myParticipations.length === 0) {
+        setRecentThreads([]);
+        return;
+      }
+
+      const threadIds = myParticipations.map(p => p.thread_id);
+
+      // For each thread, get the other participant
+      const threads: RecentThread[] = [];
+
+      for (const threadId of threadIds) {
+        // Get the other participant
+        const { data: otherParticipant } = await supabase
+          .from('chat_participants')
+          .select('user_id')
+          .eq('thread_id', threadId)
+          .neq('user_id', currentProfileId)
+          .maybeSingle();
+
+        if (!otherParticipant) continue;
+
+        // Get user profile info
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id, user_id, name, full_name, email, avatar, ximatar')
+          .eq('id', otherParticipant.user_id)
+          .maybeSingle();
+
+        if (!profile) continue;
+
+        // Get last message
+        const { data: lastMsg } = await supabase
+          .from('chat_messages')
+          .select('body, created_at')
+          .eq('thread_id', threadId)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        threads.push({
+          thread_id: threadId,
+          other_user: {
+            id: profile.user_id || profile.id,
+            name: profile.full_name || profile.name || profile.email?.split('@')[0] || 'User',
+            email: profile.email || '',
+            avatar: profile.avatar,
+            ximatar: profile.ximatar,
+            status: 'offline'
+          },
+          last_message: lastMsg?.body,
+          last_message_time: lastMsg?.created_at
+        });
+      }
+
+      // Sort by last message time (newest first)
+      threads.sort((a, b) => {
+        if (!a.last_message_time) return 1;
+        if (!b.last_message_time) return -1;
+        return new Date(b.last_message_time).getTime() - new Date(a.last_message_time).getTime();
+      });
+
+      setRecentThreads(threads);
+      console.log('[useRealtimeChat] Recent threads:', threads);
+    } catch (err) {
+      console.error('[useRealtimeChat] Exception fetching threads:', err);
+    } finally {
+      setLoadingThreads(false);
+    }
+  }, [currentProfileId]);
+
+  // Fetch recent threads when profile id is available
+  useEffect(() => {
+    if (currentProfileId) {
+      fetchRecentThreads();
+    }
+  }, [currentProfileId, fetchRecentThreads]);
 
   // Search users with debounce
   const searchUsers = useCallback(async (query: string) => {
@@ -440,12 +545,25 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     };
   }, [selectedThread]);
 
-  // Get selected user
-  const selectedUser = users.find(u => u.id === selectedUserId) || null;
+  // Get selected user - check both search results and recent threads
+  const selectedUser = users.find(u => u.id === selectedUserId) 
+    || recentThreads.find(t => t.other_user.id === selectedUserId)?.other_user
+    || null;
+
+  // Open an existing thread directly (from recent threads)
+  const openExistingThread = useCallback(async (threadId: string, otherUser: ChatUser) => {
+    console.log('[useRealtimeChat] Opening existing thread:', threadId);
+    setSelectedUserId(otherUser.id);
+    setSelectedThread(threadId);
+    setThreadError(null);
+    await fetchMessages(threadId);
+  }, [fetchMessages]);
 
   return {
     users,
     messages,
+    recentThreads,
+    loadingThreads,
     selectedThread,
     selectedUser,
     searchQuery,
@@ -456,8 +574,10 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     sendError,
     threadError,
     openThread,
+    openExistingThread,
     sendMessage,
     handleSearchChange,
-    clearSendError: () => setSendError(null)
+    clearSendError: () => setSendError(null),
+    refreshThreads: fetchRecentThreads
   };
 };
