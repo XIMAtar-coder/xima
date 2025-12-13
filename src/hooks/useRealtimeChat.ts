@@ -35,14 +35,19 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   // Fetch all users except current user
   useEffect(() => {
     const fetchUsers = async () => {
       if (!currentUserId) {
+        console.log('[useRealtimeChat] No currentUserId provided, skipping user fetch');
         setLoading(false);
         return;
       }
+
+      setFetchError(null);
+      console.log('[useRealtimeChat] Fetching users for currentUserId:', currentUserId);
 
       try {
         const { data, error } = await supabase
@@ -52,24 +57,34 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
 
         if (error) {
           console.error('[useRealtimeChat] Error fetching users:', error);
+          setFetchError(`Query failed: ${error.message}`);
           setLoading(false);
           return;
         }
 
-        if (data) {
-          const mappedUsers = data.map((user) => ({
-            id: user.user_id,
-            name: user.full_name || user.name || user.email?.split('@')[0] || 'User',
-            email: user.email || '',
-            avatar: user.avatar,
-            ximatar: user.ximatar,
-            status: 'offline' as const,
-            unreadCount: 0
-          }));
+        console.log('[useRealtimeChat] Raw data from profiles:', data);
+
+        if (data && data.length > 0) {
+          const mappedUsers = data
+            .filter(user => user.user_id) // Ensure user_id exists
+            .map((user) => ({
+              id: user.user_id,
+              name: user.full_name || user.name || user.email?.split('@')[0] || `User ${user.user_id?.slice(0, 6)}`,
+              email: user.email || '',
+              avatar: user.avatar,
+              ximatar: user.ximatar,
+              status: 'offline' as const,
+              unreadCount: 0
+            }));
+          console.log('[useRealtimeChat] Mapped users:', mappedUsers.length);
           setUsers(mappedUsers);
+        } else {
+          console.log('[useRealtimeChat] No other users found in database');
+          setUsers([]);
         }
       } catch (err) {
         console.error('[useRealtimeChat] Exception:', err);
+        setFetchError('An unexpected error occurred');
       }
       setLoading(false);
     };
@@ -275,6 +290,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     selectedUser,
     loading,
     sending,
+    fetchError,
     openThread,
     sendMessage
   };
