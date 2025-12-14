@@ -132,33 +132,46 @@ const BusinessCandidates = () => {
     if (goalId && shortlist.length > 0) {
       const loadShortlistAndInvitations = async () => {
         // Use the new business_shortlists table
-        const { data: shortlistedData } = await supabase
+        const { data: shortlistedData, error: shortlistErr } = await supabase
           .from('business_shortlists')
           .select('candidate_profile_id')
           .eq('business_id', user?.id)
           .eq('hiring_goal_id', goalId);
 
         // Also load existing invitations
-        const { data: invitationsData } = await supabase
+        const { data: invitationsData, error: invitationsErr } = await supabase
           .from('challenge_invitations')
           .select('candidate_profile_id, status')
           .eq('business_id', user?.id)
           .eq('hiring_goal_id', goalId);
 
+        // Handle invitation query errors - don't mark anyone as invited
+        if (invitationsErr) {
+          console.error('Error loading invitations:', invitationsErr);
+          toast({
+            title: t('common.error'),
+            description: 'Failed to load invitation statuses',
+            variant: 'destructive'
+          });
+        }
+
         const shortlistedIds = new Set(shortlistedData?.map(s => s.candidate_profile_id) || []);
         setShortlistedCount(shortlistedIds.size);
 
-        // Build invitation status map
+        // Build invitation status map keyed by profile_id (candidate_profile_id)
         const invStatusMap: Record<string, 'none' | 'invited' | 'accepted' | 'declined'> = {};
-        (invitationsData || []).forEach(inv => {
-          invStatusMap[inv.candidate_profile_id] = inv.status as any;
-        });
+        if (!invitationsErr) {
+          (invitationsData || []).forEach(inv => {
+            invStatusMap[inv.candidate_profile_id] = inv.status as any;
+          });
+        }
         setInvitationStatuses(invStatusMap);
 
+        // Map using profile_id for invitation status lookup
         const candidatesWithStatus = shortlist.map(c => ({
           ...c,
-          isShortlisted: shortlistedIds.has(c.user_id),
-          invitationStatus: invStatusMap[c.user_id] || 'none'
+          isShortlisted: shortlistedIds.has(c.profile_id),
+          invitationStatus: invStatusMap[c.profile_id] || 'none'
         }));
 
         setCandidates(candidatesWithStatus);
@@ -166,7 +179,7 @@ const BusinessCandidates = () => {
       };
       loadShortlistAndInvitations();
     }
-  }, [goalId, shortlist, user?.id]);
+  }, [goalId, shortlist, user?.id, t, toast]);
 
   const loadCandidates = async () => {
     try {
@@ -340,19 +353,19 @@ const BusinessCandidates = () => {
     setVisibleCount(prev => prev + PAGE_SIZE);
   };
 
-  // Handle invite to challenge
-  const handleInviteToChallenge = async (candidateId: string) => {
+  // Handle invite to challenge - candidateProfileId is profiles.id
+  const handleInviteToChallenge = async (candidateProfileId: string) => {
     if (!goalId || !user?.id) return;
     
-    // Set loading state
-    setInvitationStatuses(prev => ({ ...prev, [candidateId]: 'loading' }));
+    // Set loading state for THIS candidate only (keyed by profile_id)
+    setInvitationStatuses(prev => ({ ...prev, [candidateProfileId]: 'loading' }));
     
     try {
-      // Get candidate email from profiles
+      // Get candidate email from profiles using profile_id
       const { data: profile } = await supabase
         .from('profiles')
         .select('id, email, full_name, name')
-        .eq('user_id', candidateId)
+        .eq('id', candidateProfileId)
         .single();
 
       if (!profile) throw new Error('Candidate profile not found');
@@ -366,7 +379,7 @@ const BusinessCandidates = () => {
         .insert({
           business_id: user.id,
           hiring_goal_id: goalId,
-          candidate_profile_id: profile.id
+          candidate_profile_id: candidateProfileId
         })
         .select('id, invite_token')
         .single();
@@ -379,7 +392,7 @@ const BusinessCandidates = () => {
             description: t('business.shortlist.already_invited_desc'),
             variant: 'default'
           });
-          setInvitationStatuses(prev => ({ ...prev, [candidateId]: 'invited' }));
+          setInvitationStatuses(prev => ({ ...prev, [candidateProfileId]: 'invited' }));
           return;
         }
         throw invError;
@@ -404,15 +417,15 @@ const BusinessCandidates = () => {
         }
       }
 
-      // Update local state
-      setInvitationStatuses(prev => ({ ...prev, [candidateId]: 'invited' }));
+      // Update local state - keyed by profile_id
+      setInvitationStatuses(prev => ({ ...prev, [candidateProfileId]: 'invited' }));
       
-      // Update candidate in list
+      // Update candidate in list - match by profile_id
       setCandidates(prev => prev.map(c => 
-        c.user_id === candidateId ? { ...c, invitationStatus: 'invited' as const } : c
+        c.profile_id === candidateProfileId ? { ...c, invitationStatus: 'invited' as const } : c
       ));
       setFilteredCandidates(prev => prev.map(c => 
-        c.user_id === candidateId ? { ...c, invitationStatus: 'invited' as const } : c
+        c.profile_id === candidateProfileId ? { ...c, invitationStatus: 'invited' as const } : c
       ));
 
       toast({
@@ -421,7 +434,8 @@ const BusinessCandidates = () => {
       });
     } catch (err: any) {
       console.error('Error sending invitation:', err);
-      setInvitationStatuses(prev => ({ ...prev, [candidateId]: 'none' }));
+      // Reset to 'none' on error - keyed by profile_id
+      setInvitationStatuses(prev => ({ ...prev, [candidateProfileId]: 'none' }));
       toast({
         title: t('common.error'),
         description: err.message,
@@ -701,7 +715,7 @@ const BusinessCandidates = () => {
                 isSelected={selectedCandidates.includes(candidate.user_id)}
                 showSaveButton={!!goalId}
                 showDebug={showDebug}
-                invitationStatus={invitationStatuses[candidate.user_id] || candidate.invitationStatus || 'none'}
+                invitationStatus={invitationStatuses[candidate.profile_id] || candidate.invitationStatus || 'none'}
                 onSelect={async (checked) => {
                   if (checked) {
                     setSelectedCandidates([...selectedCandidates, candidate.user_id]);
@@ -719,7 +733,7 @@ const BusinessCandidates = () => {
                   }
                 }}
                 onToggleShortlist={() => handleToggleShortlist(candidate.user_id)}
-                onInviteToChallenge={() => handleInviteToChallenge(candidate.user_id)}
+                onInviteToChallenge={() => handleInviteToChallenge(candidate.profile_id)}
               />
               {/* Match reasons for shortlist view */}
               {goalId && candidate.matchReasons && candidate.matchReasons.length > 0 && (
