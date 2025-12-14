@@ -31,7 +31,7 @@ const BusinessDashboard = () => {
   const [companyProfile, setCompanyProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [businessProfile, setBusinessProfile] = useState<any>(null);
-  const [hasCompletedHiringGoal, setHasCompletedHiringGoal] = useState(false);
+  const [hiringGoalStatus, setHiringGoalStatus] = useState<'none' | 'draft' | 'completed'>('none');
   const [hiringGoalLoading, setHiringGoalLoading] = useState(true);
 
   useEffect(() => {
@@ -63,7 +63,8 @@ const BusinessDashboard = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       
-      const { data } = await supabase
+      // First check for completed goals
+      const { data: completedData } = await supabase
         .from('hiring_goal_drafts')
         .select('status')
         .eq('business_id', user.id)
@@ -71,9 +72,29 @@ const BusinessDashboard = () => {
         .limit(1)
         .maybeSingle();
       
-      setHasCompletedHiringGoal(!!data);
+      if (completedData) {
+        setHiringGoalStatus('completed');
+        return;
+      }
+      
+      // Then check for draft goals
+      const { data: draftData } = await supabase
+        .from('hiring_goal_drafts')
+        .select('status')
+        .eq('business_id', user.id)
+        .eq('status', 'draft')
+        .limit(1)
+        .maybeSingle();
+      
+      if (draftData) {
+        setHiringGoalStatus('draft');
+      } else {
+        setHiringGoalStatus('none');
+      }
     } catch (err) {
       console.error('Error loading hiring goal status:', err);
+      // Fallback: show card if we can't determine status
+      setHiringGoalStatus('none');
     } finally {
       setHiringGoalLoading(false);
     }
@@ -346,9 +367,9 @@ const BusinessDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Hiring Goal Card - Show for first-time/empty-state */}
-        {!hiringGoalLoading && !hasCompletedHiringGoal && (
-          <HiringGoalCard onComplete={() => setHasCompletedHiringGoal(true)} />
+        {/* Hiring Goal Card - Show for first-time (none) or draft state */}
+        {!hiringGoalLoading && hiringGoalStatus !== 'completed' && (
+          <HiringGoalCard onComplete={() => setHiringGoalStatus('completed')} />
         )}
 
         {/* Company Profile Section */}
