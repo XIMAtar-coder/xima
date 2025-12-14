@@ -18,6 +18,7 @@ import { AssessmentOverviewCard } from '@/components/profile/AssessmentOverviewC
 import { OpenAnswerList } from '@/components/profile/OpenAnswerList';
 import { CVAnalysisCard } from '@/components/profile/CVAnalysisCard';
 import { MyOpportunitiesSection } from '@/components/opportunities/MyOpportunitiesSection';
+import { ChallengeInvitationBanner } from '@/components/ChallengeInvitationBanner';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -154,6 +155,9 @@ const Profile = () => {
   return (
     <MainLayout>
       <div className="container max-w-7xl mx-auto py-8 space-y-8 watermark-bg animate-[slide-up_0.4s_ease-out]">
+        {/* Challenge Invitation Banner */}
+        <ChallengeInvitationBanner />
+
         {/* Header with Full Name */}
         <div className="space-y-4 relative z-10">
           <div className="flex items-center justify-between">
