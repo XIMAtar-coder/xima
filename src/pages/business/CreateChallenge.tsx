@@ -1,244 +1,488 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import { useUser } from '@/context/UserContext';
+import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Target, Calendar, TrendingUp, Link as LinkIcon } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { 
+  ArrowLeft, Sparkles, Loader2, Rocket, Save, Eye, Clock, 
+  Target, CheckCircle2, Wand2, AlertCircle
+} from 'lucide-react';
+
+interface HiringGoal {
+  id: string;
+  role_title: string | null;
+  task_description: string | null;
+  experience_level: string | null;
+  work_model: string | null;
+  country: string | null;
+}
 
 const CreateChallenge = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const goalId = searchParams.get('goal');
   const { t } = useTranslation();
   const { toast } = useToast();
-  const { user } = useUser();
-  const [loading, setLoading] = useState(false);
-  
-  const selectedCandidates = (location.state as any)?.selectedCandidates || [];
+  const { user, isAuthenticated } = useUser();
+  const { isBusiness, loading: businessLoading } = useBusinessRole();
 
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    targetSkills: '',
-    deadline: '',
-    difficulty: 3,
-    attachmentUrl: ''
-  });
+  const [hiringGoal, setHiringGoal] = useState<HiringGoal | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  // Form state
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [successCriteria, setSuccessCriteria] = useState<string[]>(['', '', '']);
+  const [timeEstimate, setTimeEstimate] = useState(45);
 
-    try {
-      // Create the challenge
-      const { data: challenge, error: challengeError } = await supabase
-        .from('business_challenges')
-        .insert({
-          business_id: user?.id,
-          title: formData.title,
-          description: formData.description,
-          target_skills: formData.targetSkills.split(',').map(s => s.trim()).filter(Boolean),
-          deadline: formData.deadline ? new Date(formData.deadline).toISOString() : null,
-          difficulty: formData.difficulty,
-          attachment_url: formData.attachmentUrl || null
-        })
-        .select()
+  // Load hiring goal
+  useEffect(() => {
+    if (!isAuthenticated || (businessLoading === false && !isBusiness)) {
+      navigate('/business/login');
+      return;
+    }
+
+    if (!goalId) {
+      navigate('/business/dashboard');
+      return;
+    }
+
+    const fetchGoal = async () => {
+      const { data, error } = await supabase
+        .from('hiring_goal_drafts')
+        .select('id, role_title, task_description, experience_level, work_model, country')
+        .eq('id', goalId)
+        .eq('business_id', user?.id)
         .single();
 
-      if (challengeError) throw challengeError;
-
-      // Assign to selected candidates
-      if (selectedCandidates.length > 0 && challenge) {
-        const assignments = selectedCandidates.map((candidateId: string) => ({
-          candidate_id: candidateId,
-          challenge_id: challenge.id,
-          status: 'pending'
-        }));
-
-        const { error: assignError } = await supabase
-          .from('candidate_challenges')
-          .insert(assignments);
-
-        if (assignError) throw assignError;
+      if (error || !data) {
+        toast({
+          title: t('common.error'),
+          description: 'Hiring goal not found',
+          variant: 'destructive'
+        });
+        navigate('/business/dashboard');
+        return;
       }
 
+      setHiringGoal(data);
+      if (data.role_title) {
+        setTitle(`${data.role_title} Challenge`);
+      }
+      setLoading(false);
+    };
+
+    if (!businessLoading && user?.id) {
+      fetchGoal();
+    }
+  }, [goalId, user?.id, isAuthenticated, isBusiness, businessLoading, navigate, toast, t]);
+
+  // Generate with AI
+  const handleGenerate = async () => {
+    if (!hiringGoal?.task_description) {
       toast({
-        title: t('business_portal.success'),
-        description: t('business_portal.challenge_created', { count: selectedCandidates.length }),
+        title: t('common.error'),
+        description: t('challenge_builder.no_task_description'),
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-challenge', {
+        body: {
+          task_description: hiringGoal.task_description,
+          role_title: hiringGoal.role_title,
+          experience_level: hiringGoal.experience_level,
+          work_model: hiringGoal.work_model,
+          country: hiringGoal.country
+        }
       });
 
-      navigate('/business/challenges');
-    } catch (error: any) {
-      console.error('Error creating challenge:', error);
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+
+      setTitle(data.title_suggestion || title);
+      setDescription(data.candidate_facing_description || '');
+      setSuccessCriteria(data.success_criteria?.length ? data.success_criteria : ['', '', '']);
+      setTimeEstimate(data.time_estimate_minutes || 45);
+
       toast({
-        title: t('business_portal.error'),
-        description: error.message || t('business_portal.failed_create_challenge'),
+        title: t('challenge_builder.generated'),
+        description: t('challenge_builder.generated_desc'),
+      });
+    } catch (err: any) {
+      console.error('Generate challenge error:', err);
+      toast({
+        title: t('common.error'),
+        description: err.message || 'Failed to generate challenge',
         variant: 'destructive'
       });
     } finally {
-      setLoading(false);
+      setGenerating(false);
     }
   };
 
-  const difficultyLevels = [
-    { value: 1, label: t('business_portal.beginner'), color: 'bg-green-500' },
-    { value: 2, label: t('business_portal.easy'), color: 'bg-blue-500' },
-    { value: 3, label: t('business_portal.medium'), color: 'bg-yellow-500' },
-    { value: 4, label: t('business_portal.hard'), color: 'bg-orange-500' },
-    { value: 5, label: t('business_portal.expert'), color: 'bg-red-500' }
-  ];
+  // Save as draft
+  const handleSaveDraft = async () => {
+    if (!title.trim()) {
+      toast({
+        title: t('common.error'),
+        description: t('challenge_builder.title_required'),
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('business_challenges')
+        .insert({
+          business_id: user?.id,
+          hiring_goal_id: goalId,
+          title: title.trim(),
+          description: description.trim(),
+          success_criteria: successCriteria.filter(c => c.trim()),
+          time_estimate_minutes: timeEstimate,
+          rubric: { criteria: { outcome: 3, clarity: 3, reasoning: 3 } },
+          status: 'draft'
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: t('challenge_builder.draft_saved'),
+        description: t('challenge_builder.draft_saved_desc'),
+      });
+      navigate(`/business/candidates?fromGoal=${goalId}`);
+    } catch (err: any) {
+      console.error('Save draft error:', err);
+      toast({
+        title: t('common.error'),
+        description: err.message,
+        variant: 'destructive'
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Activate challenge
+  const handleActivate = async () => {
+    if (!title.trim() || !description.trim()) {
+      toast({
+        title: t('common.error'),
+        description: t('challenge_builder.fill_required'),
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('business_challenges')
+        .insert({
+          business_id: user?.id,
+          hiring_goal_id: goalId,
+          title: title.trim(),
+          description: description.trim(),
+          success_criteria: successCriteria.filter(c => c.trim()),
+          time_estimate_minutes: timeEstimate,
+          rubric: { criteria: { outcome: 3, clarity: 3, reasoning: 3 } },
+          status: 'active'
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: t('challenge_builder.activated'),
+        description: t('challenge_builder.activated_desc'),
+      });
+      navigate(`/business/candidates?fromGoal=${goalId}`);
+    } catch (err: any) {
+      console.error('Activate error:', err);
+      toast({
+        title: t('common.error'),
+        description: err.message,
+        variant: 'destructive'
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const updateCriterion = (index: number, value: string) => {
+    const updated = [...successCriteria];
+    updated[index] = value;
+    setSuccessCriteria(updated);
+  };
+
+  if (loading || businessLoading) {
+    return (
+      <BusinessLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </BusinessLayout>
+    );
+  }
 
   return (
     <BusinessLayout>
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">{t('business_portal.create_challenge')}</h1>
-          <p className="text-[#A3ABB5]">
-            {t('business_portal.design_challenge')}
-          </p>
-          {selectedCandidates.length > 0 && (
-            <Badge className="mt-2 bg-[#3A9FFF]/20 text-[#3A9FFF]">
-              {t('business_portal.will_be_assigned', { count: selectedCandidates.length })}
-            </Badge>
-          )}
+        <div className="space-y-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate(`/business/candidates?fromGoal=${goalId}`)}
+            className="gap-2 -ml-2"
+          >
+            <ArrowLeft size={16} />
+            {t('common.back')}
+          </Button>
+
+          <div className="flex items-start gap-4">
+            <div className="p-3 rounded-full bg-primary/20">
+              <Target className="h-6 w-6 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-foreground mb-2">
+                {t('challenge_builder.page_title')}
+              </h1>
+              <p className="text-muted-foreground">
+                {t('challenge_builder.page_subtitle')}
+              </p>
+              {hiringGoal?.role_title && (
+                <Badge variant="outline" className="mt-2">
+                  {hiringGoal.role_title}
+                </Badge>
+              )}
+            </div>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <Card className="bg-gradient-to-br from-[#0F1419] to-[#0A0F1C] border-[#3A9FFF]/20">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Target className="text-[#3A9FFF]" />
-                {t('business_portal.challenge_details')}
-              </CardTitle>
-              <CardDescription className="text-[#A3ABB5]">
-                {t('business_portal.provide_info')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Title */}
-              <div className="space-y-2">
-                <Label htmlFor="title" className="text-white">{t('business_portal.challenge_title')}</Label>
-                <Input
-                  id="title"
-                  placeholder={t('business_portal.title_placeholder')}
-                  className="bg-[#0A0F1C] border-[#3A9FFF]/20 text-white"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  required
-                />
-              </div>
-
-              {/* Description */}
-              <div className="space-y-2">
-                <Label htmlFor="description" className="text-white">{t('business_portal.description')}</Label>
-                <Textarea
-                  id="description"
-                  placeholder={t('business_portal.description_placeholder')}
-                  rows={5}
-                  className="bg-[#0A0F1C] border-[#3A9FFF]/20 text-white"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                />
-              </div>
-
-              {/* Target Skills */}
-              <div className="space-y-2">
-                <Label htmlFor="targetSkills" className="text-white">{t('business_portal.target_skills')}</Label>
-                <Input
-                  id="targetSkills"
-                  placeholder={t('business_portal.skills_placeholder')}
-                  className="bg-[#0A0F1C] border-[#3A9FFF]/20 text-white"
-                  value={formData.targetSkills}
-                  onChange={(e) => setFormData({ ...formData, targetSkills: e.target.value })}
-                />
-              </div>
-
-              {/* Deadline */}
-              <div className="space-y-2">
-                <Label htmlFor="deadline" className="text-white flex items-center gap-2">
-                  <Calendar size={16} />
-                  {t('business_portal.deadline')}
-                </Label>
-                <Input
-                  id="deadline"
-                  type="datetime-local"
-                  className="bg-[#0A0F1C] border-[#3A9FFF]/20 text-white"
-                  value={formData.deadline}
-                  onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
-                />
-              </div>
-
-              {/* Difficulty */}
-              <div className="space-y-3">
-                <Label className="text-white flex items-center gap-2">
-                  <TrendingUp size={16} />
-                  {t('business_portal.difficulty_level')}
-                </Label>
-                <div className="grid grid-cols-5 gap-3">
-                  {difficultyLevels.map((level) => (
-                    <button
-                      key={level.value}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, difficulty: level.value })}
-                      className={`p-4 rounded-lg border-2 transition-all ${
-                        formData.difficulty === level.value
-                          ? 'border-[#3A9FFF] bg-[#3A9FFF]/10'
-                          : 'border-[#3A9FFF]/20 hover:border-[#3A9FFF]/40'
-                      }`}
-                    >
-                      <div className={`w-3 h-3 rounded-full ${level.color} mx-auto mb-2`}></div>
-                      <p className="text-xs text-white font-medium">{level.label}</p>
-                      <p className="text-xs text-[#A3ABB5]">{level.value}</p>
-                    </button>
-                  ))}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Editor Panel */}
+          <div className="space-y-6">
+            {/* AI Generation */}
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between gap-4 flex-wrap">
+                  <div className="flex items-center gap-3">
+                    <Wand2 className="h-5 w-5 text-primary shrink-0" />
+                    <div>
+                      <p className="font-medium text-foreground">{t('challenge_builder.ai_generate_title')}</p>
+                      <p className="text-sm text-muted-foreground">{t('challenge_builder.ai_generate_desc')}</p>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={handleGenerate} 
+                    disabled={generating || !hiringGoal?.task_description}
+                    className="gap-2 shrink-0"
+                  >
+                    {generating ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        {t('common.loading')}
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-4 w-4" />
+                        {title ? t('challenge_builder.regenerate') : t('challenge_builder.generate')}
+                      </>
+                    )}
+                  </Button>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              {/* Attachment URL */}
-              <div className="space-y-2">
-                <Label htmlFor="attachmentUrl" className="text-white flex items-center gap-2">
-                  <LinkIcon size={16} />
-                  {t('business_portal.attachment_url')}
-                </Label>
+            {/* Title */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">{t('challenge_builder.title_label')}</CardTitle>
+              </CardHeader>
+              <CardContent>
                 <Input
-                  id="attachmentUrl"
-                  type="url"
-                  placeholder="https://..."
-                  className="bg-[#0A0F1C] border-[#3A9FFF]/20 text-white"
-                  value={formData.attachmentUrl}
-                  onChange={(e) => setFormData({ ...formData, attachmentUrl: e.target.value })}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder={t('challenge_builder.title_placeholder')}
+                  maxLength={100}
                 />
-              </div>
+              </CardContent>
+            </Card>
 
-              {/* Actions */}
-              <div className="flex gap-3 pt-4">
-                <Button
-                  type="submit"
-                  className="flex-1 bg-[#3A9FFF] hover:bg-[#3A9FFF]/90"
-                  disabled={loading}
-                >
-                  {loading ? t('business_portal.creating') : t('business_portal.create_challenge_btn')}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="border-[#3A9FFF]/30"
-                  onClick={() => navigate('/business/challenges')}
-                >
-                  {t('business_portal.cancel')}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </form>
+            {/* Description */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">{t('challenge_builder.description_label')}</CardTitle>
+                <CardDescription>{t('challenge_builder.description_hint')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder={t('challenge_builder.description_placeholder')}
+                  rows={6}
+                  maxLength={2000}
+                />
+                <p className="text-xs text-muted-foreground mt-2">{description.length}/2000</p>
+              </CardContent>
+            </Card>
+
+            {/* Success Criteria */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                  {t('challenge_builder.criteria_label')}
+                </CardTitle>
+                <CardDescription>{t('challenge_builder.criteria_hint')}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {successCriteria.map((criterion, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground w-6">{idx + 1}.</span>
+                    <Input
+                      value={criterion}
+                      onChange={(e) => updateCriterion(idx, e.target.value)}
+                      placeholder={t('challenge_builder.criterion_placeholder')}
+                      maxLength={200}
+                    />
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Time Estimate */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-amber-500" />
+                  {t('challenge_builder.time_label')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-3">
+                  <Input
+                    type="number"
+                    value={timeEstimate}
+                    onChange={(e) => setTimeEstimate(parseInt(e.target.value) || 30)}
+                    min={10}
+                    max={480}
+                    className="w-24"
+                  />
+                  <span className="text-muted-foreground">{t('challenge_builder.minutes')}</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Preview Panel */}
+          <div className="space-y-6">
+            <Card className="lg:sticky lg:top-6">
+              <CardHeader className="border-b">
+                <div className="flex items-center gap-2">
+                  <Eye className="h-5 w-5 text-muted-foreground" />
+                  <CardTitle className="text-lg">{t('challenge_builder.preview_title')}</CardTitle>
+                </div>
+                <CardDescription>{t('challenge_builder.preview_desc')}</CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <div>
+                  <h2 className="text-xl font-bold text-foreground">
+                    {title || t('challenge_builder.preview_no_title')}
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {hiringGoal?.role_title || 'Role'}
+                  </p>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <p className="text-foreground whitespace-pre-wrap">
+                    {description || <span className="text-muted-foreground italic">{t('challenge_builder.preview_no_description')}</span>}
+                  </p>
+                </div>
+
+                {successCriteria.some(c => c.trim()) && (
+                  <>
+                    <Separator />
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2">{t('challenge_builder.preview_criteria')}</h3>
+                      <ul className="space-y-1">
+                        {successCriteria.filter(c => c.trim()).map((c, idx) => (
+                          <li key={idx} className="flex items-start gap-2 text-sm text-foreground">
+                            <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                            {c}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
+                )}
+
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Clock className="h-4 w-4" />
+                  {t('challenge_builder.estimated_time', { minutes: timeEstimate })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col gap-3">
+              <Button 
+                onClick={handleActivate} 
+                disabled={saving || !title.trim() || !description.trim()}
+                size="lg"
+                className="w-full gap-2"
+              >
+                {saving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Rocket className="h-4 w-4" />
+                )}
+                {t('challenge_builder.activate_button')}
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={handleSaveDraft} 
+                disabled={saving || !title.trim()}
+                size="lg"
+                className="w-full gap-2"
+              >
+                <Save className="h-4 w-4" />
+                {t('challenge_builder.save_draft')}
+              </Button>
+            </div>
+
+            {!hiringGoal?.task_description && (
+              <Card className="border-amber-500/50 bg-amber-500/5">
+                <CardContent className="p-4 flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-foreground">{t('challenge_builder.no_task_title')}</p>
+                    <p className="text-sm text-muted-foreground">{t('challenge_builder.no_task_desc')}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
       </div>
     </BusinessLayout>
   );

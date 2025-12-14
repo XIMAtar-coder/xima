@@ -638,7 +638,7 @@ const BusinessCandidates = () => {
             {/* Challenge gate banner - show if no active challenge */}
             {!challengeLoading && !activeChallenge && (
               <NoChallengeGate 
-                onCreateChallenge={() => setShowCreateChallengeModal(true)}
+                onCreateChallenge={() => navigate(`/business/challenges/new?goal=${goalId}`)}
                 onViewSaved={() => setViewFilter('shortlisted')}
               />
             )}
