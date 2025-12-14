@@ -45,6 +45,7 @@ import CreateJobOffer from "./pages/business/CreateJobOffer";
 import JobCandidateMatching from "./pages/business/JobCandidateMatching";
 import Analytics from "./pages/Analytics";
 import AssessmentGuide from "./pages/AssessmentGuide";
+import ChallengeAccept from "./pages/ChallengeAccept";
 
 const queryClient = new QueryClient();
 
@@ -99,6 +100,7 @@ const AppContent = () => {
           <Route path="/business/jobs/new" element={<CreateJobOffer />} />
           <Route path="/business/jobs/:jobId/matches" element={<JobCandidateMatching />} />
           <Route path="/analytics" element={<Analytics />} />
+          <Route path="/challenge/accept" element={<ChallengeAccept />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         {/* <ChatEntry /> */}

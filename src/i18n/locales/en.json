@@ -1880,7 +1880,14 @@
       "regenerated": "Matches Regenerated",
       "regenerated_desc": "Your match list has been refreshed. Saved candidates remain at the top.",
       "show_more": "Show {{count}} more",
-      "invite_to_challenge": "Invite to Challenge"
+      "invite_to_challenge": "Invite to Challenge",
+      "invited": "Invited",
+      "accepted": "Accepted",
+      "sending": "Sending...",
+      "invitation_sent": "Invitation Sent",
+      "invitation_sent_desc": "{{name}} has been invited to your challenge",
+      "already_invited": "Already Invited",
+      "already_invited_desc": "This candidate has already been invited to this challenge"
     },
     "reports": {
       "title": "Reports & Analytics",
@@ -2213,5 +2220,28 @@
     "title": "404 - Page Not Found",
     "message": "Oops! The page you're looking for doesn't exist.",
     "return_home": "Return to Home"
+  },
+  "challenge_invitation": {
+    "banner_title": "You have challenge invitations!",
+    "pending": "pending",
+    "view_challenge": "View Challenge",
+    "title": "Challenge Invitation",
+    "subtitle": "A company wants to evaluate your skills",
+    "what_they_need": "What they need:",
+    "invited_on": "Invited on {{date}}",
+    "login_required": "Please log in to respond to this invitation",
+    "accept": "Accept Challenge",
+    "decline": "Decline",
+    "accepted_title": "Challenge Accepted!",
+    "accepted_desc": "You've accepted the challenge. Good luck!",
+    "declined_title": "Invitation Declined",
+    "declined_desc": "You've declined this invitation.",
+    "error_title": "Invalid Invitation",
+    "go_home": "Go Home",
+    "go_profile": "Go to Profile",
+    "already_accepted": "Already Accepted",
+    "already_accepted_desc": "You've already accepted this challenge from {{company}}.",
+    "already_declined": "Already Declined",
+    "already_declined_desc": "You've already declined this invitation."
   }
 }

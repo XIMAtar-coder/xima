@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Star, Target, TrendingUp, Bookmark, BookmarkCheck } from 'lucide-react';
+import { Star, Target, TrendingUp, Bookmark, BookmarkCheck, Send, CheckCircle2, Loader2 } from 'lucide-react';
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer } from 'recharts';
 
 interface XimatarCandidateCardProps {
@@ -28,6 +28,7 @@ interface XimatarCandidateCardProps {
   isSelected?: boolean;
   showSaveButton?: boolean;
   showDebug?: boolean;
+  invitationStatus?: 'none' | 'invited' | 'accepted' | 'declined' | 'loading';
   onSelect?: (checked: boolean) => void;
   onToggleShortlist?: () => void;
   onInviteToChallenge?: () => void;
@@ -53,6 +54,7 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
   isSelected = false,
   showSaveButton = false,
   showDebug = false,
+  invitationStatus = 'none',
   onSelect,
   onToggleShortlist,
   onInviteToChallenge,
@@ -177,13 +179,39 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
               <TrendingUp className="mr-2" size={16} />
               View Insights
             </Button>
-            {onInviteToChallenge && (
+            {onInviteToChallenge && isShortlisted && (
               <Button
-                className="w-full bg-primary hover:bg-primary/90"
-                onClick={onInviteToChallenge}
+                className={`w-full ${
+                  invitationStatus === 'accepted' 
+                    ? 'bg-green-600 hover:bg-green-600 cursor-default' 
+                    : invitationStatus === 'invited'
+                    ? 'bg-amber-600 hover:bg-amber-600 cursor-default'
+                    : 'bg-primary hover:bg-primary/90'
+                }`}
+                onClick={invitationStatus === 'none' ? onInviteToChallenge : undefined}
+                disabled={invitationStatus === 'loading' || invitationStatus !== 'none'}
               >
-                <Target className="mr-2" size={16} />
-                {t('business.shortlist.invite_to_challenge')}
+                {invitationStatus === 'loading' ? (
+                  <>
+                    <Loader2 className="mr-2 animate-spin" size={16} />
+                    {t('business.shortlist.sending')}
+                  </>
+                ) : invitationStatus === 'accepted' ? (
+                  <>
+                    <CheckCircle2 className="mr-2" size={16} />
+                    {t('business.shortlist.accepted')}
+                  </>
+                ) : invitationStatus === 'invited' ? (
+                  <>
+                    <Send className="mr-2" size={16} />
+                    {t('business.shortlist.invited')}
+                  </>
+                ) : (
+                  <>
+                    <Target className="mr-2" size={16} />
+                    {t('business.shortlist.invite_to_challenge')}
+                  </>
+                )}
               </Button>
             )}
           </div>
