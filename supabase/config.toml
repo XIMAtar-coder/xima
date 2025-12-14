@@ -44,3 +44,6 @@ verify_jwt = false
 
 [functions.send-challenge-invitation]
 verify_jwt = true
+
+[functions.generate-challenge]
+verify_jwt = true

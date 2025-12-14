@@ -602,8 +602,11 @@ export type Database = {
           hiring_goal_id: string | null
           id: string
           is_public: boolean | null
+          rubric: Json | null
           status: string
+          success_criteria: string[] | null
           target_skills: string[] | null
+          time_estimate_minutes: number | null
           title: string
           updated_at: string | null
         }
@@ -617,8 +620,11 @@ export type Database = {
           hiring_goal_id?: string | null
           id?: string
           is_public?: boolean | null
+          rubric?: Json | null
           status?: string
+          success_criteria?: string[] | null
           target_skills?: string[] | null
+          time_estimate_minutes?: number | null
           title: string
           updated_at?: string | null
         }
@@ -632,8 +638,11 @@ export type Database = {
           hiring_goal_id?: string | null
           id?: string
           is_public?: boolean | null
+          rubric?: Json | null
           status?: string
+          success_criteria?: string[] | null
           target_skills?: string[] | null
+          time_estimate_minutes?: number | null
           title?: string
           updated_at?: string | null
         }
