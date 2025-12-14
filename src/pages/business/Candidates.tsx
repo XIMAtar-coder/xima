@@ -16,6 +16,8 @@ import { XimatarCandidateCard } from '@/components/business/XimatarCandidateCard
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useHiringGoalShortlist } from '@/hooks/useHiringGoalShortlist';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CreateChallengeModal } from '@/components/business/CreateChallengeModal';
+import { NoChallengeGate } from '@/components/business/NoChallengeGate';
 
 const PAGE_SIZE = 12;
 
@@ -38,6 +40,11 @@ interface Candidate {
   matchLevel?: 'high' | 'medium' | 'low';
   matchReasons?: string[];
   invitationStatus?: 'none' | 'invited' | 'accepted' | 'declined' | 'loading';
+}
+
+interface ActiveChallenge {
+  id: string;
+  title: string;
 }
 
 const BusinessCandidates = () => {
@@ -63,6 +70,11 @@ const BusinessCandidates = () => {
   const [showDebug, setShowDebug] = useState(false);
   const [invitationStatuses, setInvitationStatuses] = useState<Record<string, 'none' | 'invited' | 'accepted' | 'declined' | 'loading'>>({});
   const [companyName, setCompanyName] = useState<string>('');
+  
+  // Challenge gating state
+  const [activeChallenge, setActiveChallenge] = useState<ActiveChallenge | null>(null);
+  const [challengeLoading, setChallengeLoading] = useState(true);
+  const [showCreateChallengeModal, setShowCreateChallengeModal] = useState(false);
 
   // Fetch company name for invitations
   useEffect(() => {
@@ -77,6 +89,39 @@ const BusinessCandidates = () => {
     };
     fetchCompanyName();
   }, [user?.id]);
+
+  // Fetch active challenge for the hiring goal
+  useEffect(() => {
+    const fetchActiveChallenge = async () => {
+      if (!goalId || !user?.id) {
+        setChallengeLoading(false);
+        return;
+      }
+      
+      try {
+        // Get the most recently updated active challenge for this goal
+        const { data, error } = await supabase
+          .from('business_challenges')
+          .select('id, title')
+          .eq('business_id', user.id)
+          .eq('hiring_goal_id', goalId)
+          .eq('status', 'active')
+          .order('updated_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (error) throw error;
+        setActiveChallenge(data);
+      } catch (err) {
+        console.error('Error fetching active challenge:', err);
+        setActiveChallenge(null);
+      } finally {
+        setChallengeLoading(false);
+      }
+    };
+    
+    fetchActiveChallenge();
+  }, [goalId, user?.id]);
 
   // Shortlist from hiring goal
   const { 
@@ -355,7 +400,7 @@ const BusinessCandidates = () => {
 
   // Handle invite to challenge - candidateProfileId is profiles.id
   const handleInviteToChallenge = async (candidateProfileId: string) => {
-    if (!goalId || !user?.id) return;
+    if (!goalId || !user?.id || !activeChallenge) return;
     
     // Set loading state for THIS candidate only (keyed by profile_id)
     setInvitationStatuses(prev => ({ ...prev, [candidateProfileId]: 'loading' }));
@@ -373,13 +418,14 @@ const BusinessCandidates = () => {
       const candidateName = profile.full_name || profile.name || 'Candidate';
       const candidateEmail = profile.email;
 
-      // Create invitation record
+      // Create invitation record with challenge_id
       const { data: invitation, error: invError } = await supabase
         .from('challenge_invitations')
         .insert({
           business_id: user.id,
           hiring_goal_id: goalId,
-          candidate_profile_id: candidateProfileId
+          candidate_profile_id: candidateProfileId,
+          challenge_id: activeChallenge.id
         })
         .select('id, invite_token')
         .single();
@@ -589,8 +635,24 @@ const BusinessCandidates = () => {
               </TabsList>
             </Tabs>
 
+            {/* Challenge gate banner - show if no active challenge */}
+            {!challengeLoading && !activeChallenge && (
+              <NoChallengeGate 
+                onCreateChallenge={() => setShowCreateChallengeModal(true)}
+                onViewSaved={() => setViewFilter('shortlisted')}
+              />
+            )}
+
+            {/* Active challenge badge */}
+            {activeChallenge && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-primary/5 border border-primary/20 p-3 rounded-lg">
+                <Target size={16} className="text-primary shrink-0" />
+                <span>{t('business.challenge.active_challenge')}: <strong className="text-foreground">{activeChallenge.title}</strong></span>
+              </div>
+            )}
+
             {/* Hint for All Matches tab */}
-            {viewFilter === 'all' && (
+            {viewFilter === 'all' && activeChallenge && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
                 <Lightbulb size={16} className="text-amber-500 shrink-0" />
                 {t('business.shortlist.save_hint')}
@@ -716,6 +778,8 @@ const BusinessCandidates = () => {
                 showSaveButton={!!goalId}
                 showDebug={showDebug}
                 invitationStatus={invitationStatuses[candidate.profile_id] || candidate.invitationStatus || 'none'}
+                inviteDisabled={!activeChallenge}
+                inviteDisabledReason={!activeChallenge ? t('business.challenge.create_first_tooltip') : undefined}
                 onSelect={async (checked) => {
                   if (checked) {
                     setSelectedCandidates([...selectedCandidates, candidate.user_id]);
@@ -793,6 +857,21 @@ const BusinessCandidates = () => {
               )}
             </CardContent>
           </Card>
+        )}
+
+        {/* Create Challenge Modal */}
+        {goalId && user?.id && (
+          <CreateChallengeModal
+            open={showCreateChallengeModal}
+            onOpenChange={setShowCreateChallengeModal}
+            hiringGoalId={goalId}
+            businessId={user.id}
+            defaultTitle={hiringGoal?.role_title || t('business.challenge.new_challenge')}
+            defaultDescription={hiringGoal?.task_description || ''}
+            onChallengeCreated={(challengeId) => {
+              setActiveChallenge({ id: challengeId, title: hiringGoal?.role_title || t('business.challenge.new_challenge') });
+            }}
+          />
         )}
       </div>
     </BusinessLayout>

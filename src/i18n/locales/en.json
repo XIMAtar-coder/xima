@@ -2243,5 +2243,24 @@
     "already_accepted_desc": "You've already accepted this challenge from {{company}}.",
     "already_declined": "Already Declined",
     "already_declined_desc": "You've already declined this invitation."
+  },
+  "business_challenge": {
+    "create_title": "Create Challenge",
+    "create_description": "Define your challenge to start inviting candidates.",
+    "title_label": "Challenge Title",
+    "title_placeholder": "e.g. Product Strategy Case Study",
+    "description_label": "Challenge Description",
+    "description_placeholder": "Describe what candidates will need to do...",
+    "activate_button": "Activate Challenge",
+    "activated": "Challenge Activated",
+    "activated_desc": "You can now invite candidates to participate.",
+    "fill_required": "Please fill in all required fields.",
+    "gate_title": "Create a Challenge First",
+    "gate_description": "You need to create and activate a challenge before you can invite candidates.",
+    "create_button": "Create Challenge",
+    "view_saved": "View Saved",
+    "active_challenge": "Active Challenge",
+    "create_first_tooltip": "Create an active challenge first",
+    "new_challenge": "New Challenge"
   }
 }

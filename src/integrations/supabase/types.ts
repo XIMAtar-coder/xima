@@ -599,8 +599,10 @@ export type Database = {
           deadline: string | null
           description: string | null
           difficulty: number | null
+          hiring_goal_id: string | null
           id: string
           is_public: boolean | null
+          status: string
           target_skills: string[] | null
           title: string
           updated_at: string | null
@@ -612,8 +614,10 @@ export type Database = {
           deadline?: string | null
           description?: string | null
           difficulty?: number | null
+          hiring_goal_id?: string | null
           id?: string
           is_public?: boolean | null
+          status?: string
           target_skills?: string[] | null
           title: string
           updated_at?: string | null
@@ -625,13 +629,23 @@ export type Database = {
           deadline?: string | null
           description?: string | null
           difficulty?: number | null
+          hiring_goal_id?: string | null
           id?: string
           is_public?: boolean | null
+          status?: string
           target_skills?: string[] | null
           title?: string
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "business_challenges_hiring_goal_id_fkey"
+            columns: ["hiring_goal_id"]
+            isOneToOne: false
+            referencedRelation: "hiring_goal_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       business_profiles: {
         Row: {
@@ -779,6 +793,7 @@ export type Database = {
         Row: {
           business_id: string
           candidate_profile_id: string
+          challenge_id: string | null
           created_at: string
           hiring_goal_id: string
           id: string
@@ -790,6 +805,7 @@ export type Database = {
         Insert: {
           business_id: string
           candidate_profile_id: string
+          challenge_id?: string | null
           created_at?: string
           hiring_goal_id: string
           id?: string
@@ -801,6 +817,7 @@ export type Database = {
         Update: {
           business_id?: string
           candidate_profile_id?: string
+          challenge_id?: string | null
           created_at?: string
           hiring_goal_id?: string
           id?: string
@@ -810,6 +827,13 @@ export type Database = {
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "challenge_invitations_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "business_challenges"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "challenge_invitations_hiring_goal_id_fkey"
             columns: ["hiring_goal_id"]
