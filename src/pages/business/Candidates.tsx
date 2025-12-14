@@ -11,10 +11,11 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft } from 'lucide-react';
+import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft, Bookmark, BookmarkCheck } from 'lucide-react';
 import { XimatarCandidateCard } from '@/components/business/XimatarCandidateCard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useHiringGoalShortlist } from '@/hooks/useHiringGoalShortlist';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Candidate {
   user_id: string;
@@ -48,6 +49,8 @@ const BusinessCandidates = () => {
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
   const [ximatarFilter, setXimatarFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'score' | 'pillar'>('score');
+  const [viewFilter, setViewFilter] = useState<'all' | 'shortlisted'>('all');
+  const [shortlistedCount, setShortlistedCount] = useState(0);
 
   // Shortlist from hiring goal
   const { 
@@ -102,12 +105,15 @@ const BusinessCandidates = () => {
   useEffect(() => {
     if (goalId && shortlist.length > 0) {
       const loadShortlistStatus = async () => {
+        // Use the new business_shortlists table
         const { data: shortlistedData } = await supabase
-          .from('candidate_shortlist')
-          .select('candidate_id')
-          .eq('business_id', user?.id);
+          .from('business_shortlists')
+          .select('candidate_profile_id')
+          .eq('business_id', user?.id)
+          .eq('hiring_goal_id', goalId);
 
-        const shortlistedIds = new Set(shortlistedData?.map(s => s.candidate_id) || []);
+        const shortlistedIds = new Set(shortlistedData?.map(s => s.candidate_profile_id) || []);
+        setShortlistedCount(shortlistedIds.size);
 
         const candidatesWithStatus = shortlist.map(c => ({
           ...c,
@@ -127,32 +133,7 @@ const BusinessCandidates = () => {
 
       if (error) throw error;
 
-      const { data: shortlistedData } = await supabase
-        .from('candidate_shortlist')
-        .select('candidate_id')
-        .eq('business_id', user?.id);
-
-      const shortlistedIds = new Set(shortlistedData?.map(s => s.candidate_id) || []);
-
-      // DEV DEBUG: Log first 5 candidates raw data
-      if (import.meta.env.DEV && candidatesData?.length) {
-        console.group('🔍 [DEV] Candidate Pool Audit');
-        console.log('Source: supabase.rpc("get_candidate_visibility")');
-        console.log('Underlying tables: profiles → assessment_results → pillar_scores → ximatars');
-        console.log('Total candidates returned:', candidatesData.length);
-        console.table(
-          candidatesData.slice(0, 5).map((c: any, i: number) => ({
-            '#': i + 1,
-            profile_user_id: c.user_id,
-            ximatar_id: c.ximatar_id || 'null',
-            ximatar_label: c.ximatar_label || 'null',
-            evaluation_score: c.evaluation_score,
-            source: 'profiles.user_id → auth.users.id'
-          }))
-        );
-        console.groupEnd();
-      }
-
+      // For non-goal view, we don't have goal-specific shortlist - just show all
       const candidatesWithShortlist: Candidate[] = (candidatesData || []).map((candidate: any) => ({
         user_id: candidate.user_id,
         ximatar_label: candidate.ximatar_label || 'Unknown',
@@ -165,7 +146,7 @@ const BusinessCandidates = () => {
         creativity: Number(candidate.creativity) || 0,
         drive: Number(candidate.drive) || 0,
         rank: Number(candidate.rank) || 0,
-        isShortlisted: shortlistedIds.has(candidate.user_id)
+        isShortlisted: false
       }));
 
       try {
@@ -194,26 +175,47 @@ const BusinessCandidates = () => {
 
   const handleToggleShortlist = async (candidateId: string) => {
     const candidate = candidates.find(c => c.user_id === candidateId);
-    if (!candidate) return;
+    if (!candidate || !goalId) return;
 
     try {
       if (candidate.isShortlisted) {
+        // Remove from shortlist
         await supabase
-          .from('candidate_shortlist')
+          .from('business_shortlists')
           .delete()
           .eq('business_id', user?.id)
-          .eq('candidate_id', candidateId);
+          .eq('hiring_goal_id', goalId)
+          .eq('candidate_profile_id', candidateId);
       } else {
+        // Add to shortlist
         await supabase
-          .from('candidate_shortlist')
+          .from('business_shortlists')
           .insert({
             business_id: user?.id,
-            candidate_id: candidateId,
-            status: 'shortlisted'
+            hiring_goal_id: goalId,
+            candidate_profile_id: candidateId
           });
       }
 
-      loadCandidates();
+      // Update local state immediately
+      const updatedCandidates = candidates.map(c => 
+        c.user_id === candidateId 
+          ? { ...c, isShortlisted: !c.isShortlisted }
+          : c
+      );
+      setCandidates(updatedCandidates);
+      
+      // Update count
+      const newCount = updatedCandidates.filter(c => c.isShortlisted).length;
+      setShortlistedCount(newCount);
+      
+      // Update filtered view
+      if (viewFilter === 'shortlisted') {
+        setFilteredCandidates(updatedCandidates.filter(c => c.isShortlisted));
+      } else {
+        setFilteredCandidates(updatedCandidates);
+      }
+
       toast({
         title: candidate.isShortlisted ? t('business.candidates.removed_from_shortlist') : t('business.candidates.added_single'),
         description: candidate.isShortlisted ? t('business.candidates.candidate_removed') : t('business.candidates.candidate_added')
@@ -225,6 +227,16 @@ const BusinessCandidates = () => {
         description: t('business.candidates.failed_update'),
         variant: 'destructive'
       });
+    }
+  };
+
+  // Handle view filter changes (All / Shortlisted)
+  const handleViewFilterChange = (value: string) => {
+    setViewFilter(value as 'all' | 'shortlisted');
+    if (value === 'shortlisted') {
+      setFilteredCandidates(candidates.filter(c => c.isShortlisted));
+    } else {
+      setFilteredCandidates(candidates);
     }
   };
 
@@ -331,6 +343,21 @@ const BusinessCandidates = () => {
                 )}
               </div>
             </div>
+            
+            {/* Shortlist filter tabs */}
+            <Tabs value={viewFilter} onValueChange={handleViewFilterChange} className="w-full">
+              <TabsList className="grid w-full max-w-md grid-cols-2">
+                <TabsTrigger value="all" className="gap-2">
+                  <Bookmark size={14} />
+                  {t('business.shortlist.all_matches')}
+                </TabsTrigger>
+                <TabsTrigger value="shortlisted" className="gap-2">
+                  <BookmarkCheck size={14} />
+                  {t('business.shortlist.saved')} ({shortlistedCount})
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
             {shortlistError && (
               <Card className="border-destructive/50 bg-destructive/5">
                 <CardContent className="p-4 text-destructive">
