@@ -647,7 +647,7 @@ const BusinessCandidates = () => {
             {activeChallenge && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground bg-primary/5 border border-primary/20 p-3 rounded-lg">
                 <Target size={16} className="text-primary shrink-0" />
-                <span>{t('business.challenge.active_challenge')}: <strong className="text-foreground">{activeChallenge.title}</strong></span>
+                <span>{t('business_challenge.active_challenge')}: <strong className="text-foreground">{activeChallenge.title}</strong></span>
               </div>
             )}
 
@@ -779,7 +779,7 @@ const BusinessCandidates = () => {
                 showDebug={showDebug}
                 invitationStatus={invitationStatuses[candidate.profile_id] || candidate.invitationStatus || 'none'}
                 inviteDisabled={!activeChallenge}
-                inviteDisabledReason={!activeChallenge ? t('business.challenge.create_first_tooltip') : undefined}
+                inviteDisabledReason={!activeChallenge ? t('business_challenge.create_first_tooltip') : undefined}
                 onSelect={async (checked) => {
                   if (checked) {
                     setSelectedCandidates([...selectedCandidates, candidate.user_id]);
@@ -866,7 +866,7 @@ const BusinessCandidates = () => {
             onOpenChange={setShowCreateChallengeModal}
             hiringGoalId={goalId}
             businessId={user.id}
-            defaultTitle={hiringGoal?.role_title || t('business.challenge.new_challenge')}
+            defaultTitle={hiringGoal?.role_title || t('business_challenge.new_challenge')}
             defaultDescription={hiringGoal?.task_description || ''}
             onChallengeCreated={(challengeId, challengeTitle) => {
               setActiveChallenge({ id: challengeId, title: challengeTitle });
