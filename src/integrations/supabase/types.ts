@@ -1166,6 +1166,7 @@ export type Database = {
           experience_level: string | null
           id: string
           role_title: string | null
+          salary_benchmark_json: Json | null
           salary_currency: string | null
           salary_max: number | null
           salary_min: number | null
@@ -1183,6 +1184,7 @@ export type Database = {
           experience_level?: string | null
           id?: string
           role_title?: string | null
+          salary_benchmark_json?: Json | null
           salary_currency?: string | null
           salary_max?: number | null
           salary_min?: number | null
@@ -1200,6 +1202,7 @@ export type Database = {
           experience_level?: string | null
           id?: string
           role_title?: string | null
+          salary_benchmark_json?: Json | null
           salary_currency?: string | null
           salary_max?: number | null
           salary_min?: number | null
