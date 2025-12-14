@@ -373,6 +373,7 @@ const BusinessDashboard = () => {
         {/* Hiring Goal Card - Show for first-time (none) or draft state */}
         {!hiringGoalLoading && hiringGoalStatus !== 'completed' && (
           <HiringGoalCard 
+            key={hiringGoalDraftId || 'new'}
             draftId={hiringGoalDraftId}
             onComplete={() => {
               console.log('[Dashboard] HiringGoalCard completed, refetching status...');
@@ -405,9 +406,17 @@ const BusinessDashboard = () => {
                     </Link>
                     <Button 
                       variant="outline" 
-                      onClick={() => {
-                        setHiringGoalStatus('draft');
-                        console.log('[Dashboard] Reopening hiring goal for editing');
+                      onClick={async () => {
+                        console.log('[Dashboard] Edit Goal clicked, updating status to draft...');
+                        // Update DB row to draft status
+                        if (hiringGoalDraftId) {
+                          await supabase
+                            .from('hiring_goal_drafts')
+                            .update({ status: 'draft' })
+                            .eq('id', hiringGoalDraftId);
+                        }
+                        // Refetch to get updated state
+                        await loadHiringGoalStatus();
                       }}
                     >
                       {t('business.hiring_goal.edit_goal')}

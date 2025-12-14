@@ -86,20 +86,28 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        // Fetch the most recent draft (order by updated_at desc, limit 1)
-        const { data, error } = await supabase
+        // If we have a specific draftId, fetch that row directly
+        // Otherwise fetch the most recent non-completed draft
+        let query = supabase
           .from('hiring_goal_drafts')
           .select('*')
-          .eq('business_id', user.id)
-          .order('updated_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
+          .eq('business_id', user.id);
+        
+        if (initialDraftId) {
+          // Fetch specific row by ID (for edit mode)
+          query = query.eq('id', initialDraftId);
+        } else {
+          // Fetch most recent draft that's not completed
+          query = query.neq('status', 'completed').order('updated_at', { ascending: false }).limit(1);
+        }
+        
+        const { data, error } = await query.maybeSingle();
 
         if (error) throw error;
         
-        console.log('[HiringGoalCard] Loaded draft:', { id: data?.id, status: data?.status });
+        console.log('[HiringGoalCard] Loaded draft:', { id: data?.id, status: data?.status, task: data?.task_description?.substring(0, 30) });
         
-        if (data && data.status !== 'completed') {
+        if (data) {
           setDraft({
             id: data.id,
             task_description: data.task_description || '',
