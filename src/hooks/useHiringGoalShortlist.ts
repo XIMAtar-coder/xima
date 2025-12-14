@@ -13,8 +13,11 @@ interface HiringGoal {
 
 interface CandidateWithMatch {
   user_id: string;
+  profile_id: string;
+  display_name: string;
   ximatar_label: string;
   ximatar_image: string;
+  ximatar_id?: string;
   evaluation_score: number;
   pillar_average: number;
   computational_power: number;
@@ -237,10 +240,27 @@ export const useHiringGoalShortlist = (goalId: string | null) => {
       // 4. Score and filter candidates
       const scoredCandidates: CandidateWithMatch[] = (candidatesData || []).map((candidate: any) => {
         const match = calculateMatch(candidate, keywords, thresholds);
+        
+        // DEV: Log if ximatar data is inconsistent
+        if (process.env.NODE_ENV === 'development') {
+          const hasLabelImageMismatch = candidate.ximatar_label && candidate.ximatar_image && 
+            !candidate.ximatar_image.toLowerCase().includes(candidate.ximatar_label.toLowerCase());
+          if (hasLabelImageMismatch) {
+            console.warn('[DEV] Ximatar mismatch:', {
+              user_id: candidate.user_id,
+              label: candidate.ximatar_label,
+              image: candidate.ximatar_image
+            });
+          }
+        }
+        
         return {
           user_id: candidate.user_id,
-          ximatar_label: candidate.ximatar_label || 'Unknown',
+          profile_id: candidate.profile_id || candidate.user_id,
+          display_name: candidate.display_name || 'Unknown',
+          ximatar_label: candidate.ximatar_label || 'unknown',
           ximatar_image: candidate.ximatar_image || '/placeholder.svg',
+          ximatar_id: candidate.ximatar_id,
           evaluation_score: Number(candidate.evaluation_score) || 0,
           pillar_average: Number(candidate.pillar_average) || 0,
           computational_power: Number(candidate.computational_power) || 0,

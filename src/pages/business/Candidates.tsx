@@ -11,7 +11,7 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft, Bookmark, BookmarkCheck, RefreshCw, ChevronDown, Lightbulb } from 'lucide-react';
+import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft, Bookmark, BookmarkCheck, RefreshCw, ChevronDown, Lightbulb, Bug } from 'lucide-react';
 import { XimatarCandidateCard } from '@/components/business/XimatarCandidateCard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useHiringGoalShortlist } from '@/hooks/useHiringGoalShortlist';
@@ -21,8 +21,11 @@ const PAGE_SIZE = 12;
 
 interface Candidate {
   user_id: string;
+  profile_id: string;
+  display_name: string;
   ximatar_label: string;
   ximatar_image: string;
+  ximatar_id?: string;
   evaluation_score: number;
   pillar_average: number;
   computational_power: number;
@@ -55,6 +58,8 @@ const BusinessCandidates = () => {
   const [shortlistedCount, setShortlistedCount] = useState(0);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [regenerateSeed, setRegenerateSeed] = useState(0);
+  const [showDebug, setShowDebug] = useState(false);
 
   // Shortlist from hiring goal
   const { 
@@ -138,20 +143,38 @@ const BusinessCandidates = () => {
       if (error) throw error;
 
       // For non-goal view, we don't have goal-specific shortlist - just show all
-      const candidatesWithShortlist: Candidate[] = (candidatesData || []).map((candidate: any) => ({
-        user_id: candidate.user_id,
-        ximatar_label: candidate.ximatar_label || 'Unknown',
-        ximatar_image: candidate.ximatar_image || '/placeholder.svg',
-        evaluation_score: Number(candidate.evaluation_score) || 0,
-        pillar_average: Number(candidate.pillar_average) || 0,
-        computational_power: Number(candidate.computational_power) || 0,
-        communication: Number(candidate.communication) || 0,
-        knowledge: Number(candidate.knowledge) || 0,
-        creativity: Number(candidate.creativity) || 0,
-        drive: Number(candidate.drive) || 0,
-        rank: Number(candidate.rank) || 0,
-        isShortlisted: false
-      }));
+      const candidatesWithShortlist: Candidate[] = (candidatesData || []).map((candidate: any) => {
+        // DEV: Log if ximatar data is inconsistent
+        if (process.env.NODE_ENV === 'development') {
+          const hasLabelImageMismatch = candidate.ximatar_label && candidate.ximatar_image && 
+            !candidate.ximatar_image.toLowerCase().includes(candidate.ximatar_label.toLowerCase());
+          if (hasLabelImageMismatch) {
+            console.warn('[DEV] Ximatar mismatch:', {
+              user_id: candidate.user_id,
+              label: candidate.ximatar_label,
+              image: candidate.ximatar_image
+            });
+          }
+        }
+        
+        return {
+          user_id: candidate.user_id,
+          profile_id: candidate.profile_id || candidate.user_id,
+          display_name: candidate.display_name || 'Unknown',
+          ximatar_label: candidate.ximatar_label || 'unknown',
+          ximatar_image: candidate.ximatar_image || '/placeholder.svg',
+          ximatar_id: candidate.ximatar_id,
+          evaluation_score: Number(candidate.evaluation_score) || 0,
+          pillar_average: Number(candidate.pillar_average) || 0,
+          computational_power: Number(candidate.computational_power) || 0,
+          communication: Number(candidate.communication) || 0,
+          knowledge: Number(candidate.knowledge) || 0,
+          creativity: Number(candidate.creativity) || 0,
+          drive: Number(candidate.drive) || 0,
+          rank: Number(candidate.rank) || 0,
+          isShortlisted: false
+        };
+      });
 
       try {
         await supabase.rpc('log_user_activity', {
@@ -245,20 +268,27 @@ const BusinessCandidates = () => {
     }
   };
 
-  // Handle regenerate matches (shuffle with deterministic seed)
+  // Handle regenerate matches (deterministic shuffle with seed)
   const handleRegenerate = async () => {
     if (!goalId) return;
     setIsRegenerating(true);
     
+    // Increment seed for new shuffle
+    const newSeed = regenerateSeed + 1;
+    setRegenerateSeed(newSeed);
+    
     // Preserve currently saved candidates
     const savedIds = new Set(candidates.filter(c => c.isShortlisted).map(c => c.user_id));
     
-    // Simple shuffle - in production you'd use a deterministic seed stored in DB
-    const shuffled = [...candidates].sort(() => Math.random() - 0.5);
+    // Deterministic shuffle using seed-based scoring
+    const seededShuffle = [...candidates].map((c, i) => ({
+      ...c,
+      sortKey: Math.sin(newSeed * 9999 + i) * 10000
+    })).sort((a, b) => a.sortKey - b.sortKey).map(({ sortKey, ...c }) => c);
     
     // Put saved candidates at the top, then rest
-    const savedCandidates = shuffled.filter(c => savedIds.has(c.user_id));
-    const unsavedCandidates = shuffled.filter(c => !savedIds.has(c.user_id));
+    const savedCandidates = seededShuffle.filter(c => savedIds.has(c.user_id));
+    const unsavedCandidates = seededShuffle.filter(c => !savedIds.has(c.user_id));
     const reordered = [...savedCandidates, ...unsavedCandidates];
     
     setCandidates(reordered);
@@ -384,17 +414,29 @@ const BusinessCandidates = () => {
                   </Badge>
                 )}
               </div>
-              {/* Regenerate button */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRegenerate}
-                disabled={isRegenerating}
-                className="shrink-0"
-              >
-                <RefreshCw size={14} className={`mr-2 ${isRegenerating ? 'animate-spin' : ''}`} />
-                {t('business.shortlist.regenerate')}
-              </Button>
+              <div className="flex items-center gap-2 shrink-0">
+                {/* DEV Debug Toggle */}
+                {process.env.NODE_ENV === 'development' && (
+                  <Button
+                    variant={showDebug ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setShowDebug(!showDebug)}
+                    title="Toggle DEV Debug Info"
+                  >
+                    <Bug size={14} />
+                  </Button>
+                )}
+                {/* Regenerate button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRegenerate}
+                  disabled={isRegenerating}
+                >
+                  <RefreshCw size={14} className={`mr-2 ${isRegenerating ? 'animate-spin' : ''}`} />
+                  {t('business.shortlist.regenerate')}
+                </Button>
+              </div>
             </div>
             
             {/* Shortlist filter tabs */}
@@ -519,8 +561,11 @@ const BusinessCandidates = () => {
               )}
               <XimatarCandidateCard
                 candidateId={candidate.user_id}
+                profileId={candidate.profile_id}
+                displayName={candidate.display_name}
                 ximatarLabel={candidate.ximatar_label}
                 ximatarImage={candidate.ximatar_image}
+                ximatarId={candidate.ximatar_id}
                 evaluationScore={candidate.evaluation_score}
                 pillarAverage={candidate.pillar_average}
                 pillars={{
@@ -533,6 +578,7 @@ const BusinessCandidates = () => {
                 isShortlisted={candidate.isShortlisted}
                 isSelected={selectedCandidates.includes(candidate.user_id)}
                 showSaveButton={!!goalId}
+                showDebug={showDebug}
                 onSelect={async (checked) => {
                   if (checked) {
                     setSelectedCandidates([...selectedCandidates, candidate.user_id]);
