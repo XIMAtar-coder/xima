@@ -1474,6 +1474,10 @@
       "apply_benchmark": "Aplicar",
       "continue": "Continuar",
       "success": "¡Objetivo de contratación guardado exitosamente!",
+      "completed_title": "Objetivo Guardado",
+      "completed_desc": "Tu objetivo de contratación ha sido guardado. Ahora puedes generar una lista de candidatos compatibles.",
+      "generate_shortlist": "Generar Lista",
+      "edit_goal": "Editar Objetivo",
       "error": "No se pudo guardar el objetivo de contratación",
       "errors": {
         "task_required": "La descripción de la tarea es obligatoria",

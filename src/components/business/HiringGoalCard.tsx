@@ -52,10 +52,11 @@ const COUNTRIES = [
 ];
 
 interface HiringGoalCardProps {
+  draftId?: string | null;
   onComplete?: () => void;
 }
 
-export function HiringGoalCard({ onComplete }: HiringGoalCardProps) {
+export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGoalCardProps) {
   const { t } = useTranslation();
   const [draft, setDraft] = useState<HiringGoalDraft>({
     task_description: '',
@@ -85,18 +86,20 @@ export function HiringGoalCard({ onComplete }: HiringGoalCardProps) {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
+        // Fetch the most recent draft (order by updated_at desc, limit 1)
         const { data, error } = await supabase
           .from('hiring_goal_drafts')
           .select('*')
           .eq('business_id', user.id)
-          .eq('status', 'draft')
           .order('updated_at', { ascending: false })
           .limit(1)
           .maybeSingle();
 
         if (error) throw error;
         
-        if (data) {
+        console.log('[HiringGoalCard] Loaded draft:', { id: data?.id, status: data?.status });
+        
+        if (data && data.status !== 'completed') {
           setDraft({
             id: data.id,
             task_description: data.task_description || '',
@@ -113,14 +116,14 @@ export function HiringGoalCard({ onComplete }: HiringGoalCardProps) {
           });
         }
       } catch (err) {
-        console.error('Error loading hiring goal draft:', err);
+        console.error('[HiringGoalCard] Error loading draft:', err);
       } finally {
         setLoading(false);
       }
     };
 
     loadDraft();
-  }, []);
+  }, [initialDraftId]);
 
   // Auto-save with debounce
   const saveDraft = useCallback(async (currentDraft: HiringGoalDraft) => {
@@ -280,21 +283,34 @@ export function HiringGoalCard({ onComplete }: HiringGoalCardProps) {
         status: 'completed'
       };
 
+      console.log('[HiringGoalCard] Submitting:', { draftId: draft.id, payload });
+
+      let result;
       if (draft.id) {
-        await supabase
+        // Update the SAME row
+        result = await supabase
           .from('hiring_goal_drafts')
           .update(payload)
-          .eq('id', draft.id);
+          .eq('id', draft.id)
+          .select()
+          .single();
       } else {
-        await supabase
+        // Create new completed goal
+        result = await supabase
           .from('hiring_goal_drafts')
-          .insert(payload);
+          .insert(payload)
+          .select()
+          .single();
       }
+
+      if (result.error) throw result.error;
+      
+      console.log('[HiringGoalCard] Submit success:', result.data);
 
       toast.success(t('business.hiring_goal.success'));
       onComplete?.();
     } catch (err) {
-      console.error('Error submitting hiring goal:', err);
+      console.error('[HiringGoalCard] Error submitting:', err);
       toast.error(t('business.hiring_goal.error'));
     } finally {
       setSubmitting(false);

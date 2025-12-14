@@ -32,6 +32,7 @@ const BusinessDashboard = () => {
   const [profileLoading, setProfileLoading] = useState(true);
   const [businessProfile, setBusinessProfile] = useState<any>(null);
   const [hiringGoalStatus, setHiringGoalStatus] = useState<'none' | 'draft' | 'completed'>('none');
+  const [hiringGoalDraftId, setHiringGoalDraftId] = useState<string | null>(null);
   const [hiringGoalLoading, setHiringGoalLoading] = useState(true);
 
   useEffect(() => {
@@ -63,38 +64,40 @@ const BusinessDashboard = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       
-      // First check for completed goals
-      const { data: completedData } = await supabase
+      // Fetch the most recent hiring goal draft (by updated_at)
+      const { data, error } = await supabase
         .from('hiring_goal_drafts')
-        .select('status')
+        .select('id, status')
         .eq('business_id', user.id)
-        .eq('status', 'completed')
+        .order('updated_at', { ascending: false })
         .limit(1)
         .maybeSingle();
       
-      if (completedData) {
-        setHiringGoalStatus('completed');
+      if (error) {
+        console.error('[Dashboard] Error fetching hiring goal:', error);
+        setHiringGoalStatus('none');
         return;
       }
       
-      // Then check for draft goals
-      const { data: draftData } = await supabase
-        .from('hiring_goal_drafts')
-        .select('status')
-        .eq('business_id', user.id)
-        .eq('status', 'draft')
-        .limit(1)
-        .maybeSingle();
+      console.log('[Dashboard] Hiring goal loaded:', { id: data?.id, status: data?.status });
       
-      if (draftData) {
-        setHiringGoalStatus('draft');
-      } else {
+      if (!data) {
+        // No rows exist
         setHiringGoalStatus('none');
+        setHiringGoalDraftId(null);
+      } else if (data.status === 'completed') {
+        setHiringGoalStatus('completed');
+        setHiringGoalDraftId(data.id);
+      } else {
+        // Status is 'draft' or any unknown value → show card (safe fallback)
+        setHiringGoalStatus('draft');
+        setHiringGoalDraftId(data.id);
       }
     } catch (err) {
-      console.error('Error loading hiring goal status:', err);
+      console.error('[Dashboard] Error loading hiring goal status:', err);
       // Fallback: show card if we can't determine status
       setHiringGoalStatus('none');
+      setHiringGoalDraftId(null);
     } finally {
       setHiringGoalLoading(false);
     }
@@ -369,7 +372,64 @@ const BusinessDashboard = () => {
 
         {/* Hiring Goal Card - Show for first-time (none) or draft state */}
         {!hiringGoalLoading && hiringGoalStatus !== 'completed' && (
-          <HiringGoalCard onComplete={() => setHiringGoalStatus('completed')} />
+          <HiringGoalCard 
+            draftId={hiringGoalDraftId}
+            onComplete={() => {
+              console.log('[Dashboard] HiringGoalCard completed, refetching status...');
+              loadHiringGoalStatus();
+            }} 
+          />
+        )}
+
+        {/* Next Step Panel - Show after hiring goal is completed */}
+        {!hiringGoalLoading && hiringGoalStatus === 'completed' && (
+          <Card className="border-green-500/30 bg-gradient-to-br from-green-500/5 to-background">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-full bg-green-500/20">
+                  <CheckCircle className="h-6 w-6 text-green-500" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-foreground mb-1">
+                    {t('business.hiring_goal.completed_title')}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {t('business.hiring_goal.completed_desc')}
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <Link to="/business/candidates">
+                      <Button className="gap-2">
+                        <Users className="h-4 w-4" />
+                        {t('business.hiring_goal.generate_shortlist')}
+                      </Button>
+                    </Link>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setHiringGoalStatus('draft');
+                        console.log('[Dashboard] Reopening hiring goal for editing');
+                      }}
+                    >
+                      {t('business.hiring_goal.edit_goal')}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              {/* Dev logging - status indicator */}
+              {process.env.NODE_ENV === 'development' && (
+                <div className="mt-4 pt-4 border-t border-border/50 text-xs text-muted-foreground font-mono">
+                  [DEV] draftId: {hiringGoalDraftId || 'null'} | status: {hiringGoalStatus}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Dev logging for draft/none states */}
+        {process.env.NODE_ENV === 'development' && !hiringGoalLoading && hiringGoalStatus !== 'completed' && (
+          <div className="text-xs text-muted-foreground font-mono bg-muted/50 p-2 rounded">
+            [DEV] Hiring Goal: draftId={hiringGoalDraftId || 'null'} | status={hiringGoalStatus}
+          </div>
         )}
 
         {/* Company Profile Section */}

@@ -1857,6 +1857,10 @@
       "apply_benchmark": "Applica",
       "continue": "Continua",
       "success": "Obiettivo di assunzione salvato con successo!",
+      "completed_title": "Obiettivo Salvato",
+      "completed_desc": "Il tuo obiettivo di assunzione è stato salvato. Ora puoi generare una lista di candidati compatibili.",
+      "generate_shortlist": "Genera Shortlist",
+      "edit_goal": "Modifica Obiettivo",
       "error": "Impossibile salvare l'obiettivo di assunzione",
       "errors": {
         "task_required": "La descrizione del compito è obbligatoria",
