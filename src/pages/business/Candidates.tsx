@@ -868,8 +868,8 @@ const BusinessCandidates = () => {
             businessId={user.id}
             defaultTitle={hiringGoal?.role_title || t('business.challenge.new_challenge')}
             defaultDescription={hiringGoal?.task_description || ''}
-            onChallengeCreated={(challengeId) => {
-              setActiveChallenge({ id: challengeId, title: hiringGoal?.role_title || t('business.challenge.new_challenge') });
+            onChallengeCreated={(challengeId, challengeTitle) => {
+              setActiveChallenge({ id: challengeId, title: challengeTitle });
             }}
           />
         )}

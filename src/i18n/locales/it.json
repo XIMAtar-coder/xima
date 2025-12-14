@@ -2157,5 +2157,24 @@
     "already_accepted_desc": "Hai già accettato questa sfida da {{company}}.",
     "already_declined": "Già Rifiutato",
     "already_declined_desc": "Hai già rifiutato questo invito."
+  },
+  "business_challenge": {
+    "create_title": "Crea Sfida",
+    "create_description": "Definisci la tua sfida per iniziare a invitare i candidati.",
+    "title_label": "Titolo Sfida",
+    "title_placeholder": "es. Case Study di Strategia Prodotto",
+    "description_label": "Descrizione Sfida",
+    "description_placeholder": "Descrivi cosa dovranno fare i candidati...",
+    "activate_button": "Attiva Sfida",
+    "activated": "Sfida Attivata",
+    "activated_desc": "Ora puoi invitare i candidati a partecipare.",
+    "fill_required": "Compila tutti i campi obbligatori.",
+    "gate_title": "Crea Prima una Sfida",
+    "gate_description": "Devi creare e attivare una sfida prima di poter invitare i candidati.",
+    "create_button": "Crea Sfida",
+    "view_saved": "Vedi Salvati",
+    "active_challenge": "Sfida Attiva",
+    "create_first_tooltip": "Crea prima una sfida attiva",
+    "new_challenge": "Nuova Sfida"
   }
 }

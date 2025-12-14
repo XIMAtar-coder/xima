@@ -1774,5 +1774,24 @@
     "already_accepted_desc": "Ya has aceptado este desafío de {{company}}.",
     "already_declined": "Ya Rechazado",
     "already_declined_desc": "Ya has rechazado esta invitación."
+  },
+  "business_challenge": {
+    "create_title": "Crear Desafío",
+    "create_description": "Define tu desafío para comenzar a invitar candidatos.",
+    "title_label": "Título del Desafío",
+    "title_placeholder": "ej. Caso de Estudio de Estrategia de Producto",
+    "description_label": "Descripción del Desafío",
+    "description_placeholder": "Describe lo que los candidatos tendrán que hacer...",
+    "activate_button": "Activar Desafío",
+    "activated": "Desafío Activado",
+    "activated_desc": "Ahora puedes invitar candidatos a participar.",
+    "fill_required": "Por favor completa todos los campos requeridos.",
+    "gate_title": "Crea un Desafío Primero",
+    "gate_description": "Necesitas crear y activar un desafío antes de poder invitar candidatos.",
+    "create_button": "Crear Desafío",
+    "view_saved": "Ver Guardados",
+    "active_challenge": "Desafío Activo",
+    "create_first_tooltip": "Crea un desafío activo primero",
+    "new_challenge": "Nuevo Desafío"
   }
 }

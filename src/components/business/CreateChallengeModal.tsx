@@ -16,7 +16,7 @@ interface CreateChallengeModalProps {
   businessId: string;
   defaultTitle?: string;
   defaultDescription?: string;
-  onChallengeCreated: (challengeId: string) => void;
+  onChallengeCreated: (challengeId: string, challengeTitle: string) => void;
 }
 
 export const CreateChallengeModal: React.FC<CreateChallengeModalProps> = ({
@@ -73,7 +73,8 @@ export const CreateChallengeModal: React.FC<CreateChallengeModalProps> = ({
         description: t('business_challenge.activated_desc'),
       });
 
-      onChallengeCreated(data.id);
+      // Return both id and title so parent can update state properly
+      onChallengeCreated(data.id, title.trim());
       onOpenChange(false);
     } catch (err: any) {
       console.error('Error creating challenge:', err);
