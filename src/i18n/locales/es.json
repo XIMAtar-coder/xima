@@ -1408,7 +1408,17 @@
       "why_matched": "Por qué este candidato coincide:",
       "no_matches": "Ningún candidato coincide con los criterios de tu objetivo",
       "all_matches": "Todos los Matches",
-      "saved": "Guardados"
+      "saved": "Guardados",
+      "save_btn": "Guardar",
+      "saved_btn": "Guardado",
+      "save_hint": "Guarda candidatos para tenerlos para después.",
+      "no_saved": "Aún no hay candidatos guardados",
+      "browse_matches": "Ver Todos los Matches",
+      "regenerate": "Regenerar",
+      "regenerated": "Matches Regenerados",
+      "regenerated_desc": "Tu lista ha sido actualizada. Los candidatos guardados permanecen arriba.",
+      "show_more": "Mostrar {{count}} más",
+      "invite_to_challenge": "Invitar al Desafío"
     },
     "reports": {
       "title": "Informes y Análisis",
