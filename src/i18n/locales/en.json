@@ -1870,7 +1870,17 @@
       "why_matched": "Why this candidate matches:",
       "no_matches": "No candidates matched your hiring goal criteria",
       "all_matches": "All Matches",
-      "saved": "Saved"
+      "saved": "Saved",
+      "save_btn": "Save",
+      "saved_btn": "Saved",
+      "save_hint": "Save candidates to keep them for later.",
+      "no_saved": "No saved candidates yet",
+      "browse_matches": "Browse All Matches",
+      "regenerate": "Regenerate",
+      "regenerated": "Matches Regenerated",
+      "regenerated_desc": "Your match list has been refreshed. Saved candidates remain at the top.",
+      "show_more": "Show {{count}} more",
+      "invite_to_challenge": "Invite to Challenge"
     },
     "reports": {
       "title": "Reports & Analytics",

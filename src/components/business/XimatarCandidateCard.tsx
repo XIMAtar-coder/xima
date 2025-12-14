@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Star, Target, TrendingUp } from 'lucide-react';
+import { Star, Target, TrendingUp, Bookmark, BookmarkCheck } from 'lucide-react';
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer } from 'recharts';
 
 interface XimatarCandidateCardProps {
@@ -22,6 +23,7 @@ interface XimatarCandidateCardProps {
   };
   isShortlisted?: boolean;
   isSelected?: boolean;
+  showSaveButton?: boolean;
   onSelect?: (checked: boolean) => void;
   onToggleShortlist?: () => void;
   onInviteToChallenge?: () => void;
@@ -42,10 +44,12 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
   pillars,
   isShortlisted = false,
   isSelected = false,
+  showSaveButton = false,
   onSelect,
   onToggleShortlist,
   onInviteToChallenge,
 }) => {
+  const { t } = useTranslation();
   const [showDetail, setShowDetail] = useState(false);
   const level = getLevelBadge(evaluationScore);
 
@@ -68,7 +72,8 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
                 onCheckedChange={onSelect}
               />
             )}
-            {onToggleShortlist && (
+            {/* Small star icon for legacy/non-goal view */}
+            {onToggleShortlist && !showSaveButton && (
               <Button
                 variant="ghost"
                 size="icon"
@@ -114,6 +119,26 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
           </div>
 
           <div className="mt-4 pt-4 border-t border-border space-y-2">
+            {/* Explicit Save/Saved button for goal-based view */}
+            {showSaveButton && onToggleShortlist && (
+              <Button
+                variant={isShortlisted ? "secondary" : "outline"}
+                className={`w-full ${isShortlisted ? 'bg-green-500/20 text-green-600 hover:bg-green-500/30 border-green-500/30' : ''}`}
+                onClick={onToggleShortlist}
+              >
+                {isShortlisted ? (
+                  <>
+                    <BookmarkCheck className="mr-2" size={16} />
+                    {t('business.shortlist.saved_btn')}
+                  </>
+                ) : (
+                  <>
+                    <Bookmark className="mr-2" size={16} />
+                    {t('business.shortlist.save_btn')}
+                  </>
+                )}
+              </Button>
+            )}
             <Button
               variant="outline"
               className="w-full"
@@ -128,7 +153,7 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
                 onClick={onInviteToChallenge}
               >
                 <Target className="mr-2" size={16} />
-                Invite to Challenge
+                {t('business.shortlist.invite_to_challenge')}
               </Button>
             )}
           </div>

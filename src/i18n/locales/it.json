@@ -1791,7 +1791,17 @@
       "why_matched": "Perché questo candidato corrisponde:",
       "no_matches": "Nessun candidato corrisponde ai criteri del tuo obiettivo",
       "all_matches": "Tutti i Match",
-      "saved": "Salvati"
+      "saved": "Salvati",
+      "save_btn": "Salva",
+      "saved_btn": "Salvato",
+      "save_hint": "Salva i candidati per tenerli per dopo.",
+      "no_saved": "Nessun candidato salvato ancora",
+      "browse_matches": "Sfoglia Tutti i Match",
+      "regenerate": "Rigenera",
+      "regenerated": "Match Rigenerati",
+      "regenerated_desc": "La tua lista è stata aggiornata. I candidati salvati rimangono in cima.",
+      "show_more": "Mostra altri {{count}}",
+      "invite_to_challenge": "Invita alla Sfida"
     },
     "reports": {
       "title": "Report e Analisi",

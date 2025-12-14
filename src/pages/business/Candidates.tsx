@@ -11,11 +11,13 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft, Bookmark, BookmarkCheck } from 'lucide-react';
+import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft, Bookmark, BookmarkCheck, RefreshCw, ChevronDown, Lightbulb } from 'lucide-react';
 import { XimatarCandidateCard } from '@/components/business/XimatarCandidateCard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useHiringGoalShortlist } from '@/hooks/useHiringGoalShortlist';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+const PAGE_SIZE = 12;
 
 interface Candidate {
   user_id: string;
@@ -51,6 +53,8 @@ const BusinessCandidates = () => {
   const [sortBy, setSortBy] = useState<'score' | 'pillar'>('score');
   const [viewFilter, setViewFilter] = useState<'all' | 'shortlisted'>('all');
   const [shortlistedCount, setShortlistedCount] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [isRegenerating, setIsRegenerating] = useState(false);
 
   // Shortlist from hiring goal
   const { 
@@ -233,12 +237,50 @@ const BusinessCandidates = () => {
   // Handle view filter changes (All / Shortlisted)
   const handleViewFilterChange = (value: string) => {
     setViewFilter(value as 'all' | 'shortlisted');
+    setVisibleCount(PAGE_SIZE); // Reset pagination when switching tabs
     if (value === 'shortlisted') {
       setFilteredCandidates(candidates.filter(c => c.isShortlisted));
     } else {
       setFilteredCandidates(candidates);
     }
   };
+
+  // Handle regenerate matches (shuffle with deterministic seed)
+  const handleRegenerate = async () => {
+    if (!goalId) return;
+    setIsRegenerating(true);
+    
+    // Preserve currently saved candidates
+    const savedIds = new Set(candidates.filter(c => c.isShortlisted).map(c => c.user_id));
+    
+    // Simple shuffle - in production you'd use a deterministic seed stored in DB
+    const shuffled = [...candidates].sort(() => Math.random() - 0.5);
+    
+    // Put saved candidates at the top, then rest
+    const savedCandidates = shuffled.filter(c => savedIds.has(c.user_id));
+    const unsavedCandidates = shuffled.filter(c => !savedIds.has(c.user_id));
+    const reordered = [...savedCandidates, ...unsavedCandidates];
+    
+    setCandidates(reordered);
+    setFilteredCandidates(viewFilter === 'shortlisted' ? reordered.filter(c => c.isShortlisted) : reordered);
+    setVisibleCount(PAGE_SIZE);
+    
+    toast({
+      title: t('business.shortlist.regenerated'),
+      description: t('business.shortlist.regenerated_desc')
+    });
+    
+    setIsRegenerating(false);
+  };
+
+  // Show more candidates
+  const handleShowMore = () => {
+    setVisibleCount(prev => prev + PAGE_SIZE);
+  };
+
+  // Get paginated candidates for display
+  const displayedCandidates = filteredCandidates.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredCandidates.length;
 
   const handleBulkAction = async (action: string) => {
     if (selectedCandidates.length === 0) {
@@ -342,6 +384,17 @@ const BusinessCandidates = () => {
                   </Badge>
                 )}
               </div>
+              {/* Regenerate button */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRegenerate}
+                disabled={isRegenerating}
+                className="shrink-0"
+              >
+                <RefreshCw size={14} className={`mr-2 ${isRegenerating ? 'animate-spin' : ''}`} />
+                {t('business.shortlist.regenerate')}
+              </Button>
             </div>
             
             {/* Shortlist filter tabs */}
@@ -357,6 +410,14 @@ const BusinessCandidates = () => {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
+
+            {/* Hint for All Matches tab */}
+            {viewFilter === 'all' && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
+                <Lightbulb size={16} className="text-amber-500 shrink-0" />
+                {t('business.shortlist.save_hint')}
+              </div>
+            )}
 
             {shortlistError && (
               <Card className="border-destructive/50 bg-destructive/5">
@@ -448,7 +509,7 @@ const BusinessCandidates = () => {
 
         {/* Candidates Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCandidates.map((candidate) => (
+          {displayedCandidates.map((candidate) => (
             <div key={candidate.user_id} className="relative">
               {/* Match badge for shortlist view */}
               {goalId && candidate.matchLevel && (
@@ -471,6 +532,7 @@ const BusinessCandidates = () => {
                 }}
                 isShortlisted={candidate.isShortlisted}
                 isSelected={selectedCandidates.includes(candidate.user_id)}
+                showSaveButton={!!goalId}
                 onSelect={async (checked) => {
                   if (checked) {
                     setSelectedCandidates([...selectedCandidates, candidate.user_id]);
@@ -510,12 +572,42 @@ const BusinessCandidates = () => {
           ))}
         </div>
 
+        {/* Show More Button (Pagination) */}
+        {hasMore && displayedCandidates.length > 0 && (
+          <div className="flex justify-center pt-4">
+            <Button
+              variant="outline"
+              onClick={handleShowMore}
+              className="gap-2"
+            >
+              <ChevronDown size={16} />
+              {t('business.shortlist.show_more', { count: PAGE_SIZE })}
+            </Button>
+          </div>
+        )}
+
+        {/* Empty States */}
         {filteredCandidates.length === 0 && (
           <Card className="bg-card border-border">
-            <CardContent className="p-12 text-center">
-              <p className="text-muted-foreground text-lg">
-                {goalId ? t('business.shortlist.no_matches') : t('business.candidates.no_candidates')}
-              </p>
+            <CardContent className="p-12 text-center space-y-4">
+              {goalId && viewFilter === 'shortlisted' ? (
+                <>
+                  <BookmarkCheck size={48} className="mx-auto text-muted-foreground/50" />
+                  <p className="text-muted-foreground text-lg">
+                    {t('business.shortlist.no_saved')}
+                  </p>
+                  <Button
+                    variant="outline"
+                    onClick={() => handleViewFilterChange('all')}
+                  >
+                    {t('business.shortlist.browse_matches')}
+                  </Button>
+                </>
+              ) : (
+                <p className="text-muted-foreground text-lg">
+                  {goalId ? t('business.shortlist.no_matches') : t('business.candidates.no_candidates')}
+                </p>
+              )}
             </CardContent>
           </Card>
         )}
