@@ -2134,5 +2134,28 @@
     "title": "404 - Pagina Non Trovata",
     "message": "Ops! La pagina che stai cercando non esiste.",
     "return_home": "Torna alla Home"
+  },
+  "challenge_invitation": {
+    "banner_title": "Hai inviti a sfide!",
+    "pending": "in attesa",
+    "view_challenge": "Visualizza Sfida",
+    "title": "Invito alla Sfida",
+    "subtitle": "Un'azienda vuole valutare le tue competenze",
+    "what_they_need": "Cosa cercano:",
+    "invited_on": "Invitato il {{date}}",
+    "login_required": "Accedi per rispondere a questo invito",
+    "accept": "Accetta Sfida",
+    "decline": "Rifiuta",
+    "accepted_title": "Sfida Accettata!",
+    "accepted_desc": "Hai accettato la sfida. Buona fortuna!",
+    "declined_title": "Invito Rifiutato",
+    "declined_desc": "Hai rifiutato questo invito.",
+    "error_title": "Invito Non Valido",
+    "go_home": "Vai alla Home",
+    "go_profile": "Vai al Profilo",
+    "already_accepted": "Già Accettata",
+    "already_accepted_desc": "Hai già accettato questa sfida da {{company}}.",
+    "already_declined": "Già Rifiutato",
+    "already_declined_desc": "Hai già rifiutato questo invito."
   }
 }

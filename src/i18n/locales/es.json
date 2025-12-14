@@ -1751,5 +1751,28 @@
     "title": "404 - Página No Encontrada",
     "message": "¡Ups! La página que buscas no existe.",
     "return_home": "Volver al Inicio"
+  },
+  "challenge_invitation": {
+    "banner_title": "¡Tienes invitaciones a desafíos!",
+    "pending": "pendiente",
+    "view_challenge": "Ver Desafío",
+    "title": "Invitación al Desafío",
+    "subtitle": "Una empresa quiere evaluar tus habilidades",
+    "what_they_need": "Lo que necesitan:",
+    "invited_on": "Invitado el {{date}}",
+    "login_required": "Inicia sesión para responder a esta invitación",
+    "accept": "Aceptar Desafío",
+    "decline": "Rechazar",
+    "accepted_title": "¡Desafío Aceptado!",
+    "accepted_desc": "Has aceptado el desafío. ¡Buena suerte!",
+    "declined_title": "Invitación Rechazada",
+    "declined_desc": "Has rechazado esta invitación.",
+    "error_title": "Invitación Inválida",
+    "go_home": "Ir al Inicio",
+    "go_profile": "Ir al Perfil",
+    "already_accepted": "Ya Aceptado",
+    "already_accepted_desc": "Ya has aceptado este desafío de {{company}}.",
+    "already_declined": "Ya Rechazado",
+    "already_declined_desc": "Ya has rechazado esta invitación."
   }
 }
