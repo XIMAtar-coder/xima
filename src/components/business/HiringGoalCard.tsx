@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Target, ChevronDown, Loader2, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Sparkles, ChevronDown, Loader2, CheckCircle2, AlertCircle, ArrowRight, Save } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -51,6 +51,15 @@ const COUNTRIES = [
   { code: 'CH', name: 'Switzerland', currency: 'CHF' },
 ];
 
+const TASK_SUGGESTION_CHIPS = [
+  'own_pipeline',
+  'improve_conversion',
+  'manage_accounts',
+  'lead_team',
+  'automate_reporting',
+  'build_partnerships'
+];
+
 interface HiringGoalCardProps {
   draftId?: string | null;
   onComplete?: () => void;
@@ -76,8 +85,9 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
   const [submitting, setSubmitting] = useState(false);
   const [benchmark, setBenchmark] = useState<SalaryBenchmark | null>(null);
   const [benchmarkLoading, setBenchmarkLoading] = useState(false);
-  const [optionalOpen, setOptionalOpen] = useState(false);
+  const [roleTitleOpen, setRoleTitleOpen] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isEditingExisting, setIsEditingExisting] = useState(false);
 
   // Load existing draft
   useEffect(() => {
@@ -86,18 +96,14 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        // If we have a specific draftId, fetch that row directly
-        // Otherwise fetch the most recent non-completed draft
         let query = supabase
           .from('hiring_goal_drafts')
           .select('*')
           .eq('business_id', user.id);
         
         if (initialDraftId) {
-          // Fetch specific row by ID (for edit mode)
           query = query.eq('id', initialDraftId);
         } else {
-          // Fetch most recent draft that's not completed
           query = query.neq('status', 'completed').order('updated_at', { ascending: false }).limit(1);
         }
         
@@ -122,6 +128,14 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
             salary_period: data.salary_period || 'yearly',
             status: data.status || 'draft'
           });
+          // If we loaded an existing draft with content, mark as editing
+          if (data.task_description) {
+            setIsEditingExisting(true);
+          }
+          // Open role title section if it has content
+          if (data.role_title) {
+            setRoleTitleOpen(true);
+          }
         }
       } catch (err) {
         console.error('[HiringGoalCard] Error loading draft:', err);
@@ -209,7 +223,6 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
         if (error) throw error;
         if (data?.success && data?.benchmark) {
           setBenchmark(data.benchmark);
-          // Update currency based on country
           const country = COUNTRIES.find(c => c.code === draft.country);
           if (country) {
             setDraft(prev => ({ ...prev, salary_currency: country.currency }));
@@ -227,13 +240,22 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
 
   const updateField = <K extends keyof HiringGoalDraft>(field: K, value: HiringGoalDraft[K]) => {
     setDraft(prev => ({ ...prev, [field]: value }));
-    // Clear error when field is updated
     if (errors[field]) {
       setErrors(prev => {
         const next = { ...prev };
         delete next[field];
         return next;
       });
+    }
+  };
+
+  const insertSuggestion = (chipKey: string) => {
+    const suggestion = t(`business.hiring_goal.suggestion_${chipKey}`);
+    const currentText = draft.task_description;
+    const bulletPrefix = currentText && !currentText.endsWith('\n') && currentText.length > 0 ? '\n• ' : '• ';
+    const newText = currentText + bulletPrefix + suggestion;
+    if (newText.length <= 600) {
+      updateField('task_description', newText);
     }
   };
 
@@ -295,7 +317,6 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
 
       let result;
       if (draft.id) {
-        // Update the SAME row
         result = await supabase
           .from('hiring_goal_drafts')
           .update(payload)
@@ -303,7 +324,6 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
           .select()
           .single();
       } else {
-        // Create new completed goal
         result = await supabase
           .from('hiring_goal_drafts')
           .insert(payload)
@@ -359,18 +379,12 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
       <CardHeader className="pb-4">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-primary/10">
-            <Target className="h-5 w-5 text-primary" />
+            <Sparkles className="h-5 w-5 text-primary" />
           </div>
           <div className="flex-1">
             <CardTitle className="text-lg">{t('business.hiring_goal.title')}</CardTitle>
             <CardDescription>{t('business.hiring_goal.description')}</CardDescription>
           </div>
-          {saving && (
-            <Badge variant="outline" className="gap-1 text-muted-foreground">
-              <Loader2 className="h-3 w-3 animate-spin" />
-              {t('business.hiring_goal.saving')}
-            </Badge>
-          )}
         </div>
       </CardHeader>
 
@@ -381,6 +395,23 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
             {t('business.hiring_goal.task_label')} <span className="text-destructive">*</span>
           </Label>
           <p className="text-xs text-muted-foreground">{t('business.hiring_goal.task_hint')}</p>
+          
+          {/* Suggestion chips */}
+          <div className="flex flex-wrap gap-2 py-2">
+            {TASK_SUGGESTION_CHIPS.map((chip) => (
+              <Button
+                key={chip}
+                type="button"
+                variant="outline"
+                size="sm"
+                className="text-xs h-7 px-2.5 hover:bg-primary/10 hover:border-primary/30"
+                onClick={() => insertSuggestion(chip)}
+              >
+                + {t(`business.hiring_goal.chip_${chip}`)}
+              </Button>
+            ))}
+          </div>
+          
           <Textarea
             id="task_description"
             value={draft.task_description}
@@ -402,35 +433,36 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
           </div>
         </div>
 
-        {/* OPTIONAL: Role Title (Progressive Disclosure) */}
-        <Collapsible open={optionalOpen} onOpenChange={setOptionalOpen}>
+        {/* OPTIONAL: Role Title (Collapsed by default) */}
+        <Collapsible open={roleTitleOpen} onOpenChange={setRoleTitleOpen}>
           <CollapsibleTrigger asChild>
-            <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
-              <ChevronDown className={`h-4 w-4 transition-transform ${optionalOpen ? 'rotate-180' : ''}`} />
+            <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground -ml-2">
+              <ChevronDown className={`h-4 w-4 transition-transform ${roleTitleOpen ? 'rotate-180' : ''}`} />
               {t('business.hiring_goal.optional_fields')}
             </Button>
           </CollapsibleTrigger>
-          <CollapsibleContent className="pt-4 space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="role_title" className="text-sm font-medium">
-                {t('business.hiring_goal.role_label')}
-              </Label>
-              <p className="text-xs text-muted-foreground">{t('business.hiring_goal.role_hint')}</p>
-              <Input
-                id="role_title"
-                value={draft.role_title}
-                onChange={(e) => updateField('role_title', e.target.value)}
-                placeholder={t('business.hiring_goal.role_placeholder')}
-              />
-            </div>
+          <CollapsibleContent className="pt-3 space-y-2">
+            <Label htmlFor="role_title" className="text-sm font-medium">
+              {t('business.hiring_goal.role_label')}
+            </Label>
+            <p className="text-xs text-muted-foreground">{t('business.hiring_goal.role_hint')}</p>
+            <Input
+              id="role_title"
+              value={draft.role_title}
+              onChange={(e) => updateField('role_title', e.target.value)}
+              placeholder={t('business.hiring_goal.role_placeholder')}
+            />
           </CollapsibleContent>
         </Collapsible>
 
         {/* Experience Level */}
         <div className="space-y-3">
-          <Label className="text-sm font-medium">
-            {t('business.hiring_goal.experience_label')} <span className="text-destructive">*</span>
-          </Label>
+          <div>
+            <Label className="text-sm font-medium">
+              {t('business.hiring_goal.experience_label')} <span className="text-destructive">*</span>
+            </Label>
+            <p className="text-xs text-muted-foreground mt-0.5">{t('business.hiring_goal.experience_hint')}</p>
+          </div>
           <RadioGroup
             value={draft.experience_level}
             onValueChange={(value) => updateField('experience_level', value)}
@@ -461,79 +493,77 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
           )}
         </div>
 
-        {/* Work Model + Location */}
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">
-              {t('business.hiring_goal.work_model_label')} <span className="text-destructive">*</span>
-            </Label>
-            <Select value={draft.work_model} onValueChange={(v) => updateField('work_model', v)}>
-              <SelectTrigger className={errors.work_model ? 'border-destructive' : ''}>
-                <SelectValue placeholder={t('business.hiring_goal.work_model_placeholder')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="remote">{t('business.hiring_goal.work_remote')}</SelectItem>
-                <SelectItem value="hybrid">{t('business.hiring_goal.work_hybrid')}</SelectItem>
-                <SelectItem value="onsite">{t('business.hiring_goal.work_onsite')}</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.work_model && (
-              <span className="text-destructive text-xs flex items-center gap-1">
-                <AlertCircle className="h-3 w-3" />
-                {errors.work_model}
-              </span>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">
-              {t('business.hiring_goal.country_label')} <span className="text-destructive">*</span>
-            </Label>
-            <Select value={draft.country} onValueChange={(v) => updateField('country', v)}>
-              <SelectTrigger className={errors.country ? 'border-destructive' : ''}>
-                <SelectValue placeholder={t('business.hiring_goal.country_placeholder')} />
-              </SelectTrigger>
-              <SelectContent>
-                {COUNTRIES.map((country) => (
-                  <SelectItem key={country.code} value={country.code}>
-                    {country.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.country && (
-              <span className="text-destructive text-xs flex items-center gap-1">
-                <AlertCircle className="h-3 w-3" />
-                {errors.country}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* City/Region (optional) */}
-        <div className="space-y-2">
-          <Label htmlFor="city_region" className="text-sm font-medium">
-            {t('business.hiring_goal.city_label')}
+        {/* Work Model + Location - Compact Layout */}
+        <div className="space-y-4">
+          <Label className="text-sm font-medium">
+            {t('business.hiring_goal.where_how_label')} <span className="text-destructive">*</span>
           </Label>
-          <Input
-            id="city_region"
-            value={draft.city_region}
-            onChange={(e) => updateField('city_region', e.target.value)}
-            placeholder={t('business.hiring_goal.city_placeholder')}
-          />
+          
+          {/* Work Model Pills */}
+          <div className="flex flex-wrap gap-2">
+            {['remote', 'hybrid', 'onsite'].map((model) => (
+              <Button
+                key={model}
+                type="button"
+                variant={draft.work_model === model ? 'default' : 'outline'}
+                size="sm"
+                className={`h-8 ${draft.work_model === model ? '' : 'hover:bg-muted/50'}`}
+                onClick={() => updateField('work_model', model)}
+              >
+                {t(`business.hiring_goal.work_${model}`)}
+              </Button>
+            ))}
+          </div>
+          {errors.work_model && (
+            <span className="text-destructive text-xs flex items-center gap-1">
+              <AlertCircle className="h-3 w-3" />
+              {errors.work_model}
+            </span>
+          )}
+          
+          {/* Country + City in row */}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Select value={draft.country} onValueChange={(v) => updateField('country', v)}>
+                <SelectTrigger className={errors.country ? 'border-destructive' : ''}>
+                  <SelectValue placeholder={t('business.hiring_goal.country_placeholder')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {COUNTRIES.map((country) => (
+                    <SelectItem key={country.code} value={country.code}>
+                      {country.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.country && (
+                <span className="text-destructive text-xs flex items-center gap-1">
+                  <AlertCircle className="h-3 w-3" />
+                  {errors.country}
+                </span>
+              )}
+            </div>
+            
+            <Input
+              value={draft.city_region}
+              onChange={(e) => updateField('city_region', e.target.value)}
+              placeholder={t('business.hiring_goal.city_placeholder')}
+            />
+          </div>
         </div>
 
         {/* Compensation Range */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <Label className="text-sm font-medium">
               {t('business.hiring_goal.salary_label')} <span className="text-destructive">*</span>
             </Label>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <Button
                 type="button"
                 variant={draft.salary_period === 'yearly' ? 'default' : 'outline'}
                 size="sm"
+                className="h-7 text-xs"
                 onClick={() => updateField('salary_period', 'yearly')}
               >
                 {t('business.hiring_goal.yearly')}
@@ -542,6 +572,7 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
                 type="button"
                 variant={draft.salary_period === 'monthly' ? 'default' : 'outline'}
                 size="sm"
+                className="h-7 text-xs"
                 onClick={() => updateField('salary_period', 'monthly')}
               >
                 {t('business.hiring_goal.monthly')}
@@ -581,53 +612,60 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
             </span>
           )}
 
-          {/* AI Benchmark Hint */}
+          {/* AI Benchmark Hint - Subtle, non-blocking */}
           {(benchmark || benchmarkLoading) && (
-            <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+            <div className="p-2.5 rounded-lg bg-muted/30 border border-border/30">
               {benchmarkLoading ? (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Loader2 className="h-3 w-3 animate-spin" />
                   {t('business.hiring_goal.loading_benchmark')}
                 </div>
               ) : benchmark && (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-primary" />
-                    <span className="text-sm font-medium">
-                      {benchmark.source === 'country' 
-                        ? t('business.hiring_goal.benchmark_country', { country: benchmark.country_name })
-                        : t('business.hiring_goal.benchmark_eu')
-                      }
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Sparkles className="h-3 w-3 text-primary/70" />
+                    <span>
+                      {benchmark.currency} {benchmark.min.toLocaleString()}–{benchmark.max.toLocaleString()}
                     </span>
-                    <Badge className={getConfidenceColor(benchmark.confidence)}>
-                      {t(`business.hiring_goal.confidence_${benchmark.confidence}`)}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      {benchmark.currency} {benchmark.min.toLocaleString()} — {benchmark.max.toLocaleString()}
-                      <span className="ml-2 text-xs">
-                        ({t('business.hiring_goal.median')}: {benchmark.median.toLocaleString()})
-                      </span>
+                    <span className="text-muted-foreground/70">
+                      {t('business.hiring_goal.market_hint')}
                     </span>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={applyBenchmark}
-                      className="text-primary hover:text-primary"
-                    >
-                      {t('business.hiring_goal.apply_benchmark')}
-                    </Button>
                   </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={applyBenchmark}
+                    className="text-xs h-6 px-2 text-primary hover:text-primary"
+                  >
+                    {t('business.hiring_goal.apply_benchmark')}
+                  </Button>
                 </div>
               )}
             </div>
           )}
         </div>
 
-        {/* CTA */}
-        <div className="flex justify-end pt-4 border-t">
+        {/* Footer with status + CTA */}
+        <div className="flex items-center justify-between pt-4 border-t gap-3 flex-wrap">
+          {/* Draft saved indicator */}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            {saving ? (
+              <>
+                <Loader2 className="h-3 w-3 animate-spin" />
+                {t('business.hiring_goal.saving')}
+              </>
+            ) : (
+              <>
+                <Save className="h-3 w-3" />
+                {isEditingExisting 
+                  ? t('business.hiring_goal.editing_saved') 
+                  : t('business.hiring_goal.draft_saved')
+                }
+              </>
+            )}
+          </div>
+          
           <Button
             onClick={handleSubmit}
             disabled={submitting}
@@ -636,9 +674,11 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
             {submitting ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <CheckCircle2 className="h-4 w-4" />
+              <>
+                {t('business.hiring_goal.continue_cta')}
+                <ArrowRight className="h-4 w-4" />
+              </>
             )}
-            {t('business.hiring_goal.continue')}
           </Button>
         </div>
       </CardContent>
