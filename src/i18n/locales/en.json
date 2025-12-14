@@ -1936,6 +1936,10 @@
       "apply_benchmark": "Apply",
       "continue": "Continue",
       "success": "Hiring goal saved successfully!",
+      "completed_title": "Hiring Goal Saved",
+      "completed_desc": "Your hiring goal has been saved. You can now generate a shortlist of matching candidates.",
+      "generate_shortlist": "Generate Shortlist",
+      "edit_goal": "Edit Goal",
       "error": "Failed to save hiring goal",
       "errors": {
         "task_required": "Task description is required",
