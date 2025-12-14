@@ -17,6 +17,7 @@ interface InvitationDetails {
   company_name: string;
   role_title: string | null;
   task_description: string | null;
+  challenge_title: string | null;
 }
 
 const ChallengeAccept = () => {
@@ -44,10 +45,10 @@ const ChallengeAccept = () => {
 
   const fetchInvitation = async () => {
     try {
-      // Fetch invitation by token
+      // Fetch invitation by token with challenge info
       const { data: invData, error: invError } = await supabase
         .from('challenge_invitations')
-        .select('id, status, created_at, business_id, hiring_goal_id')
+        .select('id, status, created_at, business_id, hiring_goal_id, challenge_id')
         .eq('invite_token', token)
         .single();
 
@@ -57,8 +58,8 @@ const ChallengeAccept = () => {
         return;
       }
 
-      // Fetch company and role details
-      const [businessResult, goalResult] = await Promise.all([
+      // Fetch company, role, and challenge details
+      const [businessResult, goalResult, challengeResult] = await Promise.all([
         supabase
           .from('business_profiles')
           .select('company_name')
@@ -68,7 +69,14 @@ const ChallengeAccept = () => {
           .from('hiring_goal_drafts')
           .select('role_title, task_description')
           .eq('id', invData.hiring_goal_id)
-          .single()
+          .single(),
+        invData.challenge_id 
+          ? supabase
+              .from('business_challenges')
+              .select('title')
+              .eq('id', invData.challenge_id)
+              .single()
+          : Promise.resolve({ data: null })
       ]);
 
       setInvitation({
@@ -77,7 +85,8 @@ const ChallengeAccept = () => {
         created_at: invData.created_at,
         company_name: businessResult.data?.company_name || 'Company',
         role_title: goalResult.data?.role_title || null,
-        task_description: goalResult.data?.task_description || null
+        task_description: goalResult.data?.task_description || null,
+        challenge_title: challengeResult.data?.title || null
       });
     } catch (err) {
       console.error('Error fetching invitation:', err);
@@ -281,6 +290,15 @@ const ChallengeAccept = () => {
           </div>
 
           <CardContent className="p-6 space-y-6">
+            {/* Challenge title if available */}
+            {invitation.challenge_title && (
+              <div className="text-center">
+                <Badge variant="secondary" className="text-base px-4 py-1">
+                  {invitation.challenge_title}
+                </Badge>
+              </div>
+            )}
+
             {/* Company info */}
             <div className="flex items-start gap-4 p-4 bg-muted/50 rounded-lg">
               <Building2 className="h-6 w-6 text-primary shrink-0 mt-0.5" />
