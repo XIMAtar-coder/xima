@@ -1157,6 +1157,60 @@ export type Database = {
           },
         ]
       }
+      hiring_goal_drafts: {
+        Row: {
+          business_id: string
+          city_region: string | null
+          country: string | null
+          created_at: string | null
+          experience_level: string | null
+          id: string
+          role_title: string | null
+          salary_currency: string | null
+          salary_max: number | null
+          salary_min: number | null
+          salary_period: string | null
+          status: string | null
+          task_description: string | null
+          updated_at: string | null
+          work_model: string | null
+        }
+        Insert: {
+          business_id: string
+          city_region?: string | null
+          country?: string | null
+          created_at?: string | null
+          experience_level?: string | null
+          id?: string
+          role_title?: string | null
+          salary_currency?: string | null
+          salary_max?: number | null
+          salary_min?: number | null
+          salary_period?: string | null
+          status?: string | null
+          task_description?: string | null
+          updated_at?: string | null
+          work_model?: string | null
+        }
+        Update: {
+          business_id?: string
+          city_region?: string | null
+          country?: string | null
+          created_at?: string | null
+          experience_level?: string | null
+          id?: string
+          role_title?: string | null
+          salary_currency?: string | null
+          salary_max?: number | null
+          salary_min?: number | null
+          salary_period?: string | null
+          status?: string | null
+          task_description?: string | null
+          updated_at?: string | null
+          work_model?: string | null
+        }
+        Relationships: []
+      }
       i18n_keys: {
         Row: {
           created_at: string | null

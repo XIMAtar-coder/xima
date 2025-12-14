@@ -38,3 +38,6 @@ verify_jwt = false
 
 [functions.get-field-averages]
 verify_jwt = false
+
+[functions.get-salary-benchmark]
+verify_jwt = false

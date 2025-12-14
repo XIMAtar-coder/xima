@@ -13,6 +13,7 @@ import { Progress } from '@/components/ui/progress';
 import { Link } from 'react-router-dom';
 import { CandidateEngagement } from '@/components/business/CandidateEngagement';
 import { CompanyProfileCard } from '@/components/business/CompanyProfileCard';
+import { HiringGoalCard } from '@/components/business/HiringGoalCard';
 
 const BusinessDashboard = () => {
   const navigate = useNavigate();
@@ -30,6 +31,8 @@ const BusinessDashboard = () => {
   const [companyProfile, setCompanyProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [businessProfile, setBusinessProfile] = useState<any>(null);
+  const [hasCompletedHiringGoal, setHasCompletedHiringGoal] = useState(false);
+  const [hiringGoalLoading, setHiringGoalLoading] = useState(true);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -52,7 +55,29 @@ const BusinessDashboard = () => {
     loadDashboardStats();
     loadCompanyProfile();
     loadBusinessProfile();
+    loadHiringGoalStatus();
   }, [isAuthenticated, isBusiness, businessLoading, navigate, toast, t]);
+
+  const loadHiringGoalStatus = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      
+      const { data } = await supabase
+        .from('hiring_goal_drafts')
+        .select('status')
+        .eq('business_id', user.id)
+        .eq('status', 'completed')
+        .limit(1)
+        .maybeSingle();
+      
+      setHasCompletedHiringGoal(!!data);
+    } catch (err) {
+      console.error('Error loading hiring goal status:', err);
+    } finally {
+      setHiringGoalLoading(false);
+    }
+  };
 
   const loadDashboardStats = async () => {
     try {
@@ -320,6 +345,11 @@ const BusinessDashboard = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Hiring Goal Card - Show for first-time/empty-state */}
+        {!hiringGoalLoading && !hasCompletedHiringGoal && (
+          <HiringGoalCard onComplete={() => setHasCompletedHiringGoal(true)} />
+        )}
 
         {/* Company Profile Section */}
         <CompanyProfileCard
