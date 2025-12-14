@@ -1789,7 +1789,9 @@
       "match_medium": "Media Corrispondenza",
       "match_low": "Bassa Corrispondenza",
       "why_matched": "Perché questo candidato corrisponde:",
-      "no_matches": "Nessun candidato corrisponde ai criteri del tuo obiettivo"
+      "no_matches": "Nessun candidato corrisponde ai criteri del tuo obiettivo",
+      "all_matches": "Tutti i Match",
+      "saved": "Salvati"
     },
     "reports": {
       "title": "Report e Analisi",

@@ -53,11 +53,17 @@ const BusinessDashboard = () => {
       return;
     }
 
-    loadDashboardStats();
     loadCompanyProfile();
     loadBusinessProfile();
     loadHiringGoalStatus();
   }, [isAuthenticated, isBusiness, businessLoading, navigate, toast, t]);
+
+  // Load dashboard stats after hiring goal status is determined
+  useEffect(() => {
+    if (!hiringGoalLoading && user?.id) {
+      loadDashboardStats();
+    }
+  }, [hiringGoalLoading, hiringGoalDraftId, hiringGoalStatus, user?.id]);
 
   const loadHiringGoalStatus = async () => {
     try {
@@ -109,10 +115,23 @@ const BusinessDashboard = () => {
         .from('assessment_results')
         .select('*', { count: 'exact', head: true });
 
-      const { count: shortlistedCount } = await supabase
-        .from('candidate_shortlist')
-        .select('*', { count: 'exact', head: true })
-        .eq('business_id', user?.id);
+      // Get shortlisted count from business_shortlists for latest completed hiring goal
+      let shortlistedCount = 0;
+      if (hiringGoalDraftId && hiringGoalStatus === 'completed') {
+        const { count } = await supabase
+          .from('business_shortlists')
+          .select('*', { count: 'exact', head: true })
+          .eq('business_id', user?.id)
+          .eq('hiring_goal_id', hiringGoalDraftId);
+        shortlistedCount = count || 0;
+      } else {
+        // Fallback: count all shortlists for this business
+        const { count } = await supabase
+          .from('business_shortlists')
+          .select('*', { count: 'exact', head: true })
+          .eq('business_id', user?.id);
+        shortlistedCount = count || 0;
+      }
 
       const { count: activeChallengesCount } = await supabase
         .from('business_challenges')
@@ -139,7 +158,7 @@ const BusinessDashboard = () => {
 
       setStats({
         totalCandidates: candidatesCount || 0,
-        shortlisted: shortlistedCount || 0,
+        shortlisted: shortlistedCount,
         activeChallenges: activeChallengesCount || 0,
         completedChallenges: completedCount || 0
       });

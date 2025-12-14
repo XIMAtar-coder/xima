@@ -1868,7 +1868,9 @@
       "match_medium": "Medium Match",
       "match_low": "Low Match",
       "why_matched": "Why this candidate matches:",
-      "no_matches": "No candidates matched your hiring goal criteria"
+      "no_matches": "No candidates matched your hiring goal criteria",
+      "all_matches": "All Matches",
+      "saved": "Saved"
     },
     "reports": {
       "title": "Reports & Analytics",

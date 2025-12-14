@@ -672,6 +672,38 @@ export type Database = {
         }
         Relationships: []
       }
+      business_shortlists: {
+        Row: {
+          business_id: string
+          candidate_profile_id: string
+          created_at: string
+          hiring_goal_id: string
+          id: string
+        }
+        Insert: {
+          business_id: string
+          candidate_profile_id: string
+          created_at?: string
+          hiring_goal_id: string
+          id?: string
+        }
+        Update: {
+          business_id?: string
+          candidate_profile_id?: string
+          created_at?: string
+          hiring_goal_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_shortlists_hiring_goal_id_fkey"
+            columns: ["hiring_goal_id"]
+            isOneToOne: false
+            referencedRelation: "hiring_goal_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       candidate_challenges: {
         Row: {
           candidate_id: string

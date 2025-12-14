@@ -1406,7 +1406,9 @@
       "match_medium": "Media Coincidencia",
       "match_low": "Baja Coincidencia",
       "why_matched": "Por qué este candidato coincide:",
-      "no_matches": "Ningún candidato coincide con los criterios de tu objetivo"
+      "no_matches": "Ningún candidato coincide con los criterios de tu objetivo",
+      "all_matches": "Todos los Matches",
+      "saved": "Guardados"
     },
     "reports": {
       "title": "Informes y Análisis",
