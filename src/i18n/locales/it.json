@@ -1781,6 +1781,16 @@
       "failed_action": "Impossibile eseguire l'azione",
       "no_candidates": "Nessun candidato trovato con i criteri selezionati"
     },
+    "shortlist": {
+      "title": "Lista Basata sul Tuo Obiettivo di Assunzione",
+      "subtitle": "{{count}} candidati corrispondenti ai tuoi requisiti",
+      "generating": "Generazione della tua lista personalizzata...",
+      "match_high": "Alta Corrispondenza",
+      "match_medium": "Media Corrispondenza",
+      "match_low": "Bassa Corrispondenza",
+      "why_matched": "Perché questo candidato corrisponde:",
+      "no_matches": "Nessun candidato corrisponde ai criteri del tuo obiettivo"
+    },
     "reports": {
       "title": "Report e Analisi",
       "subtitle": "Analisi complete della tua pipeline di assunzioni",

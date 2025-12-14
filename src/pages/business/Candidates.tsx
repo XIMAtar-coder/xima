@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,9 +11,10 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Filter, Star, Target, ArrowUpDown } from 'lucide-react';
+import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft } from 'lucide-react';
 import { XimatarCandidateCard } from '@/components/business/XimatarCandidateCard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useHiringGoalShortlist } from '@/hooks/useHiringGoalShortlist';
 
 interface Candidate {
   user_id: string;
@@ -28,10 +29,14 @@ interface Candidate {
   drive: number;
   rank: number;
   isShortlisted?: boolean;
+  matchLevel?: 'high' | 'medium' | 'low';
+  matchReasons?: string[];
 }
 
 const BusinessCandidates = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const goalId = searchParams.get('fromGoal');
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
@@ -44,16 +49,30 @@ const BusinessCandidates = () => {
   const [ximatarFilter, setXimatarFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'score' | 'pillar'>('score');
 
+  // Shortlist from hiring goal
+  const { 
+    loading: shortlistLoading, 
+    hiringGoal, 
+    shortlist, 
+    error: shortlistError 
+  } = useHiringGoalShortlist(goalId);
+
   useEffect(() => {
     if (!isAuthenticated || (businessLoading === false && !isBusiness)) {
       navigate('/business/login');
       return;
     }
 
+    // If we have a goalId, use shortlist data instead of loading all candidates
+    if (goalId) {
+      setLoading(false);
+      return;
+    }
+
     if (!businessLoading) {
       loadCandidates();
     }
-  }, [isAuthenticated, isBusiness, businessLoading]);
+  }, [isAuthenticated, isBusiness, businessLoading, goalId]);
 
   useEffect(() => {
     let filtered = [...candidates];
@@ -79,18 +98,41 @@ const BusinessCandidates = () => {
     setFilteredCandidates(filtered);
   }, [searchTerm, candidates, ximatarFilter, sortBy]);
 
+  // Update candidates when shortlist is loaded (for goal-based view)
+  useEffect(() => {
+    if (goalId && shortlist.length > 0) {
+      const loadShortlistStatus = async () => {
+        const { data: shortlistedData } = await supabase
+          .from('candidate_shortlist')
+          .select('candidate_id')
+          .eq('business_id', user?.id);
+
+        const shortlistedIds = new Set(shortlistedData?.map(s => s.candidate_id) || []);
+
+        const candidatesWithStatus = shortlist.map(c => ({
+          ...c,
+          isShortlisted: shortlistedIds.has(c.user_id)
+        }));
+
+        setCandidates(candidatesWithStatus);
+        setFilteredCandidates(candidatesWithStatus);
+      };
+      loadShortlistStatus();
+    }
+  }, [goalId, shortlist, user?.id]);
+
   const loadCandidates = async () => {
     try {
       const { data: candidatesData, error } = await supabase.rpc('get_candidate_visibility');
 
       if (error) throw error;
 
-      const { data: shortlisted } = await supabase
+      const { data: shortlistedData } = await supabase
         .from('candidate_shortlist')
         .select('candidate_id')
         .eq('business_id', user?.id);
 
-      const shortlistedIds = new Set(shortlisted?.map(s => s.candidate_id) || []);
+      const shortlistedIds = new Set(shortlistedData?.map(s => s.candidate_id) || []);
 
       // DEV DEBUG: Log first 5 candidates raw data
       if (import.meta.env.DEV && candidatesData?.length) {
@@ -228,141 +270,225 @@ const BusinessCandidates = () => {
     }
   };
 
-  if (loading || businessLoading) {
+  if (loading || businessLoading || (goalId && shortlistLoading)) {
     return (
       <BusinessLayout>
         <div className="flex justify-center items-center min-h-[60vh]">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary"></div>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+            {goalId && (
+              <p className="text-muted-foreground">{t('business.shortlist.generating')}</p>
+            )}
+          </div>
         </div>
       </BusinessLayout>
     );
   }
 
+  // Match level badge styling
+  const getMatchBadge = (level: 'high' | 'medium' | 'low' | undefined) => {
+    switch (level) {
+      case 'high':
+        return <Badge className="bg-green-500/20 text-green-500 border-green-500/30">{t('business.shortlist.match_high')}</Badge>;
+      case 'medium':
+        return <Badge className="bg-amber-500/20 text-amber-500 border-amber-500/30">{t('business.shortlist.match_medium')}</Badge>;
+      case 'low':
+        return <Badge className="bg-muted text-muted-foreground border-border">{t('business.shortlist.match_low')}</Badge>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <BusinessLayout>
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">{t('business.candidates.title')}</h1>
-            <p className="text-muted-foreground">
-              {filteredCandidates.length} {t('business.candidates.available')}
-            </p>
-          </div>
-          {selectedCandidates.length > 0 && (
-            <div className="flex gap-2">
-              <Button
-                onClick={() => handleBulkAction('shortlist')}
-                variant="outline"
-                className="border-primary/30"
-              >
-                <Star className="mr-2" size={16} />
-                {t('business.candidates.shortlist_action')} ({selectedCandidates.length})
-              </Button>
-              <Button
-                onClick={() => handleBulkAction('challenge')}
-                className="bg-primary hover:bg-primary/90"
-              >
-                <Target className="mr-2" size={16} />
-                {t('business.candidates.invite_action')}
-              </Button>
-            </div>
-          )}
-        </div>
-
-        {/* Search and Filters */}
-        <Card className="bg-card border-border">
-          <CardContent className="p-4">
-            <div className="flex gap-4 flex-wrap">
-              <div className="flex-1 min-w-[200px] relative">
-                <Search className="absolute left-3 top-3 text-muted-foreground" size={18} />
-                <Input
-                  placeholder={t('business.candidates.search_placeholder')}
-                  className="pl-10"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
+        {/* Header - Different for shortlist vs pool view */}
+        {goalId ? (
+          <div className="space-y-4">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/business/dashboard')}
+              className="gap-2 -ml-2"
+            >
+              <ArrowLeft size={16} />
+              {t('common.back')}
+            </Button>
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-full bg-primary/20">
+                <Sparkles className="h-6 w-6 text-primary" />
               </div>
-              <Select value={ximatarFilter} onValueChange={setXimatarFilter}>
-                <SelectTrigger className="w-[180px]">
-                  <Filter className="mr-2" size={16} />
-                  <SelectValue placeholder={t('business.candidates.filter_type')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t('business.candidates.all_types')}</SelectItem>
-                  <SelectItem value="owl">Owl</SelectItem>
-                  <SelectItem value="parrot">Parrot</SelectItem>
-                  <SelectItem value="elephant">Elephant</SelectItem>
-                  <SelectItem value="fox">Fox</SelectItem>
-                  <SelectItem value="horse">Horse</SelectItem>
-                  <SelectItem value="wolf">Wolf</SelectItem>
-                  <SelectItem value="lion">Lion</SelectItem>
-                  <SelectItem value="bee">Bee</SelectItem>
-                  <SelectItem value="cat">Cat</SelectItem>
-                  <SelectItem value="dolphin">Dolphin</SelectItem>
-                  <SelectItem value="bear">Bear</SelectItem>
-                  <SelectItem value="chameleon">Chameleon</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={sortBy} onValueChange={(value: 'score' | 'pillar') => setSortBy(value)}>
-                <SelectTrigger className="w-[180px]">
-                  <ArrowUpDown className="mr-2" size={16} />
-                  <SelectValue placeholder={t('business.candidates.sort_by')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="score">{t('business.candidates.evaluation_score')}</SelectItem>
-                  <SelectItem value="pillar">{t('business.candidates.pillar_average')}</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold text-foreground mb-2">
+                  {t('business.shortlist.title')}
+                </h1>
+                <p className="text-muted-foreground">
+                  {t('business.shortlist.subtitle', { count: filteredCandidates.length })}
+                </p>
+                {hiringGoal?.role_title && (
+                  <Badge variant="outline" className="mt-2">
+                    {hiringGoal.role_title}
+                  </Badge>
+                )}
+              </div>
             </div>
-          </CardContent>
-        </Card>
+            {shortlistError && (
+              <Card className="border-destructive/50 bg-destructive/5">
+                <CardContent className="p-4 text-destructive">
+                  {shortlistError}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">{t('business.candidates.title')}</h1>
+              <p className="text-muted-foreground">
+                {filteredCandidates.length} {t('business.candidates.available')}
+              </p>
+            </div>
+            {selectedCandidates.length > 0 && (
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => handleBulkAction('shortlist')}
+                  variant="outline"
+                  className="border-primary/30"
+                >
+                  <Star className="mr-2" size={16} />
+                  {t('business.candidates.shortlist_action')} ({selectedCandidates.length})
+                </Button>
+                <Button
+                  onClick={() => handleBulkAction('challenge')}
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  <Target className="mr-2" size={16} />
+                  {t('business.candidates.invite_action')}
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Search and Filters - Only show in full pool view */}
+        {!goalId && (
+          <Card className="bg-card border-border">
+            <CardContent className="p-4">
+              <div className="flex gap-4 flex-wrap">
+                <div className="flex-1 min-w-[200px] relative">
+                  <Search className="absolute left-3 top-3 text-muted-foreground" size={18} />
+                  <Input
+                    placeholder={t('business.candidates.search_placeholder')}
+                    className="pl-10"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                <Select value={ximatarFilter} onValueChange={setXimatarFilter}>
+                  <SelectTrigger className="w-[180px]">
+                    <Filter className="mr-2" size={16} />
+                    <SelectValue placeholder={t('business.candidates.filter_type')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{t('business.candidates.all_types')}</SelectItem>
+                    <SelectItem value="owl">Owl</SelectItem>
+                    <SelectItem value="parrot">Parrot</SelectItem>
+                    <SelectItem value="elephant">Elephant</SelectItem>
+                    <SelectItem value="fox">Fox</SelectItem>
+                    <SelectItem value="horse">Horse</SelectItem>
+                    <SelectItem value="wolf">Wolf</SelectItem>
+                    <SelectItem value="lion">Lion</SelectItem>
+                    <SelectItem value="bee">Bee</SelectItem>
+                    <SelectItem value="cat">Cat</SelectItem>
+                    <SelectItem value="dolphin">Dolphin</SelectItem>
+                    <SelectItem value="bear">Bear</SelectItem>
+                    <SelectItem value="chameleon">Chameleon</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={sortBy} onValueChange={(value: 'score' | 'pillar') => setSortBy(value)}>
+                  <SelectTrigger className="w-[180px]">
+                    <ArrowUpDown className="mr-2" size={16} />
+                    <SelectValue placeholder={t('business.candidates.sort_by')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="score">{t('business.candidates.evaluation_score')}</SelectItem>
+                    <SelectItem value="pillar">{t('business.candidates.pillar_average')}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Candidates Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCandidates.map((candidate) => (
-            <XimatarCandidateCard
-              key={candidate.user_id}
-              candidateId={candidate.user_id}
-              ximatarLabel={candidate.ximatar_label}
-              ximatarImage={candidate.ximatar_image}
-              evaluationScore={candidate.evaluation_score}
-              pillarAverage={candidate.pillar_average}
-              pillars={{
-                computational_power: candidate.computational_power,
-                communication: candidate.communication,
-                knowledge: candidate.knowledge,
-                creativity: candidate.creativity,
-                drive: candidate.drive,
-              }}
-              isShortlisted={candidate.isShortlisted}
-              isSelected={selectedCandidates.includes(candidate.user_id)}
-              onSelect={async (checked) => {
-                if (checked) {
-                  setSelectedCandidates([...selectedCandidates, candidate.user_id]);
-                  try {
-                    await supabase.rpc('log_user_activity', {
-                      p_user_id: user?.id,
-                      p_action: 'candidate_view',
-                      p_context: { candidate_id: candidate.user_id }
-                    });
-                  } catch (err) {
-                    console.warn('Failed to log activity:', err);
+            <div key={candidate.user_id} className="relative">
+              {/* Match badge for shortlist view */}
+              {goalId && candidate.matchLevel && (
+                <div className="absolute -top-2 -right-2 z-10">
+                  {getMatchBadge(candidate.matchLevel)}
+                </div>
+              )}
+              <XimatarCandidateCard
+                candidateId={candidate.user_id}
+                ximatarLabel={candidate.ximatar_label}
+                ximatarImage={candidate.ximatar_image}
+                evaluationScore={candidate.evaluation_score}
+                pillarAverage={candidate.pillar_average}
+                pillars={{
+                  computational_power: candidate.computational_power,
+                  communication: candidate.communication,
+                  knowledge: candidate.knowledge,
+                  creativity: candidate.creativity,
+                  drive: candidate.drive,
+                }}
+                isShortlisted={candidate.isShortlisted}
+                isSelected={selectedCandidates.includes(candidate.user_id)}
+                onSelect={async (checked) => {
+                  if (checked) {
+                    setSelectedCandidates([...selectedCandidates, candidate.user_id]);
+                    try {
+                      await supabase.rpc('log_user_activity', {
+                        p_user_id: user?.id,
+                        p_action: 'candidate_view',
+                        p_context: { candidate_id: candidate.user_id }
+                      });
+                    } catch (err) {
+                      console.warn('Failed to log activity:', err);
+                    }
+                  } else {
+                    setSelectedCandidates(selectedCandidates.filter(id => id !== candidate.user_id));
                   }
-                } else {
-                  setSelectedCandidates(selectedCandidates.filter(id => id !== candidate.user_id));
-                }
-              }}
-              onToggleShortlist={() => handleToggleShortlist(candidate.user_id)}
-              onInviteToChallenge={() => navigate('/business/challenges/new', { state: { selectedCandidates: [candidate.user_id] } })}
-            />
+                }}
+                onToggleShortlist={() => handleToggleShortlist(candidate.user_id)}
+                onInviteToChallenge={() => navigate('/business/challenges/new', { state: { selectedCandidates: [candidate.user_id] } })}
+              />
+              {/* Match reasons for shortlist view */}
+              {goalId && candidate.matchReasons && candidate.matchReasons.length > 0 && (
+                <div className="mt-2 p-3 bg-muted/50 rounded-lg border border-border/50">
+                  <p className="text-xs font-medium text-muted-foreground mb-1">
+                    {t('business.shortlist.why_matched')}
+                  </p>
+                  <ul className="space-y-1">
+                    {candidate.matchReasons.map((reason, idx) => (
+                      <li key={idx} className="text-xs text-foreground flex items-start gap-1.5">
+                        <span className="text-primary mt-0.5">•</span>
+                        {reason}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           ))}
         </div>
 
         {filteredCandidates.length === 0 && (
           <Card className="bg-card border-border">
             <CardContent className="p-12 text-center">
-              <p className="text-muted-foreground text-lg">{t('business.candidates.no_candidates')}</p>
+              <p className="text-muted-foreground text-lg">
+                {goalId ? t('business.shortlist.no_matches') : t('business.candidates.no_candidates')}
+              </p>
             </CardContent>
           </Card>
         )}

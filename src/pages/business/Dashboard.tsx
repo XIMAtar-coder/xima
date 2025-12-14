@@ -398,12 +398,13 @@ const BusinessDashboard = () => {
                     {t('business.hiring_goal.completed_desc')}
                   </p>
                   <div className="flex flex-wrap gap-3">
-                    <Link to="/business/candidates">
-                      <Button className="gap-2">
-                        <Users className="h-4 w-4" />
-                        {t('business.hiring_goal.generate_shortlist')}
-                      </Button>
-                    </Link>
+                    <Button 
+                      className="gap-2"
+                      onClick={() => navigate(`/business/candidates?fromGoal=${hiringGoalDraftId}`)}
+                    >
+                      <Users className="h-4 w-4" />
+                      {t('business.hiring_goal.generate_shortlist')}
+                    </Button>
                     <Button 
                       variant="outline" 
                       onClick={async () => {

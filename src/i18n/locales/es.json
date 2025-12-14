@@ -1398,6 +1398,16 @@
       "failed_action": "No se pudo realizar la acción",
       "no_candidates": "No se encontraron candidatos que coincidan con tus criterios"
     },
+    "shortlist": {
+      "title": "Lista Basada en Tu Objetivo de Contratación",
+      "subtitle": "{{count}} candidatos coinciden con tus requisitos",
+      "generating": "Generando tu lista personalizada...",
+      "match_high": "Alta Coincidencia",
+      "match_medium": "Media Coincidencia",
+      "match_low": "Baja Coincidencia",
+      "why_matched": "Por qué este candidato coincide:",
+      "no_matches": "Ningún candidato coincide con los criterios de tu objetivo"
+    },
     "reports": {
       "title": "Informes y Análisis",
       "subtitle": "Información integral sobre tu pipeline de contratación",
