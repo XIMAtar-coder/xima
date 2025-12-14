@@ -37,6 +37,7 @@ interface Candidate {
   isShortlisted?: boolean;
   matchLevel?: 'high' | 'medium' | 'low';
   matchReasons?: string[];
+  invitationStatus?: 'none' | 'invited' | 'accepted' | 'declined' | 'loading';
 }
 
 const BusinessCandidates = () => {
@@ -60,6 +61,22 @@ const BusinessCandidates = () => {
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [regenerateSeed, setRegenerateSeed] = useState(0);
   const [showDebug, setShowDebug] = useState(false);
+  const [invitationStatuses, setInvitationStatuses] = useState<Record<string, 'none' | 'invited' | 'accepted' | 'declined' | 'loading'>>({});
+  const [companyName, setCompanyName] = useState<string>('');
+
+  // Fetch company name for invitations
+  useEffect(() => {
+    const fetchCompanyName = async () => {
+      if (!user?.id) return;
+      const { data } = await supabase
+        .from('business_profiles')
+        .select('company_name')
+        .eq('user_id', user.id)
+        .single();
+      if (data) setCompanyName(data.company_name);
+    };
+    fetchCompanyName();
+  }, [user?.id]);
 
   // Shortlist from hiring goal
   const { 
@@ -113,7 +130,7 @@ const BusinessCandidates = () => {
   // Update candidates when shortlist is loaded (for goal-based view)
   useEffect(() => {
     if (goalId && shortlist.length > 0) {
-      const loadShortlistStatus = async () => {
+      const loadShortlistAndInvitations = async () => {
         // Use the new business_shortlists table
         const { data: shortlistedData } = await supabase
           .from('business_shortlists')
@@ -121,18 +138,33 @@ const BusinessCandidates = () => {
           .eq('business_id', user?.id)
           .eq('hiring_goal_id', goalId);
 
+        // Also load existing invitations
+        const { data: invitationsData } = await supabase
+          .from('challenge_invitations')
+          .select('candidate_profile_id, status')
+          .eq('business_id', user?.id)
+          .eq('hiring_goal_id', goalId);
+
         const shortlistedIds = new Set(shortlistedData?.map(s => s.candidate_profile_id) || []);
         setShortlistedCount(shortlistedIds.size);
 
+        // Build invitation status map
+        const invStatusMap: Record<string, 'none' | 'invited' | 'accepted' | 'declined'> = {};
+        (invitationsData || []).forEach(inv => {
+          invStatusMap[inv.candidate_profile_id] = inv.status as any;
+        });
+        setInvitationStatuses(invStatusMap);
+
         const candidatesWithStatus = shortlist.map(c => ({
           ...c,
-          isShortlisted: shortlistedIds.has(c.user_id)
+          isShortlisted: shortlistedIds.has(c.user_id),
+          invitationStatus: invStatusMap[c.user_id] || 'none'
         }));
 
         setCandidates(candidatesWithStatus);
         setFilteredCandidates(candidatesWithStatus);
       };
-      loadShortlistStatus();
+      loadShortlistAndInvitations();
     }
   }, [goalId, shortlist, user?.id]);
 
@@ -306,6 +338,96 @@ const BusinessCandidates = () => {
   // Show more candidates
   const handleShowMore = () => {
     setVisibleCount(prev => prev + PAGE_SIZE);
+  };
+
+  // Handle invite to challenge
+  const handleInviteToChallenge = async (candidateId: string) => {
+    if (!goalId || !user?.id) return;
+    
+    // Set loading state
+    setInvitationStatuses(prev => ({ ...prev, [candidateId]: 'loading' }));
+    
+    try {
+      // Get candidate email from profiles
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id, email, full_name, name')
+        .eq('user_id', candidateId)
+        .single();
+
+      if (!profile) throw new Error('Candidate profile not found');
+
+      const candidateName = profile.full_name || profile.name || 'Candidate';
+      const candidateEmail = profile.email;
+
+      // Create invitation record
+      const { data: invitation, error: invError } = await supabase
+        .from('challenge_invitations')
+        .insert({
+          business_id: user.id,
+          hiring_goal_id: goalId,
+          candidate_profile_id: profile.id
+        })
+        .select('id, invite_token')
+        .single();
+
+      if (invError) {
+        if (invError.code === '23505') {
+          // Duplicate - already invited
+          toast({
+            title: t('business.shortlist.already_invited'),
+            description: t('business.shortlist.already_invited_desc'),
+            variant: 'default'
+          });
+          setInvitationStatuses(prev => ({ ...prev, [candidateId]: 'invited' }));
+          return;
+        }
+        throw invError;
+      }
+
+      // Send email via edge function (if we have email)
+      if (candidateEmail) {
+        try {
+          await supabase.functions.invoke('send-challenge-invitation', {
+            body: {
+              invitation_id: invitation.id,
+              candidate_email: candidateEmail,
+              candidate_name: candidateName,
+              company_name: companyName || 'Company',
+              role_title: hiringGoal?.role_title,
+              invite_token: invitation.invite_token,
+              language: 'en'
+            }
+          });
+        } catch (emailErr) {
+          console.warn('Email sending failed (non-blocking):', emailErr);
+        }
+      }
+
+      // Update local state
+      setInvitationStatuses(prev => ({ ...prev, [candidateId]: 'invited' }));
+      
+      // Update candidate in list
+      setCandidates(prev => prev.map(c => 
+        c.user_id === candidateId ? { ...c, invitationStatus: 'invited' as const } : c
+      ));
+      setFilteredCandidates(prev => prev.map(c => 
+        c.user_id === candidateId ? { ...c, invitationStatus: 'invited' as const } : c
+      ));
+
+      toast({
+        title: t('business.shortlist.invitation_sent'),
+        description: t('business.shortlist.invitation_sent_desc', { name: candidateName })
+      });
+    } catch (err: any) {
+      console.error('Error sending invitation:', err);
+      setInvitationStatuses(prev => ({ ...prev, [candidateId]: 'none' }));
+      toast({
+        title: t('common.error'),
+        description: err.message,
+        variant: 'destructive'
+      });
+    }
   };
 
   // Get paginated candidates for display
@@ -579,6 +701,7 @@ const BusinessCandidates = () => {
                 isSelected={selectedCandidates.includes(candidate.user_id)}
                 showSaveButton={!!goalId}
                 showDebug={showDebug}
+                invitationStatus={invitationStatuses[candidate.user_id] || candidate.invitationStatus || 'none'}
                 onSelect={async (checked) => {
                   if (checked) {
                     setSelectedCandidates([...selectedCandidates, candidate.user_id]);
@@ -596,7 +719,7 @@ const BusinessCandidates = () => {
                   }
                 }}
                 onToggleShortlist={() => handleToggleShortlist(candidate.user_id)}
-                onInviteToChallenge={() => navigate('/business/challenges/new', { state: { selectedCandidates: [candidate.user_id] } })}
+                onInviteToChallenge={() => handleInviteToChallenge(candidate.user_id)}
               />
               {/* Match reasons for shortlist view */}
               {goalId && candidate.matchReasons && candidate.matchReasons.length > 0 && (

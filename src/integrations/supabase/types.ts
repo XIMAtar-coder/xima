@@ -775,6 +775,50 @@ export type Database = {
         }
         Relationships: []
       }
+      challenge_invitations: {
+        Row: {
+          business_id: string
+          candidate_profile_id: string
+          created_at: string
+          hiring_goal_id: string
+          id: string
+          invite_token: string
+          responded_at: string | null
+          sent_via: string[]
+          status: string
+        }
+        Insert: {
+          business_id: string
+          candidate_profile_id: string
+          created_at?: string
+          hiring_goal_id: string
+          id?: string
+          invite_token?: string
+          responded_at?: string | null
+          sent_via?: string[]
+          status?: string
+        }
+        Update: {
+          business_id?: string
+          candidate_profile_id?: string
+          created_at?: string
+          hiring_goal_id?: string
+          id?: string
+          invite_token?: string
+          responded_at?: string | null
+          sent_via?: string[]
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_invitations_hiring_goal_id_fkey"
+            columns: ["hiring_goal_id"]
+            isOneToOne: false
+            referencedRelation: "hiring_goal_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_messages: {
         Row: {
           body: string
@@ -2160,6 +2204,19 @@ export type Database = {
         Returns: string
       }
       get_admin_stats: { Args: never; Returns: Json }
+      get_candidate_invitations: {
+        Args: { p_user_id: string }
+        Returns: {
+          business_id: string
+          company_name: string
+          created_at: string
+          hiring_goal_id: string
+          id: string
+          invite_token: string
+          role_title: string
+          status: string
+        }[]
+      }
       get_candidate_visibility: {
         Args: never
         Returns: {
