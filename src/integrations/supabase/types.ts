@@ -2167,10 +2167,12 @@ export type Database = {
           computational_power: number
           computed_at: string
           creativity: number
+          display_name: string
           drive: number
           evaluation_score: number
           knowledge: number
           pillar_average: number
+          profile_id: string
           rank: number
           user_id: string
           ximatar: Database["public"]["Enums"]["ximatar_type"]

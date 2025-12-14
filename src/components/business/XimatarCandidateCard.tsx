@@ -10,8 +10,11 @@ import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer } fro
 
 interface XimatarCandidateCardProps {
   candidateId: string;
+  profileId?: string;
+  displayName?: string;
   ximatarLabel: string;
   ximatarImage: string;
+  ximatarId?: string;
   evaluationScore: number;
   pillarAverage: number;
   pillars: {
@@ -24,6 +27,7 @@ interface XimatarCandidateCardProps {
   isShortlisted?: boolean;
   isSelected?: boolean;
   showSaveButton?: boolean;
+  showDebug?: boolean;
   onSelect?: (checked: boolean) => void;
   onToggleShortlist?: () => void;
   onInviteToChallenge?: () => void;
@@ -37,14 +41,18 @@ const getLevelBadge = (score: number) => {
 
 export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
   candidateId,
+  profileId,
+  displayName,
   ximatarLabel,
   ximatarImage,
+  ximatarId,
   evaluationScore,
   pillarAverage,
   pillars,
   isShortlisted = false,
   isSelected = false,
   showSaveButton = false,
+  showDebug = false,
   onSelect,
   onToggleShortlist,
   onInviteToChallenge,
@@ -52,6 +60,9 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
   const { t } = useTranslation();
   const [showDetail, setShowDetail] = useState(false);
   const level = getLevelBadge(evaluationScore);
+
+  // Check if pillars have real data
+  const hasPillarData = pillarAverage > 0;
 
   const chartData = [
     { pillar: 'Computational', score: pillars.computational_power },
@@ -65,6 +76,17 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
     <>
       <Card className="bg-gradient-to-br from-card to-card/50 border-border/50 hover:border-primary/40 transition-all">
         <CardContent className="p-6">
+          {/* DEV Debug Overlay */}
+          {showDebug && process.env.NODE_ENV === 'development' && (
+            <div className="mb-3 p-2 bg-yellow-500/10 border border-yellow-500/30 rounded text-xs font-mono space-y-0.5">
+              <div className="text-yellow-600">🔧 DEV DEBUG</div>
+              <div><span className="text-muted-foreground">profile_id:</span> {profileId || 'N/A'}</div>
+              <div><span className="text-muted-foreground">user_id:</span> {candidateId}</div>
+              <div><span className="text-muted-foreground">ximatar_id:</span> {ximatarId || 'N/A'}</div>
+              <div><span className="text-muted-foreground">save_id:</span> {profileId || candidateId}</div>
+            </div>
+          )}
+          
           <div className="flex items-start justify-between mb-4">
             {onSelect && (
               <Checkbox
@@ -91,23 +113,31 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
                 src={ximatarImage} 
                 alt={ximatarLabel} 
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/placeholder.svg';
+                }}
               />
             </div>
             <Badge className={`bg-gradient-to-r ${level.color} text-white mb-2`}>
               {level.label}
             </Badge>
-            <h3 className="text-lg font-bold text-foreground capitalize">{ximatarLabel}</h3>
+            <h3 className="text-lg font-bold text-foreground capitalize">{displayName || ximatarLabel}</h3>
+            {displayName && (
+              <p className="text-sm text-muted-foreground capitalize">{ximatarLabel}</p>
+            )}
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Evaluation Score</span>
+              <span className="text-sm text-muted-foreground">{t('business.candidates.evaluation_score', 'Evaluation Score')}</span>
               <span className="text-sm font-bold text-foreground">{evaluationScore.toFixed(1)}</span>
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Pillar Average</span>
-              <span className="text-sm font-bold text-foreground">{pillarAverage.toFixed(1)}</span>
+              <span className="text-sm text-muted-foreground">{t('business.candidates.pillar_average', 'Pillar Average')}</span>
+              <span className="text-sm font-bold text-foreground">
+                {hasPillarData ? pillarAverage.toFixed(1) : t('business.candidates.not_computed', 'Not computed')}
+              </span>
             </div>
 
             <div className="w-full bg-muted rounded-full h-2">
