@@ -1860,6 +1860,16 @@
       "failed_action": "Failed to perform action",
       "no_candidates": "No candidates found matching your criteria"
     },
+    "shortlist": {
+      "title": "Shortlist Based on Your Hiring Goal",
+      "subtitle": "{{count}} candidates matched to your requirements",
+      "generating": "Generating your personalized shortlist...",
+      "match_high": "High Match",
+      "match_medium": "Medium Match",
+      "match_low": "Low Match",
+      "why_matched": "Why this candidate matches:",
+      "no_matches": "No candidates matched your hiring goal criteria"
+    },
     "reports": {
       "title": "Reports & Analytics",
       "subtitle": "Comprehensive insights into your hiring pipeline",
