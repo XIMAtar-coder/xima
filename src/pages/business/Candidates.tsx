@@ -92,6 +92,25 @@ const BusinessCandidates = () => {
 
       const shortlistedIds = new Set(shortlisted?.map(s => s.candidate_id) || []);
 
+      // DEV DEBUG: Log first 5 candidates raw data
+      if (import.meta.env.DEV && candidatesData?.length) {
+        console.group('🔍 [DEV] Candidate Pool Audit');
+        console.log('Source: supabase.rpc("get_candidate_visibility")');
+        console.log('Underlying tables: profiles → assessment_results → pillar_scores → ximatars');
+        console.log('Total candidates returned:', candidatesData.length);
+        console.table(
+          candidatesData.slice(0, 5).map((c: any, i: number) => ({
+            '#': i + 1,
+            profile_user_id: c.user_id,
+            ximatar_id: c.ximatar_id || 'null',
+            ximatar_label: c.ximatar_label || 'null',
+            evaluation_score: c.evaluation_score,
+            source: 'profiles.user_id → auth.users.id'
+          }))
+        );
+        console.groupEnd();
+      }
+
       const candidatesWithShortlist: Candidate[] = (candidatesData || []).map((candidate: any) => ({
         user_id: candidate.user_id,
         ximatar_label: candidate.ximatar_label || 'Unknown',
