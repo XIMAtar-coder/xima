@@ -1796,6 +1796,7 @@
   },
   "challenge_builder": {
     "page_title": "Crear Desafío",
+    "edit_title": "Editar Desafío",
     "page_subtitle": "Diseña un desafío basado en habilidades para que los candidatos demuestren sus capacidades.",
     "ai_generate_title": "Generación con IA",
     "ai_generate_desc": "Deja que la IA cree un desafío basado en tu objetivo de contratación.",
@@ -1831,5 +1832,33 @@
     "no_task_title": "Faltan Detalles del Objetivo",
     "no_task_desc": "Agrega una descripción de tarea en tu objetivo de contratación para habilitar la generación con IA.",
     "generation_failed": "Generación de IA fallida. Por favor intenta de nuevo."
+  },
+  "challenges": {
+    "page_title": "Desafíos",
+    "page_subtitle": "Gestiona tus desafíos y evaluaciones de contratación.",
+    "new_challenge": "Nuevo Desafío",
+    "no_challenges": "Aún no hay desafíos",
+    "no_challenges_desc": "Crea tu primer desafío para comenzar a evaluar candidatos.",
+    "create_first": "Crear Primer Desafío",
+    "status_active": "Activo",
+    "status_draft": "Borrador",
+    "status_archived": "Archivado",
+    "activate": "Activar",
+    "archive": "Archivar",
+    "duplicate": "Duplicar",
+    "activated": "Desafío Activado",
+    "activated_desc": "Este desafío ahora está activo y listo para invitaciones.",
+    "archived": "Desafío Archivado",
+    "archived_desc": "Este desafío ha sido archivado.",
+    "duplicated": "Desafío Duplicado",
+    "duplicated_desc": "Se ha creado una copia del desafío como borrador.",
+    "load_error": "Error al cargar desafíos.",
+    "activate_error": "Error al activar desafío.",
+    "archive_error": "Error al archivar desafío.",
+    "duplicate_error": "Error al duplicar desafío.",
+    "save_changes": "Guardar Cambios"
+  },
+  "common": {
+    "edit": "Editar"
   }
 }

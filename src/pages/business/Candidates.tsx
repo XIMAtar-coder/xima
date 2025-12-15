@@ -11,7 +11,7 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft, Bookmark, BookmarkCheck, RefreshCw, ChevronDown, Lightbulb, Bug } from 'lucide-react';
+import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft, Bookmark, BookmarkCheck, RefreshCw, ChevronDown, Lightbulb, Bug, Pencil, Plus } from 'lucide-react';
 import { XimatarCandidateCard } from '@/components/business/XimatarCandidateCard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useHiringGoalShortlist } from '@/hooks/useHiringGoalShortlist';
@@ -643,11 +643,33 @@ const BusinessCandidates = () => {
               />
             )}
 
-            {/* Active challenge badge */}
+            {/* Active challenge badge with actions */}
             {activeChallenge && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-primary/5 border border-primary/20 p-3 rounded-lg">
-                <Target size={16} className="text-primary shrink-0" />
-                <span>{t('business_challenge.active_challenge')}: <strong className="text-foreground">{activeChallenge.title}</strong></span>
+              <div className="flex items-center justify-between gap-4 text-sm bg-primary/5 border border-primary/20 p-3 rounded-lg">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Target size={16} className="text-primary shrink-0" />
+                  <span>{t('business_challenge.active_challenge')}: <strong className="text-foreground">{activeChallenge.title}</strong></span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate(`/business/challenges/${activeChallenge.id}/edit`)}
+                    className="h-8 px-2"
+                  >
+                    <Pencil size={14} className="mr-1" />
+                    {t('common.edit')}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate(`/business/challenges/new?goal=${goalId}`)}
+                    className="h-8 px-2"
+                  >
+                    <Plus size={14} className="mr-1" />
+                    {t('business_challenge.new_challenge')}
+                  </Button>
+                </div>
               </div>
             )}
 

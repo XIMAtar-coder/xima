@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -14,7 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   ArrowLeft, Sparkles, Loader2, Rocket, Save, Eye, Clock, 
-  Target, CheckCircle2, Wand2, AlertCircle
+  Target, CheckCircle2, Wand2, AlertCircle, Archive
 } from 'lucide-react';
 
 interface HiringGoal {
@@ -26,16 +26,31 @@ interface HiringGoal {
   country: string | null;
 }
 
+interface ExistingChallenge {
+  id: string;
+  title: string;
+  description: string | null;
+  success_criteria: string[] | null;
+  time_estimate_minutes: number | null;
+  rubric: any;
+  status: string;
+  hiring_goal_id: string | null;
+}
+
 const CreateChallenge = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { id: challengeId } = useParams();
   const goalId = searchParams.get('goal');
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: businessLoading } = useBusinessRole();
 
+  const isEditMode = !!challengeId;
+
   const [hiringGoal, setHiringGoal] = useState<HiringGoal | null>(null);
+  const [existingChallenge, setExistingChallenge] = useState<ExistingChallenge | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -45,48 +60,92 @@ const CreateChallenge = () => {
   const [description, setDescription] = useState('');
   const [successCriteria, setSuccessCriteria] = useState<string[]>(['', '', '']);
   const [timeEstimate, setTimeEstimate] = useState(45);
+  const [currentStatus, setCurrentStatus] = useState('draft');
 
-  // Load hiring goal
+  // Load hiring goal or existing challenge
   useEffect(() => {
     if (!isAuthenticated || (businessLoading === false && !isBusiness)) {
       navigate('/business/login');
       return;
     }
 
-    if (!goalId) {
+    if (!businessLoading && user?.id) {
+      if (isEditMode) {
+        loadExistingChallenge();
+      } else if (goalId) {
+        loadHiringGoal();
+      } else {
+        // Create without goal - just allow it
+        setLoading(false);
+      }
+    }
+  }, [challengeId, goalId, user?.id, isAuthenticated, isBusiness, businessLoading, navigate]);
+
+  const loadHiringGoal = async () => {
+    const { data, error } = await supabase
+      .from('hiring_goal_drafts')
+      .select('id, role_title, task_description, experience_level, work_model, country')
+      .eq('id', goalId)
+      .eq('business_id', user?.id)
+      .single();
+
+    if (error || !data) {
+      toast({
+        title: t('common.error'),
+        description: 'Hiring goal not found',
+        variant: 'destructive'
+      });
       navigate('/business/dashboard');
       return;
     }
 
-    const fetchGoal = async () => {
-      const { data, error } = await supabase
+    setHiringGoal(data);
+    if (data.role_title) {
+      setTitle(`${data.role_title} Challenge`);
+    }
+    setLoading(false);
+  };
+
+  const loadExistingChallenge = async () => {
+    const { data, error } = await supabase
+      .from('business_challenges')
+      .select('*')
+      .eq('id', challengeId)
+      .eq('business_id', user?.id)
+      .single();
+
+    if (error || !data) {
+      toast({
+        title: t('common.error'),
+        description: 'Challenge not found',
+        variant: 'destructive'
+      });
+      navigate('/business/challenges');
+      return;
+    }
+
+    setExistingChallenge(data);
+    setTitle(data.title);
+    setDescription(data.description || '');
+    setSuccessCriteria(data.success_criteria?.length ? data.success_criteria : ['', '', '']);
+    setTimeEstimate(data.time_estimate_minutes || 45);
+    setCurrentStatus(data.status);
+
+    // Load hiring goal if exists
+    if (data.hiring_goal_id) {
+      const { data: goalData } = await supabase
         .from('hiring_goal_drafts')
         .select('id, role_title, task_description, experience_level, work_model, country')
-        .eq('id', goalId)
-        .eq('business_id', user?.id)
+        .eq('id', data.hiring_goal_id)
         .single();
-
-      if (error || !data) {
-        toast({
-          title: t('common.error'),
-          description: 'Hiring goal not found',
-          variant: 'destructive'
-        });
-        navigate('/business/dashboard');
-        return;
+      
+      if (goalData) {
+        setHiringGoal(goalData);
       }
-
-      setHiringGoal(data);
-      if (data.role_title) {
-        setTitle(`${data.role_title} Challenge`);
-      }
-      setLoading(false);
-    };
-
-    if (!businessLoading && user?.id) {
-      fetchGoal();
     }
-  }, [goalId, user?.id, isAuthenticated, isBusiness, businessLoading, navigate, toast, t]);
+
+    setLoading(false);
+  };
 
   // Generate with AI
   const handleGenerate = async () => {
@@ -161,8 +220,8 @@ const CreateChallenge = () => {
     }
   };
 
-  // Save as draft
-  const handleSaveDraft = async () => {
+  // Save (create or update)
+  const handleSave = async (newStatus: 'draft' | 'active' | 'archived') => {
     if (!title.trim()) {
       toast({
         title: t('common.error'),
@@ -172,43 +231,7 @@ const CreateChallenge = () => {
       return;
     }
 
-    setSaving(true);
-    try {
-      const { error } = await supabase
-        .from('business_challenges')
-        .insert({
-          business_id: user?.id,
-          hiring_goal_id: goalId,
-          title: title.trim(),
-          description: description.trim(),
-          success_criteria: successCriteria.filter(c => c.trim()),
-          time_estimate_minutes: timeEstimate,
-          rubric: { criteria: { outcome: 3, clarity: 3, reasoning: 3 } },
-          status: 'draft'
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: t('challenge_builder.draft_saved'),
-        description: t('challenge_builder.draft_saved_desc'),
-      });
-      navigate(`/business/candidates?fromGoal=${goalId}`);
-    } catch (err: any) {
-      console.error('Save draft error:', err);
-      toast({
-        title: t('common.error'),
-        description: err.message,
-        variant: 'destructive'
-      });
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  // Activate challenge
-  const handleActivate = async () => {
-    if (!title.trim() || !description.trim()) {
+    if (newStatus === 'active' && !description.trim()) {
       toast({
         title: t('common.error'),
         description: t('challenge_builder.fill_required'),
@@ -219,28 +242,69 @@ const CreateChallenge = () => {
 
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from('business_challenges')
-        .insert({
-          business_id: user?.id,
-          hiring_goal_id: goalId,
-          title: title.trim(),
-          description: description.trim(),
-          success_criteria: successCriteria.filter(c => c.trim()),
-          time_estimate_minutes: timeEstimate,
-          rubric: { criteria: { outcome: 3, clarity: 3, reasoning: 3 } },
-          status: 'active'
-        });
+      const challengeData = {
+        title: title.trim(),
+        description: description.trim(),
+        success_criteria: successCriteria.filter(c => c.trim()),
+        time_estimate_minutes: timeEstimate,
+        rubric: { criteria: { outcome: 3, clarity: 3, reasoning: 3 } },
+        status: newStatus,
+        updated_at: new Date().toISOString()
+      };
 
-      if (error) throw error;
+      const effectiveGoalId = isEditMode ? existingChallenge?.hiring_goal_id : goalId;
+
+      // If activating, archive other active challenges for the same goal
+      if (newStatus === 'active' && effectiveGoalId) {
+        await supabase
+          .from('business_challenges')
+          .update({ status: 'archived', updated_at: new Date().toISOString() })
+          .eq('business_id', user?.id)
+          .eq('hiring_goal_id', effectiveGoalId)
+          .eq('status', 'active')
+          .neq('id', challengeId || '');
+      }
+
+      if (isEditMode) {
+        // Update existing
+        const { error } = await supabase
+          .from('business_challenges')
+          .update(challengeData)
+          .eq('id', challengeId);
+
+        if (error) throw error;
+      } else {
+        // Create new
+        const { error } = await supabase
+          .from('business_challenges')
+          .insert({
+            ...challengeData,
+            business_id: user?.id,
+            hiring_goal_id: goalId || null
+          });
+
+        if (error) throw error;
+      }
+
+      const toastMessages = {
+        draft: { title: t('challenge_builder.draft_saved'), desc: t('challenge_builder.draft_saved_desc') },
+        active: { title: t('challenge_builder.activated'), desc: t('challenge_builder.activated_desc') },
+        archived: { title: t('challenges.archived'), desc: t('challenges.archived_desc') }
+      };
 
       toast({
-        title: t('challenge_builder.activated'),
-        description: t('challenge_builder.activated_desc'),
+        title: toastMessages[newStatus].title,
+        description: toastMessages[newStatus].desc,
       });
-      navigate(`/business/candidates?fromGoal=${goalId}`);
+
+      // Navigate back
+      if (effectiveGoalId) {
+        navigate(`/business/candidates?fromGoal=${effectiveGoalId}`);
+      } else {
+        navigate('/business/challenges');
+      }
     } catch (err: any) {
-      console.error('Activate error:', err);
+      console.error('Save error:', err);
       toast({
         title: t('common.error'),
         description: err.message,
@@ -255,6 +319,14 @@ const CreateChallenge = () => {
     const updated = [...successCriteria];
     updated[index] = value;
     setSuccessCriteria(updated);
+  };
+
+  const getBackUrl = () => {
+    const effectiveGoalId = isEditMode ? existingChallenge?.hiring_goal_id : goalId;
+    if (effectiveGoalId) {
+      return `/business/candidates?fromGoal=${effectiveGoalId}`;
+    }
+    return '/business/challenges';
   };
 
   if (loading || businessLoading) {
@@ -274,7 +346,7 @@ const CreateChallenge = () => {
         <div className="space-y-4">
           <Button 
             variant="ghost" 
-            onClick={() => navigate(`/business/candidates?fromGoal=${goalId}`)}
+            onClick={() => navigate(getBackUrl())}
             className="gap-2 -ml-2"
           >
             <ArrowLeft size={16} />
@@ -287,16 +359,32 @@ const CreateChallenge = () => {
             </div>
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                {t('challenge_builder.page_title')}
+                {isEditMode ? t('challenge_builder.edit_title') : t('challenge_builder.page_title')}
               </h1>
               <p className="text-muted-foreground">
                 {t('challenge_builder.page_subtitle')}
               </p>
-              {hiringGoal?.role_title && (
-                <Badge variant="outline" className="mt-2">
-                  {hiringGoal.role_title}
-                </Badge>
-              )}
+              <div className="flex items-center gap-2 mt-2">
+                {hiringGoal?.role_title && (
+                  <Badge variant="outline">
+                    {hiringGoal.role_title}
+                  </Badge>
+                )}
+                {isEditMode && (
+                  <Badge 
+                    className={
+                      currentStatus === 'active' 
+                        ? 'bg-green-500/20 text-green-600 border-green-500/30' 
+                        : currentStatus === 'archived'
+                        ? 'bg-muted text-muted-foreground'
+                        : ''
+                    }
+                    variant={currentStatus === 'draft' ? 'outline' : 'default'}
+                  >
+                    {t(`challenges.status_${currentStatus}`)}
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -305,36 +393,38 @@ const CreateChallenge = () => {
           {/* Editor Panel */}
           <div className="space-y-6">
             {/* AI Generation */}
-            <Card className="border-primary/20 bg-primary/5">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between gap-4 flex-wrap">
-                  <div className="flex items-center gap-3">
-                    <Wand2 className="h-5 w-5 text-primary shrink-0" />
-                    <div>
-                      <p className="font-medium text-foreground">{t('challenge_builder.ai_generate_title')}</p>
-                      <p className="text-sm text-muted-foreground">{t('challenge_builder.ai_generate_desc')}</p>
+            {hiringGoal?.task_description && (
+              <Card className="border-primary/20 bg-primary/5">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between gap-4 flex-wrap">
+                    <div className="flex items-center gap-3">
+                      <Wand2 className="h-5 w-5 text-primary shrink-0" />
+                      <div>
+                        <p className="font-medium text-foreground">{t('challenge_builder.ai_generate_title')}</p>
+                        <p className="text-sm text-muted-foreground">{t('challenge_builder.ai_generate_desc')}</p>
+                      </div>
                     </div>
+                    <Button 
+                      onClick={handleGenerate} 
+                      disabled={generating}
+                      className="gap-2 shrink-0"
+                    >
+                      {generating ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          {t('common.loading')}
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="h-4 w-4" />
+                          {title ? t('challenge_builder.regenerate') : t('challenge_builder.generate')}
+                        </>
+                      )}
+                    </Button>
                   </div>
-                  <Button 
-                    onClick={handleGenerate} 
-                    disabled={generating || !hiringGoal?.task_description}
-                    className="gap-2 shrink-0"
-                  >
-                    {generating ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        {t('common.loading')}
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="h-4 w-4" />
-                        {title ? t('challenge_builder.regenerate') : t('challenge_builder.generate')}
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Title */}
             <Card>
@@ -471,22 +561,41 @@ const CreateChallenge = () => {
 
             {/* Action Buttons */}
             <div className="flex flex-col gap-3">
-              <Button 
-                onClick={handleActivate} 
-                disabled={saving || !title.trim() || !description.trim()}
-                size="lg"
-                className="w-full gap-2"
-              >
-                {saving ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Rocket className="h-4 w-4" />
-                )}
-                {t('challenge_builder.activate_button')}
-              </Button>
+              {currentStatus !== 'active' && (
+                <Button 
+                  onClick={() => handleSave('active')} 
+                  disabled={saving || !title.trim() || !description.trim()}
+                  size="lg"
+                  className="w-full gap-2"
+                >
+                  {saving ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Rocket className="h-4 w-4" />
+                  )}
+                  {t('challenge_builder.activate_button')}
+                </Button>
+              )}
+              
+              {currentStatus === 'active' && isEditMode && (
+                <Button 
+                  onClick={() => handleSave('active')} 
+                  disabled={saving || !title.trim() || !description.trim()}
+                  size="lg"
+                  className="w-full gap-2"
+                >
+                  {saving ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4" />
+                  )}
+                  {t('challenges.save_changes')}
+                </Button>
+              )}
+              
               <Button 
                 variant="outline"
-                onClick={handleSaveDraft} 
+                onClick={() => handleSave('draft')} 
                 disabled={saving || !title.trim()}
                 size="lg"
                 className="w-full gap-2"
@@ -494,9 +603,22 @@ const CreateChallenge = () => {
                 <Save className="h-4 w-4" />
                 {t('challenge_builder.save_draft')}
               </Button>
+              
+              {isEditMode && currentStatus !== 'archived' && (
+                <Button 
+                  variant="ghost"
+                  onClick={() => handleSave('archived')} 
+                  disabled={saving}
+                  size="lg"
+                  className="w-full gap-2 text-muted-foreground"
+                >
+                  <Archive className="h-4 w-4" />
+                  {t('challenges.archive')}
+                </Button>
+              )}
             </div>
 
-            {!hiringGoal?.task_description && (
+            {!hiringGoal?.task_description && !isEditMode && (
               <Card className="border-amber-500/50 bg-amber-500/5">
                 <CardContent className="p-4 flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
