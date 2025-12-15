@@ -2179,6 +2179,7 @@
   },
   "challenge_builder": {
     "page_title": "Crea Sfida",
+    "edit_title": "Modifica Sfida",
     "page_subtitle": "Progetta una sfida basata sulle competenze per valutare i candidati.",
     "ai_generate_title": "Generazione AI",
     "ai_generate_desc": "Lascia che l'AI crei una sfida basata sul tuo obiettivo di assunzione.",
@@ -2214,5 +2215,33 @@
     "no_task_title": "Dettagli Obiettivo Mancanti",
     "no_task_desc": "Aggiungi una descrizione del compito nel tuo obiettivo di assunzione per abilitare la generazione AI.",
     "generation_failed": "Generazione AI fallita. Riprova."
+  },
+  "challenges": {
+    "page_title": "Sfide",
+    "page_subtitle": "Gestisci le tue sfide e valutazioni di assunzione.",
+    "new_challenge": "Nuova Sfida",
+    "no_challenges": "Nessuna sfida ancora",
+    "no_challenges_desc": "Crea la tua prima sfida per iniziare a valutare i candidati.",
+    "create_first": "Crea Prima Sfida",
+    "status_active": "Attiva",
+    "status_draft": "Bozza",
+    "status_archived": "Archiviata",
+    "activate": "Attiva",
+    "archive": "Archivia",
+    "duplicate": "Duplica",
+    "activated": "Sfida Attivata",
+    "activated_desc": "Questa sfida è ora attiva e pronta per gli inviti.",
+    "archived": "Sfida Archiviata",
+    "archived_desc": "Questa sfida è stata archiviata.",
+    "duplicated": "Sfida Duplicata",
+    "duplicated_desc": "È stata creata una copia della sfida come bozza.",
+    "load_error": "Impossibile caricare le sfide.",
+    "activate_error": "Impossibile attivare la sfida.",
+    "archive_error": "Impossibile archiviare la sfida.",
+    "duplicate_error": "Impossibile duplicare la sfida.",
+    "save_changes": "Salva Modifiche"
+  },
+  "common": {
+    "edit": "Modifica"
   }
 }

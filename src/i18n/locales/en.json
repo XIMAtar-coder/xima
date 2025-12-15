@@ -2265,6 +2265,7 @@
   },
   "challenge_builder": {
     "page_title": "Create Challenge",
+    "edit_title": "Edit Challenge",
     "page_subtitle": "Design a skills-based challenge for candidates to demonstrate their abilities.",
     "ai_generate_title": "AI-Powered Generation",
     "ai_generate_desc": "Let AI create a challenge based on your hiring goal.",
@@ -2300,5 +2301,33 @@
     "no_task_title": "Missing Hiring Goal Details",
     "no_task_desc": "Add a task description in your hiring goal to enable AI generation.",
     "generation_failed": "AI generation failed. Please try again."
+  },
+  "challenges": {
+    "page_title": "Challenges",
+    "page_subtitle": "Manage your hiring challenges and assessments.",
+    "new_challenge": "New Challenge",
+    "no_challenges": "No challenges yet",
+    "no_challenges_desc": "Create your first challenge to start assessing candidates.",
+    "create_first": "Create First Challenge",
+    "status_active": "Active",
+    "status_draft": "Draft",
+    "status_archived": "Archived",
+    "activate": "Activate",
+    "archive": "Archive",
+    "duplicate": "Duplicate",
+    "activated": "Challenge Activated",
+    "activated_desc": "This challenge is now active and ready for invitations.",
+    "archived": "Challenge Archived",
+    "archived_desc": "This challenge has been archived.",
+    "duplicated": "Challenge Duplicated",
+    "duplicated_desc": "A copy of the challenge has been created as a draft.",
+    "load_error": "Failed to load challenges.",
+    "activate_error": "Failed to activate challenge.",
+    "archive_error": "Failed to archive challenge.",
+    "duplicate_error": "Failed to duplicate challenge.",
+    "save_changes": "Save Changes"
+  },
+  "common": {
+    "edit": "Edit"
   }
 }
