@@ -1829,6 +1829,7 @@
     "fill_required": "Por favor completa el título y la descripción.",
     "no_task_description": "No hay descripción de tarea disponible para la generación con IA.",
     "no_task_title": "Faltan Detalles del Objetivo",
-    "no_task_desc": "Agrega una descripción de tarea en tu objetivo de contratación para habilitar la generación con IA."
+    "no_task_desc": "Agrega una descripción de tarea en tu objetivo de contratación para habilitar la generación con IA.",
+    "generation_failed": "Generación de IA fallida. Por favor intenta de nuevo."
   }
 }

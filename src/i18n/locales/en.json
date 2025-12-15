@@ -2298,6 +2298,7 @@
     "fill_required": "Please fill in the title and description.",
     "no_task_description": "No task description available for AI generation.",
     "no_task_title": "Missing Hiring Goal Details",
-    "no_task_desc": "Add a task description in your hiring goal to enable AI generation."
+    "no_task_desc": "Add a task description in your hiring goal to enable AI generation.",
+    "generation_failed": "AI generation failed. Please try again."
   }
 }
