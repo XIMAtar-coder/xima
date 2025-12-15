@@ -90,7 +90,11 @@ const CreateChallenge = () => {
 
   // Generate with AI
   const handleGenerate = async () => {
+    console.log('[CreateChallenge] handleGenerate called');
+    console.log('[CreateChallenge] hiringGoal:', hiringGoal);
+    
     if (!hiringGoal?.task_description) {
+      console.warn('[CreateChallenge] No task description available');
       toast({
         title: t('common.error'),
         description: t('challenge_builder.no_task_description'),
@@ -101,6 +105,11 @@ const CreateChallenge = () => {
 
     setGenerating(true);
     try {
+      console.log('[CreateChallenge] Invoking generate-challenge function with:', {
+        task_description: hiringGoal.task_description?.substring(0, 50),
+        role_title: hiringGoal.role_title
+      });
+
       const { data, error } = await supabase.functions.invoke('generate-challenge', {
         body: {
           task_description: hiringGoal.task_description,
@@ -111,23 +120,40 @@ const CreateChallenge = () => {
         }
       });
 
-      if (error) throw error;
-      if (data.error) throw new Error(data.error);
+      console.log('[CreateChallenge] Response:', { data, error });
 
+      if (error) {
+        console.error('[CreateChallenge] Supabase function error:', error);
+        throw error;
+      }
+      
+      if (data?.error) {
+        console.error('[CreateChallenge] API returned error:', data.error);
+        throw new Error(data.error);
+      }
+
+      // Map response fields to form state
       setTitle(data.title_suggestion || title);
       setDescription(data.candidate_facing_description || '');
       setSuccessCriteria(data.success_criteria?.length ? data.success_criteria : ['', '', '']);
       setTimeEstimate(data.time_estimate_minutes || 45);
+
+      console.log('[CreateChallenge] Form updated with:', {
+        title: data.title_suggestion,
+        descriptionLength: data.candidate_facing_description?.length,
+        criteriaCount: data.success_criteria?.length,
+        timeEstimate: data.time_estimate_minutes
+      });
 
       toast({
         title: t('challenge_builder.generated'),
         description: t('challenge_builder.generated_desc'),
       });
     } catch (err: any) {
-      console.error('Generate challenge error:', err);
+      console.error('[CreateChallenge] Generate challenge error:', err);
       toast({
         title: t('common.error'),
-        description: err.message || 'Failed to generate challenge',
+        description: err.message || t('challenge_builder.generation_failed') || 'AI generation failed. Please try again.',
         variant: 'destructive'
       });
     } finally {

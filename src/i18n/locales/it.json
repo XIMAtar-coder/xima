@@ -2212,6 +2212,7 @@
     "fill_required": "Compila titolo e descrizione.",
     "no_task_description": "Nessuna descrizione del compito disponibile per la generazione AI.",
     "no_task_title": "Dettagli Obiettivo Mancanti",
-    "no_task_desc": "Aggiungi una descrizione del compito nel tuo obiettivo di assunzione per abilitare la generazione AI."
+    "no_task_desc": "Aggiungi una descrizione del compito nel tuo obiettivo di assunzione per abilitare la generazione AI.",
+    "generation_failed": "Generazione AI fallita. Riprova."
   }
 }

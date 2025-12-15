@@ -14,20 +14,25 @@ interface GenerateChallengeRequest {
 }
 
 serve(async (req) => {
+  console.log('[generate-challenge] Function invoked - method:', req.method);
+  
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    const body = await req.json();
+    console.log('[generate-challenge] Request body received:', JSON.stringify(body).substring(0, 200));
+    
     const { 
       task_description, 
       role_title, 
       experience_level, 
       work_model, 
       country 
-    }: GenerateChallengeRequest = await req.json();
+    }: GenerateChallengeRequest = body;
 
-    console.log('[generate-challenge] Received request:', { 
+    console.log('[generate-challenge] Parsed request:', { 
       task_description: task_description?.substring(0, 100), 
       role_title, 
       experience_level 
