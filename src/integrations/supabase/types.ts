@@ -599,10 +599,12 @@ export type Database = {
           deadline: string | null
           description: string | null
           difficulty: number | null
+          end_at: string | null
           hiring_goal_id: string | null
           id: string
           is_public: boolean | null
           rubric: Json | null
+          start_at: string | null
           status: string
           success_criteria: string[] | null
           target_skills: string[] | null
@@ -617,10 +619,12 @@ export type Database = {
           deadline?: string | null
           description?: string | null
           difficulty?: number | null
+          end_at?: string | null
           hiring_goal_id?: string | null
           id?: string
           is_public?: boolean | null
           rubric?: Json | null
+          start_at?: string | null
           status?: string
           success_criteria?: string[] | null
           target_skills?: string[] | null
@@ -635,10 +639,12 @@ export type Database = {
           deadline?: string | null
           description?: string | null
           difficulty?: number | null
+          end_at?: string | null
           hiring_goal_id?: string | null
           id?: string
           is_public?: boolean | null
           rubric?: Json | null
+          start_at?: string | null
           status?: string
           success_criteria?: string[] | null
           target_skills?: string[] | null

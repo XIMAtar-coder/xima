@@ -26,6 +26,9 @@ interface ActiveChallengeWithStats {
   invited_count: number;
   responses_count: number;
   created_at: string;
+  start_at: string | null;
+  end_at: string | null;
+  status: string;
 }
 
 const BusinessDashboard = () => {
@@ -96,7 +99,10 @@ const BusinessDashboard = () => {
           id,
           title,
           hiring_goal_id,
-          created_at
+          created_at,
+          start_at,
+          end_at,
+          status
         `)
         .eq('business_id', user.id)
         .eq('status', 'active')
@@ -152,7 +158,10 @@ const BusinessDashboard = () => {
           hiring_goal_title: challenge.hiring_goal_id ? goalsMap[challenge.hiring_goal_id] || null : null,
           invited_count: invitedCount,
           responses_count: responsesCount,
-          created_at: challenge.created_at || ''
+          created_at: challenge.created_at || '',
+          start_at: challenge.start_at || null,
+          end_at: challenge.end_at || null,
+          status: challenge.status || 'active'
         };
       });
 

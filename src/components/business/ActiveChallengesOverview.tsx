@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Target, Users, MessageSquare, ChevronRight, Zap } from 'lucide-react';
+import { Target, Users, MessageSquare, ChevronRight, Zap, Clock, AlertTriangle } from 'lucide-react';
+import { getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
 
 interface ActiveChallenge {
   id: string;
@@ -14,6 +15,9 @@ interface ActiveChallenge {
   invited_count: number;
   responses_count: number;
   created_at: string;
+  start_at: string | null;
+  end_at: string | null;
+  status: string;
 }
 
 interface ActiveChallengesOverviewProps {
@@ -63,32 +67,47 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        {challenges.map((challenge) => (
-          <div 
-            key={challenge.id}
-            className="p-4 rounded-lg border border-border/50 bg-card/50 hover:border-primary/30 transition-colors"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <Target className="h-4 w-4 text-primary shrink-0" />
-                  <h4 className="font-medium text-foreground truncate">{challenge.title}</h4>
-                </div>
-                {challenge.hiring_goal_title && (
-                  <p className="text-sm text-muted-foreground truncate mb-2">
-                    {challenge.hiring_goal_title}
-                  </p>
-                )}
-                <div className="flex items-center gap-4 text-sm">
-                  <span className="flex items-center gap-1 text-muted-foreground">
-                    <Users className="h-3.5 w-3.5" />
-                    {challenge.invited_count} {t('business.dashboard.invited')}
-                  </span>
-                  <span className="flex items-center gap-1 text-muted-foreground">
-                    <MessageSquare className="h-3.5 w-3.5" />
-                    {challenge.responses_count} {t('business.dashboard.responses')}
-                  </span>
-                </div>
+        {challenges.map((challenge) => {
+          const timeInfo = getChallengeTimeInfo(challenge.start_at, challenge.end_at, challenge.status);
+          
+          return (
+            <div 
+              key={challenge.id}
+              className="p-4 rounded-lg border border-border/50 bg-card/50 hover:border-primary/30 transition-colors"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <Target className="h-4 w-4 text-primary shrink-0" />
+                    <h4 className="font-medium text-foreground truncate">{challenge.title}</h4>
+                    {timeInfo.isExpiringSoon && (
+                      <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/30 text-xs">
+                        <AlertTriangle className="h-3 w-3 mr-1" />
+                        {t('business.dashboard.expiring_soon')}
+                      </Badge>
+                    )}
+                  </div>
+                  {challenge.hiring_goal_title && (
+                    <p className="text-sm text-muted-foreground truncate mb-2">
+                      {challenge.hiring_goal_title}
+                    </p>
+                  )}
+                  <div className="flex items-center gap-4 text-sm flex-wrap">
+                    <span className="flex items-center gap-1 text-muted-foreground">
+                      <Users className="h-3.5 w-3.5" />
+                      {challenge.invited_count} {t('business.dashboard.invited')}
+                    </span>
+                    <span className="flex items-center gap-1 text-muted-foreground">
+                      <MessageSquare className="h-3.5 w-3.5" />
+                      {challenge.responses_count} {t('business.dashboard.responses')}
+                    </span>
+                    {timeInfo.remainingText && (
+                      <span className="flex items-center gap-1 text-muted-foreground">
+                        <Clock className="h-3.5 w-3.5" />
+                        {timeInfo.remainingText}
+                      </span>
+                    )}
+                  </div>
               </div>
               <Button
                 variant="ghost"
@@ -105,9 +124,10 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
                 {t('business.dashboard.view_responses')}
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </CardContent>
     </Card>
   );
