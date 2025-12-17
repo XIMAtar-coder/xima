@@ -49,6 +49,8 @@ import AssessmentGuide from "./pages/AssessmentGuide";
 import ChallengeAccept from "./pages/ChallengeAccept";
 import GoalCandidates from "./pages/business/GoalCandidates";
 import GoalChallenges from "./pages/business/GoalChallenges";
+import ChallengeResponses from "./pages/business/ChallengeResponses";
+import ChallengeCompletion from "./pages/candidate/ChallengeCompletion";
 
 const queryClient = new QueryClient();
 
@@ -106,8 +108,11 @@ const AppContent = () => {
           {/* Goal-scoped routes */}
           <Route path="/business/goals/:goalId/candidates" element={<GoalCandidates />} />
           <Route path="/business/goals/:goalId/challenges" element={<GoalChallenges />} />
+          <Route path="/business/goals/:goalId/challenges/:challengeId/responses" element={<ChallengeResponses />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/challenge/accept" element={<ChallengeAccept />} />
+          {/* Candidate challenge completion */}
+          <Route path="/candidate/challenges/:invitationId" element={<ChallengeCompletion />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         {/* <ChatEntry /> */}

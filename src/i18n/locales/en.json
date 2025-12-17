@@ -2422,6 +2422,80 @@
     "save_changes": "Save Changes"
   },
   "common": {
-    "edit": "Edit"
+    "edit": "Edit",
+    "actions": "Actions",
+    "back_to_profile": "Back to Profile"
+  },
+  "challenge": {
+    "not_found": "Challenge not found",
+    "status": {
+      "upcoming": "Upcoming",
+      "active": "Active",
+      "expired": "Expired",
+      "submitted": "Submitted"
+    },
+    "expired_message": "This challenge is no longer available for submission.",
+    "upcoming_message": "This challenge has not started yet.",
+    "progress": "Progress",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "instructions": "Instructions",
+    "success_criteria": "What we're looking for",
+    "estimated_time": "Estimated time: {{minutes}} minutes",
+    "your_response": "Your Response",
+    "approach_label": "Your Approach",
+    "approach_placeholder": "Describe how you would approach this challenge...",
+    "assumptions_label": "Key Assumptions",
+    "assumptions_placeholder": "What assumptions are you making?",
+    "first_actions_label": "First 3 Actions",
+    "first_actions_hint": "What would be your first three concrete steps?",
+    "action_placeholder": "Action {{n}}",
+    "tradeoff_label": "Primary Trade-off You Prioritize",
+    "tradeoff_speed": "Speed of execution (ship fast)",
+    "tradeoff_quality": "Quality & reliability (do it right)",
+    "tradeoff_alignment": "Stakeholder alignment (get buy-in)",
+    "tradeoff_data": "Data certainty (validate first)",
+    "tradeoff_cost": "Cost efficiency (optimize spend)",
+    "confidence_label": "Confidence Level",
+    "confidence_placeholder": "Select your confidence level",
+    "confidence_low": "Low",
+    "confidence_medium": "Medium",
+    "confidence_high": "High",
+    "fields_remaining": "required fields remaining",
+    "submit_btn": "Submit Challenge",
+    "submission_success": "Submission received!",
+    "submitted_title": "Submission Received",
+    "submitted_desc": "Your response has been submitted successfully.",
+    "submitted_at": "Submitted at",
+    "validation": {
+      "incomplete": "Incomplete Submission",
+      "approach_required": "Your approach is required",
+      "assumptions_required": "Key assumptions are required",
+      "actions_required": "Please provide all 3 actions",
+      "tradeoff_required": "Please select a trade-off priority",
+      "confidence_required": "Please select your confidence level"
+    }
+  },
+  "business": {
+    "responses": {
+      "subtitle": "Review candidate submissions",
+      "stat_invited": "Invited",
+      "stat_submitted": "Submitted",
+      "stat_draft": "In Progress",
+      "stat_pending": "Not Started",
+      "table_title": "Candidate Responses",
+      "no_invitations": "No candidates have been invited yet.",
+      "col_candidate": "Candidate",
+      "col_status": "Status",
+      "col_invited_at": "Invited",
+      "col_submitted_at": "Submitted",
+      "view": "View",
+      "submitted": "Submitted",
+      "draft": "Draft",
+      "in_progress": "In Progress",
+      "invited": "Invited",
+      "submission": "Submission",
+      "no_content": "No content available"
+    }
   }
 }

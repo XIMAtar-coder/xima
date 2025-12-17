@@ -858,6 +858,66 @@ export type Database = {
           },
         ]
       }
+      challenge_submissions: {
+        Row: {
+          business_id: string
+          candidate_profile_id: string
+          challenge_id: string
+          created_at: string
+          draft_payload: Json | null
+          hiring_goal_id: string
+          id: string
+          invitation_id: string
+          status: string
+          submitted_at: string | null
+          submitted_payload: Json | null
+          updated_at: string
+        }
+        Insert: {
+          business_id: string
+          candidate_profile_id: string
+          challenge_id: string
+          created_at?: string
+          draft_payload?: Json | null
+          hiring_goal_id: string
+          id?: string
+          invitation_id: string
+          status?: string
+          submitted_at?: string | null
+          submitted_payload?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          business_id?: string
+          candidate_profile_id?: string
+          challenge_id?: string
+          created_at?: string
+          draft_payload?: Json | null
+          hiring_goal_id?: string
+          id?: string
+          invitation_id?: string
+          status?: string
+          submitted_at?: string | null
+          submitted_payload?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "business_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challenge_submissions_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: true
+            referencedRelation: "challenge_invitations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_messages: {
         Row: {
           body: string
