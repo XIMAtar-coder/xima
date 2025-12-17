@@ -466,37 +466,69 @@ const BusinessDashboard = () => {
           </div>
         )}
 
-        {/* Hiring Goals Portfolio */}
-        {hiringGoals.length > 0 && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-foreground">{t('business.goals.portfolio_title')}</h2>
-                <p className="text-sm text-muted-foreground">{t('business.goals.portfolio_desc')}</p>
+        {/* Hiring Goals Portfolio - ONLY ACTIVE GOALS */}
+        {(() => {
+          const activeGoals = hiringGoals.filter(goal => goal.status === 'active');
+          
+          return (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground">{t('business.goals.portfolio_title')}</h2>
+                  <p className="text-sm text-muted-foreground">{t('business.goals.portfolio_desc')}</p>
+                </div>
+                <Button 
+                  onClick={async () => {
+                    const newGoal = await createGoal();
+                    if (newGoal) {
+                      toast({ title: t('business.goals.created'), description: t('business.goals.created_desc') });
+                    }
+                  }}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  {t('business.goals.new_goal')}
+                </Button>
               </div>
-              <Button 
-                onClick={async () => {
-                  const newGoal = await createGoal();
-                  if (newGoal) {
-                    toast({ title: t('business.goals.created'), description: t('business.goals.created_desc') });
-                  }
-                }}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                {t('business.goals.new_goal')}
-              </Button>
+              
+              {activeGoals.length > 0 ? (
+                <div className="space-y-3">
+                  {activeGoals.map((goal) => (
+                    <HiringGoalOverviewCard
+                      key={goal.id}
+                      goal={goal}
+                      onStatusChange={updateGoalStatus}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <Card className="border-dashed border-2 border-muted-foreground/30">
+                  <CardContent className="p-8 text-center">
+                    <div className="p-4 rounded-full bg-muted/50 w-fit mx-auto mb-4">
+                      <Briefcase className="h-8 w-8 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">
+                      {t('business.goals.no_active_title')}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {t('business.goals.no_active_desc')}
+                    </p>
+                    <Button 
+                      onClick={async () => {
+                        const newGoal = await createGoal();
+                        if (newGoal) {
+                          toast({ title: t('business.goals.created'), description: t('business.goals.created_desc') });
+                        }
+                      }}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      {t('business.goals.create_first')}
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
             </div>
-            <div className="space-y-3">
-              {hiringGoals.map((goal) => (
-                <HiringGoalOverviewCard
-                  key={goal.id}
-                  goal={goal}
-                  onStatusChange={updateGoalStatus}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Company Profile Section */}
         <CompanyProfileCard
