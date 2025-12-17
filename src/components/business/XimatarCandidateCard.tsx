@@ -184,7 +184,8 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
               <TrendingUp className="mr-2" size={16} />
               View Insights
             </Button>
-            {onInviteToChallenge && isShortlisted && (
+            {/* Invite button - available for ANY candidate (not just saved) */}
+            {onInviteToChallenge && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>

@@ -1418,7 +1418,25 @@
       "regenerated": "Matches Regenerados",
       "regenerated_desc": "Tu lista ha sido actualizada. Los candidatos guardados permanecen arriba.",
       "show_more": "Mostrar {{count}} más",
-      "invite_to_challenge": "Invitar al Desafío"
+      "invite_to_challenge": "Invitar al Desafío",
+      "select_hint": "Selecciona candidatos para invitarlos a tu desafío. Guardar es solo para análisis."
+    },
+    "selection": {
+      "selected": "{{count}} seleccionados",
+      "invite_to_challenge": "Invitar al Desafío",
+      "clear": "Limpiar"
+    },
+    "invite": {
+      "choose_challenge": "Elige un Desafío",
+      "choose_challenge_desc": "Selecciona a qué desafío invitar a {{count}} candidato(s):",
+      "updated": "Actualizado",
+      "confirm_invite": "Confirmar Invitación",
+      "active_challenges_count": "{{count}} desafío(s) activo(s)",
+      "bulk_success": "Invitaciones Enviadas",
+      "bulk_success_desc": "{{count}} candidato(s) invitados exitosamente",
+      "already_invited_count": "Algunos Ya Invitados",
+      "already_invited_count_desc": "{{count}} candidato(s) ya habían sido invitados",
+      "bulk_fail_desc": "No se pudo invitar a {{count}} candidato(s)"
     },
     "reports": {
       "title": "Informes y Análisis",

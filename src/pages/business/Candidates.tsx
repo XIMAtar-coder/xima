@@ -6,7 +6,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
 import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
@@ -18,6 +17,8 @@ import { useHiringGoalShortlist } from '@/hooks/useHiringGoalShortlist';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CreateChallengeModal } from '@/components/business/CreateChallengeModal';
 import { NoChallengeGate } from '@/components/business/NoChallengeGate';
+import { SelectionActionBar } from '@/components/business/SelectionActionBar';
+import { ChallengePickerModal } from '@/components/business/ChallengePickerModal';
 
 const PAGE_SIZE = 12;
 
@@ -45,6 +46,7 @@ interface Candidate {
 interface ActiveChallenge {
   id: string;
   title: string;
+  updated_at: string;
 }
 
 const BusinessCandidates = () => {
@@ -59,7 +61,7 @@ const BusinessCandidates = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [filteredCandidates, setFilteredCandidates] = useState<Candidate[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
+  const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]); // profile_ids for selection
   const [ximatarFilter, setXimatarFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'score' | 'pillar'>('score');
   const [viewFilter, setViewFilter] = useState<'all' | 'shortlisted'>('all');
@@ -71,10 +73,12 @@ const BusinessCandidates = () => {
   const [invitationStatuses, setInvitationStatuses] = useState<Record<string, 'none' | 'invited' | 'accepted' | 'declined' | 'loading'>>({});
   const [companyName, setCompanyName] = useState<string>('');
   
-  // Challenge gating state
-  const [activeChallenge, setActiveChallenge] = useState<ActiveChallenge | null>(null);
+  // Challenge gating state - NOW SUPPORTS MULTIPLE ACTIVE CHALLENGES
+  const [activeChallenges, setActiveChallenges] = useState<ActiveChallenge[]>([]);
   const [challengeLoading, setChallengeLoading] = useState(true);
   const [showCreateChallengeModal, setShowCreateChallengeModal] = useState(false);
+  const [showChallengePickerModal, setShowChallengePickerModal] = useState(false);
+  const [bulkInviteLoading, setBulkInviteLoading] = useState(false);
 
   // Fetch company name for invitations
   useEffect(() => {
@@ -90,37 +94,35 @@ const BusinessCandidates = () => {
     fetchCompanyName();
   }, [user?.id]);
 
-  // Fetch active challenge for the hiring goal
+  // Fetch ALL active challenges for the hiring goal (supports multi-challenge per goal)
   useEffect(() => {
-    const fetchActiveChallenge = async () => {
+    const fetchActiveChallenges = async () => {
       if (!goalId || !user?.id) {
         setChallengeLoading(false);
         return;
       }
       
       try {
-        // Get the most recently updated active challenge for this goal
+        // Get ALL active challenges for this goal, ordered by most recent
         const { data, error } = await supabase
           .from('business_challenges')
-          .select('id, title')
+          .select('id, title, updated_at')
           .eq('business_id', user.id)
           .eq('hiring_goal_id', goalId)
           .eq('status', 'active')
-          .order('updated_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
+          .order('updated_at', { ascending: false });
 
         if (error) throw error;
-        setActiveChallenge(data);
+        setActiveChallenges(data || []);
       } catch (err) {
-        console.error('Error fetching active challenge:', err);
-        setActiveChallenge(null);
+        console.error('Error fetching active challenges:', err);
+        setActiveChallenges([]);
       } finally {
         setChallengeLoading(false);
       }
     };
     
-    fetchActiveChallenge();
+    fetchActiveChallenges();
   }, [goalId, user?.id]);
 
   // Shortlist from hiring goal
@@ -399,8 +401,12 @@ const BusinessCandidates = () => {
   };
 
   // Handle invite to challenge - candidateProfileId is profiles.id
-  const handleInviteToChallenge = async (candidateProfileId: string) => {
-    if (!goalId || !user?.id || !activeChallenge) return;
+  // Now supports choosing from multiple active challenges
+  const handleInviteToChallenge = async (candidateProfileId: string, challengeId?: string) => {
+    if (!goalId || !user?.id || activeChallenges.length === 0) return;
+    
+    // If multiple challenges and no challenge specified, use first one (single invite from card)
+    const targetChallengeId = challengeId || activeChallenges[0].id;
     
     // Set loading state for THIS candidate only (keyed by profile_id)
     setInvitationStatuses(prev => ({ ...prev, [candidateProfileId]: 'loading' }));
@@ -425,7 +431,7 @@ const BusinessCandidates = () => {
           business_id: user.id,
           hiring_goal_id: goalId,
           candidate_profile_id: candidateProfileId,
-          challenge_id: activeChallenge.id
+          challenge_id: targetChallengeId
         })
         .select('id, invite_token')
         .single();
@@ -439,7 +445,7 @@ const BusinessCandidates = () => {
             variant: 'default'
           });
           setInvitationStatuses(prev => ({ ...prev, [candidateProfileId]: 'invited' }));
-          return;
+          return { success: false, alreadyInvited: true };
         }
         throw invError;
       }
@@ -474,17 +480,98 @@ const BusinessCandidates = () => {
         c.profile_id === candidateProfileId ? { ...c, invitationStatus: 'invited' as const } : c
       ));
 
-      toast({
-        title: t('business.shortlist.invitation_sent'),
-        description: t('business.shortlist.invitation_sent_desc', { name: candidateName })
-      });
+      return { success: true };
     } catch (err: any) {
       console.error('Error sending invitation:', err);
       // Reset to 'none' on error - keyed by profile_id
       setInvitationStatuses(prev => ({ ...prev, [candidateProfileId]: 'none' }));
+      return { success: false, error: err.message };
+    }
+  };
+
+  // Handle single invite from card - with challenge picker if multiple
+  const handleSingleInvite = (candidateProfileId: string) => {
+    if (activeChallenges.length === 0) return;
+    
+    if (activeChallenges.length === 1) {
+      // Single challenge - use directly
+      handleInviteToChallenge(candidateProfileId, activeChallenges[0].id).then(result => {
+        if (result?.success) {
+          toast({
+            title: t('business.shortlist.invitation_sent'),
+            description: t('business.shortlist.invitation_sent_desc', { name: 'Candidate' })
+          });
+        } else if (result?.error) {
+          toast({
+            title: t('common.error'),
+            description: result.error,
+            variant: 'destructive'
+          });
+        }
+      });
+    } else {
+      // Multiple challenges - select this candidate and show picker
+      setSelectedCandidates([candidateProfileId]);
+      setShowChallengePickerModal(true);
+    }
+  };
+
+  // Handle bulk invite from action bar
+  const handleBulkInviteClick = () => {
+    if (selectedCandidates.length === 0 || activeChallenges.length === 0) return;
+    
+    if (activeChallenges.length === 1) {
+      // Single challenge - invite directly
+      handleBulkInvite(activeChallenges[0].id);
+    } else {
+      // Multiple challenges - show picker
+      setShowChallengePickerModal(true);
+    }
+  };
+
+  // Perform bulk invite to a specific challenge
+  const handleBulkInvite = async (challengeId: string) => {
+    if (selectedCandidates.length === 0) return;
+    
+    setBulkInviteLoading(true);
+    setShowChallengePickerModal(false);
+    
+    let successCount = 0;
+    let failCount = 0;
+    let alreadyInvitedCount = 0;
+    
+    for (const profileId of selectedCandidates) {
+      const result = await handleInviteToChallenge(profileId, challengeId);
+      if (result?.success) {
+        successCount++;
+      } else if (result?.alreadyInvited) {
+        alreadyInvitedCount++;
+      } else {
+        failCount++;
+      }
+    }
+    
+    setBulkInviteLoading(false);
+    setSelectedCandidates([]);
+    
+    // Show summary toast
+    if (successCount > 0) {
+      toast({
+        title: t('business.invite.bulk_success'),
+        description: t('business.invite.bulk_success_desc', { count: successCount })
+      });
+    }
+    if (alreadyInvitedCount > 0) {
+      toast({
+        title: t('business.invite.already_invited_count'),
+        description: t('business.invite.already_invited_count_desc', { count: alreadyInvitedCount }),
+        variant: 'default'
+      });
+    }
+    if (failCount > 0) {
       toast({
         title: t('common.error'),
-        description: err.message,
+        description: t('business.invite.bulk_fail_desc', { count: failCount }),
         variant: 'destructive'
       });
     }
@@ -635,31 +722,38 @@ const BusinessCandidates = () => {
               </TabsList>
             </Tabs>
 
-            {/* Challenge gate banner - show if no active challenge */}
-            {!challengeLoading && !activeChallenge && (
+            {/* Challenge gate banner - show if no active challenges */}
+            {!challengeLoading && activeChallenges.length === 0 && (
               <NoChallengeGate 
                 onCreateChallenge={() => navigate(`/business/challenges/new?goal=${goalId}`)}
                 onViewSaved={() => setViewFilter('shortlisted')}
               />
             )}
 
-            {/* Active challenge badge with actions */}
-            {activeChallenge && (
+            {/* Active challenges banner with actions */}
+            {activeChallenges.length > 0 && (
               <div className="flex items-center justify-between gap-4 text-sm bg-slate-900/60 border border-white/10 p-4 rounded-lg shadow-lg">
                 <div className="flex items-center gap-2 text-white/80">
                   <Target size={16} className="text-primary shrink-0" />
-                  <span>{t('business_challenge.active_challenge')}: <strong className="text-white">{activeChallenge.title}</strong></span>
+                  <span>
+                    {t('business.invite.active_challenges_count', { count: activeChallenges.length })}
+                    {activeChallenges.length === 1 && (
+                      <span>: <strong className="text-white">{activeChallenges[0].title}</strong></span>
+                    )}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => navigate(`/business/challenges/${activeChallenge.id}/edit`)}
-                    className="h-8 px-2 text-white/80 hover:text-white hover:bg-white/10"
-                  >
-                    <Pencil size={14} className="mr-1" />
-                    {t('common.edit')}
-                  </Button>
+                  {activeChallenges.length === 1 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => navigate(`/business/challenges/${activeChallenges[0].id}/edit`)}
+                      className="h-8 px-2 text-white/80 hover:text-white hover:bg-white/10"
+                    >
+                      <Pencil size={14} className="mr-1" />
+                      {t('common.edit')}
+                    </Button>
+                  )}
                   <Button
                     variant="ghost"
                     size="sm"
@@ -683,10 +777,10 @@ const BusinessCandidates = () => {
             )}
 
             {/* Hint for All Matches tab */}
-            {viewFilter === 'all' && activeChallenge && (
+            {viewFilter === 'all' && activeChallenges.length > 0 && (
               <div className="flex items-center gap-2 text-sm text-white/80 bg-slate-900/60 border border-white/10 p-3 rounded-lg">
                 <Lightbulb size={16} className="text-amber-400 shrink-0" />
-                {t('business.shortlist.save_hint')}
+                {t('business.shortlist.select_hint')}
               </div>
             )}
 
@@ -805,30 +899,22 @@ const BusinessCandidates = () => {
                   drive: candidate.drive,
                 }}
                 isShortlisted={candidate.isShortlisted}
-                isSelected={selectedCandidates.includes(candidate.user_id)}
+                isSelected={selectedCandidates.includes(candidate.profile_id)}
                 showSaveButton={!!goalId}
                 showDebug={showDebug}
                 invitationStatus={invitationStatuses[candidate.profile_id] || candidate.invitationStatus || 'none'}
-                inviteDisabled={!activeChallenge}
-                inviteDisabledReason={!activeChallenge ? t('business_challenge.create_first_tooltip') : undefined}
-                onSelect={async (checked) => {
+                inviteDisabled={activeChallenges.length === 0}
+                inviteDisabledReason={activeChallenges.length === 0 ? t('business_challenge.create_first_tooltip') : undefined}
+                onSelect={(checked) => {
+                  // Use profile_id for selection (for bulk invite)
                   if (checked) {
-                    setSelectedCandidates([...selectedCandidates, candidate.user_id]);
-                    try {
-                      await supabase.rpc('log_user_activity', {
-                        p_user_id: user?.id,
-                        p_action: 'candidate_view',
-                        p_context: { candidate_id: candidate.user_id }
-                      });
-                    } catch (err) {
-                      console.warn('Failed to log activity:', err);
-                    }
+                    setSelectedCandidates([...selectedCandidates, candidate.profile_id]);
                   } else {
-                    setSelectedCandidates(selectedCandidates.filter(id => id !== candidate.user_id));
+                    setSelectedCandidates(selectedCandidates.filter(id => id !== candidate.profile_id));
                   }
                 }}
                 onToggleShortlist={() => handleToggleShortlist(candidate.user_id)}
-                onInviteToChallenge={() => handleInviteToChallenge(candidate.profile_id)}
+                onInviteToChallenge={() => handleSingleInvite(candidate.profile_id)}
               />
               {/* Match reasons for shortlist view */}
               {goalId && candidate.matchReasons && candidate.matchReasons.length > 0 && (
@@ -900,8 +986,30 @@ const BusinessCandidates = () => {
             defaultTitle={hiringGoal?.role_title || t('business_challenge.new_challenge')}
             defaultDescription={hiringGoal?.task_description || ''}
             onChallengeCreated={(challengeId, challengeTitle) => {
-              setActiveChallenge({ id: challengeId, title: challengeTitle });
+              setActiveChallenges(prev => [{ id: challengeId, title: challengeTitle, updated_at: new Date().toISOString() }, ...prev]);
             }}
+          />
+        )}
+
+        {/* Challenge Picker Modal for bulk invite */}
+        <ChallengePickerModal
+          open={showChallengePickerModal}
+          onOpenChange={setShowChallengePickerModal}
+          challenges={activeChallenges}
+          selectedCount={selectedCandidates.length}
+          onConfirm={handleBulkInvite}
+          loading={bulkInviteLoading}
+        />
+
+        {/* Selection Action Bar - fixed at bottom */}
+        {goalId && (
+          <SelectionActionBar
+            selectedCount={selectedCandidates.length}
+            activeChallengeCount={activeChallenges.length}
+            onInvite={handleBulkInviteClick}
+            onClear={() => setSelectedCandidates([])}
+            inviteDisabled={activeChallenges.length === 0}
+            inviteDisabledReason={activeChallenges.length === 0 ? t('business_challenge.create_first_tooltip') : undefined}
           />
         )}
       </div>

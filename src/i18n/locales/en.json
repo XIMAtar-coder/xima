@@ -1887,7 +1887,25 @@
       "invitation_sent": "Invitation Sent",
       "invitation_sent_desc": "{{name}} has been invited to your challenge",
       "already_invited": "Already Invited",
-      "already_invited_desc": "This candidate has already been invited to this challenge"
+      "already_invited_desc": "This candidate has already been invited to this challenge",
+      "select_hint": "Select candidates to invite them to your challenge. Saving is for analysis only."
+    },
+    "selection": {
+      "selected": "{{count}} selected",
+      "invite_to_challenge": "Invite to Challenge",
+      "clear": "Clear"
+    },
+    "invite": {
+      "choose_challenge": "Choose a Challenge",
+      "choose_challenge_desc": "Select which challenge to invite {{count}} candidate(s) to:",
+      "updated": "Updated",
+      "confirm_invite": "Confirm Invite",
+      "active_challenges_count": "{{count}} active challenge(s)",
+      "bulk_success": "Invitations Sent",
+      "bulk_success_desc": "Successfully invited {{count}} candidate(s)",
+      "already_invited_count": "Some Already Invited",
+      "already_invited_count_desc": "{{count}} candidate(s) were already invited",
+      "bulk_fail_desc": "Failed to invite {{count}} candidate(s)"
     },
     "reports": {
       "title": "Reports & Analytics",
