@@ -1269,10 +1269,13 @@ export type Database = {
       hiring_goal_drafts: {
         Row: {
           business_id: string
+          candidate_count: number | null
+          challenge_count: number | null
           city_region: string | null
           country: string | null
           created_at: string | null
           experience_level: string | null
+          function_area: string | null
           id: string
           role_title: string | null
           salary_benchmark_json: Json | null
@@ -1287,10 +1290,13 @@ export type Database = {
         }
         Insert: {
           business_id: string
+          candidate_count?: number | null
+          challenge_count?: number | null
           city_region?: string | null
           country?: string | null
           created_at?: string | null
           experience_level?: string | null
+          function_area?: string | null
           id?: string
           role_title?: string | null
           salary_benchmark_json?: Json | null
@@ -1305,10 +1311,13 @@ export type Database = {
         }
         Update: {
           business_id?: string
+          candidate_count?: number | null
+          challenge_count?: number | null
           city_region?: string | null
           country?: string | null
           created_at?: string | null
           experience_level?: string | null
+          function_area?: string | null
           id?: string
           role_title?: string | null
           salary_benchmark_json?: Json | null
