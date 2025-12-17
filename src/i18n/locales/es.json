@@ -1792,7 +1792,8 @@
     "view_saved": "Ver Guardados",
     "active_challenge": "Desafío Activo",
     "create_first_tooltip": "Crea un desafío activo primero",
-    "new_challenge": "Nuevo Desafío"
+    "new_challenge": "Nuevo Desafío",
+    "manage_challenges": "Gestionar Desafíos"
   },
   "challenge_builder": {
     "page_title": "Crear Desafío",

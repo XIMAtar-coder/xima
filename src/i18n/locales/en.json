@@ -2261,7 +2261,8 @@
     "view_saved": "View Saved",
     "active_challenge": "Active Challenge",
     "create_first_tooltip": "Create an active challenge first",
-    "new_challenge": "New Challenge"
+    "new_challenge": "New Challenge",
+    "manage_challenges": "Manage Challenges"
   },
   "challenge_builder": {
     "page_title": "Create Challenge",

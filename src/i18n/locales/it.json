@@ -2175,7 +2175,8 @@
     "view_saved": "Vedi Salvati",
     "active_challenge": "Sfida Attiva",
     "create_first_tooltip": "Crea prima una sfida attiva",
-    "new_challenge": "Nuova Sfida"
+    "new_challenge": "Nuova Sfida",
+    "manage_challenges": "Gestisci Sfide"
   },
   "challenge_builder": {
     "page_title": "Crea Sfida",
