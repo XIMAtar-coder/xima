@@ -1374,7 +1374,12 @@
       "website": "Sitio Web",
       "hr_contact": "Contacto RR.HH.",
       "ai_profile": "Perfil IA",
-      "edit_profile": "Editar Perfil"
+      "edit_profile": "Editar Perfil",
+      "active_challenges_overview": "Desafíos Activos",
+      "active": "activos",
+      "invited": "invitados",
+      "responses": "respuestas",
+      "view_responses": "Ver Respuestas"
     },
     "candidates": {
       "title": "Grupo de Candidatos",

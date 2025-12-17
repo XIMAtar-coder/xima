@@ -1757,7 +1757,12 @@
       "website": "Sito Web",
       "hr_contact": "Contatto HR",
       "ai_profile": "Profilo IA",
-      "edit_profile": "Modifica Profilo"
+      "edit_profile": "Modifica Profilo",
+      "active_challenges_overview": "Challenge Attive",
+      "active": "attive",
+      "invited": "invitati",
+      "responses": "risposte",
+      "view_responses": "Visualizza Risposte"
     },
     "candidates": {
       "title": "Pool di Candidati",

@@ -1836,7 +1836,12 @@
       "website": "Website",
       "hr_contact": "HR Contact",
       "ai_profile": "AI Profile",
-      "edit_profile": "Edit Profile"
+      "edit_profile": "Edit Profile",
+      "active_challenges_overview": "Active Challenges",
+      "active": "active",
+      "invited": "invited",
+      "responses": "responses",
+      "view_responses": "View Responses"
     },
     "candidates": {
       "title": "Candidate Pool",

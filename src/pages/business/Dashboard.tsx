@@ -15,7 +15,18 @@ import { CandidateEngagement } from '@/components/business/CandidateEngagement';
 import { CompanyProfileCard } from '@/components/business/CompanyProfileCard';
 import { HiringGoalCard } from '@/components/business/HiringGoalCard';
 import { HiringGoalOverviewCard } from '@/components/business/HiringGoalOverviewCard';
+import { ActiveChallengesOverview } from '@/components/business/ActiveChallengesOverview';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
+
+interface ActiveChallengeWithStats {
+  id: string;
+  title: string;
+  hiring_goal_id: string | null;
+  hiring_goal_title: string | null;
+  invited_count: number;
+  responses_count: number;
+  created_at: string;
+}
 
 const BusinessDashboard = () => {
   const navigate = useNavigate();
@@ -36,6 +47,8 @@ const BusinessDashboard = () => {
   const [hiringGoalStatus, setHiringGoalStatus] = useState<'none' | 'draft' | 'completed'>('none');
   const [hiringGoalDraftId, setHiringGoalDraftId] = useState<string | null>(null);
   const [hiringGoalLoading, setHiringGoalLoading] = useState(true);
+  const [activeChallengesWithStats, setActiveChallengesWithStats] = useState<ActiveChallengeWithStats[]>([]);
+  const [activeChallengesLoading, setActiveChallengesLoading] = useState(true);
   
   // Hiring Goals portfolio
   const { goals: hiringGoals, loading: hiringGoalsLoading, updateGoalStatus, createGoal, refetch: refetchGoals } = useHiringGoals();
@@ -61,6 +74,7 @@ const BusinessDashboard = () => {
     loadCompanyProfile();
     loadBusinessProfile();
     loadHiringGoalStatus();
+    loadActiveChallengesWithStats();
   }, [isAuthenticated, isBusiness, businessLoading, navigate, toast, t]);
 
   // Load dashboard stats after hiring goal status is determined
@@ -69,6 +83,86 @@ const BusinessDashboard = () => {
       loadDashboardStats();
     }
   }, [hiringGoalLoading, hiringGoalDraftId, hiringGoalStatus, user?.id]);
+
+  const loadActiveChallengesWithStats = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Fetch active challenges for this business
+      const { data: challenges, error } = await supabase
+        .from('business_challenges')
+        .select(`
+          id,
+          title,
+          hiring_goal_id,
+          created_at
+        `)
+        .eq('business_id', user.id)
+        .eq('status', 'active')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('[Dashboard] Error fetching active challenges:', error);
+        return;
+      }
+
+      if (!challenges || challenges.length === 0) {
+        setActiveChallengesWithStats([]);
+        return;
+      }
+
+      // Get hiring goal titles for each challenge
+      const goalIds = challenges.map(c => c.hiring_goal_id).filter(Boolean) as string[];
+      let goalsMap: Record<string, string> = {};
+      
+      if (goalIds.length > 0) {
+        const { data: goals } = await supabase
+          .from('hiring_goal_drafts')
+          .select('id, role_title')
+          .in('id', goalIds);
+        
+        if (goals) {
+          goalsMap = goals.reduce((acc, g) => ({ ...acc, [g.id]: g.role_title || 'Untitled Goal' }), {});
+        }
+      }
+
+      // Get invitation counts per challenge
+      const challengeIds = challenges.map(c => c.id);
+      const { data: invitations } = await supabase
+        .from('challenge_invitations')
+        .select('challenge_id, status')
+        .in('challenge_id', challengeIds);
+
+      // Get response counts from candidate_challenges
+      const { data: responses } = await supabase
+        .from('candidate_challenges')
+        .select('challenge_id, status')
+        .in('challenge_id', challengeIds);
+
+      // Build stats
+      const challengesWithStats: ActiveChallengeWithStats[] = challenges.map(challenge => {
+        const invitedCount = invitations?.filter(i => i.challenge_id === challenge.id).length || 0;
+        const responsesCount = responses?.filter(r => r.challenge_id === challenge.id && r.status === 'completed').length || 0;
+        
+        return {
+          id: challenge.id,
+          title: challenge.title,
+          hiring_goal_id: challenge.hiring_goal_id,
+          hiring_goal_title: challenge.hiring_goal_id ? goalsMap[challenge.hiring_goal_id] || null : null,
+          invited_count: invitedCount,
+          responses_count: responsesCount,
+          created_at: challenge.created_at || ''
+        };
+      });
+
+      setActiveChallengesWithStats(challengesWithStats);
+    } catch (err) {
+      console.error('[Dashboard] Error loading active challenges with stats:', err);
+    } finally {
+      setActiveChallengesLoading(false);
+    }
+  };
 
   const loadHiringGoalStatus = async () => {
     try {
@@ -466,9 +560,17 @@ const BusinessDashboard = () => {
           </div>
         )}
 
+        {/* Active Challenges Overview - Operational Activity Priority */}
+        <ActiveChallengesOverview 
+          challenges={activeChallengesWithStats} 
+          loading={activeChallengesLoading} 
+        />
+
         {/* Hiring Goals Portfolio - ONLY ACTIVE GOALS */}
         {(() => {
           const activeGoals = hiringGoals.filter(goal => goal.status === 'active');
+          const hasActiveChallenges = activeChallengesWithStats.length > 0;
+          const showEmptyState = activeGoals.length === 0 && !hasActiveChallenges && !activeChallengesLoading;
           
           return (
             <div className="space-y-4">
@@ -500,7 +602,7 @@ const BusinessDashboard = () => {
                     />
                   ))}
                 </div>
-              ) : (
+              ) : showEmptyState ? (
                 <Card className="border-dashed border-2 border-muted-foreground/30">
                   <CardContent className="p-8 text-center">
                     <div className="p-4 rounded-full bg-muted/50 w-fit mx-auto mb-4">
@@ -525,7 +627,7 @@ const BusinessDashboard = () => {
                     </Button>
                   </CardContent>
                 </Card>
-              )}
+              ) : null}
             </div>
           );
         })()}
