@@ -47,6 +47,8 @@ import JobCandidateMatching from "./pages/business/JobCandidateMatching";
 import Analytics from "./pages/Analytics";
 import AssessmentGuide from "./pages/AssessmentGuide";
 import ChallengeAccept from "./pages/ChallengeAccept";
+import GoalCandidates from "./pages/business/GoalCandidates";
+import GoalChallenges from "./pages/business/GoalChallenges";
 
 const queryClient = new QueryClient();
 
@@ -101,6 +103,9 @@ const AppContent = () => {
           <Route path="/business/jobs" element={<BusinessJobs />} />
           <Route path="/business/jobs/new" element={<CreateJobOffer />} />
           <Route path="/business/jobs/:jobId/matches" element={<JobCandidateMatching />} />
+          {/* Goal-scoped routes */}
+          <Route path="/business/goals/:goalId/candidates" element={<GoalCandidates />} />
+          <Route path="/business/goals/:goalId/challenges" element={<GoalChallenges />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/challenge/accept" element={<ChallengeAccept />} />
           <Route path="*" element={<NotFound />} />

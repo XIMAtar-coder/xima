@@ -14,6 +14,8 @@ import { Link } from 'react-router-dom';
 import { CandidateEngagement } from '@/components/business/CandidateEngagement';
 import { CompanyProfileCard } from '@/components/business/CompanyProfileCard';
 import { HiringGoalCard } from '@/components/business/HiringGoalCard';
+import { HiringGoalOverviewCard } from '@/components/business/HiringGoalOverviewCard';
+import { useHiringGoals } from '@/hooks/useHiringGoals';
 
 const BusinessDashboard = () => {
   const navigate = useNavigate();
@@ -34,6 +36,9 @@ const BusinessDashboard = () => {
   const [hiringGoalStatus, setHiringGoalStatus] = useState<'none' | 'draft' | 'completed'>('none');
   const [hiringGoalDraftId, setHiringGoalDraftId] = useState<string | null>(null);
   const [hiringGoalLoading, setHiringGoalLoading] = useState(true);
+  
+  // Hiring Goals portfolio
+  const { goals: hiringGoals, loading: hiringGoalsLoading, updateGoalStatus, createGoal, refetch: refetchGoals } = useHiringGoals();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -458,6 +463,38 @@ const BusinessDashboard = () => {
         {process.env.NODE_ENV === 'development' && !hiringGoalLoading && hiringGoalStatus !== 'completed' && (
           <div className="text-xs text-muted-foreground font-mono bg-muted/50 p-2 rounded">
             [DEV] Hiring Goal: draftId={hiringGoalDraftId || 'null'} | status={hiringGoalStatus}
+          </div>
+        )}
+
+        {/* Hiring Goals Portfolio */}
+        {hiringGoals.length > 0 && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">{t('business.goals.portfolio_title')}</h2>
+                <p className="text-sm text-muted-foreground">{t('business.goals.portfolio_desc')}</p>
+              </div>
+              <Button 
+                onClick={async () => {
+                  const newGoal = await createGoal();
+                  if (newGoal) {
+                    toast({ title: t('business.goals.created'), description: t('business.goals.created_desc') });
+                  }
+                }}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                {t('business.goals.new_goal')}
+              </Button>
+            </div>
+            <div className="space-y-3">
+              {hiringGoals.map((goal) => (
+                <HiringGoalOverviewCard
+                  key={goal.id}
+                  goal={goal}
+                  onStatusChange={updateGoalStatus}
+                />
+              ))}
+            </div>
           </div>
         )}
 
