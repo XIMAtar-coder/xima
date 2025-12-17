@@ -7,8 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { useToast } from '@/hooks/use-toast';
-import { Target, Building2, CheckCircle2, XCircle, Clock, ArrowRight, Loader2 } from 'lucide-react';
+import { Target, Building2, CheckCircle2, XCircle, Clock, ArrowRight, Loader2, AlertTriangle, CalendarClock } from 'lucide-react';
 import MainLayout from '@/components/layout/MainLayout';
+import { getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
 
 interface InvitationDetails {
   id: string;
@@ -18,6 +19,9 @@ interface InvitationDetails {
   role_title: string | null;
   task_description: string | null;
   challenge_title: string | null;
+  challenge_start_at: string | null;
+  challenge_end_at: string | null;
+  challenge_status: string | null;
 }
 
 const ChallengeAccept = () => {
@@ -73,7 +77,7 @@ const ChallengeAccept = () => {
         invData.challenge_id 
           ? supabase
               .from('business_challenges')
-              .select('title')
+              .select('title, start_at, end_at, status')
               .eq('id', invData.challenge_id)
               .single()
           : Promise.resolve({ data: null })
@@ -86,7 +90,10 @@ const ChallengeAccept = () => {
         company_name: businessResult.data?.company_name || 'Company',
         role_title: goalResult.data?.role_title || null,
         task_description: goalResult.data?.task_description || null,
-        challenge_title: challengeResult.data?.title || null
+        challenge_title: challengeResult.data?.title || null,
+        challenge_start_at: challengeResult.data?.start_at || null,
+        challenge_end_at: challengeResult.data?.end_at || null,
+        challenge_status: challengeResult.data?.status || null
       });
     } catch (err) {
       console.error('Error fetching invitation:', err);
@@ -269,6 +276,14 @@ const ChallengeAccept = () => {
     );
   }
 
+  // Compute time status for the challenge
+  const timeInfo = invitation.challenge_start_at && invitation.challenge_end_at
+    ? getChallengeTimeInfo(invitation.challenge_start_at, invitation.challenge_end_at, invitation.challenge_status || 'active')
+    : null;
+
+  const isExpired = timeInfo?.timeStatus === 'expired';
+  const isUpcoming = timeInfo?.timeStatus === 'upcoming';
+
   return (
     <MainLayout>
       <div className="max-w-2xl mx-auto mt-8 px-4">
@@ -290,6 +305,19 @@ const ChallengeAccept = () => {
           </div>
 
           <CardContent className="p-6 space-y-6">
+            {/* Expired banner */}
+            {isExpired && (
+              <Card className="border-destructive/50 bg-destructive/5">
+                <CardContent className="p-4 flex items-center gap-3">
+                  <AlertTriangle className="h-5 w-5 text-destructive shrink-0" />
+                  <div>
+                    <p className="font-medium text-destructive">{t('challenge_invitation.expired_title')}</p>
+                    <p className="text-sm text-muted-foreground">{t('challenge_invitation.expired_desc')}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Challenge title if available */}
             {invitation.challenge_title && (
               <div className="text-center">
@@ -326,6 +354,28 @@ const ChallengeAccept = () => {
               </div>
             )}
 
+            {/* Challenge deadline */}
+            {timeInfo && invitation.challenge_end_at && (
+              <div className={`flex items-center gap-3 p-3 rounded-lg ${isExpired ? 'bg-destructive/10' : timeInfo.isExpiringSoon ? 'bg-amber-500/10' : 'bg-muted/50'}`}>
+                <CalendarClock className={`h-5 w-5 ${isExpired ? 'text-destructive' : timeInfo.isExpiringSoon ? 'text-amber-500' : 'text-primary'}`} />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground">
+                    {isExpired 
+                      ? t('challenge_invitation.deadline_passed')
+                      : t('challenge_invitation.deadline', { date: new Date(invitation.challenge_end_at).toLocaleDateString() })}
+                  </p>
+                  {timeInfo.remainingText && !isExpired && (
+                    <p className="text-xs text-muted-foreground">{timeInfo.remainingText}</p>
+                  )}
+                </div>
+                {timeInfo.isExpiringSoon && !isExpired && (
+                  <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/30">
+                    {t('challenge_invitation.expiring_soon')}
+                  </Badge>
+                )}
+              </div>
+            )}
+
             {/* Timing */}
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Clock size={16} />
@@ -351,7 +401,7 @@ const ChallengeAccept = () => {
             )}
 
             {/* Action buttons */}
-            {isAuthenticated && (
+            {isAuthenticated && !isExpired && (
               <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-border">
                 <Button
                   onClick={handleAccept}
@@ -376,6 +426,15 @@ const ChallengeAccept = () => {
                   size="lg"
                 >
                   {t('challenge_invitation.decline')}
+                </Button>
+              </div>
+            )}
+
+            {/* Expired - no actions */}
+            {isAuthenticated && isExpired && (
+              <div className="pt-4 border-t border-border text-center">
+                <Button onClick={() => navigate('/profile')} variant="outline">
+                  {t('challenge_invitation.go_profile')}
                 </Button>
               </div>
             )}

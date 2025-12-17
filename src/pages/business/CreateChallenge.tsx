@@ -12,11 +12,11 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { validateChallengeDates, getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
 import { 
   ArrowLeft, Sparkles, Loader2, Rocket, Save, Eye, Clock, 
-  Target, CheckCircle2, Wand2, AlertCircle, Archive
+  Target, CheckCircle2, Wand2, AlertCircle, Archive, CalendarClock
 } from 'lucide-react';
-
 interface HiringGoal {
   id: string;
   role_title: string | null;
@@ -35,6 +35,8 @@ interface ExistingChallenge {
   rubric: any;
   status: string;
   hiring_goal_id: string | null;
+  start_at: string | null;
+  end_at: string | null;
 }
 
 const CreateChallenge = () => {
@@ -61,6 +63,18 @@ const CreateChallenge = () => {
   const [successCriteria, setSuccessCriteria] = useState<string[]>(['', '', '']);
   const [timeEstimate, setTimeEstimate] = useState(45);
   const [currentStatus, setCurrentStatus] = useState('draft');
+  const [startAt, setStartAt] = useState<string>('');
+  const [endAt, setEndAt] = useState<string>('');
+
+  // Set default dates (start now, end in 7 days)
+  useEffect(() => {
+    if (!startAt && !isEditMode) {
+      const now = new Date();
+      const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      setStartAt(now.toISOString().slice(0, 16));
+      setEndAt(weekFromNow.toISOString().slice(0, 16));
+    }
+  }, [isEditMode, startAt]);
 
   // Load hiring goal or existing challenge
   useEffect(() => {
@@ -130,6 +144,8 @@ const CreateChallenge = () => {
     setSuccessCriteria(data.success_criteria?.length ? data.success_criteria : ['', '', '']);
     setTimeEstimate(data.time_estimate_minutes || 45);
     setCurrentStatus(data.status);
+    if (data.start_at) setStartAt(new Date(data.start_at).toISOString().slice(0, 16));
+    if (data.end_at) setEndAt(new Date(data.end_at).toISOString().slice(0, 16));
 
     // Load hiring goal if exists
     if (data.hiring_goal_id) {
@@ -240,6 +256,19 @@ const CreateChallenge = () => {
       return;
     }
 
+    // Validate dates for activation
+    if (newStatus === 'active') {
+      const dateValidation = validateChallengeDates(startAt || null, endAt || null);
+      if (!dateValidation.valid) {
+        toast({
+          title: t('common.error'),
+          description: dateValidation.error || t('challenge_builder.dates_required'),
+          variant: 'destructive'
+        });
+        return;
+      }
+    }
+
     setSaving(true);
     try {
       const challengeData = {
@@ -249,6 +278,8 @@ const CreateChallenge = () => {
         time_estimate_minutes: timeEstimate,
         rubric: { criteria: { outcome: 3, clarity: 3, reasoning: 3 } },
         status: newStatus,
+        start_at: startAt ? new Date(startAt).toISOString() : null,
+        end_at: endAt ? new Date(endAt).toISOString() : null,
         updated_at: new Date().toISOString()
       };
 
@@ -480,6 +511,53 @@ const CreateChallenge = () => {
                     />
                   </div>
                 ))}
+              </CardContent>
+            </Card>
+
+            {/* Time Estimate */}
+            {/* Time Window */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <CalendarClock className="h-5 w-5 text-primary" />
+                  {t('challenge_builder.time_window_label')}
+                </CardTitle>
+                <CardDescription>{t('challenge_builder.time_window_hint')}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">
+                      {t('challenge_builder.start_date')}
+                    </label>
+                    <Input
+                      type="datetime-local"
+                      value={startAt}
+                      onChange={(e) => setStartAt(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">
+                      {t('challenge_builder.end_date')}
+                    </label>
+                    <Input
+                      type="datetime-local"
+                      value={endAt}
+                      onChange={(e) => setEndAt(e.target.value)}
+                    />
+                  </div>
+                </div>
+                {startAt && endAt && (
+                  <p className="text-xs text-muted-foreground">
+                    {(() => {
+                      const info = getChallengeTimeInfo(startAt, endAt, currentStatus);
+                      if (info.remainingText) {
+                        return `⏱ ${info.remainingText}`;
+                      }
+                      return null;
+                    })()}
+                  </p>
+                )}
               </CardContent>
             </Card>
 

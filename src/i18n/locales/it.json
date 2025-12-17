@@ -1762,7 +1762,8 @@
       "active": "attive",
       "invited": "invitati",
       "responses": "risposte",
-      "view_responses": "Visualizza Risposte"
+      "view_responses": "Visualizza Risposte",
+      "expiring_soon": "In scadenza"
     },
     "candidates": {
       "title": "Pool di Candidati",
@@ -2262,7 +2263,12 @@
     "no_task_description": "Nessuna descrizione del compito disponibile per la generazione AI.",
     "no_task_title": "Dettagli Obiettivo Mancanti",
     "no_task_desc": "Aggiungi una descrizione del compito nel tuo obiettivo di assunzione per abilitare la generazione AI.",
-    "generation_failed": "Generazione AI fallita. Riprova."
+    "generation_failed": "Generazione AI fallita. Riprova.",
+    "time_window_label": "Finestra Temporale",
+    "time_window_hint": "Imposta quando i candidati possono iniziare e devono completare la sfida.",
+    "start_date": "Data Inizio",
+    "end_date": "Data Fine",
+    "dates_required": "Le date di inizio e fine sono necessarie per attivare una sfida."
   },
   "challenges": {
     "page_title": "Sfide",

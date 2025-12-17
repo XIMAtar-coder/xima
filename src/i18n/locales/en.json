@@ -1841,7 +1841,8 @@
       "active": "active",
       "invited": "invited",
       "responses": "responses",
-      "view_responses": "View Responses"
+      "view_responses": "View Responses",
+      "expiring_soon": "Expiring soon"
     },
     "candidates": {
       "title": "Candidate Pool",
@@ -2324,7 +2325,12 @@
     "already_accepted": "Already Accepted",
     "already_accepted_desc": "You've already accepted this challenge from {{company}}.",
     "already_declined": "Already Declined",
-    "already_declined_desc": "You've already declined this invitation."
+    "already_declined_desc": "You've already declined this invitation.",
+    "expired_title": "Challenge Expired",
+    "expired_desc": "This challenge is no longer available for submissions.",
+    "deadline_passed": "Deadline has passed",
+    "deadline": "Deadline: {{date}}",
+    "expiring_soon": "Expiring soon"
   },
   "business_challenge": {
     "create_title": "Create Challenge",
@@ -2383,7 +2389,12 @@
     "no_task_description": "No task description available for AI generation.",
     "no_task_title": "Missing Hiring Goal Details",
     "no_task_desc": "Add a task description in your hiring goal to enable AI generation.",
-    "generation_failed": "AI generation failed. Please try again."
+    "generation_failed": "AI generation failed. Please try again.",
+    "time_window_label": "Challenge Time Window",
+    "time_window_hint": "Set when candidates can start and must complete the challenge.",
+    "start_date": "Start Date",
+    "end_date": "End Date",
+    "dates_required": "Start and end dates are required to activate a challenge."
   },
   "challenges": {
     "page_title": "Challenges",
