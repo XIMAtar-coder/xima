@@ -559,64 +559,6 @@ const CreateChallenge = () => {
               </CardContent>
             </Card>
 
-            {/* Action Buttons - Sticky on mobile/tablet, inline on desktop */}
-            <div className="hidden lg:flex flex-col gap-3">
-              {currentStatus !== 'active' && (
-                <Button 
-                  onClick={() => handleSave('active')} 
-                  disabled={saving || !title.trim() || !description.trim()}
-                  size="lg"
-                  className="w-full gap-2"
-                >
-                  {saving ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Rocket className="h-4 w-4" />
-                  )}
-                  {t('challenge_builder.activate_button')}
-                </Button>
-              )}
-              
-              {currentStatus === 'active' && isEditMode && (
-                <Button 
-                  onClick={() => handleSave('active')} 
-                  disabled={saving || !title.trim() || !description.trim()}
-                  size="lg"
-                  className="w-full gap-2"
-                >
-                  {saving ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Save className="h-4 w-4" />
-                  )}
-                  {t('challenges.save_changes')}
-                </Button>
-              )}
-              
-              <Button 
-                variant="outline"
-                onClick={() => handleSave('draft')} 
-                disabled={saving || !title.trim()}
-                size="lg"
-                className="w-full gap-2"
-              >
-                <Save className="h-4 w-4" />
-                {t('challenge_builder.save_draft')}
-              </Button>
-              
-              {isEditMode && currentStatus !== 'archived' && (
-                <Button 
-                  variant="ghost"
-                  onClick={() => handleSave('archived')} 
-                  disabled={saving}
-                  size="lg"
-                  className="w-full gap-2 text-muted-foreground"
-                >
-                  <Archive className="h-4 w-4" />
-                  {t('challenges.archive')}
-                </Button>
-              )}
-            </div>
 
             {!hiringGoal?.task_description && !isEditMode && (
               <Card className="border-amber-500/50 bg-amber-500/5">
@@ -633,9 +575,15 @@ const CreateChallenge = () => {
         </div>
       </div>
 
-      {/* Sticky CTA bar - visible on all screens */}
-      <div className="fixed bottom-0 left-0 right-0 lg:left-64 bg-[#0A0F1C]/95 backdrop-blur-sm border-t border-white/10 p-4 z-50">
-        <div className="max-w-5xl mx-auto flex flex-wrap gap-3 justify-end">
+      {/* Bottom spacer to prevent content from being hidden behind fixed CTA */}
+      <div className="h-24" />
+
+      {/* Fixed CTA bar - always visible at viewport bottom */}
+      <div 
+        className="fixed bottom-0 inset-x-0 bg-slate-900/95 backdrop-blur-md border-t border-white/10 p-4"
+        style={{ zIndex: 9999 }}
+      >
+        <div className="max-w-5xl mx-auto flex flex-wrap gap-3 justify-center sm:justify-end">
           {isEditMode && currentStatus !== 'archived' && (
             <Button 
               variant="ghost"
