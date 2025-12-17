@@ -131,8 +131,8 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
         }`}
       >
         {/* Dark scrim overlay for improved readability */}
-        <div className="absolute inset-0 bg-black/50 pointer-events-none" style={{ marginLeft: sidebarOpen ? '256px' : '80px' }} />
-        <div className="relative z-10 p-8">
+        <div className="fixed inset-0 bg-black/50 pointer-events-none" style={{ marginLeft: sidebarOpen ? '256px' : '80px' }} />
+        <div className="relative z-10 p-8 pb-32">
           {children}
         </div>
       </main>
