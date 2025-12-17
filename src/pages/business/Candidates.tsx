@@ -11,7 +11,7 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft, Bookmark, BookmarkCheck, RefreshCw, ChevronDown, Lightbulb, Bug, Pencil, Plus } from 'lucide-react';
+import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft, Bookmark, BookmarkCheck, RefreshCw, ChevronDown, Lightbulb, Bug, Pencil, Plus, Settings } from 'lucide-react';
 import { XimatarCandidateCard } from '@/components/business/XimatarCandidateCard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useHiringGoalShortlist } from '@/hooks/useHiringGoalShortlist';
@@ -668,6 +668,15 @@ const BusinessCandidates = () => {
                   >
                     <Plus size={14} className="mr-1" />
                     {t('business_challenge.new_challenge')}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate('/business/challenges')}
+                    className="h-8 px-2 text-white/80 hover:text-white hover:bg-white/10"
+                  >
+                    <Settings size={14} className="mr-1" />
+                    {t('business_challenge.manage_challenges')}
                   </Button>
                 </div>
               </div>
