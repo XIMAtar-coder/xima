@@ -1937,7 +1937,10 @@
       "status_paused": "Paused",
       "status_closed": "Closed",
       "status_draft": "Draft",
-      "back_to_dashboard": "Dashboard"
+      "back_to_dashboard": "Dashboard",
+      "no_active_title": "No active hiring goals yet",
+      "no_active_desc": "Create your first hiring goal to start building your talent pipeline.",
+      "create_first": "Create your first hiring goal"
     },
     "challenges": {
       "title": "Challenges",
