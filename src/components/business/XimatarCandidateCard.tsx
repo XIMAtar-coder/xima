@@ -81,7 +81,7 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
 
   return (
     <>
-      <Card className="bg-gradient-to-br from-card to-card/50 border-border/50 hover:border-primary/40 transition-all">
+      <Card className="bg-slate-900/70 backdrop-blur-sm border border-white/10 hover:border-primary/40 transition-all shadow-lg">
         <CardContent className="p-6">
           {/* DEV Debug Overlay */}
           {showDebug && process.env.NODE_ENV === 'development' && (
@@ -128,21 +128,21 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
             <Badge className={`bg-gradient-to-r ${level.color} text-white mb-2`}>
               {level.label}
             </Badge>
-            <h3 className="text-lg font-bold text-foreground capitalize">{displayName || ximatarLabel}</h3>
+            <h3 className="text-lg font-bold text-white capitalize">{displayName || ximatarLabel}</h3>
             {displayName && (
-              <p className="text-sm text-muted-foreground capitalize">{ximatarLabel}</p>
+              <p className="text-sm text-white/70 capitalize">{ximatarLabel}</p>
             )}
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{t('business.candidates.evaluation_score', 'Evaluation Score')}</span>
-              <span className="text-sm font-bold text-foreground">{evaluationScore.toFixed(1)}</span>
+              <span className="text-sm text-white/70">{t('business.candidates.evaluation_score', 'Evaluation Score')}</span>
+              <span className="text-sm font-bold text-white">{evaluationScore.toFixed(1)}</span>
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{t('business.candidates.pillar_average', 'Pillar Average')}</span>
-              <span className="text-sm font-bold text-foreground">
+              <span className="text-sm text-white/70">{t('business.candidates.pillar_average', 'Pillar Average')}</span>
+              <span className="text-sm font-bold text-white">
                 {hasPillarData ? pillarAverage.toFixed(1) : t('business.candidates.not_computed', 'Not computed')}
               </span>
             </div>

@@ -16,17 +16,17 @@ export const NoChallengeGate: React.FC<NoChallengeGateProps> = ({
   const { t } = useTranslation();
 
   return (
-    <Card className="border-amber-500/50 bg-amber-500/5">
+    <Card className="border-amber-500/40 bg-amber-500/10 backdrop-blur-sm shadow-lg">
       <CardContent className="p-6">
         <div className="flex items-start gap-4">
-          <div className="p-3 rounded-full bg-amber-500/10">
-            <AlertTriangle className="h-6 w-6 text-amber-500" />
+          <div className="p-3 rounded-full bg-amber-500/20">
+            <AlertTriangle className="h-6 w-6 text-amber-400" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-foreground mb-1">
+            <h3 className="font-semibold text-white mb-1">
               {t('business_challenge.gate_title')}
             </h3>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-sm text-white/80 mb-4">
               {t('business_challenge.gate_description')}
             </p>
             <div className="flex gap-3">

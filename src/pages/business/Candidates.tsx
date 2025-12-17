@@ -584,10 +584,10 @@ const BusinessCandidates = () => {
                 <Sparkles className="h-6 w-6 text-primary" />
               </div>
               <div className="flex-1">
-                <h1 className="text-3xl font-bold text-foreground mb-2">
+                <h1 className="text-3xl font-bold text-white mb-2">
                   {t('business.shortlist.title')}
                 </h1>
-                <p className="text-muted-foreground">
+                <p className="text-white/80">
                   {t('business.shortlist.subtitle', { count: filteredCandidates.length })}
                 </p>
                 {hiringGoal?.role_title && (
@@ -623,12 +623,12 @@ const BusinessCandidates = () => {
             
             {/* Shortlist filter tabs */}
             <Tabs value={viewFilter} onValueChange={handleViewFilterChange} className="w-full">
-              <TabsList className="grid w-full max-w-md grid-cols-2">
-                <TabsTrigger value="all" className="gap-2">
+              <TabsList className="grid w-full max-w-md grid-cols-2 bg-slate-900/60 border border-white/10">
+                <TabsTrigger value="all" className="gap-2 data-[state=active]:bg-white/15 data-[state=active]:text-white text-white/70">
                   <Bookmark size={14} />
                   {t('business.shortlist.all_matches')}
                 </TabsTrigger>
-                <TabsTrigger value="shortlisted" className="gap-2">
+                <TabsTrigger value="shortlisted" className="gap-2 data-[state=active]:bg-white/15 data-[state=active]:text-white text-white/70">
                   <BookmarkCheck size={14} />
                   {t('business.shortlist.saved')} ({shortlistedCount})
                 </TabsTrigger>
@@ -645,17 +645,17 @@ const BusinessCandidates = () => {
 
             {/* Active challenge badge with actions */}
             {activeChallenge && (
-              <div className="flex items-center justify-between gap-4 text-sm bg-primary/5 border border-primary/20 p-3 rounded-lg">
-                <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="flex items-center justify-between gap-4 text-sm bg-slate-900/60 border border-white/10 p-4 rounded-lg shadow-lg">
+                <div className="flex items-center gap-2 text-white/80">
                   <Target size={16} className="text-primary shrink-0" />
-                  <span>{t('business_challenge.active_challenge')}: <strong className="text-foreground">{activeChallenge.title}</strong></span>
+                  <span>{t('business_challenge.active_challenge')}: <strong className="text-white">{activeChallenge.title}</strong></span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => navigate(`/business/challenges/${activeChallenge.id}/edit`)}
-                    className="h-8 px-2"
+                    className="h-8 px-2 text-white/80 hover:text-white hover:bg-white/10"
                   >
                     <Pencil size={14} className="mr-1" />
                     {t('common.edit')}
@@ -664,7 +664,7 @@ const BusinessCandidates = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => navigate(`/business/challenges/new?goal=${goalId}`)}
-                    className="h-8 px-2"
+                    className="h-8 px-2 text-white/80 hover:text-white hover:bg-white/10"
                   >
                     <Plus size={14} className="mr-1" />
                     {t('business_challenge.new_challenge')}
@@ -675,8 +675,8 @@ const BusinessCandidates = () => {
 
             {/* Hint for All Matches tab */}
             {viewFilter === 'all' && activeChallenge && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
-                <Lightbulb size={16} className="text-amber-500 shrink-0" />
+              <div className="flex items-center gap-2 text-sm text-white/80 bg-slate-900/60 border border-white/10 p-3 rounded-lg">
+                <Lightbulb size={16} className="text-amber-400 shrink-0" />
                 {t('business.shortlist.save_hint')}
               </div>
             )}
@@ -692,8 +692,8 @@ const BusinessCandidates = () => {
         ) : (
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">{t('business.candidates.title')}</h1>
-              <p className="text-muted-foreground">
+              <h1 className="text-3xl font-bold text-white mb-2">{t('business.candidates.title')}</h1>
+              <p className="text-white/80">
                 {filteredCandidates.length} {t('business.candidates.available')}
               </p>
             </div>
@@ -721,7 +721,7 @@ const BusinessCandidates = () => {
 
         {/* Search and Filters - Only show in full pool view */}
         {!goalId && (
-          <Card className="bg-card border-border">
+          <Card className="bg-slate-900/60 border border-white/10 shadow-lg">
             <CardContent className="p-4">
               <div className="flex gap-4 flex-wrap">
                 <div className="flex-1 min-w-[200px] relative">
@@ -823,13 +823,13 @@ const BusinessCandidates = () => {
               />
               {/* Match reasons for shortlist view */}
               {goalId && candidate.matchReasons && candidate.matchReasons.length > 0 && (
-                <div className="mt-2 p-3 bg-muted/50 rounded-lg border border-border/50">
-                  <p className="text-xs font-medium text-muted-foreground mb-1">
+                <div className="mt-2 p-3 bg-slate-900/60 rounded-lg border border-white/10">
+                  <p className="text-xs font-medium text-white/70 mb-1">
                     {t('business.shortlist.why_matched')}
                   </p>
                   <ul className="space-y-1">
                     {candidate.matchReasons.map((reason, idx) => (
-                      <li key={idx} className="text-xs text-foreground flex items-start gap-1.5">
+                      <li key={idx} className="text-xs text-white/90 flex items-start gap-1.5">
                         <span className="text-primary mt-0.5">•</span>
                         {reason}
                       </li>
@@ -857,7 +857,7 @@ const BusinessCandidates = () => {
 
         {/* Empty States */}
         {filteredCandidates.length === 0 && (
-          <Card className="bg-card border-border">
+          <Card className="bg-slate-900/60 border border-white/10 shadow-lg">
             <CardContent className="p-12 text-center space-y-4">
               {goalId && viewFilter === 'shortlisted' ? (
                 <>
