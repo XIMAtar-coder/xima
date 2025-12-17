@@ -126,11 +126,13 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
 
       {/* Main Content */}
       <main
-        className={`transition-all duration-300 ${
+        className={`transition-all duration-300 min-h-screen ${
           sidebarOpen ? 'ml-64' : 'ml-20'
         }`}
       >
-        <div className="p-8">
+        {/* Dark scrim overlay for improved readability */}
+        <div className="absolute inset-0 bg-black/50 pointer-events-none" style={{ marginLeft: sidebarOpen ? '256px' : '80px' }} />
+        <div className="relative z-10 p-8">
           {children}
         </div>
       </main>
