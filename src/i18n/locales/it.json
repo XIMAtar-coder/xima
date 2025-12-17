@@ -1801,7 +1801,25 @@
       "regenerated": "Match Rigenerati",
       "regenerated_desc": "La tua lista è stata aggiornata. I candidati salvati rimangono in cima.",
       "show_more": "Mostra altri {{count}}",
-      "invite_to_challenge": "Invita alla Sfida"
+      "invite_to_challenge": "Invita alla Sfida",
+      "select_hint": "Seleziona i candidati per invitarli alla sfida. Il salvataggio è solo per l'analisi."
+    },
+    "selection": {
+      "selected": "{{count}} selezionati",
+      "invite_to_challenge": "Invita alla Sfida",
+      "clear": "Cancella"
+    },
+    "invite": {
+      "choose_challenge": "Scegli una Sfida",
+      "choose_challenge_desc": "Seleziona la sfida a cui invitare {{count}} candidato/i:",
+      "updated": "Aggiornato",
+      "confirm_invite": "Conferma Invito",
+      "active_challenges_count": "{{count}} sfida/e attiva/e",
+      "bulk_success": "Inviti Inviati",
+      "bulk_success_desc": "Invitati con successo {{count}} candidato/i",
+      "already_invited_count": "Alcuni Già Invitati",
+      "already_invited_count_desc": "{{count}} candidato/i erano già stati invitati",
+      "bulk_fail_desc": "Impossibile invitare {{count}} candidato/i"
     },
     "reports": {
       "title": "Report e Analisi",
