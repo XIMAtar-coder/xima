@@ -2080,6 +2080,26 @@
         "salary_required": "Please enter salary range",
         "salary_invalid": "Minimum salary cannot exceed maximum"
       }
+    },
+    "responses": {
+      "subtitle": "Review candidate submissions",
+      "stat_invited": "Invited",
+      "stat_submitted": "Submitted",
+      "stat_draft": "In Progress",
+      "stat_pending": "Not Started",
+      "table_title": "Candidate Responses",
+      "no_invitations": "No candidates have been invited yet.",
+      "col_candidate": "Candidate",
+      "col_status": "Status",
+      "col_invited_at": "Invited",
+      "col_submitted_at": "Submitted",
+      "view": "View",
+      "submitted": "Submitted",
+      "draft": "Draft",
+      "in_progress": "In Progress",
+      "invited": "Invited",
+      "submission": "Submission",
+      "no_content": "No content available"
     }
   },
   "guide": {
@@ -2474,28 +2494,6 @@
       "actions_required": "Please provide all 3 actions",
       "tradeoff_required": "Please select a trade-off priority",
       "confidence_required": "Please select your confidence level"
-    }
-  },
-  "business": {
-    "responses": {
-      "subtitle": "Review candidate submissions",
-      "stat_invited": "Invited",
-      "stat_submitted": "Submitted",
-      "stat_draft": "In Progress",
-      "stat_pending": "Not Started",
-      "table_title": "Candidate Responses",
-      "no_invitations": "No candidates have been invited yet.",
-      "col_candidate": "Candidate",
-      "col_status": "Status",
-      "col_invited_at": "Invited",
-      "col_submitted_at": "Submitted",
-      "view": "View",
-      "submitted": "Submitted",
-      "draft": "Draft",
-      "in_progress": "In Progress",
-      "invited": "Invited",
-      "submission": "Submission",
-      "no_content": "No content available"
     }
   }
 }

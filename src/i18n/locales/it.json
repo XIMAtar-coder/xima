@@ -1959,6 +1959,26 @@
         "salary_required": "Inserisci il range salariale",
         "salary_invalid": "Il salario minimo non può superare il massimo"
       }
+    },
+    "responses": {
+      "subtitle": "Rivedi le risposte dei candidati",
+      "stat_invited": "Invitati",
+      "stat_submitted": "Inviati",
+      "stat_draft": "In corso",
+      "stat_pending": "Non iniziati",
+      "table_title": "Risposte candidati",
+      "no_invitations": "Nessun candidato invitato.",
+      "col_candidate": "Candidato",
+      "col_status": "Stato",
+      "col_invited_at": "Invitato",
+      "col_submitted_at": "Inviato",
+      "view": "Vedi",
+      "submitted": "Inviato",
+      "draft": "Bozza",
+      "in_progress": "In corso",
+      "invited": "Invitato",
+      "submission": "Risposta",
+      "no_content": "Nessun contenuto"
     }
   },
   "guide": {
@@ -2335,8 +2355,5 @@
     "submitted_desc": "La tua risposta è stata inviata con successo.",
     "submitted_at": "Inviata il",
     "validation": { "incomplete": "Invio incompleto", "approach_required": "L'approccio è richiesto", "assumptions_required": "Le assunzioni sono richieste", "actions_required": "Fornisci tutte e 3 le azioni", "tradeoff_required": "Seleziona un trade-off", "confidence_required": "Seleziona il livello di confidenza" }
-  },
-  "business": {
-    "responses": { "subtitle": "Rivedi le risposte dei candidati", "stat_invited": "Invitati", "stat_submitted": "Inviati", "stat_draft": "In corso", "stat_pending": "Non iniziati", "table_title": "Risposte candidati", "no_invitations": "Nessun candidato invitato.", "col_candidate": "Candidato", "col_status": "Stato", "col_invited_at": "Invitato", "col_submitted_at": "Inviato", "view": "Vedi", "submitted": "Inviato", "draft": "Bozza", "in_progress": "In corso", "invited": "Invitato", "submission": "Risposta", "no_content": "Nessun contenuto" }
   }
 }
