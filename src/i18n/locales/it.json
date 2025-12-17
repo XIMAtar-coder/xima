@@ -2297,5 +2297,46 @@
   },
   "common": {
     "edit": "Modifica"
+  },
+  "challenge": {
+    "not_found": "Challenge non trovata",
+    "status": { "upcoming": "In arrivo", "active": "Attiva", "expired": "Scaduta", "submitted": "Inviata" },
+    "expired_message": "Questa challenge non è più disponibile.",
+    "upcoming_message": "Questa challenge non è ancora iniziata.",
+    "progress": "Progresso",
+    "saving": "Salvataggio...",
+    "saved": "Salvato",
+    "instructions": "Istruzioni",
+    "success_criteria": "Cosa cerchiamo",
+    "estimated_time": "Tempo stimato: {{minutes}} minuti",
+    "your_response": "La tua risposta",
+    "approach_label": "Il tuo approccio",
+    "approach_placeholder": "Descrivi come affronteresti questa challenge...",
+    "assumptions_label": "Assunzioni chiave",
+    "assumptions_placeholder": "Quali assunzioni stai facendo?",
+    "first_actions_label": "Prime 3 azioni",
+    "first_actions_hint": "Quali sarebbero i tuoi primi tre passi concreti?",
+    "action_placeholder": "Azione {{n}}",
+    "tradeoff_label": "Trade-off prioritario",
+    "tradeoff_speed": "Velocità di esecuzione",
+    "tradeoff_quality": "Qualità e affidabilità",
+    "tradeoff_alignment": "Allineamento stakeholder",
+    "tradeoff_data": "Certezza dei dati",
+    "tradeoff_cost": "Efficienza dei costi",
+    "confidence_label": "Livello di confidenza",
+    "confidence_placeholder": "Seleziona il tuo livello",
+    "confidence_low": "Basso",
+    "confidence_medium": "Medio",
+    "confidence_high": "Alto",
+    "fields_remaining": "campi richiesti rimanenti",
+    "submit_btn": "Invia Challenge",
+    "submission_success": "Risposta ricevuta!",
+    "submitted_title": "Risposta Ricevuta",
+    "submitted_desc": "La tua risposta è stata inviata con successo.",
+    "submitted_at": "Inviata il",
+    "validation": { "incomplete": "Invio incompleto", "approach_required": "L'approccio è richiesto", "assumptions_required": "Le assunzioni sono richieste", "actions_required": "Fornisci tutte e 3 le azioni", "tradeoff_required": "Seleziona un trade-off", "confidence_required": "Seleziona il livello di confidenza" }
+  },
+  "business": {
+    "responses": { "subtitle": "Rivedi le risposte dei candidati", "stat_invited": "Invitati", "stat_submitted": "Inviati", "stat_draft": "In corso", "stat_pending": "Non iniziati", "table_title": "Risposte candidati", "no_invitations": "Nessun candidato invitato.", "col_candidate": "Candidato", "col_status": "Stato", "col_invited_at": "Invitato", "col_submitted_at": "Inviato", "view": "Vedi", "submitted": "Inviato", "draft": "Bozza", "in_progress": "In corso", "invited": "Invitato", "submission": "Risposta", "no_content": "Nessun contenuto" }
   }
 }
