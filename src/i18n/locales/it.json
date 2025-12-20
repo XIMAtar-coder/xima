@@ -1821,16 +1821,21 @@
       "clear": "Cancella"
     },
     "invite": {
-      "choose_challenge": "Scegli una Sfida",
+      "choose_challenge": "Scegli una Sfida Attiva",
       "choose_challenge_desc": "Seleziona la sfida a cui invitare {{count}} candidato/i:",
       "updated": "Aggiornato",
+      "ends": "Scade",
       "confirm_invite": "Conferma Invito",
       "active_challenges_count": "{{count}} sfida/e attiva/e",
       "bulk_success": "Inviti Inviati",
       "bulk_success_desc": "Invitati con successo {{count}} candidato/i",
       "already_invited_count": "Alcuni Già Invitati",
       "already_invited_count_desc": "{{count}} candidato/i erano già stati invitati",
-      "bulk_fail_desc": "Impossibile invitare {{count}} candidato/i"
+      "bulk_fail_desc": "Impossibile invitare {{count}} candidato/i",
+      "no_challenge_title": "Nessuna Sfida Attiva",
+      "no_challenge_desc": "Crea e attiva prima una sfida",
+      "activate_first": "Attiva prima una sfida",
+      "go_to_challenges": "Vai alle Sfide"
     },
     "goals": {
       "portfolio_title": "I Tuoi Obiettivi di Assunzione",

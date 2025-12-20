@@ -1914,9 +1914,10 @@
       "clear": "Clear"
     },
     "invite": {
-      "choose_challenge": "Choose a Challenge",
+      "choose_challenge": "Choose an Active Challenge",
       "choose_challenge_desc": "Select which challenge to invite {{count}} candidate(s) to:",
       "updated": "Updated",
+      "ends": "Ends",
       "confirm_invite": "Confirm Invite",
       "active_challenges_count": "{{count}} active challenge(s)",
       "bulk_success": "Invitations Sent",
@@ -1926,8 +1927,10 @@
       "bulk_fail_desc": "Failed to invite {{count}} candidate(s)",
       "success_title": "Invitations Sent",
       "success_desc": "Successfully invited {{count}} candidate(s)",
-      "no_challenge_title": "No Active Challenge",
-      "no_challenge_desc": "Create and activate a challenge first"
+      "no_challenge_title": "No Active Challenges",
+      "no_challenge_desc": "Create and activate a challenge first",
+      "activate_first": "Activate a challenge first",
+      "go_to_challenges": "Go to Challenges"
     },
     "goals": {
       "portfolio_title": "Your Hiring Goals",

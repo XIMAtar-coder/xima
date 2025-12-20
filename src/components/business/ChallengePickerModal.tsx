@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dialog,
@@ -10,13 +10,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { Target, Calendar } from 'lucide-react';
+import { Target, Calendar, Briefcase } from 'lucide-react';
 import { format } from 'date-fns';
 
-interface Challenge {
+export interface Challenge {
   id: string;
   title: string;
   updated_at: string;
+  hiring_goal_id?: string;
+  goal_title?: string;
+  end_at?: string | null;
 }
 
 interface ChallengePickerModalProps {
@@ -24,7 +27,7 @@ interface ChallengePickerModalProps {
   onOpenChange: (open: boolean) => void;
   challenges: Challenge[];
   selectedCount: number;
-  onConfirm: (challengeId: string) => void;
+  onConfirm: (challengeId: string, hiringGoalId?: string) => void;
   loading?: boolean;
 }
 
@@ -37,13 +40,19 @@ export const ChallengePickerModal: React.FC<ChallengePickerModalProps> = ({
   loading = false,
 }) => {
   const { t } = useTranslation();
-  const [selectedChallengeId, setSelectedChallengeId] = useState<string>(
-    challenges[0]?.id || ''
-  );
+  const [selectedChallengeId, setSelectedChallengeId] = useState<string>('');
+
+  // Reset selection when modal opens with new challenges
+  useEffect(() => {
+    if (open && challenges.length > 0) {
+      setSelectedChallengeId(challenges[0].id);
+    }
+  }, [open, challenges]);
 
   const handleConfirm = () => {
     if (selectedChallengeId) {
-      onConfirm(selectedChallengeId);
+      const selectedChallenge = challenges.find(c => c.id === selectedChallengeId);
+      onConfirm(selectedChallengeId, selectedChallenge?.hiring_goal_id);
     }
   };
 
@@ -65,7 +74,7 @@ export const ChallengePickerModal: React.FC<ChallengePickerModalProps> = ({
           <RadioGroup
             value={selectedChallengeId}
             onValueChange={setSelectedChallengeId}
-            className="space-y-3"
+            className="space-y-3 max-h-[300px] overflow-y-auto"
           >
             {challenges.map((challenge) => (
               <div
@@ -80,9 +89,18 @@ export const ChallengePickerModal: React.FC<ChallengePickerModalProps> = ({
                 <RadioGroupItem value={challenge.id} id={challenge.id} className="mt-0.5" />
                 <Label htmlFor={challenge.id} className="flex-1 cursor-pointer">
                   <div className="font-medium text-foreground">{challenge.title}</div>
+                  {challenge.goal_title && (
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                      <Briefcase size={12} />
+                      {challenge.goal_title}
+                    </div>
+                  )}
                   <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
                     <Calendar size={12} />
-                    {t('business.invite.updated')}: {format(new Date(challenge.updated_at), 'MMM d, yyyy')}
+                    {challenge.end_at 
+                      ? `${t('business.invite.ends')}: ${format(new Date(challenge.end_at), 'MMM d, yyyy')}`
+                      : `${t('business.invite.updated')}: ${format(new Date(challenge.updated_at), 'MMM d, yyyy')}`
+                    }
                   </div>
                 </Label>
               </div>
