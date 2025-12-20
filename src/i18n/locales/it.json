@@ -2366,6 +2366,7 @@
     "fields_remaining": "campi richiesti rimanenti",
     "submit_btn": "Invia Challenge",
     "submission_success": "Risposta ricevuta!",
+    "already_submitted": "Hai già inviato questa challenge.",
     "submitted_title": "Risposta Ricevuta",
     "submitted_desc": "La tua risposta è stata inviata con successo.",
     "submitted_at": "Inviata il",

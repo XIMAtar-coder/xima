@@ -2498,6 +2498,7 @@
     "fields_remaining": "required fields remaining",
     "submit_btn": "Submit Challenge",
     "submission_success": "Submission received!",
+    "already_submitted": "You have already submitted this challenge.",
     "submitted_title": "Submission Received",
     "submitted_desc": "Your response has been submitted successfully.",
     "submitted_at": "Submitted at",
