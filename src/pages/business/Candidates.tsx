@@ -10,16 +10,15 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft, Bookmark, BookmarkCheck, RefreshCw, ChevronDown, Lightbulb, Bug, Pencil, Plus, Settings, Briefcase, ExternalLink } from 'lucide-react';
+import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft, Bookmark, BookmarkCheck, RefreshCw, ChevronDown, Lightbulb, Bug, Pencil, Plus, Settings, AlertCircle, ExternalLink } from 'lucide-react';
 import { XimatarCandidateCard } from '@/components/business/XimatarCandidateCard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useHiringGoalShortlist } from '@/hooks/useHiringGoalShortlist';
-import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CreateChallengeModal } from '@/components/business/CreateChallengeModal';
 import { NoChallengeGate } from '@/components/business/NoChallengeGate';
 import { SelectionActionBar } from '@/components/business/SelectionActionBar';
-import { ChallengePickerModal } from '@/components/business/ChallengePickerModal';
+import { ChallengePickerModal, type Challenge } from '@/components/business/ChallengePickerModal';
 import { Link } from 'react-router-dom';
 
 const PAGE_SIZE = 12;
@@ -45,12 +44,6 @@ interface Candidate {
   invitationStatus?: 'none' | 'invited' | 'accepted' | 'declined' | 'loading';
 }
 
-interface ActiveChallenge {
-  id: string;
-  title: string;
-  updated_at: string;
-}
-
 const BusinessCandidates = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -63,7 +56,7 @@ const BusinessCandidates = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [filteredCandidates, setFilteredCandidates] = useState<Candidate[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]); // profile_ids for selection
+  const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
   const [ximatarFilter, setXimatarFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'score' | 'pillar'>('score');
   const [viewFilter, setViewFilter] = useState<'all' | 'shortlisted'>('all');
@@ -75,19 +68,25 @@ const BusinessCandidates = () => {
   const [invitationStatuses, setInvitationStatuses] = useState<Record<string, 'none' | 'invited' | 'accepted' | 'declined' | 'loading'>>({});
   const [companyName, setCompanyName] = useState<string>('');
   
-  // Goal selector state for non-goal view
-  const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null);
-  const { goals: allGoals, loading: goalsLoading } = useHiringGoals();
+  // Goal ID from URL param (only for goal-scoped view)
+  const goalId = goalIdFromParams;
   
-  // Use either the param goal or the selected goal
-  const goalId = goalIdFromParams || selectedGoalId;
-  
-  // Challenge gating state - NOW SUPPORTS MULTIPLE ACTIVE CHALLENGES
-  const [activeChallenges, setActiveChallenges] = useState<ActiveChallenge[]>([]);
+  // All active challenges across ALL goals (for global pool)
+  const [allActiveChallenges, setAllActiveChallenges] = useState<Challenge[]>([]);
+  // Goal-specific challenges (for goal-scoped view)
+  const [goalActiveChallenges, setGoalActiveChallenges] = useState<Challenge[]>([]);
   const [challengeLoading, setChallengeLoading] = useState(true);
   const [showCreateChallengeModal, setShowCreateChallengeModal] = useState(false);
   const [showChallengePickerModal, setShowChallengePickerModal] = useState(false);
   const [bulkInviteLoading, setBulkInviteLoading] = useState(false);
+
+  // Shortlist from hiring goal (only used when goalId is set)
+  const { 
+    loading: shortlistLoading, 
+    hiringGoal, 
+    shortlist, 
+    error: shortlistError 
+  } = useHiringGoalShortlist(goalId);
 
   // Fetch company name for invitations
   useEffect(() => {
@@ -103,46 +102,84 @@ const BusinessCandidates = () => {
     fetchCompanyName();
   }, [user?.id]);
 
-  // Fetch ALL active challenges for the hiring goal (supports multi-challenge per goal)
+  // Fetch ALL active challenges across ALL goals (for global pool)
   useEffect(() => {
-    const fetchActiveChallenges = async () => {
-      if (!goalId || !user?.id) {
-        setActiveChallenges([]);
+    const fetchAllActiveChallenges = async () => {
+      if (!user?.id) {
+        setAllActiveChallenges([]);
         setChallengeLoading(false);
         return;
       }
       
       setChallengeLoading(true);
       try {
-        // Get ALL active challenges for this goal, ordered by most recent
+        // Get ALL active challenges for this business with goal info
         const { data, error } = await supabase
           .from('business_challenges')
-          .select('id, title, updated_at')
+          .select(`
+            id, 
+            title, 
+            updated_at, 
+            end_at,
+            hiring_goal_id,
+            hiring_goal_drafts!business_challenges_hiring_goal_id_fkey (
+              role_title
+            )
+          `)
+          .eq('business_id', user.id)
+          .eq('status', 'active')
+          .order('updated_at', { ascending: false });
+
+        if (error) throw error;
+        
+        const challenges: Challenge[] = (data || []).map((c: any) => ({
+          id: c.id,
+          title: c.title,
+          updated_at: c.updated_at,
+          end_at: c.end_at,
+          hiring_goal_id: c.hiring_goal_id,
+          goal_title: c.hiring_goal_drafts?.role_title || t('business.goals.untitled')
+        }));
+        
+        setAllActiveChallenges(challenges);
+      } catch (err) {
+        console.error('Error fetching all active challenges:', err);
+        setAllActiveChallenges([]);
+      } finally {
+        setChallengeLoading(false);
+      }
+    };
+    
+    fetchAllActiveChallenges();
+  }, [user?.id, t]);
+
+  // Fetch goal-specific challenges (when in goal view)
+  useEffect(() => {
+    const fetchGoalChallenges = async () => {
+      if (!goalId || !user?.id) {
+        setGoalActiveChallenges([]);
+        return;
+      }
+      
+      try {
+        const { data, error } = await supabase
+          .from('business_challenges')
+          .select('id, title, updated_at, end_at, hiring_goal_id')
           .eq('business_id', user.id)
           .eq('hiring_goal_id', goalId)
           .eq('status', 'active')
           .order('updated_at', { ascending: false });
 
         if (error) throw error;
-        setActiveChallenges(data || []);
+        setGoalActiveChallenges(data || []);
       } catch (err) {
-        console.error('Error fetching active challenges:', err);
-        setActiveChallenges([]);
-      } finally {
-        setChallengeLoading(false);
+        console.error('Error fetching goal challenges:', err);
+        setGoalActiveChallenges([]);
       }
     };
     
-    fetchActiveChallenges();
+    fetchGoalChallenges();
   }, [goalId, user?.id]);
-
-  // Shortlist from hiring goal
-  const { 
-    loading: shortlistLoading, 
-    hiringGoal, 
-    shortlist, 
-    error: shortlistError 
-  } = useHiringGoalShortlist(goalId);
 
   useEffect(() => {
     if (!isAuthenticated || (businessLoading === false && !isBusiness)) {
@@ -170,7 +207,8 @@ const BusinessCandidates = () => {
 
     if (searchTerm) {
       filtered = filtered.filter(c =>
-        c.ximatar_label?.toLowerCase().includes(searchTerm.toLowerCase())
+        c.ximatar_label?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.display_name?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -189,34 +227,25 @@ const BusinessCandidates = () => {
   useEffect(() => {
     if (goalId && shortlist.length > 0) {
       const loadShortlistAndInvitations = async () => {
-        // Use the new business_shortlists table
-        const { data: shortlistedData, error: shortlistErr } = await supabase
+        const { data: shortlistedData } = await supabase
           .from('business_shortlists')
           .select('candidate_profile_id')
           .eq('business_id', user?.id)
           .eq('hiring_goal_id', goalId);
 
-        // Also load existing invitations
         const { data: invitationsData, error: invitationsErr } = await supabase
           .from('challenge_invitations')
           .select('candidate_profile_id, status')
           .eq('business_id', user?.id)
           .eq('hiring_goal_id', goalId);
 
-        // Handle invitation query errors - don't mark anyone as invited
         if (invitationsErr) {
           console.error('Error loading invitations:', invitationsErr);
-          toast({
-            title: t('common.error'),
-            description: 'Failed to load invitation statuses',
-            variant: 'destructive'
-          });
         }
 
         const shortlistedIds = new Set(shortlistedData?.map(s => s.candidate_profile_id) || []);
         setShortlistedCount(shortlistedIds.size);
 
-        // Build invitation status map keyed by profile_id (candidate_profile_id)
         const invStatusMap: Record<string, 'none' | 'invited' | 'accepted' | 'declined'> = {};
         if (!invitationsErr) {
           (invitationsData || []).forEach(inv => {
@@ -225,7 +254,6 @@ const BusinessCandidates = () => {
         }
         setInvitationStatuses(invStatusMap);
 
-        // Map using profile_id for invitation status lookup
         const candidatesWithStatus = shortlist.map(c => ({
           ...c,
           isShortlisted: shortlistedIds.has(c.profile_id),
@@ -237,7 +265,44 @@ const BusinessCandidates = () => {
       };
       loadShortlistAndInvitations();
     }
-  }, [goalId, shortlist, user?.id, t, toast]);
+  }, [goalId, shortlist, user?.id]);
+
+  // Load invitation statuses for global pool (track all invitations for each candidate)
+  useEffect(() => {
+    const loadGlobalInvitationStatuses = async () => {
+      if (goalId || !user?.id || candidates.length === 0) return;
+      
+      const profileIds = candidates.map(c => c.profile_id);
+      const { data, error } = await supabase
+        .from('challenge_invitations')
+        .select('candidate_profile_id, status')
+        .eq('business_id', user.id)
+        .in('candidate_profile_id', profileIds);
+      
+      if (error) {
+        console.error('Error loading global invitation statuses:', error);
+        return;
+      }
+      
+      // For global pool, if ANY invitation exists for a candidate, mark as invited
+      const statusMap: Record<string, 'invited' | 'accepted' | 'declined' | 'none'> = {};
+      (data || []).forEach(inv => {
+        // Priority: accepted > invited > declined > none
+        const current = statusMap[inv.candidate_profile_id];
+        if (inv.status === 'accepted') {
+          statusMap[inv.candidate_profile_id] = 'accepted';
+        } else if (inv.status === 'invited' && current !== 'accepted') {
+          statusMap[inv.candidate_profile_id] = 'invited';
+        } else if (!current) {
+          statusMap[inv.candidate_profile_id] = inv.status as any;
+        }
+      });
+      
+      setInvitationStatuses(statusMap);
+    };
+    
+    loadGlobalInvitationStatuses();
+  }, [goalId, user?.id, candidates]);
 
   const loadCandidates = async () => {
     try {
@@ -245,39 +310,23 @@ const BusinessCandidates = () => {
 
       if (error) throw error;
 
-      // For non-goal view, we don't have goal-specific shortlist - just show all
-      const candidatesWithShortlist: Candidate[] = (candidatesData || []).map((candidate: any) => {
-        // DEV: Log if ximatar data is inconsistent
-        if (process.env.NODE_ENV === 'development') {
-          const hasLabelImageMismatch = candidate.ximatar_label && candidate.ximatar_image && 
-            !candidate.ximatar_image.toLowerCase().includes(candidate.ximatar_label.toLowerCase());
-          if (hasLabelImageMismatch) {
-            console.warn('[DEV] Ximatar mismatch:', {
-              user_id: candidate.user_id,
-              label: candidate.ximatar_label,
-              image: candidate.ximatar_image
-            });
-          }
-        }
-        
-        return {
-          user_id: candidate.user_id,
-          profile_id: candidate.profile_id || candidate.user_id,
-          display_name: candidate.display_name || 'Unknown',
-          ximatar_label: candidate.ximatar_label || 'unknown',
-          ximatar_image: candidate.ximatar_image || '/placeholder.svg',
-          ximatar_id: candidate.ximatar_id,
-          evaluation_score: Number(candidate.evaluation_score) || 0,
-          pillar_average: Number(candidate.pillar_average) || 0,
-          computational_power: Number(candidate.computational_power) || 0,
-          communication: Number(candidate.communication) || 0,
-          knowledge: Number(candidate.knowledge) || 0,
-          creativity: Number(candidate.creativity) || 0,
-          drive: Number(candidate.drive) || 0,
-          rank: Number(candidate.rank) || 0,
-          isShortlisted: false
-        };
-      });
+      const candidatesWithShortlist: Candidate[] = (candidatesData || []).map((candidate: any) => ({
+        user_id: candidate.user_id,
+        profile_id: candidate.profile_id || candidate.user_id,
+        display_name: candidate.display_name || 'Unknown',
+        ximatar_label: candidate.ximatar_label || 'unknown',
+        ximatar_image: candidate.ximatar_image || '/placeholder.svg',
+        ximatar_id: candidate.ximatar_id,
+        evaluation_score: Number(candidate.evaluation_score) || 0,
+        pillar_average: Number(candidate.pillar_average) || 0,
+        computational_power: Number(candidate.computational_power) || 0,
+        communication: Number(candidate.communication) || 0,
+        knowledge: Number(candidate.knowledge) || 0,
+        creativity: Number(candidate.creativity) || 0,
+        drive: Number(candidate.drive) || 0,
+        rank: Number(candidate.rank) || 0,
+        isShortlisted: false
+      }));
 
       try {
         await supabase.rpc('log_user_activity', {
@@ -309,7 +358,6 @@ const BusinessCandidates = () => {
 
     try {
       if (candidate.isShortlisted) {
-        // Remove from shortlist
         await supabase
           .from('business_shortlists')
           .delete()
@@ -317,7 +365,6 @@ const BusinessCandidates = () => {
           .eq('hiring_goal_id', goalId)
           .eq('candidate_profile_id', candidateId);
       } else {
-        // Add to shortlist
         await supabase
           .from('business_shortlists')
           .insert({
@@ -327,7 +374,6 @@ const BusinessCandidates = () => {
           });
       }
 
-      // Update local state immediately
       const updatedCandidates = candidates.map(c => 
         c.user_id === candidateId 
           ? { ...c, isShortlisted: !c.isShortlisted }
@@ -335,11 +381,9 @@ const BusinessCandidates = () => {
       );
       setCandidates(updatedCandidates);
       
-      // Update count
       const newCount = updatedCandidates.filter(c => c.isShortlisted).length;
       setShortlistedCount(newCount);
       
-      // Update filtered view
       if (viewFilter === 'shortlisted') {
         setFilteredCandidates(updatedCandidates.filter(c => c.isShortlisted));
       } else {
@@ -360,10 +404,9 @@ const BusinessCandidates = () => {
     }
   };
 
-  // Handle view filter changes (All / Shortlisted)
   const handleViewFilterChange = (value: string) => {
     setViewFilter(value as 'all' | 'shortlisted');
-    setVisibleCount(PAGE_SIZE); // Reset pagination when switching tabs
+    setVisibleCount(PAGE_SIZE);
     if (value === 'shortlisted') {
       setFilteredCandidates(candidates.filter(c => c.isShortlisted));
     } else {
@@ -371,25 +414,20 @@ const BusinessCandidates = () => {
     }
   };
 
-  // Handle regenerate matches (deterministic shuffle with seed)
   const handleRegenerate = async () => {
     if (!goalId) return;
     setIsRegenerating(true);
     
-    // Increment seed for new shuffle
     const newSeed = regenerateSeed + 1;
     setRegenerateSeed(newSeed);
     
-    // Preserve currently saved candidates
     const savedIds = new Set(candidates.filter(c => c.isShortlisted).map(c => c.user_id));
     
-    // Deterministic shuffle using seed-based scoring
     const seededShuffle = [...candidates].map((c, i) => ({
       ...c,
       sortKey: Math.sin(newSeed * 9999 + i) * 10000
     })).sort((a, b) => a.sortKey - b.sortKey).map(({ sortKey, ...c }) => c);
     
-    // Put saved candidates at the top, then rest
     const savedCandidates = seededShuffle.filter(c => savedIds.has(c.user_id));
     const unsavedCandidates = seededShuffle.filter(c => !savedIds.has(c.user_id));
     const reordered = [...savedCandidates, ...unsavedCandidates];
@@ -406,24 +444,17 @@ const BusinessCandidates = () => {
     setIsRegenerating(false);
   };
 
-  // Show more candidates
   const handleShowMore = () => {
     setVisibleCount(prev => prev + PAGE_SIZE);
   };
 
-  // Handle invite to challenge - candidateProfileId is profiles.id
-  // Now supports choosing from multiple active challenges
-  const handleInviteToChallenge = async (candidateProfileId: string, challengeId?: string) => {
-    if (!goalId || !user?.id || activeChallenges.length === 0) return;
+  // Invite to challenge - works for both global pool and goal view
+  const handleInviteToChallenge = async (candidateProfileId: string, challengeId: string, hiringGoalId: string) => {
+    if (!user?.id) return;
     
-    // If multiple challenges and no challenge specified, use first one (single invite from card)
-    const targetChallengeId = challengeId || activeChallenges[0].id;
-    
-    // Set loading state for THIS candidate only (keyed by profile_id)
     setInvitationStatuses(prev => ({ ...prev, [candidateProfileId]: 'loading' }));
     
     try {
-      // Get candidate email from profiles using profile_id
       const { data: profile } = await supabase
         .from('profiles')
         .select('id, email, full_name, name')
@@ -435,21 +466,19 @@ const BusinessCandidates = () => {
       const candidateName = profile.full_name || profile.name || 'Candidate';
       const candidateEmail = profile.email;
 
-      // Create invitation record with challenge_id
       const { data: invitation, error: invError } = await supabase
         .from('challenge_invitations')
         .insert({
           business_id: user.id,
-          hiring_goal_id: goalId,
+          hiring_goal_id: hiringGoalId,
           candidate_profile_id: candidateProfileId,
-          challenge_id: targetChallengeId
+          challenge_id: challengeId
         })
         .select('id, invite_token')
         .single();
 
       if (invError) {
         if (invError.code === '23505') {
-          // Duplicate - already invited
           toast({
             title: t('business.shortlist.already_invited'),
             description: t('business.shortlist.already_invited_desc'),
@@ -461,7 +490,7 @@ const BusinessCandidates = () => {
         throw invError;
       }
 
-      // Send email via edge function (if we have email)
+      // Send email if available
       if (candidateEmail) {
         try {
           await supabase.functions.invoke('send-challenge-invitation', {
@@ -480,10 +509,8 @@ const BusinessCandidates = () => {
         }
       }
 
-      // Update local state - keyed by profile_id
       setInvitationStatuses(prev => ({ ...prev, [candidateProfileId]: 'invited' }));
       
-      // Update candidate in list - match by profile_id
       setCandidates(prev => prev.map(c => 
         c.profile_id === candidateProfileId ? { ...c, invitationStatus: 'invited' as const } : c
       ));
@@ -494,19 +521,22 @@ const BusinessCandidates = () => {
       return { success: true };
     } catch (err: any) {
       console.error('Error sending invitation:', err);
-      // Reset to 'none' on error - keyed by profile_id
       setInvitationStatuses(prev => ({ ...prev, [candidateProfileId]: 'none' }));
       return { success: false, error: err.message };
     }
   };
 
-  // Handle single invite from card - with challenge picker if multiple
+  // Handle single invite from card
   const handleSingleInvite = (candidateProfileId: string) => {
-    if (!goalId || activeChallenges.length === 0) return;
+    // Use goal-specific challenges if in goal view, otherwise all active challenges
+    const challengesToUse = goalId ? goalActiveChallenges : allActiveChallenges;
     
-    if (activeChallenges.length === 1) {
-      // Single challenge - use directly
-      handleInviteToChallenge(candidateProfileId, activeChallenges[0].id).then(result => {
+    if (challengesToUse.length === 0) return;
+    
+    if (challengesToUse.length === 1) {
+      const challenge = challengesToUse[0];
+      const goalIdToUse = goalId || challenge.hiring_goal_id!;
+      handleInviteToChallenge(candidateProfileId, challenge.id, goalIdToUse).then(result => {
         if (result?.success) {
           toast({
             title: t('business.shortlist.invitation_sent'),
@@ -521,27 +551,26 @@ const BusinessCandidates = () => {
         }
       });
     } else {
-      // Multiple challenges - select this candidate and show picker
+      // Multiple challenges - show picker
       setSelectedCandidates([candidateProfileId]);
       setShowChallengePickerModal(true);
     }
   };
 
-  // Handle bulk invite from action bar
+  // Handle bulk invite click
   const handleBulkInviteClick = () => {
-    if (selectedCandidates.length === 0 || activeChallenges.length === 0) return;
+    const challengesToUse = goalId ? goalActiveChallenges : allActiveChallenges;
+    if (selectedCandidates.length === 0 || challengesToUse.length === 0) return;
     
-    if (activeChallenges.length === 1) {
-      // Single challenge - invite directly
-      handleBulkInvite(activeChallenges[0].id);
+    if (challengesToUse.length === 1) {
+      handleBulkInvite(challengesToUse[0].id, goalId || challengesToUse[0].hiring_goal_id!);
     } else {
-      // Multiple challenges - show picker
       setShowChallengePickerModal(true);
     }
   };
 
   // Perform bulk invite to a specific challenge
-  const handleBulkInvite = async (challengeId: string) => {
+  const handleBulkInvite = async (challengeId: string, hiringGoalId: string) => {
     if (selectedCandidates.length === 0) return;
     
     setBulkInviteLoading(true);
@@ -552,7 +581,7 @@ const BusinessCandidates = () => {
     let alreadyInvitedCount = 0;
     
     for (const profileId of selectedCandidates) {
-      const result = await handleInviteToChallenge(profileId, challengeId);
+      const result = await handleInviteToChallenge(profileId, challengeId, hiringGoalId);
       if (result?.success) {
         successCount++;
       } else if (result?.alreadyInvited) {
@@ -565,7 +594,6 @@ const BusinessCandidates = () => {
     setBulkInviteLoading(false);
     setSelectedCandidates([]);
     
-    // Show summary toast
     if (successCount > 0) {
       toast({
         title: t('business.invite.bulk_success'),
@@ -588,49 +616,21 @@ const BusinessCandidates = () => {
     }
   };
 
-  // Get paginated candidates for display
+  // Get challenges to use based on view mode
+  const activeChallenges = goalId ? goalActiveChallenges : allActiveChallenges;
   const displayedCandidates = filteredCandidates.slice(0, visibleCount);
   const hasMore = visibleCount < filteredCandidates.length;
 
-  const handleBulkAction = async (action: string) => {
-    if (selectedCandidates.length === 0) {
-      toast({
-        title: t('business.candidates.no_selection'),
-        description: t('business.candidates.select_first'),
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    try {
-      if (action === 'shortlist') {
-        const inserts = selectedCandidates.map(candidateId => ({
-          business_id: user?.id,
-          candidate_id: candidateId,
-          status: 'shortlisted'
-        }));
-
-        await supabase
-          .from('candidate_shortlist')
-          .upsert(inserts);
-
-        toast({
-          title: t('business.dashboard.success'),
-          description: `${selectedCandidates.length} ${t('business.candidates.added_to_shortlist')}`
-        });
-      } else if (action === 'challenge') {
-        navigate('/business/challenges/new', { state: { selectedCandidates } });
-      }
-
-      setSelectedCandidates([]);
-      loadCandidates();
-    } catch (error) {
-      console.error('Error performing bulk action:', error);
-      toast({
-        title: t('common.error'),
-        description: t('business.candidates.failed_action'),
-        variant: 'destructive'
-      });
+  const getMatchBadge = (level: 'high' | 'medium' | 'low' | undefined) => {
+    switch (level) {
+      case 'high':
+        return <Badge className="bg-green-500/20 text-green-500 border-green-500/30">{t('business.shortlist.match_high')}</Badge>;
+      case 'medium':
+        return <Badge className="bg-amber-500/20 text-amber-500 border-amber-500/30">{t('business.shortlist.match_medium')}</Badge>;
+      case 'low':
+        return <Badge className="bg-muted text-muted-foreground border-border">{t('business.shortlist.match_low')}</Badge>;
+      default:
+        return null;
     }
   };
 
@@ -649,24 +649,10 @@ const BusinessCandidates = () => {
     );
   }
 
-  // Match level badge styling
-  const getMatchBadge = (level: 'high' | 'medium' | 'low' | undefined) => {
-    switch (level) {
-      case 'high':
-        return <Badge className="bg-green-500/20 text-green-500 border-green-500/30">{t('business.shortlist.match_high')}</Badge>;
-      case 'medium':
-        return <Badge className="bg-amber-500/20 text-amber-500 border-amber-500/30">{t('business.shortlist.match_medium')}</Badge>;
-      case 'low':
-        return <Badge className="bg-muted text-muted-foreground border-border">{t('business.shortlist.match_low')}</Badge>;
-      default:
-        return null;
-    }
-  };
-
   return (
     <BusinessLayout>
       <div className="space-y-6">
-        {/* Header - Different for shortlist vs pool view */}
+        {/* Header - Different for goal-scoped vs global pool view */}
         {goalId ? (
           <div className="space-y-4">
             <Button 
@@ -695,7 +681,6 @@ const BusinessCandidates = () => {
                 )}
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                {/* DEV Debug Toggle */}
                 {process.env.NODE_ENV === 'development' && (
                   <Button
                     variant={showDebug ? "secondary" : "ghost"}
@@ -706,7 +691,6 @@ const BusinessCandidates = () => {
                     <Bug size={14} />
                   </Button>
                 )}
-                {/* Regenerate button */}
                 <Button
                   variant="outline"
                   size="sm"
@@ -719,7 +703,6 @@ const BusinessCandidates = () => {
               </div>
             </div>
             
-            {/* Shortlist filter tabs */}
             <Tabs value={viewFilter} onValueChange={handleViewFilterChange} className="w-full">
               <TabsList className="grid w-full max-w-md grid-cols-2 bg-slate-900/60 border border-white/10">
                 <TabsTrigger value="all" className="gap-2 data-[state=active]:bg-white/15 data-[state=active]:text-white text-white/70">
@@ -733,32 +716,30 @@ const BusinessCandidates = () => {
               </TabsList>
             </Tabs>
 
-            {/* Challenge gate banner - show if no active challenges */}
-            {!challengeLoading && activeChallenges.length === 0 && (
+            {!challengeLoading && goalActiveChallenges.length === 0 && (
               <NoChallengeGate 
                 onCreateChallenge={() => navigate(`/business/challenges/new?goal=${goalId}`)}
                 onViewSaved={() => setViewFilter('shortlisted')}
               />
             )}
 
-            {/* Active challenges banner with actions */}
-            {activeChallenges.length > 0 && (
+            {goalActiveChallenges.length > 0 && (
               <div className="flex items-center justify-between gap-4 text-sm bg-slate-900/60 border border-white/10 p-4 rounded-lg shadow-lg">
                 <div className="flex items-center gap-2 text-white/80">
                   <Target size={16} className="text-primary shrink-0" />
                   <span>
-                    {t('business.invite.active_challenges_count', { count: activeChallenges.length })}
-                    {activeChallenges.length === 1 && (
-                      <span>: <strong className="text-white">{activeChallenges[0].title}</strong></span>
+                    {t('business.invite.active_challenges_count', { count: goalActiveChallenges.length })}
+                    {goalActiveChallenges.length === 1 && (
+                      <span>: <strong className="text-white">{goalActiveChallenges[0].title}</strong></span>
                     )}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  {activeChallenges.length === 1 && (
+                  {goalActiveChallenges.length === 1 && (
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => navigate(`/business/challenges/${activeChallenges[0].id}/edit`)}
+                      onClick={() => navigate(`/business/challenges/${goalActiveChallenges[0].id}/edit`)}
                       className="h-8 px-2 text-white/80 hover:text-white hover:bg-white/10"
                     >
                       <Pencil size={14} className="mr-1" />
@@ -787,8 +768,7 @@ const BusinessCandidates = () => {
               </div>
             )}
 
-            {/* Hint for All Matches tab */}
-            {viewFilter === 'all' && activeChallenges.length > 0 && (
+            {viewFilter === 'all' && goalActiveChallenges.length > 0 && (
               <div className="flex items-center gap-2 text-sm text-white/80 bg-slate-900/60 border border-white/10 p-3 rounded-lg">
                 <Lightbulb size={16} className="text-amber-400 shrink-0" />
                 {t('business.shortlist.select_hint')}
@@ -804,6 +784,7 @@ const BusinessCandidates = () => {
             )}
           </div>
         ) : (
+          // Global Candidate Pool Header
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -815,80 +796,43 @@ const BusinessCandidates = () => {
               {selectedCandidates.length > 0 && (
                 <div className="flex gap-2">
                   <Button
-                    onClick={() => handleBulkAction('shortlist')}
-                    variant="outline"
-                    className="border-primary/30"
-                  >
-                    <Star className="mr-2" size={16} />
-                    {t('business.candidates.shortlist_action')} ({selectedCandidates.length})
-                  </Button>
-                  <Button
-                    onClick={() => handleBulkAction('challenge')}
+                    onClick={handleBulkInviteClick}
                     className="bg-primary hover:bg-primary/90"
-                    disabled={!goalId || activeChallenges.length === 0}
+                    disabled={allActiveChallenges.length === 0}
                   >
                     <Target className="mr-2" size={16} />
-                    {t('business.candidates.invite_action')}
+                    {t('business.candidates.invite_action')} ({selectedCandidates.length})
                   </Button>
                 </div>
               )}
             </div>
             
-            {/* Goal selector for inviting - required to invite candidates */}
-            <Card className="bg-slate-900/60 border border-primary/30 shadow-lg">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-4 flex-wrap">
-                  <div className="flex items-center gap-2 text-white/80">
-                    <Briefcase size={18} className="text-primary" />
-                    <span className="text-sm font-medium">{t('business.candidates.select_goal_to_invite')}</span>
+            {/* No active challenges banner for global pool */}
+            {!challengeLoading && allActiveChallenges.length === 0 && (
+              <Card className="bg-amber-500/10 border-amber-500/30">
+                <CardContent className="p-4 flex items-center gap-4">
+                  <AlertCircle className="h-5 w-5 text-amber-500 shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-amber-200">{t('business.invite.no_challenge_title')}</p>
+                    <p className="text-xs text-amber-200/70">{t('business.invite.no_challenge_desc')}</p>
                   </div>
-                  <Select 
-                    value={selectedGoalId || ''} 
-                    onValueChange={(value) => setSelectedGoalId(value)}
-                  >
-                    <SelectTrigger className="w-[280px] bg-background/50">
-                      <SelectValue placeholder={t('business.candidates.select_hiring_goal')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {allGoals.map((goal) => (
-                        <SelectItem key={goal.id} value={goal.id}>
-                          {goal.role_title || t('business.goals.untitled')}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {selectedGoalId && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <span className="text-white/60">
-                        {activeChallenges.length > 0 
-                          ? t('business.invite.active_challenges_count', { count: activeChallenges.length })
-                          : t('business.invite.no_challenge_desc')
-                        }
-                      </span>
-                      {activeChallenges.length === 0 && (
-                        <Link to={`/business/goals/${selectedGoalId}/challenges`}>
-                          <Button variant="link" size="sm" className="text-primary p-0 h-auto">
-                            {t('business.candidates.go_to_challenges')}
-                            <ExternalLink size={12} className="ml-1" />
-                          </Button>
-                        </Link>
-                      )}
-                    </div>
-                  )}
-                </div>
-                {allGoals.length === 0 && !goalsLoading && (
-                  <div className="mt-3 text-sm text-amber-400/80 flex items-center gap-2">
-                    <Lightbulb size={14} />
-                    {t('business.candidates.no_goals_hint')}
-                    <Link to="/business/dashboard">
-                      <Button variant="link" size="sm" className="text-primary p-0 h-auto">
-                        {t('business.candidates.create_goal')}
-                      </Button>
-                    </Link>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  <Link to="/business/challenges">
+                    <Button variant="outline" size="sm" className="border-amber-500/30 text-amber-200 hover:bg-amber-500/20">
+                      {t('business.invite.go_to_challenges')}
+                      <ExternalLink size={12} className="ml-1" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            )}
+            
+            {/* Active challenges info for global pool */}
+            {allActiveChallenges.length > 0 && (
+              <div className="flex items-center gap-2 text-sm text-white/80 bg-slate-900/60 border border-white/10 p-3 rounded-lg">
+                <Target size={16} className="text-primary shrink-0" />
+                <span>{t('business.invite.active_challenges_count', { count: allActiveChallenges.length })}</span>
+              </div>
+            )}
           </div>
         )}
 
@@ -946,7 +890,6 @@ const BusinessCandidates = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {displayedCandidates.map((candidate) => (
             <div key={candidate.user_id} className="relative">
-              {/* Match badge for shortlist view */}
               {goalId && candidate.matchLevel && (
                 <div className="absolute -top-2 -right-2 z-10">
                   {getMatchBadge(candidate.matchLevel)}
@@ -973,10 +916,9 @@ const BusinessCandidates = () => {
                 showSaveButton={!!goalId}
                 showDebug={showDebug}
                 invitationStatus={invitationStatuses[candidate.profile_id] || candidate.invitationStatus || 'none'}
-                inviteDisabled={!goalId || activeChallenges.length === 0}
-                inviteDisabledReason={!goalId ? t('business.candidates.select_goal_to_invite') : activeChallenges.length === 0 ? t('business_challenge.create_first_tooltip') : undefined}
+                inviteDisabled={activeChallenges.length === 0}
+                inviteDisabledReason={activeChallenges.length === 0 ? t('business.invite.activate_first') : undefined}
                 onSelect={(checked) => {
-                  // Use profile_id for selection (for bulk invite)
                   if (checked) {
                     setSelectedCandidates([...selectedCandidates, candidate.profile_id]);
                   } else {
@@ -986,7 +928,6 @@ const BusinessCandidates = () => {
                 onToggleShortlist={() => handleToggleShortlist(candidate.user_id)}
                 onInviteToChallenge={() => handleSingleInvite(candidate.profile_id)}
               />
-              {/* Match reasons for shortlist view */}
               {goalId && candidate.matchReasons && candidate.matchReasons.length > 0 && (
                 <div className="mt-2 p-3 bg-slate-900/60 rounded-lg border border-white/10">
                   <p className="text-xs font-medium text-white/70 mb-1">
@@ -1006,7 +947,7 @@ const BusinessCandidates = () => {
           ))}
         </div>
 
-        {/* Show More Button (Pagination) */}
+        {/* Show More Button */}
         {hasMore && displayedCandidates.length > 0 && (
           <div className="flex justify-center pt-4">
             <Button
@@ -1056,30 +997,36 @@ const BusinessCandidates = () => {
             defaultTitle={hiringGoal?.role_title || t('business_challenge.new_challenge')}
             defaultDescription={hiringGoal?.task_description || ''}
             onChallengeCreated={(challengeId, challengeTitle) => {
-              setActiveChallenges(prev => [{ id: challengeId, title: challengeTitle, updated_at: new Date().toISOString() }, ...prev]);
+              setGoalActiveChallenges(prev => [{ id: challengeId, title: challengeTitle, updated_at: new Date().toISOString() }, ...prev]);
             }}
           />
         )}
 
-        {/* Challenge Picker Modal for bulk invite */}
+        {/* Challenge Picker Modal */}
         <ChallengePickerModal
           open={showChallengePickerModal}
           onOpenChange={setShowChallengePickerModal}
           challenges={activeChallenges}
           selectedCount={selectedCandidates.length}
-          onConfirm={handleBulkInvite}
+          onConfirm={(challengeId, hiringGoalId) => {
+            const challenge = activeChallenges.find(c => c.id === challengeId);
+            const goalIdToUse = hiringGoalId || goalId || challenge?.hiring_goal_id;
+            if (goalIdToUse) {
+              handleBulkInvite(challengeId, goalIdToUse);
+            }
+          }}
           loading={bulkInviteLoading}
         />
 
-        {/* Selection Action Bar - fixed at bottom */}
+        {/* Selection Action Bar - for goal view */}
         {goalId && (
           <SelectionActionBar
             selectedCount={selectedCandidates.length}
-            activeChallengeCount={activeChallenges.length}
+            activeChallengeCount={goalActiveChallenges.length}
             onInvite={handleBulkInviteClick}
             onClear={() => setSelectedCandidates([])}
-            inviteDisabled={activeChallenges.length === 0}
-            inviteDisabledReason={activeChallenges.length === 0 ? t('business_challenge.create_first_tooltip') : undefined}
+            inviteDisabled={goalActiveChallenges.length === 0}
+            inviteDisabledReason={goalActiveChallenges.length === 0 ? t('business_challenge.create_first_tooltip') : undefined}
           />
         )}
       </div>
