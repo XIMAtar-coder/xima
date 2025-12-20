@@ -10,15 +10,17 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft, Bookmark, BookmarkCheck, RefreshCw, ChevronDown, Lightbulb, Bug, Pencil, Plus, Settings } from 'lucide-react';
+import { Search, Filter, Star, Target, ArrowUpDown, Sparkles, ArrowLeft, Bookmark, BookmarkCheck, RefreshCw, ChevronDown, Lightbulb, Bug, Pencil, Plus, Settings, Briefcase, ExternalLink } from 'lucide-react';
 import { XimatarCandidateCard } from '@/components/business/XimatarCandidateCard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useHiringGoalShortlist } from '@/hooks/useHiringGoalShortlist';
+import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CreateChallengeModal } from '@/components/business/CreateChallengeModal';
 import { NoChallengeGate } from '@/components/business/NoChallengeGate';
 import { SelectionActionBar } from '@/components/business/SelectionActionBar';
 import { ChallengePickerModal } from '@/components/business/ChallengePickerModal';
+import { Link } from 'react-router-dom';
 
 const PAGE_SIZE = 12;
 
@@ -52,7 +54,7 @@ interface ActiveChallenge {
 const BusinessCandidates = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const goalId = searchParams.get('fromGoal');
+  const goalIdFromParams = searchParams.get('fromGoal');
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
@@ -72,6 +74,13 @@ const BusinessCandidates = () => {
   const [showDebug, setShowDebug] = useState(false);
   const [invitationStatuses, setInvitationStatuses] = useState<Record<string, 'none' | 'invited' | 'accepted' | 'declined' | 'loading'>>({});
   const [companyName, setCompanyName] = useState<string>('');
+  
+  // Goal selector state for non-goal view
+  const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null);
+  const { goals: allGoals, loading: goalsLoading } = useHiringGoals();
+  
+  // Use either the param goal or the selected goal
+  const goalId = goalIdFromParams || selectedGoalId;
   
   // Challenge gating state - NOW SUPPORTS MULTIPLE ACTIVE CHALLENGES
   const [activeChallenges, setActiveChallenges] = useState<ActiveChallenge[]>([]);
@@ -98,10 +107,12 @@ const BusinessCandidates = () => {
   useEffect(() => {
     const fetchActiveChallenges = async () => {
       if (!goalId || !user?.id) {
+        setActiveChallenges([]);
         setChallengeLoading(false);
         return;
       }
       
+      setChallengeLoading(true);
       try {
         // Get ALL active challenges for this goal, ordered by most recent
         const { data, error } = await supabase
@@ -491,7 +502,7 @@ const BusinessCandidates = () => {
 
   // Handle single invite from card - with challenge picker if multiple
   const handleSingleInvite = (candidateProfileId: string) => {
-    if (activeChallenges.length === 0) return;
+    if (!goalId || activeChallenges.length === 0) return;
     
     if (activeChallenges.length === 1) {
       // Single challenge - use directly
@@ -793,32 +804,91 @@ const BusinessCandidates = () => {
             )}
           </div>
         ) : (
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white mb-2">{t('business.candidates.title')}</h1>
-              <p className="text-white/80">
-                {filteredCandidates.length} {t('business.candidates.available')}
-              </p>
-            </div>
-            {selectedCandidates.length > 0 && (
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => handleBulkAction('shortlist')}
-                  variant="outline"
-                  className="border-primary/30"
-                >
-                  <Star className="mr-2" size={16} />
-                  {t('business.candidates.shortlist_action')} ({selectedCandidates.length})
-                </Button>
-                <Button
-                  onClick={() => handleBulkAction('challenge')}
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  <Target className="mr-2" size={16} />
-                  {t('business.candidates.invite_action')}
-                </Button>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-white mb-2">{t('business.candidates.title')}</h1>
+                <p className="text-white/80">
+                  {filteredCandidates.length} {t('business.candidates.available')}
+                </p>
               </div>
-            )}
+              {selectedCandidates.length > 0 && (
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => handleBulkAction('shortlist')}
+                    variant="outline"
+                    className="border-primary/30"
+                  >
+                    <Star className="mr-2" size={16} />
+                    {t('business.candidates.shortlist_action')} ({selectedCandidates.length})
+                  </Button>
+                  <Button
+                    onClick={() => handleBulkAction('challenge')}
+                    className="bg-primary hover:bg-primary/90"
+                    disabled={!goalId || activeChallenges.length === 0}
+                  >
+                    <Target className="mr-2" size={16} />
+                    {t('business.candidates.invite_action')}
+                  </Button>
+                </div>
+              )}
+            </div>
+            
+            {/* Goal selector for inviting - required to invite candidates */}
+            <Card className="bg-slate-900/60 border border-primary/30 shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <div className="flex items-center gap-2 text-white/80">
+                    <Briefcase size={18} className="text-primary" />
+                    <span className="text-sm font-medium">{t('business.candidates.select_goal_to_invite')}</span>
+                  </div>
+                  <Select 
+                    value={selectedGoalId || ''} 
+                    onValueChange={(value) => setSelectedGoalId(value)}
+                  >
+                    <SelectTrigger className="w-[280px] bg-background/50">
+                      <SelectValue placeholder={t('business.candidates.select_hiring_goal')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {allGoals.map((goal) => (
+                        <SelectItem key={goal.id} value={goal.id}>
+                          {goal.role_title || t('business.goals.untitled')}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {selectedGoalId && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="text-white/60">
+                        {activeChallenges.length > 0 
+                          ? t('business.invite.active_challenges_count', { count: activeChallenges.length })
+                          : t('business.invite.no_challenge_desc')
+                        }
+                      </span>
+                      {activeChallenges.length === 0 && (
+                        <Link to={`/business/goals/${selectedGoalId}/challenges`}>
+                          <Button variant="link" size="sm" className="text-primary p-0 h-auto">
+                            {t('business.candidates.go_to_challenges')}
+                            <ExternalLink size={12} className="ml-1" />
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
+                  )}
+                </div>
+                {allGoals.length === 0 && !goalsLoading && (
+                  <div className="mt-3 text-sm text-amber-400/80 flex items-center gap-2">
+                    <Lightbulb size={14} />
+                    {t('business.candidates.no_goals_hint')}
+                    <Link to="/business/dashboard">
+                      <Button variant="link" size="sm" className="text-primary p-0 h-auto">
+                        {t('business.candidates.create_goal')}
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
         )}
 
@@ -903,8 +973,8 @@ const BusinessCandidates = () => {
                 showSaveButton={!!goalId}
                 showDebug={showDebug}
                 invitationStatus={invitationStatuses[candidate.profile_id] || candidate.invitationStatus || 'none'}
-                inviteDisabled={activeChallenges.length === 0}
-                inviteDisabledReason={activeChallenges.length === 0 ? t('business_challenge.create_first_tooltip') : undefined}
+                inviteDisabled={!goalId || activeChallenges.length === 0}
+                inviteDisabledReason={!goalId ? t('business.candidates.select_goal_to_invite') : activeChallenges.length === 0 ? t('business_challenge.create_first_tooltip') : undefined}
                 onSelect={(checked) => {
                   // Use profile_id for selection (for bulk invite)
                   if (checked) {

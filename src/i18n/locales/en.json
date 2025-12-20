@@ -1871,7 +1871,12 @@
       "active_challenges": "Active challenges",
       "manage_challenges": "Manage challenges",
       "all_matches": "All Matches",
-      "saved": "Saved"
+      "saved": "Saved",
+      "select_goal_to_invite": "Select a hiring goal to invite candidates:",
+      "select_hiring_goal": "Select Hiring Goal",
+      "go_to_challenges": "Go to Challenges",
+      "no_goals_hint": "You need a hiring goal to invite candidates.",
+      "create_goal": "Create Hiring Goal"
     },
     "shortlist": {
       "title": "Shortlist Based on Your Hiring Goal",

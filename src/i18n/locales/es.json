@@ -1402,7 +1402,12 @@
       "candidate_added": "El candidato ha sido agregado a tu preselección",
       "failed_update": "No se pudo actualizar la preselección",
       "failed_action": "No se pudo realizar la acción",
-      "no_candidates": "No se encontraron candidatos que coincidan con tus criterios"
+      "no_candidates": "No se encontraron candidatos que coincidan con tus criterios",
+      "select_goal_to_invite": "Selecciona un objetivo de contratación para invitar candidatos:",
+      "select_hiring_goal": "Seleccionar Objetivo de Contratación",
+      "go_to_challenges": "Ir a Desafíos",
+      "no_goals_hint": "Necesitas un objetivo de contratación para invitar candidatos.",
+      "create_goal": "Crear Objetivo de Contratación"
     },
     "shortlist": {
       "title": "Lista Basada en Tu Objetivo de Contratación",
