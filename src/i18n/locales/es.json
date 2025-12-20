@@ -1985,6 +1985,7 @@
     "fields_remaining": "campos requeridos restantes",
     "submit_btn": "Enviar Challenge",
     "submission_success": "¡Respuesta recibida!",
+    "already_submitted": "Ya has enviado esta challenge.",
     "submitted_title": "Respuesta Recibida",
     "submitted_desc": "Tu respuesta ha sido enviada con éxito.",
     "submitted_at": "Enviada el",

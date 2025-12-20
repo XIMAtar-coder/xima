@@ -96,36 +96,55 @@ export default function ChallengeResponses() {
         const goal = goalsData?.find(g => g.id === goalId);
         setCurrentGoal((goal || null) as HiringGoal | null);
 
-        // Load invitations with submissions
-        const { data: invitationsData } = await supabase
+        // Load invitations with submissions via LEFT JOIN style approach
+        // First get all invitations for this challenge
+        const { data: invitationsData, error: invError } = await supabase
           .from('challenge_invitations')
           .select(`
             id,
             candidate_profile_id,
             status,
-            created_at,
-            profiles!challenge_invitations_candidate_profile_id_fkey (
-              id,
-              full_name,
-              name
-            )
+            created_at
           `)
           .eq('challenge_id', challengeId)
           .eq('business_id', user.id);
 
-        // Load submissions
-        const { data: submissionsData } = await supabase
+        if (invError) {
+          console.error('Error loading invitations:', invError);
+        }
+
+        // Get profile info for all candidates
+        const candidateProfileIds = (invitationsData || []).map(inv => inv.candidate_profile_id);
+        
+        const { data: profilesData } = candidateProfileIds.length > 0 
+          ? await supabase
+              .from('profiles')
+              .select('id, full_name, name')
+              .in('id', candidateProfileIds)
+          : { data: [] };
+
+        const profilesMap = new Map(
+          (profilesData || []).map(p => [p.id, p])
+        );
+
+        // Load ALL submissions for this challenge (regardless of invitation status)
+        const { data: submissionsData, error: subError } = await supabase
           .from('challenge_submissions')
           .select('*')
           .eq('challenge_id', challengeId)
           .eq('business_id', user.id);
 
+        if (subError) {
+          console.error('Error loading submissions:', subError);
+        }
+
         const submissionsByInvitation = new Map(
-          submissionsData?.map(s => [s.invitation_id, s]) || []
+          (submissionsData || []).map(s => [s.invitation_id, s])
         );
 
+        // Map invitations with their submissions (LEFT JOIN behavior)
         const mapped: InvitationWithSubmission[] = (invitationsData || []).map(inv => {
-          const profile = inv.profiles as any;
+          const profile = profilesMap.get(inv.candidate_profile_id);
           const submission = submissionsByInvitation.get(inv.id);
           return {
             invitationId: inv.id,

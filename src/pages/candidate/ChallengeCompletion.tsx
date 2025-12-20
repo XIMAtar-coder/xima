@@ -283,6 +283,15 @@ export default function ChallengeCompletion() {
   }, [payload, t]);
 
   const handleSubmit = async () => {
+    // Prevent double submission
+    if (submissionStatus === 'submitted') {
+      toast({
+        title: t('challenge.already_submitted'),
+        variant: 'destructive',
+      });
+      return;
+    }
+
     if (validationErrors.length > 0) {
       toast({
         title: t('challenge.validation.incomplete'),
@@ -297,6 +306,22 @@ export default function ChallengeCompletion() {
       const now = new Date().toISOString();
 
       if (submissionId) {
+        // Check if already submitted before updating
+        const { data: existing } = await supabase
+          .from('challenge_submissions')
+          .select('status')
+          .eq('id', submissionId)
+          .single();
+
+        if (existing?.status === 'submitted') {
+          toast({
+            title: t('challenge.already_submitted'),
+            variant: 'destructive',
+          });
+          setSubmissionStatus('submitted');
+          return;
+        }
+
         await supabase
           .from('challenge_submissions')
           .update({
