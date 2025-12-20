@@ -19,6 +19,7 @@ import { OpenAnswerList } from '@/components/profile/OpenAnswerList';
 import { CVAnalysisCard } from '@/components/profile/CVAnalysisCard';
 import { MyOpportunitiesSection } from '@/components/opportunities/MyOpportunitiesSection';
 import { ChallengeInvitationBanner } from '@/components/ChallengeInvitationBanner';
+import { ChallengesForYouSection } from '@/components/profile/ChallengesForYouSection';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -243,6 +244,9 @@ const Profile = () => {
           </div>
 
           {/* Full Width Sections */}
+          {/* Challenges for You */}
+          <ChallengesForYouSection />
+          
           {/* Job Opportunities */}
           <MyOpportunitiesSection />
         </div>
