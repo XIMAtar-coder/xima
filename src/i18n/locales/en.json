@@ -61,7 +61,10 @@
     "change_photo": "Change Photo",
     "uploading": "Uploading...",
     "growth_area": "Growth Area",
-    "no_mentor_assigned": "Complete your first evaluation to receive a mentor"
+    "no_mentor_assigned": "Complete your first evaluation to receive a mentor",
+    "challenges_for_you": "Challenges for You",
+    "active": "Active",
+    "no_challenges_yet": "No challenges yet."
   },
   "results": {
     "title": "Your Results",
@@ -2460,8 +2463,11 @@
       "upcoming": "Upcoming",
       "active": "Active",
       "expired": "Expired",
-      "submitted": "Submitted"
+      "submitted": "Submitted",
+      "declined": "Declined"
     },
+    "open_challenge": "Open Challenge",
+    "view_submission": "View Submission",
     "expired_message": "This challenge is no longer available for submission.",
     "upcoming_message": "This challenge has not started yet.",
     "progress": "Progress",
@@ -2503,5 +2509,9 @@
       "tradeoff_required": "Please select a trade-off priority",
       "confidence_required": "Please select your confidence level"
     }
+  },
+  "notifications": {
+    "new_challenge_invitation": "New Challenge Invitation",
+    "challenge_invitation_message": "{{company}} has invited you to complete a challenge."
   }
 }

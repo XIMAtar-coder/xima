@@ -490,6 +490,29 @@ const BusinessCandidates = () => {
         throw invError;
       }
 
+      // Get the candidate's user_id for notification
+      const { data: candidateProfile } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .eq('id', candidateProfileId)
+        .single();
+
+      // Create in-app notification for the candidate
+      if (candidateProfile?.user_id) {
+        try {
+          await supabase.from('notifications').insert({
+            recipient_id: candidateProfile.user_id,
+            sender_id: user.id,
+            type: 'challenge_invitation',
+            related_id: invitation.id, // Store invitation_id for deep link
+            title: t('notifications.new_challenge_invitation'),
+            message: t('notifications.challenge_invitation_message', { company: companyName || 'Company' })
+          });
+        } catch (notifErr) {
+          console.warn('Notification creation failed (non-blocking):', notifErr);
+        }
+      }
+
       // Send email if available
       if (candidateEmail) {
         try {

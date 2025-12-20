@@ -21,8 +21,12 @@ export const NotificationsDropdown = () => {
     markAsRead(notification.id);
     
     // Navigate based on notification type
-    if (notification.type === 'challenge' && notification.related_id) {
-      navigate(`/challenges/${notification.related_id}`);
+    if (notification.type === 'challenge_invitation' && notification.related_id) {
+      // Direct invitation - related_id is invitation_id
+      navigate(`/candidate/challenges/${notification.related_id}`);
+    } else if (notification.type === 'challenge' && notification.related_id) {
+      // Public challenge notification - navigate to profile to see challenges
+      navigate('/profile');
     } else if (notification.type === 'job_offer' && notification.related_id) {
       navigate(`/opportunities/${notification.related_id}`);
     }

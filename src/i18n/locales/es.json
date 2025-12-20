@@ -98,6 +98,9 @@
     "uploading": "Subiendo...",
     "growth_area": "Área de Crecimiento",
     "no_mentor_assigned": "Completa tu primera evaluación para recibir un mentor",
+    "challenges_for_you": "Desafíos para Ti",
+    "active": "Activos",
+    "no_challenges_yet": "Ningún desafío todavía.",
     "no_slots_available": "No hay espacios disponibles en este momento",
     "external_booking": "Reservar mediante calendario externo",
     "view_full_calendar": "Ver calendario completo",
@@ -1949,7 +1952,9 @@
   },
   "challenge": {
     "not_found": "Challenge no encontrada",
-    "status": { "upcoming": "Próxima", "active": "Activa", "expired": "Expirada", "submitted": "Enviada" },
+    "status": { "upcoming": "Próxima", "active": "Activa", "expired": "Expirada", "submitted": "Enviada", "declined": "Rechazada" },
+    "open_challenge": "Abrir Desafío",
+    "view_submission": "Ver Respuesta",
     "expired_message": "Esta challenge ya no está disponible.",
     "upcoming_message": "Esta challenge aún no ha comenzado.",
     "progress": "Progreso",
@@ -1984,5 +1989,9 @@
     "submitted_desc": "Tu respuesta ha sido enviada con éxito.",
     "submitted_at": "Enviada el",
     "validation": { "incomplete": "Envío incompleto", "approach_required": "El enfoque es requerido", "assumptions_required": "Las suposiciones son requeridas", "actions_required": "Proporciona las 3 acciones", "tradeoff_required": "Selecciona un trade-off", "confidence_required": "Selecciona el nivel de confianza" }
+  },
+  "notifications": {
+    "new_challenge_invitation": "Nueva Invitación a Desafío",
+    "challenge_invitation_message": "{{company}} te ha invitado a completar un desafío."
   }
 }
