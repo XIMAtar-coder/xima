@@ -132,12 +132,14 @@ export default function ChallengeResponses() {
 
         const profilesMap = new Map((profilesData || []).map(p => [p.id, p]));
 
-        // Load submissions with signals
-        const { data: submissionsData, error: subError } = await supabase
-          .from('challenge_submissions')
-          .select('*')
-          .eq('challenge_id', challengeId)
-          .eq('business_id', user.id);
+        // Load submissions using invitation_ids as the primary key (more reliable than challenge_id)
+        const invitationIds = (invitationsData || []).map(inv => inv.id);
+        const { data: submissionsData, error: subError } = invitationIds.length > 0
+          ? await supabase
+              .from('challenge_submissions')
+              .select('*')
+              .in('invitation_id', invitationIds)
+          : { data: [] };
 
         if (subError) console.error('Error loading submissions:', subError);
 

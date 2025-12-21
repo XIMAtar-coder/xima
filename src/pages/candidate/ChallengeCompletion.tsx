@@ -212,7 +212,7 @@ export default function ChallengeCompletion() {
   );
 
   const saveDraft = async (currentPayload: SubmissionPayload) => {
-    if (!challenge || submissionStatus === 'submitted') return;
+    if (!challenge || !invitationId || submissionStatus === 'submitted') return;
 
     setSaving(true);
     try {
@@ -222,17 +222,31 @@ export default function ChallengeCompletion() {
           .update({ draft_payload: currentPayload as any })
           .eq('id', submissionId);
       } else {
+        // Fetch invitation for authoritative values
+        const { data: invitation } = await supabase
+          .from('challenge_invitations')
+          .select('id, business_id, hiring_goal_id, challenge_id, candidate_profile_id')
+          .eq('id', invitationId)
+          .single();
+
+        if (!invitation) {
+          console.error('Invitation not found for draft save');
+          return;
+        }
+
         const { data, error } = await supabase
           .from('challenge_submissions')
-          .insert([{
-            invitation_id: challenge.invitationId,
-            candidate_profile_id: challenge.candidateProfileId,
-            business_id: challenge.businessId,
-            hiring_goal_id: challenge.hiringGoalId,
-            challenge_id: challenge.challengeId,
+          .upsert({
+            invitation_id: invitation.id,
+            candidate_profile_id: invitation.candidate_profile_id,
+            business_id: invitation.business_id,
+            hiring_goal_id: invitation.hiring_goal_id,
+            challenge_id: invitation.challenge_id,
             draft_payload: currentPayload as any,
             status: 'draft',
-          }])
+          }, {
+            onConflict: 'invitation_id',
+          })
           .select('id')
           .single();
 
@@ -302,9 +316,41 @@ export default function ChallengeCompletion() {
       return;
     }
 
+    if (!invitationId) {
+      toast({ title: t('common.error'), description: 'Missing invitation ID', variant: 'destructive' });
+      return;
+    }
+
     setSubmitting(true);
     try {
+      // ALWAYS re-fetch the invitation to get authoritative field values
+      const { data: invitation, error: invError } = await supabase
+        .from('challenge_invitations')
+        .select('id, business_id, hiring_goal_id, challenge_id, candidate_profile_id')
+        .eq('id', invitationId)
+        .single();
+
+      if (invError || !invitation) {
+        toast({ title: t('common.error'), description: 'Invitation not found', variant: 'destructive' });
+        return;
+      }
+
       const now = new Date().toISOString();
+      const signals = computeSignals(payload);
+
+      // Use invitation as the source of truth for all foreign keys
+      const submissionData = {
+        invitation_id: invitation.id,
+        candidate_profile_id: invitation.candidate_profile_id,
+        business_id: invitation.business_id,
+        hiring_goal_id: invitation.hiring_goal_id,
+        challenge_id: invitation.challenge_id,
+        status: 'submitted' as const,
+        submitted_payload: payload as any,
+        submitted_at: now,
+        signals_payload: signals as any,
+        signals_version: 'v1',
+      };
 
       if (submissionId) {
         // Check if already submitted before updating
@@ -323,39 +369,41 @@ export default function ChallengeCompletion() {
           return;
         }
 
-        // Compute XIMA signals
-        const signals = computeSignals(payload);
-
-        await supabase
+        // Update existing submission
+        const { error: updateError } = await supabase
           .from('challenge_submissions')
           .update({
-            status: 'submitted',
-            submitted_payload: payload as any,
-            submitted_at: now,
-            signals_payload: signals as any,
-            signals_version: 'v1',
+            ...submissionData,
+            draft_payload: payload as any,
           })
           .eq('id', submissionId);
-      } else {
-        // Compute XIMA signals
-        const signals = computeSignals(payload);
 
-        await supabase
+        if (updateError) {
+          console.error('Update error:', updateError);
+          throw updateError;
+        }
+      } else {
+        // Insert new submission with upsert on invitation_id
+        const { error: insertError } = await supabase
           .from('challenge_submissions')
-          .insert([{
-            invitation_id: challenge!.invitationId,
-            candidate_profile_id: challenge!.candidateProfileId,
-            business_id: challenge!.businessId,
-            hiring_goal_id: challenge!.hiringGoalId,
-            challenge_id: challenge!.challengeId,
+          .upsert({
+            ...submissionData,
             draft_payload: payload as any,
-            submitted_payload: payload as any,
-            status: 'submitted',
-            submitted_at: now,
-            signals_payload: signals as any,
-            signals_version: 'v1',
-          }]);
+          }, {
+            onConflict: 'invitation_id',
+          });
+
+        if (insertError) {
+          console.error('Insert error:', insertError);
+          throw insertError;
+        }
       }
+
+      // Also update the invitation status to reflect submission
+      await supabase
+        .from('challenge_invitations')
+        .update({ status: 'submitted', responded_at: now })
+        .eq('id', invitationId);
 
       setSubmissionStatus('submitted');
       setSubmittedAt(now);
