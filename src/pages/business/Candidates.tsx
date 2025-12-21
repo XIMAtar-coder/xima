@@ -498,9 +498,8 @@ const BusinessCandidates = () => {
         .single();
 
       // Create in-app notification for the candidate
-      // IMPORTANT: type must be one of: 'challenge', 'job_offer', 'message', 'system'
       if (candidateProfileData?.user_id) {
-        const notificationType = 'challenge'; // This is the correct type
+        const notificationType = 'challenge_invitation';
         try {
           await supabase.from('notifications').insert({
             recipient_id: candidateProfileData.user_id,
