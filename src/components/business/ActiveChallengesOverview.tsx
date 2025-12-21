@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Target, Users, MessageSquare, ChevronRight, Zap, Clock, AlertTriangle } from 'lucide-react';
+import { Target, Users, MessageSquare, ChevronRight, Zap, Clock, AlertTriangle, Bug } from 'lucide-react';
 import { getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
+
+const isDev = import.meta.env.DEV;
 
 interface ActiveChallenge {
   id: string;
@@ -105,6 +107,13 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
                       <span className="flex items-center gap-1 text-muted-foreground">
                         <Clock className="h-3.5 w-3.5" />
                         {timeInfo.remainingText}
+                      </span>
+                    )}
+                    {/* DEV: Show raw counts for debugging */}
+                    {isDev && (
+                      <span className="flex items-center gap-1 text-yellow-600 text-xs font-mono">
+                        <Bug className="h-3 w-3" />
+                        inv={challenge.invited_count} resp={challenge.responses_count}
                       </span>
                     )}
                   </div>
