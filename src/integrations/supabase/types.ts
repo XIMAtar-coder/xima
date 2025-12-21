@@ -868,6 +868,8 @@ export type Database = {
           hiring_goal_id: string
           id: string
           invitation_id: string
+          signals_payload: Json | null
+          signals_version: string
           status: string
           submitted_at: string | null
           submitted_payload: Json | null
@@ -882,6 +884,8 @@ export type Database = {
           hiring_goal_id: string
           id?: string
           invitation_id: string
+          signals_payload?: Json | null
+          signals_version?: string
           status?: string
           submitted_at?: string | null
           submitted_payload?: Json | null
@@ -896,6 +900,8 @@ export type Database = {
           hiring_goal_id?: string
           id?: string
           invitation_id?: string
+          signals_payload?: Json | null
+          signals_version?: string
           status?: string
           submitted_at?: string | null
           submitted_payload?: Json | null

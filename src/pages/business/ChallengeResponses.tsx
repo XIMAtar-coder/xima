@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,10 +8,15 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
-import { ArrowLeft, Eye, Clock, CheckCircle, AlertTriangle, FileText, Loader2 } from 'lucide-react';
+import { ArrowLeft, Eye, Clock, CheckCircle, AlertTriangle, FileText, Loader2, BarChart3, ArrowUpDown, Sparkles } from 'lucide-react';
 import { getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
 import { GoalContextHeader } from '@/components/business/GoalContextHeader';
+import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import type { HiringGoal } from '@/hooks/useHiringGoals';
 
 interface ChallengeInfo {
@@ -35,7 +40,12 @@ interface InvitationWithSubmission {
   submittedAt: string | null;
   draftPayload: any;
   submittedPayload: any;
+  signalsPayload: SignalsPayload | null;
+  signalsVersion: string | null;
 }
+
+type SortField = 'overall' | 'framing' | 'decision_quality' | 'execution_bias' | 'impact_thinking' | 'candidateName';
+type SortDir = 'asc' | 'desc';
 
 export default function ChallengeResponses() {
   const { goalId, challengeId } = useParams<{ goalId: string; challengeId: string }>();
@@ -49,6 +59,12 @@ export default function ChallengeResponses() {
   const [currentGoal, setCurrentGoal] = useState<HiringGoal | null>(null);
   const [selectedSubmission, setSelectedSubmission] = useState<InvitationWithSubmission | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+
+  // Compare tab state
+  const [showAllInvited, setShowAllInvited] = useState(false);
+  const [sortField, setSortField] = useState<SortField>('overall');
+  const [sortDir, setSortDir] = useState<SortDir>('desc');
+  const [generatingSignals, setGeneratingSignals] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -96,26 +112,17 @@ export default function ChallengeResponses() {
         const goal = goalsData?.find(g => g.id === goalId);
         setCurrentGoal((goal || null) as HiringGoal | null);
 
-        // Load invitations with submissions via LEFT JOIN style approach
-        // First get all invitations for this challenge
+        // Load invitations
         const { data: invitationsData, error: invError } = await supabase
           .from('challenge_invitations')
-          .select(`
-            id,
-            candidate_profile_id,
-            status,
-            created_at
-          `)
+          .select('id, candidate_profile_id, status, created_at')
           .eq('challenge_id', challengeId)
           .eq('business_id', user.id);
 
-        if (invError) {
-          console.error('Error loading invitations:', invError);
-        }
+        if (invError) console.error('Error loading invitations:', invError);
 
-        // Get profile info for all candidates
+        // Get profile info
         const candidateProfileIds = (invitationsData || []).map(inv => inv.candidate_profile_id);
-        
         const { data: profilesData } = candidateProfileIds.length > 0 
           ? await supabase
               .from('profiles')
@@ -123,26 +130,20 @@ export default function ChallengeResponses() {
               .in('id', candidateProfileIds)
           : { data: [] };
 
-        const profilesMap = new Map(
-          (profilesData || []).map(p => [p.id, p])
-        );
+        const profilesMap = new Map((profilesData || []).map(p => [p.id, p]));
 
-        // Load ALL submissions for this challenge (regardless of invitation status)
+        // Load submissions with signals
         const { data: submissionsData, error: subError } = await supabase
           .from('challenge_submissions')
           .select('*')
           .eq('challenge_id', challengeId)
           .eq('business_id', user.id);
 
-        if (subError) {
-          console.error('Error loading submissions:', subError);
-        }
+        if (subError) console.error('Error loading submissions:', subError);
 
-        const submissionsByInvitation = new Map(
-          (submissionsData || []).map(s => [s.invitation_id, s])
-        );
+        const submissionsByInvitation = new Map((submissionsData || []).map(s => [s.invitation_id, s]));
 
-        // Map invitations with their submissions (LEFT JOIN behavior)
+        // Map invitations with their submissions
         const mapped: InvitationWithSubmission[] = (invitationsData || []).map(inv => {
           const profile = profilesMap.get(inv.candidate_profile_id);
           const submission = submissionsByInvitation.get(inv.id);
@@ -157,6 +158,8 @@ export default function ChallengeResponses() {
             submittedAt: submission?.submitted_at || null,
             draftPayload: submission?.draft_payload || null,
             submittedPayload: submission?.submitted_payload || null,
+            signalsPayload: (submission?.signals_payload as unknown as SignalsPayload) || null,
+            signalsVersion: submission?.signals_version || null,
           };
         });
 
@@ -197,6 +200,87 @@ export default function ChallengeResponses() {
   const openDetail = (inv: InvitationWithSubmission) => {
     setSelectedSubmission(inv);
     setDetailOpen(true);
+  };
+
+  // Generate signals for older submissions
+  const generateSignalsFor = async (inv: InvitationWithSubmission) => {
+    if (!inv.submissionId || !inv.submittedPayload) return;
+    
+    setGeneratingSignals(inv.invitationId);
+    try {
+      const signals = computeSignals(inv.submittedPayload);
+      
+      await supabase
+        .from('challenge_submissions')
+        .update({
+          signals_payload: signals as any,
+          signals_version: 'v1',
+        })
+        .eq('id', inv.submissionId);
+
+      // Update local state
+      setInvitations(prev => prev.map(i => 
+        i.invitationId === inv.invitationId 
+          ? { ...i, signalsPayload: signals, signalsVersion: 'v1' }
+          : i
+      ));
+
+      toast({ title: t('business.compare.signals_generated') });
+    } catch (error) {
+      console.error('Error generating signals:', error);
+      toast({ title: t('common.error'), variant: 'destructive' });
+    } finally {
+      setGeneratingSignals(null);
+    }
+  };
+
+  // Compare tab data
+  const compareData = useMemo(() => {
+    let data = showAllInvited 
+      ? invitations 
+      : invitations.filter(i => i.submissionStatus === 'submitted');
+
+    // Sort
+    data = [...data].sort((a, b) => {
+      if (sortField === 'candidateName') {
+        return sortDir === 'asc' 
+          ? a.candidateName.localeCompare(b.candidateName)
+          : b.candidateName.localeCompare(a.candidateName);
+      }
+      
+      const aVal = a.signalsPayload?.[sortField] ?? -1;
+      const bVal = b.signalsPayload?.[sortField] ?? -1;
+      return sortDir === 'asc' ? aVal - bVal : bVal - aVal;
+    });
+
+    return data;
+  }, [invitations, showAllInvited, sortField, sortDir]);
+
+  const toggleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDir(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDir('desc');
+    }
+  };
+
+  const SortHeader = ({ field, label }: { field: SortField; label: string }) => (
+    <TableHead 
+      className="cursor-pointer hover:bg-muted/50 transition-colors"
+      onClick={() => toggleSort(field)}
+    >
+      <div className="flex items-center gap-1">
+        {label}
+        <ArrowUpDown className={`h-3 w-3 ${sortField === field ? 'text-primary' : 'text-muted-foreground'}`} />
+      </div>
+    </TableHead>
+  );
+
+  const ScoreCell = ({ score }: { score: number | undefined }) => {
+    if (score === undefined) return <span className="text-muted-foreground">—</span>;
+    const color = score >= 70 ? 'text-green-600' : score >= 50 ? 'text-amber-600' : 'text-red-600';
+    return <span className={`font-medium ${color}`}>{score}</span>;
   };
 
   if (loading) {
@@ -280,54 +364,181 @@ export default function ChallengeResponses() {
           </Card>
         </div>
 
-        {/* Responses Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">{t('business.responses.table_title')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {invitations.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>{t('business.responses.no_invitations')}</p>
-              </div>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t('business.responses.col_candidate')}</TableHead>
-                    <TableHead>{t('business.responses.col_status')}</TableHead>
-                    <TableHead>{t('business.responses.col_invited_at')}</TableHead>
-                    <TableHead>{t('business.responses.col_submitted_at')}</TableHead>
-                    <TableHead className="text-right">{t('common.actions')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {invitations.map((inv) => (
-                    <TableRow key={inv.invitationId}>
-                      <TableCell className="font-medium">{inv.candidateName}</TableCell>
-                      <TableCell>{getStatusBadge(inv)}</TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {new Date(inv.invitedAt).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {inv.submittedAt ? new Date(inv.submittedAt).toLocaleDateString() : '—'}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {(inv.submissionStatus === 'submitted' || inv.submissionStatus === 'draft') && (
-                          <Button variant="ghost" size="sm" onClick={() => openDetail(inv)}>
-                            <Eye className="h-4 w-4 mr-1" />
-                            {t('business.responses.view')}
-                          </Button>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
+        {/* Tabs: Responses / Compare */}
+        <Tabs defaultValue="responses" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="responses" className="gap-2">
+              <FileText className="h-4 w-4" />
+              {t('business.responses.tab_responses')}
+            </TabsTrigger>
+            <TabsTrigger value="compare" className="gap-2">
+              <BarChart3 className="h-4 w-4" />
+              {t('business.responses.tab_compare')}
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Responses Tab */}
+          <TabsContent value="responses">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">{t('business.responses.table_title')}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {invitations.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>{t('business.responses.no_invitations')}</p>
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t('business.responses.col_candidate')}</TableHead>
+                        <TableHead>{t('business.responses.col_status')}</TableHead>
+                        <TableHead>{t('business.responses.col_invited_at')}</TableHead>
+                        <TableHead>{t('business.responses.col_submitted_at')}</TableHead>
+                        <TableHead className="text-right">{t('common.actions')}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {invitations.map((inv) => (
+                        <TableRow key={inv.invitationId}>
+                          <TableCell className="font-medium">{inv.candidateName}</TableCell>
+                          <TableCell>{getStatusBadge(inv)}</TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {new Date(inv.invitedAt).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {inv.submittedAt ? new Date(inv.submittedAt).toLocaleDateString() : '—'}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {(inv.submissionStatus === 'submitted' || inv.submissionStatus === 'draft') && (
+                              <Button variant="ghost" size="sm" onClick={() => openDetail(inv)}>
+                                <Eye className="h-4 w-4 mr-1" />
+                                {t('business.responses.view')}
+                              </Button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Compare Tab */}
+          <TabsContent value="compare">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                      {t('business.compare.title')}
+                    </CardTitle>
+                    <CardDescription>{t('business.compare.description')}</CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch 
+                      id="show-all" 
+                      checked={showAllInvited} 
+                      onCheckedChange={setShowAllInvited} 
+                    />
+                    <Label htmlFor="show-all" className="text-sm">
+                      {t('business.compare.show_all')}
+                    </Label>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {compareData.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>{t('business.compare.no_submissions')}</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <SortHeader field="candidateName" label={t('business.responses.col_candidate')} />
+                          <SortHeader field="framing" label={t('business.compare.framing')} />
+                          <SortHeader field="decision_quality" label={t('business.compare.decision')} />
+                          <SortHeader field="execution_bias" label={t('business.compare.execution')} />
+                          <SortHeader field="impact_thinking" label={t('business.compare.impact')} />
+                          <TableHead>{t('business.compare.confidence')}</TableHead>
+                          <SortHeader field="overall" label={t('business.compare.overall')} />
+                          <TableHead className="text-right">{t('common.actions')}</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {compareData.map((inv) => (
+                          <TableRow key={inv.invitationId}>
+                            <TableCell className="font-medium">{inv.candidateName}</TableCell>
+                            {inv.signalsPayload ? (
+                              <>
+                                <TableCell><ScoreCell score={inv.signalsPayload.framing} /></TableCell>
+                                <TableCell><ScoreCell score={inv.signalsPayload.decision_quality} /></TableCell>
+                                <TableCell><ScoreCell score={inv.signalsPayload.execution_bias} /></TableCell>
+                                <TableCell><ScoreCell score={inv.signalsPayload.impact_thinking} /></TableCell>
+                                <TableCell>
+                                  <Badge variant={
+                                    inv.signalsPayload.confidence === 'high' ? 'default' :
+                                    inv.signalsPayload.confidence === 'medium' ? 'secondary' : 'outline'
+                                  }>
+                                    {inv.signalsPayload.confidence}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-bold text-lg">{inv.signalsPayload.overall}</span>
+                                    <Progress value={inv.signalsPayload.overall} className="w-16 h-2" />
+                                  </div>
+                                </TableCell>
+                              </>
+                            ) : inv.submissionStatus === 'submitted' ? (
+                              <TableCell colSpan={6} className="text-center">
+                                <div className="flex items-center justify-center gap-2">
+                                  <span className="text-muted-foreground text-sm">{t('business.compare.not_scored')}</span>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    disabled={generatingSignals === inv.invitationId}
+                                    onClick={() => generateSignalsFor(inv)}
+                                  >
+                                    {generatingSignals === inv.invitationId ? (
+                                      <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                                    ) : (
+                                      <Sparkles className="h-3 w-3 mr-1" />
+                                    )}
+                                    {t('business.compare.generate')}
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            ) : (
+                              <TableCell colSpan={6} className="text-center text-muted-foreground">
+                                {getStatusBadge(inv)}
+                              </TableCell>
+                            )}
+                            <TableCell className="text-right">
+                              {(inv.submissionStatus === 'submitted' || inv.submissionStatus === 'draft') && (
+                                <Button variant="ghost" size="sm" onClick={() => openDetail(inv)}>
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
 
         {/* Detail Dialog */}
         <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
@@ -358,6 +569,7 @@ function SubmissionDetail({ submission, challenge }: { submission: InvitationWit
   const payload = submission.submissionStatus === 'submitted' 
     ? submission.submittedPayload 
     : submission.draftPayload;
+  const signals = submission.signalsPayload;
 
   if (!payload) {
     return <p className="text-muted-foreground">{t('business.responses.no_content')}</p>;
@@ -379,6 +591,62 @@ function SubmissionDetail({ submission, challenge }: { submission: InvitationWit
 
   return (
     <div className="space-y-6">
+      {/* XIMA Signals Card */}
+      {signals && (
+        <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+          <h4 className="font-medium mb-3 flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            {t('business.compare.xima_signals')}
+          </h4>
+          
+          {/* Scores grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+            <div className="text-center p-2 bg-background rounded">
+              <div className="text-lg font-bold">{signals.framing}</div>
+              <div className="text-xs text-muted-foreground">{t('business.compare.framing')}</div>
+            </div>
+            <div className="text-center p-2 bg-background rounded">
+              <div className="text-lg font-bold">{signals.decision_quality}</div>
+              <div className="text-xs text-muted-foreground">{t('business.compare.decision')}</div>
+            </div>
+            <div className="text-center p-2 bg-background rounded">
+              <div className="text-lg font-bold">{signals.execution_bias}</div>
+              <div className="text-xs text-muted-foreground">{t('business.compare.execution')}</div>
+            </div>
+            <div className="text-center p-2 bg-background rounded">
+              <div className="text-lg font-bold">{signals.impact_thinking}</div>
+              <div className="text-xs text-muted-foreground">{t('business.compare.impact')}</div>
+            </div>
+          </div>
+
+          {/* Overall + Confidence */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">{t('business.compare.overall')}:</span>
+              <span className="text-xl font-bold text-primary">{signals.overall}</span>
+              <Progress value={signals.overall} className="w-24 h-2" />
+            </div>
+            <Badge variant={signals.confidence === 'high' ? 'default' : signals.confidence === 'medium' ? 'secondary' : 'outline'}>
+              {t('business.compare.confidence')}: {signals.confidence}
+            </Badge>
+          </div>
+
+          {/* Summary */}
+          <p className="text-sm text-muted-foreground italic">{signals.summary}</p>
+
+          {/* Flags */}
+          {signals.flags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-3">
+              {signals.flags.map((flag, i) => (
+                <Badge key={i} variant="outline" className="text-xs">
+                  {flag.replace(/_/g, ' ')}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Challenge context */}
       {challenge && (
         <div className="bg-muted/50 rounded-lg p-4">
@@ -391,7 +659,7 @@ function SubmissionDetail({ submission, challenge }: { submission: InvitationWit
         </div>
       )}
 
-      {/* XIMA signals */}
+      {/* XIMA signals from payload */}
       <div className="flex flex-wrap gap-2">
         {payload.tradeoff_priority && (
           <Badge variant="outline" className="text-sm">

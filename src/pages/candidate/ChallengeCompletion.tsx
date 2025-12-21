@@ -15,6 +15,7 @@ import { toast } from '@/hooks/use-toast';
 import { Clock, CheckCircle, AlertTriangle, Timer, Loader2, Save, Send } from 'lucide-react';
 import { getChallengeTimeInfo, ChallengeTimeStatus } from '@/utils/challengeTimeUtils';
 import MainLayout from '@/components/layout/MainLayout';
+import { computeSignals } from '@/lib/signals/computeSignals';
 
 interface ChallengeDetails {
   invitationId: string;
@@ -322,15 +323,23 @@ export default function ChallengeCompletion() {
           return;
         }
 
+        // Compute XIMA signals
+        const signals = computeSignals(payload);
+
         await supabase
           .from('challenge_submissions')
           .update({
             status: 'submitted',
             submitted_payload: payload as any,
             submitted_at: now,
+            signals_payload: signals as any,
+            signals_version: 'v1',
           })
           .eq('id', submissionId);
       } else {
+        // Compute XIMA signals
+        const signals = computeSignals(payload);
+
         await supabase
           .from('challenge_submissions')
           .insert([{
@@ -343,6 +352,8 @@ export default function ChallengeCompletion() {
             submitted_payload: payload as any,
             status: 'submitted',
             submitted_at: now,
+            signals_payload: signals as any,
+            signals_version: 'v1',
           }]);
       }
 
