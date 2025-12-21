@@ -7,15 +7,15 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
-import { ArrowLeft, Eye, Clock, CheckCircle, AlertTriangle, FileText, Loader2, BarChart3, ArrowUpDown, Sparkles, Bug } from 'lucide-react';
+import { ArrowLeft, Eye, Clock, FileText, Loader2, BarChart3, ArrowUpDown, Sparkles, Bug } from 'lucide-react';
 import { getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
 import { GoalContextHeader } from '@/components/business/GoalContextHeader';
+import { SubmissionDetailDrawer } from '@/components/business/SubmissionDetailDrawer';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import type { HiringGoal } from '@/hooks/useHiringGoals';
 import { useChallengeResponsesData, InvitationWithSubmission } from '@/hooks/useChallengeResponsesData';
@@ -45,7 +45,7 @@ export default function ChallengeResponses() {
   const [allGoals, setAllGoals] = useState<HiringGoal[]>([]);
   const [currentGoal, setCurrentGoal] = useState<HiringGoal | null>(null);
   const [selectedSubmission, setSelectedSubmission] = useState<InvitationWithSubmission | null>(null);
-  const [detailOpen, setDetailOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [challengeLoading, setChallengeLoading] = useState(true);
 
   // Compare tab state
@@ -135,7 +135,7 @@ export default function ChallengeResponses() {
 
   const openDetail = (inv: InvitationWithSubmission) => {
     setSelectedSubmission(inv);
-    setDetailOpen(true);
+    setDrawerOpen(true);
   };
 
   // Generate signals for older submissions
@@ -358,12 +358,17 @@ export default function ChallengeResponses() {
                             {inv.submittedAt ? new Date(inv.submittedAt).toLocaleDateString() : '—'}
                           </TableCell>
                           <TableCell className="text-right">
-                            {(inv.submissionStatus === 'submitted' || inv.submissionStatus === 'draft') && (
+                            {inv.submissionStatus === 'submitted' ? (
+                              <Button size="sm" onClick={() => openDetail(inv)}>
+                                <Eye className="h-4 w-4 mr-1" />
+                                {t('business.responses.view_submission')}
+                              </Button>
+                            ) : inv.submissionStatus === 'draft' ? (
                               <Button variant="ghost" size="sm" onClick={() => openDetail(inv)}>
                                 <Eye className="h-4 w-4 mr-1" />
                                 {t('business.responses.view')}
                               </Button>
-                            )}
+                            ) : null}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -486,173 +491,19 @@ export default function ChallengeResponses() {
           </TabsContent>
         </Tabs>
 
-        {/* Detail Dialog */}
-        <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {selectedSubmission?.candidateName} - {t('business.responses.submission')}
-                {selectedSubmission?.submissionStatus === 'draft' && (
-                  <Badge variant="secondary" className="ml-2">{t('business.responses.draft')}</Badge>
-                )}
-              </DialogTitle>
-            </DialogHeader>
-            {selectedSubmission && (
-              <SubmissionDetail 
-                submission={selectedSubmission}
-                challenge={challenge}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
+        {/* Submission Detail Drawer */}
+        <SubmissionDetailDrawer
+          open={drawerOpen}
+          onOpenChange={setDrawerOpen}
+          submission={selectedSubmission}
+          challenge={challenge}
+          businessId={userId || ''}
+          challengeId={challengeId || ''}
+          onSignalsGenerated={refetch}
+          onReviewSaved={refetch}
+        />
       </div>
     </BusinessLayout>
   );
 }
 
-function SubmissionDetail({ submission, challenge }: { submission: InvitationWithSubmission; challenge: ChallengeInfo | null }) {
-  const { t } = useTranslation();
-  const payload = submission.submissionStatus === 'submitted' 
-    ? submission.submittedPayload 
-    : submission.draftPayload;
-  const signals = submission.signalsPayload;
-
-  if (!payload) {
-    return <p className="text-muted-foreground">{t('business.responses.no_content')}</p>;
-  }
-
-  const tradeoffLabels: Record<string, string> = {
-    speed: t('challenge.tradeoff_speed'),
-    quality: t('challenge.tradeoff_quality'),
-    alignment: t('challenge.tradeoff_alignment'),
-    data: t('challenge.tradeoff_data'),
-    cost: t('challenge.tradeoff_cost'),
-  };
-
-  const confidenceLabels: Record<string, string> = {
-    low: t('challenge.confidence_low'),
-    medium: t('challenge.confidence_medium'),
-    high: t('challenge.confidence_high'),
-  };
-
-  return (
-    <div className="space-y-6">
-      {/* XIMA Signals Card */}
-      {signals && (
-        <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-          <h4 className="font-medium mb-3 flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
-            {t('business.compare.xima_signals')}
-          </h4>
-          
-          {/* Scores grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            <div className="text-center p-2 bg-background rounded">
-              <div className="text-lg font-bold">{signals.framing}</div>
-              <div className="text-xs text-muted-foreground">{t('business.compare.framing')}</div>
-            </div>
-            <div className="text-center p-2 bg-background rounded">
-              <div className="text-lg font-bold">{signals.decision_quality}</div>
-              <div className="text-xs text-muted-foreground">{t('business.compare.decision')}</div>
-            </div>
-            <div className="text-center p-2 bg-background rounded">
-              <div className="text-lg font-bold">{signals.execution_bias}</div>
-              <div className="text-xs text-muted-foreground">{t('business.compare.execution')}</div>
-            </div>
-            <div className="text-center p-2 bg-background rounded">
-              <div className="text-lg font-bold">{signals.impact_thinking}</div>
-              <div className="text-xs text-muted-foreground">{t('business.compare.impact')}</div>
-            </div>
-          </div>
-
-          {/* Overall + Confidence */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">{t('business.compare.overall')}:</span>
-              <span className="text-xl font-bold text-primary">{signals.overall}</span>
-              <Progress value={signals.overall} className="w-24 h-2" />
-            </div>
-            <Badge variant={signals.confidence === 'high' ? 'default' : signals.confidence === 'medium' ? 'secondary' : 'outline'}>
-              {t('business.compare.confidence')}: {signals.confidence}
-            </Badge>
-          </div>
-
-          {/* Summary */}
-          <p className="text-sm text-muted-foreground italic">{signals.summary}</p>
-
-          {/* Flags */}
-          {signals.flags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-3">
-              {signals.flags.map((flag, i) => (
-                <Badge key={i} variant="outline" className="text-xs">
-                  {flag.replace(/_/g, ' ')}
-                </Badge>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Challenge context */}
-      {challenge && (
-        <div className="bg-muted/50 rounded-lg p-4">
-          <h4 className="font-medium mb-2">{challenge.title}</h4>
-          {challenge.successCriteria.length > 0 && (
-            <ul className="text-sm text-muted-foreground list-disc list-inside">
-              {challenge.successCriteria.map((c, i) => <li key={i}>{c}</li>)}
-            </ul>
-          )}
-        </div>
-      )}
-
-      {/* XIMA signals from payload */}
-      <div className="flex flex-wrap gap-2">
-        {payload.tradeoff_priority && (
-          <Badge variant="outline" className="text-sm">
-            {t('challenge.tradeoff_label')}: {tradeoffLabels[payload.tradeoff_priority] || payload.tradeoff_priority}
-          </Badge>
-        )}
-        {payload.confidence && (
-          <Badge variant="outline" className="text-sm">
-            {t('challenge.confidence_label')}: {confidenceLabels[payload.confidence] || payload.confidence}
-          </Badge>
-        )}
-      </div>
-
-      {/* Approach */}
-      {payload.approach && (
-        <div>
-          <h4 className="font-medium mb-1">{t('challenge.approach_label')}</h4>
-          <p className="text-muted-foreground whitespace-pre-wrap">{payload.approach}</p>
-        </div>
-      )}
-
-      {/* Assumptions */}
-      {payload.assumptions && (
-        <div>
-          <h4 className="font-medium mb-1">{t('challenge.assumptions_label')}</h4>
-          <p className="text-muted-foreground whitespace-pre-wrap">{payload.assumptions}</p>
-        </div>
-      )}
-
-      {/* First actions */}
-      {payload.first_actions?.length > 0 && (
-        <div>
-          <h4 className="font-medium mb-1">{t('challenge.first_actions_label')}</h4>
-          <ol className="list-decimal list-inside text-muted-foreground space-y-1">
-            {payload.first_actions.filter((a: string) => a?.trim()).map((action: string, i: number) => (
-              <li key={i}>{action}</li>
-            ))}
-          </ol>
-        </div>
-      )}
-
-      {/* Metadata */}
-      {submission.submittedAt && (
-        <div className="text-sm text-muted-foreground pt-4 border-t">
-          {t('challenge.submitted_at')}: {new Date(submission.submittedAt).toLocaleString()}
-        </div>
-      )}
-    </div>
-  );
-}
