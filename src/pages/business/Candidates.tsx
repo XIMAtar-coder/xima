@@ -497,14 +497,14 @@ const BusinessCandidates = () => {
         .eq('id', candidateProfileId)
         .single();
 
-      // Create in-app notification for the candidate
+      // Create in-app notification for the candidate (type must be: challenge, job_offer, message, or system)
       if (candidateProfile?.user_id) {
         try {
           await supabase.from('notifications').insert({
             recipient_id: candidateProfile.user_id,
             sender_id: user.id,
-            type: 'challenge', // Must match notifications_type_check constraint
-            related_id: invitation.id, // Store invitation_id for deep link
+            type: 'challenge' as const, // Valid types: challenge, job_offer, message, system
+            related_id: invitation.id,
             title: t('notifications.new_challenge_invitation'),
             message: t('notifications.challenge_invitation_message', { company: companyName || 'Company' })
           });
