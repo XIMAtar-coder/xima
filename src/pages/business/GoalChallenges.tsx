@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Target, Play, Pause, Archive, Edit, Copy, Clock, CheckCircle } from 'lucide-react';
+import { Plus, Target, Play, Pause, Archive, Edit, Copy, Clock, CheckCircle, Eye } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -206,6 +206,7 @@ const GoalChallenges: React.FC = () => {
                 <ChallengeCard
                   key={challenge.id}
                   challenge={challenge}
+                  goalId={goalId!}
                   onStatusChange={updateChallengeStatus}
                   onDuplicate={duplicateChallenge}
                   getStatusBadge={getStatusBadge}
@@ -228,6 +229,7 @@ const GoalChallenges: React.FC = () => {
                 <ChallengeCard
                   key={challenge.id}
                   challenge={challenge}
+                  goalId={goalId!}
                   onStatusChange={updateChallengeStatus}
                   onDuplicate={duplicateChallenge}
                   getStatusBadge={getStatusBadge}
@@ -250,6 +252,7 @@ const GoalChallenges: React.FC = () => {
                 <ChallengeCard
                   key={challenge.id}
                   challenge={challenge}
+                  goalId={goalId!}
                   onStatusChange={updateChallengeStatus}
                   onDuplicate={duplicateChallenge}
                   getStatusBadge={getStatusBadge}
@@ -282,6 +285,7 @@ const GoalChallenges: React.FC = () => {
 
 interface ChallengeCardProps {
   challenge: Challenge;
+  goalId: string;
   onStatusChange: (id: string, status: string) => void;
   onDuplicate: (challenge: Challenge) => void;
   getStatusBadge: (status: string) => React.ReactNode;
@@ -290,11 +294,13 @@ interface ChallengeCardProps {
 
 const ChallengeCard: React.FC<ChallengeCardProps> = ({
   challenge,
+  goalId,
   onStatusChange,
   onDuplicate,
   getStatusBadge,
   t
 }) => {
+  const navigate = useNavigate();
   return (
     <Card>
       <CardContent className="p-4">
@@ -324,6 +330,10 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-popover border-border">
+              <DropdownMenuItem onClick={() => navigate(`/business/goals/${goalId}/challenges/${challenge.id}/responses`)}>
+                <Eye className="h-4 w-4 mr-2" />
+                {t('business.dashboard.view_responses')}
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onDuplicate(challenge)}>
                 <Copy className="h-4 w-4 mr-2" />
                 {t('business.challenges.duplicate')}
