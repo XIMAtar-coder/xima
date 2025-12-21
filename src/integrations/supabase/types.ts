@@ -858,6 +858,57 @@ export type Database = {
           },
         ]
       }
+      challenge_reviews: {
+        Row: {
+          business_id: string
+          candidate_profile_id: string
+          challenge_id: string
+          created_at: string | null
+          decision: string
+          followup_question: string | null
+          id: string
+          invitation_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          business_id: string
+          candidate_profile_id: string
+          challenge_id: string
+          created_at?: string | null
+          decision: string
+          followup_question?: string | null
+          id?: string
+          invitation_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          business_id?: string
+          candidate_profile_id?: string
+          challenge_id?: string
+          created_at?: string | null
+          decision?: string
+          followup_question?: string | null
+          id?: string
+          invitation_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_reviews_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "business_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challenge_reviews_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: true
+            referencedRelation: "challenge_invitations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       challenge_submissions: {
         Row: {
           business_id: string
