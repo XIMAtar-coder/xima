@@ -219,12 +219,12 @@ const Profile = () => {
                 onBookingSuccess={handleMentorBookingSuccess}
               />
 
-              {/* Personalized Challenge */}
-              {profileData.pillar_scores && user?.id && (
+              {/* Personalized Challenge - Always render for candidates */}
+              {user?.id && (
                 <PersonalizedChallenge 
                   userId={user.id}
                   ximatarType={profileData.ximatar || undefined}
-                  pillarScores={Object.entries(profileData.pillar_scores).map(([pillar, score]) => ({ pillar, score }))}
+                  pillarScores={profileData.pillar_scores ? Object.entries(profileData.pillar_scores).map(([pillar, score]) => ({ pillar, score })) : []}
                 />
               )}
 

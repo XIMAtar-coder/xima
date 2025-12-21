@@ -35,6 +35,8 @@ export const PersonalizedChallenge: React.FC<PersonalizedChallengeProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('[PersonalizedChallenge] mounted, userId:', userId);
+    
     const fetchChallenges = async () => {
       try {
         setLoading(true);
@@ -42,11 +44,13 @@ export const PersonalizedChallenge: React.FC<PersonalizedChallengeProps> = ({
 
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
+          console.log('[PersonalizedChallenge] No session, showing empty state');
           setError('Not authenticated');
           setLoading(false);
           return;
         }
 
+        console.log('[PersonalizedChallenge] Calling fetch-user-challenges...');
         const { data, error } = await supabase.functions.invoke('fetch-user-challenges', {
           headers: {
             Authorization: `Bearer ${session.access_token}`
@@ -54,21 +58,20 @@ export const PersonalizedChallenge: React.FC<PersonalizedChallengeProps> = ({
         });
 
         if (error) {
-          console.error('Edge function error:', error);
-          // Don't show error to user, just show no challenges
+          console.error('[PersonalizedChallenge] Edge function error:', error);
           setChallenges([]);
           setLoading(false);
           return;
         }
 
+        console.log('[PersonalizedChallenge] Result:', data?.challenges?.length || 0, 'challenges');
         if (data?.success) {
           setChallenges(data.challenges || []);
         } else {
           setChallenges([]);
         }
       } catch (error: any) {
-        console.error('Error fetching challenges:', error);
-        // Don't display error, just show no challenges available
+        console.error('[PersonalizedChallenge] Error fetching challenges:', error);
         setChallenges([]);
       } finally {
         setLoading(false);
@@ -77,6 +80,9 @@ export const PersonalizedChallenge: React.FC<PersonalizedChallengeProps> = ({
 
     if (userId) {
       fetchChallenges();
+    } else {
+      console.log('[PersonalizedChallenge] No userId provided');
+      setLoading(false);
     }
   }, [userId]);
 
