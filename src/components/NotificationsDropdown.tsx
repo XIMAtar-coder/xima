@@ -21,7 +21,7 @@ export const NotificationsDropdown = () => {
     markAsRead(notification.id);
     
     // Navigate based on notification type
-    if (notification.type === 'challenge_invitation' && notification.related_id) {
+    if (notification.type === 'challenge' && notification.related_id) {
       // Direct invitation - related_id is invitation_id
       navigate(`/candidate/challenges/${notification.related_id}`);
     } else if (notification.type === 'challenge' && notification.related_id) {
