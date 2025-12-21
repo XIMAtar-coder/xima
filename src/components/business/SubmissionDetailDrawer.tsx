@@ -197,8 +197,6 @@ export function SubmissionDetailDrawer({
     }
   };
 
-  if (!submission) return null;
-
   const tradeoffLabels: Record<string, string> = {
     speed: t('challenge.tradeoff_speed'),
     quality: t('challenge.tradeoff_quality'),
@@ -225,37 +223,44 @@ export function SubmissionDetailDrawer({
     }
   };
 
+  // Always render Sheet, check submission inside content
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-xl overflow-y-auto">
-        <SheetHeader className="mb-6">
-          {/* Candidate Header */}
-          <div className="flex items-center gap-3">
-            <Avatar className="h-12 w-12">
-              <AvatarImage src={`/ximatars/fox.png`} />
-              <AvatarFallback>
-                <User className="h-6 w-6" />
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <SheetTitle className="text-left flex items-center gap-2">
-                {submission.candidateName}
-                {submission.submissionStatus === 'draft' && (
-                  <Badge variant="secondary" className="ml-1">{t('business.responses.draft')}</Badge>
-                )}
-              </SheetTitle>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Clock className="h-3 w-3" />
-                {submission.submittedAt
-                  ? t('challenge.submitted_at') + ': ' + new Date(submission.submittedAt).toLocaleString()
-                  : t('business.responses.not_submitted_yet')}
-              </div>
-            </div>
-            {getDecisionBadge()}
+        {!submission ? (
+          <div className="flex items-center justify-center h-full text-muted-foreground">
+            {t('common.loading')}
           </div>
-        </SheetHeader>
+        ) : (
+          <>
+            <SheetHeader className="mb-6">
+              {/* Candidate Header */}
+              <div className="flex items-center gap-3">
+                <Avatar className="h-12 w-12">
+                  <AvatarImage src={`/ximatars/fox.png`} />
+                  <AvatarFallback>
+                    <User className="h-6 w-6" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <SheetTitle className="text-left flex items-center gap-2">
+                    {submission.candidateName}
+                    {submission.submissionStatus === 'draft' && (
+                      <Badge variant="secondary" className="ml-1">{t('business.responses.draft')}</Badge>
+                    )}
+                  </SheetTitle>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Clock className="h-3 w-3" />
+                    {submission.submittedAt
+                      ? t('challenge.submitted_at') + ': ' + new Date(submission.submittedAt).toLocaleString()
+                      : t('business.responses.not_submitted_yet')}
+                  </div>
+                </div>
+                {getDecisionBadge()}
+              </div>
+            </SheetHeader>
 
-        <div className="space-y-6">
+            <div className="space-y-6">
           {/* XIMA Signals Card */}
           {localSignals ? (
             <Card className="border-primary/30 bg-primary/5">
@@ -488,7 +493,9 @@ export function SubmissionDetailDrawer({
               </CardContent>
             </Card>
           )}
-        </div>
+            </div>
+          </>
+        )}
       </SheetContent>
     </Sheet>
   );
