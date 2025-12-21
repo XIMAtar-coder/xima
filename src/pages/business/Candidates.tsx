@@ -491,25 +491,27 @@ const BusinessCandidates = () => {
       }
 
       // Get the candidate's user_id for notification
-      const { data: candidateProfile } = await supabase
+      const { data: candidateProfileData } = await supabase
         .from('profiles')
         .select('user_id')
         .eq('id', candidateProfileId)
         .single();
 
-      // Create in-app notification for the candidate (type must be: challenge, job_offer, message, or system)
-      if (candidateProfile?.user_id) {
+      // Create in-app notification for the candidate
+      // IMPORTANT: type must be one of: 'challenge', 'job_offer', 'message', 'system'
+      if (candidateProfileData?.user_id) {
+        const notificationType = 'challenge'; // This is the correct type
         try {
           await supabase.from('notifications').insert({
-            recipient_id: candidateProfile.user_id,
+            recipient_id: candidateProfileData.user_id,
             sender_id: user.id,
-            type: 'challenge' as const, // Valid types: challenge, job_offer, message, system
+            type: notificationType,
             related_id: invitation.id,
             title: t('notifications.new_challenge_invitation'),
             message: t('notifications.challenge_invitation_message', { company: companyName || 'Company' })
           });
         } catch (notifErr) {
-          console.warn('Notification creation failed (non-blocking):', notifErr);
+          console.warn('Notification insert failed:', notifErr);
         }
       }
 
