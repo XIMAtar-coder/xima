@@ -331,7 +331,15 @@ export default function ChallengeCompletion() {
         .single();
 
       if (invError || !invitation) {
-        toast({ title: t('common.error'), description: 'Invitation not found', variant: 'destructive' });
+        console.error('Invitation fetch error:', invError);
+        toast({ title: t('common.error'), description: invError?.message || 'Invitation not found', variant: 'destructive' });
+        return;
+      }
+
+      // Validation guard: ensure required fields are present
+      if (!invitation.candidate_profile_id) {
+        console.error('Missing candidate_profile_id on invitation:', invitation);
+        toast({ title: t('common.error'), description: 'Missing candidate profile', variant: 'destructive' });
         return;
       }
 
@@ -339,18 +347,23 @@ export default function ChallengeCompletion() {
       const signals = computeSignals(payload);
 
       // Use invitation as the source of truth for all foreign keys
-      const submissionData = {
+      // CRITICAL: signals_version must NEVER be null (NOT NULL constraint)
+      const submissionData: Record<string, unknown> = {
         invitation_id: invitation.id,
         candidate_profile_id: invitation.candidate_profile_id,
         business_id: invitation.business_id,
         hiring_goal_id: invitation.hiring_goal_id,
         challenge_id: invitation.challenge_id,
-        status: 'submitted' as const,
-        submitted_payload: payload as any,
+        status: 'submitted',
+        submitted_payload: payload,
         submitted_at: now,
-        signals_payload: signals as any,
-        signals_version: 'v1',
+        signals_version: 'v1', // Explicit, never null
       };
+
+      // Only include signals_payload if it exists
+      if (signals && Object.keys(signals).length > 0) {
+        submissionData.signals_payload = signals;
+      }
 
       if (submissionId) {
         // Check if already submitted before updating
@@ -370,12 +383,13 @@ export default function ChallengeCompletion() {
         }
 
         // Update existing submission
+        const updatePayload = {
+          ...submissionData,
+          draft_payload: payload,
+        };
         const { error: updateError } = await supabase
           .from('challenge_submissions')
-          .update({
-            ...submissionData,
-            draft_payload: payload as any,
-          })
+          .update(updatePayload as any)
           .eq('id', submissionId);
 
         if (updateError) {
@@ -384,12 +398,13 @@ export default function ChallengeCompletion() {
         }
       } else {
         // Insert new submission with upsert on invitation_id
+        const insertPayload = {
+          ...submissionData,
+          draft_payload: payload,
+        };
         const { error: insertError } = await supabase
           .from('challenge_submissions')
-          .upsert({
-            ...submissionData,
-            draft_payload: payload as any,
-          }, {
+          .upsert(insertPayload as any, {
             onConflict: 'invitation_id',
           });
 
@@ -408,9 +423,11 @@ export default function ChallengeCompletion() {
       setSubmissionStatus('submitted');
       setSubmittedAt(now);
       toast({ title: t('challenge.submission_success') });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Submit error:', error);
-      toast({ title: t('common.error'), variant: 'destructive' });
+      // Show real Supabase error message for debugging
+      const errorMessage = error?.message || error?.details || 'Submission failed';
+      toast({ title: t('common.error'), description: errorMessage, variant: 'destructive' });
     } finally {
       setSubmitting(false);
     }
