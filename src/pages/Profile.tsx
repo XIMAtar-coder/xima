@@ -18,6 +18,8 @@ import { AssessmentOverviewCard } from '@/components/profile/AssessmentOverviewC
 import { OpenAnswerList } from '@/components/profile/OpenAnswerList';
 import { CVAnalysisCard } from '@/components/profile/CVAnalysisCard';
 import { MyOpportunitiesSection } from '@/components/opportunities/MyOpportunitiesSection';
+// Removed ChallengeInvitationBanner - ChallengesForYouSection is the single source of truth
+import { ChallengesForYouSection } from '@/components/profile/ChallengesForYouSection';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -219,12 +221,12 @@ const Profile = () => {
                 onBookingSuccess={handleMentorBookingSuccess}
               />
 
-              {/* Personalized Challenge - Always render for candidates */}
-              {user?.id && (
+              {/* Personalized Challenge */}
+              {profileData.pillar_scores && user?.id && (
                 <PersonalizedChallenge 
                   userId={user.id}
                   ximatarType={profileData.ximatar || undefined}
-                  pillarScores={profileData.pillar_scores ? Object.entries(profileData.pillar_scores).map(([pillar, score]) => ({ pillar, score })) : []}
+                  pillarScores={Object.entries(profileData.pillar_scores).map(([pillar, score]) => ({ pillar, score }))}
                 />
               )}
 
@@ -239,6 +241,9 @@ const Profile = () => {
           </div>
 
           {/* Full Width Sections */}
+          {/* Challenges for You */}
+          <ChallengesForYouSection />
+          
           {/* Job Opportunities */}
           <MyOpportunitiesSection />
         </div>
