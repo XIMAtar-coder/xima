@@ -503,7 +503,7 @@ const BusinessCandidates = () => {
           await supabase.from('notifications').insert({
             recipient_id: candidateProfile.user_id,
             sender_id: user.id,
-            type: 'challenge_invitation',
+            type: 'challenge', // Must match notifications_type_check constraint
             related_id: invitation.id, // Store invitation_id for deep link
             title: t('notifications.new_challenge_invitation'),
             message: t('notifications.challenge_invitation_message', { company: companyName || 'Company' })
