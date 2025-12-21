@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
@@ -8,7 +8,7 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, Target, CheckCircle, TrendingUp, Plus, ArrowRight, Briefcase, AlertCircle } from 'lucide-react';
+import { Users, Target, CheckCircle, TrendingUp, Plus, ArrowRight, Briefcase, AlertCircle, Bug } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Link } from 'react-router-dom';
 import { CandidateEngagement } from '@/components/business/CandidateEngagement';
@@ -17,6 +17,9 @@ import { HiringGoalCard } from '@/components/business/HiringGoalCard';
 import { HiringGoalOverviewCard } from '@/components/business/HiringGoalOverviewCard';
 import { ActiveChallengesOverview } from '@/components/business/ActiveChallengesOverview';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
+import { useChallengeStatsMap } from '@/hooks/useChallengeResponsesData';
+
+const isDev = import.meta.env.DEV;
 
 interface ActiveChallengeWithStats {
   id: string;
@@ -50,11 +53,36 @@ const BusinessDashboard = () => {
   const [hiringGoalStatus, setHiringGoalStatus] = useState<'none' | 'draft' | 'completed'>('none');
   const [hiringGoalDraftId, setHiringGoalDraftId] = useState<string | null>(null);
   const [hiringGoalLoading, setHiringGoalLoading] = useState(true);
-  const [activeChallengesWithStats, setActiveChallengesWithStats] = useState<ActiveChallengeWithStats[]>([]);
+  const [activeChallengesBase, setActiveChallengesBase] = useState<{id: string; title: string; hiring_goal_id: string | null; hiring_goal_title: string | null; created_at: string; start_at: string | null; end_at: string | null; status: string}[]>([]);
   const [activeChallengesLoading, setActiveChallengesLoading] = useState(true);
   
   // Hiring Goals portfolio
   const { goals: hiringGoals, loading: hiringGoalsLoading, updateGoalStatus, createGoal, refetch: refetchGoals } = useHiringGoals();
+
+  // Get challenge IDs for the shared stats hook
+  const challengeIds = useMemo(() => activeChallengesBase.map(c => c.id), [activeChallengesBase]);
+  
+  // Use shared invitation-driven stats hook
+  const { statsMap, loading: statsLoading, debug: statsDebug } = useChallengeStatsMap(user?.id, challengeIds);
+
+  // Combine base challenges with stats from the shared hook
+  const activeChallengesWithStats: ActiveChallengeWithStats[] = useMemo(() => {
+    return activeChallengesBase.map(challenge => {
+      const stats = statsMap.get(challenge.id);
+      return {
+        id: challenge.id,
+        title: challenge.title,
+        hiring_goal_id: challenge.hiring_goal_id,
+        hiring_goal_title: challenge.hiring_goal_title,
+        invited_count: stats?.invited || 0,
+        responses_count: stats?.responses || 0,
+        created_at: challenge.created_at,
+        start_at: challenge.start_at,
+        end_at: challenge.end_at,
+        status: challenge.status,
+      };
+    });
+  }, [activeChallengesBase, statsMap]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -77,7 +105,7 @@ const BusinessDashboard = () => {
     loadCompanyProfile();
     loadBusinessProfile();
     loadHiringGoalStatus();
-    loadActiveChallengesWithStats();
+    loadActiveChallengesBase();
   }, [isAuthenticated, isBusiness, businessLoading, navigate, toast, t]);
 
   // Load dashboard stats after hiring goal status is determined
@@ -87,12 +115,12 @@ const BusinessDashboard = () => {
     }
   }, [hiringGoalLoading, hiringGoalDraftId, hiringGoalStatus, user?.id]);
 
-  const loadActiveChallengesWithStats = async () => {
+  const loadActiveChallengesBase = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Fetch active challenges for this business
+      // Fetch active challenges for this business (base data only - stats come from hook)
       const { data: challenges, error } = await supabase
         .from('business_challenges')
         .select(`
@@ -114,7 +142,7 @@ const BusinessDashboard = () => {
       }
 
       if (!challenges || challenges.length === 0) {
-        setActiveChallengesWithStats([]);
+        setActiveChallengesBase([]);
         return;
       }
 
@@ -133,41 +161,19 @@ const BusinessDashboard = () => {
         }
       }
 
-      // Get invitation counts per challenge
-      const challengeIds = challenges.map(c => c.id);
-      const { data: invitations } = await supabase
-        .from('challenge_invitations')
-        .select('challenge_id, status')
-        .in('challenge_id', challengeIds);
-
-      // Get response counts from candidate_challenges
-      const { data: responses } = await supabase
-        .from('candidate_challenges')
-        .select('challenge_id, status')
-        .in('challenge_id', challengeIds);
-
-      // Build stats
-      const challengesWithStats: ActiveChallengeWithStats[] = challenges.map(challenge => {
-        const invitedCount = invitations?.filter(i => i.challenge_id === challenge.id).length || 0;
-        const responsesCount = responses?.filter(r => r.challenge_id === challenge.id && r.status === 'completed').length || 0;
-        
-        return {
-          id: challenge.id,
-          title: challenge.title,
-          hiring_goal_id: challenge.hiring_goal_id,
-          hiring_goal_title: challenge.hiring_goal_id ? goalsMap[challenge.hiring_goal_id] || null : null,
-          invited_count: invitedCount,
-          responses_count: responsesCount,
-          created_at: challenge.created_at || '',
-          start_at: challenge.start_at || null,
-          end_at: challenge.end_at || null,
-          status: challenge.status || 'active'
-        };
-      });
-
-      setActiveChallengesWithStats(challengesWithStats);
+      // Set base challenges (stats will be merged via useMemo)
+      setActiveChallengesBase(challenges.map(challenge => ({
+        id: challenge.id,
+        title: challenge.title,
+        hiring_goal_id: challenge.hiring_goal_id,
+        hiring_goal_title: challenge.hiring_goal_id ? goalsMap[challenge.hiring_goal_id] || null : null,
+        created_at: challenge.created_at || '',
+        start_at: challenge.start_at || null,
+        end_at: challenge.end_at || null,
+        status: challenge.status || 'active'
+      })));
     } catch (err) {
-      console.error('[Dashboard] Error loading active challenges with stats:', err);
+      console.error('[Dashboard] Error loading active challenges:', err);
     } finally {
       setActiveChallengesLoading(false);
     }
@@ -572,8 +578,28 @@ const BusinessDashboard = () => {
         {/* Active Challenges Overview - Operational Activity Priority */}
         <ActiveChallengesOverview 
           challenges={activeChallengesWithStats} 
-          loading={activeChallengesLoading} 
+          loading={activeChallengesLoading || statsLoading} 
         />
+
+        {/* DEV Debug Panel for Challenge Stats */}
+        {isDev && activeChallengesBase.length > 0 && (
+          <Card className="border-dashed border-yellow-500/50 bg-yellow-500/5">
+            <CardContent className="py-3">
+              <div className="flex items-center gap-2 text-xs font-mono text-yellow-600 flex-wrap">
+                <Bug className="h-3 w-3" />
+                <span>DEV Challenge Stats:</span>
+                {activeChallengesBase.slice(0, 3).map(c => {
+                  const s = statsDebug[c.id];
+                  return (
+                    <span key={c.id} className="bg-yellow-500/10 px-1 rounded">
+                      {c.title.slice(0, 15)}... inv={s?.invCount || 0} sub={s?.subCount || 0}
+                    </span>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Hiring Goals Portfolio - ONLY ACTIVE GOALS */}
         {(() => {

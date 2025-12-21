@@ -13,11 +13,12 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
-import { ArrowLeft, Eye, Clock, CheckCircle, AlertTriangle, FileText, Loader2, BarChart3, ArrowUpDown, Sparkles } from 'lucide-react';
+import { ArrowLeft, Eye, Clock, CheckCircle, AlertTriangle, FileText, Loader2, BarChart3, ArrowUpDown, Sparkles, Bug } from 'lucide-react';
 import { getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
 import { GoalContextHeader } from '@/components/business/GoalContextHeader';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import type { HiringGoal } from '@/hooks/useHiringGoals';
+import { useChallengeResponsesData, InvitationWithSubmission } from '@/hooks/useChallengeResponsesData';
 
 interface ChallengeInfo {
   id: string;
@@ -29,36 +30,23 @@ interface ChallengeInfo {
   status: string;
 }
 
-interface InvitationWithSubmission {
-  invitationId: string;
-  candidateProfileId: string;
-  candidateName: string;
-  invitationStatus: string;
-  invitedAt: string;
-  submissionId: string | null;
-  submissionStatus: 'draft' | 'submitted' | null;
-  submittedAt: string | null;
-  draftPayload: any;
-  submittedPayload: any;
-  signalsPayload: SignalsPayload | null;
-  signalsVersion: string | null;
-}
-
 type SortField = 'overall' | 'framing' | 'decision_quality' | 'execution_bias' | 'impact_thinking' | 'candidateName';
 type SortDir = 'asc' | 'desc';
+
+const isDev = import.meta.env.DEV;
 
 export default function ChallengeResponses() {
   const { goalId, challengeId } = useParams<{ goalId: string; challengeId: string }>();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null);
-  const [invitations, setInvitations] = useState<InvitationWithSubmission[]>([]);
   const [allGoals, setAllGoals] = useState<HiringGoal[]>([]);
   const [currentGoal, setCurrentGoal] = useState<HiringGoal | null>(null);
   const [selectedSubmission, setSelectedSubmission] = useState<InvitationWithSubmission | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [challengeLoading, setChallengeLoading] = useState(true);
 
   // Compare tab state
   const [showAllInvited, setShowAllInvited] = useState(false);
@@ -66,8 +54,13 @@ export default function ChallengeResponses() {
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [generatingSignals, setGeneratingSignals] = useState<string | null>(null);
 
+  // Use the shared hook for invitation-driven data
+  const { rows: invitations, stats, loading: responsesLoading, refetch, debug } = useChallengeResponsesData(userId, challengeId);
+
+  const loading = challengeLoading || responsesLoading;
+
   useEffect(() => {
-    async function loadData() {
+    async function loadChallengeData() {
       if (!challengeId || !goalId) return;
 
       try {
@@ -77,7 +70,9 @@ export default function ChallengeResponses() {
           return;
         }
 
-        // Load challenge
+        setUserId(user.id);
+
+        // Load challenge info only (responses come from the hook)
         const { data: challengeData, error: challengeError } = await supabase
           .from('business_challenges')
           .select('id, title, description, success_criteria, start_at, end_at, status')
@@ -112,79 +107,18 @@ export default function ChallengeResponses() {
         const goal = goalsData?.find(g => g.id === goalId);
         setCurrentGoal((goal || null) as HiringGoal | null);
 
-        // Load invitations
-        const { data: invitationsData, error: invError } = await supabase
-          .from('challenge_invitations')
-          .select('id, candidate_profile_id, status, created_at')
-          .eq('challenge_id', challengeId)
-          .eq('business_id', user.id);
-
-        if (invError) console.error('Error loading invitations:', invError);
-
-        // Get profile info
-        const candidateProfileIds = (invitationsData || []).map(inv => inv.candidate_profile_id);
-        const { data: profilesData } = candidateProfileIds.length > 0 
-          ? await supabase
-              .from('profiles')
-              .select('id, full_name, name')
-              .in('id', candidateProfileIds)
-          : { data: [] };
-
-        const profilesMap = new Map((profilesData || []).map(p => [p.id, p]));
-
-        // Load submissions using invitation_ids as the primary key (more reliable than challenge_id)
-        const invitationIds = (invitationsData || []).map(inv => inv.id);
-        const { data: submissionsData, error: subError } = invitationIds.length > 0
-          ? await supabase
-              .from('challenge_submissions')
-              .select('*')
-              .in('invitation_id', invitationIds)
-          : { data: [] };
-
-        if (subError) console.error('Error loading submissions:', subError);
-
-        const submissionsByInvitation = new Map((submissionsData || []).map(s => [s.invitation_id, s]));
-
-        // Map invitations with their submissions
-        const mapped: InvitationWithSubmission[] = (invitationsData || []).map(inv => {
-          const profile = profilesMap.get(inv.candidate_profile_id);
-          const submission = submissionsByInvitation.get(inv.id);
-          return {
-            invitationId: inv.id,
-            candidateProfileId: inv.candidate_profile_id,
-            candidateName: profile?.full_name || profile?.name || 'Unknown',
-            invitationStatus: inv.status,
-            invitedAt: inv.created_at,
-            submissionId: submission?.id || null,
-            submissionStatus: (submission?.status as 'draft' | 'submitted') || null,
-            submittedAt: submission?.submitted_at || null,
-            draftPayload: submission?.draft_payload || null,
-            submittedPayload: submission?.submitted_payload || null,
-            signalsPayload: (submission?.signals_payload as unknown as SignalsPayload) || null,
-            signalsVersion: submission?.signals_version || null,
-          };
-        });
-
-        setInvitations(mapped);
       } catch (error) {
-        console.error('Error loading data:', error);
+        console.error('Error loading challenge data:', error);
         toast({ title: t('common.error'), variant: 'destructive' });
       } finally {
-        setLoading(false);
+        setChallengeLoading(false);
       }
     }
 
-    loadData();
+    loadChallengeData();
   }, [challengeId, goalId, navigate, t]);
 
   const timeInfo = challenge ? getChallengeTimeInfo(challenge.startAt, challenge.endAt, challenge.status) : null;
-
-  const stats = {
-    invited: invitations.length,
-    submitted: invitations.filter(i => i.submissionStatus === 'submitted').length,
-    draft: invitations.filter(i => i.submissionStatus === 'draft').length,
-    pending: invitations.filter(i => !i.submissionId).length,
-  };
 
   const getStatusBadge = (inv: InvitationWithSubmission) => {
     if (inv.submissionStatus === 'submitted') {
@@ -220,12 +154,8 @@ export default function ChallengeResponses() {
         })
         .eq('id', inv.submissionId);
 
-      // Update local state
-      setInvitations(prev => prev.map(i => 
-        i.invitationId === inv.invitationId 
-          ? { ...i, signalsPayload: signals, signalsVersion: 'v1' }
-          : i
-      ));
+      // Refetch from shared hook to update local state
+      await refetch();
 
       toast({ title: t('business.compare.signals_generated') });
     } catch (error) {
@@ -348,13 +278,13 @@ export default function ChallengeResponses() {
           </Card>
           <Card>
             <CardContent className="py-4 text-center">
-              <div className="text-2xl font-bold text-green-600">{stats.submitted}</div>
+              <div className="text-2xl font-bold text-green-600">{stats.responses}</div>
               <div className="text-sm text-muted-foreground">{t('business.responses.stat_submitted')}</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="py-4 text-center">
-              <div className="text-2xl font-bold text-amber-600">{stats.draft}</div>
+              <div className="text-2xl font-bold text-amber-600">{stats.drafts}</div>
               <div className="text-sm text-muted-foreground">{t('business.responses.stat_draft')}</div>
             </CardContent>
           </Card>
@@ -365,6 +295,20 @@ export default function ChallengeResponses() {
             </CardContent>
           </Card>
         </div>
+
+        {/* DEV Debug Panel */}
+        {isDev && (
+          <Card className="border-dashed border-yellow-500/50 bg-yellow-500/5">
+            <CardContent className="py-3">
+              <div className="flex items-center gap-2 text-xs font-mono text-yellow-600">
+                <Bug className="h-3 w-3" />
+                <span>DEV: invitations={debug.invitationIds.length > 0 ? debug.invitationIds.slice(0, 3).join(', ') + '...' : 'none'}</span>
+                <span>| submissions={debug.submissionInvitationIds.length > 0 ? debug.submissionInvitationIds.slice(0, 3).join(', ') + '...' : 'none'}</span>
+                <span>| invited={stats.invited} responses={stats.responses}</span>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Tabs: Responses / Compare */}
         <Tabs defaultValue="responses" className="space-y-4">
