@@ -2017,7 +2017,25 @@
       "signals_not_generated": "Segnali non ancora generati",
       "generate_signals": "Genera Segnali"
     },
+    "insights": {
+      "decision_profile": "Profilo Decisionale",
+      "strengths": "Punti di Forza",
+      "risks": "Rischi",
+      "role_fit": "Idoneità al Ruolo",
+      "view_detailed_scores": "Visualizza punteggi dettagliati"
+    },
+    "filter": {
+      "all": "Tutti",
+      "needs_decision": "Da valutare",
+      "shortlisted": "In lista",
+      "followup": "Chiarimenti",
+      "passed": "Scartati",
+      "pending": "In attesa",
+      "no_results": "Nessun candidato corrisponde a questo filtro"
+    },
     "review": {
+      "decision": "Decisione",
+      "needs_decision": "Da valutare",
       "actions_title": "Azioni",
       "shortlist": "Aggiungi alla lista",
       "request_followup": "Richiedi chiarimenti",

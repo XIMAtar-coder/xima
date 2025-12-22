@@ -11,12 +11,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from '@/hooks/use-toast';
-import { ArrowLeft, Eye, Clock, FileText, Loader2, BarChart3, ArrowUpDown, Sparkles, Bug, Star, MessageSquare, XCircle, AlertCircle, Filter } from 'lucide-react';
+import { ArrowLeft, Eye, Clock, FileText, Loader2, BarChart3, ArrowUpDown, Sparkles, Bug, Star, MessageSquare, XCircle, AlertCircle, Filter, Info } from 'lucide-react';
 import { getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
 import { GoalContextHeader } from '@/components/business/GoalContextHeader';
 import { SubmissionDetailDrawer } from '@/components/business/SubmissionDetailDrawer';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
+import { signalTooltips } from '@/lib/signals/interpretSignals';
 import type { HiringGoal } from '@/hooks/useHiringGoals';
 import { useChallengeResponsesData, InvitationWithSubmission, ReviewDecision } from '@/hooks/useChallengeResponsesData';
 
@@ -268,17 +270,44 @@ export default function ChallengeResponses() {
     }
   };
 
-  const SortHeader = ({ field, label }: { field: SortField; label: string }) => (
-    <TableHead 
-      className="cursor-pointer hover:bg-muted/50 transition-colors"
-      onClick={() => toggleSort(field)}
-    >
-      <div className="flex items-center gap-1">
-        {label}
-        <ArrowUpDown className={`h-3 w-3 ${sortField === field ? 'text-primary' : 'text-muted-foreground'}`} />
-      </div>
-    </TableHead>
-  );
+  // Map field to tooltip key
+  const getTooltipForField = (field: SortField): string | undefined => {
+    const tooltipMap: Partial<Record<SortField, keyof typeof signalTooltips>> = {
+      framing: 'framing',
+      decision_quality: 'decision_quality',
+      execution_bias: 'execution_bias',
+      impact_thinking: 'impact_thinking',
+      overall: 'overall',
+    };
+    const key = tooltipMap[field];
+    return key ? signalTooltips[key] : undefined;
+  };
+
+  const SortHeader = ({ field, label }: { field: SortField; label: string }) => {
+    const tooltip = getTooltipForField(field);
+    
+    return (
+      <TableHead 
+        className="cursor-pointer hover:bg-muted/50 transition-colors"
+        onClick={() => toggleSort(field)}
+      >
+        <div className="flex items-center gap-1">
+          {label}
+          {tooltip ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[200px] text-xs">
+                {tooltip}
+              </TooltipContent>
+            </Tooltip>
+          ) : null}
+          <ArrowUpDown className={`h-3 w-3 ${sortField === field ? 'text-primary' : 'text-muted-foreground'}`} />
+        </div>
+      </TableHead>
+    );
+  };
 
   const ScoreCell = ({ score }: { score: number | undefined }) => {
     if (score === undefined) return <span className="text-muted-foreground">—</span>;
