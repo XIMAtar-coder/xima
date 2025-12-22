@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,13 +12,13 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
-import { ArrowLeft, Eye, Clock, FileText, Loader2, BarChart3, ArrowUpDown, Sparkles, Bug } from 'lucide-react';
+import { ArrowLeft, Eye, Clock, FileText, Loader2, BarChart3, ArrowUpDown, Sparkles, Bug, Star, MessageSquare, XCircle, AlertCircle, Filter } from 'lucide-react';
 import { getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
 import { GoalContextHeader } from '@/components/business/GoalContextHeader';
 import { SubmissionDetailDrawer } from '@/components/business/SubmissionDetailDrawer';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import type { HiringGoal } from '@/hooks/useHiringGoals';
-import { useChallengeResponsesData, InvitationWithSubmission } from '@/hooks/useChallengeResponsesData';
+import { useChallengeResponsesData, InvitationWithSubmission, ReviewDecision } from '@/hooks/useChallengeResponsesData';
 
 interface ChallengeInfo {
   id: string;
@@ -32,8 +32,25 @@ interface ChallengeInfo {
 
 type SortField = 'overall' | 'framing' | 'decision_quality' | 'execution_bias' | 'impact_thinking' | 'candidateName';
 type SortDir = 'asc' | 'desc';
+type FilterType = 'all' | 'needs_decision' | 'shortlisted' | 'followup' | 'passed' | 'pending';
 
 const isDev = import.meta.env.DEV;
+
+// Priority order for sorting: submitted+no decision first, then shortlisted, followup, pending, passed last
+const getDecisionPriority = (inv: InvitationWithSubmission): number => {
+  if (inv.submissionStatus !== 'submitted') {
+    // Pending/draft items
+    return 4;
+  }
+  // Submitted items
+  switch (inv.reviewDecision) {
+    case null: return 0; // Needs decision - highest priority
+    case 'shortlist': return 1;
+    case 'followup': return 2;
+    case 'pass': return 5; // Always last
+    default: return 3;
+  }
+};
 
 export default function ChallengeResponses() {
   const { goalId, challengeId } = useParams<{ goalId: string; challengeId: string }>();
@@ -47,6 +64,7 @@ export default function ChallengeResponses() {
   const [selectedSubmission, setSelectedSubmission] = useState<InvitationWithSubmission | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [challengeLoading, setChallengeLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
 
   // Compare tab state
   const [showAllInvited, setShowAllInvited] = useState(false);
@@ -55,7 +73,7 @@ export default function ChallengeResponses() {
   const [generatingSignals, setGeneratingSignals] = useState<string | null>(null);
 
   // Use the shared hook for invitation-driven data
-  const { rows: invitations, stats, loading: responsesLoading, refetch, debug } = useChallengeResponsesData(userId, challengeId);
+  const { rows: invitations, stats, loading: responsesLoading, refetch, updateRowDecision, debug } = useChallengeResponsesData(userId, challengeId);
 
   const loading = challengeLoading || responsesLoading;
 
@@ -120,6 +138,35 @@ export default function ChallengeResponses() {
 
   const timeInfo = challenge ? getChallengeTimeInfo(challenge.startAt, challenge.endAt, challenge.status) : null;
 
+  // Filter and sort invitations for the Responses tab
+  const filteredAndSortedInvitations = useMemo(() => {
+    let data = [...invitations];
+
+    // Apply filter
+    switch (activeFilter) {
+      case 'needs_decision':
+        data = data.filter(inv => inv.submissionStatus === 'submitted' && inv.reviewDecision === null);
+        break;
+      case 'shortlisted':
+        data = data.filter(inv => inv.reviewDecision === 'shortlist');
+        break;
+      case 'followup':
+        data = data.filter(inv => inv.reviewDecision === 'followup');
+        break;
+      case 'passed':
+        data = data.filter(inv => inv.reviewDecision === 'pass');
+        break;
+      case 'pending':
+        data = data.filter(inv => inv.submissionStatus === null || inv.submissionStatus === 'draft');
+        break;
+    }
+
+    // Default sort: decision priority (needs decision first, passed last)
+    data.sort((a, b) => getDecisionPriority(a) - getDecisionPriority(b));
+
+    return data;
+  }, [invitations, activeFilter]);
+
   const getStatusBadge = (inv: InvitationWithSubmission) => {
     if (inv.submissionStatus === 'submitted') {
       return <Badge className="bg-green-500">{t('business.responses.submitted')}</Badge>;
@@ -133,10 +180,34 @@ export default function ChallengeResponses() {
     return <Badge variant="outline">{t('business.responses.invited')}</Badge>;
   };
 
+  const getDecisionBadge = (inv: InvitationWithSubmission) => {
+    if (inv.submissionStatus !== 'submitted') return null;
+    
+    switch (inv.reviewDecision) {
+      case 'shortlist':
+        return <Badge className="bg-green-600"><Star className="h-3 w-3 mr-1" />{t('business.review.shortlisted')}</Badge>;
+      case 'followup':
+        return <Badge variant="outline" className="border-amber-500 text-amber-600"><MessageSquare className="h-3 w-3 mr-1" />{t('business.review.followup_pending')}</Badge>;
+      case 'pass':
+        return <Badge variant="secondary" className="text-muted-foreground"><XCircle className="h-3 w-3 mr-1" />{t('business.review.passed')}</Badge>;
+      default:
+        return <Badge variant="outline" className="border-orange-400 text-orange-500"><AlertCircle className="h-3 w-3 mr-1" />{t('business.review.needs_decision')}</Badge>;
+    }
+  };
+
   const openDetail = (inv: InvitationWithSubmission) => {
     setSelectedSubmission(inv);
     setDrawerOpen(true);
   };
+
+  // Callback when review is saved in drawer - optimistically update
+  const handleReviewSaved = useCallback((decision: ReviewDecision, followupQuestion?: string | null) => {
+    if (selectedSubmission) {
+      updateRowDecision(selectedSubmission.invitationId, decision, followupQuestion);
+      // Also update the selected submission locally
+      setSelectedSubmission(prev => prev ? { ...prev, reviewDecision: decision, reviewFollowupQuestion: followupQuestion ?? prev.reviewFollowupQuestion } : prev);
+    }
+  }, [selectedSubmission, updateRowDecision]);
 
   // Generate signals for older submissions
   const generateSignalsFor = async (inv: InvitationWithSubmission) => {
@@ -214,6 +285,19 @@ export default function ChallengeResponses() {
     const color = score >= 70 ? 'text-green-600' : score >= 50 ? 'text-amber-600' : 'text-red-600';
     return <span className={`font-medium ${color}`}>{score}</span>;
   };
+
+  // Filter chip component
+  const FilterChip = ({ filter, label, count }: { filter: FilterType; label: string; count?: number }) => (
+    <Button
+      variant={activeFilter === filter ? 'default' : 'outline'}
+      size="sm"
+      onClick={() => setActiveFilter(filter)}
+      className="h-7 text-xs"
+    >
+      {label}
+      {count !== undefined && <span className="ml-1 opacity-70">({count})</span>}
+    </Button>
+  );
 
   if (loading) {
     return (
@@ -327,13 +411,26 @@ export default function ChallengeResponses() {
           <TabsContent value="responses">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">{t('business.responses.table_title')}</CardTitle>
+                <div className="flex flex-col gap-4">
+                  <CardTitle className="text-lg">{t('business.responses.table_title')}</CardTitle>
+                  
+                  {/* Filter Chips */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Filter className="h-4 w-4 text-muted-foreground" />
+                    <FilterChip filter="all" label={t('business.filter.all')} count={stats.invited} />
+                    <FilterChip filter="needs_decision" label={t('business.filter.needs_decision')} count={stats.needsDecision} />
+                    <FilterChip filter="shortlisted" label={t('business.filter.shortlisted')} count={stats.shortlisted} />
+                    <FilterChip filter="followup" label={t('business.filter.followup')} count={stats.followup} />
+                    <FilterChip filter="passed" label={t('business.filter.passed')} count={stats.passed} />
+                    <FilterChip filter="pending" label={t('business.filter.pending')} count={stats.pending + stats.drafts} />
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
-                {invitations.length === 0 ? (
+                {filteredAndSortedInvitations.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground">
                     <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>{t('business.responses.no_invitations')}</p>
+                    <p>{activeFilter === 'all' ? t('business.responses.no_invitations') : t('business.filter.no_results')}</p>
                   </div>
                 ) : (
                   <Table>
@@ -341,37 +438,42 @@ export default function ChallengeResponses() {
                       <TableRow>
                         <TableHead>{t('business.responses.col_candidate')}</TableHead>
                         <TableHead>{t('business.responses.col_status')}</TableHead>
-                        <TableHead>{t('business.responses.col_invited_at')}</TableHead>
+                        <TableHead>{t('business.review.decision')}</TableHead>
                         <TableHead>{t('business.responses.col_submitted_at')}</TableHead>
                         <TableHead className="text-right">{t('common.actions')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {invitations.map((inv) => (
-                        <TableRow key={inv.invitationId}>
-                          <TableCell className="font-medium">{inv.candidateName}</TableCell>
-                          <TableCell>{getStatusBadge(inv)}</TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {new Date(inv.invitedAt).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {inv.submittedAt ? new Date(inv.submittedAt).toLocaleDateString() : '—'}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            {inv.submissionStatus === 'submitted' ? (
-                              <Button size="sm" onClick={() => openDetail(inv)}>
-                                <Eye className="h-4 w-4 mr-1" />
-                                {t('business.responses.view_submission')}
-                              </Button>
-                            ) : inv.submissionStatus === 'draft' ? (
-                              <Button variant="ghost" size="sm" onClick={() => openDetail(inv)}>
-                                <Eye className="h-4 w-4 mr-1" />
-                                {t('business.responses.view')}
-                              </Button>
-                            ) : null}
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {filteredAndSortedInvitations.map((inv) => {
+                        const isClickable = inv.submissionStatus === 'submitted' || inv.submissionStatus === 'draft';
+                        return (
+                          <TableRow 
+                            key={inv.invitationId}
+                            className={isClickable ? 'cursor-pointer hover:bg-muted/50 transition-colors' : ''}
+                            onClick={isClickable ? () => openDetail(inv) : undefined}
+                          >
+                            <TableCell className="font-medium">{inv.candidateName}</TableCell>
+                            <TableCell>{getStatusBadge(inv)}</TableCell>
+                            <TableCell>{getDecisionBadge(inv)}</TableCell>
+                            <TableCell className="text-muted-foreground">
+                              {inv.submittedAt ? new Date(inv.submittedAt).toLocaleDateString() : '—'}
+                            </TableCell>
+                            <TableCell className="text-right" onClick={e => e.stopPropagation()}>
+                              {inv.submissionStatus === 'submitted' ? (
+                                <Button size="sm" onClick={() => openDetail(inv)}>
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  {t('business.responses.view_submission')}
+                                </Button>
+                              ) : inv.submissionStatus === 'draft' ? (
+                                <Button variant="ghost" size="sm" onClick={() => openDetail(inv)}>
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  {t('business.responses.view')}
+                                </Button>
+                              ) : null}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 )}
@@ -500,7 +602,7 @@ export default function ChallengeResponses() {
           businessId={userId || ''}
           challengeId={challengeId || ''}
           onSignalsGenerated={refetch}
-          onReviewSaved={refetch}
+          onReviewSaved={handleReviewSaved}
         />
       </div>
     </BusinessLayout>

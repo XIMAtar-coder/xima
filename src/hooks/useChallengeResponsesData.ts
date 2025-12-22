@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import type { SignalsPayload } from '@/lib/signals/computeSignals';
 
 export type ResponseStatus = 'pending' | 'draft' | 'submitted';
+export type ReviewDecision = 'shortlist' | 'followup' | 'pass' | null;
 
 export interface InvitationWithSubmission {
   invitationId: string;
@@ -17,6 +18,9 @@ export interface InvitationWithSubmission {
   submittedPayload: any;
   signalsPayload: SignalsPayload | null;
   signalsVersion: string | null;
+  // New: review decision
+  reviewDecision: ReviewDecision;
+  reviewFollowupQuestion: string | null;
 }
 
 export interface ChallengeResponseStats {
@@ -24,6 +28,10 @@ export interface ChallengeResponseStats {
   responses: number;
   pending: number;
   drafts: number;
+  needsDecision: number;
+  shortlisted: number;
+  followup: number;
+  passed: number;
 }
 
 export interface UseChallengeResponsesDataResult {
@@ -32,6 +40,7 @@ export interface UseChallengeResponsesDataResult {
   loading: boolean;
   error: Error | null;
   refetch: () => Promise<void>;
+  updateRowDecision: (invitationId: string, decision: ReviewDecision, followupQuestion?: string | null) => void;
   debug: {
     invitationIds: string[];
     submissionInvitationIds: string[];
@@ -47,7 +56,10 @@ export function useChallengeResponsesData(
   challengeId: string | null | undefined
 ): UseChallengeResponsesDataResult {
   const [rows, setRows] = useState<InvitationWithSubmission[]>([]);
-  const [stats, setStats] = useState<ChallengeResponseStats>({ invited: 0, responses: 0, pending: 0, drafts: 0 });
+  const [stats, setStats] = useState<ChallengeResponseStats>({ 
+    invited: 0, responses: 0, pending: 0, drafts: 0,
+    needsDecision: 0, shortlisted: 0, followup: 0, passed: 0 
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [debug, setDebug] = useState<{ invitationIds: string[]; submissionInvitationIds: string[] }>({
@@ -55,10 +67,24 @@ export function useChallengeResponsesData(
     submissionInvitationIds: [],
   });
 
+  const computeStats = useCallback((data: InvitationWithSubmission[]): ChallengeResponseStats => {
+    const submitted = data.filter(r => r.submissionStatus === 'submitted');
+    return {
+      invited: data.length,
+      responses: submitted.length,
+      pending: data.filter(r => r.submissionStatus === null).length,
+      drafts: data.filter(r => r.submissionStatus === 'draft').length,
+      needsDecision: submitted.filter(r => r.reviewDecision === null).length,
+      shortlisted: submitted.filter(r => r.reviewDecision === 'shortlist').length,
+      followup: submitted.filter(r => r.reviewDecision === 'followup').length,
+      passed: submitted.filter(r => r.reviewDecision === 'pass').length,
+    };
+  }, []);
+
   const fetchData = useCallback(async () => {
     if (!businessId || !challengeId) {
       setRows([]);
-      setStats({ invited: 0, responses: 0, pending: 0, drafts: 0 });
+      setStats({ invited: 0, responses: 0, pending: 0, drafts: 0, needsDecision: 0, shortlisted: 0, followup: 0, passed: 0 });
       setLoading(false);
       return;
     }
@@ -90,9 +116,22 @@ export function useChallengeResponsesData(
         submissionsData = data || [];
       }
 
+      // Step 3: Fetch reviews for these invitations
+      let reviewsData: any[] = [];
+      if (invitationIds.length > 0) {
+        const { data, error: reviewError } = await supabase
+          .from('challenge_reviews')
+          .select('invitation_id, decision, followup_question')
+          .in('invitation_id', invitationIds)
+          .eq('business_id', businessId);
+
+        if (reviewError) throw reviewError;
+        reviewsData = data || [];
+      }
+
       const submissionInvitationIds = submissionsData.map(s => s.invitation_id);
 
-      // Step 3: Get profile info for candidate names
+      // Step 4: Get profile info for candidate names
       const candidateProfileIds = (invitationsData || []).map(inv => inv.candidate_profile_id);
       let profilesData: any[] = [];
       if (candidateProfileIds.length > 0) {
@@ -105,11 +144,13 @@ export function useChallengeResponsesData(
 
       const profilesMap = new Map(profilesData.map(p => [p.id, p]));
       const submissionsByInvitation = new Map(submissionsData.map(s => [s.invitation_id, s]));
+      const reviewsByInvitation = new Map(reviewsData.map(r => [r.invitation_id, r]));
 
-      // Step 4: Build unified rows
+      // Step 5: Build unified rows
       const mapped: InvitationWithSubmission[] = (invitationsData || []).map(inv => {
         const profile = profilesMap.get(inv.candidate_profile_id);
         const submission = submissionsByInvitation.get(inv.id);
+        const review = reviewsByInvitation.get(inv.id);
 
         let derivedStatus: ResponseStatus | null = null;
         if (!submission) {
@@ -133,19 +174,13 @@ export function useChallengeResponsesData(
           submittedPayload: submission?.submitted_payload || null,
           signalsPayload: (submission?.signals_payload as unknown as SignalsPayload) || null,
           signalsVersion: submission?.signals_version || null,
+          reviewDecision: (review?.decision as ReviewDecision) || null,
+          reviewFollowupQuestion: review?.followup_question || null,
         };
       });
 
-      // Step 5: Compute stats
-      const computedStats: ChallengeResponseStats = {
-        invited: mapped.length,
-        responses: mapped.filter(r => r.submissionStatus === 'submitted').length,
-        pending: mapped.filter(r => r.submissionStatus === null).length,
-        drafts: mapped.filter(r => r.submissionStatus === 'draft').length,
-      };
-
       setRows(mapped);
-      setStats(computedStats);
+      setStats(computeStats(mapped));
       setDebug({
         invitationIds: invitationIds.slice(0, 5),
         submissionInvitationIds: submissionInvitationIds.slice(0, 5),
@@ -157,7 +192,20 @@ export function useChallengeResponsesData(
     } finally {
       setLoading(false);
     }
-  }, [businessId, challengeId]);
+  }, [businessId, challengeId, computeStats]);
+
+  // Optimistic update for row decision
+  const updateRowDecision = useCallback((invitationId: string, decision: ReviewDecision, followupQuestion?: string | null) => {
+    setRows(prev => {
+      const updated = prev.map(row => 
+        row.invitationId === invitationId 
+          ? { ...row, reviewDecision: decision, reviewFollowupQuestion: followupQuestion ?? row.reviewFollowupQuestion }
+          : row
+      );
+      setStats(computeStats(updated));
+      return updated;
+    });
+  }, [computeStats]);
 
   useEffect(() => {
     fetchData();
@@ -169,6 +217,7 @@ export function useChallengeResponsesData(
     loading,
     error,
     refetch: fetchData,
+    updateRowDecision,
     debug,
   };
 }
@@ -254,6 +303,10 @@ export function useChallengeStatsMap(
             responses,
             pending,
             drafts,
+            needsDecision: 0, // Not computed in bulk stats
+            shortlisted: 0,
+            followup: 0,
+            passed: 0,
           });
 
           newDebug[challengeId] = {
