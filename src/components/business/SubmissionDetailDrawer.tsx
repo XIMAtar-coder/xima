@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import {
@@ -25,8 +25,12 @@ import {
   Clock,
   User,
   AlertTriangle,
+  TrendingUp,
+  Target,
+  Briefcase,
 } from 'lucide-react';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
+import { interpretSignals } from '@/lib/signals/interpretSignals';
 import type { InvitationWithSubmission } from '@/hooks/useChallengeResponsesData';
 
 interface ChallengeInfo {
@@ -261,72 +265,137 @@ export function SubmissionDetailDrawer({
             </SheetHeader>
 
             <div className="space-y-6">
-          {/* XIMA Signals Card */}
+          {/* HR-Readable Decision Insights */}
           {localSignals ? (
-            <Card className="border-primary/30 bg-primary/5">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-primary" />
-                  {t('business.compare.xima_signals')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Overall Score */}
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">{t('business.compare.overall')}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-primary">{localSignals.overall}</span>
-                    <Progress value={localSignals.overall} className="w-20 h-2" />
-                  </div>
-                </div>
+            <>
+              {/* Decision Profile Card - Primary Insight */}
+              <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Target className="h-4 w-4 text-primary" />
+                    {t('business.insights.decision_profile')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Decision Profile Statement */}
+                  <p className="text-sm font-medium leading-relaxed">
+                    {interpretSignals(localSignals).decisionProfile}
+                  </p>
 
-                {/* Dimension Scores */}
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { key: 'framing', label: t('business.compare.framing'), value: localSignals.framing },
-                    { key: 'decision_quality', label: t('business.compare.decision'), value: localSignals.decision_quality },
-                    { key: 'execution_bias', label: t('business.compare.execution'), value: localSignals.execution_bias },
-                    { key: 'impact_thinking', label: t('business.compare.impact'), value: localSignals.impact_thinking },
-                  ].map(dim => (
-                    <div key={dim.key} className="bg-background rounded-lg p-3 text-center">
-                      <div className={`text-lg font-bold ${
-                        dim.value >= 70 ? 'text-green-600' : 
-                        dim.value >= 50 ? 'text-amber-600' : 'text-red-600'
-                      }`}>{dim.value}</div>
-                      <div className="text-xs text-muted-foreground">{dim.label}</div>
+                  {/* Strengths & Risks Grid */}
+                  <div className="grid grid-cols-2 gap-3 pt-2">
+                    {/* Strengths */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-1.5 text-green-600">
+                        <TrendingUp className="h-3.5 w-3.5" />
+                        <span className="text-xs font-semibold uppercase tracking-wide">{t('business.insights.strengths')}</span>
+                      </div>
+                      <ul className="space-y-1">
+                        {interpretSignals(localSignals).strengths.map((strength, i) => (
+                          <li key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
+                            <CheckCircle className="h-3 w-3 text-green-500 mt-0.5 shrink-0" />
+                            {strength}
+                          </li>
+                        ))}
+                        {interpretSignals(localSignals).strengths.length === 0 && (
+                          <li className="text-xs text-muted-foreground italic">—</li>
+                        )}
+                      </ul>
                     </div>
-                  ))}
-                </div>
 
-                {/* Confidence */}
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">{t('business.compare.confidence')}:</span>
-                  <Badge variant={
-                    localSignals.confidence === 'high' ? 'default' :
-                    localSignals.confidence === 'medium' ? 'secondary' : 'outline'
-                  }>
-                    {localSignals.confidence}
-                  </Badge>
-                </div>
-
-                {/* Flags */}
-                {localSignals.flags.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {localSignals.flags.map((flag, i) => (
-                      <Badge key={i} variant="outline" className="text-xs bg-amber-500/10 border-amber-500/30">
-                        <AlertTriangle className="h-3 w-3 mr-1" />
-                        {flag.replace(/_/g, ' ')}
-                      </Badge>
-                    ))}
+                    {/* Risks */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-1.5 text-amber-600">
+                        <AlertTriangle className="h-3.5 w-3.5" />
+                        <span className="text-xs font-semibold uppercase tracking-wide">{t('business.insights.risks')}</span>
+                      </div>
+                      <ul className="space-y-1">
+                        {interpretSignals(localSignals).risks.map((risk, i) => (
+                          <li key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
+                            <AlertTriangle className="h-3 w-3 text-amber-500 mt-0.5 shrink-0" />
+                            {risk}
+                          </li>
+                        ))}
+                        {interpretSignals(localSignals).risks.length === 0 && (
+                          <li className="text-xs text-muted-foreground italic">—</li>
+                        )}
+                      </ul>
+                    </div>
                   </div>
-                )}
 
-                {/* Summary */}
-                <p className="text-sm text-muted-foreground italic border-t pt-3">
-                  {localSignals.summary}
-                </p>
-              </CardContent>
-            </Card>
+                  {/* Role Fit Hint */}
+                  <div className="border-t pt-3">
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <Briefcase className="h-3.5 w-3.5 text-primary" />
+                      <span className="text-xs font-semibold uppercase tracking-wide text-primary">{t('business.insights.role_fit')}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground italic">
+                      {interpretSignals(localSignals).roleFitHint}
+                    </p>
+                  </div>
+
+                  {/* Overall Score Badge */}
+                  <div className="flex items-center justify-between pt-2 border-t">
+                    <span className="text-xs text-muted-foreground">{t('business.compare.overall')}</span>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-lg font-bold ${
+                        localSignals.overall >= 70 ? 'text-green-600' : 
+                        localSignals.overall >= 50 ? 'text-amber-600' : 'text-red-600'
+                      }`}>{localSignals.overall}</span>
+                      <Progress value={localSignals.overall} className="w-16 h-1.5" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Numeric Signals (Demoted - Collapsible Detail) */}
+              <details className="group">
+                <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground flex items-center gap-1.5 py-2">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  {t('business.insights.view_detailed_scores')}
+                </summary>
+                <Card className="mt-2 border-dashed">
+                  <CardContent className="py-4 space-y-3">
+                    {/* Dimension Scores - Smaller */}
+                    <div className="grid grid-cols-4 gap-2">
+                      {[
+                        { key: 'framing', label: t('business.compare.framing'), value: localSignals.framing },
+                        { key: 'decision_quality', label: t('business.compare.decision'), value: localSignals.decision_quality },
+                        { key: 'execution_bias', label: t('business.compare.execution'), value: localSignals.execution_bias },
+                        { key: 'impact_thinking', label: t('business.compare.impact'), value: localSignals.impact_thinking },
+                      ].map(dim => (
+                        <div key={dim.key} className="bg-muted/50 rounded p-2 text-center">
+                          <div className={`text-sm font-bold ${
+                            dim.value >= 70 ? 'text-green-600' : 
+                            dim.value >= 50 ? 'text-amber-600' : 'text-red-600'
+                          }`}>{dim.value}</div>
+                          <div className="text-[10px] text-muted-foreground leading-tight">{dim.label}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Confidence */}
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">{t('business.compare.confidence')}:</span>
+                      <Badge variant="outline" className="text-[10px] h-5">
+                        {localSignals.confidence}
+                      </Badge>
+                    </div>
+
+                    {/* Flags */}
+                    {localSignals.flags.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {localSignals.flags.map((flag, i) => (
+                          <Badge key={i} variant="outline" className="text-[10px] h-5 bg-amber-500/10 border-amber-500/30">
+                            {flag.replace(/_/g, ' ')}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </details>
+            </>
           ) : submission.submissionStatus === 'submitted' ? (
             <Card className="border-dashed">
               <CardContent className="py-6 text-center">

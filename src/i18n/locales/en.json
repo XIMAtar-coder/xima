@@ -2019,7 +2019,40 @@
       "not_scored": "Not scored yet",
       "generate": "Generate",
       "signals_generated": "Signals generated successfully",
-      "xima_signals": "XIMA Signals"
+      "xima_signals": "XIMA Signals",
+      "signals_not_generated": "Signals not generated yet",
+      "generate_signals": "Generate Signals"
+    },
+    "insights": {
+      "decision_profile": "Decision Profile",
+      "strengths": "Strengths",
+      "risks": "Risks",
+      "role_fit": "Role Fit",
+      "view_detailed_scores": "View detailed scores"
+    },
+    "filter": {
+      "all": "All",
+      "needs_decision": "Needs Decision",
+      "shortlisted": "Shortlisted",
+      "followup": "Follow-up",
+      "passed": "Passed",
+      "pending": "Pending",
+      "no_results": "No candidates match this filter"
+    },
+    "review": {
+      "decision": "Decision",
+      "needs_decision": "Needs Decision",
+      "shortlisted": "Shortlisted",
+      "passed": "Passed",
+      "followup_pending": "Follow-up Sent",
+      "followup_sent": "Follow-up question sent",
+      "actions_title": "Actions",
+      "shortlist": "Shortlist",
+      "request_followup": "Request Follow-up",
+      "pass": "Pass",
+      "followup_question_label": "Your question for the candidate",
+      "followup_placeholder": "What would you like to ask this candidate?",
+      "send_followup": "Send Follow-up"
     },
     "reports": {
       "title": "Reports & Analytics",
