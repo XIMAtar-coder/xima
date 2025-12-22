@@ -51,7 +51,7 @@ interface SubmissionDetailDrawerProps {
   businessId: string;
   challengeId: string;
   onSignalsGenerated?: () => void;
-  onReviewSaved?: () => void;
+  onReviewSaved?: (decision: 'shortlist' | 'followup' | 'pass', followupQuestion?: string | null) => void;
 }
 
 export function SubmissionDetailDrawer({
@@ -178,7 +178,7 @@ export function SubmissionDetailDrawer({
       });
 
       setFollowupMode(false);
-      onReviewSaved?.();
+      onReviewSaved?.(decision, question);
     } catch (error) {
       console.error('Error saving review:', error);
       toast({ title: t('common.error'), variant: 'destructive' });
