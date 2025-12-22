@@ -51,6 +51,7 @@ import GoalCandidates from "./pages/business/GoalCandidates";
 import GoalChallenges from "./pages/business/GoalChallenges";
 import ChallengeResponses from "./pages/business/ChallengeResponses";
 import ChallengeCompletion from "./pages/candidate/ChallengeCompletion";
+import ChallengeFollowup from "./pages/candidate/ChallengeFollowup";
 
 const queryClient = new QueryClient();
 
@@ -113,6 +114,7 @@ const AppContent = () => {
           <Route path="/challenge/accept" element={<ChallengeAccept />} />
           {/* Candidate challenge completion */}
           <Route path="/candidate/challenges/:invitationId" element={<ChallengeCompletion />} />
+          <Route path="/candidate/followups/:invitationId" element={<ChallengeFollowup />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         {/* <ChatEntry /> */}
