@@ -28,6 +28,7 @@ import {
   TrendingUp,
   Target,
   Briefcase,
+  Reply,
 } from 'lucide-react';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import { interpretSignals } from '@/lib/signals/interpretSignals';
@@ -45,6 +46,14 @@ interface ChallengeReview {
   decision: 'shortlist' | 'followup' | 'pass';
   followup_question: string | null;
   created_at: string;
+}
+
+interface ChallengeFollowup {
+  id: string;
+  question: string;
+  answer: string | null;
+  asked_at: string;
+  answered_at: string | null;
 }
 
 interface SubmissionDetailDrawerProps {
@@ -75,36 +84,50 @@ export function SubmissionDetailDrawer({
   const [followupMode, setFollowupMode] = useState(false);
   const [followupQuestion, setFollowupQuestion] = useState('');
   const [localSignals, setLocalSignals] = useState<SignalsPayload | null>(null);
+  const [followupData, setFollowupData] = useState<ChallengeFollowup | null>(null);
 
-  // Fetch existing review when drawer opens
+  // Fetch existing review and followup when drawer opens
   useEffect(() => {
     if (!open || !submission) {
       setCurrentReview(null);
       setFollowupMode(false);
       setFollowupQuestion('');
       setLocalSignals(null);
+      setFollowupData(null);
       return;
     }
 
     setLocalSignals(submission.signalsPayload);
 
-    async function fetchReview() {
-      const { data } = await supabase
+    async function fetchReviewAndFollowup() {
+      // Fetch review
+      const { data: reviewData } = await supabase
         .from('challenge_reviews')
         .select('id, decision, followup_question, created_at')
         .eq('invitation_id', submission!.invitationId)
         .eq('business_id', businessId)
         .maybeSingle();
 
-      if (data) {
-        setCurrentReview(data as ChallengeReview);
-        if (data.decision === 'followup' && data.followup_question) {
-          setFollowupQuestion(data.followup_question);
+      if (reviewData) {
+        setCurrentReview(reviewData as ChallengeReview);
+        if (reviewData.decision === 'followup' && reviewData.followup_question) {
+          setFollowupQuestion(reviewData.followup_question);
         }
+      }
+
+      // Fetch followup data
+      const { data: followup } = await supabase
+        .from('challenge_followups')
+        .select('id, question, answer, asked_at, answered_at')
+        .eq('invitation_id', submission!.invitationId)
+        .maybeSingle();
+
+      if (followup) {
+        setFollowupData(followup as ChallengeFollowup);
       }
     }
 
-    fetchReview();
+    fetchReviewAndFollowup();
   }, [open, submission, businessId]);
 
   const payload = submission?.submissionStatus === 'submitted'
@@ -166,6 +189,42 @@ export function SubmissionDetailDrawer({
         await supabase
           .from('challenge_reviews')
           .insert(reviewData);
+      }
+
+      // If follow-up decision, create/upsert challenge_followups and send notification
+      if (decision === 'followup' && question) {
+        // Upsert followup record
+        const { error: followupError } = await supabase
+          .from('challenge_followups')
+          .upsert({
+            invitation_id: submission.invitationId,
+            business_id: businessId,
+            candidate_profile_id: submission.candidateProfileId,
+            question: question,
+            asked_at: new Date().toISOString(),
+          }, { onConflict: 'invitation_id' });
+
+        if (followupError) {
+          console.error('Error creating followup:', followupError);
+        } else {
+          // Update local followup data
+          setFollowupData({
+            id: 'temp',
+            question: question,
+            answer: null,
+            asked_at: new Date().toISOString(),
+            answered_at: null,
+          });
+
+          // Send notification to candidate
+          await supabase.from('notifications').insert({
+            recipient_id: submission.candidateProfileId,
+            type: 'challenge',
+            title: t('followup.notification_title'),
+            message: t('followup.notification_message'),
+            related_id: submission.invitationId,
+          });
+        }
       }
 
       setCurrentReview({
@@ -541,6 +600,51 @@ export function SubmissionDetailDrawer({
                       <p className="mt-2 italic">"{currentReview.followup_question}"</p>
                     )}
                   </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Follow-up Section - Show if followup exists */}
+          {followupData && (
+            <Card className={followupData.answered_at ? 'border-green-500/30 bg-green-500/5' : 'border-amber-500/30 bg-amber-500/5'}>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Reply className="h-4 w-4" />
+                  {t('followup.section_title')}
+                  {followupData.answered_at ? (
+                    <Badge className="bg-green-500 ml-auto">
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      {t('followup.answered')}
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="ml-auto border-amber-500/50 text-amber-600">
+                      <Clock className="h-3 w-3 mr-1" />
+                      {t('followup.pending')}
+                    </Badge>
+                  )}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {/* Question */}
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground mb-1">{t('followup.question_label')}</p>
+                  <p className="text-sm bg-muted/50 rounded p-2 border-l-2 border-primary">{followupData.question}</p>
+                </div>
+
+                {/* Answer */}
+                {followupData.answered_at ? (
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1">{t('followup.answer_label')}</p>
+                    <p className="text-sm bg-background rounded p-2 border whitespace-pre-wrap">{followupData.answer}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {t('followup.answered_on', { date: new Date(followupData.answered_at).toLocaleDateString() })}
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground italic">
+                    {t('followup.waiting_for_answer')}
+                  </p>
                 )}
               </CardContent>
             </Card>

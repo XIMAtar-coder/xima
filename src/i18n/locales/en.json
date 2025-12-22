@@ -2623,5 +2623,27 @@
   "notifications": {
     "new_challenge_invitation": "New Challenge Invitation",
     "challenge_invitation_message": "{{company}} has invited you to complete a challenge."
+  },
+  "followup": {
+    "title": "Follow-up Question",
+    "section_title": "Follow-up",
+    "question_label": "Question from recruiter",
+    "answer_label": "Your answer",
+    "your_answer": "Your Answer",
+    "answer_placeholder": "Type your response here...",
+    "submit_answer": "Submit Answer",
+    "answered": "Answered",
+    "pending": "Pending",
+    "not_found": "Follow-up question not found",
+    "asked_on": "Asked on {{date}}",
+    "answered_on": "Answered on {{date}}",
+    "waiting_for_answer": "Waiting for candidate's response...",
+    "company": "Company",
+    "challenge": "Challenge",
+    "answer_submitted": "Your answer has been submitted!",
+    "notification_title": "Follow-up Question Received",
+    "notification_message": "A recruiter has asked you a follow-up question about your challenge submission.",
+    "answer_received_title": "Follow-up Answer Received",
+    "answer_received_message": "A candidate has answered your follow-up question."
   }
 }

@@ -2431,5 +2431,27 @@
   "notifications": {
     "new_challenge_invitation": "Nuovo Invito a una Sfida",
     "challenge_invitation_message": "{{company}} ti ha invitato a completare una sfida."
+  },
+  "followup": {
+    "title": "Domanda di Follow-up",
+    "section_title": "Follow-up",
+    "question_label": "Domanda del recruiter",
+    "answer_label": "La tua risposta",
+    "your_answer": "La tua risposta",
+    "answer_placeholder": "Scrivi la tua risposta qui...",
+    "submit_answer": "Invia Risposta",
+    "answered": "Risposto",
+    "pending": "In attesa",
+    "not_found": "Domanda di follow-up non trovata",
+    "asked_on": "Richiesta il {{date}}",
+    "answered_on": "Risposto il {{date}}",
+    "waiting_for_answer": "In attesa della risposta del candidato...",
+    "company": "Azienda",
+    "challenge": "Sfida",
+    "answer_submitted": "La tua risposta è stata inviata!",
+    "notification_title": "Domanda di Follow-up Ricevuta",
+    "notification_message": "Un recruiter ti ha fatto una domanda di follow-up sulla tua challenge.",
+    "answer_received_title": "Risposta di Follow-up Ricevuta",
+    "answer_received_message": "Un candidato ha risposto alla tua domanda di follow-up."
   }
 }

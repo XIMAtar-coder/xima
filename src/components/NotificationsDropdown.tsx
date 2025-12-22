@@ -20,13 +20,14 @@ export const NotificationsDropdown = () => {
   const handleNotificationClick = (notification: any) => {
     markAsRead(notification.id);
     
-    // Navigate based on notification type
-    if (notification.type === 'challenge_invitation' && notification.related_id) {
+    // Check for followup notifications first
+    if (notification.type === 'challenge' && notification.related_id) {
+      // If related_id is an invitation, check if it might be a followup
+      // Route to followup page for followup notifications
+      navigate(`/candidate/followups/${notification.related_id}`);
+    } else if (notification.type === 'challenge_invitation' && notification.related_id) {
       // Direct invitation - related_id is invitation_id
       navigate(`/candidate/challenges/${notification.related_id}`);
-    } else if (notification.type === 'challenge' && notification.related_id) {
-      // Public challenge notification - navigate to profile to see challenges
-      navigate('/profile');
     } else if (notification.type === 'job_offer' && notification.related_id) {
       navigate(`/opportunities/${notification.related_id}`);
     }

@@ -804,6 +804,47 @@ export type Database = {
         }
         Relationships: []
       }
+      challenge_followups: {
+        Row: {
+          answer: string | null
+          answered_at: string | null
+          asked_at: string | null
+          business_id: string
+          candidate_profile_id: string
+          id: string
+          invitation_id: string
+          question: string
+        }
+        Insert: {
+          answer?: string | null
+          answered_at?: string | null
+          asked_at?: string | null
+          business_id: string
+          candidate_profile_id: string
+          id?: string
+          invitation_id: string
+          question: string
+        }
+        Update: {
+          answer?: string | null
+          answered_at?: string | null
+          asked_at?: string | null
+          business_id?: string
+          candidate_profile_id?: string
+          id?: string
+          invitation_id?: string
+          question?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_followups_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: true
+            referencedRelation: "challenge_invitations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       challenge_invitations: {
         Row: {
           business_id: string
