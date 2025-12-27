@@ -39,14 +39,17 @@ serve(async (req) => {
   try {
     const body = await req.json();
     console.log('[generate-challenge] Request body received:', JSON.stringify(body).substring(0, 300));
+    console.log('[generate-challenge] Mode check:', body.mode, 'is xima_core:', body.mode === 'xima_core');
     
     // Check if this is a XIMA Core Challenge request
     if (body.mode === 'xima_core') {
-      return handleXimaCoreGeneration(body as GenerateXimaCoreRequest);
+      console.log('[generate-challenge] Routing to XIMA Core generation');
+      return await handleXimaCoreGeneration(body as GenerateXimaCoreRequest);
     }
     
     // Legacy challenge generation
-    return handleLegacyGeneration(body as GenerateChallengeRequest);
+    console.log('[generate-challenge] Routing to Legacy generation');
+    return await handleLegacyGeneration(body as GenerateChallengeRequest);
 
   } catch (err) {
     console.error('[generate-challenge] Error:', err);
