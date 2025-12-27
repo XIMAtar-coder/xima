@@ -8,6 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Star, Target, TrendingUp, Bookmark, BookmarkCheck, Send, CheckCircle2, Loader2 } from 'lucide-react';
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer } from 'recharts';
+import { CandidateLevelBadge } from './CandidateLevelBadge';
+import { CandidateLevelProgress } from '@/lib/challenges/challengeLevels';
 
 interface XimatarCandidateCardProps {
   candidateId: string;
@@ -32,6 +34,7 @@ interface XimatarCandidateCardProps {
   invitationStatus?: 'none' | 'invited' | 'accepted' | 'declined' | 'loading';
   inviteDisabled?: boolean;
   inviteDisabledReason?: string;
+  levelProgress?: CandidateLevelProgress;
   onSelect?: (checked: boolean) => void;
   onToggleShortlist?: () => void;
   onInviteToChallenge?: () => void;
@@ -60,6 +63,7 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
   invitationStatus = 'none',
   inviteDisabled = false,
   inviteDisabledReason,
+  levelProgress,
   onSelect,
   onToggleShortlist,
   onInviteToChallenge,
@@ -133,6 +137,13 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
               <p className="text-sm text-white/70 capitalize">{ximatarLabel}</p>
             )}
           </div>
+
+          {/* Level Progress Badge */}
+          {levelProgress && (
+            <div className="mb-3 flex justify-center">
+              <CandidateLevelBadge progress={levelProgress} compact showUncertainty />
+            </div>
+          )}
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
