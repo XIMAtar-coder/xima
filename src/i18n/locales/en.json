@@ -2612,7 +2612,17 @@
   "common": {
     "edit": "Edit",
     "actions": "Actions",
-    "back_to_profile": "Back to Profile"
+    "back_to_profile": "Back to Profile",
+    "create_challenge": "Create Challenge",
+    "activate_challenge": "Activate Challenge",
+    "save_draft": "Save as Draft",
+    "save_changes": "Save Changes",
+    "submit": "Submit",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "view_responses": "View Responses",
+    "view_details": "View Details",
+    "regenerate": "Regenerate"
   },
   "challenge": {
     "not_found": "Challenge not found",
