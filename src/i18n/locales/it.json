@@ -2433,7 +2433,19 @@
     "save_changes": "Salva Modifiche"
   },
   "common": {
-    "edit": "Modifica"
+    "edit": "Modifica",
+    "actions": "Azioni",
+    "back_to_profile": "Torna al Profilo",
+    "create_challenge": "Crea Challenge",
+    "activate_challenge": "Attiva Challenge",
+    "save_draft": "Salva come Bozza",
+    "save_changes": "Salva Modifiche",
+    "submit": "Invia",
+    "continue": "Continua",
+    "cancel": "Annulla",
+    "view_responses": "Visualizza Risposte",
+    "view_details": "Visualizza Dettagli",
+    "regenerate": "Rigenera"
   },
   "challenge": {
     "not_found": "Challenge non trovata",
