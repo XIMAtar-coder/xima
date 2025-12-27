@@ -2052,7 +2052,26 @@
       "strengths": "Punti di Forza",
       "risks": "Rischi",
       "role_fit": "Idoneità al Ruolo",
-      "view_detailed_scores": "Visualizza punteggi dettagliati"
+      "view_detailed_scores": "Visualizza segnali dettagliati",
+      "signals_tooltip": {
+        "framing": "Quanto chiaramente il candidato identifica il problema e i vincoli chiave.",
+        "decision_quality": "Quanto bene i trade-off e le scelte sono ragionati.",
+        "execution_bias": "Tendenza a passare dal pensiero all'azione in situazioni incerte.",
+        "impact_thinking": "Quanto naturalmente il lavoro è collegato ai risultati di business."
+      },
+      "flag_tooltip": {
+        "clear_tradeoffs": "Ha esplicitato i trade-off nel suo approccio",
+        "bias_to_action": "Ha usato un linguaggio decisivo e orientato all'azione",
+        "uses_metrics": "Ha fatto riferimento a numeri o misurazioni specifiche",
+        "weak_assumptions": "La sezione delle assunzioni era breve o mancante",
+        "vague_language": "Ha usato parole vaghe come 'forse' o 'possibilmente'",
+        "no_metrics": "Non ha fatto riferimento a risultati misurabili",
+        "no_tradeoff": "Non ha identificato un trade-off primario",
+        "short_approach": "La descrizione dell'approccio era piuttosto breve",
+        "vague_actions": "Le prime azioni mancavano di specificità",
+        "no_actions": "Non ha specificato passi successivi concreti",
+        "confidence_mismatch": "La confidenza dichiarata differisce dalla qualità dimostrata"
+      }
     },
     "filter": {
       "all": "Tutti",
