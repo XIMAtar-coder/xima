@@ -2563,6 +2563,9 @@
     "candidate_msg_complete": "Percorso completato — grazie per il tuo tempo",
     "business_view_completed": "{{count}} livello/i completato/i",
     "business_view_current": "Attualmente al Livello {{level}}",
-    "business_view_pending": "In attesa del prossimo invito"
+    "business_view_pending": "In attesa del prossimo invito",
+    "blocked_title": "Completa prima il livello precedente",
+    "blocked_message": "Il Livello {{current}} richiede che il Livello {{required}} sia completato prima.",
+    "go_to_prerequisite": "Vai al Livello {{level}}"
   }
 }
