@@ -773,7 +773,7 @@ const BusinessCandidates = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => navigate(`/business/challenges/new?goal=${goalId}`)}
+                    onClick={() => navigate(`/business/challenges/select?goal=${goalId}`)}
                     className="h-8 px-2 text-white/80 hover:text-white hover:bg-white/10"
                   >
                     <Plus size={14} className="mr-1" />

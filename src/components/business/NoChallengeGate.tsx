@@ -3,10 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, Rocket, Bookmark, Settings } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { AlertTriangle, Brain, Bookmark, Settings, Star } from 'lucide-react';
 
 interface NoChallengeGateProps {
-  onCreateChallenge: () => void;
+  onCreateChallenge?: () => void;
   onViewSaved?: () => void;
   goalId?: string | null;
 }
@@ -19,24 +20,42 @@ export const NoChallengeGate: React.FC<NoChallengeGateProps> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  // Default behavior: route to XIMA Core Challenge (Level 1)
+  const handleCreateChallenge = () => {
+    if (goalId) {
+      // Route to challenge type selector which will auto-redirect to XIMA Core if needed
+      navigate(`/business/challenges/select?goal=${goalId}`);
+    } else if (onCreateChallenge) {
+      onCreateChallenge();
+    } else {
+      navigate('/business/challenges/xima-core');
+    }
+  };
+
   return (
-    <Card className="border-amber-500/40 bg-amber-500/10 backdrop-blur-sm shadow-lg">
+    <Card className="border-primary/40 bg-primary/5 backdrop-blur-sm shadow-lg">
       <CardContent className="p-6">
         <div className="flex items-start gap-4">
-          <div className="p-3 rounded-full bg-amber-500/20">
-            <AlertTriangle className="h-6 w-6 text-amber-400" />
+          <div className="p-3 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/20">
+            <Brain className="h-6 w-6 text-primary" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-white mb-1">
-              {t('business_challenge.gate_title')}
-            </h3>
-            <p className="text-sm text-white/80 mb-4">
-              {t('business_challenge.gate_description')}
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="font-semibold text-foreground">
+                {t('business_challenge.gate_title_xima')}
+              </h3>
+              <Badge className="bg-primary text-primary-foreground gap-1 text-xs">
+                <Star className="h-3 w-3 fill-current" />
+                {t('challenge_type.recommended')}
+              </Badge>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              {t('business_challenge.gate_description_xima')}
             </p>
             <div className="flex flex-wrap gap-3">
-              <Button onClick={onCreateChallenge}>
-                <Rocket className="mr-2 h-4 w-4" />
-                {t('business_challenge.create_button')}
+              <Button onClick={handleCreateChallenge} className="gap-2">
+                <Brain className="h-4 w-4" />
+                {t('business_challenge.activate_xima_core')}
               </Button>
               {onViewSaved && (
                 <Button variant="outline" onClick={onViewSaved}>
@@ -47,7 +66,6 @@ export const NoChallengeGate: React.FC<NoChallengeGateProps> = ({
               <Button 
                 variant="ghost" 
                 onClick={() => navigate('/business/challenges')}
-                className="text-white/70 hover:text-white hover:bg-white/10"
               >
                 <Settings className="mr-2 h-4 w-4" />
                 {t('business_challenge.manage_challenges')}

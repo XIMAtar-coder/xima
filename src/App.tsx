@@ -38,6 +38,7 @@ import BusinessDashboard from "./pages/business/Dashboard";
 import BusinessCandidates from "./pages/business/Candidates";
 import CreateChallenge from "./pages/business/CreateChallenge";
 import CreateXimaCoreChallenge from "./pages/business/CreateXimaCoreChallenge";
+import ChallengeTypeSelector from "./pages/business/ChallengeTypeSelector";
 import BusinessChallenges from "./pages/business/Challenges";
 import BusinessEvaluations from "./pages/business/Evaluations";
 import BusinessReports from "./pages/business/Reports";
@@ -99,6 +100,7 @@ const AppContent = () => {
           <Route path="/business/dashboard" element={<BusinessDashboard />} />
           <Route path="/business/candidates" element={<BusinessCandidates />} />
           <Route path="/business/challenges" element={<BusinessChallenges />} />
+          <Route path="/business/challenges/select" element={<ChallengeTypeSelector />} />
           <Route path="/business/challenges/new" element={<CreateChallenge />} />
           <Route path="/business/challenges/xima-core" element={<CreateXimaCoreChallenge />} />
           <Route path="/business/challenges/:id/edit" element={<CreateChallenge />} />

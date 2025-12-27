@@ -340,7 +340,6 @@ const GoalCandidates: React.FC = () => {
         {activeChallenges.length === 0 && (
           <NoChallengeGate 
             goalId={goalId}
-            onCreateChallenge={() => navigate(`/business/challenges/new?goal=${goalId}`)}
             onViewSaved={() => setActiveTab('saved')}
           />
         )}
