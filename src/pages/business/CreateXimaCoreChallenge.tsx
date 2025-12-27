@@ -101,6 +101,7 @@ const CreateXimaCoreChallenge = () => {
     }
 
     // Load hiring goal if provided
+    let loadedGoal: HiringGoal | null = null;
     if (goalId) {
       const { data: goalData, error: goalError } = await supabase
         .from('hiring_goal_drafts')
@@ -119,10 +120,12 @@ const CreateXimaCoreChallenge = () => {
         return;
       }
 
+      loadedGoal = goalData;
       setHiringGoal(goalData);
     }
 
     // Load company profile
+    let loadedCompanyProfile: CompanyProfile | null = null;
     const { data: companyData } = await supabase
       .from('company_profiles')
       .select('operating_style, communication_style, values')
@@ -130,17 +133,22 @@ const CreateXimaCoreChallenge = () => {
       .single();
 
     if (companyData) {
+      loadedCompanyProfile = companyData;
       setCompanyProfile(companyData);
     }
 
     setLoading(false);
     
-    // Auto-generate scenario
-    generateScenario();
+    // Auto-generate scenario - pass data directly instead of relying on state
+    generateScenario(loadedGoal, loadedCompanyProfile);
   };
 
-  const generateScenario = async () => {
+  const generateScenario = async (goalData?: HiringGoal | null, companyData?: CompanyProfile | null) => {
     if (isActivated) return; // Can't regenerate after activation
+    
+    // Use passed data or fall back to current state
+    const goal = goalData !== undefined ? goalData : hiringGoal;
+    const company = companyData !== undefined ? companyData : companyProfile;
     
     setGenerating(true);
     try {
@@ -148,11 +156,11 @@ const CreateXimaCoreChallenge = () => {
         body: {
           mode: 'xima_core',
           context: {
-            roleTitle: hiringGoal?.role_title || undefined,
-            functionArea: hiringGoal?.function_area || undefined,
-            experienceLevel: hiringGoal?.experience_level || undefined,
-            taskDescription: hiringGoal?.task_description || undefined,
-            decisionStyle: companyProfile?.operating_style || undefined,
+            roleTitle: goal?.role_title || undefined,
+            functionArea: goal?.function_area || undefined,
+            experienceLevel: goal?.experience_level || undefined,
+            taskDescription: goal?.task_description || undefined,
+            decisionStyle: company?.operating_style || undefined,
           }
         }
       });
@@ -380,7 +388,7 @@ const CreateXimaCoreChallenge = () => {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      onClick={generateScenario}
+                      onClick={() => generateScenario()}
                       disabled={generating}
                       className="gap-2"
                     >
