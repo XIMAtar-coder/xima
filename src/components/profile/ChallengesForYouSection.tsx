@@ -7,6 +7,23 @@ import { Badge } from '@/components/ui/badge';
 import { Target, Clock, Building2, CheckCircle, ArrowRight, AlertTriangle } from 'lucide-react';
 import { useCandidateChallenges, CandidateChallenge } from '@/hooks/useCandidateChallenges';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipelineProgress';
+import { CHALLENGE_LEVELS, ChallengeLevel } from '@/lib/challenges/challengeLevels';
+
+const LevelBadge: React.FC<{ level: ChallengeLevel }> = ({ level }) => {
+  const { t } = useTranslation();
+  const colors = {
+    1: 'bg-primary/10 text-primary border-primary/30',
+    2: 'bg-blue-500/10 text-blue-600 border-blue-500/30',
+    3: 'bg-purple-500/10 text-purple-600 border-purple-500/30',
+  };
+  
+  return (
+    <Badge variant="outline" className={`text-[10px] px-1.5 py-0 ${colors[level]}`}>
+      L{level}
+    </Badge>
+  );
+};
 
 const ChallengeCard: React.FC<{ challenge: CandidateChallenge }> = ({ challenge }) => {
   const navigate = useNavigate();
@@ -56,7 +73,8 @@ const ChallengeCard: React.FC<{ challenge: CandidateChallenge }> = ({ challenge 
       <CardContent className="p-4">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
+              <LevelBadge level={challenge.level} />
               <h4 className="font-semibold truncate">{challenge.challengeTitle}</h4>
               {getStatusBadge()}
             </div>
@@ -93,7 +111,7 @@ const ChallengeCard: React.FC<{ challenge: CandidateChallenge }> = ({ challenge 
 
 export const ChallengesForYouSection: React.FC = () => {
   const { t } = useTranslation();
-  const { challenges, loading, activeCount } = useCandidateChallenges();
+  const { challenges, loading, activeCount, overallProgress } = useCandidateChallenges();
 
   if (loading) {
     return (
@@ -113,34 +131,41 @@ export const ChallengesForYouSection: React.FC = () => {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
-            {t('profile.challenges_for_you')}
-          </CardTitle>
-          {activeCount > 0 && (
-            <Badge variant="secondary" className="bg-primary/20 text-primary">
-              {activeCount} {t('profile.active')}
-            </Badge>
+    <div className="space-y-4">
+      {/* Pipeline Progress - Always show if there are challenges */}
+      {challenges.length > 0 && (
+        <ChallengePipelineProgress progress={overallProgress} />
+      )}
+      
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5 text-primary" />
+              {t('profile.challenges_for_you')}
+            </CardTitle>
+            {activeCount > 0 && (
+              <Badge variant="secondary" className="bg-primary/20 text-primary">
+                {activeCount} {t('profile.active')}
+              </Badge>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          {challenges.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <AlertTriangle className="h-10 w-10 mx-auto mb-3 opacity-50" />
+              <p>{t('profile.no_challenges_yet')}</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {challenges.slice(0, 5).map(challenge => (
+                <ChallengeCard key={challenge.invitationId} challenge={challenge} />
+              ))}
+            </div>
           )}
-        </div>
-      </CardHeader>
-      <CardContent>
-        {challenges.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <AlertTriangle className="h-10 w-10 mx-auto mb-3 opacity-50" />
-            <p>{t('profile.no_challenges_yet')}</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {challenges.slice(0, 5).map(challenge => (
-              <ChallengeCard key={challenge.invitationId} challenge={challenge} />
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };

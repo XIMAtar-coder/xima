@@ -2760,6 +2760,9 @@
     "candidate_msg_complete": "Journey complete — thank you for your time",
     "business_view_completed": "{{count}} level(s) completed",
     "business_view_current": "Currently at Level {{level}}",
-    "business_view_pending": "Awaiting next invitation"
+    "business_view_pending": "Awaiting next invitation",
+    "blocked_title": "Complete Previous Level First",
+    "blocked_message": "Level {{current}} requires Level {{required}} to be completed first.",
+    "go_to_prerequisite": "Go to Level {{level}}"
   }
 }

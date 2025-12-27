@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -12,10 +12,18 @@ import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
-import { Clock, CheckCircle, AlertTriangle, Timer, Loader2, Save, Send } from 'lucide-react';
+import { Clock, CheckCircle, AlertTriangle, Timer, Loader2, Save, Send, Lock, ArrowRight } from 'lucide-react';
 import { getChallengeTimeInfo, ChallengeTimeStatus } from '@/utils/challengeTimeUtils';
 import MainLayout from '@/components/layout/MainLayout';
 import { computeSignals } from '@/lib/signals/computeSignals';
+import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipelineProgress';
+import { 
+  ChallengeLevel, 
+  getChallengeLevel, 
+  computeLevelProgress,
+  CandidateLevelProgress,
+  CHALLENGE_LEVELS 
+} from '@/lib/challenges/challengeLevels';
 
 interface ChallengeDetails {
   invitationId: string;
@@ -32,6 +40,7 @@ interface ChallengeDetails {
   endAt: string | null;
   status: string;
   companyName: string;
+  level: ChallengeLevel;
 }
 
 interface SubmissionPayload {
@@ -40,6 +49,12 @@ interface SubmissionPayload {
   first_actions: string[];
   tradeoff_priority: string;
   confidence: string;
+}
+
+interface PrerequisiteBlock {
+  blocked: boolean;
+  requiredLevel: ChallengeLevel;
+  prerequisiteInvitationId: string | null;
 }
 
 const TRADEOFF_OPTIONS = [
@@ -68,6 +83,8 @@ export default function ChallengeCompletion() {
   const [submissionId, setSubmissionId] = useState<string | null>(null);
   const [submissionStatus, setSubmissionStatus] = useState<'draft' | 'submitted'>('draft');
   const [submittedAt, setSubmittedAt] = useState<string | null>(null);
+  const [prerequisiteBlock, setPrerequisiteBlock] = useState<PrerequisiteBlock | null>(null);
+  const [levelProgress, setLevelProgress] = useState<CandidateLevelProgress | null>(null);
 
   const [payload, setPayload] = useState<SubmissionPayload>({
     approach: '',
@@ -119,7 +136,8 @@ export default function ChallengeCompletion() {
               time_estimate_minutes,
               start_at,
               end_at,
-              status
+              status,
+              rubric
             ),
             hiring_goal_drafts!challenge_invitations_hiring_goal_id_fkey (
               role_title
@@ -144,6 +162,8 @@ export default function ChallengeCompletion() {
 
         const challengeData = invitation.business_challenges as any;
         const goalData = invitation.hiring_goal_drafts as any;
+        const rubric = challengeData?.rubric as { type?: string } | null;
+        const level = getChallengeLevel({ rubric, title: challengeData?.title });
 
         setChallenge({
           invitationId: invitation.id,
@@ -160,7 +180,73 @@ export default function ChallengeCompletion() {
           endAt: challengeData?.end_at || null,
           status: challengeData?.status || 'active',
           companyName: businessProfile?.company_name || 'Company',
+          level,
         });
+
+        // Check progression prerequisites for this hiring goal
+        // Get all invitations + submissions for the same hiring goal
+        const { data: goalInvitations } = await supabase
+          .from('challenge_invitations')
+          .select(`
+            id,
+            challenge_id,
+            business_challenges!challenge_invitations_challenge_id_fkey (
+              rubric,
+              title
+            )
+          `)
+          .eq('candidate_profile_id', profile.id)
+          .eq('hiring_goal_id', invitation.hiring_goal_id);
+
+        const invitationIds = (goalInvitations || []).map(i => i.id);
+        
+        // Get submissions for these invitations
+        const { data: goalSubmissions } = await supabase
+          .from('challenge_submissions')
+          .select('invitation_id, status')
+          .in('invitation_id', invitationIds);
+
+        const submissionMap = new Map((goalSubmissions || []).map(s => [s.invitation_id, s.status]));
+
+        // Build progress from all goal invitations
+        const progressData = (goalInvitations || []).map(inv => {
+          const bc = inv.business_challenges as any;
+          const invRubric = bc?.rubric as { type?: string } | null;
+          const invLevel = getChallengeLevel({ rubric: invRubric, title: bc?.title });
+          const status = submissionMap.get(inv.id) || 'draft';
+          return { challenge_level: invLevel, status };
+        });
+
+        const progress = computeLevelProgress(progressData);
+        setLevelProgress(progress);
+
+        // Check if this challenge level is blocked
+        if (level === 2 && !progress.completedLevels.includes(1)) {
+          // Find L1 invitation
+          const l1Inv = (goalInvitations || []).find(inv => {
+            const bc = inv.business_challenges as any;
+            const invRubric = bc?.rubric as { type?: string } | null;
+            return getChallengeLevel({ rubric: invRubric, title: bc?.title }) === 1;
+          });
+          setPrerequisiteBlock({
+            blocked: true,
+            requiredLevel: 1,
+            prerequisiteInvitationId: l1Inv?.id || null,
+          });
+        } else if (level === 3 && !progress.completedLevels.includes(2)) {
+          const l2Inv = (goalInvitations || []).find(inv => {
+            const bc = inv.business_challenges as any;
+            const invRubric = bc?.rubric as { type?: string } | null;
+            return getChallengeLevel({ rubric: invRubric, title: bc?.title }) === 2;
+          });
+          setPrerequisiteBlock({
+            blocked: true,
+            requiredLevel: 2,
+            prerequisiteInvitationId: l2Inv?.id || null,
+          });
+        } else {
+          setPrerequisiteBlock({ blocked: false, requiredLevel: 1, prerequisiteInvitationId: null });
+        }
 
         // Load existing submission if any
         const { data: submission } = await supabase
@@ -457,6 +543,52 @@ export default function ChallengeCompletion() {
             <CardContent className="py-12 text-center">
               <AlertTriangle className="h-12 w-12 text-destructive mx-auto mb-4" />
               <p className="text-muted-foreground">{t('challenge.not_found')}</p>
+            </CardContent>
+          </Card>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  // Blocked by prerequisite - show gating UI
+  if (prerequisiteBlock?.blocked) {
+    return (
+      <MainLayout>
+        <div className="container max-w-3xl py-8 space-y-6">
+          {/* Pipeline Progress */}
+          {levelProgress && (
+            <ChallengePipelineProgress progress={levelProgress} />
+          )}
+          
+          <Card className="border-amber-500/30 bg-amber-500/5">
+            <CardContent className="py-12 text-center">
+              <Lock className="h-16 w-16 text-amber-500 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold mb-2">{t('levels.blocked_title')}</h2>
+              <p className="text-muted-foreground mb-2">
+                {t('levels.blocked_message', { 
+                  current: challenge.level, 
+                  required: prerequisiteBlock.requiredLevel 
+                })}
+              </p>
+              <p className="text-sm text-muted-foreground mb-6">
+                {t(`levels.requires_level_${prerequisiteBlock.requiredLevel}`)}
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                {prerequisiteBlock.prerequisiteInvitationId ? (
+                  <Button onClick={() => navigate(`/candidate/challenges/${prerequisiteBlock.prerequisiteInvitationId}`)}>
+                    <ArrowRight className="h-4 w-4 mr-2" />
+                    {t('levels.go_to_prerequisite', { level: prerequisiteBlock.requiredLevel })}
+                  </Button>
+                ) : (
+                  <Button onClick={() => navigate('/profile')}>
+                    {t('common.back_to_profile')}
+                  </Button>
+                )}
+                <Button variant="outline" onClick={() => navigate('/profile')}>
+                  {t('common.back_to_profile')}
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>

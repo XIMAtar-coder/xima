@@ -1,7 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { getChallengeTimeInfo, ChallengeTimeStatus } from '@/utils/challengeTimeUtils';
+import { 
+  ChallengeLevel, 
+  CandidateLevelProgress, 
+  getChallengeLevel, 
+  computeLevelProgress 
+} from '@/lib/challenges/challengeLevels';
 
 export interface CandidateChallenge {
   invitationId: string;
@@ -9,13 +15,16 @@ export interface CandidateChallenge {
   challengeTitle: string;
   companyName: string;
   roleTitle: string | null;
-  status: 'invited' | 'accepted' | 'declined';
+  hiringGoalId: string;
+  status: 'invited' | 'accepted' | 'declined' | 'submitted';
   timeStatus: 'upcoming' | 'active' | 'expired' | 'archived';
   remainingText: string | null;
   startAt: string | null;
   endAt: string | null;
   createdAt: string;
   isSubmitted: boolean;
+  level: ChallengeLevel;
+  rubricType: string | null;
 }
 
 export const useCandidateChallenges = () => {
@@ -52,12 +61,14 @@ export const useCandidateChallenges = () => {
           status,
           created_at,
           business_id,
+          hiring_goal_id,
           business_challenges!challenge_invitations_challenge_id_fkey (
             id,
             title,
             start_at,
             end_at,
-            status
+            status,
+            rubric
           ),
           hiring_goal_drafts!challenge_invitations_hiring_goal_id_fkey (
             role_title
@@ -103,11 +114,15 @@ export const useCandidateChallenges = () => {
       const challengeList: CandidateChallenge[] = (invitations || []).map(inv => {
         const challenge = inv.business_challenges as any;
         const goal = inv.hiring_goal_drafts as any;
+        const rubric = challenge?.rubric as { type?: string } | null;
         const timeInfo = getChallengeTimeInfo(
           challenge?.start_at || null,
           challenge?.end_at || null,
           challenge?.status || 'active'
         );
+
+        // Determine challenge level
+        const level = getChallengeLevel({ rubric, title: challenge?.title });
 
         return {
           invitationId: inv.id,
@@ -115,13 +130,16 @@ export const useCandidateChallenges = () => {
           challengeTitle: challenge?.title || 'Challenge',
           companyName: businessMap[inv.business_id] || 'Company',
           roleTitle: goal?.role_title || null,
-          status: inv.status as 'invited' | 'accepted' | 'declined',
+          hiringGoalId: inv.hiring_goal_id,
+          status: submittedMap[inv.id] ? 'submitted' : (inv.status as 'invited' | 'accepted' | 'declined'),
           timeStatus: timeInfo.timeStatus,
           remainingText: timeInfo.remainingText,
           startAt: challenge?.start_at || null,
           endAt: challenge?.end_at || null,
           createdAt: inv.created_at,
           isSubmitted: !!submittedMap[inv.id],
+          level,
+          rubricType: rubric?.type || null,
         };
       });
 
@@ -142,10 +160,40 @@ export const useCandidateChallenges = () => {
     fetchChallenges();
   }, [fetchChallenges]);
 
+  // Compute level progress based on submitted challenges
+  // Group by hiring goal and compute progress for each
+  const levelProgressByGoal = useMemo(() => {
+    const byGoal: Record<string, CandidateLevelProgress> = {};
+    
+    const goalIds = [...new Set(challenges.map(c => c.hiringGoalId))];
+    
+    for (const goalId of goalIds) {
+      const goalChallenges = challenges.filter(c => c.hiringGoalId === goalId);
+      const submissions = goalChallenges.map(c => ({
+        challenge_level: c.level,
+        status: c.isSubmitted ? 'submitted' : 'draft',
+      }));
+      byGoal[goalId] = computeLevelProgress(submissions);
+    }
+    
+    return byGoal;
+  }, [challenges]);
+
+  // Overall progress (across all goals - for dashboard display)
+  const overallProgress = useMemo((): CandidateLevelProgress => {
+    const allSubmissions = challenges.map(c => ({
+      challenge_level: c.level,
+      status: c.isSubmitted ? 'submitted' : 'draft',
+    }));
+    return computeLevelProgress(allSubmissions);
+  }, [challenges]);
+
   return {
     challenges,
     loading,
     activeCount,
+    levelProgressByGoal,
+    overallProgress,
     refresh: fetchChallenges,
   };
 };
