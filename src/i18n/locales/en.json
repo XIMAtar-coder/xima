@@ -1,20 +1,32 @@
 {
   "xima_core": {
-    "page_subtitle": "A standardized assessment with AI-generated scenario tailored to your context",
-    "what_is_title": "What is XIMA Core Challenge?",
-    "what_is_desc": "A structured Level 1 challenge that evaluates decision-making in ambiguous situations. The scenario is personalized, but questions are identical for fair comparison.",
-    "feature_1": "5 fixed questions measuring decision-making signals",
-    "feature_2": "AI-generated scenario based on your hiring context",
-    "feature_3": "No right or wrong answers - we evaluate reasoning",
-    "scenario_title": "Generated Scenario",
+    "page_subtitle": "A standardized decision-making instrument with AI-personalized scenario",
+    "what_is_title": "What is XIMA Core?",
+    "what_is_desc": "A standardized Level 1 instrument that evaluates how candidates think in ambiguous situations. The scenario is personalized, but the structure is identical for fair comparison.",
+    "feature_1": "5 fixed questions measuring decision signals",
+    "feature_2": "AI-personalized scenario for your context",
+    "feature_3": "No right/wrong answers - we evaluate reasoning",
+    "scenario_title": "Personalized Scenario",
     "scenario_desc": "This scenario was generated based on your company and role context",
-    "regenerate": "Regenerate",
+    "regenerate": "Regenerate Scenario",
     "preview_title": "Candidate Preview",
     "preview_desc": "What candidates will see",
     "scenario_label": "Scenario",
-    "questions_label": "Questions",
-    "activate_button": "Activate Challenge",
-    "activated_desc": "XIMA Core Challenge is now active and ready for candidates"
+    "questions_label": "Fixed Questions",
+    "questions_desc": "These questions are standardized across all XIMA Core challenges",
+    "activate_button": "Activate XIMA Core Challenge",
+    "activated_title": "XIMA Core Activated",
+    "activated_desc": "XIMA Core Challenge is now live and ready for candidates",
+    "level_1_badge": "Level 1",
+    "standardized": "Standardized",
+    "fixed_structure": "Fixed Structure",
+    "helper_text": "This challenge evaluates how candidates think in ambiguous situations. The structure is fixed — only the scenario is personalized to your context.",
+    "ai_generated_label": "AI-generated for your company and hiring goal",
+    "estimated_time": "Estimated Time",
+    "intro_preview": "Candidate Introduction",
+    "cta_helper": "Once activated, the scenario is locked and candidates can begin.",
+    "already_active_title": "XIMA Core Already Active",
+    "already_active_desc": "Only one XIMA Core Challenge can be active per hiring goal."
   },
   "common": {
     "login_required": "Login Required",
@@ -25,7 +37,8 @@
     "area_to_develop": "Growth Area",
     "you": "You",
     "as_strength": "As Strength",
-    "as_weakness": "As Weakness"
+    "as_weakness": "As Weakness",
+    "minutes": "min"
   },
   "profile": {
     "page_title": "Welcome, {{name}}",
