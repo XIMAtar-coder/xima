@@ -30,6 +30,7 @@ interface ChallengeInfo {
   startAt: string | null;
   endAt: string | null;
   status: string;
+  rubric?: { type?: string } | null;
 }
 
 type SortField = 'overall' | 'framing' | 'decision_quality' | 'execution_bias' | 'impact_thinking' | 'candidateName';
@@ -95,7 +96,7 @@ export default function ChallengeResponses() {
         // Load challenge info only (responses come from the hook)
         const { data: challengeData, error: challengeError } = await supabase
           .from('business_challenges')
-          .select('id, title, description, success_criteria, start_at, end_at, status')
+          .select('id, title, description, success_criteria, start_at, end_at, status, rubric')
           .eq('id', challengeId)
           .eq('business_id', user.id)
           .single();
@@ -114,6 +115,7 @@ export default function ChallengeResponses() {
           startAt: challengeData.start_at,
           endAt: challengeData.end_at,
           status: challengeData.status,
+          rubric: challengeData.rubric as { type?: string } | null,
         });
 
         // Load hiring goals
@@ -630,8 +632,10 @@ export default function ChallengeResponses() {
           challenge={challenge}
           businessId={userId || ''}
           challengeId={challengeId || ''}
+          hiringGoalId={goalId}
           onSignalsGenerated={refetch}
           onReviewSaved={handleReviewSaved}
+          onLevel2InviteSent={refetch}
         />
       </div>
     </BusinessLayout>

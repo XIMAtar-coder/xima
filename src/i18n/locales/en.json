@@ -2276,6 +2276,19 @@
       "followup_question_label": "Your follow-up question",
       "followup_placeholder": "Ask the candidate to clarify or expand on something...",
       "send_followup": "Send Follow-up"
+    },
+    "level2": {
+      "next_step": "Next Step in Pipeline",
+      "invite_to_level2": "Invite to Level 2 Challenge",
+      "already_invited": "Already Invited to Level 2",
+      "choose_challenge": "Choose a Level 2 Challenge",
+      "choose_challenge_desc": "Select a role-specific challenge to send to {{name}}.",
+      "no_challenges": "No Level 2 challenges created for this hiring goal yet.",
+      "create_challenge": "Create Level 2 Challenge",
+      "updated": "Updated",
+      "send_invite": "Send Invite",
+      "invite_sent": "Invitation Sent",
+      "invite_sent_desc": "{{name}} has been invited to the Level 2 challenge."
     }
   },
   "guide": {
