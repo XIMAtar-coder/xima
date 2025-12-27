@@ -31,7 +31,8 @@ import {
   Reply,
 } from 'lucide-react';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
-import { interpretSignals } from '@/lib/signals/interpretSignals';
+import { interpretSignals, signalTooltips, flagTooltips, CompanyContext } from '@/lib/signals/interpretSignals';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import type { InvitationWithSubmission } from '@/hooks/useChallengeResponsesData';
 
 interface ChallengeInfo {
@@ -336,7 +337,7 @@ export function SubmissionDetailDrawer({
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* Decision Profile Statement */}
+                  {/* Decision Profile Statement - Context-aware */}
                   <p className="text-sm font-medium leading-relaxed">
                     {interpretSignals(localSignals).decisionProfile}
                   </p>
@@ -382,7 +383,7 @@ export function SubmissionDetailDrawer({
                     </div>
                   </div>
 
-                  {/* Role Fit Hint */}
+                  {/* Role Fit Hint - ONE LINE */}
                   <div className="border-t pt-3">
                     <div className="flex items-center gap-1.5 mb-1.5">
                       <Briefcase className="h-3.5 w-3.5 text-primary" />
@@ -392,68 +393,79 @@ export function SubmissionDetailDrawer({
                       {interpretSignals(localSignals).roleFitHint}
                     </p>
                   </div>
-
-                  {/* Overall Score Badge */}
-                  <div className="flex items-center justify-between pt-2 border-t">
-                    <span className="text-xs text-muted-foreground">{t('business.compare.overall')}</span>
-                    <div className="flex items-center gap-2">
-                      <span className={`text-lg font-bold ${
-                        localSignals.overall >= 70 ? 'text-green-600' : 
-                        localSignals.overall >= 50 ? 'text-amber-600' : 'text-red-600'
-                      }`}>{localSignals.overall}</span>
-                      <Progress value={localSignals.overall} className="w-16 h-1.5" />
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
 
-              {/* Numeric Signals (Demoted - Collapsible Detail) */}
-              <details className="group">
-                <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground flex items-center gap-1.5 py-2">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  {t('business.insights.view_detailed_scores')}
-                </summary>
-                <Card className="mt-2 border-dashed">
-                  <CardContent className="py-4 space-y-3">
-                    {/* Dimension Scores - Smaller */}
-                    <div className="grid grid-cols-4 gap-2">
-                      {[
-                        { key: 'framing', label: t('business.compare.framing'), value: localSignals.framing },
-                        { key: 'decision_quality', label: t('business.compare.decision'), value: localSignals.decision_quality },
-                        { key: 'execution_bias', label: t('business.compare.execution'), value: localSignals.execution_bias },
-                        { key: 'impact_thinking', label: t('business.compare.impact'), value: localSignals.impact_thinking },
-                      ].map(dim => (
-                        <div key={dim.key} className="bg-muted/50 rounded p-2 text-center">
-                          <div className={`text-sm font-bold ${
-                            dim.value >= 70 ? 'text-green-600' : 
-                            dim.value >= 50 ? 'text-amber-600' : 'text-red-600'
-                          }`}>{dim.value}</div>
-                          <div className="text-[10px] text-muted-foreground leading-tight">{dim.label}</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Confidence */}
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">{t('business.compare.confidence')}:</span>
-                      <Badge variant="outline" className="text-[10px] h-5">
-                        {localSignals.confidence}
-                      </Badge>
-                    </div>
-
-                    {/* Flags */}
-                    {localSignals.flags.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {localSignals.flags.map((flag, i) => (
-                          <Badge key={i} variant="outline" className="text-[10px] h-5 bg-amber-500/10 border-amber-500/30">
-                            {flag.replace(/_/g, ' ')}
-                          </Badge>
+              {/* Numeric Signals (De-emphasized - Collapsible Detail) */}
+              <TooltipProvider>
+                <details className="group">
+                  <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground flex items-center gap-1.5 py-2">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    {t('business.insights.view_detailed_scores')}
+                  </summary>
+                  <Card className="mt-2 border-dashed">
+                    <CardContent className="py-4 space-y-3">
+                      {/* Dimension Scores - With tooltips */}
+                      <div className="grid grid-cols-4 gap-2">
+                        {[
+                          { key: 'framing', label: t('business.compare.framing'), value: localSignals.framing },
+                          { key: 'decision_quality', label: t('business.compare.decision'), value: localSignals.decision_quality },
+                          { key: 'execution_bias', label: t('business.compare.execution'), value: localSignals.execution_bias },
+                          { key: 'impact_thinking', label: t('business.compare.impact'), value: localSignals.impact_thinking },
+                        ].map(dim => (
+                          <Tooltip key={dim.key}>
+                            <TooltipTrigger asChild>
+                              <div className="bg-muted/50 rounded p-2 text-center cursor-help">
+                                <div className={`text-sm font-bold ${
+                                  dim.value >= 70 ? 'text-green-600' : 
+                                  dim.value >= 50 ? 'text-amber-600' : 'text-red-600'
+                                }`}>{dim.value}</div>
+                                <div className="text-[10px] text-muted-foreground leading-tight">{dim.label}</div>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-xs">
+                              <p className="text-xs">{signalTooltips[dim.key] || dim.label}</p>
+                            </TooltipContent>
+                          </Tooltip>
                         ))}
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </details>
+
+                      {/* Confidence */}
+                      <div className="flex items-center justify-between text-xs">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="text-muted-foreground cursor-help">{t('business.compare.confidence')}:</span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="text-xs">{signalTooltips.confidence}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                        <Badge variant="outline" className="text-[10px] h-5">
+                          {localSignals.confidence}
+                        </Badge>
+                      </div>
+
+                      {/* Flags with tooltips */}
+                      {localSignals.flags.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {localSignals.flags.map((flag, i) => (
+                            <Tooltip key={i}>
+                              <TooltipTrigger asChild>
+                                <Badge variant="outline" className="text-[10px] h-5 bg-amber-500/10 border-amber-500/30 cursor-help">
+                                  {flag.replace(/_/g, ' ')}
+                                </Badge>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" className="max-w-xs">
+                                <p className="text-xs">{flagTooltips[flag] || flag.replace(/_/g, ' ')}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </details>
+              </TooltipProvider>
             </>
           ) : submission.submissionStatus === 'submitted' ? (
             <Card className="border-dashed">

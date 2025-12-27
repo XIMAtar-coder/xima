@@ -2237,6 +2237,32 @@
       "signals_not_generated": "Signals not generated yet",
       "generate_signals": "Generate Signals"
     },
+    "insights": {
+      "decision_profile": "Decision Profile",
+      "strengths": "Strengths",
+      "risks": "Risks",
+      "role_fit": "Role Fit Hint",
+      "view_detailed_scores": "View detailed signals",
+      "signals_tooltip": {
+        "framing": "How clearly the candidate identifies the real problem and key constraints.",
+        "decision_quality": "How well trade-offs and choices are reasoned through.",
+        "execution_bias": "Tendency to move from thinking to action under uncertainty.",
+        "impact_thinking": "How naturally work is connected to business outcomes."
+      },
+      "flag_tooltip": {
+        "clear_tradeoffs": "Explicitly named trade-offs in their approach",
+        "bias_to_action": "Used decisive, action-oriented language",
+        "uses_metrics": "Referenced specific numbers or measurements",
+        "weak_assumptions": "Assumptions section was brief or missing",
+        "vague_language": "Used hedging words like 'maybe' or 'possibly'",
+        "no_metrics": "Did not reference measurable outcomes",
+        "no_tradeoff": "Did not identify a primary trade-off",
+        "short_approach": "Approach description was quite brief",
+        "vague_actions": "First actions lacked specificity",
+        "no_actions": "Did not specify concrete next steps",
+        "confidence_mismatch": "Stated confidence differs from demonstrated content quality"
+      }
+    },
     "review": {
       "actions_title": "Actions",
       "shortlist": "Shortlist",
