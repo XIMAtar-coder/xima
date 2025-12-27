@@ -1,4 +1,21 @@
 {
+  "xima_core": {
+    "page_subtitle": "Una valutazione standardizzata con scenario generato dall'IA adattato al tuo contesto",
+    "what_is_title": "Cos'è la XIMA Core Challenge?",
+    "what_is_desc": "Una sfida strutturata di Livello 1 che valuta il processo decisionale in situazioni ambigue. Lo scenario è personalizzato, ma le domande sono identiche per un confronto equo.",
+    "feature_1": "5 domande fisse che misurano segnali decisionali",
+    "feature_2": "Scenario generato dall'IA basato sul contesto di assunzione",
+    "feature_3": "Nessuna risposta giusta o sbagliata - valutiamo il ragionamento",
+    "scenario_title": "Scenario Generato",
+    "scenario_desc": "Questo scenario è stato generato in base al contesto aziendale e del ruolo",
+    "regenerate": "Rigenera",
+    "preview_title": "Anteprima Candidato",
+    "preview_desc": "Cosa vedranno i candidati",
+    "scenario_label": "Scenario",
+    "questions_label": "Domande",
+    "activate_button": "Attiva Challenge",
+    "activated_desc": "La XIMA Core Challenge è ora attiva e pronta per i candidati"
+  },
   "nav": {
     "home": "Home",
     "how_it_works": "Come Funziona",

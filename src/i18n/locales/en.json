@@ -1,4 +1,21 @@
 {
+  "xima_core": {
+    "page_subtitle": "A standardized assessment with AI-generated scenario tailored to your context",
+    "what_is_title": "What is XIMA Core Challenge?",
+    "what_is_desc": "A structured Level 1 challenge that evaluates decision-making in ambiguous situations. The scenario is personalized, but questions are identical for fair comparison.",
+    "feature_1": "5 fixed questions measuring decision-making signals",
+    "feature_2": "AI-generated scenario based on your hiring context",
+    "feature_3": "No right or wrong answers - we evaluate reasoning",
+    "scenario_title": "Generated Scenario",
+    "scenario_desc": "This scenario was generated based on your company and role context",
+    "regenerate": "Regenerate",
+    "preview_title": "Candidate Preview",
+    "preview_desc": "What candidates will see",
+    "scenario_label": "Scenario",
+    "questions_label": "Questions",
+    "activate_button": "Activate Challenge",
+    "activated_desc": "XIMA Core Challenge is now active and ready for candidates"
+  },
   "common": {
     "login_required": "Login Required",
     "login": "Login",
