@@ -29,17 +29,21 @@ import {
   Target,
   Briefcase,
   Reply,
+  ArrowRight,
 } from 'lucide-react';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import { interpretSignals, signalTooltips, flagTooltips, CompanyContext } from '@/lib/signals/interpretSignals';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import type { InvitationWithSubmission } from '@/hooks/useChallengeResponsesData';
+import { Level2InviteModal } from './Level2InviteModal';
+import { ChallengeLevel, getChallengeLevel } from '@/lib/challenges/challengeLevels';
 
 interface ChallengeInfo {
   id: string;
   title: string;
   description: string | null;
   successCriteria: string[];
+  rubric?: { type?: string } | null;
 }
 
 interface ChallengeReview {
@@ -64,8 +68,10 @@ interface SubmissionDetailDrawerProps {
   challenge: ChallengeInfo | null;
   businessId: string;
   challengeId: string;
+  hiringGoalId?: string;
   onSignalsGenerated?: () => void;
   onReviewSaved?: (decision: 'shortlist' | 'followup' | 'pass', followupQuestion?: string | null) => void;
+  onLevel2InviteSent?: () => void;
 }
 
 export function SubmissionDetailDrawer({
@@ -75,8 +81,10 @@ export function SubmissionDetailDrawer({
   challenge,
   businessId,
   challengeId,
+  hiringGoalId,
   onSignalsGenerated,
   onReviewSaved,
+  onLevel2InviteSent,
 }: SubmissionDetailDrawerProps) {
   const { t } = useTranslation();
   const [generatingSignals, setGeneratingSignals] = useState(false);
@@ -86,6 +94,16 @@ export function SubmissionDetailDrawer({
   const [followupQuestion, setFollowupQuestion] = useState('');
   const [localSignals, setLocalSignals] = useState<SignalsPayload | null>(null);
   const [followupData, setFollowupData] = useState<ChallengeFollowup | null>(null);
+  
+  // Level 2 invite state
+  const [level2ModalOpen, setLevel2ModalOpen] = useState(false);
+  const [alreadyInvitedToLevel2, setAlreadyInvitedToLevel2] = useState(false);
+  const [checkingLevel2, setCheckingLevel2] = useState(false);
+
+  // Determine current challenge level
+  const currentChallengeLevel = useMemo((): ChallengeLevel => {
+    return getChallengeLevel({ rubric: challenge?.rubric });
+  }, [challenge?.rubric]);
 
   // Fetch existing review and followup when drawer opens
   useEffect(() => {
@@ -130,6 +148,47 @@ export function SubmissionDetailDrawer({
 
     fetchReviewAndFollowup();
   }, [open, submission, businessId]);
+
+  // Check if candidate is already invited to Level 2 for this hiring goal
+  useEffect(() => {
+    async function checkLevel2Invite() {
+      if (!open || !submission || !hiringGoalId || currentChallengeLevel !== 1) {
+        setAlreadyInvitedToLevel2(false);
+        return;
+      }
+
+      setCheckingLevel2(true);
+      try {
+        // Get all Level 2 invitations for this candidate + hiring goal
+        const { data: invitations } = await supabase
+          .from('challenge_invitations')
+          .select(`
+            id,
+            business_challenges!challenge_invitations_challenge_id_fkey (
+              rubric
+            )
+          `)
+          .eq('candidate_profile_id', submission.candidateProfileId)
+          .eq('hiring_goal_id', hiringGoalId)
+          .eq('business_id', businessId);
+
+        // Check if any invitation is for a Level 2 challenge
+        const hasLevel2Invite = (invitations || []).some(inv => {
+          const bc = inv.business_challenges as { rubric?: { type?: string } } | null;
+          const level = getChallengeLevel({ rubric: bc?.rubric });
+          return level === 2;
+        });
+
+        setAlreadyInvitedToLevel2(hasLevel2Invite);
+      } catch (err) {
+        console.error('Error checking Level 2 invites:', err);
+      } finally {
+        setCheckingLevel2(false);
+      }
+    }
+
+    checkLevel2Invite();
+  }, [open, submission, hiringGoalId, businessId, currentChallengeLevel]);
 
   const payload = submission?.submissionStatus === 'submitted'
     ? submission.submittedPayload
@@ -575,32 +634,62 @@ export function SubmissionDetailDrawer({
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      onClick={handleShortlist}
-                      disabled={savingReview}
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      {savingReview && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                      <Star className="h-4 w-4 mr-2" />
-                      {t('business.review.shortlist')}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={handleFollowup}
-                      disabled={savingReview}
-                    >
-                      <MessageSquare className="h-4 w-4 mr-2" />
-                      {t('business.review.request_followup')}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={handlePass}
-                      disabled={savingReview}
-                    >
-                      <XCircle className="h-4 w-4 mr-2" />
-                      {t('business.review.pass')}
-                    </Button>
+                  <div className="space-y-3">
+                    {/* Review Actions Row */}
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        onClick={handleShortlist}
+                        disabled={savingReview}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        {savingReview && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                        <Star className="h-4 w-4 mr-2" />
+                        {t('business.review.shortlist')}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={handleFollowup}
+                        disabled={savingReview}
+                      >
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        {t('business.review.request_followup')}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={handlePass}
+                        disabled={savingReview}
+                      >
+                        <XCircle className="h-4 w-4 mr-2" />
+                        {t('business.review.pass')}
+                      </Button>
+                    </div>
+
+                    {/* Invite to Level 2 - Only show for Level 1 submissions */}
+                    {currentChallengeLevel === 1 && hiringGoalId && (
+                      <div className="border-t pt-3">
+                        <p className="text-xs text-muted-foreground mb-2">{t('business.level2.next_step')}</p>
+                        {alreadyInvitedToLevel2 ? (
+                          <Button variant="outline" disabled className="w-full">
+                            <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                            {t('business.level2.already_invited')}
+                          </Button>
+                        ) : (
+                          <Button 
+                            variant="secondary"
+                            onClick={() => setLevel2ModalOpen(true)}
+                            disabled={checkingLevel2}
+                            className="w-full"
+                          >
+                            {checkingLevel2 ? (
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            ) : (
+                              <ArrowRight className="h-4 w-4 mr-2" />
+                            )}
+                            {t('business.level2.invite_to_level2')}
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -682,6 +771,22 @@ export function SubmissionDetailDrawer({
           </>
         )}
       </SheetContent>
+
+      {/* Level 2 Invite Modal */}
+      {submission && hiringGoalId && (
+        <Level2InviteModal
+          open={level2ModalOpen}
+          onOpenChange={setLevel2ModalOpen}
+          businessId={businessId}
+          hiringGoalId={hiringGoalId}
+          candidateProfileId={submission.candidateProfileId}
+          candidateName={submission.candidateName}
+          onInviteSent={() => {
+            setAlreadyInvitedToLevel2(true);
+            onLevel2InviteSent?.();
+          }}
+        />
+      )}
     </Sheet>
   );
 }

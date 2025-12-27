@@ -2097,6 +2097,19 @@
       "followup_question_label": "La tua domanda",
       "followup_placeholder": "Chiedi al candidato di chiarire o approfondire...",
       "send_followup": "Invia Richiesta"
+    },
+    "level2": {
+      "next_step": "Passo successivo nel percorso",
+      "invite_to_level2": "Invita a Challenge Livello 2",
+      "already_invited": "Già invitato al Livello 2",
+      "choose_challenge": "Scegli una Challenge Livello 2",
+      "choose_challenge_desc": "Seleziona una challenge specifica per il ruolo da inviare a {{name}}.",
+      "no_challenges": "Nessuna challenge Livello 2 creata per questo obiettivo.",
+      "create_challenge": "Crea Challenge Livello 2",
+      "updated": "Aggiornato",
+      "send_invite": "Invia Invito",
+      "invite_sent": "Invito Inviato",
+      "invite_sent_desc": "{{name}} è stato invitato alla challenge Livello 2."
     }
   },
   "guide": {
