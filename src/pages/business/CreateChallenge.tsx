@@ -44,6 +44,7 @@ const CreateChallenge = () => {
   const [searchParams] = useSearchParams();
   const { id: challengeId } = useParams();
   const goalId = searchParams.get('goal');
+  const challengeType = searchParams.get('type'); // 'custom' means they explicitly chose custom
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
@@ -76,6 +77,16 @@ const CreateChallenge = () => {
     }
   }, [isEditMode, startAt]);
 
+  // Redirect to selector if not editing and not explicitly choosing custom
+  useEffect(() => {
+    if (!isEditMode && goalId && challengeType !== 'custom') {
+      // User navigated directly to /challenges/new?goal=X without going through selector
+      // Redirect them to the challenge type selector
+      navigate(`/business/challenges/select?goal=${goalId}`, { replace: true });
+      return;
+    }
+  }, [isEditMode, goalId, challengeType, navigate]);
+
   // Load hiring goal or existing challenge
   useEffect(() => {
     if (!isAuthenticated || (businessLoading === false && !isBusiness)) {
@@ -86,14 +97,14 @@ const CreateChallenge = () => {
     if (!businessLoading && user?.id) {
       if (isEditMode) {
         loadExistingChallenge();
-      } else if (goalId) {
+      } else if (goalId && challengeType === 'custom') {
         loadHiringGoal();
-      } else {
+      } else if (!goalId) {
         // Create without goal - just allow it
         setLoading(false);
       }
     }
-  }, [challengeId, goalId, user?.id, isAuthenticated, isBusiness, businessLoading, navigate]);
+  }, [challengeId, goalId, challengeType, user?.id, isAuthenticated, isBusiness, businessLoading, navigate]);
 
   const loadHiringGoal = async () => {
     const { data, error } = await supabase
