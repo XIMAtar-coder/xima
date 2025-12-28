@@ -51,9 +51,11 @@ import AssessmentGuide from "./pages/AssessmentGuide";
 import ChallengeAccept from "./pages/ChallengeAccept";
 import GoalCandidates from "./pages/business/GoalCandidates";
 import GoalChallenges from "./pages/business/GoalChallenges";
+import GoalSettings from "./pages/business/GoalSettings";
 import ChallengeResponses from "./pages/business/ChallengeResponses";
 import ChallengeCompletion from "./pages/candidate/ChallengeCompletion";
 import ChallengeFollowup from "./pages/candidate/ChallengeFollowup";
+import EligibilityReview from "./pages/admin/EligibilityReview";
 
 const queryClient = new QueryClient();
 
@@ -94,6 +96,7 @@ const AppContent = () => {
           <Route path="/dashboard" element={<Profile />} />
           <Route path="/chat" element={<XimaChat />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/eligibility" element={<EligibilityReview />} />
           {/* Business Portal Routes */}
           <Route path="/business/register" element={<BusinessRegister />} />
           <Route path="/business/login" element={<BusinessLogin />} />
@@ -113,6 +116,7 @@ const AppContent = () => {
           {/* Goal-scoped routes */}
           <Route path="/business/goals/:goalId/candidates" element={<GoalCandidates />} />
           <Route path="/business/goals/:goalId/challenges" element={<GoalChallenges />} />
+          <Route path="/business/goals/:goalId/settings" element={<GoalSettings />} />
           <Route path="/business/goals/:goalId/challenges/:challengeId/responses" element={<ChallengeResponses />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/challenge/accept" element={<ChallengeAccept />} />
