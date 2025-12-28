@@ -2288,7 +2288,9 @@
       "updated": "Updated",
       "send_invite": "Send Invite",
       "invite_sent": "Invitation Sent",
-      "invite_sent_desc": "{{name}} has been invited to the Level 2 challenge."
+      "invite_sent_desc": "{{name}} has been invited to the Level 2 challenge.",
+      "xima_core_required": "XIMA Core Required",
+      "xima_core_required_desc": "You must activate XIMA Core (Level 1) before inviting to Level 2. Create and activate a XIMA Core challenge first."
     }
   },
   "guide": {
@@ -2838,7 +2840,9 @@
       "locked": "Locked",
       "complete_previous": "Complete Level {{level}} First",
       "go_to_level": "Go to Level {{level}}",
-      "no_prerequisite_found": "No prerequisite challenge found. Please contact support."
+      "no_prerequisite_found": "No prerequisite challenge found. Please contact support.",
+      "no_prerequisite_contact": "The prerequisite challenge hasn't been assigned yet. Please check your challenges below or contact the company.",
+      "view_all_challenges": "View All Challenges"
     }
   }
 }

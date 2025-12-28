@@ -91,7 +91,68 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
 
     setSending(true);
     try {
-      // Create the invitation
+      // First, check if candidate has a Level 1 (XIMA Core) invitation for this goal
+      const { data: existingL1 } = await supabase
+        .from('challenge_invitations')
+        .select(`
+          id,
+          business_challenges!challenge_invitations_challenge_id_fkey (
+            rubric
+          )
+        `)
+        .eq('business_id', businessId)
+        .eq('hiring_goal_id', hiringGoalId)
+        .eq('candidate_profile_id', candidateProfileId);
+
+      const hasL1Invitation = existingL1?.some(inv => {
+        const rubric = (inv.business_challenges as any)?.rubric as { type?: string } | null;
+        return getChallengeLevel({ rubric }) === 1;
+      });
+
+      // If no L1 invitation exists, find and create one
+      if (!hasL1Invitation) {
+        // Find active XIMA Core challenge for this goal
+        const { data: ximaCoreChallenges } = await supabase
+          .from('business_challenges')
+          .select('id, rubric')
+          .eq('business_id', businessId)
+          .eq('hiring_goal_id', hiringGoalId)
+          .in('status', ['active', 'published']);
+
+        const l1Challenge = ximaCoreChallenges?.find(c => {
+          const rubric = c.rubric as { type?: string } | null;
+          return getChallengeLevel({ rubric }) === 1;
+        });
+
+        if (!l1Challenge) {
+          // No XIMA Core challenge exists - block the invite
+          toast({
+            title: t('business.level2.xima_core_required'),
+            description: t('business.level2.xima_core_required_desc'),
+            variant: 'destructive',
+          });
+          setSending(false);
+          return;
+        }
+
+        // Create Level 1 invitation first
+        const { error: l1Error } = await supabase
+          .from('challenge_invitations')
+          .insert({
+            business_id: businessId,
+            hiring_goal_id: hiringGoalId,
+            challenge_id: l1Challenge.id,
+            candidate_profile_id: candidateProfileId,
+            status: 'invited',
+            sent_via: ['in_app'],
+          });
+
+        if (l1Error && l1Error.code !== '23505') {
+          console.error('Error creating L1 invitation:', l1Error);
+        }
+      }
+
+      // Now create the Level 2 invitation
       const { error } = await supabase
         .from('challenge_invitations')
         .insert({
@@ -105,7 +166,6 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
 
       if (error) {
         if (error.code === '23505') {
-          // Unique constraint violation - already invited
           toast({
             title: t('business.level2.already_invited'),
             variant: 'destructive',
