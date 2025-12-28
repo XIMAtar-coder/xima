@@ -2843,6 +2843,29 @@
       "no_prerequisite_found": "No prerequisite challenge found. Please contact support.",
       "no_prerequisite_contact": "The prerequisite challenge hasn't been assigned yet. Please check your challenges below or contact the company.",
       "view_all_challenges": "View All Challenges"
+    },
+    "status": {
+      "awaiting_review": "Awaiting Review",
+      "shortlisted": "Shortlisted",
+      "followup_requested": "Follow-up Requested",
+      "not_selected": "Not Selected",
+      "advanced": "Advanced",
+      "answer_followup": "Answer Follow-up"
+    }
+  },
+  "business": {
+    "review": {
+      "shortlisted": "Shortlisted",
+      "passed": "Passed",
+      "followup_pending": "Follow-up Pending",
+      "followup_sent": "Follow-up Sent",
+      "advanced_to_level2": "Advanced to Level 2"
+    },
+    "level2": {
+      "proceed_to_level2": "Proceed to Level 2",
+      "select_challenge": "Select Level 2 Challenge",
+      "pipeline_locked": "Pipeline Requirements Not Met",
+      "pipeline_locked_desc": "The candidate must complete Level 1 and be reviewed before proceeding to Level 2."
     }
   }
 }

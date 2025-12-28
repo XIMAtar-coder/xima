@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Target, Clock, Building2, CheckCircle, ArrowRight, AlertTriangle, Lock } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
+import { Target, Clock, Building2, CheckCircle, ArrowRight, AlertTriangle, Star, MessageSquare, Hourglass } from 'lucide-react';
 import { useCandidateChallenges, CandidateChallenge } from '@/hooks/useCandidateChallenges';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipelineProgress';
@@ -31,11 +30,27 @@ const ChallengeCard: React.FC<{ challenge: CandidateChallenge }> = ({ challenge 
   const { t } = useTranslation();
 
   const getStatusBadge = () => {
-    if (challenge.isLocked) {
-      return <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/30"><Lock className="h-3 w-3 mr-1" />{t('candidate.levels.locked')}</Badge>;
+    // Show review decision status if available
+    if (challenge.reviewDecision === 'shortlist') {
+      return <Badge className="bg-green-500"><Star className="h-3 w-3 mr-1" />{t('candidate.status.shortlisted')}</Badge>;
     }
+    if (challenge.reviewDecision === 'followup') {
+      return <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/30"><MessageSquare className="h-3 w-3 mr-1" />{t('candidate.status.followup_requested')}</Badge>;
+    }
+    if (challenge.reviewDecision === 'pass') {
+      return <Badge variant="secondary">{t('candidate.status.not_selected')}</Badge>;
+    }
+    if (challenge.reviewDecision === 'proceed_level2') {
+      return <Badge className="bg-primary"><ArrowRight className="h-3 w-3 mr-1" />{t('candidate.status.advanced')}</Badge>;
+    }
+    
+    // Show awaiting review if submitted but no decision
+    if (challenge.awaitingReview) {
+      return <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/30"><Hourglass className="h-3 w-3 mr-1" />{t('candidate.status.awaiting_review')}</Badge>;
+    }
+    
     if (challenge.isSubmitted) {
-      return <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/30">{t('challenge.status.submitted')}</Badge>;
+      return <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/30"><CheckCircle className="h-3 w-3 mr-1" />{t('challenge.status.submitted')}</Badge>;
     }
     if (challenge.status === 'declined') {
       return <Badge variant="secondary">{t('challenge.status.declined')}</Badge>;
@@ -52,26 +67,18 @@ const ChallengeCard: React.FC<{ challenge: CandidateChallenge }> = ({ challenge 
     }
   };
 
-  const handleLockedClick = () => {
-    if (challenge.prerequisiteInvitationId) {
-      navigate(`/candidate/challenges/${challenge.prerequisiteInvitationId}`);
-    } else {
-      toast({
-        title: t('candidate.levels.no_prerequisite_found'),
-        variant: 'destructive',
-      });
-      navigate('/profile');
-    }
-  };
-
   const getActionButton = () => {
-    // If locked, show CTA to complete prerequisite
-    if (challenge.isLocked) {
-      const prereqLevel = challenge.level === 2 ? 1 : 2;
+    // If passed, no action
+    if (challenge.reviewDecision === 'pass') {
+      return null;
+    }
+
+    // If follow-up requested, show answer button
+    if (challenge.reviewDecision === 'followup') {
       return (
-        <Button size="sm" variant="outline" onClick={handleLockedClick}>
-          <Lock className="h-4 w-4 mr-1" />
-          {t('candidate.levels.complete_previous', { level: prereqLevel })}
+        <Button size="sm" onClick={() => navigate(`/candidate/challenge-followup/${challenge.invitationId}`)}>
+          <MessageSquare className="h-4 w-4 mr-1" />
+          {t('candidate.status.answer_followup')}
         </Button>
       );
     }
@@ -179,14 +186,14 @@ export const ChallengesForYouSection: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent>
-          {challenges.length === 0 ? (
+          {challenges.filter(c => !c.isLocked).length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <AlertTriangle className="h-10 w-10 mx-auto mb-3 opacity-50" />
               <p>{t('profile.no_challenges_yet')}</p>
             </div>
           ) : (
             <div className="space-y-3">
-              {challenges.slice(0, 5).map(challenge => (
+              {challenges.filter(c => !c.isLocked).slice(0, 5).map(challenge => (
                 <ChallengeCard key={challenge.invitationId} challenge={challenge} />
               ))}
             </div>
