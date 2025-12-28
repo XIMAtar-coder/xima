@@ -774,6 +774,82 @@ export type Database = {
           },
         ]
       }
+      candidate_eligibility: {
+        Row: {
+          business_id: string
+          candidate_profile_id: string
+          certificates_list: string[] | null
+          created_at: string | null
+          education_field: string | null
+          education_level: string | null
+          hiring_goal_id: string
+          id: string
+          language_level: string | null
+          language_notes: string | null
+          notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          business_id: string
+          candidate_profile_id: string
+          certificates_list?: string[] | null
+          created_at?: string | null
+          education_field?: string | null
+          education_level?: string | null
+          hiring_goal_id: string
+          id?: string
+          language_level?: string | null
+          language_notes?: string | null
+          notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          business_id?: string
+          candidate_profile_id?: string
+          certificates_list?: string[] | null
+          created_at?: string | null
+          education_field?: string | null
+          education_level?: string | null
+          hiring_goal_id?: string
+          id?: string
+          language_level?: string | null
+          language_notes?: string | null
+          notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidate_eligibility_candidate_profile_id_fkey"
+            columns: ["candidate_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "candidate_eligibility_candidate_profile_id_fkey"
+            columns: ["candidate_profile_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "candidate_eligibility_hiring_goal_id_fkey"
+            columns: ["hiring_goal_id"]
+            isOneToOne: false
+            referencedRelation: "hiring_goal_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       candidate_shortlist: {
         Row: {
           business_id: string
@@ -1352,6 +1428,44 @@ export type Database = {
           },
         ]
       }
+      eligibility_documents: {
+        Row: {
+          created_at: string | null
+          doc_type: string
+          eligibility_id: string
+          id: string
+          label: string | null
+          storage_path: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string | null
+          doc_type: string
+          eligibility_id: string
+          id?: string
+          label?: string | null
+          storage_path: string
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string | null
+          doc_type?: string
+          eligibility_id?: string
+          id?: string
+          label?: string | null
+          storage_path?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eligibility_documents_eligibility_id_fkey"
+            columns: ["eligibility_id"]
+            isOneToOne: false
+            referencedRelation: "candidate_eligibility"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       flow_questions: {
         Row: {
           flow_id: string
@@ -1495,6 +1609,68 @@ export type Database = {
           work_model?: string | null
         }
         Relationships: []
+      }
+      hiring_goal_requirements: {
+        Row: {
+          allow_override: boolean | null
+          business_id: string
+          certificates_required: boolean | null
+          created_at: string | null
+          education_field: string | null
+          education_required: boolean | null
+          hiring_goal_id: string
+          id: string
+          language: string | null
+          language_level: string | null
+          language_required: boolean | null
+          min_education_level: string | null
+          override_reason_required: boolean | null
+          required_certificates: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          allow_override?: boolean | null
+          business_id: string
+          certificates_required?: boolean | null
+          created_at?: string | null
+          education_field?: string | null
+          education_required?: boolean | null
+          hiring_goal_id: string
+          id?: string
+          language?: string | null
+          language_level?: string | null
+          language_required?: boolean | null
+          min_education_level?: string | null
+          override_reason_required?: boolean | null
+          required_certificates?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          allow_override?: boolean | null
+          business_id?: string
+          certificates_required?: boolean | null
+          created_at?: string | null
+          education_field?: string | null
+          education_required?: boolean | null
+          hiring_goal_id?: string
+          id?: string
+          language?: string | null
+          language_level?: string | null
+          language_required?: boolean | null
+          min_education_level?: string | null
+          override_reason_required?: boolean | null
+          required_certificates?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hiring_goal_requirements_hiring_goal_id_fkey"
+            columns: ["hiring_goal_id"]
+            isOneToOne: true
+            referencedRelation: "hiring_goal_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       i18n_keys: {
         Row: {
@@ -2478,7 +2654,7 @@ export type Database = {
     }
     Enums: {
       ai_message_role: "user" | "assistant" | "system" | "tool"
-      app_role: "admin" | "user" | "business"
+      app_role: "admin" | "user" | "business" | "operator"
       lang_code: "it" | "en" | "es"
       ximatar_type:
         | "lion"
@@ -2621,7 +2797,7 @@ export const Constants = {
   public: {
     Enums: {
       ai_message_role: ["user", "assistant", "system", "tool"],
-      app_role: ["admin", "user", "business"],
+      app_role: ["admin", "user", "business", "operator"],
       lang_code: ["it", "en", "es"],
       ximatar_type: [
         "lion",
