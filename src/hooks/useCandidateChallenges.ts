@@ -130,18 +130,7 @@ export const useCandidateChallenges = () => {
       const challengeList: CandidateChallenge[] = (invitations || []).map(inv => {
         const challenge = inv.business_challenges as any;
         const goal = inv.hiring_goal_drafts as any;
-        const rawRubric = challenge?.rubric as { 
-          type?: string; 
-          isXimaCore?: boolean; 
-          level?: number | string;
-        } | null;
-        
-        // Normalize rubric for level detection
-        const rubric = rawRubric ? {
-          ...rawRubric,
-          isXimaCore: rawRubric.isXimaCore === true,
-          level: typeof rawRubric.level === 'string' ? parseInt(rawRubric.level, 10) : rawRubric.level,
-        } : null;
+        const rubric = challenge?.rubric || null;
         
         const timeInfo = getChallengeTimeInfo(
           challenge?.start_at || null,
@@ -149,7 +138,7 @@ export const useCandidateChallenges = () => {
           challenge?.status || 'active'
         );
 
-        // Determine challenge level
+        // Determine challenge level - getChallengeLevel handles type coercion internally
         const level = getChallengeLevel({ rubric, title: challenge?.title });
         console.log('[useCandidateChallenges] Level detection:', { 
           invId: inv.id, 

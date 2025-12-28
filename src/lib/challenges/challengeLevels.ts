@@ -61,7 +61,7 @@ export interface CandidateLevelProgress {
  * 6. Default → Level 2 (role-specific)
  */
 export function getChallengeLevel(challenge: {
-  rubric?: { type?: string; isXimaCore?: boolean; level?: number } | null;
+  rubric?: { type?: string; isXimaCore?: boolean | string; level?: number | string } | null;
   title?: string;
 }): ChallengeLevel {
   const rubric = challenge?.rubric;
@@ -73,13 +73,14 @@ export function getChallengeLevel(challenge: {
     return 1;
   }
   
-  // Check rubric.isXimaCore flag (used in DB)
-  if (rubric?.isXimaCore === true) {
+  // Check rubric.isXimaCore flag (used in DB) - handle both boolean and string
+  if (rubric?.isXimaCore === true || rubric?.isXimaCore === 'true') {
     return 1;
   }
   
-  // Check rubric.level === 1 (explicit level marker)
-  if (rubric?.level === 1) {
+  // Check rubric.level === 1 (explicit level marker) - handle both number and string
+  const levelNum = typeof rubric?.level === 'string' ? parseInt(rubric.level, 10) : rubric?.level;
+  if (levelNum === 1) {
     return 1;
   }
   
@@ -88,8 +89,8 @@ export function getChallengeLevel(challenge: {
     return 3;
   }
   
-  // Check rubric.level for explicit L3
-  if (rubric?.level === 3) {
+  // Check rubric.level for explicit L3 - use levelNum already computed
+  if (levelNum === 3) {
     return 3;
   }
   

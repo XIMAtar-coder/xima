@@ -162,22 +162,10 @@ export default function ChallengeCompletion() {
 
         const challengeData = invitation.business_challenges as any;
         const goalData = invitation.hiring_goal_drafts as any;
-        // Parse rubric properly - may have isXimaCore, level, type fields
-        const rubric = challengeData?.rubric as { 
-          type?: string; 
-          isXimaCore?: boolean; 
-          level?: number | string;
-        } | null;
-        
-        // Normalize level to number if it's a string
-        const normalizedRubric = rubric ? {
-          ...rubric,
-          isXimaCore: rubric.isXimaCore === true || rubric.isXimaCore === 'true' as any,
-          level: typeof rubric.level === 'string' ? parseInt(rubric.level, 10) : rubric.level,
-        } : null;
-        
-        const level = getChallengeLevel({ rubric: normalizedRubric, title: challengeData?.title });
-        console.log('[ChallengeCompletion] Level detection:', { rubric: normalizedRubric, title: challengeData?.title, detectedLevel: level });
+        // getChallengeLevel now handles type coercion internally
+        const rubric = challengeData?.rubric || null;
+        const level = getChallengeLevel({ rubric, title: challengeData?.title });
+        console.log('[ChallengeCompletion] Level detection:', { rubric, title: challengeData?.title, detectedLevel: level });
 
         setChallenge({
           invitationId: invitation.id,
@@ -225,16 +213,10 @@ export default function ChallengeCompletion() {
         // Build progress from all goal invitations
         const progressData = (goalInvitations || []).map(inv => {
           const bc = inv.business_challenges as any;
-          const invRubric = bc?.rubric as { type?: string; isXimaCore?: boolean; level?: number | string } | null;
-          // Normalize rubric for level detection
-          const normalizedInvRubric = invRubric ? {
-            ...invRubric,
-            isXimaCore: invRubric.isXimaCore === true || invRubric.isXimaCore === 'true' as any,
-            level: typeof invRubric.level === 'string' ? parseInt(invRubric.level, 10) : invRubric.level,
-          } : null;
-          const invLevel = getChallengeLevel({ rubric: normalizedInvRubric, title: bc?.title });
+          const invRubric = bc?.rubric || null;
+          const invLevel = getChallengeLevel({ rubric: invRubric, title: bc?.title });
           const status = submissionMap.get(inv.id) || 'draft';
-          console.log('[ChallengeCompletion] Invitation level:', { invId: inv.id, rubric: normalizedInvRubric, title: bc?.title, level: invLevel, status });
+          console.log('[ChallengeCompletion] Invitation level:', { invId: inv.id, rubric: invRubric, title: bc?.title, level: invLevel, status });
           return { challenge_level: invLevel, status };
         });
 
@@ -246,13 +228,7 @@ export default function ChallengeCompletion() {
           // Find L1 invitation
           const l1Inv = (goalInvitations || []).find(inv => {
             const bc = inv.business_challenges as any;
-            const invRubric = bc?.rubric as { type?: string; isXimaCore?: boolean; level?: number | string } | null;
-            const normRubric = invRubric ? {
-              ...invRubric,
-              isXimaCore: invRubric.isXimaCore === true,
-              level: typeof invRubric.level === 'string' ? parseInt(invRubric.level, 10) : invRubric.level,
-            } : null;
-            return getChallengeLevel({ rubric: normRubric, title: bc?.title }) === 1;
+            return getChallengeLevel({ rubric: bc?.rubric, title: bc?.title }) === 1;
           });
           setPrerequisiteBlock({
             blocked: true,
@@ -262,13 +238,7 @@ export default function ChallengeCompletion() {
         } else if (level === 3 && !progress.completedLevels.includes(2)) {
           const l2Inv = (goalInvitations || []).find(inv => {
             const bc = inv.business_challenges as any;
-            const invRubric = bc?.rubric as { type?: string; isXimaCore?: boolean; level?: number | string } | null;
-            const normRubric = invRubric ? {
-              ...invRubric,
-              isXimaCore: invRubric.isXimaCore === true,
-              level: typeof invRubric.level === 'string' ? parseInt(invRubric.level, 10) : invRubric.level,
-            } : null;
-            return getChallengeLevel({ rubric: normRubric, title: bc?.title }) === 2;
+            return getChallengeLevel({ rubric: bc?.rubric, title: bc?.title }) === 2;
           });
           setPrerequisiteBlock({
             blocked: true,
