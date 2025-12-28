@@ -57,13 +57,20 @@ export function getChallengeLevel(challenge: {
   title?: string;
 }): ChallengeLevel {
   const rubricType = challenge?.rubric?.type;
+  const title = (challenge?.title || '').toLowerCase();
   
+  // Check rubric type first
   if (rubricType === 'xima_core') {
     return 1;
   }
   
   if (rubricType === 'standing_presence' || rubricType === 'video') {
     return 3;
+  }
+  
+  // Fallback: Check title for XIMA Core challenges (DB may have null rubric.type)
+  if (title.includes('xima core') || title.includes('xima-core')) {
+    return 1;
   }
   
   // Default to Level 2 (role-specific) for custom challenges
