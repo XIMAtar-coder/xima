@@ -2635,5 +2635,13 @@
     "invite_with_override": "Invita con Deroga",
     "override_reason": "Motivazione Deroga",
     "invited_with_override": "Invitato con deroga"
+  },
+  "candidate": {
+    "levels": {
+      "locked": "Bloccato",
+      "complete_previous": "Completa prima il Livello {{level}}",
+      "go_to_level": "Vai al Livello {{level}}",
+      "no_prerequisite_found": "Nessuna sfida prerequisita trovata. Contatta il supporto."
+    }
   }
 }
