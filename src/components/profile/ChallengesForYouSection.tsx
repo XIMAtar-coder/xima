@@ -1,17 +1,16 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Target, Clock, Building2, CheckCircle, ArrowRight, AlertTriangle, Star, MessageSquare, Hourglass, AlertCircle } from 'lucide-react';
+import { Target, Clock, Building2, CheckCircle, ArrowRight, AlertTriangle, Star, MessageSquare, Hourglass } from 'lucide-react';
 import { useCandidateChallenges, CandidateChallenge } from '@/hooks/useCandidateChallenges';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipelineProgress';
-import { CHALLENGE_LEVELS, ChallengeLevel } from '@/lib/challenges/challengeLevels';
+import { ChallengeLevel } from '@/lib/challenges/challengeLevels';
 
 const LevelBadge: React.FC<{ level: ChallengeLevel }> = ({ level }) => {
-  const { t } = useTranslation();
   const colors = {
     1: 'bg-primary/10 text-primary border-primary/30',
     2: 'bg-blue-500/10 text-blue-600 border-blue-500/30',
@@ -94,6 +93,8 @@ const ChallengeCard: React.FC<{ challenge: CandidateChallenge }> = ({ challenge 
     if (challenge.status === 'declined' || challenge.timeStatus === 'expired' || challenge.timeStatus === 'archived') {
       return null;
     }
+    
+    // Active challenge - can start or continue
     return (
       <Button size="sm" onClick={() => navigate(`/candidate/challenges/${challenge.invitationId}`)}>
         {t('challenge.open_challenge')}
@@ -147,37 +148,6 @@ export const ChallengesForYouSection: React.FC = () => {
   const { t } = useTranslation();
   const { challenges, loading, activeCount, overallProgress } = useCandidateChallenges();
 
-  // Separate L1 and L2+ challenges - always show L1 if it exists
-  const level1Challenges = useMemo(() => challenges.filter(c => c.level === 1), [challenges]);
-  const higherLevelChallenges = useMemo(() => challenges.filter(c => c.level > 1 && !c.isLocked), [challenges]);
-  
-  // All actionable challenges: L1 (always) + unlocked L2+
-  const actionableChallenges = useMemo(() => {
-    return [...level1Challenges, ...higherLevelChallenges];
-  }, [level1Challenges, higherLevelChallenges]);
-
-  // Detect data inconsistency: L2+ exists without L1 for same business+goal
-  const dataInconsistencies = useMemo(() => {
-    const inconsistencies: { businessId: string; hiringGoalId: string; companyName: string }[] = [];
-    
-    const l2PlusChallenges = challenges.filter(c => c.level >= 2);
-    for (const l2 of l2PlusChallenges) {
-      const hasL1 = level1Challenges.some(
-        l1 => l1.businessId === l2.businessId && l1.hiringGoalId === l2.hiringGoalId
-      );
-      if (!hasL1) {
-        if (!inconsistencies.some(i => i.businessId === l2.businessId && i.hiringGoalId === l2.hiringGoalId)) {
-          inconsistencies.push({
-            businessId: l2.businessId,
-            hiringGoalId: l2.hiringGoalId,
-            companyName: l2.companyName,
-          });
-        }
-      }
-    }
-    return inconsistencies;
-  }, [challenges, level1Challenges]);
-
   if (loading) {
     return (
       <Card>
@@ -197,27 +167,6 @@ export const ChallengesForYouSection: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {/* Data Inconsistency Debug Banner */}
-      {dataInconsistencies.length > 0 && (
-        <Card className="border-amber-500/50 bg-amber-500/10">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm font-medium text-amber-700">
-                  {t('candidate.data_inconsistency_title', 'Data Inconsistency Detected')}
-                </p>
-                <p className="text-xs text-amber-600 mt-1">
-                  {t('candidate.data_inconsistency_desc', 'Level 2 challenge exists without Level 1 for: {{companies}}. Please contact support.', {
-                    companies: dataInconsistencies.map(i => i.companyName).join(', ')
-                  })}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Pipeline Progress - Always show if there are challenges */}
       {challenges.length > 0 && (
         <ChallengePipelineProgress progress={overallProgress} />
@@ -238,14 +187,14 @@ export const ChallengesForYouSection: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent>
-          {actionableChallenges.length === 0 ? (
+          {challenges.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <AlertTriangle className="h-10 w-10 mx-auto mb-3 opacity-50" />
               <p>{t('profile.no_challenges_yet')}</p>
             </div>
           ) : (
             <div className="space-y-3">
-              {actionableChallenges.slice(0, 10).map(challenge => (
+              {challenges.slice(0, 10).map(challenge => (
                 <ChallengeCard key={challenge.invitationId} challenge={challenge} />
               ))}
             </div>

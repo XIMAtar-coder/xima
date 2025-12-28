@@ -26,8 +26,6 @@ export interface CandidateChallenge {
   isSubmitted: boolean;
   level: ChallengeLevel;
   rubricType: string | null;
-  isLocked: boolean;
-  prerequisiteInvitationId: string | null;
   awaitingReview: boolean;
   reviewDecision: string | null;
 }
@@ -127,19 +125,8 @@ export const useCandidateChallenges = () => {
         });
       }
 
-      // Pre-compute level info for all invitations to find prerequisites
-      const invitationLevelMap = new Map<string, { level: ChallengeLevel; businessId: string; hiringGoalId: string }>();
-      (invitations || []).forEach(inv => {
-        const challenge = inv.business_challenges as any;
-        const rubric = challenge?.rubric as { type?: string } | null;
-        const level = getChallengeLevel({ rubric, title: challenge?.title });
-        invitationLevelMap.set(inv.id, {
-          level,
-          businessId: inv.business_id,
-          hiringGoalId: inv.hiring_goal_id,
-        });
-      });
-
+      // Map to challenge list - NO LOCKED LOGIC
+      // If an invitation exists, the DB trigger guarantees prerequisites are met
       const challengeList: CandidateChallenge[] = (invitations || []).map(inv => {
         const challenge = inv.business_challenges as any;
         const goal = inv.hiring_goal_drafts as any;
@@ -154,45 +141,6 @@ export const useCandidateChallenges = () => {
         const level = getChallengeLevel({ rubric, title: challenge?.title });
         const isSubmitted = !!submittedMap[inv.id];
         const reviewDecision = reviewMap[inv.id] || null;
-
-        // Compute if locked - with DB enforcement, L2/L3 invitations only exist if prerequisites are met
-        // So we only lock if the invitation somehow exists but prereq isn't submitted
-        // This is a safety check; with DB triggers this should rarely happen
-        let isLocked = false;
-        let prerequisiteInvitationId: string | null = null;
-        const prerequisiteLevel: ChallengeLevel | null = level === 2 ? 1 : level === 3 ? 2 : null;
-
-        if (prerequisiteLevel) {
-          // Find prerequisite invitation for same business + hiring goal (strict match)
-          let prereqInv = (invitations || []).find(i => {
-            const info = invitationLevelMap.get(i.id);
-            return info &&
-              info.level === prerequisiteLevel &&
-              info.businessId === inv.business_id &&
-              info.hiringGoalId === inv.hiring_goal_id;
-          });
-
-          // Fallback: same business_id only
-          if (!prereqInv) {
-            prereqInv = (invitations || []).find(i => {
-              const info = invitationLevelMap.get(i.id);
-              return info &&
-                info.level === prerequisiteLevel &&
-                info.businessId === inv.business_id;
-            });
-          }
-
-          if (prereqInv) {
-            prerequisiteInvitationId = prereqInv.id;
-            // With DB enforcement, if L2 invite exists, L1 should be submitted
-            // But check anyway for safety
-            if (!submittedMap[prereqInv.id]) {
-              isLocked = true;
-            }
-          }
-          // Note: With DB enforcement, we don't lock if no prereq found because
-          // the invite shouldn't exist without prerequisites being met
-        }
 
         // Awaiting review = submitted but no review decision yet
         const awaitingReview = isSubmitted && !reviewDecision;
@@ -214,8 +162,6 @@ export const useCandidateChallenges = () => {
           isSubmitted,
           level,
           rubricType: rubric?.type || null,
-          isLocked,
-          prerequisiteInvitationId,
           awaitingReview,
           reviewDecision,
         };

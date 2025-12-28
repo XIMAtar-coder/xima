@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { GoalContextHeader } from '@/components/business/GoalContextHeader';
 import { SelectionActionBar } from '@/components/business/SelectionActionBar';
-import { ChallengePickerModal } from '@/components/business/ChallengePickerModal';
+// ChallengePickerModal removed - pipeline always starts with XIMA Core (L1)
 import { XimatarCandidateCard } from '@/components/business/XimatarCandidateCard';
 import { NoChallengeGate } from '@/components/business/NoChallengeGate';
 import { Button } from '@/components/ui/button';
@@ -59,9 +59,7 @@ const GoalCandidates: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
   
-  // Modal state
-  const [showChallengeModal, setShowChallengeModal] = useState(false);
-  const [pendingInviteIds, setPendingInviteIds] = useState<string[]>([]);
+  // Modal state (legacy - keeping for potential future use)
 
   const currentGoal = goals.find(g => g.id === goalId) || null;
   const requiresEligibility = hasRequirements();
@@ -277,74 +275,6 @@ const GoalCandidates: React.FC = () => {
     await fetchCandidates();
   };
 
-  const handleInviteToChallenge = async (profileIds: string[], challengeId: string) => {
-    if (!goalId) return;
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    // Get the challenge level to determine if we need to auto-create L1
-    const { data: selectedChallenge } = await supabase
-      .from('business_challenges')
-      .select('id, rubric')
-      .eq('id', challengeId)
-      .single();
-
-    const selectedLevel = selectedChallenge 
-      ? getChallengeLevel({ rubric: selectedChallenge.rubric as { type?: string } | null })
-      : 2;
-
-    let successCount = 0;
-    for (const profileId of profileIds) {
-      const alreadyInvitedToThis = await supabase
-        .from('challenge_invitations')
-        .select('id')
-        .eq('business_id', user.id)
-        .eq('hiring_goal_id', goalId)
-        .eq('candidate_profile_id', profileId)
-        .eq('challenge_id', challengeId)
-        .maybeSingle();
-
-      // Create the requested invitation if not already invited
-      if (!alreadyInvitedToThis.data) {
-        const { error } = await supabase
-          .from('challenge_invitations')
-          .insert({
-            business_id: user.id,
-            hiring_goal_id: goalId,
-            candidate_profile_id: profileId,
-            challenge_id: challengeId,
-            status: 'invited',
-            sent_via: ['platform']
-          });
-
-        if (error) {
-          // Handle pipeline_locked error from DB trigger
-          if (error.message?.includes('pipeline_locked')) {
-            toast({
-              title: t('business.invite.pipeline_locked', 'Pipeline locked'),
-              description: t('business.invite.pipeline_locked_desc', 'Candidate must complete XIMA Core first.'),
-              variant: 'destructive'
-            });
-          } else if (error.code !== '23505') {
-            console.error('Error inviting:', error);
-          }
-        } else {
-          successCount++;
-        }
-      }
-    }
-
-    if (successCount > 0) {
-      toast({
-        title: t('business.invite.success_title'),
-        description: t('business.invite.success_desc', { count: successCount })
-      });
-    }
-
-    setSelectedIds(new Set());
-    await fetchCandidates();
-  };
-
   // Check if there's an active XIMA Core challenge
   const hasXimaCoreChallenge = activeChallenges.some(c => {
     const rubric = (c as any).rubric as { type?: string } | null;
@@ -353,20 +283,13 @@ const GoalCandidates: React.FC = () => {
 
   const handleBulkInviteClick = () => {
     if (selectedIds.size === 0) return;
-    
-    // Primary action: Invite to XIMA Core (Level 1)
+    // Primary action: Always invite to XIMA Core (Level 1) - the pipeline entry point
     handleInviteToXimaCore(Array.from(selectedIds));
   };
 
   const handleSingleInvite = (profileId: string) => {
-    // Primary action: Invite to XIMA Core (Level 1)
+    // Primary action: Always invite to XIMA Core (Level 1) - the pipeline entry point
     handleInviteToXimaCore([profileId]);
-  };
-
-  const handleChallengeSelect = (challengeId: string) => {
-    handleInviteToChallenge(pendingInviteIds, challengeId);
-    setShowChallengeModal(false);
-    setPendingInviteIds([]);
   };
 
   const getInvitationStatus = (profileId: string): 'none' | 'invited' | 'accepted' => {
@@ -544,14 +467,7 @@ const GoalCandidates: React.FC = () => {
           </TabsContent>
         </Tabs>
 
-        {/* Challenge picker modal */}
-        <ChallengePickerModal
-          open={showChallengeModal}
-          onOpenChange={setShowChallengeModal}
-          challenges={activeChallenges}
-          selectedCount={pendingInviteIds.length}
-          onConfirm={handleChallengeSelect}
-        />
+        {/* Challenge picker modal removed - pipeline always starts with XIMA Core (L1) */}
       </div>
     </BusinessLayout>
   );
