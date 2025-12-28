@@ -575,16 +575,20 @@ export default function ChallengeCompletion() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                {prerequisiteBlock.prerequisiteInvitationId ? (
-                  <Button onClick={() => navigate(`/candidate/challenges/${prerequisiteBlock.prerequisiteInvitationId}`)}>
-                    <ArrowRight className="h-4 w-4 mr-2" />
-                    {t('levels.go_to_prerequisite', { level: prerequisiteBlock.requiredLevel })}
-                  </Button>
-                ) : (
-                  <Button onClick={() => navigate('/profile')}>
-                    {t('common.back_to_profile')}
-                  </Button>
-                )}
+                <Button onClick={() => {
+                  if (prerequisiteBlock.prerequisiteInvitationId) {
+                    navigate(`/candidate/challenges/${prerequisiteBlock.prerequisiteInvitationId}`);
+                  } else {
+                    toast({
+                      title: t('candidate.levels.no_prerequisite_found'),
+                      variant: 'destructive',
+                    });
+                    navigate('/profile');
+                  }
+                }}>
+                  <ArrowRight className="h-4 w-4 mr-2" />
+                  {t('candidate.levels.go_to_level', { level: prerequisiteBlock.requiredLevel })}
+                </Button>
                 <Button variant="outline" onClick={() => navigate('/profile')}>
                   {t('common.back_to_profile')}
                 </Button>

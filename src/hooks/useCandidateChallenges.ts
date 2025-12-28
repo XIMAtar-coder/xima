@@ -16,6 +16,7 @@ export interface CandidateChallenge {
   companyName: string;
   roleTitle: string | null;
   hiringGoalId: string;
+  businessId: string;
   status: 'invited' | 'accepted' | 'declined' | 'submitted';
   timeStatus: 'upcoming' | 'active' | 'expired' | 'archived';
   remainingText: string | null;
@@ -25,6 +26,8 @@ export interface CandidateChallenge {
   isSubmitted: boolean;
   level: ChallengeLevel;
   rubricType: string | null;
+  isLocked: boolean;
+  prerequisiteInvitationId: string | null;
 }
 
 export const useCandidateChallenges = () => {
@@ -111,6 +114,19 @@ export const useCandidateChallenges = () => {
         });
       }
 
+      // Pre-compute level info for all invitations to find prerequisites
+      const invitationLevelMap = new Map<string, { level: ChallengeLevel; businessId: string; hiringGoalId: string }>();
+      (invitations || []).forEach(inv => {
+        const challenge = inv.business_challenges as any;
+        const rubric = challenge?.rubric as { type?: string } | null;
+        const level = getChallengeLevel({ rubric, title: challenge?.title });
+        invitationLevelMap.set(inv.id, {
+          level,
+          businessId: inv.business_id,
+          hiringGoalId: inv.hiring_goal_id,
+        });
+      });
+
       const challengeList: CandidateChallenge[] = (invitations || []).map(inv => {
         const challenge = inv.business_challenges as any;
         const goal = inv.hiring_goal_drafts as any;
@@ -124,6 +140,33 @@ export const useCandidateChallenges = () => {
         // Determine challenge level
         const level = getChallengeLevel({ rubric, title: challenge?.title });
 
+        // Compute if locked (prerequisite not submitted) for same business + hiring goal
+        let isLocked = false;
+        let prerequisiteInvitationId: string | null = null;
+        const prerequisiteLevel: ChallengeLevel | null = level === 2 ? 1 : level === 3 ? 2 : null;
+
+        if (prerequisiteLevel) {
+          // Find prerequisite invitation for same business + hiring goal
+          const prereqInv = (invitations || []).find(i => {
+            const info = invitationLevelMap.get(i.id);
+            return info &&
+              info.level === prerequisiteLevel &&
+              info.businessId === inv.business_id &&
+              info.hiringGoalId === inv.hiring_goal_id;
+          });
+
+          if (prereqInv) {
+            prerequisiteInvitationId = prereqInv.id;
+            // Check if prerequisite is submitted
+            if (!submittedMap[prereqInv.id]) {
+              isLocked = true;
+            }
+          } else {
+            // No prerequisite invitation found - still locked
+            isLocked = true;
+          }
+        }
+
         return {
           invitationId: inv.id,
           challengeId: inv.challenge_id || '',
@@ -131,6 +174,7 @@ export const useCandidateChallenges = () => {
           companyName: businessMap[inv.business_id] || 'Company',
           roleTitle: goal?.role_title || null,
           hiringGoalId: inv.hiring_goal_id,
+          businessId: inv.business_id,
           status: submittedMap[inv.id] ? 'submitted' : (inv.status as 'invited' | 'accepted' | 'declined'),
           timeStatus: timeInfo.timeStatus,
           remainingText: timeInfo.remainingText,
@@ -140,6 +184,8 @@ export const useCandidateChallenges = () => {
           isSubmitted: !!submittedMap[inv.id],
           level,
           rubricType: rubric?.type || null,
+          isLocked,
+          prerequisiteInvitationId,
         };
       });
 

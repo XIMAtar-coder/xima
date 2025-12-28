@@ -2832,5 +2832,13 @@
     "invite_with_override": "Invite with Override",
     "override_reason": "Override Reason",
     "invited_with_override": "Invited with override"
+  },
+  "candidate": {
+    "levels": {
+      "locked": "Locked",
+      "complete_previous": "Complete Level {{level}} First",
+      "go_to_level": "Go to Level {{level}}",
+      "no_prerequisite_found": "No prerequisite challenge found. Please contact support."
+    }
   }
 }

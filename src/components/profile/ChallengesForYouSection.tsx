@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Target, Clock, Building2, CheckCircle, ArrowRight, AlertTriangle } from 'lucide-react';
+import { Target, Clock, Building2, CheckCircle, ArrowRight, AlertTriangle, Lock } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 import { useCandidateChallenges, CandidateChallenge } from '@/hooks/useCandidateChallenges';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipelineProgress';
@@ -30,6 +31,9 @@ const ChallengeCard: React.FC<{ challenge: CandidateChallenge }> = ({ challenge 
   const { t } = useTranslation();
 
   const getStatusBadge = () => {
+    if (challenge.isLocked) {
+      return <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/30"><Lock className="h-3 w-3 mr-1" />{t('candidate.levels.locked')}</Badge>;
+    }
     if (challenge.isSubmitted) {
       return <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/30">{t('challenge.status.submitted')}</Badge>;
     }
@@ -48,7 +52,30 @@ const ChallengeCard: React.FC<{ challenge: CandidateChallenge }> = ({ challenge 
     }
   };
 
+  const handleLockedClick = () => {
+    if (challenge.prerequisiteInvitationId) {
+      navigate(`/candidate/challenges/${challenge.prerequisiteInvitationId}`);
+    } else {
+      toast({
+        title: t('candidate.levels.no_prerequisite_found'),
+        variant: 'destructive',
+      });
+      navigate('/profile');
+    }
+  };
+
   const getActionButton = () => {
+    // If locked, show CTA to complete prerequisite
+    if (challenge.isLocked) {
+      const prereqLevel = challenge.level === 2 ? 1 : 2;
+      return (
+        <Button size="sm" variant="outline" onClick={handleLockedClick}>
+          <Lock className="h-4 w-4 mr-1" />
+          {t('candidate.levels.complete_previous', { level: prereqLevel })}
+        </Button>
+      );
+    }
+
     if (challenge.isSubmitted) {
       return (
         <Button variant="outline" size="sm" onClick={() => navigate(`/candidate/challenges/${challenge.invitationId}`)}>
