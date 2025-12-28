@@ -19,6 +19,7 @@ import { CreateChallengeModal } from '@/components/business/CreateChallengeModal
 import { NoChallengeGate } from '@/components/business/NoChallengeGate';
 import { SelectionActionBar } from '@/components/business/SelectionActionBar';
 import { ChallengePickerModal, type Challenge } from '@/components/business/ChallengePickerModal';
+import { getChallengeLevel } from '@/lib/challenges/challengeLevels';
 import { Link } from 'react-router-dom';
 
 const PAGE_SIZE = 12;
@@ -113,7 +114,7 @@ const BusinessCandidates = () => {
       
       setChallengeLoading(true);
       try {
-        // Get ALL active challenges for this business with goal info
+        // Get ALL active challenges for this business with goal info + rubric for level detection
         const { data, error } = await supabase
           .from('business_challenges')
           .select(`
@@ -121,6 +122,7 @@ const BusinessCandidates = () => {
             title, 
             updated_at, 
             end_at,
+            rubric,
             hiring_goal_id,
             hiring_goal_drafts!business_challenges_hiring_goal_id_fkey (
               role_title
@@ -137,6 +139,7 @@ const BusinessCandidates = () => {
           title: c.title,
           updated_at: c.updated_at,
           end_at: c.end_at,
+          rubric: c.rubric,
           hiring_goal_id: c.hiring_goal_id,
           goal_title: c.hiring_goal_drafts?.role_title || t('business.goals.untitled')
         }));
@@ -164,14 +167,23 @@ const BusinessCandidates = () => {
       try {
         const { data, error } = await supabase
           .from('business_challenges')
-          .select('id, title, updated_at, end_at, hiring_goal_id')
+          .select('id, title, updated_at, end_at, rubric, hiring_goal_id')
           .eq('business_id', user.id)
           .eq('hiring_goal_id', goalId)
           .eq('status', 'active')
           .order('updated_at', { ascending: false });
 
         if (error) throw error;
-        setGoalActiveChallenges(data || []);
+        // Map to Challenge type with proper rubric casting
+        const challenges: Challenge[] = (data || []).map((c: any) => ({
+          id: c.id,
+          title: c.title,
+          updated_at: c.updated_at,
+          end_at: c.end_at,
+          rubric: c.rubric as { type?: string; isXimaCore?: boolean; level?: number } | null,
+          hiring_goal_id: c.hiring_goal_id
+        }));
+        setGoalActiveChallenges(challenges);
       } catch (err) {
         console.error('Error fetching goal challenges:', err);
         setGoalActiveChallenges([]);
@@ -550,47 +562,77 @@ const BusinessCandidates = () => {
     }
   };
 
-  // Handle single invite from card
+  // Find XIMA Core (Level 1) challenge from a list - this is the ONLY entry point
+  const findXimaCoreChallenge = (challenges: Challenge[]): Challenge | undefined => {
+    return challenges.find(c => {
+      const rubric = (c as any).rubric as { type?: string; isXimaCore?: boolean; level?: number } | null;
+      return getChallengeLevel({ rubric, title: c.title }) === 1;
+    });
+  };
+
+  // Handle single invite from card - ALWAYS invites to XIMA Core (Level 1)
   const handleSingleInvite = (candidateProfileId: string) => {
     // Use goal-specific challenges if in goal view, otherwise all active challenges
     const challengesToUse = goalId ? goalActiveChallenges : allActiveChallenges;
     
     if (challengesToUse.length === 0) return;
     
-    if (challengesToUse.length === 1) {
-      const challenge = challengesToUse[0];
-      const goalIdToUse = goalId || challenge.hiring_goal_id!;
-      handleInviteToChallenge(candidateProfileId, challenge.id, goalIdToUse).then(result => {
-        if (result?.success) {
+    // ALWAYS find and use the XIMA Core (Level 1) challenge - this is the pipeline entry point
+    const ximaCore = findXimaCoreChallenge(challengesToUse);
+    
+    if (!ximaCore) {
+      toast({
+        title: t('business.invite.no_xima_core_title', 'No XIMA Core challenge'),
+        description: t('business.invite.no_xima_core_desc', 'Create an active XIMA Core (Level 1) challenge first to invite candidates.'),
+        variant: 'destructive'
+      });
+      return;
+    }
+    
+    const goalIdToUse = goalId || ximaCore.hiring_goal_id!;
+    handleInviteToChallenge(candidateProfileId, ximaCore.id, goalIdToUse).then(result => {
+      if (result?.success) {
+        toast({
+          title: t('business.shortlist.invitation_sent'),
+          description: t('business.shortlist.invitation_sent_desc', { name: 'Candidate' })
+        });
+      } else if (result?.error) {
+        // Check for pipeline_locked error and show clearer message
+        if (result.error.includes('pipeline_locked')) {
           toast({
-            title: t('business.shortlist.invitation_sent'),
-            description: t('business.shortlist.invitation_sent_desc', { name: 'Candidate' })
+            title: t('pipeline.error_title', 'Pipeline Error'),
+            description: t('pipeline.level1_required', 'Candidate must complete XIMA Core (Level 1) first.'),
+            variant: 'destructive'
           });
-        } else if (result?.error) {
+        } else {
           toast({
             title: t('common.error'),
             description: result.error,
             variant: 'destructive'
           });
         }
-      });
-    } else {
-      // Multiple challenges - show picker
-      setSelectedCandidates([candidateProfileId]);
-      setShowChallengePickerModal(true);
-    }
+      }
+    });
   };
 
-  // Handle bulk invite click
+  // Handle bulk invite click - ALWAYS invites to XIMA Core (Level 1)
   const handleBulkInviteClick = () => {
     const challengesToUse = goalId ? goalActiveChallenges : allActiveChallenges;
     if (selectedCandidates.length === 0 || challengesToUse.length === 0) return;
     
-    if (challengesToUse.length === 1) {
-      handleBulkInvite(challengesToUse[0].id, goalId || challengesToUse[0].hiring_goal_id!);
-    } else {
-      setShowChallengePickerModal(true);
+    // ALWAYS find and use the XIMA Core (Level 1) challenge
+    const ximaCore = findXimaCoreChallenge(challengesToUse);
+    
+    if (!ximaCore) {
+      toast({
+        title: t('business.invite.no_xima_core_title', 'No XIMA Core challenge'),
+        description: t('business.invite.no_xima_core_desc', 'Create an active XIMA Core (Level 1) challenge first to invite candidates.'),
+        variant: 'destructive'
+      });
+      return;
     }
+    
+    handleBulkInvite(ximaCore.id, goalId || ximaCore.hiring_goal_id!);
   };
 
   // Perform bulk invite to a specific challenge
