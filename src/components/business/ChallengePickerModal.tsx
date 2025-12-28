@@ -20,6 +20,7 @@ export interface Challenge {
   hiring_goal_id?: string;
   goal_title?: string;
   end_at?: string | null;
+  rubric?: { type?: string; isXimaCore?: boolean; level?: number } | null;
 }
 
 interface ChallengePickerModalProps {
