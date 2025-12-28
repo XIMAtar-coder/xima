@@ -48,7 +48,7 @@ interface ChallengeInfo {
 
 interface ChallengeReview {
   id: string;
-  decision: 'shortlist' | 'followup' | 'pass';
+  decision: 'shortlist' | 'followup' | 'pass' | 'proceed_level2';
   followup_question: string | null;
   created_at: string;
 }
@@ -70,7 +70,7 @@ interface SubmissionDetailDrawerProps {
   challengeId: string;
   hiringGoalId?: string;
   onSignalsGenerated?: () => void;
-  onReviewSaved?: (decision: 'shortlist' | 'followup' | 'pass', followupQuestion?: string | null) => void;
+  onReviewSaved?: (decision: 'shortlist' | 'followup' | 'pass' | 'proceed_level2', followupQuestion?: string | null) => void;
   onLevel2InviteSent?: () => void;
 }
 
@@ -220,7 +220,7 @@ export function SubmissionDetailDrawer({
     }
   };
 
-  const saveReview = async (decision: 'shortlist' | 'followup' | 'pass', question?: string) => {
+  const saveReview = async (decision: 'shortlist' | 'followup' | 'pass' | 'proceed_level2', question?: string) => {
     if (!submission) return;
 
     setSavingReview(true);
@@ -251,7 +251,7 @@ export function SubmissionDetailDrawer({
           .insert(reviewData);
       }
 
-      // If follow-up decision, create/upsert challenge_followups and send notification
+      // If follow-up decision, create/upsert challenge_followups
       if (decision === 'followup' && question) {
         // Upsert followup record
         const { error: followupError } = await supabase
@@ -275,15 +275,6 @@ export function SubmissionDetailDrawer({
             asked_at: new Date().toISOString(),
             answered_at: null,
           });
-
-          // Send notification to candidate
-          await supabase.from('notifications').insert({
-            recipient_id: submission.candidateProfileId,
-            type: 'challenge',
-            title: t('followup.notification_title'),
-            message: t('followup.notification_message'),
-            related_id: submission.invitationId,
-          });
         }
       }
 
@@ -294,11 +285,12 @@ export function SubmissionDetailDrawer({
         created_at: new Date().toISOString(),
       });
 
-      toast({ 
-        title: decision === 'shortlist' ? t('business.review.shortlisted') :
+      const toastTitle = decision === 'shortlist' ? t('business.review.shortlisted') :
                decision === 'pass' ? t('business.review.passed') :
-               t('business.review.followup_sent')
-      });
+               decision === 'proceed_level2' ? t('business.review.advanced_to_level2') :
+               t('business.review.followup_sent');
+      
+      toast({ title: toastTitle });
 
       setFollowupMode(false);
       onReviewSaved?.(decision, question);
@@ -343,6 +335,8 @@ export function SubmissionDetailDrawer({
         return <Badge variant="secondary"><XCircle className="h-3 w-3 mr-1" />{t('business.review.passed')}</Badge>;
       case 'followup':
         return <Badge variant="outline"><MessageSquare className="h-3 w-3 mr-1" />{t('business.review.followup_pending')}</Badge>;
+      case 'proceed_level2':
+        return <Badge className="bg-primary"><ArrowRight className="h-3 w-3 mr-1" />{t('business.review.advanced_to_level2')}</Badge>;
     }
   };
 
@@ -664,7 +658,7 @@ export function SubmissionDetailDrawer({
                       </Button>
                     </div>
 
-                    {/* Invite to Level 2 - Only show for Level 1 submissions */}
+                    {/* Proceed to Level 2 - Only show for Level 1 submissions */}
                     {currentChallengeLevel === 1 && hiringGoalId && (
                       <div className="border-t pt-3">
                         <p className="text-xs text-muted-foreground mb-2">{t('business.level2.next_step')}</p>
@@ -673,7 +667,7 @@ export function SubmissionDetailDrawer({
                             <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
                             {t('business.level2.already_invited')}
                           </Button>
-                        ) : (
+                        ) : currentReview?.decision === 'proceed_level2' ? (
                           <Button 
                             variant="secondary"
                             onClick={() => setLevel2ModalOpen(true)}
@@ -685,7 +679,24 @@ export function SubmissionDetailDrawer({
                             ) : (
                               <ArrowRight className="h-4 w-4 mr-2" />
                             )}
-                            {t('business.level2.invite_to_level2')}
+                            {t('business.level2.select_challenge')}
+                          </Button>
+                        ) : (
+                          <Button 
+                            variant="default"
+                            onClick={async () => {
+                              await saveReview('proceed_level2');
+                              setLevel2ModalOpen(true);
+                            }}
+                            disabled={savingReview || checkingLevel2}
+                            className="w-full"
+                          >
+                            {(savingReview || checkingLevel2) ? (
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            ) : (
+                              <ArrowRight className="h-4 w-4 mr-2" />
+                            )}
+                            {t('business.level2.proceed_to_level2')}
                           </Button>
                         )}
                       </div>

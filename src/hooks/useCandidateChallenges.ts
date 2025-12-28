@@ -28,6 +28,8 @@ export interface CandidateChallenge {
   rubricType: string | null;
   isLocked: boolean;
   prerequisiteInvitationId: string | null;
+  awaitingReview: boolean;
+  reviewDecision: string | null;
 }
 
 export const useCandidateChallenges = () => {
@@ -98,9 +100,10 @@ export const useCandidateChallenges = () => {
         });
       }
 
-      // Check for submitted challenges
+      // Check for submitted challenges and fetch reviews
       const invitationIds = (invitations || []).map(i => i.id);
       let submittedMap: Record<string, boolean> = {};
+      let reviewMap: Record<string, string> = {}; // invitation_id -> decision
       
       if (invitationIds.length > 0) {
         const { data: submissions } = await supabase
@@ -111,6 +114,16 @@ export const useCandidateChallenges = () => {
         
         (submissions || []).forEach(s => {
           submittedMap[s.invitation_id] = true;
+        });
+
+        // Fetch reviews for these invitations (to show status like shortlisted)
+        const { data: reviews } = await supabase
+          .from('challenge_reviews')
+          .select('invitation_id, decision')
+          .in('invitation_id', invitationIds);
+        
+        (reviews || []).forEach(r => {
+          reviewMap[r.invitation_id] = r.decision;
         });
       }
 
@@ -139,8 +152,12 @@ export const useCandidateChallenges = () => {
 
         // Determine challenge level
         const level = getChallengeLevel({ rubric, title: challenge?.title });
+        const isSubmitted = !!submittedMap[inv.id];
+        const reviewDecision = reviewMap[inv.id] || null;
 
-        // Compute if locked (prerequisite not submitted) for same business + hiring goal
+        // Compute if locked - with DB enforcement, L2/L3 invitations only exist if prerequisites are met
+        // So we only lock if the invitation somehow exists but prereq isn't submitted
+        // This is a safety check; with DB triggers this should rarely happen
         let isLocked = false;
         let prerequisiteInvitationId: string | null = null;
         const prerequisiteLevel: ChallengeLevel | null = level === 2 ? 1 : level === 3 ? 2 : null;
@@ -155,7 +172,7 @@ export const useCandidateChallenges = () => {
               info.hiringGoalId === inv.hiring_goal_id;
           });
 
-          // Fallback: same business_id only (in case hiring_goal_id mismatches)
+          // Fallback: same business_id only
           if (!prereqInv) {
             prereqInv = (invitations || []).find(i => {
               const info = invitationLevelMap.get(i.id);
@@ -167,15 +184,18 @@ export const useCandidateChallenges = () => {
 
           if (prereqInv) {
             prerequisiteInvitationId = prereqInv.id;
-            // Check if prerequisite is submitted
+            // With DB enforcement, if L2 invite exists, L1 should be submitted
+            // But check anyway for safety
             if (!submittedMap[prereqInv.id]) {
               isLocked = true;
             }
-          } else {
-            // No prerequisite invitation found - still locked
-            isLocked = true;
           }
+          // Note: With DB enforcement, we don't lock if no prereq found because
+          // the invite shouldn't exist without prerequisites being met
         }
+
+        // Awaiting review = submitted but no review decision yet
+        const awaitingReview = isSubmitted && !reviewDecision;
 
         return {
           invitationId: inv.id,
@@ -185,17 +205,19 @@ export const useCandidateChallenges = () => {
           roleTitle: goal?.role_title || null,
           hiringGoalId: inv.hiring_goal_id,
           businessId: inv.business_id,
-          status: submittedMap[inv.id] ? 'submitted' : (inv.status as 'invited' | 'accepted' | 'declined'),
+          status: isSubmitted ? 'submitted' : (inv.status as 'invited' | 'accepted' | 'declined'),
           timeStatus: timeInfo.timeStatus,
           remainingText: timeInfo.remainingText,
           startAt: challenge?.start_at || null,
           endAt: challenge?.end_at || null,
           createdAt: inv.created_at,
-          isSubmitted: !!submittedMap[inv.id],
+          isSubmitted,
           level,
           rubricType: rubric?.type || null,
           isLocked,
           prerequisiteInvitationId,
+          awaitingReview,
+          reviewDecision,
         };
       });
 
