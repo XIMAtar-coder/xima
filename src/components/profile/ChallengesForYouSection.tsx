@@ -165,10 +165,49 @@ export const ChallengesForYouSection: React.FC = () => {
     );
   }
 
+  // PIPELINE FIX: Filter to only show actionable challenges
+  // Level 1: Always show if invited
+  // Level 2/3: Only show if Level 1 is submitted for same hiring goal
+  const actionableChallenges = challenges.filter(challenge => {
+    // Level 1 is ALWAYS actionable
+    if (challenge.level === 1) {
+      return true;
+    }
+    
+    // For Level 2/3: Check if Level 1 is submitted for the same hiring goal
+    const l1ForGoal = challenges.find(c => 
+      c.hiringGoalId === challenge.hiringGoalId && 
+      c.level === 1
+    );
+    
+    // Only show Level 2/3 if Level 1 exists AND is submitted
+    // AND the review decision allows progression (proceed_level2 for L2)
+    if (challenge.level === 2) {
+      return l1ForGoal?.isSubmitted && l1ForGoal?.reviewDecision === 'proceed_level2';
+    }
+    
+    // For Level 3, require Level 2 submitted and approved
+    if (challenge.level === 3) {
+      const l2ForGoal = challenges.find(c => 
+        c.hiringGoalId === challenge.hiringGoalId && 
+        c.level === 2
+      );
+      return l2ForGoal?.isSubmitted && l2ForGoal?.reviewDecision === 'proceed_level3';
+    }
+    
+    return false;
+  });
+
+  const activeActionableCount = actionableChallenges.filter(c => 
+    c.timeStatus === 'active' && 
+    !c.isSubmitted && 
+    c.status !== 'declined'
+  ).length;
+
   return (
     <div className="space-y-4">
       {/* Pipeline Progress - Always show if there are challenges */}
-      {challenges.length > 0 && (
+      {actionableChallenges.length > 0 && (
         <ChallengePipelineProgress progress={overallProgress} />
       )}
       
@@ -179,22 +218,22 @@ export const ChallengesForYouSection: React.FC = () => {
               <Target className="h-5 w-5 text-primary" />
               {t('profile.challenges_for_you')}
             </CardTitle>
-            {activeCount > 0 && (
+            {activeActionableCount > 0 && (
               <Badge variant="secondary" className="bg-primary/20 text-primary">
-                {activeCount} {t('profile.active')}
+                {activeActionableCount} {t('profile.active')}
               </Badge>
             )}
           </div>
         </CardHeader>
         <CardContent>
-          {challenges.length === 0 ? (
+          {actionableChallenges.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <AlertTriangle className="h-10 w-10 mx-auto mb-3 opacity-50" />
               <p>{t('profile.no_challenges_yet')}</p>
             </div>
           ) : (
             <div className="space-y-3">
-              {challenges.slice(0, 10).map(challenge => (
+              {actionableChallenges.slice(0, 10).map(challenge => (
                 <ChallengeCard key={challenge.invitationId} challenge={challenge} />
               ))}
             </div>
