@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useHiringGoalRequirements } from '@/hooks/useHiringGoalRequirements';
 import { supabase } from '@/integrations/supabase/client';
+import { getChallengeLevel } from '@/lib/challenges/challengeLevels';
 import { Users, Target, RefreshCw, Bookmark } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -210,18 +211,73 @@ const GoalCandidates: React.FC = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    let successCount = 0;
-    for (const profileId of profileIds) {
-      // Check if already invited
-      const { data: existing } = await supabase
-        .from('challenge_invitations')
-        .select('id')
+    // Get the challenge level to determine if we need to auto-create L1
+    const { data: selectedChallenge } = await supabase
+      .from('business_challenges')
+      .select('id, rubric')
+      .eq('id', challengeId)
+      .single();
+
+    const selectedLevel = selectedChallenge 
+      ? getChallengeLevel({ rubric: selectedChallenge.rubric as { type?: string } | null })
+      : 2;
+
+    // If inviting to L2+, find L1 challenge for auto-creation
+    let l1ChallengeId: string | null = null;
+    if (selectedLevel >= 2) {
+      const { data: allChallenges } = await supabase
+        .from('business_challenges')
+        .select('id, rubric')
         .eq('business_id', user.id)
         .eq('hiring_goal_id', goalId)
-        .eq('candidate_profile_id', profileId)
-        .maybeSingle();
+        .in('status', ['active', 'published']);
 
-      if (!existing) {
+      const l1Challenge = allChallenges?.find(c => {
+        const rubric = c.rubric as { type?: string } | null;
+        return getChallengeLevel({ rubric }) === 1;
+      });
+      l1ChallengeId = l1Challenge?.id || null;
+    }
+
+    let successCount = 0;
+    for (const profileId of profileIds) {
+      // Check existing invitations for this candidate
+      const { data: existingInvitations } = await supabase
+        .from('challenge_invitations')
+        .select(`
+          id,
+          challenge_id,
+          business_challenges!challenge_invitations_challenge_id_fkey (
+            rubric
+          )
+        `)
+        .eq('business_id', user.id)
+        .eq('hiring_goal_id', goalId)
+        .eq('candidate_profile_id', profileId);
+
+      const hasL1 = existingInvitations?.some(inv => {
+        const rubric = (inv.business_challenges as any)?.rubric as { type?: string } | null;
+        return getChallengeLevel({ rubric }) === 1;
+      });
+
+      const alreadyInvitedToThis = existingInvitations?.some(inv => inv.challenge_id === challengeId);
+
+      // If inviting to L2+ and no L1 exists, auto-create L1 invitation
+      if (selectedLevel >= 2 && !hasL1 && l1ChallengeId) {
+        await supabase
+          .from('challenge_invitations')
+          .insert({
+            business_id: user.id,
+            hiring_goal_id: goalId,
+            candidate_profile_id: profileId,
+            challenge_id: l1ChallengeId,
+            status: 'invited',
+            sent_via: ['platform']
+          });
+      }
+
+      // Create the requested invitation if not already invited
+      if (!alreadyInvitedToThis) {
         const { error } = await supabase
           .from('challenge_invitations')
           .insert({

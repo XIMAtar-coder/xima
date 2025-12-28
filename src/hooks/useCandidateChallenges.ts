@@ -146,14 +146,24 @@ export const useCandidateChallenges = () => {
         const prerequisiteLevel: ChallengeLevel | null = level === 2 ? 1 : level === 3 ? 2 : null;
 
         if (prerequisiteLevel) {
-          // Find prerequisite invitation for same business + hiring goal
-          const prereqInv = (invitations || []).find(i => {
+          // Find prerequisite invitation for same business + hiring goal (strict match)
+          let prereqInv = (invitations || []).find(i => {
             const info = invitationLevelMap.get(i.id);
             return info &&
               info.level === prerequisiteLevel &&
               info.businessId === inv.business_id &&
               info.hiringGoalId === inv.hiring_goal_id;
           });
+
+          // Fallback: same business_id only (in case hiring_goal_id mismatches)
+          if (!prereqInv) {
+            prereqInv = (invitations || []).find(i => {
+              const info = invitationLevelMap.get(i.id);
+              return info &&
+                info.level === prerequisiteLevel &&
+                info.businessId === inv.business_id;
+            });
+          }
 
           if (prereqInv) {
             prerequisiteInvitationId = prereqInv.id;

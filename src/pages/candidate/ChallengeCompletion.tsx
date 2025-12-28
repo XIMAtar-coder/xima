@@ -552,6 +552,8 @@ export default function ChallengeCompletion() {
 
   // Blocked by prerequisite - show gating UI
   if (prerequisiteBlock?.blocked) {
+    const hasPrerequisite = !!prerequisiteBlock.prerequisiteInvitationId;
+    
     return (
       <MainLayout>
         <div className="container max-w-3xl py-8 space-y-6">
@@ -571,24 +573,23 @@ export default function ChallengeCompletion() {
                 })}
               </p>
               <p className="text-sm text-muted-foreground mb-6">
-                {t(`levels.requires_level_${prerequisiteBlock.requiredLevel}`)}
+                {hasPrerequisite 
+                  ? t(`levels.requires_level_${prerequisiteBlock.requiredLevel}`)
+                  : t('candidate.levels.no_prerequisite_contact')}
               </p>
               
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Button onClick={() => {
-                  if (prerequisiteBlock.prerequisiteInvitationId) {
-                    navigate(`/candidate/challenges/${prerequisiteBlock.prerequisiteInvitationId}`);
-                  } else {
-                    toast({
-                      title: t('candidate.levels.no_prerequisite_found'),
-                      variant: 'destructive',
-                    });
-                    navigate('/profile');
-                  }
-                }}>
-                  <ArrowRight className="h-4 w-4 mr-2" />
-                  {t('candidate.levels.go_to_level', { level: prerequisiteBlock.requiredLevel })}
-                </Button>
+                {hasPrerequisite ? (
+                  <Button onClick={() => navigate(`/candidate/challenges/${prerequisiteBlock.prerequisiteInvitationId}`)}>
+                    <ArrowRight className="h-4 w-4 mr-2" />
+                    {t('candidate.levels.go_to_level', { level: prerequisiteBlock.requiredLevel })}
+                  </Button>
+                ) : (
+                  <Button onClick={() => navigate('/profile')}>
+                    <ArrowRight className="h-4 w-4 mr-2" />
+                    {t('candidate.levels.view_all_challenges')}
+                  </Button>
+                )}
                 <Button variant="outline" onClick={() => navigate('/profile')}>
                   {t('common.back_to_profile')}
                 </Button>

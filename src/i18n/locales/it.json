@@ -2109,7 +2109,9 @@
       "updated": "Aggiornato",
       "send_invite": "Invia Invito",
       "invite_sent": "Invito Inviato",
-      "invite_sent_desc": "{{name}} è stato invitato alla challenge Livello 2."
+      "invite_sent_desc": "{{name}} è stato invitato alla challenge Livello 2.",
+      "xima_core_required": "XIMA Core Richiesto",
+      "xima_core_required_desc": "Devi attivare XIMA Core (Livello 1) prima di invitare al Livello 2. Crea e attiva prima una XIMA Core challenge."
     }
   },
   "guide": {
@@ -2641,7 +2643,9 @@
       "locked": "Bloccato",
       "complete_previous": "Completa prima il Livello {{level}}",
       "go_to_level": "Vai al Livello {{level}}",
-      "no_prerequisite_found": "Nessuna sfida prerequisita trovata. Contatta il supporto."
+      "no_prerequisite_found": "Nessuna sfida prerequisita trovata. Contatta il supporto.",
+      "no_prerequisite_contact": "La sfida prerequisita non è ancora stata assegnata. Controlla le tue sfide qui sotto o contatta l'azienda.",
+      "view_all_challenges": "Vedi Tutte le Sfide"
     }
   }
 }
