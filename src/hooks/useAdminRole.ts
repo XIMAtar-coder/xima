@@ -5,45 +5,49 @@ import { useUser } from '../context/UserContext';
 export const useAdminRole = () => {
   const { user, isAuthenticated } = useUser();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isOperator, setIsOperator] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkAdminRole = async () => {
+    const checkRoles = async () => {
       if (!isAuthenticated || !user?.id) {
-        console.log('Admin check: Not authenticated or no user ID', { isAuthenticated, userId: user?.id });
+        console.log('Role check: Not authenticated or no user ID', { isAuthenticated, userId: user?.id });
         setIsAdmin(false);
+        setIsOperator(false);
         setLoading(false);
         return;
       }
 
       try {
-        console.log('Admin check: Checking role for user:', user.id);
+        console.log('Role check: Checking roles for user:', user.id);
         
-        // Query user_roles table to check if user has admin role
+        // Query user_roles table to check all roles for this user
         const { data, error } = await supabase
           .from('user_roles')
           .select('role')
-          .eq('user_id', user.id)
-          .eq('role', 'admin')
-          .maybeSingle();
+          .eq('user_id', user.id);
 
         if (error) {
-          console.error('Error checking admin role:', error);
+          console.error('Error checking roles:', error);
           setIsAdmin(false);
+          setIsOperator(false);
         } else {
-          console.log('Admin check result:', { data, isAdmin: !!data });
-          setIsAdmin(!!data);
+          const roles = data?.map(r => r.role) || [];
+          console.log('Role check result:', { roles });
+          setIsAdmin(roles.includes('admin'));
+          setIsOperator(roles.includes('operator') || roles.includes('admin'));
         }
       } catch (error) {
-        console.error('Error checking admin role:', error);
+        console.error('Error checking roles:', error);
         setIsAdmin(false);
+        setIsOperator(false);
       } finally {
         setLoading(false);
       }
     };
 
-    checkAdminRole();
+    checkRoles();
   }, [isAuthenticated, user?.id]);
 
-  return { isAdmin, loading };
+  return { isAdmin, isOperator, loading };
 };
