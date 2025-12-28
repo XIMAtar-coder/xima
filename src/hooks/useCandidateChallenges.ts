@@ -130,7 +130,19 @@ export const useCandidateChallenges = () => {
       const challengeList: CandidateChallenge[] = (invitations || []).map(inv => {
         const challenge = inv.business_challenges as any;
         const goal = inv.hiring_goal_drafts as any;
-        const rubric = challenge?.rubric as { type?: string } | null;
+        const rawRubric = challenge?.rubric as { 
+          type?: string; 
+          isXimaCore?: boolean; 
+          level?: number | string;
+        } | null;
+        
+        // Normalize rubric for level detection
+        const rubric = rawRubric ? {
+          ...rawRubric,
+          isXimaCore: rawRubric.isXimaCore === true,
+          level: typeof rawRubric.level === 'string' ? parseInt(rawRubric.level, 10) : rawRubric.level,
+        } : null;
+        
         const timeInfo = getChallengeTimeInfo(
           challenge?.start_at || null,
           challenge?.end_at || null,
@@ -139,6 +151,12 @@ export const useCandidateChallenges = () => {
 
         // Determine challenge level
         const level = getChallengeLevel({ rubric, title: challenge?.title });
+        console.log('[useCandidateChallenges] Level detection:', { 
+          invId: inv.id, 
+          title: challenge?.title,
+          rubric,
+          level 
+        });
         const isSubmitted = !!submittedMap[inv.id];
         const reviewDecision = reviewMap[inv.id] || null;
 
