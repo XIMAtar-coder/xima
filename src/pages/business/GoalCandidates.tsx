@@ -215,8 +215,9 @@ const GoalCandidates: React.FC = () => {
       .in('status', ['active', 'published']);
 
     const l1Challenge = allChallenges?.find(c => {
-      const rubric = c.rubric as { type?: string } | null;
-      return getChallengeLevel({ rubric }) === 1;
+      // Pass rubric and title for full detection
+      const rubric = c.rubric as { type?: string; isXimaCore?: boolean; level?: number } | null;
+      return getChallengeLevel({ rubric, title: c.title }) === 1;
     });
     return l1Challenge || null;
   };
@@ -277,8 +278,8 @@ const GoalCandidates: React.FC = () => {
 
   // Check if there's an active XIMA Core challenge
   const hasXimaCoreChallenge = activeChallenges.some(c => {
-    const rubric = (c as any).rubric as { type?: string } | null;
-    return getChallengeLevel({ rubric }) === 1;
+    const rubric = (c as any).rubric as { type?: string; isXimaCore?: boolean; level?: number } | null;
+    return getChallengeLevel({ rubric, title: c.title }) === 1;
   });
 
   const handleBulkInviteClick = () => {

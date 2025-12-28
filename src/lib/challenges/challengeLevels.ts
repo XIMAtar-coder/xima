@@ -51,25 +51,50 @@ export interface CandidateLevelProgress {
 
 /**
  * Determines which level a challenge belongs to based on its type/rubric
+ * 
+ * Detection priority:
+ * 1. rubric.type === 'xima_core' → Level 1
+ * 2. rubric.isXimaCore === true → Level 1
+ * 3. rubric.level === 1 → Level 1
+ * 4. title contains 'xima core' → Level 1
+ * 5. rubric.type in ['standing_presence', 'video'] → Level 3
+ * 6. Default → Level 2 (role-specific)
  */
 export function getChallengeLevel(challenge: {
-  rubric?: { type?: string } | null;
+  rubric?: { type?: string; isXimaCore?: boolean; level?: number } | null;
   title?: string;
 }): ChallengeLevel {
-  const rubricType = challenge?.rubric?.type;
+  const rubric = challenge?.rubric;
   const title = (challenge?.title || '').toLowerCase();
   
-  // Check rubric type first
-  if (rubricType === 'xima_core') {
+  // LEVEL 1: XIMA Core detection (multiple indicators)
+  // Check rubric.type === 'xima_core'
+  if (rubric?.type === 'xima_core') {
     return 1;
   }
   
-  if (rubricType === 'standing_presence' || rubricType === 'video') {
+  // Check rubric.isXimaCore flag (used in DB)
+  if (rubric?.isXimaCore === true) {
+    return 1;
+  }
+  
+  // Check rubric.level === 1 (explicit level marker)
+  if (rubric?.level === 1) {
+    return 1;
+  }
+  
+  // LEVEL 3: Standing presence / video challenges
+  if (rubric?.type === 'standing_presence' || rubric?.type === 'video') {
     return 3;
   }
   
-  // Fallback: Check title for XIMA Core challenges (DB may have null rubric.type)
-  if (title.includes('xima core') || title.includes('xima-core')) {
+  // Check rubric.level for explicit L3
+  if (rubric?.level === 3) {
+    return 3;
+  }
+  
+  // FALLBACK: Check title for XIMA Core (last resort)
+  if (title.includes('xima core') || title.includes('xima-core') || title.includes('ximacore')) {
     return 1;
   }
   
