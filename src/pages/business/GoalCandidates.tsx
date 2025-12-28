@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
+import { useHiringGoalRequirements } from '@/hooks/useHiringGoalRequirements';
 import { supabase } from '@/integrations/supabase/client';
 import { Users, Target, RefreshCw, Bookmark } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -44,12 +45,14 @@ const GoalCandidates: React.FC = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { goals, loading: goalsLoading } = useHiringGoals();
+  const { requirements, hasRequirements } = useHiringGoalRequirements(goalId);
 
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [shortlistedIds, setShortlistedIds] = useState<Set<string>>(new Set());
   const [invitedIds, setInvitedIds] = useState<Set<string>>(new Set());
   const [acceptedIds, setAcceptedIds] = useState<Set<string>>(new Set());
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [eligibleIds, setEligibleIds] = useState<Set<string>>(new Set());
   const [activeChallenges, setActiveChallenges] = useState<ActiveChallenge[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
@@ -59,6 +62,7 @@ const GoalCandidates: React.FC = () => {
   const [pendingInviteIds, setPendingInviteIds] = useState<string[]>([]);
 
   const currentGoal = goals.find(g => g.id === goalId) || null;
+  const requiresEligibility = hasRequirements();
 
   const fetchCandidates = useCallback(async () => {
     if (!goalId) return;
@@ -130,6 +134,15 @@ const GoalCandidates: React.FC = () => {
         .eq('status', 'active');
 
       setActiveChallenges(challengeData || []);
+
+      // Fetch eligibility statuses for candidates
+      const { data: eligibilityData } = await supabase
+        .from('candidate_eligibility')
+        .select('candidate_profile_id, status')
+        .eq('hiring_goal_id', goalId)
+        .eq('status', 'eligible');
+
+      setEligibleIds(new Set(eligibilityData?.map(e => e.candidate_profile_id) || []));
     } catch (error) {
       console.error('Error loading candidates:', error);
     } finally {
@@ -283,6 +296,22 @@ const GoalCandidates: React.FC = () => {
     return 'none';
   };
 
+  const getInviteDisabledReason = (profileId: string): string | undefined => {
+    if (activeChallenges.length === 0) {
+      return t('business.invite.no_challenge_desc');
+    }
+    if (requiresEligibility && !eligibleIds.has(profileId)) {
+      return t('eligibility.not_verified');
+    }
+    return undefined;
+  };
+
+  const isInviteDisabled = (profileId: string): boolean => {
+    if (activeChallenges.length === 0) return true;
+    if (requiresEligibility && !eligibleIds.has(profileId)) return true;
+    return false;
+  };
+
   const filteredCandidates = activeTab === 'saved'
     ? candidates.filter(c => shortlistedIds.has(c.profile_id))
     : candidates;
@@ -391,8 +420,8 @@ const GoalCandidates: React.FC = () => {
                   isSelected={selectedIds.has(candidate.profile_id)}
                   showSaveButton={true}
                   invitationStatus={getInvitationStatus(candidate.profile_id)}
-                  inviteDisabled={activeChallenges.length === 0}
-                  inviteDisabledReason={activeChallenges.length === 0 ? t('business.invite.no_challenge_desc') : undefined}
+                  inviteDisabled={isInviteDisabled(candidate.profile_id)}
+                  inviteDisabledReason={getInviteDisabledReason(candidate.profile_id)}
                   onSelect={(checked) => toggleSelection(candidate.profile_id, checked)}
                   onToggleShortlist={() => toggleShortlist(candidate.profile_id)}
                   onInviteToChallenge={() => handleSingleInvite(candidate.profile_id)}
@@ -425,8 +454,8 @@ const GoalCandidates: React.FC = () => {
                   isSelected={selectedIds.has(candidate.profile_id)}
                   showSaveButton={true}
                   invitationStatus={getInvitationStatus(candidate.profile_id)}
-                  inviteDisabled={activeChallenges.length === 0}
-                  inviteDisabledReason={activeChallenges.length === 0 ? t('business.invite.no_challenge_desc') : undefined}
+                  inviteDisabled={isInviteDisabled(candidate.profile_id)}
+                  inviteDisabledReason={getInviteDisabledReason(candidate.profile_id)}
                   onSelect={(checked) => toggleSelection(candidate.profile_id, checked)}
                   onToggleShortlist={() => toggleShortlist(candidate.profile_id)}
                   onInviteToChallenge={() => handleSingleInvite(candidate.profile_id)}
