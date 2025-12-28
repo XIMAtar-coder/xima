@@ -1962,6 +1962,10 @@
       "success_desc": "Successfully invited {{count}} candidate(s)",
       "no_challenge_title": "No Active Challenges",
       "no_challenge_desc": "Create and activate a challenge first",
+      "no_xima_core_title": "No XIMA Core Challenge",
+      "no_xima_core_desc": "Create an active XIMA Core (Level 1) challenge first.",
+      "pipeline_locked": "Pipeline Locked",
+      "pipeline_locked_desc": "Candidate must complete XIMA Core (Level 1) first.",
       "activate_first": "Activate a challenge first",
       "go_to_challenges": "Go to Challenges"
     },
@@ -2851,7 +2855,9 @@
       "not_selected": "Not Selected",
       "advanced": "Advanced",
       "answer_followup": "Answer Follow-up"
-    }
+    },
+    "data_inconsistency_title": "Data Inconsistency Detected",
+    "data_inconsistency_desc": "Level 2 challenge exists without Level 1 for: {{companies}}. Please contact support."
   },
   "business": {
     "review": {

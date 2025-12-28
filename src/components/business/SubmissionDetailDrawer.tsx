@@ -658,8 +658,8 @@ export function SubmissionDetailDrawer({
                       </Button>
                     </div>
 
-                    {/* Proceed to Level 2 - Only show for Level 1 submissions */}
-                    {currentChallengeLevel === 1 && hiringGoalId && (
+                    {/* Proceed to Level 2 - Only show for Level 1 submissions that have been submitted */}
+                    {currentChallengeLevel === 1 && hiringGoalId && submission.submissionStatus === 'submitted' && (
                       <div className="border-t pt-3">
                         <p className="text-xs text-muted-foreground mb-2">{t('business.level2.next_step')}</p>
                         {alreadyInvitedToLevel2 ? (
