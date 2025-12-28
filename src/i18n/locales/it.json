@@ -2646,6 +2646,16 @@
       "no_prerequisite_found": "Nessuna sfida prerequisita trovata. Contatta il supporto.",
       "no_prerequisite_contact": "La sfida prerequisita non è ancora stata assegnata. Controlla le tue sfide qui sotto o contatta l'azienda.",
       "view_all_challenges": "Vedi Tutte le Sfide"
-    }
+    },
+    "status": {
+      "awaiting_review": "In Attesa di Revisione",
+      "shortlisted": "Selezionato",
+      "followup_requested": "Follow-up Richiesto",
+      "not_selected": "Non Selezionato",
+      "advanced": "Avanzato",
+      "answer_followup": "Rispondi al Follow-up"
+    },
+    "data_inconsistency_title": "Incoerenza Dati Rilevata",
+    "data_inconsistency_desc": "Esiste una sfida di Livello 2 senza Livello 1 per: {{companies}}. Contatta il supporto."
   }
 }

@@ -38,6 +38,7 @@ interface ActiveChallenge {
   id: string;
   title: string;
   updated_at: string;
+  rubric?: unknown;
 }
 
 const GoalCandidates: React.FC = () => {
@@ -126,10 +127,10 @@ const GoalCandidates: React.FC = () => {
       setInvitedIds(invited);
       setAcceptedIds(accepted);
 
-      // Fetch active challenges for this goal
+      // Fetch active challenges for this goal (include rubric for level detection)
       const { data: challengeData } = await supabase
         .from('business_challenges')
-        .select('id, title, updated_at')
+        .select('id, title, updated_at, rubric')
         .eq('business_id', user.id)
         .eq('hiring_goal_id', goalId)
         .eq('status', 'active');
@@ -206,85 +207,59 @@ const GoalCandidates: React.FC = () => {
 
   const clearSelection = () => setSelectedIds(new Set());
 
-  const handleInviteToChallenge = async (profileIds: string[], challengeId: string) => {
+  // Find the active XIMA Core (Level 1) challenge for this goal
+  const getXimaCoreChallenge = async (userId: string) => {
+    const { data: allChallenges } = await supabase
+      .from('business_challenges')
+      .select('id, rubric, title')
+      .eq('business_id', userId)
+      .eq('hiring_goal_id', goalId)
+      .in('status', ['active', 'published']);
+
+    const l1Challenge = allChallenges?.find(c => {
+      const rubric = c.rubric as { type?: string } | null;
+      return getChallengeLevel({ rubric }) === 1;
+    });
+    return l1Challenge || null;
+  };
+
+  // Invite candidates to XIMA Core (Level 1) - primary action
+  const handleInviteToXimaCore = async (profileIds: string[]) => {
     if (!goalId) return;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    // Get the challenge level to determine if we need to auto-create L1
-    const { data: selectedChallenge } = await supabase
-      .from('business_challenges')
-      .select('id, rubric')
-      .eq('id', challengeId)
-      .single();
-
-    const selectedLevel = selectedChallenge 
-      ? getChallengeLevel({ rubric: selectedChallenge.rubric as { type?: string } | null })
-      : 2;
-
-    // If inviting to L2+, find L1 challenge for auto-creation
-    let l1ChallengeId: string | null = null;
-    if (selectedLevel >= 2) {
-      const { data: allChallenges } = await supabase
-        .from('business_challenges')
-        .select('id, rubric')
-        .eq('business_id', user.id)
-        .eq('hiring_goal_id', goalId)
-        .in('status', ['active', 'published']);
-
-      const l1Challenge = allChallenges?.find(c => {
-        const rubric = c.rubric as { type?: string } | null;
-        return getChallengeLevel({ rubric }) === 1;
+    const l1Challenge = await getXimaCoreChallenge(user.id);
+    
+    if (!l1Challenge) {
+      toast({
+        title: t('business.invite.no_xima_core_title', 'No XIMA Core challenge'),
+        description: t('business.invite.no_xima_core_desc', 'Create an active XIMA Core (Level 1) challenge first.'),
+        variant: 'destructive'
       });
-      l1ChallengeId = l1Challenge?.id || null;
+      return;
     }
 
     let successCount = 0;
     for (const profileId of profileIds) {
-      // Check existing invitations for this candidate
-      const { data: existingInvitations } = await supabase
+      // Check if already invited to this L1 challenge
+      const { data: existingInvitation } = await supabase
         .from('challenge_invitations')
-        .select(`
-          id,
-          challenge_id,
-          business_challenges!challenge_invitations_challenge_id_fkey (
-            rubric
-          )
-        `)
+        .select('id')
         .eq('business_id', user.id)
         .eq('hiring_goal_id', goalId)
-        .eq('candidate_profile_id', profileId);
+        .eq('candidate_profile_id', profileId)
+        .eq('challenge_id', l1Challenge.id)
+        .maybeSingle();
 
-      const hasL1 = existingInvitations?.some(inv => {
-        const rubric = (inv.business_challenges as any)?.rubric as { type?: string } | null;
-        return getChallengeLevel({ rubric }) === 1;
-      });
-
-      const alreadyInvitedToThis = existingInvitations?.some(inv => inv.challenge_id === challengeId);
-
-      // If inviting to L2+ and no L1 exists, auto-create L1 invitation
-      if (selectedLevel >= 2 && !hasL1 && l1ChallengeId) {
-        await supabase
-          .from('challenge_invitations')
-          .insert({
-            business_id: user.id,
-            hiring_goal_id: goalId,
-            candidate_profile_id: profileId,
-            challenge_id: l1ChallengeId,
-            status: 'invited',
-            sent_via: ['platform']
-          });
-      }
-
-      // Create the requested invitation if not already invited
-      if (!alreadyInvitedToThis) {
+      if (!existingInvitation) {
         const { error } = await supabase
           .from('challenge_invitations')
           .insert({
             business_id: user.id,
             hiring_goal_id: goalId,
             candidate_profile_id: profileId,
-            challenge_id: challengeId,
+            challenge_id: l1Challenge.id,
             status: 'invited',
             sent_via: ['platform']
           });
@@ -302,42 +277,90 @@ const GoalCandidates: React.FC = () => {
     await fetchCandidates();
   };
 
+  const handleInviteToChallenge = async (profileIds: string[], challengeId: string) => {
+    if (!goalId) return;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // Get the challenge level to determine if we need to auto-create L1
+    const { data: selectedChallenge } = await supabase
+      .from('business_challenges')
+      .select('id, rubric')
+      .eq('id', challengeId)
+      .single();
+
+    const selectedLevel = selectedChallenge 
+      ? getChallengeLevel({ rubric: selectedChallenge.rubric as { type?: string } | null })
+      : 2;
+
+    let successCount = 0;
+    for (const profileId of profileIds) {
+      const alreadyInvitedToThis = await supabase
+        .from('challenge_invitations')
+        .select('id')
+        .eq('business_id', user.id)
+        .eq('hiring_goal_id', goalId)
+        .eq('candidate_profile_id', profileId)
+        .eq('challenge_id', challengeId)
+        .maybeSingle();
+
+      // Create the requested invitation if not already invited
+      if (!alreadyInvitedToThis.data) {
+        const { error } = await supabase
+          .from('challenge_invitations')
+          .insert({
+            business_id: user.id,
+            hiring_goal_id: goalId,
+            candidate_profile_id: profileId,
+            challenge_id: challengeId,
+            status: 'invited',
+            sent_via: ['platform']
+          });
+
+        if (error) {
+          // Handle pipeline_locked error from DB trigger
+          if (error.message?.includes('pipeline_locked')) {
+            toast({
+              title: t('business.invite.pipeline_locked', 'Pipeline locked'),
+              description: t('business.invite.pipeline_locked_desc', 'Candidate must complete XIMA Core first.'),
+              variant: 'destructive'
+            });
+          } else if (error.code !== '23505') {
+            console.error('Error inviting:', error);
+          }
+        } else {
+          successCount++;
+        }
+      }
+    }
+
+    if (successCount > 0) {
+      toast({
+        title: t('business.invite.success_title'),
+        description: t('business.invite.success_desc', { count: successCount })
+      });
+    }
+
+    setSelectedIds(new Set());
+    await fetchCandidates();
+  };
+
+  // Check if there's an active XIMA Core challenge
+  const hasXimaCoreChallenge = activeChallenges.some(c => {
+    const rubric = (c as any).rubric as { type?: string } | null;
+    return getChallengeLevel({ rubric }) === 1;
+  });
+
   const handleBulkInviteClick = () => {
     if (selectedIds.size === 0) return;
     
-    if (activeChallenges.length === 0) {
-      toast({
-        title: t('business.invite.no_challenge_title'),
-        description: t('business.invite.no_challenge_desc'),
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    if (activeChallenges.length === 1) {
-      handleInviteToChallenge(Array.from(selectedIds), activeChallenges[0].id);
-    } else {
-      setPendingInviteIds(Array.from(selectedIds));
-      setShowChallengeModal(true);
-    }
+    // Primary action: Invite to XIMA Core (Level 1)
+    handleInviteToXimaCore(Array.from(selectedIds));
   };
 
   const handleSingleInvite = (profileId: string) => {
-    if (activeChallenges.length === 0) {
-      toast({
-        title: t('business.invite.no_challenge_title'),
-        description: t('business.invite.no_challenge_desc'),
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    if (activeChallenges.length === 1) {
-      handleInviteToChallenge([profileId], activeChallenges[0].id);
-    } else {
-      setPendingInviteIds([profileId]);
-      setShowChallengeModal(true);
-    }
+    // Primary action: Invite to XIMA Core (Level 1)
+    handleInviteToXimaCore([profileId]);
   };
 
   const handleChallengeSelect = (challengeId: string) => {
