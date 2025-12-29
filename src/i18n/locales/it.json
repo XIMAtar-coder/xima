@@ -2723,5 +2723,23 @@
       "signals_generated": "Segnali generati",
       "framing": "Inquadramento"
     }
+  },
+  "signals": {
+    "panel_title": "Segnali XIMA",
+    "panel_description": "Come questo candidato affronta le decisioni — pattern, non punteggi",
+    "decision_framing": "Inquadramento Decisionale",
+    "agency_ownership": "Iniziativa e Responsabilità",
+    "ambiguity_handling": "Gestione dell'Ambiguità",
+    "impact_orientation": "Orientamento all'Impatto",
+    "communication_clarity": "Chiarezza Comunicativa",
+    "contextual_summary": "Riepilogo",
+    "observed_tradeoffs": "Trade-off Osservati",
+    "confidence_low": "Bassa confidenza",
+    "confidence_medium": "Media confidenza",
+    "confidence_high": "Alta confidenza",
+    "reflection_title": "Come È Apparso il Tuo Approccio",
+    "reflection_description": "Cosa rivela questa risposta sul tuo stile",
+    "reflection_prompt": "Riflette il modo in cui lavori di solito?",
+    "reflection_prompt_helper": "Prenditi un momento per considerare se questo corrisponde al tuo tipico approccio decisionale."
   }
 }

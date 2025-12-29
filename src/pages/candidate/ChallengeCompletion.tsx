@@ -15,8 +15,9 @@ import { toast } from '@/hooks/use-toast';
 import { Clock, CheckCircle, AlertTriangle, Timer, Loader2, Save, Send, ArrowRight, Target } from 'lucide-react';
 import { getChallengeTimeInfo, ChallengeTimeStatus } from '@/utils/challengeTimeUtils';
 import MainLayout from '@/components/layout/MainLayout';
-import { computeSignals } from '@/lib/signals/computeSignals';
+import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipelineProgress';
+import { CandidateReflectionPanel } from '@/components/signals/CandidateReflectionPanel';
 import { 
   ChallengeLevel, 
   getChallengeLevel, 
@@ -83,6 +84,7 @@ export default function ChallengeCompletion() {
   const [submissionId, setSubmissionId] = useState<string | null>(null);
   const [submissionStatus, setSubmissionStatus] = useState<'draft' | 'submitted'>('draft');
   const [submittedAt, setSubmittedAt] = useState<string | null>(null);
+  const [submittedSignals, setSubmittedSignals] = useState<SignalsPayload | null>(null);
   const [prerequisiteBlock, setPrerequisiteBlock] = useState<PrerequisiteBlock | null>(null);
   const [levelProgress, setLevelProgress] = useState<CandidateLevelProgress | null>(null);
 
@@ -260,6 +262,12 @@ export default function ChallengeCompletion() {
           setSubmissionId(submission.id);
           setSubmissionStatus(submission.status as 'draft' | 'submitted');
           setSubmittedAt(submission.submitted_at);
+          
+          // Load signals for reflection panel
+          if (submission.signals_payload) {
+            setSubmittedSignals(submission.signals_payload as unknown as SignalsPayload);
+          }
+          
           const existingPayload = (submission.status === 'submitted' 
             ? submission.submitted_payload 
             : submission.draft_payload) as Record<string, any> | null;
@@ -568,31 +576,40 @@ export default function ChallengeCompletion() {
     );
   }
 
-  // Submitted confirmation - human-friendly awaiting review state
+  // Submitted confirmation - human-friendly awaiting review state with reflection
   if (submissionStatus === 'submitted') {
     return (
       <MainLayout>
-        <div className="container max-w-3xl py-8">
+        <div className="container max-w-3xl py-8 space-y-6">
+          {/* Status Card */}
           <Card>
-            <CardContent className="py-12 text-center">
-              <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+            <CardContent className="py-8 text-center">
+              <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
               <Badge variant="outline" className="mb-4 bg-blue-500/10 text-blue-600 border-blue-500/30">
                 {t('candidate.status.awaiting_review')}
               </Badge>
-              <h2 className="text-2xl font-bold mb-2">{t('candidate.challenge.submitted_title')}</h2>
-              <p className="text-muted-foreground mb-4">
+              <h2 className="text-xl font-bold mb-2">{t('candidate.challenge.submitted_title')}</h2>
+              <p className="text-muted-foreground mb-2">
                 {t('candidate.challenge.submitted_helper', { company: challenge?.companyName || '' })}
               </p>
               {submittedAt && (
-                <p className="text-sm text-muted-foreground mb-6">
+                <p className="text-sm text-muted-foreground">
                   {t('challenge.submitted_at')}: {new Date(submittedAt).toLocaleString()}
                 </p>
               )}
-              <Button onClick={() => navigate('/profile')} className="mt-2">
-                {t('common.back_to_profile')}
-              </Button>
             </CardContent>
           </Card>
+          
+          {/* Candidate Reflection Panel - Show signals */}
+          {submittedSignals && (
+            <CandidateReflectionPanel signals={submittedSignals} />
+          )}
+          
+          <div className="flex justify-center">
+            <Button onClick={() => navigate('/profile')} variant="outline">
+              {t('common.back_to_profile')}
+            </Button>
+          </div>
         </div>
       </MainLayout>
     );
