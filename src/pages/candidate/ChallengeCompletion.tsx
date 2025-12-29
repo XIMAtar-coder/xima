@@ -12,7 +12,7 @@ import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
-import { Clock, CheckCircle, AlertTriangle, Timer, Loader2, Save, Send, Lock, ArrowRight } from 'lucide-react';
+import { Clock, CheckCircle, AlertTriangle, Timer, Loader2, Save, Send, ArrowRight, Target } from 'lucide-react';
 import { getChallengeTimeInfo, ChallengeTimeStatus } from '@/utils/challengeTimeUtils';
 import MainLayout from '@/components/layout/MainLayout';
 import { computeSignals } from '@/lib/signals/computeSignals';
@@ -551,50 +551,16 @@ export default function ChallengeCompletion() {
     );
   }
 
-  // Blocked by prerequisite - show gating UI
+  // Blocked by prerequisite - DO NOT show technical blocking UI
+  // Instead, silently redirect to profile - candidates should never see "locked" states
   if (prerequisiteBlock?.blocked) {
-    const hasPrerequisite = !!prerequisiteBlock.prerequisiteInvitationId;
-    
     return (
       <MainLayout>
-        <div className="container max-w-3xl py-8 space-y-6">
-          {/* Pipeline Progress */}
-          {levelProgress && (
-            <ChallengePipelineProgress progress={levelProgress} />
-          )}
-          
-          <Card className="border-amber-500/30 bg-amber-500/5">
+        <div className="container max-w-3xl py-8">
+          <Card>
             <CardContent className="py-12 text-center">
-              <Lock className="h-16 w-16 text-amber-500 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">{t('levels.blocked_title')}</h2>
-              <p className="text-muted-foreground mb-2">
-                {t('levels.blocked_message', { 
-                  current: challenge.level, 
-                  required: prerequisiteBlock.requiredLevel 
-                })}
-              </p>
-              <p className="text-sm text-muted-foreground mb-6">
-                {hasPrerequisite 
-                  ? t(`levels.requires_level_${prerequisiteBlock.requiredLevel}`)
-                  : t('candidate.levels.no_prerequisite_contact')}
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                {hasPrerequisite ? (
-                  <Button onClick={() => navigate(`/candidate/challenges/${prerequisiteBlock.prerequisiteInvitationId}`)}>
-                    <ArrowRight className="h-4 w-4 mr-2" />
-                    {t('candidate.levels.go_to_level', { level: prerequisiteBlock.requiredLevel })}
-                  </Button>
-                ) : (
-                  <Button onClick={() => navigate('/profile')}>
-                    <ArrowRight className="h-4 w-4 mr-2" />
-                    {t('candidate.levels.view_all_challenges')}
-                  </Button>
-                )}
-                <Button variant="outline" onClick={() => navigate('/profile')}>
-                  {t('common.back_to_profile')}
-                </Button>
-              </div>
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">{t('common.loading')}</p>
             </CardContent>
           </Card>
         </div>
@@ -602,7 +568,7 @@ export default function ChallengeCompletion() {
     );
   }
 
-  // Submitted confirmation
+  // Submitted confirmation - human-friendly awaiting review state
   if (submissionStatus === 'submitted') {
     return (
       <MainLayout>
@@ -610,14 +576,19 @@ export default function ChallengeCompletion() {
           <Card>
             <CardContent className="py-12 text-center">
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">{t('challenge.submitted_title')}</h2>
-              <p className="text-muted-foreground mb-4">{t('challenge.submitted_desc')}</p>
+              <Badge variant="outline" className="mb-4 bg-blue-500/10 text-blue-600 border-blue-500/30">
+                {t('candidate.status.awaiting_review')}
+              </Badge>
+              <h2 className="text-2xl font-bold mb-2">{t('candidate.challenge.submitted_title')}</h2>
+              <p className="text-muted-foreground mb-4">
+                {t('candidate.challenge.submitted_helper', { company: challenge?.companyName || '' })}
+              </p>
               {submittedAt && (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground mb-6">
                   {t('challenge.submitted_at')}: {new Date(submittedAt).toLocaleString()}
                 </p>
               )}
-              <Button onClick={() => navigate('/profile')} className="mt-6">
+              <Button onClick={() => navigate('/profile')} className="mt-2">
                 {t('common.back_to_profile')}
               </Button>
             </CardContent>
@@ -630,6 +601,28 @@ export default function ChallengeCompletion() {
   return (
     <MainLayout>
       <div className="container max-w-3xl py-8 space-y-6">
+        {/* XIMA Core Challenge Intro Block */}
+        {challenge.level === 1 && (
+          <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
+            <CardContent className="py-6">
+              <div className="flex items-start gap-4">
+                <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                  <Target className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold mb-1">{t('candidate.challenge.xima_core_title')}</h2>
+                  <p className="text-muted-foreground mb-3">
+                    {t('candidate.challenge.xima_core_desc')}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t('candidate.challenge.xima_core_helper')}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Header with status */}
         <Card>
           <CardHeader>
@@ -641,9 +634,6 @@ export default function ChallengeCompletion() {
                 )}
               </div>
               <div className="flex flex-col items-end gap-2">
-                <Badge variant={isExpired ? 'destructive' : isUpcoming ? 'secondary' : 'default'}>
-                  {isExpired ? t('challenge.status.expired') : isUpcoming ? t('challenge.status.upcoming') : t('challenge.status.active')}
-                </Badge>
                 {timeInfo?.remainingText && !isExpired && (
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
                     <Clock className="h-4 w-4" />
@@ -654,26 +644,6 @@ export default function ChallengeCompletion() {
             </div>
           </CardHeader>
         </Card>
-
-        {/* Expired banner */}
-        {isExpired && (
-          <Card className="border-destructive bg-destructive/10">
-            <CardContent className="py-4 flex items-center gap-3">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-              <span className="text-destructive font-medium">{t('challenge.expired_message')}</span>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Upcoming banner */}
-        {isUpcoming && (
-          <Card className="border-amber-500 bg-amber-500/10">
-            <CardContent className="py-4 flex items-center gap-3">
-              <Timer className="h-5 w-5 text-amber-600" />
-              <span className="text-amber-700 font-medium">{t('challenge.upcoming_message')}</span>
-            </CardContent>
-          </Card>
-        )}
 
         {/* Progress */}
         {!isReadOnly && (

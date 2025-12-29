@@ -646,7 +646,7 @@ export function SubmissionDetailDrawer({
                         disabled={savingReview}
                       >
                         <MessageSquare className="h-4 w-4 mr-2" />
-                        {t('business.review.request_followup')}
+                        {t('business.review.request_clarification')}
                       </Button>
                       <Button
                         variant="ghost"
@@ -654,18 +654,17 @@ export function SubmissionDetailDrawer({
                         disabled={savingReview}
                       >
                         <XCircle className="h-4 w-4 mr-2" />
-                        {t('business.review.pass')}
+                        {t('business.review.close_application')}
                       </Button>
                     </div>
 
-                    {/* Proceed to Level 2 - Only show for Level 1 submissions that have been submitted */}
+                    {/* Proceed to next step - Only show for Level 1 submissions that have been submitted */}
                     {currentChallengeLevel === 1 && hiringGoalId && submission.submissionStatus === 'submitted' && (
                       <div className="border-t pt-3">
-                        <p className="text-xs text-muted-foreground mb-2">{t('business.level2.next_step')}</p>
                         {alreadyInvitedToLevel2 ? (
                           <Button variant="outline" disabled className="w-full">
                             <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
-                            {t('business.level2.already_invited')}
+                            {t('business.review.next_step_sent')}
                           </Button>
                         ) : currentReview?.decision === 'proceed_level2' ? (
                           <Button 
@@ -679,25 +678,30 @@ export function SubmissionDetailDrawer({
                             ) : (
                               <ArrowRight className="h-4 w-4 mr-2" />
                             )}
-                            {t('business.level2.select_challenge')}
+                            {t('business.review.select_next_challenge')}
                           </Button>
                         ) : (
-                          <Button 
-                            variant="default"
-                            onClick={async () => {
-                              await saveReview('proceed_level2');
-                              setLevel2ModalOpen(true);
-                            }}
-                            disabled={savingReview || checkingLevel2}
-                            className="w-full"
-                          >
-                            {(savingReview || checkingLevel2) ? (
-                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            ) : (
-                              <ArrowRight className="h-4 w-4 mr-2" />
-                            )}
-                            {t('business.level2.proceed_to_level2')}
-                          </Button>
+                          <div>
+                            <Button 
+                              variant="default"
+                              onClick={async () => {
+                                await saveReview('proceed_level2');
+                                setLevel2ModalOpen(true);
+                              }}
+                              disabled={savingReview || checkingLevel2}
+                              className="w-full"
+                            >
+                              {(savingReview || checkingLevel2) ? (
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              ) : (
+                                <ArrowRight className="h-4 w-4 mr-2" />
+                              )}
+                              {t('business.review.proceed_to_next_step')}
+                            </Button>
+                            <p className="text-xs text-muted-foreground mt-2">
+                              {t('business.review.proceed_helper')}
+                            </p>
+                          </div>
                         )}
                       </div>
                     )}

@@ -2849,12 +2849,31 @@
       "view_all_challenges": "View All Challenges"
     },
     "status": {
-      "awaiting_review": "Awaiting Review",
+      "awaiting_review": "Awaiting review",
       "shortlisted": "Shortlisted",
-      "followup_requested": "Follow-up Requested",
-      "not_selected": "Not Selected",
-      "advanced": "Advanced",
-      "answer_followup": "Answer Follow-up"
+      "followup_requested": "Clarification requested",
+      "not_selected": "Not selected",
+      "advanced": "Advanced to next step",
+      "answer_followup": "Answer question",
+      "action_required": "Action required"
+    },
+    "challenges": {
+      "empty_title": "No challenges right now",
+      "empty_desc": "When companies invite you to challenges, they will appear here."
+    },
+    "challenge": {
+      "start_challenge": "Start challenge",
+      "xima_core_title": "XIMA Core Challenge",
+      "xima_core_desc": "This challenge helps the company understand how you think and make decisions.",
+      "xima_core_helper": "There are no right or wrong answers — we're interested in your reasoning.",
+      "submitted_title": "Response sent",
+      "submitted_helper": "Your response was sent to {{company}}. They are reviewing it now. You'll be notified as soon as they respond."
+    },
+    "notifications": {
+      "submission_received": "Your response was sent to {{company}}. They are reviewing it now.",
+      "advanced": "You've advanced to the next step with {{company}}.",
+      "shortlisted": "{{company}} shortlisted your profile. You're still in the process.",
+      "passed": "{{company}} decided not to proceed this time. Keep going — your profile stays active."
     },
     "data_inconsistency_title": "Data Inconsistency Detected",
     "data_inconsistency_desc": "Level 2 challenge exists without Level 1 for: {{companies}}. Please contact support."
@@ -2862,16 +2881,48 @@
   "business": {
     "review": {
       "shortlisted": "Shortlisted",
-      "passed": "Passed",
-      "followup_pending": "Follow-up Pending",
-      "followup_sent": "Follow-up Sent",
-      "advanced_to_level2": "Advanced to Level 2"
+      "passed": "Closed",
+      "followup_pending": "Clarification pending",
+      "followup_sent": "Clarification sent",
+      "advanced_to_level2": "Advanced to next step",
+      "actions_title": "Actions",
+      "shortlist": "Shortlist",
+      "request_clarification": "Request clarification",
+      "close_application": "Close application",
+      "proceed_to_next_step": "Proceed to next step",
+      "proceed_helper": "This unlocks the next challenge level for the candidate.",
+      "next_step_sent": "Next step sent",
+      "select_next_challenge": "Select next challenge",
+      "current_decision": "Current decision",
+      "followup_question_label": "Your question",
+      "followup_placeholder": "What would you like to clarify?",
+      "send_followup": "Send question"
+    },
+    "responses": {
+      "status_invited": "Invited — waiting",
+      "status_awaiting_review": "Awaiting review",
+      "status_advanced": "Advanced to next step",
+      "status_closed": "Closed",
+      "status_needs_decision": "Needs decision"
     },
     "level2": {
-      "proceed_to_level2": "Proceed to Level 2",
-      "select_challenge": "Select Level 2 Challenge",
+      "proceed_to_level2": "Proceed to next step",
+      "select_challenge": "Select next challenge",
       "pipeline_locked": "Pipeline Requirements Not Met",
-      "pipeline_locked_desc": "The candidate must complete Level 1 and be reviewed before proceeding to Level 2."
+      "pipeline_locked_desc": "The candidate must complete Level 1 and be reviewed before proceeding to Level 2.",
+      "already_invited": "Already invited to next step",
+      "next_step": "Next step"
+    },
+    "insights": {
+      "decision_profile": "Decision Profile",
+      "strengths": "Strengths",
+      "risks": "Risks",
+      "role_fit": "Role Fit",
+      "view_detailed_scores": "View detailed scores"
+    },
+    "compare": {
+      "signals_generated": "Signals generated",
+      "framing": "Framing"
     }
   }
 }
