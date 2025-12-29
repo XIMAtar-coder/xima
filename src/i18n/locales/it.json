@@ -2648,14 +2648,80 @@
       "view_all_challenges": "Vedi Tutte le Sfide"
     },
     "status": {
-      "awaiting_review": "In Attesa di Revisione",
-      "shortlisted": "Selezionato",
-      "followup_requested": "Follow-up Richiesto",
-      "not_selected": "Non Selezionato",
-      "advanced": "Avanzato",
-      "answer_followup": "Rispondi al Follow-up"
+      "awaiting_review": "In attesa di revisione",
+      "shortlisted": "Nella shortlist",
+      "followup_requested": "Chiarimento richiesto",
+      "not_selected": "Non selezionato",
+      "advanced": "Avanzato al prossimo step",
+      "answer_followup": "Rispondi alla domanda",
+      "action_required": "Azione richiesta"
+    },
+    "challenges": {
+      "empty_title": "Nessuna sfida al momento",
+      "empty_desc": "Quando le aziende ti inviteranno a delle sfide, appariranno qui."
+    },
+    "challenge": {
+      "start_challenge": "Inizia sfida",
+      "xima_core_title": "XIMA Core Challenge",
+      "xima_core_desc": "Questa sfida aiuta l'azienda a capire come pensi e prendi decisioni.",
+      "xima_core_helper": "Non ci sono risposte giuste o sbagliate — ci interessa il tuo ragionamento.",
+      "submitted_title": "Risposta inviata",
+      "submitted_helper": "La tua risposta è stata inviata a {{company}}. La stanno valutando ora. Riceverai una notifica appena risponderanno."
+    },
+    "notifications": {
+      "submission_received": "La tua risposta è stata inviata a {{company}}. La stanno valutando.",
+      "advanced": "Sei avanzato al prossimo step con {{company}}.",
+      "shortlisted": "{{company}} ha inserito il tuo profilo nella shortlist. Sei ancora nel processo.",
+      "passed": "{{company}} ha deciso di non procedere questa volta. Continua — il tuo profilo resta attivo."
     },
     "data_inconsistency_title": "Incoerenza Dati Rilevata",
     "data_inconsistency_desc": "Esiste una sfida di Livello 2 senza Livello 1 per: {{companies}}. Contatta il supporto."
+  },
+  "business": {
+    "review": {
+      "shortlisted": "Nella shortlist",
+      "passed": "Chiuso",
+      "followup_pending": "Chiarimento in attesa",
+      "followup_sent": "Chiarimento inviato",
+      "advanced_to_level2": "Avanzato al prossimo step",
+      "actions_title": "Azioni",
+      "shortlist": "Aggiungi a shortlist",
+      "request_clarification": "Richiedi chiarimento",
+      "close_application": "Chiudi candidatura",
+      "proceed_to_next_step": "Procedi al prossimo step",
+      "proceed_helper": "Questo sblocca il prossimo livello di sfida per il candidato.",
+      "next_step_sent": "Prossimo step inviato",
+      "select_next_challenge": "Seleziona prossima sfida",
+      "current_decision": "Decisione attuale",
+      "followup_question_label": "La tua domanda",
+      "followup_placeholder": "Cosa vorresti chiarire?",
+      "send_followup": "Invia domanda"
+    },
+    "responses": {
+      "status_invited": "Invitato — in attesa",
+      "status_awaiting_review": "In attesa di revisione",
+      "status_advanced": "Avanzato al prossimo step",
+      "status_closed": "Chiuso",
+      "status_needs_decision": "Richiede decisione"
+    },
+    "level2": {
+      "proceed_to_level2": "Procedi al prossimo step",
+      "select_challenge": "Seleziona prossima sfida",
+      "pipeline_locked": "Requisiti Pipeline Non Soddisfatti",
+      "pipeline_locked_desc": "Il candidato deve completare il Livello 1 ed essere valutato prima di procedere al Livello 2.",
+      "already_invited": "Già invitato al prossimo step",
+      "next_step": "Prossimo step"
+    },
+    "insights": {
+      "decision_profile": "Profilo Decisionale",
+      "strengths": "Punti di Forza",
+      "risks": "Rischi",
+      "role_fit": "Adattamento al Ruolo",
+      "view_detailed_scores": "Vedi punteggi dettagliati"
+    },
+    "compare": {
+      "signals_generated": "Segnali generati",
+      "framing": "Inquadramento"
+    }
   }
 }
