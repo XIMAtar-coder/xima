@@ -2922,7 +2922,9 @@
     },
     "compare": {
       "signals_generated": "Signals generated",
-      "framing": "Framing"
+      "framing": "Framing",
+      "compare_selected": "Compare {{count}} candidates",
+      "max_3": "Select max 3 candidates"
     }
   },
   "signals": {
@@ -2941,6 +2943,24 @@
     "reflection_title": "How Your Approach Came Across",
     "reflection_description": "What this response reveals about your style",
     "reflection_prompt": "Does this reflect how you usually work?",
-    "reflection_prompt_helper": "Take a moment to consider if this matches your typical approach to decision-making."
+    "reflection_prompt_helper": "Take a moment to consider if this matches your typical approach to decision-making.",
+    "compare_title": "Compare Candidates",
+    "compare_description": "Side-by-side comparison of decision-making patterns — different styles, not better or worse",
+    "compare_disclaimer": "This comparison highlights differences in approach, not rankings. Every candidate brings unique strengths.",
+    "decision_confidence_title": "Decision Confidence",
+    "decision_confidence_description": "Do you have enough signal to decide?",
+    "whats_clear": "What's Clear",
+    "whats_uncertain": "What's Uncertain",
+    "what_to_test_next": "Suggested Next Step",
+    "premium": {
+      "title": "XIMA Premium Insights",
+      "description": "Advanced decision intelligence signals",
+      "teaser": "Unlock deeper insights about this candidate's patterns",
+      "unlock_cta": "Unlock Premium Insights",
+      "decision_consistency": "Decision Consistency",
+      "learning_velocity": "Learning Velocity",
+      "risk_awareness": "Risk Awareness",
+      "strategic_depth": "Strategic Depth"
+    }
   }
 }
