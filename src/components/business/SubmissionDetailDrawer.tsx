@@ -35,6 +35,8 @@ import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import { interpretSignals, signalTooltips, flagTooltips, CompanyContext } from '@/lib/signals/interpretSignals';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { XimaSignalsPanel } from '@/components/signals/XimaSignalsPanel';
+import { DecisionConfidencePanel } from '@/components/signals/DecisionConfidencePanel';
+import { PremiumSignalsPanel } from '@/components/signals/PremiumSignalsPanel';
 import type { InvitationWithSubmission } from '@/hooks/useChallengeResponsesData';
 import { Level2InviteModal } from './Level2InviteModal';
 import { ChallengeLevel, getChallengeLevel } from '@/lib/challenges/challengeLevels';
@@ -383,6 +385,12 @@ export function SubmissionDetailDrawer({
           {localSignals ? (
             <>
               <XimaSignalsPanel signals={localSignals} />
+              
+              {/* Decision Confidence Panel */}
+              <DecisionConfidencePanel signals={localSignals} />
+              
+              {/* XIMA Premium Signals */}
+              <PremiumSignalsPanel signals={localSignals} isPremium={false} />
 
               {/* Numeric Signals (De-emphasized - Collapsible Detail) */}
               <TooltipProvider>

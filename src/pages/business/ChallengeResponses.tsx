@@ -6,6 +6,7 @@ import BusinessLayout from '@/components/business/BusinessLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
@@ -13,10 +14,11 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from '@/hooks/use-toast';
-import { ArrowLeft, Eye, Clock, FileText, Loader2, BarChart3, ArrowUpDown, Sparkles, Bug, Star, MessageSquare, XCircle, AlertCircle, Filter, Info } from 'lucide-react';
+import { ArrowLeft, Eye, Clock, FileText, Loader2, BarChart3, ArrowUpDown, Sparkles, Bug, Star, MessageSquare, XCircle, AlertCircle, Filter, Info, Scale } from 'lucide-react';
 import { getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
 import { GoalContextHeader } from '@/components/business/GoalContextHeader';
 import { SubmissionDetailDrawer } from '@/components/business/SubmissionDetailDrawer';
+import { CandidateComparisonView } from '@/components/signals/CandidateComparisonView';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import { signalTooltips } from '@/lib/signals/interpretSignals';
 import type { HiringGoal } from '@/hooks/useHiringGoals';
@@ -74,6 +76,10 @@ export default function ChallengeResponses() {
   const [sortField, setSortField] = useState<SortField>('overall');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [generatingSignals, setGeneratingSignals] = useState<string | null>(null);
+  
+  // Comparison selection state
+  const [selectedForComparison, setSelectedForComparison] = useState<Set<string>>(new Set());
+  const [comparisonViewOpen, setComparisonViewOpen] = useState(false);
 
   // Use the shared hook for invitation-driven data
   const { rows: invitations, stats, loading: responsesLoading, refetch, updateRowDecision, debug } = useChallengeResponsesData(userId, challengeId);
@@ -516,7 +522,7 @@ export default function ChallengeResponses() {
           <TabsContent value="compare">
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap gap-3">
                   <div>
                     <CardTitle className="text-lg flex items-center gap-2">
                       <Sparkles className="h-5 w-5 text-primary" />
@@ -524,15 +530,32 @@ export default function ChallengeResponses() {
                     </CardTitle>
                     <CardDescription>{t('business.compare.description')}</CardDescription>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Switch 
-                      id="show-all" 
-                      checked={showAllInvited} 
-                      onCheckedChange={setShowAllInvited} 
-                    />
-                    <Label htmlFor="show-all" className="text-sm">
-                      {t('business.compare.show_all')}
-                    </Label>
+                  <div className="flex items-center gap-3">
+                    {/* Compare Button - Show when 2-3 candidates selected */}
+                    {selectedForComparison.size >= 2 && selectedForComparison.size <= 3 && (
+                      <Button 
+                        onClick={() => setComparisonViewOpen(true)}
+                        className="gap-2"
+                      >
+                        <Scale className="h-4 w-4" />
+                        {t('business.compare.compare_selected', { count: selectedForComparison.size })}
+                      </Button>
+                    )}
+                    {selectedForComparison.size > 3 && (
+                      <Badge variant="outline" className="text-amber-600 border-amber-500/30">
+                        {t('business.compare.max_3')}
+                      </Badge>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <Switch 
+                        id="show-all" 
+                        checked={showAllInvited} 
+                        onCheckedChange={setShowAllInvited} 
+                      />
+                      <Label htmlFor="show-all" className="text-sm">
+                        {t('business.compare.show_all')}
+                      </Label>
+                    </div>
                   </div>
                 </div>
               </CardHeader>
@@ -547,6 +570,7 @@ export default function ChallengeResponses() {
                     <Table>
                       <TableHeader>
                         <TableRow>
+                          <TableHead className="w-10"></TableHead>
                           <SortHeader field="candidateName" label={t('business.responses.col_candidate')} />
                           <SortHeader field="framing" label={t('business.compare.framing')} />
                           <SortHeader field="decision_quality" label={t('business.compare.decision')} />
@@ -558,63 +582,87 @@ export default function ChallengeResponses() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {compareData.map((inv) => (
-                          <TableRow key={inv.invitationId}>
-                            <TableCell className="font-medium">{inv.candidateName}</TableCell>
-                            {inv.signalsPayload ? (
-                              <>
-                                <TableCell><ScoreCell score={inv.signalsPayload.framing} /></TableCell>
-                                <TableCell><ScoreCell score={inv.signalsPayload.decision_quality} /></TableCell>
-                                <TableCell><ScoreCell score={inv.signalsPayload.execution_bias} /></TableCell>
-                                <TableCell><ScoreCell score={inv.signalsPayload.impact_thinking} /></TableCell>
-                                <TableCell>
-                                  <Badge variant={
-                                    inv.signalsPayload.confidence === 'high' ? 'default' :
-                                    inv.signalsPayload.confidence === 'medium' ? 'secondary' : 'outline'
-                                  }>
-                                    {inv.signalsPayload.confidence}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex items-center gap-2">
-                                    <span className="font-bold text-lg">{inv.signalsPayload.overall}</span>
-                                    <Progress value={inv.signalsPayload.overall} className="w-16 h-2" />
+                        {compareData.map((inv) => {
+                          const isSelected = selectedForComparison.has(inv.invitationId);
+                          const canSelect = inv.signalsPayload && (selectedForComparison.size < 3 || isSelected);
+                          
+                          return (
+                            <TableRow key={inv.invitationId} className={isSelected ? 'bg-primary/5' : ''}>
+                              <TableCell>
+                                {inv.signalsPayload && (
+                                  <Checkbox
+                                    checked={isSelected}
+                                    disabled={!canSelect}
+                                    onCheckedChange={(checked) => {
+                                      setSelectedForComparison(prev => {
+                                        const next = new Set(prev);
+                                        if (checked) {
+                                          next.add(inv.invitationId);
+                                        } else {
+                                          next.delete(inv.invitationId);
+                                        }
+                                        return next;
+                                      });
+                                    }}
+                                  />
+                                )}
+                              </TableCell>
+                              <TableCell className="font-medium">{inv.candidateName}</TableCell>
+                              {inv.signalsPayload ? (
+                                <>
+                                  <TableCell><ScoreCell score={inv.signalsPayload.framing} /></TableCell>
+                                  <TableCell><ScoreCell score={inv.signalsPayload.decision_quality} /></TableCell>
+                                  <TableCell><ScoreCell score={inv.signalsPayload.execution_bias} /></TableCell>
+                                  <TableCell><ScoreCell score={inv.signalsPayload.impact_thinking} /></TableCell>
+                                  <TableCell>
+                                    <Badge variant={
+                                      inv.signalsPayload.confidence === 'high' ? 'default' :
+                                      inv.signalsPayload.confidence === 'medium' ? 'secondary' : 'outline'
+                                    }>
+                                      {inv.signalsPayload.confidence}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-bold text-lg">{inv.signalsPayload.overall}</span>
+                                      <Progress value={inv.signalsPayload.overall} className="w-16 h-2" />
+                                    </div>
+                                  </TableCell>
+                                </>
+                              ) : inv.submissionStatus === 'submitted' ? (
+                                <TableCell colSpan={6} className="text-center">
+                                  <div className="flex items-center justify-center gap-2">
+                                    <span className="text-muted-foreground text-sm">{t('business.compare.not_scored')}</span>
+                                    <Button 
+                                      variant="outline" 
+                                      size="sm"
+                                      disabled={generatingSignals === inv.invitationId}
+                                      onClick={() => generateSignalsFor(inv)}
+                                    >
+                                      {generatingSignals === inv.invitationId ? (
+                                        <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                                      ) : (
+                                        <Sparkles className="h-3 w-3 mr-1" />
+                                      )}
+                                      {t('business.compare.generate')}
+                                    </Button>
                                   </div>
                                 </TableCell>
-                              </>
-                            ) : inv.submissionStatus === 'submitted' ? (
-                              <TableCell colSpan={6} className="text-center">
-                                <div className="flex items-center justify-center gap-2">
-                                  <span className="text-muted-foreground text-sm">{t('business.compare.not_scored')}</span>
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm"
-                                    disabled={generatingSignals === inv.invitationId}
-                                    onClick={() => generateSignalsFor(inv)}
-                                  >
-                                    {generatingSignals === inv.invitationId ? (
-                                      <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                                    ) : (
-                                      <Sparkles className="h-3 w-3 mr-1" />
-                                    )}
-                                    {t('business.compare.generate')}
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            ) : (
-                              <TableCell colSpan={6} className="text-center text-muted-foreground">
-                                {getStatusBadge(inv)}
-                              </TableCell>
-                            )}
-                            <TableCell className="text-right">
-                              {(inv.submissionStatus === 'submitted' || inv.submissionStatus === 'draft') && (
-                                <Button variant="ghost" size="sm" onClick={() => openDetail(inv)}>
-                                  <Eye className="h-4 w-4" />
-                                </Button>
+                              ) : (
+                                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                                  {getStatusBadge(inv)}
+                                </TableCell>
                               )}
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                              <TableCell className="text-right">
+                                {(inv.submissionStatus === 'submitted' || inv.submissionStatus === 'draft') && (
+                                  <Button variant="ghost" size="sm" onClick={() => openDetail(inv)}>
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
                       </TableBody>
                     </Table>
                   </div>
@@ -623,6 +671,26 @@ export default function ChallengeResponses() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Candidate Comparison View */}
+        <CandidateComparisonView
+          open={comparisonViewOpen}
+          onOpenChange={setComparisonViewOpen}
+          candidates={compareData
+            .filter(inv => selectedForComparison.has(inv.invitationId) && inv.signalsPayload)
+            .map(inv => ({
+              id: inv.invitationId,
+              name: inv.candidateName,
+              signals: inv.signalsPayload!,
+            }))}
+          onRemoveCandidate={(id) => {
+            setSelectedForComparison(prev => {
+              const next = new Set(prev);
+              next.delete(id);
+              return next;
+            });
+          }}
+        />
 
         {/* Submission Detail Drawer */}
         <SubmissionDetailDrawer

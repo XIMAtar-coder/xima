@@ -2721,7 +2721,9 @@
     },
     "compare": {
       "signals_generated": "Segnali generati",
-      "framing": "Inquadramento"
+      "framing": "Inquadramento",
+      "compare_selected": "Confronta {{count}} candidati",
+      "max_3": "Seleziona max 3 candidati"
     }
   },
   "signals": {
@@ -2740,6 +2742,24 @@
     "reflection_title": "Come È Apparso il Tuo Approccio",
     "reflection_description": "Cosa rivela questa risposta sul tuo stile",
     "reflection_prompt": "Riflette il modo in cui lavori di solito?",
-    "reflection_prompt_helper": "Prenditi un momento per considerare se questo corrisponde al tuo tipico approccio decisionale."
+    "reflection_prompt_helper": "Prenditi un momento per considerare se questo corrisponde al tuo tipico approccio decisionale.",
+    "compare_title": "Confronta Candidati",
+    "compare_description": "Confronto affiancato dei pattern decisionali — stili diversi, non migliori o peggiori",
+    "compare_disclaimer": "Questo confronto evidenzia differenze di approccio, non classifiche. Ogni candidato porta punti di forza unici.",
+    "decision_confidence_title": "Confidenza Decisionale",
+    "decision_confidence_description": "Hai abbastanza segnali per decidere?",
+    "whats_clear": "Cosa È Chiaro",
+    "whats_uncertain": "Cosa È Incerto",
+    "what_to_test_next": "Prossimo Passo Suggerito",
+    "premium": {
+      "title": "XIMA Premium Insights",
+      "description": "Segnali avanzati di intelligenza decisionale",
+      "teaser": "Sblocca insight più profondi sui pattern di questo candidato",
+      "unlock_cta": "Sblocca Premium Insights",
+      "decision_consistency": "Coerenza Decisionale",
+      "learning_velocity": "Velocità di Apprendimento",
+      "risk_awareness": "Consapevolezza del Rischio",
+      "strategic_depth": "Profondità Strategica"
+    }
   }
 }
