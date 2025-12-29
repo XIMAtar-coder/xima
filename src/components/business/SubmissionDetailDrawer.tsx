@@ -34,6 +34,7 @@ import {
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import { interpretSignals, signalTooltips, flagTooltips, CompanyContext } from '@/lib/signals/interpretSignals';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { XimaSignalsPanel } from '@/components/signals/XimaSignalsPanel';
 import type { InvitationWithSubmission } from '@/hooks/useChallengeResponsesData';
 import { Level2InviteModal } from './Level2InviteModal';
 import { ChallengeLevel, getChallengeLevel } from '@/lib/challenges/challengeLevels';
@@ -378,76 +379,10 @@ export function SubmissionDetailDrawer({
             </SheetHeader>
 
             <div className="space-y-6">
-          {/* HR-Readable Decision Insights */}
+          {/* XIMA Signals Panel - Qualitative Insights */}
           {localSignals ? (
             <>
-              {/* Decision Profile Card - Primary Insight */}
-              <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Target className="h-4 w-4 text-primary" />
-                    {t('business.insights.decision_profile')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Decision Profile Statement - Context-aware */}
-                  <p className="text-sm font-medium leading-relaxed">
-                    {interpretSignals(localSignals).decisionProfile}
-                  </p>
-
-                  {/* Strengths & Risks Grid */}
-                  <div className="grid grid-cols-2 gap-3 pt-2">
-                    {/* Strengths */}
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-1.5 text-green-600">
-                        <TrendingUp className="h-3.5 w-3.5" />
-                        <span className="text-xs font-semibold uppercase tracking-wide">{t('business.insights.strengths')}</span>
-                      </div>
-                      <ul className="space-y-1">
-                        {interpretSignals(localSignals).strengths.map((strength, i) => (
-                          <li key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
-                            <CheckCircle className="h-3 w-3 text-green-500 mt-0.5 shrink-0" />
-                            {strength}
-                          </li>
-                        ))}
-                        {interpretSignals(localSignals).strengths.length === 0 && (
-                          <li className="text-xs text-muted-foreground italic">—</li>
-                        )}
-                      </ul>
-                    </div>
-
-                    {/* Risks */}
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-1.5 text-amber-600">
-                        <AlertTriangle className="h-3.5 w-3.5" />
-                        <span className="text-xs font-semibold uppercase tracking-wide">{t('business.insights.risks')}</span>
-                      </div>
-                      <ul className="space-y-1">
-                        {interpretSignals(localSignals).risks.map((risk, i) => (
-                          <li key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
-                            <AlertTriangle className="h-3 w-3 text-amber-500 mt-0.5 shrink-0" />
-                            {risk}
-                          </li>
-                        ))}
-                        {interpretSignals(localSignals).risks.length === 0 && (
-                          <li className="text-xs text-muted-foreground italic">—</li>
-                        )}
-                      </ul>
-                    </div>
-                  </div>
-
-                  {/* Role Fit Hint - ONE LINE */}
-                  <div className="border-t pt-3">
-                    <div className="flex items-center gap-1.5 mb-1.5">
-                      <Briefcase className="h-3.5 w-3.5 text-primary" />
-                      <span className="text-xs font-semibold uppercase tracking-wide text-primary">{t('business.insights.role_fit')}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground italic">
-                      {interpretSignals(localSignals).roleFitHint}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+              <XimaSignalsPanel signals={localSignals} />
 
               {/* Numeric Signals (De-emphasized - Collapsible Detail) */}
               <TooltipProvider>

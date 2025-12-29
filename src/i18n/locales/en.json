@@ -2924,5 +2924,23 @@
       "signals_generated": "Signals generated",
       "framing": "Framing"
     }
+  },
+  "signals": {
+    "panel_title": "XIMA Signals",
+    "panel_description": "How this candidate approaches decisions — patterns, not scores",
+    "decision_framing": "Decision Framing",
+    "agency_ownership": "Agency & Ownership",
+    "ambiguity_handling": "Ambiguity Handling",
+    "impact_orientation": "Impact Orientation",
+    "communication_clarity": "Communication Clarity",
+    "contextual_summary": "Summary",
+    "observed_tradeoffs": "Observed Tradeoffs",
+    "confidence_low": "Low confidence",
+    "confidence_medium": "Medium confidence",
+    "confidence_high": "High confidence",
+    "reflection_title": "How Your Approach Came Across",
+    "reflection_description": "What this response reveals about your style",
+    "reflection_prompt": "Does this reflect how you usually work?",
+    "reflection_prompt_helper": "Take a moment to consider if this matches your typical approach to decision-making."
   }
 }
