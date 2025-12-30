@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useUser } from '@/context/UserContext';
 import { Button } from '@/components/ui/button';
 import { 
@@ -14,6 +15,7 @@ interface BusinessLayoutProps {
 const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user, signOut } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -23,13 +25,13 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
   };
 
   const navItems = [
-    { path: '/business/dashboard', icon: LayoutDashboard, label: 'Overview' },
-    { path: '/business/candidates', icon: Users, label: 'Candidate Pool' },
-    { path: '/business/challenges', icon: Target, label: 'Launch Challenges' },
-    { path: '/business/jobs', icon: Briefcase, label: 'Job Offers' },
-    { path: '/business/evaluations', icon: FileText, label: 'Evaluations' },
-    { path: '/business/reports', icon: BarChart3, label: 'Reports & Analytics' },
-    { path: '/business/settings', icon: Settings, label: 'Settings' }
+    { path: '/business/dashboard', icon: LayoutDashboard, labelKey: 'business.nav.overview' },
+    { path: '/business/candidates', icon: Users, labelKey: 'business.nav.candidates' },
+    { path: '/business/challenges', icon: Target, labelKey: 'business.nav.challenges' },
+    { path: '/business/jobs', icon: Briefcase, labelKey: 'business.nav.jobs' },
+    { path: '/business/evaluations', icon: FileText, labelKey: 'business.nav.evaluations' },
+    { path: '/business/reports', icon: BarChart3, labelKey: 'business.nav.reports' },
+    { path: '/business/settings', icon: Settings, labelKey: 'business.nav.settings' }
   ];
 
   return (
@@ -80,7 +82,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
                   }`}
                 >
                   <Icon size={20} />
-                  {sidebarOpen && <span className="font-medium">{item.label}</span>}
+                  {sidebarOpen && <span className="font-medium">{t(item.labelKey)}</span>}
                 </Link>
               );
             })}
@@ -107,7 +109,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
                   onClick={handleSignOut}
                 >
                   <LogOut size={18} className="mr-2" />
-                  Sign Out
+                  {t('business.nav.sign_out')}
                 </Button>
               </div>
             ) : (
