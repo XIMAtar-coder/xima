@@ -12,12 +12,14 @@ import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
-import { Clock, CheckCircle, AlertTriangle, Timer, Loader2, Save, Send, ArrowRight, Target } from 'lucide-react';
+import { Clock, CheckCircle, AlertTriangle, Timer, Loader2, Send, Target } from 'lucide-react';
 import { getChallengeTimeInfo, ChallengeTimeStatus } from '@/utils/challengeTimeUtils';
 import MainLayout from '@/components/layout/MainLayout';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipelineProgress';
 import { CandidateReflectionPanel } from '@/components/signals/CandidateReflectionPanel';
+import { ChallengeProgressHeader } from '@/components/candidate/ChallengeProgressHeader';
+import { CharacterCountTextarea } from '@/components/candidate/CharacterCountTextarea';
 import { 
   ChallengeLevel, 
   getChallengeLevel, 
@@ -113,12 +115,16 @@ export default function ChallengeCompletion() {
   const [submittedSignals, setSubmittedSignals] = useState<SignalsPayload | null>(null);
   const [prerequisiteBlock, setPrerequisiteBlock] = useState<PrerequisiteBlock | null>(null);
   const [levelProgress, setLevelProgress] = useState<CandidateLevelProgress | null>(null);
+  const [lastSaveTime, setLastSaveTime] = useState<Date | null>(null);
 
   // Level 1 payload
   const [payload, setPayload] = useState<SubmissionPayload>(DEFAULT_L1_PAYLOAD);
   
   // Level 2 payload
   const [level2Payload, setLevel2Payload] = useState<Level2Payload>(DEFAULT_L2_PAYLOAD);
+
+  // MIN_CHARS threshold for field completion
+  const MIN_CHARS = 120;
 
   // Load challenge and submission data
   useEffect(() => {
@@ -389,6 +395,7 @@ export default function ChallengeCompletion() {
       console.error('Autosave error:', error);
     } finally {
       setSaving(false);
+      setLastSaveTime(new Date());
     }
   };
 
@@ -471,32 +478,32 @@ export default function ChallengeCompletion() {
       console.error('Autosave error:', error);
     } finally {
       setSaving(false);
+      setLastSaveTime(new Date());
     }
   };
 
-  // Calculate progress - handles both Level 1 and Level 2
+  // Calculate progress - handles both Level 1 and Level 2 using MIN_CHARS
   const progress = useMemo(() => {
     if (challenge?.level === 2) {
-      // Level 2 progress
+      // Level 2 progress - 4 required fields
       let filled = 0;
-      const total = 4; // Required fields only
-      if (level2Payload.approach.trim()) filled++;
-      if (level2Payload.role_plan.trim()) filled++;
-      if (level2Payload.assumptions_tradeoffs.trim()) filled++;
-      if (level2Payload.key_deliverables.trim()) filled++;
+      const total = 4;
+      if (level2Payload.approach.trim().length >= MIN_CHARS) filled++;
+      if (level2Payload.role_plan.trim().length >= MIN_CHARS) filled++;
+      if (level2Payload.assumptions_tradeoffs.trim().length >= MIN_CHARS) filled++;
+      if (level2Payload.key_deliverables.trim().length >= MIN_CHARS) filled++;
       return Math.round((filled / total) * 100);
     }
-    // Level 1 progress
+    // Level 1 progress - textareas use MIN_CHARS, other fields just need values
     let filled = 0;
-    const total = 6;
-    if (payload.approach.trim()) filled++;
-    if (payload.assumptions.trim()) filled++;
-    if (payload.first_actions.filter(a => a.trim()).length >= 1) filled++;
+    const total = 5; // approach, assumptions, actions, tradeoff, confidence
+    if (payload.approach.trim().length >= MIN_CHARS) filled++;
+    if (payload.assumptions.trim().length >= MIN_CHARS) filled++;
     if (payload.first_actions.filter(a => a.trim()).length >= 3) filled++;
     if (payload.tradeoff_priority) filled++;
     if (payload.confidence) filled++;
     return Math.round((filled / total) * 100);
-  }, [payload, level2Payload, challenge?.level]);
+  }, [payload, level2Payload, challenge?.level, MIN_CHARS]);
 
   // Validation - handles both Level 1 and Level 2
   const validationErrors = useMemo(() => {
@@ -748,6 +755,17 @@ export default function ChallengeCompletion() {
 
   return (
     <MainLayout>
+      {/* Sticky Progress Header */}
+      {!isReadOnly && challenge && invitationId && (
+        <ChallengeProgressHeader
+          invitationId={invitationId}
+          level={challenge.level as 1 | 2 | 3}
+          completionPercent={progress}
+          saving={saving}
+          lastSaveTime={lastSaveTime}
+          estimatedMinutes={challenge.timeEstimateMinutes}
+        />
+      )}
       <div className="container max-w-3xl py-8 space-y-6">
         {/* XIMA Core Challenge Intro Block */}
         {challenge.level === 1 && (
@@ -793,24 +811,7 @@ export default function ChallengeCompletion() {
           </CardHeader>
         </Card>
 
-        {/* Progress */}
-        {!isReadOnly && (
-          <Card>
-            <CardContent className="py-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">{t('challenge.progress')}</span>
-                <div className="flex items-center gap-2">
-                  {saving && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
-                  <span className="text-sm text-muted-foreground">
-                    {saving ? t('challenge.saving') : t('challenge.saved')}
-                  </span>
-                </div>
-              </div>
-              <Progress value={progress} className="h-2" />
-              <span className="text-xs text-muted-foreground mt-1">{progress}%</span>
-            </CardContent>
-          </Card>
-        )}
+        {/* Progress card removed - using sticky header instead */}
 
         {/* Instructions */}
         <Card>
@@ -848,30 +849,30 @@ export default function ChallengeCompletion() {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Approach */}
-              <div className="space-y-2">
-                <Label htmlFor="approach">{t('challenge.approach_label')} *</Label>
-                <Textarea
-                  id="approach"
-                  value={payload.approach}
-                  onChange={(e) => updatePayload('approach', e.target.value)}
-                  placeholder={t('challenge.approach_placeholder')}
-                  disabled={isReadOnly}
-                  rows={4}
-                />
-              </div>
+              <CharacterCountTextarea
+                id="approach"
+                label={t('challenge.approach_label')}
+                value={payload.approach}
+                onChange={(v) => updatePayload('approach', v)}
+                placeholder={t('challenge.approach_placeholder')}
+                disabled={isReadOnly}
+                required
+                rows={4}
+                minChars={MIN_CHARS}
+              />
 
               {/* Assumptions */}
-              <div className="space-y-2">
-                <Label htmlFor="assumptions">{t('challenge.assumptions_label')} *</Label>
-                <Textarea
-                  id="assumptions"
-                  value={payload.assumptions}
-                  onChange={(e) => updatePayload('assumptions', e.target.value)}
-                  placeholder={t('challenge.assumptions_placeholder')}
-                  disabled={isReadOnly}
-                  rows={3}
-                />
-              </div>
+              <CharacterCountTextarea
+                id="assumptions"
+                label={t('challenge.assumptions_label')}
+                value={payload.assumptions}
+                onChange={(v) => updatePayload('assumptions', v)}
+                placeholder={t('challenge.assumptions_placeholder')}
+                disabled={isReadOnly}
+                required
+                rows={3}
+                minChars={MIN_CHARS}
+              />
 
               {/* First 3 Actions */}
               <div className="space-y-2">
@@ -942,69 +943,70 @@ export default function ChallengeCompletion() {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Approach */}
-              <div className="space-y-2">
-                <Label htmlFor="l2-approach">{t('candidate.challenge.approach_label')} *</Label>
-                <Textarea
-                  id="l2-approach"
-                  value={level2Payload.approach}
-                  onChange={(e) => updateLevel2Payload('approach', e.target.value)}
-                  placeholder={t('candidate.challenge.approach_placeholder')}
-                  disabled={isReadOnly}
-                  rows={4}
-                />
-              </div>
+              <CharacterCountTextarea
+                id="l2-approach"
+                label={t('candidate.challenge.approach_label')}
+                value={level2Payload.approach}
+                onChange={(v) => updateLevel2Payload('approach', v)}
+                placeholder={t('candidate.challenge.approach_placeholder')}
+                disabled={isReadOnly}
+                required
+                rows={4}
+                minChars={MIN_CHARS}
+              />
 
               {/* Role Plan */}
-              <div className="space-y-2">
-                <Label htmlFor="role-plan">{t('candidate.challenge.role_plan_label')} *</Label>
-                <Textarea
-                  id="role-plan"
-                  value={level2Payload.role_plan}
-                  onChange={(e) => updateLevel2Payload('role_plan', e.target.value)}
-                  placeholder={t('candidate.challenge.role_plan_placeholder')}
-                  disabled={isReadOnly}
-                  rows={5}
-                />
-              </div>
+              <CharacterCountTextarea
+                id="role-plan"
+                label={t('candidate.challenge.role_plan_label')}
+                value={level2Payload.role_plan}
+                onChange={(v) => updateLevel2Payload('role_plan', v)}
+                placeholder={t('candidate.challenge.role_plan_placeholder')}
+                disabled={isReadOnly}
+                required
+                rows={5}
+                minChars={MIN_CHARS}
+              />
 
               {/* Assumptions & Trade-offs */}
-              <div className="space-y-2">
-                <Label htmlFor="assumptions-tradeoffs">{t('candidate.challenge.assumptions_tradeoffs_label')} *</Label>
-                <Textarea
-                  id="assumptions-tradeoffs"
-                  value={level2Payload.assumptions_tradeoffs}
-                  onChange={(e) => updateLevel2Payload('assumptions_tradeoffs', e.target.value)}
-                  placeholder={t('candidate.challenge.assumptions_tradeoffs_placeholder')}
-                  disabled={isReadOnly}
-                  rows={4}
-                />
-              </div>
+              <CharacterCountTextarea
+                id="assumptions-tradeoffs"
+                label={t('candidate.challenge.assumptions_tradeoffs_label')}
+                value={level2Payload.assumptions_tradeoffs}
+                onChange={(v) => updateLevel2Payload('assumptions_tradeoffs', v)}
+                placeholder={t('candidate.challenge.assumptions_tradeoffs_placeholder')}
+                disabled={isReadOnly}
+                required
+                rows={4}
+                minChars={MIN_CHARS}
+              />
 
               {/* Key Deliverables */}
-              <div className="space-y-2">
-                <Label htmlFor="deliverables">{t('candidate.challenge.key_deliverables_label')} *</Label>
-                <Textarea
-                  id="deliverables"
-                  value={level2Payload.key_deliverables}
-                  onChange={(e) => updateLevel2Payload('key_deliverables', e.target.value)}
-                  placeholder={t('candidate.challenge.key_deliverables_placeholder')}
-                  disabled={isReadOnly}
-                  rows={4}
-                />
-              </div>
+              <CharacterCountTextarea
+                id="deliverables"
+                label={t('candidate.challenge.key_deliverables_label')}
+                value={level2Payload.key_deliverables}
+                onChange={(v) => updateLevel2Payload('key_deliverables', v)}
+                placeholder={t('candidate.challenge.key_deliverables_placeholder')}
+                disabled={isReadOnly}
+                required
+                rows={4}
+                minChars={MIN_CHARS}
+              />
 
               {/* Questions for Company (optional) */}
-              <div className="space-y-2">
-                <Label htmlFor="questions">{t('candidate.challenge.questions_for_company_label')}</Label>
-                <Textarea
-                  id="questions"
-                  value={level2Payload.questions_for_company}
-                  onChange={(e) => updateLevel2Payload('questions_for_company', e.target.value)}
-                  placeholder={t('candidate.challenge.questions_for_company_placeholder')}
-                  disabled={isReadOnly}
-                  rows={3}
-                />
-              </div>
+              <CharacterCountTextarea
+                id="questions"
+                label={t('candidate.challenge.questions_for_company_label')}
+                value={level2Payload.questions_for_company}
+                onChange={(v) => updateLevel2Payload('questions_for_company', v)}
+                placeholder={t('candidate.challenge.questions_for_company_placeholder')}
+                disabled={isReadOnly}
+                rows={3}
+                minChars={50}
+                recommendedMin={100}
+                recommendedMax={300}
+              />
             </CardContent>
           </Card>
         )}

@@ -2794,7 +2794,14 @@
       "questions_for_company_placeholder": "Eventuali domande di chiarimento che faresti prima di iniziare...",
       "custom_role_challenge": "Sfida Ruolo Personalizzata",
       "submit_level2": "Invia Risposta",
-      "submitted_awaiting_review": "Inviata — in attesa di revisione"
+      "submitted_awaiting_review": "Inviata — in attesa di revisione",
+      "progress_complete": "completato",
+      "time_remaining": "rimanenti",
+      "time_exceeded": "Tempo scaduto",
+      "almost_done": "Quasi fatto!",
+      "chars": "caratteri",
+      "recommended": "Consigliati",
+      "add_more_detail": "Aggiungi qualche dettaglio in più"
     },
     "notifications": {
       "submission_received": "La tua risposta è stata inviata a {{company}}. La stanno valutando.",
