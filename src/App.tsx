@@ -52,6 +52,7 @@ import ChallengeAccept from "./pages/ChallengeAccept";
 import GoalCandidates from "./pages/business/GoalCandidates";
 import GoalChallenges from "./pages/business/GoalChallenges";
 import GoalSettings from "./pages/business/GoalSettings";
+import GoalDecisionPack from "./pages/business/GoalDecisionPack";
 import ChallengeResponses from "./pages/business/ChallengeResponses";
 import ChallengeCompletion from "./pages/candidate/ChallengeCompletion";
 import ChallengeFollowup from "./pages/candidate/ChallengeFollowup";
@@ -117,6 +118,7 @@ const AppContent = () => {
           <Route path="/business/goals/:goalId/candidates" element={<GoalCandidates />} />
           <Route path="/business/goals/:goalId/challenges" element={<GoalChallenges />} />
           <Route path="/business/goals/:goalId/settings" element={<GoalSettings />} />
+          <Route path="/business/goals/:goalId/decision-pack" element={<GoalDecisionPack />} />
           <Route path="/business/goals/:goalId/challenges/:challengeId/responses" element={<ChallengeResponses />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/challenge/accept" element={<ChallengeAccept />} />
