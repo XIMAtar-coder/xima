@@ -2962,5 +2962,157 @@
       "risk_awareness": "Risk Awareness",
       "strategic_depth": "Strategic Depth"
     }
+  },
+  "level2": {
+    "modal": {
+      "title": "Choose Role Challenge",
+      "description": "Select a role-specific challenge for {{name}} to validate their skills"
+    },
+    "tabs": {
+      "templates": "Templates",
+      "existing": "Existing",
+      "custom": "Custom"
+    },
+    "select_role_family": "Select role family",
+    "no_existing": "No existing Level 2 challenges for this goal yet.",
+    "use_template_instead": "Use a template instead",
+    "create_and_invite": "Create & Send Invite",
+    "create_failed": "Failed to create challenge",
+    "role_family": {
+      "engineering": "Engineering",
+      "data": "Data",
+      "sales": "Sales",
+      "marketing": "Marketing",
+      "operations": "Operations"
+    },
+    "templates": {
+      "engineering": {
+        "title": "System Design Under Constraints",
+        "description": "Evaluate system thinking and technical trade-off decisions in a constrained environment"
+      },
+      "data": {
+        "title": "Metrics & Experiment Design",
+        "description": "Assess analytical reasoning through metric definition and experiment planning"
+      },
+      "sales": {
+        "title": "Account Plan & Outreach",
+        "description": "Test strategic account planning and value proposition communication"
+      },
+      "marketing": {
+        "title": "Campaign Brief & KPIs",
+        "description": "Evaluate campaign strategy, audience targeting, and measurement approach"
+      },
+      "operations": {
+        "title": "Process Improvement Plan",
+        "description": "Assess problem diagnosis and practical solution design for operational challenges"
+      }
+    },
+    "deliverable": {
+      "structured_design": "Structured Design",
+      "structured_analysis": "Structured Analysis",
+      "email_sequence": "Email Sequence",
+      "campaign_brief": "Campaign Brief",
+      "process_plan": "Process Plan"
+    },
+    "skills": {
+      "system_design": "System Design",
+      "constraints_handling": "Constraints Handling",
+      "technical_communication": "Technical Communication",
+      "metrics_definition": "Metrics Definition",
+      "experiment_design": "Experiment Design",
+      "analytical_reasoning": "Analytical Reasoning",
+      "account_planning": "Account Planning",
+      "outreach_strategy": "Outreach Strategy",
+      "value_proposition": "Value Proposition",
+      "campaign_strategy": "Campaign Strategy",
+      "audience_targeting": "Audience Targeting",
+      "kpi_definition": "KPI Definition",
+      "process_analysis": "Process Analysis",
+      "optimization": "Optimization",
+      "change_management": "Change Management"
+    },
+    "criteria": {
+      "engineering": {
+        "clarity": "Clarity of design decisions and component responsibilities",
+        "feasibility": "Feasibility within stated constraints",
+        "tradeoffs": "Awareness of trade-offs and their implications"
+      },
+      "data": {
+        "metrics_relevance": "Relevance and actionability of chosen metrics",
+        "experiment_rigor": "Rigor and validity of experiment design",
+        "risk_awareness": "Awareness of risks and potential confounders"
+      },
+      "sales": {
+        "target_understanding": "Understanding of target account needs",
+        "value_clarity": "Clarity of value proposition",
+        "sequence_logic": "Logic and flow of outreach sequence"
+      },
+      "marketing": {
+        "strategic_alignment": "Alignment with campaign objectives",
+        "audience_fit": "Fit between strategy and target audience",
+        "measurability": "Measurability and realism of KPIs"
+      },
+      "operations": {
+        "problem_diagnosis": "Accuracy of problem diagnosis",
+        "solution_practicality": "Practicality of proposed changes",
+        "implementation_clarity": "Clarity of implementation approach"
+      }
+    },
+    "prompts": {
+      "context": "Context & Approach",
+      "context_placeholder": "Describe how you understand the problem and your approach...",
+      "components": "Key Components",
+      "components_placeholder": "List the main components of your solution...",
+      "tradeoffs": "Trade-offs & Decisions",
+      "tradeoffs_placeholder": "Explain the trade-offs you considered...",
+      "constraints": "Constraints & Limitations",
+      "constraints_placeholder": "What constraints did you consider?",
+      "problem": "Problem Analysis",
+      "problem_placeholder": "How do you understand the problem?",
+      "metrics": "Key Metrics",
+      "metrics_placeholder": "What metrics would you track?",
+      "experiment": "Experiment Plan",
+      "experiment_placeholder": "Describe your experiment approach...",
+      "risks": "Risks & Considerations",
+      "risks_placeholder": "What risks should be considered?",
+      "target_analysis": "Target Account Analysis",
+      "target_analysis_placeholder": "Describe the target account...",
+      "value_prop": "Value Proposition",
+      "value_prop_placeholder": "What value do you offer?",
+      "outreach_sequence": "Outreach Sequence",
+      "outreach_sequence_placeholder": "List your outreach steps...",
+      "objective": "Campaign Objective",
+      "objective_placeholder": "What is the campaign goal?",
+      "audience": "Target Audience",
+      "audience_placeholder": "Describe the target audience...",
+      "channels": "Channels",
+      "channels_placeholder": "Which channels would you use?",
+      "kpis": "KPIs",
+      "kpis_placeholder": "How will you measure success?",
+      "current_state": "Current State",
+      "current_state_placeholder": "Describe the current process...",
+      "pain_points": "Pain Points",
+      "pain_points_placeholder": "List the key issues...",
+      "proposed_changes": "Proposed Changes",
+      "proposed_changes_placeholder": "Describe your improvements...",
+      "rollout_plan": "Rollout Plan",
+      "rollout_plan_placeholder": "How would you implement this?"
+    },
+    "custom": {
+      "title_label": "Challenge Title",
+      "title_placeholder": "e.g., Technical Design Exercise",
+      "title_required": "Please enter a challenge title",
+      "description_label": "Description",
+      "description_placeholder": "Describe what the candidate should do...",
+      "timebox_label": "Time Limit",
+      "role_family_label": "Role Family"
+    },
+    "candidate": {
+      "intro_title": "Role-Specific Challenge",
+      "intro_desc": "This challenge validates your skills for the {{role}} position at {{company}}.",
+      "intro_helper": "Based on your Level 1 review, you've been invited to demonstrate your role-specific capabilities.",
+      "timebox_info": "Time estimate: {{minutes}} minutes",
+      "deliverable_label": "Deliverable Type"
+    }
   }
 }
