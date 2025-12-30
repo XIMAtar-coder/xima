@@ -225,27 +225,42 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
         });
       }
 
-      // First, check if an invitation already exists for this exact challenge
+      // First, check if an ACTIVE invitation already exists for this exact challenge
+      // Only block if the invitation is still valid (not withdrawn/expired/cancelled)
       const { data: existingInvitation } = await supabase
         .from('challenge_invitations')
-        .select('id')
+        .select('id, status, created_at')
         .eq('business_id', businessId)
         .eq('hiring_goal_id', hiringGoalId)
         .eq('challenge_id', challengeId)
         .eq('candidate_profile_id', candidateProfileId)
+        .not('status', 'in', '("withdrawn","expired","cancelled")')
         .maybeSingle();
 
       if (existingInvitation) {
-        // Already invited - do NOT send notification, just inform user
+        // Already invited to THIS challenge - do NOT send notification, just inform user
         if (import.meta.env.DEV) {
-          console.log('[Level2InviteModal] Already invited, invitation ID:', existingInvitation.id);
+          console.log('[Level2InviteModal] Already invited to this challenge:', {
+            invitationId: existingInvitation.id,
+            status: existingInvitation.status,
+            challengeId,
+          });
         }
+        
+        // Get challenge title for better UX
+        const { data: challengeInfo } = await supabase
+          .from('business_challenges')
+          .select('title')
+          .eq('id', challengeId)
+          .single();
+        
         toast({
           title: t('business.level2.already_invited'),
-          description: t('business.level2.already_invited_desc'),
+          description: t('business.level2.already_invited_to_challenge', { 
+            challenge: challengeInfo?.title || 'this challenge' 
+          }),
         });
-        onOpenChange(false);
-        onInviteSent?.();
+        // Keep modal open so user can select a different challenge
         return;
       }
 
