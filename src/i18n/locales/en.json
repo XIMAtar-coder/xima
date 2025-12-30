@@ -2900,7 +2900,14 @@
       "questions_for_company_placeholder": "Any clarifying questions you would ask before starting...",
       "custom_role_challenge": "Custom Role Challenge",
       "submit_level2": "Submit Response",
-      "submitted_awaiting_review": "Submitted — awaiting review"
+      "submitted_awaiting_review": "Submitted — awaiting review",
+      "progress_complete": "complete",
+      "time_remaining": "remaining",
+      "time_exceeded": "Time exceeded",
+      "almost_done": "Almost done!",
+      "chars": "chars",
+      "recommended": "Recommended",
+      "add_more_detail": "Add a bit more detail"
     },
     "notifications": {
       "submission_received": "Your response was sent to {{company}}. They are reviewing it now.",
