@@ -40,8 +40,18 @@ i18n
     // Handle language variants (e.g., en-GB -> en)
     load: 'languageOnly',
     
-    // Return key if translation not found (for debugging)
+    // Return empty string if translation not found (prevents raw keys in UI)
     returnEmptyString: false,
+    
+    // Use key as fallback (but with saveMissing we'll log it in dev)
+    saveMissing: import.meta.env.DEV,
+    
+    // Log missing keys in development only
+    missingKeyHandler: import.meta.env.DEV 
+      ? (lngs, ns, key, fallbackValue) => {
+          console.warn(`[i18n] Missing key: "${key}" for languages: ${lngs.join(', ')}`);
+        }
+      : undefined,
   });
 
 export default i18n;
