@@ -20,6 +20,7 @@ import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipel
 import { CandidateReflectionPanel } from '@/components/signals/CandidateReflectionPanel';
 import { ChallengeProgressHeader } from '@/components/candidate/ChallengeProgressHeader';
 import { CharacterCountTextarea } from '@/components/candidate/CharacterCountTextarea';
+import { PreChallengeBriefing } from '@/components/candidate/PreChallengeBriefing';
 import { 
   ChallengeLevel, 
   getChallengeLevel, 
@@ -116,6 +117,12 @@ export default function ChallengeCompletion() {
   const [prerequisiteBlock, setPrerequisiteBlock] = useState<PrerequisiteBlock | null>(null);
   const [levelProgress, setLevelProgress] = useState<CandidateLevelProgress | null>(null);
   const [lastSaveTime, setLastSaveTime] = useState<Date | null>(null);
+  
+  // Briefing state - check localStorage to see if already acknowledged
+  const [briefingCompleted, setBriefingCompleted] = useState<boolean>(() => {
+    if (!invitationId) return false;
+    return localStorage.getItem(`xima_briefing_${invitationId}`) === 'completed';
+  });
 
   // Level 1 payload
   const [payload, setPayload] = useState<SubmissionPayload>(DEFAULT_L1_PAYLOAD);
@@ -711,6 +718,33 @@ export default function ChallengeCompletion() {
           </Card>
         </div>
       </MainLayout>
+    );
+  }
+
+  // Handle briefing start - mark as completed and store in localStorage
+  const handleStartChallenge = () => {
+    if (invitationId) {
+      localStorage.setItem(`xima_briefing_${invitationId}`, 'completed');
+      setBriefingCompleted(true);
+    }
+  };
+
+  // Show Pre-Challenge Briefing if not yet completed (and not already submitted)
+  // Also skip briefing if there's already draft data (user has started before)
+  const hasDraftData = challenge.level === 2 
+    ? Object.values(level2Payload).some(v => v.trim().length > 0)
+    : payload.approach.trim().length > 0 || payload.assumptions.trim().length > 0;
+
+  if (!briefingCompleted && !hasDraftData && submissionStatus !== 'submitted') {
+    const estimatedMinutes = challenge.timeEstimateMinutes || (challenge.level === 1 ? 25 : 35);
+    return (
+      <PreChallengeBriefing
+        level={challenge.level}
+        companyName={challenge.companyName}
+        challengeTitle={challenge.challengeTitle}
+        estimatedMinutes={estimatedMinutes}
+        onStart={handleStartChallenge}
+      />
     );
   }
 
