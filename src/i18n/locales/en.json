@@ -2295,6 +2295,7 @@
       "next_step": "Next Step in Pipeline",
       "invite_to_level2": "Invite to Level 2 Challenge",
       "already_invited": "Already Invited to Level 2",
+      "already_invited_desc": "This candidate already has a Level 2 invitation for this goal.",
       "choose_challenge": "Choose a Level 2 Challenge",
       "choose_challenge_desc": "Select a role-specific challenge to send to {{name}}.",
       "no_challenges": "No Level 2 challenges created for this hiring goal yet.",
@@ -2303,6 +2304,8 @@
       "send_invite": "Send Invite",
       "invite_sent": "Invitation Sent",
       "invite_sent_desc": "{{name}} has been invited to the Level 2 challenge.",
+      "pipeline_locked": "Pipeline Locked",
+      "pipeline_locked_desc": "The candidate must complete Level 1 (XIMA Core) before they can be invited to Level 2.",
       "xima_core_required": "XIMA Core Required",
       "xima_core_required_desc": "You must activate XIMA Core (Level 1) before inviting to Level 2. Create and activate a XIMA Core challenge first."
     }

@@ -2207,6 +2207,7 @@
       "next_step": "Passo successivo nel percorso",
       "invite_to_level2": "Invita a Challenge Livello 2",
       "already_invited": "Già invitato al Livello 2",
+      "already_invited_desc": "Questo candidato ha già un invito Livello 2 per questo obiettivo.",
       "choose_challenge": "Scegli una Challenge Livello 2",
       "choose_challenge_desc": "Seleziona una challenge specifica per il ruolo da inviare a {{name}}.",
       "no_challenges": "Nessuna challenge Livello 2 creata per questo obiettivo.",
@@ -2215,6 +2216,8 @@
       "send_invite": "Invia Invito",
       "invite_sent": "Invito Inviato",
       "invite_sent_desc": "{{name}} è stato invitato alla challenge Livello 2.",
+      "pipeline_locked": "Pipeline Bloccata",
+      "pipeline_locked_desc": "Il candidato deve completare il Livello 1 (XIMA Core) prima di poter essere invitato al Livello 2.",
       "xima_core_required": "XIMA Core Richiesto",
       "xima_core_required_desc": "Devi attivare XIMA Core (Livello 1) prima di invitare al Livello 2. Crea e attiva prima una XIMA Core challenge."
     }

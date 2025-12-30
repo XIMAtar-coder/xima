@@ -153,7 +153,9 @@ export const ChallengesForYouSection: React.FC = () => {
   }
 
   // ONLY show actionable challenges - never show locked, blocked, or technical states
-  // Filter out: passed decisions, expired, declined, and Level 2/3 that require progression
+  // Filter out: passed decisions, expired, declined
+  // Note: If an invitation exists, the DB trigger has already validated pipeline progression,
+  // so we trust that Level 2/3 invitations are legitimate and should be shown.
   const actionableChallenges = challenges.filter(challenge => {
     // Never show passed decisions
     if (challenge.reviewDecision === 'pass') return false;
@@ -165,24 +167,28 @@ export const ChallengesForYouSection: React.FC = () => {
     // Level 1 is always actionable
     if (challenge.level === 1) return true;
     
-    // Level 2: Only show if Level 1 approved with proceed_level2
-    if (challenge.level === 2) {
-      const l1ForGoal = challenges.find(c => 
-        c.hiringGoalId === challenge.hiringGoalId && c.level === 1
-      );
-      return l1ForGoal?.reviewDecision === 'proceed_level2';
-    }
-    
-    // Level 3: Only show if Level 2 approved
-    if (challenge.level === 3) {
-      const l2ForGoal = challenges.find(c => 
-        c.hiringGoalId === challenge.hiringGoalId && c.level === 2
-      );
-      return l2ForGoal?.reviewDecision === 'proceed_level3';
+    // Level 2 & 3: The DB trigger (enforce_pipeline_progression) ensures invitations 
+    // can only be created if prerequisites are met. If an invitation exists, it's valid.
+    // Show them as actionable.
+    if (challenge.level === 2 || challenge.level === 3) {
+      return true;
     }
     
     return false;
   });
+  
+  // DEV-ONLY: Log challenge visibility
+  if (import.meta.env.DEV) {
+    console.log('[ChallengesForYouSection] Challenges:', {
+      total: challenges.length,
+      actionable: actionableChallenges.length,
+      byLevel: {
+        L1: challenges.filter(c => c.level === 1).length,
+        L2: challenges.filter(c => c.level === 2).length,
+        L3: challenges.filter(c => c.level === 3).length,
+      }
+    });
+  }
 
   const activeCount = actionableChallenges.filter(c => 
     c.timeStatus === 'active' && !c.isSubmitted
