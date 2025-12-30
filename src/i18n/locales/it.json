@@ -2208,6 +2208,7 @@
       "invite_to_level2": "Invita a Challenge Livello 2",
       "already_invited": "Già invitato al Livello 2",
       "already_invited_desc": "Questo candidato ha già un invito Livello 2 per questo obiettivo.",
+      "already_invited_to_challenge": "Questo candidato è già stato invitato a \"{{challenge}}\". Seleziona una challenge diversa o gestisci l'invito esistente.",
       "choose_challenge": "Scegli una Challenge Livello 2",
       "choose_challenge_desc": "Seleziona una challenge specifica per il ruolo da inviare a {{name}}.",
       "no_challenges": "Nessuna challenge Livello 2 creata per questo obiettivo.",

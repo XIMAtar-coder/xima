@@ -2296,6 +2296,7 @@
       "invite_to_level2": "Invite to Level 2 Challenge",
       "already_invited": "Already Invited to Level 2",
       "already_invited_desc": "This candidate already has a Level 2 invitation for this goal.",
+      "already_invited_to_challenge": "This candidate was already invited to \"{{challenge}}\". Select a different challenge or manage the existing invitation.",
       "choose_challenge": "Choose a Level 2 Challenge",
       "choose_challenge_desc": "Select a role-specific challenge to send to {{name}}.",
       "no_challenges": "No Level 2 challenges created for this hiring goal yet.",
