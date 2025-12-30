@@ -140,12 +140,6 @@ export const useCandidateChallenges = () => {
 
         // Determine challenge level - getChallengeLevel handles type coercion internally
         const level = getChallengeLevel({ rubric, title: challenge?.title });
-        console.log('[useCandidateChallenges] Level detection:', { 
-          invId: inv.id, 
-          title: challenge?.title,
-          rubric,
-          level 
-        });
         const isSubmitted = !!submittedMap[inv.id];
         const reviewDecision = reviewMap[inv.id] || null;
 
@@ -173,6 +167,16 @@ export const useCandidateChallenges = () => {
           reviewDecision,
         };
       });
+
+      // DEV-ONLY: Log invitation counts
+      if (import.meta.env.DEV) {
+        const l2Count = challengeList.filter(c => c.level === 2).length;
+        console.log('[useCandidateChallenges] Fetched invitations:', {
+          total: challengeList.length,
+          level2: l2Count,
+          active: challengeList.filter(c => c.timeStatus === 'active' && !c.isSubmitted).length,
+        });
+      }
 
       setChallenges(challengeList);
       setActiveCount(challengeList.filter(c => 

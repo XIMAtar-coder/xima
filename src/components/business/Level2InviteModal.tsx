@@ -215,7 +215,42 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
   const sendInvitation = async (challengeId: string) => {
     setSending(true);
     try {
-      const { error } = await supabase
+      // DEV-ONLY: Log invitation check
+      if (import.meta.env.DEV) {
+        console.log('[Level2InviteModal] Checking existing invitation:', {
+          businessId,
+          hiringGoalId,
+          challengeId,
+          candidateProfileId,
+        });
+      }
+
+      // First, check if an invitation already exists for this exact challenge
+      const { data: existingInvitation } = await supabase
+        .from('challenge_invitations')
+        .select('id')
+        .eq('business_id', businessId)
+        .eq('hiring_goal_id', hiringGoalId)
+        .eq('challenge_id', challengeId)
+        .eq('candidate_profile_id', candidateProfileId)
+        .maybeSingle();
+
+      if (existingInvitation) {
+        // Already invited - do NOT send notification, just inform user
+        if (import.meta.env.DEV) {
+          console.log('[Level2InviteModal] Already invited, invitation ID:', existingInvitation.id);
+        }
+        toast({
+          title: t('business.level2.already_invited'),
+          description: t('business.level2.already_invited_desc'),
+        });
+        onOpenChange(false);
+        onInviteSent?.();
+        return;
+      }
+
+      // No existing invitation - create new one
+      const { data: newInvitation, error } = await supabase
         .from('challenge_invitations')
         .insert({
           business_id: businessId,
@@ -224,7 +259,9 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
           candidate_profile_id: candidateProfileId,
           status: 'invited',
           sent_via: ['in_app'],
-        });
+        })
+        .select('id')
+        .single();
 
       if (error) {
         if (error.message?.includes('pipeline_locked')) {
@@ -234,14 +271,21 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
             variant: 'destructive',
           });
         } else if (error.code === '23505') {
+          // Unique constraint - race condition, treat as already invited
           toast({
             title: t('business.level2.already_invited'),
-            variant: 'destructive',
           });
+          onOpenChange(false);
+          onInviteSent?.();
         } else {
           throw error;
         }
         return;
+      }
+
+      // Success - notification is handled by DB trigger, show success toast
+      if (import.meta.env.DEV) {
+        console.log('[Level2InviteModal] Invitation created successfully:', newInvitation.id);
       }
 
       toast({
