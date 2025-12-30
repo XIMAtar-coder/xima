@@ -2761,5 +2761,90 @@
       "risk_awareness": "Consapevolezza del Rischio",
       "strategic_depth": "Profondità Strategica"
     }
+  },
+  "level2": {
+    "modal": {
+      "title": "Scegli Sfida per Ruolo",
+      "description": "Seleziona una sfida specifica per {{name}} per validare le sue competenze"
+    },
+    "tabs": {
+      "templates": "Template",
+      "existing": "Esistenti",
+      "custom": "Personalizzata"
+    },
+    "select_role_family": "Seleziona area funzionale",
+    "no_existing": "Nessuna sfida Level 2 esistente per questo obiettivo.",
+    "use_template_instead": "Usa un template",
+    "create_and_invite": "Crea e Invia Invito",
+    "create_failed": "Impossibile creare la sfida",
+    "role_family": {
+      "engineering": "Engineering",
+      "data": "Data",
+      "sales": "Sales",
+      "marketing": "Marketing",
+      "operations": "Operations"
+    },
+    "templates": {
+      "engineering": {
+        "title": "System Design con Vincoli",
+        "description": "Valuta il pensiero sistemico e le decisioni di trade-off in ambiente vincolato"
+      },
+      "data": {
+        "title": "Metriche & Experiment Design",
+        "description": "Valuta il ragionamento analitico attraverso definizione metriche e pianificazione esperimenti"
+      },
+      "sales": {
+        "title": "Account Plan & Outreach",
+        "description": "Testa la pianificazione strategica e la comunicazione della value proposition"
+      },
+      "marketing": {
+        "title": "Campaign Brief & KPI",
+        "description": "Valuta strategia campagna, targeting e approccio alla misurazione"
+      },
+      "operations": {
+        "title": "Piano Miglioramento Processi",
+        "description": "Valuta diagnosi problemi e design soluzioni pratiche per sfide operative"
+      }
+    },
+    "deliverable": {
+      "structured_design": "Design Strutturato",
+      "structured_analysis": "Analisi Strutturata",
+      "email_sequence": "Sequenza Email",
+      "campaign_brief": "Brief Campagna",
+      "process_plan": "Piano Processo"
+    },
+    "skills": {
+      "system_design": "System Design",
+      "constraints_handling": "Gestione Vincoli",
+      "technical_communication": "Comunicazione Tecnica",
+      "metrics_definition": "Definizione Metriche",
+      "experiment_design": "Design Esperimenti",
+      "analytical_reasoning": "Ragionamento Analitico",
+      "account_planning": "Pianificazione Account",
+      "outreach_strategy": "Strategia Outreach",
+      "value_proposition": "Value Proposition",
+      "campaign_strategy": "Strategia Campagna",
+      "audience_targeting": "Targeting Audience",
+      "kpi_definition": "Definizione KPI",
+      "process_analysis": "Analisi Processi",
+      "optimization": "Ottimizzazione",
+      "change_management": "Change Management"
+    },
+    "custom": {
+      "title_label": "Titolo Sfida",
+      "title_placeholder": "es. Esercizio di Design Tecnico",
+      "title_required": "Inserisci un titolo per la sfida",
+      "description_label": "Descrizione",
+      "description_placeholder": "Descrivi cosa deve fare il candidato...",
+      "timebox_label": "Limite di Tempo",
+      "role_family_label": "Area Funzionale"
+    },
+    "candidate": {
+      "intro_title": "Sfida Specifica per Ruolo",
+      "intro_desc": "Questa sfida valida le tue competenze per la posizione {{role}} presso {{company}}.",
+      "intro_helper": "In base alla tua valutazione Level 1, sei stato invitato a dimostrare le tue capacità specifiche per il ruolo.",
+      "timebox_info": "Tempo stimato: {{minutes}} minuti",
+      "deliverable_label": "Tipo di Deliverable"
+    }
   }
 }
