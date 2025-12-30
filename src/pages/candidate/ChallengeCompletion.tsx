@@ -52,6 +52,15 @@ interface SubmissionPayload {
   confidence: string;
 }
 
+// Level 2 payload - role-specific structured response
+interface Level2Payload {
+  approach: string;
+  role_plan: string;
+  assumptions_tradeoffs: string;
+  key_deliverables: string;
+  questions_for_company: string;
+}
+
 interface PrerequisiteBlock {
   blocked: boolean;
   requiredLevel: ChallengeLevel;
@@ -72,6 +81,23 @@ const CONFIDENCE_OPTIONS = [
   { value: 'high', labelKey: 'confidence_high' },
 ];
 
+// Default payloads for each level
+const DEFAULT_L1_PAYLOAD: SubmissionPayload = {
+  approach: '',
+  assumptions: '',
+  first_actions: ['', '', ''],
+  tradeoff_priority: '',
+  confidence: '',
+};
+
+const DEFAULT_L2_PAYLOAD: Level2Payload = {
+  approach: '',
+  role_plan: '',
+  assumptions_tradeoffs: '',
+  key_deliverables: '',
+  questions_for_company: '',
+};
+
 export default function ChallengeCompletion() {
   const { invitationId } = useParams<{ invitationId: string }>();
   const { t } = useTranslation();
@@ -88,13 +114,11 @@ export default function ChallengeCompletion() {
   const [prerequisiteBlock, setPrerequisiteBlock] = useState<PrerequisiteBlock | null>(null);
   const [levelProgress, setLevelProgress] = useState<CandidateLevelProgress | null>(null);
 
-  const [payload, setPayload] = useState<SubmissionPayload>({
-    approach: '',
-    assumptions: '',
-    first_actions: ['', '', ''],
-    tradeoff_priority: '',
-    confidence: '',
-  });
+  // Level 1 payload
+  const [payload, setPayload] = useState<SubmissionPayload>(DEFAULT_L1_PAYLOAD);
+  
+  // Level 2 payload
+  const [level2Payload, setLevel2Payload] = useState<Level2Payload>(DEFAULT_L2_PAYLOAD);
 
   // Load challenge and submission data
   useEffect(() => {
@@ -272,13 +296,25 @@ export default function ChallengeCompletion() {
             ? submission.submitted_payload 
             : submission.draft_payload) as Record<string, any> | null;
           if (existingPayload && typeof existingPayload === 'object') {
-            setPayload({
-              approach: existingPayload.approach || '',
-              assumptions: existingPayload.assumptions || '',
-              first_actions: existingPayload.first_actions || ['', '', ''],
-              tradeoff_priority: existingPayload.tradeoff_priority || '',
-              confidence: existingPayload.confidence || '',
-            });
+            // Check if it's a Level 2 payload (has role_plan field)
+            if ('role_plan' in existingPayload) {
+              setLevel2Payload({
+                approach: existingPayload.approach || '',
+                role_plan: existingPayload.role_plan || '',
+                assumptions_tradeoffs: existingPayload.assumptions_tradeoffs || '',
+                key_deliverables: existingPayload.key_deliverables || '',
+                questions_for_company: existingPayload.questions_for_company || '',
+              });
+            } else {
+              // Level 1 payload
+              setPayload({
+                approach: existingPayload.approach || '',
+                assumptions: existingPayload.assumptions || '',
+                first_actions: existingPayload.first_actions || ['', '', ''],
+                tradeoff_priority: existingPayload.tradeoff_priority || '',
+                confidence: existingPayload.confidence || '',
+              });
+            }
           }
         }
       } catch (error) {
@@ -368,8 +404,89 @@ export default function ChallengeCompletion() {
     updatePayload('first_actions', newActions);
   };
 
-  // Calculate progress
+  // Level 2 update handlers
+  const updateLevel2Payload = (field: keyof Level2Payload, value: string) => {
+    const newPayload = { ...level2Payload, [field]: value };
+    setLevel2Payload(newPayload);
+    saveLevel2Debounced(newPayload);
+  };
+
+  // Debounced save for Level 2
+  const saveLevel2Debounced = useCallback(
+    (() => {
+      let timeout: NodeJS.Timeout;
+      return (newPayload: Level2Payload) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          saveLevel2Draft(newPayload);
+        }, 2000);
+      };
+    })(),
+    [challenge, submissionId]
+  );
+
+  const saveLevel2Draft = async (currentPayload: Level2Payload) => {
+    if (!challenge || !invitationId || submissionStatus === 'submitted') return;
+
+    setSaving(true);
+    try {
+      if (submissionId) {
+        await supabase
+          .from('challenge_submissions')
+          .update({ draft_payload: currentPayload as any })
+          .eq('id', submissionId);
+      } else {
+        const { data: invitation } = await supabase
+          .from('challenge_invitations')
+          .select('id, business_id, hiring_goal_id, challenge_id, candidate_profile_id')
+          .eq('id', invitationId)
+          .single();
+
+        if (!invitation) {
+          console.error('Invitation not found for draft save');
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('challenge_submissions')
+          .upsert({
+            invitation_id: invitation.id,
+            candidate_profile_id: invitation.candidate_profile_id,
+            business_id: invitation.business_id,
+            hiring_goal_id: invitation.hiring_goal_id,
+            challenge_id: invitation.challenge_id,
+            draft_payload: currentPayload as any,
+            status: 'draft',
+          }, {
+            onConflict: 'invitation_id',
+          })
+          .select('id')
+          .single();
+
+        if (!error && data) {
+          setSubmissionId(data.id);
+        }
+      }
+    } catch (error) {
+      console.error('Autosave error:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Calculate progress - handles both Level 1 and Level 2
   const progress = useMemo(() => {
+    if (challenge?.level === 2) {
+      // Level 2 progress
+      let filled = 0;
+      const total = 4; // Required fields only
+      if (level2Payload.approach.trim()) filled++;
+      if (level2Payload.role_plan.trim()) filled++;
+      if (level2Payload.assumptions_tradeoffs.trim()) filled++;
+      if (level2Payload.key_deliverables.trim()) filled++;
+      return Math.round((filled / total) * 100);
+    }
+    // Level 1 progress
     let filled = 0;
     const total = 6;
     if (payload.approach.trim()) filled++;
@@ -379,18 +496,27 @@ export default function ChallengeCompletion() {
     if (payload.tradeoff_priority) filled++;
     if (payload.confidence) filled++;
     return Math.round((filled / total) * 100);
-  }, [payload]);
+  }, [payload, level2Payload, challenge?.level]);
 
-  // Validation
+  // Validation - handles both Level 1 and Level 2
   const validationErrors = useMemo(() => {
     const errors: string[] = [];
+    if (challenge?.level === 2) {
+      // Level 2 validation
+      if (!level2Payload.approach.trim()) errors.push(t('challenge.validation.approach_required'));
+      if (!level2Payload.role_plan.trim()) errors.push(t('challenge.validation.role_plan_required'));
+      if (!level2Payload.assumptions_tradeoffs.trim()) errors.push(t('challenge.validation.assumptions_required'));
+      if (!level2Payload.key_deliverables.trim()) errors.push(t('challenge.validation.deliverables_required'));
+      return errors;
+    }
+    // Level 1 validation
     if (!payload.approach.trim()) errors.push(t('challenge.validation.approach_required'));
     if (!payload.assumptions.trim()) errors.push(t('challenge.validation.assumptions_required'));
     if (payload.first_actions.filter(a => a.trim()).length < 3) errors.push(t('challenge.validation.actions_required'));
     if (!payload.tradeoff_priority) errors.push(t('challenge.validation.tradeoff_required'));
     if (!payload.confidence) errors.push(t('challenge.validation.confidence_required'));
     return errors;
-  }, [payload, t]);
+  }, [payload, level2Payload, challenge?.level, t]);
 
   const handleSubmit = async () => {
     // Prevent double submission
@@ -439,7 +565,12 @@ export default function ChallengeCompletion() {
       }
 
       const now = new Date().toISOString();
-      const signals = computeSignals(payload);
+      
+      // Determine which payload to use based on level
+      const submissionPayload = challenge?.level === 2 ? level2Payload : payload;
+      
+      // Only compute signals for Level 1
+      const signals = challenge?.level === 1 ? computeSignals(payload) : null;
 
       // Use invitation as the source of truth for all foreign keys
       // CRITICAL: signals_version must NEVER be null (NOT NULL constraint)
@@ -450,12 +581,12 @@ export default function ChallengeCompletion() {
         hiring_goal_id: invitation.hiring_goal_id,
         challenge_id: invitation.challenge_id,
         status: 'submitted',
-        submitted_payload: payload,
+        submitted_payload: submissionPayload,
         submitted_at: now,
         signals_version: 'v1', // Explicit, never null
       };
 
-      // Only include signals_payload if it exists
+      // Only include signals_payload if it exists (Level 1 only)
       if (signals && Object.keys(signals).length > 0) {
         submissionData.signals_payload = signals;
       }
@@ -478,13 +609,13 @@ export default function ChallengeCompletion() {
         }
 
         // Update existing submission
-        const updatePayload = {
+        const updateData = {
           ...submissionData,
-          draft_payload: payload,
+          draft_payload: submissionPayload,
         };
         const { error: updateError } = await supabase
           .from('challenge_submissions')
-          .update(updatePayload as any)
+          .update(updateData as any)
           .eq('id', submissionId);
 
         if (updateError) {
@@ -493,13 +624,13 @@ export default function ChallengeCompletion() {
         }
       } else {
         // Insert new submission with upsert on invitation_id
-        const insertPayload = {
+        const insertData = {
           ...submissionData,
-          draft_payload: payload,
+          draft_payload: submissionPayload,
         };
         const { error: insertError } = await supabase
           .from('challenge_submissions')
-          .upsert(insertPayload as any, {
+          .upsert(insertData as any, {
             onConflict: 'invitation_id',
           });
 
@@ -709,97 +840,174 @@ export default function ChallengeCompletion() {
           </CardContent>
         </Card>
 
-        {/* Response Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">{t('challenge.your_response')}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Approach */}
-            <div className="space-y-2">
-              <Label htmlFor="approach">{t('challenge.approach_label')} *</Label>
-              <Textarea
-                id="approach"
-                value={payload.approach}
-                onChange={(e) => updatePayload('approach', e.target.value)}
-                placeholder={t('challenge.approach_placeholder')}
-                disabled={isReadOnly}
-                rows={4}
-              />
-            </div>
-
-            {/* Assumptions */}
-            <div className="space-y-2">
-              <Label htmlFor="assumptions">{t('challenge.assumptions_label')} *</Label>
-              <Textarea
-                id="assumptions"
-                value={payload.assumptions}
-                onChange={(e) => updatePayload('assumptions', e.target.value)}
-                placeholder={t('challenge.assumptions_placeholder')}
-                disabled={isReadOnly}
-                rows={3}
-              />
-            </div>
-
-            {/* First 3 Actions */}
-            <div className="space-y-2">
-              <Label>{t('challenge.first_actions_label')} *</Label>
-              <p className="text-sm text-muted-foreground">{t('challenge.first_actions_hint')}</p>
+        {/* Response Form - Level 1 */}
+        {challenge.level === 1 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">{t('challenge.your_response')}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Approach */}
               <div className="space-y-2">
-                {[0, 1, 2].map((i) => (
-                  <Input
-                    key={i}
-                    value={payload.first_actions[i] || ''}
-                    onChange={(e) => updateAction(i, e.target.value)}
-                    placeholder={t('challenge.action_placeholder', { n: i + 1 })}
-                    disabled={isReadOnly}
-                  />
-                ))}
+                <Label htmlFor="approach">{t('challenge.approach_label')} *</Label>
+                <Textarea
+                  id="approach"
+                  value={payload.approach}
+                  onChange={(e) => updatePayload('approach', e.target.value)}
+                  placeholder={t('challenge.approach_placeholder')}
+                  disabled={isReadOnly}
+                  rows={4}
+                />
               </div>
-            </div>
 
-            {/* Trade-off Priority */}
-            <div className="space-y-3">
-              <Label>{t('challenge.tradeoff_label')} *</Label>
-              <RadioGroup
-                value={payload.tradeoff_priority}
-                onValueChange={(v) => updatePayload('tradeoff_priority', v)}
-                disabled={isReadOnly}
-                className="space-y-2"
-              >
-                {TRADEOFF_OPTIONS.map((opt) => (
-                  <div key={opt.value} className="flex items-center space-x-2">
-                    <RadioGroupItem value={opt.value} id={`tradeoff-${opt.value}`} />
-                    <Label htmlFor={`tradeoff-${opt.value}`} className="font-normal cursor-pointer">
-                      {t(`challenge.${opt.labelKey}`)}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
+              {/* Assumptions */}
+              <div className="space-y-2">
+                <Label htmlFor="assumptions">{t('challenge.assumptions_label')} *</Label>
+                <Textarea
+                  id="assumptions"
+                  value={payload.assumptions}
+                  onChange={(e) => updatePayload('assumptions', e.target.value)}
+                  placeholder={t('challenge.assumptions_placeholder')}
+                  disabled={isReadOnly}
+                  rows={3}
+                />
+              </div>
 
-            {/* Confidence */}
-            <div className="space-y-2">
-              <Label>{t('challenge.confidence_label')} *</Label>
-              <Select
-                value={payload.confidence}
-                onValueChange={(v) => updatePayload('confidence', v)}
-                disabled={isReadOnly}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t('challenge.confidence_placeholder')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {CONFIDENCE_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {t(`challenge.${opt.labelKey}`)}
-                    </SelectItem>
+              {/* First 3 Actions */}
+              <div className="space-y-2">
+                <Label>{t('challenge.first_actions_label')} *</Label>
+                <p className="text-sm text-muted-foreground">{t('challenge.first_actions_hint')}</p>
+                <div className="space-y-2">
+                  {[0, 1, 2].map((i) => (
+                    <Input
+                      key={i}
+                      value={payload.first_actions[i] || ''}
+                      onChange={(e) => updateAction(i, e.target.value)}
+                      placeholder={t('challenge.action_placeholder', { n: i + 1 })}
+                      disabled={isReadOnly}
+                    />
                   ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
+                </div>
+              </div>
+
+              {/* Trade-off Priority */}
+              <div className="space-y-3">
+                <Label>{t('challenge.tradeoff_label')} *</Label>
+                <RadioGroup
+                  value={payload.tradeoff_priority}
+                  onValueChange={(v) => updatePayload('tradeoff_priority', v)}
+                  disabled={isReadOnly}
+                  className="space-y-2"
+                >
+                  {TRADEOFF_OPTIONS.map((opt) => (
+                    <div key={opt.value} className="flex items-center space-x-2">
+                      <RadioGroupItem value={opt.value} id={`tradeoff-${opt.value}`} />
+                      <Label htmlFor={`tradeoff-${opt.value}`} className="font-normal cursor-pointer">
+                        {t(`challenge.${opt.labelKey}`)}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+
+              {/* Confidence */}
+              <div className="space-y-2">
+                <Label>{t('challenge.confidence_label')} *</Label>
+                <Select
+                  value={payload.confidence}
+                  onValueChange={(v) => updatePayload('confidence', v)}
+                  disabled={isReadOnly}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t('challenge.confidence_placeholder')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CONFIDENCE_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {t(`challenge.${opt.labelKey}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Response Form - Level 2 */}
+        {challenge.level === 2 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">{t('challenge.your_response')}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Approach */}
+              <div className="space-y-2">
+                <Label htmlFor="l2-approach">{t('candidate.challenge.approach_label')} *</Label>
+                <Textarea
+                  id="l2-approach"
+                  value={level2Payload.approach}
+                  onChange={(e) => updateLevel2Payload('approach', e.target.value)}
+                  placeholder={t('candidate.challenge.approach_placeholder')}
+                  disabled={isReadOnly}
+                  rows={4}
+                />
+              </div>
+
+              {/* Role Plan */}
+              <div className="space-y-2">
+                <Label htmlFor="role-plan">{t('candidate.challenge.role_plan_label')} *</Label>
+                <Textarea
+                  id="role-plan"
+                  value={level2Payload.role_plan}
+                  onChange={(e) => updateLevel2Payload('role_plan', e.target.value)}
+                  placeholder={t('candidate.challenge.role_plan_placeholder')}
+                  disabled={isReadOnly}
+                  rows={5}
+                />
+              </div>
+
+              {/* Assumptions & Trade-offs */}
+              <div className="space-y-2">
+                <Label htmlFor="assumptions-tradeoffs">{t('candidate.challenge.assumptions_tradeoffs_label')} *</Label>
+                <Textarea
+                  id="assumptions-tradeoffs"
+                  value={level2Payload.assumptions_tradeoffs}
+                  onChange={(e) => updateLevel2Payload('assumptions_tradeoffs', e.target.value)}
+                  placeholder={t('candidate.challenge.assumptions_tradeoffs_placeholder')}
+                  disabled={isReadOnly}
+                  rows={4}
+                />
+              </div>
+
+              {/* Key Deliverables */}
+              <div className="space-y-2">
+                <Label htmlFor="deliverables">{t('candidate.challenge.key_deliverables_label')} *</Label>
+                <Textarea
+                  id="deliverables"
+                  value={level2Payload.key_deliverables}
+                  onChange={(e) => updateLevel2Payload('key_deliverables', e.target.value)}
+                  placeholder={t('candidate.challenge.key_deliverables_placeholder')}
+                  disabled={isReadOnly}
+                  rows={4}
+                />
+              </div>
+
+              {/* Questions for Company (optional) */}
+              <div className="space-y-2">
+                <Label htmlFor="questions">{t('candidate.challenge.questions_for_company_label')}</Label>
+                <Textarea
+                  id="questions"
+                  value={level2Payload.questions_for_company}
+                  onChange={(e) => updateLevel2Payload('questions_for_company', e.target.value)}
+                  placeholder={t('candidate.challenge.questions_for_company_placeholder')}
+                  disabled={isReadOnly}
+                  rows={3}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Submit */}
         {!isReadOnly && (

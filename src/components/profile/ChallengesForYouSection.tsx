@@ -80,9 +80,20 @@ const ChallengeCard: React.FC<{ challenge: CandidateChallenge }> = ({ challenge 
 
     // Active challenge - can start or continue
     if (challenge.timeStatus === 'active') {
+      // Level-specific button text
+      const getButtonLabel = () => {
+        if (challenge.level === 2) {
+          return t('candidate.challenge.start_level2');
+        }
+        if (challenge.level === 3) {
+          return t('candidate.challenge.start_level3');
+        }
+        return t('candidate.challenge.start_challenge');
+      };
+
       return (
         <Button size="sm" onClick={() => navigate(`/candidate/challenges/${challenge.invitationId}`)}>
-          {t('candidate.challenge.start_challenge')}
+          {getButtonLabel()}
           <ArrowRight className="h-4 w-4 ml-1" />
         </Button>
       );

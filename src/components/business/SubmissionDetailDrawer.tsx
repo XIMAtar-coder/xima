@@ -490,21 +490,23 @@ export function SubmissionDetailDrawer({
                 <CardTitle className="text-base">{t('business.responses.submission_content')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Candidate preferences */}
-                <div className="flex flex-wrap gap-2">
-                  {payload.tradeoff_priority && (
-                    <Badge variant="outline">
-                      {t('challenge.tradeoff_label')}: {tradeoffLabels[payload.tradeoff_priority] || payload.tradeoff_priority}
-                    </Badge>
-                  )}
-                  {payload.confidence && (
-                    <Badge variant="outline">
-                      {t('challenge.confidence_label')}: {confidenceLabels[payload.confidence] || payload.confidence}
-                    </Badge>
-                  )}
-                </div>
+                {/* Candidate preferences - only for Level 1 */}
+                {(payload.tradeoff_priority || payload.confidence) && (
+                  <div className="flex flex-wrap gap-2">
+                    {payload.tradeoff_priority && (
+                      <Badge variant="outline">
+                        {t('challenge.tradeoff_label')}: {tradeoffLabels[payload.tradeoff_priority] || payload.tradeoff_priority}
+                      </Badge>
+                    )}
+                    {payload.confidence && (
+                      <Badge variant="outline">
+                        {t('challenge.confidence_label')}: {confidenceLabels[payload.confidence] || payload.confidence}
+                      </Badge>
+                    )}
+                  </div>
+                )}
 
-                {/* Approach */}
+                {/* Approach - both Level 1 and Level 2 */}
                 {payload.approach && (
                   <div>
                     <Label className="text-sm font-medium">{t('challenge.approach_label')}</Label>
@@ -512,7 +514,7 @@ export function SubmissionDetailDrawer({
                   </div>
                 )}
 
-                {/* Assumptions */}
+                {/* Level 1 specific fields */}
                 {payload.assumptions && (
                   <div>
                     <Label className="text-sm font-medium">{t('challenge.assumptions_label')}</Label>
@@ -520,7 +522,6 @@ export function SubmissionDetailDrawer({
                   </div>
                 )}
 
-                {/* First Actions */}
                 {payload.first_actions?.length > 0 && (
                   <div>
                     <Label className="text-sm font-medium">{t('challenge.first_actions_label')}</Label>
@@ -529,6 +530,35 @@ export function SubmissionDetailDrawer({
                         <li key={i}>{action}</li>
                       ))}
                     </ol>
+                  </div>
+                )}
+
+                {/* Level 2 specific fields */}
+                {payload.role_plan && (
+                  <div>
+                    <Label className="text-sm font-medium">{t('candidate.challenge.role_plan_label')}</Label>
+                    <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{payload.role_plan}</p>
+                  </div>
+                )}
+
+                {payload.assumptions_tradeoffs && (
+                  <div>
+                    <Label className="text-sm font-medium">{t('candidate.challenge.assumptions_tradeoffs_label')}</Label>
+                    <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{payload.assumptions_tradeoffs}</p>
+                  </div>
+                )}
+
+                {payload.key_deliverables && (
+                  <div>
+                    <Label className="text-sm font-medium">{t('candidate.challenge.key_deliverables_label')}</Label>
+                    <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{payload.key_deliverables}</p>
+                  </div>
+                )}
+
+                {payload.questions_for_company && (
+                  <div>
+                    <Label className="text-sm font-medium">{t('candidate.challenge.questions_for_company_label')}</Label>
+                    <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{payload.questions_for_company}</p>
                   </div>
                 )}
               </CardContent>
