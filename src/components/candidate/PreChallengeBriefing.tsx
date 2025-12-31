@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Clock, Target, FileText, CheckCircle, Bell } from 'lucide-react';
+import { ArrowLeft, Clock, Target, FileText, CheckCircle, Bell, Building2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ChallengeLevel } from '@/lib/challenges/challengeLevels';
 
@@ -10,6 +10,7 @@ interface PreChallengeBriefingProps {
   companyName: string;
   challengeTitle: string;
   estimatedMinutes: number;
+  roleTitle?: string | null;
   onStart: () => void;
 }
 
@@ -18,6 +19,7 @@ export function PreChallengeBriefing({
   companyName,
   challengeTitle,
   estimatedMinutes,
+  roleTitle,
   onStart,
 }: PreChallengeBriefingProps) {
   const { t } = useTranslation();
@@ -42,6 +44,31 @@ export function PreChallengeBriefing({
 
         {/* Briefing Sections */}
         <div className="space-y-6">
+          {/* Company Context - NEW SECTION */}
+          <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-4">
+                <div className="p-2 rounded-lg bg-primary/20">
+                  <Building2 className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-2">
+                    {t('candidate.briefing.context_title')}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {roleTitle 
+                      ? t('candidate.briefing.context_with_role', { companyName, roleTitle })
+                      : t('candidate.briefing.context_no_role', { companyName })
+                    }
+                  </p>
+                  <p className="text-muted-foreground text-sm leading-relaxed mt-2">
+                    {t('candidate.briefing.context_note')}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Purpose */}
           <Card className="border-border/50">
             <CardContent className="pt-6">

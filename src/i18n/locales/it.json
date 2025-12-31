@@ -2806,6 +2806,10 @@
     "briefing": {
       "level_1_badge": "Livello 1 · Decision-Making",
       "level_2_badge": "Livello 2 · Specifico per Ruolo",
+      "context_title": "Perché questa sfida, e perché tu",
+      "context_with_role": "Sei stato invitato da {{companyName}} nell'ambito della ricerca per il ruolo {{roleTitle}}.",
+      "context_no_role": "Sei stato invitato da {{companyName}} per esplorare come affronti decisioni e sfide.",
+      "context_note": "Questa non è una prova. È uno spazio di confronto per capire come affronti decisioni, ambiguità e impatto — in un contesto rilevante per loro.",
       "purpose_title": "Perché esiste questa sfida",
       "purpose_l1": "Questa sfida è progettata per capire come pensi, prendi decisioni e gestisci l'incertezza. Non ci sono risposte giuste o sbagliate.",
       "purpose_l2": "Questa sfida valuta il tuo ragionamento pratico e le tue competenze per il ruolo. Si basa sulla tua risposta precedente e si concentra sulle capacità specifiche del ruolo.",
@@ -2828,6 +2832,9 @@
       "l2_note": "Questo si basa sul tuo step precedente — mostraci come affronteresti il ruolo.",
       "start_challenge": "Inizia Sfida",
       "go_back": "Torna indietro"
+    },
+    "reassurance": {
+      "message": "Prenditi un momento. Non ci sono risposte giuste o sbagliate.\nQuesta sfida serve a capire come ragioni, non a giudicarti."
     },
     "notifications": {
       "submission_received": "La tua risposta è stata inviata a {{company}}. La stanno valutando.",
