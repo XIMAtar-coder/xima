@@ -2912,6 +2912,10 @@
     "briefing": {
       "level_1_badge": "Level 1 · Decision-Making",
       "level_2_badge": "Level 2 · Role-Specific",
+      "context_title": "Why this challenge, and why you",
+      "context_with_role": "You've been invited by {{companyName}} as part of their exploration for the role {{roleTitle}}.",
+      "context_no_role": "You've been invited by {{companyName}} to explore how you approach decisions and challenges.",
+      "context_note": "This is not a test. It's a shared space to understand how you approach decisions, uncertainty, and impact — in a context that matters to them.",
       "purpose_title": "Why this challenge exists",
       "purpose_l1": "This challenge is designed to understand how you think, make decisions, and navigate uncertainty. There are no right or wrong answers.",
       "purpose_l2": "This challenge evaluates your practical reasoning and skills for the role. It builds on your previous response and focuses on role-specific capabilities.",
@@ -2934,6 +2938,9 @@
       "l2_note": "This builds on your previous step — show us how you'd approach the role.",
       "start_challenge": "Start Challenge",
       "go_back": "Go back"
+    },
+    "reassurance": {
+      "message": "Take a breath. There are no right or wrong answers here.\nThis challenge is about how you think — not about being perfect."
     },
     "notifications": {
       "submission_received": "Your response was sent to {{company}}. They are reviewing it now.",

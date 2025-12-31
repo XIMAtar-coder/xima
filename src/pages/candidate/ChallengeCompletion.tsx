@@ -21,6 +21,7 @@ import { CandidateReflectionPanel } from '@/components/signals/CandidateReflecti
 import { ChallengeProgressHeader } from '@/components/candidate/ChallengeProgressHeader';
 import { CharacterCountTextarea } from '@/components/candidate/CharacterCountTextarea';
 import { PreChallengeBriefing } from '@/components/candidate/PreChallengeBriefing';
+import { ReassuranceToast } from '@/components/candidate/ReassuranceToast';
 import { 
   ChallengeLevel, 
   getChallengeLevel, 
@@ -121,6 +122,17 @@ export default function ChallengeCompletion() {
   // Briefing state - check localStorage to see if already acknowledged
   const [briefingCompleted, setBriefingCompleted] = useState<boolean>(() => {
     if (!invitationId) return false;
+    return localStorage.getItem(`xima_briefing_${invitationId}`) === 'completed';
+  });
+  
+  // Show reassurance only when just started (briefing just completed, no prior draft)
+  const [showReassurance, setShowReassurance] = useState<boolean>(() => {
+    if (!invitationId) return false;
+    // Show if briefing was just completed but reassurance not yet shown
+    const briefingDone = localStorage.getItem(`xima_briefing_${invitationId}`) === 'completed';
+    const reassuranceShown = localStorage.getItem(`xima_reassurance_${invitationId}`) === 'shown';
+    // We'll trigger this in handleStartChallenge instead
+    return false;
     return localStorage.getItem(`xima_briefing_${invitationId}`) === 'completed';
   });
 
@@ -721,11 +733,16 @@ export default function ChallengeCompletion() {
     );
   }
 
-  // Handle briefing start - mark as completed and store in localStorage
+  // Handle briefing start - mark as completed, trigger reassurance, and store in localStorage
   const handleStartChallenge = () => {
     if (invitationId) {
       localStorage.setItem(`xima_briefing_${invitationId}`, 'completed');
       setBriefingCompleted(true);
+      // Trigger reassurance toast (only if not previously shown)
+      const reassuranceShown = localStorage.getItem(`xima_reassurance_${invitationId}`) === 'shown';
+      if (!reassuranceShown) {
+        setShowReassurance(true);
+      }
     }
   };
 
@@ -743,6 +760,7 @@ export default function ChallengeCompletion() {
         companyName={challenge.companyName}
         challengeTitle={challenge.challengeTitle}
         estimatedMinutes={estimatedMinutes}
+        roleTitle={challenge.roleTitle}
         onStart={handleStartChallenge}
       />
     );
@@ -801,6 +819,14 @@ export default function ChallengeCompletion() {
         />
       )}
       <div className="container max-w-3xl py-8 space-y-6">
+        {/* Reassurance Toast - shows briefly after starting challenge */}
+        {showReassurance && invitationId && (
+          <ReassuranceToast 
+            invitationId={invitationId}
+            onDismiss={() => setShowReassurance(false)}
+          />
+        )}
+        
         {/* XIMA Core Challenge Intro Block */}
         {challenge.level === 1 && (
           <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
