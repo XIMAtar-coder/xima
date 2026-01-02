@@ -37,11 +37,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { XimaSignalsPanel } from '@/components/signals/XimaSignalsPanel';
 import { DecisionConfidencePanel } from '@/components/signals/DecisionConfidencePanel';
 import { PremiumSignalsPanel } from '@/components/signals/PremiumSignalsPanel';
+import { XimaDecisionPack } from '@/components/signals/XimaDecisionPack';
 import { Level2SignalsPanel } from './Level2SignalsPanel';
 import type { InvitationWithSubmission } from '@/hooks/useChallengeResponsesData';
 import { Level2InviteModal } from './Level2InviteModal';
 import { ChallengeLevel, getChallengeLevel } from '@/lib/challenges/challengeLevels';
 import { isLevel2Rubric } from '@/lib/challenges/level2Templates';
+import { useBusinessPremium } from '@/hooks/useBusinessPremium';
 
 interface ChallengeInfo {
   id: string;
@@ -92,6 +94,7 @@ export function SubmissionDetailDrawer({
   onLevel2InviteSent,
 }: SubmissionDetailDrawerProps) {
   const { t } = useTranslation();
+  const { isPremium } = useBusinessPremium();
   const [generatingSignals, setGeneratingSignals] = useState(false);
   const [savingReview, setSavingReview] = useState(false);
   const [currentReview, setCurrentReview] = useState<ChallengeReview | null>(null);
@@ -391,8 +394,15 @@ export function SubmissionDetailDrawer({
               {/* Decision Confidence Panel */}
               <DecisionConfidencePanel signals={localSignals} />
               
+              {/* XIMA Decision Pack - Premium Feature */}
+              <XimaDecisionPack 
+                signals={localSignals} 
+                level2Payload={currentChallengeLevel === 2 ? payload : null}
+                isPremium={isPremium}
+              />
+              
               {/* XIMA Premium Signals */}
-              <PremiumSignalsPanel signals={localSignals} isPremium={false} />
+              <PremiumSignalsPanel signals={localSignals} isPremium={isPremium} />
 
               {/* Numeric Signals (De-emphasized - Collapsible Detail) */}
               <TooltipProvider>
