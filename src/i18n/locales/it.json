@@ -65,7 +65,8 @@
     "back": "Indietro",
     "strongest": "Il Tuo Vantaggio",
     "area_to_develop": "Area di Crescita",
-    "minutes": "min"
+    "minutes": "min",
+    "this_role": "questo ruolo"
   },
   "ximatar_intro": {
     "storytelling": "Non definiamo le persone con etichette. Riveliamo la dinamica tra ciò che le muove, ciò che le eleva e ciò che le trattiene",
@@ -2204,6 +2205,17 @@
       "send_followup": "Invia Richiesta"
     },
     "level2": {
+      "hard_skills_title": "Livello 2 — Sfida Hard Skill per Ruolo",
+      "hard_skills_subtitle": "Risposta strutturata ancorata a uno scenario operativo specifico",
+      "scenario_context_label": "Contesto dello Scenario",
+      "scenario_context_fallback": "Posizione di {{role}} presso {{company}}",
+      "approach_section": "Approccio",
+      "decisions_section": "Decisioni Chiave e Trade-off",
+      "deliverables_section": "Deliverable Concreti",
+      "tools_section": "Strumenti e Metodi",
+      "risks_section": "Rischi e Punti di Fallimento",
+      "candidate_questions": "Domande del Candidato",
+      "no_response_yet": "Nessuna risposta ancora inviata",
       "next_step": "Passo successivo nel percorso",
       "invite_to_level2": "Invita a Challenge Livello 2",
       "already_invited": "Già invitato al Livello 2",
@@ -2843,7 +2855,36 @@
       "passed": "{{company}} ha deciso di non procedere questa volta. Continua — il tuo profilo resta attivo."
     },
     "data_inconsistency_title": "Incoerenza Dati Rilevata",
-    "data_inconsistency_desc": "Esiste una sfida di Livello 2 senza Livello 1 per: {{companies}}. Contatta il supporto."
+    "data_inconsistency_desc": "Esiste una sfida di Livello 2 senza Livello 1 per: {{companies}}. Contatta il supporto.",
+    "level2": {
+      "scenario_title": "Contesto dello Scenario",
+      "scenario_intro": "Stai entrando nel ruolo di {{role}} presso {{company}}.",
+      "scenario_note": "Tutte le tue risposte devono riferirsi a questo scenario specifico. Non ci sono risposte giuste o sbagliate — concentrati sul tuo ragionamento e le tue decisioni.",
+      "scenario_fallback": "Sulla base della tua sfida XIMA Core iniziale, {{company}} sta esplorando come affronteresti la posizione di {{role}}. Considera le realtà operative che affrontano.",
+      "context_title": "Contesto della Sfida",
+      "context_desc": "Stai completando una sfida basata sul ruolo per {{companyName}} come parte dell'esplorazione per {{roleTitle}}.",
+      "core_context_title": "Basato sulla tua risposta XIMA Core",
+      "skills_title": "In questa sfida valutiamo:",
+      "skills_subtitle": "Queste competenze sono specifiche per il ruolo — nessun punteggio, solo trasparenza",
+      "form_intro": "Dato lo scenario sopra, mostra come affronteresti realmente questo ruolo. Sii specifico e concreto.",
+      "approach_label": "Il Tuo Approccio",
+      "approach_placeholder": "Dato lo scenario sopra, descrivi il tuo approccio tecnico o professionale...",
+      "approach_helper": "In questo contesto, come inizieresti?",
+      "decisions_label": "Decisioni Chiave e Trade-off",
+      "decisions_placeholder": "In questo scenario, quali decisioni chiave prenderesti? Quali trade-off sei disposto ad accettare?",
+      "decisions_helper": "Pensa ai vincoli reali di questa situazione.",
+      "deliverables_label": "Deliverable Concreti",
+      "deliverables_placeholder": "Quali deliverable concreti produrresti nelle prime settimane? Sii specifico sugli output...",
+      "deliverables_helper": "Quali prodotti tangibili creeresti?",
+      "tools_label": "Strumenti e Metodi",
+      "tools_placeholder": "In questo scenario, quali strumenti, framework o metodi applicheresti? Perché queste scelte?",
+      "tools_helper": "Considera cosa è pratico dato il contesto.",
+      "risks_label": "Rischi e Punti di Fallimento",
+      "risks_placeholder": "In questo contesto, cosa potrebbe andare storto? Come anticiperesti e gestiresti i fallimenti?",
+      "risks_helper": "Quali sono le maggiori incertezze?",
+      "questions_label": "Domande per l'Azienda (opzionale)",
+      "questions_placeholder": "Dato lo scenario, cosa vorresti chiarire prima di iniziare?"
+    }
   },
   "signals": {
     "panel_title": "Segnali XIMA",
