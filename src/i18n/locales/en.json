@@ -2949,7 +2949,50 @@
       "passed": "{{company}} decided not to proceed this time. Keep going — your profile stays active."
     },
     "data_inconsistency_title": "Data Inconsistency Detected",
-    "data_inconsistency_desc": "Level 2 challenge exists without Level 1 for: {{companies}}. Please contact support."
+    "data_inconsistency_desc": "Level 2 challenge exists without Level 1 for: {{companies}}. Please contact support.",
+    "level2": {
+      "context_title": "Challenge Context",
+      "context_desc": "You're completing a role-based challenge for {{companyName}} as part of the {{roleTitle}} exploration.",
+      "core_context_title": "Building on your XIMA Core response",
+      "skills_title": "In this challenge we are evaluating:",
+      "skills_subtitle": "These skills are specific to the role — no scoring, just transparency",
+      "form_intro": "Show how you would actually approach this role. Be specific and concrete.",
+      "approach_label": "Your Approach",
+      "approach_placeholder": "Describe your technical or professional approach to this challenge...",
+      "decisions_label": "Key Decisions & Trade-offs",
+      "decisions_placeholder": "What key decisions would you make? What trade-offs are you willing to accept?",
+      "deliverables_label": "Concrete Deliverables",
+      "deliverables_placeholder": "What would you actually produce or deliver? Be specific about outputs...",
+      "tools_label": "Tools & Methods",
+      "tools_placeholder": "What tools, frameworks, or methods would you use? Why?",
+      "risks_label": "Risks & Failure Points",
+      "risks_placeholder": "What could go wrong? How would you mitigate or handle failure?",
+      "questions_label": "Questions for the Company (optional)",
+      "questions_placeholder": "Any clarifying questions you would ask before starting..."
+    }
+  },
+  "business": {
+    "level2": {
+      "hard_skills_title": "Role-Based Response",
+      "hard_skills_subtitle": "Structured hard-skill signals from Level 2 challenge",
+      "approach_section": "Approach",
+      "decisions_section": "Key Decisions & Trade-offs",
+      "deliverables_section": "Concrete Deliverables",
+      "tools_section": "Tools & Methods",
+      "risks_section": "Risks & Failure Points",
+      "candidate_questions": "Candidate's Questions",
+      "no_response_yet": "No response submitted yet"
+    }
+  },
+  "common": {
+    "this_role": "this role"
+  },
+  "challenge": {
+    "validation": {
+      "decisions_required": "Key Decisions & Trade-offs is required",
+      "tools_required": "Tools & Methods is required",
+      "risks_required": "Risks & Failure Points is required"
+    }
   },
   "signals": {
     "panel_title": "XIMA Signals",
