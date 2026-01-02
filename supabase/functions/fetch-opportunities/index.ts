@@ -12,10 +12,39 @@ serve(async (req) => {
   }
 
   try {
-    // Initialize Supabase client
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+    // SECURITY: Validate authentication
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      console.error("[fetch-opportunities] Missing Authorization header");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized", message: "Authorization header required" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Create client with user's auth context to validate the JWT
+    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
+    
+    if (authError || !user) {
+      console.error("[fetch-opportunities] Authentication failed:", authError?.message);
+      return new Response(
+        JSON.stringify({ error: "Unauthorized", message: "Invalid or expired token" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log(`[fetch-opportunities] Authenticated user: ${user.id}`);
+
+    // Use service role for database operations
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Fetch public job opportunities
     const { data: opportunities, error } = await supabase
@@ -26,11 +55,11 @@ serve(async (req) => {
       .limit(20);
 
     if (error) {
-      console.error("Database error:", error);
+      console.error("[fetch-opportunities] Database error:", error);
       throw new Error(`Failed to fetch opportunities: ${error.message}`);
     }
 
-    console.log(`Fetched ${opportunities?.length || 0} opportunities`);
+    console.log(`[fetch-opportunities] Fetched ${opportunities?.length || 0} opportunities`);
 
     return new Response(
       JSON.stringify({
@@ -42,7 +71,7 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error("Error in fetch-opportunities function:", error);
+    console.error("[fetch-opportunities] Error:", error);
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : "Unknown error",

@@ -4,7 +4,7 @@ project_id = "iyckvvnecpnldrxqmzta"
 verify_jwt = false
 
 [functions.test-ximatar-patterns]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-company-profile]
 verify_jwt = false
@@ -16,7 +16,7 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.fetch-opportunities]
-verify_jwt = false
+verify_jwt = true
 
 [functions.fetch-user-challenges]
 verify_jwt = true
@@ -34,7 +34,10 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.recommend-mentors]
-verify_jwt = false
+verify_jwt = true
+
+[functions.recommend-jobs]
+verify_jwt = true
 
 [functions.get-field-averages]
 verify_jwt = false
@@ -46,4 +49,10 @@ verify_jwt = false
 verify_jwt = true
 
 [functions.generate-challenge]
+verify_jwt = true
+
+[functions.verify-challenge-invitation]
+verify_jwt = false
+
+[functions.ximai-chat]
 verify_jwt = true

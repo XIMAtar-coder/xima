@@ -49,51 +49,36 @@ const ChallengeAccept = () => {
 
   const fetchInvitation = async () => {
     try {
-      // Fetch invitation by token with challenge info
-      const { data: invData, error: invError } = await supabase
-        .from('challenge_invitations')
-        .select('id, status, created_at, business_id, hiring_goal_id, challenge_id')
-        .eq('invite_token', token)
-        .single();
+      // Use edge function to verify invitation by token (secure, rate-limited)
+      const { data, error: fnError } = await supabase.functions.invoke('verify-challenge-invitation', {
+        body: { token }
+      });
 
-      if (invError || !invData) {
+      if (fnError || data?.error) {
+        console.error('Invitation verification failed:', fnError || data?.error);
+        setError(data?.message || 'Invitation not found or expired');
+        setLoading(false);
+        return;
+      }
+
+      if (!data?.invitation) {
         setError('Invitation not found or expired');
         setLoading(false);
         return;
       }
 
-      // Fetch company, role, and challenge details
-      const [businessResult, goalResult, challengeResult] = await Promise.all([
-        supabase
-          .from('business_profiles')
-          .select('company_name')
-          .eq('user_id', invData.business_id)
-          .single(),
-        supabase
-          .from('hiring_goal_drafts')
-          .select('role_title, task_description')
-          .eq('id', invData.hiring_goal_id)
-          .single(),
-        invData.challenge_id 
-          ? supabase
-              .from('business_challenges')
-              .select('title, start_at, end_at, status')
-              .eq('id', invData.challenge_id)
-              .single()
-          : Promise.resolve({ data: null })
-      ]);
-
+      const inv = data.invitation;
       setInvitation({
-        id: invData.id,
-        status: invData.status,
-        created_at: invData.created_at,
-        company_name: businessResult.data?.company_name || 'Company',
-        role_title: goalResult.data?.role_title || null,
-        task_description: goalResult.data?.task_description || null,
-        challenge_title: challengeResult.data?.title || null,
-        challenge_start_at: challengeResult.data?.start_at || null,
-        challenge_end_at: challengeResult.data?.end_at || null,
-        challenge_status: challengeResult.data?.status || null
+        id: inv.id,
+        status: inv.status,
+        created_at: inv.created_at,
+        company_name: inv.company_name || 'Company',
+        role_title: inv.role_title || null,
+        task_description: inv.task_description || null,
+        challenge_title: inv.challenge_title || null,
+        challenge_start_at: inv.challenge_start_at || null,
+        challenge_end_at: inv.challenge_end_at || null,
+        challenge_status: inv.challenge_status || null
       });
     } catch (err) {
       console.error('Error fetching invitation:', err);
