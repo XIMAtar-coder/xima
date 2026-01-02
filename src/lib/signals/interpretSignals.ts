@@ -11,6 +11,7 @@ export interface CompanyContext {
   size?: string;
   maturity?: string;
   roleTitle?: string;
+  companyName?: string;
   functionArea?: string;
   workModel?: string;
 }
@@ -20,6 +21,37 @@ export interface DecisionInsights {
   strengths: string[];
   risks: string[];
   roleFitHint: string;
+}
+
+// ============================================
+// NEW: Signal Interpretation Layer Types
+// ============================================
+
+export interface SignalInterpretation {
+  id: string;
+  label: string;
+  status: 'clear' | 'partial' | 'fragmented';
+  explanation: string;
+  evidence: string;
+  confidence: 'low' | 'medium' | 'high';
+}
+
+export interface UncertaintyItem {
+  gap: string;
+  reason: string;
+}
+
+export interface FollowupQuestion {
+  question: string;
+  context: string;
+}
+
+export interface InterpretationPayload {
+  level: 1 | 2;
+  signals: SignalInterpretation[];
+  uncertainties: UncertaintyItem[];
+  suggestedQuestions: FollowupQuestion[];
+  decisionReadiness: 'ready' | 'needs_clarification' | 'insufficient';
 }
 
 /**
@@ -233,6 +265,322 @@ export function interpretSignals(signals: SignalsPayload, context?: CompanyConte
     strengths: getStrengths(signals, context),
     risks: getRisks(signals, context),
     roleFitHint: getRoleFitHint(signals, context),
+  };
+}
+
+// ============================================
+// NEW: Full Signal Interpretation Layer
+// ============================================
+
+/**
+ * Derive confidence level from score and flags
+ */
+function deriveConfidence(score: number, flags: string[]): 'low' | 'medium' | 'high' {
+  const weakFlags = ['weak_assumptions', 'short_approach', 'vague_language', 'no_actions', 'vague_actions'];
+  const weakCount = weakFlags.filter(f => flags.includes(f)).length;
+
+  if (weakCount >= 2 || score < 40) return 'low';
+  if (weakCount >= 1 || score < 55) return 'medium';
+  return 'high';
+}
+
+function interpretDecisionStructure(signals: SignalsPayload): SignalInterpretation {
+  const { framing, decision_quality, flags } = signals;
+  const avgScore = (framing + decision_quality) / 2;
+
+  let status: 'clear' | 'partial' | 'fragmented';
+  let explanation: string;
+  let evidence: string;
+
+  if (avgScore >= 65) {
+    status = 'clear';
+    explanation = 'The candidate structures problems with explicit constraints and assumptions before proposing solutions.';
+    evidence = 'Response shows systematic problem decomposition and logical flow.';
+  } else if (avgScore >= 45) {
+    status = 'partial';
+    explanation = 'Key elements of the problem are identified, though some assumptions remain implicit.';
+    evidence = 'Partial structure present but could benefit from more explicit framing.';
+  } else {
+    status = 'fragmented';
+    explanation = 'Moves toward solutions quickly with less emphasis on upfront structuring.';
+    evidence = 'Response would benefit from more deliberate problem definition.';
+  }
+
+  return {
+    id: 'decision_structure',
+    label: 'interpretation.decision_structure',
+    status,
+    explanation,
+    evidence,
+    confidence: deriveConfidence(avgScore, flags),
+  };
+}
+
+function interpretOwnership(signals: SignalsPayload): SignalInterpretation {
+  const { execution_bias, flags } = signals;
+  const hasBiasToAction = flags.includes('bias_to_action');
+
+  let status: 'clear' | 'partial' | 'fragmented';
+  let explanation: string;
+  let evidence: string;
+
+  if (hasBiasToAction || execution_bias >= 65) {
+    status = 'clear';
+    explanation = 'Demonstrates strong initiative and personal accountability.';
+    evidence = 'Uses active language and takes clear ownership of proposed actions.';
+  } else if (execution_bias >= 45) {
+    status = 'partial';
+    explanation = 'Shows willingness to take ownership with a measured approach.';
+    evidence = 'Balances personal initiative with collaborative framing.';
+  } else {
+    status = 'fragmented';
+    explanation = 'May prefer collaborative or delegated ownership structures.';
+    evidence = 'Response focuses more on context than personal commitments.';
+  }
+
+  return {
+    id: 'ownership_agency',
+    label: 'interpretation.ownership_agency',
+    status,
+    explanation,
+    evidence,
+    confidence: deriveConfidence(execution_bias, flags),
+  };
+}
+
+function interpretTradeoffs(signals: SignalsPayload): SignalInterpretation {
+  const { framing, decision_quality, flags } = signals;
+  const hasClearTradeoffs = flags.includes('clear_tradeoffs');
+  const hasNoTradeoff = flags.includes('no_tradeoff');
+
+  let status: 'clear' | 'partial' | 'fragmented';
+  let explanation: string;
+  let evidence: string;
+
+  if (hasClearTradeoffs && framing >= 55) {
+    status = 'clear';
+    explanation = 'Explicitly acknowledges trade-offs and competing priorities.';
+    evidence = 'Response articulates what would be sacrificed for chosen approach.';
+  } else if (!hasNoTradeoff && decision_quality >= 50) {
+    status = 'partial';
+    explanation = 'Some trade-offs are implicit in the reasoning.';
+    evidence = 'Could benefit from more explicit discussion of alternatives.';
+  } else {
+    status = 'fragmented';
+    explanation = 'Trade-offs not explicitly identified in the response.';
+    evidence = 'Response may benefit from considering competing constraints.';
+  }
+
+  return {
+    id: 'tradeoff_awareness',
+    label: 'interpretation.tradeoff_awareness',
+    status,
+    explanation,
+    evidence,
+    confidence: hasClearTradeoffs ? 'high' : hasNoTradeoff ? 'low' : 'medium',
+  };
+}
+
+function interpretContextFidelity(signals: SignalsPayload): SignalInterpretation {
+  const { framing, impact_thinking, flags } = signals;
+  const avgScore = (framing + impact_thinking) / 2;
+  const hasVagueLanguage = flags.includes('vague_language');
+
+  let status: 'clear' | 'partial' | 'fragmented';
+  let explanation: string;
+  let evidence: string;
+
+  if (avgScore >= 60 && !hasVagueLanguage) {
+    status = 'clear';
+    explanation = 'Response is well-anchored to the specific scenario provided.';
+    evidence = 'References concrete elements from the context.';
+  } else if (avgScore >= 45) {
+    status = 'partial';
+    explanation = 'Response connects to context but includes some generic elements.';
+    evidence = 'Mix of specific and general reasoning.';
+  } else {
+    status = 'fragmented';
+    explanation = 'Response tends toward abstract or general reasoning.';
+    evidence = 'Could be more tailored to the specific scenario.';
+  }
+
+  return {
+    id: 'context_fidelity',
+    label: 'interpretation.context_fidelity',
+    status,
+    explanation,
+    evidence,
+    confidence: hasVagueLanguage ? 'low' : deriveConfidence(avgScore, flags),
+  };
+}
+
+function interpretExecutionReadiness(signals: SignalsPayload, level: 1 | 2): SignalInterpretation {
+  const { execution_bias, impact_thinking, flags } = signals;
+  const avgScore = (execution_bias + impact_thinking) / 2;
+  const hasMetrics = flags.includes('uses_metrics');
+  const hasNoActions = flags.includes('no_actions');
+
+  let status: 'clear' | 'partial' | 'fragmented';
+  let explanation: string;
+  let evidence: string;
+
+  if (avgScore >= 65 && !hasNoActions) {
+    status = 'clear';
+    explanation = level === 2
+      ? 'Concrete deliverables and methods are clearly articulated.'
+      : 'Shows readiness to move from analysis to action.';
+    evidence = hasMetrics
+      ? 'Includes specific tools, methods, and measurable outcomes.'
+      : 'Defines clear next steps and practical approach.';
+  } else if (avgScore >= 45) {
+    status = 'partial';
+    explanation = level === 2
+      ? 'Some deliverables outlined but could be more specific.'
+      : 'Balances planning with action orientation.';
+    evidence = 'Has practical elements but room for more specificity.';
+  } else {
+    status = 'fragmented';
+    explanation = level === 2
+      ? 'Deliverables and methods need more concrete definition.'
+      : 'Focus is more on analysis than implementation.';
+    evidence = 'Would benefit from more actionable specificity.';
+  }
+
+  return {
+    id: 'execution_readiness',
+    label: 'interpretation.execution_readiness',
+    status,
+    explanation,
+    evidence,
+    confidence: deriveConfidence(avgScore, flags),
+  };
+}
+
+function analyzeUncertainties(signals: SignalsPayload, level: 1 | 2): UncertaintyItem[] {
+  const items: UncertaintyItem[] = [];
+  const { flags, framing, execution_bias, impact_thinking, decision_quality } = signals;
+
+  if (flags.includes('weak_assumptions') || framing < 50) {
+    items.push({
+      gap: 'interpretation.uncertainty.assumptions',
+      reason: 'interpretation.uncertainty.assumptions_reason',
+    });
+  }
+
+  if (flags.includes('no_metrics') || impact_thinking < 45) {
+    items.push({
+      gap: 'interpretation.uncertainty.metrics',
+      reason: 'interpretation.uncertainty.metrics_reason',
+    });
+  }
+
+  if (flags.includes('vague_actions') || flags.includes('no_actions') || execution_bias < 45) {
+    items.push({
+      gap: 'interpretation.uncertainty.actions',
+      reason: 'interpretation.uncertainty.actions_reason',
+    });
+  }
+
+  if (level === 2 && execution_bias < 55) {
+    items.push({
+      gap: 'interpretation.uncertainty.deliverables',
+      reason: 'interpretation.uncertainty.deliverables_reason',
+    });
+  }
+
+  if (decision_quality < 50) {
+    items.push({
+      gap: 'interpretation.uncertainty.reasoning',
+      reason: 'interpretation.uncertainty.reasoning_reason',
+    });
+  }
+
+  return items.slice(0, 3);
+}
+
+function generateFollowupQuestions(signals: SignalsPayload, level: 1 | 2): FollowupQuestion[] {
+  const questions: FollowupQuestion[] = [];
+  const { flags, framing, execution_bias, impact_thinking } = signals;
+
+  if (flags.includes('weak_assumptions') || framing < 55) {
+    questions.push({
+      question: 'interpretation.followup.validate_assumption',
+      context: 'interpretation.followup.validate_assumption_context',
+    });
+  }
+
+  if (flags.includes('no_tradeoff') || !flags.includes('clear_tradeoffs')) {
+    questions.push({
+      question: 'interpretation.followup.constraint_change',
+      context: 'interpretation.followup.constraint_change_context',
+    });
+  }
+
+  if (flags.includes('vague_actions') || execution_bias < 50) {
+    questions.push({
+      question: 'interpretation.followup.first_week',
+      context: 'interpretation.followup.first_week_context',
+    });
+  }
+
+  if (flags.includes('no_metrics') || impact_thinking < 50) {
+    questions.push({
+      question: 'interpretation.followup.success_measure',
+      context: 'interpretation.followup.success_measure_context',
+    });
+  }
+
+  if (level === 2) {
+    questions.push({
+      question: 'interpretation.followup.risk_mitigation',
+      context: 'interpretation.followup.risk_mitigation_context',
+    });
+  }
+
+  return questions.slice(0, 3);
+}
+
+function determineDecisionReadiness(
+  interpretations: SignalInterpretation[],
+  uncertainties: UncertaintyItem[]
+): 'ready' | 'needs_clarification' | 'insufficient' {
+  const clearCount = interpretations.filter(s => s.status === 'clear').length;
+  const fragmentedCount = interpretations.filter(s => s.status === 'fragmented').length;
+
+  if (clearCount >= 4 && uncertainties.length <= 1) {
+    return 'ready';
+  }
+  if (fragmentedCount >= 3 || uncertainties.length >= 3) {
+    return 'insufficient';
+  }
+  return 'needs_clarification';
+}
+
+/**
+ * Full interpretation layer for business decision support
+ */
+export function getFullInterpretation(
+  signals: SignalsPayload,
+  level: 1 | 2 = 1
+): InterpretationPayload {
+  const interpretations: SignalInterpretation[] = [
+    interpretDecisionStructure(signals),
+    interpretOwnership(signals),
+    interpretTradeoffs(signals),
+    interpretContextFidelity(signals),
+    interpretExecutionReadiness(signals, level),
+  ];
+
+  const uncertainties = analyzeUncertainties(signals, level);
+  const suggestedQuestions = generateFollowupQuestions(signals, level);
+  const decisionReadiness = determineDecisionReadiness(interpretations, uncertainties);
+
+  return {
+    level,
+    signals: interpretations,
+    uncertainties,
+    suggestedQuestions,
+    decisionReadiness,
   };
 }
 
