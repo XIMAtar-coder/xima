@@ -22,6 +22,8 @@ import { ChallengeProgressHeader } from '@/components/candidate/ChallengeProgres
 import { CharacterCountTextarea } from '@/components/candidate/CharacterCountTextarea';
 import { PreChallengeBriefing } from '@/components/candidate/PreChallengeBriefing';
 import { ReassuranceToast } from '@/components/candidate/ReassuranceToast';
+import { Level2ContextBlock } from '@/components/candidate/Level2ContextBlock';
+import { isLevel2Rubric, RoleFamily } from '@/lib/challenges/level2Templates';
 import { 
   ChallengeLevel, 
   getChallengeLevel, 
@@ -46,6 +48,9 @@ interface ChallengeDetails {
   status: string;
   companyName: string;
   level: ChallengeLevel;
+  // Level 2 specific fields
+  roleFamily?: RoleFamily | null;
+  skillFocus?: string[];
 }
 
 interface SubmissionPayload {
@@ -56,12 +61,13 @@ interface SubmissionPayload {
   confidence: string;
 }
 
-// Level 2 payload - role-specific structured response
+// Level 2 payload - role-specific structured response (hard skills)
 interface Level2Payload {
   approach: string;
-  role_plan: string;
-  assumptions_tradeoffs: string;
-  key_deliverables: string;
+  decisions_tradeoffs: string;
+  concrete_deliverables: string;
+  tools_methods: string;
+  risks_failures: string;
   questions_for_company: string;
 }
 
@@ -96,9 +102,10 @@ const DEFAULT_L1_PAYLOAD: SubmissionPayload = {
 
 const DEFAULT_L2_PAYLOAD: Level2Payload = {
   approach: '',
-  role_plan: '',
-  assumptions_tradeoffs: '',
-  key_deliverables: '',
+  decisions_tradeoffs: '',
+  concrete_deliverables: '',
+  tools_methods: '',
+  risks_failures: '',
   questions_for_company: '',
 };
 
@@ -218,6 +225,14 @@ export default function ChallengeCompletion() {
         const level = getChallengeLevel({ rubric, title: challengeData?.title });
         console.log('[ChallengeCompletion] Level detection:', { rubric, title: challengeData?.title, detectedLevel: level });
 
+        // Extract Level 2 specific fields from rubric
+        let roleFamily: RoleFamily | null = null;
+        let skillFocus: string[] = [];
+        if (rubric && isLevel2Rubric(rubric)) {
+          roleFamily = rubric.role_family || null;
+          skillFocus = rubric.skill_focus || [];
+        }
+
         setChallenge({
           invitationId: invitation.id,
           challengeId: invitation.challenge_id || '',
@@ -234,6 +249,8 @@ export default function ChallengeCompletion() {
           status: challengeData?.status || 'active',
           companyName: businessProfile?.company_name || 'Company',
           level,
+          roleFamily,
+          skillFocus,
         });
 
         // Check progression prerequisites for this hiring goal
@@ -321,13 +338,14 @@ export default function ChallengeCompletion() {
             ? submission.submitted_payload 
             : submission.draft_payload) as Record<string, any> | null;
           if (existingPayload && typeof existingPayload === 'object') {
-            // Check if it's a Level 2 payload (has role_plan field)
-            if ('role_plan' in existingPayload) {
+            // Check if it's a Level 2 payload (new format or legacy)
+            if ('decisions_tradeoffs' in existingPayload || 'role_plan' in existingPayload) {
               setLevel2Payload({
                 approach: existingPayload.approach || '',
-                role_plan: existingPayload.role_plan || '',
-                assumptions_tradeoffs: existingPayload.assumptions_tradeoffs || '',
-                key_deliverables: existingPayload.key_deliverables || '',
+                decisions_tradeoffs: existingPayload.decisions_tradeoffs || existingPayload.assumptions_tradeoffs || '',
+                concrete_deliverables: existingPayload.concrete_deliverables || existingPayload.key_deliverables || '',
+                tools_methods: existingPayload.tools_methods || existingPayload.role_plan || '',
+                risks_failures: existingPayload.risks_failures || '',
                 questions_for_company: existingPayload.questions_for_company || '',
               });
             } else {
@@ -504,13 +522,14 @@ export default function ChallengeCompletion() {
   // Calculate progress - handles both Level 1 and Level 2 using MIN_CHARS
   const progress = useMemo(() => {
     if (challenge?.level === 2) {
-      // Level 2 progress - 4 required fields
+      // Level 2 progress - 5 required fields
       let filled = 0;
-      const total = 4;
+      const total = 5;
       if (level2Payload.approach.trim().length >= MIN_CHARS) filled++;
-      if (level2Payload.role_plan.trim().length >= MIN_CHARS) filled++;
-      if (level2Payload.assumptions_tradeoffs.trim().length >= MIN_CHARS) filled++;
-      if (level2Payload.key_deliverables.trim().length >= MIN_CHARS) filled++;
+      if (level2Payload.decisions_tradeoffs.trim().length >= MIN_CHARS) filled++;
+      if (level2Payload.concrete_deliverables.trim().length >= MIN_CHARS) filled++;
+      if (level2Payload.tools_methods.trim().length >= MIN_CHARS) filled++;
+      if (level2Payload.risks_failures.trim().length >= MIN_CHARS) filled++;
       return Math.round((filled / total) * 100);
     }
     // Level 1 progress - textareas use MIN_CHARS, other fields just need values
@@ -530,9 +549,10 @@ export default function ChallengeCompletion() {
     if (challenge?.level === 2) {
       // Level 2 validation
       if (!level2Payload.approach.trim()) errors.push(t('challenge.validation.approach_required'));
-      if (!level2Payload.role_plan.trim()) errors.push(t('challenge.validation.role_plan_required'));
-      if (!level2Payload.assumptions_tradeoffs.trim()) errors.push(t('challenge.validation.assumptions_required'));
-      if (!level2Payload.key_deliverables.trim()) errors.push(t('challenge.validation.deliverables_required'));
+      if (!level2Payload.decisions_tradeoffs.trim()) errors.push(t('challenge.validation.decisions_required'));
+      if (!level2Payload.concrete_deliverables.trim()) errors.push(t('challenge.validation.deliverables_required'));
+      if (!level2Payload.tools_methods.trim()) errors.push(t('challenge.validation.tools_required'));
+      if (!level2Payload.risks_failures.trim()) errors.push(t('challenge.validation.risks_required'));
       return errors;
     }
     // Level 1 validation
@@ -995,59 +1015,84 @@ export default function ChallengeCompletion() {
           </Card>
         )}
 
-        {/* Response Form - Level 2 */}
+        {/* Level 2 Context Block + Response Form */}
         {challenge.level === 2 && (
-          <Card>
+          <>
+            {/* Context Block - Read-only */}
+            <Level2ContextBlock
+              companyName={challenge.companyName}
+              roleTitle={challenge.roleTitle}
+              roleFamily={challenge.roleFamily}
+              skillFocus={challenge.skillFocus}
+            />
+            
+            <Card>
             <CardHeader>
               <CardTitle className="text-lg">{t('challenge.your_response')}</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                {t('candidate.level2.form_intro')}
+              </p>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Approach */}
               <CharacterCountTextarea
                 id="l2-approach"
-                label={t('candidate.challenge.approach_label')}
+                label={t('candidate.level2.approach_label')}
                 value={level2Payload.approach}
                 onChange={(v) => updateLevel2Payload('approach', v)}
-                placeholder={t('candidate.challenge.approach_placeholder')}
+                placeholder={t('candidate.level2.approach_placeholder')}
                 disabled={isReadOnly}
                 required
                 rows={4}
                 minChars={MIN_CHARS}
               />
 
-              {/* Role Plan */}
+              {/* Key Decisions & Trade-offs */}
               <CharacterCountTextarea
-                id="role-plan"
-                label={t('candidate.challenge.role_plan_label')}
-                value={level2Payload.role_plan}
-                onChange={(v) => updateLevel2Payload('role_plan', v)}
-                placeholder={t('candidate.challenge.role_plan_placeholder')}
+                id="decisions-tradeoffs"
+                label={t('candidate.level2.decisions_label')}
+                value={level2Payload.decisions_tradeoffs}
+                onChange={(v) => updateLevel2Payload('decisions_tradeoffs', v)}
+                placeholder={t('candidate.level2.decisions_placeholder')}
                 disabled={isReadOnly}
                 required
                 rows={5}
                 minChars={MIN_CHARS}
               />
 
-              {/* Assumptions & Trade-offs */}
+              {/* Concrete Deliverables */}
               <CharacterCountTextarea
-                id="assumptions-tradeoffs"
-                label={t('candidate.challenge.assumptions_tradeoffs_label')}
-                value={level2Payload.assumptions_tradeoffs}
-                onChange={(v) => updateLevel2Payload('assumptions_tradeoffs', v)}
-                placeholder={t('candidate.challenge.assumptions_tradeoffs_placeholder')}
+                id="deliverables"
+                label={t('candidate.level2.deliverables_label')}
+                value={level2Payload.concrete_deliverables}
+                onChange={(v) => updateLevel2Payload('concrete_deliverables', v)}
+                placeholder={t('candidate.level2.deliverables_placeholder')}
                 disabled={isReadOnly}
                 required
                 rows={4}
                 minChars={MIN_CHARS}
               />
 
-              {/* Key Deliverables */}
+              {/* Tools & Methods */}
               <CharacterCountTextarea
-                id="deliverables"
-                label={t('candidate.challenge.key_deliverables_label')}
-                value={level2Payload.key_deliverables}
-                onChange={(v) => updateLevel2Payload('key_deliverables', v)}
-                placeholder={t('candidate.challenge.key_deliverables_placeholder')}
+                id="tools-methods"
+                label={t('candidate.level2.tools_label')}
+                value={level2Payload.tools_methods}
+                onChange={(v) => updateLevel2Payload('tools_methods', v)}
+                placeholder={t('candidate.level2.tools_placeholder')}
+                disabled={isReadOnly}
+                required
+                rows={4}
+                minChars={MIN_CHARS}
+              />
+
+              {/* Risks & Failure Points */}
+              <CharacterCountTextarea
+                id="risks-failures"
+                label={t('candidate.level2.risks_label')}
+                value={level2Payload.risks_failures}
+                onChange={(v) => updateLevel2Payload('risks_failures', v)}
+                placeholder={t('candidate.level2.risks_placeholder')}
                 disabled={isReadOnly}
                 required
                 rows={4}
@@ -1057,10 +1102,10 @@ export default function ChallengeCompletion() {
               {/* Questions for Company (optional) */}
               <CharacterCountTextarea
                 id="questions"
-                label={t('candidate.challenge.questions_for_company_label')}
+                label={t('candidate.level2.questions_label')}
                 value={level2Payload.questions_for_company}
                 onChange={(v) => updateLevel2Payload('questions_for_company', v)}
-                placeholder={t('candidate.challenge.questions_for_company_placeholder')}
+                placeholder={t('candidate.level2.questions_placeholder')}
                 disabled={isReadOnly}
                 rows={3}
                 minChars={50}
@@ -1069,6 +1114,7 @@ export default function ChallengeCompletion() {
               />
             </CardContent>
           </Card>
+          </>
         )}
 
         {/* Submit */}

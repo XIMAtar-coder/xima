@@ -37,9 +37,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { XimaSignalsPanel } from '@/components/signals/XimaSignalsPanel';
 import { DecisionConfidencePanel } from '@/components/signals/DecisionConfidencePanel';
 import { PremiumSignalsPanel } from '@/components/signals/PremiumSignalsPanel';
+import { Level2SignalsPanel } from './Level2SignalsPanel';
 import type { InvitationWithSubmission } from '@/hooks/useChallengeResponsesData';
 import { Level2InviteModal } from './Level2InviteModal';
 import { ChallengeLevel, getChallengeLevel } from '@/lib/challenges/challengeLevels';
+import { isLevel2Rubric } from '@/lib/challenges/level2Templates';
 
 interface ChallengeInfo {
   id: string;
