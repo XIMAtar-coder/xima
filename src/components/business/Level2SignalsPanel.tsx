@@ -8,7 +8,9 @@ import {
   Lightbulb, 
   AlertTriangle, 
   Wrench,
-  Package
+  Package,
+  MapPin,
+  Building2,
 } from 'lucide-react';
 
 interface Level2Payload {
@@ -29,17 +31,22 @@ interface Level2SignalsPanelProps {
   roleTitle?: string | null;
   roleFamily?: string | null;
   skillFocus?: string[];
+  companyName?: string;
+  scenarioContext?: string | null;
 }
 
 /**
  * Business-facing panel that presents Level 2 hard-skill signals
  * in a structured, scannable format for review.
+ * Includes scenario context at the top for consistency with candidate view.
  */
 export function Level2SignalsPanel({
   payload,
   roleTitle,
   roleFamily,
   skillFocus = [],
+  companyName,
+  scenarioContext,
 }: Level2SignalsPanelProps) {
   const { t } = useTranslation();
 
@@ -144,6 +151,27 @@ export function Level2SignalsPanel({
       </CardHeader>
       
       <CardContent className="space-y-4">
+        {/* Scenario Context - Show same context business gave */}
+        {(scenarioContext || (companyName && roleTitle)) && (
+          <div className="bg-muted/40 rounded-lg p-3 border border-border/50">
+            <div className="flex items-start gap-2 mb-2">
+              <MapPin className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+              <h4 className="text-sm font-medium">{t('business.level2.scenario_context_label')}</h4>
+            </div>
+            {scenarioContext ? (
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap pl-6">
+                {scenarioContext}
+              </p>
+            ) : companyName && roleTitle && (
+              <p className="text-sm text-muted-foreground pl-6">
+                {t('business.level2.scenario_context_fallback', { company: companyName, role: roleTitle })}
+              </p>
+            )}
+          </div>
+        )}
+
+        <Separator />
+
         {filledSections.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
             {t('business.level2.no_response_yet')}

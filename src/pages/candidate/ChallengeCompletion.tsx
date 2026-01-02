@@ -51,6 +51,7 @@ interface ChallengeDetails {
   // Level 2 specific fields
   roleFamily?: RoleFamily | null;
   skillFocus?: string[];
+  scenarioContext?: string | null; // AI-generated scenario from XIMA Core
 }
 
 interface SubmissionPayload {
@@ -228,9 +229,30 @@ export default function ChallengeCompletion() {
         // Extract Level 2 specific fields from rubric
         let roleFamily: RoleFamily | null = null;
         let skillFocus: string[] = [];
+        let scenarioContext: string | null = null;
+        
         if (rubric && isLevel2Rubric(rubric)) {
           roleFamily = rubric.role_family || null;
           skillFocus = rubric.skill_focus || [];
+        }
+
+        // For Level 2 challenges, fetch the XIMA Core (Level 1) scenario from the same hiring goal
+        if (level === 2) {
+          const { data: l1Challenges } = await supabase
+            .from('business_challenges')
+            .select('description, rubric, title')
+            .eq('hiring_goal_id', invitation.hiring_goal_id)
+            .eq('business_id', invitation.business_id);
+
+          // Find the Level 1 challenge (XIMA Core)
+          const l1Challenge = (l1Challenges || []).find(ch => {
+            const chLevel = getChallengeLevel({ rubric: ch.rubric as Record<string, unknown>, title: ch.title });
+            return chLevel === 1;
+          });
+
+          if (l1Challenge?.description) {
+            scenarioContext = l1Challenge.description;
+          }
         }
 
         setChallenge({
@@ -251,6 +273,7 @@ export default function ChallengeCompletion() {
           level,
           roleFamily,
           skillFocus,
+          scenarioContext,
         });
 
         // Check progression prerequisites for this hiring goal
@@ -1018,12 +1041,13 @@ export default function ChallengeCompletion() {
         {/* Level 2 Context Block + Response Form */}
         {challenge.level === 2 && (
           <>
-            {/* Context Block - Read-only */}
+            {/* Scenario Context Block - Read-only, always visible */}
             <Level2ContextBlock
               companyName={challenge.companyName}
               roleTitle={challenge.roleTitle}
               roleFamily={challenge.roleFamily}
               skillFocus={challenge.skillFocus}
+              scenarioContext={challenge.scenarioContext}
             />
             
             <Card>
