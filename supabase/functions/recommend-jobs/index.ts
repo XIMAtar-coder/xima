@@ -44,19 +44,40 @@ Deno.serve(async (req) => {
 
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { userId } = await req.json();
-
-    if (!userId) {
+    // SECURITY: Validate authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error('[recommend-jobs] Missing Authorization header');
       return new Response(
-        JSON.stringify({ error: 'userId is required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: 'Unauthorized', message: 'Authorization header required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log(`Generating recommendations for user: ${userId}`);
+    // Create client with user's auth context to validate the JWT
+    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
+    
+    if (authError || !user) {
+      console.error('[recommend-jobs] Authentication failed:', authError?.message);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized', message: 'Invalid or expired token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Use the authenticated user's ID instead of accepting from request body
+    const userId = user.id;
+    console.log(`[recommend-jobs] Generating recommendations for authenticated user: ${userId}`);
+
+    // Use service role for database operations that need RLS bypass
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // 1. Fetch user's latest assessment with pillar scores
     const { data: assessmentData, error: assessmentError } = await supabase
@@ -72,7 +93,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (assessmentError || !assessmentData) {
-      console.log('No assessment found for user:', userId);
+      console.log('[recommend-jobs] No assessment found for user:', userId);
       return new Response(
         JSON.stringify({ 
           recommendations: [], 
@@ -89,7 +110,7 @@ Deno.serve(async (req) => {
       .eq('assessment_result_id', assessmentData.id);
 
     if (pillarError || !pillarData || pillarData.length === 0) {
-      console.log('No pillar scores found for user:', userId);
+      console.log('[recommend-jobs] No pillar scores found for user:', userId);
       return new Response(
         JSON.stringify({ 
           recommendations: [], 
@@ -108,8 +129,8 @@ Deno.serve(async (req) => {
 
     const userXimatar = (assessmentData.ximatars as any)?.label?.toLowerCase();
 
-    console.log('User pillars:', userPillars);
-    console.log('User ximatar:', userXimatar);
+    console.log('[recommend-jobs] User pillars:', userPillars);
+    console.log('[recommend-jobs] User ximatar:', userXimatar);
 
     // 2. Fetch opportunities from database
     const { data: opportunities, error: jobsError } = await supabase
@@ -142,7 +163,7 @@ Deno.serve(async (req) => {
         jobs = [...jobs, ...staticJobs];
       }
     } catch (e) {
-      console.warn('Could not fetch static jobs:', e);
+      console.warn('[recommend-jobs] Could not fetch static jobs:', e);
     }
 
     // If still no jobs, use fallback
@@ -181,7 +202,7 @@ Deno.serve(async (req) => {
       ];
     }
 
-    console.log(`Loaded ${jobs.length} jobs`);
+    console.log(`[recommend-jobs] Loaded ${jobs.length} jobs`);
 
     // 3. Calculate match scores with enhanced algorithm
     const recommendations = jobs.map((job) => {
@@ -281,7 +302,7 @@ Deno.serve(async (req) => {
       .sort((a, b) => b.matchScore - a.matchScore)
       .slice(0, 10);
 
-    console.log(`Returning ${filtered.length} recommendations`);
+    console.log(`[recommend-jobs] Returning ${filtered.length} recommendations`);
 
     // 5. Update user_job_links with recommended status
     const recommendedJobIds = filtered.map((r) => r.job.id);
@@ -315,7 +336,7 @@ Deno.serve(async (req) => {
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Error generating recommendations:', error);
+    console.error('[recommend-jobs] Error generating recommendations:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

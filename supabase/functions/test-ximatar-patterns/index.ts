@@ -1,4 +1,3 @@
-// deno-lint-ignore-file no-explicit-any
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.3";
 
@@ -14,8 +13,54 @@ serve(async (req: Request) => {
 
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+    // SECURITY: Validate authentication - require admin role
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      console.error("[test-ximatar-patterns] Missing Authorization header");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized", message: "Authorization header required" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Create client with user's auth context to validate the JWT
+    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
+    
+    if (authError || !user) {
+      console.error("[test-ximatar-patterns] Authentication failed:", authError?.message);
+      return new Response(
+        JSON.stringify({ error: "Unauthorized", message: "Invalid or expired token" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Use service role for admin check
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Check if user has admin role
+    const { data: roleData, error: roleError } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+
+    if (roleError || !roleData) {
+      console.error("[test-ximatar-patterns] User is not an admin:", user.id);
+      return new Response(
+        JSON.stringify({ error: "Forbidden", message: "Admin access required" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log(`[test-ximatar-patterns] Admin user authenticated: ${user.id}`);
 
     // Define test patterns for each XIMAtar
     const testPatterns = [
@@ -46,7 +91,7 @@ serve(async (req: Request) => {
     }
     
     const testUserId = authData.users[0].id;
-    console.log(`Using test user: ${testUserId}`);
+    console.log(`[test-ximatar-patterns] Using test user: ${testUserId}`);
 
     // Ensure a profile exists for this user (FK requirement)
     const { data: profileRows } = await supabase
@@ -65,7 +110,7 @@ serve(async (req: Request) => {
 
     // Test each pattern
     for (const pattern of testPatterns) {
-      console.log(`Testing pattern: ${pattern.name}`);
+      console.log(`[test-ximatar-patterns] Testing pattern: ${pattern.name}`);
       
       // Create assessment result
       const { data: assessmentResult, error: resultError } = await supabase
@@ -79,7 +124,7 @@ serve(async (req: Request) => {
         .single();
 
       if (resultError) {
-        console.error(`Error creating result for ${pattern.name}:`, resultError);
+        console.error(`[test-ximatar-patterns] Error creating result for ${pattern.name}:`, resultError);
         results.push({ pattern: pattern.name, error: resultError.message, success: false });
         continue;
       }
@@ -96,7 +141,7 @@ serve(async (req: Request) => {
         .insert(pillarInserts);
 
       if (pillarError) {
-        console.error(`Error inserting pillars for ${pattern.name}:`, pillarError);
+        console.error(`[test-ximatar-patterns] Error inserting pillars for ${pattern.name}:`, pillarError);
         results.push({ pattern: pattern.name, error: pillarError.message, success: false });
         continue;
       }
@@ -107,7 +152,7 @@ serve(async (req: Request) => {
       });
 
       if (assignError) {
-        console.error(`Error assigning XIMAtar for ${pattern.name}:`, assignError);
+        console.error(`[test-ximatar-patterns] Error assigning XIMAtar for ${pattern.name}:`, assignError);
         results.push({ pattern: pattern.name, error: assignError.message, success: false });
         continue;
       }
@@ -120,7 +165,7 @@ serve(async (req: Request) => {
         .single();
 
       if (fetchError) {
-        console.error(`Error fetching result for ${pattern.name}:`, fetchError);
+        console.error(`[test-ximatar-patterns] Error fetching result for ${pattern.name}:`, fetchError);
         results.push({ pattern: pattern.name, error: fetchError.message, success: false });
         continue;
       }
@@ -152,7 +197,7 @@ serve(async (req: Request) => {
       status: 200,
     });
   } catch (error) {
-    console.error("Test error:", error);
+    console.error("[test-ximatar-patterns] Error:", error);
     return new Response(JSON.stringify({ error: String(error) }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
