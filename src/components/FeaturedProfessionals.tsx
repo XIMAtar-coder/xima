@@ -43,6 +43,7 @@ export default function FeaturedProfessionals({
   const { i18n, t } = useTranslation();
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [loading, setLoading] = useState(true);
+  const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
   const locale = (i18n.language || 'it').slice(0, 2) as 'it' | 'en' | 'es';
 
@@ -165,18 +166,13 @@ export default function FeaturedProfessionals({
           >
             <div className="flex items-center gap-4">
               <div className="relative h-16 w-16 rounded-full overflow-hidden bg-muted flex-shrink-0 ring-2 ring-primary/20">
-                {avatarUrl ? (
+                {avatarUrl && !imageErrors.has(p.id) ? (
                   <img
                     src={avatarUrl}
                     alt={p.full_name}
                     className="h-full w-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                      const parent = (e.target as HTMLImageElement).parentElement;
-                      if (parent) {
-                        parent.innerHTML = '<div class="h-full w-full flex items-center justify-center text-muted-foreground text-xl font-semibold">' + 
-                          p.full_name.charAt(0) + '</div>';
-                      }
+                    onError={() => {
+                      setImageErrors(prev => new Set([...prev, p.id]));
                     }}
                   />
                 ) : (
