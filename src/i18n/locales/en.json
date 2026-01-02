@@ -3292,5 +3292,63 @@
     "action_interview_rationale": "Both levels show consistent signals. Direct conversation recommended.",
     "action_review": "Continue Review",
     "action_review_rationale": "Additional context may help finalize the decision."
+  },
+  "level3": {
+    "modal": {
+      "title": "Invite to Level 3 — Standing & Presence",
+      "description": "Invite {{name}} to demonstrate their professional presence and communication."
+    },
+    "select_format": "Select challenge format",
+    "custom_title_label": "Custom title",
+    "custom_description_label": "Custom description",
+    "send_invite": "Send Level 3 Invite",
+    "create_failed": "Failed to create Level 3 challenge",
+    "templates": {
+      "video_pitch": {
+        "title": "Video Self-Introduction",
+        "description": "Record a brief video introducing yourself and explaining your interest in the role."
+      },
+      "async_presentation": {
+        "title": "Async Presentation",
+        "description": "Prepare a short presentation about a topic relevant to the role."
+      },
+      "written_narrative": {
+        "title": "Written Professional Narrative",
+        "description": "Write about your professional journey and what drives you."
+      }
+    }
+  },
+  "business": {
+    "level3": {
+      "already_invited": "Already invited to Level 3",
+      "pipeline_locked": "Pipeline Locked",
+      "pipeline_locked_desc": "Level 2 must be completed before inviting to Level 3.",
+      "invite_sent": "Level 3 Invitation Sent",
+      "invite_sent_desc": "{{name}} has been invited to the Level 3 challenge.",
+      "proceed_to_level3": "Invite to Level 3",
+      "level3_sent": "Level 3 Sent"
+    },
+    "level2_interpretation": {
+      "title": "Level 2 — Hard Skill Interpretation (AI)",
+      "subtitle": "Qualitative assessment of role-specific capabilities",
+      "hard_skill_clarity": "Hard Skill Clarity",
+      "tool_method_maturity": "Tool & Method Maturity",
+      "decision_quality": "Decision Quality Under Constraints",
+      "risk_awareness": "Risk Awareness",
+      "execution_realism": "Execution Realism",
+      "observed_patterns": "Observed Patterns",
+      "readiness": {
+        "ready": "Ready for next step",
+        "needs_clarification": "Needs clarification",
+        "insufficient": "Needs more detail"
+      }
+    }
+  },
+  "interpretation": {
+    "status": {
+      "clear": "Clear",
+      "partial": "Partial",
+      "fragmented": "Fragmented"
+    }
   }
 }
