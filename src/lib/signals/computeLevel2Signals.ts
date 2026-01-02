@@ -2,8 +2,11 @@
  * XIMA Level 2 Signals - Hard Skill Interpretation
  * 
  * Generates qualitative AI interpretation for Level 2 (role-based) submissions.
+ * Uses edge function for AI-powered analysis.
  * NO SCORES - only qualitative assessments.
  */
+
+import { supabase } from '@/integrations/supabase/client';
 
 export interface Level2SignalsPayload {
   hardSkillClarity: 'clear' | 'partial' | 'fragmented';
@@ -19,6 +22,7 @@ export interface Level2SignalsPayload {
   overallReadiness: 'ready' | 'needs_clarification' | 'insufficient';
   summary: string;
   flags: string[];
+  generatedAt?: string;
 }
 
 interface Level2Payload {
@@ -32,6 +36,33 @@ interface Level2Payload {
   role_plan?: string;
   assumptions_tradeoffs?: string;
   key_deliverables?: string;
+}
+
+/**
+ * Call the edge function to compute Level 2 signals using AI
+ */
+export async function computeLevel2SignalsAsync(submissionId: string): Promise<Level2SignalsPayload> {
+  console.log('Calling compute-level2-signals edge function for:', submissionId);
+  
+  const { data, error } = await supabase.functions.invoke('compute-level2-signals', {
+    body: { submission_id: submissionId }
+  });
+
+  if (error) {
+    console.error('Edge function error:', error);
+    throw new Error(error.message || 'Failed to compute Level 2 signals');
+  }
+
+  if (data?.error) {
+    console.error('Edge function returned error:', data.error);
+    throw new Error(data.error);
+  }
+
+  if (!data?.signals) {
+    throw new Error('No signals returned from edge function');
+  }
+
+  return data.signals as Level2SignalsPayload;
 }
 
 // Word count helper
@@ -57,7 +88,8 @@ const hasSpecificTools = (text: string): boolean =>
   /jira|confluence|notion|figma|sketch|miro|slack|teams|zoom|google|microsoft|salesforce|hubspot|zendesk|tableau|looker|amplitude|mixpanel|segment|stripe|twilio|sendgrid|datadog|splunk|grafana|prometheus/i.test(text);
 
 /**
- * Compute Level 2 signals from a role-based submission payload
+ * Fallback: Compute Level 2 signals locally (no AI)
+ * Used when edge function fails or for quick preview
  */
 export function computeLevel2Signals(payload: Level2Payload): Level2SignalsPayload {
   const flags: string[] = [];

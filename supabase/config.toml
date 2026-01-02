@@ -56,3 +56,6 @@ verify_jwt = false
 
 [functions.ximai-chat]
 verify_jwt = true
+
+[functions.compute-level2-signals]
+verify_jwt = true

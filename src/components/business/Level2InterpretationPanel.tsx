@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { 
   Target, 
@@ -9,6 +9,8 @@ import {
   CheckCircle,
   HelpCircle,
   XCircle,
+  Sparkles,
+  Clock,
 } from 'lucide-react';
 import type { Level2SignalsPayload } from '@/lib/signals/computeLevel2Signals';
 
@@ -90,21 +92,38 @@ export function Level2InterpretationPanel({ signals }: Level2InterpretationPanel
     insufficient: 'bg-red-400/10 text-red-500 border-red-400/30',
   };
 
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return null;
+    try {
+      return new Date(dateStr).toLocaleString();
+    } catch {
+      return null;
+    }
+  };
+
   return (
-    <Card>
+    <Card className="border-primary/20">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
-            <Target className="h-4 w-4 text-primary" />
+            <Sparkles className="h-4 w-4 text-primary" />
             {t('business.level2_interpretation.title')}
           </CardTitle>
           <Badge variant="outline" className={readinessColors[signals.overallReadiness]}>
             {t(`business.level2_interpretation.readiness.${signals.overallReadiness}`)}
           </Badge>
         </div>
-        <p className="text-xs text-muted-foreground mt-1">
-          {t('business.level2_interpretation.subtitle')}
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-muted-foreground mt-1">
+            {t('business.level2_interpretation.subtitle')}
+          </p>
+          {signals.generatedAt && (
+            <span className="text-xs text-muted-foreground flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              {t('business.level2_interpretation.generated_at')}: {formatDate(signals.generatedAt)}
+            </span>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Summary */}
@@ -149,6 +168,11 @@ export function Level2InterpretationPanel({ signals }: Level2InterpretationPanel
           </div>
         )}
       </CardContent>
+      <CardFooter className="pt-0">
+        <p className="text-xs text-muted-foreground italic">
+          {t('business.level2_interpretation.footer_note')}
+        </p>
+      </CardFooter>
     </Card>
   );
 }
