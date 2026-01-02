@@ -3077,5 +3077,34 @@
       "stage_passed": "Scartato",
       "print_footer": "Generato da XIMA Premium"
     }
+  },
+  "decision_pack": {
+    "title": "XIMA Decision Pack",
+    "subtitle": "Sintesi decisionale che combina gli insight di Livello 1 e Livello 2",
+    "premium_badge": "Premium",
+    "locked_description": "Sblocca il supporto decisionale completo con insight consolidati.",
+    "feature_executive_summary": "Sintesi Esecutiva",
+    "feature_signal_matrix": "Matrice dei Segnali Consolidata",
+    "feature_risk_radar": "Radar dei Rischi",
+    "feature_next_action": "Azione Suggerita",
+    "upgrade_cta": "Passa a Premium",
+    "executive_summary": "Sintesi Esecutiva",
+    "signal_matrix": "Matrice dei Segnali",
+    "risk_radar": "Incertezze Residue",
+    "suggested_action": "Azione Suggerita",
+    "action_disclaimer": "Questo è un suggerimento non vincolante. La decisione finale è sempre tua.",
+    "status_clear": "Chiaro",
+    "status_partial": "Parziale",
+    "status_fragmented": "Frammentato",
+    "signal_technical_approach": "Approccio Tecnico",
+    "signal_execution_clarity": "Chiarezza Esecutiva",
+    "action_proceed_l2": "Procedi alla Sfida di Livello 2",
+    "action_proceed_l2_rationale": "I segnali forti del Livello 1 suggeriscono prontezza per la valutazione basata sul ruolo.",
+    "action_clarify": "Richiedi Chiarimenti",
+    "action_clarify_rationale": "Alcuni segnali beneficerebbero di un follow-up prima di procedere.",
+    "action_interview": "Considera un Colloquio",
+    "action_interview_rationale": "Entrambi i livelli mostrano segnali coerenti. Si consiglia una conversazione diretta.",
+    "action_review": "Continua la Revisione",
+    "action_review_rationale": "Contesto aggiuntivo potrebbe aiutare a finalizzare la decisione."
   }
 }
