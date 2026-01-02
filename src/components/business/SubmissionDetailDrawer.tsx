@@ -464,8 +464,23 @@ export function SubmissionDetailDrawer({
             </SheetHeader>
 
             <div className="space-y-6">
-          {/* XIMA Signals Panel - Qualitative Insights */}
-          {localSignals ? (
+          {/* Level 2 Interpretation Panel - Show for L2 submissions */}
+          {currentChallengeLevel === 2 && localLevel2Signals && (
+            <Level2InterpretationPanel signals={localLevel2Signals} />
+          )}
+          
+          {/* Level 2 Loading State */}
+          {currentChallengeLevel === 2 && !localLevel2Signals && submission.submissionStatus === 'submitted' && (
+            <Card className="border-dashed">
+              <CardContent className="py-6 text-center">
+                <Loader2 className="h-8 w-8 mx-auto mb-2 text-muted-foreground animate-spin" />
+                <p className="text-muted-foreground">{t('business.level2_interpretation.generating')}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* XIMA Signals Panel - Qualitative Insights (Level 1) */}
+          {currentChallengeLevel === 1 && localSignals ? (
             <>
               <XimaSignalsPanel signals={localSignals} />
               
@@ -475,7 +490,7 @@ export function SubmissionDetailDrawer({
               {/* XIMA Decision Pack - Premium Feature */}
               <XimaDecisionPack 
                 signals={localSignals} 
-                level2Payload={currentChallengeLevel === 2 ? payload : null}
+                level2Payload={null}
                 isPremium={isPremium}
               />
               
@@ -553,7 +568,7 @@ export function SubmissionDetailDrawer({
                 </details>
               </TooltipProvider>
             </>
-          ) : submission.submissionStatus === 'submitted' ? (
+          ) : currentChallengeLevel === 1 && submission.submissionStatus === 'submitted' ? (
             <Card className="border-dashed">
               <CardContent className="py-6 text-center">
                 <Sparkles className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
@@ -721,7 +736,7 @@ export function SubmissionDetailDrawer({
                       </Button>
                     </div>
 
-                    {/* Proceed to next step - Only show for Level 1 submissions that have been submitted */}
+                    {/* Proceed to Level 2 - Only show for Level 1 submissions */}
                     {currentChallengeLevel === 1 && hiringGoalId && submission.submissionStatus === 'submitted' && (
                       <div className="border-t pt-3">
                         {alreadyInvitedToLevel2 ? (
@@ -763,6 +778,37 @@ export function SubmissionDetailDrawer({
                             </Button>
                             <p className="text-xs text-muted-foreground mt-2">
                               {t('business.review.proceed_helper')}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Proceed to Level 3 - Only show for Level 2 submissions */}
+                    {currentChallengeLevel === 2 && hiringGoalId && submission.submissionStatus === 'submitted' && (
+                      <div className="border-t pt-3">
+                        {alreadyInvitedToLevel3 ? (
+                          <Button variant="outline" disabled className="w-full">
+                            <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                            {t('business.review.level3_invite_sent')}
+                          </Button>
+                        ) : (
+                          <div>
+                            <Button 
+                              variant="default"
+                              onClick={() => setLevel3ModalOpen(true)}
+                              disabled={checkingLevel3}
+                              className="w-full"
+                            >
+                              {checkingLevel3 ? (
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              ) : (
+                                <Users className="h-4 w-4 mr-2" />
+                              )}
+                              {t('business.review.proceed_to_level3')}
+                            </Button>
+                            <p className="text-xs text-muted-foreground mt-2">
+                              {t('business.review.level3_helper')}
                             </p>
                           </div>
                         )}
@@ -862,6 +908,22 @@ export function SubmissionDetailDrawer({
           onInviteSent={() => {
             setAlreadyInvitedToLevel2(true);
             onLevel2InviteSent?.();
+          }}
+        />
+      )}
+
+      {/* Level 3 Invite Modal */}
+      {submission && hiringGoalId && (
+        <Level3InviteModal
+          open={level3ModalOpen}
+          onOpenChange={setLevel3ModalOpen}
+          businessId={businessId}
+          hiringGoalId={hiringGoalId}
+          candidateProfileId={submission.candidateProfileId}
+          candidateName={submission.candidateName}
+          onInviteSent={() => {
+            setAlreadyInvitedToLevel3(true);
+            onLevel3InviteSent?.();
           }}
         />
       )}

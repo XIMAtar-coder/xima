@@ -2281,6 +2281,8 @@
       "actions_title": "Actions",
       "shortlist": "Shortlist",
       "request_followup": "Request Follow-up",
+      "request_clarification": "Request Clarification",
+      "close_application": "Close Application",
       "pass": "Pass",
       "shortlisted": "Shortlisted",
       "passed": "Passed",
@@ -2289,7 +2291,15 @@
       "current_decision": "Current decision",
       "followup_question_label": "Your follow-up question",
       "followup_placeholder": "Ask the candidate to clarify or expand on something...",
-      "send_followup": "Send Follow-up"
+      "send_followup": "Send Follow-up",
+      "next_step_sent": "Next step sent",
+      "select_next_challenge": "Select Next Challenge",
+      "proceed_to_next_step": "Proceed to Next Step",
+      "proceed_helper": "This will mark the candidate for advancement and open the challenge selector.",
+      "advanced_to_level2": "Advanced to Level 2",
+      "proceed_to_level3": "Invite to Level 3",
+      "level3_helper": "Invite the candidate to demonstrate Standing & Professional Presence.",
+      "level3_invite_sent": "Level 3 Invitation Sent"
     },
     "level2": {
       "next_step": "Next Step in Pipeline",
@@ -3331,6 +3341,7 @@
     "level2_interpretation": {
       "title": "Level 2 — Hard Skill Interpretation (AI)",
       "subtitle": "Qualitative assessment of role-specific capabilities",
+      "generating": "Generating AI interpretation...",
       "hard_skill_clarity": "Hard Skill Clarity",
       "tool_method_maturity": "Tool & Method Maturity",
       "decision_quality": "Decision Quality Under Constraints",

@@ -2194,6 +2194,8 @@
       "actions_title": "Azioni",
       "shortlist": "Aggiungi alla lista",
       "request_followup": "Richiedi chiarimenti",
+      "request_clarification": "Richiedi Chiarimenti",
+      "close_application": "Chiudi Candidatura",
       "pass": "Scarta",
       "shortlisted": "In lista",
       "passed": "Scartato",
@@ -2202,7 +2204,15 @@
       "current_decision": "Decisione attuale",
       "followup_question_label": "La tua domanda",
       "followup_placeholder": "Chiedi al candidato di chiarire o approfondire...",
-      "send_followup": "Invia Richiesta"
+      "send_followup": "Invia Richiesta",
+      "next_step_sent": "Prossimo step inviato",
+      "select_next_challenge": "Seleziona Challenge Successiva",
+      "proceed_to_next_step": "Procedi allo Step Successivo",
+      "proceed_helper": "Questo segnerà il candidato per l'avanzamento e aprirà il selettore di challenge.",
+      "advanced_to_level2": "Avanzato al Livello 2",
+      "proceed_to_level3": "Invita al Livello 3",
+      "level3_helper": "Invita il candidato a dimostrare Standing e Presenza Professionale.",
+      "level3_invite_sent": "Invito Livello 3 Inviato"
     },
     "level2": {
       "hard_skills_title": "Livello 2 — Sfida Hard Skill per Ruolo",
@@ -2233,6 +2243,31 @@
       "pipeline_locked_desc": "Il candidato deve completare il Livello 1 (XIMA Core) prima di poter essere invitato al Livello 2.",
       "xima_core_required": "XIMA Core Richiesto",
       "xima_core_required_desc": "Devi attivare XIMA Core (Livello 1) prima di invitare al Livello 2. Crea e attiva prima una XIMA Core challenge."
+    },
+    "level3": {
+      "already_invited": "Già invitato al Livello 3",
+      "pipeline_locked": "Pipeline Bloccata",
+      "pipeline_locked_desc": "Il Livello 2 deve essere completato prima di invitare al Livello 3.",
+      "invite_sent": "Invito Livello 3 Inviato",
+      "invite_sent_desc": "{{name}} è stato invitato alla challenge Livello 3.",
+      "proceed_to_level3": "Invita al Livello 3",
+      "level3_sent": "Livello 3 Inviato"
+    },
+    "level2_interpretation": {
+      "title": "Livello 2 — Interpretazione Hard Skill (IA)",
+      "subtitle": "Valutazione qualitativa delle competenze specifiche del ruolo",
+      "generating": "Generazione interpretazione IA...",
+      "hard_skill_clarity": "Chiarezza Hard Skill",
+      "tool_method_maturity": "Maturità Strumenti e Metodi",
+      "decision_quality": "Qualità Decisionale sotto Vincoli",
+      "risk_awareness": "Consapevolezza dei Rischi",
+      "execution_realism": "Realismo Esecutivo",
+      "observed_patterns": "Pattern Osservati",
+      "readiness": {
+        "ready": "Pronto per il passo successivo",
+        "needs_clarification": "Necessita chiarimenti",
+        "insufficient": "Necessita più dettagli"
+      }
     }
   },
   "guide": {
@@ -3106,5 +3141,12 @@
     "action_interview_rationale": "Entrambi i livelli mostrano segnali coerenti. Si consiglia una conversazione diretta.",
     "action_review": "Continua la Revisione",
     "action_review_rationale": "Contesto aggiuntivo potrebbe aiutare a finalizzare la decisione."
+  },
+  "interpretation": {
+    "status": {
+      "clear": "Chiaro",
+      "partial": "Parziale",
+      "fragmented": "Frammentato"
+    }
   }
 }
