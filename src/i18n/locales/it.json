@@ -908,7 +908,11 @@
     "step_3": "Ricevi i Tuoi Risultati",
     "step_4": "Inizia il Tuo Viaggio",
     "back": "Indietro",
-    "choose_mentor_required": "Scegli il tuo mentore per continuare"
+    "choose_mentor_required": "Scegli il tuo mentore per continuare",
+    "resume_title": "Riprendere il tuo viaggio?",
+    "resume_description": "Hai dei progressi salvati da una sessione precedente. Vuoi continuare da dove ti eri fermato?",
+    "resume": "Riprendi",
+    "start_over": "Ricomincia"
   },
   "login": {
     "title": "Bentornato",

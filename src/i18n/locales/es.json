@@ -1049,7 +1049,11 @@
     "step_3": "Obtén Tus Resultados",
     "step_4": "Comienza Tu Viaje",
     "back": "Atrás",
-    "choose_mentor_required": "Elige tu mentor para continuar"
+    "choose_mentor_required": "Elige tu mentor para continuar",
+    "resume_title": "¿Reanudar tu viaje?",
+    "resume_description": "Tienes progreso guardado de una sesión anterior. ¿Quieres continuar donde lo dejaste?",
+    "resume": "Reanudar",
+    "start_over": "Empezar de nuevo"
   },
   "ximatar_journey": {
     "title": "Tu Viaje XIMAtar",

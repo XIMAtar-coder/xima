@@ -723,7 +723,11 @@
     "step_3": "Get Your Results",
     "step_4": "Start Your Journey",
     "back": "Back",
-    "choose_mentor_required": "Choose your mentor to continue"
+    "choose_mentor_required": "Choose your mentor to continue",
+    "resume_title": "Resume Your Journey?",
+    "resume_description": "You have saved progress from a previous session. Would you like to continue where you left off?",
+    "resume": "Resume",
+    "start_over": "Start Over"
   },
   "login": {
     "title": "Welcome back",
