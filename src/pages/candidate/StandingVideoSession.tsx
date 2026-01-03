@@ -99,6 +99,10 @@ export default function StandingVideoSession() {
   const recordedChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Stream state
+  const [streamReady, setStreamReady] = useState(false);
+  const [previewError, setPreviewError] = useState<string | null>(null);
+
   // Upload
   const [uploadProgress, setUploadProgress] = useState(0);
 
@@ -225,33 +229,124 @@ export default function StandingVideoSession() {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [sessionState]);
 
+  // Attach stream to video element
+  const attachStreamToPreview = useCallback(async (stream: MediaStream) => {
+    if (!videoPreviewRef.current) {
+      console.error('Video preview ref not available');
+      return false;
+    }
+
+    try {
+      videoPreviewRef.current.srcObject = stream;
+      videoPreviewRef.current.muted = true;
+      videoPreviewRef.current.playsInline = true;
+      
+      // Explicitly call play() with error handling
+      try {
+        await videoPreviewRef.current.play();
+        console.log('Video preview playing successfully');
+        setStreamReady(true);
+        setPreviewError(null);
+        return true;
+      } catch (playError) {
+        console.warn('Autoplay blocked, waiting for user interaction:', playError);
+        setPreviewError('tap_to_enable');
+        return false;
+      }
+    } catch (err) {
+      console.error('Error attaching stream to preview:', err);
+      setPreviewError('stream_error');
+      return false;
+    }
+  }, []);
+
+  // Re-attach stream when video element becomes available or state changes
+  useEffect(() => {
+    if (mediaStreamRef.current && videoPreviewRef.current) {
+      // Only re-attach if not already attached or if srcObject is null
+      if (!videoPreviewRef.current.srcObject) {
+        attachStreamToPreview(mediaStreamRef.current);
+      }
+    }
+  }, [sessionState, attachStreamToPreview]);
+
   const requestPermissions = async () => {
     setSessionState('permissions');
+    setPreviewError(null);
+    setStreamReady(false);
+    
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
         audio: true 
       });
       
+      console.log('Got media stream:', stream.getTracks().map(t => `${t.kind}: ${t.label}`));
       mediaStreamRef.current = stream;
       setCameraPermission(true);
       setMicPermission(true);
 
-      if (videoPreviewRef.current) {
-        videoPreviewRef.current.srcObject = stream;
-      }
+      // Attach to preview
+      await attachStreamToPreview(stream);
     } catch (err) {
       console.error('Permission error:', err);
       if (err instanceof DOMException) {
         if (err.name === 'NotAllowedError') {
           setCameraPermission(false);
           setMicPermission(false);
+        } else if (err.name === 'NotFoundError') {
+          setPreviewError('no_camera');
         }
       }
     }
   };
 
+  // Handle tap to enable preview (for browsers that block autoplay)
+  const handleTapToPlay = async () => {
+    if (videoPreviewRef.current && mediaStreamRef.current) {
+      try {
+        await videoPreviewRef.current.play();
+        setStreamReady(true);
+        setPreviewError(null);
+      } catch (err) {
+        console.error('Failed to play on tap:', err);
+      }
+    }
+  };
+
+  // Get supported mimeType for MediaRecorder
+  const getSupportedMimeType = (): string => {
+    const types = [
+      'video/webm;codecs=vp9,opus',
+      'video/webm;codecs=vp8,opus',
+      'video/webm;codecs=vp9',
+      'video/webm;codecs=vp8',
+      'video/webm',
+      'video/mp4',
+    ];
+    
+    for (const type of types) {
+      if (MediaRecorder.isTypeSupported(type)) {
+        console.log('Using mimeType:', type);
+        return type;
+      }
+    }
+    
+    console.warn('No supported mimeType found, using default');
+    return '';
+  };
+
   const startRecording = () => {
+    // Verify stream is ready before starting
+    if (!mediaStreamRef.current || !streamReady) {
+      toast({
+        title: t('common.error'),
+        description: 'Camera not ready. Please wait for the preview to appear.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     setSessionState('countdown');
     setCountdown(3);
 
@@ -268,53 +363,96 @@ export default function StandingVideoSession() {
   };
 
   const beginRecording = () => {
-    if (!mediaStreamRef.current) return;
+    const stream = mediaStreamRef.current;
+    if (!stream) {
+      console.error('No stream available for recording');
+      toast({
+        title: t('common.error'),
+        description: 'Camera stream lost. Please refresh and try again.',
+        variant: 'destructive'
+      });
+      setSessionState('permissions');
+      return;
+    }
+
+    // Check if MediaRecorder is available
+    if (typeof MediaRecorder === 'undefined') {
+      toast({
+        title: t('common.error'),
+        description: 'Your browser does not support video recording. Please try Chrome or Firefox.',
+        variant: 'destructive'
+      });
+      setSessionState('permissions');
+      return;
+    }
 
     setSessionState('recording');
     setRecordingTime(0);
     setCurrentPromptIndex(0);
     recordedChunksRef.current = [];
 
-    const mediaRecorder = new MediaRecorder(mediaStreamRef.current, {
-      mimeType: 'video/webm;codecs=vp9,opus'
-    });
+    // Re-attach stream to preview for recording state
+    if (videoPreviewRef.current) {
+      videoPreviewRef.current.srcObject = stream;
+      videoPreviewRef.current.play().catch(console.warn);
+    }
 
-    mediaRecorderRef.current = mediaRecorder;
+    try {
+      const mimeType = getSupportedMimeType();
+      const options: MediaRecorderOptions = mimeType ? { mimeType } : {};
+      
+      const mediaRecorder = new MediaRecorder(stream, options);
+      mediaRecorderRef.current = mediaRecorder;
 
-    mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        recordedChunksRef.current.push(event.data);
-      }
-    };
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunksRef.current.push(event.data);
+          console.log('Recorded chunk:', event.data.size, 'bytes');
+        }
+      };
 
-    mediaRecorder.start(1000); // Collect data every second
+      mediaRecorder.onerror = (event) => {
+        console.error('MediaRecorder error:', event);
+      };
 
-    // Start timer
-    const startTime = Date.now();
-    const durationMs = (context?.durationMinutes || 5) * 60 * 1000;
-    const promptIntervalMs = durationMs / prompts.length;
+      mediaRecorder.start(1000); // Collect data every second
+      console.log('MediaRecorder started');
 
-    timerRef.current = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      setRecordingTime(Math.floor(elapsed / 1000));
+      // Start timer
+      const startTime = Date.now();
+      const durationMs = (context?.durationMinutes || 5) * 60 * 1000;
+      const promptIntervalMs = durationMs / prompts.length;
 
-      // Check if can finish (60s minimum)
-      if (elapsed >= 60000) {
-        setCanFinish(true);
-      }
+      timerRef.current = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        setRecordingTime(Math.floor(elapsed / 1000));
 
-      // Advance prompts
-      const newPromptIndex = Math.min(
-        Math.floor(elapsed / promptIntervalMs),
-        prompts.length - 1
-      );
-      setCurrentPromptIndex(newPromptIndex);
+        // Check if can finish (60s minimum)
+        if (elapsed >= 60000) {
+          setCanFinish(true);
+        }
 
-      // Auto-stop at duration end
-      if (elapsed >= durationMs) {
-        finishRecording();
-      }
-    }, 1000);
+        // Advance prompts
+        const newPromptIndex = Math.min(
+          Math.floor(elapsed / promptIntervalMs),
+          prompts.length - 1
+        );
+        setCurrentPromptIndex(newPromptIndex);
+
+        // Auto-stop at duration end
+        if (elapsed >= durationMs) {
+          finishRecording();
+        }
+      }, 1000);
+    } catch (err) {
+      console.error('Failed to start MediaRecorder:', err);
+      toast({
+        title: t('common.error'),
+        description: 'Failed to start recording. Please try again.',
+        variant: 'destructive'
+      });
+      setSessionState('permissions');
+    }
   };
 
   const finishRecording = useCallback(async () => {
@@ -608,11 +746,35 @@ export default function StandingVideoSession() {
                   autoPlay
                   muted
                   playsInline
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover scale-x-[-1]"
+                  style={{ transform: 'scaleX(-1)' }}
                 />
+                
+                {/* Loading overlay */}
                 {cameraPermission === null && (
                   <div className="absolute inset-0 flex items-center justify-center bg-background/80">
                     <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  </div>
+                )}
+                
+                {/* Tap to enable overlay */}
+                {previewError === 'tap_to_enable' && (
+                  <button 
+                    onClick={handleTapToPlay}
+                    className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 cursor-pointer hover:bg-background/70 transition-colors"
+                  >
+                    <Camera className="h-12 w-12 text-primary mb-2" />
+                    <span className="text-sm font-medium">{t('level3.standing.tap_to_enable')}</span>
+                  </button>
+                )}
+                
+                {/* Camera live indicator */}
+                {streamReady && cameraPermission && (
+                  <div className="absolute top-3 left-3">
+                    <Badge variant="secondary" className="bg-green-500/90 text-white border-0">
+                      <span className="w-2 h-2 rounded-full bg-white mr-2 animate-pulse" />
+                      {t('level3.standing.camera_live')}
+                    </Badge>
                   </div>
                 )}
               </div>
@@ -635,8 +797,15 @@ export default function StandingVideoSession() {
                 </div>
               )}
 
+              {previewError === 'no_camera' && (
+                <div className="text-center text-sm text-destructive">
+                  {t('level3.standing.no_camera')}
+                </div>
+              )}
+
               {cameraPermission && micPermission && (
-                <Button onClick={startRecording} className="w-full">
+                <Button onClick={startRecording} className="w-full" disabled={!streamReady}>
+                  {!streamReady && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                   <Play className="h-4 w-4 mr-2" />
                   {t('level3.standing.begin_recording')}
                 </Button>
@@ -652,8 +821,19 @@ export default function StandingVideoSession() {
   if (sessionState === 'countdown') {
     return (
       <MainLayout>
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <div className="text-center">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-background relative">
+          {/* Keep video preview visible during countdown */}
+          <div className="absolute inset-0 opacity-30">
+            <video
+              ref={videoPreviewRef}
+              autoPlay
+              muted
+              playsInline
+              className="w-full h-full object-cover scale-x-[-1]"
+              style={{ transform: 'scaleX(-1)' }}
+            />
+          </div>
+          <div className="text-center relative z-10">
             <div className="text-9xl font-bold text-primary animate-pulse">{countdown}</div>
             <p className="text-muted-foreground mt-4">{t('level3.standing.get_ready')}</p>
           </div>
@@ -695,14 +875,23 @@ export default function StandingVideoSession() {
           {/* Main content */}
           <div className="flex-1 container max-w-4xl mx-auto p-4 flex flex-col gap-4">
             {/* Video preview */}
-            <div className="relative flex-1 min-h-0">
+            <div className="relative flex-1 min-h-[300px] bg-muted rounded-lg overflow-hidden">
               <video
                 ref={videoPreviewRef}
                 autoPlay
                 muted
                 playsInline
-                className="w-full h-full object-cover rounded-lg"
+                className="w-full h-full object-cover rounded-lg scale-x-[-1]"
+                style={{ transform: 'scaleX(-1)' }}
               />
+              
+              {/* Camera live indicator */}
+              <div className="absolute top-4 right-4">
+                <Badge variant="secondary" className="bg-green-500/90 text-white border-0">
+                  <span className="w-2 h-2 rounded-full bg-white mr-2 animate-pulse" />
+                  {t('level3.standing.camera_live')}
+                </Badge>
+              </div>
               
               {/* Focus lost warning */}
               {focusLostCount > 0 && (
