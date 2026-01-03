@@ -10,6 +10,16 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+// HTML escape function to prevent XSS in email templates
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 interface InvitationRequest {
   invitation_id: string;
   candidate_email: string;
@@ -27,28 +37,33 @@ const getEmailContent = (
   inviteLink: string,
   language: string = 'en'
 ) => {
+  // Escape all user-supplied data to prevent XSS
+  const safeName = escapeHtml(candidateName);
+  const safeCompany = escapeHtml(companyName);
+  const safeRole = escapeHtml(roleTitle || 'Position');
+
   const translations: Record<string, { subject: string; greeting: string; intro: string; role: string; cta: string; footer: string }> = {
     en: {
       subject: `You're invited to a challenge on XIMA`,
-      greeting: `Hello ${candidateName},`,
-      intro: `${companyName} has identified you as a great match and would like to invite you to participate in their hiring challenge.`,
-      role: `Role: ${roleTitle || 'Position'}`,
+      greeting: `Hello ${safeName},`,
+      intro: `${safeCompany} has identified you as a great match and would like to invite you to participate in their hiring challenge.`,
+      role: `Role: ${safeRole}`,
       cta: `View Challenge`,
       footer: `This invitation was sent via XIMA Platform. If you have questions, please contact us.`
     },
     it: {
       subject: `Sei stato invitato a una sfida su XIMA`,
-      greeting: `Ciao ${candidateName},`,
-      intro: `${companyName} ti ha identificato come un ottimo match e vorrebbe invitarti a partecipare alla loro sfida di selezione.`,
-      role: `Ruolo: ${roleTitle || 'Posizione'}`,
+      greeting: `Ciao ${safeName},`,
+      intro: `${safeCompany} ti ha identificato come un ottimo match e vorrebbe invitarti a partecipare alla loro sfida di selezione.`,
+      role: `Ruolo: ${safeRole}`,
       cta: `Visualizza Sfida`,
       footer: `Questo invito è stato inviato tramite XIMA Platform. Per domande, contattaci.`
     },
     es: {
       subject: `Has sido invitado a un desafío en XIMA`,
-      greeting: `Hola ${candidateName},`,
-      intro: `${companyName} te ha identificado como un gran candidato y te invita a participar en su desafío de contratación.`,
-      role: `Puesto: ${roleTitle || 'Posición'}`,
+      greeting: `Hola ${safeName},`,
+      intro: `${safeCompany} te ha identificado como un gran candidato y te invita a participar en su desafío de contratación.`,
+      role: `Puesto: ${safeRole}`,
       cta: `Ver Desafío`,
       footer: `Esta invitación fue enviada a través de XIMA Platform. Si tienes preguntas, contáctanos.`
     }
@@ -80,7 +95,7 @@ const getEmailContent = (
           
           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #4171d6;">
             <p style="margin: 0; font-weight: bold; color: #1a1a2e;">${t.role}</p>
-            <p style="margin: 8px 0 0; color: #666;">${companyName}</p>
+            <p style="margin: 8px 0 0; color: #666;">${escapeHtml(companyName)}</p>
           </div>
           
           <div style="text-align: center; margin: 40px 0;">

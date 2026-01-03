@@ -9,6 +9,16 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+// HTML escape function to prevent XSS in email templates
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 interface VerificationEmailRequest {
   email: string;
   name: string;
@@ -41,7 +51,7 @@ const handler = async (req: Request): Promise<Response> => {
             <img src="https://your-domain.com/xima-logo.png" alt="XIMA Logo" style="height: 60px;">
           </div>
           
-          <h1 style="color: #4171d6; text-align: center; margin-bottom: 30px;">Welcome to XIMA, ${name}!</h1>
+          <h1 style="color: #4171d6; text-align: center; margin-bottom: 30px;">Welcome to XIMA, ${escapeHtml(name)}!</h1>
           
           <p style="font-size: 16px; margin-bottom: 20px;">
             Thank you for joining XIMA, the revolutionary platform for discovering your professional potential through XIMAtar assessment.
