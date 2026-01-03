@@ -2266,6 +2266,8 @@
       "ai_complete": "I segnali Livello 2 sono stati generati.",
       "regenerate": "Rigenera Analisi",
       "generated_at": "Generato",
+      "ready_to_generate": "Clicca il pulsante per generare l'interpretazione IA",
+      "generate_button": "Genera Interpretazione IA",
       "hard_skill_clarity": "Chiarezza Hard Skill",
       "tool_method_maturity": "Maturità Strumenti e Metodi",
       "decision_quality": "Qualità Decisionale sotto Vincoli",

@@ -3403,6 +3403,8 @@
       "ai_complete": "Level 2 signals have been generated.",
       "regenerate": "Regenerate Analysis",
       "generated_at": "Generated",
+      "ready_to_generate": "Click the button below to generate AI interpretation",
+      "generate_button": "Generate AI Interpretation",
       "hard_skill_clarity": "Hard Skill Clarity",
       "tool_method_maturity": "Tool & Method Maturity",
       "decision_quality": "Decision Quality Under Constraints",

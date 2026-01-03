@@ -1756,6 +1756,8 @@
       "ai_complete": "Las señales Nivel 2 han sido generadas.",
       "regenerate": "Regenerar Análisis",
       "generated_at": "Generado",
+      "ready_to_generate": "Haz clic en el botón para generar la interpretación IA",
+      "generate_button": "Generar Interpretación IA",
       "hard_skill_clarity": "Claridad de Hard Skills",
       "tool_method_maturity": "Madurez de Herramientas y Métodos",
       "decision_quality": "Calidad de Decisión bajo Restricciones",
