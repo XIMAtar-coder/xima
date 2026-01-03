@@ -22,8 +22,10 @@ import {
   Square,
   Upload,
   Eye,
+  FileVideo,
 } from 'lucide-react';
 import MainLayout from '@/components/layout/MainLayout';
+import StandingUploadMode from '@/components/candidate/StandingUploadMode';
 
 // Prompts for Standing session - communication, clarity, ownership, reflection
 const STANDING_PROMPTS = {
@@ -66,7 +68,7 @@ interface ChallengeContext {
   locale: string;
 }
 
-type SessionState = 'briefing' | 'permissions' | 'countdown' | 'recording' | 'uploading' | 'submitted';
+type SessionState = 'briefing' | 'mode_select' | 'upload_mode' | 'permissions' | 'countdown' | 'recording' | 'uploading' | 'submitted';
 
 export default function StandingVideoSession() {
   const { invitationId } = useParams<{ invitationId: string }>();
@@ -724,7 +726,7 @@ export default function StandingVideoSession() {
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   {t('common.back')}
                 </Button>
-                <Button onClick={requestPermissions} className="flex-1">
+                <Button onClick={() => setSessionState('mode_select')} className="flex-1">
                   <Camera className="h-4 w-4 mr-2" />
                   {t('level3.standing.start_session')}
                 </Button>
@@ -736,7 +738,85 @@ export default function StandingVideoSession() {
     );
   }
 
-  // UPLOADING STATE
+  // MODE SELECT STATE
+  if (sessionState === 'mode_select') {
+    return (
+      <MainLayout>
+        <div className="min-h-screen flex items-center justify-center p-4">
+          <Card className="max-w-lg w-full">
+            <CardHeader className="text-center">
+              <CardTitle>{t('level3.standing.select_mode_title')}</CardTitle>
+              <CardDescription>{t('level3.standing.select_mode_desc')}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Live Recording Option */}
+              <button
+                onClick={requestPermissions}
+                className="w-full p-4 rounded-lg border-2 border-muted hover:border-primary/50 hover:bg-primary/5 transition-colors text-left group"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                    <Video className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-foreground">{t('level3.standing.mode_live')}</h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {t('level3.standing.mode_live_desc')}
+                    </p>
+                  </div>
+                </div>
+              </button>
+
+              {/* Upload Video Option */}
+              <button
+                onClick={() => setSessionState('upload_mode')}
+                className="w-full p-4 rounded-lg border-2 border-muted hover:border-primary/50 hover:bg-primary/5 transition-colors text-left group"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                    <FileVideo className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-foreground">{t('level3.standing.mode_upload')}</h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {t('level3.standing.mode_upload_desc')}
+                    </p>
+                  </div>
+                </div>
+              </button>
+
+              <Button variant="ghost" onClick={() => setSessionState('briefing')} className="w-full">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                {t('common.back')}
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  // UPLOAD MODE STATE
+  if (sessionState === 'upload_mode') {
+    return (
+      <MainLayout>
+        <div className="min-h-screen flex items-center justify-center p-4">
+          <StandingUploadMode
+            context={context}
+            submissionId={submissionId}
+            onSubmitted={(newSubmissionId, newSubmittedAt) => {
+              setSubmissionId(newSubmissionId);
+              setSubmittedAt(newSubmittedAt);
+              setIsSubmitted(true);
+              setSessionState('submitted');
+            }}
+            onBack={() => setSessionState('mode_select')}
+          />
+        </div>
+      </MainLayout>
+    );
+  }
+
   if (sessionState === 'uploading') {
     return (
       <MainLayout>
