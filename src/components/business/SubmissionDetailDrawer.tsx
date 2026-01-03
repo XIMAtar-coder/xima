@@ -702,7 +702,59 @@ export function SubmissionDetailDrawer({
           ) : null}
 
           {/* Submission Content */}
-          {payload ? (
+          {/* Level 3 Video Player */}
+          {currentChallengeLevel === 3 && payload?.video_url && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Briefcase className="h-4 w-4" />
+                  {t('level3.standing.video_title')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="aspect-video bg-muted rounded-lg overflow-hidden">
+                  <video
+                    src={payload.video_url}
+                    controls
+                    className="w-full h-full object-contain"
+                    controlsList="nodownload"
+                  />
+                </div>
+                <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+                  {payload.duration_seconds && (
+                    <Badge variant="outline">
+                      <Clock className="h-3 w-3 mr-1" />
+                      {Math.floor(payload.duration_seconds / 60)}:{String(payload.duration_seconds % 60).padStart(2, '0')}
+                    </Badge>
+                  )}
+                  {payload.locale && (
+                    <Badge variant="outline">{payload.locale.toUpperCase()}</Badge>
+                  )}
+                  {payload.focus_lost_count > 0 && (
+                    <Badge variant="outline" className="text-amber-600 border-amber-500/30">
+                      <AlertTriangle className="h-3 w-3 mr-1" />
+                      {t('level3.standing.focus_lost', { count: payload.focus_lost_count })}
+                    </Badge>
+                  )}
+                </div>
+                {payload.prompts_shown && payload.prompts_shown.length > 0 && (
+                  <details className="text-sm">
+                    <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+                      {t('level3.standing.prompts_shown')} ({payload.prompts_shown.length})
+                    </summary>
+                    <ol className="list-decimal list-inside mt-2 space-y-1 text-muted-foreground">
+                      {payload.prompts_shown.map((p: string, i: number) => (
+                        <li key={i}>{p}</li>
+                      ))}
+                    </ol>
+                  </details>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Text-based Submission Content (L1/L2) */}
+          {payload && !payload.video_url ? (
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">{t('business.responses.submission_content')}</CardTitle>
@@ -781,13 +833,13 @@ export function SubmissionDetailDrawer({
                 )}
               </CardContent>
             </Card>
-          ) : (
+          ) : !payload?.video_url ? (
             <Card>
               <CardContent className="py-6 text-center text-muted-foreground">
                 {t('business.responses.no_content')}
               </CardContent>
             </Card>
-          )}
+          ) : null}
 
           {/* Actions Section */}
           {submission.submissionStatus === 'submitted' && (

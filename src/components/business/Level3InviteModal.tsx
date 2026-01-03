@@ -10,10 +10,9 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { 
@@ -21,10 +20,12 @@ import {
   Loader2, 
   Clock, 
   Video,
-  Mic,
-  MessageCircle,
-  CheckCircle,
+  Building2,
+  Briefcase,
+  User,
+  MessageSquare,
 } from 'lucide-react';
+import { useBusinessLocale, BusinessLocale } from '@/hooks/useBusinessLocale';
 
 interface Level3InviteModalProps {
   open: boolean;
@@ -33,35 +34,21 @@ interface Level3InviteModalProps {
   hiringGoalId: string;
   candidateProfileId: string;
   candidateName: string;
+  companyName?: string;
+  roleTitle?: string;
   onInviteSent?: () => void;
 }
 
-// Level 3 challenge templates
-const LEVEL_3_TEMPLATES = [
-  {
-    id: 'video_pitch',
-    titleKey: 'level3.templates.video_pitch.title',
-    descriptionKey: 'level3.templates.video_pitch.description',
-    icon: Video,
-    timeboxMinutes: 30,
-    deliverableType: 'video',
-  },
-  {
-    id: 'async_presentation',
-    titleKey: 'level3.templates.async_presentation.title',
-    descriptionKey: 'level3.templates.async_presentation.description',
-    icon: Mic,
-    timeboxMinutes: 45,
-    deliverableType: 'presentation',
-  },
-  {
-    id: 'written_narrative',
-    titleKey: 'level3.templates.written_narrative.title',
-    descriptionKey: 'level3.templates.written_narrative.description',
-    icon: MessageCircle,
-    timeboxMinutes: 40,
-    deliverableType: 'narrative',
-  },
+const DURATION_OPTIONS = [
+  { value: 4, label: '4 min' },
+  { value: 5, label: '5 min' },
+  { value: 6, label: '6 min' },
+];
+
+const PROMPT_COUNT_OPTIONS = [
+  { value: 3, label: '3' },
+  { value: 4, label: '4' },
+  { value: 5, label: '5' },
 ];
 
 export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
@@ -71,36 +58,62 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
   hiringGoalId,
   candidateProfileId,
   candidateName,
+  companyName,
+  roleTitle,
   onInviteSent,
 }) => {
   const { t } = useTranslation();
+  const { locale } = useBusinessLocale();
   
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('video_pitch');
-  const [customTitle, setCustomTitle] = useState('');
-  const [customDescription, setCustomDescription] = useState('');
+  const [duration, setDuration] = useState(5);
+  const [promptCount, setPromptCount] = useState(4);
   const [sending, setSending] = useState(false);
-  const [creatingChallenge, setCreatingChallenge] = useState(false);
+  const [contextData, setContextData] = useState<{ companyName: string; roleTitle: string } | null>(null);
 
   // Reset state when modal closes
   useEffect(() => {
     if (!open) {
-      setSelectedTemplateId('video_pitch');
-      setCustomTitle('');
-      setCustomDescription('');
+      setDuration(5);
+      setPromptCount(4);
     }
   }, [open]);
 
-  const selectedTemplate = LEVEL_3_TEMPLATES.find(t => t.id === selectedTemplateId);
+  // Fetch context data if not provided
+  useEffect(() => {
+    if (!open) return;
+    
+    if (companyName && roleTitle) {
+      setContextData({ companyName, roleTitle });
+      return;
+    }
+
+    async function fetchContext() {
+      try {
+        const [{ data: businessProfile }, { data: goalData }] = await Promise.all([
+          supabase.from('business_profiles').select('company_name').eq('user_id', businessId).single(),
+          supabase.from('hiring_goal_drafts').select('role_title').eq('id', hiringGoalId).single(),
+        ]);
+
+        setContextData({
+          companyName: businessProfile?.company_name || 'Company',
+          roleTitle: goalData?.role_title || 'Role',
+        });
+      } catch (err) {
+        console.error('Error fetching context:', err);
+        setContextData({ companyName: 'Company', roleTitle: 'Role' });
+      }
+    }
+
+    fetchContext();
+  }, [open, businessId, hiringGoalId, companyName, roleTitle]);
 
   const createChallengeAndInvite = async () => {
-    if (!selectedTemplate) return;
-
-    setCreatingChallenge(true);
+    setSending(true);
     try {
-      const title = customTitle.trim() || t(selectedTemplate.titleKey);
-      const description = customDescription.trim() || t(selectedTemplate.descriptionKey);
+      const title = t('level3.standing.title');
+      const description = t('level3.standing.description');
 
-      // Create the Level 3 challenge
+      // Create the Level 3 Standing challenge
       const { data: newChallenge, error: createError } = await supabase
         .from('business_challenges')
         .insert([{
@@ -111,14 +124,13 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
           rubric: {
             level: 3,
             type: 'standing_presence',
-            deliverable_type: selectedTemplate.deliverableType,
-            timebox_minutes: selectedTemplate.timeboxMinutes,
-            company_context_ref: {
-              business_id: businessId,
-              hiring_goal_id: hiringGoalId,
-            },
+            deliverable_type: 'video',
+            duration_minutes: duration,
+            prompt_count: promptCount,
+            locale,
+            company_context: contextData,
           },
-          time_estimate_minutes: selectedTemplate.timeboxMinutes,
+          time_estimate_minutes: duration,
           status: 'active',
         }])
         .select('id')
@@ -126,30 +138,13 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
 
       if (createError) throw createError;
 
-      // Send the invitation
-      await sendInvitation(newChallenge.id);
-    } catch (err) {
-      console.error('Error creating Level 3 challenge:', err);
-      toast({
-        title: t('common.error'),
-        description: t('level3.create_failed'),
-        variant: 'destructive',
-      });
-    } finally {
-      setCreatingChallenge(false);
-    }
-  };
-
-  const sendInvitation = async (challengeId: string) => {
-    setSending(true);
-    try {
       // Check for existing invitation
       const { data: existingInvitation } = await supabase
         .from('challenge_invitations')
         .select('id, status')
         .eq('business_id', businessId)
         .eq('hiring_goal_id', hiringGoalId)
-        .eq('challenge_id', challengeId)
+        .eq('challenge_id', newChallenge.id)
         .eq('candidate_profile_id', candidateProfileId)
         .not('status', 'in', '("withdrawn","expired","cancelled")')
         .maybeSingle();
@@ -169,7 +164,7 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
         .insert({
           business_id: businessId,
           hiring_goal_id: hiringGoalId,
-          challenge_id: challengeId,
+          challenge_id: newChallenge.id,
           candidate_profile_id: candidateProfileId,
           status: 'invited',
           sent_via: ['in_app'],
@@ -206,101 +201,112 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
     }
   };
 
-  const isProcessing = sending || creatingChallenge;
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-card border-border max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
-            {t('level3.modal.title')}
+            <Video className="h-5 w-5 text-primary" />
+            {t('level3.standing.modal_title')}
           </DialogTitle>
           <DialogDescription>
-            {t('level3.modal.description', { name: candidateName })}
+            {t('level3.standing.modal_description')}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          {/* Template Selection */}
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">{t('level3.select_format')}</Label>
+          {/* Context Summary */}
+          <Card className="bg-muted/30">
+            <CardContent className="py-3 px-4 space-y-2">
+              <div className="flex items-center gap-2 text-sm">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <span className="font-medium">{candidateName}</span>
+              </div>
+              {contextData && (
+                <>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Building2 className="h-4 w-4" />
+                    <span>{contextData.companyName}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Briefcase className="h-4 w-4" />
+                    <span>{contextData.roleTitle}</span>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* What is Standing */}
+          <Card className="border-primary/30 bg-primary/5">
+            <CardContent className="py-3 px-4">
+              <div className="flex items-start gap-3">
+                <Video className="h-5 w-5 text-primary mt-0.5" />
+                <div className="space-y-1">
+                  <h4 className="text-sm font-medium">{t('level3.standing.what_title')}</h4>
+                  <p className="text-xs text-muted-foreground">
+                    {t('level3.standing.what_description')}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Configuration */}
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              {LEVEL_3_TEMPLATES.map((template) => {
-                const Icon = template.icon;
-                return (
-                  <Card
-                    key={template.id}
-                    className={`cursor-pointer transition-all ${
-                      selectedTemplateId === template.id
-                        ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                        : 'hover:border-primary/50'
-                    }`}
-                    onClick={() => setSelectedTemplateId(template.id)}
-                  >
-                    <CardContent className="py-3 px-4">
-                      <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <Icon className="h-4 w-4 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            {selectedTemplateId === template.id && (
-                              <CheckCircle className="h-4 w-4 text-primary shrink-0" />
-                            )}
-                            <h4 className="font-medium text-sm">{t(template.titleKey)}</h4>
-                          </div>
-                          <p className="text-xs text-muted-foreground truncate">
-                            {t(template.descriptionKey)}
-                          </p>
-                        </div>
-                        <Badge variant="outline" className="text-xs shrink-0">
-                          <Clock className="h-3 w-3 mr-1" />
-                          {template.timeboxMinutes}m
-                        </Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+              <Label className="text-sm flex items-center gap-1">
+                <Clock className="h-3.5 w-3.5" />
+                {t('level3.standing.duration_label')}
+              </Label>
+              <Select value={duration.toString()} onValueChange={(v) => setDuration(parseInt(v))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {DURATION_OPTIONS.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value.toString()}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label className="text-sm flex items-center gap-1">
+                <MessageSquare className="h-3.5 w-3.5" />
+                {t('level3.standing.prompts_label')}
+              </Label>
+              <Select value={promptCount.toString()} onValueChange={(v) => setPromptCount(parseInt(v))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {PROMPT_COUNT_OPTIONS.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value.toString()}>
+                      {opt.label} {t('level3.standing.prompts_suffix')}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
-          {/* Optional Custom Title */}
-          <div className="space-y-2">
-            <Label htmlFor="custom-title" className="text-sm">
-              {t('level3.custom_title_label')} <span className="text-muted-foreground">({t('common.optional')})</span>
-            </Label>
-            <Input
-              id="custom-title"
-              value={customTitle}
-              onChange={(e) => setCustomTitle(e.target.value)}
-              placeholder={selectedTemplate ? t(selectedTemplate.titleKey) : ''}
-            />
-          </div>
-
-          {/* Optional Custom Description */}
-          <div className="space-y-2">
-            <Label htmlFor="custom-desc" className="text-sm">
-              {t('level3.custom_description_label')} <span className="text-muted-foreground">({t('common.optional')})</span>
-            </Label>
-            <Textarea
-              id="custom-desc"
-              value={customDescription}
-              onChange={(e) => setCustomDescription(e.target.value)}
-              placeholder={selectedTemplate ? t(selectedTemplate.descriptionKey) : ''}
-              rows={3}
-            />
+          {/* Summary */}
+          <div className="text-xs text-muted-foreground text-center py-2 border-t">
+            {t('level3.standing.summary', { duration, promptCount })}
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isProcessing}>
-            {t('common.cancel')}
+        <DialogFooter className="gap-2 sm:gap-0">
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={sending}>
+            {t('level3.standing.not_now')}
           </Button>
-          <Button onClick={createChallengeAndInvite} disabled={isProcessing}>
-            {isProcessing && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            {t('level3.send_invite')}
+          <Button onClick={createChallengeAndInvite} disabled={sending || !contextData}>
+            {sending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+            <Video className="h-4 w-4 mr-2" />
+            {t('level3.standing.send_invite')}
           </Button>
         </DialogFooter>
       </DialogContent>
