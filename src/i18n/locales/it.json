@@ -3205,7 +3205,30 @@
       "not_found": "Challenge Standing non trovata.",
       "video_title": "Video Standing",
       "prompts_shown": "Prompt mostrati",
-      "focus_lost": "Tab cambiato {{count}} volta/e"
+      "focus_lost": "Tab cambiato {{count}} volta/e",
+      "select_mode_title": "Scegli il metodo di registrazione",
+      "select_mode_desc": "Puoi registrare dal vivo o caricare un file video",
+      "mode_live": "Registra dal vivo",
+      "mode_live_desc": "Registra con prompt guidati in tempo reale",
+      "mode_upload": "Carica Video",
+      "mode_upload_desc": "Registra o seleziona un video dal tuo dispositivo",
+      "upload": {
+        "title": "Carica Video",
+        "description": "Registra un nuovo video usando la fotocamera o scegli un file video esistente.",
+        "record_video_now": "Registra Video Ora",
+        "choose_existing_video": "Scegli Video Esistente",
+        "replace_video": "Sostituisci Video",
+        "upload_button": "Carica",
+        "uploading": "Caricamento...",
+        "upload_ready": "Pronto per il caricamento",
+        "invalid_file_type": "Tipo di file non valido",
+        "allowed_types": "Consentiti: MP4, WebM, MOV",
+        "file_too_large": "File troppo grande",
+        "max_size": "Dimensione massima: {{size}} MB",
+        "could_not_read_duration": "Impossibile leggere la durata del video",
+        "camera_desktop_hint": "La registrazione dalla fotocamera è disponibile su dispositivi mobili",
+        "processing": "Elaborazione video..."
+      }
     }
   },
   "interpretation": {

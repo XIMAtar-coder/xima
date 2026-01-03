@@ -3382,7 +3382,30 @@
       "not_found": "Standing challenge not found.",
       "video_title": "Standing Video",
       "prompts_shown": "Prompts shown",
-      "focus_lost": "Tab switched {{count}} time(s)"
+      "focus_lost": "Tab switched {{count}} time(s)",
+      "select_mode_title": "Choose Recording Method",
+      "select_mode_desc": "You can record live or upload a video file",
+      "mode_live": "Record Live",
+      "mode_live_desc": "Record with guided prompts in real-time",
+      "mode_upload": "Upload Video",
+      "mode_upload_desc": "Record or select a video from your device",
+      "upload": {
+        "title": "Upload Video",
+        "description": "Record a new video using your camera or choose an existing video file.",
+        "record_video_now": "Record Video Now",
+        "choose_existing_video": "Choose Existing Video",
+        "replace_video": "Replace Video",
+        "upload_button": "Upload",
+        "uploading": "Uploading...",
+        "upload_ready": "Ready to upload",
+        "invalid_file_type": "Invalid file type",
+        "allowed_types": "Allowed: MP4, WebM, MOV",
+        "file_too_large": "File too large",
+        "max_size": "Max size: {{size}} MB",
+        "could_not_read_duration": "Could not read video duration",
+        "camera_desktop_hint": "Camera recording is available on mobile devices",
+        "processing": "Processing video..."
+      }
     }
   },
   "business": {
