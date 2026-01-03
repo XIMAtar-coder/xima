@@ -128,9 +128,6 @@ export function SubmissionDetailDrawer({
   // Stable submission key for guards
   const submissionKey = submission?.submissionId ?? null;
   
-  // Track which submissionKey we've auto-generated for (prevents repeated calls)
-  const autoGenForRef = useRef<string | null>(null);
-  
   // Track if drawer was ever opened for this submission (reset guard)
   const lastOpenedKeyRef = useRef<string | null>(null);
 
@@ -213,103 +210,80 @@ export function SubmissionDetailDrawer({
     fetchReviewAndFollowup();
   }, [open, submission?.invitationId, businessId]);
   
-  // AUTO-GENERATE Level 2 signals when drawer opens with L2 submission
-  useEffect(() => {
-    // Abort conditions
-    if (!open) return;
+  // MANUAL L2 signals generation (triggered by button only)
+  const handleGenerateLevel2Signals = async () => {
     if (!submissionKey) return;
-    if (currentChallengeLevel !== 2) return;
-    if (submission?.submissionStatus !== 'submitted') return;
-    
-    // Already have signals (from DB or locally generated)
-    if (effectiveLevel2Signals) return;
-    
-    // Already triggered generation for this exact submission
-    if (autoGenForRef.current === submissionKey) return;
-    
-    // Already generating
     if (isGeneratingLevel2) return;
     
-    // Mark as generating for this submission
-    autoGenForRef.current = submissionKey;
-    
-    async function generateL2Signals() {
-      setIsGeneratingLevel2(true);
-      setLevel2Error(null);
-      
-      console.log('[L2 Signals] Starting AI generation for submission:', submissionKey);
-      
-      try {
-        // Call edge function for AI-powered analysis
-        const l2Signals = await computeLevel2SignalsAsync(submissionKey!);
-        
-        console.log('[L2 Signals] Received signals:', { 
-          overallReadiness: l2Signals.overallReadiness,
-          hasData: !!l2Signals.hardSkillClarity 
-        });
-        
-        setLocalLevel2Signals(l2Signals);
-        onSignalsGenerated?.();
-        
-        toast({ 
-          title: t('business.level2_interpretation.signals_generated'),
-          description: t('business.level2_interpretation.ai_complete'),
-        });
-      } catch (error) {
-        console.error('[L2 Signals] Error auto-generating L2 signals via AI:', error);
-        
-        // Fallback to local computation
-        try {
-          const existingPayload = submission?.submittedPayload as Record<string, any> | null;
-          if (existingPayload) {
-            console.log('[L2 Signals] Falling back to local computation');
-            const fallbackSignals = computeLevel2Signals(existingPayload);
-            
-            await supabase
-              .from('challenge_submissions')
-              .update({
-                signals_payload: fallbackSignals as any,
-                signals_version: 'v1_l2_fallback',
-              })
-              .eq('id', submissionKey);
-            
-            setLocalLevel2Signals(fallbackSignals);
-            onSignalsGenerated?.();
-            
-            toast({
-              title: t('business.level2_interpretation.signals_generated'),
-              description: 'Generated using local analysis.',
-            });
-          } else {
-            throw new Error('No payload available for fallback');
-          }
-        } catch (fallbackError) {
-          console.error('[L2 Signals] Fallback signal generation also failed:', fallbackError);
-          // Allow retry by clearing the ref for this submission
-          autoGenForRef.current = null;
-          const errorMessage = error instanceof Error ? error.message : String(error);
-          setLevel2Error(errorMessage);
-          toast({ 
-            title: t('common.error'), 
-            description: errorMessage,
-            variant: 'destructive' 
-          });
-        }
-      } finally {
-        setIsGeneratingLevel2(false);
-        console.log('[L2 Signals] Generation complete');
-      }
-    }
-    
-    generateL2Signals();
-  }, [open, submissionKey, currentChallengeLevel, submission?.submissionStatus, effectiveLevel2Signals, isGeneratingLevel2, submission?.submittedPayload, onSignalsGenerated, t]);
-
-  // Retry L2 signals generation
-  const handleRetryL2Signals = () => {
-    if (!submissionKey) return;
-    autoGenForRef.current = null; // Clear to allow retry
-    setLocalLevel2Signals(null);
+    setIsGeneratingLevel2(true);
     setLevel2Error(null);
+    
+    console.log('[L2 Signals] Starting AI generation for submission:', submissionKey);
+    
+    try {
+      // Call edge function for AI-powered analysis
+      const l2Signals = await computeLevel2SignalsAsync(submissionKey);
+      
+      console.log('[L2 Signals] Received signals:', { 
+        overallReadiness: l2Signals.overallReadiness,
+        hasData: !!l2Signals.hardSkillClarity 
+      });
+      
+      setLocalLevel2Signals(l2Signals);
+      onSignalsGenerated?.();
+      
+      toast({ 
+        title: t('business.level2_interpretation.signals_generated'),
+        description: t('business.level2_interpretation.ai_complete'),
+      });
+    } catch (error) {
+      console.error('[L2 Signals] Error generating L2 signals via AI:', error);
+      
+      // Fallback to local computation
+      try {
+        const existingPayload = submission?.submittedPayload as Record<string, any> | null;
+        if (existingPayload) {
+          console.log('[L2 Signals] Falling back to local computation');
+          const fallbackSignals = computeLevel2Signals(existingPayload);
+          
+          await supabase
+            .from('challenge_submissions')
+            .update({
+              signals_payload: fallbackSignals as any,
+              signals_version: 'v1_l2_fallback',
+            })
+            .eq('id', submissionKey);
+          
+          setLocalLevel2Signals(fallbackSignals);
+          onSignalsGenerated?.();
+          
+          toast({
+            title: t('business.level2_interpretation.signals_generated'),
+            description: 'Generated using local analysis.',
+          });
+        } else {
+          throw new Error('No payload available for fallback');
+        }
+      } catch (fallbackError) {
+        console.error('[L2 Signals] Fallback signal generation also failed:', fallbackError);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        setLevel2Error(errorMessage);
+        toast({ 
+          title: t('common.error'), 
+          description: errorMessage,
+          variant: 'destructive' 
+        });
+      }
+    } finally {
+      setIsGeneratingLevel2(false);
+      console.log('[L2 Signals] Generation complete');
+    }
+  };
+
+  // Retry L2 signals generation (just calls the main function)
+  const handleRetryL2Signals = () => {
+    setLevel2Error(null);
+    handleGenerateLevel2Signals();
   };
 
   // Check if candidate is already invited to Level 2 for this hiring goal
@@ -584,10 +558,10 @@ export function SubmissionDetailDrawer({
             <Card className="border-dashed">
               <CardContent className="py-6 text-center">
                 <Sparkles className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                <p className="text-muted-foreground mb-3">AI interpretation ready to generate</p>
-                <Button onClick={handleRetryL2Signals} variant="outline" size="sm">
+                <p className="text-muted-foreground mb-3">{t('business.level2_interpretation.ready_to_generate')}</p>
+                <Button onClick={handleGenerateLevel2Signals} variant="default" size="sm">
                   <Sparkles className="h-4 w-4 mr-2" />
-                  Generate AI Interpretation
+                  {t('business.level2_interpretation.generate_button')}
                 </Button>
               </CardContent>
             </Card>
