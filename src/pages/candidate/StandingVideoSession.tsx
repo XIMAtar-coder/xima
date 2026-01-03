@@ -506,12 +506,9 @@ export default function StandingVideoSession() {
 
       setUploadProgress(70);
 
-      // Get public URL
-      const { data: urlData } = supabase.storage
-        .from('challenge-videos')
-        .getPublicUrl(fileName);
-
-      const videoUrl = urlData?.publicUrl || fileName;
+      // Store the file path (not public URL) - signed URLs will be generated when viewing
+      // Path format: standing/{candidateProfileId}/{invitationId}.webm
+      const videoUrl = fileName;
 
       // Create/update submission
       const submissionPayload = {
