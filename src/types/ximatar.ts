@@ -131,7 +131,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Sales ability', 'Adaptability', 'Creative solutions', 'Networking'],
     weaknesses: ['May be overly opportunistic', 'Can lack follow-through', 'Risk of being manipulative'],
     idealRoles: ['Sales', 'Marketing', 'Business Development', 'Entrepreneur'],
-    image: '/lovable-uploads/c070e0d9-286c-45cb-9a35-39b053c368a5.png', // Fox avatar
+    image: '/ximatars/fox.png',
     personality: {
       en: {
         description: 'The Fox XIMAtar represents clever opportunists who excel at identifying and seizing business opportunities. They are persuasive, adaptable, and skilled at finding creative solutions to challenges.',
