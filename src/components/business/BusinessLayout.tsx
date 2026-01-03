@@ -5,8 +5,20 @@ import { useUser } from '@/context/UserContext';
 import { Button } from '@/components/ui/button';
 import { 
   LayoutDashboard, Users, Target, FileText, BarChart3, 
-  Settings, LogOut, Menu, X, Building2, Briefcase
+  Settings, LogOut, Menu, X, Building2, Briefcase, Globe
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+const languages = [
+  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'es', name: 'Español', flag: '🇪🇸' }
+];
 
 interface BusinessLayoutProps {
   children: React.ReactNode;
@@ -15,9 +27,15 @@ interface BusinessLayoutProps {
 const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, signOut } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[1];
+
+  const handleLanguageChange = (languageCode: string) => {
+    i18n.changeLanguage(languageCode);
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -132,8 +150,40 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
           sidebarOpen ? 'ml-64' : 'ml-20'
         }`}
       >
+        {/* Top Header with Language Switcher */}
+        <header className="sticky top-0 z-40 flex items-center justify-end px-6 py-3 bg-[#0A0F1C]/80 backdrop-blur-sm border-b border-[#3A9FFF]/10">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="flex items-center gap-2 text-[#A3ABB5] hover:text-white hover:bg-[#3A9FFF]/10"
+                aria-label={`Current language: ${currentLanguage.name}`}
+              >
+                <Globe size={16} />
+                <span className="hidden sm:inline">{currentLanguage.flag}</span>
+                <span className="text-sm font-medium">{currentLanguage.code.toUpperCase()}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[150px] bg-[#0F1419] border-[#3A9FFF]/20">
+              {languages.map((language) => (
+                <DropdownMenuItem
+                  key={language.code}
+                  onClick={() => handleLanguageChange(language.code)}
+                  className={`flex items-center gap-3 cursor-pointer ${
+                    i18n.language === language.code ? 'bg-[#3A9FFF]/20 text-[#3A9FFF]' : 'text-[#A3ABB5] hover:text-white'
+                  }`}
+                >
+                  <span className="text-lg">{language.flag}</span>
+                  <span className="font-medium">{language.name}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </header>
+        
         {/* Dark scrim overlay for improved readability */}
-        <div className="fixed inset-0 bg-black/50 pointer-events-none" style={{ marginLeft: sidebarOpen ? '256px' : '80px' }} />
+        <div className="fixed inset-0 bg-black/50 pointer-events-none" style={{ marginLeft: sidebarOpen ? '256px' : '80px', top: '49px' }} />
         <div className="relative z-10 p-8 pb-32">
           {children}
         </div>

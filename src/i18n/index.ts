@@ -20,6 +20,17 @@ const resources = {
   }
 };
 
+const LANGUAGE_STORAGE_KEY = 'xima.language';
+
+// Get stored language from localStorage
+const getStoredLanguage = (): string | null => {
+  try {
+    return localStorage.getItem(LANGUAGE_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+};
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -31,6 +42,7 @@ i18n
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
+      lookupLocalStorage: LANGUAGE_STORAGE_KEY,
     },
 
     interpolation: {
@@ -53,5 +65,20 @@ i18n
         }
       : undefined,
   });
+
+// Persist language changes to localStorage
+i18n.on('languageChanged', (lng) => {
+  try {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, lng);
+  } catch {
+    // Ignore localStorage errors
+  }
+});
+
+// Apply stored language on init if available
+const storedLang = getStoredLanguage();
+if (storedLang && ['en', 'it', 'es'].includes(storedLang)) {
+  i18n.changeLanguage(storedLang);
+}
 
 export default i18n;
