@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { scoreOpenResponse, type FieldKey } from '@/lib/scoring/openResponse';
 import { useToast } from '@/hooks/use-toast';
@@ -15,17 +15,58 @@ import QuestionExample from '@/components/QuestionExample';
 interface XimatarAssessmentProps {
   onComplete: (step: number) => void;
   assessmentSetKey?: string;
+  // New props for state management
+  currentQuestionIndex?: number;
+  savedMcAnswers?: Record<number, number>;
+  savedOpenAnswers?: Record<string, string>;
+  onQuestionChange?: (index: number) => void;
+  onMcAnswerChange?: (questionId: number, answerIndex: number) => void;
+  onOpenAnswerChange?: (questionId: string, answer: string) => void;
+  onGoBack?: () => void;
 }
 
-const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, assessmentSetKey = 'science_tech' }) => {
+const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ 
+  onComplete, 
+  assessmentSetKey = 'science_tech',
+  currentQuestionIndex,
+  savedMcAnswers,
+  savedOpenAnswers,
+  onQuestionChange,
+  onMcAnswerChange,
+  onOpenAnswerChange,
+  onGoBack,
+}) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const { setAssessmentInProgress } = useAssessment();
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [openAnswers, setOpenAnswers] = useState<Record<string, string>>({});
+  
+  // Use external state if provided, otherwise use internal state
+  const [internalQuestion, setInternalQuestion] = useState(currentQuestionIndex ?? 0);
+  const [internalMcAnswers, setInternalMcAnswers] = useState<Record<number, number>>(savedMcAnswers ?? {});
+  const [internalOpenAnswers, setInternalOpenAnswers] = useState<Record<string, string>>(savedOpenAnswers ?? {});
   const [isCompleting, setIsCompleting] = useState(false);
-  const [attemptId] = useState(() => crypto.randomUUID()); // Generate once per assessment
+  const [attemptId] = useState(() => crypto.randomUUID());
+
+  // Determine if we're using external state management
+  const isExternallyControlled = onQuestionChange !== undefined;
+  
+  // Current values (external or internal)
+  const currentQuestion = isExternallyControlled ? (currentQuestionIndex ?? 0) : internalQuestion;
+  const answers = isExternallyControlled ? (savedMcAnswers ?? {}) : internalMcAnswers;
+  const openAnswers = isExternallyControlled ? (savedOpenAnswers ?? {}) : internalOpenAnswers;
+
+  // Sync internal state if external state is provided initially
+  useEffect(() => {
+    if (savedMcAnswers && Object.keys(savedMcAnswers).length > 0) {
+      setInternalMcAnswers(savedMcAnswers);
+    }
+    if (savedOpenAnswers && Object.keys(savedOpenAnswers).length > 0) {
+      setInternalOpenAnswers(savedOpenAnswers);
+    }
+    if (currentQuestionIndex !== undefined) {
+      setInternalQuestion(currentQuestionIndex);
+    }
+  }, []);
 
   useEffect(() => {
     setAssessmentInProgress(true);
@@ -74,8 +115,22 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
   const totalQuestions = questions.length + openQuestions.length;
   const progress = ((currentQuestion + 1) / totalQuestions) * 100;
 
+  const setCurrentQuestion = (index: number) => {
+    if (isExternallyControlled && onQuestionChange) {
+      onQuestionChange(index);
+    } else {
+      setInternalQuestion(index);
+    }
+  };
+
   const handleAnswerSelect = (questionId: number, answerIndex: number) => {
-    setAnswers(prev => ({ ...prev, [questionId]: answerIndex }));
+    // Update internal state
+    setInternalMcAnswers(prev => ({ ...prev, [questionId]: answerIndex }));
+    
+    // Notify parent if externally controlled
+    if (isExternallyControlled && onMcAnswerChange) {
+      onMcAnswerChange(questionId, answerIndex);
+    }
     
     setTimeout(() => {
       if (currentQuestion < questions.length - 1) {
@@ -87,11 +142,27 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
   };
 
   const handleOpenAnswerChange = (questionId: string, value: string) => {
-    setOpenAnswers(prev => ({ ...prev, [questionId]: value }));
+    setInternalOpenAnswers(prev => ({ ...prev, [questionId]: value }));
+    
+    if (isExternallyControlled && onOpenAnswerChange) {
+      onOpenAnswerChange(questionId, value);
+    }
+  };
+
+  const handleGoBack = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+    } else if (onGoBack) {
+      onGoBack();
+    }
   };
 
   const handleComplete = async () => {
     setIsCompleting(true);
+    
+    // Use internal state for submission (most up-to-date)
+    const submissionAnswers = { ...internalMcAnswers, ...answers };
+    const submissionOpenAnswers = { ...internalOpenAnswers, ...openAnswers };
     
     try {
       const fieldKey = assessmentSetKey as FieldKey;
@@ -107,8 +178,8 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
           attemptId,
           assessmentSetKey: fieldKey,
           language,
-          answers,
-          openAnswers,
+          answers: submissionAnswers,
+          openAnswers: submissionOpenAnswers,
           timestamp: new Date().toISOString()
         };
         localStorage.setItem('guest_assessment_data', JSON.stringify(guestData));
@@ -118,9 +189,9 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
           let total = 0;
           let count = 0;
           questionIds.forEach(qId => {
-            if (answers[qId] !== undefined) {
+            if (submissionAnswers[qId] !== undefined) {
               // answers are 0-3, scale to 0-10 with some variance
-              total += (answers[qId] + 1) * 2.5 + (Math.random() * 1.5 - 0.75);
+              total += (submissionAnswers[qId] + 1) * 2.5 + (Math.random() * 1.5 - 0.75);
               count++;
             }
           });
@@ -196,7 +267,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
       // 1. Score and persist open answers using AI
       const openResponses = await Promise.all(
         (['open1', 'open2'] as const).map(async (openKey) => {
-          const answer = openAnswers[openKey] || '';
+          const answer = submissionOpenAnswers[openKey] || '';
           
           // Call edge function to analyze with Lovable AI
           const { data: aiResult, error: aiError } = await supabase.functions.invoke(
@@ -299,7 +370,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
         19: 'drive', 20: 'drive', 21: 'drive'
       };
 
-      const answerRecords = Object.entries(answers).map(([qId, answerIdx]) => ({
+      const answerRecords = Object.entries(submissionAnswers).map(([qId, answerIdx]) => ({
         result_id: resultData.id,
         question_id: parseInt(qId),
         answer_value: answerIdx,
@@ -397,13 +468,13 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
     <div className="space-y-6">
       <div className="text-center space-y-4">
         <h2 className="text-3xl font-bold">{t(`${baseKey}.title`)}</h2>
-        <p className="text-gray-600 dark:text-gray-300">
+        <p className="text-muted-foreground">
           {t(`${baseKey}.subtitle`)}
         </p>
         
         <div className="space-y-2">
           <Progress value={progress} className="h-2" />
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             {t('assessment.question')} {currentQuestion + 1} {t('assessment.of')} {totalQuestions}
           </p>
         </div>
@@ -414,7 +485,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
           <div className="space-y-6">
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-4">
-                <div className="inline-block px-3 py-1 bg-[#2C6CFF] bg-opacity-10 text-[#2C6CFF] rounded-full text-sm font-medium">
+                <div className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
                   {t(`${baseKey}.questions.${currentMultipleChoice.key}.category`)}
                 </div>
                 <QuestionExample
@@ -433,26 +504,38 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
                 <button
                   key={index}
                   onClick={() => handleAnswerSelect(currentMultipleChoice.id, index)}
-                  className={`p-4 text-left rounded-lg border-2 transition-all hover:border-[#2C6CFF] hover:bg-blue-50 dark:hover:bg-white/5
+                  className={`p-4 text-left rounded-lg border-2 transition-all hover:border-primary hover:bg-primary/5
                     ${answers[currentMultipleChoice.id] === index 
-                      ? 'border-[#2C6CFF] bg-blue-50 dark:bg-white/5 text-[#2C6CFF]' 
-                      : 'border-gray-200 dark:border-white/10 hover:border-[#2C6CFF]'
+                      ? 'border-primary bg-primary/5 text-primary' 
+                      : 'border-border hover:border-primary'
                     }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0
                       ${answers[currentMultipleChoice.id] === index 
-                        ? 'border-[#2C6CFF] bg-[#2C6CFF]' 
-                        : 'border-gray-300'
+                        ? 'border-primary bg-primary' 
+                        : 'border-muted-foreground/50'
                       }`}>
                       {answers[currentMultipleChoice.id] === index && (
-                        <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
+                        <div className="w-2 h-2 bg-primary-foreground rounded-full m-0.5"></div>
                       )}
                     </div>
                     <span>{t(`${baseKey}.questions.${currentMultipleChoice.key}.options.${index}`)}</span>
                   </div>
                 </button>
               ))}
+            </div>
+
+            {/* Back button for multiple choice */}
+            <div className="flex justify-start pt-4">
+              <Button
+                variant="outline"
+                onClick={handleGoBack}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft size={16} />
+                {t('journey.back', 'Back')}
+              </Button>
             </div>
           </div>
         )}
@@ -483,19 +566,29 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
             />
             
             <div className="flex justify-between items-center">
-              <p className="text-sm text-gray-500">
-                {openAnswers[currentOpenQuestion.id]?.length || 0} {t('assessment.characters')}
-              </p>
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="outline"
+                  onClick={handleGoBack}
+                  className="flex items-center gap-2"
+                >
+                  <ArrowLeft size={16} />
+                  {t('journey.back', 'Back')}
+                </Button>
+                <p className="text-sm text-muted-foreground">
+                  {openAnswers[currentOpenQuestion.id]?.length || 0} {t('assessment.characters')}
+                </p>
+              </div>
               
               {currentQuestion === totalQuestions - 1 ? (
                 <Button 
                   onClick={handleComplete}
                   disabled={!canProceed() || isCompleting}
-                  className="bg-[#2C6CFF] hover:bg-[#2950a3]"
+                  className="bg-primary hover:bg-primary/90"
                 >
                   {isCompleting ? (
                     <>
-                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
                       {t('assessment.completing')}
                     </>
                   ) : (
@@ -509,7 +602,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ onComplete, asses
                 <Button 
                   onClick={() => setCurrentQuestion(currentQuestion + 1)}
                   disabled={!canProceed()}
-                  className="bg-[#2C6CFF] hover:bg-[#2950a3]"
+                  className="bg-primary hover:bg-primary/90"
                 >
                   {t('assessment.next_question')}
                   <ArrowRight size={16} className="ml-2" />

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useBlocker } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'next-themes';
 import MainLayout from '../components/layout/MainLayout';
@@ -7,13 +7,23 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '../context/UserContext';
-import { ArrowRight, ArrowLeft, Check, Upload, FileText, Calendar, User } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Check, Upload, FileText, Calendar, User, RotateCcw } from 'lucide-react';
 import BaselineAssessment from '../components/ximatar-journey/BaselineAssessment';
 import XimatarAssessment from '../components/ximatar-journey/XimatarAssessment';
 import ResultsComparison from '../components/ximatar-journey/ResultsComparison';
-
 import { Logo } from '../components/Logo';
 import { CvAnalysisUpload } from '../components/ximatar-journey/CvAnalysisUpload';
+import { useXimatarJourneyState } from '@/hooks/useXimatarJourneyState';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const XimatarJourney = () => {
   const navigate = useNavigate();
@@ -22,11 +32,27 @@ const XimatarJourney = () => {
   const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
   
-  const [currentStep, setCurrentStep] = useState(1);
-  const [baselineCompleted, setBaselineCompleted] = useState(false);
-  const [assessmentCompleted, setAssessmentCompleted] = useState(false);
-  const [resultsViewed, setResultsViewed] = useState(false);
-  const [cvUploaded, setCvUploaded] = useState(false);
+  const {
+    step: currentStep,
+    questionIndex,
+    mcAnswers,
+    openAnswers,
+    baselineCompleted,
+    cvUploaded,
+    showResumeModal,
+    setStep,
+    setQuestionIndex,
+    setMcAnswer,
+    setOpenAnswer,
+    setBaselineCompleted,
+    setCvUploaded,
+    goToNextQuestion,
+    goToPrevQuestion,
+    completeJourney,
+    resumeJourney,
+    startFresh,
+    setShowResumeModal,
+  } = useXimatarJourneyState();
 
   const steps = [
     { number: 1, title: t('journey.step_1'), icon: <FileText size={20} /> },
@@ -38,27 +64,56 @@ const XimatarJourney = () => {
     switch (step) {
       case 1:
         setBaselineCompleted(true);
-        setCurrentStep(2);
+        setStep(2);
         break;
       case 2:
-        setAssessmentCompleted(true);
-        setCurrentStep(3);
+        setStep(3);
         break;
       case 3:
-        setResultsViewed(true);
-        // Results component will handle navigation to registration
+        completeJourney();
         break;
     }
   };
 
   const goBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+    if (currentStep === 2 && questionIndex > 0) {
+      // Go to previous question within assessment
+      goToPrevQuestion();
+    } else if (currentStep > 1) {
+      // Go to previous step
+      if (currentStep === 2) {
+        setQuestionIndex(0); // Reset question index when going back to step 1
+      }
+      setStep(currentStep - 1);
     }
   };
 
+  // Block navigation away from the page if there's progress
+  const hasProgress = currentStep > 1 || questionIndex > 0 || Object.keys(mcAnswers).length > 0;
+
   return (
     <MainLayout>
+      {/* Resume Modal */}
+      <AlertDialog open={showResumeModal} onOpenChange={setShowResumeModal}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('journey.resume_title', 'Resume Your Journey?')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('journey.resume_description', 'You have saved progress from a previous session. Would you like to continue where you left off?')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={startFresh} className="flex items-center gap-2">
+              <RotateCcw size={16} />
+              {t('journey.start_over', 'Start Over')}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={resumeJourney}>
+              {t('journey.resume', 'Resume')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="container max-w-5xl mx-auto pt-4 watermark-bg">
         <div className="text-center mb-8 relative z-10">
           <Logo 
@@ -80,10 +135,10 @@ const XimatarJourney = () => {
                 <div 
                   className={`w-12 h-12 rounded-full flex items-center justify-center border-2 
                     ${currentStep === step.number 
-                      ? 'bg-[#4171d6] border-[#4171d6] text-white' 
+                      ? 'bg-primary border-primary text-primary-foreground' 
                       : currentStep > step.number
                         ? 'bg-green-500 border-green-500 text-white'
-                        : 'bg-white border-gray-300 text-gray-400'
+                        : 'bg-background border-muted-foreground/30 text-muted-foreground'
                     }`}
                 >
                   {currentStep > step.number ? <Check size={20} /> : step.icon}
@@ -91,10 +146,10 @@ const XimatarJourney = () => {
                 <span 
                   className={`text-sm mt-2 text-center max-w-20
                     ${currentStep === step.number 
-                      ? 'text-[#4171d6] font-medium' 
+                      ? 'text-primary font-medium' 
                       : currentStep > step.number
                         ? 'text-green-600 font-medium'
-                        : 'text-gray-500'
+                        : 'text-muted-foreground'
                     }`}
                 >
                   {step.title}
@@ -102,9 +157,9 @@ const XimatarJourney = () => {
               </div>
             ))}
             
-            <div className="absolute h-1 bg-gray-200 top-6 left-0 right-0 z-0">
+            <div className="absolute h-1 bg-muted top-6 left-0 right-0 z-0">
               <div 
-                className="h-full bg-[#4171d6] transition-all duration-300"
+                className="h-full bg-primary transition-all duration-300"
                 style={{ 
                   width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` 
                 }}
@@ -130,6 +185,14 @@ const XimatarJourney = () => {
             <XimatarAssessment 
               onComplete={handleStepComplete}
               assessmentSetKey={(localStorage.getItem('preferred_field') as 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops') || 'science_tech'}
+              // Pass state management props
+              currentQuestionIndex={questionIndex}
+              savedMcAnswers={mcAnswers}
+              savedOpenAnswers={openAnswers}
+              onQuestionChange={setQuestionIndex}
+              onMcAnswerChange={setMcAnswer}
+              onOpenAnswerChange={setOpenAnswer}
+              onGoBack={goBack}
             />
           )}
           
@@ -150,8 +213,8 @@ const XimatarJourney = () => {
           </div>
         )}
         
-        {/* Navigation */}
-        {currentStep < 3 && (
+        {/* Navigation - only show for step 1 */}
+        {currentStep === 1 && (
           <div className="flex justify-between mt-6">
             <Button 
               variant="outline" 
@@ -163,14 +226,12 @@ const XimatarJourney = () => {
               {t('journey.back')}
             </Button>
             
-            <div className="flex items-center gap-2 text-sm text-gray-500">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               {t('journey.step')} {currentStep} {t('assessment.of')} {steps.length}
             </div>
           </div>
         )}
       </div>
-      
-      
     </MainLayout>
   );
 };
