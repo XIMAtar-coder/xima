@@ -92,7 +92,7 @@ export default function StandingVideoSession() {
   const [focusLostCount, setFocusLostCount] = useState(0);
   const [canFinish, setCanFinish] = useState(false);
 
-  // Media refs
+  // Media refs - single persistent video element
   const videoPreviewRef = useRef<HTMLVideoElement>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -229,21 +229,35 @@ export default function StandingVideoSession() {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [sessionState]);
 
-  // Attach stream to video element
-  const attachStreamToPreview = useCallback(async (stream: MediaStream) => {
-    if (!videoPreviewRef.current) {
-      console.error('Video preview ref not available');
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach(track => track.stop());
+      }
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, []);
+
+  // Attach stream to video element - always re-attach when ref becomes available
+  const attachStreamToPreview = useCallback(async () => {
+    const stream = mediaStreamRef.current;
+    const videoEl = videoPreviewRef.current;
+    
+    if (!stream || !videoEl) {
       return false;
     }
 
+    // Always set srcObject even if already set (to handle ref re-mount)
     try {
-      videoPreviewRef.current.srcObject = stream;
-      videoPreviewRef.current.muted = true;
-      videoPreviewRef.current.playsInline = true;
+      videoEl.srcObject = stream;
+      videoEl.muted = true;
+      videoEl.playsInline = true;
       
-      // Explicitly call play() with error handling
       try {
-        await videoPreviewRef.current.play();
+        await videoEl.play();
         console.log('Video preview playing successfully');
         setStreamReady(true);
         setPreviewError(null);
@@ -260,13 +274,14 @@ export default function StandingVideoSession() {
     }
   }, []);
 
-  // Re-attach stream when video element becomes available or state changes
+  // Re-attach stream whenever video ref might change (state transitions)
   useEffect(() => {
-    if (mediaStreamRef.current && videoPreviewRef.current) {
-      // Only re-attach if not already attached or if srcObject is null
-      if (!videoPreviewRef.current.srcObject) {
-        attachStreamToPreview(mediaStreamRef.current);
-      }
+    if (mediaStreamRef.current && (sessionState === 'permissions' || sessionState === 'countdown' || sessionState === 'recording')) {
+      // Use timeout to ensure DOM has updated
+      const timer = setTimeout(() => {
+        attachStreamToPreview();
+      }, 50);
+      return () => clearTimeout(timer);
     }
   }, [sessionState, attachStreamToPreview]);
 
@@ -286,8 +301,8 @@ export default function StandingVideoSession() {
       setCameraPermission(true);
       setMicPermission(true);
 
-      // Attach to preview
-      await attachStreamToPreview(stream);
+      // Attach to preview after a small delay to ensure ref is ready
+      setTimeout(() => attachStreamToPreview(), 100);
     } catch (err) {
       console.error('Permission error:', err);
       if (err instanceof DOMException) {
@@ -338,7 +353,7 @@ export default function StandingVideoSession() {
 
   const startRecording = () => {
     // Verify stream is ready before starting
-    if (!mediaStreamRef.current || !streamReady) {
+    if (!mediaStreamRef.current) {
       toast({
         title: t('common.error'),
         description: 'Camera not ready. Please wait for the preview to appear.',
@@ -390,12 +405,6 @@ export default function StandingVideoSession() {
     setRecordingTime(0);
     setCurrentPromptIndex(0);
     recordedChunksRef.current = [];
-
-    // Re-attach stream to preview for recording state
-    if (videoPreviewRef.current) {
-      videoPreviewRef.current.srcObject = stream;
-      videoPreviewRef.current.play().catch(console.warn);
-    }
 
     try {
       const mimeType = getSupportedMimeType();
@@ -491,7 +500,6 @@ export default function StandingVideoSession() {
         });
 
       if (uploadError) {
-        // Try creating bucket if doesn't exist (will be handled by backend)
         console.error('Upload error:', uploadError);
         throw uploadError;
       }
@@ -576,6 +584,9 @@ export default function StandingVideoSession() {
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
+
+  // Determine if we should show the persistent video element
+  const showVideoPreview = sessionState === 'permissions' || sessionState === 'countdown' || sessionState === 'recording';
 
   if (loading) {
     return (
@@ -728,57 +739,139 @@ export default function StandingVideoSession() {
     );
   }
 
-  // PERMISSIONS STATE
-  if (sessionState === 'permissions') {
+  // UPLOADING STATE
+  if (sessionState === 'uploading') {
     return (
       <MainLayout>
         <div className="min-h-screen flex items-center justify-center p-4">
-          <Card className="max-w-lg w-full">
-            <CardHeader>
-              <CardTitle>{t('level3.standing.permissions_title')}</CardTitle>
-              <CardDescription>{t('level3.standing.permissions_desc')}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Video Preview */}
-              <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
-                <video
-                  ref={videoPreviewRef}
-                  autoPlay
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover scale-x-[-1]"
-                  style={{ transform: 'scaleX(-1)' }}
-                />
-                
-                {/* Loading overlay */}
-                {cameraPermission === null && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-background/80">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                  </div>
-                )}
-                
-                {/* Tap to enable overlay */}
-                {previewError === 'tap_to_enable' && (
-                  <button 
-                    onClick={handleTapToPlay}
-                    className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 cursor-pointer hover:bg-background/70 transition-colors"
-                  >
-                    <Camera className="h-12 w-12 text-primary mb-2" />
-                    <span className="text-sm font-medium">{t('level3.standing.tap_to_enable')}</span>
-                  </button>
-                )}
-                
-                {/* Camera live indicator */}
-                {streamReady && cameraPermission && (
-                  <div className="absolute top-3 left-3">
-                    <Badge variant="secondary" className="bg-green-500/90 text-white border-0">
-                      <span className="w-2 h-2 rounded-full bg-white mr-2 animate-pulse" />
-                      {t('level3.standing.camera_live')}
-                    </Badge>
-                  </div>
-                )}
+          <Card className="max-w-md w-full">
+            <CardContent className="py-8 text-center space-y-4">
+              <Upload className="h-12 w-12 mx-auto text-primary animate-pulse" />
+              <div>
+                <p className="font-medium">{t('level3.standing.uploading')}</p>
+                <p className="text-sm text-muted-foreground">{t('level3.standing.please_wait')}</p>
               </div>
+              <Progress value={uploadProgress} className="h-2" />
+              <p className="text-sm text-muted-foreground">{uploadProgress}%</p>
+            </CardContent>
+          </Card>
+        </div>
+      </MainLayout>
+    );
+  }
 
+  // PERMISSIONS / COUNTDOWN / RECORDING STATES - Use single layout with persistent video
+  const totalDuration = (context?.durationMinutes || 5) * 60;
+  const progressPercent = (recordingTime / totalDuration) * 100;
+
+  return (
+    <MainLayout>
+      <div className="min-h-screen flex flex-col bg-background">
+        {/* Header - only show during recording */}
+        {sessionState === 'recording' && (
+          <div className="border-b bg-card/50 backdrop-blur">
+            <div className="container max-w-4xl mx-auto p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Badge variant="destructive" className="animate-pulse">
+                  <span className="w-2 h-2 rounded-full bg-white mr-2 animate-pulse" />
+                  {t('level3.standing.recording')}
+                </Badge>
+                <span className="font-mono text-lg">{formatTime(recordingTime)}</span>
+              </div>
+              <Button 
+                onClick={finishRecording} 
+                disabled={!canFinish}
+                variant={canFinish ? 'default' : 'outline'}
+              >
+                <Square className="h-4 w-4 mr-2" />
+                {t('level3.standing.finish_submit')}
+              </Button>
+            </div>
+            <Progress value={progressPercent} className="h-1" />
+          </div>
+        )}
+
+        {/* Main content area */}
+        <div className="flex-1 container max-w-4xl mx-auto p-4 flex flex-col">
+          {/* Permissions header */}
+          {sessionState === 'permissions' && (
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold">{t('level3.standing.permissions_title')}</h2>
+              <p className="text-muted-foreground">{t('level3.standing.permissions_desc')}</p>
+            </div>
+          )}
+
+          {/* PERSISTENT VIDEO PREVIEW - Always rendered for permissions/countdown/recording */}
+          <div className={`relative bg-muted rounded-lg overflow-hidden ${sessionState === 'recording' ? 'flex-1 min-h-[300px]' : 'aspect-video max-w-lg mx-auto w-full'}`}>
+            <video
+              ref={videoPreviewRef}
+              autoPlay
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+              style={{ transform: 'scaleX(-1)' }}
+            />
+            
+            {/* Countdown overlay */}
+            {sessionState === 'countdown' && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/70">
+                <div className="text-9xl font-bold text-primary animate-pulse">{countdown}</div>
+                <p className="text-muted-foreground mt-4">{t('level3.standing.get_ready')}</p>
+              </div>
+            )}
+
+            {/* Loading overlay - only when waiting for permissions */}
+            {sessionState === 'permissions' && cameraPermission === null && !previewError && (
+              <div className="absolute inset-0 flex items-center justify-center bg-background/80">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            )}
+
+            {/* Tap to enable overlay */}
+            {previewError === 'tap_to_enable' && (
+              <button 
+                onClick={handleTapToPlay}
+                className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 cursor-pointer hover:bg-background/70 transition-colors"
+              >
+                <Camera className="h-12 w-12 text-primary mb-2" />
+                <span className="text-sm font-medium">{t('level3.standing.tap_to_enable')}</span>
+              </button>
+            )}
+
+            {/* Camera live indicator */}
+            {streamReady && cameraPermission && sessionState !== 'countdown' && (
+              <div className="absolute top-3 left-3">
+                <Badge variant="secondary" className="bg-green-500/90 text-white border-0">
+                  <span className="w-2 h-2 rounded-full bg-white mr-2 animate-pulse" />
+                  {t('level3.standing.camera_live')}
+                </Badge>
+              </div>
+            )}
+
+            {/* Recording indicator */}
+            {sessionState === 'recording' && (
+              <div className="absolute top-4 right-4">
+                <Badge variant="secondary" className="bg-green-500/90 text-white border-0">
+                  <span className="w-2 h-2 rounded-full bg-white mr-2 animate-pulse" />
+                  {t('level3.standing.camera_live')}
+                </Badge>
+              </div>
+            )}
+
+            {/* Focus lost warning */}
+            {sessionState === 'recording' && focusLostCount > 0 && (
+              <div className="absolute top-4 left-4">
+                <Badge variant="outline" className="bg-amber-500/90 text-white border-0">
+                  <AlertTriangle className="h-3 w-3 mr-1" />
+                  {t('level3.standing.focus_warning')}
+                </Badge>
+              </div>
+            )}
+          </div>
+
+          {/* Permission status + start button */}
+          {sessionState === 'permissions' && (
+            <div className="mt-4 space-y-4 max-w-lg mx-auto w-full">
               {/* Permission status */}
               <div className="flex items-center justify-center gap-4">
                 <div className="flex items-center gap-2 text-sm">
@@ -810,102 +903,12 @@ export default function StandingVideoSession() {
                   {t('level3.standing.begin_recording')}
                 </Button>
               )}
-            </CardContent>
-          </Card>
-        </div>
-      </MainLayout>
-    );
-  }
-
-  // COUNTDOWN STATE
-  if (sessionState === 'countdown') {
-    return (
-      <MainLayout>
-        <div className="min-h-screen flex flex-col items-center justify-center bg-background relative">
-          {/* Keep video preview visible during countdown */}
-          <div className="absolute inset-0 opacity-30">
-            <video
-              ref={videoPreviewRef}
-              autoPlay
-              muted
-              playsInline
-              className="w-full h-full object-cover scale-x-[-1]"
-              style={{ transform: 'scaleX(-1)' }}
-            />
-          </div>
-          <div className="text-center relative z-10">
-            <div className="text-9xl font-bold text-primary animate-pulse">{countdown}</div>
-            <p className="text-muted-foreground mt-4">{t('level3.standing.get_ready')}</p>
-          </div>
-        </div>
-      </MainLayout>
-    );
-  }
-
-  // RECORDING STATE
-  if (sessionState === 'recording') {
-    const totalDuration = (context?.durationMinutes || 5) * 60;
-    const progressPercent = (recordingTime / totalDuration) * 100;
-
-    return (
-      <MainLayout>
-        <div className="min-h-screen flex flex-col bg-background">
-          {/* Header */}
-          <div className="border-b bg-card/50 backdrop-blur">
-            <div className="container max-w-4xl mx-auto p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Badge variant="destructive" className="animate-pulse">
-                  <span className="w-2 h-2 rounded-full bg-white mr-2 animate-pulse" />
-                  {t('level3.standing.recording')}
-                </Badge>
-                <span className="font-mono text-lg">{formatTime(recordingTime)}</span>
-              </div>
-              <Button 
-                onClick={finishRecording} 
-                disabled={!canFinish}
-                variant={canFinish ? 'default' : 'outline'}
-              >
-                <Square className="h-4 w-4 mr-2" />
-                {t('level3.standing.finish_submit')}
-              </Button>
             </div>
-            <Progress value={progressPercent} className="h-1" />
-          </div>
+          )}
 
-          {/* Main content */}
-          <div className="flex-1 container max-w-4xl mx-auto p-4 flex flex-col gap-4">
-            {/* Video preview */}
-            <div className="relative flex-1 min-h-[300px] bg-muted rounded-lg overflow-hidden">
-              <video
-                ref={videoPreviewRef}
-                autoPlay
-                muted
-                playsInline
-                className="w-full h-full object-cover rounded-lg scale-x-[-1]"
-                style={{ transform: 'scaleX(-1)' }}
-              />
-              
-              {/* Camera live indicator */}
-              <div className="absolute top-4 right-4">
-                <Badge variant="secondary" className="bg-green-500/90 text-white border-0">
-                  <span className="w-2 h-2 rounded-full bg-white mr-2 animate-pulse" />
-                  {t('level3.standing.camera_live')}
-                </Badge>
-              </div>
-              
-              {/* Focus lost warning */}
-              {focusLostCount > 0 && (
-                <div className="absolute top-4 left-4">
-                  <Badge variant="outline" className="bg-amber-500/90 text-white border-0">
-                    <AlertTriangle className="h-3 w-3 mr-1" />
-                    {t('level3.standing.focus_warning')}
-                  </Badge>
-                </div>
-              )}
-            </div>
-
-            {/* Current prompt */}
-            <Card className="bg-primary/5 border-primary/30">
+          {/* Current prompt - only during recording */}
+          {sessionState === 'recording' && (
+            <Card className="mt-4 bg-primary/5 border-primary/30">
               <CardContent className="py-4">
                 <div className="flex items-start gap-3">
                   <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
@@ -920,32 +923,9 @@ export default function StandingVideoSession() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+          )}
         </div>
-      </MainLayout>
-    );
-  }
-
-  // UPLOADING STATE
-  if (sessionState === 'uploading') {
-    return (
-      <MainLayout>
-        <div className="min-h-screen flex items-center justify-center p-4">
-          <Card className="max-w-md w-full">
-            <CardContent className="py-8 text-center space-y-4">
-              <Upload className="h-12 w-12 mx-auto text-primary animate-pulse" />
-              <div>
-                <h3 className="font-semibold">{t('level3.standing.uploading')}</h3>
-                <p className="text-sm text-muted-foreground">{t('level3.standing.uploading_desc')}</p>
-              </div>
-              <Progress value={uploadProgress} className="w-full" />
-              <p className="text-sm text-muted-foreground">{uploadProgress}%</p>
-            </CardContent>
-          </Card>
-        </div>
-      </MainLayout>
-    );
-  }
-
-  return null;
+      </div>
+    </MainLayout>
+  );
 }
