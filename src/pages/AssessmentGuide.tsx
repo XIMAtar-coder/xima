@@ -163,18 +163,18 @@ const AssessmentGuide = () => {
   ];
 
   const ximatars = [
-    { name: 'Lion', emoji: '🦁', strength: 'Drive', style: t('guide.ximatars.lion', 'Executive Leader') },
-    { name: 'Fox', emoji: '🦊', strength: 'Creativity', style: t('guide.ximatars.fox', 'Strategic Opportunist') },
-    { name: 'Owl', emoji: '🦉', strength: 'Knowledge', style: t('guide.ximatars.owl', 'Wise Analyst') },
-    { name: 'Dolphin', emoji: '🐬', strength: 'Communication', style: t('guide.ximatars.dolphin', 'Team Facilitator') },
-    { name: 'Cat', emoji: '🐱', strength: 'Computational', style: t('guide.ximatars.cat', 'Independent Specialist') },
-    { name: 'Bear', emoji: '🐻', strength: 'Knowledge', style: t('guide.ximatars.bear', 'Reliable Guardian') },
-    { name: 'Bee', emoji: '🐝', strength: 'Drive', style: t('guide.ximatars.bee', 'Productive Worker') },
-    { name: 'Wolf', emoji: '🐺', strength: 'Drive', style: t('guide.ximatars.wolf', 'Tactical Team Player') },
-    { name: 'Parrot', emoji: '🦜', strength: 'Communication', style: t('guide.ximatars.parrot', 'Expressive Communicator') },
-    { name: 'Elephant', emoji: '🐘', strength: 'Knowledge', style: t('guide.ximatars.elephant', 'Long-Term Strategist') },
-    { name: 'Horse', emoji: '🐴', strength: 'Drive', style: t('guide.ximatars.horse', 'Reliable Driver') },
-    { name: 'Chameleon', emoji: '🦎', strength: 'Balanced', style: t('guide.ximatars.chameleon', 'Adaptive Operator') }
+    { name: 'Lion', image: '/ximatars/lion.png', strength: 'Drive', style: t('guide.ximatars.lion', 'Executive Leader') },
+    { name: 'Fox', image: '/ximatars/fox.png', strength: 'Creativity', style: t('guide.ximatars.fox', 'Strategic Opportunist') },
+    { name: 'Owl', image: '/ximatars/owl.png', strength: 'Knowledge', style: t('guide.ximatars.owl', 'Wise Analyst') },
+    { name: 'Dolphin', image: '/ximatars/dolphin.png', strength: 'Communication', style: t('guide.ximatars.dolphin', 'Team Facilitator') },
+    { name: 'Cat', image: '/ximatars/cat.png', strength: 'Computational', style: t('guide.ximatars.cat', 'Independent Specialist') },
+    { name: 'Bear', image: '/ximatars/bear.png', strength: 'Knowledge', style: t('guide.ximatars.bear', 'Reliable Guardian') },
+    { name: 'Bee', image: '/ximatars/bee.png', strength: 'Drive', style: t('guide.ximatars.bee', 'Productive Worker') },
+    { name: 'Wolf', image: '/ximatars/wolf.png', strength: 'Drive', style: t('guide.ximatars.wolf', 'Tactical Team Player') },
+    { name: 'Parrot', image: '/ximatars/parrot.png', strength: 'Communication', style: t('guide.ximatars.parrot', 'Expressive Communicator') },
+    { name: 'Elephant', image: '/ximatars/elephant.png', strength: 'Knowledge', style: t('guide.ximatars.elephant', 'Long-Term Strategist') },
+    { name: 'Horse', image: '/ximatars/horse.png', strength: 'Drive', style: t('guide.ximatars.horse', 'Reliable Driver') },
+    { name: 'Chameleon', image: '/ximatars/chameleon.png', strength: 'Balanced', style: t('guide.ximatars.chameleon', 'Adaptive Operator') }
   ];
 
   const scoringExample = [
@@ -358,7 +358,7 @@ const AssessmentGuide = () => {
             >
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="w-5 h-5 text-primary animate-bounce" />
-                <span className="font-semibold">{t('guide.result', 'Result')}: Fox 🦊</span>
+                <span className="font-semibold inline-flex items-center gap-2">{t('guide.result', 'Result')}: Fox <img src="/ximatars/fox.png" alt="XIMAtar Fox" className="h-6 w-6 rounded-full object-cover bg-muted/40 ring-1 ring-border/40 inline-block" /></span>
               </div>
               <p className="text-sm text-muted-foreground">
                 {t('guide.result_explanation', 'With highest Creativity (9.1) and strong Computational Power (8.2), this profile matches the Fox archetype - a Strategic Opportunist who excels at innovative problem-solving.')}
@@ -397,9 +397,13 @@ const AssessmentGuide = () => {
                 }`}
                 style={{ transitionDelay: `${index * 50}ms` }}
               >
-                <span className="text-4xl mb-2 block transition-transform duration-300 group-hover:scale-125 group-hover:animate-bounce">
-                  {ximatar.emoji}
-                </span>
+                <div className="w-12 h-12 mx-auto mb-2 flex items-center justify-center">
+                  <img 
+                    src={ximatar.image} 
+                    alt={`XIMAtar ${ximatar.name}`}
+                    className="h-10 w-10 rounded-full object-cover bg-muted/40 ring-1 ring-border/40 p-0.5 transition-transform duration-300 group-hover:scale-125"
+                  />
+                </div>
                 <h4 className="font-semibold group-hover:text-primary transition-colors">{ximatar.name}</h4>
                 <p className="text-xs text-muted-foreground mb-2">{ximatar.style}</p>
                 <Badge variant="outline" className="text-xs transition-all group-hover:bg-primary group-hover:text-primary-foreground">
