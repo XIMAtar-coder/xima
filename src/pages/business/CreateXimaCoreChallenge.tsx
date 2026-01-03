@@ -37,7 +37,7 @@ const CreateXimaCoreChallenge = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const goalId = searchParams.get('goal');
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: businessLoading } = useBusinessRole();
@@ -155,6 +155,7 @@ const CreateXimaCoreChallenge = () => {
       const { data, error } = await supabase.functions.invoke('generate-challenge', {
         body: {
           mode: 'xima_core',
+          locale: i18n.language?.split('-')[0] || 'en',
           context: {
             roleTitle: goal?.role_title || undefined,
             functionArea: goal?.function_area || undefined,

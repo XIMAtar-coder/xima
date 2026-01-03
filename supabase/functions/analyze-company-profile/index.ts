@@ -10,6 +10,26 @@ const corsHeaders = {
 
 interface AnalyzeBody {
   website?: string;
+  locale?: string;
+}
+
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: 'English',
+  it: 'Italian',
+  es: 'Spanish',
+};
+
+function getLanguageInstruction(locale: string): string {
+  const normalizedLocale = ['en', 'it', 'es'].includes(locale) ? locale : 'en';
+  const targetLanguage = LANGUAGE_NAMES[normalizedLocale];
+  return `
+
+CRITICAL LANGUAGE INSTRUCTION:
+You MUST respond ONLY in ${targetLanguage}.
+All string values (summary, operating_style, communication_style, values, ideal_traits, risk_areas) must be in ${targetLanguage}.
+Do NOT include any English words unless they are proper nouns, brand names, or product names.
+Do NOT add bilingual text or translations in parentheses.
+JSON keys must remain in English, but ALL values must be in ${targetLanguage}.`;
 }
 
 serve(async (req) => {
@@ -18,7 +38,7 @@ serve(async (req) => {
   }
 
   try {
-    const { website }: AnalyzeBody = await req.json();
+    const { website, locale = 'en' }: AnalyzeBody = await req.json();
     if (!website || !/^https?:\/\//i.test(website)) {
       return json({ error: "Invalid website URL" }, 400);
     }
@@ -75,10 +95,12 @@ serve(async (req) => {
 
     const corpus = textChunks.join("\n\n").slice(0, 18000); // keep under model limits
 
+    const langInstruction = getLanguageInstruction(locale);
     const system = [
       "You are XIM-AI analyzing a company's public website to extract culture and hiring signals.",
       "Return a STRICT JSON object with keys: summary, values, operating_style, communication_style, ideal_traits, risk_areas.",
-      "Each key should be concise strings or string arrays. No extra commentary."
+      "Each key should be concise strings or string arrays. No extra commentary.",
+      langInstruction
     ].join(" ");
 
     const prompt = `Website: ${website}\n\nContent:\n${corpus}`;

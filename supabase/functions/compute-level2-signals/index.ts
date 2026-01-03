@@ -24,13 +24,33 @@ interface Level2SignalsPayload {
   generatedAt: string;
 }
 
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: 'English',
+  it: 'Italian',
+  es: 'Spanish',
+};
+
+function getLanguageInstruction(locale: string): string {
+  const normalizedLocale = ['en', 'it', 'es'].includes(locale) ? locale : 'en';
+  const targetLanguage = LANGUAGE_NAMES[normalizedLocale];
+  return `
+
+CRITICAL LANGUAGE INSTRUCTION:
+You MUST respond ONLY in ${targetLanguage}.
+All explanation text, summary, and flags descriptions must be in ${targetLanguage}.
+Do NOT include any English words unless they are proper nouns, code identifiers, or product names.
+Do NOT add bilingual text or translations in parentheses.
+JSON keys must remain in English, but ALL string values must be in ${targetLanguage}.`;
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { submission_id } = await req.json();
+    const { submission_id, locale = 'en' } = await req.json();
+    const langInstruction = getLanguageInstruction(locale);
 
     if (!submission_id) {
       return new Response(
@@ -39,7 +59,7 @@ serve(async (req) => {
       );
     }
 
-    console.log('Computing Level 2 signals for submission:', submission_id);
+    console.log('Computing Level 2 signals for submission:', submission_id, 'locale:', locale);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -166,7 +186,7 @@ RESPONSE FORMAT (strict JSON):
   "flags": ["array of observed patterns like 'strong_technical_depth', 'weak_risk_awareness']
 }
 
-Be fair, constructive, and focused on helping the business make informed decisions.`;
+Be fair, constructive, and focused on helping the business make informed decisions.${langInstruction}`;
 
     const userPrompt = `Evaluate this Level 2 hard skill submission:
 

@@ -36,7 +36,7 @@ interface ActiveChallengeWithStats {
 
 const BusinessDashboard = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: businessLoading } = useBusinessRole();
@@ -345,7 +345,8 @@ const BusinessDashboard = () => {
     try {
       const { data, error } = await supabase.functions.invoke('analyze-company-profile', {
         body: {
-          website: businessProfile.website
+          website: businessProfile.website,
+          locale: i18n.language?.split('-')[0] || 'en'
         }
       });
 
