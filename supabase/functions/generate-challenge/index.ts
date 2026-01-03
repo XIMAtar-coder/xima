@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -37,6 +38,61 @@ serve(async (req) => {
   }
 
   try {
+    // Authentication check
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error('[generate-challenge] No authorization header');
+      return new Response(
+        JSON.stringify({ error: 'Authorization required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      console.error('[generate-challenge] Auth error:', authError?.message);
+      return new Response(
+        JSON.stringify({ error: 'Authentication failed' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('[generate-challenge] Authenticated user:', user.id);
+
+    // Check if user has business role
+    const { data: roles, error: rolesError } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id);
+
+    if (rolesError) {
+      console.error('[generate-challenge] Roles query error:', rolesError.message);
+      return new Response(
+        JSON.stringify({ error: 'Failed to verify permissions' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const hasBusiness = roles?.some(r => r.role === 'business');
+    const hasAdmin = roles?.some(r => r.role === 'admin');
+
+    if (!hasBusiness && !hasAdmin) {
+      console.error('[generate-challenge] User lacks business role:', user.id);
+      return new Response(
+        JSON.stringify({ error: 'Business role required to generate challenges' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('[generate-challenge] User authorized - roles:', roles?.map(r => r.role).join(', '));
+
     const body = await req.json();
     console.log('[generate-challenge] Request body received:', JSON.stringify(body).substring(0, 300));
     console.log('[generate-challenge] Mode check:', body.mode, 'is xima_core:', body.mode === 'xima_core');
@@ -44,12 +100,12 @@ serve(async (req) => {
     // Check if this is a XIMA Core Challenge request
     if (body.mode === 'xima_core') {
       console.log('[generate-challenge] Routing to XIMA Core generation');
-      return await handleXimaCoreGeneration(body as GenerateXimaCoreRequest);
+      return await handleXimaCoreGeneration(body as GenerateXimaCoreRequest, user.id);
     }
     
     // Legacy challenge generation
     console.log('[generate-challenge] Routing to Legacy generation');
-    return await handleLegacyGeneration(body as GenerateChallengeRequest);
+    return await handleLegacyGeneration(body as GenerateChallengeRequest, user.id);
 
   } catch (err) {
     console.error('[generate-challenge] Error:', err);
@@ -60,9 +116,9 @@ serve(async (req) => {
   }
 });
 
-async function handleXimaCoreGeneration(request: GenerateXimaCoreRequest): Promise<Response> {
+async function handleXimaCoreGeneration(request: GenerateXimaCoreRequest, userId: string): Promise<Response> {
   const { context } = request;
-  console.log('[generate-challenge] XIMA Core mode - context:', context);
+  console.log('[generate-challenge] XIMA Core mode - context:', context, 'userId:', userId);
 
   const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
   if (!LOVABLE_API_KEY) {
@@ -206,7 +262,8 @@ Return ONLY a JSON object:
 
   console.log('[generate-challenge] Generated XIMA Core scenario:', {
     length: result.scenario.length,
-    businessType: result.business_type
+    businessType: result.business_type,
+    generatedBy: userId
   });
 
   return new Response(
@@ -215,7 +272,7 @@ Return ONLY a JSON object:
   );
 }
 
-async function handleLegacyGeneration(body: GenerateChallengeRequest): Promise<Response> {
+async function handleLegacyGeneration(body: GenerateChallengeRequest, userId: string): Promise<Response> {
   const { 
     task_description, 
     role_title, 
@@ -227,7 +284,8 @@ async function handleLegacyGeneration(body: GenerateChallengeRequest): Promise<R
   console.log('[generate-challenge] Legacy mode - parsed request:', { 
     task_description: task_description?.substring(0, 100), 
     role_title, 
-    experience_level 
+    experience_level,
+    generatedBy: userId
   });
 
   if (!task_description) {
@@ -358,7 +416,8 @@ Return ONLY a JSON object with this exact structure:
   console.log('[generate-challenge] Generated challenge:', { 
     title: result.title_suggestion,
     criteriaCount: result.success_criteria.length,
-    timeEstimate: result.time_estimate_minutes
+    timeEstimate: result.time_estimate_minutes,
+    generatedBy: userId
   });
 
   return new Response(
