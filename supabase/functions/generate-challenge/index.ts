@@ -12,10 +12,12 @@ interface GenerateChallengeRequest {
   experience_level?: string;
   work_model?: string;
   country?: string;
+  locale?: string;
 }
 
 interface GenerateXimaCoreRequest {
   mode: 'xima_core';
+  locale?: string;
   context: {
     companyIndustry?: string;
     companySize?: string;
@@ -26,6 +28,25 @@ interface GenerateXimaCoreRequest {
     experienceLevel?: string;
     taskDescription?: string;
   };
+}
+
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: 'English',
+  it: 'Italian',
+  es: 'Spanish',
+};
+
+function getLanguageInstruction(locale: string): string {
+  const normalizedLocale = ['en', 'it', 'es'].includes(locale) ? locale : 'en';
+  const targetLanguage = LANGUAGE_NAMES[normalizedLocale];
+  return `
+
+CRITICAL LANGUAGE INSTRUCTION:
+You MUST respond ONLY in ${targetLanguage}.
+Do NOT include any English words unless they are proper nouns, code identifiers, or product names.
+Do NOT add bilingual text or translations in parentheses.
+All free-text values in your response must be in ${targetLanguage}.
+JSON keys must remain in English, but ALL values must be in ${targetLanguage}.`;
 }
 
 const XIMA_CORE_BASE_SCENARIO = `You join a team working on an important initiative. The goal is clear, but progress is slow. Stakeholders have different expectations, priorities conflict, and no one fully owns the outcome. You have no formal authority, but the deadline is approaching.`;
@@ -117,8 +138,9 @@ serve(async (req) => {
 });
 
 async function handleXimaCoreGeneration(request: GenerateXimaCoreRequest, userId: string): Promise<Response> {
-  const { context } = request;
-  console.log('[generate-challenge] XIMA Core mode - context:', context, 'userId:', userId);
+  const { context, locale = 'en' } = request;
+  const langInstruction = getLanguageInstruction(locale);
+  console.log('[generate-challenge] XIMA Core mode - context:', context, 'locale:', locale, 'userId:', userId);
 
   const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
   if (!LOVABLE_API_KEY) {
@@ -153,7 +175,7 @@ Your task is to generate a realistic business scenario that:
 - Does NOT reveal or reference specific company information
 - Creates genuine tension that requires judgment to navigate
 
-The scenario should feel like a real situation a professional might encounter.`;
+The scenario should feel like a real situation a professional might encounter.${langInstruction}`;
 
   const userPrompt = `Generate a scenario for a hiring assessment challenge.
 
@@ -278,13 +300,17 @@ async function handleLegacyGeneration(body: GenerateChallengeRequest, userId: st
     role_title, 
     experience_level, 
     work_model, 
-    country 
+    country,
+    locale = 'en'
   } = body;
+
+  const langInstruction = getLanguageInstruction(locale);
 
   console.log('[generate-challenge] Legacy mode - parsed request:', { 
     task_description: task_description?.substring(0, 100), 
     role_title, 
     experience_level,
+    locale,
     generatedBy: userId
   });
 
@@ -315,7 +341,7 @@ async function handleLegacyGeneration(body: GenerateChallengeRequest, userId: st
   const systemPrompt = `You are an expert HR professional creating hiring challenges. 
 Generate a practical, skills-based challenge that evaluates candidates fairly and effectively.
 The challenge should be realistic, take-home style, and focus on demonstrating relevant skills.
-Keep the tone professional but approachable.`;
+Keep the tone professional but approachable.${langInstruction}`;
 
   const userPrompt = `Based on this hiring context:
 ${contextParts}

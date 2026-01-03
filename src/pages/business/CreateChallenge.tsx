@@ -45,7 +45,7 @@ const CreateChallenge = () => {
   const { id: challengeId } = useParams();
   const goalId = searchParams.get('goal');
   const challengeType = searchParams.get('type'); // 'custom' means they explicitly chose custom
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: businessLoading } = useBusinessRole();
@@ -202,7 +202,8 @@ const CreateChallenge = () => {
           role_title: hiringGoal.role_title,
           experience_level: hiringGoal.experience_level,
           work_model: hiringGoal.work_model,
-          country: hiringGoal.country
+          country: hiringGoal.country,
+          locale: i18n.language?.split('-')[0] || 'en'
         }
       });
 

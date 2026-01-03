@@ -38,14 +38,17 @@ interface Level2Payload {
   key_deliverables?: string;
 }
 
+import { getBusinessLocale } from '@/hooks/useBusinessLocale';
+
 /**
  * Call the edge function to compute Level 2 signals using AI
  */
-export async function computeLevel2SignalsAsync(submissionId: string): Promise<Level2SignalsPayload> {
-  console.log('Calling compute-level2-signals edge function for:', submissionId);
+export async function computeLevel2SignalsAsync(submissionId: string, locale?: string): Promise<Level2SignalsPayload> {
+  const effectiveLocale = locale || getBusinessLocale();
+  console.log('Calling compute-level2-signals edge function for:', submissionId, 'locale:', effectiveLocale);
   
   const { data, error } = await supabase.functions.invoke('compute-level2-signals', {
-    body: { submission_id: submissionId }
+    body: { submission_id: submissionId, locale: effectiveLocale }
   });
 
   if (error) {
