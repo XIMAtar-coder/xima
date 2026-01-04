@@ -122,8 +122,61 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // === SECURITY: Verify caller has business role ===
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Authorization required' }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+    // First verify the caller's identity with anon key + their JWT
+    const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const { data: { user }, error: authError } = await supabaseUser.auth.getUser();
+    if (authError || !user) {
+      console.error("[send-challenge-invitation] Auth failed:", authError?.message);
+      return new Response(
+        JSON.stringify({ error: 'Authentication failed' }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Check if user has business role
+    const { data: roles, error: rolesError } = await supabaseUser
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id);
+
+    if (rolesError) {
+      console.error("[send-challenge-invitation] Roles query error:", rolesError.message);
+      return new Response(
+        JSON.stringify({ error: 'Failed to verify permissions' }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const hasBusiness = roles?.some(r => r.role === 'business');
+    const hasAdmin = roles?.some(r => r.role === 'admin');
+
+    if (!hasBusiness && !hasAdmin) {
+      console.error("[send-challenge-invitation] User lacks business role:", user.id);
+      return new Response(
+        JSON.stringify({ error: 'Business role required to send invitations' }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    console.log("[send-challenge-invitation] User authorized:", user.id, "roles:", roles?.map(r => r.role).join(', '));
+
+    // Now use service role for actual operations
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     const {

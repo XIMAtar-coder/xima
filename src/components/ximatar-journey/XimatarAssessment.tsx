@@ -171,9 +171,9 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
       // Get current user (may be null for guest users)
       const { data: { user } } = await supabase.auth.getUser();
       
-      // For guest users, store data locally and compute client-side
+      // For guest users, store data in sessionStorage (auto-clears on tab close for security)
       if (!user) {
-        // Store answers in localStorage for post-registration
+        // Store answers in sessionStorage for post-registration (more secure than localStorage)
         const guestData = {
           attemptId,
           assessmentSetKey: fieldKey,
@@ -182,7 +182,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
           openAnswers: submissionOpenAnswers,
           timestamp: new Date().toISOString()
         };
-        localStorage.setItem('guest_assessment_data', JSON.stringify(guestData));
+        sessionStorage.setItem('guest_assessment_data', JSON.stringify(guestData));
         
         // Client-side score computation with proper variance based on answers
         const computeGuestPillarScore = (questionIds: number[]) => {
@@ -243,15 +243,15 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
         const strongest = pillarEntries[0][0];
         const weakest = pillarEntries[pillarEntries.length - 1][0];
         
-        // Store ALL assessment data for sync after registration
-        localStorage.setItem('guest_pillar_scores', JSON.stringify(mockPillarScores));
-        localStorage.setItem('guest_ximatar', ximatarLabel);
-        localStorage.setItem('guest_ximatar_name', ximatarLabel.charAt(0).toUpperCase() + ximatarLabel.slice(1));
-        localStorage.setItem('guest_drive_level', driveLevel);
-        localStorage.setItem('guest_strongest_pillar', strongest);
-        localStorage.setItem('guest_weakest_pillar', weakest);
-        localStorage.setItem('guest_ximatar_storytelling', t('ximatar_intro.storytelling'));
-        localStorage.setItem('guest_ximatar_growth_path', t(`ximatar_intro.drive_paths.${driveLevel}_desc`));
+        // Store ALL assessment data in sessionStorage for sync after registration (more secure)
+        sessionStorage.setItem('guest_pillar_scores', JSON.stringify(mockPillarScores));
+        sessionStorage.setItem('guest_ximatar', ximatarLabel);
+        sessionStorage.setItem('guest_ximatar_name', ximatarLabel.charAt(0).toUpperCase() + ximatarLabel.slice(1));
+        sessionStorage.setItem('guest_drive_level', driveLevel);
+        sessionStorage.setItem('guest_strongest_pillar', strongest);
+        sessionStorage.setItem('guest_weakest_pillar', weakest);
+        sessionStorage.setItem('guest_ximatar_storytelling', t('ximatar_intro.storytelling'));
+        sessionStorage.setItem('guest_ximatar_growth_path', t(`ximatar_intro.drive_paths.${driveLevel}_desc`));
         
         toast({
           title: t('assessment.guest_complete'),

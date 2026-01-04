@@ -55,16 +55,60 @@ serve(async (req) => {
 
     console.log("Received file:", file.name, file.type, file.size);
 
+    // === SECURITY: File size validation (10MB limit) ===
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    if (file.size > MAX_FILE_SIZE) {
+      return new Response(
+        JSON.stringify({ error: "File too large. Maximum 10MB allowed." }), 
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // === SECURITY: File type validation (whitelist) ===
+    const ALLOWED_TYPES = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain'
+    ];
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid file type. Only PDF, DOC, DOCX, and TXT files are allowed." }), 
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const fileBytes = new Uint8Array(await file.arrayBuffer());
-    const filename = `${Date.now()}_${file.name}`;
+
+    // === SECURITY: Validate PDF content (magic bytes check) ===
+    if (file.type === 'application/pdf') {
+      const isPDF = fileBytes[0] === 0x25 && fileBytes[1] === 0x50 && 
+                    fileBytes[2] === 0x44 && fileBytes[3] === 0x46; // %PDF
+      if (!isPDF) {
+        return new Response(
+          JSON.stringify({ error: "File claims to be PDF but content validation failed." }), 
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+
+    // === SECURITY: Sanitize filename to prevent path traversal ===
+    const sanitizeFilename = (name: string): string => {
+      return name
+        .replace(/[^a-zA-Z0-9._-]/g, '_') // Remove special chars
+        .replace(/\.\./g, '_') // Prevent directory traversal
+        .substring(0, 255); // Limit length
+    };
+    const safeFilename = sanitizeFilename(file.name);
+    const filename = `${Date.now()}_${safeFilename}`;
     const storagePath = `${user.id}/${filename}`;
 
-    // Upload to storage bucket (cv-uploads)
+    // Upload to storage bucket (cv-uploads) - use validated file type, no fallback
     const { error: uploadError } = await supabase.storage
       .from("cv-uploads")
       .upload(storagePath, fileBytes, {
         upsert: true,
-        contentType: file.type || "application/octet-stream",
+        contentType: file.type,
       });
 
     if (uploadError) {

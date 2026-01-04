@@ -36,18 +36,18 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
     } catch (e) {
       console.warn('[sync] auth.getUser failed', e);
     }
-    // Check localStorage for guest assessment data
-    const guestResultId = localStorage.getItem('latest_assessment_result_id');
-    const guestPillarScores = localStorage.getItem('guest_pillar_scores');
-    const guestXimatar = localStorage.getItem('guest_ximatar');
-    const guestXimatarName = localStorage.getItem('guest_ximatar_name');
-    const guestXimatarImage = localStorage.getItem('guest_ximatar_image');
-    const guestDriveLevel = localStorage.getItem('guest_drive_level');
-    const guestStrongestPillar = localStorage.getItem('guest_strongest_pillar');
-    const guestWeakestPillar = localStorage.getItem('guest_weakest_pillar');
-    const guestStorytelling = localStorage.getItem('guest_ximatar_storytelling');
-    const guestGrowthPath = localStorage.getItem('guest_ximatar_growth_path');
-    const guestAttemptId = localStorage.getItem('current_attempt_id');
+    // Check sessionStorage for guest assessment data (more secure than localStorage)
+    const guestResultId = sessionStorage.getItem('latest_assessment_result_id');
+    const guestPillarScores = sessionStorage.getItem('guest_pillar_scores');
+    const guestXimatar = sessionStorage.getItem('guest_ximatar');
+    const guestXimatarName = sessionStorage.getItem('guest_ximatar_name');
+    const guestXimatarImage = sessionStorage.getItem('guest_ximatar_image');
+    const guestDriveLevel = sessionStorage.getItem('guest_drive_level');
+    const guestStrongestPillar = sessionStorage.getItem('guest_strongest_pillar');
+    const guestWeakestPillar = sessionStorage.getItem('guest_weakest_pillar');
+    const guestStorytelling = sessionStorage.getItem('guest_ximatar_storytelling');
+    const guestGrowthPath = sessionStorage.getItem('guest_ximatar_growth_path');
+    const guestAttemptId = sessionStorage.getItem('current_attempt_id');
 
     if (!guestResultId && !guestPillarScores && !guestXimatar) {
       console.log('No guest assessment data found to sync');
@@ -211,19 +211,19 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
       }
     }
 
-    // Clean up localStorage after successful sync
-    localStorage.removeItem('latest_assessment_result_id');
-    localStorage.removeItem('guest_pillar_scores');
-    localStorage.removeItem('guest_ximatar');
-    localStorage.removeItem('guest_ximatar_name');
-    localStorage.removeItem('guest_ximatar_image');
-    localStorage.removeItem('guest_drive_level');
-    localStorage.removeItem('guest_strongest_pillar');
-    localStorage.removeItem('guest_weakest_pillar');
-    localStorage.removeItem('guest_ximatar_storytelling');
-    localStorage.removeItem('guest_ximatar_growth_path');
-    localStorage.removeItem('guest_assessment_data');
-    localStorage.removeItem('current_attempt_id');
+    // Clean up sessionStorage after successful sync
+    sessionStorage.removeItem('latest_assessment_result_id');
+    sessionStorage.removeItem('guest_pillar_scores');
+    sessionStorage.removeItem('guest_ximatar');
+    sessionStorage.removeItem('guest_ximatar_name');
+    sessionStorage.removeItem('guest_ximatar_image');
+    sessionStorage.removeItem('guest_drive_level');
+    sessionStorage.removeItem('guest_strongest_pillar');
+    sessionStorage.removeItem('guest_weakest_pillar');
+    sessionStorage.removeItem('guest_ximatar_storytelling');
+    sessionStorage.removeItem('guest_ximatar_growth_path');
+    sessionStorage.removeItem('guest_assessment_data');
+    sessionStorage.removeItem('current_attempt_id');
     
     console.log('✅ Assessment sync completed successfully - all data transferred to profile');
     return true;
