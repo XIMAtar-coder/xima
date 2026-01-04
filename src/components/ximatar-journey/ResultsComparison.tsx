@@ -67,9 +67,9 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       const currentLang = (i18n.language || 'it').split('-')[0] as 'it' | 'en' | 'es';
       
-      // Check for guest data first
-      const guestPillarScores = localStorage.getItem('guest_pillar_scores');
-      const guestXimatar = localStorage.getItem('guest_ximatar');
+      // Check for guest data first (use sessionStorage for security)
+      const guestPillarScores = sessionStorage.getItem('guest_pillar_scores');
+      const guestXimatar = sessionStorage.getItem('guest_ximatar');
       
       if (guestPillarScores && !user?.id) {
         const guestScores = JSON.parse(guestPillarScores);
@@ -238,7 +238,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   // Fetch open responses
   useEffect(() => {
     const fetchOpenResponses = async () => {
-      const guestData = localStorage.getItem('guest_assessment_data');
+      const guestData = sessionStorage.getItem('guest_assessment_data');
       if (guestData && !user?.id) {
         const data = JSON.parse(guestData);
         const guestResponses = Object.entries(data.openAnswers || {}).map(([key, answer]) => ({
