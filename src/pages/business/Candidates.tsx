@@ -342,7 +342,6 @@ const BusinessCandidates = () => {
 
       try {
         await supabase.rpc('log_user_activity', {
-          p_user_id: user?.id,
           p_action: 'view_candidate_pool',
           p_context: { count: candidatesWithShortlist.length }
         });

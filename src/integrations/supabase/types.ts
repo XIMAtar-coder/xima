@@ -2631,6 +2631,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      internal_log_activity: {
+        Args: { p_action: string; p_context?: Json; p_user_id: string }
+        Returns: string
+      }
       is_thread_participant: {
         Args: { p_thread_id: string; p_user_id: string }
         Returns: boolean
@@ -2646,7 +2650,7 @@ export type Database = {
         Returns: undefined
       }
       log_user_activity: {
-        Args: { p_action: string; p_context?: Json; p_user_id: string }
+        Args: { p_action: string; p_context?: Json }
         Returns: string
       }
       recompute_matches: { Args: { p_user: string }; Returns: undefined }
