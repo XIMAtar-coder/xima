@@ -1,28 +1,29 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
+import { Upload, ClipboardCheck, Sparkles, Calendar } from 'lucide-react';
 
 const Process = () => {
   const { t } = useTranslation();
   
   const steps = [
     {
-      image: '/ximatars/elephant.png',
+      icon: Upload,
       title: t('process.step1.title'),
       description: t('process.step1.description')
     },
     {
-      image: '/ximatars/owl.png',
+      icon: ClipboardCheck,
       title: t('process.step2.title'),
       description: t('process.step2.description')
     },
     {
-      image: '/ximatars/dolphin.png',
+      icon: Sparkles,
       title: t('process.step3.title'),
       description: t('process.step3.description')
     },
     {
-      image: '/ximatars/fox.png',
+      icon: Calendar,
       title: t('process.step4.title'),
       description: t('process.step4.description')
     }
@@ -31,21 +32,21 @@ const Process = () => {
   return (
     <div className="mb-12">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {steps.map((step, index) => (
-          <Card key={index} className="p-6 text-center hover:shadow-lg transition-shadow group">
-            <div className="w-12 h-12 flex items-center justify-center mx-auto mb-4">
-              <img 
-                src={step.image} 
-                alt={step.title}
-                className="h-10 w-10 rounded-full object-cover bg-muted/40 ring-1 ring-border/40 p-0.5 transition-transform duration-300 group-hover:scale-110"
-              />
-            </div>
-            <h3 className="text-lg font-semibold mb-3">{step.title}</h3>
-            <p className="text-muted-foreground text-sm">{step.description}</p>
-          </Card>
-        ))}
+        {steps.map((step, index) => {
+          const Icon = step.icon;
+          return (
+            <Card key={index} className="p-6 text-center hover:shadow-lg transition-shadow group premium-card">
+              <div className="w-14 h-14 flex items-center justify-center mx-auto mb-4 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 group-hover:border-primary/40 transition-colors">
+                <Icon className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold mb-3 text-foreground">{step.title}</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
 };
+
 export default Process;
