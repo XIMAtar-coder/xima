@@ -1,190 +1,248 @@
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import MainLayout from '../components/layout/MainLayout';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const About = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   
+  const pillars = [
+    { key: 'experience', color: 'from-blue-500 to-blue-600' },
+    { key: 'intelligence', color: 'from-purple-500 to-purple-600' },
+    { key: 'motivation', color: 'from-rose-500 to-rose-600' },
+    { key: 'attitude', color: 'from-emerald-500 to-emerald-600' },
+    { key: 'analysis', color: 'from-amber-500 to-amber-600' },
+  ];
+
+  const mismatches = [
+    t('about.mismatch_1'),
+    t('about.mismatch_2'),
+    t('about.mismatch_3'),
+    t('about.mismatch_4'),
+    t('about.mismatch_5'),
+  ];
+
+  const jobSeekerBenefits = [
+    t('about.job_seekers_1'),
+    t('about.job_seekers_2'),
+    t('about.job_seekers_3'),
+    t('about.job_seekers_4'),
+    t('about.job_seekers_5'),
+  ];
+
+  const employerBenefits = [
+    t('about.employers_1'),
+    t('about.employers_2'),
+    t('about.employers_3'),
+    t('about.employers_4'),
+    t('about.employers_5'),
+  ];
+
   return (
     <MainLayout>
-      <div className="container max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">{t('about.title')}</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+      <div className="container max-w-4xl mx-auto px-4 py-12 md:py-20">
+        {/* Hero Section */}
+        <div className="text-center mb-16 md:mb-20 animate-fade-in">
+          <div 
+            className="h-0.5 w-16 mx-auto rounded-full mb-8"
+            style={{
+              background: 'linear-gradient(90deg, hsl(var(--xima-blue)), hsl(var(--xima-teal)))'
+            }}
+          />
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-foreground leading-tight">
+            {t('about.title')}
+          </h1>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             {t('about.subtitle')}
           </p>
         </div>
         
-        <Card className="shadow-lg border-0 overflow-hidden mb-12">
-          <div className="bg-gradient-to-r from-[#4171d6] to-[#2950a3] py-10 px-6 text-white">
-            <h2 className="text-3xl font-bold mb-4">{t('about.match_problem_title')}</h2>
-            <p className="text-lg">
-              {t('about.match_problem_subtitle')}
-            </p>
-          </div>
-          <CardContent className="p-6">
-            <div className="space-y-6">
-              <p>
+        {/* Problem Section */}
+        <section className="mb-16 md:mb-20">
+          <div className="premium-card rounded-2xl overflow-hidden">
+            <div className="accent-gradient py-8 md:py-10 px-6 md:px-8">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                {t('about.match_problem_title')}
+              </h2>
+              <p className="text-lg text-white/90 leading-relaxed">
+                {t('about.match_problem_subtitle')}
+              </p>
+            </div>
+            <div className="p-6 md:p-8 space-y-6">
+              <p className="text-foreground leading-relaxed text-base md:text-lg">
                 {t('about.match_problem_description')}
               </p>
               
-              <p>
+              <p className="text-muted-foreground leading-relaxed">
                 {t('about.match_leads_to')}
               </p>
               
-              <ul className="list-disc pl-6 space-y-2">
-                <li>{t('about.mismatch_1')}</li>
-                <li>{t('about.mismatch_2')}</li>
-                <li>{t('about.mismatch_3')}</li>
-                <li>{t('about.mismatch_4')}</li>
-                <li>{t('about.mismatch_5')}</li>
+              <ul className="space-y-3 pl-1">
+                {mismatches.map((item, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <span className="mt-1 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary" />
+                    <span className="text-muted-foreground leading-relaxed">{item}</span>
+                  </li>
+                ))}
               </ul>
               
-              <p>
-                {t('about.solution_description')}
-              </p>
+              <div className="pt-2 border-t border-border">
+                <p className="text-foreground leading-relaxed font-medium">
+                  {t('about.solution_description')}
+                </p>
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
         
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold mb-6 text-center">{t('about.approach_title')}</h2>
+        {/* Approach Section */}
+        <section className="mb-16 md:mb-20">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+              {t('about.approach_title')}
+            </h2>
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold">{t('about.five_pillars_title')}</h3>
-              <p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            {/* Five Pillars */}
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold text-foreground">
+                {t('about.five_pillars_title')}
+              </h3>
+              <p className="text-muted-foreground leading-relaxed">
                 {t('about.five_pillars_description')}
               </p>
               
-              <ul className="space-y-4 mt-6">
-                <li className="p-3 bg-blue-50 rounded-lg">
-                  <span className="font-bold text-blue-700">{t('about.experience_pillar')}</span>
-                </li>
-                <li className="p-3 bg-purple-50 rounded-lg">
-                  <span className="font-bold text-purple-700">{t('about.intelligence_pillar')}</span>
-                </li>
-                <li className="p-3 bg-red-50 rounded-lg">
-                  <span className="font-bold text-red-700">{t('about.motivation_pillar')}</span>
-                </li>
-                <li className="p-3 bg-green-50 rounded-lg">
-                  <span className="font-bold text-green-700">{t('about.attitude_pillar')}</span>
-                </li>
-                <li className="p-3 bg-amber-50 rounded-lg">
-                  <span className="font-bold text-amber-700">{t('about.analysis_pillar')}</span>
-                </li>
-              </ul>
+              <div className="space-y-3">
+                {pillars.map((pillar) => (
+                  <div 
+                    key={pillar.key}
+                    className="premium-card p-4 rounded-xl flex items-center gap-3"
+                  >
+                    <div className={`w-2 h-8 rounded-full bg-gradient-to-b ${pillar.color}`} />
+                    <span className="font-semibold text-foreground">
+                      {t(`about.${pillar.key}_pillar`)}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
             
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold">{t('about.ximatar_title')}</h3>
-              <p>
+            {/* Ximatar */}
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold text-foreground">
+                {t('about.ximatar_title')}
+              </h3>
+              <p className="text-muted-foreground leading-relaxed">
                 {t('about.ximatar_description')}
               </p>
               
-              <div className="bg-blue-50 p-4 rounded-lg mt-4">
-                <h4 className="font-medium mb-2">{t('about.why_animals_title')}</h4>
-                <p className="text-sm">
+              <div className="premium-card p-5 rounded-xl border-l-4 border-l-primary">
+                <h4 className="font-semibold text-foreground mb-2">
+                  {t('about.why_animals_title')}
+                </h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {t('about.why_animals_description')}
                 </p>
               </div>
               
-              <div className="mt-4">
-                <h4 className="font-medium mb-2">{t('about.features_title')}</h4>
-                <p>
-                  {t('about.features_description')}
-                </p>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">
+                    {t('about.features_title')}
+                  </h4>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {t('about.features_description')}
+                  </p>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">
+                    {t('about.mentor_matching_title')}
+                  </h4>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {t('about.mentor_matching_description')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Benefits Section */}
+        <section className="mb-16 md:mb-20">
+          <div className="premium-card rounded-2xl p-6 md:p-10">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground text-center mb-10">
+              {t('about.benefits_title')}
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
+              {/* Job Seekers */}
+              <div>
+                <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full accent-gradient flex items-center justify-center">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  {t('about.job_seekers_title')}
+                </h3>
+                <ul className="space-y-4">
+                  {jobSeekerBenefits.map((benefit, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="mt-1.5 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary" />
+                      <span className="text-muted-foreground leading-relaxed">{benefit}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
               
-              <div className="mt-4">
-                <h4 className="font-medium mb-2">{t('about.mentor_matching_title')}</h4>
-                <p>
-                  {t('about.mentor_matching_description')}
-                </p>
+              {/* Employers */}
+              <div>
+                <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full accent-gradient flex items-center justify-center">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  {t('about.employers_title')}
+                </h3>
+                <ul className="space-y-4">
+                  {employerBenefits.map((benefit, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="mt-1.5 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary" />
+                      <span className="text-muted-foreground leading-relaxed">{benefit}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
-        </div>
+        </section>
         
-        <div className="mb-12 bg-gray-50 p-8 rounded-lg">
-          <h2 className="text-3xl font-bold mb-6 text-center">{t('about.benefits_title')}</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold">{t('about.job_seekers_title')}</h3>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2">
-                  <span className="h-5 w-5 rounded-full bg-[#4171d6] text-white flex items-center justify-center text-xs mt-0.5">✓</span>
-                  <span>{t('about.job_seekers_1')}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="h-5 w-5 rounded-full bg-[#4171d6] text-white flex items-center justify-center text-xs mt-0.5">✓</span>
-                  <span>{t('about.job_seekers_2')}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="h-5 w-5 rounded-full bg-[#4171d6] text-white flex items-center justify-center text-xs mt-0.5">✓</span>
-                  <span>{t('about.job_seekers_3')}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="h-5 w-5 rounded-full bg-[#4171d6] text-white flex items-center justify-center text-xs mt-0.5">✓</span>
-                  <span>{t('about.job_seekers_4')}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="h-5 w-5 rounded-full bg-[#4171d6] text-white flex items-center justify-center text-xs mt-0.5">✓</span>
-                  <span>{t('about.job_seekers_5')}</span>
-                </li>
-              </ul>
-            </div>
-            
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold">{t('about.employers_title')}</h3>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2">
-                  <span className="h-5 w-5 rounded-full bg-[#4171d6] text-white flex items-center justify-center text-xs mt-0.5">✓</span>
-                  <span>{t('about.employers_1')}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="h-5 w-5 rounded-full bg-[#4171d6] text-white flex items-center justify-center text-xs mt-0.5">✓</span>
-                  <span>{t('about.employers_2')}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="h-5 w-5 rounded-full bg-[#4171d6] text-white flex items-center justify-center text-xs mt-0.5">✓</span>
-                  <span>{t('about.employers_3')}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="h-5 w-5 rounded-full bg-[#4171d6] text-white flex items-center justify-center text-xs mt-0.5">✓</span>
-                  <span>{t('about.employers_4')}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="h-5 w-5 rounded-full bg-[#4171d6] text-white flex items-center justify-center text-xs mt-0.5">✓</span>
-                  <span>{t('about.employers_5')}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-6">{t('about.ready_title')}</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+        {/* CTA Section */}
+        <section className="text-center py-12 md:py-16">
+          <div 
+            className="h-0.5 w-16 mx-auto rounded-full mb-8"
+            style={{
+              background: 'linear-gradient(90deg, hsl(var(--xima-blue)), hsl(var(--xima-teal)))'
+            }}
+          />
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+            {t('about.ready_title')}
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed">
             {t('about.ready_subtitle')}
           </p>
           
           <Button 
             size="lg"
-            className="bg-[#4171d6] hover:bg-[#2950a3]"
+            className="accent-gradient text-white hover:opacity-90 transition-opacity shadow-lg text-base md:text-lg px-8 py-6 rounded-xl"
             onClick={() => navigate('/register')}
           >
             {t('about.get_started')}
-            <ChevronRight size={18} className="ml-2" />
+            <ChevronRight size={20} className="ml-2" />
           </Button>
-        </div>
+        </section>
       </div>
     </MainLayout>
   );
