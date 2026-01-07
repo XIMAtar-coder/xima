@@ -746,7 +746,9 @@
     "welcome_back": "Welcome back to XIMA.",
     "login_failed": "Login failed",
     "invalid_credentials": "Invalid email or password",
-    "enter_both": "Please enter both email and password"
+    "enter_both": "Please enter both email and password",
+    "or_continue_with": "or continue with email",
+    "continue_with_google": "Continue with Google"
   },
   "register": {
     "title": "Create an account",
@@ -772,7 +774,31 @@
     "registration_success": "Registration successful!",
     "welcome_message": "Welcome to XIMA. You can now access your dashboard.",
     "registration_failed": "Registration failed",
-    "try_again": "Please try again later"
+    "try_again": "Please try again later",
+    "or_continue_with": "or continue with email",
+    "continue_with_google": "Continue with Google",
+    "check_email_title": "Check your email",
+    "check_email_description": "We've sent you a verification link. Please check your inbox."
+  },
+  "verify_email": {
+    "title": "Verify your email",
+    "description": "We've sent a confirmation link to your email. Please verify to continue.",
+    "sent_to": "Verification email sent to:",
+    "resend_button": "Resend verification email",
+    "resend_success": "Email sent!",
+    "resend_failed": "Failed to resend email",
+    "check_inbox": "Please check your inbox and spam folder.",
+    "change_email_button": "Change email address",
+    "new_email": "New email address",
+    "new_email_placeholder": "Enter new email address",
+    "update_email": "Update email",
+    "email_updated": "Email updated!",
+    "verification_sent_new": "A verification link has been sent to your new email address.",
+    "change_failed": "Failed to update email",
+    "logout_button": "Log out",
+    "help_text": "If you don't receive the email within a few minutes, check your spam folder or try a different email address.",
+    "verified_title": "Email verified!",
+    "verified_description": "Your email has been verified. Welcome to XIMA!"
   },
   "not_found": {
     "title": "404",
