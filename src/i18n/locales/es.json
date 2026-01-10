@@ -1360,6 +1360,43 @@
     "cta_title": "¿Listo para Transformar Tu Contratación?",
     "cta_subtitle": "Únete a las empresas líderes que utilizan XIMA para construir equipos excepcionales.",
     "start_free_trial": "Iniciar Prueba Gratuita",
+    "command_center": {
+      "welcome": "Tu Centro de Comando",
+      "subtitle": "Tus próximas acciones y pipeline de un vistazo",
+      "profile_ready": "Perfil Listo",
+      "profile_incomplete": "Perfil Incompleto",
+      "last_generated": "Última generación: {{date}}",
+      "next_actions": "Acciones Rápidas",
+      "attention_needed": "Requiere Atención",
+      "actions": {
+        "create_challenge": "Crear Desafío",
+        "invite_candidates": "Invitar Candidatos",
+        "review_responses": "Revisar Respuestas"
+      },
+      "kpi": {
+        "active_challenges": "Desafíos Activos",
+        "pending_reviews": "Revisiones Pendientes",
+        "pipeline_candidates": "En Pipeline",
+        "shortlisted": "Preseleccionados"
+      },
+      "attention": {
+        "reviews_waiting": "{{count}} respuestas esperando revisión",
+        "challenge_expiring": "{{count}} desafío por expirar",
+        "followup_requested": "{{count}} candidatos solicitaron seguimiento"
+      }
+    },
+    "profile_tools": {
+      "title": "Herramientas de Perfil Empresarial",
+      "generated": "Generado",
+      "last_updated": "Actualizado: {{date}}",
+      "regenerate": "Regenerar",
+      "edit_settings": "Editar Configuración",
+      "generate_desc": "Genera un perfil empresarial con IA desde tu sitio web",
+      "add_website_first": "Añade tu sitio web en configuración para generar un perfil",
+      "generating": "Generando...",
+      "generate_cta": "Generar Perfil",
+      "add_website": "Añadir Sitio Web"
+    },
     "dashboard": {
       "welcome": "¡Bienvenido de Nuevo!",
       "subtitle": "Gestiona tu pipeline de talento y lanza nuevos desafíos",

@@ -1852,6 +1852,43 @@
     "cta_title": "Ready to Transform Your Hiring?",
     "cta_subtitle": "Join leading companies using XIMA to build exceptional teams.",
     "start_free_trial": "Start Free Trial",
+    "command_center": {
+      "welcome": "Your Business Hub",
+      "subtitle": "Your next actions and pipeline at a glance",
+      "profile_ready": "Profile Ready",
+      "profile_incomplete": "Profile Incomplete",
+      "last_generated": "Last generated: {{date}}",
+      "next_actions": "Quick Actions",
+      "attention_needed": "Attention Needed",
+      "actions": {
+        "create_challenge": "Create Challenge",
+        "invite_candidates": "Invite Candidates",
+        "review_responses": "Review Responses"
+      },
+      "kpi": {
+        "active_challenges": "Active Challenges",
+        "pending_reviews": "Pending Reviews",
+        "pipeline_candidates": "In Pipeline",
+        "shortlisted": "Shortlisted"
+      },
+      "attention": {
+        "reviews_waiting": "{{count}} submissions waiting for review",
+        "challenge_expiring": "{{count}} challenge expiring soon",
+        "followup_requested": "{{count}} candidates requested follow-up"
+      }
+    },
+    "profile_tools": {
+      "title": "Company Profile Tools",
+      "generated": "Generated",
+      "last_updated": "Updated: {{date}}",
+      "regenerate": "Regenerate",
+      "edit_settings": "Edit Settings",
+      "generate_desc": "Generate an AI-powered company profile from your website",
+      "add_website_first": "Add your company website in settings to generate a profile",
+      "generating": "Generating...",
+      "generate_cta": "Generate Profile",
+      "add_website": "Add Website"
+    },
     "dashboard": {
       "welcome": "Welcome Back!",
       "subtitle": "Manage your talent pipeline and launch new challenges",
