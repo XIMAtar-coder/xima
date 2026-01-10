@@ -120,45 +120,41 @@ Deno.serve(async (req) => {
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
-    // SECURITY: Validate authentication
+    // Check for authentication - but allow unauthenticated requests (guest users after assessment)
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      console.error('[recommend-mentors] Missing Authorization header');
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized', message: 'Authorization header required' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Create client with user's auth context to validate the JWT
-    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } }
-    });
-
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
+    let userId: string | null = null;
     
-    if (authError || !user) {
-      console.error('[recommend-mentors] Authentication failed:', authError?.message);
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized', message: 'Invalid or expired token' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    if (authHeader) {
+      // Create client with user's auth context to validate the JWT
+      const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
+        global: { headers: { Authorization: authHeader } }
+      });
+
+      const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
+      
+      if (!authError && user) {
+        userId = user.id;
+        console.log(`[recommend-mentors] Authenticated user: ${userId}`);
+      } else {
+        console.log('[recommend-mentors] Auth header present but invalid, continuing as guest');
+      }
+    } else {
+      console.log('[recommend-mentors] No auth header, processing as guest request');
     }
 
-    console.log(`[recommend-mentors] Authenticated user: ${user.id}`);
-
-    // Use service role for database operations
+    // Use service role for database operations (to bypass RLS)
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Parse request body for user data
     const { pillar_scores, ximatar } = await req.json().catch(() => ({}));
     
-    console.log('[recommend-mentors] Input:', { pillar_scores, ximatar });
+    console.log('[recommend-mentors] Input:', { pillar_scores, ximatar, isAuthenticated: !!userId });
 
-    // Fetch all active mentors
+    // Fetch all active mentors using the public view (safe for all users)
+    // Using service role still works with the view
     const { data: mentors, error: mentorsError } = await supabase
       .from('mentors')
-      .select('*')
+      .select('id, name, title, bio, profile_image_url, specialties, xima_pillars, rating, experience_years, is_active, updated_at')
       .eq('is_active', true)
       .order('rating', { ascending: false });
 

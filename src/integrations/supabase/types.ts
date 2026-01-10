@@ -198,6 +198,13 @@ export type Database = {
             referencedRelation: "mentors"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "appointments_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "mentors_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       assessment_answers: {
@@ -1762,6 +1769,13 @@ export type Database = {
             referencedRelation: "mentors"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "mentor_availability_slots_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "mentors_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       mentor_matches: {
@@ -2534,6 +2548,45 @@ export type Database = {
       }
     }
     Views: {
+      mentors_public: {
+        Row: {
+          bio: string | null
+          id: string | null
+          is_active: boolean | null
+          name: string | null
+          profile_image_url: string | null
+          rating: number | null
+          specialties: string[] | null
+          title: string | null
+          updated_at: string | null
+          xima_pillars: string[] | null
+        }
+        Insert: {
+          bio?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          name?: string | null
+          profile_image_url?: string | null
+          rating?: number | null
+          specialties?: string[] | null
+          title?: string | null
+          updated_at?: string | null
+          xima_pillars?: string[] | null
+        }
+        Update: {
+          bio?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          name?: string | null
+          profile_image_url?: string | null
+          rating?: number | null
+          specialties?: string[] | null
+          title?: string | null
+          updated_at?: string | null
+          xima_pillars?: string[] | null
+        }
+        Relationships: []
+      }
       v_dashboard: {
         Row: {
           assessments_completed: number | null
