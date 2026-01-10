@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
+import { useBusinessProfile } from '@/hooks/useBusinessProfile';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Users, Target, CheckCircle, TrendingUp, Plus, Briefcase, Bug } from 'lucide-react';
@@ -49,7 +50,8 @@ const BusinessDashboard = () => {
   });
   const [companyProfile, setCompanyProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
-  const [businessProfile, setBusinessProfile] = useState<any>(null);
+  // Use shared business profile hook for cross-page sync
+  const { businessProfile, isLoading: businessProfileLoading } = useBusinessProfile();
   const [hiringGoalStatus, setHiringGoalStatus] = useState<'none' | 'draft' | 'completed'>('none');
   const [hiringGoalDraftId, setHiringGoalDraftId] = useState<string | null>(null);
   const [hiringGoalLoading, setHiringGoalLoading] = useState(true);
@@ -103,7 +105,6 @@ const BusinessDashboard = () => {
     }
 
     loadCompanyProfile();
-    loadBusinessProfile();
     loadHiringGoalStatus();
     loadActiveChallengesBase();
   }, [isAuthenticated, isBusiness, businessLoading, navigate, toast, t]);
@@ -302,26 +303,6 @@ const BusinessDashboard = () => {
       console.error('Error loading company profile:', error);
     } finally {
       setProfileLoading(false);
-    }
-  };
-
-  const loadBusinessProfile = async () => {
-    if (!user?.id) return;
-    
-    try {
-      const { data, error } = await supabase
-        .from('business_profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      if (error) {
-        console.error('Error loading business profile:', error);
-      } else {
-        setBusinessProfile(data);
-      }
-    } catch (error) {
-      console.error('Error loading business profile:', error);
     }
   };
 

@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { useUser } from '@/context/UserContext';
+import { useBusinessProfile } from '@/hooks/useBusinessProfile';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -29,8 +30,10 @@ const BusinessSettings = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user } = useUser();
+  const { businessProfile: sharedProfile, invalidate: invalidateBusinessProfile, updateOptimistically } = useBusinessProfile();
   const [loading, setLoading] = useState(false);
   const [snapshotLoading, setSnapshotLoading] = useState(false);
+  const [initialized, setInitialized] = useState(false);
   
   // Basic profile data
   const [formData, setFormData] = useState({
@@ -60,56 +63,37 @@ const BusinessSettings = () => {
     snapshot_founded_year: ''
   });
 
+  // Initialize form data from shared profile
   useEffect(() => {
-    loadBusinessProfile();
-  }, []);
-
-  const loadBusinessProfile = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('business_profiles')
-        .select('*')
-        .eq('user_id', user?.id)
-        .maybeSingle();
-
-      if (error && error.code !== 'PGRST116') throw error;
-
-      if (data) {
-        setFormData({
-          companyName: data.company_name || '',
-          website: data.website || '',
-          hrContactEmail: data.hr_contact_email || '',
-          defaultChallengeDuration: data.default_challenge_duration || 7,
-          defaultChallengeDifficulty: data.default_challenge_difficulty || 3
-        });
-
-        setSnapshotData({
-          manual_hq_city: data.manual_hq_city || '',
-          manual_hq_country: data.manual_hq_country || '',
-          manual_industry: data.manual_industry || '',
-          manual_employees_count: data.manual_employees_count?.toString() || '',
-          manual_revenue_range: data.manual_revenue_range || '',
-          manual_founded_year: data.manual_founded_year?.toString() || '',
-          manual_website: data.manual_website || '',
-          snapshot_manual_override: data.snapshot_manual_override || false,
-          // Auto-extracted values
-          snapshot_hq_city: data.snapshot_hq_city || '',
-          snapshot_hq_country: data.snapshot_hq_country || '',
-          snapshot_industry: data.snapshot_industry || '',
-          snapshot_employees_count: data.snapshot_employees_count?.toString() || '',
-          snapshot_revenue_range: data.snapshot_revenue_range || '',
-          snapshot_founded_year: data.snapshot_founded_year?.toString() || ''
-        });
-      }
-    } catch (error) {
-      console.error('Error loading profile:', error);
-      toast({
-        title: t('business_portal.error'),
-        description: t('business_portal.failed_load_profile'),
-        variant: 'destructive'
+    if (sharedProfile && !initialized) {
+      setFormData({
+        companyName: sharedProfile.company_name || '',
+        website: sharedProfile.website || '',
+        hrContactEmail: sharedProfile.hr_contact_email || '',
+        defaultChallengeDuration: sharedProfile.default_challenge_duration || 7,
+        defaultChallengeDifficulty: sharedProfile.default_challenge_difficulty || 3
       });
+
+      setSnapshotData({
+        manual_hq_city: sharedProfile.manual_hq_city || '',
+        manual_hq_country: sharedProfile.manual_hq_country || '',
+        manual_industry: sharedProfile.manual_industry || '',
+        manual_employees_count: sharedProfile.manual_employees_count?.toString() || '',
+        manual_revenue_range: sharedProfile.manual_revenue_range || '',
+        manual_founded_year: sharedProfile.manual_founded_year?.toString() || '',
+        manual_website: sharedProfile.manual_website || '',
+        snapshot_manual_override: sharedProfile.snapshot_manual_override || false,
+        // Auto-extracted values
+        snapshot_hq_city: sharedProfile.snapshot_hq_city || '',
+        snapshot_hq_country: sharedProfile.snapshot_hq_country || '',
+        snapshot_industry: sharedProfile.snapshot_industry || '',
+        snapshot_employees_count: sharedProfile.snapshot_employees_count?.toString() || '',
+        snapshot_revenue_range: sharedProfile.snapshot_revenue_range || '',
+        snapshot_founded_year: sharedProfile.snapshot_founded_year?.toString() || ''
+      });
+      setInitialized(true);
     }
-  };
+  }, [sharedProfile, initialized]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,26 +132,32 @@ const BusinessSettings = () => {
   const handleSaveSnapshot = async () => {
     setSnapshotLoading(true);
 
+    const updates = {
+      manual_hq_city: snapshotData.manual_hq_city || null,
+      manual_hq_country: snapshotData.manual_hq_country || null,
+      manual_industry: snapshotData.manual_industry || null,
+      manual_employees_count: snapshotData.manual_employees_count 
+        ? parseInt(snapshotData.manual_employees_count) 
+        : null,
+      manual_revenue_range: snapshotData.manual_revenue_range || null,
+      manual_founded_year: snapshotData.manual_founded_year 
+        ? parseInt(snapshotData.manual_founded_year) 
+        : null,
+      manual_website: snapshotData.manual_website || null,
+      snapshot_manual_override: snapshotData.snapshot_manual_override
+    };
+
     try {
       const { error } = await supabase
         .from('business_profiles')
-        .update({
-          manual_hq_city: snapshotData.manual_hq_city || null,
-          manual_hq_country: snapshotData.manual_hq_country || null,
-          manual_industry: snapshotData.manual_industry || null,
-          manual_employees_count: snapshotData.manual_employees_count 
-            ? parseInt(snapshotData.manual_employees_count) 
-            : null,
-          manual_revenue_range: snapshotData.manual_revenue_range || null,
-          manual_founded_year: snapshotData.manual_founded_year 
-            ? parseInt(snapshotData.manual_founded_year) 
-            : null,
-          manual_website: snapshotData.manual_website || null,
-          snapshot_manual_override: snapshotData.snapshot_manual_override
-        })
+        .update(updates)
         .eq('user_id', user?.id);
 
       if (error) throw error;
+
+      // Optimistically update & invalidate shared cache so Dashboard updates immediately
+      updateOptimistically(updates);
+      invalidateBusinessProfile();
 
       toast({
         title: t('business_portal.success'),
@@ -188,19 +178,21 @@ const BusinessSettings = () => {
   const handleResetToAI = async () => {
     setSnapshotLoading(true);
 
+    const resetUpdates = {
+      manual_hq_city: null,
+      manual_hq_country: null,
+      manual_industry: null,
+      manual_employees_count: null,
+      manual_revenue_range: null,
+      manual_founded_year: null,
+      manual_website: null,
+      snapshot_manual_override: false
+    };
+
     try {
       const { error } = await supabase
         .from('business_profiles')
-        .update({
-          manual_hq_city: null,
-          manual_hq_country: null,
-          manual_industry: null,
-          manual_employees_count: null,
-          manual_revenue_range: null,
-          manual_founded_year: null,
-          manual_website: null,
-          snapshot_manual_override: false
-        })
+        .update(resetUpdates)
         .eq('user_id', user?.id);
 
       if (error) throw error;
@@ -217,6 +209,10 @@ const BusinessSettings = () => {
         manual_website: '',
         snapshot_manual_override: false
       }));
+
+      // Optimistically update & invalidate shared cache so Dashboard updates immediately
+      updateOptimistically(resetUpdates);
+      invalidateBusinessProfile();
 
       toast({
         title: t('business_portal.success'),
