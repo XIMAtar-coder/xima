@@ -3448,5 +3448,11 @@
       "partial": "Partial",
       "fragmented": "Fragmented"
     }
+  },
+  "auth": {
+    "continue_with_google": "Continue with Google",
+    "continue_with_email": "Continue with email",
+    "save_results_message": "Save your results to continue",
+    "auth_failed": "Authentication Failed"
   }
 }

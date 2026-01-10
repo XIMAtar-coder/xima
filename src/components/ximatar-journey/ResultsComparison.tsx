@@ -15,6 +15,7 @@ import { useXimatarsCatalog } from '@/hooks/useXimatarsCatalog';
 import type { Rubric } from '@/lib/scoring/openResponse';
 import { normalizeXimatarImageUrl } from '@/utils/normalizeXimatarImage';
 import { useToast } from '@/hooks/use-toast';
+import { CandidateGoogleCTA } from '../auth/CandidateGoogleCTA';
 
 interface ResultsComparisonProps {
   onComplete: (step: number) => void;
@@ -658,15 +659,27 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         />
 
         {selectedProfessional && (
-          <div className="text-center mt-8 animate-scale-in">
-            <Button 
-              size="lg"
-              onClick={handleProceedWithSelection}
-              className="px-8 py-4 hover-scale"
-            >
-              {isAuthenticated ? t('results.proceed_to_dashboard') : t('results.register_to_continue')}
-              <ArrowRight size={20} className="ml-2" />
-            </Button>
+          <div className="mt-8 space-y-6 animate-scale-in">
+            {/* Show Google CTA for unauthenticated users */}
+            {!isAuthenticated && (
+              <div className="max-w-sm mx-auto">
+                <CandidateGoogleCTA redirectTo="/ximatar-journey?step=3" />
+              </div>
+            )}
+
+            {/* Show proceed button for authenticated users */}
+            {isAuthenticated && (
+              <div className="text-center">
+                <Button 
+                  size="lg"
+                  onClick={handleProceedWithSelection}
+                  className="px-8 py-4 hover-scale"
+                >
+                  {t('results.proceed_to_dashboard')}
+                  <ArrowRight size={20} className="ml-2" />
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </Card>

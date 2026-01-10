@@ -2232,5 +2232,11 @@
         "processing": "Procesando video..."
       }
     }
+  },
+  "auth": {
+    "continue_with_google": "Continuar con Google",
+    "continue_with_email": "Continuar con email",
+    "save_results_message": "Guarda tus resultados para continuar",
+    "auth_failed": "Autenticación Fallida"
   }
 }
