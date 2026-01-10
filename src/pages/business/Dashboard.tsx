@@ -15,7 +15,7 @@ import { HiringGoalCard } from '@/components/business/HiringGoalCard';
 import { HiringGoalOverviewCard } from '@/components/business/HiringGoalOverviewCard';
 import { ActiveChallengesOverview } from '@/components/business/ActiveChallengesOverview';
 import { BusinessCommandCenter } from '@/components/business/BusinessCommandCenter';
-import { ProfileToolsCard } from '@/components/business/ProfileToolsCard';
+import { CompanyProfileCard } from '@/components/business/CompanyProfileCard';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useChallengeStatsMap } from '@/hooks/useChallengeResponsesData';
 
@@ -664,12 +664,11 @@ const BusinessDashboard = () => {
           );
         })()}
 
-        {/* Profile Tools Card - MOVED DOWN AND COLLAPSED */}
-        <ProfileToolsCard
-          companyProfile={companyProfile}
-          businessProfile={businessProfile}
-          profileLoading={profileLoading}
-          onGenerateProfile={handleGenerateProfile}
+        {/* Company Profile Card - ORIGINAL UI RESTORED */}
+        <CompanyProfileCard
+          profile={companyProfile}
+          loading={profileLoading}
+          onGenerate={handleGenerateProfile}
         />
 
         {/* Candidate Engagement */}
