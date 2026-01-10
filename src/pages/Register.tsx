@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +11,7 @@ import { RegistrationForm } from '../types';
 import { Logo } from '@/components/Logo';
 import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
 import { supabase } from '@/integrations/supabase/client';
+import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -230,6 +230,17 @@ const Register = () => {
                 )}
               </Button>
             </form>
+            
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-[#A3ABB5]/30" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-[#0A0F1C] px-2 text-[#A3ABB5]">{t('auth.or', 'or')}</span>
+              </div>
+            </div>
+            
+            <GoogleAuthButton mode="register" />
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
             <p className="text-sm text-[#A3ABB5] text-center w-full">
