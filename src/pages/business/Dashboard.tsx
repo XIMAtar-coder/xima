@@ -370,54 +370,6 @@ const BusinessDashboard = () => {
     }
   };
 
-  if (loading || businessLoading) {
-    return (
-      <BusinessLayout>
-        <div className="flex justify-center items-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">{t('business.dashboard.loading')}</p>
-          </div>
-        </div>
-      </BusinessLayout>
-    );
-  }
-
-  const statCards = [
-    {
-      title: t('business.dashboard.available_candidates'),
-      value: stats.totalCandidates,
-      icon: <Users size={24} />,
-      color: 'text-primary',
-      bgColor: 'bg-primary/10',
-      link: '/business/candidates'
-    },
-    {
-      title: t('business.dashboard.shortlisted'),
-      value: stats.shortlisted,
-      icon: <CheckCircle size={24} />,
-      color: 'text-green-500',
-      bgColor: 'bg-green-500/10',
-      link: '/business/candidates'
-    },
-    {
-      title: t('business.dashboard.active_challenges'),
-      value: stats.activeChallenges,
-      icon: <Target size={24} />,
-      color: 'text-purple-500',
-      bgColor: 'bg-purple-500/10',
-      link: '/business/challenges'
-    },
-    {
-      title: t('business.dashboard.completed'),
-      value: stats.completedChallenges,
-      icon: <TrendingUp size={24} />,
-      color: 'text-orange-500',
-      bgColor: 'bg-orange-500/10',
-      link: '/business/evaluations'
-    }
-  ];
-
   // Calculate profile completeness - always calculate with safe defaults
   const calculateProfileCompleteness = () => {
     let score = 0;
@@ -474,6 +426,55 @@ const BusinessDashboard = () => {
     
     return items;
   }, [pendingReviewsCount, activeChallengesWithStats, hiringGoalDraftId, t]);
+
+  const statCards = [
+    {
+      title: t('business.dashboard.available_candidates'),
+      value: stats.totalCandidates,
+      icon: <Users size={24} />,
+      color: 'text-primary',
+      bgColor: 'bg-primary/10',
+      link: '/business/candidates'
+    },
+    {
+      title: t('business.dashboard.shortlisted'),
+      value: stats.shortlisted,
+      icon: <CheckCircle size={24} />,
+      color: 'text-green-500',
+      bgColor: 'bg-green-500/10',
+      link: '/business/candidates'
+    },
+    {
+      title: t('business.dashboard.active_challenges'),
+      value: stats.activeChallenges,
+      icon: <Target size={24} />,
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-500/10',
+      link: '/business/challenges'
+    },
+    {
+      title: t('business.dashboard.completed'),
+      value: stats.completedChallenges,
+      icon: <TrendingUp size={24} />,
+      color: 'text-orange-500',
+      bgColor: 'bg-orange-500/10',
+      link: '/business/evaluations'
+    }
+  ];
+
+  // Early return for loading state - AFTER all hooks
+  if (loading || businessLoading) {
+    return (
+      <BusinessLayout>
+        <div className="flex justify-center items-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">{t('business.dashboard.loading')}</p>
+          </div>
+        </div>
+      </BusinessLayout>
+    );
+  }
 
   // DEV LOG: Confirm banner rendering
   console.log('[Dashboard] Profile completeness:', {
