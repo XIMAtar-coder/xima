@@ -23,6 +23,7 @@ export interface Level2SignalsPayload {
   summary: string;
   flags: string[];
   generatedAt?: string;
+  generatedLocale?: string; // Track which language was used
 }
 
 interface Level2Payload {

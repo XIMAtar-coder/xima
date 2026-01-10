@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { 
   Target, 
   Wrench, 
@@ -11,11 +12,16 @@ import {
   XCircle,
   Sparkles,
   Clock,
+  Globe,
+  RefreshCw,
 } from 'lucide-react';
 import type { Level2SignalsPayload } from '@/lib/signals/computeLevel2Signals';
+import { useBusinessLocale } from '@/hooks/useBusinessLocale';
 
 interface Level2InterpretationPanelProps {
   signals: Level2SignalsPayload;
+  onRegenerate?: () => void;
+  isRegenerating?: boolean;
 }
 
 // Status to icon mapping
@@ -44,9 +50,22 @@ const StatusBadge = ({ status }: { status: 'clear' | 'partial' | 'fragmented' })
 /**
  * Displays AI-generated interpretation for Level 2 hard skill submissions.
  * Shows qualitative assessments - NO SCORES.
+ * Includes language mismatch detection with regenerate option.
  */
-export function Level2InterpretationPanel({ signals }: Level2InterpretationPanelProps) {
+export function Level2InterpretationPanel({ signals, onRegenerate, isRegenerating }: Level2InterpretationPanelProps) {
   const { t } = useTranslation();
+  const { locale } = useBusinessLocale();
+
+  // Language names for display
+  const languageNames: Record<string, string> = {
+    en: 'English',
+    it: 'Italiano',
+    es: 'Español',
+  };
+
+  // Check if content was generated in a different language
+  const generatedLocale = signals.generatedLocale || 'en';
+  const hasLanguageMismatch = generatedLocale !== locale;
 
   const signalItems = [
     {
@@ -124,6 +143,30 @@ export function Level2InterpretationPanel({ signals }: Level2InterpretationPanel
             </span>
           )}
         </div>
+        
+        {/* Language mismatch warning */}
+        {hasLanguageMismatch && onRegenerate && (
+          <div className="flex items-center justify-between bg-amber-500/10 border border-amber-500/30 rounded-lg p-2 mt-2">
+            <div className="flex items-center gap-2 text-amber-600 text-xs">
+              <Globe className="h-4 w-4" />
+              <span>{t('business.level2_interpretation.language_mismatch')}</span>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-7 text-xs"
+              onClick={onRegenerate}
+              disabled={isRegenerating}
+            >
+              {isRegenerating ? (
+                <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
+              ) : (
+                <RefreshCw className="h-3 w-3 mr-1" />
+              )}
+              {t('business.level2_interpretation.regenerate_in_language', { language: languageNames[locale] })}
+            </Button>
+          </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Summary */}

@@ -22,6 +22,7 @@ interface Level2SignalsPayload {
   summary: string;
   flags: string[];
   generatedAt: string;
+  generatedLocale: string; // Track which language was used
 }
 
 const LANGUAGE_NAMES: Record<string, string> = {
@@ -50,7 +51,8 @@ serve(async (req) => {
 
   try {
     const { submission_id, locale = 'en' } = await req.json();
-    const langInstruction = getLanguageInstruction(locale);
+    const normalizedLocale = ['en', 'it', 'es'].includes(locale) ? locale : 'en';
+    const langInstruction = getLanguageInstruction(normalizedLocale);
 
     if (!submission_id) {
       return new Response(
@@ -59,7 +61,7 @@ serve(async (req) => {
       );
     }
 
-    console.log('Computing Level 2 signals for submission:', submission_id, 'locale:', locale);
+    console.log('Computing Level 2 signals for submission:', submission_id, 'locale:', normalizedLocale);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -295,6 +297,7 @@ Respond with valid JSON only.`;
         summary: parsed.summary || 'Unable to generate summary.',
         flags: Array.isArray(parsed.flags) ? parsed.flags : [],
         generatedAt: new Date().toISOString(),
+        generatedLocale: normalizedLocale,
       };
     } catch (parseError) {
       console.error("Failed to parse AI response:", aiContent);

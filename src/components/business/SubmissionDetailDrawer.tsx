@@ -525,7 +525,11 @@ export function SubmissionDetailDrawer({
             <div className="space-y-6">
           {/* Level 2 Interpretation Panel - Show for L2 submissions when signals exist */}
           {currentChallengeLevel === 2 && effectiveLevel2Signals && !isGeneratingLevel2 && (
-            <Level2InterpretationPanel signals={effectiveLevel2Signals} />
+            <Level2InterpretationPanel 
+              signals={effectiveLevel2Signals} 
+              onRegenerate={handleGenerateLevel2Signals}
+              isRegenerating={isGeneratingLevel2}
+            />
           )}
           
           {/* Level 2 Loading State - Only show when actively generating AND no signals yet */}
