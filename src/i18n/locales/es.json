@@ -1069,7 +1069,14 @@
     "login_button": "Iniciar Sesión",
     "signup_link": "¿No tienes cuenta? Regístrate",
     "forgot_password": "¿Olvidaste tu contraseña?",
-    "invalid_credentials": "Credenciales inválidas"
+    "invalid_credentials": "Credenciales inválidas",
+    "login_failed": "Error al iniciar sesión"
+  },
+  "auth": {
+    "or": "o",
+    "continue_with_google": "Continuar con Google",
+    "authenticating": "Autenticando...",
+    "syncing_data": "Sincronizando tus datos..."
   },
   "register": {
     "title": "Crear Cuenta",

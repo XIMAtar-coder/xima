@@ -748,6 +748,12 @@
     "invalid_credentials": "Invalid email or password",
     "enter_both": "Please enter both email and password"
   },
+  "auth": {
+    "or": "or",
+    "continue_with_google": "Continue with Google",
+    "authenticating": "Authenticating...",
+    "syncing_data": "Syncing your data..."
+  },
   "register": {
     "title": "Create an account",
     "subtitle": "Join XIMA to discover your professional potential",

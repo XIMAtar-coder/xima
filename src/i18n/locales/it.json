@@ -933,6 +933,12 @@
     "invalid_credentials": "Email o password non validi",
     "enter_both": "Inserisci sia email che password"
   },
+  "auth": {
+    "or": "oppure",
+    "continue_with_google": "Continua con Google",
+    "authenticating": "Autenticazione...",
+    "syncing_data": "Sincronizzazione dei tuoi dati..."
+  },
   "register": {
     "title": "Crea un Account",
     "subtitle": "Unisciti a XIMA per scoprire il tuo potenziale professionale",
