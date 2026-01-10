@@ -21,13 +21,14 @@ import {
 } from 'lucide-react';
 import { 
   resolveCompanySnapshot, 
-  type BusinessProfileWithSnapshot, 
   type CompanyProfileData 
 } from '@/lib/business/resolveCompanySnapshot';
+import { useBusinessProfile } from '@/hooks/useBusinessProfile';
 
 interface BusinessOverviewBannerProps {
   companyProfile: CompanyProfileData | null;
-  businessProfile: BusinessProfileWithSnapshot | null;
+  // businessProfile is now optional - we use the hook directly for real-time sync
+  businessProfile?: any;
 }
 
 // Helper to format large numbers with separators
@@ -173,10 +174,16 @@ const SnapshotField: React.FC<{
 
 export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
   companyProfile,
-  businessProfile
+  businessProfile: propBusinessProfile
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  
+  // Use the shared hook for real-time sync with Settings page
+  const { businessProfile: hookBusinessProfile } = useBusinessProfile();
+  
+  // Prefer hook data (always fresh) over prop data
+  const businessProfile = hookBusinessProfile || propBusinessProfile;
   
   // Resolve snapshot with priority: manual overrides -> auto-extracted -> fallback
   const snapshot = resolveCompanySnapshot(businessProfile, companyProfile);
