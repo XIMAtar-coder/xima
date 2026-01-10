@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { 
   Brain, 
@@ -14,30 +16,18 @@ import {
   TrendingUp,
   Clock,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  Settings
 } from 'lucide-react';
-
-interface CompanyProfileData {
-  summary?: string;
-  values?: string[];
-  ideal_traits?: string[];
-  pillar_vector?: Record<string, number>;
-  operating_style?: string;
-  communication_style?: string;
-  recommended_ximatars?: string[];
-  risk_areas?: string[];
-  website?: string;
-}
-
-interface BusinessProfileData {
-  company_name?: string;
-  website?: string;
-  hr_contact_email?: string;
-}
+import { 
+  resolveCompanySnapshot, 
+  type BusinessProfileWithSnapshot, 
+  type CompanyProfileData 
+} from '@/lib/business/resolveCompanySnapshot';
 
 interface BusinessOverviewBannerProps {
   companyProfile: CompanyProfileData | null;
-  businessProfile: BusinessProfileData | null;
+  businessProfile: BusinessProfileWithSnapshot | null;
 }
 
 // Helper to format large numbers with separators
@@ -186,19 +176,13 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
   businessProfile
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   
-  // Extract data from profiles
-  const website = businessProfile?.website || companyProfile?.website || null;
-  const domain = website ? new URL(website.startsWith('http') ? website : `https://${website}`).hostname.replace('www.', '') : null;
+  // Resolve snapshot with priority: manual overrides -> auto-extracted -> fallback
+  const snapshot = resolveCompanySnapshot(businessProfile, companyProfile);
   
-  // These would ideally come from the profile - using placeholder logic
-  // In a real implementation, the AI profile generation would extract these
-  const operatingStyle = companyProfile?.operating_style || null;
-  const values = companyProfile?.values || [];
-  
-  // Mock employee count - this could be added to company_profiles table later
-  // For now, we show the field but let businesses know to set it
-  const employeeCount: number | null = null; // Would come from profile when available
+  // Check if snapshot is missing critical data
+  const hasMissingData = !snapshot.hq_location && !snapshot.industry && !snapshot.employees_count;
   
   return (
     <Card className="border-border/50 bg-gradient-to-br from-card via-card to-primary/5 overflow-hidden">
@@ -256,14 +240,16 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
           
           {/* Right Column: Company Snapshot */}
           <div className="space-y-4">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <Building2 className="h-5 w-5 text-primary" />
-                {t('business.overview.company_snapshot')}
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                {t('business.overview.snapshot_subtitle')}
-              </p>
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  <Building2 className="h-5 w-5 text-primary" />
+                  {t('business.overview.company_snapshot')}
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {t('business.overview.snapshot_subtitle')}
+                </p>
+              </div>
             </div>
             
             {/* Snapshot Grid */}
@@ -271,32 +257,52 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
               <SnapshotField
                 icon={<MapPin className="h-4 w-4" />}
                 label={t('business.overview.field_location')}
-                value={operatingStyle}
+                value={snapshot.hq_location}
               />
               
               <SnapshotField
                 icon={<Building2 className="h-4 w-4" />}
                 label={t('business.overview.field_industry')}
-                value={values.length > 0 ? values[0] : null}
+                value={snapshot.industry}
               />
               
               <SnapshotField
                 icon={<Users className="h-4 w-4" />}
                 label={t('business.overview.field_employees')}
-                value={employeeCount ? formatNumber(employeeCount) : null}
-                isHighlight={!!employeeCount}
-                employeeCount={employeeCount || undefined}
+                value={snapshot.employees_count ? formatNumber(snapshot.employees_count) : null}
+                isHighlight={!!snapshot.employees_count}
+                employeeCount={snapshot.employees_count || undefined}
               />
               
               <SnapshotField
                 icon={<Globe className="h-4 w-4" />}
                 label={t('business.overview.field_website')}
-                value={domain}
+                value={snapshot.website_domain}
               />
             </div>
             
-            {/* Employee count CTA when missing */}
-            {!employeeCount && (
+            {/* Edit Snapshot CTA when data is missing */}
+            {hasMissingData && (
+              <div className="flex items-center justify-between bg-amber-500/10 border border-amber-500/20 rounded-md p-3">
+                <div className="flex items-start gap-2">
+                  <Settings className="h-4 w-4 mt-0.5 flex-shrink-0 text-amber-500" />
+                  <span className="text-xs text-muted-foreground">
+                    {t('business.overview.edit_snapshot_hint')}
+                  </span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs h-7 text-primary hover:text-primary/80"
+                  onClick={() => navigate('/business/settings#snapshot')}
+                >
+                  {t('business.overview.edit_snapshot_cta')}
+                </Button>
+              </div>
+            )}
+            
+            {/* Employee count CTA when only that is missing */}
+            {!hasMissingData && !snapshot.employees_count && (
               <div className="text-xs text-muted-foreground bg-amber-500/10 border border-amber-500/20 rounded-md p-2 flex items-start gap-2">
                 <Users className="h-3 w-3 mt-0.5 flex-shrink-0 text-amber-500" />
                 <span>{t('business.overview.set_employee_count')}</span>

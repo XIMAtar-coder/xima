@@ -26,6 +26,15 @@ interface CompanyProfile {
     knowledge: number;
   };
   recommended_ximatars: string[];
+  // Structured snapshot fields for Company Snapshot banner
+  snapshot: {
+    hq_city: string | null;
+    hq_country: string | null;
+    industry: string | null;
+    employees_count: number | null;
+    revenue_range: string | null;
+    founded_year: number | null;
+  };
 }
 
 Deno.serve(async (req) => {
@@ -82,7 +91,7 @@ Deno.serve(async (req) => {
 
     console.log('Generated profile:', JSON.stringify(profile, null, 2));
 
-    // Store profile in database
+    // Store profile in database (including snapshot fields)
     const { data, error } = await supabase
       .from('company_profiles')
       .upsert({
@@ -100,6 +109,31 @@ Deno.serve(async (req) => {
       }, { onConflict: 'company_id' })
       .select()
       .single();
+
+    if (error) {
+      console.error('Error storing profile:', error);
+      throw error;
+    }
+
+    // Also update business_profiles with snapshot fields if we have a user context
+    // Try to find the business profile by company_id (which is actually user_id in this context)
+    const { error: snapshotError } = await supabase
+      .from('business_profiles')
+      .update({
+        snapshot_hq_city: profile.snapshot.hq_city,
+        snapshot_hq_country: profile.snapshot.hq_country,
+        snapshot_industry: profile.snapshot.industry,
+        snapshot_employees_count: profile.snapshot.employees_count,
+        snapshot_revenue_range: profile.snapshot.revenue_range,
+        snapshot_founded_year: profile.snapshot.founded_year,
+        snapshot_last_enriched_at: new Date().toISOString()
+      })
+      .eq('user_id', company_id);
+
+    if (snapshotError) {
+      console.warn('Could not update business_profiles snapshot:', snapshotError);
+      // Don't fail the whole operation if this update fails
+    }
 
     if (error) {
       console.error('Error storing profile:', error);
@@ -153,6 +187,9 @@ async function generateCompanyProfile(
   // Determine recommended XIMAtars based on pillar vector
   const recommendedXimatars = determineRecommendedXimatars(pillarVector);
 
+  // Extract snapshot fields from content
+  const snapshot = extractSnapshotFields(companyName, textContent);
+
   return {
     summary: analysis.summary,
     values: analysis.values,
@@ -161,7 +198,133 @@ async function generateCompanyProfile(
     ideal_traits: analysis.ideal_traits,
     risk_areas: analysis.risk_areas,
     pillar_vector: pillarVector,
-    recommended_ximatars: recommendedXimatars
+    recommended_ximatars: recommendedXimatars,
+    snapshot
+  };
+}
+
+/**
+ * Extract structured snapshot fields from website content
+ * This extracts location, industry, employee count, etc.
+ */
+function extractSnapshotFields(companyName: string, content: string): {
+  hq_city: string | null;
+  hq_country: string | null;
+  industry: string | null;
+  employees_count: number | null;
+  revenue_range: string | null;
+  founded_year: number | null;
+} {
+  // Extract industry
+  let industry: string | null = null;
+  if (/technology|software|tech|digital|ai|saas|platform/gi.test(content)) {
+    industry = 'Technology';
+  } else if (/consulting|advisory|professional services/gi.test(content)) {
+    industry = 'Consulting';
+  } else if (/finance|banking|investment|financial/gi.test(content)) {
+    industry = 'Financial Services';
+  } else if (/marketing|advertising|creative|design agency/gi.test(content)) {
+    industry = 'Marketing & Creative';
+  } else if (/manufacturing|industrial|production/gi.test(content)) {
+    industry = 'Manufacturing';
+  } else if (/healthcare|medical|health|pharma/gi.test(content)) {
+    industry = 'Healthcare';
+  } else if (/retail|e-commerce|ecommerce|shopping/gi.test(content)) {
+    industry = 'Retail & E-commerce';
+  } else if (/education|university|school|learning/gi.test(content)) {
+    industry = 'Education';
+  } else if (/real estate|property|realty/gi.test(content)) {
+    industry = 'Real Estate';
+  }
+
+  // Try to extract employee count from common patterns
+  let employees_count: number | null = null;
+  const employeePatterns = [
+    /(\d{1,3}(?:,\d{3})*|\d+)\s*(?:\+\s*)?employees/gi,
+    /team of (\d{1,3}(?:,\d{3})*|\d+)/gi,
+    /(\d{1,3}(?:,\d{3})*|\d+)\s*team members/gi,
+    /over (\d{1,3}(?:,\d{3})*|\d+) people/gi,
+    /(\d{1,3}(?:,\d{3})*|\d+)\s*professionals/gi,
+  ];
+  
+  for (const pattern of employeePatterns) {
+    const match = pattern.exec(content);
+    if (match) {
+      const numStr = match[1].replace(/,/g, '');
+      const num = parseInt(numStr, 10);
+      if (num > 0 && num < 1000000) {
+        employees_count = num;
+        break;
+      }
+    }
+  }
+
+  // Try to extract founded year
+  let founded_year: number | null = null;
+  const foundedPatterns = [
+    /founded\s*(?:in\s*)?(\d{4})/gi,
+    /established\s*(?:in\s*)?(\d{4})/gi,
+    /since\s+(\d{4})/gi,
+    /started\s*(?:in\s*)?(\d{4})/gi,
+  ];
+  
+  for (const pattern of foundedPatterns) {
+    const match = pattern.exec(content);
+    if (match) {
+      const year = parseInt(match[1], 10);
+      if (year >= 1800 && year <= new Date().getFullYear()) {
+        founded_year = year;
+        break;
+      }
+    }
+  }
+
+  // Try to extract HQ location from common patterns
+  let hq_city: string | null = null;
+  let hq_country: string | null = null;
+  
+  // Common location patterns
+  const locationPatterns = [
+    /headquarters?\s*(?:in|:)\s*([A-Z][a-zA-Z\s]+),?\s*([A-Z][a-zA-Z\s]+)?/gi,
+    /based\s*in\s*([A-Z][a-zA-Z\s]+),?\s*([A-Z][a-zA-Z\s]+)?/gi,
+    /located\s*in\s*([A-Z][a-zA-Z\s]+),?\s*([A-Z][a-zA-Z\s]+)?/gi,
+  ];
+  
+  for (const pattern of locationPatterns) {
+    const match = pattern.exec(content);
+    if (match) {
+      hq_city = match[1]?.trim() || null;
+      hq_country = match[2]?.trim() || null;
+      if (hq_city) break;
+    }
+  }
+
+  // Try to extract revenue range (less common, usually not on websites)
+  let revenue_range: string | null = null;
+  const revenuePatterns = [
+    /revenue\s*(?:of\s*)?\$?(\d+(?:\.\d+)?)\s*([BMK])/gi,
+    /\$(\d+(?:\.\d+)?)\s*([BMK])\s*(?:revenue|turnover)/gi,
+  ];
+  
+  for (const pattern of revenuePatterns) {
+    const match = pattern.exec(content);
+    if (match) {
+      const num = match[1];
+      const unit = match[2].toUpperCase();
+      revenue_range = `$${num}${unit}`;
+      break;
+    }
+  }
+
+  console.log('Extracted snapshot:', { industry, employees_count, founded_year, hq_city, hq_country, revenue_range });
+
+  return {
+    hq_city,
+    hq_country,
+    industry,
+    employees_count,
+    revenue_range,
+    founded_year,
   };
 }
 
