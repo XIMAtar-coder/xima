@@ -43,74 +43,37 @@ export default function FeaturedProfessionals({
   const { i18n, t } = useTranslation();
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
   const locale = (i18n.language || 'it').slice(0, 2) as 'it' | 'en' | 'es';
 
-  useEffect(() => {
-    const fetchProfessionals = async () => {
-      try {
-        console.log('[FeaturedProfessionals] Fetching recommendations with:', { pillarScores, ximatar });
-        
-        // Call the recommend-mentors edge function
-        const { data, error } = await supabase.functions.invoke('recommend-mentors', {
-          body: { 
-            pillar_scores: pillarScores || [],
-            ximatar: ximatar || null
-          }
-        });
-
-        if (error) {
-          console.error('[FeaturedProfessionals] Error from edge function:', error);
-          // Fallback to direct query
-          await fetchDirectFromDatabase();
-          return;
+  const fetchProfessionals = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      console.log('[FeaturedProfessionals] Fetching recommendations with:', { pillarScores, ximatar });
+      
+      // Call the recommend-mentors edge function
+      const { data, error: fnError } = await supabase.functions.invoke('recommend-mentors', {
+        body: { 
+          pillar_scores: pillarScores || [],
+          ximatar: ximatar || null
         }
-        
-        console.log('[FeaturedProfessionals] Recommendations received:', data);
-        
-        if (data?.recommendations && data.recommendations.length > 0) {
-          const mapped = data.recommendations.map((m: any) => ({
-            id: m.id,
-            full_name: m.name || 'Unknown',
-            title: m.title || '',
-            linkedin_url: '',
-            avatar_path: m.profile_image_url,
-            locale_bio: { en: m.bio || '', it: m.bio || '', es: m.bio || '' },
-            expertise_tags: m.specialties || [],
-            compatibility_score: m.compatibility_score || 85,
-            xima_pillars: m.xima_pillars || [],
-            match_reasons: m.match_reasons || [],
-            updated_at: m.updated_at
-          }));
-          setProfessionals(mapped);
-        } else {
-          // Fallback to direct query if no recommendations
-          await fetchDirectFromDatabase();
-        }
-      } catch (error) {
-        console.error('[FeaturedProfessionals] Error:', error);
-        await fetchDirectFromDatabase();
-      } finally {
-        setLoading(false);
-      }
-    };
+      });
 
-    const fetchDirectFromDatabase = async () => {
-      console.log('[FeaturedProfessionals] Falling back to direct database query');
-      const { data, error } = await supabase
-        .from('mentors')
-        .select('id, name, title, bio, profile_image_url, specialties, xima_pillars, rating, updated_at')
-        .eq('is_active', true)
-        .order('rating', { ascending: false });
-
-      if (error) {
-        console.error('[FeaturedProfessionals] Error fetching mentors:', error);
+      if (fnError) {
+        console.error('[FeaturedProfessionals] Error from edge function:', fnError);
+        // Fallback to public view query
+        await fetchFromPublicView();
         return;
       }
       
-      if (data && data.length > 0) {
-        const mapped = data.map((m: any) => ({
+      console.log('[FeaturedProfessionals] Recommendations received:', data);
+      
+      if (data?.recommendations && data.recommendations.length > 0) {
+        const mapped = data.recommendations.map((m: any) => ({
           id: m.id,
           full_name: m.name || 'Unknown',
           title: m.title || '',
@@ -118,15 +81,61 @@ export default function FeaturedProfessionals({
           avatar_path: m.profile_image_url,
           locale_bio: { en: m.bio || '', it: m.bio || '', es: m.bio || '' },
           expertise_tags: m.specialties || [],
-          compatibility_score: m.rating ? Math.round(m.rating * 20) : 85,
+          compatibility_score: m.compatibility_score || 85,
           xima_pillars: m.xima_pillars || [],
-          match_reasons: [],
+          match_reasons: m.match_reasons || [],
           updated_at: m.updated_at
         }));
         setProfessionals(mapped);
+      } else {
+        // Fallback to public view if no recommendations
+        await fetchFromPublicView();
       }
-    };
+    } catch (err) {
+      console.error('[FeaturedProfessionals] Error:', err);
+      await fetchFromPublicView();
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const fetchFromPublicView = async () => {
+    console.log('[FeaturedProfessionals] Fetching from mentors_public view');
+    
+    // Use the public view that is accessible to both anon and authenticated users
+    const { data, error: viewError } = await supabase
+      .from('mentors_public')
+      .select('id, name, title, bio, profile_image_url, specialties, xima_pillars, rating, updated_at')
+      .order('rating', { ascending: false });
+
+    if (viewError) {
+      console.error('[FeaturedProfessionals] Error fetching from mentors_public:', viewError);
+      setError(t('mentors.fetch_error', 'Unable to load mentors. Please try again.'));
+      return;
+    }
+    
+    if (data && data.length > 0) {
+      const mapped = data.map((m: any) => ({
+        id: m.id,
+        full_name: m.name || 'Unknown',
+        title: m.title || '',
+        linkedin_url: '',
+        avatar_path: m.profile_image_url,
+        locale_bio: { en: m.bio || '', it: m.bio || '', es: m.bio || '' },
+        expertise_tags: m.specialties || [],
+        compatibility_score: m.rating ? Math.round(m.rating * 20) : 85,
+        xima_pillars: m.xima_pillars || [],
+        match_reasons: [],
+        updated_at: m.updated_at
+      }));
+      setProfessionals(mapped);
+    } else {
+      console.log('[FeaturedProfessionals] No mentors found in public view');
+      setError(t('mentors.no_mentors', 'No mentors available at the moment.'));
+    }
+  };
+
+  useEffect(() => {
     fetchProfessionals();
   }, [pillarScores, ximatar]);
 
@@ -140,6 +149,24 @@ export default function FeaturedProfessionals({
             <div className="h-3 bg-muted rounded" />
           </Card>
         ))}
+      </div>
+    );
+  }
+
+  // Show error or empty state with retry button
+  if (error || professionals.length === 0) {
+    return (
+      <div className="text-center py-12 space-y-4">
+        <div className="text-muted-foreground">
+          {error || t('mentors.no_mentors', 'No mentors available at the moment.')}
+        </div>
+        <Button 
+          variant="outline" 
+          onClick={() => fetchProfessionals()}
+          className="gap-2"
+        >
+          {t('common.retry', 'Retry')}
+        </Button>
       </div>
     );
   }
