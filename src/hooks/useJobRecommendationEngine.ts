@@ -75,7 +75,13 @@ export const useJobRecommendationEngine = () => {
       }
     } catch (err: any) {
       console.error('Error generating recommendations:', err);
-      setError(err.message || 'Failed to generate recommendations');
+      // Handle auth errors gracefully - don't show error for expired sessions
+      if (err.message?.includes('401') || err.message?.includes('Unauthorized')) {
+        setRecommendations([]);
+        setError(null); // Silently fail on auth issues
+      } else {
+        setError(err.message || 'Failed to generate recommendations');
+      }
     } finally {
       setLoading(false);
     }
