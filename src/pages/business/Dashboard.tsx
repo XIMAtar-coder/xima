@@ -8,14 +8,14 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, Target, CheckCircle, TrendingUp, Plus, ArrowRight, Briefcase, AlertCircle, Bug } from 'lucide-react';
-import { Progress } from '@/components/ui/progress';
+import { Users, Target, CheckCircle, TrendingUp, Plus, Briefcase, Bug } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { CandidateEngagement } from '@/components/business/CandidateEngagement';
-import { CompanyProfileCard } from '@/components/business/CompanyProfileCard';
 import { HiringGoalCard } from '@/components/business/HiringGoalCard';
 import { HiringGoalOverviewCard } from '@/components/business/HiringGoalOverviewCard';
 import { ActiveChallengesOverview } from '@/components/business/ActiveChallengesOverview';
+import { BusinessCommandCenter } from '@/components/business/BusinessCommandCenter';
+import { ProfileToolsCard } from '@/components/business/ProfileToolsCard';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useChallengeStatsMap } from '@/hooks/useChallengeResponsesData';
 
@@ -433,8 +433,50 @@ const BusinessDashboard = () => {
   
   const profileCompleteness = calculateProfileCompleteness();
 
+  // Compute pending reviews count from active challenges stats
+  const pendingReviewsCount = useMemo(() => {
+    return activeChallengesWithStats.reduce((sum, c) => sum + c.responses_count, 0);
+  }, [activeChallengesWithStats]);
+
+  // Compute candidates in pipeline (unique invited)
+  const candidatesInPipelineCount = useMemo(() => {
+    return activeChallengesWithStats.reduce((sum, c) => sum + c.invited_count, 0);
+  }, [activeChallengesWithStats]);
+
+  // Build attention items
+  const attentionItems = useMemo(() => {
+    const items: { type: 'review' | 'expiring' | 'followup'; count: number; label: string; link: string }[] = [];
+    
+    if (pendingReviewsCount > 0) {
+      items.push({
+        type: 'review',
+        count: pendingReviewsCount,
+        label: t('business.command_center.attention.reviews_waiting', { count: pendingReviewsCount }),
+        link: hiringGoalDraftId ? `/business/goals/${hiringGoalDraftId}/challenges` : '/business/challenges'
+      });
+    }
+    
+    // Check for expiring challenges
+    const expiringChallenges = activeChallengesWithStats.filter(c => {
+      if (!c.end_at) return false;
+      const daysUntilEnd = (new Date(c.end_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+      return daysUntilEnd <= 3 && daysUntilEnd > 0;
+    });
+    
+    if (expiringChallenges.length > 0) {
+      items.push({
+        type: 'expiring',
+        count: expiringChallenges.length,
+        label: t('business.command_center.attention.challenge_expiring', { count: expiringChallenges.length }),
+        link: '/business/challenges'
+      });
+    }
+    
+    return items;
+  }, [pendingReviewsCount, activeChallengesWithStats, hiringGoalDraftId, t]);
+
   // DEV LOG: Confirm banner rendering
-  console.log('[Dashboard] Profile completeness banner rendering:', {
+  console.log('[Dashboard] Profile completeness:', {
     percentage: profileCompleteness.percentage,
     businessProfile: !!businessProfile,
     companyProfile: !!companyProfile,
@@ -444,65 +486,47 @@ const BusinessDashboard = () => {
   return (
     <BusinessLayout>
       <div className="space-y-8">
-         {/* Header */}
-        <div>
-          <h1 className="text-4xl font-bold text-foreground mb-2">{t('business.dashboard.welcome')}</h1>
-          <p className="text-muted-foreground">
-            {t('business.dashboard.subtitle')}
-          </p>
-        </div>
+        {/* Command Center - TOP OF DASHBOARD */}
+        <BusinessCommandCenter
+          companyName={businessProfile?.company_name || null}
+          profileStatus={profileLoading ? 'loading' : (profileCompleteness.percentage === 100 ? 'ready' : 'incomplete')}
+          lastGenerated={companyProfile?.updated_at || null}
+          stats={{
+            activeChallenges: stats.activeChallenges,
+            pendingReviews: pendingReviewsCount,
+            candidatesInPipeline: candidatesInPipelineCount,
+            shortlisted: stats.shortlisted
+          }}
+          attentionItems={attentionItems}
+          loading={loading || statsLoading}
+          hiringGoalId={hiringGoalDraftId}
+        />
 
-        {/* Profile Completeness Banner - ALWAYS VISIBLE */}
-        <Card className={profileCompleteness.percentage === 100 ? "border-green-500/50 bg-green-500/5" : "border-amber-500/50 bg-amber-500/5"}>
-          <CardContent className="p-4">
-            <div className="flex items-start gap-4">
-              <div className={`p-2 rounded-full ${profileCompleteness.percentage === 100 ? 'bg-green-500/20' : 'bg-amber-500/20'}`}>
-                {profileCompleteness.percentage === 100 ? (
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                ) : (
-                  <AlertCircle className="h-5 w-5 text-amber-500" />
-                )}
+        {/* Active Challenges Overview - Operational Activity Priority */}
+        <ActiveChallengesOverview 
+          challenges={activeChallengesWithStats} 
+          loading={activeChallengesLoading || statsLoading} 
+        />
+
+        {/* DEV Debug Panel for Challenge Stats */}
+        {isDev && activeChallengesBase.length > 0 && (
+          <Card className="border-dashed border-yellow-500/50 bg-yellow-500/5">
+            <CardContent className="py-3">
+              <div className="flex items-center gap-2 text-xs font-mono text-yellow-600 flex-wrap">
+                <Bug className="h-3 w-3" />
+                <span>DEV Challenge Stats:</span>
+                {activeChallengesBase.slice(0, 3).map(c => {
+                  const s = statsDebug[c.id];
+                  return (
+                    <span key={c.id} className="bg-yellow-500/10 px-1 rounded">
+                      {c.title.slice(0, 15)}... inv={s?.invCount || 0} sub={s?.subCount || 0}
+                    </span>
+                  );
+                })}
               </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-foreground mb-1">
-                  {profileCompleteness.percentage === 100 
-                    ? t('business.dashboard.profile_complete_title')
-                    : t('business.dashboard.complete_profile_title')}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  {profileCompleteness.percentage === 100 
-                    ? t('business.dashboard.profile_complete_desc')
-                    : t('business.dashboard.complete_profile_desc')}
-                </p>
-                <div className="flex items-center gap-4 mb-3">
-                  <Progress value={profileCompleteness.percentage} className="flex-1 h-2" />
-                  <span className="text-sm font-medium text-foreground">
-                    {profileCompleteness.percentage}%
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                  <span className={businessProfile?.company_name ? 'text-green-500' : ''}>
-                    {businessProfile?.company_name ? '✓' : '○'} {t('business.dashboard.company_name')}
-                  </span>
-                  <span className={businessProfile?.website ? 'text-green-500' : ''}>
-                    {businessProfile?.website ? '✓' : '○'} {t('business.dashboard.website')}
-                  </span>
-                  <span className={businessProfile?.hr_contact_email ? 'text-green-500' : ''}>
-                    {businessProfile?.hr_contact_email ? '✓' : '○'} {t('business.dashboard.hr_contact')}
-                  </span>
-                  <span className={companyProfile ? 'text-green-500' : ''}>
-                    {companyProfile ? '✓' : '○'} {t('business.dashboard.ai_profile')}
-                  </span>
-                </div>
-              </div>
-              <Link to="/business/settings">
-                <Button variant="outline" size="sm" className="shrink-0">
-                  {t('business.dashboard.edit_profile')}
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Hiring Goal Card - Show for first-time (none) or draft state */}
         {!hiringGoalLoading && hiringGoalStatus !== 'completed' && (
@@ -543,14 +567,12 @@ const BusinessDashboard = () => {
                       variant="outline" 
                       onClick={async () => {
                         console.log('[Dashboard] Edit Goal clicked, updating status to draft...');
-                        // Update DB row to draft status
                         if (hiringGoalDraftId) {
                           await supabase
                             .from('hiring_goal_drafts')
                             .update({ status: 'draft' })
                             .eq('id', hiringGoalDraftId);
                         }
-                        // Refetch to get updated state
                         await loadHiringGoalStatus();
                       }}
                     >
@@ -559,7 +581,6 @@ const BusinessDashboard = () => {
                   </div>
                 </div>
               </div>
-              {/* Dev logging - status indicator */}
               {process.env.NODE_ENV === 'development' && (
                 <div className="mt-4 pt-4 border-t border-border/50 text-xs text-muted-foreground font-mono">
                   [DEV] draftId: {hiringGoalDraftId || 'null'} | status: {hiringGoalStatus}
@@ -574,32 +595,6 @@ const BusinessDashboard = () => {
           <div className="text-xs text-muted-foreground font-mono bg-muted/50 p-2 rounded">
             [DEV] Hiring Goal: draftId={hiringGoalDraftId || 'null'} | status={hiringGoalStatus}
           </div>
-        )}
-
-        {/* Active Challenges Overview - Operational Activity Priority */}
-        <ActiveChallengesOverview 
-          challenges={activeChallengesWithStats} 
-          loading={activeChallengesLoading || statsLoading} 
-        />
-
-        {/* DEV Debug Panel for Challenge Stats */}
-        {isDev && activeChallengesBase.length > 0 && (
-          <Card className="border-dashed border-yellow-500/50 bg-yellow-500/5">
-            <CardContent className="py-3">
-              <div className="flex items-center gap-2 text-xs font-mono text-yellow-600 flex-wrap">
-                <Bug className="h-3 w-3" />
-                <span>DEV Challenge Stats:</span>
-                {activeChallengesBase.slice(0, 3).map(c => {
-                  const s = statsDebug[c.id];
-                  return (
-                    <span key={c.id} className="bg-yellow-500/10 px-1 rounded">
-                      {c.title.slice(0, 15)}... inv={s?.invCount || 0} sub={s?.subCount || 0}
-                    </span>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
         )}
 
         {/* Hiring Goals Portfolio - ONLY ACTIVE GOALS */}
@@ -668,102 +663,13 @@ const BusinessDashboard = () => {
           );
         })()}
 
-        {/* Company Profile Section */}
-        <CompanyProfileCard
-          profile={companyProfile}
-          loading={profileLoading}
-          onGenerate={handleGenerateProfile}
+        {/* Profile Tools Card - MOVED DOWN AND COLLAPSED */}
+        <ProfileToolsCard
+          companyProfile={companyProfile}
+          businessProfile={businessProfile}
+          profileLoading={profileLoading}
+          onGenerateProfile={handleGenerateProfile}
         />
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {statCards.map((stat, index) => (
-            <Card
-              key={index}
-              className="bg-gradient-to-br from-card to-card/80 border-primary/20 hover:border-primary/40 transition-all hover:scale-105"
-            >
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`p-3 rounded-lg ${stat.bgColor}`}>
-                    <div className={stat.color}>{stat.icon}</div>
-                  </div>
-                  <Link to={stat.link}>
-                    <Button variant="ghost" size="icon" className="hover:bg-primary/10">
-                      <ArrowRight size={18} className="text-muted-foreground" />
-                    </Button>
-                  </Link>
-                </div>
-                <h3 className="text-3xl font-bold text-foreground mb-1">{stat.value}</h3>
-                <p className="text-sm text-muted-foreground">{stat.title}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="bg-gradient-to-br from-card to-card/80 border-primary/20">
-            <CardHeader>
-              <CardTitle className="text-foreground">{t('business.dashboard.find_talent_title')}</CardTitle>
-              <CardDescription className="text-muted-foreground">
-                {t('business.dashboard.find_talent_desc')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link to="/business/candidates">
-                <Button className="w-full bg-primary hover:bg-primary/90">
-                  <Users size={18} className="mr-2" />
-                  {t('business.dashboard.browse_candidates')}
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-card to-card/80 border-primary/20">
-            <CardHeader>
-              <CardTitle className="text-foreground">{t('business.dashboard.launch_challenge_title')}</CardTitle>
-              <CardDescription className="text-muted-foreground">
-                {t('business.dashboard.launch_challenge_desc')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link to="/business/challenges/new">
-                <Button className="w-full bg-gradient-to-r from-purple-500 to-primary hover:opacity-90">
-                  <Plus size={18} className="mr-2" />
-                  {t('business.dashboard.create_challenge')}
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Recent Activity */}
-        <Card className="bg-gradient-to-br from-card to-card/80 border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-foreground">{t('business.dashboard.getting_started')}</CardTitle>
-            <CardDescription className="text-muted-foreground">
-              {t('business.dashboard.getting_started_desc')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/10 border border-primary/20">
-              <CheckCircle className="text-green-500" size={20} />
-              <span className="text-foreground">{t('business.dashboard.account_created')}</span>
-            </div>
-            <Link to="/business/candidates">
-              <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all cursor-pointer">
-                <div className="w-5 h-5 rounded-full border-2 border-muted-foreground" />
-                <span className="text-muted-foreground">{t('business.dashboard.browse_shortlist')}</span>
-              </div>
-            </Link>
-            <Link to="/business/challenges/new">
-              <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all cursor-pointer">
-                <div className="w-5 h-5 rounded-full border-2 border-muted-foreground" />
-                <span className="text-muted-foreground">{t('business.dashboard.create_first_challenge')}</span>
-              </div>
-            </Link>
-          </CardContent>
-        </Card>
 
         {/* Candidate Engagement */}
         <div>
