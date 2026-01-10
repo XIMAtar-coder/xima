@@ -5,11 +5,38 @@ import MainLayout from '../components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChevronRight, Users, Target, BarChart3, Award } from 'lucide-react';
+import { useUser } from '@/context/UserContext';
+import { useBusinessRole } from '@/hooks/useBusinessRole';
+import BusinessLayout from '@/components/business/BusinessLayout';
+import { BusinessCommandCenter } from '@/components/business/BusinessCommandCenter';
 
 const Business = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { isAuthenticated } = useUser();
+  const { isBusiness, loading: businessLoading } = useBusinessRole();
 
+  // Show loading state while checking auth
+  if (businessLoading) {
+    return (
+      <MainLayout>
+        <div className="flex justify-center items-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto"></div>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  // Logged-in business user: show Command Center
+  if (isAuthenticated && isBusiness) {
+    return (
+      <BusinessLayout>
+        <BusinessCommandCenter />
+      </BusinessLayout>
+    );
+  }
+
+  // Logged-out or non-business user: show marketing page
   const features = [
     {
       icon: <Users className="w-8 h-8" />,
