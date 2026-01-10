@@ -3237,11 +3237,5 @@
       "partial": "Parziale",
       "fragmented": "Frammentato"
     }
-  },
-  "auth": {
-    "continue_with_google": "Continua con Google",
-    "continue_with_email": "Continua con email",
-    "save_results_message": "Salva i tuoi risultati per continuare",
-    "auth_failed": "Autenticazione Fallita"
   }
 }
