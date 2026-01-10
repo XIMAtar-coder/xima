@@ -58,6 +58,7 @@ import ChallengeCompletion from "./pages/candidate/ChallengeCompletion";
 import ChallengeFollowup from "./pages/candidate/ChallengeFollowup";
 import StandingVideoSession from "./pages/candidate/StandingVideoSession";
 import EligibilityReview from "./pages/admin/EligibilityReview";
+import AuthCallback from "./pages/AuthCallback";
 
 const queryClient = new QueryClient();
 
@@ -83,6 +84,7 @@ const AppContent = () => {
           <Route path="/business" element={<Business />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/ximatar-journey" element={<XimatarJourney />} />

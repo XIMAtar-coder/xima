@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '../context/UserContext';
+import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -131,11 +132,18 @@ const Login = () => {
                   t('login.login_button')
                 )}
               </Button>
-              
-              <p className="text-center text-sm text-[#A3ABB5] font-body pt-2">
-                Matching Quality in Jobs
-              </p>
             </form>
+            
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-[#2A2F3E]" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-[#0A0F1C] px-2 text-[#A3ABB5]">{t('auth.or', 'or')}</span>
+              </div>
+            </div>
+            
+            <GoogleAuthButton mode="login" />
           </CardContent>
           <CardFooter className="flex justify-center">
             <p className="text-sm text-[#A3ABB5]">
