@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import MainLayout from '../components/layout/MainLayout';
@@ -8,34 +8,22 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '../context/UserContext';
-import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
-import { Separator } from '@/components/ui/separator';
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { signIn, isAuthenticated, session } = useUser();
+  const { signIn, isAuthenticated } = useUser();
   const { t } = useTranslation();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  useEffect(() => {
-    if (isAuthenticated && session?.user) {
-      // Check if email is verified
-      const isVerified = session.user.email_confirmed_at || session.user.confirmed_at;
-      
-      if (!isVerified) {
-        navigate('/candidate/verify-email');
-      } else {
-        // Get redirect destination or default to profile
-        const redirectTo = sessionStorage.getItem('auth_redirect') || '/profile';
-        sessionStorage.removeItem('auth_redirect');
-        navigate(redirectTo);
-      }
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/profile');
     }
-  }, [isAuthenticated, session, navigate]);
+  }, [isAuthenticated, navigate]);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +53,7 @@ const Login = () => {
           title: t('login.login_success'),
           description: t('login.welcome_back')
         });
-        // Navigation handled in useEffect based on verification status
+        navigate('/profile');
       }
     } catch (error) {
       toast({
@@ -95,23 +83,7 @@ const Login = () => {
               {t('login.subtitle')}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Google OAuth Button */}
-            <GoogleAuthButton mode="login" />
-            
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <Separator className="w-full bg-[#2A2F3E]" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-[#0A0F1C] px-2 text-[#A3ABB5]">
-                  {t('login.or_continue_with')}
-                </span>
-              </div>
-            </div>
-            
-            {/* Email/Password Form */}
+          <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-[#A3ABB5]">{t('login.email')}</Label>
@@ -131,7 +103,6 @@ const Login = () => {
                   <Button 
                     variant="link" 
                     className="p-0 h-auto text-xs text-[#3A9FFF] hover:text-[#5AB4FF]"
-                    type="button"
                   >
                     {t('login.forgot_password')}
                   </Button>

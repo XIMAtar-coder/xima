@@ -931,9 +931,7 @@
     "welcome_back": "Bentornato su XIMA.",
     "login_failed": "Accesso fallito",
     "invalid_credentials": "Email o password non validi",
-    "enter_both": "Inserisci sia email che password",
-    "or_continue_with": "oppure continua con email",
-    "continue_with_google": "Continua con Google"
+    "enter_both": "Inserisci sia email che password"
   },
   "register": {
     "title": "Crea un Account",
@@ -960,31 +958,7 @@
     "welcome_message": "Benvenuto su XIMA. Ora puoi accedere alla tua dashboard.",
     "assessment_synced": "I dati della tua valutazione sono stati salvati nel tuo profilo",
     "registration_failed": "Registrazione fallita",
-    "try_again": "Per favore riprova più tardi",
-    "or_continue_with": "oppure continua con email",
-    "continue_with_google": "Continua con Google",
-    "check_email_title": "Controlla la tua email",
-    "check_email_description": "Ti abbiamo inviato un link di verifica. Controlla la tua casella di posta."
-  },
-  "verify_email": {
-    "title": "Verifica la tua email",
-    "description": "Ti abbiamo inviato un link di conferma. Verifica per continuare.",
-    "sent_to": "Email di verifica inviata a:",
-    "resend_button": "Reinvia email di verifica",
-    "resend_success": "Email inviata!",
-    "resend_failed": "Invio email fallito",
-    "check_inbox": "Controlla la tua casella di posta e la cartella spam.",
-    "change_email_button": "Cambia indirizzo email",
-    "new_email": "Nuovo indirizzo email",
-    "new_email_placeholder": "Inserisci nuovo indirizzo email",
-    "update_email": "Aggiorna email",
-    "email_updated": "Email aggiornata!",
-    "verification_sent_new": "Un link di verifica è stato inviato al tuo nuovo indirizzo email.",
-    "change_failed": "Aggiornamento email fallito",
-    "logout_button": "Esci",
-    "help_text": "Se non ricevi l'email entro pochi minuti, controlla la cartella spam o prova con un altro indirizzo email.",
-    "verified_title": "Email verificata!",
-    "verified_description": "La tua email è stata verificata. Benvenuto su XIMA!"
+    "try_again": "Per favore riprova più tardi"
   },
   "not_found": {
     "title": "404",

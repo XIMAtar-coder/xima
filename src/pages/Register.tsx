@@ -1,23 +1,22 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '../context/UserContext';
 import { RegistrationForm } from '../types';
 import { Logo } from '@/components/Logo';
 import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
 import { supabase } from '@/integrations/supabase/client';
-import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
 
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isAuthenticated, session } = useUser();
+  const { signUp, isAuthenticated } = useUser();
   const { t } = useTranslation();
   
   const [formData, setFormData] = useState<RegistrationForm>({
@@ -30,25 +29,19 @@ const Register = () => {
   const [errors, setErrors] = useState<Partial<RegistrationForm>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  useEffect(() => {
-    if (isAuthenticated && session?.user) {
-      // Check if email is verified
-      const isVerified = session.user.email_confirmed_at || session.user.confirmed_at;
-      
-      if (!isVerified) {
-        navigate('/candidate/verify-email');
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      // Check if user came from assessment flow
+      const savedSelection = localStorage.getItem('selectedProfessional');
+      if (savedSelection) {
+        // Clear the stored selection and go to dashboard with data
+        localStorage.removeItem('selectedProfessional');
+        navigate('/profile', { state: JSON.parse(savedSelection) });
       } else {
-        // Check if user came from assessment flow
-        const savedSelection = localStorage.getItem('selectedProfessional');
-        if (savedSelection) {
-          localStorage.removeItem('selectedProfessional');
-          navigate('/profile', { state: JSON.parse(savedSelection) });
-        } else {
-          navigate('/profile');
-        }
+        navigate('/profile');
       }
     }
-  }, [isAuthenticated, session, navigate]);
+  }, [isAuthenticated, navigate]);
   
   const validateForm = () => {
     const newErrors: Partial<RegistrationForm> = {};
@@ -91,19 +84,9 @@ const Register = () => {
     
     try {
       console.log('[Register] submitting signUp');
-      
-      // Sign up with email redirect for verification
-      const { data, error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-          data: { name: formData.name }
-        }
-      });
+      const { data, error } = await signUp(formData.email, formData.password, formData.name);
 
       console.log('[Register] signUp result', { userId: data?.user?.id, error });
-      
       if (error) {
         toast({
           title: t('register.registration_failed'),
@@ -113,27 +96,18 @@ const Register = () => {
         return;
       }
 
-      // Check if email confirmation is required
-      const needsEmailConfirmation = data.user && !data.session;
-      
-      if (needsEmailConfirmation) {
-        // User needs to verify email - redirect to verify page
-        toast({
-          title: t('register.check_email_title'),
-          description: t('register.check_email_description'),
-        });
-        
-        // Navigate to verify email page
-        navigate('/candidate/verify-email');
-        return;
-      }
-
-      // If we get here, email confirmation is disabled (dev mode)
-      // Auto sign-in and sync assessment data
+      // Get the newly created user ID
       const newUserId = data?.user?.id;
+      try {
+        const { data: authUser } = await supabase.auth.getUser();
+        console.log('[Register] auth.getUser after signUp', authUser?.user?.id);
+      } catch (e) {
+        console.warn('[Register] auth.getUser failed', e);
+      }
 
       if (newUserId) {
         console.log('[Register] syncing guest assessment to profile for', newUserId);
+        // Sync guest assessment data to profile and wait for completion
         const syncSuccess = await syncGuestAssessmentToProfile(newUserId);
 
         if (syncSuccess) {
@@ -176,23 +150,7 @@ const Register = () => {
               {t('register.subtitle')}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Google OAuth Button */}
-            <GoogleAuthButton mode="signup" />
-            
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <Separator className="w-full bg-[#A3ABB5]/20" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-[#0A0F1C] px-2 text-[#A3ABB5]">
-                  {t('register.or_continue_with')}
-                </span>
-              </div>
-            </div>
-            
-            {/* Email/Password Form */}
+          <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-white">{t('register.full_name')}</Label>

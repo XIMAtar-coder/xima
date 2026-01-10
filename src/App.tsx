@@ -58,8 +58,6 @@ import ChallengeCompletion from "./pages/candidate/ChallengeCompletion";
 import ChallengeFollowup from "./pages/candidate/ChallengeFollowup";
 import StandingVideoSession from "./pages/candidate/StandingVideoSession";
 import EligibilityReview from "./pages/admin/EligibilityReview";
-import AuthCallback from "./pages/auth/Callback";
-import VerifyEmail from "./pages/candidate/VerifyEmail";
 
 const queryClient = new QueryClient();
 
@@ -125,10 +123,6 @@ const AppContent = () => {
           <Route path="/business/goals/:goalId/challenges/:challengeId/responses" element={<ChallengeResponses />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/challenge/accept" element={<ChallengeAccept />} />
-          {/* Auth callback for email verification and OAuth */}
-          <Route path="/auth/callback" element={<AuthCallback />} />
-          {/* Candidate verification */}
-          <Route path="/candidate/verify-email" element={<VerifyEmail />} />
           {/* Candidate challenge completion */}
           <Route path="/candidate/challenges/:invitationId" element={<ChallengeCompletion />} />
           <Route path="/candidate/challenges/:invitationId/standing" element={<StandingVideoSession />} />
