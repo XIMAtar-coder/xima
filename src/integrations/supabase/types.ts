@@ -678,6 +678,21 @@ export type Database = {
           default_challenge_duration: number | null
           hr_contact_email: string | null
           id: string
+          manual_employees_count: number | null
+          manual_founded_year: number | null
+          manual_hq_city: string | null
+          manual_hq_country: string | null
+          manual_industry: string | null
+          manual_revenue_range: string | null
+          manual_website: string | null
+          snapshot_employees_count: number | null
+          snapshot_founded_year: number | null
+          snapshot_hq_city: string | null
+          snapshot_hq_country: string | null
+          snapshot_industry: string | null
+          snapshot_last_enriched_at: string | null
+          snapshot_manual_override: boolean | null
+          snapshot_revenue_range: string | null
           updated_at: string | null
           user_id: string
           website: string | null
@@ -690,6 +705,21 @@ export type Database = {
           default_challenge_duration?: number | null
           hr_contact_email?: string | null
           id?: string
+          manual_employees_count?: number | null
+          manual_founded_year?: number | null
+          manual_hq_city?: string | null
+          manual_hq_country?: string | null
+          manual_industry?: string | null
+          manual_revenue_range?: string | null
+          manual_website?: string | null
+          snapshot_employees_count?: number | null
+          snapshot_founded_year?: number | null
+          snapshot_hq_city?: string | null
+          snapshot_hq_country?: string | null
+          snapshot_industry?: string | null
+          snapshot_last_enriched_at?: string | null
+          snapshot_manual_override?: boolean | null
+          snapshot_revenue_range?: string | null
           updated_at?: string | null
           user_id: string
           website?: string | null
@@ -702,6 +732,21 @@ export type Database = {
           default_challenge_duration?: number | null
           hr_contact_email?: string | null
           id?: string
+          manual_employees_count?: number | null
+          manual_founded_year?: number | null
+          manual_hq_city?: string | null
+          manual_hq_country?: string | null
+          manual_industry?: string | null
+          manual_revenue_range?: string | null
+          manual_website?: string | null
+          snapshot_employees_count?: number | null
+          snapshot_founded_year?: number | null
+          snapshot_hq_city?: string | null
+          snapshot_hq_country?: string | null
+          snapshot_industry?: string | null
+          snapshot_last_enriched_at?: string | null
+          snapshot_manual_override?: boolean | null
+          snapshot_revenue_range?: string | null
           updated_at?: string | null
           user_id?: string
           website?: string | null
