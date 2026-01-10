@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '@/context/UserContext';
@@ -13,6 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useBusinessLocale, LANGUAGE_STORAGE_KEY, VALID_LOCALES } from '@/hooks/useBusinessLocale';
 
 const languages = [
   { code: 'it', name: 'Italiano', flag: '🇮🇹' },
@@ -29,12 +30,21 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { user, signOut } = useUser();
+  const { locale, changeLocale } = useBusinessLocale();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[1];
+  // Sync stored language on mount
+  useEffect(() => {
+    const storedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    if (storedLang && VALID_LOCALES.includes(storedLang as any) && i18n.language?.split('-')[0] !== storedLang) {
+      i18n.changeLanguage(storedLang);
+    }
+  }, [i18n]);
+
+  const currentLanguage = languages.find(lang => lang.code === locale) || languages[1];
 
   const handleLanguageChange = (languageCode: string) => {
-    i18n.changeLanguage(languageCode);
+    changeLocale(languageCode as 'en' | 'it' | 'es');
   };
 
   const handleSignOut = async () => {

@@ -2281,6 +2281,8 @@
       "execution_realism": "Realismo Esecutivo",
       "observed_patterns": "Pattern Osservati",
       "footer_note": "Interpretazione IA powered by XIMA. Rivedi questi insight prima di procedere al Livello 3.",
+      "language_mismatch": "Contenuto in altra lingua",
+      "regenerate_in_language": "Rigenera in {{language}}",
       "readiness": {
         "ready": "Pronto per il passo successivo",
         "needs_clarification": "Necessita chiarimenti",

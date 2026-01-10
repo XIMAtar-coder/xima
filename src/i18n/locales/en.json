@@ -3441,6 +3441,8 @@
       "execution_realism": "Execution Realism",
       "observed_patterns": "Observed Patterns",
       "footer_note": "AI interpretation powered by XIMA. Review these insights before proceeding to Level 3.",
+      "language_mismatch": "Content in different language",
+      "regenerate_in_language": "Regenerate in {{language}}",
       "readiness": {
         "ready": "Ready for next step",
         "needs_clarification": "Needs clarification",
