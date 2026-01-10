@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { BusinessOverviewBanner } from './BusinessOverviewBanner';
 import { 
   Briefcase, 
   Target, 
@@ -36,6 +37,8 @@ interface CommandCenterProps {
   }[];
   loading?: boolean;
   hiringGoalId?: string | null;
+  companyProfile?: any;
+  businessProfile?: any;
 }
 
 export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
@@ -45,7 +48,9 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
   stats,
   attentionItems,
   loading = false,
-  hiringGoalId
+  hiringGoalId,
+  companyProfile,
+  businessProfile
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -137,6 +142,12 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
           )}
         </div>
       </div>
+
+      {/* XIMA Overview Banner - RIGHT AFTER HEADER */}
+      <BusinessOverviewBanner 
+        companyProfile={companyProfile}
+        businessProfile={businessProfile}
+      />
 
       {/* Next Actions Row */}
       <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
