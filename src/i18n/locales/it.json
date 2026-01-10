@@ -1799,6 +1799,31 @@
         "followup_requested": "{{count}} candidati hanno richiesto follow-up"
       }
     },
+    "overview": {
+      "how_xima_works": "Come funziona XIMA",
+      "pipeline_subtitle": "Una pipeline a 3 livelli che trasforma i colloqui in segnali",
+      "level1_title": "XIMA Core",
+      "level1_desc": "Processo decisionale e mentalità",
+      "level2_title": "Sfida di Ruolo",
+      "level2_desc": "Hard skills nel contesto",
+      "level3_title": "Standing",
+      "level3_desc": "Comunicazione e presenza",
+      "control_note": "Tu decidi chi avanza. I candidati vedono solo il prossimo livello sbloccato.",
+      "company_snapshot": "Panoramica Azienda",
+      "snapshot_subtitle": "Dati chiave dal tuo profilo generato dall'IA",
+      "field_location": "Sede / Località",
+      "field_industry": "Settore",
+      "field_employees": "Dipendenti",
+      "field_website": "Sito Web",
+      "set_employee_count": "Imposta il numero di dipendenti nelle impostazioni aziendali per sbloccare le stime di impatto XIMA.",
+      "xima_impact_title": "Potenziale Impatto XIMA",
+      "reduce_time_hire": "Riduci il time-to-hire dell'80%",
+      "days_saved_month": "giorni lavorativi risparmiati / mese",
+      "reduce_turnover": "Riduci il turnover del 25%",
+      "turnover_desc": "Meno ricambio, più stabilità — quantificato quando colleghi i dati HR.",
+      "workforce_readiness": "Testa la prontezza della forza lavoro",
+      "workforce_desc": "Valida competenze e mentalità per nuove iniziative prima di investire."
+    },
     "profile_tools": {
       "title": "Strumenti Profilo Aziendale",
       "generated": "Generato",

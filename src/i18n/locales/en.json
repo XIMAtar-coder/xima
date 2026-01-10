@@ -1877,6 +1877,31 @@
         "followup_requested": "{{count}} candidates requested follow-up"
       }
     },
+    "overview": {
+      "how_xima_works": "How XIMA Works",
+      "pipeline_subtitle": "A 3-level challenge pipeline that turns interviews into signal",
+      "level1_title": "XIMA Core",
+      "level1_desc": "Decision making & mindset",
+      "level2_title": "Role Challenge",
+      "level2_desc": "Hard skills in context",
+      "level3_title": "Standing",
+      "level3_desc": "Communication & presence",
+      "control_note": "You decide who advances. Candidates see only the next unlocked level.",
+      "company_snapshot": "Company Snapshot",
+      "snapshot_subtitle": "Key facts from your AI-generated profile",
+      "field_location": "HQ / Location",
+      "field_industry": "Industry",
+      "field_employees": "Employees",
+      "field_website": "Website",
+      "set_employee_count": "Set your employee count in company settings to unlock XIMA impact estimates.",
+      "xima_impact_title": "XIMA Impact Potential",
+      "reduce_time_hire": "Reduce time-to-hire by 80%",
+      "days_saved_month": "workdays saved / month",
+      "reduce_turnover": "Reduce turnover by 25%",
+      "turnover_desc": "Less churn, more stability — quantified once you connect HR data.",
+      "workforce_readiness": "Test workforce readiness",
+      "workforce_desc": "Validate skills & mindset for new initiatives before you invest."
+    },
     "profile_tools": {
       "title": "Company Profile Tools",
       "generated": "Generated",
