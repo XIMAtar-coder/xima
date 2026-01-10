@@ -16,7 +16,6 @@ import { HiringGoalOverviewCard } from '@/components/business/HiringGoalOverview
 import { ActiveChallengesOverview } from '@/components/business/ActiveChallengesOverview';
 import { BusinessCommandCenter } from '@/components/business/BusinessCommandCenter';
 import { CompanyProfileCard } from '@/components/business/CompanyProfileCard';
-import { BusinessOverviewBanner } from '@/components/business/BusinessOverviewBanner';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useChallengeStatsMap } from '@/hooks/useChallengeResponsesData';
 
@@ -488,7 +487,7 @@ const BusinessDashboard = () => {
   return (
     <BusinessLayout>
       <div className="space-y-8">
-        {/* Command Center - TOP OF DASHBOARD */}
+        {/* Command Center - TOP OF DASHBOARD (includes XIMA Overview Banner) */}
         <BusinessCommandCenter
           companyName={businessProfile?.company_name || null}
           profileStatus={profileLoading ? 'loading' : (profileCompleteness.percentage === 100 ? 'ready' : 'incomplete')}
@@ -502,10 +501,6 @@ const BusinessDashboard = () => {
           attentionItems={attentionItems}
           loading={loading || statsLoading}
           hiringGoalId={hiringGoalDraftId}
-        />
-
-        {/* XIMA Overview Banner - NEW SECTION */}
-        <BusinessOverviewBanner
           companyProfile={companyProfile}
           businessProfile={businessProfile}
         />
