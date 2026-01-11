@@ -603,6 +603,7 @@ export type Database = {
           attachment_url: string | null
           business_id: string
           created_at: string | null
+          created_from_job_post: boolean | null
           deadline: string | null
           description: string | null
           difficulty: number | null
@@ -610,6 +611,7 @@ export type Database = {
           hiring_goal_id: string | null
           id: string
           is_public: boolean | null
+          job_post_id: string | null
           rubric: Json | null
           start_at: string | null
           status: string
@@ -623,6 +625,7 @@ export type Database = {
           attachment_url?: string | null
           business_id: string
           created_at?: string | null
+          created_from_job_post?: boolean | null
           deadline?: string | null
           description?: string | null
           difficulty?: number | null
@@ -630,6 +633,7 @@ export type Database = {
           hiring_goal_id?: string | null
           id?: string
           is_public?: boolean | null
+          job_post_id?: string | null
           rubric?: Json | null
           start_at?: string | null
           status?: string
@@ -643,6 +647,7 @@ export type Database = {
           attachment_url?: string | null
           business_id?: string
           created_at?: string | null
+          created_from_job_post?: boolean | null
           deadline?: string | null
           description?: string | null
           difficulty?: number | null
@@ -650,6 +655,7 @@ export type Database = {
           hiring_goal_id?: string | null
           id?: string
           is_public?: boolean | null
+          job_post_id?: string | null
           rubric?: Json | null
           start_at?: string | null
           status?: string
@@ -667,6 +673,13 @@ export type Database = {
             referencedRelation: "hiring_goal_drafts"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "business_challenges_job_post_id_fkey"
+            columns: ["job_post_id"]
+            isOneToOne: false
+            referencedRelation: "job_posts"
+            referencedColumns: ["id"]
+          },
         ]
       }
       business_job_post_imports: {
@@ -677,6 +690,7 @@ export type Database = {
           extracted_data: Json | null
           id: string
           job_post_id: string | null
+          new_job_post_id: string | null
           pdf_path: string
           status: string
           updated_at: string
@@ -688,6 +702,7 @@ export type Database = {
           extracted_data?: Json | null
           id?: string
           job_post_id?: string | null
+          new_job_post_id?: string | null
           pdf_path: string
           status?: string
           updated_at?: string
@@ -699,6 +714,7 @@ export type Database = {
           extracted_data?: Json | null
           id?: string
           job_post_id?: string | null
+          new_job_post_id?: string | null
           pdf_path?: string
           status?: string
           updated_at?: string
@@ -709,6 +725,13 @@ export type Database = {
             columns: ["job_post_id"]
             isOneToOne: false
             referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_job_post_imports_new_job_post_id_fkey"
+            columns: ["new_job_post_id"]
+            isOneToOne: false
+            referencedRelation: "job_posts"
             referencedColumns: ["id"]
           },
         ]
@@ -1808,6 +1831,69 @@ export type Database = {
             referencedColumns: ["key"]
           },
         ]
+      }
+      job_posts: {
+        Row: {
+          benefits: string | null
+          business_id: string
+          created_at: string
+          department: string | null
+          description: string | null
+          employment_type: string | null
+          id: string
+          locale: string | null
+          location: string | null
+          requirements_must: string | null
+          requirements_nice: string | null
+          responsibilities: string | null
+          salary_range: string | null
+          seniority: string | null
+          source_pdf_path: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          benefits?: string | null
+          business_id: string
+          created_at?: string
+          department?: string | null
+          description?: string | null
+          employment_type?: string | null
+          id?: string
+          locale?: string | null
+          location?: string | null
+          requirements_must?: string | null
+          requirements_nice?: string | null
+          responsibilities?: string | null
+          salary_range?: string | null
+          seniority?: string | null
+          source_pdf_path?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          benefits?: string | null
+          business_id?: string
+          created_at?: string
+          department?: string | null
+          description?: string | null
+          employment_type?: string | null
+          id?: string
+          locale?: string | null
+          location?: string | null
+          requirements_must?: string | null
+          requirements_nice?: string | null
+          responsibilities?: string | null
+          salary_range?: string | null
+          seniority?: string | null
+          source_pdf_path?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       mentor_availability_slots: {
         Row: {
