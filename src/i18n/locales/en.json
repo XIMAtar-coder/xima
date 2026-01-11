@@ -1877,6 +1877,27 @@
         "followup_requested": "{{count}} candidates requested follow-up"
       }
     },
+    "job_posts_overview": {
+      "title": "Job Posts Overview",
+      "go_to_job_posts": "Go to Job Posts",
+      "create_job_post": "Create Job Post",
+      "recent_posts": "Recent Job Posts",
+      "no_posts": "No job posts yet. Create your first job post to start attracting candidates.",
+      "applications": "applications",
+      "new": "new",
+      "last_updated": "Updated {{date}}",
+      "kpi": {
+        "open_job_posts": "Open Positions",
+        "active_job_posts": "Active Posts",
+        "total_applications": "Applications (30d)",
+        "pending_reviews": "Pending Reviews"
+      },
+      "status": {
+        "active": "Active",
+        "draft": "Draft",
+        "closed": "Closed"
+      }
+    },
     "overview": {
       "how_xima_works": "How XIMA Works",
       "pipeline_subtitle": "A 3-level challenge pipeline that turns interviews into signal",
