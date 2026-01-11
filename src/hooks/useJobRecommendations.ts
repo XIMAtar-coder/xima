@@ -21,7 +21,10 @@ export const useJobRecommendations = () => {
   const [lastGenerated, setLastGenerated] = useState<string | null>(null);
 
   const generateRecommendations = async () => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      setRecommendations([]);
+      return;
+    }
 
     setLoading(true);
     try {
@@ -29,12 +32,31 @@ export const useJobRecommendations = () => {
         body: { userId: user.id },
       });
 
-      if (error) throw error;
+      // Handle auth errors gracefully - don't crash the app
+      if (error) {
+        const errorMessage = error.message?.toLowerCase() || '';
+        const isAuthError = errorMessage.includes('401') || 
+                           errorMessage.includes('unauthorized') ||
+                           errorMessage.includes('auth') ||
+                           errorMessage.includes('session');
+        
+        if (isAuthError) {
+          console.warn('[useJobRecommendations] Auth error - clearing recommendations silently');
+          setRecommendations([]);
+          return;
+        }
+        
+        // For non-auth errors, log but don't throw
+        console.error('[useJobRecommendations] Error:', error);
+        setRecommendations([]);
+        return;
+      }
 
-      setRecommendations(data.recommendations || []);
-      setLastGenerated(data.generatedAt || new Date().toISOString());
+      setRecommendations(data?.recommendations || []);
+      setLastGenerated(data?.generatedAt || new Date().toISOString());
     } catch (error) {
-      console.error('Error generating recommendations:', error);
+      // Catch any unexpected errors and fail gracefully
+      console.error('[useJobRecommendations] Unexpected error:', error);
       setRecommendations([]);
     } finally {
       setLoading(false);
