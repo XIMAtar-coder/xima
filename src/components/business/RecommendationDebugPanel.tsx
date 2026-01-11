@@ -13,9 +13,13 @@ import {
   RefreshCw,
   Database,
   Target,
-  Sparkles
+  Sparkles,
+  FlaskConical,
+  Building2
 } from 'lucide-react';
-import { useRecommendationDebug, XIMATAR_PILLAR_VECTORS, XIMATAR_PROFILES, type XimatarExplanation } from '@/hooks/useRecommendationDebug';
+import { useRecommendationDebug, XIMATAR_PROFILES, type XimatarExplanation } from '@/hooks/useRecommendationDebug';
+import { runRecommendationTests, type TestResult } from '@/lib/recommendations/__tests__/recommendations.test';
+import { type XimatarRecommendation } from '@/lib/recommendations';
 import { cn } from '@/lib/utils';
 
 interface RecommendationDebugPanelProps {
@@ -31,7 +35,9 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
   const isDebugMode = searchParams.get('debug') === '1' || import.meta.env.DEV;
   
   const { debugData, loading, error, refresh } = useRecommendationDebug(businessId, hiringGoalId);
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['warnings', 'inputs']));
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['warnings', 'engine']));
+  const [testResults, setTestResults] = useState<TestResult[] | null>(null);
+  const [testRunning, setTestRunning] = useState(false);
   
   if (!isDebugMode) return null;
   
@@ -45,6 +51,16 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
       }
       return next;
     });
+  };
+
+  const runTests = () => {
+    setTestRunning(true);
+    setTimeout(() => {
+      const results = runRecommendationTests();
+      setTestResults(results);
+      setTestRunning(false);
+      console.log('[RecommendationDebug] Test results:', results);
+    }, 100);
   };
 
   const renderPillarBar = (value: number, label: string, delta?: number) => (
@@ -68,59 +84,117 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
     </div>
   );
 
-  const renderXimatarCard = (explanation: XimatarExplanation) => (
+  const renderEngineRecommendation = (rec: XimatarRecommendation) => (
     <div 
-      key={explanation.ximatar}
-      className="p-3 rounded-lg border border-border bg-card space-y-2"
+      key={rec.ximatar_id}
+      className={cn(
+        "p-3 rounded-lg border bg-card space-y-2",
+        rec.source === 'company_constraint' ? "border-green-500/50 bg-green-500/5" :
+        rec.source === 'hiring_goal_match' ? "border-blue-500/50 bg-blue-500/5" :
+        "border-muted"
+      )}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <img 
-            src={`/ximatars/${explanation.ximatar}.png`} 
-            alt={explanation.ximatar}
+            src={`/ximatars/${rec.ximatar_id}.png`} 
+            alt={rec.ximatar_id}
             className="h-8 w-8 object-contain"
           />
-          <span className="font-medium capitalize">{explanation.ximatar}</span>
-          <Badge variant={explanation.rank <= 3 ? "default" : "secondary"}>
-            #{explanation.rank}
-          </Badge>
+          <div>
+            <span className="font-medium capitalize">{rec.ximatar_id}</span>
+            <p className="text-xs text-muted-foreground">{rec.profile.title}</p>
+          </div>
         </div>
-        <span className="text-sm text-muted-foreground font-mono">
-          dist: {explanation.distance}
-        </span>
+        <div className="text-right">
+          <Badge variant={rec.rank <= 3 ? "default" : "secondary"}>
+            #{rec.rank}
+          </Badge>
+          <div className="text-xs font-mono mt-1">
+            score: {rec.score}
+          </div>
+        </div>
       </div>
       
-      {/* Match signals */}
-      {explanation.match_signals.length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {explanation.match_signals.map((signal, idx) => (
-            <Badge key={idx} variant="outline" className="text-xs bg-green-500/10">
-              {signal}
-            </Badge>
-          ))}
+      {/* Source badge */}
+      <div className="flex items-center gap-2">
+        <Badge 
+          variant="outline" 
+          className={cn(
+            "text-xs",
+            rec.source === 'company_constraint' ? "bg-green-500/10 text-green-700" :
+            rec.source === 'hiring_goal_match' ? "bg-blue-500/10 text-blue-700" :
+            "bg-muted"
+          )}
+        >
+          {rec.source === 'company_constraint' ? '🏢 Company Constraint' :
+           rec.source === 'hiring_goal_match' ? '🎯 Goal Match' :
+           '📊 Taxonomy Fallback'}
+        </Badge>
+        {rec.seniority_compatible && (
+          <Badge variant="outline" className="text-xs bg-purple-500/10 text-purple-700">
+            ✓ Seniority
+          </Badge>
+        )}
+      </div>
+      
+      {/* Score breakdown */}
+      <div className="space-y-1 pt-2 border-t border-border/50">
+        <div className="flex items-center gap-2 text-xs">
+          <span className="w-20 text-muted-foreground">Skills (45%)</span>
+          <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+            <div className="h-full bg-green-500" style={{ width: `${rec.score_breakdown.skills_overlap}%` }} />
+          </div>
+          <span className="w-8 text-right font-mono">{rec.score_breakdown.skills_overlap}</span>
+        </div>
+        <div className="flex items-center gap-2 text-xs">
+          <span className="w-20 text-muted-foreground">Keywords (25%)</span>
+          <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+            <div className="h-full bg-blue-500" style={{ width: `${rec.score_breakdown.keyword_overlap}%` }} />
+          </div>
+          <span className="w-8 text-right font-mono">{rec.score_breakdown.keyword_overlap}</span>
+        </div>
+        <div className="flex items-center gap-2 text-xs">
+          <span className="w-20 text-muted-foreground">Industry (15%)</span>
+          <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+            <div className="h-full bg-orange-500" style={{ width: `${rec.score_breakdown.industry_overlap}%` }} />
+          </div>
+          <span className="w-8 text-right font-mono">{rec.score_breakdown.industry_overlap}</span>
+        </div>
+        <div className="flex items-center gap-2 text-xs">
+          <span className="w-20 text-muted-foreground">Seniority (10%)</span>
+          <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+            <div className="h-full bg-purple-500" style={{ width: `${rec.score_breakdown.seniority_fit}%` }} />
+          </div>
+          <span className="w-8 text-right font-mono">{rec.score_breakdown.seniority_fit}</span>
+        </div>
+      </div>
+      
+      {/* Matched items */}
+      {(rec.matched_skills.length > 0 || rec.matched_industries.length > 0) && (
+        <div className="text-xs space-y-1">
+          {rec.matched_skills.length > 0 && (
+            <div>
+              <span className="text-muted-foreground">Matched skills: </span>
+              {rec.matched_skills.slice(0, 4).map((s, i) => (
+                <Badge key={i} variant="secondary" className="mr-1 text-xs">{s}</Badge>
+              ))}
+              {rec.matched_skills.length > 4 && <span className="text-muted-foreground">+{rec.matched_skills.length - 4}</span>}
+            </div>
+          )}
+          {rec.matched_industries.length > 0 && (
+            <div>
+              <span className="text-muted-foreground">Matched industries: </span>
+              {rec.matched_industries.slice(0, 3).map((s, i) => (
+                <Badge key={i} variant="outline" className="mr-1 text-xs">{s}</Badge>
+              ))}
+            </div>
+          )}
         </div>
       )}
       
-      {/* Pillar breakdown */}
-      <div className="space-y-1 pt-2 border-t border-border/50">
-        {explanation.contribution_breakdown.map(p => (
-          <div key={p.pillar} className="flex items-center gap-2 text-xs">
-            <span className="w-20 text-muted-foreground truncate capitalize">
-              {p.pillar.replace('_', ' ')}
-            </span>
-            <span className="w-8 text-right font-mono text-muted-foreground">{p.company_value}</span>
-            <span className="text-muted-foreground">→</span>
-            <span className="w-8 text-right font-mono">{p.template_value}</span>
-            <span className={cn(
-              "w-10 text-right font-mono text-xs",
-              Math.abs(p.delta) < 15 ? "text-green-500" : 
-              Math.abs(p.delta) < 30 ? "text-yellow-500" : "text-red-500"
-            )}>
-              {p.delta > 0 ? '+' : ''}{p.delta}
-            </span>
-          </div>
-        ))}
-      </div>
+      {/* Explanation */}
+      <p className="text-xs text-muted-foreground italic">{rec.explanation}</p>
     </div>
   );
 
@@ -133,6 +207,10 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
             XIMAtar Recommendation Debug
           </CardTitle>
           <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={runTests} disabled={testRunning}>
+              <FlaskConical className={cn("h-4 w-4 mr-1", testRunning && "animate-pulse")} />
+              Run Tests
+            </Button>
             <Badge variant="outline" className="bg-yellow-500/10 text-yellow-700 dark:text-yellow-300">
               DEBUG MODE
             </Badge>
@@ -142,7 +220,7 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
           </div>
         </div>
         <CardDescription>
-          Shows recommendation pipeline inputs, algorithm, and per-XIMAtar explanations
+          Hybrid constraint matching: ≥8 from company profile, ranked by goal similarity
         </CardDescription>
       </CardHeader>
       
@@ -157,6 +235,55 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
           <div className="flex items-center justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
           </div>
+        )}
+        
+        {/* Test Results */}
+        {testResults && (
+          <Collapsible 
+            open={expandedSections.has('tests')}
+            onOpenChange={() => toggleSection('tests')}
+            defaultOpen
+          >
+            <CollapsibleTrigger className="flex items-center gap-2 w-full p-2 rounded-lg bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 transition-colors">
+              {expandedSections.has('tests') ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+              <FlaskConical className="h-4 w-4 text-purple-500" />
+              <span className="font-medium text-purple-700 dark:text-purple-300">
+                Test Results: {testResults.filter(t => t.passed).length}/{testResults.length} passed
+              </span>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-2">
+              <div className="space-y-2">
+                {testResults.map((result, idx) => (
+                  <div 
+                    key={idx}
+                    className={cn(
+                      "p-2 rounded border text-sm",
+                      result.passed ? "bg-green-500/10 border-green-500/30" : "bg-red-500/10 border-red-500/30"
+                    )}
+                  >
+                    <div className="flex items-center gap-2">
+                      {result.passed ? <CheckCircle className="h-4 w-4 text-green-500" /> : <AlertTriangle className="h-4 w-4 text-red-500" />}
+                      <span className="font-medium">{result.name}</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      Strategy: {result.result.strategy_used} | 
+                      Company: {result.result.company_constraint_count} | 
+                      Goal: {result.result.goal_match_count} | 
+                      Fallback: {result.result.fallback_count}
+                    </div>
+                    <div className="text-xs mt-1">
+                      Top 3: {result.result.recommendations.slice(0, 3).map(r => r.ximatar_id).join(', ')}
+                    </div>
+                    {result.errors.length > 0 && (
+                      <div className="text-xs text-red-600 mt-1">
+                        {result.errors.join('; ')}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         )}
         
         {debugData && (
@@ -184,6 +311,44 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
               </Collapsible>
             )}
             
+            {/* Engine Strategy Summary */}
+            {debugData.engineResult && (
+              <div className="p-3 rounded-lg border border-primary/30 bg-primary/5">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold text-sm flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    Recommendation Engine Result
+                  </h4>
+                  <Badge variant="default">{debugData.engineResult.strategy_used}</Badge>
+                </div>
+                <div className="grid grid-cols-3 gap-4 text-center text-sm">
+                  <div className="p-2 rounded bg-green-500/10">
+                    <div className="text-2xl font-bold text-green-600">{debugData.engineResult.company_constraint_count}</div>
+                    <div className="text-xs text-muted-foreground">Company Constraint</div>
+                  </div>
+                  <div className="p-2 rounded bg-blue-500/10">
+                    <div className="text-2xl font-bold text-blue-600">{debugData.engineResult.goal_match_count}</div>
+                    <div className="text-xs text-muted-foreground">Goal Match</div>
+                  </div>
+                  <div className="p-2 rounded bg-muted">
+                    <div className="text-2xl font-bold text-muted-foreground">{debugData.engineResult.fallback_count}</div>
+                    <div className="text-xs text-muted-foreground">Fallback</div>
+                  </div>
+                </div>
+                {debugData.engineResult.debug_info.goal_tokens.length > 0 && (
+                  <div className="mt-2 text-xs">
+                    <span className="text-muted-foreground">Goal tokens: </span>
+                    {debugData.engineResult.debug_info.goal_tokens.slice(0, 10).map((t, i) => (
+                      <Badge key={i} variant="secondary" className="mr-1 mb-1 text-xs">{t}</Badge>
+                    ))}
+                    {debugData.engineResult.debug_info.goal_tokens.length > 10 && (
+                      <span className="text-muted-foreground">+{debugData.engineResult.debug_info.goal_tokens.length - 10}</span>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+            
             {/* Input Contexts */}
             <Collapsible 
               open={expandedSections.has('inputs')}
@@ -198,7 +363,7 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
                 {/* Company Context */}
                 <div className="p-3 rounded-lg border border-border bg-card">
                   <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-primary" />
+                    <Building2 className="h-4 w-4 text-primary" />
                     Company Context
                     <Badge variant="outline" className="text-xs">{debugData.companyContext?.source}</Badge>
                   </h4>
@@ -208,6 +373,18 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
                     <div><span className="text-muted-foreground">Website:</span> {debugData.companyContext?.website || '—'}</div>
                     <div><span className="text-muted-foreground">Employees:</span> {debugData.companyContext?.employees_count || '—'}</div>
                   </div>
+                  
+                  {debugData.companyContext?.ideal_ximatar_profile_ids && (
+                    <div className="mt-2">
+                      <span className="text-xs text-muted-foreground">Ideal XIMAtar IDs ({debugData.companyContext.ideal_ximatar_profile_ids.length}): </span>
+                      {debugData.companyContext.ideal_ximatar_profile_ids.slice(0, 6).map((x, i) => (
+                        <Badge key={i} variant="default" className="mr-1 mb-1 text-xs capitalize">{x}</Badge>
+                      ))}
+                      {debugData.companyContext.ideal_ximatar_profile_ids.length > 6 && (
+                        <Badge variant="secondary" className="text-xs">+{debugData.companyContext.ideal_ximatar_profile_ids.length - 6}</Badge>
+                      )}
+                    </div>
+                  )}
                   
                   {debugData.companyContext?.pillar_vector && (
                     <div className="mt-3 pt-3 border-t border-border/50">
@@ -225,15 +402,6 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
                       <span className="text-xs text-muted-foreground">Values: </span>
                       {debugData.companyContext.values.map((v, i) => (
                         <Badge key={i} variant="secondary" className="mr-1 mb-1 text-xs">{v}</Badge>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {debugData.companyContext?.recommended_ximatars && (
-                    <div className="mt-2">
-                      <span className="text-xs text-muted-foreground">Stored Recommendations: </span>
-                      {debugData.companyContext.recommended_ximatars.map((x, i) => (
-                        <Badge key={i} variant="default" className="mr-1 mb-1 text-xs capitalize">{x}</Badge>
                       ))}
                     </div>
                   )}
@@ -259,6 +427,25 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
               </CollapsibleContent>
             </Collapsible>
             
+            {/* Engine Recommendations (New) */}
+            {debugData.engineResult && (
+              <Collapsible 
+                open={expandedSections.has('engine')}
+                onOpenChange={() => toggleSection('engine')}
+              >
+                <CollapsibleTrigger className="flex items-center gap-2 w-full p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
+                  {expandedSections.has('engine') ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span className="font-medium">Engine: All 12 Recommendations</span>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-2">
+                  <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                    {debugData.engineResult.recommendations.map(renderEngineRecommendation)}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            )}
+            
             {/* Matching Strategy */}
             <Collapsible 
               open={expandedSections.has('strategy')}
@@ -267,52 +454,27 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
               <CollapsibleTrigger className="flex items-center gap-2 w-full p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
                 {expandedSections.has('strategy') ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 <Target className="h-4 w-4" />
-                <span className="font-medium">Matching Strategy</span>
+                <span className="font-medium">Matching Strategy Details</span>
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-2">
                 <div className="p-3 rounded-lg border border-border bg-card text-sm">
                   <div><span className="text-muted-foreground">Algorithm:</span> <code className="bg-muted px-1 rounded">{debugData.matchingStrategy.algorithm}</code></div>
                   <p className="mt-2 text-muted-foreground">{debugData.matchingStrategy.description}</p>
                   <div className="mt-2">
-                    <span className="text-muted-foreground">Pillar Weights: </span>
+                    <span className="text-muted-foreground">Scoring Weights: </span>
                     {Object.entries(debugData.matchingStrategy.weights).map(([k, v]) => (
-                      <Badge key={k} variant="outline" className="mr-1 text-xs">{k}: {v}</Badge>
+                      <Badge key={k} variant="outline" className="mr-1 text-xs">{k}: {(v as number * 100).toFixed(0)}%</Badge>
                     ))}
                   </div>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-            
-            {/* Top Recommendations */}
-            <Collapsible 
-              open={expandedSections.has('top3')}
-              onOpenChange={() => toggleSection('top3')}
-            >
-              <CollapsibleTrigger className="flex items-center gap-2 w-full p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
-                {expandedSections.has('top3') ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="font-medium">Top 3 Recommended XIMAtars</span>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="pt-2">
-                <div className="grid gap-3 md:grid-cols-3">
-                  {debugData.recommendedXimatars.map(renderXimatarCard)}
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-            
-            {/* Full Ranking */}
-            <Collapsible 
-              open={expandedSections.has('all')}
-              onOpenChange={() => toggleSection('all')}
-            >
-              <CollapsibleTrigger className="flex items-center gap-2 w-full p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
-                {expandedSections.has('all') ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                <Database className="h-4 w-4" />
-                <span className="font-medium">All 12 XIMAtars Ranked</span>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="pt-2">
-                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                  {debugData.allXimatarsRanked.map(renderXimatarCard)}
+                  <div className="mt-2">
+                    <span className="text-muted-foreground">Constraints: </span>
+                    <Badge variant="outline" className="mr-1 text-xs">
+                      Min company: {debugData.matchingStrategy.constraints?.min_company_constraint || 8}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      Total: {debugData.matchingStrategy.constraints?.total_recommendations || 12}
+                    </Badge>
+                  </div>
                 </div>
               </CollapsibleContent>
             </Collapsible>
