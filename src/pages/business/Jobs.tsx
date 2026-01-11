@@ -8,8 +8,9 @@ import BusinessLayout from '@/components/business/BusinessLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Briefcase, MapPin, Eye, Users } from 'lucide-react';
+import { Plus, Briefcase, MapPin, Eye, Users, FileUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import PdfImportModal from '@/components/business/PdfImportModal';
 
 interface Job {
   id: string;
@@ -30,6 +31,7 @@ export default function Jobs() {
   const { toast } = useToast();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showPdfImport, setShowPdfImport] = useState(false);
 
   useEffect(() => {
     if (!roleLoading && !isBusiness) {
@@ -106,11 +108,23 @@ export default function Jobs() {
               {t('jobs.subtitle')}
             </p>
           </div>
-          <Button onClick={() => navigate('/business/jobs/new')}>
-            <Plus className="h-4 w-4 mr-2" />
-            {t('jobs.create_job')}
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setShowPdfImport(true)}>
+              <FileUp className="h-4 w-4 mr-2" />
+              {t('business.pdf_import.import_from_pdf')}
+            </Button>
+            <Button onClick={() => navigate('/business/jobs/new')}>
+              <Plus className="h-4 w-4 mr-2" />
+              {t('jobs.create_job')}
+            </Button>
+          </div>
         </div>
+
+        <PdfImportModal 
+          open={showPdfImport} 
+          onOpenChange={setShowPdfImport}
+          onSuccess={fetchJobs}
+        />
 
         {jobs.length === 0 ? (
           <Card>

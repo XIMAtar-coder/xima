@@ -1899,6 +1899,28 @@
       },
       "error_loading": "Could not load job posts data"
     },
+    "pdf_import": {
+      "title": "Import Job Post from PDF",
+      "description": "Upload a job description PDF to automatically create a draft job post.",
+      "import_button": "Import",
+      "drop_or_click": "Drop a PDF here or click to browse",
+      "pdf_only": "PDF files only, max 10MB",
+      "uploading": "Uploading PDF...",
+      "processing": "Extracting job details...",
+      "please_wait": "This may take a few moments",
+      "success": "Import Successful",
+      "job_created": "Draft job post created successfully",
+      "job_created_desc": "The job post has been created as a draft. Review and publish when ready.",
+      "view_job": "View Job Post",
+      "error": "Import Failed",
+      "unknown_error": "An unexpected error occurred",
+      "try_again": "Try Again",
+      "invalid_file_type": "Invalid File Type",
+      "only_pdf_allowed": "Only PDF files are allowed",
+      "file_too_large": "File Too Large",
+      "max_size_10mb": "Maximum file size is 10MB",
+      "import_from_pdf": "Import from PDF"
+    },
     "overview": {
       "how_xima_works": "How XIMA Works",
       "pipeline_subtitle": "A 3-level challenge pipeline that turns interviews into signal",

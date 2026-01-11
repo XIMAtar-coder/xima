@@ -1407,6 +1407,28 @@
       },
       "error_loading": "No se pudieron cargar los datos de ofertas"
     },
+    "pdf_import": {
+      "title": "Importar Oferta desde PDF",
+      "description": "Sube un PDF con la descripción del trabajo para crear automáticamente un borrador.",
+      "import_button": "Importar",
+      "drop_or_click": "Arrastra un PDF aquí o haz clic para buscar",
+      "pdf_only": "Solo archivos PDF, máx 10MB",
+      "uploading": "Subiendo PDF...",
+      "processing": "Extrayendo detalles del trabajo...",
+      "please_wait": "Esto puede tardar unos momentos",
+      "success": "Importación Exitosa",
+      "job_created": "Borrador de oferta creado con éxito",
+      "job_created_desc": "La oferta se ha creado como borrador. Revisa y publica cuando esté lista.",
+      "view_job": "Ver Oferta",
+      "error": "Importación Fallida",
+      "unknown_error": "Ocurrió un error inesperado",
+      "try_again": "Intentar de Nuevo",
+      "invalid_file_type": "Tipo de Archivo Inválido",
+      "only_pdf_allowed": "Solo se permiten archivos PDF",
+      "file_too_large": "Archivo Demasiado Grande",
+      "max_size_10mb": "Tamaño máximo de archivo 10MB",
+      "import_from_pdf": "Importar desde PDF"
+    },
     "overview": {
       "how_xima_works": "Cómo funciona XIMA",
       "pipeline_subtitle": "Un pipeline de 3 niveles que convierte entrevistas en señales",
