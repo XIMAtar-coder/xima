@@ -63,25 +63,37 @@ export const useJobRecommendationEngine = () => {
         body: { userId: user.id }
       });
 
-      if (functionError) throw functionError;
+      // Handle auth/function errors gracefully
+      if (functionError) {
+        const errorMsg = functionError.message?.toLowerCase() || '';
+        const isAuthError = errorMsg.includes('401') || 
+                           errorMsg.includes('unauthorized') ||
+                           errorMsg.includes('non-2xx') ||
+                           errorMsg.includes('auth') ||
+                           errorMsg.includes('session');
+        
+        if (isAuthError) {
+          console.warn('[useJobRecommendationEngine] Auth error - clearing recommendations silently');
+          setRecommendations([]);
+          setError(null);
+          return;
+        }
+        throw functionError;
+      }
 
       const response = data as RecommendationResponse;
       
-      if (response.message && response.recommendations.length === 0) {
+      if (response?.message && (!response.recommendations || response.recommendations.length === 0)) {
         setError(response.message);
       } else {
-        setRecommendations(response.recommendations);
-        setLastGenerated(response.generatedAt);
+        setRecommendations(response?.recommendations || []);
+        setLastGenerated(response?.generatedAt || new Date().toISOString());
       }
     } catch (err: any) {
-      console.error('Error generating recommendations:', err);
-      // Handle auth errors gracefully - don't show error for expired sessions
-      if (err.message?.includes('401') || err.message?.includes('Unauthorized')) {
-        setRecommendations([]);
-        setError(null); // Silently fail on auth issues
-      } else {
-        setError(err.message || 'Failed to generate recommendations');
-      }
+      console.warn('[useJobRecommendationEngine] Error:', err);
+      // Always fail gracefully - no blank screens
+      setRecommendations([]);
+      setError(null);
     } finally {
       setLoading(false);
     }
