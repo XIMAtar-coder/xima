@@ -15,98 +15,73 @@ import {
   FileText
 } from 'lucide-react';
 import { format } from 'date-fns';
-
-interface JobPost {
-  id: string;
-  title: string;
-  status: 'active' | 'draft' | 'closed';
-  applicationsCount: number;
-  newApplications: number;
-  lastUpdated: string;
-}
+import { useBusinessJobPostsOverview } from '@/hooks/useBusinessJobPostsOverview';
+import { toast } from 'sonner';
 
 interface BusinessJobPostsOverviewBannerProps {
-  loading?: boolean;
+  businessId?: string;
 }
 
-// Mock data for now - will be replaced with real data
-const mockStats = {
-  openJobPosts: 5,
-  activeJobPosts: 3,
-  totalApplications: 127,
-  pendingReviews: 18
-};
-
-const mockJobPosts: JobPost[] = [
-  {
-    id: '1',
-    title: 'Senior Product Manager',
-    status: 'active',
-    applicationsCount: 45,
-    newApplications: 8,
-    lastUpdated: new Date().toISOString()
-  },
-  {
-    id: '2',
-    title: 'Data Analyst',
-    status: 'active',
-    applicationsCount: 32,
-    newApplications: 5,
-    lastUpdated: new Date(Date.now() - 86400000).toISOString()
-  },
-  {
-    id: '3',
-    title: 'Frontend Developer',
-    status: 'draft',
-    applicationsCount: 0,
-    newApplications: 0,
-    lastUpdated: new Date(Date.now() - 172800000).toISOString()
-  }
-];
+type JobStatus = 'active' | 'published' | 'draft' | 'closed' | string;
 
 export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBannerProps> = ({
-  loading = false
+  businessId
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { data, loading, error, refetch } = useBusinessJobPostsOverview(businessId);
 
-  const stats = mockStats;
-  const jobPosts = mockJobPosts;
+  // Show error toast but keep banner visible
+  React.useEffect(() => {
+    if (error) {
+      toast.error(t('business.job_posts_overview.error_loading'));
+    }
+  }, [error, t]);
+
+  const stats = data?.totals ?? {
+    openCount: 0,
+    activeCount: 0,
+    applicationsLast30d: 0,
+    pendingReviewsCount: 0
+  };
+
+  const jobPosts = data?.latestPosts ?? [];
 
   const kpiItems = [
     {
       key: 'open_job_posts',
-      value: stats.openJobPosts,
+      value: stats.openCount,
       icon: FileText,
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/10'
     },
     {
       key: 'active_job_posts',
-      value: stats.activeJobPosts,
+      value: stats.activeCount,
       icon: Eye,
       color: 'text-green-500',
       bgColor: 'bg-green-500/10'
     },
     {
       key: 'total_applications',
-      value: stats.totalApplications,
+      value: stats.applicationsLast30d,
       icon: Users,
       color: 'text-purple-500',
       bgColor: 'bg-purple-500/10'
     },
     {
       key: 'pending_reviews',
-      value: stats.pendingReviews,
+      value: stats.pendingReviewsCount,
       icon: Clock,
       color: 'text-amber-500',
       bgColor: 'bg-amber-500/10'
     }
   ];
 
-  const getStatusBadge = (status: JobPost['status']) => {
+  const getStatusBadge = (status: JobStatus) => {
     switch (status) {
       case 'active':
+      case 'published':
         return (
           <Badge className="bg-green-500/20 text-green-600 border-green-500/30">
             {t('business.job_posts_overview.status.active')}
@@ -122,6 +97,12 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
         return (
           <Badge variant="outline" className="text-muted-foreground">
             {t('business.job_posts_overview.status.closed')}
+          </Badge>
+        );
+      default:
+        return (
+          <Badge variant="secondary" className="bg-muted text-muted-foreground">
+            {status}
           </Badge>
         );
     }
@@ -210,15 +191,24 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
           ) : jobPosts.length === 0 ? (
             <div className="text-center py-6 text-muted-foreground">
               <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">{t('business.job_posts_overview.no_posts')}</p>
+              <p className="text-sm mb-3">{t('business.job_posts_overview.no_posts')}</p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/business/jobs/new')}
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                {t('business.job_posts_overview.create_job_post')}
+              </Button>
             </div>
           ) : (
             <div className="space-y-2">
-              {jobPosts.slice(0, 3).map((job) => (
+              {jobPosts.map((job) => (
                 <div
                   key={job.id}
                   className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-lg bg-background/50 border border-border/50 hover:border-primary/30 transition-colors cursor-pointer"
-                  onClick={() => navigate(`/business/jobs/${job.id}`)}
+                  onClick={() => navigate(`/business/goals/${job.id}`)}
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className="flex-1 min-w-0">
@@ -230,7 +220,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">
                         {t('business.job_posts_overview.last_updated', {
-                          date: format(new Date(job.lastUpdated), 'MMM d, yyyy')
+                          date: format(new Date(job.updatedAt), 'MMM d, yyyy')
                         })}
                       </p>
                     </div>
@@ -247,9 +237,9 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
                       </span>
                     </div>
                     
-                    {job.newApplications > 0 && (
+                    {job.newApplicationsLast7Days > 0 && (
                       <Badge variant="secondary" className="bg-primary/10 text-primary text-xs">
-                        +{job.newApplications} {t('business.job_posts_overview.new')}
+                        +{job.newApplicationsLast7Days} {t('business.job_posts_overview.new')}
                       </Badge>
                     )}
                     

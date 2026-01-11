@@ -1896,7 +1896,8 @@
         "active": "Active",
         "draft": "Draft",
         "closed": "Closed"
-      }
+      },
+      "error_loading": "Could not load job posts data"
     },
     "overview": {
       "how_xima_works": "How XIMA Works",

@@ -40,6 +40,7 @@ interface CommandCenterProps {
   hiringGoalId?: string | null;
   companyProfile?: any;
   businessProfile?: any;
+  businessId?: string;
 }
 
 export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
@@ -51,7 +52,8 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
   loading = false,
   hiringGoalId,
   companyProfile,
-  businessProfile
+  businessProfile,
+  businessId
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -151,7 +153,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
       />
 
       {/* Job Posts Overview Banner - BEFORE Quick Actions */}
-      <BusinessJobPostsOverviewBanner loading={loading} />
+      <BusinessJobPostsOverviewBanner businessId={businessId} />
 
       {/* Next Actions Row */}
       <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
