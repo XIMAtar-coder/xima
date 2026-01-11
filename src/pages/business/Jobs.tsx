@@ -8,19 +8,27 @@ import BusinessLayout from '@/components/business/BusinessLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Briefcase, MapPin, Eye, Users, FileUp } from 'lucide-react';
+import { Plus, Briefcase, MapPin, Eye, FileUp, Target, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import PdfImportModal from '@/components/business/PdfImportModal';
 
-interface Job {
+interface JobPost {
   id: string;
   title: string;
-  company: string;
-  location: string;
-  description: string;
-  skills: string[];
-  is_public: boolean;
+  status: string;
+  locale: string | null;
+  description: string | null;
+  responsibilities: string | null;
+  requirements_must: string | null;
+  requirements_nice: string | null;
+  benefits: string | null;
+  location: string | null;
+  employment_type: string | null;
+  seniority: string | null;
+  department: string | null;
+  salary_range: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 export default function Jobs() {
@@ -29,9 +37,10 @@ export default function Jobs() {
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: roleLoading } = useBusinessRole();
   const { toast } = useToast();
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<JobPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [showPdfImport, setShowPdfImport] = useState(false);
+  const [creatingChallengeForJob, setCreatingChallengeForJob] = useState<string | null>(null);
 
   useEffect(() => {
     if (!roleLoading && !isBusiness) {
@@ -40,16 +49,17 @@ export default function Jobs() {
   }, [isBusiness, roleLoading, navigate]);
 
   useEffect(() => {
-    if (isAuthenticated && isBusiness) {
+    if (isAuthenticated && isBusiness && user?.id) {
       fetchJobs();
     }
-  }, [isAuthenticated, isBusiness]);
+  }, [isAuthenticated, isBusiness, user?.id]);
 
   const fetchJobs = async () => {
     try {
       const { data, error } = await supabase
-        .from('opportunities')
+        .from('job_posts')
         .select('*')
+        .eq('business_id', user?.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -61,27 +71,100 @@ export default function Jobs() {
     }
   };
 
-  const toggleJobVisibility = async (jobId: string, currentVisibility: boolean) => {
+  const toggleJobStatus = async (jobId: string, currentStatus: string) => {
+    const newStatus = currentStatus === 'active' ? 'draft' : 'active';
     try {
       const { error } = await supabase
-        .from('opportunities')
-        .update({ is_public: !currentVisibility })
-        .eq('id', jobId);
+        .from('job_posts')
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq('id', jobId)
+        .eq('business_id', user?.id);
 
       if (error) throw error;
 
       toast({
         title: t('jobs.success'),
-        description: !currentVisibility ? t('jobs.job_published') : t('jobs.job_unpublished'),
+        description: newStatus === 'active' ? t('jobs.job_published') : t('jobs.job_unpublished'),
       });
 
       fetchJobs();
     } catch (error: any) {
       toast({
-        title: t('jobs.error'),
+        title: t('common.error'),
         description: error.message || t('jobs.failed_update_visibility'),
         variant: "destructive"
       });
+    }
+  };
+
+  const extractSkillsFromText = (text: string): string[] => {
+    const commonSkills = [
+      'javascript', 'typescript', 'react', 'node', 'python', 'java', 'sql', 
+      'aws', 'docker', 'kubernetes', 'git', 'agile', 'scrum', 'leadership',
+      'communication', 'teamwork', 'problem-solving', 'analytics', 'excel',
+      'project management', 'design', 'marketing', 'sales', 'customer service'
+    ];
+    
+    const lowerText = text.toLowerCase();
+    return commonSkills.filter(skill => lowerText.includes(skill));
+  };
+
+  const handleCreateChallenge = async (job: JobPost) => {
+    setCreatingChallengeForJob(job.id);
+    
+    try {
+      const contextParts = [
+        job.description,
+        job.responsibilities ? `Responsibilities:\n${job.responsibilities}` : '',
+        job.requirements_must ? `Requirements:\n${job.requirements_must}` : '',
+        job.requirements_nice ? `Nice to have:\n${job.requirements_nice}` : ''
+      ].filter(Boolean).join('\n\n');
+
+      const skillsText = [job.requirements_must, job.requirements_nice].filter(Boolean).join(' ');
+      const targetSkills = extractSkillsFromText(skillsText);
+
+      const { data, error } = await supabase
+        .from('business_challenges')
+        .insert({
+          business_id: user?.id,
+          title: job.title,
+          description: contextParts.slice(0, 2000),
+          target_skills: targetSkills.length > 0 ? targetSkills : null,
+          job_post_id: job.id,
+          created_from_job_post: true,
+          status: 'draft',
+        })
+        .select('id')
+        .single();
+
+      if (error) throw error;
+
+      toast({
+        title: t('jobs.challenge_created'),
+        description: t('jobs.challenge_created_from_job_post'),
+      });
+
+      navigate(`/business/challenges/${data.id}/edit`);
+    } catch (error: any) {
+      console.error('Error creating challenge:', error);
+      toast({
+        title: t('common.error'),
+        description: error.message,
+        variant: 'destructive'
+      });
+    } finally {
+      setCreatingChallengeForJob(null);
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'active':
+        return <Badge className="bg-green-500/20 text-green-600 border-green-500/30">{t('jobs.published')}</Badge>;
+      case 'archived':
+        return <Badge variant="outline" className="text-muted-foreground">{t('jobs.archived')}</Badge>;
+      default:
+        return <Badge variant="secondary">{t('jobs.draft')}</Badge>;
     }
   };
 
@@ -149,38 +232,51 @@ export default function Jobs() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <CardTitle className="text-xl">{job.title}</CardTitle>
-                        <Badge variant={job.is_public ? 'default' : 'secondary'}>
-                          {job.is_public ? t('jobs.published') : t('jobs.draft')}
-                        </Badge>
+                        {getStatusBadge(job.status)}
                       </div>
-                      <CardDescription className="flex items-center gap-4">
-                        <span className="flex items-center gap-1">
-                          <Briefcase className="h-3 w-3" />
-                          {job.company}
-                        </span>
+                      <CardDescription className="flex items-center gap-4 flex-wrap">
+                        {job.department && (
+                          <span className="flex items-center gap-1">
+                            <Briefcase className="h-3 w-3" />
+                            {job.department}
+                          </span>
+                        )}
                         {job.location && (
                           <span className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
                             {job.location}
                           </span>
                         )}
+                        {job.employment_type && (
+                          <Badge variant="outline" className="text-xs">{job.employment_type}</Badge>
+                        )}
+                        {job.seniority && (
+                          <Badge variant="outline" className="text-xs">{job.seniority}</Badge>
+                        )}
                       </CardDescription>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => toggleJobVisibility(job.id, job.is_public)}
+                        onClick={() => handleCreateChallenge(job)}
+                        disabled={creatingChallengeForJob === job.id}
+                        className="gap-1"
                       >
-                        <Eye className="h-4 w-4 mr-1" />
-                        {job.is_public ? t('jobs.unpublish') : t('jobs.publish')}
+                        {creatingChallengeForJob === job.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Target className="h-4 w-4" />
+                        )}
+                        {t('jobs.create_challenge')}
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => navigate(`/opportunities/${job.id}`)}
+                        onClick={() => toggleJobStatus(job.id, job.status)}
                       >
-                        {t('jobs.view_details')}
+                        <Eye className="h-4 w-4 mr-1" />
+                        {job.status === 'active' ? t('jobs.unpublish') : t('jobs.publish')}
                       </Button>
                     </div>
                   </div>
@@ -190,27 +286,11 @@ export default function Jobs() {
                     {job.description}
                   </p>
 
-                  {job.skills && job.skills.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {job.skills.slice(0, 5).map((skill, idx) => (
-                        <Badge key={idx} variant="outline" className="text-xs">
-                          {skill}
-                        </Badge>
-                      ))}
-                      {job.skills.length > 5 && (
-                        <Badge variant="outline" className="text-xs">
-                          {t('jobs.more_skills', { count: job.skills.length - 5 })}
-                        </Badge>
-                      )}
-                    </div>
+                  {job.salary_range && (
+                    <p className="text-sm text-muted-foreground mb-2">
+                      <strong>{t('jobs.salary')}:</strong> {job.salary_range}
+                    </p>
                   )}
-
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      {t('jobs.view_candidate_matches')}
-                    </span>
-                  </div>
                 </CardContent>
               </Card>
             ))}
