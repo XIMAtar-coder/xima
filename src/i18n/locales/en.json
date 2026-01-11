@@ -1895,7 +1895,8 @@
       "status": {
         "active": "Active",
         "draft": "Draft",
-        "closed": "Closed"
+        "closed": "Closed",
+        "archived": "Archived"
       },
       "error_loading": "Could not load job posts data"
     },

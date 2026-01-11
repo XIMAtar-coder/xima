@@ -12,17 +12,19 @@ import {
   Clock,
   Users,
   Eye,
-  FileText
+  FileText,
+  Zap
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useBusinessJobPostsOverview } from '@/hooks/useBusinessJobPostsOverview';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface BusinessJobPostsOverviewBannerProps {
   businessId?: string;
 }
 
-type JobStatus = 'active' | 'published' | 'draft' | 'closed' | string;
+type JobStatus = 'active' | 'draft' | 'archived' | string;
 
 export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBannerProps> = ({
   businessId
@@ -30,6 +32,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { data, loading, error, refetch } = useBusinessJobPostsOverview(businessId);
+  const [creatingChallengeFor, setCreatingChallengeFor] = React.useState<string | null>(null);
 
   // Show error toast but keep banner visible
   React.useEffect(() => {
@@ -81,7 +84,6 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
   const getStatusBadge = (status: JobStatus) => {
     switch (status) {
       case 'active':
-      case 'published':
         return (
           <Badge className="bg-green-500/20 text-green-600 border-green-500/30">
             {t('business.job_posts_overview.status.active')}
@@ -93,10 +95,10 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
             {t('business.job_posts_overview.status.draft')}
           </Badge>
         );
-      case 'closed':
+      case 'archived':
         return (
           <Badge variant="outline" className="text-muted-foreground">
-            {t('business.job_posts_overview.status.closed')}
+            {t('business.job_posts_overview.status.archived')}
           </Badge>
         );
       default:
@@ -105,6 +107,71 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
             {status}
           </Badge>
         );
+    }
+  };
+
+  const handleCreateChallenge = async (
+    e: React.MouseEvent,
+    jobPost: typeof jobPosts[0]
+  ) => {
+    e.stopPropagation();
+    
+    if (!businessId) {
+      toast.error(t('common.error'));
+      return;
+    }
+
+    setCreatingChallengeFor(jobPost.id);
+
+    try {
+      // Build challenge description from job post fields
+      const descriptionParts: string[] = [];
+      if (jobPost.description) {
+        descriptionParts.push(jobPost.description);
+      }
+      if (jobPost.responsibilities) {
+        descriptionParts.push(`\n\n**Responsibilities:**\n${jobPost.responsibilities}`);
+      }
+      if (jobPost.requirements_must) {
+        descriptionParts.push(`\n\n**Requirements:**\n${jobPost.requirements_must}`);
+      }
+      const challengeDescription = descriptionParts.join('') || null;
+
+      // Extract simple skills from requirements
+      const targetSkills: string[] = [];
+      if (jobPost.requirements_must) {
+        const skillKeywords = jobPost.requirements_must
+          .split(/[,;\n]/)
+          .map(s => s.trim())
+          .filter(s => s.length > 2 && s.length < 50)
+          .slice(0, 5);
+        targetSkills.push(...skillKeywords);
+      }
+
+      // Create challenge draft
+      const { data: newChallenge, error: createError } = await supabase
+        .from('business_challenges')
+        .insert({
+          business_id: businessId,
+          title: jobPost.title,
+          description: challengeDescription,
+          status: 'draft',
+          job_post_id: jobPost.id,
+          created_from_job_post: true,
+          target_skills: targetSkills.length > 0 ? targetSkills : null,
+        })
+        .select('id')
+        .single();
+
+      if (createError) throw createError;
+
+      toast.success(t('business.jobs.create_challenge_success'));
+      navigate(`/business/challenges/${newChallenge.id}`);
+    } catch (err: any) {
+      console.error('Error creating challenge from job post:', err);
+      toast.error(t('business.jobs.create_challenge_error'));
+    } finally {
+      setCreatingChallengeFor(null);
     }
   };
 
@@ -208,7 +275,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
                 <div
                   key={job.id}
                   className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-lg bg-background/50 border border-border/50 hover:border-primary/30 transition-colors cursor-pointer"
-                  onClick={() => navigate(`/business/goals/${job.id}/candidates`)}
+                  onClick={() => navigate(`/business/jobs`)}
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className="flex-1 min-w-0">
@@ -226,7 +293,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-3 text-sm">
                     <div className="flex items-center gap-1.5">
                       <Users className="h-3.5 w-3.5 text-muted-foreground" />
                       <span className="text-foreground font-medium">
@@ -242,6 +309,19 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
                         +{job.newApplicationsLast7Days} {t('business.job_posts_overview.new')}
                       </Badge>
                     )}
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="gap-1.5 h-7 px-2 text-xs"
+                      onClick={(e) => handleCreateChallenge(e, job)}
+                      disabled={creatingChallengeFor === job.id}
+                    >
+                      <Zap className="h-3.5 w-3.5" />
+                      {creatingChallengeFor === job.id
+                        ? t('common.loading')
+                        : t('business.jobs.create_challenge')}
+                    </Button>
                     
                     <ChevronRight className="h-4 w-4 text-muted-foreground hidden sm:block" />
                   </div>
