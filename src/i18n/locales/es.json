@@ -1403,7 +1403,8 @@
       "status": {
         "active": "Activa",
         "draft": "Borrador",
-        "closed": "Cerrada"
+        "closed": "Cerrada",
+        "archived": "Archivada"
       },
       "error_loading": "No se pudieron cargar los datos de ofertas"
     },

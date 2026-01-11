@@ -1817,7 +1817,8 @@
       "status": {
         "active": "Attivo",
         "draft": "Bozza",
-        "closed": "Chiuso"
+        "closed": "Chiuso",
+        "archived": "Archiviato"
       },
       "error_loading": "Impossibile caricare i dati degli annunci"
     },
