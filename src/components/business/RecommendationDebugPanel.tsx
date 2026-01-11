@@ -15,7 +15,7 @@ import {
   Target,
   Sparkles
 } from 'lucide-react';
-import { useRecommendationDebug, XIMATAR_TEMPLATES, type XimatarExplanation } from '@/hooks/useRecommendationDebug';
+import { useRecommendationDebug, XIMATAR_PILLAR_VECTORS, XIMATAR_PROFILES, type XimatarExplanation } from '@/hooks/useRecommendationDebug';
 import { cn } from '@/lib/utils';
 
 interface RecommendationDebugPanelProps {

@@ -1349,6 +1349,8 @@ export type Database = {
           created_at: string | null
           id: string
           ideal_traits: string[] | null
+          ideal_ximatar_profile_ids: string[] | null
+          ideal_ximatar_profile_reasoning: string | null
           operating_style: string | null
           pillar_vector: Json
           recommended_ximatars: string[] | null
@@ -1364,6 +1366,8 @@ export type Database = {
           created_at?: string | null
           id?: string
           ideal_traits?: string[] | null
+          ideal_ximatar_profile_ids?: string[] | null
+          ideal_ximatar_profile_reasoning?: string | null
           operating_style?: string | null
           pillar_vector?: Json
           recommended_ximatars?: string[] | null
@@ -1379,6 +1383,8 @@ export type Database = {
           created_at?: string | null
           id?: string
           ideal_traits?: string[] | null
+          ideal_ximatar_profile_ids?: string[] | null
+          ideal_ximatar_profile_reasoning?: string | null
           operating_style?: string | null
           pillar_vector?: Json
           recommended_ximatars?: string[] | null
