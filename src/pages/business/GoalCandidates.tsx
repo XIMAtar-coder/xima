@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { GoalContextHeader } from '@/components/business/GoalContextHeader';
 import { SelectionActionBar } from '@/components/business/SelectionActionBar';
 // ChallengePickerModal removed - pipeline always starts with XIMA Core (L1)
-import { XimatarCandidateCard } from '@/components/business/XimatarCandidateCard';
+import { XimatarCandidateCard, XimatarRecommendationExplanation } from '@/components/business/XimatarCandidateCard';
 import { NoChallengeGate } from '@/components/business/NoChallengeGate';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,7 +15,8 @@ import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useHiringGoalRequirements } from '@/hooks/useHiringGoalRequirements';
 import { supabase } from '@/integrations/supabase/client';
 import { getChallengeLevel } from '@/lib/challenges/challengeLevels';
-import { Users, Target, RefreshCw, Bookmark } from 'lucide-react';
+import { computeXimatarRecommendations, type XimatarRecommendation } from '@/lib/recommendations';
+import { Users, Target, RefreshCw, Bookmark, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface Candidate {
@@ -44,6 +45,7 @@ interface ActiveChallenge {
 const GoalCandidates: React.FC = () => {
   const { goalId } = useParams<{ goalId: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { t } = useTranslation();
   const { toast } = useToast();
   const { goals, loading: goalsLoading } = useHiringGoals();
@@ -58,6 +60,7 @@ const GoalCandidates: React.FC = () => {
   const [activeChallenges, setActiveChallenges] = useState<ActiveChallenge[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
+  const [companyProfile, setCompanyProfile] = useState<any>(null);
   
   // Modal state (legacy - keeping for potential future use)
 
@@ -143,6 +146,15 @@ const GoalCandidates: React.FC = () => {
         .eq('status', 'eligible');
 
       setEligibleIds(new Set(eligibilityData?.map(e => e.candidate_profile_id) || []));
+
+      // Fetch company profile for recommendation explanations
+      const { data: companyData } = await supabase
+        .from('company_profiles')
+        .select('*')
+        .eq('company_id', user.id)
+        .maybeSingle();
+      
+      setCompanyProfile(companyData);
     } catch (error) {
       console.error('Error loading candidates:', error);
     } finally {
@@ -319,6 +331,56 @@ const GoalCandidates: React.FC = () => {
     ? candidates.filter(c => shortlistedIds.has(c.profile_id))
     : candidates;
 
+  // Compute XIMAtar recommendations with explanations
+  const recommendationsMap = useMemo(() => {
+    if (!currentGoal) return new Map<string, XimatarRecommendationExplanation>();
+    
+    const companyContext = {
+      ideal_ximatar_profile_ids: companyProfile?.ideal_ximatar_profile_ids,
+      pillar_vector: companyProfile?.pillar_vector,
+      values: companyProfile?.values,
+      ideal_traits: companyProfile?.ideal_traits,
+      industry: companyProfile?.snapshot_industry,
+    };
+    
+    const hiringGoalContext = {
+      role_title: currentGoal.role_title,
+      function_area: currentGoal.function_area,
+      experience_level: currentGoal.experience_level,
+      task_description: currentGoal.task_description,
+    };
+    
+    const result = computeXimatarRecommendations(companyContext, hiringGoalContext);
+    
+    const map = new Map<string, XimatarRecommendationExplanation>();
+    
+    for (const rec of result.recommendations) {
+      // Generate short reason based on source and matches
+      let shortReason = '';
+      if (rec.source === 'company_constraint') {
+        shortReason = t('business.recommendations.matches_ideal_profile', 'Matches your ideal profile set');
+      } else if (rec.matched_skills.length > 0) {
+        const topSkills = rec.matched_skills.slice(0, 2).join(', ');
+        shortReason = t('business.recommendations.top_skill_match', { skills: topSkills, defaultValue: `Top skill match: ${topSkills}` });
+      } else if (rec.matched_industries.length > 0) {
+        shortReason = t('business.recommendations.industry_match', { industry: rec.matched_industries[0], defaultValue: `Industry match: ${rec.matched_industries[0]}` });
+      } else {
+        shortReason = t('business.recommendations.general_fit', 'General fit for this role');
+      }
+      
+      map.set(rec.ximatar_id, {
+        shortReason,
+        source: rec.source,
+        matchedSkills: rec.matched_skills,
+        matchedKeywords: rec.matched_keywords,
+        matchedIndustries: rec.matched_industries,
+        scoreBreakdown: rec.score_breakdown,
+      });
+    }
+    
+    return map;
+  }, [currentGoal, companyProfile, t]);
+
   if (goalsLoading || loading) {
     return (
       <BusinessLayout>
@@ -400,6 +462,14 @@ const GoalCandidates: React.FC = () => {
           </TabsList>
 
           <TabsContent value="all" className="mt-6">
+            {/* Recommendation label */}
+            <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span>
+                {t('business.recommendations.based_on_label', 'Recommended based on your Company Profile + this Hiring Goal')}
+              </span>
+            </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredCandidates.map((candidate) => (
                 <XimatarCandidateCard
@@ -428,6 +498,7 @@ const GoalCandidates: React.FC = () => {
                   onSelect={(checked) => toggleSelection(candidate.profile_id, checked)}
                   onToggleShortlist={() => toggleShortlist(candidate.profile_id)}
                   onInviteToChallenge={() => handleSingleInvite(candidate.profile_id)}
+                  recommendationExplanation={candidate.ximatar_id ? recommendationsMap.get(candidate.ximatar_id) : undefined}
                 />
               ))}
             </div>
@@ -462,6 +533,7 @@ const GoalCandidates: React.FC = () => {
                   onSelect={(checked) => toggleSelection(candidate.profile_id, checked)}
                   onToggleShortlist={() => toggleShortlist(candidate.profile_id)}
                   onInviteToChallenge={() => handleSingleInvite(candidate.profile_id)}
+                  recommendationExplanation={candidate.ximatar_id ? recommendationsMap.get(candidate.ximatar_id) : undefined}
                 />
               ))}
             </div>
