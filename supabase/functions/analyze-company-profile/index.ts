@@ -2,6 +2,13 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.3";
 import * as cheerio from "npm:cheerio@1.0.0-rc.12";
+import { 
+  XIMATAR_PROFILES, 
+  computePillarsFromText, 
+  rankXimatarsByDistance, 
+  computeKeywordBonus,
+  type XimatarPillars 
+} from "../_shared/ximatarTaxonomy.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -156,10 +163,49 @@ serve(async (req) => {
 
     console.log("Normalized analysis:", normalizedAnalysis);
 
-    const pillar_vector = computePillars(normalizedAnalysis);
-    const recommended_ximatars = suggestXimatars(pillar_vector, normalizedAnalysis);
+    // Use canonical taxonomy for pillar computation
+    const analysisText = [
+      normalizedAnalysis.summary, 
+      normalizedAnalysis.operating_style, 
+      normalizedAnalysis.communication_style, 
+      ...(normalizedAnalysis.values || []),
+      ...(normalizedAnalysis.ideal_traits || [])
+    ].join(" ");
+    
+    const pillar_vector = computePillarsFromText(analysisText);
+    
+    // Rank XIMAtars using canonical taxonomy with keyword bonus
+    const contextKeywords = [
+      ...(normalizedAnalysis.values || []),
+      ...(normalizedAnalysis.ideal_traits || [])
+    ];
+    
+    const rankedXimatars = rankXimatarsByDistance(pillar_vector).map(x => {
+      const { bonus, matchedKeywords } = computeKeywordBonus(x.id, contextKeywords);
+      return {
+        ...x,
+        adjustedDistance: x.distance - bonus, // Lower is better
+        matchedKeywords
+      };
+    }).sort((a, b) => a.adjustedDistance - b.adjustedDistance);
+    
+    // Top 3 for recommended_ximatars (legacy field)
+    const recommended_ximatars = rankedXimatars.slice(0, 3).map(x => x.id);
+    
+    // All 12 ranked IDs for ideal_ximatar_profile_ids
+    const ideal_ximatar_profile_ids = rankedXimatars.map(x => x.id);
+    
+    // Build reasoning for top picks
+    const ideal_ximatar_profile_reasoning = rankedXimatars.slice(0, 3).map(x => {
+      const profile = XIMATAR_PROFILES[x.id];
+      const keywords = x.matchedKeywords.length > 0 
+        ? `Matched keywords: ${x.matchedKeywords.slice(0, 3).join(', ')}. `
+        : '';
+      return `${profile.name} (${profile.title}): ${keywords}Distance: ${x.distance.toFixed(1)}`;
+    }).join(' | ');
 
     console.log("Upserting profile for company_id:", company_id);
+    console.log("Ideal XIMAtar profile IDs:", ideal_ximatar_profile_ids);
 
     // Ensure a row exists, then update with full analysis
     const { error: upsertErr } = await supabase.from("company_profiles").upsert(
@@ -174,6 +220,8 @@ serve(async (req) => {
         risk_areas: normalizedAnalysis.risk_areas,
         pillar_vector,
         recommended_ximatars,
+        ideal_ximatar_profile_ids,
+        ideal_ximatar_profile_reasoning,
         updated_at: new Date().toISOString(),
       },
       { onConflict: "company_id" }
@@ -185,7 +233,7 @@ serve(async (req) => {
     }
 
     console.log("Profile saved successfully");
-    return json({ success: true });
+    return json({ success: true, ideal_ximatar_profile_ids, recommended_ximatars });
   } catch (e) {
     console.error("analyze_company_profile error:", e);
     return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
@@ -252,46 +300,5 @@ function fallbackAnalysis(corpus: string) {
   };
 }
 
-function computePillars(a: any) {
-  // Simple heuristics blended with keywords
-  const txt = [a.summary, a.operating_style, a.communication_style, ...(toArray(a.values) || [])].join(" ").toLowerCase();
-  const score = (cond: boolean, base = 50, inc = 15) => Math.max(0, Math.min(100, base + (cond ? inc : 0)));
-  return {
-    drive: score(/fast|ambitious|growth|performance|drive|execution/.test(txt), 55, 20),
-    comp_power: score(/data|analysis|engineering|ai|software|ops|process/.test(txt), 50, 20),
-    communication: score(/communication|team|collaboration|marketing|brand|story/.test(txt), 50, 20),
-    creativity: score(/innovation|design|creative|explore|experiment/.test(txt), 50, 20),
-    knowledge: score(/expertise|quality|research|learning|safety|compliance/.test(txt), 55, 15),
-  };
-}
-
-function suggestXimatars(vec: { drive: number; comp_power: number; communication: number; creativity: number; knowledge: number }, a: any): string[] {
-  // Basic template vectors 0–100
-  const templates: Record<string, { drive: number; comp_power: number; communication: number; creativity: number; knowledge: number }> = {
-    lion: { drive: 90, comp_power: 60, communication: 70, creativity: 55, knowledge: 55 },
-    owl: { drive: 55, comp_power: 85, communication: 60, creativity: 55, knowledge: 75 },
-    dolphin: { drive: 60, comp_power: 55, communication: 85, creativity: 60, knowledge: 60 },
-    fox: { drive: 65, comp_power: 60, communication: 75, creativity: 85, knowledge: 55 },
-    bear: { drive: 60, comp_power: 65, communication: 55, creativity: 50, knowledge: 85 },
-    bee: { drive: 85, comp_power: 80, communication: 55, creativity: 50, knowledge: 60 },
-    wolf: { drive: 80, comp_power: 60, communication: 70, creativity: 55, knowledge: 55 },
-    cat: { drive: 55, comp_power: 85, communication: 55, creativity: 80, knowledge: 60 },
-    parrot: { drive: 60, comp_power: 55, communication: 90, creativity: 70, knowledge: 55 },
-    elephant: { drive: 55, comp_power: 65, communication: 60, creativity: 55, knowledge: 90 },
-    horse: { drive: 80, comp_power: 65, communication: 60, creativity: 55, knowledge: 60 },
-    chameleon: { drive: 65, comp_power: 65, communication: 65, creativity: 65, knowledge: 65 },
-  };
-  const names = Object.keys(templates);
-  const dist = (a: any, b: any) => Math.sqrt(
-    (a.drive - b.drive) ** 2 +
-    (a.comp_power - b.comp_power) ** 2 +
-    (a.communication - b.communication) ** 2 +
-    (a.creativity - b.creativity) ** 2 +
-    (a.knowledge - b.knowledge) ** 2,
-  );
-  return names
-    .map((n) => ({ n, d: dist(vec, templates[n]) }))
-    .sort((x, y) => x.d - y.d)
-    .slice(0, 3)
-    .map((x) => x.n);
-}
+// NOTE: computePillars and suggestXimatars have been replaced by
+// canonical functions from _shared/ximatarTaxonomy.ts

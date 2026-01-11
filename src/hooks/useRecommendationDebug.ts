@@ -1,29 +1,18 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { 
+  XIMATAR_PROFILES, 
+  XIMATAR_PILLAR_VECTORS,
+  computePillarDistance,
+  computeKeywordBonus,
+  rankXimatarsByDistance,
+  NEUTRAL_PILLARS,
+  type XimatarPillars,
+  type XimatarProfile
+} from '@/lib/ximatarTaxonomy';
 
-// XIMAtar template pillar vectors (same as edge function)
-const XIMATAR_TEMPLATES: Record<string, XimatarPillars> = {
-  lion: { drive: 90, comp_power: 60, communication: 70, creativity: 55, knowledge: 55 },
-  owl: { drive: 55, comp_power: 85, communication: 60, creativity: 55, knowledge: 75 },
-  dolphin: { drive: 60, comp_power: 55, communication: 85, creativity: 60, knowledge: 60 },
-  fox: { drive: 65, comp_power: 60, communication: 75, creativity: 85, knowledge: 55 },
-  bear: { drive: 60, comp_power: 65, communication: 55, creativity: 50, knowledge: 85 },
-  bee: { drive: 85, comp_power: 80, communication: 55, creativity: 50, knowledge: 60 },
-  wolf: { drive: 80, comp_power: 60, communication: 70, creativity: 55, knowledge: 55 },
-  cat: { drive: 55, comp_power: 85, communication: 55, creativity: 80, knowledge: 60 },
-  parrot: { drive: 60, comp_power: 55, communication: 90, creativity: 70, knowledge: 55 },
-  elephant: { drive: 55, comp_power: 65, communication: 60, creativity: 55, knowledge: 90 },
-  horse: { drive: 80, comp_power: 65, communication: 60, creativity: 55, knowledge: 60 },
-  chameleon: { drive: 65, comp_power: 65, communication: 65, creativity: 65, knowledge: 65 },
-};
-
-interface XimatarPillars {
-  drive: number;
-  comp_power: number;
-  communication: number;
-  creativity: number;
-  knowledge: number;
-}
+// Re-export for use in components
+export { XIMATAR_PROFILES, XIMATAR_PILLAR_VECTORS };
 
 export interface CompanyContext {
   source: 'business_profiles';
@@ -96,10 +85,11 @@ function computeExplanation(
   companyVector: XimatarPillars | null,
   rank: number
 ): XimatarExplanation {
-  const template = XIMATAR_TEMPLATES[ximatar];
-  const effectiveCompanyVector = companyVector || { drive: 50, comp_power: 50, communication: 50, creativity: 50, knowledge: 50 };
+  const profile = XIMATAR_PROFILES[ximatar];
+  const template = profile?.pillars || NEUTRAL_PILLARS;
+  const effectiveCompanyVector = companyVector || NEUTRAL_PILLARS;
   
-  const distance = computeDistance(effectiveCompanyVector, template);
+  const distance = computePillarDistance(effectiveCompanyVector, template);
   
   const pillars = ['drive', 'comp_power', 'communication', 'creativity', 'knowledge'] as const;
   const pillar_deltas: Record<string, number> = {};
@@ -224,13 +214,14 @@ export function useRecommendationDebug(businessId: string | undefined, hiringGoa
         city_region: hiringGoal.city_region,
       } : null;
       
-      // Compute all XIMAtar rankings
+      // Compute all XIMAtar rankings using canonical taxonomy
       const companyPillarVector = companyContext.pillar_vector;
-      const allXimatarsRanked = Object.keys(XIMATAR_TEMPLATES)
+      const effectiveVector = companyPillarVector || NEUTRAL_PILLARS;
+      
+      const allXimatarsRanked = Object.keys(XIMATAR_PROFILES)
         .map(x => {
-          const template = XIMATAR_TEMPLATES[x];
-          const effectiveVector = companyPillarVector || { drive: 50, comp_power: 50, communication: 50, creativity: 50, knowledge: 50 };
-          return { ximatar: x, distance: computeDistance(effectiveVector, template) };
+          const profile = XIMATAR_PROFILES[x];
+          return { ximatar: x, distance: computePillarDistance(effectiveVector, profile.pillars) };
         })
         .sort((a, b) => a.distance - b.distance)
         .map((x, idx) => computeExplanation(x.ximatar, companyPillarVector, idx + 1));
@@ -311,5 +302,4 @@ export function useRecommendationDebug(businessId: string | undefined, hiringGoa
   };
 }
 
-// Export templates for use in debug UI
-export { XIMATAR_TEMPLATES };
+// Re-exported from ximatarTaxonomy for backward compatibility
