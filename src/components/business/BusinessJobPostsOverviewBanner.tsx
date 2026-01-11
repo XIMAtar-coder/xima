@@ -208,7 +208,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
                 <div
                   key={job.id}
                   className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-lg bg-background/50 border border-border/50 hover:border-primary/30 transition-colors cursor-pointer"
-                  onClick={() => navigate(`/business/goals/${job.id}`)}
+                  onClick={() => navigate(`/business/goals/${job.id}/candidates`)}
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className="flex-1 min-w-0">
