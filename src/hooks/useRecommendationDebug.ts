@@ -4,12 +4,15 @@ import {
   XIMATAR_PROFILES, 
   XIMATAR_PILLAR_VECTORS,
   computePillarDistance,
-  computeKeywordBonus,
-  rankXimatarsByDistance,
   NEUTRAL_PILLARS,
   type XimatarPillars,
-  type XimatarProfile
 } from '@/lib/ximatarTaxonomy';
+import { 
+  computeXimatarRecommendations,
+  type RecommendationResult,
+  type XimatarRecommendation,
+  SCORING_WEIGHTS,
+} from '@/lib/recommendations';
 
 // Re-export for use in components
 export { XIMATAR_PROFILES, XIMATAR_PILLAR_VECTORS };
@@ -27,6 +30,7 @@ export interface CompanyContext {
   operating_style: string | null;
   communication_style: string | null;
   recommended_ximatars: string[] | null;
+  ideal_ximatar_profile_ids: string[] | null;
 }
 
 export interface HiringGoalContext {
@@ -64,20 +68,17 @@ export interface RecommendationDebugData {
     algorithm: string;
     description: string;
     weights: Record<string, number>;
+    constraints: {
+      min_company_constraint: number;
+      total_recommendations: number;
+    };
   };
+  // New engine results
+  engineResult: RecommendationResult | null;
+  // Legacy format for backward compatibility
   recommendedXimatars: XimatarExplanation[];
   allXimatarsRanked: XimatarExplanation[];
   mismatchWarnings: string[];
-}
-
-function computeDistance(a: XimatarPillars, b: XimatarPillars): number {
-  return Math.sqrt(
-    (a.drive - b.drive) ** 2 +
-    (a.comp_power - b.comp_power) ** 2 +
-    (a.communication - b.communication) ** 2 +
-    (a.creativity - b.creativity) ** 2 +
-    (a.knowledge - b.knowledge) ** 2
-  );
 }
 
 function computeExplanation(
@@ -171,8 +172,7 @@ export function useRecommendationDebug(businessId: string | undefined, hiringGoa
         hiringGoal = data;
       }
       
-      // Build contexts
-      // Safely parse pillar_vector from JSON
+      // Parse pillar_vector from JSON
       let pillarVector: XimatarPillars | null = null;
       if (companyProfile?.pillar_vector && typeof companyProfile.pillar_vector === 'object') {
         const pv = companyProfile.pillar_vector as Record<string, unknown>;
@@ -185,6 +185,12 @@ export function useRecommendationDebug(businessId: string | undefined, hiringGoa
             knowledge: (pv.knowledge as number) || 50,
           };
         }
+      }
+      
+      // Parse ideal_ximatar_profile_ids
+      let idealXimatarIds: string[] | null = null;
+      if (companyProfile?.ideal_ximatar_profile_ids && Array.isArray(companyProfile.ideal_ximatar_profile_ids)) {
+        idealXimatarIds = companyProfile.ideal_ximatar_profile_ids;
       }
       
       const companyContext: CompanyContext = {
@@ -200,6 +206,7 @@ export function useRecommendationDebug(businessId: string | undefined, hiringGoa
         operating_style: companyProfile?.operating_style || null,
         communication_style: companyProfile?.communication_style || null,
         recommended_ximatars: companyProfile?.recommended_ximatars || null,
+        ideal_ximatar_profile_ids: idealXimatarIds,
       };
       
       const hiringGoalContext: HiringGoalContext | null = hiringGoal ? {
@@ -214,7 +221,26 @@ export function useRecommendationDebug(businessId: string | undefined, hiringGoa
         city_region: hiringGoal.city_region,
       } : null;
       
-      // Compute all XIMAtar rankings using canonical taxonomy
+      // ============ RUN NEW RECOMMENDATION ENGINE ============
+      const engineResult = computeXimatarRecommendations(
+        {
+          ideal_ximatar_profile_ids: companyContext.ideal_ximatar_profile_ids,
+          pillar_vector: companyContext.pillar_vector,
+          values: companyContext.values,
+          ideal_traits: companyContext.ideal_traits,
+          industry: companyContext.industry,
+        },
+        {
+          role_title: hiringGoalContext?.role_title,
+          function_area: hiringGoalContext?.function_area,
+          experience_level: hiringGoalContext?.experience_level,
+          task_description: hiringGoalContext?.task_description,
+          country: hiringGoalContext?.country,
+          city_region: hiringGoalContext?.city_region,
+        }
+      );
+      
+      // ============ LEGACY: Compute pillar-distance rankings ============
       const companyPillarVector = companyContext.pillar_vector;
       const effectiveVector = companyPillarVector || NEUTRAL_PILLARS;
       
@@ -235,16 +261,19 @@ export function useRecommendationDebug(businessId: string | undefined, hiringGoa
         mismatchWarnings.push('⚠️ No company profile generated - recommendations use default values');
       }
       
+      if (!idealXimatarIds || idealXimatarIds.length === 0) {
+        mismatchWarnings.push('⚠️ No ideal_ximatar_profile_ids in company profile - using goal-only strategy');
+      }
+      
       if (companyContext.recommended_ximatars) {
         const storedTop3 = companyContext.recommended_ximatars.slice(0, 3);
-        const computedTop3 = recommendedXimatars.map(x => x.ximatar);
+        const engineTop3 = engineResult.recommendations.slice(0, 3).map(r => r.ximatar_id);
         const storedSet = new Set(storedTop3);
-        const computedSet = new Set(computedTop3);
-        const missing = storedTop3.filter(x => !computedSet.has(x));
-        const extra = computedTop3.filter(x => !storedSet.has(x));
+        const engineSet = new Set(engineTop3);
+        const missing = storedTop3.filter(x => !engineSet.has(x));
         
-        if (missing.length > 0 || extra.length > 0) {
-          mismatchWarnings.push(`⚠️ Stored recommendations [${storedTop3.join(', ')}] differ from computed [${computedTop3.join(', ')}]`);
+        if (missing.length > 0) {
+          mismatchWarnings.push(`⚠️ Legacy stored [${storedTop3.join(', ')}] differs from engine [${engineTop3.join(', ')}]`);
         }
       }
       
@@ -253,7 +282,7 @@ export function useRecommendationDebug(businessId: string | undefined, hiringGoa
       }
       
       if (hiringGoalContext && !hiringGoalContext.role_title) {
-        mismatchWarnings.push('⚠️ Hiring goal has no role_title - may affect future matching');
+        mismatchWarnings.push('⚠️ Hiring goal has no role_title - may affect matching quality');
       }
       
       // Build debug data
@@ -262,16 +291,15 @@ export function useRecommendationDebug(businessId: string | undefined, hiringGoa
         companyContext,
         hiringGoalContext,
         matchingStrategy: {
-          algorithm: 'euclidean_distance',
-          description: 'Ranks XIMAtar templates by Euclidean distance from company pillar_vector. Closest templates are recommended.',
-          weights: {
-            drive: 1,
-            comp_power: 1,
-            communication: 1,
-            creativity: 1,
-            knowledge: 1
-          }
+          algorithm: 'hybrid_constraint_scoring',
+          description: `Hard constraint: ≥${engineResult.debug_info.min_company_constraint} from company's ideal list. Soft rank by goal similarity (skills 45%, keywords 25%, industry 15%, seniority 10%, location 5%).`,
+          weights: SCORING_WEIGHTS,
+          constraints: {
+            min_company_constraint: engineResult.debug_info.min_company_constraint,
+            total_recommendations: 12,
+          },
         },
+        engineResult,
         recommendedXimatars,
         allXimatarsRanked,
         mismatchWarnings
@@ -281,6 +309,7 @@ export function useRecommendationDebug(businessId: string | undefined, hiringGoa
       
       // Log to console for easy debugging
       console.log('[RecommendationDebug] Full debug data:', data);
+      console.log('[RecommendationDebug] Engine result:', engineResult);
       
     } catch (err: any) {
       console.error('[RecommendationDebug] Error:', err);
@@ -301,5 +330,3 @@ export function useRecommendationDebug(businessId: string | undefined, hiringGoa
     refresh: loadDebugData
   };
 }
-
-// Re-exported from ximatarTaxonomy for backward compatibility
