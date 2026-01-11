@@ -17,6 +17,7 @@ import { HiringGoalOverviewCard } from '@/components/business/HiringGoalOverview
 import { ActiveChallengesOverview } from '@/components/business/ActiveChallengesOverview';
 import { BusinessCommandCenter } from '@/components/business/BusinessCommandCenter';
 import { CompanyProfileCard } from '@/components/business/CompanyProfileCard';
+import { RecommendationDebugPanel } from '@/components/business/RecommendationDebugPanel';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useChallengeStatsMap } from '@/hooks/useChallengeResponsesData';
 
@@ -647,6 +648,12 @@ const BusinessDashboard = () => {
             </div>
           );
         })()}
+
+        {/* XIMAtar Recommendation Debug Panel - Only visible with ?debug=1 or in DEV */}
+        <RecommendationDebugPanel 
+          businessId={user?.id}
+          hiringGoalId={hiringGoalDraftId}
+        />
 
         {/* Company Profile Card - ORIGINAL UI RESTORED */}
         <CompanyProfileCard
