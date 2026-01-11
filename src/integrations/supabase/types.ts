@@ -669,6 +669,50 @@ export type Database = {
           },
         ]
       }
+      business_job_post_imports: {
+        Row: {
+          business_id: string
+          created_at: string
+          error_message: string | null
+          extracted_data: Json | null
+          id: string
+          job_post_id: string | null
+          pdf_path: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          error_message?: string | null
+          extracted_data?: Json | null
+          id?: string
+          job_post_id?: string | null
+          pdf_path: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          error_message?: string | null
+          extracted_data?: Json | null
+          id?: string
+          job_post_id?: string | null
+          pdf_path?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_job_post_imports_job_post_id_fkey"
+            columns: ["job_post_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_profiles: {
         Row: {
           company_logo: string | null

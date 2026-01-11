@@ -1821,6 +1821,28 @@
       },
       "error_loading": "Impossibile caricare i dati degli annunci"
     },
+    "pdf_import": {
+      "title": "Importa Annuncio da PDF",
+      "description": "Carica un PDF con la descrizione del lavoro per creare automaticamente una bozza.",
+      "import_button": "Importa",
+      "drop_or_click": "Trascina un PDF qui o clicca per sfogliare",
+      "pdf_only": "Solo file PDF, max 10MB",
+      "uploading": "Caricamento PDF...",
+      "processing": "Estrazione dettagli lavoro...",
+      "please_wait": "Potrebbe richiedere alcuni istanti",
+      "success": "Importazione Completata",
+      "job_created": "Bozza annuncio creata con successo",
+      "job_created_desc": "L'annuncio è stato creato come bozza. Rivedi e pubblica quando pronto.",
+      "view_job": "Vedi Annuncio",
+      "error": "Importazione Fallita",
+      "unknown_error": "Si è verificato un errore imprevisto",
+      "try_again": "Riprova",
+      "invalid_file_type": "Tipo File Non Valido",
+      "only_pdf_allowed": "Sono ammessi solo file PDF",
+      "file_too_large": "File Troppo Grande",
+      "max_size_10mb": "Dimensione massima 10MB",
+      "import_from_pdf": "Importa da PDF"
+    },
     "overview": {
       "how_xima_works": "Come funziona XIMA",
       "pipeline_subtitle": "Una pipeline a 3 livelli che trasforma i colloqui in segnali",
