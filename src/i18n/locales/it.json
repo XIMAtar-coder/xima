@@ -1818,7 +1818,8 @@
         "active": "Attivo",
         "draft": "Bozza",
         "closed": "Chiuso"
-      }
+      },
+      "error_loading": "Impossibile caricare i dati degli annunci"
     },
     "overview": {
       "how_xima_works": "Come funziona XIMA",

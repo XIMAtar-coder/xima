@@ -1404,7 +1404,8 @@
         "active": "Activa",
         "draft": "Borrador",
         "closed": "Cerrada"
-      }
+      },
+      "error_loading": "No se pudieron cargar los datos de ofertas"
     },
     "overview": {
       "how_xima_works": "Cómo funciona XIMA",

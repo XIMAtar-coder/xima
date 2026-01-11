@@ -484,6 +484,7 @@ const BusinessDashboard = () => {
           hiringGoalId={hiringGoalDraftId}
           companyProfile={companyProfile}
           businessProfile={businessProfile}
+          businessId={user?.id}
         />
 
         {/* Active Challenges Overview - Operational Activity Priority */}
