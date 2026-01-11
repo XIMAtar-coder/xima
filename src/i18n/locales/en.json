@@ -2703,7 +2703,14 @@
     "requirements_nice_placeholder": "Optional skills that would be a plus...",
     "benefits": "Benefits & Perks",
     "benefits_placeholder": "What you offer to candidates...",
-    "save_draft": "Save as Draft"
+    "save_draft": "Save as Draft",
+    "filter_all": "All",
+    "linked_challenges": "challenges",
+    "updated_at": "Updated {{date}}",
+    "no_jobs_filter": "No {{status}} job posts",
+    "job_archived": "Job post archived",
+    "edit": "Edit",
+    "cancel": "Cancel"
   },
   "opportunities": {
     "my_opportunities": "My Opportunities",

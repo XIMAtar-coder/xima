@@ -2152,7 +2152,14 @@
     "requirements_nice_placeholder": "Habilidades opcionales que serían un plus...",
     "benefits": "Beneficios y Ventajas",
     "benefits_placeholder": "Qué ofreces a los candidatos...",
-    "save_draft": "Guardar como Borrador"
+    "save_draft": "Guardar como Borrador",
+    "filter_all": "Todos",
+    "linked_challenges": "desafíos",
+    "updated_at": "Actualizado {{date}}",
+    "no_jobs_filter": "No hay ofertas {{status}}",
+    "job_archived": "Oferta archivada",
+    "edit": "Editar",
+    "cancel": "Cancelar"
   },
   "opportunities": {
     "my_opportunities": "Mis Oportunidades",
