@@ -1799,6 +1799,27 @@
         "followup_requested": "{{count}} candidati hanno richiesto follow-up"
       }
     },
+    "job_posts_overview": {
+      "title": "Panoramica Annunci di Lavoro",
+      "go_to_job_posts": "Vai agli Annunci",
+      "create_job_post": "Crea Annuncio",
+      "recent_posts": "Annunci di Lavoro Recenti",
+      "no_posts": "Nessun annuncio ancora. Crea il tuo primo annuncio per iniziare ad attrarre candidati.",
+      "applications": "candidature",
+      "new": "nuove",
+      "last_updated": "Aggiornato {{date}}",
+      "kpi": {
+        "open_job_posts": "Posizioni Aperte",
+        "active_job_posts": "Annunci Attivi",
+        "total_applications": "Candidature (30g)",
+        "pending_reviews": "Da Valutare"
+      },
+      "status": {
+        "active": "Attivo",
+        "draft": "Bozza",
+        "closed": "Chiuso"
+      }
+    },
     "overview": {
       "how_xima_works": "Come funziona XIMA",
       "pipeline_subtitle": "Una pipeline a 3 livelli che trasforma i colloqui in segnali",

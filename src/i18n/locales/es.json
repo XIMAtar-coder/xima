@@ -1385,6 +1385,27 @@
         "followup_requested": "{{count}} candidatos solicitaron seguimiento"
       }
     },
+    "job_posts_overview": {
+      "title": "Resumen de Ofertas de Empleo",
+      "go_to_job_posts": "Ver Ofertas",
+      "create_job_post": "Crear Oferta",
+      "recent_posts": "Ofertas de Empleo Recientes",
+      "no_posts": "Ninguna oferta todavía. Crea tu primera oferta para empezar a atraer candidatos.",
+      "applications": "candidaturas",
+      "new": "nuevas",
+      "last_updated": "Actualizado {{date}}",
+      "kpi": {
+        "open_job_posts": "Posiciones Abiertas",
+        "active_job_posts": "Ofertas Activas",
+        "total_applications": "Candidaturas (30d)",
+        "pending_reviews": "Pendientes de Revisión"
+      },
+      "status": {
+        "active": "Activa",
+        "draft": "Borrador",
+        "closed": "Cerrada"
+      }
+    },
     "overview": {
       "how_xima_works": "Cómo funciona XIMA",
       "pipeline_subtitle": "Un pipeline de 3 niveles que convierte entrevistas en señales",

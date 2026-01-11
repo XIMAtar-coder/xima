@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BusinessOverviewBanner } from './BusinessOverviewBanner';
+import { BusinessJobPostsOverviewBanner } from './BusinessJobPostsOverviewBanner';
 import { 
   Briefcase, 
   Target, 
@@ -148,6 +149,9 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
         companyProfile={companyProfile}
         businessProfile={businessProfile}
       />
+
+      {/* Job Posts Overview Banner - BEFORE Quick Actions */}
+      <BusinessJobPostsOverviewBanner loading={loading} />
 
       {/* Next Actions Row */}
       <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
