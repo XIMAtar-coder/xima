@@ -2661,7 +2661,14 @@
     "requirements_nice_placeholder": "Competenze opzionali che sarebbero un plus...",
     "benefits": "Benefit e Vantaggi",
     "benefits_placeholder": "Cosa offri ai candidati...",
-    "save_draft": "Salva come Bozza"
+    "save_draft": "Salva come Bozza",
+    "filter_all": "Tutti",
+    "linked_challenges": "sfide",
+    "updated_at": "Aggiornato {{date}}",
+    "no_jobs_filter": "Nessuna offerta {{status}}",
+    "job_archived": "Offerta archiviata",
+    "edit": "Modifica",
+    "cancel": "Annulla"
   },
   "opportunities": {
     "my_opportunities": "Le Mie Opportunità",
