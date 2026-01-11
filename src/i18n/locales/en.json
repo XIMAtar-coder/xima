@@ -2067,6 +2067,13 @@
       "no_goals_hint": "You need a hiring goal to invite candidates.",
       "create_goal": "Create Hiring Goal"
     },
+    "recommendations": {
+      "based_on_label": "Recommended based on your Company Profile + this Hiring Goal",
+      "matches_ideal_profile": "Matches your ideal profile set",
+      "top_skill_match": "Top skill match: {{skills}}",
+      "industry_match": "Industry match: {{industry}}",
+      "general_fit": "General fit for this role"
+    },
     "shortlist": {
       "title": "Shortlist Based on Your Hiring Goal",
       "subtitle": "{{count}} candidates matched to your requirements",

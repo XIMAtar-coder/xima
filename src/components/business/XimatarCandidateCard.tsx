@@ -6,10 +6,27 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Star, Target, TrendingUp, Bookmark, BookmarkCheck, Send, CheckCircle2, Loader2 } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Star, Target, TrendingUp, Bookmark, BookmarkCheck, Send, CheckCircle2, Loader2, ChevronDown, Sparkles } from 'lucide-react';
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer } from 'recharts';
 import { CandidateLevelBadge } from './CandidateLevelBadge';
 import { CandidateLevelProgress } from '@/lib/challenges/challengeLevels';
+
+export interface XimatarRecommendationExplanation {
+  shortReason: string;
+  source: 'company_constraint' | 'hiring_goal_match' | 'taxonomy_fallback';
+  matchedSkills?: string[];
+  matchedKeywords?: string[];
+  matchedIndustries?: string[];
+  scoreBreakdown?: {
+    skills_overlap: number;
+    keyword_overlap: number;
+    industry_overlap: number;
+    seniority_fit: number;
+    location_language: number;
+    total: number;
+  };
+}
 
 interface XimatarCandidateCardProps {
   candidateId: string;
@@ -35,6 +52,7 @@ interface XimatarCandidateCardProps {
   inviteDisabled?: boolean;
   inviteDisabledReason?: string;
   levelProgress?: CandidateLevelProgress;
+  recommendationExplanation?: XimatarRecommendationExplanation;
   onSelect?: (checked: boolean) => void;
   onToggleShortlist?: () => void;
   onInviteToChallenge?: () => void;
@@ -64,10 +82,14 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
   inviteDisabled = false,
   inviteDisabledReason,
   levelProgress,
+  recommendationExplanation,
   onSelect,
   onToggleShortlist,
   onInviteToChallenge,
 }) => {
+  const isDebugMode = typeof window !== 'undefined' && 
+    (new URLSearchParams(window.location.search).get('debug') === '1' || 
+     import.meta.env.DEV);
   const { t } = useTranslation();
   const [showDetail, setShowDetail] = useState(false);
   const level = getLevelBadge(evaluationScore);
@@ -137,6 +159,59 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
               <p className="text-sm text-white/70 capitalize">{ximatarLabel}</p>
             )}
           </div>
+
+          {/* Recommendation Explanation - 1-line reason */}
+          {recommendationExplanation && (
+            <div className="mb-3">
+              <div className="flex items-center justify-center gap-1.5 text-xs text-primary/80">
+                <Sparkles className="h-3 w-3" />
+                <span>{recommendationExplanation.shortReason}</span>
+              </div>
+              
+              {/* Debug mode: expandable full details */}
+              {isDebugMode && (
+                <Collapsible className="mt-2">
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="w-full h-6 text-xs text-muted-foreground hover:text-foreground">
+                      <ChevronDown className="h-3 w-3 mr-1" />
+                      Show details
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="mt-2 p-2 bg-muted/30 rounded text-xs space-y-1.5 border border-border/50">
+                    <div className="flex items-center gap-1.5">
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                        {recommendationExplanation.source.replace(/_/g, ' ')}
+                      </Badge>
+                    </div>
+                    {recommendationExplanation.matchedSkills && recommendationExplanation.matchedSkills.length > 0 && (
+                      <div className="text-muted-foreground">
+                        <span className="text-foreground font-medium">Skills:</span> {recommendationExplanation.matchedSkills.slice(0, 5).join(', ')}
+                      </div>
+                    )}
+                    {recommendationExplanation.matchedIndustries && recommendationExplanation.matchedIndustries.length > 0 && (
+                      <div className="text-muted-foreground">
+                        <span className="text-foreground font-medium">Industry:</span> {recommendationExplanation.matchedIndustries.join(', ')}
+                      </div>
+                    )}
+                    {recommendationExplanation.scoreBreakdown && (
+                      <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 pt-1 border-t border-border/50">
+                        <span className="text-muted-foreground">Skills:</span>
+                        <span>{recommendationExplanation.scoreBreakdown.skills_overlap.toFixed(0)}</span>
+                        <span className="text-muted-foreground">Keywords:</span>
+                        <span>{recommendationExplanation.scoreBreakdown.keyword_overlap.toFixed(0)}</span>
+                        <span className="text-muted-foreground">Industry:</span>
+                        <span>{recommendationExplanation.scoreBreakdown.industry_overlap.toFixed(0)}</span>
+                        <span className="text-muted-foreground">Seniority:</span>
+                        <span>{recommendationExplanation.scoreBreakdown.seniority_fit.toFixed(0)}</span>
+                        <span className="text-muted-foreground font-medium">Total:</span>
+                        <span className="font-medium">{recommendationExplanation.scoreBreakdown.total.toFixed(1)}</span>
+                      </div>
+                    )}
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
+            </div>
+          )}
 
           {/* Level Progress Badge */}
           {levelProgress && (

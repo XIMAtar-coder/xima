@@ -1982,6 +1982,13 @@
       "no_goals_hint": "Hai bisogno di un obiettivo di assunzione per invitare candidati.",
       "create_goal": "Crea Obiettivo di Assunzione"
     },
+    "recommendations": {
+      "based_on_label": "Consigliati in base al tuo Profilo Aziendale + questo Obiettivo di Assunzione",
+      "matches_ideal_profile": "Corrisponde al tuo profilo ideale",
+      "top_skill_match": "Competenza chiave: {{skills}}",
+      "industry_match": "Settore: {{industry}}",
+      "general_fit": "Adatto a questo ruolo"
+    },
     "shortlist": {
       "title": "Lista Basata sul Tuo Obiettivo di Assunzione",
       "subtitle": "{{count}} candidati corrispondenti ai tuoi requisiti",
