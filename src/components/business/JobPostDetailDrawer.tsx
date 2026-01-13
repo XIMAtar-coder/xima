@@ -27,7 +27,10 @@ import {
   Briefcase, 
   Save,
   Eye,
-  EyeOff
+  EyeOff,
+  CheckCircle2,
+  AlertTriangle,
+  FileText
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
@@ -48,9 +51,55 @@ interface JobPost {
   seniority: string | null;
   department: string | null;
   salary_range: string | null;
+  source_pdf_path?: string | null;
   created_at: string;
   updated_at: string;
   linkedChallengesCount?: number;
+}
+
+// Publish Readiness Block Component
+function PublishReadinessBlock({ job }: { job: JobPost }) {
+  const { t } = useTranslation();
+  
+  const hasDescription = !!job.description && job.description.length > 50;
+  const hasResponsibilities = !!job.responsibilities && job.responsibilities.includes('•');
+  const hasRequirements = !!job.requirements_must && job.requirements_must.includes('•');
+  const isFromPdf = !!job.source_pdf_path;
+  
+  const isReady = hasDescription && hasResponsibilities && hasRequirements;
+  const sectionsComplete = [hasDescription, hasResponsibilities, hasRequirements].filter(Boolean).length;
+  
+  if (!isFromPdf) return null;
+  
+  return (
+    <div className={`p-3 rounded-lg border ${isReady ? 'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800' : 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800'}`}>
+      <div className="flex items-start gap-2">
+        {isReady ? (
+          <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
+        ) : (
+          <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+        )}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <FileText className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs font-medium">
+              {isReady ? t('jobs.import_cleaned') : t('jobs.import_needs_review')}
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            {t('jobs.sections_complete', { count: sectionsComplete, total: 3 })}
+          </p>
+          {!isReady && (
+            <ul className="text-xs text-muted-foreground mt-1 space-y-0.5">
+              {!hasDescription && <li>• {t('jobs.missing_description')}</li>}
+              {!hasResponsibilities && <li>• {t('jobs.missing_responsibilities')}</li>}
+              {!hasRequirements && <li>• {t('jobs.missing_requirements')}</li>}
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 interface JobPostDetailDrawerProps {
@@ -168,6 +217,9 @@ export default function JobPostDetailDrawer({
         </SheetHeader>
 
         <div className="space-y-6">
+          {/* Publish Readiness Indicator */}
+          <PublishReadinessBlock job={job} />
+
           {/* Actions */}
           <div className="flex flex-wrap gap-2">
             <Button

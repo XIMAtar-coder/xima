@@ -2727,7 +2727,13 @@
     "no_jobs_filter": "No {{status}} job posts",
     "job_archived": "Job post archived",
     "edit": "Edit",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "import_cleaned": "Imported content cleaned ✓",
+    "import_needs_review": "Review imported content",
+    "sections_complete": "{{count}}/{{total}} sections complete",
+    "missing_description": "Add job description",
+    "missing_responsibilities": "Add responsibilities",
+    "missing_requirements": "Add requirements"
   },
   "opportunities": {
     "my_opportunities": "My Opportunities",

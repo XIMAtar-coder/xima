@@ -2169,7 +2169,13 @@
     "no_jobs_filter": "No hay ofertas {{status}}",
     "job_archived": "Oferta archivada",
     "edit": "Editar",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "import_cleaned": "Contenido importado limpio ✓",
+    "import_needs_review": "Revisar contenido importado",
+    "sections_complete": "{{count}}/{{total}} secciones completas",
+    "missing_description": "Añadir descripción del trabajo",
+    "missing_responsibilities": "Añadir responsabilidades",
+    "missing_requirements": "Añadir requisitos"
   },
   "opportunities": {
     "my_opportunities": "Mis Oportunidades",
