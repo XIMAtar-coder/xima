@@ -1846,7 +1846,9 @@
       "create_page_hint": "Hai già una descrizione del lavoro? Importa il PDF per precompilare i campi.",
       "form_prefilled": "Modulo Precompilato",
       "form_prefilled_desc": "I dettagli del lavoro sono stati importati dal PDF. Rivedi e modifica se necessario.",
-      "use_imported_data": "Usa Dati Importati"
+      "use_imported_data": "Usa Dati Importati",
+      "redirect_to_draft_toast": "Bozza creata da PDF",
+      "redirecting_to_draft": "Reindirizzamento alla nuova bozza..."
     },
     "overview": {
       "how_xima_works": "Come funziona XIMA",

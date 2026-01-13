@@ -1924,7 +1924,9 @@
       "create_page_hint": "Have an existing job description? Import the PDF to prefill fields.",
       "form_prefilled": "Form Pre-filled",
       "form_prefilled_desc": "Job details have been imported from the PDF. Review and adjust as needed.",
-      "use_imported_data": "Use Imported Data"
+      "use_imported_data": "Use Imported Data",
+      "redirect_to_draft_toast": "Draft created from PDF",
+      "redirecting_to_draft": "Redirecting to your new job draft..."
     },
     "overview": {
       "how_xima_works": "How XIMA Works",

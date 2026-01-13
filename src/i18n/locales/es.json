@@ -1432,7 +1432,9 @@
       "create_page_hint": "¿Tienes una descripción de trabajo existente? Importa el PDF para rellenar los campos.",
       "form_prefilled": "Formulario Prellenado",
       "form_prefilled_desc": "Los detalles del trabajo se han importado del PDF. Revisa y ajusta según sea necesario.",
-      "use_imported_data": "Usar Datos Importados"
+      "use_imported_data": "Usar Datos Importados",
+      "redirect_to_draft_toast": "Borrador creado desde PDF",
+      "redirecting_to_draft": "Redirigiendo a tu nuevo borrador..."
     },
     "overview": {
       "how_xima_works": "Cómo funciona XIMA",
