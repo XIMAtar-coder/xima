@@ -1428,7 +1428,11 @@
       "only_pdf_allowed": "Solo se permiten archivos PDF",
       "file_too_large": "Archivo Demasiado Grande",
       "max_size_10mb": "Tamaño máximo de archivo 10MB",
-      "import_from_pdf": "Importar desde PDF"
+      "import_from_pdf": "Importar desde PDF",
+      "create_page_hint": "¿Tienes una descripción de trabajo existente? Importa el PDF para rellenar los campos.",
+      "form_prefilled": "Formulario Prellenado",
+      "form_prefilled_desc": "Los detalles del trabajo se han importado del PDF. Revisa y ajusta según sea necesario.",
+      "use_imported_data": "Usar Datos Importados"
     },
     "overview": {
       "how_xima_works": "Cómo funciona XIMA",

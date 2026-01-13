@@ -7,13 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Briefcase, MapPin, ArrowLeft, Loader2 } from 'lucide-react';
+import { Briefcase, MapPin, ArrowLeft, Loader2, FileUp } from 'lucide-react';
+import PdfImportModal, { ImportedJobData } from '@/components/business/PdfImportModal';
 
 const CreateJobOffer = () => {
   const navigate = useNavigate();
@@ -22,6 +22,7 @@ const CreateJobOffer = () => {
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: businessLoading } = useBusinessRole();
   const [loading, setLoading] = useState(false);
+  const [showPdfImport, setShowPdfImport] = useState(false);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -98,6 +99,28 @@ const CreateJobOffer = () => {
     }
   };
 
+  const handleImportComplete = (jobData: ImportedJobData) => {
+    setFormData({
+      title: jobData.title || '',
+      description: jobData.description || '',
+      responsibilities: jobData.responsibilities || '',
+      requirements_must: jobData.requirements_must || '',
+      requirements_nice: jobData.requirements_nice || '',
+      benefits: jobData.benefits || '',
+      location: jobData.location || '',
+      employment_type: jobData.employment_type || '',
+      seniority: jobData.seniority || '',
+      department: jobData.department || '',
+      salary_range: jobData.salary_range || '',
+      status: 'draft',
+    });
+    
+    toast({
+      title: t('business.pdf_import.form_prefilled'),
+      description: t('business.pdf_import.form_prefilled_desc'),
+    });
+  };
+
   if (businessLoading) {
     return (
       <BusinessLayout>
@@ -121,13 +144,32 @@ const CreateJobOffer = () => {
             {t('common.back')}
           </Button>
 
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">{t('jobs.create_job')}</h1>
-            <p className="text-muted-foreground">
-              {t('jobs.create_job_desc')}
-            </p>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">{t('jobs.create_job')}</h1>
+              <p className="text-muted-foreground">
+                {t('jobs.create_job_desc')}
+              </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                {t('business.pdf_import.create_page_hint')}
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowPdfImport(true)}
+              className="shrink-0"
+            >
+              <FileUp className="h-4 w-4 mr-2" />
+              {t('business.pdf_import.import_from_pdf')}
+            </Button>
           </div>
         </div>
+
+        <PdfImportModal 
+          open={showPdfImport} 
+          onOpenChange={setShowPdfImport}
+          onImportComplete={handleImportComplete}
+        />
 
         <form onSubmit={(e) => handleSubmit(e, true)}>
           <Card className="bg-card border-border">

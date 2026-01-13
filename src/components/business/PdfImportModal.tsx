@@ -15,15 +15,32 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Upload, FileText, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 
+export interface ImportedJobData {
+  id: string;
+  title: string;
+  description: string | null;
+  responsibilities: string | null;
+  requirements_must: string | null;
+  requirements_nice: string | null;
+  benefits: string | null;
+  location: string | null;
+  employment_type: string | null;
+  seniority: string | null;
+  department: string | null;
+  salary_range: string | null;
+}
+
 interface PdfImportModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
+  /** If provided, will fetch the imported job and call this instead of navigating */
+  onImportComplete?: (jobData: ImportedJobData) => void;
 }
 
 type ImportStatus = 'idle' | 'uploading' | 'processing' | 'success' | 'error';
 
-export default function PdfImportModal({ open, onOpenChange, onSuccess }: PdfImportModalProps) {
+export default function PdfImportModal({ open, onOpenChange, onSuccess, onImportComplete }: PdfImportModalProps) {
   const { t } = useTranslation();
   const { user } = useUser();
   const { toast } = useToast();
@@ -151,10 +168,32 @@ export default function PdfImportModal({ open, onOpenChange, onSuccess }: PdfImp
     }
   };
 
-  const handleViewJob = () => {
+  const handleViewJob = async () => {
     if (createdJobId) {
-      onOpenChange(false);
-      navigate(`/opportunities/${createdJobId}`);
+      // If onImportComplete is provided, fetch job data and call it
+      if (onImportComplete) {
+        try {
+          const { data: jobData, error } = await supabase
+            .from('job_posts')
+            .select('id, title, description, responsibilities, requirements_must, requirements_nice, benefits, location, employment_type, seniority, department, salary_range')
+            .eq('id', createdJobId)
+            .single();
+          
+          if (error) throw error;
+          
+          onOpenChange(false);
+          resetState();
+          onImportComplete(jobData as ImportedJobData);
+        } catch (error) {
+          console.error('Error fetching imported job:', error);
+          // Fallback to navigation
+          onOpenChange(false);
+          navigate(`/opportunities/${createdJobId}`);
+        }
+      } else {
+        onOpenChange(false);
+        navigate(`/opportunities/${createdJobId}`);
+      }
     }
   };
 
@@ -284,7 +323,10 @@ export default function PdfImportModal({ open, onOpenChange, onSuccess }: PdfImp
                 {t('common.close')}
               </Button>
               <Button onClick={handleViewJob}>
-                {t('business.pdf_import.view_job')}
+                {onImportComplete 
+                  ? t('business.pdf_import.use_imported_data')
+                  : t('business.pdf_import.view_job')
+                }
               </Button>
             </>
           )}

@@ -1920,7 +1920,11 @@
       "only_pdf_allowed": "Only PDF files are allowed",
       "file_too_large": "File Too Large",
       "max_size_10mb": "Maximum file size is 10MB",
-      "import_from_pdf": "Import from PDF"
+      "import_from_pdf": "Import from PDF",
+      "create_page_hint": "Have an existing job description? Import the PDF to prefill fields.",
+      "form_prefilled": "Form Pre-filled",
+      "form_prefilled_desc": "Job details have been imported from the PDF. Review and adjust as needed.",
+      "use_imported_data": "Use Imported Data"
     },
     "overview": {
       "how_xima_works": "How XIMA Works",
