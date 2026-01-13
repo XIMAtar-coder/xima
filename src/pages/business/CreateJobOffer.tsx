@@ -13,7 +13,7 @@ import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Briefcase, MapPin, ArrowLeft, Loader2, FileUp } from 'lucide-react';
-import PdfImportModal, { ImportedJobData } from '@/components/business/PdfImportModal';
+import PdfImportModal from '@/components/business/PdfImportModal';
 
 const CreateJobOffer = () => {
   const navigate = useNavigate();
@@ -99,28 +99,6 @@ const CreateJobOffer = () => {
     }
   };
 
-  const handleImportComplete = (jobData: ImportedJobData) => {
-    setFormData({
-      title: jobData.title || '',
-      description: jobData.description || '',
-      responsibilities: jobData.responsibilities || '',
-      requirements_must: jobData.requirements_must || '',
-      requirements_nice: jobData.requirements_nice || '',
-      benefits: jobData.benefits || '',
-      location: jobData.location || '',
-      employment_type: jobData.employment_type || '',
-      seniority: jobData.seniority || '',
-      department: jobData.department || '',
-      salary_range: jobData.salary_range || '',
-      status: 'draft',
-    });
-    
-    toast({
-      title: t('business.pdf_import.form_prefilled'),
-      description: t('business.pdf_import.form_prefilled_desc'),
-    });
-  };
-
   if (businessLoading) {
     return (
       <BusinessLayout>
@@ -165,10 +143,10 @@ const CreateJobOffer = () => {
           </div>
         </div>
 
+        {/* PDF Import Modal - will auto-redirect on success */}
         <PdfImportModal 
           open={showPdfImport} 
           onOpenChange={setShowPdfImport}
-          onImportComplete={handleImportComplete}
         />
 
         <form onSubmit={(e) => handleSubmit(e, true)}>

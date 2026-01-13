@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
@@ -51,6 +51,7 @@ type StatusFilter = 'all' | 'draft' | 'active' | 'archived';
 
 export default function Jobs() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: roleLoading } = useBusinessRole();
@@ -60,6 +61,17 @@ export default function Jobs() {
   const [creatingChallengeForJob, setCreatingChallengeForJob] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+
+  // Handle jobPostId from URL query param (for redirect after PDF import)
+  useEffect(() => {
+    const jobPostIdFromUrl = searchParams.get('jobPostId');
+    if (jobPostIdFromUrl && !loading && jobs.length > 0) {
+      setSelectedJobId(jobPostIdFromUrl);
+      // Clean up URL
+      searchParams.delete('jobPostId');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams, loading, jobs]);
 
   useEffect(() => {
     if (!roleLoading && !isBusiness) {

@@ -8,12 +8,16 @@ const corsHeaders = {
 
 interface ExtractedJobData {
   title: string;
-  company: string;
   location: string | null;
   description: string;
-  skills: string[];
-  requirements: string[];
-  responsibilities: string[];
+  responsibilities: string | null;
+  requirements_must: string | null;
+  requirements_nice: string | null;
+  benefits: string | null;
+  employment_type: string | null;
+  seniority: string | null;
+  department: string | null;
+  salary_range: string | null;
 }
 
 function extractTextFromPdf(pdfBytes: Uint8Array): string {
@@ -97,12 +101,16 @@ function parseJobDescription(text: string): ExtractedJobData {
   
   // Try to extract title (usually first meaningful line or line after "Job Title:")
   let title = 'Imported Job Position';
-  let company = '';
   let location: string | null = null;
-  const skills: string[] = [];
-  const requirements: string[] = [];
-  const responsibilities: string[] = [];
+  let department: string | null = null;
+  let employment_type: string | null = null;
+  let seniority: string | null = null;
+  let salary_range: string | null = null;
   let description = '';
+  let responsibilities = '';
+  let requirements_must = '';
+  let requirements_nice = '';
+  let benefits = '';
   
   let currentSection = 'description';
   
@@ -125,14 +133,6 @@ function parseJobDescription(text: string): ExtractedJobData {
       }
     }
     
-    // Detect company
-    if (lowerLine.includes('company:') || lowerLine.includes('employer:') || lowerLine.includes('organization:')) {
-      const colonIdx = line.indexOf(':');
-      if (colonIdx > 0) {
-        company = line.substring(colonIdx + 1).trim();
-      }
-    }
-    
     // Detect location
     if (lowerLine.includes('location:') || lowerLine.includes('place:') || lowerLine.includes('city:')) {
       const colonIdx = line.indexOf(':');
@@ -141,65 +141,100 @@ function parseJobDescription(text: string): ExtractedJobData {
       }
     }
     
+    // Detect department
+    if (lowerLine.includes('department:') || lowerLine.includes('team:') || lowerLine.includes('division:')) {
+      const colonIdx = line.indexOf(':');
+      if (colonIdx > 0) {
+        department = line.substring(colonIdx + 1).trim();
+      }
+    }
+    
+    // Detect employment type
+    if (lowerLine.includes('full-time') || lowerLine.includes('full time')) {
+      employment_type = 'full-time';
+    } else if (lowerLine.includes('part-time') || lowerLine.includes('part time')) {
+      employment_type = 'part-time';
+    } else if (lowerLine.includes('contract')) {
+      employment_type = 'contract';
+    } else if (lowerLine.includes('internship') || lowerLine.includes('intern')) {
+      employment_type = 'internship';
+    }
+    
+    // Detect seniority
+    if (lowerLine.includes('senior') || lowerLine.includes('sr.')) {
+      seniority = 'senior';
+    } else if (lowerLine.includes('junior') || lowerLine.includes('jr.') || lowerLine.includes('entry')) {
+      seniority = 'entry';
+    } else if (lowerLine.includes('lead') || lowerLine.includes('principal')) {
+      seniority = 'lead';
+    } else if (lowerLine.includes('manager') || lowerLine.includes('director') || lowerLine.includes('executive')) {
+      seniority = 'executive';
+    }
+    
+    // Detect salary
+    if (lowerLine.includes('salary') || lowerLine.includes('compensation') || lowerLine.includes('€') || lowerLine.includes('$')) {
+      const salaryMatch = line.match(/[\$€£]?\s*[\d,]+\s*[-–]\s*[\$€£]?\s*[\d,]+/);
+      if (salaryMatch) {
+        salary_range = salaryMatch[0];
+      }
+    }
+    
     // Detect sections
-    if (lowerLine.includes('skill') || lowerLine.includes('competenc') || lowerLine.includes('tecnolog')) {
-      currentSection = 'skills';
-      continue;
-    }
-    if (lowerLine.includes('requirement') || lowerLine.includes('requisit') || lowerLine.includes('qualific')) {
-      currentSection = 'requirements';
-      continue;
-    }
-    if (lowerLine.includes('responsibilit') || lowerLine.includes('duties') || lowerLine.includes('mansioni')) {
+    if (lowerLine.includes('responsibilit') || lowerLine.includes('duties') || lowerLine.includes('mansioni') || lowerLine.includes('what you\'ll do')) {
       currentSection = 'responsibilities';
       continue;
     }
-    if (lowerLine.includes('about') || lowerLine.includes('description') || lowerLine.includes('overview')) {
+    if (lowerLine.includes('requirement') || lowerLine.includes('requisit') || lowerLine.includes('qualific') || lowerLine.includes('must have') || lowerLine.includes('what we need')) {
+      currentSection = 'requirements_must';
+      continue;
+    }
+    if (lowerLine.includes('nice to have') || lowerLine.includes('preferred') || lowerLine.includes('bonus') || lowerLine.includes('plus')) {
+      currentSection = 'requirements_nice';
+      continue;
+    }
+    if (lowerLine.includes('benefit') || lowerLine.includes('perks') || lowerLine.includes('what we offer') || lowerLine.includes('vantaggi')) {
+      currentSection = 'benefits';
+      continue;
+    }
+    if (lowerLine.includes('about') || lowerLine.includes('description') || lowerLine.includes('overview') || lowerLine.includes('chi siamo')) {
       currentSection = 'description';
       continue;
     }
     
     // Add to appropriate section
-    if (line.match(/^[-•*]\s*/) || line.match(/^\d+\.\s*/)) {
-      const cleanLine = line.replace(/^[-•*\d.]\s*/, '').trim();
-      if (cleanLine.length > 3) {
-        switch (currentSection) {
-          case 'skills':
-            skills.push(cleanLine);
-            break;
-          case 'requirements':
-            requirements.push(cleanLine);
-            break;
-          case 'responsibilities':
-            responsibilities.push(cleanLine);
-            break;
-          default:
-            description += cleanLine + '\n';
-        }
+    const cleanLine = line.replace(/^[-•*\d.]\s*/, '').trim();
+    if (cleanLine.length > 3) {
+      switch (currentSection) {
+        case 'responsibilities':
+          responsibilities += (responsibilities ? '\n' : '') + '• ' + cleanLine;
+          break;
+        case 'requirements_must':
+          requirements_must += (requirements_must ? '\n' : '') + '• ' + cleanLine;
+          break;
+        case 'requirements_nice':
+          requirements_nice += (requirements_nice ? '\n' : '') + '• ' + cleanLine;
+          break;
+        case 'benefits':
+          benefits += (benefits ? '\n' : '') + '• ' + cleanLine;
+          break;
+        default:
+          description += (description ? '\n' : '') + cleanLine;
       }
-    } else if (currentSection === 'description') {
-      description += line + '\n';
-    }
-  }
-  
-  // Extract skills from text if none found
-  if (skills.length === 0) {
-    const skillPatterns = /\b(JavaScript|TypeScript|Python|Java|React|Angular|Vue|Node\.?js|SQL|AWS|Azure|GCP|Docker|Kubernetes|Git|Agile|Scrum|REST|GraphQL|HTML|CSS|SASS|MongoDB|PostgreSQL|Redis|Linux|CI\/CD|DevOps|Machine Learning|AI|Data Analysis|Excel|Word|PowerPoint|Communication|Leadership|Teamwork|Problem.?Solving)\b/gi;
-    const foundSkills = text.match(skillPatterns);
-    if (foundSkills) {
-      const uniqueSkills = [...new Set(foundSkills.map(s => s.trim()))];
-      skills.push(...uniqueSkills.slice(0, 10));
     }
   }
   
   return {
     title: title.substring(0, 200),
-    company: company || 'To be specified',
     location,
     description: description.trim().substring(0, 5000) || text.substring(0, 2000),
-    skills: skills.slice(0, 15),
-    requirements: requirements.slice(0, 20),
-    responsibilities: responsibilities.slice(0, 20)
+    responsibilities: responsibilities.trim() || null,
+    requirements_must: requirements_must.trim() || null,
+    requirements_nice: requirements_nice.trim() || null,
+    benefits: benefits.trim() || null,
+    employment_type,
+    seniority,
+    department,
+    salary_range
   };
 }
 
@@ -293,16 +328,25 @@ serve(async (req) => {
     const parsedData = parseJobDescription(extractedText);
     console.log('Parsed job data:', JSON.stringify(parsedData, null, 2));
 
-    // Create a draft job post in opportunities table using service client
+    // Create a draft job post in job_posts table (NOT opportunities)
     const { data: newJob, error: createError } = await serviceClient
-      .from('opportunities')
+      .from('job_posts')
       .insert({
+        business_id: user.id,
         title: parsedData.title,
-        company: parsedData.company,
-        location: parsedData.location,
         description: parsedData.description,
-        skills: parsedData.skills,
-        is_public: false, // Draft by default
+        responsibilities: parsedData.responsibilities,
+        requirements_must: parsedData.requirements_must,
+        requirements_nice: parsedData.requirements_nice,
+        benefits: parsedData.benefits,
+        location: parsedData.location,
+        employment_type: parsedData.employment_type,
+        seniority: parsedData.seniority,
+        department: parsedData.department,
+        salary_range: parsedData.salary_range,
+        source_pdf_path: importRecord.pdf_path,
+        status: 'draft',
+        locale: 'en',
       })
       .select()
       .single();
@@ -322,12 +366,12 @@ serve(async (req) => {
       );
     }
 
-    // Update import record with success
+    // Update import record with success - link to new_job_post_id
     await userClient
       .from('business_job_post_imports')
       .update({ 
         status: 'ready',
-        job_post_id: newJob.id,
+        new_job_post_id: newJob.id,
         extracted_data: {
           ...parsedData,
           rawTextLength: extractedText.length
@@ -340,7 +384,9 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        jobPostId: newJob.id,
+        job_post_id: newJob.id,
+        import_id: importId,
+        status: 'ready',
         extractedData: parsedData
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

@@ -1,9 +1,6 @@
-import { useState, useRef } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { useUser } from '@/context/UserContext';
-import { useToast } from '@/hooks/use-toast';
+import { useJobPostPdfImport } from '@/hooks/useJobPostPdfImport';
 import {
   Dialog,
   DialogContent,
@@ -15,191 +12,52 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Upload, FileText, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 
-export interface ImportedJobData {
-  id: string;
-  title: string;
-  description: string | null;
-  responsibilities: string | null;
-  requirements_must: string | null;
-  requirements_nice: string | null;
-  benefits: string | null;
-  location: string | null;
-  employment_type: string | null;
-  seniority: string | null;
-  department: string | null;
-  salary_range: string | null;
-}
-
 interface PdfImportModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Callback after successful import (before redirect) */
   onSuccess?: () => void;
-  /** If provided, will fetch the imported job and call this instead of navigating */
-  onImportComplete?: (jobData: ImportedJobData) => void;
 }
 
-type ImportStatus = 'idle' | 'uploading' | 'processing' | 'success' | 'error';
-
-export default function PdfImportModal({ open, onOpenChange, onSuccess, onImportComplete }: PdfImportModalProps) {
+export default function PdfImportModal({ open, onOpenChange, onSuccess }: PdfImportModalProps) {
   const { t } = useTranslation();
-  const { user } = useUser();
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   
-  const [status, setStatus] = useState<ImportStatus>('idle');
-  const [progress, setProgress] = useState(0);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [createdJobId, setCreatedJobId] = useState<string | null>(null);
+  const {
+    status,
+    progress,
+    selectedFile,
+    errorMessage,
+    fileInputRef,
+    handleFileSelect,
+    handleImport,
+    resetState,
+    redirectToJob,
+  } = useJobPostPdfImport({ redirectOnSuccess: true });
 
-  const resetState = () => {
-    setStatus('idle');
-    setProgress(0);
-    setSelectedFile(null);
-    setErrorMessage('');
-    setCreatedJobId(null);
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.type !== 'application/pdf') {
-        toast({
-          title: t('business.pdf_import.invalid_file_type'),
-          description: t('business.pdf_import.only_pdf_allowed'),
-          variant: 'destructive',
-        });
-        return;
-      }
-      if (file.size > 10 * 1024 * 1024) {
-        toast({
-          title: t('business.pdf_import.file_too_large'),
-          description: t('business.pdf_import.max_size_10mb'),
-          variant: 'destructive',
-        });
-        return;
-      }
-      setSelectedFile(file);
-      setStatus('idle');
-      setErrorMessage('');
+  // Reset state when modal closes
+  useEffect(() => {
+    if (!open) {
+      resetState();
     }
-  };
-
-  const handleImport = async () => {
-    if (!selectedFile || !user) return;
-
-    try {
-      setStatus('uploading');
-      setProgress(10);
-
-      // Upload PDF to storage
-      const filePath = `${user.id}/${Date.now()}_${selectedFile.name}`;
-      const { error: uploadError } = await supabase.storage
-        .from('job_posts_pdfs')
-        .upload(filePath, selectedFile);
-
-      if (uploadError) {
-        throw new Error(uploadError.message);
-      }
-
-      setProgress(30);
-
-      // Create import record
-      const { data: importRecord, error: insertError } = await supabase
-        .from('business_job_post_imports')
-        .insert({
-          business_id: user.id,
-          pdf_path: filePath,
-          status: 'queued',
-        })
-        .select()
-        .single();
-
-      if (insertError) {
-        throw new Error(insertError.message);
-      }
-
-      setProgress(50);
-      setStatus('processing');
-
-      // Call edge function to process PDF
-      const { data: sessionData } = await supabase.auth.getSession();
-      const response = await fetch(
-        `https://iyckvvnecpnldrxqmzta.supabase.co/functions/v1/import-job-post-pdf`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionData.session?.access_token}`,
-          },
-          body: JSON.stringify({ importId: importRecord.id }),
-        }
-      );
-
-      setProgress(80);
-
-      const result = await response.json();
-
-      if (!result.success) {
-        throw new Error(result.error || 'Processing failed');
-      }
-
-      setProgress(100);
-      setStatus('success');
-      setCreatedJobId(result.jobPostId);
-
-      toast({
-        title: t('business.pdf_import.success'),
-        description: t('business.pdf_import.job_created'),
-      });
-
-      onSuccess?.();
-
-    } catch (error: any) {
-      console.error('Import error:', error);
-      setStatus('error');
-      setErrorMessage(error.message || t('business.pdf_import.unknown_error'));
-      toast({
-        title: t('business.pdf_import.error'),
-        description: error.message || t('business.pdf_import.unknown_error'),
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handleViewJob = async () => {
-    if (createdJobId) {
-      // If onImportComplete is provided, fetch job data and call it
-      if (onImportComplete) {
-        try {
-          const { data: jobData, error } = await supabase
-            .from('job_posts')
-            .select('id, title, description, responsibilities, requirements_must, requirements_nice, benefits, location, employment_type, seniority, department, salary_range')
-            .eq('id', createdJobId)
-            .single();
-          
-          if (error) throw error;
-          
-          onOpenChange(false);
-          resetState();
-          onImportComplete(jobData as ImportedJobData);
-        } catch (error) {
-          console.error('Error fetching imported job:', error);
-          // Fallback to navigation
-          onOpenChange(false);
-          navigate(`/opportunities/${createdJobId}`);
-        }
-      } else {
-        onOpenChange(false);
-        navigate(`/opportunities/${createdJobId}`);
-      }
-    }
-  };
+  }, [open, resetState]);
 
   const handleClose = () => {
     resetState();
     onOpenChange(false);
+  };
+
+  const handleImportClick = async () => {
+    const jobId = await handleImport();
+    if (jobId) {
+      onSuccess?.();
+      onOpenChange(false);
+      // Hook already handles redirect
+    }
+  };
+
+  const handleViewJob = () => {
+    onOpenChange(false);
+    redirectToJob();
   };
 
   return (
@@ -281,7 +139,7 @@ export default function PdfImportModal({ open, onOpenChange, onSuccess, onImport
                   {t('business.pdf_import.success')}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {t('business.pdf_import.job_created_desc')}
+                  {t('business.pdf_import.redirecting_to_draft')}
                 </p>
               </div>
             </div>
@@ -310,7 +168,7 @@ export default function PdfImportModal({ open, onOpenChange, onSuccess, onImport
               <Button variant="outline" onClick={handleClose}>
                 {t('common.cancel')}
               </Button>
-              <Button onClick={handleImport} disabled={!selectedFile}>
+              <Button onClick={handleImportClick} disabled={!selectedFile}>
                 <Upload className="h-4 w-4 mr-2" />
                 {t('business.pdf_import.import_button')}
               </Button>
@@ -318,17 +176,9 @@ export default function PdfImportModal({ open, onOpenChange, onSuccess, onImport
           )}
           
           {status === 'success' && (
-            <>
-              <Button variant="outline" onClick={handleClose}>
-                {t('common.close')}
-              </Button>
-              <Button onClick={handleViewJob}>
-                {onImportComplete 
-                  ? t('business.pdf_import.use_imported_data')
-                  : t('business.pdf_import.view_job')
-                }
-              </Button>
-            </>
+            <Button onClick={handleViewJob}>
+              {t('business.pdf_import.view_job')}
+            </Button>
           )}
           
           {status === 'error' && (
