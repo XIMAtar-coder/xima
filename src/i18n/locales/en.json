@@ -1907,13 +1907,16 @@
       "drop_or_click": "Drop a PDF here or click to browse",
       "pdf_only": "PDF files only, max 10MB",
       "uploading": "Uploading PDF...",
-      "processing": "Extracting job details...",
+      "processing": "Mapping job details...",
+      "extracting_text": "Extracting text from PDF...",
       "please_wait": "This may take a few moments",
       "success": "Import Successful",
       "job_created": "Draft job post created successfully",
       "job_created_desc": "The job post has been created as a draft. Review and publish when ready.",
       "view_job": "View Job Post",
       "error": "Import Failed",
+      "extraction_error": "Text Extraction Failed",
+      "no_extractable_text": "This PDF has no extractable text (may be a scan or protected PDF). Please upload a text-based PDF.",
       "unknown_error": "An unexpected error occurred",
       "try_again": "Try Again",
       "invalid_file_type": "Invalid File Type",
@@ -1926,7 +1929,8 @@
       "form_prefilled_desc": "Job details have been imported from the PDF. Review and adjust as needed.",
       "use_imported_data": "Use Imported Data",
       "redirect_to_draft_toast": "Draft created from PDF",
-      "redirecting_to_draft": "Redirecting to your new job draft..."
+      "redirecting_to_draft": "Redirecting to your new job draft...",
+      "extraction_failed": "Could not extract text from the PDF"
     },
     "overview": {
       "how_xima_works": "How XIMA Works",

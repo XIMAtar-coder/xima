@@ -20,221 +20,253 @@ interface ExtractedJobData {
   salary_range: string | null;
 }
 
-function extractTextFromPdf(pdfBytes: Uint8Array): string {
-  // Simple text extraction from PDF
-  // This looks for text streams in the PDF and extracts readable content
-  const decoder = new TextDecoder('utf-8', { fatal: false });
-  const content = decoder.decode(pdfBytes);
-  
-  // Extract text between stream markers (basic PDF text extraction)
-  const textParts: string[] = [];
-  
-  // Look for text objects in PDF
-  const streamRegex = /stream\s*([\s\S]*?)\s*endstream/g;
-  let match;
-  
-  while ((match = streamRegex.exec(content)) !== null) {
-    const streamContent = match[1];
-    // Extract text from Tj and TJ operators
-    const textMatches = streamContent.match(/\(([^)]+)\)\s*Tj|\[([^\]]+)\]\s*TJ/g);
-    if (textMatches) {
-      textMatches.forEach(tm => {
-        // Clean up the text
-        const cleaned = tm
-          .replace(/\(([^)]+)\)\s*Tj/g, '$1')
-          .replace(/\[([^\]]+)\]\s*TJ/g, '$1')
-          .replace(/\([^)]*\)/g, (m) => m.slice(1, -1))
-          .replace(/\\n/g, '\n')
-          .replace(/\\r/g, '')
-          .replace(/<[0-9A-Fa-f]+>/g, '')
-          .trim();
-        if (cleaned) {
-          textParts.push(cleaned);
-        }
-      });
-    }
-  }
+interface SectionMap {
+  companyOverview: string;
+  positionSummary: string;
+  responsibilities: string;
+  requirementsMust: string;
+  requirementsNice: string;
+  competencies: string;
+  benefits: string;
+}
 
-  // If no text found via streams, try to find plain text content
-  if (textParts.length === 0) {
-    // Look for text that might be embedded
-    const plainTextRegex = /BT\s*([\s\S]*?)\s*ET/g;
-    while ((match = plainTextRegex.exec(content)) !== null) {
-      const btContent = match[1];
-      const texts = btContent.match(/\(([^)]+)\)/g);
-      if (texts) {
-        texts.forEach(t => {
-          const clean = t.slice(1, -1).trim();
-          if (clean && clean.length > 2) {
-            textParts.push(clean);
-          }
-        });
+function extractSections(text: string): SectionMap {
+  const sections: SectionMap = {
+    companyOverview: '',
+    positionSummary: '',
+    responsibilities: '',
+    requirementsMust: '',
+    requirementsNice: '',
+    competencies: '',
+    benefits: '',
+  };
+
+  // Normalize text
+  const normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const lines = normalizedText.split('\n');
+  
+  // Section heading patterns (case-insensitive)
+  const sectionPatterns: { pattern: RegExp; key: keyof SectionMap }[] = [
+    { pattern: /^(company\s*overview|about\s*(us|the\s*company)?|chi\s*siamo)/i, key: 'companyOverview' },
+    { pattern: /^(position\s*summary|job\s*summary|role\s*overview|overview|sommario)/i, key: 'positionSummary' },
+    { pattern: /^(key\s*responsibilities|responsibilities|duties|what\s*you.ll\s*do|mansioni|compiti)/i, key: 'responsibilities' },
+    { pattern: /^(required\s*qualifications|requirements|must\s*have|requisiti\s*richiesti|qualifiche)/i, key: 'requirementsMust' },
+    { pattern: /^(preferred\s*qualifications|nice\s*to\s*have|preferred|bonus|plus|requisiti\s*preferenziali)/i, key: 'requirementsNice' },
+    { pattern: /^(professional\s*competencies|competencies|skills|competenze)/i, key: 'competencies' },
+    { pattern: /^(what\s*we\s*offer|benefits|perks|offriamo|vantaggi)/i, key: 'benefits' },
+  ];
+
+  let currentSection: keyof SectionMap | null = null;
+  let currentContent: string[] = [];
+
+  const saveCurrentSection = () => {
+    if (currentSection && currentContent.length > 0) {
+      sections[currentSection] = currentContent.join('\n').trim();
+    }
+    currentContent = [];
+  };
+
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+    
+    // Check if this line is a section heading
+    let matchedSection: keyof SectionMap | null = null;
+    for (const { pattern, key } of sectionPatterns) {
+      if (pattern.test(trimmedLine)) {
+        matchedSection = key;
+        break;
       }
     }
+
+    if (matchedSection) {
+      saveCurrentSection();
+      currentSection = matchedSection;
+    } else if (currentSection) {
+      // Add line to current section
+      if (trimmedLine) {
+        currentContent.push(trimmedLine);
+      }
+    } else if (trimmedLine) {
+      // No section yet, add to company overview as default
+      sections.companyOverview += (sections.companyOverview ? '\n' : '') + trimmedLine;
+    }
   }
 
-  // Fallback: extract any readable text from the PDF
-  if (textParts.length === 0) {
-    // Get ASCII readable content
-    const readable = content.split('').filter(c => {
-      const code = c.charCodeAt(0);
-      return (code >= 32 && code <= 126) || code === 10 || code === 13;
-    }).join('');
-    
-    // Try to find structured content
-    const lines = readable.split(/[\r\n]+/).filter(line => {
-      return line.trim().length > 10 && 
-             !line.includes('obj') && 
-             !line.includes('endobj') &&
-             !line.includes('/Type') &&
-             !line.includes('/Length');
-    });
-    
-    textParts.push(...lines);
+  // Save last section
+  saveCurrentSection();
+
+  return sections;
+}
+
+function extractMetadata(text: string): Partial<ExtractedJobData> {
+  const metadata: Partial<ExtractedJobData> = {};
+  const lines = text.split('\n').slice(0, 30); // Check first 30 lines for metadata
+
+  for (const line of lines) {
+    const lowerLine = line.toLowerCase().trim();
+
+    // Extract title (first substantial line)
+    if (!metadata.title) {
+      const trimmed = line.trim();
+      if (trimmed.length >= 5 && trimmed.length <= 100 && !lowerLine.includes(':')) {
+        // Likely a title - check it's not a company name or generic header
+        if (!lowerLine.includes('company') && !lowerLine.includes('overview')) {
+          metadata.title = trimmed;
+        }
+      }
+    }
+
+    // Location
+    if (lowerLine.includes('location:') || lowerLine.includes('sede:') || lowerLine.includes('place:')) {
+      const colonIdx = line.indexOf(':');
+      if (colonIdx > 0) {
+        metadata.location = line.substring(colonIdx + 1).trim();
+      }
+    }
+
+    // Department
+    if (lowerLine.includes('department:') || lowerLine.includes('team:') || lowerLine.includes('division:') || lowerLine.includes('area:')) {
+      const colonIdx = line.indexOf(':');
+      if (colonIdx > 0) {
+        metadata.department = line.substring(colonIdx + 1).trim();
+      }
+    }
+
+    // Contract/Employment type
+    if (lowerLine.includes('contract type:') || lowerLine.includes('employment type:') || lowerLine.includes('tipo contratto:')) {
+      const colonIdx = line.indexOf(':');
+      if (colonIdx > 0) {
+        const value = line.substring(colonIdx + 1).trim().toLowerCase();
+        if (value.includes('full')) metadata.employment_type = 'full-time';
+        else if (value.includes('part')) metadata.employment_type = 'part-time';
+        else if (value.includes('contract') || value.includes('tempo determinato')) metadata.employment_type = 'contract';
+        else if (value.includes('intern') || value.includes('stage')) metadata.employment_type = 'internship';
+        else metadata.employment_type = line.substring(colonIdx + 1).trim();
+      }
+    }
+
+    // Detect employment type from text
+    if (!metadata.employment_type) {
+      if (lowerLine.includes('full-time') || lowerLine.includes('full time') || lowerLine.includes('tempo pieno')) {
+        metadata.employment_type = 'full-time';
+      } else if (lowerLine.includes('part-time') || lowerLine.includes('part time') || lowerLine.includes('tempo parziale')) {
+        metadata.employment_type = 'part-time';
+      }
+    }
+
+    // Seniority
+    if (lowerLine.includes('seniority:') || lowerLine.includes('level:') || lowerLine.includes('experience level:')) {
+      const colonIdx = line.indexOf(':');
+      if (colonIdx > 0) {
+        metadata.seniority = line.substring(colonIdx + 1).trim().toLowerCase();
+      }
+    }
+
+    // Detect seniority from text
+    if (!metadata.seniority) {
+      if (lowerLine.includes('senior') || lowerLine.includes('sr.')) {
+        metadata.seniority = 'senior';
+      } else if (lowerLine.includes('junior') || lowerLine.includes('jr.') || lowerLine.includes('entry')) {
+        metadata.seniority = 'entry';
+      } else if (lowerLine.includes('lead') || lowerLine.includes('principal')) {
+        metadata.seniority = 'lead';
+      } else if (lowerLine.includes('manager') || lowerLine.includes('director')) {
+        metadata.seniority = 'executive';
+      }
+    }
+
+    // Salary
+    if (lowerLine.includes('salary') || lowerLine.includes('compensation') || lowerLine.includes('ral')) {
+      const salaryMatch = line.match(/[\$€£]?\s*[\d,]+\s*[-–]\s*[\$€£]?\s*[\d,]+/);
+      if (salaryMatch) {
+        metadata.salary_range = salaryMatch[0];
+      }
+    }
+
+    // Reporting line (extract but don't map to job_posts field - just for context)
+    // Could be used for description enrichment
   }
 
-  return textParts.join('\n');
+  return metadata;
+}
+
+function formatBulletPoints(text: string): string {
+  if (!text) return '';
+  
+  const lines = text.split('\n');
+  const formatted = lines.map(line => {
+    const trimmed = line.trim();
+    if (!trimmed) return '';
+    
+    // Already a bullet point
+    if (/^[-•*]\s/.test(trimmed)) return trimmed;
+    
+    // Numbered list
+    if (/^\d+[.)]\s/.test(trimmed)) {
+      return '• ' + trimmed.replace(/^\d+[.)]\s*/, '');
+    }
+    
+    // Add bullet if substantial content
+    if (trimmed.length > 10) {
+      return '• ' + trimmed;
+    }
+    
+    return trimmed;
+  }).filter(Boolean);
+  
+  return formatted.join('\n');
 }
 
 function parseJobDescription(text: string): ExtractedJobData {
-  const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+  // Extract sections
+  const sections = extractSections(text);
   
-  // Try to extract title (usually first meaningful line or line after "Job Title:")
-  let title = 'Imported Job Position';
-  let location: string | null = null;
-  let department: string | null = null;
-  let employment_type: string | null = null;
-  let seniority: string | null = null;
-  let salary_range: string | null = null;
+  // Extract metadata (title, location, etc.)
+  const metadata = extractMetadata(text);
+
+  // Build description from company overview and position summary
   let description = '';
-  let responsibilities = '';
-  let requirements_must = '';
-  let requirements_nice = '';
-  let benefits = '';
-  
-  let currentSection = 'description';
-  
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const lowerLine = line.toLowerCase();
-    
-    // Detect title
-    if (i === 0 && line.length > 5 && line.length < 100) {
-      title = line;
-    } else if (lowerLine.includes('job title') || lowerLine.includes('position:')) {
-      const nextLine = lines[i + 1];
-      if (nextLine && nextLine.length > 3 && nextLine.length < 100) {
-        title = nextLine;
-      } else {
-        const colonIdx = line.indexOf(':');
-        if (colonIdx > 0) {
-          title = line.substring(colonIdx + 1).trim() || title;
-        }
-      }
-    }
-    
-    // Detect location
-    if (lowerLine.includes('location:') || lowerLine.includes('place:') || lowerLine.includes('city:')) {
-      const colonIdx = line.indexOf(':');
-      if (colonIdx > 0) {
-        location = line.substring(colonIdx + 1).trim();
-      }
-    }
-    
-    // Detect department
-    if (lowerLine.includes('department:') || lowerLine.includes('team:') || lowerLine.includes('division:')) {
-      const colonIdx = line.indexOf(':');
-      if (colonIdx > 0) {
-        department = line.substring(colonIdx + 1).trim();
-      }
-    }
-    
-    // Detect employment type
-    if (lowerLine.includes('full-time') || lowerLine.includes('full time')) {
-      employment_type = 'full-time';
-    } else if (lowerLine.includes('part-time') || lowerLine.includes('part time')) {
-      employment_type = 'part-time';
-    } else if (lowerLine.includes('contract')) {
-      employment_type = 'contract';
-    } else if (lowerLine.includes('internship') || lowerLine.includes('intern')) {
-      employment_type = 'internship';
-    }
-    
-    // Detect seniority
-    if (lowerLine.includes('senior') || lowerLine.includes('sr.')) {
-      seniority = 'senior';
-    } else if (lowerLine.includes('junior') || lowerLine.includes('jr.') || lowerLine.includes('entry')) {
-      seniority = 'entry';
-    } else if (lowerLine.includes('lead') || lowerLine.includes('principal')) {
-      seniority = 'lead';
-    } else if (lowerLine.includes('manager') || lowerLine.includes('director') || lowerLine.includes('executive')) {
-      seniority = 'executive';
-    }
-    
-    // Detect salary
-    if (lowerLine.includes('salary') || lowerLine.includes('compensation') || lowerLine.includes('€') || lowerLine.includes('$')) {
-      const salaryMatch = line.match(/[\$€£]?\s*[\d,]+\s*[-–]\s*[\$€£]?\s*[\d,]+/);
-      if (salaryMatch) {
-        salary_range = salaryMatch[0];
-      }
-    }
-    
-    // Detect sections
-    if (lowerLine.includes('responsibilit') || lowerLine.includes('duties') || lowerLine.includes('mansioni') || lowerLine.includes('what you\'ll do')) {
-      currentSection = 'responsibilities';
-      continue;
-    }
-    if (lowerLine.includes('requirement') || lowerLine.includes('requisit') || lowerLine.includes('qualific') || lowerLine.includes('must have') || lowerLine.includes('what we need')) {
-      currentSection = 'requirements_must';
-      continue;
-    }
-    if (lowerLine.includes('nice to have') || lowerLine.includes('preferred') || lowerLine.includes('bonus') || lowerLine.includes('plus')) {
-      currentSection = 'requirements_nice';
-      continue;
-    }
-    if (lowerLine.includes('benefit') || lowerLine.includes('perks') || lowerLine.includes('what we offer') || lowerLine.includes('vantaggi')) {
-      currentSection = 'benefits';
-      continue;
-    }
-    if (lowerLine.includes('about') || lowerLine.includes('description') || lowerLine.includes('overview') || lowerLine.includes('chi siamo')) {
-      currentSection = 'description';
-      continue;
-    }
-    
-    // Add to appropriate section
-    const cleanLine = line.replace(/^[-•*\d.]\s*/, '').trim();
-    if (cleanLine.length > 3) {
-      switch (currentSection) {
-        case 'responsibilities':
-          responsibilities += (responsibilities ? '\n' : '') + '• ' + cleanLine;
-          break;
-        case 'requirements_must':
-          requirements_must += (requirements_must ? '\n' : '') + '• ' + cleanLine;
-          break;
-        case 'requirements_nice':
-          requirements_nice += (requirements_nice ? '\n' : '') + '• ' + cleanLine;
-          break;
-        case 'benefits':
-          benefits += (benefits ? '\n' : '') + '• ' + cleanLine;
-          break;
-        default:
-          description += (description ? '\n' : '') + cleanLine;
-      }
-    }
+  if (sections.companyOverview) {
+    description += sections.companyOverview;
   }
-  
+  if (sections.positionSummary) {
+    description += (description ? '\n\n' : '') + sections.positionSummary;
+  }
+
+  // Format responsibilities with bullets
+  const responsibilities = formatBulletPoints(sections.responsibilities);
+
+  // Format requirements with bullets
+  let requirementsMust = formatBulletPoints(sections.requirementsMust);
+  if (sections.competencies && !requirementsMust) {
+    requirementsMust = formatBulletPoints(sections.competencies);
+  } else if (sections.competencies) {
+    requirementsMust += '\n\n' + formatBulletPoints(sections.competencies);
+  }
+
+  const requirementsNice = formatBulletPoints(sections.requirementsNice);
+  const benefits = formatBulletPoints(sections.benefits);
+
+  // Fallback title if none found
+  const title = metadata.title || 'Imported Job Position';
+
+  // If no structured content, use first portion of text as description
+  if (!description && text.length > 0) {
+    description = text.substring(0, Math.min(2000, text.length));
+  }
+
   return {
     title: title.substring(0, 200),
-    location,
-    description: description.trim().substring(0, 5000) || text.substring(0, 2000),
-    responsibilities: responsibilities.trim() || null,
-    requirements_must: requirements_must.trim() || null,
-    requirements_nice: requirements_nice.trim() || null,
-    benefits: benefits.trim() || null,
-    employment_type,
-    seniority,
-    department,
-    salary_range
+    location: metadata.location || null,
+    description: description.trim().substring(0, 5000),
+    responsibilities: responsibilities || null,
+    requirements_must: requirementsMust || null,
+    requirements_nice: requirementsNice || null,
+    benefits: benefits || null,
+    employment_type: metadata.employment_type || null,
+    seniority: metadata.seniority || null,
+    department: metadata.department || null,
+    salary_range: metadata.salary_range || null,
   };
 }
 
@@ -275,8 +307,11 @@ serve(async (req) => {
       );
     }
 
-    const { importId } = await req.json();
+    const body = await req.json();
+    const { importId, extracted_text, locale } = body;
+    
     console.log(`Processing import ${importId} for user ${user.id}`);
+    console.log(`Extracted text length: ${extracted_text?.length || 0}`);
 
     // Fetch the import record
     const { data: importRecord, error: importError } = await userClient
@@ -300,35 +335,33 @@ serve(async (req) => {
       .update({ status: 'processing' })
       .eq('id', importId);
 
-    // Download the PDF from storage
-    const { data: pdfData, error: downloadError } = await userClient.storage
-      .from('job_posts_pdfs')
-      .download(importRecord.pdf_path);
-
-    if (downloadError || !pdfData) {
-      console.error('PDF download error:', downloadError);
+    // Validate extracted text
+    if (!extracted_text || extracted_text.length < 50) {
+      console.error('No extracted text provided or text too short');
       await userClient
         .from('business_job_post_imports')
-        .update({ status: 'error', error_message: 'Failed to download PDF' })
+        .update({ 
+          status: 'error', 
+          error_message: 'No extractable text found in PDF' 
+        })
         .eq('id', importId);
       return new Response(
-        JSON.stringify({ success: false, error: 'Failed to download PDF' }),
+        JSON.stringify({ success: false, error: 'No extractable text found in PDF. Please ensure the PDF contains text (not scanned images).' }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Extract text from PDF
-    console.log('Extracting text from PDF...');
-    const pdfBytes = new Uint8Array(await pdfData.arrayBuffer());
-    const extractedText = extractTextFromPdf(pdfBytes);
-    
-    console.log('Extracted text length:', extractedText.length);
+    // Parse the job description from extracted text
+    console.log('Parsing job description from extracted text...');
+    const parsedData = parseJobDescription(extracted_text);
+    console.log('Parsed job data:', JSON.stringify({
+      title: parsedData.title,
+      descriptionLength: parsedData.description?.length,
+      hasResponsibilities: !!parsedData.responsibilities,
+      hasRequirements: !!parsedData.requirements_must,
+    }));
 
-    // Parse the job description
-    const parsedData = parseJobDescription(extractedText);
-    console.log('Parsed job data:', JSON.stringify(parsedData, null, 2));
-
-    // Create a draft job post in job_posts table (NOT opportunities)
+    // Create a draft job post in job_posts table
     const { data: newJob, error: createError } = await serviceClient
       .from('job_posts')
       .insert({
@@ -346,7 +379,7 @@ serve(async (req) => {
         salary_range: parsedData.salary_range,
         source_pdf_path: importRecord.pdf_path,
         status: 'draft',
-        locale: 'en',
+        locale: locale || 'en',
       })
       .select()
       .single();
@@ -366,15 +399,42 @@ serve(async (req) => {
       );
     }
 
-    // Update import record with success - link to new_job_post_id
+    // Extract section headings for debug info
+    const headingPatterns = [
+      /company\s*overview/i,
+      /position\s*summary/i,
+      /responsibilities/i,
+      /requirements/i,
+      /qualifications/i,
+      /what\s*we\s*offer/i,
+      /benefits/i,
+    ];
+    const detectedHeadings: string[] = [];
+    for (const pattern of headingPatterns) {
+      if (pattern.test(extracted_text)) {
+        const match = extracted_text.match(pattern);
+        if (match) detectedHeadings.push(match[0]);
+      }
+    }
+
+    // Update import record with success
     await userClient
       .from('business_job_post_imports')
       .update({ 
         status: 'ready',
         new_job_post_id: newJob.id,
         extracted_data: {
-          ...parsedData,
-          rawTextLength: extractedText.length
+          extracted_text_length: extracted_text.length,
+          preview: extracted_text.substring(0, 1000),
+          detected_headings: detectedHeadings,
+          parsed_title: parsedData.title,
+          parsed_sections: {
+            has_description: !!parsedData.description,
+            has_responsibilities: !!parsedData.responsibilities,
+            has_requirements_must: !!parsedData.requirements_must,
+            has_requirements_nice: !!parsedData.requirements_nice,
+            has_benefits: !!parsedData.benefits,
+          }
         }
       })
       .eq('id', importId);
@@ -387,7 +447,6 @@ serve(async (req) => {
         job_post_id: newJob.id,
         import_id: importId,
         status: 'ready',
-        extractedData: parsedData
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
