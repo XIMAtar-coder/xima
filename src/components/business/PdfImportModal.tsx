@@ -10,7 +10,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Upload, FileText, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Upload, FileText, CheckCircle, AlertCircle, Loader2, Bug } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface PdfImportModalProps {
   open: boolean;
@@ -27,6 +28,8 @@ export default function PdfImportModal({ open, onOpenChange, onSuccess }: PdfImp
     progress,
     selectedFile,
     errorMessage,
+    debugInfo,
+    isDebugMode,
     fileInputRef,
     handleFileSelect,
     handleImport,
@@ -58,6 +61,19 @@ export default function PdfImportModal({ open, onOpenChange, onSuccess }: PdfImp
   const handleViewJob = () => {
     onOpenChange(false);
     redirectToJob();
+  };
+
+  const getStatusMessage = () => {
+    switch (status) {
+      case 'extracting':
+        return t('business.pdf_import.extracting_text');
+      case 'uploading':
+        return t('business.pdf_import.uploading');
+      case 'processing':
+        return t('business.pdf_import.processing');
+      default:
+        return '';
+    }
   };
 
   return (
@@ -112,15 +128,12 @@ export default function PdfImportModal({ open, onOpenChange, onSuccess }: PdfImp
           )}
 
           {/* Processing State */}
-          {(status === 'uploading' || status === 'processing') && (
+          {(status === 'extracting' || status === 'uploading' || status === 'processing') && (
             <div className="space-y-4 text-center py-4">
               <Loader2 className="h-10 w-10 mx-auto animate-spin text-primary" />
               <div>
                 <p className="text-sm font-medium">
-                  {status === 'uploading' 
-                    ? t('business.pdf_import.uploading')
-                    : t('business.pdf_import.processing')
-                  }
+                  {getStatusMessage()}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {t('business.pdf_import.please_wait')}
@@ -158,6 +171,46 @@ export default function PdfImportModal({ open, onOpenChange, onSuccess }: PdfImp
                 </p>
               </div>
             </div>
+          )}
+
+          {/* Debug Info (only shown in debug mode) */}
+          {isDebugMode && debugInfo && (
+            <Collapsible>
+              <CollapsibleTrigger asChild>
+                <Button variant="outline" size="sm" className="w-full">
+                  <Bug className="h-4 w-4 mr-2" />
+                  Debug Info
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-2">
+                <div className="p-3 bg-muted rounded-lg text-xs font-mono space-y-2">
+                  <div>
+                    <strong>Pages:</strong> {debugInfo.pageCount}
+                  </div>
+                  <div>
+                    <strong>Text Length:</strong> {debugInfo.extractedTextLength} chars
+                  </div>
+                  <div>
+                    <strong>Detected Headings:</strong>
+                    {debugInfo.detectedHeadings.length > 0 ? (
+                      <ul className="ml-4 mt-1">
+                        {debugInfo.detectedHeadings.map((h, i) => (
+                          <li key={i}>• {h}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <span className="text-muted-foreground ml-2">None</span>
+                    )}
+                  </div>
+                  <div>
+                    <strong>Preview:</strong>
+                    <pre className="mt-1 p-2 bg-background rounded text-[10px] whitespace-pre-wrap max-h-40 overflow-auto">
+                      {debugInfo.textPreview}
+                    </pre>
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           )}
         </div>
 

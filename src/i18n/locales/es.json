@@ -1415,13 +1415,16 @@
       "drop_or_click": "Arrastra un PDF aquí o haz clic para buscar",
       "pdf_only": "Solo archivos PDF, máx 10MB",
       "uploading": "Subiendo PDF...",
-      "processing": "Extrayendo detalles del trabajo...",
+      "processing": "Mapeando detalles del trabajo...",
+      "extracting_text": "Extrayendo texto del PDF...",
       "please_wait": "Esto puede tardar unos momentos",
       "success": "Importación Exitosa",
       "job_created": "Borrador de oferta creado con éxito",
       "job_created_desc": "La oferta se ha creado como borrador. Revisa y publica cuando esté lista.",
       "view_job": "Ver Oferta",
       "error": "Importación Fallida",
+      "extraction_error": "Extracción de Texto Fallida",
+      "no_extractable_text": "Este PDF no tiene texto extraíble (puede ser un escaneo o PDF protegido). Sube un PDF con texto.",
       "unknown_error": "Ocurrió un error inesperado",
       "try_again": "Intentar de Nuevo",
       "invalid_file_type": "Tipo de Archivo Inválido",
@@ -1434,7 +1437,8 @@
       "form_prefilled_desc": "Los detalles del trabajo se han importado del PDF. Revisa y ajusta según sea necesario.",
       "use_imported_data": "Usar Datos Importados",
       "redirect_to_draft_toast": "Borrador creado desde PDF",
-      "redirecting_to_draft": "Redirigiendo a tu nuevo borrador..."
+      "redirecting_to_draft": "Redirigiendo a tu nuevo borrador...",
+      "extraction_failed": "No se pudo extraer el texto del PDF"
     },
     "overview": {
       "how_xima_works": "Cómo funciona XIMA",
