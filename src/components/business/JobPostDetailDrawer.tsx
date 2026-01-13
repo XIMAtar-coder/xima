@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
   SelectContent,
@@ -28,13 +29,13 @@ import {
   Save,
   Eye,
   EyeOff,
-  CheckCircle2,
-  AlertTriangle,
-  FileText
+  Pencil,
+  Users
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { toast } from 'sonner';
+import JobPostCandidatePreview from './JobPostCandidatePreview';
 
 interface JobPost {
   id: string;
@@ -52,54 +53,11 @@ interface JobPost {
   department: string | null;
   salary_range: string | null;
   source_pdf_path?: string | null;
+  content_json?: unknown;
+  content_html?: string | null;
   created_at: string;
   updated_at: string;
   linkedChallengesCount?: number;
-}
-
-// Publish Readiness Block Component
-function PublishReadinessBlock({ job }: { job: JobPost }) {
-  const { t } = useTranslation();
-  
-  const hasDescription = !!job.description && job.description.length > 50;
-  const hasResponsibilities = !!job.responsibilities && job.responsibilities.includes('•');
-  const hasRequirements = !!job.requirements_must && job.requirements_must.includes('•');
-  const isFromPdf = !!job.source_pdf_path;
-  
-  const isReady = hasDescription && hasResponsibilities && hasRequirements;
-  const sectionsComplete = [hasDescription, hasResponsibilities, hasRequirements].filter(Boolean).length;
-  
-  if (!isFromPdf) return null;
-  
-  return (
-    <div className={`p-3 rounded-lg border ${isReady ? 'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800' : 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800'}`}>
-      <div className="flex items-start gap-2">
-        {isReady ? (
-          <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
-        ) : (
-          <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
-        )}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <FileText className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="text-xs font-medium">
-              {isReady ? t('jobs.import_cleaned') : t('jobs.import_needs_review')}
-            </span>
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            {t('jobs.sections_complete', { count: sectionsComplete, total: 3 })}
-          </p>
-          {!isReady && (
-            <ul className="text-xs text-muted-foreground mt-1 space-y-0.5">
-              {!hasDescription && <li>• {t('jobs.missing_description')}</li>}
-              {!hasResponsibilities && <li>• {t('jobs.missing_responsibilities')}</li>}
-              {!hasRequirements && <li>• {t('jobs.missing_requirements')}</li>}
-            </ul>
-          )}
-        </div>
-      </div>
-    </div>
-  );
 }
 
 interface JobPostDetailDrawerProps {
@@ -121,14 +79,15 @@ export default function JobPostDetailDrawer({
 }: JobPostDetailDrawerProps) {
   const { t } = useTranslation();
   const { user } = useUser();
-  const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>('preview');
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<JobPost>>({});
 
   React.useEffect(() => {
     if (job) {
       setFormData({ ...job });
-      setIsEditing(false);
+      // Default to preview tab for imported jobs, editor for others
+      setActiveTab(job.source_pdf_path ? 'preview' : 'editor');
     }
   }, [job]);
 
@@ -159,7 +118,6 @@ export default function JobPostDetailDrawer({
       if (error) throw error;
 
       toast.success(t('jobs.job_draft_saved'));
-      setIsEditing(false);
       onUpdate();
     } catch (error: any) {
       toast.error(error.message || t('common.error'));
@@ -199,7 +157,7 @@ export default function JobPostDetailDrawer({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
         <SheetHeader className="pb-4">
           <div className="flex items-start justify-between">
             <div className="flex-1">
@@ -211,61 +169,66 @@ export default function JobPostDetailDrawer({
                     • {job.linkedChallengesCount} {t('jobs.linked_challenges')}
                   </span>
                 )}
+                {job.source_pdf_path && (
+                  <Badge variant="outline" className="text-xs">PDF Import</Badge>
+                )}
               </SheetDescription>
             </div>
           </div>
         </SheetHeader>
 
-        <div className="space-y-6">
-          {/* Publish Readiness Indicator */}
-          <PublishReadinessBlock job={job} />
-
-          {/* Actions */}
-          <div className="flex flex-wrap gap-2">
-            <Button
-              onClick={() => onCreateChallenge(job)}
-              disabled={creatingChallenge}
-              className="gap-2"
-            >
-              {creatingChallenge ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Target className="h-4 w-4" />
-              )}
-              {t('jobs.create_challenge')}
-            </Button>
-
-            {job.status !== 'archived' && (
-              <Button variant="outline" onClick={handleToggleStatus} className="gap-2">
-                {job.status === 'active' ? (
-                  <>
-                    <EyeOff className="h-4 w-4" />
-                    {t('jobs.unpublish')}
-                  </>
-                ) : (
-                  <>
-                    <Eye className="h-4 w-4" />
-                    {t('jobs.publish')}
-                  </>
-                )}
-              </Button>
-            )}
-
-            {!isEditing ? (
-              <Button variant="ghost" onClick={() => setIsEditing(true)}>
-                {t('jobs.edit')}
-              </Button>
+        {/* Actions */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          <Button
+            onClick={() => onCreateChallenge(job)}
+            disabled={creatingChallenge}
+            className="gap-2"
+          >
+            {creatingChallenge ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <Button variant="ghost" onClick={() => setIsEditing(false)}>
-                {t('jobs.cancel')}
-              </Button>
+              <Target className="h-4 w-4" />
             )}
-          </div>
+            {t('jobs.create_challenge')}
+          </Button>
 
-          <Separator />
+          {job.status !== 'archived' && (
+            <Button variant="outline" onClick={handleToggleStatus} className="gap-2">
+              {job.status === 'active' ? (
+                <>
+                  <EyeOff className="h-4 w-4" />
+                  {t('jobs.unpublish')}
+                </>
+              ) : (
+                <>
+                  <Eye className="h-4 w-4" />
+                  {t('jobs.publish')}
+                </>
+              )}
+            </Button>
+          )}
+        </div>
 
-          {/* Form / View */}
-          {isEditing ? (
+        <Separator className="mb-4" />
+
+        {/* Tabs: Preview / Editor */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsTrigger value="preview" className="gap-2">
+              <Users className="h-4 w-4" />
+              {t('jobs.preview.candidate_view', 'Candidate Preview')}
+            </TabsTrigger>
+            <TabsTrigger value="editor" className="gap-2">
+              <Pencil className="h-4 w-4" />
+              {t('jobs.preview.editor', 'Editor')}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="preview" className="mt-0">
+            <JobPostCandidatePreview job={job} />
+          </TabsContent>
+
+          <TabsContent value="editor" className="mt-0">
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>{t('jobs.job_title')}</Label>
@@ -353,8 +316,12 @@ export default function JobPostDetailDrawer({
                 <Textarea
                   value={formData.responsibilities || ''}
                   onChange={(e) => setFormData({ ...formData, responsibilities: e.target.value })}
-                  rows={3}
+                  rows={4}
+                  placeholder={t('jobs.responsibilities_placeholder')}
                 />
+                <p className="text-xs text-muted-foreground">
+                  {t('jobs.preview.bullets_hint', 'Each line starting with • will render as a bullet point')}
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -362,7 +329,8 @@ export default function JobPostDetailDrawer({
                 <Textarea
                   value={formData.requirements_must || ''}
                   onChange={(e) => setFormData({ ...formData, requirements_must: e.target.value })}
-                  rows={3}
+                  rows={4}
+                  placeholder={t('jobs.requirements_must_placeholder')}
                 />
               </div>
 
@@ -371,7 +339,8 @@ export default function JobPostDetailDrawer({
                 <Textarea
                   value={formData.requirements_nice || ''}
                   onChange={(e) => setFormData({ ...formData, requirements_nice: e.target.value })}
-                  rows={2}
+                  rows={3}
+                  placeholder={t('jobs.requirements_nice_placeholder')}
                 />
               </div>
 
@@ -380,7 +349,8 @@ export default function JobPostDetailDrawer({
                 <Textarea
                   value={formData.benefits || ''}
                   onChange={(e) => setFormData({ ...formData, benefits: e.target.value })}
-                  rows={2}
+                  rows={3}
+                  placeholder={t('jobs.benefits_placeholder')}
                 />
               </div>
 
@@ -389,74 +359,8 @@ export default function JobPostDetailDrawer({
                 {t('jobs.save_draft')}
               </Button>
             </div>
-          ) : (
-            <div className="space-y-4">
-              {/* View Mode */}
-              <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
-                {job.department && (
-                  <span className="flex items-center gap-1">
-                    <Briefcase className="h-3.5 w-3.5" />
-                    {job.department}
-                  </span>
-                )}
-                {job.location && (
-                  <span className="flex items-center gap-1">
-                    <MapPin className="h-3.5 w-3.5" />
-                    {job.location}
-                  </span>
-                )}
-                {job.employment_type && (
-                  <Badge variant="outline" className="text-xs">{job.employment_type}</Badge>
-                )}
-                {job.seniority && (
-                  <Badge variant="outline" className="text-xs">{job.seniority}</Badge>
-                )}
-              </div>
-
-              {job.salary_range && (
-                <div>
-                  <h4 className="text-sm font-medium mb-1">{t('jobs.salary')}</h4>
-                  <p className="text-sm text-muted-foreground">{job.salary_range}</p>
-                </div>
-              )}
-
-              {job.description && (
-                <div>
-                  <h4 className="text-sm font-medium mb-1">{t('jobs.job_description')}</h4>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{job.description}</p>
-                </div>
-              )}
-
-              {job.responsibilities && (
-                <div>
-                  <h4 className="text-sm font-medium mb-1">{t('jobs.responsibilities')}</h4>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{job.responsibilities}</p>
-                </div>
-              )}
-
-              {job.requirements_must && (
-                <div>
-                  <h4 className="text-sm font-medium mb-1">{t('jobs.requirements_must')}</h4>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{job.requirements_must}</p>
-                </div>
-              )}
-
-              {job.requirements_nice && (
-                <div>
-                  <h4 className="text-sm font-medium mb-1">{t('jobs.requirements_nice')}</h4>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{job.requirements_nice}</p>
-                </div>
-              )}
-
-              {job.benefits && (
-                <div>
-                  <h4 className="text-sm font-medium mb-1">{t('jobs.benefits')}</h4>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{job.benefits}</p>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+          </TabsContent>
+        </Tabs>
       </SheetContent>
     </Sheet>
   );
