@@ -1,8 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Briefcase, Clock, Building2, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { MapPin, Briefcase, Clock, Building2, CheckCircle2, AlertTriangle, Bug } from 'lucide-react';
 
 interface ContentBlock {
   type: 'intro' | 'section';
@@ -47,19 +48,67 @@ interface PublishReadinessProps {
   contentBlocks: JobContentBlocks | null;
 }
 
+// Debug panel for ?debug=1 mode
+function DebugPanel({ job, contentBlocks }: { job: JobPost; contentBlocks: JobContentBlocks | null }) {
+  const hasContentJson = !!job.content_json;
+  const blocksCount = contentBlocks?.blocks?.length || 0;
+  const blockTitles = contentBlocks?.blocks?.map(b => b.title) || [];
+  
+  return (
+    <div className="p-3 rounded-lg border border-dashed border-amber-500 bg-amber-50 dark:bg-amber-950/30 text-xs font-mono space-y-1">
+      <div className="flex items-center gap-2 font-semibold text-amber-700 dark:text-amber-400">
+        <Bug className="h-4 w-4" />
+        Debug Mode
+      </div>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-muted-foreground">
+        <span>content_json exists:</span>
+        <span className={hasContentJson ? 'text-green-600' : 'text-red-600'}>
+          {hasContentJson ? 'YES ✓' : 'NO ✗'}
+        </span>
+        <span>Number of blocks:</span>
+        <span>{blocksCount}</span>
+        <span>Block titles:</span>
+        <span className="col-span-1 truncate">{blockTitles.join(', ') || 'none'}</span>
+        <span>Has description:</span>
+        <span className={job.description ? 'text-green-600' : 'text-muted-foreground'}>
+          {job.description ? `YES (${job.description.length} chars)` : 'NO'}
+        </span>
+        <span>Has responsibilities:</span>
+        <span className={job.responsibilities ? 'text-green-600' : 'text-muted-foreground'}>
+          {job.responsibilities ? 'YES' : 'NO'}
+        </span>
+        <span>Source PDF:</span>
+        <span className={job.source_pdf_path ? 'text-green-600' : 'text-muted-foreground'}>
+          {job.source_pdf_path ? 'YES' : 'NO'}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function PublishReadinessIndicator({ job, contentBlocks }: PublishReadinessProps) {
   const { t } = useTranslation();
   
+  // Evaluate based on content_json blocks (as per requirements)
   const hasIntro = contentBlocks?.blocks.some(b => b.type === 'intro' && b.body && b.body.length > 0);
-  const hasResponsibilities = contentBlocks?.blocks.some(b => b.title.toLowerCase().includes('do') && b.bullets && b.bullets.length > 0);
-  const hasRequirements = contentBlocks?.blocks.some(b => b.title.toLowerCase().includes('bring') && b.bullets && b.bullets.length > 0);
-  const hasBenefits = contentBlocks?.blocks.some(b => b.title.toLowerCase().includes('offer') && b.bullets && b.bullets.length > 0);
+  const introLength = contentBlocks?.blocks.find(b => b.type === 'intro')?.body?.join(' ').length || 0;
+  const hasGoodIntro = hasIntro && introLength > 200;
+  
+  const responsibilitiesBlock = contentBlocks?.blocks.find(b => 
+    b.title.toLowerCase().includes('do') || b.title.toLowerCase().includes('responsibil')
+  );
+  const hasResponsibilities = responsibilitiesBlock?.bullets && responsibilitiesBlock.bullets.length >= 3;
+  
+  const requirementsBlock = contentBlocks?.blocks.find(b => 
+    b.title.toLowerCase().includes('bring') || b.title.toLowerCase().includes('requir') || b.title.toLowerCase().includes('qualif')
+  );
+  const hasRequirements = requirementsBlock?.bullets && requirementsBlock.bullets.length >= 3;
   
   const checks = [
     { key: 'title', ok: !!contentBlocks?.hero.title && contentBlocks.hero.title !== 'Imported Job Position', label: t('jobs.preview.has_title', 'Clear title') },
-    { key: 'intro', ok: hasIntro, label: t('jobs.preview.has_intro', 'Role introduction') },
-    { key: 'responsibilities', ok: hasResponsibilities, label: t('jobs.preview.has_responsibilities', 'Responsibilities') },
-    { key: 'requirements', ok: hasRequirements, label: t('jobs.preview.has_requirements', 'Requirements') },
+    { key: 'intro', ok: hasGoodIntro, label: t('jobs.preview.has_intro', 'Role introduction (200+ chars)') },
+    { key: 'responsibilities', ok: hasResponsibilities, label: t('jobs.preview.has_responsibilities', 'Responsibilities (3+ items)') },
+    { key: 'requirements', ok: hasRequirements, label: t('jobs.preview.has_requirements', 'Requirements (3+ items)') },
   ];
   
   const passedCount = checks.filter(c => c.ok).length;
@@ -104,6 +153,8 @@ interface Props {
 
 export default function JobPostCandidatePreview({ job }: Props) {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
+  const isDebugMode = searchParams.get('debug') === '1';
   
   // Try to parse content_json if it's a string
   let contentBlocks: JobContentBlocks | null = null;
@@ -119,58 +170,87 @@ export default function JobPostCandidatePreview({ job }: Props) {
     }
   }
 
-  // Fallback: build content blocks from legacy fields if content_json is missing
-  if (!contentBlocks && (job.description || job.responsibilities)) {
-    contentBlocks = {
-      hero: {
-        title: job.title,
-        company: null,
-        location: job.location,
-        employmentType: job.employment_type,
-        seniority: job.seniority,
-        department: job.department,
-      },
-      blocks: [],
-    };
+  // ENHANCED FALLBACK: Build content blocks from legacy fields if content_json is missing or empty
+  if (!contentBlocks || !contentBlocks.blocks || contentBlocks.blocks.length === 0) {
+    // Check if we have ANY content to work with
+    const hasAnyContent = job.description || job.responsibilities || job.requirements_must || job.requirements_nice || job.benefits;
     
-    if (job.description) {
-      contentBlocks.blocks.push({
-        type: 'intro',
-        title: 'About the Role',
-        body: job.description.split(/\n\n+/).filter(p => p.trim()),
-      });
-    }
-    
-    if (job.responsibilities) {
-      contentBlocks.blocks.push({
-        type: 'section',
-        title: "What You'll Do",
-        bullets: job.responsibilities.split('\n').filter(l => l.trim().startsWith('•')).map(l => l.replace(/^•\s*/, '').trim()),
-      });
-    }
-    
-    if (job.requirements_must) {
-      contentBlocks.blocks.push({
-        type: 'section',
-        title: 'What You Bring',
-        bullets: job.requirements_must.split('\n').filter(l => l.trim().startsWith('•')).map(l => l.replace(/^•\s*/, '').trim()),
-      });
-    }
-    
-    if (job.requirements_nice) {
-      contentBlocks.blocks.push({
-        type: 'section',
-        title: 'Nice to Have',
-        bullets: job.requirements_nice.split('\n').filter(l => l.trim().startsWith('•')).map(l => l.replace(/^•\s*/, '').trim()),
-      });
-    }
-    
-    if (job.benefits) {
-      contentBlocks.blocks.push({
-        type: 'section',
-        title: 'What We Offer',
-        bullets: job.benefits.split('\n').filter(l => l.trim().startsWith('•')).map(l => l.replace(/^•\s*/, '').trim()),
-      });
+    if (hasAnyContent) {
+      contentBlocks = {
+        hero: {
+          title: job.title,
+          company: null,
+          location: job.location,
+          employmentType: job.employment_type,
+          seniority: job.seniority,
+          department: job.department,
+        },
+        blocks: [],
+      };
+      
+      if (job.description) {
+        contentBlocks.blocks.push({
+          type: 'intro',
+          title: 'About the Role',
+          body: job.description.split(/\n\n+/).filter(p => p.trim()),
+        });
+      }
+      
+      if (job.responsibilities) {
+        const bullets = job.responsibilities.split('\n')
+          .filter(l => l.trim().startsWith('•'))
+          .map(l => l.replace(/^•\s*/, '').trim())
+          .filter(b => b.length > 3);
+        if (bullets.length > 0) {
+          contentBlocks.blocks.push({
+            type: 'section',
+            title: "What You'll Do",
+            bullets,
+          });
+        }
+      }
+      
+      if (job.requirements_must) {
+        const bullets = job.requirements_must.split('\n')
+          .filter(l => l.trim().startsWith('•'))
+          .map(l => l.replace(/^•\s*/, '').trim())
+          .filter(b => b.length > 3);
+        if (bullets.length > 0) {
+          contentBlocks.blocks.push({
+            type: 'section',
+            title: 'What You Bring',
+            bullets,
+          });
+        }
+      }
+      
+      if (job.requirements_nice) {
+        const bullets = job.requirements_nice.split('\n')
+          .filter(l => l.trim().startsWith('•'))
+          .map(l => l.replace(/^•\s*/, '').trim())
+          .filter(b => b.length > 3);
+        if (bullets.length > 0) {
+          contentBlocks.blocks.push({
+            type: 'section',
+            title: 'Nice to Have',
+            bullets,
+          });
+        }
+      }
+      
+      if (job.benefits) {
+        const bullets = job.benefits.split('\n')
+          .filter(l => l.trim().startsWith('•'))
+          .map(l => l.replace(/^•\s*/, '').trim())
+          .filter(b => b.length > 3);
+        if (bullets.length > 0) {
+          contentBlocks.blocks.push({
+            type: 'section',
+            title: 'What We Offer',
+            bullets,
+          });
+        }
+      }
     }
   }
 
@@ -179,6 +259,11 @@ export default function JobPostCandidatePreview({ job }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* Debug Panel (only shown with ?debug=1) */}
+      {isDebugMode && (
+        <DebugPanel job={job} contentBlocks={contentBlocks} />
+      )}
+
       {/* Publish Readiness */}
       {job.source_pdf_path && (
         <PublishReadinessIndicator job={job} contentBlocks={contentBlocks} />

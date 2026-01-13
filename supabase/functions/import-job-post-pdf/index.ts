@@ -92,6 +92,12 @@ serve(async (req) => {
     console.log('Normalizing job post text...');
     const { jobPost, preview } = normalizeJobPostText(extracted_text);
     
+    // CRITICAL: Log content_json to verify it's being generated
+    console.log('CONTENT_BLOCKS:', JSON.stringify(jobPost.content_json, null, 2));
+    console.log('content_json exists:', !!jobPost.content_json);
+    console.log('content_json blocks count:', jobPost.content_json?.blocks?.length || 0);
+    console.log('content_html length:', jobPost.content_html?.length || 0);
+    
     console.log('Normalized job data:', JSON.stringify({
       title: jobPost.title,
       descriptionLength: jobPost.description?.length,
@@ -103,7 +109,28 @@ serve(async (req) => {
       benefitsCount: preview.sections.benefits_count,
       blocksCount: preview.blocks_count,
       hasContentJson: !!jobPost.content_json,
+      contentJsonBlocksCount: jobPost.content_json?.blocks?.length || 0,
+      hasContentHtml: !!jobPost.content_html,
     }));
+
+    // GUARD: Ensure content_json is never null before insert
+    const finalContentJson = jobPost.content_json || {
+      hero: {
+        title: jobPost.title,
+        company: null,
+        location: jobPost.location,
+        employmentType: jobPost.employment_type,
+        seniority: jobPost.seniority,
+        department: jobPost.department,
+      },
+      blocks: [{
+        type: 'section',
+        title: 'Job Description',
+        body: [jobPost.description || extracted_text.substring(0, 2000)],
+      }],
+    };
+
+    const finalContentHtml = jobPost.content_html || `<section class="job-section"><h2>Job Description</h2><p>${jobPost.description || 'Imported from PDF'}</p></section>`;
 
     // Create a draft job post in job_posts table
     const { data: newJob, error: createError } = await serviceClient
@@ -121,8 +148,8 @@ serve(async (req) => {
         seniority: jobPost.seniority,
         department: jobPost.department,
         salary_range: jobPost.salary_range,
-        content_json: jobPost.content_json,
-        content_html: jobPost.content_html,
+        content_json: finalContentJson,  // GUARANTEED not null
+        content_html: finalContentHtml,   // GUARANTEED not null
         source_pdf_path: importRecord.pdf_path,
         status: 'draft',
         locale: locale || 'en',

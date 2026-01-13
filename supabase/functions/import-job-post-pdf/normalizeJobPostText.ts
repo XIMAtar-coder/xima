@@ -724,26 +724,42 @@ export function normalizeJobPostText(rawText: string): {
   jobPost: NormalizedJobPost;
   preview: CleanedPreview;
 } {
+  console.log('[normalizeJobPostText] Starting normalization of', rawText.length, 'chars');
+  
   // Step 1: Normalize whitespace
   let text = normalizeWhitespace(rawText);
+  console.log('[normalizeJobPostText] After whitespace normalization:', text.length, 'chars');
   
   // Step 2: Fix bullets
   text = fixBullets(text);
+  console.log('[normalizeJobPostText] After bullet fix:', text.length, 'chars');
   
   // Step 3: Extract metadata and clean duplicates
   const { metadata, cleanedText } = extractMetadata(text);
+  console.log('[normalizeJobPostText] Metadata extracted:', JSON.stringify(metadata));
   
   // Step 4: Deduplicate content
   const dedupedText = deduplicateContent(cleanedText);
+  console.log('[normalizeJobPostText] After dedup:', dedupedText.length, 'chars');
   
   // Step 5: Parse sections
   const sections = parseSections(dedupedText);
+  console.log('[normalizeJobPostText] Parsed sections:', {
+    title: sections.title,
+    hasOverview: !!sections.companyOverview,
+    hasSummary: !!sections.positionSummary,
+    hasResponsibilities: !!sections.responsibilities,
+    hasRequirementsMust: !!sections.requirementsMust,
+    hasRequirementsNice: !!sections.requirementsNice,
+    hasBenefits: !!sections.benefits,
+  });
   
   // Step 6: Build structured content blocks
-  const contentBlocks = buildJobPostContentBlocks(sections, metadata);
+  let contentBlocks = buildJobPostContentBlocks(sections, metadata);
+  console.log('[normalizeJobPostText] Content blocks built:', contentBlocks.blocks.length, 'blocks');
   
   // Step 7: Generate HTML
-  const contentHtml = renderHtmlFromBlocks(contentBlocks);
+  let contentHtml = renderHtmlFromBlocks(contentBlocks);
   
   // Step 8: Build description
   let description = '';
@@ -787,10 +803,106 @@ export function normalizeJobPostText(rawText: string): {
       seniority = yearsMatch[0];
     }
   }
+
+  // CRITICAL: Ensure content_json is NEVER null - create fallback if parsing didn't produce blocks
+  const finalTitle = sections.title || 'Imported Job Position';
   
-  // Build result
+  if (!contentBlocks || contentBlocks.blocks.length === 0) {
+    console.log('[normalizeJobPostText] No blocks generated, creating fallback content blocks');
+    
+    // Build fallback blocks from whatever content we have
+    const fallbackBlocks: ContentBlock[] = [];
+    
+    // Add description as intro if available
+    if (description) {
+      fallbackBlocks.push({
+        type: 'intro',
+        title: 'About the Role',
+        body: description.split(/\n\n+/).filter(p => p.trim()).slice(0, 4),
+      });
+    }
+    
+    // Add responsibilities if available
+    if (responsibilities) {
+      const bullets = responsibilities.split('\n').filter(l => l.trim().startsWith('•')).map(l => l.replace(/^•\s*/, '').trim()).filter(b => b.length > 3);
+      if (bullets.length > 0) {
+        fallbackBlocks.push({
+          type: 'section',
+          title: "What You'll Do",
+          bullets,
+        });
+      }
+    }
+    
+    // Add requirements if available
+    if (requirementsMust) {
+      const bullets = requirementsMust.split('\n').filter(l => l.trim().startsWith('•')).map(l => l.replace(/^•\s*/, '').trim()).filter(b => b.length > 3);
+      if (bullets.length > 0) {
+        fallbackBlocks.push({
+          type: 'section',
+          title: 'What You Bring',
+          bullets,
+        });
+      }
+    }
+    
+    // Add nice-to-have if available
+    if (requirementsNice) {
+      const bullets = requirementsNice.split('\n').filter(l => l.trim().startsWith('•')).map(l => l.replace(/^•\s*/, '').trim()).filter(b => b.length > 3);
+      if (bullets.length > 0) {
+        fallbackBlocks.push({
+          type: 'section',
+          title: 'Nice to Have',
+          bullets,
+        });
+      }
+    }
+    
+    // Add benefits if available
+    if (benefits) {
+      const bullets = benefits.split('\n').filter(l => l.trim().startsWith('•')).map(l => l.replace(/^•\s*/, '').trim()).filter(b => b.length > 3);
+      if (bullets.length > 0) {
+        fallbackBlocks.push({
+          type: 'section',
+          title: 'What We Offer',
+          bullets,
+        });
+      }
+    }
+    
+    // Last resort: if still no blocks, create one from the full text
+    if (fallbackBlocks.length === 0 && dedupedText.length > 0) {
+      console.log('[normalizeJobPostText] Creating last-resort content block from full text');
+      const paragraphs = dedupedText.split(/\n\n+/).filter(p => p.trim() && p.trim() !== finalTitle).slice(0, 6);
+      fallbackBlocks.push({
+        type: 'section',
+        title: 'Job Description',
+        body: paragraphs,
+      });
+    }
+    
+    contentBlocks = {
+      hero: {
+        title: finalTitle,
+        company: metadata.company,
+        location: metadata.location,
+        employmentType: metadata.employmentType || metadata.contractType,
+        seniority: seniority,
+        department: metadata.department,
+      },
+      blocks: fallbackBlocks,
+    };
+    
+    // Regenerate HTML from fallback blocks
+    contentHtml = renderHtmlFromBlocks(contentBlocks);
+  }
+  
+  console.log('[normalizeJobPostText] FINAL content_json blocks:', contentBlocks.blocks.length);
+  console.log('[normalizeJobPostText] FINAL content_json block titles:', contentBlocks.blocks.map(b => b.title));
+  
+  // Build result - content_json is GUARANTEED to exist
   const jobPost: NormalizedJobPost = {
-    title: sections.title || 'Imported Job Position',
+    title: finalTitle,
     description: description.trim().substring(0, 5000),
     responsibilities: responsibilities?.substring(0, 5000) || null,
     requirements_must: requirementsMust?.substring(0, 5000) || null,
@@ -801,8 +913,8 @@ export function normalizeJobPostText(rawText: string): {
     seniority: seniority,
     department: metadata.department,
     salary_range: metadata.salaryRange,
-    content_json: contentBlocks,
-    content_html: contentHtml,
+    content_json: contentBlocks, // NEVER null
+    content_html: contentHtml,   // NEVER null
   };
   
   const preview: CleanedPreview = {
