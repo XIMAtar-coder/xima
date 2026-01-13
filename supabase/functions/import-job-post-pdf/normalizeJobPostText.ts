@@ -7,8 +7,12 @@
 
 export function normalizeWhitespace(text: string): string {
   return text
-    // Convert page separators to paragraph breaks
+    // Remove page separators completely
     .replace(/---\s*PAGE\s*---/gi, '\n\n')
+    // Remove any leftover PDF markers
+    .replace(/%\s*PDF[^\n]*/gi, '')
+    .replace(/<<[^>]*>>/g, '')
+    .replace(/\/[A-Z][a-z]*\s+\d+/g, '')
     // Normalize line endings
     .replace(/\r\n/g, '\n')
     .replace(/\r/g, '\n')
@@ -24,9 +28,9 @@ export function normalizeWhitespace(text: string): string {
 // ============= B) Fix Bullets =============
 
 const BULLET_MARKERS = [
-  '•', '●', '○', '◦', '▪', '▫', '■', '□',  // Unicode bullets
-  'l ', 'o ', '* ', '- ', '– ', '— ',       // Common substitutes (l = lowercase L often used)
-  '► ', '▸ ', '→ ', '➤ ',                   // Arrows as bullets
+  '•', '●', '○', '◦', '▪', '▫', '■', '□',
+  'l ', 'o ', '* ', '- ', '– ', '— ',
+  '► ', '▸ ', '→ ', '➤ ',
 ];
 
 export function fixBullets(text: string): string {
@@ -39,6 +43,12 @@ export function fixBullets(text: string): string {
       fixedLines.push('');
       continue;
     }
+
+    // Fix double bullets ("• • " -> "• ")
+    workingLine = workingLine.replace(/•\s*•/g, '•');
+    workingLine = workingLine.replace(/^\s*•\s*$/, ''); // Remove orphan bullets
+    
+    if (!workingLine) continue;
 
     // Check if line starts with a bullet marker
     let startsWithBullet = false;
@@ -61,7 +71,7 @@ export function fixBullets(text: string): string {
     if (startsWithBullet && workingLine.includes(' • ')) {
       const parts = workingLine.split(/\s*•\s*/).filter(p => p.trim());
       for (const part of parts) {
-        if (part.trim()) {
+        if (part.trim() && part.trim().length > 3) {
           fixedLines.push('• ' + part.trim());
         }
       }
@@ -82,7 +92,39 @@ export function fixBullets(text: string): string {
     fixedLines.push(workingLine);
   }
 
-  return fixedLines.join('\n');
+  // Ensure headings are separated with blank lines
+  const result: string[] = [];
+  for (let i = 0; i < fixedLines.length; i++) {
+    const line = fixedLines[i];
+    const prevLine = i > 0 ? fixedLines[i - 1] : '';
+    
+    // If current line looks like a heading and previous line is not empty
+    if (isLikelyHeading(line) && prevLine && !prevLine.startsWith('•')) {
+      if (result[result.length - 1] !== '') {
+        result.push('');
+      }
+    }
+    
+    result.push(line);
+    
+    // Add blank line after headings
+    if (isLikelyHeading(line) && i < fixedLines.length - 1 && fixedLines[i + 1] !== '') {
+      result.push('');
+    }
+  }
+
+  return result.join('\n');
+}
+
+function isLikelyHeading(line: string): boolean {
+  if (!line || line.startsWith('•')) return false;
+  const headingPatterns = [
+    /^(company|position|key|required|preferred|professional|what\s+we|about)/i,
+    /^(responsibilities|qualifications|competencies|requirements|overview|summary|benefits)/i,
+    /^(what\s+you|your\s+profile|our\s+offer|perks)/i,
+    /^(chi\s+siamo|cosa\s+farai|requisiti|offriamo|vantaggi)/i,
+  ];
+  return headingPatterns.some(p => p.test(line));
 }
 
 // ============= C) Extract Header Metadata =============
@@ -130,9 +172,9 @@ export function extractMetadata(text: string): { metadata: JobMetadata; cleanedT
     { pattern: /^ral\s*[:：]\s*(.+)/i, key: 'salaryRange' },
   ];
 
-  // Track which metadata lines to remove (first occurrence only)
+  // Track which metadata lines to remove
   const extractedKeys = new Set<keyof JobMetadata>();
-  const linesToRemove = new Set<number>();
+  const metadataLineSignatures = new Set<string>();
 
   // First pass: extract metadata from first ~40 lines
   const headerLines = Math.min(40, lines.length);
@@ -144,7 +186,8 @@ export function extractMetadata(text: string): { metadata: JobMetadata; cleanedT
       if (match && !extractedKeys.has(key)) {
         metadata[key] = match[1].trim();
         extractedKeys.add(key);
-        linesToRemove.add(i);
+        // Store normalized signature for dedup
+        metadataLineSignatures.add(normalizeForDedup(line));
         break;
       }
     }
@@ -154,36 +197,35 @@ export function extractMetadata(text: string): { metadata: JobMetadata; cleanedT
   if (!metadata.employmentType) {
     const fullText = text.toLowerCase();
     if (fullText.includes('full-time') || fullText.includes('full time') || fullText.includes('tempo pieno')) {
-      metadata.employmentType = 'full-time';
+      metadata.employmentType = 'Full-Time';
     } else if (fullText.includes('part-time') || fullText.includes('part time') || fullText.includes('tempo parziale')) {
-      metadata.employmentType = 'part-time';
-    } else if (fullText.includes('contract') || fullText.includes('tempo determinato')) {
-      metadata.employmentType = 'contract';
+      metadata.employmentType = 'Part-Time';
+    } else if (fullText.includes('tempo determinato')) {
+      metadata.employmentType = 'Contract';
     } else if (fullText.includes('internship') || fullText.includes('stage') || fullText.includes('tirocinio')) {
-      metadata.employmentType = 'internship';
+      metadata.employmentType = 'Internship';
     }
   }
 
-  // Second pass: remove duplicate metadata lines from rest of document
+  // Second pass: remove ALL occurrences of metadata lines (not just first)
   const cleanedLines: string[] = [];
   for (let i = 0; i < lines.length; i++) {
-    // Skip explicitly marked lines
-    if (linesToRemove.has(i)) {
-      continue;
-    }
-
-    // Check for duplicate metadata patterns in the rest of the document
     const line = lines[i].trim();
-    let isDuplicateMetadata = false;
+    const normalized = normalizeForDedup(line);
     
-    for (const { pattern, key } of metadataPatterns) {
-      if (pattern.test(line) && extractedKeys.has(key)) {
-        isDuplicateMetadata = true;
-        break;
+    // Check if this matches any metadata pattern
+    let isMetadata = metadataLineSignatures.has(normalized);
+    
+    if (!isMetadata) {
+      for (const { pattern, key } of metadataPatterns) {
+        if (pattern.test(line) && extractedKeys.has(key)) {
+          isMetadata = true;
+          break;
+        }
       }
     }
 
-    if (!isDuplicateMetadata) {
+    if (!isMetadata) {
       cleanedLines.push(lines[i]);
     }
   }
@@ -325,7 +367,8 @@ export function parseSections(text: string): ParsedSections {
       const isMetadata = /^(company|location|department|contract|employment|reporting|salary|experience)[\s:]/i.test(line);
       
       if (!isHeading && !isMetadata) {
-        sections.title = line;
+        // Clean up title - remove any trailing metadata-like content
+        sections.title = line.replace(/\s*[|•]\s*.*$/, '').trim();
         break;
       }
     }
@@ -366,8 +409,12 @@ export function parseSections(text: string): ParsedSections {
         currentContent.push(trimmedLine);
       }
     } else if (!currentSection && trimmedLine && trimmedLine !== sections.title) {
-      // Before any section, add to companyOverview
-      sections.companyOverview += (sections.companyOverview ? '\n' : '') + trimmedLine;
+      // Before any section, add to positionSummary (more useful than overview for intros)
+      if (!sections.companyOverview) {
+        sections.companyOverview = trimmedLine;
+      } else {
+        sections.companyOverview += '\n' + trimmedLine;
+      }
     }
   }
 
@@ -379,7 +426,7 @@ export function parseSections(text: string): ParsedSections {
 
 // ============= E) Deduplication =============
 
-function normalizeForComparison(text: string): string {
+function normalizeForDedup(text: string): string {
   return text
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, '')
@@ -415,7 +462,7 @@ function similarity(a: string, b: string): number {
 
 export function deduplicateContent(text: string): string {
   const lines = text.split('\n');
-  const seenNormalized = new Map<string, number>(); // normalized -> first line index
+  const seenNormalized = new Map<string, number>();
   const result: string[] = [];
 
   for (let i = 0; i < lines.length; i++) {
@@ -424,7 +471,10 @@ export function deduplicateContent(text: string): string {
     
     // Keep empty lines for formatting
     if (!trimmed) {
-      result.push(line);
+      const lastLine = result[result.length - 1];
+      if (lastLine !== undefined && lastLine.trim() !== '') {
+        result.push('');
+      }
       continue;
     }
 
@@ -433,7 +483,7 @@ export function deduplicateContent(text: string): string {
       continue;
     }
 
-    const normalized = normalizeForComparison(trimmed);
+    const normalized = normalizeForDedup(trimmed);
     
     // Skip if we've seen an identical or near-identical line
     let isDuplicate = false;
@@ -453,7 +503,163 @@ export function deduplicateContent(text: string): string {
   return result.join('\n');
 }
 
-// ============= F) Field Mapping =============
+// ============= F) Content Block Builder =============
+
+export interface ContentBlock {
+  type: 'intro' | 'section';
+  title: string;
+  body?: string[];
+  bullets?: string[];
+}
+
+export interface JobContentBlocks {
+  hero: {
+    title: string;
+    company: string | null;
+    location: string | null;
+    employmentType: string | null;
+    seniority: string | null;
+    department: string | null;
+  };
+  blocks: ContentBlock[];
+}
+
+function extractBullets(text: string): string[] {
+  if (!text) return [];
+  return text
+    .split('\n')
+    .filter(l => l.trim().startsWith('•'))
+    .map(l => l.trim().replace(/^•\s*/, '').trim())
+    .filter(l => l.length > 3);
+}
+
+function extractParagraphs(text: string): string[] {
+  if (!text) return [];
+  return text
+    .split(/\n\n+/)
+    .map(p => p.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim())
+    .filter(p => p.length > 10 && !p.startsWith('•'));
+}
+
+export function buildJobPostContentBlocks(
+  sections: ParsedSections,
+  metadata: JobMetadata
+): JobContentBlocks {
+  const blocks: ContentBlock[] = [];
+
+  // About the role - combine overview and summary
+  const introBody: string[] = [];
+  if (sections.companyOverview) {
+    const paragraphs = extractParagraphs(sections.companyOverview);
+    introBody.push(...paragraphs);
+  }
+  if (sections.positionSummary) {
+    const paragraphs = extractParagraphs(sections.positionSummary);
+    introBody.push(...paragraphs);
+  }
+  
+  if (introBody.length > 0) {
+    blocks.push({
+      type: 'intro',
+      title: 'About the Role',
+      body: introBody.slice(0, 4), // Limit to 4 paragraphs
+    });
+  }
+
+  // What you'll do
+  const responsibilityBullets = extractBullets(sections.responsibilities);
+  if (responsibilityBullets.length > 0) {
+    blocks.push({
+      type: 'section',
+      title: "What You'll Do",
+      bullets: responsibilityBullets,
+    });
+  }
+
+  // What you bring
+  const mustBullets = extractBullets(sections.requirementsMust);
+  const competencyBullets = extractBullets(sections.competencies);
+  const allMustHave = [...mustBullets, ...competencyBullets];
+  if (allMustHave.length > 0) {
+    blocks.push({
+      type: 'section',
+      title: 'What You Bring',
+      bullets: allMustHave,
+    });
+  }
+
+  // Nice to have
+  const niceBullets = extractBullets(sections.requirementsNice);
+  if (niceBullets.length > 0) {
+    blocks.push({
+      type: 'section',
+      title: 'Nice to Have',
+      bullets: niceBullets,
+    });
+  }
+
+  // What we offer
+  const benefitBullets = extractBullets(sections.benefits);
+  if (benefitBullets.length > 0) {
+    blocks.push({
+      type: 'section',
+      title: 'What We Offer',
+      bullets: benefitBullets,
+    });
+  }
+
+  return {
+    hero: {
+      title: sections.title,
+      company: metadata.company,
+      location: metadata.location,
+      employmentType: metadata.employmentType || metadata.contractType,
+      seniority: metadata.seniority,
+      department: metadata.department,
+    },
+    blocks,
+  };
+}
+
+// ============= G) HTML Generator =============
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+export function renderHtmlFromBlocks(content: JobContentBlocks): string {
+  const parts: string[] = [];
+
+  for (const block of content.blocks) {
+    parts.push(`<section class="job-section">`);
+    parts.push(`<h2>${escapeHtml(block.title)}</h2>`);
+    
+    if (block.body && block.body.length > 0) {
+      for (const paragraph of block.body) {
+        parts.push(`<p>${escapeHtml(paragraph)}</p>`);
+      }
+    }
+    
+    if (block.bullets && block.bullets.length > 0) {
+      parts.push('<ul>');
+      for (const bullet of block.bullets) {
+        parts.push(`<li>${escapeHtml(bullet)}</li>`);
+      }
+      parts.push('</ul>');
+    }
+    
+    parts.push('</section>');
+  }
+
+  return parts.join('\n');
+}
+
+// ============= H) Field Mapping =============
 
 export interface NormalizedJobPost {
   title: string;
@@ -467,6 +673,8 @@ export interface NormalizedJobPost {
   seniority: string | null;
   department: string | null;
   salary_range: string | null;
+  content_json: JobContentBlocks | null;
+  content_html: string | null;
 }
 
 export interface CleanedPreview {
@@ -485,6 +693,7 @@ export interface CleanedPreview {
     nice_count: number;
     benefits_count: number;
   };
+  blocks_count: number;
   extracted_text_length: number;
 }
 
@@ -501,7 +710,11 @@ function formatAsBulletList(text: string): string {
     const trimmed = line.trim();
     if (trimmed.startsWith('• ')) return trimmed;
     if (trimmed.startsWith('•')) return '• ' + trimmed.substring(1).trim();
-    return '• ' + trimmed;
+    // Only add bullet if it looks like a list item (not a heading or paragraph)
+    if (trimmed.length < 200 && !trimmed.endsWith('.') && !isLikelyHeading(trimmed)) {
+      return '• ' + trimmed;
+    }
+    return trimmed;
   });
   
   return formatted.join('\n');
@@ -526,38 +739,45 @@ export function normalizeJobPostText(rawText: string): {
   // Step 5: Parse sections
   const sections = parseSections(dedupedText);
   
-  // Step 6: Build description
+  // Step 6: Build structured content blocks
+  const contentBlocks = buildJobPostContentBlocks(sections, metadata);
+  
+  // Step 7: Generate HTML
+  const contentHtml = renderHtmlFromBlocks(contentBlocks);
+  
+  // Step 8: Build description
   let description = '';
   if (sections.companyOverview) {
-    description = sections.companyOverview;
+    description = sections.companyOverview.replace(/\n+/g, '\n\n').trim();
   }
   if (sections.positionSummary) {
-    description += (description ? '\n\n' : '') + sections.positionSummary;
+    description += (description ? '\n\n' : '') + sections.positionSummary.replace(/\n+/g, '\n\n').trim();
   }
   
   // Fallback: if no description but we have text, use first portion
   if (!description && dedupedText.length > 0) {
-    const lines = dedupedText.split('\n').filter(l => l.trim() && l.trim() !== sections.title);
-    description = lines.slice(0, 10).join('\n');
+    const lines = dedupedText.split('\n').filter(l => l.trim() && l.trim() !== sections.title && !l.startsWith('•'));
+    description = lines.slice(0, 5).join('\n\n');
   }
   
-  // Step 7: Format bullet lists
+  // Step 9: Format bullet lists
   const responsibilities = sections.responsibilities ? formatAsBulletList(sections.responsibilities) : null;
   
   let requirementsMust = sections.requirementsMust ? formatAsBulletList(sections.requirementsMust) : null;
-  // Merge competencies into requirements if no separate must-haves
+  // Merge competencies into requirements
   if (sections.competencies) {
+    const formatted = formatAsBulletList(sections.competencies);
     if (requirementsMust) {
-      requirementsMust += '\n' + formatAsBulletList(sections.competencies);
+      requirementsMust += '\n' + formatted;
     } else {
-      requirementsMust = formatAsBulletList(sections.competencies);
+      requirementsMust = formatted;
     }
   }
   
   const requirementsNice = sections.requirementsNice ? formatAsBulletList(sections.requirementsNice) : null;
   const benefits = sections.benefits ? formatAsBulletList(sections.benefits) : null;
   
-  // Step 8: Extract seniority from requirements if not in metadata
+  // Step 10: Extract seniority from requirements if not in metadata
   let seniority = metadata.seniority;
   if (!seniority && requirementsMust) {
     const yearsMatch = requirementsMust.match(/(\d+)[-–](\d+)\s*years?/i) 
@@ -581,6 +801,8 @@ export function normalizeJobPostText(rawText: string): {
     seniority: seniority,
     department: metadata.department,
     salary_range: metadata.salaryRange,
+    content_json: contentBlocks,
+    content_html: contentHtml,
   };
   
   const preview: CleanedPreview = {
@@ -599,6 +821,7 @@ export function normalizeJobPostText(rawText: string): {
       nice_count: countBulletPoints(requirementsNice || ''),
       benefits_count: countBulletPoints(benefits || ''),
     },
+    blocks_count: contentBlocks.blocks.length,
     extracted_text_length: rawText.length,
   };
   

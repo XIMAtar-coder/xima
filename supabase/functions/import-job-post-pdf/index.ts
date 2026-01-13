@@ -101,6 +101,8 @@ serve(async (req) => {
       requirementsCount: preview.sections.must_count,
       hasBenefits: !!jobPost.benefits,
       benefitsCount: preview.sections.benefits_count,
+      blocksCount: preview.blocks_count,
+      hasContentJson: !!jobPost.content_json,
     }));
 
     // Create a draft job post in job_posts table
@@ -119,6 +121,8 @@ serve(async (req) => {
         seniority: jobPost.seniority,
         department: jobPost.department,
         salary_range: jobPost.salary_range,
+        content_json: jobPost.content_json,
+        content_html: jobPost.content_html,
         source_pdf_path: importRecord.pdf_path,
         status: 'draft',
         locale: locale || 'en',
@@ -151,6 +155,7 @@ serve(async (req) => {
           cleaned_preview: preview,
           raw_text_preview: extracted_text.substring(0, 1000),
           normalization_applied: true,
+          content_blocks_generated: true,
           sections_detected: {
             has_overview: preview.sections.has_overview,
             has_summary: preview.sections.has_summary,
@@ -160,6 +165,7 @@ serve(async (req) => {
             benefits: preview.sections.benefits_count,
           },
           metadata_extracted: preview.meta,
+          blocks_count: preview.blocks_count,
         }
       })
       .eq('id', importId);

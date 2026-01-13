@@ -1842,6 +1842,8 @@ export type Database = {
         Row: {
           benefits: string | null
           business_id: string
+          content_html: string | null
+          content_json: Json | null
           created_at: string
           department: string | null
           description: string | null
@@ -1862,6 +1864,8 @@ export type Database = {
         Insert: {
           benefits?: string | null
           business_id: string
+          content_html?: string | null
+          content_json?: Json | null
           created_at?: string
           department?: string | null
           description?: string | null
@@ -1882,6 +1886,8 @@ export type Database = {
         Update: {
           benefits?: string | null
           business_id?: string
+          content_html?: string | null
+          content_json?: Json | null
           created_at?: string
           department?: string | null
           description?: string | null
