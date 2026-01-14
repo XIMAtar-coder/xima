@@ -2488,6 +2488,15 @@
       "interested": "Interesado",
       "relevant": "Relevante",
       "save": "Guardar"
+    },
+    "interest": {
+      "title": "Señales de Interés",
+      "pending": "pendientes",
+      "subtitle": "Empresas han mostrado interés en tu perfil. Acepta para desbloquear el chat.",
+      "accept": "Aceptar",
+      "open_chat": "Chat",
+      "accepted_success": "¡Interés aceptado! El chat ya está disponible.",
+      "privacy_note": "Los nombres de las empresas se revelan solo después de mostrar interés. Tu identidad permanece anónima hasta que aceptes."
     }
   }
 }
