@@ -6,16 +6,15 @@ import { FeedHeader } from './FeedHeader';
 import { FeedItemCard } from './FeedItemCard';
 import { FeedEmptyState } from './FeedEmptyState';
 import { Card, CardContent } from '@/components/ui/card';
-import { useNavigate } from 'react-router-dom';
 
 interface XimaFeedProps {
   showChatAccess?: boolean;
   hasPendingChats?: boolean;
+  onOpenConversations?: () => void;
 }
 
-export const XimaFeed = ({ showChatAccess, hasPendingChats }: XimaFeedProps) => {
+export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations }: XimaFeedProps) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { 
     items, 
     loading, 
@@ -97,7 +96,7 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats }: XimaFeedProps) => 
             </div>
             <Button 
               size="sm" 
-              onClick={() => navigate('/xima-chat?view=conversations')}
+              onClick={onOpenConversations}
             >
               {t('feed.open_chats', 'Open Chats')}
             </Button>
