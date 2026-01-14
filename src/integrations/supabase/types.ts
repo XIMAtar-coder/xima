@@ -2933,6 +2933,20 @@ export type Database = {
             Args: { p_mc_answers: Json; p_result_id: string }
             Returns: undefined
           }
+      emit_feed_signal: {
+        Args: {
+          p_payload: Json
+          p_source: string
+          p_subject_ximatar_id: string
+          p_type: string
+          p_visibility?: Json
+        }
+        Returns: string
+      }
+      emit_interest_aggregated_signal: {
+        Args: { p_interest_count: number; p_subject_ximatar_id: string }
+        Returns: string
+      }
       ensure_mentor_thread: {
         Args: { p_mentor: string; p_user: string }
         Returns: string
