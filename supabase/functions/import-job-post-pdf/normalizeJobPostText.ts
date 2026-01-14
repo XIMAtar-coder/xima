@@ -1,37 +1,83 @@
 /**
  * Job Post Text Normalization Utilities
- * Cleans and structures extracted PDF text into publish-ready job post content
+ * Transforms corporate job descriptions into candidate-friendly, publish-ready content
+ * Following XIMA values: clarity, structure, transparency, professionalism
  */
 
-// ============= A) Normalize Whitespace & Punctuation =============
+// ============= Constants =============
 
-export function normalizeWhitespace(text: string): string {
-  return text
-    // Remove page separators completely
-    .replace(/---\s*PAGE\s*---/gi, '\n\n')
-    // Remove any leftover PDF markers
-    .replace(/%\s*PDF[^\n]*/gi, '')
-    .replace(/<<[^>]*>>/g, '')
-    .replace(/\/[A-Z][a-z]*\s+\d+/g, '')
-    // Normalize line endings
-    .replace(/\r\n/g, '\n')
-    .replace(/\r/g, '\n')
-    // Convert multiple spaces to single space (within lines)
-    .split('\n')
-    .map(line => line.replace(/  +/g, ' ').trim())
-    .join('\n')
-    // Convert 3+ newlines to double newline (paragraph break)
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-}
-
-// ============= B) Fix Bullets =============
+const MAX_BULLET_LENGTH = 140;
+const MAX_PARAGRAPH_LINES = 4;
+const MIN_INTRO_LENGTH = 200;
+const MIN_BULLET_COUNT = 3;
 
 const BULLET_MARKERS = [
   '•', '●', '○', '◦', '▪', '▫', '■', '□',
   'l ', 'o ', '* ', '- ', '– ', '— ',
   '► ', '▸ ', '→ ', '➤ ',
 ];
+
+// ============= STEP 1: Title Normalization =============
+
+/**
+ * Clean job title: remove company name, location, contract type
+ * Max 4-5 words, professional format
+ */
+export function normalizeTitle(rawTitle: string): string {
+  if (!rawTitle) return '';
+  
+  let title = rawTitle.trim();
+  
+  // Remove common suffixes with metadata
+  title = title
+    .replace(/\s*[-–—|]\s*(full[- ]?time|part[- ]?time|contract|remote|hybrid|on[- ]?site)/gi, '')
+    .replace(/\s*[-–—|]\s*(ltd|llc|inc|gmbh|s\.?r\.?l\.?|s\.?p\.?a\.?|plc)\.?\s*$/gi, '')
+    .replace(/\s*[-–—|]\s*[A-Z][a-z]+(\s+[A-Z][a-z]+)*\s*$/g, '') // Remove trailing company name pattern
+    .replace(/\s*\([^)]*\)\s*$/, '') // Remove trailing parentheses
+    .replace(/\s*,\s*[A-Z][a-z]+.*$/, '') // Remove location after comma
+    .trim();
+  
+  // Title case conversion for ALL CAPS titles
+  if (title === title.toUpperCase() && title.length > 3) {
+    title = title
+      .toLowerCase()
+      .split(' ')
+      .map(word => {
+        // Keep some words lowercase
+        if (['and', 'or', 'the', 'a', 'an', 'of', 'for', 'to', 'in', 'on'].includes(word)) {
+          return word;
+        }
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(' ');
+    // Capitalize first word
+    title = title.charAt(0).toUpperCase() + title.slice(1);
+  }
+  
+  return title.substring(0, 80);
+}
+
+// ============= STEP 2: Text Cleanup =============
+
+export function normalizeWhitespace(text: string): string {
+  return text
+    // Remove page separators completely
+    .replace(/---\s*PAGE\s*---/gi, '\n\n')
+    // Remove PDF artifacts
+    .replace(/%\s*PDF[^\n]*/gi, '')
+    .replace(/<<[^>]*>>/g, '')
+    .replace(/\/[A-Z][a-z]*\s+\d+/g, '')
+    // Normalize line endings
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n')
+    // Clean up spaces
+    .split('\n')
+    .map(line => line.replace(/  +/g, ' ').trim())
+    .join('\n')
+    // Normalize paragraph breaks
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
 
 export function fixBullets(text: string): string {
   const lines = text.split('\n');
@@ -46,11 +92,11 @@ export function fixBullets(text: string): string {
 
     // Fix double bullets ("• • " -> "• ")
     workingLine = workingLine.replace(/•\s*•/g, '•');
-    workingLine = workingLine.replace(/^\s*•\s*$/, ''); // Remove orphan bullets
+    workingLine = workingLine.replace(/^\s*•\s*$/, '');
     
     if (!workingLine) continue;
 
-    // Check if line starts with a bullet marker
+    // Convert various bullet markers to standard bullet
     let startsWithBullet = false;
     for (const marker of BULLET_MARKERS) {
       if (workingLine.startsWith(marker)) {
@@ -60,29 +106,29 @@ export function fixBullets(text: string): string {
       }
     }
 
-    // Check for numbered list items
+    // Convert numbered lists
     const numberedMatch = workingLine.match(/^(\d{1,2})[.)]\s+(.+)/);
     if (numberedMatch) {
       workingLine = '• ' + numberedMatch[2];
       startsWithBullet = true;
     }
 
-    // Handle multiple bullets in one line (e.g., "• item1 • item2 • item3")
+    // Split multiple bullets in one line
     if (startsWithBullet && workingLine.includes(' • ')) {
       const parts = workingLine.split(/\s*•\s*/).filter(p => p.trim());
       for (const part of parts) {
-        if (part.trim() && part.trim().length > 3) {
+        if (part.trim().length > 3) {
           fixedLines.push('• ' + part.trim());
         }
       }
       continue;
     }
 
-    // Handle lines with inline "l " bullets (common PDF extraction artifact)
+    // Handle inline "l " bullets (PDF artifact)
     if (workingLine.includes(' l ') && workingLine.split(' l ').length > 2) {
       const parts = workingLine.split(/\s+l\s+/).filter(p => p.trim());
       for (const part of parts) {
-        if (part.trim() && part.trim().length > 3) {
+        if (part.trim().length > 3) {
           fixedLines.push('• ' + part.trim());
         }
       }
@@ -98,7 +144,6 @@ export function fixBullets(text: string): string {
     const line = fixedLines[i];
     const prevLine = i > 0 ? fixedLines[i - 1] : '';
     
-    // If current line looks like a heading and previous line is not empty
     if (isLikelyHeading(line) && prevLine && !prevLine.startsWith('•')) {
       if (result[result.length - 1] !== '') {
         result.push('');
@@ -107,7 +152,6 @@ export function fixBullets(text: string): string {
     
     result.push(line);
     
-    // Add blank line after headings
     if (isLikelyHeading(line) && i < fixedLines.length - 1 && fixedLines[i + 1] !== '') {
       result.push('');
     }
@@ -127,7 +171,7 @@ function isLikelyHeading(line: string): boolean {
   return headingPatterns.some(p => p.test(line));
 }
 
-// ============= C) Extract Header Metadata =============
+// ============= STEP 3: Metadata Extraction =============
 
 export interface JobMetadata {
   company: string | null;
@@ -172,11 +216,10 @@ export function extractMetadata(text: string): { metadata: JobMetadata; cleanedT
     { pattern: /^ral\s*[:：]\s*(.+)/i, key: 'salaryRange' },
   ];
 
-  // Track which metadata lines to remove
   const extractedKeys = new Set<keyof JobMetadata>();
   const metadataLineSignatures = new Set<string>();
 
-  // First pass: extract metadata from first ~40 lines
+  // Extract from first ~40 lines
   const headerLines = Math.min(40, lines.length);
   for (let i = 0; i < headerLines; i++) {
     const line = lines[i].trim();
@@ -186,14 +229,13 @@ export function extractMetadata(text: string): { metadata: JobMetadata; cleanedT
       if (match && !extractedKeys.has(key)) {
         metadata[key] = match[1].trim();
         extractedKeys.add(key);
-        // Store normalized signature for dedup
         metadataLineSignatures.add(normalizeForDedup(line));
         break;
       }
     }
   }
 
-  // Detect employment type from text if not explicitly found
+  // Detect employment type from text
   if (!metadata.employmentType) {
     const fullText = text.toLowerCase();
     if (fullText.includes('full-time') || fullText.includes('full time') || fullText.includes('tempo pieno')) {
@@ -207,13 +249,12 @@ export function extractMetadata(text: string): { metadata: JobMetadata; cleanedT
     }
   }
 
-  // Second pass: remove ALL occurrences of metadata lines (not just first)
+  // Remove metadata lines from content
   const cleanedLines: string[] = [];
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     const normalized = normalizeForDedup(line);
     
-    // Check if this matches any metadata pattern
     let isMetadata = metadataLineSignatures.has(normalized);
     
     if (!isMetadata) {
@@ -236,7 +277,7 @@ export function extractMetadata(text: string): { metadata: JobMetadata; cleanedT
   };
 }
 
-// ============= D) Section Parsing =============
+// ============= STEP 4: Section Parsing =============
 
 export interface ParsedSections {
   title: string;
@@ -355,19 +396,16 @@ export function parseSections(text: string): ParsedSections {
 
   const lines = text.split('\n');
   
-  // Detect title from first substantial line (before any sections)
+  // Detect title from first substantial line
   for (let i = 0; i < Math.min(10, lines.length); i++) {
     const line = lines[i].trim();
     if (line.length >= 5 && line.length <= 100) {
-      // Check it's not a section heading
       const isHeading = SECTION_PATTERNS.some(sp => 
         sp.patterns.some(p => p.test(line))
       );
-      // Check it's not metadata
       const isMetadata = /^(company|location|department|contract|employment|reporting|salary|experience)[\s:]/i.test(line);
       
       if (!isHeading && !isMetadata) {
-        // Clean up title - remove any trailing metadata-like content
         sections.title = line.replace(/\s*[|•]\s*.*$/, '').trim();
         break;
       }
@@ -388,7 +426,6 @@ export function parseSections(text: string): ParsedSections {
   for (const line of lines) {
     const trimmedLine = line.trim();
     
-    // Check if this is a section heading
     let matchedSection: keyof Omit<ParsedSections, 'title'> | null = null;
     for (const { key, patterns } of SECTION_PATTERNS) {
       for (const pattern of patterns) {
@@ -404,12 +441,10 @@ export function parseSections(text: string): ParsedSections {
       saveSection();
       currentSection = matchedSection;
     } else if (currentSection && trimmedLine) {
-      // Skip the title from content
       if (trimmedLine !== sections.title) {
         currentContent.push(trimmedLine);
       }
     } else if (!currentSection && trimmedLine && trimmedLine !== sections.title) {
-      // Before any section, add to positionSummary (more useful than overview for intros)
       if (!sections.companyOverview) {
         sections.companyOverview = trimmedLine;
       } else {
@@ -418,13 +453,11 @@ export function parseSections(text: string): ParsedSections {
     }
   }
 
-  // Save last section
   saveSection();
-
   return sections;
 }
 
-// ============= E) Deduplication =============
+// ============= STEP 5: Deduplication =============
 
 function normalizeForDedup(text: string): string {
   return text
@@ -441,12 +474,10 @@ function similarity(a: string, b: string): number {
   const longer = a.length > b.length ? a : b;
   const shorter = a.length > b.length ? b : a;
   
-  // If shorter is contained in longer, high similarity
   if (longer.includes(shorter)) {
     return shorter.length / longer.length;
   }
   
-  // Simple word overlap similarity
   const wordsA = new Set(a.split(' ').filter(w => w.length > 2));
   const wordsB = new Set(b.split(' ').filter(w => w.length > 2));
   
@@ -469,7 +500,6 @@ export function deduplicateContent(text: string): string {
     const line = lines[i];
     const trimmed = line.trim();
     
-    // Keep empty lines for formatting
     if (!trimmed) {
       const lastLine = result[result.length - 1];
       if (lastLine !== undefined && lastLine.trim() !== '') {
@@ -478,16 +508,12 @@ export function deduplicateContent(text: string): string {
       continue;
     }
 
-    // Skip very short lines that might be artifacts
-    if (trimmed.length < 3) {
-      continue;
-    }
+    if (trimmed.length < 3) continue;
 
     const normalized = normalizeForDedup(trimmed);
     
-    // Skip if we've seen an identical or near-identical line
     let isDuplicate = false;
-    for (const [seen, _] of seenNormalized) {
+    for (const [seen] of seenNormalized) {
       if (similarity(normalized, seen) >= 0.9) {
         isDuplicate = true;
         break;
@@ -503,7 +529,160 @@ export function deduplicateContent(text: string): string {
   return result.join('\n');
 }
 
-// ============= F) Content Block Builder =============
+// ============= STEP 6: Candidate-Friendly Rewriting =============
+
+/**
+ * Rewrite intro paragraphs with direct, candidate-friendly language
+ * Uses "You will...", "You'll be responsible for..." style
+ */
+function rewriteIntro(companyOverview: string, positionSummary: string): string[] {
+  const paragraphs: string[] = [];
+  
+  // Process company overview
+  if (companyOverview) {
+    const cleanedOverview = companyOverview
+      .replace(/\n/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    
+    if (cleanedOverview.length > 0) {
+      paragraphs.push(cleanedOverview);
+    }
+  }
+  
+  // Process position summary - rewrite to be more direct
+  if (positionSummary) {
+    let summary = positionSummary
+      .replace(/\n/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    
+    // Convert third-person corporate speak to second-person
+    summary = summary
+      .replace(/The\s+(candidate|employee|hire|person)\s+will/gi, 'You will')
+      .replace(/The\s+(successful\s+)?(candidate|applicant)\s+is\s+responsible\s+for/gi, 'You\'ll be responsible for')
+      .replace(/The\s+role\s+involves/gi, 'You\'ll')
+      .replace(/This\s+position\s+is\s+responsible\s+for/gi, 'You\'ll be responsible for')
+      .replace(/This\s+role\s+requires/gi, 'You\'ll need')
+      .replace(/is\s+a\s+key\s+contributor\s+within/gi, 'play a key role in')
+      .replace(/will\s+be\s+responsible\s+for/gi, 'will be responsible for')
+      .replace(/\bHe\s*\/\s*She\s+will/gi, 'You will')
+      .replace(/\bHe\s+or\s+she\s+will/gi, 'You will');
+    
+    if (summary.length > 0) {
+      paragraphs.push(summary);
+    }
+  }
+  
+  // Limit to 3 paragraphs, each max 4 lines
+  return paragraphs
+    .slice(0, 3)
+    .map(p => {
+      // Split long paragraphs
+      if (p.length > 500) {
+        const sentences = p.match(/[^.!?]+[.!?]+/g) || [p];
+        const chunks: string[] = [];
+        let current = '';
+        
+        for (const sentence of sentences) {
+          if ((current + sentence).length > 400) {
+            if (current) chunks.push(current.trim());
+            current = sentence;
+          } else {
+            current += sentence;
+          }
+        }
+        if (current) chunks.push(current.trim());
+        
+        return chunks.slice(0, MAX_PARAGRAPH_LINES).join(' ');
+      }
+      return p;
+    });
+}
+
+/**
+ * Clean and format bullet points
+ * - Starts with action verb
+ * - Max 140 characters
+ * - No duplicates
+ */
+function formatBulletList(text: string): string[] {
+  if (!text) return [];
+  
+  const bullets: string[] = [];
+  const seenNormalized = new Set<string>();
+  
+  const lines = text.split('\n').filter(l => l.trim());
+  
+  for (const line of lines) {
+    let bullet = line.trim();
+    
+    // Remove bullet marker
+    bullet = bullet.replace(/^[•●○◦▪▫■□►▸→➤\-–—*]\s*/, '');
+    
+    if (bullet.length < 5) continue;
+    
+    // Clean up redundant phrasing
+    bullet = bullet
+      .replace(/^(Strong|Solid|Advanced|Excellent|Good|Proven)\s+/i, '')
+      .replace(/^(Knowledge|Understanding|Experience)\s+(of|in|with)\s+/i, '')
+      .replace(/\s+$/, '')
+      .trim();
+    
+    // Capitalize first letter
+    bullet = bullet.charAt(0).toUpperCase() + bullet.slice(1);
+    
+    // Truncate if too long
+    if (bullet.length > MAX_BULLET_LENGTH) {
+      const lastSpace = bullet.lastIndexOf(' ', MAX_BULLET_LENGTH - 3);
+      bullet = bullet.substring(0, lastSpace > 80 ? lastSpace : MAX_BULLET_LENGTH - 3) + '...';
+    }
+    
+    // Deduplicate
+    const normalized = normalizeForDedup(bullet);
+    if (!seenNormalized.has(normalized)) {
+      seenNormalized.add(normalized);
+      bullets.push(bullet);
+    }
+  }
+  
+  return bullets;
+}
+
+/**
+ * Format responsibilities with action verbs
+ */
+function formatResponsibilities(text: string): string[] {
+  if (!text) return [];
+  
+  const bullets = formatBulletList(text);
+  
+  // Ensure each bullet starts with an action verb
+  const actionVerbs = ['Manage', 'Lead', 'Develop', 'Create', 'Implement', 'Design', 'Analyze', 'Support', 
+    'Coordinate', 'Maintain', 'Monitor', 'Oversee', 'Execute', 'Drive', 'Deliver', 'Build', 'Ensure'];
+  
+  return bullets.map(bullet => {
+    // Check if starts with a verb (simple heuristic: ends with -e, -s, -ing, etc.)
+    const firstWord = bullet.split(' ')[0];
+    const looksLikeVerb = /^[A-Z][a-z]+(e|s|ing|ize|ate|ify)?\b/.test(firstWord) || 
+                          actionVerbs.some(v => firstWord.toLowerCase() === v.toLowerCase());
+    
+    if (!looksLikeVerb) {
+      // Try to convert noun phrases to verb phrases
+      if (bullet.toLowerCase().startsWith('responsibility for')) {
+        bullet = 'Manage ' + bullet.substring(18);
+      } else if (bullet.toLowerCase().startsWith('management of')) {
+        bullet = 'Manage ' + bullet.substring(13);
+      } else if (bullet.toLowerCase().startsWith('development of')) {
+        bullet = 'Develop ' + bullet.substring(14);
+      }
+    }
+    
+    return bullet;
+  });
+}
+
+// ============= Content Block Builder =============
 
 export interface ContentBlock {
   type: 'intro' | 'section';
@@ -524,93 +703,77 @@ export interface JobContentBlocks {
   blocks: ContentBlock[];
 }
 
-function extractBullets(text: string): string[] {
-  if (!text) return [];
-  return text
-    .split('\n')
-    .filter(l => l.trim().startsWith('•'))
-    .map(l => l.trim().replace(/^•\s*/, '').trim())
-    .filter(l => l.length > 3);
-}
-
-function extractParagraphs(text: string): string[] {
-  if (!text) return [];
-  return text
-    .split(/\n\n+/)
-    .map(p => p.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim())
-    .filter(p => p.length > 10 && !p.startsWith('•'));
-}
-
 export function buildJobPostContentBlocks(
   sections: ParsedSections,
   metadata: JobMetadata
 ): JobContentBlocks {
   const blocks: ContentBlock[] = [];
 
-  // About the role - combine overview and summary
-  const introBody: string[] = [];
-  if (sections.companyOverview) {
-    const paragraphs = extractParagraphs(sections.companyOverview);
-    introBody.push(...paragraphs);
-  }
-  if (sections.positionSummary) {
-    const paragraphs = extractParagraphs(sections.positionSummary);
-    introBody.push(...paragraphs);
-  }
-  
+  // About the role - rewritten intro
+  const introBody = rewriteIntro(sections.companyOverview, sections.positionSummary);
   if (introBody.length > 0) {
     blocks.push({
       type: 'intro',
-      title: 'About the Role',
-      body: introBody.slice(0, 4), // Limit to 4 paragraphs
+      title: 'About the role',
+      body: introBody,
     });
   }
 
-  // What you'll do
-  const responsibilityBullets = extractBullets(sections.responsibilities);
+  // What you'll do - responsibilities with action verbs
+  const responsibilityBullets = formatResponsibilities(sections.responsibilities);
   if (responsibilityBullets.length > 0) {
     blocks.push({
       type: 'section',
-      title: "What You'll Do",
+      title: "What you'll do",
       bullets: responsibilityBullets,
     });
   }
 
-  // What you bring
-  const mustBullets = extractBullets(sections.requirementsMust);
-  const competencyBullets = extractBullets(sections.competencies);
+  // What you bring - must-have requirements + competencies
+  const mustBullets = formatBulletList(sections.requirementsMust);
+  const competencyBullets = formatBulletList(sections.competencies);
   const allMustHave = [...mustBullets, ...competencyBullets];
-  if (allMustHave.length > 0) {
+  
+  // Dedupe combined list
+  const seenMust = new Set<string>();
+  const dedupedMustHave = allMustHave.filter(b => {
+    const norm = normalizeForDedup(b);
+    if (seenMust.has(norm)) return false;
+    seenMust.add(norm);
+    return true;
+  });
+  
+  if (dedupedMustHave.length > 0) {
     blocks.push({
       type: 'section',
-      title: 'What You Bring',
-      bullets: allMustHave,
+      title: 'What you bring',
+      bullets: dedupedMustHave,
     });
   }
 
-  // Nice to have
-  const niceBullets = extractBullets(sections.requirementsNice);
+  // Nice to have - only if explicitly present
+  const niceBullets = formatBulletList(sections.requirementsNice);
   if (niceBullets.length > 0) {
     blocks.push({
       type: 'section',
-      title: 'Nice to Have',
+      title: 'Nice to have',
       bullets: niceBullets,
     });
   }
 
-  // What we offer
-  const benefitBullets = extractBullets(sections.benefits);
+  // What we offer - benefits (no invented content)
+  const benefitBullets = formatBulletList(sections.benefits);
   if (benefitBullets.length > 0) {
     blocks.push({
       type: 'section',
-      title: 'What We Offer',
+      title: 'What we offer',
       bullets: benefitBullets,
     });
   }
 
   return {
     hero: {
-      title: sections.title,
+      title: normalizeTitle(sections.title),
       company: metadata.company,
       location: metadata.location,
       employmentType: metadata.employmentType || metadata.contractType,
@@ -621,7 +784,7 @@ export function buildJobPostContentBlocks(
   };
 }
 
-// ============= G) HTML Generator =============
+// ============= HTML Generator =============
 
 function escapeHtml(text: string): string {
   return text
@@ -659,7 +822,65 @@ export function renderHtmlFromBlocks(content: JobContentBlocks): string {
   return parts.join('\n');
 }
 
-// ============= H) Field Mapping =============
+// ============= Quality Check =============
+
+interface QualityCheckResult {
+  passed: boolean;
+  issues: string[];
+}
+
+function runQualityCheck(content: JobContentBlocks): QualityCheckResult {
+  const issues: string[] = [];
+  
+  // Check title
+  if (!content.hero.title || content.hero.title.length < 3) {
+    issues.push('Missing or too short title');
+  }
+  if (content.hero.title && content.hero.title.split(' ').length > 7) {
+    issues.push('Title too long (should be 4-5 words)');
+  }
+  
+  // Check intro
+  const introBlock = content.blocks.find(b => b.type === 'intro');
+  if (!introBlock || !introBlock.body || introBlock.body.length === 0) {
+    issues.push('Missing "About the role" section');
+  } else {
+    const introLength = introBlock.body.join(' ').length;
+    if (introLength < MIN_INTRO_LENGTH) {
+      issues.push(`Intro too short (${introLength} chars, need ${MIN_INTRO_LENGTH}+)`);
+    }
+  }
+  
+  // Check responsibilities
+  const respBlock = content.blocks.find(b => b.title === "What you'll do");
+  if (!respBlock || !respBlock.bullets || respBlock.bullets.length < MIN_BULLET_COUNT) {
+    issues.push(`Need at least ${MIN_BULLET_COUNT} responsibilities`);
+  }
+  
+  // Check requirements
+  const reqBlock = content.blocks.find(b => b.title === 'What you bring');
+  if (!reqBlock || !reqBlock.bullets || reqBlock.bullets.length < MIN_BULLET_COUNT) {
+    issues.push(`Need at least ${MIN_BULLET_COUNT} requirements`);
+  }
+  
+  // Check bullet length
+  for (const block of content.blocks) {
+    if (block.bullets) {
+      for (const bullet of block.bullets) {
+        if (bullet.length > MAX_BULLET_LENGTH) {
+          issues.push(`Bullet too long in "${block.title}"`);
+        }
+      }
+    }
+  }
+  
+  return {
+    passed: issues.length === 0,
+    issues,
+  };
+}
+
+// ============= Field Mapping =============
 
 export interface NormalizedJobPost {
   title: string;
@@ -695,29 +916,7 @@ export interface CleanedPreview {
   };
   blocks_count: number;
   extracted_text_length: number;
-}
-
-function countBulletPoints(text: string): number {
-  if (!text) return 0;
-  return (text.match(/^•/gm) || []).length;
-}
-
-function formatAsBulletList(text: string): string {
-  if (!text) return '';
-  
-  const lines = text.split('\n').filter(l => l.trim());
-  const formatted = lines.map(line => {
-    const trimmed = line.trim();
-    if (trimmed.startsWith('• ')) return trimmed;
-    if (trimmed.startsWith('•')) return '• ' + trimmed.substring(1).trim();
-    // Only add bullet if it looks like a list item (not a heading or paragraph)
-    if (trimmed.length < 200 && !trimmed.endsWith('.') && !isLikelyHeading(trimmed)) {
-      return '• ' + trimmed;
-    }
-    return trimmed;
-  });
-  
-  return formatted.join('\n');
+  quality_check: QualityCheckResult;
 }
 
 export function normalizeJobPostText(rawText: string): {
@@ -734,7 +933,7 @@ export function normalizeJobPostText(rawText: string): {
   text = fixBullets(text);
   console.log('[normalizeJobPostText] After bullet fix:', text.length, 'chars');
   
-  // Step 3: Extract metadata and clean duplicates
+  // Step 3: Extract metadata
   const { metadata, cleanedText } = extractMetadata(text);
   console.log('[normalizeJobPostText] Metadata extracted:', JSON.stringify(metadata));
   
@@ -754,46 +953,48 @@ export function normalizeJobPostText(rawText: string): {
     hasBenefits: !!sections.benefits,
   });
   
-  // Step 6: Build structured content blocks
+  // Step 6: Build candidate-friendly content blocks
   let contentBlocks = buildJobPostContentBlocks(sections, metadata);
   console.log('[normalizeJobPostText] Content blocks built:', contentBlocks.blocks.length, 'blocks');
   
-  // Step 7: Generate HTML
+  // Step 7: Run quality check
+  const qualityCheck = runQualityCheck(contentBlocks);
+  console.log('[normalizeJobPostText] Quality check:', qualityCheck);
+  
+  // Step 8: Generate HTML
   let contentHtml = renderHtmlFromBlocks(contentBlocks);
   
-  // Step 8: Build description
+  // Build description from intro blocks
   let description = '';
-  if (sections.companyOverview) {
-    description = sections.companyOverview.replace(/\n+/g, '\n\n').trim();
-  }
-  if (sections.positionSummary) {
-    description += (description ? '\n\n' : '') + sections.positionSummary.replace(/\n+/g, '\n\n').trim();
+  const introBlock = contentBlocks.blocks.find(b => b.type === 'intro');
+  if (introBlock && introBlock.body) {
+    description = introBlock.body.join('\n\n');
   }
   
-  // Fallback: if no description but we have text, use first portion
+  // Fallback if no description
   if (!description && dedupedText.length > 0) {
-    const lines = dedupedText.split('\n').filter(l => l.trim() && l.trim() !== sections.title && !l.startsWith('•'));
+    const lines = dedupedText.split('\n').filter(l => 
+      l.trim() && l.trim() !== sections.title && !l.startsWith('•')
+    );
     description = lines.slice(0, 5).join('\n\n');
   }
   
-  // Step 9: Format bullet lists
-  const responsibilities = sections.responsibilities ? formatAsBulletList(sections.responsibilities) : null;
+  // Format bullet lists for legacy fields
+  const formatLegacyBullets = (bullets: string[]): string => {
+    return bullets.map(b => '• ' + b).join('\n');
+  };
   
-  let requirementsMust = sections.requirementsMust ? formatAsBulletList(sections.requirementsMust) : null;
-  // Merge competencies into requirements
-  if (sections.competencies) {
-    const formatted = formatAsBulletList(sections.competencies);
-    if (requirementsMust) {
-      requirementsMust += '\n' + formatted;
-    } else {
-      requirementsMust = formatted;
-    }
-  }
+  const respBlock = contentBlocks.blocks.find(b => b.title === "What you'll do");
+  const mustBlock = contentBlocks.blocks.find(b => b.title === 'What you bring');
+  const niceBlock = contentBlocks.blocks.find(b => b.title === 'Nice to have');
+  const benefitsBlock = contentBlocks.blocks.find(b => b.title === 'What we offer');
   
-  const requirementsNice = sections.requirementsNice ? formatAsBulletList(sections.requirementsNice) : null;
-  const benefits = sections.benefits ? formatAsBulletList(sections.benefits) : null;
+  const responsibilities = respBlock?.bullets ? formatLegacyBullets(respBlock.bullets) : null;
+  const requirementsMust = mustBlock?.bullets ? formatLegacyBullets(mustBlock.bullets) : null;
+  const requirementsNice = niceBlock?.bullets ? formatLegacyBullets(niceBlock.bullets) : null;
+  const benefits = benefitsBlock?.bullets ? formatLegacyBullets(benefitsBlock.bullets) : null;
   
-  // Step 10: Extract seniority from requirements if not in metadata
+  // Extract seniority from requirements if not in metadata
   let seniority = metadata.seniority;
   if (!seniority && requirementsMust) {
     const yearsMatch = requirementsMust.match(/(\d+)[-–](\d+)\s*years?/i) 
@@ -804,79 +1005,57 @@ export function normalizeJobPostText(rawText: string): {
     }
   }
 
-  // CRITICAL: Ensure content_json is NEVER null - create fallback if parsing didn't produce blocks
-  const finalTitle = sections.title || 'Imported Job Position';
+  const finalTitle = contentBlocks.hero.title || normalizeTitle(sections.title) || 'Imported Job Position';
   
+  // Ensure content_json is NEVER null
   if (!contentBlocks || contentBlocks.blocks.length === 0) {
-    console.log('[normalizeJobPostText] No blocks generated, creating fallback content blocks');
+    console.log('[normalizeJobPostText] No blocks generated, creating fallback');
     
-    // Build fallback blocks from whatever content we have
     const fallbackBlocks: ContentBlock[] = [];
     
-    // Add description as intro if available
     if (description) {
       fallbackBlocks.push({
         type: 'intro',
-        title: 'About the Role',
-        body: description.split(/\n\n+/).filter(p => p.trim()).slice(0, 4),
+        title: 'About the role',
+        body: description.split(/\n\n+/).filter(p => p.trim()).slice(0, 3),
       });
     }
     
-    // Add responsibilities if available
     if (responsibilities) {
-      const bullets = responsibilities.split('\n').filter(l => l.trim().startsWith('•')).map(l => l.replace(/^•\s*/, '').trim()).filter(b => b.length > 3);
+      const bullets = responsibilities.split('\n')
+        .filter(l => l.trim().startsWith('•'))
+        .map(l => l.replace(/^•\s*/, '').trim())
+        .filter(b => b.length > 3);
       if (bullets.length > 0) {
         fallbackBlocks.push({
           type: 'section',
-          title: "What You'll Do",
+          title: "What you'll do",
           bullets,
         });
       }
     }
     
-    // Add requirements if available
     if (requirementsMust) {
-      const bullets = requirementsMust.split('\n').filter(l => l.trim().startsWith('•')).map(l => l.replace(/^•\s*/, '').trim()).filter(b => b.length > 3);
+      const bullets = requirementsMust.split('\n')
+        .filter(l => l.trim().startsWith('•'))
+        .map(l => l.replace(/^•\s*/, '').trim())
+        .filter(b => b.length > 3);
       if (bullets.length > 0) {
         fallbackBlocks.push({
           type: 'section',
-          title: 'What You Bring',
+          title: 'What you bring',
           bullets,
         });
       }
     }
     
-    // Add nice-to-have if available
-    if (requirementsNice) {
-      const bullets = requirementsNice.split('\n').filter(l => l.trim().startsWith('•')).map(l => l.replace(/^•\s*/, '').trim()).filter(b => b.length > 3);
-      if (bullets.length > 0) {
-        fallbackBlocks.push({
-          type: 'section',
-          title: 'Nice to Have',
-          bullets,
-        });
-      }
-    }
-    
-    // Add benefits if available
-    if (benefits) {
-      const bullets = benefits.split('\n').filter(l => l.trim().startsWith('•')).map(l => l.replace(/^•\s*/, '').trim()).filter(b => b.length > 3);
-      if (bullets.length > 0) {
-        fallbackBlocks.push({
-          type: 'section',
-          title: 'What We Offer',
-          bullets,
-        });
-      }
-    }
-    
-    // Last resort: if still no blocks, create one from the full text
     if (fallbackBlocks.length === 0 && dedupedText.length > 0) {
-      console.log('[normalizeJobPostText] Creating last-resort content block from full text');
-      const paragraphs = dedupedText.split(/\n\n+/).filter(p => p.trim() && p.trim() !== finalTitle).slice(0, 6);
+      const paragraphs = dedupedText.split(/\n\n+/)
+        .filter(p => p.trim() && p.trim() !== finalTitle)
+        .slice(0, 4);
       fallbackBlocks.push({
         type: 'section',
-        title: 'Job Description',
+        title: 'Job description',
         body: paragraphs,
       });
     }
@@ -893,14 +1072,12 @@ export function normalizeJobPostText(rawText: string): {
       blocks: fallbackBlocks,
     };
     
-    // Regenerate HTML from fallback blocks
     contentHtml = renderHtmlFromBlocks(contentBlocks);
   }
   
   console.log('[normalizeJobPostText] FINAL content_json blocks:', contentBlocks.blocks.length);
-  console.log('[normalizeJobPostText] FINAL content_json block titles:', contentBlocks.blocks.map(b => b.title));
+  console.log('[normalizeJobPostText] FINAL block titles:', contentBlocks.blocks.map(b => b.title));
   
-  // Build result - content_json is GUARANTEED to exist
   const jobPost: NormalizedJobPost = {
     title: finalTitle,
     description: description.trim().substring(0, 5000),
@@ -913,8 +1090,8 @@ export function normalizeJobPostText(rawText: string): {
     seniority: seniority,
     department: metadata.department,
     salary_range: metadata.salaryRange,
-    content_json: contentBlocks, // NEVER null
-    content_html: contentHtml,   // NEVER null
+    content_json: contentBlocks,
+    content_html: contentHtml,
   };
   
   const preview: CleanedPreview = {
@@ -928,13 +1105,14 @@ export function normalizeJobPostText(rawText: string): {
     sections: {
       has_overview: !!sections.companyOverview,
       has_summary: !!sections.positionSummary,
-      responsibilities_count: countBulletPoints(responsibilities || ''),
-      must_count: countBulletPoints(requirementsMust || ''),
-      nice_count: countBulletPoints(requirementsNice || ''),
-      benefits_count: countBulletPoints(benefits || ''),
+      responsibilities_count: respBlock?.bullets?.length || 0,
+      must_count: mustBlock?.bullets?.length || 0,
+      nice_count: niceBlock?.bullets?.length || 0,
+      benefits_count: benefitsBlock?.bullets?.length || 0,
     },
     blocks_count: contentBlocks.blocks.length,
     extracted_text_length: rawText.length,
+    quality_check: qualityCheck,
   };
   
   return { jobPost, preview };
