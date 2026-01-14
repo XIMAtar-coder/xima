@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
+import { useCreateL2ChallengeFromJobPost } from '@/hooks/useCreateL2ChallengeFromJobPost';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,13 +14,11 @@ import {
   Plus, 
   Briefcase, 
   MapPin, 
-  Eye, 
   FileUp, 
   Target, 
   Loader2,
   ChevronRight,
   Archive,
-  Pencil,
   Link2
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -58,9 +57,11 @@ export default function Jobs() {
   const [jobs, setJobs] = useState<JobPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [showPdfImport, setShowPdfImport] = useState(false);
-  const [creatingChallengeForJob, setCreatingChallengeForJob] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  
+  // L2 Challenge creation hook
+  const { createL2Challenge, creatingFor: creatingChallengeForJob } = useCreateL2ChallengeFromJobPost();
 
   // Handle jobPostId from URL query param (for redirect after PDF import)
   useEffect(() => {
@@ -146,56 +147,19 @@ export default function Jobs() {
     archived: jobs.filter(j => j.status === 'archived').length
   };
 
-  const extractSkillsFromText = (text: string): string[] => {
-    const commonSkills = [
-      'javascript', 'typescript', 'react', 'node', 'python', 'java', 'sql', 
-      'aws', 'docker', 'kubernetes', 'git', 'agile', 'scrum', 'leadership',
-      'communication', 'teamwork', 'problem-solving', 'analytics', 'excel',
-      'project management', 'design', 'marketing', 'sales', 'customer service'
-    ];
-    
-    const lowerText = text.toLowerCase();
-    return commonSkills.filter(skill => lowerText.includes(skill));
-  };
-
+  /**
+   * Create L2 challenge from job post using AI generation
+   */
   const handleCreateChallenge = async (job: JobPost) => {
-    setCreatingChallengeForJob(job.id);
-    
-    try {
-      const contextParts = [
-        job.description,
-        job.responsibilities ? `Responsibilities:\n${job.responsibilities}` : '',
-        job.requirements_must ? `Requirements:\n${job.requirements_must}` : '',
-        job.requirements_nice ? `Nice to have:\n${job.requirements_nice}` : ''
-      ].filter(Boolean).join('\n\n');
-
-      const skillsText = [job.requirements_must, job.requirements_nice].filter(Boolean).join(' ');
-      const targetSkills = extractSkillsFromText(skillsText);
-
-      const { data, error } = await supabase
-        .from('business_challenges')
-        .insert({
-          business_id: user?.id,
-          title: job.title,
-          description: contextParts.slice(0, 2000),
-          target_skills: targetSkills.length > 0 ? targetSkills : null,
-          job_post_id: job.id,
-          created_from_job_post: true,
-          status: 'draft',
-        })
-        .select('id')
-        .single();
-
-      if (error) throw error;
-
-      toast.success(t('jobs.challenge_created_from_job_post'));
-      navigate(`/business/challenges/${data.id}/edit`);
-    } catch (error: any) {
-      console.error('Error creating challenge:', error);
-      toast.error(error.message || t('common.error'));
-    } finally {
-      setCreatingChallengeForJob(null);
-    }
+    await createL2Challenge({
+      id: job.id,
+      title: job.title,
+      description: job.description,
+      responsibilities: job.responsibilities,
+      requirements_must: job.requirements_must,
+      requirements_nice: job.requirements_nice,
+      locale: job.locale,
+    });
   };
 
   const handleArchiveJob = async (jobId: string) => {
@@ -407,8 +371,6 @@ export default function Jobs() {
         job={selectedJob}
         open={!!selectedJobId}
         onOpenChange={(open) => !open && setSelectedJobId(null)}
-        onCreateChallenge={handleCreateChallenge}
-        creatingChallenge={creatingChallengeForJob === selectedJobId}
         onUpdate={fetchJobs}
       />
     </BusinessLayout>

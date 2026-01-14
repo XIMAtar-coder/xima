@@ -602,16 +602,21 @@ export type Database = {
         Row: {
           attachment_url: string | null
           business_id: string
+          config_json: Json | null
+          context_snapshot: Json | null
           created_at: string | null
           created_from_job_post: boolean | null
           deadline: string | null
           description: string | null
           difficulty: number | null
           end_at: string | null
+          generation_error: string | null
+          generation_status: string | null
           hiring_goal_id: string | null
           id: string
           is_public: boolean | null
           job_post_id: string | null
+          level: number
           rubric: Json | null
           start_at: string | null
           status: string
@@ -624,16 +629,21 @@ export type Database = {
         Insert: {
           attachment_url?: string | null
           business_id: string
+          config_json?: Json | null
+          context_snapshot?: Json | null
           created_at?: string | null
           created_from_job_post?: boolean | null
           deadline?: string | null
           description?: string | null
           difficulty?: number | null
           end_at?: string | null
+          generation_error?: string | null
+          generation_status?: string | null
           hiring_goal_id?: string | null
           id?: string
           is_public?: boolean | null
           job_post_id?: string | null
+          level?: number
           rubric?: Json | null
           start_at?: string | null
           status?: string
@@ -646,16 +656,21 @@ export type Database = {
         Update: {
           attachment_url?: string | null
           business_id?: string
+          config_json?: Json | null
+          context_snapshot?: Json | null
           created_at?: string | null
           created_from_job_post?: boolean | null
           deadline?: string | null
           description?: string | null
           difficulty?: number | null
           end_at?: string | null
+          generation_error?: string | null
+          generation_status?: string | null
           hiring_goal_id?: string | null
           id?: string
           is_public?: boolean | null
           job_post_id?: string | null
+          level?: number
           rubric?: Json | null
           start_at?: string | null
           status?: string

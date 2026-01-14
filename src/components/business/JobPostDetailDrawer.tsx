@@ -24,8 +24,6 @@ import {
 import { 
   Target, 
   Loader2, 
-  MapPin, 
-  Briefcase, 
   Save,
   Eye,
   EyeOff,
@@ -34,6 +32,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import { useCreateL2ChallengeFromJobPost } from '@/hooks/useCreateL2ChallengeFromJobPost';
 import { toast } from 'sonner';
 import JobPostCandidatePreview from './JobPostCandidatePreview';
 
@@ -64,8 +63,6 @@ interface JobPostDetailDrawerProps {
   job: JobPost | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreateChallenge: (job: JobPost) => void;
-  creatingChallenge: boolean;
   onUpdate: () => void;
 }
 
@@ -73,15 +70,16 @@ export default function JobPostDetailDrawer({
   job,
   open,
   onOpenChange,
-  onCreateChallenge,
-  creatingChallenge,
   onUpdate
 }: JobPostDetailDrawerProps) {
   const { t } = useTranslation();
   const { user } = useUser();
+  const { createL2Challenge, creatingFor } = useCreateL2ChallengeFromJobPost();
   const [activeTab, setActiveTab] = useState<string>('preview');
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<JobPost>>({});
+  
+  const isCreatingChallenge = creatingFor === job?.id;
 
   React.useEffect(() => {
     if (job) {
@@ -180,11 +178,19 @@ export default function JobPostDetailDrawer({
         {/* Actions */}
         <div className="flex flex-wrap gap-2 mb-4">
           <Button
-            onClick={() => onCreateChallenge(job)}
-            disabled={creatingChallenge}
+            onClick={() => createL2Challenge({
+              id: job.id,
+              title: job.title,
+              description: job.description,
+              responsibilities: job.responsibilities,
+              requirements_must: job.requirements_must,
+              requirements_nice: job.requirements_nice,
+              locale: job.locale,
+            })}
+            disabled={isCreatingChallenge}
             className="gap-2"
           >
-            {creatingChallenge ? (
+            {isCreatingChallenge ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <Target className="h-4 w-4" />
