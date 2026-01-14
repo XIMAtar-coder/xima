@@ -2822,7 +2822,21 @@
     "time_window_hint": "Imposta quando i candidati possono iniziare e devono completare la sfida.",
     "start_date": "Data Inizio",
     "end_date": "Data Fine",
-    "dates_required": "Le date di inizio e fine sono necessarie per attivare una sfida."
+    "dates_required": "Le date di inizio e fine sono necessarie per attivare una sfida.",
+    "level_2": "Livello 2",
+    "ai_ready": "AI Pronta",
+    "ai_generating": "Generazione...",
+    "l2_review_required_title": "Revisione Richiesta Prima di Procedere",
+    "l2_review_required_desc": "La generazione AI ha riscontrato problemi. Rivedi e completa manualmente la configurazione della sfida prima di attivarla.",
+    "l2_complete_title": "Sfida Livello 2 Pronta",
+    "l2_complete_desc": "Questa sfida è completamente configurata e pronta per i candidati.",
+    "next_step_l3": "Prossimo Passo: Livello 3 (Video Standing)",
+    "next_step_l3_desc": "Dopo che i candidati completano questa sfida L2, puoi invitare i migliori al L3 dalla schermata di revisione.",
+    "l2_incomplete_title": "Configurazione Sfida Incompleta",
+    "l2_needs_steps": "Almeno 2 step della sfida richiesti",
+    "l2_needs_rubric": "Almeno 4 criteri di valutazione richiesti",
+    "l2_needs_time": "Tempo stimato richiesto",
+    "l2_needs_review_first": "Risolvi prima i problemi di generazione AI"
   },
   "challenges": {
     "page_title": "Sfide",

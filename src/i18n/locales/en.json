@@ -2869,7 +2869,21 @@
     "time_window_hint": "Set when candidates can start and must complete the challenge.",
     "start_date": "Start Date",
     "end_date": "End Date",
-    "dates_required": "Start and end dates are required to activate a challenge."
+    "dates_required": "Start and end dates are required to activate a challenge.",
+    "level_2": "Level 2",
+    "ai_ready": "AI Ready",
+    "ai_generating": "Generating...",
+    "l2_review_required_title": "Review Required Before Proceeding",
+    "l2_review_required_desc": "AI generation encountered issues. Please review and manually complete the challenge configuration before activating.",
+    "l2_complete_title": "Level 2 Challenge Ready",
+    "l2_complete_desc": "This challenge is fully configured and ready for candidates.",
+    "next_step_l3": "Next Step: Level 3 (Standing Video)",
+    "next_step_l3_desc": "After candidates complete this L2 challenge, you can invite top performers to L3 from the submission review screen.",
+    "l2_incomplete_title": "Challenge Configuration Incomplete",
+    "l2_needs_steps": "At least 2 challenge steps required",
+    "l2_needs_rubric": "At least 4 scoring criteria required",
+    "l2_needs_time": "Estimated time is required",
+    "l2_needs_review_first": "Resolve AI generation issues first"
   },
   "challenges": {
     "page_title": "Challenges",
