@@ -2288,7 +2288,21 @@
     "time_window_hint": "Establece cuándo los candidatos pueden comenzar y deben completar el desafío.",
     "start_date": "Fecha de Inicio",
     "end_date": "Fecha de Fin",
-    "dates_required": "Las fechas de inicio y fin son necesarias para activar un desafío."
+    "dates_required": "Las fechas de inicio y fin son necesarias para activar un desafío.",
+    "level_2": "Nivel 2",
+    "ai_ready": "IA Lista",
+    "ai_generating": "Generando...",
+    "l2_review_required_title": "Revisión Requerida Antes de Continuar",
+    "l2_review_required_desc": "La generación de IA encontró problemas. Por favor revisa y completa manualmente la configuración del desafío antes de activarlo.",
+    "l2_complete_title": "Desafío Nivel 2 Listo",
+    "l2_complete_desc": "Este desafío está completamente configurado y listo para los candidatos.",
+    "next_step_l3": "Siguiente Paso: Nivel 3 (Video Standing)",
+    "next_step_l3_desc": "Después de que los candidatos completen este desafío L2, puedes invitar a los mejores al L3 desde la pantalla de revisión de entregas.",
+    "l2_incomplete_title": "Configuración del Desafío Incompleta",
+    "l2_needs_steps": "Se requieren al menos 2 pasos del desafío",
+    "l2_needs_rubric": "Se requieren al menos 4 criterios de puntuación",
+    "l2_needs_time": "Se requiere tiempo estimado",
+    "l2_needs_review_first": "Resuelve primero los problemas de generación de IA"
   },
   "challenges": {
     "page_title": "Desafíos",

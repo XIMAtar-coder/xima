@@ -26,6 +26,9 @@ interface Challenge {
   time_estimate_minutes: number | null;
   created_at: string;
   updated_at: string;
+  level?: number | null;
+  generation_status?: string | null;
+  job_post_id?: string | null;
 }
 
 const GoalChallenges: React.FC = () => {
@@ -306,8 +309,18 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
               <h3 className="font-semibold text-foreground truncate">{challenge.title}</h3>
+              {challenge.level === 2 && (
+                <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/30 text-xs">
+                  L2
+                </Badge>
+              )}
+              {challenge.generation_status === 'needs_review' && (
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/30 text-xs">
+                  {t('challenge_builder.l2_review_required_title')}
+                </Badge>
+              )}
               {getStatusBadge(challenge.status)}
             </div>
             {challenge.description && (

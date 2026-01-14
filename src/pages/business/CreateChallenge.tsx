@@ -26,6 +26,12 @@ interface HiringGoal {
   country: string | null;
 }
 
+interface L2ConfigJson {
+  steps?: any[];
+  scoring_rubric?: any[];
+  estimated_time_minutes?: number;
+}
+
 interface ExistingChallenge {
   id: string;
   title: string;
@@ -37,6 +43,52 @@ interface ExistingChallenge {
   hiring_goal_id: string | null;
   start_at: string | null;
   end_at: string | null;
+  // L2 AI generation fields
+  level?: number | null;
+  generation_status?: string | null;
+  generation_error?: string | null;
+  config_json?: L2ConfigJson | null;
+  job_post_id?: string | null;
+  created_from_job_post?: boolean | null;
+}
+
+/**
+ * L2 Challenge Completeness Validation
+ * Returns true if the L2 challenge meets minimum requirements to proceed to L3
+ */
+function validateL2Completeness(challenge: ExistingChallenge | null): {
+  isComplete: boolean;
+  reasons: string[];
+} {
+  if (!challenge) return { isComplete: false, reasons: ['challenge.no_challenge'] };
+  
+  const reasons: string[] = [];
+  const config = challenge.config_json as L2ConfigJson | null;
+  
+  // Must have config_json.steps with at least 2 steps
+  if (!config?.steps || config.steps.length < 2) {
+    reasons.push('challenge_builder.l2_needs_steps');
+  }
+  
+  // Must have scoring_rubric with at least 4 criteria
+  if (!config?.scoring_rubric || config.scoring_rubric.length < 4) {
+    reasons.push('challenge_builder.l2_needs_rubric');
+  }
+  
+  // Must have estimated_time_minutes
+  if (!config?.estimated_time_minutes && !challenge.time_estimate_minutes) {
+    reasons.push('challenge_builder.l2_needs_time');
+  }
+  
+  // Must not be in needs_review or failed status
+  if (challenge.generation_status === 'needs_review' || challenge.generation_status === 'failed') {
+    reasons.push('challenge_builder.l2_needs_review_first');
+  }
+  
+  return {
+    isComplete: reasons.length === 0,
+    reasons
+  };
 }
 
 const CreateChallenge = () => {
@@ -149,7 +201,7 @@ const CreateChallenge = () => {
       return;
     }
 
-    setExistingChallenge(data);
+    setExistingChallenge(data as unknown as ExistingChallenge);
     setTitle(data.title);
     setDescription(data.description || '');
     setSuccessCriteria(data.success_criteria?.length ? data.success_criteria : ['', '', '']);
@@ -407,10 +459,15 @@ const CreateChallenge = () => {
               <p className="text-muted-foreground">
                 {t('challenge_builder.page_subtitle')}
               </p>
-              <div className="flex items-center gap-2 mt-2">
+              <div className="flex items-center gap-2 mt-2 flex-wrap">
                 {hiringGoal?.role_title && (
                   <Badge variant="outline">
                     {hiringGoal.role_title}
+                  </Badge>
+                )}
+                {isEditMode && existingChallenge?.level === 2 && (
+                  <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/30">
+                    {t('challenge_builder.level_2')}
                   </Badge>
                 )}
                 {isEditMode && (
@@ -427,10 +484,85 @@ const CreateChallenge = () => {
                     {t(`challenges.status_${currentStatus}`)}
                   </Badge>
                 )}
+                {isEditMode && existingChallenge?.generation_status === 'ready' && (
+                  <Badge className="bg-green-500/10 text-green-600 border-green-500/30">
+                    {t('challenge_builder.ai_ready')}
+                  </Badge>
+                )}
+                {isEditMode && existingChallenge?.generation_status === 'generating' && (
+                  <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/30">
+                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                    {t('challenge_builder.ai_generating')}
+                  </Badge>
+                )}
               </div>
             </div>
           </div>
         </div>
+
+        {/* L2 Review Required Banner */}
+        {isEditMode && existingChallenge?.generation_status === 'needs_review' && (
+          <Card className="border-amber-500/50 bg-amber-500/10">
+            <CardContent className="p-4 flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="font-medium text-foreground">{t('challenge_builder.l2_review_required_title')}</p>
+                <p className="text-sm text-muted-foreground mt-1">{t('challenge_builder.l2_review_required_desc')}</p>
+                {existingChallenge?.generation_error && (
+                  <p className="text-sm text-amber-600 mt-2 font-mono bg-amber-500/10 p-2 rounded">
+                    {existingChallenge.generation_error}
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* L2 Completeness Check & Next Step Info */}
+        {isEditMode && existingChallenge?.level === 2 && existingChallenge?.generation_status === 'ready' && (
+          (() => {
+            const { isComplete, reasons } = validateL2Completeness(existingChallenge);
+            if (isComplete) {
+              return (
+                <Card className="border-green-500/50 bg-green-500/10">
+                  <CardContent className="p-4 flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="font-medium text-foreground">{t('challenge_builder.l2_complete_title')}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{t('challenge_builder.l2_complete_desc')}</p>
+                      <div className="mt-3 p-3 bg-muted/50 rounded-lg">
+                        <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                          <Target className="h-4 w-4 text-primary" />
+                          {t('challenge_builder.next_step_l3')}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">{t('challenge_builder.next_step_l3_desc')}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            } else {
+              return (
+                <Card className="border-muted bg-muted/30">
+                  <CardContent className="p-4 flex items-start gap-3">
+                    <AlertCircle className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="font-medium text-foreground">{t('challenge_builder.l2_incomplete_title')}</p>
+                      <ul className="text-sm text-muted-foreground mt-2 space-y-1">
+                        {reasons.map((reason, idx) => (
+                          <li key={idx} className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full" />
+                            {t(reason)}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            }
+          })()
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Editor Panel */}
