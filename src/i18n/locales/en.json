@@ -3681,8 +3681,9 @@
   "feed": {
     "signals": "Signals",
     "conversations": "Conversations",
-    "title": "XIMA Signal Feed",
-    "subtitle": "In XIMA you don't follow people. You follow signals.",
+    "title": "XIMA Feed",
+    "tagline": "In XIMA you don't follow people. You follow signals.",
+    "subtitle": "Anonymous signals from verified achievements. No noise, only signal.",
     "loading": "Loading signals...",
     "failed_to_load": "Failed to load feed",
     "failed_to_load_desc": "There was a problem loading your signals. Please try again.",
@@ -3692,6 +3693,7 @@
     "chat_available": "You have conversations available",
     "chat_hint": "Based on mutual interest signals",
     "open_chats": "Open Chats",
+    "back_to_feed": "Back to Feed",
     "privacy_notice": "All signals are anonymized and AI-normalized. XIMAtar identities are shown, not personal information. Reactions are aggregated and never attributed to individuals.",
     "empty": {
       "title": "No signals yet",

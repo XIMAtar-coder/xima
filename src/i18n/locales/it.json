@@ -3470,8 +3470,9 @@
   "feed": {
     "signals": "Segnali",
     "conversations": "Conversazioni",
-    "title": "Feed Segnali XIMA",
-    "subtitle": "In XIMA non segui le persone. Segui i segnali.",
+    "title": "XIMA Feed",
+    "tagline": "In XIMA non segui le persone. Segui i segnali.",
+    "subtitle": "Segnali anonimi da traguardi verificati. Nessun rumore, solo segnali.",
     "loading": "Caricamento segnali...",
     "failed_to_load": "Caricamento feed fallito",
     "failed_to_load_desc": "Si è verificato un problema nel caricamento dei tuoi segnali. Riprova.",
@@ -3481,6 +3482,7 @@
     "chat_available": "Hai conversazioni disponibili",
     "chat_hint": "Basate su segnali di interesse reciproco",
     "open_chats": "Apri Chat",
+    "back_to_feed": "Torna al Feed",
     "privacy_notice": "Tutti i segnali sono anonimizzati e normalizzati dall'IA. Vengono mostrate le identità XIMAtar, non le informazioni personali. Le reazioni sono aggregate e mai attribuite a individui.",
     "empty": {
       "title": "Nessun segnale ancora",
