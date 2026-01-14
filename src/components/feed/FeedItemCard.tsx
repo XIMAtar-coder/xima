@@ -70,8 +70,9 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
     setReactingType(null);
   };
 
-  const ximatarImage = item.ximatar?.image || item.payload.ximatar_image;
-  const ximatarName = item.ximatar?.name || item.payload.ximatar_name || 'XIMAtar';
+  // XIMAtar info comes from payload (privacy-safe, no joins to ximatar tables)
+  const ximatarImage = item.payload.ximatar_image;
+  const ximatarName = item.payload.ximatar_name || 'XIMAtar';
 
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow duration-200 border-border/50">
