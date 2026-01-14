@@ -37,14 +37,16 @@ export interface FeedItem {
   };
   created_at: string;
   reactions?: Record<string, number>;
-  ximatar?: {
-    id: string;
-    name: string;
-    image: string;
-  };
 }
 
 export type ReactionType = 'interested' | 'relevant_skill' | 'save_for_review';
+
+// Debug mode check
+const isDebugMode = () => {
+  if (typeof window === 'undefined') return false;
+  const params = new URLSearchParams(window.location.search);
+  return params.get('debug') === '1' || import.meta.env.DEV;
+};
 
 export const useFeedItems = () => {
   const { user } = useUser();
@@ -52,6 +54,7 @@ export const useFeedItems = () => {
   const [items, setItems] = useState<FeedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [debugError, setDebugError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
 
   const fetchFeedItems = useCallback(async (cursor?: string) => {
@@ -62,25 +65,15 @@ export const useFeedItems = () => {
 
     try {
       setError(null);
+      setDebugError(null);
       
+      // Privacy-safe query: NO joins to ximatars, profiles, or users
+      // Only select fields from feed_items table
       let query = supabase
         .from('feed_items')
-        .select(`
-          id,
-          type,
-          source,
-          subject_ximatar_id,
-          payload,
-          visibility,
-          created_at,
-          ximatars:subject_ximatar_id (
-            id,
-            name,
-            image
-          )
-        `)
+        .select('id, type, source, subject_ximatar_id, payload, visibility, created_at')
         .order('created_at', { ascending: false })
-        .limit(20);
+        .limit(50);
 
       if (cursor) {
         query = query.lt('created_at', cursor);
@@ -91,22 +84,46 @@ export const useFeedItems = () => {
       if (fetchError) {
         console.error('[useFeedItems] Error fetching feed:', fetchError);
         setError('Failed to load feed');
+        if (isDebugMode()) {
+          setDebugError(`${fetchError.code}: ${fetchError.message} (hint: ${fetchError.hint || 'none'})`);
+        }
         return;
       }
 
       if (data) {
+        // Fetch reaction counts for each item (using privacy-safe RPC)
         const itemsWithReactions = await Promise.all(
-          data.map(async (item: any) => {
-            // Fetch reaction counts for each item
-            const { data: reactions } = await supabase.rpc('get_feed_item_reactions', {
-              item_id: item.id
-            });
+          data.map(async (item) => {
+            try {
+              const { data: reactions, error: reactionError } = await supabase.rpc('get_feed_item_reactions', {
+                item_id: item.id
+              });
 
-            return {
-              ...item,
-              reactions: reactions || {},
-              ximatar: item.ximatars
-            };
+              if (reactionError) {
+                console.warn('[useFeedItems] Error fetching reactions for item:', item.id, reactionError);
+                return {
+                  ...item,
+                  payload: item.payload as unknown as FeedItemPayload,
+                  visibility: item.visibility as unknown as FeedItem['visibility'],
+                  reactions: {}
+                } as FeedItem;
+              }
+
+              return {
+                ...item,
+                payload: item.payload as unknown as FeedItemPayload,
+                visibility: item.visibility as unknown as FeedItem['visibility'],
+                reactions: reactions || {}
+              } as FeedItem;
+            } catch (err) {
+              console.warn('[useFeedItems] Exception fetching reactions:', err);
+              return {
+                ...item,
+                payload: item.payload as unknown as FeedItemPayload,
+                visibility: item.visibility as unknown as FeedItem['visibility'],
+                reactions: {}
+              } as FeedItem;
+            }
           })
         );
 
@@ -116,11 +133,14 @@ export const useFeedItems = () => {
           setItems(itemsWithReactions);
         }
         
-        setHasMore(data.length === 20);
+        setHasMore(data.length === 50);
       }
     } catch (err) {
       console.error('[useFeedItems] Exception:', err);
       setError('An error occurred');
+      if (isDebugMode() && err instanceof Error) {
+        setDebugError(err.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -134,7 +154,7 @@ export const useFeedItems = () => {
     if (!user) return false;
 
     try {
-      const { data, error } = await supabase.rpc('add_feed_reaction', {
+      const { error } = await supabase.rpc('add_feed_reaction', {
         p_feed_item_id: feedItemId,
         p_reaction_type: reactionType,
         p_reactor_type: isBusiness ? 'business' : 'candidate'
@@ -191,6 +211,7 @@ export const useFeedItems = () => {
     items,
     loading,
     error,
+    debugError,
     hasMore,
     loadMore,
     refresh,

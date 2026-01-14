@@ -3677,5 +3677,37 @@
       "partial": "Partial",
       "fragmented": "Fragmented"
     }
+  },
+  "feed": {
+    "signals": "Signals",
+    "conversations": "Conversations",
+    "title": "XIMA Signal Feed",
+    "subtitle": "In XIMA you don't follow people. You follow signals.",
+    "loading": "Loading signals...",
+    "failed_to_load": "Failed to load feed",
+    "failed_to_load_desc": "There was a problem loading your signals. Please try again.",
+    "try_again": "Try again",
+    "refresh": "Refresh",
+    "load_more": "Load more signals",
+    "chat_available": "You have conversations available",
+    "chat_hint": "Based on mutual interest signals",
+    "open_chats": "Open Chats",
+    "privacy_notice": "All signals are anonymized and AI-normalized. XIMAtar identities are shown, not personal information. Reactions are aggregated and never attributed to individuals.",
+    "empty": {
+      "title": "No signals yet",
+      "description": "The feed will populate as candidates complete challenges, validate skills, and reach new levels. Only verified system events appear here—no user-generated content."
+    },
+    "type": {
+      "challenge_completed": "Challenge Completed",
+      "skill_validated": "Skill Validated",
+      "level_reached": "Level Reached",
+      "badge_unlocked": "Badge Unlocked",
+      "interest_aggregated": "Interest Signal"
+    },
+    "reaction": {
+      "interested": "Interested",
+      "relevant": "Relevant",
+      "save": "Save"
+    }
   }
 }

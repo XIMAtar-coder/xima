@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Loader2, RefreshCw, AlertCircle, MessageCircle } from 'lucide-react';
+import { Loader2, RefreshCw, AlertCircle, MessageCircle, Bug } from 'lucide-react';
 import { useFeedItems } from '@/hooks/useFeedItems';
 import { FeedHeader } from './FeedHeader';
 import { FeedItemCard } from './FeedItemCard';
@@ -19,7 +19,8 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats }: XimaFeedProps) => 
   const { 
     items, 
     loading, 
-    error, 
+    error,
+    debugError,
     hasMore, 
     loadMore, 
     refresh, 
@@ -38,16 +39,40 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats }: XimaFeedProps) => 
 
   if (error) {
     return (
-      <Card className="border-destructive/50">
-        <CardContent className="py-8 text-center">
-          <AlertCircle className="h-10 w-10 text-destructive mx-auto mb-4" />
-          <p className="text-destructive font-medium">{error}</p>
-          <Button variant="outline" className="mt-4" onClick={refresh}>
-            <RefreshCw className="h-4 w-4 mr-2" />
-            {t('feed.retry', 'Try again')}
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        <Card className="border-destructive/50">
+          <CardContent className="py-8 text-center">
+            <AlertCircle className="h-10 w-10 text-destructive mx-auto mb-4" />
+            <p className="text-destructive font-medium mb-2">
+              {t('feed.failed_to_load', 'Failed to load feed')}
+            </p>
+            <p className="text-sm text-muted-foreground mb-4">
+              {t('feed.failed_to_load_desc', 'There was a problem loading your signals. Please try again.')}
+            </p>
+            <Button variant="outline" onClick={refresh}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              {t('feed.try_again', 'Try again')}
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Debug panel - only shown in debug mode */}
+        {debugError && (
+          <Card className="border-yellow-500/50 bg-yellow-50/10">
+            <CardContent className="py-4">
+              <div className="flex items-start gap-2">
+                <Bug className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium text-yellow-700 mb-1">Debug Info</p>
+                  <code className="text-xs text-yellow-600 block break-all whitespace-pre-wrap">
+                    {debugError}
+                  </code>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     );
   }
 
@@ -93,7 +118,7 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats }: XimaFeedProps) => 
         </Button>
       </div>
 
-      {/* Feed items */}
+      {/* Feed items - empty state vs populated */}
       {items.length === 0 ? (
         <FeedEmptyState />
       ) : (
