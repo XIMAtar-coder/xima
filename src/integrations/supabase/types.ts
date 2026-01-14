@@ -1606,6 +1606,79 @@ export type Database = {
           },
         ]
       }
+      feed_items: {
+        Row: {
+          created_at: string
+          id: string
+          payload: Json
+          source: string
+          subject_ximatar_id: string
+          type: string
+          visibility: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          payload?: Json
+          source: string
+          subject_ximatar_id: string
+          type: string
+          visibility?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          payload?: Json
+          source?: string
+          subject_ximatar_id?: string
+          type?: string
+          visibility?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_items_subject_ximatar_id_fkey"
+            columns: ["subject_ximatar_id"]
+            isOneToOne: false
+            referencedRelation: "ximatars"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feed_reactions: {
+        Row: {
+          created_at: string
+          feed_item_id: string
+          id: string
+          reaction_type: string
+          reactor_hash: string
+          reactor_type: string
+        }
+        Insert: {
+          created_at?: string
+          feed_item_id: string
+          id?: string
+          reaction_type: string
+          reactor_hash: string
+          reactor_type: string
+        }
+        Update: {
+          created_at?: string
+          feed_item_id?: string
+          id?: string
+          reaction_type?: string
+          reactor_hash?: string
+          reactor_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_reactions_feed_item_id_fkey"
+            columns: ["feed_item_id"]
+            isOneToOne: false
+            referencedRelation: "feed_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       flow_questions: {
         Row: {
           flow_id: string
@@ -2750,6 +2823,22 @@ export type Database = {
       }
     }
     Views: {
+      feed_reaction_counts: {
+        Row: {
+          count: number | null
+          feed_item_id: string | null
+          reaction_type: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_reactions_feed_item_id_fkey"
+            columns: ["feed_item_id"]
+            isOneToOne: false
+            referencedRelation: "feed_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentors_public: {
         Row: {
           bio: string | null
@@ -2811,6 +2900,14 @@ export type Database = {
       }
     }
     Functions: {
+      add_feed_reaction: {
+        Args: {
+          p_feed_item_id: string
+          p_reaction_type: string
+          p_reactor_type: string
+        }
+        Returns: boolean
+      }
       assign_first_admin: {
         Args: { target_user_id: string }
         Returns: undefined
@@ -2875,6 +2972,7 @@ export type Database = {
           ximatar_label: string
         }[]
       }
+      get_feed_item_reactions: { Args: { item_id: string }; Returns: Json }
       get_profile_id_for_auth_user: {
         Args: { p_auth_uid: string }
         Returns: string
