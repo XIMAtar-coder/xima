@@ -12,9 +12,14 @@ interface ContentBlock {
   bullets?: string[];
 }
 
+interface ValidationResult {
+  valid: boolean;
+  reasons: string[];
+}
+
 interface JobContentBlocks {
   hero: {
-    title: string;
+    title: string | null;
     company: string | null;
     location: string | null;
     employmentType: string | null;
@@ -22,6 +27,9 @@ interface JobContentBlocks {
     department: string | null;
   };
   blocks: ContentBlock[];
+  validation?: ValidationResult;
+  needs_manual_review?: boolean;
+  invalid_structure?: boolean;
 }
 
 interface JobPost {
@@ -53,9 +61,10 @@ function DebugPanel({ job, contentBlocks }: { job: JobPost; contentBlocks: JobCo
   const hasContentJson = !!job.content_json;
   const blocksCount = contentBlocks?.blocks?.length || 0;
   const blockTitles = contentBlocks?.blocks?.map(b => b.title) || [];
+  const validation = contentBlocks?.validation;
   
   return (
-    <div className="p-3 rounded-lg border border-dashed border-amber-500 bg-amber-50 dark:bg-amber-950/30 text-xs font-mono space-y-1">
+    <div className="p-3 rounded-lg border border-dashed border-amber-500 bg-amber-50 dark:bg-amber-950/30 text-xs font-mono space-y-2">
       <div className="flex items-center gap-2 font-semibold text-amber-700 dark:text-amber-400">
         <Bug className="h-4 w-4" />
         Debug Mode
@@ -81,7 +90,29 @@ function DebugPanel({ job, contentBlocks }: { job: JobPost; contentBlocks: JobCo
         <span className={job.source_pdf_path ? 'text-green-600' : 'text-muted-foreground'}>
           {job.source_pdf_path ? 'YES' : 'NO'}
         </span>
+        <span>Pipeline validation:</span>
+        <span className={validation?.valid ? 'text-green-600' : 'text-red-600'}>
+          {validation ? (validation.valid ? 'PASSED ✓' : 'FAILED ✗') : 'N/A'}
+        </span>
+        <span>Needs manual review:</span>
+        <span className={contentBlocks?.needs_manual_review ? 'text-amber-600' : 'text-muted-foreground'}>
+          {contentBlocks?.needs_manual_review ? 'YES ⚠' : 'NO'}
+        </span>
+        <span>Invalid structure:</span>
+        <span className={contentBlocks?.invalid_structure ? 'text-red-600' : 'text-muted-foreground'}>
+          {contentBlocks?.invalid_structure ? 'YES ✗' : 'NO'}
+        </span>
       </div>
+      {validation && !validation.valid && validation.reasons.length > 0 && (
+        <div className="mt-2 pt-2 border-t border-amber-300 dark:border-amber-700">
+          <span className="text-amber-700 dark:text-amber-400 font-medium">Validation issues:</span>
+          <ul className="mt-1 space-y-0.5">
+            {validation.reasons.map((reason, idx) => (
+              <li key={idx} className="text-red-600 dark:text-red-400">• {reason}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
@@ -264,8 +295,33 @@ export default function JobPostCandidatePreview({ job }: Props) {
         <DebugPanel job={job} contentBlocks={contentBlocks} />
       )}
 
-      {/* Publish Readiness */}
-      {job.source_pdf_path && (
+      {/* Validation Status Banner (for pipeline validation failures) */}
+      {contentBlocks?.needs_manual_review && (
+        <div className="p-4 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20">
+          <div className="flex items-center gap-2 mb-2">
+            <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+            <span className="font-medium text-red-700 dark:text-red-300">
+              {t('jobs.preview.manual_review_needed', 'Manual review required')}
+            </span>
+          </div>
+          <p className="text-sm text-red-600 dark:text-red-400 mb-2">
+            {t('jobs.preview.structure_issues', 'The job post could not be fully processed. Please review and edit manually.')}
+          </p>
+          {contentBlocks?.validation?.reasons && contentBlocks.validation.reasons.length > 0 && (
+            <ul className="text-sm text-red-600 dark:text-red-400 space-y-1">
+              {contentBlocks.validation.reasons.map((reason, idx) => (
+                <li key={idx} className="flex items-start gap-1.5">
+                  <span className="mt-0.5">•</span>
+                  <span>{reason}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
+      {/* Publish Readiness (only if validation passed or no validation) */}
+      {job.source_pdf_path && !contentBlocks?.needs_manual_review && (
         <PublishReadinessIndicator job={job} contentBlocks={contentBlocks} />
       )}
 
