@@ -17,8 +17,8 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useBusinessJobPostsOverview } from '@/hooks/useBusinessJobPostsOverview';
+import { useCreateL2ChallengeFromJobPost } from '@/hooks/useCreateL2ChallengeFromJobPost';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
 
 interface BusinessJobPostsOverviewBannerProps {
   businessId?: string;
@@ -31,8 +31,8 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { data, loading, error, refetch } = useBusinessJobPostsOverview(businessId);
-  const [creatingChallengeFor, setCreatingChallengeFor] = React.useState<string | null>(null);
+  const { data, loading, error } = useBusinessJobPostsOverview(businessId);
+  const { createL2Challenge, creatingFor } = useCreateL2ChallengeFromJobPost();
 
   // Show error toast but keep banner visible
   React.useEffect(() => {
@@ -115,64 +115,13 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
     jobPost: typeof jobPosts[0]
   ) => {
     e.stopPropagation();
-    
-    if (!businessId) {
-      toast.error(t('common.error'));
-      return;
-    }
-
-    setCreatingChallengeFor(jobPost.id);
-
-    try {
-      // Build challenge description from job post fields
-      const descriptionParts: string[] = [];
-      if (jobPost.description) {
-        descriptionParts.push(jobPost.description);
-      }
-      if (jobPost.responsibilities) {
-        descriptionParts.push(`\n\n**Responsibilities:**\n${jobPost.responsibilities}`);
-      }
-      if (jobPost.requirements_must) {
-        descriptionParts.push(`\n\n**Requirements:**\n${jobPost.requirements_must}`);
-      }
-      const challengeDescription = descriptionParts.join('') || null;
-
-      // Extract simple skills from requirements
-      const targetSkills: string[] = [];
-      if (jobPost.requirements_must) {
-        const skillKeywords = jobPost.requirements_must
-          .split(/[,;\n]/)
-          .map(s => s.trim())
-          .filter(s => s.length > 2 && s.length < 50)
-          .slice(0, 5);
-        targetSkills.push(...skillKeywords);
-      }
-
-      // Create challenge draft
-      const { data: newChallenge, error: createError } = await supabase
-        .from('business_challenges')
-        .insert({
-          business_id: businessId,
-          title: jobPost.title,
-          description: challengeDescription,
-          status: 'draft',
-          job_post_id: jobPost.id,
-          created_from_job_post: true,
-          target_skills: targetSkills.length > 0 ? targetSkills : null,
-        })
-        .select('id')
-        .single();
-
-      if (createError) throw createError;
-
-      toast.success(t('business.jobs.create_challenge_success'));
-      navigate(`/business/challenges/${newChallenge.id}`);
-    } catch (err: any) {
-      console.error('Error creating challenge from job post:', err);
-      toast.error(t('business.jobs.create_challenge_error'));
-    } finally {
-      setCreatingChallengeFor(null);
-    }
+    await createL2Challenge({
+      id: jobPost.id,
+      title: jobPost.title,
+      description: jobPost.description,
+      responsibilities: jobPost.responsibilities,
+      requirements_must: jobPost.requirements_must,
+    });
   };
 
   return (
@@ -315,10 +264,10 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
                       size="sm"
                       className="gap-1.5 h-7 px-2 text-xs"
                       onClick={(e) => handleCreateChallenge(e, job)}
-                      disabled={creatingChallengeFor === job.id}
+                      disabled={creatingFor === job.id}
                     >
                       <Zap className="h-3.5 w-3.5" />
-                      {creatingChallengeFor === job.id
+                      {creatingFor === job.id
                         ? t('common.loading')
                         : t('business.jobs.create_challenge')}
                     </Button>

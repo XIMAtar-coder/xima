@@ -65,3 +65,6 @@ verify_jwt = false
 
 [functions.translate-content]
 verify_jwt = false
+
+[functions.generate-l2-challenge-from-job-post]
+verify_jwt = true
