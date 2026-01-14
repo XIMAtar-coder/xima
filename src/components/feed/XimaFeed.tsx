@@ -5,6 +5,7 @@ import { useFeedItems } from '@/hooks/useFeedItems';
 import { FeedHeader } from './FeedHeader';
 import { FeedItemCard } from './FeedItemCard';
 import { FeedEmptyState } from './FeedEmptyState';
+import { InterestSignalsCard } from './InterestSignalsCard';
 import { Card, CardContent } from '@/components/ui/card';
 
 interface XimaFeedProps {
@@ -78,6 +79,13 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
   return (
     <div className="max-w-2xl mx-auto">
       <FeedHeader />
+
+      {/* Interest signals for candidates - shows companies that showed interest */}
+      {!isBusiness && (
+        <div className="mb-6">
+          <InterestSignalsCard onChatOpen={() => onOpenConversations?.()} />
+        </div>
+      )}
 
       {/* Chat access notice - only shown when mutual interest exists */}
       {showChatAccess && hasPendingChats && (

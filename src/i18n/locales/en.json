@@ -3710,6 +3710,15 @@
       "interested": "Interested",
       "relevant": "Relevant",
       "save": "Save"
+    },
+    "interest": {
+      "title": "Interest Signals",
+      "pending": "pending",
+      "subtitle": "Companies have shown interest in your profile. Accept to unlock chat.",
+      "accept": "Accept",
+      "open_chat": "Chat",
+      "accepted_success": "Interest accepted! Chat is now available.",
+      "privacy_note": "Company names are revealed only after showing interest. Your identity remains anonymous until you accept."
     }
   }
 }

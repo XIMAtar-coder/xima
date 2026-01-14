@@ -2155,6 +2155,74 @@ export type Database = {
         }
         Relationships: []
       }
+      mutual_interest: {
+        Row: {
+          business_id: string
+          business_interested_at: string | null
+          candidate_accepted_at: string | null
+          candidate_ximatar_id: string
+          chat_thread_id: string | null
+          created_at: string | null
+          feed_item_id: string | null
+          hiring_goal_id: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          business_id: string
+          business_interested_at?: string | null
+          candidate_accepted_at?: string | null
+          candidate_ximatar_id: string
+          chat_thread_id?: string | null
+          created_at?: string | null
+          feed_item_id?: string | null
+          hiring_goal_id?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          business_id?: string
+          business_interested_at?: string | null
+          candidate_accepted_at?: string | null
+          candidate_ximatar_id?: string
+          chat_thread_id?: string | null
+          created_at?: string | null
+          feed_item_id?: string | null
+          hiring_goal_id?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mutual_interest_candidate_ximatar_id_fkey"
+            columns: ["candidate_ximatar_id"]
+            isOneToOne: false
+            referencedRelation: "ximatars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mutual_interest_chat_thread_id_fkey"
+            columns: ["chat_thread_id"]
+            isOneToOne: false
+            referencedRelation: "chat_threads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mutual_interest_feed_item_id_fkey"
+            columns: ["feed_item_id"]
+            isOneToOne: false
+            referencedRelation: "feed_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mutual_interest_hiring_goal_id_fkey"
+            columns: ["hiring_goal_id"]
+            isOneToOne: false
+            referencedRelation: "hiring_goal_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string | null
@@ -2900,6 +2968,7 @@ export type Database = {
       }
     }
     Functions: {
+      accept_interest: { Args: { p_interest_id: string }; Returns: Json }
       add_feed_reaction: {
         Args: {
           p_feed_item_id: string
@@ -2987,6 +3056,20 @@ export type Database = {
         }[]
       }
       get_feed_item_reactions: { Args: { item_id: string }; Returns: Json }
+      get_interest_count_for_ximatar: {
+        Args: { p_ximatar_id: string }
+        Returns: number
+      }
+      get_pending_interests: {
+        Args: never
+        Returns: {
+          accepted: boolean
+          business_name: string
+          hiring_goal_title: string
+          id: string
+          interested_at: string
+        }[]
+      }
       get_profile_id_for_auth_user: {
         Args: { p_auth_uid: string }
         Returns: string
@@ -3022,6 +3105,10 @@ export type Database = {
       }
       recompute_matches: { Args: { p_user: string }; Returns: undefined }
       recompute_user_scores: { Args: { p_user: string }; Returns: undefined }
+      record_business_interest: {
+        Args: { p_feed_item_id: string; p_hiring_goal_id?: string }
+        Returns: string
+      }
     }
     Enums: {
       ai_message_role: "user" | "assistant" | "system" | "tool"

@@ -3499,6 +3499,15 @@
       "interested": "Interessato",
       "relevant": "Rilevante",
       "save": "Salva"
+    },
+    "interest": {
+      "title": "Segnali di Interesse",
+      "pending": "in attesa",
+      "subtitle": "Aziende hanno mostrato interesse per il tuo profilo. Accetta per sbloccare la chat.",
+      "accept": "Accetta",
+      "open_chat": "Chat",
+      "accepted_success": "Interesse accettato! La chat è ora disponibile.",
+      "privacy_note": "I nomi delle aziende vengono rivelati solo dopo che mostrano interesse. La tua identità rimane anonima finché non accetti."
     }
   }
 }
