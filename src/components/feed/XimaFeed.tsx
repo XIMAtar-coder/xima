@@ -1,12 +1,14 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Loader2, RefreshCw, AlertCircle, MessageCircle, Bug } from 'lucide-react';
+import { Loader2, RefreshCw, AlertCircle, MessageCircle, Bug, FlaskConical } from 'lucide-react';
 import { useFeedItems } from '@/hooks/useFeedItems';
 import { FeedHeader } from './FeedHeader';
 import { FeedItemCard } from './FeedItemCard';
 import { FeedEmptyState } from './FeedEmptyState';
 import { InterestSignalsCard } from './InterestSignalsCard';
 import { Card, CardContent } from '@/components/ui/card';
+import { toast } from 'sonner';
 
 interface XimaFeedProps {
   showChatAccess?: boolean;
@@ -14,8 +16,16 @@ interface XimaFeedProps {
   onOpenConversations?: () => void;
 }
 
+// Check if we're in debug mode (dev environment or ?debug=1)
+const isDebugMode = () => {
+  if (typeof window === 'undefined') return false;
+  const params = new URLSearchParams(window.location.search);
+  return import.meta.env.DEV || params.get('debug') === '1';
+};
+
 export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations }: XimaFeedProps) => {
   const { t } = useTranslation();
+  const [seeding, setSeeding] = useState(false);
   const { 
     items, 
     loading, 
@@ -27,6 +37,35 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
     addReaction,
     isBusiness 
   } = useFeedItems();
+
+  const handleSeedDemoSignals = async () => {
+    setSeeding(true);
+    try {
+      const response = await fetch(
+        'https://iyckvvnecpnldrxqmzta.supabase.co/functions/v1/seed-feed-items',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-dev-token': 'xima-dev-seed-2024'
+          }
+        }
+      );
+      const data = await response.json();
+      
+      if (data.success) {
+        toast.success(`Seeded ${data.seeded} demo signals`);
+        refresh();
+      } else {
+        toast.error(data.error || 'Failed to seed signals');
+      }
+    } catch (err) {
+      console.error('Seed error:', err);
+      toast.error('Failed to seed demo signals');
+    } finally {
+      setSeeding(false);
+    }
+  };
 
   if (loading && items.length === 0) {
     return (
@@ -112,8 +151,20 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
         </Card>
       )}
 
-      {/* Refresh button */}
-      <div className="flex justify-end mb-4">
+      {/* Debug + Refresh controls */}
+      <div className="flex justify-end gap-2 mb-4">
+        {isDebugMode() && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleSeedDemoSignals}
+            disabled={seeding}
+            className="text-yellow-600 border-yellow-500/50 hover:bg-yellow-50"
+          >
+            <FlaskConical className={`h-4 w-4 mr-2 ${seeding ? 'animate-pulse' : ''}`} />
+            {seeding ? 'Seeding...' : 'Seed demo signals'}
+          </Button>
+        )}
         <Button 
           variant="ghost" 
           size="sm" 
