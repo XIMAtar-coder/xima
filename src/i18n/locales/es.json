@@ -2475,7 +2475,26 @@
     "privacy_notice": "Todas las señales están anonimizadas y normalizadas por IA. Se muestran identidades XIMAtar, no información personal. Las reacciones son agregadas y nunca se atribuyen a individuos.",
     "empty": {
       "title": "Sin señales aún",
-      "description": "El feed se llenará a medida que los candidatos completen desafíos, validen habilidades y alcancen nuevos niveles. Solo aparecen aquí eventos verificados del sistema—sin contenido generado por usuarios."
+      "description": "Completa desafíos para mostrar tu progreso verificado.",
+      "hint": "Sin publicaciones sociales. Solo hitos verificados."
+    },
+    "title": {
+      "challenge_completed": "Desafío completado",
+      "skill_validated": "Habilidad validada",
+      "level_reached": "Actualización de progreso",
+      "interest_aggregated": "Señal de mercado",
+      "signal": "Señal"
+    },
+    "card": {
+      "challenge_level": "Desafío Nivel {{level}}",
+      "verified_signal": "Señal verificada",
+      "advanced_to_level": "Avanzado al Nivel {{level}}",
+      "qualification_verified": "Señal de calificación verificada",
+      "companies_interested": "{{count}} empresas mostraron interés",
+      "identity_unlocked": "Identidad desbloqueada solo con interés mutuo"
+    },
+    "chip": {
+      "verified": "Verificado"
     },
     "type": {
       "challenge_completed": "Desafío Completado",

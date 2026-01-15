@@ -181,7 +181,7 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
       {items.length === 0 ? (
         <FeedEmptyState />
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {items.map((item) => (
             <FeedItemCard 
               key={item.id} 
@@ -193,9 +193,10 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
 
           {/* Load more */}
           {hasMore && (
-            <div className="text-center pt-4">
+            <div className="text-center pt-6">
               <Button 
                 variant="outline" 
+                size="sm"
                 onClick={loadMore}
                 disabled={loading}
               >

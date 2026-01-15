@@ -3486,7 +3486,26 @@
     "privacy_notice": "Tutti i segnali sono anonimizzati e normalizzati dall'IA. Vengono mostrate le identità XIMAtar, non le informazioni personali. Le reazioni sono aggregate e mai attribuite a individui.",
     "empty": {
       "title": "Nessun segnale ancora",
-      "description": "Il feed si popolerà man mano che i candidati completano sfide, validano competenze e raggiungono nuovi livelli. Solo eventi di sistema verificati appaiono qui—nessun contenuto generato dagli utenti."
+      "description": "Completa le sfide per mostrare i tuoi progressi verificati.",
+      "hint": "Nessun post social. Solo traguardi verificati."
+    },
+    "title": {
+      "challenge_completed": "Sfida completata",
+      "skill_validated": "Competenza validata",
+      "level_reached": "Aggiornamento progressi",
+      "interest_aggregated": "Segnale di mercato",
+      "signal": "Segnale"
+    },
+    "card": {
+      "challenge_level": "Sfida Livello {{level}}",
+      "verified_signal": "Segnale verificato",
+      "advanced_to_level": "Avanzato al Livello {{level}}",
+      "qualification_verified": "Segnale di qualifica verificato",
+      "companies_interested": "{{count}} aziende hanno mostrato interesse",
+      "identity_unlocked": "Identità sbloccata solo con interesse reciproco"
+    },
+    "chip": {
+      "verified": "Verificato"
     },
     "type": {
       "challenge_completed": "Sfida Completata",
