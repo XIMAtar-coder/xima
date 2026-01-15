@@ -66,12 +66,16 @@ serve(async (req) => {
         ximatar_image: ximatar.image_url || `/ximatars/default.png`,
       };
 
+      // IMPORTANT: source must be exactly 'candidate', 'business', or 'system'
+      // Use 'system' for all demo/seed items to avoid constraint violations
+      const validSource = 'system';
+
       // Each ximatar gets 2-3 different signal types
       // Ximatar 1: challenge_completed + skill_validated
       if (index === 0) {
         seedItems.push({
           type: 'challenge_completed',
-          source: 'dev_seed',
+          source: validSource,
           subject_ximatar_id: ximatar.id,
           payload: { 
             ...basePayload,
@@ -82,7 +86,7 @@ serve(async (req) => {
         });
         seedItems.push({
           type: 'skill_validated',
-          source: 'dev_seed',
+          source: validSource,
           subject_ximatar_id: ximatar.id,
           payload: { 
             ...basePayload,
@@ -98,7 +102,7 @@ serve(async (req) => {
       if (index === 1) {
         seedItems.push({
           type: 'skill_validated',
-          source: 'dev_seed',
+          source: validSource,
           subject_ximatar_id: ximatar.id,
           payload: { 
             ...basePayload,
@@ -110,7 +114,7 @@ serve(async (req) => {
         });
         seedItems.push({
           type: 'level_reached',
-          source: 'dev_seed',
+          source: validSource,
           subject_ximatar_id: ximatar.id,
           payload: { 
             ...basePayload,
@@ -125,7 +129,7 @@ serve(async (req) => {
       if (index === 2) {
         seedItems.push({
           type: 'challenge_completed',
-          source: 'dev_seed',
+          source: validSource,
           subject_ximatar_id: ximatar.id,
           payload: { 
             ...basePayload,
@@ -136,7 +140,7 @@ serve(async (req) => {
         });
         seedItems.push({
           type: 'skill_validated',
-          source: 'dev_seed',
+          source: validSource,
           subject_ximatar_id: ximatar.id,
           payload: { 
             ...basePayload,
