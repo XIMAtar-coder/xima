@@ -72,7 +72,7 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
     return (
       <div className="flex flex-col items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-        <p className="text-muted-foreground">{t('feed.loading', 'Loading signals...')}</p>
+        <p className="text-muted-foreground">{t('feed.states.loading', 'Loading signals…')}</p>
       </div>
     );
   }
@@ -84,14 +84,14 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
           <CardContent className="py-8 text-center">
             <AlertCircle className="h-10 w-10 text-destructive mx-auto mb-4" />
             <p className="text-destructive font-medium mb-2">
-              {t('feed.failed_to_load', 'Failed to load feed')}
+              {t('feed.states.error_title', 'Failed to load feed')}
             </p>
             <p className="text-sm text-muted-foreground mb-4">
-              {t('feed.failed_to_load_desc', 'There was a problem loading your signals. Please try again.')}
+              {t('feed.states.empty_desc', 'Only verified milestones will appear here.')}
             </p>
             <Button variant="outline" onClick={refresh}>
               <RefreshCw className="h-4 w-4 mr-2" />
-              {t('feed.try_again', 'Try again')}
+              {t('feed.states.error_cta', 'Try again')}
             </Button>
           </CardContent>
         </Card>

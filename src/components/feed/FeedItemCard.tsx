@@ -227,15 +227,15 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
   const getTypeTitle = () => {
     switch (item.type) {
       case 'challenge_completed':
-        return t('feed.title.challenge_completed', 'Challenge completed');
+        return t('feed.titles.challenge_completed', 'Challenge completed');
       case 'skill_validated':
-        return t('feed.title.skill_validated', 'Skill validated');
+        return t('feed.titles.skill_validated', 'Skill validated');
       case 'level_reached':
-        return t('feed.title.level_reached', 'Progress update');
+        return t('feed.titles.level_reached', 'Progress update');
       case 'interest_aggregated':
-        return t('feed.title.interest_aggregated', 'Market signal');
+        return t('feed.titles.interest_aggregated', 'Market signal');
       default:
-        return t('feed.title.signal', 'Signal');
+        return t('feed.titles.signal', 'Signal');
     }
   };
 
