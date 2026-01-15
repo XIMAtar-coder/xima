@@ -2463,6 +2463,7 @@
     "title": "XIMA Feed",
     "tagline": "En XIMA no sigues a personas. Sigues señales.",
     "subtitle": "Señales anónimas de logros verificados. Sin ruido, solo señales.",
+    "legend": "Solo hitos verificados · Sin publicaciones sociales · Privacidad by design",
     "loading": "Cargando señales...",
     "failed_to_load": "Error al cargar el feed",
     "failed_to_load_desc": "Hubo un problema al cargar tus señales. Por favor, inténtalo de nuevo.",
@@ -2491,25 +2492,23 @@
       "conversations": "Conversaciones"
     },
     "titles": {
-      "challenge_completed": "Desafío completado",
-      "skill_validated": "Habilidad validada",
+      "challenge_completed": "Reto completado",
+      "skill_validated": "Competencia validada",
       "level_reached": "Actualización de progreso",
-      "interest_aggregated": "Señal de mercado",
-      "signal": "Señal"
+      "interest_aggregated": "Señal de mercado"
     },
     "card": {
-      "challenge_level": "Desafío Nivel {{level}}",
-      "verified_signal": "Señal verificada",
-      "advanced_to_level": "Avanzado al Nivel {{level}}",
-      "qualification_verified": "Señal de calificación verificada",
-      "companies_interested": "{{count}} empresas mostraron interés",
-      "identity_unlocked": "Identidad desbloqueada solo con interés mutuo",
       "primary": {
-        "level_completed": "Reto completado (Nivel {{level}})"
+        "level_completed": "Reto completado (Nivel {{level}})",
+        "advanced_to_level": "Avanzó al Nivel {{level}}",
+        "interest_count": "{{count}} empresas mostraron interés"
       },
       "secondary": {
         "verified": "Señal verificada",
         "identity_unlock": "La identidad se desbloquea solo con interés mutuo"
+      },
+      "fallback": {
+        "primary": "Actualización verificada"
       }
     },
     "chips": {

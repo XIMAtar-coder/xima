@@ -3685,6 +3685,7 @@
     "title": "XIMA Feed",
     "tagline": "In XIMA you don't follow people. You follow signals.",
     "subtitle": "Anonymous signals from verified achievements. No noise, only signal.",
+    "legend": "Only verified milestones · No social posts · Privacy by design",
     "loading": "Loading signals...",
     "failed_to_load": "Failed to load feed",
     "failed_to_load_desc": "There was a problem loading your signals. Please try again.",
@@ -3716,22 +3717,20 @@
       "challenge_completed": "Challenge completed",
       "skill_validated": "Skill validated",
       "level_reached": "Progress update",
-      "interest_aggregated": "Market signal",
-      "signal": "Signal"
+      "interest_aggregated": "Market signal"
     },
     "card": {
-      "challenge_level": "Level {{level}} challenge",
-      "verified_signal": "Verified signal",
-      "advanced_to_level": "Advanced to Level {{level}}",
-      "qualification_verified": "Qualification signal verified",
-      "companies_interested": "{{count}} companies showed interest",
-      "identity_unlocked": "Identity unlocked only on mutual interest",
       "primary": {
-        "level_completed": "Level {{level}} challenge completed"
+        "level_completed": "Level {{level}} challenge completed",
+        "advanced_to_level": "Advanced to Level {{level}}",
+        "interest_count": "{{count}} companies showed interest"
       },
       "secondary": {
         "verified": "Verified signal",
         "identity_unlock": "Identity unlocks only on mutual interest"
+      },
+      "fallback": {
+        "primary": "Verified progress update"
       }
     },
     "chips": {
