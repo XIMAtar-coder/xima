@@ -6,6 +6,18 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-dev-token',
 };
 
+// Valid sources per DB constraint - hard-coded for safety
+const VALID_SOURCES = ['candidate', 'business', 'system'] as const;
+type ValidSource = typeof VALID_SOURCES[number];
+
+function normalizeSource(rawSource: string): ValidSource {
+  const normalized = String(rawSource).toLowerCase().trim();
+  if (VALID_SOURCES.includes(normalized as ValidSource)) {
+    return normalized as ValidSource;
+  }
+  return 'system'; // fallback to system for any invalid value
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -48,34 +60,47 @@ serve(async (req) => {
 
     console.log('[seed-feed-items] Using ximatars:', ximatars.map(x => x.label || x.id));
 
+    // Demo batch timestamp for identification
+    const demoBatch = new Date().toISOString();
+    
     // Skills to use for variety
     const skills = ['Analytical Thinking', 'Process Optimization', 'Strategic Planning', 'Team Coordination'];
+    
+    // Mixed sources for variety (all valid)
+    const sources: ValidSource[] = ['system', 'candidate', 'business'];
     
     // Build seed items - multiple items per ximatar for a realistic mixed feed
     const seedItems: Array<{
       type: string;
-      source: string;
+      source: ValidSource;
       subject_ximatar_id: string;
       payload: Record<string, unknown>;
       visibility: { public: boolean };
     }> = [];
 
     ximatars.forEach((ximatar, index) => {
+      // Demo metadata added to all payloads for identification
+      const demoMeta = {
+        demo: true,
+        demo_batch: demoBatch,
+        demo_label: 'Seed demo signals mixed',
+      };
+      
       const basePayload = {
         ximatar_name: ximatar.label || `XIMAtar ${index + 1}`,
         ximatar_image: ximatar.image_url || `/ximatars/default.png`,
+        ...demoMeta,
       };
 
-      // IMPORTANT: source must be exactly 'candidate', 'business', or 'system'
-      // Use 'system' for all demo/seed items to avoid constraint violations
-      const validSource = 'system';
+      // Use mixed valid sources, cycling through them
+      const itemSource = normalizeSource(sources[index % sources.length]);
 
       // Each ximatar gets 2-3 different signal types
-      // Ximatar 1: challenge_completed + skill_validated
+      // Ximatar 1: challenge_completed + skill_validated (source: system)
       if (index === 0) {
         seedItems.push({
           type: 'challenge_completed',
-          source: validSource,
+          source: itemSource,
           subject_ximatar_id: ximatar.id,
           payload: { 
             ...basePayload,
@@ -86,7 +111,7 @@ serve(async (req) => {
         });
         seedItems.push({
           type: 'skill_validated',
-          source: validSource,
+          source: itemSource,
           subject_ximatar_id: ximatar.id,
           payload: { 
             ...basePayload,
@@ -98,11 +123,11 @@ serve(async (req) => {
         });
       }
       
-      // Ximatar 2: skill_validated + level_reached
+      // Ximatar 2: skill_validated + level_reached (source: candidate)
       if (index === 1) {
         seedItems.push({
           type: 'skill_validated',
-          source: validSource,
+          source: itemSource,
           subject_ximatar_id: ximatar.id,
           payload: { 
             ...basePayload,
@@ -114,7 +139,7 @@ serve(async (req) => {
         });
         seedItems.push({
           type: 'level_reached',
-          source: validSource,
+          source: itemSource,
           subject_ximatar_id: ximatar.id,
           payload: { 
             ...basePayload,
@@ -125,11 +150,11 @@ serve(async (req) => {
         });
       }
       
-      // Ximatar 3: challenge_completed + skill_validated
+      // Ximatar 3: challenge_completed + skill_validated (source: business)
       if (index === 2) {
         seedItems.push({
           type: 'challenge_completed',
-          source: validSource,
+          source: itemSource,
           subject_ximatar_id: ximatar.id,
           payload: { 
             ...basePayload,
@@ -140,7 +165,7 @@ serve(async (req) => {
         });
         seedItems.push({
           type: 'skill_validated',
-          source: validSource,
+          source: itemSource,
           subject_ximatar_id: ximatar.id,
           payload: { 
             ...basePayload,
@@ -153,27 +178,42 @@ serve(async (req) => {
       }
     });
 
-    console.log('[seed-feed-items] Inserting', seedItems.length, 'items for', ximatars.length, 'ximatars');
+    console.log('[seed-feed-items] Inserting', seedItems.length, 'items via emit_feed_signal for', ximatars.length, 'ximatars');
 
-    // Insert feed items
-    const { data: inserted, error: insertError } = await supabaseAdmin
-      .from('feed_items')
-      .insert(seedItems)
-      .select('id, type, subject_ximatar_id');
+    // Insert feed items using emit_feed_signal RPC for dedup + consistency
+    const insertedIds: string[] = [];
+    const errors: string[] = [];
 
-    if (insertError) {
-      console.error('[seed-feed-items] Insert error:', insertError);
+    for (const item of seedItems) {
+      const { data, error } = await supabaseAdmin.rpc('emit_feed_signal', {
+        p_type: item.type,
+        p_source: item.source,
+        p_subject_ximatar_id: item.subject_ximatar_id,
+        p_payload: item.payload,
+        p_visibility: item.visibility,
+      });
+
+      if (error) {
+        console.error('[seed-feed-items] emit_feed_signal error:', error.message);
+        errors.push(`${item.type}: ${error.message}`);
+      } else if (data) {
+        insertedIds.push(data);
+      }
+    }
+
+    if (errors.length > 0 && insertedIds.length === 0) {
       return new Response(
-        JSON.stringify({ success: false, error: insertError.message }),
+        JSON.stringify({ success: false, error: errors.join('; ') }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log('[seed-feed-items] Seeded items:', inserted?.length);
+    console.log('[seed-feed-items] Seeded items:', insertedIds.length, 'errors:', errors.length);
     return new Response(
       JSON.stringify({ 
         success: true, 
-        inserted: inserted?.length || 0,
+        inserted: insertedIds.length,
+        skipped_or_errors: errors.length,
         ximatars: ximatars.map(x => ({ id: x.id, label: x.label }))
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
