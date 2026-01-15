@@ -3725,10 +3725,21 @@
       "advanced_to_level": "Advanced to Level {{level}}",
       "qualification_verified": "Qualification signal verified",
       "companies_interested": "{{count}} companies showed interest",
-      "identity_unlocked": "Identity unlocked only on mutual interest"
+      "identity_unlocked": "Identity unlocked only on mutual interest",
+      "primary": {
+        "level_completed": "Level {{level}} challenge completed"
+      },
+      "secondary": {
+        "verified": "Verified signal",
+        "identity_unlock": "Identity unlocks only on mutual interest"
+      }
     },
-    "chip": {
-      "verified": "Verified"
+    "chips": {
+      "verified": "Verified",
+      "challenge": "Challenge",
+      "skill": "Skill",
+      "market": "Market signal",
+      "level": "Level {{level}}"
     },
     "type": {
       "challenge_completed": "Challenge Completed",
