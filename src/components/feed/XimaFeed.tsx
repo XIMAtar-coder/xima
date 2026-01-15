@@ -54,7 +54,8 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
       const data = await response.json();
       
       if (data.success) {
-        toast.success(`Seeded ${data.seeded} demo signals`);
+        const ximatarCount = data.ximatars?.length || 0;
+        toast.success(`Seeded ${data.inserted} demo signals from ${ximatarCount} XIMatars`);
         refresh();
       } else {
         toast.error(data.error || 'Failed to seed signals');

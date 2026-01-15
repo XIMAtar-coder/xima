@@ -31,11 +31,12 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Find a real ximatar_id to use as subject
+    // Find 3 distinct ximatars to create a "mixed" feed
     const { data: ximatars, error: ximatarError } = await supabaseAdmin
       .from('ximatars')
-      .select('id')
-      .limit(1);
+      .select('id, label, image_url')
+      .order('id')
+      .limit(3);
 
     if (ximatarError || !ximatars?.length) {
       console.log('[seed-feed-items] No ximatars found, cannot seed');
@@ -45,39 +46,116 @@ serve(async (req) => {
       );
     }
 
-    const subjectXimatarId = ximatars[0].id;
-    console.log('[seed-feed-items] Using ximatar:', subjectXimatarId);
+    console.log('[seed-feed-items] Using ximatars:', ximatars.map(x => x.label || x.id));
 
-    // Define seed items with clean, anonymized payloads
-    const seedItems = [
-      {
-        type: 'challenge_completed',
-        source: 'dev_seed',
-        subject_ximatar_id: subjectXimatarId,
-        payload: { normalized_text: 'Completed a Level 2 challenge', level: 2 },
-        visibility: { public: true }
-      },
-      {
-        type: 'skill_validated',
-        source: 'dev_seed',
-        subject_ximatar_id: subjectXimatarId,
-        payload: { normalized_text: 'Validated skill: Process Optimization', skill: 'Process Optimization' },
-        visibility: { public: true }
-      },
-      {
-        type: 'level_reached',
-        source: 'dev_seed',
-        subject_ximatar_id: subjectXimatarId,
-        payload: { normalized_text: 'Advanced to Level 3 evaluation', level: 3 },
-        visibility: { public: true }
+    // Skills to use for variety
+    const skills = ['Analytical Thinking', 'Process Optimization', 'Strategic Planning', 'Team Coordination'];
+    
+    // Build seed items - multiple items per ximatar for a realistic mixed feed
+    const seedItems: Array<{
+      type: string;
+      source: string;
+      subject_ximatar_id: string;
+      payload: Record<string, unknown>;
+      visibility: { public: boolean };
+    }> = [];
+
+    ximatars.forEach((ximatar, index) => {
+      const basePayload = {
+        ximatar_name: ximatar.label || `XIMAtar ${index + 1}`,
+        ximatar_image: ximatar.image_url || `/ximatars/default.png`,
+      };
+
+      // Each ximatar gets 2-3 different signal types
+      // Ximatar 1: challenge_completed + skill_validated
+      if (index === 0) {
+        seedItems.push({
+          type: 'challenge_completed',
+          source: 'dev_seed',
+          subject_ximatar_id: ximatar.id,
+          payload: { 
+            ...basePayload,
+            normalized_text: 'Completed a Level 2 challenge', 
+            level: 2 
+          },
+          visibility: { public: true }
+        });
+        seedItems.push({
+          type: 'skill_validated',
+          source: 'dev_seed',
+          subject_ximatar_id: ximatar.id,
+          payload: { 
+            ...basePayload,
+            normalized_text: `Validated skill: ${skills[0]}`, 
+            skill: skills[0],
+            skill_tags: [skills[0]]
+          },
+          visibility: { public: true }
+        });
       }
-    ];
+      
+      // Ximatar 2: skill_validated + level_reached
+      if (index === 1) {
+        seedItems.push({
+          type: 'skill_validated',
+          source: 'dev_seed',
+          subject_ximatar_id: ximatar.id,
+          payload: { 
+            ...basePayload,
+            normalized_text: `Validated skill: ${skills[1]}`, 
+            skill: skills[1],
+            skill_tags: [skills[1], skills[2]]
+          },
+          visibility: { public: true }
+        });
+        seedItems.push({
+          type: 'level_reached',
+          source: 'dev_seed',
+          subject_ximatar_id: ximatar.id,
+          payload: { 
+            ...basePayload,
+            normalized_text: 'Advanced to Level 3 evaluation', 
+            level: 3 
+          },
+          visibility: { public: true }
+        });
+      }
+      
+      // Ximatar 3: challenge_completed + skill_validated
+      if (index === 2) {
+        seedItems.push({
+          type: 'challenge_completed',
+          source: 'dev_seed',
+          subject_ximatar_id: ximatar.id,
+          payload: { 
+            ...basePayload,
+            normalized_text: 'Completed a Level 1 challenge', 
+            level: 1 
+          },
+          visibility: { public: true }
+        });
+        seedItems.push({
+          type: 'skill_validated',
+          source: 'dev_seed',
+          subject_ximatar_id: ximatar.id,
+          payload: { 
+            ...basePayload,
+            normalized_text: `Validated skill: ${skills[3]}`, 
+            skill: skills[3],
+            skill_tags: [skills[3]]
+          },
+          visibility: { public: true }
+        });
+      }
+    });
+
+    console.log('[seed-feed-items] Inserting', seedItems.length, 'items for', ximatars.length, 'ximatars');
 
     // Insert feed items
     const { data: inserted, error: insertError } = await supabaseAdmin
       .from('feed_items')
       .insert(seedItems)
-      .select('id, type');
+      .select('id, type, subject_ximatar_id');
 
     if (insertError) {
       console.error('[seed-feed-items] Insert error:', insertError);
@@ -87,9 +165,13 @@ serve(async (req) => {
       );
     }
 
-    console.log('[seed-feed-items] Seeded items:', inserted);
+    console.log('[seed-feed-items] Seeded items:', inserted?.length);
     return new Response(
-      JSON.stringify({ success: true, seeded: inserted?.length || 0 }),
+      JSON.stringify({ 
+        success: true, 
+        inserted: inserted?.length || 0,
+        ximatars: ximatars.map(x => ({ id: x.id, label: x.label }))
+      }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
