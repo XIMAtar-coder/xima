@@ -13,7 +13,7 @@ export type FeedItemType =
 export type FeedSource = 'candidate' | 'business' | 'system';
 
 export interface FeedItemPayload {
-  normalized_text: string;
+  normalized_text?: string;
   skill_tags?: string[];
   level?: number;
   badge?: string;
@@ -96,10 +96,21 @@ export const useFeedItems = () => {
 
       if (data) {
         // Filter out demo items in production unless debug mode
+        // Also add defensive payload parsing
         let filteredData = data;
         if (!isDebugMode()) {
           filteredData = data.filter(item => {
-            const payload = item.payload as unknown as FeedItemPayload;
+            // Defensive: ensure payload is an object
+            let payload: FeedItemPayload = {};
+            if (item.payload && typeof item.payload === 'object') {
+              payload = item.payload as unknown as FeedItemPayload;
+            } else if (typeof item.payload === 'string') {
+              try {
+                payload = JSON.parse(item.payload);
+              } catch {
+                payload = {};
+              }
+            }
             return !payload?.demo;
           });
         }

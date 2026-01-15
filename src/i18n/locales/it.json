@@ -3485,12 +3485,23 @@
     "open_chats": "Apri Chat",
     "back_to_feed": "Torna al Feed",
     "privacy_notice": "Tutti i segnali sono anonimizzati e normalizzati dall'IA. Vengono mostrate le identità XIMAtar, non le informazioni personali. Le reazioni sono aggregate e mai attribuite a individui.",
+    "states": {
+      "loading": "Caricamento segnali…",
+      "empty_title": "Nessun segnale ancora",
+      "empty_desc": "Solo traguardi verificati appariranno qui.",
+      "error_title": "Caricamento feed fallito",
+      "error_cta": "Riprova"
+    },
     "empty": {
       "title": "Nessun segnale ancora",
       "description": "Completa le sfide per mostrare i tuoi progressi verificati.",
       "hint": "Nessun post social. Solo traguardi verificati."
     },
-    "title": {
+    "tabs": {
+      "signals": "Segnali",
+      "conversations": "Conversazioni"
+    },
+    "titles": {
       "challenge_completed": "Sfida completata",
       "skill_validated": "Competenza validata",
       "level_reached": "Aggiornamento progressi",

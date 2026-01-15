@@ -3696,12 +3696,23 @@
     "open_chats": "Open Chats",
     "back_to_feed": "Back to Feed",
     "privacy_notice": "All signals are anonymized and AI-normalized. XIMAtar identities are shown, not personal information. Reactions are aggregated and never attributed to individuals.",
+    "states": {
+      "loading": "Loading signals…",
+      "empty_title": "No signals yet",
+      "empty_desc": "Only verified milestones will appear here.",
+      "error_title": "Failed to load feed",
+      "error_cta": "Try again"
+    },
     "empty": {
       "title": "No signals yet",
       "description": "Complete challenges to surface verified progress.",
       "hint": "No social posts. Only verified milestones."
     },
-    "title": {
+    "tabs": {
+      "signals": "Signals",
+      "conversations": "Conversations"
+    },
+    "titles": {
       "challenge_completed": "Challenge completed",
       "skill_validated": "Skill validated",
       "level_reached": "Progress update",
