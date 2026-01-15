@@ -3013,7 +3013,7 @@ export type Database = {
         Returns: string
       }
       emit_interest_aggregated_signal: {
-        Args: { p_interest_count: number; p_subject_ximatar_id: string }
+        Args: { p_count: number; p_ximatar_id: string }
         Returns: string
       }
       ensure_mentor_thread: {

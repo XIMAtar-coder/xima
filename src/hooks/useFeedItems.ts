@@ -21,6 +21,10 @@ export interface FeedItemPayload {
   locale?: string;
   ximatar_name?: string;
   ximatar_image?: string;
+  // Demo markers (hidden in production)
+  demo?: boolean;
+  demo_batch?: string;
+  demo_label?: string;
 }
 
 export interface FeedItem {
@@ -91,9 +95,18 @@ export const useFeedItems = () => {
       }
 
       if (data) {
+        // Filter out demo items in production unless debug mode
+        let filteredData = data;
+        if (!isDebugMode()) {
+          filteredData = data.filter(item => {
+            const payload = item.payload as unknown as FeedItemPayload;
+            return !payload?.demo;
+          });
+        }
+        
         // Fetch reaction counts for each item (using privacy-safe RPC)
         const itemsWithReactions = await Promise.all(
-          data.map(async (item) => {
+          filteredData.map(async (item) => {
             try {
               const { data: reactions, error: reactionError } = await supabase.rpc('get_feed_item_reactions', {
                 item_id: item.id
@@ -133,7 +146,7 @@ export const useFeedItems = () => {
           setItems(itemsWithReactions);
         }
         
-        setHasMore(data.length === 50);
+        setHasMore(filteredData.length === 50);
       }
     } catch (err) {
       console.error('[useFeedItems] Exception:', err);

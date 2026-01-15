@@ -245,7 +245,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                           }}
                           className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
                         >
-                          {t('nav.chat')}
+                          {t('nav.feed')}
                         </button>
                       </>
                     )}
@@ -316,7 +316,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                       }`}
                       style={{ fontWeight: 500, letterSpacing: '0.05em' }}
                     >
-                      {t('nav.chat')}
+                      {t('nav.feed')}
                       {location.pathname === '/chat' && (
                         <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
                       )}
