@@ -15,6 +15,7 @@ export type FeedSource = 'candidate' | 'business' | 'system';
 export interface FeedItemPayload {
   normalized_text?: string;
   skill_tags?: string[];
+  skill?: string;
   level?: number;
   badge?: string;
   count?: number;
@@ -26,6 +27,8 @@ export interface FeedItemPayload {
   demo?: boolean;
   demo_batch?: string;
   demo_label?: string;
+  // Allow additional unknown fields
+  [key: string]: unknown;
 }
 
 export interface FeedItem {

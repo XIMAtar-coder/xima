@@ -10,8 +10,7 @@ import {
   Zap,
   Heart,
   Bookmark,
-  Target,
-  CheckCircle2
+  Target
 } from 'lucide-react';
 import { FeedItem, ReactionType } from '@/hooks/useFeedItems';
 import { cn } from '@/lib/utils';
@@ -39,16 +38,29 @@ const TYPE_CONFIG = {
     color: 'text-green-500',
     bgColor: 'bg-green-500/10',
   },
-  badge_unlocked: {
-    icon: CheckCircle2,
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-500/10',
-  },
   interest_aggregated: {
     icon: Zap,
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10',
   }
+};
+
+// Helper: safely extract XIMAtar data from payload
+const getSafeXimatar = (payload: Record<string, unknown>): { name: string; image: string | null } => ({
+  name: (payload.ximatar_name as string) || 'XIMAtar',
+  image: (payload.ximatar_image as string) || null
+});
+
+// Helper: extract level from payload
+const getLevel = (payload: Record<string, unknown>): number | null => {
+  const level = payload.level;
+  return typeof level === 'number' ? level : null;
+};
+
+// Helper: extract count from payload
+const getCount = (payload: Record<string, unknown>): number | null => {
+  const count = payload.count;
+  return typeof count === 'number' ? count : null;
 };
 
 // Format relative time with localization
@@ -92,7 +104,7 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
   const { t, i18n } = useTranslation();
   const [reactingType, setReactingType] = useState<ReactionType | null>(null);
 
-  const config = TYPE_CONFIG[item.type] || TYPE_CONFIG.challenge_completed;
+  const config = TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG] || TYPE_CONFIG.challenge_completed;
   const Icon = config.icon;
 
   const handleReact = async (reactionType: ReactionType) => {
@@ -101,13 +113,14 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
     setReactingType(null);
   };
 
-  // Extract payload data (privacy-safe, no joins)
-  const ximatarImage = item.payload.ximatar_image;
-  const ximatarName = item.payload.ximatar_name || 'XIMAtar';
-  const level = item.payload.level;
-  const skillTags = item.payload.skill_tags || [];
-  const interestCount = item.payload.count;
-  const challengeContext = item.payload.challenge_context;
+  // Extract payload data using helpers
+  const ximatar = getSafeXimatar(item.payload);
+  const level = getLevel(item.payload);
+  const count = getCount(item.payload);
+  const skillTags = (item.payload.skill_tags as string[]) || [];
+  const skill = (item.payload.skill as string) || skillTags[0] || '';
+  const challengeContext = item.payload.challenge_context as string | undefined;
+  const normalizedText = item.payload.normalized_text as string | undefined;
 
   // Get type title
   const getTypeTitle = (): string => {
@@ -121,7 +134,7 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
       case 'interest_aggregated':
         return t('feed.titles.interest_aggregated');
       default:
-        return t('feed.titles.signal');
+        return item.type;
     }
   };
 
@@ -179,12 +192,10 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
         break;
 
       default:
-        if (level) {
-          chips.push({ 
-            label: t('feed.chips.level', { level }), 
-            variant: 'level' 
-          });
-        }
+        chips.push({ 
+          label: t('feed.chips.verified'), 
+          variant: 'verified' 
+        });
     }
 
     return chips.slice(0, 3);
@@ -196,13 +207,13 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
       case 'challenge_completed':
         return t('feed.card.primary.level_completed', { level: level || 2 });
       case 'skill_validated':
-        return skillTags[0] || item.payload.normalized_text?.replace('Validated skill: ', '') || t('feed.chips.skill');
+        return skill || t('feed.chips.skill');
       case 'level_reached':
-        return t('feed.card.advanced_to_level', { level: level || 3 });
+        return t('feed.card.primary.advanced_to_level', { level: level || 3 });
       case 'interest_aggregated':
-        return t('feed.card.companies_interested', { count: interestCount || 1 });
+        return t('feed.card.primary.interest_count', { count: count || 1 });
       default:
-        return truncateText(item.payload.normalized_text, 80);
+        return truncateText(normalizedText, 80) || t('feed.card.fallback.primary');
     }
   };
 
@@ -210,11 +221,13 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
   const renderSecondaryLine = (): string | null => {
     switch (item.type) {
       case 'challenge_completed':
-        return challengeContext ? truncateText(challengeContext, 50) : null;
+        return challengeContext 
+          ? truncateText(challengeContext, 50) 
+          : t('feed.card.secondary.verified');
       case 'skill_validated':
         return t('feed.card.secondary.verified');
       case 'level_reached':
-        return t('feed.card.qualification_verified');
+        return t('feed.card.secondary.verified');
       case 'interest_aggregated':
         return t('feed.card.secondary.identity_unlock');
       default:
@@ -233,18 +246,18 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
           {/* Left: XIMAtar Avatar */}
           <div className="flex-shrink-0">
             <Avatar className="h-11 w-11 border-2 border-primary/20">
-              {ximatarImage && (
+              {ximatar.image && (
                 <AvatarImage 
-                  src={ximatarImage.startsWith('/') ? ximatarImage : `/ximatars/${ximatarImage}.png`} 
-                  alt={ximatarName}
+                  src={ximatar.image.startsWith('/') ? ximatar.image : `/ximatars/${ximatar.image}.png`} 
+                  alt={ximatar.name}
                 />
               )}
               <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
-                {ximatarName.charAt(0).toUpperCase()}
+                {ximatar.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <p className="text-[10px] text-center text-muted-foreground mt-1 capitalize truncate max-w-[44px]">
-              {ximatarName}
+              {ximatar.name}
             </p>
           </div>
 
@@ -265,7 +278,7 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
 
             {/* Primary line (max 1 line, clamp) */}
             <p className={cn(
-              "font-medium text-foreground line-clamp-1",
+              "font-semibold text-foreground line-clamp-1",
               item.type === 'skill_validated' ? 'text-base' : 'text-sm'
             )}>
               {primaryLine}
@@ -280,7 +293,7 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
 
             {/* Chips row */}
             {chips.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-2">
+              <div className="flex flex-wrap gap-1.5 mt-2.5">
                 {chips.map((chip, idx) => (
                   <FeedChip key={idx} variant={chip.variant}>
                     {chip.label}

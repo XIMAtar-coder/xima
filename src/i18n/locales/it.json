@@ -3474,6 +3474,7 @@
     "title": "XIMA Feed",
     "tagline": "In XIMA non segui le persone. Segui i segnali.",
     "subtitle": "Segnali anonimi da traguardi verificati. Nessun rumore, solo segnali.",
+    "legend": "Solo milestone verificati · Nessun post social · Privacy by design",
     "loading": "Caricamento segnali...",
     "failed_to_load": "Caricamento feed fallito",
     "failed_to_load_desc": "Si è verificato un problema nel caricamento dei tuoi segnali. Riprova.",
@@ -3504,23 +3505,21 @@
     "titles": {
       "challenge_completed": "Sfida completata",
       "skill_validated": "Competenza validata",
-      "level_reached": "Aggiornamento progressi",
-      "interest_aggregated": "Segnale di mercato",
-      "signal": "Segnale"
+      "level_reached": "Aggiornamento progresso",
+      "interest_aggregated": "Segnale di mercato"
     },
     "card": {
-      "challenge_level": "Sfida Livello {{level}}",
-      "verified_signal": "Segnale verificato",
-      "advanced_to_level": "Avanzato al Livello {{level}}",
-      "qualification_verified": "Segnale di qualifica verificato",
-      "companies_interested": "{{count}} aziende hanno mostrato interesse",
-      "identity_unlocked": "Identità sbloccata solo con interesse reciproco",
       "primary": {
-        "level_completed": "Sfida completata (Livello {{level}})"
+        "level_completed": "Sfida completata (Livello {{level}})",
+        "advanced_to_level": "Avanzato al Livello {{level}}",
+        "interest_count": "{{count}} aziende interessate"
       },
       "secondary": {
         "verified": "Segnale verificato",
         "identity_unlock": "L'identità si sblocca solo con interesse reciproco"
+      },
+      "fallback": {
+        "primary": "Aggiornamento verificato"
       }
     },
     "chips": {
