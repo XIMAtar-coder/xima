@@ -3514,10 +3514,21 @@
       "advanced_to_level": "Avanzato al Livello {{level}}",
       "qualification_verified": "Segnale di qualifica verificato",
       "companies_interested": "{{count}} aziende hanno mostrato interesse",
-      "identity_unlocked": "Identità sbloccata solo con interesse reciproco"
+      "identity_unlocked": "Identità sbloccata solo con interesse reciproco",
+      "primary": {
+        "level_completed": "Sfida completata (Livello {{level}})"
+      },
+      "secondary": {
+        "verified": "Segnale verificato",
+        "identity_unlock": "L'identità si sblocca solo con interesse reciproco"
+      }
     },
-    "chip": {
-      "verified": "Verificato"
+    "chips": {
+      "verified": "Verificato",
+      "challenge": "Sfida",
+      "skill": "Competenza",
+      "market": "Segnale di mercato",
+      "level": "Livello {{level}}"
     },
     "type": {
       "challenge_completed": "Sfida Completata",

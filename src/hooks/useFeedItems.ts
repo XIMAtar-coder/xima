@@ -21,6 +21,7 @@ export interface FeedItemPayload {
   locale?: string;
   ximatar_name?: string;
   ximatar_image?: string;
+  challenge_context?: string;
   // Demo markers (hidden in production)
   demo?: boolean;
   demo_batch?: string;
