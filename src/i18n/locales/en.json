@@ -3821,7 +3821,7 @@
     "tagline": "In XIMA you don't follow people. You follow signals.",
     "subtitle": "Anonymous signals from verified achievements. No noise, only signal.",
     "legend": "Only verified milestones · No social posts · Privacy by design",
-    "loading": "Loading signals...",
+    "loading": "Loading update...",
     "failed_to_load": "Failed to load feed",
     "failed_to_load_desc": "There was a problem loading your signals. Please try again.",
     "try_again": "Try again",
@@ -3832,6 +3832,23 @@
     "open_chats": "Open Chats",
     "back_to_feed": "Back to Feed",
     "privacy_notice": "All signals are anonymized and AI-normalized. XIMAtar identities are shown, not personal information. Reactions are aggregated and never attributed to individuals.",
+    "no_new_updates": "No new updates",
+    "no_updates_desc": "You're all caught up! New updates will appear here when available.",
+    "check_again": "Check again",
+    "next": "Next",
+    "privacy_badge": "Anonymized signal • No personal data",
+    "widget": {
+      "title": "Latest Update",
+      "new_activity": "New activity in your pipeline"
+    },
+    "types": {
+      "challenge_completed": "Challenge Completed",
+      "level_reached": "Level Reached",
+      "badge_unlocked": "Badge Unlocked",
+      "skill_validated": "Skill Validated",
+      "interest": "Interest Signal",
+      "update": "Update"
+    },
     "states": {
       "loading": "Loading signals…",
       "empty_title": "No signals yet",

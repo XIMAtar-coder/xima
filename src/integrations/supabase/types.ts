@@ -1320,27 +1320,53 @@ export type Database = {
       }
       chat_threads: {
         Row: {
+          business_id: string | null
+          candidate_profile_id: string | null
           created_at: string | null
           created_by: string
           id: string
           is_group: boolean
+          mentor_profile_id: string | null
+          thread_type: Database["public"]["Enums"]["thread_type_enum"] | null
           topic: string | null
         }
         Insert: {
+          business_id?: string | null
+          candidate_profile_id?: string | null
           created_at?: string | null
           created_by: string
           id?: string
           is_group?: boolean
+          mentor_profile_id?: string | null
+          thread_type?: Database["public"]["Enums"]["thread_type_enum"] | null
           topic?: string | null
         }
         Update: {
+          business_id?: string | null
+          candidate_profile_id?: string | null
           created_at?: string | null
           created_by?: string
           id?: string
           is_group?: boolean
+          mentor_profile_id?: string | null
+          thread_type?: Database["public"]["Enums"]["thread_type_enum"] | null
           topic?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "chat_threads_candidate_profile_id_fkey"
+            columns: ["candidate_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_threads_candidate_profile_id_fkey"
+            columns: ["candidate_profile_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
           {
             foreignKeyName: "chat_threads_created_by_fkey"
             columns: ["created_by"]
@@ -1659,35 +1685,116 @@ export type Database = {
           },
         ]
       }
+      feed_consumption: {
+        Row: {
+          created_at: string | null
+          last_seen_at: string | null
+          last_seen_feed_item_id: string | null
+          profile_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          last_seen_at?: string | null
+          last_seen_feed_item_id?: string | null
+          profile_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          last_seen_at?: string | null
+          last_seen_feed_item_id?: string | null
+          profile_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_consumption_last_seen_feed_item_id_fkey"
+            columns: ["last_seen_feed_item_id"]
+            isOneToOne: false
+            referencedRelation: "feed_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feed_consumption_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feed_consumption_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       feed_items: {
         Row: {
+          audience_type:
+            | Database["public"]["Enums"]["audience_type_enum"]
+            | null
+          business_id: string | null
+          candidate_profile_id: string | null
           created_at: string
           id: string
+          mentor_profile_id: string | null
           payload: Json
+          priority: number | null
           source: string
           subject_ximatar_id: string
           type: string
           visibility: Json
         }
         Insert: {
+          audience_type?:
+            | Database["public"]["Enums"]["audience_type_enum"]
+            | null
+          business_id?: string | null
+          candidate_profile_id?: string | null
           created_at?: string
           id?: string
+          mentor_profile_id?: string | null
           payload?: Json
+          priority?: number | null
           source: string
           subject_ximatar_id: string
           type: string
           visibility?: Json
         }
         Update: {
+          audience_type?:
+            | Database["public"]["Enums"]["audience_type_enum"]
+            | null
+          business_id?: string | null
+          candidate_profile_id?: string | null
           created_at?: string
           id?: string
+          mentor_profile_id?: string | null
           payload?: Json
+          priority?: number | null
           source?: string
           subject_ximatar_id?: string
           type?: string
           visibility?: Json
         }
         Relationships: [
+          {
+            foreignKeyName: "feed_items_candidate_profile_id_fkey"
+            columns: ["candidate_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feed_items_candidate_profile_id_fkey"
+            columns: ["candidate_profile_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
           {
             foreignKeyName: "feed_items_subject_ximatar_id_fkey"
             columns: ["subject_ximatar_id"]
@@ -1729,6 +1836,46 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "feed_items"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      feed_seen_items: {
+        Row: {
+          feed_item_id: string
+          profile_id: string
+          seen_at: string | null
+        }
+        Insert: {
+          feed_item_id: string
+          profile_id: string
+          seen_at?: string | null
+        }
+        Update: {
+          feed_item_id?: string
+          profile_id?: string
+          seen_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_seen_items_feed_item_id_fkey"
+            columns: ["feed_item_id"]
+            isOneToOne: false
+            referencedRelation: "feed_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feed_seen_items_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feed_seen_items_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -3091,6 +3238,15 @@ export type Database = {
             Args: { p_mc_answers: Json; p_result_id: string }
             Returns: undefined
           }
+      create_chat_thread: {
+        Args: {
+          p_business_id?: string
+          p_candidate_profile_id: string
+          p_mentor_profile_id?: string
+          p_thread_type: string
+        }
+        Returns: string
+      }
       emit_feed_signal: {
         Args: {
           p_payload: Json
@@ -3149,6 +3305,18 @@ export type Database = {
         Args: { p_ximatar_id: string }
         Returns: number
       }
+      get_next_feed_item: {
+        Args: never
+        Returns: {
+          created_at: string
+          id: string
+          payload: Json
+          priority: number
+          source: string
+          subject_ximatar_id: string
+          type: string
+        }[]
+      }
       get_pending_interests: {
         Args: never
         Returns: {
@@ -3202,7 +3370,9 @@ export type Database = {
     Enums: {
       ai_message_role: "user" | "assistant" | "system" | "tool"
       app_role: "admin" | "user" | "business" | "operator"
+      audience_type_enum: "candidate" | "business" | "mentor"
       lang_code: "it" | "en" | "es"
+      thread_type_enum: "business_candidate" | "mentor_candidate"
       ximatar_type:
         | "lion"
         | "owl"
@@ -3345,7 +3515,9 @@ export const Constants = {
     Enums: {
       ai_message_role: ["user", "assistant", "system", "tool"],
       app_role: ["admin", "user", "business", "operator"],
+      audience_type_enum: ["candidate", "business", "mentor"],
       lang_code: ["it", "en", "es"],
+      thread_type_enum: ["business_candidate", "mentor_candidate"],
       ximatar_type: [
         "lion",
         "owl",

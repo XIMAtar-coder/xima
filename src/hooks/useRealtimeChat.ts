@@ -339,126 +339,67 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     }
   }, []);
 
-  // Fetch or create thread with selected user
+  // GDPR-SAFE: Thread creation is now restricted to B2C and M2C only via RPC
+  // Legacy openThread is deprecated - use createSecureThread instead
   const openThread = useCallback(async (otherUserId: string) => {
-    if (!currentUserId) {
-      console.log('[useRealtimeChat] openThread: No currentUserId');
-      return;
+    console.warn('[useRealtimeChat] openThread is deprecated. Direct thread creation is no longer supported for privacy compliance.');
+    setThreadError('Direct thread creation is disabled. Use mutual interest or mentor match to initiate conversations.');
+  }, []);
+
+  /**
+   * Create a secure chat thread using the new RPC.
+   * Validates mutual_interest (B2C) or mentor_match (M2C) server-side.
+   */
+  const createSecureThread = useCallback(async (
+    threadType: 'business_candidate' | 'mentor_candidate',
+    candidateProfileId: string,
+    businessId?: string,
+    mentorProfileId?: string
+  ): Promise<string | null> => {
+    if (!currentUserId || !currentProfileId) {
+      setThreadError('Not authenticated');
+      return null;
     }
-    
-    console.log('[useRealtimeChat] openThread called:', { currentUserId, otherUserId });
-    setSelectedUserId(otherUserId);
-    setMessages([]);
-    setThreadError(null);
 
     try {
-      // First, get the profile.id for the current user (created_by references profiles.id, not auth.uid)
-      const { data: currentProfile, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('user_id', currentUserId)
-        .maybeSingle();
-
-      if (profileError || !currentProfile) {
-        console.error('[useRealtimeChat] Error fetching current profile:', profileError);
-        setThreadError('Could not find your profile');
-        return;
-      }
-
-      const profileId = currentProfile.id;
-      console.log('[useRealtimeChat] Current profile id:', profileId);
-
-      // Try to find existing thread between these two users
-      const { data: myThreads, error: threadsError } = await supabase
-        .from('chat_participants')
-        .select('thread_id')
-        .eq('user_id', profileId);
-
-      if (threadsError) {
-        console.error('[useRealtimeChat] Error fetching my threads:', threadsError);
-      }
-
-      console.log('[useRealtimeChat] My threads:', myThreads);
-
-      // Get other user's profile.id
-      const { data: otherProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('user_id', otherUserId)
-        .maybeSingle();
-
-      const otherProfileId = otherProfile?.id;
-      console.log('[useRealtimeChat] Other profile id:', otherProfileId);
-
-      if (!otherProfileId) {
-        setThreadError('Could not find the other user');
-        return;
-      }
-
-      if (myThreads && myThreads.length > 0) {
-        for (const pt of myThreads) {
-          const { data: otherParticipant } = await supabase
-            .from('chat_participants')
-            .select('user_id')
-            .eq('thread_id', pt.thread_id)
-            .eq('user_id', otherProfileId)
-            .maybeSingle();
-
-          if (otherParticipant) {
-            console.log('[useRealtimeChat] Found existing thread:', pt.thread_id);
-            setSelectedThread(pt.thread_id);
-            await fetchMessages(pt.thread_id);
-            return;
-          }
-        }
-      }
-
-      console.log('[useRealtimeChat] Creating new thread...');
+      setThreadError(null);
       
-      // Create new thread with profile.id as created_by
-      const { data: newThread, error: threadError } = await supabase
-        .from('chat_threads')
-        .insert({
-          created_by: profileId,
-          is_group: false,
-          topic: 'direct'
-        })
-        .select()
-        .single();
+      const { data, error } = await supabase.rpc('create_chat_thread', {
+        p_thread_type: threadType,
+        p_candidate_profile_id: candidateProfileId,
+        p_business_id: businessId || null,
+        p_mentor_profile_id: mentorProfileId || null
+      });
 
-      if (threadError) {
-        console.error('[useRealtimeChat] Error creating thread:', threadError);
-        setThreadError(`Failed to create conversation: ${threadError.message}`);
-        return;
+      if (error) {
+        console.error('[useRealtimeChat] Error creating secure thread:', error);
+        setThreadError(error.message);
+        return null;
       }
 
-      console.log('[useRealtimeChat] Created thread:', newThread);
-
-      if (newThread) {
-        // Add both participants using profile.id
-        const { error: participantError } = await supabase
-          .from('chat_participants')
-          .insert([
-            { thread_id: newThread.id, user_id: profileId },
-            { thread_id: newThread.id, user_id: otherProfileId }
-          ]);
-
-        if (participantError) {
-          console.error('[useRealtimeChat] Error adding participants:', participantError);
-          setThreadError(`Failed to add participants: ${participantError.message}`);
-          return;
-        }
-
-        console.log('[useRealtimeChat] Added participants successfully');
-        setSelectedThread(newThread.id);
-        setMessages([]);
+      if (data) {
+        const threadId = data as string;
+        setSelectedThread(threadId);
+        await fetchMessages(threadId);
+        await fetchRecentThreads(); // Refresh thread list
+        return threadId;
       }
+
+      return null;
     } catch (err) {
-      console.error('[useRealtimeChat] Exception in openThread:', err);
-      setThreadError('An unexpected error occurred');
+      console.error('[useRealtimeChat] Exception creating secure thread:', err);
+      setThreadError('Failed to create conversation');
+      return null;
     }
-  }, [currentUserId, fetchMessages]);
-  // Send a message with optimistic update
+  }, [currentUserId, currentProfileId, fetchMessages, fetchRecentThreads]);
+
+  // Open an existing thread (for participants only - RLS enforced)
+  const openExistingThread = useCallback(async (threadId: string, otherUser: ChatUser) => {
+    setSelectedThread(threadId);
+    setSelectedUserId(otherUser.id);
+    setUsers([otherUser]);
+    await fetchMessages(threadId);
+  }, [fetchMessages]);
   const sendMessage = useCallback(async (body: string): Promise<boolean> => {
     if (!selectedThread || !currentProfileId || !body.trim()) {
       console.log('[useRealtimeChat] sendMessage: Missing required data', { selectedThread, currentProfileId, hasBody: !!body.trim() });
@@ -589,15 +530,6 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     || recentThreads.find(t => t.other_user.id === selectedUserId)?.other_user
     || null;
 
-  // Open an existing thread directly (from recent threads)
-  const openExistingThread = useCallback(async (threadId: string, otherUser: ChatUser) => {
-    console.log('[useRealtimeChat] Opening existing thread:', threadId);
-    setSelectedUserId(otherUser.id);
-    setSelectedThread(threadId);
-    setThreadError(null);
-    await fetchMessages(threadId);
-  }, [fetchMessages]);
-
   return {
     users,
     messages,
@@ -614,6 +546,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     threadError,
     openThread,
     openExistingThread,
+    createSecureThread,
     sendMessage,
     handleSearchChange,
     clearSendError: () => setSendError(null),
