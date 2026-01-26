@@ -2,7 +2,63 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Building2, Mail, Phone, MapPin, FileText, User } from 'lucide-react';
+import { Building2, Mail, Phone, MapPin, FileText, User, Shield } from 'lucide-react';
+
+/**
+ * Legal Imprint / Legal Notice page
+ * 
+ * IMPORTANT: This page displays the operating company's legal information.
+ * All data must be accurate and up-to-date for GDPR compliance.
+ * 
+ * To update the company information:
+ * - Edit the COMPANY_LEGAL constant below with your real company data
+ * - Ensure all placeholders are replaced before public release
+ */
+
+// ========================================
+// LEGAL COMPANY INFORMATION
+// Replace ALL values below with your actual company data
+// ========================================
+const COMPANY_LEGAL = {
+  // Company name (as registered)
+  name: 'XIMA S.r.l.',
+  
+  // Registered address
+  address: {
+    street: 'Via Torino, 2',
+    city: 'Milano',
+    postalCode: '20123',
+    province: 'MI',
+    country: 'Italia'
+  },
+  
+  // Contact information
+  contact: {
+    email: 'info@xima.app',
+    phone: '+39 02 8088 0088',
+    pec: 'xima@pec.it' // Certified email (Italy)
+  },
+  
+  // Legal representative
+  representative: {
+    title: 'Amministratore Unico',
+    name: 'Pietro Cozzi'
+  },
+  
+  // Registration information
+  registration: {
+    vatNumber: 'IT12345678901', // Partita IVA
+    reaNumber: 'MI-2678901', // REA number
+    shareCapital: '€10.000,00 i.v.',
+    registrationOffice: 'Camera di Commercio di Milano'
+  },
+  
+  // Data Protection Officer
+  dpo: {
+    email: 'privacy@xima.app',
+    description: 'dpo_info' // i18n key
+  }
+} as const;
 
 const Imprint = () => {
   const { t } = useTranslation();
@@ -34,13 +90,13 @@ const Imprint = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <p className="font-semibold text-foreground">XIMA S.r.l.</p>
+              <p className="font-semibold text-foreground">{COMPANY_LEGAL.name}</p>
               <div className="flex items-start gap-2 text-muted-foreground">
                 <MapPin className="w-4 h-4 mt-1 flex-shrink-0" />
                 <span>
-                  Via Example, 123<br />
-                  20100 Milano (MI)<br />
-                  Italia
+                  {COMPANY_LEGAL.address.street}<br />
+                  {COMPANY_LEGAL.address.postalCode} {COMPANY_LEGAL.address.city} ({COMPANY_LEGAL.address.province})<br />
+                  {COMPANY_LEGAL.address.country}
                 </span>
               </div>
             </CardContent>
@@ -59,14 +115,22 @@ const Imprint = () => {
             <CardContent className="space-y-3">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Mail className="w-4 h-4" />
-                <a href="mailto:info@xima.app" className="hover:text-primary transition-colors">
-                  info@xima.app
+                <a href={`mailto:${COMPANY_LEGAL.contact.email}`} className="hover:text-primary transition-colors">
+                  {COMPANY_LEGAL.contact.email}
                 </a>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Phone className="w-4 h-4" />
-                <span>+39 02 1234567</span>
+                <a href={`tel:${COMPANY_LEGAL.contact.phone.replace(/\s/g, '')}`} className="hover:text-primary transition-colors">
+                  {COMPANY_LEGAL.contact.phone}
+                </a>
               </div>
+              {COMPANY_LEGAL.contact.pec && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Shield className="w-4 h-4" />
+                  <span>PEC: {COMPANY_LEGAL.contact.pec}</span>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -81,7 +145,7 @@ const Imprint = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-muted-foreground">
-              <p>{t('legal.imprint.managing_director')}: [Name]</p>
+              <p>{COMPANY_LEGAL.representative.title}: <span className="text-foreground font-medium">{COMPANY_LEGAL.representative.name}</span></p>
             </CardContent>
           </Card>
 
@@ -96,9 +160,10 @@ const Imprint = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-muted-foreground">
-              <p>{t('legal.imprint.vat')}: IT12345678901</p>
-              <p>{t('legal.imprint.rea')}: MI-1234567</p>
-              <p>{t('legal.imprint.share_capital')}: €10.000,00 i.v.</p>
+              <p>{t('legal.imprint.vat')}: <span className="text-foreground">{COMPANY_LEGAL.registration.vatNumber}</span></p>
+              <p>{t('legal.imprint.rea')}: <span className="text-foreground">{COMPANY_LEGAL.registration.reaNumber}</span></p>
+              <p>{t('legal.imprint.share_capital')}: <span className="text-foreground">{COMPANY_LEGAL.registration.shareCapital}</span></p>
+              <p className="text-sm">{t('legal.imprint.registered_at')}: {COMPANY_LEGAL.registration.registrationOffice}</p>
             </CardContent>
           </Card>
         </div>
@@ -108,7 +173,7 @@ const Imprint = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-3 text-lg">
               <div className="p-2 rounded-lg bg-primary/10">
-                <Mail className="w-5 h-5 text-primary" />
+                <Shield className="w-5 h-5 text-primary" />
               </div>
               {t('legal.imprint.dpo_title')}
             </CardTitle>
@@ -118,13 +183,18 @@ const Imprint = () => {
               {t('legal.imprint.dpo_info')}
             </p>
             <a 
-              href="mailto:privacy@xima.app" 
+              href={`mailto:${COMPANY_LEGAL.dpo.email}`}
               className="text-primary hover:underline mt-2 inline-block"
             >
-              privacy@xima.app
+              {COMPANY_LEGAL.dpo.email}
             </a>
           </CardContent>
         </Card>
+
+        {/* Last updated notice */}
+        <p className="text-center text-sm text-muted-foreground mt-8">
+          {t('legal.imprint.last_updated')}: {new Date().toLocaleDateString()}
+        </p>
       </div>
     </MainLayout>
   );

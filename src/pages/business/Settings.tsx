@@ -26,6 +26,8 @@ import {
   Sparkles
 } from 'lucide-react';
 import CompanyLegalSettings from '@/components/business/CompanyLegalSettings';
+import { ProfilingOptOutSection } from '@/components/settings/ProfilingOptOutSection';
+import { AccountDeletionSection } from '@/components/settings/AccountDeletionSection';
 
 const BusinessSettings = () => {
   const { t } = useTranslation();
@@ -526,6 +528,16 @@ const BusinessSettings = () => {
 
         {/* Legal Information Section */}
         <CompanyLegalSettings />
+
+        <Separator className="my-8" />
+
+        {/* GDPR: Profiling Opt-Out (Art. 21/22) */}
+        <ProfilingOptOutSection />
+
+        <Separator className="my-8" />
+
+        {/* GDPR: Account Deletion (Art. 17) */}
+        <AccountDeletionSection variant="business" />
       </div>
     </BusinessLayout>
   );

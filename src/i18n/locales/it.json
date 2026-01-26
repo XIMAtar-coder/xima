@@ -3685,5 +3685,62 @@
       "accepted_success": "Interesse accettato! La chat è ora disponibile.",
       "privacy_note": "I nomi delle aziende vengono rivelati solo dopo che mostrano interesse. La tua identità rimane anonima finché non accetti."
     }
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "subtitle": "Gestisci il tuo account, le preferenze sulla privacy e i dati",
+    "deletion": {
+      "title": "Elimina Account",
+      "description": "Elimina permanentemente il tuo account e tutti i dati associati",
+      "warningTitle": "Questa azione non può essere annullata:",
+      "warning1": "Il tuo profilo e tutte le informazioni personali saranno eliminati",
+      "warning2": "I risultati delle valutazioni e il profilo XIMAtar saranno rimossi",
+      "warning3": "Le sottomissioni alle challenge saranno anonimizzate",
+      "warning4": "I messaggi della chat saranno anonimizzati",
+      "button": "Elimina Il Mio Account",
+      "confirmTitle": "Sei assolutamente sicuro?",
+      "confirmDescription": "Questo eliminerà permanentemente il tuo account e tutti i dati. Questa azione non può essere annullata.",
+      "typeToConfirm": "Digita '{{phrase}}' per confermare:",
+      "confirmButton": "Elimina Account Permanentemente",
+      "deleting": "Eliminazione in corso...",
+      "success": "Account Eliminato",
+      "successMessage": "Il tuo account e tutti i dati associati sono stati eliminati permanentemente.",
+      "partialSuccess": "Eliminazione Parziale",
+      "partialMessage": "I tuoi dati sono stati eliminati ma c'è stato un problema con la rimozione del login. Contatta il supporto.",
+      "error": "Eliminazione Fallita",
+      "errorMessage": "Si è verificato un problema durante l'eliminazione del tuo account. Riprova o contatta il supporto.",
+      "confirmationMismatch": "Il testo di conferma non corrisponde. Digita la frase esatta."
+    },
+    "profiling": {
+      "title": "Preferenze di Profilazione IA",
+      "description": "Controlla come XIMA usa l'analisi automatizzata sui tuoi dati",
+      "whatIsTitle": "Cos'è la profilazione IA?",
+      "whatIsDescription": "XIMA usa l'IA per analizzare il tuo CV, le valutazioni e le risposte alle challenge per fornire approfondimenti personalizzati e abbinarti con opportunità.",
+      "includes1": "Analisi del CV per l'estrazione delle competenze",
+      "includes2": "Assegnazione dell'archetipo XIMAtar in base al tuo profilo",
+      "includes3": "Valutazione delle risposte alle challenge",
+      "optOutLabel": "Opporsi alla profilazione automatizzata",
+      "optOutDescription": "Disabilita l'analisi basata sull'IA dei tuoi dati (GDPR Art. 21/22)",
+      "optedOutTitle": "Cosa cambia quando ti opponi:",
+      "change1": "L'analisi del CV verrà saltata",
+      "change2": "XIMAtar non verrà riassegnato in base a nuove valutazioni",
+      "change3": "I segnali delle challenge non saranno calcolati",
+      "existingData": "Nota: I risultati dell'analisi esistenti rimarranno visibili ma non saranno aggiornati.",
+      "humanReview": "Puoi richiedere una revisione umana di qualsiasi decisione automatizzata contattando:",
+      "optOutSuccess": "Profilazione Disabilitata",
+      "optOutMessage": "La profilazione IA è stata disabilitata per il tuo account.",
+      "optInSuccess": "Profilazione Abilitata",
+      "optInMessage": "La profilazione IA è ora abilitata per il tuo account.",
+      "errorMessage": "Impossibile aggiornare la preferenza. Riprova."
+    }
+  },
+  "common": {
+    "cancel": "Annulla"
+  },
+  "legal": {
+    "imprint": {
+      "registered_at": "Registrato presso",
+      "last_updated": "Ultimo aggiornamento"
+    }
   }
 }

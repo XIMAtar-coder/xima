@@ -43,6 +43,28 @@ serve(async (req) => {
 
     console.log("Authenticated user:", user.id);
 
+    // ===== GDPR Art. 21/22: Check profiling opt-out =====
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('profiling_opt_out')
+      .eq('user_id', user.id)
+      .single();
+
+    if (profileError) {
+      console.error("Profile fetch error:", profileError);
+    }
+
+    if (profile?.profiling_opt_out === true) {
+      console.log("User has opted out of profiling, skipping AI analysis");
+      return new Response(
+        JSON.stringify({ 
+          error: "AI profiling is disabled for your account. You can enable it in Settings.",
+          optedOut: true 
+        }), 
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Parse form-data file
     const formData = await req.formData();
     const file = formData.get("file");

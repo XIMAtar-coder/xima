@@ -63,6 +63,7 @@ import ChallengeFollowup from "./pages/candidate/ChallengeFollowup";
 import StandingVideoSession from "./pages/candidate/StandingVideoSession";
 import EligibilityReview from "./pages/admin/EligibilityReview";
 import AuthCallback from "./pages/AuthCallback";
+import CandidateSettings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -107,6 +108,7 @@ const AppContent = () => {
           <Route path="/assessment-guide" element={<AssessmentGuide />} />
           <Route path="/dashboard" element={<Profile />} />
           <Route path="/chat" element={<XimaChat />} />
+          <Route path="/settings" element={<CandidateSettings />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/eligibility" element={<EligibilityReview />} />
           {/* Business Portal Routes */}

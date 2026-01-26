@@ -2613,6 +2613,7 @@ export type Database = {
           pillars: Json | null
           preferred_lang: Database["public"]["Enums"]["lang_code"] | null
           profile_complete: boolean | null
+          profiling_opt_out: boolean
           strongest_pillar: string | null
           updated_at: string
           user_id: string
@@ -2641,6 +2642,7 @@ export type Database = {
           pillars?: Json | null
           preferred_lang?: Database["public"]["Enums"]["lang_code"] | null
           profile_complete?: boolean | null
+          profiling_opt_out?: boolean
           strongest_pillar?: string | null
           updated_at?: string
           user_id: string
@@ -2669,6 +2671,7 @@ export type Database = {
           pillars?: Json | null
           preferred_lang?: Database["public"]["Enums"]["lang_code"] | null
           profile_complete?: boolean | null
+          profiling_opt_out?: boolean
           strongest_pillar?: string | null
           updated_at?: string
           user_id?: string
@@ -3247,6 +3250,7 @@ export type Database = {
         }
         Returns: string
       }
+      delete_user_account: { Args: { p_user_id: string }; Returns: Json }
       emit_feed_signal: {
         Args: {
           p_payload: Json
