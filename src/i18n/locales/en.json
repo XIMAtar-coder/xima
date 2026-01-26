@@ -793,6 +793,26 @@
     "imprint": "Legal Notice",
     "all_rights_reserved": "All rights reserved."
   },
+  "dataExport": {
+    "title": "Export Your Data",
+    "description": "Download a copy of all your personal data stored in XIMA.",
+    "includes": "This export includes:",
+    "includesList": {
+      "profile": "Account and profile information",
+      "ximatar": "XIMAtar profile and pillar scores",
+      "assessments": "All assessment responses and results",
+      "challenges": "Challenge invitations and submissions",
+      "messages": "Chat and AI assistant messages",
+      "activity": "Activity logs and preferences"
+    },
+    "downloadButton": "Download My Data",
+    "exporting": "Preparing export...",
+    "success": "Export Ready",
+    "downloadStarted": "Your data export has been downloaded.",
+    "error": "Export Failed",
+    "notAuthenticated": "Please sign in to export your data.",
+    "unknownError": "An unexpected error occurred while exporting your data."
+  },
   "legal": {
     "privacy": {
       "title": "Privacy Policy",

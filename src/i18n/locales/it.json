@@ -979,6 +979,26 @@
     "imprint": "Note Legali",
     "all_rights_reserved": "Tutti i diritti riservati."
   },
+  "dataExport": {
+    "title": "Esporta i Tuoi Dati",
+    "description": "Scarica una copia di tutti i tuoi dati personali memorizzati in XIMA.",
+    "includes": "Questa esportazione include:",
+    "includesList": {
+      "profile": "Informazioni su account e profilo",
+      "ximatar": "Profilo XIMAtar e punteggi dei pilastri",
+      "assessments": "Tutte le risposte e i risultati delle valutazioni",
+      "challenges": "Inviti alle sfide e sottomissioni",
+      "messages": "Messaggi chat e assistente AI",
+      "activity": "Log delle attività e preferenze"
+    },
+    "downloadButton": "Scarica i Miei Dati",
+    "exporting": "Preparazione esportazione...",
+    "success": "Esportazione Pronta",
+    "downloadStarted": "L'esportazione dei tuoi dati è stata scaricata.",
+    "error": "Esportazione Fallita",
+    "notAuthenticated": "Effettua l'accesso per esportare i tuoi dati.",
+    "unknownError": "Si è verificato un errore imprevisto durante l'esportazione dei dati."
+  },
   "legal": {
     "privacy": {
       "title": "Informativa sulla Privacy",
