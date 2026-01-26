@@ -779,7 +779,42 @@
     "registration_success": "Registration successful!",
     "welcome_message": "Welcome to XIMA. You can now access your dashboard.",
     "registration_failed": "Registration failed",
-    "try_again": "Please try again later"
+    "try_again": "Please try again later",
+    "acceptPrivacy": "I agree to the",
+    "acceptTerms": "I agree to the",
+    "consentRequired": "You must accept both the Privacy Policy and Terms of Service to continue.",
+    "consent_error_title": "Registration Error",
+    "consent_error_desc": "Failed to record your consent. Please try registering again."
+  },
+  "legal": {
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  },
+  "business": {
+    "register": {
+      "title": "Business Portal",
+      "subtitle": "Create your XIMA business account to access top talent",
+      "company_name": "Company Name",
+      "company_placeholder": "Acme Corporation",
+      "email": "Business Email",
+      "email_placeholder": "hr@company.com",
+      "password": "Password",
+      "website": "Company Website (Required)",
+      "website_hint": "Please enter a valid URL starting with http:// or https://",
+      "website_desc": "Your company profile will be automatically generated from this website",
+      "hr_email": "HR Contact Email (Optional)",
+      "hr_placeholder": "recruiter@company.com",
+      "invalid_website": "Invalid Website",
+      "invalid_website_desc": "Please enter a valid website URL starting with http:// or https://",
+      "success": "Success!",
+      "success_desc": "Business account created successfully. Your company profile is being generated. Please check your email to verify your account.",
+      "failed": "Registration Failed",
+      "failed_desc": "An error occurred during registration",
+      "creating": "Creating Account...",
+      "submit": "Create Business Account",
+      "have_account": "Already have an account?",
+      "sign_in": "Sign in"
+    }
   },
   "not_found": {
     "title": "404",

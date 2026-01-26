@@ -965,7 +965,42 @@
     "welcome_message": "Benvenuto su XIMA. Ora puoi accedere alla tua dashboard.",
     "assessment_synced": "I dati della tua valutazione sono stati salvati nel tuo profilo",
     "registration_failed": "Registrazione fallita",
-    "try_again": "Per favore riprova più tardi"
+    "try_again": "Per favore riprova più tardi",
+    "acceptPrivacy": "Accetto la",
+    "acceptTerms": "Accetto i",
+    "consentRequired": "Devi accettare sia l'Informativa Privacy che i Termini di Servizio per continuare.",
+    "consent_error_title": "Errore di Registrazione",
+    "consent_error_desc": "Impossibile registrare il consenso. Riprova a registrarti."
+  },
+  "legal": {
+    "privacyPolicy": "Informativa Privacy",
+    "termsOfService": "Termini di Servizio"
+  },
+  "business": {
+    "register": {
+      "title": "Portale Business",
+      "subtitle": "Crea il tuo account business XIMA per accedere ai migliori talenti",
+      "company_name": "Nome Azienda",
+      "company_placeholder": "Acme Corporation",
+      "email": "Email Aziendale",
+      "email_placeholder": "hr@azienda.com",
+      "password": "Password",
+      "website": "Sito Web Aziendale (Obbligatorio)",
+      "website_hint": "Inserisci un URL valido che inizia con http:// o https://",
+      "website_desc": "Il profilo aziendale verrà generato automaticamente da questo sito web",
+      "hr_email": "Email Contatto HR (Opzionale)",
+      "hr_placeholder": "recruiter@azienda.com",
+      "invalid_website": "Sito Web Non Valido",
+      "invalid_website_desc": "Inserisci un URL valido che inizia con http:// o https://",
+      "success": "Operazione riuscita!",
+      "success_desc": "Account business creato con successo. Il profilo aziendale è in fase di generazione. Controlla la tua email per verificare l'account.",
+      "failed": "Registrazione Fallita",
+      "failed_desc": "Si è verificato un errore durante la registrazione",
+      "creating": "Creazione Account...",
+      "submit": "Crea Account Business",
+      "have_account": "Hai già un account?",
+      "sign_in": "Accedi"
+    }
   },
   "not_found": {
     "title": "404",
