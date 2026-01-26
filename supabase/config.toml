@@ -71,3 +71,6 @@ verify_jwt = true
 
 [functions.seed-feed-items]
 verify_jwt = false
+
+[functions.data-export]
+verify_jwt = true

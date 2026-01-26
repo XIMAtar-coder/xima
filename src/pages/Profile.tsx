@@ -20,6 +20,7 @@ import { CVAnalysisCard } from '@/components/profile/CVAnalysisCard';
 import { MyOpportunitiesSection } from '@/components/opportunities/MyOpportunitiesSection';
 // Removed ChallengeInvitationBanner - ChallengesForYouSection is the single source of truth
 import { ChallengesForYouSection } from '@/components/profile/ChallengesForYouSection';
+import { DataExportButton } from '@/components/profile/DataExportButton';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -246,6 +247,9 @@ const Profile = () => {
           
           {/* Job Opportunities */}
           <MyOpportunitiesSection />
+
+          {/* Data Export Section */}
+          <DataExportButton />
         </div>
       </div>
     </MainLayout>
