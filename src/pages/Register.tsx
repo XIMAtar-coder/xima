@@ -12,12 +12,14 @@ import { Logo } from '@/components/Logo';
 import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
 import { supabase } from '@/integrations/supabase/client';
 import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
+import { ConsentCheckboxes } from '@/components/auth/ConsentCheckboxes';
+import { recordUserConsents } from '@/hooks/useConsentRecording';
 
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { signUp, isAuthenticated } = useUser();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   
   const [formData, setFormData] = useState<RegistrationForm>({
     name: '',
@@ -28,6 +30,11 @@ const Register = () => {
   
   const [errors, setErrors] = useState<Partial<RegistrationForm>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Consent state
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showConsentError, setShowConsentError] = useState(false);
   
   React.useEffect(() => {
     if (isAuthenticated) {
@@ -69,6 +76,12 @@ const Register = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
+  const validateConsents = () => {
+    const consentsValid = privacyAccepted && termsAccepted;
+    setShowConsentError(!consentsValid);
+    return consentsValid;
+  };
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -78,7 +91,10 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) return;
+    const formValid = validateForm();
+    const consentsValid = validateConsents();
+    
+    if (!formValid || !consentsValid) return;
     
     setIsSubmitting(true);
     
@@ -98,14 +114,32 @@ const Register = () => {
 
       // Get the newly created user ID
       const newUserId = data?.user?.id;
-      try {
-        const { data: authUser } = await supabase.auth.getUser();
-        console.log('[Register] auth.getUser after signUp', authUser?.user?.id);
-      } catch (e) {
-        console.warn('[Register] auth.getUser failed', e);
-      }
-
+      
       if (newUserId) {
+        // Record consent immediately after signup
+        const consentResult = await recordUserConsents(newUserId, i18n.language);
+        
+        if (!consentResult.success) {
+          console.error('[Register] Consent recording failed:', consentResult.error);
+          // Sign out and show error
+          await supabase.auth.signOut();
+          toast({
+            title: t('register.consent_error_title', 'Registration Error'),
+            description: t('register.consent_error_desc', 'Failed to record your consent. Please try registering again.'),
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        console.log('[Register] Consents recorded successfully');
+
+        try {
+          const { data: authUser } = await supabase.auth.getUser();
+          console.log('[Register] auth.getUser after signUp', authUser?.user?.id);
+        } catch (e) {
+          console.warn('[Register] auth.getUser failed', e);
+        }
+
         console.log('[Register] syncing guest assessment to profile for', newUserId);
         // Sync guest assessment data to profile and wait for completion
         const syncSuccess = await syncGuestAssessmentToProfile(newUserId);
@@ -214,6 +248,16 @@ const Register = () => {
                   <p className="text-sm text-red-500">{errors.confirmPassword}</p>
                 )}
               </div>
+
+              {/* Consent Checkboxes */}
+              <ConsentCheckboxes
+                privacyAccepted={privacyAccepted}
+                termsAccepted={termsAccepted}
+                onPrivacyChange={setPrivacyAccepted}
+                onTermsChange={setTermsAccepted}
+                showError={showConsentError}
+                className="pt-2"
+              />
               
               <Button 
                 type="submit" 

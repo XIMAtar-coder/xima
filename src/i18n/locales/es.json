@@ -1094,7 +1094,42 @@
     "registration_success": "Registro Exitoso",
     "welcome_message": "Bienvenido a XIMA. Tu viaje comienza ahora",
     "registration_failed": "Registro Fallido",
-    "try_again": "Por favor intenta nuevamente"
+    "try_again": "Por favor intenta nuevamente",
+    "acceptPrivacy": "Acepto la",
+    "acceptTerms": "Acepto los",
+    "consentRequired": "Debes aceptar tanto la Política de Privacidad como los Términos de Servicio para continuar.",
+    "consent_error_title": "Error de Registro",
+    "consent_error_desc": "No se pudo registrar tu consentimiento. Por favor intenta registrarte nuevamente."
+  },
+  "legal": {
+    "privacyPolicy": "Política de Privacidad",
+    "termsOfService": "Términos de Servicio"
+  },
+  "business": {
+    "register": {
+      "title": "Portal de Negocios",
+      "subtitle": "Crea tu cuenta de negocios XIMA para acceder a los mejores talentos",
+      "company_name": "Nombre de la Empresa",
+      "company_placeholder": "Acme Corporation",
+      "email": "Correo Empresarial",
+      "email_placeholder": "rrhh@empresa.com",
+      "password": "Contraseña",
+      "website": "Sitio Web de la Empresa (Requerido)",
+      "website_hint": "Por favor ingresa una URL válida que comience con http:// o https://",
+      "website_desc": "El perfil de tu empresa se generará automáticamente desde este sitio web",
+      "hr_email": "Correo de Contacto RRHH (Opcional)",
+      "hr_placeholder": "reclutador@empresa.com",
+      "invalid_website": "Sitio Web Inválido",
+      "invalid_website_desc": "Por favor ingresa una URL válida que comience con http:// o https://",
+      "success": "¡Éxito!",
+      "success_desc": "Cuenta de negocios creada exitosamente. El perfil de tu empresa se está generando. Por favor revisa tu correo para verificar tu cuenta.",
+      "failed": "Registro Fallido",
+      "failed_desc": "Ocurrió un error durante el registro",
+      "creating": "Creando Cuenta...",
+      "submit": "Crear Cuenta de Negocios",
+      "have_account": "¿Ya tienes una cuenta?",
+      "sign_in": "Iniciar sesión"
+    }
   },
   "not_found": {
     "title": "Página No Encontrada",
