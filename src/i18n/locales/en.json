@@ -3913,5 +3913,62 @@
       "accepted_success": "Interest accepted! Chat is now available.",
       "privacy_note": "Company names are revealed only after showing interest. Your identity remains anonymous until you accept."
     }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account, privacy preferences, and data",
+    "deletion": {
+      "title": "Delete Account",
+      "description": "Permanently delete your account and all associated data",
+      "warningTitle": "This action cannot be undone:",
+      "warning1": "Your profile and all personal information will be deleted",
+      "warning2": "Assessment results and XIMAtar profile will be removed",
+      "warning3": "Challenge submissions will be anonymized",
+      "warning4": "Chat messages will be anonymized",
+      "button": "Delete My Account",
+      "confirmTitle": "Are you absolutely sure?",
+      "confirmDescription": "This will permanently delete your account and all data. This action cannot be undone.",
+      "typeToConfirm": "Type '{{phrase}}' to confirm:",
+      "confirmButton": "Permanently Delete Account",
+      "deleting": "Deleting...",
+      "success": "Account Deleted",
+      "successMessage": "Your account and all associated data have been permanently deleted.",
+      "partialSuccess": "Partial Deletion",
+      "partialMessage": "Your data was deleted but there was an issue removing your login. Please contact support.",
+      "error": "Deletion Failed",
+      "errorMessage": "There was a problem deleting your account. Please try again or contact support.",
+      "confirmationMismatch": "The confirmation text doesn't match. Please type the exact phrase."
+    },
+    "profiling": {
+      "title": "AI Profiling Preferences",
+      "description": "Control how XIMA uses automated analysis on your data",
+      "whatIsTitle": "What is AI profiling?",
+      "whatIsDescription": "XIMA uses AI to analyze your CV, assessments, and challenge responses to provide personalized insights and match you with opportunities.",
+      "includes1": "CV analysis for skill extraction",
+      "includes2": "XIMAtar archetype assignment based on your profile",
+      "includes3": "Challenge response evaluation",
+      "optOutLabel": "Object to automated profiling",
+      "optOutDescription": "Disable AI-based analysis of your data (GDPR Art. 21/22)",
+      "optedOutTitle": "What changes when opted out:",
+      "change1": "CV analysis will be skipped",
+      "change2": "XIMAtar will not be reassigned based on new assessments",
+      "change3": "Challenge signals will not be computed",
+      "existingData": "Note: Existing analysis results will remain visible but will not be updated.",
+      "humanReview": "You can request human review of any automated decisions by contacting:",
+      "optOutSuccess": "Profiling Disabled",
+      "optOutMessage": "AI profiling has been disabled for your account.",
+      "optInSuccess": "Profiling Enabled",
+      "optInMessage": "AI profiling is now enabled for your account.",
+      "errorMessage": "Failed to update preference. Please try again."
+    }
+  },
+  "common": {
+    "cancel": "Cancel"
+  },
+  "legal": {
+    "imprint": {
+      "registered_at": "Registered at",
+      "last_updated": "Last updated"
+    }
   }
 }

@@ -2574,5 +2574,62 @@
       "accepted_success": "¡Interés aceptado! El chat ya está disponible.",
       "privacy_note": "Los nombres de las empresas se revelan solo después de mostrar interés. Tu identidad permanece anónima hasta que aceptes."
     }
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Administra tu cuenta, preferencias de privacidad y datos",
+    "deletion": {
+      "title": "Eliminar Cuenta",
+      "description": "Elimina permanentemente tu cuenta y todos los datos asociados",
+      "warningTitle": "Esta acción no se puede deshacer:",
+      "warning1": "Tu perfil y toda la información personal serán eliminados",
+      "warning2": "Los resultados de evaluación y el perfil XIMAtar serán removidos",
+      "warning3": "Las respuestas a los desafíos serán anonimizadas",
+      "warning4": "Los mensajes de chat serán anonimizados",
+      "button": "Eliminar Mi Cuenta",
+      "confirmTitle": "¿Estás absolutamente seguro?",
+      "confirmDescription": "Esto eliminará permanentemente tu cuenta y todos los datos. Esta acción no se puede deshacer.",
+      "typeToConfirm": "Escribe '{{phrase}}' para confirmar:",
+      "confirmButton": "Eliminar Cuenta Permanentemente",
+      "deleting": "Eliminando...",
+      "success": "Cuenta Eliminada",
+      "successMessage": "Tu cuenta y todos los datos asociados han sido eliminados permanentemente.",
+      "partialSuccess": "Eliminación Parcial",
+      "partialMessage": "Tus datos fueron eliminados pero hubo un problema al remover tu inicio de sesión. Contacta al soporte.",
+      "error": "Error al Eliminar",
+      "errorMessage": "Hubo un problema al eliminar tu cuenta. Intenta de nuevo o contacta al soporte.",
+      "confirmationMismatch": "El texto de confirmación no coincide. Escribe la frase exacta."
+    },
+    "profiling": {
+      "title": "Preferencias de Perfilado IA",
+      "description": "Controla cómo XIMA usa el análisis automatizado en tus datos",
+      "whatIsTitle": "¿Qué es el perfilado IA?",
+      "whatIsDescription": "XIMA usa IA para analizar tu CV, evaluaciones y respuestas a desafíos para proporcionar información personalizada y conectarte con oportunidades.",
+      "includes1": "Análisis de CV para extracción de habilidades",
+      "includes2": "Asignación de arquetipo XIMAtar basado en tu perfil",
+      "includes3": "Evaluación de respuestas a desafíos",
+      "optOutLabel": "Oponerse al perfilado automatizado",
+      "optOutDescription": "Deshabilita el análisis basado en IA de tus datos (GDPR Art. 21/22)",
+      "optedOutTitle": "Qué cambia cuando te opones:",
+      "change1": "El análisis de CV será omitido",
+      "change2": "XIMAtar no será reasignado basándose en nuevas evaluaciones",
+      "change3": "Las señales de desafíos no serán calculadas",
+      "existingData": "Nota: Los resultados de análisis existentes permanecerán visibles pero no serán actualizados.",
+      "humanReview": "Puedes solicitar revisión humana de cualquier decisión automatizada contactando:",
+      "optOutSuccess": "Perfilado Deshabilitado",
+      "optOutMessage": "El perfilado IA ha sido deshabilitado para tu cuenta.",
+      "optInSuccess": "Perfilado Habilitado",
+      "optInMessage": "El perfilado IA ahora está habilitado para tu cuenta.",
+      "errorMessage": "Error al actualizar preferencia. Intenta de nuevo."
+    }
+  },
+  "common": {
+    "cancel": "Cancelar"
+  },
+  "legal": {
+    "imprint": {
+      "registered_at": "Registrado en",
+      "last_updated": "Última actualización"
+    }
   }
 }

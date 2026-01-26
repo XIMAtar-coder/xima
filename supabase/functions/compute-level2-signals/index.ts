@@ -63,15 +63,45 @@ serve(async (req) => {
 
     console.log('Computing Level 2 signals for submission:', submission_id, 'locale:', normalizedLocale);
 
+    // ===== GDPR Art. 21/22: Check profiling opt-out for the candidate =====
+    // Get candidate_profile_id from submission first
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Fetch submission to get candidate
+    const { data: submissionCheck, error: subCheckError } = await supabase
+      .from('challenge_submissions')
+      .select('candidate_profile_id')
+      .eq('id', submission_id)
+      .single();
+
+    if (submissionCheck?.candidate_profile_id) {
+      // Check if candidate has opted out of profiling
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('profiling_opt_out')
+        .eq('id', submissionCheck.candidate_profile_id)
+        .single();
+
+      if (profile?.profiling_opt_out === true) {
+        console.log('Candidate has opted out of profiling, skipping signal computation');
+        return new Response(
+          JSON.stringify({ 
+            error: 'Candidate has opted out of automated profiling',
+            optedOut: true 
+          }),
+          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Create Supabase client
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    // Supabase client already created above for profiling check
 
     // Fetch submission data
     const { data: submission, error: submissionError } = await supabase

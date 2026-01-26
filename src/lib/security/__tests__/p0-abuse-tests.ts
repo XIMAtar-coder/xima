@@ -325,3 +325,73 @@ export {
   testChatMessageIsolation,
   testCompanyProfileIsolation
 };
+
+/**
+ * ===============================================
+ * RELEASE BLOCKER TESTS (B1-B4)
+ * ===============================================
+ * 
+ * Manual test steps to verify GDPR compliance fixes.
+ * Run these before public release.
+ */
+
+/**
+ * B1: Right to Deletion (GDPR Art. 17)
+ * 
+ * Test Steps:
+ * 1. Create a test account (candidate or business)
+ * 2. Complete some activities (upload CV, send messages, etc.)
+ * 3. Navigate to Settings (/settings or /business/settings)
+ * 4. Click "Delete My Account" button
+ * 5. Type "DELETE MY ACCOUNT" and confirm
+ * 6. Verify: redirected to home, signed out, cannot log back in
+ * 
+ * Database Verification:
+ * - profiles: 0 rows for deleted user
+ * - user_consents: 0 rows
+ * - auth.users: 0 rows
+ * - chat_messages: sender_id = null for their messages
+ */
+
+/**
+ * B2: Right to Object to Profiling (GDPR Art. 21/22)
+ * 
+ * Test Steps:
+ * 1. Navigate to Settings
+ * 2. Toggle "Object to automated profiling" ON
+ * 3. Try uploading a CV
+ * 4. Expected: 403 error "AI profiling is disabled"
+ * 
+ * Database Verification:
+ * - profiles.profiling_opt_out = true
+ */
+
+/**
+ * B3: Legal Imprint Placeholders
+ * 
+ * Test Steps:
+ * 1. Navigate to /imprint
+ * 2. Verify NO placeholder text remains:
+ *    - "[Name]"
+ *    - "Via Example, 123"
+ *    - "IT12345678901" (if placeholder)
+ */
+
+/**
+ * B4: Profiles RLS Hardening
+ * 
+ * Test Steps:
+ * 1. Log in as Candidate A
+ * 2. Run in console: supabase.from('profiles').select('*')
+ * 3. Expected: Only 1 row (own profile)
+ * 
+ * Database Verification:
+ * - No policy with qual: true on profiles SELECT
+ */
+
+export const RELEASE_BLOCKER_TESTS = {
+  B1_RIGHT_TO_DELETION: 'delete-account edge function + UI',
+  B2_PROFILING_OPT_OUT: 'profiling_opt_out column + guards',
+  B3_LEGAL_IMPRINT: 'real company data in Imprint.tsx',
+  B4_PROFILES_RLS: 'dropped permissive SELECT policy'
+};
