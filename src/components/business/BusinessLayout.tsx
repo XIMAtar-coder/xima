@@ -194,9 +194,38 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
         
         {/* Dark scrim overlay for improved readability */}
         <div className="fixed inset-0 bg-black/50 pointer-events-none" style={{ marginLeft: sidebarOpen ? '256px' : '80px', top: '49px' }} />
-        <div className="relative z-10 p-8 pb-32">
+        <div className="relative z-10 p-8 pb-16">
           {children}
         </div>
+        
+        {/* Footer with legal links */}
+        <footer className="relative z-10 border-t border-[#3A9FFF]/10 px-8 py-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-xs text-[#A3ABB5]">
+              © {new Date().getFullYear()} XIMA. {t('footer.all_rights_reserved')}
+            </p>
+            <div className="flex items-center gap-6">
+              <Link 
+                to="/privacy" 
+                className="text-xs text-[#A3ABB5] hover:text-[#3A9FFF] transition-colors"
+              >
+                {t('footer.privacy')}
+              </Link>
+              <Link 
+                to="/terms" 
+                className="text-xs text-[#A3ABB5] hover:text-[#3A9FFF] transition-colors"
+              >
+                {t('footer.terms')}
+              </Link>
+              <Link 
+                to="/imprint" 
+                className="text-xs text-[#A3ABB5] hover:text-[#3A9FFF] transition-colors"
+              >
+                {t('footer.imprint')}
+              </Link>
+            </div>
+          </div>
+        </footer>
       </main>
     </div>
   );

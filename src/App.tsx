@@ -31,6 +31,10 @@ import ChatEntry from "./components/ximai/ChatEntry";
 import OpportunityDetails from "./pages/OpportunityDetails";
 
 import { AssessmentProvider } from "./contexts/AssessmentContext";
+// Legal pages
+import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
+import Terms from "./pages/legal/Terms";
+import Imprint from "./pages/legal/Imprint";
 // Business Portal
 import BusinessRegister from "./pages/business/Register";
 import BusinessLogin from "./pages/business/Login";
@@ -86,6 +90,10 @@ const AppContent = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/onboarding" element={<Onboarding />} />
+          {/* Legal Pages */}
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/imprint" element={<Imprint />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/ximatar-journey" element={<XimatarJourney />} />
           <Route path="/xima-chat" element={<XimaChat />} />

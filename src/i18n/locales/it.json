@@ -973,7 +973,59 @@
     "return_home": "Torna alla Home"
   },
   "footer": {
-    "copyright": "XIMA - Qualità dell'Abbinamento nel Lavoro"
+    "copyright": "XIMA - Qualità dell'Abbinamento nel Lavoro",
+    "privacy": "Informativa Privacy",
+    "terms": "Termini di Servizio",
+    "imprint": "Note Legali",
+    "all_rights_reserved": "Tutti i diritti riservati."
+  },
+  "legal": {
+    "privacy": {
+      "title": "Informativa sulla Privacy",
+      "last_updated": "Ultimo aggiornamento",
+      "intro": "In XIMA, prendiamo seriamente la tua privacy. Questa Informativa sulla Privacy spiega come raccogliamo, utilizziamo, divulghiamo e proteggiamo le tue informazioni quando utilizzi la nostra piattaforma.",
+      "data_collection_title": "Dati che Raccogliamo",
+      "data_collection_content": "Raccogliamo le informazioni che ci fornisci direttamente, tra cui:\n• Informazioni sull'account (nome, email, password)\n• Dati del profilo (CV, competenze, esperienza lavorativa)\n• Risposte alle valutazioni e dati del profilo XIMAtar\n• Preferenze di comunicazione\n\nRaccogliamo automaticamente anche alcune informazioni quando utilizzi la nostra piattaforma, incluse informazioni sul dispositivo, dati di log e modelli di utilizzo.",
+      "data_usage_title": "Come Utilizziamo i Tuoi Dati",
+      "data_usage_content": "Utilizziamo le informazioni raccolte per:\n• Fornire, mantenere e migliorare i nostri servizi\n• Generare il tuo profilo XIMAtar e raccomandazioni personalizzate\n• Abbinarti a opportunità di lavoro rilevanti\n• Comunicare con te riguardo ai nostri servizi\n• Garantire la sicurezza della piattaforma e prevenire frodi\n\nElaboriamo i tuoi dati di valutazione utilizzando l'IA per generare approfondimenti e raccomandazioni. Questo costituisce profilazione automatizzata ai sensi dell'Art. 22 del GDPR.",
+      "data_security_title": "Sicurezza dei Dati",
+      "data_security_content": "Implementiamo misure tecniche e organizzative appropriate per proteggere i tuoi dati personali da accesso non autorizzato, alterazione, divulgazione o distruzione. Questo include crittografia, controlli di accesso e valutazioni di sicurezza regolari.",
+      "your_rights_title": "I Tuoi Diritti",
+      "your_rights_content": "Ai sensi del GDPR, hai il diritto di:\n• Accedere ai tuoi dati personali\n• Rettificare dati inesatti\n• Richiedere la cancellazione dei tuoi dati\n• Opporti al trattamento\n• Portabilità dei dati\n• Revocare il consenso\n\nPer esercitare questi diritti, contattaci a privacy@xima.app",
+      "contact_title": "Contattaci",
+      "contact_content": "Se hai domande su questa Informativa sulla Privacy o sulle nostre pratiche relative ai dati, contatta il nostro Responsabile della Protezione dei Dati a privacy@xima.app"
+    },
+    "terms": {
+      "title": "Termini di Servizio",
+      "last_updated": "Ultimo aggiornamento",
+      "intro": "Questi Termini di Servizio regolano l'accesso e l'utilizzo della piattaforma e dei servizi XIMA. Utilizzando la nostra piattaforma, accetti di essere vincolato da questi termini.",
+      "acceptance_title": "Accettazione dei Termini",
+      "acceptance_content": "Accedendo o utilizzando XIMA, accetti di essere vincolato da questi Termini di Servizio e dalla nostra Informativa sulla Privacy. Se non accetti questi termini, ti preghiamo di non utilizzare la nostra piattaforma.",
+      "services_title": "I Nostri Servizi",
+      "services_content": "XIMA fornisce una piattaforma di matching professionale che utilizza valutazioni basate su IA per creare profili professionali (XIMAtar) e connettere candidati con datori di lavoro. I nostri servizi includono:\n• Valutazione e profilazione professionale\n• Matching lavorativo e raccomandazioni\n• Strumenti di comunicazione per candidati e aziende\n• Risorse per lo sviluppo della carriera",
+      "user_obligations_title": "Obblighi dell'Utente",
+      "user_obligations_content": "Come utente di XIMA, accetti di:\n• Fornire informazioni accurate e veritiere\n• Mantenere la riservatezza del tuo account\n• Non abusare o tentare di manipolare la piattaforma\n• Rispettare la privacy e i diritti degli altri utenti\n• Rispettare tutte le leggi e i regolamenti applicabili",
+      "liability_title": "Limitazione di Responsabilità",
+      "liability_content": "XIMA fornisce i suoi servizi \"così come sono\" e non fornisce garanzie riguardo all'accuratezza delle valutazioni o al successo degli abbinamenti lavorativi. Non siamo responsabili per danni indiretti, incidentali o consequenziali derivanti dall'utilizzo della piattaforma.",
+      "termination_title": "Risoluzione",
+      "termination_content": "Possiamo terminare o sospendere il tuo accesso a XIMA in qualsiasi momento, con o senza causa. Alla risoluzione, il tuo diritto di utilizzare la piattaforma cessa immediatamente. Puoi richiedere la cancellazione dei tuoi dati in conformità con la nostra Informativa sulla Privacy.",
+      "changes_title": "Modifiche ai Termini",
+      "changes_content": "Potremmo aggiornare questi Termini di Servizio di tanto in tanto. Ti informeremo di eventuali modifiche sostanziali pubblicando i nuovi termini sulla nostra piattaforma e aggiornando la data di \"Ultimo aggiornamento\"."
+    },
+    "imprint": {
+      "title": "Note Legali",
+      "subtitle": "Informazioni aziendali e dichiarazioni legali (Impressum)",
+      "company_info": "Informazioni Aziendali",
+      "contact": "Contatti",
+      "representative": "Rappresentante Legale",
+      "managing_director": "Amministratore Delegato",
+      "registration": "Informazioni di Registrazione",
+      "vat": "Partita IVA",
+      "rea": "Numero REA",
+      "share_capital": "Capitale Sociale",
+      "dpo_title": "Responsabile Protezione Dati",
+      "dpo_info": "Per domande riguardanti il trattamento dei tuoi dati personali o per esercitare i tuoi diritti di protezione dati, contatta il nostro Responsabile della Protezione dei Dati:"
+    }
   },
   "language": {
     "switch_to": "Passa a {{language}}"
@@ -1907,6 +1959,34 @@
       "snapshot_saved": "Snapshot aziendale salvato con successo",
       "snapshot_save_failed": "Impossibile salvare lo snapshot aziendale",
       "snapshot_reset": "Snapshot ripristinato ai valori estratti dall'IA"
+    },
+    "legal": {
+      "title": "Informazioni Legali",
+      "description": "Gestisci le informazioni legali e di conformità della tua azienda. Questi dati sono archiviati separatamente dal profilo marketing.",
+      "legal_name": "Ragione Sociale",
+      "legal_name_placeholder": "es. ACME Corporation S.r.l.",
+      "legal_name_hint": "Il nome registrato ufficiale della tua azienda",
+      "registered_address": "Sede Legale",
+      "street_address": "Indirizzo",
+      "street_placeholder": "es. Via Roma, 123",
+      "city": "Città",
+      "city_placeholder": "es. Milano",
+      "postal_code": "CAP",
+      "postal_placeholder": "es. 20100",
+      "country": "Paese",
+      "country_placeholder": "es. Italia",
+      "registration_info": "Informazioni di Registrazione (Opzionale)",
+      "vat_number": "Partita IVA",
+      "vat_placeholder": "es. IT12345678901",
+      "registration_number": "Numero REA",
+      "registration_placeholder": "es. MI-1234567",
+      "contact_email": "Email Contatto Legale",
+      "contact_email_placeholder": "es. legale@azienda.com",
+      "contact_email_hint": "Email per comunicazioni legali e richieste di protezione dati",
+      "save": "Salva Informazioni Legali",
+      "save_success": "Informazioni legali salvate",
+      "save_success_description": "Le informazioni legali della tua azienda sono state aggiornate con successo.",
+      "save_error": "Impossibile salvare le informazioni legali"
     },
     "profile_tools": {
       "title": "Strumenti Profilo Aziendale",
