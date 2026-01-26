@@ -5,7 +5,7 @@ import { RealtimeChannel } from '@supabase/supabase-js';
 export interface ChatUser {
   id: string;
   name: string;
-  email: string;
+  // SECURITY: email removed to prevent enumeration - P0-2 fix
   avatar?: any;
   ximatar?: string;
   lastSeen?: string;
@@ -121,10 +121,10 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
 
         if (!otherParticipant) continue;
 
-        // Get user profile info
+        // Get user profile info - SECURITY: email removed (P0-2 fix)
         const { data: profile } = await supabase
           .from('profiles')
-          .select('id, user_id, name, full_name, email, avatar, ximatar')
+          .select('id, user_id, name, full_name, avatar, ximatar')
           .eq('id', otherParticipant.user_id)
           .maybeSingle();
 
@@ -143,8 +143,8 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
           thread_id: threadId,
           other_user: {
             id: profile.user_id || profile.id,
-            name: profile.full_name || profile.name || profile.email?.split('@')[0] || 'User',
-            email: profile.email || '',
+            name: profile.full_name || profile.name || 'User',
+            // SECURITY: email removed (P0-2 fix)
             avatar: profile.avatar,
             ximatar: profile.ximatar,
             status: 'offline'
@@ -178,8 +178,10 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
   }, [currentProfileId, fetchRecentThreads]);
 
   // Search users with debounce
+  // SECURITY: P0-2 fix - Only search users who are already in threads with current user
+  // or have mutual interest. No global email search allowed.
   const searchUsers = useCallback(async (query: string) => {
-    if (!currentUserId) return;
+    if (!currentUserId || !currentProfileId) return;
     
     // Clear results if query too short
     if (query.length < MIN_SEARCH_LENGTH) {
@@ -192,11 +194,48 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     setFetchError(null);
 
     try {
+      // SECURITY: Only search within users the current user can legitimately contact:
+      // 1. Users they already have a thread with
+      // 2. This prevents global user enumeration
+      
+      // Get thread IDs the user participates in
+      const { data: myThreads } = await supabase
+        .from('chat_participants')
+        .select('thread_id')
+        .eq('user_id', currentProfileId);
+      
+      const threadIds = myThreads?.map(t => t.thread_id) || [];
+      
+      if (threadIds.length === 0) {
+        // No threads = no one to search
+        setUsers([]);
+        setHasSearched(true);
+        setSearching(false);
+        return;
+      }
+      
+      // Get other participants from those threads
+      const { data: otherParticipants } = await supabase
+        .from('chat_participants')
+        .select('user_id')
+        .in('thread_id', threadIds)
+        .neq('user_id', currentProfileId);
+      
+      const allowedProfileIds = [...new Set(otherParticipants?.map(p => p.user_id) || [])];
+      
+      if (allowedProfileIds.length === 0) {
+        setUsers([]);
+        setHasSearched(true);
+        setSearching(false);
+        return;
+      }
+      
+      // Search only within allowed users (no email in query or results)
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, user_id, name, full_name, email, avatar, ximatar')
-        .neq('user_id', currentUserId)
-        .or(`full_name.ilike.%${query}%,name.ilike.%${query}%,email.ilike.%${query}%`)
+        .select('id, user_id, name, full_name, avatar, ximatar')
+        .in('id', allowedProfileIds)
+        .or(`full_name.ilike.%${query}%,name.ilike.%${query}%`)
         .limit(MAX_RESULTS);
 
       if (error) {
@@ -208,8 +247,8 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
           .filter(user => user.user_id)
           .map((user) => ({
             id: user.user_id,
-            name: user.full_name || user.name || user.email?.split('@')[0] || `User ${user.user_id?.slice(0, 6)}`,
-            email: user.email || '',
+            name: user.full_name || user.name || `User ${user.user_id?.slice(0, 6)}`,
+            // SECURITY: No email exposed
             avatar: user.avatar,
             ximatar: user.ximatar,
             status: 'offline' as const,
@@ -226,7 +265,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     } finally {
       setSearching(false);
     }
-  }, [currentUserId]);
+  }, [currentUserId, currentProfileId]);
 
   // Debounced search handler
   const handleSearchChange = useCallback((query: string) => {

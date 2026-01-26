@@ -466,16 +466,17 @@ const BusinessCandidates = () => {
     setInvitationStatuses(prev => ({ ...prev, [candidateProfileId]: 'loading' }));
     
     try {
+      // SECURITY: P0-2 fix - email removed from profile query
+      // Email is only needed for sending invitations, which should be done server-side
       const { data: profile } = await supabase
         .from('profiles')
-        .select('id, email, full_name, name')
+        .select('id, full_name, name')
         .eq('id', candidateProfileId)
         .single();
 
       if (!profile) throw new Error('Candidate profile not found');
 
       const candidateName = profile.full_name || profile.name || 'Candidate';
-      const candidateEmail = profile.email;
 
       const { data: invitation, error: invError } = await supabase
         .from('challenge_invitations')
@@ -525,23 +526,23 @@ const BusinessCandidates = () => {
         }
       }
 
-      // Send email if available
-      if (candidateEmail) {
-        try {
-          await supabase.functions.invoke('send-challenge-invitation', {
-            body: {
-              invitation_id: invitation.id,
-              candidate_email: candidateEmail,
-              candidate_name: candidateName,
-              company_name: companyName || 'Company',
-              role_title: hiringGoal?.role_title,
-              invite_token: invitation.invite_token,
-              language: 'en'
-            }
-          });
-        } catch (emailErr) {
-          console.warn('Email sending failed (non-blocking):', emailErr);
-        }
+      // SECURITY: P0-2 fix - Email invitations are now handled server-side
+      // The edge function send-challenge-invitation fetches the email directly from the database
+      // This prevents client-side email exposure
+      try {
+        await supabase.functions.invoke('send-challenge-invitation', {
+          body: {
+            invitation_id: invitation.id,
+            candidate_profile_id: candidateProfileId,
+            candidate_name: candidateName,
+            company_name: companyName || 'Company',
+            role_title: hiringGoal?.role_title,
+            invite_token: invitation.invite_token,
+            language: 'en'
+          }
+        });
+      } catch (emailErr) {
+        console.warn('Email sending failed (non-blocking):', emailErr);
       }
 
       setInvitationStatuses(prev => ({ ...prev, [candidateProfileId]: 'invited' }));
