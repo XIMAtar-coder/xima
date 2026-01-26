@@ -77,6 +77,8 @@ export const useFeedItems = () => {
       
       // Privacy-safe query: NO joins to ximatars, profiles, or users
       // Only select fields from feed_items table
+      // SECURITY: RLS now enforces visibility at DB level (P0-1 fix)
+      // This client filter is defense-in-depth only
       let query = supabase
         .from('feed_items')
         .select('id, type, source, subject_ximatar_id, payload, visibility, created_at')

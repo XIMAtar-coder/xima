@@ -270,7 +270,7 @@ const XimaChat = () => {
                         </Avatar>
                         <div className="flex-1">
                           <CardTitle className="text-base">{selectedUser.name}</CardTitle>
-                          <p className="text-xs text-muted-foreground">{selectedUser.email}</p>
+                          {/* SECURITY: email removed - P0-2 fix */}
                         </div>
                         {selectedUser.ximatar && (
                           <Badge variant="secondary" className="capitalize">
