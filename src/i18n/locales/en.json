@@ -787,7 +787,59 @@
     "return_home": "Return to Home"
   },
   "footer": {
-    "copyright": "XIMA - Matching Quality in Jobs"
+    "copyright": "XIMA - Matching Quality in Jobs",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "imprint": "Legal Notice",
+    "all_rights_reserved": "All rights reserved."
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacy Policy",
+      "last_updated": "Last updated",
+      "intro": "At XIMA, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform.",
+      "data_collection_title": "Data We Collect",
+      "data_collection_content": "We collect information you provide directly to us, including:\n• Account information (name, email, password)\n• Profile data (CV, skills, work experience)\n• Assessment responses and XIMAtar profile data\n• Communication preferences\n\nWe also automatically collect certain information when you use our platform, including device information, log data, and usage patterns.",
+      "data_usage_title": "How We Use Your Data",
+      "data_usage_content": "We use the information we collect to:\n• Provide, maintain, and improve our services\n• Generate your XIMAtar profile and personalized recommendations\n• Match you with relevant job opportunities\n• Communicate with you about our services\n• Ensure platform security and prevent fraud\n\nWe process your assessment data using AI to generate insights and recommendations. This constitutes automated profiling under GDPR Article 22.",
+      "data_security_title": "Data Security",
+      "data_security_content": "We implement appropriate technical and organizational measures to protect your personal data against unauthorized access, alteration, disclosure, or destruction. This includes encryption, access controls, and regular security assessments.",
+      "your_rights_title": "Your Rights",
+      "your_rights_content": "Under GDPR, you have the right to:\n• Access your personal data\n• Rectify inaccurate data\n• Request deletion of your data\n• Object to processing\n• Data portability\n• Withdraw consent\n\nTo exercise these rights, contact us at privacy@xima.app",
+      "contact_title": "Contact Us",
+      "contact_content": "If you have questions about this Privacy Policy or our data practices, please contact our Data Protection Officer at privacy@xima.app"
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "last_updated": "Last updated",
+      "intro": "These Terms of Service govern your access to and use of XIMA's platform and services. By using our platform, you agree to be bound by these terms.",
+      "acceptance_title": "Acceptance of Terms",
+      "acceptance_content": "By accessing or using XIMA, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree to these terms, please do not use our platform.",
+      "services_title": "Our Services",
+      "services_content": "XIMA provides a professional matching platform that uses AI-powered assessments to create professional profiles (XIMAtar) and connect candidates with employers. Our services include:\n• Professional assessment and profiling\n• Job matching and recommendations\n• Communication tools for candidates and employers\n• Career development resources",
+      "user_obligations_title": "User Obligations",
+      "user_obligations_content": "As a user of XIMA, you agree to:\n• Provide accurate and truthful information\n• Maintain the confidentiality of your account\n• Not misuse or attempt to manipulate the platform\n• Respect the privacy and rights of other users\n• Comply with all applicable laws and regulations",
+      "liability_title": "Limitation of Liability",
+      "liability_content": "XIMA provides its services \"as is\" and makes no warranties regarding the accuracy of assessments or the success of job matches. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform.",
+      "termination_title": "Termination",
+      "termination_content": "We may terminate or suspend your access to XIMA at any time, with or without cause. Upon termination, your right to use the platform ceases immediately. You may request deletion of your data in accordance with our Privacy Policy.",
+      "changes_title": "Changes to Terms",
+      "changes_content": "We may update these Terms of Service from time to time. We will notify you of any material changes by posting the new terms on our platform and updating the \"Last updated\" date."
+    },
+    "imprint": {
+      "title": "Legal Notice",
+      "subtitle": "Company information and legal disclosures (Impressum)",
+      "company_info": "Company Information",
+      "contact": "Contact",
+      "representative": "Legal Representative",
+      "managing_director": "Managing Director",
+      "registration": "Registration Information",
+      "vat": "VAT Number",
+      "rea": "REA Number",
+      "share_capital": "Share Capital",
+      "dpo_title": "Data Protection Officer",
+      "dpo_info": "For questions regarding the processing of your personal data or to exercise your data protection rights, please contact our Data Protection Officer:"
+    }
   },
   "language": {
     "switch_to": "Switch to {{language}}"
@@ -1985,6 +2037,34 @@
       "snapshot_saved": "Company snapshot saved successfully",
       "snapshot_save_failed": "Failed to save company snapshot",
       "snapshot_reset": "Snapshot reset to AI-extracted values"
+    },
+    "legal": {
+      "title": "Legal Information",
+      "description": "Manage your company's legal and compliance information. This data is stored separately from your marketing profile.",
+      "legal_name": "Legal Company Name",
+      "legal_name_placeholder": "e.g. ACME Corporation S.r.l.",
+      "legal_name_hint": "The official registered name of your company",
+      "registered_address": "Registered Address",
+      "street_address": "Street Address",
+      "street_placeholder": "e.g. Via Roma, 123",
+      "city": "City",
+      "city_placeholder": "e.g. Milan",
+      "postal_code": "Postal Code",
+      "postal_placeholder": "e.g. 20100",
+      "country": "Country",
+      "country_placeholder": "e.g. Italy",
+      "registration_info": "Registration Information (Optional)",
+      "vat_number": "VAT Number",
+      "vat_placeholder": "e.g. IT12345678901",
+      "registration_number": "Company Registration Number",
+      "registration_placeholder": "e.g. MI-1234567",
+      "contact_email": "Legal Contact Email",
+      "contact_email_placeholder": "e.g. legal@company.com",
+      "contact_email_hint": "Email for legal communications and data protection requests",
+      "save": "Save Legal Information",
+      "save_success": "Legal information saved",
+      "save_success_description": "Your company's legal information has been updated successfully.",
+      "save_error": "Failed to save legal information"
     },
     "profile_tools": {
       "title": "Company Profile Tools",

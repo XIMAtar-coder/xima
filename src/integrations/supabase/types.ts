@@ -1357,6 +1357,59 @@ export type Database = {
           },
         ]
       }
+      company_legal: {
+        Row: {
+          business_id: string
+          city: string | null
+          contact_email: string | null
+          country: string | null
+          created_at: string
+          id: string
+          legal_name: string | null
+          postal_code: string | null
+          registration_number: string | null
+          street_address: string | null
+          updated_at: string
+          vat_number: string | null
+        }
+        Insert: {
+          business_id: string
+          city?: string | null
+          contact_email?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          legal_name?: string | null
+          postal_code?: string | null
+          registration_number?: string | null
+          street_address?: string | null
+          updated_at?: string
+          vat_number?: string | null
+        }
+        Update: {
+          business_id?: string
+          city?: string | null
+          contact_email?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          legal_name?: string | null
+          postal_code?: string | null
+          registration_number?: string | null
+          street_address?: string | null
+          updated_at?: string
+          vat_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_business_legal"
+            columns: ["business_id"]
+            isOneToOne: true
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_profiles: {
         Row: {
           communication_style: string | null

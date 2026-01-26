@@ -25,6 +25,7 @@ import {
   RefreshCw,
   Sparkles
 } from 'lucide-react';
+import CompanyLegalSettings from '@/components/business/CompanyLegalSettings';
 
 const BusinessSettings = () => {
   const { t } = useTranslation();
@@ -520,6 +521,11 @@ const BusinessSettings = () => {
             </div>
           </CardContent>
         </Card>
+
+        <Separator className="my-8" />
+
+        {/* Legal Information Section */}
+        <CompanyLegalSettings />
       </div>
     </BusinessLayout>
   );

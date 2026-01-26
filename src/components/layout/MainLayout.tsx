@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { NotificationsDropdown } from '../NotificationsDropdown';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
+import Footer from './Footer';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -401,24 +402,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
         {children}
       </main>
       
-      {!fullHeight && (
-        <footer className="bg-card/50 py-8 mt-16 border-t border-border/30">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex items-center logo-wrap">
-                <Logo 
-                  variant="full"
-                  alt="XIMA logo" 
-                  className="h-7 relative z-10"
-                />
-              </div>
-              <p className="text-sm text-muted-foreground">
-                © 2024 {t('footer.copyright')}
-              </p>
-            </div>
-          </div>
-        </footer>
-      )}
+      {!fullHeight && <Footer />}
     </div>
   );
 };
