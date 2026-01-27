@@ -1,15 +1,20 @@
-[
-  {
-    "id": "EXISTING_UUID_FROM_DB",
-    "name": "Full Name",
-    "title": "Role / Title",
-    "bio": "Short biography text",
-    "profile_image_url": "/avatars/firstname-lastname.jpg",
-    "linkedin_url": "https://linkedin.com/in/handle",
-    "specialties": ["specialty1", "specialty2"],
-    "xima_pillars": ["communication", "drive"],
-    "rating": 4.5,
-    "experience_years": 10,
-    "is_active": true
-  }
-]
+{
+  "mentors": [
+    {
+      "name": "Daniel Cracau",
+      "title": "Entrepreneur and Kindness Advocate | Ex UN staff",
+      "bio": "Enabling sustainable technologies through hard work, creativity, and win-win networking. Location: Linz, Upper Austria, Austria.",
+      "profile_image_url": "/avatars/daniel-cracau.jpg",
+      "linkedin_url": "https://www.linkedin.com/in/daniel-cracau/",
+      "specialties": [
+        "Entrepreneurship",
+        "Sustainable technologies",
+        "Win-win networking",
+        "Kindness leadership"
+      ],
+      "xima_pillars": ["communication", "knowledge", "computational_power"],
+      "rating": 5.0,
+      "is_active": true
+    }
+  ]
+}
