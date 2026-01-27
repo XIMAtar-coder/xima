@@ -3216,10 +3216,6 @@ export type Database = {
         }
         Returns: boolean
       }
-      assign_first_admin: {
-        Args: { target_user_id: string }
-        Returns: undefined
-      }
       assign_role_to_user: {
         Args: {
           target_role: Database["public"]["Enums"]["app_role"]

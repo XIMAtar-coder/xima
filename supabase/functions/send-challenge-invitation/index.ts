@@ -20,11 +20,10 @@ function escapeHtml(unsafe: string): string {
     .replace(/'/g, '&#039;');
 }
 
+// SECURITY FIX: Removed candidate_email parameter - email must be fetched server-side only
 interface InvitationRequest {
   invitation_id: string;
-  // SECURITY: P0-2 fix - email is now fetched server-side, not passed from client
-  candidate_profile_id?: string;  // New: used to look up email server-side
-  candidate_email?: string;       // Deprecated: kept for backward compatibility
+  candidate_profile_id: string;  // Required - used to look up email server-side
   candidate_name: string;
   company_name: string;
   role_title: string | null;
@@ -184,7 +183,6 @@ const handler = async (req: Request): Promise<Response> => {
     const {
       invitation_id,
       candidate_profile_id,
-      candidate_email: legacyCandidateEmail,  // Deprecated, kept for backward compat
       candidate_name,
       company_name,
       role_title,
@@ -192,30 +190,70 @@ const handler = async (req: Request): Promise<Response> => {
       language = 'en'
     }: InvitationRequest = await req.json();
 
-    // SECURITY: P0-2 fix - Fetch email server-side instead of trusting client
-    let candidate_email = legacyCandidateEmail;
-    
-    if (candidate_profile_id && !candidate_email) {
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('email')
-        .eq('id', candidate_profile_id)
-        .single();
-      
-      if (profileError) {
-        console.warn("[send-challenge-invitation] Could not fetch candidate email:", profileError.message);
-      } else {
-        candidate_email = profileData?.email;
-      }
-    }
-
-    if (!candidate_email) {
-      console.warn("[send-challenge-invitation] No email available for candidate");
+    // SECURITY FIX: Validate required field
+    if (!candidate_profile_id) {
       return new Response(
-        JSON.stringify({ success: false, error: 'No email available' }),
-        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        JSON.stringify({ error: 'candidate_profile_id is required' }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
+
+    // SECURITY FIX: Verify invitation ownership - caller must own this invitation
+    const { data: invitation, error: invError } = await supabase
+      .from('challenge_invitations')
+      .select('candidate_profile_id, business_id, invite_token')
+      .eq('id', invitation_id)
+      .single();
+
+    if (invError || !invitation) {
+      console.error("[send-challenge-invitation] Invalid invitation:", invError?.message);
+      return new Response(
+        JSON.stringify({ error: 'Invalid invitation' }),
+        { status: 404, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Verify the invitation matches the provided profile
+    if (invitation.candidate_profile_id !== candidate_profile_id) {
+      console.error("[send-challenge-invitation] Profile mismatch");
+      return new Response(
+        JSON.stringify({ error: 'Invitation does not match candidate' }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Verify the caller owns this invitation (is the business that created it)
+    // Get business profile for current user
+    const { data: businessProfile } = await supabase
+      .from('business_profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!hasAdmin && (!businessProfile || invitation.business_id !== businessProfile.id)) {
+      console.error("[send-challenge-invitation] Not authorized to send this invitation");
+      return new Response(
+        JSON.stringify({ error: 'Not authorized to send this invitation' }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // SECURITY FIX: ALWAYS fetch email server-side - never trust client input
+    const { data: profileData, error: profileError } = await supabase
+      .from('profiles')
+      .select('email')
+      .eq('id', candidate_profile_id)
+      .single();
+
+    if (profileError || !profileData?.email) {
+      console.warn("[send-challenge-invitation] Could not fetch candidate email:", profileError?.message);
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid candidate profile or email not available' }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const candidate_email = profileData.email;
 
     console.log("[send-challenge-invitation] Processing invitation:", {
       invitation_id,
