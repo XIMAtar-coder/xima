@@ -2305,6 +2305,7 @@ export type Database = {
           hourly_rate: number | null
           id: string
           is_active: boolean | null
+          linkedin_url: string | null
           name: string
           profile_image_url: string | null
           rating: number | null
@@ -2324,6 +2325,7 @@ export type Database = {
           hourly_rate?: number | null
           id?: string
           is_active?: boolean | null
+          linkedin_url?: string | null
           name: string
           profile_image_url?: string | null
           rating?: number | null
@@ -2343,6 +2345,7 @@ export type Database = {
           hourly_rate?: number | null
           id?: string
           is_active?: boolean | null
+          linkedin_url?: string | null
           name?: string
           profile_image_url?: string | null
           rating?: number | null
@@ -3151,6 +3154,7 @@ export type Database = {
           bio: string | null
           id: string | null
           is_active: boolean | null
+          linkedin_url: string | null
           name: string | null
           profile_image_url: string | null
           rating: number | null
@@ -3163,6 +3167,7 @@ export type Database = {
           bio?: string | null
           id?: string | null
           is_active?: boolean | null
+          linkedin_url?: string | null
           name?: string | null
           profile_image_url?: string | null
           rating?: number | null
@@ -3175,6 +3180,7 @@ export type Database = {
           bio?: string | null
           id?: string | null
           is_active?: boolean | null
+          linkedin_url?: string | null
           name?: string | null
           profile_image_url?: string | null
           rating?: number | null
