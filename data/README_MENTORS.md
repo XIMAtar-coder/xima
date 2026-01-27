@@ -2,13 +2,13 @@
 
 ## Overview
 
-Mentors displayed at the **END of the candidate assessment** (post-assessment mentor selection) are fetched from:
+Mentors displayed at the **END of the candidate assessment** (XimatarJourney → ResultsComparison → FeaturedProfessionals) are fetched from:
 - **Primary**: `public.mentors` table via `recommend-mentors` edge function
-- **Fallback**: `public.mentors_public` view (for unauthenticated users)
+- **Fallback**: `public.mentors_public` view
 
 ### Key Principles
 
-- ✅ **Flexible count** — You can have 3, 5, 8, 20, or any number of mentors
+- ✅ **Flexible count** — ANY number of mentors (not fixed to 6)
 - ✅ **Database is source of truth** — No hardcoded mentors in UI
 - ✅ **Only active mentors shown** — Filter: `is_active = true`
 - ✅ **No code changes needed** — Update data via SQL only
@@ -16,23 +16,26 @@ Mentors displayed at the **END of the candidate assessment** (post-assessment me
 
 ---
 
-## Quick Start (3 Steps)
+## Quick Start (4 Steps)
 
-### Step 1: Prepare Your Data
-1. Create your mentor data following the JSON schema below
-2. Each mentor needs an `id` that **already exists** in the database
-3. Or insert new mentor rows first (see "Adding New Mentors" section)
+### Step 1: Edit JSON Data
+1. Open `data/mentors_seed.input.json`
+2. Add mentor objects to the `"mentors"` array
+3. Each mentor needs `name` and `xima_pillars` (required)
 
 ### Step 2: Upload Photos
-1. Add mentor photos to `public/avatars/` folder
+1. Upload mentor photos to `public/avatars/` folder
 2. Use format: `firstname-lastname.jpg` (lowercase, hyphenated)
-3. Recommended: **512×512px** or **800×800px**, square, JPG or WebP
+3. Recommended: **512×512px** or **800×800px**, square, JPG/WebP
 
-### Step 3: Run SQL Update
+### Step 3: Run SQL Upsert
 1. Open [Supabase SQL Editor](https://supabase.com/dashboard/project/iyckvvnecpnldrxqmzta/sql/new)
-2. Write UPDATE statements for each mentor (see `mentors_upsert.sql` template)
+2. Copy the UPSERT statement(s) from `data/mentors_upsert.sql`
 3. Run the SQL
-4. Verify with the post-update query
+
+### Step 4: Verify
+1. Check mentors with: `SELECT * FROM public.mentors WHERE is_active = true;`
+2. Complete an assessment to see mentors in the post-assessment screen
 
 ---
 
@@ -40,30 +43,32 @@ Mentors displayed at the **END of the candidate assessment** (post-assessment me
 
 | File | Purpose |
 |------|---------|
-| `mentors_seed.template.json` | Schema example with sample values |
-| `mentors_seed.input.json` | Template for your mentor data |
-| `mentors_upsert.sql` | SQL template for updates |
+| `mentors_seed.input.json` | Source of truth — your mentor data |
+| `mentors_seed.template.json` | Schema reference with examples |
+| `mentors_upsert.sql` | SQL script to run (copy to SQL Editor) |
 | `README_MENTORS.md` | This guide |
 
 ---
 
 ## JSON Schema
 
-Each mentor object must follow this structure:
+File: `data/mentors_seed.input.json`
 
 ```json
 {
-  "id": "uuid (REQUIRED — must match existing DB row)",
-  "name": "string (REQUIRED)",
-  "title": "string (optional)",
-  "bio": "string (optional)",
-  "profile_image_url": "string, e.g. /avatars/name.jpg (optional)",
-  "linkedin_url": "string, full URL (optional)",
-  "specialties": ["string array"] (REQUIRED),
-  "xima_pillars": ["string array"] (REQUIRED, see valid values),
-  "rating": "number 0.0-5.0 (optional)",
-  "experience_years": "number 0-60 (optional)",
-  "is_active": "boolean (REQUIRED, true to show)"
+  "mentors": [
+    {
+      "name": "Full Name (REQUIRED)",
+      "title": "Role / Title (optional)",
+      "bio": "Short bio text (optional)",
+      "profile_image_url": "/avatars/firstname-lastname.jpg (optional)",
+      "linkedin_url": "https://linkedin.com/in/handle (optional, used for matching)",
+      "specialties": ["tag1", "tag2"] (optional),
+      "xima_pillars": ["communication", "drive"] (REQUIRED),
+      "rating": 4.8 (optional, 0-5),
+      "is_active": true (optional, defaults to true)
+    }
+  ]
 }
 ```
 
@@ -77,87 +82,79 @@ Only these values are allowed:
 
 ---
 
+## UPSERT Matching Logic
+
+The SQL script uses this matching priority:
+
+1. **PRIMARY: `linkedin_url`** — If provided, matches on LinkedIn URL (unique index)
+2. **FALLBACK: `name`** — If no linkedin_url, matches by name (case-insensitive)
+3. **INSERT** — If no match found, creates new mentor with generated UUID
+
+This means:
+- ✅ You don't need to know existing UUIDs
+- ✅ LinkedIn URL is the safest way to identify mentors
+- ✅ New mentors are auto-inserted
+- ✅ Existing mentors are updated, not duplicated
+
+---
+
 ## Example: Adding 3 Mentors
 
 ```json
-[
-  {
-    "id": "b58d9a69-93e0-4634-bffb-48e26d4fe922",
-    "name": "Jane Doe",
-    "title": "Career Coach",
-    "bio": "Expert in leadership development with 12 years of experience.",
-    "profile_image_url": "/avatars/jane-doe.jpg",
-    "linkedin_url": "https://linkedin.com/in/janedoe",
-    "specialties": ["leadership", "communication"],
-    "xima_pillars": ["communication", "drive"],
-    "rating": 4.8,
-    "experience_years": 12,
-    "is_active": true
-  },
-  {
-    "id": "8e51d44c-b96d-42d1-ac48-823f2cb8686b",
-    "name": "John Smith",
-    "title": "Technical Mentor",
-    "bio": "Specializes in data science and analytical thinking.",
-    "profile_image_url": "/avatars/john-smith.jpg",
-    "linkedin_url": "https://linkedin.com/in/johnsmith",
-    "specialties": ["data science", "analytics"],
-    "xima_pillars": ["computational_power", "knowledge"],
-    "rating": 4.6,
-    "experience_years": 8,
-    "is_active": true
-  },
-  {
-    "id": "8f879039-36cb-4367-8064-49ba9a9fdbf2",
-    "name": "Maria Garcia",
-    "title": "Innovation Specialist",
-    "bio": "Helps professionals unlock creative problem-solving.",
-    "profile_image_url": "/avatars/maria-garcia.jpg",
-    "linkedin_url": "https://linkedin.com/in/mariagarcia",
-    "specialties": ["creativity", "innovation"],
-    "xima_pillars": ["creativity", "communication"],
-    "rating": 4.9,
-    "experience_years": 15,
-    "is_active": true
-  }
-]
+{
+  "mentors": [
+    {
+      "name": "Daniel Cracau",
+      "title": "Entrepreneur and Kindness Advocate | Ex UN staff",
+      "bio": "Enabling sustainable technologies through hard work, creativity, and win-win networking.",
+      "profile_image_url": "/avatars/daniel-cracau.jpg",
+      "linkedin_url": "https://www.linkedin.com/in/daniel-cracau/",
+      "specialties": ["Entrepreneurship", "Sustainable technologies"],
+      "xima_pillars": ["communication", "knowledge", "computational_power"],
+      "rating": 5.0,
+      "is_active": true
+    },
+    {
+      "name": "Jane Smith",
+      "title": "Leadership Coach",
+      "bio": "Expert in career transitions and executive coaching.",
+      "profile_image_url": "/avatars/jane-smith.jpg",
+      "linkedin_url": "https://linkedin.com/in/janesmith",
+      "specialties": ["Leadership", "Coaching"],
+      "xima_pillars": ["communication", "drive"],
+      "rating": 4.8,
+      "is_active": true
+    },
+    {
+      "name": "Marco Rossi",
+      "title": "Tech Advisor",
+      "bio": "CTO background, specializes in tech career paths.",
+      "profile_image_url": "/avatars/marco-rossi.jpg",
+      "linkedin_url": "https://linkedin.com/in/marcorossi",
+      "specialties": ["Technology", "Strategy"],
+      "xima_pillars": ["computational_power", "knowledge"],
+      "rating": 4.9,
+      "is_active": true
+    }
+  ]
+}
 ```
 
 ---
 
-## Adding New Mentors
-
-To add a **new mentor** (not update an existing one):
-
-1. Generate a new UUID (use [uuidgenerator.net](https://www.uuidgenerator.net/))
-2. Insert the new row first:
-
-```sql
-INSERT INTO public.mentors (id, name, is_active, specialties, xima_pillars)
-VALUES (
-  'YOUR_NEW_UUID_HERE',
-  'New Mentor Name',
-  true,
-  ARRAY['specialty1'],
-  ARRAY['communication']
-);
-```
-
-3. Then update with full data using the standard UPDATE statement
-
----
-
-## Hiding Mentors
+## Hiding/Removing Mentors
 
 To **hide a mentor** without deleting:
 
 ```sql
 UPDATE public.mentors 
 SET is_active = false, updated_at = now()
-WHERE id = 'MENTOR_UUID_HERE';
+WHERE linkedin_url = 'https://linkedin.com/in/mentor-to-hide';
+-- OR
+WHERE LOWER(name) = LOWER('Mentor Name');
 ```
 
-The mentor will no longer appear in the assessment results but data is preserved.
+The mentor will no longer appear but data is preserved.
 
 ---
 
@@ -176,12 +173,11 @@ The mentor will no longer appear in the assessment results but data is preserved
 ## Validation Checklist
 
 Before running SQL:
-- [ ] All `id` values match existing DB rows (or insert new ones first)
-- [ ] `name` is filled for each mentor
-- [ ] `specialties` is a non-empty array
-- [ ] `xima_pillars` contains only valid values (see list above)
-- [ ] `rating` is between 0.0 and 5.0 (or null)
-- [ ] Photo files exist at the specified paths
+- [ ] JSON is valid (use jsonlint.com to check)
+- [ ] Every mentor has `name` (required)
+- [ ] Every mentor has `xima_pillars` array with valid values
+- [ ] `rating` is between 0.0 and 5.0 (or omit)
+- [ ] Photo files exist at specified paths
 - [ ] `is_active = true` for mentors you want displayed
 
 ---
@@ -198,7 +194,7 @@ The `mentors_public` view exposes only safe fields:
 
 ### Check current mentors:
 ```sql
-SELECT id, name, is_active, updated_at 
+SELECT id, name, linkedin_url, is_active, updated_at 
 FROM public.mentors 
 ORDER BY name;
 ```
@@ -222,11 +218,17 @@ WHERE NOT (
 
 ---
 
-## Dry Run
+## Troubleshooting
 
-**Always test with ONE mentor first before updating all.**
+**Mentor not appearing?**
+1. Check `is_active = true`
+2. Verify photo path exists
+3. Confirm `xima_pillars` are valid
 
-1. Run preflight check
-2. Update 1 mentor
-3. Verify in SQL and in the assessment flow
-4. Then update the rest
+**Duplicate mentor created?**
+- Use `linkedin_url` for reliable matching
+- Check for typos in LinkedIn URL
+
+**SQL error on upsert?**
+- Ensure `linkedin_url` is unique per mentor
+- Validate JSON arrays are properly formatted

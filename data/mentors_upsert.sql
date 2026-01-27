@@ -1,109 +1,149 @@
--- ============================================================
--- MENTOR DATA UPSERT SCRIPT
--- ============================================================
--- 
--- HOW TO USE:
--- 1. Fill data/mentors_seed.input.json with real mentor data
--- 2. Generate UPDATE statements from your JSON (one per mentor)
--- 3. Run in Supabase SQL Editor: https://supabase.com/dashboard/project/iyckvvnecpnldrxqmzta/sql/new
---
--- IMPORTANT RULES:
--- - This script only UPDATES existing mentor rows (no INSERT)
--- - IDs MUST already exist in the database
--- - Mentor count is FLEXIBLE — add/remove UPDATE blocks as needed
--- - Mentors NOT included in this script remain unchanged
--- - Set is_active = false to hide a mentor (do NOT delete rows)
--- ============================================================
+-- =============================================================
+-- MENTOR UPSERT SCRIPT
+-- =============================================================
+-- This script updates/inserts mentors from data/mentors_seed.input.json
+-- Run in Supabase SQL Editor: https://supabase.com/dashboard/project/iyckvvnecpnldrxqmzta/sql/new
+-- =============================================================
 
--- ============================================================
--- PREFLIGHT CHECK (run first to see current mentors)
--- ============================================================
-SELECT id, name, is_active, updated_at 
+-- =============================================================
+-- STEP 1: PREFLIGHT VALIDATION QUERIES
+-- Run these FIRST to understand current state
+-- =============================================================
+
+-- 1a. List all current mentors
+SELECT id, name, linkedin_url, is_active, updated_at 
 FROM public.mentors 
 ORDER BY name;
 
--- ============================================================
--- VALIDATION: Check pillar values are valid
--- ============================================================
--- Valid xima_pillars: computational_power, communication, knowledge, creativity, drive
--- Run AFTER updates to verify:
-/*
+-- 1b. Count active vs inactive
+SELECT 
+  COUNT(*) FILTER (WHERE is_active = true) as active_count,
+  COUNT(*) FILTER (WHERE is_active = false) as inactive_count,
+  COUNT(*) as total_count
+FROM public.mentors;
+
+-- 1c. Validate existing pillar values (should return 0 rows)
 SELECT id, name, xima_pillars
 FROM public.mentors
 WHERE NOT (
   xima_pillars <@ ARRAY['computational_power', 'communication', 'knowledge', 'creativity', 'drive']::text[]
 );
--- Should return 0 rows if all pillars are valid
-*/
 
--- ============================================================
--- UPDATE TEMPLATE (copy this block for each mentor)
--- ============================================================
--- Replace placeholders with real values from your JSON.
--- Add as many blocks as you have mentors — no fixed count.
--- 
--- CRITICAL: The WHERE clause ID must match an existing row.
--- If the ID doesn't exist, the statement will update 0 rows (safe fail).
+-- =============================================================
+-- STEP 2: UPSERT MENTORS
+-- Matching logic:
+--   1. PRIMARY: linkedin_url (when not null)
+--   2. FALLBACK: name (case-insensitive) if linkedin_url not present
+-- =============================================================
 
-/*
-UPDATE public.mentors SET
-  name = 'Full Name',
-  title = 'Role / Title',
-  bio = 'Biography text here',
-  profile_image_url = '/avatars/firstname-lastname.jpg',
-  linkedin_url = 'https://linkedin.com/in/handle',
-  specialties = ARRAY['specialty1', 'specialty2'],
-  xima_pillars = ARRAY['communication', 'drive', 'knowledge'],
-  rating = 4.5,
-  experience_years = 10,
-  is_active = true,
-  updated_at = now()
-WHERE id = 'EXISTING_UUID_FROM_DB';
-*/
+-- -------------------------------------------------------------
+-- MENTOR: Daniel Cracau
+-- Match: linkedin_url = 'https://www.linkedin.com/in/daniel-cracau/'
+-- -------------------------------------------------------------
+INSERT INTO public.mentors (
+  id, name, title, bio, profile_image_url, linkedin_url,
+  specialties, xima_pillars, rating, is_active, updated_at
+)
+VALUES (
+  gen_random_uuid(),
+  'Daniel Cracau',
+  'Entrepreneur and Kindness Advocate | Ex UN staff',
+  'Enabling sustainable technologies through hard work, creativity, and win-win networking. Location: Linz, Upper Austria, Austria.',
+  '/avatars/daniel-cracau.jpg',
+  'https://www.linkedin.com/in/daniel-cracau/',
+  ARRAY['Entrepreneurship', 'Sustainable technologies', 'Win-win networking', 'Kindness leadership'],
+  ARRAY['communication', 'knowledge', 'computational_power'],
+  5.0,
+  true,
+  now()
+)
+ON CONFLICT (linkedin_url) WHERE linkedin_url IS NOT NULL
+DO UPDATE SET
+  name = EXCLUDED.name,
+  title = EXCLUDED.title,
+  bio = EXCLUDED.bio,
+  profile_image_url = EXCLUDED.profile_image_url,
+  specialties = EXCLUDED.specialties,
+  xima_pillars = EXCLUDED.xima_pillars,
+  rating = EXCLUDED.rating,
+  is_active = EXCLUDED.is_active,
+  updated_at = now();
 
--- ============================================================
--- YOUR MENTOR UPDATES (paste real values below)
--- ============================================================
+-- =============================================================
+-- TEMPLATE: Add more mentors below (copy and modify)
+-- =============================================================
 
--- MENTOR 1 (example — replace with real data)
+-- -------------------------------------------------------------
+-- MENTOR: [Name Here]
+-- Match: linkedin_url = '[LinkedIn URL]'
+-- -------------------------------------------------------------
+-- INSERT INTO public.mentors (
+--   id, name, title, bio, profile_image_url, linkedin_url,
+--   specialties, xima_pillars, rating, is_active, updated_at
+-- )
+-- VALUES (
+--   gen_random_uuid(),
+--   '[Full Name]',
+--   '[Title/Role]',
+--   '[Bio text...]',
+--   '/avatars/[filename].jpg',
+--   '[LinkedIn URL]',
+--   ARRAY['Specialty1', 'Specialty2'],
+--   ARRAY['communication', 'knowledge'],  -- Valid: computational_power, communication, knowledge, creativity, drive
+--   4.5,
+--   true,
+--   now()
+-- )
+-- ON CONFLICT (linkedin_url) WHERE linkedin_url IS NOT NULL
+-- DO UPDATE SET
+--   name = EXCLUDED.name,
+--   title = EXCLUDED.title,
+--   bio = EXCLUDED.bio,
+--   profile_image_url = EXCLUDED.profile_image_url,
+--   specialties = EXCLUDED.specialties,
+--   xima_pillars = EXCLUDED.xima_pillars,
+--   rating = EXCLUDED.rating,
+--   is_active = EXCLUDED.is_active,
+--   updated_at = now();
+
+-- =============================================================
+-- FALLBACK: For mentors WITHOUT linkedin_url (match by name)
+-- =============================================================
+-- Use this pattern when linkedin_url is not available:
+--
 -- UPDATE public.mentors SET
---   name = 'Jane Doe',
---   title = 'Career Coach',
---   bio = 'Expert in leadership and communication skills.',
---   profile_image_url = '/avatars/jane-doe.jpg',
---   linkedin_url = 'https://linkedin.com/in/janedoe',
---   specialties = ARRAY['leadership', 'communication'],
---   xima_pillars = ARRAY['communication', 'drive'],
---   rating = 4.8,
---   experience_years = 12,
+--   title = '[Title]',
+--   bio = '[Bio]',
+--   profile_image_url = '/avatars/[filename].jpg',
+--   specialties = ARRAY['Specialty1'],
+--   xima_pillars = ARRAY['communication'],
+--   rating = 4.5,
 --   is_active = true,
 --   updated_at = now()
--- WHERE id = 'b58d9a69-93e0-4634-bffb-48e26d4fe922';
+-- WHERE LOWER(name) = LOWER('[Mentor Name]');
+--
+-- If no match, INSERT manually:
+-- INSERT INTO public.mentors (id, name, ...) VALUES (gen_random_uuid(), ...);
 
--- MENTOR 2 (add more blocks as needed)
--- UPDATE public.mentors SET ...
--- WHERE id = '...';
+-- =============================================================
+-- STEP 3: POST-UPSERT VERIFICATION
+-- =============================================================
 
--- ============================================================
--- POST-UPDATE VERIFICATION
--- ============================================================
--- Run after updates to confirm data:
-
-SELECT id, name, title, rating, is_active, 
-       array_length(specialties, 1) as specialty_count,
-       array_length(xima_pillars, 1) as pillar_count,
-       updated_at 
+-- 3a. Verify all active mentors
+SELECT id, name, title, linkedin_url, is_active, updated_at 
 FROM public.mentors 
 WHERE is_active = true
-ORDER BY rating DESC NULLS LAST;
+ORDER BY updated_at DESC;
 
--- Check for missing required fields:
-SELECT id, name,
-  CASE WHEN name IS NULL OR name = '' THEN 'MISSING NAME' END as issue
-FROM public.mentors
-WHERE is_active = true AND (name IS NULL OR name = '');
-
--- Count active mentors:
+-- 3b. Final count
 SELECT COUNT(*) as active_mentor_count 
 FROM public.mentors 
 WHERE is_active = true;
+
+-- 3c. Validate all pillars are valid
+SELECT id, name, xima_pillars
+FROM public.mentors
+WHERE NOT (
+  xima_pillars <@ ARRAY['computational_power', 'communication', 'knowledge', 'creativity', 'drive']::text[]
+);
+-- Should return 0 rows
