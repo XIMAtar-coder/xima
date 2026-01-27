@@ -3966,8 +3966,53 @@
     "cancel": "Cancel"
   },
   "legal": {
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "privacy": {
+      "title": "Privacy Policy",
+      "last_updated": "Last updated",
+      "intro": "At XIMA S.r.l., we are committed to protecting your privacy and personal data. This Privacy Policy explains how we collect, use, store, and protect your information when you use our platform. By using XIMA, you consent to the practices described in this policy.",
+      "data_collection_title": "Data We Collect",
+      "data_collection_content": "We collect the following types of personal data:\n\n• Account information: email address, name, and profile details you provide during registration\n• Professional data: CV uploads, assessment responses, and career preferences\n• Usage data: how you interact with our platform, including pages visited and features used\n• Technical data: device information, IP address, and browser type for security and optimization purposes\n\nAll data is collected with your explicit consent and is necessary for providing our services.",
+      "data_usage_title": "How We Use Your Data",
+      "data_usage_content": "Your data is used for the following purposes:\n\n• Creating and maintaining your XIMAtar professional profile\n• AI-powered assessment analysis to provide personalized insights\n• Matching you with relevant career opportunities and challenges\n• Facilitating communication between candidates, businesses, and mentors\n• Improving our platform and developing new features\n• Complying with legal obligations and preventing fraud\n\nWe use automated decision-making (profiling) to generate your XIMAtar archetype. You can object to this processing at any time through your account settings.",
+      "data_security_title": "Data Security",
+      "data_security_content": "We implement industry-standard security measures to protect your data:\n\n• Encryption of data in transit (TLS/SSL) and at rest\n• Secure cloud infrastructure hosted in EU data centers\n• Row-level security ensuring users can only access their own data\n• Regular security audits and vulnerability assessments\n• Strict access controls for our team members\n\nDespite our best efforts, no system is 100% secure. We encourage you to use strong passwords and keep your account credentials confidential.",
+      "your_rights_title": "Your Rights (GDPR)",
+      "your_rights_content": "Under the General Data Protection Regulation (GDPR), you have the following rights:\n\n• Right of Access: Request a copy of all personal data we hold about you\n• Right to Rectification: Correct any inaccurate or incomplete data\n• Right to Erasure: Request deletion of your personal data ('right to be forgotten')\n• Right to Restriction: Limit how we process your data in certain circumstances\n• Right to Data Portability: Receive your data in a structured, machine-readable format\n• Right to Object: Object to automated profiling and direct marketing\n• Right to Withdraw Consent: Withdraw consent at any time without affecting prior processing\n\nTo exercise any of these rights, contact our Data Protection Officer at privacy@xima.app.",
+      "contact_title": "Contact Information",
+      "contact_content": "For any privacy-related inquiries or to exercise your rights, please contact:\n\nXIMA S.r.l.\nVia Torino, 2\n20123 Milano (MI), Italia\n\nData Protection Officer: privacy@xima.app\nGeneral inquiries: info@xima.app\n\nYou also have the right to lodge a complaint with the Italian Data Protection Authority (Garante per la protezione dei dati personali) if you believe your rights have been violated."
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "last_updated": "Last updated",
+      "intro": "Welcome to XIMA. These Terms of Service govern your access to and use of the XIMA platform operated by XIMA S.r.l. By registering for an account or using our services, you agree to be bound by these terms. Please read them carefully.",
+      "acceptance_title": "Acceptance of Terms",
+      "acceptance_content": "By creating an account or accessing XIMA, you confirm that:\n\n• You are at least 18 years old or have parental consent\n• You have read and understood these Terms of Service\n• You agree to be bound by these terms and our Privacy Policy\n• The information you provide is accurate and complete\n\nIf you do not agree to these terms, please do not use our platform.",
+      "services_title": "Our Services",
+      "services_content": "XIMA provides a professional assessment and matching platform that includes:\n\n• XIMAtar Assessment: AI-powered evaluation of your professional profile across five pillars (Computational Power, Communication, Knowledge, Creativity, Drive)\n• Career Matching: Connection with businesses seeking candidates that match your profile\n• Challenge System: Structured challenges to demonstrate your capabilities to potential employers\n• Mentor Network: Access to professional mentors for career guidance\n• Feed & Communication: Tools to engage with opportunities and communicate with businesses\n\nWe reserve the right to modify, suspend, or discontinue any part of our services with reasonable notice.",
+      "user_obligations_title": "User Obligations",
+      "user_obligations_content": "When using XIMA, you agree to:\n\n• Provide accurate and truthful information in your profile and assessments\n• Keep your account credentials secure and not share them with others\n• Not attempt to manipulate assessment results or submit false information\n• Respect other users and maintain professional conduct in all communications\n• Not use the platform for any unlawful purpose or to harass others\n• Not attempt to reverse-engineer, scrape, or interfere with the platform\n\nViolation of these obligations may result in account suspension or termination.",
+      "liability_title": "Limitation of Liability",
+      "liability_content": "To the fullest extent permitted by law:\n\n• XIMA provides services 'as is' without warranties of any kind\n• We do not guarantee employment outcomes or business results\n• We are not responsible for decisions made by third parties based on your profile\n• Our liability is limited to direct damages up to the amount you paid us (if any) in the past 12 months\n• We are not liable for indirect, consequential, or punitive damages\n\nNothing in these terms limits our liability for fraud, gross negligence, or matters that cannot be excluded by law.",
+      "termination_title": "Account Termination",
+      "termination_content": "You may delete your account at any time through your account settings. Upon deletion:\n\n• Your profile and personal data will be permanently removed\n• Assessment results and XIMAtar profile will be deleted\n• Challenge submissions will be anonymized\n• Chat messages will be anonymized\n\nWe may suspend or terminate accounts that violate these terms or engage in fraudulent activity. We will provide notice when reasonably possible.",
+      "changes_title": "Changes to These Terms",
+      "changes_content": "We may update these Terms of Service from time to time to reflect changes in our services or legal requirements. When we make material changes:\n\n• We will notify you via email or in-app notification\n• The updated terms will be posted with a new 'Last updated' date\n• Continued use of XIMA after changes take effect constitutes acceptance\n\nFor questions about these terms, contact us at info@xima.app."
+    },
     "imprint": {
+      "title": "Legal Notice",
+      "subtitle": "Company information and legal disclosures as required by EU regulations",
+      "company_info": "Company Information",
+      "contact": "Contact",
+      "representative": "Legal Representative",
+      "registration": "Registration",
+      "vat": "VAT Number",
+      "rea": "REA Number",
+      "share_capital": "Share Capital",
       "registered_at": "Registered at",
+      "dpo_title": "Data Protection Officer",
+      "dpo_info": "For any privacy-related inquiries, data access requests, or to exercise your GDPR rights, please contact our Data Protection Officer:",
       "last_updated": "Last updated"
     }
   }

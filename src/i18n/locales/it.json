@@ -3738,8 +3738,53 @@
     "cancel": "Annulla"
   },
   "legal": {
+    "privacyPolicy": "Informativa Privacy",
+    "termsOfService": "Termini di Servizio",
+    "privacy": {
+      "title": "Informativa sulla Privacy",
+      "last_updated": "Ultimo aggiornamento",
+      "intro": "XIMA S.r.l. si impegna a proteggere la tua privacy e i tuoi dati personali. Questa Informativa sulla Privacy spiega come raccogliamo, utilizziamo, conserviamo e proteggiamo le tue informazioni quando utilizzi la nostra piattaforma. Utilizzando XIMA, acconsenti alle pratiche descritte in questa informativa.",
+      "data_collection_title": "Dati che Raccogliamo",
+      "data_collection_content": "Raccogliamo i seguenti tipi di dati personali:\n\n• Informazioni dell'account: indirizzo email, nome e dettagli del profilo forniti durante la registrazione\n• Dati professionali: caricamenti di CV, risposte alle valutazioni e preferenze di carriera\n• Dati di utilizzo: come interagisci con la nostra piattaforma, incluse le pagine visitate e le funzionalità utilizzate\n• Dati tecnici: informazioni sul dispositivo, indirizzo IP e tipo di browser per scopi di sicurezza e ottimizzazione\n\nTutti i dati sono raccolti con il tuo consenso esplicito e sono necessari per fornire i nostri servizi.",
+      "data_usage_title": "Come Utilizziamo i Tuoi Dati",
+      "data_usage_content": "I tuoi dati sono utilizzati per le seguenti finalità:\n\n• Creare e mantenere il tuo profilo professionale XIMAtar\n• Analisi delle valutazioni basata su IA per fornire approfondimenti personalizzati\n• Abbinarti con opportunità di carriera e sfide pertinenti\n• Facilitare la comunicazione tra candidati, aziende e mentor\n• Migliorare la nostra piattaforma e sviluppare nuove funzionalità\n• Rispettare gli obblighi legali e prevenire frodi\n\nUtilizziamo processi decisionali automatizzati (profilazione) per generare il tuo archetipo XIMAtar. Puoi opporti a questo trattamento in qualsiasi momento attraverso le impostazioni del tuo account.",
+      "data_security_title": "Sicurezza dei Dati",
+      "data_security_content": "Implementiamo misure di sicurezza standard del settore per proteggere i tuoi dati:\n\n• Crittografia dei dati in transito (TLS/SSL) e a riposo\n• Infrastruttura cloud sicura ospitata in data center UE\n• Sicurezza a livello di riga che garantisce che gli utenti possano accedere solo ai propri dati\n• Audit di sicurezza regolari e valutazioni delle vulnerabilità\n• Controlli di accesso rigorosi per i membri del nostro team\n\nNonostante i nostri migliori sforzi, nessun sistema è sicuro al 100%. Ti incoraggiamo a utilizzare password forti e a mantenere riservate le credenziali del tuo account.",
+      "your_rights_title": "I Tuoi Diritti (GDPR)",
+      "your_rights_content": "Ai sensi del Regolamento Generale sulla Protezione dei Dati (GDPR), hai i seguenti diritti:\n\n• Diritto di Accesso: Richiedere una copia di tutti i dati personali che conserviamo su di te\n• Diritto di Rettifica: Correggere eventuali dati inesatti o incompleti\n• Diritto alla Cancellazione: Richiedere la cancellazione dei tuoi dati personali ('diritto all'oblio')\n• Diritto alla Limitazione: Limitare il modo in cui trattiamo i tuoi dati in determinate circostanze\n• Diritto alla Portabilità: Ricevere i tuoi dati in un formato strutturato e leggibile da dispositivo automatico\n• Diritto di Opposizione: Opporsi alla profilazione automatizzata e al marketing diretto\n• Diritto di Revoca del Consenso: Revocare il consenso in qualsiasi momento senza pregiudicare il trattamento precedente\n\nPer esercitare uno qualsiasi di questi diritti, contatta il nostro Responsabile della Protezione dei Dati all'indirizzo privacy@xima.app.",
+      "contact_title": "Informazioni di Contatto",
+      "contact_content": "Per qualsiasi richiesta relativa alla privacy o per esercitare i tuoi diritti, contatta:\n\nXIMA S.r.l.\nVia Torino, 2\n20123 Milano (MI), Italia\n\nResponsabile della Protezione dei Dati: privacy@xima.app\nRichieste generali: info@xima.app\n\nHai anche il diritto di presentare un reclamo al Garante per la protezione dei dati personali se ritieni che i tuoi diritti siano stati violati."
+    },
+    "terms": {
+      "title": "Termini di Servizio",
+      "last_updated": "Ultimo aggiornamento",
+      "intro": "Benvenuto su XIMA. Questi Termini di Servizio regolano il tuo accesso e utilizzo della piattaforma XIMA gestita da XIMA S.r.l. Registrando un account o utilizzando i nostri servizi, accetti di essere vincolato da questi termini. Ti preghiamo di leggerli attentamente.",
+      "acceptance_title": "Accettazione dei Termini",
+      "acceptance_content": "Creando un account o accedendo a XIMA, confermi che:\n\n• Hai almeno 18 anni o hai il consenso dei genitori\n• Hai letto e compreso questi Termini di Servizio\n• Accetti di essere vincolato da questi termini e dalla nostra Informativa sulla Privacy\n• Le informazioni che fornisci sono accurate e complete\n\nSe non accetti questi termini, ti preghiamo di non utilizzare la nostra piattaforma.",
+      "services_title": "I Nostri Servizi",
+      "services_content": "XIMA fornisce una piattaforma di valutazione professionale e matching che include:\n\n• Valutazione XIMAtar: valutazione basata su IA del tuo profilo professionale attraverso cinque pilastri (Potenza Computazionale, Comunicazione, Conoscenza, Creatività, Spinta)\n• Career Matching: connessione con aziende che cercano candidati corrispondenti al tuo profilo\n• Sistema di Challenge: sfide strutturate per dimostrare le tue capacità a potenziali datori di lavoro\n• Network di Mentor: accesso a mentor professionisti per orientamento professionale\n• Feed e Comunicazione: strumenti per interagire con le opportunità e comunicare con le aziende\n\nCi riserviamo il diritto di modificare, sospendere o interrompere qualsiasi parte dei nostri servizi con ragionevole preavviso.",
+      "user_obligations_title": "Obblighi dell'Utente",
+      "user_obligations_content": "Utilizzando XIMA, accetti di:\n\n• Fornire informazioni accurate e veritiere nel tuo profilo e nelle valutazioni\n• Mantenere sicure le credenziali del tuo account e non condividerle con altri\n• Non tentare di manipolare i risultati delle valutazioni o inviare informazioni false\n• Rispettare gli altri utenti e mantenere una condotta professionale in tutte le comunicazioni\n• Non utilizzare la piattaforma per scopi illeciti o per molestare altri\n• Non tentare di decompilare, estrarre dati o interferire con la piattaforma\n\nLa violazione di questi obblighi può comportare la sospensione o la chiusura dell'account.",
+      "liability_title": "Limitazione di Responsabilità",
+      "liability_content": "Nella misura massima consentita dalla legge:\n\n• XIMA fornisce servizi 'così come sono' senza garanzie di alcun tipo\n• Non garantiamo risultati occupazionali o commerciali\n• Non siamo responsabili delle decisioni prese da terzi in base al tuo profilo\n• La nostra responsabilità è limitata ai danni diretti fino all'importo che ci hai pagato (se presente) negli ultimi 12 mesi\n• Non siamo responsabili per danni indiretti, consequenziali o punitivi\n\nNulla in questi termini limita la nostra responsabilità per frode, colpa grave o questioni che non possono essere escluse per legge.",
+      "termination_title": "Chiusura dell'Account",
+      "termination_content": "Puoi eliminare il tuo account in qualsiasi momento attraverso le impostazioni dell'account. Al momento dell'eliminazione:\n\n• Il tuo profilo e i dati personali saranno rimossi permanentemente\n• I risultati delle valutazioni e il profilo XIMAtar saranno eliminati\n• Le sottomissioni alle challenge saranno anonimizzate\n• I messaggi della chat saranno anonimizzati\n\nPotremmo sospendere o chiudere gli account che violano questi termini o si impegnano in attività fraudolente. Forniremo un preavviso quando ragionevolmente possibile.",
+      "changes_title": "Modifiche a Questi Termini",
+      "changes_content": "Potremmo aggiornare questi Termini di Servizio di tanto in tanto per riflettere cambiamenti nei nostri servizi o requisiti legali. Quando apportiamo modifiche sostanziali:\n\n• Ti informeremo via email o notifica in-app\n• I termini aggiornati saranno pubblicati con una nuova data di 'Ultimo aggiornamento'\n• L'uso continuato di XIMA dopo l'entrata in vigore delle modifiche costituisce accettazione\n\nPer domande su questi termini, contattaci all'indirizzo info@xima.app."
+    },
     "imprint": {
+      "title": "Note Legali",
+      "subtitle": "Informazioni aziendali e divulgazioni legali come richiesto dalle normative UE",
+      "company_info": "Informazioni Aziendali",
+      "contact": "Contatti",
+      "representative": "Rappresentante Legale",
+      "registration": "Registrazione",
+      "vat": "Partita IVA",
+      "rea": "Numero REA",
+      "share_capital": "Capitale Sociale",
       "registered_at": "Registrato presso",
+      "dpo_title": "Responsabile della Protezione dei Dati",
+      "dpo_info": "Per qualsiasi richiesta relativa alla privacy, richieste di accesso ai dati o per esercitare i tuoi diritti GDPR, contatta il nostro Responsabile della Protezione dei Dati:",
       "last_updated": "Ultimo aggiornamento"
     }
   }
