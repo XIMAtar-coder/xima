@@ -2302,6 +2302,7 @@ export type Database = {
           company: string | null
           created_at: string
           experience_years: number | null
+          first_session_expectations: string | null
           hourly_rate: number | null
           id: string
           is_active: boolean | null
@@ -2322,6 +2323,7 @@ export type Database = {
           company?: string | null
           created_at?: string
           experience_years?: number | null
+          first_session_expectations?: string | null
           hourly_rate?: number | null
           id?: string
           is_active?: boolean | null
@@ -2342,6 +2344,7 @@ export type Database = {
           company?: string | null
           created_at?: string
           experience_years?: number | null
+          first_session_expectations?: string | null
           hourly_rate?: number | null
           id?: string
           is_active?: boolean | null
