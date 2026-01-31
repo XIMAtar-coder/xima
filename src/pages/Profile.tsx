@@ -10,6 +10,7 @@ import { useUser } from '@/context/UserContext';
 import { useProfileData } from '@/hooks/useProfileData';
 import { XimatarProfileCard } from '@/components/results/XimatarProfileCard';
 import { MentorSection } from '@/components/profile/MentorSection';
+import { MentorAvailabilityReadOnly } from '@/components/profile/MentorAvailabilityReadOnly';
 
 import { PillarRadarChart } from '@/components/profile/PillarRadarChart';
 import { XimatarHeroCard } from '@/components/profile/XimatarHeroCard';
@@ -216,11 +217,19 @@ const Profile = () => {
 
             {/* Right Column */}
             <div className="space-y-6">
-              {/* Mentor Section - Always show */}
+              {/* Mentor Section - Shows mentor info */}
               <MentorSection 
                 mentor={profileData.mentor_profile} 
                 onBookingSuccess={handleMentorBookingSuccess}
               />
+
+              {/* Read-only Availability View */}
+              {profileData.mentor_profile && (
+                <MentorAvailabilityReadOnly 
+                  mentorId={(profileData.mentor_profile as any)?.id}
+                  mentorName={(profileData.mentor_profile as any)?.name || (profileData.mentor_profile as any)?.full_name}
+                />
+              )}
 
 
               {/* CV Analysis */}
