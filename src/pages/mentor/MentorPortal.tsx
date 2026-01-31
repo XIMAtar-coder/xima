@@ -150,6 +150,22 @@ export default function MentorPortal() {
 
         {/* Action Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Calendar & Sessions - now primary */}
+          <Card 
+            className="cursor-pointer hover:border-primary/50 transition-colors group border-2 border-primary/20"
+            onClick={() => navigate('/mentor/calendar')}
+          >
+            <CardContent className="pt-6 text-center">
+              <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
+                <CalendarClock className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-semibold">{t('mentor.action_calendar', 'Calendar & Sessions')}</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                {t('mentor.action_calendar_desc', 'Manage availability and review requests')}
+              </p>
+            </CardContent>
+          </Card>
+
           {/* Edit Profile */}
           <Card 
             className="cursor-pointer hover:border-primary/50 transition-colors group"
@@ -178,22 +194,6 @@ export default function MentorPortal() {
               <h3 className="font-semibold">{t('mentor.action_preview', 'Preview as Candidate')}</h3>
               <p className="text-sm text-muted-foreground mt-1">
                 {t('mentor.action_preview_desc', 'See how candidates view your profile')}
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Sessions */}
-          <Card 
-            className="cursor-pointer hover:border-primary/50 transition-colors group"
-            onClick={() => navigate('/mentor/sessions')}
-          >
-            <CardContent className="pt-6 text-center">
-              <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
-                <CalendarClock className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold">{t('mentor.action_sessions', 'Sessions')}</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                {t('mentor.action_sessions_desc', 'View and manage coaching sessions')}
               </p>
             </CardContent>
           </Card>

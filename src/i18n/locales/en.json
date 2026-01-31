@@ -27,7 +27,12 @@
     "session_scheduled": "Your session is scheduled.",
     "view_session_details": "View details",
     "free_intro_completed": "Free intro session completed",
-    "paid_sessions_coming": "Paid sessions will be available soon."
+    "paid_sessions_coming": "Paid sessions will be available soon.",
+    "session_ready": "Your session is confirmed and ready.",
+    "session_declined": "Your mentor was unable to accept this request.",
+    "join_session": "Join Session",
+    "opens_10_min_before": "Room opens 10 minutes before the session",
+    "try_another_slot": "Try another slot"
   },
   "sessions": {
     "session_not_found": "Session not found",
@@ -44,13 +49,38 @@
     "mentor_will_confirm": "Your mentor will review and confirm this session request. You'll receive an update when they respond.",
     "session_confirmed": "Session confirmed!",
     "prepare_for_session": "Your session is confirmed. Prepare any questions you'd like to discuss with your mentor.",
+    "ready_to_join": "Your session is ready. Click the button below to join.",
+    "session_ended_msg": "This session has ended.",
+    "join_session": "Join Session",
+    "opens_10_min_before": "Room opens 10 minutes before the session",
+    "session_rejected": "Session declined",
+    "mentor_rejected": "Your mentor was unable to accept this session request.",
+    "session_cancelled": "Session cancelled",
+    "session_was_cancelled": "This session has been cancelled.",
+    "book_new": "Book a new session",
     "shared_notes": "Notes",
     "cancel_session": "Cancel Session",
     "confirm_cancel": "Cancel Session?",
     "cancel_warning": "Are you sure you want to cancel this session? This action cannot be undone.",
     "cancelled": "Session Cancelled",
     "cancelled_desc": "Your session has been cancelled.",
-    "free": "Free"
+    "free": "Free",
+    "not_confirmed": "Session Not Confirmed",
+    "must_be_confirmed": "The session must be confirmed before joining.",
+    "too_early": "Room opens 10 minutes before the session starts.",
+    "session_ended": "This session has ended.",
+    "room_not_available": "Room Not Available",
+    "scheduled_for": "Session scheduled for:",
+    "view_details": "View Session Details",
+    "access_denied": "Access Denied",
+    "not_participant": "You are not a participant in this session.",
+    "exit_room": "Exit Room",
+    "live": "Live",
+    "video_call": "Video Call"
+  },
+  "mentor": {
+    "action_calendar": "Calendar & Sessions",
+    "action_calendar_desc": "Manage availability and review requests"
   },
   "xima_core": {
     "page_subtitle": "A standardized decision-making instrument with AI-personalized scenario",

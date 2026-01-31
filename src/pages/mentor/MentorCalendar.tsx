@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   ArrowLeft, Calendar as CalendarIcon, Clock, Plus, User, 
-  Check, X, Ban, RefreshCw, Trash2, ChevronRight
+  Check, X, Ban, RefreshCw, Trash2, ChevronRight, Video
 } from 'lucide-react';
 import NotAMentor from './NotAMentor';
 
@@ -131,8 +131,22 @@ export default function MentorCalendar() {
     });
   };
 
+  // Check if session is joinable (10 min before to 60 min after start)
+  const isSessionJoinable = (session: MentorSession): boolean => {
+    if (session.status !== 'confirmed') return false;
+    const now = new Date();
+    const startsAt = parseISO(session.starts_at);
+    const windowStart = addDays(startsAt, -1); // subMinutes doesn't exist, use manual calc
+    const windowEnd = addDays(startsAt, 1);
+    // Simple check: is the session today or in the near future?
+    const tenMinBefore = new Date(startsAt.getTime() - 10 * 60 * 1000);
+    const sixtyMinAfter = new Date(startsAt.getTime() + 60 * 60 * 1000);
+    return now >= tenMinBefore && now <= sixtyMinAfter;
+  };
+
   const SessionCard = ({ session }: { session: MentorSession }) => {
     const statusBadge = STATUS_BADGES[session.status] || STATUS_BADGES.requested;
+    const joinable = isSessionJoinable(session);
     
     return (
       <Card className="hover:border-primary/30 transition-colors">
@@ -167,6 +181,17 @@ export default function MentorCalendar() {
               )}
               {session.status === 'confirmed' && (
                 <>
+                  {joinable && (
+                    <Button 
+                      size="sm" 
+                      variant="default"
+                      onClick={() => navigate(`/sessions/${session.id}/room`)}
+                      className="gap-1"
+                    >
+                      <Video className="h-4 w-4" />
+                      Join
+                    </Button>
+                  )}
                   <Button size="sm" variant="outline" onClick={() => completeSession(session.id)}>
                     <Check className="h-4 w-4 mr-1" />
                     Done

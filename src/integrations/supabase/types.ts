@@ -2520,6 +2520,10 @@ export type Database = {
           status: string
           title: string | null
           updated_at: string
+          video_provider: string | null
+          video_room_created_at: string | null
+          video_room_name: string | null
+          video_room_url: string | null
         }
         Insert: {
           availability_slot_id?: string | null
@@ -2538,6 +2542,10 @@ export type Database = {
           status?: string
           title?: string | null
           updated_at?: string
+          video_provider?: string | null
+          video_room_created_at?: string | null
+          video_room_name?: string | null
+          video_room_url?: string | null
         }
         Update: {
           availability_slot_id?: string | null
@@ -2556,6 +2564,10 @@ export type Database = {
           status?: string
           title?: string | null
           updated_at?: string
+          video_provider?: string | null
+          video_room_created_at?: string | null
+          video_room_name?: string | null
+          video_room_url?: string | null
         }
         Relationships: [
           {

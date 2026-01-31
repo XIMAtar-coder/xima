@@ -334,32 +334,37 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                 <div className="flex items-center space-x-6 animate-[fade-in_0.5s_ease-out]">
                   {/* Navigation Links */}
                   <div className="hidden md:flex items-center space-x-6">
-                    <button 
-                      onClick={() => navigate('/profile')}
-                      className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
-                        location.pathname === '/profile' || location.pathname === '/dashboard' 
-                          ? 'text-[hsl(var(--xima-accent))]' 
-                          : ''
-                      }`}
-                      style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                    >
-                      {t('nav.dashboard')}
-                      {(location.pathname === '/profile' || location.pathname === '/dashboard') && (
-                        <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
-                      )}
-                    </button>
-                    <button 
-                      onClick={() => navigate('/chat')}
-                      className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
-                        location.pathname === '/chat' ? 'text-[hsl(var(--xima-accent))]' : ''
-                      }`}
-                      style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                    >
-                      {t('nav.feed')}
-                      {location.pathname === '/chat' && (
-                        <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
-                      )}
-                    </button>
+                    {/* Show candidate nav items only if NOT on mentor portal pages */}
+                    {!(isMentor && location.pathname.startsWith('/mentor')) && (
+                      <>
+                        <button 
+                          onClick={() => navigate('/profile')}
+                          className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
+                            location.pathname === '/profile' || location.pathname === '/dashboard' 
+                              ? 'text-[hsl(var(--xima-accent))]' 
+                              : ''
+                          }`}
+                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
+                        >
+                          {t('nav.dashboard')}
+                          {(location.pathname === '/profile' || location.pathname === '/dashboard') && (
+                            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
+                          )}
+                        </button>
+                        <button 
+                          onClick={() => navigate('/chat')}
+                          className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
+                            location.pathname === '/chat' ? 'text-[hsl(var(--xima-accent))]' : ''
+                          }`}
+                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
+                        >
+                          {t('nav.feed')}
+                          {location.pathname === '/chat' && (
+                            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
+                          )}
+                        </button>
+                      </>
+                    )}
                     {isAdmin && (
                       <>
                         <button 
@@ -388,20 +393,23 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         </button>
                       </>
                     )}
-                    <button 
-                      onClick={() => navigate('/development-plan')}
-                      className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
-                        location.pathname.startsWith('/test') || location.pathname === '/development-plan' 
-                          ? 'text-[hsl(var(--xima-accent))]' 
-                          : ''
-                      }`}
-                      style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                    >
-                      {t('nav.tests')}
-                      {(location.pathname.startsWith('/test') || location.pathname === '/development-plan') && (
-                        <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
-                      )}
-                    </button>
+                    {/* Show Tests only when not on mentor pages */}
+                    {!(isMentor && location.pathname.startsWith('/mentor')) && (
+                      <button 
+                        onClick={() => navigate('/development-plan')}
+                        className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
+                          location.pathname.startsWith('/test') || location.pathname === '/development-plan' 
+                            ? 'text-[hsl(var(--xima-accent))]' 
+                            : ''
+                        }`}
+                        style={{ fontWeight: 500, letterSpacing: '0.05em' }}
+                      >
+                        {t('nav.tests')}
+                        {(location.pathname.startsWith('/test') || location.pathname === '/development-plan') && (
+                          <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
+                        )}
+                      </button>
+                    )}
                     {isMentor && (
                       <button 
                         onClick={() => navigate('/mentor')}

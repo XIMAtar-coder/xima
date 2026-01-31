@@ -65,6 +65,7 @@ import EligibilityReview from "./pages/admin/EligibilityReview";
 import AuthCallback from "./pages/AuthCallback";
 import CandidateSettings from "./pages/Settings";
 import CandidateSessionDetail from "./pages/candidate/SessionDetail";
+import CandidateSessionRoom from "./pages/candidate/SessionRoom";
 // Mentor Portal
 import MentorPortal from "./pages/mentor/MentorPortal";
 import MentorLogin from "./pages/mentor/MentorLogin";
@@ -158,6 +159,7 @@ const AppContent = () => {
           <Route path="/candidate/followups/:invitationId" element={<ChallengeFollowup />} />
           {/* Candidate session detail */}
           <Route path="/sessions/:sessionId" element={<CandidateSessionDetail />} />
+          <Route path="/sessions/:sessionId/room" element={<CandidateSessionRoom />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         {/* <ChatEntry /> */}

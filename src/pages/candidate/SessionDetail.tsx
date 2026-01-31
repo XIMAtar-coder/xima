@@ -15,11 +15,13 @@ import {
   AlertCircle,
   CheckCircle2,
   XCircle,
-  MessageSquare
+  MessageSquare,
+  Video,
+  RefreshCw
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, isAfter, isBefore, addMinutes, subMinutes } from 'date-fns';
 import { it, enUS } from 'date-fns/locale';
 import {
   AlertDialog,
@@ -231,6 +233,25 @@ export default function SessionDetail() {
   const canCancel = session?.status && ['requested', 'confirmed', 'rescheduled'].includes(session.status);
   const mentorName = mentor?.name || t('sessions.your_mentor', 'Your Mentor');
 
+  // Check if session is joinable (10 min before to 60 min after start)
+  const isJoinable = (() => {
+    if (!session || session.status !== 'confirmed') return false;
+    const now = new Date();
+    const startsAt = parseISO(session.starts_at);
+    const windowStart = subMinutes(startsAt, 10);
+    const windowEnd = addMinutes(startsAt, 60);
+    return isAfter(now, windowStart) && isBefore(now, windowEnd);
+  })();
+
+  // Check if session is upcoming but not yet joinable
+  const isUpcoming = (() => {
+    if (!session || session.status !== 'confirmed') return false;
+    const now = new Date();
+    const startsAt = parseISO(session.starts_at);
+    const windowStart = subMinutes(startsAt, 10);
+    return isBefore(now, windowStart);
+  })();
+
   if (loading) {
     return (
       <MainLayout>
@@ -352,16 +373,83 @@ export default function SessionDetail() {
             )}
 
             {session.status === 'confirmed' && (
-              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+              <div className="space-y-4">
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
+                    <div className="flex-1">
+                      <p className="font-medium text-foreground">
+                        {t('sessions.session_confirmed', 'Session confirmed!')}
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {isJoinable 
+                          ? t('sessions.ready_to_join', 'Your session is ready. Click the button below to join.')
+                          : isUpcoming
+                            ? t('sessions.prepare_for_session', 'Your session is confirmed. Prepare any questions you\'d like to discuss with your mentor.')
+                            : t('sessions.session_ended_msg', 'This session has ended.')
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Join Session Button */}
+                {isJoinable && (
+                  <Button 
+                    onClick={() => navigate(`/sessions/${session.id}/room`)}
+                    className="w-full gap-2"
+                    size="lg"
+                  >
+                    <Video className="h-5 w-5" />
+                    {t('sessions.join_session', 'Join Session')}
+                  </Button>
+                )}
+
+                {isUpcoming && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground justify-center">
+                    <Clock className="h-4 w-4" />
+                    {t('sessions.opens_10_min_before', 'Room opens 10 minutes before the session')}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {session.status === 'rejected' && (
+              <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-4">
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
-                  <div>
+                  <XCircle className="h-5 w-5 text-destructive mt-0.5" />
+                  <div className="flex-1">
                     <p className="font-medium text-foreground">
-                      {t('sessions.session_confirmed', 'Session confirmed!')}
+                      {t('sessions.session_rejected', 'Session declined')}
                     </p>
                     <p className="text-sm text-muted-foreground mt-1">
-                      {t('sessions.prepare_for_session', 'Your session is confirmed. Prepare any questions you\'d like to discuss with your mentor.')}
+                      {t('sessions.mentor_rejected', 'Your mentor was unable to accept this session request.')}
                     </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {session.status === 'cancelled' && (
+              <div className="bg-muted border border-border rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <XCircle className="h-5 w-5 text-muted-foreground mt-0.5" />
+                  <div className="flex-1">
+                    <p className="font-medium text-foreground">
+                      {t('sessions.session_cancelled', 'Session cancelled')}
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {t('sessions.session_was_cancelled', 'This session has been cancelled.')}
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="mt-3"
+                      onClick={() => navigate('/profile')}
+                    >
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                      {t('sessions.book_new', 'Book a new session')}
+                    </Button>
                   </div>
                 </div>
               </div>
