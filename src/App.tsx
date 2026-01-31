@@ -69,6 +69,8 @@ import MentorPortal from "./pages/mentor/MentorPortal";
 import MentorLogin from "./pages/mentor/MentorLogin";
 import MentorProfileEdit from "./pages/mentor/MentorProfileEdit";
 import MentorSessions from "./pages/mentor/MentorSessions";
+import MentorCalendar from "./pages/mentor/MentorCalendar";
+import MentorSessionDetail from "./pages/mentor/MentorSessionDetail";
 import MentorPreview from "./pages/mentor/MentorPreview";
 
 const queryClient = new QueryClient();
@@ -123,6 +125,8 @@ const AppContent = () => {
           <Route path="/mentor/profile" element={<MentorProfileEdit />} />
           <Route path="/mentor/preview" element={<MentorPreview />} />
           <Route path="/mentor/sessions" element={<MentorSessions />} />
+          <Route path="/mentor/calendar" element={<MentorCalendar />} />
+          <Route path="/mentor/calendar/:sessionId" element={<MentorSessionDetail />} />
           {/* Business Portal Routes */}
           <Route path="/business/register" element={<BusinessRegister />} />
           <Route path="/business/login" element={<BusinessLogin />} />
