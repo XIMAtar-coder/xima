@@ -2152,7 +2152,11 @@
     "specialties": "Specialties",
     "xima_pillars": "XIMA Pillars",
     "active_coachees": "Active",
-    "total_coached": "Total coached"
+    "total_coached": "Total coached",
+    "refresh_mentors": "Refresh mentors",
+    "refresh_hint": "Not satisfied? Refresh to see other compatible mentors.",
+    "showing_compatible": "Showing compatible mentors for your profile",
+    "your_selection": "Your selection"
   },
   "business": {
     "hero_title": "Find the Perfect Talent Match",

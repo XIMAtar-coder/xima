@@ -146,9 +146,28 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Parse request body for user data
-    const { pillar_scores, ximatar } = await req.json().catch(() => ({}));
+    const { pillar_scores, ximatar, refresh_seed } = await req.json().catch(() => ({}));
     
-    console.log('[recommend-mentors] Input:', { pillar_scores, ximatar, isAuthenticated: !!userId });
+    console.log('[recommend-mentors] Input:', { pillar_scores, ximatar, refresh_seed, isAuthenticated: !!userId });
+
+    // Simple seeded shuffle function for deterministic randomization
+    const seededShuffle = <T,>(arr: T[], seed: string): T[] => {
+      const result = [...arr];
+      // Simple hash function
+      let hash = 0;
+      for (let i = 0; i < seed.length; i++) {
+        const char = seed.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+      }
+      // Fisher-Yates shuffle with seeded random
+      for (let i = result.length - 1; i > 0; i--) {
+        hash = Math.abs((hash * 1103515245 + 12345) & 0x7fffffff);
+        const j = hash % (i + 1);
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+      return result;
+    };
 
     // Fetch all active mentors using the public view (safe for all users)
     // Using service role still works with the view
@@ -204,12 +223,32 @@ Deno.serve(async (req) => {
     // Sort by compatibility score
     recommendations.sort((a, b) => b.compatibility_score - a.compatibility_score);
 
+    // Apply seeded shuffle if refresh_seed is provided (for "Refresh mentors" feature)
+    let finalRecommendations = recommendations;
+    if (refresh_seed && typeof refresh_seed === 'string') {
+      console.log('[recommend-mentors] Applying seeded shuffle with seed:', refresh_seed);
+      // Group by score buckets to maintain some relevance while shuffling
+      const scoreBuckets = new Map<number, RecommendedMentor[]>();
+      for (const r of recommendations) {
+        const bucket = Math.floor(r.compatibility_score / 10) * 10; // 10-point buckets
+        if (!scoreBuckets.has(bucket)) scoreBuckets.set(bucket, []);
+        scoreBuckets.get(bucket)!.push(r);
+      }
+      // Shuffle within each bucket
+      finalRecommendations = [];
+      const sortedBuckets = [...scoreBuckets.keys()].sort((a, b) => b - a);
+      for (const bucket of sortedBuckets) {
+        const shuffled = seededShuffle(scoreBuckets.get(bucket)!, refresh_seed);
+        finalRecommendations.push(...shuffled);
+      }
+    }
+
     console.log('[recommend-mentors] Recommendations calculated:', 
-      recommendations.map(r => ({ name: r.name, score: r.compatibility_score }))
+      finalRecommendations.map(r => ({ name: r.name, score: r.compatibility_score }))
     );
 
     return new Response(
-      JSON.stringify({ recommendations }),
+      JSON.stringify({ recommendations: finalRecommendations }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 

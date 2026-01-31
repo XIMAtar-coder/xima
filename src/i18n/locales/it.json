@@ -2022,7 +2022,16 @@
     "view_linkedin": "Vedi su LinkedIn",
     "compatibility": "Compatibilità",
     "select_title": "Seleziona il Tuo Professionista",
-    "select_subtitle": "Scegli un esperto che ti guiderà nel tuo percorso di crescita"
+    "select_subtitle": "Scegli un esperto che ti guiderà nel tuo percorso di crescita",
+    "selected": "Selezionato",
+    "specialties": "Specialità",
+    "xima_pillars": "Pilastri XIMA",
+    "active_coachees": "Attivi",
+    "total_coached": "Totale seguiti",
+    "refresh_mentors": "Aggiorna mentori",
+    "refresh_hint": "Non soddisfatto? Aggiorna per vedere altri mentori compatibili.",
+    "showing_compatible": "Mostrando mentori compatibili con il tuo profilo",
+    "your_selection": "La tua selezione"
   },
   "business": {
     "hero_title": "Trova il Talento Perfetto",

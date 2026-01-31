@@ -1367,7 +1367,16 @@
     "subtitle": "Selecciona el mentor que mejor se adapta a tus objetivos",
     "select": "Seleccionar",
     "view_linkedin": "Ver en LinkedIn",
-    "compatibility": "Compatibilidad"
+    "compatibility": "Compatibilidad",
+    "selected": "Seleccionado",
+    "specialties": "Especialidades",
+    "xima_pillars": "Pilares XIMA",
+    "active_coachees": "Activos",
+    "total_coached": "Total guiados",
+    "refresh_mentors": "Actualizar mentores",
+    "refresh_hint": "¿No estás satisfecho? Actualiza para ver otros mentores compatibles.",
+    "showing_compatible": "Mostrando mentores compatibles con tu perfil",
+    "your_selection": "Tu selección"
   },
   "business": {
     "hero_title": "Encuentra el Talento Perfecto",
