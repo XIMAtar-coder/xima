@@ -2301,6 +2301,7 @@ export type Database = {
           bio: string | null
           company: string | null
           created_at: string
+          email: string | null
           experience_years: number | null
           first_session_expectations: string | null
           hourly_rate: number | null
@@ -2322,6 +2323,7 @@ export type Database = {
           bio?: string | null
           company?: string | null
           created_at?: string
+          email?: string | null
           experience_years?: number | null
           first_session_expectations?: string | null
           hourly_rate?: number | null
@@ -2343,6 +2345,7 @@ export type Database = {
           bio?: string | null
           company?: string | null
           created_at?: string
+          email?: string | null
           experience_years?: number | null
           first_session_expectations?: string | null
           hourly_rate?: number | null
@@ -3155,6 +3158,7 @@ export type Database = {
       mentors_public: {
         Row: {
           bio: string | null
+          first_session_expectations: string | null
           id: string | null
           is_active: boolean | null
           linkedin_url: string | null
@@ -3168,6 +3172,7 @@ export type Database = {
         }
         Insert: {
           bio?: string | null
+          first_session_expectations?: string | null
           id?: string | null
           is_active?: boolean | null
           linkedin_url?: string | null
@@ -3181,6 +3186,7 @@ export type Database = {
         }
         Update: {
           bio?: string | null
+          first_session_expectations?: string | null
           id?: string | null
           is_active?: boolean | null
           linkedin_url?: string | null
