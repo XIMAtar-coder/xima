@@ -10,7 +10,7 @@ import { useUser } from '@/context/UserContext';
 import { useProfileData } from '@/hooks/useProfileData';
 import { XimatarProfileCard } from '@/components/results/XimatarProfileCard';
 import { MentorSection } from '@/components/profile/MentorSection';
-import { PersonalizedChallenge } from '@/components/profile/PersonalizedChallenge';
+
 import { PillarRadarChart } from '@/components/profile/PillarRadarChart';
 import { XimatarHeroCard } from '@/components/profile/XimatarHeroCard';
 import { StrengthFrictionSummary } from '@/components/profile/StrengthFrictionSummary';
@@ -222,14 +222,6 @@ const Profile = () => {
                 onBookingSuccess={handleMentorBookingSuccess}
               />
 
-              {/* Personalized Challenge */}
-              {profileData.pillar_scores && user?.id && (
-                <PersonalizedChallenge 
-                  userId={user.id}
-                  ximatarType={profileData.ximatar || undefined}
-                  pillarScores={Object.entries(profileData.pillar_scores).map(([pillar, score]) => ({ pillar, score }))}
-                />
-              )}
 
               {/* CV Analysis */}
               <CVAnalysisCard 
