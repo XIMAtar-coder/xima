@@ -1,4 +1,16 @@
 {
+  "profile": {
+    "mentor_availability": "Disponibilità del Mentore",
+    "availability_read_only": "Visualizza gli slot disponibili di {{mentorName}}. La prenotazione sarà disponibile a breve.",
+    "no_availability_yet": "Il tuo mentore non ha ancora pubblicato disponibilità",
+    "upcoming_slots": "Slot disponibili",
+    "slots": "slot",
+    "timezone_note": "Tutti gli orari in",
+    "today": "Oggi",
+    "tomorrow": "Domani",
+    "auth_required": "Effettua il login per vedere la disponibilità",
+    "error_fetching_availability": "Errore nel caricamento della disponibilità"
+  },
   "xima_core": {
     "page_subtitle": "Uno strumento decisionale standardizzato con scenario personalizzato dall'IA",
     "what_is_title": "Cos'è XIMA Core?",
