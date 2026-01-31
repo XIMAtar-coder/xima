@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { getAvatarUrl } from '@/lib/avatar';
+
 
 interface PillarScore {
   pillar: string;
@@ -171,6 +171,27 @@ export default function FeaturedProfessionals({
     );
   }
 
+  // Normalize avatar URL for public paths or external URLs
+  const normalizeAvatarUrl = (path: string | null, updatedAt?: string | null): string | null => {
+    if (!path) return null;
+    
+    let url: string;
+    if (path.startsWith('http')) {
+      // External URL - use as-is
+      url = path;
+    } else if (path.startsWith('/')) {
+      // Absolute public path (e.g., "/avatars/daniel-cracau.jpg")
+      url = path;
+    } else {
+      // Filename only - prefix with /avatars/
+      url = `/avatars/${path}`;
+    }
+    
+    // Add cache-busting
+    const cacheBuster = updatedAt || Date.now().toString();
+    return `${url}?v=${encodeURIComponent(cacheBuster)}`;
+  };
+
   return (
     <div className="grid md:grid-cols-3 gap-4">
       {professionals.slice(0, limit).map((p) => {
@@ -178,7 +199,7 @@ export default function FeaturedProfessionals({
           ? (p.locale_bio[locale] || p.locale_bio.en || '')
           : '';
         const score = p.compatibility_score;
-        const avatarUrl = getAvatarUrl(p.avatar_path, p.updated_at);
+        const avatarUrl = normalizeAvatarUrl(p.avatar_path, p.updated_at);
         const specialties = p.expertise_tags || [];
         const ximaPillars = p.xima_pillars || [];
         const matchReasons = p.match_reasons || [];
