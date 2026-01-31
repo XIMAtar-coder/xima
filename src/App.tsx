@@ -64,6 +64,10 @@ import StandingVideoSession from "./pages/candidate/StandingVideoSession";
 import EligibilityReview from "./pages/admin/EligibilityReview";
 import AuthCallback from "./pages/AuthCallback";
 import CandidateSettings from "./pages/Settings";
+// Mentor Portal
+import MentorPortal from "./pages/mentor/MentorPortal";
+import MentorProfileEdit from "./pages/mentor/MentorProfileEdit";
+import MentorPreview from "./pages/mentor/MentorPreview";
 
 const queryClient = new QueryClient();
 
@@ -111,6 +115,10 @@ const AppContent = () => {
           <Route path="/settings" element={<CandidateSettings />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/eligibility" element={<EligibilityReview />} />
+          {/* Mentor Portal Routes */}
+          <Route path="/mentor" element={<MentorPortal />} />
+          <Route path="/mentor/profile" element={<MentorProfileEdit />} />
+          <Route path="/mentor/preview" element={<MentorPreview />} />
           {/* Business Portal Routes */}
           <Route path="/business/register" element={<BusinessRegister />} />
           <Route path="/business/login" element={<BusinessLogin />} />
