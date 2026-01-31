@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
+import { getPostLoginRedirectPath } from '@/hooks/usePostLoginRedirect';
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -53,10 +54,11 @@ const AuthCallback = () => {
               console.warn('Assessment sync warning (non-blocking):', syncError);
             }
 
-            // Navigate to profile
+            // Determine redirect based on user role
             if (isMounted) {
               setIsProcessing(false);
-              navigate('/profile', { replace: true });
+              const redirectPath = await getPostLoginRedirectPath(session.user.id);
+              navigate(redirectPath, { replace: true });
             }
           }
         }
@@ -84,7 +86,8 @@ const AuthCallback = () => {
           }
 
           setIsProcessing(false);
-          navigate('/profile', { replace: true });
+          const redirectPath = await getPostLoginRedirectPath(session.user.id);
+          navigate(redirectPath, { replace: true });
           return;
         }
       } catch (err) {

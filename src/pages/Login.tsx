@@ -9,6 +9,8 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '../context/UserContext';
 import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
+import { getPostLoginRedirectPath } from '@/hooks/usePostLoginRedirect';
+import { supabase } from '@/integrations/supabase/client';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -21,9 +23,18 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   React.useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/profile');
-    }
+    const handleAuthRedirect = async () => {
+      if (isAuthenticated) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const redirectPath = await getPostLoginRedirectPath(user.id);
+          navigate(redirectPath);
+        } else {
+          navigate('/profile');
+        }
+      }
+    };
+    handleAuthRedirect();
   }, [isAuthenticated, navigate]);
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,7 +65,15 @@ const Login = () => {
           title: t('login.login_success'),
           description: t('login.welcome_back')
         });
-        navigate('/profile');
+        
+        // Get user and determine redirect based on role
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const redirectPath = await getPostLoginRedirectPath(user.id);
+          navigate(redirectPath);
+        } else {
+          navigate('/profile');
+        }
       }
     } catch (error) {
       toast({
