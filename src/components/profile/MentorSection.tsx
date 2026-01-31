@@ -5,9 +5,23 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
-import { Calendar, ExternalLink, Loader2, Clock, CheckCircle2, Star } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { 
+  Calendar, 
+  ExternalLink, 
+  Loader2, 
+  Clock, 
+  CheckCircle2, 
+  Star, 
+  CalendarDays,
+  Bell,
+  RefreshCw,
+  User
+} from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { format, parseISO } from 'date-fns';
+import { it, enUS } from 'date-fns/locale';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,7 +48,8 @@ interface Slot {
   id: string;
   start_time: string;
   end_time: string;
-  is_booked: boolean;
+  is_booked?: boolean;
+  timezone?: string;
 }
 
 interface MentorInfo {
@@ -50,19 +65,22 @@ interface MentorSectionProps {
   onBookingSuccess?: () => void;
 }
 
+type AvailabilityState = 'loading' | 'no_availability' | 'no_slots' | 'has_slots';
 
 export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingSuccess }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const [slots, setSlots] = useState<Slot[]>([]);
   const [mentorInfo, setMentorInfo] = useState<MentorInfo | null>(null);
-  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(true);
   const [isBooking, setIsBooking] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  
+  const [availabilityState, setAvailabilityState] = useState<AvailabilityState>('loading');
+  const [availabilityMessage, setAvailabilityMessage] = useState<string | null>(null);
 
+  const dateLocale = i18n.language?.startsWith('it') ? it : enUS;
   const displayName = mentor?.full_name || mentor?.name || '';
   const photoUrl = mentor?.photo_url || mentor?.avatar_url || undefined;
   const bookingLink = mentor?.booking_link || mentor?.calendar_url || undefined;
@@ -70,24 +88,33 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
   useEffect(() => {
     if (mentor) {
       fetchAvailability();
+    } else {
+      setIsLoadingSlots(false);
+      setAvailabilityState('no_availability');
     }
   }, [mentor]);
 
   const fetchAvailability = async () => {
     setIsLoadingSlots(true);
+    setAvailabilityState('loading');
     try {
-      console.log('[MentorSection] Fetching availability for mentor:', displayName);
-      
+      const session = await supabase.auth.getSession();
+      if (!session.data.session?.access_token) {
+        setAvailabilityMessage(t('profile.auth_required', 'Please log in to view availability'));
+        setAvailabilityState('no_availability');
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke('fetch-mentor-availability', {
         headers: {
-          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+          Authorization: `Bearer ${session.data.session.access_token}`,
         },
       });
 
-      console.log('[MentorSection] Availability response:', { data, error });
-
       if (error) {
         console.error('[MentorSection] Error fetching availability:', error);
+        setAvailabilityState('no_availability');
+        setAvailabilityMessage(t('profile.error_fetching_availability', 'Error loading availability'));
         toast({
           title: t('common.error'),
           description: t('profile.error_fetching_slots', 'Error fetching availability'),
@@ -97,20 +124,27 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
       }
 
       if (data?.success) {
-        console.log('[MentorSection] Slots received:', data.slots?.length || 0);
-        console.log('[MentorSection] Debug info:', data.debug);
         setSlots(data.slots || []);
         if (data.mentor) {
           setMentorInfo(data.mentor);
         }
+        setAvailabilityMessage(data.message || null);
         
-        // If no slots, show message
-        if (data.message && (!data.slots || data.slots.length === 0)) {
-          console.log('[MentorSection] No slots message:', data.message);
+        // Determine availability state
+        if (!data.slots || data.slots.length === 0) {
+          // Check if mentor has ever published availability
+          if (data.message?.includes('not published')) {
+            setAvailabilityState('no_availability');
+          } else {
+            setAvailabilityState('no_slots');
+          }
+        } else {
+          setAvailabilityState('has_slots');
         }
       }
     } catch (error) {
       console.error('[MentorSection] Exception fetching availability:', error);
+      setAvailabilityState('no_availability');
       toast({
         title: t('common.error'),
         description: t('profile.error_fetching_slots', 'Error fetching availability'),
@@ -159,9 +193,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
         });
         setShowConfirmDialog(false);
         setSelectedSlot(null);
-        // Refresh slots
         await fetchAvailability();
-        // Notify parent
         onBookingSuccess?.();
       } else {
         toast({
@@ -182,13 +214,24 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
   };
 
   const formatTime = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+    const date = parseISO(dateStr);
+    return format(date, 'HH:mm', { locale: dateLocale });
   };
 
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('it-IT', { weekday: 'long', month: 'long', day: 'numeric' });
+    const date = parseISO(dateStr);
+    return format(date, 'EEEE, d MMMM', { locale: dateLocale });
+  };
+
+  const formatTimezone = (tz: string): string => {
+    const tzMap: Record<string, string> = {
+      'Europe/Rome': 'CET (Rome)',
+      'Europe/London': 'GMT (London)',
+      'America/New_York': 'EST (New York)',
+      'America/Los_Angeles': 'PST (Los Angeles)',
+      'Asia/Tokyo': 'JST (Tokyo)',
+    };
+    return tzMap[tz] || tz;
   };
 
   // Get dates that have available slots
@@ -223,16 +266,20 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
     return !hasSlot || date < new Date(new Date().setHours(0, 0, 0, 0));
   };
 
+  // No mentor selected state
   if (!mentor) {
     return (
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            {t('profile.your_mentor', 'Il Tuo Mentore')}
+            <User className="h-5 w-5" />
+            {t('profile.your_mentor', 'Your Mentor')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-center py-8">
+          <div className="flex justify-center">
+            <User className="h-16 w-16 text-muted-foreground/30" />
+          </div>
           <p className="text-muted-foreground">
             {t('profile.no_mentor_assigned', 'Complete your first evaluation to receive a mentor')}
           </p>
@@ -244,87 +291,134 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
   return (
     <>
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            {t('profile.your_mentor', 'Il Tuo Mentore')}
+            <User className="h-5 w-5" />
+            {t('profile.your_mentor', 'Your Mentor')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Mentor Summary Panel */}
-          <div className="border border-border rounded-lg p-4 bg-muted/30">
-            <div className="flex items-start gap-4 mb-4">
-              <Avatar className="h-16 w-16 border-2 border-primary/20">
-                <AvatarImage src={photoUrl} alt={displayName || t('profile.your_mentor')} />
-                <AvatarFallback className="bg-primary/10 text-primary">{(displayName || '?').charAt(0)}</AvatarFallback>
-              </Avatar>
-              <div className="flex-1">
-                {displayName && (
-                  <h3 className="font-semibold text-xl text-foreground">{displayName}</h3>
-                )}
-                {mentor?.role && (
-                  <p className="text-sm text-muted-foreground mt-1 font-medium">{mentor.role}</p>
-                )}
-              </div>
+          {/* Mentor Identity Section */}
+          <div className="flex items-start gap-4">
+            <Avatar className="h-16 w-16 border-2 border-primary/20 ring-2 ring-background shadow-md">
+              <AvatarImage src={photoUrl} alt={displayName || t('profile.your_mentor')} />
+              <AvatarFallback className="bg-primary/10 text-primary text-xl font-semibold">
+                {(displayName || '?').charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              {displayName && (
+                <h3 className="font-semibold text-xl text-foreground truncate">{displayName}</h3>
+              )}
+              {mentor?.role && (
+                <p className="text-sm text-muted-foreground mt-0.5 font-medium">{mentor.role}</p>
+              )}
+              {/* Key specialties */}
+              {mentorInfo?.title && (
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {mentorInfo.title.split(/[,&]/).slice(0, 2).map((specialty, idx) => (
+                    <Badge key={idx} variant="secondary" className="gap-1 text-xs">
+                      <Star className="h-3 w-3" />
+                      {specialty.trim()}
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
-            
-            {mentor?.bio && (
-              <div className="space-y-2">
-                <p className="text-sm text-foreground/90 leading-relaxed line-clamp-3">
-                  {mentor.bio}
-                </p>
-              </div>
-            )}
-            
-            {/* Key Strengths from mentor info */}
-            {mentorInfo?.title && (
-              <div className="flex flex-wrap gap-2 mt-3">
-                {mentorInfo.title.split(/[,&]/).slice(0, 3).map((specialty, idx) => (
-                  <Badge key={idx} variant="secondary" className="gap-1">
-                    <Star className="h-3 w-3" />
-                    {specialty.trim()}
-                  </Badge>
-                ))}
-              </div>
-            )}
+          </div>
+          
+          {/* Mentor Bio (truncated) */}
+          {mentor?.bio && (
+            <p className="text-sm text-foreground/80 leading-relaxed line-clamp-3">
+              {mentor.bio}
+            </p>
+          )}
+
+          {/* Value Proposition */}
+          <div className="bg-muted/50 rounded-lg p-3 text-sm text-muted-foreground">
+            {t('profile.mentor_value_prop', 'Your mentor will guide your professional development with personalized advice based on your XIMA profile.')}
           </div>
 
+          <Separator />
 
-          {/* Booking Calendar */}
+          {/* Availability Section */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h4 className="font-medium flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                {t('profile.book_session', 'Book a Session')} (15 min)
+                <CalendarDays className="h-4 w-4" />
+                {t('profile.availability', 'Availability')}
               </h4>
-              {slots.length > 0 && (
-                <Badge variant="secondary">{slots.length} {t('profile.slots_available', 'slots available')}</Badge>
+              {availabilityState === 'has_slots' && (
+                <Badge variant="secondary" className="bg-primary/10 text-primary">
+                  {slots.length} {t('profile.slots_available', 'slots')}
+                </Badge>
               )}
             </div>
 
-            {isLoadingSlots ? (
+            {/* Loading State */}
+            {isLoadingSlots && (
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                <p className="text-sm text-muted-foreground ml-2">
+                <span className="ml-2 text-sm text-muted-foreground">
                   {t('profile.loading_availability', 'Loading availability...')}
-                </p>
+                </span>
               </div>
-            ) : slots.length === 0 ? (
-              <div className="text-center py-8 space-y-4">
-                <p className="text-muted-foreground">{t('profile.no_slots_available', 'No available slots at the moment')}</p>
-                <Button onClick={fetchAvailability} variant="outline" size="sm">
+            )}
+
+            {/* STATE A: No availability published */}
+            {!isLoadingSlots && availabilityState === 'no_availability' && (
+              <div className="text-center py-6 space-y-4">
+                <div className="flex justify-center">
+                  <Calendar className="h-12 w-12 text-muted-foreground/30" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-muted-foreground font-medium">
+                    {t('profile.no_availability_yet', 'Your mentor has not published availability yet')}
+                  </p>
+                  <p className="text-sm text-muted-foreground/70">
+                    {t('profile.check_back_later_desc', 'Check back soon or use external booking if available')}
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-2 justify-center pt-2">
+                  <Button variant="outline" size="sm" onClick={fetchAvailability}>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    {t('profile.check_again', 'Check again')}
+                  </Button>
+                  {bookingLink && (
+                    <Button asChild variant="secondary" size="sm">
+                      <a href={bookingLink} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="mr-2 h-4 w-4" />
+                        {t('profile.external_booking', 'External calendar')}
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* STATE B: No slots currently available */}
+            {!isLoadingSlots && availabilityState === 'no_slots' && (
+              <div className="text-center py-6 space-y-4">
+                <div className="flex justify-center">
+                  <Clock className="h-12 w-12 text-muted-foreground/30" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-muted-foreground font-medium">
+                    {t('profile.no_slots_available', 'No available slots at the moment')}
+                  </p>
+                  <p className="text-sm text-muted-foreground/70">
+                    {t('profile.slots_taken_desc', 'All current slots may be booked. Try again later.')}
+                  </p>
+                </div>
+                <Button variant="outline" size="sm" onClick={fetchAvailability}>
+                  <RefreshCw className="mr-2 h-4 w-4" />
                   {t('profile.retry', 'Retry')}
                 </Button>
-                {bookingLink && (
-                  <Button asChild variant="outline">
-                    <a href={bookingLink} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      {t('profile.external_booking', 'Book via external calendar')}
-                    </a>
-                  </Button>
-                )}
               </div>
-            ) : (
+            )}
+
+            {/* STATE C: Available slots present */}
+            {!isLoadingSlots && availabilityState === 'has_slots' && (
               <div className="space-y-4">
                 {/* Calendar Widget */}
                 <div className="border border-border rounded-lg p-4 bg-card">
@@ -385,19 +479,26 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
                     {t('profile.select_date', 'Select a date to view available time slots')}
                   </p>
                 )}
+
+                {/* Timezone indicator */}
+                {slots[0]?.timezone && (
+                  <div className="text-xs text-muted-foreground text-center pt-2 border-t">
+                    {t('profile.timezone_note', 'All times in')} {formatTimezone(slots[0].timezone)}
+                  </div>
+                )}
               </div>
             )}
-          </div>
 
-          {/* External Booking Link (if available) */}
-          {bookingLink && slots.length > 0 && (
-            <Button asChild variant="ghost" size="sm" className="w-full">
-              <a href={bookingLink} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="mr-2 h-4 w-4" />
-                {t('profile.view_full_calendar', 'View full calendar')}
-              </a>
-            </Button>
-          )}
+            {/* External Booking Link (if available and has slots) */}
+            {bookingLink && availabilityState === 'has_slots' && (
+              <Button asChild variant="ghost" size="sm" className="w-full">
+                <a href={bookingLink} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  {t('profile.view_full_calendar', 'View full calendar')}
+                </a>
+              </Button>
+            )}
+          </div>
         </CardContent>
       </Card>
 
