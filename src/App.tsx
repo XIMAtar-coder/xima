@@ -68,6 +68,7 @@ import CandidateSettings from "./pages/Settings";
 import MentorPortal from "./pages/mentor/MentorPortal";
 import MentorLogin from "./pages/mentor/MentorLogin";
 import MentorProfileEdit from "./pages/mentor/MentorProfileEdit";
+import MentorSessions from "./pages/mentor/MentorSessions";
 import MentorPreview from "./pages/mentor/MentorPreview";
 
 const queryClient = new QueryClient();
@@ -121,6 +122,7 @@ const AppContent = () => {
           <Route path="/mentor/login" element={<MentorLogin />} />
           <Route path="/mentor/profile" element={<MentorProfileEdit />} />
           <Route path="/mentor/preview" element={<MentorPreview />} />
+          <Route path="/mentor/sessions" element={<MentorSessions />} />
           {/* Business Portal Routes */}
           <Route path="/business/register" element={<BusinessRegister />} />
           <Route path="/business/login" element={<BusinessLogin />} />

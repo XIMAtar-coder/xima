@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { User, Star, Edit, Eye } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { User, Star, Edit, Eye, CalendarClock, AlertTriangle, CheckCircle, Users, Sparkles } from 'lucide-react';
 import NotAMentor from './NotAMentor';
 
 export default function MentorPortal() {
@@ -39,6 +40,10 @@ export default function MentorPortal() {
     return <NotAMentor />;
   }
 
+  // Check for incomplete profile
+  const isProfileIncomplete = !mentorProfile.bio || !mentorProfile.title || 
+    !mentorProfile.profile_image_url || !mentorProfile.xima_pillars?.length;
+
   // Mentor portal dashboard
   return (
     <MainLayout>
@@ -48,12 +53,13 @@ export default function MentorPortal() {
           <div>
             <h1 className="text-3xl font-bold">{t('mentor.portal_title', 'Mentor Portal')}</h1>
             <p className="text-muted-foreground mt-1">
-              {t('mentor.portal_description', 'Manage your mentor profile and how candidates see you')}
+              {t('mentor.portal_description', 'Manage your mentor profile and coaching sessions')}
             </p>
           </div>
           <div className="flex items-center gap-2">
             {mentorProfile.is_active ? (
-              <Badge variant="default" className="bg-accent/50 text-accent-foreground border-accent/30">
+              <Badge variant="default" className="bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30">
+                <CheckCircle className="h-3 w-3 mr-1" />
                 {t('mentor.status_active', 'Active')}
               </Badge>
             ) : (
@@ -64,22 +70,33 @@ export default function MentorPortal() {
           </div>
         </div>
 
-        {/* Profile Overview Card */}
+        {/* Profile Incomplete Warning */}
+        {isProfileIncomplete && (
+          <Alert variant="destructive" className="border-amber-500/50 bg-amber-500/10 text-amber-700 dark:text-amber-400">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>{t('mentor.profile_incomplete_title', 'Complete Your Profile')}</AlertTitle>
+            <AlertDescription className="mt-2">
+              {t('mentor.profile_incomplete_desc', 'Your profile is missing some information. Complete it to appear in candidate recommendations.')}
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigate('/mentor/profile')}
+                className="mt-2 border-amber-500/30 hover:bg-amber-500/10"
+              >
+                <Edit className="h-3 w-3 mr-1" />
+                {t('mentor.complete_profile', 'Complete Profile')}
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Mentor Mini Card */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              {t('mentor.your_profile', 'Your Profile')}
-            </CardTitle>
-            <CardDescription>
-              {t('mentor.profile_card_description', 'This is how candidates see your mentor profile')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <div className="flex flex-col sm:flex-row gap-6">
               {/* Avatar */}
               <div className="flex-shrink-0">
-                <div className="h-24 w-24 rounded-full overflow-hidden bg-muted ring-2 ring-primary/20">
+                <div className="h-20 w-20 rounded-full overflow-hidden bg-muted ring-2 ring-primary/20">
                   {mentorProfile.profile_image_url ? (
                     <img
                       src={mentorProfile.profile_image_url.startsWith('http') 
@@ -99,20 +116,22 @@ export default function MentorPortal() {
               </div>
 
               {/* Info */}
-              <div className="flex-1 space-y-3">
+              <div className="flex-1 space-y-2">
                 <div>
                   <h3 className="text-xl font-semibold">{mentorProfile.name}</h3>
                   {mentorProfile.title && (
-                    <p className="text-muted-foreground">{mentorProfile.title}</p>
+                    <p className="text-muted-foreground text-sm">{mentorProfile.title}</p>
                   )}
                 </div>
 
-                {mentorProfile.rating && (
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-primary text-primary" />
-                    <span className="font-medium">{mentorProfile.rating.toFixed(1)}</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-4">
+                  {mentorProfile.rating && (
+                    <div className="flex items-center gap-1">
+                      <Star className="h-4 w-4 fill-primary text-primary" />
+                      <span className="font-medium text-sm">{mentorProfile.rating.toFixed(1)}</span>
+                    </div>
+                  )}
+                </div>
 
                 {mentorProfile.xima_pillars && mentorProfile.xima_pillars.length > 0 && (
                   <div className="flex flex-wrap gap-1">
@@ -123,43 +142,127 @@ export default function MentorPortal() {
                     ))}
                   </div>
                 )}
-
-                {mentorProfile.bio && (
-                  <p className="text-sm text-muted-foreground line-clamp-2">{mentorProfile.bio}</p>
-                )}
               </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t">
-              <Button onClick={() => navigate('/mentor/profile')} className="gap-2">
-                <Edit className="h-4 w-4" />
-                {t('mentor.edit_profile', 'Edit Profile')}
-              </Button>
-              <Button variant="outline" onClick={() => navigate('/mentor/preview')} className="gap-2">
-                <Eye className="h-4 w-4" />
-                {t('mentor.preview_as_candidate', 'Preview as Candidate')}
-              </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Quick Stats (read-only) */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        {/* Action Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Edit Profile */}
+          <Card 
+            className="cursor-pointer hover:border-primary/50 transition-colors group"
+            onClick={() => navigate('/mentor/profile')}
+          >
+            <CardContent className="pt-6 text-center">
+              <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
+                <Edit className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-semibold">{t('mentor.action_edit_profile', 'Edit Profile')}</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                {t('mentor.action_edit_profile_desc', 'Update your bio, pillars, and specialties')}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Preview as Candidate */}
+          <Card 
+            className="cursor-pointer hover:border-primary/50 transition-colors group"
+            onClick={() => navigate('/mentor/preview')}
+          >
+            <CardContent className="pt-6 text-center">
+              <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
+                <Eye className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-semibold">{t('mentor.action_preview', 'Preview as Candidate')}</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                {t('mentor.action_preview_desc', 'See how candidates view your profile')}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Sessions */}
+          <Card 
+            className="cursor-pointer hover:border-primary/50 transition-colors group"
+            onClick={() => navigate('/mentor/sessions')}
+          >
+            <CardContent className="pt-6 text-center">
+              <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
+                <CalendarClock className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-semibold">{t('mentor.action_sessions', 'Sessions')}</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                {t('mentor.action_sessions_desc', 'View and manage coaching sessions')}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* How It Works Section */}
+        <Card className="bg-muted/30">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Sparkles className="h-5 w-5 text-primary" />
+              {t('mentor.how_it_works_title', 'How It Works')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Users className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm">{t('mentor.how_step_1_title', 'Appear in Results')}</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {t('mentor.how_step_1_desc', 'Candidates see you based on XIMAtar pillar match')}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Edit className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm">{t('mentor.how_step_2_title', 'Manage Your Profile')}</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {t('mentor.how_step_2_desc', 'Keep your bio, pillars, and expectations updated')}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <CalendarClock className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm">{t('mentor.how_step_3_title', 'Conduct Sessions')}</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {t('mentor.how_step_3_desc', 'Session management coming soon')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-3 gap-4">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-6 text-center">
               <div className="text-2xl font-bold">{mentorProfile.rating?.toFixed(1) || '—'}</div>
               <p className="text-sm text-muted-foreground">{t('mentor.rating', 'Rating')}</p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-6 text-center">
               <div className="text-2xl font-bold">{mentorProfile.specialties?.length || 0}</div>
               <p className="text-sm text-muted-foreground">{t('mentor.specialties', 'Specialties')}</p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-6 text-center">
               <div className="text-2xl font-bold">{mentorProfile.xima_pillars?.length || 0}</div>
               <p className="text-sm text-muted-foreground">{t('mentor.pillars', 'Pillars')}</p>
             </CardContent>
