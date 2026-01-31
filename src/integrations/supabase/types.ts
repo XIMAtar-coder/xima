@@ -2236,8 +2236,12 @@ export type Database = {
           end_time: string
           id: string
           is_booked: boolean | null
+          is_recurring: boolean
           mentor_id: string
+          rrule: string | null
           start_time: string
+          status: string
+          timezone: string
           updated_at: string | null
         }
         Insert: {
@@ -2247,8 +2251,12 @@ export type Database = {
           end_time: string
           id?: string
           is_booked?: boolean | null
+          is_recurring?: boolean
           mentor_id: string
+          rrule?: string | null
           start_time: string
+          status?: string
+          timezone?: string
           updated_at?: string | null
         }
         Update: {
@@ -2258,8 +2266,12 @@ export type Database = {
           end_time?: string
           id?: string
           is_booked?: boolean | null
+          is_recurring?: boolean
           mentor_id?: string
+          rrule?: string | null
           start_time?: string
+          status?: string
+          timezone?: string
           updated_at?: string | null
         }
         Relationships: [
@@ -2449,6 +2461,128 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_dashboard"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      mentor_session_audit_logs: {
+        Row: {
+          action: string
+          actor_role: string
+          actor_user_id: string | null
+          created_at: string
+          id: string
+          meta: Json
+          session_id: string
+        }
+        Insert: {
+          action: string
+          actor_role: string
+          actor_user_id?: string | null
+          created_at?: string
+          id?: string
+          meta?: Json
+          session_id: string
+        }
+        Update: {
+          action?: string
+          actor_role?: string
+          actor_user_id?: string | null
+          created_at?: string
+          id?: string
+          meta?: Json
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_session_audit_logs_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentor_sessions: {
+        Row: {
+          availability_slot_id: string | null
+          candidate_profile_id: string
+          created_at: string
+          created_by: string
+          ends_at: string
+          id: string
+          mentor_id: string
+          notes_private: string | null
+          notes_shared: string | null
+          starts_at: string
+          status: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          availability_slot_id?: string | null
+          candidate_profile_id: string
+          created_at?: string
+          created_by: string
+          ends_at: string
+          id?: string
+          mentor_id: string
+          notes_private?: string | null
+          notes_shared?: string | null
+          starts_at: string
+          status?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          availability_slot_id?: string | null
+          candidate_profile_id?: string
+          created_at?: string
+          created_by?: string
+          ends_at?: string
+          id?: string
+          mentor_id?: string
+          notes_private?: string | null
+          notes_shared?: string | null
+          starts_at?: string
+          status?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_sessions_availability_slot_id_fkey"
+            columns: ["availability_slot_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_availability_slots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_sessions_candidate_profile_id_fkey"
+            columns: ["candidate_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_sessions_candidate_profile_id_fkey"
+            columns: ["candidate_profile_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "mentor_sessions_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "mentors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_sessions_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "mentors_public"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -3415,6 +3549,14 @@ export type Database = {
         Args: { p_result_id: string }
         Returns: undefined
       }
+      candidate_cancel_session: {
+        Args: { p_session_id: string }
+        Returns: Json
+      }
+      candidate_selected_mentor_id: {
+        Args: { p_user_id: string }
+        Returns: string
+      }
       compute_pillar_scores_from_assessment:
         | { Args: { p_result_id: string }; Returns: undefined }
         | {
@@ -3544,12 +3686,25 @@ export type Database = {
         Args: { p_action: string; p_context?: Json }
         Returns: string
       }
+      mentor_cancel_session: { Args: { p_session_id: string }; Returns: Json }
+      mentor_complete_session: { Args: { p_session_id: string }; Returns: Json }
+      mentor_confirm_session: { Args: { p_session_id: string }; Returns: Json }
+      mentor_reject_session: { Args: { p_session_id: string }; Returns: Json }
+      mentor_reschedule_session: {
+        Args: {
+          p_new_ends_at: string
+          p_new_starts_at: string
+          p_session_id: string
+        }
+        Returns: Json
+      }
       recompute_matches: { Args: { p_user: string }; Returns: undefined }
       recompute_user_scores: { Args: { p_user: string }; Returns: undefined }
       record_business_interest: {
         Args: { p_feed_item_id: string; p_hiring_goal_id?: string }
         Returns: string
       }
+      request_mentor_session: { Args: { p_slot_id: string }; Returns: Json }
     }
     Enums: {
       ai_message_role: "user" | "assistant" | "system" | "tool"
