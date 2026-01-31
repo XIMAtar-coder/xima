@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { User, Star, Edit, Eye, CalendarClock, AlertTriangle, CheckCircle, Users, Sparkles } from 'lucide-react';
+import { User, Star, Edit, Eye, CalendarClock, AlertTriangle, CheckCircle, Users, Sparkles, UserCheck } from 'lucide-react';
+import { MentorCVAccessSection } from '@/components/mentor/MentorCVAccessSection';
 import NotAMentor from './NotAMentor';
 
 export default function MentorPortal() {
@@ -247,8 +248,11 @@ export default function MentorPortal() {
           </CardContent>
         </Card>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-3 gap-4">
+        {/* CV Access Section */}
+        <MentorCVAccessSection mentorId={mentorProfile.id} />
+
+        {/* Quick Stats - Updated with coaching counters */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <Card>
             <CardContent className="pt-6 text-center">
               <div className="text-2xl font-bold">{mentorProfile.rating?.toFixed(1) || '—'}</div>
@@ -257,8 +261,17 @@ export default function MentorPortal() {
           </Card>
           <Card>
             <CardContent className="pt-6 text-center">
-              <div className="text-2xl font-bold">{mentorProfile.specialties?.length || 0}</div>
-              <p className="text-sm text-muted-foreground">{t('mentor.specialties', 'Specialties')}</p>
+              <div className="text-2xl font-bold text-primary flex items-center justify-center gap-1">
+                <UserCheck className="h-5 w-5" />
+                {(mentorProfile as any).active_coached_profiles_count || 0}
+              </div>
+              <p className="text-sm text-muted-foreground">{t('mentor.active_coachees', 'Active Coachees')}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6 text-center">
+              <div className="text-2xl font-bold">{(mentorProfile as any).total_coached_profiles_count || 0}</div>
+              <p className="text-sm text-muted-foreground">{t('mentor.total_coached', 'Total Coached')}</p>
             </CardContent>
           </Card>
           <Card>

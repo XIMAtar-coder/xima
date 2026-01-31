@@ -23,6 +23,8 @@ type Professional = {
   xima_pillars: string[];
   match_reasons: string[];
   updated_at?: string | null;
+  active_coached_profiles_count?: number;
+  total_coached_profiles_count?: number;
 };
 
 interface FeaturedProfessionalsProps {
@@ -84,7 +86,9 @@ export default function FeaturedProfessionals({
           compatibility_score: m.compatibility_score || 85,
           xima_pillars: m.xima_pillars || [],
           match_reasons: m.match_reasons || [],
-          updated_at: m.updated_at
+          updated_at: m.updated_at,
+          active_coached_profiles_count: m.active_coached_profiles_count || 0,
+          total_coached_profiles_count: m.total_coached_profiles_count || 0,
         }));
         setProfessionals(mapped);
       } else {
@@ -105,7 +109,7 @@ export default function FeaturedProfessionals({
     // Use the public view that is accessible to both anon and authenticated users
     const { data, error: viewError } = await supabase
       .from('mentors_public')
-      .select('id, name, title, bio, profile_image_url, specialties, xima_pillars, rating, updated_at')
+      .select('id, name, title, bio, profile_image_url, specialties, xima_pillars, rating, updated_at, active_coached_profiles_count, total_coached_profiles_count')
       .order('rating', { ascending: false });
 
     if (viewError) {
@@ -126,7 +130,9 @@ export default function FeaturedProfessionals({
         compatibility_score: m.rating ? Math.round(m.rating * 20) : 85,
         xima_pillars: m.xima_pillars || [],
         match_reasons: [],
-        updated_at: m.updated_at
+        updated_at: m.updated_at,
+        active_coached_profiles_count: m.active_coached_profiles_count || 0,
+        total_coached_profiles_count: m.total_coached_profiles_count || 0,
       }));
       setProfessionals(mapped);
     } else {
@@ -204,6 +210,8 @@ export default function FeaturedProfessionals({
         const ximaPillars = p.xima_pillars || [];
         const matchReasons = p.match_reasons || [];
         const isSelected = selectedId === p.id;
+        const activeCoachees = p.active_coached_profiles_count || 0;
+        const totalCoached = p.total_coached_profiles_count || 0;
         
         return (
           <Card 
@@ -235,8 +243,17 @@ export default function FeaturedProfessionals({
               </div>
             </div>
 
-            <div className="text-sm font-medium rounded-full px-3 py-1 bg-primary/10 text-primary self-start">
-              {score}% {t('professionals.compatibility')}
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="text-sm font-medium rounded-full px-3 py-1 bg-primary/10 text-primary">
+                {score}% {t('professionals.compatibility')}
+              </div>
+              {(activeCoachees > 0 || totalCoached > 0) && (
+                <div className="text-xs text-muted-foreground flex items-center gap-1">
+                  <span>{t('professionals.active_coachees', 'Active')}: {activeCoachees}</span>
+                  <span>·</span>
+                  <span>{t('professionals.total_coached', 'Total coached')}: {totalCoached}</span>
+                </div>
+              )}
             </div>
 
             {/* Match Reasons */}

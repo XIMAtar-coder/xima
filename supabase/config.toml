@@ -74,3 +74,6 @@ verify_jwt = false
 
 [functions.data-export]
 verify_jwt = true
+
+[functions.mentor-get-candidate-cv]
+verify_jwt = true

@@ -11,8 +11,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Save, X, Plus } from 'lucide-react';
+import { MentorAvatarUpload } from '@/components/mentor/MentorAvatarUpload';
 import NotAMentor from './NotAMentor';
 
 const AVAILABLE_PILLARS = [
@@ -190,19 +192,17 @@ export default function MentorProfileEdit() {
               />
             </div>
 
-            {/* Editable: Profile Image URL */}
-            <div className="space-y-2">
-              <Label htmlFor="profile_image_url">{t('mentor.photo_url', 'Profile Photo URL')}</Label>
-              <Input
-                id="profile_image_url"
-                value={formData.profile_image_url}
-                onChange={(e) => setFormData(prev => ({ ...prev, profile_image_url: e.target.value }))}
-                placeholder={t('mentor.photo_placeholder', '/avatars/your-photo.jpg or https://...')}
-              />
-              <p className="text-xs text-muted-foreground">
-                {t('mentor.photo_hint', 'Use a public path like /avatars/name.jpg or an external URL')}
-              </p>
-            </div>
+            {/* Avatar Upload - NEW */}
+            <MentorAvatarUpload
+              mentorId={mentorProfile.id}
+              currentImageUrl={formData.profile_image_url}
+              onUploadSuccess={(newUrl) => {
+                setFormData(prev => ({ ...prev, profile_image_url: newUrl }));
+                refetch();
+              }}
+            />
+
+            <Separator />
 
             {/* Editable: XIMA Pillars */}
             <div className="space-y-2">
