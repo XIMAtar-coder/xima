@@ -18,11 +18,13 @@ import {
   RefreshCw,
   User,
   AlertCircle,
-  Eye
+  Eye,
+  Video,
+  XCircle
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, isAfter, isBefore, addMinutes, subMinutes } from 'date-fns';
 import { it, enUS } from 'date-fns/locale';
 import {
   AlertDialog,
@@ -445,7 +447,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
               </div>
             )}
 
-            {/* STATE: Has pending session */}
+            {/* STATE: Has pending/confirmed session */}
             {!isLoadingSlots && availabilityState === 'has_pending_session' && pendingSession && (
               <div className="space-y-4">
                 <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-3">
@@ -470,11 +472,54 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
                   <p className="text-xs text-muted-foreground">
                     {pendingSession.status === 'requested' 
                       ? t('profile.waiting_confirmation', 'Your mentor will confirm this session shortly.')
-                      : t('profile.session_scheduled', 'Your session is scheduled.')}
+                      : pendingSession.status === 'confirmed'
+                        ? t('profile.session_ready', 'Your session is confirmed and ready.')
+                        : pendingSession.status === 'rejected'
+                          ? t('profile.session_declined', 'Your mentor was unable to accept this request.')
+                          : t('profile.session_scheduled', 'Your session is scheduled.')}
                   </p>
                 </div>
+
+                {/* Show Join button if confirmed and in time window */}
+                {pendingSession.status === 'confirmed' && (() => {
+                  const now = new Date();
+                  const startsAt = parseISO(pendingSession.starts_at);
+                  const windowStart = subMinutes(startsAt, 10);
+                  const windowEnd = addMinutes(startsAt, 60);
+                  const isJoinable = isAfter(now, windowStart) && isBefore(now, windowEnd);
+                  const isUpcoming = isBefore(now, windowStart);
+
+                  return isJoinable ? (
+                    <Button 
+                      className="w-full gap-2"
+                      size="lg"
+                      onClick={() => navigate(`/sessions/${pendingSession.id}/room`)}
+                    >
+                      <Video className="h-5 w-5" />
+                      {t('profile.join_session', 'Join Session')}
+                    </Button>
+                  ) : isUpcoming ? (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground justify-center">
+                      <Clock className="h-4 w-4" />
+                      {t('profile.opens_10_min_before', 'Room opens 10 minutes before the session')}
+                    </div>
+                  ) : null;
+                })()}
+
+                {pendingSession.status === 'rejected' && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full"
+                    onClick={() => fetchAvailability()}
+                  >
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    {t('profile.try_another_slot', 'Try another slot')}
+                  </Button>
+                )}
+
                 <Button 
-                  variant="outline" 
+                  variant="ghost" 
                   size="sm" 
                   className="w-full"
                   onClick={() => navigate(`/sessions/${pendingSession.id}`)}

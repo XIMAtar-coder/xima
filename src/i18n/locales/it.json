@@ -27,7 +27,12 @@
     "session_scheduled": "La tua sessione è programmata.",
     "view_session_details": "Vedi dettagli",
     "free_intro_completed": "Sessione introduttiva gratuita completata",
-    "paid_sessions_coming": "Le sessioni a pagamento saranno disponibili presto."
+    "paid_sessions_coming": "Le sessioni a pagamento saranno disponibili presto.",
+    "session_ready": "La tua sessione è confermata e pronta.",
+    "session_declined": "Il tuo mentore non ha potuto accettare questa richiesta.",
+    "join_session": "Partecipa alla Sessione",
+    "opens_10_min_before": "La stanza si apre 10 minuti prima della sessione",
+    "try_another_slot": "Prova un altro slot"
   },
   "sessions": {
     "session_not_found": "Sessione non trovata",
@@ -44,13 +49,38 @@
     "mentor_will_confirm": "Il tuo mentore esaminerà e confermerà questa richiesta. Riceverai un aggiornamento quando risponderà.",
     "session_confirmed": "Sessione confermata!",
     "prepare_for_session": "La tua sessione è confermata. Prepara le domande che vorresti discutere con il tuo mentore.",
+    "ready_to_join": "La tua sessione è pronta. Clicca il pulsante qui sotto per partecipare.",
+    "session_ended_msg": "Questa sessione è terminata.",
+    "join_session": "Partecipa alla Sessione",
+    "opens_10_min_before": "La stanza si apre 10 minuti prima della sessione",
+    "session_rejected": "Sessione rifiutata",
+    "mentor_rejected": "Il tuo mentore non ha potuto accettare questa richiesta.",
+    "session_cancelled": "Sessione annullata",
+    "session_was_cancelled": "Questa sessione è stata annullata.",
+    "book_new": "Prenota una nuova sessione",
     "shared_notes": "Note",
     "cancel_session": "Annulla Sessione",
     "confirm_cancel": "Annullare la Sessione?",
     "cancel_warning": "Sei sicuro di voler annullare questa sessione? Questa azione non può essere annullata.",
     "cancelled": "Sessione Annullata",
     "cancelled_desc": "La tua sessione è stata annullata.",
-    "free": "Gratuita"
+    "free": "Gratuita",
+    "not_confirmed": "Sessione Non Confermata",
+    "must_be_confirmed": "La sessione deve essere confermata prima di partecipare.",
+    "too_early": "La stanza si apre 10 minuti prima dell'inizio della sessione.",
+    "session_ended": "Questa sessione è terminata.",
+    "room_not_available": "Stanza Non Disponibile",
+    "scheduled_for": "Sessione programmata per:",
+    "view_details": "Vedi Dettagli Sessione",
+    "access_denied": "Accesso Negato",
+    "not_participant": "Non sei un partecipante di questa sessione.",
+    "exit_room": "Esci dalla Stanza",
+    "live": "In Diretta",
+    "video_call": "Video Chiamata"
+  },
+  "mentor": {
+    "action_calendar": "Calendario e Sessioni",
+    "action_calendar_desc": "Gestisci disponibilità e revisiona richieste"
   },
   "xima_core": {
     "page_subtitle": "Uno strumento decisionale standardizzato con scenario personalizzato dall'IA",
