@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,17 +8,40 @@ import {
   ArrowLeft, 
   Loader2, 
   AlertCircle, 
-  Video,
   Clock,
-  CheckCircle2
+  CheckCircle2,
+  Info
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { format, parseISO, isAfter, isBefore, addMinutes, subMinutes } from 'date-fns';
 
-// Video provider configuration
-const VIDEO_PROVIDER = 'jitsi';
-const VIDEO_BASE_URL = 'https://meet.jit.si';
+// Video provider configuration - always use public Jitsi for MVP
+const JITSI_DOMAIN = 'meet.jit.si';
+
+// Restricted domains that require auth/moderator login - we skip these
+const RESTRICTED_DOMAINS = ['8x8.vc', 'vpaas', 'jaas'];
+
+// Declare JitsiMeetExternalAPI type for TypeScript
+declare global {
+  interface Window {
+    JitsiMeetExternalAPI: new (domain: string, options: JitsiOptions) => JitsiAPI;
+  }
+}
+
+interface JitsiOptions {
+  roomName: string;
+  parentNode: HTMLElement;
+  userInfo?: { displayName: string };
+  configOverwrite?: Record<string, unknown>;
+  interfaceConfigOverwrite?: Record<string, unknown>;
+}
+
+interface JitsiAPI {
+  dispose: () => void;
+  executeCommand: (command: string, ...args: unknown[]) => void;
+  addListener: (event: string, handler: (...args: unknown[]) => void) => void;
+}
 
 interface SessionData {
   id: string;
@@ -42,13 +65,144 @@ export default function SessionRoom() {
   const [accessDenied, setAccessDenied] = useState(false);
   const [notInWindow, setNotInWindow] = useState(false);
   const [timeMessage, setTimeMessage] = useState<string>('');
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [readyToJoin, setReadyToJoin] = useState(false);
+  const [displayName, setDisplayName] = useState<string>('Participant');
+  const [usingFallbackProvider, setUsingFallbackProvider] = useState(false);
+  
+  const jitsiContainerRef = useRef<HTMLDivElement>(null);
+  const jitsiApiRef = useRef<JitsiAPI | null>(null);
 
   useEffect(() => {
     if (sessionId) {
       checkAccessAndLoadSession();
     }
+    
+    // Cleanup Jitsi API on unmount
+    return () => {
+      if (jitsiApiRef.current) {
+        jitsiApiRef.current.dispose();
+        jitsiApiRef.current = null;
+      }
+    };
   }, [sessionId]);
+
+  // Initialize Jitsi when ready
+  useEffect(() => {
+    if (readyToJoin && jitsiContainerRef.current && !jitsiApiRef.current) {
+      initializeJitsi();
+    }
+  }, [readyToJoin]);
+
+  const isRestrictedDomain = (url: string | null): boolean => {
+    if (!url) return false;
+    return RESTRICTED_DOMAINS.some(domain => url.toLowerCase().includes(domain));
+  };
+
+  const initializeJitsi = async () => {
+    if (!jitsiContainerRef.current || !sessionId) return;
+
+    // Load Jitsi IFrame API script if not already loaded
+    if (!window.JitsiMeetExternalAPI) {
+      const script = document.createElement('script');
+      script.src = `https://${JITSI_DOMAIN}/external_api.js`;
+      script.async = true;
+      script.onload = () => createJitsiMeeting();
+      script.onerror = () => {
+        console.error('[SessionRoom] Failed to load Jitsi API');
+        toast({
+          title: t('sessions.video_error', 'Video Error'),
+          description: t('sessions.failed_to_load_video', 'Failed to load video service. Please refresh.'),
+          variant: 'destructive',
+        });
+      };
+      document.body.appendChild(script);
+    } else {
+      createJitsiMeeting();
+    }
+  };
+
+  const createJitsiMeeting = () => {
+    if (!jitsiContainerRef.current || !sessionId) return;
+    if (jitsiApiRef.current) return; // Already created
+
+    const roomName = `xima-session-${sessionId}`;
+
+    try {
+      const api = new window.JitsiMeetExternalAPI(JITSI_DOMAIN, {
+        roomName,
+        parentNode: jitsiContainerRef.current,
+        userInfo: { 
+          displayName: displayName 
+        },
+        configOverwrite: {
+          // Disable pre-join page to go straight into the meeting
+          prejoinPageEnabled: false,
+          // Disable welcome page
+          enableWelcomePage: false,
+          // Disable deep linking prompts
+          disableDeepLinking: true,
+          // CRITICAL: Disable lobby/waiting room - allows anyone to start
+          lobby: { enabled: false },
+          'lobby.enabled': false, // Some deployments use this format
+          // CRITICAL: Disable user roles based on token - no moderator required
+          enableUserRolesBasedOnToken: false,
+          // Don't require display name popup
+          requireDisplayName: false,
+          // Audio/video defaults
+          startWithAudioMuted: false,
+          startWithVideoMuted: false,
+          // Disable invite functions (cleaner UI)
+          disableInviteFunctions: true,
+          // Hide some UI elements for cleaner experience
+          hideConferenceSubject: false,
+          hideConferenceTimer: false,
+          // Disable recording/livestream prompts
+          liveStreamingEnabled: false,
+          fileRecordingsEnabled: false,
+          // Disable third party requests
+          disableThirdPartyRequests: true,
+        },
+        interfaceConfigOverwrite: {
+          // Minimal toolbar
+          TOOLBAR_BUTTONS: [
+            'microphone', 'camera', 'closedcaptions', 'desktop', 
+            'fullscreen', 'hangup', 'chat', 'settings',
+            'videoquality', 'tileview'
+          ],
+          // Hide some UI elements
+          SHOW_JITSI_WATERMARK: false,
+          SHOW_WATERMARK_FOR_GUESTS: false,
+          SHOW_BRAND_WATERMARK: false,
+          BRAND_WATERMARK_LINK: '',
+          // Disable feedback
+          DISABLE_FOCUS_INDICATOR: true,
+          DISABLE_PRESENCE_STATUS: true,
+          // Default view
+          DEFAULT_BACKGROUND: '#1a1a2e',
+          TILE_VIEW_MAX_COLUMNS: 2,
+        },
+      });
+
+      jitsiApiRef.current = api;
+
+      // Listen for events
+      api.addListener('videoConferenceLeft', () => {
+        navigate(`/sessions/${sessionId}`);
+      });
+
+      api.addListener('readyToClose', () => {
+        navigate(`/sessions/${sessionId}`);
+      });
+
+    } catch (error) {
+      console.error('[SessionRoom] Failed to create Jitsi meeting:', error);
+      toast({
+        title: t('sessions.video_error', 'Video Error'),
+        description: t('sessions.failed_to_create_video', 'Failed to create video meeting. Please refresh.'),
+        variant: 'destructive',
+      });
+    }
+  };
 
   const checkAccessAndLoadSession = async () => {
     setLoading(true);
@@ -62,13 +216,13 @@ export default function SessionRoom() {
       // Get user's profile ID and mentor ID (if any)
       const { data: profile } = await supabase
         .from('profiles')
-        .select('id')
+        .select('id, full_name')
         .eq('user_id', user.id)
         .single();
 
       const { data: mentorRecord } = await supabase
         .from('mentors')
-        .select('id')
+        .select('id, name')
         .eq('user_id', user.id)
         .maybeSingle();
 
@@ -95,6 +249,13 @@ export default function SessionRoom() {
         setAccessDenied(true);
         setLoading(false);
         return;
+      }
+
+      // Set display name for Jitsi
+      if (isMentor && mentorRecord?.name) {
+        setDisplayName(mentorRecord.name);
+      } else if (isCandidate && profile?.full_name) {
+        setDisplayName(profile.full_name);
       }
 
       // Check if session is confirmed
@@ -130,35 +291,22 @@ export default function SessionRoom() {
         return;
       }
 
-      // Session is accessible - ensure video room exists
-      let roomUrl = sessionData.video_room_url;
+      // Check if stored URL is from a restricted domain
+      if (isRestrictedDomain(sessionData.video_room_url)) {
+        setUsingFallbackProvider(true);
+      }
+
+      // Session is accessible - ensure video room exists in DB
       const roomName = `xima-session-${sessionId}`;
       
-      // Build Jitsi URL with config overrides to disable lobby/moderator gate
-      // This allows both participants to start/join without waiting for a moderator
-      const jitsiConfigParams = [
-        'config.prejoinPageEnabled=false',
-        'config.enableWelcomePage=false',
-        'config.disableDeepLinking=true',
-        'config.lobby.enabled=false',
-        'config.requireDisplayName=false',
-        'config.startWithAudioMuted=true',
-        'config.startWithVideoMuted=false',
-      ].join('&');
-      
-      const fullRoomUrl = `${VIDEO_BASE_URL}/${roomName}#${jitsiConfigParams}`;
-      
-      if (!roomUrl) {
-        // Create room lazily - store base URL without config params
-        roomUrl = `${VIDEO_BASE_URL}/${roomName}`;
-
-        // Update the session with video room info
+      if (!sessionData.video_room_name) {
+        // Store room info in DB
         await supabase
           .from('mentor_sessions')
           .update({
-            video_provider: VIDEO_PROVIDER,
+            video_provider: 'jitsi',
             video_room_name: roomName,
-            video_room_url: roomUrl,
+            video_room_url: `https://${JITSI_DOMAIN}/${roomName}`,
             video_room_created_at: new Date().toISOString(),
           })
           .eq('id', sessionId);
@@ -169,7 +317,7 @@ export default function SessionRoom() {
           actor_user_id: user.id,
           actor_role: isMentor ? 'mentor' : 'candidate',
           action: 'video_room_created',
-          meta: { provider: VIDEO_PROVIDER, room_name: roomName },
+          meta: { provider: 'jitsi', room_name: roomName, domain: JITSI_DOMAIN },
         });
       }
 
@@ -179,12 +327,11 @@ export default function SessionRoom() {
         actor_user_id: user.id,
         actor_role: isMentor ? 'mentor' : 'candidate',
         action: 'video_room_joined',
-        meta: {},
+        meta: { domain: JITSI_DOMAIN },
       });
 
       setSession(sessionData as SessionData);
-      // Use the full URL with config overrides for the iframe
-      setVideoUrl(fullRoomUrl);
+      setReadyToJoin(true);
     } catch (error) {
       console.error('[SessionRoom] Error:', error);
       setAccessDenied(true);
@@ -251,16 +398,25 @@ export default function SessionRoom() {
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => navigate(`/sessions/${sessionId}`)}
+          onClick={() => {
+            if (jitsiApiRef.current) {
+              jitsiApiRef.current.dispose();
+              jitsiApiRef.current = null;
+            }
+            navigate(`/sessions/${sessionId}`);
+          }}
           className="gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
           {t('sessions.exit_room', 'Exit Room')}
         </Button>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-muted-foreground hidden sm:block">
-            {t('sessions.refresh_hint', 'If the meeting loads forever, refresh once.')}
-          </span>
+          {usingFallbackProvider && (
+            <span className="text-xs text-muted-foreground hidden sm:flex items-center gap-1">
+              <Info className="h-3 w-3" />
+              {t('sessions.using_default_provider', 'Using XIMA default room provider')}
+            </span>
+          )}
           <Badge variant="default" className="gap-1">
             <CheckCircle2 className="h-3 w-3" />
             {t('sessions.live', 'Live')}
@@ -268,17 +424,12 @@ export default function SessionRoom() {
         </div>
       </div>
 
-      {/* Video Iframe */}
-      <div className="flex-1 relative">
-        {videoUrl && (
-          <iframe
-            src={videoUrl}
-            allow="camera; microphone; fullscreen; display-capture; autoplay"
-            className="absolute inset-0 w-full h-full border-0"
-            title={t('sessions.video_call', 'Video Call')}
-          />
-        )}
-      </div>
+      {/* Jitsi Container - API will inject the iframe here */}
+      <div 
+        ref={jitsiContainerRef}
+        className="flex-1 relative bg-black"
+        style={{ minHeight: 0 }}
+      />
     </div>
   );
 }

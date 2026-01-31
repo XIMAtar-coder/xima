@@ -88,7 +88,11 @@
     "reschedule_confirmed": "Riprogrammazione Confermata",
     "reschedule_confirmed_desc": "L'orario della sessione è stato aggiornato al nuovo programma sopra.",
     "reschedule_declined": "Riprogrammazione Rifiutata",
-    "reschedule_declined_desc": "L'orario originale della sessione rimane invariato."
+    "reschedule_declined_desc": "L'orario originale della sessione rimane invariato.",
+    "video_error": "Errore Video",
+    "failed_to_load_video": "Impossibile caricare il servizio video. Aggiorna la pagina.",
+    "failed_to_create_video": "Impossibile creare la videochiamata. Aggiorna la pagina.",
+    "using_default_provider": "Utilizzo del provider predefinito XIMA"
   },
   "mentor": {
     "action_calendar": "Calendario e Sessioni",
