@@ -132,9 +132,24 @@ export default function SessionRoom() {
 
       // Session is accessible - ensure video room exists
       let roomUrl = sessionData.video_room_url;
+      const roomName = `xima-session-${sessionId}`;
+      
+      // Build Jitsi URL with config overrides to disable lobby/moderator gate
+      // This allows both participants to start/join without waiting for a moderator
+      const jitsiConfigParams = [
+        'config.prejoinPageEnabled=false',
+        'config.enableWelcomePage=false',
+        'config.disableDeepLinking=true',
+        'config.lobby.enabled=false',
+        'config.requireDisplayName=false',
+        'config.startWithAudioMuted=true',
+        'config.startWithVideoMuted=false',
+      ].join('&');
+      
+      const fullRoomUrl = `${VIDEO_BASE_URL}/${roomName}#${jitsiConfigParams}`;
+      
       if (!roomUrl) {
-        // Create room lazily
-        const roomName = `xima-session-${sessionId}`;
+        // Create room lazily - store base URL without config params
         roomUrl = `${VIDEO_BASE_URL}/${roomName}`;
 
         // Update the session with video room info
@@ -168,7 +183,8 @@ export default function SessionRoom() {
       });
 
       setSession(sessionData as SessionData);
-      setVideoUrl(roomUrl);
+      // Use the full URL with config overrides for the iframe
+      setVideoUrl(fullRoomUrl);
     } catch (error) {
       console.error('[SessionRoom] Error:', error);
       setAccessDenied(true);
@@ -241,7 +257,10 @@ export default function SessionRoom() {
           <ArrowLeft className="h-4 w-4" />
           {t('sessions.exit_room', 'Exit Room')}
         </Button>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-muted-foreground hidden sm:block">
+            {t('sessions.refresh_hint', 'If the meeting loads forever, refresh once.')}
+          </span>
           <Badge variant="default" className="gap-1">
             <CheckCircle2 className="h-3 w-3" />
             {t('sessions.live', 'Live')}
