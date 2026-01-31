@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { RefreshCw } from 'lucide-react';
 
 
 interface PillarScore {
@@ -35,6 +36,23 @@ interface FeaturedProfessionalsProps {
   ximatar?: string;
 }
 
+// Simple seeded shuffle for client-side fallback
+function seededShuffle<T>(arr: T[], seed: string): T[] {
+  const result = [...arr];
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    const char = seed.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  for (let i = result.length - 1; i > 0; i--) {
+    hash = Math.abs((hash * 1103515245 + 12345) & 0x7fffffff);
+    const j = hash % (i + 1);
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
 export default function FeaturedProfessionals({ 
   limit = 3,
   onSelect,
@@ -44,31 +62,39 @@ export default function FeaturedProfessionals({
 }: FeaturedProfessionalsProps) {
   const { i18n, t } = useTranslation();
   const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [pinnedProfessional, setPinnedProfessional] = useState<Professional | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+  const [refreshSeed, setRefreshSeed] = useState<string | null>(null);
 
   const locale = (i18n.language || 'it').slice(0, 2) as 'it' | 'en' | 'es';
 
-  const fetchProfessionals = async () => {
-    setLoading(true);
+  const fetchProfessionals = useCallback(async (seed?: string | null, isRefresh = false) => {
+    if (isRefresh) {
+      setRefreshing(true);
+    } else {
+      setLoading(true);
+    }
     setError(null);
     
     try {
-      console.log('[FeaturedProfessionals] Fetching recommendations with:', { pillarScores, ximatar });
+      console.log('[FeaturedProfessionals] Fetching recommendations with:', { pillarScores, ximatar, refresh_seed: seed });
       
       // Call the recommend-mentors edge function
       const { data, error: fnError } = await supabase.functions.invoke('recommend-mentors', {
         body: { 
           pillar_scores: pillarScores || [],
-          ximatar: ximatar || null
+          ximatar: ximatar || null,
+          refresh_seed: seed || undefined
         }
       });
 
       if (fnError) {
         console.error('[FeaturedProfessionals] Error from edge function:', fnError);
         // Fallback to public view query
-        await fetchFromPublicView();
+        await fetchFromPublicView(seed);
         return;
       }
       
@@ -90,20 +116,41 @@ export default function FeaturedProfessionals({
           active_coached_profiles_count: m.active_coached_profiles_count || 0,
           total_coached_profiles_count: m.total_coached_profiles_count || 0,
         }));
+        
+        // Handle pinned professional (selected but not in new list)
+        handlePinnedProfessional(mapped);
         setProfessionals(mapped);
       } else {
         // Fallback to public view if no recommendations
-        await fetchFromPublicView();
+        await fetchFromPublicView(seed);
       }
     } catch (err) {
       console.error('[FeaturedProfessionals] Error:', err);
-      await fetchFromPublicView();
+      await fetchFromPublicView(seed);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
-  };
+  }, [pillarScores, ximatar]);
 
-  const fetchFromPublicView = async () => {
+  // Handle pinned professional when list changes
+  const handlePinnedProfessional = useCallback((newList: Professional[]) => {
+    if (selectedId) {
+      const stillInList = newList.some(p => p.id === selectedId);
+      if (!stillInList && professionals.length > 0) {
+        // Find the selected professional from current list and pin it
+        const selected = professionals.find(p => p.id === selectedId);
+        if (selected) {
+          setPinnedProfessional(selected);
+        }
+      } else if (stillInList) {
+        // Clear pin if it's back in the list
+        setPinnedProfessional(null);
+      }
+    }
+  }, [selectedId, professionals]);
+
+  const fetchFromPublicView = async (seed?: string | null) => {
     console.log('[FeaturedProfessionals] Fetching from mentors_public view');
     
     // Use the public view that is accessible to both anon and authenticated users
@@ -119,7 +166,7 @@ export default function FeaturedProfessionals({
     }
     
     if (data && data.length > 0) {
-      const mapped = data.map((m: any) => ({
+      let mapped = data.map((m: any) => ({
         id: m.id,
         full_name: m.name || 'Unknown',
         title: m.title || '',
@@ -134,6 +181,13 @@ export default function FeaturedProfessionals({
         active_coached_profiles_count: m.active_coached_profiles_count || 0,
         total_coached_profiles_count: m.total_coached_profiles_count || 0,
       }));
+      
+      // Apply seeded shuffle for fallback path if seed is provided
+      if (seed) {
+        mapped = seededShuffle(mapped, seed);
+      }
+      
+      handlePinnedProfessional(mapped);
       setProfessionals(mapped);
     } else {
       console.log('[FeaturedProfessionals] No mentors found in public view');
@@ -141,9 +195,16 @@ export default function FeaturedProfessionals({
     }
   };
 
+  // Handle refresh button click
+  const handleRefresh = useCallback(() => {
+    const newSeed = Date.now().toString();
+    setRefreshSeed(newSeed);
+    fetchProfessionals(newSeed, true);
+  }, [fetchProfessionals]);
+
   useEffect(() => {
-    fetchProfessionals();
-  }, [pillarScores, ximatar]);
+    fetchProfessionals(refreshSeed, false);
+  }, [pillarScores, ximatar, fetchProfessionals]);
 
   if (loading) {
     return (
@@ -198,9 +259,38 @@ export default function FeaturedProfessionals({
     return `${url}?v=${encodeURIComponent(cacheBuster)}`;
   };
 
+  // Build the display list: pinned professional first (if any), then others
+  const displayList = pinnedProfessional 
+    ? [pinnedProfessional, ...professionals.filter(p => p.id !== pinnedProfessional.id)]
+    : professionals;
+
   return (
-    <div className="grid md:grid-cols-3 gap-4">
-      {professionals.slice(0, limit).map((p) => {
+    <div className="space-y-4">
+      {/* Refresh button header */}
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-muted-foreground">
+          {t('professionals.showing_compatible', 'Showing compatible mentors for your profile')}
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleRefresh}
+          disabled={refreshing || loading}
+          className="gap-2"
+        >
+          <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+          {t('professionals.refresh_mentors', 'Refresh mentors')}
+        </Button>
+      </div>
+      
+      {/* Hint text */}
+      <p className="text-xs text-muted-foreground">
+        {t('professionals.refresh_hint', 'Not satisfied? Refresh to see other compatible mentors.')}
+      </p>
+
+      <div className="grid md:grid-cols-3 gap-4">
+      {displayList.slice(0, limit).map((p) => {
+        const isPinned = pinnedProfessional?.id === p.id;
         const bio = (typeof p.locale_bio === 'object' && p.locale_bio !== null)
           ? (p.locale_bio[locale] || p.locale_bio.en || '')
           : '';
@@ -218,8 +308,14 @@ export default function FeaturedProfessionals({
             key={p.id} 
             className={`p-6 flex flex-col gap-4 hover:shadow-lg transition-all ${
               isSelected ? 'ring-2 ring-primary shadow-xl' : ''
-            }`}
+            } ${isPinned ? 'border-primary/50' : ''}`}
           >
+            {/* Pinned/Selected badge for mentors no longer in refreshed list */}
+            {isPinned && (
+              <Badge variant="secondary" className="w-fit text-xs">
+                {t('professionals.your_selection', 'Your selection')}
+              </Badge>
+            )}
             <div className="flex items-center gap-4">
               <div className="relative h-16 w-16 rounded-full overflow-hidden bg-muted flex-shrink-0 ring-2 ring-primary/20">
                 {avatarUrl && !imageErrors.has(p.id) ? (
@@ -323,6 +419,7 @@ export default function FeaturedProfessionals({
           </Card>
         );
       })}
+      </div>
     </div>
   );
 }
