@@ -66,6 +66,7 @@ import AuthCallback from "./pages/AuthCallback";
 import CandidateSettings from "./pages/Settings";
 // Mentor Portal
 import MentorPortal from "./pages/mentor/MentorPortal";
+import MentorLogin from "./pages/mentor/MentorLogin";
 import MentorProfileEdit from "./pages/mentor/MentorProfileEdit";
 import MentorPreview from "./pages/mentor/MentorPreview";
 
@@ -117,6 +118,7 @@ const AppContent = () => {
           <Route path="/admin/eligibility" element={<EligibilityReview />} />
           {/* Mentor Portal Routes */}
           <Route path="/mentor" element={<MentorPortal />} />
+          <Route path="/mentor/login" element={<MentorLogin />} />
           <Route path="/mentor/profile" element={<MentorProfileEdit />} />
           <Route path="/mentor/preview" element={<MentorPreview />} />
           {/* Business Portal Routes */}

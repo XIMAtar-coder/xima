@@ -624,7 +624,21 @@
     "intro_call": "15-minute intro call",
     "flexible_scheduling": "Flexible scheduling",
     "personalized_guidance": "Personalized guidance",
-    "selected": "Selected"
+    "selected": "Selected",
+    "login_title": "Mentor Login",
+    "login_description": "Welcome to the XIMA Mentor Portal. Access your profile, manage your availability, and connect with candidates seeking guidance on their professional journey.",
+    "email_placeholder": "mentor@example.com",
+    "login_not_mentor_title": "Access Denied",
+    "login_not_mentor_desc": "This account is not registered as a mentor.",
+    "login_success_title": "Welcome back!",
+    "login_success_desc": "Successfully logged in to the Mentor Portal",
+    "forgot_password_email_required_title": "Email Required",
+    "forgot_password_email_required_desc": "Please enter your email address first",
+    "forgot_password_sent_title": "Reset Email Sent",
+    "forgot_password_sent_desc": "Check your email for the password reset link",
+    "login_help_text": "If you are a mentor and don't have access yet, please contact support.",
+    "not_a_mentor": "Not a mentor?",
+    "go_to_candidate_login": "Go to Candidate login"
   },
   "dashboard": {
     "title": "Your XIMA Dashboard",
@@ -747,7 +761,9 @@
     "welcome_back": "Welcome back to XIMA.",
     "login_failed": "Login failed",
     "invalid_credentials": "Invalid email or password",
-    "enter_both": "Please enter both email and password"
+    "enter_both": "Please enter both email and password",
+    "are_you_mentor": "Are you a mentor?",
+    "mentor_login_link": "Login here"
   },
   "auth": {
     "or": "or",
