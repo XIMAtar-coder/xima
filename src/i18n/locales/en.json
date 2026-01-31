@@ -76,11 +76,27 @@
     "not_participant": "You are not a participant in this session.",
     "exit_room": "Exit Room",
     "live": "Live",
-    "video_call": "Video Call"
+    "video_call": "Video Call",
+    "reschedule_proposed": "Reschedule Proposed",
+    "mentor_proposed_new_time": "Your mentor has proposed a new time for this session:",
+    "accept_new_time": "Accept New Time",
+    "keep_original": "Keep Original Time",
+    "reschedule_accepted": "Reschedule Accepted",
+    "reschedule_accepted_desc": "Session time has been updated.",
+    "reschedule_rejected": "Reschedule Rejected",
+    "reschedule_rejected_desc": "Original session time remains unchanged.",
+    "reschedule_confirmed": "Reschedule Confirmed",
+    "reschedule_confirmed_desc": "Session time has been updated to the new schedule above.",
+    "reschedule_declined": "Reschedule Declined",
+    "reschedule_declined_desc": "Original session time remains unchanged."
   },
   "mentor": {
     "action_calendar": "Calendar & Sessions",
-    "action_calendar_desc": "Manage availability and review requests"
+    "action_calendar_desc": "Manage availability and review requests",
+    "awaiting_reschedule_response": "Awaiting candidate response to reschedule",
+    "reschedule_accepted": "Reschedule accepted",
+    "reschedule_rejected": "Reschedule declined",
+    "done": "Done"
   },
   "xima_core": {
     "page_subtitle": "A standardized decision-making instrument with AI-personalized scenario",

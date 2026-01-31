@@ -30,6 +30,10 @@ export interface MentorSession {
   created_at: string;
   updated_at: string;
   candidate_name?: string;
+  // Reschedule proposal fields
+  proposed_start_at: string | null;
+  proposed_end_at: string | null;
+  reschedule_status: 'none' | 'proposed' | 'accepted' | 'rejected';
 }
 
 export interface SessionAuditLog {
@@ -72,7 +76,10 @@ export function useMentorCalendar(mentorId: string | null) {
       const { data: sessionsData, error: sessionsError } = await supabase
         .from('mentor_sessions')
         .select(`
-          *,
+          id, mentor_id, candidate_profile_id, availability_slot_id,
+          starts_at, ends_at, status, title, notes_private, notes_shared,
+          created_by, created_at, updated_at,
+          proposed_start_at, proposed_end_at, reschedule_status,
           profiles!mentor_sessions_candidate_profile_id_fkey (
             full_name,
             name
@@ -92,6 +99,7 @@ export function useMentorCalendar(mentorId: string | null) {
         ...s,
         status: s.status as MentorSession['status'],
         created_by: s.created_by as MentorSession['created_by'],
+        reschedule_status: (s.reschedule_status || 'none') as MentorSession['reschedule_status'],
         candidate_name: s.profiles?.full_name || s.profiles?.name || 'Anonymous'
       })));
     } catch (err: any) {

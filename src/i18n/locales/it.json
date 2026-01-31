@@ -76,11 +76,27 @@
     "not_participant": "Non sei un partecipante di questa sessione.",
     "exit_room": "Esci dalla Stanza",
     "live": "In Diretta",
-    "video_call": "Video Chiamata"
+    "video_call": "Video Chiamata",
+    "reschedule_proposed": "Riprogrammazione Proposta",
+    "mentor_proposed_new_time": "Il tuo mentor ha proposto un nuovo orario per questa sessione:",
+    "accept_new_time": "Accetta Nuovo Orario",
+    "keep_original": "Mantieni Orario Originale",
+    "reschedule_accepted": "Riprogrammazione Accettata",
+    "reschedule_accepted_desc": "L'orario della sessione è stato aggiornato.",
+    "reschedule_rejected": "Riprogrammazione Rifiutata",
+    "reschedule_rejected_desc": "L'orario originale della sessione rimane invariato.",
+    "reschedule_confirmed": "Riprogrammazione Confermata",
+    "reschedule_confirmed_desc": "L'orario della sessione è stato aggiornato al nuovo programma sopra.",
+    "reschedule_declined": "Riprogrammazione Rifiutata",
+    "reschedule_declined_desc": "L'orario originale della sessione rimane invariato."
   },
   "mentor": {
     "action_calendar": "Calendario e Sessioni",
-    "action_calendar_desc": "Gestisci disponibilità e revisiona richieste"
+    "action_calendar_desc": "Gestisci disponibilità e revisiona richieste",
+    "awaiting_reschedule_response": "In attesa della risposta del candidato alla riprogrammazione",
+    "reschedule_accepted": "Riprogrammazione accettata",
+    "reschedule_rejected": "Riprogrammazione rifiutata",
+    "done": "Completato"
   },
   "xima_core": {
     "page_subtitle": "Uno strumento decisionale standardizzato con scenario personalizzato dall'IA",

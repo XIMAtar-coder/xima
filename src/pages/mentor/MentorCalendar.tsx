@@ -147,6 +147,7 @@ export default function MentorCalendar() {
   const SessionCard = ({ session }: { session: MentorSession }) => {
     const statusBadge = STATUS_BADGES[session.status] || STATUS_BADGES.requested;
     const joinable = isSessionJoinable(session);
+    const hasPendingReschedule = session.reschedule_status === 'proposed';
     
     return (
       <Card className="hover:border-primary/30 transition-colors">
@@ -166,6 +167,25 @@ export default function MentorCalendar() {
                 <Clock className="h-3 w-3 ml-2" />
                 {format(parseISO(session.starts_at), 'HH:mm')} - {format(parseISO(session.ends_at), 'HH:mm')}
               </div>
+              {/* Reschedule status indicator */}
+              {hasPendingReschedule && (
+                <div className="flex items-center gap-1.5 mt-2 text-xs text-amber-600 dark:text-amber-400">
+                  <RefreshCw className="h-3 w-3" />
+                  {t('mentor.awaiting_reschedule_response', 'Awaiting candidate response to reschedule')}
+                </div>
+              )}
+              {session.reschedule_status === 'accepted' && (
+                <div className="flex items-center gap-1.5 mt-2 text-xs text-green-600 dark:text-green-400">
+                  <Check className="h-3 w-3" />
+                  {t('mentor.reschedule_accepted', 'Reschedule accepted')}
+                </div>
+              )}
+              {session.reschedule_status === 'rejected' && (
+                <div className="flex items-center gap-1.5 mt-2 text-xs text-muted-foreground">
+                  <X className="h-3 w-3" />
+                  {t('mentor.reschedule_rejected', 'Reschedule declined')}
+                </div>
+              )}
             </div>
             
             <div className="flex items-center gap-1">
@@ -189,12 +209,12 @@ export default function MentorCalendar() {
                       className="gap-1"
                     >
                       <Video className="h-4 w-4" />
-                      Join
+                      {t('sessions.join_session', 'Join')}
                     </Button>
                   )}
                   <Button size="sm" variant="outline" onClick={() => completeSession(session.id)}>
                     <Check className="h-4 w-4 mr-1" />
-                    Done
+                    {t('mentor.done', 'Done')}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => cancelSession(session.id)}>
                     <Ban className="h-4 w-4" />
