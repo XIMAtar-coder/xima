@@ -164,7 +164,7 @@ const Login = () => {
             
             <GoogleAuthButton mode="login" />
           </CardContent>
-          <CardFooter className="flex justify-center">
+        <CardFooter className="flex flex-col gap-2">
             <p className="text-sm text-[#A3ABB5]">
               {t('login.no_account')}{" "}
               <Button 
@@ -173,6 +173,16 @@ const Login = () => {
                 onClick={() => navigate('/register')}
               >
                 {t('login.sign_up')}
+              </Button>
+            </p>
+            <p className="text-sm text-[#A3ABB5]">
+              {t('login.are_you_mentor', 'Are you a mentor?')}{" "}
+              <Button 
+                variant="link" 
+                className="p-0 h-auto text-[#3A9FFF] hover:text-[#5AB4FF]"
+                onClick={() => navigate('/mentor/login')}
+              >
+                {t('login.mentor_login_link', 'Login here')}
               </Button>
             </p>
           </CardFooter>

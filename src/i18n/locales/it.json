@@ -602,7 +602,21 @@
     "intro_call": "Chiamata introduttiva di 15 minuti",
     "flexible_scheduling": "Programmazione flessibile",
     "personalized_guidance": "Guida personalizzata",
-    "selected": "Selezionato"
+    "selected": "Selezionato",
+    "login_title": "Accesso Mentore",
+    "login_description": "Benvenuto nel Portale Mentore XIMA. Accedi al tuo profilo, gestisci la tua disponibilità e connettiti con candidati che cercano guida nel loro percorso professionale.",
+    "email_placeholder": "mentore@esempio.com",
+    "login_not_mentor_title": "Accesso Negato",
+    "login_not_mentor_desc": "Questo account non è registrato come mentore.",
+    "login_success_title": "Bentornato!",
+    "login_success_desc": "Accesso al Portale Mentore effettuato con successo",
+    "forgot_password_email_required_title": "Email Richiesta",
+    "forgot_password_email_required_desc": "Inserisci prima il tuo indirizzo email",
+    "forgot_password_sent_title": "Email di Reset Inviata",
+    "forgot_password_sent_desc": "Controlla la tua email per il link di reset della password",
+    "login_help_text": "Se sei un mentore e non hai ancora accesso, contatta il supporto.",
+    "not_a_mentor": "Non sei un mentore?",
+    "go_to_candidate_login": "Vai al login Candidati"
   },
   "dashboard": {
     "title": "La Tua Dashboard XIMA",
@@ -932,7 +946,9 @@
     "welcome_back": "Bentornato su XIMA.",
     "login_failed": "Accesso fallito",
     "invalid_credentials": "Email o password non validi",
-    "enter_both": "Inserisci sia email che password"
+    "enter_both": "Inserisci sia email che password",
+    "are_you_mentor": "Sei un mentore?",
+    "mentor_login_link": "Accedi qui"
   },
   "auth": {
     "or": "oppure",
