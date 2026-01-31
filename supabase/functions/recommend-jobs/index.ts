@@ -62,20 +62,21 @@ Deno.serve(async (req) => {
       global: { headers: { Authorization: authHeader } }
     });
 
-    // CRITICAL: Must pass token explicitly for Lovable Cloud (ES256 signing)
+    // Use getClaims() instead of getUser() - validates JWT signature without checking session existence
+    // This matches PostgREST behavior and is more resilient to stale sessions
     const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser(token);
+    const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
     
-    if (authError || !user) {
-      console.error('[recommend-jobs] Authentication failed:', authError?.message);
+    if (claimsError || !claimsData?.claims?.sub) {
+      console.error('[recommend-jobs] JWT validation failed:', claimsError?.message);
       return new Response(
         JSON.stringify({ error: 'Unauthorized', message: 'Invalid or expired token' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Use the authenticated user's ID instead of accepting from request body
-    const userId = user.id;
+    // Use the user ID from JWT claims
+    const userId = claimsData.claims.sub as string;
     console.log(`[recommend-jobs] Generating recommendations for authenticated user: ${userId}`);
 
     // Use service role for database operations that need RLS bypass
