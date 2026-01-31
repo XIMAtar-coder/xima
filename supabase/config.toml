@@ -37,7 +37,7 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.recommend-jobs]
-verify_jwt = true
+verify_jwt = false
 
 [functions.get-field-averages]
 verify_jwt = false

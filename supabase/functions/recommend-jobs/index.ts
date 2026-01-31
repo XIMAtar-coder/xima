@@ -57,12 +57,14 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Create client with user's auth context to validate the JWT
+    // Create client with user's auth context
     const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } }
     });
 
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
+    // CRITICAL: Must pass token explicitly for Lovable Cloud (ES256 signing)
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser(token);
     
     if (authError || !user) {
       console.error('[recommend-jobs] Authentication failed:', authError?.message);
