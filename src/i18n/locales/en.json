@@ -88,7 +88,11 @@
     "reschedule_confirmed": "Reschedule Confirmed",
     "reschedule_confirmed_desc": "Session time has been updated to the new schedule above.",
     "reschedule_declined": "Reschedule Declined",
-    "reschedule_declined_desc": "Original session time remains unchanged."
+    "reschedule_declined_desc": "Original session time remains unchanged.",
+    "video_error": "Video Error",
+    "failed_to_load_video": "Failed to load video service. Please refresh.",
+    "failed_to_create_video": "Failed to create video meeting. Please refresh.",
+    "using_default_provider": "Using XIMA default room provider"
   },
   "mentor": {
     "action_calendar": "Calendar & Sessions",
