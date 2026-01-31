@@ -10,7 +10,7 @@ import { useUserHeaderData } from '@/hooks/useUserHeaderData';
 import { supabase } from '@/integrations/supabase/client';
 import { NotificationsDropdown } from '../NotificationsDropdown';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu } from 'lucide-react';
+import { Menu, GraduationCap } from 'lucide-react';
 import Footer from './Footer';
 
 interface MainLayoutProps {
@@ -27,6 +27,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
   const { assessmentInProgress } = useAssessment();
   const [scrolled, setScrolled] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isMentor, setIsMentor] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const headerData = useUserHeaderData(user?.id);
 
@@ -55,6 +56,31 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
     };
     
     checkAdminRole();
+  }, [user?.id]);
+
+  // Check if user is a mentor
+  useEffect(() => {
+    const checkMentorStatus = async () => {
+      if (!user?.id) {
+        setIsMentor(false);
+        return;
+      }
+      
+      try {
+        const { data, error } = await supabase
+          .from('mentors')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        
+        setIsMentor(!!data && !error);
+      } catch (error) {
+        console.error('Error checking mentor status:', error);
+        setIsMentor(false);
+      }
+    };
+    
+    checkMentorStatus();
   }, [user?.id]);
 
   useEffect(() => {
@@ -248,6 +274,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         >
                           {t('nav.feed')}
                         </button>
+                        {isMentor && (
+                          <button
+                            onClick={() => {
+                              navigate('/mentor');
+                              setMobileMenuOpen(false);
+                            }}
+                            className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2 flex items-center gap-2"
+                          >
+                            <GraduationCap className="h-4 w-4" />
+                            {t('nav.mentor_portal', 'Mentor Portal')}
+                          </button>
+                        )}
                       </>
                     )}
                     
@@ -364,6 +402,23 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
                       )}
                     </button>
+                    {isMentor && (
+                      <button 
+                        onClick={() => navigate('/mentor')}
+                        className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative flex items-center gap-1.5 ${
+                          location.pathname.startsWith('/mentor') && !location.pathname.includes('/login')
+                            ? 'text-[hsl(var(--xima-accent))]' 
+                            : ''
+                        }`}
+                        style={{ fontWeight: 500, letterSpacing: '0.05em' }}
+                      >
+                        <GraduationCap className="h-4 w-4" />
+                        {t('nav.mentor_portal', 'Mentor Portal')}
+                        {location.pathname.startsWith('/mentor') && !location.pathname.includes('/login') && (
+                          <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
+                        )}
+                      </button>
+                    )}
                   </div>
                   
                   {/* User Info - Desktop */}
