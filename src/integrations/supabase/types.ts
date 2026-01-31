@@ -2508,11 +2508,14 @@ export type Database = {
           candidate_profile_id: string
           created_at: string
           created_by: string
+          duration_minutes: number | null
           ends_at: string
           id: string
           mentor_id: string
           notes_private: string | null
           notes_shared: string | null
+          price_cents: number | null
+          session_type: string | null
           starts_at: string
           status: string
           title: string | null
@@ -2523,11 +2526,14 @@ export type Database = {
           candidate_profile_id: string
           created_at?: string
           created_by: string
+          duration_minutes?: number | null
           ends_at: string
           id?: string
           mentor_id: string
           notes_private?: string | null
           notes_shared?: string | null
+          price_cents?: number | null
+          session_type?: string | null
           starts_at: string
           status?: string
           title?: string | null
@@ -2538,11 +2544,14 @@ export type Database = {
           candidate_profile_id?: string
           created_at?: string
           created_by?: string
+          duration_minutes?: number | null
           ends_at?: string
           id?: string
           mentor_id?: string
           notes_private?: string | null
           notes_shared?: string | null
+          price_cents?: number | null
+          session_type?: string | null
           starts_at?: string
           status?: string
           title?: string | null
@@ -2911,6 +2920,7 @@ export type Database = {
           cv_scores: Json | null
           drive_level: string | null
           email: string | null
+          free_intro_session_used_at: string | null
           full_name: string | null
           id: string
           mentor: Json | null
@@ -2940,6 +2950,7 @@ export type Database = {
           cv_scores?: Json | null
           drive_level?: string | null
           email?: string | null
+          free_intro_session_used_at?: string | null
           full_name?: string | null
           id?: string
           mentor?: Json | null
@@ -2969,6 +2980,7 @@ export type Database = {
           cv_scores?: Json | null
           drive_level?: string | null
           email?: string | null
+          free_intro_session_used_at?: string | null
           full_name?: string | null
           id?: string
           mentor?: Json | null
@@ -3704,6 +3716,7 @@ export type Database = {
         Args: { p_feed_item_id: string; p_hiring_goal_id?: string }
         Returns: string
       }
+      request_free_intro_session: { Args: { p_slot_id: string }; Returns: Json }
       request_mentor_session: { Args: { p_slot_id: string }; Returns: Json }
     }
     Enums: {

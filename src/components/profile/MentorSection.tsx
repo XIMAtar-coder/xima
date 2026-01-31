@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -14,9 +15,10 @@ import {
   CheckCircle2, 
   Star, 
   CalendarDays,
-  Bell,
   RefreshCw,
-  User
+  User,
+  AlertCircle,
+  Eye
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -60,16 +62,24 @@ interface MentorInfo {
   avatar_url?: string;
 }
 
+interface PendingSession {
+  id: string;
+  starts_at: string;
+  ends_at: string;
+  status: string;
+}
+
 interface MentorSectionProps {
   mentor: MentorLike | null;
   onBookingSuccess?: () => void;
 }
 
-type AvailabilityState = 'loading' | 'no_availability' | 'no_slots' | 'has_slots';
+type AvailabilityState = 'loading' | 'no_availability' | 'no_slots' | 'has_slots' | 'has_pending_session' | 'free_intro_used';
 
 export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingSuccess }) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [slots, setSlots] = useState<Slot[]>([]);
   const [mentorInfo, setMentorInfo] = useState<MentorInfo | null>(null);
   const [isLoadingSlots, setIsLoadingSlots] = useState(true);
@@ -79,6 +89,8 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [availabilityState, setAvailabilityState] = useState<AvailabilityState>('loading');
   const [availabilityMessage, setAvailabilityMessage] = useState<string | null>(null);
+  const [pendingSession, setPendingSession] = useState<PendingSession | null>(null);
+  const [freeIntroUsed, setFreeIntroUsed] = useState(false);
 
   const dateLocale = i18n.language?.startsWith('it') ? it : enUS;
   const displayName = mentor?.full_name || mentor?.name || '';
@@ -102,6 +114,41 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
       if (!session.data.session?.access_token) {
         setAvailabilityMessage(t('profile.auth_required', 'Please log in to view availability'));
         setAvailabilityState('no_availability');
+        return;
+      }
+
+      // Check if user has used free intro
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('id, free_intro_session_used_at')
+        .eq('user_id', session.data.session.user.id)
+        .single();
+
+      const usedFreeIntro = !!profileData?.free_intro_session_used_at;
+      setFreeIntroUsed(usedFreeIntro);
+
+      // Check for existing pending/confirmed sessions with this mentor
+      if (profileData?.id) {
+        const { data: existingSessions } = await supabase
+          .from('mentor_sessions')
+          .select('id, starts_at, ends_at, status, session_type')
+          .eq('candidate_profile_id', profileData.id)
+          .in('status', ['requested', 'confirmed', 'rescheduled'])
+          .order('starts_at', { ascending: true })
+          .limit(1);
+
+        if (existingSessions && existingSessions.length > 0) {
+          setPendingSession(existingSessions[0] as PendingSession);
+          setAvailabilityState('has_pending_session');
+          setIsLoadingSlots(false);
+          return;
+        }
+      }
+
+      // If free intro is used and no pending session, show that state
+      if (usedFreeIntro) {
+        setAvailabilityState('free_intro_used');
+        setIsLoadingSlots(false);
         return;
       }
 
@@ -130,9 +177,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
         }
         setAvailabilityMessage(data.message || null);
         
-        // Determine availability state
         if (!data.slots || data.slots.length === 0) {
-          // Check if mentor has ever published availability
           if (data.message?.includes('not published')) {
             setAvailabilityState('no_availability');
           } else {
@@ -161,23 +206,17 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
   };
 
   const handleBookingConfirm = async () => {
-    if (!selectedSlot || !mentorInfo) return;
+    if (!selectedSlot) return;
 
     setIsBooking(true);
     try {
-      const { data, error } = await supabase.functions.invoke('schedule-mentor-meeting', {
-        body: {
-          slot_id: selectedSlot.id,
-          mentor_id: mentorInfo.id,
-          start_time: selectedSlot.start_time,
-          end_time: selectedSlot.end_time,
-        },
-        headers: {
-          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-        },
+      // Use the new request_free_intro_session RPC
+      const { data, error } = await supabase.rpc('request_free_intro_session', {
+        p_slot_id: selectedSlot.id,
       });
 
       if (error) {
+        console.error('[MentorSection] RPC error:', error);
         toast({
           title: t('common.error'),
           description: error.message || t('profile.booking_failed'),
@@ -186,23 +225,49 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
         return;
       }
 
-      if (data?.success) {
+      const result = data as { success: boolean; error?: string; message?: string; session_id?: string; starts_at?: string; ends_at?: string };
+
+      if (result?.success) {
         toast({
-          title: t('profile.booking_success'),
-          description: t('profile.booking_success_desc'),
+          title: t('profile.booking_success', 'Request Sent!'),
+          description: t('profile.booking_success_desc', 'Your mentor will confirm shortly.'),
         });
         setShowConfirmDialog(false);
         setSelectedSlot(null);
-        await fetchAvailability();
+        
+        // Update state to show pending session
+        if (result.session_id) {
+          setPendingSession({
+            id: result.session_id,
+            starts_at: result.starts_at || selectedSlot.start_time,
+            ends_at: result.ends_at || selectedSlot.end_time,
+            status: 'requested'
+          });
+        }
+        setAvailabilityState('has_pending_session');
+        setFreeIntroUsed(true);
         onBookingSuccess?.();
       } else {
-        toast({
-          title: t('common.error'),
-          description: data?.message || t('profile.booking_failed'),
-          variant: 'destructive',
-        });
+        // Handle specific error codes
+        if (result?.error === 'FREE_INTRO_ALREADY_USED') {
+          toast({
+            title: t('profile.free_intro_used_title', 'Free Intro Already Used'),
+            description: t('profile.free_intro_used_desc', 'You already used your free intro session. Next sessions will be available soon.'),
+            variant: 'destructive',
+          });
+          setFreeIntroUsed(true);
+          setAvailabilityState('free_intro_used');
+        } else {
+          toast({
+            title: t('common.error'),
+            description: result?.message || t('profile.booking_failed'),
+            variant: 'destructive',
+          });
+        }
+        setShowConfirmDialog(false);
       }
     } catch (error: any) {
+      console.error('[MentorSection] Booking error:', error);
       toast({
         title: t('common.error'),
         description: error.message || t('profile.booking_failed'),
@@ -232,6 +297,24 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
       'Asia/Tokyo': 'JST (Tokyo)',
     };
     return tzMap[tz] || tz;
+  };
+
+  const getStatusBadgeVariant = (status: string) => {
+    switch (status) {
+      case 'confirmed': return 'default';
+      case 'requested': return 'secondary';
+      case 'rescheduled': return 'outline';
+      default: return 'secondary';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'confirmed': return t('profile.session_confirmed', 'Confirmed');
+      case 'requested': return t('profile.session_pending', 'Pending confirmation');
+      case 'rescheduled': return t('profile.session_rescheduled', 'Rescheduled');
+      default: return status;
+    }
   };
 
   // Get dates that have available slots
@@ -313,7 +396,6 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
               {mentor?.role && (
                 <p className="text-sm text-muted-foreground mt-0.5 font-medium">{mentor.role}</p>
               )}
-              {/* Key specialties */}
               {mentorInfo?.title && (
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {mentorInfo.title.split(/[,&]/).slice(0, 2).map((specialty, idx) => (
@@ -327,14 +409,12 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
             </div>
           </div>
           
-          {/* Mentor Bio (truncated) */}
           {mentor?.bio && (
             <p className="text-sm text-foreground/80 leading-relaxed line-clamp-3">
               {mentor.bio}
             </p>
           )}
 
-          {/* Value Proposition */}
           <div className="bg-muted/50 rounded-lg p-3 text-sm text-muted-foreground">
             {t('profile.mentor_value_prop', 'Your mentor will guide your professional development with personalized advice based on your XIMA profile.')}
           </div>
@@ -362,6 +442,71 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
                 <span className="ml-2 text-sm text-muted-foreground">
                   {t('profile.loading_availability', 'Loading availability...')}
                 </span>
+              </div>
+            )}
+
+            {/* STATE: Has pending session */}
+            {!isLoadingSlots && availabilityState === 'has_pending_session' && pendingSession && (
+              <div className="space-y-4">
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Badge variant={getStatusBadgeVariant(pendingSession.status)}>
+                      {getStatusLabel(pendingSession.status)}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {t('profile.free_intro', 'Free Intro')}
+                    </Badge>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="flex items-center gap-2 text-sm font-medium">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      {formatDate(pendingSession.starts_at)}
+                    </p>
+                    <p className="flex items-center gap-2 text-sm">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      {formatTime(pendingSession.starts_at)} - {formatTime(pendingSession.ends_at)}
+                    </p>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {pendingSession.status === 'requested' 
+                      ? t('profile.waiting_confirmation', 'Your mentor will confirm this session shortly.')
+                      : t('profile.session_scheduled', 'Your session is scheduled.')}
+                  </p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => navigate(`/sessions/${pendingSession.id}`)}
+                >
+                  <Eye className="mr-2 h-4 w-4" />
+                  {t('profile.view_session_details', 'View details')}
+                </Button>
+              </div>
+            )}
+
+            {/* STATE: Free intro already used (no pending session) */}
+            {!isLoadingSlots && availabilityState === 'free_intro_used' && (
+              <div className="text-center py-6 space-y-4">
+                <div className="flex justify-center">
+                  <CheckCircle2 className="h-12 w-12 text-primary/50" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-muted-foreground font-medium">
+                    {t('profile.free_intro_completed', 'Free intro session completed')}
+                  </p>
+                  <p className="text-sm text-muted-foreground/70">
+                    {t('profile.paid_sessions_coming', 'Paid sessions will be available soon.')}
+                  </p>
+                </div>
+                {bookingLink && (
+                  <Button asChild variant="secondary" size="sm">
+                    <a href={bookingLink} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      {t('profile.external_booking', 'External calendar')}
+                    </a>
+                  </Button>
+                )}
               </div>
             )}
 
@@ -420,6 +565,21 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
             {/* STATE C: Available slots present */}
             {!isLoadingSlots && availabilityState === 'has_slots' && (
               <div className="space-y-4">
+                {/* Free intro banner */}
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Star className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-foreground">
+                      {t('profile.free_intro_available', 'Free 15-minute intro session')}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {t('profile.select_slot_to_book', 'Select a slot to request your session')}
+                    </p>
+                  </div>
+                </div>
+
                 {/* Calendar Widget */}
                 <div className="border border-border rounded-lg p-4 bg-card">
                   <CalendarComponent
@@ -506,26 +666,37 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
       <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('profile.confirm_booking', 'Confirm Booking')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {selectedSlot && (
-                <div className="space-y-2 text-left">
-                  <p>{t('profile.booking_with', 'You are booking a session with')} <strong>{displayName}</strong></p>
-                  <div className="bg-muted p-3 rounded-md space-y-1">
-                    <p className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      {formatDate(selectedSlot.start_time)}
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      {formatTime(selectedSlot.start_time)} - {formatTime(selectedSlot.end_time)}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {t('profile.duration_15', 'Duration: 15 minutes')}
-                    </p>
-                  </div>
-                </div>
-              )}
+            <AlertDialogTitle>{t('profile.confirm_intro_request', 'Request Free Intro Session')}</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-3 text-left">
+                {selectedSlot && (
+                  <>
+                    <p>{t('profile.requesting_with', 'You are requesting a session with')} <strong>{displayName}</strong></p>
+                    <div className="bg-muted p-3 rounded-md space-y-1">
+                      <p className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        {formatDate(selectedSlot.start_time)}
+                      </p>
+                      <p className="flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        {formatTime(selectedSlot.start_time)} - {formatTime(selectedSlot.end_time)}
+                      </p>
+                      <div className="flex items-center gap-2 pt-1">
+                        <Badge variant="secondary" className="text-xs">
+                          {t('profile.free_intro', 'Free Intro')}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">15 {t('common.minutes', 'minutes')}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2 bg-muted border border-border rounded-md p-2">
+                      <AlertCircle className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                      <p className="text-xs text-muted-foreground">
+                        {t('profile.one_free_intro_note', 'This is your one-time free intro session. Your mentor will need to confirm.')}
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -536,12 +707,12 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
               {isBooking ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t('profile.booking', 'Booking...')}
+                  {t('profile.requesting', 'Requesting...')}
                 </>
               ) : (
                 <>
                   <CheckCircle2 className="mr-2 h-4 w-4" />
-                  {t('profile.confirm', 'Confirm Booking')}
+                  {t('profile.request_session', 'Request Session')}
                 </>
               )}
             </AlertDialogAction>
