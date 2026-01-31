@@ -141,10 +141,10 @@ export default function SessionRoom() {
           enableWelcomePage: false,
           // Disable deep linking prompts
           disableDeepLinking: true,
-          // CRITICAL: Disable lobby/waiting room - allows anyone to start
+          // CRITICAL: Disable lobby/waiting room
           lobby: { enabled: false },
-          'lobby.enabled': false, // Some deployments use this format
-          // CRITICAL: Disable user roles based on token - no moderator required
+          'lobby.enabled': false,
+          // CRITICAL: Disable user roles based on token - no external auth needed
           enableUserRolesBasedOnToken: false,
           // Don't require display name popup
           requireDisplayName: false,
@@ -153,6 +153,8 @@ export default function SessionRoom() {
           startWithVideoMuted: false,
           // Disable invite functions (cleaner UI)
           disableInviteFunctions: true,
+          // Hide moderator indicator since everyone is a moderator
+          disableModeratorIndicator: true,
           // Hide some UI elements for cleaner experience
           hideConferenceSubject: false,
           hideConferenceTimer: false,
@@ -161,6 +163,8 @@ export default function SessionRoom() {
           fileRecordingsEnabled: false,
           // Disable third party requests
           disableThirdPartyRequests: true,
+          // Disable self-view to reduce UI clutter (optional)
+          doNotStoreRoom: true,
         },
         interfaceConfigOverwrite: {
           // Minimal toolbar
@@ -169,11 +173,13 @@ export default function SessionRoom() {
             'fullscreen', 'hangup', 'chat', 'settings',
             'videoquality', 'tileview'
           ],
-          // Hide some UI elements
+          // Hide watermarks
           SHOW_JITSI_WATERMARK: false,
           SHOW_WATERMARK_FOR_GUESTS: false,
           SHOW_BRAND_WATERMARK: false,
           BRAND_WATERMARK_LINK: '',
+          // Disable join/leave notifications
+          DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
           // Disable feedback
           DISABLE_FOCUS_INDICATOR: true,
           DISABLE_PRESENCE_STATUS: true,
@@ -185,7 +191,22 @@ export default function SessionRoom() {
 
       jitsiApiRef.current = api;
 
-      // Listen for events
+      // CRITICAL: Grant moderator rights to every participant when they join
+      // This ensures BOTH mentor and candidate can start/control the meeting
+      api.addListener('videoConferenceJoined', (data: { id: string }) => {
+        console.log('[SessionRoom] User joined conference, granting moderator:', data);
+        // Grant moderator to the current participant
+        api.executeCommand('grantModerator', data.id);
+      });
+
+      // Also grant moderator when any participant joins (for the other user)
+      api.addListener('participantJoined', (data: { id: string; displayName: string }) => {
+        console.log('[SessionRoom] Participant joined, granting moderator:', data);
+        // Grant moderator to newly joined participant
+        api.executeCommand('grantModerator', data.id);
+      });
+
+      // Handle conference exit
       api.addListener('videoConferenceLeft', () => {
         navigate(`/sessions/${sessionId}`);
       });
