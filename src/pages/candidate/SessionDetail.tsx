@@ -48,6 +48,10 @@ interface SessionData {
   duration_minutes: number | null;
   price_cents: number | null;
   created_at: string;
+  // Reschedule proposal fields
+  proposed_start_at: string | null;
+  proposed_end_at: string | null;
+  reschedule_status: 'none' | 'proposed' | 'accepted' | 'rejected';
 }
 
 interface MentorData {
@@ -67,6 +71,7 @@ export default function SessionDetail() {
   const [session, setSession] = useState<SessionData | null>(null);
   const [mentor, setMentor] = useState<MentorData | null>(null);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [isRespondingReschedule, setIsRespondingReschedule] = useState(false);
 
   const dateLocale = i18n.language?.startsWith('it') ? it : enUS;
 
@@ -111,7 +116,7 @@ export default function SessionDetail() {
       // Fetch session
       const { data: sessionData, error: sessionError } = await supabase
         .from('mentor_sessions')
-        .select('*')
+        .select('id, mentor_id, candidate_profile_id, starts_at, ends_at, status, title, notes_shared, session_type, duration_minutes, price_cents, created_at, proposed_start_at, proposed_end_at, reschedule_status')
         .eq('id', sessionId)
         .single();
 
@@ -126,7 +131,10 @@ export default function SessionDetail() {
         return;
       }
 
-      setSession(sessionData as SessionData);
+      setSession({
+        ...sessionData,
+        reschedule_status: sessionData.reschedule_status || 'none'
+      } as SessionData);
 
       // Fetch mentor info
       const { data: mentorData } = await supabase
@@ -176,6 +184,72 @@ export default function SessionDetail() {
       });
     } finally {
       setIsCancelling(false);
+    }
+  };
+
+  const handleAcceptReschedule = async () => {
+    if (!session) return;
+
+    setIsRespondingReschedule(true);
+    try {
+      const { data, error } = await supabase.rpc('candidate_accept_reschedule', {
+        p_session_id: session.id
+      });
+
+      if (error) throw error;
+
+      const result = data as { success: boolean; error?: string };
+      if (!result?.success) {
+        throw new Error(result?.error || 'Failed to accept reschedule');
+      }
+
+      toast({
+        title: t('sessions.reschedule_accepted', 'Reschedule Accepted'),
+        description: t('sessions.reschedule_accepted_desc', 'Session time has been updated.'),
+      });
+
+      await fetchSessionDetails();
+    } catch (err: any) {
+      toast({
+        title: t('common.error'),
+        description: err.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsRespondingReschedule(false);
+    }
+  };
+
+  const handleRejectReschedule = async () => {
+    if (!session) return;
+
+    setIsRespondingReschedule(true);
+    try {
+      const { data, error } = await supabase.rpc('candidate_reject_reschedule', {
+        p_session_id: session.id
+      });
+
+      if (error) throw error;
+
+      const result = data as { success: boolean; error?: string };
+      if (!result?.success) {
+        throw new Error(result?.error || 'Failed to reject reschedule');
+      }
+
+      toast({
+        title: t('sessions.reschedule_rejected', 'Reschedule Rejected'),
+        description: t('sessions.reschedule_rejected_desc', 'Original session time remains unchanged.'),
+      });
+
+      await fetchSessionDetails();
+    } catch (err: any) {
+      toast({
+        title: t('common.error'),
+        description: err.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsRespondingReschedule(false);
     }
   };
 
@@ -354,6 +428,85 @@ export default function SessionDetail() {
                 </div>
               </div>
             </div>
+
+            {/* Reschedule Proposal Banner */}
+            {session.reschedule_status === 'proposed' && session.proposed_start_at && session.proposed_end_at && (
+              <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <RefreshCw className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="font-medium text-foreground">
+                      {t('sessions.reschedule_proposed', 'Reschedule Proposed')}
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {t('sessions.mentor_proposed_new_time', 'Your mentor has proposed a new time for this session:')}
+                    </p>
+                    <div className="mt-3 bg-background rounded-md p-3 border">
+                      <p className="font-medium">{formatFullDate(session.proposed_start_at)}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {formatTime(session.proposed_start_at)} - {formatTime(session.proposed_end_at)}
+                      </p>
+                    </div>
+                    <div className="flex gap-2 mt-4">
+                      <Button 
+                        onClick={handleAcceptReschedule}
+                        disabled={isRespondingReschedule}
+                        className="gap-2"
+                      >
+                        {isRespondingReschedule ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <CheckCircle2 className="h-4 w-4" />
+                        )}
+                        {t('sessions.accept_new_time', 'Accept New Time')}
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={handleRejectReschedule}
+                        disabled={isRespondingReschedule}
+                        className="gap-2"
+                      >
+                        <XCircle className="h-4 w-4" />
+                        {t('sessions.keep_original', 'Keep Original Time')}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Reschedule Accepted/Rejected Message */}
+            {session.reschedule_status === 'accepted' && (
+              <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-foreground">
+                      {t('sessions.reschedule_confirmed', 'Reschedule Confirmed')}
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {t('sessions.reschedule_confirmed_desc', 'Session time has been updated to the new schedule above.')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {session.reschedule_status === 'rejected' && (
+              <div className="bg-muted border border-border rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <XCircle className="h-5 w-5 text-muted-foreground mt-0.5" />
+                  <div>
+                    <p className="font-medium text-foreground">
+                      {t('sessions.reschedule_declined', 'Reschedule Declined')}
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {t('sessions.reschedule_declined_desc', 'Original session time remains unchanged.')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Status explanation */}
             {session.status === 'requested' && (

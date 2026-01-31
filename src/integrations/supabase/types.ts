@@ -2515,6 +2515,12 @@ export type Database = {
           notes_private: string | null
           notes_shared: string | null
           price_cents: number | null
+          proposed_availability_slot_id: string | null
+          proposed_end_at: string | null
+          proposed_start_at: string | null
+          reschedule_proposed_at: string | null
+          reschedule_responded_at: string | null
+          reschedule_status: string
           session_type: string | null
           starts_at: string
           status: string
@@ -2537,6 +2543,12 @@ export type Database = {
           notes_private?: string | null
           notes_shared?: string | null
           price_cents?: number | null
+          proposed_availability_slot_id?: string | null
+          proposed_end_at?: string | null
+          proposed_start_at?: string | null
+          reschedule_proposed_at?: string | null
+          reschedule_responded_at?: string | null
+          reschedule_status?: string
           session_type?: string | null
           starts_at: string
           status?: string
@@ -2559,6 +2571,12 @@ export type Database = {
           notes_private?: string | null
           notes_shared?: string | null
           price_cents?: number | null
+          proposed_availability_slot_id?: string | null
+          proposed_end_at?: string | null
+          proposed_start_at?: string | null
+          reschedule_proposed_at?: string | null
+          reschedule_responded_at?: string | null
+          reschedule_status?: string
           session_type?: string | null
           starts_at?: string
           status?: string
@@ -2603,6 +2621,13 @@ export type Database = {
             columns: ["mentor_id"]
             isOneToOne: false
             referencedRelation: "mentors_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_sessions_proposed_availability_slot_id_fkey"
+            columns: ["proposed_availability_slot_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_availability_slots"
             referencedColumns: ["id"]
           },
         ]
@@ -3573,7 +3598,15 @@ export type Database = {
         Args: { p_result_id: string }
         Returns: undefined
       }
+      candidate_accept_reschedule: {
+        Args: { p_session_id: string }
+        Returns: Json
+      }
       candidate_cancel_session: {
+        Args: { p_session_id: string }
+        Returns: Json
+      }
+      candidate_reject_reschedule: {
         Args: { p_session_id: string }
         Returns: Json
       }
