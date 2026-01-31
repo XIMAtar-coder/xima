@@ -14,6 +14,8 @@ export interface MentorProfile {
   rating: number | null;
   is_active: boolean | null;
   first_session_expectations: string | null;
+  active_coached_profiles_count: number;
+  total_coached_profiles_count: number;
   updated_at: string;
 }
 
@@ -47,7 +49,7 @@ export function useMentorProfile(): UseMentorProfileResult {
       // Check if user has a mentor record
       const { data, error: fetchError } = await supabase
         .from('mentors')
-        .select('id, user_id, name, title, bio, profile_image_url, linkedin_url, specialties, xima_pillars, rating, is_active, first_session_expectations, updated_at')
+        .select('id, user_id, name, title, bio, profile_image_url, linkedin_url, specialties, xima_pillars, rating, is_active, first_session_expectations, active_coached_profiles_count, total_coached_profiles_count, updated_at')
         .eq('user_id', user.id)
         .maybeSingle();
 

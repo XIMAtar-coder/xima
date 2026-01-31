@@ -2195,6 +2195,39 @@ export type Database = {
         }
         Relationships: []
       }
+      mentor_access_audit_logs: {
+        Row: {
+          action: string
+          actor_role: string
+          actor_user_id: string
+          candidate_profile_id: string
+          created_at: string
+          id: string
+          mentor_id: string
+          metadata: Json
+        }
+        Insert: {
+          action: string
+          actor_role: string
+          actor_user_id: string
+          candidate_profile_id: string
+          created_at?: string
+          id?: string
+          mentor_id: string
+          metadata?: Json
+        }
+        Update: {
+          action?: string
+          actor_role?: string
+          actor_user_id?: string
+          candidate_profile_id?: string
+          created_at?: string
+          id?: string
+          mentor_id?: string
+          metadata?: Json
+        }
+        Relationships: []
+      }
       mentor_availability_slots: {
         Row: {
           booked_by: string | null
@@ -2253,6 +2286,130 @@ export type Database = {
           },
         ]
       }
+      mentor_coaching_relationships: {
+        Row: {
+          candidate_profile_id: string
+          created_at: string
+          ended_at: string | null
+          id: string
+          mentor_id: string
+          started_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          candidate_profile_id: string
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          mentor_id: string
+          started_at?: string
+          status: string
+          updated_at?: string
+        }
+        Update: {
+          candidate_profile_id?: string
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          mentor_id?: string
+          started_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_coaching_relationships_candidate_profile_id_fkey"
+            columns: ["candidate_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_coaching_relationships_candidate_profile_id_fkey"
+            columns: ["candidate_profile_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "mentor_coaching_relationships_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "mentors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_coaching_relationships_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "mentors_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentor_cv_access: {
+        Row: {
+          allowed_at: string | null
+          candidate_profile_id: string
+          created_at: string
+          id: string
+          is_allowed: boolean
+          mentor_id: string
+          revoked_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          allowed_at?: string | null
+          candidate_profile_id: string
+          created_at?: string
+          id?: string
+          is_allowed?: boolean
+          mentor_id: string
+          revoked_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          allowed_at?: string | null
+          candidate_profile_id?: string
+          created_at?: string
+          id?: string
+          is_allowed?: boolean
+          mentor_id?: string
+          revoked_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_cv_access_candidate_profile_id_fkey"
+            columns: ["candidate_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_cv_access_candidate_profile_id_fkey"
+            columns: ["candidate_profile_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "mentor_cv_access_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "mentors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentor_cv_access_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "mentors_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentor_matches: {
         Row: {
           assigned_by: string | null
@@ -2297,6 +2454,7 @@ export type Database = {
       }
       mentors: {
         Row: {
+          active_coached_profiles_count: number
           availability: Json | null
           bio: string | null
           company: string | null
@@ -2313,12 +2471,14 @@ export type Database = {
           rating: number | null
           specialties: string[]
           title: string | null
+          total_coached_profiles_count: number
           total_sessions: number | null
           updated_at: string
           user_id: string | null
           xima_pillars: string[]
         }
         Insert: {
+          active_coached_profiles_count?: number
           availability?: Json | null
           bio?: string | null
           company?: string | null
@@ -2335,12 +2495,14 @@ export type Database = {
           rating?: number | null
           specialties: string[]
           title?: string | null
+          total_coached_profiles_count?: number
           total_sessions?: number | null
           updated_at?: string
           user_id?: string | null
           xima_pillars: string[]
         }
         Update: {
+          active_coached_profiles_count?: number
           availability?: Json | null
           bio?: string | null
           company?: string | null
@@ -2357,6 +2519,7 @@ export type Database = {
           rating?: number | null
           specialties?: string[]
           title?: string | null
+          total_coached_profiles_count?: number
           total_sessions?: number | null
           updated_at?: string
           user_id?: string | null
@@ -3157,6 +3320,7 @@ export type Database = {
       }
       mentors_public: {
         Row: {
+          active_coached_profiles_count: number | null
           bio: string | null
           first_session_expectations: string | null
           id: string | null
@@ -3167,10 +3331,12 @@ export type Database = {
           rating: number | null
           specialties: string[] | null
           title: string | null
+          total_coached_profiles_count: number | null
           updated_at: string | null
           xima_pillars: string[] | null
         }
         Insert: {
+          active_coached_profiles_count?: number | null
           bio?: string | null
           first_session_expectations?: string | null
           id?: string | null
@@ -3181,10 +3347,12 @@ export type Database = {
           rating?: number | null
           specialties?: string[] | null
           title?: string | null
+          total_coached_profiles_count?: number | null
           updated_at?: string | null
           xima_pillars?: string[] | null
         }
         Update: {
+          active_coached_profiles_count?: number | null
           bio?: string | null
           first_session_expectations?: string | null
           id?: string | null
@@ -3195,6 +3363,7 @@ export type Database = {
           rating?: number | null
           specialties?: string[] | null
           title?: string | null
+          total_coached_profiles_count?: number | null
           updated_at?: string | null
           xima_pillars?: string[] | null
         }
