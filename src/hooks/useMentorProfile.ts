@@ -17,6 +17,17 @@ export interface MentorProfile {
   active_coached_profiles_count: number;
   total_coached_profiles_count: number;
   updated_at: string;
+  // New fields
+  languages: string[];
+  location: string | null;
+  badges: string[];
+  free_intro_enabled: boolean;
+  free_intro_duration_minutes: number;
+  paid_sessions_enabled: boolean;
+  can_host_video_sessions: boolean;
+  can_reschedule_sessions: boolean;
+  can_view_candidate_cv: boolean;
+  requires_candidate_cv_consent: boolean;
 }
 
 interface UseMentorProfileResult {
@@ -49,7 +60,7 @@ export function useMentorProfile(): UseMentorProfileResult {
       // Check if user has a mentor record
       const { data, error: fetchError } = await supabase
         .from('mentors')
-        .select('id, user_id, name, title, bio, profile_image_url, linkedin_url, specialties, xima_pillars, rating, is_active, first_session_expectations, active_coached_profiles_count, total_coached_profiles_count, updated_at')
+        .select('id, user_id, name, title, bio, profile_image_url, linkedin_url, specialties, xima_pillars, rating, is_active, first_session_expectations, active_coached_profiles_count, total_coached_profiles_count, updated_at, languages, location, badges, free_intro_enabled, free_intro_duration_minutes, paid_sessions_enabled, can_host_video_sessions, can_reschedule_sessions, can_view_candidate_cv, requires_candidate_cv_consent')
         .eq('user_id', user.id)
         .maybeSingle();
 

@@ -2636,19 +2636,29 @@ export type Database = {
         Row: {
           active_coached_profiles_count: number
           availability: Json | null
+          badges: string[] | null
           bio: string | null
+          can_host_video_sessions: boolean | null
+          can_reschedule_sessions: boolean | null
+          can_view_candidate_cv: boolean | null
           company: string | null
           created_at: string
           email: string | null
           experience_years: number | null
           first_session_expectations: string | null
+          free_intro_duration_minutes: number | null
+          free_intro_enabled: boolean | null
           hourly_rate: number | null
           id: string
           is_active: boolean | null
+          languages: string[] | null
           linkedin_url: string | null
+          location: string | null
           name: string
+          paid_sessions_enabled: boolean | null
           profile_image_url: string | null
           rating: number | null
+          requires_candidate_cv_consent: boolean | null
           specialties: string[]
           title: string | null
           total_coached_profiles_count: number
@@ -2660,19 +2670,29 @@ export type Database = {
         Insert: {
           active_coached_profiles_count?: number
           availability?: Json | null
+          badges?: string[] | null
           bio?: string | null
+          can_host_video_sessions?: boolean | null
+          can_reschedule_sessions?: boolean | null
+          can_view_candidate_cv?: boolean | null
           company?: string | null
           created_at?: string
           email?: string | null
           experience_years?: number | null
           first_session_expectations?: string | null
+          free_intro_duration_minutes?: number | null
+          free_intro_enabled?: boolean | null
           hourly_rate?: number | null
           id?: string
           is_active?: boolean | null
+          languages?: string[] | null
           linkedin_url?: string | null
+          location?: string | null
           name: string
+          paid_sessions_enabled?: boolean | null
           profile_image_url?: string | null
           rating?: number | null
+          requires_candidate_cv_consent?: boolean | null
           specialties: string[]
           title?: string | null
           total_coached_profiles_count?: number
@@ -2684,19 +2704,29 @@ export type Database = {
         Update: {
           active_coached_profiles_count?: number
           availability?: Json | null
+          badges?: string[] | null
           bio?: string | null
+          can_host_video_sessions?: boolean | null
+          can_reschedule_sessions?: boolean | null
+          can_view_candidate_cv?: boolean | null
           company?: string | null
           created_at?: string
           email?: string | null
           experience_years?: number | null
           first_session_expectations?: string | null
+          free_intro_duration_minutes?: number | null
+          free_intro_enabled?: boolean | null
           hourly_rate?: number | null
           id?: string
           is_active?: boolean | null
+          languages?: string[] | null
           linkedin_url?: string | null
+          location?: string | null
           name?: string
+          paid_sessions_enabled?: boolean | null
           profile_image_url?: string | null
           rating?: number | null
+          requires_candidate_cv_consent?: boolean | null
           specialties?: string[]
           title?: string | null
           total_coached_profiles_count?: number
@@ -3504,12 +3534,19 @@ export type Database = {
       mentors_public: {
         Row: {
           active_coached_profiles_count: number | null
+          badges: string[] | null
           bio: string | null
+          can_host_video_sessions: boolean | null
           first_session_expectations: string | null
+          free_intro_duration_minutes: number | null
+          free_intro_enabled: boolean | null
           id: string | null
           is_active: boolean | null
+          languages: string[] | null
           linkedin_url: string | null
+          location: string | null
           name: string | null
+          paid_sessions_enabled: boolean | null
           profile_image_url: string | null
           rating: number | null
           specialties: string[] | null
@@ -3520,12 +3557,19 @@ export type Database = {
         }
         Insert: {
           active_coached_profiles_count?: number | null
+          badges?: string[] | null
           bio?: string | null
+          can_host_video_sessions?: boolean | null
           first_session_expectations?: string | null
+          free_intro_duration_minutes?: number | null
+          free_intro_enabled?: boolean | null
           id?: string | null
           is_active?: boolean | null
+          languages?: string[] | null
           linkedin_url?: string | null
+          location?: string | null
           name?: string | null
+          paid_sessions_enabled?: boolean | null
           profile_image_url?: string | null
           rating?: number | null
           specialties?: string[] | null
@@ -3536,12 +3580,19 @@ export type Database = {
         }
         Update: {
           active_coached_profiles_count?: number | null
+          badges?: string[] | null
           bio?: string | null
+          can_host_video_sessions?: boolean | null
           first_session_expectations?: string | null
+          free_intro_duration_minutes?: number | null
+          free_intro_enabled?: boolean | null
           id?: string | null
           is_active?: boolean | null
+          languages?: string[] | null
           linkedin_url?: string | null
+          location?: string | null
           name?: string | null
+          paid_sessions_enabled?: boolean | null
           profile_image_url?: string | null
           rating?: number | null
           specialties?: string[] | null
