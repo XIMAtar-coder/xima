@@ -1,11 +1,20 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { normalizeJobPostText } from "./normalizeJobPostText.ts";
+import { 
+  isValidUUID, 
+  validateString, 
+  validateOptionalEnum,
+  ValidationError 
+} from "../_shared/validation.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const MAX_EXTRACTED_TEXT_LENGTH = 500000; // 500KB limit for extracted text
+const SUPPORTED_LOCALES = ['en', 'it', 'es', 'de', 'fr'] as const;
 
 serve(async (req) => {
   // Handle CORS preflight
@@ -45,7 +54,34 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    const { importId, extracted_text, locale } = body;
+    
+    // Validate importId is a valid UUID
+    if (!body.importId || !isValidUUID(body.importId)) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid importId: must be a valid UUID' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    const importId = body.importId;
+    
+    // Validate extracted_text exists and has reasonable length
+    if (typeof body.extracted_text !== 'string') {
+      return new Response(
+        JSON.stringify({ success: false, error: 'extracted_text must be a string' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    if (body.extracted_text.length > MAX_EXTRACTED_TEXT_LENGTH) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'extracted_text exceeds maximum allowed length' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    const extracted_text = body.extracted_text;
+    
+    // Validate locale with fallback
+    const locale = validateOptionalEnum(body.locale, SUPPORTED_LOCALES, 'en');
     
     console.log(`Processing import ${importId} for user ${user.id}`);
     console.log(`Raw extracted text length: ${extracted_text?.length || 0}`);

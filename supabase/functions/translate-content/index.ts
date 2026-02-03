@@ -1,4 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { 
+  validateString, 
+  validateOptionalEnum, 
+  ValidationError,
+  handleValidationError 
+} from "../_shared/validation.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,22 +17,27 @@ const LANGUAGE_NAMES: Record<string, string> = {
   es: 'Spanish',
 };
 
+const SUPPORTED_LOCALES = ['en', 'it', 'es'] as const;
+const MAX_TEXT_LENGTH = 10000; // Limit text length to prevent abuse
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { text, targetLocale } = await req.json();
-
-    if (!text || typeof text !== 'string') {
-      return new Response(
-        JSON.stringify({ error: 'Missing or invalid text parameter' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const normalizedLocale = ['en', 'it', 'es'].includes(targetLocale) ? targetLocale : 'en';
+    const body = await req.json();
+    
+    // Validate inputs with proper error messages
+    const text = validateString(body.text, 'text', { 
+      minLength: 1, 
+      maxLength: MAX_TEXT_LENGTH 
+    });
+    const normalizedLocale = validateOptionalEnum(
+      body.targetLocale, 
+      SUPPORTED_LOCALES, 
+      'en'
+    );
     const targetLanguage = LANGUAGE_NAMES[normalizedLocale];
 
     // If target is English and content appears to be English, return as-is
@@ -107,6 +118,10 @@ STRICT RULES:
     );
 
   } catch (error) {
+    // Handle validation errors specially
+    if (error instanceof ValidationError) {
+      return handleValidationError(error, corsHeaders);
+    }
     console.error('[translate-content] Error:', error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
