@@ -2597,6 +2597,7 @@ export type Database = {
           proposed_availability_slot_id: string | null
           proposed_end_at: string | null
           proposed_start_at: string | null
+          requires_reschedule: boolean
           reschedule_proposed_at: string | null
           reschedule_responded_at: string | null
           reschedule_status: string
@@ -2629,6 +2630,7 @@ export type Database = {
           proposed_availability_slot_id?: string | null
           proposed_end_at?: string | null
           proposed_start_at?: string | null
+          requires_reschedule?: boolean
           reschedule_proposed_at?: string | null
           reschedule_responded_at?: string | null
           reschedule_status?: string
@@ -2661,6 +2663,7 @@ export type Database = {
           proposed_availability_slot_id?: string | null
           proposed_end_at?: string | null
           proposed_start_at?: string | null
+          requires_reschedule?: boolean
           reschedule_proposed_at?: string | null
           reschedule_responded_at?: string | null
           reschedule_status?: string

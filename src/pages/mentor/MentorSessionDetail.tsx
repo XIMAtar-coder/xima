@@ -24,7 +24,7 @@ import NotAMentor from './NotAMentor';
 const STATUS_BADGES: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; label: string }> = {
   requested: { variant: 'secondary', label: 'Pending Approval' },
   confirmed: { variant: 'default', label: 'Confirmed' },
-  rejected: { variant: 'destructive', label: 'Rejected' },
+  rejected: { variant: 'destructive', label: 'Rejected – awaiting new slot' },
   cancelled: { variant: 'destructive', label: 'Cancelled' },
   completed: { variant: 'outline', label: 'Completed' },
   rescheduled: { variant: 'secondary', label: 'Rescheduled' },
