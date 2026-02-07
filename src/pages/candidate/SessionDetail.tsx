@@ -48,6 +48,7 @@ interface SessionData {
   duration_minutes: number | null;
   price_cents: number | null;
   created_at: string;
+  requires_reschedule: boolean;
   // Reschedule proposal fields
   proposed_start_at: string | null;
   proposed_end_at: string | null;
@@ -116,7 +117,7 @@ export default function SessionDetail() {
       // Fetch session
       const { data: sessionData, error: sessionError } = await supabase
         .from('mentor_sessions')
-        .select('id, mentor_id, candidate_profile_id, starts_at, ends_at, status, title, notes_shared, session_type, duration_minutes, price_cents, created_at, proposed_start_at, proposed_end_at, reschedule_status')
+        .select('id, mentor_id, candidate_profile_id, starts_at, ends_at, status, title, notes_shared, session_type, duration_minutes, price_cents, created_at, proposed_start_at, proposed_end_at, reschedule_status, requires_reschedule')
         .eq('id', sessionId)
         .single();
 
@@ -133,7 +134,8 @@ export default function SessionDetail() {
 
       setSession({
         ...sessionData,
-        reschedule_status: sessionData.reschedule_status || 'none'
+        reschedule_status: sessionData.reschedule_status || 'none',
+        requires_reschedule: sessionData.requires_reschedule ?? false,
       } as SessionData);
 
       // Fetch mentor info
@@ -304,7 +306,7 @@ export default function SessionDetail() {
     );
   };
 
-  const canCancel = session?.status && ['requested', 'confirmed', 'rescheduled'].includes(session.status);
+  const canCancel = session?.status && ['requested', 'confirmed', 'rescheduled'].includes(session.status) && !session?.requires_reschedule;
   const mentorName = mentor?.name || t('sessions.your_mentor', 'Your Mentor');
 
   // Check if session is joinable (10 min before to 60 min after start)
@@ -567,7 +569,30 @@ export default function SessionDetail() {
               </div>
             )}
 
-            {session.status === 'rejected' && (
+            {session.status === 'rejected' && session.requires_reschedule && (
+              <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-5">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+                  <div className="flex-1 space-y-3">
+                    <p className="font-medium text-foreground">
+                      {t('sessions.free_intro_rejected_title', 'Your mentor is unavailable for this time')}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {t('sessions.free_intro_rejected_msg', "Your mentor couldn't accept this time. You can pick another slot — your free intro is still available.")}
+                    </p>
+                    <Button 
+                      className="w-full gap-2"
+                      onClick={() => navigate('/profile')}
+                    >
+                      <Calendar className="h-4 w-4" />
+                      {t('sessions.choose_another_slot', 'Choose another time')}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {session.status === 'rejected' && !session.requires_reschedule && (
               <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-4">
                 <div className="flex items-start gap-3">
                   <XCircle className="h-5 w-5 text-destructive mt-0.5" />
@@ -576,21 +601,8 @@ export default function SessionDetail() {
                       {t('sessions.session_rejected', 'Session declined')}
                     </p>
                     <p className="text-sm text-muted-foreground mt-1">
-                      {session.session_type === 'free_intro'
-                        ? t('sessions.free_intro_rejected_msg', "Your mentor couldn't accept this time. You can pick another slot — your free intro is still available.")
-                        : t('sessions.mentor_rejected', 'Your mentor was unable to accept this session request.')}
+                      {t('sessions.mentor_rejected', 'Your mentor was unable to accept this session request.')}
                     </p>
-                    {session.session_type === 'free_intro' && (
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="mt-3 gap-2"
-                        onClick={() => navigate('/profile')}
-                      >
-                        <Calendar className="h-4 w-4" />
-                        {t('sessions.choose_another_slot', 'Choose another slot')}
-                      </Button>
-                    )}
                   </div>
                 </div>
               </div>
