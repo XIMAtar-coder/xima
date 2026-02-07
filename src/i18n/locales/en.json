@@ -4286,16 +4286,17 @@
   },
   "dashboard": {
     "membership": {
-      "title": "Membership & Credits",
-      "subtitle": "Earn credits by inviting friends. Use credits to unlock mentor sessions.",
+      "title": "Your Growth Path",
+      "subtitle": "Credits unlock real conversations with your mentor. Earn them by growing the XIMA community.",
+      "creditLine": "You have {{credits}} credits available",
       "tier_freemium": "Freemium",
       "tier_basic": "Basic",
       "tier_premium": "Premium",
       "tier_pro": "Pro",
-      "creditsLabel": "credits",
-      "manage": "Manage plan",
-      "invite": "Invite friends",
-      "hint": "A standard 45-min mentor session costs 5 credits."
+      "manage": "Manage membership",
+      "invite": "Invite people & earn credits",
+      "hint": "A standard 45-minute mentor session costs 5 credits.",
+      "settingsHelper": "You can change your plan or manage referrals anytime in Settings."
     }
   }
 }
