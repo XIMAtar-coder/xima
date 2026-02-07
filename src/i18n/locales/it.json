@@ -4013,5 +4013,33 @@
       "hint": "Una sessione standard da 45 min costa 5 crediti. Ogni invito conta.",
       "settingsHelper": "Puoi gestire piano e inviti in qualsiasi momento dalle Impostazioni."
     }
+  },
+  "onboarding": {
+    "welcome_title": "Benvenuto nel tuo percorso XIMA",
+    "welcome_copy": "Questo è il tuo spazio di crescita personale. Scopriamo insieme come funziona.",
+    "start": "Inizia",
+    "skip": "Salta",
+    "hint": {
+      "dashboard_title": "Il tuo hub di crescita",
+      "dashboard_body": "Monitora i tuoi progressi, crediti e prossimi passi da qui.",
+      "feed_title": "Il tuo Feed",
+      "feed_body": "Ricevi messaggi, aggiornamenti dal mentore e attività importanti qui.",
+      "mentor_title": "Il tuo Mentore",
+      "mentor_body": "Il tuo mentore ti supporta con sessioni mirate basate sul tuo profilo.",
+      "challenges_title": "Challenge",
+      "challenges_body": "Le aziende ti invitano qui a sfide e opportunità reali.",
+      "settings_title": "Impostazioni",
+      "settings_body": "Gestisci piano, crediti, inviti e preferenze del tuo account."
+    }
+  },
+  "feed": {
+    "thread_type": {
+      "mentor": "Mentore",
+      "business": "Azienda"
+    },
+    "open_thread": "Apri",
+    "active_threads_title": "Le tue conversazioni",
+    "active_threads_subtitle": "Messaggi con il tuo mentore e le aziende con cui sei in contatto.",
+    "no_active_threads": "Nessuna conversazione ancora. Appariranno qui quando un mentore o un'azienda si collegherà con te."
   }
 }

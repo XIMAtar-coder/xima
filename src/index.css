@@ -347,6 +347,28 @@
   }
 }
 
+/* Onboarding hint fade-in */
+@keyframes onboarding-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-onboarding-fade-in {
+  animation: onboarding-fade-in 350ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-onboarding-fade-in {
+    animation: none;
+  }
+}
+
 /* Logo hover animation */
 .logo-hover {
   transition: opacity 0.3s ease, transform 0.3s ease;

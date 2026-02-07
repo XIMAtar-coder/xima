@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Settings } from 'lucide-react';
+import { OnboardingHintBanner } from '@/components/onboarding/OnboardingHintBanner';
 import MainLayout from '@/components/layout/MainLayout';
 import { DataExportButton } from '@/components/profile/DataExportButton';
 import { ProfilingOptOutSection } from '@/components/settings/ProfilingOptOutSection';
@@ -72,6 +73,8 @@ const CandidateSettings = () => {
   return (
     <MainLayout>
       <div className="container max-w-3xl mx-auto py-8 space-y-8">
+        <OnboardingHintBanner hintKey="settings" />
+
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">

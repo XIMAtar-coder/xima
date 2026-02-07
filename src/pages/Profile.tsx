@@ -21,6 +21,9 @@ import { MyOpportunitiesSection } from '@/components/opportunities/MyOpportuniti
 import { MembershipSummaryCard } from '@/components/profile/MembershipSummaryCard';
 // Removed ChallengeInvitationBanner - ChallengesForYouSection is the single source of truth
 import { ChallengesForYouSection } from '@/components/profile/ChallengesForYouSection';
+import { WelcomeOverlay } from '@/components/onboarding/WelcomeOverlay';
+import { OnboardingHintBanner } from '@/components/onboarding/OnboardingHintBanner';
+import { useOnboardingState } from '@/hooks/useOnboardingState';
 
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -35,6 +38,7 @@ const Profile = () => {
   const [mentorRefreshKey, setMentorRefreshKey] = React.useState(0);
   const [processingMentor, setProcessingMentor] = React.useState(false);
   const profileData = useProfileData(profileRefreshKey);
+  const { showWelcome, completeStep } = useOnboardingState();
   
   // Process pending mentor assignment after registration
   useEffect(() => {
@@ -170,6 +174,16 @@ const Profile = () => {
         </div>
 
         <div className="space-y-8 relative z-10">
+          {/* Welcome overlay for first-time users */}
+          <WelcomeOverlay
+            open={showWelcome}
+            onStart={() => completeStep('welcome_seen')}
+            onSkip={() => completeStep('welcome_seen')}
+          />
+
+          {/* Onboarding hint */}
+          <OnboardingHintBanner hintKey="dashboard" />
+
           {/* Membership & Credits Recap */}
           <MembershipSummaryCard />
 
