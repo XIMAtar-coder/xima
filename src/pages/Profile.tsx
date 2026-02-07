@@ -18,6 +18,7 @@ import { AssessmentOverviewCard } from '@/components/profile/AssessmentOverviewC
 import { OpenAnswerList } from '@/components/profile/OpenAnswerList';
 import { CVAnalysisCard } from '@/components/profile/CVAnalysisCard';
 import { MyOpportunitiesSection } from '@/components/opportunities/MyOpportunitiesSection';
+import { MembershipSummaryCard } from '@/components/profile/MembershipSummaryCard';
 // Removed ChallengeInvitationBanner - ChallengesForYouSection is the single source of truth
 import { ChallengesForYouSection } from '@/components/profile/ChallengesForYouSection';
 import { DataExportButton } from '@/components/profile/DataExportButton';
@@ -169,8 +170,11 @@ const Profile = () => {
         </div>
 
         <div className="space-y-8 relative z-10">
+          {/* Membership & Credits Recap */}
+          <MembershipSummaryCard />
+
           {/* XIMAtar Hero Card - Full Width with Profile Photo */}
-          <XimatarHeroCard 
+          <XimatarHeroCard
             ximatarName={profileData.ximatar_name}
             ximatarImage={profileData.ximatar_image}
             driveLevel={profileData.drive_level}

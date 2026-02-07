@@ -3994,5 +3994,18 @@
       "dpo_info": "Per qualsiasi richiesta relativa alla privacy, richieste di accesso ai dati o per esercitare i tuoi diritti GDPR, contatta il nostro Responsabile della Protezione dei Dati:",
       "last_updated": "Ultimo aggiornamento"
     }
+  },
+  "dashboard": {
+    "membership": {
+      "title": "Abbonamento e Crediti",
+      "tier_freemium": "Freemium",
+      "tier_basic": "Basic",
+      "tier_premium": "Premium",
+      "tier_pro": "Pro",
+      "creditsLabel": "crediti",
+      "microcopy": "I crediti sbloccano sessioni da 45 min con il mentore. Guadagnali invitando amici.",
+      "ctaManage": "Gestisci piano",
+      "ctaInvite": "Invita amici"
+    }
   }
 }
