@@ -3220,6 +3220,9 @@ export type Database = {
           id: string
           invited_user_id: string
           inviter_user_id: string
+          qualified_at: string | null
+          referred_email: string | null
+          rewarded_at: string | null
           status: string
         }
         Insert: {
@@ -3228,6 +3231,9 @@ export type Database = {
           id?: string
           invited_user_id: string
           inviter_user_id: string
+          qualified_at?: string | null
+          referred_email?: string | null
+          rewarded_at?: string | null
           status?: string
         }
         Update: {
@@ -3236,6 +3242,9 @@ export type Database = {
           id?: string
           invited_user_id?: string
           inviter_user_id?: string
+          qualified_at?: string | null
+          referred_email?: string | null
+          rewarded_at?: string | null
           status?: string
         }
         Relationships: []
@@ -3909,6 +3918,10 @@ export type Database = {
           p_new_starts_at: string
           p_session_id: string
         }
+        Returns: Json
+      }
+      qualify_referral_and_reward: {
+        Args: { p_referred_user_id: string }
         Returns: Json
       }
       recompute_matches: { Args: { p_user: string }; Returns: undefined }
