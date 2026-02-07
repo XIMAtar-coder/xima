@@ -418,7 +418,7 @@ export default function SessionDetail() {
                   <Clock className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="font-medium">{session.duration_minutes || 15} {t('common.minutes', 'minutes')}</p>
+                  <p className="font-medium">{session.duration_minutes || 30} {t('common.minutes', 'minutes')}</p>
                   <p className="text-sm text-muted-foreground">
                     {session.price_cents === 0 
                       ? t('sessions.free', 'Free')

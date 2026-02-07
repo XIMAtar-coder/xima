@@ -6,6 +6,7 @@ import { DataExportButton } from '@/components/profile/DataExportButton';
 import { ProfilingOptOutSection } from '@/components/settings/ProfilingOptOutSection';
 import { AccountDeletionSection } from '@/components/settings/AccountDeletionSection';
 import { MentorCVConsentToggle } from '@/components/settings/MentorCVConsentToggle';
+import { MembershipSection } from '@/components/settings/MembershipSection';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -93,6 +94,11 @@ const CandidateSettings = () => {
             <Separator />
           </>
         )}
+
+        {/* Membership Plan */}
+        <MembershipSection />
+
+        <Separator />
 
         {/* Data Export (GDPR Art. 20 - Portability) */}
         <DataExportButton />

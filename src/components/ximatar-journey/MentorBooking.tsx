@@ -14,7 +14,7 @@ const mentors = [
     name: 'Daniel Rodriguez',
     specialty: 'Computational Power & Analysis',
     experience: '10+ years in Data Science',
-    calendlyUrl: 'https://calendly.com/daniel-xima-mentor/15min',
+    calendlyUrl: 'https://calendly.com/daniel-xima-mentor/30min',
     avatar: {
       animal: 'Elephant',
       image: '/placeholder.svg',
@@ -30,7 +30,7 @@ const mentors = [
     name: 'Pietro Martinelli',
     specialty: 'Communication & Leadership',
     experience: '8+ years in Management',
-    calendlyUrl: 'https://calendly.com/pietro-xima-mentor/15min',
+    calendlyUrl: 'https://calendly.com/pietro-xima-mentor/30min',
     avatar: {
       animal: 'Lion',
       image: '/placeholder.svg',
@@ -46,7 +46,7 @@ const mentors = [
     name: 'Antonella Rossi',
     specialty: 'Creativity & Innovation',
     experience: '12+ years in Design & Strategy',
-    calendlyUrl: 'https://calendly.com/antonella-xima-mentor/15min',
+    calendlyUrl: 'https://calendly.com/antonella-xima-mentor/30min',
     avatar: {
       animal: 'Fox',
       image: '/placeholder.svg',

@@ -617,7 +617,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-medium text-foreground">
-                      {t('profile.free_intro_available', 'Free 15-minute intro session')}
+                      {t('profile.free_intro_available', 'Free 30-minute intro session')}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {t('profile.select_slot_to_book', 'Select a slot to request your session')}
@@ -730,7 +730,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
                         <Badge variant="secondary" className="text-xs">
                           {t('profile.free_intro', 'Free Intro')}
                         </Badge>
-                        <span className="text-xs text-muted-foreground">15 {t('common.minutes', 'minutes')}</span>
+                        <span className="text-xs text-muted-foreground">30 {t('common.minutes', 'minutes')}</span>
                       </div>
                     </div>
                     <div className="flex items-start gap-2 bg-muted border border-border rounded-md p-2">
