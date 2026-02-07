@@ -149,12 +149,15 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
         }
       }
 
-      // If free intro is used and no pending session, show that state
+      // If free intro is completed (used_at set), show that state
       if (usedFreeIntro) {
         setAvailabilityState('free_intro_used');
         setIsLoadingSlots(false);
         return;
       }
+
+      // If there's a rejected/cancelled free_intro but used_at is null,
+      // the candidate can rebook — fall through to show slots
 
       const { data, error } = await supabase.functions.invoke('fetch-mentor-availability', {
         headers: {
@@ -249,7 +252,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
           });
         }
         setAvailabilityState('has_pending_session');
-        setFreeIntroUsed(true);
+        // Don't set freeIntroUsed here — it's only consumed on completion
         onBookingSuccess?.();
       } else {
         // Handle specific error codes
