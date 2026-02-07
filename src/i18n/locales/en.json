@@ -4301,5 +4301,33 @@
       "hint": "A standard 45-min mentor session costs 5 credits. Every referral counts.",
       "settingsHelper": "You can change your plan or manage referrals anytime in Settings."
     }
+  },
+  "onboarding": {
+    "welcome_title": "Welcome to your XIMA journey",
+    "welcome_copy": "This is your personal growth space. Let's explore how it works.",
+    "start": "Start",
+    "skip": "Skip",
+    "hint": {
+      "dashboard_title": "Your growth hub",
+      "dashboard_body": "Track your progress, credits, and next steps from here.",
+      "feed_title": "Your Feed",
+      "feed_body": "Receive messages, mentor updates, and important activity here.",
+      "mentor_title": "Your Mentor",
+      "mentor_body": "Your mentor supports you with targeted sessions based on your profile.",
+      "challenges_title": "Challenges",
+      "challenges_body": "Companies invite you here to real challenges and opportunities.",
+      "settings_title": "Settings",
+      "settings_body": "Manage your plan, credits, referrals, and account preferences."
+    }
+  },
+  "feed": {
+    "thread_type": {
+      "mentor": "Mentor",
+      "business": "Company"
+    },
+    "open_thread": "Open",
+    "active_threads_title": "Your Conversations",
+    "active_threads_subtitle": "Messages with your mentor and companies you're connected with.",
+    "no_active_threads": "No conversations yet. They'll appear here when a mentor or company connects with you."
   }
 }

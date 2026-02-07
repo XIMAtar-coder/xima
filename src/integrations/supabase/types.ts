@@ -3471,6 +3471,33 @@ export type Database = {
         }
         Relationships: []
       }
+      user_onboarding_state: {
+        Row: {
+          completed_steps: Json
+          created_at: string
+          dismissed_hints: Json
+          first_login_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_steps?: Json
+          created_at?: string
+          dismissed_hints?: Json
+          first_login_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_steps?: Json
+          created_at?: string
+          dismissed_hints?: Json
+          first_login_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_opportunity_matches: {
         Row: {
           created_at: string | null

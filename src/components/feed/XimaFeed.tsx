@@ -4,8 +4,11 @@ import { MessageCircle } from 'lucide-react';
 import { FeedHeader } from './FeedHeader';
 import { SingleFeedCard } from './SingleFeedCard';
 import { InterestSignalsCard } from './InterestSignalsCard';
+import { FeedActiveThreads } from './FeedActiveThreads';
 import { Card, CardContent } from '@/components/ui/card';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
+import { useRealtimeChat, RecentThread } from '@/hooks/useRealtimeChat';
+import { useUser } from '@/context/UserContext';
 
 interface XimaFeedProps {
   showChatAccess?: boolean;
@@ -16,12 +19,19 @@ interface XimaFeedProps {
 /**
  * GDPR-Safe XIMA Feed - "One news per login" pattern.
  * 
- * Replaces the infinite scroll feed with a single audience-scoped news card.
+ * Includes contextual chat threads (mentor/business only).
  * No global visibility, strict RLS enforcement at database level.
  */
 export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations }: XimaFeedProps) => {
   const { t } = useTranslation();
   const { isBusiness } = useBusinessRole();
+  const { user } = useUser();
+  const { recentThreads, loadingThreads } = useRealtimeChat(user?.id);
+
+  const handleOpenThread = (threadId: string) => {
+    // Navigate to conversations view with the thread pre-selected
+    onOpenConversations?.();
+  };
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -32,6 +42,15 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
         <div className="mb-6">
           <InterestSignalsCard onChatOpen={() => onOpenConversations?.()} />
         </div>
+      )}
+
+      {/* Contextual chat threads (mentor + business only) */}
+      {!isBusiness && (
+        <FeedActiveThreads
+          threads={recentThreads}
+          loading={loadingThreads}
+          onOpenThread={handleOpenThread}
+        />
       )}
 
       {/* Chat access notice - only shown when mutual interest exists */}

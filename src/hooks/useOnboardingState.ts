@@ -1,0 +1,103 @@
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useUser } from '@/context/UserContext';
+
+export type OnboardingStep = 'welcome_seen';
+export type OnboardingHint = 
+  | 'dashboard' 
+  | 'feed' 
+  | 'mentor' 
+  | 'challenges' 
+  | 'settings';
+
+interface OnboardingState {
+  completed_steps: string[];
+  dismissed_hints: string[];
+  first_login_at: string | null;
+}
+
+export const useOnboardingState = () => {
+  const { user, isAuthenticated } = useUser();
+  const [state, setState] = useState<OnboardingState>({
+    completed_steps: [],
+    dismissed_hints: [],
+    first_login_at: null,
+  });
+  const [loading, setLoading] = useState(true);
+
+  // Fetch onboarding state
+  useEffect(() => {
+    if (!isAuthenticated || !user?.id) {
+      setLoading(false);
+      return;
+    }
+
+    const fetch = async () => {
+      const { data, error } = await supabase
+        .from('user_onboarding_state')
+        .select('completed_steps, dismissed_hints, first_login_at')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error('[useOnboardingState] fetch error:', error);
+      } else if (data) {
+        setState({
+          completed_steps: (data.completed_steps as string[]) || [],
+          dismissed_hints: (data.dismissed_hints as string[]) || [],
+          first_login_at: data.first_login_at,
+        });
+      } else {
+        // No row yet — create one
+        await supabase
+          .from('user_onboarding_state')
+          .insert({ user_id: user.id });
+      }
+      setLoading(false);
+    };
+
+    fetch();
+  }, [isAuthenticated, user?.id]);
+
+  const completeStep = useCallback(async (step: OnboardingStep) => {
+    if (!user?.id) return;
+    const updated = [...new Set([...state.completed_steps, step])];
+    setState(prev => ({ ...prev, completed_steps: updated }));
+
+    await supabase
+      .from('user_onboarding_state')
+      .update({ completed_steps: updated as any, updated_at: new Date().toISOString() })
+      .eq('user_id', user.id);
+  }, [user?.id, state.completed_steps]);
+
+  const dismissHint = useCallback(async (hint: OnboardingHint) => {
+    if (!user?.id) return;
+    const updated = [...new Set([...state.dismissed_hints, hint])];
+    setState(prev => ({ ...prev, dismissed_hints: updated }));
+
+    await supabase
+      .from('user_onboarding_state')
+      .update({ dismissed_hints: updated as any, updated_at: new Date().toISOString() })
+      .eq('user_id', user.id);
+  }, [user?.id, state.dismissed_hints]);
+
+  const hasCompletedStep = useCallback((step: OnboardingStep) => {
+    return state.completed_steps.includes(step);
+  }, [state.completed_steps]);
+
+  const hasDisimissedHint = useCallback((hint: OnboardingHint) => {
+    return state.dismissed_hints.includes(hint);
+  }, [state.dismissed_hints]);
+
+  const showWelcome = !loading && isAuthenticated && !state.completed_steps.includes('welcome_seen');
+
+  return {
+    loading,
+    state,
+    showWelcome,
+    completeStep,
+    dismissHint,
+    hasCompletedStep,
+    hasDismissedHint: hasDisimissedHint,
+  };
+};

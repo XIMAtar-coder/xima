@@ -14,6 +14,7 @@ import { useRealtimeChat, ChatMessage, RecentThread, ChatUser } from '@/hooks/us
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { XimaFeed } from '@/components/feed/XimaFeed';
+import { OnboardingHintBanner } from '@/components/onboarding/OnboardingHintBanner';
 
 const XimaChat = () => {
   const { t } = useTranslation();
@@ -399,6 +400,7 @@ const XimaChat = () => {
   return (
     <MainLayout>
       <div className="container max-w-4xl mx-auto px-4 py-8">
+        <OnboardingHintBanner hintKey="feed" />
         <XimaFeed 
           showChatAccess={true}
           hasPendingChats={hasPendingChats}
