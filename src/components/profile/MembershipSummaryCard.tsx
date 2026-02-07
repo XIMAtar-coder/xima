@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Coins, Crown, Zap, Star, Sparkles, Settings, Users } from 'lucide-react';
+import { Coins, Crown, Zap, Star, Sparkles, Users, ArrowRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const TIER_ICONS: Record<string, React.ReactNode> = {
-  freemium: <Zap className="h-3.5 w-3.5" />,
-  basic: <Star className="h-3.5 w-3.5" />,
-  premium: <Crown className="h-3.5 w-3.5" />,
-  pro: <Sparkles className="h-3.5 w-3.5" />,
+  freemium: <Zap className="h-3 w-3" />,
+  basic: <Star className="h-3 w-3" />,
+  premium: <Crown className="h-3 w-3" />,
+  pro: <Sparkles className="h-3 w-3" />,
 };
 
 const TIER_COLORS: Record<string, string> = {
@@ -57,80 +56,75 @@ export const MembershipSummaryCard: React.FC = () => {
 
   if (loading) {
     return (
-      <Card className="border-border/50">
-        <CardContent className="p-5">
-          <div className="flex items-center gap-4">
-            <Skeleton className="h-10 w-10 rounded-full shrink-0" />
-            <div className="flex-1 space-y-2">
-              <Skeleton className="h-4 w-40" />
-              <Skeleton className="h-3 w-56" />
-            </div>
+      <div className="rounded-xl border border-border/40 bg-muted/30 p-5">
+        <div className="space-y-3">
+          <Skeleton className="h-4 w-36" />
+          <Skeleton className="h-3 w-64" />
+          <div className="flex gap-3 pt-1">
+            <Skeleton className="h-8 w-28" />
+            <Skeleton className="h-8 w-28" />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
   const tierLabel = t(`dashboard.membership.tier_${tier}`, tier.charAt(0).toUpperCase() + tier.slice(1));
 
   return (
-    <Card className="border-border/50 bg-card/80">
-      <CardContent className="p-5">
-        {/* Title row */}
-        <div className="flex items-start justify-between gap-4 mb-3">
-          <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-              <Coins className="h-4.5 w-4.5 text-primary" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-foreground leading-tight">
-                {t('dashboard.membership.title', 'Membership & Credits')}
-              </h3>
-              <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
-                {t('dashboard.membership.subtitle', 'Earn credits by inviting friends. Use credits to unlock mentor sessions.')}
-              </p>
-            </div>
-          </div>
-        </div>
+    <div className="rounded-xl border border-border/40 bg-muted/20 p-5 space-y-3">
+      {/* Title + tier badge */}
+      <div className="flex items-center gap-2.5 flex-wrap">
+        <Coins className="h-4 w-4 text-primary shrink-0" />
+        <h3 className="text-sm font-semibold text-foreground">
+          {t('dashboard.membership.title')}
+        </h3>
+        <Badge variant="secondary" className={`${TIER_COLORS[tier] || TIER_COLORS.freemium} text-[11px] px-2 py-0.5 gap-1`}>
+          {TIER_ICONS[tier] || TIER_ICONS.freemium}
+          {tierLabel}
+        </Badge>
+      </div>
 
-        {/* Stats row */}
-        <div className="flex items-center gap-3 mb-3">
-          <Badge className={`${TIER_COLORS[tier] || TIER_COLORS.freemium} text-xs`}>
-            {TIER_ICONS[tier] || TIER_ICONS.freemium}
-            <span className="ml-1">{tierLabel}</span>
-          </Badge>
-          <div className="flex items-center gap-1.5 text-sm">
-            <span className="font-bold text-foreground">{credits}</span>
-            <span className="text-muted-foreground">{t('dashboard.membership.creditsLabel', 'credits')}</span>
-          </div>
-        </div>
+      {/* Narrative subtitle */}
+      <p className="text-xs text-muted-foreground leading-relaxed max-w-lg">
+        {t('dashboard.membership.subtitle')}
+      </p>
 
-        {/* CTAs + hint */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-          <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              onClick={() => navigate('/settings')}
-              className="gap-1.5 text-xs h-8"
-            >
-              <Settings className="h-3.5 w-3.5" />
-              {t('dashboard.membership.manage', 'Manage plan')}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/settings#referrals')}
-              className="gap-1.5 text-xs h-8"
-            >
-              <Users className="h-3.5 w-3.5" />
-              {t('dashboard.membership.invite', 'Invite friends')}
-            </Button>
-          </div>
-          <p className="text-[11px] text-muted-foreground sm:ml-auto">
-            {t('dashboard.membership.hint', 'A standard 45-min mentor session costs 5 credits.')}
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+      {/* Credit balance */}
+      <p className="text-sm text-foreground">
+        {t('dashboard.membership.creditLine', { credits })}
+      </p>
+
+      {/* CTAs */}
+      <div className="flex items-center gap-2 flex-wrap pt-0.5">
+        <Button
+          size="sm"
+          onClick={() => navigate('/settings#referrals')}
+          className="gap-1.5 text-xs h-8"
+        >
+          <Users className="h-3.5 w-3.5" />
+          {t('dashboard.membership.invite')}
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate('/settings')}
+          className="gap-1 text-xs h-8 text-muted-foreground"
+        >
+          {t('dashboard.membership.manage')}
+          <ArrowRight className="h-3 w-3" />
+        </Button>
+      </div>
+
+      {/* Hint + settings helper */}
+      <div className="space-y-0.5 pt-0.5">
+        <p className="text-[11px] text-muted-foreground/70">
+          {t('dashboard.membership.hint')}
+        </p>
+        <p className="text-[11px] text-muted-foreground/50">
+          {t('dashboard.membership.settingsHelper')}
+        </p>
+      </div>
+    </div>
   );
 };
