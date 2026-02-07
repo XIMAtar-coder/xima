@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Settings } from 'lucide-react';
 import { OnboardingHintBanner } from '@/components/onboarding/OnboardingHintBanner';
+import { useOnboardingState } from '@/hooks/useOnboardingState';
 import MainLayout from '@/components/layout/MainLayout';
 import { DataExportButton } from '@/components/profile/DataExportButton';
 import { ProfilingOptOutSection } from '@/components/settings/ProfilingOptOutSection';
@@ -13,11 +14,19 @@ import { supabase } from '@/integrations/supabase/client';
 
 const CandidateSettings = () => {
   const { t } = useTranslation();
+  const { completeStep, hasCompletedStep } = useOnboardingState();
   const [mentorInfo, setMentorInfo] = useState<{ mentorId: string | null; mentorName: string | null; profileId: string | null }>({
     mentorId: null,
     mentorName: null,
     profileId: null,
   });
+
+  // Auto-complete settings onboarding step on page visit
+  useEffect(() => {
+    if (!hasCompletedStep('settings')) {
+      completeStep('settings');
+    }
+  }, [completeStep, hasCompletedStep]);
 
   useEffect(() => {
     const fetchMentorInfo = async () => {
