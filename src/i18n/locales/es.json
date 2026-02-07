@@ -2715,15 +2715,15 @@
   "dashboard": {
     "membership": {
       "title": "Tu camino de crecimiento",
-      "subtitle": "Los créditos desbloquean conversaciones reales con tu mentor. Gánalos haciendo crecer la comunidad XIMA.",
+      "subtitle": "Estás empezando. Invita a un amigo para ganar tus primeros créditos — desbloquean sesiones reales con tu mentor.",
       "creditLine": "Tienes {{credits}} créditos disponibles",
       "tier_freemium": "Freemium",
       "tier_basic": "Basic",
       "tier_premium": "Premium",
       "tier_pro": "Pro",
       "manage": "Gestionar suscripción",
-      "invite": "Invita personas y gana créditos",
-      "hint": "Una sesión estándar de 45 min cuesta 5 créditos.",
+      "invite": "Invita a un amigo y gana créditos",
+      "hint": "Una sesión estándar de 45 min cuesta 5 créditos. Cada invitación cuenta.",
       "settingsHelper": "Puedes cambiar tu plan o gestionar invitaciones en cualquier momento desde Ajustes."
     }
   }
