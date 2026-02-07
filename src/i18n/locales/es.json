@@ -2710,5 +2710,18 @@
       "dpo_info": "Para cualquier consulta relacionada con la privacidad, solicitudes de acceso a datos o para ejercer tus derechos RGPD, contacta a nuestro Delegado de Protección de Datos:",
       "last_updated": "Última actualización"
     }
+  },
+  "dashboard": {
+    "membership": {
+      "title": "Membresía y Créditos",
+      "tier_freemium": "Freemium",
+      "tier_basic": "Basic",
+      "tier_premium": "Premium",
+      "tier_pro": "Pro",
+      "creditsLabel": "créditos",
+      "microcopy": "Los créditos desbloquean sesiones de 45 min con el mentor. Gánalos invitando amigos.",
+      "ctaManage": "Gestionar plan",
+      "ctaInvite": "Invitar amigos"
+    }
   }
 }

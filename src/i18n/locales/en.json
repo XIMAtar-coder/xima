@@ -4282,5 +4282,18 @@
       "dpo_info": "For any privacy-related inquiries, data access requests, or to exercise your GDPR rights, please contact our Data Protection Officer:",
       "last_updated": "Last updated"
     }
+  },
+  "dashboard": {
+    "membership": {
+      "title": "Membership & Credits",
+      "tier_freemium": "Freemium",
+      "tier_basic": "Basic",
+      "tier_premium": "Premium",
+      "tier_pro": "Pro",
+      "creditsLabel": "credits",
+      "microcopy": "Credits unlock 45-min mentor sessions. Earn them by inviting friends.",
+      "ctaManage": "Manage plan",
+      "ctaInvite": "Invite friends"
+    }
   }
 }
