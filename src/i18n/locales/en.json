@@ -4308,16 +4308,26 @@
     "start": "Start",
     "skip": "Skip",
     "hint": {
-      "dashboard_title": "Your growth hub",
-      "dashboard_body": "Track your progress, credits, and next steps from here.",
+      "dashboard_title": "This is your growth hub",
+      "dashboard_body": "Here you track your XIMAtar, mentor progress, credits, and next steps.",
+      "assessment_title": "Build your XIMAtar",
+      "assessment_body": "This is how your XIMAtar is built. Your answers shape mentors and challenges.",
       "feed_title": "Your Feed",
-      "feed_body": "Receive messages, mentor updates, and important activity here.",
+      "feed_body": "This is where meaningful conversations happen with mentors and companies.",
       "mentor_title": "Your Mentor",
-      "mentor_body": "Your mentor supports you with targeted sessions based on your profile.",
+      "mentor_body": "Your mentor guides your growth. Choosing one unlocks sessions and feedback.",
       "challenges_title": "Challenges",
       "challenges_body": "Companies invite you here to real challenges and opportunities.",
       "settings_title": "Settings",
-      "settings_body": "Manage your plan, credits, referrals, and account preferences."
+      "settings_body": "Manage your plan, credits, referrals, and account preferences here."
+    },
+    "cta": {
+      "got_it": "Got it",
+      "continue_test": "Continue test",
+      "choose_mentor": "Choose mentor",
+      "understood": "Understood",
+      "explore_challenges": "Explore challenges",
+      "open_settings": "Open settings"
     }
   },
   "feed": {

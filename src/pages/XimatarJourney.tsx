@@ -24,6 +24,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { OnboardingHintBanner } from '@/components/onboarding/OnboardingHintBanner';
 
 const XimatarJourney = () => {
   const navigate = useNavigate();
@@ -93,6 +94,7 @@ const XimatarJourney = () => {
 
   return (
     <MainLayout>
+      <OnboardingHintBanner hintKey="assessment" />
       {/* Resume Modal */}
       <AlertDialog open={showResumeModal} onOpenChange={setShowResumeModal}>
         <AlertDialogContent>

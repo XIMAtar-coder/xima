@@ -2,13 +2,17 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 
-export type OnboardingStep = 'welcome_seen';
-export type OnboardingHint = 
-  | 'dashboard' 
-  | 'feed' 
-  | 'mentor' 
-  | 'challenges' 
+export type OnboardingStep = 
+  | 'welcome_seen'
+  | 'dashboard'
+  | 'assessment'
+  | 'mentor'
+  | 'feed'
+  | 'challenges'
   | 'settings';
+
+// Keep backward compat alias
+export type OnboardingHint = OnboardingStep;
 
 interface OnboardingState {
   completed_steps: string[];
@@ -70,24 +74,30 @@ export const useOnboardingState = () => {
       .eq('user_id', user.id);
   }, [user?.id, state.completed_steps]);
 
-  const dismissHint = useCallback(async (hint: OnboardingHint) => {
+  const dismissHint = useCallback(async (hint: OnboardingStep) => {
+    // dismissHint now also completes the step
     if (!user?.id) return;
-    const updated = [...new Set([...state.dismissed_hints, hint])];
-    setState(prev => ({ ...prev, dismissed_hints: updated }));
+    const updatedHints = [...new Set([...state.dismissed_hints, hint])];
+    const updatedSteps = [...new Set([...state.completed_steps, hint])];
+    setState(prev => ({ ...prev, dismissed_hints: updatedHints, completed_steps: updatedSteps }));
 
     await supabase
       .from('user_onboarding_state')
-      .update({ dismissed_hints: updated as any, updated_at: new Date().toISOString() })
+      .update({ 
+        dismissed_hints: updatedHints as any, 
+        completed_steps: updatedSteps as any,
+        updated_at: new Date().toISOString() 
+      })
       .eq('user_id', user.id);
-  }, [user?.id, state.dismissed_hints]);
+  }, [user?.id, state.dismissed_hints, state.completed_steps]);
 
   const hasCompletedStep = useCallback((step: OnboardingStep) => {
     return state.completed_steps.includes(step);
   }, [state.completed_steps]);
 
-  const hasDisimissedHint = useCallback((hint: OnboardingHint) => {
-    return state.dismissed_hints.includes(hint);
-  }, [state.dismissed_hints]);
+  const hasDismissedHint = useCallback((hint: OnboardingStep) => {
+    return state.completed_steps.includes(hint);
+  }, [state.completed_steps]);
 
   const showWelcome = !loading && isAuthenticated && !state.completed_steps.includes('welcome_seen');
 
@@ -98,6 +108,6 @@ export const useOnboardingState = () => {
     completeStep,
     dismissHint,
     hasCompletedStep,
-    hasDismissedHint: hasDisimissedHint,
+    hasDismissedHint,
   };
 };

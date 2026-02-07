@@ -4020,16 +4020,26 @@
     "start": "Inizia",
     "skip": "Salta",
     "hint": {
-      "dashboard_title": "Il tuo hub di crescita",
-      "dashboard_body": "Monitora i tuoi progressi, crediti e prossimi passi da qui.",
+      "dashboard_title": "Questo è il tuo hub di crescita",
+      "dashboard_body": "Qui monitori il tuo XIMAtar, i progressi col mentore, i crediti e i prossimi passi.",
+      "assessment_title": "Costruisci il tuo XIMAtar",
+      "assessment_body": "Così nasce il tuo XIMAtar. Le tue risposte definiscono mentori e sfide.",
       "feed_title": "Il tuo Feed",
-      "feed_body": "Ricevi messaggi, aggiornamenti dal mentore e attività importanti qui.",
+      "feed_body": "Qui avvengono le conversazioni significative con mentori e aziende.",
       "mentor_title": "Il tuo Mentore",
-      "mentor_body": "Il tuo mentore ti supporta con sessioni mirate basate sul tuo profilo.",
+      "mentor_body": "Il tuo mentore guida la tua crescita. Sceglierne uno sblocca sessioni e feedback.",
       "challenges_title": "Challenge",
       "challenges_body": "Le aziende ti invitano qui a sfide e opportunità reali.",
       "settings_title": "Impostazioni",
       "settings_body": "Gestisci piano, crediti, inviti e preferenze del tuo account."
+    },
+    "cta": {
+      "got_it": "Capito",
+      "continue_test": "Continua il test",
+      "choose_mentor": "Scegli mentore",
+      "understood": "Ho capito",
+      "explore_challenges": "Esplora le sfide",
+      "open_settings": "Apri impostazioni"
     }
   },
   "feed": {

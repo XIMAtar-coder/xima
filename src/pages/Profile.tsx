@@ -235,6 +235,7 @@ const Profile = () => {
             {/* Right Column */}
             <div className="space-y-6">
               {/* Unified Mentor Section - Identity + Availability */}
+              <OnboardingHintBanner hintKey="mentor" />
               <MentorSection 
                 mentor={profileData.mentor_profile} 
                 onBookingSuccess={handleMentorBookingSuccess}
@@ -253,6 +254,7 @@ const Profile = () => {
 
           {/* Full Width Sections */}
           {/* Challenges for You */}
+          <OnboardingHintBanner hintKey="challenges" />
           <ChallengesForYouSection />
           
           {/* Job Opportunities */}
