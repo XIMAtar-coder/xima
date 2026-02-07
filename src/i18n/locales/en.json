@@ -277,7 +277,8 @@
     "analytics": "Analytics",
     "developer": "Developer",
     "tests": "Tests",
-    "mentor_portal": "Mentor Portal"
+    "mentor_portal": "Mentor Portal",
+    "settings": "Settings"
   },
   "hero": {
     "title": "Discover Your Professional Self",
@@ -4286,14 +4287,15 @@
   "dashboard": {
     "membership": {
       "title": "Membership & Credits",
+      "subtitle": "Earn credits by inviting friends. Use credits to unlock mentor sessions.",
       "tier_freemium": "Freemium",
       "tier_basic": "Basic",
       "tier_premium": "Premium",
       "tier_pro": "Pro",
       "creditsLabel": "credits",
-      "microcopy": "Credits unlock 45-min mentor sessions. Earn them by inviting friends.",
-      "ctaManage": "Manage plan",
-      "ctaInvite": "Invite friends"
+      "manage": "Manage plan",
+      "invite": "Invite friends",
+      "hint": "A standard 45-min mentor session costs 5 credits."
     }
   }
 }

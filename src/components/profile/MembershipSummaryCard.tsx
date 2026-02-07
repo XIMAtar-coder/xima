@@ -5,14 +5,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Coins, Crown, Zap, Star, Sparkles, Settings, Users, AlertCircle } from 'lucide-react';
+import { Coins, Crown, Zap, Star, Sparkles, Settings, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const TIER_ICONS: Record<string, React.ReactNode> = {
-  freemium: <Zap className="h-4 w-4" />,
-  basic: <Star className="h-4 w-4" />,
-  premium: <Crown className="h-4 w-4" />,
-  pro: <Sparkles className="h-4 w-4" />,
+  freemium: <Zap className="h-3.5 w-3.5" />,
+  basic: <Star className="h-3.5 w-3.5" />,
+  premium: <Crown className="h-3.5 w-3.5" />,
+  pro: <Sparkles className="h-3.5 w-3.5" />,
 };
 
 const TIER_COLORS: Record<string, string> = {
@@ -26,12 +26,11 @@ export const MembershipSummaryCard: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [tier, setTier] = useState('freemium');
   const [credits, setCredits] = useState(0);
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchData = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
@@ -48,24 +47,25 @@ export const MembershipSummaryCard: React.FC = () => {
           setCredits(balanceRes.data as number);
         }
       } catch {
-        setError(true);
+        // silently fail — card still shows CTAs
       } finally {
         setLoading(false);
       }
     };
-    fetch();
+    fetchData();
   }, []);
 
   if (loading) {
     return (
-      <Card>
-        <CardContent className="p-4 flex items-center gap-4">
-          <Skeleton className="h-10 w-10 rounded-full" />
-          <div className="flex-1 space-y-2">
-            <Skeleton className="h-4 w-32" />
-            <Skeleton className="h-3 w-48" />
+      <Card className="border-border/50">
+        <CardContent className="p-5">
+          <div className="flex items-center gap-4">
+            <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-4 w-40" />
+              <Skeleton className="h-3 w-56" />
+            </div>
           </div>
-          <Skeleton className="h-9 w-36" />
         </CardContent>
       </Card>
     );
@@ -74,53 +74,61 @@ export const MembershipSummaryCard: React.FC = () => {
   const tierLabel = t(`dashboard.membership.tier_${tier}`, tier.charAt(0).toUpperCase() + tier.slice(1));
 
   return (
-    <Card className="border-primary/20">
-      <CardContent className="p-4">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          {/* Left: tier + credits */}
-          <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-              <Coins className="h-5 w-5 text-primary" />
+    <Card className="border-border/50 bg-card/80">
+      <CardContent className="p-5">
+        {/* Title row */}
+        <div className="flex items-start justify-between gap-4 mb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              <Coins className="h-4.5 w-4.5 text-primary" />
             </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <Badge className={TIER_COLORS[tier] || TIER_COLORS.freemium}>
-                  {TIER_ICONS[tier] || TIER_ICONS.freemium}
-                  <span className="ml-1">{tierLabel}</span>
-                </Badge>
-                <span className="text-sm font-semibold text-foreground">
-                  {credits} {t('dashboard.membership.creditsLabel', 'credits')}
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                {t('dashboard.membership.microcopy', 'Credits unlock 45-min mentor sessions. Earn them by inviting friends.')}
+            <div>
+              <h3 className="text-sm font-semibold text-foreground leading-tight">
+                {t('dashboard.membership.title', 'Membership & Credits')}
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
+                {t('dashboard.membership.subtitle', 'Earn credits by inviting friends. Use credits to unlock mentor sessions.')}
               </p>
             </div>
           </div>
+        </div>
 
-          {/* Right: CTAs */}
-          <div className="flex items-center gap-2 shrink-0">
-            {error && (
-              <AlertCircle className="h-4 w-4 text-destructive" />
-            )}
+        {/* Stats row */}
+        <div className="flex items-center gap-3 mb-3">
+          <Badge className={`${TIER_COLORS[tier] || TIER_COLORS.freemium} text-xs`}>
+            {TIER_ICONS[tier] || TIER_ICONS.freemium}
+            <span className="ml-1">{tierLabel}</span>
+          </Badge>
+          <div className="flex items-center gap-1.5 text-sm">
+            <span className="font-bold text-foreground">{credits}</span>
+            <span className="text-muted-foreground">{t('dashboard.membership.creditsLabel', 'credits')}</span>
+          </div>
+        </div>
+
+        {/* CTAs + hint */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              onClick={() => navigate('/settings')}
+              className="gap-1.5 text-xs h-8"
+            >
+              <Settings className="h-3.5 w-3.5" />
+              {t('dashboard.membership.manage', 'Manage plan')}
+            </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => navigate('/settings#referrals')}
-              className="gap-1.5"
+              className="gap-1.5 text-xs h-8"
             >
               <Users className="h-3.5 w-3.5" />
-              {t('dashboard.membership.ctaInvite', 'Invite friends')}
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => navigate('/settings')}
-              className="gap-1.5"
-            >
-              <Settings className="h-3.5 w-3.5" />
-              {t('dashboard.membership.ctaManage', 'Manage plan')}
+              {t('dashboard.membership.invite', 'Invite friends')}
             </Button>
           </div>
+          <p className="text-[11px] text-muted-foreground sm:ml-auto">
+            {t('dashboard.membership.hint', 'A standard 45-min mentor session costs 5 credits.')}
+          </p>
         </div>
       </CardContent>
     </Card>

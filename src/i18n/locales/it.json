@@ -150,7 +150,8 @@
     "analytics": "Analytics",
     "developer": "Sviluppatore",
     "tests": "Test",
-    "mentor_portal": "Portale Mentore"
+    "mentor_portal": "Portale Mentore",
+    "settings": "Impostazioni"
   },
   "hero": {
     "title": "Scopri il Tuo Sé Professionale",
@@ -3998,14 +3999,15 @@
   "dashboard": {
     "membership": {
       "title": "Abbonamento e Crediti",
+      "subtitle": "Ottieni crediti invitando amici. Usa i crediti per sbloccare sessioni con il mentore.",
       "tier_freemium": "Freemium",
       "tier_basic": "Basic",
       "tier_premium": "Premium",
       "tier_pro": "Pro",
       "creditsLabel": "crediti",
-      "microcopy": "I crediti sbloccano sessioni da 45 min con il mentore. Guadagnali invitando amici.",
-      "ctaManage": "Gestisci piano",
-      "ctaInvite": "Invita amici"
+      "manage": "Gestisci piano",
+      "invite": "Invita amici",
+      "hint": "Una sessione standard da 45 minuti costa 5 crediti."
     }
   }
 }
