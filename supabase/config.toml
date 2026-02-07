@@ -77,3 +77,18 @@ verify_jwt = true
 
 [functions.mentor-get-candidate-cv]
 verify_jwt = true
+
+[functions.send-referral-invite]
+verify_jwt = false
+
+[functions.bootstrap-mentor-auth]
+verify_jwt = false
+
+[functions.admin-set-user-password]
+verify_jwt = false
+
+[functions.send-verification-email]
+verify_jwt = false
+
+[functions.seed-mentor-auth]
+verify_jwt = false

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,9 +17,11 @@ import { recordUserConsents } from '@/hooks/useConsentRecording';
 
 const Register = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { signUp, isAuthenticated } = useUser();
   const { t, i18n } = useTranslation();
+  const refCode = searchParams.get('ref') || '';
   
   const [formData, setFormData] = useState<RegistrationForm>({
     name: '',
@@ -131,6 +133,20 @@ const Register = () => {
           return;
         }
         
+        // Apply referral code if present
+        if (refCode) {
+          try {
+            const { data: refResult, error: refError } = await supabase.rpc('apply_referral_on_signup', { invite_code: refCode });
+            if (refError) {
+              console.warn('[Register] Referral apply failed:', refError);
+            } else {
+              console.log('[Register] Referral applied:', refResult);
+            }
+          } catch (refErr) {
+            console.warn('[Register] Referral apply exception:', refErr);
+          }
+        }
+
         console.log('[Register] Consents recorded successfully');
 
         try {

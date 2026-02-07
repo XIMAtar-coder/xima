@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { Crown, Zap, Star, Sparkles, Users, MessageSquare, BookOpen, Video, Loader2 } from 'lucide-react';
+import { Crown, Zap, Star, Sparkles, Users, MessageSquare, BookOpen, Video, Loader2, Copy, Check, Send, Gift, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface MembershipStatus {
   tier: string;
@@ -16,6 +18,13 @@ interface MembershipStatus {
   can_access_training_unlimited: boolean;
   interview_prep_credits: number;
   renewal_at: string | null;
+}
+
+interface ReferralRow {
+  id: string;
+  status: string;
+  created_at: string;
+  referred_email: string | null;
 }
 
 const TIER_CONFIG: Record<string, {
@@ -69,25 +78,107 @@ const TIER_CONFIG: Record<string, {
 };
 
 export const MembershipSection: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { toast } = useToast();
   const [status, setStatus] = useState<MembershipStatus | null>(null);
   const [loading, setLoading] = useState(true);
+  const [referralCode, setReferralCode] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [sendingInvite, setSendingInvite] = useState(false);
+  const [referrals, setReferrals] = useState<ReferralRow[]>([]);
+  const [qualifiedCount, setQualifiedCount] = useState(0);
 
   useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const { data, error } = await supabase.rpc('get_membership_status');
-        if (!error && data) {
-          setStatus(data as unknown as MembershipStatus);
-        }
-      } catch (err) {
-        console.error('[MembershipSection] Error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStatus();
+    fetchAll();
   }, []);
+
+  const fetchAll = async () => {
+    try {
+      const [statusRes, profileRes, referralsRes] = await Promise.all([
+        supabase.rpc('get_membership_status'),
+        supabase.from('profiles').select('referral_code').eq('user_id', (await supabase.auth.getUser()).data.user?.id || '').single(),
+        supabase.from('referrals').select('id, status, created_at, referred_email').order('created_at', { ascending: false }).limit(20),
+      ]);
+
+      if (!statusRes.error && statusRes.data) {
+        setStatus(statusRes.data as unknown as MembershipStatus);
+      }
+      if (!profileRes.error && profileRes.data) {
+        setReferralCode(profileRes.data.referral_code);
+      }
+      if (!referralsRes.error && referralsRes.data) {
+        setReferrals(referralsRes.data as ReferralRow[]);
+        const qualified = (referralsRes.data as ReferralRow[]).filter(
+          r => r.status === 'qualified' || r.status === 'rewarded' || r.status === 'signed_up'
+        ).length;
+        setQualifiedCount(qualified);
+      }
+    } catch (err) {
+      console.error('[MembershipSection] Error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCopy = async () => {
+    if (!referralCode) return;
+    const link = `https://xima.lovable.app/register?ref=${referralCode}`;
+    await navigator.clipboard.writeText(link);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+    toast({ title: t('settings.link_copied', 'Link copied!') });
+  };
+
+  const handleSendInvite = async () => {
+    if (!inviteEmail.trim()) return;
+    setSendingInvite(true);
+    try {
+      const session = await supabase.auth.getSession();
+      const { data, error } = await supabase.functions.invoke('send-referral-invite', {
+        body: { recipient_email: inviteEmail.trim(), locale: i18n.language },
+        headers: { Authorization: `Bearer ${session.data.session?.access_token}` },
+      });
+
+      if (error || !data?.success) {
+        const errCode = data?.error || error?.message || 'UNKNOWN';
+        toast({
+          title: t('common.error'),
+          description: errCode === 'SELF_INVITE'
+            ? t('settings.cannot_self_invite', "You can't invite yourself")
+            : t('settings.invite_failed', 'Failed to send invite'),
+          variant: 'destructive',
+        });
+      } else {
+        toast({ title: t('settings.invite_sent', 'Invite sent!') });
+        setInviteEmail('');
+      }
+    } catch (err) {
+      console.error('[MembershipSection] Send invite error:', err);
+      toast({ title: t('common.error'), description: t('settings.invite_failed', 'Failed to send invite'), variant: 'destructive' });
+    } finally {
+      setSendingInvite(false);
+    }
+  };
+
+  const getStatusLabel = (s: string) => {
+    switch (s) {
+      case 'invited': return t('settings.referral_invited', 'Invited');
+      case 'signed_up': return t('settings.referral_signed_up', 'Signed up');
+      case 'qualified': return t('settings.referral_qualified', 'Qualified');
+      case 'rewarded': return t('settings.referral_rewarded', 'Rewarded');
+      default: return s;
+    }
+  };
+
+  const getStatusColor = (s: string) => {
+    switch (s) {
+      case 'rewarded': return 'bg-primary/10 text-primary';
+      case 'qualified': return 'bg-green-500/10 text-green-600';
+      case 'signed_up': return 'bg-blue-500/10 text-blue-600';
+      default: return 'bg-muted text-muted-foreground';
+    }
+  };
 
   if (loading) {
     return (
@@ -101,6 +192,7 @@ export const MembershipSection: React.FC = () => {
 
   const currentTier = status?.tier || 'freemium';
   const config = TIER_CONFIG[currentTier] || TIER_CONFIG.freemium;
+  const progressToNextCredit = qualifiedCount % 5;
 
   return (
     <div className="space-y-4">
@@ -122,7 +214,6 @@ export const MembershipSection: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Benefits List */}
           <div className="space-y-2">
             {config.benefits.map((benefit, idx) => (
               <div key={idx} className="flex items-center gap-3 text-sm">
@@ -173,6 +264,113 @@ export const MembershipSection: React.FC = () => {
               </div>
             )}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Referral Section */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Gift className="h-5 w-5 text-primary" />
+            {t('settings.invite_friends', 'Invite Friends')}
+          </CardTitle>
+          <CardDescription>
+            {t('settings.invite_desc', 'Invite 5 friends and earn a free mentor session')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Progress towards next credit */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">
+                {t('settings.progress_to_credit', 'Progress to next credit')}
+              </span>
+              <span className="font-medium text-foreground">{progressToNextCredit} / 5</span>
+            </div>
+            <div className="h-2 rounded-full bg-muted overflow-hidden">
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-500"
+                style={{ width: `${(progressToNextCredit / 5) * 100}%` }}
+              />
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Invite link */}
+          {referralCode && (
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-foreground">
+                {t('settings.your_invite_link', 'Your invite link')}
+              </p>
+              <div className="flex gap-2">
+                <Input
+                  readOnly
+                  value={`https://xima.lovable.app/register?ref=${referralCode}`}
+                  className="text-xs bg-muted/50"
+                />
+                <Button variant="outline" size="icon" onClick={handleCopy} className="shrink-0">
+                  {copied ? <Check className="h-4 w-4 text-primary" /> : <Copy className="h-4 w-4" />}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Send invite by email */}
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-foreground">
+              {t('settings.send_invite_email', 'Send invite by email')}
+            </p>
+            <div className="flex gap-2">
+              <Input
+                type="email"
+                placeholder={t('settings.email_placeholder', 'friend@example.com')}
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSendInvite()}
+              />
+              <Button
+                variant="default"
+                size="icon"
+                onClick={handleSendInvite}
+                disabled={sendingInvite || !inviteEmail.trim()}
+                className="shrink-0"
+              >
+                {sendingInvite ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              </Button>
+            </div>
+          </div>
+
+          {/* Recent referrals */}
+          {referrals.length > 0 && (
+            <>
+              <Separator />
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-foreground">
+                  {t('settings.recent_invites', 'Recent invites')}
+                </p>
+                <div className="space-y-1.5 max-h-40 overflow-y-auto">
+                  {referrals.map((ref) => (
+                    <div key={ref.id} className="flex items-center justify-between text-sm py-1.5 px-2 rounded bg-muted/30">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Users className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                        <span className="text-muted-foreground truncate text-xs">
+                          {ref.referred_email
+                            ? ref.referred_email.replace(/(.{2}).*@/, '$1***@')
+                            : t('settings.referral_user', 'Referred user')}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Badge variant="secondary" className={`text-xs ${getStatusColor(ref.status)}`}>
+                          {getStatusLabel(ref.status)}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 
