@@ -1685,6 +1685,33 @@ export type Database = {
           },
         ]
       }
+      entitlement_events: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          meta: Json
+          type: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          id?: string
+          meta?: Json
+          type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          meta?: Json
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       feed_consumption: {
         Row: {
           created_at: string | null
@@ -2360,6 +2387,24 @@ export type Database = {
           },
         ]
       }
+      mentor_credits: {
+        Row: {
+          free_session_credits: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          free_session_credits?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          free_session_credits?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mentor_cv_access: {
         Row: {
           allowed_at: string | null
@@ -2505,12 +2550,16 @@ export type Database = {
       mentor_sessions: {
         Row: {
           availability_slot_id: string | null
+          billing_source: string | null
           candidate_profile_id: string
           created_at: string
           created_by: string
           duration_minutes: number | null
           ends_at: string
           id: string
+          included_by_tier:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
           mentor_id: string
           notes_private: string | null
           notes_shared: string | null
@@ -2533,12 +2582,16 @@ export type Database = {
         }
         Insert: {
           availability_slot_id?: string | null
+          billing_source?: string | null
           candidate_profile_id: string
           created_at?: string
           created_by: string
           duration_minutes?: number | null
           ends_at: string
           id?: string
+          included_by_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
           mentor_id: string
           notes_private?: string | null
           notes_shared?: string | null
@@ -2561,12 +2614,16 @@ export type Database = {
         }
         Update: {
           availability_slot_id?: string | null
+          billing_source?: string | null
           candidate_profile_id?: string
           created_at?: string
           created_by?: string
           duration_minutes?: number | null
           ends_at?: string
           id?: string
+          included_by_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
           mentor_id?: string
           notes_private?: string | null
           notes_shared?: string | null
@@ -2990,6 +3047,9 @@ export type Database = {
           free_intro_session_used_at: string | null
           full_name: string | null
           id: string
+          membership_renewal_at: string | null
+          membership_started_at: string | null
+          membership_tier: Database["public"]["Enums"]["membership_tier"]
           mentor: Json | null
           name: string | null
           pillar_scores: Json | null
@@ -2997,6 +3057,8 @@ export type Database = {
           preferred_lang: Database["public"]["Enums"]["lang_code"] | null
           profile_complete: boolean | null
           profiling_opt_out: boolean
+          referral_code: string | null
+          referred_by_code: string | null
           strongest_pillar: string | null
           updated_at: string
           user_id: string
@@ -3020,6 +3082,9 @@ export type Database = {
           free_intro_session_used_at?: string | null
           full_name?: string | null
           id?: string
+          membership_renewal_at?: string | null
+          membership_started_at?: string | null
+          membership_tier?: Database["public"]["Enums"]["membership_tier"]
           mentor?: Json | null
           name?: string | null
           pillar_scores?: Json | null
@@ -3027,6 +3092,8 @@ export type Database = {
           preferred_lang?: Database["public"]["Enums"]["lang_code"] | null
           profile_complete?: boolean | null
           profiling_opt_out?: boolean
+          referral_code?: string | null
+          referred_by_code?: string | null
           strongest_pillar?: string | null
           updated_at?: string
           user_id: string
@@ -3050,6 +3117,9 @@ export type Database = {
           free_intro_session_used_at?: string | null
           full_name?: string | null
           id?: string
+          membership_renewal_at?: string | null
+          membership_started_at?: string | null
+          membership_tier?: Database["public"]["Enums"]["membership_tier"]
           mentor?: Json | null
           name?: string | null
           pillar_scores?: Json | null
@@ -3057,6 +3127,8 @@ export type Database = {
           preferred_lang?: Database["public"]["Enums"]["lang_code"] | null
           profile_complete?: boolean | null
           profiling_opt_out?: boolean
+          referral_code?: string | null
+          referred_by_code?: string | null
           strongest_pillar?: string | null
           updated_at?: string
           user_id?: string
@@ -3140,6 +3212,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      referrals: {
+        Row: {
+          confirmed_at: string | null
+          created_at: string
+          id: string
+          invited_user_id: string
+          inviter_user_id: string
+          status: string
+        }
+        Insert: {
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          invited_user_id: string
+          inviter_user_id: string
+          status?: string
+        }
+        Update: {
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          invited_user_id?: string
+          inviter_user_id?: string
+          status?: string
+        }
+        Relationships: []
       }
       saved_opportunities: {
         Row: {
@@ -3634,6 +3733,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      apply_referral_on_signup: { Args: { invite_code: string }; Returns: Json }
       assign_role_to_user: {
         Args: {
           target_role: Database["public"]["Enums"]["app_role"]
@@ -3739,6 +3839,7 @@ export type Database = {
         Args: { p_ximatar_id: string }
         Returns: number
       }
+      get_membership_status: { Args: never; Returns: Json }
       get_next_feed_item: {
         Args: never
         Returns: {
@@ -3764,6 +3865,10 @@ export type Database = {
       get_profile_id_for_auth_user: {
         Args: { p_auth_uid: string }
         Returns: string
+      }
+      grant_interview_prep_if_3_challenges_completed: {
+        Args: { p_business_id: string; p_user_id: string }
+        Returns: Json
       }
       has_role: {
         Args: {
@@ -3820,6 +3925,7 @@ export type Database = {
       app_role: "admin" | "user" | "business" | "operator"
       audience_type_enum: "candidate" | "business" | "mentor"
       lang_code: "it" | "en" | "es"
+      membership_tier: "freemium" | "basic" | "premium" | "pro"
       thread_type_enum: "business_candidate" | "mentor_candidate"
       ximatar_type:
         | "lion"
@@ -3965,6 +4071,7 @@ export const Constants = {
       app_role: ["admin", "user", "business", "operator"],
       audience_type_enum: ["candidate", "business", "mentor"],
       lang_code: ["it", "en", "es"],
+      membership_tier: ["freemium", "basic", "premium", "pro"],
       thread_type_enum: ["business_candidate", "mentor_candidate"],
       ximatar_type: [
         "lion",

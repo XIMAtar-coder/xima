@@ -49,7 +49,7 @@
     "profile_photo": "Foto de Perfil",
     "upload_photo": "Subir Foto",
     "your_mentor": "Tu Mentor",
-    "book_15_min_session": "Reserva tu sesión de 15 minutos",
+    "book_15_min_session": "Reserva tu sesión de 30 minutos",
     "challenge_for_you": "Desafío para Ti",
     "this_week": "Esta Semana",
     "no_assessment_title": "Completa Tu Primera Evaluación XIMA",
@@ -113,7 +113,7 @@
     "booking_success": "¡Reserva confirmada!",
     "booking_success_desc": "Tu sesión de mentoría ha sido programada exitosamente",
     "booking_with": "Estás reservando una sesión con",
-    "duration_15": "Duración: 15 minutos",
+    "duration_15": "Duración: 30 minutos",
     "booking": "Reservando...",
     "confirm": "Confirmar Reserva"
   },
