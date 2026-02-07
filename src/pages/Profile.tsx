@@ -19,7 +19,6 @@ import { OpenAnswerList } from '@/components/profile/OpenAnswerList';
 import { CVAnalysisCard } from '@/components/profile/CVAnalysisCard';
 import { MyOpportunitiesSection } from '@/components/opportunities/MyOpportunitiesSection';
 import { MembershipSummaryCard } from '@/components/profile/MembershipSummaryCard';
-// Removed ChallengeInvitationBanner - ChallengesForYouSection is the single source of truth
 import { ChallengesForYouSection } from '@/components/profile/ChallengesForYouSection';
 import { WelcomeOverlay } from '@/components/onboarding/WelcomeOverlay';
 import { OnboardingHintBanner } from '@/components/onboarding/OnboardingHintBanner';
@@ -38,18 +37,25 @@ const Profile = () => {
   const [mentorRefreshKey, setMentorRefreshKey] = React.useState(0);
   const [processingMentor, setProcessingMentor] = React.useState(false);
   const profileData = useProfileData(profileRefreshKey);
-  const { showWelcome, completeStep } = useOnboardingState();
+  const { showWelcome, completeStep, firstPendingStep } = useOnboardingState();
+
+  const hasMentor = !!profileData.mentor_profile;
+
+  // Auto-complete choose_mentor when mentor is selected
+  useEffect(() => {
+    if (hasMentor) {
+      completeStep('choose_mentor');
+    }
+  }, [hasMentor, completeStep]);
   
   // Process pending mentor assignment after registration
   useEffect(() => {
     const processPendingMentorAssignment = async () => {
       if (!isAuthenticated || !user?.id || processingMentor) return;
       
-      // Check if there's a selected professional from the journey
       const selectedProfessionalData = localStorage.getItem('selected_professional_data');
       if (!selectedProfessionalData) return;
       
-      // Check if user already has a mentor
       if (profileData.mentor_profile) {
         console.log('[Profile] User already has a mentor, skipping assignment');
         localStorage.removeItem('selected_professional_data');
@@ -78,7 +84,6 @@ const Profile = () => {
             title: "Success",
             description: `${professional.full_name} has been assigned as your mentor!`,
           });
-          // Refresh profile data to show the mentor
           setProfileRefreshKey(prev => prev + 1);
         }
       } catch (error) {
@@ -88,7 +93,6 @@ const Profile = () => {
       }
     };
     
-    // Wait a bit for profile data to load before processing
     const timeout = setTimeout(() => {
       processPendingMentorAssignment();
     }, 1000);
@@ -101,7 +105,6 @@ const Profile = () => {
   };
 
   const handleCVUploadSuccess = () => {
-    // Trigger profile data refresh without hard reload
     setProfileRefreshKey(prev => prev + 1);
   };
 
@@ -181,13 +184,16 @@ const Profile = () => {
             onSkip={() => completeStep('welcome_seen')}
           />
 
-          {/* Onboarding hint */}
-          <OnboardingHintBanner hintKey="dashboard" />
+          {/* Dashboard intro banner (highest priority on this page) */}
+          <OnboardingHintBanner hintKey="dashboard_intro" />
 
           {/* Membership & Credits Recap */}
-          <MembershipSummaryCard />
+          <div>
+            <OnboardingHintBanner hintKey="credits_and_referrals" />
+            <MembershipSummaryCard />
+          </div>
 
-          {/* XIMAtar Hero Card - Full Width with Profile Photo */}
+          {/* XIMAtar Hero Card */}
           <XimatarHeroCard
             ximatarName={profileData.ximatar_name}
             ximatarImage={profileData.ximatar_image}
@@ -205,19 +211,16 @@ const Profile = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Column */}
             <div className="space-y-6">
-              {/* Strength & Friction Summary */}
               <StrengthFrictionSummary 
                 strongestPillar={profileData.strongest_pillar}
                 weakestPillar={profileData.weakest_pillar}
                 growthPath={profileData.ximatar_growth_path}
               />
               
-              {/* Pillar Radar Chart */}
               {profileData.pillar_scores && (
                 <PillarRadarChart pillars={profileData.pillar_scores} />
               )}
 
-              {/* Assessment Overview */}
               {profileData.pillar_scores && (
                 <AssessmentOverviewCard 
                   pillarScores={profileData.pillar_scores}
@@ -226,7 +229,6 @@ const Profile = () => {
                 />
               )}
 
-              {/* Open Answers */}
               {profileData.open_answers && profileData.open_answers.length > 0 && (
                 <OpenAnswerList openAnswers={profileData.open_answers} />
               )}
@@ -234,13 +236,13 @@ const Profile = () => {
 
             {/* Right Column */}
             <div className="space-y-6">
-              {/* Unified Mentor Section - Identity + Availability */}
-              <OnboardingHintBanner hintKey="mentor" />
+              {/* Mentor onboarding banners */}
+              {!hasMentor && <OnboardingHintBanner hintKey="choose_mentor" />}
+              {hasMentor && <OnboardingHintBanner hintKey="book_free_intro" />}
               <MentorSection 
                 mentor={profileData.mentor_profile} 
                 onBookingSuccess={handleMentorBookingSuccess}
               />
-
 
               {/* CV Analysis */}
               <CVAnalysisCard 
@@ -252,9 +254,7 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Full Width Sections */}
-          {/* Challenges for You */}
-          <OnboardingHintBanner hintKey="challenges" />
+          {/* Challenges */}
           <ChallengesForYouSection />
           
           {/* Job Opportunities */}

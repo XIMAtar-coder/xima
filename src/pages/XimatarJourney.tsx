@@ -94,7 +94,7 @@ const XimatarJourney = () => {
 
   return (
     <MainLayout>
-      <OnboardingHintBanner hintKey="assessment" />
+      <OnboardingHintBanner hintKey="create_ximatar" />
       {/* Resume Modal */}
       <AlertDialog open={showResumeModal} onOpenChange={setShowResumeModal}>
         <AlertDialogContent>
