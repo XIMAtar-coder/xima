@@ -20,7 +20,9 @@ import {
   AlertCircle,
   Eye,
   Video,
-  XCircle
+  XCircle,
+  Coins,
+  Users
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -351,6 +353,83 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
     return !hasSlot || date < new Date(new Date().setHours(0, 0, 0, 0));
   };
 
+  // Sub-component: Free intro used state with credit gating
+  const FreeIntroUsedState: React.FC<{ bookingLink?: string }> = ({ bookingLink: bLink }) => {
+    const [credits, setCredits] = useState<number | null>(null);
+    const [loadingCredits, setLoadingCredits] = useState(true);
+
+    useEffect(() => {
+      supabase.rpc('get_my_credit_balance').then(({ data, error }) => {
+        if (!error && data != null) setCredits(data as number);
+        setLoadingCredits(false);
+      });
+    }, []);
+
+    const hasEnoughCredits = (credits ?? 0) >= 5;
+
+    return (
+      <div className="text-center py-6 space-y-4">
+        <div className="flex justify-center">
+          <CheckCircle2 className="h-12 w-12 text-primary/50" />
+        </div>
+        <div className="space-y-2">
+          <p className="text-muted-foreground font-medium">
+            {t('profile.free_intro_completed', 'Free intro session completed')}
+          </p>
+        </div>
+
+        {/* Credit-gated standard session */}
+        <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-3 text-left">
+          <div className="flex items-center gap-2">
+            <Coins className="h-4 w-4 text-primary" />
+            <p className="text-sm font-medium text-foreground">
+              {t('booking.standard_session_title', 'Book a 45-minute session')}
+            </p>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {t('booking.standard_session_subtitle', 'Unlocked with credits (5 credits).')}
+          </p>
+
+          {loadingCredits ? (
+            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground mx-auto" />
+          ) : (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">{t('credits.available', 'Available credits')}</span>
+                <span className="font-semibold text-foreground">{credits ?? 0}</span>
+              </div>
+              {hasEnoughCredits ? (
+                <Button variant="default" size="sm" className="w-full" disabled>
+                  {t('booking.standard_session_title', 'Book a 45-minute session')}
+                  <span className="ml-1 text-xs opacity-70">({t('settings.coming_soon', 'Coming soon')})</span>
+                </Button>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-xs text-muted-foreground">
+                    {t('credits.not_enough', 'You need 5 credits to book a 45-minute session.')}
+                  </p>
+                  <div className="flex items-center gap-2 text-xs text-primary">
+                    <Users className="h-3.5 w-3.5" />
+                    {t('credits.cta_invite', 'Invite people to earn credits')}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {bLink && (
+          <Button asChild variant="secondary" size="sm">
+            <a href={bLink} target="_blank" rel="noopener noreferrer">
+              <ExternalLink className="mr-2 h-4 w-4" />
+              {t('profile.external_booking', 'External calendar')}
+            </a>
+          </Button>
+        )}
+      </div>
+    );
+  };
+
   // No mentor selected state
   if (!mentor) {
     return (
@@ -530,29 +609,9 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
               </div>
             )}
 
-            {/* STATE: Free intro already used (no pending session) */}
+            {/* STATE: Free intro already used — show credit-gated standard session */}
             {!isLoadingSlots && availabilityState === 'free_intro_used' && (
-              <div className="text-center py-6 space-y-4">
-                <div className="flex justify-center">
-                  <CheckCircle2 className="h-12 w-12 text-primary/50" />
-                </div>
-                <div className="space-y-2">
-                  <p className="text-muted-foreground font-medium">
-                    {t('profile.free_intro_completed', 'Free intro session completed')}
-                  </p>
-                  <p className="text-sm text-muted-foreground/70">
-                    {t('profile.paid_sessions_coming', 'Paid sessions will be available soon.')}
-                  </p>
-                </div>
-                {bookingLink && (
-                  <Button asChild variant="secondary" size="sm">
-                    <a href={bookingLink} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      {t('profile.external_booking', 'External calendar')}
-                    </a>
-                  </Button>
-                )}
-              </div>
+              <FreeIntroUsedState bookingLink={bookingLink} />
             )}
 
             {/* STATE A: No availability published */}

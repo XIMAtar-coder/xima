@@ -2630,7 +2630,32 @@
       "optInSuccess": "Perfilado Habilitado",
       "optInMessage": "El perfilado IA ahora está habilitado para tu cuenta.",
       "errorMessage": "Error al actualizar preferencia. Intenta de nuevo."
-    }
+    },
+    "benefit_free_intro": "1 sesión introductoria gratuita (30 min)",
+    "benefit_referral_credits": "Gana créditos invitando amigos",
+    "benefit_monthly_session": "1 sesión con mentor al mes",
+    "benefit_unlimited_chat": "Chat ilimitado con mentor",
+    "benefit_interview_prep": "Preparación de entrevistas después de 3 desafíos",
+    "benefit_weekly_session": "1 sesión con mentor por semana",
+    "benefit_unlimited_training": "Cursos de formación ilimitados",
+    "qualified_referrals": "Referidos validados"
+  },
+  "referral": {
+    "title": "Invita amigos, gana créditos",
+    "how_it_works": "Cuando alguien se registra con tu enlace y completa su primera sesión introductoria gratuita con un mentor, el referido se valida.",
+    "earn_credits": "Cada referido validado te da +1 crédito.",
+    "qualified_rule": "Contamos los referidos solo después de la primera sesión introductoria para asegurar perfiles reales."
+  },
+  "credits": {
+    "available": "Créditos disponibles",
+    "cost_standard_session": "La sesión estándar con mentor (45 min) cuesta 5 créditos.",
+    "not_enough": "Necesitas 5 créditos para reservar una sesión de 45 minutos.",
+    "cta_invite": "Invita personas para ganar créditos",
+    "can_book": "Puedes reservar"
+  },
+  "booking": {
+    "standard_session_title": "Reserva una sesión de 45 minutos",
+    "standard_session_subtitle": "Desbloqueada con créditos (5 créditos)."
   },
   "common": {
     "cancel": "Cancelar"

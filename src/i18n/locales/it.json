@@ -3914,7 +3914,32 @@
       "optInSuccess": "Profilazione Abilitata",
       "optInMessage": "La profilazione IA è ora abilitata per il tuo account.",
       "errorMessage": "Impossibile aggiornare la preferenza. Riprova."
-    }
+    },
+    "benefit_free_intro": "1 sessione introduttiva gratuita (30 min)",
+    "benefit_referral_credits": "Guadagna crediti invitando amici",
+    "benefit_monthly_session": "1 sessione con il mentore al mese",
+    "benefit_unlimited_chat": "Chat illimitata con il mentore",
+    "benefit_interview_prep": "Preparazione colloqui dopo 3 challenge",
+    "benefit_weekly_session": "1 sessione con il mentore a settimana",
+    "benefit_unlimited_training": "Corsi di formazione illimitati",
+    "qualified_referrals": "Referral validati"
+  },
+  "referral": {
+    "title": "Invita amici, guadagna crediti",
+    "how_it_works": "Quando una persona si iscrive con il tuo link e completa la prima sessione gratuita con un mentore, il referral è valido.",
+    "earn_credits": "Ogni referral valido ti dà +1 credito.",
+    "qualified_rule": "Contiamo i referral solo dopo la prima sessione gratuita per assicurarci che i profili siano reali."
+  },
+  "credits": {
+    "available": "Crediti disponibili",
+    "cost_standard_session": "La sessione standard con il mentore (45 min) costa 5 crediti.",
+    "not_enough": "Ti servono 5 crediti per prenotare una sessione da 45 minuti.",
+    "cta_invite": "Invita persone per guadagnare crediti",
+    "can_book": "Puoi prenotare"
+  },
+  "booking": {
+    "standard_session_title": "Prenota una sessione da 45 minuti",
+    "standard_session_subtitle": "Sbloccata con i crediti (5 crediti)."
   },
   "common": {
     "cancel": "Annulla"

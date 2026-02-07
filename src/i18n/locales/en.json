@@ -4202,7 +4202,32 @@
     "cv_consent_note": "When enabled, your mentor can view your CV to better help with career guidance. You can revoke access at any time.",
     "cv_consent_error": "Failed to update consent",
     "toggle_cv_access": "Toggle CV access",
-    "no_mentor_for_cv": "Complete your assessment to get a mentor and manage CV access"
+    "no_mentor_for_cv": "Complete your assessment to get a mentor and manage CV access",
+    "benefit_free_intro": "1 free intro session (30 min)",
+    "benefit_referral_credits": "Earn credits by inviting friends",
+    "benefit_monthly_session": "1 mentor session per month",
+    "benefit_unlimited_chat": "Unlimited chat with mentor",
+    "benefit_interview_prep": "Interview prep after 3 challenges",
+    "benefit_weekly_session": "1 mentor session per week",
+    "benefit_unlimited_training": "Unlimited training courses",
+    "qualified_referrals": "Validated referrals"
+  },
+  "referral": {
+    "title": "Invite friends, earn credits",
+    "how_it_works": "When someone signs up with your link and completes their first free intro session with a mentor, the referral is validated.",
+    "earn_credits": "Each validated referral gives you +1 credit.",
+    "qualified_rule": "We count referrals only after the first mentor intro is completed to ensure real profiles."
+  },
+  "credits": {
+    "available": "Available credits",
+    "cost_standard_session": "Standard mentor session (45 min) costs 5 credits.",
+    "not_enough": "You need 5 credits to book a 45-minute session.",
+    "cta_invite": "Invite people to earn credits",
+    "can_book": "Can book session"
+  },
+  "booking": {
+    "standard_session_title": "Book a 45-minute session",
+    "standard_session_subtitle": "Unlocked with credits (5 credits)."
   },
   "common": {
     "cancel": "Cancel"

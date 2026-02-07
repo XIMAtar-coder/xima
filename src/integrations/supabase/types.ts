@@ -2387,6 +2387,36 @@ export type Database = {
           },
         ]
       }
+      mentor_credit_ledger: {
+        Row: {
+          created_at: string
+          delta: number
+          id: string
+          reason: string
+          related_referral_id: string | null
+          related_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          delta: number
+          id?: string
+          reason: string
+          related_referral_id?: string | null
+          related_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          delta?: number
+          id?: string
+          reason?: string
+          related_referral_id?: string | null
+          related_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       mentor_credits: {
         Row: {
           free_session_credits: number
@@ -3780,6 +3810,10 @@ export type Database = {
             Args: { p_mc_answers: Json; p_result_id: string }
             Returns: undefined
           }
+      consume_my_credits_for_standard_session: {
+        Args: { p_session_id?: string; required_credits?: number }
+        Returns: Json
+      }
       create_chat_thread: {
         Args: {
           p_business_id?: string
@@ -3849,6 +3883,7 @@ export type Database = {
         Returns: number
       }
       get_membership_status: { Args: never; Returns: Json }
+      get_my_credit_balance: { Args: never; Returns: number }
       get_next_feed_item: {
         Args: never
         Returns: {

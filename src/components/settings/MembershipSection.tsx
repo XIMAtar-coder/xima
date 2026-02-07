@@ -5,20 +5,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { Crown, Zap, Star, Sparkles, Users, MessageSquare, BookOpen, Video, Loader2, Copy, Check, Send, Gift, Clock } from 'lucide-react';
+import { Crown, Zap, Star, Sparkles, Users, MessageSquare, BookOpen, Video, Loader2, Copy, Check, Send, Gift, Clock, Coins } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-
-interface MembershipStatus {
-  tier: string;
-  sessions_remaining_current_period: number;
-  free_session_credits: number;
-  unlimited_chat_with_mentor: boolean;
-  can_book_weekly: boolean;
-  can_access_training_unlimited: boolean;
-  interview_prep_credits: number;
-  renewal_at: string | null;
-}
 
 interface ReferralRow {
   id: string;
@@ -32,7 +21,7 @@ const TIER_CONFIG: Record<string, {
   icon: React.ReactNode;
   price: string;
   color: string;
-  benefits: { icon: React.ReactNode; text: string }[];
+  benefits: { icon: React.ReactNode; textKey: string; fallback: string }[];
 }> = {
   freemium: {
     label: 'Freemium',
@@ -40,8 +29,8 @@ const TIER_CONFIG: Record<string, {
     price: 'Free',
     color: 'bg-muted text-muted-foreground',
     benefits: [
-      { icon: <Video className="h-4 w-4" />, text: '1 free intro session' },
-      { icon: <Users className="h-4 w-4" />, text: 'Earn sessions via referrals (5 invites = 1 session)' },
+      { icon: <Video className="h-4 w-4" />, textKey: 'settings.benefit_free_intro', fallback: '1 free intro session (30 min)' },
+      { icon: <Users className="h-4 w-4" />, textKey: 'settings.benefit_referral_credits', fallback: 'Earn credits by inviting friends' },
     ],
   },
   basic: {
@@ -50,7 +39,7 @@ const TIER_CONFIG: Record<string, {
     price: '€8.99/month',
     color: 'bg-primary/10 text-primary',
     benefits: [
-      { icon: <Video className="h-4 w-4" />, text: '1 mentor session per month' },
+      { icon: <Video className="h-4 w-4" />, textKey: 'settings.benefit_monthly_session', fallback: '1 mentor session per month' },
     ],
   },
   premium: {
@@ -59,9 +48,9 @@ const TIER_CONFIG: Record<string, {
     price: '€20.99/month',
     color: 'bg-accent text-accent-foreground',
     benefits: [
-      { icon: <Video className="h-4 w-4" />, text: '1 mentor session per month' },
-      { icon: <MessageSquare className="h-4 w-4" />, text: 'Unlimited chat with mentor' },
-      { icon: <Sparkles className="h-4 w-4" />, text: 'Interview prep after 3 challenges' },
+      { icon: <Video className="h-4 w-4" />, textKey: 'settings.benefit_monthly_session', fallback: '1 mentor session per month' },
+      { icon: <MessageSquare className="h-4 w-4" />, textKey: 'settings.benefit_unlimited_chat', fallback: 'Unlimited chat with mentor' },
+      { icon: <Sparkles className="h-4 w-4" />, textKey: 'settings.benefit_interview_prep', fallback: 'Interview prep after 3 challenges' },
     ],
   },
   pro: {
@@ -70,9 +59,9 @@ const TIER_CONFIG: Record<string, {
     price: '€39.99/month',
     color: 'bg-primary text-primary-foreground',
     benefits: [
-      { icon: <Video className="h-4 w-4" />, text: '1 mentor session per week' },
-      { icon: <MessageSquare className="h-4 w-4" />, text: 'Unlimited chat with mentor' },
-      { icon: <BookOpen className="h-4 w-4" />, text: 'Unlimited training courses' },
+      { icon: <Video className="h-4 w-4" />, textKey: 'settings.benefit_weekly_session', fallback: '1 mentor session per week' },
+      { icon: <MessageSquare className="h-4 w-4" />, textKey: 'settings.benefit_unlimited_chat', fallback: 'Unlimited chat with mentor' },
+      { icon: <BookOpen className="h-4 w-4" />, textKey: 'settings.benefit_unlimited_training', fallback: 'Unlimited training courses' },
     ],
   },
 };
@@ -80,8 +69,9 @@ const TIER_CONFIG: Record<string, {
 export const MembershipSection: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
-  const [status, setStatus] = useState<MembershipStatus | null>(null);
   const [loading, setLoading] = useState(true);
+  const [currentTier, setCurrentTier] = useState('freemium');
+  const [creditBalance, setCreditBalance] = useState(0);
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
@@ -95,22 +85,26 @@ export const MembershipSection: React.FC = () => {
 
   const fetchAll = async () => {
     try {
-      const [statusRes, profileRes, referralsRes] = await Promise.all([
-        supabase.rpc('get_membership_status'),
-        supabase.from('profiles').select('referral_code').eq('user_id', (await supabase.auth.getUser()).data.user?.id || '').single(),
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const [profileRes, balanceRes, referralsRes] = await Promise.all([
+        supabase.from('profiles').select('referral_code, membership_tier').eq('user_id', user.id).single(),
+        supabase.rpc('get_my_credit_balance'),
         supabase.from('referrals').select('id, status, created_at, referred_email').order('created_at', { ascending: false }).limit(20),
       ]);
 
-      if (!statusRes.error && statusRes.data) {
-        setStatus(statusRes.data as unknown as MembershipStatus);
-      }
       if (!profileRes.error && profileRes.data) {
         setReferralCode(profileRes.data.referral_code);
+        setCurrentTier((profileRes.data as any).membership_tier || 'freemium');
+      }
+      if (!balanceRes.error && balanceRes.data != null) {
+        setCreditBalance(balanceRes.data as number);
       }
       if (!referralsRes.error && referralsRes.data) {
         setReferrals(referralsRes.data as ReferralRow[]);
         const qualified = (referralsRes.data as ReferralRow[]).filter(
-          r => r.status === 'qualified' || r.status === 'rewarded' || r.status === 'signed_up'
+          r => r.status === 'qualified' || r.status === 'rewarded'
         ).length;
         setQualifiedCount(qualified);
       }
@@ -190,9 +184,7 @@ export const MembershipSection: React.FC = () => {
     );
   }
 
-  const currentTier = status?.tier || 'freemium';
   const config = TIER_CONFIG[currentTier] || TIER_CONFIG.freemium;
-  const progressToNextCredit = qualifiedCount % 5;
 
   return (
     <div className="space-y-4">
@@ -220,49 +212,34 @@ export const MembershipSection: React.FC = () => {
                 <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
                   {benefit.icon}
                 </div>
-                <span className="text-foreground">{benefit.text}</span>
+                <span className="text-foreground">{t(benefit.textKey, benefit.fallback)}</span>
               </div>
             ))}
           </div>
 
           <Separator />
 
-          {/* Credits & Counters */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-lg bg-muted/50 p-3 text-center">
-              <p className="text-2xl font-bold text-foreground">
-                {status?.sessions_remaining_current_period ?? 0}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {t('settings.sessions_remaining', 'Sessions remaining')}
-              </p>
-            </div>
-            <div className="rounded-lg bg-muted/50 p-3 text-center">
-              <p className="text-2xl font-bold text-foreground">
-                {status?.free_session_credits ?? 0}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {t('settings.free_credits', 'Free credits')}
-              </p>
-            </div>
-            {(currentTier === 'premium' || currentTier === 'pro') && (
-              <div className="rounded-lg bg-muted/50 p-3 text-center">
-                <p className="text-2xl font-bold text-foreground">
-                  {status?.interview_prep_credits ?? 0}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {t('settings.interview_prep_credits', 'Interview prep')}
-                </p>
+          {/* Credits counter — prominent */}
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Coins className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-semibold text-foreground text-lg">{creditBalance}</p>
+                  <p className="text-xs text-muted-foreground">{t('credits.available', 'Available credits')}</p>
+                </div>
               </div>
-            )}
-            {status?.unlimited_chat_with_mentor && (
-              <div className="rounded-lg bg-primary/5 border border-primary/20 p-3 text-center">
-                <MessageSquare className="h-5 w-5 text-primary mx-auto mb-1" />
-                <p className="text-xs text-muted-foreground">
-                  {t('settings.unlimited_chat', 'Unlimited chat')}
-                </p>
-              </div>
-            )}
+              {creditBalance >= 5 && (
+                <Badge variant="secondary" className="bg-green-500/10 text-green-600">
+                  {t('credits.can_book', 'Can book session')}
+                </Badge>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              {t('credits.cost_standard_session', 'Standard mentor session (45 min) costs 5 credits.')}
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -272,26 +249,34 @@ export const MembershipSection: React.FC = () => {
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Gift className="h-5 w-5 text-primary" />
-            {t('settings.invite_friends', 'Invite Friends')}
+            {t('referral.title', 'Invite friends, earn credits')}
           </CardTitle>
           <CardDescription>
-            {t('settings.invite_desc', 'Invite 5 friends and earn a free mentor session')}
+            {t('referral.how_it_works', 'When someone signs up with your link and completes their first free intro session with a mentor, the referral is validated.')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Progress towards next credit */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">
-                {t('settings.progress_to_credit', 'Progress to next credit')}
-              </span>
-              <span className="font-medium text-foreground">{progressToNextCredit} / 5</span>
+          {/* How credits work */}
+          <div className="space-y-1.5 text-sm text-muted-foreground">
+            <p>✦ {t('referral.earn_credits', 'Each validated referral gives you +1 credit.')}</p>
+            <p className="text-xs">
+              {t('referral.qualified_rule', 'We count referrals only after the first mentor intro is completed to ensure real profiles.')}
+            </p>
+          </div>
+
+          {/* Stats */}
+          <div className="flex gap-3">
+            <div className="flex-1 rounded-lg bg-muted/50 p-3 text-center">
+              <p className="text-2xl font-bold text-foreground">{qualifiedCount}</p>
+              <p className="text-xs text-muted-foreground">
+                {t('settings.qualified_referrals', 'Validated referrals')}
+              </p>
             </div>
-            <div className="h-2 rounded-full bg-muted overflow-hidden">
-              <div
-                className="h-full rounded-full bg-primary transition-all duration-500"
-                style={{ width: `${(progressToNextCredit / 5) * 100}%` }}
-              />
+            <div className="flex-1 rounded-lg bg-muted/50 p-3 text-center">
+              <p className="text-2xl font-bold text-foreground">{creditBalance}</p>
+              <p className="text-xs text-muted-foreground">
+                {t('credits.available', 'Available credits')}
+              </p>
             </div>
           </div>
 
