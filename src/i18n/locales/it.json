@@ -29,7 +29,7 @@
     "free_intro_completed": "Sessione introduttiva gratuita completata",
     "paid_sessions_coming": "Le sessioni a pagamento saranno disponibili presto.",
     "session_ready": "La tua sessione è confermata e pronta.",
-    "session_declined": "Il tuo mentore non ha potuto accettare questa richiesta.",
+    "session_declined": "Il tuo mentore non ha potuto accettare questo orario. Scegli un altro slot — la tua intro gratuita è ancora disponibile.",
     "join_session": "Partecipa alla Sessione",
     "opens_10_min_before": "La stanza si apre 10 minuti prima della sessione",
     "try_another_slot": "Prova un altro slot"
@@ -55,6 +55,8 @@
     "opens_10_min_before": "La stanza si apre 10 minuti prima della sessione",
     "session_rejected": "Sessione rifiutata",
     "mentor_rejected": "Il tuo mentore non ha potuto accettare questa richiesta.",
+    "free_intro_rejected_msg": "Il tuo mentore non ha potuto accettare questo orario. Puoi scegliere un altro slot — la tua intro gratuita è ancora disponibile.",
+    "choose_another_slot": "Scegli un altro slot",
     "session_cancelled": "Sessione annullata",
     "session_was_cancelled": "Questa sessione è stata annullata.",
     "book_new": "Prenota una nuova sessione",

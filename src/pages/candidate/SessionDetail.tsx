@@ -576,8 +576,21 @@ export default function SessionDetail() {
                       {t('sessions.session_rejected', 'Session declined')}
                     </p>
                     <p className="text-sm text-muted-foreground mt-1">
-                      {t('sessions.mentor_rejected', 'Your mentor was unable to accept this session request.')}
+                      {session.session_type === 'free_intro'
+                        ? t('sessions.free_intro_rejected_msg', "Your mentor couldn't accept this time. You can pick another slot — your free intro is still available.")
+                        : t('sessions.mentor_rejected', 'Your mentor was unable to accept this session request.')}
                     </p>
+                    {session.session_type === 'free_intro' && (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="mt-3 gap-2"
+                        onClick={() => navigate('/profile')}
+                      >
+                        <Calendar className="h-4 w-4" />
+                        {t('sessions.choose_another_slot', 'Choose another slot')}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
