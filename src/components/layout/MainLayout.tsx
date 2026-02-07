@@ -10,7 +10,7 @@ import { useUserHeaderData } from '@/hooks/useUserHeaderData';
 import { supabase } from '@/integrations/supabase/client';
 import { NotificationsDropdown } from '../NotificationsDropdown';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap } from 'lucide-react';
+import { Menu, GraduationCap, Settings } from 'lucide-react';
 import Footer from './Footer';
 
 interface MainLayoutProps {
@@ -286,6 +286,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                             {t('nav.mentor_portal', 'Mentor Portal')}
                           </button>
                         )}
+                        <button
+                          onClick={() => {
+                            navigate('/settings');
+                            setMobileMenuOpen(false);
+                          }}
+                          className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2 flex items-center gap-2"
+                        >
+                          <Settings className="h-4 w-4" />
+                          {t('nav.settings', 'Settings')}
+                        </button>
                       </>
                     )}
                     
@@ -395,20 +405,39 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                     )}
                     {/* Show Tests only when not on mentor pages */}
                     {!(isMentor && location.pathname.startsWith('/mentor')) && (
-                      <button 
-                        onClick={() => navigate('/development-plan')}
-                        className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
-                          location.pathname.startsWith('/test') || location.pathname === '/development-plan' 
-                            ? 'text-[hsl(var(--xima-accent))]' 
-                            : ''
-                        }`}
-                        style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                      >
-                        {t('nav.tests')}
-                        {(location.pathname.startsWith('/test') || location.pathname === '/development-plan') && (
-                          <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
-                        )}
-                      </button>
+                      <>
+                        <button 
+                          onClick={() => navigate('/development-plan')}
+                          className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
+                            location.pathname.startsWith('/test') || location.pathname === '/development-plan' 
+                              ? 'text-[hsl(var(--xima-accent))]' 
+                              : ''
+                          }`}
+                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
+                        >
+                          {t('nav.tests')}
+                          {(location.pathname.startsWith('/test') || location.pathname === '/development-plan') && (
+                            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
+                          )}
+                        </button>
+                        <button 
+                          onClick={() => navigate('/settings')}
+                          className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
+                            location.pathname === '/settings' 
+                              ? 'text-[hsl(var(--xima-accent))]' 
+                              : ''
+                          }`}
+                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
+                        >
+                          <span className="flex items-center gap-1">
+                            <Settings className="h-3.5 w-3.5" />
+                            {t('nav.settings', 'Settings')}
+                          </span>
+                          {location.pathname === '/settings' && (
+                            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
+                          )}
+                        </button>
+                      </>
                     )}
                     {isMentor && (
                       <button 

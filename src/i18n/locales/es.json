@@ -29,7 +29,8 @@
     "feed": "Feed",
     "analytics": "Analíticas",
     "developer": "Desarrollador",
-    "tests": "Pruebas"
+    "tests": "Pruebas",
+    "settings": "Ajustes"
   },
   "hero": {
     "title": "Descubre Tu Yo Profesional",
@@ -2713,15 +2714,16 @@
   },
   "dashboard": {
     "membership": {
-      "title": "Membresía y Créditos",
+      "title": "Suscripción y Créditos",
+      "subtitle": "Gana créditos invitando amigos. Usa los créditos para desbloquear sesiones con tu mentor.",
       "tier_freemium": "Freemium",
       "tier_basic": "Basic",
       "tier_premium": "Premium",
       "tier_pro": "Pro",
       "creditsLabel": "créditos",
-      "microcopy": "Los créditos desbloquean sesiones de 45 min con el mentor. Gánalos invitando amigos.",
-      "ctaManage": "Gestionar plan",
-      "ctaInvite": "Invitar amigos"
+      "manage": "Gestionar plan",
+      "invite": "Invitar amigos",
+      "hint": "Una sesión estándar de 45 min cuesta 5 créditos."
     }
   }
 }
