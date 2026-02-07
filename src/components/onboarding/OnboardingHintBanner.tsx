@@ -1,86 +1,156 @@
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { X, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useOnboardingState, OnboardingStep } from '@/hooks/useOnboardingState';
 
 interface OnboardingHintBannerProps {
   hintKey: OnboardingStep;
-  /** Optional CTA label override (translation key) */
-  ctaKey?: string;
-  ctaFallback?: string;
-  /** Called when the CTA is clicked. If not provided, CTA just dismisses. */
+  /** Called when the CTA is clicked. If not provided, CTA navigates or dismisses. */
   onCtaClick?: () => void;
 }
 
-const HINT_I18N: Record<string, { titleKey: string; titleFallback: string; bodyKey: string; bodyFallback: string; ctaKey: string; ctaFallback: string }> = {
-  dashboard: {
-    titleKey: 'onboarding.hint.dashboard_title',
+interface StepConfig {
+  titleKey: string;
+  titleFallback: string;
+  bodyKey: string;
+  bodyFallback: string;
+  ctaKey: string;
+  ctaFallback: string;
+  /** Route to navigate to when CTA is clicked (optional) */
+  route?: string;
+}
+
+const STEP_CONFIG: Record<string, StepConfig> = {
+  dashboard_intro: {
+    titleKey: 'onboarding.dashboard_intro.title',
     titleFallback: 'This is your growth hub',
-    bodyKey: 'onboarding.hint.dashboard_body',
+    bodyKey: 'onboarding.dashboard_intro.body',
     bodyFallback: 'Here you track your XIMAtar, mentor progress, credits, and next steps.',
-    ctaKey: 'onboarding.cta.got_it',
+    ctaKey: 'onboarding.common.got_it',
+    ctaFallback: 'Got it',
+  },
+  create_ximatar: {
+    titleKey: 'onboarding.create_ximatar.title',
+    titleFallback: 'Build your XIMAtar',
+    bodyKey: 'onboarding.create_ximatar.body',
+    bodyFallback: 'This is how your XIMAtar is built. Your answers shape mentors and challenges.',
+    ctaKey: 'onboarding.create_ximatar.cta',
+    ctaFallback: 'Continue test',
+  },
+  choose_mentor: {
+    titleKey: 'onboarding.choose_mentor.title',
+    titleFallback: 'Choose your mentor',
+    bodyKey: 'onboarding.choose_mentor.body',
+    bodyFallback: 'Your mentor guides your growth. Choosing one unlocks sessions and feedback.',
+    ctaKey: 'onboarding.choose_mentor.cta',
+    ctaFallback: 'Choose mentor',
+  },
+  book_free_intro: {
+    titleKey: 'onboarding.book_free_intro.title',
+    titleFallback: 'Book your free intro session',
+    bodyKey: 'onboarding.book_free_intro.body',
+    bodyFallback: 'You have a free intro session available! Book a slot with your mentor to get started.',
+    ctaKey: 'onboarding.book_free_intro.cta',
+    ctaFallback: 'Book session',
+  },
+  feed_and_chat: {
+    titleKey: 'onboarding.feed_and_chat.title',
+    titleFallback: 'Your Feed & conversations',
+    bodyKey: 'onboarding.feed_and_chat.body',
+    bodyFallback: 'This is where meaningful conversations happen with mentors and companies.',
+    ctaKey: 'onboarding.common.got_it',
+    ctaFallback: 'Got it',
+  },
+  credits_and_referrals: {
+    titleKey: 'onboarding.credits_and_referrals.title',
+    titleFallback: 'Credits & referrals',
+    bodyKey: 'onboarding.credits_and_referrals.body',
+    bodyFallback: 'Earn credits by inviting friends and use them for mentoring sessions.',
+    ctaKey: 'onboarding.common.got_it',
+    ctaFallback: 'Got it',
+  },
+  settings_manage_plan: {
+    titleKey: 'onboarding.settings_manage_plan.title',
+    titleFallback: 'Your settings',
+    bodyKey: 'onboarding.settings_manage_plan.body',
+    bodyFallback: 'Manage your plan, credits, referrals, and account preferences here.',
+    ctaKey: 'onboarding.common.got_it',
+    ctaFallback: 'Got it',
+  },
+  // Legacy keys (backward compat)
+  dashboard: {
+    titleKey: 'onboarding.dashboard_intro.title',
+    titleFallback: 'This is your growth hub',
+    bodyKey: 'onboarding.dashboard_intro.body',
+    bodyFallback: 'Here you track your XIMAtar, mentor progress, credits, and next steps.',
+    ctaKey: 'onboarding.common.got_it',
     ctaFallback: 'Got it',
   },
   assessment: {
-    titleKey: 'onboarding.hint.assessment_title',
+    titleKey: 'onboarding.create_ximatar.title',
     titleFallback: 'Build your XIMAtar',
-    bodyKey: 'onboarding.hint.assessment_body',
+    bodyKey: 'onboarding.create_ximatar.body',
     bodyFallback: 'This is how your XIMAtar is built. Your answers shape mentors and challenges.',
-    ctaKey: 'onboarding.cta.continue_test',
+    ctaKey: 'onboarding.create_ximatar.cta',
     ctaFallback: 'Continue test',
   },
   mentor: {
-    titleKey: 'onboarding.hint.mentor_title',
-    titleFallback: 'Your Mentor',
-    bodyKey: 'onboarding.hint.mentor_body',
+    titleKey: 'onboarding.choose_mentor.title',
+    titleFallback: 'Choose your mentor',
+    bodyKey: 'onboarding.choose_mentor.body',
     bodyFallback: 'Your mentor guides your growth. Choosing one unlocks sessions and feedback.',
-    ctaKey: 'onboarding.cta.choose_mentor',
+    ctaKey: 'onboarding.choose_mentor.cta',
     ctaFallback: 'Choose mentor',
   },
   feed: {
-    titleKey: 'onboarding.hint.feed_title',
-    titleFallback: 'Your Feed',
-    bodyKey: 'onboarding.hint.feed_body',
+    titleKey: 'onboarding.feed_and_chat.title',
+    titleFallback: 'Your Feed & conversations',
+    bodyKey: 'onboarding.feed_and_chat.body',
     bodyFallback: 'This is where meaningful conversations happen with mentors and companies.',
-    ctaKey: 'onboarding.cta.understood',
-    ctaFallback: 'Understood',
+    ctaKey: 'onboarding.common.got_it',
+    ctaFallback: 'Got it',
   },
   challenges: {
-    titleKey: 'onboarding.hint.challenges_title',
+    titleKey: 'onboarding.feed_and_chat.title',
     titleFallback: 'Challenges',
-    bodyKey: 'onboarding.hint.challenges_body',
+    bodyKey: 'onboarding.feed_and_chat.body',
     bodyFallback: 'Companies invite you here to real challenges and opportunities.',
-    ctaKey: 'onboarding.cta.explore_challenges',
-    ctaFallback: 'Explore challenges',
+    ctaKey: 'onboarding.common.got_it',
+    ctaFallback: 'Got it',
   },
   settings: {
-    titleKey: 'onboarding.hint.settings_title',
-    titleFallback: 'Settings',
-    bodyKey: 'onboarding.hint.settings_body',
+    titleKey: 'onboarding.settings_manage_plan.title',
+    titleFallback: 'Your settings',
+    bodyKey: 'onboarding.settings_manage_plan.body',
     bodyFallback: 'Manage your plan, credits, referrals, and account preferences here.',
-    ctaKey: 'onboarding.cta.open_settings',
-    ctaFallback: 'Open settings',
+    ctaKey: 'onboarding.common.got_it',
+    ctaFallback: 'Got it',
   },
 };
 
-export const OnboardingHintBanner = ({ hintKey, ctaKey, ctaFallback, onCtaClick }: OnboardingHintBannerProps) => {
+export const OnboardingHintBanner = ({ hintKey, onCtaClick }: OnboardingHintBannerProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { hasCompletedStep, dismissHint, loading } = useOnboardingState();
 
   if (loading || hasCompletedStep(hintKey)) return null;
 
-  const hint = HINT_I18N[hintKey];
-  if (!hint) return null;
+  const config = STEP_CONFIG[hintKey];
+  if (!config) return null;
 
   const handleCta = () => {
     if (onCtaClick) {
       onCtaClick();
+    } else if (config.route) {
+      navigate(config.route);
     }
     dismissHint(hintKey);
   };
 
-  const resolvedCtaKey = ctaKey || hint.ctaKey;
-  const resolvedCtaFallback = ctaFallback || hint.ctaFallback;
+  const handleSkip = () => {
+    dismissHint(hintKey);
+  };
 
   return (
     <div className="relative rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 mb-6 animate-onboarding-fade-in motion-reduce:animate-none">
@@ -90,25 +160,35 @@ export const OnboardingHintBanner = ({ hintKey, ctaKey, ctaFallback, onCtaClick 
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium">
-            {t(hint.titleKey, hint.titleFallback)}
+            {t(config.titleKey, config.titleFallback)}
           </p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            {t(hint.bodyKey, hint.bodyFallback)}
+            {t(config.bodyKey, config.bodyFallback)}
           </p>
-          <Button
-            variant="link"
-            size="sm"
-            className="px-0 h-auto mt-1.5 text-xs font-semibold text-primary"
-            onClick={handleCta}
-          >
-            {t(resolvedCtaKey, resolvedCtaFallback)}
-          </Button>
+          <div className="flex items-center gap-3 mt-1.5">
+            <Button
+              variant="link"
+              size="sm"
+              className="px-0 h-auto text-xs font-semibold text-primary"
+              onClick={handleCta}
+            >
+              {t(config.ctaKey, config.ctaFallback)}
+            </Button>
+            <Button
+              variant="link"
+              size="sm"
+              className="px-0 h-auto text-xs text-muted-foreground"
+              onClick={handleSkip}
+            >
+              {t('onboarding.common.skip', 'Skip')}
+            </Button>
+          </div>
         </div>
         <Button
           variant="ghost"
           size="icon"
           className="h-6 w-6 flex-shrink-0"
-          onClick={() => dismissHint(hintKey)}
+          onClick={handleSkip}
           aria-label={t('common.dismiss', 'Dismiss')}
         >
           <X className="h-3.5 w-3.5" />

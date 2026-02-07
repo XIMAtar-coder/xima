@@ -400,7 +400,7 @@ const XimaChat = () => {
   return (
     <MainLayout>
       <div className="container max-w-4xl mx-auto px-4 py-8">
-        <OnboardingHintBanner hintKey="feed" />
+        <OnboardingHintBanner hintKey="feed_and_chat" />
         <XimaFeed 
           showChatAccess={true}
           hasPendingChats={hasPendingChats}

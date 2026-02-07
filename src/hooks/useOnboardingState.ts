@@ -2,14 +2,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 
-export type OnboardingStep = 
+export type OnboardingStep =
   | 'welcome_seen'
-  | 'dashboard'
-  | 'assessment'
-  | 'mentor'
-  | 'feed'
-  | 'challenges'
-  | 'settings';
+  | 'dashboard_intro'
+  | 'create_ximatar'
+  | 'choose_mentor'
+  | 'book_free_intro'
+  | 'feed_and_chat'
+  | 'credits_and_referrals'
+  | 'settings_manage_plan';
 
 // Keep backward compat alias
 export type OnboardingHint = OnboardingStep;
@@ -75,7 +76,7 @@ export const useOnboardingState = () => {
   }, [user?.id, state.completed_steps]);
 
   const dismissHint = useCallback(async (hint: OnboardingStep) => {
-    // dismissHint now also completes the step
+    // dismissHint also completes the step
     if (!user?.id) return;
     const updatedHints = [...new Set([...state.dismissed_hints, hint])];
     const updatedSteps = [...new Set([...state.completed_steps, hint])];
@@ -83,10 +84,10 @@ export const useOnboardingState = () => {
 
     await supabase
       .from('user_onboarding_state')
-      .update({ 
-        dismissed_hints: updatedHints as any, 
+      .update({
+        dismissed_hints: updatedHints as any,
         completed_steps: updatedSteps as any,
-        updated_at: new Date().toISOString() 
+        updated_at: new Date().toISOString()
       })
       .eq('user_id', user.id);
   }, [user?.id, state.dismissed_hints, state.completed_steps]);
@@ -99,6 +100,17 @@ export const useOnboardingState = () => {
     return state.completed_steps.includes(hint);
   }, [state.completed_steps]);
 
+  /**
+   * Returns the first incomplete step from a priority-ordered list.
+   * Use this to show only the highest-priority pending banner on a page.
+   */
+  const firstPendingStep = useCallback((steps: OnboardingStep[]): OnboardingStep | null => {
+    for (const step of steps) {
+      if (!state.completed_steps.includes(step)) return step;
+    }
+    return null;
+  }, [state.completed_steps]);
+
   const showWelcome = !loading && isAuthenticated && !state.completed_steps.includes('welcome_seen');
 
   return {
@@ -109,5 +121,6 @@ export const useOnboardingState = () => {
     dismissHint,
     hasCompletedStep,
     hasDismissedHint,
+    firstPendingStep,
   };
 };

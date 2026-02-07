@@ -4019,6 +4019,45 @@
     "welcome_copy": "Questo è il tuo spazio di crescita personale. Scopriamo insieme come funziona.",
     "start": "Inizia",
     "skip": "Salta",
+    "common": {
+      "got_it": "Capito",
+      "skip": "Salta"
+    },
+    "dashboard_intro": {
+      "title": "Questo è il tuo hub di crescita",
+      "body": "Qui monitori il tuo XIMAtar, i progressi col mentore, i crediti e i prossimi passi.",
+      "cta": "Capito"
+    },
+    "create_ximatar": {
+      "title": "Costruisci il tuo XIMAtar",
+      "body": "Così nasce il tuo XIMAtar. Le tue risposte definiscono mentori e sfide.",
+      "cta": "Continua il test"
+    },
+    "choose_mentor": {
+      "title": "Scegli il tuo mentore",
+      "body": "Il tuo mentore guida la tua crescita. Sceglierne uno sblocca sessioni e feedback.",
+      "cta": "Scegli mentore"
+    },
+    "book_free_intro": {
+      "title": "Prenota la sessione introduttiva gratuita",
+      "body": "Hai una sessione introduttiva gratuita disponibile! Prenota uno slot con il tuo mentore.",
+      "cta": "Prenota sessione"
+    },
+    "feed_and_chat": {
+      "title": "Il tuo Feed e conversazioni",
+      "body": "Qui avvengono le conversazioni significative con mentori e aziende.",
+      "cta": "Capito"
+    },
+    "credits_and_referrals": {
+      "title": "Crediti e inviti",
+      "body": "Guadagna crediti invitando amici e usali per sessioni di mentoring.",
+      "cta": "Capito"
+    },
+    "settings_manage_plan": {
+      "title": "Le tue impostazioni",
+      "body": "Gestisci piano, crediti, inviti e preferenze del tuo account.",
+      "cta": "Capito"
+    },
     "hint": {
       "dashboard_title": "Questo è il tuo hub di crescita",
       "dashboard_body": "Qui monitori il tuo XIMAtar, i progressi col mentore, i crediti e i prossimi passi.",

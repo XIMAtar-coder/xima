@@ -4307,6 +4307,45 @@
     "welcome_copy": "This is your personal growth space. Let's explore how it works.",
     "start": "Start",
     "skip": "Skip",
+    "common": {
+      "got_it": "Got it",
+      "skip": "Skip"
+    },
+    "dashboard_intro": {
+      "title": "This is your growth hub",
+      "body": "Here you track your XIMAtar, mentor progress, credits, and next steps.",
+      "cta": "Got it"
+    },
+    "create_ximatar": {
+      "title": "Build your XIMAtar",
+      "body": "This is how your XIMAtar is built. Your answers shape mentors and challenges.",
+      "cta": "Continue test"
+    },
+    "choose_mentor": {
+      "title": "Choose your mentor",
+      "body": "Your mentor guides your growth. Choosing one unlocks sessions and feedback.",
+      "cta": "Choose mentor"
+    },
+    "book_free_intro": {
+      "title": "Book your free intro session",
+      "body": "You have a free intro session available! Book a slot with your mentor to get started.",
+      "cta": "Book session"
+    },
+    "feed_and_chat": {
+      "title": "Your Feed & conversations",
+      "body": "This is where meaningful conversations happen with mentors and companies.",
+      "cta": "Got it"
+    },
+    "credits_and_referrals": {
+      "title": "Credits & referrals",
+      "body": "Earn credits by inviting friends and use them for mentoring sessions.",
+      "cta": "Got it"
+    },
+    "settings_manage_plan": {
+      "title": "Your settings",
+      "body": "Manage your plan, credits, referrals, and account preferences here.",
+      "cta": "Got it"
+    },
     "hint": {
       "dashboard_title": "This is your growth hub",
       "dashboard_body": "Here you track your XIMAtar, mentor progress, credits, and next steps.",

@@ -23,8 +23,8 @@ const CandidateSettings = () => {
 
   // Auto-complete settings onboarding step on page visit
   useEffect(() => {
-    if (!hasCompletedStep('settings')) {
-      completeStep('settings');
+    if (!hasCompletedStep('settings_manage_plan')) {
+      completeStep('settings_manage_plan');
     }
   }, [completeStep, hasCompletedStep]);
 
@@ -82,7 +82,7 @@ const CandidateSettings = () => {
   return (
     <MainLayout>
       <div className="container max-w-3xl mx-auto py-8 space-y-8">
-        <OnboardingHintBanner hintKey="settings" />
+        <OnboardingHintBanner hintKey="settings_manage_plan" />
 
         {/* Header */}
         <div>
