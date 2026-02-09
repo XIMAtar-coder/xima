@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Settings } from 'lucide-react';
-import { OnboardingHintBanner } from '@/components/onboarding/OnboardingHintBanner';
 import { useOnboardingState } from '@/hooks/useOnboardingState';
 import MainLayout from '@/components/layout/MainLayout';
 import { DataExportButton } from '@/components/profile/DataExportButton';
@@ -34,7 +33,6 @@ const CandidateSettings = () => {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        // Get candidate's profile id
         const { data: profile } = await supabase
           .from('profiles')
           .select('id')
@@ -46,7 +44,6 @@ const CandidateSettings = () => {
         let mentorId = null;
         let mentorName = null;
 
-        // Try to get mentor from mentor_matches
         const { data: match } = await supabase
           .from('mentor_matches')
           .select('mentor_user_id')
@@ -82,8 +79,6 @@ const CandidateSettings = () => {
   return (
     <MainLayout>
       <div className="container max-w-3xl mx-auto py-8 space-y-8">
-        <OnboardingHintBanner hintKey="settings_manage_plan" />
-
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">

@@ -4081,6 +4081,53 @@
       "open_settings": "Apri impostazioni"
     }
   },
+  "guide": {
+    "open_button": "Guida",
+    "steps": {
+      "welcome": {
+        "title": "Benvenuto in XIMA",
+        "body": "XIMA è il tuo spazio di crescita personale. Qui scopri il tuo profilo professionale, ti colleghi con un mentore e sblocchi opportunità attraverso sfide reali.",
+        "cta": ""
+      },
+      "ximatar": {
+        "title": "Costruisci il tuo XIMAtar",
+        "body": "Il tuo XIMAtar è la tua identità professionale — costruita dalle tue risposte su cinque dimensioni. Definisce quali mentori e sfide sono più adatti a te.",
+        "cta": "Inizia il test →"
+      },
+      "mentor": {
+        "title": "Scegli il tuo mentore",
+        "body": "Dopo il test, verrai abbinato a mentori che si adattano al tuo profilo. Scegli quello che risuona con i tuoi obiettivi.",
+        "cta": "Vai alla dashboard →"
+      },
+      "session": {
+        "title": "Prenota la sessione gratuita",
+        "body": "Ogni nuovo membro ha una sessione introduttiva gratuita. Usala per connetterti con il tuo mentore e definire la direzione della tua crescita.",
+        "cta": "Vai alla dashboard →"
+      },
+      "feed": {
+        "title": "Feed e conversazioni",
+        "body": "Il tuo feed mostra aggiornamenti da mentori e aziende. Le conversazioni contestuali avvengono qui — niente chat aperta, solo scambi significativi.",
+        "cta": "Apri il feed →"
+      },
+      "credits": {
+        "title": "Crediti e inviti",
+        "body": "Guadagna crediti invitando amici. Usali per sessioni di mentoring e funzionalità premium. Il tuo impatto cresce con la tua rete.",
+        "cta": "Vedi crediti →"
+      },
+      "settings": {
+        "title": "Impostazioni e piano",
+        "body": "Gestisci la tua iscrizione, le preferenze di privacy, l'esportazione dei dati e le impostazioni del tuo account — tutto in un unico posto.",
+        "cta": "Apri impostazioni →"
+      }
+    },
+    "buttons": {
+      "next": "Avanti",
+      "back": "Indietro",
+      "finish": "Fine",
+      "close": "Chiudi",
+      "dont_show_again": "Non mostrare più"
+    }
+  },
   "feed": {
     "thread_type": {
       "mentor": "Mentore",

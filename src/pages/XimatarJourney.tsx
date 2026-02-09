@@ -24,7 +24,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { OnboardingHintBanner } from '@/components/onboarding/OnboardingHintBanner';
 
 const XimatarJourney = () => {
   const navigate = useNavigate();
@@ -78,23 +77,19 @@ const XimatarJourney = () => {
 
   const goBack = () => {
     if (currentStep === 2 && questionIndex > 0) {
-      // Go to previous question within assessment
       goToPrevQuestion();
     } else if (currentStep > 1) {
-      // Go to previous step
       if (currentStep === 2) {
-        setQuestionIndex(0); // Reset question index when going back to step 1
+        setQuestionIndex(0);
       }
       setStep(currentStep - 1);
     }
   };
 
-  // Block navigation away from the page if there's progress
   const hasProgress = currentStep > 1 || questionIndex > 0 || Object.keys(mcAnswers).length > 0;
 
   return (
     <MainLayout>
-      <OnboardingHintBanner hintKey="create_ximatar" />
       {/* Resume Modal */}
       <AlertDialog open={showResumeModal} onOpenChange={setShowResumeModal}>
         <AlertDialogContent>
@@ -187,7 +182,6 @@ const XimatarJourney = () => {
             <XimatarAssessment 
               onComplete={handleStepComplete}
               assessmentSetKey={(localStorage.getItem('preferred_field') as 'science_tech' | 'business_leadership' | 'arts_creative' | 'service_ops') || 'science_tech'}
-              // Pass state management props
               currentQuestionIndex={questionIndex}
               savedMcAnswers={mcAnswers}
               savedOpenAnswers={openAnswers}
