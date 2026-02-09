@@ -1,13 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Loader2 } from 'lucide-react';
 import { FeedHeader } from './FeedHeader';
 import { SingleFeedCard } from './SingleFeedCard';
+import { FeedItemCard } from './FeedItemCard';
+import { FeedEmptyState } from './FeedEmptyState';
 import { InterestSignalsCard } from './InterestSignalsCard';
 import { FeedActiveThreads } from './FeedActiveThreads';
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useRealtimeChat, RecentThread } from '@/hooks/useRealtimeChat';
+import { useFeedItems } from '@/hooks/useFeedItems';
 import { useUser } from '@/context/UserContext';
 
 interface XimaFeedProps {
@@ -27,9 +31,9 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
   const { isBusiness } = useBusinessRole();
   const { user } = useUser();
   const { recentThreads, loadingThreads } = useRealtimeChat(user?.id);
+  const { items, loading: feedLoading, error: feedError, addReaction, refresh } = useFeedItems();
 
   const handleOpenThread = (threadId: string) => {
-    // Navigate to conversations view with the thread pre-selected
     onOpenConversations?.();
   };
 
@@ -37,7 +41,7 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
     <div className="max-w-2xl mx-auto">
       <FeedHeader />
 
-      {/* Interest signals for candidates - shows companies that showed interest */}
+      {/* Interest signals for candidates */}
       {!isBusiness && (
         <div className="mb-6">
           <InterestSignalsCard onChatOpen={() => onOpenConversations?.()} />
@@ -53,7 +57,7 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
         />
       )}
 
-      {/* Chat access notice - only shown when mutual interest exists */}
+      {/* Chat access notice */}
       {showChatAccess && hasPendingChats && (
         <Card className="mb-6 border-primary/30 bg-primary/5">
           <CardContent className="py-4 flex items-center justify-between">
@@ -78,8 +82,57 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
         </Card>
       )}
 
-      {/* Single feed card - "One news per login" */}
+      {/* Featured single feed card */}
       <SingleFeedCard className="mb-6" />
+
+      {/* Dynamic feed items list */}
+      <div className="space-y-4 mb-6">
+        {feedLoading && (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <Card key={i}>
+                <CardContent className="p-4">
+                  <div className="flex gap-3">
+                    <Skeleton className="h-11 w-11 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-3/4" />
+                      <Skeleton className="h-3 w-1/2" />
+                      <div className="flex gap-2 mt-2">
+                        <Skeleton className="h-5 w-16 rounded-full" />
+                        <Skeleton className="h-5 w-14 rounded-full" />
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {feedError && (
+          <Card className="border-destructive/30">
+            <CardContent className="py-6 text-center">
+              <p className="text-sm text-destructive mb-3">{feedError}</p>
+              <Button variant="outline" size="sm" onClick={refresh}>
+                {t('common.retry', 'Retry')}
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {!feedLoading && !feedError && items.length === 0 && (
+          <FeedEmptyState />
+        )}
+
+        {!feedLoading && !feedError && items.map((item) => (
+          <FeedItemCard
+            key={item.id}
+            item={item}
+            onReact={addReaction}
+            isBusiness={isBusiness}
+          />
+        ))}
+      </div>
 
       {/* Privacy notice */}
       <p className="text-xs text-muted-foreground/60 text-center mt-8 max-w-md mx-auto">
