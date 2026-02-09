@@ -102,7 +102,6 @@ export const useOnboardingState = () => {
 
   /**
    * Returns the first incomplete step from a priority-ordered list.
-   * Use this to show only the highest-priority pending banner on a page.
    */
   const firstPendingStep = useCallback((steps: OnboardingStep[]): OnboardingStep | null => {
     for (const step of steps) {
@@ -111,12 +110,17 @@ export const useOnboardingState = () => {
     return null;
   }, [state.completed_steps]);
 
-  const showWelcome = !loading && isAuthenticated && !state.completed_steps.includes('welcome_seen');
+  // Guide-specific: auto-show if guide (welcome_seen) was never completed
+  const shouldAutoShowGuide = !loading && isAuthenticated && !state.completed_steps.includes('welcome_seen');
+
+  // Legacy compat
+  const showWelcome = shouldAutoShowGuide;
 
   return {
     loading,
     state,
     showWelcome,
+    shouldAutoShowGuide,
     completeStep,
     dismissHint,
     hasCompletedStep,

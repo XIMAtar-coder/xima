@@ -10,8 +10,10 @@ import { useUserHeaderData } from '@/hooks/useUserHeaderData';
 import { supabase } from '@/integrations/supabase/client';
 import { NotificationsDropdown } from '../NotificationsDropdown';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, Settings } from 'lucide-react';
+import { Menu, GraduationCap, Settings, HelpCircle } from 'lucide-react';
 import Footer from './Footer';
+import { XimaJourneyGuideModal } from '../onboarding/XimaJourneyGuideModal';
+import { useOnboardingState } from '@/hooks/useOnboardingState';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -28,6 +30,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
   const [scrolled, setScrolled] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMentor, setIsMentor] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
+  const { completeStep } = useOnboardingState();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const headerData = useUserHeaderData(user?.id);
 
@@ -296,6 +300,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                           <Settings className="h-4 w-4" />
                           {t('nav.settings', 'Settings')}
                         </button>
+                        <button
+                          onClick={() => {
+                            setGuideOpen(true);
+                            setMobileMenuOpen(false);
+                          }}
+                          className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2 flex items-center gap-2"
+                        >
+                          <HelpCircle className="h-4 w-4" />
+                          {t('guide.open_button', 'Guide')}
+                        </button>
                       </>
                     )}
                     
@@ -437,6 +451,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                             <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
                           )}
                         </button>
+                        <button 
+                          onClick={() => setGuideOpen(true)}
+                          className="text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative"
+                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
+                          title={t('guide.open_button', 'Guide')}
+                        >
+                          <span className="flex items-center gap-1">
+                            <HelpCircle className="h-3.5 w-3.5" />
+                            {t('guide.open_button', 'Guide')}
+                          </span>
+                        </button>
                       </>
                     )}
                     {isMentor && (
@@ -495,6 +520,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
       </main>
       
       {!fullHeight && <Footer />}
+
+      {/* Journey Guide Modal — accessible from nav */}
+      {isAuthenticated && (
+        <XimaJourneyGuideModal
+          open={guideOpen}
+          onClose={(dontShow) => {
+            setGuideOpen(false);
+            if (dontShow) completeStep('welcome_seen');
+          }}
+        />
+      )}
     </div>
   );
 };

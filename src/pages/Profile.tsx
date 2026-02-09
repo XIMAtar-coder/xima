@@ -20,8 +20,7 @@ import { CVAnalysisCard } from '@/components/profile/CVAnalysisCard';
 import { MyOpportunitiesSection } from '@/components/opportunities/MyOpportunitiesSection';
 import { MembershipSummaryCard } from '@/components/profile/MembershipSummaryCard';
 import { ChallengesForYouSection } from '@/components/profile/ChallengesForYouSection';
-import { WelcomeOverlay } from '@/components/onboarding/WelcomeOverlay';
-import { OnboardingHintBanner } from '@/components/onboarding/OnboardingHintBanner';
+import { XimaJourneyGuideModal } from '@/components/onboarding/XimaJourneyGuideModal';
 import { useOnboardingState } from '@/hooks/useOnboardingState';
 
 import { supabase } from '@/integrations/supabase/client';
@@ -37,9 +36,17 @@ const Profile = () => {
   const [mentorRefreshKey, setMentorRefreshKey] = React.useState(0);
   const [processingMentor, setProcessingMentor] = React.useState(false);
   const profileData = useProfileData(profileRefreshKey);
-  const { showWelcome, completeStep, firstPendingStep } = useOnboardingState();
+  const { shouldAutoShowGuide, completeStep } = useOnboardingState();
+  const [guideOpen, setGuideOpen] = useState(false);
 
   const hasMentor = !!profileData.mentor_profile;
+
+  // Auto-open guide for first-time users
+  useEffect(() => {
+    if (shouldAutoShowGuide) {
+      setGuideOpen(true);
+    }
+  }, [shouldAutoShowGuide]);
 
   // Auto-complete choose_mentor when mentor is selected
   useEffect(() => {
@@ -113,6 +120,13 @@ const Profile = () => {
     setProfileRefreshKey(prev => prev + 1);
   };
 
+  const handleGuideClose = (dontShowAgain: boolean) => {
+    setGuideOpen(false);
+    if (dontShowAgain || shouldAutoShowGuide) {
+      completeStep('welcome_seen');
+    }
+  };
+
   console.log('[Profile] render profileData', profileData);
   
   if (!isAuthenticated) {
@@ -142,6 +156,11 @@ const Profile = () => {
     return (
       <MainLayout>
         <div className="container max-w-4xl mx-auto py-12 space-y-8">
+          <XimaJourneyGuideModal
+            open={guideOpen}
+            onClose={handleGuideClose}
+            isAutoOpen={shouldAutoShowGuide}
+          />
           <Card className="text-center py-12">
             <CardContent className="space-y-6">
               <div className="flex justify-center">
@@ -165,6 +184,13 @@ const Profile = () => {
   return (
     <MainLayout>
       <div className="container max-w-7xl mx-auto py-8 space-y-8 watermark-bg animate-[slide-up_0.4s_ease-out]">
+        {/* Journey Guide Modal */}
+        <XimaJourneyGuideModal
+          open={guideOpen}
+          onClose={handleGuideClose}
+          isAutoOpen={shouldAutoShowGuide}
+        />
+
         {/* Header with Full Name */}
         <div className="space-y-4 relative z-10">
           <div className="flex items-center justify-between">
@@ -177,21 +203,8 @@ const Profile = () => {
         </div>
 
         <div className="space-y-8 relative z-10">
-          {/* Welcome overlay for first-time users */}
-          <WelcomeOverlay
-            open={showWelcome}
-            onStart={() => completeStep('welcome_seen')}
-            onSkip={() => completeStep('welcome_seen')}
-          />
-
-          {/* Dashboard intro banner (highest priority on this page) */}
-          <OnboardingHintBanner hintKey="dashboard_intro" />
-
           {/* Membership & Credits Recap */}
-          <div>
-            <OnboardingHintBanner hintKey="credits_and_referrals" />
-            <MembershipSummaryCard />
-          </div>
+          <MembershipSummaryCard />
 
           {/* XIMAtar Hero Card */}
           <XimatarHeroCard
@@ -236,9 +249,6 @@ const Profile = () => {
 
             {/* Right Column */}
             <div className="space-y-6">
-              {/* Mentor onboarding banners */}
-              {!hasMentor && <OnboardingHintBanner hintKey="choose_mentor" />}
-              {hasMentor && <OnboardingHintBanner hintKey="book_free_intro" />}
               <MentorSection 
                 mentor={profileData.mentor_profile} 
                 onBookingSuccess={handleMentorBookingSuccess}

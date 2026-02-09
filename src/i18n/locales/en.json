@@ -4369,6 +4369,53 @@
       "open_settings": "Open settings"
     }
   },
+  "guide": {
+    "open_button": "Guide",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to XIMA",
+        "body": "XIMA is your personal growth space. Here you discover your professional profile, connect with a mentor, and unlock opportunities through real challenges.",
+        "cta": ""
+      },
+      "ximatar": {
+        "title": "Build your XIMAtar",
+        "body": "Your XIMAtar is your professional identity — built from your answers across five dimensions. It shapes which mentors and challenges match you best.",
+        "cta": "Start assessment →"
+      },
+      "mentor": {
+        "title": "Choose your mentor",
+        "body": "After your assessment, you'll be matched with mentors who fit your profile. Pick the one that resonates with your goals.",
+        "cta": "Go to dashboard →"
+      },
+      "session": {
+        "title": "Book your free intro",
+        "body": "Every new member gets one free intro session. Use it to connect with your mentor and set your growth direction.",
+        "cta": "Go to dashboard →"
+      },
+      "feed": {
+        "title": "Feed & conversations",
+        "body": "Your feed shows updates from mentors and companies. Contextual conversations happen here — no open chat, only meaningful exchanges.",
+        "cta": "Open feed →"
+      },
+      "credits": {
+        "title": "Credits & referrals",
+        "body": "Earn credits by inviting friends. Use them for mentoring sessions and premium features. Your impact grows as your network does.",
+        "cta": "View credits →"
+      },
+      "settings": {
+        "title": "Settings & your plan",
+        "body": "Manage your membership, privacy preferences, data exports, and account settings — all in one place.",
+        "cta": "Open settings →"
+      }
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "finish": "Finish",
+      "close": "Close",
+      "dont_show_again": "Don't show this again"
+    }
+  },
   "feed": {
     "thread_type": {
       "mentor": "Mentor",
