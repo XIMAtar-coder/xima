@@ -45,10 +45,34 @@ Deno.serve(async (req) => {
 
   try {
     console.log('Starting company profile generation...');
+
+    // Authenticate request
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Unauthorized' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
+    }
     
-    // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
+    const authClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await authClient.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims?.sub) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Unauthorized' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
+    }
+    const callerUserId = claimsData.claims.sub as string;
+
+    // Initialize service role client for DB operations
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Parse request body
@@ -56,6 +80,14 @@ Deno.serve(async (req) => {
     
     if (!company_id || !company_name || !website) {
       throw new Error('Missing required fields: company_id, company_name, website');
+    }
+
+    // Ownership validation: company_id must match the authenticated user
+    if (company_id !== callerUserId) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Forbidden: can only generate profile for your own company' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
+      );
     }
 
     console.log(`Generating profile for: ${company_name} (${website})`);
