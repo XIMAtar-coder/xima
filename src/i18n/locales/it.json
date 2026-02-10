@@ -4137,5 +4137,45 @@
     "active_threads_title": "Le tue conversazioni",
     "active_threads_subtitle": "Messaggi con il tuo mentore e le aziende con cui sei in contatto.",
     "no_active_threads": "Nessuna conversazione ancora. Appariranno qui quando un mentore o un'azienda si collegherà con te."
+  },
+  "business_guide": {
+    "open_button": "Guida",
+    "steps": {
+      "biz_welcome": {
+        "title": "Benvenuto in XIMA Business",
+        "body": "Questo è il tuo centro di comando per le assunzioni. Da qui gestisci sfide, scopri talenti e prendi decisioni più intelligenti — tutto grazie all'approccio basato sui segnali di XIMA.",
+        "cta": ""
+      },
+      "biz_company_profile": {
+        "title": "Configura il profilo aziendale",
+        "body": "Completa il profilo della tua azienda affinché i candidati possano conoscere la tua cultura e i tuoi valori. Un profilo forte attira abbinamenti migliori.",
+        "cta": "Vai alle impostazioni →"
+      },
+      "biz_publish_challenge": {
+        "title": "Pubblica la tua prima sfida",
+        "body": "Le sfide sono il modo per valutare i candidati su compiti reali. Creane una collegata a un obiettivo di assunzione e lascia che i talenti mostrino cosa sanno fare.",
+        "cta": "Crea sfida →"
+      },
+      "biz_review_candidates": {
+        "title": "Valuta i candidati",
+        "body": "Man mano che i candidati completano le sfide, vedrai i loro segnali e profili XIMAtar. Usa i dati per selezionare con sicurezza.",
+        "cta": "Vedi candidati →"
+      },
+      "biz_chat_and_sessions": {
+        "title": "Chat e valutazioni",
+        "body": "Interagisci con i candidati selezionati attraverso conversazioni contestuali. Rivedi le consegne e pianifica follow-up quando necessario.",
+        "cta": "Vedi valutazioni →"
+      },
+      "biz_feedback_and_outcomes": {
+        "title": "Monitora i risultati",
+        "body": "Tieni sotto controllo il tuo funnel di assunzione, le prestazioni delle sfide e il coinvolgimento dei candidati — tutto in un unico posto.",
+        "cta": "Vedi report →"
+      },
+      "biz_settings_and_compliance": {
+        "title": "Impostazioni e conformità",
+        "body": "Gestisci i tuoi dati legali, l'accesso del team e le preferenze di fatturazione. Mantieni tutto allineato ai requisiti della tua azienda.",
+        "cta": "Apri impostazioni →"
+      }
+    }
   }
 }

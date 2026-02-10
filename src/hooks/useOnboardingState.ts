@@ -10,7 +10,8 @@ export type OnboardingStep =
   | 'book_free_intro'
   | 'feed_and_chat'
   | 'credits_and_referrals'
-  | 'settings_manage_plan';
+  | 'settings_manage_plan'
+  | 'biz_welcome_seen';
 
 // Keep backward compat alias
 export type OnboardingHint = OnboardingStep;
@@ -113,6 +114,9 @@ export const useOnboardingState = () => {
   // Guide-specific: auto-show if guide (welcome_seen) was never completed
   const shouldAutoShowGuide = !loading && isAuthenticated && !state.completed_steps.includes('welcome_seen');
 
+  // Business guide: auto-show if biz_welcome_seen was never completed
+  const shouldAutoShowBusinessGuide = !loading && isAuthenticated && !state.completed_steps.includes('biz_welcome_seen');
+
   // Legacy compat
   const showWelcome = shouldAutoShowGuide;
 
@@ -121,6 +125,7 @@ export const useOnboardingState = () => {
     state,
     showWelcome,
     shouldAutoShowGuide,
+    shouldAutoShowBusinessGuide,
     completeStep,
     dismissHint,
     hasCompletedStep,
