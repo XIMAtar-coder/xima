@@ -5,8 +5,10 @@ import { useUser } from '@/context/UserContext';
 import { Button } from '@/components/ui/button';
 import { 
   LayoutDashboard, Users, Target, FileText, BarChart3, 
-  Settings, LogOut, Menu, X, Building2, Briefcase, Globe
+  Settings, LogOut, Menu, X, Building2, Briefcase, Globe, HelpCircle
 } from 'lucide-react';
+import { useOnboardingState } from '@/hooks/useOnboardingState';
+import { BusinessJourneyGuideModal } from '@/components/business/BusinessJourneyGuideModal';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +34,24 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
   const { user, signOut } = useUser();
   const { locale, changeLocale } = useBusinessLocale();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { shouldAutoShowBusinessGuide, completeStep } = useOnboardingState();
+  const [guideOpen, setGuideOpen] = useState(false);
+  const [guideAutoTriggered, setGuideAutoTriggered] = useState(false);
+
+  // Auto-open guide once for first-time business users
+  useEffect(() => {
+    if (shouldAutoShowBusinessGuide && !guideAutoTriggered) {
+      setGuideOpen(true);
+      setGuideAutoTriggered(true);
+    }
+  }, [shouldAutoShowBusinessGuide, guideAutoTriggered]);
+
+  const handleGuideClose = (dontShowAgain: boolean) => {
+    setGuideOpen(false);
+    if (dontShowAgain) {
+      completeStep('biz_welcome_seen');
+    }
+  };
 
   // Sync stored language on mount
   useEffect(() => {
@@ -161,7 +181,18 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
         }`}
       >
         {/* Top Header with Language Switcher */}
-        <header className="sticky top-0 z-40 flex items-center justify-end px-6 py-3 bg-[#0A0F1C]/80 backdrop-blur-sm border-b border-[#3A9FFF]/10">
+        <header className="sticky top-0 z-40 flex items-center justify-end gap-2 px-6 py-3 bg-[#0A0F1C]/80 backdrop-blur-sm border-b border-[#3A9FFF]/10">
+          {/* Guide button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setGuideOpen(true)}
+            className="flex items-center gap-1.5 text-[#A3ABB5] hover:text-white hover:bg-[#3A9FFF]/10"
+          >
+            <HelpCircle size={16} />
+            <span className="text-sm font-medium">{t('business_guide.open_button', 'Guide')}</span>
+          </Button>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
@@ -227,6 +258,13 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
           </div>
         </footer>
       </main>
+
+      {/* Business Journey Guide Modal */}
+      <BusinessJourneyGuideModal
+        open={guideOpen}
+        onClose={handleGuideClose}
+        isAutoOpen={shouldAutoShowBusinessGuide}
+      />
     </div>
   );
 };

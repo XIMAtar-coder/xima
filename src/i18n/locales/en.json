@@ -4425,5 +4425,45 @@
     "active_threads_title": "Your Conversations",
     "active_threads_subtitle": "Messages with your mentor and companies you're connected with.",
     "no_active_threads": "No conversations yet. They'll appear here when a mentor or company connects with you."
+  },
+  "business_guide": {
+    "open_button": "Guide",
+    "steps": {
+      "biz_welcome": {
+        "title": "Welcome to XIMA Business",
+        "body": "This is your hiring command center. From here you manage challenges, discover talent, and make smarter hiring decisions — all powered by XIMA's signal-based approach.",
+        "cta": ""
+      },
+      "biz_company_profile": {
+        "title": "Set up your company profile",
+        "body": "Complete your company profile so candidates can learn about your culture and values. A strong profile attracts better matches.",
+        "cta": "Go to settings →"
+      },
+      "biz_publish_challenge": {
+        "title": "Publish your first challenge",
+        "body": "Challenges are how you assess candidates on real tasks. Create one linked to a hiring goal and let talent show what they can do.",
+        "cta": "Create challenge →"
+      },
+      "biz_review_candidates": {
+        "title": "Review candidates",
+        "body": "As candidates complete challenges, you'll see their signals and XIMAtar profiles here. Use the data to shortlist with confidence.",
+        "cta": "View candidates →"
+      },
+      "biz_chat_and_sessions": {
+        "title": "Chat & evaluations",
+        "body": "Engage with shortlisted candidates through contextual conversations. Review submissions and schedule follow-ups when needed.",
+        "cta": "View evaluations →"
+      },
+      "biz_feedback_and_outcomes": {
+        "title": "Track outcomes",
+        "body": "Monitor your hiring funnel, challenge performance, and candidate engagement — all in one place.",
+        "cta": "View reports →"
+      },
+      "biz_settings_and_compliance": {
+        "title": "Settings & compliance",
+        "body": "Manage your legal details, team access, and billing preferences. Keep everything aligned with your company's requirements.",
+        "cta": "Open settings →"
+      }
+    }
   }
 }
