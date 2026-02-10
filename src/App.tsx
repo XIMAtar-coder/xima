@@ -27,6 +27,7 @@ import TestCreativeThinking from "./pages/TestCreativeThinking";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import { XimAIProvider } from "./context/XimAIProvider";
+import ChatEntry from "./components/ximai/ChatEntry";
 import OpportunityDetails from "./pages/OpportunityDetails";
 
 import { AssessmentProvider } from "./contexts/AssessmentContext";
@@ -65,9 +66,6 @@ import AuthCallback from "./pages/AuthCallback";
 import CandidateSettings from "./pages/Settings";
 import CandidateSessionDetail from "./pages/candidate/SessionDetail";
 import CandidateSessionRoom from "./pages/candidate/SessionRoom";
-// Verification
-import VerifyEmail from "./pages/auth/VerifyEmail";
-import { VerificationGate } from "./components/auth/VerificationGate";
 // Mentor Portal
 import MentorPortal from "./pages/mentor/MentorPortal";
 import MentorLogin from "./pages/mentor/MentorLogin";
@@ -94,79 +92,76 @@ const AppContent = () => {
     <>
       <LoadingScreen isLoading={isLoading} />
       <XimAIProvider>
-        <VerificationGate>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/how-it-works" element={<HowItWorks />} />
-            <Route path="/business" element={<Business />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
-            <Route path="/onboarding" element={<Onboarding />} />
-            {/* Legal Pages */}
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/imprint" element={<Imprint />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/ximatar-journey" element={<XimatarJourney />} />
-            <Route path="/xima-chat" element={<XimaChat />} />
-            <Route path="/development-plan" element={<DevelopmentPlan />} />
-            <Route path="/test/data-analysis" element={<TestDataAnalysis />} />
-            <Route path="/test/logical-problem-solving" element={<TestLogicalProblemSolving />} />
-            <Route path="/test/presentation-skills" element={<TestPresentationSkills />} />
-            <Route path="/test/creative-thinking" element={<TestCreativeThinking />} />
-            <Route path="/opportunity/:id" element={<OpportunityDetails />} />
-            
-            <Route path="/assessment-guide" element={<AssessmentGuide />} />
-            <Route path="/dashboard" element={<Profile />} />
-            <Route path="/chat" element={<XimaChat />} />
-            <Route path="/settings" element={<CandidateSettings />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/admin/eligibility" element={<EligibilityReview />} />
-            {/* Mentor Portal Routes */}
-            <Route path="/mentor" element={<MentorPortal />} />
-            <Route path="/mentor/login" element={<MentorLogin />} />
-            <Route path="/mentor/profile" element={<MentorProfileEdit />} />
-            <Route path="/mentor/preview" element={<MentorPreview />} />
-            <Route path="/mentor/sessions" element={<MentorSessions />} />
-            <Route path="/mentor/calendar" element={<MentorCalendar />} />
-            <Route path="/mentor/calendar/:sessionId" element={<MentorSessionDetail />} />
-            {/* Business Portal Routes */}
-            <Route path="/business/register" element={<BusinessRegister />} />
-            <Route path="/business/login" element={<BusinessLogin />} />
-            <Route path="/business/dashboard" element={<BusinessDashboard />} />
-            <Route path="/business/candidates" element={<BusinessCandidates />} />
-            <Route path="/business/challenges" element={<BusinessChallenges />} />
-            <Route path="/business/challenges/select" element={<ChallengeTypeSelector />} />
-            <Route path="/business/challenges/new" element={<CreateChallenge />} />
-            <Route path="/business/challenges/xima-core" element={<CreateXimaCoreChallenge />} />
-            <Route path="/business/challenges/:id/edit" element={<CreateChallenge />} />
-            <Route path="/business/evaluations" element={<BusinessEvaluations />} />
-            <Route path="/business/reports" element={<BusinessReports />} />
-            <Route path="/business/settings" element={<BusinessSettings />} />
-            <Route path="/business/jobs" element={<BusinessJobs />} />
-            <Route path="/business/jobs/new" element={<CreateJobOffer />} />
-            <Route path="/business/jobs/:jobId/matches" element={<JobCandidateMatching />} />
-            {/* Goal-scoped routes */}
-            <Route path="/business/goals/:goalId/candidates" element={<GoalCandidates />} />
-            <Route path="/business/goals/:goalId/challenges" element={<GoalChallenges />} />
-            <Route path="/business/goals/:goalId/settings" element={<GoalSettings />} />
-            <Route path="/business/goals/:goalId/decision-pack" element={<GoalDecisionPack />} />
-            <Route path="/business/goals/:goalId/challenges/:challengeId/responses" element={<ChallengeResponses />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/challenge/accept" element={<ChallengeAccept />} />
-            {/* Candidate challenge completion */}
-            <Route path="/candidate/challenges/:invitationId" element={<ChallengeCompletion />} />
-            <Route path="/candidate/challenges/:invitationId/standing" element={<StandingVideoSession />} />
-            <Route path="/candidate/followups/:invitationId" element={<ChallengeFollowup />} />
-            {/* Candidate session detail */}
-            <Route path="/sessions/:sessionId" element={<CandidateSessionDetail />} />
-            <Route path="/sessions/:sessionId/room" element={<CandidateSessionRoom />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </VerificationGate>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/business" element={<Business />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/onboarding" element={<Onboarding />} />
+          {/* Legal Pages */}
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/imprint" element={<Imprint />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/ximatar-journey" element={<XimatarJourney />} />
+          <Route path="/xima-chat" element={<XimaChat />} />
+          <Route path="/development-plan" element={<DevelopmentPlan />} />
+          <Route path="/test/data-analysis" element={<TestDataAnalysis />} />
+          <Route path="/test/logical-problem-solving" element={<TestLogicalProblemSolving />} />
+          <Route path="/test/presentation-skills" element={<TestPresentationSkills />} />
+          <Route path="/test/creative-thinking" element={<TestCreativeThinking />} />
+          <Route path="/opportunity/:id" element={<OpportunityDetails />} />
+          
+          <Route path="/assessment-guide" element={<AssessmentGuide />} />
+          <Route path="/dashboard" element={<Profile />} />
+          <Route path="/chat" element={<XimaChat />} />
+          <Route path="/settings" element={<CandidateSettings />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/eligibility" element={<EligibilityReview />} />
+          {/* Mentor Portal Routes */}
+          <Route path="/mentor" element={<MentorPortal />} />
+          <Route path="/mentor/login" element={<MentorLogin />} />
+          <Route path="/mentor/profile" element={<MentorProfileEdit />} />
+          <Route path="/mentor/preview" element={<MentorPreview />} />
+          <Route path="/mentor/sessions" element={<MentorSessions />} />
+          <Route path="/mentor/calendar" element={<MentorCalendar />} />
+          <Route path="/mentor/calendar/:sessionId" element={<MentorSessionDetail />} />
+          {/* Business Portal Routes */}
+          <Route path="/business/register" element={<BusinessRegister />} />
+          <Route path="/business/login" element={<BusinessLogin />} />
+          <Route path="/business/dashboard" element={<BusinessDashboard />} />
+          <Route path="/business/candidates" element={<BusinessCandidates />} />
+          <Route path="/business/challenges" element={<BusinessChallenges />} />
+          <Route path="/business/challenges/select" element={<ChallengeTypeSelector />} />
+          <Route path="/business/challenges/new" element={<CreateChallenge />} />
+          <Route path="/business/challenges/xima-core" element={<CreateXimaCoreChallenge />} />
+          <Route path="/business/challenges/:id/edit" element={<CreateChallenge />} />
+          <Route path="/business/evaluations" element={<BusinessEvaluations />} />
+          <Route path="/business/reports" element={<BusinessReports />} />
+          <Route path="/business/settings" element={<BusinessSettings />} />
+          <Route path="/business/jobs" element={<BusinessJobs />} />
+          <Route path="/business/jobs/new" element={<CreateJobOffer />} />
+          <Route path="/business/jobs/:jobId/matches" element={<JobCandidateMatching />} />
+          {/* Goal-scoped routes */}
+          <Route path="/business/goals/:goalId/candidates" element={<GoalCandidates />} />
+          <Route path="/business/goals/:goalId/challenges" element={<GoalChallenges />} />
+          <Route path="/business/goals/:goalId/settings" element={<GoalSettings />} />
+          <Route path="/business/goals/:goalId/decision-pack" element={<GoalDecisionPack />} />
+          <Route path="/business/goals/:goalId/challenges/:challengeId/responses" element={<ChallengeResponses />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/challenge/accept" element={<ChallengeAccept />} />
+          {/* Candidate challenge completion */}
+          <Route path="/candidate/challenges/:invitationId" element={<ChallengeCompletion />} />
+          <Route path="/candidate/challenges/:invitationId/standing" element={<StandingVideoSession />} />
+          <Route path="/candidate/followups/:invitationId" element={<ChallengeFollowup />} />
+          {/* Candidate session detail */}
+          <Route path="/sessions/:sessionId" element={<CandidateSessionDetail />} />
+          <Route path="/sessions/:sessionId/room" element={<CandidateSessionRoom />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
         {/* <ChatEntry /> */}
       </XimAIProvider>
     </>

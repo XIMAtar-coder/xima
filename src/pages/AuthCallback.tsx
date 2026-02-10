@@ -44,14 +44,6 @@ const AuthCallback = () => {
           if (event === 'SIGNED_IN' && session?.user) {
             console.log('AuthCallback: User signed in via OAuth:', session.user.email);
             
-            // Confirm email verification in profiles table
-            try {
-              await supabase.rpc('confirm_email_verification');
-              console.log('AuthCallback: Email verification confirmed in profile');
-            } catch (verifyErr) {
-              console.warn('AuthCallback: confirm_email_verification warning:', verifyErr);
-            }
-
             // Sync any guest assessment data to the new user's profile
             try {
               const synced = await syncGuestAssessmentToProfile(session.user.id);
@@ -83,13 +75,6 @@ const AuthCallback = () => {
         if (session?.user && isMounted) {
           console.log('AuthCallback: Existing session found for:', session.user.email);
           
-          // Confirm email verification
-          try {
-            await supabase.rpc('confirm_email_verification');
-          } catch {
-            // non-critical
-          }
-
           // Sync any guest assessment data
           try {
             const synced = await syncGuestAssessmentToProfile(session.user.id);

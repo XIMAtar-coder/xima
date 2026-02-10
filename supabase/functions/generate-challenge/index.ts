@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { checkEmailVerified, unverifiedResponse } from "../_shared/emailVerification.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -84,12 +83,6 @@ serve(async (req) => {
         JSON.stringify({ error: 'Authentication failed' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
-    }
-
-    // Email verification check
-    const verifyResult = await checkEmailVerified(authHeader);
-    if (!verifyResult.verified) {
-      return unverifiedResponse(verifyResult.code, verifyResult.message, corsHeaders);
     }
 
     console.log('[generate-challenge] Authenticated user:', user.id);
