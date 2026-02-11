@@ -84,7 +84,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     });
 
-    // Do NOT auto-signin — user must verify email first
     return { data, error };
   };
 

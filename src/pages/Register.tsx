@@ -42,7 +42,6 @@ const Register = () => {
 
   const [errors, setErrors] = useState<RegisterFormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showCheckInbox, setShowCheckInbox] = useState(false);
 
   // Consent state
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
@@ -61,10 +60,10 @@ const Register = () => {
   }, []);
 
   React.useEffect(() => {
-    if (isAuthenticated && !showCheckInbox) {
+    if (isAuthenticated) {
       navigate('/profile');
     }
-  }, [isAuthenticated, navigate, showCheckInbox]);
+  }, [isAuthenticated, navigate]);
 
   const validateForm = () => {
     const newErrors: RegisterFormErrors = {};
@@ -119,12 +118,10 @@ const Register = () => {
     setIsSubmitting(true);
 
     try {
-      // Sign up WITHOUT auto-signin — user must verify email first
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             first_name: formData.firstName,
             last_name: formData.lastName,
@@ -169,8 +166,21 @@ const Register = () => {
         }
       }
 
-      // Show "check your inbox" screen
-      setShowCheckInbox(true);
+      // Sync guest assessment data after signup
+      if (data?.user?.id) {
+        try {
+          const { syncGuestAssessmentToProfile } = await import('@/utils/assessmentSync');
+          await syncGuestAssessmentToProfile(data.user.id);
+        } catch (syncErr) {
+          console.warn('[Register] Assessment sync warning:', syncErr);
+        }
+      }
+
+      // Session is automatically established, useEffect will redirect to /profile
+      toast({
+        title: t('register.success_title', 'Account created!'),
+        description: t('register.success_desc', 'Welcome to XIMA.'),
+      });
 
     } catch (error) {
       toast({
@@ -182,51 +192,6 @@ const Register = () => {
       setIsSubmitting(false);
     }
   };
-
-  // ─── Check Inbox Screen ───
-  if (showCheckInbox) {
-    return (
-      <div className="min-h-screen bg-[#0A0F1C] flex items-center justify-center p-4">
-        <div className="w-full max-w-md animate-[fade-in_0.4s_ease-out]">
-          <Card className="border border-[#A3ABB5]/20 bg-[#0A0F1C]/80 backdrop-blur-sm shadow-2xl">
-            <CardHeader className="space-y-4 text-center">
-              <div className="mx-auto mb-2">
-                <Logo variant="full" className="h-12 mx-auto" alt="XIMA" />
-              </div>
-              <div className="mx-auto w-16 h-16 rounded-full bg-[#3A9FFF]/10 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-[#3A9FFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <CardTitle className="text-2xl font-bold text-white font-heading">
-                {t('register.check_inbox_title', 'Check your inbox!')}
-              </CardTitle>
-              <CardDescription className="text-[#A3ABB5] text-base">
-                {t('register.check_inbox_desc', 'We sent a verification link to')}
-              </CardDescription>
-              <p className="text-white font-medium">{formData.email}</p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="bg-[#1A1F2E] rounded-lg p-4 space-y-2">
-                <p className="text-sm text-[#A3ABB5]">
-                  {t('register.check_inbox_instructions', 'Click the link in the email to activate your account. You have 24 hours to verify.')}
-                </p>
-                <p className="text-sm text-[#A3ABB5]">
-                  {t('register.check_spam', 'Can\'t find the email? Check your spam folder.')}
-                </p>
-              </div>
-              <Button
-                className="w-full bg-[#3A9FFF] hover:bg-[#3A9FFF]/80 text-white"
-                onClick={() => navigate('/login')}
-              >
-                {t('register.go_to_login', 'Go to Login')}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
 
   // ─── Registration Form ───
   return (
