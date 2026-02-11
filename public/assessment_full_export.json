@@ -1,0 +1,240 @@
+{
+  "export_date": "2026-02-11",
+  "version": "1.0",
+  "meta": {
+    "total_fields": 4,
+    "questions_per_field": 23,
+    "mc_questions": 21,
+    "open_questions": 2,
+    "pillars": ["computational_power", "communication", "knowledge", "creativity", "drive"]
+  },
+  "fields": [
+    {
+      "field_key": "science_tech",
+      "field_title_i18n": "field.science_tech.title",
+      "questions": [
+        { "id": "q1", "step": 1, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "computational_power", "question_en": "When faced with a complex data set, what is your first approach?", "options_en": ["Break it down into smaller, manageable parts","Look for patterns and trends immediately","Seek tools or software to help analyze it","Consult with others who have similar experience"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q2", "step": 2, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "computational_power", "question_en": "In a team meeting, how do you typically contribute?", "options_en": ["I listen carefully and ask clarifying questions","I share ideas and build on others' suggestions","I take notes and summarize key points","I focus on actionable next steps"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q3", "step": 3, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "computational_power", "question_en": "How do you prefer to learn new skills?", "options_en": ["Through hands-on practice and experimentation","By reading comprehensive guides and documentation","Through structured courses and formal training","By learning from mentors and experienced colleagues"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q4", "step": 4, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "computational_power", "question_en": "When solving a problem, you tend to:", "options_en": ["Think of multiple unconventional solutions","Combine existing ideas in new ways","Build upon proven methods with improvements","Seek inspiration from different industries or fields"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q5", "step": 5, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "computational_power", "question_en": "What motivates you most in your work?", "options_en": ["Achieving challenging goals and targets","Making a positive impact on others","Continuous learning and growth","Recognition and advancement opportunities"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q6", "step": 6, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "communication", "question_en": "How do you evaluate the effectiveness of a technical solution?", "options_en": ["Measure performance and specific metrics","Compare alternatives and run A/B tests","Gather feedback from end users","Verify it meets all requirements"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q7", "step": 7, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "communication", "question_en": "How do you handle conflicts or disagreements at work?", "options_en": ["Find common ground and shared solutions","Present facts and data to support my position","Facilitate discussion between involved parties","Propose practical compromises"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q8", "step": 8, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "communication", "question_en": "When you encounter conflicting information?", "options_en": ["Research additional sources to verify","Analyze the credibility of original sources","Consult experts in the specific field","Test empirically when possible"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q9", "step": 9, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "communication", "question_en": "How do you generate new ideas for projects?", "options_en": ["Brainstorming and creative sessions","Study success cases from other industries","Experiment with prototypes and mockups","Collaborate with diverse teams"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q10", "step": 10, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "communication", "question_en": "How do you maintain motivation during long projects?", "options_en": ["Set milestones and celebrate progress","Keep focus on the final goal","Vary activities to avoid monotony","Seek support and feedback from team"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q11", "step": 11, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "knowledge", "question_en": "How do you approach automating repetitive processes?", "options_en": ["Identify patterns and create custom scripts","Use existing tools and adapt them","Analyze cost-benefit before automating","Collaborate with technical experts to implement"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q12", "step": 12, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "knowledge", "question_en": "How do you adapt your communication style to different audiences?", "options_en": ["Study the background and needs of the audience","Use examples and analogies relevant to their context","Modify the level of technical detail","Ask for feedback to ensure I'm being clear"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q13", "step": 13, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "knowledge", "question_en": "How do you organize and share acquired knowledge?", "options_en": ["Create structured and searchable documentation","Organize training sessions for the team","Develop practical guides and tutorials","Maintain databases of best practices"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q14", "step": 14, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "knowledge", "question_en": "How do you overcome creative blocks?", "options_en": ["Change environment and seek new perspectives","Brainstorm with colleagues","Research inspiration from unrelated fields","Take strategic breaks and return to the problem later"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q15", "step": 15, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "creativity", "question_en": "How do you react to failures or setbacks?", "options_en": ["Analyze what went wrong to learn","Focus quickly on the next opportunity","Seek feedback from mentors or experienced colleagues","Readapt strategy while maintaining the goal"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q16", "step": 16, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "creativity", "question_en": "How do you handle large amounts of data to analyze?", "options_en": ["Use visualization tools to identify patterns","Segment data into logical categories","Apply statistical techniques to find correlations","Create automated dashboards for continuous monitoring"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q17", "step": 17, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "creativity", "question_en": "How do you present complex results to non-technical stakeholders?", "options_en": ["Use charts and intuitive visualizations","Focus on business results, not technical details","Tell a story that connects data to concrete impacts","Prepare executive summaries with key points"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q18", "step": 18, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "creativity", "question_en": "How do you stay updated in your areas of expertise?", "options_en": ["Follow industry publications and research","Participate in specialized conferences and webinars","Join professional communities and forums","Experiment with new tools and technologies"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q19", "step": 19, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "drive", "question_en": "How do you balance innovation and practicality in your projects?", "options_en": ["Test innovative ideas on a small scale first","Maintain a portfolio of projects at different risk levels","Seek continuous feedback to validate creative directions","Establish clear criteria to evaluate new ideas"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q20", "step": 20, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "drive", "question_en": "How do you define and pursue long-term goals?", "options_en": ["Create detailed roadmaps with intermediate milestones","Establish quantifiable metrics to measure progress","Regularly review and adapt strategy","Maintain constant focus despite distractions"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "q21", "step": 21, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "drive", "question_en": "How do you evaluate the implementation of new technologies?", "options_en": ["Conduct thorough cost-benefit analysis","Test on pilot projects before full adoption","Evaluate impact on existing processes and teams","Research case studies and industry best practices"], "option_values": [0,1,2,3], "validation": "required, single selection" },
+        { "id": "open1", "step": 22, "type": "open-answer", "pillar_blend": "60% creativity + 40% communication", "question_en": "Describe a professional situation where you felt most successful. What made it successful and what was your specific contribution?", "validation": "required, non-empty string" },
+        { "id": "open2", "step": 23, "type": "open-answer", "pillar_blend": "60% drive + 40% knowledge", "question_en": "What is your biggest professional challenge or area where you'd like to grow? How do you plan to address it?", "validation": "required, non-empty string" }
+      ]
+    },
+    {
+      "field_key": "business_leadership",
+      "field_title_i18n": "field.business_leadership.title",
+      "questions": [
+        { "id": "q1", "step": 1, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "computational_power", "question_en": "When reviewing a business KPI dashboard, what is your first step?", "options_en": ["Scan for anomalies vs targets","Drill into segment breakdowns","Compare with historical trends","Export data to investigate offline"] },
+        { "id": "q2", "step": 2, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "computational_power", "question_en": "In an exec meeting with conflicting opinions, you typically:", "options_en": ["Synthesize and reframe the core issue","Ask clarifying questions to align context","Summarize decisions and next steps","De-escalate and redirect to shared goals"] },
+        { "id": "q3", "step": 3, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "computational_power", "question_en": "How do you keep your market knowledge current?", "options_en": ["Read industry briefings weekly","Follow analyst reports and competitors","Attend conferences and webinars","Run regular customer interviews"] },
+        { "id": "q4", "step": 4, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "computational_power", "question_en": "Designing a new go-to-market motion, you prefer to:", "options_en": ["Prototype campaigns quickly","Adapt proven playbooks","Borrow ideas from adjacent industries","Co-create with sales and product"] },
+        { "id": "q5", "step": 5, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "computational_power", "question_en": "What most sustains your momentum through a tough quarter?", "options_en": ["Clear milestones and scorecards","Purpose and impact on customers","Learning through iteration","Recognition and visible wins"] },
+        { "id": "q6", "step": 6, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "communication", "question_en": "Faced with ambiguous revenue drops, you first:", "options_en": ["Segment by channel and cohort","Correlate with pricing or promo changes","Check attribution/measurement integrity","Benchmark against seasonality"] },
+        { "id": "q7", "step": 7, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "communication", "question_en": "When a team resists a strategic change, you:", "options_en": ["Tell a compelling story with evidence","Create forums to surface concerns","Map stakeholders and tailor messages","Negotiate phased adoption"] },
+        { "id": "q8", "step": 8, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "communication", "question_en": "Your approach to learning a new business model:", "options_en": ["Build a financial model end-to-end","Read case studies across sectors","Shadow operators doing the work","Run a small pilot to learn"] },
+        { "id": "q9", "step": 9, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "communication", "question_en": "To unlock growth in a saturated segment, you:", "options_en": ["Test a novel positioning angle","Bundle/re-package offers creatively","Create partnerships to reach new users","Reinvent the onboarding experience"] },
+        { "id": "q10", "step": 10, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "communication", "question_en": "Under pressure with tight deadlines, you:", "options_en": ["Ruthlessly prioritize the 20% that matters","Keep the team energized and focused","Time-box experiments to learn fast","Secure resources and unblock quickly"] },
+        { "id": "q11", "step": 11, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "knowledge", "question_en": "Evaluating a pricing change, you:", "options_en": ["Run sensitivity analyses","A/B test price points","Model elasticity by segment","Validate with customer interviews"] },
+        { "id": "q12", "step": 12, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "knowledge", "question_en": "Communicating to non-experts, you mainly:", "options_en": ["Use visuals and analogies","Tell a narrative with outcomes","Provide executive summaries","Offer clear calls to action"] },
+        { "id": "q13", "step": 13, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "knowledge", "question_en": "Institutional knowledge is best maintained by:", "options_en": ["Well-structured internal docs","Regular training sessions","Living playbooks with owners","Communities of practice"] },
+        { "id": "q14", "step": 14, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "knowledge", "question_en": "When plans stall, you spark ideas by:", "options_en": ["Rapid ideation sprints","Cross-functional workshops","Reverse-engineering competitor wins","Inviting contrarian perspectives"] },
+        { "id": "q15", "step": 15, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "creativity", "question_en": "After a failed initiative, you tend to:", "options_en": ["Do a blameless post-mortem","Pivot quickly to a new path","Seek mentoring on blind spots","Refine the vision and persist"] },
+        { "id": "q16", "step": 16, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "creativity", "question_en": "To forecast next quarter, you:", "options_en": ["Blend bottom-up with top-down models","Stress-test scenarios","Validate assumptions with sales","Simulate capacity constraints"] },
+        { "id": "q17", "step": 17, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "creativity", "question_en": "Presenting complex strategy, you:", "options_en": ["Tell a story tied to impact","Use simple visuals","Focus on trade-offs and choices","Provide a one-page brief"] },
+        { "id": "q18", "step": 18, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "creativity", "question_en": "To onboard into a new industry fast, you:", "options_en": ["Study regulations and economics","Interview key stakeholders","Map the value chain and incentives","Analyze customer jobs-to-be-done"] },
+        { "id": "q19", "step": 19, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "drive", "question_en": "To differentiate your brand, you:", "options_en": ["Create a distinct voice and POV","Design signature experiences","Co-create with your community","Experiment with novel channels"] },
+        { "id": "q20", "step": 20, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "drive", "question_en": "Pursuing long-term outcomes, you:", "options_en": ["Set a clear roadmap and checkpoints","Track leading and lagging indicators","Review and adapt quarterly","Shield focus from distractions"] },
+        { "id": "q21", "step": 21, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "drive", "question_en": "Evaluating a transformation program, you first:", "options_en": ["Define success metrics","Pilot with a control group","Assess org readiness and risk","Study reference cases"] },
+        { "id": "open1", "step": 22, "type": "open-answer", "pillar_blend": "60% creativity + 40% communication", "question_en": "Describe a leadership decision you are proud of. What trade-offs did you weigh and why?" },
+        { "id": "open2", "step": 23, "type": "open-answer", "pillar_blend": "60% drive + 40% knowledge", "question_en": "What's your biggest growth edge as a leader, and how are you addressing it?" }
+      ]
+    },
+    {
+      "field_key": "arts_creative",
+      "field_title_i18n": "field.arts_creative.title",
+      "questions": [
+        { "id": "q1", "step": 1, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "computational_power", "question_en": "When evaluating creative performance data, you first:", "options_en": ["Scan engagement vs objectives","Compare formats and placements","Analyze audience segments","Check measurement integrity"] },
+        { "id": "q2", "step": 2, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "computational_power", "question_en": "Presenting a concept to non-designers, you:", "options_en": ["Tell the story behind choices","Use visual before/after examples","Relate benefits to business goals","Invite questions to build clarity"] },
+        { "id": "q3", "step": 3, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "computational_power", "question_en": "How do you stay current in your craft?", "options_en": ["Study masters and case studies","Learn new tools and workflows","Take courses and critiques","Join communities and share work"] },
+        { "id": "q4", "step": 4, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "computational_power", "question_en": "Your idea generation habit is to:", "options_en": ["Produce many rough drafts fast","Remix references into new forms","Iterate on one promising direction","Invite team co-creation early"] },
+        { "id": "q5", "step": 5, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "computational_power", "question_en": "When a deadline is tight, you:", "options_en": ["Time-box and ship a solid version","Focus on the core narrative","Reduce scope without losing impact","Ask for support to remove blockers"] },
+        { "id": "q6", "step": 6, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "communication", "question_en": "To choose a campaign visual, you rely on:", "options_en": ["A/B tests on thumbnails","Heatmaps or eye-tracking insights","Historical performance patterns","User research snapshots"] },
+        { "id": "q7", "step": 7, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "communication", "question_en": "Receiving critical feedback, you:", "options_en": ["Paraphrase to ensure understanding","Ask for specific examples","Discuss constraints and goals","Propose a revision plan"] },
+        { "id": "q8", "step": 8, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "communication", "question_en": "Building domain knowledge for a client, you:", "options_en": ["Interview stakeholders","Study brand guidelines deeply","Analyze audience personas","Review market and trend reports"] },
+        { "id": "q9", "step": 9, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "communication", "question_en": "Unblocking a stalled concept, you:", "options_en": ["Switch mediums or constraints","Seek inspiration from other arts","Brainstorm with a diverse group","Take a pause to reset perspective"] },
+        { "id": "q10", "step": 10, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "communication", "question_en": "Staying motivated on long projects, you:", "options_en": ["Track visible progress","Celebrate small creative wins","Alternate tasks to avoid fatigue","Share drafts for encouragement"] },
+        { "id": "q11", "step": 11, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "knowledge", "question_en": "To allocate production budget, you:", "options_en": ["Model cost vs expected lift","Prioritize high-impact assets","Prototype cheaply first","Reuse/adapt assets smartly"] },
+        { "id": "q12", "step": 12, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "knowledge", "question_en": "When teams misunderstand the brief, you:", "options_en": ["Reframe outcomes and success","Show references to align taste","Translate abstract goals to criteria","Co-write a clarified brief"] },
+        { "id": "q13", "step": 13, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "knowledge", "question_en": "To document craft knowledge, you:", "options_en": ["Create reusable templates","Publish internal guides","Record short how-to videos","Maintain a curated reference library"] },
+        { "id": "q14", "step": 14, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "knowledge", "question_en": "To differentiate a brand visually, you:", "options_en": ["Invent a signature system","Evolve typography and motion","Craft a distinct narrative motif","Experiment with sensory elements"] },
+        { "id": "q15", "step": 15, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "creativity", "question_en": "After a concept is rejected, you:", "options_en": ["Extract lessons and iterate","Pitch an alternate angle fast","Ask for criteria you missed","Refine and re-present"] },
+        { "id": "q16", "step": 16, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "creativity", "question_en": "Choosing toolchains, you:", "options_en": ["Compare speed and compatibility","Check collaboration features","Evaluate learning curve","Assess cost and licensing"] },
+        { "id": "q17", "step": 17, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "creativity", "question_en": "To align with stakeholders, you:", "options_en": ["Use simple narrative arcs","Show options with pros/cons","Focus on audience impact","Provide a concise one-pager"] },
+        { "id": "q18", "step": 18, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "creativity", "question_en": "To learn a new domain quickly, you:", "options_en": ["Study landscape & competitors","Review audience insights","Interview subject-matter experts","Shadow real users"] },
+        { "id": "q19", "step": 19, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "drive", "question_en": "To produce original work, you:", "options_en": ["Set creative constraints","Mash up unlikely references","Prototype and test early","Collaborate with other disciplines"] },
+        { "id": "q20", "step": 20, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "drive", "question_en": "Keeping long-term vision, you:", "options_en": ["Maintain a north-star board","Set quarterly creative themes","Schedule reflection windows","Protect focus time"] },
+        { "id": "q21", "step": 21, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "drive", "question_en": "To judge asset quality at scale, you:", "options_en": ["Define measurable criteria","Batch-review with checklists","Sample test with audience","Automate checks where possible"] },
+        { "id": "open1", "step": 22, "type": "open-answer", "pillar_blend": "60% creativity + 40% communication", "question_en": "Tell us about a piece you created that changed outcomes. Why did it work?" },
+        { "id": "open2", "step": 23, "type": "open-answer", "pillar_blend": "60% drive + 40% knowledge", "question_en": "Which creative skill are you most driven to improve this year and how?" }
+      ]
+    },
+    {
+      "field_key": "service_ops",
+      "field_title_i18n": "field.service_ops.title",
+      "questions": [
+        { "id": "q1", "step": 1, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "computational_power", "question_en": "When service metrics dip, your first step is to:", "options_en": ["Segment by shift/location","Check process compliance","Compare with historical patterns","Verify data integrity"] },
+        { "id": "q2", "step": 2, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "computational_power", "question_en": "Handling a difficult customer, you:", "options_en": ["Listen and reflect needs","Clarify policies in plain language","Offer options and next steps","Escalate appropriately with context"] },
+        { "id": "q3", "step": 3, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "computational_power", "question_en": "Keeping procedures current, you:", "options_en": ["Maintain clear SOPs","Run short refresh trainings","Log changes in a knowledge base","Collect frontline feedback regularly"] },
+        { "id": "q4", "step": 4, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "computational_power", "question_en": "To improve a recurring bottleneck, you:", "options_en": ["Redesign the workflow","Borrow solutions from other teams","Pilot a low-risk experiment","Co-create with staff and users"] },
+        { "id": "q5", "step": 5, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "computational_power", "question_en": "On high-pressure days, you:", "options_en": ["Focus on top-impact tasks","Support teammates actively","Rotate tasks to avoid fatigue","Celebrate small wins"] },
+        { "id": "q6", "step": 6, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "communication", "question_en": "To schedule staff effectively, you:", "options_en": ["Model demand by hour","Account for skill mix","Plan buffers for spikes","Review constraints and rules"] },
+        { "id": "q7", "step": 7, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "communication", "question_en": "When protocols change, you:", "options_en": ["Explain the why and impact","Use clear checklists or visuals","Offer a Q&A channel","Pair people for peer support"] },
+        { "id": "q8", "step": 8, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "communication", "question_en": "Onboarding new staff, you:", "options_en": ["Use step-by-step guides","Shadow then gradual independence","Micro-trainings on critical tasks","Document common pitfalls"] },
+        { "id": "q9", "step": 9, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "communication", "question_en": "To improve service experience, you:", "options_en": ["Redesign touchpoints","Personalize key moments","Streamline handoffs","Test new tools or aids"] },
+        { "id": "q10", "step": 10, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "communication", "question_en": "To maintain morale, you:", "options_en": ["Share goals and progress","Recognize helpful behaviors","Rotate responsibilities fairly","Provide quick support on blockers"] },
+        { "id": "q11", "step": 11, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "knowledge", "question_en": "To reduce errors, you:", "options_en": ["Introduce checklists","Standardize and 5S","Automate repetitive steps","Measure error types and fix causes"] },
+        { "id": "q12", "step": 12, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "knowledge", "question_en": "When teams hand off work, you:", "options_en": ["Define clear acceptance criteria","Use concise handoff templates","Hold quick alignment huddles","Create shared dashboards"] },
+        { "id": "q13", "step": 13, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "knowledge", "question_en": "Capturing lessons learned, you:", "options_en": ["Run short retros regularly","Publish simple summaries","Create searchable FAQs","Assign owners to keep content fresh"] },
+        { "id": "q14", "step": 14, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "knowledge", "question_en": "To handle constraints, you:", "options_en": ["Design smarter sequencing","Re-use resources creatively","Rearrange space/tools flow","Simplify user steps"] },
+        { "id": "q15", "step": 15, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "creativity", "question_en": "After a service failure, you:", "options_en": ["Run a blameless review","Notify stakeholders transparently","Deliver a recovery plan fast","Track follow-through to closure"] },
+        { "id": "q16", "step": 16, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "creativity", "question_en": "Choosing a new tool, you:", "options_en": ["Score by requirements fit","Pilot with a small group","Evaluate cost/benefit and risk","Check integration with systems"] },
+        { "id": "q17", "step": 17, "type": "single-choice", "pillar_in_i18n": "Communication", "pillar_in_code": "creativity", "question_en": "To align shifts/teams, you:", "options_en": ["Use clear dashboards","Hold quick standups","Send concise bullet updates","Use radio/chat protocols"] },
+        { "id": "q18", "step": 18, "type": "single-choice", "pillar_in_i18n": "Knowledge", "pillar_in_code": "creativity", "question_en": "To learn a new regulation, you:", "options_en": ["Read official guidance","Ask experts for clarifications","Create a compliance checklist","Train the team with examples"] },
+        { "id": "q19", "step": 19, "type": "single-choice", "pillar_in_i18n": "Creativity", "pillar_in_code": "drive", "question_en": "To improve accessibility, you:", "options_en": ["Simplify forms/language","Offer alternate formats","Rework space/signage","Co-design with users"] },
+        { "id": "q20", "step": 20, "type": "single-choice", "pillar_in_i18n": "Drive", "pillar_in_code": "drive", "question_en": "To sustain long-term quality, you:", "options_en": ["Set SLAs and audits","Track leading indicators","Run improvement cycles","Protect focus time for staff"] },
+        { "id": "q21", "step": 21, "type": "single-choice", "pillar_in_i18n": "Computational Power", "pillar_in_code": "drive", "question_en": "Evaluating a process change, you:", "options_en": ["Define success metrics up front","Compare before/after data","Run a controlled trial","Document impact and next steps"] },
+        { "id": "open1", "step": 22, "type": "open-answer", "pillar_blend": "60% creativity + 40% communication", "question_en": "Describe a time you improved a service process. What changed and how did you make it stick?" },
+        { "id": "open2", "step": 23, "type": "open-answer", "pillar_blend": "60% drive + 40% knowledge", "question_en": "What area of your operations practice do you most want to grow this year, and what's your plan?" }
+      ]
+    }
+  ],
+  "scoring_pipeline": {
+    "mc_pillar_mapping_in_code": {
+      "description": "HARDCODED in XimatarAssessment.tsx lines 358-371. Maps question IDs 1-21 to pillars in SEQUENTIAL BLOCKS regardless of field.",
+      "mapping": {
+        "1-5": "computational_power",
+        "6-10": "communication",
+        "11-14": "knowledge",
+        "15-18": "creativity",
+        "19-21": "drive"
+      }
+    },
+    "i18n_category_labels": {
+      "description": "Each question in i18n has a 'category' field that cycles through pillars: q1=CompPower, q2=Comm, q3=Knowledge, q4=Creativity, q5=Drive, q6=CompPower, ... This is a ROTATING pattern, NOT sequential blocks.",
+      "pattern": "q(n) pillar = pillars[(n-1) % 5] where pillars = [comp_power, communication, knowledge, creativity, drive]"
+    },
+    "mc_score_formula_guest": {
+      "formula": "pillar_score = avg( (answer_index + 1) * 2.5 + random(-0.75, +0.75) ) for questions in that pillar block",
+      "range": "clamped to [0, 10]",
+      "fallback_if_no_answers": 5.0,
+      "source": "XimatarAssessment.tsx lines 188-198"
+    },
+    "mc_score_formula_authenticated": {
+      "description": "Raw answer_value (0-3) stored in assessment_answers table with pillar tag. Server-side computation triggered by setting completed=true on assessment_results.",
+      "source": "XimatarAssessment.tsx lines 356-398"
+    },
+    "open_answer_scoring": {
+      "local_fallback": {
+        "rubric_dimensions": {
+          "length": { "max": 20, "description": "Word count scoring, ideal 80-250 words" },
+          "relevance": { "max": 25, "description": "Keyword overlap with field vocabulary" },
+          "structure": { "max": 20, "description": "Sentence count, transitions, intro/conclusion" },
+          "specificity": { "max": 20, "description": "Numbers, examples, long words" },
+          "action": { "max": 15, "description": "Action verbs presence" }
+        },
+        "total_max": 100,
+        "source": "src/lib/scoring/openResponse.ts"
+      },
+      "ai_scoring": {
+        "edge_function": "analyze-open-answer",
+        "returns": "score_total, score_breakdown, steve_jobs_explanation, improvement_suggestions, cleaned_text",
+        "stored_in": "assessment_open_responses table"
+      }
+    },
+    "open_answer_pillar_blending": {
+      "formula": "blended[pillar] = base[pillar] * 0.90 + open_contribution[pillar] * 0.10",
+      "open1_splits": { "creativity": 0.60, "communication": 0.40 },
+      "open2_splits": { "drive": 0.60, "knowledge": 0.40 },
+      "computational_power": "NOT affected by open answers (MC-only)",
+      "source": "src/lib/scoring/openResponse.ts blendOpenIntoPillars()"
+    },
+    "ximatar_assignment": {
+      "guest_mode": "Top-2 pillar heuristic with hardcoded if/else chain (XimatarAssessment.tsx lines 214-236)",
+      "authenticated_mode": "Euclidean distance to 12 canonical profiles in src/lib/ximatarTaxonomy.ts (server-side)"
+    }
+  },
+  "drive_computation": {
+    "table": "pillar_progress_snapshots",
+    "sources": ["assessment_initial", "mentor_session_completed", "challenge_completed", "assessment_retest"],
+    "columns": "user_id, source, occurred_at, pillar_scores (jsonb), metadata (jsonb)",
+    "formula": {
+      "single_snapshot": "score = max(0, min(100, round(60 - (avg_top2 - avg_bottom2) * 2)))",
+      "multiple_snapshots": {
+        "step1": "Identify 2 weakest pillars at baseline (earliest snapshot)",
+        "step2": "delta = latest_score - baseline_score for each weak pillar",
+        "step3": "velocity = delta / days_elapsed (minimum 1 day)",
+        "step4": "avg_velocity = mean(velocities)",
+        "step5": "score = max(0, min(100, round(50 + (avg_velocity / 0.20) * 25)))"
+      },
+      "target_velocity": "0.20 points/day"
+    },
+    "caching": "profiles.drive_score and profiles.drive_updated_at updated via trigger trg_update_drive_on_snapshot",
+    "source": "supabase/migrations/20260211214038_*.sql compute_drive_score()"
+  },
+  "critical_findings": [
+    {
+      "id": "CRITICAL-001",
+      "severity": "CRITICAL",
+      "title": "Pillar mapping mismatch between i18n categories and code scoring",
+      "description": "The i18n category labels rotate through 5 pillars cyclically (q1=CompPower, q2=Comm, q3=Knowledge, q4=Creativity, q5=Drive, q6=CompPower, ...) but the hardcoded questionPillarMap in XimatarAssessment.tsx maps sequentially (q1-5=CompPower, q6-10=Comm, q11-14=Knowledge, q15-18=Creativity, q19-21=Drive). This means q2 is labeled 'Communication' in the UI but scored as 'computational_power'. This affects ALL users across ALL fields.",
+      "impact": "Every pillar score is incorrectly computed. A user's Communication answers are scored as Computational Power, Knowledge answers scored as Communication, etc.",
+      "files": ["src/components/ximatar-journey/XimatarAssessment.tsx:358-371", "src/i18n/locales/en.json assessmentSets.*.questions.*.category"]
+    },
+    {
+      "id": "CRITICAL-002",
+      "severity": "HIGH",
+      "title": "Guest pillar score uses same incorrect sequential block mapping",
+      "description": "Guest scoring (lines 202-207) uses the same incorrect sequential mapping as authenticated scoring.",
+      "files": ["src/components/ximatar-journey/XimatarAssessment.tsx:202-207"]
+    },
+    {
+      "id": "MEDIUM-001",
+      "severity": "MEDIUM",
+      "title": "All 4 fields use identical pillar mapping despite different questions",
+      "description": "The questionPillarMap is hardcoded and does not change based on assessmentSetKey. The same sequential block mapping is applied regardless of which field the user selected.",
+      "files": ["src/components/ximatar-journey/XimatarAssessment.tsx:358-371"]
+    },
+    {
+      "id": "MEDIUM-002",
+      "severity": "MEDIUM",
+      "title": "Guest XIMAtar assignment uses simple if/else heuristic, not Euclidean distance",
+      "description": "Guest users get XIMAtar assigned via a hardcoded if/else chain based on top-2 pillars, while authenticated users use proper Euclidean distance to canonical profiles. Results may differ significantly.",
+      "files": ["src/components/ximatar-journey/XimatarAssessment.tsx:214-236"]
+    },
+    {
+      "id": "LOW-001",
+      "severity": "LOW",
+      "title": "Open answer has no max-length validation in UI",
+      "description": "The Textarea for open answers has no maxLength constraint. Users could submit very long answers.",
+      "files": ["src/components/ximatar-journey/XimatarAssessment.tsx:561-565"]
+    }
+  ]
+}
