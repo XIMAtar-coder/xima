@@ -23,16 +23,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Gate: must complete assessment + mentor before login
-  React.useEffect(() => {
-    if (!hasLocalReadiness() && !isAuthenticated) {
-      toast({
-        title: t('auth.readiness_required_title', 'Assessment Required'),
-        description: t('auth.readiness_required_desc', 'Complete the assessment and choose a mentor before logging in.'),
-      });
-      navigate('/ximatar-journey', { replace: true });
-    }
-  }, []);
+  // No gate on login — returning users may not have localStorage keys.
+  // CandidateRouteGuard on /profile handles assessment checks via DB.
 
   React.useEffect(() => {
     const handleAuthRedirect = async () => {
