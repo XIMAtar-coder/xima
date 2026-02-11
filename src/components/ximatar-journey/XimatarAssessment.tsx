@@ -8,6 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { scoreOpenResponse, type FieldKey } from '@/lib/scoring/openResponse';
+import { getPillarForQuestion, getQuestionIdsByPillar, type PillarKey } from '@/lib/assessment/getPillarForQuestion';
 import { useToast } from '@/hooks/use-toast';
 import { useAssessment } from '@/contexts/AssessmentContext';
 import QuestionExample from '@/components/QuestionExample';
@@ -184,7 +185,9 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
         };
         sessionStorage.setItem('guest_assessment_data', JSON.stringify(guestData));
         
-        // Client-side score computation with proper variance based on answers
+        // Client-side score computation using correct cyclic pillar mapping
+        const pillarGroups = getQuestionIdsByPillar();
+        
         const computeGuestPillarScore = (questionIds: number[]) => {
           let total = 0;
           let count = 0;
@@ -199,12 +202,17 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
         };
         
         const mockPillarScores = {
-          computational_power: computeGuestPillarScore([1, 2, 3, 4, 5]),
-          communication: computeGuestPillarScore([6, 7, 8, 9, 10]),
-          knowledge: computeGuestPillarScore([11, 12, 13, 14]),
-          creativity: computeGuestPillarScore([15, 16, 17, 18]),
-          drive: computeGuestPillarScore([19, 20, 21])
+          computational_power: computeGuestPillarScore(pillarGroups.computational_power),
+          communication: computeGuestPillarScore(pillarGroups.communication),
+          knowledge: computeGuestPillarScore(pillarGroups.knowledge),
+          creativity: computeGuestPillarScore(pillarGroups.creativity),
+          drive: computeGuestPillarScore(pillarGroups.drive),
         };
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.info('[XIMA] Guest pillar groups:', pillarGroups);
+          console.info('[XIMA] Guest pillar scores:', mockPillarScores);
+        }
         
         // Determine XIMAtar based on top 2 pillars
         const pillarEntries = Object.entries(mockPillarScores).sort((a, b) => b[1] - a[1]);
@@ -354,29 +362,24 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
       }
 
       // 3. Store MC answers in assessment_answers table
-      // Map question IDs to pillars
-      const questionPillarMap: Record<number, string> = {
-        // Questions 1-5: Computational Power
-        1: 'computational_power', 2: 'computational_power', 3: 'computational_power', 
-        4: 'computational_power', 5: 'computational_power',
-        // Questions 6-10: Communication
-        6: 'communication', 7: 'communication', 8: 'communication', 
-        9: 'communication', 10: 'communication',
-        // Questions 11-14: Knowledge
-        11: 'knowledge', 12: 'knowledge', 13: 'knowledge', 14: 'knowledge',
-        // Questions 15-18: Creativity
-        15: 'creativity', 16: 'creativity', 17: 'creativity', 18: 'creativity',
-        // Questions 19-21: Drive
-        19: 'drive', 20: 'drive', 21: 'drive'
-      };
+      // Use cyclic pillar mapping (single source of truth)
+      const answerRecords = Object.entries(submissionAnswers).map(([qId, answerIdx]) => {
+        const questionNum = parseInt(qId);
+        const pillar = getPillarForQuestion(questionNum);
 
-      const answerRecords = Object.entries(submissionAnswers).map(([qId, answerIdx]) => ({
-        result_id: resultData.id,
-        question_id: parseInt(qId),
-        answer_value: answerIdx,
-        pillar: questionPillarMap[parseInt(qId)] || 'knowledge',
-        weight: 1.0
-      }));
+        if (process.env.NODE_ENV === 'development') {
+          const categoryLabel = t(`${baseKey}.questions.q${questionNum}.category`);
+          console.info(`[XIMA] q${questionNum}: category="${categoryLabel}" → pillar="${pillar}"`);
+        }
+
+        return {
+          result_id: resultData.id,
+          question_id: questionNum,
+          answer_value: answerIdx,
+          pillar,
+          weight: 1.0,
+        };
+      });
 
       const { error: answersError } = await supabase
         .from('assessment_answers')
