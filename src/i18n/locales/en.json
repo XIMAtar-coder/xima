@@ -182,7 +182,10 @@
     "growth_path": "Your Growth Path",
     "assessment_overview": "Assessment Overview",
     "overall_score": "Overall Score",
-    "drive_level": "Drive Level",
+    "drive_level": "Drive (Growth Velocity)",
+    "drive_subtitle": "Speed of improvement on weak areas",
+    "drive_refining": "We'll refine your Drive as you complete sessions and challenges.",
+    "pillars_dynamic": "Pillars are dynamic. Your next steps can move them.",
     "pillar_scores": "Pillar Scores",
     "your_story": "Your Story",
     "open_answers": "Your Open Answers",
@@ -345,11 +348,13 @@
       "as_weakness": "You may avoid risk, prefer the known, or resist ideation"
     },
     "drive": {
-      "name": "Drive",
-      "description": "Your inner motivation to pursue ambitious goals, bounce back from setbacks, take initiative, and maintain commitment to excellence",
-      "drive_note": "Drive doesn't define skill — it defines trajectory",
-      "as_strength": "You are self-motivated, resilient, and action-oriented",
-      "as_weakness": "You may hesitate, delay action, or lack momentum"
+      "name": "Drive (Growth Velocity)",
+      "description": "Drive measures how fast you improve the skills you don't yet master. It tracks your growth over time — not your starting point.",
+      "drive_note": "Pillars are dynamic. Your next steps can move them.",
+      "as_strength": "You improve rapidly on weak areas — your trajectory is accelerating",
+      "as_weakness": "Your growth on weak areas is slow — focus on deliberate practice",
+      "strength_description": "Your improvement velocity on weak areas is strong. You turn friction points into strengths faster than average.",
+      "growth_description": "Focus on your weakest pillars with targeted practice. Drive grows as you close the gap between your strengths and weaknesses."
     },
     "cta_primary": "Get your XIMAtar now",
     "cta_secondary": "Learn more",
@@ -416,18 +421,18 @@
         ]
       },
       "drive": {
-        "name": "Drive",
-        "tagline": "Pursue goals with determination and resilience",
-        "description": "The inner drive that keeps you focused, the ability to overcome obstacles and maintain momentum toward your goals.",
+        "name": "Drive (Growth Velocity)",
+        "tagline": "How fast you improve the skills you don't yet master",
+        "description": "Drive measures your growth over time on weak areas. It's the 'boost' pillar — tracking distance traveled, not starting point.",
         "how_we_evaluate": [
-          "Ability to set and pursue long-term goals",
-          "Resilience in the face of challenges and setbacks",
-          "Initiative and proactivity in tackling new opportunities"
+          "Improvement velocity on your weakest pillars over time",
+          "Gap reduction between strongest and weakest areas",
+          "Consistency of growth across sessions and challenges"
         ],
         "tips": [
-          "Set SMART goals with celebratable milestones",
-          "Develop routines and habits that support your goals",
-          "Find sources of inspiration and maintain clear vision"
+          "Focus practice on your weakest pillars, not your strongest",
+          "Complete sessions and challenges regularly to build a growth track record",
+          "Revisit assessments periodically — each one refines your Drive score"
         ]
       }
     }

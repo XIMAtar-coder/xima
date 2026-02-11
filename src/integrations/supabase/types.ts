@@ -2967,6 +2967,33 @@ export type Database = {
         }
         Relationships: []
       }
+      pillar_progress_snapshots: {
+        Row: {
+          id: string
+          metadata: Json | null
+          occurred_at: string
+          pillar_scores: Json
+          source: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          metadata?: Json | null
+          occurred_at?: string
+          pillar_scores: Json
+          source: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          metadata?: Json | null
+          occurred_at?: string
+          pillar_scores?: Json
+          source?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pillar_scores: {
         Row: {
           assessment_result_id: string
@@ -3077,6 +3104,8 @@ export type Database = {
           cv_comments: Json | null
           cv_scores: Json | null
           drive_level: string | null
+          drive_score: number | null
+          drive_updated_at: string | null
           email: string | null
           email_verified_at: string | null
           first_name: string | null
@@ -3118,6 +3147,8 @@ export type Database = {
           cv_comments?: Json | null
           cv_scores?: Json | null
           drive_level?: string | null
+          drive_score?: number | null
+          drive_updated_at?: string | null
           email?: string | null
           email_verified_at?: string | null
           first_name?: string | null
@@ -3159,6 +3190,8 @@ export type Database = {
           cv_comments?: Json | null
           cv_scores?: Json | null
           drive_level?: string | null
+          drive_score?: number | null
+          drive_updated_at?: string | null
           email?: string | null
           email_verified_at?: string | null
           first_name?: string | null
@@ -3853,6 +3886,8 @@ export type Database = {
         Returns: string
       }
       check_verification_expiry: { Args: never; Returns: undefined }
+      compute_drive_for_current_user: { Args: never; Returns: number }
+      compute_drive_score: { Args: { p_user_id: string }; Returns: number }
       compute_pillar_scores_from_assessment:
         | { Args: { p_result_id: string }; Returns: undefined }
         | {
