@@ -3070,6 +3070,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_status: string
           avatar: Json | null
           created_at: string
           creation_source: string | null
@@ -3077,9 +3078,12 @@ export type Database = {
           cv_scores: Json | null
           drive_level: string | null
           email: string | null
+          email_verified_at: string | null
+          first_name: string | null
           free_intro_session_used_at: string | null
           full_name: string | null
           id: string
+          last_name: string | null
           membership_renewal_at: string | null
           membership_started_at: string | null
           membership_tier: Database["public"]["Enums"]["membership_tier"]
@@ -3095,6 +3099,7 @@ export type Database = {
           strongest_pillar: string | null
           updated_at: string
           user_id: string
+          verification_required_until: string
           weakest_pillar: string | null
           ximatar: Database["public"]["Enums"]["ximatar_type"] | null
           ximatar_assigned_at: string | null
@@ -3105,6 +3110,7 @@ export type Database = {
           ximatar_storytelling: string | null
         }
         Insert: {
+          account_status?: string
           avatar?: Json | null
           created_at?: string
           creation_source?: string | null
@@ -3112,9 +3118,12 @@ export type Database = {
           cv_scores?: Json | null
           drive_level?: string | null
           email?: string | null
+          email_verified_at?: string | null
+          first_name?: string | null
           free_intro_session_used_at?: string | null
           full_name?: string | null
           id?: string
+          last_name?: string | null
           membership_renewal_at?: string | null
           membership_started_at?: string | null
           membership_tier?: Database["public"]["Enums"]["membership_tier"]
@@ -3130,6 +3139,7 @@ export type Database = {
           strongest_pillar?: string | null
           updated_at?: string
           user_id: string
+          verification_required_until?: string
           weakest_pillar?: string | null
           ximatar?: Database["public"]["Enums"]["ximatar_type"] | null
           ximatar_assigned_at?: string | null
@@ -3140,6 +3150,7 @@ export type Database = {
           ximatar_storytelling?: string | null
         }
         Update: {
+          account_status?: string
           avatar?: Json | null
           created_at?: string
           creation_source?: string | null
@@ -3147,9 +3158,12 @@ export type Database = {
           cv_scores?: Json | null
           drive_level?: string | null
           email?: string | null
+          email_verified_at?: string | null
+          first_name?: string | null
           free_intro_session_used_at?: string | null
           full_name?: string | null
           id?: string
+          last_name?: string | null
           membership_renewal_at?: string | null
           membership_started_at?: string | null
           membership_tier?: Database["public"]["Enums"]["membership_tier"]
@@ -3165,6 +3179,7 @@ export type Database = {
           strongest_pillar?: string | null
           updated_at?: string
           user_id?: string
+          verification_required_until?: string
           weakest_pillar?: string | null
           ximatar?: Database["public"]["Enums"]["ximatar_type"] | null
           ximatar_assigned_at?: string | null
@@ -3834,12 +3849,14 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: string
       }
+      check_verification_expiry: { Args: never; Returns: undefined }
       compute_pillar_scores_from_assessment:
         | { Args: { p_result_id: string }; Returns: undefined }
         | {
             Args: { p_mc_answers: Json; p_result_id: string }
             Returns: undefined
           }
+      confirm_email_verification: { Args: never; Returns: undefined }
       consume_my_credits_for_standard_session: {
         Args: { p_session_id?: string; required_credits?: number }
         Returns: Json
@@ -3955,6 +3972,7 @@ export type Database = {
         Args: { p_action: string; p_context?: Json; p_user_id: string }
         Returns: string
       }
+      is_email_verified: { Args: never; Returns: boolean }
       is_thread_participant: {
         Args: { p_thread_id: string; p_user_id: string }
         Returns: boolean

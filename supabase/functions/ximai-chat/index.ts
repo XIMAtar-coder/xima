@@ -1,4 +1,5 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { checkEmailVerified, unverifiedResponse } from "../_shared/emailVerification.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -67,6 +68,12 @@ serve(async (req) => {
         JSON.stringify({ error: 'Unauthorized' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
+    }
+
+    // 1b. Check email verification
+    const verifyResult = await checkEmailVerified(authHeader);
+    if (!verifyResult.verified) {
+      return unverifiedResponse(verifyResult.code, verifyResult.message, corsHeaders);
     }
 
     // 2. Check rate limit
