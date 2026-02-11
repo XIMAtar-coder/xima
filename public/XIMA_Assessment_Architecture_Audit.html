@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>XIMA Assessment Architecture Audit</title>
+<style>
+  @page { size: A4; margin: 2cm; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; line-height: 1.5; color: #1a1a2e; }
+  h1 { font-size: 22px; border-bottom: 3px solid #2C6CFF; padding-bottom: 8px; margin-top: 0; }
+  h2 { font-size: 16px; color: #2C6CFF; margin-top: 24px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+  h3 { font-size: 13px; margin-top: 16px; color: #333; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 10px; }
+  th, td { border: 1px solid #ccc; padding: 4px 6px; text-align: left; }
+  th { background: #f0f4ff; font-weight: 600; }
+  .critical { background: #fff0f0; border-left: 4px solid #e53e3e; padding: 8px 12px; margin: 8px 0; }
+  .high { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 8px 12px; margin: 8px 0; }
+  .medium { background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 8px 12px; margin: 8px 0; }
+  .low { background: #f0fdf4; border-left: 4px solid #22c55e; padding: 8px 12px; margin: 8px 0; }
+  code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-size: 10px; }
+  .formula { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; margin: 8px 0; font-family: monospace; font-size: 10px; }
+  .mismatch { color: #e53e3e; font-weight: bold; }
+  .page-break { page-break-before: always; }
+  .toc { margin: 16px 0; }
+  .toc a { color: #2C6CFF; text-decoration: none; }
+  .header-meta { color: #666; font-size: 10px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<h1>XIMA Assessment Architecture Audit</h1>
+<div class="header-meta">
+  Generated: 2026-02-11 | Version: 1.0 | Status: READ-ONLY EXPORT<br>
+  Total Fields: 4 | Questions per field: 23 (21 MC + 2 Open) | Pillars: 5
+</div>
+
+<div class="toc">
+  <strong>Table of Contents</strong>
+  <ol>
+    <li>Assessment Questions (All 4 Fields)</li>
+    <li>Pillar Scoring Logic</li>
+    <li>Drive Computation Logic</li>
+    <li>File Map</li>
+    <li>Critical Findings</li>
+  </ol>
+</div>
+
+<!-- ============================================ -->
+<h2>1. Assessment Questions</h2>
+
+<h3>1.1 Work Fields Definition</h3>
+<p>Defined in <code>src/components/FieldSelector.tsx</code> as <code>FieldKey</code> type:</p>
+<table>
+  <tr><th>Field Key</th><th>i18n Title Key</th><th>i18n Desc Key</th></tr>
+  <tr><td>science_tech</td><td>field.science_tech.title</td><td>field.science_tech.desc</td></tr>
+  <tr><td>business_leadership</td><td>field.business_leadership.title</td><td>field.business_leadership.desc</td></tr>
+  <tr><td>arts_creative</td><td>field.arts_creative.title</td><td>field.arts_creative.desc</td></tr>
+  <tr><td>service_ops</td><td>field.service_ops.title</td><td>field.service_ops.desc</td></tr>
+</table>
+
+<h3>1.2 Question Structure (Common to All Fields)</h3>
+<p>21 multiple-choice (4 options each, 0-indexed) + 2 open-answer questions. i18n key pattern: <code>assessmentSets.{field_key}.questions.{qN}.question</code></p>
+<p><strong>i18n Category Rotation Pattern:</strong> q1=Comp Power, q2=Communication, q3=Knowledge, q4=Creativity, q5=Drive, q6=Comp Power, q7=Communication, ... (repeating cycle of 5)</p>
+
+<h3>1.3 science_tech Questions</h3>
+<table>
+  <tr><th>#</th><th>ID</th><th>i18n Cat</th><th>Code Pillar</th><th>Question (EN)</th><th>Match?</th></tr>
+  <tr><td>1</td><td>q1</td><td>Comp Power</td><td>comp_power</td><td>When faced with a complex data set, what is your first approach?</td><td>✅</td></tr>
+  <tr><td>2</td><td>q2</td><td>Communication</td><td class="mismatch">comp_power</td><td>In a team meeting, how do you typically contribute?</td><td class="mismatch">❌</td></tr>
+  <tr><td>3</td><td>q3</td><td>Knowledge</td><td class="mismatch">comp_power</td><td>How do you prefer to learn new skills?</td><td class="mismatch">❌</td></tr>
+  <tr><td>4</td><td>q4</td><td>Creativity</td><td class="mismatch">comp_power</td><td>When solving a problem, you tend to:</td><td class="mismatch">❌</td></tr>
+  <tr><td>5</td><td>q5</td><td>Drive</td><td class="mismatch">comp_power</td><td>What motivates you most in your work?</td><td class="mismatch">❌</td></tr>
+  <tr><td>6</td><td>q6</td><td>Comp Power</td><td class="mismatch">communication</td><td>How do you evaluate the effectiveness of a technical solution?</td><td class="mismatch">❌</td></tr>
+  <tr><td>7</td><td>q7</td><td>Communication</td><td>communication</td><td>How do you handle conflicts or disagreements at work?</td><td>✅</td></tr>
+  <tr><td>8</td><td>q8</td><td>Knowledge</td><td class="mismatch">communication</td><td>When you encounter conflicting information?</td><td class="mismatch">❌</td></tr>
+  <tr><td>9</td><td>q9</td><td>Creativity</td><td class="mismatch">communication</td><td>How do you generate new ideas for projects?</td><td class="mismatch">❌</td></tr>
+  <tr><td>10</td><td>q10</td><td>Drive</td><td class="mismatch">communication</td><td>How do you maintain motivation during long projects?</td><td class="mismatch">❌</td></tr>
+  <tr><td>11</td><td>q11</td><td>Comp Power</td><td class="mismatch">knowledge</td><td>How do you approach automating repetitive processes?</td><td class="mismatch">❌</td></tr>
+  <tr><td>12</td><td>q12</td><td>Communication</td><td class="mismatch">knowledge</td><td>How do you adapt your communication style to different audiences?</td><td class="mismatch">❌</td></tr>
+  <tr><td>13</td><td>q13</td><td>Knowledge</td><td>knowledge</td><td>How do you organize and share acquired knowledge?</td><td>✅</td></tr>
+  <tr><td>14</td><td>q14</td><td>Creativity</td><td class="mismatch">knowledge</td><td>How do you overcome creative blocks?</td><td class="mismatch">❌</td></tr>
+  <tr><td>15</td><td>q15</td><td>Drive</td><td class="mismatch">creativity</td><td>How do you react to failures or setbacks?</td><td class="mismatch">❌</td></tr>
+  <tr><td>16</td><td>q16</td><td>Comp Power</td><td class="mismatch">creativity</td><td>How do you handle large amounts of data to analyze?</td><td class="mismatch">❌</td></tr>
+  <tr><td>17</td><td>q17</td><td>Communication</td><td class="mismatch">creativity</td><td>How do you present complex results to non-technical stakeholders?</td><td class="mismatch">❌</td></tr>
+  <tr><td>18</td><td>q18</td><td>Knowledge</td><td class="mismatch">creativity</td><td>How do you stay updated in your areas of expertise?</td><td class="mismatch">❌</td></tr>
+  <tr><td>19</td><td>q19</td><td>Creativity</td><td class="mismatch">drive</td><td>How do you balance innovation and practicality in your projects?</td><td class="mismatch">❌</td></tr>
+  <tr><td>20</td><td>q20</td><td>Drive</td><td>drive</td><td>How do you define and pursue long-term goals?</td><td>✅</td></tr>
+  <tr><td>21</td><td>q21</td><td>Comp Power</td><td class="mismatch">drive</td><td>How do you evaluate the implementation of new technologies?</td><td class="mismatch">❌</td></tr>
+  <tr><td>22</td><td>open1</td><td colspan="2">60% creativity + 40% communication</td><td>Describe a professional situation where you felt most successful...</td><td>—</td></tr>
+  <tr><td>23</td><td>open2</td><td colspan="2">60% drive + 40% knowledge</td><td>What is your biggest professional challenge or area where you'd like to grow?</td><td>—</td></tr>
+</table>
+<p><strong>⚠️ Only 4 of 21 MC questions have matching i18n category and code pillar (q1, q7, q13, q20).</strong></p>
+
+<p><em>The same mismatch pattern applies identically to business_leadership, arts_creative, and service_ops — the code pillar mapping is identical across all fields.</em></p>
+
+<!-- Other fields: abbreviated since the code mapping is identical -->
+<h3>1.4 business_leadership Questions (question text differs, pillar mapping identical)</h3>
+<p>Same 21+2 structure with field-specific questions. See <code>assessment_full_export.json</code> for full text. Same pillar mismatch applies.</p>
+
+<h3>1.5 arts_creative Questions</h3>
+<p>Same structure. See JSON export for full text.</p>
+
+<h3>1.6 service_ops Questions</h3>
+<p>Same structure. See JSON export for full text.</p>
+
+<!-- ============================================ -->
+<div class="page-break"></div>
+<h2>2. Pillar Scoring Logic</h2>
+
+<h3>2.1 Raw Answer Storage</h3>
+<table>
+  <tr><th>Path</th><th>Description</th></tr>
+  <tr><td><code>assessment_answers</code> table</td><td>result_id, question_id (1-21), answer_value (0-3), pillar (string), weight (1.0)</td></tr>
+  <tr><td><code>assessment_open_responses</code> table</td><td>user_id, attempt_id, field_key, language, open_key, answer, score (0-100), rubric (jsonb)</td></tr>
+  <tr><td><code>assessment_results</code> table</td><td>user_id, attempt_id, field_key, language, completed, pillars, ximatar_id, total_score</td></tr>
+</table>
+
+<h3>2.2 MC Pillar Score (Guest Mode)</h3>
+<div class="formula">
+for each pillar_block (e.g., q1-5 → computational_power):<br>
+&nbsp;&nbsp;scores = []<br>
+&nbsp;&nbsp;for each question_id in block:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if answer exists:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raw = (answer_index + 1) * 2.5 + random(-0.75, +0.75)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scores.push(clamp(raw, 0, 10))<br>
+&nbsp;&nbsp;pillar_score = scores.length > 0 ? avg(scores) : 5.0<br>
+<br>
+Range: [0, 10]<br>
+Source: XimatarAssessment.tsx:188-198
+</div>
+
+<h3>2.3 MC Pillar Score (Authenticated Mode)</h3>
+<p>Answer values stored in <code>assessment_answers</code> with pillar tag. Server-side trigger computes final scores when <code>completed=true</code> is set. The server computation logic is not in frontend code — it's triggered by the <code>assessment_results.completed</code> flag update.</p>
+
+<h3>2.4 Open Answer Scoring (Local Fallback)</h3>
+<div class="formula">
+total = length(0-20) + relevance(0-25) + structure(0-20) + specificity(0-20) + action(0-15)<br>
+Range: [0, 100]<br>
+<br>
+length: ideal 80-250 words → 20pts; taper outside<br>
+relevance: field keyword hits × 2.5, cap 25<br>
+structure: sentence count + transitions + intro/conclusion markers<br>
+specificity: numbers + examples + long words<br>
+action: action verb count × 3, cap 15<br>
+<br>
+Source: src/lib/scoring/openResponse.ts
+</div>
+
+<h3>2.5 Open Answer Scoring (AI Mode)</h3>
+<p>Edge function <code>analyze-open-answer</code> returns: <code>score_total</code>, <code>score_breakdown</code> (length/relevance/structure/specificity/action), <code>steve_jobs_explanation</code>, <code>improvement_suggestions</code>, <code>cleaned_text</code>.</p>
+
+<h3>2.6 Open→Pillar Blending</h3>
+<div class="formula">
+OPEN_WEIGHT = 0.10 (10% influence)<br>
+<br>
+open1 → 60% creativity + 40% communication<br>
+open2 → 60% drive + 40% knowledge<br>
+computational_power → NOT affected by open answers<br>
+<br>
+blended[pillar] = base[pillar] * (1 - 0.10) + open_contribution[pillar] * 0.10<br>
+Result clamped to [0, 100], rounded.<br>
+<br>
+Source: src/lib/scoring/openResponse.ts blendOpenIntoPillars()
+</div>
+
+<h3>2.7 XIMAtar Assignment</h3>
+<p><strong>Guest:</strong> Top-2 pillar heuristic (hardcoded if/else, 11 branches). Fallback: fox.<br>
+<strong>Authenticated:</strong> Euclidean distance to 12 canonical profiles in <code>src/lib/ximatarTaxonomy.ts</code>. Closest profile wins.</p>
+
+<!-- ============================================ -->
+<div class="page-break"></div>
+<h2>3. Drive Computation Logic</h2>
+
+<h3>3.1 Storage</h3>
+<table>
+  <tr><th>Table</th><th>Key Columns</th></tr>
+  <tr><td>pillar_progress_snapshots</td><td>user_id, source, occurred_at, pillar_scores (jsonb), metadata</td></tr>
+  <tr><td>profiles</td><td>drive_score (integer, cached), drive_updated_at</td></tr>
+</table>
+<p>Valid sources: <code>assessment_initial</code>, <code>mentor_session_completed</code>, <code>challenge_completed</code>, <code>assessment_retest</code></p>
+
+<h3>3.2 Single Snapshot Formula</h3>
+<div class="formula">
+pillars = [communication, knowledge, creativity, computational_power] (sorted ascending)<br>
+avg_weakest = (sorted[0] + sorted[1]) / 2<br>
+avg_strongest = (sorted[2] + sorted[3]) / 2<br>
+<br>
+score = clamp(round(60 - (avg_strongest - avg_weakest) * 2), 0, 100)<br>
+<br>
+Interpretation: Smaller gap between strongest and weakest → higher Drive score
+</div>
+
+<h3>3.3 Multiple Snapshots Formula (Growth Velocity)</h3>
+<div class="formula">
+1. Get baseline (earliest snapshot) and latest snapshot<br>
+2. Identify 2 weakest pillars at baseline<br>
+3. For each weak pillar:<br>
+&nbsp;&nbsp;&nbsp;delta = latest_score - baseline_score<br>
+&nbsp;&nbsp;&nbsp;velocity = delta / max(1, days_elapsed)<br>
+4. avg_velocity = mean(velocities of weak pillars)<br>
+5. target_velocity = 0.20 points/day<br>
+6. score = clamp(round(50 + (avg_velocity / 0.20) * 25), 0, 100)<br>
+<br>
+Example: If weak pillars improved by 2 points over 10 days:<br>
+&nbsp;&nbsp;velocity = 0.20, score = 50 + (0.20/0.20)*25 = 75
+</div>
+
+<h3>3.4 Trigger & Caching</h3>
+<p>Trigger <code>trg_update_drive_on_snapshot</code> fires on INSERT into <code>pillar_progress_snapshots</code>. Calls <code>compute_drive_score(user_id)</code> and updates <code>profiles.drive_score</code> and <code>profiles.drive_updated_at</code>.</p>
+
+<!-- ============================================ -->
+<div class="page-break"></div>
+<h2>4. File Map</h2>
+
+<h3>4.1 UI Components</h3>
+<table>
+  <tr><th>File</th><th>Role</th></tr>
+  <tr><td>src/pages/XimatarJourney.tsx</td><td>Entry route for assessment</td></tr>
+  <tr><td>src/components/ximatar-journey/BaselineAssessment.tsx</td><td>Step 1: Field selection + CV upload</td></tr>
+  <tr><td>src/components/ximatar-journey/XimatarAssessment.tsx</td><td>Step 2: 21 MC + 2 open questions</td></tr>
+  <tr><td>src/components/ximatar-journey/ResultsComparison.tsx</td><td>Step 3: Results display</td></tr>
+  <tr><td>src/components/FieldSelector.tsx</td><td>Field selection widget (4 fields)</td></tr>
+  <tr><td>src/components/ximatar-journey/OpenAnswerScore.tsx</td><td>Open answer score display with rubric</td></tr>
+  <tr><td>src/components/QuestionExample.tsx</td><td>Example/help popover per question</td></tr>
+  <tr><td>src/contexts/AssessmentContext.tsx</td><td>Assessment-in-progress flag</td></tr>
+</table>
+
+<h3>4.2 Scoring & Logic</h3>
+<table>
+  <tr><th>File</th><th>Role</th></tr>
+  <tr><td>src/lib/scoring/openResponse.ts</td><td>Local open-answer scoring + pillar blending</td></tr>
+  <tr><td>src/lib/ximatarTaxonomy.ts</td><td>12 canonical XIMAtar profiles + distance functions</td></tr>
+  <tr><td>src/lib/assessment/category.ts</td><td>Localized label → CategoryId mapping</td></tr>
+  <tr><td>src/utils/assessmentSync.ts</td><td>Guest→authenticated data sync</td></tr>
+  <tr><td>src/hooks/useXimatarJourneyState.ts</td><td>Journey state persistence (localStorage + URL)</td></tr>
+</table>
+
+<h3>4.3 Edge Functions</h3>
+<table>
+  <tr><th>Function</th><th>Role</th></tr>
+  <tr><td>analyze-open-answer</td><td>AI scoring of open answers</td></tr>
+  <tr><td>analyze-cv</td><td>CV analysis → pillar scores</td></tr>
+  <tr><td>get-field-averages</td><td>Peer comparison data</td></tr>
+</table>
+
+<h3>4.4 DB Tables</h3>
+<table>
+  <tr><th>Table</th><th>Role</th></tr>
+  <tr><td>assessment_results</td><td>Per-attempt result row</td></tr>
+  <tr><td>assessment_answers</td><td>MC answer storage</td></tr>
+  <tr><td>assessment_open_responses</td><td>Open answer + rubric</td></tr>
+  <tr><td>pillar_progress_snapshots</td><td>Drive velocity data</td></tr>
+  <tr><td>profiles</td><td>Cached ximatar, drive_score, pillar_scores</td></tr>
+  <tr><td>ximatars</td><td>XIMAtar reference data</td></tr>
+</table>
+
+<h3>4.5 i18n</h3>
+<table>
+  <tr><th>File</th><th>Content</th></tr>
+  <tr><td>src/i18n/locales/en.json</td><td>assessmentSets.{field}.questions.{qN}</td></tr>
+  <tr><td>src/i18n/locales/it.json</td><td>Same structure, Italian</td></tr>
+  <tr><td>src/i18n/locales/es.json</td><td>Same structure, Spanish</td></tr>
+</table>
+
+<!-- ============================================ -->
+<div class="page-break"></div>
+<h2>5. ⚠️ Critical Findings</h2>
+
+<div class="critical">
+  <strong>CRITICAL-001: Pillar Mapping Mismatch</strong><br>
+  The i18n category labels cycle through 5 pillars (q1=CompPower, q2=Comm, q3=Knowledge, q4=Creativity, q5=Drive, q6=CompPower...) but the code scores in sequential blocks (q1-5=CompPower, q6-10=Comm, q11-14=Knowledge, q15-18=Creativity, q19-21=Drive).<br><br>
+  <strong>Impact:</strong> Only 4 of 21 questions (q1, q7, q13, q20) score into the pillar shown in the UI. All other answers are assigned to the wrong pillar.<br>
+  <strong>Files:</strong> <code>XimatarAssessment.tsx:358-371</code> vs <code>en.json assessmentSets.*.questions.*.category</code>
+</div>
+
+<div class="critical">
+  <strong>CRITICAL-002: Guest Scoring Uses Same Incorrect Mapping</strong><br>
+  Guest pillar computation (lines 202-207) uses the same sequential block mapping, affecting all guest users identically.<br>
+  <strong>Files:</strong> <code>XimatarAssessment.tsx:202-207</code>
+</div>
+
+<div class="high">
+  <strong>HIGH-001: All Fields Use Identical Code Mapping</strong><br>
+  The <code>questionPillarMap</code> is hardcoded and does not vary by <code>assessmentSetKey</code>. Despite each field having different question content with rotating pillar labels, the scoring always uses the same sequential blocks.<br>
+  <strong>Files:</strong> <code>XimatarAssessment.tsx:358-371</code>
+</div>
+
+<div class="medium">
+  <strong>MEDIUM-001: Guest vs Authenticated XIMAtar Assignment Divergence</strong><br>
+  Guest users get XIMAtar via a simple if/else heuristic on top-2 pillars (11 branches). Authenticated users use Euclidean distance to 12 canonical profiles. Results may differ for the same answer set.<br>
+  <strong>Files:</strong> <code>XimatarAssessment.tsx:214-236</code> vs <code>src/lib/ximatarTaxonomy.ts</code>
+</div>
+
+<div class="low">
+  <strong>LOW-001: No Max-Length on Open Answer Input</strong><br>
+  The Textarea has no <code>maxLength</code> attribute. Extremely long answers could be submitted.<br>
+  <strong>Files:</strong> <code>XimatarAssessment.tsx:561-565</code>
+</div>
+
+<hr>
+<p style="color: #888; font-size: 9px; text-align: center;">
+  XIMA Assessment Architecture Audit — Generated 2026-02-11 — READ-ONLY EXPORT — No code was modified
+</p>
+
+</body>
+</html>
