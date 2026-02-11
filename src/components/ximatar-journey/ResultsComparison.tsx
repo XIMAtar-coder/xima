@@ -329,6 +329,9 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   const handleProceedWithSelection = () => {
     if (!selectedProfessional) return;
     
+    // Mark assessment as completed for route guards
+    localStorage.setItem('xima.assessment_completed', 'true');
+    
     const professionalData = JSON.parse(localStorage.getItem('selected_professional_data') || '{}');
     
     if (isAuthenticated) {

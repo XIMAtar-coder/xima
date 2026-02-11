@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
 import { ConsentCheckboxes } from '@/components/auth/ConsentCheckboxes';
 import { recordUserConsents } from '@/hooks/useConsentRecording';
+import { hasLocalReadiness } from '@/components/auth/CandidateRouteGuard';
 
 interface RegisterFormData {
   firstName: string;
@@ -47,6 +48,17 @@ const Register = () => {
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showConsentError, setShowConsentError] = useState(false);
+
+  // Gate: must complete assessment + mentor before registering
+  React.useEffect(() => {
+    if (!hasLocalReadiness()) {
+      toast({
+        title: t('auth.readiness_required_title', 'Assessment Required'),
+        description: t('auth.readiness_required_desc', 'Complete the assessment and choose a mentor before creating your account.'),
+      });
+      navigate('/ximatar-journey', { replace: true });
+    }
+  }, []);
 
   React.useEffect(() => {
     if (isAuthenticated && !showCheckInbox) {
