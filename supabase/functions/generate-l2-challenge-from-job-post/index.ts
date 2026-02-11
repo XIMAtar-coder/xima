@@ -1,69 +1,35 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { callAiGateway, extractJsonFromAiContent, generateCorrelationId, AiGatewayError } from "../_shared/aiClient.ts";
+import { validateL2ChallengeConfig } from "../_shared/aiSchema.ts";
+import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
 
 interface L2ConfigStep {
   type: 'screening_questions' | 'scenario_task' | 'skills_check' | 'culture_fit';
-  items: Array<{
-    id: string;
-    text: string;
-    required?: boolean;
-  }>;
+  items: Array<{ id: string; text: string; required?: boolean }>;
 }
 
 interface L2Config {
   overview: string;
   steps: L2ConfigStep[];
-  scoring_rubric: Array<{
-    criterion: string;
-    weight: number;
-    description: string;
-  }>;
+  scoring_rubric: Array<{ criterion: string; weight: number; description: string }>;
   estimated_time_minutes: number;
   language: string;
 }
 
 interface JobContentBlocks {
-  hero?: {
-    title?: string;
-    company?: string;
-    location?: string;
-    employmentType?: string;
-    seniority?: string;
-    department?: string;
-  };
-  blocks?: Array<{
-    type: string;
-    title: string;
-    body?: string[];
-    bullets?: string[];
-  }>;
+  hero?: { title?: string; company?: string; location?: string; employmentType?: string; seniority?: string; department?: string };
+  blocks?: Array<{ type: string; title: string; body?: string[]; bullets?: string[] }>;
 }
 
-const LANGUAGE_NAMES: Record<string, string> = {
-  en: 'English',
-  it: 'Italian',
-  es: 'Spanish',
-};
+const LANGUAGE_NAMES: Record<string, string> = { en: 'English', it: 'Italian', es: 'Spanish' };
 
 function getLanguageInstruction(locale: string): string {
   const normalizedLocale = ['en', 'it', 'es'].includes(locale) ? locale : 'en';
   const targetLanguage = LANGUAGE_NAMES[normalizedLocale];
-  return `
-
-CRITICAL LANGUAGE INSTRUCTION:
-You MUST respond ONLY in ${targetLanguage}.
-All text values must be in ${targetLanguage}.
-JSON keys must remain in English, but ALL values must be in ${targetLanguage}.`;
+  return `\n\nCRITICAL LANGUAGE INSTRUCTION:\nYou MUST respond ONLY in ${targetLanguage}.\nAll text values must be in ${targetLanguage}.\nJSON keys must remain in English, but ALL values must be in ${targetLanguage}.`;
 }
 
-/**
- * Generates minimal skeleton config when AI fails
- */
 function generateMinimalSkeleton(jobTitle: string, locale: string): L2Config {
   const isItalian = locale === 'it';
   const isSpanish = locale === 'es';
@@ -78,222 +44,102 @@ function generateMinimalSkeleton(jobTitle: string, locale: string): L2Config {
       {
         type: 'screening_questions',
         items: [
-          {
-            id: 'sq_1',
-            text: isItalian ? 'Descrivi la tua esperienza rilevante per questo ruolo.' 
-                  : isSpanish ? 'Describe tu experiencia relevante para este puesto.'
-                  : 'Describe your relevant experience for this role.',
-            required: true,
-          },
-          {
-            id: 'sq_2',
-            text: isItalian ? 'Quali strumenti o tecnologie hai utilizzato in ruoli simili?'
-                  : isSpanish ? '¿Qué herramientas o tecnologías has utilizado en roles similares?'
-                  : 'What tools or technologies have you used in similar roles?',
-            required: true,
-          },
+          { id: 'sq_1', text: isItalian ? 'Descrivi la tua esperienza rilevante per questo ruolo.' : isSpanish ? 'Describe tu experiencia relevante para este puesto.' : 'Describe your relevant experience for this role.', required: true },
+          { id: 'sq_2', text: isItalian ? 'Quali strumenti o tecnologie hai utilizzato in ruoli simili?' : isSpanish ? '¿Qué herramientas o tecnologías has utilizado en roles similares?' : 'What tools or technologies have you used in similar roles?', required: true },
         ],
       },
       {
         type: 'scenario_task',
         items: [
-          {
-            id: 'st_1',
-            text: isItalian 
-              ? 'Descrivi come affronteresti un progetto complesso in questa posizione. Includi il tuo approccio, i passaggi chiave e come gestiresti eventuali sfide.'
-              : isSpanish
-              ? 'Describe cómo abordarías un proyecto complejo en esta posición. Incluye tu enfoque, los pasos clave y cómo manejarías los desafíos.'
-              : 'Describe how you would approach a complex project in this position. Include your approach, key steps, and how you would handle challenges.',
-            required: true,
-          },
+          { id: 'st_1', text: isItalian ? 'Descrivi come affronteresti un progetto complesso in questa posizione.' : isSpanish ? 'Describe cómo abordarías un proyecto complejo en esta posición.' : 'Describe how you would approach a complex project in this position.', required: true },
         ],
       },
     ],
     scoring_rubric: [
-      {
-        criterion: isItalian ? 'Rilevanza' : isSpanish ? 'Relevancia' : 'Relevance',
-        weight: 25,
-        description: isItalian 
-          ? 'La risposta affronta direttamente i requisiti del ruolo'
-          : isSpanish 
-          ? 'La respuesta aborda directamente los requisitos del puesto'
-          : 'Response directly addresses role requirements',
-      },
-      {
-        criterion: isItalian ? 'Chiarezza' : isSpanish ? 'Claridad' : 'Clarity',
-        weight: 25,
-        description: isItalian 
-          ? 'Comunicazione chiara e ben strutturata'
-          : isSpanish 
-          ? 'Comunicación clara y bien estructurada'
-          : 'Clear and well-structured communication',
-      },
-      {
-        criterion: isItalian ? 'Competenza tecnica' : isSpanish ? 'Competencia técnica' : 'Technical competence',
-        weight: 25,
-        description: isItalian 
-          ? 'Dimostra conoscenza tecnica appropriata'
-          : isSpanish 
-          ? 'Demuestra conocimiento técnico apropiado'
-          : 'Demonstrates appropriate technical knowledge',
-      },
-      {
-        criterion: isItalian ? 'Problem solving' : isSpanish ? 'Resolución de problemas' : 'Problem solving',
-        weight: 25,
-        description: isItalian 
-          ? 'Mostra capacità di analisi e risoluzione problemi'
-          : isSpanish 
-          ? 'Muestra habilidades analíticas y de resolución de problemas'
-          : 'Shows analytical and problem-solving skills',
-      },
+      { criterion: isItalian ? 'Rilevanza' : isSpanish ? 'Relevancia' : 'Relevance', weight: 25, description: isItalian ? 'La risposta affronta direttamente i requisiti del ruolo' : isSpanish ? 'La respuesta aborda directamente los requisitos del puesto' : 'Response directly addresses role requirements' },
+      { criterion: isItalian ? 'Chiarezza' : isSpanish ? 'Claridad' : 'Clarity', weight: 25, description: isItalian ? 'Comunicazione chiara e ben strutturata' : isSpanish ? 'Comunicación clara y bien estructurada' : 'Clear and well-structured communication' },
+      { criterion: isItalian ? 'Competenza tecnica' : isSpanish ? 'Competencia técnica' : 'Technical competence', weight: 25, description: isItalian ? 'Dimostra conoscenza tecnica appropriata' : isSpanish ? 'Demuestra conocimiento técnico apropiado' : 'Demonstrates appropriate technical knowledge' },
+      { criterion: isItalian ? 'Problem solving' : isSpanish ? 'Resolución de problemas' : 'Problem solving', weight: 25, description: isItalian ? 'Mostra capacità di analisi e risoluzione problemi' : isSpanish ? 'Muestra habilidades analíticas y de resolución de problemas' : 'Shows analytical and problem-solving skills' },
     ],
     estimated_time_minutes: 45,
     language: locale,
   };
 }
 
-/**
- * Extract structured job data from job_posts row
- */
 function extractJobContext(jobPost: any): Record<string, any> {
-  // Try structured content_json first
   const contentJson = jobPost.content_json as JobContentBlocks | null;
-  
   const job: Record<string, any> = {
     title: contentJson?.hero?.title || jobPost.title,
     location: contentJson?.hero?.location || jobPost.location,
     employmentType: contentJson?.hero?.employmentType || jobPost.employment_type,
     seniority: contentJson?.hero?.seniority || jobPost.seniority,
     department: contentJson?.hero?.department || jobPost.department,
-    intro: '',
-    responsibilities: [] as string[],
-    mustHave: [] as string[],
-    niceToHave: [] as string[],
-    offer: [] as string[],
+    intro: '', responsibilities: [] as string[], mustHave: [] as string[],
+    niceToHave: [] as string[], offer: [] as string[],
   };
 
-  // Extract from structured blocks if available
   if (contentJson?.blocks && Array.isArray(contentJson.blocks)) {
     for (const block of contentJson.blocks) {
-      if (block.type === 'intro' && block.body) {
-        job.intro = block.body.join(' ');
-      } else if (block.title?.toLowerCase().includes('do') || block.title?.toLowerCase().includes('responsibilit')) {
-        job.responsibilities = block.bullets || [];
-      } else if (block.title?.toLowerCase().includes('bring') || block.title?.toLowerCase().includes('require')) {
-        job.mustHave = block.bullets || [];
-      } else if (block.title?.toLowerCase().includes('nice')) {
-        job.niceToHave = block.bullets || [];
-      } else if (block.title?.toLowerCase().includes('offer')) {
-        job.offer = block.bullets || [];
-      }
+      if (block.type === 'intro' && block.body) job.intro = block.body.join(' ');
+      else if (block.title?.toLowerCase().includes('do') || block.title?.toLowerCase().includes('responsibilit')) job.responsibilities = block.bullets || [];
+      else if (block.title?.toLowerCase().includes('bring') || block.title?.toLowerCase().includes('require')) job.mustHave = block.bullets || [];
+      else if (block.title?.toLowerCase().includes('nice')) job.niceToHave = block.bullets || [];
+      else if (block.title?.toLowerCase().includes('offer')) job.offer = block.bullets || [];
     }
   }
 
-  // Fallback to legacy fields
-  if (!job.intro && jobPost.description) {
-    job.intro = jobPost.description;
-  }
-  if (job.responsibilities.length === 0 && jobPost.responsibilities) {
-    job.responsibilities = jobPost.responsibilities.split('\n').filter((l: string) => l.trim());
-  }
-  if (job.mustHave.length === 0 && jobPost.requirements_must) {
-    job.mustHave = jobPost.requirements_must.split('\n').filter((l: string) => l.trim());
-  }
-  if (job.niceToHave.length === 0 && jobPost.requirements_nice) {
-    job.niceToHave = jobPost.requirements_nice.split('\n').filter((l: string) => l.trim());
-  }
-  if (job.offer.length === 0 && jobPost.benefits) {
-    job.offer = jobPost.benefits.split('\n').filter((l: string) => l.trim());
-  }
+  if (!job.intro && jobPost.description) job.intro = jobPost.description;
+  if (job.responsibilities.length === 0 && jobPost.responsibilities) job.responsibilities = jobPost.responsibilities.split('\n').filter((l: string) => l.trim());
+  if (job.mustHave.length === 0 && jobPost.requirements_must) job.mustHave = jobPost.requirements_must.split('\n').filter((l: string) => l.trim());
+  if (job.niceToHave.length === 0 && jobPost.requirements_nice) job.niceToHave = jobPost.requirements_nice.split('\n').filter((l: string) => l.trim());
+  if (job.offer.length === 0 && jobPost.benefits) job.offer = jobPost.benefits.split('\n').filter((l: string) => l.trim());
 
   return job;
 }
 
 serve(async (req) => {
-  console.log('[generate-l2-challenge] Function invoked - method:', req.method);
-  
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const correlationId = req.headers.get('x-correlation-id') || generateCorrelationId();
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
   const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
   const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
   try {
-    // Auth check
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      console.error('[generate-l2-challenge] No authorization header');
-      return new Response(
-        JSON.stringify({ error: 'Authorization required' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    if (!authHeader) return unauthorizedResponse();
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } }
     });
 
     const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      console.error('[generate-l2-challenge] Auth error:', authError?.message);
-      return new Response(
-        JSON.stringify({ error: 'Authentication failed' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    if (authError || !user) return unauthorizedResponse('Authentication failed');
 
-    console.log('[generate-l2-challenge] Authenticated user:', user.id);
-
-    // Parse request
     const body = await req.json();
     const { challenge_id, job_post_id, locale = 'en' } = body;
 
     if (!challenge_id || !job_post_id) {
-      return new Response(
-        JSON.stringify({ error: 'challenge_id and job_post_id are required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return errorResponse(400, 'INVALID_INPUT', 'challenge_id and job_post_id are required');
     }
 
-    console.log('[generate-l2-challenge] Processing:', { challenge_id, job_post_id, locale });
-
-    // Use service role for data fetching to bypass RLS for reading context
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Fetch job post
     const { data: jobPost, error: jobError } = await supabaseAdmin
-      .from('job_posts')
-      .select('*')
-      .eq('id', job_post_id)
-      .single();
+      .from('job_posts').select('*').eq('id', job_post_id).single();
 
     if (jobError || !jobPost) {
-      console.error('[generate-l2-challenge] Job post not found:', jobError?.message);
-      return new Response(
-        JSON.stringify({ error: 'Job post not found' }),
-        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return errorResponse(404, 'NOT_FOUND', 'Job post not found');
     }
 
-    console.log('[generate-l2-challenge] Job post loaded:', jobPost.title);
-
-    // Fetch company profile (if exists)
     const { data: companyProfile } = await supabaseAdmin
-      .from('company_profiles')
-      .select('*')
-      .eq('company_id', jobPost.business_id)
-      .maybeSingle();
+      .from('company_profiles').select('*').eq('company_id', jobPost.business_id).maybeSingle();
 
-    // Fetch business profile for fallback
     const { data: businessProfile } = await supabaseAdmin
-      .from('business_profiles')
-      .select('*')
-      .eq('user_id', jobPost.business_id)
-      .maybeSingle();
+      .from('business_profiles').select('*').eq('user_id', jobPost.business_id).maybeSingle();
 
-    // Build context package
     const jobContext = extractJobContext(jobPost);
     
     const companyContext = {
@@ -305,41 +151,10 @@ serve(async (req) => {
     };
 
     const contextPackage = {
-      job: jobContext,
-      company: companyContext,
+      job: jobContext, company: companyContext,
       constraints: { keepMeaning: true, noHallucinations: true },
-      generatedAt: new Date().toISOString(),
-      locale,
+      generatedAt: new Date().toISOString(), locale,
     };
-
-    console.log('[generate-l2-challenge] Context package built:', {
-      jobTitle: jobContext.title,
-      companyName: companyContext.name,
-      hasResponsibilities: jobContext.responsibilities.length,
-      hasMustHave: jobContext.mustHave.length,
-    });
-
-    // Call AI to generate L2 config
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      console.error('[generate-l2-challenge] LOVABLE_API_KEY not configured');
-      // Fall back to skeleton
-      const skeleton = generateMinimalSkeleton(jobContext.title, locale);
-      await supabaseAdmin
-        .from('business_challenges')
-        .update({
-          config_json: skeleton,
-          context_snapshot: contextPackage,
-          generation_status: 'needs_review',
-          generation_error: 'AI service not configured',
-        })
-        .eq('id', challenge_id);
-
-      return new Response(
-        JSON.stringify({ success: true, status: 'needs_review', config: skeleton }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
 
     const langInstruction = getLanguageInstruction(locale);
 
@@ -365,113 +180,52 @@ ${JSON.stringify(companyContext, null, 2)}
 
 Generate a structured L2 challenge with:
 1. overview: 2-3 sentence summary of what the challenge assesses (80-120 words)
-2. steps: Array of assessment steps:
-   - screening_questions (3-6 items): Initial qualification questions based on requirements
-   - scenario_task (1 item): A realistic work scenario based on responsibilities
-   - skills_check (5-10 items): Technical knowledge verification
-   - culture_fit (3-6 items): Behavioral/culture alignment questions
+2. steps: Array of assessment steps
 3. scoring_rubric: 4-6 evaluation criteria with weights (must sum to 100)
 4. estimated_time_minutes: Realistic completion time (30-60 minutes)
 5. language: "${locale}"
 
-Return ONLY valid JSON with this structure:
-{
-  "overview": "string",
-  "steps": [
-    { "type": "screening_questions", "items": [{ "id": "sq_1", "text": "string", "required": true }] },
-    { "type": "scenario_task", "items": [{ "id": "st_1", "text": "string", "required": true }] },
-    { "type": "skills_check", "items": [{ "id": "sc_1", "text": "string", "required": false }] },
-    { "type": "culture_fit", "items": [{ "id": "cf_1", "text": "string", "required": false }] }
-  ],
-  "scoring_rubric": [
-    { "criterion": "string", "weight": 25, "description": "string" }
-  ],
-  "estimated_time_minutes": 45,
-  "language": "${locale}"
-}`;
-
-    console.log('[generate-l2-challenge] Calling Lovable AI...');
+Return ONLY valid JSON.`;
 
     let config: L2Config;
     let generationStatus = 'ready';
     let generationError: string | null = null;
 
     try {
-      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'google/gemini-2.5-flash',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-          ],
-          temperature: 0.6,
-        }),
+      const aiResp = await callAiGateway({
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        temperature: 0.6,
+        correlationId,
+        functionName: 'generate-l2-challenge-from-job-post',
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[generate-l2-challenge] AI gateway error:', response.status, errorText);
-        
-        if (response.status === 429) {
-          generationError = 'Rate limit exceeded. Please try again.';
-        } else if (response.status === 402) {
-          generationError = 'AI credits exhausted.';
-        } else {
-          generationError = `AI gateway error: ${response.status}`;
-        }
-        
+      const jsonStr = extractJsonFromAiContent(aiResp.content);
+      const parsed = JSON.parse(jsonStr);
+      const validated = validateL2ChallengeConfig(parsed);
+
+      if (!validated) {
         config = generateMinimalSkeleton(jobContext.title, locale);
         generationStatus = 'needs_review';
+        generationError = 'AI response schema validation failed';
       } else {
-        const aiResponse = await response.json();
-        const content = aiResponse.choices?.[0]?.message?.content;
-
-        console.log('[generate-l2-challenge] AI response received:', content?.substring(0, 200));
-
-        if (!content) {
-          throw new Error('Empty AI response');
-        }
-
-        // Parse JSON from response
-        let jsonStr = content;
-        const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
-        if (jsonMatch) {
-          jsonStr = jsonMatch[1].trim();
-        }
-
-        const parsed = JSON.parse(jsonStr);
-
-        // Validate and normalize
-        config = {
-          overview: parsed.overview || generateMinimalSkeleton(jobContext.title, locale).overview,
-          steps: Array.isArray(parsed.steps) ? parsed.steps : [],
-          scoring_rubric: Array.isArray(parsed.scoring_rubric) ? parsed.scoring_rubric : [],
-          estimated_time_minutes: typeof parsed.estimated_time_minutes === 'number' 
-            ? parsed.estimated_time_minutes 
-            : 45,
-          language: locale,
-        };
-
-        // Validate minimum structure
-        if (config.steps.length === 0) {
-          config = generateMinimalSkeleton(jobContext.title, locale);
-          generationStatus = 'needs_review';
-          generationError = 'AI generated empty steps';
-        }
+        config = { ...validated, language: locale };
       }
-    } catch (aiError) {
-      console.error('[generate-l2-challenge] AI processing error:', aiError);
+    } catch (e) {
+      if (e instanceof AiGatewayError && (e.statusCode === 429 || e.statusCode === 402)) {
+        generationError = e.message;
+      } else {
+        generationError = e instanceof Error ? e.message : 'Unknown AI error';
+      }
       config = generateMinimalSkeleton(jobContext.title, locale);
       generationStatus = 'needs_review';
-      generationError = aiError instanceof Error ? aiError.message : 'Unknown AI error';
     }
 
-    // Update challenge with generated config
+    // If fallback was used, mark it
+    const usedFallback = generationStatus === 'needs_review';
+
     const { error: updateError } = await supabaseAdmin
       .from('business_challenges')
       .update({
@@ -484,34 +238,26 @@ Return ONLY valid JSON with this structure:
       .eq('id', challenge_id);
 
     if (updateError) {
-      console.error('[generate-l2-challenge] Failed to update challenge:', updateError.message);
-      return new Response(
-        JSON.stringify({ error: 'Failed to save challenge configuration' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return errorResponse(500, 'DB_ERROR', 'Failed to save challenge configuration');
     }
 
-    console.log('[generate-l2-challenge] Challenge updated successfully:', {
-      challenge_id,
-      status: generationStatus,
-      stepsCount: config.steps.length,
+    console.log(JSON.stringify({
+      type: 'success', correlation_id: correlationId,
+      function_name: 'generate-l2-challenge-from-job-post',
+      status: generationStatus, used_fallback: usedFallback,
+    }));
+
+    return jsonResponse({ 
+      success: true, status: generationStatus, config,
+      error: generationError, used_fallback: usedFallback,
     });
 
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        status: generationStatus, 
-        config,
-        error: generationError,
-      }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-
   } catch (err) {
-    console.error('[generate-l2-challenge] Error:', err);
-    return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : 'Unknown error' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    console.error(JSON.stringify({
+      type: 'unhandled_error', correlation_id: correlationId,
+      function_name: 'generate-l2-challenge-from-job-post',
+      error: err instanceof Error ? err.message : 'Unknown error',
+    }));
+    return errorResponse(500, 'INTERNAL_ERROR', err instanceof Error ? err.message : 'Unknown error');
   }
 });

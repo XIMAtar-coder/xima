@@ -1,18 +1,14 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { callAiGateway, generateCorrelationId, AiGatewayError } from "../_shared/aiClient.ts";
+import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
 
 const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
 
 // Rate limiting: in-memory store (resets on function cold start)
-// For production, consider using a database table
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_MAX = 20; // requests per minute
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
@@ -45,15 +41,13 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const correlationId = req.headers.get('x-correlation-id') || generateCorrelationId();
+
   try {
     // 1. Verify authentication
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      console.error('ximai-chat: No authorization header');
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return unauthorizedResponse();
     }
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -62,17 +56,16 @@ serve(async (req) => {
 
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
-      console.error('ximai-chat: Auth error', authError?.message);
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return unauthorizedResponse();
     }
 
     // 2. Check rate limit
     const rateLimit = checkRateLimit(user.id);
     if (!rateLimit.allowed) {
-      console.warn(`ximai-chat: Rate limit exceeded for user ${user.id}`);
+      console.log(JSON.stringify({
+        type: 'rate_limited', correlation_id: correlationId,
+        function_name: 'ximai-chat',
+      }));
       return new Response(
         JSON.stringify({ error: 'Rate limit exceeded. Please wait a moment before sending more messages.' }),
         { 
@@ -90,28 +83,17 @@ serve(async (req) => {
     const body = await req.json();
     const { message, context } = body;
 
-    // Validate message
     if (!message || typeof message !== 'string') {
-      return new Response(
-        JSON.stringify({ error: 'Invalid message: must be a non-empty string' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return errorResponse(400, 'INVALID_INPUT', 'Invalid message: must be a non-empty string');
     }
 
     if (message.length > MAX_MESSAGE_LENGTH) {
-      return new Response(
-        JSON.stringify({ error: `Message too long: maximum ${MAX_MESSAGE_LENGTH} characters allowed` }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return errorResponse(400, 'INVALID_INPUT', `Message too long: maximum ${MAX_MESSAGE_LENGTH} characters allowed`);
     }
 
-    // Sanitize message (trim whitespace)
     const sanitizedMessage = message.trim();
     if (sanitizedMessage.length === 0) {
-      return new Response(
-        JSON.stringify({ error: 'Message cannot be empty' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return errorResponse(400, 'INVALID_INPUT', 'Message cannot be empty');
     }
 
     // Sanitize context
@@ -128,16 +110,7 @@ serve(async (req) => {
         : []
     };
 
-    // 4. Check OpenAI API key
-    if (!OPENAI_API_KEY) {
-      console.error('ximai-chat: OPENAI_API_KEY not configured');
-      return new Response(
-        JSON.stringify({ error: 'Service temporarily unavailable' }),
-        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // 5. Build request to OpenAI
+    // 4. Build request — NOW using Lovable AI Gateway instead of OpenAI
     const system = [
       "You are XIM‑AI, a helpful assistant for the XIMA platform.",
       "You answer in the user's selected language (it or en).",
@@ -148,41 +121,33 @@ serve(async (req) => {
       "Keep responses helpful, concise, and relevant to XIMA platform features."
     ].join(' ');
 
-    const payload = {
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: system },
-        { 
-          role: 'user', 
-          content: `lang=${sanitizedContext.lang} route=${sanitizedContext.route} sections=${sanitizedContext.visibleSections.join(',')}` 
-        },
-        { role: 'user', content: sanitizedMessage }
-      ],
-      max_tokens: 500 // Limit response length to control costs
-    };
+    console.log(JSON.stringify({
+      type: 'request', correlation_id: correlationId,
+      function_name: 'ximai-chat',
+      message_length: sanitizedMessage.length,
+    }));
 
-    console.log(`ximai-chat: Processing request for user ${user.id}, message length: ${sanitizedMessage.length}`);
+    let generatedText: string;
 
-    const resp = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!resp.ok) {
-      const errorText = await resp.text();
-      console.error('ximai-chat: OpenAI API error', resp.status, errorText);
-      return new Response(
-        JSON.stringify({ error: 'AI service error. Please try again.' }),
-        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    try {
+      const aiResp = await callAiGateway({
+        messages: [
+          { role: 'system', content: system },
+          { 
+            role: 'user', 
+            content: `lang=${sanitizedContext.lang} route=${sanitizedContext.route} sections=${sanitizedContext.visibleSections.join(',')}` 
+          },
+          { role: 'user', content: sanitizedMessage }
+        ],
+        max_tokens: 500,
+        correlationId,
+        functionName: 'ximai-chat',
+      });
+      generatedText = aiResp.content;
+    } catch (e) {
+      if (e instanceof AiGatewayError) return e.toResponse();
+      throw e;
     }
-
-    const data = await resp.json();
-    const generatedText = data?.choices?.[0]?.message?.content ?? '';
 
     return new Response(JSON.stringify({ generatedText }), {
       headers: { 
@@ -192,10 +157,11 @@ serve(async (req) => {
       },
     });
   } catch (error) {
-    console.error('ximai-chat error:', error);
-    return new Response(
-      JSON.stringify({ error: 'An unexpected error occurred' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    console.error(JSON.stringify({
+      type: 'unhandled_error', correlation_id: correlationId,
+      function_name: 'ximai-chat',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    }));
+    return errorResponse(500, 'INTERNAL_ERROR', 'An unexpected error occurred');
   }
 });

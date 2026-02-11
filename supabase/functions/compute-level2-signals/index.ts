@@ -1,29 +1,9 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-
-interface Level2SignalsPayload {
-  hardSkillClarity: 'clear' | 'partial' | 'fragmented';
-  hardSkillExplanation: string;
-  toolMethodMaturity: 'clear' | 'partial' | 'fragmented';
-  toolMethodExplanation: string;
-  decisionQualityUnderConstraints: 'clear' | 'partial' | 'fragmented';
-  decisionExplanation: string;
-  riskAwareness: 'clear' | 'partial' | 'fragmented';
-  riskExplanation: string;
-  executionRealism: 'clear' | 'partial' | 'fragmented';
-  executionExplanation: string;
-  overallReadiness: 'ready' | 'needs_clarification' | 'insufficient';
-  summary: string;
-  flags: string[];
-  generatedAt: string;
-  generatedLocale: string; // Track which language was used
-}
+import { callAiGateway, extractJsonFromAiContent, generateCorrelationId, logAiCall, AiGatewayError } from "../_shared/aiClient.ts";
+import { validateLevel2Signals } from "../_shared/aiSchema.ts";
+import { corsHeaders, errorResponse, jsonResponse, profilingOptOutResponse, unauthorizedResponse, forbiddenResponse } from "../_shared/errors.ts";
 
 const LANGUAGE_NAMES: Record<string, string> = {
   en: 'English',
@@ -49,90 +29,99 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const correlationId = req.headers.get('x-correlation-id') || generateCorrelationId();
+
   try {
     const { submission_id, locale = 'en' } = await req.json();
     const normalizedLocale = ['en', 'it', 'es'].includes(locale) ? locale : 'en';
-    const langInstruction = getLanguageInstruction(normalizedLocale);
 
-    if (!submission_id) {
-      return new Response(
-        JSON.stringify({ error: 'Missing submission_id parameter' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    if (!submission_id || typeof submission_id !== 'string') {
+      return errorResponse(400, 'INVALID_INPUT', 'Missing or invalid submission_id parameter');
     }
 
-    console.log('Computing Level 2 signals for submission:', submission_id, 'locale:', normalizedLocale);
+    // ===== P0 SECURITY: Verify JWT =====
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return unauthorizedResponse('Missing auth token');
+    }
+    const token = authHeader.replace('Bearer ', '');
 
-    // ===== GDPR Art. 21/22: Check profiling opt-out for the candidate =====
-    // Get candidate_profile_id from submission first
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+    const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: `Bearer ${token}` } }
+    });
+
+    const { data: claimsData, error: claimsError } = await supabaseUser.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return unauthorizedResponse('Invalid or expired token');
+    }
+    const callerId = claimsData.claims.sub as string;
+
+    // ===== P0 SECURITY: Verify business/admin role =====
+    const { data: roles } = await supabaseUser
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', callerId);
+
+    const hasBusiness = roles?.some(r => r.role === 'business');
+    const hasAdmin = roles?.some(r => r.role === 'admin');
+    if (!hasBusiness && !hasAdmin) {
+      return forbiddenResponse('Business or admin role required to compute signals');
+    }
+
+    // Service role client for data operations
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Fetch submission to get candidate
-    const { data: submissionCheck, error: subCheckError } = await supabase
-      .from('challenge_submissions')
-      .select('candidate_profile_id')
-      .eq('id', submission_id)
-      .single();
-
-    if (submissionCheck?.candidate_profile_id) {
-      // Check if candidate has opted out of profiling
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('profiling_opt_out')
-        .eq('id', submissionCheck.candidate_profile_id)
-        .single();
-
-      if (profile?.profiling_opt_out === true) {
-        console.log('Candidate has opted out of profiling, skipping signal computation');
-        return new Response(
-          JSON.stringify({ 
-            error: 'Candidate has opted out of automated profiling',
-            optedOut: true 
-          }),
-          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-    }
-
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
-    }
-
-    // Supabase client already created above for profiling check
-
-    // Fetch submission data
+    // ===== P0 SECURITY: Verify caller owns the submission's business =====
     const { data: submission, error: submissionError } = await supabase
       .from('challenge_submissions')
-      .select(`
-        id,
-        submitted_payload,
-        challenge_id,
-        hiring_goal_id,
-        business_id
-      `)
+      .select('id, submitted_payload, challenge_id, hiring_goal_id, business_id, candidate_profile_id')
       .eq('id', submission_id)
       .single();
 
     if (submissionError || !submission) {
-      console.error('Submission not found:', submissionError);
-      return new Response(
-        JSON.stringify({ error: 'Submission not found' }),
-        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return errorResponse(404, 'NOT_FOUND', 'Submission not found');
+    }
+
+    // Verify the caller is the business owner of this submission
+    if (!hasAdmin) {
+      const { data: businessProfile } = await supabase
+        .from('business_profiles')
+        .select('id')
+        .eq('user_id', callerId)
+        .single();
+
+      if (!businessProfile || submission.business_id !== callerId) {
+        return forbiddenResponse('You do not own this submission');
+      }
+    }
+
+    // ===== GDPR: Check profiling opt-out BEFORE LLM call =====
+    if (submission.candidate_profile_id) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('profiling_opt_out')
+        .eq('id', submission.candidate_profile_id)
+        .single();
+
+      if (profile?.profiling_opt_out === true) {
+        console.log(JSON.stringify({ 
+          type: 'gdpr_block', correlation_id: correlationId,
+          function_name: 'compute-level2-signals', reason: 'profiling_opt_out'
+        }));
+        return profilingOptOutResponse();
+      }
     }
 
     const payload = submission.submitted_payload as Record<string, any>;
     if (!payload) {
-      return new Response(
-        JSON.stringify({ error: 'No submission payload found' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return errorResponse(400, 'INVALID_INPUT', 'No submission payload found');
     }
 
-    // Fetch context: challenge info, company info, role info
+    // Fetch context (challenge info, company info, role info)
     let roleTitle = '';
     let companyName = '';
     let challengeDescription = '';
@@ -143,9 +132,7 @@ serve(async (req) => {
       .eq('id', submission.challenge_id)
       .single();
 
-    if (challenge) {
-      challengeDescription = challenge.description || '';
-    }
+    if (challenge) challengeDescription = challenge.description || '';
 
     if (submission.hiring_goal_id) {
       const { data: goal } = await supabase
@@ -173,14 +160,18 @@ serve(async (req) => {
     const risks = payload.risks_failures || '';
     const questions = payload.questions_for_company || '';
 
-    console.log('Submission content lengths:', {
-      approach: approach.length,
-      decisionsTradeoffs: decisionsTradeoffs.length,
-      deliverables: deliverables.length,
-      tools: tools.length,
-      risks: risks.length,
-      questions: questions.length,
-    });
+    console.log(JSON.stringify({
+      type: 'input_summary', correlation_id: correlationId,
+      function_name: 'compute-level2-signals',
+      submission_id, locale: normalizedLocale,
+      content_lengths: {
+        approach: approach.length, decisionsTradeoffs: decisionsTradeoffs.length,
+        deliverables: deliverables.length, tools: tools.length,
+        risks: risks.length, questions: questions.length,
+      }
+    }));
+
+    const langInstruction = getLanguageInstruction(normalizedLocale);
 
     const systemPrompt = `You are XIMA, an AI that evaluates Level 2 hard skill submissions for hiring assessments.
 
@@ -254,88 +245,57 @@ ${questions || '(Not provided)'}
 
 Respond with valid JSON only.`;
 
-    console.log('Calling AI for Level 2 interpretation...');
-
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt }
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Rate limits exceeded, please try again later." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "Payment required, please add funds." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
-      return new Response(
-        JSON.stringify({ error: "AI gateway error" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const data = await response.json();
-    const aiContent = data.choices?.[0]?.message?.content;
-
-    if (!aiContent) {
-      console.error("No content in AI response:", data);
-      return new Response(
-        JSON.stringify({ error: "No content in AI response" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    // Parse AI response
-    let parsedResult: Level2SignalsPayload;
+    // Call AI via shared gateway client
+    let aiResponse;
     try {
-      const jsonMatch = aiContent.match(/```json\s*([\s\S]*?)\s*```/) ||
-                        aiContent.match(/```\s*([\s\S]*?)\s*```/);
-      const jsonString = jsonMatch ? jsonMatch[1] : aiContent;
-      const parsed = JSON.parse(jsonString.trim());
-      
-      // Validate and normalize
-      parsedResult = {
-        hardSkillClarity: parsed.hardSkillClarity || 'partial',
-        hardSkillExplanation: parsed.hardSkillExplanation || '',
-        toolMethodMaturity: parsed.toolMethodMaturity || 'partial',
-        toolMethodExplanation: parsed.toolMethodExplanation || '',
-        decisionQualityUnderConstraints: parsed.decisionQualityUnderConstraints || 'partial',
-        decisionExplanation: parsed.decisionExplanation || '',
-        riskAwareness: parsed.riskAwareness || 'partial',
-        riskExplanation: parsed.riskExplanation || '',
-        executionRealism: parsed.executionRealism || 'partial',
-        executionExplanation: parsed.executionExplanation || '',
-        overallReadiness: parsed.overallReadiness || 'needs_clarification',
-        summary: parsed.summary || 'Unable to generate summary.',
-        flags: Array.isArray(parsed.flags) ? parsed.flags : [],
-        generatedAt: new Date().toISOString(),
-        generatedLocale: normalizedLocale,
-      };
-    } catch (parseError) {
-      console.error("Failed to parse AI response:", aiContent);
-      return new Response(
-        JSON.stringify({ error: "Failed to parse AI response", rawResponse: aiContent }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      aiResponse = await callAiGateway({
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        correlationId,
+        functionName: 'compute-level2-signals',
+      });
+    } catch (e) {
+      if (e instanceof AiGatewayError) return e.toResponse();
+      throw e;
     }
+
+    // ===== RELIABILITY: Strict schema validation =====
+    let parsedResult;
+    try {
+      const jsonString = extractJsonFromAiContent(aiResponse.content);
+      const parsed = JSON.parse(jsonString);
+      parsedResult = validateLevel2Signals(parsed);
+    } catch (parseError) {
+      console.error(JSON.stringify({
+        type: 'parse_error', correlation_id: correlationId,
+        function_name: 'compute-level2-signals',
+        error: 'Failed to parse AI response JSON',
+      }));
+    }
+
+    if (!parsedResult) {
+      logAiCall({
+        correlation_id: correlationId,
+        function_name: 'compute-level2-signals',
+        model: aiResponse.model,
+        latency_ms: aiResponse.latencyMs,
+        status: 'error',
+        error_code: 'SCHEMA_VALIDATION_FAILED',
+      });
+      // Update submission with failed status
+      await supabase
+        .from('challenge_submissions')
+        .update({ signals_version: 'v2_ai_failed' })
+        .eq('id', submission_id);
+
+      return errorResponse(502, 'L2_SIGNALS_PARSE_FAILED', 
+        'AI response did not match expected schema. Signals were not saved.');
+    }
+
+    // Set locale
+    parsedResult.generatedLocale = normalizedLocale;
 
     // Save to database
     const { error: updateError } = await supabase
@@ -347,27 +307,29 @@ Respond with valid JSON only.`;
       .eq('id', submission_id);
 
     if (updateError) {
-      console.error('Error saving signals to DB:', updateError);
-      // Still return the signals even if save fails
-    } else {
-      console.log('Level 2 signals saved to database');
+      console.error(JSON.stringify({
+        type: 'db_error', correlation_id: correlationId,
+        function_name: 'compute-level2-signals',
+        error: updateError.message,
+      }));
     }
 
-    console.log('Level 2 interpretation complete:', {
+    console.log(JSON.stringify({
+      type: 'success', correlation_id: correlationId,
+      function_name: 'compute-level2-signals',
       overallReadiness: parsedResult.overallReadiness,
       flagsCount: parsedResult.flags.length,
-    });
+    }));
 
-    return new Response(
-      JSON.stringify({ signals: parsedResult }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return jsonResponse({ signals: parsedResult });
 
   } catch (error) {
-    console.error('Error in compute-level2-signals:', error);
-    return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    console.error(JSON.stringify({
+      type: 'unhandled_error', correlation_id: correlationId,
+      function_name: 'compute-level2-signals',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    }));
+    return errorResponse(500, 'INTERNAL_ERROR', 
+      error instanceof Error ? error.message : 'Unknown error');
   }
 });

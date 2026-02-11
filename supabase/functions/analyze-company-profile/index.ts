@@ -9,16 +9,9 @@ import {
   computeKeywordBonus,
   type XimatarPillars 
 } from "../_shared/ximatarTaxonomy.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
-
-interface AnalyzeBody {
-  website?: string;
-  locale?: string;
-}
+import { callAiGateway, extractJsonFromAiContent, generateCorrelationId, AiGatewayError } from "../_shared/aiClient.ts";
+import { validateCompanyAnalysis } from "../_shared/aiSchema.ts";
+import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
 
 const LANGUAGE_NAMES: Record<string, string> = {
   en: 'English',
@@ -44,26 +37,36 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const correlationId = req.headers.get('x-correlation-id') || generateCorrelationId();
+
   try {
-    const { website, locale = 'en' }: AnalyzeBody = await req.json();
+    const { website, locale = 'en' } = await req.json();
     if (!website || !/^https?:\/\//i.test(website)) {
-      return json({ error: "Invalid website URL" }, 400);
+      return errorResponse(400, 'INVALID_INPUT', 'Invalid website URL');
     }
 
+    // ===== P0 SECURITY: Proper JWT verification (replaces manual decodeJwtSub) =====
     const authHeader = req.headers.get("authorization") || "";
     if (!authHeader.startsWith("Bearer ")) {
-      return json({ error: "Missing auth token" }, 401);
+      return unauthorizedResponse('Missing auth token');
     }
-    const jwt = authHeader.replace("Bearer ", "");
-    const company_id = decodeJwtSub(jwt);
+    const token = authHeader.replace("Bearer ", "");
 
-    const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
-    const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+    const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    if (!SUPABASE_URL || !SERVICE_ROLE) throw new Error("Supabase env not configured");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    const supabaseUser = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      global: { headers: { Authorization: `Bearer ${token}` } }
+    });
 
+    const { data: claimsData, error: claimsError } = await supabaseUser.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return unauthorizedResponse('Invalid or expired token');
+    }
+    const company_id = claimsData.claims.sub as string;
+
+    // Service role for DB writes
     const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
     // Fetch and aggregate website text (homepage + likely subpages)
@@ -72,7 +75,6 @@ serve(async (req) => {
       const homepage = await fetch(website, { headers: { "User-Agent": ua() } });
       const html = await homepage.text();
       const $ = cheerio.load(html);
-      // look for about/mission/values links
       $("a[href]").each((_, el) => {
         const href = ($(el).attr("href") || "").toLowerCase();
         if (href.includes("about") || href.includes("mission") || href.includes("values")) {
@@ -100,7 +102,7 @@ serve(async (req) => {
       } catch (_) { /* ignore single page failures */ }
     }
 
-    const corpus = textChunks.join("\n\n").slice(0, 18000); // keep under model limits
+    const corpus = textChunks.join("\n\n").slice(0, 18000);
 
     const langInstruction = getLanguageInstruction(locale);
     const system = [
@@ -112,56 +114,56 @@ serve(async (req) => {
 
     const prompt = `Website: ${website}\n\nContent:\n${corpus}`;
 
-    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+    // ===== OBSERVABILITY: Use shared AI client =====
+    let aiContent: string;
+    try {
+      const aiResp = await callAiGateway({
         messages: [
           { role: "system", content: system },
           { role: "user", content: prompt },
         ],
         temperature: 0.3,
         max_tokens: 800,
-      }),
-    });
-
-    if (!aiResp.ok) {
-      const t = await aiResp.text();
-      console.error("Lovable AI error:", aiResp.status, t);
-      if (aiResp.status === 429) return json({ error: "Rate limit exceeded. Please try again later." }, 429);
-      if (aiResp.status === 402) return json({ error: "AI credits exhausted. Please add credits in Settings." }, 402);
-      return json({ error: "AI request failed" }, 500);
+        correlationId,
+        functionName: 'analyze-company-profile',
+      });
+      aiContent = aiResp.content;
+    } catch (e) {
+      if (e instanceof AiGatewayError) return e.toResponse();
+      throw e;
     }
 
-    const aiJson = await aiResp.json();
-    const content = aiJson?.choices?.[0]?.message?.content || "{}";
-    console.log("AI raw response:", content);
-
-    let analysis: any;
+    // ===== RELIABILITY: Strict schema validation =====
+    let analysis;
     try {
-      const jsonStr = safeJsonFromText(content);
-      console.log("Extracted JSON:", jsonStr);
-      analysis = JSON.parse(jsonStr);
+      const jsonStr = extractJsonFromAiContent(aiContent);
+      const parsed = JSON.parse(jsonStr);
+      analysis = validateCompanyAnalysis(parsed);
     } catch (parseErr) {
-      console.error("JSON parse error, using fallback:", parseErr);
+      console.error(JSON.stringify({
+        type: 'parse_error', correlation_id: correlationId,
+        function_name: 'analyze-company-profile',
+      }));
+    }
+
+    // Fallback if validation fails
+    if (!analysis) {
+      console.log(JSON.stringify({
+        type: 'validation_fallback', correlation_id: correlationId,
+        function_name: 'analyze-company-profile',
+      }));
       analysis = fallbackAnalysis(corpus);
     }
 
     // Ensure all required fields have values
     const normalizedAnalysis = {
       summary: analysis.summary || "Company profile generated from website analysis.",
-      values: toArray(analysis.values).length > 0 ? toArray(analysis.values) : ["Innovation", "Quality"],
+      values: analysis.values.length > 0 ? analysis.values : ["Innovation", "Quality"],
       operating_style: analysis.operating_style || "Professional and results-oriented.",
       communication_style: analysis.communication_style || "Clear and collaborative.",
-      ideal_traits: toArray(analysis.ideal_traits).length > 0 ? toArray(analysis.ideal_traits) : ["Problem-solving", "Teamwork"],
-      risk_areas: toArray(analysis.risk_areas),
+      ideal_traits: analysis.ideal_traits.length > 0 ? analysis.ideal_traits : ["Problem-solving", "Teamwork"],
+      risk_areas: analysis.risk_areas,
     };
-
-    console.log("Normalized analysis:", normalizedAnalysis);
 
     // Use canonical taxonomy for pillar computation
     const analysisText = [
@@ -184,18 +186,14 @@ serve(async (req) => {
       const { bonus, matchedKeywords } = computeKeywordBonus(x.id, contextKeywords);
       return {
         ...x,
-        adjustedDistance: x.distance - bonus, // Lower is better
+        adjustedDistance: x.distance - bonus,
         matchedKeywords
       };
     }).sort((a, b) => a.adjustedDistance - b.adjustedDistance);
     
-    // Top 3 for recommended_ximatars (legacy field)
     const recommended_ximatars = rankedXimatars.slice(0, 3).map(x => x.id);
-    
-    // All 12 ranked IDs for ideal_ximatar_profile_ids
     const ideal_ximatar_profile_ids = rankedXimatars.map(x => x.id);
     
-    // Build reasoning for top picks
     const ideal_ximatar_profile_reasoning = rankedXimatars.slice(0, 3).map(x => {
       const profile = XIMATAR_PROFILES[x.id];
       const keywords = x.matchedKeywords.length > 0 
@@ -204,10 +202,12 @@ serve(async (req) => {
       return `${profile.name} (${profile.title}): ${keywords}Distance: ${x.distance.toFixed(1)}`;
     }).join(' | ');
 
-    console.log("Upserting profile for company_id:", company_id);
-    console.log("Ideal XIMAtar profile IDs:", ideal_ximatar_profile_ids);
+    console.log(JSON.stringify({
+      type: 'success', correlation_id: correlationId,
+      function_name: 'analyze-company-profile',
+      ideal_ximatar_count: ideal_ximatar_profile_ids.length,
+    }));
 
-    // Ensure a row exists, then update with full analysis
     const { error: upsertErr } = await supabase.from("company_profiles").upsert(
       {
         company_id,
@@ -228,33 +228,24 @@ serve(async (req) => {
     );
 
     if (upsertErr) {
-      console.error("DB upsert error:", upsertErr);
-      return json({ error: "Failed to store profile" }, 500);
+      console.error(JSON.stringify({
+        type: 'db_error', correlation_id: correlationId,
+        function_name: 'analyze-company-profile',
+        error: upsertErr.message,
+      }));
+      return errorResponse(500, 'DB_ERROR', 'Failed to store profile');
     }
 
-    console.log("Profile saved successfully");
-    return json({ success: true, ideal_ximatar_profile_ids, recommended_ximatars });
+    return jsonResponse({ success: true, ideal_ximatar_profile_ids, recommended_ximatars });
   } catch (e) {
-    console.error("analyze_company_profile error:", e);
-    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+    console.error(JSON.stringify({
+      type: 'unhandled_error', correlation_id: correlationId,
+      function_name: 'analyze-company-profile',
+      error: e instanceof Error ? e.message : 'Unknown error',
+    }));
+    return errorResponse(500, 'INTERNAL_ERROR', e instanceof Error ? e.message : 'Unknown error');
   }
 });
-
-function json(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), {
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-    status,
-  });
-}
-
-function decodeJwtSub(token: string): string {
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1] || ""));
-    return payload.sub;
-  } catch {
-    return "";
-  }
-}
 
 function toAbsUrl(base: string, href: string): string | null {
   try { return new URL(href, base).toString(); } catch { return null; }
@@ -264,31 +255,7 @@ function ua() {
   return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36";
 }
 
-function toArray(x: any): string[] {
-  if (!x) return [];
-  if (Array.isArray(x)) return x.map((s) => String(s)).slice(0, 20);
-  return String(x)
-    .split(/[;,•\n]/)
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .slice(0, 20);
-}
-
-function safeJsonFromText(s: string) {
-  // Try to extract JSON from markdown code blocks first
-  const codeBlockMatch = s.match(/```(?:json)?\s*([\s\S]*?)```/);
-  if (codeBlockMatch) {
-    const extracted = codeBlockMatch[1].trim();
-    const jsonMatch = extracted.match(/\{[\s\S]*\}/);
-    return jsonMatch ? jsonMatch[0] : "{}";
-  }
-  // Otherwise find any JSON object
-  const m = s.match(/\{[\s\S]*\}/);
-  return m ? m[0] : "{}";
-}
-
 function fallbackAnalysis(corpus: string) {
-  // Extract basic info when AI parsing fails
   const sentences = corpus.split(/[.!?]+/).filter(s => s.trim().length > 20);
   return {
     summary: sentences.slice(0, 2).join('. ').slice(0, 300) || "Company profile analysis pending.",
@@ -299,6 +266,3 @@ function fallbackAnalysis(corpus: string) {
     risk_areas: ["Rapid scaling challenges", "Market competition"],
   };
 }
-
-// NOTE: computePillars and suggestXimatars have been replaced by
-// canonical functions from _shared/ximatarTaxonomy.ts

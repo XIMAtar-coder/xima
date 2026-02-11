@@ -1,25 +1,21 @@
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { callAiGateway, extractJsonFromAiContent, generateCorrelationId, AiGatewayError } from "../_shared/aiClient.ts";
+import { validateCvAnalysis } from "../_shared/aiSchema.ts";
+import { corsHeaders, errorResponse, jsonResponse, profilingOptOutResponse, unauthorizedResponse } from "../_shared/errors.ts";
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+
+  const correlationId = req.headers.get('x-correlation-id') || generateCorrelationId();
 
   try {
     // Extract JWT
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: "Missing Authorization header" }), 
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return unauthorizedResponse('Missing Authorization header');
     }
 
     const jwt = authHeader.replace("Bearer ", "").trim();
@@ -34,14 +30,8 @@ serve(async (req) => {
     // Retrieve authenticated user
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) {
-      console.error("Authentication failed:", userError);
-      return new Response(
-        JSON.stringify({ error: "Authentication required. Please log in and try again." }), 
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return unauthorizedResponse('Authentication required. Please log in and try again.');
     }
-
-    console.log("Authenticated user:", user.id);
 
     // ===== GDPR Art. 21/22: Check profiling opt-out =====
     const { data: profile, error: profileError } = await supabase
@@ -51,39 +41,31 @@ serve(async (req) => {
       .single();
 
     if (profileError) {
-      console.error("Profile fetch error:", profileError);
+      console.error(JSON.stringify({
+        type: 'db_error', correlation_id: correlationId,
+        function_name: 'analyze-cv', error: 'Profile fetch failed',
+      }));
     }
 
     if (profile?.profiling_opt_out === true) {
-      console.log("User has opted out of profiling, skipping AI analysis");
-      return new Response(
-        JSON.stringify({ 
-          error: "AI profiling is disabled for your account. You can enable it in Settings.",
-          optedOut: true 
-        }), 
-        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      console.log(JSON.stringify({
+        type: 'gdpr_block', correlation_id: correlationId,
+        function_name: 'analyze-cv', reason: 'profiling_opt_out',
+      }));
+      return profilingOptOutResponse();
     }
 
     // Parse form-data file
     const formData = await req.formData();
     const file = formData.get("file");
     if (!file || !(file instanceof File)) {
-      return new Response(
-        JSON.stringify({ error: "File missing or invalid" }), 
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return errorResponse(400, 'INVALID_INPUT', 'File missing or invalid');
     }
 
-    console.log("Received file:", file.name, file.type, file.size);
-
     // === SECURITY: File size validation (10MB limit) ===
-    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
     if (file.size > MAX_FILE_SIZE) {
-      return new Response(
-        JSON.stringify({ error: "File too large. Maximum 10MB allowed." }), 
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return errorResponse(400, 'FILE_TOO_LARGE', 'File too large. Maximum 10MB allowed.');
     }
 
     // === SECURITY: File type validation (whitelist) ===
@@ -94,10 +76,7 @@ serve(async (req) => {
       'text/plain'
     ];
     if (!ALLOWED_TYPES.includes(file.type)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid file type. Only PDF, DOC, DOCX, and TXT files are allowed." }), 
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return errorResponse(400, 'INVALID_FILE_TYPE', 'Invalid file type. Only PDF, DOC, DOCX, and TXT files are allowed.');
     }
 
     const fileBytes = new Uint8Array(await file.arrayBuffer());
@@ -105,27 +84,23 @@ serve(async (req) => {
     // === SECURITY: Validate PDF content (magic bytes check) ===
     if (file.type === 'application/pdf') {
       const isPDF = fileBytes[0] === 0x25 && fileBytes[1] === 0x50 && 
-                    fileBytes[2] === 0x44 && fileBytes[3] === 0x46; // %PDF
+                    fileBytes[2] === 0x44 && fileBytes[3] === 0x46;
       if (!isPDF) {
-        return new Response(
-          JSON.stringify({ error: "File claims to be PDF but content validation failed." }), 
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+        return errorResponse(400, 'INVALID_FILE_CONTENT', 'File claims to be PDF but content validation failed.');
       }
     }
 
     // === SECURITY: Sanitize filename to prevent path traversal ===
     const sanitizeFilename = (name: string): string => {
       return name
-        .replace(/[^a-zA-Z0-9._-]/g, '_') // Remove special chars
-        .replace(/\.\./g, '_') // Prevent directory traversal
-        .substring(0, 255); // Limit length
+        .replace(/[^a-zA-Z0-9._-]/g, '_')
+        .replace(/\.\./g, '_')
+        .substring(0, 255);
     };
     const safeFilename = sanitizeFilename(file.name);
     const filename = `${Date.now()}_${safeFilename}`;
     const storagePath = `${user.id}/${filename}`;
 
-    // Upload to storage bucket (cv-uploads) - use validated file type, no fallback
     const { error: uploadError } = await supabase.storage
       .from("cv-uploads")
       .upload(storagePath, fileBytes, {
@@ -134,38 +109,24 @@ serve(async (req) => {
       });
 
     if (uploadError) {
-      console.error("Upload error:", uploadError);
-      return new Response(
-        JSON.stringify({ error: `Upload failed: ${uploadError.message}` }), 
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return errorResponse(400, 'UPLOAD_FAILED', `Upload failed: ${uploadError.message}`);
     }
-
-    console.log("File uploaded successfully to:", storagePath);
 
     // Convert file to text for AI analysis
     const decoder = new TextDecoder("utf-8");
     const text = decoder.decode(fileBytes);
-    
-    // Take first 10000 chars to avoid token limits
     const truncatedText = text.substring(0, 10000);
-    console.log("Extracted text length:", truncatedText.length);
 
-    // Get Lovable AI API key
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
-    }
+    console.log(JSON.stringify({
+      type: 'request', correlation_id: correlationId,
+      function_name: 'analyze-cv',
+      text_length: truncatedText.length,
+    }));
 
-    // Call Lovable AI for CV analysis
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+    // Call Lovable AI for CV analysis via shared client
+    let aiContent: string;
+    try {
+      const aiResp = await callAiGateway({
         messages: [
           {
             role: "system",
@@ -207,47 +168,42 @@ Return ONLY valid JSON with this structure:
             content: `Analyze this CV and provide scores with explanations:\n\n${truncatedText}` 
           }
         ],
-        response_format: { type: "json_object" }
-      }),
-    });
-
-    if (!aiResponse.ok) {
-      const errorText = await aiResponse.text();
-      console.error("Lovable AI error:", aiResponse.status, errorText);
-      
-      if (aiResponse.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }), 
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      if (aiResponse.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "AI credits depleted. Please add credits to your workspace." }), 
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      
-      throw new Error(`AI analysis failed: ${aiResponse.status}`);
+        response_format: { type: "json_object" },
+        correlationId,
+        functionName: 'analyze-cv',
+      });
+      aiContent = aiResp.content;
+    } catch (e) {
+      if (e instanceof AiGatewayError) return e.toResponse();
+      throw e;
     }
 
-    console.log("AI analysis complete");
-    const aiData = await aiResponse.json();
-    const analysisResult = JSON.parse(aiData.choices[0].message.content || "{}");
-    
-    // Extract cv_scores (pillar scores)
+    // ===== RELIABILITY: Strict schema validation (no silent defaults) =====
+    let analysisResult;
+    try {
+      const parsed = JSON.parse(aiContent);
+      analysisResult = validateCvAnalysis(parsed);
+    } catch (parseErr) {
+      console.error(JSON.stringify({
+        type: 'parse_error', correlation_id: correlationId,
+        function_name: 'analyze-cv',
+      }));
+    }
+
+    if (!analysisResult) {
+      return errorResponse(502, 'CV_AI_PARSE_FAILED', 
+        'AI analysis did not return valid results. Previous scores are preserved. Please try again.');
+    }
+
     const cv_scores = {
-      computational_power: analysisResult.computational_power || 50,
-      communication: analysisResult.communication || 50,
-      knowledge: analysisResult.knowledge || 50,
-      creativity: analysisResult.creativity || 50,
-      drive: analysisResult.drive || 50
+      computational_power: analysisResult.computational_power,
+      communication: analysisResult.communication,
+      knowledge: analysisResult.knowledge,
+      creativity: analysisResult.creativity,
+      drive: analysisResult.drive,
     };
 
-    const cv_comments = analysisResult.comments || {};
-    
-    console.log("CV Scores:", cv_scores);
-    console.log("CV Comments:", cv_comments);
+    const cv_comments = analysisResult.comments;
 
     // Update profile row (RLS safe)
     const { error: updateError } = await supabase
@@ -256,44 +212,41 @@ Return ONLY valid JSON with this structure:
       .eq("user_id", user.id);
 
     if (updateError) {
-      console.error("Profile update error:", updateError);
-      return new Response(
-        JSON.stringify({ error: `Failed to save analysis: ${updateError.message}` }), 
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return errorResponse(400, 'DB_ERROR', `Failed to save analysis: ${updateError.message}`);
     }
 
-    console.log("Profile updated successfully with cv_scores");
-
-    // Also save detailed analysis to assessment_cv_analysis for historical records
+    // Save detailed analysis (minimize stored CV text to first 2000 chars)
     await supabase
       .from("assessment_cv_analysis")
       .insert({
         user_id: user.id,
-        cv_text: truncatedText.substring(0, 5000),
-        summary: analysisResult.summary || "CV analyzed successfully",
-        strengths: analysisResult.strengths || [],
-        soft_skills: analysisResult.soft_skills || [],
+        cv_text: truncatedText.substring(0, 2000),
+        summary: analysisResult.summary,
+        strengths: analysisResult.strengths,
+        soft_skills: analysisResult.soft_skills,
         pillar_vector: cv_scores,
         ximatar_suggestions: []
       });
 
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        cv_scores,
-        cv_comments,
-        summary: analysisResult.summary,
-        strengths: analysisResult.strengths,
-        soft_skills: analysisResult.soft_skills
-      }), 
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    console.log(JSON.stringify({
+      type: 'success', correlation_id: correlationId,
+      function_name: 'analyze-cv',
+    }));
+
+    return jsonResponse({ 
+      success: true, 
+      cv_scores,
+      cv_comments,
+      summary: analysisResult.summary,
+      strengths: analysisResult.strengths,
+      soft_skills: analysisResult.soft_skills
+    });
   } catch (err) {
-    console.error("Error in analyze-cv function:", err);
-    return new Response(
-      JSON.stringify({ error: err.message || "An unexpected error occurred" }), 
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    console.error(JSON.stringify({
+      type: 'unhandled_error', correlation_id: correlationId,
+      function_name: 'analyze-cv',
+      error: err instanceof Error ? err.message : 'Unknown error',
+    }));
+    return errorResponse(500, 'INTERNAL_ERROR', err instanceof Error ? err.message : 'An unexpected error occurred');
   }
 });

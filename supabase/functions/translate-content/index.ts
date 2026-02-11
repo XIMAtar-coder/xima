@@ -6,34 +6,25 @@ import {
   ValidationError,
   handleValidationError 
 } from "../_shared/validation.ts";
+import { callAiGateway, generateCorrelationId, AiGatewayError } from "../_shared/aiClient.ts";
+import { corsHeaders, errorResponse, jsonResponse } from "../_shared/errors.ts";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-
-const LANGUAGE_NAMES: Record<string, string> = {
-  en: 'English',
-  it: 'Italian',
-  es: 'Spanish',
-};
-
+const LANGUAGE_NAMES: Record<string, string> = { en: 'English', it: 'Italian', es: 'Spanish' };
 const SUPPORTED_LOCALES = ['en', 'it', 'es'] as const;
-const MAX_TEXT_LENGTH = 10000; // Limit text length to prevent abuse
+const MAX_TEXT_LENGTH = 10000;
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const correlationId = req.headers.get('x-correlation-id') || generateCorrelationId();
+
   try {
     // Authenticate request
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return errorResponse(401, 'UNAUTHORIZED', 'Unauthorized');
     }
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
@@ -43,41 +34,17 @@ serve(async (req) => {
     const token = authHeader.replace('Bearer ', '');
     const { error: claimsError } = await supabase.auth.getClaims(token);
     if (claimsError) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return errorResponse(401, 'UNAUTHORIZED', 'Unauthorized');
     }
 
     const body = await req.json();
     
-    // Validate inputs with proper error messages
-    const text = validateString(body.text, 'text', { 
-      minLength: 1, 
-      maxLength: MAX_TEXT_LENGTH 
-    });
-    const normalizedLocale = validateOptionalEnum(
-      body.targetLocale, 
-      SUPPORTED_LOCALES, 
-      'en'
-    );
+    const text = validateString(body.text, 'text', { minLength: 1, maxLength: MAX_TEXT_LENGTH });
+    const normalizedLocale = validateOptionalEnum(body.targetLocale, SUPPORTED_LOCALES, 'en');
     const targetLanguage = LANGUAGE_NAMES[normalizedLocale];
 
-    // If target is English and content appears to be English, return as-is
     if (normalizedLocale === 'en') {
-      return new Response(
-        JSON.stringify({ translatedText: text }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      console.error('[translate-content] LOVABLE_API_KEY not configured');
-      return new Response(
-        JSON.stringify({ error: 'AI service not configured' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return jsonResponse({ translatedText: text });
     }
 
     const systemPrompt = `You are a professional translator. Translate the following text to ${targetLanguage}.
@@ -91,64 +58,43 @@ STRICT RULES:
 - Keep formatting (bullet points, line breaks) intact.
 - Return ONLY the translated text, no explanations or commentary.`;
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+    try {
+      const aiResp = await callAiGateway({
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: text }
+          { role: 'user', content: text },
         ],
-      }),
-    });
+        correlationId,
+        functionName: 'translate-content',
+      });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('[translate-content] AI gateway error:', response.status, errorText);
-      
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: 'Rate limit exceeded. Please try again in a moment.' }),
-          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+      const translatedText = aiResp.content.trim() || text;
+
+      console.log(JSON.stringify({
+        type: 'success', correlation_id: correlationId,
+        function_name: 'translate-content',
+        target_locale: normalizedLocale,
+        output_length: translatedText.length,
+      }));
+
+      return jsonResponse({ translatedText });
+    } catch (e) {
+      if (e instanceof AiGatewayError) {
+        if (e.statusCode === 429 || e.statusCode === 402) return e.toResponse();
       }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'AI credits exhausted. Please add credits to continue.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      
-      // Return original text on failure
-      return new Response(
-        JSON.stringify({ translatedText: text }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      // Fallback: return original text
+      return jsonResponse({ translatedText: text });
     }
 
-    const aiResponse = await response.json();
-    const translatedText = aiResponse.choices?.[0]?.message?.content?.trim() || text;
-
-    console.log('[translate-content] Translated to', targetLanguage, '- length:', translatedText.length);
-
-    return new Response(
-      JSON.stringify({ translatedText }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-
   } catch (error) {
-    // Handle validation errors specially
     if (error instanceof ValidationError) {
       return handleValidationError(error, corsHeaders);
     }
-    console.error('[translate-content] Error:', error);
-    return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    console.error(JSON.stringify({
+      type: 'unhandled_error', correlation_id: correlationId,
+      function_name: 'translate-content',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    }));
+    return errorResponse(500, 'INTERNAL_ERROR', error instanceof Error ? error.message : 'Unknown error');
   }
 });
