@@ -1532,13 +1532,13 @@
           ]
         },
         "q5": {
-          "category": "Motivazione",
-          "question": "Cosa ti motiva di più nel tuo lavoro?",
+          "category": "Drive",
+          "question": "Ti rendi conto che il tuo approccio al debugging fallisce sistematicamente su una nuova classe di errori nei sistemi distribuiti. Tu:",
           "options": [
-            "Raggiungere obiettivi sfidanti",
-            "Avere un impatto positivo sugli altri",
-            "Apprendimento e crescita continui",
-            "Riconoscimento e opportunità di avanzamento"
+            "Ti affianchi a qualcuno esperto in quell'area e studi il suo metodo da vicino",
+            "Dedichi tempo ogni settimana a riprodurre e analizzare questi errori sistematicamente",
+            "Costruisci una checklist diagnostica dai tuoi fallimenti per tracciare quali pattern ti sfuggono",
+            "Passi a un framework di debugging radicalmente diverso e confronti i risultati"
           ]
         },
         "q6": {
@@ -1582,13 +1582,13 @@
           ]
         },
         "q10": {
-          "category": "Motivazione",
-          "question": "Come mantieni la motivazione durante progetti lunghi?",
+          "category": "Drive",
+          "question": "Il feedback delle tue code review evidenzia ripetutamente la stessa debolezza progettuale che non hai migliorato. Tu:",
           "options": [
-            "Fisso traguardi e celebro i progressi",
-            "Mantengo il focus sull'obiettivo finale",
-            "Varie attività per evitare monotonia",
-            "Cerco supporto e feedback dal team"
+            "Chiedi al reviewer di guidarti attraverso un approccio alternativo sul tuo codice reale",
+            "Riscrivi un modulo passato usando il pattern consigliato per interiorizzarlo",
+            "Stabilisci un obiettivo di miglioramento specifico e misurabile per le prossime tre PR",
+            "Studi il principio di design sottostante in profondità prima di tentare altro codice"
           ]
         },
         "q11": {
@@ -1632,13 +1632,13 @@
           ]
         },
         "q15": {
-          "category": "Motivazione",
-          "question": "Come reagisci a fallimenti o battute d'arresto?",
+          "category": "Drive",
+          "question": "Un incidente in produzione ha esposto una lacuna nelle tue conoscenze di monitoring. Dopo aver risolto l'urgenza, tu:",
           "options": [
-            "Analizzo cosa è andato storto per imparare",
-            "Mi concentro rapidamente sulla prossima opportunità",
-            "Cerco feedback da mentori o colleghi esperti",
-            "Adatto la strategia mantenendo l'obiettivo"
+            "Documenti esattamente quali segnali ti sono sfuggiti e li aggiungi alla tua checklist personale",
+            "Fissi una sessione con l'ingegnere di turno per capire cosa ha visto che tu non hai colto",
+            "Configuri un ambiente sandbox per provocare deliberatamente guasti simili e fare pratica",
+            "Ridisegni le soglie di alert basandoti su ciò che ora capisci, poi validi per due settimane"
           ]
         },
         "q16": {
@@ -1682,13 +1682,13 @@
           ]
         },
         "q20": {
-          "category": "Motivazione",
-          "question": "Come definisci e persegui obiettivi a lungo termine?",
+          "category": "Drive",
+          "question": "Fai fatica con un'area tecnica (es. ottimizzazione delle performance) da mesi. Il tuo prossimo passo è:",
           "options": [
-            "Creo roadmap dettagliate con traguardi intermedi",
-            "Stabilisco metriche quantificabili per misurare i progressi",
-            "Rivedo e adatto regolarmente la strategia",
-            "Mantengo costante il focus nonostante distrazioni"
+            "Trovare un progetto specifico e piccolo che ti costringa a usare questa skill sotto vincoli reali",
+            "Tracciare i tuoi tentativi e risultati settimanalmente per vedere se il tuo approccio sta migliorando",
+            "Chiedere una valutazione onesta a qualcuno forte in quell'area su cosa stai sbagliando",
+            "Cambiare completamente strategia di apprendimento — se leggere non ha funzionato, provare a costruire; se da solo, provare in coppia"
           ]
         },
         "q21": {
@@ -1818,22 +1818,22 @@
         "q2": { "category": "Comunicazione", "question": "In una riunione con opinioni in conflitto, di solito tu:", "options": ["Sintetizzi e riformuli il nodo del problema", "Fai domande per allineare il contesto", "Riepiloghi decisioni e prossimi passi", "Riduci la tensione e riporti a obiettivi comuni"] },
         "q3": { "category": "Conoscenza", "question": "Come mantieni aggiornate le tue conoscenze di mercato?", "options": ["Leggo report di settore settimanali", "Seguo analisti e concorrenti", "Partecipo a conferenze e webinar", "Conduco interviste periodiche ai clienti"] },
         "q4": { "category": "Creatività", "question": "Progettando un go-to-market, preferisci:", "options": ["Prototipare campagne velocemente", "Adattare playbook collaudati", "Prendere spunto da settori adiacenti", "Co-creare con sales e product"] },
-        "q5": { "category": "Motivazione", "question": "Cosa sostiene di più la tua energia in un trimestre difficile?", "options": ["Milestone e scorecard chiari", "Impatto positivo sui clienti", "Apprendimento continuo iterando", "Riconoscimento e vittorie visibili"] },
+        "q5": { "category": "Drive", "question": "La tua presentazione al board è andata male perché il tuo storytelling finanziario mancava di profondità. Tu:", "options": ["Chiedi a un CFO peer di rivedere il tuo prossimo deck e indicare i punti deboli specifici", "Ricostruisci la stessa presentazione da zero usando una struttura narrativa diversa", "Studi tre presentazioni al board esemplari e identifichi quali tecniche non stai usando", "Presenti prima a un pubblico interno più piccolo per ottenere feedback in tempo reale"] },
         "q6": { "category": "Potenza Computazionale", "question": "Di fronte a cali di ricavi ambigui, per prima cosa:", "options": ["Segmento per canale e coorte", "Correlazione con prezzi/promozioni", "Verifico integrità dell'attribuzione", "Confronto con la stagionalità"] },
         "q7": { "category": "Comunicazione", "question": "Se il team resiste a un cambio strategico, tu:", "options": ["Racconti una storia supportata da evidenze", "Crei spazi per far emergere obiezioni", "Mappi stakeholder e adatti i messaggi", "Proponi un'adozione per fasi"] },
         "q8": { "category": "Conoscenza", "question": "Per apprendere un nuovo modello di business:", "options": ["Costruisco un modello finanziario completo", "Leggo casi studio cross-settore", "Affianco gli operatori sul campo", "Avvio un piccolo pilot per imparare"] },
         "q9": { "category": "Creatività", "question": "Per sbloccare crescita in un segmento maturo, tu:", "options": ["Testi un posizionamento innovativo", "Riconfezioni l'offerta in modo creativo", "Crei partnership per nuovi utenti", "Reinventi l'onboarding"] },
-        "q10": { "category": "Motivazione", "question": "Sotto scadenze strette, tu:", "options": ["Dai priorità al 20% che conta", "Mantieni il team focalizzato", "Time-box per apprendere in fretta", "Sblocchi risorse rapidamente"] },
+        "q10": { "category": "Drive", "question": "L'output di pianificazione strategica del tuo team è più debole dei peer. Sospetti sia la tua facilitazione. Tu:", "options": ["Osservi la sessione strategica di un altro leader e prendi appunti strutturati sul suo metodo", "Registri la tua prossima sessione e auto-critichi cosa cambieresti", "Porti un facilitatore esterno una volta e partecipi come osservatore per imparare la tecnica", "Ridisegni il tuo template di planning basandoti su cosa ha prodotto output debole l'ultima volta"] },
         "q11": { "category": "Potenza Computazionale", "question": "Valutando un cambio di prezzo, tu:", "options": ["Fai analisi di sensibilità", "Testi A/B i price point", "Modelli l'elasticità per segmento", "Confermi con interviste ai clienti"] },
         "q12": { "category": "Comunicazione", "question": "Comunicando a non esperti, principalmente:", "options": ["Usi visual e analogie", "Racconti una narrativa con impatto", "Forni executive summary", "Indichi call-to-action chiare"] },
         "q13": { "category": "Conoscenza", "question": "La conoscenza istituzionale si mantiene meglio con:", "options": ["Documentazione strutturata", "Formazioni periodiche", "Playbook vivi con owner", "Community di pratica"] },
         "q14": { "category": "Creatività", "question": "Quando i piani rallentano, generi idee con:", "options": ["Sprint di ideazione rapidi", "Workshop cross-funzionali", "Reverse-engineering dei competitor", "Prospettive controintuitive"] },
-        "q15": { "category": "Motivazione", "question": "Dopo un'iniziativa fallita, tendi a:", "options": ["Fare post-mortem senza colpe", "Pivotare rapidamente", "Cercare mentoring sui blind spot", "Raffinare la visione e insistere"] },
+        "q15": { "category": "Drive", "question": "Un lancio prodotto è andato sotto le attese perché hai valutato male il timing di mercato. Tu:", "options": ["Intervisti cinque clienti per capire quali segnali hai letto male", "Costruisci un framework di post-mortem per confrontare le tue assunzioni con i dati reali", "Ti affianchi a qualcuno che ha predetto il mercato correttamente per capire il suo ragionamento", "Lanci un test più piccolo per il prossimo prodotto per validare il timing prima del commitment totale"] },
         "q16": { "category": "Potenza Computazionale", "question": "Per prevedere il prossimo trimestre:", "options": ["Unisco bottom-up e top-down", "Stress-testo scenari", "Valido ipotesi con sales", "Simulo vincoli di capacità"] },
         "q17": { "category": "Comunicazione", "question": "Presentando una strategia complessa, tu:", "options": ["Racconti una storia legata all'impatto", "Usi visual semplici", "Evidenzi trade-off e scelte", "Offri un one-pager"] },
         "q18": { "category": "Conoscenza", "question": "Per entrare in un nuovo settore velocemente:", "options": ["Studio regole ed economia", "Intervisto stakeholder chiave", "Mappo value chain e incentivi", "Analizzo i jobs-to-be-done"] },
         "q19": { "category": "Creatività", "question": "Per differenziare il brand, tu:", "options": ["Costruisci una voce distintiva", "Progetti esperienze firma", "Co-crei con la community", "Sperimenta canali nuovi"] },
-        "q20": { "category": "Motivazione", "question": "Puntando a risultati di lungo termine, tu:", "options": ["Definisci roadmap e checkpoint", "Tracci leading/lagging indicator", "Rivedi e adatti trimestralmente", "Proteggi il focus dalle distrazioni"] },
+        "q20": { "category": "Drive", "question": "Ricevi feedback costante che la tua delega è debole, rallentando il team. Tu:", "options": ["Scegli un task che normalmente terresti e lo deleghi completamente questa settimana, tracciando cosa succede", "Chiedi ai tuoi riporti diretti cosa hanno bisogno da te per prendere ownership più efficacemente", "Studi come un peer leader delega — cosa passa, quando e come", "Imposti check-in settimanali invece che giornalieri e misuri se la qualità regge"] },
         "q21": { "category": "Potenza Computazionale", "question": "Valutando un programma di trasformazione, prima:", "options": ["Definisci metriche di successo", "Piloti con gruppo di controllo", "Valuti readiness e rischi", "Studi casi di riferimento"] },
         "open1": { "question": "Descrivi una decisione di leadership che ti rende orgoglioso/a. Quali compromessi hai valutato e perché?" },
         "open2": { "question": "Qual è la tua maggiore area di crescita come leader e come la stai affrontando?" }
@@ -1879,22 +1879,22 @@
         "q2": { "category": "Comunicazione", "question": "Presentando un concept a non designer, tu:", "options": ["Racconti la storia delle scelte", "Mostri esempi prima/dopo", "Colleghi benefici a obiettivi di business", "Inviti domande per chiarire"] },
         "q3": { "category": "Conoscenza", "question": "Come resti aggiornato/a sulla tua disciplina?", "options": ["Studio maestri e case study", "Apprendo nuovi tool e workflow", "Seguo corsi e critiche", "Partecipo a community condividendo lavori"] },
         "q4": { "category": "Creatività", "question": "Per generare idee, la tua abitudine è:", "options": ["Produrre molte bozze rapide", "Remixare riferimenti in forme nuove", "Iterare su una direzione promettente", "Co-creare presto col team"] },
-        "q5": { "category": "Motivazione", "question": "Con scadenza stretta, tu:", "options": ["Time-box e consegno una buona versione", "Focalizzo sulla narrativa centrale", "Ridimensiono senza perdere impatto", "Chiedo supporto per sblocchi"] },
+        "q5": { "category": "Drive", "question": "Un cliente ha rifiutato il tuo lavoro perché mancava di profondità strategica — un'area che sai essere debole. Tu:", "options": ["Chiedi al cliente di mostrarti un esempio del lavoro con la profondità che cercava", "Ti affianchi a un/a strategist nel prossimo progetto per osservare come costruisce la narrativa", "Riscrivi tu stesso/a il layer strategico del brief rifiutato e chiedi una critica onesta", "Dedichi tempo settimanale a esercizi di strategia da una disciplina creativa diversa"] },
         "q6": { "category": "Potenza Computazionale", "question": "Per scegliere un visual di campagna, ti affidi a:", "options": ["A/B test sulle anteprime", "Heatmap/eye-tracking", "Pattern storici di performance", "Snapshot di ricerca utenti"] },
         "q7": { "category": "Comunicazione", "question": "Ricevendo feedback critico, tu:", "options": ["Parafrasi per capire bene", "Chiedi esempi specifici", "Discuti vincoli e obiettivi", "Proponi un piano di revisione"] },
         "q8": { "category": "Conoscenza", "question": "Per conoscere il dominio di un cliente, tu:", "options": ["Intervisti stakeholder", "Studi profondamente le brand guideline", "Analizzi le personas", "Rivedi report di trend"] },
         "q9": { "category": "Creatività", "question": "Per sbloccare un concept fermo, tu:", "options": ["Cambi medium o vincoli", "Cerchi ispirazione in altre arti", "Brainstorm con gruppo eterogeneo", "Fai una pausa per resettare"] },
-        "q10": { "category": "Motivazione", "question": "Per restare motivato/a su progetti lunghi, tu:", "options": ["Tracci progressi visibili", "Celebri piccoli successi", "Alterni compiti per evitare fatica", "Condividi bozze per incoraggiamento"] },
+        "q10": { "category": "Drive", "question": "Le tue competenze di motion design sono sotto le aspettative del team e impattano i tuoi progetti. Tu:", "options": ["Prendi un piccolo progetto interno che richiede motion, con una scadenza realistica", "Chiedi a un/a collega esperto/a di lavorare in coppia sulla tua prossima animazione con feedback diretto", "Segui un corso strutturato e applichi ogni lezione a un deliverable reale entro 48 ore", "Analizzi cinque pezzi di motion eccellenti per identificare tecniche specifiche che non stai usando"] },
         "q11": { "category": "Potenza Computazionale", "question": "Per allocare il budget di produzione, tu:", "options": ["Modelli costo vs impatto atteso", "Dai priorità agli asset ad alto impatto", "Prototipi a basso costo prima", "Riusi/adatti asset in modo intelligente"] },
         "q12": { "category": "Comunicazione", "question": "Quando il brief è frainteso, tu:", "options": ["Riformuli outcome e successo", "Mostri reference per allineare il gusto", "Traduci obiettivi astratti in criteri", "Risciacqui il brief insieme"] },
         "q13": { "category": "Conoscenza", "question": "Per documentare il know-how, tu:", "options": ["Crei template riutilizzabili", "Pubblichi guide interne", "Registi brevi how-to video", "Mantieni librerie di riferimento"] },
         "q14": { "category": "Creatività", "question": "Per differenziare il brand visivamente, tu:", "options": ["Inventi un sistema firma", "Evolvi tipografia e motion", "Crei un motivo narrativo distintivo", "Sperimenta elementi sensoriali"] },
-        "q15": { "category": "Motivazione", "question": "Dopo un concept rifiutato, tu:", "options": ["Estraggo lezioni e iter", "Propongo subito un'alternativa", "Chiedo i criteri mancati", "Raffino e ripresento"] },
+        "q15": { "category": "Drive", "question": "La revisione del tuo portfolio rivela che il lavoro tipografico è costantemente la tua area più debole. Tu:", "options": ["Ridisegni un progetto passato focalizzandoti solo sulla tipografia e confronti il risultato", "Chiedi una critica a uno/a specialista di tipografia su cosa specificamente va migliorato", "Tracci le tue decisioni tipografiche per il prossimo mese per individuare errori ricorrenti", "Limiti il tuo prossimo progetto a soli elementi tipografici — niente illustrazione né colore"] },
         "q16": { "category": "Potenza Computazionale", "question": "Scegliendo tool e pipeline, tu:", "options": ["Confronti velocità/compatibilità", "Verifichi collaborazione", "Valuti curva di apprendimento", "Consideri costi e licenze"] },
         "q17": { "category": "Comunicazione", "question": "Per allinearti con gli stakeholder, tu:", "options": ["Usi archi narrativi semplici", "Mostri opzioni con pro/contro", "Metti l'impatto sul pubblico al centro", "Fornisci un one-pager sintetico"] },
         "q18": { "category": "Conoscenza", "question": "Per apprendere velocemente un nuovo dominio, tu:", "options": ["Studi panorama e competitor", "Rivedi insight sull'audience", "Intervisti esperti", "Osservi gli utenti reali"] },
         "q19": { "category": "Creatività", "question": "Per produrre lavoro originale, tu:", "options": ["Imposti vincoli creativi", "Unisci riferimenti improbabili", "Prototipi e testi presto", "Collabori con altre discipline"] },
-        "q20": { "category": "Motivazione", "question": "Per mantenere la visione a lungo termine, tu:", "options": ["Un north-star board", "Temi creativi trimestrali", "Finestre di riflessione pianificate", "Proteggi il tempo profondo"] },
+        "q20": { "category": "Drive", "question": "Hai raggiunto un plateau nelle tue competenze di direzione creativa e ti senti bloccato/a allo stesso livello. Tu:", "options": ["Prendi un progetto in un formato o genere che non hai mai affrontato", "Chiedi a tre peer di fiducia di indicarti ciascuno un'area specifica dove la tua direzione può migliorare", "Confronti il tuo lavoro recente con quello di 12 mesi fa per identificare cosa è realmente cambiato", "Stabilisci obiettivi trimestrali di competenza con deliverable concreti che dimostrino miglioramento"] },
         "q21": { "category": "Potenza Computazionale", "question": "Per giudicare la qualità degli asset su larga scala, tu:", "options": ["Definisci criteri misurabili", "Revisioni a lotti con checklist", "Test campione col pubblico", "Automatizzi controlli dove possibile"] },
         "open1": { "question": "Racconta un lavoro che ha cambiato gli esiti. Perché ha funzionato?" },
         "open2": { "question": "Quale abilità creativa vuoi migliorare quest'anno e come?" }
@@ -1940,22 +1940,22 @@
         "q2": { "category": "Comunicazione", "question": "Gestendo un cliente difficile, tu:", "options": ["Ascolti e rifletti i bisogni", "Spieghi le policy in modo semplice", "Offri opzioni e prossimi passi", "Escali con contesto adeguato"] },
         "q3": { "category": "Conoscenza", "question": "Per tenere aggiornate le procedure, tu:", "options": ["Mantieni SOP chiare", "Fai micro-training periodici", "Registri cambi in un knowledge base", "Raccogli feedback dal fronte"] },
         "q4": { "category": "Creatività", "question": "Per migliorare un collo di bottiglia ricorrente, tu:", "options": ["Ripensi il flusso di lavoro", "Importi soluzioni da altri team", "Avvii un esperimento a basso rischio", "Co-crei con staff e utenti"] },
-        "q5": { "category": "Motivazione", "question": "Nei giorni di alta pressione, tu:", "options": ["Ti concentri sui compiti ad alto impatto", "Supporti attivamente i colleghi", "Ruoti attività per evitare fatica", "Celebri piccole vittorie"] },
+        "q5": { "category": "Drive", "question": "Il tempo di risposta agli incidenti del tuo team è più lento del target, e tu sei parte del problema. Tu:", "options": ["Affianchi il responder più veloce del turno e documenti cosa fa di diverso", "Rivedi i tuoi ultimi cinque incidenti per trovare lo step specifico dove hai perso tempo", "Ti eserciti a rispondere a incidenti simulati con un timer per costruire velocità", "Ridisegni la tua checklist di triage personale basandoti su cosa ti ha effettivamente rallentato"] },
         "q6": { "category": "Potenza Computazionale", "question": "Per pianificare turni efficaci, tu:", "options": ["Modelli domanda per ora", "Consideri il mix di competenze", "Inserisci buffer per picchi", "Rivedi vincoli e regole"] },
         "q7": { "category": "Comunicazione", "question": "Quando cambiano i protocolli, tu:", "options": ["Spieghi il perché e l'impatto", "Usi checklist/visual chiare", "Offri un canale Q&A", "Abbini le persone per supporto pari"] },
         "q8": { "category": "Conoscenza", "question": "Per l'onboarding del nuovo personale, tu:", "options": ["Guide passo-passo", "Affiancamento verso autonomia", "Micro-training su task critici", "Documenti errori ricorrenti"] },
         "q9": { "category": "Creatività", "question": "Per migliorare l'esperienza di servizio, tu:", "options": ["Ridisegni touchpoint", "Personalizzi momenti chiave", "Snellisci passaggi di consegne", "Testi nuovi strumenti"] },
-        "q10": { "category": "Motivazione", "question": "Per mantenere il morale, tu:", "options": ["Condividi obiettivi e progressi", "Riconosci comportamenti utili", "Ruoti responsabilità in modo equo", "Offri supporto rapido ai blocchi"] },
+        "q10": { "category": "Drive", "question": "Il feedback dei clienti mostra che le spiegazioni del tuo team durante i disservizi sono confuse — e gli script li hai scritti tu. Tu:", "options": ["Registri spiegazioni reali e le rivedi per identificare cosa non è chiaro", "Fai pratica con scenari simulati usando script in linguaggio semplice finché diventa naturale", "Chiedi a un/a formatore/trice di comunicazione di osservare un'interazione e dare consigli mirati", "Crei una libreria di template per le spiegazioni più comuni e la testi con gli utenti"] },
         "q11": { "category": "Potenza Computazionale", "question": "Per ridurre gli errori, tu:", "options": ["Introduci checklist", "Standardizzi e 5S", "Automatizzi i passaggi ripetitivi", "Misuri tipologie e risolvi cause"] },
         "q12": { "category": "Comunicazione", "question": "Quando i team si passano il lavoro, tu:", "options": ["Definisci criteri di accettazione", "Usi handoff template sintetici", "Fai brevi allineamenti", "Crei dashboard condivise"] },
         "q13": { "category": "Conoscenza", "question": "Per catturare lezioni apprese, tu:", "options": ["Brevi retro periodiche", "Sintesi semplici", "FAQ ricercabili", "Owner per mantenere aggiornato"] },
         "q14": { "category": "Creatività", "question": "Per gestire vincoli, tu:", "options": ["Sequenze operative più intelligenti", "Riusi risorse creativamente", "Riorganizzi spazi/flussi", "Semplifichi i passaggi utente"] },
-        "q15": { "category": "Motivazione", "question": "Dopo un disservizio, tu:", "options": ["Review senza colpe", "Informi in modo trasparente", "Piano di recovery rapido", "Tracci follow-through fino a chiusura"] },
+        "q15": { "category": "Drive", "question": "Un audit ha trovato lacune ricorrenti nella tua documentazione di compliance — una competenza che non hai sviluppato. Tu:", "options": ["Identifichi le 2 lacune più comuni e crei una checklist personale per quelle aree", "Chiedi all'auditor di guidarti attraverso cosa significa esattamente una buona documentazione", "Confronti la tua documentazione con quella di un/a collega che ha ottenuto buoni risultati, fianco a fianco", "Rifai un documento recente da zero seguendo lo standard corretto e cronometrandoti"] },
         "q16": { "category": "Potenza Computazionale", "question": "Scegliendo un nuovo strumento, tu:", "options": ["Valuti aderenza ai requisiti", "Piloti con un piccolo gruppo", "Valuti costi/benefici e rischio", "Controlli integrazione coi sistemi"] },
         "q17": { "category": "Comunicazione", "question": "Per allineare turni/team, tu:", "options": ["Dashboard chiare", "Standup brevi", "Aggiornamenti puntuali", "Protocolli radio/chat"] },
         "q18": { "category": "Conoscenza", "question": "Per apprendere una nuova normativa, tu:", "options": ["Linee guida ufficiali", "Chiarimenti da esperti", "Checklist di compliance", "Formi il team con esempi"] },
         "q19": { "category": "Creatività", "question": "Per migliorare l'accessibilità, tu:", "options": ["Semplifichi moduli/linguaggio", "Offri formati alternativi", "Riprogetti spazi/segnaletica", "Co-disegni con gli utenti"] },
-        "q20": { "category": "Motivazione", "question": "Per sostenere la qualità nel tempo, tu:", "options": ["Imposti SLA e audit", "Tracci indicatori anticipatori", "Cicli di miglioramento continui", "Proteggi il tempo di concentrazione"] },
+        "q20": { "category": "Drive", "question": "Ti hanno detto che le tue proposte di miglioramento dei processi mancano di supporto dati — una competenza che non hai sviluppato. Tu:", "options": ["Alleghi baseline misurabili alla tua prossima proposta, anche se raccogliere i dati richiede tempo extra", "Ti affianchi a un/a analyst per imparare come costruisce argomentazioni basate sui dati", "Segui un corso breve di analisi dati operativi e lo applichi a un caso di miglioramento reale", "Rivedi tre proposte approvate per fare reverse-engineering di quali dati le hanno rese convincenti"] },
         "q21": { "category": "Potenza Computazionale", "question": "Valutando un cambiamento di processo, tu:", "options": ["Definisci metriche in anticipo", "Confronti dati prima/dopo", "Test controllato", "Documenti impatto e prossimi passi"] },
         "open1": { "question": "Descrivi una volta in cui hai migliorato un processo di servizio. Cosa è cambiato e come l'hai reso stabile?" },
         "open2": { "question": "Quale area della tua pratica operativa vuoi far crescere quest'anno e qual è il tuo piano?" }
