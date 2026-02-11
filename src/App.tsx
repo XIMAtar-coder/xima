@@ -65,9 +65,6 @@ import AuthCallback from "./pages/AuthCallback";
 import CandidateSettings from "./pages/Settings";
 import CandidateSessionDetail from "./pages/candidate/SessionDetail";
 import CandidateSessionRoom from "./pages/candidate/SessionRoom";
-// Verification
-import VerifyEmail from "./pages/auth/VerifyEmail";
-import { VerificationGate } from "./components/auth/VerificationGate";
 import { CandidateRouteGuard } from "./components/auth/CandidateRouteGuard";
 // Mentor Portal
 import MentorPortal from "./pages/mentor/MentorPortal";
@@ -95,7 +92,6 @@ const AppContent = () => {
     <>
       <LoadingScreen isLoading={isLoading} />
       <XimAIProvider>
-        <VerificationGate>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
@@ -104,7 +100,6 @@ const AppContent = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/onboarding" element={<Onboarding />} />
             {/* Legal Pages */}
             <Route path="/privacy" element={<PrivacyPolicy />} />
@@ -167,7 +162,6 @@ const AppContent = () => {
             <Route path="/sessions/:sessionId/room" element={<CandidateRouteGuard><CandidateSessionRoom /></CandidateRouteGuard>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </VerificationGate>
         {/* <ChatEntry /> */}
       </XimAIProvider>
     </>
