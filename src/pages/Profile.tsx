@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -151,34 +151,9 @@ const Profile = () => {
     );
   }
 
-  // No assessment completed yet
+  // No assessment completed yet — redirect to journey (guard should catch this, but defense-in-depth)
   if (!profileData.hasAssessment) {
-    return (
-      <MainLayout>
-        <div className="container max-w-4xl mx-auto py-12 space-y-8">
-          <XimaJourneyGuideModal
-            open={guideOpen}
-            onClose={handleGuideClose}
-            isAutoOpen={shouldAutoShowGuide}
-          />
-          <Card className="text-center py-12">
-            <CardContent className="space-y-6">
-              <div className="flex justify-center">
-                <Sparkles className="h-24 w-24 text-primary opacity-50" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold mb-4">{t('profile.no_assessment_title')}</h2>
-                <p className="text-muted-foreground text-lg mb-8">{t('profile.no_assessment_desc')}</p>
-              </div>
-              <Button size="lg" onClick={() => navigate('/ximatar-journey')}>
-                <Sparkles className="mr-2 h-5 w-5" />
-                {t('profile.start_assessment')}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </MainLayout>
-    );
+    return <Navigate to="/ximatar-journey" replace />;
   }
 
   return (

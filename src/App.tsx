@@ -68,6 +68,7 @@ import CandidateSessionRoom from "./pages/candidate/SessionRoom";
 // Verification
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import { VerificationGate } from "./components/auth/VerificationGate";
+import { CandidateRouteGuard } from "./components/auth/CandidateRouteGuard";
 // Mentor Portal
 import MentorPortal from "./pages/mentor/MentorPortal";
 import MentorLogin from "./pages/mentor/MentorLogin";
@@ -109,7 +110,7 @@ const AppContent = () => {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/imprint" element={<Imprint />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile" element={<CandidateRouteGuard><Profile /></CandidateRouteGuard>} />
             <Route path="/ximatar-journey" element={<XimatarJourney />} />
             <Route path="/xima-chat" element={<XimaChat />} />
             <Route path="/development-plan" element={<DevelopmentPlan />} />
@@ -120,9 +121,9 @@ const AppContent = () => {
             <Route path="/opportunity/:id" element={<OpportunityDetails />} />
             
             <Route path="/assessment-guide" element={<AssessmentGuide />} />
-            <Route path="/dashboard" element={<Profile />} />
-            <Route path="/chat" element={<XimaChat />} />
-            <Route path="/settings" element={<CandidateSettings />} />
+            <Route path="/dashboard" element={<CandidateRouteGuard><Profile /></CandidateRouteGuard>} />
+            <Route path="/chat" element={<CandidateRouteGuard><XimaChat /></CandidateRouteGuard>} />
+            <Route path="/settings" element={<CandidateRouteGuard><CandidateSettings /></CandidateRouteGuard>} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/eligibility" element={<EligibilityReview />} />
             {/* Mentor Portal Routes */}
@@ -162,8 +163,8 @@ const AppContent = () => {
             <Route path="/candidate/challenges/:invitationId/standing" element={<StandingVideoSession />} />
             <Route path="/candidate/followups/:invitationId" element={<ChallengeFollowup />} />
             {/* Candidate session detail */}
-            <Route path="/sessions/:sessionId" element={<CandidateSessionDetail />} />
-            <Route path="/sessions/:sessionId/room" element={<CandidateSessionRoom />} />
+            <Route path="/sessions/:sessionId" element={<CandidateRouteGuard><CandidateSessionDetail /></CandidateRouteGuard>} />
+            <Route path="/sessions/:sessionId/room" element={<CandidateRouteGuard><CandidateSessionRoom /></CandidateRouteGuard>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </VerificationGate>

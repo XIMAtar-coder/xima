@@ -11,6 +11,7 @@ import { useUser } from '../context/UserContext';
 import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
 import { getPostLoginRedirectPath } from '@/hooks/usePostLoginRedirect';
 import { supabase } from '@/integrations/supabase/client';
+import { hasLocalReadiness } from '@/components/auth/CandidateRouteGuard';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -22,6 +23,17 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  // Gate: must complete assessment + mentor before login
+  React.useEffect(() => {
+    if (!hasLocalReadiness() && !isAuthenticated) {
+      toast({
+        title: t('auth.readiness_required_title', 'Assessment Required'),
+        description: t('auth.readiness_required_desc', 'Complete the assessment and choose a mentor before logging in.'),
+      });
+      navigate('/ximatar-journey', { replace: true });
+    }
+  }, []);
+
   React.useEffect(() => {
     const handleAuthRedirect = async () => {
       if (isAuthenticated) {
