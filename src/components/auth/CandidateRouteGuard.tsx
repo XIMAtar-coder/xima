@@ -42,6 +42,7 @@ export const CandidateRouteGuard: React.FC<{ children: React.ReactNode }> = ({ c
 
   // Not logged in → send to assessment start
   if (!isAuthenticated) {
+    console.info('[CandidateRouteGuard] Not authenticated → redirect /ximatar-journey');
     return <Navigate to="/ximatar-journey" state={{ from: location }} replace />;
   }
 
@@ -52,12 +53,16 @@ export const CandidateRouteGuard: React.FC<{ children: React.ReactNode }> = ({ c
   // Also accept localStorage as fallback (mentor might be pending assignment)
   const localReady = hasLocalReadiness();
 
+  console.info('[CandidateRouteGuard] Check:', { hasAssessment, hasMentor, localReady, path: location.pathname });
+
   if (!hasAssessment && !localReady) {
+    console.info('[CandidateRouteGuard] No assessment (DB or local) → redirect /ximatar-journey');
     return <Navigate to="/ximatar-journey" replace />;
   }
 
   // If assessment exists in DB but no mentor yet, also allow if localStorage has pending mentor
   if (hasAssessment && !hasMentor && !localStorage.getItem('selected_professional_data')) {
+    console.info('[CandidateRouteGuard] Assessment OK but no mentor → redirect /ximatar-journey');
     return <Navigate to="/ximatar-journey" replace />;
   }
 

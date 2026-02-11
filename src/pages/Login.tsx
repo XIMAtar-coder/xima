@@ -29,6 +29,17 @@ const Login = () => {
   React.useEffect(() => {
     const handleAuthRedirect = async () => {
       if (isAuthenticated) {
+        // If there's a pending claim payload, sync it before redirecting
+        const claimRaw = localStorage.getItem('xima.pre_signup_claim');
+        if (claimRaw) {
+          console.info('[Login] Pending claim found, syncing before redirect...');
+          const { syncGuestAssessmentToProfile } = await import('@/utils/assessmentSync');
+          const { data: { user: authUser } } = await supabase.auth.getUser();
+          if (authUser) {
+            await syncGuestAssessmentToProfile(authUser.id);
+          }
+        }
+
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           const redirectPath = await getPostLoginRedirectPath(user.id);
