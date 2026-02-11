@@ -14,12 +14,14 @@ interface AssessmentOverviewCardProps {
     drive: number;
   };
   driveLevel: 'high' | 'medium' | 'low' | null;
+  driveScore?: number | null;
   storytelling: string | null;
 }
 
 export const AssessmentOverviewCard: React.FC<AssessmentOverviewCardProps> = ({
   pillarScores,
   driveLevel,
+  driveScore,
   storytelling
 }) => {
   const { t } = useTranslation();
@@ -36,9 +38,9 @@ export const AssessmentOverviewCard: React.FC<AssessmentOverviewCardProps> = ({
   ];
 
   const driveLevelConfig = {
-    high: { color: 'bg-green-600', text: 'High Drive' },
-    medium: { color: 'bg-blue-600', text: 'Medium Drive' },
-    low: { color: 'bg-orange-600', text: 'Low Drive' }
+    high: { color: 'bg-green-600', text: 'High Growth Velocity' },
+    medium: { color: 'bg-blue-600', text: 'Medium Growth Velocity' },
+    low: { color: 'bg-orange-600', text: 'Low Growth Velocity' }
   };
 
   return (
@@ -64,23 +66,30 @@ export const AssessmentOverviewCard: React.FC<AssessmentOverviewCardProps> = ({
         </div>
 
         {/* Drive (Growth Velocity) */}
-        {driveLevel && (
-          <div>
-            <span className="text-sm font-medium text-muted-foreground block mb-1">
-              {t('profile.drive_level', 'Drive (Growth Velocity)')}
-            </span>
-            <p className="text-xs text-muted-foreground mb-2">
-              {t('profile.drive_subtitle', 'Speed of improvement on weak areas')}
+        <div>
+          <span className="text-sm font-medium text-muted-foreground block mb-1">
+            {t('profile.drive_growth_velocity', 'Drive (Growth Velocity)')}
+          </span>
+          <p className="text-xs text-muted-foreground mb-2">
+            {t('profile.drive_subtitle', 'Speed of improvement on weak areas')}
+          </p>
+          {driveScore !== null && driveScore !== undefined ? (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold">{Math.round(driveScore)}/100</span>
+              </div>
+              <Progress value={driveScore} className="h-2" />
+            </div>
+          ) : (
+            <p className="text-xs italic text-muted-foreground">
+              {t('profile.drive_refining', 'Drive is refining — complete more challenges to measure growth velocity.')}
             </p>
-            <Badge className={`${driveLevelConfig[driveLevel].color} text-white`}>
-              {driveLevelConfig[driveLevel].text}
-            </Badge>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Pillars are dynamic note */}
         <p className="text-xs text-muted-foreground italic">
-          {t('profile.pillars_dynamic', 'Pillars are dynamic. Your next steps can move them.')}
+          {t('profile.pillars_dynamic', 'Pillars are dynamic — they evolve with practice.')}
         </p>
 
         {/* Pillar Scores Breakdown */}

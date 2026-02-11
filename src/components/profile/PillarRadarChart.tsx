@@ -117,7 +117,7 @@ export const PillarRadarChart: React.FC<PillarRadarChartProps> = ({ pillars }) =
           ))}
         </div>
         <p className="text-xs text-muted-foreground italic mt-4">
-          {t('profile.pillars_dynamic', 'Pillars are dynamic. Your next steps can move them.')}
+          {t('profile.pillars_dynamic', 'Pillars are dynamic — they evolve with practice.')}
         </p>
       </CardContent>
     </Card>

@@ -212,6 +212,8 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
     }
 
     // Insert initial pillar progress snapshot for Drive computation
+    // This snapshot enables Drive to be calculated as improvement velocity over time
+    // Only inserted if we have pillar scores; Drive remains NULL until a second snapshot exists
     if (guestPillarScores) {
       try {
         const scores = JSON.parse(guestPillarScores);
@@ -232,7 +234,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         if (snapshotError) {
           console.warn('[sync] snapshot insert error (non-fatal):', snapshotError);
         } else {
-          console.log('✅ Inserted initial pillar progress snapshot');
+          console.log('✅ Inserted initial pillar progress snapshot for Drive');
         }
       } catch (e) {
         console.warn('[sync] snapshot insert failed (non-fatal):', e);
