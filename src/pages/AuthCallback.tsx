@@ -45,7 +45,6 @@ const AuthCallback = () => {
             console.log('AuthCallback: User signed in via OAuth:', session.user.email);
             
             // Sync any guest assessment data to the new user's profile
-            // This also assigns the pre-selected mentor from localStorage claim
             try {
               const synced = await syncGuestAssessmentToProfile(session.user.id);
               if (synced) {

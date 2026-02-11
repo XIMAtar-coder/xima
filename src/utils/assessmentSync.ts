@@ -23,110 +23,63 @@ interface GuestAssessmentData {
 }
 
 /**
- * Reads the durable claim payload from localStorage (survives tab switches).
- * Falls back to individual sessionStorage keys for backwards compatibility.
- */
-function resolveClaimData() {
-  // 1) Try the consolidated localStorage claim payload first
-  const claimRaw = localStorage.getItem('xima.pre_signup_claim');
-  if (claimRaw) {
-    try {
-      const claim = JSON.parse(claimRaw);
-      console.log('[sync] Using localStorage claim payload');
-      return {
-        resultId: claim.result_id || null,
-        pillarScores: claim.pillar_scores ? JSON.stringify(claim.pillar_scores) : null,
-        ximatar: claim.ximatar_label || null,
-        ximatarName: claim.ximatar_name || null,
-        ximatarImage: claim.ximatar_image || null,
-        driveLevel: claim.drive_level || null,
-        strongestPillar: claim.strongest_pillar || null,
-        weakestPillar: claim.weakest_pillar || null,
-        storytelling: claim.storytelling || null,
-        growthPath: claim.growth_path || null,
-        attemptId: claim.attempt_id || null,
-        mentorId: claim.selected_mentor_id || null,
-        totalScore: claim.total_score || null,
-        source: 'localStorage' as const,
-      };
-    } catch (e) {
-      console.warn('[sync] Invalid claim payload in localStorage', e);
-    }
-  }
-
-  // 2) Fallback: individual sessionStorage keys (legacy)
-  const guestResultId = sessionStorage.getItem('latest_assessment_result_id');
-  const guestPillarScores = sessionStorage.getItem('guest_pillar_scores');
-  const guestXimatar = sessionStorage.getItem('guest_ximatar');
-
-  if (!guestResultId && !guestPillarScores && !guestXimatar) {
-    return null;
-  }
-
-  console.log('[sync] Using sessionStorage keys (legacy fallback)');
-  const mentorRaw = localStorage.getItem('selected_professional_data');
-  let mentorId: string | null = null;
-  if (mentorRaw) {
-    try { mentorId = JSON.parse(mentorRaw)?.id || null; } catch {}
-  }
-
-  return {
-    resultId: guestResultId,
-    pillarScores: guestPillarScores,
-    ximatar: guestXimatar,
-    ximatarName: sessionStorage.getItem('guest_ximatar_name'),
-    ximatarImage: sessionStorage.getItem('guest_ximatar_image'),
-    driveLevel: sessionStorage.getItem('guest_drive_level'),
-    strongestPillar: sessionStorage.getItem('guest_strongest_pillar'),
-    weakestPillar: sessionStorage.getItem('guest_weakest_pillar'),
-    storytelling: sessionStorage.getItem('guest_ximatar_storytelling'),
-    growthPath: sessionStorage.getItem('guest_ximatar_growth_path'),
-    attemptId: sessionStorage.getItem('current_attempt_id'),
-    mentorId,
-    totalScore: null,
-    source: 'sessionStorage' as const,
-  };
-}
-
-/**
- * Syncs guest assessment data to the user's profile after registration.
- * Also assigns the selected mentor if one was chosen pre-signup.
- * This ensures data continuity from guest → authenticated user flow.
+ * Syncs guest assessment data to the user's profile after registration
+ * This ensures data continuity from guest → authenticated user flow
  */
 export const syncGuestAssessmentToProfile = async (userId: string): Promise<boolean> => {
   try {
-    console.log('[sync] Starting assessment sync for user:', userId);
+    console.log('Starting assessment sync for user:', userId);
 
-    const claim = resolveClaimData();
-    if (!claim) {
-      console.log('[sync] No guest assessment data found to sync');
+    try {
+      const { data: authUser } = await supabase.auth.getUser();
+      console.log('[sync] auth.getUser', authUser?.user?.id, authUser?.user?.email);
+    } catch (e) {
+      console.warn('[sync] auth.getUser failed', e);
+    }
+    // Check sessionStorage for guest assessment data (more secure than localStorage)
+    const guestResultId = sessionStorage.getItem('latest_assessment_result_id');
+    const guestPillarScores = sessionStorage.getItem('guest_pillar_scores');
+    const guestXimatar = sessionStorage.getItem('guest_ximatar');
+    const guestXimatarName = sessionStorage.getItem('guest_ximatar_name');
+    const guestXimatarImage = sessionStorage.getItem('guest_ximatar_image');
+    const guestDriveLevel = sessionStorage.getItem('guest_drive_level');
+    const guestStrongestPillar = sessionStorage.getItem('guest_strongest_pillar');
+    const guestWeakestPillar = sessionStorage.getItem('guest_weakest_pillar');
+    const guestStorytelling = sessionStorage.getItem('guest_ximatar_storytelling');
+    const guestGrowthPath = sessionStorage.getItem('guest_ximatar_growth_path');
+    const guestAttemptId = sessionStorage.getItem('current_attempt_id');
+
+    if (!guestResultId && !guestPillarScores && !guestXimatar) {
+      console.log('No guest assessment data found to sync');
       return false;
     }
 
     // If we have a result_id from guest flow, link it to the user
-    if (claim.resultId) {
+    if (guestResultId) {
       const { error: linkError } = await supabase
         .from('assessment_results')
         .update({ 
           user_id: userId,
           computed_at: new Date().toISOString()
         })
-        .eq('id', claim.resultId)
-        .is('user_id', null);
+        .eq('id', guestResultId)
+        .is('user_id', null); // Only update if not already claimed
 
       if (linkError) {
-        console.error('[sync] Error linking assessment result:', linkError);
+        console.error('Error linking assessment result:', linkError);
       } else {
-        console.log('[sync] Successfully linked assessment result to user');
+        console.log('Successfully linked assessment result to user');
       }
     }
 
-    // Sync pillar scores
-    if (claim.pillarScores) {
-      const scores = JSON.parse(claim.pillarScores) as Record<string, number>;
+    // Sync pillar scores from localStorage if available
+    if (guestPillarScores) {
+      const scores = JSON.parse(guestPillarScores) as Record<string, number>;
       
-      let resultId = claim.resultId;
+      // Get or create assessment_result
+      let resultId = guestResultId;
       if (!resultId) {
+        // Create a new assessment_result for this data
         const totalScore: number = Object.values(scores).reduce((sum: number, val: number) => sum + val, 0);
         
         const { data: newResult, error: createError } = await supabase
@@ -136,46 +89,48 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
             completed: true,
             total_score: totalScore,
             language: localStorage.getItem('i18nextLng')?.split('-')[0] || 'it',
-            attempt_id: claim.attemptId || undefined
+            attempt_id: guestAttemptId || undefined
           }])
           .select()
           .single();
 
         if (createError || !newResult) {
-          console.error('[sync] Error creating assessment result:', createError);
-        } else {
-          resultId = newResult.id;
+          console.error('Error creating assessment result:', createError);
+          return false;
         }
+        resultId = newResult.id;
       }
 
-      if (resultId) {
-        const pillarInserts = Object.entries(scores).map(([pillar, score]) => ({
-          assessment_result_id: resultId,
-          pillar,
-          score: score as number
-        }));
+      // Insert pillar scores (they won't duplicate due to unique constraint)
+      const pillarInserts = Object.entries(scores).map(([pillar, score]) => ({
+        assessment_result_id: resultId,
+        pillar: pillar,
+        score: score as number
+      }));
 
-        const { error: pillarError } = await supabase
-          .from('pillar_scores')
-          .insert(pillarInserts);
+      const { error: pillarError } = await supabase
+        .from('pillar_scores')
+        .insert(pillarInserts);
 
-        if (pillarError) {
-          console.error('[sync] Error syncing pillar scores:', pillarError);
-        } else {
-          console.log('[sync] Successfully synced pillar scores');
-        }
+      if (pillarError) {
+        console.error('Error syncing pillar scores:', pillarError);
+      } else {
+        console.log('Successfully synced pillar scores');
       }
     }
 
-    // Ensure profile row exists
+    // Ensure a profile row exists for this user
     let hasProfile = false;
     try {
-      const { data: existingProfile } = await supabase
+      const { data: existingProfile, error: profileFetchError } = await supabase
         .from('profiles')
         .select('user_id')
         .eq('user_id', userId)
         .maybeSingle();
       if (existingProfile) hasProfile = true;
+      if (profileFetchError && profileFetchError.code !== 'PGRST116') {
+        console.warn('[sync] profile fetch error (ignored if not found):', profileFetchError);
+      }
     } catch (e) {
       console.warn('[sync] error checking existing profile', e);
     }
@@ -197,35 +152,39 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
       }
     }
 
-    // Update profile with XIMAtar assessment data
-    if (claim.ximatar) {
+    // Update profiles table with COMPLETE XIMAtar assessment data
+    if (guestXimatar) {
+      // Get XIMAtar ID and full data from label
       const { data: ximatarData } = await supabase
         .from('ximatars')
         .select('id, image_url')
-        .eq('label', claim.ximatar.toLowerCase())
+        .eq('label', guestXimatar.toLowerCase())
         .single();
 
       if (ximatarData) {
+        // Prepare complete profile update with ALL assessment fields
         const profileUpdate: any = {
-          ximatar: claim.ximatar.toLowerCase() as any,
+          ximatar: guestXimatar.toLowerCase() as any,
           ximatar_id: ximatarData.id,
           ximatar_assigned_at: new Date().toISOString(),
           creation_source: 'assessment',
           profile_complete: true
         };
 
-        if (claim.ximatarName) profileUpdate.ximatar_name = claim.ximatarName;
-        if (claim.ximatarImage) profileUpdate.ximatar_image = claim.ximatarImage;
+        // Add optional fields if available
+        if (guestXimatarName) profileUpdate.ximatar_name = guestXimatarName;
+        if (guestXimatarImage) profileUpdate.ximatar_image = guestXimatarImage;
         else if (ximatarData.image_url) profileUpdate.ximatar_image = ximatarData.image_url;
-        if (claim.driveLevel) profileUpdate.drive_level = claim.driveLevel;
-        if (claim.strongestPillar) profileUpdate.strongest_pillar = claim.strongestPillar;
-        if (claim.weakestPillar) profileUpdate.weakest_pillar = claim.weakestPillar;
-        if (claim.storytelling) profileUpdate.ximatar_storytelling = claim.storytelling;
-        if (claim.growthPath) profileUpdate.ximatar_growth_path = claim.growthPath;
+        if (guestDriveLevel) profileUpdate.drive_level = guestDriveLevel;
+        if (guestStrongestPillar) profileUpdate.strongest_pillar = guestStrongestPillar;
+        if (guestWeakestPillar) profileUpdate.weakest_pillar = guestWeakestPillar;
+        if (guestStorytelling) profileUpdate.ximatar_storytelling = guestStorytelling;
+        if (guestGrowthPath) profileUpdate.ximatar_growth_path = guestGrowthPath;
         
-        if (claim.pillarScores) {
+        // Add pillar scores as JSONB
+        if (guestPillarScores) {
           try {
-            profileUpdate.pillar_scores = JSON.parse(claim.pillarScores);
+            profileUpdate.pillar_scores = JSON.parse(guestPillarScores);
           } catch (e) {
             console.warn('[sync] invalid pillar_scores JSON, skipping');
           }
@@ -237,45 +196,22 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           .eq('user_id', userId);
 
         if (profileError) {
-          console.error('[sync] Error updating profile with assessment data:', profileError);
+          console.error('Error updating profile with complete data:', profileError);
         } else {
-          console.log('[sync] ✅ Updated profile with XIMAtar assessment data');
+          console.log('✅ Successfully updated profile with complete XIMAtar assessment data');
         }
 
-        // Update assessment_result with ximatar_id
-        if (claim.resultId) {
+        // Update assessment_result with ximatar_id if we have a result
+        if (guestResultId) {
           await supabase
             .from('assessment_results')
             .update({ ximatar_id: ximatarData.id })
-            .eq('id', claim.resultId);
+            .eq('id', guestResultId);
         }
       }
     }
 
-    // ── Assign mentor if selected pre-signup ──
-    if (claim.mentorId) {
-      console.log('[sync] Assigning pre-signup mentor:', claim.mentorId);
-      try {
-        const { data, error } = await supabase.functions.invoke('assign-mentor', {
-          body: { professional_id: claim.mentorId },
-        });
-        if (error) {
-          console.error('[sync] Error assigning mentor via edge function:', error);
-        } else if (data?.success) {
-          console.log('[sync] ✅ Mentor assigned successfully:', data.mentor?.name);
-        }
-      } catch (e) {
-        console.error('[sync] Exception assigning mentor:', e);
-      }
-    }
-
-    // Clean up ALL storage after sync
-    // localStorage claim
-    localStorage.removeItem('xima.pre_signup_claim');
-    // Keep xima.assessment_completed and selected_professional_data for CandidateRouteGuard
-    // They'll be cleaned up by Profile.tsx once DB state is confirmed
-    
-    // sessionStorage (legacy)
+    // Clean up sessionStorage after successful sync
     sessionStorage.removeItem('latest_assessment_result_id');
     sessionStorage.removeItem('guest_pillar_scores');
     sessionStorage.removeItem('guest_ximatar');
@@ -289,11 +225,11 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
     sessionStorage.removeItem('guest_assessment_data');
     sessionStorage.removeItem('current_attempt_id');
     
-    console.log('[sync] ✅ Assessment sync completed - all data transferred to profile');
+    console.log('✅ Assessment sync completed successfully - all data transferred to profile');
     return true;
 
   } catch (error) {
-    console.error('[sync] Error syncing guest assessment:', error);
+    console.error('Error syncing guest assessment:', error);
     return false;
   }
 };

@@ -7,91 +7,74 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '../context/UserContext';
+import { RegistrationForm } from '../types';
 import { Logo } from '@/components/Logo';
+import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
 import { supabase } from '@/integrations/supabase/client';
 import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
 import { ConsentCheckboxes } from '@/components/auth/ConsentCheckboxes';
 import { recordUserConsents } from '@/hooks/useConsentRecording';
-import { hasLocalReadiness } from '@/components/auth/CandidateRouteGuard';
-
-interface RegisterFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-type RegisterFormErrors = Partial<Record<keyof RegisterFormData, string>>;
 
 const Register = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const { isAuthenticated } = useUser();
+  const { signUp, isAuthenticated } = useUser();
   const { t, i18n } = useTranslation();
   const refCode = searchParams.get('ref') || '';
-
-  const [formData, setFormData] = useState<RegisterFormData>({
-    firstName: '',
-    lastName: '',
+  
+  const [formData, setFormData] = useState<RegistrationForm>({
+    name: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
-
-  const [errors, setErrors] = useState<RegisterFormErrors>({});
+  
+  const [errors, setErrors] = useState<Partial<RegistrationForm>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  
   // Consent state
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showConsentError, setShowConsentError] = useState(false);
-
-  // Gate: must complete assessment + mentor before registering
-  React.useEffect(() => {
-    if (!hasLocalReadiness()) {
-      toast({
-        title: t('auth.readiness_required_title', 'Assessment Required'),
-        description: t('auth.readiness_required_desc', 'Complete the assessment and choose a mentor before creating your account.'),
-      });
-      navigate('/ximatar-journey', { replace: true });
-    }
-  }, []);
-
+  
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/profile');
+      // Check if user came from assessment flow
+      const savedSelection = localStorage.getItem('selectedProfessional');
+      if (savedSelection) {
+        // Clear the stored selection and go to dashboard with data
+        localStorage.removeItem('selectedProfessional');
+        navigate('/profile', { state: JSON.parse(savedSelection) });
+      } else {
+        navigate('/profile');
+      }
     }
   }, [isAuthenticated, navigate]);
-
+  
   const validateForm = () => {
-    const newErrors: RegisterFormErrors = {};
-
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = t('register.first_name_required', 'First name is required');
+    const newErrors: Partial<RegistrationForm> = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = t('register.name_required');
     }
-
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = t('register.last_name_required', 'Last name is required');
-    }
-
+    
     if (!formData.email.trim()) {
       newErrors.email = t('register.email_required');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = t('register.email_invalid');
     }
-
+    
     if (!formData.password) {
       newErrors.password = t('register.password_required');
     } else if (formData.password.length < 6) {
       newErrors.password = t('register.password_length');
     }
-
+    
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = t('register.passwords_match');
     }
-
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -101,35 +84,27 @@ const Register = () => {
     setShowConsentError(!consentsValid);
     return consentsValid;
   };
-
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     const formValid = validateForm();
     const consentsValid = validateConsents();
-
+    
     if (!formValid || !consentsValid) return;
-
+    
     setIsSubmitting(true);
-
+    
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            name: `${formData.firstName} ${formData.lastName}`.trim(),
-          }
-        }
-      });
+      console.log('[Register] submitting signUp');
+      const { data, error } = await signUp(formData.email, formData.password, formData.name);
 
+      console.log('[Register] signUp result', { userId: data?.user?.id, error });
       if (error) {
         toast({
           title: t('register.registration_failed'),
@@ -139,14 +114,17 @@ const Register = () => {
         return;
       }
 
+      // Get the newly created user ID
       const newUserId = data?.user?.id;
-
+      
       if (newUserId) {
-        // Record consent
+        // Record consent immediately after signup
         const consentResult = await recordUserConsents(newUserId, i18n.language);
-
+        
         if (!consentResult.success) {
           console.error('[Register] Consent recording failed:', consentResult.error);
+          // Sign out and show error
+          await supabase.auth.signOut();
           toast({
             title: t('register.consent_error_title', 'Registration Error'),
             description: t('register.consent_error_desc', 'Failed to record your consent. Please try registering again.'),
@@ -154,34 +132,50 @@ const Register = () => {
           });
           return;
         }
-
+        
         // Apply referral code if present
         if (refCode) {
           try {
-            const { error: refError } = await supabase.rpc('apply_referral_on_signup', { invite_code: refCode });
-            if (refError) console.warn('[Register] Referral apply failed:', refError);
+            const { data: refResult, error: refError } = await supabase.rpc('apply_referral_on_signup', { invite_code: refCode });
+            if (refError) {
+              console.warn('[Register] Referral apply failed:', refError);
+            } else {
+              console.log('[Register] Referral applied:', refResult);
+            }
           } catch (refErr) {
             console.warn('[Register] Referral apply exception:', refErr);
           }
         }
-      }
 
-      // Sync guest assessment data after signup
-      if (data?.user?.id) {
+        console.log('[Register] Consents recorded successfully');
+
         try {
-          const { syncGuestAssessmentToProfile } = await import('@/utils/assessmentSync');
-          await syncGuestAssessmentToProfile(data.user.id);
-        } catch (syncErr) {
-          console.warn('[Register] Assessment sync warning:', syncErr);
+          const { data: authUser } = await supabase.auth.getUser();
+          console.log('[Register] auth.getUser after signUp', authUser?.user?.id);
+        } catch (e) {
+          console.warn('[Register] auth.getUser failed', e);
+        }
+
+        console.log('[Register] syncing guest assessment to profile for', newUserId);
+        // Sync guest assessment data to profile and wait for completion
+        const syncSuccess = await syncGuestAssessmentToProfile(newUserId);
+
+        if (syncSuccess) {
+          toast({
+            title: t('register.registration_success'),
+            description: t('register.assessment_synced', 'Your assessment data has been saved to your profile'),
+          });
+        } else {
+          toast({
+            title: t('register.registration_success'),
+            description: t('register.welcome_message'),
+          });
         }
       }
 
-      // Session is automatically established, useEffect will redirect to /profile
-      toast({
-        title: t('register.success_title', 'Account created!'),
-        description: t('register.success_desc', 'Welcome to XIMA.'),
-      });
-
+      console.log('[Register] navigating to /profile after sync attempt');
+      navigate('/profile');
+      
     } catch (error) {
       toast({
         title: t('register.registration_failed'),
@@ -192,8 +186,7 @@ const Register = () => {
       setIsSubmitting(false);
     }
   };
-
-  // ─── Registration Form ───
+  
   return (
     <div className="min-h-screen bg-[#0A0F1C] flex items-center justify-center p-4">
       <div className="w-full max-w-md animate-[fade-in_0.4s_ease-out]">
@@ -209,37 +202,21 @@ const Register = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName" className="text-white">{t('register.first_name', 'First Name')}</Label>
-                  <Input
-                    id="firstName"
-                    name="firstName"
-                    placeholder={t('register.first_name_placeholder', 'John')}
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className={`bg-[#0A0F1C]/50 border-[#A3ABB5]/30 text-white placeholder:text-[#A3ABB5]/50 ${errors.firstName ? "border-red-500" : ""}`}
-                  />
-                  {errors.firstName && (
-                    <p className="text-sm text-red-500">{errors.firstName}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName" className="text-white">{t('register.last_name', 'Last Name')}</Label>
-                  <Input
-                    id="lastName"
-                    name="lastName"
-                    placeholder={t('register.last_name_placeholder', 'Doe')}
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className={`bg-[#0A0F1C]/50 border-[#A3ABB5]/30 text-white placeholder:text-[#A3ABB5]/50 ${errors.lastName ? "border-red-500" : ""}`}
-                  />
-                  {errors.lastName && (
-                    <p className="text-sm text-red-500">{errors.lastName}</p>
-                  )}
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-white">{t('register.full_name')}</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  placeholder={t('register.name_placeholder')}
+                  value={formData.name}
+                  onChange={handleChange}
+                  className={`bg-[#0A0F1C]/50 border-[#A3ABB5]/30 text-white placeholder:text-[#A3ABB5]/50 ${errors.name ? "border-red-500" : ""}`}
+                />
+                {errors.name && (
+                  <p className="text-sm text-red-500">{errors.name}</p>
+                )}
               </div>
-
+              
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-white">{t('register.email')}</Label>
                 <Input
@@ -255,7 +232,7 @@ const Register = () => {
                   <p className="text-sm text-red-500">{errors.email}</p>
                 )}
               </div>
-
+              
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-white">{t('register.password')}</Label>
                 <Input
@@ -271,7 +248,7 @@ const Register = () => {
                   <p className="text-sm text-red-500">{errors.password}</p>
                 )}
               </div>
-
+              
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword" className="text-white">{t('register.confirm_password')}</Label>
                 <Input
@@ -297,9 +274,9 @@ const Register = () => {
                 showError={showConsentError}
                 className="pt-2"
               />
-
-              <Button
-                type="submit"
+              
+              <Button 
+                type="submit" 
                 className="w-full bg-[#3A9FFF] hover:bg-[#3A9FFF]/80 hover:shadow-[0_0_20px_rgba(58,159,255,0.5)] transition-all duration-300 text-white font-medium"
                 disabled={isSubmitting}
               >
@@ -313,7 +290,7 @@ const Register = () => {
                 )}
               </Button>
             </form>
-
+            
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-[#A3ABB5]/30" />
@@ -322,14 +299,14 @@ const Register = () => {
                 <span className="bg-[#0A0F1C] px-2 text-[#A3ABB5]">{t('auth.or', 'or')}</span>
               </div>
             </div>
-
+            
             <GoogleAuthButton mode="register" />
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
             <p className="text-sm text-[#A3ABB5] text-center w-full">
               {t('register.have_account')}{" "}
-              <Button
-                variant="link"
+              <Button 
+                variant="link" 
                 className="p-0 h-auto text-[#3A9FFF] hover:text-[#3A9FFF]/80"
                 onClick={() => navigate('/login')}
               >

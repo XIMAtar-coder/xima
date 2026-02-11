@@ -329,35 +329,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   const handleProceedWithSelection = () => {
     if (!selectedProfessional) return;
     
-    // Mark assessment as completed for route guards
-    localStorage.setItem('xima.assessment_completed', 'true');
-    
     const professionalData = JSON.parse(localStorage.getItem('selected_professional_data') || '{}');
-
-    // Build a durable claim payload in localStorage so it survives
-    // email-verification tab switches (sessionStorage is per-tab).
-    const claimPayload = {
-      ximatar_label: ximatarData?.label || sessionStorage.getItem('guest_ximatar') || null,
-      ximatar_id: ximatarData?.id || null,
-      ximatar_name: ximatarData?.translations?.title || sessionStorage.getItem('guest_ximatar_name') || null,
-      ximatar_image: ximatarData?.image_url || sessionStorage.getItem('guest_ximatar_image') || null,
-      pillar_scores: pillarScores.length > 0
-        ? Object.fromEntries(pillarScores.map(p => [p.pillar, p.score]))
-        : JSON.parse(sessionStorage.getItem('guest_pillar_scores') || 'null'),
-      drive_level: sessionStorage.getItem('guest_drive_level') || null,
-      strongest_pillar: sessionStorage.getItem('guest_strongest_pillar') || null,
-      weakest_pillar: sessionStorage.getItem('guest_weakest_pillar') || null,
-      storytelling: sessionStorage.getItem('guest_ximatar_storytelling') || null,
-      growth_path: sessionStorage.getItem('guest_ximatar_growth_path') || null,
-      selected_mentor_id: professionalData?.id || null,
-      total_score: totalScore,
-      result_id: sessionStorage.getItem('latest_assessment_result_id') || null,
-      attempt_id: sessionStorage.getItem('current_attempt_id') || null,
-      assessment_completed: true,
-      created_at: new Date().toISOString(),
-    };
-    localStorage.setItem('xima.pre_signup_claim', JSON.stringify(claimPayload));
-    console.info('[ResultsComparison] Stored pre-signup claim payload', claimPayload);
     
     if (isAuthenticated) {
       navigate('/profile', { 

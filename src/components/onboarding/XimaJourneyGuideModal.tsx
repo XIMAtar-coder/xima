@@ -41,10 +41,6 @@ export const XimaJourneyGuideModal = ({ open, onClose, isAutoOpen = false }: Xim
   const handleNext = () => {
     if (isLast) {
       onClose(true);
-      // Navigate to dashboard on finish
-      if (window.location.pathname !== '/profile' && window.location.pathname !== '/dashboard') {
-        navigate('/profile', { replace: true });
-      }
     } else {
       setCurrentStep(prev => prev + 1);
     }
@@ -56,10 +52,6 @@ export const XimaJourneyGuideModal = ({ open, onClose, isAutoOpen = false }: Xim
 
   const handleClose = () => {
     onClose(dontShowAgain);
-    // Ensure user lands on dashboard after dismissing the guide
-    if (window.location.pathname !== '/profile' && window.location.pathname !== '/dashboard') {
-      navigate('/profile', { replace: true });
-    }
   };
 
   const handleCtaNavigate = () => {

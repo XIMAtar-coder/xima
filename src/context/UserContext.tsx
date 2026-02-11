@@ -79,10 +79,24 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${window.location.origin}/profile`,
         data: { name }
       }
     });
+
+    // For development/testing, auto sign-in after successful registration
+    if (!error && data.user) {
+      // The user is created, now sign them in directly
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      if (signInError) {
+        console.error('Auto sign-in failed:', signInError);
+        return { data, error: signInError };
+      }
+    }
 
     return { data, error };
   };
