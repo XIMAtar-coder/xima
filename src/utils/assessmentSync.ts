@@ -211,6 +211,34 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
       }
     }
 
+    // Insert initial pillar progress snapshot for Drive computation
+    if (guestPillarScores) {
+      try {
+        const scores = JSON.parse(guestPillarScores);
+        const snapshotScores = {
+          communication: scores.communication ?? 0,
+          knowledge: scores.knowledge ?? 0,
+          creativity: scores.creativity ?? 0,
+          computational_power: scores.computational_power ?? 0,
+        };
+        const { error: snapshotError } = await supabase
+          .from('pillar_progress_snapshots')
+          .insert({
+            user_id: userId,
+            source: 'assessment_initial',
+            pillar_scores: snapshotScores,
+            metadata: { result_id: guestResultId || null },
+          });
+        if (snapshotError) {
+          console.warn('[sync] snapshot insert error (non-fatal):', snapshotError);
+        } else {
+          console.log('✅ Inserted initial pillar progress snapshot');
+        }
+      } catch (e) {
+        console.warn('[sync] snapshot insert failed (non-fatal):', e);
+      }
+    }
+
     // Clean up sessionStorage after successful sync
     sessionStorage.removeItem('latest_assessment_result_id');
     sessionStorage.removeItem('guest_pillar_scores');

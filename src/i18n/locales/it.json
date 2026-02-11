@@ -240,13 +240,13 @@
       "growth_description": "Coltiva le tue capacità creative attraverso la sperimentazione, l'esposizione a idee diverse e la pratica di tecniche di ideazione."
     },
     "drive": {
-      "name": "Spinta",
-      "description": "La tua motivazione interiore a perseguire obiettivi ambiziosi, riprenderti dalle battute d'arresto, prendere iniziativa e mantenere l'impegno verso l'eccellenza",
-      "drive_note": "La Spinta non definisce l'abilità — definisce la traiettoria",
-      "as_strength": "Sei auto-motivato, resiliente e orientato all'azione",
-      "as_weakness": "Potresti esitare, ritardare l'azione o mancare di slancio",
-      "strength_description": "La tua motivazione e determinazione nel raggiungere gli obiettivi è notevole. Hai la perseveranza e l'energia per superare le sfide e ottenere risultati.",
-      "growth_description": "Concentrati sul mantenere la tua motivazione attraverso la definizione di obiettivi, la celebrazione dei successi e la costruzione di resilienza di fronte alle difficoltà."
+      "name": "Drive (Velocità di Crescita)",
+      "description": "Drive è quanto velocemente migliori ciò che non padroneggi ancora. Misura la crescita nel tempo — non il punto di partenza.",
+      "drive_note": "I pillar sono dinamici. I prossimi passi possono farli crescere.",
+      "as_strength": "Migliori rapidamente nelle aree deboli — la tua traiettoria sta accelerando",
+      "as_weakness": "La tua crescita nelle aree deboli è lenta — concentrati sulla pratica mirata",
+      "strength_description": "La tua velocità di miglioramento nelle aree deboli è forte. Trasformi i punti di attrito in punti di forza più velocemente della media.",
+      "growth_description": "Concentrati sui pillar più deboli con pratica mirata. Il Drive cresce man mano che riduci il divario tra i tuoi punti di forza e le debolezze."
     },
     "cta_primary": "Ottieni il tuo Ximatar ora",
     "cta_secondary": "Scopri di più",
@@ -313,18 +313,18 @@
         ]
       },
       "drive": {
-        "name": "Motivazione",
-        "tagline": "Persegui obiettivi con determinazione e resilienza",
-        "description": "La spinta interiore che ti mantiene focalizzato, la capacità di superare ostacoli e mantenere lo slancio verso i tuoi obiettivi.",
+        "name": "Drive (Velocità di Crescita)",
+        "tagline": "Quanto velocemente migliori ciò che non padroneggi ancora",
+        "description": "Il Drive misura la tua crescita nel tempo sulle aree deboli. È il pillar 'boost' — traccia la distanza percorsa, non il punto di partenza.",
         "how_we_evaluate": [
-          "Capacità di fissare e perseguire obiettivi a lungo termine",
-          "Resilienza di fronte a sfide e battute d'arresto",
-          "Iniziativa e proattività nell'affrontare nuove opportunità"
+          "Velocità di miglioramento sui pillar più deboli nel tempo",
+          "Riduzione del divario tra aree più forti e più deboli",
+          "Costanza di crescita tra sessioni e challenge"
         ],
         "tips": [
-          "Stabilisci obiettivi SMART con traguardi intermedi celebrabili",
-          "Sviluppa routine e abitudini che supportano i tuoi obiettivi",
-          "Trova fonti di ispirazione e mantieni una visione chiara"
+          "Concentra la pratica sui pillar più deboli, non sui più forti",
+          "Completa sessioni e challenge regolarmente per costruire un track record",
+          "Ripeti le valutazioni periodicamente — ognuna affina il tuo punteggio Drive"
         ]
       }
     }
@@ -854,7 +854,10 @@
     "growth_path": "Il Tuo Percorso di Crescita",
     "assessment_overview": "Panoramica della Valutazione",
     "overall_score": "Punteggio Complessivo",
-    "drive_level": "Livello di Spinta",
+    "drive_level": "Drive (Velocità di Crescita)",
+    "drive_subtitle": "Velocità di miglioramento sulle aree deboli",
+    "drive_refining": "Affineremo il Drive man mano che completi sessioni e challenge.",
+    "pillars_dynamic": "I pillar sono dinamici. I prossimi passi possono farli crescere.",
     "pillar_scores": "Punteggi dei Pilastri",
     "your_story": "La Tua Storia",
     "open_answers": "Le Tue Risposte Aperte",
@@ -907,9 +910,9 @@
     "match": "Compatibilità",
     "refresh": "Aggiorna",
      "loading": "Caricamento...",
-     "drive_level_high": "Alta Motivazione",
-     "drive_level_medium": "Media Motivazione",
-     "drive_level_low": "Bassa Motivazione",
+     "drive_level_high": "Alto Drive",
+     "drive_level_medium": "Medio Drive",
+     "drive_level_low": "Basso Drive",
      "change_photo": "Cambia Foto",
      "uploading": "Caricamento...",
      "growth_area": "Area di Crescita",

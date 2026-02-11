@@ -63,17 +63,25 @@ export const AssessmentOverviewCard: React.FC<AssessmentOverviewCardProps> = ({
           <Progress value={averageScore * 10} className="h-3" />
         </div>
 
-        {/* Drive Level */}
+        {/* Drive (Growth Velocity) */}
         {driveLevel && (
           <div>
-            <span className="text-sm font-medium text-muted-foreground block mb-2">
-              {t('profile.drive_level', 'Drive Level')}
+            <span className="text-sm font-medium text-muted-foreground block mb-1">
+              {t('profile.drive_level', 'Drive (Growth Velocity)')}
             </span>
+            <p className="text-xs text-muted-foreground mb-2">
+              {t('profile.drive_subtitle', 'Speed of improvement on weak areas')}
+            </p>
             <Badge className={`${driveLevelConfig[driveLevel].color} text-white`}>
               {driveLevelConfig[driveLevel].text}
             </Badge>
           </div>
         )}
+
+        {/* Pillars are dynamic note */}
+        <p className="text-xs text-muted-foreground italic">
+          {t('profile.pillars_dynamic', 'Pillars are dynamic. Your next steps can move them.')}
+        </p>
 
         {/* Pillar Scores Breakdown */}
         <div className="space-y-3">
