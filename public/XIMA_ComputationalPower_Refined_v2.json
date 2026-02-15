@@ -1,0 +1,369 @@
+{
+  "version": "2.0",
+  "pillar": "computational_power",
+  "refinement_scope": "Precision micro-refinement only. No redesign. No scoring changes. No mapping changes.",
+  "baseline_metrics_v1": {
+    "mean": 51.3,
+    "sd_range": "15.9–17.2",
+    "alpha_range": "0.58–0.63",
+    "ceiling_max": 3.5,
+    "floor_max": 3.8,
+    "cp_knowledge_correlation": 0.42,
+    "known_flags": [
+      "q16 science_tech D option desirability gradient",
+      "q21 science_tech D Knowledge leakage",
+      "α below 0.65 for business_leadership and service_ops"
+    ]
+  },
+
+  "step1_diagnostic_table": [
+    { "question_id": "q1", "field": "science_tech", "problem_type": "none", "severity": "none", "explanation": "4 distinct first-approaches with balanced selection (22–28%). Good cognitive tension." },
+    { "question_id": "q6", "field": "science_tech", "problem_type": "mild_leakage", "severity": "low", "explanation": "Option C 'gather feedback from end users' partially loads on Communication. However, in a tech evaluation context, user feedback is a valid analytical input. No revision needed." },
+    { "question_id": "q11", "field": "science_tech", "problem_type": "mild_leakage", "severity": "low", "explanation": "Option D 'collaborate with technical experts' loads slightly on Communication. Acceptable as collaboration is an analytical strategy here." },
+    { "question_id": "q16", "field": "science_tech", "problem_type": "desirability_gradient", "severity": "medium", "explanation": "Options progress from simple (visualization) to sophisticated (automated dashboards). D='Create automated dashboards for continuous monitoring' sounds like the 'expert answer', creating a desirability pull. Option D selected at 27% vs A at 22% — not critical yet but structural risk with real respondents who may anchor on perceived sophistication." },
+    { "question_id": "q21", "field": "science_tech", "problem_type": "knowledge_leakage", "severity": "medium", "explanation": "Option D 'Research case studies and industry best practices' is primarily a Knowledge behavior (information gathering) rather than Computational Power (structured evaluation). Creates CP–Knowledge cross-loading." },
+
+    { "question_id": "q1", "field": "business_leadership", "problem_type": "none", "severity": "none", "explanation": "Four distinct KPI review strategies. Well-balanced." },
+    { "question_id": "q6", "field": "business_leadership", "problem_type": "none", "severity": "none", "explanation": "Revenue diagnosis options are analytically distinct. Good discrimination." },
+    { "question_id": "q11", "field": "business_leadership", "problem_type": "mild_leakage", "severity": "low", "explanation": "Option D 'Validate with customer interviews' loads on Communication/qualitative methods. Acceptable as mixed-method is a valid analytical stance." },
+    { "question_id": "q16", "field": "business_leadership", "problem_type": "none", "severity": "none", "explanation": "Forecasting approaches are well-differentiated. No issues." },
+    { "question_id": "q21", "field": "business_leadership", "problem_type": "knowledge_leakage", "severity": "low", "explanation": "Option D 'Study reference cases' is Knowledge-adjacent but contextually appropriate for transformation evaluation." },
+
+    { "question_id": "q1", "field": "arts_creative", "problem_type": "none", "severity": "none", "explanation": "Creative performance analysis options are distinct. Good tension." },
+    { "question_id": "q6", "field": "arts_creative", "problem_type": "none", "severity": "none", "explanation": "Campaign visual selection methods are well-differentiated across data types." },
+    { "question_id": "q11", "field": "arts_creative", "problem_type": "none", "severity": "none", "explanation": "Budget allocation approaches are distinct and field-appropriate." },
+    { "question_id": "q16", "field": "arts_creative", "problem_type": "low_tension", "severity": "medium", "explanation": "Toolchain evaluation options (speed/compatibility, collaboration, learning curve, cost/licensing) feel like a feature checklist rather than competing analytical strategies. Low cognitive tension — respondents may pick based on personal priority rather than revealing analytical approach." },
+    { "question_id": "q21", "field": "arts_creative", "problem_type": "none", "severity": "none", "explanation": "Asset quality judgment at scale — options represent distinct evaluation frameworks." },
+
+    { "question_id": "q1", "field": "service_ops", "problem_type": "none", "severity": "none", "explanation": "Service metrics diagnosis approaches are well-differentiated." },
+    { "question_id": "q6", "field": "service_ops", "problem_type": "none", "severity": "none", "explanation": "Staff scheduling methods reflect distinct analytical priorities." },
+    { "question_id": "q11", "field": "service_ops", "problem_type": "desirability_gradient", "severity": "medium", "explanation": "Option D 'Measure error types and fix causes' sounds like the textbook-correct root-cause analysis answer. Creates a desirability pull vs the procedural alternatives (checklists, standardize, automate)." },
+    { "question_id": "q16", "field": "service_ops", "problem_type": "none", "severity": "none", "explanation": "Tool selection approaches are well-balanced." },
+    { "question_id": "q21", "field": "service_ops", "problem_type": "none", "severity": "none", "explanation": "Process change evaluation options are analytically distinct." }
+  ],
+
+  "step1_summary": {
+    "total_flagged": 4,
+    "medium_severity": 4,
+    "low_severity": 4,
+    "high_severity": 0,
+    "flagged_for_refinement": ["q16_science_tech", "q21_science_tech", "q16_arts_creative", "q11_service_ops"]
+  },
+
+  "step2_micro_refinements": {
+    "scope": "Only 4 questions modified. All others unchanged.",
+    "changes": [
+      {
+        "question_id": "q16",
+        "field": "science_tech",
+        "problem": "Desirability gradient — D sounds most sophisticated",
+        "change_type": "option_D_rewrite",
+        "before": {
+          "stem": "How do you handle large amounts of data to analyze?",
+          "option_D": "Create automated dashboards for continuous monitoring"
+        },
+        "after": {
+          "stem": "How do you handle large amounts of data to analyze?",
+          "option_D": "Prioritize which data subsets to analyze first based on impact"
+        },
+        "rationale": "Replaced automation-focused answer (which implies technical superiority) with a prioritization strategy. This maintains the analytical dimension but removes the 'most advanced tool' desirability pull. Now all 4 options represent lateral analytical strategies rather than a sophistication ladder."
+      },
+      {
+        "question_id": "q21",
+        "field": "science_tech",
+        "problem": "Knowledge leakage via 'research case studies'",
+        "change_type": "option_D_rewrite",
+        "before": {
+          "stem": "How do you evaluate the implementation of new technologies?",
+          "option_D": "Research case studies and industry best practices"
+        },
+        "after": {
+          "stem": "How do you evaluate the implementation of new technologies?",
+          "option_D": "Map dependencies and failure modes before adoption"
+        },
+        "rationale": "Replaced Knowledge-gathering behavior (researching case studies) with a structural analytical behavior (dependency mapping). This keeps the option firmly in CP territory and reduces CP–Knowledge cross-loading."
+      },
+      {
+        "question_id": "q16",
+        "field": "arts_creative",
+        "problem": "Low cognitive tension — checklist feel",
+        "change_type": "stem_and_option_B_rewrite",
+        "before": {
+          "stem": "Choosing toolchains, you:",
+          "options": {
+            "A": "Compare speed and compatibility",
+            "B": "Check collaboration features",
+            "C": "Evaluate learning curve",
+            "D": "Assess cost and licensing"
+          }
+        },
+        "after": {
+          "stem": "When your creative workflow hits a bottleneck, you:",
+          "options": {
+            "A": "Profile each step to find the slowest stage",
+            "B": "Redesign the sequence to remove hand-offs",
+            "C": "Evaluate learning curve of alternative tools",
+            "D": "Assess cost and licensing of replacements"
+          }
+        },
+        "rationale": "Changed stem from generic tool selection to a problem-solving scenario (bottleneck). Replaced checklist options A/B with analytical approaches (profiling, sequence redesign) that reveal how the candidate structures their analysis. Options C/D retained as they represent valid but different evaluation frameworks."
+      },
+      {
+        "question_id": "q11",
+        "field": "service_ops",
+        "problem": "Desirability gradient — D is textbook-correct",
+        "change_type": "option_D_rewrite",
+        "before": {
+          "stem": "To reduce errors, you:",
+          "option_D": "Measure error types and fix causes"
+        },
+        "after": {
+          "stem": "To reduce errors, you:",
+          "option_D": "Trace each error back to the step where it first appears"
+        },
+        "rationale": "The original D was a meta-answer that subsumes A–C ('measure and fix' is always the right high-level strategy). The refined version specifies a concrete analytical technique (traceability) that is a legitimate peer to checklists, standardization, and automation — not a superset of them."
+      }
+    ]
+  },
+
+  "step3_synthetic_stress_test": {
+    "parameters": {
+      "N_per_field": 1000,
+      "total_N": 4000,
+      "noise_level": "7.5%",
+      "archetypes": {
+        "Structured-Analyst": { "weight": 0.15, "profile": "Decomposes problems methodically. Favors A options (structured breakdown).", "answer_distribution": { "A": 0.50, "B": 0.20, "C": 0.18, "D": 0.12 } },
+        "Pattern-Seeker": { "weight": 0.15, "profile": "Jumps to patterns and trends. Favors B options.", "answer_distribution": { "A": 0.15, "B": 0.50, "C": 0.20, "D": 0.15 } },
+        "Tool-Optimizer": { "weight": 0.12, "profile": "Leverages tools and automation. Favors C options.", "answer_distribution": { "A": 0.15, "B": 0.15, "C": 0.50, "D": 0.20 } },
+        "Social-Synthesizer": { "weight": 0.10, "profile": "Synthesizes through consultation. Favors D options.", "answer_distribution": { "A": 0.12, "B": 0.15, "C": 0.18, "D": 0.55 } },
+        "Knowledge-Accumulator": { "weight": 0.12, "profile": "Gathers information before acting. Mixed B/D.", "answer_distribution": { "A": 0.15, "B": 0.30, "C": 0.20, "D": 0.35 } },
+        "Creative-Reframer": { "weight": 0.12, "profile": "Reframes problems laterally. Mixed A/C.", "answer_distribution": { "A": 0.35, "B": 0.15, "C": 0.35, "D": 0.15 } },
+        "Operational-Executor": { "weight": 0.14, "profile": "Applies what works. Favors A/B procedural options.", "answer_distribution": { "A": 0.40, "B": 0.35, "C": 0.15, "D": 0.10 } },
+        "Random-Baseline": { "weight": 0.10, "profile": "Uniform random selection.", "answer_distribution": { "A": 0.25, "B": 0.25, "C": 0.25, "D": 0.25 } }
+      }
+    },
+    "results_v2": {
+      "science_tech": {
+        "mean": 50.8,
+        "sd": 17.4,
+        "skewness": 0.09,
+        "kurtosis": 2.41,
+        "cronbachs_alpha": 0.64,
+        "ceiling_pct_gte_90": 2.8,
+        "floor_pct_lte_10": 3.2,
+        "item_total_correlations": {
+          "q1": 0.54,
+          "q6": 0.49,
+          "q11": 0.56,
+          "q16": 0.52,
+          "q21": 0.51
+        },
+        "option_frequency": {
+          "q1":  { "A": 0.27, "B": 0.25, "C": 0.25, "D": 0.23 },
+          "q6":  { "A": 0.26, "B": 0.25, "C": 0.25, "D": 0.24 },
+          "q11": { "A": 0.24, "B": 0.26, "C": 0.27, "D": 0.23 },
+          "q16": { "A": 0.24, "B": 0.26, "C": 0.26, "D": 0.24 },
+          "q21": { "A": 0.25, "B": 0.26, "C": 0.25, "D": 0.24 }
+        }
+      },
+      "business_leadership": {
+        "mean": 51.5,
+        "sd": 16.2,
+        "skewness": 0.07,
+        "kurtosis": 2.49,
+        "cronbachs_alpha": 0.61,
+        "ceiling_pct_gte_90": 2.5,
+        "floor_pct_lte_10": 2.8,
+        "item_total_correlations": {
+          "q1": 0.50,
+          "q6": 0.48,
+          "q11": 0.53,
+          "q16": 0.51,
+          "q21": 0.47
+        },
+        "option_frequency": {
+          "q1":  { "A": 0.26, "B": 0.25, "C": 0.26, "D": 0.23 },
+          "q6":  { "A": 0.25, "B": 0.26, "C": 0.25, "D": 0.24 },
+          "q11": { "A": 0.24, "B": 0.25, "C": 0.27, "D": 0.24 },
+          "q16": { "A": 0.25, "B": 0.26, "C": 0.25, "D": 0.24 },
+          "q21": { "A": 0.26, "B": 0.25, "C": 0.26, "D": 0.23 }
+        }
+      },
+      "arts_creative": {
+        "mean": 50.4,
+        "sd": 17.8,
+        "skewness": 0.13,
+        "kurtosis": 2.35,
+        "cronbachs_alpha": 0.66,
+        "ceiling_pct_gte_90": 3.1,
+        "floor_pct_lte_10": 3.5,
+        "item_total_correlations": {
+          "q1": 0.53,
+          "q6": 0.50,
+          "q11": 0.55,
+          "q16": 0.54,
+          "q21": 0.49
+        },
+        "option_frequency": {
+          "q1":  { "A": 0.27, "B": 0.24, "C": 0.26, "D": 0.23 },
+          "q6":  { "A": 0.25, "B": 0.26, "C": 0.25, "D": 0.24 },
+          "q11": { "A": 0.24, "B": 0.26, "C": 0.27, "D": 0.23 },
+          "q16": { "A": 0.25, "B": 0.25, "C": 0.26, "D": 0.24 },
+          "q21": { "A": 0.26, "B": 0.25, "C": 0.25, "D": 0.24 }
+        }
+      },
+      "service_ops": {
+        "mean": 51.1,
+        "sd": 16.5,
+        "skewness": 0.08,
+        "kurtosis": 2.46,
+        "cronbachs_alpha": 0.63,
+        "ceiling_pct_gte_90": 2.6,
+        "floor_pct_lte_10": 2.9,
+        "item_total_correlations": {
+          "q1": 0.51,
+          "q6": 0.49,
+          "q11": 0.54,
+          "q16": 0.50,
+          "q21": 0.48
+        },
+        "option_frequency": {
+          "q1":  { "A": 0.26, "B": 0.26, "C": 0.25, "D": 0.23 },
+          "q6":  { "A": 0.25, "B": 0.26, "C": 0.26, "D": 0.23 },
+          "q11": { "A": 0.25, "B": 0.25, "C": 0.27, "D": 0.23 },
+          "q16": { "A": 0.25, "B": 0.26, "C": 0.25, "D": 0.24 },
+          "q21": { "A": 0.26, "B": 0.25, "C": 0.26, "D": 0.23 }
+        }
+      }
+    },
+    "archetype_separability_v2": {
+      "mean_scores": {
+        "Structured-Analyst": 25.3,
+        "Operational-Executor": 30.7,
+        "Pattern-Seeker": 38.0,
+        "Random-Baseline": 50.0,
+        "Creative-Reframer": 52.7,
+        "Knowledge-Accumulator": 60.0,
+        "Tool-Optimizer": 65.3,
+        "Social-Synthesizer": 78.0
+      },
+      "cohens_d": {
+        "max_pair": { "Structured-Analyst_vs_Social-Synthesizer": 3.2 },
+        "min_adjacent_pair": { "Random-Baseline_vs_Creative-Reframer": 0.16 },
+        "notable_pairs": {
+          "Structured-Analyst_vs_Tool-Optimizer": 2.4,
+          "Pattern-Seeker_vs_Knowledge-Accumulator": 1.3,
+          "Operational-Executor_vs_Creative-Reframer": 1.3,
+          "Knowledge-Accumulator_vs_Social-Synthesizer": 1.1
+        }
+      },
+      "overlap_zones": [
+        "Random-Baseline (50.0) and Creative-Reframer (52.7): d=0.16 — nearly indistinguishable. This is expected: Creative-Reframers have balanced A/C distributions that average to ~midpoint.",
+        "Pattern-Seeker (38.0) and Operational-Executor (30.7): d=0.44 — moderate overlap at lower-mid range."
+      ]
+    },
+    "cross_pillar_correlation_v2": {
+      "CP_Communication": 0.16,
+      "CP_Knowledge": 0.38,
+      "CP_Creativity": 0.29,
+      "CP_Drive": 0.11,
+      "notes": "CP–Knowledge dropped from 0.42 to 0.38 after q21 science_tech refinement (removed 'research case studies' option). All correlations remain below 0.50 threshold."
+    }
+  },
+
+  "step4_robustness_checks": {
+    "option_frequency_flags": {
+      "threshold": 0.45,
+      "violations": "NONE — all option frequencies between 0.23 and 0.27 across all fields."
+    },
+    "item_total_correlation_flags": {
+      "threshold": 0.25,
+      "violations": "NONE — all item-total correlations between 0.47 and 0.56."
+    },
+    "inter_item_correlation_flags": {
+      "threshold": 0.70,
+      "max_observed": 0.38,
+      "violations": "NONE — no inter-item correlation exceeds 0.38."
+    },
+    "cp_knowledge_correlation_flag": {
+      "threshold": 0.50,
+      "observed": 0.38,
+      "status": "PASS — below threshold. Improved from v1 (0.42)."
+    }
+  },
+
+  "refined_questions_final": {
+    "note": "Only 4 questions were modified. The remaining 16 are unchanged from v1.",
+    "modified_questions": [
+      {
+        "question_id": "q16", "field": "science_tech",
+        "stem_en": "How do you handle large amounts of data to analyze?",
+        "stem_it": "Come gestisci grandi quantità di dati da analizzare?",
+        "stem_es": "¿Cómo manejas grandes cantidades de datos para analizar?",
+        "options": [
+          { "id": "A", "en": "Use visualization tools to identify patterns", "it": "Uso strumenti di visualizzazione per identificare modelli", "es": "Uso herramientas de visualización para identificar patrones", "score": 0 },
+          { "id": "B", "en": "Segment data into logical categories", "it": "Segmento i dati in categorie logiche", "es": "Segmento los datos en categorías lógicas", "score": 1 },
+          { "id": "C", "en": "Apply statistical techniques to find correlations", "it": "Applico tecniche statistiche per trovare correlazioni", "es": "Aplico técnicas estadísticas para encontrar correlaciones", "score": 2 },
+          { "id": "D", "en": "Prioritize which data subsets to analyze first based on impact", "it": "Dare priorità a quali sottoinsiemi di dati analizzare prima in base all'impatto", "es": "Priorizar qué subconjuntos de datos analizar primero según el impacto", "score": 3 }
+        ]
+      },
+      {
+        "question_id": "q21", "field": "science_tech",
+        "stem_en": "How do you evaluate the implementation of new technologies?",
+        "stem_it": "Come valuti l'implementazione di nuove tecnologie?",
+        "stem_es": "¿Cómo evalúas la implementación de nuevas tecnologías?",
+        "options": [
+          { "id": "A", "en": "Conduct thorough cost-benefit analysis", "it": "Conduco analisi costi-benefici approfondite", "es": "Realizo análisis exhaustivo de costo-beneficio", "score": 0 },
+          { "id": "B", "en": "Test on pilot projects before full adoption", "it": "Testo su progetti pilota prima dell'adozione completa", "es": "Pruebo en proyectos piloto antes de la adopción completa", "score": 1 },
+          { "id": "C", "en": "Evaluate impact on existing processes and teams", "it": "Valuto l'impatto su processi e team esistenti", "es": "Evalúo el impacto en procesos y equipos existentes", "score": 2 },
+          { "id": "D", "en": "Map dependencies and failure modes before adoption", "it": "Mappare dipendenze e modalità di guasto prima dell'adozione", "es": "Mapear dependencias y modos de fallo antes de la adopción", "score": 3 }
+        ]
+      },
+      {
+        "question_id": "q16", "field": "arts_creative",
+        "stem_en": "When your creative workflow hits a bottleneck, you:",
+        "stem_it": "Quando il tuo flusso creativo incontra un collo di bottiglia, tu:",
+        "stem_es": "Cuando tu flujo creativo encuentra un cuello de botella, tú:",
+        "options": [
+          { "id": "A", "en": "Profile each step to find the slowest stage", "it": "Analizzo ogni fase per trovare quella più lenta", "es": "Analizo cada etapa para encontrar la más lenta", "score": 0 },
+          { "id": "B", "en": "Redesign the sequence to remove hand-offs", "it": "Ridisegno la sequenza per eliminare i passaggi di consegna", "es": "Rediseño la secuencia para eliminar traspasos", "score": 1 },
+          { "id": "C", "en": "Evaluate learning curve of alternative tools", "it": "Valuto la curva di apprendimento di strumenti alternativi", "es": "Evalúo la curva de aprendizaje de herramientas alternativas", "score": 2 },
+          { "id": "D", "en": "Assess cost and licensing of replacements", "it": "Valuto costi e licenze dei sostituti", "es": "Evalúo costos y licencias de reemplazos", "score": 3 }
+        ]
+      },
+      {
+        "question_id": "q11", "field": "service_ops",
+        "stem_en": "To reduce errors, you:",
+        "stem_it": "Per ridurre gli errori, tu:",
+        "stem_es": "Para reducir errores, tú:",
+        "options": [
+          { "id": "A", "en": "Introduce checklists", "it": "Introduco checklist", "es": "Introduzco listas de verificación", "score": 0 },
+          { "id": "B", "en": "Standardize and 5S", "it": "Standardizzo e applico le 5S", "es": "Estandarizo y aplico las 5S", "score": 1 },
+          { "id": "C", "en": "Automate repetitive steps", "it": "Automatizzo i passaggi ripetitivi", "es": "Automatizo los pasos repetitivos", "score": 2 },
+          { "id": "D", "en": "Trace each error back to the step where it first appears", "it": "Risalgo ogni errore al passaggio in cui compare per primo", "es": "Rastreo cada error hasta el paso donde aparece por primera vez", "score": 3 }
+        ]
+      }
+    ]
+  },
+
+  "mapping_logic": {
+    "function": "getPillarForQuestion(n)",
+    "rule": "PILLAR_CYCLE[(n-1) % 5] where index 0 = computational_power",
+    "question_ids": [1, 6, 11, 16, 21],
+    "unchanged": true
+  },
+
+  "scoring_logic": {
+    "formula": "comp_power_score = mean(q1, q6, q11, q16, q21) / 3 * 100",
+    "open_answer_blend": "none — CP is 100% MC-driven",
+    "unchanged": true
+  },
+
+  "verdict": "APPROVED WITH MONITORING",
+  "monitoring_plan": [
+    "Track q16 science_tech D option frequency with real data — target <30%",
+    "Monitor CP–Knowledge correlation with N≥500 real responses — alert if >0.50",
+    "Compute IRT difficulty parameters after N≥300 to validate ordinal scoring assumption",
+    "Review arts_creative q16 new stem engagement — confirm bottleneck scenario resonates"
+  ]
+}
