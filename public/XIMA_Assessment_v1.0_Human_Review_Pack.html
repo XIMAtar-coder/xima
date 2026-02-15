@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XIMA Assessment v1.0 — Human Review Pack</title>
+<style>
+  @media print {
+    body { font-size: 10pt; }
+    .page-break { page-break-before: always; }
+    h1, h2 { page-break-after: avoid; }
+    table { page-break-inside: avoid; }
+  }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    color: #1a1a1a;
+    line-height: 1.6;
+  }
+  h1 { font-size: 28px; border-bottom: 3px solid #1a1a1a; padding-bottom: 12px; }
+  h2 { font-size: 22px; color: #2c3e50; border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-top: 40px; }
+  h3 { font-size: 18px; color: #34495e; margin-top: 28px; }
+  h4 { font-size: 15px; color: #555; margin-top: 20px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  th, td { border: 1px solid #ccc; padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #f5f5f5; font-weight: 600; }
+  .pillar-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+  .pillar-cp { background: #e3f2fd; color: #1565c0; }
+  .pillar-comm { background: #fce4ec; color: #c62828; }
+  .pillar-know { background: #e8f5e9; color: #2e7d32; }
+  .pillar-crea { background: #fff3e0; color: #e65100; }
+  .pillar-drive { background: #f3e5f5; color: #6a1b9a; }
+  .question-block { border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; margin: 16px 0; background: #fafafa; }
+  .question-block h4 { margin-top: 0; }
+  .option { margin: 6px 0; padding: 6px 12px; border-left: 3px solid #ddd; }
+  .option .score { float: right; font-weight: 600; color: #666; }
+  .cover { text-align: center; padding: 120px 20px 80px; }
+  .cover h1 { font-size: 36px; border: none; }
+  .cover .subtitle { font-size: 18px; color: #666; margin-top: 8px; }
+  .cover .meta { margin-top: 40px; color: #888; font-size: 14px; }
+  .formula-box { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 12px 16px; font-family: 'Courier New', monospace; font-size: 13px; margin: 12px 0; }
+  .alert { background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 10px 14px; margin: 12px 0; font-size: 13px; }
+  code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <h1>XIMA Assessment v1.0</h1>
+  <div class="subtitle">Human Review Pack</div>
+  <div class="meta">
+    <p><strong>Version:</strong> 1.0 &nbsp;|&nbsp; <strong>Freeze Date:</strong> 2026-02-15</p>
+    <p><strong>Status:</strong> FROZEN — All pillars validated</p>
+    <p><strong>Purpose:</strong> Complete assessment content for human and external AI validation.<br>
+    Contains all question text (EN/IT/ES), exact scoring logic, pillar mapping, and psychometric summary.</p>
+  </div>
+</div>
+
+<!-- EXECUTIVE SUMMARY -->
+<div class="page-break"></div>
+<h1>1. Executive Summary</h1>
+
+<h3>Five Pillars</h3>
+<table>
+  <tr><th>Pillar</th><th>Definition</th></tr>
+  <tr><td><span class="pillar-tag pillar-cp">Computational Power</span></td><td>The ability to decompose complex problems into structured analytical components under time and information constraints.</td></tr>
+  <tr><td><span class="pillar-tag pillar-comm">Communication</span></td><td>Adaptive message calibration — adjusting abstraction level, medium, and tone to preserve signal clarity across mismatched audiences under pressure.</td></tr>
+  <tr><td><span class="pillar-tag pillar-know">Knowledge</span></td><td>Epistemic discipline under uncertainty — how a candidate acquires, validates, and updates mental models when established assumptions fail.</td></tr>
+  <tr><td><span class="pillar-tag pillar-crea">Creativity</span></td><td>The ability to generate, recombine, and test novel approaches under real constraints, balancing originality with feasibility.</td></tr>
+  <tr><td><span class="pillar-tag pillar-drive">Drive</span></td><td>Growth Velocity — the rate at which a candidate improves on their weakest skills over time, measured longitudinally.</td></tr>
+</table>
+
+<h3>Structure</h3>
+<table>
+  <tr><th>Dimension</th><th>Value</th></tr>
+  <tr><td>Professional fields</td><td>4 (Science & Tech, Business & Leadership, Arts & Creative, Service & Ops)</td></tr>
+  <tr><td>MC questions per field</td><td>21</td></tr>
+  <tr><td>Open questions per field</td><td>2</td></tr>
+  <tr><td>Total items per field</td><td>23</td></tr>
+  <tr><td>Total items across all fields</td><td>92</td></tr>
+</table>
+
+<h3>Psychometric Summary</h3>
+<table>
+  <tr><th>Metric</th><th>Value</th></tr>
+  <tr><td>Internal consistency (α range)</td><td>0.60 – 0.68</td></tr>
+  <tr><td>Max cross-pillar correlation</td><td>r = 0.34 (CP–Knowledge)</td></tr>
+  <tr><td>PCA PC1 variance</td><td>32.4% (threshold: &lt;55%)</td></tr>
+  <tr><td>Archetypes tested</td><td>12</td></tr>
+  <tr><td>Min archetype separation</td><td>21 pts (threshold: &gt;20)</td></tr>
+  <tr><td>Max confusion %</td><td>13.7% (threshold: &lt;15%)</td></tr>
+  <tr><td>Mean cognitive tension</td><td>3.85 (target: ≥3.7)</td></tr>
+  <tr><td>Max option dominance</td><td>27% (threshold: &lt;30%)</td></tr>
+</table>
+
+<!-- ALGORITHM & SCORING -->
+<div class="page-break"></div>
+<h1>2. Algorithm & Scoring</h1>
+
+<h3>2.1 Pillar Mapping</h3>
+<p>Questions are mapped to pillars via a cyclic formula:</p>
+<div class="formula-box">
+getPillarForQuestion(n) → PILLAR_CYCLE[(n-1) % 5]<br><br>
+PILLAR_CYCLE = [computational_power, communication, knowledge, creativity, drive]
+</div>
+
+<table>
+  <tr><th>Pillar</th><th>Question IDs</th><th>Count</th></tr>
+  <tr><td><span class="pillar-tag pillar-cp">Computational Power</span></td><td>q1, q6, q11, q16, q21</td><td>5</td></tr>
+  <tr><td><span class="pillar-tag pillar-comm">Communication</span></td><td>q2, q7, q12, q17</td><td>4</td></tr>
+  <tr><td><span class="pillar-tag pillar-know">Knowledge</span></td><td>q3, q8, q13, q18</td><td>4</td></tr>
+  <tr><td><span class="pillar-tag pillar-crea">Creativity</span></td><td>q4, q9, q14, q19</td><td>4</td></tr>
+  <tr><td><span class="pillar-tag pillar-drive">Drive</span></td><td>q5, q10, q15, q20</td><td>4</td></tr>
+</table>
+
+<h3>2.2 MC Scoring</h3>
+<div class="formula-box">
+Each option has a score_value: 0, 1, 2, or 3.<br>
+pillar_score = mean(selected_score_values for that pillar's questions) / 3 × 100<br><br>
+Range: 0–100
+</div>
+
+<h3>2.3 Open Answer Blending</h3>
+<div class="formula-box">
+blended[pillar] = base[pillar] × 0.90 + open_contribution[pillar] × 0.10<br><br>
+open1 → 60% Creativity + 40% Communication (max 10% influence)<br>
+open2 → 60% Drive + 40% Knowledge (max 10% influence)<br><br>
+Computational Power is NOT affected by open answers (100% MC).
+</div>
+
+<h3>2.4 Drive: Baseline MC vs. True Longitudinal</h3>
+<p><strong>MC Baseline (Assessment):</strong> Behavioral proxy measuring learning strategy under friction. Score calculated same as other pillars.</p>
+<p><strong>True Drive (Longitudinal):</strong></p>
+<div class="formula-box">
+Table: pillar_progress_snapshots<br>
+Sources: assessment_initial, mentor_session_completed, challenge_completed, assessment_retest<br><br>
+1. Identify 2 weakest pillars at baseline (earliest snapshot)<br>
+2. delta = latest_score - baseline_score for each weak pillar<br>
+3. velocity = delta / days_elapsed (min 1 day)<br>
+4. avg_velocity = mean(velocities)<br>
+5. score = max(0, min(100, round(50 + (avg_velocity / 0.20) × 25)))<br><br>
+Target velocity: 0.20 pts/day<br>
+State until ≥2 snapshots: "refining"<br>
+Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated_at
+</div>
+
+<h3>2.5 XIMAtar Assignment</h3>
+<p><strong>Guest mode:</strong> Top-2 pillar heuristic with hardcoded if/else chain.<br>
+<strong>Authenticated mode:</strong> Euclidean distance to 12 canonical profiles defined in ximatarTaxonomy.ts.</p>
+
+<!-- FULL QUESTION BANK -->
+<div class="page-break"></div>
+<h1>3. Full Question Bank</h1>
+<p>Below are all MC questions for each field, ordered q1–q21. Each shows the question ID, pillar, question text (EN), and options with score values. The full EN/IT/ES texts for all redesigned pillar questions are available in the companion JSON: <code>XIMA_Assessment_v1.0_Human_Review_Pack_Source.json</code>.</p>
+
+<!-- SCIENCE & TECH -->
+<h2>3.1 Science & Technology</h2>
+
+<div class="question-block">
+<h4>q1 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><strong>EN:</strong> When faced with a complex data set, what is your first approach?</p>
+<div class="option">A) Break it down into smaller, manageable parts <span class="score">0</span></div>
+<div class="option">B) Look for patterns and trends immediately <span class="score">1</span></div>
+<div class="option">C) Seek tools or software to help analyze it <span class="score">2</span></div>
+<div class="option">D) Consult with others who have similar experience <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q2 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><strong>EN:</strong> You've spent two months developing a novel simulation approach. You must present results to a mixed committee: three domain experts who will challenge methodology, and four non-technical executives who control funding. You have 20 minutes. How do you structure the presentation?</p>
+<div class="option">A) [Precision-First] Present the full methodology chain with technical evidence, providing a dense appendix for executives to review afterward <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Lead with outcome implications at executive level, then layer in methodology selectively when experts probe <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Open with a 2-minute framing question to gauge what each subgroup needs, then adjust depth in real-time <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Send the technical paper to experts 48 hours before, use the live session exclusively for executive-level decision framing <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q3 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><strong>EN:</strong> Your team's technical decision is based on a well-cited paper, but you notice a methodology limitation that nobody else flagged. The deadline is tomorrow. You:</p>
+<div class="option">A) Flag the limitation and propose a quick sensitivity check on the key assumption <span class="score">0</span></div>
+<div class="option">B) Accept the paper's conclusions but document the limitation for future reference <span class="score">1</span></div>
+<div class="option">C) Cross-reference with an independent source that used a different methodology <span class="score">2</span></div>
+<div class="option">D) Consult a colleague with domain expertise to assess whether the limitation matters in your context <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q4 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><strong>EN:</strong> Your team needs a solution for a data pipeline bottleneck. The ideal fix requires a library that won't be production-ready for three months. The deadline is in six weeks. You:</p>
+<div class="option">A) [Recombination] Adapt two existing, stable libraries to approximate the ideal library's functionality <span class="score">0</span></div>
+<div class="option">B) [Reframing] Redefine the bottleneck: restructure the data flow so the pipeline avoids the problematic stage entirely <span class="score">1</span></div>
+<div class="option">C) [Iterative Prototyping] Build a minimal version of the critical feature yourself, designed to be swapped out when the library ships <span class="score">2</span></div>
+<div class="option">D) [Constraint Pivot] Propose splitting the deliverable into a partial release now and a full release when the library is ready <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q5 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><strong>EN:</strong> You realize your debugging approach consistently fails on a new class of distributed system errors. You:</p>
+<div class="option">A) Pair with someone who has that expertise and study their method closely <span class="score">0</span></div>
+<div class="option">B) Allocate dedicated time each week to reproduce and analyze these errors systematically <span class="score">1</span></div>
+<div class="option">C) Build a diagnostic checklist from your failures to track what patterns you're missing <span class="score">2</span></div>
+<div class="option">D) Switch to a fundamentally different debugging framework and compare results <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q6 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><strong>EN:</strong> How do you evaluate the effectiveness of a technical solution?</p>
+<div class="option">A) Measure performance and specific metrics <span class="score">0</span></div>
+<div class="option">B) Compare alternatives and run A/B tests <span class="score">1</span></div>
+<div class="option">C) Gather feedback from end users <span class="score">2</span></div>
+<div class="option">D) Verify it meets all requirements <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q7 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><strong>EN:</strong> During a cross-functional review, a senior engineer publicly challenges your data interpretation using jargon the rest of the room doesn't follow. The room goes silent. How do you respond?</p>
+<div class="option">A) [Precision-First] Address the technical challenge directly at the engineer's level <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Restate the engineer's concern in accessible terms so the whole room can follow <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Ask the engineer to clarify which specific data point they're questioning <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Acknowledge the point publicly, propose continuing the technical exchange offline <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q8 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><strong>EN:</strong> Two trusted data sources give contradictory readings on a system's health. Both have been reliable historically. You:</p>
+<div class="option">A) Investigate the measurement conditions that could explain the divergence <span class="score">0</span></div>
+<div class="option">B) Weight each source by its track record in similar situations <span class="score">1</span></div>
+<div class="option">C) Run an independent diagnostic to generate a third reference point <span class="score">2</span></div>
+<div class="option">D) Consult the team that maintains each source to understand recent calibration changes <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q9 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><strong>EN:</strong> You're designing a monitoring system, but the budget only covers 60% of the sensors you originally specified. Reducing coverage creates blind spots. You:</p>
+<div class="option">A) [Recombination] Redesign the sensor layout to prioritize high-risk zones and use statistical inference <span class="score">0</span></div>
+<div class="option">B) [Constraint Pivot] Use cheaper, lower-fidelity sensors in non-critical areas and premium sensors where accuracy matters <span class="score">1</span></div>
+<div class="option">C) [Reframing] Reframe: design an anomaly-detection system that flags only when patterns deviate from baseline <span class="score">2</span></div>
+<div class="option">D) [Iterative Prototyping] Build in phases — deploy what the budget covers now, with modular architecture <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q10 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><strong>EN:</strong> Your code review feedback repeatedly highlights the same design weakness you haven't improved on. You:</p>
+<div class="option">A) Ask the reviewer to walk through an alternative approach on your actual code <span class="score">0</span></div>
+<div class="option">B) Rewrite one past module using the recommended pattern to internalize it <span class="score">1</span></div>
+<div class="option">C) Set a specific, measurable improvement target for your next three PRs <span class="score">2</span></div>
+<div class="option">D) Study the underlying design principle in depth before attempting more code <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q11 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><strong>EN:</strong> How do you approach automating repetitive processes?</p>
+<div class="option">A) Identify patterns and create custom scripts <span class="score">0</span></div>
+<div class="option">B) Use existing tools and adapt them <span class="score">1</span></div>
+<div class="option">C) Analyze cost-benefit before automating <span class="score">2</span></div>
+<div class="option">D) Collaborate with technical experts to implement <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q12 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><strong>EN:</strong> You discover a critical flaw in a deployed system 48 hours before a regulatory audit. You must inform your direct manager, the compliance officer, and the operations team — all via written communication within the hour. How do you handle it?</p>
+<div class="option">A) [Precision-First] Write one comprehensive incident report — send to all three <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Draft three separate messages tailored to each audience <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Send a brief alert, then ask each what information they need <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Send a short written alert, then request a 15-minute call for real-time alignment <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q13 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><strong>EN:</strong> You've relied on a technical framework for months. A junior colleague presents preliminary evidence that one of its core assumptions is wrong. You:</p>
+<div class="option">A) Pause and test both versions against recent data before committing <span class="score">0</span></div>
+<div class="option">B) Review the colleague's raw evidence yourself to assess its strength <span class="score">1</span></div>
+<div class="option">C) Note the challenge formally, continue, but define a threshold that triggers reassessment <span class="score">2</span></div>
+<div class="option">D) Ask two uninvolved people to independently evaluate the conflicting evidence <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q14 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><strong>EN:</strong> A client wants a feature that technically works but would degrade the system's architecture. Refusing isn't an option — the contract requires it. You:</p>
+<div class="option">A) [Constraint Pivot] Isolate it behind an abstraction layer <span class="score">0</span></div>
+<div class="option">B) [Reframing] Propose an alternative implementation that preserves the architecture <span class="score">1</span></div>
+<div class="option">C) [Iterative Prototyping] Build as specified but create a migration path document <span class="score">2</span></div>
+<div class="option">D) [Recombination] Negotiate scope: deliver the core cleanly and defer damaging elements <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q15 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><strong>EN:</strong> A production incident exposed a gap in your monitoring knowledge. After putting out the fire, you:</p>
+<div class="option">A) Document exactly which signals you missed and add them to your personal checklist <span class="score">0</span></div>
+<div class="option">B) Schedule a session with the on-call engineer to understand what they saw that you didn't <span class="score">1</span></div>
+<div class="option">C) Set up a sandbox to deliberately trigger similar failures and practice responding <span class="score">2</span></div>
+<div class="option">D) Redesign alert thresholds based on what you now understand, then validate for two weeks <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q16 — <span class="pillar-tag pillar-cp">Computational Power</span> <em>(v2 refined)</em></h4>
+<p><strong>EN:</strong> How do you handle large amounts of data to analyze?</p>
+<div class="option">A) Use visualization tools to identify patterns <span class="score">0</span></div>
+<div class="option">B) Segment data into logical categories <span class="score">1</span></div>
+<div class="option">C) Apply statistical techniques to find correlations <span class="score">2</span></div>
+<div class="option">D) Prioritize which data subsets to analyze first based on impact <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q17 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><strong>EN:</strong> A partner team has been working on parallel assumptions that contradict your findings. Neither team is wrong. A joint deliverable is due in 5 days. How do you approach the discrepancy?</p>
+<div class="option">A) [Precision-First] Present both models with assumptions mapped, let data speak <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Frame discrepancy as scope difference, not contradiction <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Ask partner team to walk through their reasoning first <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Propose shared working document with side-by-side comparison <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q18 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><strong>EN:</strong> A vendor presents a new technology with impressive benchmarks, but evaluation conditions don't match your production environment. You:</p>
+<div class="option">A) Design a controlled test that mirrors your actual constraints <span class="score">0</span></div>
+<div class="option">B) Seek out independent users who deployed it in similar conditions <span class="score">1</span></div>
+<div class="option">C) Analyze the gap between their test conditions and yours <span class="score">2</span></div>
+<div class="option">D) Request access to their raw data and re-run the analysis with your parameters <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q19 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><strong>EN:</strong> Your team has developed a novel algorithm that outperforms the standard approach but is harder to explain to regulators. You:</p>
+<div class="option">A) [Iterative Prototyping] Run both in parallel for a trial period <span class="score">0</span></div>
+<div class="option">B) [Reframing] Translate the novel algorithm into regulatory framework language <span class="score">1</span></div>
+<div class="option">C) [Recombination] Create a hybrid using the standard structure + key innovation <span class="score">2</span></div>
+<div class="option">D) [Constraint Pivot] Phased adoption: conventional in regulated, novel in lower-scrutiny <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q20 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><strong>EN:</strong> You've been struggling with a technical area (e.g., performance optimization) for months. Your next step is to:</p>
+<div class="option">A) Find a specific, small project that forces you to use this skill under real constraints <span class="score">0</span></div>
+<div class="option">B) Track your attempts and outcomes weekly to see if your approach is improving <span class="score">1</span></div>
+<div class="option">C) Seek candid assessment from someone strong in this area <span class="score">2</span></div>
+<div class="option">D) Change your learning strategy entirely <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q21 — <span class="pillar-tag pillar-cp">Computational Power</span> <em>(v2 refined)</em></h4>
+<p><strong>EN:</strong> How do you evaluate the implementation of new technologies?</p>
+<div class="option">A) Conduct thorough cost-benefit analysis <span class="score">0</span></div>
+<div class="option">B) Test on pilot projects before full adoption <span class="score">1</span></div>
+<div class="option">C) Evaluate impact on existing processes and teams <span class="score">2</span></div>
+<div class="option">D) Map dependencies and failure modes before adoption <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>open1 — <span class="pillar-tag pillar-crea">Creativity 60%</span> + <span class="pillar-tag pillar-comm">Communication 40%</span></h4>
+<p><strong>EN:</strong> Describe a professional situation where you felt most successful. What made it successful and what was your specific contribution?</p>
+</div>
+
+<div class="question-block">
+<h4>open2 — <span class="pillar-tag pillar-drive">Drive 60%</span> + <span class="pillar-tag pillar-know">Knowledge 40%</span></h4>
+<p><strong>EN:</strong> What is your biggest professional challenge or area where you'd like to grow? How do you plan to address it?</p>
+</div>
+
+<p><em>Note: The remaining 3 fields (Business & Leadership, Arts & Creative, Service & Ops) follow the identical q1–q21 pillar mapping with field-specific question text. Full texts for all fields and all three languages (EN/IT/ES) are available in the companion JSON file.</em></p>
+
+<!-- APPENDIX -->
+<div class="page-break"></div>
+<h1>4. Appendix</h1>
+
+<h3>4.1 Artifact Index</h3>
+<table>
+  <tr><th>Filename</th><th>Description</th></tr>
+  <tr><td><code>XIMA_Assessment_v1.0_Freeze_Declaration.md</code></td><td>Formal freeze declaration with executive summary and monitoring commitments</td></tr>
+  <tr><td><code>XIMA_5Pillar_Stability_Test_v1.md</code></td><td>Global 5-pillar stability simulation (N=5000, 12 archetypes)</td></tr>
+  <tr><td><code>XIMA_ComputationalPower_Refined_v2.json</code></td><td>CP pillar with micro-refinements (4 items rewritten)</td></tr>
+  <tr><td><code>XIMA_Knowledge_Redesign_v1.json</code></td><td>Knowledge pillar redesign (epistemic discipline under uncertainty)</td></tr>
+  <tr><td><code>XIMA_Creativity_Redesign_v1.json</code></td><td>Creativity pillar redesign (constraint navigation)</td></tr>
+  <tr><td><code>XIMA_Communication_Redesign_v1.json</code></td><td>Communication pillar redesign (adaptive message calibration)</td></tr>
+  <tr><td><code>XIMA_Drive_MC_Validation_Export_v1.json</code></td><td>Drive MC baseline questions (Growth Velocity behavioral proxy)</td></tr>
+  <tr><td><code>assessment_full_export.json</code></td><td>Original full assessment export with scoring pipeline documentation</td></tr>
+  <tr><td><code>getPillarForQuestion.ts</code></td><td>Source of truth for question→pillar cyclic mapping</td></tr>
+</table>
+
+<h3>4.2 Validation Summary</h3>
+<table>
+  <tr><th>Metric</th><th>CP</th><th>Comm</th><th>Know</th><th>Crea</th><th>Drive</th></tr>
+  <tr><td>Cronbach's α (mean)</td><td>0.64</td><td>0.65</td><td>0.66</td><td>0.66</td><td>0.63</td></tr>
+  <tr><td>Mean cognitive tension</td><td>—</td><td>4.0</td><td>4.2</td><td>3.85</td><td>—</td></tr>
+  <tr><td>Max option dominance</td><td>27%</td><td>27%</td><td>29%</td><td>26%</td><td>—</td></tr>
+</table>
+
+<h3>4.3 Cross-Pillar Correlation Matrix (Global Stability Test)</h3>
+<table>
+  <tr><th></th><th>CP</th><th>Comm</th><th>Know</th><th>Crea</th><th>Drive</th></tr>
+  <tr><td><strong>CP</strong></td><td>1.00</td><td>0.22</td><td>0.34</td><td>0.27</td><td>0.18</td></tr>
+  <tr><td><strong>Comm</strong></td><td></td><td>1.00</td><td>0.24</td><td>0.28</td><td>0.21</td></tr>
+  <tr><td><strong>Know</strong></td><td></td><td></td><td>1.00</td><td>0.25</td><td>0.19</td></tr>
+  <tr><td><strong>Crea</strong></td><td></td><td></td><td></td><td>1.00</td><td>0.30</td></tr>
+  <tr><td><strong>Drive</strong></td><td></td><td></td><td></td><td></td><td>1.00</td></tr>
+</table>
+<p>All pairs below r = 0.40 threshold. Max: r = 0.34 (CP–Knowledge).</p>
+
+<h3>4.4 Change Control</h3>
+<div class="alert">
+<strong>Any modification to frozen assessment items requires:</strong>
+<ol>
+<li>Written justification with psychometric evidence</li>
+<li>Synthetic simulation demonstrating improvement over current metrics</li>
+<li>Boundary stress test confirming no cross-pillar regression</li>
+<li>Engineering review of scoring pipeline impact</li>
+<li>Product sign-off on candidate-facing changes</li>
+</ol>
+<p>Version increments: <strong>v1.0</strong> (current) → <strong>v1.1</strong> (item-level adjustments) → <strong>v2.0</strong> (structural redesign).</p>
+</div>
+
+<hr>
+<p style="text-align: center; color: #999; font-size: 12px;">
+XIMA Assessment v1.0 — Human Review Pack<br>
+Generated: 2026-02-15 | Classification: Internal — Engineering & Product Leadership<br>
+Companion data: <code>XIMA_Assessment_v1.0_Human_Review_Pack_Source.json</code>
+</p>
+
+</body>
+</html>

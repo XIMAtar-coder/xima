@@ -1,0 +1,488 @@
+{
+  "document_title": "XIMA Assessment v1.0 — Human Review Pack",
+  "version": "1.0",
+  "freeze_date": "2026-02-15",
+  "purpose": "Complete structured export of the frozen XIMA Assessment v1.0 for human and external AI validation. Contains all questions, scoring logic, and mapping rules.",
+  "pillar_definitions": {
+    "computational_power": "The ability to decompose complex problems into structured analytical components under time and information constraints.",
+    "communication": "Adaptive message calibration — adjusting abstraction level, medium, and tone to preserve signal clarity across mismatched audiences under pressure.",
+    "knowledge": "Epistemic discipline under uncertainty — how a candidate acquires, validates, and updates mental models when established assumptions fail.",
+    "creativity": "The ability to generate, recombine, and test novel approaches under real constraints, balancing originality with feasibility.",
+    "drive": "Growth Velocity — the rate at which a candidate improves on their weakest skills over time, measured longitudinally through behavioral baselines and progress snapshots."
+  },
+  "fields": ["science_tech", "business_leadership", "arts_creative", "service_ops"],
+  "pillar_mapping": {
+    "function": "getPillarForQuestion(n) => PILLAR_CYCLE[(n-1) % 5]",
+    "cycle": ["computational_power", "communication", "knowledge", "creativity", "drive"],
+    "table": {
+      "q1": "computational_power", "q2": "communication", "q3": "knowledge", "q4": "creativity", "q5": "drive",
+      "q6": "computational_power", "q7": "communication", "q8": "knowledge", "q9": "creativity", "q10": "drive",
+      "q11": "computational_power", "q12": "communication", "q13": "knowledge", "q14": "creativity", "q15": "drive",
+      "q16": "computational_power", "q17": "communication", "q18": "knowledge", "q19": "creativity", "q20": "drive",
+      "q21": "computational_power"
+    },
+    "questions_per_pillar": {
+      "computational_power": ["q1", "q6", "q11", "q16", "q21"],
+      "communication": ["q2", "q7", "q12", "q17"],
+      "knowledge": ["q3", "q8", "q13", "q18"],
+      "creativity": ["q4", "q9", "q14", "q19"],
+      "drive": ["q5", "q10", "q15", "q20"]
+    }
+  },
+  "scoring_formulas": {
+    "mc_scoring": "Each option has score_value 0–3. Pillar score = mean(selected_score_values for that pillar's questions) / 3 * 100.",
+    "open_answer_blending": "blended[pillar] = base[pillar] * 0.90 + open_contribution[pillar] * 0.10",
+    "open1_mapping": "60% creativity + 40% communication (max 10% influence on each)",
+    "open2_mapping": "60% drive + 40% knowledge (max 10% influence on each)",
+    "computational_power_note": "CP is 100% MC-driven — no open answer blend.",
+    "drive_baseline": "Drive_MC_baseline = mean(q5, q10, q15, q20 score_values) / 3 * 100",
+    "drive_longitudinal": {
+      "table": "pillar_progress_snapshots",
+      "step1": "Identify 2 weakest pillars at baseline (earliest snapshot)",
+      "step2": "delta = latest_score - baseline_score for each weak pillar",
+      "step3": "velocity = delta / days_elapsed (min 1 day)",
+      "step4": "avg_velocity = mean(velocities)",
+      "step5": "score = max(0, min(100, round(50 + (avg_velocity / 0.20) * 25)))",
+      "target_velocity": "0.20 points/day",
+      "state_when_insufficient_data": "refining (until ≥2 snapshots)",
+      "caching": "profiles.drive_score and profiles.drive_updated_at via trigger"
+    },
+    "ximatar_assignment": {
+      "guest": "Top-2 pillar heuristic with hardcoded if/else chain",
+      "authenticated": "Euclidean distance to 12 canonical profiles in ximatarTaxonomy.ts"
+    }
+  },
+  "questions_by_field": {
+    "science_tech": {
+      "mc_questions": [
+        {
+          "question_id": "q1", "pillar": "computational_power",
+          "category_en": "Computational Power", "category_it": "Potenza Computazionale", "category_es": "Potencia Computacional",
+          "text_en": "When faced with a complex data set, what is your first approach?",
+          "text_it": "Di fronte a un set di dati complesso, qual è il tuo primo approccio?",
+          "text_es": "Cuando te enfrentas a un conjunto de datos complejo, ¿cuál es tu primer enfoque?",
+          "options": [
+            {"key": "A", "en": "Break it down into smaller, manageable parts", "it": "Suddividerlo in parti più piccole e gestibili", "es": "Dividirlo en partes más pequeñas y manejables", "score_value": 0},
+            {"key": "B", "en": "Look for patterns and trends immediately", "it": "Cercare immediatamente schemi e tendenze", "es": "Buscar patrones y tendencias inmediatamente", "score_value": 1},
+            {"key": "C", "en": "Seek tools or software to help analyze it", "it": "Cercare strumenti o software per aiutare nell'analisi", "es": "Buscar herramientas o software para ayudar a analizarlo", "score_value": 2},
+            {"key": "D", "en": "Consult with others who have similar experience", "it": "Consultare altri con esperienza simile", "es": "Consultar con otros que tengan experiencia similar", "score_value": 3}
+          ],
+          "source_artifact": "public/assessment_full_export.json"
+        },
+        {
+          "question_id": "q2", "pillar": "communication",
+          "category_en": "Communication", "category_it": "Comunicazione", "category_es": "Comunicación",
+          "text_en": "You've spent two months developing a novel simulation approach. You must present results to a mixed committee: three domain experts who will challenge methodology, and four non-technical executives who control funding. You have 20 minutes. How do you structure the presentation?",
+          "text_it": "Hai trascorso due mesi sviluppando un nuovo approccio di simulazione. Devi presentare i risultati a un comitato misto: tre esperti di dominio che contesteranno la metodologia e quattro dirigenti non tecnici che controllano i finanziamenti. Hai 20 minuti. Come strutturi la presentazione?",
+          "text_es": "Has pasado dos meses desarrollando un nuevo enfoque de simulación. Debes presentar resultados a un comité mixto: tres expertos de dominio que cuestionarán la metodología y cuatro ejecutivos no técnicos que controlan la financiación. Tienes 20 minutos. ¿Cómo estructuras la presentación?",
+          "options": [
+            {"key": "A", "en": "Present the full methodology chain with technical evidence, providing a dense appendix for executives to review afterward", "it": "Presentare l'intera catena metodologica con evidenze tecniche, fornendo un denso allegato per i dirigenti da esaminare successivamente", "es": "Presentar la cadena metodológica completa con evidencia técnica, proporcionando un denso apéndice para que los ejecutivos revisen después", "score_value": 0, "strategy": "Precision-First"},
+            {"key": "B", "en": "Lead with outcome implications at executive level, then layer in methodology selectively when experts probe", "it": "Iniziare con le implicazioni dei risultati a livello dirigenziale, poi aggiungere metodologia selettivamente quando gli esperti indagano", "es": "Liderar con implicaciones de resultados a nivel ejecutivo, luego agregar metodología selectivamente cuando los expertos indaguen", "score_value": 1, "strategy": "Abstraction-Shift"},
+            {"key": "C", "en": "Open with a 2-minute framing question to gauge what each subgroup needs, then adjust depth in real-time", "it": "Aprire con una domanda di inquadramento di 2 minuti per valutare cosa ogni sottogruppo necessita, poi regolare la profondità in tempo reale", "es": "Abrir con una pregunta de encuadre de 2 minutos para evaluar qué necesita cada subgrupo, luego ajustar la profundidad en tiempo real", "score_value": 2, "strategy": "Signal-Check"},
+            {"key": "D", "en": "Send the technical paper to experts 48 hours before, use the live session exclusively for executive-level decision framing", "it": "Inviare il paper tecnico agli esperti 48 ore prima, usare la sessione dal vivo esclusivamente per inquadrare le decisioni a livello dirigenziale", "es": "Enviar el paper técnico a los expertos 48 horas antes, usar la sesión en vivo exclusivamente para encuadrar decisiones a nivel ejecutivo", "score_value": 3, "strategy": "Medium-Pivot"}
+          ],
+          "source_artifact": "public/XIMA_Communication_Redesign_v1.json"
+        },
+        {
+          "question_id": "q3", "pillar": "knowledge",
+          "category_en": "Knowledge", "category_it": "Conoscenza", "category_es": "Conocimiento",
+          "text_en": "Your team's technical decision is based on a well-cited paper, but you notice a methodology limitation that nobody else flagged. The deadline is tomorrow. You:",
+          "text_it": "La decisione tecnica del tuo team si basa su un paper ben citato, ma noti una limitazione metodologica che nessun altro ha segnalato. La scadenza è domani. Tu:",
+          "text_es": "La decisión técnica de tu equipo se basa en un paper bien citado, pero notas una limitación metodológica que nadie más señaló. La fecha límite es mañana. Tú:",
+          "options": [
+            {"key": "A", "en": "Flag the limitation and propose a quick sensitivity check on the key assumption", "it": "Segnala la limitazione e proponi una rapida verifica di sensibilità sull'assunzione chiave", "es": "Señala la limitación y propón una verificación rápida de sensibilidad sobre la suposición clave", "score_value": 0},
+            {"key": "B", "en": "Accept the paper's conclusions but document the limitation for future reference", "it": "Accetta le conclusioni del paper ma documenta la limitazione per riferimento futuro", "es": "Acepta las conclusiones del paper pero documenta la limitación para referencia futura", "score_value": 1},
+            {"key": "C", "en": "Cross-reference with an independent source that used a different methodology", "it": "Confronta con una fonte indipendente che ha usato una metodologia diversa", "es": "Cruza referencias con una fuente independiente que usó una metodología diferente", "score_value": 2},
+            {"key": "D", "en": "Consult a colleague with domain expertise to assess whether the limitation matters in your context", "it": "Consulta un collega con esperienza di dominio per valutare se la limitazione è rilevante nel tuo contesto", "es": "Consulta a un colega con experiencia de dominio para evaluar si la limitación importa en tu contexto", "score_value": 3}
+          ],
+          "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"
+        },
+        {
+          "question_id": "q4", "pillar": "creativity",
+          "category_en": "Creativity", "category_it": "Creatività", "category_es": "Creatividad",
+          "text_en": "Your team needs a solution for a data pipeline bottleneck. The ideal fix requires a library that won't be production-ready for three months. The deadline is in six weeks. You:",
+          "text_it": "Il tuo team ha bisogno di una soluzione per un collo di bottiglia nella pipeline dati. La soluzione ideale richiede una libreria che non sarà pronta per la produzione per tre mesi. La scadenza è tra sei settimane. Tu:",
+          "text_es": "Tu equipo necesita una solución para un cuello de botella en el pipeline de datos. La solución ideal requiere una librería que no estará lista para producción en tres meses. La fecha límite es en seis semanas. Tú:",
+          "options": [
+            {"key": "A", "en": "Adapt two existing, stable libraries to approximate the ideal library's functionality, accepting some performance trade-offs", "it": "Adattare due librerie esistenti e stabili per approssimare la funzionalità della libreria ideale, accettando alcuni compromessi prestazionali", "es": "Adaptar dos librerías existentes y estables para aproximar la funcionalidad de la librería ideal, aceptando algunos compromisos de rendimiento", "score_value": 0, "strategy": "recombination"},
+            {"key": "B", "en": "Redefine the bottleneck: restructure the data flow so the pipeline avoids the problematic stage entirely", "it": "Ridefinire il collo di bottiglia: ristrutturare il flusso dati in modo che la pipeline eviti completamente la fase problematica", "es": "Redefinir el cuello de botella: reestructurar el flujo de datos para que el pipeline evite completamente la etapa problemática", "score_value": 1, "strategy": "reframing"},
+            {"key": "C", "en": "Build a minimal version of the critical feature yourself, designed to be swapped out when the library ships", "it": "Costruire una versione minimale della funzionalità critica, progettata per essere sostituita quando la libreria sarà pronta", "es": "Construir una versión mínima de la funcionalidad crítica, diseñada para ser reemplazada cuando la librería esté lista", "score_value": 2, "strategy": "iterative_prototyping"},
+            {"key": "D", "en": "Propose splitting the deliverable into a partial release now using current tools and a full release when the library is ready", "it": "Proporre di dividere il deliverable in un rilascio parziale ora usando strumenti attuali e un rilascio completo quando la libreria sarà pronta", "es": "Proponer dividir el entregable en un lanzamiento parcial ahora con herramientas actuales y un lanzamiento completo cuando la librería esté lista", "score_value": 3, "strategy": "constraint_pivot"}
+          ],
+          "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"
+        },
+        {
+          "question_id": "q5", "pillar": "drive",
+          "category_en": "Drive", "category_it": "Motivazione", "category_es": "Impulso",
+          "text_en": "You realize your debugging approach consistently fails on a new class of distributed system errors. You:",
+          "text_it": "Ti rendi conto che il tuo approccio al debugging fallisce sistematicamente su una nuova classe di errori nei sistemi distribuiti. Tu:",
+          "text_es": "Te das cuenta de que tu enfoque de debugging falla sistemáticamente en una nueva clase de errores de sistemas distribuidos. Tú:",
+          "options": [
+            {"key": "A", "en": "Pair with someone who has that expertise and study their method closely", "it": "Ti affianchi a qualcuno esperto in quell'area e studi il suo metodo da vicino", "es": "Te emparejas con alguien experto en esa área y estudias su método de cerca", "score_value": 0},
+            {"key": "B", "en": "Allocate dedicated time each week to reproduce and analyze these errors systematically", "it": "Dedichi tempo ogni settimana a riprodurre e analizzare questi errori sistematicamente", "es": "Dedicas tiempo cada semana a reproducir y analizar estos errores sistemáticamente", "score_value": 1},
+            {"key": "C", "en": "Build a diagnostic checklist from your failures to track what patterns you're missing", "it": "Costruisci una checklist diagnostica dai tuoi fallimenti per tracciare quali pattern ti sfuggono", "es": "Construyes una checklist diagnóstica a partir de tus fallos para rastrear qué patrones se te escapan", "score_value": 2},
+            {"key": "D", "en": "Switch to a fundamentally different debugging framework and compare results", "it": "Passi a un framework di debugging radicalmente diverso e confronti i risultati", "es": "Cambias a un framework de debugging radicalmente diferente y comparas resultados", "score_value": 3}
+          ],
+          "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"
+        },
+        {
+          "question_id": "q6", "pillar": "computational_power",
+          "text_en": "How do you evaluate the effectiveness of a technical solution?",
+          "text_it": "Come valuti l'efficacia di una soluzione tecnica?",
+          "text_es": "¿Cómo evalúas la efectividad de una solución técnica?",
+          "options": [
+            {"key": "A", "en": "Measure performance and specific metrics", "it": "Misuro le prestazioni e metriche specifiche", "es": "Mido el rendimiento y métricas específicas", "score_value": 0},
+            {"key": "B", "en": "Compare alternatives and run A/B tests", "it": "Confronto alternative e faccio test A/B", "es": "Comparo alternativas y ejecuto pruebas A/B", "score_value": 1},
+            {"key": "C", "en": "Gather feedback from end users", "it": "Raccolgo feedback dagli utenti finali", "es": "Recopilo feedback de los usuarios finales", "score_value": 2},
+            {"key": "D", "en": "Verify it meets all requirements", "it": "Verifico che soddisfi tutti i requisiti", "es": "Verifico que cumple todos los requisitos", "score_value": 3}
+          ],
+          "source_artifact": "public/assessment_full_export.json"
+        },
+        {
+          "question_id": "q7", "pillar": "communication",
+          "text_en": "During a cross-functional review, a senior engineer publicly challenges your data interpretation using jargon the rest of the room doesn't follow. The room goes silent. How do you respond?",
+          "text_it": "Durante una revisione interfunzionale, un ingegnere senior contesta pubblicamente la tua interpretazione dei dati usando gergo che il resto della stanza non comprende. La stanza ammutolisce. Come rispondi?",
+          "text_es": "Durante una revisión interfuncional, un ingeniero senior cuestiona públicamente tu interpretación de datos usando jerga que el resto de la sala no entiende. La sala se queda en silencio. ¿Cómo respondes?",
+          "options": [
+            {"key": "A", "en": "Address the technical challenge directly at the engineer's level, ensuring the critique is fully answered before translating for the room", "score_value": 0, "strategy": "Precision-First"},
+            {"key": "B", "en": "Restate the engineer's concern in accessible terms so the whole room can follow, then respond at that level", "score_value": 1, "strategy": "Abstraction-Shift"},
+            {"key": "C", "en": "Ask the engineer to clarify which specific data point they're questioning, buying time to gauge room comprehension", "score_value": 2, "strategy": "Signal-Check"},
+            {"key": "D", "en": "Acknowledge the point publicly, propose continuing the technical exchange offline, and redirect the meeting to shared-understanding items", "score_value": 3, "strategy": "Medium-Pivot"}
+          ],
+          "source_artifact": "public/XIMA_Communication_Redesign_v1.json"
+        },
+        {
+          "question_id": "q8", "pillar": "knowledge",
+          "text_en": "Two trusted data sources give contradictory readings on a system's health. Both have been reliable historically. You:",
+          "text_it": "Due fonti dati affidabili danno letture contraddittorie sullo stato di un sistema. Entrambe sono state storicamente affidabili. Tu:",
+          "text_es": "Dos fuentes de datos de confianza dan lecturas contradictorias sobre la salud de un sistema. Ambas han sido históricamente confiables. Tú:",
+          "options": [
+            {"key": "A", "en": "Investigate the measurement conditions that could explain the divergence", "score_value": 0},
+            {"key": "B", "en": "Weight each source by its track record in similar situations", "score_value": 1},
+            {"key": "C", "en": "Run an independent diagnostic to generate a third reference point", "score_value": 2},
+            {"key": "D", "en": "Consult the team that maintains each source to understand recent calibration changes", "score_value": 3}
+          ],
+          "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"
+        },
+        {
+          "question_id": "q9", "pillar": "creativity",
+          "text_en": "You're designing a monitoring system, but the budget only covers 60% of the sensors you originally specified. Reducing coverage creates blind spots. You:",
+          "text_it": "Stai progettando un sistema di monitoraggio, ma il budget copre solo il 60% dei sensori che avevi originariamente specificato. Ridurre la copertura crea zone cieche. Tu:",
+          "text_es": "Estás diseñando un sistema de monitoreo, pero el presupuesto solo cubre el 60% de los sensores que especificaste originalmente. Reducir la cobertura crea puntos ciegos. Tú:",
+          "options": [
+            {"key": "A", "en": "Redesign the sensor layout to prioritize high-risk zones and use statistical inference to estimate the gaps", "score_value": 0, "strategy": "recombination"},
+            {"key": "B", "en": "Propose using cheaper, lower-fidelity sensors in non-critical areas and premium sensors only where accuracy matters most", "score_value": 1, "strategy": "constraint_pivot"},
+            {"key": "C", "en": "Reframe the monitoring goal: instead of full coverage, design an anomaly-detection system that flags only when patterns deviate from baseline", "score_value": 2, "strategy": "reframing"},
+            {"key": "D", "en": "Build the system in phases — deploy what the budget covers now, with a modular architecture that allows expansion later", "score_value": 3, "strategy": "iterative_prototyping"}
+          ],
+          "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"
+        },
+        {
+          "question_id": "q10", "pillar": "drive",
+          "text_en": "Your code review feedback repeatedly highlights the same design weakness you haven't improved on. You:",
+          "text_it": "Il feedback delle tue code review evidenzia ripetutamente la stessa debolezza progettuale che non hai migliorato. Tu:",
+          "text_es": "El feedback de tus code reviews señala repetidamente la misma debilidad de diseño que no has mejorado. Tú:",
+          "options": [
+            {"key": "A", "en": "Ask the reviewer to walk through an alternative approach on your actual code", "score_value": 0},
+            {"key": "B", "en": "Rewrite one past module using the recommended pattern to internalize it", "score_value": 1},
+            {"key": "C", "en": "Set a specific, measurable improvement target for your next three PRs", "score_value": 2},
+            {"key": "D", "en": "Study the underlying design principle in depth before attempting more code", "score_value": 3}
+          ],
+          "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"
+        },
+        {
+          "question_id": "q11", "pillar": "computational_power",
+          "text_en": "How do you approach automating repetitive processes?",
+          "text_it": "Come approcci l'automazione di processi ripetitivi?",
+          "text_es": "¿Cómo abordas la automatización de procesos repetitivos?",
+          "options": [
+            {"key": "A", "en": "Identify patterns and create custom scripts", "score_value": 0},
+            {"key": "B", "en": "Use existing tools and adapt them", "score_value": 1},
+            {"key": "C", "en": "Analyze cost-benefit before automating", "score_value": 2},
+            {"key": "D", "en": "Collaborate with technical experts to implement", "score_value": 3}
+          ],
+          "source_artifact": "public/assessment_full_export.json"
+        },
+        {
+          "question_id": "q12", "pillar": "communication",
+          "text_en": "You discover a critical flaw in a deployed system 48 hours before a regulatory audit. You must inform: your direct manager (technical), the compliance officer (legal framing), and the operations team (immediate action needed). All via written communication within the hour. How do you handle it?",
+          "text_it": "Scopri un difetto critico in un sistema in produzione 48 ore prima di un audit regolatorio. Devi informare: il tuo responsabile diretto (tecnico), il compliance officer (inquadramento legale) e il team operativo (azione immediata necessaria). Tutto via comunicazione scritta entro un'ora. Come gestisci?",
+          "text_es": "Descubres un fallo crítico en un sistema desplegado 48 horas antes de una auditoría regulatoria. Debes informar a: tu responsable directo (técnico), el oficial de cumplimiento (encuadre legal) y el equipo de operaciones (acción inmediata necesaria). Todo por comunicación escrita en una hora. ¿Cómo lo manejas?",
+          "options": [
+            {"key": "A", "en": "Write one comprehensive incident report covering technical root cause, legal exposure, and operational steps—send to all three", "score_value": 0, "strategy": "Precision-First"},
+            {"key": "B", "en": "Draft three separate messages: technical detail for manager, risk framing for compliance, action checklist for operations", "score_value": 1, "strategy": "Abstraction-Shift"},
+            {"key": "C", "en": "Send a brief alert to all three flagging severity, then ask each what information they need before writing detailed follow-ups", "score_value": 2, "strategy": "Signal-Check"},
+            {"key": "D", "en": "Send a short written alert to create the record, then immediately request a 15-minute call with all three to ensure real-time alignment", "score_value": 3, "strategy": "Medium-Pivot"}
+          ],
+          "source_artifact": "public/XIMA_Communication_Redesign_v1.json"
+        },
+        {
+          "question_id": "q13", "pillar": "knowledge",
+          "text_en": "You've relied on a technical framework for months. A junior colleague presents preliminary evidence that one of its core assumptions is wrong. You:",
+          "text_it": "Ti sei affidato a un framework tecnico per mesi. Un collega junior presenta evidenze preliminari che una delle sue assunzioni fondamentali è sbagliata. Tu:",
+          "text_es": "Has confiado en un framework técnico durante meses. Un colega junior presenta evidencia preliminar de que una de sus suposiciones fundamentales es incorrecta. Tú:",
+          "options": [
+            {"key": "A", "en": "Pause your current work with the framework and test both versions against recent data before committing either way", "score_value": 0},
+            {"key": "B", "en": "Review the colleague's raw evidence yourself to assess its strength before involving anyone else", "score_value": 1},
+            {"key": "C", "en": "Note the challenge formally and continue with the framework, but define a specific threshold that would trigger a full reassessment", "score_value": 2},
+            {"key": "D", "en": "Ask two people who weren't involved in either analysis to independently evaluate the conflicting evidence", "score_value": 3}
+          ],
+          "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"
+        },
+        {
+          "question_id": "q14", "pillar": "creativity",
+          "text_en": "A client wants a feature that technically works but would degrade the system's architecture, making future development harder. Refusing isn't an option — the contract requires it. You:",
+          "text_it": "Un cliente vuole una funzionalità che tecnicamente funziona ma degraderebbe l'architettura del sistema, rendendo lo sviluppo futuro più difficile. Rifiutare non è un'opzione — il contratto lo richiede. Tu:",
+          "text_es": "Un cliente quiere una funcionalidad que técnicamente funciona pero degradaría la arquitectura del sistema, haciendo el desarrollo futuro más difícil. Rechazar no es una opción — el contrato lo requiere. Tú:",
+          "options": [
+            {"key": "A", "en": "Implement the feature but isolate it behind an abstraction layer so it can be replaced without affecting the rest of the system", "score_value": 0, "strategy": "constraint_pivot"},
+            {"key": "B", "en": "Propose an alternative implementation that achieves the client's goal through a different technical approach that preserves the architecture", "score_value": 1, "strategy": "reframing"},
+            {"key": "C", "en": "Build the feature as specified but simultaneously create a migration path document that shows how to refactor it later", "score_value": 2, "strategy": "iterative_prototyping"},
+            {"key": "D", "en": "Negotiate the scope: deliver the core of what they need in a cleaner way and defer the elements that cause the most architectural damage", "score_value": 3, "strategy": "recombination"}
+          ],
+          "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"
+        },
+        {
+          "question_id": "q15", "pillar": "drive",
+          "text_en": "A production incident exposed a gap in your monitoring knowledge. After putting out the fire, you:",
+          "text_it": "Un incidente in produzione ha esposto una lacuna nelle tue conoscenze di monitoring. Dopo aver risolto l'urgenza, tu:",
+          "text_es": "Un incidente en producción expuso una laguna en tus conocimientos de monitoreo. Después de apagar el fuego, tú:",
+          "options": [
+            {"key": "A", "en": "Document exactly which signals you missed and add them to your personal checklist", "score_value": 0},
+            {"key": "B", "en": "Schedule a session with the on-call engineer to understand what they saw that you didn't", "score_value": 1},
+            {"key": "C", "en": "Set up a sandbox environment to deliberately trigger similar failures and practice responding", "score_value": 2},
+            {"key": "D", "en": "Redesign alert thresholds based on what you now understand, then validate for two weeks", "score_value": 3}
+          ],
+          "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"
+        },
+        {
+          "question_id": "q16", "pillar": "computational_power",
+          "text_en": "How do you handle large amounts of data to analyze?",
+          "text_it": "Come gestisci grandi quantità di dati da analizzare?",
+          "text_es": "¿Cómo manejas grandes cantidades de datos para analizar?",
+          "options": [
+            {"key": "A", "en": "Use visualization tools to identify patterns", "it": "Uso strumenti di visualizzazione per identificare modelli", "es": "Uso herramientas de visualización para identificar patrones", "score_value": 0},
+            {"key": "B", "en": "Segment data into logical categories", "it": "Segmento i dati in categorie logiche", "es": "Segmento los datos en categorías lógicas", "score_value": 1},
+            {"key": "C", "en": "Apply statistical techniques to find correlations", "it": "Applico tecniche statistiche per trovare correlazioni", "es": "Aplico técnicas estadísticas para encontrar correlaciones", "score_value": 2},
+            {"key": "D", "en": "Prioritize which data subsets to analyze first based on impact", "it": "Dare priorità a quali sottoinsiemi di dati analizzare prima in base all'impatto", "es": "Priorizar qué subconjuntos de datos analizar primero según el impacto", "score_value": 3}
+          ],
+          "note": "v2 refinement — option D rewritten to remove desirability gradient",
+          "source_artifact": "public/XIMA_ComputationalPower_Refined_v2.json"
+        },
+        {
+          "question_id": "q17", "pillar": "communication",
+          "text_en": "A partner team has been working on parallel assumptions that contradict your findings. Neither team is wrong—you're using different validated models. A joint deliverable is due in 5 days. In the first alignment meeting, how do you approach the discrepancy?",
+          "text_it": "Un team partner ha lavorato su assunzioni parallele che contraddicono i tuoi risultati. Nessuno dei due team ha torto—state usando modelli validati diversi. Un deliverable congiunto è previsto tra 5 giorni. Nel primo incontro di allineamento, come affronti la discrepanza?",
+          "text_es": "Un equipo socio ha estado trabajando con suposiciones paralelas que contradicen tus hallazgos. Ningún equipo está equivocado—están usando modelos validados diferentes. Un entregable conjunto vence en 5 días. En la primera reunión de alineación, ¿cómo abordas la discrepancia?",
+          "options": [
+            {"key": "A", "en": "Present both models with their assumptions explicitly mapped, letting the data speak before proposing reconciliation", "score_value": 0, "strategy": "Precision-First"},
+            {"key": "B", "en": "Frame the discrepancy as a scope difference rather than a contradiction, focusing on what the joint deliverable actually needs to resolve", "score_value": 1, "strategy": "Abstraction-Shift"},
+            {"key": "C", "en": "Ask the partner team to walk through their reasoning first, listening for assumption gaps before revealing your own model", "score_value": 2, "strategy": "Signal-Check"},
+            {"key": "D", "en": "Propose a shared working document where both models are laid side-by-side with tagged assumptions, replacing verbal debate with structured comparison", "score_value": 3, "strategy": "Medium-Pivot"}
+          ],
+          "source_artifact": "public/XIMA_Communication_Redesign_v1.json"
+        },
+        {
+          "question_id": "q18", "pillar": "knowledge",
+          "text_en": "A vendor presents a new technology with impressive benchmarks, but the evaluation conditions don't match your production environment. You:",
+          "text_it": "Un fornitore presenta una nuova tecnologia con benchmark impressionanti, ma le condizioni di valutazione non corrispondono al tuo ambiente di produzione. Tu:",
+          "text_es": "Un proveedor presenta una nueva tecnología con benchmarks impresionantes, pero las condiciones de evaluación no coinciden con tu entorno de producción. Tú:",
+          "options": [
+            {"key": "A", "en": "Design a controlled test that mirrors your actual constraints", "score_value": 0},
+            {"key": "B", "en": "Seek out independent users who deployed it in similar conditions", "score_value": 1},
+            {"key": "C", "en": "Analyze the gap between their test conditions and yours to estimate real-world performance", "score_value": 2},
+            {"key": "D", "en": "Request access to their raw data and re-run the analysis with your parameters", "score_value": 3}
+          ],
+          "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"
+        },
+        {
+          "question_id": "q19", "pillar": "creativity",
+          "text_en": "Your team has developed a novel algorithm that outperforms the standard approach in testing, but it's harder to explain to regulators and stakeholders who expect the conventional method. You:",
+          "text_it": "Il tuo team ha sviluppato un algoritmo innovativo che supera l'approccio standard nei test, ma è più difficile da spiegare ai regolatori e stakeholder che si aspettano il metodo convenzionale. Tu:",
+          "text_es": "Tu equipo ha desarrollado un algoritmo novedoso que supera el enfoque estándar en pruebas, pero es más difícil de explicar a reguladores y stakeholders que esperan el método convencional. Tú:",
+          "options": [
+            {"key": "A", "en": "Run both algorithms in parallel for a trial period, using the standard one for reporting while validating the novel one's results against it", "score_value": 0, "strategy": "iterative_prototyping"},
+            {"key": "B", "en": "Redesign the presentation: translate the novel algorithm's logic into the regulatory framework's language without changing the underlying approach", "score_value": 1, "strategy": "reframing"},
+            {"key": "C", "en": "Create a hybrid that uses the standard method's structure but incorporates the key innovation from your algorithm where it matters most", "score_value": 2, "strategy": "recombination"},
+            {"key": "D", "en": "Propose a phased adoption: start with the conventional approach in regulated contexts and introduce the novel algorithm in lower-scrutiny applications first", "score_value": 3, "strategy": "constraint_pivot"}
+          ],
+          "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"
+        },
+        {
+          "question_id": "q20", "pillar": "drive",
+          "text_en": "You've been struggling with a technical area (e.g., performance optimization) for months. Your next step is to:",
+          "text_it": "Da mesi fatichi con un'area tecnica (es. ottimizzazione delle prestazioni). Il tuo prossimo passo è:",
+          "text_es": "Llevas meses luchando con un área técnica (ej. optimización de rendimiento). Tu próximo paso es:",
+          "options": [
+            {"key": "A", "en": "Find a specific, small project that forces you to use this skill under real constraints", "score_value": 0},
+            {"key": "B", "en": "Track your attempts and outcomes weekly to see if your approach is actually improving", "score_value": 1},
+            {"key": "C", "en": "Seek candid assessment from someone strong in this area about what specifically you're doing wrong", "score_value": 2},
+            {"key": "D", "en": "Change your learning strategy entirely — if reading didn't work, try building; if solo, try pairing", "score_value": 3}
+          ],
+          "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"
+        },
+        {
+          "question_id": "q21", "pillar": "computational_power",
+          "text_en": "How do you evaluate the implementation of new technologies?",
+          "text_it": "Come valuti l'implementazione di nuove tecnologie?",
+          "text_es": "¿Cómo evalúas la implementación de nuevas tecnologías?",
+          "options": [
+            {"key": "A", "en": "Conduct thorough cost-benefit analysis", "it": "Conduco analisi costi-benefici approfondite", "es": "Realizo análisis exhaustivo de costo-beneficio", "score_value": 0},
+            {"key": "B", "en": "Test on pilot projects before full adoption", "it": "Testo su progetti pilota prima dell'adozione completa", "es": "Pruebo en proyectos piloto antes de la adopción completa", "score_value": 1},
+            {"key": "C", "en": "Evaluate impact on existing processes and teams", "it": "Valuto l'impatto su processi e team esistenti", "es": "Evalúo el impacto en procesos y equipos existentes", "score_value": 2},
+            {"key": "D", "en": "Map dependencies and failure modes before adoption", "it": "Mappare dipendenze e modalità di guasto prima dell'adozione", "es": "Mapear dependencias y modos de fallo antes de la adopción", "score_value": 3}
+          ],
+          "note": "v2 refinement — option D rewritten to remove Knowledge leakage",
+          "source_artifact": "public/XIMA_ComputationalPower_Refined_v2.json"
+        }
+      ],
+      "open_questions": [
+        {
+          "question_id": "open1",
+          "pillar_blend": "60% creativity + 40% communication",
+          "text_en": "Describe a professional situation where you felt most successful. What made it successful and what was your specific contribution?",
+          "text_it": "Descrivi una situazione professionale in cui ti sei sentito/a maggiormente di successo. Cosa l'ha resa di successo e qual è stato il tuo contributo specifico?",
+          "text_es": "Describe una situación profesional en la que te sentiste más exitoso/a. ¿Qué la hizo exitosa y cuál fue tu contribución específica?",
+          "max_influence": "10% on creativity (6%) and communication (4%)",
+          "source_artifact": "public/assessment_full_export.json"
+        },
+        {
+          "question_id": "open2",
+          "pillar_blend": "60% drive + 40% knowledge",
+          "text_en": "What is your biggest professional challenge or area where you'd like to grow? How do you plan to address it?",
+          "text_it": "Qual è la tua più grande sfida professionale o l'area in cui vorresti crescere? Come pensi di affrontarla?",
+          "text_es": "¿Cuál es tu mayor desafío profesional o área donde te gustaría crecer? ¿Cómo planeas abordarlo?",
+          "max_influence": "10% on drive (6%) and knowledge (4%)",
+          "source_artifact": "public/assessment_full_export.json"
+        }
+      ]
+    },
+    "business_leadership": {
+      "mc_questions_note": "Questions follow the same q1-q21 pillar mapping. Full text for each field is available in the respective frozen artifacts. This section shows only the redesigned (frozen) questions; pre-existing questions are in assessment_full_export.json.",
+      "mc_questions": [
+        {"question_id": "q1", "pillar": "computational_power", "text_en": "When reviewing a business KPI dashboard, what is your first step?", "source_artifact": "public/assessment_full_export.json"},
+        {"question_id": "q2", "pillar": "communication", "text_en": "You need board approval for a strategic pivot. The CFO wants ROI projections, the founder cares about mission alignment, and two independent directors have expressed skepticism about execution risk. You have one 30-minute slot. How do you prepare?", "source_artifact": "public/XIMA_Communication_Redesign_v1.json"},
+        {"question_id": "q3", "pillar": "knowledge", "text_en": "Your strategy relies on a market assumption supported by one reputable analyst report. A competitor's move suggests the assumption may be wrong. You:", "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"},
+        {"question_id": "q4", "pillar": "creativity", "text_en": "Your company needs to enter a new market segment, but the product wasn't designed for that audience and a full redesign would take 18 months. The board wants traction in 6 months. You:", "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"},
+        {"question_id": "q5", "pillar": "drive", "text_en": "Your board presentation fell flat because your financial storytelling lacked depth. You:", "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"},
+        {"question_id": "q6", "pillar": "computational_power", "text_en": "Faced with ambiguous revenue drops, you first:", "source_artifact": "public/assessment_full_export.json"},
+        {"question_id": "q7", "pillar": "communication", "text_en": "Your team has just been restructured. Two members are anxious about role changes, one is openly frustrated, and one seems disengaged. You need to communicate new responsibilities in a team meeting. How do you approach it?", "source_artifact": "public/XIMA_Communication_Redesign_v1.json"},
+        {"question_id": "q8", "pillar": "knowledge", "text_en": "You're entering a market where the available data is sparse and contradictory. Industry experts disagree on fundamentals. You:", "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"},
+        {"question_id": "q9", "pillar": "creativity", "text_en": "A key product launch is two weeks away. The marketing team discovers that the primary competitor just released a nearly identical feature with strong PR coverage. You:", "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"},
+        {"question_id": "q10", "pillar": "drive", "text_en": "Your team's strategic planning output is weaker than peers'. You suspect it's your facilitation. You:", "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"},
+        {"question_id": "q11", "pillar": "computational_power", "text_en": "Evaluating a pricing change, you:", "source_artifact": "public/assessment_full_export.json"},
+        {"question_id": "q12", "pillar": "communication", "text_en": "A key client escalates dissatisfaction directly to your CEO. The client's complaint mixes legitimate service gaps with inaccurate assumptions about your process. Your CEO asks you to draft the response. How do you handle the inaccuracies?", "source_artifact": "public/XIMA_Communication_Redesign_v1.json"},
+        {"question_id": "q13", "pillar": "knowledge", "text_en": "You've relied on a strategic model for months. A junior team member presents preliminary evidence that one of its core assumptions is wrong. You:", "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"},
+        {"question_id": "q14", "pillar": "creativity", "text_en": "Your team's quarterly plan is solid, but a major client requests a custom feature that would consume 40% of your engineering capacity. Saying no risks losing the client; saying yes risks the roadmap. You:", "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"},
+        {"question_id": "q15", "pillar": "drive", "text_en": "A product launch underperformed because you misjudged market timing. You:", "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"},
+        {"question_id": "q16", "pillar": "computational_power", "text_en": "To forecast next quarter, you:", "source_artifact": "public/assessment_full_export.json"},
+        {"question_id": "q17", "pillar": "communication", "text_en": "Two departments you oversee have a resource conflict. Both leaders present their case to you privately, each framing the other as unreasonable. You must communicate a resolution that neither will fully like. How do you deliver it?", "source_artifact": "public/XIMA_Communication_Redesign_v1.json"},
+        {"question_id": "q18", "pillar": "knowledge", "text_en": "A regulatory change will affect your business, but the interpretation is ambiguous and industry peers are reading it differently. You:", "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"},
+        {"question_id": "q19", "pillar": "creativity", "text_en": "Your company's core product is mature and growth has plateaued. The board wants a new revenue stream, but R&D budget is limited to 15% of current spend. You:", "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"},
+        {"question_id": "q20", "pillar": "drive", "text_en": "You've received consistent feedback that your delegation is weak, slowing the team. You:", "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"},
+        {"question_id": "q21", "pillar": "computational_power", "text_en": "Evaluating a transformation program, you first:", "source_artifact": "public/assessment_full_export.json"}
+      ],
+      "open_questions": [
+        {"question_id": "open1", "pillar_blend": "60% creativity + 40% communication", "text_en": "Describe a leadership decision you are proud of. What trade-offs did you weigh and why?"},
+        {"question_id": "open2", "pillar_blend": "60% drive + 40% knowledge", "text_en": "What's your biggest growth edge as a leader, and how are you addressing it?"}
+      ]
+    },
+    "arts_creative": {
+      "mc_questions_note": "Same pillar cycle. Full redesigned question text in respective artifacts.",
+      "mc_questions": [
+        {"question_id": "q1", "pillar": "computational_power", "text_en": "When evaluating creative performance data, you first:", "source_artifact": "public/assessment_full_export.json"},
+        {"question_id": "q2", "pillar": "communication", "text_en": "Your creative concept has been approved, but the production team interprets the brief differently than you intended. Their version is technically valid but misses your tonal intent. Rework would cost two days the project doesn't have. How do you address the gap?", "source_artifact": "public/XIMA_Communication_Redesign_v1.json"},
+        {"question_id": "q3", "pillar": "knowledge", "text_en": "You've developed a strong visual style, but a new project requires a visual language you're unfamiliar with. The brief is vague and references are scarce. You:", "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"},
+        {"question_id": "q4", "pillar": "creativity", "text_en": "A client wants a bold, distinctive campaign, but their legal team has flagged restrictions: no comparative claims, no superlatives, and all imagery must include their existing brand elements. You:", "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"},
+        {"question_id": "q5", "pillar": "drive", "text_en": "A client rejected your work for lacking strategic depth — an area you know is weak. You:", "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"},
+        {"question_id": "q6", "pillar": "computational_power", "text_en": "To choose a campaign visual, you rely on:", "source_artifact": "public/assessment_full_export.json"},
+        {"question_id": "q7", "pillar": "communication", "text_en": "A client gives feedback that contradicts their own approved brief. They don't realize the contradiction. Pointing it out directly risks making them feel incompetent. Ignoring it means building something misaligned. How do you navigate this?", "source_artifact": "public/XIMA_Communication_Redesign_v1.json"},
+        {"question_id": "q8", "pillar": "knowledge", "text_en": "Your creative direction is based on audience research, but early user testing returns mixed signals — some love it, some find it confusing. You:", "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"},
+        {"question_id": "q9", "pillar": "creativity", "text_en": "You're designing a visual identity for a brand that operates in two very different markets — luxury and affordable. They want one identity that works for both without alienating either audience. You:", "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"},
+        {"question_id": "q10", "pillar": "drive", "text_en": "Your motion design skills are behind the team's expectations, and it's affecting your projects. You:", "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"},
+        {"question_id": "q11", "pillar": "computational_power", "text_en": "To allocate production budget, you:", "source_artifact": "public/assessment_full_export.json"},
+        {"question_id": "q12", "pillar": "communication", "text_en": "You're leading a creative review where a junior team member's work has significant issues, but they've clearly invested heavily. Two senior colleagues are in the room. How do you deliver feedback that's honest without being destructive?", "source_artifact": "public/XIMA_Communication_Redesign_v1.json"},
+        {"question_id": "q13", "pillar": "knowledge", "text_en": "You've relied on a creative direction for months. A junior designer presents preliminary user data suggesting one of your core aesthetic assumptions may be wrong. You:", "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"},
+        {"question_id": "q14", "pillar": "creativity", "text_en": "You've been developing a creative direction for weeks. In the final review, the client says they love the work but need it adapted for a medium you didn't design for. The deadline doesn't change. You:", "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"},
+        {"question_id": "q15", "pillar": "drive", "text_en": "Your portfolio review revealed that your typographic work is consistently your weakest area. You:", "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"},
+        {"question_id": "q16", "pillar": "computational_power", "text_en": "When your creative workflow hits a bottleneck, you:", "note": "v2 refinement — stem rewritten for cognitive tension", "source_artifact": "public/XIMA_ComputationalPower_Refined_v2.json"},
+        {"question_id": "q17", "pillar": "communication", "text_en": "A collaborator from a different discipline keeps using their own domain's vocabulary to describe your shared project. Meetings are productive on the surface but you suspect fundamental misalignment beneath the shared terms. How do you test this?", "source_artifact": "public/XIMA_Communication_Redesign_v1.json"},
+        {"question_id": "q18", "pillar": "knowledge", "text_en": "A client insists their audience wants a specific aesthetic, but your research suggests otherwise. The client's conviction is strong. You:", "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"},
+        {"question_id": "q19", "pillar": "creativity", "text_en": "Your team has developed an innovative visual concept that tests well with younger audiences but alienates the brand's existing older customer base. The client wants to keep both. You:", "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"},
+        {"question_id": "q20", "pillar": "drive", "text_en": "You've plateaued in your creative direction skills and feel stuck at the same level. You:", "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"},
+        {"question_id": "q21", "pillar": "computational_power", "text_en": "To judge asset quality at scale, you:", "source_artifact": "public/assessment_full_export.json"}
+      ],
+      "open_questions": [
+        {"question_id": "open1", "pillar_blend": "60% creativity + 40% communication", "text_en": "Tell us about a piece you created that changed outcomes. Why did it work?"},
+        {"question_id": "open2", "pillar_blend": "60% drive + 40% knowledge", "text_en": "Which creative skill are you most driven to improve this year and how?"}
+      ]
+    },
+    "service_ops": {
+      "mc_questions_note": "Same pillar cycle. Full redesigned question text in respective artifacts.",
+      "mc_questions": [
+        {"question_id": "q1", "pillar": "computational_power", "text_en": "When service metrics dip, your first step is to:", "source_artifact": "public/assessment_full_export.json"},
+        {"question_id": "q2", "pillar": "communication", "text_en": "A process change you've implemented is causing confusion among frontline staff. Some are reverting to old procedures. You can't mandate compliance without understanding the breakdown. How do you diagnose and address the communication gap?", "source_artifact": "public/XIMA_Communication_Redesign_v1.json"},
+        {"question_id": "q3", "pillar": "knowledge", "text_en": "Your team follows a standard procedure, but an unusual case doesn't fit the existing protocol. The procedure manual doesn't cover this scenario. You:", "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"},
+        {"question_id": "q4", "pillar": "creativity", "text_en": "Your service team needs to reduce average handling time by 20%, but cutting steps would hurt quality scores. You can't hire more staff. You:", "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"},
+        {"question_id": "q5", "pillar": "drive", "text_en": "Your team's incident response time has been slower than the target, and you are part of the problem. You:", "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"},
+        {"question_id": "q6", "pillar": "computational_power", "text_en": "To schedule staff effectively, you:", "source_artifact": "public/assessment_full_export.json"},
+        {"question_id": "q7", "pillar": "communication", "text_en": "A customer is escalating a complaint. They're factually wrong about what happened, but emotionally they've had a genuinely poor experience. Your response will be reviewed by your manager. How do you handle the factual inaccuracy while addressing the experience?", "source_artifact": "public/XIMA_Communication_Redesign_v1.json"},
+        {"question_id": "q8", "pillar": "knowledge", "text_en": "Two experienced team members give you contradictory advice on handling a service situation. Both have strong track records. You:", "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"},
+        {"question_id": "q9", "pillar": "creativity", "text_en": "A key supplier notifies you that a critical component will be unavailable for three weeks. Your service depends on it daily. Switching suppliers permanently isn't viable due to contracts. You:", "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"},
+        {"question_id": "q10", "pillar": "drive", "text_en": "Customer feedback shows that your team's explanations during outages are confusing — and you wrote the scripts. You:", "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"},
+        {"question_id": "q11", "pillar": "computational_power", "text_en": "To reduce errors, you:", "note": "v2 refinement — option D rewritten to remove desirability gradient", "source_artifact": "public/XIMA_ComputationalPower_Refined_v2.json"},
+        {"question_id": "q12", "pillar": "communication", "text_en": "You need to communicate a service-level reduction to long-term clients. The reduction is permanent and non-negotiable. Some clients will be significantly impacted. You must preserve the relationship while being transparent. How do you deliver the message?", "source_artifact": "public/XIMA_Communication_Redesign_v1.json"},
+        {"question_id": "q13", "pillar": "knowledge", "text_en": "You've relied on an operational procedure for months. A junior team member presents preliminary case data suggesting one of its core assumptions is wrong. You:", "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"},
+        {"question_id": "q14", "pillar": "creativity", "text_en": "Management wants to introduce a digital self-service channel to reduce call volume by 30%. But your data shows that 60% of customers who try self-service end up calling anyway because the issues are too complex. You:", "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"},
+        {"question_id": "q15", "pillar": "drive", "text_en": "An audit found that your compliance documentation has recurring gaps — a skill you haven't developed. You:", "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"},
+        {"question_id": "q16", "pillar": "computational_power", "text_en": "Choosing a new tool, you:", "source_artifact": "public/assessment_full_export.json"},
+        {"question_id": "q17", "pillar": "communication", "text_en": "You've been asked to train a new team on a complex workflow. Half the group has operational experience in a related field; the other half are complete beginners. You have one training session. How do you structure it?", "source_artifact": "public/XIMA_Communication_Redesign_v1.json"},
+        {"question_id": "q18", "pillar": "knowledge", "text_en": "A new industry guideline contradicts a practice your team has used successfully for years. The guideline's evidence base is limited but growing. You:", "source_artifact": "public/XIMA_Knowledge_Redesign_v1.json"},
+        {"question_id": "q19", "pillar": "creativity", "text_en": "Your team runs a 24/7 operation. A new regulation requires additional documentation at each handoff between shifts, but adding paperwork would slow transitions and create a 15-minute gap in coverage. You:", "source_artifact": "public/XIMA_Creativity_Redesign_v1.json"},
+        {"question_id": "q20", "pillar": "drive", "text_en": "You've been told your process improvement proposals lack data support — a skill you haven't developed. You:", "source_artifact": "public/XIMA_Drive_MC_Validation_Export_v1.json"},
+        {"question_id": "q21", "pillar": "computational_power", "text_en": "Evaluating a process change, you:", "source_artifact": "public/assessment_full_export.json"}
+      ],
+      "open_questions": [
+        {"question_id": "open1", "pillar_blend": "60% creativity + 40% communication", "text_en": "Describe a time you improved a service process. What changed and how did you make it stick?"},
+        {"question_id": "open2", "pillar_blend": "60% drive + 40% knowledge", "text_en": "What area of your operations practice do you most want to grow this year, and what's your plan?"}
+      ]
+    }
+  },
+  "validation_summary": {
+    "global_stability_test": {
+      "N": 5000,
+      "archetypes_tested": 12,
+      "max_cross_pillar_r": 0.34,
+      "PCA_PC1_variance": "32.4%",
+      "min_archetype_separation": "21 pts",
+      "max_confusion_pct": "13.7%",
+      "verdict": "PASS"
+    },
+    "per_pillar_reliability": {
+      "computational_power": {"alpha_range": "0.61-0.66", "mean_alpha": 0.64},
+      "knowledge": {"alpha_range": "0.64-0.68", "mean_alpha": 0.66},
+      "creativity": {"alpha_range": "0.64-0.68", "mean_alpha": 0.66},
+      "communication": {"alpha_range": "0.63-0.67", "mean_alpha": 0.65},
+      "drive": {"alpha_range": "0.60-0.66", "mean_alpha": 0.63}
+    },
+    "item_quality": {
+      "mean_cognitive_tension": 3.85,
+      "max_option_dominance": "27%",
+      "social_desirability_items": 0,
+      "ceiling_pct": "3.2%",
+      "floor_pct": "2.8%"
+    }
+  },
+  "artifact_index": [
+    {"filename": "public/XIMA_Assessment_v1.0_Freeze_Declaration.md", "description": "Formal freeze declaration with executive summary and monitoring commitments"},
+    {"filename": "public/XIMA_5Pillar_Stability_Test_v1.md", "description": "Global 5-pillar stability simulation report (N=5000, 12 archetypes)"},
+    {"filename": "public/XIMA_ComputationalPower_Refined_v2.json", "description": "CP pillar frozen questions with micro-refinements and validation"},
+    {"filename": "public/XIMA_Knowledge_Redesign_v1.json", "description": "Knowledge pillar redesigned questions (epistemic discipline under uncertainty)"},
+    {"filename": "public/XIMA_Creativity_Redesign_v1.json", "description": "Creativity pillar redesigned questions (constraint navigation)"},
+    {"filename": "public/XIMA_Communication_Redesign_v1.json", "description": "Communication pillar redesigned questions (adaptive message calibration)"},
+    {"filename": "public/XIMA_Drive_MC_Validation_Export_v1.json", "description": "Drive pillar MC baseline questions (Growth Velocity behavioral proxy)"},
+    {"filename": "public/assessment_full_export.json", "description": "Pre-redesign full assessment export with all original questions and scoring pipeline"},
+    {"filename": "src/lib/assessment/getPillarForQuestion.ts", "description": "Single source of truth for question→pillar cyclic mapping"}
+  ],
+  "change_control": "Any modification to frozen assessment items requires: (1) Written justification with psychometric evidence, (2) Synthetic simulation demonstrating improvement, (3) Boundary stress test confirming no cross-pillar regression, (4) Engineering review of scoring pipeline impact, (5) Product sign-off. Version increments: v1.0 → v1.1 (item adjustments) → v2.0 (structural redesign)."
+}
