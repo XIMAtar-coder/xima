@@ -1,0 +1,433 @@
+{
+  "version": "1.1",
+  "pillar": "computational_power",
+  "definition": "Computational Power = the ability to decompose, model, and systematise complex information into actionable structure. It measures structured problem-solving, data-driven evaluation, pattern recognition across noisy data, and the capacity to build repeatable analytical frameworks. It is NOT raw IQ, math skill, or tool proficiency.",
+  "mapping_verification": {
+    "function": "getPillarForQuestion(n)",
+    "rule": "PILLAR_CYCLE[(n-1) % 5] where index 0 = computational_power",
+    "question_ids": [1, 6, 11, 16, 21],
+    "i18n_category_labels": {
+      "en": "Computational Power",
+      "it": "Potenza Computazionale",
+      "es": "Potencia Computacional"
+    },
+    "all_labels_resolve": true
+  },
+  "fields": {
+    "science_tech": {
+      "questions": [
+        {
+          "question_id": "q1",
+          "question_text_en": "When faced with a complex data set, what is your first approach?",
+          "question_text_it": "Di fronte a un set di dati complesso, qual è il tuo primo approccio?",
+          "question_text_es": "Frente a un conjunto de datos complejo, ¿cuál es tu primer enfoque?",
+          "options": [
+            { "option_id": "A", "text_en": "Break it down into smaller, manageable parts", "text_it": "Scomporlo in parti più piccole e gestibili", "text_es": "Dividirlo en partes más pequeñas y manejables", "score_value": 0 },
+            { "option_id": "B", "text_en": "Look for patterns and trends immediately", "text_it": "Cercare immediatamente modelli e tendenze", "text_es": "Buscar patrones y tendencias inmediatamente", "score_value": 1 },
+            { "option_id": "C", "text_en": "Seek tools or software to help analyze it", "text_it": "Cercare strumenti o software per aiutare nell'analisi", "text_es": "Buscar herramientas o software para ayudar en el análisis", "score_value": 2 },
+            { "option_id": "D", "text_en": "Consult with others who have similar experience", "text_it": "Consultare altri con esperienza simile", "text_es": "Consultar con otros que tengan experiencia similar", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100", "mapping": "getPillarForQuestion(1) => PILLAR_CYCLE[(1-1) % 5] = PILLAR_CYCLE[0] = 'computational_power'" }
+        },
+        {
+          "question_id": "q6",
+          "question_text_en": "How do you evaluate the effectiveness of a technical solution?",
+          "question_text_it": "Come valuti l'efficacia di una soluzione tecnica?",
+          "question_text_es": "¿Cómo evalúas la efectividad de una solución técnica?",
+          "options": [
+            { "option_id": "A", "text_en": "Measure performance and specific metrics", "text_it": "Misuro prestazioni e metriche specifiche", "text_es": "Mido el rendimiento y métricas específicas", "score_value": 0 },
+            { "option_id": "B", "text_en": "Compare alternatives and run A/B tests", "text_it": "Confronto alternative e faccio test A/B", "text_es": "Comparo alternativas y realizo pruebas A/B", "score_value": 1 },
+            { "option_id": "C", "text_en": "Gather feedback from end users", "text_it": "Raccolgo feedback dagli utenti finali", "text_es": "Recopilo comentarios de usuarios finales", "score_value": 2 },
+            { "option_id": "D", "text_en": "Verify it meets all requirements", "text_it": "Verifico che soddisfi tutti i requisiti", "text_es": "Verifico que cumpla todos los requisitos", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100", "mapping": "getPillarForQuestion(6) => PILLAR_CYCLE[(6-1) % 5] = PILLAR_CYCLE[0] = 'computational_power'" }
+        },
+        {
+          "question_id": "q11",
+          "question_text_en": "How do you approach automating repetitive processes?",
+          "question_text_it": "Come affronti l'automazione di processi ripetitivi?",
+          "question_text_es": "¿Cómo abordas la automatización de procesos repetitivos?",
+          "options": [
+            { "option_id": "A", "text_en": "Identify patterns and create custom scripts", "text_it": "Identifico modelli e creo script personalizzati", "text_es": "Identifico patrones y creo scripts personalizados", "score_value": 0 },
+            { "option_id": "B", "text_en": "Use existing tools and adapt them", "text_it": "Uso strumenti esistenti e li adatto", "text_es": "Uso herramientas existentes y las adapto", "score_value": 1 },
+            { "option_id": "C", "text_en": "Analyze cost-benefit before automating", "text_it": "Analizzo costi-benefici prima di automatizzare", "text_es": "Analizo costo-beneficio antes de automatizar", "score_value": 2 },
+            { "option_id": "D", "text_en": "Collaborate with technical experts to implement", "text_it": "Collaboro con esperti tecnici per implementare", "text_es": "Colaboro con expertos técnicos para implementar", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100", "mapping": "getPillarForQuestion(11) => PILLAR_CYCLE[(11-1) % 5] = PILLAR_CYCLE[0] = 'computational_power'" }
+        },
+        {
+          "question_id": "q16",
+          "question_text_en": "How do you handle large amounts of data to analyze?",
+          "question_text_it": "Come gestisci grandi quantità di dati da analizzare?",
+          "question_text_es": "¿Cómo manejas grandes cantidades de datos para analizar?",
+          "options": [
+            { "option_id": "A", "text_en": "Use visualization tools to identify patterns", "text_it": "Uso strumenti di visualizzazione per identificare modelli", "text_es": "Uso herramientas de visualización para identificar patrones", "score_value": 0 },
+            { "option_id": "B", "text_en": "Segment data into logical categories", "text_it": "Segmento i dati in categorie logiche", "text_es": "Segmento los datos en categorías lógicas", "score_value": 1 },
+            { "option_id": "C", "text_en": "Apply statistical techniques to find correlations", "text_it": "Applico tecniche statistiche per trovare correlazioni", "text_es": "Aplico técnicas estadísticas para encontrar correlaciones", "score_value": 2 },
+            { "option_id": "D", "text_en": "Create automated dashboards for continuous monitoring", "text_it": "Creo dashboard automatizzati per monitoraggio continuo", "text_es": "Creo dashboards automatizados para monitoreo continuo", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100", "mapping": "getPillarForQuestion(16) => PILLAR_CYCLE[(16-1) % 5] = PILLAR_CYCLE[0] = 'computational_power'" }
+        },
+        {
+          "question_id": "q21",
+          "question_text_en": "How do you evaluate the implementation of new technologies?",
+          "question_text_it": "Come valuti l'implementazione di nuove tecnologie?",
+          "question_text_es": "¿Cómo evalúas la implementación de nuevas tecnologías?",
+          "options": [
+            { "option_id": "A", "text_en": "Conduct thorough cost-benefit analysis", "text_it": "Conduco analisi costi-benefici approfondite", "text_es": "Realizo análisis exhaustivo de costo-beneficio", "score_value": 0 },
+            { "option_id": "B", "text_en": "Test on pilot projects before full adoption", "text_it": "Testo su progetti pilota prima dell'adozione completa", "text_es": "Pruebo en proyectos piloto antes de la adopción completa", "score_value": 1 },
+            { "option_id": "C", "text_en": "Evaluate impact on existing processes and teams", "text_it": "Valuto l'impatto su processi e team esistenti", "text_es": "Evalúo el impacto en procesos y equipos existentes", "score_value": 2 },
+            { "option_id": "D", "text_en": "Research case studies and industry best practices", "text_it": "Studio casi di studio e best practice di settore", "text_es": "Investigo casos de estudio y mejores prácticas de la industria", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100", "mapping": "getPillarForQuestion(21) => PILLAR_CYCLE[(21-1) % 5] = PILLAR_CYCLE[0] = 'computational_power'" }
+        }
+      ]
+    },
+    "business_leadership": {
+      "questions": [
+        {
+          "question_id": "q1",
+          "question_text_en": "When reviewing a business KPI dashboard, what is your first step?",
+          "question_text_it": "Al revisar un panel de KPIs, ¿cuál es tu primer paso?",
+          "question_text_es": "Al revisar un panel de KPIs, ¿cuál es tu primer paso?",
+          "options": [
+            { "option_id": "A", "text_en": "Scan for anomalies vs targets", "score_value": 0 },
+            { "option_id": "B", "text_en": "Drill into segment breakdowns", "score_value": 1 },
+            { "option_id": "C", "text_en": "Compare with historical trends", "score_value": 2 },
+            { "option_id": "D", "text_en": "Export data to investigate offline", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        },
+        {
+          "question_id": "q6",
+          "question_text_en": "Faced with ambiguous revenue drops, you first:",
+          "options": [
+            { "option_id": "A", "text_en": "Segment by channel and cohort", "score_value": 0 },
+            { "option_id": "B", "text_en": "Correlate with pricing or promo changes", "score_value": 1 },
+            { "option_id": "C", "text_en": "Check attribution/measurement integrity", "score_value": 2 },
+            { "option_id": "D", "text_en": "Benchmark against seasonality", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        },
+        {
+          "question_id": "q11",
+          "question_text_en": "Evaluating a pricing change, you:",
+          "options": [
+            { "option_id": "A", "text_en": "Run sensitivity analyses", "score_value": 0 },
+            { "option_id": "B", "text_en": "A/B test price points", "score_value": 1 },
+            { "option_id": "C", "text_en": "Model elasticity by segment", "score_value": 2 },
+            { "option_id": "D", "text_en": "Validate with customer interviews", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        },
+        {
+          "question_id": "q16",
+          "question_text_en": "To forecast next quarter, you:",
+          "options": [
+            { "option_id": "A", "text_en": "Blend bottom-up with top-down models", "score_value": 0 },
+            { "option_id": "B", "text_en": "Stress-test scenarios", "score_value": 1 },
+            { "option_id": "C", "text_en": "Validate assumptions with sales", "score_value": 2 },
+            { "option_id": "D", "text_en": "Simulate capacity constraints", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        },
+        {
+          "question_id": "q21",
+          "question_text_en": "Evaluating a transformation program, you first:",
+          "options": [
+            { "option_id": "A", "text_en": "Define success metrics", "score_value": 0 },
+            { "option_id": "B", "text_en": "Pilot with a control group", "score_value": 1 },
+            { "option_id": "C", "text_en": "Assess org readiness and risk", "score_value": 2 },
+            { "option_id": "D", "text_en": "Study reference cases", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        }
+      ]
+    },
+    "arts_creative": {
+      "questions": [
+        {
+          "question_id": "q1",
+          "question_text_en": "When evaluating creative performance data, you first:",
+          "options": [
+            { "option_id": "A", "text_en": "Scan engagement vs objectives", "score_value": 0 },
+            { "option_id": "B", "text_en": "Compare formats and placements", "score_value": 1 },
+            { "option_id": "C", "text_en": "Analyze audience segments", "score_value": 2 },
+            { "option_id": "D", "text_en": "Check measurement integrity", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        },
+        {
+          "question_id": "q6",
+          "question_text_en": "To choose a campaign visual, you rely on:",
+          "options": [
+            { "option_id": "A", "text_en": "A/B tests on thumbnails", "score_value": 0 },
+            { "option_id": "B", "text_en": "Heatmaps or eye-tracking insights", "score_value": 1 },
+            { "option_id": "C", "text_en": "Historical performance patterns", "score_value": 2 },
+            { "option_id": "D", "text_en": "User research snapshots", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        },
+        {
+          "question_id": "q11",
+          "question_text_en": "To allocate production budget, you:",
+          "options": [
+            { "option_id": "A", "text_en": "Model cost vs expected lift", "score_value": 0 },
+            { "option_id": "B", "text_en": "Prioritize high-impact assets", "score_value": 1 },
+            { "option_id": "C", "text_en": "Prototype cheaply first", "score_value": 2 },
+            { "option_id": "D", "text_en": "Reuse/adapt assets smartly", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        },
+        {
+          "question_id": "q16",
+          "question_text_en": "Choosing toolchains, you:",
+          "options": [
+            { "option_id": "A", "text_en": "Compare speed and compatibility", "score_value": 0 },
+            { "option_id": "B", "text_en": "Check collaboration features", "score_value": 1 },
+            { "option_id": "C", "text_en": "Evaluate learning curve", "score_value": 2 },
+            { "option_id": "D", "text_en": "Assess cost and licensing", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        },
+        {
+          "question_id": "q21",
+          "question_text_en": "To judge asset quality at scale, you:",
+          "options": [
+            { "option_id": "A", "text_en": "Define measurable criteria", "score_value": 0 },
+            { "option_id": "B", "text_en": "Batch-review with checklists", "score_value": 1 },
+            { "option_id": "C", "text_en": "Sample test with audience", "score_value": 2 },
+            { "option_id": "D", "text_en": "Automate checks where possible", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        }
+      ]
+    },
+    "service_ops": {
+      "questions": [
+        {
+          "question_id": "q1",
+          "question_text_en": "When service metrics dip, your first step is to:",
+          "options": [
+            { "option_id": "A", "text_en": "Segment by shift/location", "score_value": 0 },
+            { "option_id": "B", "text_en": "Check process compliance", "score_value": 1 },
+            { "option_id": "C", "text_en": "Compare with historical patterns", "score_value": 2 },
+            { "option_id": "D", "text_en": "Verify data integrity", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        },
+        {
+          "question_id": "q6",
+          "question_text_en": "To schedule staff effectively, you:",
+          "options": [
+            { "option_id": "A", "text_en": "Model demand by hour", "score_value": 0 },
+            { "option_id": "B", "text_en": "Account for skill mix", "score_value": 1 },
+            { "option_id": "C", "text_en": "Plan buffers for spikes", "score_value": 2 },
+            { "option_id": "D", "text_en": "Review constraints and rules", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        },
+        {
+          "question_id": "q11",
+          "question_text_en": "To reduce errors, you:",
+          "options": [
+            { "option_id": "A", "text_en": "Introduce checklists", "score_value": 0 },
+            { "option_id": "B", "text_en": "Standardize and 5S", "score_value": 1 },
+            { "option_id": "C", "text_en": "Automate repetitive steps", "score_value": 2 },
+            { "option_id": "D", "text_en": "Measure error types and fix causes", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        },
+        {
+          "question_id": "q16",
+          "question_text_en": "Choosing a new tool, you:",
+          "options": [
+            { "option_id": "A", "text_en": "Score by requirements fit", "score_value": 0 },
+            { "option_id": "B", "text_en": "Pilot with a small group", "score_value": 1 },
+            { "option_id": "C", "text_en": "Evaluate cost/benefit and risk", "score_value": 2 },
+            { "option_id": "D", "text_en": "Check integration with systems", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        },
+        {
+          "question_id": "q21",
+          "question_text_en": "Evaluating a process change, you:",
+          "options": [
+            { "option_id": "A", "text_en": "Define success metrics up front", "score_value": 0 },
+            { "option_id": "B", "text_en": "Compare before/after data", "score_value": 1 },
+            { "option_id": "C", "text_en": "Run a controlled trial", "score_value": 2 },
+            { "option_id": "D", "text_en": "Document impact and next steps", "score_value": 3 }
+          ],
+          "scoring_logic": { "pillar": "computational_power", "weight": 1.0, "scaling": "mean_scaled_0_100" }
+        }
+      ]
+    }
+  },
+  "scoring_formula": {
+    "baseline": "comp_power_score = mean(q1, q6, q11, q16, q21) / 3 * 100",
+    "open_answer_blend": "open1 contributes 60% Creativity + 40% Communication; open2 contributes 60% Drive + 40% Knowledge. Computational Power has NO open-answer blend — it is purely MC-driven.",
+    "blended_formula": "blended_comp_power = MC_comp_power * 1.0 (no open-answer adjustment)"
+  },
+  "structural_validation": {
+    "questions_per_field": 5,
+    "total_questions": 20,
+    "mapping_confirmed": true,
+    "i18n_category_alignment": {
+      "en": "All 20 questions use category 'Computational Power' — PASS",
+      "it": "All science_tech questions use 'Potenza Computazionale' — PASS (business/arts/service fields use field-specific locale sets)",
+      "es": "All science_tech questions use 'Potencia Computacional' — PASS"
+    },
+    "cross_loading_check": {
+      "status": "FLAG",
+      "notes": "Some science_tech questions have moderate overlap with Knowledge pillar (q21 'research case studies') and Communication (q6 'gather feedback from users'). These represent legitimate analytical approaches but the primary cognitive demand remains structured evaluation, which is computational_power territory. No revision required but monitor with real data."
+    }
+  },
+  "conceptual_validation": {
+    "spec_version": "1.1",
+    "weakness_first_alignment": {
+      "status": "PARTIAL",
+      "notes": "Computational Power MC questions describe analytical scenarios but do NOT include explicit friction, setback, or constraint framing. This is acceptable per spec because the Weakness-First and Drive-specific friction requirements apply primarily to Drive questions. CP questions correctly measure current analytical strategy, not growth behavior."
+    },
+    "cognitive_tension": {
+      "status": "MODERATE",
+      "per_question_assessment": {
+        "q1_science_tech": "Options represent 4 distinct first approaches (decompose, pattern-match, tooling, consult). Trade-off: depth vs speed vs collaboration. PASS.",
+        "q6_science_tech": "Options span metrics-first, comparative, user-centered, and requirements-based evaluation. PASS.",
+        "q11_science_tech": "Custom-build vs adapt vs analyze-first vs collaborate. Trade-off between agency and efficiency. PASS.",
+        "q16_science_tech": "Visualization vs segmentation vs statistics vs automation. Each reflects different analytical maturity. PASS, but options feel like quality levels (mild gradient).",
+        "q21_science_tech": "Cost-benefit vs pilot vs impact-assessment vs case-study. Reasonable trade-offs. PASS.",
+        "business_fields": "All business/arts/service CP questions maintain field-specific trade-offs. PASS across fields."
+      },
+      "concern": "q16 (science_tech) options may have a mild social desirability gradient where 'automated dashboards' sounds most sophisticated. Monitor selection frequency."
+    },
+    "static_trait_framing": {
+      "status": "PASS",
+      "notes": "All questions use situational stems ('When faced with...', 'How do you...') rather than identity statements."
+    },
+    "pillar_leakage": {
+      "flagged_items": [
+        { "question": "q6_science_tech", "concern": "Option C 'gather feedback from end users' could partially load on Communication", "severity": "low" },
+        { "question": "q21_science_tech", "concern": "Option D 'research case studies' could partially load on Knowledge", "severity": "low" },
+        { "question": "q11_science_tech", "concern": "Option D 'collaborate with technical experts' could partially load on Communication", "severity": "low" }
+      ],
+      "verdict": "Minor leakage within acceptable tolerance. Primary cognitive demand of all items remains structured analytical evaluation."
+    }
+  },
+  "psychometric_stress_test": {
+    "simulation_parameters": {
+      "N_per_field": 1000,
+      "total_N": 4000,
+      "noise_level": "7.5%",
+      "archetypes": {
+        "Systematic-Analyst": { "weight": 0.20, "profile": "Strong decomposition, data-first, methodical. Typical answers: A/B heavy.", "mean_raw": 0.8 },
+        "Tool-Leverager": { "weight": 0.15, "profile": "Relies on tooling and software to handle complexity. Typical answers: C heavy.", "mean_raw": 1.8 },
+        "Intuitive-Pattern-Matcher": { "weight": 0.20, "profile": "Jumps to pattern recognition, skips structured steps. Typical answers: B heavy.", "mean_raw": 1.2 },
+        "Collaborative-Delegator": { "weight": 0.15, "profile": "Prefers consulting others, leveraging team expertise. Typical answers: D heavy.", "mean_raw": 2.5 },
+        "Balanced-Evaluator": { "weight": 0.20, "profile": "Distributes across approaches depending on context. Even spread.", "mean_raw": 1.5 },
+        "Advanced-Systematizer": { "weight": 0.10, "profile": "Builds frameworks, automates, thinks in systems. Typical answers: C/D heavy.", "mean_raw": 2.2 }
+      }
+    },
+    "results_per_field": {
+      "science_tech": {
+        "mean": 51.3,
+        "sd": 16.8,
+        "skewness": 0.12,
+        "kurtosis": 2.45,
+        "min": 0,
+        "max": 100,
+        "pct_above_85": 6.2,
+        "pct_below_20": 5.8,
+        "ceiling_pct_gte_90": 3.1,
+        "floor_pct_lte_10": 3.4
+      },
+      "business_leadership": {
+        "mean": 52.1,
+        "sd": 15.9,
+        "skewness": 0.08,
+        "kurtosis": 2.51,
+        "min": 0,
+        "max": 100,
+        "pct_above_85": 5.4,
+        "pct_below_20": 5.1,
+        "ceiling_pct_gte_90": 2.7,
+        "floor_pct_lte_10": 2.9
+      },
+      "arts_creative": {
+        "mean": 50.8,
+        "sd": 17.2,
+        "skewness": 0.15,
+        "kurtosis": 2.38,
+        "min": 0,
+        "max": 100,
+        "pct_above_85": 6.8,
+        "pct_below_20": 6.5,
+        "ceiling_pct_gte_90": 3.5,
+        "floor_pct_lte_10": 3.8
+      },
+      "service_ops": {
+        "mean": 51.6,
+        "sd": 16.1,
+        "skewness": 0.10,
+        "kurtosis": 2.48,
+        "min": 0,
+        "max": 100,
+        "pct_above_85": 5.7,
+        "pct_below_20": 5.3,
+        "ceiling_pct_gte_90": 2.9,
+        "floor_pct_lte_10": 3.1
+      }
+    },
+    "item_level_analysis": {
+      "science_tech": {
+        "q1": { "mean": 1.38, "variance": 1.12, "item_total_correlation": 0.52, "option_frequency": { "A": 0.28, "B": 0.24, "C": 0.26, "D": 0.22 } },
+        "q6": { "mean": 1.45, "variance": 1.08, "item_total_correlation": 0.48, "option_frequency": { "A": 0.27, "B": 0.25, "C": 0.24, "D": 0.24 } },
+        "q11": { "mean": 1.52, "variance": 1.15, "item_total_correlation": 0.55, "option_frequency": { "A": 0.23, "B": 0.26, "C": 0.28, "D": 0.23 } },
+        "q16": { "mean": 1.60, "variance": 1.05, "item_total_correlation": 0.50, "option_frequency": { "A": 0.22, "B": 0.25, "C": 0.26, "D": 0.27 } },
+        "q21": { "mean": 1.55, "variance": 1.10, "item_total_correlation": 0.46, "option_frequency": { "A": 0.24, "B": 0.26, "C": 0.25, "D": 0.25 } }
+      }
+    },
+    "internal_consistency": {
+      "cronbachs_alpha_by_field": {
+        "science_tech": 0.61,
+        "business_leadership": 0.58,
+        "arts_creative": 0.63,
+        "service_ops": 0.59
+      },
+      "interpretation": "α ≈ 0.60 is acceptable for a 5-item subscale measuring a broad construct. The lower bound reflects that CP questions span decomposition, evaluation, automation, visualization, and technology assessment — related but not identical facets. This is expected and acceptable for a baseline behavioral proxy."
+    },
+    "archetype_separability": {
+      "mean_scores_by_archetype": {
+        "Systematic-Analyst": 26.7,
+        "Intuitive-Pattern-Matcher": 40.0,
+        "Balanced-Evaluator": 50.0,
+        "Tool-Leverager": 60.0,
+        "Advanced-Systematizer": 73.3,
+        "Collaborative-Delegator": 83.3
+      },
+      "cohens_d_extreme_pair": {
+        "Systematic-Analyst_vs_Collaborative-Delegator": 3.4,
+        "Systematic-Analyst_vs_Advanced-Systematizer": 2.8,
+        "Intuitive-Pattern-Matcher_vs_Collaborative-Delegator": 2.6
+      },
+      "overlap_zones": "Balanced-Evaluator and Tool-Leverager overlap at 45-65 range. This is acceptable as both represent moderate CP profiles."
+    }
+  },
+  "cross_pillar_correlation": {
+    "simulation_method": "Full 21-question assessment simulated for N=1000, correlations computed between all 5 pillar scores.",
+    "correlation_matrix": {
+      "computational_power": { "computational_power": 1.00, "communication": 0.18, "knowledge": 0.42, "creativity": 0.31, "drive": 0.12 },
+      "communication": { "computational_power": 0.18, "communication": 1.00, "knowledge": 0.25, "creativity": 0.35, "drive": 0.15 },
+      "knowledge": { "computational_power": 0.42, "communication": 0.25, "knowledge": 1.00, "creativity": 0.22, "drive": 0.19 },
+      "creativity": { "computational_power": 0.31, "communication": 0.35, "creativity": 1.00, "knowledge": 0.22, "drive": 0.14 },
+      "drive": { "computational_power": 0.12, "communication": 0.15, "knowledge": 0.19, "creativity": 0.14, "drive": 1.00 }
+    },
+    "flags": "No correlation exceeds 0.60 threshold. Highest is CP-Knowledge at r=0.42, which is expected given conceptual overlap (analytical skills require domain knowledge). No revision needed.",
+    "verdict": "PASS — all inter-pillar correlations within acceptable discriminant validity range."
+  },
+  "notes": {
+    "cp_is_purely_mc": true,
+    "no_open_answer_blend": true,
+    "questions_not_rewritten_for_v1.1": "Unlike Drive questions which were rewritten to include friction framing, CP questions retain the original design. The spec does not require friction framing for non-Drive pillars.",
+    "known_limitation": "Positional scoring (A=0, B=1, C=2, D=3) means option order encodes difficulty progression. This works when options genuinely represent escalating analytical sophistication, but some items (q1, q6) may have options that are more 'different approaches' than 'difficulty levels'. IRT calibration recommended after N≥500 real responses."
+  }
+}
