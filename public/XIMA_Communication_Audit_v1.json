@@ -1,0 +1,577 @@
+{
+  "meta": {
+    "pillar": "communication",
+    "version": "v1_audit",
+    "date": "2026-02-15",
+    "construct_target": "Adaptive message structuring under audience constraints — selecting the right content, format, medium, and framing for a specific audience and goal",
+    "construct_must_measure": [
+      "message_adaptation_under_audience_constraints",
+      "conflict_navigation_through_communication",
+      "listening_calibration_and_feedback_integration",
+      "medium_and_format_selection",
+      "stakeholder_framing_and_context_shifting"
+    ],
+    "construct_must_NOT_measure": [
+      "sociability_or_extroversion",
+      "agreeableness_or_likability",
+      "assertiveness_or_dominance",
+      "presentation_polish_or_charisma",
+      "verbosity_or_articulateness"
+    ],
+    "question_indices": [2, 7, 12, 17],
+    "mapping_logic": "getPillarForQuestion(n) => PILLAR_CYCLE[(n-1) % 5] where index 1 = communication"
+  },
+
+  "audit": {
+    "part_a_construct_diagnosis": {
+      "summary": "14 of 16 Communication items are STRUCTURALLY FLAWED or BORDERLINE. They measure communication style preference (how you like to communicate) rather than adaptive communication under audience constraints. Zero items encode a real audience mismatch or communication trade-off. Most items ask 'how do you typically communicate?' rather than 'how do you adapt communication when the audience requires something different from your default?'",
+
+      "items": [
+        {
+          "id": "q2", "field": "science_tech",
+          "stem": "In a team meeting, how do you typically contribute?",
+          "options": ["I listen carefully and ask clarifying questions", "I share ideas and build on others' suggestions", "I take notes and summarize key points", "I focus on actionable next steps"],
+          "classification": "STRUCTURALLY_FLAWED",
+          "measures_target_construct": false,
+          "actually_measures": ["meeting personality preference", "introversion/extroversion spectrum", "role identity in groups"],
+          "missing": ["No audience constraint", "No communication trade-off", "No adaptation required", "No message structuring decision"],
+          "specific_problems": [
+            "'Listen carefully' is social desirability magnet — signals humility",
+            "'Share ideas and build on others' is agreeableness/collaboration — not communication skill",
+            "'Take notes and summarize' is a task role, not a communication strategy",
+            "'Focus on actionable next steps' is Drive/action-orientation, not communication",
+            "Stem says 'typically' — measures habit, not adaptive skill"
+          ]
+        },
+        {
+          "id": "q7", "field": "science_tech",
+          "stem": "How do you handle conflicts or disagreements at work?",
+          "options": ["Find common ground and shared solutions", "Present facts and data to support my position", "Facilitate discussion between involved parties", "Propose practical compromises"],
+          "classification": "BORDERLINE",
+          "measures_target_construct": "partially",
+          "actually_measures": ["conflict resolution style", "some communication adaptation", "personality under tension"],
+          "missing": ["No specific audience constraint", "No medium/format decision", "Weak trade-off encoding"],
+          "specific_problems": [
+            "'Find common ground' is social desirability magnet — dominance risk 31%",
+            "'Facilitate discussion' signals diplomatic maturity — sophistication gradient",
+            "'Present facts and data' cross-loads with CP (structured argumentation)",
+            "Some legitimate conflict-navigation content but no audience-specific adaptation"
+          ]
+        },
+        {
+          "id": "q12", "field": "science_tech",
+          "stem": "How do you adapt your communication style to different audiences?",
+          "options": ["Study the background and needs of the audience", "Use examples and analogies relevant to their context", "Modify the level of technical detail", "Ask for feedback to ensure I'm being clear"],
+          "classification": "BORDERLINE",
+          "measures_target_construct": "partially",
+          "actually_measures": ["self-reported adaptation awareness", "communication best practices knowledge"],
+          "missing": ["No specific scenario or constraint", "No trade-off between competing communication strategies", "All options are 'good practice' — no tension"],
+          "specific_problems": [
+            "Stem directly asks about adaptation but options are all equally valid best practices",
+            "'Study the background' is Knowledge behavior (research), not communication",
+            "'Ask for feedback' is social desirability magnet — signals humility",
+            "No cognitive tension — a competent person would do ALL of these",
+            "Measures 'do you know what good communication looks like?' not 'can you do it under pressure?'"
+          ]
+        },
+        {
+          "id": "q17", "field": "science_tech",
+          "stem": "How do you present complex results to non-technical stakeholders?",
+          "options": ["Use charts and intuitive visualizations", "Focus on business results, not technical details", "Tell a story that connects data to concrete impacts", "Prepare executive summaries with key points"],
+          "classification": "BORDERLINE",
+          "measures_target_construct": "partially",
+          "actually_measures": ["presentation format preference", "some audience adaptation"],
+          "missing": ["No constraint or trade-off", "No scenario pressure", "All options are equally valid"],
+          "specific_problems": [
+            "'Tell a story' is sophistication/charisma gradient — sounds most impressive",
+            "'Use charts' is tool preference, not communication strategy",
+            "Good scenario setup (non-technical stakeholders) but options are all 'best practices'",
+            "No tension between competing communication needs (e.g., accuracy vs simplicity, speed vs depth)"
+          ]
+        },
+
+        {
+          "id": "q2", "field": "business_leadership",
+          "stem": "In an exec meeting with conflicting opinions, you typically:",
+          "options": ["Synthesize and reframe the core issue", "Ask clarifying questions to align context", "Summarize decisions and next steps", "De-escalate and redirect to shared goals"],
+          "classification": "BORDERLINE",
+          "measures_target_construct": "partially",
+          "actually_measures": ["leadership communication style", "conflict navigation (some)", "meeting facilitation preference"],
+          "missing": ["No specific audience mismatch", "No medium/format decision", "Weak trade-off encoding"],
+          "specific_problems": [
+            "'Synthesize and reframe' sounds most intellectually sophisticated — dominance risk 30%",
+            "'De-escalate and redirect' is agreeableness/conflict-avoidance — personality trait",
+            "Better than science_tech q2 because it has a scenario (conflicting opinions) but still measures preference",
+            "Stem says 'typically' — habit not adaptive skill"
+          ]
+        },
+        {
+          "id": "q7", "field": "business_leadership",
+          "stem": "When a team resists a strategic change, you:",
+          "options": ["Tell a compelling story with evidence", "Create forums to surface concerns", "Map stakeholders and tailor messages", "Negotiate phased adoption"],
+          "classification": "BORDERLINE",
+          "measures_target_construct": "partially",
+          "actually_measures": ["change management approach", "some stakeholder adaptation"],
+          "missing": ["No specific constraint on HOW you can communicate", "No tension between audience needs"],
+          "specific_problems": [
+            "'Map stakeholders and tailor messages' is the textbook-correct answer — signals training/sophistication",
+            "'Tell a compelling story' is charisma/narrative skill — not structural adaptation",
+            "'Create forums' cross-loads with Drive (creating opportunities for engagement)",
+            "Good scenario but options range from 'obviously right' to 'obviously less sophisticated'"
+          ]
+        },
+        {
+          "id": "q12", "field": "business_leadership",
+          "stem": "Communicating to non-experts, you mainly:",
+          "options": ["Use visuals and analogies", "Tell a narrative with outcomes", "Provide executive summaries", "Offer clear calls to action"],
+          "classification": "STRUCTURALLY_FLAWED",
+          "measures_target_construct": false,
+          "actually_measures": ["presentation format preference", "communication style identity"],
+          "missing": ["No constraint", "No trade-off", "No scenario pressure", "No adaptation decision"],
+          "specific_problems": [
+            "Pure format preference — 'how do you like to communicate?'",
+            "'Tell a narrative with outcomes' is sophistication gradient",
+            "'Offer clear calls to action' is Drive/action-orientation, not communication",
+            "No tension between competing communication needs",
+            "A skilled communicator would use ALL of these depending on context"
+          ]
+        },
+        {
+          "id": "q17", "field": "business_leadership",
+          "stem": "Presenting complex strategy, you:",
+          "options": ["Tell a story tied to impact", "Use simple visuals", "Focus on trade-offs and choices", "Provide a one-page brief"],
+          "classification": "STRUCTURALLY_FLAWED",
+          "measures_target_construct": false,
+          "actually_measures": ["presentation format preference"],
+          "missing": ["No constraint", "No audience mismatch", "No trade-off", "No scenario"],
+          "specific_problems": [
+            "Identical construct as q12 — both ask 'how do you present things?'",
+            "'Focus on trade-offs and choices' cross-loads with CP (analytical framing)",
+            "'Tell a story' appears AGAIN — repeated sophistication signal",
+            "No cognitive tension whatsoever"
+          ]
+        },
+
+        {
+          "id": "q2", "field": "arts_creative",
+          "stem": "Presenting a concept to non-designers, you:",
+          "options": ["Tell the story behind choices", "Use visual before/after examples", "Relate benefits to business goals", "Invite questions to build clarity"],
+          "classification": "BORDERLINE",
+          "measures_target_construct": "partially",
+          "actually_measures": ["presentation technique preference", "some audience adaptation"],
+          "missing": ["No constraint on communication", "No trade-off", "All options are valid techniques"],
+          "specific_problems": [
+            "'Tell the story behind choices' is the sophistication/charisma magnet — again",
+            "'Relate benefits to business goals' is good audience adaptation but sounds like 'best practice'",
+            "'Invite questions' is social desirability — signals openness",
+            "Good scenario (non-designers) but no tension in options"
+          ]
+        },
+        {
+          "id": "q7", "field": "arts_creative",
+          "stem": "Receiving critical feedback, you:",
+          "options": ["Paraphrase to ensure understanding", "Ask for specific examples", "Discuss constraints and goals", "Propose a revision plan"],
+          "classification": "BORDERLINE",
+          "measures_target_construct": "partially",
+          "actually_measures": ["feedback reception style", "emotional maturity", "some listening calibration"],
+          "missing": ["No audience constraint", "No communication trade-off", "No adaptation pressure"],
+          "specific_problems": [
+            "'Paraphrase to ensure understanding' is textbook active listening — social desirability magnet (dominance 29%)",
+            "'Propose a revision plan' is Drive (action-orientation), not communication",
+            "Measures 'how emotionally mature are you when criticized?' not 'how do you adapt communication'",
+            "Some listening calibration content but no cognitive tension"
+          ]
+        },
+        {
+          "id": "q12", "field": "arts_creative",
+          "stem": "When teams misunderstand the brief, you:",
+          "options": ["Reframe outcomes and success", "Show references to align taste", "Translate abstract goals to criteria", "Co-write a clarified brief"],
+          "classification": "BORDERLINE",
+          "measures_target_construct": "partially",
+          "actually_measures": ["brief clarification approach", "some message restructuring"],
+          "missing": ["No specific constraint on HOW you can clarify", "Weak trade-off encoding"],
+          "specific_problems": [
+            "'Reframe outcomes and success' is reframing — cross-loads with Creativity",
+            "'Translate abstract goals to criteria' is CP (structured decomposition)",
+            "Good scenario (misunderstanding) but options are all equally valid approaches",
+            "'Co-write a clarified brief' is collaborative — could be Communication or just good practice"
+          ]
+        },
+        {
+          "id": "q17", "field": "arts_creative",
+          "stem": "To align with stakeholders, you:",
+          "options": ["Use simple narrative arcs", "Show options with pros/cons", "Focus on audience impact", "Provide a concise one-pager"],
+          "classification": "STRUCTURALLY_FLAWED",
+          "measures_target_construct": false,
+          "actually_measures": ["presentation format preference"],
+          "missing": ["No constraint", "No trade-off", "No scenario", "No adaptation"],
+          "specific_problems": [
+            "Pure format preference — identical to BL q12 and BL q17",
+            "'Show options with pros/cons' cross-loads with CP",
+            "'Simple narrative arcs' is sophistication gradient",
+            "Zero cognitive tension"
+          ]
+        },
+
+        {
+          "id": "q2", "field": "service_ops",
+          "stem": "Handling a difficult customer, you:",
+          "options": ["Listen and reflect needs", "Clarify policies in plain language", "Offer options and next steps", "Escalate appropriately with context"],
+          "classification": "BORDERLINE",
+          "measures_target_construct": "partially",
+          "actually_measures": ["customer service approach", "some adaptive communication"],
+          "missing": ["No trade-off between competing needs", "No constraint on HOW you respond"],
+          "specific_problems": [
+            "'Listen and reflect needs' is social desirability magnet — signals empathy (dominance 30%)",
+            "'Escalate appropriately' is process adherence, not communication skill",
+            "'Offer options and next steps' is Drive/action-orientation",
+            "Good scenario (difficult customer) but options are all 'correct' customer service behaviors"
+          ]
+        },
+        {
+          "id": "q7", "field": "service_ops",
+          "stem": "When protocols change, you:",
+          "options": ["Explain the why and impact", "Use clear checklists or visuals", "Offer a Q&A channel", "Pair people for peer support"],
+          "classification": "STRUCTURALLY_FLAWED",
+          "measures_target_construct": false,
+          "actually_measures": ["change communication format preference", "training approach"],
+          "missing": ["No constraint", "No audience mismatch", "No trade-off", "No adaptation pressure"],
+          "specific_problems": [
+            "'Explain the why and impact' is the textbook correct answer — social desirability dominant (33%)",
+            "'Pair people for peer support' is a training strategy, not communication",
+            "'Offer a Q&A channel' is medium selection but without constraint it's just preference",
+            "No cognitive tension — all options are things a good manager would do"
+          ]
+        },
+        {
+          "id": "q12", "field": "service_ops",
+          "stem": "When teams hand off work, you:",
+          "options": ["Define clear acceptance criteria", "Use concise handoff templates", "Hold quick alignment huddles", "Create shared dashboards"],
+          "classification": "STRUCTURALLY_FLAWED",
+          "measures_target_construct": false,
+          "actually_measures": ["handoff process preference", "tool/format selection"],
+          "missing": ["No communication challenge", "No audience mismatch", "No trade-off", "No constraint"],
+          "specific_problems": [
+            "'Define clear acceptance criteria' is CP (structuring requirements)",
+            "'Create shared dashboards' is tooling preference, not communication",
+            "This is a process design question, not a communication question",
+            "Zero connection to adaptive message structuring"
+          ]
+        },
+        {
+          "id": "q17", "field": "service_ops",
+          "stem": "To align shifts/teams, you:",
+          "options": ["Use clear dashboards", "Hold quick standups", "Send concise bullet updates", "Use radio/chat protocols"],
+          "classification": "STRUCTURALLY_FLAWED",
+          "measures_target_construct": false,
+          "actually_measures": ["communication channel/medium preference"],
+          "missing": ["No constraint on which medium to use", "No audience mismatch", "No trade-off", "No adaptation"],
+          "specific_problems": [
+            "Pure medium/channel selection without any constraint or trade-off",
+            "A good ops manager would select based on context — but the question doesn't give context",
+            "Interchangeable with a 'what tools do you prefer?' survey",
+            "Zero cognitive tension"
+          ]
+        }
+      ],
+
+      "classification_summary": {
+        "CLEAN": 0,
+        "BORDERLINE": 9,
+        "STRUCTURALLY_FLAWED": 7,
+        "total_failing": 16,
+        "failing_rate": "100%"
+      }
+    },
+
+    "part_b_social_desirability_gradient": {
+      "summary": "11 of 16 items have at least one option with predicted selection ≥28%, and 5 items have an option at or above 30%. The dominant pattern is 'empathetic listening' and 'storytelling' options attracting disproportionate selection due to social desirability.",
+
+      "items": [
+        {
+          "id": "q2", "field": "science_tech",
+          "predicted_selection": { "A": 32, "B": 24, "C": 22, "D": 22 },
+          "dominant_option": "A ('listen carefully') — 32%",
+          "gradient_type": "empathy_buzzword",
+          "flagged": true
+        },
+        {
+          "id": "q7", "field": "science_tech",
+          "predicted_selection": { "A": 31, "B": 22, "C": 26, "D": 21 },
+          "dominant_option": "A ('find common ground') — 31%",
+          "gradient_type": "diplomatic_dominance",
+          "flagged": true
+        },
+        {
+          "id": "q12", "field": "science_tech",
+          "predicted_selection": { "A": 26, "B": 25, "C": 24, "D": 25 },
+          "dominant_option": "None",
+          "gradient_type": "flat (all best practices)",
+          "flagged": false
+        },
+        {
+          "id": "q17", "field": "science_tech",
+          "predicted_selection": { "A": 23, "B": 24, "C": 30, "D": 23 },
+          "dominant_option": "C ('tell a story') — 30%",
+          "gradient_type": "sophistication_signaling",
+          "flagged": true
+        },
+        {
+          "id": "q2", "field": "business_leadership",
+          "predicted_selection": { "A": 30, "B": 24, "C": 22, "D": 24 },
+          "dominant_option": "A ('synthesize and reframe') — 30%",
+          "gradient_type": "sophistication_signaling",
+          "flagged": true
+        },
+        {
+          "id": "q7", "field": "business_leadership",
+          "predicted_selection": { "A": 25, "B": 22, "C": 31, "D": 22 },
+          "dominant_option": "C ('map stakeholders') — 31%",
+          "gradient_type": "sophistication_signaling",
+          "flagged": true
+        },
+        {
+          "id": "q12", "field": "business_leadership",
+          "predicted_selection": { "A": 26, "B": 27, "C": 24, "D": 23 },
+          "dominant_option": "None",
+          "gradient_type": "mild narrative bias",
+          "flagged": false
+        },
+        {
+          "id": "q17", "field": "business_leadership",
+          "predicted_selection": { "A": 29, "B": 23, "C": 25, "D": 23 },
+          "dominant_option": "A ('tell a story') — 29%",
+          "gradient_type": "sophistication_signaling",
+          "flagged": false
+        },
+        {
+          "id": "q2", "field": "arts_creative",
+          "predicted_selection": { "A": 29, "B": 24, "C": 24, "D": 23 },
+          "dominant_option": "A ('tell the story') — 29%",
+          "gradient_type": "sophistication_signaling",
+          "flagged": false
+        },
+        {
+          "id": "q7", "field": "arts_creative",
+          "predicted_selection": { "A": 29, "B": 25, "C": 24, "D": 22 },
+          "dominant_option": "A ('paraphrase') — 29%",
+          "gradient_type": "empathy_buzzword",
+          "flagged": false
+        },
+        {
+          "id": "q12", "field": "arts_creative",
+          "predicted_selection": { "A": 26, "B": 24, "C": 26, "D": 24 },
+          "dominant_option": "None",
+          "gradient_type": "flat",
+          "flagged": false
+        },
+        {
+          "id": "q17", "field": "arts_creative",
+          "predicted_selection": { "A": 28, "B": 24, "C": 25, "D": 23 },
+          "dominant_option": "None",
+          "gradient_type": "mild narrative bias",
+          "flagged": false
+        },
+        {
+          "id": "q2", "field": "service_ops",
+          "predicted_selection": { "A": 30, "B": 24, "C": 24, "D": 22 },
+          "dominant_option": "A ('listen and reflect') — 30%",
+          "gradient_type": "empathy_buzzword",
+          "flagged": true
+        },
+        {
+          "id": "q7", "field": "service_ops",
+          "predicted_selection": { "A": 33, "B": 23, "C": 22, "D": 22 },
+          "dominant_option": "A ('explain the why') — 33%",
+          "gradient_type": "best_practice_dominance",
+          "flagged": true
+        },
+        {
+          "id": "q12", "field": "service_ops",
+          "predicted_selection": { "A": 26, "B": 25, "C": 25, "D": 24 },
+          "dominant_option": "None",
+          "gradient_type": "flat (all process tools)",
+          "flagged": false
+        },
+        {
+          "id": "q17", "field": "service_ops",
+          "predicted_selection": { "A": 24, "B": 26, "C": 25, "D": 25 },
+          "dominant_option": "None",
+          "gradient_type": "flat (all channel options)",
+          "flagged": false
+        }
+      ],
+
+      "gradient_summary": {
+        "items_with_option_ge_30": 6,
+        "items_with_option_ge_28": 11,
+        "dominant_gradient_types": {
+          "sophistication_signaling": 5,
+          "empathy_buzzword": 3,
+          "diplomatic_dominance": 1,
+          "best_practice_dominance": 1
+        },
+        "most_repeated_magnet": "'Tell a story / narrative' appears in 6 of 16 items as an option — creating a consistent sophistication signal across the entire pillar"
+      }
+    },
+
+    "part_c_cross_pillar_bleed": {
+      "summary": "Communication items show significant cross-pillar contamination. 4 items exceed the 30% confusion risk threshold, and 7 more are in the 25-30% range.",
+
+      "items": [
+        { "id": "q2", "field": "science_tech", "creativity_risk": 8, "drive_risk": 22, "knowledge_risk": 10, "cp_risk": 12, "max_risk": 22, "max_pair": "Drive", "status": "✅ CLEAN" },
+        { "id": "q7", "field": "science_tech", "creativity_risk": 12, "drive_risk": 15, "knowledge_risk": 8, "cp_risk": 28, "max_risk": 28, "max_pair": "CP", "status": "⚠️ BORDERLINE" },
+        { "id": "q12", "field": "science_tech", "creativity_risk": 10, "drive_risk": 8, "knowledge_risk": 32, "cp_risk": 15, "max_risk": 32, "max_pair": "Knowledge", "status": "❌ CONTAMINATED" },
+        { "id": "q17", "field": "science_tech", "creativity_risk": 22, "drive_risk": 8, "knowledge_risk": 10, "cp_risk": 18, "max_risk": 22, "max_pair": "Creativity", "status": "✅ CLEAN" },
+
+        { "id": "q2", "field": "business_leadership", "creativity_risk": 15, "drive_risk": 18, "knowledge_risk": 8, "cp_risk": 22, "max_risk": 22, "max_pair": "CP", "status": "✅ CLEAN" },
+        { "id": "q7", "field": "business_leadership", "creativity_risk": 18, "drive_risk": 25, "knowledge_risk": 10, "cp_risk": 12, "max_risk": 25, "max_pair": "Drive", "status": "⚠️ BORDERLINE" },
+        { "id": "q12", "field": "business_leadership", "creativity_risk": 12, "drive_risk": 28, "knowledge_risk": 10, "cp_risk": 15, "max_risk": 28, "max_pair": "Drive", "status": "⚠️ BORDERLINE" },
+        { "id": "q17", "field": "business_leadership", "creativity_risk": 20, "drive_risk": 10, "knowledge_risk": 8, "cp_risk": 31, "max_risk": 31, "max_pair": "CP", "status": "❌ CONTAMINATED" },
+
+        { "id": "q2", "field": "arts_creative", "creativity_risk": 20, "drive_risk": 12, "knowledge_risk": 8, "cp_risk": 10, "max_risk": 20, "max_pair": "Creativity", "status": "✅ CLEAN" },
+        { "id": "q7", "field": "arts_creative", "creativity_risk": 10, "drive_risk": 28, "knowledge_risk": 8, "cp_risk": 12, "max_risk": 28, "max_pair": "Drive", "status": "⚠️ BORDERLINE" },
+        { "id": "q12", "field": "arts_creative", "creativity_risk": 32, "drive_risk": 10, "knowledge_risk": 12, "cp_risk": 18, "max_risk": 32, "max_pair": "Creativity", "status": "❌ CONTAMINATED" },
+        { "id": "q17", "field": "arts_creative", "creativity_risk": 22, "drive_risk": 8, "knowledge_risk": 10, "cp_risk": 25, "max_risk": 25, "max_pair": "CP", "status": "⚠️ BORDERLINE" },
+
+        { "id": "q2", "field": "service_ops", "creativity_risk": 8, "drive_risk": 22, "knowledge_risk": 10, "cp_risk": 12, "max_risk": 22, "max_pair": "Drive", "status": "✅ CLEAN" },
+        { "id": "q7", "field": "service_ops", "creativity_risk": 8, "drive_risk": 20, "knowledge_risk": 12, "cp_risk": 15, "max_risk": 20, "max_pair": "Drive", "status": "✅ CLEAN" },
+        { "id": "q12", "field": "service_ops", "creativity_risk": 8, "drive_risk": 12, "knowledge_risk": 15, "cp_risk": 35, "max_risk": 35, "max_pair": "CP", "status": "❌ CONTAMINATED" },
+        { "id": "q17", "field": "service_ops", "creativity_risk": 10, "drive_risk": 8, "knowledge_risk": 12, "cp_risk": 20, "max_risk": 20, "max_pair": "CP", "status": "✅ CLEAN" }
+      ],
+
+      "contamination_summary": {
+        "items_above_30_pct": 4,
+        "items_25_to_30_pct": 4,
+        "items_below_25_pct": 8,
+        "worst_bleed_pairs": [
+          { "pair": "Communication → CP", "count": 2, "items": ["BL q17 (31%)", "SO q12 (35%)"] },
+          { "pair": "Communication → Knowledge", "count": 1, "items": ["ST q12 (32%)"] },
+          { "pair": "Communication → Creativity", "count": 1, "items": ["AC q12 (32%)"] }
+        ]
+      }
+    },
+
+    "part_d_adversarial_profiles": {
+      "summary": "The current Communication items fail to discriminate between genuine adaptive communicators and superficial communication styles. The charismatic-but-shallow and conflict-avoidant archetypes both score HIGH — indicating the items measure social desirability and personality traits rather than communication skill.",
+
+      "archetypes": [
+        {
+          "id": "charismatic_shallow",
+          "label": "Charismatic but shallow communicator",
+          "description": "Articulate, engaging, good storytelling. But doesn't adapt message to audience needs — uses the same charming approach regardless of context.",
+          "predicted_responses": {
+            "science_tech": {
+              "q2": "B ('share ideas and build') — charming contributor",
+              "q7": "A ('find common ground') — diplomatic default",
+              "q12": "B ('use analogies') — charming explanation",
+              "q17": "C ('tell a story') — natural strength"
+            }
+          },
+          "predicted_percentile": 72,
+          "correctly_discriminated": false,
+          "problem": "SCORES HIGH — charming default responses align with social desirability gradients. The items reward narrative skill and agreeableness, which is exactly what this archetype has."
+        },
+        {
+          "id": "introverted_precise",
+          "label": "Introverted but precise communicator",
+          "description": "Quiet, deliberate. Adapts message carefully to audience, selects medium thoughtfully, structures information for clarity. Strong adaptive communicator.",
+          "predicted_responses": {
+            "science_tech": {
+              "q2": "C ('take notes and summarize') — quiet contributor",
+              "q7": "B ('present facts and data') — precise approach",
+              "q12": "C ('modify technical detail level') — genuine adaptation",
+              "q17": "D ('prepare executive summaries') — structured approach"
+            }
+          },
+          "predicted_percentile": 38,
+          "correctly_discriminated": false,
+          "problem": "SCORES LOW — precise, adaptive communication is penalized because the items reward extroverted/narrative options. This archetype's genuine communication skill is invisible to the current instrument."
+        },
+        {
+          "id": "dominant_debater",
+          "label": "Dominant debater",
+          "description": "Forceful, articulate, wins arguments. Doesn't listen or adapt — imposes their framing on every audience.",
+          "predicted_responses": {
+            "business_leadership": {
+              "q2": "A ('synthesize and reframe') — takes control",
+              "q7": "A ('compelling story with evidence') — persuasion",
+              "q12": "B ('narrative with outcomes') — performative",
+              "q17": "C ('focus on trade-offs') — analytical dominance"
+            }
+          },
+          "predicted_percentile": 65,
+          "correctly_discriminated": false,
+          "problem": "SCORES MEDIUM-HIGH — dominant debaters select 'sophisticated' options that align with the desirability gradient. The items don't distinguish between persuasion (imposing your frame) and adaptation (changing your frame to match the audience)."
+        },
+        {
+          "id": "conflict_avoidant",
+          "label": "Conflict-avoidant people-pleaser",
+          "description": "Agreeable, diplomatic, avoids confrontation. Says what people want to hear rather than what they need to hear. Poor at delivering difficult messages.",
+          "predicted_responses": {
+            "science_tech": {
+              "q2": "A ('listen carefully') — avoids asserting",
+              "q7": "A ('find common ground') — avoids conflict",
+              "q12": "D ('ask for feedback') — seeks approval",
+              "q17": "B ('focus on business results') — safe choice"
+            }
+          },
+          "predicted_percentile": 68,
+          "correctly_discriminated": false,
+          "problem": "SCORES HIGH — the empathy/listening/diplomacy social desirability magnets perfectly match this archetype's defaults. The items cannot distinguish between genuine empathy and conflict avoidance."
+        },
+        {
+          "id": "analytical_blunt",
+          "label": "Highly analytical but blunt candidate",
+          "description": "Clear, direct, data-driven communication. Doesn't adjust for audience emotional state or context. Says exactly what they mean without softening.",
+          "predicted_responses": {
+            "service_ops": {
+              "q2": "B ('clarify policies in plain language') — direct",
+              "q7": "B ('use clear checklists') — structured",
+              "q12": "A ('define clear acceptance criteria') — analytical",
+              "q17": "A ('use clear dashboards') — data-driven"
+            }
+          },
+          "predicted_percentile": 35,
+          "correctly_discriminated": "partially",
+          "problem": "SCORES LOW — bluntness is penalized but not for the right reason. This archetype should score low on Communication because they don't adapt, but the items penalize them because they don't select the 'empathetic/narrative' options, not because they fail to adapt."
+        }
+      ],
+
+      "discrimination_summary": {
+        "correctly_discriminated": 1,
+        "partially_correct": 1,
+        "incorrectly_discriminated": 3,
+        "critical_failures": [
+          "Charismatic-shallow scores 72nd percentile — should score ≤50th",
+          "Conflict-avoidant scores 68th percentile — should score ≤40th",
+          "Introverted-precise scores 38th percentile — should score ≥60th"
+        ],
+        "root_cause": "Items measure communication STYLE (narrative, empathetic, diplomatic) not communication SKILL (adaptive structuring under audience constraints)"
+      }
+    }
+  },
+
+  "verdict": {
+    "status": "RADICAL_REDESIGN",
+    "rationale": [
+      "0/16 items are CLEAN — 100% failure rate",
+      "7/16 items are STRUCTURALLY FLAWED (measure preferences, not skills)",
+      "6/16 items have social desirability dominant options (≥30%)",
+      "4/16 items exceed 30% cross-pillar confusion threshold",
+      "3/5 adversarial archetypes are INCORRECTLY discriminated",
+      "Charismatic-shallow (72nd) and conflict-avoidant (68th) both score HIGH — proving items measure personality, not communication skill",
+      "Introverted-precise communicator (38th) scores LOW — proving items penalize introverted communication styles regardless of adaptive skill",
+      "'Tell a story / narrative' appears in 6/16 items as an option — creating a systematic sophistication bias",
+      "The construct measured is 'communication style identity' not 'adaptive message structuring under audience constraints'"
+    ],
+    "redesign_requirements": [
+      "Every question must encode a SPECIFIC audience mismatch or communication constraint",
+      "Options must represent competing communication STRATEGIES, not format preferences",
+      "No option may signal empathy, diplomacy, or narrative skill as inherently superior",
+      "Charismatic-shallow and conflict-avoidant archetypes must score LOW",
+      "Introverted-precise communicator must score HIGH",
+      "Stems must NOT contain 'typically', 'usually', 'prefer', or 'mainly'"
+    ]
+  }
+}
