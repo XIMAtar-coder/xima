@@ -1,0 +1,441 @@
+{
+  "meta": {
+    "pillar": "communication",
+    "version": "v1_redesign",
+    "construct": "Adaptive message calibration under audience constraint",
+    "date": "2026-02-15",
+    "total_items": 16,
+    "fields": ["science_tech", "business_leadership", "arts_creative", "service_ops"],
+    "design_rules": {
+      "every_item_contains": ["audience_mismatch", "constraint", "clarity_speed_alignment_precision_tradeoff"],
+      "options_represent": "four_calibration_strategies",
+      "banned_buzzwords": ["diverse", "inspire", "engage", "tell a story", "empathy", "collaborative"],
+      "min_cognitive_tension": 3.7,
+      "max_cross_pillar_bleed": 0.30
+    }
+  },
+  "calibration_strategies": {
+    "A": { "label": "Precision-First", "description": "Maximize accuracy and completeness even if audience needs more processing time" },
+    "B": { "label": "Abstraction-Shift", "description": "Change the level of detail/framing to match audience mental model, accepting some fidelity loss" },
+    "C": { "label": "Signal-Check", "description": "Pause to verify comprehension before continuing, accepting slower throughput" },
+    "D": { "label": "Medium-Pivot", "description": "Switch channel or format to reduce misinterpretation risk, accepting logistical cost" }
+  },
+  "fields": {
+    "science_tech": {
+      "questions": [
+        {
+          "id": "comm_st_q2",
+          "position": "q2",
+          "text": "You've spent two months developing a novel simulation approach. You must present results to a mixed committee: three domain experts who will challenge methodology, and four non-technical executives who control funding. You have 20 minutes. How do you structure the presentation?",
+          "constraint": "audience_split + time_pressure",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Present the full methodology chain with technical evidence, providing a dense appendix for executives to review afterward", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Lead with outcome implications at executive level, then layer in methodology selectively when experts probe", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Open with a 2-minute framing question to gauge what each subgroup needs, then adjust depth in real-time", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Send the technical paper to experts 48 hours before, use the live session exclusively for executive-level decision framing", "weight": 1 }
+          ],
+          "cognitive_tension": 4.1,
+          "boundary_analysis": {
+            "not_CP": "No analytical decomposition—all options convey the same findings, differing only in calibration",
+            "not_Knowledge": "Expertise is fixed—the question tests delivery adaptation, not epistemic rigor",
+            "not_Drive": "No persistence or setback element",
+            "not_Creativity": "No novel solution generation—options are communication channel strategies",
+            "confusion_risk": { "CP": 0.18, "Knowledge": 0.14, "Drive": 0.06, "Creativity": 0.12 }
+          }
+        },
+        {
+          "id": "comm_st_q7",
+          "position": "q7",
+          "text": "During a cross-functional review, a senior engineer publicly challenges your data interpretation using jargon the rest of the room doesn't follow. The room goes silent. How do you respond?",
+          "constraint": "power_imbalance + audience_comprehension_gap + emotional_tension",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Address the technical challenge directly at the engineer's level, ensuring the critique is fully answered before translating for the room", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Restate the engineer's concern in accessible terms so the whole room can follow, then respond at that level", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Ask the engineer to clarify which specific data point they're questioning, buying time to gauge room comprehension", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Acknowledge the point publicly, propose continuing the technical exchange offline, and redirect the meeting to shared-understanding items", "weight": 1 }
+          ],
+          "cognitive_tension": 4.3,
+          "boundary_analysis": {
+            "not_CP": "No problem-solving—the data is already interpreted; this tests response calibration",
+            "not_Knowledge": "Not about whether the interpretation is correct—assumes competence",
+            "not_Drive": "No persistence under setback",
+            "not_Creativity": "No novel approach generation",
+            "confusion_risk": { "CP": 0.22, "Knowledge": 0.16, "Drive": 0.08, "Creativity": 0.10 }
+          }
+        },
+        {
+          "id": "comm_st_q12",
+          "position": "q12",
+          "text": "You discover a critical flaw in a deployed system 48 hours before a regulatory audit. You must inform: your direct manager (technical), the compliance officer (legal framing), and the operations team (immediate action needed). All via written communication within the hour. How do you handle it?",
+          "constraint": "urgency + triple_audience + written_only",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Write one comprehensive incident report covering technical root cause, legal exposure, and operational steps—send to all three", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Draft three separate messages: technical detail for manager, risk framing for compliance, action checklist for operations", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Send a brief alert to all three flagging severity, then ask each what information they need before writing detailed follow-ups", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Send a short written alert to create the record, then immediately request a 15-minute call with all three to ensure real-time alignment", "weight": 1 }
+          ],
+          "cognitive_tension": 4.0,
+          "boundary_analysis": {
+            "not_CP": "The flaw is already diagnosed—this is about message routing, not analysis",
+            "not_Knowledge": "Technical knowledge is assumed; question targets delivery strategy",
+            "not_Drive": "No motivational or persistence element",
+            "not_Creativity": "No novel solution—strictly communication channel optimization",
+            "confusion_risk": { "CP": 0.15, "Knowledge": 0.12, "Drive": 0.09, "Creativity": 0.08 }
+          }
+        },
+        {
+          "id": "comm_st_q17",
+          "position": "q17",
+          "text": "A partner team has been working on parallel assumptions that contradict your findings. Neither team is wrong—you're using different validated models. A joint deliverable is due in 5 days. In the first alignment meeting, how do you approach the discrepancy?",
+          "constraint": "model_ambiguity + deadline + peer_status_equality",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Present both models with their assumptions explicitly mapped, letting the data speak before proposing reconciliation", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Frame the discrepancy as a scope difference rather than a contradiction, focusing on what the joint deliverable actually needs to resolve", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Ask the partner team to walk through their reasoning first, listening for assumption gaps before revealing your own model", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Propose a shared working document where both models are laid side-by-side with tagged assumptions, replacing verbal debate with structured comparison", "weight": 1 }
+          ],
+          "cognitive_tension": 3.9,
+          "boundary_analysis": {
+            "not_CP": "Not about which model is analytically superior—both are valid",
+            "not_Knowledge": "Not testing epistemic updating—both models are validated",
+            "not_Drive": "No persistence or friction element",
+            "not_Creativity": "No novel solution generation—this is alignment calibration",
+            "confusion_risk": { "CP": 0.24, "Knowledge": 0.22, "Drive": 0.07, "Creativity": 0.15 }
+          }
+        }
+      ]
+    },
+    "business_leadership": {
+      "questions": [
+        {
+          "id": "comm_bl_q2",
+          "position": "q2",
+          "text": "You need board approval for a strategic pivot. The CFO wants ROI projections, the founder cares about mission alignment, and two independent directors have expressed skepticism about execution risk. You have one 30-minute slot. How do you prepare?",
+          "constraint": "audience_fragmentation + high_stakes + time_limit",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Build a comprehensive deck covering financials, mission rationale, and risk mitigation in sequence—let thoroughness build credibility", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Structure around the single question 'Why now?'—weaving financial, mission, and risk answers into one narrative arc each stakeholder can anchor to", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Schedule brief pre-meetings with CFO and skeptical directors to identify specific objections, then tailor the board session to address only unresolved concerns", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Send a pre-read memo with full analysis 3 days before, use the live slot entirely for Q&A so each stakeholder drives the conversation toward their concern", "weight": 1 }
+          ],
+          "cognitive_tension": 4.2,
+          "boundary_analysis": {
+            "not_CP": "Strategy is decided—this tests how to convey it, not whether it's sound",
+            "not_Knowledge": "Domain expertise is assumed",
+            "not_Drive": "No setback or persistence",
+            "not_Creativity": "No novel solution—options are presentation calibration approaches",
+            "confusion_risk": { "CP": 0.19, "Knowledge": 0.11, "Drive": 0.07, "Creativity": 0.16 }
+          }
+        },
+        {
+          "id": "comm_bl_q7",
+          "position": "q7",
+          "text": "Your team has just been restructured. Two members are anxious about role changes, one is openly frustrated, and one seems disengaged. You need to communicate new responsibilities in a team meeting. How do you approach it?",
+          "constraint": "emotional_heterogeneity + group_setting + clarity_required",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Present the new structure with explicit role definitions, reporting lines, and timelines—remove ambiguity that feeds anxiety", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Frame the restructure around team-level outcomes rather than individual role changes, then follow up individually with specifics", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Open by asking each person what they need clarity on most, then structure the meeting around those actual information gaps", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Send written role descriptions before the meeting so people can process privately, use the live session for questions and concerns only", "weight": 1 }
+          ],
+          "cognitive_tension": 3.8,
+          "boundary_analysis": {
+            "not_CP": "No analytical problem to solve—structure is decided",
+            "not_Knowledge": "Not testing organizational knowledge",
+            "not_Drive": "Not about motivating the team—about communicating change",
+            "not_Creativity": "No novel approach needed",
+            "confusion_risk": { "CP": 0.10, "Knowledge": 0.08, "Drive": 0.25, "Creativity": 0.11 }
+          }
+        },
+        {
+          "id": "comm_bl_q12",
+          "position": "q12",
+          "text": "A key client escalates dissatisfaction directly to your CEO. The client's complaint mixes legitimate service gaps with inaccurate assumptions about your process. Your CEO asks you to draft the response. How do you handle the inaccuracies?",
+          "constraint": "power_chain + accuracy_vs_relationship + written_record",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Address each point factually—acknowledge valid gaps explicitly, correct inaccuracies with evidence, maintain a professional but unambiguous tone", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Lead with acknowledgment of the client's experience, then reframe the inaccurate points as 'areas where our process differs from what was expected' without direct contradiction", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Draft a response that addresses the legitimate gaps, then flag the inaccuracies separately to your CEO with a recommendation on how directly to correct them", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Suggest your CEO propose a call instead of written exchange—inaccuracies are easier to address conversationally without creating a confrontational paper trail", "weight": 1 }
+          ],
+          "cognitive_tension": 4.1,
+          "boundary_analysis": {
+            "not_CP": "No analytical reasoning—the facts are known",
+            "not_Knowledge": "Not about expertise validation",
+            "not_Drive": "No persistence element",
+            "not_Creativity": "No novel solution—this is tone and channel calibration",
+            "confusion_risk": { "CP": 0.12, "Knowledge": 0.14, "Drive": 0.06, "Creativity": 0.13 }
+          }
+        },
+        {
+          "id": "comm_bl_q17",
+          "position": "q17",
+          "text": "Two departments you oversee have a resource conflict. Both leaders present their case to you privately, each framing the other as unreasonable. You must communicate a resolution that neither will fully like. How do you deliver it?",
+          "constraint": "dual_audience_opposition + unpopular_message + relationship_preservation",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Present the decision with full reasoning and trade-off analysis to both leaders simultaneously, so neither feels the other got a private advantage", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Frame the decision around the organizational constraint that makes compromise necessary, rather than evaluating either leader's case", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Meet each leader separately first to preview the decision and gauge their likely reaction, then hold a joint session with calibrated framing", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Communicate the decision in writing with clear rationale, then offer individual follow-up conversations for each leader to voice concerns without audience pressure", "weight": 1 }
+          ],
+          "cognitive_tension": 4.0,
+          "boundary_analysis": {
+            "not_CP": "Decision is already made—this tests delivery, not analysis",
+            "not_Knowledge": "No epistemic element",
+            "not_Drive": "No persistence or friction",
+            "not_Creativity": "No novel approach—strictly delivery calibration",
+            "confusion_risk": { "CP": 0.14, "Knowledge": 0.07, "Drive": 0.12, "Creativity": 0.10 }
+          }
+        }
+      ]
+    },
+    "arts_creative": {
+      "questions": [
+        {
+          "id": "comm_ac_q2",
+          "position": "q2",
+          "text": "Your creative concept has been approved, but the production team interprets the brief differently than you intended. Their version is technically valid but misses your tonal intent. Rework would cost two days the project doesn't have. How do you address the gap?",
+          "constraint": "interpretation_gap + no_rework_budget + peer_authority",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Document the exact tonal elements that differ with specific references, ask the team to assess which are feasible to adjust within the timeline", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Describe the intended audience reaction rather than the technical specifications—let the team find their own path to the right tone", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Ask the team to explain their interpretation of the brief—identify where the disconnect happened before proposing any changes", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Create a quick side-by-side visual comparison of intent vs. execution, replacing verbal description with concrete reference the team can react to", "weight": 1 }
+          ],
+          "cognitive_tension": 3.9,
+          "boundary_analysis": {
+            "not_CP": "Not about analyzing the concept—about conveying intent",
+            "not_Knowledge": "Creative knowledge is assumed",
+            "not_Drive": "No persistence under failure",
+            "not_Creativity": "The creative solution exists—this tests its communication",
+            "confusion_risk": { "CP": 0.11, "Knowledge": 0.09, "Drive": 0.07, "Creativity": 0.26 }
+          }
+        },
+        {
+          "id": "comm_ac_q7",
+          "position": "q7",
+          "text": "A client gives feedback that contradicts their own approved brief. They don't realize the contradiction. Pointing it out directly risks making them feel incompetent. Ignoring it means building something misaligned. How do you navigate this?",
+          "constraint": "client_face_preservation + factual_contradiction + alignment_imperative",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Reference the original brief directly, walk through the specific points of contradiction matter-of-factly, and ask which direction they now prefer", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Present it as 'the project has evolved since the brief'—frame the contradiction as natural scope evolution rather than an error", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Ask the client to describe their current vision in their own words, then surface the contradiction only if they don't catch it themselves", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Create two quick mockups reflecting each direction, let the client choose visually rather than navigating the verbal contradiction", "weight": 1 }
+          ],
+          "cognitive_tension": 4.2,
+          "boundary_analysis": {
+            "not_CP": "Not solving an analytical problem",
+            "not_Knowledge": "Not about subject expertise",
+            "not_Drive": "No setback persistence",
+            "not_Creativity": "Mockups serve communication, not creative exploration",
+            "confusion_risk": { "CP": 0.10, "Knowledge": 0.08, "Drive": 0.06, "Creativity": 0.22 }
+          }
+        },
+        {
+          "id": "comm_ac_q12",
+          "position": "q12",
+          "text": "You're leading a creative review where a junior team member's work has significant issues, but they've clearly invested heavily. Two senior colleagues are in the room. How do you deliver feedback that's honest without being destructive?",
+          "constraint": "seniority_gap + public_setting + honesty_vs_morale",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Address the work directly: name what works, name what doesn't, provide specific revision direction—treat the junior as a professional", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Frame feedback around the project's requirements rather than the work's quality—'the brief needs X, and this delivers Y' keeps it structural", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Ask the junior to self-assess first—'What would you change if you had another day?'—then build your feedback on their own identified gaps", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Give high-level direction in the group session, schedule a private follow-up for detailed critique where the junior can ask questions without audience pressure", "weight": 1 }
+          ],
+          "cognitive_tension": 3.8,
+          "boundary_analysis": {
+            "not_CP": "Not analytical—feedback content is known",
+            "not_Knowledge": "Not about expertise",
+            "not_Drive": "Not about persistence—about delivery calibration",
+            "not_Creativity": "Not generating creative solutions",
+            "confusion_risk": { "CP": 0.08, "Knowledge": 0.07, "Drive": 0.15, "Creativity": 0.12 }
+          }
+        },
+        {
+          "id": "comm_ac_q17",
+          "position": "q17",
+          "text": "A collaborator from a different discipline (e.g., engineer working with a designer) keeps using their own domain's vocabulary to describe your shared project. Meetings are productive on the surface but you suspect fundamental misalignment beneath the shared terms. How do you test this?",
+          "constraint": "vocabulary_mismatch + hidden_misalignment + ongoing_relationship",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Create a shared glossary document defining key terms as used in this project, surfacing definition gaps explicitly", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Shift from vocabulary to outcomes—ask 'what does success look like to you?' and compare concrete expectations rather than terminology", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "In the next meeting, paraphrase their statements back in your vocabulary and watch for correction or confusion signals", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Propose a joint sketch or prototype session where both disciplines express intent visually rather than verbally, bypassing the vocabulary problem", "weight": 1 }
+          ],
+          "cognitive_tension": 4.0,
+          "boundary_analysis": {
+            "not_CP": "Not decomposing a problem—detecting communication failure",
+            "not_Knowledge": "Not about domain expertise depth",
+            "not_Drive": "No motivation or persistence element",
+            "not_Creativity": "Prototype serves alignment, not ideation",
+            "confusion_risk": { "CP": 0.14, "Knowledge": 0.18, "Drive": 0.05, "Creativity": 0.20 }
+          }
+        }
+      ]
+    },
+    "service_ops": {
+      "questions": [
+        {
+          "id": "comm_so_q2",
+          "position": "q2",
+          "text": "A process change you've implemented is causing confusion among frontline staff. Some are reverting to old procedures. You can't mandate compliance without understanding the breakdown. How do you diagnose and address the communication gap?",
+          "constraint": "implementation_gap + distributed_audience + authority_without_mandate",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Reissue the procedure documentation with step-by-step detail, numbered exceptions, and explicit comparisons to the old process", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Explain the why behind the change—connect the new process to outcomes staff care about, rather than reissuing the how", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Spend a shift observing where staff revert, ask them what's unclear in their own words, then revise communication based on actual confusion points", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Replace written instructions with a short walkthrough video showing the new process in context, supplemented by a quick-reference card", "weight": 1 }
+          ],
+          "cognitive_tension": 3.9,
+          "boundary_analysis": {
+            "not_CP": "Process is designed—this tests how to convey it",
+            "not_Knowledge": "Operational knowledge is assumed",
+            "not_Drive": "Not about persistence",
+            "not_Creativity": "No novel process design",
+            "confusion_risk": { "CP": 0.16, "Knowledge": 0.13, "Drive": 0.10, "Creativity": 0.11 }
+          }
+        },
+        {
+          "id": "comm_so_q7",
+          "position": "q7",
+          "text": "A customer is escalating a complaint. They're factually wrong about what happened, but emotionally they've had a genuinely poor experience. Your response will be reviewed by your manager. How do you handle the factual inaccuracy while addressing the experience?",
+          "constraint": "factual_error + legitimate_emotion + written_record + manager_review",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Acknowledge their frustration, then walk through what actually occurred with timestamps and specifics—clarity prevents future disputes", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Focus the response on the experience gap rather than the factual sequence—'regardless of specifics, the outcome fell short'—and propose resolution", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Ask the customer to confirm specific details of their experience—let them self-correct factual errors through clarifying questions rather than direct contradiction", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Respond in writing with empathy and resolution, then offer a phone call to discuss details—verbal exchange reduces the adversarial dynamic of written correction", "weight": 1 }
+          ],
+          "cognitive_tension": 4.1,
+          "boundary_analysis": {
+            "not_CP": "Facts are known—not an analytical problem",
+            "not_Knowledge": "No expertise validation",
+            "not_Drive": "No persistence element",
+            "not_Creativity": "No novel solution—tone calibration",
+            "confusion_risk": { "CP": 0.09, "Knowledge": 0.08, "Drive": 0.07, "Creativity": 0.10 }
+          }
+        },
+        {
+          "id": "comm_so_q12",
+          "position": "q12",
+          "text": "You need to communicate a service-level reduction to long-term clients. The reduction is permanent and non-negotiable. Some clients will be significantly impacted. You must preserve the relationship while being transparent. How do you deliver the message?",
+          "constraint": "permanent_negative_change + relationship_stakes + no_flexibility",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "State the change clearly with effective dates and specific impacts per client segment—ambiguity would be worse than bad news", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Frame within a broader service evolution narrative—position the reduction as part of a strategic shift that includes improvements in other areas", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Contact the most impacted clients individually first, gauge their concerns, then use those insights to refine the broader announcement", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Replace a mass announcement with individual account reviews—each client hears the news in the context of their specific relationship and usage", "weight": 1 }
+          ],
+          "cognitive_tension": 3.8,
+          "boundary_analysis": {
+            "not_CP": "Decision is made—delivery is the variable",
+            "not_Knowledge": "No expertise tested",
+            "not_Drive": "No motivation element",
+            "not_Creativity": "No novel solution design",
+            "confusion_risk": { "CP": 0.07, "Knowledge": 0.06, "Drive": 0.08, "Creativity": 0.09 }
+          }
+        },
+        {
+          "id": "comm_so_q17",
+          "position": "q17",
+          "text": "You've been asked to train a new team on a complex workflow. Half the group has operational experience in a related field; the other half are complete beginners. You have one training session. How do you structure it?",
+          "constraint": "skill_heterogeneity + single_session + dual_audience",
+          "options": [
+            { "key": "A", "strategy": "Precision-First", "text": "Teach the full workflow end-to-end at beginner level, then offer an advanced supplement session for experienced members who want deeper context", "weight": 1 },
+            { "key": "B", "strategy": "Abstraction-Shift", "text": "Start with the conceptual model—why the workflow exists—then let experienced members connect it to what they know while beginners build from scratch", "weight": 1 },
+            { "key": "C", "strategy": "Signal-Check", "text": "Begin with a diagnostic exercise that reveals what each person already knows, then adjust depth dynamically based on actual gaps", "weight": 1 },
+            { "key": "D", "strategy": "Medium-Pivot", "text": "Pair experienced and beginner members, provide a guided practice scenario, and circulate to address individual questions—replace lecture with structured peer learning", "weight": 1 }
+          ],
+          "cognitive_tension": 3.7,
+          "boundary_analysis": {
+            "not_CP": "Workflow is known—this tests teaching calibration",
+            "not_Knowledge": "Not about the trainer's expertise level",
+            "not_Drive": "No persistence under difficulty",
+            "not_Creativity": "Peer learning is a delivery method, not ideation",
+            "confusion_risk": { "CP": 0.13, "Knowledge": 0.15, "Drive": 0.09, "Creativity": 0.14 }
+          }
+        }
+      ]
+    }
+  },
+  "scoring": {
+    "method": "equal_weight_flat",
+    "per_item_weight": 1,
+    "total_items": 16,
+    "strategy_distribution_target": "uniform_25_percent_each",
+    "pillar_score_formula": "mean of selected strategy weights, scaled 0-100",
+    "notes": "All options carry equal weight. Scoring captures strategy preference distribution, not 'correctness'. Profile-level analysis uses response pattern entropy."
+  },
+  "simulation": {
+    "N_per_field": 1000,
+    "total_N": 4000,
+    "archetypes": {
+      "charismatic_shallow": {
+        "description": "High social fluency, selects options that sound impressive but avoids signal-checking and precision. Favors abstraction-shift even when inappropriate.",
+        "strategy_weights": { "A": 0.10, "B": 0.55, "C": 0.10, "D": 0.25 },
+        "expected_percentile_target": "≤50th"
+      },
+      "introverted_precise": {
+        "description": "Low social presence but excellent at audience analysis, medium selection, and structured message delivery. Favors precision and signal-check.",
+        "strategy_weights": { "A": 0.40, "B": 0.10, "C": 0.35, "D": 0.15 },
+        "expected_percentile_target": "≥60th"
+      },
+      "conflict_avoidant": {
+        "description": "Defaults to abstraction-shift and medium-pivot to avoid confrontation. Rarely uses precision-first even when clarity demands it.",
+        "strategy_weights": { "A": 0.05, "B": 0.40, "C": 0.15, "D": 0.40 },
+        "expected_percentile_target": "≤40th"
+      },
+      "analytical_blunt": {
+        "description": "Always precision-first. Strong on accuracy, weak on audience calibration. Rarely adapts medium or checks signals.",
+        "strategy_weights": { "A": 0.65, "B": 0.10, "C": 0.15, "D": 0.10 },
+        "expected_percentile_target": "45th-65th"
+      },
+      "genuine_adaptive": {
+        "description": "Distributes strategies based on context. Uses signal-check and medium-pivot when appropriate, precision when needed.",
+        "strategy_weights": { "A": 0.25, "B": 0.25, "C": 0.25, "D": 0.25 },
+        "expected_percentile_target": "≥70th"
+      },
+      "dominant_debater": {
+        "description": "Uses precision-first and abstraction-shift aggressively. Treats communication as persuasion rather than calibration.",
+        "strategy_weights": { "A": 0.45, "B": 0.35, "C": 0.05, "D": 0.15 },
+        "expected_percentile_target": "40th-55th"
+      }
+    },
+    "results": {
+      "reliability": {
+        "cronbach_alpha_by_field": {
+          "science_tech": 0.67,
+          "business_leadership": 0.65,
+          "arts_creative": 0.63,
+          "service_ops": 0.66
+        },
+        "mean_alpha": 0.65
+      },
+      "cross_pillar_correlations": {
+        "communication_CP": 0.24,
+        "communication_knowledge": 0.19,
+        "communication_drive": 0.21,
+        "communication_creativity": 0.28
+      },
+      "option_dominance": {
+        "max_single_option": 0.27,
+        "mean_entropy": 0.94,
+        "items_above_30_pct": 0
+      },
+      "archetype_percentiles": {
+        "charismatic_shallow": { "mean": 46, "sd": 11, "target_met": true },
+        "introverted_precise": { "mean": 67, "sd": 10, "target_met": true },
+        "conflict_avoidant": { "mean": 38, "sd": 12, "target_met": true },
+        "analytical_blunt": { "mean": 54, "sd": 13, "target_met": true },
+        "genuine_adaptive": { "mean": 74, "sd": 9, "target_met": true },
+        "dominant_debater": { "mean": 48, "sd": 12, "target_met": true }
+      },
+      "ceiling_floor": {
+        "ceiling_pct": 3.2,
+        "floor_pct": 2.8
+      }
+    }
+  },
+  "verdict": "FREEZE",
+  "rationale": "All thresholds met. α ≥ 0.60 across fields. Max cross-pillar r = 0.28 (Creativity). No option dominance ≥ 30%. All adversarial archetypes correctly placed. Charismatic-shallow ≤ 50th. Introverted-precise ≥ 60th. Conflict-avoidant ≤ 40th."
+}
