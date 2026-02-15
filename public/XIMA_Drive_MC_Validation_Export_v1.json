@@ -1,0 +1,708 @@
+{
+  "version": "1.1",
+  "pillar": "drive",
+  "definition": "Drive = Growth Velocity. Measures how quickly and effectively a candidate improves in their weakest areas through deliberate learning behaviour under friction, setback, or constraint. MC Drive questions serve as a behavioural baseline proxy; the true Drive score is computed longitudinally from pillar_progress_snapshots.",
+  "fields": {
+    "science_tech": {
+      "questions": [
+        {
+          "question_id": "q5",
+          "question_text_en": "You realize your debugging approach consistently fails on a new class of distributed system errors. You:",
+          "question_text_it": "Ti rendi conto che il tuo approccio al debugging fallisce sistematicamente su una nuova classe di errori nei sistemi distribuiti. Tu:",
+          "question_text_es": "Te das cuenta de que tu enfoque de debugging falla sistemáticamente en una nueva clase de errores de sistemas distribuidos. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Pair with someone who has that expertise and study their method closely",
+              "text_it": "Ti affianchi a qualcuno esperto in quell'area e studi il suo metodo da vicino",
+              "text_es": "Te emparejas con alguien experto en esa área y estudias su método de cerca",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Allocate dedicated time each week to reproduce and analyze these errors systematically",
+              "text_it": "Dedichi tempo ogni settimana a riprodurre e analizzare questi errori sistematicamente",
+              "text_es": "Dedicas tiempo cada semana a reproducir y analizar estos errores sistemáticamente",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Build a diagnostic checklist from your failures to track what patterns you're missing",
+              "text_it": "Costruisci una checklist diagnostica dai tuoi fallimenti per tracciare quali pattern ti sfuggono",
+              "text_es": "Construyes una checklist diagnóstica a partir de tus fallos para rastrear qué patrones se te escapan",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Switch to a fundamentally different debugging framework and compare results",
+              "text_it": "Passi a un framework di debugging radicalmente diverso e confronti i risultati",
+              "text_es": "Cambias a un framework de debugging radicalmente diferente y comparas resultados",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(5) => PILLAR_CYCLE[(5-1) % 5] = PILLAR_CYCLE[4] = 'drive'"
+          }
+        },
+        {
+          "question_id": "q10",
+          "question_text_en": "Your code review feedback repeatedly highlights the same design weakness you haven't improved on. You:",
+          "question_text_it": "Il feedback delle tue code review evidenzia ripetutamente la stessa debolezza progettuale che non hai migliorato. Tu:",
+          "question_text_es": "El feedback de tus code reviews señala repetidamente la misma debilidad de diseño que no has mejorado. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Ask the reviewer to walk through an alternative approach on your actual code",
+              "text_it": "Chiedi al reviewer di guidarti attraverso un approccio alternativo sul tuo codice reale",
+              "text_es": "Pides al reviewer que te guíe por un enfoque alternativo sobre tu código real",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Rewrite one past module using the recommended pattern to internalize it",
+              "text_it": "Riscrivi un modulo passato usando il pattern consigliato per interiorizzarlo",
+              "text_es": "Reescribes un módulo pasado usando el patrón recomendado para interiorizarlo",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Set a specific, measurable improvement target for your next three PRs",
+              "text_it": "Stabilisci un obiettivo di miglioramento specifico e misurabile per le prossime tre PR",
+              "text_es": "Estableces un objetivo de mejora específico y medible para tus próximas tres PRs",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Study the underlying design principle in depth before attempting more code",
+              "text_it": "Studi il principio di design sottostante in profondità prima di tentare altro codice",
+              "text_es": "Estudias el principio de diseño subyacente en profundidad antes de intentar más código",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(10) => PILLAR_CYCLE[(10-1) % 5] = PILLAR_CYCLE[4] = 'drive'"
+          }
+        },
+        {
+          "question_id": "q15",
+          "question_text_en": "A production incident exposed a gap in your monitoring knowledge. After putting out the fire, you:",
+          "question_text_it": "Un incidente in produzione ha esposto una lacuna nelle tue conoscenze di monitoring. Dopo aver risolto l'urgenza, tu:",
+          "question_text_es": "Un incidente en producción expuso una laguna en tus conocimientos de monitoreo. Después de apagar el fuego, tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Document exactly which signals you missed and add them to your personal checklist",
+              "text_it": "Documenti esattamente quali segnali ti sono sfuggiti e li aggiungi alla tua checklist personale",
+              "text_es": "Documentas exactamente qué señales se te escaparon y las añades a tu checklist personal",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Schedule a session with the on-call engineer to understand what they saw that you didn't",
+              "text_it": "Fissi una sessione con l'ingegnere di turno per capire cosa ha visto che tu non hai colto",
+              "text_es": "Programas una sesión con el ingeniero de guardia para entender qué vio que tú no captaste",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Set up a sandbox environment to deliberately trigger similar failures and practice responding",
+              "text_it": "Configuri un ambiente sandbox per provocare deliberatamente guasti simili e fare pratica",
+              "text_es": "Configuras un sandbox para provocar deliberadamente fallos similares y practicar la respuesta",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Redesign alert thresholds based on what you now understand, then validate for two weeks",
+              "text_it": "Ridisegni le soglie di alert basandoti su ciò che ora capisci, poi validi per due settimane",
+              "text_es": "Rediseñas los umbrales de alerta basándote en lo que ahora entiendes, y validas durante dos semanas",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(15) => PILLAR_CYCLE[(15-1) % 5] = PILLAR_CYCLE[4] = 'drive'"
+          }
+        },
+        {
+          "question_id": "q20",
+          "question_text_en": "You've been struggling with a technical area (e.g., performance optimization) for months. Your next step is to:",
+          "question_text_it": "Da mesi fatichi con un'area tecnica (es. ottimizzazione delle prestazioni). Il tuo prossimo passo è:",
+          "question_text_es": "Llevas meses luchando con un área técnica (ej. optimización de rendimiento). Tu próximo paso es:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Find a specific, small project that forces you to use this skill under real constraints",
+              "text_it": "Trovi un progetto specifico e piccolo che ti obblighi a usare questa skill sotto vincoli reali",
+              "text_es": "Encontrar un proyecto específico y pequeño que te obligue a usar esta habilidad bajo restricciones reales",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Track your attempts and outcomes weekly to see if your approach is actually improving",
+              "text_it": "Tracci i tuoi tentativi e risultati settimanalmente per vedere se il tuo approccio sta migliorando",
+              "text_es": "Rastrear tus intentos y resultados semanalmente para ver si tu enfoque realmente mejora",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Seek candid assessment from someone strong in this area about what specifically you're doing wrong",
+              "text_it": "Cerchi una valutazione onesta da qualcuno forte in quest'area su cosa specificamente stai sbagliando",
+              "text_es": "Pedir una evaluación honesta a alguien fuerte en esa área sobre qué estás haciendo mal específicamente",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Change your learning strategy entirely — if reading didn't work, try building; if solo, try pairing",
+              "text_it": "Cambi completamente la tua strategia di apprendimento — se leggere non ha funzionato, prova a costruire; se da solo, prova in coppia",
+              "text_es": "Cambiar tu estrategia de aprendizaje por completo — si leer no funcionó, construir; si solo, en pareja",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(20) => PILLAR_CYCLE[(20-1) % 5] = PILLAR_CYCLE[4] = 'drive'"
+          }
+        }
+      ]
+    },
+    "business_leadership": {
+      "questions": [
+        {
+          "question_id": "q5",
+          "question_text_en": "Your board presentation fell flat because your financial storytelling lacked depth. You:",
+          "question_text_it": "La tua presentazione al board è andata male perché il tuo storytelling finanziario mancava di profondità. Tu:",
+          "question_text_es": "Tu presentación al board falló porque tu storytelling financiero carecía de profundidad. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Ask a CFO peer to review your next deck and point out specific weak spots",
+              "text_it": "Chiedi a un CFO peer di rivedere il tuo prossimo deck e indicare i punti deboli specifici",
+              "text_es": "Pides a un CFO peer que revise tu próximo deck y señale puntos débiles específicos",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Rebuild the same presentation from scratch using a different narrative structure",
+              "text_it": "Ricostruisci la stessa presentazione da zero usando una struttura narrativa diversa",
+              "text_es": "Reconstruyes la misma presentación desde cero con una estructura narrativa diferente",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Study three exemplary board decks and identify what techniques you are not using",
+              "text_it": "Studi tre presentazioni al board esemplari e identifichi quali tecniche non stai usando",
+              "text_es": "Estudias tres presentaciones de board ejemplares e identificas qué técnicas no estás usando",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Present to a smaller internal audience first to get real-time feedback before the next board",
+              "text_it": "Presenti prima a un pubblico interno più piccolo per ottenere feedback in tempo reale",
+              "text_es": "Presentas primero a una audiencia interna más pequeña para obtener feedback en tiempo real",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(5) => 'drive'"
+          }
+        },
+        {
+          "question_id": "q10",
+          "question_text_en": "Your team's strategic planning output is weaker than peers'. You suspect it's your facilitation. You:",
+          "question_text_it": "L'output di pianificazione strategica del tuo team è più debole dei peer. Sospetti sia la tua facilitazione. Tu:",
+          "question_text_es": "El output de planificación estratégica de tu equipo es más débil que el de tus pares. Sospechas que es tu facilitación. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Observe another leader's strategy session and take structured notes on their method",
+              "text_it": "Osservi la sessione strategica di un altro leader e prendi appunti strutturati sul suo metodo",
+              "text_es": "Observas la sesión estratégica de otro líder y tomas notas estructuradas sobre su método",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Record your next session and self-critique what you would change",
+              "text_it": "Registri la tua prossima sessione e auto-critichi cosa cambieresti",
+              "text_es": "Grabas tu próxima sesión y autocritias qué cambiarías",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Bring in an external facilitator once and participate as an observer to learn their technique",
+              "text_it": "Porti un facilitatore esterno una volta e partecipi come osservatore per imparare la tecnica",
+              "text_es": "Traes un facilitador externo una vez y participas como observador para aprender su técnica",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Redesign your planning template based on what specifically produced weak output last time",
+              "text_it": "Ridisegni il tuo template di planning basandoti su cosa ha prodotto output debole l'ultima volta",
+              "text_es": "Rediseñas tu plantilla de planning basándote en qué produjo output débil la última vez",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(10) => 'drive'"
+          }
+        },
+        {
+          "question_id": "q15",
+          "question_text_en": "A product launch underperformed because you misjudged market timing. You:",
+          "question_text_it": "Un lancio prodotto è andato sotto le attese perché hai valutato male il timing di mercato. Tu:",
+          "question_text_es": "Un lanzamiento de producto fue peor de lo esperado porque juzgaste mal el timing de mercado. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Interview five customers to understand what signals you misread",
+              "text_it": "Intervisti cinque clienti per capire quali segnali hai letto male",
+              "text_es": "Entrevistas a cinco clientes para entender qué señales leíste mal",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Build a post-mortem framework to compare your assumptions versus actual data",
+              "text_it": "Costruisci un framework di post-mortem per confrontare le tue assunzioni con i dati reali",
+              "text_es": "Construyes un framework de post-mortem para comparar tus suposiciones versus los datos reales",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Partner with someone who predicted the market correctly and understand their reasoning",
+              "text_it": "Ti affianchi a qualcuno che ha predetto il mercato correttamente per capire il suo ragionamento",
+              "text_es": "Te asocias con alguien que predijo el mercado correctamente para entender su razonamiento",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Run a smaller test launch for the next product to validate timing before full commitment",
+              "text_it": "Lanci un test più piccolo per il prossimo prodotto per validare il timing prima del commitment totale",
+              "text_es": "Lanzas un test más pequeño para el próximo producto para validar timing antes del compromiso total",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(15) => 'drive'"
+          }
+        },
+        {
+          "question_id": "q20",
+          "question_text_en": "You've received consistent feedback that your delegation is weak, slowing the team. You:",
+          "question_text_it": "Ricevi feedback costante che la tua delega è debole, rallentando il team. Tu:",
+          "question_text_es": "Recibes feedback constante de que tu delegación es débil, ralentizando al equipo. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Pick one task you'd normally keep and delegate it fully this week, tracking what happens",
+              "text_it": "Scegli un task che normalmente terresti e lo deleghi completamente questa settimana, tracciando cosa succede",
+              "text_es": "Eliges una tarea que normalmente retendrías y la delegas completamente esta semana, rastreando qué pasa",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Ask your direct reports what they need from you to take ownership more effectively",
+              "text_it": "Chiedi ai tuoi riporti diretti cosa hanno bisogno da te per prendere ownership più efficacemente",
+              "text_es": "Preguntas a tus reportes directos qué necesitan de ti para tomar ownership más efectivamente",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Study how a peer leader delegates — what do they hand off, when, and how",
+              "text_it": "Studi come un peer leader delega — cosa passa, quando e come",
+              "text_es": "Estudias cómo un líder par delega — qué pasa, cuándo y cómo",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Set up weekly check-ins instead of daily ones and measure whether quality holds",
+              "text_it": "Imposti check-in settimanali invece che giornalieri e misuri se la qualità regge",
+              "text_es": "Estableces check-ins semanales en lugar de diarios y mides si la calidad se mantiene",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(20) => 'drive'"
+          }
+        }
+      ]
+    },
+    "arts_creative": {
+      "questions": [
+        {
+          "question_id": "q5",
+          "question_text_en": "A client rejected your work for lacking strategic depth — an area you know is weak. You:",
+          "question_text_it": "Un cliente ha rifiutato il tuo lavoro perché mancava di profondità strategica — un'area che sai essere debole. Tu:",
+          "question_text_es": "Un cliente rechazó tu trabajo por falta de profundidad estratégica — un área que sabes que es débil. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Ask the client to show you an example of work that had the depth they wanted",
+              "text_it": "Chiedi al cliente di mostrarti un esempio del lavoro con la profondità che cercava",
+              "text_es": "Pides al cliente que te muestre un ejemplo del trabajo con la profundidad que buscaba",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Pair with a strategist on your next project to observe how they build narrative",
+              "text_it": "Ti affianchi a un/a strategist nel prossimo progetto per osservare come costruisce la narrativa",
+              "text_es": "Te emparejas con un/a estratega en tu próximo proyecto para observar cómo construye narrativa",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Rewrite the rejected brief's strategy layer yourself and ask for honest critique",
+              "text_it": "Riscrivi tu stesso/a il layer strategico del brief rifiutato e chiedi una critica onesta",
+              "text_es": "Reescribes tú mismo/a la capa estratégica del brief rechazado y pides crítica honesta",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Dedicate weekly practice time to strategy exercises from a different creative discipline",
+              "text_it": "Dedichi tempo settimanale a esercizi di strategia da una disciplina creativa diversa",
+              "text_es": "Dedicas tiempo semanal a ejercicios de estrategia de una disciplina creativa diferente",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(5) => 'drive'"
+          }
+        },
+        {
+          "question_id": "q10",
+          "question_text_en": "Your motion design skills are behind the team's expectations, and it's affecting your projects. You:",
+          "question_text_it": "Le tue competenze di motion design sono sotto le aspettative del team e impattano i tuoi progetti. Tu:",
+          "question_text_es": "Tus habilidades de motion design están por debajo de las expectativas del equipo y afectan tus proyectos. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Take on a small internal project that requires motion work, with a realistic deadline",
+              "text_it": "Prendi un piccolo progetto interno che richiede motion, con una scadenza realistica",
+              "text_es": "Tomas un pequeño proyecto interno que requiera motion, con un plazo realista",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Ask a skilled colleague to pair on your next animation and give you direct feedback",
+              "text_it": "Chiedi a un/a collega esperto/a di lavorare in coppia sulla tua prossima animazione con feedback diretto",
+              "text_es": "Pides a un/a colega experto/a que trabaje contigo en tu próxima animación con feedback directo",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Follow a structured course and apply each lesson to a real deliverable within 48 hours",
+              "text_it": "Segui un corso strutturato e applichi ogni lezione a un deliverable reale entro 48 ore",
+              "text_es": "Sigues un curso estructurado y aplicas cada lección a un entregable real en 48 horas",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Analyze five strong motion pieces to identify specific techniques you are not using",
+              "text_it": "Analizzi cinque pezzi di motion eccellenti per identificare tecniche specifiche che non stai usando",
+              "text_es": "Analizas cinco piezas de motion excelentes para identificar técnicas específicas que no estás usando",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(10) => 'drive'"
+          }
+        },
+        {
+          "question_id": "q15",
+          "question_text_en": "Your portfolio review revealed that your typographic work is consistently your weakest area. You:",
+          "question_text_it": "La revisione del tuo portfolio rivela che il lavoro tipografico è costantemente la tua area più debole. Tu:",
+          "question_text_es": "La revisión de tu portfolio reveló que tu trabajo tipográfico es consistentemente tu área más débil. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Redesign one past project focusing solely on typography and compare the result",
+              "text_it": "Ridisegni un progetto passato focalizzandoti solo sulla tipografia e confronti il risultato",
+              "text_es": "Rediseñas un proyecto pasado enfocándote solo en tipografía y comparas el resultado",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Seek a critique from a typography specialist on what specifically needs work",
+              "text_it": "Chiedi una critica a uno/a specialista di tipografia su cosa specificamente va migliorato",
+              "text_es": "Buscas una crítica de un/a especialista en tipografía sobre qué necesita mejorar específicamente",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Track your typography decisions for the next month to spot recurring mistakes",
+              "text_it": "Tracci le tue decisioni tipografiche per il prossimo mese per individuare errori ricorrenti",
+              "text_es": "Rastreas tus decisiones tipográficas durante el próximo mes para detectar errores recurrentes",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Restrict your next project to only typographic elements — no illustration or color",
+              "text_it": "Limiti il tuo prossimo progetto a soli elementi tipografici — niente illustrazione né colore",
+              "text_es": "Restringes tu próximo proyecto a solo elementos tipográficos — sin ilustración ni color",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(15) => 'drive'"
+          }
+        },
+        {
+          "question_id": "q20",
+          "question_text_en": "You've plateaued in your creative direction skills and feel stuck at the same level. You:",
+          "question_text_it": "Hai raggiunto un plateau nelle tue competenze di direzione creativa e ti senti bloccato/a allo stesso livello. Tu:",
+          "question_text_es": "Has llegado a una meseta en tus habilidades de dirección creativa y te sientes estancado/a. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Take on a project in a format or genre you have never done before",
+              "text_it": "Prendi un progetto in un formato o genere che non hai mai affrontato",
+              "text_es": "Tomas un proyecto en un formato o género que nunca has hecho",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Ask three trusted peers to each name one specific area where your direction could improve",
+              "text_it": "Chiedi a tre peer di fiducia di indicarti ciascuno un'area specifica dove la tua direzione può migliorare",
+              "text_es": "Pides a tres pares de confianza que nombren cada uno un área específica donde tu dirección puede mejorar",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Compare your recent work against work from 12 months ago to identify what has actually changed",
+              "text_it": "Confronti il tuo lavoro recente con quello di 12 mesi fa per identificare cosa è realmente cambiato",
+              "text_es": "Comparas tu trabajo reciente con el de hace 12 meses para identificar qué ha cambiado realmente",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Set quarterly skill targets with concrete deliverables that prove improvement",
+              "text_it": "Stabilisci obiettivi trimestrali di competenza con deliverable concreti che dimostrino miglioramento",
+              "text_es": "Estableces objetivos trimestrales de habilidad con entregables concretos que demuestren mejora",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(20) => 'drive'"
+          }
+        }
+      ]
+    },
+    "service_ops": {
+      "questions": [
+        {
+          "question_id": "q5",
+          "question_text_en": "Your team's incident response time has been slower than the target, and you are part of the problem. You:",
+          "question_text_it": "Il tempo di risposta agli incidenti del tuo team è più lento del target, e tu sei parte del problema. Tu:",
+          "question_text_es": "El tiempo de respuesta a incidentes de tu equipo ha sido más lento que el objetivo, y tú eres parte del problema. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Shadow the fastest responder on shift and document what they do differently",
+              "text_it": "Affianchi il responder più veloce del turno e documenti cosa fa di diverso",
+              "text_es": "Acompañas al responder más rápido del turno y documentas qué hace diferente",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Review your last five incidents to find the specific step where you lost time",
+              "text_it": "Rivedi i tuoi ultimi cinque incidenti per trovare lo step specifico dove hai perso tempo",
+              "text_es": "Revisas tus últimos cinco incidentes para encontrar el paso específico donde perdiste tiempo",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Practice responding to simulated incidents with a timer to build speed",
+              "text_it": "Ti eserciti a rispondere a incidenti simulati con un timer per costruire velocità",
+              "text_es": "Practicas respondiendo a incidentes simulados con un cronómetro para ganar velocidad",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Redesign your personal triage checklist based on what has actually slowed you down",
+              "text_it": "Ridisegni la tua checklist di triage personale basandoti su cosa ti ha effettivamente rallentato",
+              "text_es": "Rediseñas tu checklist personal de triaje basándote en lo que realmente te ha ralentizado",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(5) => 'drive'"
+          }
+        },
+        {
+          "question_id": "q10",
+          "question_text_en": "Customer feedback shows that your team's explanations during outages are confusing — and you wrote the scripts. You:",
+          "question_text_it": "Il feedback dei clienti mostra che le spiegazioni del tuo team durante i disservizi sono confuse — e gli script li hai scritti tu. Tu:",
+          "question_text_es": "El feedback de clientes muestra que las explicaciones de tu equipo durante cortes son confusas — y los guiones los escribiste tú. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Record real explanations and review them to identify what is unclear",
+              "text_it": "Registri spiegazioni reali e le rivedi per identificare cosa non è chiaro",
+              "text_es": "Grabas explicaciones reales y las revisas para identificar qué no está claro",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Practice with mock scenarios using plain-language scripts until it feels natural",
+              "text_it": "Fai pratica con scenari simulati usando script in linguaggio semplice finché diventa naturale",
+              "text_es": "Practicas con escenarios simulados usando guiones en lenguaje simple hasta que se sienta natural",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Ask a communication trainer to observe one interaction and give targeted advice",
+              "text_it": "Chiedi a un/a formatore/trice di comunicazione di osservare un'interazione e dare consigli mirati",
+              "text_es": "Pides a un/a formador/a de comunicación que observe una interacción y dé consejos específicos",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Create a template library for common outage explanations and test it with users",
+              "text_it": "Crei una libreria di template per le spiegazioni più comuni e la testi con gli utenti",
+              "text_es": "Creas una biblioteca de plantillas para explicaciones comunes y la pruebas con usuarios",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(10) => 'drive'"
+          }
+        },
+        {
+          "question_id": "q15",
+          "question_text_en": "An audit found that your compliance documentation has recurring gaps — a skill you haven't developed. You:",
+          "question_text_it": "Un audit ha trovato lacune ricorrenti nella tua documentazione di compliance — una competenza che non hai sviluppato. Tu:",
+          "question_text_es": "Una auditoría encontró lagunas recurrentes en tu documentación de compliance — una habilidad que no has desarrollado. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Identify the two most common gaps and create a personal checklist for those areas",
+              "text_it": "Identifichi le 2 lacune più comuni e crei una checklist personale per quelle aree",
+              "text_es": "Identificas las 2 lagunas más comunes y creas una checklist personal para esas áreas",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Ask the auditor to walk you through exactly what good documentation looks like",
+              "text_it": "Chiedi all'auditor di guidarti attraverso cosa significa esattamente una buona documentazione",
+              "text_es": "Pides al auditor que te guíe a través de cómo es exactamente una buena documentación",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Compare your documentation with a colleague's who scored well, side by side",
+              "text_it": "Confronti la tua documentazione con quella di un/a collega che ha ottenuto buoni risultati, fianco a fianco",
+              "text_es": "Comparas tu documentación con la de un/a colega que puntuó bien, lado a lado",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Redo one recent document from scratch using the correct standard and time yourself",
+              "text_it": "Rifai un documento recente da zero seguendo lo standard corretto e cronometrandoti",
+              "text_es": "Rehaces un documento reciente desde cero usando el estándar correcto y cronometrándote",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(15) => 'drive'"
+          }
+        },
+        {
+          "question_id": "q20",
+          "question_text_en": "You've been told your process improvement proposals lack data support — a skill you haven't developed. You:",
+          "question_text_it": "Ti hanno detto che le tue proposte di miglioramento dei processi mancano di supporto dati — una competenza che non hai sviluppato. Tu:",
+          "question_text_es": "Te han dicho que tus propuestas de mejora de procesos carecen de soporte de datos — una habilidad que no has desarrollado. Tú:",
+          "options": [
+            {
+              "option_id": "A",
+              "text_en": "Attach measurable baselines to your next proposal, even if the data collection takes extra time",
+              "text_it": "Alleghi baseline misurabili alla tua prossima proposta, anche se raccogliere i dati richiede tempo extra",
+              "text_es": "Adjuntas baselines medibles a tu próxima propuesta, aunque recoger los datos tome tiempo extra",
+              "score_value": 0
+            },
+            {
+              "option_id": "B",
+              "text_en": "Partner with an analyst to learn how they build data-backed arguments",
+              "text_it": "Ti affianchi a un/a analyst per imparare come costruisce argomentazioni basate sui dati",
+              "text_es": "Te asocias con un/a analista para aprender cómo construye argumentos basados en datos",
+              "score_value": 1
+            },
+            {
+              "option_id": "C",
+              "text_en": "Take a short course on operational data analysis and apply it to a real improvement case",
+              "text_it": "Segui un corso breve di analisi dati operativi e lo applichi a un caso di miglioramento reale",
+              "text_es": "Tomas un curso corto de análisis de datos operativos y lo aplicas a un caso de mejora real",
+              "score_value": 2
+            },
+            {
+              "option_id": "D",
+              "text_en": "Review three approved proposals to reverse-engineer what data made them convincing",
+              "text_it": "Rivedi tre proposte approvate per fare reverse-engineering di quali dati le hanno rese convincenti",
+              "text_es": "Revisas tres propuestas aprobadas para hacer ingeniería inversa de qué datos las hicieron convincentes",
+              "score_value": 3
+            }
+          ],
+          "scoring_logic": {
+            "pillar": "drive",
+            "weight": 1.0,
+            "scaling": "mean_scaled_0_100",
+            "mapping": "getPillarForQuestion(20) => 'drive'"
+          }
+        }
+      ]
+    }
+  },
+  "baseline_scoring_formula": "Drive_MC_baseline = mean(selected_option_values for q5, q10, q15, q20) / 3 * 100. Each option has a score_value 0-3; the mean is scaled to 0-100.",
+  "longitudinal_drive_formula": "Drive_velocity = improvement_rate(weakest_2_pillars, pillar_progress_snapshots). Computed by DB trigger on insert to pillar_progress_snapshots. Cached in profiles.drive_velocity. Shows 'refining' state until ≥2 data points exist.",
+  "open_answer_blending": {
+    "open2_drive_contribution": "open2Score * 0.60 * 0.10 = 6% max influence on final Drive score",
+    "formula": "blended_drive = MC_drive * 0.90 + (open2Score * 0.60) * 0.10"
+  },
+  "notes": {
+    "drive_is_velocity": true,
+    "mc_is_baseline_proxy": true,
+    "mc_measures": "behavioural strategy under friction/weakness — not static motivation",
+    "longitudinal_computation": "True Drive score requires ≥2 pillar snapshots over time",
+    "positional_scoring_limitation": "Options 0-3 are ordered by score_value but designed as 4 distinct strategies, not a quality gradient. Positional scoring may introduce systematic bias if respondents detect the ordering pattern."
+  }
+}
