@@ -1,0 +1,94 @@
+{
+  "document_title": "XIMA Assessment v1.1 — Human Review Pack",
+  "version": "1.1",
+  "version_type": "item-level adjustments",
+  "base_version": "1.0",
+  "freeze_date": "2026-02-15",
+  "design_spec": "XIMA_Question_Design_Spec v1.1 — Weakness-First methodology",
+  "purpose": "Complete structured export of the XIMA Assessment v1.1 for human and external AI validation. Contains all questions, scoring logic, mapping rules, and change log from v1.0.",
+  "v1_1_changes": {
+    "cognitive_tension_enforcement": "All MC items must encode meaningful trade-offs between two legitimate strategies. Social desirability gradients prohibited.",
+    "cp_micro_refinements": "q16, q21 rewritten across all fields to remove Knowledge leakage and desirability gradient (v2).",
+    "knowledge_q13_revision": "q13 revised across all 4 fields for epistemic discipline framing.",
+    "drive_validation": "All Drive MC items validated via synthetic stress test (N=5000).",
+    "communication_redesign": "4-strategy framework: Precision-First, Abstraction-Shift, Signal-Check, Medium-Pivot.",
+    "creativity_redesign": "4-strategy framework: Recombination, Reframing, Iterative Prototyping, Constraint Pivot.",
+    "weakness_first": "Assessment prioritizes identifying candidate's 2 weakest pillars with highest growth leverage."
+  },
+  "pillar_definitions": {
+    "computational_power": "Ability to structure ambiguity under constraints — decomposing complex problems into structured analytical components under time and information pressure.",
+    "communication": "Adaptive message calibration — adjusting abstraction level, medium, and tone to preserve signal clarity across mismatched audiences under pressure.",
+    "knowledge": "Epistemic discipline under uncertainty — how a candidate acquires, validates, and updates mental models when established assumptions fail.",
+    "creativity": "Ability to generate, recombine, and test novel approaches under real constraints, balancing originality with feasibility (constraint navigation).",
+    "drive": "Growth Velocity — the rate at which a candidate improves on their weakest skills over time, measured longitudinally through behavioral baselines and progress snapshots."
+  },
+  "fields": ["science_tech", "business_leadership", "arts_creative", "service_ops"],
+  "pillar_mapping": {
+    "function": "getPillarForQuestion(n) => PILLAR_CYCLE[(n-1) % 5]",
+    "cycle": ["computational_power", "communication", "knowledge", "creativity", "drive"],
+    "table": {
+      "q1": "computational_power", "q2": "communication", "q3": "knowledge", "q4": "creativity", "q5": "drive",
+      "q6": "computational_power", "q7": "communication", "q8": "knowledge", "q9": "creativity", "q10": "drive",
+      "q11": "computational_power", "q12": "communication", "q13": "knowledge", "q14": "creativity", "q15": "drive",
+      "q16": "computational_power", "q17": "communication", "q18": "knowledge", "q19": "creativity", "q20": "drive",
+      "q21": "computational_power"
+    },
+    "questions_per_pillar": {
+      "computational_power": ["q1", "q6", "q11", "q16", "q21"],
+      "communication": ["q2", "q7", "q12", "q17"],
+      "knowledge": ["q3", "q8", "q13", "q18"],
+      "creativity": ["q4", "q9", "q14", "q19"],
+      "drive": ["q5", "q10", "q15", "q20"]
+    }
+  },
+  "scoring_formulas": {
+    "mc_scoring": "Each option has score_value 0–3. Pillar score = mean(selected_score_values for that pillar's questions) / 3 * 100.",
+    "open_answer_blending": "blended[pillar] = base[pillar] * 0.90 + open_contribution[pillar] * 0.10",
+    "open1_mapping": "60% creativity + 40% communication (max 10% influence on each)",
+    "open2_mapping": "60% drive + 40% knowledge (max 10% influence on each)",
+    "computational_power_note": "CP is 100% MC-driven — no open answer blend.",
+    "drive_baseline": "Drive_MC_baseline = mean(q5, q10, q15, q20 score_values) / 3 * 100",
+    "drive_longitudinal": {
+      "table": "pillar_progress_snapshots",
+      "step1": "Identify 2 weakest pillars at baseline (earliest snapshot)",
+      "step2": "delta = latest_score - baseline_score for each weak pillar",
+      "step3": "velocity = delta / days_elapsed (min 1 day)",
+      "step4": "avg_velocity = mean(velocities)",
+      "step5": "score = max(0, min(100, round(50 + (avg_velocity / 0.20) * 25)))",
+      "target_velocity": "0.20 points/day",
+      "state_when_insufficient_data": "refining (until ≥2 snapshots)",
+      "caching": "profiles.drive_score and profiles.drive_updated_at via trigger"
+    },
+    "ximatar_assignment": {
+      "guest": "Top-2 pillar heuristic with hardcoded if/else chain",
+      "authenticated": "Euclidean distance to 12 canonical profiles in ximatarTaxonomy.ts"
+    }
+  },
+  "psychometric_summary": {
+    "alpha_range": "0.60–0.68",
+    "max_cross_pillar_r": "0.34 (CP–Knowledge)",
+    "pca_pc1_variance": "32.4%",
+    "archetypes_tested": 12,
+    "min_archetype_separation": 21,
+    "max_confusion_pct": 13.7,
+    "mean_cognitive_tension": 3.85,
+    "max_option_dominance": "27%"
+  },
+  "validation_milestones": {
+    "N300": "correlation validation",
+    "N500": "IRT calibration"
+  },
+  "questions_by_field": "See companion HTML file for full inline question bank across all 4 fields with trilingual text and score values.",
+  "input_artifacts": [
+    "public/XIMA_Assessment_v1.0_Freeze_Declaration.md",
+    "public/XIMA_5Pillar_Stability_Test_v1.md",
+    "public/XIMA_ComputationalPower_Refined_v2.json",
+    "public/XIMA_Knowledge_Redesign_v1.json",
+    "public/XIMA_Creativity_Redesign_v1.json",
+    "public/XIMA_Communication_Redesign_v1.json",
+    "public/XIMA_Drive_MC_Validation_Export_v1.json",
+    "public/assessment_full_export.json",
+    "XIMA_Question_Design_Spec.md",
+    "src/lib/assessment/getPillarForQuestion.ts"
+  ]
+}
