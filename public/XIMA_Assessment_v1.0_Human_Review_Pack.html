@@ -43,6 +43,10 @@
   .formula-box { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 12px 16px; font-family: 'Courier New', monospace; font-size: 13px; margin: 12px 0; }
   .alert { background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 10px 14px; margin: 12px 0; font-size: 13px; }
   code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  .lang-label { font-weight: 600; color: #888; font-size: 11px; text-transform: uppercase; margin-right: 4px; }
+  .lang-text { margin: 4px 0; font-size: 13px; }
+  .lang-it { color: #555; }
+  .lang-es { color: #555; }
 </style>
 </head>
 <body>
@@ -151,17 +155,24 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 <p><strong>Guest mode:</strong> Top-2 pillar heuristic with hardcoded if/else chain.<br>
 <strong>Authenticated mode:</strong> Euclidean distance to 12 canonical profiles defined in ximatarTaxonomy.ts.</p>
 
-<!-- FULL QUESTION BANK -->
+<!-- =====================================================
+     3. FULL QUESTION BANK — ALL 4 FIELDS
+     ===================================================== -->
 <div class="page-break"></div>
 <h1>3. Full Question Bank</h1>
-<p>Below are all MC questions for each field, ordered q1–q21. Each shows the question ID, pillar, question text (EN), and options with score values. The full EN/IT/ES texts for all redesigned pillar questions are available in the companion JSON: <code>XIMA_Assessment_v1.0_Human_Review_Pack_Source.json</code>.</p>
+<p>Below are all MC and open questions for each of the 4 professional fields. Each question shows the pillar, trilingual text (EN/IT/ES where available from frozen artifacts), and option score values. The pillar mapping is identical across all fields: <code>q(n) → PILLAR_CYCLE[(n-1) % 5]</code>.</p>
 
-<!-- SCIENCE & TECH -->
+<!-- ============================
+     3.1 SCIENCE & TECHNOLOGY
+     ============================ -->
+<div class="page-break"></div>
 <h2>3.1 Science & Technology</h2>
 
 <div class="question-block">
 <h4>q1 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
-<p><strong>EN:</strong> When faced with a complex data set, what is your first approach?</p>
+<p><span class="lang-label">EN</span> When faced with a complex data set, what is your first approach?</p>
+<p class="lang-it"><span class="lang-label">IT</span> Di fronte a un set di dati complesso, qual è il tuo primo approccio?</p>
+<p class="lang-es"><span class="lang-label">ES</span> Cuando te enfrentas a un conjunto de datos complejo, ¿cuál es tu primer enfoque?</p>
 <div class="option">A) Break it down into smaller, manageable parts <span class="score">0</span></div>
 <div class="option">B) Look for patterns and trends immediately <span class="score">1</span></div>
 <div class="option">C) Seek tools or software to help analyze it <span class="score">2</span></div>
@@ -170,7 +181,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q2 — <span class="pillar-tag pillar-comm">Communication</span></h4>
-<p><strong>EN:</strong> You've spent two months developing a novel simulation approach. You must present results to a mixed committee: three domain experts who will challenge methodology, and four non-technical executives who control funding. You have 20 minutes. How do you structure the presentation?</p>
+<p><span class="lang-label">EN</span> You've spent two months developing a novel simulation approach. You must present results to a mixed committee: three domain experts who will challenge methodology, and four non-technical executives who control funding. You have 20 minutes. How do you structure the presentation?</p>
+<p class="lang-it"><span class="lang-label">IT</span> Hai trascorso due mesi sviluppando un nuovo approccio di simulazione. Devi presentare i risultati a un comitato misto: tre esperti di dominio che contesteranno la metodologia e quattro dirigenti non tecnici che controllano i finanziamenti. Hai 20 minuti. Come strutturi la presentazione?</p>
+<p class="lang-es"><span class="lang-label">ES</span> Has pasado dos meses desarrollando un nuevo enfoque de simulación. Debes presentar resultados a un comité mixto: tres expertos de dominio que cuestionarán la metodología y cuatro ejecutivos no técnicos que controlan la financiación. Tienes 20 minutos. ¿Cómo estructuras la presentación?</p>
 <div class="option">A) [Precision-First] Present the full methodology chain with technical evidence, providing a dense appendix for executives to review afterward <span class="score">0</span></div>
 <div class="option">B) [Abstraction-Shift] Lead with outcome implications at executive level, then layer in methodology selectively when experts probe <span class="score">1</span></div>
 <div class="option">C) [Signal-Check] Open with a 2-minute framing question to gauge what each subgroup needs, then adjust depth in real-time <span class="score">2</span></div>
@@ -179,7 +192,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q3 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
-<p><strong>EN:</strong> Your team's technical decision is based on a well-cited paper, but you notice a methodology limitation that nobody else flagged. The deadline is tomorrow. You:</p>
+<p><span class="lang-label">EN</span> Your team's technical decision is based on a well-cited paper, but you notice a methodology limitation that nobody else flagged. The deadline is tomorrow. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> La decisione tecnica del tuo team si basa su un paper ben citato, ma noti una limitazione metodologica che nessun altro ha segnalato. La scadenza è domani. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> La decisión técnica de tu equipo se basa en un paper bien citado, pero notas una limitación metodológica que nadie más señaló. La fecha límite es mañana. Tú:</p>
 <div class="option">A) Flag the limitation and propose a quick sensitivity check on the key assumption <span class="score">0</span></div>
 <div class="option">B) Accept the paper's conclusions but document the limitation for future reference <span class="score">1</span></div>
 <div class="option">C) Cross-reference with an independent source that used a different methodology <span class="score">2</span></div>
@@ -188,7 +203,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q4 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
-<p><strong>EN:</strong> Your team needs a solution for a data pipeline bottleneck. The ideal fix requires a library that won't be production-ready for three months. The deadline is in six weeks. You:</p>
+<p><span class="lang-label">EN</span> Your team needs a solution for a data pipeline bottleneck. The ideal fix requires a library that won't be production-ready for three months. The deadline is in six weeks. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Il tuo team ha bisogno di una soluzione per un collo di bottiglia nella pipeline dati. La soluzione ideale richiede una libreria che non sarà pronta per la produzione per tre mesi. La scadenza è tra sei settimane. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Tu equipo necesita una solución para un cuello de botella en el pipeline de datos. La solución ideal requiere una librería que no estará lista para producción en tres meses. La fecha límite es en seis semanas. Tú:</p>
 <div class="option">A) [Recombination] Adapt two existing, stable libraries to approximate the ideal library's functionality <span class="score">0</span></div>
 <div class="option">B) [Reframing] Redefine the bottleneck: restructure the data flow so the pipeline avoids the problematic stage entirely <span class="score">1</span></div>
 <div class="option">C) [Iterative Prototyping] Build a minimal version of the critical feature yourself, designed to be swapped out when the library ships <span class="score">2</span></div>
@@ -197,7 +214,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q5 — <span class="pillar-tag pillar-drive">Drive</span></h4>
-<p><strong>EN:</strong> You realize your debugging approach consistently fails on a new class of distributed system errors. You:</p>
+<p><span class="lang-label">EN</span> You realize your debugging approach consistently fails on a new class of distributed system errors. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Ti rendi conto che il tuo approccio al debugging fallisce sistematicamente su una nuova classe di errori nei sistemi distribuiti. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Te das cuenta de que tu enfoque de debugging falla sistemáticamente en una nueva clase de errores de sistemas distribuidos. Tú:</p>
 <div class="option">A) Pair with someone who has that expertise and study their method closely <span class="score">0</span></div>
 <div class="option">B) Allocate dedicated time each week to reproduce and analyze these errors systematically <span class="score">1</span></div>
 <div class="option">C) Build a diagnostic checklist from your failures to track what patterns you're missing <span class="score">2</span></div>
@@ -206,7 +225,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q6 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
-<p><strong>EN:</strong> How do you evaluate the effectiveness of a technical solution?</p>
+<p><span class="lang-label">EN</span> How do you evaluate the effectiveness of a technical solution?</p>
+<p class="lang-it"><span class="lang-label">IT</span> Come valuti l'efficacia di una soluzione tecnica?</p>
+<p class="lang-es"><span class="lang-label">ES</span> ¿Cómo evalúas la efectividad de una solución técnica?</p>
 <div class="option">A) Measure performance and specific metrics <span class="score">0</span></div>
 <div class="option">B) Compare alternatives and run A/B tests <span class="score">1</span></div>
 <div class="option">C) Gather feedback from end users <span class="score">2</span></div>
@@ -215,7 +236,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q7 — <span class="pillar-tag pillar-comm">Communication</span></h4>
-<p><strong>EN:</strong> During a cross-functional review, a senior engineer publicly challenges your data interpretation using jargon the rest of the room doesn't follow. The room goes silent. How do you respond?</p>
+<p><span class="lang-label">EN</span> During a cross-functional review, a senior engineer publicly challenges your data interpretation using jargon the rest of the room doesn't follow. The room goes silent. How do you respond?</p>
+<p class="lang-it"><span class="lang-label">IT</span> Durante una revisione interfunzionale, un ingegnere senior contesta pubblicamente la tua interpretazione dei dati usando gergo che il resto della stanza non comprende. La stanza ammutolisce. Come rispondi?</p>
+<p class="lang-es"><span class="lang-label">ES</span> Durante una revisión interfuncional, un ingeniero senior cuestiona públicamente tu interpretación de datos usando jerga que el resto de la sala no entiende. La sala se queda en silencio. ¿Cómo respondes?</p>
 <div class="option">A) [Precision-First] Address the technical challenge directly at the engineer's level <span class="score">0</span></div>
 <div class="option">B) [Abstraction-Shift] Restate the engineer's concern in accessible terms so the whole room can follow <span class="score">1</span></div>
 <div class="option">C) [Signal-Check] Ask the engineer to clarify which specific data point they're questioning <span class="score">2</span></div>
@@ -224,7 +247,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q8 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
-<p><strong>EN:</strong> Two trusted data sources give contradictory readings on a system's health. Both have been reliable historically. You:</p>
+<p><span class="lang-label">EN</span> Two trusted data sources give contradictory readings on a system's health. Both have been reliable historically. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Due fonti dati affidabili danno letture contraddittorie sullo stato di un sistema. Entrambe sono state storicamente affidabili. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Dos fuentes de datos de confianza dan lecturas contradictorias sobre la salud de un sistema. Ambas han sido históricamente confiables. Tú:</p>
 <div class="option">A) Investigate the measurement conditions that could explain the divergence <span class="score">0</span></div>
 <div class="option">B) Weight each source by its track record in similar situations <span class="score">1</span></div>
 <div class="option">C) Run an independent diagnostic to generate a third reference point <span class="score">2</span></div>
@@ -233,16 +258,20 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q9 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
-<p><strong>EN:</strong> You're designing a monitoring system, but the budget only covers 60% of the sensors you originally specified. Reducing coverage creates blind spots. You:</p>
+<p><span class="lang-label">EN</span> You're designing a monitoring system, but the budget only covers 60% of the sensors you originally specified. Reducing coverage creates blind spots. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Stai progettando un sistema di monitoraggio, ma il budget copre solo il 60% dei sensori che avevi originariamente specificato. Ridurre la copertura crea zone cieche. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Estás diseñando un sistema de monitoreo, pero el presupuesto solo cubre el 60% de los sensores que especificaste originalmente. Reducir la cobertura crea puntos ciegos. Tú:</p>
 <div class="option">A) [Recombination] Redesign the sensor layout to prioritize high-risk zones and use statistical inference <span class="score">0</span></div>
 <div class="option">B) [Constraint Pivot] Use cheaper, lower-fidelity sensors in non-critical areas and premium sensors where accuracy matters <span class="score">1</span></div>
-<div class="option">C) [Reframing] Reframe: design an anomaly-detection system that flags only when patterns deviate from baseline <span class="score">2</span></div>
+<div class="option">C) [Reframing] Design an anomaly-detection system that flags only when patterns deviate from baseline <span class="score">2</span></div>
 <div class="option">D) [Iterative Prototyping] Build in phases — deploy what the budget covers now, with modular architecture <span class="score">3</span></div>
 </div>
 
 <div class="question-block">
 <h4>q10 — <span class="pillar-tag pillar-drive">Drive</span></h4>
-<p><strong>EN:</strong> Your code review feedback repeatedly highlights the same design weakness you haven't improved on. You:</p>
+<p><span class="lang-label">EN</span> Your code review feedback repeatedly highlights the same design weakness you haven't improved on. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Il feedback delle tue code review evidenzia ripetutamente la stessa debolezza progettuale che non hai migliorato. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> El feedback de tus code reviews señala repetidamente la misma debilidad de diseño que no has mejorado. Tú:</p>
 <div class="option">A) Ask the reviewer to walk through an alternative approach on your actual code <span class="score">0</span></div>
 <div class="option">B) Rewrite one past module using the recommended pattern to internalize it <span class="score">1</span></div>
 <div class="option">C) Set a specific, measurable improvement target for your next three PRs <span class="score">2</span></div>
@@ -251,7 +280,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q11 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
-<p><strong>EN:</strong> How do you approach automating repetitive processes?</p>
+<p><span class="lang-label">EN</span> How do you approach automating repetitive processes?</p>
+<p class="lang-it"><span class="lang-label">IT</span> Come approcci l'automazione di processi ripetitivi?</p>
+<p class="lang-es"><span class="lang-label">ES</span> ¿Cómo abordas la automatización de procesos repetitivos?</p>
 <div class="option">A) Identify patterns and create custom scripts <span class="score">0</span></div>
 <div class="option">B) Use existing tools and adapt them <span class="score">1</span></div>
 <div class="option">C) Analyze cost-benefit before automating <span class="score">2</span></div>
@@ -260,7 +291,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q12 — <span class="pillar-tag pillar-comm">Communication</span></h4>
-<p><strong>EN:</strong> You discover a critical flaw in a deployed system 48 hours before a regulatory audit. You must inform your direct manager, the compliance officer, and the operations team — all via written communication within the hour. How do you handle it?</p>
+<p><span class="lang-label">EN</span> You discover a critical flaw in a deployed system 48 hours before a regulatory audit. You must inform your direct manager, the compliance officer, and the operations team — all via written communication within the hour. How do you handle it?</p>
+<p class="lang-it"><span class="lang-label">IT</span> Scopri un difetto critico in un sistema in produzione 48 ore prima di un audit regolatorio. Devi informare: il tuo responsabile diretto (tecnico), il compliance officer (inquadramento legale) e il team operativo (azione immediata necessaria). Tutto via comunicazione scritta entro un'ora. Come gestisci?</p>
+<p class="lang-es"><span class="lang-label">ES</span> Descubres un fallo crítico en un sistema desplegado 48 horas antes de una auditoría regulatoria. Debes informar a: tu responsable directo (técnico), el oficial de cumplimiento (encuadre legal) y el equipo de operaciones (acción inmediata necesaria). Todo por comunicación escrita en una hora. ¿Cómo lo manejas?</p>
 <div class="option">A) [Precision-First] Write one comprehensive incident report — send to all three <span class="score">0</span></div>
 <div class="option">B) [Abstraction-Shift] Draft three separate messages tailored to each audience <span class="score">1</span></div>
 <div class="option">C) [Signal-Check] Send a brief alert, then ask each what information they need <span class="score">2</span></div>
@@ -269,7 +302,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q13 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
-<p><strong>EN:</strong> You've relied on a technical framework for months. A junior colleague presents preliminary evidence that one of its core assumptions is wrong. You:</p>
+<p><span class="lang-label">EN</span> You've relied on a technical framework for months. A junior colleague presents preliminary evidence that one of its core assumptions is wrong. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Ti sei affidato a un framework tecnico per mesi. Un collega junior presenta evidenze preliminari che una delle sue assunzioni fondamentali è sbagliata. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Has confiado en un framework técnico durante meses. Un colega junior presenta evidencia preliminar de que una de sus suposiciones fundamentales es incorrecta. Tú:</p>
 <div class="option">A) Pause and test both versions against recent data before committing <span class="score">0</span></div>
 <div class="option">B) Review the colleague's raw evidence yourself to assess its strength <span class="score">1</span></div>
 <div class="option">C) Note the challenge formally, continue, but define a threshold that triggers reassessment <span class="score">2</span></div>
@@ -278,7 +313,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q14 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
-<p><strong>EN:</strong> A client wants a feature that technically works but would degrade the system's architecture. Refusing isn't an option — the contract requires it. You:</p>
+<p><span class="lang-label">EN</span> A client wants a feature that technically works but would degrade the system's architecture. Refusing isn't an option — the contract requires it. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Un cliente vuole una funzionalità che tecnicamente funziona ma degraderebbe l'architettura del sistema, rendendo lo sviluppo futuro più difficile. Rifiutare non è un'opzione — il contratto lo richiede. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Un cliente quiere una funcionalidad que técnicamente funciona pero degradaría la arquitectura del sistema, haciendo el desarrollo futuro más difícil. Rechazar no es una opción — el contrato lo requiere. Tú:</p>
 <div class="option">A) [Constraint Pivot] Isolate it behind an abstraction layer <span class="score">0</span></div>
 <div class="option">B) [Reframing] Propose an alternative implementation that preserves the architecture <span class="score">1</span></div>
 <div class="option">C) [Iterative Prototyping] Build as specified but create a migration path document <span class="score">2</span></div>
@@ -287,7 +324,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q15 — <span class="pillar-tag pillar-drive">Drive</span></h4>
-<p><strong>EN:</strong> A production incident exposed a gap in your monitoring knowledge. After putting out the fire, you:</p>
+<p><span class="lang-label">EN</span> A production incident exposed a gap in your monitoring knowledge. After putting out the fire, you:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Un incidente in produzione ha esposto una lacuna nelle tue conoscenze di monitoring. Dopo aver risolto l'urgenza, tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Un incidente en producción expuso una laguna en tus conocimientos de monitoreo. Después de apagar el fuego, tú:</p>
 <div class="option">A) Document exactly which signals you missed and add them to your personal checklist <span class="score">0</span></div>
 <div class="option">B) Schedule a session with the on-call engineer to understand what they saw that you didn't <span class="score">1</span></div>
 <div class="option">C) Set up a sandbox to deliberately trigger similar failures and practice responding <span class="score">2</span></div>
@@ -296,7 +335,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q16 — <span class="pillar-tag pillar-cp">Computational Power</span> <em>(v2 refined)</em></h4>
-<p><strong>EN:</strong> How do you handle large amounts of data to analyze?</p>
+<p><span class="lang-label">EN</span> How do you handle large amounts of data to analyze?</p>
+<p class="lang-it"><span class="lang-label">IT</span> Come gestisci grandi quantità di dati da analizzare?</p>
+<p class="lang-es"><span class="lang-label">ES</span> ¿Cómo manejas grandes cantidades de datos para analizar?</p>
 <div class="option">A) Use visualization tools to identify patterns <span class="score">0</span></div>
 <div class="option">B) Segment data into logical categories <span class="score">1</span></div>
 <div class="option">C) Apply statistical techniques to find correlations <span class="score">2</span></div>
@@ -305,7 +346,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q17 — <span class="pillar-tag pillar-comm">Communication</span></h4>
-<p><strong>EN:</strong> A partner team has been working on parallel assumptions that contradict your findings. Neither team is wrong. A joint deliverable is due in 5 days. How do you approach the discrepancy?</p>
+<p><span class="lang-label">EN</span> A partner team has been working on parallel assumptions that contradict your findings. Neither team is wrong. A joint deliverable is due in 5 days. How do you approach the discrepancy?</p>
+<p class="lang-it"><span class="lang-label">IT</span> Un team partner ha lavorato su assunzioni parallele che contraddicono i tuoi risultati. Nessuno dei due team ha torto—state usando modelli validati diversi. Un deliverable congiunto è previsto tra 5 giorni. Come affronti la discrepanza?</p>
+<p class="lang-es"><span class="lang-label">ES</span> Un equipo socio ha estado trabajando con suposiciones paralelas que contradicen tus hallazgos. Ningún equipo está equivocado—están usando modelos validados diferentes. Un entregable conjunto vence en 5 días. ¿Cómo abordas la discrepancia?</p>
 <div class="option">A) [Precision-First] Present both models with assumptions mapped, let data speak <span class="score">0</span></div>
 <div class="option">B) [Abstraction-Shift] Frame discrepancy as scope difference, not contradiction <span class="score">1</span></div>
 <div class="option">C) [Signal-Check] Ask partner team to walk through their reasoning first <span class="score">2</span></div>
@@ -314,7 +357,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q18 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
-<p><strong>EN:</strong> A vendor presents a new technology with impressive benchmarks, but evaluation conditions don't match your production environment. You:</p>
+<p><span class="lang-label">EN</span> A vendor presents a new technology with impressive benchmarks, but evaluation conditions don't match your production environment. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Un fornitore presenta una nuova tecnologia con benchmark impressionanti, ma le condizioni di valutazione non corrispondono al tuo ambiente di produzione. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Un proveedor presenta una nueva tecnología con benchmarks impresionantes, pero las condiciones de evaluación no coinciden con tu entorno de producción. Tú:</p>
 <div class="option">A) Design a controlled test that mirrors your actual constraints <span class="score">0</span></div>
 <div class="option">B) Seek out independent users who deployed it in similar conditions <span class="score">1</span></div>
 <div class="option">C) Analyze the gap between their test conditions and yours <span class="score">2</span></div>
@@ -323,7 +368,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q19 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
-<p><strong>EN:</strong> Your team has developed a novel algorithm that outperforms the standard approach but is harder to explain to regulators. You:</p>
+<p><span class="lang-label">EN</span> Your team has developed a novel algorithm that outperforms the standard approach but is harder to explain to regulators. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Il tuo team ha sviluppato un algoritmo innovativo che supera l'approccio standard nei test, ma è più difficile da spiegare ai regolatori e stakeholder che si aspettano il metodo convenzionale. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Tu equipo ha desarrollado un algoritmo novedoso que supera el enfoque estándar en pruebas, pero es más difícil de explicar a reguladores y stakeholders que esperan el método convencional. Tú:</p>
 <div class="option">A) [Iterative Prototyping] Run both in parallel for a trial period <span class="score">0</span></div>
 <div class="option">B) [Reframing] Translate the novel algorithm into regulatory framework language <span class="score">1</span></div>
 <div class="option">C) [Recombination] Create a hybrid using the standard structure + key innovation <span class="score">2</span></div>
@@ -332,7 +379,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q20 — <span class="pillar-tag pillar-drive">Drive</span></h4>
-<p><strong>EN:</strong> You've been struggling with a technical area (e.g., performance optimization) for months. Your next step is to:</p>
+<p><span class="lang-label">EN</span> You've been struggling with a technical area (e.g., performance optimization) for months. Your next step is to:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Da mesi fatichi con un'area tecnica (es. ottimizzazione delle prestazioni). Il tuo prossimo passo è:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Llevas meses luchando con un área técnica (ej. optimización de rendimiento). Tu próximo paso es:</p>
 <div class="option">A) Find a specific, small project that forces you to use this skill under real constraints <span class="score">0</span></div>
 <div class="option">B) Track your attempts and outcomes weekly to see if your approach is improving <span class="score">1</span></div>
 <div class="option">C) Seek candid assessment from someone strong in this area <span class="score">2</span></div>
@@ -341,7 +390,9 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>q21 — <span class="pillar-tag pillar-cp">Computational Power</span> <em>(v2 refined)</em></h4>
-<p><strong>EN:</strong> How do you evaluate the implementation of new technologies?</p>
+<p><span class="lang-label">EN</span> How do you evaluate the implementation of new technologies?</p>
+<p class="lang-it"><span class="lang-label">IT</span> Come valuti l'implementazione di nuove tecnologie?</p>
+<p class="lang-es"><span class="lang-label">ES</span> ¿Cómo evalúas la implementación de nuevas tecnologías?</p>
 <div class="option">A) Conduct thorough cost-benefit analysis <span class="score">0</span></div>
 <div class="option">B) Test on pilot projects before full adoption <span class="score">1</span></div>
 <div class="option">C) Evaluate impact on existing processes and teams <span class="score">2</span></div>
@@ -350,15 +401,664 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 
 <div class="question-block">
 <h4>open1 — <span class="pillar-tag pillar-crea">Creativity 60%</span> + <span class="pillar-tag pillar-comm">Communication 40%</span></h4>
-<p><strong>EN:</strong> Describe a professional situation where you felt most successful. What made it successful and what was your specific contribution?</p>
+<p><span class="lang-label">EN</span> Describe a professional situation where you felt most successful. What made it successful and what was your specific contribution?</p>
+<p class="lang-it"><span class="lang-label">IT</span> Descrivi una situazione professionale in cui ti sei sentito/a maggiormente di successo. Cosa l'ha resa di successo e qual è stato il tuo contributo specifico?</p>
+<p class="lang-es"><span class="lang-label">ES</span> Describe una situación profesional en la que te sentiste más exitoso/a. ¿Qué la hizo exitosa y cuál fue tu contribución específica?</p>
 </div>
 
 <div class="question-block">
 <h4>open2 — <span class="pillar-tag pillar-drive">Drive 60%</span> + <span class="pillar-tag pillar-know">Knowledge 40%</span></h4>
-<p><strong>EN:</strong> What is your biggest professional challenge or area where you'd like to grow? How do you plan to address it?</p>
+<p><span class="lang-label">EN</span> What is your biggest professional challenge or area where you'd like to grow? How do you plan to address it?</p>
+<p class="lang-it"><span class="lang-label">IT</span> Qual è la tua più grande sfida professionale o l'area in cui vorresti crescere? Come pensi di affrontarla?</p>
+<p class="lang-es"><span class="lang-label">ES</span> ¿Cuál es tu mayor desafío profesional o área donde te gustaría crecer? ¿Cómo planeas abordarlo?</p>
 </div>
 
-<p><em>Note: The remaining 3 fields (Business & Leadership, Arts & Creative, Service & Ops) follow the identical q1–q21 pillar mapping with field-specific question text. Full texts for all fields and all three languages (EN/IT/ES) are available in the companion JSON file.</em></p>
+
+<!-- ============================
+     3.2 BUSINESS & LEADERSHIP
+     ============================ -->
+<div class="page-break"></div>
+<h2>3.2 Business & Leadership</h2>
+
+<div class="question-block">
+<h4>q1 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><span class="lang-label">EN</span> When reviewing a business KPI dashboard, what is your first step?</p>
+<div class="option">A) Scan for anomalies vs targets <span class="score">0</span></div>
+<div class="option">B) Drill into segment breakdowns <span class="score">1</span></div>
+<div class="option">C) Compare with historical trends <span class="score">2</span></div>
+<div class="option">D) Export data to investigate offline <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q2 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><span class="lang-label">EN</span> You need board approval for a strategic pivot. The CFO wants ROI projections, the founder cares about mission alignment, and two independent directors have expressed skepticism about execution risk. You have one 30-minute slot. How do you prepare?</p>
+<div class="option">A) [Precision-First] Build a comprehensive deck covering financials, mission rationale, and risk mitigation in sequence <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Structure around 'Why now?' — weaving financial, mission, and risk answers into one narrative arc <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Schedule brief pre-meetings to identify specific objections, then tailor the board session <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Send a pre-read memo 3 days before, use live slot entirely for Q&A <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q3 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><span class="lang-label">EN</span> Your strategy relies on a market assumption supported by one reputable analyst report. A competitor's move suggests the assumption may be wrong. You:</p>
+<div class="option">A) Commission a quick independent analysis to test the assumption from a different angle <span class="score">0</span></div>
+<div class="option">B) Adjust the strategy to work under both the original and alternative assumptions <span class="score">1</span></div>
+<div class="option">C) Talk to frontline salespeople to get qualitative signals on which assumption holds <span class="score">2</span></div>
+<div class="option">D) Document the uncertainty and set a trigger point where you'd revisit the assumption <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q4 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><span class="lang-label">EN</span> Your company needs to enter a new market segment, but the product wasn't designed for that audience and a full redesign would take 18 months. The board wants traction in 6 months. You:</p>
+<div class="option">A) [Recombination] Repackage the existing product with different positioning, pricing, and onboarding for the new segment <span class="score">0</span></div>
+<div class="option">B) [Constraint Pivot] Partner with a company already serving that segment and offer your product as an integrated add-on <span class="score">1</span></div>
+<div class="option">C) [Iterative Prototyping] Launch a stripped-down version targeting only the use case with strongest overlap <span class="score">2</span></div>
+<div class="option">D) [Reframing] Identify a niche within the new segment where your current product already fits, and expand from there <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q5 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><span class="lang-label">EN</span> Your board presentation fell flat because your financial storytelling lacked depth. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> La tua presentazione al board è andata male perché il tuo storytelling finanziario mancava di profondità. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Tu presentación al board falló porque tu storytelling financiero carecía de profundidad. Tú:</p>
+<div class="option">A) Ask a CFO peer to review your next deck and point out specific weak spots <span class="score">0</span></div>
+<div class="option">B) Rebuild the same presentation from scratch using a different narrative structure <span class="score">1</span></div>
+<div class="option">C) Study three exemplary board decks and identify what techniques you are not using <span class="score">2</span></div>
+<div class="option">D) Present to a smaller internal audience first to get real-time feedback <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q6 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><span class="lang-label">EN</span> Faced with ambiguous revenue drops, you first:</p>
+<div class="option">A) Segment by channel and cohort <span class="score">0</span></div>
+<div class="option">B) Correlate with pricing or promo changes <span class="score">1</span></div>
+<div class="option">C) Check attribution/measurement integrity <span class="score">2</span></div>
+<div class="option">D) Benchmark against seasonality <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q7 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><span class="lang-label">EN</span> Your team has just been restructured. Two members are anxious about role changes, one is openly frustrated, and one seems disengaged. You need to communicate new responsibilities in a team meeting. How do you approach it?</p>
+<div class="option">A) [Precision-First] Present the new structure with explicit role definitions, reporting lines, and timelines <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Frame the restructure around team-level outcomes rather than individual role changes <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Open by asking each person what they need clarity on most <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Send written role descriptions before the meeting, use the live session for questions only <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q8 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><span class="lang-label">EN</span> You're entering a market where the available data is sparse and contradictory. Industry experts disagree on fundamentals. You:</p>
+<div class="option">A) Run a small-scale pilot to generate your own data before committing <span class="score">0</span></div>
+<div class="option">B) Map the disagreements to identify what specific evidence would resolve them <span class="score">1</span></div>
+<div class="option">C) Adopt the view of the expert whose reasoning is most transparent, while monitoring for disconfirming signals <span class="score">2</span></div>
+<div class="option">D) Build separate business cases for the two most plausible scenarios <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q9 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><span class="lang-label">EN</span> A key product launch is two weeks away. The marketing team discovers that the primary competitor just released a nearly identical feature with strong PR coverage. You:</p>
+<div class="option">A) [Reframing] Shift the launch narrative to a different value proposition the competitor didn't address <span class="score">0</span></div>
+<div class="option">B) [Iterative Prototyping] Accelerate one unique capability that differentiates you <span class="score">1</span></div>
+<div class="option">C) [Recombination] Bundle the launch with a complementary offer that changes the comparison frame <span class="score">2</span></div>
+<div class="option">D) [Constraint Pivot] Delay by one week to add a visible differentiator and craft a counter-narrative <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q10 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><span class="lang-label">EN</span> Your team's strategic planning output is weaker than peers'. You suspect it's your facilitation. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> L'output di pianificazione strategica del tuo team è più debole dei peer. Sospetti sia la tua facilitazione. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> El output de planificación estratégica de tu equipo es más débil que el de tus pares. Sospechas que es tu facilitación. Tú:</p>
+<div class="option">A) Observe another leader's strategy session and take structured notes on their method <span class="score">0</span></div>
+<div class="option">B) Record your next session and self-critique what you would change <span class="score">1</span></div>
+<div class="option">C) Bring in an external facilitator once and participate as an observer <span class="score">2</span></div>
+<div class="option">D) Redesign your planning template based on what produced weak output last time <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q11 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><span class="lang-label">EN</span> Evaluating a pricing change, you:</p>
+<div class="option">A) Run sensitivity analyses <span class="score">0</span></div>
+<div class="option">B) A/B test price points <span class="score">1</span></div>
+<div class="option">C) Model elasticity by segment <span class="score">2</span></div>
+<div class="option">D) Validate with customer interviews <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q12 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><span class="lang-label">EN</span> A key client escalates dissatisfaction directly to your CEO. The client's complaint mixes legitimate service gaps with inaccurate assumptions about your process. Your CEO asks you to draft the response. How do you handle the inaccuracies?</p>
+<div class="option">A) [Precision-First] Address each point factually — acknowledge valid gaps, correct inaccuracies with evidence <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Lead with acknowledgment of experience, reframe inaccuracies as 'areas where process differs from expectation' <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Address legitimate gaps, flag inaccuracies separately to CEO with recommendation <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Suggest CEO propose a call instead — inaccuracies are easier to address conversationally <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q13 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><span class="lang-label">EN</span> You've relied on a strategic model for months. A junior team member presents preliminary evidence that one of its core assumptions is wrong. You:</p>
+<div class="option">A) Pause and test both versions against recent market data before committing <span class="score">0</span></div>
+<div class="option">B) Review the team member's raw evidence yourself to assess its strength <span class="score">1</span></div>
+<div class="option">C) Note the challenge formally, continue, but define a trigger point for full reassessment <span class="score">2</span></div>
+<div class="option">D) Ask two uninvolved people to independently evaluate the conflicting evidence <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q14 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><span class="lang-label">EN</span> Your team's quarterly plan is solid, but a major client requests a custom feature that would consume 40% of your engineering capacity. Saying no risks losing the client; saying yes risks the roadmap. You:</p>
+<div class="option">A) [Recombination] Build a generalized version that serves both the client and your roadmap <span class="score">0</span></div>
+<div class="option">B) [Iterative Prototyping] Offer an interim workaround while scheduling the full feature next quarter <span class="score">1</span></div>
+<div class="option">C) [Constraint Pivot] Renegotiate the quarterly plan: defer lowest-impact items and reallocate capacity <span class="score">2</span></div>
+<div class="option">D) [Reframing] Explore whether the client's underlying problem can be solved differently with existing capabilities <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q15 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><span class="lang-label">EN</span> A product launch underperformed because you misjudged market timing. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Un lancio prodotto è andato sotto le attese perché hai valutato male il timing di mercato. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Un lanzamiento de producto fue peor de lo esperado porque juzgaste mal el timing de mercado. Tú:</p>
+<div class="option">A) Interview five customers to understand what signals you misread <span class="score">0</span></div>
+<div class="option">B) Build a post-mortem framework to compare assumptions versus actual data <span class="score">1</span></div>
+<div class="option">C) Partner with someone who predicted the market correctly and understand their reasoning <span class="score">2</span></div>
+<div class="option">D) Run a smaller test launch for the next product to validate timing before full commitment <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q16 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><span class="lang-label">EN</span> To forecast next quarter, you:</p>
+<div class="option">A) Blend bottom-up with top-down models <span class="score">0</span></div>
+<div class="option">B) Stress-test scenarios <span class="score">1</span></div>
+<div class="option">C) Validate assumptions with sales <span class="score">2</span></div>
+<div class="option">D) Simulate capacity constraints <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q17 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><span class="lang-label">EN</span> Two departments you oversee have a resource conflict. Both leaders present their case to you privately, each framing the other as unreasonable. You must communicate a resolution that neither will fully like. How do you deliver it?</p>
+<div class="option">A) [Precision-First] Present decision with full reasoning and trade-off analysis to both simultaneously <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Frame decision around organizational constraint, rather than evaluating either case <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Meet each leader separately first to preview decision and gauge reaction <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Communicate in writing with rationale, then offer individual follow-up conversations <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q18 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><span class="lang-label">EN</span> A regulatory change will affect your business, but the interpretation is ambiguous and industry peers are reading it differently. You:</p>
+<div class="option">A) Engage a legal specialist and stress-test multiple interpretations against your operations <span class="score">0</span></div>
+<div class="option">B) Wait for an industry body to issue guidance, while preparing contingency plans <span class="score">1</span></div>
+<div class="option">C) Adopt the most conservative interpretation now and relax it as clarity emerges <span class="score">2</span></div>
+<div class="option">D) Compare how similar ambiguities were resolved historically to predict the likely outcome <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q19 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><span class="lang-label">EN</span> Your company's core product is mature and growth has plateaued. The board wants a new revenue stream, but R&D budget is limited to 15% of current spend. You:</p>
+<div class="option">A) [Recombination] Identify underutilized assets and package them as a new offering for a different buyer persona <span class="score">0</span></div>
+<div class="option">B) [Reframing] Redefine the product boundary — turn a free feature into premium or unbundle into standalone products <span class="score">1</span></div>
+<div class="option">C) [Iterative Prototyping] Run three small, time-boxed experiments targeting different revenue hypotheses <span class="score">2</span></div>
+<div class="option">D) [Constraint Pivot] Partner with a complementary company to co-develop a joint offering <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q20 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><span class="lang-label">EN</span> You've received consistent feedback that your delegation is weak, slowing the team. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Ricevi feedback costante che la tua delega è debole, rallentando il team. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Recibes feedback constante de que tu delegación es débil, ralentizando al equipo. Tú:</p>
+<div class="option">A) Pick one task you'd normally keep and delegate it fully this week, tracking what happens <span class="score">0</span></div>
+<div class="option">B) Ask your direct reports what they need from you to take ownership more effectively <span class="score">1</span></div>
+<div class="option">C) Study how a peer leader delegates — what do they hand off, when, and how <span class="score">2</span></div>
+<div class="option">D) Set up weekly check-ins instead of daily ones and measure whether quality holds <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q21 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><span class="lang-label">EN</span> Evaluating a transformation program, you first:</p>
+<div class="option">A) Define success metrics <span class="score">0</span></div>
+<div class="option">B) Pilot with a control group <span class="score">1</span></div>
+<div class="option">C) Assess org readiness and risk <span class="score">2</span></div>
+<div class="option">D) Study reference cases <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>open1 — <span class="pillar-tag pillar-crea">Creativity 60%</span> + <span class="pillar-tag pillar-comm">Communication 40%</span></h4>
+<p><span class="lang-label">EN</span> Describe a leadership decision you are proud of. What trade-offs did you weigh and why?</p>
+</div>
+
+<div class="question-block">
+<h4>open2 — <span class="pillar-tag pillar-drive">Drive 60%</span> + <span class="pillar-tag pillar-know">Knowledge 40%</span></h4>
+<p><span class="lang-label">EN</span> What's your biggest growth edge as a leader, and how are you addressing it?</p>
+</div>
+
+
+<!-- ============================
+     3.3 ARTS & CREATIVE
+     ============================ -->
+<div class="page-break"></div>
+<h2>3.3 Arts & Creative</h2>
+
+<div class="question-block">
+<h4>q1 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><span class="lang-label">EN</span> When evaluating creative performance data, you first:</p>
+<div class="option">A) Scan engagement vs objectives <span class="score">0</span></div>
+<div class="option">B) Compare formats and placements <span class="score">1</span></div>
+<div class="option">C) Analyze audience segments <span class="score">2</span></div>
+<div class="option">D) Check measurement integrity <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q2 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><span class="lang-label">EN</span> Your creative concept has been approved, but the production team interprets the brief differently than you intended. Their version is technically valid but misses your tonal intent. Rework would cost two days the project doesn't have. How do you address the gap?</p>
+<div class="option">A) [Precision-First] Document the exact tonal elements that differ, ask the team to assess feasibility within timeline <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Describe the intended audience reaction rather than technical specs — let the team find their own path <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Ask the team to explain their interpretation to identify where the disconnect happened <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Create a quick side-by-side visual comparison of intent vs execution <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q3 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><span class="lang-label">EN</span> You've developed a strong visual style, but a new project requires a visual language you're unfamiliar with. The brief is vague and references are scarce. You:</p>
+<div class="option">A) Study the closest existing examples and identify the underlying design principles <span class="score">0</span></div>
+<div class="option">B) Create quick experiments in the new style and gather feedback before committing <span class="score">1</span></div>
+<div class="option">C) Interview the stakeholders to clarify what they associate with the desired visual language <span class="score">2</span></div>
+<div class="option">D) Adapt elements from your existing style that could bridge into the new direction <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q4 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><span class="lang-label">EN</span> A client wants a bold, distinctive campaign, but their legal team has flagged restrictions: no comparative claims, no superlatives, and all imagery must include their existing brand elements. You:</p>
+<div class="option">A) [Constraint Pivot] Use the brand elements as the creative foundation — make the restrictions the aesthetic concept <span class="score">0</span></div>
+<div class="option">B) [Recombination] Develop a visual language that feels distinctive through composition, pacing, and tone within every constraint <span class="score">1</span></div>
+<div class="option">C) [Iterative Prototyping] Propose three concepts at different points on the boldness spectrum, each fully compliant <span class="score">2</span></div>
+<div class="option">D) [Reframing] Reframe 'bold' toward storytelling — create a narrative-driven campaign through emotion rather than assertion <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q5 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><span class="lang-label">EN</span> A client rejected your work for lacking strategic depth — an area you know is weak. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Un cliente ha rifiutato il tuo lavoro perché mancava di profondità strategica — un'area che sai essere debole. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Un cliente rechazó tu trabajo por falta de profundidad estratégica — un área que sabes que es débil. Tú:</p>
+<div class="option">A) Ask the client to show you an example of work with the depth they wanted <span class="score">0</span></div>
+<div class="option">B) Pair with a strategist on your next project to observe how they build narrative <span class="score">1</span></div>
+<div class="option">C) Rewrite the rejected brief's strategy layer yourself and ask for honest critique <span class="score">2</span></div>
+<div class="option">D) Dedicate weekly practice time to strategy exercises from a different creative discipline <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q6 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><span class="lang-label">EN</span> To choose a campaign visual, you rely on:</p>
+<div class="option">A) A/B tests on thumbnails <span class="score">0</span></div>
+<div class="option">B) Heatmaps or eye-tracking insights <span class="score">1</span></div>
+<div class="option">C) Historical performance patterns <span class="score">2</span></div>
+<div class="option">D) User research snapshots <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q7 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><span class="lang-label">EN</span> A client gives feedback that contradicts their own approved brief. They don't realize the contradiction. Pointing it out directly risks making them feel incompetent. Ignoring it means building something misaligned. How do you navigate this?</p>
+<div class="option">A) [Precision-First] Reference the original brief directly, walk through the contradiction matter-of-factly <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Frame it as 'the project has evolved since the brief' — natural scope evolution rather than error <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Ask the client to describe their current vision — let them catch the contradiction themselves <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Create two quick mockups reflecting each direction, let the client choose visually <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q8 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><span class="lang-label">EN</span> Your creative direction is based on audience research, but early user testing returns mixed signals — some love it, some find it confusing. You:</p>
+<div class="option">A) Segment the responses to understand if different audience groups react differently <span class="score">0</span></div>
+<div class="option">B) Test a simplified version to isolate whether the confusion is about concept or execution <span class="score">1</span></div>
+<div class="option">C) Revisit the original research to check if you missed nuances in the data <span class="score">2</span></div>
+<div class="option">D) Bring in a fresh set of testers with a clearer testing protocol to reduce noise <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q9 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><span class="lang-label">EN</span> You're designing a visual identity for a brand that operates in two very different markets — luxury and affordable. They want one identity that works for both. You:</p>
+<div class="option">A) [Recombination] Create a flexible system with shared core elements but distinct visual expressions by context <span class="score">0</span></div>
+<div class="option">B) [Reframing] Find the emotional overlap between audiences and design around that shared value <span class="score">1</span></div>
+<div class="option">C) [Constraint Pivot] Design a primary identity for the larger segment and create a sub-brand treatment for the other <span class="score">2</span></div>
+<div class="option">D) [Iterative Prototyping] Test three approaches with representatives from both audiences before committing <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q10 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><span class="lang-label">EN</span> Your motion design skills are behind the team's expectations, and it's affecting your projects. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Le tue competenze di motion design sono sotto le aspettative del team e impattano i tuoi progetti. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Tus habilidades de motion design están por debajo de las expectativas del equipo y afectan tus proyectos. Tú:</p>
+<div class="option">A) Take on a small internal project that requires motion work, with a realistic deadline <span class="score">0</span></div>
+<div class="option">B) Ask a skilled colleague to pair on your next animation and give direct feedback <span class="score">1</span></div>
+<div class="option">C) Follow a structured course and apply each lesson to a real deliverable within 48 hours <span class="score">2</span></div>
+<div class="option">D) Analyze five strong motion pieces to identify specific techniques you are not using <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q11 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><span class="lang-label">EN</span> To allocate production budget, you:</p>
+<div class="option">A) Model cost vs expected lift <span class="score">0</span></div>
+<div class="option">B) Prioritize high-impact assets <span class="score">1</span></div>
+<div class="option">C) Prototype cheaply first <span class="score">2</span></div>
+<div class="option">D) Reuse/adapt assets smartly <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q12 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><span class="lang-label">EN</span> You're leading a creative review where a junior team member's work has significant issues, but they've clearly invested heavily. Two senior colleagues are in the room. How do you deliver feedback?</p>
+<div class="option">A) [Precision-First] Address the work directly: name what works, name what doesn't, provide specific revision direction <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Frame feedback around the project's requirements — 'the brief needs X, this delivers Y' <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Ask the junior to self-assess first — 'What would you change if you had another day?' <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Give high-level direction in the group, schedule private follow-up for detailed critique <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q13 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><span class="lang-label">EN</span> You've relied on a creative direction for months. A junior designer presents preliminary user data suggesting one of your core aesthetic assumptions may be wrong. You:</p>
+<div class="option">A) Pause and test both versions with a fresh audience sample before committing <span class="score">0</span></div>
+<div class="option">B) Review the junior designer's raw data yourself to assess its validity <span class="score">1</span></div>
+<div class="option">C) Note the challenge formally, continue, but define a feedback threshold for full reassessment <span class="score">2</span></div>
+<div class="option">D) Ask two uninvolved people to independently evaluate the conflicting evidence <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q14 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><span class="lang-label">EN</span> You've been developing a creative direction for weeks. In the final review, the client says they love the work but need it adapted for a medium you didn't design for. The deadline doesn't change. You:</p>
+<div class="option">A) [Recombination] Extract the strongest visual moments and restructure them as a sequential static narrative <span class="score">0</span></div>
+<div class="option">B) [Reframing] Redesign the core idea for the new medium from scratch — start from the insight, not the execution <span class="score">1</span></div>
+<div class="option">C) [Constraint Pivot] Create a hybrid: adapt key frames but add an interactive element that brings motion back <span class="score">2</span></div>
+<div class="option">D) [Iterative Prototyping] Deliver a fast version using existing assets now, and a medium-optimized version later <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q15 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><span class="lang-label">EN</span> Your portfolio review revealed that your typographic work is consistently your weakest area. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> La revisione del tuo portfolio rivela che il lavoro tipografico è costantemente la tua area più debole. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> La revisión de tu portfolio reveló que tu trabajo tipográfico es consistentemente tu área más débil. Tú:</p>
+<div class="option">A) Redesign one past project focusing solely on typography and compare the result <span class="score">0</span></div>
+<div class="option">B) Seek a critique from a typography specialist on what specifically needs work <span class="score">1</span></div>
+<div class="option">C) Track your typography decisions for the next month to spot recurring mistakes <span class="score">2</span></div>
+<div class="option">D) Restrict your next project to only typographic elements — no illustration or color <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q16 — <span class="pillar-tag pillar-cp">Computational Power</span> <em>(v2 refined)</em></h4>
+<p><span class="lang-label">EN</span> When your creative workflow hits a bottleneck, you:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Quando il tuo flusso creativo incontra un collo di bottiglia, tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Cuando tu flujo creativo encuentra un cuello de botella, tú:</p>
+<div class="option">A) Profile each step to find the slowest stage <span class="score">0</span></div>
+<div class="option">B) Redesign the sequence to remove hand-offs <span class="score">1</span></div>
+<div class="option">C) Evaluate learning curve of alternative tools <span class="score">2</span></div>
+<div class="option">D) Assess cost and licensing of replacements <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q17 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><span class="lang-label">EN</span> A collaborator from a different discipline keeps using their own domain's vocabulary to describe your shared project. Meetings are productive on the surface but you suspect fundamental misalignment beneath the shared terms. How do you test this?</p>
+<div class="option">A) [Precision-First] Create a shared glossary defining key terms as used in this project <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Shift from vocabulary to outcomes — ask 'what does success look like to you?' <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Paraphrase their statements back in your vocabulary and watch for confusion signals <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Propose a joint sketch/prototype session where both express intent visually <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q18 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><span class="lang-label">EN</span> A client insists their audience wants a specific aesthetic, but your research suggests otherwise. The client's conviction is strong. You:</p>
+<div class="option">A) Propose an A/B test with both approaches on a small sample before full production <span class="score">0</span></div>
+<div class="option">B) Present your research transparently and ask the client to explain what evidence supports their view <span class="score">1</span></div>
+<div class="option">C) Find a creative solution that incorporates elements of both perspectives <span class="score">2</span></div>
+<div class="option">D) Document both positions and agree on success criteria that will resolve the disagreement after launch <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q19 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><span class="lang-label">EN</span> Your team has developed an innovative visual concept that tests well with younger audiences but alienates the brand's existing older customer base. The client wants to keep both. You:</p>
+<div class="option">A) [Recombination] Find elements from both concepts that can coexist, creating a bridge aesthetic <span class="score">0</span></div>
+<div class="option">B) [Constraint Pivot] Use innovative concept in acquisition channels, retain familiar style in retention channels <span class="score">1</span></div>
+<div class="option">C) [Iterative Prototyping] Evolve the existing visual language gradually, incorporating new principles in small doses <span class="score">2</span></div>
+<div class="option">D) [Reframing] A/B rollout: test the new concept with a controlled segment of the older audience first <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q20 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><span class="lang-label">EN</span> You've plateaued in your creative direction skills and feel stuck at the same level. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Hai raggiunto un plateau nelle tue competenze di direzione creativa e ti senti bloccato/a allo stesso livello. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Has llegado a una meseta en tus habilidades de dirección creativa y te sientes estancado/a. Tú:</p>
+<div class="option">A) Take on a project in a format or genre you have never done before <span class="score">0</span></div>
+<div class="option">B) Ask three trusted peers to each name one specific area where your direction could improve <span class="score">1</span></div>
+<div class="option">C) Compare your recent work against work from 12 months ago to identify what has actually changed <span class="score">2</span></div>
+<div class="option">D) Set quarterly skill targets with concrete deliverables that prove improvement <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q21 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><span class="lang-label">EN</span> To judge asset quality at scale, you:</p>
+<div class="option">A) Define measurable criteria <span class="score">0</span></div>
+<div class="option">B) Batch-review with checklists <span class="score">1</span></div>
+<div class="option">C) Sample test with audience <span class="score">2</span></div>
+<div class="option">D) Automate checks where possible <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>open1 — <span class="pillar-tag pillar-crea">Creativity 60%</span> + <span class="pillar-tag pillar-comm">Communication 40%</span></h4>
+<p><span class="lang-label">EN</span> Tell us about a piece you created that changed outcomes. Why did it work?</p>
+</div>
+
+<div class="question-block">
+<h4>open2 — <span class="pillar-tag pillar-drive">Drive 60%</span> + <span class="pillar-tag pillar-know">Knowledge 40%</span></h4>
+<p><span class="lang-label">EN</span> Which creative skill are you most driven to improve this year and how?</p>
+</div>
+
+
+<!-- ============================
+     3.4 SERVICE & OPS
+     ============================ -->
+<div class="page-break"></div>
+<h2>3.4 Service & Operations</h2>
+
+<div class="question-block">
+<h4>q1 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><span class="lang-label">EN</span> When service metrics dip, your first step is to:</p>
+<div class="option">A) Segment by shift/location <span class="score">0</span></div>
+<div class="option">B) Check process compliance <span class="score">1</span></div>
+<div class="option">C) Compare with historical patterns <span class="score">2</span></div>
+<div class="option">D) Verify data integrity <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q2 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><span class="lang-label">EN</span> A process change you've implemented is causing confusion among frontline staff. Some are reverting to old procedures. You can't mandate compliance without understanding the breakdown. How do you diagnose and address the communication gap?</p>
+<div class="option">A) [Precision-First] Reissue procedure documentation with step-by-step detail and explicit comparisons to old process <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Explain the why behind the change — connect to outcomes staff care about <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Spend a shift observing where staff revert, ask what's unclear, then revise based on actual confusion <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Replace written instructions with a short walkthrough video plus quick-reference card <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q3 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><span class="lang-label">EN</span> Your team follows a standard procedure, but an unusual case doesn't fit the existing protocol. The procedure manual doesn't cover this scenario. You:</p>
+<div class="option">A) Identify which parts still apply and adapt the rest with documented reasoning <span class="score">0</span></div>
+<div class="option">B) Consult a colleague who's handled similar edge cases <span class="score">1</span></div>
+<div class="option">C) Escalate with a clear description of why the standard procedure doesn't fit <span class="score">2</span></div>
+<div class="option">D) Handle it using best judgment and write up the case so the procedure can be updated <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q4 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><span class="lang-label">EN</span> Your service team needs to reduce average handling time by 20%, but cutting steps would hurt quality scores. You can't hire more staff. You:</p>
+<div class="option">A) [Reframing] Redesign the service flow so common cases follow a streamlined path while complex cases get full process <span class="score">0</span></div>
+<div class="option">B) [Recombination] Identify the most time-consuming step and find a way to perform it in parallel with another <span class="score">1</span></div>
+<div class="option">C) [Constraint Pivot] Redefine 'handling time' by shifting some steps to asynchronous follow-up <span class="score">2</span></div>
+<div class="option">D) [Iterative Prototyping] Create templated responses for the most frequent 30% of requests <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q5 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><span class="lang-label">EN</span> Your team's incident response time has been slower than the target, and you are part of the problem. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Il tempo di risposta agli incidenti del tuo team è più lento del target, e tu sei parte del problema. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> El tiempo de respuesta a incidentes de tu equipo ha sido más lento que el objetivo, y tú eres parte del problema. Tú:</p>
+<div class="option">A) Shadow the fastest responder on shift and document what they do differently <span class="score">0</span></div>
+<div class="option">B) Review your last five incidents to find the specific step where you lost time <span class="score">1</span></div>
+<div class="option">C) Practice responding to simulated incidents with a timer to build speed <span class="score">2</span></div>
+<div class="option">D) Redesign your personal triage checklist based on what has actually slowed you down <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q6 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><span class="lang-label">EN</span> To schedule staff effectively, you:</p>
+<div class="option">A) Model demand by hour <span class="score">0</span></div>
+<div class="option">B) Account for skill mix <span class="score">1</span></div>
+<div class="option">C) Plan buffers for spikes <span class="score">2</span></div>
+<div class="option">D) Review constraints and rules <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q7 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><span class="lang-label">EN</span> A customer is escalating a complaint. They're factually wrong about what happened, but emotionally they've had a genuinely poor experience. Your response will be reviewed by your manager. How do you handle the factual inaccuracy while addressing the experience?</p>
+<div class="option">A) [Precision-First] Acknowledge frustration, then walk through what actually occurred with timestamps <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Focus on the experience gap — 'regardless of specifics, the outcome fell short' — and propose resolution <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Ask the customer to confirm specific details — let them self-correct through clarifying questions <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Respond in writing with empathy and resolution, then offer a phone call for details <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q8 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><span class="lang-label">EN</span> Two experienced team members give you contradictory advice on handling a service situation. Both have strong track records. You:</p>
+<div class="option">A) Ask each to explain the reasoning behind their recommendation, not just the conclusion <span class="score">0</span></div>
+<div class="option">B) Look at what's different about this situation compared to when each approach worked before <span class="score">1</span></div>
+<div class="option">C) Try the approach with the lower downside risk and evaluate the outcome <span class="score">2</span></div>
+<div class="option">D) Check if there's a documented precedent for this type of situation <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q9 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><span class="lang-label">EN</span> A key supplier notifies you that a critical component will be unavailable for three weeks. Your service depends on it daily. Switching suppliers permanently isn't viable. You:</p>
+<div class="option">A) [Recombination] Source a temporary alternative and adjust your process to accommodate differences <span class="score">0</span></div>
+<div class="option">B) [Reframing] Redesign the affected workflow to function without the component for three weeks <span class="score">1</span></div>
+<div class="option">C) [Constraint Pivot] Negotiate with the supplier for partial deliveries, prioritizing the most urgent variants <span class="score">2</span></div>
+<div class="option">D) [Iterative Prototyping] Build a small reserve by reducing usage in lower-priority areas <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q10 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><span class="lang-label">EN</span> Customer feedback shows that your team's explanations during outages are confusing — and you wrote the scripts. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Il feedback dei clienti mostra che le spiegazioni del tuo team durante i disservizi sono confuse — e gli script li hai scritti tu. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> El feedback de clientes muestra que las explicaciones de tu equipo durante cortes son confusas — y los guiones los escribiste tú. Tú:</p>
+<div class="option">A) Record real explanations and review them to identify what is unclear <span class="score">0</span></div>
+<div class="option">B) Practice with mock scenarios using plain-language scripts until it feels natural <span class="score">1</span></div>
+<div class="option">C) Ask a communication trainer to observe one interaction and give targeted advice <span class="score">2</span></div>
+<div class="option">D) Create a template library for common outage explanations and test it with users <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q11 — <span class="pillar-tag pillar-cp">Computational Power</span> <em>(v2 refined)</em></h4>
+<p><span class="lang-label">EN</span> To reduce errors, you:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Per ridurre gli errori, tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Para reducir errores, tú:</p>
+<div class="option">A) Introduce checklists <span class="score">0</span></div>
+<div class="option">B) Standardize and 5S <span class="score">1</span></div>
+<div class="option">C) Automate repetitive steps <span class="score">2</span></div>
+<div class="option">D) Trace each error back to the step where it first appears <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q12 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><span class="lang-label">EN</span> You need to communicate a service-level reduction to long-term clients. The reduction is permanent and non-negotiable. Some clients will be significantly impacted. How do you deliver the message?</p>
+<div class="option">A) [Precision-First] State the change clearly with effective dates and specific impacts per segment <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Frame within a broader service evolution narrative including improvements elsewhere <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Contact the most impacted clients individually first, gauge concerns, then refine the broader announcement <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Replace mass announcement with individual account reviews — each client hears news in context <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q13 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><span class="lang-label">EN</span> You've relied on an operational procedure for months. A junior team member presents preliminary case data suggesting one of its core assumptions is wrong. You:</p>
+<div class="option">A) Pause applying the procedure in affected cases and test both approaches before committing <span class="score">0</span></div>
+<div class="option">B) Review the team member's raw case data yourself to assess its strength <span class="score">1</span></div>
+<div class="option">C) Note the challenge formally, continue, but define a specific outcome threshold for reassessment <span class="score">2</span></div>
+<div class="option">D) Ask two uninvolved people to independently evaluate the conflicting evidence <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q14 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><span class="lang-label">EN</span> Management wants to introduce a digital self-service channel to reduce call volume by 30%. But your data shows 60% of customers who try self-service end up calling anyway. You:</p>
+<div class="option">A) [Constraint Pivot] Redesign self-service to handle only cases it can actually resolve, route complex cases to agents faster <span class="score">0</span></div>
+<div class="option">B) [Recombination] Create a hybrid: let customers start in self-service with seamless escalation that preserves context <span class="score">1</span></div>
+<div class="option">C) [Reframing] Reframe the 30% target: focus on reducing repeat calls by using self-service for follow-ups and status checks <span class="score">2</span></div>
+<div class="option">D) [Iterative Prototyping] Pilot three different approaches on different case types to find which benefit from automation <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q15 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><span class="lang-label">EN</span> An audit found that your compliance documentation has recurring gaps — a skill you haven't developed. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Un audit ha trovato lacune ricorrenti nella tua documentazione di compliance — una competenza che non hai sviluppato. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Una auditoría encontró lagunas recurrentes en tu documentación de compliance — una habilidad que no has desarrollado. Tú:</p>
+<div class="option">A) Identify the two most common gaps and create a personal checklist for those areas <span class="score">0</span></div>
+<div class="option">B) Ask the auditor to walk you through exactly what good documentation looks like <span class="score">1</span></div>
+<div class="option">C) Compare your documentation with a colleague's who scored well, side by side <span class="score">2</span></div>
+<div class="option">D) Redo one recent document from scratch using the correct standard and time yourself <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q16 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><span class="lang-label">EN</span> Choosing a new tool, you:</p>
+<div class="option">A) Score by requirements fit <span class="score">0</span></div>
+<div class="option">B) Pilot with a small group <span class="score">1</span></div>
+<div class="option">C) Evaluate cost/benefit and risk <span class="score">2</span></div>
+<div class="option">D) Check integration with systems <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q17 — <span class="pillar-tag pillar-comm">Communication</span></h4>
+<p><span class="lang-label">EN</span> You've been asked to train a new team on a complex workflow. Half the group has operational experience; the other half are complete beginners. You have one session. How do you structure it?</p>
+<div class="option">A) [Precision-First] Teach the full workflow at beginner level, offer advanced supplement for experienced members <span class="score">0</span></div>
+<div class="option">B) [Abstraction-Shift] Start with the conceptual model, let experienced members connect to what they know <span class="score">1</span></div>
+<div class="option">C) [Signal-Check] Begin with a diagnostic exercise to reveal what each person knows, adjust dynamically <span class="score">2</span></div>
+<div class="option">D) [Medium-Pivot] Pair experienced and beginner members with guided practice, replace lecture with peer learning <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q18 — <span class="pillar-tag pillar-know">Knowledge</span></h4>
+<p><span class="lang-label">EN</span> A new industry guideline contradicts a practice your team has used successfully for years. The guideline's evidence base is limited but growing. You:</p>
+<div class="option">A) Review the evidence behind the guideline and compare it with your team's outcome data <span class="score">0</span></div>
+<div class="option">B) Pilot the new guideline on a subset of cases while maintaining the old practice as control <span class="score">1</span></div>
+<div class="option">C) Adopt the guideline but track outcomes closely to verify it performs as claimed <span class="score">2</span></div>
+<div class="option">D) Consult peers at other organizations to understand how they're interpreting and implementing it <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q19 — <span class="pillar-tag pillar-crea">Creativity</span></h4>
+<p><span class="lang-label">EN</span> Your team runs a 24/7 operation. A new regulation requires additional documentation at each handoff between shifts, but adding paperwork would slow transitions and create a 15-minute gap in coverage. You:</p>
+<div class="option">A) [Recombination] Replace paper-based approach with a structured digital log that auto-populates from shift activity data <span class="score">0</span></div>
+<div class="option">B) [Constraint Pivot] Overlap shifts by 15 minutes and use the overlap for both handoff and documentation <span class="score">1</span></div>
+<div class="option">C) [Iterative Prototyping] Split documentation: capture critical items during handoff, defer detailed notes to quieter period <span class="score">2</span></div>
+<div class="option">D) [Reframing] Work with compliance to identify minimum viable documentation that satisfies the regulation <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q20 — <span class="pillar-tag pillar-drive">Drive</span></h4>
+<p><span class="lang-label">EN</span> You've been told your process improvement proposals lack data support — a skill you haven't developed. You:</p>
+<p class="lang-it"><span class="lang-label">IT</span> Ti hanno detto che le tue proposte di miglioramento dei processi mancano di supporto dati — una competenza che non hai sviluppato. Tu:</p>
+<p class="lang-es"><span class="lang-label">ES</span> Te han dicho que tus propuestas de mejora de procesos carecen de soporte de datos — una habilidad que no has desarrollado. Tú:</p>
+<div class="option">A) Attach measurable baselines to your next proposal, even if data collection takes extra time <span class="score">0</span></div>
+<div class="option">B) Partner with an analyst to learn how they build data-backed arguments <span class="score">1</span></div>
+<div class="option">C) Take a short course on operational data analysis and apply it to a real case <span class="score">2</span></div>
+<div class="option">D) Review three approved proposals to reverse-engineer what data made them convincing <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>q21 — <span class="pillar-tag pillar-cp">Computational Power</span></h4>
+<p><span class="lang-label">EN</span> Evaluating a process change, you:</p>
+<div class="option">A) Define success metrics up front <span class="score">0</span></div>
+<div class="option">B) Compare before/after data <span class="score">1</span></div>
+<div class="option">C) Run a controlled trial <span class="score">2</span></div>
+<div class="option">D) Document impact and next steps <span class="score">3</span></div>
+</div>
+
+<div class="question-block">
+<h4>open1 — <span class="pillar-tag pillar-crea">Creativity 60%</span> + <span class="pillar-tag pillar-comm">Communication 40%</span></h4>
+<p><span class="lang-label">EN</span> Describe a time you improved a service process. What changed and how did you make it stick?</p>
+</div>
+
+<div class="question-block">
+<h4>open2 — <span class="pillar-tag pillar-drive">Drive 60%</span> + <span class="pillar-tag pillar-know">Knowledge 40%</span></h4>
+<p><span class="lang-label">EN</span> What area of your operations practice do you most want to grow this year, and what's your plan?</p>
+</div>
+
 
 <!-- APPENDIX -->
 <div class="page-break"></div>
@@ -397,7 +1097,17 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 </table>
 <p>All pairs below r = 0.40 threshold. Max: r = 0.34 (CP–Knowledge).</p>
 
-<h3>4.4 Change Control</h3>
+<h3>4.4 Trilingual Coverage Note</h3>
+<p>IT/ES translations are shown inline where they exist in the frozen pillar artifacts. Specifically:</p>
+<ul>
+  <li><strong>Drive questions (q5, q10, q15, q20):</strong> Full EN/IT/ES in <code>XIMA_Drive_MC_Validation_Export_v1.json</code> — shown for all 4 fields.</li>
+  <li><strong>CP refined questions (q16, q21 science_tech; q16 arts_creative; q11 service_ops):</strong> Full EN/IT/ES in <code>XIMA_ComputationalPower_Refined_v2.json</code>.</li>
+  <li><strong>Communication, Knowledge, Creativity redesigned questions:</strong> EN only in frozen artifacts. IT/ES text is managed via i18n translation keys at runtime.</li>
+  <li><strong>Original (pre-redesign) CP questions:</strong> IT/ES available via i18n keys, EN shown from <code>assessment_full_export.json</code>.</li>
+</ul>
+<p>The complete trilingual text for all questions is available at runtime through the i18n system (see <code>src/i18n/locales/{en,it,es}.json</code>).</p>
+
+<h3>4.5 Change Control</h3>
 <div class="alert">
 <strong>Any modification to frozen assessment items requires:</strong>
 <ol>
@@ -413,7 +1123,7 @@ Cached in: profiles.drive_score, profiles.drive_velocity, profiles.drive_updated
 <hr>
 <p style="text-align: center; color: #999; font-size: 12px;">
 XIMA Assessment v1.0 — Human Review Pack<br>
-Generated: 2026-02-15 | Classification: Internal — Engineering & Product Leadership<br>
+Generated: 2026-02-16 | Classification: Internal — Engineering & Product Leadership<br>
 Companion data: <code>XIMA_Assessment_v1.0_Human_Review_Pack_Source.json</code>
 </p>
 
