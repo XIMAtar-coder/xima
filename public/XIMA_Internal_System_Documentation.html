@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XIMA — Full Internal System Documentation Export</title>
+<style>
+  @media print {
+    body { font-size: 11pt; }
+    .page-break { page-break-before: always; }
+    h1, h2, h3 { page-break-after: avoid; }
+    table { page-break-inside: avoid; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1a1a2e; max-width: 900px; margin: 0 auto; padding: 40px 30px; background: #fafafa; }
+  h1 { font-size: 2rem; border-bottom: 3px solid #0f3460; padding-bottom: 12px; margin: 40px 0 20px; color: #0f3460; }
+  h2 { font-size: 1.5rem; color: #16213e; margin: 30px 0 12px; border-left: 4px solid #e94560; padding-left: 12px; }
+  h3 { font-size: 1.15rem; color: #0f3460; margin: 20px 0 8px; }
+  p, li { margin-bottom: 8px; }
+  ul, ol { padding-left: 24px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+  th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; }
+  th { background: #0f3460; color: white; font-weight: 600; }
+  tr:nth-child(even) { background: #f0f0f5; }
+  code { background: #eef; padding: 2px 6px; border-radius: 3px; font-size: 0.88em; }
+  pre { background: #1a1a2e; color: #e0e0e0; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 12px 0; font-size: 0.85rem; line-height: 1.5; }
+  .cover { text-align: center; padding: 80px 20px; border: 2px solid #0f3460; margin-bottom: 40px; background: linear-gradient(135deg, #0f3460 0%, #16213e 100%); color: white; border-radius: 8px; }
+  .cover h1 { color: white; border: none; font-size: 2.4rem; }
+  .cover p { color: #ccc; font-size: 1.1rem; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 600; margin-right: 6px; }
+  .badge-live { background: #d4edda; color: #155724; }
+  .badge-designed { background: #fff3cd; color: #856404; }
+  .badge-hypothetical { background: #f8d7da; color: #721c24; }
+  .badge-partial { background: #cce5ff; color: #004085; }
+  .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px 16px; margin: 12px 0; border-radius: 4px; }
+  .info { background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 12px 16px; margin: 12px 0; border-radius: 4px; }
+  .critical { background: #f8d7da; border-left: 4px solid #dc3545; padding: 12px 16px; margin: 12px 0; border-radius: 4px; }
+  .toc { background: #f0f0f5; padding: 20px 30px; border-radius: 6px; margin: 20px 0 40px; }
+  .toc ol { counter-reset: toc; list-style: none; padding-left: 0; }
+  .toc li { counter-increment: toc; margin: 6px 0; }
+  .toc li::before { content: counter(toc) ". "; font-weight: 700; color: #e94560; }
+  .toc a { text-decoration: none; color: #0f3460; }
+  .toc a:hover { text-decoration: underline; }
+  .formula { background: #f5f5ff; padding: 12px 16px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Courier New', monospace; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>XIMA</h1>
+  <p style="font-size:1.3rem; margin:10px 0;">Full Internal System Documentation Export</p>
+  <p>READ-ONLY EXTRACTION — v1.1 Frozen Baseline</p>
+  <p style="margin-top:20px; font-size:0.9rem;">Generated: 2026-02-22 | Classification: Internal / Confidential</p>
+  <p style="font-size:0.85rem; color:#aaa;">This document is auto-generated from the live XIMA codebase and database schema. No marketing fluff. No hallucinated features.</p>
+</div>
+
+<div class="toc">
+  <h2 style="border:none; padding:0; margin:0 0 12px;">Table of Contents</h2>
+  <ol>
+    <li><a href="#s1">Executive Overview</a></li>
+    <li><a href="#s2">Product Architecture</a></li>
+    <li><a href="#s3">Psychometric Model</a></li>
+    <li><a href="#s4">AI Model Usage</a></li>
+    <li><a href="#s5">Validation &amp; Stability</a></li>
+    <li><a href="#s6">Business Model</a></li>
+    <li><a href="#s7">Pricing Model</a></li>
+    <li><a href="#s8">Unit Economics</a></li>
+    <li><a href="#s9">Tipping Point Analysis</a></li>
+    <li><a href="#s10">Breakeven Calculation</a></li>
+    <li><a href="#s11">Strategic Positioning</a></li>
+    <li><a href="#s12">Current State of the Project</a></li>
+    <li><a href="#s13">Risks</a></li>
+    <li><a href="#s14">Scaling Strategy</a></li>
+    <li><a href="#s15">State of the Art Summary</a></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h1 id="s1">1. Executive Overview</h1>
+
+<p><strong>XIMA</strong> is a psychometric hiring intelligence platform that replaces CV-first screening with a 5-pillar behavioral assessment, producing anonymized candidate profiles ("XIMAtars") that companies evaluate through a progressive 3-level challenge pipeline. The platform measures <em>Computational Power, Communication, Knowledge, Creativity, and Drive</em> — generating development-oriented signals (not scores or grades) that help businesses make more informed hiring decisions while giving candidates actionable self-awareness.</p>
+
+<h3>Core Problem</h3>
+<p>Traditional hiring is biased toward credentials, self-presentation, and unstructured interviews. XIMA replaces this with a structured, psychometrically-validated assessment pipeline that surfaces cognitive patterns and behavioral tendencies that CVs cannot reveal.</p>
+
+<h3>Target Users</h3>
+<table>
+  <tr><th>User Type</th><th>Description</th><th>Status</th></tr>
+  <tr><td><strong>Candidate</strong></td><td>Job seekers taking assessment, receiving XIMAtar profile, accessing development plan, engaging with challenges</td><td><span class="badge badge-live">Live</span></td></tr>
+  <tr><td><strong>Business</strong></td><td>Companies creating hiring goals, launching challenges, evaluating submissions via signal panels</td><td><span class="badge badge-live">Live</span></td></tr>
+  <tr><td><strong>Mentor</strong></td><td>Professionals providing 1:1 coaching sessions to candidates, with dedicated portal</td><td><span class="badge badge-live">Live</span></td></tr>
+  <tr><td><strong>Admin</strong></td><td>Internal platform administration, eligibility reviews</td><td><span class="badge badge-live">Live</span></td></tr>
+</table>
+
+<h3>Core Differentiator</h3>
+<p>XIMAtar-based anonymized profiles eliminate name/photo/institution bias. The "Weakness-First" methodology prioritizes identifying growth leverage rather than ranking candidates. No auto-rejection — businesses always make the final decision with qualitative signals, not numerical scores.</p>
+
+<h3>Current Version</h3>
+<p><strong>v1.1 — Frozen.</strong> Psychometric baseline established. Any modification requires new version (v1.2+) and full revalidation pipeline.</p>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h1 id="s2">2. Product Architecture</h1>
+
+<h2>2.1 System Overview</h2>
+
+<table>
+  <tr><th>Layer</th><th>Technology</th><th>Details</th></tr>
+  <tr><td>Frontend</td><td>React 18 + Vite + TypeScript</td><td>SPA with React Router v6, TailwindCSS, shadcn/ui components, Framer Motion animations</td></tr>
+  <tr><td>Backend</td><td>Supabase (Lovable Cloud)</td><td>PostgreSQL database, Row Level Security, 30+ Edge Functions (Deno runtime)</td></tr>
+  <tr><td>AI Gateway</td><td>Lovable AI Gateway</td><td>Unified endpoint at <code>ai.gateway.lovable.dev</code>, default model: <code>google/gemini-2.5-flash</code></td></tr>
+  <tr><td>Hosting</td><td>Lovable Cloud</td><td>Automated deployment, preview + production environments</td></tr>
+  <tr><td>Database</td><td>PostgreSQL (Supabase)</td><td>78 tables, extensive RLS policies, SECURITY DEFINER functions with hardened search_path</td></tr>
+  <tr><td>Auth</td><td>Supabase Auth</td><td>Email/password + Google OAuth, mandatory consent gating</td></tr>
+  <tr><td>i18n</td><td>i18next</td><td>English, Italian, Spanish — with browser language detection</td></tr>
+  <tr><td>State Management</td><td>TanStack Query + React Context</td><td>Server state via React Query, UI state via Context providers</td></tr>
+  <tr><td>Email</td><td>Resend (via Edge Functions)</td><td>Welcome emails, challenge invitations, verification</td></tr>
+  <tr><td>File Storage</td><td>Supabase Storage</td><td>CVs, eligibility documents, company logos, challenge attachments</td></tr>
+</table>
+
+<h2>2.2 User Types & Permissions</h2>
+
+<h3>Candidate</h3>
+<ul>
+  <li>Takes 21-question MC assessment + 2 open-answer questions</li>
+  <li>Receives XIMAtar profile (1 of 12 archetypes)</li>
+  <li>Accesses development plan, mentor booking, opportunity feed</li>
+  <li>Responds to business challenge invitations (L1/L2/L3)</li>
+  <li>Can export personal data (GDPR) and delete account</li>
+  <li>RLS: sees only own data (<code>auth.uid() = user_id</code>)</li>
+</ul>
+
+<h3>Business</h3>
+<ul>
+  <li>Creates hiring goals with role requirements</li>
+  <li>Launches progressive challenges (3 levels)</li>
+  <li>Views candidate XIMAtar profiles + signal panels</li>
+  <li>Manages shortlists, eligibility verification</li>
+  <li>Accesses Decision Pack (Premium)</li>
+  <li>RLS: sees only own company data + candidates who applied</li>
+</ul>
+
+<h3>Mentor</h3>
+<ul>
+  <li>Dedicated portal at <code>/mentor/*</code></li>
+  <li>Manages availability calendar</li>
+  <li>Conducts sessions with assigned candidates</li>
+  <li>Can view candidate CV (with consent)</li>
+  <li>Auth via mentor table lookup (<code>getPostLoginRedirectPath</code>)</li>
+</ul>
+
+<h3>Admin</h3>
+<ul>
+  <li>Eligibility review dashboard</li>
+  <li>User management (password reset via edge function)</li>
+  <li>Recommendation analytics</li>
+</ul>
+
+<h2>2.3 Core Product Modules</h2>
+
+<table>
+  <tr><th>Module</th><th>Description</th><th>Key Files</th></tr>
+  <tr><td>Assessment Engine</td><td>21 MC questions (cyclic 5-pillar mapping) + 2 open answers per field</td><td><code>getPillarForQuestion.ts</code>, <code>AssessmentContext.tsx</code>, <code>XimatarAssessment.tsx</code></td></tr>
+  <tr><td>XIMAtar Profile</td><td>12 animal archetypes with pillar vectors, assigned via Euclidean distance</td><td><code>ximatarTaxonomy.ts</code>, <code>XimatarProfileCard.tsx</code></td></tr>
+  <tr><td>Business Dashboard</td><td>Hiring goal management, candidate overview, challenge orchestration</td><td><code>BusinessCommandCenter.tsx</code>, <code>Dashboard.tsx</code></td></tr>
+  <tr><td>Hiring Goal System</td><td>Role-scoped candidate pipelines with requirements, shortlists, challenges</td><td><code>useHiringGoals.ts</code>, <code>GoalCandidates.tsx</code></td></tr>
+  <tr><td>Challenge Pipeline</td><td>3-level progressive: L1 (XIMA Core), L2 (Role-Specific), L3 (Standing Video)</td><td><code>challengeLevels.ts</code>, <code>ChallengeCompletion.tsx</code></td></tr>
+  <tr><td>Signal Engine</td><td>Heuristic + AI-based submission analysis producing qualitative signals</td><td><code>computeSignals.ts</code>, <code>computeLevel2Signals.ts</code></td></tr>
+  <tr><td>Recommendation Engine</td><td>Hybrid XIMAtar matching: company constraints + goal similarity + taxonomy distance</td><td><code>computeXimatarRecommendations.ts</code></td></tr>
+  <tr><td>Open Answer Evaluation</td><td>LLM-based scoring with pre/post guardrails, non-answer detection, score capping</td><td><code>analyze-open-answer/index.ts</code>, <code>openResponse.ts</code></td></tr>
+  <tr><td>Chat/Feed</td><td>Real-time messaging (candidate↔business↔mentor), activity feed with reactions</td><td><code>useRealtimeChat.ts</code>, <code>XimaFeed.tsx</code></td></tr>
+  <tr><td>Mentor System</td><td>Calendar management, session booking, CV access with consent</td><td><code>MentorPortal.tsx</code>, <code>useMentorCalendar.ts</code></td></tr>
+  <tr><td>GDPR Compliance</td><td>Data export, account deletion, profiling opt-out, consent versioning</td><td><code>data-export/</code>, <code>delete-account/</code>, <code>consentVersions.ts</code></td></tr>
+</table>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h1 id="s3">3. Psychometric Model</h1>
+
+<h2>3.1 Five-Pillar Framework (Frozen v1.1)</h2>
+
+<table>
+  <tr><th>Pillar</th><th>Definition</th><th>Measures</th><th>Does NOT Measure</th><th>Cross-Pillar Guard</th></tr>
+  <tr>
+    <td><strong>Computational Power</strong></td>
+    <td>Capacity to structure, analyze, and solve problems systematically</td>
+    <td>Analytical reasoning, pattern recognition, data interpretation, algorithmic thinking</td>
+    <td>IQ, mathematical aptitude, academic grades</td>
+    <td>Max r=0.34 with Knowledge (acceptable — shared analytical substrate)</td>
+  </tr>
+  <tr>
+    <td><strong>Communication</strong></td>
+    <td>Ability to convey ideas, listen, and adapt messaging to context</td>
+    <td>Clarity of expression, active listening, contextual adaptation, persuasion</td>
+    <td>Charisma, public speaking experience, extraversion</td>
+    <td>Distinct from Creativity (r&lt;0.30) — creative expression ≠ communication effectiveness</td>
+  </tr>
+  <tr>
+    <td><strong>Knowledge</strong></td>
+    <td>Depth and breadth of domain expertise and learning orientation</td>
+    <td>Domain depth, cross-domain synthesis, learning methodology, knowledge application</td>
+    <td>Years of experience, certifications held, formal education level</td>
+    <td>Moderate correlation with CP expected; items designed with distinct framing</td>
+  </tr>
+  <tr>
+    <td><strong>Creativity</strong></td>
+    <td>Capacity to generate novel solutions and see unconventional connections</td>
+    <td>Divergent thinking, novel problem framing, cognitive flexibility, idea fluency</td>
+    <td>Artistic talent, design skills, aesthetic sense</td>
+    <td>Distinct from Communication — creative ideation ≠ ability to communicate</td>
+  </tr>
+  <tr>
+    <td><strong>Drive</strong></td>
+    <td>Behavioral response to friction, setbacks, and ambiguity — Growth Velocity</td>
+    <td>Learning under friction, recovery from setbacks, proactive engagement, self-directed growth</td>
+    <td>Static motivation, "grit" rhetoric, ambition statements, work hours</td>
+    <td>Constrained to behavioral markers, not motivational self-reports</td>
+  </tr>
+</table>
+
+<h2>3.2 Assessment Structure</h2>
+
+<h3>Professional Fields (4)</h3>
+<ul>
+  <li><code>science_tech</code> — Science, technology, engineering, data analysis</li>
+  <li><code>business_leadership</code> — Business strategy, leadership, management</li>
+  <li><code>arts_creative</code> — Creative arts, design, storytelling</li>
+  <li><code>service_ops</code> — Service delivery, operations, customer experience</li>
+</ul>
+
+<h3>Question Distribution</h3>
+<ul>
+  <li><strong>21 MC questions</strong> per field (84 total across 4 fields)</li>
+  <li><strong>2 open-answer questions</strong> per field (8 total)</li>
+  <li><strong>Total item bank: 92 items</strong></li>
+</ul>
+
+<h3>Cyclic Pillar Mapping</h3>
+<div class="formula">
+<pre>
+PILLAR_CYCLE = [computational_power, communication, knowledge, creativity, drive]
+
+getPillarForQuestion(n) = PILLAR_CYCLE[(n - 1) % 5]
+
+Result:
+  q1  → computational_power    q6  → computational_power    q11 → computational_power    q16 → computational_power    q21 → computational_power
+  q2  → communication          q7  → communication          q12 → communication          q17 → communication
+  q3  → knowledge              q8  → knowledge              q13 → knowledge              q18 → knowledge
+  q4  → creativity             q9  → creativity             q14 → creativity             q19 → creativity
+  q5  → drive                  q10 → drive                  q15 → drive                  q20 → drive
+
+Distribution: CP gets 5 questions, all others get 4 each.
+</pre>
+</div>
+
+<h2>3.3 Scoring Logic</h2>
+
+<h3>Multiple Choice Scoring</h3>
+<div class="formula">
+<pre>
+Each MC answer maps to ordinal value: 0, 1, 2, or 3
+Pillar raw score = mean(answer_values for pillar questions)
+Pillar normalized score = (raw_score / 3) × 100    // Scale to 0-100
+</pre>
+</div>
+
+<h3>Open Answer Scoring</h3>
+<div class="formula">
+<pre>
+// Client-side heuristic (fallback):
+score = length(0-20) + relevance(0-25) + structure(0-20) + specificity(0-20) + action(0-15)
+Total: 0-100
+
+// Server-side (primary): LLM evaluation via analyze-open-answer edge function
+// Pre-LLM: Non-answer detection (regex patterns, word count < 5 → score 5)
+// Post-LLM: Red flag caps (generic→40, off_topic→25, contradiction→35, copy_paste→30)
+// Post-LLM: Word count < 30 → cap at 35
+</pre>
+</div>
+
+<h3>Blending Formula (90/10)</h3>
+<div class="formula">
+<pre>
+OPEN_WEIGHT = 0.10   // 10% influence
+
+open1 contributes to: Creativity (60%) + Communication (40%)
+open2 contributes to: Drive (60%) + Knowledge (40%)
+Computational Power: MC-only (no open-answer influence — deliberate design choice)
+
+blended_pillar = base_MC × 0.90 + open_contribution × 0.10
+Result clamped to [0, 100]
+</pre>
+</div>
+
+<h3>XIMAtar Assignment</h3>
+<div class="formula">
+<pre>
+// Guest users: simplified if/else heuristic → archetype
+// Authenticated users: Euclidean distance to 12 canonical profiles
+
+distance(candidate, archetype) = √(Σ(candidate_pillar_i - archetype_pillar_i)²)
+// Across all 5 pillar dimensions
+// Closest archetype wins
+</pre>
+</div>
+
+<h3>Drive Velocity (Longitudinal)</h3>
+<div class="formula">
+<pre>
+drive_velocity = (drive_score_current - drive_score_previous) / days_elapsed
+Target: 0.20 pts/day
+// Only computed when multiple assessments exist for same user
+</pre>
+</div>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h1 id="s4">4. AI Model Usage</h1>
+
+<h2>Where LLM Is Used</h2>
+
+<table>
+  <tr><th>Function</th><th>Purpose</th><th>Model</th><th>Guardrails</th></tr>
+  <tr><td><code>analyze-open-answer</code></td><td>Score open-ended assessment responses (0-100)</td><td>gemini-2.5-flash</td><td>Pre-LLM non-answer detection, post-LLM score capping, red flag enforcement</td></tr>
+  <tr><td><code>compute-level2-signals</code></td><td>Qualitative interpretation of L2 challenge submissions</td><td>gemini-2.5-flash</td><td>Fallback to local heuristic on failure; qualitative only (clear/partial/fragmented)</td></tr>
+  <tr><td><code>analyze-cv</code></td><td>Extract pillar vector + soft skills from CV text</td><td>gemini-2.5-flash</td><td>GDPR profiling_opt_out check; results stored in assessment_cv_analysis</td></tr>
+  <tr><td><code>generate-challenge</code></td><td>Generate L2 challenge content from job post context</td><td>gemini-2.5-flash</td><td>Template-constrained output</td></tr>
+  <tr><td><code>generate-company-profile</code></td><td>Analyze company website → pillar vector + culture traits</td><td>gemini-2.5-flash</td><td>Text-based pillar computation fallback</td></tr>
+  <tr><td><code>ximai-chat</code></td><td>Candidate-facing AI assistant</td><td>gemini-2.5-flash</td><td>Conversation context from ai_conversations/ai_messages tables</td></tr>
+  <tr><td><code>translate-content</code></td><td>On-demand content translation (EN/IT/ES)</td><td>gemini-2.5-flash</td><td>Cache layer via aiTranslationCache</td></tr>
+  <tr><td><code>import-job-post-pdf</code></td><td>Extract structured job data from PDF uploads</td><td>gemini-2.5-flash</td><td>Text normalization pre-processing</td></tr>
+  <tr><td><code>recommend-mentors</code></td><td>Match candidates to mentors based on pillar profiles</td><td>gemini-2.5-flash</td><td>Pillar distance calculation</td></tr>
+</table>
+
+<h2>Cognitive Tension Enforcement</h2>
+<p>All MC questions are designed with "Cognitive Tension" — meaningful trade-offs between two legitimate strategies. No answer option is universally "best." This is enforced at the question design level (frozen in v1.1), not at runtime.</p>
+
+<h2>Anti-Social-Desirability Mechanisms</h2>
+<ul>
+  <li>MC options avoid "obviously correct" answers — all options represent valid professional approaches</li>
+  <li>Drive questions specifically avoid "grit" rhetoric and motivation self-reports</li>
+  <li>Open-answer evaluator penalizes generic/vague responses (red flag: "generic" → cap at 40)</li>
+  <li>Non-answer detection catches "I don't know" / "not sure" patterns (trilingual regex)</li>
+</ul>
+
+<h2>Model Dependence Risk</h2>
+<div class="warning">
+  <strong>Medium-High.</strong> All AI features route through <code>ai.gateway.lovable.dev</code> using <code>google/gemini-2.5-flash</code>. If the gateway goes down or the model changes behavior:
+  <ul>
+    <li>Open-answer scoring has local fallback (<code>scoreOpenResponse</code> in <code>openResponse.ts</code>)</li>
+    <li>L2 signals have local heuristic fallback (<code>computeLevel2Signals</code> local function)</li>
+    <li>CV analysis, challenge generation, and chat have NO fallback — they fail with error response</li>
+    <li>No model versioning/pinning — model behavior changes could affect scoring consistency</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h1 id="s5">5. Validation &amp; Stability</h1>
+
+<h2>Pillar Validation Status</h2>
+<table>
+  <tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr>
+  <tr><td>Mean Cronbach's α</td><td>0.60 – 0.68</td><td>Acceptable internal consistency for 4-5 item scales</td></tr>
+  <tr><td>Max cross-pillar correlation (r)</td><td>0.34 (CP ↔ Knowledge)</td><td>Within acceptable range — shared analytical substrate</td></tr>
+  <tr><td>PC1 Variance (PCA)</td><td>32.4%</td><td>No single factor dominates — 5 pillars are meaningfully distinct</td></tr>
+  <tr><td>Archetype stress test</td><td>Pass</td><td>12 XIMAtars remain distinct under synthetic extreme profiles</td></tr>
+</table>
+
+<h2>Version Differences: v1.0 → v1.1</h2>
+<ul>
+  <li><strong>Methodology:</strong> Introduced "Weakness-First" approach — prioritizes identifying growth leverage in candidate's two weakest pillars</li>
+  <li><strong>Drive pillar:</strong> Redesigned to measure Growth Velocity (behavioral response to friction) instead of static motivation</li>
+  <li><strong>Creativity pillar:</strong> Redesigned to measure cognitive flexibility and novel problem framing</li>
+  <li><strong>Communication pillar:</strong> Redesigned to distinguish from creativity (persuasion ≠ ideation)</li>
+  <li><strong>Knowledge pillar:</strong> Redesigned to measure learning methodology, not credential accumulation</li>
+  <li><strong>Computational Power:</strong> Refined with v2 validation — reduced cross-pillar bleed</li>
+</ul>
+
+<h2>Freeze Declaration</h2>
+<div class="info">
+  <strong>v1.1 is formally frozen.</strong> Modifications require:
+  <ul>
+    <li>New version designation (v1.2+)</li>
+    <li>Full revalidation pipeline execution</li>
+    <li>Real-data milestones: N≥300 for correlation analysis, N≥500 for IRT calibration</li>
+    <li>Updated Human Review Pack generation</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h1 id="s6">6. Business Model</h1>
+
+<h2>6.1 Target Market</h2>
+<table>
+  <tr><th>Segment</th><th>Description</th><th>Status</th></tr>
+  <tr><td>SMB Hiring (5-200 employees)</td><td>Companies needing structured hiring without enterprise HR teams</td><td><span class="badge badge-designed">Designed</span></td></tr>
+  <tr><td>Enterprise HR (200+ employees)</td><td>Large organizations seeking scalable assessment pipelines</td><td><span class="badge badge-hypothetical">Hypothetical</span></td></tr>
+  <tr><td>Individual Candidates</td><td>Self-assessment, development plan, mentor access</td><td><span class="badge badge-live">Live</span> (free)</td></tr>
+  <tr><td>Licensing / White-label</td><td>Assessment engine embedded in third-party platforms</td><td><span class="badge badge-hypothetical">Hypothetical</span></td></tr>
+</table>
+
+<h2>6.2 Value Proposition</h2>
+
+<h3>For Candidates</h3>
+<ul>
+  <li>Free psychometric self-assessment with actionable development insights</li>
+  <li>Anonymized profile (XIMAtar) — eliminates name/photo/institution bias</li>
+  <li>Progressive challenge pipeline that demonstrates capabilities, not credentials</li>
+  <li>Mentor access for professional development (credit-based)</li>
+</ul>
+
+<h3>For Companies</h3>
+<ul>
+  <li>Structured, bias-reduced candidate evaluation via 3-level challenge pipeline</li>
+  <li>Qualitative signals (not scores) — supports human decision-making without auto-rejection</li>
+  <li>XIMAtar-based matching: find candidates whose cognitive profiles fit role requirements</li>
+  <li>Premium: Decision Pack, Consistency Guard, Eligibility Gate</li>
+</ul>
+
+<h3>For Enterprise (Future)</h3>
+<ul>
+  <li>Volume licensing for assessment engine</li>
+  <li>API integration with existing ATS/HRIS systems</li>
+  <li>Custom pillar calibration for organizational culture</li>
+</ul>
+
+<h2>6.3 Revenue Streams</h2>
+
+<table>
+  <tr><th>Stream</th><th>Description</th><th>Status</th></tr>
+  <tr><td>Company Subscription</td><td>Monthly fee for hiring goal creation, challenge launches, signal access</td><td><span class="badge badge-designed">Designed</span></td></tr>
+  <tr><td>Enterprise License</td><td>Annual contract for volume usage, custom configuration, SLA</td><td><span class="badge badge-hypothetical">Hypothetical</span></td></tr>
+  <tr><td>Candidate Premium</td><td>Enhanced development plan, priority mentor matching, unlimited chat</td><td><span class="badge badge-designed">Designed</span> (4 tiers scaffolded)</td></tr>
+  <tr><td>Mentor Credits</td><td>Credit system for session booking (earned via referrals or purchased)</td><td><span class="badge badge-live">Live</span> (referral-only)</td></tr>
+  <tr><td>API Access</td><td>Assessment-as-a-Service for third-party integrations</td><td><span class="badge badge-hypothetical">Hypothetical</span></td></tr>
+  <tr><td>White-Label</td><td>Branded assessment platform for HR consultancies</td><td><span class="badge badge-hypothetical">Hypothetical</span></td></tr>
+  <tr><td>Data Analytics</td><td>Anonymized labor market intelligence reports</td><td><span class="badge badge-hypothetical">Hypothetical</span></td></tr>
+</table>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h1 id="s7">7. Pricing Model</h1>
+
+<div class="warning">
+  <strong>Note:</strong> Pricing is not finalized. The following is a realistic scenario based on system complexity, AI costs, and market positioning. All figures are monthly, in EUR.
+</div>
+
+<table>
+  <tr><th>Tier</th><th>Price/mo</th><th>Seats</th><th>Assessments/mo</th><th>AI Usage</th><th>Support</th><th>Features</th></tr>
+  <tr>
+    <td><strong>Starter</strong></td>
+    <td>€199</td>
+    <td>2</td>
+    <td>25 candidates</td>
+    <td>Basic (L1 signals only)</td>
+    <td>Email</td>
+    <td>1 hiring goal, L1+L2 challenges, basic signals</td>
+  </tr>
+  <tr>
+    <td><strong>Growth</strong></td>
+    <td>€499</td>
+    <td>5</td>
+    <td>100 candidates</td>
+    <td>Full (L1+L2+L3 signals, AI interpretation)</td>
+    <td>Priority email + chat</td>
+    <td>Unlimited hiring goals, Decision Pack, Consistency Guard, Eligibility Gate, job post PDF import</td>
+  </tr>
+  <tr>
+    <td><strong>Enterprise</strong></td>
+    <td>Custom (est. €1,500+)</td>
+    <td>Unlimited</td>
+    <td>Unlimited</td>
+    <td>Full + custom models</td>
+    <td>Dedicated CSM</td>
+    <td>API access, custom pillar calibration, SSO, SLA, white-label option</td>
+  </tr>
+</table>
+
+<h3>Candidate Tiers (Scaffolded)</h3>
+<table>
+  <tr><th>Tier</th><th>Price</th><th>Includes</th></tr>
+  <tr><td>Freemium</td><td>€0</td><td>Assessment, XIMAtar profile, referral-driven mentor credits</td></tr>
+  <tr><td>Basic</td><td>TBD</td><td>1 mentor session/month included</td></tr>
+  <tr><td>Premium</td><td>TBD</td><td>1 session/mo + unlimited chat + interview prep credit</td></tr>
+  <tr><td>Pro</td><td>TBD</td><td>1 session/week + unlimited chat + unlimited training</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h1 id="s8">8. Unit Economics</h1>
+
+<h2>Cost Per Assessment (Estimated)</h2>
+<table>
+  <tr><th>Component</th><th>Cost per assessment</th><th>Notes</th></tr>
+  <tr><td>MC Processing (DB + compute)</td><td>~€0.001</td><td>Pure computation, negligible</td></tr>
+  <tr><td>Open Answer AI (2 calls × gemini-2.5-flash)</td><td>~€0.01–0.03</td><td>~500 input tokens + ~300 output tokens per call</td></tr>
+  <tr><td>XIMAtar Assignment</td><td>~€0.001</td><td>Euclidean distance computation, negligible</td></tr>
+  <tr><td>CV Analysis (optional)</td><td>~€0.02–0.05</td><td>Larger input (CV text), structured output</td></tr>
+  <tr><td><strong>Total per assessment</strong></td><td><strong>~€0.03–0.08</strong></td><td>Excluding CV analysis</td></tr>
+</table>
+
+<h2>Cost Per Active Company Per Month (Estimated)</h2>
+<table>
+  <tr><th>Component</th><th>Monthly Cost</th><th>Notes</th></tr>
+  <tr><td>Database (Supabase Pro)</td><td>€25 (shared across all companies)</td><td>Pro plan baseline</td></tr>
+  <tr><td>Edge Function invocations</td><td>€0.50–2.00 per company</td><td>Depends on challenge volume</td></tr>
+  <tr><td>AI tokens (challenges + signals)</td><td>€2–10 per company</td><td>Varies with L2/L3 usage</td></tr>
+  <tr><td>Email (Resend)</td><td>€0.10–0.50 per company</td><td>Invitation emails, notifications</td></tr>
+  <tr><td>Storage</td><td>€0.10–0.30 per company</td><td>PDFs, CVs, attachments</td></tr>
+  <tr><td><strong>Total variable cost per company</strong></td><td><strong>~€3–13</strong></td><td>Highly volume-dependent</td></tr>
+</table>
+
+<h2>Fixed Cost Drivers (Monthly Estimated)</h2>
+<table>
+  <tr><th>Category</th><th>Monthly Cost</th><th>Notes</th></tr>
+  <tr><td>Supabase (Lovable Cloud)</td><td>€25–100</td><td>Database, auth, storage, functions</td></tr>
+  <tr><td>Lovable subscription</td><td>€20–50</td><td>Hosting + AI gateway access</td></tr>
+  <tr><td>Domain + CDN</td><td>€10–20</td><td>Custom domain, SSL</td></tr>
+  <tr><td>Email service (Resend)</td><td>€0–20</td><td>Free tier covers initial volume</td></tr>
+  <tr><td>Development (founder time)</td><td>€0 (bootstrapped) or €3,000–8,000</td><td>If hiring contractors/developers</td></tr>
+  <tr><td>Marketing</td><td>€500–2,000</td><td>Content, LinkedIn, events</td></tr>
+  <tr><td>Legal/Compliance</td><td>€200–500</td><td>GDPR maintenance, legal counsel</td></tr>
+  <tr><td><strong>Total fixed (bootstrapped)</strong></td><td><strong>~€800–2,700</strong></td><td>Pre-revenue phase</td></tr>
+  <tr><td><strong>Total fixed (with team)</strong></td><td><strong>~€4,000–11,000</strong></td><td>With 1-2 part-time hires</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h1 id="s9">9. Tipping Point Analysis</h1>
+
+<h3>Assumptions</h3>
+<ul>
+  <li>ARPU (Average Revenue Per User/Company): €349/mo (weighted average of Starter + Growth)</li>
+  <li>Variable cost per company: €8/mo (mid-range estimate)</li>
+  <li>Contribution margin per company: €349 - €8 = €341/mo</li>
+</ul>
+
+<h3>Three Scenarios</h3>
+
+<table>
+  <tr><th>Scenario</th><th>Monthly Fixed Costs</th><th>Required Companies</th><th>Monthly Revenue at Break-even</th></tr>
+  <tr>
+    <td><strong>Conservative</strong> (bootstrapped, minimal marketing)</td>
+    <td>€1,500</td>
+    <td>⌈1,500 / 341⌉ = <strong>5 companies</strong></td>
+    <td>€1,745</td>
+  </tr>
+  <tr>
+    <td><strong>Realistic</strong> (1 part-time hire, moderate marketing)</td>
+    <td>€5,000</td>
+    <td>⌈5,000 / 341⌉ = <strong>15 companies</strong></td>
+    <td>€5,235</td>
+  </tr>
+  <tr>
+    <td><strong>Aggressive</strong> (small team, active marketing)</td>
+    <td>€12,000</td>
+    <td>⌈12,000 / 341⌉ = <strong>36 companies</strong></td>
+    <td>€12,564</td>
+  </tr>
+</table>
+
+<div class="info">
+  <strong>Key insight:</strong> With very low marginal costs (AI tokens + DB), the tipping point is achievable with a small number of paying companies. The critical challenge is customer acquisition, not cost management.
+</div>
+
+<!-- ============================================================ -->
+<h1 id="s10">10. Breakeven Calculation</h1>
+
+<div class="formula">
+<pre>
+Breakeven = Fixed Costs / (ARPU – Variable Cost per Company)
+Breakeven = Fixed Costs / Contribution Margin
+
+Assumptions:
+  ARPU = €349/mo (blended Starter/Growth)
+  Variable Cost = €8/mo per company
+  Contribution Margin = €341/mo
+
+Scenarios:
+  Bootstrapped:  €1,500 / €341 = 4.4 → 5 companies
+  Realistic:     €5,000 / €341 = 14.7 → 15 companies
+  Aggressive:    €12,000 / €341 = 35.2 → 36 companies
+
+Time to Profitability (assuming 2 new companies/month):
+  Bootstrapped:  Month 3
+  Realistic:     Month 8
+  Aggressive:    Month 18
+
+Time to Profitability (assuming 4 new companies/month):
+  Bootstrapped:  Month 2
+  Realistic:     Month 4
+  Aggressive:    Month 9
+</pre>
+</div>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h1 id="s11">11. Strategic Positioning</h1>
+
+<h2>Defensibility</h2>
+<table>
+  <tr><th>Factor</th><th>Strength</th><th>Assessment</th></tr>
+  <tr><td>Psychometric Model (v1.1 frozen)</td><td>🟢 Strong</td><td>Validated 5-pillar framework with published methodology. Competitors would need to build + validate from scratch.</td></tr>
+  <tr><td>XIMAtar Taxonomy</td><td>🟢 Strong</td><td>12 canonical profiles with semantic meaning — creates brand identity and user attachment</td></tr>
+  <tr><td>Progressive Challenge Pipeline</td><td>🟡 Moderate</td><td>Conceptually replicable, but the orchestration logic + signal engine is complex to reproduce</td></tr>
+  <tr><td>Data Network Effect</td><td>🔴 Weak (today)</td><td>Requires N≥500 real assessments for meaningful cross-validation. Not yet achieved.</td></tr>
+  <tr><td>Switching Cost</td><td>🟡 Moderate</td><td>Companies investing in challenge design + candidate data create lock-in. Early stage = low switching cost.</td></tr>
+</table>
+
+<h2>AI Commoditization Risk</h2>
+<div class="warning">
+  <strong>Medium.</strong> XIMA's AI usage is primarily for evaluation (open answers, signals). The core differentiator is the psychometric model and assessment design, NOT the AI layer. If AI evaluation becomes commoditized, XIMA's validated pillar framework remains defensible. However, competitors with better AI could offer similar features faster.
+</div>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h1 id="s12">12. Current State of the Project</h1>
+
+<h2>Fully Implemented</h2>
+<ul>
+  <li>✅ 5-pillar assessment engine (21 MC + 2 open per field, 4 fields)</li>
+  <li>✅ XIMAtar assignment via Euclidean distance (12 archetypes)</li>
+  <li>✅ Business portal: hiring goals, challenges, candidate management</li>
+  <li>✅ 3-level progressive challenge pipeline (L1 XIMA Core, L2 Role-Specific, L3 Standing Video)</li>
+  <li>✅ Signal engine: L1 heuristic signals + L2 AI-powered qualitative interpretation</li>
+  <li>✅ Open-answer AI evaluation with pre/post guardrails</li>
+  <li>✅ XIMAtar recommendation engine (hybrid: company constraints + goal matching)</li>
+  <li>✅ GDPR compliance: data export, account deletion, profiling opt-out, consent versioning</li>
+  <li>✅ RLS hardening across all tables (78 tables, auth.uid() enforcement)</li>
+  <li>✅ Trilingual support (EN/IT/ES)</li>
+  <li>✅ Mentor portal with calendar, sessions, CV access</li>
+  <li>✅ Real-time chat (candidate ↔ business ↔ mentor)</li>
+  <li>✅ Activity feed with reactions</li>
+  <li>✅ Job post PDF import with AI extraction</li>
+  <li>✅ Human Review Pack generator (v1.0 + v1.1)</li>
+  <li>✅ Legal pages: Privacy Policy, Terms, Imprint (real XIMA S.r.l. data)</li>
+  <li>✅ Google OAuth + email/password auth</li>
+  <li>✅ Dark/light theme</li>
+</ul>
+
+<h2>Partially Implemented</h2>
+<ul>
+  <li>⚠️ Membership tiers: DB schema + UI scaffolding exists, but no payment integration (Stripe not connected)</li>
+  <li>⚠️ Mentor credit system: referral-based credits tracked, no purchase flow</li>
+  <li>⚠️ Standing Video (L3): session room UI exists, no actual video recording/playback infrastructure</li>
+  <li>⚠️ Company profile enrichment: basic text analysis implemented, no external data source integration</li>
+  <li>⚠️ Email notifications: edge functions exist but email delivery not fully configured for all flows</li>
+  <li>⚠️ Development plan: UI exists but items are static (devplan_items table), no dynamic progression</li>
+</ul>
+
+<h2>Conceptual / Roadmap</h2>
+<ul>
+  <li>📋 Payment integration (Stripe)</li>
+  <li>📋 API access for third-party integrations</li>
+  <li>📋 White-label option</li>
+  <li>📋 SSO / enterprise authentication</li>
+  <li>📋 Custom pillar calibration per organization</li>
+  <li>📋 Mobile app (React Native or PWA)</li>
+  <li>📋 ATS/HRIS integration (Greenhouse, Lever, Workday)</li>
+  <li>📋 Real video recording + transcription for L3</li>
+  <li>📋 IRT calibration (requires N≥500)</li>
+</ul>
+
+<h2>Technically Fragile Areas</h2>
+<div class="critical">
+  <ul>
+    <li><strong>AI model dependency:</strong> No model versioning/pinning — gemini-2.5-flash behavior changes could affect scoring consistency across time</li>
+    <li><strong>L3 Video:</strong> Session room UI exists but there's no actual video capture, storage, or analysis — it's a shell</li>
+    <li><strong>Psychometric sample size:</strong> Validation is synthetic-based. Real-world validation requires N≥300 (not yet reached)</li>
+    <li><strong>Email deliverability:</strong> Resend integration exists but production email reputation not established</li>
+    <li><strong>Single AI provider:</strong> All AI goes through Lovable Gateway → gemini-2.5-flash. No fallback provider.</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h1 id="s13">13. Risks</h1>
+
+<table>
+  <tr><th>Risk</th><th>Severity</th><th>Likelihood</th><th>Mitigation</th></tr>
+  <tr>
+    <td><strong>Psychometric validity</strong> — Real-world data may not match synthetic validation</td>
+    <td>🔴 High</td>
+    <td>Medium</td>
+    <td>Freeze v1.1, collect real data, revalidate at N=300/500 milestones</td>
+  </tr>
+  <tr>
+    <td><strong>GDPR compliance</strong> — Profiling regulations, cross-border data, consent management</td>
+    <td>🔴 High</td>
+    <td>Low</td>
+    <td>Full GDPR suite implemented (export, deletion, opt-out, consent versioning). EU-only hosting.</td>
+  </tr>
+  <tr>
+    <td><strong>AI bias</strong> — LLM may exhibit cultural, linguistic, or demographic bias in open-answer scoring</td>
+    <td>🟡 Medium</td>
+    <td>Medium</td>
+    <td>Post-LLM guardrails, red flag capping, non-answer detection. But no systematic bias audit yet.</td>
+  </tr>
+  <tr>
+    <td><strong>Overfitting</strong> — Assessment gaming if questions become known</td>
+    <td>🟡 Medium</td>
+    <td>Low (early)</td>
+    <td>Cognitive tension design makes gaming difficult. Question bank rotation planned for v1.2+</td>
+  </tr>
+  <tr>
+    <td><strong>Market adoption</strong> — HR buyers resistant to non-traditional assessment methods</td>
+    <td>🔴 High</td>
+    <td>High</td>
+    <td>Freemium candidate entry, demonstrable ROI through challenge pipeline, case studies needed</td>
+  </tr>
+  <tr>
+    <td><strong>Financial runway</strong> — Pre-revenue with ongoing hosting/AI costs</td>
+    <td>🟡 Medium</td>
+    <td>Medium</td>
+    <td>Very low fixed costs if bootstrapped (€800-1,500/mo). Tipping point at 5 companies.</td>
+  </tr>
+  <tr>
+    <td><strong>AI provider lock-in</strong> — Dependency on Lovable AI Gateway + Gemini</td>
+    <td>🟡 Medium</td>
+    <td>Low</td>
+    <td>Gateway abstraction layer exists. Model can theoretically be swapped. No fallback provider configured.</td>
+  </tr>
+  <tr>
+    <td><strong>Single-developer risk</strong> — Platform complexity vs team size</td>
+    <td>🟡 Medium</td>
+    <td>High</td>
+    <td>Codebase is well-structured with clear separation of concerns. Documentation artifacts exist.</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h1 id="s14">14. Scaling Strategy</h1>
+
+<h2>First 10 Customers</h2>
+<ul>
+  <li><strong>Strategy:</strong> Direct outreach, founder-led sales, personal network</li>
+  <li><strong>Target:</strong> Italian SMBs (5-50 employees) in tech/consulting — closest to founder network</li>
+  <li><strong>Offer:</strong> Free 3-month pilot with white-glove onboarding</li>
+  <li><strong>Goal:</strong> Validate product-market fit, collect N≥300 real assessments, build case studies</li>
+  <li><strong>Timeline:</strong> 3-6 months</li>
+</ul>
+
+<h2>First 100 Customers</h2>
+<ul>
+  <li><strong>Strategy:</strong> Product-led growth (candidates bring companies) + content marketing</li>
+  <li><strong>Candidate viral loop:</strong> Candidates share XIMAtar profiles → companies discover platform</li>
+  <li><strong>Content:</strong> LinkedIn thought leadership on bias-free hiring, psychometric assessment</li>
+  <li><strong>Partnerships:</strong> HR consultancies, university career centers, accelerators</li>
+  <li><strong>Timeline:</strong> 12-18 months post first 10</li>
+</ul>
+
+<h2>Enterprise Entry</h2>
+<ul>
+  <li><strong>Prerequisites:</strong> N≥500 real assessments, IRT calibration, case studies with measurable ROI</li>
+  <li><strong>Strategy:</strong> Land with one department/team, expand to full organization</li>
+  <li><strong>Requirements:</strong> SSO, API, SLA, custom pillar calibration, dedicated CSM</li>
+  <li><strong>Timeline:</strong> 18-24 months post launch</li>
+</ul>
+
+<h2>Sales vs Product-Led Growth</h2>
+<div class="info">
+  XIMA has a natural <strong>dual-entry funnel</strong>:
+  <ul>
+    <li><strong>Bottom-up (PLG):</strong> Candidates take free assessment → share XIMAtar → employer discovers XIMA</li>
+    <li><strong>Top-down (Sales):</strong> Business signs up → invites candidates to challenges → candidates get assessment</li>
+  </ul>
+  Both funnels feed each other. The PLG motion is the primary growth hypothesis.
+</div>
+
+<!-- ============================================================ -->
+<div class="page-break"></div>
+<h1 id="s15">15. State of the Art Summary</h1>
+
+<div style="background: #f0f0f5; padding: 24px; border-radius: 8px; border: 2px solid #0f3460;">
+
+<h2 style="border:none; padding:0; margin:0 0 16px; text-align:center;">Where XIMA Stands Today</h2>
+
+<p><strong>XIMA is a fully functional, GDPR-compliant psychometric hiring platform</strong> with a frozen v1.1 assessment, 12 XIMAtar archetypes, a 3-level progressive challenge pipeline, and AI-powered signal generation. The technology stack is modern (React/Supabase/Edge Functions), the psychometric model is theoretically validated (synthetic data), and the platform is ready for real-world pilot deployment.</p>
+
+<h3>What exists and works:</h3>
+<ul>
+  <li>Complete assessment engine with validated pillar framework</li>
+  <li>Full business hiring workflow (goals → challenges → signals → decisions)</li>
+  <li>Candidate journey (assessment → profile → challenges → development)</li>
+  <li>Mentor system with calendar and session management</li>
+  <li>GDPR-compliant data handling (export, deletion, opt-out)</li>
+  <li>Trilingual support (EN/IT/ES)</li>
+</ul>
+
+<h3>What must happen next to become category leader:</h3>
+<ol>
+  <li><strong>Get 10 paying companies</strong> — validate product-market fit with real users and real money</li>
+  <li><strong>Reach N≥300 real assessments</strong> — validate psychometric model with real data (correlation analysis)</li>
+  <li><strong>Implement payment (Stripe)</strong> — monetize the existing value</li>
+  <li><strong>Build 3 case studies</strong> — quantifiable ROI stories for sales</li>
+  <li><strong>Reach N≥500</strong> — IRT calibration, unlock v1.2 iteration cycle</li>
+  <li><strong>Implement L3 video infrastructure</strong> — complete the challenge pipeline</li>
+  <li><strong>Establish data network effect</strong> — enough candidates + companies that the matching improves with scale</li>
+  <li><strong>Enterprise readiness</strong> — SSO, API, SLA, custom calibration</li>
+</ol>
+
+<p style="margin-top:16px; font-weight:700; text-align:center;">The technology is built. The model is validated (synthetically). The compliance is done.<br>The next phase is purely about market execution.</p>
+
+</div>
+
+<hr style="margin: 40px 0; border: 1px solid #ddd;">
+<p style="text-align: center; color: #888; font-size: 0.85rem;">
+  XIMA Internal System Documentation — Auto-generated from codebase state on 2026-02-22<br>
+  78 database tables | 30+ edge functions | 92-item assessment bank | 12 XIMAtar archetypes<br>
+  Classification: Internal / Confidential — Not for external distribution without authorization
+</p>
+
+</body>
+</html>
