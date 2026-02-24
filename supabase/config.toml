@@ -98,3 +98,6 @@ verify_jwt = false
 
 [functions.ai-invocation-replay]
 verify_jwt = true
+
+[functions.process-email-outbox]
+verify_jwt = false

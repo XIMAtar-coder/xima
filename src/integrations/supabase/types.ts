@@ -359,14 +359,14 @@ export type Database = {
           id: string
           key_reasons: string[]
           open_key: string
-          open_response_id: string
+          open_response_id: string | null
           prompt_template_version: string
           quality_label: string
           retention_days: number
           rubric_version: string
           score_breakdown: Json | null
           scoring_schema_version: string
-          subject_profile_id: string
+          subject_profile_id: string | null
         }
         Insert: {
           ai_request_id: string
@@ -382,14 +382,14 @@ export type Database = {
           id?: string
           key_reasons?: string[]
           open_key: string
-          open_response_id: string
+          open_response_id?: string | null
           prompt_template_version?: string
           quality_label: string
           retention_days?: number
           rubric_version?: string
           score_breakdown?: Json | null
           scoring_schema_version?: string
-          subject_profile_id: string
+          subject_profile_id?: string | null
         }
         Update: {
           ai_request_id?: string
@@ -405,22 +405,43 @@ export type Database = {
           id?: string
           key_reasons?: string[]
           open_key?: string
-          open_response_id?: string
+          open_response_id?: string | null
           prompt_template_version?: string
           quality_label?: string
           retention_days?: number
           rubric_version?: string
           score_breakdown?: Json | null
           scoring_schema_version?: string
-          subject_profile_id?: string
+          subject_profile_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "assessment_evidence_ledger_ai_request_id_fkey"
+            columns: ["ai_request_id"]
+            isOneToOne: false
+            referencedRelation: "ai_invocation_log"
+            referencedColumns: ["request_id"]
+          },
           {
             foreignKeyName: "assessment_evidence_ledger_open_response_id_fkey"
             columns: ["open_response_id"]
             isOneToOne: false
             referencedRelation: "assessment_open_responses"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_evidence_ledger_subject_profile_id_fkey"
+            columns: ["subject_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_evidence_ledger_subject_profile_id_fkey"
+            columns: ["subject_profile_id"]
+            isOneToOne: false
+            referencedRelation: "v_dashboard"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -1827,6 +1848,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      email_outbox: {
+        Row: {
+          attempts: number
+          created_at: string
+          email_type: string
+          error_message: string | null
+          html_body: string
+          id: string
+          idempotency_key: string
+          last_attempt_at: string | null
+          max_attempts: number
+          metadata: Json
+          next_retry_at: string | null
+          provider_message_id: string | null
+          recipient_email: string
+          sent_at: string | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          email_type: string
+          error_message?: string | null
+          html_body: string
+          id?: string
+          idempotency_key: string
+          last_attempt_at?: string | null
+          max_attempts?: number
+          metadata?: Json
+          next_retry_at?: string | null
+          provider_message_id?: string | null
+          recipient_email: string
+          sent_at?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          email_type?: string
+          error_message?: string | null
+          html_body?: string
+          id?: string
+          idempotency_key?: string
+          last_attempt_at?: string | null
+          max_attempts?: number
+          metadata?: Json
+          next_retry_at?: string | null
+          provider_message_id?: string | null
+          recipient_email?: string
+          sent_at?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       entitlement_events: {
         Row: {
@@ -4064,6 +4145,17 @@ export type Database = {
       }
       emit_interest_aggregated_signal: {
         Args: { p_count: number; p_ximatar_id: string }
+        Returns: string
+      }
+      enqueue_email: {
+        Args: {
+          p_email_type: string
+          p_html_body: string
+          p_idempotency_key: string
+          p_metadata?: Json
+          p_recipient_email: string
+          p_subject: string
+        }
         Returns: string
       }
       ensure_mentor_thread: {
