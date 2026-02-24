@@ -1,0 +1,39 @@
+{
+  "document": {
+    "title": "XIMA Assessment v1.1 — Technical White Paper (Full Literal Human Review Edition)",
+    "version": "1.1",
+    "date_generated": "2026-02-24",
+    "freeze_status": "Runtime hash enforcement active (djb2, per-locale)",
+    "languages": ["en", "it", "es"],
+    "total_mc_questions": 84,
+    "total_open_questions": 8,
+    "total_items": 92,
+    "fields": ["science_tech", "business_leadership", "arts_creative", "service_ops"],
+    "questions_per_field": 21,
+    "open_per_field": 2,
+    "scoring": {
+      "mc_option_mapping": "A=0, B=1, C=2, D=3 (fixed ordinal, all questions)",
+      "pillar_aggregation": "Mean of mapped values per pillar, scaled 0-100",
+      "open_answer_weight": "10% blended into specific pillars",
+      "open_answer_pillars": {
+        "open1": "Creativity + Communication",
+        "open2": "Drive + Knowledge"
+      }
+    },
+    "pillar_cycle": ["computational_power", "communication", "knowledge", "creativity", "drive"],
+    "cyclic_mapping": "question_number → pillar = PILLAR_CYCLE[(n-1) % 5]",
+    "completeness_proof": {
+      "mc_expected": 84,
+      "open_expected": 8,
+      "total_expected": 92,
+      "en_mc_present": 84,
+      "en_open_present": 8,
+      "it_mc_present": 84,
+      "it_open_present": 8,
+      "es_mc_present": 84,
+      "es_open_present": 8,
+      "all_languages_complete": true,
+      "status": "PASS"
+    }
+  }
+}
