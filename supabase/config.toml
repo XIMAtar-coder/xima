@@ -101,3 +101,6 @@ verify_jwt = true
 
 [functions.process-email-outbox]
 verify_jwt = false
+
+[functions.contact-sales]
+verify_jwt = true

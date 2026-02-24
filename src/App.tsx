@@ -74,6 +74,8 @@ import MentorSessions from "./pages/mentor/MentorSessions";
 import MentorCalendar from "./pages/mentor/MentorCalendar";
 import MentorSessionDetail from "./pages/mentor/MentorSessionDetail";
 import MentorPreview from "./pages/mentor/MentorPreview";
+import Pricing from "./pages/Pricing";
+import ContactSales from "./pages/ContactSales";
 
 const queryClient = new QueryClient();
 
@@ -96,6 +98,8 @@ const AppContent = () => {
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/contact-sales" element={<ContactSales />} />
           <Route path="/business" element={<Business />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

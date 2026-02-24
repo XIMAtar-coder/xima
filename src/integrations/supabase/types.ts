@@ -906,6 +906,59 @@ export type Database = {
           },
         ]
       }
+      business_entitlements: {
+        Row: {
+          business_id: string
+          contract_end: string | null
+          contract_start: string | null
+          created_at: string
+          features: Json
+          id: string
+          max_seats: number
+          notes: string | null
+          plan_tier: string
+          renewal_date: string | null
+          seats_used: number
+          updated_at: string
+        }
+        Insert: {
+          business_id: string
+          contract_end?: string | null
+          contract_start?: string | null
+          created_at?: string
+          features?: Json
+          id?: string
+          max_seats?: number
+          notes?: string | null
+          plan_tier?: string
+          renewal_date?: string | null
+          seats_used?: number
+          updated_at?: string
+        }
+        Update: {
+          business_id?: string
+          contract_end?: string | null
+          contract_start?: string | null
+          created_at?: string
+          features?: Json
+          id?: string
+          max_seats?: number
+          notes?: string | null
+          plan_tier?: string
+          renewal_date?: string | null
+          seats_used?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_entitlements_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: true
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_job_post_imports: {
         Row: {
           business_id: string
@@ -1731,6 +1784,56 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      contact_sales_requests: {
+        Row: {
+          business_id: string | null
+          company_name: string | null
+          correlation_id: string | null
+          created_at: string
+          desired_seats: number | null
+          desired_tier: string | null
+          id: string
+          message: string | null
+          requester_email: string
+          requester_name: string
+          status: string
+        }
+        Insert: {
+          business_id?: string | null
+          company_name?: string | null
+          correlation_id?: string | null
+          created_at?: string
+          desired_seats?: number | null
+          desired_tier?: string | null
+          id?: string
+          message?: string | null
+          requester_email: string
+          requester_name: string
+          status?: string
+        }
+        Update: {
+          business_id?: string | null
+          company_name?: string | null
+          correlation_id?: string | null
+          created_at?: string
+          desired_seats?: number | null
+          desired_tier?: string | null
+          id?: string
+          message?: string | null
+          requester_email?: string
+          requester_name?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_sales_requests_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       cv_uploads: {
         Row: {
@@ -4149,6 +4252,18 @@ export type Database = {
         }
         Returns: boolean
       }
+      admin_set_business_plan: {
+        Args: {
+          p_business_id: string
+          p_contract_end?: string
+          p_contract_start?: string
+          p_features?: Json
+          p_max_seats?: number
+          p_notes?: string
+          p_plan_tier: string
+        }
+        Returns: Json
+      }
       apply_referral_on_signup: { Args: { invite_code: string }; Returns: Json }
       assign_role_to_user: {
         Args: {
@@ -4180,6 +4295,10 @@ export type Database = {
       candidate_selected_mentor_id: {
         Args: { p_user_id: string }
         Returns: string
+      }
+      check_business_feature: {
+        Args: { p_business_id: string; p_feature: string }
+        Returns: boolean
       }
       check_verification_expiry: { Args: never; Returns: undefined }
       compute_drive_for_current_user: { Args: never; Returns: number }

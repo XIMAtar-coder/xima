@@ -388,8 +388,12 @@ export const MembershipSection: React.FC = () => {
                         <p className="text-sm text-muted-foreground">{tierConfig.price}</p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" disabled>
-                      {t('settings.coming_soon', 'Coming soon')}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.location.href = '/contact-sales'}
+                    >
+                      {t('pricing.contact_sales', 'Contact Sales')}
                     </Button>
                   </div>
                 ))}
