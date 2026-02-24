@@ -1440,32 +1440,32 @@
         },
         "q2": {
           "category": "Communication",
-          "question": "In a team meeting, how do you typically contribute?",
+          "question": "You've spent two months developing a novel simulation approach. You must present results to a mixed committee: three domain experts who will challenge methodology, and four non-technical executives who control funding. You have 20 minutes. How do you structure the presentation?",
           "options": [
-            "I listen carefully and ask clarifying questions",
-            "I share ideas and build on others' suggestions",
-            "I take notes and summarize key points",
-            "I focus on actionable next steps"
+            "Present the full methodology chain with technical evidence, providing a dense appendix for executives to review afterward",
+            "Lead with outcome implications at executive level, then layer in methodology selectively when experts probe",
+            "Open with a 2-minute framing question to gauge what each subgroup needs, then adjust depth in real-time",
+            "Send the technical paper to experts 48 hours before, use the live session exclusively for executive-level decision framing"
           ]
         },
         "q3": {
           "category": "Knowledge",
-          "question": "How do you prefer to learn new skills?",
+          "question": "Your team's technical decision is based on a well-cited paper, but you notice a methodology limitation that nobody else flagged. The deadline is tomorrow. You:",
           "options": [
-            "Through hands-on practice and experimentation",
-            "By reading comprehensive guides and documentation",
-            "Through structured courses and formal training",
-            "By learning from mentors and experienced colleagues"
+            "Flag the limitation and propose a quick sensitivity check on the key assumption",
+            "Accept the paper's conclusions but document the limitation for future reference",
+            "Cross-reference with an independent source that used a different methodology",
+            "Consult a colleague with domain expertise to assess whether the limitation matters in your context"
           ]
         },
         "q4": {
           "category": "Creativity",
-          "question": "When solving a problem, you tend to:",
+          "question": "Your team needs a solution for a data pipeline bottleneck. The ideal fix requires a library that won't be production-ready for three months. The deadline is in six weeks. You:",
           "options": [
-            "Think of multiple unconventional solutions",
-            "Combine existing ideas in new ways",
-            "Build upon proven methods with improvements",
-            "Seek inspiration from different industries or fields"
+            "Adapt two existing, stable libraries to approximate the ideal library's functionality, accepting some performance trade-offs",
+            "Redefine the bottleneck: restructure the data flow so the pipeline avoids the problematic stage entirely",
+            "Build a minimal version of the critical feature yourself, designed to be swapped out when the library ships",
+            "Propose splitting the deliverable into a partial release now using current tools and a full release when the library is ready"
           ]
         },
         "q5": {
@@ -1490,32 +1490,32 @@
         },
         "q7": {
           "category": "Communication",
-          "question": "How do you handle conflicts or disagreements at work?",
+          "question": "During a cross-functional review, a senior engineer publicly challenges your data interpretation using jargon the rest of the room doesn't follow. The room goes silent. How do you respond?",
           "options": [
-            "Find common ground and shared solutions",
-            "Present facts and data to support my position",
-            "Facilitate discussion between involved parties",
-            "Propose practical compromises"
+            "Address the technical challenge directly at the engineer's level, ensuring the critique is fully answered before translating for the room",
+            "Restate the engineer's concern in accessible terms so the whole room can follow, then respond at that level",
+            "Ask the engineer to clarify which specific data point they're questioning, buying time to gauge room comprehension",
+            "Acknowledge the point publicly, propose continuing the technical exchange offline, and redirect the meeting to shared-understanding items"
           ]
         },
         "q8": {
           "category": "Knowledge",
-          "question": "When you encounter conflicting information?",
+          "question": "Two trusted data sources give contradictory readings on a system's health. Both have been reliable historically. You:",
           "options": [
-            "Research additional sources to verify",
-            "Analyze the credibility of original sources",
-            "Consult experts in the specific field",
-            "Test empirically when possible"
+            "Investigate the measurement conditions that could explain the divergence",
+            "Weight each source by its track record in similar situations",
+            "Run an independent diagnostic to generate a third reference point",
+            "Consult the team that maintains each source to understand recent calibration changes"
           ]
         },
         "q9": {
           "category": "Creativity",
-          "question": "How do you generate new ideas for projects?",
+          "question": "You're designing a monitoring system, but the budget only covers 60% of the sensors you originally specified. Reducing coverage creates blind spots. You:",
           "options": [
-            "Brainstorming and creative sessions",
-            "Study success cases from other industries",
-            "Experiment with prototypes and mockups",
-            "Collaborate with diverse teams"
+            "Redesign the sensor layout to prioritize high-risk zones and use statistical inference to estimate the gaps",
+            "Propose using cheaper, lower-fidelity sensors in non-critical areas and premium sensors only where accuracy matters most",
+            "Reframe the monitoring goal: instead of full coverage, design an anomaly-detection system that flags only when patterns deviate from baseline",
+            "Build the system in phases — deploy what the budget covers now, with a modular architecture that allows expansion later"
           ]
         },
         "q10": {
@@ -1540,32 +1540,32 @@
         },
         "q12": {
           "category": "Communication",
-          "question": "How do you adapt your communication style to different audiences?",
+          "question": "You discover a critical flaw in a deployed system 48 hours before a regulatory audit. You must inform: your direct manager (technical), the compliance officer (legal framing), and the operations team (immediate action needed). All via written communication within the hour. How do you handle it?",
           "options": [
-            "Study the background and needs of the audience",
-            "Use examples and analogies relevant to their context",
-            "Modify the level of technical detail",
-            "Ask for feedback to ensure I'm being clear"
+            "Write one comprehensive incident report covering technical root cause, legal exposure, and operational steps — send to all three",
+            "Draft three separate messages: technical detail for manager, risk framing for compliance, action checklist for operations",
+            "Send a brief alert to all three flagging severity, then ask each what information they need before writing detailed follow-ups",
+            "Send a short written alert to create the record, then immediately request a 15-minute call with all three to ensure real-time alignment"
           ]
         },
         "q13": {
           "category": "Knowledge",
-          "question": "How do you organize and share acquired knowledge?",
+          "question": "You've relied on a technical framework for months. A junior colleague presents preliminary evidence that one of its core assumptions is wrong. You:",
           "options": [
-            "Create structured and searchable documentation",
-            "Organize training sessions for the team",
-            "Develop practical guides and tutorials",
-            "Maintain databases of best practices"
+            "Pause your current work with the framework and test both versions against recent data before committing either way",
+            "Review the colleague's raw evidence yourself to assess its strength before involving anyone else",
+            "Note the challenge formally and continue with the framework, but define a specific threshold that would trigger a full reassessment",
+            "Ask two people who weren't involved in either analysis to independently evaluate the conflicting evidence"
           ]
         },
         "q14": {
           "category": "Creativity",
-          "question": "How do you overcome creative blocks?",
+          "question": "A client wants a feature that technically works but would degrade the system's architecture, making future development harder. Refusing isn't an option — the contract requires it. You:",
           "options": [
-            "Change environment and seek new perspectives",
-            "Brainstorm with colleagues",
-            "Research inspiration from unrelated fields",
-            "Take strategic breaks and return to the problem later"
+            "Implement the feature but isolate it behind an abstraction layer so it can be replaced without affecting the rest of the system",
+            "Propose an alternative implementation that achieves the client's goal through a different technical approach that preserves the architecture",
+            "Build the feature as specified but simultaneously create a migration path document that shows how to refactor it later",
+            "Negotiate the scope: deliver the core of what they need in a cleaner way and defer the elements that cause the most architectural damage"
           ]
         },
         "q15": {
@@ -1585,37 +1585,37 @@
             "Use visualization tools to identify patterns",
             "Segment data into logical categories",
             "Apply statistical techniques to find correlations",
-            "Create automated dashboards for continuous monitoring"
+            "Prioritize which data subsets to analyze first based on impact"
           ]
         },
         "q17": {
           "category": "Communication",
-          "question": "How do you present complex results to non-technical stakeholders?",
+          "question": "A partner team has been working on parallel assumptions that contradict your findings. Neither team is wrong — you're using different validated models. A joint deliverable is due in 5 days. In the first alignment meeting, how do you approach the discrepancy?",
           "options": [
-            "Use charts and intuitive visualizations",
-            "Focus on business results, not technical details",
-            "Tell a story that connects data to concrete impacts",
-            "Prepare executive summaries with key points"
+            "Present both models with their assumptions explicitly mapped, letting the data speak before proposing reconciliation",
+            "Frame the discrepancy as a scope difference rather than a contradiction, focusing on what the joint deliverable actually needs to resolve",
+            "Ask the partner team to walk through their reasoning first, listening for assumption gaps before revealing your own model",
+            "Propose a shared working document where both models are laid side-by-side with tagged assumptions, replacing verbal debate with structured comparison"
           ]
         },
         "q18": {
           "category": "Knowledge",
-          "question": "How do you stay updated in your areas of expertise?",
+          "question": "A vendor presents a new technology with impressive benchmarks, but the evaluation conditions don't match your production environment. You:",
           "options": [
-            "Follow industry publications and research",
-            "Participate in specialized conferences and webinars",
-            "Join professional communities and forums",
-            "Experiment with new tools and technologies"
+            "Design a controlled test that mirrors your actual constraints",
+            "Seek out independent users who deployed it in similar conditions",
+            "Analyze the gap between their test conditions and yours to estimate real-world performance",
+            "Request access to their raw data and re-run the analysis with your parameters"
           ]
         },
         "q19": {
           "category": "Creativity",
-          "question": "How do you balance innovation and practicality in your projects?",
+          "question": "Your team has developed a novel algorithm that outperforms the standard approach in testing, but it's harder to explain to regulators and stakeholders who expect the conventional method. You:",
           "options": [
-            "Test innovative ideas on a small scale first",
-            "Maintain a portfolio of projects at different risk levels",
-            "Seek continuous feedback to validate creative directions",
-            "Establish clear criteria to evaluate new ideas"
+            "Run both algorithms in parallel for a trial period, using the standard one for reporting while validating the novel one's results against it",
+            "Redesign the presentation: translate the novel algorithm's logic into the regulatory framework's language without changing the underlying approach",
+            "Create a hybrid that uses the standard method's structure but incorporates the key innovation from your algorithm where it matters most",
+            "Propose a phased adoption: start with the conventional approach in regulated contexts and introduce the novel algorithm in lower-scrutiny applications first"
           ]
         },
         "q20": {
@@ -1635,7 +1635,7 @@
             "Conduct thorough cost-benefit analysis",
             "Test on pilot projects before full adoption",
             "Evaluate impact on existing processes and teams",
-            "Research case studies and industry best practices"
+            "Map dependencies and failure modes before adoption"
           ]
         },
         "open1": {
@@ -1752,24 +1752,24 @@
       "subtitle": "Complete our comprehensive assessment to discover your professional strengths",
       "questions": {
         "q1": { "category": "Computational Power", "question": "When reviewing a business KPI dashboard, what is your first step?", "options": ["Scan for anomalies vs targets", "Drill into segment breakdowns", "Compare with historical trends", "Export data to investigate offline"] },
-        "q2": { "category": "Communication", "question": "In an exec meeting with conflicting opinions, you typically:", "options": ["Synthesize and reframe the core issue", "Ask clarifying questions to align context", "Summarize decisions and next steps", "De-escalate and redirect to shared goals"] },
-        "q3": { "category": "Knowledge", "question": "How do you keep your market knowledge current?", "options": ["Read industry briefings weekly", "Follow analyst reports and competitors", "Attend conferences and webinars", "Run regular customer interviews"] },
-        "q4": { "category": "Creativity", "question": "Designing a new go-to-market motion, you prefer to:", "options": ["Prototype campaigns quickly", "Adapt proven playbooks", "Borrow ideas from adjacent industries", "Co-create with sales and product"] },
+        "q2": { "category": "Communication", "question": "You need board approval for a strategic pivot. The CFO wants ROI projections, the founder cares about mission alignment, and two independent directors have expressed skepticism about execution risk. You have one 30-minute slot. How do you prepare?", "options": ["Build a comprehensive deck covering financials, mission rationale, and risk mitigation in sequence — let thoroughness build credibility", "Structure around the single question 'Why now?' — weaving financial, mission, and risk answers into one narrative arc each stakeholder can anchor to", "Schedule brief pre-meetings with CFO and skeptical directors to identify specific objections, then tailor the board session to address only unresolved concerns", "Send a pre-read memo with full analysis 3 days before, use the live slot entirely for Q&A so each stakeholder drives the conversation toward their concern"] },
+        "q3": { "category": "Knowledge", "question": "Your strategy relies on a market assumption supported by one reputable analyst report. A competitor's move suggests the assumption may be wrong. You:", "options": ["Commission a quick independent analysis to test the assumption from a different angle", "Adjust the strategy to work under both the original and alternative assumptions", "Talk to frontline salespeople to get qualitative signals on which assumption holds", "Document the uncertainty and set a trigger point where you'd revisit the assumption"] },
+        "q4": { "category": "Creativity", "question": "Your company needs to enter a new market segment, but the product wasn't designed for that audience and a full redesign would take 18 months. The board wants traction in 6 months. You:", "options": ["Repackage the existing product with a different positioning, pricing, and onboarding flow tailored to the new segment's language", "Partner with a company already serving that segment and offer your product as an integrated add-on to their existing solution", "Launch a stripped-down version targeting only the use case with the strongest overlap between your current product and the new segment's needs", "Redefine the target: identify a niche within the new segment where your current product already fits, and expand from there"] },
         "q5": { "category": "Drive", "question": "Your board presentation fell flat because your financial storytelling lacked depth. You:", "options": ["Ask a CFO peer to review your next deck and point out specific weak spots", "Rebuild the same presentation from scratch using a different narrative structure", "Study three exemplary board decks and identify what techniques you are not using", "Present to a smaller internal audience first to get real-time feedback before the next board"] },
         "q6": { "category": "Computational Power", "question": "Faced with ambiguous revenue drops, you first:", "options": ["Segment by channel and cohort", "Correlate with pricing or promo changes", "Check attribution/measurement integrity", "Benchmark against seasonality"] },
-        "q7": { "category": "Communication", "question": "When a team resists a strategic change, you:", "options": ["Tell a compelling story with evidence", "Create forums to surface concerns", "Map stakeholders and tailor messages", "Negotiate phased adoption"] },
-        "q8": { "category": "Knowledge", "question": "Your approach to learning a new business model:", "options": ["Build a financial model end-to-end", "Read case studies across sectors", "Shadow operators doing the work", "Run a small pilot to learn"] },
-        "q9": { "category": "Creativity", "question": "To unlock growth in a saturated segment, you:", "options": ["Test a novel positioning angle", "Bundle/re-package offers creatively", "Create partnerships to reach new users", "Reinvent the onboarding experience"] },
+        "q7": { "category": "Communication", "question": "Your team has just been restructured. Two members are anxious about role changes, one is openly frustrated, and one seems disengaged. You need to communicate new responsibilities in a team meeting. How do you approach it?", "options": ["Present the new structure with explicit role definitions, reporting lines, and timelines — remove ambiguity that feeds anxiety", "Frame the restructure around team-level outcomes rather than individual role changes, then follow up individually with specifics", "Open by asking each person what they need clarity on most, then structure the meeting around those actual information gaps", "Send written role descriptions before the meeting so people can process privately, use the live session for questions and concerns only"] },
+        "q8": { "category": "Knowledge", "question": "You're entering a market where the available data is sparse and contradictory. Industry experts disagree on fundamentals. You:", "options": ["Run a small-scale pilot to generate your own data before committing", "Map the disagreements to identify what specific evidence would resolve them", "Adopt the view of the expert whose reasoning is most transparent, while monitoring for disconfirming signals", "Build separate business cases for the two most plausible scenarios"] },
+        "q9": { "category": "Creativity", "question": "A key product launch is two weeks away. The marketing team discovers that the primary competitor just released a nearly identical feature with strong PR coverage. You:", "options": ["Shift the launch narrative: instead of feature parity, position your release around a different value proposition that the competitor didn't address", "Accelerate one unique capability that differentiates you, even if it means deprioritizing polish on the shared features", "Bundle the launch with a complementary offer (free trial, integration, partnership) that changes the comparison frame entirely", "Delay the launch by one week to add a small but visible differentiator, and use the extra time to craft a counter-narrative"] },
         "q10": { "category": "Drive", "question": "Your team's strategic planning output is weaker than peers'. You suspect it's your facilitation. You:", "options": ["Observe another leader's strategy session and take structured notes on their method", "Record your next session and self-critique what you would change", "Bring in an external facilitator once and participate as an observer to learn their technique", "Redesign your planning template based on what specifically produced weak output last time"] },
         "q11": { "category": "Computational Power", "question": "Evaluating a pricing change, you:", "options": ["Run sensitivity analyses", "A/B test price points", "Model elasticity by segment", "Validate with customer interviews"] },
-        "q12": { "category": "Communication", "question": "Communicating to non-experts, you mainly:", "options": ["Use visuals and analogies", "Tell a narrative with outcomes", "Provide executive summaries", "Offer clear calls to action"] },
-        "q13": { "category": "Knowledge", "question": "Institutional knowledge is best maintained by:", "options": ["Well-structured internal docs", "Regular training sessions", "Living playbooks with owners", "Communities of practice"] },
-        "q14": { "category": "Creativity", "question": "When plans stall, you spark ideas by:", "options": ["Rapid ideation sprints", "Cross-functional workshops", "Reverse-engineering competitor wins", "Inviting contrarian perspectives"] },
+        "q12": { "category": "Communication", "question": "A key client escalates dissatisfaction directly to your CEO. The client's complaint mixes legitimate service gaps with inaccurate assumptions about your process. Your CEO asks you to draft the response. How do you handle the inaccuracies?", "options": ["Address each point factually — acknowledge valid gaps explicitly, correct inaccuracies with evidence, maintain a professional but unambiguous tone", "Lead with acknowledgment of the client's experience, then reframe the inaccurate points as 'areas where our process differs from what was expected' without direct contradiction", "Draft a response that addresses the legitimate gaps, then flag the inaccuracies separately to your CEO with a recommendation on how directly to correct them", "Suggest your CEO propose a call instead of written exchange — inaccuracies are easier to address conversationally without creating a confrontational paper trail"] },
+        "q13": { "category": "Knowledge", "question": "You've relied on a strategic model for months. A junior team member presents preliminary evidence that one of its core assumptions is wrong. You:", "options": ["Pause your current work with the model and test both versions against recent market data before committing either way", "Review the team member's raw evidence yourself to assess its strength before involving anyone else", "Note the challenge formally and continue with the model, but define a specific trigger point that would force a full reassessment", "Ask two people who weren't involved in either analysis to independently evaluate the conflicting evidence"] },
+        "q14": { "category": "Creativity", "question": "Your team's quarterly plan is solid, but a major client requests a custom feature that would consume 40% of your engineering capacity. Saying no risks losing the client; saying yes risks the roadmap. You:", "options": ["Propose building a generalized version of the feature that serves both the client's need and your roadmap — it takes slightly longer but creates lasting value", "Offer the client an interim workaround using existing capabilities while scheduling the full feature for the next quarter", "Renegotiate the quarterly plan: identify the lowest-impact roadmap items to defer and reallocate capacity to the client feature", "Reframe the request: explore whether the client's underlying problem can be solved differently with something you already have or are already building"] },
         "q15": { "category": "Drive", "question": "A product launch underperformed because you misjudged market timing. You:", "options": ["Interview five customers to understand what signals you misread", "Build a post-mortem framework to compare your assumptions versus actual data", "Partner with someone who predicted the market correctly and understand their reasoning", "Run a smaller test launch for the next product to validate timing before full commitment"] },
         "q16": { "category": "Computational Power", "question": "To forecast next quarter, you:", "options": ["Blend bottom-up with top-down models", "Stress-test scenarios", "Validate assumptions with sales", "Simulate capacity constraints"] },
-        "q17": { "category": "Communication", "question": "Presenting complex strategy, you:", "options": ["Tell a story tied to impact", "Use simple visuals", "Focus on trade-offs and choices", "Provide a one-page brief"] },
-        "q18": { "category": "Knowledge", "question": "To onboard into a new industry fast, you:", "options": ["Study regulations and economics", "Interview key stakeholders", "Map the value chain and incentives", "Analyze customer jobs-to-be-done"] },
-        "q19": { "category": "Creativity", "question": "To differentiate your brand, you:", "options": ["Create a distinct voice and POV", "Design signature experiences", "Co-create with your community", "Experiment with novel channels"] },
+        "q17": { "category": "Communication", "question": "Two departments you oversee have a resource conflict. Both leaders present their case to you privately, each framing the other as unreasonable. You must communicate a resolution that neither will fully like. How do you deliver it?", "options": ["Present the decision with full reasoning and trade-off analysis to both leaders simultaneously, so neither feels the other got a private advantage", "Frame the decision around the organizational constraint that makes compromise necessary, rather than evaluating either leader's case", "Meet each leader separately first to preview the decision and gauge their likely reaction, then hold a joint session with calibrated framing", "Communicate the decision in writing with clear rationale, then offer individual follow-up conversations for each leader to voice concerns without audience pressure"] },
+        "q18": { "category": "Knowledge", "question": "A regulatory change will affect your business, but the interpretation is ambiguous and industry peers are reading it differently. You:", "options": ["Engage a legal specialist and stress-test multiple interpretations against your operations", "Wait for an industry body to issue guidance, while preparing contingency plans", "Adopt the most conservative interpretation now and relax it as clarity emerges", "Compare how similar ambiguities were resolved historically to predict the likely outcome"] },
+        "q19": { "category": "Creativity", "question": "Your company's core product is mature and growth has plateaued. The board wants a new revenue stream, but R&D budget is limited to 15% of current spend. You:", "options": ["Identify underutilized assets (data, APIs, expertise) and package them as a new offering for a different buyer persona", "Redefine the product boundary: turn a free feature into a premium tier, or unbundle capabilities into standalone products", "Run three small, time-boxed experiments targeting different revenue hypotheses before committing budget to any single bet", "Partner with a complementary company to co-develop a joint offering that neither could build alone within the budget constraint"] },
         "q20": { "category": "Drive", "question": "You've received consistent feedback that your delegation is weak, slowing the team. You:", "options": ["Pick one task you'd normally keep and delegate it fully this week, tracking what happens", "Ask your direct reports what they need from you to take ownership more effectively", "Study how a peer leader delegates — what do they hand off, when, and how", "Set up weekly check-ins instead of daily ones and measure whether quality holds"] },
         "q21": { "category": "Computational Power", "question": "Evaluating a transformation program, you first:", "options": ["Define success metrics", "Pilot with a control group", "Assess org readiness and risk", "Study reference cases"] },
         "open1": { "question": "Describe a leadership decision you are proud of. What trade-offs did you weigh and why?" },
@@ -1882,24 +1882,24 @@
       "subtitle": "Complete our comprehensive assessment to discover your professional strengths",
       "questions": {
         "q1": { "category": "Computational Power", "question": "When evaluating creative performance data, you first:", "options": ["Scan engagement vs objectives", "Compare formats and placements", "Analyze audience segments", "Check measurement integrity"] },
-        "q2": { "category": "Communication", "question": "Presenting a concept to non-designers, you:", "options": ["Tell the story behind choices", "Use visual before/after examples", "Relate benefits to business goals", "Invite questions to build clarity"] },
-        "q3": { "category": "Knowledge", "question": "How do you stay current in your craft?", "options": ["Study masters and case studies", "Learn new tools and workflows", "Take courses and critiques", "Join communities and share work"] },
-        "q4": { "category": "Creativity", "question": "Your idea generation habit is to:", "options": ["Produce many rough drafts fast", "Remix references into new forms", "Iterate on one promising direction", "Invite team co-creation early"] },
+        "q2": { "category": "Communication", "question": "Your creative concept has been approved, but the production team interprets the brief differently than you intended. Their version is technically valid but misses your tonal intent. Rework would cost two days the project doesn't have. How do you address the gap?", "options": ["Document the exact tonal elements that differ with specific references, ask the team to assess which are feasible to adjust within the timeline", "Describe the intended audience reaction rather than the technical specifications — let the team find their own path to the right tone", "Ask the team to explain their interpretation of the brief — identify where the disconnect happened before proposing any changes", "Create a quick side-by-side visual comparison of intent vs. execution, replacing verbal description with concrete reference the team can react to"] },
+        "q3": { "category": "Knowledge", "question": "You've developed a strong visual style, but a new project requires a visual language you're unfamiliar with. The brief is vague and references are scarce. You:", "options": ["Study the closest existing examples and identify the underlying design principles", "Create quick experiments in the new style and gather feedback before committing", "Interview the stakeholders to clarify what they associate with the desired visual language", "Adapt elements from your existing style that could bridge into the new direction"] },
+        "q4": { "category": "Creativity", "question": "A client wants a bold, distinctive campaign, but their legal team has flagged restrictions: no comparative claims, no superlatives, and all imagery must include their existing brand elements. You:", "options": ["Use the brand elements as the creative foundation — make the restrictions the aesthetic concept rather than working around them", "Develop a visual language that feels distinctive through composition, pacing, and tone while staying within every legal constraint", "Propose three concepts at different points on the boldness spectrum, each fully compliant, so the client can choose their comfort level", "Reframe 'bold' away from claims and toward storytelling: create a narrative-driven campaign that achieves impact through emotion rather than assertion"] },
         "q5": { "category": "Drive", "question": "A client rejected your work for lacking strategic depth — an area you know is weak. You:", "options": ["Ask the client to show you an example of work that had the depth they wanted", "Pair with a strategist on your next project to observe how they build narrative", "Rewrite the rejected brief's strategy layer yourself and ask for honest critique", "Dedicate weekly practice time to strategy exercises from a different creative discipline"] },
         "q6": { "category": "Computational Power", "question": "To choose a campaign visual, you rely on:", "options": ["A/B tests on thumbnails", "Heatmaps or eye-tracking insights", "Historical performance patterns", "User research snapshots"] },
-        "q7": { "category": "Communication", "question": "Receiving critical feedback, you:", "options": ["Paraphrase to ensure understanding", "Ask for specific examples", "Discuss constraints and goals", "Propose a revision plan"] },
-        "q8": { "category": "Knowledge", "question": "Building domain knowledge for a client, you:", "options": ["Interview stakeholders", "Study brand guidelines deeply", "Analyze audience personas", "Review market and trend reports"] },
-        "q9": { "category": "Creativity", "question": "Unblocking a stalled concept, you:", "options": ["Switch mediums or constraints", "Seek inspiration from other arts", "Brainstorm with a diverse group", "Take a pause to reset perspective"] },
+        "q7": { "category": "Communication", "question": "A client gives feedback that contradicts their own approved brief. They don't realize the contradiction. Pointing it out directly risks making them feel incompetent. Ignoring it means building something misaligned. How do you navigate this?", "options": ["Reference the original brief directly, walk through the specific points of contradiction matter-of-factly, and ask which direction they now prefer", "Present it as 'the project has evolved since the brief' — frame the contradiction as natural scope evolution rather than an error", "Ask the client to describe their current vision in their own words, then surface the contradiction only if they don't catch it themselves", "Create two quick mockups reflecting each direction, let the client choose visually rather than navigating the verbal contradiction"] },
+        "q8": { "category": "Knowledge", "question": "Your creative direction is based on audience research, but early user testing returns mixed signals — some love it, some find it confusing. You:", "options": ["Segment the responses to understand if different audience groups react differently", "Test a simplified version to isolate whether the confusion is about concept or execution", "Revisit the original research to check if you missed nuances in the data", "Bring in a fresh set of testers with a clearer testing protocol to reduce noise"] },
+        "q9": { "category": "Creativity", "question": "You're designing a visual identity for a brand that operates in two very different markets — luxury and affordable. They want one identity that works for both without alienating either audience. You:", "options": ["Create a flexible identity system with shared core elements but distinct visual expressions that shift based on context and channel", "Find the emotional overlap between the two audiences and design the identity around that shared value rather than price positioning", "Design a primary identity optimized for the larger market segment and create a sub-brand treatment for the other", "Test three different approaches with representatives from both audiences before committing to a direction"] },
         "q10": { "category": "Drive", "question": "Your motion design skills are behind the team's expectations, and it's affecting your projects. You:", "options": ["Take on a small internal project that requires motion work, with a realistic deadline", "Ask a skilled colleague to pair on your next animation and give you direct feedback", "Follow a structured course and apply each lesson to a real deliverable within 48 hours", "Analyze five strong motion pieces to identify specific techniques you are not using"] },
         "q11": { "category": "Computational Power", "question": "To allocate production budget, you:", "options": ["Model cost vs expected lift", "Prioritize high-impact assets", "Prototype cheaply first", "Reuse/adapt assets smartly"] },
-        "q12": { "category": "Communication", "question": "When teams misunderstand the brief, you:", "options": ["Reframe outcomes and success", "Show references to align taste", "Translate abstract goals to criteria", "Co-write a clarified brief"] },
-        "q13": { "category": "Knowledge", "question": "To document craft knowledge, you:", "options": ["Create reusable templates", "Publish internal guides", "Record short how-to videos", "Maintain a curated reference library"] },
-        "q14": { "category": "Creativity", "question": "To differentiate a brand visually, you:", "options": ["Invent a signature system", "Evolve typography and motion", "Craft a distinct narrative motif", "Experiment with sensory elements"] },
+        "q12": { "category": "Communication", "question": "You're leading a creative review where a junior team member's work has significant issues, but they've clearly invested heavily. Two senior colleagues are in the room. How do you deliver feedback that's honest without being destructive?", "options": ["Address the work directly: name what works, name what doesn't, provide specific revision direction — treat the junior as a professional", "Frame feedback around the project's requirements rather than the work's quality — 'the brief needs X, and this delivers Y' keeps it structural", "Ask the junior to self-assess first — 'What would you change if you had another day?' — then build your feedback on their own identified gaps", "Give high-level direction in the group session, schedule a private follow-up for detailed critique where the junior can ask questions without audience pressure"] },
+        "q13": { "category": "Knowledge", "question": "You've relied on a creative direction for months. A junior designer presents preliminary user data suggesting one of your core aesthetic assumptions may be wrong. You:", "options": ["Pause your current direction and test both versions with a fresh audience sample before committing either way", "Review the junior designer's raw data yourself to assess its validity before involving anyone else", "Note the challenge formally and continue with your direction, but define a specific feedback threshold that would trigger a full reassessment", "Ask two people who weren't involved in either direction to independently evaluate the conflicting evidence"] },
+        "q14": { "category": "Creativity", "question": "You've been developing a creative direction for weeks. In the final review, the client says they love the work but need it adapted for a medium you didn't design for (e.g., the campaign was designed for video but they now need it as a static OOH series). The deadline doesn't change. You:", "options": ["Extract the strongest visual moments from the video concept and restructure them as a sequential static narrative", "Redesign the core idea for the new medium from scratch — what worked in video may not translate, so start from the insight rather than the execution", "Create a hybrid: adapt the key frames but add a scannable/interactive element that brings some of the motion back", "Propose delivering the OOH adaptation in two phases — a fast version using existing assets now, and a medium-optimized version two weeks later"] },
         "q15": { "category": "Drive", "question": "Your portfolio review revealed that your typographic work is consistently your weakest area. You:", "options": ["Redesign one past project focusing solely on typography and compare the result", "Seek a critique from a typography specialist on what specifically needs work", "Track your typography decisions for the next month to spot recurring mistakes", "Restrict your next project to only typographic elements — no illustration or color"] },
-        "q16": { "category": "Computational Power", "question": "Choosing toolchains, you:", "options": ["Compare speed and compatibility", "Check collaboration features", "Evaluate learning curve", "Assess cost and licensing"] },
-        "q17": { "category": "Communication", "question": "To align with stakeholders, you:", "options": ["Use simple narrative arcs", "Show options with pros/cons", "Focus on audience impact", "Provide a concise one-pager"] },
-        "q18": { "category": "Knowledge", "question": "To learn a new domain quickly, you:", "options": ["Study landscape & competitors", "Review audience insights", "Interview subject-matter experts", "Shadow real users"] },
-        "q19": { "category": "Creativity", "question": "To produce original work, you:", "options": ["Set creative constraints", "Mash up unlikely references", "Prototype and test early", "Collaborate with other disciplines"] },
+        "q16": { "category": "Computational Power", "question": "When your creative workflow hits a bottleneck, you:", "options": ["Profile each step to find the slowest stage", "Redesign the sequence to remove hand-offs", "Evaluate learning curve of alternative tools", "Assess cost and licensing of replacements"] },
+        "q17": { "category": "Communication", "question": "A collaborator from a different discipline (e.g., engineer working with a designer) keeps using their own domain's vocabulary to describe your shared project. Meetings are productive on the surface but you suspect fundamental misalignment beneath the shared terms. How do you test this?", "options": ["Create a shared glossary document defining key terms as used in this project, surfacing definition gaps explicitly", "Shift from vocabulary to outcomes — ask 'what does success look like to you?' and compare concrete expectations rather than terminology", "In the next meeting, paraphrase their statements back in your vocabulary and watch for correction or confusion signals", "Propose a joint sketch or prototype session where both disciplines express intent visually rather than verbally, bypassing the vocabulary problem"] },
+        "q18": { "category": "Knowledge", "question": "A client insists their audience wants a specific aesthetic, but your research suggests otherwise. The client's conviction is strong. You:", "options": ["Propose an A/B test with both approaches on a small sample before full production", "Present your research transparently and ask the client to explain what evidence supports their view", "Find a creative solution that incorporates elements of both perspectives", "Document both positions and agree on success criteria that will resolve the disagreement after launch"] },
+        "q19": { "category": "Creativity", "question": "Your team has developed an innovative visual concept that tests well with younger audiences but alienates the brand's existing older customer base. The client wants to keep both. You:", "options": ["Find elements from both the new concept and the existing visual language that can coexist, creating a bridge aesthetic", "Reframe the strategy: use the innovative concept in acquisition channels (social, digital) and retain the familiar style in retention channels (email, loyalty)", "Evolve the existing visual language gradually, incorporating the new concept's principles in small doses across touchpoints", "Propose an A/B rollout: test the new concept with a controlled segment of the older audience to find the actual tolerance threshold before full deployment"] },
         "q20": { "category": "Drive", "question": "You've plateaued in your creative direction skills and feel stuck at the same level. You:", "options": ["Take on a project in a format or genre you have never done before", "Ask three trusted peers to each name one specific area where your direction could improve", "Compare your recent work against work from 12 months ago to identify what has actually changed", "Set quarterly skill targets with concrete deliverables that prove improvement"] },
         "q21": { "category": "Computational Power", "question": "To judge asset quality at scale, you:", "options": ["Define measurable criteria", "Batch-review with checklists", "Sample test with audience", "Automate checks where possible"] },
         "open1": { "question": "Tell us about a piece you created that changed outcomes. Why did it work?" },
@@ -2012,24 +2012,24 @@
       "subtitle": "Complete our comprehensive assessment to discover your professional strengths",
       "questions": {
         "q1": { "category": "Computational Power", "question": "When service metrics dip, your first step is to:", "options": ["Segment by shift/location", "Check process compliance", "Compare with historical patterns", "Verify data integrity"] },
-        "q2": { "category": "Communication", "question": "Handling a difficult customer, you:", "options": ["Listen and reflect needs", "Clarify policies in plain language", "Offer options and next steps", "Escalate appropriately with context"] },
-        "q3": { "category": "Knowledge", "question": "Keeping procedures current, you:", "options": ["Maintain clear SOPs", "Run short refresh trainings", "Log changes in a knowledge base", "Collect frontline feedback regularly"] },
-        "q4": { "category": "Creativity", "question": "To improve a recurring bottleneck, you:", "options": ["Redesign the workflow", "Borrow solutions from other teams", "Pilot a low-risk experiment", "Co-create with staff and users"] },
+        "q2": { "category": "Communication", "question": "A process change you've implemented is causing confusion among frontline staff. Some are reverting to old procedures. You can't mandate compliance without understanding the breakdown. How do you diagnose and address the communication gap?", "options": ["Reissue the procedure documentation with step-by-step detail, numbered exceptions, and explicit comparisons to the old process", "Explain the why behind the change — connect the new process to outcomes staff care about, rather than reissuing the how", "Spend a shift observing where staff revert, ask them what's unclear in their own words, then revise communication based on actual confusion points", "Replace written instructions with a short walkthrough video showing the new process in context, supplemented by a quick-reference card"] },
+        "q3": { "category": "Knowledge", "question": "Your team follows a standard procedure, but an unusual case doesn't fit the existing protocol. The procedure manual doesn't cover this scenario. You:", "options": ["Identify which parts of the standard procedure still apply and adapt the rest with documented reasoning", "Consult a colleague who's handled similar edge cases to understand how they approached it", "Escalate to a supervisor with a clear description of why the standard procedure doesn't fit", "Handle it using your best judgment and write up the case so the procedure can be updated"] },
+        "q4": { "category": "Creativity", "question": "Your service team needs to reduce average handling time by 20%, but cutting steps would hurt quality scores. You can't hire more staff. You:", "options": ["Redesign the service flow so that common cases follow a streamlined path while complex cases get the full process — handling both faster on average", "Identify the most time-consuming step and find a way to perform it in parallel with another step rather than sequentially", "Redefine 'handling time' by shifting some steps to asynchronous follow-up, reducing live interaction time without cutting content", "Create templated responses for the most frequent 30% of requests, freeing agents to spend more time on the remaining complex cases"] },
         "q5": { "category": "Drive", "question": "Your team's incident response time has been slower than the target, and you are part of the problem. You:", "options": ["Shadow the fastest responder on shift and document what they do differently", "Review your last five incidents to find the specific step where you lost time", "Practice responding to simulated incidents with a timer to build speed", "Redesign your personal triage checklist based on what has actually slowed you down"] },
         "q6": { "category": "Computational Power", "question": "To schedule staff effectively, you:", "options": ["Model demand by hour", "Account for skill mix", "Plan buffers for spikes", "Review constraints and rules"] },
-        "q7": { "category": "Communication", "question": "When protocols change, you:", "options": ["Explain the why and impact", "Use clear checklists or visuals", "Offer a Q&A channel", "Pair people for peer support"] },
-        "q8": { "category": "Knowledge", "question": "Onboarding new staff, you:", "options": ["Use step-by-step guides", "Shadow then gradual independence", "Micro-trainings on critical tasks", "Document common pitfalls"] },
-        "q9": { "category": "Creativity", "question": "To improve service experience, you:", "options": ["Redesign touchpoints", "Personalize key moments", "Streamline handoffs", "Test new tools or aids"] },
+        "q7": { "category": "Communication", "question": "A customer is escalating a complaint. They're factually wrong about what happened, but emotionally they've had a genuinely poor experience. Your response will be reviewed by your manager. How do you handle the factual inaccuracy while addressing the experience?", "options": ["Acknowledge their frustration, then walk through what actually occurred with timestamps and specifics — clarity prevents future disputes", "Focus the response on the experience gap rather than the factual sequence — 'regardless of specifics, the outcome fell short' — and propose resolution", "Ask the customer to confirm specific details of their experience — let them self-correct factual errors through clarifying questions rather than direct contradiction", "Respond in writing with empathy and resolution, then offer a phone call to discuss details — verbal exchange reduces the adversarial dynamic of written correction"] },
+        "q8": { "category": "Knowledge", "question": "Two experienced team members give you contradictory advice on handling a service situation. Both have strong track records. You:", "options": ["Ask each to explain the reasoning behind their recommendation, not just the conclusion", "Look at what's different about this situation compared to when each approach worked before", "Try the approach with the lower downside risk and evaluate the outcome", "Check if there's a documented precedent for this type of situation before deciding"] },
+        "q9": { "category": "Creativity", "question": "A key supplier notifies you that a critical component will be unavailable for three weeks. Your service depends on it daily. Switching suppliers permanently isn't viable due to contracts. You:", "options": ["Source a temporary alternative that covers the gap, even if it's not identical, and adjust your process to accommodate the differences", "Redesign the affected service workflow to function without the component for three weeks, even if it means a different (but acceptable) customer experience", "Negotiate with the supplier to provide partial or substitute deliveries, prioritizing the specific variants you need most urgently", "Build a small reserve by reducing usage in lower-priority applications and redirecting inventory to the most critical service lines"] },
         "q10": { "category": "Drive", "question": "Customer feedback shows that your team's explanations during outages are confusing — and you wrote the scripts. You:", "options": ["Record real explanations and review them to identify what is unclear", "Practice with mock scenarios using plain-language scripts until it feels natural", "Ask a communication trainer to observe one interaction and give targeted advice", "Create a template library for common outage explanations and test it with users"] },
-        "q11": { "category": "Computational Power", "question": "To reduce errors, you:", "options": ["Introduce checklists", "Standardize and 5S", "Automate repetitive steps", "Measure error types and fix causes"] },
-        "q12": { "category": "Communication", "question": "When teams hand off work, you:", "options": ["Define clear acceptance criteria", "Use concise handoff templates", "Hold quick alignment huddles", "Create shared dashboards"] },
-        "q13": { "category": "Knowledge", "question": "Capturing lessons learned, you:", "options": ["Run short retros regularly", "Publish simple summaries", "Create searchable FAQs", "Assign owners to keep content fresh"] },
-        "q14": { "category": "Creativity", "question": "To handle constraints, you:", "options": ["Design smarter sequencing", "Re-use resources creatively", "Rearrange space/tools flow", "Simplify user steps"] },
+        "q11": { "category": "Computational Power", "question": "To reduce errors, you:", "options": ["Introduce checklists", "Standardize and 5S", "Automate repetitive steps", "Trace each error back to the step where it first appears"] },
+        "q12": { "category": "Communication", "question": "You need to communicate a service-level reduction to long-term clients. The reduction is permanent and non-negotiable. Some clients will be significantly impacted. You must preserve the relationship while being transparent. How do you deliver the message?", "options": ["State the change clearly with effective dates and specific impacts per client segment — ambiguity would be worse than bad news", "Frame within a broader service evolution narrative — position the reduction as part of a strategic shift that includes improvements in other areas", "Contact the most impacted clients individually first, gauge their concerns, then use those insights to refine the broader announcement", "Replace a mass announcement with individual account reviews — each client hears the news in the context of their specific relationship and usage"] },
+        "q13": { "category": "Knowledge", "question": "You've relied on an operational procedure for months. A junior team member presents preliminary case data suggesting one of its core assumptions is wrong. You:", "options": ["Pause applying the procedure in affected cases and test both approaches on recent cases before committing either way", "Review the team member's raw case data yourself to assess its strength before involving anyone else", "Note the challenge formally and continue with the procedure, but define a specific outcome threshold that would trigger a full reassessment", "Ask two people who weren't involved in either analysis to independently evaluate the conflicting evidence"] },
+        "q14": { "category": "Creativity", "question": "Management wants to introduce a digital self-service channel to reduce call volume by 30%. But your data shows that 60% of customers who try self-service end up calling anyway because the issues are too complex. You:", "options": ["Redesign the self-service flow to handle only the cases it can actually resolve well, and route complex cases to agents faster rather than trying to contain them", "Create a hybrid: let customers start in self-service but offer a seamless escalation that preserves context, so the agent call is shorter", "Reframe the 30% target: instead of reducing total calls, focus on reducing repeat calls by using self-service for follow-ups and status checks", "Pilot three different self-service approaches on different case types to identify which categories actually benefit from automation before scaling"] },
         "q15": { "category": "Drive", "question": "An audit found that your compliance documentation has recurring gaps — a skill you haven't developed. You:", "options": ["Identify the two most common gaps and create a personal checklist for those areas", "Ask the auditor to walk you through exactly what good documentation looks like", "Compare your documentation with a colleague's who scored well, side by side", "Redo one recent document from scratch using the correct standard and time yourself"] },
         "q16": { "category": "Computational Power", "question": "Choosing a new tool, you:", "options": ["Score by requirements fit", "Pilot with a small group", "Evaluate cost/benefit and risk", "Check integration with systems"] },
-        "q17": { "category": "Communication", "question": "To align shifts/teams, you:", "options": ["Use clear dashboards", "Hold quick standups", "Send concise bullet updates", "Use radio/chat protocols"] },
-        "q18": { "category": "Knowledge", "question": "To learn a new regulation, you:", "options": ["Read official guidance", "Ask experts for clarifications", "Create a compliance checklist", "Train the team with examples"] },
-        "q19": { "category": "Creativity", "question": "To improve accessibility, you:", "options": ["Simplify forms/language", "Offer alternate formats", "Rework space/signage", "Co-design with users"] },
+        "q17": { "category": "Communication", "question": "You've been asked to train a new team on a complex workflow. Half the group has operational experience in a related field; the other half are complete beginners. You have one training session. How do you structure it?", "options": ["Teach the full workflow end-to-end at beginner level, then offer an advanced supplement session for experienced members who want deeper context", "Start with the conceptual model — why the workflow exists — then let experienced members connect it to what they know while beginners build from scratch", "Begin with a diagnostic exercise that reveals what each person already knows, then adjust depth dynamically based on actual gaps", "Pair experienced and beginner members, provide a guided practice scenario, and circulate to address individual questions — replace lecture with structured peer learning"] },
+        "q18": { "category": "Knowledge", "question": "A new industry guideline contradicts a practice your team has used successfully for years. The guideline's evidence base is limited but growing. You:", "options": ["Review the evidence behind the guideline and compare it with your team's outcome data", "Pilot the new guideline on a subset of cases while maintaining the old practice as control", "Adopt the guideline but track outcomes closely to verify it performs as claimed", "Consult peers at other organizations to understand how they're interpreting and implementing it"] },
+        "q19": { "category": "Creativity", "question": "Your team runs a 24/7 operation. A new regulation requires additional documentation at each handoff between shifts, but adding paperwork would slow transitions and create a 15-minute gap in coverage. You:", "options": ["Redesign the handoff format: replace the paper-based approach with a structured digital log that auto-populates from the shift's activity data", "Overlap shifts by 15 minutes and use the overlap period for both handoff and documentation, absorbing the time cost within the schedule", "Split the documentation requirement: capture critical items during the handoff and defer detailed notes to a quieter period within the next shift", "Redefine the documentation scope: work with compliance to identify the minimum viable documentation that satisfies the regulation without the full burden"] },
         "q20": { "category": "Drive", "question": "You've been told your process improvement proposals lack data support — a skill you haven't developed. You:", "options": ["Attach measurable baselines to your next proposal, even if the data collection takes extra time", "Partner with an analyst to learn how they build data-backed arguments", "Take a short course on operational data analysis and apply it to a real improvement case", "Review three approved proposals to reverse-engineer what data made them convincing"] },
         "q21": { "category": "Computational Power", "question": "Evaluating a process change, you:", "options": ["Define success metrics up front", "Compare before/after data", "Run a controlled trial", "Document impact and next steps"] },
         "open1": { "question": "Describe a time you improved a service process. What changed and how did you make it stick?" },
