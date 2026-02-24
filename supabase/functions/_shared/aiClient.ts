@@ -356,3 +356,62 @@ export class AiGatewayError extends Error {
     return aiErrorResponse(this.statusCode, this.errorCode, this.message);
   }
 }
+
+// =====================================================
+// EVIDENCE LEDGER — Open-Answer Audit Trail (Step 2)
+// =====================================================
+
+/**
+ * Compute SHA-256 hash of content for integrity verification without storing PII.
+ */
+export async function computeContentHash(text: string): Promise<string> {
+  const data = new TextEncoder().encode(text);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+export interface EvidenceLedgerEntry {
+  open_response_id: string;
+  subject_profile_id: string;
+  attempt_id: string;
+  field_key: string;
+  open_key: string;
+  ai_request_id: string;
+  final_score: number;
+  quality_label: string;
+  key_reasons: string[];
+  detected_red_flags: string[];
+  score_breakdown: Record<string, number> | null;
+  content_hash: string;
+  content_length: number;
+  content_language: string;
+}
+
+/**
+ * Persist an evidence ledger entry for an open-answer evaluation.
+ * Fire-and-forget: errors logged but never block caller.
+ * Uses service_role — bypasses RLS.
+ */
+export async function persistEvidenceLedgerEntry(entry: EvidenceLedgerEntry): Promise<void> {
+  try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!supabaseUrl || !serviceKey) {
+      console.warn("[evidence_ledger] Missing credentials — skipping");
+      return;
+    }
+    const client = createClient(supabaseUrl, serviceKey);
+    const { error } = await client.from("assessment_evidence_ledger").insert({
+      ...entry,
+      rubric_version: "1.0",
+      scoring_schema_version: SCORING_SCHEMA_VERSION,
+      prompt_template_version: PROMPT_TEMPLATE_VERSION,
+    });
+    if (error) {
+      console.error("[evidence_ledger] Insert failed:", error.message);
+    }
+  } catch (e) {
+    console.error("[evidence_ledger] Error:", e instanceof Error ? e.message : e);
+  }
+}

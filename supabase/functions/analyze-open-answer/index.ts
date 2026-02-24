@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { callAiGateway, generateCorrelationId, AiGatewayError } from "../_shared/aiClient.ts";
+import { callAiGateway, generateCorrelationId, AiGatewayError, computeContentHash, persistEvidenceLedgerEntry } from "../_shared/aiClient.ts";
 import { validateOpenAnswerScoring } from "../_shared/aiSchema.ts";
 import { corsHeaders, errorResponse, jsonResponse, profilingOptOutResponse } from "../_shared/errors.ts";
 
@@ -201,6 +201,7 @@ Apply all scoring rules and self-checks. Be honest - do not inflate the score.
 Return ONLY the JSON object, no other text.`;
 
     let parsedResult;
+    let aiRequestId = '';
 
     try {
       const aiResp = await callAiGateway({
@@ -213,6 +214,7 @@ Return ONLY the JSON object, no other text.`;
         inputSummary: `open_answer:field=${field},lang=${language},key=${openKey},len=${cleanedText.length}`,
       });
 
+      aiRequestId = aiResp.requestId;
       try {
         const jsonMatch = aiResp.content.match(/```json\s*([\s\S]*?)\s*```/) || 
                           aiResp.content.match(/```\s*([\s\S]*?)\s*```/) ||
@@ -295,6 +297,62 @@ Return ONLY the JSON object, no other text.`;
       quality_label: qualityLabel,
       red_flags_count: redFlags.length,
     }));
+
+    // ===== EVIDENCE LEDGER: persist audit trail (fire-and-forget) =====
+    // Requires: user_id, attempt_id, and the open_response to already be saved
+    // We compute content_hash here — NO raw text stored in the ledger
+    if (user_id && typeof user_id === 'string') {
+      try {
+        const contentHash = await computeContentHash(cleanedText);
+        
+        // Look up the open_response_id and profile id
+        const serviceClient = createClient(
+          Deno.env.get("SUPABASE_URL")!,
+          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+        );
+        
+        // Find the profile id (subject_profile_id) for this auth user
+        const { data: profile } = await serviceClient
+          .from('profiles')
+          .select('id')
+          .eq('user_id', user_id)
+          .single();
+
+        if (profile) {
+          // Find the most recent open response for this user+field+openKey
+          const { data: openResp } = await serviceClient
+            .from('assessment_open_responses')
+            .select('id, attempt_id')
+            .eq('user_id', user_id)
+            .eq('field_key', field)
+            .eq('open_key', openKey)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+
+          if (openResp) {
+            persistEvidenceLedgerEntry({
+              open_response_id: openResp.id,
+              subject_profile_id: profile.id,
+              attempt_id: openResp.attempt_id,
+              field_key: field,
+              open_key: openKey,
+              ai_request_id: aiRequestId,
+              final_score: finalScore,
+              quality_label: qualityLabel,
+              key_reasons: parsedResult.reasons.slice(0, 5),
+              detected_red_flags: redFlags,
+              score_breakdown: mappedBreakdown,
+              content_hash: contentHash,
+              content_length: cleanedText.length,
+              content_language: language,
+            });
+          }
+        }
+      } catch (ledgerErr) {
+        console.error('[evidence_ledger] Outer error:', ledgerErr instanceof Error ? ledgerErr.message : ledgerErr);
+      }
+    }
 
     return jsonResponse(result);
 
