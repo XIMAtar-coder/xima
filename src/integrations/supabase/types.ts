@@ -344,6 +344,86 @@ export type Database = {
         }
         Relationships: []
       }
+      assessment_evidence_ledger: {
+        Row: {
+          ai_request_id: string
+          attempt_id: string
+          content_hash: string
+          content_language: string
+          content_length: number
+          created_at: string
+          detected_red_flags: string[]
+          expires_at: string | null
+          field_key: string
+          final_score: number
+          id: string
+          key_reasons: string[]
+          open_key: string
+          open_response_id: string
+          prompt_template_version: string
+          quality_label: string
+          retention_days: number
+          rubric_version: string
+          score_breakdown: Json | null
+          scoring_schema_version: string
+          subject_profile_id: string
+        }
+        Insert: {
+          ai_request_id: string
+          attempt_id: string
+          content_hash: string
+          content_language?: string
+          content_length: number
+          created_at?: string
+          detected_red_flags?: string[]
+          expires_at?: string | null
+          field_key: string
+          final_score: number
+          id?: string
+          key_reasons?: string[]
+          open_key: string
+          open_response_id: string
+          prompt_template_version?: string
+          quality_label: string
+          retention_days?: number
+          rubric_version?: string
+          score_breakdown?: Json | null
+          scoring_schema_version?: string
+          subject_profile_id: string
+        }
+        Update: {
+          ai_request_id?: string
+          attempt_id?: string
+          content_hash?: string
+          content_language?: string
+          content_length?: number
+          created_at?: string
+          detected_red_flags?: string[]
+          expires_at?: string | null
+          field_key?: string
+          final_score?: number
+          id?: string
+          key_reasons?: string[]
+          open_key?: string
+          open_response_id?: string
+          prompt_template_version?: string
+          quality_label?: string
+          retention_days?: number
+          rubric_version?: string
+          score_breakdown?: Json | null
+          scoring_schema_version?: string
+          subject_profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_evidence_ledger_open_response_id_fkey"
+            columns: ["open_response_id"]
+            isOneToOne: false
+            referencedRelation: "assessment_open_responses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assessment_flows: {
         Row: {
           active: boolean
