@@ -1,4 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { emitAuditEvent } from "../_shared/auditEvents.ts";
+import { extractCorrelationId } from "../_shared/correlationId.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,6 +13,8 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
+    const correlationId = extractCorrelationId(req);
+
     // 1. Authenticate the request
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
@@ -41,6 +45,16 @@ Deno.serve(async (req: Request) => {
     const userEmail = user.email;
 
     console.log(`[data-export] Starting export for user: ${userId}`);
+
+    // Emit audit event for data export request
+    emitAuditEvent({
+      actorType: 'candidate',
+      actorId: userId,
+      action: 'data_rights.export_requested',
+      entityType: 'profile',
+      entityId: userId,
+      correlationId,
+    });
 
     // 2. Fetch all personal data (RLS enforced on each query)
     

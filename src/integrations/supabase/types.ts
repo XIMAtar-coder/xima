@@ -665,6 +665,51 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_events: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_type: string
+          attempt_id: string | null
+          correlation_id: string | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip_hash: string | null
+          metadata: Json
+          occurred_at: string
+          user_agent_hash: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_type: string
+          attempt_id?: string | null
+          correlation_id?: string | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip_hash?: string | null
+          metadata?: Json
+          occurred_at?: string
+          user_agent_hash?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_type?: string
+          attempt_id?: string | null
+          correlation_id?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip_hash?: string | null
+          metadata?: Json
+          occurred_at?: string
+          user_agent_hash?: string | null
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           created_at: string | null
@@ -3051,6 +3096,33 @@ export type Database = {
         }
         Relationships: []
       }
+      metrics_daily: {
+        Row: {
+          id: string
+          metadata: Json
+          metric_date: string
+          metric_name: string
+          metric_value: number
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          metadata?: Json
+          metric_date: string
+          metric_name: string
+          metric_value?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          metadata?: Json
+          metric_date?: string
+          metric_name?: string
+          metric_value?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mutual_interest: {
         Row: {
           business_id: string
@@ -4133,6 +4205,21 @@ export type Database = {
         Returns: string
       }
       delete_user_account: { Args: { p_user_id: string }; Returns: Json }
+      emit_audit_event: {
+        Args: {
+          p_action: string
+          p_actor_id: string
+          p_actor_type: string
+          p_attempt_id?: string
+          p_correlation_id?: string
+          p_entity_id?: string
+          p_entity_type: string
+          p_ip_hash?: string
+          p_metadata?: Json
+          p_user_agent_hash?: string
+        }
+        Returns: string
+      }
       emit_feed_signal: {
         Args: {
           p_payload: Json
@@ -4240,6 +4327,15 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_daily_metric: {
+        Args: {
+          p_date?: string
+          p_increment?: number
+          p_metadata?: Json
+          p_metric_name: string
+        }
+        Returns: undefined
       }
       internal_log_activity: {
         Args: { p_action: string; p_context?: Json; p_user_id: string }
