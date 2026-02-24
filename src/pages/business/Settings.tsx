@@ -28,6 +28,7 @@ import {
 import CompanyLegalSettings from '@/components/business/CompanyLegalSettings';
 import { ProfilingOptOutSection } from '@/components/settings/ProfilingOptOutSection';
 import { AccountDeletionSection } from '@/components/settings/AccountDeletionSection';
+import { BusinessPlanCard } from '@/components/business/BusinessPlanCard';
 
 const BusinessSettings = () => {
   const { t } = useTranslation();
@@ -250,6 +251,9 @@ const BusinessSettings = () => {
           <h1 className="text-3xl font-bold text-foreground mb-2">{t('business_portal.settings')}</h1>
           <p className="text-muted-foreground">{t('business_portal.manage_preferences')}</p>
         </div>
+
+        {/* Plan & Entitlements */}
+        <BusinessPlanCard />
 
         <form onSubmit={handleSubmit}>
           {/* Company Information */}
