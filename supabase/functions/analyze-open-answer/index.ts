@@ -210,6 +210,7 @@ Return ONLY the JSON object, no other text.`;
         ],
         correlationId,
         functionName: 'analyze-open-answer',
+        inputSummary: `open_answer:field=${field},lang=${language},key=${openKey},len=${cleanedText.length}`,
       });
 
       try {
