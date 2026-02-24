@@ -4372,6 +4372,34 @@ export type Database = {
         }
         Returns: Json
       }
+      ops_check_assessment_wow_drop: {
+        Args: never
+        Returns: {
+          alert_fired: boolean
+          drop_pct: number
+          last_week: number
+          this_week: number
+          threshold: number
+        }[]
+      }
+      ops_check_dead_letters_24h: {
+        Args: never
+        Returns: {
+          alert_fired: boolean
+          dead_letter_count: number
+          threshold: number
+        }[]
+      }
+      ops_check_scoring_error_rate_24h: {
+        Args: never
+        Returns: {
+          alert_fired: boolean
+          error_count: number
+          error_rate: number
+          threshold: number
+          total_count: number
+        }[]
+      }
       qualify_referral_and_reward: {
         Args: { p_referred_user_id: string }
         Returns: Json
