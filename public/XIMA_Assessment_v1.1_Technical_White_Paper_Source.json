@@ -1,0 +1,101 @@
+{
+  "document": {
+    "title": "XIMA Assessment v1.1 — Technical White Paper",
+    "version": "1.1",
+    "generated": "2026-02-24",
+    "classification": "Internal Review Document — Confidential",
+    "freeze_status": "Runtime hash enforcement active"
+  },
+  "construct_framework": {
+    "pillars": {
+      "computational_power": {
+        "definition": "Capacity to decompose complex data, identify patterns, apply analytical reasoning, and evaluate solutions systematically.",
+        "boundary": "Does not measure raw intelligence, IQ, or mathematical ability in isolation.",
+        "questions": [1, 6, 11, 16, 21]
+      },
+      "communication": {
+        "definition": "Ability to adapt messaging to diverse audiences, navigate interpersonal dynamics, and achieve alignment through structured dialogue.",
+        "boundary": "Does not measure linguistic fluency, extroversion, or social desirability.",
+        "questions": [2, 7, 12, 17]
+      },
+      "knowledge": {
+        "definition": "Capacity for evidence evaluation, belief updating under uncertainty, and synthesis of information from multiple sources.",
+        "boundary": "Does not measure domain-specific expertise or factual recall.",
+        "questions": [3, 8, 13, 18]
+      },
+      "creativity": {
+        "definition": "Ability to generate novel solutions under real constraints, reframe problems, and navigate trade-offs between innovation and feasibility.",
+        "boundary": "Does not measure artistic talent or divergent thinking in isolation.",
+        "questions": [4, 9, 14, 19]
+      },
+      "drive": {
+        "definition": "Learning behaviour under friction — capacity to identify personal skill gaps, design corrective strategies, and sustain deliberate practice. Measured as Growth Velocity.",
+        "boundary": "Does not measure static motivation, grit rhetoric, or self-reported ambition.",
+        "questions": [5, 10, 15, 20]
+      }
+    }
+  },
+  "assessment_structure": {
+    "fields": ["science_tech", "business_leadership", "arts_creative", "service_ops"],
+    "questions_per_field": 21,
+    "open_questions_per_field": 2,
+    "total_mc_questions": 84,
+    "total_open_questions": 8,
+    "response_format": "4-option forced choice (MC), free text (open)",
+    "pillar_mapping": "Cyclic: q1→CP, q2→Comm, q3→Know, q4→Crea, q5→Drive, q6→CP, ..., q21→CP",
+    "scoring": {
+      "mc_option_scores": [0, 1, 2, 3],
+      "pillar_aggregation": "Mean of raw scores per pillar, scaled to 0-100",
+      "open_answer_weight": 0.10,
+      "mc_weight": 0.90,
+      "open_answer_pillars": {
+        "open1": ["creativity", "communication"],
+        "open2": ["drive", "knowledge"]
+      }
+    }
+  },
+  "ximatar_assignment": {
+    "method": "Euclidean distance to 12 canonical prototype vectors",
+    "prototypes": {
+      "lion": { "drive": 90, "comp_power": 60, "communication": 70, "creativity": 55, "knowledge": 55 },
+      "owl": { "drive": 55, "comp_power": 85, "communication": 60, "creativity": 55, "knowledge": 75 },
+      "dolphin": { "drive": 60, "comp_power": 55, "communication": 85, "creativity": 60, "knowledge": 60 },
+      "fox": { "drive": 65, "comp_power": 60, "communication": 75, "creativity": 85, "knowledge": 55 },
+      "bear": { "drive": 60, "comp_power": 65, "communication": 55, "creativity": 50, "knowledge": 85 },
+      "bee": { "drive": 85, "comp_power": 80, "communication": 55, "creativity": 50, "knowledge": 60 },
+      "wolf": { "drive": 80, "comp_power": 60, "communication": 70, "creativity": 55, "knowledge": 55 },
+      "cat": { "drive": 55, "comp_power": 85, "communication": 55, "creativity": 80, "knowledge": 60 },
+      "parrot": { "drive": 60, "comp_power": 55, "communication": 90, "creativity": 70, "knowledge": 55 },
+      "elephant": { "drive": 55, "comp_power": 65, "communication": 60, "creativity": 55, "knowledge": 90 },
+      "horse": { "drive": 80, "comp_power": 65, "communication": 60, "creativity": 55, "knowledge": 60 },
+      "chameleon": { "drive": 65, "comp_power": 65, "communication": 65, "creativity": 65, "knowledge": 65 }
+    },
+    "tie_resolution": "Lowest index in prototype list wins (deterministic)"
+  },
+  "freeze_enforcement": {
+    "version_constant": "ASSESSMENT_VERSION = '1.1'",
+    "file": "src/lib/assessment/freezeGuard.ts",
+    "hash_algorithm": "djb2 (32-bit, zero-dependency)",
+    "scope": "assessmentSets subtree per locale (EN, IT, ES)",
+    "enforcement": "Fatal console error at startup if runtime hash diverges from frozen baseline",
+    "version_bump_procedure": [
+      "1. Update ASSESSMENT_VERSION to new version (e.g., '1.2')",
+      "2. Run in browser console: import('./lib/assessment/freezeGuard').then(m => m.regenerateHashes())",
+      "3. Copy the logged hashes into ASSESSMENT_FREEZE_HASHES",
+      "4. Commit with message: 'chore: bump assessment freeze to v1.2'"
+    ]
+  },
+  "gdpr_compliance": {
+    "data_collected": ["MC responses (ordinal 0-3)", "Optional open text responses", "Timestamps", "XIMAtar assignment result", "Field selection"],
+    "data_not_collected": ["Sensitive personal data (Art. 9 GDPR)", "Health data", "Political opinions", "Biometric data"],
+    "processing_basis": "Legitimate interest / contractual necessity",
+    "automated_decision": false,
+    "article_22_statement": "XIMA Assessment is a decision-support tool and does not produce automated legally binding decisions under Article 22 GDPR.",
+    "user_rights": ["Access (Art. 15)", "Rectification (Art. 16)", "Erasure (Art. 17)", "Objection (Art. 21)", "Data Portability (Art. 20)"],
+    "implementation": {
+      "deletion": "delete-account edge function",
+      "export": "data-export edge function",
+      "profiling_opt_out": "profiling_opt_out flag in profiles table"
+    }
+  }
+}
