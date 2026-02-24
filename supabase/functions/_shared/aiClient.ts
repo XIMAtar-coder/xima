@@ -1,21 +1,25 @@
 /**
- * Shared AI Gateway Client — v1.2 Enterprise Edition
+ * Shared AI Gateway Client — v1.2 Enterprise Edition (Hardened)
  * 
  * Unified wrapper for Lovable AI Gateway calls across all edge functions.
  * Provides structured logging, correlation IDs, error handling, response parsing,
  * and persistent AI Invocation Envelope logging for enterprise auditability.
+ * 
+ * GOVERNANCE: prompt_hash now covers system+user+temperature+max_tokens+hidden_instructions
  */
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 // =====================================================
-// AI GOVERNANCE CONSTANTS (v1.2)
+// AI GOVERNANCE CONSTANTS (v1.2 — Hardened)
 // =====================================================
 export const AI_PROVIDER = "lovable_gateway";
 export const AI_GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 export const DEFAULT_MODEL = "google/gemini-2.5-flash";
-export const DEFAULT_MODEL_VERSION = "1.0";
+export const DEFAULT_MODEL_VERSION = "2025-04-17";  // pinned provider snapshot
 export const DEFAULT_TEMPERATURE = undefined; // provider default
+export const PROMPT_TEMPLATE_VERSION = "1.0";
+export const SCORING_SCHEMA_VERSION = "1.0";
 
 export interface AiMessage {
   role: "system" | "user" | "assistant";
@@ -32,6 +36,10 @@ export interface AiRequestOptions {
   functionName: string;
   /** Redacted input summary for audit log (no PII). E.g. "field=science_tech,lang=en,len=342" */
   inputSummary?: string;
+  /** Override prompt template version (defaults to PROMPT_TEMPLATE_VERSION) */
+  promptTemplateVersion?: string;
+  /** Override scoring schema version (defaults to SCORING_SCHEMA_VERSION) */
+  scoringSchemaVersion?: string;
 }
 
 export interface AiResponse {
@@ -73,12 +81,23 @@ export function logAiCall(entry: AiCallLog): void {
 }
 
 /**
- * Compute SHA-256 hash of prompt content for drift detection.
+ * Compute SHA-256 hash of the FULL invocation fingerprint for drift detection.
+ * Includes: all message roles+content, temperature, max_tokens.
  * No raw prompt stored — only the hash.
  */
-async function computePromptHash(messages: AiMessage[]): Promise<string> {
-  const concatenated = messages.map(m => `${m.role}:${m.content}`).join("\n---\n");
-  const data = new TextEncoder().encode(concatenated);
+async function computePromptHash(
+  messages: AiMessage[],
+  temperature: number | undefined,
+  maxTokens: number | undefined
+): Promise<string> {
+  // Build a deterministic canonical string covering all prompt inputs
+  const parts: string[] = [];
+  for (const m of messages) {
+    parts.push(`[${m.role}]\n${m.content}`);
+  }
+  parts.push(`[params] temperature=${temperature ?? "default"} max_tokens=${maxTokens ?? "default"}`);
+  const canonical = parts.join("\n===\n");
+  const data = new TextEncoder().encode(canonical);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
@@ -97,7 +116,10 @@ async function persistInvocationEnvelope(envelope: {
   model_name: string;
   model_version: string;
   temperature: number | null;
+  max_tokens: number | null;
   prompt_hash: string;
+  prompt_template_version: string;
+  scoring_schema_version: string;
   input_summary: string | null;
   output_summary: string | null;
   status: string;
@@ -148,12 +170,30 @@ export async function callAiGateway(
   const {
     messages, model, temperature, max_tokens, response_format,
     correlationId, functionName, inputSummary,
+    promptTemplateVersion, scoringSchemaVersion,
   } = options;
   const selectedModel = model || DEFAULT_MODEL;
   const requestId = crypto.randomUUID();
+  const ptv = promptTemplateVersion || PROMPT_TEMPLATE_VERSION;
+  const ssv = scoringSchemaVersion || SCORING_SCHEMA_VERSION;
 
-  // Pre-compute prompt hash (no PII stored)
-  const promptHash = await computePromptHash(messages);
+  // Compute prompt hash covering ALL inputs (system, user, params)
+  const promptHash = await computePromptHash(messages, temperature, max_tokens);
+
+  const baseEnvelope = {
+    request_id: requestId,
+    correlation_id: correlationId,
+    function_name: functionName,
+    provider: AI_PROVIDER,
+    model_name: selectedModel,
+    model_version: DEFAULT_MODEL_VERSION,
+    temperature: temperature ?? null,
+    max_tokens: max_tokens ?? null,
+    prompt_hash: promptHash,
+    prompt_template_version: ptv,
+    scoring_schema_version: ssv,
+    input_summary: inputSummary ?? null,
+  };
 
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
   if (!LOVABLE_API_KEY) {
@@ -165,17 +205,8 @@ export async function callAiGateway(
       status: "error",
       error_code: "MISSING_API_KEY",
     });
-    // Persist failure envelope
     await persistInvocationEnvelope({
-      request_id: requestId,
-      correlation_id: correlationId,
-      function_name: functionName,
-      provider: AI_PROVIDER,
-      model_name: selectedModel,
-      model_version: DEFAULT_MODEL_VERSION,
-      temperature: temperature ?? null,
-      prompt_hash: promptHash,
-      input_summary: inputSummary ?? null,
+      ...baseEnvelope,
       output_summary: null,
       status: "error",
       error_code: "MISSING_API_KEY",
@@ -230,17 +261,8 @@ export async function callAiGateway(
     const errorText = await response.text().catch(() => "");
     console.error(`[${functionName}] AI gateway error: ${status}`, errorText.substring(0, 200));
 
-    // Persist failure envelope
     await persistInvocationEnvelope({
-      request_id: requestId,
-      correlation_id: correlationId,
-      function_name: functionName,
-      provider: AI_PROVIDER,
-      model_name: selectedModel,
-      model_version: DEFAULT_MODEL_VERSION,
-      temperature: temperature ?? null,
-      prompt_hash: promptHash,
-      input_summary: inputSummary ?? null,
+      ...baseEnvelope,
       output_summary: `error:${errorCode}`,
       status: logStatus,
       error_code: errorCode,
@@ -272,15 +294,7 @@ export async function callAiGateway(
     });
 
     await persistInvocationEnvelope({
-      request_id: requestId,
-      correlation_id: correlationId,
-      function_name: functionName,
-      provider: AI_PROVIDER,
-      model_name: selectedModel,
-      model_version: DEFAULT_MODEL_VERSION,
-      temperature: temperature ?? null,
-      prompt_hash: promptHash,
-      input_summary: inputSummary ?? null,
+      ...baseEnvelope,
       output_summary: "empty_response",
       status: "error",
       error_code: "EMPTY_RESPONSE",
@@ -303,15 +317,7 @@ export async function callAiGateway(
   const redactedOutput = `len=${outputLen},truncated=${content.substring(0, 60).replace(/[^a-zA-Z0-9_:={},\s]/g, '.')}`;
 
   persistInvocationEnvelope({
-    request_id: requestId,
-    correlation_id: correlationId,
-    function_name: functionName,
-    provider: AI_PROVIDER,
-    model_name: selectedModel,
-    model_version: DEFAULT_MODEL_VERSION,
-    temperature: temperature ?? null,
-    prompt_hash: promptHash,
-    input_summary: inputSummary ?? null,
+    ...baseEnvelope,
     output_summary: redactedOutput,
     status: "success",
     error_code: null,

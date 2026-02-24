@@ -80,12 +80,15 @@ export type Database = {
           input_summary: string | null
           invoked_at: string
           latency_ms: number | null
+          max_tokens: number | null
           model_name: string
           model_version: string
           output_summary: string | null
           prompt_hash: string
+          prompt_template_version: string
           provider: string
           request_id: string
+          scoring_schema_version: string
           status: string
           temperature: number | null
         }
@@ -97,12 +100,15 @@ export type Database = {
           input_summary?: string | null
           invoked_at?: string
           latency_ms?: number | null
+          max_tokens?: number | null
           model_name: string
           model_version?: string
           output_summary?: string | null
           prompt_hash: string
+          prompt_template_version?: string
           provider?: string
           request_id: string
+          scoring_schema_version?: string
           status: string
           temperature?: number | null
         }
@@ -114,12 +120,15 @@ export type Database = {
           input_summary?: string | null
           invoked_at?: string
           latency_ms?: number | null
+          max_tokens?: number | null
           model_name?: string
           model_version?: string
           output_summary?: string | null
           prompt_hash?: string
+          prompt_template_version?: string
           provider?: string
           request_id?: string
+          scoring_schema_version?: string
           status?: string
           temperature?: number | null
         }
