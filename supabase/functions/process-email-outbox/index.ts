@@ -15,6 +15,8 @@
  */
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
+import { newCorrelationId } from "../_shared/correlationId.ts";
 
 const BATCH_SIZE = 10;
 const BASE_BACKOFF_SECONDS = 30;
@@ -166,6 +168,16 @@ Deno.serve(async (req) => {
 
   const summary = { processed: emails.length, sent, failed, dead_lettered: deadLettered };
   console.log("[email-outbox] Batch complete:", JSON.stringify(summary));
+
+  // Emit batch-level audit metric for edge function latency
+  emitAuditEventWithMetric({
+    actorType: 'system',
+    actorId: null,
+    action: 'email.batch_processed',
+    entityType: 'email_outbox',
+    correlationId: newCorrelationId(),
+    metadata: summary,
+  }, 'email.batch_processed');
 
   return new Response(JSON.stringify(summary), {
     status: 200,

@@ -4,6 +4,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { callAiGateway, generateCorrelationId, AiGatewayError, computeContentHash, persistEvidenceLedgerEntry } from "../_shared/aiClient.ts";
 import { validateOpenAnswerScoring } from "../_shared/aiSchema.ts";
 import { corsHeaders, errorResponse, jsonResponse, profilingOptOutResponse } from "../_shared/errors.ts";
+import { emitAuditEventWithMetric, hashForAudit } from "../_shared/auditEvents.ts";
+import { extractCorrelationId } from "../_shared/correlationId.ts";
 
 // =====================================================
 // NON-ANSWER DETECTION (Pre-LLM Hard Rules)
@@ -64,7 +66,8 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const correlationId = req.headers.get('x-correlation-id') || generateCorrelationId();
+  const correlationId = extractCorrelationId(req);
+  const ipHash = req.headers.get('x-forwarded-for') ? await hashForAudit(req.headers.get('x-forwarded-for')!) : null;
 
   try {
     const { text, field, language, openKey, user_id } = await req.json();
@@ -297,6 +300,18 @@ Return ONLY the JSON object, no other text.`;
       quality_label: qualityLabel,
       red_flags_count: redFlags.length,
     }));
+
+    // Emit audit event for open answer scoring
+    emitAuditEventWithMetric({
+      actorType: 'system',
+      actorId: null,
+      action: 'assessment.open_answer_scored',
+      entityType: 'open_answer',
+      entityId: `${field}:${openKey}`,
+      correlationId,
+      metadata: { field, openKey, finalScore, qualityLabel, redFlagsCount: redFlags.length, ai_request_id: aiRequestId },
+      ipHash,
+    }, 'open_answer.scored');
 
     // ===== EVIDENCE LEDGER: persist audit trail (fire-and-forget) =====
     // Requires: user_id, attempt_id, and the open_response to already be saved

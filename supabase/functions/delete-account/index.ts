@@ -1,5 +1,7 @@
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { emitAuditEvent } from "../_shared/auditEvents.ts";
+import { extractCorrelationId } from "../_shared/correlationId.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -50,7 +52,18 @@ serve(async (req) => {
       );
     }
 
+    const correlationId = extractCorrelationId(req);
     console.log("[delete-account] Starting deletion for user:", user.id);
+
+    // Emit audit event BEFORE deletion (actor_id will be nullified after)
+    emitAuditEvent({
+      actorType: 'candidate',
+      actorId: user.id,
+      action: 'data_rights.deletion_requested',
+      entityType: 'profile',
+      entityId: user.id,
+      correlationId,
+    });
 
     // Parse confirmation from request body
     const { confirmation } = await req.json();
