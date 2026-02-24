@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XIMA v1.2 — Enterprise Stabilization Plan</title>
+<style>
+  :root { --blue: #4171d6; --red: #dc2626; --amber: #d97706; --green: #16a34a; --bg: #ffffff; --fg: #1a1a2e; --muted: #6b7280; --border: #e5e7eb; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', -apple-system, sans-serif; color: var(--fg); background: var(--bg); line-height: 1.6; max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+  h1 { font-size: 28px; color: var(--blue); margin-bottom: 8px; }
+  h2 { font-size: 22px; margin: 40px 0 16px; border-bottom: 2px solid var(--blue); padding-bottom: 8px; }
+  h3 { font-size: 18px; margin: 24px 0 12px; color: var(--fg); }
+  h4 { font-size: 15px; margin: 16px 0 8px; }
+  p, li { font-size: 14px; margin-bottom: 8px; }
+  ul, ol { padding-left: 24px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: #f3f4f6; font-weight: 600; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .badge-p0 { background: #fef2f2; color: var(--red); border: 1px solid #fca5a5; }
+  .badge-p1 { background: #fffbeb; color: var(--amber); border: 1px solid #fcd34d; }
+  .badge-p2 { background: #f0fdf4; color: var(--green); border: 1px solid #86efac; }
+  .badge-critical { background: var(--red); color: white; }
+  .badge-high { background: #f97316; color: white; }
+  .badge-medium { background: var(--amber); color: white; }
+  .badge-low { background: var(--green); color: white; }
+  .status { font-weight: 600; }
+  .status-planned { color: var(--muted); }
+  .status-completed { color: var(--green); }
+  .meta { color: var(--muted); font-size: 12px; margin-bottom: 24px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 16px 0; }
+  .kpi-card { border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .kpi-card h4 { margin: 0 0 4px; font-size: 13px; color: var(--muted); }
+  .kpi-card .value { font-size: 20px; font-weight: 700; color: var(--blue); }
+  .step-block { border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 16px 0; }
+  .step-block h4 { margin-top: 0; }
+  code { background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+  @media print { body { max-width: 100%; padding: 20px; } h2 { page-break-before: always; } .step-block { page-break-inside: avoid; } }
+</style>
+</head>
+<body>
+
+<h1>XIMA v1.2 — Enterprise Stabilization Plan</h1>
+<p class="meta">Document Version: 1.0 | Generated: 2026-02-24 | Classification: Internal — Enterprise Engineering</p>
+
+<!-- ============================================================ -->
+<h2>1. Executive Summary</h2>
+
+<h3>Current Status</h3>
+<p>XIMA v1.1 is a functional assessment + hiring platform with GDPR launch compliance ("GO" verdict), a frozen psychometric baseline (Mean Cronbach's α 0.63–0.67), and a progressive 3-level challenge pipeline. The platform serves candidates, businesses, and mentors with AI-powered evaluation across 5 pillars.</p>
+
+<h3>Top Risks</h3>
+<ul>
+  <li><strong>AI Non-Determinism:</strong> No model pinning, no prompt versioning, no evidence trail for AI-evaluated open answers</li>
+  <li><strong>Email Unreliability:</strong> Fire-and-forget email sends with no retry, no delivery tracking, no outbox pattern</li>
+  <li><strong>No Observability:</strong> Structured console logs only — no persistent audit trail, no metrics, no alerting</li>
+  <li><strong>Payment Gap:</strong> Membership tiers defined in code/DB but no payment integration — broken upgrade flows</li>
+  <li><strong>Synthetic-Only Validation:</strong> Psychometric validity based on synthetic data only (N=0 real users for IRT)</li>
+</ul>
+
+<h3>v1.2 Objective</h3>
+<p><strong>"Operational stability & auditability."</strong> Make XIMA enterprise-ready through deterministic AI governance, reliable event delivery, persistent audit trails, and honest feature gating.</p>
+
+<h3>Success KPIs / SLIs</h3>
+<div class="kpi-grid">
+  <div class="kpi-card"><h4>AI Invocation Traceability</h4><div class="value">100%</div><p>Every AI call produces a persistent audit record</p></div>
+  <div class="kpi-card"><h4>Email Delivery Rate</h4><div class="value">>95%</div><p>With retry + idempotency enforcement</p></div>
+  <div class="kpi-card"><h4>Audit Event Coverage</h4><div class="value">6+ lifecycle events</div><p>Signup through deletion</p></div>
+  <div class="kpi-card"><h4>Zero Shell Features</h4><div class="value">0</div><p>No non-functional features exposed to users</p></div>
+  <div class="kpi-card"><h4>Freeze Guard</h4><div class="value">Hard-coded hashes</div><p>v1.1 assessment content immutable</p></div>
+</div>
+
+<!-- ============================================================ -->
+<h2>2. Enterprise Risk Heatmap</h2>
+
+<table>
+  <tr>
+    <th>Risk</th>
+    <th>Severity</th>
+    <th>Likelihood</th>
+    <th>Blast Radius</th>
+    <th>Mitigation</th>
+    <th>Owner</th>
+    <th>ETA</th>
+  </tr>
+  <tr>
+    <td><strong>AI Model Drift / No Pinning</strong><br>Model version not locked; Lovable gateway may change underlying model without notice</td>
+    <td><span class="badge badge-critical">Critical</span></td>
+    <td><span class="badge badge-high">High</span></td>
+    <td>All AI-evaluated content (open answers, CV analysis, L2 signals, challenges)</td>
+    <td>Step 1: AI Invocation Envelope — persist model/version/prompt-hash per call</td>
+    <td>Platform</td>
+    <td>Step 1</td>
+  </tr>
+  <tr>
+    <td><strong>No Replay / No Evidence Trail for Open Answers</strong><br>Open-answer scores exist in assessment_open_responses but no link to AI invocation</td>
+    <td><span class="badge badge-critical">Critical</span></td>
+    <td><span class="badge badge-critical">Certain</span></td>
+    <td>Psychometric auditability, legal liability</td>
+    <td>Step 2: Open-Answer Evidence Ledger</td>
+    <td>Platform</td>
+    <td>Step 2</td>
+  </tr>
+  <tr>
+    <td><strong>Email Deliverability / Missing Event Confirmations</strong><br>4 email functions use fire-and-forget; no retry, no dedup, RESEND_API_KEY may not be configured</td>
+    <td><span class="badge badge-high">High</span></td>
+    <td><span class="badge badge-high">High</span></td>
+    <td>Welcome emails, verification, challenge invitations, referral invites</td>
+    <td>Step 3: Email Outbox + Idempotency</td>
+    <td>Platform</td>
+    <td>Step 3</td>
+  </tr>
+  <tr>
+    <td><strong>L3 Video — Partially Implemented Shell</strong><br>StandingVideoSession.tsx implements full recording/upload UI (1008 lines) but bucket access, business playback, and pipeline gating may be incomplete</td>
+    <td><span class="badge badge-medium">Medium</span></td>
+    <td><span class="badge badge-medium">Medium</span></td>
+    <td>Candidate confusion, business UX gap</td>
+    <td>Step 6: Feature gate or complete MVP</td>
+    <td>Product</td>
+    <td>Step 6</td>
+  </tr>
+  <tr>
+    <td><strong>Payment Integration Missing</strong><br>4 membership tiers (freemium/basic/premium/pro) defined in DB enum but no Stripe or payment provider integrated. Upgrade buttons non-functional.</td>
+    <td><span class="badge badge-high">High</span></td>
+    <td><span class="badge badge-critical">Certain</span></td>
+    <td>Revenue, business model credibility</td>
+    <td>Step 5: Enterprise-only mode with "Contact Sales" CTA</td>
+    <td>Product</td>
+    <td>Step 5</td>
+  </tr>
+  <tr>
+    <td><strong>Synthetic Psychometrics Only</strong><br>All validation (Cronbach's α, discriminant validity) based on synthetic data. No real-data IRT calibration.</td>
+    <td><span class="badge badge-medium">Medium</span></td>
+    <td><span class="badge badge-critical">Certain</span></td>
+    <td>Scientific credibility, claims defensibility</td>
+    <td>Step 7: Real-world validation logging (anonymized)</td>
+    <td>Research</td>
+    <td>Step 7</td>
+  </tr>
+  <tr>
+    <td><strong>Single AI Provider / No Fallback</strong><br>All AI calls go through Lovable AI Gateway (google/gemini-2.5-flash). No circuit breaker.</td>
+    <td><span class="badge badge-medium">Medium</span></td>
+    <td><span class="badge badge-medium">Medium</span></td>
+    <td>All AI-dependent features degrade simultaneously</td>
+    <td>Backlog S10: Circuit breaker pattern</td>
+    <td>Platform</td>
+    <td>P2</td>
+  </tr>
+  <tr>
+    <td><strong>No Observability Stack</strong><br>Console.log only. No persistent metrics, no alerting, no dashboard.</td>
+    <td><span class="badge badge-high">High</span></td>
+    <td><span class="badge badge-critical">Certain</span></td>
+    <td>Incident detection, SLA compliance</td>
+    <td>Step 4: Audit Events + structured logging</td>
+    <td>Platform</td>
+    <td>Step 4</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>3. Scope & Priorities</h2>
+
+<h3>P0 — Must Ship (Enterprise Blockers)</h3>
+<ol>
+  <li><strong>S1:</strong> AI Governance — Invocation Envelope + Versioning</li>
+  <li><strong>S2:</strong> Open-Answer Evidence Ledger</li>
+  <li><strong>S3:</strong> Email Reliability — Outbox + Idempotency</li>
+  <li><strong>S4:</strong> Observability — Audit Events Table</li>
+  <li><strong>S5:</strong> Freeze Guard Hardening (populate actual hashes)</li>
+  <li><strong>S9:</strong> Release Governance — Version Metadata + SOP</li>
+  <li><strong>S12:</strong> GDPR Operational Playbook</li>
+</ol>
+
+<h3>P1 — Should Ship (Commercial Viability)</h3>
+<ol>
+  <li><strong>S6:</strong> Payment Decision — Enterprise-Only Mode</li>
+  <li><strong>S7:</strong> L3 Video — Feature Gate or MVP</li>
+  <li><strong>S8:</strong> Psychometric Monitoring — Validation Logging</li>
+</ol>
+
+<h3>P2 — Nice-to-Have (Operational Maturity)</h3>
+<ol>
+  <li><strong>S10:</strong> AI Fallback / Circuit Breaker</li>
+  <li><strong>S11:</strong> Operational Metrics Enhancement</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2>4. Architecture Changes</h2>
+
+<h3>4.1 AI Invocation Envelope</h3>
+<p>Every <code>callAiGateway()</code> call will persist a row to <code>ai_invocations</code> containing:</p>
+<ul>
+  <li><code>request_id</code> (UUID, PK)</li>
+  <li><code>correlation_id</code> (links to edge function request)</li>
+  <li><code>function_name</code> (which edge function made the call)</li>
+  <li><code>model</code>, <code>provider</code>, <code>model_version</code> (from gateway response)</li>
+  <li><code>prompt_hash</code> (djb2 of system prompt — enables drift detection)</li>
+  <li><code>temperature</code>, <code>max_tokens</code> (generation parameters)</li>
+  <li><code>input_length</code>, <code>output_length</code> (no PII)</li>
+  <li><code>latency_ms</code>, <code>status</code>, <code>error_code</code></li>
+  <li><code>created_at</code></li>
+</ul>
+<p><strong>Why:</strong> Enables audit trail, drift detection, replay investigation, and cost tracking.</p>
+
+<h3>4.2 Assessment Evidence Ledger</h3>
+<p>New table <code>assessment_open_answer_evidence</code> linking each open-answer AI evaluation to its invocation:</p>
+<ul>
+  <li><code>open_response_id</code> → <code>assessment_open_responses.id</code></li>
+  <li><code>ai_invocation_id</code> → <code>ai_invocations.request_id</code></li>
+  <li><code>rubric_version</code> (e.g., "v1.1")</li>
+  <li><code>raw_score</code>, <code>final_score</code>, <code>quality_label</code></li>
+  <li><code>red_flags</code> (JSONB array)</li>
+  <li><code>guardrail_applied</code> (boolean — was score capped by post-LLM rules?)</li>
+</ul>
+
+<h3>4.3 Audit Events</h3>
+<p>Lightweight event bus pattern via <code>audit_events</code> table:</p>
+<ul>
+  <li><code>id</code>, <code>actor_id</code>, <code>actor_type</code> (user/system/admin)</li>
+  <li><code>action</code> (enum: signup, assessment_start, assessment_complete, challenge_submit, data_export, account_delete)</li>
+  <li><code>entity_type</code>, <code>entity_id</code></li>
+  <li><code>metadata</code> (JSONB, no PII)</li>
+  <li><code>created_at</code></li>
+</ul>
+
+<h3>4.4 Email Outbox</h3>
+<p>Idempotent email delivery via <code>email_outbox</code> table:</p>
+<ul>
+  <li><code>idempotency_key</code> (unique: template + recipient_hash + context_hash)</li>
+  <li><code>status</code>: queued → sending → sent | failed | retrying</li>
+  <li><code>attempts</code>, <code>max_attempts</code> (default 3)</li>
+  <li><code>next_retry_at</code> (exponential backoff)</li>
+  <li><code>provider_response</code> (Resend response body)</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2>5. Acceptance Criteria Summary</h2>
+
+<table>
+  <tr><th>Step</th><th>Acceptance Criteria</th><th>Testable?</th></tr>
+  <tr>
+    <td>S1 — AI Envelope</td>
+    <td>Query <code>ai_invocations</code> after any AI call → row exists with all fields populated</td>
+    <td>✅ SQL query</td>
+  </tr>
+  <tr>
+    <td>S2 — Evidence Ledger</td>
+    <td>Complete assessment with open answers → evidence rows exist linking to invocations</td>
+    <td>✅ SQL query</td>
+  </tr>
+  <tr>
+    <td>S3 — Email Outbox</td>
+    <td>Trigger email → outbox row created → status transitions to sent. Duplicate trigger → no second email.</td>
+    <td>✅ Functional test</td>
+  </tr>
+  <tr>
+    <td>S4 — Audit Events</td>
+    <td>Signup → event logged. Assessment complete → event logged. Query audit_events → events present.</td>
+    <td>✅ SQL query</td>
+  </tr>
+  <tr>
+    <td>S5 — Freeze Guard</td>
+    <td>Hash values non-null in source. Modify locale → FATAL error logged.</td>
+    <td>✅ Unit test</td>
+  </tr>
+  <tr>
+    <td>S6 — Payment Mode</td>
+    <td>Navigate to membership → "Contact Sales" button visible. No Stripe checkout triggered.</td>
+    <td>✅ Visual check</td>
+  </tr>
+  <tr>
+    <td>S7 — L3 Gate</td>
+    <td>No L3 invitation visible to candidates (if gated). OR video uploads + plays back (if MVP).</td>
+    <td>✅ E2E check</td>
+  </tr>
+  <tr>
+    <td>S8 — Validation Logging</td>
+    <td>Complete assessment → anonymized analytics row created. No user_id in row.</td>
+    <td>✅ SQL query</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>6. Rollout Plan</h2>
+
+<h3>6.1 Feature Flags</h3>
+<ul>
+  <li><code>ENABLE_SELF_SERVE_PAYMENTS</code> = <code>false</code> (disables Stripe checkout, shows Contact Sales)</li>
+  <li><code>ENABLE_L3_VIDEO</code> = <code>true</code> or <code>false</code> (gates Level 3 invitations)</li>
+  <li><code>ENABLE_AI_INVOCATION_LOGGING</code> = <code>true</code> (can be disabled in emergency)</li>
+</ul>
+
+<h3>6.2 Backward Compatibility</h3>
+<ul>
+  <li>All new tables are additive — no existing table modifications</li>
+  <li>AI invocation logging is fire-and-forget — failures don't block the AI call</li>
+  <li>Email outbox is backwards-compatible — functions still send immediately, outbox tracks status</li>
+  <li>v1.1 assessment content is untouched — freeze guard enforces this</li>
+</ul>
+
+<h3>6.3 Rollback Strategy</h3>
+<ul>
+  <li><strong>Per-step rollback:</strong> Each step's migration can be reverted by dropping the new table</li>
+  <li><strong>Code rollback:</strong> Git revert to pre-step commit</li>
+  <li><strong>Feature flags:</strong> Instant disable without code deployment</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2>7. Compliance & Legal Appendix</h2>
+
+<h3>7.1 GDPR Decision-Support Disclaimer (Art. 22)</h3>
+<p>XIMA operates as a <strong>decision-support tool</strong>, not an automated decision-making system. Per GDPR Article 22:</p>
+<ul>
+  <li>All AI-generated signals (L1 mindset, L2 hard skills, CV analysis) are presented as <strong>qualitative indicators</strong>, not scores or rankings</li>
+  <li>Business users make final hiring decisions — XIMA does not auto-reject candidates</li>
+  <li>Candidates can exercise their right to object to profiling via <code>profiling_opt_out</code> flag</li>
+  <li>All AI evaluation functions check this flag before processing</li>
+</ul>
+
+<h3>7.2 Data Retention Recommendations</h3>
+<table>
+  <tr><th>Data Category</th><th>Recommended Retention</th><th>Rationale</th></tr>
+  <tr><td>Assessment results</td><td>Active account lifetime + 30 days post-deletion</td><td>Core service data</td></tr>
+  <tr><td>AI invocations</td><td>12 months rolling</td><td>Audit trail, not PII</td></tr>
+  <tr><td>Email outbox</td><td>90 days</td><td>Delivery debugging</td></tr>
+  <tr><td>Audit events</td><td>24 months</td><td>Compliance evidence</td></tr>
+  <tr><td>Chat messages</td><td>Active account lifetime (anonymized on delete)</td><td>Service data</td></tr>
+  <tr><td>CV uploads</td><td>Active account lifetime (deleted on account delete)</td><td>Sensitive PII</td></tr>
+  <tr><td>Challenge videos</td><td>12 months post-submission</td><td>Business review period</td></tr>
+</table>
+
+<h3>7.3 DSR Operations</h3>
+<ul>
+  <li><strong>Right of Access:</strong> <code>data-export</code> edge function aggregates 16 tables</li>
+  <li><strong>Right to Deletion:</strong> <code>delete-account</code> edge function + <code>delete_user_account</code> RPC cascades across all tables</li>
+  <li><strong>Right to Rectification:</strong> Profile edit UI + direct DB update via RLS</li>
+  <li><strong>Right to Object to Profiling:</strong> <code>profiling_opt_out</code> flag blocks all AI analysis</li>
+</ul>
+
+<h3>7.4 Logging Boundaries</h3>
+<p><strong>NEVER log:</strong> email addresses, names, answer text, CV content, chat messages</p>
+<p><strong>SAFE to log:</strong> user_id (UUID), correlation_id, function_name, latency_ms, status, field_key, content lengths, error codes</p>
+
+<!-- ============================================================ -->
+<h2>8. Execution Plan (Step-by-Step)</h2>
+
+<div class="step-block">
+  <h4><span class="badge badge-p0">P0</span> Step 0 — Baseline Audit (READ-ONLY)</h4>
+  <p><strong>Objective:</strong> Map all AI call sites, email flows, observability gaps, and payment scaffolding status.</p>
+  <p><strong>Status:</strong> <span class="status status-completed">✅ COMPLETED</span></p>
+  <p><strong>Findings:</strong> See Section 8.1 below.</p>
+</div>
+
+<div class="step-block">
+  <h4><span class="badge badge-p0">P0</span> Step 1 — AI Governance: Invocation Envelope</h4>
+  <p><strong>Objective:</strong> Persist model/version/prompt-hash/params per AI call.</p>
+  <p><strong>Tables:</strong> <code>ai_invocations</code> (new)</p>
+  <p><strong>Files:</strong> <code>supabase/functions/_shared/aiClient.ts</code></p>
+  <p><strong>Tests:</strong> Trigger any AI-using function → verify row in <code>ai_invocations</code></p>
+  <p><strong>Rollback:</strong> Drop table, revert aiClient.ts</p>
+  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+</div>
+
+<div class="step-block">
+  <h4><span class="badge badge-p0">P0</span> Step 2 — Open-Answer Evidence Ledger</h4>
+  <p><strong>Objective:</strong> Link each open-answer evaluation to its AI invocation and rubric version.</p>
+  <p><strong>Tables:</strong> <code>assessment_open_answer_evidence</code> (new)</p>
+  <p><strong>Files:</strong> <code>supabase/functions/analyze-open-answer/index.ts</code></p>
+  <p><strong>Tests:</strong> Complete assessment with open answers → evidence rows exist</p>
+  <p><strong>Rollback:</strong> Drop table, revert function</p>
+  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+</div>
+
+<div class="step-block">
+  <h4><span class="badge badge-p0">P0</span> Step 3 — Email Outbox + Idempotency</h4>
+  <p><strong>Objective:</strong> Reliable, idempotent email delivery with retry.</p>
+  <p><strong>Tables:</strong> <code>email_outbox</code> (new)</p>
+  <p><strong>Files:</strong> All 4 email edge functions</p>
+  <p><strong>Tests:</strong> Send email → outbox row. Resend → no duplicate. Simulate failure → retry.</p>
+  <p><strong>Rollback:</strong> Drop table, revert functions</p>
+  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+</div>
+
+<div class="step-block">
+  <h4><span class="badge badge-p0">P0</span> Step 4 — Audit Events</h4>
+  <p><strong>Objective:</strong> Persistent lifecycle event tracking.</p>
+  <p><strong>Tables:</strong> <code>audit_events</code> (new)</p>
+  <p><strong>Files:</strong> Edge functions + client hooks</p>
+  <p><strong>Tests:</strong> Signup → event. Assessment → event. Query table → events present.</p>
+  <p><strong>Rollback:</strong> Drop table, remove emit calls</p>
+  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+</div>
+
+<div class="step-block">
+  <h4><span class="badge badge-p1">P1</span> Step 5 — Payment Decision</h4>
+  <p><strong>Objective:</strong> Clean enterprise-only mode with Contact Sales CTA.</p>
+  <p><strong>Files:</strong> MembershipSection, MembershipSummaryCard</p>
+  <p><strong>Tests:</strong> Navigate to membership → "Contact Sales" visible. No checkout flow.</p>
+  <p><strong>Rollback:</strong> Revert CTA text</p>
+  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+</div>
+
+<div class="step-block">
+  <h4><span class="badge badge-p1">P1</span> Step 6 — L3 Video Decision</h4>
+  <p><strong>Objective:</strong> Gate or complete L3 video feature.</p>
+  <p><strong>Files:</strong> StandingVideoSession.tsx, Level3VideoPlayer.tsx</p>
+  <p><strong>Tests:</strong> No shell feature exposed. Feature works end-to-end or is hidden.</p>
+  <p><strong>Rollback:</strong> Toggle feature flag</p>
+  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+</div>
+
+<div class="step-block">
+  <h4><span class="badge badge-p1">P1</span> Step 7 — Validation Logging</h4>
+  <p><strong>Objective:</strong> Anonymized psychometric monitoring.</p>
+  <p><strong>Tables:</strong> <code>assessment_analytics</code> (new)</p>
+  <p><strong>Tests:</strong> Complete assessment → analytics row. No user_id in row.</p>
+  <p><strong>Rollback:</strong> Drop table</p>
+  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+</div>
+
+<div class="step-block">
+  <h4><span class="badge badge-p0">P0</span> Step 8 — Final Hardening</h4>
+  <p><strong>Objective:</strong> Update plan, confirm freeze, add change-control SOP.</p>
+  <p><strong>Files:</strong> This document, freezeGuard.ts</p>
+  <p><strong>Tests:</strong> v1.1 freeze passes. All steps marked completed.</p>
+  <p><strong>Rollback:</strong> N/A</p>
+  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+</div>
+
+<!-- ============================================================ -->
+<h2>8.1 Step 0 — Baseline Audit Results</h2>
+
+<h3>AI Call Sites (10 edge functions)</h3>
+<table>
+  <tr><th>#</th><th>Function</th><th>AI Purpose</th><th>Model</th><th>Has Prompt Hash?</th><th>Has Invocation Log?</th></tr>
+  <tr><td>1</td><td><code>analyze-open-answer</code></td><td>Score open-ended assessment answers (0-100)</td><td>gemini-2.5-flash (default)</td><td>❌</td><td>Console only</td></tr>
+  <tr><td>2</td><td><code>analyze-cv</code></td><td>Score CV against 5 pillars</td><td>gemini-2.5-flash</td><td>❌</td><td>Console only</td></tr>
+  <tr><td>3</td><td><code>ximai-chat</code></td><td>Conversational assistant</td><td>gemini-2.5-flash</td><td>❌</td><td>Console only</td></tr>
+  <tr><td>4</td><td><code>generate-challenge</code></td><td>Generate L1/L2 challenge scenarios</td><td>gemini-2.5-flash</td><td>❌</td><td>Console only</td></tr>
+  <tr><td>5</td><td><code>compute-level2-signals</code></td><td>Evaluate L2 hard skill submissions</td><td>gemini-2.5-flash</td><td>❌</td><td>Console only</td></tr>
+  <tr><td>6</td><td><code>analyze-company-profile</code></td><td>Extract culture signals from website</td><td>gemini-2.5-flash</td><td>❌</td><td>Console only</td></tr>
+  <tr><td>7</td><td><code>generate-l2-challenge-from-job-post</code></td><td>Generate L2 config from job post</td><td>gemini-2.5-flash</td><td>❌</td><td>Console only</td></tr>
+  <tr><td>8</td><td><code>translate-content</code></td><td>Translate UI content</td><td>gemini-2.5-flash</td><td>❌</td><td>Console only</td></tr>
+  <tr><td>9</td><td><code>generate-company-profile</code></td><td>Generate company profile (non-AI, heuristic)</td><td>N/A (no AI call)</td><td>N/A</td><td>N/A</td></tr>
+  <tr><td>10</td><td><code>recommend-jobs</code></td><td>Job matching (algorithmic, no AI)</td><td>N/A</td><td>N/A</td><td>N/A</td></tr>
+</table>
+<p><strong>Gap:</strong> 8 functions use the Lovable AI Gateway. None persist invocation metadata beyond console.log. No prompt versioning. No model pinning.</p>
+
+<h3>Email Send Flows (4 functions)</h3>
+<table>
+  <tr><th>#</th><th>Function</th><th>Provider</th><th>Idempotency?</th><th>Retry?</th><th>Delivery Tracking?</th></tr>
+  <tr><td>1</td><td><code>send-welcome-email</code></td><td>Resend (or fallback)</td><td>✅ welcome_email_sent_at check</td><td>❌</td><td>❌</td></tr>
+  <tr><td>2</td><td><code>send-verification-email</code></td><td>Resend</td><td>❌</td><td>❌</td><td>❌</td></tr>
+  <tr><td>3</td><td><code>send-challenge-invitation</code></td><td>Resend</td><td>❌</td><td>❌</td><td>❌</td></tr>
+  <tr><td>4</td><td><code>send-referral-invite</code></td><td>Resend</td><td>❌</td><td>❌</td><td>❌</td></tr>
+</table>
+<p><strong>Gap:</strong> Only welcome email has idempotency. None have retry. None track delivery status. RESEND_API_KEY may not be configured (graceful fallback exists only for welcome).</p>
+
+<h3>Observability Status</h3>
+<table>
+  <tr><th>Capability</th><th>Status</th><th>Details</th></tr>
+  <tr><td>Structured Logging</td><td>✅ Partial</td><td>All AI functions log JSON with correlation_id. Standard format via _shared/errors.ts.</td></tr>
+  <tr><td>Persistent Audit Trail</td><td>❌ Missing</td><td>activity_logs table exists but only used by log_user_activity RPC (limited events)</td></tr>
+  <tr><td>Metrics / Dashboards</td><td>❌ Missing</td><td>No metrics collection beyond Supabase's built-in analytics</td></tr>
+  <tr><td>Alerting</td><td>❌ Missing</td><td>No alerting configured</td></tr>
+  <tr><td>Error Rate Monitoring</td><td>❌ Missing</td><td>Derivable from edge function logs but no automated tracking</td></tr>
+</table>
+
+<h3>Payment / Monetization Status</h3>
+<table>
+  <tr><th>Component</th><th>Status</th><th>Details</th></tr>
+  <tr><td>Membership Tiers</td><td>✅ Defined</td><td>4 tiers in DB enum: freemium, basic, premium, pro</td></tr>
+  <tr><td>Entitlements</td><td>✅ Tracked</td><td>entitlement_events, mentor_credits, mentor_credit_ledger tables operational</td></tr>
+  <tr><td>get_membership_status()</td><td>✅ Functional</td><td>Returns tier, sessions remaining, credits, etc.</td></tr>
+  <tr><td>Stripe Integration</td><td>❌ None</td><td>No Stripe SDK, no checkout, no webhook</td></tr>
+  <tr><td>Upgrade UI</td><td>⚠️ Shell</td><td>MembershipSection shows tiers but upgrade path is non-functional</td></tr>
+</table>
+
+<h3>L3 Video Status</h3>
+<table>
+  <tr><th>Component</th><th>Status</th><th>Details</th></tr>
+  <tr><td>Recording UI</td><td>✅ Implemented</td><td>StandingVideoSession.tsx (1008 lines) — full MediaRecorder + upload logic</td></tr>
+  <tr><td>Upload Mode</td><td>✅ Implemented</td><td>StandingUploadMode component for file-based upload</td></tr>
+  <tr><td>Storage</td><td>✅ Configured</td><td>challenge-videos bucket with RLS on invitation ID</td></tr>
+  <tr><td>Business Playback</td><td>✅ Implemented</td><td>Level3VideoPlayer with signed URLs</td></tr>
+  <tr><td>Pipeline Gate</td><td>✅ Enforced</td><td>enforce_pipeline_progression trigger requires L2 review decision</td></tr>
+  <tr><td>Prompt System</td><td>✅ Implemented</td><td>Trilingual prompts (EN/IT/ES) with timed rotation</td></tr>
+</table>
+<p><strong>Assessment:</strong> L3 Video is more complete than expected. The implementation is functional end-to-end. Recommendation: validate with manual test before marking as production-ready.</p>
+
+<!-- ============================================================ -->
+<h2>9. Change-Control SOP</h2>
+
+<h3>For Future Releases (v1.3+)</h3>
+<ol>
+  <li><strong>Proposal:</strong> Create stabilization plan document with risk heatmap and acceptance criteria</li>
+  <li><strong>Review:</strong> Engineering + Product sign-off on scope and priorities</li>
+  <li><strong>Execution:</strong> Step-by-step with stop points and rollback notes</li>
+  <li><strong>Validation:</strong> Each step verified before proceeding</li>
+  <li><strong>Freeze Update:</strong> If assessment content changes, bump version + regenerate hashes</li>
+  <li><strong>Documentation:</strong> Update plan HTML with completion status + changelog</li>
+  <li><strong>Release:</strong> Tag version, publish plan, update PLATFORM_VERSION constant</li>
+</ol>
+
+<h3>Assessment Content Change Protocol</h3>
+<ol>
+  <li>NEVER modify assessmentSets in locale files without version bump</li>
+  <li>Run <code>regenerateHashes()</code> in browser console</li>
+  <li>Update ASSESSMENT_FREEZE_HASHES with new values</li>
+  <li>Bump ASSESSMENT_VERSION (e.g., "1.2")</li>
+  <li>Rerun validation pipeline (Cronbach's α + discriminant validity)</li>
+  <li>Document changes in release notes</li>
+</ol>
+
+<hr style="margin: 40px 0;">
+<p class="meta" style="text-align: center;">
+  XIMA v1.2 Enterprise Stabilization Plan — Confidential<br>
+  © 2026 XIMA S.r.l. All rights reserved.
+</p>
+
+</body>
+</html>

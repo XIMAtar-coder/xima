@@ -1,0 +1,203 @@
+{
+  "version": "1.2",
+  "title": "XIMA v1.2 Enterprise Stabilization Backlog",
+  "generated_at": "2026-02-24T00:00:00Z",
+  "total_items": 20,
+  "priorities": {
+    "P0": "Must ship for enterprise readiness",
+    "P1": "Should ship for commercial viability",
+    "P2": "Nice-to-have for operational maturity"
+  },
+  "backlog": [
+    {
+      "id": "S1",
+      "priority": "P0",
+      "title": "AI Governance: Invocation Envelope + Versioning",
+      "description": "Create ai_invocations table and persist model/version/prompt-hash/params/input-summary/output-summary/status per AI call. Add constants AI_PROVIDER, MODEL_NAME, MODEL_VERSION, TEMPERATURE, PROMPT_HASH to shared aiClient.ts.",
+      "acceptance_criteria": [
+        "Every callAiGateway() call produces an ai_invocations row",
+        "Row contains: request_id, timestamp, model, provider, version, prompt_hash (djb2 of system prompt), temperature, input_length, output_length, latency_ms, status, correlation_id, function_name",
+        "No PII stored in input_summary or output_summary (length only)",
+        "Admin can query invocations by function_name, date range, status",
+        "Replay mode: admin can view invocation metadata without PII"
+      ],
+      "tables": ["ai_invocations (new)"],
+      "files": ["supabase/functions/_shared/aiClient.ts"],
+      "rollback": "Drop ai_invocations table, revert aiClient.ts"
+    },
+    {
+      "id": "S2",
+      "priority": "P0",
+      "title": "Open-Answer Evidence Ledger",
+      "description": "Create assessment_open_answer_evidence table linking each open-answer evaluation to its AI invocation, rubric version, and scoring output.",
+      "acceptance_criteria": [
+        "Each analyze-open-answer call creates an evidence row",
+        "Row links to ai_invocations.request_id",
+        "Rubric version stored (currently implicit v1.1)",
+        "Score breakdown persisted alongside final score",
+        "Evidence rows queryable by user_id, attempt_id, field_key"
+      ],
+      "tables": ["assessment_open_answer_evidence (new)"],
+      "files": ["supabase/functions/analyze-open-answer/index.ts"],
+      "rollback": "Drop evidence table, revert edge function"
+    },
+    {
+      "id": "S3",
+      "priority": "P0",
+      "title": "Email Reliability: Outbox + Idempotency",
+      "description": "Create email_outbox table with idempotency keys. Refactor all 4 email-sending functions to enqueue then send with retry logic.",
+      "acceptance_criteria": [
+        "email_outbox table stores: id, idempotency_key, template, recipient_hash, payload, status (queued/sent/failed/retrying), attempts, last_attempt_at, provider_response, created_at",
+        "No duplicate emails sent for same idempotency_key",
+        "Failed sends retry up to 3 times with exponential backoff",
+        "All 4 email functions (welcome, verification, challenge-invitation, referral-invite) use outbox",
+        "Delivery status queryable by admin"
+      ],
+      "tables": ["email_outbox (new)"],
+      "files": [
+        "supabase/functions/send-welcome-email/index.ts",
+        "supabase/functions/send-verification-email/index.ts",
+        "supabase/functions/send-challenge-invitation/index.ts",
+        "supabase/functions/send-referral-invite/index.ts"
+      ],
+      "rollback": "Drop email_outbox, revert all 4 functions"
+    },
+    {
+      "id": "S4",
+      "priority": "P0",
+      "title": "Observability: Audit Events Table",
+      "description": "Create audit_events table for lifecycle event tracking. Emit events for key user actions: signup, assessment_started, assessment_completed, challenge_submitted, report_generated, deletion_requested.",
+      "acceptance_criteria": [
+        "audit_events table: id, actor_id, actor_type, action, entity_type, entity_id, metadata, created_at",
+        "Events emitted for: user_signup, assessment_start, assessment_complete, challenge_submit, data_export, account_delete_request",
+        "No PII in metadata (user_id only, no names/emails)",
+        "Events queryable by action, actor_id, date range",
+        "RLS: only admin role can read audit_events"
+      ],
+      "tables": ["audit_events (new)"],
+      "files": ["Multiple edge functions + client hooks"],
+      "rollback": "Drop audit_events table, remove emit calls"
+    },
+    {
+      "id": "S5",
+      "priority": "P0",
+      "title": "Freeze Guard Hardening",
+      "description": "Populate ASSESSMENT_FREEZE_HASHES with actual computed hashes instead of null values. Add CI-compatible validation.",
+      "acceptance_criteria": [
+        "ASSESSMENT_FREEZE_HASHES has non-null values for en, it, es",
+        "Any locale content change triggers FATAL console.error",
+        "validateAssessmentFreeze() called on app startup",
+        "Hash values documented in v1.2 release notes"
+      ],
+      "tables": [],
+      "files": ["src/lib/assessment/freezeGuard.ts"],
+      "rollback": "Revert hash values to null (v1.1 behavior)"
+    },
+    {
+      "id": "S6",
+      "priority": "P1",
+      "title": "Payment Decision: Enterprise-Only Mode",
+      "description": "Implement enterprise-only contracts mode: membership tier UI shows tiers but purchase buttons replaced with 'Contact Sales'. No Stripe integration in v1.2.",
+      "acceptance_criteria": [
+        "MembershipSection shows tiers with pricing info",
+        "All 'Subscribe' or 'Upgrade' buttons replaced with 'Contact Sales' linking to email",
+        "No broken payment flows in any user journey",
+        "Feature flag ENABLE_SELF_SERVE_PAYMENTS = false",
+        "Business pricing page shows 'Request Demo' CTA"
+      ],
+      "tables": [],
+      "files": ["src/components/settings/MembershipSection.tsx", "src/components/profile/MembershipSummaryCard.tsx"],
+      "rollback": "Revert CTA text changes"
+    },
+    {
+      "id": "S7",
+      "priority": "P1",
+      "title": "L3 Video: Feature Gate or MVP",
+      "description": "Either fully implement L3 video recording/storage/playback or gate it behind a feature flag hiding it from candidates until ready.",
+      "acceptance_criteria": [
+        "If gated: L3 invitations not sent, StandingVideoSession page shows 'Coming Soon' or redirects",
+        "If MVP: video uploads to challenge-videos bucket, business can play via signed URL, submission status updates correctly",
+        "No 'shell' feature exposed to candidates",
+        "Decision documented in plan"
+      ],
+      "tables": [],
+      "files": ["src/pages/candidate/StandingVideoSession.tsx", "src/components/business/Level3VideoPlayer.tsx"],
+      "rollback": "Re-enable/disable feature flag"
+    },
+    {
+      "id": "S8",
+      "priority": "P1",
+      "title": "Psychometric Monitoring: Real-World Validation Logging",
+      "description": "Log assessment completion events with anonymized pillar distributions for statistical monitoring. No PII.",
+      "acceptance_criteria": [
+        "assessment_analytics table: id, field_key, pillar_scores (anonymized), completion_duration_seconds, item_count, created_at",
+        "No user_id stored — purely aggregate statistics",
+        "Queryable for: completion rate, mean/std per pillar, cross-pillar correlations",
+        "Dashboard or SQL export available"
+      ],
+      "tables": ["assessment_analytics (new)"],
+      "files": ["src/utils/assessmentSync.ts or edge function"],
+      "rollback": "Drop assessment_analytics table"
+    },
+    {
+      "id": "S9",
+      "priority": "P0",
+      "title": "Release Governance: Version Metadata",
+      "description": "Add PLATFORM_VERSION constant, v1.2 changelog, and change-control SOP document.",
+      "acceptance_criteria": [
+        "PLATFORM_VERSION = '1.2.0' accessible in app",
+        "Changelog documented in plan HTML",
+        "Change-control SOP for future releases defined",
+        "v1.1 freeze still passes after all changes"
+      ],
+      "tables": [],
+      "files": ["src/lib/assessment/freezeGuard.ts", "public/XIMA_v1.2_Enterprise_Stabilization_Plan.html"],
+      "rollback": "Revert version constant"
+    },
+    {
+      "id": "S10",
+      "priority": "P2",
+      "title": "AI Fallback Provider Strategy",
+      "description": "Document single-provider risk. Add circuit-breaker pattern to aiClient for graceful degradation.",
+      "acceptance_criteria": [
+        "If AI gateway returns 5xx 3+ times in 60s, circuit opens and returns deterministic fallback",
+        "Circuit auto-resets after 120s",
+        "Fallback behavior documented per function",
+        "Alert logged when circuit opens"
+      ],
+      "tables": [],
+      "files": ["supabase/functions/_shared/aiClient.ts"],
+      "rollback": "Remove circuit breaker, revert to direct calls"
+    },
+    {
+      "id": "S11",
+      "priority": "P2",
+      "title": "Operational Metrics: Request Count + Error Rate",
+      "description": "Add lightweight request/error counting to edge functions via structured logs parseable by Supabase log drain.",
+      "acceptance_criteria": [
+        "Every edge function logs: {type: 'metric', function_name, status, latency_ms}",
+        "Error rate calculable from logs",
+        "P95 latency derivable from logs",
+        "No additional infrastructure required"
+      ],
+      "tables": [],
+      "files": ["supabase/functions/_shared/errors.ts"],
+      "rollback": "Remove metric log lines"
+    },
+    {
+      "id": "S12",
+      "priority": "P0",
+      "title": "GDPR Operational Playbook",
+      "description": "Document DSR handling procedures, data retention policies, and logging boundaries.",
+      "acceptance_criteria": [
+        "DSR playbook covers: access (data-export), deletion (delete-account), rectification, restriction",
+        "Data retention recommendations per table documented",
+        "Logging boundary rules: no email, no name, no answer text in logs",
+        "Decision-support disclaimer (Art. 22) included in plan"
+      ],
+      "tables": [],
+      "files": ["public/XIMA_v1.2_Enterprise_Stabilization_Plan.html"],
+      "rollback": "N/A (documentation only)"
+    }
+  ]
+}
