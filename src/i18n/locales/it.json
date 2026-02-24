@@ -1503,32 +1503,32 @@
         },
         "q2": {
           "category": "Comunicazione",
-          "question": "In una riunione di team, come contribuisci tipicamente?",
+          "question": "Hai trascorso due mesi a sviluppare un nuovo approccio di simulazione. Devi presentare i risultati a un comitato misto: tre esperti di dominio che sfideranno la metodologia e quattro dirigenti non tecnici che controllano i finanziamenti. Hai 20 minuti. Come strutturi la presentazione?",
           "options": [
-            "Ascolto attentamente e faccio domande chiarificatrici",
-            "Condivido idee e costruisco sulle proposte altrui",
-            "Prendo appunti e riassumo i punti chiave",
-            "Mi concentro sui prossimi passi concreti"
+            "Presenti l'intera catena metodologica con evidenze tecniche, fornendo un allegato denso che i dirigenti potranno rivedere dopo",
+            "Apri con le implicazioni dei risultati a livello dirigenziale, poi stratifichi la metodologia selettivamente quando gli esperti indagano",
+            "Apri con una domanda di inquadramento di 2 minuti per capire cosa ogni sottogruppo necessita, poi regoli la profondità in tempo reale",
+            "Invii il paper tecnico agli esperti 48 ore prima, usi la sessione live esclusivamente per l'inquadramento decisionale a livello dirigenziale"
           ]
         },
         "q3": {
           "category": "Conoscenza",
-          "question": "Come preferisci apprendere nuove competenze?",
+          "question": "La decisione tecnica del tuo team si basa su un paper ben citato, ma noti un limite metodologico che nessun altro ha segnalato. La scadenza è domani. Tu:",
           "options": [
-            "Attraverso pratica e sperimentazione diretta",
-            "Leggendo guide e documentazioni complete",
-            "Attraverso corsi strutturati e formazione formale",
-            "Imparando da mentori e colleghi esperti"
+            "Segnali il limite e proponi un rapido test di sensibilità sull'assunzione chiave",
+            "Accetti le conclusioni del paper ma documenti il limite per riferimento futuro",
+            "Incroci con una fonte indipendente che ha usato una metodologia diversa",
+            "Consulti un collega con competenza di dominio per valutare se il limite è rilevante nel tuo contesto"
           ]
         },
         "q4": {
           "category": "Creatività",
-          "question": "Quando risolvi un problema, tendi a:",
+          "question": "Il tuo team ha bisogno di una soluzione per un collo di bottiglia nella pipeline dati. La soluzione ideale richiede una libreria che non sarà pronta per la produzione prima di tre mesi. La scadenza è tra sei settimane. Tu:",
           "options": [
-            "Pensare a molteplici soluzioni non convenzionali",
-            "Combinare idee esistenti in modi nuovi",
-            "Migliorare metodi comprovati con innovazioni",
-            "Cercare ispirazione da settori o campi diversi"
+            "Adatti due librerie esistenti e stabili per approssimare la funzionalità della libreria ideale, accettando alcuni compromessi di performance",
+            "Ridefinisci il collo di bottiglia: ristrutturi il flusso dati così che la pipeline eviti interamente la fase problematica",
+            "Costruisci una versione minimale della funzionalità critica, progettata per essere sostituita quando la libreria sarà disponibile",
+            "Proponi di dividere il deliverable in un rilascio parziale ora con gli strumenti attuali e un rilascio completo quando la libreria sarà pronta"
           ]
         },
         "q5": {
@@ -1553,32 +1553,32 @@
         },
         "q7": {
           "category": "Comunicazione",
-          "question": "Come gestisci conflitti o disaccordi sul lavoro?",
+          "question": "Durante una revisione interfunzionale, un ingegnere senior contesta pubblicamente la tua interpretazione dei dati usando gergo tecnico che il resto della sala non segue. La sala ammutolisce. Come rispondi?",
           "options": [
-            "Trovo un terreno comune e soluzioni condivise",
-            "Presento fatti e dati a supporto della mia posizione",
-            "Facilito la discussione tra le parti coinvolte",
-            "Propongo compromessi pratici"
+            "Affronti la critica tecnica direttamente al livello dell'ingegnere, assicurandoti che sia pienamente risolta prima di tradurla per la sala",
+            "Riformuli la preoccupazione dell'ingegnere in termini accessibili così che tutta la sala possa seguire, poi rispondi a quel livello",
+            "Chiedi all'ingegnere di chiarire quale specifico dato sta contestando, guadagnando tempo per valutare la comprensione della sala",
+            "Riconosci il punto pubblicamente, proponi di continuare lo scambio tecnico offline, e riorienti la riunione sugli argomenti di comprensione condivisa"
           ]
         },
         "q8": {
           "category": "Conoscenza",
-          "question": "Quando incontri informazioni contrastanti?",
+          "question": "Due fonti dati affidabili danno letture contraddittorie sullo stato di un sistema. Entrambe sono state storicamente affidabili. Tu:",
           "options": [
-            "Cerco fonti aggiuntive per verificare",
-            "Analizzo la credibilità delle fonti originali",
-            "Consulto esperti nel campo specifico",
-            "Testo empiricamente quando possibile"
+            "Indaghi le condizioni di misurazione che potrebbero spiegare la divergenza",
+            "Pesi ogni fonte in base al suo track record in situazioni simili",
+            "Esegui un diagnostico indipendente per generare un terzo punto di riferimento",
+            "Consulti il team che gestisce ciascuna fonte per capire recenti cambiamenti di calibrazione"
           ]
         },
         "q9": {
           "category": "Creatività",
-          "question": "Come generi nuove idee per i progetti?",
+          "question": "Stai progettando un sistema di monitoraggio, ma il budget copre solo il 60% dei sensori originariamente specificati. Ridurre la copertura crea punti ciechi. Tu:",
           "options": [
-            "Sessioni di brainstorming e creatività",
-            "Studio casi di successo da altri settori",
-            "Sperimentazione con prototipi e mockup",
-            "Collaboro con team diversificati"
+            "Ridisegni il layout dei sensori per dare priorità alle zone ad alto rischio e usi inferenza statistica per stimare le lacune",
+            "Proponi di usare sensori più economici e a bassa fedeltà nelle aree non critiche e sensori premium solo dove la precisione conta di più",
+            "Riformuli l'obiettivo del monitoraggio: invece della copertura totale, progetti un sistema di rilevamento anomalie che segnala solo quando i pattern deviano dalla baseline",
+            "Costruisci il sistema in fasi — implementi ciò che il budget copre ora, con un'architettura modulare che permette l'espansione dopo"
           ]
         },
         "q10": {
@@ -1603,32 +1603,32 @@
         },
         "q12": {
           "category": "Comunicazione",
-          "question": "Come adatti il tuo stile comunicativo a diversi pubblici?",
+          "question": "Scopri un difetto critico in un sistema in produzione 48 ore prima di un audit normativo. Devi informare: il tuo diretto responsabile (tecnico), il responsabile compliance (inquadramento legale) e il team operativo (azione immediata necessaria). Tutto via comunicazione scritta entro l'ora. Come gestisci?",
           "options": [
-            "Studio il background e le esigenze del pubblico",
-            "Uso esempi e analogie rilevanti per il contesto",
-            "Modifico il livello di dettaglio tecnico",
-            "Chiedo feedback per assicurarmi di essere chiaro"
+            "Scrivi un report incidente completo che copre causa tecnica, esposizione legale e passi operativi — invii a tutti e tre",
+            "Redigi tre messaggi separati: dettaglio tecnico per il responsabile, inquadramento rischio per la compliance, checklist azioni per le operations",
+            "Invii un breve alert a tutti e tre segnalando la gravità, poi chiedi a ciascuno di quali informazioni ha bisogno prima di scrivere follow-up dettagliati",
+            "Invii un breve alert scritto per creare il record, poi chiedi immediatamente una call di 15 minuti con tutti e tre per assicurare allineamento in tempo reale"
           ]
         },
         "q13": {
           "category": "Conoscenza",
-          "question": "Come organizzi e condividi la conoscenza acquisita?",
+          "question": "Ti sei affidato a un framework tecnico per mesi. Un collega junior presenta evidenze preliminari che una delle sue assunzioni fondamentali è sbagliata. Tu:",
           "options": [
-            "Creo documentazione strutturata e ricercabile",
-            "Organizzo sessioni di formazione per il team",
-            "Sviluppo guide pratiche e tutorial",
-            "Mantengo database di best practice"
+            "Metti in pausa il tuo lavoro con il framework e testi entrambe le versioni sui dati recenti prima di decidere",
+            "Rivedi tu stesso le evidenze grezze del collega per valutarne la solidità prima di coinvolgere altri",
+            "Registri formalmente la contestazione e prosegui con il framework, ma definisci una soglia specifica che innescherebbe una rivalutazione completa",
+            "Chiedi a due persone non coinvolte in nessuna delle due analisi di valutare indipendentemente le evidenze contrastanti"
           ]
         },
         "q14": {
           "category": "Creatività",
-          "question": "Come superi i blocchi creativi?",
+          "question": "Un cliente vuole una funzionalità che tecnicamente funziona ma degraderebbe l'architettura del sistema, rendendo lo sviluppo futuro più difficile. Rifiutare non è un'opzione — il contratto lo richiede. Tu:",
           "options": [
-            "Cambio ambiente e cerco nuove prospettive",
-            "Brainstorming con colleghi",
-            "Cerco ispirazione in campi non correlati",
-            "Faccio pause strategiche e torno al problema dopo"
+            "Implementi la funzionalità ma la isoli dietro un layer di astrazione così da poterla sostituire senza impattare il resto del sistema",
+            "Proponi un'implementazione alternativa che raggiunge l'obiettivo del cliente attraverso un approccio tecnico diverso che preserva l'architettura",
+            "Costruisci la funzionalità come specificato ma contemporaneamente crei un documento di migration path che mostra come refactorizzarla dopo",
+            "Negozi lo scope: consegni il core di ciò che serve in modo più pulito e rimandi gli elementi che causano più danni architetturali"
           ]
         },
         "q15": {
@@ -1653,32 +1653,32 @@
         },
         "q17": {
           "category": "Comunicazione",
-          "question": "Come presenti risultati complessi a stakeholder non tecnici?",
+          "question": "Un team partner ha lavorato su assunzioni parallele che contraddicono le tue scoperte. Nessuno dei due team ha torto — usate modelli validati diversi. Un deliverable congiunto scade tra 5 giorni. Nel primo incontro di allineamento, come affronti la discrepanza?",
           "options": [
-            "Uso grafici e visualizzazioni intuitive",
-            "Mi concentro sui risultati di business, non sui dettagli tecnici",
-            "Racconto una storia che collega dati a impatti concreti",
-            "Preparo sintesi esecutive con punti chiave"
+            "Presenti entrambi i modelli con le loro assunzioni esplicitamente mappate, lasciando che i dati parlino prima di proporre una riconciliazione",
+            "Inquadri la discrepanza come differenza di scope piuttosto che contraddizione, concentrandoti su ciò che il deliverable congiunto deve effettivamente risolvere",
+            "Chiedi al team partner di esporre per primo il suo ragionamento, ascoltando gap nelle assunzioni prima di rivelare il tuo modello",
+            "Proponi un documento di lavoro condiviso dove entrambi i modelli sono affiancati con assunzioni taggate, sostituendo il dibattito verbale con un confronto strutturato"
           ]
         },
         "q18": {
           "category": "Conoscenza",
-          "question": "Come ti tieni aggiornato nelle tue aree di competenza?",
+          "question": "Un fornitore presenta una nuova tecnologia con benchmark impressionanti, ma le condizioni di valutazione non corrispondono al tuo ambiente di produzione. Tu:",
           "options": [
-            "Seguo pubblicazioni e ricerche di settore",
-            "Partecipo a conferenze e webinar specializzati",
-            "Mi unisco a comunità e forum professionali",
-            "Sperimentò nuovi strumenti e tecnologie"
+            "Progetti un test controllato che rispecchia i tuoi vincoli reali",
+            "Cerchi utenti indipendenti che l'hanno implementata in condizioni simili",
+            "Analizzi il gap tra le loro condizioni di test e le tue per stimare le performance reali",
+            "Richiedi l'accesso ai loro dati grezzi e ri-esegui l'analisi con i tuoi parametri"
           ]
         },
         "q19": {
           "category": "Creatività",
-          "question": "Come bilanci innovazione e praticità nei tuoi progetti?",
+          "question": "Il tuo team ha sviluppato un algoritmo innovativo che supera l'approccio standard nei test, ma è più difficile da spiegare ai regolatori e stakeholder che si aspettano il metodo convenzionale. Tu:",
           "options": [
-            "Testo idee innovative su piccola scala prima",
-            "Mantengo un portfolio di progetti a diversi livelli di rischio",
-            "Cerco feedback continuo per validare direzioni creative",
-            "Stabilisco criteri chiari per valutare nuove idee"
+            "Esegui entrambi gli algoritmi in parallelo per un periodo di prova, usando quello standard per i report mentre validi i risultati dell'innovativo rispetto ad esso",
+            "Ridisegni la presentazione: traduci la logica dell'algoritmo innovativo nel linguaggio del framework normativo senza cambiare l'approccio sottostante",
+            "Crei un ibrido che usa la struttura del metodo standard ma incorpora l'innovazione chiave del tuo algoritmo dove conta di più",
+            "Proponi un'adozione graduale: inizi con l'approccio convenzionale nei contesti regolamentati e introduci l'algoritmo innovativo prima nelle applicazioni a minor scrutinio"
           ]
         },
         "q20": {
@@ -1815,24 +1815,24 @@
       "subtitle": "Completa la nostra valutazione per scoprire i tuoi punti di forza professionali",
       "questions": {
         "q1": { "category": "Potenza Computazionale", "question": "Davanti a una dashboard di KPI, qual è il tuo primo passo?", "options": ["Cercare anomalie rispetto agli obiettivi", "Approfondire i segmenti", "Confrontare con l'andamento storico", "Esportare i dati per analizzarli a parte"] },
-        "q2": { "category": "Comunicazione", "question": "In una riunione con opinioni in conflitto, di solito tu:", "options": ["Sintetizzi e riformuli il nodo del problema", "Fai domande per allineare il contesto", "Riepiloghi decisioni e prossimi passi", "Riduci la tensione e riporti a obiettivi comuni"] },
-        "q3": { "category": "Conoscenza", "question": "Come mantieni aggiornate le tue conoscenze di mercato?", "options": ["Leggo report di settore settimanali", "Seguo analisti e concorrenti", "Partecipo a conferenze e webinar", "Conduco interviste periodiche ai clienti"] },
-        "q4": { "category": "Creatività", "question": "Progettando un go-to-market, preferisci:", "options": ["Prototipare campagne velocemente", "Adattare playbook collaudati", "Prendere spunto da settori adiacenti", "Co-creare con sales e product"] },
+        "q2": { "category": "Comunicazione", "question": "Hai bisogno dell'approvazione del board per un pivot strategico. Il CFO vuole proiezioni di ROI, il fondatore si preoccupa dell'allineamento alla missione e due consiglieri indipendenti hanno espresso scetticismo sul rischio di esecuzione. Hai uno slot di 30 minuti. Come ti prepari?", "options": ["Costruisci un deck completo che copre finanza, motivazione di missione e mitigazione rischi in sequenza — la completezza costruisce credibilità", "Strutturi attorno alla singola domanda 'Perché ora?' — intrecciando risposte finanziarie, di missione e di rischio in un unico arco narrativo a cui ogni stakeholder può ancorarsi", "Fissi brevi pre-meeting con CFO e consiglieri scettici per identificare obiezioni specifiche, poi calibri la sessione board per affrontare solo le preoccupazioni irrisolte", "Invii un memo pre-lettura con l'analisi completa 3 giorni prima, usi lo slot live interamente per Q&A così ogni stakeholder guida la conversazione verso la sua preoccupazione"] },
+        "q3": { "category": "Conoscenza", "question": "La tua strategia si basa su un'assunzione di mercato supportata da un solo report di analista autorevole. La mossa di un competitor suggerisce che l'assunzione potrebbe essere sbagliata. Tu:", "options": ["Commissioni un'analisi indipendente rapida per testare l'assunzione da un angolo diverso", "Adatti la strategia per funzionare sia con l'assunzione originale che con quella alternativa", "Parli con i venditori in prima linea per ottenere segnali qualitativi su quale assunzione regge", "Documenti l'incertezza e fissi un punto di innesco in cui rivaluteresti l'assunzione"] },
+        "q4": { "category": "Creatività", "question": "La tua azienda deve entrare in un nuovo segmento di mercato, ma il prodotto non è stato progettato per quel pubblico e un redesign completo richiederebbe 18 mesi. Il board vuole traction in 6 mesi. Tu:", "options": ["Riconfezionare il prodotto esistente con un posizionamento, pricing e flusso di onboarding diversi, adattati al linguaggio del nuovo segmento", "Fare partnership con un'azienda che già serve quel segmento e offrire il tuo prodotto come add-on integrato alla loro soluzione esistente", "Lanciare una versione ridotta mirando solo al caso d'uso con la sovrapposizione più forte tra il tuo prodotto attuale e le esigenze del nuovo segmento", "Ridefinire il target: identificare una nicchia nel nuovo segmento dove il tuo prodotto attuale già funziona, ed espandersi da lì"] },
         "q5": { "category": "Drive", "question": "La tua presentazione al board è andata male perché il tuo storytelling finanziario mancava di profondità. Tu:", "options": ["Chiedi a un CFO peer di rivedere il tuo prossimo deck e indicare i punti deboli specifici", "Ricostruisci la stessa presentazione da zero usando una struttura narrativa diversa", "Studi tre presentazioni al board esemplari e identifichi quali tecniche non stai usando", "Presenti prima a un pubblico interno più piccolo per ottenere feedback in tempo reale"] },
         "q6": { "category": "Potenza Computazionale", "question": "Di fronte a cali di ricavi ambigui, per prima cosa:", "options": ["Segmento per canale e coorte", "Correlazione con prezzi/promozioni", "Verifico integrità dell'attribuzione", "Confronto con la stagionalità"] },
-        "q7": { "category": "Comunicazione", "question": "Se il team resiste a un cambio strategico, tu:", "options": ["Racconti una storia supportata da evidenze", "Crei spazi per far emergere obiezioni", "Mappi stakeholder e adatti i messaggi", "Proponi un'adozione per fasi"] },
-        "q8": { "category": "Conoscenza", "question": "Per apprendere un nuovo modello di business:", "options": ["Costruisco un modello finanziario completo", "Leggo casi studio cross-settore", "Affianco gli operatori sul campo", "Avvio un piccolo pilot per imparare"] },
-        "q9": { "category": "Creatività", "question": "Per sbloccare crescita in un segmento maturo, tu:", "options": ["Testi un posizionamento innovativo", "Riconfezioni l'offerta in modo creativo", "Crei partnership per nuovi utenti", "Reinventi l'onboarding"] },
+        "q7": { "category": "Comunicazione", "question": "Il tuo team è appena stato ristrutturato. Due membri sono ansiosi per i cambi di ruolo, uno è apertamente frustrato e uno sembra disimpegnato. Devi comunicare le nuove responsabilità in una riunione di team. Come approcci?", "options": ["Presenti la nuova struttura con definizioni di ruolo esplicite, linee di reporting e tempistiche — rimuovi l'ambiguità che alimenta l'ansia", "Inquadri la ristrutturazione attorno ai risultati di team piuttosto che ai cambi individuali, poi fai follow-up individualmente con i dettagli", "Apri chiedendo a ogni persona cosa ha più bisogno di chiarire, poi strutturi la riunione attorno a quei gap informativi reali", "Invii le descrizioni dei ruoli scritte prima della riunione così le persone possono elaborare in privato, usi la sessione live per domande e preoccupazioni"] },
+        "q8": { "category": "Conoscenza", "question": "Stai entrando in un mercato dove i dati disponibili sono scarsi e contraddittori. Gli esperti del settore non concordano sui fondamentali. Tu:", "options": ["Lanci un pilot su piccola scala per generare i tuoi dati prima di impegnarti", "Mappi i disaccordi per identificare quale evidenza specifica li risolverebbe", "Adotti la visione dell'esperto il cui ragionamento è più trasparente, monitorando per segnali disconfermanti", "Costruisci business case separati per i due scenari più plausibili"] },
+        "q9": { "category": "Creatività", "question": "Il lancio di un prodotto chiave è tra due settimane. Il team marketing scopre che il principale competitor ha appena rilasciato una feature quasi identica con forte copertura PR. Tu:", "options": ["Sposti la narrativa del lancio: invece della parità di feature, posizioni il tuo rilascio attorno a una value proposition diversa che il competitor non ha affrontato", "Acceleri una capability unica che ti differenzia, anche se significa deprioritizzare la rifinitura sulle feature condivise", "Abbini il lancio con un'offerta complementare (trial gratuito, integrazione, partnership) che cambia completamente il frame di confronto", "Rimandi il lancio di una settimana per aggiungere un differenziatore piccolo ma visibile, e usi il tempo extra per costruire una contro-narrativa"] },
         "q10": { "category": "Drive", "question": "L'output di pianificazione strategica del tuo team è più debole dei peer. Sospetti sia la tua facilitazione. Tu:", "options": ["Osservi la sessione strategica di un altro leader e prendi appunti strutturati sul suo metodo", "Registri la tua prossima sessione e auto-critichi cosa cambieresti", "Porti un facilitatore esterno una volta e partecipi come osservatore per imparare la tecnica", "Ridisegni il tuo template di planning basandoti su cosa ha prodotto output debole l'ultima volta"] },
         "q11": { "category": "Potenza Computazionale", "question": "Valutando un cambio di prezzo, tu:", "options": ["Fai analisi di sensibilità", "Testi A/B i price point", "Modelli l'elasticità per segmento", "Confermi con interviste ai clienti"] },
-        "q12": { "category": "Comunicazione", "question": "Comunicando a non esperti, principalmente:", "options": ["Usi visual e analogie", "Racconti una narrativa con impatto", "Forni executive summary", "Indichi call-to-action chiare"] },
-        "q13": { "category": "Conoscenza", "question": "La conoscenza istituzionale si mantiene meglio con:", "options": ["Documentazione strutturata", "Formazioni periodiche", "Playbook vivi con owner", "Community di pratica"] },
-        "q14": { "category": "Creatività", "question": "Quando i piani rallentano, generi idee con:", "options": ["Sprint di ideazione rapidi", "Workshop cross-funzionali", "Reverse-engineering dei competitor", "Prospettive controintuitive"] },
+        "q12": { "category": "Comunicazione", "question": "Un cliente chiave escala la sua insoddisfazione direttamente al tuo CEO. La lamentela mescola lacune di servizio legittime con assunzioni inaccurate sul vostro processo. Il CEO ti chiede di redigere la risposta. Come gestisci le inaccuratezze?", "options": ["Affronti ogni punto fattualmente — riconosci le lacune valide esplicitamente, correggi le inaccuratezze con evidenze, mantieni un tono professionale ma inequivocabile", "Apri con il riconoscimento dell'esperienza del cliente, poi riformuli i punti inaccurati come 'aree dove il nostro processo differisce da quanto atteso' senza contraddizione diretta", "Redigi una risposta che affronta le lacune legittime, poi segnali le inaccuratezze separatamente al CEO con una raccomandazione su quanto direttamente correggerle", "Suggerisci al CEO di proporre una call invece di uno scambio scritto — le inaccuratezze sono più facili da affrontare conversazionalmente senza creare un paper trail conflittuale"] },
+        "q13": { "category": "Conoscenza", "question": "Ti sei affidato a un modello strategico per mesi. Un membro junior del team presenta evidenze preliminari che una delle sue assunzioni fondamentali è sbagliata. Tu:", "options": ["Metti in pausa il lavoro con il modello e testi entrambe le versioni sui dati di mercato recenti prima di decidere", "Rivedi tu stesso le evidenze grezze del membro del team per valutarne la solidità prima di coinvolgere altri", "Registri formalmente la contestazione e prosegui con il modello, ma definisci un punto di innesco specifico che forzerebbe una rivalutazione completa", "Chiedi a due persone non coinvolte in nessuna delle due analisi di valutare indipendentemente le evidenze contrastanti"] },
+        "q14": { "category": "Creatività", "question": "Il piano trimestrale del tuo team è solido, ma un cliente importante richiede una feature custom che consumerebbe il 40% della capacità engineering. Dire no rischia di perdere il cliente; dire sì rischia la roadmap. Tu:", "options": ["Proponi di costruire una versione generalizzata della feature che serve sia il bisogno del cliente che la roadmap — richiede un po' più tempo ma crea valore duraturo", "Offri al cliente un workaround provvisorio usando le capacità esistenti mentre scheduli la feature completa per il prossimo trimestre", "Rinegozi il piano trimestrale: identifichi gli elementi della roadmap a minor impatto da posticipare e riallochi capacità alla feature del cliente", "Riformuli la richiesta: esplori se il problema sottostante del cliente può essere risolto diversamente con qualcosa che hai già o stai già costruendo"] },
         "q15": { "category": "Drive", "question": "Un lancio prodotto è andato sotto le attese perché hai valutato male il timing di mercato. Tu:", "options": ["Intervisti cinque clienti per capire quali segnali hai letto male", "Costruisci un framework di post-mortem per confrontare le tue assunzioni con i dati reali", "Ti affianchi a qualcuno che ha predetto il mercato correttamente per capire il suo ragionamento", "Lanci un test più piccolo per il prossimo prodotto per validare il timing prima del commitment totale"] },
         "q16": { "category": "Potenza Computazionale", "question": "Per prevedere il prossimo trimestre:", "options": ["Unisco bottom-up e top-down", "Stress-testo scenari", "Valido ipotesi con sales", "Simulo vincoli di capacità"] },
-        "q17": { "category": "Comunicazione", "question": "Presentando una strategia complessa, tu:", "options": ["Racconti una storia legata all'impatto", "Usi visual semplici", "Evidenzi trade-off e scelte", "Offri un one-pager"] },
-        "q18": { "category": "Conoscenza", "question": "Per entrare in un nuovo settore velocemente:", "options": ["Studio regole ed economia", "Intervisto stakeholder chiave", "Mappo value chain e incentivi", "Analizzo i jobs-to-be-done"] },
-        "q19": { "category": "Creatività", "question": "Per differenziare il brand, tu:", "options": ["Costruisci una voce distintiva", "Progetti esperienze firma", "Co-crei con la community", "Sperimenta canali nuovi"] },
+        "q17": { "category": "Comunicazione", "question": "Due dipartimenti che supervisioni hanno un conflitto di risorse. Entrambi i leader ti presentano il loro caso in privato, ciascuno descrivendo l'altro come irragionevole. Devi comunicare una risoluzione che a nessuno dei due piacerà completamente. Come la presenti?", "options": ["Presenti la decisione con ragionamento completo e analisi dei trade-off a entrambi i leader simultaneamente, così nessuno sente che l'altro ha avuto un vantaggio privato", "Inquadri la decisione attorno al vincolo organizzativo che rende necessario il compromesso, piuttosto che valutare il caso di ciascun leader", "Incontri ogni leader separatamente prima per anticipare la decisione e valutare la probabile reazione, poi tieni una sessione congiunta con inquadramento calibrato", "Comunichi la decisione per iscritto con motivazione chiara, poi offri conversazioni di follow-up individuali perché ogni leader esprima le preoccupazioni senza pressione del pubblico"] },
+        "q18": { "category": "Conoscenza", "question": "Un cambiamento normativo impatterà la tua azienda, ma l'interpretazione è ambigua e i peer del settore la leggono diversamente. Tu:", "options": ["Ingaggi un legale specializzato e stress-testi interpretazioni multiple rispetto alle tue operazioni", "Aspetti che un ente di settore emetta una guida, preparando nel frattempo piani di contingenza", "Adotti l'interpretazione più conservativa ora e la rilassi man mano che emerge chiarezza", "Confronti come ambiguità simili sono state risolte storicamente per predire l'esito probabile"] },
+        "q19": { "category": "Creatività", "question": "Il prodotto core della tua azienda è maturo e la crescita si è appiattita. Il board vuole un nuovo flusso di ricavi, ma il budget R&D è limitato al 15% della spesa attuale. Tu:", "options": ["Identifichi asset sottoutilizzati (dati, API, competenze) e li impacchetti come nuova offerta per un buyer persona diverso", "Ridefinisci il confine del prodotto: trasformi una feature gratuita in un tier premium, o scorpori capacità in prodotti standalone", "Lanci tre piccoli esperimenti time-boxed mirando a ipotesi di ricavo diverse prima di dedicare budget a una singola scommessa", "Fai partnership con un'azienda complementare per co-sviluppare un'offerta congiunta che nessuno dei due potrebbe costruire da solo nel budget"] },
         "q20": { "category": "Drive", "question": "Ricevi feedback costante che la tua delega è debole, rallentando il team. Tu:", "options": ["Scegli un task che normalmente terresti e lo deleghi completamente questa settimana, tracciando cosa succede", "Chiedi ai tuoi riporti diretti cosa hanno bisogno da te per prendere ownership più efficacemente", "Studi come un peer leader delega — cosa passa, quando e come", "Imposti check-in settimanali invece che giornalieri e misuri se la qualità regge"] },
         "q21": { "category": "Potenza Computazionale", "question": "Valutando un programma di trasformazione, prima:", "options": ["Definisci metriche di successo", "Piloti con gruppo di controllo", "Valuti readiness e rischi", "Studi casi di riferimento"] },
         "open1": { "question": "Descrivi una decisione di leadership che ti rende orgoglioso/a. Quali compromessi hai valutato e perché?" },
