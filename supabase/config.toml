@@ -95,3 +95,6 @@ verify_jwt = false
 
 [functions.send-welcome-email]
 verify_jwt = false
+
+[functions.ai-invocation-replay]
+verify_jwt = false

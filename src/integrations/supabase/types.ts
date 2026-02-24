@@ -71,6 +71,60 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_invocation_log: {
+        Row: {
+          correlation_id: string
+          error_code: string | null
+          function_name: string
+          id: string
+          input_summary: string | null
+          invoked_at: string
+          latency_ms: number | null
+          model_name: string
+          model_version: string
+          output_summary: string | null
+          prompt_hash: string
+          provider: string
+          request_id: string
+          status: string
+          temperature: number | null
+        }
+        Insert: {
+          correlation_id: string
+          error_code?: string | null
+          function_name: string
+          id?: string
+          input_summary?: string | null
+          invoked_at?: string
+          latency_ms?: number | null
+          model_name: string
+          model_version?: string
+          output_summary?: string | null
+          prompt_hash: string
+          provider?: string
+          request_id: string
+          status: string
+          temperature?: number | null
+        }
+        Update: {
+          correlation_id?: string
+          error_code?: string | null
+          function_name?: string
+          id?: string
+          input_summary?: string | null
+          invoked_at?: string
+          latency_ms?: number | null
+          model_name?: string
+          model_version?: string
+          output_summary?: string | null
+          prompt_hash?: string
+          provider?: string
+          request_id?: string
+          status?: string
+          temperature?: number | null
+        }
+        Relationships: []
+      }
       ai_messages: {
         Row: {
           content: string
