@@ -89,19 +89,39 @@ serve(async (req) => {
 
     console.log("[delete-account] Database cleanup complete:", deleteResult);
 
-    // Step 2: Delete storage files (CV uploads)
+    // Step 2: Delete storage files (CV uploads + challenge videos)
     try {
       const adminClient = createClient(supabaseUrl, supabaseServiceKey);
       
-      // List and delete user's CV uploads
-      const { data: files } = await adminClient.storage
+      // Delete user's CV uploads
+      const { data: cvFiles } = await adminClient.storage
         .from('cv-uploads')
         .list(user.id);
 
-      if (files && files.length > 0) {
-        const filePaths = files.map(f => `${user.id}/${f.name}`);
-        await adminClient.storage.from('cv-uploads').remove(filePaths);
-        console.log("[delete-account] Deleted storage files:", filePaths.length);
+      if (cvFiles && cvFiles.length > 0) {
+        const cvPaths = cvFiles.map(f => `${user.id}/${f.name}`);
+        await adminClient.storage.from('cv-uploads').remove(cvPaths);
+        console.log("[delete-account] Deleted CV files:", cvPaths.length);
+      }
+
+      // Delete user's challenge videos (Level 3 Standing)
+      // Get profile ID to find video folder
+      const { data: profile } = await adminClient
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (profile?.id) {
+        const { data: videoFiles } = await adminClient.storage
+          .from('challenge-videos')
+          .list(`standing/${profile.id}`);
+
+        if (videoFiles && videoFiles.length > 0) {
+          const videoPaths = videoFiles.map(f => `standing/${profile.id}/${f.name}`);
+          await adminClient.storage.from('challenge-videos').remove(videoPaths);
+          console.log("[delete-account] Deleted challenge videos:", videoPaths.length);
+        }
       }
     } catch (storageError) {
       // Log but don't fail - storage cleanup is best effort
