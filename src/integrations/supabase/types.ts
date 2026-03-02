@@ -3634,6 +3634,87 @@ export type Database = {
           },
         ]
       }
+      psychometrics_telemetry: {
+        Row: {
+          completed_at: string
+          created_at: string
+          duration_ms: number | null
+          expires_at: string | null
+          field_key: string | null
+          funnel_step: string
+          id: string
+          locale: string
+          mc_items_answered: number | null
+          mc_items_total: number | null
+          open_avg_score: number | null
+          open_items_scored: number | null
+          open_items_total: number | null
+          open_quality_counts: Json | null
+          open_red_flags_count: number | null
+          retention_days: number
+          run_id: string
+          score_communication: number | null
+          score_computational_power: number | null
+          score_creativity: number | null
+          score_drive: number | null
+          score_knowledge: number | null
+          total_score: number | null
+          ximatar_label: string | null
+        }
+        Insert: {
+          completed_at?: string
+          created_at?: string
+          duration_ms?: number | null
+          expires_at?: string | null
+          field_key?: string | null
+          funnel_step?: string
+          id?: string
+          locale?: string
+          mc_items_answered?: number | null
+          mc_items_total?: number | null
+          open_avg_score?: number | null
+          open_items_scored?: number | null
+          open_items_total?: number | null
+          open_quality_counts?: Json | null
+          open_red_flags_count?: number | null
+          retention_days?: number
+          run_id: string
+          score_communication?: number | null
+          score_computational_power?: number | null
+          score_creativity?: number | null
+          score_drive?: number | null
+          score_knowledge?: number | null
+          total_score?: number | null
+          ximatar_label?: string | null
+        }
+        Update: {
+          completed_at?: string
+          created_at?: string
+          duration_ms?: number | null
+          expires_at?: string | null
+          field_key?: string | null
+          funnel_step?: string
+          id?: string
+          locale?: string
+          mc_items_answered?: number | null
+          mc_items_total?: number | null
+          open_avg_score?: number | null
+          open_items_scored?: number | null
+          open_items_total?: number | null
+          open_quality_counts?: Json | null
+          open_red_flags_count?: number | null
+          retention_days?: number
+          run_id?: string
+          score_communication?: number | null
+          score_computational_power?: number | null
+          score_creativity?: number | null
+          score_drive?: number | null
+          score_knowledge?: number | null
+          total_score?: number | null
+          ximatar_label?: string | null
+        }
+        Relationships: []
+      }
       question_bank: {
         Row: {
           active: boolean
@@ -4531,6 +4612,92 @@ export type Database = {
       }
       request_free_intro_session: { Args: { p_slot_id: string }; Returns: Json }
       request_mentor_session: { Args: { p_slot_id: string }; Returns: Json }
+      telemetry_completion_rate_by_field: {
+        Args: { p_since?: string }
+        Returns: {
+          completion_rate: number
+          completions: number
+          field_key: string
+          locale: string
+          starts: number
+        }[]
+      }
+      telemetry_dropoff_funnel: {
+        Args: { p_since?: string }
+        Returns: {
+          count: number
+          funnel_step: string
+          pct_of_starts: number
+        }[]
+      }
+      telemetry_open_answer_quality: {
+        Args: { p_since?: string }
+        Returns: {
+          error_count: number
+          error_rate: number
+          p50_latency: number
+          p95_latency: number
+          p99_latency: number
+          report_date: string
+          total_invocations: number
+        }[]
+      }
+      telemetry_open_quality_distribution: {
+        Args: { p_since?: string }
+        Returns: {
+          avg_open_score: number
+          excellent_count: number
+          field_key: string
+          good_count: number
+          locale: string
+          sample_size: number
+          total_red_flags: number
+          weak_count: number
+        }[]
+      }
+      telemetry_pillar_correlations: {
+        Args: { p_field_key?: string }
+        Returns: {
+          correlation: number
+          field_key: string
+          pillar_a: string
+          pillar_b: string
+          sample_size: number
+        }[]
+      }
+      telemetry_pillar_distributions: {
+        Args: { p_since?: string }
+        Returns: {
+          field_key: string
+          mean_score: number
+          p25: number
+          p50: number
+          p75: number
+          p95: number
+          pillar: string
+          sample_size: number
+          std_score: number
+        }[]
+      }
+      telemetry_weekly_summary: {
+        Args: never
+        Returns: {
+          change_pct: number
+          last_week: number
+          metric: string
+          this_week: number
+        }[]
+      }
+      telemetry_ximatar_distribution: {
+        Args: { p_since?: string }
+        Returns: {
+          count: number
+          field_key: string
+          locale: string
+          pct: number
+          ximatar_label: string
+        }[]
+      }
     }
     Enums: {
       ai_message_role: "user" | "assistant" | "system" | "tool"
