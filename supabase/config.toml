@@ -100,7 +100,7 @@ verify_jwt = false
 verify_jwt = true
 
 [functions.process-email-outbox]
-verify_jwt = false
+verify_jwt = true
 
 [functions.contact-sales]
 verify_jwt = true
