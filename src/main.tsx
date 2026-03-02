@@ -3,10 +3,16 @@ import App from './App.tsx'
 import './index.css'
 // Initialize i18n before anything else
 import './i18n'
-import { validateAssessmentFreeze } from '@/lib/assessment/freezeGuard'
+import { validateAssessmentFreeze, verifyFreezeIntegrity } from '@/lib/assessment/freezeGuard'
 
 // Validate assessment content integrity at startup
 validateAssessmentFreeze();
+
+// Dev-only: run verification and log PASS/FAIL
+if (import.meta.env.DEV) {
+  verifyFreezeIntegrity();
+}
+
 import { supabase } from '@/integrations/supabase/client'
 
 // Force logout on every app restart
