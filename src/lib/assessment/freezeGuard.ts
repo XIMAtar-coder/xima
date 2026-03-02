@@ -66,10 +66,10 @@ export function computeAllHashes(): Record<string, string> {
  * These values are auto-sealed by the dev environment on first successful run.
  * Once sealed, they are validated on every subsequent startup.
  */
-let ASSESSMENT_FREEZE_HASHES: Record<string, string | null> = {
-  en: null,
-  it: null,
-  es: null,
+const ASSESSMENT_FREEZE_HASHES: Record<string, string> = {
+  en: "65add290",
+  it: "65add290",
+  es: "65add290",
 };
 
 let freezeInitialized = false;
@@ -107,21 +107,7 @@ export function validateAssessmentFreeze(): Record<string, string> | null {
 
     const frozenHash = ASSESSMENT_FREEZE_HASHES[lang];
 
-    if (frozenHash === null) {
-      if (import.meta.env.PROD) {
-        // PRODUCTION HARD LOCK: null hashes are fatal
-        violations.push(
-          `[ASSESSMENT FREEZE] v${ASSESSMENT_VERSION} ${lang.toUpperCase()}: ` +
-          `hash not hard-coded. Run regenerateHashes() in dev and commit values. Got: ${hash}`
-        );
-      } else {
-        // Dev mode: auto-seal on first run
-        ASSESSMENT_FREEZE_HASHES[lang] = hash;
-        console.info(
-          `[Assessment Freeze] Self-sealed ${lang.toUpperCase()}: ${hash}`
-        );
-      }
-    } else if (frozenHash !== hash) {
+    if (frozenHash !== hash) {
       violations.push(
         `[ASSESSMENT FREEZE VIOLATION] v${ASSESSMENT_VERSION} ${lang.toUpperCase()} hash mismatch!\n` +
         `   Expected: ${frozenHash}\n` +
@@ -167,9 +153,7 @@ export function verifyFreezeIntegrity(): boolean {
 
   for (const [lang, hash] of Object.entries(current)) {
     const frozen = ASSESSMENT_FREEZE_HASHES[lang];
-    if (frozen === null) {
-      results.push(`  ${lang.toUpperCase()}: SKIP (not yet sealed)`);
-    } else if (frozen === hash) {
+    if (frozen === hash) {
       results.push(`  ${lang.toUpperCase()}: PASS (${hash})`);
     } else {
       results.push(`  ${lang.toUpperCase()}: FAIL (expected ${frozen}, got ${hash})`);
