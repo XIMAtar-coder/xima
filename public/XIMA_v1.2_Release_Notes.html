@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XIMA v1.2 — Release Notes</title>
+<style>
+  :root { --blue: #4171d6; --green: #16a34a; --amber: #d97706; --bg: #ffffff; --fg: #1a1a2e; --muted: #6b7280; --border: #e5e7eb; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', -apple-system, sans-serif; color: var(--fg); background: var(--bg); line-height: 1.6; max-width: 900px; margin: 0 auto; padding: 40px 24px; }
+  h1 { font-size: 28px; color: var(--blue); margin-bottom: 4px; }
+  h2 { font-size: 20px; margin: 32px 0 12px; border-bottom: 2px solid var(--blue); padding-bottom: 6px; }
+  h3 { font-size: 16px; margin: 20px 0 8px; }
+  p, li { font-size: 14px; margin-bottom: 6px; }
+  ul, ol { padding-left: 24px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th, td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
+  th { background: #f3f4f6; font-weight: 600; }
+  code { background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+  pre { background: #f3f4f6; padding: 12px; border-radius: 6px; font-size: 12px; overflow-x: auto; margin: 8px 0; }
+  .meta { color: var(--muted); font-size: 12px; margin-bottom: 24px; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: #dbeafe; color: var(--blue); margin-right: 4px; }
+  .tag-break { background: #fef3c7; color: var(--amber); }
+  @media print { body { max-width: 100%; padding: 20px; } }
+</style>
+</head>
+<body>
+
+<h1>XIMA v1.2 — Release Notes</h1>
+<p class="meta">Release Date: 2026-03-02 | Classification: Internal — Enterprise Engineering</p>
+
+<h2>1. Summary</h2>
+<p>XIMA v1.2 is an <strong>enterprise stabilization release</strong> focused on operational reliability, auditability, and compliance hardening. No new user-facing features were added. All changes strengthen the existing v1.1 platform for enterprise deployment.</p>
+
+<h2>2. What Changed</h2>
+
+<h3>2.1 AI Governance <span class="tag">New</span></h3>
+<ul>
+  <li>All 8 AI-calling edge functions now persist invocation metadata to <code>ai_invocation_log</code></li>
+  <li>SHA-256 prompt hashing enables drift detection without storing PII</li>
+  <li>Model version, temperature, max_tokens, and latency tracked per call</li>
+  <li>Admin-only replay endpoint: <code>ai-invocation-replay</code></li>
+</ul>
+
+<h3>2.2 Open-Answer Evidence Ledger <span class="tag">New</span></h3>
+<ul>
+  <li><code>assessment_evidence_ledger</code> links every AI-scored open answer to its invocation</li>
+  <li>Content integrity via SHA-256 hash (no raw text stored beyond <code>assessment_open_responses</code>)</li>
+  <li>Quality labels: excellent / good / acceptable / weak / flagged</li>
+  <li>Immutable link to AI invocation (ON DELETE RESTRICT)</li>
+  <li>730-day automated retention policy</li>
+</ul>
+
+<h3>2.3 Email Reliability <span class="tag">New</span></h3>
+<ul>
+  <li>Transactional Email Outbox pattern with idempotency keys</li>
+  <li>Batch worker (<code>process-email-outbox</code>) with CAS locking</li>
+  <li>Exponential backoff: 30s → 60s → 120s → 240s → 480s → dead-letter</li>
+  <li><code>enqueue_email()</code> SQL helper for server-side components</li>
+</ul>
+
+<h3>2.4 Audit Trail & Observability <span class="tag">New</span></h3>
+<ul>
+  <li>Immutable <code>audit_events</code> table (UPDATE/DELETE blocked by trigger)</li>
+  <li><code>metrics_daily</code> for operational counters</li>
+  <li>Fire-and-forget <code>emitAuditEvent()</code> helper for edge functions</li>
+  <li>SQL-based alert thresholds (dead letters, error rates, completion rates)</li>
+</ul>
+
+<h3>2.5 Enterprise Contract Mode <span class="tag">New</span></h3>
+<ul>
+  <li>Self-serve payment flows replaced with "Contact Sales" CTA</li>
+  <li><code>business_entitlements</code> table: plan tier, seats, feature flags</li>
+  <li><code>contact_sales_requests</code> with audit event + email outbox integration</li>
+  <li><code>admin_set_business_plan</code> RPC for manual entitlement management</li>
+  <li><code>check_business_feature()</code> for server-side feature gating</li>
+  <li>New pages: <code>/pricing</code>, <code>/contact-sales</code></li>
+</ul>
+
+<h3>2.6 L3 Video Hardening <span class="tag">Hardened</span></h3>
+<ul>
+  <li>GDPR: account deletion now removes challenge videos from storage</li>
+  <li>Audit trigger emits <code>l3.video_uploaded</code> on submission</li>
+  <li>L3 remains enabled — validated end-to-end (record, upload, store, playback, permissions)</li>
+</ul>
+
+<h3>2.7 Psychometric Telemetry <span class="tag">New</span></h3>
+<ul>
+  <li>Zero-PII <code>psychometrics_telemetry</code> table with SHA-256 anonymized run IDs</li>
+  <li>Automated triggers capture pillar scores, XIMAtar archetypes, funnel progression</li>
+  <li>8 SQL reporting functions for weekly ops reports</li>
+  <li>730-day automated retention</li>
+  <li>Playbook: <code>XIMA_v1.2_Validation_Telemetry_Playbook.html</code></li>
+</ul>
+
+<h3>2.8 Freeze Guard Hard Lock <span class="tag">Hardened</span></h3>
+<ul>
+  <li>Production builds throw <code>Error</code> on null or mismatched assessment hashes — app will not start</li>
+  <li>Dev mode self-seals on first run, validates on subsequent runs</li>
+  <li><code>regenerateHashes()</code> utility preserved for version bumps</li>
+</ul>
+
+<h3>2.9 RLS Final Audit <span class="tag">Hardened</span></h3>
+<table>
+  <tr><th>Table</th><th>RLS</th><th>Anon</th><th>Admin Read</th><th>Service Write</th><th>User Access</th></tr>
+  <tr><td>ai_invocation_log</td><td>✅</td><td>REVOKED</td><td>✅</td><td>✅</td><td>—</td></tr>
+  <tr><td>assessment_evidence_ledger</td><td>✅</td><td>REVOKED</td><td>✅</td><td>✅ (implicit)</td><td>—</td></tr>
+  <tr><td>audit_events</td><td>✅</td><td>REVOKED</td><td>✅</td><td>✅</td><td>—</td></tr>
+  <tr><td>metrics_daily</td><td>✅</td><td>REVOKED</td><td>✅</td><td>✅</td><td>—</td></tr>
+  <tr><td>email_outbox</td><td>✅</td><td>REVOKED</td><td>✅</td><td>✅</td><td>—</td></tr>
+  <tr><td>business_entitlements</td><td>✅</td><td>REVOKED</td><td>✅</td><td>✅</td><td>Own business only</td></tr>
+  <tr><td>contact_sales_requests</td><td>✅</td><td>REVOKED</td><td>✅</td><td>✅</td><td>Insert only</td></tr>
+  <tr><td>psychometrics_telemetry</td><td>✅</td><td>REVOKED</td><td>✅</td><td>✅ (implicit)</td><td>—</td></tr>
+</table>
+
+<h2>3. Backward Compatibility</h2>
+<ul>
+  <li><strong>Assessment content:</strong> v1.1 frozen — zero changes to questions, options, or scoring</li>
+  <li><strong>Database:</strong> All changes are additive (new tables/columns only). No existing table modifications.</li>
+  <li><strong>API:</strong> All existing edge functions maintain their current signatures</li>
+  <li><strong>Auth:</strong> No changes to authentication flows</li>
+  <li><strong>Client:</strong> No breaking changes to candidate or business UX flows</li>
+</ul>
+
+<h2>4. Known Limitations</h2>
+<ul>
+  <li><strong>Freeze hashes not yet hard-coded:</strong> Self-sealing in dev mode; production will throw on null. Run <code>regenerateHashes()</code> in dev console and commit values before production deployment.</li>
+  <li><strong>Single AI provider:</strong> All AI calls route through Lovable AI Gateway (Gemini). No fallback/circuit breaker.</li>
+  <li><strong>Synthetic-only psychometrics:</strong> Cronbach's α validated on synthetic data only. Real-data IRT calibration requires N≥500 (telemetry infrastructure now in place).</li>
+  <li><strong>Email provider:</strong> Requires RESEND_API_KEY secret. Worker gracefully skips if unconfigured.</li>
+  <li><strong>No automated CI tests:</strong> Validation relies on SQL queries and manual verification.</li>
+</ul>
+
+<h2>5. Daily Health Check Queries</h2>
+
+<h3>Query 1: Dead Letters & Failed Emails (24h)</h3>
+<pre>SELECT status, count(*) as cnt,
+  max(updated_at) as latest
+FROM email_outbox
+WHERE created_at > now() - interval '24 hours'
+GROUP BY status
+ORDER BY status;</pre>
+
+<h3>Query 2: AI Scoring Error Rate (24h)</h3>
+<pre>SELECT
+  function_name,
+  count(*) FILTER (WHERE status = 'success') as ok,
+  count(*) FILTER (WHERE status = 'error') as errors,
+  round(100.0 * count(*) FILTER (WHERE status = 'error') / NULLIF(count(*), 0), 1) as error_pct,
+  round(avg(latency_ms)::numeric, 0) as avg_latency_ms
+FROM ai_invocation_log
+WHERE invoked_at > now() - interval '24 hours'
+GROUP BY function_name
+ORDER BY errors DESC;</pre>
+
+<h3>Query 3: Assessment Completion Funnel (7d)</h3>
+<pre>SELECT
+  field_key,
+  count(*) FILTER (WHERE funnel_step = 'started') as started,
+  count(*) FILTER (WHERE funnel_step = 'mc_complete') as mc_done,
+  count(*) FILTER (WHERE funnel_step = 'open_complete') as open_done,
+  count(*) FILTER (WHERE funnel_step = 'result') as completed,
+  round(100.0 * count(*) FILTER (WHERE funnel_step = 'result') / NULLIF(count(*) FILTER (WHERE funnel_step = 'started'), 0), 1) as completion_pct
+FROM psychometrics_telemetry
+WHERE completed_at > now() - interval '7 days'
+GROUP BY field_key
+ORDER BY started DESC;</pre>
+
+<h2>6. Next Milestone: v1.3</h2>
+<ul>
+  <li><strong>S10:</strong> AI Fallback / Circuit Breaker — multi-provider support with automatic failover</li>
+  <li><strong>S11:</strong> Operational Metrics Enhancement — Grafana/dashboard integration</li>
+  <li><strong>Real-data IRT calibration:</strong> First analysis at N=300, full calibration at N=500</li>
+  <li><strong>Automated CI/CD testing:</strong> Integration tests for edge functions and assessment pipeline</li>
+  <li><strong>Internationalization expansion:</strong> Additional locale support (DE, FR)</li>
+</ul>
+
+<h2>Appendix A: Operational Runbook</h2>
+
+<h3>A.1 Email Worker Invocation</h3>
+<pre>-- Invoke manually via service_role bearer:
+curl -X POST https://iyckvvnecpnldrxqmzta.supabase.co/functions/v1/process-email-outbox \
+  -H "Authorization: Bearer $SERVICE_ROLE_KEY" \
+  -H "Content-Type: application/json"
+
+-- Schedule via pg_cron (recommended: every 2 minutes):
+SELECT cron.schedule('process-emails', '*/2 * * * *',
+  $$SELECT net.http_post(
+    'https://iyckvvnecpnldrxqmzta.supabase.co/functions/v1/process-email-outbox',
+    headers := jsonb_build_object('Authorization', 'Bearer ' || current_setting('app.service_role_key')),
+    body := '{}'::jsonb
+  )$$
+);</pre>
+
+<h3>A.2 Assessment Freeze Hash Regeneration</h3>
+<pre>-- In browser dev console:
+import('/src/lib/assessment/freezeGuard').then(m => m.regenerateHashes())
+-- Copy output into ASSESSMENT_FREEZE_HASHES in freezeGuard.ts
+-- Commit: "chore: bump assessment freeze to vX.Y"</pre>
+
+<h3>A.3 Enterprise Plan Assignment</h3>
+<pre>-- Via SQL (admin only):
+SELECT admin_set_business_plan(
+  'BUSINESS_ID_UUID',   -- target company
+  'enterprise',          -- plan_tier
+  50,                    -- max_seats
+  '{"mentor_portal": true, "level3_challenges": true, "data_export": true, "premium_signals": true, "decision_pack": true, "eligibility_gate": true}'::jsonb
+);</pre>
+
+<h2>Appendix B: Release Governance Model</h2>
+
+<h3>B.1 Version Numbering</h3>
+<ul>
+  <li><strong>Major (X.0):</strong> Breaking changes to assessment methodology or data model</li>
+  <li><strong>Minor (1.X):</strong> New features, stabilization, or compliance changes</li>
+  <li><strong>Patch (1.2.X):</strong> Bug fixes, security patches (no schema changes)</li>
+</ul>
+
+<h3>B.2 Release Checklist</h3>
+<ol>
+  <li>All steps in stabilization plan marked COMPLETED</li>
+  <li>Freeze guard hashes hard-coded and committed</li>
+  <li>RLS audit passes for all enterprise tables</li>
+  <li>Daily health queries return expected baselines</li>
+  <li>Release notes HTML published</li>
+  <li>PLATFORM_VERSION constant updated in codebase</li>
+  <li>Stabilization plan marked with completion date</li>
+</ol>
+
+<h3>B.3 Hotfix Protocol</h3>
+<ol>
+  <li>Create branch from release tag</li>
+  <li>Fix must not modify assessment content (freeze guard prevents this)</li>
+  <li>Security fixes: emit audit event + notify admin</li>
+  <li>Deploy, verify health queries, tag patch version</li>
+</ol>
+
+<hr style="margin: 40px 0;">
+<p class="meta" style="text-align: center;">
+  XIMA v1.2 Release Notes — Confidential<br>
+  © 2026 XIMA S.r.l. All rights reserved.
+</p>
+
+</body>
+</html>

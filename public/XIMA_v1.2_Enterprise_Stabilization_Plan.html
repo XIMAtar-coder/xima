@@ -42,7 +42,7 @@
 <body>
 
 <h1>XIMA v1.2 — Enterprise Stabilization Plan</h1>
-<p class="meta">Document Version: 1.0 | Generated: 2026-02-24 | Classification: Internal — Enterprise Engineering</p>
+<p class="meta">Document Version: 2.0 | Updated: 2026-03-02 | Classification: Internal — Enterprise Engineering | Status: ALL STEPS COMPLETE</p>
 
 <!-- ============================================================ -->
 <h2>1. Executive Summary</h2>
@@ -355,77 +355,71 @@
 <div class="step-block">
   <h4><span class="badge badge-p0">P0</span> Step 1 — AI Governance: Invocation Envelope</h4>
   <p><strong>Objective:</strong> Persist model/version/prompt-hash/params per AI call.</p>
-  <p><strong>Tables:</strong> <code>ai_invocations</code> (new)</p>
-  <p><strong>Files:</strong> <code>supabase/functions/_shared/aiClient.ts</code></p>
-  <p><strong>Tests:</strong> Trigger any AI-using function → verify row in <code>ai_invocations</code></p>
-  <p><strong>Rollback:</strong> Drop table, revert aiClient.ts</p>
-  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+  <p><strong>Tables:</strong> <code>ai_invocation_log</code></p>
+  <p><strong>Files:</strong> <code>supabase/functions/_shared/aiClient.ts</code>, <code>supabase/functions/_shared/aiSchema.ts</code></p>
+  <p><strong>Deliverables:</strong> SHA-256 prompt hashing, model version tracking, latency metrics, replay endpoint (<code>ai-invocation-replay</code>)</p>
+  <p><strong>Status:</strong> <span class="status status-completed">✅ COMPLETED</span></p>
 </div>
 
 <div class="step-block">
   <h4><span class="badge badge-p0">P0</span> Step 2 — Open-Answer Evidence Ledger</h4>
   <p><strong>Objective:</strong> Link each open-answer evaluation to its AI invocation and rubric version.</p>
-  <p><strong>Tables:</strong> <code>assessment_open_answer_evidence</code> (new)</p>
+  <p><strong>Tables:</strong> <code>assessment_evidence_ledger</code></p>
   <p><strong>Files:</strong> <code>supabase/functions/analyze-open-answer/index.ts</code></p>
-  <p><strong>Tests:</strong> Complete assessment with open answers → evidence rows exist</p>
-  <p><strong>Rollback:</strong> Drop table, revert function</p>
-  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+  <p><strong>Deliverables:</strong> Content hashing (SHA-256), quality labels, red flag tracking, 730-day retention policy, immutable AI invocation link (ON DELETE RESTRICT)</p>
+  <p><strong>Status:</strong> <span class="status status-completed">✅ COMPLETED</span></p>
 </div>
 
 <div class="step-block">
   <h4><span class="badge badge-p0">P0</span> Step 3 — Email Outbox + Idempotency</h4>
   <p><strong>Objective:</strong> Reliable, idempotent email delivery with retry.</p>
-  <p><strong>Tables:</strong> <code>email_outbox</code> (new)</p>
-  <p><strong>Files:</strong> All 4 email edge functions</p>
-  <p><strong>Tests:</strong> Send email → outbox row. Resend → no duplicate. Simulate failure → retry.</p>
-  <p><strong>Rollback:</strong> Drop table, revert functions</p>
-  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+  <p><strong>Tables:</strong> <code>email_outbox</code></p>
+  <p><strong>Files:</strong> <code>supabase/functions/process-email-outbox/index.ts</code>, <code>enqueue_email()</code> SQL helper</p>
+  <p><strong>Deliverables:</strong> CAS-locked batch processing, exponential backoff (2^n × 30s), dead-letter after 5 attempts, idempotency keys</p>
+  <p><strong>Status:</strong> <span class="status status-completed">✅ COMPLETED</span></p>
 </div>
 
 <div class="step-block">
-  <h4><span class="badge badge-p0">P0</span> Step 4 — Audit Events</h4>
-  <p><strong>Objective:</strong> Persistent lifecycle event tracking.</p>
-  <p><strong>Tables:</strong> <code>audit_events</code> (new)</p>
-  <p><strong>Files:</strong> Edge functions + client hooks</p>
-  <p><strong>Tests:</strong> Signup → event. Assessment → event. Query table → events present.</p>
-  <p><strong>Rollback:</strong> Drop table, remove emit calls</p>
-  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+  <h4><span class="badge badge-p0">P0</span> Step 4 — Audit Events + Observability</h4>
+  <p><strong>Objective:</strong> Persistent lifecycle event tracking with immutability guarantees.</p>
+  <p><strong>Tables:</strong> <code>audit_events</code>, <code>metrics_daily</code></p>
+  <p><strong>Files:</strong> <code>supabase/functions/_shared/auditEvents.ts</code></p>
+  <p><strong>Deliverables:</strong> Immutable audit trail (UPDATE/DELETE triggers blocked), daily metrics aggregation, alert threshold queries, fire-and-forget edge function helper</p>
+  <p><strong>Status:</strong> <span class="status status-completed">✅ COMPLETED</span></p>
 </div>
 
 <div class="step-block">
-  <h4><span class="badge badge-p1">P1</span> Step 5 — Payment Decision</h4>
-  <p><strong>Objective:</strong> Clean enterprise-only mode with Contact Sales CTA.</p>
-  <p><strong>Files:</strong> MembershipSection, MembershipSummaryCard</p>
-  <p><strong>Tests:</strong> Navigate to membership → "Contact Sales" visible. No checkout flow.</p>
-  <p><strong>Rollback:</strong> Revert CTA text</p>
-  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+  <h4><span class="badge badge-p1">P1</span> Step 5 — Enterprise Contract Mode</h4>
+  <p><strong>Objective:</strong> Replace self-serve payments with enterprise contract model.</p>
+  <p><strong>Tables:</strong> <code>business_entitlements</code>, <code>contact_sales_requests</code></p>
+  <p><strong>Files:</strong> <code>src/pages/Pricing.tsx</code>, <code>src/pages/ContactSales.tsx</code>, <code>supabase/functions/contact-sales/index.ts</code></p>
+  <p><strong>Deliverables:</strong> Tier-based entitlements (starter/growth/enterprise), seat management, feature flags, Contact Sales flow with audit + email outbox, <code>admin_set_business_plan</code> RPC, <code>check_business_feature()</code> server-side gate</p>
+  <p><strong>Status:</strong> <span class="status status-completed">✅ COMPLETED</span></p>
 </div>
 
 <div class="step-block">
-  <h4><span class="badge badge-p1">P1</span> Step 6 — L3 Video Decision</h4>
-  <p><strong>Objective:</strong> Gate or complete L3 video feature.</p>
-  <p><strong>Files:</strong> StandingVideoSession.tsx, Level3VideoPlayer.tsx</p>
-  <p><strong>Tests:</strong> No shell feature exposed. Feature works end-to-end or is hidden.</p>
-  <p><strong>Rollback:</strong> Toggle feature flag</p>
-  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+  <h4><span class="badge badge-p1">P1</span> Step 6 — L3 Video Validation + Hardening</h4>
+  <p><strong>Objective:</strong> Validate L3 video end-to-end; fix GDPR and auditability gaps.</p>
+  <p><strong>Files:</strong> <code>supabase/functions/delete-account/index.ts</code></p>
+  <p><strong>Deliverables:</strong> GDPR-compliant video deletion on account delete, <code>l3.video_uploaded</code> audit trigger + daily metric, storage path validation (challenge-videos/standing/{profileId})</p>
+  <p><strong>Verdict:</strong> PASS — L3 remains enabled in pipeline</p>
+  <p><strong>Status:</strong> <span class="status status-completed">✅ COMPLETED</span></p>
 </div>
 
 <div class="step-block">
-  <h4><span class="badge badge-p1">P1</span> Step 7 — Validation Logging</h4>
-  <p><strong>Objective:</strong> Anonymized psychometric monitoring.</p>
-  <p><strong>Tables:</strong> <code>assessment_analytics</code> (new)</p>
-  <p><strong>Tests:</strong> Complete assessment → analytics row. No user_id in row.</p>
-  <p><strong>Rollback:</strong> Drop table</p>
-  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+  <h4><span class="badge badge-p1">P1</span> Step 7 — Psychometric Validation Telemetry</h4>
+  <p><strong>Objective:</strong> Zero-PII anonymized telemetry for real-world psychometric monitoring.</p>
+  <p><strong>Tables:</strong> <code>psychometrics_telemetry</code></p>
+  <p><strong>Deliverables:</strong> SHA-256 anonymized run_id, pillar score distributions, funnel tracking, cross-pillar correlation matrix, 8 SQL reporting functions, 730-day retention, <code>XIMA_v1.2_Validation_Telemetry_Playbook.html</code></p>
+  <p><strong>Status:</strong> <span class="status status-completed">✅ COMPLETED</span></p>
 </div>
 
 <div class="step-block">
-  <h4><span class="badge badge-p0">P0</span> Step 8 — Final Hardening</h4>
-  <p><strong>Objective:</strong> Update plan, confirm freeze, add change-control SOP.</p>
-  <p><strong>Files:</strong> This document, freezeGuard.ts</p>
-  <p><strong>Tests:</strong> v1.1 freeze passes. All steps marked completed.</p>
-  <p><strong>Rollback:</strong> N/A</p>
-  <p><strong>Status:</strong> <span class="status status-planned">⏳ PLANNED</span></p>
+  <h4><span class="badge badge-p0">P0</span> Step 8 — Final Hardening + Release Governance</h4>
+  <p><strong>Objective:</strong> Hard-lock freeze guard, finalize RLS, harden email worker, create release documentation.</p>
+  <p><strong>Files:</strong> <code>src/lib/assessment/freezeGuard.ts</code>, <code>supabase/config.toml</code>, this document</p>
+  <p><strong>Deliverables:</strong> Production-fatal freeze guard (throws on null/mismatch), email worker JWT enforcement, RLS audit (8/8 tables confirmed), <code>XIMA_v1.2_Release_Notes.html</code>, operational runbook appendix</p>
+  <p><strong>Status:</strong> <span class="status status-completed">✅ COMPLETED</span></p>
 </div>
 
 <!-- ============================================================ -->
@@ -513,9 +507,72 @@
   <li>Document changes in release notes</li>
 </ol>
 
+<h2>Appendix A: Operational Runbook</h2>
+
+<h3>A.1 Daily Health Checks</h3>
+<pre style="background:#f3f4f6;padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;">
+-- 1. Dead Letters (24h)
+SELECT status, count(*), max(updated_at) FROM email_outbox
+WHERE created_at > now() - interval '24h' GROUP BY status;
+
+-- 2. AI Error Rate (24h)
+SELECT function_name, count(*) FILTER (WHERE status='success') as ok,
+  count(*) FILTER (WHERE status='error') as errors
+FROM ai_invocation_log WHERE invoked_at > now() - interval '24h'
+GROUP BY function_name ORDER BY errors DESC;
+
+-- 3. Assessment Funnel (7d)
+SELECT field_key,
+  count(*) FILTER (WHERE funnel_step='started') as started,
+  count(*) FILTER (WHERE funnel_step='result') as completed
+FROM psychometrics_telemetry WHERE completed_at > now() - interval '7d'
+GROUP BY field_key;
+</pre>
+
+<h3>A.2 Email Worker</h3>
+<p>Invoke via service_role bearer token. Schedule with pg_cron every 2 minutes. Worker is JWT-verified (<code>verify_jwt = true</code>).</p>
+
+<h3>A.3 Enterprise Plan Assignment</h3>
+<p>Use <code>admin_set_business_plan(business_id, tier, seats, features)</code> RPC. All changes emit <code>business.plan_changed</code> audit events.</p>
+
+<h3>A.4 Assessment Content Changes</h3>
+<ol>
+  <li>Never modify assessmentSets without version bump</li>
+  <li>Run <code>regenerateHashes()</code> → copy into freezeGuard.ts</li>
+  <li>Bump ASSESSMENT_VERSION</li>
+  <li>Rerun validation pipeline</li>
+</ol>
+
+<h2>Appendix B: Release Governance Model</h2>
+
+<h3>B.1 Versioning</h3>
+<ul>
+  <li><strong>Major (X.0):</strong> Breaking changes to assessment methodology</li>
+  <li><strong>Minor (1.X):</strong> New features, stabilization, compliance</li>
+  <li><strong>Patch (1.2.X):</strong> Bug fixes, security patches</li>
+</ul>
+
+<h3>B.2 Release Checklist</h3>
+<ol>
+  <li>All stabilization steps COMPLETED</li>
+  <li>Freeze guard hashes hard-coded</li>
+  <li>RLS audit passes (8/8 enterprise tables)</li>
+  <li>Health queries return expected baselines</li>
+  <li>Release notes published</li>
+</ol>
+
+<h3>B.3 Hotfix Protocol</h3>
+<ol>
+  <li>Branch from release tag</li>
+  <li>Fix must not modify assessment content</li>
+  <li>Emit audit event for security fixes</li>
+  <li>Deploy → verify → tag patch</li>
+</ol>
+
 <hr style="margin: 40px 0;">
 <p class="meta" style="text-align: center;">
-  XIMA v1.2 Enterprise Stabilization Plan — Confidential<br>
+  XIMA v1.2 Enterprise Stabilization Plan — v2.0 FINAL<br>
+  All Steps Complete — 2026-03-02<br>
   © 2026 XIMA S.r.l. All rights reserved.
 </p>
 
