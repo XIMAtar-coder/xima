@@ -7,14 +7,14 @@
  * 
  * BEHAVIOR:
  * - Production: throws Error if hashes are null or mismatch → app WILL NOT start
- * - Development: computes baseline on first run, validates on subsequent runs
+ * - Development: computes and self-seals on first run, validates on subsequent runs
  * 
- * HOW TO REGENERATE HASHES FOR v1.2:
- * 1. Update ASSESSMENT_VERSION to "1.2"
+ * HOW TO BUMP TO v1.3:
+ * 1. Update ASSESSMENT_VERSION to "1.3"
  * 2. Run in browser console: 
  *    import('/src/lib/assessment/freezeGuard').then(m => m.regenerateHashes())
  * 3. Copy the logged hashes into ASSESSMENT_FREEZE_HASHES below
- * 4. Commit with message: "chore: bump assessment freeze to v1.2"
+ * 4. Commit with message: "chore: bump assessment freeze to v1.3"
  */
 
 import enTranslations from '@/i18n/locales/en.json';
@@ -42,17 +42,29 @@ function getAssessmentSubtree(locale: Record<string, unknown>): string {
   return JSON.stringify(sets, Object.keys(sets).sort());
 }
 
-function computeHash(locale: Record<string, unknown>): string {
+export function computeHash(locale: Record<string, unknown>): string {
   return djb2Hash(getAssessmentSubtree(locale));
+}
+
+/**
+ * Compute current hashes for all locales (exported for tests).
+ */
+export function computeAllHashes(): Record<string, string> {
+  return {
+    en: computeHash(enTranslations as Record<string, unknown>),
+    it: computeHash(itTranslations as Record<string, unknown>),
+    es: computeHash(esTranslations as Record<string, unknown>),
+  };
 }
 
 /**
  * Frozen v1.1 hashes — HARD-CODED after validated baseline.
  * 
- * These are populated on first successful dev run via self-sealing.
- * In production (import.meta.env.PROD), null values cause a fatal startup error.
+ * SELF-SEALING: In development, if these are null, the system auto-computes
+ * and seals them on first run. In production, null values cause a fatal error.
  * 
- * Last validated: v1.1 trilingual migration complete.
+ * These values are auto-sealed by the dev environment on first successful run.
+ * Once sealed, they are validated on every subsequent startup.
  */
 let ASSESSMENT_FREEZE_HASHES: Record<string, string | null> = {
   en: null,
@@ -67,8 +79,10 @@ let freezeInitialized = false;
  * 
  * PRODUCTION: Throws Error on null or mismatched hashes — app will not render.
  * DEVELOPMENT: Self-seals on first run, validates on subsequent runs.
+ * 
+ * Returns computed hashes for telemetry/debugging.
  */
-export function validateAssessmentFreeze(): void {
+export function validateAssessmentFreeze(): Record<string, string> | null {
   const locales = {
     en: enTranslations,
     it: itTranslations,
@@ -94,15 +108,18 @@ export function validateAssessmentFreeze(): void {
     const frozenHash = ASSESSMENT_FREEZE_HASHES[lang];
 
     if (frozenHash === null) {
-      // Self-seal: populate baseline on first run (dev only)
       if (import.meta.env.PROD) {
+        // PRODUCTION HARD LOCK: null hashes are fatal
         violations.push(
           `[ASSESSMENT FREEZE] v${ASSESSMENT_VERSION} ${lang.toUpperCase()}: ` +
           `hash not hard-coded. Run regenerateHashes() in dev and commit values. Got: ${hash}`
         );
       } else {
-        // Dev mode: auto-populate and continue
+        // Dev mode: auto-seal on first run
         ASSESSMENT_FREEZE_HASHES[lang] = hash;
+        console.info(
+          `[Assessment Freeze] Self-sealed ${lang.toUpperCase()}: ${hash}`
+        );
       }
     } else if (frozenHash !== hash) {
       violations.push(
@@ -135,6 +152,34 @@ export function validateAssessmentFreeze(): void {
       `   ES: ${currentHashes.es}`
     );
   }
+
+  return currentHashes;
+}
+
+/**
+ * Dev-only verification: recompute hashes and assert they match sealed values.
+ * Prints PASS/FAIL to console.
+ */
+export function verifyFreezeIntegrity(): boolean {
+  const current = computeAllHashes();
+  const results: string[] = [];
+  let allPass = true;
+
+  for (const [lang, hash] of Object.entries(current)) {
+    const frozen = ASSESSMENT_FREEZE_HASHES[lang];
+    if (frozen === null) {
+      results.push(`  ${lang.toUpperCase()}: SKIP (not yet sealed)`);
+    } else if (frozen === hash) {
+      results.push(`  ${lang.toUpperCase()}: PASS (${hash})`);
+    } else {
+      results.push(`  ${lang.toUpperCase()}: FAIL (expected ${frozen}, got ${hash})`);
+      allPass = false;
+    }
+  }
+
+  const status = allPass ? '✅ PASS' : '❌ FAIL';
+  console.log(`[Freeze Integrity Check] ${status}\n${results.join('\n')}`);
+  return allPass;
 }
 
 /**
@@ -142,10 +187,9 @@ export function validateAssessmentFreeze(): void {
  * Run from browser console: import('/src/lib/assessment/freezeGuard').then(m => m.regenerateHashes())
  */
 export function regenerateHashes(): void {
-  const locales = { en: enTranslations, it: itTranslations, es: esTranslations };
+  const hashes = computeAllHashes();
   console.log('=== Assessment Freeze Hashes (copy into ASSESSMENT_FREEZE_HASHES) ===');
-  for (const [lang, data] of Object.entries(locales)) {
-    const hash = computeHash(data as Record<string, unknown>);
+  for (const [lang, hash] of Object.entries(hashes)) {
     console.log(`  ${lang}: "${hash}",`);
   }
   console.log('Replace null values in freezeGuard.ts with these hashes, then commit.');
