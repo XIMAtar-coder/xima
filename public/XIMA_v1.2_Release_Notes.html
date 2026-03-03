@@ -100,7 +100,22 @@
   <li><code>regenerateHashes()</code> utility preserved for version bumps</li>
 </ul>
 
-<h3>2.9 RLS Final Audit <span class="tag">Hardened</span></h3>
+<h3>2.9 Content-Lock Freeze Hashing (v1.2.1) <span class="tag">Hardened</span></h3>
+<ul>
+  <li>Upgraded from structural-only fingerprint to <strong>deep content hash</strong> via recursive <code>stableStringify()</code></li>
+  <li>All question text, option labels, and scoring-relevant fields are now included in the hash — any single-character change triggers <code>FREEZE VIOLATION</code></li>
+  <li>Hashes now differ per locale (EN ≠ IT ≠ ES), proving translation content is protected</li>
+  <li>Automation script: <code>npx tsx scripts/sealFreezeHashes.ts</code> — idempotent, reads i18n JSON, patches <code>freezeGuard.ts</code></li>
+</ul>
+<table>
+  <tr><th>Locale</th><th>Content Hash (djb2)</th></tr>
+  <tr><td>EN</td><td><code>11ffb15d</code></td></tr>
+  <tr><td>IT</td><td><code>e7b14a09</code></td></tr>
+  <tr><td>ES</td><td><code>d7d4491d</code></td></tr>
+</table>
+<p>See: <a href="XIMA_v1.2_Freeze_Seal_Report.html">Freeze Seal Report</a> for full details.</p>
+
+<h3>2.10 RLS Final Audit <span class="tag">Hardened</span></h3>
 <table>
   <tr><th>Table</th><th>RLS</th><th>Anon</th><th>Admin Read</th><th>Service Write</th><th>User Access</th></tr>
   <tr><td>ai_invocation_log</td><td>✅</td><td>REVOKED</td><td>✅</td><td>✅</td><td>—</td></tr>
@@ -124,7 +139,7 @@
 
 <h2>4. Known Limitations</h2>
 <ul>
-  <li><strong>Freeze hashes not yet hard-coded:</strong> Self-sealing in dev mode; production will throw on null. Run <code>regenerateHashes()</code> in dev console and commit values before production deployment.</li>
+  <li><strong>Freeze hashes sealed (v1.2.1):</strong> Content-lock hashes hard-coded via <code>scripts/sealFreezeHashes.ts</code>. No manual steps required. Run <code>npx tsx scripts/sealFreezeHashes.ts</code> after any future content change.</li>
   <li><strong>Single AI provider:</strong> All AI calls route through Lovable AI Gateway (Gemini). No fallback/circuit breaker.</li>
   <li><strong>Synthetic-only psychometrics:</strong> Cronbach's α validated on synthetic data only. Real-data IRT calibration requires N≥500 (telemetry infrastructure now in place).</li>
   <li><strong>Email provider:</strong> Requires RESEND_API_KEY secret. Worker gracefully skips if unconfigured.</li>
@@ -193,10 +208,10 @@ SELECT cron.schedule('process-emails', '*/2 * * * *',
 );</pre>
 
 <h3>A.2 Assessment Freeze Hash Regeneration</h3>
-<pre>-- In browser dev console:
-import('/src/lib/assessment/freezeGuard').then(m => m.regenerateHashes())
--- Copy output into ASSESSMENT_FREEZE_HASHES in freezeGuard.ts
--- Commit: "chore: bump assessment freeze to vX.Y"</pre>
+<pre># Automated (preferred — no manual steps):
+npx tsx scripts/sealFreezeHashes.ts
+# Idempotent: if hashes match → no-op; if mismatch → fails loudly
+# Commit: "chore: bump assessment freeze to vX.Y"</pre>
 
 <h3>A.3 Enterprise Plan Assignment</h3>
 <pre>-- Via SQL (admin only):

@@ -417,9 +417,11 @@
 <div class="step-block">
   <h4><span class="badge badge-p0">P0</span> Step 8 — Final Hardening + Release Governance</h4>
   <p><strong>Objective:</strong> Hard-lock freeze guard, finalize RLS, harden email worker, create release documentation.</p>
-  <p><strong>Files:</strong> <code>src/lib/assessment/freezeGuard.ts</code>, <code>supabase/config.toml</code>, this document</p>
+  <p><strong>Files:</strong> <code>src/lib/assessment/freezeGuard.ts</code>, <code>scripts/sealFreezeHashes.ts</code>, <code>supabase/config.toml</code>, this document</p>
   <p><strong>Deliverables:</strong> Production-fatal freeze guard (throws on null/mismatch), email worker JWT enforcement, RLS audit (8/8 tables confirmed), <code>XIMA_v1.2_Release_Notes.html</code>, operational runbook appendix</p>
-  <p><strong>Status:</strong> <span class="status status-completed">✅ COMPLETED</span></p>
+  <p><strong>Sub-step (v1.2.1):</strong> Content-lock freeze — upgraded from structural fingerprint to deep content hash via recursive <code>stableStringify()</code>. Hashes now unique per locale. Sealed via <code>scripts/sealFreezeHashes.ts</code>. See <a href="XIMA_v1.2_Freeze_Seal_Report.html">Freeze Seal Report</a>.</p>
+  <table style="font-size:12px;margin:8px 0;"><tr><th>EN</th><th>IT</th><th>ES</th></tr><tr><td><code>11ffb15d</code></td><td><code>e7b14a09</code></td><td><code>d7d4491d</code></td></tr></table>
+  <p><strong>Status:</strong> <span class="status status-completed">✅ COMPLETED — Content-lock sealed (v1.2.1)</span></p>
 </div>
 
 <!-- ============================================================ -->
@@ -500,9 +502,8 @@
 <h3>Assessment Content Change Protocol</h3>
 <ol>
   <li>NEVER modify assessmentSets in locale files without version bump</li>
-  <li>Run <code>regenerateHashes()</code> in browser console</li>
-  <li>Update ASSESSMENT_FREEZE_HASHES with new values</li>
-  <li>Bump ASSESSMENT_VERSION (e.g., "1.2")</li>
+  <li>Run <code>npx tsx scripts/sealFreezeHashes.ts</code> — auto-computes and patches <code>freezeGuard.ts</code></li>
+  <li>Bump ASSESSMENT_VERSION (e.g., "1.3")</li>
   <li>Rerun validation pipeline (Cronbach's α + discriminant validity)</li>
   <li>Document changes in release notes</li>
 </ol>
@@ -538,7 +539,7 @@ GROUP BY field_key;
 <h3>A.4 Assessment Content Changes</h3>
 <ol>
   <li>Never modify assessmentSets without version bump</li>
-  <li>Run <code>regenerateHashes()</code> → copy into freezeGuard.ts</li>
+  <li>Run <code>npx tsx scripts/sealFreezeHashes.ts</code> (auto-patches freezeGuard.ts)</li>
   <li>Bump ASSESSMENT_VERSION</li>
   <li>Rerun validation pipeline</li>
 </ol>
