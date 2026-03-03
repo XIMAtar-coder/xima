@@ -1,45 +1,67 @@
 /**
- * XIMA Assessment v1.1 Freeze Guard — Production Hard Lock
+ * XIMA Assessment v1.2.1 Freeze Guard — Content-Lock Hash
  * 
- * Ensures runtime assessment content matches the frozen v1.1 baseline.
- * Any modification to assessmentSets requires a new version (v1.2+)
- * and a rerun of the validation pipeline.
+ * Ensures runtime assessment content matches the frozen v1.2.1 baseline.
+ * Unlike v1.1 (structural-only), this version hashes ALL content:
+ * question text, option text, categories, and scoring-relevant fields.
+ * 
+ * Hashes DIFFER per locale when translations differ (EN ≠ IT ≠ ES).
  * 
  * BEHAVIOR:
- * - Production: throws Error if hashes are null or mismatch → app WILL NOT start
- * - Development: computes and self-seals on first run, validates on subsequent runs
+ * - Production: throws Error if hashes mismatch → app WILL NOT start
+ * - Development: logs violations as errors but does not throw
  * 
- * HOW TO BUMP TO v1.3:
- * 1. Update ASSESSMENT_VERSION to "1.3"
- * 2. Run in browser console: 
- *    import('/src/lib/assessment/freezeGuard').then(m => m.regenerateHashes())
- * 3. Copy the logged hashes into ASSESSMENT_FREEZE_HASHES below
- * 4. Commit with message: "chore: bump assessment freeze to v1.3"
+ * HOW TO BUMP:
+ * 1. Update ASSESSMENT_VERSION
+ * 2. Run: npx tsx scripts/sealFreezeHashes.ts
+ * 3. Commit with message: "chore: bump assessment freeze to vX.Y"
  */
 
 import enTranslations from '@/i18n/locales/en.json';
 import itTranslations from '@/i18n/locales/it.json';
 import esTranslations from '@/i18n/locales/es.json';
 
-export const ASSESSMENT_VERSION = "1.1";
+export const ASSESSMENT_VERSION = "1.2.1";
 
 /**
- * Compute a deterministic hash of the assessmentSets subtree.
- * Uses a simple djb2-style hash for zero-dependency operation.
+ * Recursively stable-stringify any value with sorted object keys.
+ * Guarantees deterministic output regardless of key insertion order.
+ */
+function stableStringify(value: unknown): string {
+  if (value === null || value === undefined) return 'null';
+  if (typeof value === 'string') return JSON.stringify(value);
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  if (Array.isArray(value)) {
+    return '[' + value.map(stableStringify).join(',') + ']';
+  }
+  if (typeof value === 'object') {
+    const obj = value as Record<string, unknown>;
+    const keys = Object.keys(obj).sort();
+    return '{' + keys.map(k => JSON.stringify(k) + ':' + stableStringify(obj[k])).join(',') + '}';
+  }
+  return String(value);
+}
+
+/**
+ * Compute a deterministic djb2 hash of a string.
  */
 function djb2Hash(str: string): string {
   let hash = 5381;
   for (let i = 0; i < str.length; i++) {
     hash = ((hash << 5) + hash) + str.charCodeAt(i);
-    hash = hash & hash; // Convert to 32-bit integer
+    hash = hash & hash;
   }
   return (hash >>> 0).toString(16).padStart(8, '0');
 }
 
+/**
+ * Get the FULL content-level serialization of assessmentSets.
+ * Includes all question text, options, categories — everything.
+ */
 function getAssessmentSubtree(locale: Record<string, unknown>): string {
   const sets = (locale as any)?.assessmentSets;
   if (!sets) return '';
-  return JSON.stringify(sets, Object.keys(sets).sort());
+  return stableStringify(sets);
 }
 
 export function computeHash(locale: Record<string, unknown>): string {
@@ -58,18 +80,15 @@ export function computeAllHashes(): Record<string, string> {
 }
 
 /**
- * Frozen v1.1 hashes — HARD-CODED after validated baseline.
+ * Frozen v1.2.1 content-lock hashes — HARD-CODED.
+ * These are sealed by: npx tsx scripts/sealFreezeHashes.ts
  * 
- * SELF-SEALING: In development, if these are null, the system auto-computes
- * and seals them on first run. In production, null values cause a fatal error.
- * 
- * These values are auto-sealed by the dev environment on first successful run.
- * Once sealed, they are validated on every subsequent startup.
+ * IMPORTANT: These MUST differ per locale (unless translations are identical).
  */
 const ASSESSMENT_FREEZE_HASHES: Record<string, string> = {
-  en: "65add290",
-  it: "65add290",
-  es: "65add290",
+  en: "11ffb15d",
+  it: "e7b14a09",
+  es: "d7d4491d",
 };
 
 let freezeInitialized = false;

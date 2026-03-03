@@ -17,6 +17,21 @@ import { resolve } from 'path';
 
 // ─── Replicate the EXACT hashing logic from freezeGuard.ts ───
 
+function stableStringify(value: unknown): string {
+  if (value === null || value === undefined) return 'null';
+  if (typeof value === 'string') return JSON.stringify(value);
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  if (Array.isArray(value)) {
+    return '[' + value.map(stableStringify).join(',') + ']';
+  }
+  if (typeof value === 'object') {
+    const obj = value as Record<string, unknown>;
+    const keys = Object.keys(obj).sort();
+    return '{' + keys.map(k => JSON.stringify(k) + ':' + stableStringify(obj[k])).join(',') + '}';
+  }
+  return String(value);
+}
+
 function djb2Hash(str: string): string {
   let hash = 5381;
   for (let i = 0; i < str.length; i++) {
@@ -29,7 +44,7 @@ function djb2Hash(str: string): string {
 function getAssessmentSubtree(locale: Record<string, unknown>): string {
   const sets = (locale as any)?.assessmentSets;
   if (!sets) return '';
-  return JSON.stringify(sets, Object.keys(sets).sort());
+  return stableStringify(sets);
 }
 
 function computeHash(locale: Record<string, unknown>): string {

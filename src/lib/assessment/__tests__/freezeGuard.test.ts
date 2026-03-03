@@ -1,10 +1,11 @@
 /**
- * XIMA Assessment Freeze Guard — Verification Test
+ * XIMA Assessment Freeze Guard v1.2.1 — Content-Lock Verification
  * 
  * Validates that:
- * 1. All 3 locales (EN/IT/ES) have assessmentSets content
- * 2. Computed hashes match the hard-coded frozen values
- * 3. Hashes are deterministic (recomputing yields same result)
+ * 1. All 3 locales have assessmentSets content
+ * 2. Content-lock hashes differ per locale
+ * 3. Hashes are deterministic
+ * 4. A 1-char mutation changes the hash (content-lock proof)
  */
 import { describe, it, expect } from 'vitest';
 import { computeHash, computeAllHashes, ASSESSMENT_VERSION } from '../freezeGuard';
@@ -12,32 +13,9 @@ import enTranslations from '@/i18n/locales/en.json';
 import itTranslations from '@/i18n/locales/it.json';
 import esTranslations from '@/i18n/locales/es.json';
 
-const EXPECTED_HASHES = {
-  en: '65add290',
-  it: '65add290',
-  es: '65add290',
-};
-
-describe('Assessment Freeze Guard', () => {
-  it('computed hashes match hard-coded frozen values', () => {
-    const hashes = computeAllHashes();
-
-    console.log('[Freeze Integrity Check]');
-    console.log(`  EN: ${hashes.en === EXPECTED_HASHES.en ? 'PASS' : 'FAIL'} (${hashes.en})`);
-    console.log(`  IT: ${hashes.it === EXPECTED_HASHES.it ? 'PASS' : 'FAIL'} (${hashes.it})`);
-    console.log(`  ES: ${hashes.es === EXPECTED_HASHES.es ? 'PASS' : 'FAIL'} (${hashes.es})`);
-
-    expect(hashes.en).toBe(EXPECTED_HASHES.en);
-    expect(hashes.it).toBe(EXPECTED_HASHES.it);
-    expect(hashes.es).toBe(EXPECTED_HASHES.es);
-  });
-
-  it('produces deterministic hashes on repeated computation', () => {
-    const first = computeAllHashes();
-    const second = computeAllHashes();
-    expect(first.en).toBe(second.en);
-    expect(first.it).toBe(second.it);
-    expect(first.es).toBe(second.es);
+describe('Assessment Freeze Guard v1.2.1 (content-lock)', () => {
+  it('version is 1.2.1', () => {
+    expect(ASSESSMENT_VERSION).toBe('1.2.1');
   });
 
   it('all locales have assessmentSets content', () => {
@@ -46,7 +24,40 @@ describe('Assessment Freeze Guard', () => {
     expect((esTranslations as any).assessmentSets).toBeDefined();
   });
 
-  it('version is set to 1.1', () => {
-    expect(ASSESSMENT_VERSION).toBe('1.1');
+  it('produces 8-char hex hashes', () => {
+    const hashes = computeAllHashes();
+    for (const [lang, hash] of Object.entries(hashes)) {
+      expect(hash).toMatch(/^[0-9a-f]{8}$/);
+      console.log(`CONTENT-HASH ${lang.toUpperCase()}: ${hash}`);
+    }
+  });
+
+  it('produces DIFFERENT hashes per locale (content-lock proof)', () => {
+    const hashes = computeAllHashes();
+    expect(hashes.en).not.toBe(hashes.it);
+    expect(hashes.en).not.toBe(hashes.es);
+    expect(hashes.it).not.toBe(hashes.es);
+  });
+
+  it('is deterministic', () => {
+    const first = computeAllHashes();
+    const second = computeAllHashes();
+    expect(first).toEqual(second);
+  });
+
+  it('detects 1-char content mutation', () => {
+    const mutated = JSON.parse(JSON.stringify(enTranslations));
+    mutated.assessmentSets.science_tech.questions.q1.question += 'X';
+    const original = computeHash(enTranslations as Record<string, unknown>);
+    const changed = computeHash(mutated);
+    expect(original).not.toBe(changed);
+  });
+
+  it('computed hashes match hard-coded sealed values', () => {
+    const SEALED = { en: '11ffb15d', it: 'e7b14a09', es: 'd7d4491d' };
+    const hashes = computeAllHashes();
+    expect(hashes.en).toBe(SEALED.en);
+    expect(hashes.it).toBe(SEALED.it);
+    expect(hashes.es).toBe(SEALED.es);
   });
 });
