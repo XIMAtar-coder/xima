@@ -161,7 +161,13 @@
     "locales_fully_rendered": ["EN", "IT", "ES"],
     "fields_fully_rendered": ["science_tech", "business_leadership", "arts_creative", "service_ops"],
     "items_per_field": "21 MC (q1–q21) + 2 Open (open1, open2) = 23 items",
+    "mc_items_expected": 252,
+    "open_items_expected": 24,
+    "total_items_expected": 276,
     "total_items_rendered": "92 items × 3 locales = 276 item renderings",
-    "certification": "All items are rendered verbatim from runtime i18n source. No abbreviations or summaries."
+    "certification": "All items are rendered verbatim from runtime i18n source. No abbreviations or summaries.",
+    "freeze_hashes_v1_2_1": { "en": "11ffb15d", "it": "e7b14a09", "es": "d7d4491d" },
+    "renderer_script": "scripts/renderReviewerPack.ts",
+    "render_command": "npm run render:reviewer-pack"
   }
 }
