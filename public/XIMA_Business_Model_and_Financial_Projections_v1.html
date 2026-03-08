@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XIMA — Business Model &amp; 5-Year Financial Projection Dossier v1.0</title>
+<style>
+  @page { size: A4; margin: 14mm 16mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 9.5pt; line-height: 1.45; color: #1a1a1a; max-width: 210mm; margin: 0 auto; padding: 14mm 16mm; }
+  h1 { font-size: 16pt; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px; }
+  .subtitle { font-size: 9pt; color: #666; margin-bottom: 16px; border-bottom: 2px solid #1a1a1a; padding-bottom: 6px; }
+  h2 { font-size: 11pt; font-weight: 700; margin: 14px 0 6px 0; color: #0d1b2a; border-left: 3px solid #2563eb; padding-left: 8px; }
+  h3 { font-size: 9.5pt; font-weight: 700; margin: 8px 0 3px 0; color: #1e3a5f; }
+  ul { padding-left: 16px; margin: 2px 0 6px 0; }
+  li { margin-bottom: 2px; }
+  p { margin: 3px 0 6px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 10px 0; font-size: 8.5pt; }
+  th, td { border: 1px solid #ccc; padding: 3px 6px; text-align: left; }
+  th { background: #f0f4f8; font-weight: 700; font-size: 8pt; text-transform: uppercase; letter-spacing: 0.3px; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .assumption { background: #fffbeb; border-left: 3px solid #f59e0b; padding: 4px 8px; margin: 6px 0; font-size: 8.5pt; }
+  .assumption::before { content: "⚠ ASSUMPTION: "; font-weight: 700; color: #b45309; }
+  .highlight { background: #eff6ff; border-left: 3px solid #2563eb; padding: 4px 8px; margin: 6px 0; font-size: 8.5pt; }
+  .model-card { border: 1px solid #d1d5db; border-radius: 4px; padding: 6px 10px; margin: 6px 0; }
+  .model-card h3 { margin-top: 0; }
+  .footer { margin-top: 20px; padding-top: 8px; border-top: 1px solid #999; font-size: 7.5pt; color: #888; display: flex; justify-content: space-between; }
+  .page-break { page-break-before: always; }
+  @media print {
+    body { padding: 0; }
+    .page-break { break-before: page; }
+  }
+  .scenario-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 6px 0; }
+  .scenario-box { border: 1px solid #d1d5db; border-radius: 4px; padding: 6px 8px; font-size: 8.5pt; }
+  .scenario-box h3 { font-size: 9pt; margin-bottom: 4px; }
+  .scenario-box.conservative { border-color: #6b7280; }
+  .scenario-box.moderate { border-color: #2563eb; background: #f8faff; }
+  .scenario-box.aggressive { border-color: #059669; }
+</style>
+</head>
+<body>
+
+<h1>XIMA — Business Model &amp; 5-Year Financial Projection Dossier</h1>
+<div class="subtitle">Version 1.0 · Generated 2026-03-08 · Classification: Strategic Input Dossier — Confidential</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<h2>SECTION 1 — Purpose and Mission</h2>
+
+<div class="highlight">
+  <strong>Core Purpose:</strong> XIMA exists to amplify human potential and help build conscious, accountable communities capable of addressing the challenges of the future.
+</div>
+
+<p>XIMA is a <strong>human potential platform</strong>, not solely a hiring tool. The philosophy:</p>
+<ul>
+  <li><strong>Talent discovery beyond credentials</strong> — replacing CV-first screening with behavioral and cognitive signal detection via a validated 5-pillar psychometric model</li>
+  <li><strong>Self-awareness for individuals</strong> — enabling candidates to understand their cognitive strengths, communication patterns, and growth areas through anonymized XIMAtar profiles (12 archetypes)</li>
+  <li><strong>Responsible team building</strong> — giving organizations behavioral intelligence to build diverse, high-performing teams without credential bias</li>
+  <li><strong>Development pathways</strong> — connecting people with vetted mentors and personalized development plans aligned to their pillar profile</li>
+  <li><strong>Community infrastructure</strong> — building a network effect where talent signals compound across hiring, development, and mentorship interactions</li>
+</ul>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<h2>SECTION 2 — Market Opportunity</h2>
+
+<table>
+  <tr><th>Market Segment</th><th>Global Size (2025 est.)</th><th>CAGR</th><th>2030 Projected</th></tr>
+  <tr><td>Recruitment Technology</td><td class="num">$32B</td><td class="num">7.8%</td><td class="num">$46B</td></tr>
+  <tr><td>AI-Assisted Hiring Tools</td><td class="num">$3.2B</td><td class="num">14.5%</td><td class="num">$6.3B</td></tr>
+  <tr><td>Talent Development / L&D</td><td class="num">$44B</td><td class="num">9.2%</td><td class="num">$68B</td></tr>
+  <tr><td>Coaching &amp; Mentorship Platforms</td><td class="num">$4.5B</td><td class="num">12.1%</td><td class="num">$8.0B</td></tr>
+</table>
+<div class="assumption">Market size estimates derived from Statista, Grand View Research, and HolonIQ 2024-2025 reports. Rounded to nearest $0.5B.</div>
+
+<p><strong>Convergence thesis:</strong> These four markets are collapsing into a single <em>talent intelligence</em> category. Employers increasingly demand pre-hire behavioral signal + post-hire development continuity. XIMA sits at the intersection: psychometric assessment → hiring match → mentor-driven development → continuous talent intelligence. The addressable niche (SMB psychometric hiring + talent development in EU) is estimated at <strong>€800M–€1.2B</strong> by 2028.</p>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<h2>SECTION 3 — Platform Value Creation</h2>
+
+<table>
+  <tr><th>Stakeholder</th><th>Value Delivered</th><th>Key Mechanism</th></tr>
+  <tr><td><strong>Companies</strong></td><td>Reduce mis-hires, screen for behavioral fit, access structured decision packs</td><td>3-level challenge pipeline, signal engine, XIMAtar-to-role matching</td></tr>
+  <tr><td><strong>Candidates</strong></td><td>Portable behavioral profile, bias-free evaluation, career self-awareness</td><td>XIMAtar identity (12 archetypes), pillar radar, development plan</td></tr>
+  <tr><td><strong>Mentors</strong></td><td>Qualified lead flow, structured session framework, credential visibility</td><td>AI-matched mentor recommendations, calendar integration, CV-consent system</td></tr>
+  <tr><td><strong>Educational Institutions</strong></td><td>Student employability insights, cohort behavioral analytics, employer partnerships</td><td>Bulk assessment API (future), field-specific pillar benchmarks</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<h2>SECTION 4 — Possible Business Models</h2>
+
+<div class="model-card">
+  <h3>Model A — B2B Hiring Platform</h3>
+  <ul>
+    <li><strong>How it works:</strong> Companies subscribe for access to the candidate pool and challenge pipeline. Optional success fee on hires.</li>
+    <li><strong>Pricing logic:</strong> Monthly subscription (€199–€1,500/mo by tier) + optional success fee (€500–€2,000 per confirmed hire)</li>
+    <li><strong>Target:</strong> SMBs and mid-market companies (10–500 employees) hiring 5–50 roles/year</li>
+    <li><strong>Scalability:</strong> High — recurring revenue, marginal cost per additional company is near-zero (infrastructure + AI tokens only)</li>
+    <li><strong>Status:</strong> <strong>Live</strong> — current primary model with 3-tier pricing (Starter / Growth / Enterprise)</li>
+  </ul>
+</div>
+
+<div class="model-card">
+  <h3>Model B — Talent Intelligence SaaS</h3>
+  <ul>
+    <li><strong>How it works:</strong> Companies use XIMA for internal workforce behavioral mapping, team composition analysis, and succession planning</li>
+    <li><strong>Pricing logic:</strong> Per-seat licensing (€8–€25/employee/month) or annual enterprise contract</li>
+    <li><strong>Target:</strong> HR departments in mid-market and enterprise (500+ employees)</li>
+    <li><strong>Scalability:</strong> Very high — no hiring dependency, continuous engagement</li>
+    <li><strong>Status:</strong> <strong>Designed</strong> — requires internal assessment mode and team dashboard (roadmap H2 2026)</li>
+  </ul>
+</div>
+
+<div class="model-card">
+  <h3>Model C — Mentor Marketplace</h3>
+  <ul>
+    <li><strong>How it works:</strong> Mentors set rates for coaching sessions and development programs. XIMA matches candidates to mentors using pillar profiles. Platform takes commission.</li>
+    <li><strong>Pricing logic:</strong> Mentor-set pricing (est. €50–€200/session). Platform commission: 15–25%</li>
+    <li><strong>Target:</strong> Career changers, junior professionals, candidates post-assessment seeking growth</li>
+    <li><strong>Scalability:</strong> Medium — supply-constrained by mentor onboarding; marketplace dynamics require critical mass</li>
+    <li><strong>Status:</strong> <strong>Partially live</strong> — mentor portal operational, booking system live, payment not yet integrated</li>
+  </ul>
+</div>
+
+<div class="model-card">
+  <h3>Model D — Candidate Premium</h3>
+  <ul>
+    <li><strong>How it works:</strong> Free candidates get basic XIMAtar + pillar scores. Premium unlocks detailed capability reports, CV-vs-assessment comparison, priority mentor matching, career strategy insights.</li>
+    <li><strong>Pricing logic:</strong> Freemium → Premium at €9.90/month or €89/year</li>
+    <li><strong>Target:</strong> Active job seekers and career-development-focused professionals</li>
+    <li><strong>Scalability:</strong> High — zero marginal cost for digital reports; conversion rates expected at 3–8% of free users</li>
+    <li><strong>Status:</strong> <strong>Designed</strong> — premium tier structure defined, entitlement system live, Stripe not yet integrated</li>
+  </ul>
+</div>
+
+<div class="model-card">
+  <h3>Model E — Enterprise / White-Label Licensing</h3>
+  <ul>
+    <li><strong>How it works:</strong> Large organizations or HR consultancies license the XIMA assessment engine for internal deployment under their brand</li>
+    <li><strong>Pricing logic:</strong> Annual license €15,000–€80,000 depending on seat count and customization</li>
+    <li><strong>Target:</strong> Large corporates (1,000+ employees), HR consulting firms, universities</li>
+    <li><strong>Scalability:</strong> Medium — high revenue per deal but long sales cycles and customization overhead</li>
+    <li><strong>Status:</strong> <strong>Hypothetical</strong> — requires API abstraction layer and multi-tenant isolation (roadmap 2027+)</li>
+  </ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+
+<h2>SECTION 5 — Revenue Streams</h2>
+
+<table>
+  <tr><th>Revenue Stream</th><th>Model</th><th>Price Range</th><th>Year 1 Contribution</th><th>Year 5 Contribution</th></tr>
+  <tr><td>Company subscriptions</td><td>A</td><td>€199–€1,500/mo</td><td class="num">70%</td><td class="num">45%</td></tr>
+  <tr><td>Hiring success fees</td><td>A</td><td>€500–€2,000/hire</td><td class="num">10%</td><td class="num">15%</td></tr>
+  <tr><td>Mentor marketplace commission</td><td>C</td><td>15–25% of session fee</td><td class="num">2%</td><td class="num">10%</td></tr>
+  <tr><td>Candidate premium subscriptions</td><td>D</td><td>€9.90/mo or €89/yr</td><td class="num">3%</td><td class="num">12%</td></tr>
+  <tr><td>Enterprise licensing</td><td>B/E</td><td>€15K–€80K/year</td><td class="num">15%</td><td class="num">18%</td></tr>
+</table>
+<div class="assumption">Revenue contribution percentages are strategic targets, not forecasts. Early years dominated by B2B subscriptions; diversification expected from Year 3+.</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<h2>SECTION 6 — Operational Cost Structure</h2>
+
+<h3>Year 1 Estimated Annual Costs (Bootstrapped / Pre-Seed)</h3>
+<table>
+  <tr><th>Category</th><th>Item</th><th>Monthly Est.</th><th>Annual Est.</th></tr>
+  <tr><td rowspan="4"><strong>Infrastructure</strong></td><td>Cloud hosting (Supabase Pro + CDN)</td><td class="num">€120</td><td class="num">€1,440</td></tr>
+  <tr><td>AI inference (Gemini 2.5 Flash via gateway)</td><td class="num">€80–€300</td><td class="num">€960–€3,600</td></tr>
+  <tr><td>Storage &amp; bandwidth</td><td class="num">€30</td><td class="num">€360</td></tr>
+  <tr><td>Domain, email, monitoring tools</td><td class="num">€50</td><td class="num">€600</td></tr>
+  <tr><td rowspan="3"><strong>Personnel</strong></td><td>Core team (2–3 founders, deferred comp)</td><td class="num">€0*</td><td class="num">€0*</td></tr>
+  <tr><td>Part-time contractor (design/UX)</td><td class="num">€800</td><td class="num">€9,600</td></tr>
+  <tr><td>Part-time sales/BD</td><td class="num">€500</td><td class="num">€6,000</td></tr>
+  <tr><td rowspan="3"><strong>Operations</strong></td><td>Legal &amp; compliance (GDPR audit, terms)</td><td class="num">€250</td><td class="num">€3,000</td></tr>
+  <tr><td>Accounting &amp; admin</td><td class="num">€200</td><td class="num">€2,400</td></tr>
+  <tr><td>Marketing (content, events, LinkedIn)</td><td class="num">€400</td><td class="num">€4,800</td></tr>
+  <tr><td colspan="2"><strong>TOTAL Year 1 (bootstrapped)</strong></td><td class="num"><strong>€2,430–€2,650</strong></td><td class="num"><strong>€29,160–€31,800</strong></td></tr>
+</table>
+<div class="assumption">*Founder compensation deferred. If founders take €2,500/mo each (×2), add ~€60,000/year. Year 1 assumes lean bootstrapped operation.</div>
+
+<h3>Year 3 Estimated Annual Costs (Post-Seed, Scaling)</h3>
+<table>
+  <tr><th>Category</th><th>Annual Est.</th></tr>
+  <tr><td>Infrastructure (scaled)</td><td class="num">€18,000–€36,000</td></tr>
+  <tr><td>Engineering (3 FTEs)</td><td class="num">€180,000</td></tr>
+  <tr><td>Product &amp; AI Research (1 FTE)</td><td class="num">€65,000</td></tr>
+  <tr><td>Sales &amp; Marketing (2 FTEs + budget)</td><td class="num">€120,000</td></tr>
+  <tr><td>Customer Support (1 FTE)</td><td class="num">€40,000</td></tr>
+  <tr><td>Operations (legal, compliance, admin)</td><td class="num">€30,000</td></tr>
+  <tr><td><strong>TOTAL Year 3</strong></td><td class="num"><strong>€453,000–€471,000</strong></td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<h2>SECTION 7 — Unit Economics</h2>
+
+<table>
+  <tr><th>Metric</th><th>Estimate</th><th>Notes</th></tr>
+  <tr><td>Cost per assessment (AI tokens)</td><td class="num">€0.03–€0.08</td><td>21 MC + 2 open answers + XIMAtar assignment. Gemini 2.5 Flash pricing.</td></tr>
+  <tr><td>Cost per L2 challenge (AI generation + scoring)</td><td class="num">€0.15–€0.40</td><td>Longer prompts for role-specific simulation generation and signal extraction.</td></tr>
+  <tr><td>Cost per company served (variable/mo)</td><td class="num">€3–€13</td><td>AI inference + storage. Excludes fixed costs.</td></tr>
+  <tr><td>Cost per candidate acquisition</td><td class="num">€0 (organic) – €15 (paid)</td><td>Candidates self-serve; organic via company invitations. Paid via LinkedIn/content.</td></tr>
+  <tr><td>Gross margin (B2B subscription)</td><td class="num">92–97%</td><td>Subscription revenue minus variable infrastructure costs.</td></tr>
+  <tr><td>Contribution margin per company</td><td class="num">€341/mo (avg)</td><td>At ARPU €349/mo minus €8/mo variable costs.</td></tr>
+  <tr><td>LTV (est. 24-month retention)</td><td class="num">€8,184</td><td>€341 × 24 months. Conservative churn assumption: 50% annual.</td></tr>
+  <tr><td>LTV:CAC ratio target</td><td class="num">5:1 – 10:1</td><td>CAC estimated €500–€1,500 per company (content + sales).</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<h2>SECTION 8 — Growth Scenarios</h2>
+
+<div class="scenario-grid">
+  <div class="scenario-box conservative">
+    <h3>🔵 Conservative</h3>
+    <p><strong>Thesis:</strong> Organic growth, no funding, Italian SMB market only</p>
+    <table>
+      <tr><th></th><th>Y1</th><th>Y3</th><th>Y5</th></tr>
+      <tr><td>Companies</td><td class="num">5</td><td class="num">25</td><td class="num">60</td></tr>
+      <tr><td>Candidates</td><td class="num">200</td><td class="num">2,500</td><td class="num">8,000</td></tr>
+      <tr><td>Mentors</td><td class="num">5</td><td class="num">15</td><td class="num">30</td></tr>
+      <tr><td>ARR</td><td class="num">€21K</td><td class="num">€125K</td><td class="num">€350K</td></tr>
+    </table>
+  </div>
+  <div class="scenario-box moderate">
+    <h3>🟢 Moderate</h3>
+    <p><strong>Thesis:</strong> Pre-seed funded (€200K), EU expansion from Year 2</p>
+    <table>
+      <tr><th></th><th>Y1</th><th>Y3</th><th>Y5</th></tr>
+      <tr><td>Companies</td><td class="num">10</td><td class="num">80</td><td class="num">250</td></tr>
+      <tr><td>Candidates</td><td class="num">500</td><td class="num">12,000</td><td class="num">50,000</td></tr>
+      <tr><td>Mentors</td><td class="num">8</td><td class="num">40</td><td class="num">120</td></tr>
+      <tr><td>ARR</td><td class="num">€50K</td><td class="num">€480K</td><td class="num">€1.8M</td></tr>
+    </table>
+  </div>
+  <div class="scenario-box aggressive">
+    <h3>🟠 Aggressive</h3>
+    <p><strong>Thesis:</strong> Seed round (€1M+), multi-market, enterprise deals</p>
+    <table>
+      <tr><th></th><th>Y1</th><th>Y3</th><th>Y5</th></tr>
+      <tr><td>Companies</td><td class="num">20</td><td class="num">200</td><td class="num">800</td></tr>
+      <tr><td>Candidates</td><td class="num">1,500</td><td class="num">40,000</td><td class="num">200,000</td></tr>
+      <tr><td>Mentors</td><td class="num">15</td><td class="num">100</td><td class="num">400</td></tr>
+      <tr><td>ARR</td><td class="num">€120K</td><td class="num">€1.5M</td><td class="num">€6.5M</td></tr>
+    </table>
+  </div>
+</div>
+<div class="assumption">All scenarios assume current product capabilities. Aggressive scenario requires seed funding and dedicated sales team by month 6.</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+
+<h2>SECTION 9 — Five-Year Financial Projection (Moderate Scenario)</h2>
+
+<table>
+  <tr><th>Metric</th><th>Year 1</th><th>Year 2</th><th>Year 3</th><th>Year 4</th><th>Year 5</th></tr>
+  <tr><td>Active Companies</td><td class="num">10</td><td class="num">35</td><td class="num">80</td><td class="num">160</td><td class="num">250</td></tr>
+  <tr><td>Active Candidates</td><td class="num">500</td><td class="num">3,000</td><td class="num">12,000</td><td class="num">30,000</td><td class="num">50,000</td></tr>
+  <tr><td>Active Mentors</td><td class="num">8</td><td class="num">20</td><td class="num">40</td><td class="num">75</td><td class="num">120</td></tr>
+  <tr><td colspan="6" style="background:#f0f4f8;font-weight:700">Revenue</td></tr>
+  <tr><td>Company Subscriptions</td><td class="num">€35,000</td><td class="num">€160,000</td><td class="num">€384,000</td><td class="num">€720,000</td><td class="num">€1,080,000</td></tr>
+  <tr><td>Hiring Success Fees</td><td class="num">€5,000</td><td class="num">€25,000</td><td class="num">€60,000</td><td class="num">€120,000</td><td class="num">€225,000</td></tr>
+  <tr><td>Candidate Premium</td><td class="num">€1,500</td><td class="num">€12,000</td><td class="num">€48,000</td><td class="num">€120,000</td><td class="num">€216,000</td></tr>
+  <tr><td>Mentor Marketplace</td><td class="num">€1,000</td><td class="num">€8,000</td><td class="num">€24,000</td><td class="num">€60,000</td><td class="num">€120,000</td></tr>
+  <tr><td>Enterprise Licensing</td><td class="num">€7,500</td><td class="num">€15,000</td><td class="num">€60,000</td><td class="num">€150,000</td><td class="num">€270,000</td></tr>
+  <tr><td><strong>Total Revenue</strong></td><td class="num"><strong>€50,000</strong></td><td class="num"><strong>€220,000</strong></td><td class="num"><strong>€576,000</strong></td><td class="num"><strong>€1,170,000</strong></td><td class="num"><strong>€1,911,000</strong></td></tr>
+  <tr><td colspan="6" style="background:#f0f4f8;font-weight:700">Costs</td></tr>
+  <tr><td>Infrastructure</td><td class="num">€6,000</td><td class="num">€12,000</td><td class="num">€28,000</td><td class="num">€48,000</td><td class="num">€72,000</td></tr>
+  <tr><td>Personnel</td><td class="num">€16,000</td><td class="num">€120,000</td><td class="num">€285,000</td><td class="num">€480,000</td><td class="num">€650,000</td></tr>
+  <tr><td>Sales &amp; Marketing</td><td class="num">€5,000</td><td class="num">€40,000</td><td class="num">€100,000</td><td class="num">€180,000</td><td class="num">€250,000</td></tr>
+  <tr><td>Operations (legal, admin)</td><td class="num">€5,400</td><td class="num">€18,000</td><td class="num">€40,000</td><td class="num">€55,000</td><td class="num">€70,000</td></tr>
+  <tr><td><strong>Total Costs</strong></td><td class="num"><strong>€32,400</strong></td><td class="num"><strong>€190,000</strong></td><td class="num"><strong>€453,000</strong></td><td class="num"><strong>€763,000</strong></td><td class="num"><strong>€1,042,000</strong></td></tr>
+  <tr><td colspan="6" style="background:#f0f4f8;font-weight:700">Profitability</td></tr>
+  <tr><td>Gross Margin</td><td class="num">88%</td><td class="num">95%</td><td class="num">95%</td><td class="num">96%</td><td class="num">96%</td></tr>
+  <tr><td>EBITDA</td><td class="num">€17,600</td><td class="num">€30,000</td><td class="num">€123,000</td><td class="num">€407,000</td><td class="num">€869,000</td></tr>
+  <tr><td>EBITDA Margin</td><td class="num">35%</td><td class="num">14%</td><td class="num">21%</td><td class="num">35%</td><td class="num">45%</td></tr>
+</table>
+
+<div class="assumption">Year 1 personnel cost assumes deferred founder compensation. Year 2 assumes first hire. ARPU blended across tiers at €400/mo by Year 3. Candidate premium conversion: 4% of active candidates. Mentor commission: avg €15/session × sessions/year. Gross margin = (Revenue - Infrastructure) / Revenue.</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<h2>SECTION 10 — Breakeven Analysis</h2>
+
+<table>
+  <tr><th>Scenario</th><th>Fixed Costs (Monthly)</th><th>ARPU</th><th>Variable Cost/Co</th><th>Companies to Breakeven</th><th>Est. Timeline</th></tr>
+  <tr><td>Bootstrapped (founders unpaid)</td><td class="num">€2,400</td><td class="num">€349</td><td class="num">€8</td><td class="num"><strong>7</strong></td><td>Month 6–9</td></tr>
+  <tr><td>Founders paid (€5K/mo total)</td><td class="num">€7,400</td><td class="num">€349</td><td class="num">€8</td><td class="num"><strong>22</strong></td><td>Month 12–18</td></tr>
+  <tr><td>Post-seed (team of 5)</td><td class="num">€22,000</td><td class="num">€400</td><td class="num">€10</td><td class="num"><strong>56</strong></td><td>Month 18–24</td></tr>
+</table>
+
+<p><strong>Formula:</strong> Breakeven companies = Fixed costs / (ARPU − Variable cost per company). Does not include non-subscription revenue streams which accelerate breakeven.</p>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<h2>SECTION 11 — Strategic Advantages</h2>
+
+<table>
+  <tr><th>Advantage</th><th>Strength Today</th><th>Strength at N≥500</th><th>Moat Type</th></tr>
+  <tr><td><strong>Psychometric dataset accumulation</strong> — every assessment enriches validation data, enables IRT calibration, improves XIMAtar precision</td><td>Weak (N&lt;100)</td><td>Strong</td><td>Data network effect</td></tr>
+  <tr><td><strong>Behavioral talent graph</strong> — cross-company behavioral patterns create unique market intelligence</td><td>Not yet active</td><td>Strong</td><td>Data asset</td></tr>
+  <tr><td><strong>XIMAtar brand identity</strong> — 12 memorable archetypes create candidate emotional attachment and virality</td><td>Moderate</td><td>Strong</td><td>Brand moat</td></tr>
+  <tr><td><strong>Mentor ecosystem</strong> — vetted mentors matched via behavioral signal; creates switching costs for both mentors and candidates</td><td>Weak (few mentors)</td><td>Moderate</td><td>Marketplace network</td></tr>
+  <tr><td><strong>AI-supported talent intelligence</strong> — signal engine, qualitative interpretation, challenge generation create compounding IP</td><td>Moderate</td><td>Strong</td><td>Technology IP</td></tr>
+  <tr><td><strong>Regulatory positioning</strong> — GDPR Art. 22 compliant by design, consent versioning, audit trail — rare in competitors</td><td>Strong</td><td>Strong</td><td>Compliance moat</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<h2>SECTION 12 — Risks</h2>
+
+<table>
+  <tr><th>Risk</th><th>Severity</th><th>Likelihood</th><th>Mitigation</th></tr>
+  <tr><td><strong>Adoption resistance</strong> — HR teams skeptical of behavioral-first tools; prefer traditional CV screening</td><td>High</td><td>High</td><td>Case studies, ROI calculator, free trial period, dual-entry funnel (candidate-pull + top-down sales)</td></tr>
+  <tr><td><strong>Psychometric validation gap</strong> — current N&lt;100; academic credibility requires N≥300 with external panel review</td><td>High</td><td>Medium</td><td>Priority roadmap item; IRT calibration at N≥300; partnership with university research lab</td></tr>
+  <tr><td><strong>AI cost fluctuations</strong> — dependency on Gemini 2.5 Flash pricing; model deprecation risk</td><td>Medium</td><td>Medium</td><td>Multi-model abstraction layer (designed, not yet live); local heuristic fallbacks for scoring; cost monitoring per invocation</td></tr>
+  <tr><td><strong>Competition from HR tech incumbents</strong> — HireVue, Harver, Arctic Shores have larger datasets and enterprise relationships</td><td>Medium</td><td>High</td><td>Differentiate on SMB pricing, candidate portability, transparency; avoid direct enterprise competition initially</td></tr>
+  <tr><td><strong>Single-market concentration</strong> — Italian SMB market is small; scaling requires internationalization</td><td>Medium</td><td>Medium</td><td>Trilingual platform already live (EN/IT/ES); DACH expansion planned Year 2</td></tr>
+  <tr><td><strong>Founder dependency</strong> — small team; key-person risk on technical and psychometric design</td><td>Medium</td><td>High</td><td>Documented architecture (Internal System Doc), freeze protocol, version-controlled assessment model</td></tr>
+  <tr><td><strong>Regulatory tightening</strong> — EU AI Act may impose additional requirements on AI-assisted hiring</td><td>Low–Medium</td><td>Medium</td><td>XIMA already positioned as decision-support (not automated decisions); audit trail infrastructure in place</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<h2>SECTION 13 — Strategic Vision</h2>
+
+<div class="highlight">
+  <strong>Long-term vision:</strong> XIMA becomes a global human capability infrastructure — a persistent behavioral identity layer that connects hiring, development, mentorship, and organizational intelligence.
+</div>
+
+<h3>Phase 1 (Now – Year 2): Foundation</h3>
+<ul>
+  <li>Establish product-market fit with Italian SMBs (target: 10–35 paying companies)</li>
+  <li>Validate psychometric model with N≥300 assessments and external review</li>
+  <li>Integrate payment processing (Stripe)</li>
+  <li>Publish 3+ case studies demonstrating hiring quality improvement</li>
+  <li>Build mentor supply to 20+ active professionals</li>
+</ul>
+
+<h3>Phase 2 (Year 2–3): Scale</h3>
+<ul>
+  <li>Expand to DACH and Iberian markets leveraging trilingual infrastructure</li>
+  <li>Launch Candidate Premium tier with Stripe billing</li>
+  <li>Activate mentor marketplace with payment flows and commission structure</li>
+  <li>Reach 80 companies and 12,000 candidates</li>
+  <li>Begin IRT calibration and publish validation white paper</li>
+</ul>
+
+<h3>Phase 3 (Year 3–5): Platform</h3>
+<ul>
+  <li>Launch Talent Intelligence SaaS for internal workforce analysis (Model B)</li>
+  <li>Offer API access and white-label licensing for enterprise and edu (Model E)</li>
+  <li>Build behavioral talent graph as proprietary data asset</li>
+  <li>Target 250+ companies and 50,000+ candidates</li>
+  <li>Achieve €1.9M+ ARR with 45% EBITDA margin</li>
+</ul>
+
+<h3>Phase 4 (Year 5+): Infrastructure</h3>
+<ul>
+  <li>XIMA as portable behavioral credential accepted across employers</li>
+  <li>University and vocational training integrations</li>
+  <li>Government workforce development partnerships</li>
+  <li>Behavioral data marketplace (anonymized, GDPR-compliant aggregate insights)</li>
+</ul>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="footer">
+  <span>XIMA Business Model &amp; Financial Projections v1.0 · 2026-03-08</span>
+  <span>Classification: Strategic Input Dossier — Confidential · Not a Financial Guarantee</span>
+</div>
+
+</body>
+</html>
