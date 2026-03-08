@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XIMA — Investor White Paper Input Dossier v1.0</title>
+<style>
+  @page { size: A4; margin: 15mm 18mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 9pt; line-height: 1.38; color: #1a1a1a; max-width: 210mm; margin: 0 auto; }
+  .page { page-break-after: always; padding: 15mm 18mm; min-height: 297mm; position: relative; }
+  .page:last-child { page-break-after: avoid; }
+  h1 { font-size: 16pt; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 2pt; color: #111; }
+  .subtitle { font-size: 9pt; color: #666; margin-bottom: 10pt; border-bottom: 2px solid #111; padding-bottom: 6pt; }
+  h2 { font-size: 10.5pt; font-weight: 700; color: #111; margin: 10pt 0 4pt 0; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #ccc; padding-bottom: 2pt; }
+  h3 { font-size: 9.5pt; font-weight: 700; color: #333; margin: 6pt 0 2pt 0; }
+  ul { padding-left: 14pt; margin: 2pt 0 4pt 0; }
+  li { margin-bottom: 1.5pt; }
+  .two-col { display: flex; gap: 14pt; }
+  .two-col > div { flex: 1; }
+  table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin: 4pt 0 6pt 0; }
+  th { background: #f0f0f0; text-align: left; padding: 3pt 5pt; font-weight: 700; border: 1px solid #ccc; }
+  td { padding: 2.5pt 5pt; border: 1px solid #ddd; vertical-align: top; }
+  .tag { display: inline-block; background: #e8e8e8; border-radius: 2pt; padding: 1pt 4pt; font-size: 7.5pt; font-weight: 600; margin-right: 3pt; }
+  .tag-live { background: #d4edda; color: #155724; }
+  .tag-designed { background: #fff3cd; color: #856404; }
+  .tag-planned { background: #e2e3f1; color: #383d6e; }
+  .footer { position: absolute; bottom: 15mm; left: 18mm; right: 18mm; font-size: 7pt; color: #999; border-top: 1px solid #ddd; padding-top: 4pt; display: flex; justify-content: space-between; }
+  .metric { font-weight: 700; color: #111; }
+  .small { font-size: 8pt; color: #555; }
+  strong { font-weight: 700; }
+  @media print {
+    body { max-width: none; }
+    .page { padding: 0; min-height: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== PAGE 1 ==================== -->
+<div class="page">
+
+<h1>XIMA — Investor White Paper Input Dossier</h1>
+<div class="subtitle">Version 1.0 · Generated 2026-03-07 · Classification: <strong>Input Dossier — Not Final Investor Document</strong></div>
+
+<!-- SECTION 1 -->
+<h2>1 — Executive Overview</h2>
+<ul>
+  <li><strong>What XIMA is:</strong> A psychometric hiring intelligence platform that replaces CV-first screening with a 5-pillar behavioral assessment. Candidates complete a structured evaluation and receive an anonymized behavioral profile (XIMAtar) before any company sees their identity.</li>
+  <li><strong>Problem solved:</strong> Traditional hiring relies on credential bias (university name, employer brand), unstructured interviews, and subjective gut-feel. These methods produce high false-positive rates, penalize non-traditional candidates, and provide zero behavioral signal to employers.</li>
+  <li><strong>Core innovation:</strong> XIMA combines validated psychometric item design with AI-scored qualitative evaluation. The system assigns one of 12 canonical XIMAtar archetypes (e.g., Fox = strategic adaptability, Owl = analytical depth) via Euclidean distance matching on the pillar vector. Companies evaluate behavioral fit before seeing CVs.</li>
+  <li><strong>Scalability:</strong> The pillar model is field-agnostic — currently deployed across 4 professional fields (Business &amp; Management, Technology &amp; Engineering, Creative &amp; Design, Social &amp; Education). Trilingual (EN/IT/ES). Archetypes are industry-neutral; field-specific item calibration happens at the question level, not the model level.</li>
+</ul>
+
+<!-- SECTION 2 -->
+<h2>2 — Platform Architecture</h2>
+
+<h3>2.1 Technology Stack</h3>
+<table>
+  <tr><th>Layer</th><th>Technology</th><th>Details</th></tr>
+  <tr><td>Frontend</td><td>React 18, Vite, TypeScript</td><td>SPA with i18next trilingual routing, Tailwind CSS, shadcn/ui components</td></tr>
+  <tr><td>Backend</td><td>Supabase (hosted PostgreSQL)</td><td>78 tables, Row-Level Security on all tables, real-time subscriptions</td></tr>
+  <tr><td>API Layer</td><td>Supabase Edge Functions (Deno)</td><td>30+ functions: assessment scoring, challenge generation, CV analysis, email outbox</td></tr>
+  <tr><td>AI Inference</td><td>Lovable AI Gateway → Gemini 2.5 Flash</td><td>9 distinct AI touchpoints; all calls logged with SHA-256 prompt hashes</td></tr>
+  <tr><td>Auth</td><td>Supabase Auth + Google OAuth</td><td>Email/password + social login; separate auth flows for candidates, businesses, mentors</td></tr>
+  <tr><td>Storage</td><td>Supabase Storage</td><td>CV uploads, profile photos, challenge attachments, eligibility documents</td></tr>
+</table>
+
+<h3>2.2 Assessment Pipeline</h3>
+<ul>
+  <li><strong>Input:</strong> Candidate selects professional field → completes 21 multiple-choice items (4-point ordinal scale, 0–3) + 2 open-ended responses.</li>
+  <li><strong>Pillar mapping:</strong> Items follow a cyclic 5-pillar assignment (q1→P1, q2→P2, … q6→P1, etc.). Each pillar receives exactly 4–5 items per field. Mapping is content-locked with djb2 freeze hashes.</li>
+  <li><strong>Scoring:</strong> MC scores → pillar means → normalized 0–100. Open answers scored by AI (rubric: depth, specificity, self-awareness, actionability; 1–5 scale) → blended 90% MC / 10% open.</li>
+  <li><strong>XIMAtar assignment:</strong> Final pillar vector compared to 12 canonical archetype profiles via Euclidean distance. Nearest archetype assigned. Top-3 matches stored.</li>
+  <li><strong>Output:</strong> Candidate profile with pillar scores, XIMAtar identity, strengths/friction summary, development plan items.</li>
+</ul>
+
+<h3>2.3 Three-Level Challenge System</h3>
+<table>
+  <tr><th>Level</th><th>Name</th><th>Purpose</th><th>Status</th></tr>
+  <tr><td>L1</td><td>XIMA Core Assessment</td><td>Standardized mindset evaluation. 5 open questions on decision-making, ownership, ambiguity, impact, collaboration. Identical structure for all companies; scenario AI-generated from company context.</td><td><span class="tag tag-live">LIVE</span></td></tr>
+  <tr><td>L2</td><td>Role-Specific Challenge</td><td>AI-generated simulation based on job post and hiring goal. Custom rubric per role. Signal extraction via <code>compute-level2-signals</code> edge function.</td><td><span class="tag tag-live">LIVE</span></td></tr>
+  <tr><td>L3</td><td>Standing Video Session</td><td>Asynchronous video response to structured prompts. Tests communication, presence, articulation. No AI scoring — human review only.</td><td><span class="tag tag-designed">DESIGNED</span></td></tr>
+</table>
+
+<!-- SECTION 3 -->
+<h2>3 — AI Usage &amp; Governance</h2>
+
+<div class="two-col">
+<div>
+<h3>3.1 AI Touchpoints (9 total)</h3>
+<table>
+  <tr><th>#</th><th>Function</th><th>Model</th></tr>
+  <tr><td>1</td><td>Open-answer scoring (<code>analyze-open-answer</code>)</td><td>Gemini 2.5 Flash</td></tr>
+  <tr><td>2</td><td>L2 signal extraction (<code>compute-level2-signals</code>)</td><td>Gemini 2.5 Flash</td></tr>
+  <tr><td>3</td><td>CV analysis (<code>analyze-cv</code>)</td><td>Gemini 2.5 Flash</td></tr>
+  <tr><td>4</td><td>Challenge generation (<code>generate-challenge</code>)</td><td>Gemini 2.5 Flash</td></tr>
+  <tr><td>5</td><td>Company profile analysis (<code>analyze-company-profile</code>)</td><td>Gemini 2.5 Flash</td></tr>
+  <tr><td>6</td><td>Job post PDF import (<code>import-job-post-pdf</code>)</td><td>Gemini 2.5 Flash</td></tr>
+  <tr><td>7</td><td>Mentor recommendation (<code>recommend-mentors</code>)</td><td>Gemini 2.5 Flash</td></tr>
+  <tr><td>8</td><td>Content translation (<code>translate-content</code>)</td><td>Gemini 2.5 Flash</td></tr>
+  <tr><td>9</td><td>Candidate chat assistant (<code>ximai-chat</code>)</td><td>Gemini 2.5 Flash</td></tr>
+</table>
+</div>
+<div>
+<h3>3.2 Governance Framework</h3>
+<ul>
+  <li><strong>Audit logging:</strong> Every AI call logged to <code>ai_invocation_log</code> table with: request_id, correlation_id, prompt_hash (SHA-256), model version, latency, status, scoring_schema_version.</li>
+  <li><strong>Deterministic replay:</strong> <code>ai-invocation-replay</code> edge function can re-execute any historical AI call for audit or debugging.</li>
+  <li><strong>Pre-guardrails:</strong> Trilingual non-answer detection regex (catches placeholder, offensive, or empty responses). Minimum content-length thresholds.</li>
+  <li><strong>Post-guardrails:</strong> Red-flag detection in AI output → score capping. Schema validation (Zod) on all AI responses. Local heuristic fallback if AI call fails.</li>
+  <li><strong>No autonomous decisions:</strong> AI outputs are advisory signals. All hiring decisions require human confirmation. System classified as decision-support under GDPR Art. 22.</li>
+</ul>
+</div>
+</div>
+
+<div class="footer">
+  <span>XIMA Investor Input Dossier v1.0 · Confidential · Page 1 of 2</span>
+  <span>Generated: 2026-03-07 · Not for distribution without authorization</span>
+</div>
+</div>
+
+<!-- ==================== PAGE 2 ==================== -->
+<div class="page">
+
+<h1 style="font-size:12pt; margin-bottom:8pt;">XIMA — Investor Input Dossier (continued)</h1>
+
+<!-- SECTION 4 -->
+<h2>4 — Psychometric Model</h2>
+
+<div class="two-col">
+<div>
+<h3>4.1 Five-Pillar Framework</h3>
+<table>
+  <tr><th>Pillar</th><th>Measures</th><th>Does NOT Measure</th></tr>
+  <tr><td>Drive</td><td>Goal persistence, initiative, internal motivation</td><td>Aggression, workaholism</td></tr>
+  <tr><td>Creativity</td><td>Divergent thinking, novel approaches, curiosity</td><td>Artistic talent, aesthetic sense</td></tr>
+  <tr><td>Knowledge</td><td>Learning orientation, information synthesis, depth</td><td>IQ, domain expertise, memory</td></tr>
+  <tr><td>Communication</td><td>Clarity, empathy, persuasion, active listening</td><td>Extroversion, charisma</td></tr>
+  <tr><td>Computational Power</td><td>Analytical reasoning, pattern recognition, systematic thinking</td><td>Math ability, coding skill</td></tr>
+</table>
+
+<h3>4.2 Validation Metrics (Synthetic, N=500)</h3>
+<ul>
+  <li>Cronbach's α per pillar: <span class="metric">0.60–0.68</span> (acceptable for 4–5 item scales)</li>
+  <li>Max cross-pillar correlation: <span class="metric">r = 0.34</span> (discriminant validity confirmed)</li>
+  <li>PCA first component variance: <span class="metric">PC1 = 32.4%</span> (no single dominant factor)</li>
+  <li>Status: synthetic validation only. Real-world calibration requires <span class="metric">N ≥ 300</span> per field.</li>
+</ul>
+</div>
+<div>
+<h3>4.3 Scoring Architecture</h3>
+<ul>
+  <li>MC items: 4-point ordinal (0–3), no reverse-scoring in v1.2</li>
+  <li>Pillar score = mean of assigned items → normalized to 0–100</li>
+  <li>Open-answer: AI rubric scoring (1–5) on depth, specificity, self-awareness, actionability</li>
+  <li>Final blend: 90% MC + 10% open-answer contribution</li>
+  <li>XIMAtar: Euclidean distance to 12 canonical profiles → nearest match assigned</li>
+</ul>
+
+<h3>4.4 Freeze Protocol</h3>
+<ul>
+  <li>All assessment items content-locked with <strong>djb2 hashes</strong></li>
+  <li>Runtime freeze guard validates hashes on assessment load</li>
+  <li>Any item change triggers version increment and mandatory revalidation</li>
+  <li>Current version: <span class="metric">v1.2</span> (frozen 2025-02)</li>
+</ul>
+</div>
+</div>
+
+<!-- SECTION 5 -->
+<h2>5 — Business Model &amp; Unit Economics</h2>
+
+<div class="two-col">
+<div>
+<h3>5.1 Pricing Tiers</h3>
+<table>
+  <tr><th>Tier</th><th>Price</th><th>Seats</th><th>Key Features</th></tr>
+  <tr><td>Starter</td><td>€199/mo</td><td>Up to 3</td><td>Core assessment, L1 challenges, basic matching</td></tr>
+  <tr><td>Growth</td><td>€499/mo</td><td>Up to 10</td><td>L2 challenges, advanced signals, priority support</td></tr>
+  <tr><td>Enterprise</td><td>€1,500+/mo</td><td>Unlimited</td><td>Custom integrations, white-label, dedicated CSM</td></tr>
+</table>
+
+<h3>5.2 Unit Economics</h3>
+<ul>
+  <li>Variable cost per assessment (AI tokens + compute): <span class="metric">€0.03–0.08</span></li>
+  <li>Variable cost per company/month: <span class="metric">€3–13</span></li>
+  <li>Blended ARPU: <span class="metric">€349/mo</span></li>
+  <li>Contribution margin per company: <span class="metric">~€341/mo (97.7%)</span></li>
+  <li>Breakeven: <span class="metric">5 companies</span> (bootstrapped) to <span class="metric">15 companies</span> (with marketing spend)</li>
+</ul>
+</div>
+<div>
+<h3>5.3 Revenue Streams</h3>
+<table>
+  <tr><th>Stream</th><th>Status</th><th>Notes</th></tr>
+  <tr><td>Company subscriptions (B2B SaaS)</td><td><span class="tag tag-live">LIVE</span></td><td>Primary revenue driver</td></tr>
+  <tr><td>Candidate premium tiers</td><td><span class="tag tag-designed">DESIGNED</span></td><td>Enhanced profile, mentor access, development plan</td></tr>
+  <tr><td>Mentor session credits</td><td><span class="tag tag-designed">DESIGNED</span></td><td>Marketplace commission on booked sessions</td></tr>
+  <tr><td>API access / integrations</td><td><span class="tag tag-planned">PLANNED</span></td><td>ATS webhook integration, data export API</td></tr>
+  <tr><td>White-label licensing</td><td><span class="tag tag-planned">PLANNED</span></td><td>Enterprise-only, custom branding</td></tr>
+</table>
+
+<h3>5.4 Payment Infrastructure</h3>
+<ul>
+  <li>Stripe integration: <span class="tag tag-planned">PLANNED</span> — next milestone</li>
+  <li>Current: manual onboarding, no self-serve billing</li>
+</ul>
+</div>
+</div>
+
+<!-- SECTION 6 -->
+<h2>6 — GDPR &amp; Compliance</h2>
+<ul>
+  <li><strong>Data subject rights (implemented):</strong> Full data export (JSON), account deletion with cascade, profiling opt-out toggle, consent versioning with timestamped records.</li>
+  <li><strong>Legal basis:</strong> Legitimate interest for assessment (with opt-out); explicit consent for AI processing and data sharing with businesses.</li>
+  <li><strong>Article 22 compliance:</strong> XIMA is classified as a <em>decision-support tool</em>. No automated hiring decisions. All AI outputs are advisory. Human confirmation required at every pipeline stage.</li>
+  <li><strong>Technical enforcement:</strong> Row-Level Security on all 78 PostgreSQL tables. Business users cannot access candidate PII until candidate accepts challenge invitation. Mentor CV access gated by candidate consent toggle.</li>
+  <li><strong>Data residency:</strong> Supabase EU region. No data transfer outside EEA except AI inference (Gemini API — covered by Google DPA).</li>
+</ul>
+
+<!-- SECTION 7 -->
+<h2>7 — Market Position &amp; Risks</h2>
+
+<div class="two-col">
+<div>
+<h3>7.1 Defensibility Assessment</h3>
+<table>
+  <tr><th>Moat</th><th>Strength</th><th>Notes</th></tr>
+  <tr><td>Validated psychometric model</td><td><span class="metric">Medium</span></td><td>Synthetic validation done; real-world pending (N≥300)</td></tr>
+  <tr><td>XIMAtar brand &amp; UX</td><td><span class="metric">Strong</span></td><td>12 archetype system is distinctive and memorable</td></tr>
+  <tr><td>Data network effect</td><td><span class="metric">Weak (today)</span></td><td>Requires N≥500 per field for IRT calibration</td></tr>
+  <tr><td>3-level challenge pipeline</td><td><span class="metric">Medium</span></td><td>Structural differentiation from single-test competitors</td></tr>
+</table>
+
+<h3>7.2 Key Risks (Honest Assessment)</h3>
+<ul>
+  <li><strong>Validation gap:</strong> Psychometric model has synthetic validation only. Predictive validity requires real hiring outcome data (N≥300).</li>
+  <li><strong>Single AI provider:</strong> All 9 touchpoints use Gemini via Lovable Gateway. Provider lock-in and pricing risk.</li>
+  <li><strong>Market adoption:</strong> Behavioral-first hiring is unfamiliar to most SMB HR teams. Requires education-heavy sales cycle.</li>
+  <li><strong>No payment infrastructure:</strong> Stripe not yet integrated. Cannot self-serve onboard paying customers today.</li>
+</ul>
+</div>
+<div>
+<h3>7.3 Go-to-Market Strategy</h3>
+<ul>
+  <li><strong>Phase 1 (current):</strong> Italian SMB market. Direct sales to 10 pilot companies. Candidate-side PLG (free assessment → virality).</li>
+  <li><strong>Phase 2 (N≥50 companies):</strong> Expand to DACH region. Self-serve onboarding with Stripe. Content marketing via case studies.</li>
+  <li><strong>Phase 3 (N≥500):</strong> Enterprise tier with white-label. IRT-calibrated model. ATS integrations (Personio, Workday).</li>
+  <li><strong>Dual-entry funnel:</strong> Bottom-up (candidates take free assessment, share XIMAtar) + top-down (B2B sales to HR teams).</li>
+</ul>
+
+<h3>7.4 Next Milestones</h3>
+<table>
+  <tr><th>Milestone</th><th>Target</th></tr>
+  <tr><td>10 paying companies onboarded</td><td>Q2 2026</td></tr>
+  <tr><td>Stripe billing integration</td><td>Q2 2026</td></tr>
+  <tr><td>3 published case studies</td><td>Q3 2026</td></tr>
+  <tr><td>Real-world psychometric validation (N≥300)</td><td>Q3 2026</td></tr>
+  <tr><td>IRT calibration (N≥500 per field)</td><td>Q4 2026</td></tr>
+  <tr><td>ATS integration (first partner)</td><td>Q1 2027</td></tr>
+</table>
+</div>
+</div>
+
+<div class="footer">
+  <span>XIMA Investor Input Dossier v1.0 · Confidential · Page 2 of 2</span>
+  <span>This document is a structured input for downstream document generation. Not for direct investor distribution.</span>
+</div>
+</div>
+
+</body>
+</html>
