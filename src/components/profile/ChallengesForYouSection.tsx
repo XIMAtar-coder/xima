@@ -110,42 +110,40 @@ const ChallengeCard: React.FC<{ challenge: CandidateChallenge }> = ({ challenge 
   };
 
   return (
-    <Card className="hover:border-primary/50 transition-colors">
-      <CardContent className="p-4">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <h4 className="font-semibold truncate">{challenge.challengeTitle}</h4>
-              <StatusBadge challenge={challenge} />
-            </div>
-            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Building2 className="h-3.5 w-3.5" />
-                <span>{challenge.companyName}</span>
-              </div>
-              {challenge.roleTitle && (
-                <>
-                  <span className="text-border">•</span>
-                  <span>{challenge.roleTitle}</span>
-                </>
-              )}
-              {challenge.remainingText && challenge.timeStatus === 'active' && !challenge.isSubmitted && (
-                <>
-                  <span className="text-border">•</span>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-3.5 w-3.5" />
-                    <span>{challenge.remainingText}</span>
-                  </div>
-                </>
-              )}
-            </div>
+    <div className={`dashboard-section p-4 ${challenge.timeStatus === 'active' && !challenge.isSubmitted ? 'challenge-active-ring' : ''}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <h4 className="font-semibold truncate">{challenge.challengeTitle}</h4>
+            <StatusBadge challenge={challenge} />
           </div>
-          <div className="shrink-0">
-            {getActionButton()}
+          <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1">
+              <Building2 className="h-3.5 w-3.5" />
+              <span>{challenge.companyName}</span>
+            </div>
+            {challenge.roleTitle && (
+              <>
+                <span className="text-border">•</span>
+                <span>{challenge.roleTitle}</span>
+              </>
+            )}
+            {challenge.remainingText && challenge.timeStatus === 'active' && !challenge.isSubmitted && (
+              <>
+                <span className="text-border">•</span>
+                <div className="flex items-center gap-1">
+                  <Clock className="h-3.5 w-3.5" />
+                  <span>{challenge.remainingText}</span>
+                </div>
+              </>
+            )}
           </div>
         </div>
-      </CardContent>
-    </Card>
+        <div className="shrink-0">
+          {getActionButton()}
+        </div>
+      </div>
+    </div>
   );
 };
 
