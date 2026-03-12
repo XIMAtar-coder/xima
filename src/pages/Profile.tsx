@@ -183,7 +183,7 @@ const Profile = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-7xl mx-auto py-8 space-y-8 watermark-bg animate-[slide-up_0.4s_ease-out]">
+      <div className="container max-w-7xl mx-auto py-6 md:py-10 space-y-6 watermark-bg">
         {/* Journey Guide Modal */}
         <XimaJourneyGuideModal
           open={guideOpen}
@@ -191,19 +191,19 @@ const Profile = () => {
           isAutoOpen={shouldAutoShowGuide}
         />
 
-        {/* Header with Full Name */}
-        <div className="space-y-4 relative z-10">
-          <div className="flex items-center justify-between">
-            <h1 className="text-4xl font-bold flex items-center gap-3 font-heading">
-              <Sparkles className="text-primary" />
-              {t('profile.welcome_name', { name: profileData.full_name || user?.name || t('profile.user') })}
-            </h1>
-          </div>
-          <p className="text-xl text-muted-foreground">{t('profile.page_subtitle')}</p>
+        {/* Header */}
+        <div className="space-y-2 relative z-10">
+          <p className="text-xs font-bold text-primary uppercase tracking-widest">
+            {t('profile.dashboard_label', 'Dashboard')}
+          </p>
+          <h1 className="text-3xl md:text-4xl font-black font-heading text-foreground glow-text">
+            {t('profile.welcome_name', { name: profileData.full_name || user?.name || t('profile.user') })}
+          </h1>
+          <p className="text-sm text-muted-foreground max-w-lg">{t('profile.page_subtitle')}</p>
         </div>
 
-        <div className="space-y-8 relative z-10">
-          {/* Membership & Credits Recap */}
+        <div className="space-y-6 relative z-10 dashboard-stagger">
+          {/* Membership */}
           <MembershipSummaryCard />
 
           {/* XIMAtar Hero Card */}
@@ -221,7 +221,7 @@ const Profile = () => {
           />
 
           {/* Two Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left Column */}
             <div className="space-y-6">
               <StrengthFrictionSummary 
@@ -254,7 +254,6 @@ const Profile = () => {
                 onBookingSuccess={handleMentorBookingSuccess}
               />
 
-              {/* CV Analysis */}
               <CVAnalysisCard 
                 cvAnalysis={profileData.cv_analysis}
                 cvPillarScores={profileData.cv_pillar_scores}
@@ -269,7 +268,6 @@ const Profile = () => {
           
           {/* Job Opportunities */}
           <MyOpportunitiesSection />
-
         </div>
       </div>
     </MainLayout>
