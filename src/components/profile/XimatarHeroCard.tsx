@@ -230,12 +230,6 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
                 <circle
                   cx="60" cy="60" r="54"
                   fill="none"
-                  className="momentum-bar"
-                  style={{
-                    stroke: driveLevel === 'high' ? 'hsl(160, 84%, 39%)' :
-                      driveLevel === 'medium' ? 'hsl(var(--primary))' :
-                      'hsl(38, 92%, 50%)',
-                  }}
                   strokeWidth="3.5"
                   strokeDasharray={`${2 * Math.PI * 54}`}
                   strokeDashoffset={`${2 * Math.PI * 54 * (1 - drivePercentage)}`}
