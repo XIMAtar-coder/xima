@@ -56,7 +56,7 @@ export const MembershipSummaryCard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="membership-card rounded-2xl border border-border/30 bg-gradient-to-br from-card via-card to-accent/20 p-5">
+      <div className="dashboard-section p-5">
         <div className="space-y-3">
           <Skeleton className="h-4 w-36" />
           <Skeleton className="h-3 w-64" />
@@ -72,18 +72,18 @@ export const MembershipSummaryCard: React.FC = () => {
   const tierLabel = t(`dashboard.membership.tier_${tier}`, tier.charAt(0).toUpperCase() + tier.slice(1));
 
   return (
-    <div className="membership-card membership-card-enter rounded-2xl border border-border/30 bg-gradient-to-br from-card via-card to-accent/20 p-5 space-y-3 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-primary/20">
+    <div className="dashboard-section p-5 space-y-3">
       {/* Title + tier badge */}
       <div className="flex items-center gap-2.5 flex-wrap">
         <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
           <Coins className="h-3.5 w-3.5 text-primary" />
         </div>
-        <h3 className="text-sm font-semibold text-foreground tracking-tight">
+        <h3 className="text-sm font-bold text-foreground tracking-tight uppercase">
           {t('dashboard.membership.title')}
         </h3>
         <Badge
           variant="secondary"
-          className={`${TIER_COLORS[tier] || TIER_COLORS.freemium} text-[11px] px-2 py-0.5 gap-1 font-medium`}
+          className={`${TIER_COLORS[tier] || TIER_COLORS.freemium} text-[11px] px-2 py-0.5 gap-1 font-semibold`}
         >
           {TIER_ICONS[tier] || TIER_ICONS.freemium}
           {tierLabel}
@@ -96,16 +96,22 @@ export const MembershipSummaryCard: React.FC = () => {
       </p>
 
       {/* Credit balance */}
-      <p className="text-sm font-medium text-foreground">
-        {t('dashboard.membership.creditLine', { credits })}
-      </p>
+      <div className="flex items-center gap-2">
+        <Coins className="h-3.5 w-3.5 text-primary" />
+        <span className="text-sm font-bold text-foreground stat-value">
+          {credits}
+        </span>
+        <span className="text-xs text-muted-foreground">
+          {t('dashboard.membership.credits_label', 'credits')}
+        </span>
+      </div>
 
       {/* CTAs */}
       <div className="flex items-center gap-2 flex-wrap pt-0.5">
         <Button
           size="sm"
           onClick={() => navigate('/settings#referrals')}
-          className="membership-cta gap-1.5 text-xs h-8"
+          className="gap-1.5 text-xs h-8"
         >
           <Users className="h-3.5 w-3.5" />
           {t('dashboard.membership.invite')}
@@ -121,15 +127,10 @@ export const MembershipSummaryCard: React.FC = () => {
         </Button>
       </div>
 
-      {/* Hint + settings helper */}
-      <div className="space-y-0.5 pt-0.5">
-        <p className="text-[11px] text-muted-foreground/70 leading-relaxed">
-          {t('dashboard.membership.hint')}
-        </p>
-        <p className="text-[11px] text-muted-foreground/50 leading-relaxed">
-          {t('dashboard.membership.settingsHelper')}
-        </p>
-      </div>
+      {/* Hint */}
+      <p className="text-[10px] text-muted-foreground/60 leading-relaxed">
+        {t('dashboard.membership.hint')}
+      </p>
     </div>
   );
 };
