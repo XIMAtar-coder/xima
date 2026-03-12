@@ -110,42 +110,40 @@ const ChallengeCard: React.FC<{ challenge: CandidateChallenge }> = ({ challenge 
   };
 
   return (
-    <Card className="hover:border-primary/50 transition-colors">
-      <CardContent className="p-4">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <h4 className="font-semibold truncate">{challenge.challengeTitle}</h4>
-              <StatusBadge challenge={challenge} />
-            </div>
-            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Building2 className="h-3.5 w-3.5" />
-                <span>{challenge.companyName}</span>
-              </div>
-              {challenge.roleTitle && (
-                <>
-                  <span className="text-border">•</span>
-                  <span>{challenge.roleTitle}</span>
-                </>
-              )}
-              {challenge.remainingText && challenge.timeStatus === 'active' && !challenge.isSubmitted && (
-                <>
-                  <span className="text-border">•</span>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-3.5 w-3.5" />
-                    <span>{challenge.remainingText}</span>
-                  </div>
-                </>
-              )}
-            </div>
+    <div className={`dashboard-section p-4 ${challenge.timeStatus === 'active' && !challenge.isSubmitted ? 'challenge-active-ring' : ''}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <h4 className="font-semibold truncate">{challenge.challengeTitle}</h4>
+            <StatusBadge challenge={challenge} />
           </div>
-          <div className="shrink-0">
-            {getActionButton()}
+          <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1">
+              <Building2 className="h-3.5 w-3.5" />
+              <span>{challenge.companyName}</span>
+            </div>
+            {challenge.roleTitle && (
+              <>
+                <span className="text-border">•</span>
+                <span>{challenge.roleTitle}</span>
+              </>
+            )}
+            {challenge.remainingText && challenge.timeStatus === 'active' && !challenge.isSubmitted && (
+              <>
+                <span className="text-border">•</span>
+                <div className="flex items-center gap-1">
+                  <Clock className="h-3.5 w-3.5" />
+                  <span>{challenge.remainingText}</span>
+                </div>
+              </>
+            )}
           </div>
         </div>
-      </CardContent>
-    </Card>
+        <div className="shrink-0">
+          {getActionButton()}
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -213,35 +211,32 @@ export const ChallengesForYouSection: React.FC = () => {
   ).length;
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
-            {t('profile.challenges_for_you')}
-          </CardTitle>
-          {activeCount > 0 && (
-            <Badge variant="secondary" className="bg-primary/20 text-primary">
-              {activeCount} {t('candidate.status.action_required')}
-            </Badge>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent>
-        {actionableChallenges.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <Sparkles className="h-10 w-10 mx-auto mb-3 opacity-50" />
-            <p className="font-medium mb-1">{t('candidate.challenges.empty_title')}</p>
-            <p className="text-sm">{t('candidate.challenges.empty_desc')}</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {actionableChallenges.slice(0, 10).map(challenge => (
-              <ChallengeCard key={challenge.invitationId} challenge={challenge} />
-            ))}
-          </div>
+    <div className="dashboard-section p-5 md:p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
+          <Target className="h-4 w-4 text-primary" />
+          {t('profile.challenges_for_you')}
+        </h3>
+        {activeCount > 0 && (
+          <Badge variant="secondary" className="bg-primary/20 text-primary text-[10px] font-bold">
+            {activeCount} {t('candidate.status.action_required')}
+          </Badge>
         )}
-      </CardContent>
-    </Card>
+      </div>
+
+      {actionableChallenges.length === 0 ? (
+        <div className="text-center py-8 text-muted-foreground">
+          <Sparkles className="h-10 w-10 mx-auto mb-3 opacity-50" />
+          <p className="font-medium mb-1">{t('candidate.challenges.empty_title')}</p>
+          <p className="text-sm">{t('candidate.challenges.empty_desc')}</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {actionableChallenges.slice(0, 10).map(challenge => (
+            <ChallengeCard key={challenge.invitationId} challenge={challenge} />
+          ))}
+        </div>
+      )}
+    </div>
   );
 };

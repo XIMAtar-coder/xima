@@ -405,3 +405,106 @@
 .dark .watermark-bg::before {
   opacity: 0.02;
 }
+
+/* ── Dashboard "Challenge" Design System ── */
+
+.dashboard-hero-gradient {
+  background: 
+    linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card)) 60%, hsl(var(--primary) / 0.08) 100%);
+  border: 1px solid hsl(var(--primary) / 0.15);
+}
+
+.dark .dashboard-hero-gradient {
+  background: 
+    linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card)) 50%, hsl(var(--primary) / 0.12) 100%);
+  border: 1px solid hsl(var(--primary) / 0.2);
+}
+
+.dashboard-section {
+  position: relative;
+  border: 1px solid hsl(var(--border) / 0.5);
+  border-radius: var(--radius);
+  background: hsl(var(--card));
+  overflow: hidden;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.dashboard-section::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, hsl(var(--xima-accent)), hsl(var(--xima-teal)));
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.dashboard-section:hover {
+  border-color: hsl(var(--primary) / 0.25);
+  box-shadow: 0 4px 20px -8px hsl(var(--primary) / 0.1);
+}
+
+.dashboard-section:hover::before {
+  opacity: 1;
+}
+
+@keyframes momentum-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.momentum-bar {
+  background: linear-gradient(90deg, hsl(var(--xima-accent)), hsl(var(--xima-teal)), hsl(var(--xima-accent)));
+  background-size: 200% 100%;
+  animation: momentum-flow 3s ease-in-out infinite;
+}
+
+@keyframes challenge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.3); }
+  50% { box-shadow: 0 0 0 6px hsl(var(--primary) / 0); }
+}
+
+.challenge-active-ring {
+  animation: challenge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes slide-up-stagger {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard-stagger > * {
+  animation: slide-up-stagger 0.5s ease-out both;
+}
+
+.dashboard-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.dashboard-stagger > *:nth-child(2) { animation-delay: 80ms; }
+.dashboard-stagger > *:nth-child(3) { animation-delay: 160ms; }
+.dashboard-stagger > *:nth-child(4) { animation-delay: 240ms; }
+.dashboard-stagger > *:nth-child(5) { animation-delay: 320ms; }
+.dashboard-stagger > *:nth-child(6) { animation-delay: 400ms; }
+.dashboard-stagger > *:nth-child(7) { animation-delay: 480ms; }
+
+.glow-text {
+  text-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+}
+
+.dark .glow-text {
+  text-shadow: 0 0 30px hsl(var(--primary) / 0.4);
+}
+
+.stat-value {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .momentum-bar { animation: none; }
+  .challenge-active-ring { animation: none; }
+  .dashboard-stagger > * { animation: none; }
+  .dashboard-section::before { transition: none; }
+  .dashboard-section { transition: none; }
+}
