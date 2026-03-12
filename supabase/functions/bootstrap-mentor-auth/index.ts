@@ -10,7 +10,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-admin-secret",
 };
 
 Deno.serve(async (req) => {
@@ -21,6 +21,50 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const adminSecret = Deno.env.get("ADMIN_SECRET");
+
+    // --- Authentication: require admin secret, service-role key, or admin JWT ---
+    const adminSecretHeader = req.headers.get("x-admin-secret");
+    const authHeader = req.headers.get("authorization");
+    const apiKeyHeader = req.headers.get("apikey");
+
+    let isAuthorized = false;
+
+    // Option 1: Admin secret header
+    if (adminSecret && adminSecretHeader === adminSecret) {
+      isAuthorized = true;
+    }
+
+    // Option 2: Service-role key (internal/server-side call)
+    if (!isAuthorized && apiKeyHeader === serviceRoleKey) {
+      isAuthorized = true;
+    }
+
+    // Option 3: JWT + admin role check
+    if (!isAuthorized && authHeader) {
+      const verifyClient = createClient(supabaseUrl, serviceRoleKey);
+      const token = authHeader.replace("Bearer ", "");
+      const { data: { user }, error: authError } = await verifyClient.auth.getUser(token);
+
+      if (!authError && user) {
+        const { data: roleRows } = await verifyClient
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id)
+          .eq("role", "admin");
+
+        if (roleRows && roleRows.length > 0) {
+          isAuthorized = true;
+        }
+      }
+    }
+
+    if (!isAuthorized) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized: admin credentials required" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const { email, password } = await req.json();
 
