@@ -161,21 +161,20 @@ const Profile = () => {
             onClose={handleGuideClose}
             isAutoOpen={shouldAutoShowGuide}
           />
-          <Card className="text-center py-12">
-            <CardContent className="space-y-6">
-              <div className="flex justify-center">
-                <Sparkles className="h-24 w-24 text-primary opacity-50" />
+          <div className="dashboard-hero-gradient rounded-2xl text-center py-16 px-6">
+            <div className="flex justify-center mb-6">
+              <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <Sparkles className="h-10 w-10 text-primary" />
               </div>
-              <div>
-                <h2 className="text-3xl font-bold mb-4">{t('profile.no_assessment_title')}</h2>
-                <p className="text-muted-foreground text-lg mb-8">{t('profile.no_assessment_desc')}</p>
-              </div>
-              <Button size="lg" onClick={() => navigate('/ximatar-journey')}>
-                <Sparkles className="mr-2 h-5 w-5" />
-                {t('profile.start_assessment')}
-              </Button>
-            </CardContent>
-          </Card>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black font-heading mb-4 glow-text">{t('profile.no_assessment_title')}</h2>
+            <p className="text-muted-foreground text-lg mb-8 max-w-md mx-auto">{t('profile.no_assessment_desc')}</p>
+            <Button size="lg" onClick={() => navigate('/ximatar-journey')} className="challenge-active-ring">
+              <Sparkles className="mr-2 h-5 w-5" />
+              {t('profile.start_assessment')}
+            </Button>
+            <div className="h-1 momentum-bar mt-8 rounded-full max-w-xs mx-auto" />
+          </div>
         </div>
       </MainLayout>
     );
