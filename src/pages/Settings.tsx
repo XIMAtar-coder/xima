@@ -81,7 +81,7 @@ const CandidateSettings = () => {
       <div className="container max-w-3xl mx-auto py-8 px-4 md:px-8 space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+          <h1 className="text-[28px] md:text-[34px] font-bold text-foreground flex items-center gap-3">
             <Settings className="h-8 w-8 text-primary" />
             {t('settings.title')}
           </h1>

@@ -182,7 +182,7 @@ const DevelopmentPlan = () => {
               {t('development.overall_progress')}
             </CardTitle>
           </CardHeader>
-          <CardContent className="pt-6">
+           <CardContent className="pt-6 p-4 md:p-6">
             <div className="space-y-6">
               <div className="space-y-3">
                 <div className="flex justify-between text-sm font-medium">

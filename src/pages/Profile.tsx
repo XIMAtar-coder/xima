@@ -156,7 +156,7 @@ const Profile = () => {
             pillarScores={profileData.pillar_scores} onAvatarUpdate={handleAvatarUpdate}
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
             <div className="space-y-6">
               <StrengthFrictionSummary strongestPillar={profileData.strongest_pillar} weakestPillar={profileData.weakest_pillar} growthPath={profileData.ximatar_growth_path} />
               {profileData.pillar_scores && <PillarRadarChart pillars={profileData.pillar_scores} />}
