@@ -157,11 +157,12 @@
     "settings": "Impostazioni"
   },
   "hero": {
-    "title": "Scopri il Tuo Sé Professionale",
-    "subtitle": "XIMA ti aiuta a comprendere i tuoi punti di forza e di debolezza professionali attraverso il nostro unico sistema di valutazione a 5 pilastri, abbinandoti alle opportunità di carriera perfette.",
-    "cta": "Ottieni il Tuo Ximatar Ora!",
+    "eyebrow": "PSICOMETRIA · AI HIRING · GDPR ART. 22 COMPLIANT",
+    "title": "Il CV non ha mai parlato di te.\nIl XIMAtar sì.",
+    "subtitle": "XIMA sostituisce la selezione basata sui titoli con scienza comportamentale validata e AI. Ogni candidato riceve un XIMAtar — un'identità comportamentale persistente che possiede, porta con sé e riusa con ogni azienda a cui si candida.",
+    "cta": "Scopri il Tuo XIMAtar",
     "learn_more": "Scopri di più",
-    "for_business": "Per le Aziende",
+    "for_business": "Per le Aziende →",
     "login": "Accedi"
   },
   "common": {
@@ -330,9 +331,9 @@
     }
   },
   "cta_section": {
-    "title": "Sblocca il Tuo Potenziale Professionale",
-    "subtitle": "Unisciti a migliaia di professionisti che hanno scoperto i loro veri punti di forza e trovato la loro corrispondenza perfetta con XIMA.",
-    "button": "Ottieni il Tuo Ximatar Ora!"
+    "title": "La valutazione è gratuita.\nIl XIMAtar è tuo.",
+    "subtitle": "Fallo una volta. Portalo ovunque. Il primo strumento di hiring che lavora davvero per il candidato.",
+    "button": "Inizia Gratuitamente →"
   },
   "home": {
     "recommended_challenges": {
@@ -342,7 +343,52 @@
     "job_matches": {
       "title": "Migliori Corrispondenze di Lavoro",
       "subtitle": "Lavori su misura per le tue competenze e il tuo XIMAtar"
-    }
+    },
+    "problem_label": "// IL PROBLEMA",
+    "problem_headline": "Il sistema di selezione è rotto.\nTutti lo sanno.",
+    "problem_body": "Oltre l'80% delle PMI non usa nessuno strumento psicometrico. Il CV è il filtro principale — un proxy di credenziali che dice dove sei andato a scuola, non come pensi, decidi o lavori sotto pressione. I colloqui non strutturati producono falsi positivi sistematici e penalizzano i candidati non tradizionali. Le soluzioni enterprise costano tra €50.000 e €500.000 l'anno. Inaccessibili per le aziende dove avviene la maggior parte delle assunzioni.",
+    "problem_pullquote": "\"E se potessimo vedere la persona — non il foglio?\"",
+    "pillars_label": "// IL MODELLO",
+    "pillars_headline": "Cinque Pilastri.\nUn Quadro Completo.",
+    "pillars_subheadline": "Cinque dimensioni comportamentali indipendenti. Ognuna misura qualcosa di distinto. Ognuna illumina ciò che nessun CV può catturare.",
+    "pillar_1_name": "Drive",
+    "pillar_1_descriptor": "Il motore dietro la persona.",
+    "pillar_1_measures": "Persistenza negli obiettivi · iniziativa · motivazione interna",
+    "pillar_1_not": "Non misura: aggressività o dipendenza dal lavoro",
+    "pillar_2_name": "Creatività",
+    "pillar_2_descriptor": "La capacità di vedere in modo diverso.",
+    "pillar_2_measures": "Pensiero divergente · approcci originali · curiosità",
+    "pillar_2_not": "Non misura: talento artistico o senso estetico",
+    "pillar_3_name": "Conoscenza",
+    "pillar_3_descriptor": "La fame di capire.",
+    "pillar_3_measures": "Orientamento all'apprendimento · sintesi · profondità",
+    "pillar_3_not": "Non misura: QI, competenze di dominio o memoria",
+    "pillar_4_name": "Comunicazione",
+    "pillar_4_descriptor": "Il ponte tra sé e gli altri.",
+    "pillar_4_measures": "Chiarezza · empatia · persuasione · ascolto attivo",
+    "pillar_4_not": "Non misura: estroversione o carisma",
+    "pillar_5_name": "Potenza Computazionale",
+    "pillar_5_descriptor": "L'architettura del pensiero.",
+    "pillar_5_measures": "Ragionamento analitico · riconoscimento di pattern · pensiero sistematico",
+    "pillar_5_not": "Non misura: abilità matematica o coding",
+    "pillars_pullquote": "\"Nessun dato demografico nel punteggio. Nessun proxy di credenziali. Cinque segnali che dicono la verità su come qualcuno lavora.\"",
+    "ximatar_label": "// L'IDENTITÀ",
+    "ximatar_headline": "12 Archetipi.\nUno È Il Tuo.",
+    "ximatar_subheadline": "Ogni candidato riceve un XIMAtar — uno dei 12 archetipi comportamentali canonici, assegnato confrontando il suo profilo dei cinque pilastri con quello più vicino. Persistente. Portabile. Tuo per sempre.",
+    "ximatar_portability": "A differenza di MBTI o Big Five — che si azzerano con ogni datore di lavoro — il tuo XIMAtar è tuo. Lo fai una volta. Viaggia con te. Ogni azienda connessa a XIMA vede la stessa verità comportamentale.",
+    "archetype_fox": "Adattabilità strategica e problem solving creativo",
+    "archetype_owl": "Profondità analitica e orientamento alla conoscenza",
+    "archetype_lion": "Visione d'impatto e leadership naturale",
+    "archetype_horse": "Costanza, potenza computazionale e affidabilità",
+    "archetype_wolf": "Collaborazione profonda e spinta persistente",
+    "archetype_bear": "Solidità strutturale e pensiero sistematico",
+    "archetype_cat": "Indipendenza, intuizione e acuità osservativa",
+    "archetype_elephant": "Memoria organizzativa e intelligenza relazionale",
+    "archetype_dolphin": "Comunicazione fluida e intelligenza emotiva",
+    "archetype_bee": "Precisione operativa e orientamento al risultato",
+    "archetype_parrot": "Espressività, creatività verbale e influenza sociale",
+    "archetype_chameleon": "Adattabilità comportamentale e lettura del contesto",
+    "footer_tagline": "XIMA — Qualità dell'Abbinamento nel Lavoro"
   },
   "baseline": {
     "title": "Valutazione di Base",
