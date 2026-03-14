@@ -552,3 +552,49 @@ html.dark .glass-badge {
     transition: none !important;
   }
 }
+
+/* ══════════════════════════════════════════════════
+   GLOBAL DARK MODE CATCH-ALL SAFETY NET
+   Overrides any remaining hardcoded Tailwind classes
+   ══════════════════════════════════════════════════ */
+
+html.dark [class*="bg-white"],
+html.dark [class*="bg-gray-50"],
+html.dark [class*="bg-gray-100"] {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+html.dark [class*="text-gray-900"],
+html.dark [class*="text-gray-800"],
+html.dark [class*="text-gray-700"] {
+  color: #f5f5f7 !important;
+}
+
+html.dark [class*="text-gray-600"],
+html.dark [class*="text-gray-500"] {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+html.dark [class*="text-gray-400"],
+html.dark [class*="text-gray-300"] {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+html.dark [class*="border-gray-100"],
+html.dark [class*="border-gray-200"],
+html.dark [class*="border-gray-300"] {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark [class*="from-blue-50"],
+html.dark [class*="from-green-50"],
+html.dark [class*="from-purple-50"],
+html.dark [class*="from-orange-50"],
+html.dark [class*="to-blue-50"],
+html.dark [class*="to-green-50"],
+html.dark [class*="to-purple-50"] {
+  --tw-gradient-from: rgba(255,255,255,0.04) !important;
+  --tw-gradient-to: rgba(255,255,255,0.02) !important;
+  background-image: none !important;
+  background-color: rgba(255,255,255,0.05) !important;
+}

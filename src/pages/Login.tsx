@@ -94,7 +94,7 @@ const Login = () => {
               <img 
                 src="/src/assets/logo_full.png" 
                 alt="XIMA Logo" 
-                className="h-12 w-auto"
+                className="h-12 w-auto dark:brightness-200"
               />
             </div>
             <CardTitle className="text-[28px] font-bold">{t('login.title')}</CardTitle>

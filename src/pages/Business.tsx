@@ -98,7 +98,7 @@ const Business = () => {
 
         {/* CTA Section */}
         <div className="py-16 text-center">
-          <Card className="p-8 bg-gradient-to-r from-[hsl(var(--xima-blue))]/10 to-[hsl(var(--xima-teal))]/10 dark:bg-primary/5 dark:bg-none border-2 border-[hsl(var(--xima-accent))] dark:border-primary/25">
+          <Card className="p-8 bg-gradient-to-r from-[hsl(var(--xima-blue))]/10 to-[hsl(var(--xima-teal))]/10 dark:bg-[rgba(99,102,241,0.12)] dark:bg-none border-2 border-[hsl(var(--xima-accent))] dark:border-[rgba(99,102,241,0.20)]">
             <h2 className="text-3xl font-bold mb-4 text-foreground">{t('business.cta_title')}</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
               {t('business.cta_subtitle')}
