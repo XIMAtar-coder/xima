@@ -64,31 +64,32 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				glass: {
-					surface: 'rgba(255,255,255,0.06)',
-					hover: 'rgba(255,255,255,0.09)',
-					border: 'rgba(255,255,255,0.10)',
-					'border-hover': 'rgba(255,255,255,0.16)',
-					divider: 'rgba(255,255,255,0.06)',
+					surface: 'rgba(255,255,255,0.72)',
+					hover: 'rgba(255,255,255,0.88)',
+					border: 'rgba(255,255,255,0.90)',
+					'border-hover': 'rgba(255,255,255,0.95)',
+					divider: 'rgba(60,60,67,0.12)',
 				},
-				indigo: {
-					DEFAULT: '#6366f1',
-					light: '#818cf8',
-					dark: '#4f46e5',
-					glow: 'rgba(99,102,241,0.35)',
+				apple: {
+					blue: '#007AFF',
+					indigo: '#5856D6',
+					green: '#34C759',
+					orange: '#FF9500',
+					red: '#FF3B30',
 				}
 			},
 			fontFamily: {
-				'sans': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
-				'body': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
-				'heading': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+				'sans': ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Inter', 'system-ui', 'sans-serif'],
+				'body': ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Inter', 'system-ui', 'sans-serif'],
+				'heading': ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Inter', 'system-ui', 'sans-serif'],
 			},
 			borderRadius: {
 				'glass-xl': '28px',
-				'glass-lg': '24px',
+				'glass-lg': '20px',
 				'glass-md': '14px',
 				'glass-sm': '12px',
 				'glass-pill': '999px',
-				'glass-img': '20px',
+				'glass-img': '18px',
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
@@ -96,7 +97,7 @@ export default {
 			spacing: {
 				'section-y': '80px',
 				'section-x': '48px',
-				'card-p': '28px',
+				'card-p': '24px',
 				'section-gap': '64px',
 			},
 			keyframes: {
@@ -125,7 +126,7 @@ export default {
 					'100%': { opacity: '1', transform: 'translateY(0)' }
 				},
 				'modal-enter': {
-					'0%': { opacity: '0', transform: 'translateY(16px) scale(0.98)' },
+					'0%': { opacity: '0', transform: 'translateY(20px) scale(0.98)' },
 					'100%': { opacity: '1', transform: 'translateY(0) scale(1)' }
 				},
 				'pulse-gentle': {
@@ -151,7 +152,7 @@ export default {
 				'typing-dots': 'typing-dots 1.4s infinite ease-in-out',
 				'slide-up': 'slide-up 0.4s ease-out',
 				'loading-bar': 'loading-bar 0.8s ease-in-out infinite',
-				'modal-enter': 'modal-enter 280ms ease-out',
+				'modal-enter': 'modal-enter 320ms cubic-bezier(0.34,1.56,0.64,1)',
 			}
 		}
 	},

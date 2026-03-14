@@ -66,7 +66,6 @@ const Login = () => {
           description: t('login.welcome_back')
         });
         
-        // Get user and determine redirect based on role
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           const redirectPath = await getPostLoginRedirectPath(user.id);
@@ -89,7 +88,7 @@ const Login = () => {
   return (
     <MainLayout>
       <div className="container max-w-md mx-auto pt-8 pb-16">
-        <Card className="border-0 shadow-2xl bg-[#0A0F1C] text-white">
+        <Card>
           <CardHeader className="space-y-6 text-center">
             <div className="flex justify-center">
               <img 
@@ -98,31 +97,30 @@ const Login = () => {
                 className="h-12 w-auto"
               />
             </div>
-            <CardTitle className="text-2xl font-bold font-heading">{t('login.title')}</CardTitle>
-            <CardDescription className="text-[#A3ABB5]">
+            <CardTitle className="text-[28px] font-bold">{t('login.title')}</CardTitle>
+            <CardDescription>
               {t('login.subtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-[#A3ABB5]">{t('login.email')}</Label>
+                <Label htmlFor="email">{t('login.email')}</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder={t('login.email_placeholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-[#1A1F2E] border-[#2A2F3E] text-white focus:border-[#3A9FFF] focus:ring-[#3A9FFF]"
                 />
               </div>
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-[#A3ABB5]">{t('login.password')}</Label>
+                  <Label htmlFor="password">{t('login.password')}</Label>
                   <Button 
                     variant="link" 
-                    className="p-0 h-auto text-xs text-[#3A9FFF] hover:text-[#5AB4FF]"
+                    className="p-0 h-auto text-xs"
                   >
                     {t('login.forgot_password')}
                   </Button>
@@ -133,13 +131,12 @@ const Login = () => {
                   placeholder={t('login.password_placeholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-[#1A1F2E] border-[#2A2F3E] text-white focus:border-[#3A9FFF] focus:ring-[#3A9FFF]"
                 />
               </div>
               
               <Button 
                 type="submit" 
-                className="w-full bg-[#3A9FFF] hover:bg-[#2A8FEF] text-white font-medium"
+                className="w-full"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -155,31 +152,31 @@ const Login = () => {
             
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-[#2A2F3E]" />
+                <span className="w-full border-t border-[rgba(60,60,67,0.12)]" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-[#0A0F1C] px-2 text-[#A3ABB5]">{t('auth.or', 'or')}</span>
+                <span className="bg-white px-2 text-muted-foreground">{t('auth.or', 'or')}</span>
               </div>
             </div>
             
             <GoogleAuthButton mode="login" />
           </CardContent>
         <CardFooter className="flex flex-col gap-2">
-            <p className="text-sm text-[#A3ABB5]">
+            <p className="text-sm text-muted-foreground">
               {t('login.no_account')}{" "}
               <Button 
                 variant="link" 
-                className="p-0 h-auto text-[#3A9FFF] hover:text-[#5AB4FF] hover:shadow-[0_0_15px_rgba(58,159,255,0.5)] transition-all duration-300"
+                className="p-0 h-auto"
                 onClick={() => navigate('/register')}
               >
                 {t('login.sign_up')}
               </Button>
             </p>
-            <p className="text-sm text-[#A3ABB5]">
+            <p className="text-sm text-muted-foreground">
               {t('login.are_you_mentor', 'Are you a mentor?')}{" "}
               <Button 
                 variant="link" 
-                className="p-0 h-auto text-[#3A9FFF] hover:text-[#5AB4FF]"
+                className="p-0 h-auto"
                 onClick={() => navigate('/mentor/login')}
               >
                 {t('login.mentor_login_link', 'Login here')}

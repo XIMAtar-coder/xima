@@ -16,7 +16,7 @@ const SheetOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Overlay
     className={cn(
-      "fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      "fixed inset-0 z-50 bg-black/30 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className
     )}
     {...props}
@@ -26,7 +26,7 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
 
 const sheetVariants = cva(
-  "fixed z-50 gap-4 bg-[rgba(255,255,255,0.06)] backdrop-blur-[40px] [backdrop-filter:blur(40px)_saturate(180%)] border-[rgba(255,255,255,0.10)] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.10)] transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
+  "fixed z-50 gap-4 bg-[rgba(255,255,255,0.88)] backdrop-blur-[40px] [backdrop-filter:blur(40px)_saturate(200%)] border-[rgba(60,60,67,0.12)] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.10),inset_0_1px_0_rgba(255,255,255,1.0)] transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
   {
     variants: {
       side: {
@@ -60,8 +60,8 @@ const SheetContent = React.forwardRef<
       {...props}
     >
       {children}
-      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-[999px] bg-[rgba(255,255,255,0.08)] p-2 opacity-70 transition-all duration-[220ms] ease-out hover:opacity-100 hover:bg-[rgba(255,255,255,0.13)] focus:outline-none focus:ring-2 focus:ring-ring disabled:pointer-events-none">
-        <X className="h-4 w-4" strokeWidth={1.5} />
+      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-[999px] bg-[rgba(118,118,128,0.12)] p-2 opacity-70 transition-all duration-200 ease-out hover:opacity-100 hover:bg-[rgba(118,118,128,0.18)] focus:outline-none focus:ring-2 focus:ring-ring disabled:pointer-events-none">
+        <X className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
     </SheetPrimitive.Content>
@@ -97,7 +97,7 @@ const SheetTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Title
     ref={ref}
-    className={cn("text-xl font-medium text-foreground", className)}
+    className={cn("text-[22px] font-semibold text-foreground", className)}
     {...props}
   />
 ))
@@ -109,7 +109,7 @@ const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Description
     ref={ref}
-    className={cn("text-[15px] text-[rgba(255,255,255,0.55)]", className)}
+    className={cn("text-[16px] text-muted-foreground", className)}
     {...props}
   />
 ))

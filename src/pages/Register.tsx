@@ -33,17 +33,14 @@ const Register = () => {
   const [errors, setErrors] = useState<Partial<RegistrationForm>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Consent state
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showConsentError, setShowConsentError] = useState(false);
   
   React.useEffect(() => {
     if (isAuthenticated) {
-      // Check if user came from assessment flow
       const savedSelection = localStorage.getItem('selectedProfessional');
       if (savedSelection) {
-        // Clear the stored selection and go to dashboard with data
         localStorage.removeItem('selectedProfessional');
         navigate('/profile', { state: JSON.parse(savedSelection) });
       } else {
@@ -54,27 +51,12 @@ const Register = () => {
   
   const validateForm = () => {
     const newErrors: Partial<RegistrationForm> = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = t('register.name_required');
-    }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = t('register.email_required');
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = t('register.email_invalid');
-    }
-    
-    if (!formData.password) {
-      newErrors.password = t('register.password_required');
-    } else if (formData.password.length < 6) {
-      newErrors.password = t('register.password_length');
-    }
-    
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = t('register.passwords_match');
-    }
-    
+    if (!formData.name.trim()) newErrors.name = t('register.name_required');
+    if (!formData.email.trim()) newErrors.email = t('register.email_required');
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = t('register.email_invalid');
+    if (!formData.password) newErrors.password = t('register.password_required');
+    else if (formData.password.length < 6) newErrors.password = t('register.password_length');
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = t('register.passwords_match');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -92,194 +74,115 @@ const Register = () => {
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     const formValid = validateForm();
     const consentsValid = validateConsents();
-    
     if (!formValid || !consentsValid) return;
     
     setIsSubmitting(true);
     
     try {
-      console.log('[Register] submitting signUp');
       const { data, error } = await signUp(formData.email, formData.password, formData.name);
-
-      console.log('[Register] signUp result', { userId: data?.user?.id, error });
       if (error) {
-        toast({
-          title: t('register.registration_failed'),
-          description: error.message,
-          variant: "destructive"
-        });
+        toast({ title: t('register.registration_failed'), description: error.message, variant: "destructive" });
         return;
       }
 
-      // Get the newly created user ID
       const newUserId = data?.user?.id;
-      
       if (newUserId) {
-        // Record consent immediately after signup
         const consentResult = await recordUserConsents(newUserId, i18n.language);
-        
         if (!consentResult.success) {
-          console.error('[Register] Consent recording failed:', consentResult.error);
-          // Sign out and show error
           await supabase.auth.signOut();
-          toast({
-            title: t('register.consent_error_title', 'Registration Error'),
-            description: t('register.consent_error_desc', 'Failed to record your consent. Please try registering again.'),
-            variant: "destructive"
-          });
+          toast({ title: t('register.consent_error_title', 'Registration Error'), description: t('register.consent_error_desc', 'Failed to record your consent. Please try registering again.'), variant: "destructive" });
           return;
         }
         
-        // Apply referral code if present
         if (refCode) {
           try {
-            const { data: refResult, error: refError } = await supabase.rpc('apply_referral_on_signup', { invite_code: refCode });
-            if (refError) {
-              console.warn('[Register] Referral apply failed:', refError);
-            } else {
-              console.log('[Register] Referral applied:', refResult);
-            }
-          } catch (refErr) {
-            console.warn('[Register] Referral apply exception:', refErr);
-          }
+            await supabase.rpc('apply_referral_on_signup', { invite_code: refCode });
+          } catch (refErr) { console.warn('[Register] Referral apply exception:', refErr); }
         }
 
-        console.log('[Register] Consents recorded successfully');
-
-        try {
-          const { data: authUser } = await supabase.auth.getUser();
-          console.log('[Register] auth.getUser after signUp', authUser?.user?.id);
-        } catch (e) {
-          console.warn('[Register] auth.getUser failed', e);
-        }
-
-        console.log('[Register] syncing guest assessment to profile for', newUserId);
-        // Sync guest assessment data to profile and wait for completion
         const syncSuccess = await syncGuestAssessmentToProfile(newUserId);
-
-        if (syncSuccess) {
-          toast({
-            title: t('register.registration_success'),
-            description: t('register.assessment_synced', 'Your assessment data has been saved to your profile'),
-          });
-        } else {
-          toast({
-            title: t('register.registration_success'),
-            description: t('register.welcome_message'),
-          });
-        }
+        toast({
+          title: t('register.registration_success'),
+          description: syncSuccess ? t('register.assessment_synced', 'Your assessment data has been saved to your profile') : t('register.welcome_message'),
+        });
       }
 
-      console.log('[Register] navigating to /profile after sync attempt');
       navigate('/profile');
-      
     } catch (error) {
-      toast({
-        title: t('register.registration_failed'),
-        description: t('register.try_again'),
-        variant: "destructive"
-      });
+      toast({ title: t('register.registration_failed'), description: t('register.try_again'), variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
   };
   
   return (
-    <div className="min-h-screen bg-[#0A0F1C] flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 40%, #ffffff, #eeeef3 70%)' }}>
       <div className="w-full max-w-md animate-[fade-in_0.4s_ease-out]">
-        <Card className="border border-[#A3ABB5]/20 bg-[#0A0F1C]/80 backdrop-blur-sm shadow-2xl">
+        <Card>
           <CardHeader className="space-y-4 text-center">
             <div className="mx-auto mb-2">
               <Logo variant="full" className="h-12 mx-auto" alt="XIMA" />
             </div>
-            <CardTitle className="text-2xl font-bold text-white font-heading">{t('register.title')}</CardTitle>
-            <CardDescription className="text-[#A3ABB5]">
+            <CardTitle className="text-[28px] font-bold">{t('register.title')}</CardTitle>
+            <CardDescription>
               {t('register.subtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-white">{t('register.full_name')}</Label>
+                <Label htmlFor="name">{t('register.full_name')}</Label>
                 <Input
-                  id="name"
-                  name="name"
+                  id="name" name="name"
                   placeholder={t('register.name_placeholder')}
-                  value={formData.name}
-                  onChange={handleChange}
-                  className={`bg-[#0A0F1C]/50 border-[#A3ABB5]/30 text-white placeholder:text-[#A3ABB5]/50 ${errors.name ? "border-red-500" : ""}`}
+                  value={formData.name} onChange={handleChange}
+                  className={errors.name ? "ring-2 ring-destructive" : ""}
                 />
-                {errors.name && (
-                  <p className="text-sm text-red-500">{errors.name}</p>
-                )}
+                {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-white">{t('register.email')}</Label>
+                <Label htmlFor="email">{t('register.email')}</Label>
                 <Input
-                  id="email"
-                  name="email"
-                  type="email"
+                  id="email" name="email" type="email"
                   placeholder={t('register.email_placeholder')}
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`bg-[#0A0F1C]/50 border-[#A3ABB5]/30 text-white placeholder:text-[#A3ABB5]/50 ${errors.email ? "border-red-500" : ""}`}
+                  value={formData.email} onChange={handleChange}
+                  className={errors.email ? "ring-2 ring-destructive" : ""}
                 />
-                {errors.email && (
-                  <p className="text-sm text-red-500">{errors.email}</p>
-                )}
+                {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-white">{t('register.password')}</Label>
+                <Label htmlFor="password">{t('register.password')}</Label>
                 <Input
-                  id="password"
-                  name="password"
-                  type="password"
+                  id="password" name="password" type="password"
                   placeholder={t('register.password_placeholder')}
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={`bg-[#0A0F1C]/50 border-[#A3ABB5]/30 text-white placeholder:text-[#A3ABB5]/50 ${errors.password ? "border-red-500" : ""}`}
+                  value={formData.password} onChange={handleChange}
+                  className={errors.password ? "ring-2 ring-destructive" : ""}
                 />
-                {errors.password && (
-                  <p className="text-sm text-red-500">{errors.password}</p>
-                )}
+                {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-white">{t('register.confirm_password')}</Label>
+                <Label htmlFor="confirmPassword">{t('register.confirm_password')}</Label>
                 <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
+                  id="confirmPassword" name="confirmPassword" type="password"
                   placeholder={t('register.confirm_placeholder')}
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className={`bg-[#0A0F1C]/50 border-[#A3ABB5]/30 text-white placeholder:text-[#A3ABB5]/50 ${errors.confirmPassword ? "border-red-500" : ""}`}
+                  value={formData.confirmPassword} onChange={handleChange}
+                  className={errors.confirmPassword ? "ring-2 ring-destructive" : ""}
                 />
-                {errors.confirmPassword && (
-                  <p className="text-sm text-red-500">{errors.confirmPassword}</p>
-                )}
+                {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword}</p>}
               </div>
 
-              {/* Consent Checkboxes */}
               <ConsentCheckboxes
-                privacyAccepted={privacyAccepted}
-                termsAccepted={termsAccepted}
-                onPrivacyChange={setPrivacyAccepted}
-                onTermsChange={setTermsAccepted}
-                showError={showConsentError}
-                className="pt-2"
+                privacyAccepted={privacyAccepted} termsAccepted={termsAccepted}
+                onPrivacyChange={setPrivacyAccepted} onTermsChange={setTermsAccepted}
+                showError={showConsentError} className="pt-2"
               />
               
-              <Button 
-                type="submit" 
-                className="w-full bg-[#3A9FFF] hover:bg-[#3A9FFF]/80 hover:shadow-[0_0_20px_rgba(58,159,255,0.5)] transition-all duration-300 text-white font-medium"
-                disabled={isSubmitting}
-              >
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -293,27 +196,23 @@ const Register = () => {
             
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-[#A3ABB5]/30" />
+                <span className="w-full border-t border-[rgba(60,60,67,0.12)]" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-[#0A0F1C] px-2 text-[#A3ABB5]">{t('auth.or', 'or')}</span>
+                <span className="bg-white px-2 text-muted-foreground">{t('auth.or', 'or')}</span>
               </div>
             </div>
             
             <GoogleAuthButton mode="register" />
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <p className="text-sm text-[#A3ABB5] text-center w-full">
+            <p className="text-sm text-muted-foreground text-center w-full">
               {t('register.have_account')}{" "}
-              <Button 
-                variant="link" 
-                className="p-0 h-auto text-[#3A9FFF] hover:text-[#3A9FFF]/80"
-                onClick={() => navigate('/login')}
-              >
+              <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/login')}>
                 {t('register.log_in')}
               </Button>
             </p>
-            <p className="text-center text-sm text-[#A3ABB5] font-medium">
+            <p className="text-center text-sm text-muted-foreground font-medium">
               Matching Quality in Jobs
             </p>
           </CardFooter>
