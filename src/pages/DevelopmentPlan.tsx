@@ -398,48 +398,48 @@ const DevelopmentPlan = () => {
           </CardHeader>
           <CardContent className="pt-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="group p-5 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10 border border-blue-200/50 dark:border-blue-800/50 hover:shadow-md transition-all duration-300">
+              <div className="group p-5 rounded-[16px] bg-white dark:bg-[rgba(255,255,255,0.08)] border border-[rgba(60,60,67,0.12)] dark:border-[rgba(255,255,255,0.10)] hover:shadow-md transition-all duration-300">
                 <div className="flex items-start gap-3">
-                  <div className="p-2.5 rounded-xl bg-blue-500/20 group-hover:bg-blue-500/30 transition-colors">
-                    <Target className="h-5 w-5 text-blue-600" />
+                  <div className="p-2.5 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                    <Target className="h-5 w-5 text-primary" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-blue-900 dark:text-blue-100">
+                    <h3 className="font-semibold text-foreground">
                       {t('development.recommendations.focus_priority.title')}
                     </h3>
-                    <p className="text-sm text-blue-700/80 dark:text-blue-300/80 mt-1.5 leading-relaxed">
+                    <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
                       {t('development.recommendations.focus_priority.description')}
                     </p>
                   </div>
                 </div>
               </div>
               
-              <div className="group p-5 rounded-xl bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/20 dark:to-green-800/10 border border-green-200/50 dark:border-green-800/50 hover:shadow-md transition-all duration-300">
+              <div className="group p-5 rounded-[16px] bg-white dark:bg-[rgba(255,255,255,0.08)] border border-[rgba(60,60,67,0.12)] dark:border-[rgba(255,255,255,0.10)] hover:shadow-md transition-all duration-300">
                 <div className="flex items-start gap-3">
-                  <div className="p-2.5 rounded-xl bg-green-500/20 group-hover:bg-green-500/30 transition-colors">
-                    <Calendar className="h-5 w-5 text-green-600" />
+                  <div className="p-2.5 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                    <Calendar className="h-5 w-5 text-primary" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-green-900 dark:text-green-100">
+                    <h3 className="font-semibold text-foreground">
                       {t('development.recommendations.schedule_practice.title')}
                     </h3>
-                    <p className="text-sm text-green-700/80 dark:text-green-300/80 mt-1.5 leading-relaxed">
+                    <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
                       {t('development.recommendations.schedule_practice.description')}
                     </p>
                   </div>
                 </div>
               </div>
               
-              <div className="group p-5 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/10 border border-purple-200/50 dark:border-purple-800/50 hover:shadow-md transition-all duration-300">
+              <div className="group p-5 rounded-[16px] bg-white dark:bg-[rgba(255,255,255,0.08)] border border-[rgba(60,60,67,0.12)] dark:border-[rgba(255,255,255,0.10)] hover:shadow-md transition-all duration-300">
                 <div className="flex items-start gap-3">
-                  <div className="p-2.5 rounded-xl bg-purple-500/20 group-hover:bg-purple-500/30 transition-colors">
-                    <Users className="h-5 w-5 text-purple-600" />
+                  <div className="p-2.5 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                    <Users className="h-5 w-5 text-primary" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-purple-900 dark:text-purple-100">
+                    <h3 className="font-semibold text-foreground">
                       {t('development.recommendations.connect_mentor.title')}
                     </h3>
-                    <p className="text-sm text-purple-700/80 dark:text-purple-300/80 mt-1.5 leading-relaxed">
+                    <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
                       {t('development.recommendations.connect_mentor.description')}
                     </p>
                   </div>

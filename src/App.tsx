@@ -183,7 +183,7 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <ThemeProvider attribute="class" defaultTheme="light" storageKey="xima-theme" enableSystem={false}>
         <UserProvider>
           <AssessmentProvider>
             <TooltipProvider>

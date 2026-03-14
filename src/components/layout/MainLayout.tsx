@@ -14,6 +14,7 @@ import { Menu, GraduationCap, Settings, HelpCircle } from 'lucide-react';
 import Footer from './Footer';
 import { XimaJourneyGuideModal } from '../onboarding/XimaJourneyGuideModal';
 import { useOnboardingState } from '@/hooks/useOnboardingState';
+import { ThemeToggle } from '../ThemeToggle';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -97,8 +98,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
     `text-[15px] font-medium transition-all duration-200 ease-out relative px-3 py-1.5 rounded-[10px] ${
       active
         ? 'text-primary font-semibold'
-        : 'text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)]'
+        : 'text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)]'
     }`;
+
+  /* ── Public nav links (logged-out only) ── */
+  const publicNavLinks = [
+    { path: '/how-it-works', label: t('nav.how_it_works') },
+    { path: '/assessment-guide', label: t('nav.guide') },
+    { path: '/about', label: t('nav.about') },
+    { path: '/business', label: t('nav.business') },
+  ];
 
   return (
     <div className={`min-h-screen ${fullHeight ? 'h-screen flex flex-col overflow-hidden' : ''}`}>
@@ -108,6 +117,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
       }`}>
         <div className="container mx-auto px-5 md:px-12 h-full">
           <div className="flex justify-between items-center h-full">
+            {/* Left: Logo + public nav (logged-out only) */}
             <div className="flex items-center gap-8">
               <button
                 onClick={handleLogoClick}
@@ -121,127 +131,46 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                 />
               </button>
 
-              {/* Public Nav */}
-              <div className="hidden lg:flex items-center gap-1">
-                {[
-                  { path: '/how-it-works', label: t('nav.how_it_works') },
-                  { path: '/assessment-guide', label: t('nav.guide') },
-                  { path: '/about', label: t('nav.about') },
-                  { path: '/business', label: t('nav.business') },
-                ].map(({ path, label }) => (
-                  <button
-                    key={path}
-                    onClick={() => navigate(path)}
-                    className={navLinkClass(location.pathname === path)}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
+              {/* Public nav links — only when logged OUT */}
+              {!isAuthenticated && (
+                <div className="hidden lg:flex items-center gap-1">
+                  {publicNavLinks.map(({ path, label }) => (
+                    <button
+                      key={path}
+                      onClick={() => navigate(path)}
+                      className={navLinkClass(location.pathname === path)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
+            {/* Right side */}
             <div className="flex items-center gap-3">
               <LanguageSwitcher />
-              {isAuthenticated && user && <NotificationsDropdown />}
 
+              {/* ── Logged-OUT right side ── */}
               {!isAuthenticated && (
                 <div className="hidden md:flex items-center gap-3">
-                  <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
+                  <ThemeToggle />
+                  <Button
+                    size="sm"
+                    onClick={() => navigate('/login')}
+                    className="rounded-[14px] px-5 py-2.5"
+                  >
                     {t('nav.login')}
-                  </Button>
-                  <Button size="sm" onClick={() => navigate('/business')}>
-                    {t('nav.for_business')}
                   </Button>
                 </div>
               )}
 
-              {/* Mobile menu */}
-              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                <SheetTrigger asChild className="lg:hidden">
-                  <Button variant="ghost" size="icon">
-                    <Menu className="h-5 w-5 text-muted-foreground" strokeWidth={1.5} />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                  <nav className="flex flex-col gap-2 mt-8">
-                    {[
-                      { path: '/how-it-works', label: t('nav.how_it_works') },
-                      { path: '/assessment-guide', label: t('nav.guide') },
-                      { path: '/about', label: t('nav.about') },
-                      { path: '/business', label: t('nav.business') },
-                    ].map(({ path, label }) => (
-                      <button
-                        key={path}
-                        onClick={() => { navigate(path); setMobileMenuOpen(false); }}
-                        className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] rounded-[10px] px-3 py-2.5 transition-all duration-200"
-                      >
-                        {label}
-                      </button>
-                    ))}
-
-                    {isAuthenticated && (
-                      <>
-                        <div className="h-px bg-[rgba(60,60,67,0.12)] my-3" />
-                        {[
-                          { path: '/profile', label: t('nav.dashboard') },
-                          { path: '/chat', label: t('nav.feed') },
-                        ].map(({ path, label }) => (
-                          <button
-                            key={path}
-                            onClick={() => { navigate(path); setMobileMenuOpen(false); }}
-                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] rounded-[10px] px-3 py-2.5 transition-all duration-200"
-                          >
-                            {label}
-                          </button>
-                        ))}
-                        {isMentor && (
-                          <button
-                            onClick={() => { navigate('/mentor'); setMobileMenuOpen(false); }}
-                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] rounded-[10px] px-3 py-2.5 transition-all duration-200 flex items-center gap-2"
-                          >
-                            <GraduationCap className="h-[18px] w-[18px]" strokeWidth={1.5} />
-                            {t('nav.mentor_portal', 'Mentor Portal')}
-                          </button>
-                        )}
-                        <button
-                          onClick={() => { navigate('/settings'); setMobileMenuOpen(false); }}
-                          className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] rounded-[10px] px-3 py-2.5 transition-all duration-200 flex items-center gap-2"
-                        >
-                          <Settings className="h-[18px] w-[18px]" strokeWidth={1.5} />
-                          {t('nav.settings', 'Settings')}
-                        </button>
-                        <button
-                          onClick={() => { setGuideOpen(true); setMobileMenuOpen(false); }}
-                          className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] rounded-[10px] px-3 py-2.5 transition-all duration-200 flex items-center gap-2"
-                        >
-                          <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.5} />
-                          {t('guide.open_button', 'Guide')}
-                        </button>
-                      </>
-                    )}
-
-                    <div className="h-px bg-[rgba(60,60,67,0.12)] my-3" />
-                    {!isAuthenticated ? (
-                      <div className="flex flex-col gap-2">
-                        <Button variant="outline" onClick={() => { navigate('/login'); setMobileMenuOpen(false); }} className="w-full">
-                          {t('nav.login')}
-                        </Button>
-                        <Button onClick={() => { navigate('/business'); setMobileMenuOpen(false); }} className="w-full">
-                          {t('nav.for_business')}
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button variant="outline" onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="w-full">
-                        {t('nav.logout')}
-                      </Button>
-                    )}
-                  </nav>
-                </SheetContent>
-              </Sheet>
-
-              {/* Desktop authenticated nav */}
+              {/* ── Logged-IN right side ── */}
               {isAuthenticated && user && (
-                <div className="flex items-center gap-4 animate-fade-in">
+                <div className="flex items-center gap-3 animate-fade-in">
+                  <NotificationsDropdown />
+                  <ThemeToggle />
+
                   <div className="hidden md:flex items-center gap-1">
                     {!(isMentor && location.pathname.startsWith('/mentor')) && (
                       <>
@@ -250,6 +179,21 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         </button>
                         <button onClick={() => navigate('/chat')} className={navLinkClass(location.pathname === '/chat')}>
                           {t('nav.feed')}
+                        </button>
+                        <button onClick={() => navigate('/development-plan')} className={navLinkClass(location.pathname.startsWith('/test') || location.pathname === '/development-plan')}>
+                          {t('nav.tests')}
+                        </button>
+                        <button onClick={() => navigate('/settings')} className={navLinkClass(location.pathname === '/settings')}>
+                          <span className="flex items-center gap-1">
+                            <Settings className="h-4 w-4" strokeWidth={1.5} />
+                            {t('nav.settings', 'Impostazioni')}
+                          </span>
+                        </button>
+                        <button onClick={() => setGuideOpen(true)} className={navLinkClass(false)}>
+                          <span className="flex items-center gap-1">
+                            <HelpCircle className="h-4 w-4" strokeWidth={1.5} />
+                            Help
+                          </span>
                         </button>
                       </>
                     )}
@@ -263,25 +207,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         </button>
                       </>
                     )}
-                    {!(isMentor && location.pathname.startsWith('/mentor')) && (
-                      <>
-                        <button onClick={() => navigate('/development-plan')} className={navLinkClass(location.pathname.startsWith('/test') || location.pathname === '/development-plan')}>
-                          {t('nav.tests')}
-                        </button>
-                        <button onClick={() => navigate('/settings')} className={navLinkClass(location.pathname === '/settings')}>
-                          <span className="flex items-center gap-1">
-                            <Settings className="h-4 w-4" strokeWidth={1.5} />
-                            {t('nav.settings', 'Settings')}
-                          </span>
-                        </button>
-                        <button onClick={() => setGuideOpen(true)} className={navLinkClass(false)}>
-                          <span className="flex items-center gap-1">
-                            <HelpCircle className="h-4 w-4" strokeWidth={1.5} />
-                            {t('guide.open_button', 'Guide')}
-                          </span>
-                        </button>
-                      </>
-                    )}
                     {isMentor && (
                       <button onClick={() => navigate('/mentor')} className={navLinkClass(location.pathname.startsWith('/mentor') && !location.pathname.includes('/login'))}>
                         <span className="flex items-center gap-1.5">
@@ -292,13 +217,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                     )}
                   </div>
 
-                  {/* User avatar */}
+                  {/* Credits badge */}
                   <div className="hidden lg:flex items-center gap-3">
                     {!headerData.isLoading && headerData.ximatarImage && (
                       <img
                         src={headerData.ximatarImage}
                         alt="XIMAtar"
-                        className="w-9 h-9 rounded-[18px] object-cover border border-[rgba(60,60,67,0.12)] shadow-sm"
+                        className="w-9 h-9 rounded-[18px] object-cover border border-[var(--divider)] shadow-sm"
                       />
                     )}
                     {!headerData.isLoading && headerData.totalScore > 0 && (
@@ -313,6 +238,82 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                   </Button>
                 </div>
               )}
+
+              {/* ── Mobile menu ── */}
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild className="lg:hidden">
+                  <Button variant="ghost" size="icon">
+                    <Menu className="h-5 w-5 text-muted-foreground" strokeWidth={1.5} />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                  <nav className="flex flex-col gap-2 mt-8">
+                    {/* Public links for logged-out, auth links for logged-in */}
+                    {!isAuthenticated ? (
+                      <>
+                        {publicNavLinks.map(({ path, label }) => (
+                          <button
+                            key={path}
+                            onClick={() => { navigate(path); setMobileMenuOpen(false); }}
+                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-200"
+                          >
+                            {label}
+                          </button>
+                        ))}
+                        <div className="h-px bg-[var(--divider)] my-3" />
+                        <div className="flex items-center gap-3 px-3">
+                          <ThemeToggle />
+                        </div>
+                        <div className="h-px bg-[var(--divider)] my-3" />
+                        <Button onClick={() => { navigate('/login'); setMobileMenuOpen(false); }} className="w-full rounded-[14px]">
+                          {t('nav.login')}
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        {[
+                          { path: '/profile', label: t('nav.dashboard') },
+                          { path: '/chat', label: t('nav.feed') },
+                          { path: '/development-plan', label: t('nav.tests') },
+                          { path: '/settings', label: t('nav.settings', 'Impostazioni') },
+                        ].map(({ path, label }) => (
+                          <button
+                            key={path}
+                            onClick={() => { navigate(path); setMobileMenuOpen(false); }}
+                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-200"
+                          >
+                            {label}
+                          </button>
+                        ))}
+                        <button
+                          onClick={() => { setGuideOpen(true); setMobileMenuOpen(false); }}
+                          className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-200 flex items-center gap-2"
+                        >
+                          <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.5} />
+                          Help
+                        </button>
+                        {isMentor && (
+                          <button
+                            onClick={() => { navigate('/mentor'); setMobileMenuOpen(false); }}
+                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-200 flex items-center gap-2"
+                          >
+                            <GraduationCap className="h-[18px] w-[18px]" strokeWidth={1.5} />
+                            {t('nav.mentor_portal', 'Mentor Portal')}
+                          </button>
+                        )}
+                        <div className="h-px bg-[var(--divider)] my-3" />
+                        <div className="flex items-center gap-3 px-3">
+                          <ThemeToggle />
+                        </div>
+                        <div className="h-px bg-[var(--divider)] my-3" />
+                        <Button variant="outline" onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="w-full">
+                          {t('nav.logout')}
+                        </Button>
+                      </>
+                    )}
+                  </nav>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         </div>
