@@ -160,6 +160,7 @@
     background: #f2f2f7;
     background: radial-gradient(ellipse 80% 60% at 50% 40%, #ffffff, #eeeef3 70%);
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   .dark body,
