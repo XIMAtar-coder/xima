@@ -35,7 +35,7 @@ const Business = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-7xl mx-auto px-4">
+      <div className="container max-w-7xl mx-auto px-4 md:px-8 xl:px-12">
         {/* Hero Section */}
         <div className="flex flex-col items-center text-center py-16 md:py-24 space-y-8">
           <div className="w-full max-w-4xl space-y-6">
