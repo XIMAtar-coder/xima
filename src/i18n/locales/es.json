@@ -338,9 +338,9 @@
     }
   },
   "cta_section": {
-    "title": "Desbloquea Tu Potencial Profesional",
-    "subtitle": "Únete a miles de profesionales que han descubierto sus verdaderas fortalezas y encontrado su combinación perfecta de carrera con XIMA.",
-    "button": "¡Obtén Tu XIMAtar Ahora!"
+    "title": "La evaluación es gratuita.\nEl XIMAtar es tuyo.",
+    "subtitle": "Hazlo una vez. Llévalo a todas partes. La primera herramienta de selección que realmente trabaja para el candidato.",
+    "button": "Empieza Gratis →"
   },
   "home": {
     "recommended_challenges": {
@@ -350,7 +350,52 @@
     "job_matches": {
       "title": "Mejores Coincidencias de Empleo",
       "subtitle": "Trabajos adaptados a tus habilidades y XIMAtar"
-    }
+    },
+    "problem_label": "// EL PROBLEMA",
+    "problem_headline": "El sistema de selección está roto.\nTodos lo saben.",
+    "problem_body": "Más del 80% de las pymes no utiliza ninguna herramienta psicométrica. El CV es el filtro principal — un proxy de credenciales que dice dónde estudiaste, no cómo piensas, decides o trabajas bajo presión. Las entrevistas no estructuradas generan falsos positivos sistemáticos y penalizan a los candidatos no tradicionales. Las soluciones enterprise cuestan entre €50.000 y €500.000 al año. Estructuralmente inaccesibles para las empresas donde ocurre la mayor parte de las contrataciones.",
+    "problem_pullquote": "\"¿Y si pudiéramos ver a la persona — no el papel?\"",
+    "pillars_label": "// EL MODELO",
+    "pillars_headline": "Cinco Pilares.\nUna Imagen Completa.",
+    "pillars_subheadline": "Cinco dimensiones conductuales independientes. Cada una mide algo distinto. Cada una ilumina lo que ningún CV puede capturar.",
+    "pillar_1_name": "Drive",
+    "pillar_1_descriptor": "El motor detrás de la persona.",
+    "pillar_1_measures": "Persistencia en objetivos · iniciativa · motivación interna",
+    "pillar_1_not": "No mide: agresividad ni adicción al trabajo",
+    "pillar_2_name": "Creatividad",
+    "pillar_2_descriptor": "La capacidad de ver de otro modo.",
+    "pillar_2_measures": "Pensamiento divergente · enfoques originales · curiosidad",
+    "pillar_2_not": "No mide: talento artístico ni sentido estético",
+    "pillar_3_name": "Conocimiento",
+    "pillar_3_descriptor": "El hambre de comprender.",
+    "pillar_3_measures": "Orientación al aprendizaje · síntesis · profundidad",
+    "pillar_3_not": "No mide: coeficiente intelectual, expertise de dominio ni memoria",
+    "pillar_4_name": "Comunicación",
+    "pillar_4_descriptor": "El puente entre uno mismo y los demás.",
+    "pillar_4_measures": "Claridad · empatía · persuasión · escucha activa",
+    "pillar_4_not": "No mide: extroversión ni carisma",
+    "pillar_5_name": "Potencia Computacional",
+    "pillar_5_descriptor": "La arquitectura del pensamiento.",
+    "pillar_5_measures": "Razonamiento analítico · reconocimiento de patrones · pensamiento sistemático",
+    "pillar_5_not": "No mide: habilidad matemática ni programación",
+    "pillars_pullquote": "\"Sin datos demográficos en la puntuación. Sin proxies de credenciales. Cinco señales que dicen la verdad sobre cómo trabaja alguien.\"",
+    "ximatar_label": "// LA IDENTIDAD",
+    "ximatar_headline": "12 Arquetipos.\nUno Es El Tuyo.",
+    "ximatar_subheadline": "Cada candidato recibe un XIMAtar — uno de 12 arquetipos conductuales canónicos, asignado comparando su perfil de cinco pilares con el más cercano. Persistente. Portable. Tuyo para siempre.",
+    "ximatar_portability": "A diferencia de MBTI o Big Five — que se reinician con cada empleador — tu XIMAtar es tuyo. Lo haces una vez. Te acompaña a todas partes. Cada empresa conectada a XIMA ve la misma verdad conductual.",
+    "archetype_fox": "Adaptabilidad estratégica y resolución creativa de problemas",
+    "archetype_owl": "Profundidad analítica y orientación al conocimiento",
+    "archetype_lion": "Visión de impacto y liderazgo natural",
+    "archetype_horse": "Constancia, potencia computacional y fiabilidad",
+    "archetype_wolf": "Colaboración profunda y empuje persistente",
+    "archetype_bear": "Solidez estructural y pensamiento sistemático",
+    "archetype_cat": "Independencia, intuición y agudeza observacional",
+    "archetype_elephant": "Memoria organizativa e inteligencia relacional",
+    "archetype_dolphin": "Comunicación fluida e inteligencia emocional",
+    "archetype_bee": "Precisión operativa y orientación a resultados",
+    "archetype_parrot": "Expresividad, creatividad verbal e influencia social",
+    "archetype_chameleon": "Adaptabilidad conductual y lectura del contexto",
+    "footer_tagline": "XIMA — Calidad en el Proceso de Selección"
   },
   "baseline": {
     "title": "Evaluación Inicial",

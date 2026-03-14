@@ -440,9 +440,9 @@
     }
   },
   "cta_section": {
-    "title": "Unlock Your Professional Potential",
-    "subtitle": "Join thousands of professionals who have discovered their true strengths and found their perfect career match with XIMA.",
-    "button": "Get Your Ximatar Now!"
+    "title": "The assessment is free.\nThe XIMAtar is yours.",
+    "subtitle": "Take it once. Take it everywhere. The first hiring tool that actually works for the candidate.",
+    "button": "Start Free →"
   },
   "home": {
     "recommended_challenges": {
@@ -452,7 +452,52 @@
     "job_matches": {
       "title": "Top Job Matches",
       "subtitle": "Jobs tailored to your skills and XIMAtar"
-    }
+    },
+    "problem_label": "// THE PROBLEM",
+    "problem_headline": "The hiring system is broken.\nEveryone knows it.",
+    "problem_body": "Over 80% of SMBs use zero psychometric tooling. The CV is the primary screening instrument — a credential proxy that tells you where someone went to school, not how they think, decide, or work under pressure. Unstructured interviews produce systematic false positives and bias against non-traditional candidates. Enterprise solutions cost $50,000–$500,000 per year. Structurally inaccessible to the businesses where most hiring actually happens.",
+    "problem_pullquote": "\"What if we could see the person — not the paper?\"",
+    "pillars_label": "// THE MODEL",
+    "pillars_headline": "Five Pillars.\nOne Complete Picture.",
+    "pillars_subheadline": "Five orthogonal behavioral dimensions. Each measuring something distinct. Each illuminating what no CV can capture.",
+    "pillar_1_name": "Drive",
+    "pillar_1_descriptor": "The engine behind the person.",
+    "pillar_1_measures": "Goal persistence · initiative · internal motivation",
+    "pillar_1_not": "Not: aggression or workaholism",
+    "pillar_2_name": "Creativity",
+    "pillar_2_descriptor": "The capacity to see differently.",
+    "pillar_2_measures": "Divergent thinking · novel approaches · curiosity",
+    "pillar_2_not": "Not: artistic talent or aesthetic sense",
+    "pillar_3_name": "Knowledge",
+    "pillar_3_descriptor": "The hunger to understand.",
+    "pillar_3_measures": "Learning orientation · information synthesis · depth",
+    "pillar_3_not": "Not: IQ, domain expertise, or memory",
+    "pillar_4_name": "Communication",
+    "pillar_4_descriptor": "The bridge between self and others.",
+    "pillar_4_measures": "Clarity · empathy · persuasion · active listening",
+    "pillar_4_not": "Not: extroversion or charisma",
+    "pillar_5_name": "Computational Power",
+    "pillar_5_descriptor": "The architecture of thought.",
+    "pillar_5_measures": "Analytical reasoning · pattern recognition · systematic thinking",
+    "pillar_5_not": "Not: math ability or coding skill",
+    "pillars_pullquote": "\"No demographics in scoring. No credential proxies. Five signals that tell the truth about how someone works.\"",
+    "ximatar_label": "// THE IDENTITY",
+    "ximatar_headline": "12 Archetypes.\nOne Is Yours.",
+    "ximatar_subheadline": "Every candidate receives a XIMAtar — one of 12 canonical behavioral archetypes, assigned by matching their five-pillar score to the nearest archetype profile. Persistent. Portable. Theirs forever.",
+    "ximatar_portability": "Unlike MBTI or Big Five — which reset with every employer — your XIMAtar is yours. You take it once. It travels with you. Every XIMA-connected company sees the same behavioral truth.",
+    "archetype_fox": "Strategic adaptability and creative problem solving",
+    "archetype_owl": "Analytical depth and knowledge orientation",
+    "archetype_lion": "Impact vision and natural leadership",
+    "archetype_horse": "Consistency, computational power and reliability",
+    "archetype_wolf": "Deep collaboration and persistent drive",
+    "archetype_bear": "Structural solidity and systematic thinking",
+    "archetype_cat": "Independence, intuition and observational acuity",
+    "archetype_elephant": "Organizational memory and relational intelligence",
+    "archetype_dolphin": "Fluid communication and emotional intelligence",
+    "archetype_bee": "Operational precision and result orientation",
+    "archetype_parrot": "Expressiveness, verbal creativity and social influence",
+    "archetype_chameleon": "Behavioral adaptability and context reading",
+    "footer_tagline": "XIMA — Quality of Match at Work"
   },
   "baseline": {
     "title": "Baseline Assessment",
