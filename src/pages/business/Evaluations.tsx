@@ -102,7 +102,7 @@ const BusinessEvaluations = () => {
       case 'pending':
         return <Clock className="text-yellow-500" size={20} />;
       default:
-        return <AlertCircle className="text-gray-500" size={20} />;
+        return <AlertCircle className="text-muted-foreground" size={20} />;
     }
   };
 
