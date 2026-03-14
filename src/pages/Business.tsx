@@ -81,7 +81,7 @@ const Business = () => {
           <h2 className="text-[20px] md:text-[24px] xl:text-[28px] font-bold text-center mb-8 md:mb-12 text-foreground">
             {t('business.features_title')}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 xl:gap-6">
             {features.map((feature, index) => (
               <Card key={index} className="border-2 hover:border-[hsl(var(--xima-accent))] transition-colors dark:bg-[rgba(255,255,255,0.06)] dark:border-[rgba(255,255,255,0.08)]">
                 <CardContent className="p-6 space-y-4">
