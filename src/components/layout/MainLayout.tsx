@@ -12,6 +12,7 @@ import { NotificationsDropdown } from '../NotificationsDropdown';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, GraduationCap, Settings, HelpCircle } from 'lucide-react';
 import Footer from './Footer';
+import { MobileTabBar } from './MobileTabBar';
 import { XimaJourneyGuideModal } from '../onboarding/XimaJourneyGuideModal';
 import { useOnboardingState } from '@/hooks/useOnboardingState';
 import { ThemeToggle } from '../ThemeToggle';
@@ -95,7 +96,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
   };
 
   const navLinkClass = (active: boolean) =>
-    `text-[15px] font-medium transition-all duration-200 ease-out relative px-3 py-1.5 rounded-[10px] ${
+    `text-[14px] xl:text-[15px] font-medium transition-all duration-200 ease-out relative px-2 xl:px-3 py-1.5 rounded-[10px] ${
       active
         ? 'text-primary font-semibold'
         : 'text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)]'
@@ -115,10 +116,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
       <nav className={`fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-200 ease-out ${
         scrolled ? 'h-14 md:h-16' : 'h-16 md:h-[72px]'
       }`}>
-        <div className="container mx-auto px-5 md:px-12 h-full">
+        <div className="container mx-auto px-4 md:px-8 xl:px-12 h-full">
           <div className="flex justify-between items-center h-full">
             {/* Left: Logo + public nav (logged-out only) */}
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-4 xl:gap-8">
               <button
                 onClick={handleLogoClick}
                 disabled={assessmentInProgress}
@@ -127,13 +128,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                 <Logo
                   variant="symbol"
                   alt="XIMA logo"
-                  className={`transition-all duration-200 ease-out ${scrolled ? 'h-8 md:h-9' : 'h-9 md:h-10'}`}
+                  className={`transition-all duration-200 ease-out ${scrolled ? 'h-7 md:h-8 xl:h-9' : 'h-8 md:h-9 xl:h-10'}`}
                 />
               </button>
 
-              {/* Public nav links — only when logged OUT */}
+              {/* Public nav links — only when logged OUT, hidden on mobile */}
               {!isAuthenticated && (
-                <div className="hidden lg:flex items-center gap-1">
+                <div className="hidden md:flex items-center gap-1">
                   {publicNavLinks.map(({ path, label }) => (
                     <button
                       key={path}
@@ -148,8 +149,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
             </div>
 
             {/* Right side */}
-            <div className="flex items-center gap-3">
-              <LanguageSwitcher />
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="hidden md:block">
+                <LanguageSwitcher />
+              </div>
 
               {/* ── Logged-OUT right side ── */}
               {!isAuthenticated && (
@@ -167,11 +170,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
 
               {/* ── Logged-IN right side ── */}
               {isAuthenticated && user && (
-                <div className="flex items-center gap-3 animate-fade-in">
+                <div className="flex items-center gap-2 md:gap-3 animate-fade-in">
                   <NotificationsDropdown />
                   <ThemeToggle />
 
-                  <div className="hidden md:flex items-center gap-1">
+                  <div className="hidden xl:flex items-center gap-1">
                     {!(isMentor && location.pathname.startsWith('/mentor')) && (
                       <>
                         <button onClick={() => navigate('/profile')} className={navLinkClass(location.pathname === '/profile' || location.pathname === '/dashboard')}>
@@ -217,13 +220,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                     )}
                   </div>
 
-                  {/* Credits badge */}
-                  <div className="hidden lg:flex items-center gap-3">
+                  {/* Credits badge — desktop only */}
+                  <div className="hidden xl:flex items-center gap-3">
                     {!headerData.isLoading && headerData.ximatarImage && (
                       <img
                         src={headerData.ximatarImage}
                         alt="XIMAtar"
-                        className="w-9 h-9 rounded-[18px] object-cover border border-[var(--divider)] shadow-sm"
+                        className="w-8 h-8 xl:w-9 xl:h-9 rounded-[18px] object-cover border border-[var(--divider)] shadow-sm"
                       />
                     )}
                     {!headerData.isLoading && headerData.totalScore > 0 && (
@@ -233,21 +236,21 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                     )}
                   </div>
 
-                  <Button variant="ghost" size="sm" onClick={handleLogout}>
+                  <Button variant="ghost" size="sm" onClick={handleLogout} className="hidden md:inline-flex">
                     {t('nav.logout')}
                   </Button>
                 </div>
               )}
 
-              {/* ── Mobile menu ── */}
+              {/* ── Mobile / Tablet menu ── */}
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                <SheetTrigger asChild className="lg:hidden">
-                  <Button variant="ghost" size="icon">
+                <SheetTrigger asChild className="xl:hidden">
+                  <Button variant="ghost" size="icon" className="min-h-[44px] min-w-[44px]">
                     <Menu className="h-5 w-5 text-muted-foreground" strokeWidth={1.5} />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                  <nav className="flex flex-col gap-2 mt-8">
+                <SheetContent side="right" className="w-[280px] sm:w-[340px] backdrop-blur-[40px]">
+                  <nav className="flex flex-col gap-1 mt-8">
                     {/* Public links for logged-out, auth links for logged-in */}
                     {!isAuthenticated ? (
                       <>
@@ -255,17 +258,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                           <button
                             key={path}
                             onClick={() => { navigate(path); setMobileMenuOpen(false); }}
-                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-200"
+                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-3 min-h-[48px] flex items-center transition-all duration-200"
                           >
                             {label}
                           </button>
                         ))}
                         <div className="h-px bg-[var(--divider)] my-3" />
                         <div className="flex items-center gap-3 px-3">
+                          <LanguageSwitcher />
                           <ThemeToggle />
                         </div>
                         <div className="h-px bg-[var(--divider)] my-3" />
-                        <Button onClick={() => { navigate('/login'); setMobileMenuOpen(false); }} className="w-full rounded-[14px]">
+                        <Button onClick={() => { navigate('/login'); setMobileMenuOpen(false); }} className="w-full rounded-[14px] min-h-[48px]">
                           {t('nav.login')}
                         </Button>
                       </>
@@ -280,14 +284,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                           <button
                             key={path}
                             onClick={() => { navigate(path); setMobileMenuOpen(false); }}
-                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-200"
+                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-3 min-h-[48px] flex items-center transition-all duration-200"
                           >
                             {label}
                           </button>
                         ))}
                         <button
                           onClick={() => { setGuideOpen(true); setMobileMenuOpen(false); }}
-                          className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-200 flex items-center gap-2"
+                          className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-3 min-h-[48px] flex items-center gap-2 transition-all duration-200"
                         >
                           <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.5} />
                           Help
@@ -295,7 +299,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         {isMentor && (
                           <button
                             onClick={() => { navigate('/mentor'); setMobileMenuOpen(false); }}
-                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-200 flex items-center gap-2"
+                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-3 min-h-[48px] flex items-center gap-2 transition-all duration-200"
                           >
                             <GraduationCap className="h-[18px] w-[18px]" strokeWidth={1.5} />
                             {t('nav.mentor_portal', 'Mentor Portal')}
@@ -303,10 +307,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         )}
                         <div className="h-px bg-[var(--divider)] my-3" />
                         <div className="flex items-center gap-3 px-3">
+                          <LanguageSwitcher />
                           <ThemeToggle />
                         </div>
                         <div className="h-px bg-[var(--divider)] my-3" />
-                        <Button variant="outline" onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="w-full">
+                        <Button variant="outline" onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="w-full min-h-[48px]">
                           {t('nav.logout')}
                         </Button>
                       </>
@@ -319,11 +324,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
         </div>
       </nav>
 
-      <main className={`pt-16 md:pt-[72px] ${fullHeight ? 'flex-1 overflow-hidden' : 'flex-1'}`}>
+      <main className={`pt-16 md:pt-[72px] ${isAuthenticated ? 'pb-20 md:pb-0' : ''} ${fullHeight ? 'flex-1 overflow-hidden' : 'flex-1'}`}>
         {children}
       </main>
 
       {!fullHeight && <Footer />}
+      <MobileTabBar />
 
       {isAuthenticated && (
         <XimaJourneyGuideModal
