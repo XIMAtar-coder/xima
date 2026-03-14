@@ -35,7 +35,7 @@ const Business = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-7xl mx-auto px-4">
+      <div className="container max-w-7xl mx-auto px-4 md:px-8 xl:px-12">
         {/* Hero Section */}
         <div className="flex flex-col items-center text-center py-16 md:py-24 space-y-8">
           <div className="w-full max-w-4xl space-y-6">
@@ -46,11 +46,11 @@ const Business = () => {
               }}
             />
             
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground">
+            <h1 className="text-[28px] md:text-[40px] xl:text-[48px] font-bold leading-tight text-foreground">
               {t('business.hero_title')}
             </h1>
             
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-[14px] md:text-[17px] text-muted-foreground max-w-2xl mx-auto">
               {t('business.hero_subtitle')}
             </p>
             
@@ -78,13 +78,13 @@ const Business = () => {
 
         {/* Features Grid */}
         <div className="py-16">
-          <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
+          <h2 className="text-[20px] md:text-[24px] xl:text-[28px] font-bold text-center mb-8 md:mb-12 text-foreground">
             {t('business.features_title')}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 xl:gap-6">
             {features.map((feature, index) => (
               <Card key={index} className="border-2 hover:border-[hsl(var(--xima-accent))] transition-colors dark:bg-[rgba(255,255,255,0.06)] dark:border-[rgba(255,255,255,0.08)]">
-                <CardContent className="p-6 space-y-4">
+                <CardContent className="p-4 md:p-5 xl:p-6 space-y-4">
                   <div className="text-[hsl(var(--xima-accent))] dark:text-[rgba(255,255,255,0.60)]">
                     {feature.icon}
                   </div>

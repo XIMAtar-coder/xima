@@ -151,14 +151,14 @@ const DevelopmentPlan = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-6xl mx-auto pt-6 pb-12 space-y-8">
+      <div className="container max-w-6xl mx-auto pt-6 pb-12 px-4 md:px-8 space-y-6 md:space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start gap-4 animate-fade-in">
           <div className="space-y-2">
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <h1 className="text-[28px] md:text-[34px] xl:text-[40px] font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               {t('development.title')}
             </h1>
-            <p className="text-muted-foreground max-w-xl">
+            <p className="text-[14px] md:text-[15px] text-muted-foreground max-w-xl">
               {t('development.subtitle')}
             </p>
           </div>
@@ -182,7 +182,7 @@ const DevelopmentPlan = () => {
               {t('development.overall_progress')}
             </CardTitle>
           </CardHeader>
-          <CardContent className="pt-6">
+           <CardContent className="pt-6 p-4 md:p-6">
             <div className="space-y-6">
               <div className="space-y-3">
                 <div className="flex justify-between text-sm font-medium">

@@ -87,7 +87,7 @@ const Login = () => {
   
   return (
     <MainLayout>
-      <div className="container max-w-md mx-auto pt-8 pb-16">
+      <div className="container max-w-md mx-auto pt-8 pb-16 px-4">
         <Card>
           <CardHeader className="space-y-6 text-center">
             <div className="flex justify-center">
@@ -112,6 +112,7 @@ const Login = () => {
                   placeholder={t('login.email_placeholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="min-h-[48px]"
                 />
               </div>
               
@@ -131,12 +132,13 @@ const Login = () => {
                   placeholder={t('login.password_placeholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="min-h-[48px]"
                 />
               </div>
               
-              <Button 
+               <Button 
                 type="submit" 
-                className="w-full"
+                className="w-full min-h-[48px]"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (

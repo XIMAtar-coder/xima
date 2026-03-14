@@ -15,10 +15,10 @@ const HowItWorks = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">{t('how_it_works.title')}</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
+       <div className="container max-w-4xl mx-auto px-4 md:px-8">
+         <div className="text-center mb-8 md:mb-12">
+           <h1 className="text-[28px] md:text-[34px] xl:text-[40px] font-bold mb-4">{t('how_it_works.title')}</h1>
+           <p className="text-[14px] md:text-[17px] xl:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             {t('how_it_works.subtitle')}
           </p>
           <div className="max-w-3xl mx-auto space-y-4 text-lg text-muted-foreground">

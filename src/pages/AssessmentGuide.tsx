@@ -187,7 +187,7 @@ const AssessmentGuide = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-6xl mx-auto py-8 px-4">
+      <div className="container max-w-6xl mx-auto py-8 px-4 md:px-8">
         {/* Hero Section */}
         <div 
           id="hero-section"
@@ -205,10 +205,10 @@ const AssessmentGuide = () => {
             <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
             {t('guide.badge', 'Assessment Guide')}
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent animate-[fade-in_0.6s_ease-out]">
+          <h1 className="text-[28px] md:text-[40px] xl:text-[48px] font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent animate-[fade-in_0.6s_ease-out]">
             {t('guide.title', 'How XIMAtar Assessment Works')}
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto animate-[fade-in_0.7s_ease-out]">
+          <p className="text-[14px] md:text-[17px] xl:text-xl text-muted-foreground max-w-3xl mx-auto animate-[fade-in_0.7s_ease-out]">
             {t('guide.subtitle', 'Discover your unique professional archetype through our comprehensive assessment system based on 5 core pillars.')}
           </p>
         </div>
@@ -223,7 +223,7 @@ const AssessmentGuide = () => {
               : 'opacity-0 translate-y-8'
           }`}
         >
-          <h2 className="text-3xl font-bold text-center mb-10">
+          <h2 className="text-[20px] md:text-[24px] xl:text-[28px] font-bold text-center mb-10">
             {t('guide.journey_title', 'Your Assessment Journey')}
           </h2>
           
@@ -236,7 +236,7 @@ const AssessmentGuide = () => {
               style={{ transformOrigin: 'left' }}
             />
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 relative z-10">
               {journeySteps.map((step, index) => (
                 <Card 
                   key={index} 
@@ -275,7 +275,7 @@ const AssessmentGuide = () => {
           }`}
         >
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold mb-4">
+           <h2 className="text-[20px] md:text-[24px] xl:text-[28px] font-bold mb-4">
               {t('guide.pillars_title', 'The 5 XIMA Pillars')}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -283,7 +283,7 @@ const AssessmentGuide = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {pillars.map((pillar, index) => (
               <Card 
                 key={index} 

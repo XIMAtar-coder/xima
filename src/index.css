@@ -160,6 +160,7 @@
     background: #f2f2f7;
     background: radial-gradient(ellipse 80% 60% at 50% 40%, #ffffff, #eeeef3 70%);
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   .dark body,
@@ -529,6 +530,53 @@ html.dark .glass-badge {
   .nav-link-gradient::after {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE & TOUCH UTILITIES
+   ══════════════════════════════════════════════════ */
+
+/* Touch-friendly tap targets */
+.touch-target {
+  min-height: 44px;
+}
+
+/* Mobile tab bar glass */
+.mobile-tab-bar {
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-top: 1px solid rgba(60,60,67,0.12);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html.dark .mobile-tab-bar {
+  background: rgba(8,8,13,0.88);
+  border-top-color: rgba(255,255,255,0.08);
+}
+
+/* Replace hover effects with active states on touch devices */
+@media (hover: none) {
+  .glass-surface:hover {
+    transform: none;
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+  
+  .glass-surface:active {
+    transform: scale(0.97);
+    transition: transform 100ms ease-out;
+  }
+  
+  .btn-primary-glow:hover {
+    transform: none;
+    box-shadow: 0 4px 16px rgba(0,122,255,0.30);
+  }
+  
+  .btn-primary-glow:active {
+    transform: scale(0.97);
   }
 }
 
