@@ -205,7 +205,7 @@ const AssessmentGuide = () => {
             <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
             {t('guide.badge', 'Assessment Guide')}
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent animate-[fade-in_0.6s_ease-out]">
+          <h1 className="text-[28px] md:text-[40px] xl:text-[48px] font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent animate-[fade-in_0.6s_ease-out]">
             {t('guide.title', 'How XIMAtar Assessment Works')}
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto animate-[fade-in_0.7s_ease-out]">
