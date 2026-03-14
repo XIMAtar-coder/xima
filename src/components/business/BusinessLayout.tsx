@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useBusinessLocale, LANGUAGE_STORAGE_KEY, VALID_LOCALES } from '@/hooks/useBusinessLocale';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const languages = [
   { code: 'it', name: 'Italiano', flag: '🇮🇹' },
@@ -182,6 +183,9 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
       >
         {/* Top Header with Language Switcher */}
         <header className="sticky top-0 z-40 flex items-center justify-end gap-2 px-6 py-3 bg-[#0A0F1C]/80 backdrop-blur-sm border-b border-[#3A9FFF]/10">
+          {/* Theme toggle */}
+          <ThemeToggle />
+
           {/* Guide button */}
           <Button
             variant="ghost"
