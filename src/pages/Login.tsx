@@ -87,7 +87,7 @@ const Login = () => {
   
   return (
     <MainLayout>
-      <div className="container max-w-md mx-auto pt-8 pb-16">
+      <div className="container max-w-md mx-auto pt-8 pb-16 px-4">
         <Card>
           <CardHeader className="space-y-6 text-center">
             <div className="flex justify-center">
