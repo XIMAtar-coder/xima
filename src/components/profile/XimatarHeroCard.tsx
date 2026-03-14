@@ -85,7 +85,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
                 )}
               </div>
               {uploading && (
-                <div className="absolute inset-0 bg-white/80 rounded-[18px] flex items-center justify-center">
+                <div className="absolute inset-0 bg-background/80 rounded-[18px] flex items-center justify-center">
                   <Loader2 className="w-6 h-6 animate-spin text-primary" />
                 </div>
               )}
