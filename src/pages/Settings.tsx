@@ -78,7 +78,7 @@ const CandidateSettings = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-3xl mx-auto py-8 space-y-8">
+      <div className="container max-w-3xl mx-auto py-8 px-4 md:px-8 space-y-8">
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
