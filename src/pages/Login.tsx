@@ -132,6 +132,7 @@ const Login = () => {
                   placeholder={t('login.password_placeholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="min-h-[48px]"
                 />
               </div>
               
