@@ -41,99 +41,55 @@ const Profile = () => {
 
   const hasMentor = !!profileData.mentor_profile;
 
-  // Auto-open guide for first-time users
   useEffect(() => {
-    if (shouldAutoShowGuide) {
-      setGuideOpen(true);
-    }
+    if (shouldAutoShowGuide) setGuideOpen(true);
   }, [shouldAutoShowGuide]);
 
-  // Auto-complete choose_mentor when mentor is selected
   useEffect(() => {
-    if (hasMentor) {
-      completeStep('choose_mentor');
-    }
+    if (hasMentor) completeStep('choose_mentor');
   }, [hasMentor, completeStep]);
   
-  // Process pending mentor assignment after registration
   useEffect(() => {
     const processPendingMentorAssignment = async () => {
       if (!isAuthenticated || !user?.id || processingMentor) return;
-      
       const selectedProfessionalData = localStorage.getItem('selected_professional_data');
       if (!selectedProfessionalData) return;
-      
       if (profileData.mentor_profile) {
-        console.log('[Profile] User already has a mentor, skipping assignment');
         localStorage.removeItem('selected_professional_data');
         return;
       }
-      
       try {
         setProcessingMentor(true);
         const professional = JSON.parse(selectedProfessionalData);
-        console.log('[Profile] Processing pending mentor assignment:', professional);
-        
-        const { data, error } = await supabase.functions.invoke('assign-mentor', {
-          body: { professional_id: professional.id },
-        });
-        
+        const { data, error } = await supabase.functions.invoke('assign-mentor', { body: { professional_id: professional.id } });
         if (error) {
-          console.error('[Profile] Error assigning mentor:', error);
-          toast({
-            title: "Note",
-            description: "We'll assign your selected mentor shortly.",
-          });
+          toast({ title: "Note", description: "We'll assign your selected mentor shortly." });
         } else if (data?.success) {
-          console.log('[Profile] Mentor assigned successfully:', data.mentor);
           localStorage.removeItem('selected_professional_data');
-          toast({
-            title: "Success",
-            description: `${professional.full_name} has been assigned as your mentor!`,
-          });
+          toast({ title: "Success", description: `${professional.full_name} has been assigned as your mentor!` });
           setProfileRefreshKey(prev => prev + 1);
         }
       } catch (error) {
         console.error('[Profile] Failed to process mentor assignment:', error);
-      } finally {
-        setProcessingMentor(false);
-      }
+      } finally { setProcessingMentor(false); }
     };
-    
-    const timeout = setTimeout(() => {
-      processPendingMentorAssignment();
-    }, 1000);
-    
+    const timeout = setTimeout(() => { processPendingMentorAssignment(); }, 1000);
     return () => clearTimeout(timeout);
   }, [isAuthenticated, user?.id, profileData.mentor_profile, processingMentor, toast]);
   
-  const handleAvatarUpdate = () => {
-    setRefreshKey(prev => prev + 1);
-  };
-
-  const handleCVUploadSuccess = () => {
-    setProfileRefreshKey(prev => prev + 1);
-  };
-
-  const handleMentorBookingSuccess = () => {
-    setMentorRefreshKey(prev => prev + 1);
-    setProfileRefreshKey(prev => prev + 1);
-  };
-
+  const handleAvatarUpdate = () => setRefreshKey(prev => prev + 1);
+  const handleCVUploadSuccess = () => setProfileRefreshKey(prev => prev + 1);
+  const handleMentorBookingSuccess = () => { setMentorRefreshKey(prev => prev + 1); setProfileRefreshKey(prev => prev + 1); };
   const handleGuideClose = (dontShowAgain: boolean) => {
     setGuideOpen(false);
-    if (dontShowAgain || shouldAutoShowGuide) {
-      completeStep('welcome_seen');
-    }
+    if (dontShowAgain || shouldAutoShowGuide) completeStep('welcome_seen');
   };
 
-  console.log('[Profile] render profileData', profileData);
-  
   if (!isAuthenticated) {
     return (
       <MainLayout>
         <div className="container max-w-4xl mx-auto py-12 text-center">
-          <h2 className="text-2xl font-bold mb-4">{t('common.login_required')}</h2>
+          <h2 className="text-[28px] font-bold mb-4 text-foreground">{t('common.login_required')}</h2>
           <Button onClick={() => navigate('/login')}>{t('common.login')}</Button>
         </div>
       </MainLayout>
@@ -151,29 +107,24 @@ const Profile = () => {
     );
   }
 
-  // No assessment completed yet
   if (!profileData.hasAssessment) {
     return (
       <MainLayout>
         <div className="container max-w-4xl mx-auto py-12 space-y-8">
-          <XimaJourneyGuideModal
-            open={guideOpen}
-            onClose={handleGuideClose}
-            isAutoOpen={shouldAutoShowGuide}
-          />
-          <div className="dashboard-hero-gradient rounded-2xl text-center py-16 px-6">
+          <XimaJourneyGuideModal open={guideOpen} onClose={handleGuideClose} isAutoOpen={shouldAutoShowGuide} />
+          <div className="glass-surface rounded-[20px] text-center py-16 px-6 hover:translate-y-0">
             <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center">
-                <Sparkles className="h-10 w-10 text-primary" />
+              <div className="w-20 h-20 rounded-[20px] bg-primary/10 flex items-center justify-center">
+                <Sparkles className="h-10 w-10 text-primary" strokeWidth={1.5} />
               </div>
             </div>
-            <h2 className="text-3xl md:text-4xl font-black font-heading mb-4 glow-text">{t('profile.no_assessment_title')}</h2>
-            <p className="text-muted-foreground text-lg mb-8 max-w-md mx-auto">{t('profile.no_assessment_desc')}</p>
+            <h2 className="text-[28px] md:text-[34px] font-bold mb-4 text-foreground">{t('profile.no_assessment_title')}</h2>
+            <p className="text-muted-foreground text-[17px] mb-8 max-w-md mx-auto">{t('profile.no_assessment_desc')}</p>
             <Button size="lg" onClick={() => navigate('/ximatar-journey')} className="challenge-active-ring">
-              <Sparkles className="mr-2 h-5 w-5" />
+              <Sparkles className="mr-2 h-5 w-5" strokeWidth={1.5} />
               {t('profile.start_assessment')}
             </Button>
-            <div className="h-1 momentum-bar mt-8 rounded-full max-w-xs mx-auto" />
+            <div className="h-1 momentum-bar mt-8 rounded-[999px] max-w-xs mx-auto" />
           </div>
         </div>
       </MainLayout>
@@ -183,89 +134,42 @@ const Profile = () => {
   return (
     <MainLayout>
       <div className="container max-w-7xl mx-auto py-6 md:py-10 space-y-6 watermark-bg">
-        {/* Journey Guide Modal */}
-        <XimaJourneyGuideModal
-          open={guideOpen}
-          onClose={handleGuideClose}
-          isAutoOpen={shouldAutoShowGuide}
-        />
+        <XimaJourneyGuideModal open={guideOpen} onClose={handleGuideClose} isAutoOpen={shouldAutoShowGuide} />
 
-        {/* Header */}
         <div className="space-y-2 relative z-10">
-          <p className="text-xs font-bold text-primary uppercase tracking-widest">
+          <p className="text-[12px] font-medium text-primary uppercase tracking-[0.04em]">
             {t('profile.dashboard_label', 'Dashboard')}
           </p>
-          <h1 className="text-3xl md:text-4xl font-black font-heading text-foreground glow-text">
+          <h1 className="text-[28px] md:text-[34px] font-bold text-foreground">
             {t('profile.welcome_name', { name: profileData.full_name || user?.name || t('profile.user') })}
           </h1>
-          <p className="text-sm text-muted-foreground max-w-lg">{t('profile.page_subtitle')}</p>
+          <p className="text-[15px] text-muted-foreground max-w-lg">{t('profile.page_subtitle')}</p>
         </div>
 
         <div className="space-y-6 relative z-10 dashboard-stagger">
-          {/* Membership */}
           <MembershipSummaryCard />
-
-          {/* XIMAtar Hero Card */}
           <XimatarHeroCard
-            ximatarName={profileData.ximatar_name}
-            ximatarImage={profileData.ximatar_image}
-            driveLevel={profileData.drive_level}
-            strongestPillar={profileData.strongest_pillar}
-            weakestPillar={profileData.weakest_pillar}
-            storytelling={profileData.ximatar_storytelling}
-            fullName={profileData.full_name}
-            avatarUrl={(user?.avatar as any)?.image || null}
-            pillarScores={profileData.pillar_scores}
-            onAvatarUpdate={handleAvatarUpdate}
+            ximatarName={profileData.ximatar_name} ximatarImage={profileData.ximatar_image}
+            driveLevel={profileData.drive_level} strongestPillar={profileData.strongest_pillar}
+            weakestPillar={profileData.weakest_pillar} storytelling={profileData.ximatar_storytelling}
+            fullName={profileData.full_name} avatarUrl={(user?.avatar as any)?.image || null}
+            pillarScores={profileData.pillar_scores} onAvatarUpdate={handleAvatarUpdate}
           />
 
-          {/* Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Left Column */}
             <div className="space-y-6">
-              <StrengthFrictionSummary 
-                strongestPillar={profileData.strongest_pillar}
-                weakestPillar={profileData.weakest_pillar}
-                growthPath={profileData.ximatar_growth_path}
-              />
-              
-              {profileData.pillar_scores && (
-                <PillarRadarChart pillars={profileData.pillar_scores} />
-              )}
-
-              {profileData.pillar_scores && (
-                <AssessmentOverviewCard 
-                  pillarScores={profileData.pillar_scores}
-                  driveLevel={profileData.drive_level}
-                  storytelling={profileData.ximatar_storytelling}
-                />
-              )}
-
-              {profileData.open_answers && profileData.open_answers.length > 0 && (
-                <OpenAnswerList openAnswers={profileData.open_answers} />
-              )}
+              <StrengthFrictionSummary strongestPillar={profileData.strongest_pillar} weakestPillar={profileData.weakest_pillar} growthPath={profileData.ximatar_growth_path} />
+              {profileData.pillar_scores && <PillarRadarChart pillars={profileData.pillar_scores} />}
+              {profileData.pillar_scores && <AssessmentOverviewCard pillarScores={profileData.pillar_scores} driveLevel={profileData.drive_level} storytelling={profileData.ximatar_storytelling} />}
+              {profileData.open_answers && profileData.open_answers.length > 0 && <OpenAnswerList openAnswers={profileData.open_answers} />}
             </div>
-
-            {/* Right Column */}
             <div className="space-y-6">
-              <MentorSection 
-                mentor={profileData.mentor_profile} 
-                onBookingSuccess={handleMentorBookingSuccess}
-              />
-
-              <CVAnalysisCard 
-                cvAnalysis={profileData.cv_analysis}
-                cvPillarScores={profileData.cv_pillar_scores}
-                assessmentPillarScores={profileData.pillar_scores}
-                onUploadSuccess={handleCVUploadSuccess}
-              />
+              <MentorSection mentor={profileData.mentor_profile} onBookingSuccess={handleMentorBookingSuccess} />
+              <CVAnalysisCard cvAnalysis={profileData.cv_analysis} cvPillarScores={profileData.cv_pillar_scores} assessmentPillarScores={profileData.pillar_scores} onUploadSuccess={handleCVUploadSuccess} />
             </div>
           </div>
 
-          {/* Challenges */}
           <ChallengesForYouSection />
-          
-          {/* Job Opportunities */}
           <MyOpportunitiesSection />
         </div>
       </div>

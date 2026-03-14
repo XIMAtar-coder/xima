@@ -16,7 +16,6 @@ interface PillarRadarChartProps {
 
 export const PillarRadarChart: React.FC<PillarRadarChartProps> = ({ pillars }) => {
   const { t } = useTranslation();
-
   const computational = pillars.computational_power || pillars.computational || 0;
 
   const chartData = [
@@ -29,38 +28,22 @@ export const PillarRadarChart: React.FC<PillarRadarChartProps> = ({ pillars }) =
 
   return (
     <div className="dashboard-section p-5 md:p-6 space-y-4">
-      <h3 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
-        <Sparkles className="w-4 h-4 text-primary" />
+      <h3 className="text-[13px] font-semibold text-foreground uppercase tracking-[0.04em] flex items-center gap-2">
+        <Sparkles className="w-4 h-4 text-secondary" strokeWidth={1.5} />
         {t('profile.pillar_breakdown', 'Your Pillar Profile')}
       </h3>
 
       <div className="h-64 md:h-72 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={chartData}>
-            <PolarGrid 
-              stroke="hsl(var(--border))" 
-              strokeDasharray="3 3"
-              strokeOpacity={0.5}
-            />
-            <PolarAngleAxis 
-              dataKey="pillar" 
-              tick={{ 
-                fill: 'hsl(var(--muted-foreground))', 
-                fontSize: 11,
-                fontWeight: 600
-              }}
-            />
-            <PolarRadiusAxis 
-              angle={90} 
-              domain={[0, 10]} 
-              tick={false}
-              axisLine={false}
-            />
-            <Radar 
+            <PolarGrid stroke="rgba(60,60,67,0.12)" strokeDasharray="3 3" />
+            <PolarAngleAxis dataKey="pillar" tick={{ fill: '#6e6e73', fontSize: 11, fontWeight: 500 }} />
+            <PolarRadiusAxis angle={90} domain={[0, 10]} tick={false} axisLine={false} />
+            <Radar
               name={t('profile.your_score', 'Your Score')}
-              dataKey="score" 
-              stroke="hsl(var(--primary))" 
-              fill="hsl(var(--primary))" 
+              dataKey="score"
+              stroke="#5856D6"
+              fill="#5856D6"
               fillOpacity={0.15}
               strokeWidth={2.5}
               animationDuration={1200}
@@ -70,12 +53,11 @@ export const PillarRadarChart: React.FC<PillarRadarChartProps> = ({ pillars }) =
         </ResponsiveContainer>
       </div>
 
-      {/* Compact score row */}
       <div className="grid grid-cols-5 gap-1">
         {chartData.map((item) => (
           <div key={item.pillar} className="text-center">
-            <p className="text-lg font-black text-foreground stat-value">{item.score.toFixed(1)}</p>
-            <p className="text-[9px] text-muted-foreground truncate font-medium">{item.pillar}</p>
+            <p className="text-[17px] font-bold text-foreground stat-value">{item.score.toFixed(1)}</p>
+            <p className="text-[10px] text-muted-foreground truncate font-medium">{item.pillar}</p>
           </div>
         ))}
       </div>
