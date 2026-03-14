@@ -114,7 +114,7 @@ const BusinessEvaluations = () => {
     };
 
     return (
-      <Badge className={colors[status] || 'bg-gray-500/20 text-gray-500'}>
+      <Badge className={colors[status] || 'bg-muted text-muted-foreground'}>
         {status}
       </Badge>
     );
