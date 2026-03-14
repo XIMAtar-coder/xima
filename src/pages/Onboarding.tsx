@@ -74,36 +74,26 @@ const Onboarding = () => {
   
   const handleCvUploaded = (fileUrl: string) => {
     setLoading(true);
-    
-    // Simulate processing the CV
     setTimeout(() => {
-      // Randomly select an animal avatar
       const randomIndex = Math.floor(Math.random() * animalAvatars.length);
       const selectedAvatar = animalAvatars[randomIndex];
-      
-      // Create initial random pillars
       const initialPillarAnalysis: XimaPillars = {
-        computational: Math.floor(Math.random() * 5) + 3, // 3-7
-        communication: Math.floor(Math.random() * 5) + 3, // 3-7
-        knowledge: Math.floor(Math.random() * 5) + 3, // 3-7
-        creativity: Math.floor(Math.random() * 5) + 3, // 3-7
-        drive: Math.floor(Math.random() * 5) + 3, // 3-7
+        computational: Math.floor(Math.random() * 5) + 3,
+        communication: Math.floor(Math.random() * 5) + 3,
+        knowledge: Math.floor(Math.random() * 5) + 3,
+        creativity: Math.floor(Math.random() * 5) + 3,
+        drive: Math.floor(Math.random() * 5) + 3,
       };
-      
       setPillars(initialPillarAnalysis);
-      
       setGeneratedAvatar({
         animal: selectedAvatar.animal,
         image: '/placeholder.svg',
         features: selectedAvatar.features
       });
-      
       updateUserProfile({ cv: fileUrl });
       updatePillars(initialPillarAnalysis);
-      
       setLoading(false);
       setStep('initial-avatar');
-      
       toast({
         title: "CV Analysis Complete",
         description: "We've generated your initial XIMA profile"
@@ -113,12 +103,10 @@ const Onboarding = () => {
   
   const handleProceedToAssessment = () => {
     setLoading(true);
-    
     setTimeout(() => {
       if (generatedAvatar) {
         updateAvatar(generatedAvatar);
       }
-      
       setLoading(false);
       setStep('assessment');
     }, 1000);
@@ -126,10 +114,7 @@ const Onboarding = () => {
   
   const handleAssessmentComplete = () => {
     setLoading(true);
-    
-    // Simulate completing the assessment and generating final results
     setTimeout(() => {
-      // Create new random pillars (slightly improved from initial)
       const finalPillarAnalysis: XimaPillars = {
         computational: Math.min(pillars.computational + Math.floor(Math.random() * 3), 10),
         communication: Math.min(pillars.communication + Math.floor(Math.random() * 3), 10),
@@ -137,56 +122,33 @@ const Onboarding = () => {
         creativity: Math.min(pillars.creativity + Math.floor(Math.random() * 3), 10),
         drive: Math.min(pillars.drive + Math.floor(Math.random() * 3), 10),
       };
-      
-      // Find animal based on highest score
       const highestPillar = Object.entries(finalPillarAnalysis).reduce(
         (max, [key, value]) => value > max.value ? { key, value } : max,
         { key: '', value: 0 }
       );
-      
-      let animalName = 'Fox'; // Default
-      
-      // Simplistic mapping of highest pillar to animal
+      let animalName = 'Fox';
       switch(highestPillar.key) {
-        case 'computational':
-          animalName = 'Elephant';
-          break;
-        case 'communication':
-          animalName = 'Owl';
-          break;
-        case 'knowledge':
-          animalName = 'Wolf';
-          break;
-        case 'creativity':
-          animalName = 'Dolphin';
-          break;
-        case 'drive':
-          animalName = 'Fox';
-          break;
+        case 'computational': animalName = 'Elephant'; break;
+        case 'communication': animalName = 'Owl'; break;
+        case 'knowledge': animalName = 'Wolf'; break;
+        case 'creativity': animalName = 'Dolphin'; break;
+        case 'drive': animalName = 'Fox'; break;
       }
-      
       const newAvatar: Avatar = {
         animal: animalName,
         image: '/placeholder.svg',
         features: [
-          { 
-            name: highestPillar.key, 
-            description: `Strong ${highestPillar.key} capabilities`, 
-            strength: highestPillar.value 
-          },
+          { name: highestPillar.key, description: `Strong ${highestPillar.key} capabilities`, strength: highestPillar.value },
           ...animalAvatars.find(a => a.animal === animalName)?.features.slice(0, 2) || []
         ]
       };
-      
       setPillars(finalPillarAnalysis);
       setFinalAvatar(newAvatar);
       updatePillars(finalPillarAnalysis);
       updateAvatar(newAvatar);
       assignMentor();
-      
       setLoading(false);
       setStep('final-results');
-      
       toast({
         title: "Assessment Complete!",
         description: "Your XIMA profile has been fully created"
@@ -203,13 +165,13 @@ const Onboarding = () => {
     <MainLayout requireAuth>
       <div className="container max-w-4xl mx-auto pt-4">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">
+          <h1 className="text-3xl font-bold mb-2 text-foreground">
             {step === 'upload-cv' && "Let's Get Started"}
             {step === 'initial-avatar' && "Your Initial XIMA Profile"}
             {step === 'assessment' && "Discover Your True Potential"}
             {step === 'final-results' && "Your XIMA Profile Is Ready!"}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             {step === 'upload-cv' && "Upload your CV so we can analyze your professional experience"}
             {step === 'initial-avatar' && "Based on your CV, we've created an initial assessment"}
             {step === 'assessment' && "Let's take a deeper look at your professional strengths"}
@@ -231,13 +193,13 @@ const Onboarding = () => {
                       (index === 1 && step === 'initial-avatar') ||
                       (index === 2 && step === 'assessment') ||
                       (index === 3 && step === 'final-results')
-                        ? 'bg-xima-purple text-white'
+                        ? 'bg-primary text-primary-foreground'
                         : (
                           (index === 0 && step !== 'upload-cv') ||
                           (index === 1 && (step === 'assessment' || step === 'final-results')) ||
                           (index === 2 && step === 'final-results')
                             ? 'bg-green-500 text-white'
-                            : 'bg-gray-200 text-gray-400'
+                            : 'bg-muted text-muted-foreground'
                         )
                     }`}
                 >
@@ -256,8 +218,8 @@ const Onboarding = () => {
                       (index === 1 && step === 'initial-avatar') ||
                       (index === 2 && step === 'assessment') ||
                       (index === 3 && step === 'final-results')
-                        ? 'text-black font-medium'
-                        : 'text-gray-500'
+                        ? 'text-foreground font-medium'
+                        : 'text-muted-foreground'
                     }`}
                 >
                   {label}
@@ -265,9 +227,9 @@ const Onboarding = () => {
               </div>
             ))}
             
-            <div className="absolute h-1 bg-gray-200 top-5 left-0 right-0 z-0">
+            <div className="absolute h-1 bg-muted top-5 left-0 right-0 z-0">
               <div 
-                className="h-full bg-xima-purple"
+                className="h-full bg-primary"
                 style={{ 
                   width: 
                     step === 'upload-cv' 
@@ -298,8 +260,8 @@ const Onboarding = () => {
               
               <div className="w-full lg:w-2/3 space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold mb-2">Your Initial XIMA Score</h2>
-                  <p className="text-gray-600 mb-6">
+                  <h2 className="text-2xl font-bold mb-2 text-foreground">Your Initial XIMA Score</h2>
+                  <p className="text-muted-foreground mb-6">
                     Based on your CV, we've created an initial assessment of your professional strengths.
                     This is just the first step - your true XIMA profile will emerge after the full assessment.
                   </p>
@@ -310,7 +272,7 @@ const Onboarding = () => {
                 <div className="pt-4">
                   <Button 
                     size="lg"
-                    className="w-full lg:w-auto bg-xima-purple hover:bg-xima-dark-purple"
+                    className="w-full lg:w-auto"
                     onClick={handleProceedToAssessment}
                     disabled={loading}
                   >
@@ -334,8 +296,8 @@ const Onboarding = () => {
           {step === 'assessment' && (
             <div className="space-y-8">
               <div className="text-center">
-                <h2 className="text-2xl font-bold mb-2">Complete Your XIMA Assessment</h2>
-                <p className="text-gray-600">
+                <h2 className="text-2xl font-bold mb-2 text-foreground">Complete Your XIMA Assessment</h2>
+                <p className="text-muted-foreground">
                   We don't think the current profile fully represents YOU. Let's discover your true XIMATAR by assessing all five pillars.
                 </p>
               </div>
@@ -351,16 +313,16 @@ const Onboarding = () => {
                 
                 {['experience', 'intelligence', 'motivation', 'attitude', 'analysis'].map((pillar) => (
                   <TabsContent key={pillar} value={pillar} className="p-4 border rounded-lg">
-                    <h3 className="text-xl font-medium mb-4 capitalize">{pillar} Assessment</h3>
-                    <p className="text-gray-600 mb-6">
+                    <h3 className="text-xl font-medium mb-4 capitalize text-foreground">{pillar} Assessment</h3>
+                    <p className="text-muted-foreground mb-6">
                       This is a simplified simulation. In a real implementation, this would contain 
                       detailed assessment questions and exercises to evaluate your {pillar} pillar.
                     </p>
                     
                     <div className="text-center py-12 space-y-6">
-                      <div className="animate-pulse bg-xima-light-purple h-8 rounded w-full max-w-2xl mx-auto"></div>
-                      <div className="animate-pulse bg-xima-light-purple h-24 rounded w-full max-w-2xl mx-auto"></div>
-                      <div className="animate-pulse bg-xima-light-purple h-8 rounded w-full max-w-2xl mx-auto"></div>
+                      <div className="animate-pulse bg-primary/10 h-8 rounded w-full max-w-2xl mx-auto"></div>
+                      <div className="animate-pulse bg-primary/10 h-24 rounded w-full max-w-2xl mx-auto"></div>
+                      <div className="animate-pulse bg-primary/10 h-8 rounded w-full max-w-2xl mx-auto"></div>
                     </div>
                   </TabsContent>
                 ))}
@@ -369,7 +331,6 @@ const Onboarding = () => {
               <div className="flex justify-center pt-4">
                 <Button 
                   size="lg"
-                  className="bg-xima-purple hover:bg-xima-dark-purple"
                   onClick={handleAssessmentComplete}
                   disabled={loading}
                 >
@@ -390,31 +351,31 @@ const Onboarding = () => {
             <div className="space-y-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
-                  <h2 className="text-2xl font-bold">Your XIMATAR</h2>
+                  <h2 className="text-2xl font-bold text-foreground">Your XIMATAR</h2>
                   <div className="flex justify-center">
                     <XimaAvatar avatar={finalAvatar} size="lg" showDetails />
                   </div>
                 </div>
                 
                 <div className="space-y-6">
-                  <h2 className="text-2xl font-bold">Your XIMA Score</h2>
+                  <h2 className="text-2xl font-bold text-foreground">Your XIMA Score</h2>
                   <XimaScoreCard pillars={pillars} />
                 </div>
               </div>
               
-              <div className="bg-xima-light-purple p-6 rounded-lg">
-                <h2 className="text-2xl font-bold mb-4">Your XIMA Mentor</h2>
+              <div className="p-6 rounded-lg glass-surface-static">
+                <h2 className="text-2xl font-bold mb-4 text-foreground">Your XIMA Mentor</h2>
                 <div className="flex flex-col md:flex-row items-center gap-6">
                   <div className="md:w-1/4 flex justify-center">
                     <XimaAvatar avatar={user.mentor.avatar} size="md" />
                   </div>
                   <div className="md:w-3/4">
-                    <h3 className="text-xl font-medium mb-2">{user.mentor.name}</h3>
-                    <p className="text-gray-600 mb-4">
+                    <h3 className="text-xl font-medium mb-2 text-foreground">{user.mentor.name}</h3>
+                    <p className="text-muted-foreground mb-4">
                       Your mentor specializes in {user.mentor.specialtyPillar}, which complements your 
                       professional profile. They'll help you develop in areas where you can grow.
                     </p>
-                    <Button variant="outline" className="border-xima-purple text-xima-purple hover:bg-xima-light-purple">
+                    <Button variant="outline">
                       Connect with Your Mentor
                     </Button>
                   </div>
@@ -424,7 +385,6 @@ const Onboarding = () => {
               <div className="flex justify-center pt-4">
                 <Button 
                   size="lg"
-                  className="bg-xima-purple hover:bg-xima-dark-purple"
                   onClick={handleComplete}
                 >
                   Continue to Your Dashboard

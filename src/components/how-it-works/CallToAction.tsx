@@ -11,15 +11,15 @@ const CallToAction = () => {
   const { t } = useTranslation();
 
   return (
-    <Card className="p-8 text-center bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-[#4171d6]">
-      <h2 className="text-3xl font-bold mb-4">{t('cta_section.title')}</h2>
-      <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
+    <Card className="p-8 text-center glass-surface-static border-2 border-primary/20">
+      <h2 className="text-3xl font-bold mb-4 text-foreground">{t('cta_section.title')}</h2>
+      <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
         {t('cta_section.subtitle')}
       </p>
       <Button 
         onClick={() => navigate('/ximatar-journey')}
         size="lg"
-        className="bg-[#4171d6] hover:bg-[#2950a3] px-8 py-4"
+        className="bg-primary hover:bg-primary/90 px-8 py-4"
       >
         {t('cta_section.button')}
         <ArrowRight size={20} className="ml-2" />

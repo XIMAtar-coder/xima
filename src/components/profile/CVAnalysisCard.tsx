@@ -331,9 +331,9 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
                           <Badge 
                             variant={diff > 0 ? "default" : "destructive"}
                             className={`ml-2 ${
-                              diff > 0 ? 'bg-green-500 hover:bg-green-600' : 
+                            diff > 0 ? 'bg-green-500 hover:bg-green-600' : 
                               diff < 0 ? 'bg-red-500 hover:bg-red-600' : 
-                              'bg-gray-500'
+                              'bg-muted-foreground'
                             }`}
                           >
                             {diff > 0 ? '+' : ''}{diff.toFixed(1)}

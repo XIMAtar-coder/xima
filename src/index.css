@@ -187,6 +187,14 @@
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(60,60,67,0.35);
   }
+
+  /* Dark scrollbar */
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+  }
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.25);
+  }
 }
 
 /* ── GLASS SURFACE ── */
