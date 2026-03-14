@@ -85,7 +85,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
                 )}
               </div>
               {uploading && (
-                <div className="absolute inset-0 bg-white/80 rounded-[18px] flex items-center justify-center">
+                <div className="absolute inset-0 bg-background/80 rounded-[18px] flex items-center justify-center">
                   <Loader2 className="w-6 h-6 animate-spin text-primary" />
                 </div>
               )}
@@ -166,7 +166,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
                 )}
               </div>
               <div className="absolute -bottom-1 left-1/2 -translate-x-1/2">
-                <span className="text-[10px] font-bold text-muted-foreground bg-white/90 px-2 py-0.5 rounded-[999px] border border-[rgba(60,60,67,0.12)] stat-value shadow-sm">
+                <span className="text-[10px] font-bold text-muted-foreground bg-background/90 px-2 py-0.5 rounded-[999px] border border-border stat-value shadow-sm">
                   {Math.round(drivePercentage * 100)}%
                 </span>
               </div>

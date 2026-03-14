@@ -398,7 +398,7 @@ const DevelopmentPlan = () => {
           </CardHeader>
           <CardContent className="pt-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="group p-5 rounded-[16px] bg-white dark:bg-[rgba(255,255,255,0.08)] border border-[rgba(60,60,67,0.12)] dark:border-[rgba(255,255,255,0.10)] hover:shadow-md transition-all duration-300">
+              <div className="group p-5 rounded-[16px] bg-card border border-border hover:shadow-md transition-all duration-300">
                 <div className="flex items-start gap-3">
                   <div className="p-2.5 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
                     <Target className="h-5 w-5 text-primary" strokeWidth={1.5} />
@@ -414,7 +414,7 @@ const DevelopmentPlan = () => {
                 </div>
               </div>
               
-              <div className="group p-5 rounded-[16px] bg-white dark:bg-[rgba(255,255,255,0.08)] border border-[rgba(60,60,67,0.12)] dark:border-[rgba(255,255,255,0.10)] hover:shadow-md transition-all duration-300">
+              <div className="group p-5 rounded-[16px] bg-card border border-border hover:shadow-md transition-all duration-300">
                 <div className="flex items-start gap-3">
                   <div className="p-2.5 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
                     <Calendar className="h-5 w-5 text-primary" strokeWidth={1.5} />
@@ -430,7 +430,7 @@ const DevelopmentPlan = () => {
                 </div>
               </div>
               
-              <div className="group p-5 rounded-[16px] bg-white dark:bg-[rgba(255,255,255,0.08)] border border-[rgba(60,60,67,0.12)] dark:border-[rgba(255,255,255,0.10)] hover:shadow-md transition-all duration-300">
+              <div className="group p-5 rounded-[16px] bg-card border border-border hover:shadow-md transition-all duration-300">
                 <div className="flex items-start gap-3">
                   <div className="p-2.5 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
                     <Users className="h-5 w-5 text-primary" strokeWidth={1.5} />

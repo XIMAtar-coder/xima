@@ -199,7 +199,7 @@ const Register = () => {
                 <span className="w-full border-t border-[rgba(60,60,67,0.12)]" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-muted-foreground">{t('auth.or', 'or')}</span>
+                <span className="bg-background px-2 text-muted-foreground">{t('auth.or', 'or')}</span>
               </div>
             </div>
             
