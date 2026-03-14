@@ -157,11 +157,12 @@
     "settings": "Impostazioni"
   },
   "hero": {
-    "title": "Scopri il Tuo Sé Professionale",
-    "subtitle": "XIMA ti aiuta a comprendere i tuoi punti di forza e di debolezza professionali attraverso il nostro unico sistema di valutazione a 5 pilastri, abbinandoti alle opportunità di carriera perfette.",
-    "cta": "Ottieni il Tuo Ximatar Ora!",
+    "eyebrow": "PSICOMETRIA · AI HIRING · GDPR ART. 22 COMPLIANT",
+    "title": "Il CV non ha mai parlato di te.\nIl XIMAtar sì.",
+    "subtitle": "XIMA sostituisce la selezione basata sui titoli con scienza comportamentale validata e AI. Ogni candidato riceve un XIMAtar — un'identità comportamentale persistente che possiede, porta con sé e riusa con ogni azienda a cui si candida.",
+    "cta": "Scopri il Tuo XIMAtar",
     "learn_more": "Scopri di più",
-    "for_business": "Per le Aziende",
+    "for_business": "Per le Aziende →",
     "login": "Accedi"
   },
   "common": {
