@@ -19,10 +19,10 @@ const Footer: React.FC<FooterProps> = ({ variant = 'default' }) => {
 
   if (variant === 'minimal') {
     return (
-      <footer className="py-4 border-t border-border/30">
-        <div className="container mx-auto px-4">
+      <footer className="py-4 border-t border-[rgba(255,255,255,0.06)]">
+        <div className="container mx-auto px-6">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-[rgba(255,255,255,0.4)]">
               © {currentYear} XIMA. {t('footer.all_rights_reserved')}
             </p>
             <div className="flex items-center gap-4">
@@ -30,7 +30,7 @@ const Footer: React.FC<FooterProps> = ({ variant = 'default' }) => {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                  className="text-xs text-[rgba(255,255,255,0.4)] hover:text-primary transition-colors duration-[220ms]"
                 >
                   {link.label}
                 </Link>
@@ -43,30 +43,30 @@ const Footer: React.FC<FooterProps> = ({ variant = 'default' }) => {
   }
 
   return (
-    <footer className="bg-card/50 py-8 mt-16 border-t border-border/30">
-      <div className="container mx-auto px-4">
+    <footer className="py-10 mt-16 border-t border-[rgba(255,255,255,0.06)]">
+      <div className="container mx-auto px-6 md:px-12">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center logo-wrap">
-            <Logo 
+          <div className="flex items-center">
+            <Logo
               variant="full"
-              alt="XIMA logo" 
-              className="h-7 relative z-10"
+              alt="XIMA logo"
+              className="h-7 opacity-60"
             />
           </div>
-          
+
           <div className="flex flex-wrap items-center justify-center gap-6">
             {legalLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                className="text-sm text-[rgba(255,255,255,0.4)] hover:text-foreground transition-colors duration-[220ms]"
               >
                 {link.label}
               </Link>
             ))}
           </div>
-          
-          <p className="text-sm text-muted-foreground">
+
+          <p className="text-sm text-[rgba(255,255,255,0.4)]">
             © {currentYear} {t('footer.copyright')}
           </p>
         </div>
