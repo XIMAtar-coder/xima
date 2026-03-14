@@ -133,7 +133,7 @@ const Profile = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-7xl mx-auto py-6 md:py-10 space-y-6 watermark-bg">
+      <div className="container max-w-7xl mx-auto py-6 md:py-10 px-4 md:px-8 space-y-6 watermark-bg">
         <XimaJourneyGuideModal open={guideOpen} onClose={handleGuideClose} isAutoOpen={shouldAutoShowGuide} />
 
         <div className="space-y-2 relative z-10">
