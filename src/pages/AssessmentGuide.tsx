@@ -187,7 +187,7 @@ const AssessmentGuide = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-6xl mx-auto py-8 px-4">
+      <div className="container max-w-6xl mx-auto py-8 px-4 md:px-8">
         {/* Hero Section */}
         <div 
           id="hero-section"
