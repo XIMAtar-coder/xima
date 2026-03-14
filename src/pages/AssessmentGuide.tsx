@@ -223,7 +223,7 @@ const AssessmentGuide = () => {
               : 'opacity-0 translate-y-8'
           }`}
         >
-          <h2 className="text-3xl font-bold text-center mb-10">
+          <h2 className="text-[20px] md:text-[24px] xl:text-[28px] font-bold text-center mb-10">
             {t('guide.journey_title', 'Your Assessment Journey')}
           </h2>
           
