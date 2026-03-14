@@ -10,7 +10,6 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading = true }
 
   useEffect(() => {
     if (!isLoading) {
-      // Fade out after a short delay
       const timer = setTimeout(() => setShow(false), 300);
       return () => clearTimeout(timer);
     } else {
@@ -22,16 +21,16 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading = true }
 
   return (
     <div 
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-background transition-opacity duration-300 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-300 ${
         isLoading ? 'opacity-100' : 'opacity-0'
       }`}
+      style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 40%, #0d0d1a, #08080d 70%)' }}
     >
-      {/* Gradient background glow */}
+      {/* Glow */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-primary/10 via-accent/5 to-transparent blur-3xl animate-pulse" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-primary/10 via-primary/5 to-transparent blur-3xl animate-pulse" />
       </div>
 
-      {/* Logo container */}
       <div className="relative z-10 flex flex-col items-center gap-6">
         <div className="animate-[scale-in_0.6s_ease-out,pulse_2s_ease-in-out_infinite_0.6s]">
           <Logo 
@@ -42,15 +41,15 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading = true }
         </div>
         
         {/* Progress bar */}
-        <div className="w-48 h-0.5 bg-muted rounded-full overflow-hidden">
-          <div className="h-full bg-[#3A9FFF] animate-[loading-bar_0.8s_ease-in-out_infinite]" />
+        <div className="w-48 h-0.5 bg-[rgba(255,255,255,0.08)] rounded-[999px] overflow-hidden">
+          <div className="h-full bg-primary animate-[loading-bar_0.8s_ease-in-out_infinite] rounded-[999px]" />
         </div>
         
         {/* Loading dots */}
         <div className="flex gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#3A9FFF] animate-[pulse_1.4s_ease-in-out_infinite]" />
-          <div className="w-2 h-2 rounded-full bg-[#3A9FFF] animate-[pulse_1.4s_ease-in-out_infinite_0.2s]" />
-          <div className="w-2 h-2 rounded-full bg-[#3A9FFF] animate-[pulse_1.4s_ease-in-out_infinite_0.4s]" />
+          <div className="w-2 h-2 rounded-full bg-primary animate-[pulse_1.4s_ease-in-out_infinite]" />
+          <div className="w-2 h-2 rounded-full bg-primary animate-[pulse_1.4s_ease-in-out_infinite_0.2s]" />
+          <div className="w-2 h-2 rounded-full bg-primary animate-[pulse_1.4s_ease-in-out_infinite_0.4s]" />
         </div>
       </div>
     </div>

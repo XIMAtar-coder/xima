@@ -18,7 +18,7 @@ import { useOnboardingState } from '@/hooks/useOnboardingState';
 interface MainLayoutProps {
   children: React.ReactNode;
   requireAuth?: boolean;
-  fullHeight?: boolean; // For pages like chat that need fixed viewport height
+  fullHeight?: boolean;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, fullHeight = false }) => {
@@ -41,56 +41,43 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
     }
   }, [requireAuth, isAuthenticated, navigate]);
 
-  // Check if user is admin
   useEffect(() => {
     const checkAdminRole = async () => {
       if (!user?.id) return;
-      
       try {
         const { data } = await (supabase.rpc as any)('has_role', {
           _user_id: user.id,
           _role: 'admin'
         });
-        
         setIsAdmin(!!data);
       } catch (error) {
         console.error('Error checking admin role:', error);
         setIsAdmin(false);
       }
     };
-    
     checkAdminRole();
   }, [user?.id]);
 
-  // Check if user is a mentor
   useEffect(() => {
     const checkMentorStatus = async () => {
-      if (!user?.id) {
-        setIsMentor(false);
-        return;
-      }
-      
+      if (!user?.id) { setIsMentor(false); return; }
       try {
         const { data, error } = await supabase
           .from('mentors')
           .select('id')
           .eq('user_id', user.id)
           .maybeSingle();
-        
         setIsMentor(!!data && !error);
       } catch (error) {
         console.error('Error checking mentor status:', error);
         setIsMentor(false);
       }
     };
-    
     checkMentorStatus();
   }, [user?.id]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -102,410 +89,226 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
 
   const handleLogoClick = () => {
     if (assessmentInProgress) return;
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    } else {
-      navigate('/');
-    }
+    if (isAuthenticated) navigate('/dashboard');
+    else navigate('/');
   };
 
+  const navLinkClass = (active: boolean) =>
+    `text-[15px] font-medium transition-all duration-[220ms] ease-out relative px-3 py-1.5 rounded-[10px] ${
+      active
+        ? 'text-primary'
+        : 'text-[rgba(255,255,255,0.55)] hover:text-foreground hover:bg-[rgba(255,255,255,0.08)]'
+    }`;
+
   return (
-    <div className={`bg-background ${fullHeight ? 'h-screen flex flex-col overflow-hidden' : 'min-h-screen'}`}>
-      <nav 
-        className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-200 ease-out relative ${
-          scrolled 
-            ? 'h-14 md:h-16 lg:h-[68px] bg-card/80 backdrop-blur-md border-border/50 shadow-sm' 
-            : 'h-14 md:h-16 lg:h-18 bg-card border-border/30'
-        }`}
-      >
-        {/* Gradient accent border at bottom */}
-        <div 
-          className="absolute left-0 right-0 bottom-0 h-0.5 gradient-accent opacity-25"
-          style={{ 
-            background: 'linear-gradient(90deg, hsl(var(--xima-accent)), hsl(var(--xima-teal)))' 
-          }}
-        />
-        <div className="container mx-auto px-4 h-full">
+    <div className={`min-h-screen ${fullHeight ? 'h-screen flex flex-col overflow-hidden' : ''}`}>
+      {/* ── Floating Glass Navbar ── */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-[220ms] ease-out ${
+        scrolled ? 'h-14 md:h-16' : 'h-16 md:h-[72px]'
+      }`}>
+        <div className="container mx-auto px-6 md:px-12 h-full">
           <div className="flex justify-between items-center h-full">
-            <div className="flex items-center space-x-8">
-              <button 
+            <div className="flex items-center gap-8">
+              <button
                 onClick={handleLogoClick}
                 disabled={assessmentInProgress}
-                aria-disabled={assessmentInProgress}
-                className={`flex items-center group logo-wrap ${
-                  assessmentInProgress ? 'cursor-default opacity-70' : 'logo-hover'
-                }`}
+                className={`flex items-center ${assessmentInProgress ? 'cursor-default opacity-70' : 'logo-hover'}`}
               >
-                <Logo 
+                <Logo
                   variant="symbol"
-                  alt="XIMA logo" 
-                  className={`transition-all duration-200 ease-out relative z-10 ${
-                    scrolled 
-                      ? 'h-8 md:h-9' 
-                      : 'h-10 md:h-11'
-                  }`}
+                  alt="XIMA logo"
+                  className={`transition-all duration-[220ms] ease-out ${scrolled ? 'h-8 md:h-9' : 'h-9 md:h-10'}`}
                 />
               </button>
-              
-              {/* Public Navigation Links */}
-              <div className="hidden lg:flex items-center space-x-6">
-                <button 
-                  onClick={() => navigate('/how-it-works')}
-                  className={`text-sm font-medium hover:text-[hsl(var(--xima-accent))] transition-colors ${
-                    location.pathname === '/how-it-works' ? 'text-[hsl(var(--xima-accent))]' : 'text-muted-foreground'
-                  }`}
-                >
-                  {t('nav.how_it_works')}
-                </button>
-                <button 
-                  onClick={() => navigate('/assessment-guide')}
-                  className={`text-sm font-medium hover:text-[hsl(var(--xima-accent))] transition-colors ${
-                    location.pathname === '/assessment-guide' ? 'text-[hsl(var(--xima-accent))]' : 'text-muted-foreground'
-                  }`}
-                >
-                  {t('nav.guide')}
-                </button>
-                <button 
-                  onClick={() => navigate('/about')}
-                  className={`text-sm font-medium hover:text-[hsl(var(--xima-accent))] transition-colors ${
-                    location.pathname === '/about' ? 'text-[hsl(var(--xima-accent))]' : 'text-muted-foreground'
-                  }`}
-                >
-                  {t('nav.about')}
-                </button>
-                <button 
-                  onClick={() => navigate('/business')}
-                  className={`text-sm font-medium hover:text-[hsl(var(--xima-accent))] transition-colors ${
-                    location.pathname === '/business' ? 'text-[hsl(var(--xima-accent))]' : 'text-muted-foreground'
-                  }`}
-                >
-                  {t('nav.business')}
-                </button>
+
+              {/* Public Nav */}
+              <div className="hidden lg:flex items-center gap-1">
+                {[
+                  { path: '/how-it-works', label: t('nav.how_it_works') },
+                  { path: '/assessment-guide', label: t('nav.guide') },
+                  { path: '/about', label: t('nav.about') },
+                  { path: '/business', label: t('nav.business') },
+                ].map(({ path, label }) => (
+                  <button
+                    key={path}
+                    onClick={() => navigate(path)}
+                    className={navLinkClass(location.pathname === path)}
+                  >
+                    {label}
+                  </button>
+                ))}
               </div>
             </div>
-            
-            <div className="flex items-center space-x-4">
+
+            <div className="flex items-center gap-3">
               <LanguageSwitcher />
-              
               {isAuthenticated && user && <NotificationsDropdown />}
-              
+
               {!isAuthenticated && (
-                <div className="hidden md:flex items-center space-x-3">
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => navigate('/login')}
-                    className="text-sm font-medium"
-                  >
+                <div className="hidden md:flex items-center gap-3">
+                  <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
                     {t('nav.login')}
                   </Button>
-                  <Button 
-                    size="sm"
-                    onClick={() => navigate('/business')}
-                    className="accent-gradient text-white hover:opacity-90 transition-opacity shadow-sm"
-                  >
+                  <Button size="sm" onClick={() => navigate('/business')}>
                     {t('nav.for_business')}
                   </Button>
                 </div>
               )}
-              
-              {/* Mobile Menu Button */}
+
+              {/* Mobile menu */}
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild className="lg:hidden">
-                  <Button variant="ghost" size="sm">
-                    <Menu className="h-5 w-5" />
+                  <Button variant="ghost" size="icon">
+                    <Menu className="h-5 w-5" strokeWidth={1.5} />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                  <nav className="flex flex-col space-y-4 mt-8">
-                    {/* Public Navigation */}
-                    <button
-                      onClick={() => {
-                        navigate('/how-it-works');
-                        setMobileMenuOpen(false);
-                      }}
-                      className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
-                    >
-                      {t('nav.how_it_works')}
-                    </button>
-                    <button
-                      onClick={() => {
-                        navigate('/assessment-guide');
-                        setMobileMenuOpen(false);
-                      }}
-                      className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
-                    >
-                      {t('nav.guide')}
-                    </button>
-                    <button
-                      onClick={() => {
-                        navigate('/about');
-                        setMobileMenuOpen(false);
-                      }}
-                      className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
-                    >
-                      {t('nav.about')}
-                    </button>
-                    <button
-                      onClick={() => {
-                        navigate('/business');
-                        setMobileMenuOpen(false);
-                      }}
-                      className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
-                    >
-                      {t('nav.business')}
-                    </button>
-                    
-                    {/* Authenticated User Links */}
+                  <nav className="flex flex-col gap-2 mt-8">
+                    {[
+                      { path: '/how-it-works', label: t('nav.how_it_works') },
+                      { path: '/assessment-guide', label: t('nav.guide') },
+                      { path: '/about', label: t('nav.about') },
+                      { path: '/business', label: t('nav.business') },
+                    ].map(({ path, label }) => (
+                      <button
+                        key={path}
+                        onClick={() => { navigate(path); setMobileMenuOpen(false); }}
+                        className="text-left text-[15px] font-medium text-[rgba(255,255,255,0.75)] hover:text-foreground hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-[220ms]"
+                      >
+                        {label}
+                      </button>
+                    ))}
+
                     {isAuthenticated && (
                       <>
-                        <div className="border-t border-border pt-4 mt-4" />
-                        <button
-                          onClick={() => {
-                            navigate('/profile');
-                            setMobileMenuOpen(false);
-                          }}
-                          className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
-                        >
-                          {t('nav.dashboard')}
-                        </button>
-                        <button
-                          onClick={() => {
-                            navigate('/chat');
-                            setMobileMenuOpen(false);
-                          }}
-                          className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2"
-                        >
-                          {t('nav.feed')}
-                        </button>
+                        <div className="h-px bg-[rgba(255,255,255,0.06)] my-3" />
+                        {[
+                          { path: '/profile', label: t('nav.dashboard') },
+                          { path: '/chat', label: t('nav.feed') },
+                        ].map(({ path, label }) => (
+                          <button
+                            key={path}
+                            onClick={() => { navigate(path); setMobileMenuOpen(false); }}
+                            className="text-left text-[15px] font-medium text-[rgba(255,255,255,0.75)] hover:text-foreground hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-[220ms]"
+                          >
+                            {label}
+                          </button>
+                        ))}
                         {isMentor && (
                           <button
-                            onClick={() => {
-                              navigate('/mentor');
-                              setMobileMenuOpen(false);
-                            }}
-                            className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2 flex items-center gap-2"
+                            onClick={() => { navigate('/mentor'); setMobileMenuOpen(false); }}
+                            className="text-left text-[15px] font-medium text-[rgba(255,255,255,0.75)] hover:text-foreground hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-[220ms] flex items-center gap-2"
                           >
-                            <GraduationCap className="h-4 w-4" />
+                            <GraduationCap className="h-[18px] w-[18px]" strokeWidth={1.5} />
                             {t('nav.mentor_portal', 'Mentor Portal')}
                           </button>
                         )}
                         <button
-                          onClick={() => {
-                            navigate('/settings');
-                            setMobileMenuOpen(false);
-                          }}
-                          className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2 flex items-center gap-2"
+                          onClick={() => { navigate('/settings'); setMobileMenuOpen(false); }}
+                          className="text-left text-[15px] font-medium text-[rgba(255,255,255,0.75)] hover:text-foreground hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-[220ms] flex items-center gap-2"
                         >
-                          <Settings className="h-4 w-4" />
+                          <Settings className="h-[18px] w-[18px]" strokeWidth={1.5} />
                           {t('nav.settings', 'Settings')}
                         </button>
                         <button
-                          onClick={() => {
-                            setGuideOpen(true);
-                            setMobileMenuOpen(false);
-                          }}
-                          className="text-left text-base font-medium hover:text-[hsl(var(--xima-accent))] transition-colors py-2 flex items-center gap-2"
+                          onClick={() => { setGuideOpen(true); setMobileMenuOpen(false); }}
+                          className="text-left text-[15px] font-medium text-[rgba(255,255,255,0.75)] hover:text-foreground hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-[220ms] flex items-center gap-2"
                         >
-                          <HelpCircle className="h-4 w-4" />
+                          <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.5} />
                           {t('guide.open_button', 'Guide')}
                         </button>
                       </>
                     )}
-                    
-                    {/* Auth Buttons */}
-                    <div className="border-t border-border pt-4 mt-4 space-y-3">
-                      {!isAuthenticated ? (
-                        <>
-                          <Button 
-                            onClick={() => {
-                              navigate('/login');
-                              setMobileMenuOpen(false);
-                            }}
-                            variant="outline"
-                            className="w-full"
-                          >
-                            {t('nav.login')}
-                          </Button>
-                          <Button 
-                            onClick={() => {
-                              navigate('/business');
-                              setMobileMenuOpen(false);
-                            }}
-                            className="w-full accent-gradient text-white"
-                          >
-                            {t('nav.for_business')}
-                          </Button>
-                        </>
-                      ) : (
-                        <Button 
-                          onClick={() => {
-                            handleLogout();
-                            setMobileMenuOpen(false);
-                          }}
-                          variant="outline"
-                          className="w-full"
-                        >
-                          {t('nav.logout')}
+
+                    <div className="h-px bg-[rgba(255,255,255,0.06)] my-3" />
+                    {!isAuthenticated ? (
+                      <div className="flex flex-col gap-2">
+                        <Button variant="outline" onClick={() => { navigate('/login'); setMobileMenuOpen(false); }} className="w-full">
+                          {t('nav.login')}
                         </Button>
-                      )}
-                    </div>
+                        <Button onClick={() => { navigate('/business'); setMobileMenuOpen(false); }} className="w-full">
+                          {t('nav.for_business')}
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button variant="outline" onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="w-full">
+                        {t('nav.logout')}
+                      </Button>
+                    )}
                   </nav>
                 </SheetContent>
               </Sheet>
-              
+
+              {/* Desktop authenticated nav */}
               {isAuthenticated && user && (
-                <div className="flex items-center space-x-6 animate-[fade-in_0.5s_ease-out]">
-                  {/* Navigation Links */}
-                  <div className="hidden md:flex items-center space-x-6">
-                    {/* Show candidate nav items only if NOT on mentor portal pages */}
+                <div className="flex items-center gap-4 animate-fade-in">
+                  <div className="hidden md:flex items-center gap-1">
                     {!(isMentor && location.pathname.startsWith('/mentor')) && (
                       <>
-                        <button 
-                          onClick={() => navigate('/profile')}
-                          className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
-                            location.pathname === '/profile' || location.pathname === '/dashboard' 
-                              ? 'text-[hsl(var(--xima-accent))]' 
-                              : ''
-                          }`}
-                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                        >
+                        <button onClick={() => navigate('/profile')} className={navLinkClass(location.pathname === '/profile' || location.pathname === '/dashboard')}>
                           {t('nav.dashboard')}
-                          {(location.pathname === '/profile' || location.pathname === '/dashboard') && (
-                            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
-                          )}
                         </button>
-                        <button 
-                          onClick={() => navigate('/chat')}
-                          className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
-                            location.pathname === '/chat' ? 'text-[hsl(var(--xima-accent))]' : ''
-                          }`}
-                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                        >
+                        <button onClick={() => navigate('/chat')} className={navLinkClass(location.pathname === '/chat')}>
                           {t('nav.feed')}
-                          {location.pathname === '/chat' && (
-                            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
-                          )}
                         </button>
                       </>
                     )}
                     {isAdmin && (
                       <>
-                        <button 
-                          onClick={() => navigate('/analytics')}
-                          className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
-                            location.pathname === '/analytics' ? 'text-[hsl(var(--xima-accent))]' : ''
-                          }`}
-                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                        >
+                        <button onClick={() => navigate('/analytics')} className={navLinkClass(location.pathname === '/analytics')}>
                           {t('nav.analytics')}
-                          {location.pathname === '/analytics' && (
-                            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
-                          )}
                         </button>
-                        <button 
-                          onClick={() => navigate('/admin')}
-                          className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
-                            location.pathname === '/admin' ? 'text-[hsl(var(--xima-accent))]' : ''
-                          }`}
-                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                        >
+                        <button onClick={() => navigate('/admin')} className={navLinkClass(location.pathname === '/admin')}>
                           {t('nav.developer')}
-                          {location.pathname === '/admin' && (
-                            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
-                          )}
                         </button>
                       </>
                     )}
-                    {/* Show Tests only when not on mentor pages */}
                     {!(isMentor && location.pathname.startsWith('/mentor')) && (
                       <>
-                        <button 
-                          onClick={() => navigate('/development-plan')}
-                          className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
-                            location.pathname.startsWith('/test') || location.pathname === '/development-plan' 
-                              ? 'text-[hsl(var(--xima-accent))]' 
-                              : ''
-                          }`}
-                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                        >
+                        <button onClick={() => navigate('/development-plan')} className={navLinkClass(location.pathname.startsWith('/test') || location.pathname === '/development-plan')}>
                           {t('nav.tests')}
-                          {(location.pathname.startsWith('/test') || location.pathname === '/development-plan') && (
-                            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
-                          )}
                         </button>
-                        <button 
-                          onClick={() => navigate('/settings')}
-                          className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative ${
-                            location.pathname === '/settings' 
-                              ? 'text-[hsl(var(--xima-accent))]' 
-                              : ''
-                          }`}
-                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                        >
+                        <button onClick={() => navigate('/settings')} className={navLinkClass(location.pathname === '/settings')}>
                           <span className="flex items-center gap-1">
-                            <Settings className="h-3.5 w-3.5" />
+                            <Settings className="h-4 w-4" strokeWidth={1.5} />
                             {t('nav.settings', 'Settings')}
                           </span>
-                          {location.pathname === '/settings' && (
-                            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
-                          )}
                         </button>
-                        <button 
-                          onClick={() => setGuideOpen(true)}
-                          className="text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative"
-                          style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                          title={t('guide.open_button', 'Guide')}
-                        >
+                        <button onClick={() => setGuideOpen(true)} className={navLinkClass(false)}>
                           <span className="flex items-center gap-1">
-                            <HelpCircle className="h-3.5 w-3.5" />
+                            <HelpCircle className="h-4 w-4" strokeWidth={1.5} />
                             {t('guide.open_button', 'Guide')}
                           </span>
                         </button>
                       </>
                     )}
                     {isMentor && (
-                      <button 
-                        onClick={() => navigate('/mentor')}
-                        className={`text-sm font-body hover:text-[hsl(var(--xima-accent))] transition-colors relative flex items-center gap-1.5 ${
-                          location.pathname.startsWith('/mentor') && !location.pathname.includes('/login')
-                            ? 'text-[hsl(var(--xima-accent))]' 
-                            : ''
-                        }`}
-                        style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                      >
-                        <GraduationCap className="h-4 w-4" />
-                        {t('nav.mentor_portal', 'Mentor Portal')}
-                        {location.pathname.startsWith('/mentor') && !location.pathname.includes('/login') && (
-                          <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[hsl(var(--xima-accent))]" />
-                        )}
+                      <button onClick={() => navigate('/mentor')} className={navLinkClass(location.pathname.startsWith('/mentor') && !location.pathname.includes('/login'))}>
+                        <span className="flex items-center gap-1.5">
+                          <GraduationCap className="h-4 w-4" strokeWidth={1.5} />
+                          {t('nav.mentor_portal', 'Mentor Portal')}
+                        </span>
                       </button>
                     )}
                   </div>
-                  
-                  {/* User Info - Desktop */}
-                  <div className="hidden lg:flex items-center space-x-3">
+
+                  {/* User avatar */}
+                  <div className="hidden lg:flex items-center gap-3">
                     {!headerData.isLoading && headerData.ximatarImage && (
-                      <img 
+                      <img
                         src={headerData.ximatarImage}
                         alt="XIMAtar"
-                        className="w-10 h-10 rounded-full object-cover border-2 border-[hsl(var(--xima-accent))]/30"
+                        className="w-9 h-9 rounded-[20px] object-cover border border-[rgba(255,255,255,0.10)]"
                       />
                     )}
                     {!headerData.isLoading && headerData.totalScore > 0 && (
-                      <span className="text-sm font-bold text-[hsl(var(--xima-accent))]">
+                      <span className="text-sm font-medium text-primary">
                         {headerData.totalScore}
                       </span>
                     )}
                   </div>
-                  
-                  <Button 
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleLogout}
-                    className="font-body bg-[hsl(var(--xima-accent))]/10 hover:bg-[hsl(var(--xima-accent))]/20 transition-all hover:shadow-lg hover:shadow-[hsl(var(--xima-accent))]/20"
-                    style={{ fontWeight: 500, letterSpacing: '0.05em' }}
-                  >
+
+                  <Button variant="ghost" size="sm" onClick={handleLogout}>
                     {t('nav.logout')}
                   </Button>
                 </div>
@@ -514,14 +317,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
           </div>
         </div>
       </nav>
-      
-      <main className={`pt-14 md:pt-16 lg:pt-18 ${fullHeight ? 'flex-1 overflow-hidden' : 'flex-1'}`}>
+
+      <main className={`pt-16 md:pt-[72px] ${fullHeight ? 'flex-1 overflow-hidden' : 'flex-1'}`}>
         {children}
       </main>
-      
+
       {!fullHeight && <Footer />}
 
-      {/* Journey Guide Modal — accessible from nav */}
       {isAuthenticated && (
         <XimaJourneyGuideModal
           open={guideOpen}
