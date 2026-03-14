@@ -39,7 +39,6 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
   const [guideOpen, setGuideOpen] = useState(false);
   const [guideAutoTriggered, setGuideAutoTriggered] = useState(false);
 
-  // Auto-open guide once for first-time business users
   useEffect(() => {
     if (shouldAutoShowBusinessGuide && !guideAutoTriggered) {
       setGuideOpen(true);
@@ -54,7 +53,6 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
     }
   };
 
-  // Sync stored language on mount
   useEffect(() => {
     const storedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
     if (storedLang && VALID_LOCALES.includes(storedLang as any) && i18n.language?.split('-')[0] !== storedLang) {
@@ -84,30 +82,30 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0A0F1C]">
+    <div className="min-h-screen bg-background">
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full bg-gradient-to-b from-[#0F1419] to-[#0A0F1C] border-r border-[#3A9FFF]/20 transition-all duration-300 z-50 ${
+        className={`fixed top-0 left-0 h-full bg-card border-r border-border transition-all duration-300 z-50 ${
           sidebarOpen ? 'w-64' : 'w-20'
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-4 border-b border-[#3A9FFF]/20">
+          <div className="p-4 border-b border-border">
             <div className="flex items-center justify-between">
               {sidebarOpen && (
                 <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-[#3A9FFF]/10 border border-[#3A9FFF]/20">
-                    <Building2 className="text-[#3A9FFF]" size={24} />
+                  <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
+                    <Building2 className="text-primary" size={24} />
                   </div>
-                  <span className="text-lg font-bold text-white">XIMA Business</span>
+                  <span className="text-lg font-bold text-foreground">XIMA Business</span>
                 </div>
               )}
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="hover:bg-[#3A9FFF]/10"
+                className="hover:bg-primary/10"
               >
                 {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
               </Button>
@@ -126,8 +124,8 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
                   to={item.path}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all ${
                     isActive
-                      ? 'bg-[#3A9FFF]/20 text-[#3A9FFF] border border-[#3A9FFF]/30'
-                      : 'text-[#A3ABB5] hover:bg-[#3A9FFF]/10 hover:text-white'
+                      ? 'bg-primary/20 text-primary border border-primary/30'
+                      : 'text-muted-foreground hover:bg-primary/10 hover:text-foreground'
                   }`}
                 >
                   <Icon size={20} />
@@ -138,23 +136,23 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
           </nav>
 
           {/* User Info */}
-          <div className="p-4 border-t border-[#3A9FFF]/20">
+          <div className="p-4 border-t border-border">
             {sidebarOpen ? (
               <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-[#3A9FFF]/10">
-                  <div className="w-10 h-10 rounded-full bg-[#3A9FFF] flex items-center justify-center text-white font-bold">
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/10">
+                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
                     {user?.name?.charAt(0) || 'B'}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">
+                    <p className="text-sm font-medium text-foreground truncate">
                       {user?.name || 'Business User'}
                     </p>
-                    <p className="text-xs text-[#A3ABB5] truncate">{user?.email}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
                   </div>
                 </div>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-[#A3ABB5] hover:text-white hover:bg-[#3A9FFF]/10"
+                  className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-primary/10"
                   onClick={handleSignOut}
                 >
                   <LogOut size={18} className="mr-2" />
@@ -166,7 +164,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
                 variant="ghost"
                 size="icon"
                 onClick={handleSignOut}
-                className="w-full hover:bg-[#3A9FFF]/10"
+                className="w-full hover:bg-primary/10"
               >
                 <LogOut size={20} />
               </Button>
@@ -181,17 +179,15 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
           sidebarOpen ? 'ml-64' : 'ml-20'
         }`}
       >
-        {/* Top Header with Language Switcher */}
-        <header className="sticky top-0 z-40 flex items-center justify-end gap-2 px-6 py-3 bg-[#0A0F1C]/80 backdrop-blur-sm border-b border-[#3A9FFF]/10">
-          {/* Theme toggle */}
+        {/* Top Header */}
+        <header className="sticky top-0 z-40 flex items-center justify-end gap-2 px-6 py-3 bg-background/80 backdrop-blur-sm border-b border-border">
           <ThemeToggle />
 
-          {/* Guide button */}
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setGuideOpen(true)}
-            className="flex items-center gap-1.5 text-[#A3ABB5] hover:text-white hover:bg-[#3A9FFF]/10"
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-primary/10"
           >
             <HelpCircle size={16} />
             <span className="text-sm font-medium">{t('business_guide.open_button', 'Guide')}</span>
@@ -202,7 +198,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="flex items-center gap-2 text-[#A3ABB5] hover:text-white hover:bg-[#3A9FFF]/10"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground hover:bg-primary/10"
                 aria-label={`Current language: ${currentLanguage.name}`}
               >
                 <Globe size={16} />
@@ -210,13 +206,13 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
                 <span className="text-sm font-medium">{currentLanguage.code.toUpperCase()}</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-[150px] bg-[#0F1419] border-[#3A9FFF]/20">
+            <DropdownMenuContent align="end" className="min-w-[150px]">
               {languages.map((language) => (
                 <DropdownMenuItem
                   key={language.code}
                   onClick={() => handleLanguageChange(language.code)}
                   className={`flex items-center gap-3 cursor-pointer ${
-                    i18n.language === language.code ? 'bg-[#3A9FFF]/20 text-[#3A9FFF]' : 'text-[#A3ABB5] hover:text-white'
+                    i18n.language === language.code ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   <span className="text-lg">{language.flag}</span>
@@ -227,34 +223,32 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
           </DropdownMenu>
         </header>
         
-        {/* Dark scrim overlay for improved readability */}
-        <div className="fixed inset-0 bg-black/50 pointer-events-none" style={{ marginLeft: sidebarOpen ? '256px' : '80px', top: '49px' }} />
         <div className="relative z-10 p-8 pb-16">
           {children}
         </div>
         
-        {/* Footer with legal links */}
-        <footer className="relative z-10 border-t border-[#3A9FFF]/10 px-8 py-6">
+        {/* Footer */}
+        <footer className="relative z-10 border-t border-border px-8 py-6">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-[#A3ABB5]">
+            <p className="text-xs text-muted-foreground">
               © {new Date().getFullYear()} XIMA. {t('footer.all_rights_reserved')}
             </p>
             <div className="flex items-center gap-6">
               <Link 
                 to="/privacy" 
-                className="text-xs text-[#A3ABB5] hover:text-[#3A9FFF] transition-colors"
+                className="text-xs text-muted-foreground hover:text-primary transition-colors"
               >
                 {t('footer.privacy')}
               </Link>
               <Link 
                 to="/terms" 
-                className="text-xs text-[#A3ABB5] hover:text-[#3A9FFF] transition-colors"
+                className="text-xs text-muted-foreground hover:text-primary transition-colors"
               >
                 {t('footer.terms')}
               </Link>
               <Link 
                 to="/imprint" 
-                className="text-xs text-[#A3ABB5] hover:text-[#3A9FFF] transition-colors"
+                className="text-xs text-muted-foreground hover:text-primary transition-colors"
               >
                 {t('footer.imprint')}
               </Link>
@@ -263,7 +257,6 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
         </footer>
       </main>
 
-      {/* Business Journey Guide Modal */}
       <BusinessJourneyGuideModal
         open={guideOpen}
         onClose={handleGuideClose}
