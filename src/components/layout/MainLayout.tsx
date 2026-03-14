@@ -94,19 +94,19 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
   };
 
   const navLinkClass = (active: boolean) =>
-    `text-[15px] font-medium transition-all duration-[220ms] ease-out relative px-3 py-1.5 rounded-[10px] ${
+    `text-[15px] font-medium transition-all duration-200 ease-out relative px-3 py-1.5 rounded-[10px] ${
       active
-        ? 'text-primary'
-        : 'text-[rgba(255,255,255,0.55)] hover:text-foreground hover:bg-[rgba(255,255,255,0.08)]'
+        ? 'text-primary font-semibold'
+        : 'text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)]'
     }`;
 
   return (
     <div className={`min-h-screen ${fullHeight ? 'h-screen flex flex-col overflow-hidden' : ''}`}>
       {/* ── Floating Glass Navbar ── */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-[220ms] ease-out ${
+      <nav className={`fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-200 ease-out ${
         scrolled ? 'h-14 md:h-16' : 'h-16 md:h-[72px]'
       }`}>
-        <div className="container mx-auto px-6 md:px-12 h-full">
+        <div className="container mx-auto px-5 md:px-12 h-full">
           <div className="flex justify-between items-center h-full">
             <div className="flex items-center gap-8">
               <button
@@ -117,7 +117,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                 <Logo
                   variant="symbol"
                   alt="XIMA logo"
-                  className={`transition-all duration-[220ms] ease-out ${scrolled ? 'h-8 md:h-9' : 'h-9 md:h-10'}`}
+                  className={`transition-all duration-200 ease-out ${scrolled ? 'h-8 md:h-9' : 'h-9 md:h-10'}`}
                 />
               </button>
 
@@ -159,7 +159,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild className="lg:hidden">
                   <Button variant="ghost" size="icon">
-                    <Menu className="h-5 w-5" strokeWidth={1.5} />
+                    <Menu className="h-5 w-5 text-muted-foreground" strokeWidth={1.5} />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[300px] sm:w-[400px]">
@@ -173,7 +173,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                       <button
                         key={path}
                         onClick={() => { navigate(path); setMobileMenuOpen(false); }}
-                        className="text-left text-[15px] font-medium text-[rgba(255,255,255,0.75)] hover:text-foreground hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-[220ms]"
+                        className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] rounded-[10px] px-3 py-2.5 transition-all duration-200"
                       >
                         {label}
                       </button>
@@ -181,7 +181,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
 
                     {isAuthenticated && (
                       <>
-                        <div className="h-px bg-[rgba(255,255,255,0.06)] my-3" />
+                        <div className="h-px bg-[rgba(60,60,67,0.12)] my-3" />
                         {[
                           { path: '/profile', label: t('nav.dashboard') },
                           { path: '/chat', label: t('nav.feed') },
@@ -189,7 +189,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                           <button
                             key={path}
                             onClick={() => { navigate(path); setMobileMenuOpen(false); }}
-                            className="text-left text-[15px] font-medium text-[rgba(255,255,255,0.75)] hover:text-foreground hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-[220ms]"
+                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] rounded-[10px] px-3 py-2.5 transition-all duration-200"
                           >
                             {label}
                           </button>
@@ -197,7 +197,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         {isMentor && (
                           <button
                             onClick={() => { navigate('/mentor'); setMobileMenuOpen(false); }}
-                            className="text-left text-[15px] font-medium text-[rgba(255,255,255,0.75)] hover:text-foreground hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-[220ms] flex items-center gap-2"
+                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] rounded-[10px] px-3 py-2.5 transition-all duration-200 flex items-center gap-2"
                           >
                             <GraduationCap className="h-[18px] w-[18px]" strokeWidth={1.5} />
                             {t('nav.mentor_portal', 'Mentor Portal')}
@@ -205,14 +205,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         )}
                         <button
                           onClick={() => { navigate('/settings'); setMobileMenuOpen(false); }}
-                          className="text-left text-[15px] font-medium text-[rgba(255,255,255,0.75)] hover:text-foreground hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-[220ms] flex items-center gap-2"
+                          className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] rounded-[10px] px-3 py-2.5 transition-all duration-200 flex items-center gap-2"
                         >
                           <Settings className="h-[18px] w-[18px]" strokeWidth={1.5} />
                           {t('nav.settings', 'Settings')}
                         </button>
                         <button
                           onClick={() => { setGuideOpen(true); setMobileMenuOpen(false); }}
-                          className="text-left text-[15px] font-medium text-[rgba(255,255,255,0.75)] hover:text-foreground hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-2.5 transition-all duration-[220ms] flex items-center gap-2"
+                          className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] rounded-[10px] px-3 py-2.5 transition-all duration-200 flex items-center gap-2"
                         >
                           <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.5} />
                           {t('guide.open_button', 'Guide')}
@@ -220,7 +220,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                       </>
                     )}
 
-                    <div className="h-px bg-[rgba(255,255,255,0.06)] my-3" />
+                    <div className="h-px bg-[rgba(60,60,67,0.12)] my-3" />
                     {!isAuthenticated ? (
                       <div className="flex flex-col gap-2">
                         <Button variant="outline" onClick={() => { navigate('/login'); setMobileMenuOpen(false); }} className="w-full">
@@ -298,11 +298,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                       <img
                         src={headerData.ximatarImage}
                         alt="XIMAtar"
-                        className="w-9 h-9 rounded-[20px] object-cover border border-[rgba(255,255,255,0.10)]"
+                        className="w-9 h-9 rounded-[18px] object-cover border border-[rgba(60,60,67,0.12)] shadow-sm"
                       />
                     )}
                     {!headerData.isLoading && headerData.totalScore > 0 && (
-                      <span className="text-sm font-medium text-primary">
+                      <span className="text-sm font-semibold text-secondary">
                         {headerData.totalScore}
                       </span>
                     )}
