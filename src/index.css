@@ -75,13 +75,15 @@
 
   /* ── Dark Mode ── */
   .dark {
+    color-scheme: dark;
+
     --background: 240 10% 4%;              /* #08080d */
     --foreground: 240 5% 96%;              /* #f5f5f7 */
 
     --card: 240 10% 6%;
     --card-foreground: 240 5% 96%;
 
-    --popover: 240 10% 6%;
+    --popover: 240 10% 8%;
     --popover-foreground: 240 5% 96%;
 
     --primary: 239 84% 67%;               /* #6366f1 indigo for dark */
@@ -90,8 +92,8 @@
     --secondary: 243 54% 57%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 240 10% 10%;
-    --muted-foreground: 240 5% 65%;
+    --muted: 240 6% 12%;
+    --muted-foreground: 240 5% 55%;
 
     --accent: 239 84% 67%;
     --accent-foreground: 0 0% 100%;
@@ -99,8 +101,8 @@
     --destructive: 4 100% 59%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 5% 18%;
-    --input: 240 5% 18%;
+    --border: 240 6% 14%;
+    --input: 240 6% 12%;
     --ring: 239 84% 67%;
 
     --radius: 1.25rem;
@@ -163,10 +165,10 @@
     overflow-x: hidden;
   }
 
-  .dark body,
   html.dark body {
-    background: #08080d;
-    background: radial-gradient(ellipse 80% 60% at 50% 40%, #0d0d1a, #08080d 70%);
+    background-color: #08080d !important;
+    background-image: radial-gradient(ellipse at center, #0d0d1a 0%, #08080d 100%) !important;
+    color: #f5f5f7 !important;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -230,21 +232,20 @@
   -webkit-backdrop-filter: blur(28px) saturate(180%);
   border-bottom: 1px solid rgba(60,60,67,0.12);
 }
-/* dark .glass-nav handled by comprehensive block below */
-
-/* dark .glass-input and .glass-badge handled by comprehensive block below */
 
 /* ── GLASS DARK OVERRIDES (comprehensive) ── */
 html.dark .glass-surface,
 html.dark .glass-surface-static,
-html.dark .glass-card {
+html.dark .glass-card,
+html.dark [class*="glass-surface"],
+html.dark [class*="glass-card"] {
   background: rgba(255, 255, 255, 0.06) !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
   box-shadow: 0 8px 32px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.06) !important;
 }
 
 html.dark .glass-nav {
-  background: rgba(8, 8, 13, 0.82) !important;
+  background: rgba(8, 8, 13, 0.85) !important;
   border-bottom-color: rgba(255, 255, 255, 0.08) !important;
 }
 
@@ -585,43 +586,117 @@ html.dark .mobile-tab-bar {
    Overrides any remaining hardcoded Tailwind classes
    ══════════════════════════════════════════════════ */
 
-html.dark [class*="bg-white"],
-html.dark [class*="bg-gray-50"],
-html.dark [class*="bg-gray-100"] {
+/* Background overrides — catches all variants including opacity modifiers */
+html.dark [class*="bg-white"] {
   background-color: rgba(255, 255, 255, 0.06) !important;
 }
-
-html.dark [class*="text-gray-900"],
-html.dark [class*="text-gray-800"],
-html.dark [class*="text-gray-700"] {
-  color: #f5f5f7 !important;
+html.dark [class*="bg-gray-50"],
+html.dark [class*="bg-slate-50"],
+html.dark [class*="bg-zinc-50"] {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+html.dark [class*="bg-gray-100"],
+html.dark [class*="bg-slate-100"],
+html.dark [class*="bg-zinc-100"] {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+html.dark [class*="bg-gray-200"],
+html.dark [class*="bg-slate-200"] {
+  background-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-html.dark [class*="text-gray-600"],
-html.dark [class*="text-gray-500"] {
-  color: rgba(255, 255, 255, 0.55) !important;
-}
-
-html.dark [class*="text-gray-400"],
-html.dark [class*="text-gray-300"] {
-  color: rgba(255, 255, 255, 0.35) !important;
-}
-
-html.dark [class*="border-gray-100"],
-html.dark [class*="border-gray-200"],
-html.dark [class*="border-gray-300"] {
-  border-color: rgba(255, 255, 255, 0.08) !important;
-}
-
+/* Kill all light gradients in dark mode */
 html.dark [class*="from-blue-50"],
 html.dark [class*="from-green-50"],
 html.dark [class*="from-purple-50"],
 html.dark [class*="from-orange-50"],
+html.dark [class*="from-slate-50"],
+html.dark [class*="from-gray-50"],
 html.dark [class*="to-blue-50"],
+html.dark [class*="to-purple-50"],
 html.dark [class*="to-green-50"],
-html.dark [class*="to-purple-50"] {
+html.dark [class*="to-slate-50"] {
   --tw-gradient-from: rgba(255,255,255,0.04) !important;
   --tw-gradient-to: rgba(255,255,255,0.02) !important;
   background-image: none !important;
   background-color: rgba(255,255,255,0.05) !important;
+}
+
+/* Text overrides */
+html.dark [class*="text-gray-900"],
+html.dark [class*="text-gray-800"],
+html.dark [class*="text-slate-900"],
+html.dark [class*="text-slate-800"],
+html.dark [class*="text-zinc-900"] {
+  color: #f5f5f7 !important;
+}
+html.dark [class*="text-gray-700"],
+html.dark [class*="text-gray-600"],
+html.dark [class*="text-slate-700"],
+html.dark [class*="text-slate-600"] {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+html.dark [class*="text-gray-500"],
+html.dark [class*="text-gray-400"],
+html.dark [class*="text-slate-500"],
+html.dark [class*="text-slate-400"] {
+  color: rgba(255, 255, 255, 0.40) !important;
+}
+html.dark [class*="text-gray-300"],
+html.dark [class*="text-slate-300"] {
+  color: rgba(255, 255, 255, 0.30) !important;
+}
+
+/* Border overrides */
+html.dark [class*="border-gray-100"],
+html.dark [class*="border-gray-200"],
+html.dark [class*="border-gray-300"],
+html.dark [class*="border-slate-100"],
+html.dark [class*="border-slate-200"],
+html.dark [class*="border-zinc-200"] {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Card component override — catches Shadcn Card bg-card */
+html.dark [class*="bg-card"] {
+  background-color: rgba(255,255,255,0.06) !important;
+}
+html.dark [class*="bg-popover"] {
+  background-color: rgba(20,20,30,0.95) !important;
+}
+html.dark [class*="bg-muted"] {
+  background-color: rgba(255,255,255,0.08) !important;
+}
+
+/* Input fields global dark override */
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.10) !important;
+  color: #f5f5f7 !important;
+}
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: rgba(255,255,255,0.30) !important;
+}
+
+/* Progress bar tracks */
+html.dark [role="progressbar"] {
+  background-color: rgba(255,255,255,0.10) !important;
+}
+
+/* Separator/divider lines */
+html.dark hr,
+html.dark [data-orientation="horizontal"],
+html.dark [data-orientation="vertical"] {
+  border-color: rgba(255,255,255,0.08) !important;
+}
+
+/* Rounded containers with borders (general dark card treatment) */
+html.dark .rounded-lg[class*="border"],
+html.dark .rounded-xl[class*="border"],
+html.dark .rounded-2xl[class*="border"],
+html.dark [class*="rounded-["][class*="border"] {
+  border-color: rgba(255,255,255,0.08) !important;
 }
