@@ -214,8 +214,8 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
           <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start gap-2">
             <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
             <div>
-              <p className="text-sm text-red-800 font-medium">Upload Error</p>
-              <p className="text-sm text-red-600">{uploadError}</p>
+              <p className="text-sm text-red-600 dark:text-red-400 font-medium">Upload Error</p>
+              <p className="text-sm text-red-600 dark:text-red-400">{uploadError}</p>
               <Button
                 variant="outline"
                 size="sm"
