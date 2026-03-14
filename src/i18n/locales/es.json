@@ -33,11 +33,12 @@
     "settings": "Ajustes"
   },
   "hero": {
-    "title": "Descubre Tu Yo Profesional",
-    "subtitle": "XIMA te ayuda a comprender tus fortalezas y debilidades profesionales a través de nuestro sistema único de evaluación de 5 pilares, emparejándote con las oportunidades de carrera perfectas.",
-    "cta": "¡Obtén Tu XIMAtar Ahora!",
+    "eyebrow": "PSICOMETRÍA · AI HIRING · GDPR ART. 22 COMPLIANT",
+    "title": "El CV nunca habló de ti.\nEl XIMAtar sí.",
+    "subtitle": "XIMA reemplaza la selección basada en credenciales con ciencia conductual validada e inteligencia artificial. Cada candidato recibe un XIMAtar — una identidad conductual persistente que le pertenece, lo acompaña y reutiliza en cada empresa a la que se postula.",
+    "cta": "Descubre Tu XIMAtar",
     "learn_more": "Saber Más",
-    "for_business": "Para Empresas",
+    "for_business": "Para Empresas →",
     "login": "Iniciar Sesión"
   },
   "profile": {
