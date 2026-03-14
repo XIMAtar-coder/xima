@@ -438,7 +438,7 @@ html.dark .glass-badge {
 .premium-card { @apply glass-surface; }
 .dashboard-section { @apply glass-surface; border-radius: 20px; }
 .dashboard-hero-gradient {
-  background: rgba(255,255,255,0.72);
+  background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
