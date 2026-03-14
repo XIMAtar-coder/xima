@@ -19,7 +19,6 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0];
       
-      // Check if file is PDF
       if (selectedFile.type !== 'application/pdf') {
         toast({
           title: "Invalid file type",
@@ -29,7 +28,6 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
         return;
       }
       
-      // Check file size (5MB limit)
       if (selectedFile.size > 5 * 1024 * 1024) {
         toast({
           title: "File too large",
@@ -48,10 +46,7 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
     
     setUploading(true);
     
-    // Simulate processing delay
     setTimeout(() => {
-      // Since we don't have a real server to handle uploads,
-      // we'll simulate a successful upload with a data URL
       const fileUrl = URL.createObjectURL(file);
       onCvUploaded(fileUrl);
       
@@ -73,7 +68,7 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
   };
 
   return (
-    <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center bg-white">
+    <div className="border-2 border-dashed border-border rounded-lg p-6 text-center bg-background">
       <input
         type="file"
         ref={fileInputRef}
@@ -85,15 +80,15 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
       {!file ? (
         <div className="space-y-4">
           <div className="flex justify-center">
-            <FileText size={48} className="text-gray-400" />
+            <FileText size={48} className="text-muted-foreground" />
           </div>
           <div>
-            <h3 className="text-lg font-medium text-gray-800">Upload your CV</h3>
-            <p className="text-sm text-gray-500 mt-1">PDF format only, max 5MB</p>
+            <h3 className="text-lg font-medium text-foreground">Upload your CV</h3>
+            <p className="text-sm text-muted-foreground mt-1">PDF format only, max 5MB</p>
           </div>
           <Button 
             onClick={triggerFileInput}
-            className="bg-[#4171d6] hover:bg-[#2950a3]"
+            className="bg-primary hover:bg-primary/90"
           >
             <Upload size={16} className="mr-2" />
             Select File
@@ -102,18 +97,17 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
       ) : uploadComplete ? (
         <div className="space-y-4">
           <div className="flex justify-center">
-            <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
+            <div className="h-12 w-12 rounded-full bg-green-500/10 flex items-center justify-center">
               <Check size={24} className="text-green-600" />
             </div>
           </div>
           <div>
-            <h3 className="text-lg font-medium text-gray-800">CV Uploaded!</h3>
-            <p className="text-sm text-gray-500 mt-1">{file.name}</p>
+            <h3 className="text-lg font-medium text-foreground">CV Uploaded!</h3>
+            <p className="text-sm text-muted-foreground mt-1">{file.name}</p>
           </div>
           <Button 
             variant="outline"
             onClick={triggerFileInput}
-            className="border-gray-300 text-gray-700"
           >
             Change File
           </Button>
@@ -121,11 +115,11 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
       ) : (
         <div className="space-y-4">
           <div className="flex justify-center">
-            <FileText size={32} className="text-[#4171d6]" />
+            <FileText size={32} className="text-primary" />
           </div>
           <div>
-            <h3 className="text-lg font-medium text-gray-800">{file.name}</h3>
-            <p className="text-sm text-gray-500 mt-1">
+            <h3 className="text-lg font-medium text-foreground">{file.name}</h3>
+            <p className="text-sm text-muted-foreground mt-1">
               {(file.size / 1024 / 1024).toFixed(2)} MB
             </p>
           </div>
@@ -134,14 +128,13 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
               variant="outline"
               onClick={triggerFileInput}
               disabled={uploading}
-              className="border-gray-300 text-gray-700"
             >
               Change
             </Button>
             <Button 
               onClick={handleUpload}
               disabled={uploading}
-              className="bg-[#4171d6] hover:bg-[#2950a3]"
+              className="bg-primary hover:bg-primary/90"
             >
               {uploading ? (
                 <>

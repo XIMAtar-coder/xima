@@ -17,11 +17,11 @@ const XimaScoreCard: React.FC<XimaScoreCardProps> = ({ pillars, compact = false,
   const { t } = useTranslation();
 
   const pillarColors = {
-    computational: '#3b82f6', // blue
-    communication: '#10b981', // green
-    knowledge: '#f59e0b', // amber
-    creativity: '#8b5cf6', // purple
-    drive: '#ef4444' // red
+    computational: '#3b82f6',
+    communication: '#10b981',
+    knowledge: '#f59e0b',
+    creativity: '#8b5cf6',
+    drive: '#ef4444'
   };
 
   const pillarData = [
@@ -48,7 +48,7 @@ const XimaScoreCard: React.FC<XimaScoreCardProps> = ({ pillars, compact = false,
               <div className="flex items-center gap-2 w-32">
                 <Progress 
                   value={pillar.value * 10} 
-                  className="h-2 bg-gray-200"
+                  className="h-2 bg-muted"
                   style={{
                     '--progress-foreground': pillarColors[pillar.key as keyof typeof pillarColors]
                   } as React.CSSProperties}
@@ -73,7 +73,7 @@ const XimaScoreCard: React.FC<XimaScoreCardProps> = ({ pillars, compact = false,
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <Info size={16} className="text-gray-400" />
+                  <Info size={16} className="text-muted-foreground" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-xs">
@@ -84,7 +84,7 @@ const XimaScoreCard: React.FC<XimaScoreCardProps> = ({ pillars, compact = false,
             </TooltipProvider>
           )}
         </CardTitle>
-        <div className="text-4xl font-bold text-[#4171d6]">
+        <div className="text-4xl font-bold text-primary">
           {averageScore}/10
         </div>
       </CardHeader>
@@ -102,7 +102,7 @@ const XimaScoreCard: React.FC<XimaScoreCardProps> = ({ pillars, compact = false,
             <div className="relative">
               <Progress 
                 value={pillar.value * 10} 
-                className="h-3 bg-gray-200"
+                className="h-3 bg-muted"
               />
               <div 
                 className="absolute top-0 left-0 h-3 rounded-full transition-all duration-300"
@@ -112,7 +112,7 @@ const XimaScoreCard: React.FC<XimaScoreCardProps> = ({ pillars, compact = false,
                 }}
               />
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               {t(`pillars.${pillar.key}.description`)}
             </p>
           </div>

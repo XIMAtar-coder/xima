@@ -31,7 +31,7 @@ const LanguageSwitcher: React.FC = () => {
         <Button 
           variant="ghost" 
           size="sm"
-          className="flex items-center gap-2 text-gray-700 hover:text-[#4171d6]"
+          className="flex items-center gap-2 text-muted-foreground hover:text-primary"
           aria-label={`Current language: ${currentLanguage.name}`}
         >
           <Globe size={16} />
@@ -45,7 +45,7 @@ const LanguageSwitcher: React.FC = () => {
             key={language.code}
             onClick={() => handleLanguageChange(language.code)}
             className={`flex items-center gap-3 cursor-pointer ${
-              i18n.language === language.code ? 'bg-blue-50 text-[#4171d6]' : ''
+              i18n.language === language.code ? 'bg-primary/10 text-primary' : ''
             }`}
           >
             <span className="text-lg">{language.flag}</span>

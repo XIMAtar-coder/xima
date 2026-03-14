@@ -85,8 +85,8 @@ const MentorBooking: React.FC = () => {
     return (
       <div className="space-y-6">
         <div className="text-center">
-          <h2 className="text-3xl font-bold mb-4">{t('mentor.book_title')}</h2>
-          <p className="text-gray-600">
+          <h2 className="text-3xl font-bold mb-4 text-foreground">{t('mentor.book_title')}</h2>
+          <p className="text-muted-foreground">
             {t('mentor.book_subtitle', { name: selectedMentorData.name })}
           </p>
         </div>
@@ -95,26 +95,25 @@ const MentorBooking: React.FC = () => {
           <div className="flex items-center gap-4 mb-6">
             <XimaAvatar avatar={selectedMentorData.avatar} size="sm" />
             <div>
-              <h3 className="font-bold">{selectedMentorData.name}</h3>
-              <p className="text-sm text-gray-600">{selectedMentorData.specialty}</p>
+              <h3 className="font-bold text-foreground">{selectedMentorData.name}</h3>
+              <p className="text-sm text-muted-foreground">{selectedMentorData.specialty}</p>
             </div>
           </div>
 
-          {/* Calendly Embed Simulation */}
-          <div className="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center bg-gray-50">
-            <Calendar size={48} className="text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">{t('mentor.calendly_title')}</h3>
-            <p className="text-gray-600 mb-4">
+          <div className="border-2 border-dashed border-border rounded-lg p-8 text-center bg-muted/30">
+            <Calendar size={48} className="text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium mb-2 text-foreground">{t('mentor.calendly_title')}</h3>
+            <p className="text-muted-foreground mb-4">
               {t('mentor.calendly_description', { name: selectedMentorData.name })}
             </p>
-            <div className="space-y-2 text-sm text-gray-500">
+            <div className="space-y-2 text-sm text-muted-foreground">
               <p>{t('mentor.calendly_url', { url: selectedMentorData.calendlyUrl })}</p>
               <p>{t('mentor.calendly_duration')}</p>
               <p>{t('mentor.calendly_type')}</p>
             </div>
             
             <Button 
-              className="mt-4 bg-[#4171d6] hover:bg-[#2950a3]"
+              className="mt-4 bg-primary hover:bg-primary/90"
               onClick={() => window.open(selectedMentorData.calendlyUrl, '_blank')}
             >
               {t('mentor.open_calendly')}
@@ -136,13 +135,13 @@ const MentorBooking: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">{t('mentor.title')}</h2>
-        <p className="text-gray-600 text-lg">
+        <h2 className="text-3xl font-bold mb-4 text-foreground">{t('mentor.title')}</h2>
+        <p className="text-muted-foreground text-lg">
           {t('mentor.subtitle')}
         </p>
         {!isAuthenticated && (
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-blue-800">
+          <div className="mt-4 p-4 bg-primary/5 border border-primary/20 rounded-lg">
+            <p className="text-foreground">
               {t('mentor.login_required')}
             </p>
           </div>
@@ -155,8 +154,8 @@ const MentorBooking: React.FC = () => {
             key={mentor.id}
             className={`p-6 cursor-pointer transition-all hover:shadow-lg border-2
               ${selectedMentor === mentor.id 
-                ? 'border-[#4171d6] bg-blue-50' 
-                : 'border-gray-200 hover:border-[#4171d6]'
+                ? 'border-primary bg-primary/5' 
+                : 'border-border hover:border-primary'
               }`}
             onClick={() => handleMentorSelect(mentor.id)}
           >
@@ -166,28 +165,28 @@ const MentorBooking: React.FC = () => {
               </div>
               
               <div className="text-center space-y-2">
-                <h3 className="text-xl font-bold">{mentor.name}</h3>
-                <p className="text-sm text-[#4171d6] font-medium">{mentor.specialty}</p>
-                <p className="text-sm text-gray-600">{mentor.experience}</p>
+                <h3 className="text-xl font-bold text-foreground">{mentor.name}</h3>
+                <p className="text-sm text-primary font-medium">{mentor.specialty}</p>
+                <p className="text-sm text-muted-foreground">{mentor.experience}</p>
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock size={16} />
                   <span>{t('mentor.intro_call')}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar size={16} />
                   <span>{t('mentor.flexible_scheduling')}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <User size={16} />
                   <span>{t('mentor.personalized_guidance')}</span>
                 </div>
               </div>
 
               {selectedMentor === mentor.id && (
-                <div className="flex items-center justify-center gap-2 text-[#4171d6] font-medium">
+                <div className="flex items-center justify-center gap-2 text-primary font-medium">
                   <CheckCircle size={16} />
                   <span>{t('mentor.selected')}</span>
                 </div>
@@ -202,7 +201,7 @@ const MentorBooking: React.FC = () => {
           <Button 
             size="lg"
             onClick={handleBookCall}
-            className="bg-[#4171d6] hover:bg-[#2950a3] px-8 py-4"
+            className="bg-primary hover:bg-primary/90 px-8 py-4"
           >
             {t('mentor.book_session', { name: selectedMentorData?.name })}
             <Calendar size={20} className="ml-2" />
@@ -212,7 +211,7 @@ const MentorBooking: React.FC = () => {
 
       {!selectedMentor && (
         <div className="text-center">
-          <p className="text-gray-500">{t('mentor.select_mentor')}</p>
+          <p className="text-muted-foreground">{t('mentor.select_mentor')}</p>
         </div>
       )}
     </div>

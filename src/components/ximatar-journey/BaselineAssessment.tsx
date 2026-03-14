@@ -23,7 +23,6 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
   const { t } = useTranslation();
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  // Load field from localStorage on mount
   useEffect(() => {
     const cached = localStorage.getItem('preferred_field') as FieldKey | null;
     if (cached) setField(cached);
@@ -32,43 +31,26 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0];
-      
       if (selectedFile.type !== 'application/pdf') {
-        toast({
-          title: "Invalid file type",
-          description: "Please upload a PDF file",
-          variant: "destructive"
-        });
+        toast({ title: "Invalid file type", description: "Please upload a PDF file", variant: "destructive" });
         return;
       }
-      
       if (selectedFile.size > 5 * 1024 * 1024) {
-        toast({
-          title: "File too large",
-          description: "Maximum file size is 5MB",
-          variant: "destructive"
-        });
+        toast({ title: "File too large", description: "Maximum file size is 5MB", variant: "destructive" });
         return;
       }
-      
       setFile(selectedFile);
     }
   };
 
   const handleUpload = async () => {
     if (!file || !dataConsent) return;
-    
     setUploading(true);
-    
     setTimeout(() => {
       setUploading(false);
       setUploadComplete(true);
       onCvUpload(true);
-      
-      toast({
-        title: "CV uploaded successfully",
-        description: "Your baseline assessment is ready",
-      });
+      toast({ title: "CV uploaded successfully", description: "Your baseline assessment is ready" });
     }, 2000);
   };
 
@@ -87,12 +69,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
 
   const saveFieldPreference = () => {
     if (!field) return;
-    
-    // Save to localStorage (always works)
     localStorage.setItem('preferred_field', field);
-    
-    // Note: Database column 'preferred_field' can be added in future migration
-    // For now, only localStorage is used
   };
 
   const handleConsentChange = (checked: boolean | 'indeterminate') => {
@@ -102,20 +79,19 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">{t('baseline.title')}</h2>
+        <h2 className="text-3xl font-bold mb-4 text-foreground">{t('baseline.title')}</h2>
         <p className="text-muted-foreground text-lg">
           {t('baseline.subtitle')}
         </p>
       </div>
 
-      {/* Field Selector - must be selected first */}
       <Card className="p-6 border-2">
         <FieldSelector value={field} onChange={setField} disabled={uploading} />
       </Card>
 
       {!uploadComplete ? (
         <div className="space-y-6">
-          <Card className="p-6 border-2 border-dashed border-gray-200 bg-gray-50">
+          <Card className="p-6 border-2 border-dashed border-border bg-muted/30">
             <input
               type="file"
               ref={fileInputRef}
@@ -126,14 +102,14 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
             
             {!file ? (
               <div className="text-center space-y-4">
-                <FileText size={48} className="text-gray-400 mx-auto" />
+                <FileText size={48} className="text-muted-foreground mx-auto" />
                 <div>
-                  <h3 className="text-lg font-medium">{t('baseline.upload_cv')}</h3>
-                  <p className="text-sm text-gray-500">{t('baseline.file_format')}</p>
+                  <h3 className="text-lg font-medium text-foreground">{t('baseline.upload_cv')}</h3>
+                  <p className="text-sm text-muted-foreground">{t('baseline.file_format')}</p>
                 </div>
                 <Button 
                   onClick={() => fileInputRef.current?.click()}
-                  className="bg-[#4171d6] hover:bg-[#2950a3]"
+                  className="bg-primary hover:bg-primary/90"
                 >
                   <Upload size={16} className="mr-2" />
                   {t('baseline.select_file')}
@@ -141,10 +117,10 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
               </div>
             ) : (
               <div className="text-center space-y-4">
-                <FileText size={32} className="text-[#4171d6] mx-auto" />
+                <FileText size={32} className="text-primary mx-auto" />
                 <div>
-                  <h3 className="text-lg font-medium">{file.name}</h3>
-                  <p className="text-sm text-gray-500">
+                  <h3 className="text-lg font-medium text-foreground">{file.name}</h3>
+                  <p className="text-sm text-muted-foreground">
                     {(file.size / 1024 / 1024).toFixed(2)} MB
                   </p>
                 </div>
@@ -160,13 +136,13 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
           </Card>
 
           {file && (
-            <Card className="p-4 bg-blue-50 border-blue-200">
+            <Card className="p-4 bg-primary/5 border-primary/20">
               <div className="flex items-start space-x-3">
-                <AlertCircle className="text-blue-600 mt-0.5" size={20} />
+                <AlertCircle className="text-primary mt-0.5" size={20} />
                 <div className="space-y-3">
                   <div>
-                    <h4 className="font-medium text-blue-900">{t('baseline.data_consent_title')}</h4>
-                    <p className="text-sm text-blue-800">
+                    <h4 className="font-medium text-foreground">{t('baseline.data_consent_title')}</h4>
+                    <p className="text-sm text-muted-foreground">
                       {t('baseline.data_consent_text')}
                     </p>
                   </div>
@@ -179,7 +155,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
                     />
                     <label 
                       htmlFor="data-consent" 
-                      className="text-sm text-blue-900 cursor-pointer"
+                      className="text-sm text-foreground cursor-pointer"
                     >
                       {t('baseline.consent_checkbox')}
                     </label>
@@ -204,7 +180,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
               <Button 
                 onClick={handleUpload}
                 disabled={!field || uploading || !dataConsent}
-                className="bg-[#4171d6] hover:bg-[#2950a3]"
+                className="bg-primary hover:bg-primary/90"
               >
                 {uploading ? (
                   <>
@@ -223,13 +199,13 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
         </div>
       ) : (
         <div className="text-center space-y-6">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+          <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto">
             <Check size={32} className="text-green-600" />
           </div>
           
           <div>
-            <h3 className="text-2xl font-bold text-green-800 mb-2">{t('baseline.complete_title')}</h3>
-            <p className="text-gray-600">
+            <h3 className="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">{t('baseline.complete_title')}</h3>
+            <p className="text-muted-foreground">
               {t('baseline.complete_text')}
             </p>
           </div>
@@ -238,7 +214,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
             size="lg"
             onClick={handleContinue}
             disabled={!field}
-            className="bg-[#4171d6] hover:bg-[#2950a3]"
+            className="bg-primary hover:bg-primary/90"
           >
             {t('baseline.continue_assessment')}
           </Button>

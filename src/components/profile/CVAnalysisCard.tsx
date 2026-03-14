@@ -211,11 +211,11 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
       <CardContent className="space-y-6">
         {/* Error Message */}
         {uploadError && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+          <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start gap-2">
             <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
             <div>
-              <p className="text-sm text-red-800 font-medium">Upload Error</p>
-              <p className="text-sm text-red-600">{uploadError}</p>
+              <p className="text-sm text-red-600 dark:text-red-400 font-medium">Upload Error</p>
+              <p className="text-sm text-red-600 dark:text-red-400">{uploadError}</p>
               <Button
                 variant="outline"
                 size="sm"
@@ -331,9 +331,9 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
                           <Badge 
                             variant={diff > 0 ? "default" : "destructive"}
                             className={`ml-2 ${
-                              diff > 0 ? 'bg-green-500 hover:bg-green-600' : 
+                            diff > 0 ? 'bg-green-500 hover:bg-green-600' : 
                               diff < 0 ? 'bg-red-500 hover:bg-red-600' : 
-                              'bg-gray-500'
+                              'bg-muted-foreground'
                             }`}
                           >
                             {diff > 0 ? '+' : ''}{diff.toFixed(1)}

@@ -34,7 +34,6 @@ export const GoogleAuthButton = ({ mode }: GoogleAuthButtonProps) => {
         });
         setIsLoading(false);
       }
-      // Don't reset loading - we're redirecting
     } catch (err) {
       console.error('Google auth error:', err);
       toast({
@@ -50,12 +49,12 @@ export const GoogleAuthButton = ({ mode }: GoogleAuthButtonProps) => {
     <Button
       type="button"
       variant="outline"
-      className="w-full bg-white hover:bg-gray-100 text-gray-800 border-gray-300 font-medium flex items-center justify-center gap-3"
+      className="w-full bg-background hover:bg-muted text-foreground border-border font-medium flex items-center justify-center gap-3"
       onClick={handleGoogleAuth}
       disabled={isLoading}
     >
       {isLoading ? (
-        <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-800 border-t-transparent" />
+        <div className="h-5 w-5 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
       ) : (
         <svg className="h-5 w-5" viewBox="0 0 24 24">
           <path
