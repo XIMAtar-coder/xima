@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useBusinessLocale, LANGUAGE_STORAGE_KEY, VALID_LOCALES } from '@/hooks/useBusinessLocale';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const languages = [
   { code: 'it', name: 'Italiano', flag: '🇮🇹' },
