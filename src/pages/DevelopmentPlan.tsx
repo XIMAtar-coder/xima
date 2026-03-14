@@ -158,7 +158,7 @@ const DevelopmentPlan = () => {
             <h1 className="text-[28px] md:text-[34px] xl:text-[40px] font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               {t('development.title')}
             </h1>
-            <p className="text-muted-foreground max-w-xl">
+            <p className="text-[14px] md:text-[15px] text-muted-foreground max-w-xl">
               {t('development.subtitle')}
             </p>
           </div>
