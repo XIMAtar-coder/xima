@@ -21,7 +21,8 @@ import {
   Sparkles,
   ChevronRight,
   TrendingUp,
-  BarChart3
+  BarChart3,
+  Shield
 } from 'lucide-react';
 
 const AssessmentGuide = () => {
@@ -76,30 +77,30 @@ const AssessmentGuide = () => {
   const journeySteps = [
     {
       icon: FileText,
-      step: 1,
-      title: t('guide.step1.title', 'CV Upload'),
-      description: t('guide.step1.description', 'Upload your CV for AI-powered analysis of your professional experience and skills.'),
+      badge: t('assessmentGuide.step1_badge'),
+      title: t('assessmentGuide.step1_title'),
+      description: t('assessmentGuide.step1_body'),
       color: 'bg-blue-500'
     },
     {
       icon: ClipboardCheck,
-      step: 2,
-      title: t('guide.step2.title', 'Baseline Assessment'),
-      description: t('guide.step2.description', 'Select your field and complete the initial evaluation with multiple-choice questions.'),
+      badge: t('assessmentGuide.step2_badge'),
+      title: t('assessmentGuide.step2_title'),
+      description: t('assessmentGuide.step2_body'),
       color: 'bg-purple-500'
     },
     {
       icon: Brain,
-      step: 3,
-      title: t('guide.step3.title', 'Deep Assessment'),
-      description: t('guide.step3.description', 'Answer 21 questions plus open responses to reveal your unique profile.'),
+      badge: t('assessmentGuide.step3_badge'),
+      title: t('assessmentGuide.step3_title'),
+      description: t('assessmentGuide.step3_body'),
       color: 'bg-indigo-500'
     },
     {
       icon: Award,
-      step: 4,
-      title: t('guide.step4.title', 'XIMAtar Assignment'),
-      description: t('guide.step4.description', 'Receive your personalized XIMAtar archetype based on your pillar scores.'),
+      badge: t('assessmentGuide.step4_badge'),
+      title: t('assessmentGuide.step4_title'),
+      description: t('assessmentGuide.step4_body'),
       color: 'bg-emerald-500'
     }
   ];
@@ -107,82 +108,79 @@ const AssessmentGuide = () => {
   const pillars = [
     {
       icon: Brain,
-      key: 'computational_power',
-      name: t('pillars.computational.name', 'Computational Power'),
-      description: t('guide.pillars.computational', 'Analytical thinking, problem-solving, and data-driven decision making.'),
+      name: t('assessmentGuide.pillar1_name'),
+      description: t('assessmentGuide.pillar1_body'),
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/10',
       borderColor: 'border-blue-500/30',
-      hoverBorder: 'hover:border-blue-500',
-      weight: '20%'
+      hoverBorder: 'hover:border-blue-500'
     },
     {
       icon: MessageCircle,
-      key: 'communication',
-      name: t('pillars.communication.name', 'Communication'),
-      description: t('guide.pillars.communication', 'Clarity of expression, active listening, and collaborative dialogue.'),
+      name: t('assessmentGuide.pillar2_name'),
+      description: t('assessmentGuide.pillar2_body'),
       color: 'text-emerald-500',
       bgColor: 'bg-emerald-500/10',
       borderColor: 'border-emerald-500/30',
-      hoverBorder: 'hover:border-emerald-500',
-      weight: '20%'
+      hoverBorder: 'hover:border-emerald-500'
     },
     {
       icon: BookOpen,
-      key: 'knowledge',
-      name: t('pillars.knowledge.name', 'Knowledge'),
-      description: t('guide.pillars.knowledge', 'Domain expertise, continuous learning, and wisdom application.'),
+      name: t('assessmentGuide.pillar3_name'),
+      description: t('assessmentGuide.pillar3_body'),
       color: 'text-amber-500',
       bgColor: 'bg-amber-500/10',
       borderColor: 'border-amber-500/30',
-      hoverBorder: 'hover:border-amber-500',
-      weight: '20%'
+      hoverBorder: 'hover:border-amber-500'
     },
     {
       icon: Lightbulb,
-      key: 'creativity',
-      name: t('pillars.creativity.name', 'Creativity'),
-      description: t('guide.pillars.creativity', 'Innovation, lateral thinking, and novel solution generation.'),
+      name: t('assessmentGuide.pillar4_name'),
+      description: t('assessmentGuide.pillar4_body'),
       color: 'text-purple-500',
       bgColor: 'bg-purple-500/10',
       borderColor: 'border-purple-500/30',
-      hoverBorder: 'hover:border-purple-500',
-      weight: '20%'
+      hoverBorder: 'hover:border-purple-500'
     },
     {
       icon: Zap,
-      key: 'drive',
-      name: t('pillars.drive.name', 'Drive'),
-      description: t('guide.pillars.drive', 'Motivation, resilience, and goal-oriented determination.'),
+      name: t('assessmentGuide.pillar5_name'),
+      description: t('assessmentGuide.pillar5_body'),
       color: 'text-rose-500',
       bgColor: 'bg-rose-500/10',
       borderColor: 'border-rose-500/30',
-      hoverBorder: 'hover:border-rose-500',
-      weight: '20%'
+      hoverBorder: 'hover:border-rose-500'
     }
   ];
 
   const ximatars = [
-    { name: 'Lion', image: '/ximatars/lion.png', strength: 'Drive', style: t('guide.ximatars.lion', 'Executive Leader') },
-    { name: 'Fox', image: '/ximatars/fox.png', strength: 'Creativity', style: t('guide.ximatars.fox', 'Strategic Opportunist') },
-    { name: 'Owl', image: '/ximatars/owl.png', strength: 'Knowledge', style: t('guide.ximatars.owl', 'Wise Analyst') },
-    { name: 'Dolphin', image: '/ximatars/dolphin.png', strength: 'Communication', style: t('guide.ximatars.dolphin', 'Team Facilitator') },
-    { name: 'Cat', image: '/ximatars/cat.png', strength: 'Computational', style: t('guide.ximatars.cat', 'Independent Specialist') },
-    { name: 'Bear', image: '/ximatars/bear.png', strength: 'Knowledge', style: t('guide.ximatars.bear', 'Reliable Guardian') },
-    { name: 'Bee', image: '/ximatars/bee.png', strength: 'Drive', style: t('guide.ximatars.bee', 'Productive Worker') },
-    { name: 'Wolf', image: '/ximatars/wolf.png', strength: 'Drive', style: t('guide.ximatars.wolf', 'Tactical Team Player') },
-    { name: 'Parrot', image: '/ximatars/parrot.png', strength: 'Communication', style: t('guide.ximatars.parrot', 'Expressive Communicator') },
-    { name: 'Elephant', image: '/ximatars/elephant.png', strength: 'Knowledge', style: t('guide.ximatars.elephant', 'Long-Term Strategist') },
-    { name: 'Horse', image: '/ximatars/horse.png', strength: 'Drive', style: t('guide.ximatars.horse', 'Reliable Driver') },
-    { name: 'Chameleon', image: '/ximatars/chameleon.png', strength: 'Balanced', style: t('guide.ximatars.chameleon', 'Adaptive Operator') }
+    { name: t('assessmentGuide.archetype_lion_name'), image: '/ximatars/lion.png', strength: t('assessmentGuide.archetype_lion_pillar'), style: t('assessmentGuide.archetype_lion_role') },
+    { name: t('assessmentGuide.archetype_fox_name'), image: '/ximatars/fox.png', strength: t('assessmentGuide.archetype_fox_pillar'), style: t('assessmentGuide.archetype_fox_role') },
+    { name: t('assessmentGuide.archetype_owl_name'), image: '/ximatars/owl.png', strength: t('assessmentGuide.archetype_owl_pillar'), style: t('assessmentGuide.archetype_owl_role') },
+    { name: t('assessmentGuide.archetype_dolphin_name'), image: '/ximatars/dolphin.png', strength: t('assessmentGuide.archetype_dolphin_pillar'), style: t('assessmentGuide.archetype_dolphin_role') },
+    { name: t('assessmentGuide.archetype_cat_name'), image: '/ximatars/cat.png', strength: t('assessmentGuide.archetype_cat_pillar'), style: t('assessmentGuide.archetype_cat_role') },
+    { name: t('assessmentGuide.archetype_bear_name'), image: '/ximatars/bear.png', strength: t('assessmentGuide.archetype_bear_pillar'), style: t('assessmentGuide.archetype_bear_role') },
+    { name: t('assessmentGuide.archetype_bee_name'), image: '/ximatars/bee.png', strength: t('assessmentGuide.archetype_bee_pillar'), style: t('assessmentGuide.archetype_bee_role') },
+    { name: t('assessmentGuide.archetype_wolf_name'), image: '/ximatars/wolf.png', strength: t('assessmentGuide.archetype_wolf_pillar'), style: t('assessmentGuide.archetype_wolf_role') },
+    { name: t('assessmentGuide.archetype_parrot_name'), image: '/ximatars/parrot.png', strength: t('assessmentGuide.archetype_parrot_pillar'), style: t('assessmentGuide.archetype_parrot_role') },
+    { name: t('assessmentGuide.archetype_elephant_name'), image: '/ximatars/elephant.png', strength: t('assessmentGuide.archetype_elephant_pillar'), style: t('assessmentGuide.archetype_elephant_role') },
+    { name: t('assessmentGuide.archetype_horse_name'), image: '/ximatars/horse.png', strength: t('assessmentGuide.archetype_horse_pillar'), style: t('assessmentGuide.archetype_horse_role') },
+    { name: t('assessmentGuide.archetype_chameleon_name'), image: '/ximatars/chameleon.png', strength: t('assessmentGuide.archetype_chameleon_pillar'), style: t('assessmentGuide.archetype_chameleon_role') }
   ];
 
   const scoringExample = [
-    { pillar: 'Computational Power', score: 8.2, max: 10 },
-    { pillar: 'Communication', score: 7.5, max: 10 },
-    { pillar: 'Knowledge', score: 6.8, max: 10 },
-    { pillar: 'Creativity', score: 9.1, max: 10 },
-    { pillar: 'Drive', score: 7.9, max: 10 }
+    { pillar: t('assessmentGuide.pillar1_name'), score: 8.2, max: 10 },
+    { pillar: t('assessmentGuide.pillar2_name'), score: 7.5, max: 10 },
+    { pillar: t('assessmentGuide.pillar3_name'), score: 6.8, max: 10 },
+    { pillar: t('assessmentGuide.pillar4_name'), score: 9.1, max: 10 },
+    { pillar: t('assessmentGuide.pillar5_name'), score: 7.9, max: 10 }
+  ];
+
+  const governanceItems = [
+    { title: t('assessmentGuide.governance_1_title'), body: t('assessmentGuide.governance_1_body') },
+    { title: t('assessmentGuide.governance_2_title'), body: t('assessmentGuide.governance_2_body') },
+    { title: t('assessmentGuide.governance_3_title'), body: t('assessmentGuide.governance_3_body') },
+    { title: t('assessmentGuide.governance_4_title'), body: t('assessmentGuide.governance_4_body') }
   ];
 
   return (
@@ -203,13 +201,13 @@ const AssessmentGuide = () => {
             className="mb-4 px-4 py-1 animate-[fade-in_0.5s_ease-out] hover:scale-105 transition-transform cursor-default"
           >
             <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
-            {t('guide.badge', 'Assessment Guide')}
+            {t('assessmentGuide.eyebrow')}
           </Badge>
-          <h1 className="text-[28px] md:text-[40px] xl:text-[48px] font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent animate-[fade-in_0.6s_ease-out]">
-            {t('guide.title', 'How XIMAtar Assessment Works')}
+          <h1 className="text-[28px] md:text-[40px] xl:text-[48px] font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent animate-[fade-in_0.6s_ease-out] whitespace-pre-line">
+            {t('assessmentGuide.hero_headline')}
           </h1>
           <p className="text-[14px] md:text-[17px] xl:text-xl text-muted-foreground max-w-3xl mx-auto animate-[fade-in_0.7s_ease-out]">
-            {t('guide.subtitle', 'Discover your unique professional archetype through our comprehensive assessment system based on 5 core pillars.')}
+            {t('assessmentGuide.hero_subheadline')}
           </p>
         </div>
 
@@ -223,9 +221,15 @@ const AssessmentGuide = () => {
               : 'opacity-0 translate-y-8'
           }`}
         >
-          <h2 className="text-[20px] md:text-[24px] xl:text-[28px] font-bold text-center mb-10">
-            {t('guide.journey_title', 'Your Assessment Journey')}
+          <p className="text-xs font-mono tracking-widest text-primary uppercase text-center mb-2">
+            {t('assessmentGuide.journey_label')}
+          </p>
+          <h2 className="text-[20px] md:text-[24px] xl:text-[28px] font-bold text-center mb-2">
+            {t('assessmentGuide.journey_headline')}
           </h2>
+          <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-10">
+            {t('assessmentGuide.journey_subheadline')}
+          </p>
           
           <div className="relative">
             {/* Animated Connection Line */}
@@ -251,7 +255,7 @@ const AssessmentGuide = () => {
                     <step.icon className="w-8 h-8 transition-transform group-hover:scale-110" />
                   </div>
                   <Badge variant="secondary" className="mb-3 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                    {t('guide.step', 'Step')} {step.step}
+                    {step.badge}
                   </Badge>
                   <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
                   <p className="text-sm text-muted-foreground">{step.description}</p>
@@ -275,11 +279,14 @@ const AssessmentGuide = () => {
           }`}
         >
           <div className="text-center mb-10">
-           <h2 className="text-[20px] md:text-[24px] xl:text-[28px] font-bold mb-4">
-              {t('guide.pillars_title', 'The 5 XIMA Pillars')}
+            <p className="text-xs font-mono tracking-widest text-primary uppercase mb-2">
+              {t('assessmentGuide.pillars_label')}
+            </p>
+            <h2 className="text-[20px] md:text-[24px] xl:text-[28px] font-bold mb-4">
+              {t('assessmentGuide.pillars_headline')}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              {t('guide.pillars_description', 'Each pillar represents a core dimension of professional capability. Your unique combination determines your XIMAtar.')}
+              {t('assessmentGuide.pillars_subheadline')}
             </p>
           </div>
 
@@ -298,10 +305,7 @@ const AssessmentGuide = () => {
                   <div className={`p-3 rounded-full ${pillar.bgColor} transition-all duration-300 group-hover:scale-110 group-hover:rotate-6`}>
                     <pillar.icon className={`w-6 h-6 ${pillar.color} transition-transform`} />
                   </div>
-                  <div>
-                    <h3 className="font-semibold">{pillar.name}</h3>
-                    <Badge variant="outline" className="text-xs">{pillar.weight}</Badge>
-                  </div>
+                  <h3 className="font-semibold">{pillar.name}</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">{pillar.description}</p>
               </Card>
@@ -320,15 +324,18 @@ const AssessmentGuide = () => {
           }`}
         >
           <Card className="p-8 bg-gradient-to-br from-muted/30 to-muted/10 hover:shadow-lg transition-shadow">
+            <p className="text-xs font-mono tracking-widest text-primary uppercase mb-2">
+              {t('assessmentGuide.example_label')}
+            </p>
             <div className="flex items-center gap-3 mb-6">
               <BarChart3 className="w-8 h-8 text-primary animate-pulse" />
               <h2 className="text-2xl font-bold">
-                {t('guide.scoring_title', 'Example Pillar Scores')}
+                {t('assessmentGuide.example_headline')}
               </h2>
             </div>
             
             <p className="text-muted-foreground mb-8">
-              {t('guide.scoring_description', 'Each pillar is scored from 0-10 based on your assessment responses. Here\'s an example profile:')}
+              {t('assessmentGuide.example_body')}
             </p>
 
             <div className="space-y-6">
@@ -358,10 +365,10 @@ const AssessmentGuide = () => {
             >
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="w-5 h-5 text-primary animate-bounce" />
-                <span className="font-semibold inline-flex items-center gap-2">{t('guide.result', 'Result')}: Fox <img src="/ximatars/fox.png" alt="XIMAtar Fox" className="h-6 w-6 rounded-full object-cover bg-muted/40 ring-1 ring-border/40 inline-block" /></span>
+                <span className="font-semibold inline-flex items-center gap-2">{t('assessmentGuide.example_result_label')} <img src="/ximatars/fox.png" alt="XIMAtar Fox" className="h-6 w-6 rounded-full object-cover bg-muted/40 ring-1 ring-border/40 inline-block" /></span>
               </div>
               <p className="text-sm text-muted-foreground">
-                {t('guide.result_explanation', 'With highest Creativity (9.1) and strong Computational Power (8.2), this profile matches the Fox archetype - a Strategic Opportunist who excels at innovative problem-solving.')}
+                {t('assessmentGuide.example_result_body')}
               </p>
             </div>
           </Card>
@@ -378,11 +385,14 @@ const AssessmentGuide = () => {
           }`}
         >
           <div className="text-center mb-10">
+            <p className="text-xs font-mono tracking-widest text-primary uppercase mb-2">
+              {t('assessmentGuide.archetypes_label')}
+            </p>
             <h2 className="text-3xl font-bold mb-4">
-              {t('guide.ximatars_title', 'The 12 XIMAtar Archetypes')}
+              {t('assessmentGuide.archetypes_headline')}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              {t('guide.ximatars_description', 'Each XIMAtar represents a unique combination of strengths and work style. Discover which archetype matches your profile.')}
+              {t('assessmentGuide.archetypes_subheadline')}
             </p>
           </div>
 
@@ -414,6 +424,53 @@ const AssessmentGuide = () => {
           </div>
         </section>
 
+        {/* Governance Section */}
+        <section 
+          id="governance-section"
+          data-animate
+          className={`mb-20 transition-all duration-700 ${
+            visibleSections.has('governance-section') 
+              ? 'opacity-100 translate-y-0' 
+              : 'opacity-0 translate-y-8'
+          }`}
+        >
+          <div className="bg-card border border-border rounded-2xl p-8 md:p-12">
+            <p className="text-xs font-mono tracking-widest text-primary uppercase mb-2">
+              {t('assessmentGuide.governance_label')}
+            </p>
+            <h2 className="text-[20px] md:text-[24px] xl:text-[28px] font-bold mb-2">
+              {t('assessmentGuide.governance_headline')}
+            </h2>
+            <p className="text-muted-foreground mb-8">
+              {t('assessmentGuide.governance_subheadline')}
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {governanceItems.map((item, index) => (
+                <div 
+                  key={index}
+                  className={`space-y-2 transition-all duration-500 ${
+                    visibleSections.has('governance-section') 
+                      ? 'opacity-100 translate-y-0' 
+                      : 'opacity-0 translate-y-4'
+                  }`}
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-primary flex-shrink-0" />
+                    <h3 className="font-semibold">{item.title}</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{item.body}</p>
+                </div>
+              ))}
+            </div>
+
+            <blockquote className="text-center italic text-muted-foreground mt-8 pt-6 border-t border-border/50 text-[15px] md:text-[17px]">
+              {t('assessmentGuide.governance_pullquote')}
+            </blockquote>
+          </div>
+        </section>
+
         {/* Assignment Logic */}
         <section 
           id="logic-section"
@@ -425,18 +482,21 @@ const AssessmentGuide = () => {
           }`}
         >
           <Card className="p-8 hover:shadow-lg transition-shadow">
+            <p className="text-xs font-mono tracking-widest text-primary uppercase mb-2">
+              {t('assessmentGuide.assignment_label')}
+            </p>
             <div className="flex items-center gap-3 mb-6">
               <Target className="w-8 h-8 text-primary" />
               <h2 className="text-2xl font-bold">
-                {t('guide.logic_title', 'How XIMAtar Assignment Works')}
+                {t('assessmentGuide.assignment_headline')}
               </h2>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
               <div>
                 {[
-                  { num: 1, title: t('guide.logic_step1', 'Pillar Score Calculation'), desc: t('guide.logic_step1_desc', 'Your responses to 21 multiple-choice questions and 2 open-ended questions are analyzed to calculate scores for each of the 5 pillars.') },
-                  { num: 2, title: t('guide.logic_step2', 'Pattern Matching'), desc: t('guide.logic_step2_desc', 'Your pillar profile is compared against the ideal vectors for each of the 12 XIMatars using distance algorithms and weighted matching.') }
+                  { num: 1, title: t('assessmentGuide.assignment_step1_title'), desc: t('assessmentGuide.assignment_step1_body') },
+                  { num: 2, title: t('assessmentGuide.assignment_step2_title'), desc: t('assessmentGuide.assignment_step2_body') }
                 ].map((item, idx) => (
                   <div 
                     key={idx} 
@@ -458,8 +518,8 @@ const AssessmentGuide = () => {
 
               <div>
                 {[
-                  { num: 3, title: t('guide.logic_step3', 'Dominant Pillar Bonus'), desc: t('guide.logic_step3_desc', 'A 25% matching bonus is applied when your strongest pillar aligns with a XIMAtar\'s primary characteristic, ensuring authentic matches.') },
-                  { num: 4, title: t('guide.logic_step4', 'Final Assignment'), desc: t('guide.logic_step4_desc', 'The XIMAtar with the closest match to your unique profile becomes your archetype, along with personalized insights about your strengths and growth areas.') }
+                  { num: 3, title: t('assessmentGuide.assignment_step3_title'), desc: t('assessmentGuide.assignment_step3_body') },
+                  { num: 4, title: t('assessmentGuide.assignment_step4_title'), desc: t('assessmentGuide.assignment_step4_body') }
                 ].map((item, idx) => (
                   <div 
                     key={idx} 
@@ -495,21 +555,21 @@ const AssessmentGuide = () => {
           <Card className="p-10 bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20 hover:shadow-xl transition-all duration-300 hover:scale-[1.01]">
             <Users className="w-12 h-12 mx-auto mb-4 text-primary animate-pulse" />
             <h2 className="text-2xl font-bold mb-4">
-              {t('guide.cta_title', 'Ready to Discover Your XIMAtar?')}
+              {t('assessmentGuide.cta_headline')}
             </h2>
             <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-              {t('guide.cta_description', 'Start your assessment journey now and unlock personalized insights about your professional potential.')}
+              {t('assessmentGuide.cta_body')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" asChild className="group transition-all hover:scale-105 hover:shadow-lg">
                 <Link to="/ximatar-journey">
-                  {t('guide.cta_button', 'Start Assessment')}
+                  {t('assessmentGuide.cta_primary')}
                   <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
               <Button variant="outline" size="lg" asChild className="hover:scale-105 transition-transform">
                 <Link to="/how-it-works">
-                  {t('guide.learn_more', 'Learn More')}
+                  {t('assessmentGuide.cta_secondary')}
                 </Link>
               </Button>
             </div>
