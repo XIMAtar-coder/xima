@@ -275,7 +275,7 @@ const AssessmentGuide = () => {
           }`}
         >
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold mb-4">
+           <h2 className="text-[20px] md:text-[24px] xl:text-[28px] font-bold mb-4">
               {t('guide.pillars_title', 'The 5 XIMA Pillars')}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
