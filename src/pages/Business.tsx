@@ -83,9 +83,9 @@ const Business = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => (
-              <Card key={index} className="border-2 hover:border-[hsl(var(--xima-accent))] transition-colors">
+              <Card key={index} className="border-2 hover:border-[hsl(var(--xima-accent))] transition-colors dark:bg-[rgba(255,255,255,0.06)] dark:border-[rgba(255,255,255,0.08)]">
                 <CardContent className="p-6 space-y-4">
-                  <div className="text-[hsl(var(--xima-accent))]">
+                  <div className="text-[hsl(var(--xima-accent))] dark:text-[rgba(255,255,255,0.60)]">
                     {feature.icon}
                   </div>
                   <h3 className="text-xl font-bold text-foreground">{feature.title}</h3>
