@@ -112,6 +112,7 @@ const Login = () => {
                   placeholder={t('login.email_placeholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="min-h-[48px]"
                 />
               </div>
               
