@@ -151,7 +151,7 @@ const DevelopmentPlan = () => {
 
   return (
     <MainLayout>
-      <div className="container max-w-6xl mx-auto pt-6 pb-12 space-y-8">
+      <div className="container max-w-6xl mx-auto pt-6 pb-12 px-4 md:px-8 space-y-6 md:space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start gap-4 animate-fade-in">
           <div className="space-y-2">
