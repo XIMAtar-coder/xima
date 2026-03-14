@@ -46,7 +46,7 @@ const Business = () => {
               }}
             />
             
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground">
+            <h1 className="text-[28px] md:text-[40px] xl:text-[48px] font-bold leading-tight text-foreground">
               {t('business.hero_title')}
             </h1>
             
