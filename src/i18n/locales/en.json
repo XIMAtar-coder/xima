@@ -288,11 +288,12 @@
     "settings": "Settings"
   },
   "hero": {
-    "title": "Discover Your Professional Self",
-    "subtitle": "XIMA helps you understand your professional strengths and weaknesses through our unique 5-pillar assessment system, matching you with the perfect career opportunities.",
-    "cta": "Get Your Ximatar Now!",
+    "eyebrow": "PSYCHOMETRICS · AI HIRING · GDPR ART. 22 COMPLIANT",
+    "title": "The résumé was never about you.\nThe XIMAtar is.",
+    "subtitle": "XIMA replaces credential-based hiring with validated behavioral science and AI-powered signal extraction. Every candidate receives a XIMAtar — a persistent behavioral identity they own, carry, and reuse across every company they ever apply to.",
+    "cta": "Discover Your XIMAtar",
     "learn_more": "Learn More",
-    "for_business": "For Business",
+    "for_business": "For Companies →",
     "login": "Login"
   },
   "ximatar_intro": {
