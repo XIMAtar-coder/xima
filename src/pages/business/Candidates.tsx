@@ -922,7 +922,7 @@ const BusinessCandidates = () => {
                     <SelectValue placeholder={t('business.candidates.filter_type')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{t('business.candidates.all_types')}</SelectItem>
+                    <SelectItem value="all">{t('businessPortal.candidates_filter_all_types')}</SelectItem>
                     <SelectItem value="owl">Owl</SelectItem>
                     <SelectItem value="parrot">Parrot</SelectItem>
                     <SelectItem value="elephant">Elephant</SelectItem>
