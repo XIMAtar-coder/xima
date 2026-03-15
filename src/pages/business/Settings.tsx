@@ -416,7 +416,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label className="text-foreground flex items-center gap-2">
                   <MapPin size={16} />
-                  {t('business.settings.hq_country')}
+                  {t('businessPortal.settings_snapshot_country_label')}
                 </Label>
                 <Input
                   placeholder={snapshotData.snapshot_hq_country || t('business.settings.country_placeholder')}
