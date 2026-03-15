@@ -269,7 +269,7 @@ const BusinessSettings = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="companyName" className="text-foreground">{t('business_portal.company_name')}</Label>
+                <Label htmlFor="companyName" className="text-foreground">{t('businessPortal.settings_company_name_label')}</Label>
                 <Input
                   id="companyName"
                   placeholder="Acme Corporation"
