@@ -39,7 +39,7 @@ export const AssessmentOverviewCard: React.FC<AssessmentOverviewCardProps> = ({
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-semibold text-foreground uppercase tracking-[0.04em] flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-secondary" strokeWidth={1.5} />
-          {t('profile.assessment_overview', 'Assessment Overview')}
+          {t('dashboard.assessment_overview_title', 'Assessment Overview')}
         </h3>
         <div className="flex items-baseline gap-1">
           <span className="text-[34px] font-bold text-foreground stat-value">{averageScore.toFixed(1)}</span>
