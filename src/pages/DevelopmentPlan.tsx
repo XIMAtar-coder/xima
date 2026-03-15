@@ -192,7 +192,7 @@ const DevelopmentPlan = () => {
               <div className="p-2 rounded-lg bg-primary/10">
                 <Target className="h-5 w-5 text-primary" />
               </div>
-              {t('development.overall_progress')}
+              {t('developmentPlan.progress_title')}
             </CardTitle>
           </CardHeader>
            <CardContent className="pt-6 p-4 md:p-6">
