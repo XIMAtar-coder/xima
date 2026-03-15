@@ -128,7 +128,7 @@ const CompanyLegalSettings: React.FC = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="postal_code" className="text-sm text-muted-foreground">
-                  {t('business.legal.postal_code')}
+                  {t('businessPortal.settings_legal_address_zip')}
                 </Label>
                 <Input
                   id="postal_code"
