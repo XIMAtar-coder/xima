@@ -65,7 +65,7 @@ export const AssessmentOverviewCard: React.FC<AssessmentOverviewCardProps> = ({
             <span className="text-[13px] font-bold text-foreground stat-value">{Math.round(driveScore)}</span>
           </div>
         ) : (
-          <p className="text-[12px] italic text-muted-foreground">{t('profile.drive_refining', 'Complete more challenges to measure growth velocity.')}</p>
+          <p className="text-[12px] italic text-muted-foreground">{t('dashboard.drive_refining', 'Complete more challenges to measure growth velocity.')}</p>
         )}
       </div>
 
