@@ -456,7 +456,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label className="text-foreground flex items-center gap-2">
                   <Globe size={16} />
-                  {t('business.settings.website')}
+                  {t('businessPortal.settings_snapshot_website_label')}
                 </Label>
                 <Input
                   type="url"
