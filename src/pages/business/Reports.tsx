@@ -200,7 +200,7 @@ const BusinessReports = () => {
                 </div>
               </div>
               <h3 className="text-3xl font-bold text-foreground mb-1">{stats.conversionRate.toFixed(1)}%</h3>
-              <p className="text-sm text-muted-foreground">{t('business.reports.conversion_rate')}</p>
+              <p className="text-sm text-muted-foreground">{t('businessPortal.reports_stat_conversion')}</p>
             </CardContent>
           </Card>
         </div>
