@@ -131,7 +131,7 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
 
       {isMinimal && (
         <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 px-3 py-2 rounded-md">
-          {t('open_scoring.consider_elaborating')}
+          {t('ximatarJourney.open_score_improve_tip')}
         </p>
       )}
 
