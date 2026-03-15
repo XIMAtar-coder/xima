@@ -91,7 +91,7 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
           onClick={() => setExpanded(!expanded)}
           className="flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors font-medium"
         >
-          {t('open_scoring.why')}
+          {t('ximatarJourney.open_score_why')}
           {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
       </div>
