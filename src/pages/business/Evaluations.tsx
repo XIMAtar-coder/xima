@@ -146,9 +146,9 @@ const BusinessEvaluations = () => {
           <Card className="bg-gradient-to-br from-[#0F1419] to-[#0A0F1C] border-[#3A9FFF]/20">
             <CardContent className="p-12 text-center">
               <FileText className="mx-auto mb-4 text-[#A3ABB5]" size={48} />
-              <p className="text-[#A3ABB5] text-lg mb-2">{t('business_portal.no_evaluations')}</p>
-              <p className="text-[#A3ABB5] text-sm">
-                {t('business_portal.create_challenges_invite')}
+              <p className="text-muted-foreground text-lg mb-2">{t('businessPortal.evaluations_empty_headline')}</p>
+              <p className="text-muted-foreground text-sm">
+                {t('businessPortal.evaluations_empty_body')}
               </p>
             </CardContent>
           </Card>
