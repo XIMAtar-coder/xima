@@ -269,7 +269,7 @@ export default function FeaturedProfessionals({
       {/* Refresh button header */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
-          {t('professionals.showing_compatible', 'Showing compatible mentors for your profile')}
+          {t('ximatarJourney.mentor_showing_compatible')}
         </div>
         <Button
           variant="outline"
