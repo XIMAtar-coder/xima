@@ -138,7 +138,7 @@ export function MentorCVConsentToggle({
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <Shield className="h-5 w-5 text-primary" />
-            {t('settings.cv_consent_title', 'Mentor CV Access')}
+            {t('settings.mentor_cv_title', 'Mentor CV Access')}
           </CardTitle>
         </CardHeader>
         <CardContent>
