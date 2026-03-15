@@ -151,7 +151,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           <div>
             <h4 className="font-semibold text-sm text-muted-foreground mb-2 flex items-center gap-2">
               <Target className="h-4 w-4" />
-              {t('business.profile.ideal_traits')}
+              {t('businessPortal.company_ideal_candidate_label')}
             </h4>
             <ul className="list-disc list-inside space-y-1 text-foreground">
               {(profile.ideal_traits || []).map((trait, idx) => (
