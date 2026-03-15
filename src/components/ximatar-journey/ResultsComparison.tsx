@@ -674,7 +674,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       {!hasCv && openResponses.length > 0 && (
         <div className="space-y-6 animate-fade-in" style={{ animationDelay: '1000ms' }}>
           <Card className="p-8">
-            <h3 className="text-2xl font-bold mb-6 text-center font-heading">{t('open_scoring.title')}</h3>
+            <h3 className="text-2xl font-bold mb-6 text-center font-heading">{t('ximatarJourney.open_scores_title')}</h3>
             <div className="space-y-6">
               {openResponses.map((response, index) => (
                 <div 
