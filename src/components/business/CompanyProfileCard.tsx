@@ -238,7 +238,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
               ))}
             </div>
             <p className="text-sm text-muted-foreground mt-2">
-              {t('business.profile.recommended_ximatars_description')}
+              {t('businessPortal.company_recommended_ximatar_body')}
             </p>
           </div>
 
