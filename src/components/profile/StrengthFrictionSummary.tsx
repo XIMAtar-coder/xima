@@ -30,7 +30,7 @@ export const StrengthFrictionSummary: React.FC<StrengthFrictionSummaryProps> = (
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[11px] font-medium text-apple-green uppercase tracking-[0.04em] mb-0.5">
-                  {t('profile.your_edge', 'Your Edge')}
+                  {t('dashboard.advantage_title', 'Your Edge')}
                 </p>
                 <p className="text-[15px] font-semibold text-foreground capitalize truncate">
                   {t(`pillars.${strongestPillar}.name`, strongestPillar)}
