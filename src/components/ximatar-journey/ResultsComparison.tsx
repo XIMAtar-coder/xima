@@ -531,7 +531,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                 transition-all duration-300
                 ${driveLevel === 'medium' ? 'scale-105' : ''}
               `}>
-                {t('ximatar_intro.drive_paths.medium')}
+                {t('ximatarJourney.drive_medium_label')}
               </span>
               {driveLevel === 'medium' && (
                 <Badge 
