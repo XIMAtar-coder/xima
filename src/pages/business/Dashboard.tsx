@@ -536,10 +536,10 @@ const BusinessDashboard = () => {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-foreground mb-1">
-                    {t('business.hiring_goal.completed_title')}
+                    {t('businessPortal.hiring_goal_saved_title')}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    {t('business.hiring_goal.completed_desc')}
+                    {t('businessPortal.hiring_goal_saved_body')}
                   </p>
                   <div className="flex flex-wrap gap-3">
                     <Button 
