@@ -205,7 +205,7 @@ const CompanyLegalSettings: React.FC = () => {
               onChange={(e) => updateField('contact_email', e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
-              {t('business.legal.contact_email_hint')}
+              {t('businessPortal.settings_legal_contact_email_hint')}
             </p>
           </div>
 
