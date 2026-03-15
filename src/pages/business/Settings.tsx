@@ -384,10 +384,10 @@ const BusinessSettings = () => {
             <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border/50">
               <div className="space-y-0.5">
                 <Label className="text-foreground font-medium">
-                  {t('business.settings.override_toggle')}
+                  {t('businessPortal.settings_snapshot_manual_toggle')}
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  {t('business.settings.override_description')}
+                  {t('businessPortal.settings_snapshot_manual_body')}
                 </p>
               </div>
               <Switch
