@@ -378,7 +378,7 @@ const DevelopmentPlan = () => {
                                 {isCompleted ? (
                                   <>
                                     <Award className="h-4 w-4" />
-                                    {t('development.completed')}
+                                    {t('developmentPlan.completed_badge')}
                                   </>
                                 ) : (
                                   <>
