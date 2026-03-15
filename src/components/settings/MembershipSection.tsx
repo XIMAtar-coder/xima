@@ -228,7 +228,7 @@ export const MembershipSection: React.FC = () => {
                 </div>
                 <div>
                   <p className="font-semibold text-foreground text-lg">{creditBalance}</p>
-                  <p className="text-xs text-muted-foreground">{t('credits.available', 'Available credits')}</p>
+                  <p className="text-xs text-muted-foreground">{t('settings.membership_credits_label', 'Available credits')}</p>
                 </div>
               </div>
               {creditBalance >= 5 && (
