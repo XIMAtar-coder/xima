@@ -248,8 +248,8 @@ const BusinessSettings = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">{t('business_portal.settings')}</h1>
-          <p className="text-muted-foreground">{t('business_portal.manage_preferences')}</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">{t('businessPortal.settings_page_title')}</h1>
+          <p className="text-muted-foreground">{t('businessPortal.settings_page_subtitle')}</p>
         </div>
 
         {/* Plan & Entitlements */}
