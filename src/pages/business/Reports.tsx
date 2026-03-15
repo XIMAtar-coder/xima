@@ -141,8 +141,8 @@ const BusinessReports = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">{t('business.reports.title')}</h1>
-            <p className="text-muted-foreground">{t('business.reports.subtitle')}</p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">{t('businessPortal.reports_page_title')}</h1>
+            <p className="text-muted-foreground">{t('businessPortal.reports_page_subtitle')}</p>
           </div>
           <Button
             onClick={handleExportCSV}
