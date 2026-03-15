@@ -605,7 +605,7 @@ const BusinessDashboard = () => {
                   }}
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  {t('business.goals.new_goal')}
+                  {t('businessPortal.hiring_goals_new_cta')}
                 </Button>
               </div>
               
