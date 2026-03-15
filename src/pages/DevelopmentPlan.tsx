@@ -434,10 +434,10 @@ const DevelopmentPlan = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">
-                      {t('development.recommendations.schedule_practice.title')}
+                      {t('developmentPlan.next_step_2_title')}
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
-                      {t('development.recommendations.schedule_practice.description')}
+                      {t('developmentPlan.next_step_2_body')}
                     </p>
                   </div>
                 </div>
