@@ -459,7 +459,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                   }
                 `}
               >
-                {t(`ximatar_intro.drive_paths.${driveLevel}`)} ({driveScore.toFixed(1)})
+                {t(`ximatarJourney.drive_${driveLevel}_label`)} ({driveScore.toFixed(1)})
               </Badge>
             </div>
           </div>
