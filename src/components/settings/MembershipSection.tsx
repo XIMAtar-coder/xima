@@ -269,7 +269,7 @@ export const MembershipSection: React.FC = () => {
             <div className="flex-1 rounded-lg bg-muted/50 p-3 text-center">
               <p className="text-2xl font-bold text-foreground">{qualifiedCount}</p>
               <p className="text-xs text-muted-foreground">
-                {t('settings.qualified_referrals', 'Validated referrals')}
+                {t('settings.referral_validated_label', 'Validated referrals')}
               </p>
             </div>
             <div className="flex-1 rounded-lg bg-muted/50 p-3 text-center">
