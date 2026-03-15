@@ -92,7 +92,7 @@ export function ProfilingOptOutSection() {
           {t('settings.ai_profiling_title')}
         </CardTitle>
         <CardDescription>
-          {t('settings.profiling.description')}
+          {t('settings.ai_profiling_subtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
