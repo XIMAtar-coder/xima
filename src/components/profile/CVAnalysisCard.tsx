@@ -166,7 +166,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
             <FileText className="text-primary" />
             <div>
               <CardTitle className="font-heading">
-                {t('profile.cv_analysis', 'CV Analysis')}
+                {t('dashboard.cv_analysis_title', 'CV Analysis')}
               </CardTitle>
               {cvPillarScores && assessmentPillarScores && (
                 <p className={`text-sm mt-1 ${
