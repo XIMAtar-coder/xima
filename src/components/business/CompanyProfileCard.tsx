@@ -137,7 +137,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
             </div>
             <div>
               <h4 className="font-semibold text-sm text-muted-foreground mb-2">
-                {t('business.profile.communication_style')}
+                {t('businessPortal.company_communication_style_label')}
               </h4>
               {profile.communication_style ? (
                 <p className="text-foreground">{profile.communication_style}</p>
