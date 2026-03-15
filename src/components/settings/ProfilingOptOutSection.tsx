@@ -89,10 +89,10 @@ export function ProfilingOptOutSection() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Brain className="h-5 w-5 text-primary" />
-          {t('settings.profiling.title')}
+          {t('settings.ai_profiling_title')}
         </CardTitle>
         <CardDescription>
-          {t('settings.profiling.description')}
+          {t('settings.ai_profiling_subtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -100,14 +100,14 @@ export function ProfilingOptOutSection() {
         <Alert>
           <Info className="h-4 w-4" />
           <AlertDescription>
-            <p className="font-medium mb-2">{t('settings.profiling.whatIsTitle')}</p>
+            <p className="font-medium mb-2">{t('settings.ai_profiling_what_title')}</p>
             <p className="text-sm text-muted-foreground mb-2">
-              {t('settings.profiling.whatIsDescription')}
+              {t('settings.ai_profiling_what_body')}
             </p>
             <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-              <li>{t('settings.profiling.includes1')}</li>
-              <li>{t('settings.profiling.includes2')}</li>
-              <li>{t('settings.profiling.includes3')}</li>
+              <li>{t('settings.ai_profiling_item_1')}</li>
+              <li>{t('settings.ai_profiling_item_2')}</li>
+              <li>{t('settings.ai_profiling_item_3')}</li>
             </ul>
           </AlertDescription>
         </Alert>
@@ -116,10 +116,10 @@ export function ProfilingOptOutSection() {
         <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border/50">
           <div className="space-y-0.5 flex-1 mr-4">
             <Label htmlFor="profiling-opt-out" className="text-foreground font-medium cursor-pointer">
-              {t('settings.profiling.optOutLabel')}
+              {t('settings.ai_profiling_opt_out_label')}
             </Label>
             <p className="text-xs text-muted-foreground">
-              {t('settings.profiling.optOutDescription')}
+              {t('settings.ai_profiling_opt_out_body')}
             </p>
           </div>
           <Switch
@@ -151,7 +151,7 @@ export function ProfilingOptOutSection() {
 
         {/* Human review contact */}
         <p className="text-sm text-muted-foreground">
-          {t('settings.profiling.humanReview')}{' '}
+          {t('settings.ai_profiling_human_review')}{' '}
           <a href="mailto:privacy@xima.app" className="text-primary hover:underline">
             privacy@xima.app
           </a>

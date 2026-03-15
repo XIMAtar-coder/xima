@@ -228,7 +228,7 @@ export const MembershipSection: React.FC = () => {
                 </div>
                 <div>
                   <p className="font-semibold text-foreground text-lg">{creditBalance}</p>
-                  <p className="text-xs text-muted-foreground">{t('credits.available', 'Available credits')}</p>
+                  <p className="text-xs text-muted-foreground">{t('settings.membership_credits_label', 'Available credits')}</p>
                 </div>
               </div>
               {creditBalance >= 5 && (
@@ -238,7 +238,7 @@ export const MembershipSection: React.FC = () => {
               )}
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              {t('credits.cost_standard_session', 'Standard mentor session (45 min) costs 5 credits.')}
+              {t('settings.membership_credits_note', 'A standard mentor session (45 min) costs 5 credits.')}
             </p>
           </div>
         </CardContent>
@@ -249,18 +249,18 @@ export const MembershipSection: React.FC = () => {
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Gift className="h-5 w-5 text-primary" />
-            {t('referral.title', 'Invite friends, earn credits')}
+            {t('settings.referral_title', 'Invite Friends, Earn Credits')}
           </CardTitle>
           <CardDescription>
-            {t('referral.how_it_works', 'When someone signs up with your link and completes their first free intro session with a mentor, the referral is validated.')}
+            {t('settings.referral_body', 'When someone signs up with your link and completes their first free intro session with a mentor, the referral is validated.')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* How credits work */}
           <div className="space-y-1.5 text-sm text-muted-foreground">
-            <p>✦ {t('referral.earn_credits', 'Each validated referral gives you +1 credit.')}</p>
+            <p>{t('settings.referral_credit_rule', '✦ Each validated referral gives you +1 credit.')}</p>
             <p className="text-xs">
-              {t('referral.qualified_rule', 'We count referrals only after the first mentor intro is completed to ensure real profiles.')}
+              {t('settings.referral_note', 'We count referrals only after the first mentor intro is completed to ensure real profiles.')}
             </p>
           </div>
 
@@ -269,13 +269,13 @@ export const MembershipSection: React.FC = () => {
             <div className="flex-1 rounded-lg bg-muted/50 p-3 text-center">
               <p className="text-2xl font-bold text-foreground">{qualifiedCount}</p>
               <p className="text-xs text-muted-foreground">
-                {t('settings.qualified_referrals', 'Validated referrals')}
+                {t('settings.referral_validated_label', 'Validated referrals')}
               </p>
             </div>
             <div className="flex-1 rounded-lg bg-muted/50 p-3 text-center">
               <p className="text-2xl font-bold text-foreground">{creditBalance}</p>
               <p className="text-xs text-muted-foreground">
-                {t('credits.available', 'Available credits')}
+                {t('settings.referral_available_label', 'Available credits')}
               </p>
             </div>
           </div>
@@ -286,7 +286,7 @@ export const MembershipSection: React.FC = () => {
           {referralCode && (
             <div className="space-y-2">
               <p className="text-sm font-medium text-foreground">
-                {t('settings.your_invite_link', 'Your invite link')}
+                {t('settings.referral_link_label', 'Your invite link')}
               </p>
               <div className="flex gap-2">
                 <Input
@@ -304,12 +304,12 @@ export const MembershipSection: React.FC = () => {
           {/* Send invite by email */}
           <div className="space-y-2">
             <p className="text-sm font-medium text-foreground">
-              {t('settings.send_invite_email', 'Send invite by email')}
+              {t('settings.referral_email_label', 'Send invite by email')}
             </p>
             <div className="flex gap-2">
               <Input
                 type="email"
-                placeholder={t('settings.email_placeholder', 'friend@example.com')}
+                placeholder={t('settings.referral_email_placeholder', 'friend@example.com')}
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendInvite()}
@@ -366,6 +366,9 @@ export const MembershipSection: React.FC = () => {
             <CardTitle className="text-lg">
               {t('settings.upgrade_title', 'Upgrade Your Plan')}
             </CardTitle>
+            <CardDescription>
+              {t('settings.upgrade_subtitle', 'Unlock unlimited mentor sessions, priority access to opportunities, and advanced development tools.')}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-3">
@@ -384,8 +387,8 @@ export const MembershipSection: React.FC = () => {
                         {tierConfig.icon}
                       </div>
                       <div>
-                        <p className="font-medium text-foreground">{tierConfig.label}</p>
-                        <p className="text-sm text-muted-foreground">{tierConfig.price}</p>
+                        <p className="font-medium text-foreground">{t(`settings.plan_${key}_name`, tierConfig.label)}</p>
+                        <p className="text-xs text-muted-foreground">{t(`settings.plan_${key}_tagline`, tierConfig.price)}</p>
                       </div>
                     </div>
                     <Button
@@ -393,7 +396,7 @@ export const MembershipSection: React.FC = () => {
                       size="sm"
                       onClick={() => window.location.href = '/contact-sales'}
                     >
-                      {t('pricing.contact_sales', 'Contact Sales')}
+                      {t(`settings.plan_${key}_cta`, 'Contact Sales')}
                     </Button>
                   </div>
                 ))}
