@@ -324,7 +324,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label htmlFor="duration" className="text-foreground flex items-center gap-2">
                   <Clock size={16} />
-                  {t('business_portal.default_duration')}
+                  {t('businessPortal.settings_challenge_duration_label')}
                 </Label>
                 <Input
                   id="duration"
