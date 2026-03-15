@@ -174,7 +174,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
                   overallDelta < 0 ? 'text-red-600' : 
                   'text-muted-foreground'
                 }`}>
-                  Score Alignment: {overallDelta > 0 ? '+' : ''}{overallDelta.toFixed(1)} overall
+                  {t('dashboard.cv_score_alignment', 'Score Alignment')}: {overallDelta > 0 ? '+' : ''}{overallDelta.toFixed(1)} overall
                 </p>
               )}
             </div>
