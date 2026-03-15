@@ -136,7 +136,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
             </Badge>
           </div>
           <p className="text-muted-foreground text-sm">
-            {t('business.command_center.subtitle')}
+            {t('businessPortal.dashboard_subtitle')}
           </p>
           {lastGenerated && profileStatus === 'ready' && (
             <p className="text-xs text-muted-foreground mt-1">
