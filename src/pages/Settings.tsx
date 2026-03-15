@@ -83,10 +83,10 @@ const CandidateSettings = () => {
         <div>
           <h1 className="text-[28px] md:text-[34px] font-bold text-foreground flex items-center gap-3">
             <Settings className="h-8 w-8 text-primary" />
-            {t('settings.title')}
+            {t('settings.page_title')}
           </h1>
           <p className="text-muted-foreground mt-2">
-            {t('settings.subtitle')}
+            {t('settings.page_subtitle')}
           </p>
         </div>
 

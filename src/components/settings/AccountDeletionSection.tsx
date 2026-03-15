@@ -118,7 +118,7 @@ export function AccountDeletionSection({ variant = 'candidate' }: AccountDeletio
           <AlertDialogTrigger asChild>
             <Button variant="destructive" className="w-full sm:w-auto">
               <Trash2 className="mr-2 h-4 w-4" />
-              {t('settings.deletion.button')}
+              {t('settings.delete_button')}
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>

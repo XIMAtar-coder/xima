@@ -396,7 +396,7 @@ export const MembershipSection: React.FC = () => {
                       size="sm"
                       onClick={() => window.location.href = '/contact-sales'}
                     >
-                      {t('pricing.contact_sales', 'Contact Sales')}
+                      {t(`settings.plan_${key}_cta`, 'Contact Sales')}
                     </Button>
                   </div>
                 ))}

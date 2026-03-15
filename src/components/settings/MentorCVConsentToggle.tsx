@@ -171,10 +171,10 @@ export function MentorCVConsentToggle({
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Shield className="h-5 w-5 text-primary" />
-          {t('settings.cv_consent_title', 'Mentor CV Access')}
+          {t('settings.mentor_cv_title', 'Mentor CV Access')}
         </CardTitle>
         <CardDescription>
-          {t('settings.cv_consent_desc', 'Control whether your mentor can view your CV')}
+          {t('settings.mentor_cv_body', 'Control whether your mentor can access your CV during sessions. Disabled by default — your CV stays private until you choose to share it.')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
