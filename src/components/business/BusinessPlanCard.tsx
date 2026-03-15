@@ -54,7 +54,7 @@ export const BusinessPlanCard: React.FC = () => {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-foreground">
             <Crown className="h-5 w-5 text-primary" />
-            {t('business.plan.title', 'Your Plan')}
+            {t('businessPortal.settings_plan_title')}
           </CardTitle>
           <Badge className={TIER_COLORS[planTier] || TIER_COLORS.starter}>
             {planTier.charAt(0).toUpperCase() + planTier.slice(1)}
