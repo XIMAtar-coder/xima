@@ -645,9 +645,9 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       <Card className="p-8">
         <div className="text-center mb-6">
-          <h3 className="text-2xl font-bold mb-2 font-heading">{t('professionals.title')}</h3>
-          <p className="text-muted-foreground mb-2">{t('professionals.subtitle')}</p>
-          <p className="text-sm font-medium text-primary">{t('mentors.choose_to_continue')}</p>
+          <h3 className="text-2xl font-bold mb-2 font-heading">{t('ximatarJourney.mentor_section_title')}</h3>
+          <p className="text-muted-foreground mb-2">{t('ximatarJourney.mentor_section_subtitle')}</p>
+          <p className="text-sm font-medium text-primary">{t('ximatarJourney.mentor_choose_to_continue')}</p>
         </div>
         
         <FeaturedProfessionals 
