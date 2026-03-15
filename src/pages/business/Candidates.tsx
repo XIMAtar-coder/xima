@@ -910,7 +910,7 @@ const BusinessCandidates = () => {
                 <div className="flex-1 min-w-[200px] relative">
                   <Search className="absolute left-3 top-3 text-muted-foreground" size={18} />
                   <Input
-                    placeholder={t('business.candidates.search_placeholder')}
+                    placeholder={t('businessPortal.candidates_search_placeholder')}
                     className="pl-10"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
