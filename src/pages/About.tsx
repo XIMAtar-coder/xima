@@ -291,7 +291,7 @@ const About = () => {
                 <img 
                   src="/avatars/pietro-cozzi.jpg" 
                   alt="Pietro Cozzi" 
-                  className="w-20 h-20 rounded-full object-cover flex-shrink-0"
+                   className="w-20 h-20 rounded-2xl object-cover flex-shrink-0"
                 />
                 <div>
                   <span className="inline-block text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full mb-1">
