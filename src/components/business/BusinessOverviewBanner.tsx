@@ -283,7 +283,7 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
               
               <SnapshotField
                 icon={<Globe className="h-4 w-4" />}
-                label={t('business.overview.field_website')}
+                label={t('businessPortal.company_field_website')}
                 value={snapshot.website_domain}
               />
             </div>
