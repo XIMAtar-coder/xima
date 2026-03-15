@@ -321,7 +321,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
                       </span>
                       <div className="flex items-center gap-2">
                         <span className="text-muted-foreground">
-                          CV: {cvScore.toFixed(1)}
+                         CV: {cvScore.toFixed(1)}
                         </span>
                         <span className="text-muted-foreground">→</span>
                         <span className="font-semibold">
