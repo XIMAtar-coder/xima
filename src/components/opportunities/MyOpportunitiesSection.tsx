@@ -185,7 +185,7 @@ export const MyOpportunitiesSection: React.FC = () => {
   return (
     <Card className="w-full animate-[fade-in_0.5s_ease-out]">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="font-heading text-2xl">{t('opportunities.my_opportunities')}</CardTitle>
+        <CardTitle className="font-heading text-2xl">{t('dashboard.opportunities_title')}</CardTitle>
         <Button
           variant="outline"
           size="sm"
