@@ -102,12 +102,21 @@ const About = () => {
             <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">
               {t('about.founder_label')}
             </p>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-1">
-              {t('about.founder_headline')}
-            </h2>
-            <p className="text-sm text-muted-foreground mb-6">
-              {t('about.founder_role')}
-            </p>
+            <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+              <img 
+                src="/avatars/pietro-cozzi.jpg" 
+                alt="Pietro Cozzi" 
+                className="w-28 h-28 md:w-36 md:h-36 rounded-2xl object-cover flex-shrink-0"
+              />
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-1">
+                  {t('about.founder_headline')}
+                </h2>
+                <p className="text-sm text-muted-foreground mb-6">
+                  {t('about.founder_role')}
+                </p>
+              </div>
+            </div>
             <div className="space-y-4 mb-6">
               <p className="text-muted-foreground leading-relaxed">
                 {t('about.founder_body_1')}
