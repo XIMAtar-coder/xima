@@ -249,6 +249,12 @@
       "strength_description": "La tua velocità di miglioramento nelle aree deboli è forte. Trasformi i punti di attrito in punti di forza più velocemente della media.",
       "growth_description": "Concentrati sui pillar più deboli con pratica mirata. Il Drive cresce man mano che riduci il divario tra i tuoi punti di forza e le debolezze."
     },
+    "computational_power": {
+      "name": "Potenza Computazionale",
+      "description": "La capacità di scomporre problemi complessi in passaggi logici, utilizzare dati e strumenti per trovare soluzioni efficienti e pensare sistematicamente alle sfide",
+      "as_strength": "Sei strutturato, preciso e veloce sotto pressione",
+      "as_weakness": "Potresti avere difficoltà con i sistemi, evitare la complessità o perdere chiarezza"
+    },
     "cta_primary": "Ottieni il tuo Ximatar ora",
     "cta_secondary": "Scopri di più",
     "example_label": "Esempio",
