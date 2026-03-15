@@ -294,7 +294,7 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
                 <div className="flex items-start gap-2">
                   <Settings className="h-4 w-4 mt-0.5 flex-shrink-0 text-amber-500" />
                   <span className="text-xs text-muted-foreground">
-                    {t('business.overview.edit_snapshot_hint')}
+                    {t('businessPortal.company_overview_employees_hint')}
                   </span>
                 </div>
                 <Button
