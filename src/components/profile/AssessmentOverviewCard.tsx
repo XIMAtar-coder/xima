@@ -70,7 +70,7 @@ export const AssessmentOverviewCard: React.FC<AssessmentOverviewCardProps> = ({
       </div>
 
       <div className="space-y-2.5">
-        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-[0.04em]">{t('profile.pillar_scores', 'Pillar Scores')}</p>
+        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-[0.04em]">{t('dashboard.pillar_scores_title', 'Pillar Scores')}</p>
         {sortedPillars.map(({ key, score }, idx) => (
           <div key={key} className="flex items-center gap-3">
             <span className="text-[13px] text-muted-foreground capitalize w-28 truncate">{t(`pillars.${key}.name`, key.replace('_', ' '))}</span>
