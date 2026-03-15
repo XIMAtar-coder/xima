@@ -65,7 +65,7 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h4 className="font-semibold text-sm text-foreground">
-            {t('assessment.open_question')} {openKey === 'open1' ? '1' : '2'}
+            {t('ximatarJourney.open_question_label')} {openKey === 'open1' ? '1' : '2'}
           </h4>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
@@ -91,7 +91,7 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
           onClick={() => setExpanded(!expanded)}
           className="flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors font-medium"
         >
-          {t('open_scoring.why')}
+          {t('ximatarJourney.open_score_why')}
           {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
       </div>
@@ -131,7 +131,7 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
 
       {isMinimal && (
         <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 px-3 py-2 rounded-md">
-          {t('open_scoring.consider_elaborating')}
+          {t('ximatarJourney.open_score_improve_tip')}
         </p>
       )}
 
@@ -178,35 +178,35 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
           <details className="group">
             <summary className="text-xs font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors list-none flex items-center gap-1">
               <ChevronDown size={14} className="group-open:rotate-180 transition-transform" />
-              {t('open_scoring.rubric_breakdown')}
+              {t('ximatarJourney.open_score_breakdown_label')}
             </summary>
             <div className="grid gap-2 mt-3 pl-4">
               <RubricItem
-                label={t('open_scoring.rubric.length')}
+                label={t('ximatarJourney.open_score_clarity')}
                 score={rubric.length}
                 max={20}
                 avgScore={avgData?.rubric_averages?.length}
               />
               <RubricItem
-                label={t('open_scoring.rubric.relevance')}
+                label={t('ximatarJourney.open_score_relevance')}
                 score={rubric.relevance}
                 max={25}
                 avgScore={avgData?.rubric_averages?.relevance}
               />
               <RubricItem
-                label={t('open_scoring.rubric.structure')}
+                label={t('ximatarJourney.open_score_coherence')}
                 score={rubric.structure}
                 max={20}
                 avgScore={avgData?.rubric_averages?.structure}
               />
               <RubricItem
-                label={t('open_scoring.rubric.specificity')}
+                label={t('ximatarJourney.open_score_insight')}
                 score={rubric.specificity}
                 max={20}
                 avgScore={avgData?.rubric_averages?.specificity}
               />
               <RubricItem
-                label={t('open_scoring.rubric.action')}
+                label={t('ximatarJourney.open_score_depth')}
                 score={rubric.action}
                 max={15}
                 avgScore={avgData?.rubric_averages?.action}
@@ -215,7 +215,7 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
           </details>
 
           <p className="text-xs text-muted-foreground pt-2 border-t border-border/30">
-            {t('open_scoring.note')}
+            {t('ximatarJourney.open_score_influence_note')}
           </p>
         </div>
       )}

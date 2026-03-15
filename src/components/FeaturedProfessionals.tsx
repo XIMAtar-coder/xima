@@ -269,7 +269,7 @@ export default function FeaturedProfessionals({
       {/* Refresh button header */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
-          {t('professionals.showing_compatible', 'Showing compatible mentors for your profile')}
+          {t('ximatarJourney.mentor_showing_compatible')}
         </div>
         <Button
           variant="outline"
@@ -279,13 +279,13 @@ export default function FeaturedProfessionals({
           className="gap-2"
         >
           <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-          {t('professionals.refresh_mentors', 'Refresh mentors')}
+          {t('ximatarJourney.mentor_refresh_cta')}
         </Button>
       </div>
       
       {/* Hint text */}
       <p className="text-xs text-muted-foreground">
-        {t('professionals.refresh_hint', 'Not satisfied? Refresh to see other compatible mentors.')}
+        {t('ximatarJourney.mentor_refresh_note')}
       </p>
 
       <div className="grid md:grid-cols-3 gap-4">
@@ -341,7 +341,7 @@ export default function FeaturedProfessionals({
 
             <div className="flex items-center gap-2 flex-wrap">
               <div className="text-sm font-medium rounded-full px-3 py-1 bg-primary/10 text-primary">
-                {score}% {t('professionals.compatibility')}
+                {score}% {t('ximatarJourney.mentor_match_label')}
               </div>
               {(activeCoachees > 0 || totalCoached > 0) && (
                 <div className="text-xs text-muted-foreground flex items-center gap-1">
@@ -370,7 +370,7 @@ export default function FeaturedProfessionals({
             {specialties.length > 0 && (
               <div className="space-y-2">
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  {t('professionals.specialties', 'Specialties')}
+                  {t('ximatarJourney.mentor_specialties_label')}
                 </p>
                 <div className="flex flex-wrap gap-1">
                   {specialties.slice(0, 3).map((specialty, idx) => (
@@ -390,7 +390,7 @@ export default function FeaturedProfessionals({
             {ximaPillars.length > 0 && (
               <div className="space-y-2">
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  {t('professionals.xima_pillars', 'XIMA Pillars')}
+                  {t('ximatarJourney.mentor_pillars_label')}
                 </p>
                 <div className="flex flex-wrap gap-1">
                   {ximaPillars.slice(0, 3).map((pillar, idx) => (
@@ -413,7 +413,7 @@ export default function FeaturedProfessionals({
                 size="lg"
                 variant={isSelected ? "default" : "outline"}
               >
-                {isSelected ? `✓ ${t('professionals.selected', 'Selected')}` : t('professionals.select')}
+                {isSelected ? `✓ ${t('professionals.selected', 'Selected')}` : t('ximatarJourney.mentor_select_cta')}
               </Button>
             </div>
           </Card>

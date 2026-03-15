@@ -402,11 +402,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         <div className="text-center space-y-4">
           <Sparkles className="h-12 w-12 text-primary mx-auto mb-4 animate-scale-in" />
           <h2 className="text-3xl font-bold font-heading animate-fade-in" style={{ animationDelay: '100ms' }}>
-            {t('results.title')}
+            {t('ximatarJourney.results_title')}
           </h2>
           <div className="prose prose-lg mx-auto text-muted-foreground max-w-2xl space-y-4 animate-fade-in" style={{ animationDelay: '200ms' }}>
-            <p className="italic text-lg">{t('ximatar_intro.storytelling')}</p>
-            <p>{t('ximatar_intro.explanation')}</p>
+            <p className="italic text-lg">{t('ximatarJourney.results_tagline')}</p>
+            <p>{t('ximatarJourney.results_archetype_body')}</p>
           </div>
         </div>
       </Card>
@@ -421,12 +421,12 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       {/* How Your XIMAtar Was Determined */}
       {strongestPillar && weakestPillar && (
         <Card className="p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20 animate-fade-in" style={{ animationDelay: '400ms' }}>
-          <h3 className="text-xl font-bold mb-4 text-center font-heading">{t('ximatar_intro.assignment_logic')}</h3>
+          <h3 className="text-xl font-bold mb-4 text-center font-heading">{t('ximatarJourney.assignment_logic')}</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '500ms' }}>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-500 animate-scale-in" />
-                <span className="font-semibold">{t('results.strongest_pillar')}:</span>
+                <span className="font-semibold">{t('ximatarJourney.your_edge_label')}</span>
               </div>
               <Badge variant="default" className="px-4 py-2 text-base capitalize hover-scale">
                 {t(`pillars.${strongestPillar.pillar === 'computational_power' ? 'computational' : strongestPillar.pillar}.name`)} ({strongestPillar.score.toFixed(1)})
@@ -436,7 +436,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
             <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '600ms' }}>
               <div className="flex items-center gap-2">
                 <AlertCircle className="h-5 w-5 text-orange-500 animate-scale-in" />
-                <span className="font-semibold">{t('results.weakest_pillar')}:</span>
+                <span className="font-semibold">{t('ximatarJourney.your_friction_label')}</span>
               </div>
               <Badge variant="outline" className="px-4 py-2 text-base capitalize hover-scale">
                 {t(`pillars.${weakestPillar.pillar === 'computational_power' ? 'computational' : weakestPillar.pillar}.name`)} ({weakestPillar.score.toFixed(1)})
@@ -446,7 +446,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
             <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '700ms' }}>
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary animate-scale-in" />
-                <span className="font-semibold">{t('results.drive_level')}:</span>
+                <span className="font-semibold">{t('ximatarJourney.your_trajectory_label')}</span>
               </div>
               <Badge 
                 variant="secondary" 
@@ -459,7 +459,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                   }
                 `}
               >
-                {t(`ximatar_intro.drive_paths.${driveLevel}`)} ({driveScore.toFixed(1)})
+                {t(`ximatarJourney.drive_${driveLevel}_label`)} ({driveScore.toFixed(1)})
               </Badge>
             </div>
           </div>
@@ -468,8 +468,8 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       {/* Drive Path Explanation */}
       <Card className="p-6 overflow-hidden">
-        <h3 className="text-xl font-bold mb-4 font-heading">{t('pillars.drive.name')}</h3>
-        <p className="text-muted-foreground mb-4">{t('pillars.drive.description')}</p>
+        <h3 className="text-xl font-bold mb-4 font-heading">{t('ximatarJourney.drive_section_title')}</h3>
+        <p className="text-muted-foreground mb-4">{t('ximatarJourney.drive_section_body')}</p>
         <div className="space-y-3">
           {/* High Drive */}
           <div 
@@ -491,14 +491,14 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                 transition-all duration-300
                 ${driveLevel === 'high' ? 'scale-105' : ''}
               `}>
-                {t('ximatar_intro.drive_paths.high')}
+                {t('ximatarJourney.drive_high_label')}
               </span>
               {driveLevel === 'high' && (
                 <Badge 
                   variant="default" 
                   className="text-xs animate-scale-in bg-green-600 hover:bg-green-700"
                 >
-                  {t('common.you', 'You')}
+                  {t('ximatarJourney.drive_you_badge')}
                 </Badge>
               )}
             </div>
@@ -507,7 +507,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
               transition-opacity duration-300
               ${driveLevel === 'high' ? 'opacity-100' : 'opacity-75'}
             `}>
-              {t('ximatar_intro.drive_paths.high_desc')}
+              {t('ximatarJourney.drive_high_body')}
             </p>
           </div>
           
@@ -531,14 +531,14 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                 transition-all duration-300
                 ${driveLevel === 'medium' ? 'scale-105' : ''}
               `}>
-                {t('ximatar_intro.drive_paths.medium')}
+                {t('ximatarJourney.drive_medium_label')}
               </span>
               {driveLevel === 'medium' && (
                 <Badge 
                   variant="default" 
                   className="text-xs animate-scale-in bg-blue-600 hover:bg-blue-700"
                 >
-                  {t('common.you', 'You')}
+                  {t('ximatarJourney.drive_you_badge')}
                 </Badge>
               )}
             </div>
@@ -547,7 +547,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
               transition-opacity duration-300
               ${driveLevel === 'medium' ? 'opacity-100' : 'opacity-75'}
             `}>
-              {t('ximatar_intro.drive_paths.medium_desc')}
+              {t('ximatarJourney.drive_medium_body')}
             </p>
           </div>
           
@@ -571,14 +571,14 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                 transition-all duration-300
                 ${driveLevel === 'low' ? 'scale-105' : ''}
               `}>
-                {t('ximatar_intro.drive_paths.low')}
+                {t('ximatarJourney.drive_low_label')}
               </span>
               {driveLevel === 'low' && (
                 <Badge 
                   variant="default" 
                   className="text-xs animate-scale-in bg-orange-600 hover:bg-orange-700"
                 >
-                  {t('common.you', 'You')}
+                  {t('ximatarJourney.drive_you_badge')}
                 </Badge>
               )}
             </div>
@@ -587,7 +587,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
               transition-opacity duration-300
               ${driveLevel === 'low' ? 'opacity-100' : 'opacity-75'}
             `}>
-              {t('ximatar_intro.drive_paths.low_desc')}
+              {t('ximatarJourney.drive_low_body')}
             </p>
           </div>
         </div>
@@ -598,11 +598,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-heading">
               <Sparkles className="text-primary animate-scale-in" />
-              {t('results.assessment_scores')}
+              {t('ximatarJourney.scores_title')}
             </CardTitle>
             {totalScore !== null && (
               <p className="text-sm text-muted-foreground">
-                {t('results.total_score')}: <span className="font-bold text-primary">{totalScore.toFixed(1)}/50</span>
+                {t('ximatarJourney.scores_total_label')} <span className="font-bold text-primary">{totalScore.toFixed(1)}/50</span>
               </p>
             )}
           </CardHeader>
@@ -645,9 +645,9 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       <Card className="p-8">
         <div className="text-center mb-6">
-          <h3 className="text-2xl font-bold mb-2 font-heading">{t('professionals.title')}</h3>
-          <p className="text-muted-foreground mb-2">{t('professionals.subtitle')}</p>
-          <p className="text-sm font-medium text-primary">{t('mentors.choose_to_continue')}</p>
+          <h3 className="text-2xl font-bold mb-2 font-heading">{t('ximatarJourney.mentor_section_title')}</h3>
+          <p className="text-muted-foreground mb-2">{t('ximatarJourney.mentor_section_subtitle')}</p>
+          <p className="text-sm font-medium text-primary">{t('ximatarJourney.mentor_choose_to_continue')}</p>
         </div>
         
         <FeaturedProfessionals 
@@ -674,7 +674,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       {!hasCv && openResponses.length > 0 && (
         <div className="space-y-6 animate-fade-in" style={{ animationDelay: '1000ms' }}>
           <Card className="p-8">
-            <h3 className="text-2xl font-bold mb-6 text-center font-heading">{t('open_scoring.title')}</h3>
+            <h3 className="text-2xl font-bold mb-6 text-center font-heading">{t('ximatarJourney.open_scores_title')}</h3>
             <div className="space-y-6">
               {openResponses.map((response, index) => (
                 <div 
@@ -699,7 +699,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       <Card className="p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 border-primary/10 animate-fade-in" style={{ animationDelay: '1200ms' }}>
         <div className="text-center space-y-4">
           <p className="text-lg italic text-muted-foreground max-w-2xl mx-auto animate-scale-in" style={{ animationDelay: '1300ms' }}>
-            {t('ximatar_intro.compass')}
+            {t('ximatarJourney.closing_pullquote')}
           </p>
         </div>
       </Card>

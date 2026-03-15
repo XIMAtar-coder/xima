@@ -55,9 +55,9 @@ const XimatarJourney = () => {
   } = useXimatarJourneyState();
 
   const steps = [
-    { number: 1, title: t('journey.step_1'), icon: <FileText size={20} /> },
-    { number: 2, title: t('journey.step_2'), icon: <User size={20} /> },
-    { number: 3, title: t('journey.step_3'), icon: <Check size={20} /> }
+    { number: 1, title: t('ximatarJourney.step1_label'), icon: <FileText size={20} /> },
+    { number: 2, title: t('ximatarJourney.step2_label'), icon: <User size={20} /> },
+    { number: 3, title: t('ximatarJourney.step3_label'), icon: <Check size={20} /> }
   ];
 
   const handleStepComplete = (step: number) => {
@@ -118,9 +118,9 @@ const XimatarJourney = () => {
             alt="XIMA Logo" 
             className="h-14 w-auto mx-auto mb-4 logo-hover"
           />
-          <h1 className="text-4xl font-bold mb-2 font-heading">{t('journey.title')}</h1>
+          <h1 className="text-4xl font-bold mb-2 font-heading">{t('ximatarJourney.page_title')}</h1>
           <p className="text-muted-foreground text-lg">
-            {t('journey.subtitle')}
+            {t('ximatarJourney.page_subtitle')}
           </p>
         </div>
         
@@ -204,7 +204,7 @@ const XimatarJourney = () => {
         {currentStep === 3 && (
           <div className="mt-8 mb-6 text-center">
             <p className="text-lg font-semibold text-foreground bg-primary/10 border-2 border-primary/30 rounded-lg py-4 px-6 inline-block">
-              {t('journey.choose_mentor_required')}
+              {t('ximatarJourney.closing_cta')}
             </p>
           </div>
         )}
