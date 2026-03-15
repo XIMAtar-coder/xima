@@ -184,7 +184,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
                       {kpi.value}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {t(`business.job_posts_overview.kpi.${kpi.key}`)}
+                      {t(kpi.labelKey)}
                     </p>
                   </div>
                 </>
