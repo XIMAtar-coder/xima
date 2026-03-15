@@ -468,8 +468,8 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       {/* Drive Path Explanation */}
       <Card className="p-6 overflow-hidden">
-        <h3 className="text-xl font-bold mb-4 font-heading">{t('pillars.drive.name')}</h3>
-        <p className="text-muted-foreground mb-4">{t('pillars.drive.description')}</p>
+        <h3 className="text-xl font-bold mb-4 font-heading">{t('ximatarJourney.drive_section_title')}</h3>
+        <p className="text-muted-foreground mb-4">{t('ximatarJourney.drive_section_body')}</p>
         <div className="space-y-3">
           {/* High Drive */}
           <div 
