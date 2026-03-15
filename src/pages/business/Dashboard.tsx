@@ -547,7 +547,7 @@ const BusinessDashboard = () => {
                       onClick={() => navigate(`/business/candidates?fromGoal=${hiringGoalDraftId}`)}
                     >
                       <Users className="h-4 w-4" />
-                      {t('business.hiring_goal.generate_shortlist')}
+                      {t('businessPortal.hiring_goal_generate_shortlist')}
                     </Button>
                     <Button 
                       variant="outline" 
