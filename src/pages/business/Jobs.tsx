@@ -262,10 +262,10 @@ export default function Jobs() {
             <CardContent className="p-12 text-center">
               <Briefcase className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
               <h3 className="text-lg font-semibold mb-2">
-                {statusFilter === 'all' ? t('jobs.no_jobs_title') : t('jobs.no_jobs_filter', { status: t(`jobs.${statusFilter}`) })}
+                {statusFilter === 'all' ? t('businessPortal.jobs_page_empty_headline') : t('businessPortal.jobs_page_empty_headline')}
               </h3>
               <p className="text-muted-foreground mb-4">
-                {t('jobs.no_jobs_desc')}
+                {t('businessPortal.jobs_page_empty_body')}
               </p>
               <Button onClick={() => navigate('/business/jobs/new')}>
                 <Plus className="h-4 w-4 mr-2" />
