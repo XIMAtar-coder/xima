@@ -53,6 +53,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
   const kpiItems = [
     {
       key: 'open_job_posts',
+      labelKey: 'businessPortal.jobs_stat_open',
       value: stats.openCount,
       icon: FileText,
       color: 'text-blue-500',
@@ -60,6 +61,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
     },
     {
       key: 'active_job_posts',
+      labelKey: 'businessPortal.jobs_stat_active',
       value: stats.activeCount,
       icon: Eye,
       color: 'text-green-500',
@@ -67,6 +69,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
     },
     {
       key: 'total_applications',
+      labelKey: 'businessPortal.jobs_stat_applications',
       value: stats.applicationsLast30d,
       icon: Users,
       color: 'text-purple-500',
@@ -74,6 +77,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
     },
     {
       key: 'pending_reviews',
+      labelKey: 'businessPortal.jobs_stat_to_evaluate',
       value: stats.pendingReviewsCount,
       icon: Clock,
       color: 'text-amber-500',
