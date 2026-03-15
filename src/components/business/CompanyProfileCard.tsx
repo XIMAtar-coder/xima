@@ -108,7 +108,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           {/* Values */}
           <div>
             <h4 className="font-semibold text-sm text-muted-foreground mb-2">
-              {t('business.profile.values')}
+              {t('businessPortal.company_values_label')}
             </h4>
             {(profile.values || []).length > 0 ? (
               <div className="flex flex-wrap gap-2">
