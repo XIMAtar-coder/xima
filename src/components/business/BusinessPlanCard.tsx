@@ -61,7 +61,7 @@ export const BusinessPlanCard: React.FC = () => {
           </Badge>
         </div>
         <CardDescription>
-          {t('business.plan.subtitle', 'Current subscription and entitlements')}
+          {t('businessPortal.settings_plan_subtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
