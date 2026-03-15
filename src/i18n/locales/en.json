@@ -358,6 +358,12 @@
       "strength_description": "Your improvement velocity on weak areas is strong. You turn friction points into strengths faster than average.",
       "growth_description": "Focus on your weakest pillars with targeted practice. Drive grows as you close the gap between your strengths and weaknesses."
     },
+    "computational_power": {
+      "name": "Computational Power",
+      "description": "The ability to break down complex problems into logical steps, use data and tools to find efficient solutions, and think systematically about challenges",
+      "as_strength": "You are structured, precise, and fast under pressure",
+      "as_weakness": "You may struggle with systems, avoid complexity, or lose clarity"
+    },
     "cta_primary": "Get your XIMAtar now",
     "cta_secondary": "Learn more",
     "example_label": "Example",
