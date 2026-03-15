@@ -340,7 +340,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label htmlFor="difficulty" className="text-foreground flex items-center gap-2">
                   <TrendingUp size={16} />
-                  {t('business_portal.default_difficulty')}
+                  {t('businessPortal.settings_challenge_difficulty_label')}
                 </Label>
                 <Input
                   id="difficulty"
