@@ -96,18 +96,21 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
   const actionButtons = [
     {
       key: 'create_challenge',
+      labelKey: 'businessPortal.quick_action_create_challenge',
       icon: Plus,
       primary: true,
       link: '/business/challenges/new'
     },
     {
       key: 'invite_candidates',
+      labelKey: 'businessPortal.quick_action_invite_candidates',
       icon: Users,
       primary: false,
       link: '/business/candidates'
     },
     {
       key: 'review_responses',
+      labelKey: 'businessPortal.quick_action_evaluate',
       icon: MessageSquare,
       primary: false,
       link: hiringGoalId ? `/business/goals/${hiringGoalId}/challenges` : '/business/challenges'
