@@ -390,7 +390,7 @@ export default function FeaturedProfessionals({
             {ximaPillars.length > 0 && (
               <div className="space-y-2">
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  {t('professionals.xima_pillars', 'XIMA Pillars')}
+                  {t('ximatarJourney.mentor_pillars_label')}
                 </p>
                 <div className="flex flex-wrap gap-1">
                   {ximaPillars.slice(0, 3).map((pillar, idx) => (
