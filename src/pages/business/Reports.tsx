@@ -210,9 +210,9 @@ const BusinessReports = () => {
           {/* Shortlist Over Time */}
           <Card className="bg-gradient-to-br from-card to-card/80 border-primary/20">
             <CardHeader>
-              <CardTitle className="text-foreground">{t('business.reports.shortlist_activity')}</CardTitle>
+              <CardTitle className="text-foreground">{t('businessPortal.reports_shortlist_activity_title')}</CardTitle>
               <CardDescription className="text-muted-foreground">
-                {t('business.reports.shortlist_activity_desc')}
+                {t('businessPortal.reports_shortlist_activity_subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent>
