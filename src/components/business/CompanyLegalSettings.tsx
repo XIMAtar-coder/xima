@@ -158,7 +158,7 @@ const CompanyLegalSettings: React.FC = () => {
           <div className="space-y-4">
             <Label className="text-foreground flex items-center gap-2">
               <FileText size={16} />
-              {t('business.legal.registration_info')}
+              {t('businessPortal.settings_legal_registration_title')}
             </Label>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
