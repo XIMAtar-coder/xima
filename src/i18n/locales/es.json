@@ -250,11 +250,17 @@
       "as_weakness": "Puedes evitar el riesgo, preferir lo conocido o resistir la ideación"
     },
     "drive": {
-      "name": "Impulso",
-      "description": "Tu motivación interna para perseguir objetivos ambiciosos, recuperarte de contratiempos, tomar iniciativa y mantener el compromiso con la excelencia",
-      "drive_note": "El Impulso no define la habilidad — define la trayectoria",
-      "as_strength": "Eres auto-motivado, resiliente y orientado a la acción",
-      "as_weakness": "Puedes dudar, retrasar la acción o carecer de impulso"
+      "name": "Drive (Velocidad de Crecimiento)",
+      "description": "Drive mide qué tan rápido mejoras las habilidades que aún no dominas. Rastrea tu crecimiento a lo largo del tiempo — no tu punto de partida.",
+      "drive_note": "Los pilares son dinámicos. Tus próximos pasos pueden moverlos.",
+      "as_strength": "Mejoras rápidamente en áreas débiles — tu trayectoria se está acelerando",
+      "as_weakness": "Tu crecimiento en áreas débiles es lento — concéntrate en la práctica deliberada"
+    },
+    "computational_power": {
+      "name": "Potencia Computacional",
+      "description": "La capacidad de descomponer problemas complejos en pasos lógicos, usar datos y herramientas para encontrar soluciones eficientes y pensar sistemáticamente sobre los desafíos",
+      "as_strength": "Eres estructurado, preciso y rápido bajo presión",
+      "as_weakness": "Puedes tener dificultades con sistemas, evitar la complejidad o perder claridad"
     },
     "cta_primary": "Obtén tu XIMAtar ahora",
     "cta_secondary": "Aprende más",
