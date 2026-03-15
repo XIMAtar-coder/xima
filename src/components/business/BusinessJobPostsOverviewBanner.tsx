@@ -211,7 +211,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
           ) : jobPosts.length === 0 ? (
             <div className="text-center py-6 text-muted-foreground">
               <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm mb-3">{t('business.job_posts_overview.no_posts')}</p>
+              <p className="text-sm mb-3">{t('businessPortal.jobs_empty_headline')}</p>
               <Button
                 variant="outline"
                 size="sm"
