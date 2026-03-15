@@ -312,7 +312,7 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
             {!hasMissingData && !snapshot.employees_count && (
               <div className="text-xs text-muted-foreground bg-amber-500/10 border border-amber-500/20 rounded-md p-2 flex items-start gap-2">
                 <Users className="h-3 w-3 mt-0.5 flex-shrink-0 text-amber-500" />
-                <span>{t('business.overview.set_employee_count')}</span>
+                <span>{t('businessPortal.company_overview_employees_hint')}</span>
               </div>
             )}
           </div>
