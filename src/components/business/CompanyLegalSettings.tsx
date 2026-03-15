@@ -194,7 +194,7 @@ const CompanyLegalSettings: React.FC = () => {
           <div className="space-y-2">
             <Label htmlFor="contact_email" className="text-foreground flex items-center gap-2">
               <Mail size={16} />
-              {t('business.legal.contact_email')}
+              {t('businessPortal.settings_legal_contact_email_label')}
             </Label>
             <Input
               id="contact_email"
