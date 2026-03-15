@@ -140,7 +140,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
           </p>
           {lastGenerated && profileStatus === 'ready' && (
             <p className="text-xs text-muted-foreground mt-1">
-              {t('business.command_center.last_generated', { date: new Date(lastGenerated).toLocaleDateString() })}
+              {t('businessPortal.dashboard_last_updated', { date: new Date(lastGenerated).toLocaleDateString() })}
             </p>
           )}
         </div>
