@@ -238,7 +238,7 @@ const DevelopmentPlan = () => {
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-primary">{Math.round(overallProgress)}%</div>
-                    <div className="text-sm text-muted-foreground">{t('development.progress')}</div>
+                    <div className="text-sm text-muted-foreground">{t('developmentPlan.stat_progress_label')}</div>
                   </div>
                 </div>
               </div>
