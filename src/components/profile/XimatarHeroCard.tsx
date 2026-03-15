@@ -100,7 +100,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
           <div className="flex-1 space-y-3 text-center md:text-left min-w-0">
             <div>
               <p className="text-[12px] font-medium text-primary uppercase tracking-[0.04em] mb-1">
-                {t('profile.your_ximatar', 'Your XIMAtar')}
+                {t('dashboard.ximatar_label', 'Your XIMAtar')}
               </p>
               <h2 className="text-[28px] md:text-[34px] font-bold text-foreground truncate">
                 {ximatarName || t('profile.ximatar_archetype', 'XIMAtar Archetype')}
