@@ -258,9 +258,9 @@ export const MembershipSection: React.FC = () => {
         <CardContent className="space-y-4">
           {/* How credits work */}
           <div className="space-y-1.5 text-sm text-muted-foreground">
-            <p>✦ {t('referral.earn_credits', 'Each validated referral gives you +1 credit.')}</p>
+            <p>{t('settings.referral_credit_rule', '✦ Each validated referral gives you +1 credit.')}</p>
             <p className="text-xs">
-              {t('referral.qualified_rule', 'We count referrals only after the first mentor intro is completed to ensure real profiles.')}
+              {t('settings.referral_note', 'We count referrals only after the first mentor intro is completed to ensure real profiles.')}
             </p>
           </div>
 
