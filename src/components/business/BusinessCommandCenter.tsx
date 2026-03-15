@@ -132,7 +132,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
             >
               {profileStatus === 'loading' 
                 ? t('common.loading')
-                : t(`business.command_center.profile_${profileStatus}`)}
+                : t(`businessPortal.dashboard_profile_ready`)}
             </Badge>
           </div>
           <p className="text-muted-foreground text-sm">
