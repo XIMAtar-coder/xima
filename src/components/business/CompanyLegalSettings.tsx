@@ -66,10 +66,10 @@ const CompanyLegalSettings: React.FC = () => {
       <CardHeader>
         <CardTitle className="text-foreground flex items-center gap-2">
           <FileText className="text-primary" />
-          {t('business.legal.title')}
+          {t('businessPortal.settings_legal_title')}
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          {t('business.legal.description')}
+          {t('businessPortal.settings_legal_subtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -78,7 +78,7 @@ const CompanyLegalSettings: React.FC = () => {
           <div className="space-y-2">
             <Label htmlFor="legal_name" className="text-foreground flex items-center gap-2">
               <Building2 size={16} />
-              {t('business.legal.legal_name')}
+              {t('businessPortal.settings_legal_company_name_label')}
             </Label>
             <Input
               id="legal_name"
@@ -88,7 +88,7 @@ const CompanyLegalSettings: React.FC = () => {
               onChange={(e) => updateField('legal_name', e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
-              {t('business.legal.legal_name_hint')}
+              {t('businessPortal.settings_legal_company_name_hint')}
             </p>
           </div>
 
@@ -96,13 +96,13 @@ const CompanyLegalSettings: React.FC = () => {
           <div className="space-y-4">
             <Label className="text-foreground flex items-center gap-2">
               <MapPin size={16} />
-              {t('business.legal.registered_address')}
+              {t('businessPortal.settings_legal_address_label')}
             </Label>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2 space-y-2">
                 <Label htmlFor="street_address" className="text-sm text-muted-foreground">
-                  {t('business.legal.street_address')}
+                  {t('businessPortal.settings_legal_address_street')}
                 </Label>
                 <Input
                   id="street_address"
@@ -115,7 +115,7 @@ const CompanyLegalSettings: React.FC = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="city" className="text-sm text-muted-foreground">
-                  {t('business.legal.city')}
+                  {t('businessPortal.settings_legal_address_city')}
                 </Label>
                 <Input
                   id="city"
@@ -128,7 +128,7 @@ const CompanyLegalSettings: React.FC = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="postal_code" className="text-sm text-muted-foreground">
-                  {t('business.legal.postal_code')}
+                  {t('businessPortal.settings_legal_address_zip')}
                 </Label>
                 <Input
                   id="postal_code"
@@ -141,7 +141,7 @@ const CompanyLegalSettings: React.FC = () => {
 
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="country" className="text-sm text-muted-foreground">
-                  {t('business.legal.country')}
+                  {t('businessPortal.settings_legal_address_country')}
                 </Label>
                 <Input
                   id="country"
@@ -158,13 +158,13 @@ const CompanyLegalSettings: React.FC = () => {
           <div className="space-y-4">
             <Label className="text-foreground flex items-center gap-2">
               <FileText size={16} />
-              {t('business.legal.registration_info')}
+              {t('businessPortal.settings_legal_registration_title')}
             </Label>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="vat_number" className="text-sm text-muted-foreground">
-                  {t('business.legal.vat_number')}
+                  {t('businessPortal.settings_legal_vat_label')}
                 </Label>
                 <Input
                   id="vat_number"
@@ -177,7 +177,7 @@ const CompanyLegalSettings: React.FC = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="registration_number" className="text-sm text-muted-foreground">
-                  {t('business.legal.registration_number')}
+                  {t('businessPortal.settings_legal_rea_label')}
                 </Label>
                 <Input
                   id="registration_number"
@@ -194,7 +194,7 @@ const CompanyLegalSettings: React.FC = () => {
           <div className="space-y-2">
             <Label htmlFor="contact_email" className="text-foreground flex items-center gap-2">
               <Mail size={16} />
-              {t('business.legal.contact_email')}
+              {t('businessPortal.settings_legal_contact_email_label')}
             </Label>
             <Input
               id="contact_email"
@@ -205,7 +205,7 @@ const CompanyLegalSettings: React.FC = () => {
               onChange={(e) => updateField('contact_email', e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
-              {t('business.legal.contact_email_hint')}
+              {t('businessPortal.settings_legal_contact_email_hint')}
             </p>
           </div>
 
@@ -220,7 +220,7 @@ const CompanyLegalSettings: React.FC = () => {
             ) : (
               <Save className="mr-2" size={16} />
             )}
-            {isUpserting ? t('business_portal.saving') : t('business.legal.save')}
+            {isUpserting ? t('business_portal.saving') : t('businessPortal.settings_legal_save_cta')}
           </Button>
         </form>
       </CardContent>

@@ -43,7 +43,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Building2 className="h-5 w-5 text-[hsl(var(--xima-accent))]" />
-            {t('business.profile.title')}
+            {t('businessPortal.company_profile_title')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -61,7 +61,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Building2 className="h-5 w-5 text-[hsl(var(--xima-accent))]" />
-            {t('business.profile.title')}
+            {t('businessPortal.company_profile_title')}
           </CardTitle>
           <CardDescription>{t('business.profile.no_profile')}</CardDescription>
         </CardHeader>
@@ -86,17 +86,17 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Building2 className="h-5 w-5 text-[hsl(var(--xima-accent))]" />
-            {t('business.profile.title')}
+            {t('businessPortal.company_profile_title')}
           </CardTitle>
           <CardDescription>
-            {t('business.profile.last_updated')}: {new Date(profile.updated_at).toLocaleDateString()}
+            {t('businessPortal.company_profile_updated')}: {new Date(profile.updated_at).toLocaleDateString()}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Summary */}
           <div>
             <h4 className="font-semibold text-sm text-muted-foreground mb-2">
-              {t('business.profile.summary')}
+              {t('businessPortal.company_summary_label')}
             </h4>
             {profile.summary ? (
               <p className="text-foreground leading-relaxed">{profile.summary}</p>
@@ -108,7 +108,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           {/* Values */}
           <div>
             <h4 className="font-semibold text-sm text-muted-foreground mb-2">
-              {t('business.profile.values')}
+              {t('businessPortal.company_values_label')}
             </h4>
             {(profile.values || []).length > 0 ? (
               <div className="flex flex-wrap gap-2">
@@ -127,7 +127,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <h4 className="font-semibold text-sm text-muted-foreground mb-2">
-                {t('business.profile.operating_style')}
+                {t('businessPortal.company_operating_style_label')}
               </h4>
               {profile.operating_style ? (
                 <p className="text-foreground">{profile.operating_style}</p>
@@ -137,7 +137,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
             </div>
             <div>
               <h4 className="font-semibold text-sm text-muted-foreground mb-2">
-                {t('business.profile.communication_style')}
+                {t('businessPortal.company_communication_style_label')}
               </h4>
               {profile.communication_style ? (
                 <p className="text-foreground">{profile.communication_style}</p>
@@ -151,7 +151,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           <div>
             <h4 className="font-semibold text-sm text-muted-foreground mb-2 flex items-center gap-2">
               <Target className="h-4 w-4" />
-              {t('business.profile.ideal_traits')}
+              {t('businessPortal.company_ideal_candidate_label')}
             </h4>
             <ul className="list-disc list-inside space-y-1 text-foreground">
               {(profile.ideal_traits || []).map((trait, idx) => (
@@ -165,7 +165,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
             <div>
               <h4 className="font-semibold text-sm text-muted-foreground mb-2 flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4" />
-                {t('business.profile.risk_areas')}
+                {t('businessPortal.company_risk_areas_label')}
               </h4>
               <ul className="list-disc list-inside space-y-1 text-foreground">
                 {(profile.risk_areas || []).map((risk, idx) => (
@@ -180,7 +180,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
             <div>
               <h4 className="font-semibold text-sm text-muted-foreground mb-3 flex items-center gap-2">
                 <TrendingUp className="h-4 w-4" />
-                {t('business.profile.pillar_vector')}
+                {t('businessPortal.company_pillar_profile_label')}
               </h4>
               <div className="space-y-3">
                 {Object.entries(profile.pillar_vector).map(([pillar, value]) => {
@@ -220,7 +220,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           {/* Recommended XIMAtars */}
           <div>
             <h4 className="font-semibold text-sm text-muted-foreground mb-3">
-              {t('business.profile.recommended_ximatars')}
+              {t('businessPortal.company_recommended_ximatar_label')}
             </h4>
             <div className="flex flex-wrap gap-3">
               {(profile.recommended_ximatars || []).map((ximatar) => (
@@ -238,7 +238,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
               ))}
             </div>
             <p className="text-sm text-muted-foreground mt-2">
-              {t('business.profile.recommended_ximatars_description')}
+              {t('businessPortal.company_recommended_ximatar_body')}
             </p>
           </div>
 
@@ -246,7 +246,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           <div className="pt-4 border-t border-border">
             <Button onClick={onGenerate} variant="outline" className="gap-2">
               <Sparkles className="h-4 w-4" />
-              {t('business.profile.regenerate_cta')}
+              {t('businessPortal.company_regenerate_profile')}
             </Button>
           </div>
         </CardContent>

@@ -182,11 +182,11 @@ export default function Jobs() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-500/20 text-green-600 border-green-500/30">{t('jobs.published')}</Badge>;
+        return <Badge className="bg-green-500/20 text-green-600 border-green-500/30">{t('businessPortal.jobs_filter_published')}</Badge>;
       case 'archived':
-        return <Badge variant="outline" className="text-muted-foreground">{t('jobs.archived')}</Badge>;
+        return <Badge variant="outline" className="text-muted-foreground">{t('businessPortal.jobs_filter_archived')}</Badge>;
       default:
-        return <Badge variant="secondary">{t('jobs.draft')}</Badge>;
+        return <Badge variant="secondary">{t('businessPortal.jobs_filter_draft')}</Badge>;
     }
   };
 
@@ -211,19 +211,19 @@ export default function Jobs() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold">{t('jobs.title')}</h1>
+            <h1 className="text-2xl font-bold">{t('businessPortal.jobs_page_title')}</h1>
             <p className="text-muted-foreground text-sm mt-1">
-              {t('jobs.subtitle')}
+              {t('businessPortal.jobs_page_subtitle')}
             </p>
           </div>
           <div className="flex gap-2 flex-wrap">
             <Button variant="outline" size="sm" onClick={() => setShowPdfImport(true)}>
               <FileUp className="h-4 w-4 mr-2" />
-              {t('business.pdf_import.import_from_pdf')}
+              {t('businessPortal.jobs_import_pdf')}
             </Button>
             <Button size="sm" onClick={() => navigate('/business/jobs/new')}>
               <Plus className="h-4 w-4 mr-2" />
-              {t('jobs.create_job')}
+              {t('businessPortal.jobs_page_create_cta')}
             </Button>
           </div>
         </div>
@@ -232,19 +232,19 @@ export default function Jobs() {
         <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
           <TabsList>
             <TabsTrigger value="all" className="gap-2">
-              {t('jobs.filter_all')}
+              {t('businessPortal.jobs_filter_all')}
               <Badge variant="secondary" className="text-xs">{statusCounts.all}</Badge>
             </TabsTrigger>
             <TabsTrigger value="draft" className="gap-2">
-              {t('jobs.draft')}
+              {t('businessPortal.jobs_filter_draft')}
               <Badge variant="secondary" className="text-xs">{statusCounts.draft}</Badge>
             </TabsTrigger>
             <TabsTrigger value="active" className="gap-2">
-              {t('jobs.published')}
+              {t('businessPortal.jobs_filter_published')}
               <Badge variant="secondary" className="text-xs">{statusCounts.active}</Badge>
             </TabsTrigger>
             <TabsTrigger value="archived" className="gap-2">
-              {t('jobs.archived')}
+              {t('businessPortal.jobs_filter_archived')}
               <Badge variant="secondary" className="text-xs">{statusCounts.archived}</Badge>
             </TabsTrigger>
           </TabsList>
@@ -262,14 +262,14 @@ export default function Jobs() {
             <CardContent className="p-12 text-center">
               <Briefcase className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
               <h3 className="text-lg font-semibold mb-2">
-                {statusFilter === 'all' ? t('jobs.no_jobs_title') : t('jobs.no_jobs_filter', { status: t(`jobs.${statusFilter}`) })}
+                {statusFilter === 'all' ? t('businessPortal.jobs_page_empty_headline') : t('businessPortal.jobs_page_empty_headline')}
               </h3>
               <p className="text-muted-foreground mb-4">
-                {t('jobs.no_jobs_desc')}
+                {t('businessPortal.jobs_page_empty_body')}
               </p>
               <Button onClick={() => navigate('/business/jobs/new')}>
                 <Plus className="h-4 w-4 mr-2" />
-                {t('jobs.create_job')}
+                {t('businessPortal.jobs_page_create_cta')}
               </Button>
             </CardContent>
           </Card>

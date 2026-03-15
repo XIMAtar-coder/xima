@@ -72,13 +72,13 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
   };
 
   const navItems = [
-    { path: '/business/dashboard', icon: LayoutDashboard, labelKey: 'business.nav.overview' },
-    { path: '/business/candidates', icon: Users, labelKey: 'business.nav.candidates' },
-    { path: '/business/challenges', icon: Target, labelKey: 'business.nav.challenges' },
-    { path: '/business/jobs', icon: Briefcase, labelKey: 'business.nav.jobs' },
-    { path: '/business/evaluations', icon: FileText, labelKey: 'business.nav.evaluations' },
-    { path: '/business/reports', icon: BarChart3, labelKey: 'business.nav.reports' },
-    { path: '/business/settings', icon: Settings, labelKey: 'business.nav.settings' }
+    { path: '/business/dashboard', icon: LayoutDashboard, labelKey: 'businessPortal.nav_overview' },
+    { path: '/business/candidates', icon: Users, labelKey: 'businessPortal.nav_candidates' },
+    { path: '/business/challenges', icon: Target, labelKey: 'businessPortal.nav_challenges' },
+    { path: '/business/jobs', icon: Briefcase, labelKey: 'businessPortal.nav_jobs' },
+    { path: '/business/evaluations', icon: FileText, labelKey: 'businessPortal.nav_evaluations' },
+    { path: '/business/reports', icon: BarChart3, labelKey: 'businessPortal.nav_reports' },
+    { path: '/business/settings', icon: Settings, labelKey: 'businessPortal.nav_settings' }
   ];
 
   return (
@@ -156,7 +156,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
                   onClick={handleSignOut}
                 >
                   <LogOut size={18} className="mr-2" />
-                  {t('business.nav.sign_out')}
+                  {t('businessPortal.nav_logout')}
                 </Button>
               </div>
             ) : (
@@ -190,7 +190,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
             className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-primary/10"
           >
             <HelpCircle size={16} />
-            <span className="text-sm font-medium">{t('business_guide.open_button', 'Guide')}</span>
+            <span className="text-sm font-medium">{t('businessPortal.nav_guide')}</span>
           </Button>
 
           <DropdownMenu>

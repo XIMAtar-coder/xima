@@ -248,8 +248,8 @@ const BusinessSettings = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">{t('business_portal.settings')}</h1>
-          <p className="text-muted-foreground">{t('business_portal.manage_preferences')}</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">{t('businessPortal.settings_page_title')}</h1>
+          <p className="text-muted-foreground">{t('businessPortal.settings_page_subtitle')}</p>
         </div>
 
         {/* Plan & Entitlements */}
@@ -261,15 +261,15 @@ const BusinessSettings = () => {
             <CardHeader>
               <CardTitle className="text-foreground flex items-center gap-2">
                 <Building2 className="text-primary" />
-                {t('business_portal.company_info')}
+                {t('businessPortal.settings_company_title')}
               </CardTitle>
               <CardDescription className="text-muted-foreground">
-                {t('business_portal.update_details')}
+                {t('businessPortal.settings_company_subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="companyName" className="text-foreground">{t('business_portal.company_name')}</Label>
+                <Label htmlFor="companyName" className="text-foreground">{t('businessPortal.settings_company_name_label')}</Label>
                 <Input
                   id="companyName"
                   placeholder="Acme Corporation"
@@ -283,7 +283,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label htmlFor="website" className="text-foreground flex items-center gap-2">
                   <Globe size={16} />
-                  {t('business_portal.website')}
+                  {t('businessPortal.settings_company_website_label')}
                 </Label>
                 <Input
                   id="website"
@@ -298,7 +298,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label htmlFor="hrContactEmail" className="text-foreground flex items-center gap-2">
                   <Mail size={16} />
-                  {t('business_portal.hr_contact_email')}
+                  {t('businessPortal.settings_company_hr_email_label')}
                 </Label>
                 <Input
                   id="hrContactEmail"
@@ -315,16 +315,16 @@ const BusinessSettings = () => {
           {/* Challenge Defaults */}
           <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 mb-6">
             <CardHeader>
-              <CardTitle className="text-foreground">{t('business_portal.challenge_defaults')}</CardTitle>
+              <CardTitle className="text-foreground">{t('businessPortal.settings_challenge_defaults_title')}</CardTitle>
               <CardDescription className="text-muted-foreground">
-                {t('business_portal.default_parameters')}
+                {t('businessPortal.settings_challenge_defaults_subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="duration" className="text-foreground flex items-center gap-2">
                   <Clock size={16} />
-                  {t('business_portal.default_duration')}
+                  {t('businessPortal.settings_challenge_duration_label')}
                 </Label>
                 <Input
                   id="duration"
@@ -340,7 +340,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label htmlFor="difficulty" className="text-foreground flex items-center gap-2">
                   <TrendingUp size={16} />
-                  {t('business_portal.default_difficulty')}
+                  {t('businessPortal.settings_challenge_difficulty_label')}
                 </Label>
                 <Input
                   id="difficulty"
@@ -362,7 +362,7 @@ const BusinessSettings = () => {
             disabled={loading}
           >
             <Save className="mr-2" size={16} />
-            {loading ? t('business_portal.saving') : t('business_portal.save_settings')}
+            {loading ? t('business_portal.saving') : t('businessPortal.settings_save_cta')}
           </Button>
         </form>
 
@@ -373,10 +373,10 @@ const BusinessSettings = () => {
           <CardHeader>
             <CardTitle className="text-foreground flex items-center gap-2">
               <Sparkles className="text-amber-500" />
-              {t('business.settings.snapshot_title')}
+              {t('businessPortal.settings_snapshot_title')}
             </CardTitle>
             <CardDescription className="text-muted-foreground">
-              {t('business.settings.snapshot_description')}
+              {t('businessPortal.settings_snapshot_subtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -384,10 +384,10 @@ const BusinessSettings = () => {
             <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border/50">
               <div className="space-y-0.5">
                 <Label className="text-foreground font-medium">
-                  {t('business.settings.override_toggle')}
+                  {t('businessPortal.settings_snapshot_manual_toggle')}
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  {t('business.settings.override_description')}
+                  {t('businessPortal.settings_snapshot_manual_body')}
                 </p>
               </div>
               <Switch
@@ -403,7 +403,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label className="text-foreground flex items-center gap-2">
                   <MapPin size={16} />
-                  {t('business.settings.hq_city')}
+                  {t('businessPortal.settings_snapshot_city_label')}
                 </Label>
                 <Input
                   placeholder={snapshotData.snapshot_hq_city || t('business.settings.city_placeholder')}
@@ -416,7 +416,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label className="text-foreground flex items-center gap-2">
                   <MapPin size={16} />
-                  {t('business.settings.hq_country')}
+                  {t('businessPortal.settings_snapshot_country_label')}
                 </Label>
                 <Input
                   placeholder={snapshotData.snapshot_hq_country || t('business.settings.country_placeholder')}
@@ -429,7 +429,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label className="text-foreground flex items-center gap-2">
                   <Building2 size={16} />
-                  {t('business.settings.industry')}
+                  {t('businessPortal.settings_snapshot_sector_label')}
                 </Label>
                 <Input
                   placeholder={snapshotData.snapshot_industry || t('business.settings.industry_placeholder')}
@@ -442,7 +442,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label className="text-foreground flex items-center gap-2">
                   <Users size={16} />
-                  {t('business.settings.employees')}
+                  {t('businessPortal.settings_snapshot_employees_label')}
                 </Label>
                 <Input
                   type="number"
@@ -456,7 +456,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label className="text-foreground flex items-center gap-2">
                   <Globe size={16} />
-                  {t('business.settings.website')}
+                  {t('businessPortal.settings_snapshot_website_label')}
                 </Label>
                 <Input
                   type="url"
@@ -470,7 +470,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label className="text-foreground flex items-center gap-2">
                   <DollarSign size={16} />
-                  {t('business.settings.revenue')}
+                  {t('businessPortal.settings_snapshot_revenue_label')}
                 </Label>
                 <Input
                   placeholder={snapshotData.snapshot_revenue_range || t('business.settings.revenue_placeholder')}
@@ -483,7 +483,7 @@ const BusinessSettings = () => {
               <div className="space-y-2 md:col-span-2">
                 <Label className="text-foreground flex items-center gap-2">
                   <Calendar size={16} />
-                  {t('business.settings.founded_year')}
+                  {t('businessPortal.settings_snapshot_founded_label')}
                 </Label>
                 <Input
                   type="number"
@@ -499,7 +499,7 @@ const BusinessSettings = () => {
 
             {/* Helper text */}
             <p className="text-xs text-muted-foreground">
-              {t('business.settings.snapshot_helper')}
+              {t('businessPortal.settings_snapshot_note')}
             </p>
 
             {/* Action Buttons */}
@@ -511,7 +511,7 @@ const BusinessSettings = () => {
                 className="flex-1 bg-primary hover:bg-primary/90"
               >
                 <Save className="mr-2" size={16} />
-                {snapshotLoading ? t('business_portal.saving') : t('business.settings.save_snapshot')}
+                {snapshotLoading ? t('business_portal.saving') : t('businessPortal.settings_snapshot_save_cta')}
               </Button>
               
               <Button
@@ -522,7 +522,7 @@ const BusinessSettings = () => {
                 className="flex-1"
               >
                 <RefreshCw className="mr-2" size={16} />
-                {t('business.settings.reset_to_ai')}
+                {t('businessPortal.settings_snapshot_reset_cta')}
               </Button>
             </div>
           </CardContent>

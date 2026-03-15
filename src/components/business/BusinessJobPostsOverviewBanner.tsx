@@ -53,6 +53,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
   const kpiItems = [
     {
       key: 'open_job_posts',
+      labelKey: 'businessPortal.jobs_stat_open',
       value: stats.openCount,
       icon: FileText,
       color: 'text-blue-500',
@@ -60,6 +61,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
     },
     {
       key: 'active_job_posts',
+      labelKey: 'businessPortal.jobs_stat_active',
       value: stats.activeCount,
       icon: Eye,
       color: 'text-green-500',
@@ -67,6 +69,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
     },
     {
       key: 'total_applications',
+      labelKey: 'businessPortal.jobs_stat_applications',
       value: stats.applicationsLast30d,
       icon: Users,
       color: 'text-purple-500',
@@ -74,6 +77,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
     },
     {
       key: 'pending_reviews',
+      labelKey: 'businessPortal.jobs_stat_to_evaluate',
       value: stats.pendingReviewsCount,
       icon: Clock,
       color: 'text-amber-500',
@@ -130,7 +134,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
             <Briefcase className="h-5 w-5 text-primary" />
-            {t('business.job_posts_overview.title')}
+            {t('businessPortal.jobs_overview_title')}
           </CardTitle>
           <div className="flex flex-wrap gap-2">
             <Button
@@ -140,14 +144,14 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
               className="gap-2"
             >
               <Plus className="h-4 w-4" />
-              {t('business.job_posts_overview.create_job_post')}
+              {t('businessPortal.jobs_create_cta')}
             </Button>
             <Button
               size="sm"
               onClick={() => navigate('/business/jobs')}
               className="gap-2"
             >
-              {t('business.job_posts_overview.go_to_job_posts')}
+              {t('businessPortal.jobs_view_all_cta')}
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
@@ -180,7 +184,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
                       {kpi.value}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {t(`business.job_posts_overview.kpi.${kpi.key}`)}
+                      {t(kpi.labelKey)}
                     </p>
                   </div>
                 </>
@@ -192,7 +196,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
         {/* Job Posts List Preview */}
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-muted-foreground">
-            {t('business.job_posts_overview.recent_posts')}
+            {t('businessPortal.jobs_recent_title')}
           </h4>
           
           {loading ? (
@@ -207,7 +211,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
           ) : jobPosts.length === 0 ? (
             <div className="text-center py-6 text-muted-foreground">
               <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm mb-3">{t('business.job_posts_overview.no_posts')}</p>
+              <p className="text-sm mb-3">{t('businessPortal.jobs_empty_headline')}</p>
               <Button
                 variant="outline"
                 size="sm"
@@ -215,7 +219,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
                 className="gap-2"
               >
                 <Plus className="h-4 w-4" />
-                {t('business.job_posts_overview.create_job_post')}
+                {t('businessPortal.jobs_create_cta')}
               </Button>
             </div>
           ) : (

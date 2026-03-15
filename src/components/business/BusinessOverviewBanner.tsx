@@ -200,10 +200,10 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
             <div>
               <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                 <Brain className="h-5 w-5 text-primary" />
-                {t('business.overview.how_xima_works')}
+                {t('businessPortal.how_xima_works_title')}
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                {t('business.overview.pipeline_subtitle')}
+                {t('businessPortal.how_xima_works_body')}
               </p>
             </div>
             
@@ -241,7 +241,7 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
             {/* Business control note */}
             <div className="text-xs text-muted-foreground bg-muted/50 rounded-md p-2 flex items-start gap-2">
               <Sparkles className="h-3 w-3 mt-0.5 flex-shrink-0 text-amber-500" />
-              <span>{t('business.overview.control_note')}</span>
+              <span>{t('businessPortal.how_xima_works_privacy')}</span>
             </div>
           </div>
           
@@ -251,10 +251,10 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
               <div>
                 <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                   <Building2 className="h-5 w-5 text-primary" />
-                  {t('business.overview.company_snapshot')}
+                  {t('businessPortal.company_overview_title')}
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {t('business.overview.snapshot_subtitle')}
+                  {t('businessPortal.company_overview_body')}
                 </p>
               </div>
             </div>
@@ -263,19 +263,19 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
             <div className="grid grid-cols-2 gap-2">
               <SnapshotField
                 icon={<MapPin className="h-4 w-4" />}
-                label={t('business.overview.field_location')}
+                label={t('businessPortal.company_field_location')}
                 value={snapshot.hq_location}
               />
               
               <SnapshotField
                 icon={<Building2 className="h-4 w-4" />}
-                label={t('business.overview.field_industry')}
+                label={t('businessPortal.company_field_sector')}
                 value={snapshot.industry}
               />
               
               <SnapshotField
                 icon={<Users className="h-4 w-4" />}
-                label={t('business.overview.field_employees')}
+                label={t('businessPortal.company_field_employees')}
                 value={snapshot.employees_count ? formatNumber(snapshot.employees_count) : null}
                 isHighlight={!!snapshot.employees_count}
                 employeeCount={snapshot.employees_count || undefined}
@@ -283,7 +283,7 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
               
               <SnapshotField
                 icon={<Globe className="h-4 w-4" />}
-                label={t('business.overview.field_website')}
+                label={t('businessPortal.company_field_website')}
                 value={snapshot.website_domain}
               />
             </div>
@@ -294,7 +294,7 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
                 <div className="flex items-start gap-2">
                   <Settings className="h-4 w-4 mt-0.5 flex-shrink-0 text-amber-500" />
                   <span className="text-xs text-muted-foreground">
-                    {t('business.overview.edit_snapshot_hint')}
+                    {t('businessPortal.company_overview_employees_hint')}
                   </span>
                 </div>
                 <Button
@@ -312,7 +312,7 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
             {!hasMissingData && !snapshot.employees_count && (
               <div className="text-xs text-muted-foreground bg-amber-500/10 border border-amber-500/20 rounded-md p-2 flex items-start gap-2">
                 <Users className="h-3 w-3 mt-0.5 flex-shrink-0 text-amber-500" />
-                <span>{t('business.overview.set_employee_count')}</span>
+                <span>{t('businessPortal.company_overview_employees_hint')}</span>
               </div>
             )}
           </div>

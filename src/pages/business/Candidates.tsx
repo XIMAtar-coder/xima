@@ -854,9 +854,9 @@ const BusinessCandidates = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-white mb-2">{t('business.candidates.title')}</h1>
+                <h1 className="text-3xl font-bold text-white mb-2">{t('businessPortal.candidates_page_title')}</h1>
                 <p className="text-white/80">
-                  {filteredCandidates.length} {t('business.candidates.available')}
+                  {filteredCandidates.length} {t('businessPortal.candidates_count_label')}
                 </p>
               </div>
               {selectedCandidates.length > 0 && (
@@ -910,7 +910,7 @@ const BusinessCandidates = () => {
                 <div className="flex-1 min-w-[200px] relative">
                   <Search className="absolute left-3 top-3 text-muted-foreground" size={18} />
                   <Input
-                    placeholder={t('business.candidates.search_placeholder')}
+                    placeholder={t('businessPortal.candidates_search_placeholder')}
                     className="pl-10"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -922,7 +922,7 @@ const BusinessCandidates = () => {
                     <SelectValue placeholder={t('business.candidates.filter_type')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{t('business.candidates.all_types')}</SelectItem>
+                    <SelectItem value="all">{t('businessPortal.candidates_filter_all_types')}</SelectItem>
                     <SelectItem value="owl">Owl</SelectItem>
                     <SelectItem value="parrot">Parrot</SelectItem>
                     <SelectItem value="elephant">Elephant</SelectItem>
@@ -1046,7 +1046,7 @@ const BusinessCandidates = () => {
                 </>
               ) : (
                 <p className="text-muted-foreground text-lg">
-                  {goalId ? t('business.shortlist.no_matches') : t('business.candidates.no_candidates')}
+                  {goalId ? t('business.shortlist.no_matches') : t('businessPortal.candidates_empty_headline')}
                 </p>
               )}
             </CardContent>

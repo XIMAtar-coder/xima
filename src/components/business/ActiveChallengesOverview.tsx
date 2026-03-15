@@ -40,7 +40,7 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Zap className="h-5 w-5 text-primary" />
-            {t('business.dashboard.active_challenges_overview')}
+            {t('businessPortal.active_challenges_title')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -61,10 +61,10 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Zap className="h-5 w-5 text-primary" />
-            {t('business.dashboard.active_challenges_overview')}
+            {t('businessPortal.active_challenges_title')}
           </CardTitle>
           <Badge variant="secondary" className="bg-primary/20 text-primary">
-            {challenges.length} {t('business.dashboard.active')}
+            {challenges.length} {t('businessPortal.challenge_status_active')}
           </Badge>
         </div>
       </CardHeader>
@@ -97,11 +97,11 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
                   <div className="flex items-center gap-4 text-sm flex-wrap">
                     <span className="flex items-center gap-1 text-muted-foreground">
                       <Users className="h-3.5 w-3.5" />
-                      {challenge.invited_count} {t('business.dashboard.invited')}
+                      {challenge.invited_count} {t('businessPortal.challenge_invited_label')}
                     </span>
                     <span className="flex items-center gap-1 text-muted-foreground">
                       <MessageSquare className="h-3.5 w-3.5" />
-                      {challenge.responses_count} {t('business.dashboard.responses')}
+                      {challenge.responses_count} {t('businessPortal.challenge_responses_label')}
                     </span>
                     {timeInfo.remainingText && (
                       <span className="flex items-center gap-1 text-muted-foreground">
@@ -130,7 +130,7 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
                   }
                 }}
               >
-                {t('business.dashboard.view_responses')}
+                {t('businessPortal.challenge_view_responses')}
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
               </div>

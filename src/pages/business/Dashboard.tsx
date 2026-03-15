@@ -536,10 +536,10 @@ const BusinessDashboard = () => {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-foreground mb-1">
-                    {t('business.hiring_goal.completed_title')}
+                    {t('businessPortal.hiring_goal_saved_title')}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    {t('business.hiring_goal.completed_desc')}
+                    {t('businessPortal.hiring_goal_saved_body')}
                   </p>
                   <div className="flex flex-wrap gap-3">
                     <Button 
@@ -547,7 +547,7 @@ const BusinessDashboard = () => {
                       onClick={() => navigate(`/business/candidates?fromGoal=${hiringGoalDraftId}`)}
                     >
                       <Users className="h-4 w-4" />
-                      {t('business.hiring_goal.generate_shortlist')}
+                      {t('businessPortal.hiring_goal_generate_shortlist')}
                     </Button>
                     <Button 
                       variant="outline" 
@@ -562,7 +562,7 @@ const BusinessDashboard = () => {
                         await loadHiringGoalStatus();
                       }}
                     >
-                      {t('business.hiring_goal.edit_goal')}
+                      {t('businessPortal.hiring_goal_edit')}
                     </Button>
                   </div>
                 </div>
@@ -593,8 +593,8 @@ const BusinessDashboard = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-foreground">{t('business.goals.portfolio_title')}</h2>
-                  <p className="text-sm text-muted-foreground">{t('business.goals.portfolio_desc')}</p>
+                  <h2 className="text-2xl font-bold text-foreground">{t('businessPortal.hiring_goals_title')}</h2>
+                  <p className="text-sm text-muted-foreground">{t('businessPortal.hiring_goals_subtitle')}</p>
                 </div>
                 <Button 
                   onClick={async () => {
@@ -605,7 +605,7 @@ const BusinessDashboard = () => {
                   }}
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  {t('business.goals.new_goal')}
+                  {t('businessPortal.hiring_goals_new_cta')}
                 </Button>
               </div>
               
@@ -664,7 +664,7 @@ const BusinessDashboard = () => {
 
         {/* Candidate Engagement */}
         <div>
-          <h2 className="text-2xl font-bold text-foreground mb-4">{t('business.dashboard.candidate_engagement')}</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-4">{t('businessPortal.candidate_engagement_title')}</h2>
           <CandidateEngagement />
         </div>
       </div>

@@ -141,8 +141,8 @@ const BusinessReports = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">{t('business.reports.title')}</h1>
-            <p className="text-muted-foreground">{t('business.reports.subtitle')}</p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">{t('businessPortal.reports_page_title')}</h1>
+            <p className="text-muted-foreground">{t('businessPortal.reports_page_subtitle')}</p>
           </div>
           <Button
             onClick={handleExportCSV}
@@ -150,7 +150,7 @@ const BusinessReports = () => {
             className="border-primary/30"
           >
             <Download className="mr-2" size={16} />
-            {t('business.reports.export_report')}
+            {t('businessPortal.reports_export_cta')}
           </Button>
         </div>
 
@@ -164,7 +164,7 @@ const BusinessReports = () => {
                 </div>
               </div>
               <h3 className="text-3xl font-bold text-foreground mb-1">{stats.totalContacted}</h3>
-              <p className="text-sm text-muted-foreground">{t('business.reports.contacted')}</p>
+              <p className="text-sm text-muted-foreground">{t('businessPortal.reports_stat_contacted')}</p>
             </CardContent>
           </Card>
 
@@ -176,7 +176,7 @@ const BusinessReports = () => {
                 </div>
               </div>
               <h3 className="text-3xl font-bold text-foreground mb-1">{stats.totalShortlisted}</h3>
-              <p className="text-sm text-muted-foreground">{t('business.reports.shortlisted')}</p>
+              <p className="text-sm text-muted-foreground">{t('businessPortal.reports_stat_shortlisted')}</p>
             </CardContent>
           </Card>
 
@@ -188,7 +188,7 @@ const BusinessReports = () => {
                 </div>
               </div>
               <h3 className="text-3xl font-bold text-foreground mb-1">{stats.totalHired}</h3>
-              <p className="text-sm text-muted-foreground">{t('business.reports.hired')}</p>
+              <p className="text-sm text-muted-foreground">{t('businessPortal.reports_stat_hired')}</p>
             </CardContent>
           </Card>
 
@@ -200,7 +200,7 @@ const BusinessReports = () => {
                 </div>
               </div>
               <h3 className="text-3xl font-bold text-foreground mb-1">{stats.conversionRate.toFixed(1)}%</h3>
-              <p className="text-sm text-muted-foreground">{t('business.reports.conversion_rate')}</p>
+              <p className="text-sm text-muted-foreground">{t('businessPortal.reports_stat_conversion')}</p>
             </CardContent>
           </Card>
         </div>
@@ -210,9 +210,9 @@ const BusinessReports = () => {
           {/* Shortlist Over Time */}
           <Card className="bg-gradient-to-br from-card to-card/80 border-primary/20">
             <CardHeader>
-              <CardTitle className="text-foreground">{t('business.reports.shortlist_activity')}</CardTitle>
+              <CardTitle className="text-foreground">{t('businessPortal.reports_shortlist_activity_title')}</CardTitle>
               <CardDescription className="text-muted-foreground">
-                {t('business.reports.shortlist_activity_desc')}
+                {t('businessPortal.reports_shortlist_activity_subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -237,9 +237,9 @@ const BusinessReports = () => {
           {/* Challenge Participation */}
           <Card className="bg-gradient-to-br from-card to-card/80 border-primary/20">
             <CardHeader>
-              <CardTitle className="text-foreground">{t('business.reports.challenge_participation')}</CardTitle>
+              <CardTitle className="text-foreground">{t('businessPortal.reports_challenge_participation_title')}</CardTitle>
               <CardDescription className="text-muted-foreground">
-                {t('business.reports.challenge_participation_desc')}
+                {t('businessPortal.reports_challenge_participation_subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -264,9 +264,9 @@ const BusinessReports = () => {
           {/* Match Score Distribution */}
           <Card className="bg-gradient-to-br from-card to-card/80 border-primary/20 lg:col-span-2">
             <CardHeader>
-              <CardTitle className="text-foreground">{t('business.reports.match_distribution')}</CardTitle>
+              <CardTitle className="text-foreground">{t('businessPortal.reports_score_distribution_title')}</CardTitle>
               <CardDescription className="text-muted-foreground">
-                {t('business.reports.match_distribution_desc')}
+                {t('businessPortal.reports_score_distribution_subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent>

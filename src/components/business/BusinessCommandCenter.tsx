@@ -61,6 +61,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
   const kpiCards = [
     {
       key: 'active_challenges',
+      labelKey: 'businessPortal.pipeline_stat_challenges',
       value: stats.activeChallenges,
       icon: Target,
       color: 'text-purple-500',
@@ -69,6 +70,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
     },
     {
       key: 'pending_reviews',
+      labelKey: 'businessPortal.pipeline_stat_evaluations',
       value: stats.pendingReviews,
       icon: MessageSquare,
       color: 'text-amber-500',
@@ -77,6 +79,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
     },
     {
       key: 'pipeline_candidates',
+      labelKey: 'businessPortal.pipeline_stat_pipeline',
       value: stats.candidatesInPipeline,
       icon: Users,
       color: 'text-blue-500',
@@ -85,6 +88,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
     },
     {
       key: 'shortlisted',
+      labelKey: 'businessPortal.pipeline_stat_shortlist',
       value: stats.shortlisted,
       icon: CheckCircle,
       color: 'text-green-500',
@@ -96,18 +100,21 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
   const actionButtons = [
     {
       key: 'create_challenge',
+      labelKey: 'businessPortal.quick_action_create_challenge',
       icon: Plus,
       primary: true,
       link: '/business/challenges/new'
     },
     {
       key: 'invite_candidates',
+      labelKey: 'businessPortal.quick_action_invite_candidates',
       icon: Users,
       primary: false,
       link: '/business/candidates'
     },
     {
       key: 'review_responses',
+      labelKey: 'businessPortal.quick_action_evaluate',
       icon: MessageSquare,
       primary: false,
       link: hiringGoalId ? `/business/goals/${hiringGoalId}/challenges` : '/business/challenges'
@@ -132,15 +139,15 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
             >
               {profileStatus === 'loading' 
                 ? t('common.loading')
-                : t(`business.command_center.profile_${profileStatus}`)}
+                : t(`businessPortal.dashboard_profile_ready`)}
             </Badge>
           </div>
           <p className="text-muted-foreground text-sm">
-            {t('business.command_center.subtitle')}
+            {t('businessPortal.dashboard_subtitle')}
           </p>
           {lastGenerated && profileStatus === 'ready' && (
             <p className="text-xs text-muted-foreground mt-1">
-              {t('business.command_center.last_generated', { date: new Date(lastGenerated).toLocaleDateString() })}
+              {t('businessPortal.dashboard_last_updated', { date: new Date(lastGenerated).toLocaleDateString() })}
             </p>
           )}
         </div>
@@ -160,7 +167,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-medium flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-primary" />
-            {t('business.command_center.next_actions')}
+            {t('businessPortal.quick_actions_title')}
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
@@ -172,7 +179,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
                   className={action.primary ? 'gap-2' : 'gap-2'}
                 >
                   <action.icon className="h-4 w-4" />
-                  {t(`business.command_center.actions.${action.key}`)}
+                  {t(action.labelKey)}
                 </Button>
               </Link>
             ))}
@@ -203,7 +210,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
                       {kpi.value}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {t(`business.command_center.kpi.${kpi.key}`)}
+                      {t(kpi.labelKey)}
                     </p>
                   </>
                 )}
@@ -219,7 +226,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
           <CardHeader className="pb-3">
             <CardTitle className="text-base font-medium flex items-center gap-2 text-amber-600">
               <AlertCircle className="h-4 w-4" />
-              {t('business.command_center.attention_needed')}
+              {t('businessPortal.attention_title')}
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">

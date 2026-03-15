@@ -16,15 +16,15 @@ import {
   Shield, BarChart3, FileText, MessageSquare, Sparkles, Eye
 } from 'lucide-react';
 
-const FEATURE_LABELS: Record<FeatureFlag, { label: string; icon: React.ReactNode }> = {
-  mentor_portal: { label: 'Mentor Portal', icon: <MessageSquare className="h-4 w-4" /> },
-  level3_challenges: { label: 'Level 3 Challenges', icon: <Sparkles className="h-4 w-4" /> },
-  data_export: { label: 'Data Export', icon: <FileText className="h-4 w-4" /> },
-  premium_signals: { label: 'Premium Signals', icon: <BarChart3 className="h-4 w-4" /> },
-  eligibility_gate: { label: 'Eligibility Gate', icon: <Shield className="h-4 w-4" /> },
-  decision_pack: { label: 'Decision Pack', icon: <Eye className="h-4 w-4" /> },
-  consistency_guard: { label: 'Consistency Guard', icon: <Shield className="h-4 w-4" /> },
-  advanced_signals: { label: 'Advanced Signals', icon: <BarChart3 className="h-4 w-4" /> },
+const FEATURE_KEYS: Record<FeatureFlag, { labelKey: string; icon: React.ReactNode }> = {
+  mentor_portal: { labelKey: 'businessPortal.settings_plan_feature_mentor_portal', icon: <MessageSquare className="h-4 w-4" /> },
+  level3_challenges: { labelKey: 'businessPortal.settings_plan_feature_l3_challenges', icon: <Sparkles className="h-4 w-4" /> },
+  data_export: { labelKey: 'businessPortal.settings_plan_feature_data_export', icon: <FileText className="h-4 w-4" /> },
+  premium_signals: { labelKey: 'businessPortal.settings_plan_feature_premium_signals', icon: <BarChart3 className="h-4 w-4" /> },
+  eligibility_gate: { labelKey: 'businessPortal.settings_plan_feature_eligibility_gate', icon: <Shield className="h-4 w-4" /> },
+  decision_pack: { labelKey: 'businessPortal.settings_plan_feature_decision_pack', icon: <Eye className="h-4 w-4" /> },
+  consistency_guard: { labelKey: 'businessPortal.settings_plan_feature_consistency_guard', icon: <Shield className="h-4 w-4" /> },
+  advanced_signals: { labelKey: 'businessPortal.settings_plan_feature_advanced_signals', icon: <BarChart3 className="h-4 w-4" /> },
 };
 
 const TIER_COLORS: Record<string, string> = {
@@ -54,14 +54,14 @@ export const BusinessPlanCard: React.FC = () => {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-foreground">
             <Crown className="h-5 w-5 text-primary" />
-            {t('business.plan.title', 'Your Plan')}
+            {t('businessPortal.settings_plan_title')}
           </CardTitle>
           <Badge className={TIER_COLORS[planTier] || TIER_COLORS.starter}>
             {planTier.charAt(0).toUpperCase() + planTier.slice(1)}
           </Badge>
         </div>
         <CardDescription>
-          {t('business.plan.subtitle', 'Current subscription and entitlements')}
+          {t('businessPortal.settings_plan_subtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -71,7 +71,7 @@ export const BusinessPlanCard: React.FC = () => {
             <Users className="h-5 w-5 text-primary" />
             <div>
               <p className="text-sm font-medium text-foreground">
-                {t('business.plan.seats', 'Seats')}
+                {t('businessPortal.settings_plan_seats_label')}
               </p>
               <p className="text-xs text-muted-foreground">
                 {entitlements?.seatsUsed ?? 1} / {entitlements?.maxSeats ?? 1} {t('business.plan.used', 'used')}
@@ -104,11 +104,11 @@ export const BusinessPlanCard: React.FC = () => {
         {/* Features */}
         <div>
           <p className="text-sm font-medium text-foreground mb-3">
-            {t('business.plan.features', 'Features')}
+            {t('businessPortal.settings_plan_features_label')}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {(Object.entries(FEATURE_LABELS) as [FeatureFlag, typeof FEATURE_LABELS[FeatureFlag]][]).map(
-              ([key, { label, icon }]) => {
+            {(Object.entries(FEATURE_KEYS) as [FeatureFlag, typeof FEATURE_KEYS[FeatureFlag]][]).map(
+              ([key, { labelKey, icon }]) => {
                 const enabled = entitlements?.features[key] === true;
                 return (
                   <div
@@ -123,7 +123,7 @@ export const BusinessPlanCard: React.FC = () => {
                       <X className="h-4 w-4 shrink-0" />
                     )}
                     {icon}
-                    <span>{label}</span>
+                    <span>{t(labelKey)}</span>
                   </div>
                 );
               }
@@ -141,7 +141,7 @@ export const BusinessPlanCard: React.FC = () => {
         >
           {planTier === 'enterprise'
             ? t('business.plan.manage_plan', 'Manage Plan')
-            : t('business.plan.upgrade', 'Upgrade Plan')}
+            : t('businessPortal.settings_plan_upgrade_cta')}
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </CardContent>

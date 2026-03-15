@@ -216,11 +216,11 @@ const BusinessChallenges = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-500/20 text-green-600 border-green-500/30">{t('challenges.status_active')}</Badge>;
+        return <Badge className="bg-green-500/20 text-green-600 border-green-500/30">{t('businessPortal.challenge_status_active')}</Badge>;
       case 'draft':
-        return <Badge variant="outline" className="text-muted-foreground">{t('challenges.status_draft')}</Badge>;
+        return <Badge variant="outline" className="text-muted-foreground">{t('businessPortal.challenge_status_draft')}</Badge>;
       case 'archived':
-        return <Badge variant="secondary" className="text-muted-foreground">{t('challenges.status_archived')}</Badge>;
+        return <Badge variant="secondary" className="text-muted-foreground">{t('businessPortal.challenge_status_archived')}</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -247,10 +247,10 @@ const BusinessChallenges = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                {t('challenges.page_title')}
+                {t('businessPortal.challenges_page_title')}
               </h1>
               <p className="text-muted-foreground">
-                {t('challenges.page_subtitle')}
+                {t('businessPortal.challenges_page_subtitle')}
               </p>
             </div>
           </div>
@@ -259,7 +259,7 @@ const BusinessChallenges = () => {
             className="gap-2"
           >
             <Plus className="h-4 w-4" />
-            {t('challenges.new_challenge')}
+            {t('businessPortal.challenges_new_cta')}
           </Button>
         </div>
 

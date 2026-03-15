@@ -135,20 +135,20 @@ const BusinessEvaluations = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">{t('business_portal.tests_evaluations')}</h1>
-          <p className="text-[#A3ABB5]">
-            {t('business_portal.review_submissions')}
+          <h1 className="text-3xl font-bold text-foreground mb-2">{t('businessPortal.evaluations_page_title')}</h1>
+          <p className="text-muted-foreground">
+            {t('businessPortal.evaluations_page_subtitle')}
           </p>
         </div>
 
         {/* Evaluations List */}
         {evaluations.length === 0 ? (
-          <Card className="bg-gradient-to-br from-[#0F1419] to-[#0A0F1C] border-[#3A9FFF]/20">
+          <Card className="bg-gradient-to-br from-card to-card/80 border-primary/20">
             <CardContent className="p-12 text-center">
-              <FileText className="mx-auto mb-4 text-[#A3ABB5]" size={48} />
-              <p className="text-[#A3ABB5] text-lg mb-2">{t('business_portal.no_evaluations')}</p>
-              <p className="text-[#A3ABB5] text-sm">
-                {t('business_portal.create_challenges_invite')}
+              <FileText className="mx-auto mb-4 text-muted-foreground" size={48} />
+              <p className="text-muted-foreground text-lg mb-2">{t('businessPortal.evaluations_empty_headline')}</p>
+              <p className="text-muted-foreground text-sm">
+                {t('businessPortal.evaluations_empty_body')}
               </p>
             </CardContent>
           </Card>
