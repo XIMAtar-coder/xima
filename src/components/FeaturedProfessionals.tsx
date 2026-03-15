@@ -279,7 +279,7 @@ export default function FeaturedProfessionals({
           className="gap-2"
         >
           <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-          {t('professionals.refresh_mentors', 'Refresh mentors')}
+          {t('ximatarJourney.mentor_refresh_cta')}
         </Button>
       </div>
       
