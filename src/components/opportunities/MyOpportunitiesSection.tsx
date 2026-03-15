@@ -239,8 +239,11 @@ export const MyOpportunitiesSection: React.FC = () => {
             ) : opportunities.length === 0 ? (
               <div className="text-center py-8">
               <Briefcase className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--xima-accent))]/40" />
-              <p className="text-[hsl(var(--xima-gray))]">
-                {t('opportunities.no_jobs_available')}
+              <p className="text-[hsl(var(--xima-gray))] font-medium mb-1">
+                {t('dashboard.opportunities_empty_headline')}
+                </p>
+              <p className="text-sm text-[hsl(var(--xima-gray))]">
+                {t('dashboard.opportunities_empty_body')}
                 </p>
               </div>
             ) : (

@@ -131,7 +131,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
               {weakestPillar && (
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-[999px] bg-[rgba(255,149,0,0.12)] border border-[rgba(255,149,0,0.25)]">
                   <AlertCircle className="w-3.5 h-3.5 text-apple-orange" />
-                  <span className="text-[12px] font-medium text-apple-orange uppercase tracking-wide">{t('profile.growth_area', 'Grow')}:</span>
+                  <span className="text-[12px] font-medium text-apple-orange uppercase tracking-wide">{t('dashboard.ximatar_friction_label', 'Grow')}:</span>
                   <span className="text-[12px] font-medium text-foreground capitalize">{t(`pillars.${weakestPillar}.name`, weakestPillar)}</span>
                 </div>
               )}

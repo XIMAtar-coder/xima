@@ -88,7 +88,7 @@ export const AssessmentOverviewCard: React.FC<AssessmentOverviewCardProps> = ({
 
       {storytelling && (
         <div className="pt-4 border-t border-[rgba(60,60,67,0.12)]">
-          <p className="text-[11px] font-medium text-secondary uppercase tracking-[0.04em] mb-2">{t('profile.your_story', 'Your Story')}</p>
+          <p className="text-[11px] font-medium text-secondary uppercase tracking-[0.04em] mb-2">{t('dashboard.story_title', 'Your Story')}</p>
           <p className="text-[15px] text-muted-foreground leading-relaxed">{storytelling}</p>
         </div>
       )}

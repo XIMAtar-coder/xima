@@ -227,8 +227,8 @@ export const ChallengesForYouSection: React.FC = () => {
       {actionableChallenges.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
           <Sparkles className="h-10 w-10 mx-auto mb-3 opacity-50" />
-          <p className="font-medium mb-1">{t('candidate.challenges.empty_title')}</p>
-          <p className="text-sm">{t('candidate.challenges.empty_desc')}</p>
+           <p className="font-medium mb-1">{t('dashboard.challenges_empty_headline')}</p>
+          <p className="text-sm">{t('dashboard.challenges_empty_body')}</p>
         </div>
       ) : (
         <div className="space-y-3">

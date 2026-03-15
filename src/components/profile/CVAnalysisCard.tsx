@@ -343,11 +343,11 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
                     </div>
                     <div className="flex gap-3 items-center">
                       <div className="flex-1">
-                        <p className="text-xs text-muted-foreground mb-1">CV Score</p>
+                         <p className="text-xs text-muted-foreground mb-1">{t('dashboard.cv_score_label', 'CV Score')}</p>
                         <Progress value={cvScore * 10} className="h-2" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-xs text-muted-foreground mb-1">Assessment Score</p>
+                        <p className="text-xs text-muted-foreground mb-1">{t('dashboard.cv_assessment_label', 'Assessment Score')}</p>
                         <Progress value={assessmentScore * 10} className="h-2" />
                       </div>
                     </div>

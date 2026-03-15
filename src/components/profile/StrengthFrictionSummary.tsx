@@ -68,7 +68,7 @@ export const StrengthFrictionSummary: React.FC<StrengthFrictionSummaryProps> = (
       {growthPath && (
         <div className="pt-4 border-t border-[rgba(60,60,67,0.12)]">
           <p className="text-[11px] font-medium text-primary uppercase tracking-[0.04em] mb-2">
-            {t('profile.growth_path', 'Growth Path')}
+            {t('dashboard.growth_path_label', 'Growth Path')}
           </p>
           <p className="text-[15px] text-muted-foreground leading-relaxed">{growthPath}</p>
         </div>
