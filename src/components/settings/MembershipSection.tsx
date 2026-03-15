@@ -275,7 +275,7 @@ export const MembershipSection: React.FC = () => {
             <div className="flex-1 rounded-lg bg-muted/50 p-3 text-center">
               <p className="text-2xl font-bold text-foreground">{creditBalance}</p>
               <p className="text-xs text-muted-foreground">
-                {t('credits.available', 'Available credits')}
+                {t('settings.referral_available_label', 'Available credits')}
               </p>
             </div>
           </div>
