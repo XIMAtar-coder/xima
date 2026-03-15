@@ -1069,17 +1069,81 @@
     "assessment_completion": "Finalización de Evaluación"
   },
   "about": {
-    "title": "Acerca de XIMA",
-    "problem_title": "El Problema",
-    "problem_desc": "La calidad de las coincidencias trabajo-candidato sigue siendo baja. Los currículos no capturan la verdadera esencia de una persona, y los algoritmos de coincidencia tradicionales se quedan cortos.",
-    "solution_title": "Nuestra Solución",
-    "solution_desc": "XIMA va más allá de los currículos para entender tu verdadera identidad profesional a través de evaluaciones integrales y análisis de IA.",
-    "pillars_title": "Los Cinco Pilares de XIMA",
-    "ximatar_title": "Tu XIMAtar",
-    "ximatar_desc": "Tu identidad animal profesional única que representa tus fortalezas, estilo de trabajo y potencial.",
-    "benefits_title": "Beneficios",
-    "benefits_jobseekers": "Para Buscadores de Empleo: Descubre tu verdadero potencial y conecta con oportunidades perfectas.",
-    "benefits_employers": "Para Empleadores: Encuentra candidatos que realmente encajen con tu cultura y necesidades."
+    "eyebrow": "Sobre XIMA",
+    "hero_headline": "Por Qué Esto Empezó\nComo una Pregunta de Investigación",
+    "hero_subheadline": "XIMA no nació como un producto SaaS. Nació con una pregunta sobre identidad y equidad en el mercado laboral.",
+    "hero_pullquote": "\"Si eliminases cada credencial — cada institución, cada nombre de marca en un CV — ¿qué sabrías realmente de alguien?\"",
+
+    "origin_label": "// EL ORIGEN",
+    "origin_headline": "Construido en un Laboratorio. Diseñado para Ser Justo Antes de Ser Escalable.",
+    "origin_body": "El laboratorio nos dio el espacio para responder con honestidad. Para construir el modelo psicométrico antes que el producto. Para diseñar la arquitectura de gobernanza antes que los precios. Para preguntarnos si la selección conductual es realmente más justa antes de venderla como solución. La respuesta — validada en 500 evaluaciones sintéticas, con calibración real en curso — es sí. Para eso sirve un laboratorio de investigación.",
+
+    "problem_label": "// EL PROBLEMA",
+    "problem_headline": "El Problema de la Calidad\ndel Match",
+    "problem_subheadline": "En el mercado laboral actual, tanto empleadores como candidatos enfrentan desafíos significativos para encontrar la combinación correcta.",
+    "problem_body": "Los procesos de selección tradicionales no logran identificar las mejores coincidencias entre profesionales y oportunidades. Los CV y las entrevistas ofrecen una visión limitada del verdadero potencial de un candidato, mientras que las descripciones de puestos rara vez capturan la esencia real de un rol o la cultura empresarial.",
+    "problem_list_intro": "Esta discrepancia genera:",
+    "problem_item_1": "Alta rotación de empleados",
+    "problem_item_2": "Menor satisfacción laboral",
+    "problem_item_3": "Menor productividad",
+    "problem_item_4": "Desperdicio de recursos en reclutamiento",
+    "problem_item_5": "Oportunidades perdidas para ambas partes",
+    "problem_solution": "XIMA fue desarrollado para abordar este problema fundamental creando un marco de evaluación integral que va más allá de las calificaciones superficiales para analizar los atributos conductuales que realmente determinan el éxito profesional.",
+
+    "approach_label": "// EL ENFOQUE",
+    "approach_headline": "El Enfoque XIMA",
+
+    "pillars_title": "Los 5 Pilares",
+    "pillars_body": "XIMA evalúa a los profesionales en cinco dimensiones conductuales independientes. Cada una mide algo distinto. Juntas ofrecen una imagen completa de cómo trabaja alguien — no de dónde ha estado.",
+    "pillar_1": "Drive: Persistencia en objetivos, iniciativa y motivación interna",
+    "pillar_2": "Creatividad: Pensamiento divergente, enfoques originales y curiosidad",
+    "pillar_3": "Conocimiento: Orientación al aprendizaje, síntesis y profundidad",
+    "pillar_4": "Comunicación: Claridad, empatía, persuasión y escucha activa",
+    "pillar_5": "Potencia Computacional: Razonamiento analítico, reconocimiento de patrones y pensamiento sistemático",
+
+    "ximatar_title": "El XIMAtar",
+    "ximatar_body": "La evaluación de cada profesional genera un XIMAtar único — un arquetipo conductual vivo construido desde la tensión entre su máximo potencial, su limitación actual y su fuerza de voluntad interior. No es una etiqueta. Es una brújula.",
+
+    "why_animals_title": "¿Por Qué Animales?",
+    "why_animals_body": "Los avatares animales ofrecen representaciones intuitivas y memorables de rasgos profesionales complejos. Así como cada especie animal ha evolucionado adaptaciones únicas para prosperar en su entorno, cada profesional ha desarrollado capacidades distintas que lo hacen valioso en contextos específicos. Los animales no juzgan. Revelan.",
+
+    "morphology_title": "Características y Morfología",
+    "morphology_body": "La apariencia de cada XIMAtar refleja los resultados de la evaluación individual. Las características físicas representan diferentes fortalezas, capacidades y áreas de crecimiento potencial — haciendo visible lo que normalmente permanece oculto dentro de un CV.",
+
+    "mentor_title": "Match con Mentores",
+    "mentor_body": "Basándose en el XIMAtar, XIMA empareja a los profesionales con mentores que tienen fortalezas complementarias. No basado en antigüedad o disponibilidad genérica — basado en complementariedad conductual real. El mentor adecuado acelera el crecimiento exactamente en las áreas donde el candidato tiene fricción.",
+
+    "benefits_label": "// EL VALOR",
+    "benefits_headline": "Cómo XIMA Te Ayuda",
+
+    "candidates_title": "Para Candidatos",
+    "candidate_1": "Descubre tus verdaderas fortalezas profesionales — no las que pusiste en tu CV",
+    "candidate_2": "Encuentra oportunidades donde prosperarás, no solo donde estás calificado",
+    "candidate_3": "Recibe un plan de desarrollo personalizado basado en tus brechas reales",
+    "candidate_4": "Conéctate con mentores que complementen tu perfil conductual",
+    "candidate_5": "Tu XIMAtar es tuyo — persistente, portable, reutilizable con cada empresa",
+
+    "employers_title": "Para Empresas",
+    "employer_1": "Perfiles conductuales validados antes de ver ningún CV",
+    "employer_2": "Desafíos IA generados específicamente para el puesto — sin tests genéricos",
+    "employer_3": "Lista corta filtrada por adecuación real, no por pedigree académico",
+    "employer_4": "Cumplimiento GDPR Art. 22 completo desde el primer día — por arquitectura",
+    "employer_5": "Gestión y desarrollo del talento basados en datos conductuales, no en impresiones",
+
+    "stats_label": "// LOS NÚMEROS",
+    "stats_headline": "Construido para Escalar. Diseñado para Durar.",
+    "stat_1_value": "80%+",
+    "stat_1_label": "de las pymes no usa ninguna herramienta psicométrica — el mercado para el que XIMA fue construido",
+    "stat_2_value": "12",
+    "stat_2_label": "arquetipos conductuales — cada uno expresado en tres niveles de Drive",
+    "stat_3_value": "97.7%",
+    "stat_3_label": "margen de contribución — precios que escalan contigo",
+    "stat_4_value": "5",
+    "stat_4_label": "pilares independientes — cero proxies demográficos en la puntuación",
+
+    "cta_headline": "¿Listo para Descubrir Tu XIMAtar?",
+    "cta_body": "La evaluación es gratuita. El XIMAtar es tuyo. La primera herramienta de selección que realmente trabaja para el candidato.",
+    "cta_button": "Empezar Ahora →"
   },
   "how_it_works": {
     "title": "Cómo Funciona",
