@@ -290,7 +290,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
           <div className="space-y-4 pt-4 border-t">
             <h4 className="text-sm font-semibold flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-primary" />
-              {t('profile.cv_vs_assessment', 'CV vs Assessment Comparison')}
+              {t('dashboard.cv_comparison_title', 'CV vs Assessment Comparison')}
             </h4>
             
             {biggestImprovement.diff > 0 && (
