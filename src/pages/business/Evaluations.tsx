@@ -135,9 +135,9 @@ const BusinessEvaluations = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">{t('business_portal.tests_evaluations')}</h1>
-          <p className="text-[#A3ABB5]">
-            {t('business_portal.review_submissions')}
+          <h1 className="text-3xl font-bold text-foreground mb-2">{t('businessPortal.evaluations_page_title')}</h1>
+          <p className="text-muted-foreground">
+            {t('businessPortal.evaluations_page_subtitle')}
           </p>
         </div>
 
