@@ -341,7 +341,7 @@ export default function FeaturedProfessionals({
 
             <div className="flex items-center gap-2 flex-wrap">
               <div className="text-sm font-medium rounded-full px-3 py-1 bg-primary/10 text-primary">
-                {score}% {t('professionals.compatibility')}
+                {score}% {t('ximatarJourney.mentor_match_label')}
               </div>
               {(activeCoachees > 0 || totalCoached > 0) && (
                 <div className="text-xs text-muted-foreground flex items-center gap-1">
