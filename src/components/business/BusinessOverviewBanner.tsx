@@ -275,7 +275,7 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
               
               <SnapshotField
                 icon={<Users className="h-4 w-4" />}
-                label={t('business.overview.field_employees')}
+                label={t('businessPortal.company_field_employees')}
                 value={snapshot.employees_count ? formatNumber(snapshot.employees_count) : null}
                 isHighlight={!!snapshot.employees_count}
                 employeeCount={snapshot.employees_count || undefined}
