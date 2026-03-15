@@ -57,6 +57,18 @@ const DevelopmentPlan = () => {
   const [completedTests, setCompletedTests] = useState<number[]>([]);
   const [expandedAreas, setExpandedAreas] = useState<string[]>(['area-1']);
 
+  const categoryKeyMap: Record<string, string> = {
+    analytical: 'computational',
+    communication: 'communication',
+    creative: 'creativity',
+  };
+
+  const priorityBadgeMap: Record<string, string> = {
+    high: 'priority_badge',
+    medium: 'recommended_badge',
+    low: 'optional_badge',
+  };
+
   const developmentAreas: DevelopmentArea[] = [
     {
       id: 1,
@@ -155,11 +167,12 @@ const DevelopmentPlan = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start gap-4 animate-fade-in">
           <div className="space-y-2">
+            <p className="font-mono text-xs uppercase tracking-widest text-primary">// {t('developmentPlan.page_label')}</p>
             <h1 className="text-[28px] md:text-[34px] xl:text-[40px] font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              {t('development.title')}
+              {t('developmentPlan.page_title')}
             </h1>
             <p className="text-[14px] md:text-[15px] text-muted-foreground max-w-xl">
-              {t('development.subtitle')}
+              {t('developmentPlan.page_subtitle')}
             </p>
           </div>
           <Button 
@@ -168,7 +181,7 @@ const DevelopmentPlan = () => {
             className="gap-2 hover-scale"
           >
             <ArrowLeft className="h-4 w-4" />
-            {t('development.back_to_dashboard')}
+            {t('developmentPlan.back_button')}
           </Button>
         </div>
 
@@ -179,14 +192,14 @@ const DevelopmentPlan = () => {
               <div className="p-2 rounded-lg bg-primary/10">
                 <Target className="h-5 w-5 text-primary" />
               </div>
-              {t('development.overall_progress')}
+              {t('developmentPlan.progress_title')}
             </CardTitle>
           </CardHeader>
            <CardContent className="pt-6 p-4 md:p-6">
             <div className="space-y-6">
               <div className="space-y-3">
                 <div className="flex justify-between text-sm font-medium">
-                  <span className="text-muted-foreground">{t('development.tests_completed')}</span>
+                  <span className="text-muted-foreground">{t('developmentPlan.progress_tests_completed_label')}</span>
                   <span className="text-foreground">{completedCount} / {totalTests}</span>
                 </div>
                 <div className="relative">
@@ -205,7 +218,7 @@ const DevelopmentPlan = () => {
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-green-600">{completedCount}</div>
-                    <div className="text-sm text-muted-foreground">{t('development.tests_completed')}</div>
+                    <div className="text-sm text-muted-foreground">{t('developmentPlan.stat_completed_label')}</div>
                   </div>
                 </div>
                 
@@ -215,7 +228,7 @@ const DevelopmentPlan = () => {
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-orange-600">{totalTests - completedCount}</div>
-                    <div className="text-sm text-muted-foreground">{t('development.tests_remaining')}</div>
+                    <div className="text-sm text-muted-foreground">{t('developmentPlan.stat_remaining_label')}</div>
                   </div>
                 </div>
                 
@@ -225,7 +238,7 @@ const DevelopmentPlan = () => {
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-primary">{Math.round(overallProgress)}%</div>
-                    <div className="text-sm text-muted-foreground">{t('development.progress')}</div>
+                    <div className="text-sm text-muted-foreground">{t('developmentPlan.stat_progress_label')}</div>
                   </div>
                 </div>
               </div>
@@ -267,20 +280,20 @@ const DevelopmentPlan = () => {
                         </div>
                         <div className="text-left">
                           <h3 className="font-semibold text-lg">
-                            {t(`development.areas.${area.key}.title`)}
+                            {t(`developmentPlan.category_${categoryKeyMap[area.key] || area.key}_title`)}
                           </h3>
                           <p className="text-sm text-muted-foreground mt-0.5">
-                            {t(`development.areas.${area.key}.description`)}
+                            {t(`developmentPlan.category_${categoryKeyMap[area.key] || area.key}_body`)}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <Badge variant={getPriorityVariant(area.priority)}>
-                          {t(`development.priority.${area.priority}`)}
+                          {t(`developmentPlan.${priorityBadgeMap[area.priority]}`)}
                         </Badge>
                         <div className="hidden sm:flex items-center gap-1.5 text-sm text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
                           <Calendar className="h-3.5 w-3.5" />
-                          <span>{area.estimatedTime} {t('development.minutes')}</span>
+                          <span>{area.estimatedTime} {t('developmentPlan.minutes_label')}</span>
                         </div>
                         <div className="hidden md:block w-24">
                           <div className="flex items-center gap-2">
@@ -337,11 +350,11 @@ const DevelopmentPlan = () => {
                               <div className="flex flex-wrap gap-2">
                                 <Badge variant="outline" className="gap-1 text-xs">
                                   <BookOpen className="h-3 w-3" />
-                                  {test.questions} {t('development.questions')}
+                                  {test.questions} {t('developmentPlan.questions_label')}
                                 </Badge>
                                 <Badge variant="outline" className="gap-1 text-xs">
                                   <Clock className="h-3 w-3" />
-                                  {test.timeLimit} {t('development.minutes')}
+                                  {test.timeLimit} {t('developmentPlan.minutes_label')}
                                 </Badge>
                               </div>
                               
@@ -365,12 +378,12 @@ const DevelopmentPlan = () => {
                                 {isCompleted ? (
                                   <>
                                     <Award className="h-4 w-4" />
-                                    {t('development.completed')}
+                                    {t('developmentPlan.completed_badge')}
                                   </>
                                 ) : (
                                   <>
                                     <Play className="h-4 w-4" />
-                                    {t('development.start_test')}
+                                    {t('developmentPlan.start_test_button')}
                                   </>
                                 )}
                               </Button>
@@ -393,7 +406,7 @@ const DevelopmentPlan = () => {
               <div className="p-2 rounded-lg bg-primary/10">
                 <Sparkles className="h-5 w-5 text-primary" />
               </div>
-              {t('development.next_steps')}
+              {t('developmentPlan.next_steps_title')}
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-6">
@@ -405,10 +418,10 @@ const DevelopmentPlan = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">
-                      {t('development.recommendations.focus_priority.title')}
+                      {t('developmentPlan.next_step_1_title')}
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
-                      {t('development.recommendations.focus_priority.description')}
+                      {t('developmentPlan.next_step_1_body')}
                     </p>
                   </div>
                 </div>
@@ -421,10 +434,10 @@ const DevelopmentPlan = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">
-                      {t('development.recommendations.schedule_practice.title')}
+                      {t('developmentPlan.next_step_2_title')}
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
-                      {t('development.recommendations.schedule_practice.description')}
+                      {t('developmentPlan.next_step_2_body')}
                     </p>
                   </div>
                 </div>
@@ -437,10 +450,10 @@ const DevelopmentPlan = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">
-                      {t('development.recommendations.connect_mentor.title')}
+                      {t('developmentPlan.next_step_3_title')}
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
-                      {t('development.recommendations.connect_mentor.description')}
+                      {t('developmentPlan.next_step_3_body')}
                     </p>
                   </div>
                 </div>
