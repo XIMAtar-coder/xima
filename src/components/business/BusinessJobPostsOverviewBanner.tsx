@@ -196,7 +196,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
         {/* Job Posts List Preview */}
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-muted-foreground">
-            {t('business.job_posts_overview.recent_posts')}
+            {t('businessPortal.jobs_recent_title')}
           </h4>
           
           {loading ? (
