@@ -56,7 +56,7 @@ export const XimatarProfileCard: React.FC<XimatarProfileCardProps> = ({ ximatar,
         {/* Core Traits */}
         {translations?.core_traits && (
           <div className="space-y-2 p-4 bg-[#3A9FFF]/5 rounded-lg border border-[#3A9FFF]/20">
-            <h4 className="font-semibold text-sm text-[#3A9FFF]">{t('results.core_traits')}</h4>
+            <h4 className="font-semibold text-sm text-[#3A9FFF]">{t('ximatarJourney.core_traits_label')}</h4>
             <p className="text-sm leading-relaxed">{translations.core_traits}</p>
           </div>
         )}
