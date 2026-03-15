@@ -156,7 +156,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
                   onClick={handleSignOut}
                 >
                   <LogOut size={18} className="mr-2" />
-                  {t('business.nav.sign_out')}
+                  {t('businessPortal.nav_logout')}
                 </Button>
               </div>
             ) : (
