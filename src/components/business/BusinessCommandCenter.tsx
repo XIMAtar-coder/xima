@@ -226,7 +226,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
           <CardHeader className="pb-3">
             <CardTitle className="text-base font-medium flex items-center gap-2 text-amber-600">
               <AlertCircle className="h-4 w-4" />
-              {t('business.command_center.attention_needed')}
+              {t('businessPortal.attention_title')}
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">

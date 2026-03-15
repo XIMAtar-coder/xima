@@ -190,7 +190,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
             className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-primary/10"
           >
             <HelpCircle size={16} />
-            <span className="text-sm font-medium">{t('business_guide.open_button', 'Guide')}</span>
+            <span className="text-sm font-medium">{t('businessPortal.nav_guide')}</span>
           </Button>
 
           <DropdownMenu>
