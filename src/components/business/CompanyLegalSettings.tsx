@@ -164,7 +164,7 @@ const CompanyLegalSettings: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="vat_number" className="text-sm text-muted-foreground">
-                  {t('business.legal.vat_number')}
+                  {t('businessPortal.settings_legal_vat_label')}
                 </Label>
                 <Input
                   id="vat_number"
