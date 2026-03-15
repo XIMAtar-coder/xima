@@ -89,7 +89,7 @@ export function ProfilingOptOutSection() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Brain className="h-5 w-5 text-primary" />
-          {t('settings.profiling.title')}
+          {t('settings.ai_profiling_title')}
         </CardTitle>
         <CardDescription>
           {t('settings.profiling.description')}
