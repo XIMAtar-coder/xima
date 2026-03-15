@@ -160,7 +160,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-medium flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-primary" />
-            {t('business.command_center.next_actions')}
+            {t('businessPortal.quick_actions_title')}
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
