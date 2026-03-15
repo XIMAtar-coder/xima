@@ -116,10 +116,10 @@ export function ProfilingOptOutSection() {
         <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border/50">
           <div className="space-y-0.5 flex-1 mr-4">
             <Label htmlFor="profiling-opt-out" className="text-foreground font-medium cursor-pointer">
-              {t('settings.profiling.optOutLabel')}
+              {t('settings.ai_profiling_opt_out_label')}
             </Label>
             <p className="text-xs text-muted-foreground">
-              {t('settings.profiling.optOutDescription')}
+              {t('settings.ai_profiling_opt_out_body')}
             </p>
           </div>
           <Switch
