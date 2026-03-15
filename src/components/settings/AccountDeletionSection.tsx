@@ -92,10 +92,10 @@ export function AccountDeletionSection({ variant = 'candidate' }: AccountDeletio
       <CardHeader>
         <CardTitle className="text-destructive flex items-center gap-2">
           <Trash2 className="h-5 w-5" />
-          {t('settings.deletion.title')}
+          {t('settings.delete_title')}
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          {t('settings.deletion.description')}
+          {t('settings.delete_subtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
