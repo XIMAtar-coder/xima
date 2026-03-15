@@ -100,14 +100,14 @@ export function ProfilingOptOutSection() {
         <Alert>
           <Info className="h-4 w-4" />
           <AlertDescription>
-            <p className="font-medium mb-2">{t('settings.profiling.whatIsTitle')}</p>
+            <p className="font-medium mb-2">{t('settings.ai_profiling_what_title')}</p>
             <p className="text-sm text-muted-foreground mb-2">
-              {t('settings.profiling.whatIsDescription')}
+              {t('settings.ai_profiling_what_body')}
             </p>
             <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-              <li>{t('settings.profiling.includes1')}</li>
-              <li>{t('settings.profiling.includes2')}</li>
-              <li>{t('settings.profiling.includes3')}</li>
+              <li>{t('settings.ai_profiling_item_1')}</li>
+              <li>{t('settings.ai_profiling_item_2')}</li>
+              <li>{t('settings.ai_profiling_item_3')}</li>
             </ul>
           </AlertDescription>
         </Alert>
