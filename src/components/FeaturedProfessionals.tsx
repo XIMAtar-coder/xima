@@ -285,7 +285,7 @@ export default function FeaturedProfessionals({
       
       {/* Hint text */}
       <p className="text-xs text-muted-foreground">
-        {t('professionals.refresh_hint', 'Not satisfied? Refresh to see other compatible mentors.')}
+        {t('ximatarJourney.mentor_refresh_note')}
       </p>
 
       <div className="grid md:grid-cols-3 gap-4">
