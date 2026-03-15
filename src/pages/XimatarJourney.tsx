@@ -118,9 +118,9 @@ const XimatarJourney = () => {
             alt="XIMA Logo" 
             className="h-14 w-auto mx-auto mb-4 logo-hover"
           />
-          <h1 className="text-4xl font-bold mb-2 font-heading">{t('journey.title')}</h1>
+          <h1 className="text-4xl font-bold mb-2 font-heading">{t('ximatarJourney.page_title')}</h1>
           <p className="text-muted-foreground text-lg">
-            {t('journey.subtitle')}
+            {t('ximatarJourney.page_subtitle')}
           </p>
         </div>
         
