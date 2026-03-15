@@ -182,31 +182,31 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
             </summary>
             <div className="grid gap-2 mt-3 pl-4">
               <RubricItem
-                label={t('open_scoring.rubric.length')}
+                label={t('ximatarJourney.open_score_clarity')}
                 score={rubric.length}
                 max={20}
                 avgScore={avgData?.rubric_averages?.length}
               />
               <RubricItem
-                label={t('open_scoring.rubric.relevance')}
+                label={t('ximatarJourney.open_score_relevance')}
                 score={rubric.relevance}
                 max={25}
                 avgScore={avgData?.rubric_averages?.relevance}
               />
               <RubricItem
-                label={t('open_scoring.rubric.structure')}
+                label={t('ximatarJourney.open_score_coherence')}
                 score={rubric.structure}
                 max={20}
                 avgScore={avgData?.rubric_averages?.structure}
               />
               <RubricItem
-                label={t('open_scoring.rubric.specificity')}
+                label={t('ximatarJourney.open_score_insight')}
                 score={rubric.specificity}
                 max={20}
                 avgScore={avgData?.rubric_averages?.specificity}
               />
               <RubricItem
-                label={t('open_scoring.rubric.action')}
+                label={t('ximatarJourney.open_score_depth')}
                 score={rubric.action}
                 max={15}
                 avgScore={avgData?.rubric_averages?.action}
