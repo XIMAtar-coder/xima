@@ -305,9 +305,17 @@ const About = () => {
                   </p>
                 </div>
               </div>
-              <p className="text-muted-foreground leading-relaxed">
-                {t('about.founder_bio')}
-              </p>
+              <div className="space-y-4">
+                <p className="text-muted-foreground leading-relaxed">
+                  {t('about.founder_bio_1')}
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {t('about.founder_bio_2')}
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {t('about.founder_bio_3')}
+                </p>
+              </div>
             </div>
 
             {/* Daniel Card */}
