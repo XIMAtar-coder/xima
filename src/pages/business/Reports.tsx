@@ -237,9 +237,9 @@ const BusinessReports = () => {
           {/* Challenge Participation */}
           <Card className="bg-gradient-to-br from-card to-card/80 border-primary/20">
             <CardHeader>
-              <CardTitle className="text-foreground">{t('business.reports.challenge_participation')}</CardTitle>
+              <CardTitle className="text-foreground">{t('businessPortal.reports_challenge_participation_title')}</CardTitle>
               <CardDescription className="text-muted-foreground">
-                {t('business.reports.challenge_participation_desc')}
+                {t('businessPortal.reports_challenge_participation_subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent>
