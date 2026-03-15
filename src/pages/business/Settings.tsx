@@ -261,10 +261,10 @@ const BusinessSettings = () => {
             <CardHeader>
               <CardTitle className="text-foreground flex items-center gap-2">
                 <Building2 className="text-primary" />
-                {t('business_portal.company_info')}
+                {t('businessPortal.settings_company_title')}
               </CardTitle>
               <CardDescription className="text-muted-foreground">
-                {t('business_portal.update_details')}
+                {t('businessPortal.settings_company_subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
