@@ -181,7 +181,7 @@ const DevelopmentPlan = () => {
             className="gap-2 hover-scale"
           >
             <ArrowLeft className="h-4 w-4" />
-            {t('development.back_to_dashboard')}
+            {t('developmentPlan.back_button')}
           </Button>
         </div>
 
