@@ -64,7 +64,7 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
             {t('businessPortal.active_challenges_title')}
           </CardTitle>
           <Badge variant="secondary" className="bg-primary/20 text-primary">
-            {challenges.length} {t('business.dashboard.active')}
+            {challenges.length} {t('businessPortal.challenge_status_active')}
           </Badge>
         </div>
       </CardHeader>
