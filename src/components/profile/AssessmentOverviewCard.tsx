@@ -54,9 +54,9 @@ export const AssessmentOverviewCard: React.FC<AssessmentOverviewCardProps> = ({
       <div className="p-3 rounded-[16px] bg-[rgba(88,86,214,0.08)] border border-[rgba(88,86,214,0.15)]">
         <div className="flex items-center gap-2 mb-1">
           <Flame className="w-3.5 h-3.5 text-secondary" strokeWidth={1.5} />
-          <span className="text-[13px] font-semibold text-foreground">{t('profile.drive_growth_velocity', 'Drive (Growth Velocity)')}</span>
+          <span className="text-[13px] font-semibold text-foreground">{t('dashboard.drive_section_title', 'Drive (Growth Velocity)')}</span>
         </div>
-        <p className="text-[12px] text-muted-foreground mb-2">{t('profile.drive_subtitle', 'Speed of improvement on weak areas')}</p>
+        <p className="text-[12px] text-muted-foreground mb-2">{t('dashboard.drive_section_body', 'Speed of improvement on weak areas')}</p>
         {driveScore !== null && driveScore !== undefined ? (
           <div className="flex items-center gap-3">
             <div className="flex-1 h-1.5 rounded-[999px] bg-[rgba(118,118,128,0.16)] overflow-hidden">
