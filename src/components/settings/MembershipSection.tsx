@@ -304,7 +304,7 @@ export const MembershipSection: React.FC = () => {
           {/* Send invite by email */}
           <div className="space-y-2">
             <p className="text-sm font-medium text-foreground">
-              {t('settings.send_invite_email', 'Send invite by email')}
+              {t('settings.referral_email_label', 'Send invite by email')}
             </p>
             <div className="flex gap-2">
               <Input
