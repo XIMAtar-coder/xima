@@ -499,7 +499,7 @@ const BusinessSettings = () => {
 
             {/* Helper text */}
             <p className="text-xs text-muted-foreground">
-              {t('business.settings.snapshot_helper')}
+              {t('businessPortal.settings_snapshot_note')}
             </p>
 
             {/* Action Buttons */}
