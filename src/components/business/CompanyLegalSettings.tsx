@@ -115,7 +115,7 @@ const CompanyLegalSettings: React.FC = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="city" className="text-sm text-muted-foreground">
-                  {t('business.legal.city')}
+                  {t('businessPortal.settings_legal_address_city')}
                 </Label>
                 <Input
                   id="city"
