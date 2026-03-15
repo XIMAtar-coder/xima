@@ -251,10 +251,10 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
               <div>
                 <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                   <Building2 className="h-5 w-5 text-primary" />
-                  {t('business.overview.company_snapshot')}
+                  {t('businessPortal.company_overview_title')}
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {t('business.overview.snapshot_subtitle')}
+                  {t('businessPortal.company_overview_body')}
                 </p>
               </div>
             </div>
