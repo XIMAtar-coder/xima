@@ -483,7 +483,7 @@ const BusinessSettings = () => {
               <div className="space-y-2 md:col-span-2">
                 <Label className="text-foreground flex items-center gap-2">
                   <Calendar size={16} />
-                  {t('business.settings.founded_year')}
+                  {t('businessPortal.settings_snapshot_founded_label')}
                 </Label>
                 <Input
                   type="number"
