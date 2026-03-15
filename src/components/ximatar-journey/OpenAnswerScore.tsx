@@ -178,7 +178,7 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
           <details className="group">
             <summary className="text-xs font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors list-none flex items-center gap-1">
               <ChevronDown size={14} className="group-open:rotate-180 transition-transform" />
-              {t('open_scoring.rubric_breakdown')}
+              {t('ximatarJourney.open_score_breakdown_label')}
             </summary>
             <div className="grid gap-2 mt-3 pl-4">
               <RubricItem
