@@ -23,7 +23,7 @@ export const XimatarProfileCard: React.FC<XimatarProfileCardProps> = ({ ximatar,
       <CardHeader>
         <CardTitle className="flex items-center gap-2 font-heading">
           <Sparkles className="text-[#3A9FFF]" />
-          {t('results.your_ximatar')}
+          {t('ximatarJourney.your_ximatar_label')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
