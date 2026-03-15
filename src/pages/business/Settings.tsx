@@ -429,7 +429,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label className="text-foreground flex items-center gap-2">
                   <Building2 size={16} />
-                  {t('business.settings.industry')}
+                  {t('businessPortal.settings_snapshot_sector_label')}
                 </Label>
                 <Input
                   placeholder={snapshotData.snapshot_industry || t('business.settings.industry_placeholder')}
