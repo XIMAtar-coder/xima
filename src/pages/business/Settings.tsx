@@ -315,9 +315,9 @@ const BusinessSettings = () => {
           {/* Challenge Defaults */}
           <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 mb-6">
             <CardHeader>
-              <CardTitle className="text-foreground">{t('business_portal.challenge_defaults')}</CardTitle>
+              <CardTitle className="text-foreground">{t('businessPortal.settings_challenge_defaults_title')}</CardTitle>
               <CardDescription className="text-muted-foreground">
-                {t('business_portal.default_parameters')}
+                {t('businessPortal.settings_challenge_defaults_subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
