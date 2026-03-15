@@ -96,7 +96,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           {/* Summary */}
           <div>
             <h4 className="font-semibold text-sm text-muted-foreground mb-2">
-              {t('business.profile.summary')}
+              {t('businessPortal.company_summary_label')}
             </h4>
             {profile.summary ? (
               <p className="text-foreground leading-relaxed">{profile.summary}</p>
