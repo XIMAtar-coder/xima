@@ -196,12 +196,12 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
               {isUploading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Analyzing...
+                   {t('dashboard.cv_analyzing', 'Analyzing...')}
                 </>
               ) : (
                 <>
                   <Upload className="w-4 h-4 mr-2" />
-                  {cvAnalysis ? 'Re-upload CV' : 'Upload CV'}
+                  {cvAnalysis ? t('dashboard.cv_reupload', 'Re-upload CV') : t('dashboard.cv_upload', 'Upload CV')}
                 </>
               )}
             </Button>
