@@ -180,7 +180,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
             <div>
               <h4 className="font-semibold text-sm text-muted-foreground mb-3 flex items-center gap-2">
                 <TrendingUp className="h-4 w-4" />
-                {t('business.profile.pillar_vector')}
+                {t('businessPortal.company_pillar_profile_label')}
               </h4>
               <div className="space-y-3">
                 {Object.entries(profile.pillar_vector).map(([pillar, value]) => {
