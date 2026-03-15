@@ -18,7 +18,7 @@ export const StrengthFrictionSummary: React.FC<StrengthFrictionSummaryProps> = (
     <div className="dashboard-section p-5 md:p-6 space-y-5">
       <h3 className="text-[13px] font-semibold text-foreground uppercase tracking-[0.04em] flex items-center gap-2">
         <Compass className="w-4 h-4 text-primary" strokeWidth={1.5} />
-        {t('profile.strength_friction', 'Your Edge & Friction Points')}
+        {t('dashboard.advantage_friction_title', 'Your Edge & Friction Points')}
       </h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
