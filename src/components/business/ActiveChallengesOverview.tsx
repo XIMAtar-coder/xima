@@ -97,7 +97,7 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
                   <div className="flex items-center gap-4 text-sm flex-wrap">
                     <span className="flex items-center gap-1 text-muted-foreground">
                       <Users className="h-3.5 w-3.5" />
-                      {challenge.invited_count} {t('business.dashboard.invited')}
+                      {challenge.invited_count} {t('businessPortal.challenge_invited_label')}
                     </span>
                     <span className="flex items-center gap-1 text-muted-foreground">
                       <MessageSquare className="h-3.5 w-3.5" />
