@@ -366,6 +366,9 @@ export const MembershipSection: React.FC = () => {
             <CardTitle className="text-lg">
               {t('settings.upgrade_title', 'Upgrade Your Plan')}
             </CardTitle>
+            <CardDescription>
+              {t('settings.upgrade_subtitle', 'Unlock unlimited mentor sessions, priority access to opportunities, and advanced development tools.')}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-3">
