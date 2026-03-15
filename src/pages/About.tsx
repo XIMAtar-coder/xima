@@ -79,12 +79,51 @@ const About = () => {
             <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">
               {t('about.origin_label')}
             </p>
-            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-4">
+            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-4 whitespace-pre-line">
               {t('about.origin_headline')}
             </h2>
-            <p className="text-muted-foreground leading-relaxed">
-              {t('about.origin_body')}
+            <div className="space-y-4">
+              <p className="text-muted-foreground leading-relaxed">
+                {t('about.origin_body_1')}
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                {t('about.origin_body_2')}
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                {t('about.origin_body_3')}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Founder Section */}
+        <section className="mb-16 md:mb-20 animate-fade-in">
+          <div className="premium-card rounded-2xl p-6 md:p-8 border-l-4 border-l-primary">
+            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">
+              {t('about.founder_label')}
             </p>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-1">
+              {t('about.founder_headline')}
+            </h2>
+            <p className="text-sm text-muted-foreground mb-6">
+              {t('about.founder_role')}
+            </p>
+            <div className="space-y-4 mb-6">
+              <p className="text-muted-foreground leading-relaxed">
+                {t('about.founder_body_1')}
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                {t('about.founder_body_2')}
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                {t('about.founder_body_3')}
+              </p>
+            </div>
+            <div className="border-t border-border pt-6">
+              <p className="text-lg italic text-muted-foreground text-center leading-relaxed">
+                {t('about.founder_pullquote')}
+              </p>
+            </div>
           </div>
         </section>
         
@@ -260,17 +299,20 @@ const About = () => {
         <section className="mb-16 md:mb-20">
           <div className="text-center mb-10">
             <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">
-              {t('about.stats_label')}
+              {t('about.numbers_label')}
             </p>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-              {t('about.stats_headline')}
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+              {t('about.numbers_headline')}
             </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              {t('about.numbers_subheadline')}
+            </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {stats.map((stat, index) => (
               <div key={index} className="premium-card rounded-xl p-6 text-center">
                 <p className="text-4xl font-bold text-primary mb-2">{stat.value}</p>
-                <p className="text-sm text-muted-foreground leading-relaxed">{stat.label}</p>
+                <p className="text-sm text-muted-foreground text-center leading-relaxed">{stat.label}</p>
               </div>
             ))}
           </div>
