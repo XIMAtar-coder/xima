@@ -16,15 +16,15 @@ import {
   Shield, BarChart3, FileText, MessageSquare, Sparkles, Eye
 } from 'lucide-react';
 
-const FEATURE_LABELS: Record<FeatureFlag, { label: string; icon: React.ReactNode }> = {
-  mentor_portal: { label: 'Mentor Portal', icon: <MessageSquare className="h-4 w-4" /> },
-  level3_challenges: { label: 'Level 3 Challenges', icon: <Sparkles className="h-4 w-4" /> },
-  data_export: { label: 'Data Export', icon: <FileText className="h-4 w-4" /> },
-  premium_signals: { label: 'Premium Signals', icon: <BarChart3 className="h-4 w-4" /> },
-  eligibility_gate: { label: 'Eligibility Gate', icon: <Shield className="h-4 w-4" /> },
-  decision_pack: { label: 'Decision Pack', icon: <Eye className="h-4 w-4" /> },
-  consistency_guard: { label: 'Consistency Guard', icon: <Shield className="h-4 w-4" /> },
-  advanced_signals: { label: 'Advanced Signals', icon: <BarChart3 className="h-4 w-4" /> },
+const FEATURE_KEYS: Record<FeatureFlag, { labelKey: string; icon: React.ReactNode }> = {
+  mentor_portal: { labelKey: 'businessPortal.settings_plan_feature_mentor_portal', icon: <MessageSquare className="h-4 w-4" /> },
+  level3_challenges: { labelKey: 'businessPortal.settings_plan_feature_l3_challenges', icon: <Sparkles className="h-4 w-4" /> },
+  data_export: { labelKey: 'businessPortal.settings_plan_feature_data_export', icon: <FileText className="h-4 w-4" /> },
+  premium_signals: { labelKey: 'businessPortal.settings_plan_feature_premium_signals', icon: <BarChart3 className="h-4 w-4" /> },
+  eligibility_gate: { labelKey: 'businessPortal.settings_plan_feature_eligibility_gate', icon: <Shield className="h-4 w-4" /> },
+  decision_pack: { labelKey: 'businessPortal.settings_plan_feature_decision_pack', icon: <Eye className="h-4 w-4" /> },
+  consistency_guard: { labelKey: 'businessPortal.settings_plan_feature_consistency_guard', icon: <Shield className="h-4 w-4" /> },
+  advanced_signals: { labelKey: 'businessPortal.settings_plan_feature_advanced_signals', icon: <BarChart3 className="h-4 w-4" /> },
 };
 
 const TIER_COLORS: Record<string, string> = {
