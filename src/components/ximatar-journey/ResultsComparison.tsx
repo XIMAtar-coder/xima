@@ -436,7 +436,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
             <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '600ms' }}>
               <div className="flex items-center gap-2">
                 <AlertCircle className="h-5 w-5 text-orange-500 animate-scale-in" />
-                <span className="font-semibold">{t('results.weakest_pillar')}:</span>
+                <span className="font-semibold">{t('ximatarJourney.your_friction_label')}</span>
               </div>
               <Badge variant="outline" className="px-4 py-2 text-base capitalize hover-scale">
                 {t(`pillars.${weakestPillar.pillar === 'computational_power' ? 'computational' : weakestPillar.pillar}.name`)} ({weakestPillar.score.toFixed(1)})
