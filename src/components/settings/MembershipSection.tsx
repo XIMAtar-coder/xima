@@ -286,7 +286,7 @@ export const MembershipSection: React.FC = () => {
           {referralCode && (
             <div className="space-y-2">
               <p className="text-sm font-medium text-foreground">
-                {t('settings.your_invite_link', 'Your invite link')}
+                {t('settings.referral_link_label', 'Your invite link')}
               </p>
               <div className="flex gap-2">
                 <Input
