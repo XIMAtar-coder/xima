@@ -150,7 +150,7 @@ const BusinessReports = () => {
             className="border-primary/30"
           >
             <Download className="mr-2" size={16} />
-            {t('business.reports.export_report')}
+            {t('businessPortal.reports_export_cta')}
           </Button>
         </div>
 
