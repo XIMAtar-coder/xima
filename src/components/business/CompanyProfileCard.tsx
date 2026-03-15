@@ -86,10 +86,10 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Building2 className="h-5 w-5 text-[hsl(var(--xima-accent))]" />
-            {t('business.profile.title')}
+            {t('businessPortal.company_profile_title')}
           </CardTitle>
           <CardDescription>
-            {t('business.profile.last_updated')}: {new Date(profile.updated_at).toLocaleDateString()}
+            {t('businessPortal.company_profile_updated')}: {new Date(profile.updated_at).toLocaleDateString()}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
