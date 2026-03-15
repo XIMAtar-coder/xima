@@ -522,7 +522,7 @@ const BusinessSettings = () => {
                 className="flex-1"
               >
                 <RefreshCw className="mr-2" size={16} />
-                {t('business.settings.reset_to_ai')}
+                {t('businessPortal.settings_snapshot_reset_cta')}
               </Button>
             </div>
           </CardContent>

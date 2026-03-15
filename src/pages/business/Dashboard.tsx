@@ -664,7 +664,7 @@ const BusinessDashboard = () => {
 
         {/* Candidate Engagement */}
         <div>
-          <h2 className="text-2xl font-bold text-foreground mb-4">{t('business.dashboard.candidate_engagement')}</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-4">{t('businessPortal.candidate_engagement_title')}</h2>
           <CandidateEngagement />
         </div>
       </div>

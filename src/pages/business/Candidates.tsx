@@ -1046,7 +1046,7 @@ const BusinessCandidates = () => {
                 </>
               ) : (
                 <p className="text-muted-foreground text-lg">
-                  {goalId ? t('business.shortlist.no_matches') : t('business.candidates.no_candidates')}
+                  {goalId ? t('business.shortlist.no_matches') : t('businessPortal.candidates_empty_headline')}
                 </p>
               )}
             </CardContent>

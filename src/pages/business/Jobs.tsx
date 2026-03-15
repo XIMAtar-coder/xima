@@ -269,7 +269,7 @@ export default function Jobs() {
               </p>
               <Button onClick={() => navigate('/business/jobs/new')}>
                 <Plus className="h-4 w-4 mr-2" />
-                {t('jobs.create_job')}
+                {t('businessPortal.jobs_page_create_cta')}
               </Button>
             </CardContent>
           </Card>

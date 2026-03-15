@@ -141,7 +141,7 @@ export const BusinessPlanCard: React.FC = () => {
         >
           {planTier === 'enterprise'
             ? t('business.plan.manage_plan', 'Manage Plan')
-            : t('business.plan.upgrade', 'Upgrade Plan')}
+            : t('businessPortal.settings_plan_upgrade_cta')}
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </CardContent>

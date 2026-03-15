@@ -264,9 +264,9 @@ const BusinessReports = () => {
           {/* Match Score Distribution */}
           <Card className="bg-gradient-to-br from-card to-card/80 border-primary/20 lg:col-span-2">
             <CardHeader>
-              <CardTitle className="text-foreground">{t('business.reports.match_distribution')}</CardTitle>
+              <CardTitle className="text-foreground">{t('businessPortal.reports_score_distribution_title')}</CardTitle>
               <CardDescription className="text-muted-foreground">
-                {t('business.reports.match_distribution_desc')}
+                {t('businessPortal.reports_score_distribution_subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent>

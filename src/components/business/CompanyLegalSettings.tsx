@@ -220,7 +220,7 @@ const CompanyLegalSettings: React.FC = () => {
             ) : (
               <Save className="mr-2" size={16} />
             )}
-            {isUpserting ? t('business_portal.saving') : t('business.legal.save')}
+            {isUpserting ? t('business_portal.saving') : t('businessPortal.settings_legal_save_cta')}
           </Button>
         </form>
       </CardContent>
