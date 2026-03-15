@@ -246,7 +246,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           <div className="pt-4 border-t border-border">
             <Button onClick={onGenerate} variant="outline" className="gap-2">
               <Sparkles className="h-4 w-4" />
-              {t('business.profile.regenerate_cta')}
+              {t('businessPortal.company_regenerate_profile')}
             </Button>
           </div>
         </CardContent>

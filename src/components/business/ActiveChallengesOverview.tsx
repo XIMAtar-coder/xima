@@ -130,7 +130,7 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
                   }
                 }}
               >
-                {t('business.dashboard.view_responses')}
+                {t('businessPortal.challenge_view_responses')}
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
               </div>

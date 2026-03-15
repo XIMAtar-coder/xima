@@ -144,15 +144,15 @@ export const CandidateEngagement = () => {
       {/* Recent Candidates */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Candidate Activity</CardTitle>
+          <CardTitle>{t('businessPortal.recent_activity_title')}</CardTitle>
           <CardDescription>
-            Candidates who recently engaged with your opportunities
+            {t('businessPortal.recent_activity_subtitle')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {data.recentCandidates.length === 0 ? (
             <p className="text-center text-muted-foreground py-4">
-              No recent candidate activity
+              {t('businessPortal.recent_activity_empty')}
             </p>
           ) : (
             <div className="space-y-4">
