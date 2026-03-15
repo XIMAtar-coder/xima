@@ -562,7 +562,7 @@ const BusinessDashboard = () => {
                         await loadHiringGoalStatus();
                       }}
                     >
-                      {t('business.hiring_goal.edit_goal')}
+                      {t('businessPortal.hiring_goal_edit')}
                     </Button>
                   </div>
                 </div>
