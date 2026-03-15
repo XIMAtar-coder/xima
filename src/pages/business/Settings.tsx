@@ -511,7 +511,7 @@ const BusinessSettings = () => {
                 className="flex-1 bg-primary hover:bg-primary/90"
               >
                 <Save className="mr-2" size={16} />
-                {snapshotLoading ? t('business_portal.saving') : t('business.settings.save_snapshot')}
+                {snapshotLoading ? t('business_portal.saving') : t('businessPortal.settings_snapshot_save_cta')}
               </Button>
               
               <Button
