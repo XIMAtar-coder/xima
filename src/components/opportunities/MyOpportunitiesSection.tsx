@@ -197,7 +197,7 @@ export const MyOpportunitiesSection: React.FC = () => {
           className="gap-2"
         >
           <Sparkles className="w-4 h-4" />
-          {t('opportunities.refresh')}
+          {t('dashboard.opportunities_refresh')}
         </Button>
       </CardHeader>
       <CardContent>
