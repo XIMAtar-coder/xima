@@ -124,7 +124,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
               {strongestPillar && (
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-[999px] bg-[rgba(52,199,89,0.12)] border border-[rgba(52,199,89,0.25)]">
                   <TrendingUp className="w-3.5 h-3.5 text-apple-green" />
-                  <span className="text-[12px] font-medium text-apple-green uppercase tracking-wide">{t('profile.your_edge', 'Edge')}:</span>
+                  <span className="text-[12px] font-medium text-apple-green uppercase tracking-wide">{t('dashboard.ximatar_advantage_label', 'Edge')}:</span>
                   <span className="text-[12px] font-medium text-foreground capitalize">{t(`pillars.${strongestPillar}.name`, strongestPillar)}</span>
                 </div>
               )}
