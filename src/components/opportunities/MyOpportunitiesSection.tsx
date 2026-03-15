@@ -205,15 +205,15 @@ export const MyOpportunitiesSection: React.FC = () => {
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="recommended">
               <Sparkles className="w-4 h-4 mr-2" />
-              {t('opportunities.for_you')}
+               {t('dashboard.opportunities_tab_for_you')}
             </TabsTrigger>
             <TabsTrigger value="saved">
               <Bookmark className="w-4 h-4 mr-2" />
-              {t('opportunities.saved')}
+              {t('dashboard.opportunities_tab_saved')}
             </TabsTrigger>
             <TabsTrigger value="applied">
               <CheckCircle2 className="w-4 h-4 mr-2" />
-              {t('opportunities.applied')}
+              {t('dashboard.opportunities_tab_applied')}
             </TabsTrigger>
           </TabsList>
 
