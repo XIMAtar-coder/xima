@@ -699,7 +699,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       <Card className="p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 border-primary/10 animate-fade-in" style={{ animationDelay: '1200ms' }}>
         <div className="text-center space-y-4">
           <p className="text-lg italic text-muted-foreground max-w-2xl mx-auto animate-scale-in" style={{ animationDelay: '1300ms' }}>
-            {t('ximatar_intro.compass')}
+            {t('ximatarJourney.closing_pullquote')}
           </p>
         </div>
       </Card>

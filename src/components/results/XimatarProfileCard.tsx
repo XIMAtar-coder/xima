@@ -85,7 +85,7 @@ export const XimatarProfileCard: React.FC<XimatarProfileCardProps> = ({ ximatar,
         {translations?.ideal_roles && (
           <div className="space-y-2 p-4 bg-[#3A9FFF]/5 rounded-lg border border-[#3A9FFF]/20">
             <h4 className="font-semibold text-sm text-[#3A9FFF]">
-              {t('results.ideal_roles')}
+              {t('ximatarJourney.ideal_roles_label')}
             </h4>
             <p className="text-sm leading-relaxed">{translations.ideal_roles}</p>
           </div>

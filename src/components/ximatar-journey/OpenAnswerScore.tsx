@@ -215,7 +215,7 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
           </details>
 
           <p className="text-xs text-muted-foreground pt-2 border-t border-border/30">
-            {t('open_scoring.note')}
+            {t('ximatarJourney.open_score_influence_note')}
           </p>
         </div>
       )}

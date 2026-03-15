@@ -204,7 +204,7 @@ const XimatarJourney = () => {
         {currentStep === 3 && (
           <div className="mt-8 mb-6 text-center">
             <p className="text-lg font-semibold text-foreground bg-primary/10 border-2 border-primary/30 rounded-lg py-4 px-6 inline-block">
-              {t('journey.choose_mentor_required')}
+              {t('ximatarJourney.closing_cta')}
             </p>
           </div>
         )}

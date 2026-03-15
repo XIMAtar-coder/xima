@@ -413,7 +413,7 @@ export default function FeaturedProfessionals({
                 size="lg"
                 variant={isSelected ? "default" : "outline"}
               >
-                {isSelected ? `✓ ${t('professionals.selected', 'Selected')}` : t('professionals.select')}
+                {isSelected ? `✓ ${t('professionals.selected', 'Selected')}` : t('ximatarJourney.mentor_select_cta')}
               </Button>
             </div>
           </Card>
