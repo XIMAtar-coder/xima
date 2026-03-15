@@ -145,7 +145,7 @@ export function MentorCVConsentToggle({
           <div className="flex items-center gap-3 text-muted-foreground">
             <AlertCircle className="h-5 w-5" />
             <p className="text-sm">
-              {t('settings.no_mentor_for_cv', 'Complete your assessment to get a mentor and manage CV access')}
+              {t('settings.mentor_cv_incomplete', 'Complete your assessment to get a mentor and manage CV access.')}
             </p>
           </div>
         </CardContent>
