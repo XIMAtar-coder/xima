@@ -578,7 +578,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                   variant="default" 
                   className="text-xs animate-scale-in bg-orange-600 hover:bg-orange-700"
                 >
-                  {t('common.you', 'You')}
+                  {t('ximatarJourney.drive_you_badge')}
                 </Badge>
               )}
             </div>
