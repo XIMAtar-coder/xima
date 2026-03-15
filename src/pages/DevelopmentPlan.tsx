@@ -289,7 +289,7 @@ const DevelopmentPlan = () => {
                       </div>
                       <div className="flex items-center gap-3">
                         <Badge variant={getPriorityVariant(area.priority)}>
-                          {t(`development.priority.${area.priority}`)}
+                          {t(`developmentPlan.${priorityBadgeMap[area.priority]}`)}
                         </Badge>
                         <div className="hidden sm:flex items-center gap-1.5 text-sm text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
                           <Calendar className="h-3.5 w-3.5" />
