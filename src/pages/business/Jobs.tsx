@@ -219,7 +219,7 @@ export default function Jobs() {
           <div className="flex gap-2 flex-wrap">
             <Button variant="outline" size="sm" onClick={() => setShowPdfImport(true)}>
               <FileUp className="h-4 w-4 mr-2" />
-              {t('business.pdf_import.import_from_pdf')}
+              {t('businessPortal.jobs_import_pdf')}
             </Button>
             <Button size="sm" onClick={() => navigate('/business/jobs/new')}>
               <Plus className="h-4 w-4 mr-2" />
