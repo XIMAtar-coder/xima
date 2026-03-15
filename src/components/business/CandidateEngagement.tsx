@@ -21,6 +21,7 @@ interface CandidateEngagementData {
 }
 
 export const CandidateEngagement = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState<CandidateEngagementData>({
     totalViews: 0,
     totalApplications: 0,
