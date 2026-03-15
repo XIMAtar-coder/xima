@@ -167,11 +167,12 @@ const DevelopmentPlan = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start gap-4 animate-fade-in">
           <div className="space-y-2">
+            <p className="font-mono text-xs uppercase tracking-widest text-primary">// {t('developmentPlan.page_label')}</p>
             <h1 className="text-[28px] md:text-[34px] xl:text-[40px] font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              {t('development.title')}
+              {t('developmentPlan.page_title')}
             </h1>
             <p className="text-[14px] md:text-[15px] text-muted-foreground max-w-xl">
-              {t('development.subtitle')}
+              {t('developmentPlan.page_subtitle')}
             </p>
           </div>
           <Button 
