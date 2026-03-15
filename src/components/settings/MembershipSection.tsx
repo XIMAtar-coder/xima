@@ -387,8 +387,8 @@ export const MembershipSection: React.FC = () => {
                         {tierConfig.icon}
                       </div>
                       <div>
-                        <p className="font-medium text-foreground">{tierConfig.label}</p>
-                        <p className="text-sm text-muted-foreground">{tierConfig.price}</p>
+                        <p className="font-medium text-foreground">{t(`settings.plan_${key}_name`, tierConfig.label)}</p>
+                        <p className="text-xs text-muted-foreground">{t(`settings.plan_${key}_tagline`, tierConfig.price)}</p>
                       </div>
                     </div>
                     <Button
