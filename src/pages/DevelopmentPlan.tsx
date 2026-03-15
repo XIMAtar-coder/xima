@@ -354,7 +354,7 @@ const DevelopmentPlan = () => {
                                 </Badge>
                                 <Badge variant="outline" className="gap-1 text-xs">
                                   <Clock className="h-3 w-3" />
-                                  {test.timeLimit} {t('development.minutes')}
+                                  {test.timeLimit} {t('developmentPlan.minutes_label')}
                                 </Badge>
                               </div>
                               
