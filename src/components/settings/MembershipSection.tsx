@@ -309,7 +309,7 @@ export const MembershipSection: React.FC = () => {
             <div className="flex gap-2">
               <Input
                 type="email"
-                placeholder={t('settings.email_placeholder', 'friend@example.com')}
+                placeholder={t('settings.referral_email_placeholder', 'friend@example.com')}
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendInvite()}
