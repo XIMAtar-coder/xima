@@ -71,7 +71,7 @@ export const BusinessPlanCard: React.FC = () => {
             <Users className="h-5 w-5 text-primary" />
             <div>
               <p className="text-sm font-medium text-foreground">
-                {t('business.plan.seats', 'Seats')}
+                {t('businessPortal.settings_plan_seats_label')}
               </p>
               <p className="text-xs text-muted-foreground">
                 {entitlements?.seatsUsed ?? 1} / {entitlements?.maxSeats ?? 1} {t('business.plan.used', 'used')}
