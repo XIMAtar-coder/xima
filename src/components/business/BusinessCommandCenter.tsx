@@ -61,6 +61,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
   const kpiCards = [
     {
       key: 'active_challenges',
+      labelKey: 'businessPortal.pipeline_stat_challenges',
       value: stats.activeChallenges,
       icon: Target,
       color: 'text-purple-500',
@@ -69,6 +70,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
     },
     {
       key: 'pending_reviews',
+      labelKey: 'businessPortal.pipeline_stat_evaluations',
       value: stats.pendingReviews,
       icon: MessageSquare,
       color: 'text-amber-500',
@@ -77,6 +79,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
     },
     {
       key: 'pipeline_candidates',
+      labelKey: 'businessPortal.pipeline_stat_pipeline',
       value: stats.candidatesInPipeline,
       icon: Users,
       color: 'text-blue-500',
@@ -85,6 +88,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
     },
     {
       key: 'shortlisted',
+      labelKey: 'businessPortal.pipeline_stat_shortlist',
       value: stats.shortlisted,
       icon: CheckCircle,
       color: 'text-green-500',
