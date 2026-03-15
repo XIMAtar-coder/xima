@@ -215,7 +215,7 @@ export const ChallengesForYouSection: React.FC = () => {
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
           <Target className="h-4 w-4 text-primary" />
-          {t('profile.challenges_for_you')}
+          {t('dashboard.challenges_title')}
         </h3>
         {activeCount > 0 && (
           <Badge variant="secondary" className="bg-primary/20 text-primary text-[10px] font-bold">
