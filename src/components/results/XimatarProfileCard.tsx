@@ -65,7 +65,7 @@ export const XimatarProfileCard: React.FC<XimatarProfileCardProps> = ({ ximatar,
         {translations?.behavior && (
           <div className="space-y-2 p-4 bg-green-500/5 rounded-lg border border-green-500/20">
             <h4 className="font-semibold text-sm text-green-600 dark:text-green-400">
-              {t('results.strengths')}
+              {t('ximatarJourney.strengths_label')}
             </h4>
             <p className="text-sm leading-relaxed">{translations.behavior}</p>
           </div>
