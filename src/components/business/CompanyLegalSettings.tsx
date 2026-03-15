@@ -78,7 +78,7 @@ const CompanyLegalSettings: React.FC = () => {
           <div className="space-y-2">
             <Label htmlFor="legal_name" className="text-foreground flex items-center gap-2">
               <Building2 size={16} />
-              {t('business.legal.legal_name')}
+              {t('businessPortal.settings_legal_company_name_label')}
             </Label>
             <Input
               id="legal_name"
