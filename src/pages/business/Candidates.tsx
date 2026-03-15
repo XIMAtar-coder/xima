@@ -854,9 +854,9 @@ const BusinessCandidates = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-white mb-2">{t('business.candidates.title')}</h1>
+                <h1 className="text-3xl font-bold text-white mb-2">{t('businessPortal.candidates_page_title')}</h1>
                 <p className="text-white/80">
-                  {filteredCandidates.length} {t('business.candidates.available')}
+                  {filteredCandidates.length} {t('businessPortal.candidates_count_label')}
                 </p>
               </div>
               {selectedCandidates.length > 0 && (
