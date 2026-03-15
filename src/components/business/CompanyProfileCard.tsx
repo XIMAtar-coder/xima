@@ -165,7 +165,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
             <div>
               <h4 className="font-semibold text-sm text-muted-foreground mb-2 flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4" />
-                {t('business.profile.risk_areas')}
+                {t('businessPortal.company_risk_areas_label')}
               </h4>
               <ul className="list-disc list-inside space-y-1 text-foreground">
                 {(profile.risk_areas || []).map((risk, idx) => (
