@@ -65,7 +65,7 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h4 className="font-semibold text-sm text-foreground">
-            {t('assessment.open_question')} {openKey === 'open1' ? '1' : '2'}
+            {t('ximatarJourney.open_question_label')} {openKey === 'open1' ? '1' : '2'}
           </h4>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
