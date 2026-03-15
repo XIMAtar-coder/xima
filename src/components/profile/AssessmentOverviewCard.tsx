@@ -84,7 +84,7 @@ export const AssessmentOverviewCard: React.FC<AssessmentOverviewCardProps> = ({
         ))}
       </div>
 
-      <p className="text-[12px] text-[#aeaeb2] italic">{t('profile.pillars_dynamic', 'Pillars are dynamic — they evolve with practice.')}</p>
+      <p className="text-[12px] text-[#aeaeb2] italic">{t('dashboard.pillar_scores_note', 'Pillars are dynamic — they evolve with practice.')}</p>
 
       {storytelling && (
         <div className="pt-4 border-t border-[rgba(60,60,67,0.12)]">
