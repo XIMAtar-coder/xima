@@ -238,7 +238,7 @@ export const MembershipSection: React.FC = () => {
               )}
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              {t('credits.cost_standard_session', 'Standard mentor session (45 min) costs 5 credits.')}
+              {t('settings.membership_credits_note', 'A standard mentor session (45 min) costs 5 credits.')}
             </p>
           </div>
         </CardContent>
