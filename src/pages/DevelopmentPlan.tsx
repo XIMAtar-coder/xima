@@ -280,10 +280,10 @@ const DevelopmentPlan = () => {
                         </div>
                         <div className="text-left">
                           <h3 className="font-semibold text-lg">
-                            {t(`development.areas.${area.key}.title`)}
+                            {t(`developmentPlan.category_${categoryKeyMap[area.key] || area.key}_title`)}
                           </h3>
                           <p className="text-sm text-muted-foreground mt-0.5">
-                            {t(`development.areas.${area.key}.description`)}
+                            {t(`developmentPlan.category_${categoryKeyMap[area.key] || area.key}_body`)}
                           </p>
                         </div>
                       </div>
