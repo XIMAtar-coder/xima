@@ -241,7 +241,7 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
             {/* Business control note */}
             <div className="text-xs text-muted-foreground bg-muted/50 rounded-md p-2 flex items-start gap-2">
               <Sparkles className="h-3 w-3 mt-0.5 flex-shrink-0 text-amber-500" />
-              <span>{t('business.overview.control_note')}</span>
+              <span>{t('businessPortal.how_xima_works_privacy')}</span>
             </div>
           </div>
           
