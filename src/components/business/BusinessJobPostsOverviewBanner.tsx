@@ -147,7 +147,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
               onClick={() => navigate('/business/jobs')}
               className="gap-2"
             >
-              {t('business.job_posts_overview.go_to_job_posts')}
+              {t('businessPortal.jobs_view_all_cta')}
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
