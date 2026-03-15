@@ -200,10 +200,10 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
             <div>
               <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                 <Brain className="h-5 w-5 text-primary" />
-                {t('business.overview.how_xima_works')}
+                {t('businessPortal.how_xima_works_title')}
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                {t('business.overview.pipeline_subtitle')}
+                {t('businessPortal.how_xima_works_body')}
               </p>
             </div>
             
