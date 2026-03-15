@@ -182,11 +182,11 @@ export default function Jobs() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-500/20 text-green-600 border-green-500/30">{t('jobs.published')}</Badge>;
+        return <Badge className="bg-green-500/20 text-green-600 border-green-500/30">{t('businessPortal.jobs_filter_published')}</Badge>;
       case 'archived':
-        return <Badge variant="outline" className="text-muted-foreground">{t('jobs.archived')}</Badge>;
+        return <Badge variant="outline" className="text-muted-foreground">{t('businessPortal.jobs_filter_archived')}</Badge>;
       default:
-        return <Badge variant="secondary">{t('jobs.draft')}</Badge>;
+        return <Badge variant="secondary">{t('businessPortal.jobs_filter_draft')}</Badge>;
     }
   };
 
