@@ -350,7 +350,7 @@ const DevelopmentPlan = () => {
                               <div className="flex flex-wrap gap-2">
                                 <Badge variant="outline" className="gap-1 text-xs">
                                   <BookOpen className="h-3 w-3" />
-                                  {test.questions} {t('development.questions')}
+                                  {test.questions} {t('developmentPlan.questions_label')}
                                 </Badge>
                                 <Badge variant="outline" className="gap-1 text-xs">
                                   <Clock className="h-3 w-3" />
