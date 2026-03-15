@@ -140,7 +140,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
               className="gap-2"
             >
               <Plus className="h-4 w-4" />
-              {t('business.job_posts_overview.create_job_post')}
+              {t('businessPortal.jobs_create_cta')}
             </Button>
             <Button
               size="sm"
