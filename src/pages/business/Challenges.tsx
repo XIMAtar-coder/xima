@@ -247,10 +247,10 @@ const BusinessChallenges = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                {t('challenges.page_title')}
+                {t('businessPortal.challenges_page_title')}
               </h1>
               <p className="text-muted-foreground">
-                {t('challenges.page_subtitle')}
+                {t('businessPortal.challenges_page_subtitle')}
               </p>
             </div>
           </div>
