@@ -507,7 +507,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
               transition-opacity duration-300
               ${driveLevel === 'high' ? 'opacity-100' : 'opacity-75'}
             `}>
-              {t('ximatar_intro.drive_paths.high_desc')}
+              {t('ximatarJourney.drive_high_body')}
             </p>
           </div>
           
