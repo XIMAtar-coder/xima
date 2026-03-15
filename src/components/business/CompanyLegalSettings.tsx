@@ -177,7 +177,7 @@ const CompanyLegalSettings: React.FC = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="registration_number" className="text-sm text-muted-foreground">
-                  {t('business.legal.registration_number')}
+                  {t('businessPortal.settings_legal_rea_label')}
                 </Label>
                 <Input
                   id="registration_number"
