@@ -57,6 +57,18 @@ const DevelopmentPlan = () => {
   const [completedTests, setCompletedTests] = useState<number[]>([]);
   const [expandedAreas, setExpandedAreas] = useState<string[]>(['area-1']);
 
+  const categoryKeyMap: Record<string, string> = {
+    analytical: 'computational',
+    communication: 'communication',
+    creative: 'creativity',
+  };
+
+  const priorityBadgeMap: Record<string, string> = {
+    high: 'priority_badge',
+    medium: 'recommended_badge',
+    low: 'optional_badge',
+  };
+
   const developmentAreas: DevelopmentArea[] = [
     {
       id: 1,
