@@ -446,7 +446,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
             <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '700ms' }}>
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary animate-scale-in" />
-                <span className="font-semibold">{t('results.drive_level')}:</span>
+                <span className="font-semibold">{t('ximatarJourney.your_trajectory_label')}</span>
               </div>
               <Badge 
                 variant="secondary" 
