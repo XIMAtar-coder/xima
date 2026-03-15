@@ -298,7 +298,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label htmlFor="hrContactEmail" className="text-foreground flex items-center gap-2">
                   <Mail size={16} />
-                  {t('business_portal.hr_contact_email')}
+                  {t('businessPortal.settings_company_hr_email_label')}
                 </Label>
                 <Input
                   id="hrContactEmail"
