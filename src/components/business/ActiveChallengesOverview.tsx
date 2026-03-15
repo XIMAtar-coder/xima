@@ -101,7 +101,7 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
                     </span>
                     <span className="flex items-center gap-1 text-muted-foreground">
                       <MessageSquare className="h-3.5 w-3.5" />
-                      {challenge.responses_count} {t('business.dashboard.responses')}
+                      {challenge.responses_count} {t('businessPortal.challenge_responses_label')}
                     </span>
                     {timeInfo.remainingText && (
                       <span className="flex items-center gap-1 text-muted-foreground">
