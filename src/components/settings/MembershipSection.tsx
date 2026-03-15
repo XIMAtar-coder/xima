@@ -249,10 +249,10 @@ export const MembershipSection: React.FC = () => {
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Gift className="h-5 w-5 text-primary" />
-            {t('referral.title', 'Invite friends, earn credits')}
+            {t('settings.referral_title', 'Invite Friends, Earn Credits')}
           </CardTitle>
           <CardDescription>
-            {t('referral.how_it_works', 'When someone signs up with your link and completes their first free intro session with a mentor, the referral is validated.')}
+            {t('settings.referral_body', 'When someone signs up with your link and completes their first free intro session with a mentor, the referral is validated.')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
