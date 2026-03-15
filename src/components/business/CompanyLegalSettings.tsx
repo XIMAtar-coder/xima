@@ -96,7 +96,7 @@ const CompanyLegalSettings: React.FC = () => {
           <div className="space-y-4">
             <Label className="text-foreground flex items-center gap-2">
               <MapPin size={16} />
-              {t('business.legal.registered_address')}
+              {t('businessPortal.settings_legal_address_label')}
             </Label>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
