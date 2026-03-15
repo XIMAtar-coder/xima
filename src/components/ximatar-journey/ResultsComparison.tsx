@@ -402,11 +402,11 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         <div className="text-center space-y-4">
           <Sparkles className="h-12 w-12 text-primary mx-auto mb-4 animate-scale-in" />
           <h2 className="text-3xl font-bold font-heading animate-fade-in" style={{ animationDelay: '100ms' }}>
-            {t('results.title')}
+            {t('ximatarJourney.results_title')}
           </h2>
           <div className="prose prose-lg mx-auto text-muted-foreground max-w-2xl space-y-4 animate-fade-in" style={{ animationDelay: '200ms' }}>
-            <p className="italic text-lg">{t('ximatar_intro.storytelling')}</p>
-            <p>{t('ximatar_intro.explanation')}</p>
+            <p className="italic text-lg">{t('ximatarJourney.results_tagline')}</p>
+            <p>{t('ximatarJourney.results_archetype_body')}</p>
           </div>
         </div>
       </Card>
