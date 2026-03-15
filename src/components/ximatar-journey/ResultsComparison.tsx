@@ -421,7 +421,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       {/* How Your XIMAtar Was Determined */}
       {strongestPillar && weakestPillar && (
         <Card className="p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20 animate-fade-in" style={{ animationDelay: '400ms' }}>
-          <h3 className="text-xl font-bold mb-4 text-center font-heading">{t('ximatar_intro.assignment_logic')}</h3>
+          <h3 className="text-xl font-bold mb-4 text-center font-heading">{t('ximatarJourney.assignment_logic')}</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '500ms' }}>
               <div className="flex items-center gap-2">
