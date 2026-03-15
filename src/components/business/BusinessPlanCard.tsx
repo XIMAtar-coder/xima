@@ -123,7 +123,7 @@ export const BusinessPlanCard: React.FC = () => {
                       <X className="h-4 w-4 shrink-0" />
                     )}
                     {icon}
-                    <span>{label}</span>
+                    <span>{t(labelKey)}</span>
                   </div>
                 );
               }
