@@ -164,7 +164,7 @@ const BusinessReports = () => {
                 </div>
               </div>
               <h3 className="text-3xl font-bold text-foreground mb-1">{stats.totalContacted}</h3>
-              <p className="text-sm text-muted-foreground">{t('business.reports.contacted')}</p>
+              <p className="text-sm text-muted-foreground">{t('businessPortal.reports_stat_contacted')}</p>
             </CardContent>
           </Card>
 
