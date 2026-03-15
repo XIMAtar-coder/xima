@@ -362,7 +362,7 @@ const BusinessSettings = () => {
             disabled={loading}
           >
             <Save className="mr-2" size={16} />
-            {loading ? t('business_portal.saving') : t('business_portal.save_settings')}
+            {loading ? t('business_portal.saving') : t('businessPortal.settings_save_cta')}
           </Button>
         </form>
 
