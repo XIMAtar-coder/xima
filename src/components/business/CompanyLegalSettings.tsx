@@ -141,7 +141,7 @@ const CompanyLegalSettings: React.FC = () => {
 
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="country" className="text-sm text-muted-foreground">
-                  {t('business.legal.country')}
+                  {t('businessPortal.settings_legal_address_country')}
                 </Label>
                 <Input
                   id="country"
