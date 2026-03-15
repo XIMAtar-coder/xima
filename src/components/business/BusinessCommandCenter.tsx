@@ -175,7 +175,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
                   className={action.primary ? 'gap-2' : 'gap-2'}
                 >
                   <action.icon className="h-4 w-4" />
-                  {t(`business.command_center.actions.${action.key}`)}
+                  {t(action.labelKey)}
                 </Button>
               </Link>
             ))}
