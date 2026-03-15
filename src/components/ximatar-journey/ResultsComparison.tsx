@@ -426,7 +426,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
             <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '500ms' }}>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-500 animate-scale-in" />
-                <span className="font-semibold">{t('results.strongest_pillar')}:</span>
+                <span className="font-semibold">{t('ximatarJourney.your_edge_label')}</span>
               </div>
               <Badge variant="default" className="px-4 py-2 text-base capitalize hover-scale">
                 {t(`pillars.${strongestPillar.pillar === 'computational_power' ? 'computational' : strongestPillar.pillar}.name`)} ({strongestPillar.score.toFixed(1)})
