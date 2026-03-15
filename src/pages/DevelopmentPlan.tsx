@@ -199,7 +199,7 @@ const DevelopmentPlan = () => {
             <div className="space-y-6">
               <div className="space-y-3">
                 <div className="flex justify-between text-sm font-medium">
-                  <span className="text-muted-foreground">{t('development.tests_completed')}</span>
+                  <span className="text-muted-foreground">{t('developmentPlan.progress_tests_completed_label')}</span>
                   <span className="text-foreground">{completedCount} / {totalTests}</span>
                 </div>
                 <div className="relative">
