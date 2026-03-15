@@ -263,7 +263,7 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
             <div className="grid grid-cols-2 gap-2">
               <SnapshotField
                 icon={<MapPin className="h-4 w-4" />}
-                label={t('business.overview.field_location')}
+                label={t('businessPortal.company_field_location')}
                 value={snapshot.hq_location}
               />
               
