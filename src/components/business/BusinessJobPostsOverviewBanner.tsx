@@ -130,7 +130,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
             <Briefcase className="h-5 w-5 text-primary" />
-            {t('business.job_posts_overview.title')}
+            {t('businessPortal.jobs_overview_title')}
           </CardTitle>
           <div className="flex flex-wrap gap-2">
             <Button
