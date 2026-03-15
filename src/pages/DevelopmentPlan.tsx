@@ -293,7 +293,7 @@ const DevelopmentPlan = () => {
                         </Badge>
                         <div className="hidden sm:flex items-center gap-1.5 text-sm text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
                           <Calendar className="h-3.5 w-3.5" />
-                          <span>{area.estimatedTime} {t('development.minutes')}</span>
+                          <span>{area.estimatedTime} {t('developmentPlan.minutes_label')}</span>
                         </div>
                         <div className="hidden md:block w-24">
                           <div className="flex items-center gap-2">
