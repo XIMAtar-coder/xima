@@ -88,7 +88,7 @@ const CompanyLegalSettings: React.FC = () => {
               onChange={(e) => updateField('legal_name', e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
-              {t('business.legal.legal_name_hint')}
+              {t('businessPortal.settings_legal_company_name_hint')}
             </p>
           </div>
 
