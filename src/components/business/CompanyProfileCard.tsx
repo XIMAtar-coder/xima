@@ -220,7 +220,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           {/* Recommended XIMAtars */}
           <div>
             <h4 className="font-semibold text-sm text-muted-foreground mb-3">
-              {t('business.profile.recommended_ximatars')}
+              {t('businessPortal.company_recommended_ximatar_label')}
             </h4>
             <div className="flex flex-wrap gap-3">
               {(profile.recommended_ximatars || []).map((ximatar) => (
