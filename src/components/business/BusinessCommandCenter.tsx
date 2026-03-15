@@ -210,7 +210,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
                       {kpi.value}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {t(`business.command_center.kpi.${kpi.key}`)}
+                      {t(kpi.labelKey)}
                     </p>
                   </>
                 )}
