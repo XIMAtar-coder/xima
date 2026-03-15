@@ -61,7 +61,7 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Zap className="h-5 w-5 text-primary" />
-            {t('business.dashboard.active_challenges_overview')}
+            {t('businessPortal.active_challenges_title')}
           </CardTitle>
           <Badge variant="secondary" className="bg-primary/20 text-primary">
             {challenges.length} {t('business.dashboard.active')}
