@@ -127,7 +127,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <h4 className="font-semibold text-sm text-muted-foreground mb-2">
-                {t('business.profile.operating_style')}
+                {t('businessPortal.company_operating_style_label')}
               </h4>
               {profile.operating_style ? (
                 <p className="text-foreground">{profile.operating_style}</p>
