@@ -373,10 +373,10 @@ const BusinessSettings = () => {
           <CardHeader>
             <CardTitle className="text-foreground flex items-center gap-2">
               <Sparkles className="text-amber-500" />
-              {t('business.settings.snapshot_title')}
+              {t('businessPortal.settings_snapshot_title')}
             </CardTitle>
             <CardDescription className="text-muted-foreground">
-              {t('business.settings.snapshot_description')}
+              {t('businessPortal.settings_snapshot_subtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
