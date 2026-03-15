@@ -156,8 +156,8 @@ export const ChallengesForYouSection: React.FC = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
-            {t('profile.challenges_for_you')}
+             <Target className="h-5 w-5 text-primary" />
+            {t('dashboard.challenges_title')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -215,7 +215,7 @@ export const ChallengesForYouSection: React.FC = () => {
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
           <Target className="h-4 w-4 text-primary" />
-          {t('profile.challenges_for_you')}
+          {t('dashboard.challenges_title')}
         </h3>
         {activeCount > 0 && (
           <Badge variant="secondary" className="bg-primary/20 text-primary text-[10px] font-bold">
@@ -227,8 +227,8 @@ export const ChallengesForYouSection: React.FC = () => {
       {actionableChallenges.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
           <Sparkles className="h-10 w-10 mx-auto mb-3 opacity-50" />
-          <p className="font-medium mb-1">{t('candidate.challenges.empty_title')}</p>
-          <p className="text-sm">{t('candidate.challenges.empty_desc')}</p>
+           <p className="font-medium mb-1">{t('dashboard.challenges_empty_headline')}</p>
+          <p className="text-sm">{t('dashboard.challenges_empty_body')}</p>
         </div>
       ) : (
         <div className="space-y-3">

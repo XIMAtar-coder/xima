@@ -138,12 +138,12 @@ const Profile = () => {
 
         <div className="space-y-2 relative z-10">
           <p className="text-[12px] font-medium text-primary uppercase tracking-[0.04em]">
-            {t('profile.dashboard_label', 'Dashboard')}
+            {t('dashboard.page_label', 'Dashboard')}
           </p>
           <h1 className="text-[28px] md:text-[34px] font-bold text-foreground">
-            {t('profile.welcome_name', { name: profileData.full_name || user?.name || t('profile.user') })}
+            {t('dashboard.welcome_headline', { name: profileData.full_name || user?.name || t('profile.user') })}
           </h1>
-          <p className="text-[15px] text-muted-foreground max-w-lg">{t('profile.page_subtitle')}</p>
+          <p className="text-[15px] text-muted-foreground max-w-lg">{t('dashboard.welcome_subheadline')}</p>
         </div>
 
         <div className="space-y-6 relative z-10 dashboard-stagger">

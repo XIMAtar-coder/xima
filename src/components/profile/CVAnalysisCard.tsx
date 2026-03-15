@@ -166,7 +166,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
             <FileText className="text-primary" />
             <div>
               <CardTitle className="font-heading">
-                {t('profile.cv_analysis', 'CV Analysis')}
+                {t('dashboard.cv_analysis_title', 'CV Analysis')}
               </CardTitle>
               {cvPillarScores && assessmentPillarScores && (
                 <p className={`text-sm mt-1 ${
@@ -174,7 +174,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
                   overallDelta < 0 ? 'text-red-600' : 
                   'text-muted-foreground'
                 }`}>
-                  Score Alignment: {overallDelta > 0 ? '+' : ''}{overallDelta.toFixed(1)} overall
+                  {t('dashboard.cv_score_alignment', 'Score Alignment')}: {overallDelta > 0 ? '+' : ''}{overallDelta.toFixed(1)} overall
                 </p>
               )}
             </div>
@@ -196,12 +196,12 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
               {isUploading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Analyzing...
+                   {t('dashboard.cv_analyzing', 'Analyzing...')}
                 </>
               ) : (
                 <>
                   <Upload className="w-4 h-4 mr-2" />
-                  {cvAnalysis ? 'Re-upload CV' : 'Upload CV'}
+                  {cvAnalysis ? t('dashboard.cv_reupload', 'Re-upload CV') : t('dashboard.cv_upload', 'Upload CV')}
                 </>
               )}
             </Button>
@@ -290,13 +290,13 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
           <div className="space-y-4 pt-4 border-t">
             <h4 className="text-sm font-semibold flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-primary" />
-              {t('profile.cv_vs_assessment', 'CV vs Assessment Comparison')}
+              {t('dashboard.cv_comparison_title', 'CV vs Assessment Comparison')}
             </h4>
             
             {biggestImprovement.diff > 0 && (
               <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
                 <p className="text-sm text-green-600 font-medium">
-                  {t('profile.biggest_improvement', 'Biggest Improvement')}: {' '}
+                  {t('dashboard.cv_best_improvement', 'Biggest Improvement')}: {' '}
                   <span className="capitalize">
                     {t(`pillars.${biggestImprovement.pillar}.name`, biggestImprovement.pillar)}
                   </span>
@@ -321,7 +321,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
                       </span>
                       <div className="flex items-center gap-2">
                         <span className="text-muted-foreground">
-                          CV: {cvScore.toFixed(1)}
+                         CV: {cvScore.toFixed(1)}
                         </span>
                         <span className="text-muted-foreground">→</span>
                         <span className="font-semibold">
@@ -343,11 +343,11 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
                     </div>
                     <div className="flex gap-3 items-center">
                       <div className="flex-1">
-                        <p className="text-xs text-muted-foreground mb-1">CV Score</p>
+                         <p className="text-xs text-muted-foreground mb-1">{t('dashboard.cv_score_label', 'CV Score')}</p>
                         <Progress value={cvScore * 10} className="h-2" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-xs text-muted-foreground mb-1">Assessment Score</p>
+                        <p className="text-xs text-muted-foreground mb-1">{t('dashboard.cv_assessment_label', 'Assessment Score')}</p>
                         <Progress value={assessmentScore * 10} className="h-2" />
                       </div>
                     </div>

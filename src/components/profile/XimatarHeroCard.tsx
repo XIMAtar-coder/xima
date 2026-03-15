@@ -100,7 +100,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
           <div className="flex-1 space-y-3 text-center md:text-left min-w-0">
             <div>
               <p className="text-[12px] font-medium text-primary uppercase tracking-[0.04em] mb-1">
-                {t('profile.your_ximatar', 'Your XIMAtar')}
+                {t('dashboard.ximatar_label', 'Your XIMAtar')}
               </p>
               <h2 className="text-[28px] md:text-[34px] font-bold text-foreground truncate">
                 {ximatarName || t('profile.ximatar_archetype', 'XIMAtar Archetype')}
@@ -124,14 +124,14 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
               {strongestPillar && (
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-[999px] bg-[rgba(52,199,89,0.12)] border border-[rgba(52,199,89,0.25)]">
                   <TrendingUp className="w-3.5 h-3.5 text-apple-green" />
-                  <span className="text-[12px] font-medium text-apple-green uppercase tracking-wide">{t('profile.your_edge', 'Edge')}:</span>
+                  <span className="text-[12px] font-medium text-apple-green uppercase tracking-wide">{t('dashboard.ximatar_advantage_label', 'Edge')}:</span>
                   <span className="text-[12px] font-medium text-foreground capitalize">{t(`pillars.${strongestPillar}.name`, strongestPillar)}</span>
                 </div>
               )}
               {weakestPillar && (
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-[999px] bg-[rgba(255,149,0,0.12)] border border-[rgba(255,149,0,0.25)]">
                   <AlertCircle className="w-3.5 h-3.5 text-apple-orange" />
-                  <span className="text-[12px] font-medium text-apple-orange uppercase tracking-wide">{t('profile.growth_area', 'Grow')}:</span>
+                  <span className="text-[12px] font-medium text-apple-orange uppercase tracking-wide">{t('dashboard.ximatar_friction_label', 'Grow')}:</span>
                   <span className="text-[12px] font-medium text-foreground capitalize">{t(`pillars.${weakestPillar}.name`, weakestPillar)}</span>
                 </div>
               )}

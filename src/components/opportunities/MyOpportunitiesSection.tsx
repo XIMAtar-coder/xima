@@ -185,7 +185,7 @@ export const MyOpportunitiesSection: React.FC = () => {
   return (
     <Card className="w-full animate-[fade-in_0.5s_ease-out]">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="font-heading text-2xl">{t('opportunities.my_opportunities')}</CardTitle>
+        <CardTitle className="font-heading text-2xl">{t('dashboard.opportunities_title')}</CardTitle>
         <Button
           variant="outline"
           size="sm"
@@ -197,7 +197,7 @@ export const MyOpportunitiesSection: React.FC = () => {
           className="gap-2"
         >
           <Sparkles className="w-4 h-4" />
-          {t('opportunities.refresh')}
+          {t('dashboard.opportunities_refresh')}
         </Button>
       </CardHeader>
       <CardContent>
@@ -205,15 +205,15 @@ export const MyOpportunitiesSection: React.FC = () => {
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="recommended">
               <Sparkles className="w-4 h-4 mr-2" />
-              {t('opportunities.for_you')}
+               {t('dashboard.opportunities_tab_for_you')}
             </TabsTrigger>
             <TabsTrigger value="saved">
               <Bookmark className="w-4 h-4 mr-2" />
-              {t('opportunities.saved')}
+              {t('dashboard.opportunities_tab_saved')}
             </TabsTrigger>
             <TabsTrigger value="applied">
               <CheckCircle2 className="w-4 h-4 mr-2" />
-              {t('opportunities.applied')}
+              {t('dashboard.opportunities_tab_applied')}
             </TabsTrigger>
           </TabsList>
 
@@ -239,8 +239,11 @@ export const MyOpportunitiesSection: React.FC = () => {
             ) : opportunities.length === 0 ? (
               <div className="text-center py-8">
               <Briefcase className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--xima-accent))]/40" />
-              <p className="text-[hsl(var(--xima-gray))]">
-                {t('opportunities.no_jobs_available')}
+              <p className="text-[hsl(var(--xima-gray))] font-medium mb-1">
+                {t('dashboard.opportunities_empty_headline')}
+                </p>
+              <p className="text-sm text-[hsl(var(--xima-gray))]">
+                {t('dashboard.opportunities_empty_body')}
                 </p>
               </div>
             ) : (
