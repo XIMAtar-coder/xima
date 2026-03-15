@@ -406,7 +406,7 @@ const DevelopmentPlan = () => {
               <div className="p-2 rounded-lg bg-primary/10">
                 <Sparkles className="h-5 w-5 text-primary" />
               </div>
-              {t('development.next_steps')}
+              {t('developmentPlan.next_steps_title')}
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-6">
