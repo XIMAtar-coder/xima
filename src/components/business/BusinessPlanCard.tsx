@@ -104,7 +104,7 @@ export const BusinessPlanCard: React.FC = () => {
         {/* Features */}
         <div>
           <p className="text-sm font-medium text-foreground mb-3">
-            {t('business.plan.features', 'Features')}
+            {t('businessPortal.settings_plan_features_label')}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {(Object.entries(FEATURE_LABELS) as [FeatureFlag, typeof FEATURE_LABELS[FeatureFlag]][]).map(
