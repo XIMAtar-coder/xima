@@ -593,8 +593,8 @@ const BusinessDashboard = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-foreground">{t('business.goals.portfolio_title')}</h2>
-                  <p className="text-sm text-muted-foreground">{t('business.goals.portfolio_desc')}</p>
+                  <h2 className="text-2xl font-bold text-foreground">{t('businessPortal.hiring_goals_title')}</h2>
+                  <p className="text-sm text-muted-foreground">{t('businessPortal.hiring_goals_subtitle')}</p>
                 </div>
                 <Button 
                   onClick={async () => {
