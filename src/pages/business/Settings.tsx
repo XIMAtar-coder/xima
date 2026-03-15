@@ -442,7 +442,7 @@ const BusinessSettings = () => {
               <div className="space-y-2">
                 <Label className="text-foreground flex items-center gap-2">
                   <Users size={16} />
-                  {t('business.settings.employees')}
+                  {t('businessPortal.settings_snapshot_employees_label')}
                 </Label>
                 <Input
                   type="number"
