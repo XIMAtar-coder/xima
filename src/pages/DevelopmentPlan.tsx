@@ -228,7 +228,7 @@ const DevelopmentPlan = () => {
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-orange-600">{totalTests - completedCount}</div>
-                    <div className="text-sm text-muted-foreground">{t('development.tests_remaining')}</div>
+                    <div className="text-sm text-muted-foreground">{t('developmentPlan.stat_remaining_label')}</div>
                   </div>
                 </div>
                 
