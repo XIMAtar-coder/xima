@@ -296,7 +296,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
             {biggestImprovement.diff > 0 && (
               <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
                 <p className="text-sm text-green-600 font-medium">
-                  {t('profile.biggest_improvement', 'Biggest Improvement')}: {' '}
+                  {t('dashboard.cv_best_improvement', 'Biggest Improvement')}: {' '}
                   <span className="capitalize">
                     {t(`pillars.${biggestImprovement.pillar}.name`, biggestImprovement.pillar)}
                   </span>
