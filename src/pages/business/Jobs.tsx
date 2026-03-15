@@ -232,19 +232,19 @@ export default function Jobs() {
         <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
           <TabsList>
             <TabsTrigger value="all" className="gap-2">
-              {t('jobs.filter_all')}
+              {t('businessPortal.jobs_filter_all')}
               <Badge variant="secondary" className="text-xs">{statusCounts.all}</Badge>
             </TabsTrigger>
             <TabsTrigger value="draft" className="gap-2">
-              {t('jobs.draft')}
+              {t('businessPortal.jobs_filter_draft')}
               <Badge variant="secondary" className="text-xs">{statusCounts.draft}</Badge>
             </TabsTrigger>
             <TabsTrigger value="active" className="gap-2">
-              {t('jobs.published')}
+              {t('businessPortal.jobs_filter_published')}
               <Badge variant="secondary" className="text-xs">{statusCounts.active}</Badge>
             </TabsTrigger>
             <TabsTrigger value="archived" className="gap-2">
-              {t('jobs.archived')}
+              {t('businessPortal.jobs_filter_archived')}
               <Badge variant="secondary" className="text-xs">{statusCounts.archived}</Badge>
             </TabsTrigger>
           </TabsList>
