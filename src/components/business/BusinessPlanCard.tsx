@@ -107,8 +107,8 @@ export const BusinessPlanCard: React.FC = () => {
             {t('businessPortal.settings_plan_features_label')}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {(Object.entries(FEATURE_LABELS) as [FeatureFlag, typeof FEATURE_LABELS[FeatureFlag]][]).map(
-              ([key, { label, icon }]) => {
+            {(Object.entries(FEATURE_KEYS) as [FeatureFlag, typeof FEATURE_KEYS[FeatureFlag]][]).map(
+              ([key, { labelKey, icon }]) => {
                 const enabled = entitlements?.features[key] === true;
                 return (
                   <div
