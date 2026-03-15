@@ -66,10 +66,10 @@ const CompanyLegalSettings: React.FC = () => {
       <CardHeader>
         <CardTitle className="text-foreground flex items-center gap-2">
           <FileText className="text-primary" />
-          {t('business.legal.title')}
+          {t('businessPortal.settings_legal_title')}
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          {t('business.legal.description')}
+          {t('businessPortal.settings_legal_subtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent>
