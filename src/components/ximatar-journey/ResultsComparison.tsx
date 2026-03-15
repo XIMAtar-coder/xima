@@ -602,7 +602,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
             </CardTitle>
             {totalScore !== null && (
               <p className="text-sm text-muted-foreground">
-                {t('results.total_score')}: <span className="font-bold text-primary">{totalScore.toFixed(1)}/50</span>
+                {t('ximatarJourney.scores_total_label')} <span className="font-bold text-primary">{totalScore.toFixed(1)}/50</span>
               </p>
             )}
           </CardHeader>
