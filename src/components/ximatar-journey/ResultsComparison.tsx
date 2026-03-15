@@ -598,7 +598,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-heading">
               <Sparkles className="text-primary animate-scale-in" />
-              {t('results.assessment_scores')}
+              {t('ximatarJourney.scores_title')}
             </CardTitle>
             {totalScore !== null && (
               <p className="text-sm text-muted-foreground">
