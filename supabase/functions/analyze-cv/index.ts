@@ -492,7 +492,7 @@ serve(async (req) => {
 
     // Look up XIMAtar profile from taxonomy
     const ximatarProfile = XIMATAR_PROFILES[ximatarId];
-    const ximatarName = (profile?.ximatar_name as string) || ximatarProfile?.label || ximatarId;
+    const ximatarName = (profile?.ximatar_name as string) || ximatarProfile?.name || ximatarId;
     const ximatarTitle = ximatarProfile?.title || "";
 
     // ===== File validation =====
