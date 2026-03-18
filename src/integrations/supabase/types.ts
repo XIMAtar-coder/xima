@@ -1835,6 +1835,177 @@ export type Database = {
           },
         ]
       }
+      cv_credentials: {
+        Row: {
+          awards: Json | null
+          career_trajectory: string | null
+          certifications: Json
+          created_at: string | null
+          cv_language: string | null
+          date_of_birth: string | null
+          education: Json
+          email: string | null
+          full_name: string | null
+          hard_skills: Json
+          id: string
+          industries_worked: string[] | null
+          languages: Json
+          linkedin_url: string | null
+          location_city: string | null
+          location_country: string | null
+          location_region: string | null
+          nationality: string | null
+          patents: Json | null
+          phone: string | null
+          portfolio_url: string | null
+          professional_associations: string[] | null
+          publications: Json | null
+          seniority_level: string | null
+          total_years_experience: number | null
+          updated_at: string | null
+          user_id: string
+          volunteer_work: Json | null
+          work_experience: Json
+        }
+        Insert: {
+          awards?: Json | null
+          career_trajectory?: string | null
+          certifications?: Json
+          created_at?: string | null
+          cv_language?: string | null
+          date_of_birth?: string | null
+          education?: Json
+          email?: string | null
+          full_name?: string | null
+          hard_skills?: Json
+          id?: string
+          industries_worked?: string[] | null
+          languages?: Json
+          linkedin_url?: string | null
+          location_city?: string | null
+          location_country?: string | null
+          location_region?: string | null
+          nationality?: string | null
+          patents?: Json | null
+          phone?: string | null
+          portfolio_url?: string | null
+          professional_associations?: string[] | null
+          publications?: Json | null
+          seniority_level?: string | null
+          total_years_experience?: number | null
+          updated_at?: string | null
+          user_id: string
+          volunteer_work?: Json | null
+          work_experience?: Json
+        }
+        Update: {
+          awards?: Json | null
+          career_trajectory?: string | null
+          certifications?: Json
+          created_at?: string | null
+          cv_language?: string | null
+          date_of_birth?: string | null
+          education?: Json
+          email?: string | null
+          full_name?: string | null
+          hard_skills?: Json
+          id?: string
+          industries_worked?: string[] | null
+          languages?: Json
+          linkedin_url?: string | null
+          location_city?: string | null
+          location_country?: string | null
+          location_region?: string | null
+          nationality?: string | null
+          patents?: Json | null
+          phone?: string | null
+          portfolio_url?: string | null
+          professional_associations?: string[] | null
+          publications?: Json | null
+          seniority_level?: string | null
+          total_years_experience?: number | null
+          updated_at?: string | null
+          user_id?: string
+          volunteer_work?: Json | null
+          work_experience?: Json
+        }
+        Relationships: []
+      }
+      cv_identity_analysis: {
+        Row: {
+          alignment_score: number | null
+          analysis_model: string | null
+          archetype_aligned_roles: string[] | null
+          assessment_pillar_scores: Json
+          assessment_ximatar: string
+          correlation_id: string | null
+          created_at: string | null
+          cv_archetype_explanation: string | null
+          cv_archetype_primary: string
+          cv_archetype_secondary: string | null
+          cv_language: string | null
+          cv_pillar_scores: Json
+          cv_qualified_roles: string[] | null
+          growth_bridge_roles: string[] | null
+          id: string
+          identity_improvements: Json | null
+          mentor_key_question: string | null
+          mentor_suggested_focus: string | null
+          technical_improvements: Json | null
+          tension_gaps: Json | null
+          tension_narrative: string | null
+          user_id: string
+        }
+        Insert: {
+          alignment_score?: number | null
+          analysis_model?: string | null
+          archetype_aligned_roles?: string[] | null
+          assessment_pillar_scores: Json
+          assessment_ximatar: string
+          correlation_id?: string | null
+          created_at?: string | null
+          cv_archetype_explanation?: string | null
+          cv_archetype_primary: string
+          cv_archetype_secondary?: string | null
+          cv_language?: string | null
+          cv_pillar_scores: Json
+          cv_qualified_roles?: string[] | null
+          growth_bridge_roles?: string[] | null
+          id?: string
+          identity_improvements?: Json | null
+          mentor_key_question?: string | null
+          mentor_suggested_focus?: string | null
+          technical_improvements?: Json | null
+          tension_gaps?: Json | null
+          tension_narrative?: string | null
+          user_id: string
+        }
+        Update: {
+          alignment_score?: number | null
+          analysis_model?: string | null
+          archetype_aligned_roles?: string[] | null
+          assessment_pillar_scores?: Json
+          assessment_ximatar?: string
+          correlation_id?: string | null
+          created_at?: string | null
+          cv_archetype_explanation?: string | null
+          cv_archetype_primary?: string
+          cv_archetype_secondary?: string | null
+          cv_language?: string | null
+          cv_pillar_scores?: Json
+          cv_qualified_roles?: string[] | null
+          growth_bridge_roles?: string[] | null
+          id?: string
+          identity_improvements?: Json | null
+          mentor_key_question?: string | null
+          mentor_suggested_focus?: string | null
+          technical_improvements?: Json | null
+          tension_gaps?: Json | null
+          tension_narrative?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       cv_uploads: {
         Row: {
           analysis_results: Json | null
