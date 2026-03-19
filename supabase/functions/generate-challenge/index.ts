@@ -1,22 +1,23 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { callAiGateway, extractJsonFromAiContent, generateCorrelationId, AiGatewayError } from "../_shared/aiClient.ts";
-import { validateGeneratedChallenge, validateXimaCoreScenario } from "../_shared/aiSchema.ts";
+import { callAnthropicApi, AnthropicError } from "../_shared/anthropicClient.ts";
+import { extractJsonFromAiContent, generateCorrelationId } from "../_shared/aiClient.ts";
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse, forbiddenResponse } from "../_shared/errors.ts";
+import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
+import { XIMATAR_PROFILES } from "../_shared/ximatarTaxonomy.ts";
+
+// =====================================================
+// Types
+// =====================================================
 
 interface GenerateChallengeRequest {
-  task_description: string;
-  role_title?: string;
-  experience_level?: string;
-  work_model?: string;
-  country?: string;
-  locale?: string;
-}
-
-interface GenerateXimaCoreRequest {
   mode: 'xima_core';
   locale?: string;
-  context: {
+  business_id?: string;
+  hiring_goal_id?: string;
+  challenge_id?: string;
+  // Legacy fields for backward compatibility
+  context?: {
     companyIndustry?: string;
     companySize?: string;
     companyMaturity?: string;
@@ -26,17 +27,107 @@ interface GenerateXimaCoreRequest {
     experienceLevel?: string;
     taskDescription?: string;
   };
+  // Legacy non-xima_core fields
+  task_description?: string;
+  role_title?: string;
+  experience_level?: string;
+  work_model?: string;
+  country?: string;
 }
 
+interface XimaCoreResult {
+  scenario: string;
+  business_type: string;
+  evaluation_lens: {
+    drive_signals: string[];
+    computational_power_signals: string[];
+    communication_signals: string[];
+    creativity_signals: string[];
+    knowledge_signals: string[];
+  };
+  expected_tensions: string[];
+  estimated_time_minutes: number;
+}
+
+// =====================================================
+// Constants
+// =====================================================
+
 const LANGUAGE_NAMES: Record<string, string> = { en: 'English', it: 'Italian', es: 'Spanish' };
+
+const XIMA_CORE_BASE_SCENARIO = `You join a team working on an important initiative. The goal is clear, but progress is slow. Stakeholders have different expectations, priorities conflict, and no one fully owns the outcome. You have no formal authority, but the deadline is approaching.`;
+
+const DEFAULT_EVALUATION_LENS = {
+  drive_signals: [
+    "Takes ownership of the situation despite lacking formal authority",
+    "Proposes concrete next steps with urgency"
+  ],
+  computational_power_signals: [
+    "Breaks the problem into components before acting",
+    "References data or evidence to support decisions"
+  ],
+  communication_signals: [
+    "Addresses multiple stakeholders with differentiated messaging",
+    "Seeks alignment through dialogue rather than decree"
+  ],
+  creativity_signals: [
+    "Proposes an unconventional approach to break the deadlock",
+    "Reframes the problem to find new angles"
+  ],
+  knowledge_signals: [
+    "References relevant frameworks or best practices",
+    "Shows awareness of organizational dynamics"
+  ],
+};
+
+// =====================================================
+// Validation
+// =====================================================
+
+function validateXimaCoreResult(parsed: unknown): XimaCoreResult | null {
+  if (!parsed || typeof parsed !== "object") return null;
+  const obj = parsed as Record<string, unknown>;
+
+  if (typeof obj.scenario !== "string" || obj.scenario.length < 50 || obj.scenario.length > 500) return null;
+  if (typeof obj.business_type !== "string" || obj.business_type.length === 0) return null;
+
+  const lens = obj.evaluation_lens;
+  if (!lens || typeof lens !== "object") return null;
+  const l = lens as Record<string, unknown>;
+  const pillarFields = ["drive_signals", "computational_power_signals", "communication_signals", "creativity_signals", "knowledge_signals"];
+  for (const f of pillarFields) {
+    if (!Array.isArray(l[f]) || (l[f] as unknown[]).length < 1) return null;
+  }
+
+  if (!Array.isArray(obj.expected_tensions) || (obj.expected_tensions as unknown[]).length < 1) return null;
+
+  const time = obj.estimated_time_minutes;
+  if (typeof time !== "number" || time < 5 || time > 60) return null;
+
+  return {
+    scenario: String(obj.scenario),
+    business_type: String(obj.business_type),
+    evaluation_lens: {
+      drive_signals: (l.drive_signals as unknown[]).map(String),
+      computational_power_signals: (l.computational_power_signals as unknown[]).map(String),
+      communication_signals: (l.communication_signals as unknown[]).map(String),
+      creativity_signals: (l.creativity_signals as unknown[]).map(String),
+      knowledge_signals: (l.knowledge_signals as unknown[]).map(String),
+    },
+    expected_tensions: (obj.expected_tensions as unknown[]).map(String),
+    estimated_time_minutes: Math.round(time),
+  };
+}
 
 function getLanguageInstruction(locale: string): string {
   const normalizedLocale = ['en', 'it', 'es'].includes(locale) ? locale : 'en';
   const targetLanguage = LANGUAGE_NAMES[normalizedLocale];
-  return `\n\nCRITICAL LANGUAGE INSTRUCTION:\nYou MUST respond ONLY in ${targetLanguage}.\nDo NOT include any English words unless they are proper nouns, code identifiers, or product names.\nJSON keys must remain in English, but ALL values must be in ${targetLanguage}.`;
+  return `Write ALL text values in ${targetLanguage}. JSON keys remain English.`;
 }
 
-const XIMA_CORE_BASE_SCENARIO = `You join a team working on an important initiative. The goal is clear, but progress is slow. Stakeholders have different expectations, priorities conflict, and no one fully owns the outcome. You have no formal authority, but the deadline is approaching.`;
+// =====================================================
+// Main handler
+// =====================================================
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -51,7 +142,8 @@ serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } }
     });
@@ -64,111 +156,189 @@ serve(async (req) => {
     const hasAdmin = roles?.some(r => r.role === 'admin');
     if (!hasBusiness && !hasAdmin) return forbiddenResponse('Business role required to generate challenges');
 
-    const body = await req.json();
-    
-    if (body.mode === 'xima_core') {
-      return await handleXimaCoreGeneration(body as GenerateXimaCoreRequest, user.id, correlationId);
+    const body: GenerateChallengeRequest = await req.json();
+
+    // Legacy mode support
+    if (body.mode !== 'xima_core' && body.task_description) {
+      return await handleLegacyGeneration(body, user.id, correlationId);
     }
-    return await handleLegacyGeneration(body as GenerateChallengeRequest, user.id, correlationId);
+
+    const locale = ['en', 'it', 'es'].includes(body.locale || '') ? body.locale! : 'en';
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Fetch company context from DB
+    const businessId = body.business_id || user.id;
+    const [companyProfileRes, businessProfileRes] = await Promise.all([
+      supabaseAdmin.from('company_profiles').select('summary, operating_style, communication_style, pillar_vector, ideal_ximatar_profile_ids, values').eq('company_id', businessId).maybeSingle(),
+      supabaseAdmin.from('business_profiles').select('company_name, snapshot_industry, manual_industry').eq('user_id', businessId).maybeSingle(),
+    ]);
+
+    const companyProfile = companyProfileRes.data;
+    const businessProfile = businessProfileRes.data;
+
+    // Build company context block
+    const contextParts: string[] = [];
+    if (businessProfile?.company_name) contextParts.push(`Company: ${businessProfile.company_name}`);
+    const industry = businessProfile?.snapshot_industry || businessProfile?.manual_industry;
+    if (industry) contextParts.push(`Industry: ${industry}`);
+    if (companyProfile?.operating_style) contextParts.push(`Operating style: ${companyProfile.operating_style}`);
+    if (companyProfile?.communication_style) contextParts.push(`Communication style: ${companyProfile.communication_style}`);
+    if (companyProfile?.summary) contextParts.push(`Company summary: ${companyProfile.summary}`);
+
+    // Fall back to legacy context params
+    if (contextParts.length === 0 && body.context) {
+      const ctx = body.context;
+      if (ctx.companyIndustry) contextParts.push(`Industry: ${ctx.companyIndustry}`);
+      if (ctx.companySize) contextParts.push(`Company size: ${ctx.companySize}`);
+      if (ctx.companyMaturity) contextParts.push(`Organizational maturity: ${ctx.companyMaturity}`);
+      if (ctx.decisionStyle) contextParts.push(`Decision-making: ${ctx.decisionStyle}`);
+      if (ctx.roleTitle) contextParts.push(`Role: ${ctx.roleTitle}`);
+      if (ctx.functionArea) contextParts.push(`Function: ${ctx.functionArea}`);
+      if (ctx.experienceLevel) contextParts.push(`Seniority: ${ctx.experienceLevel}`);
+      if (ctx.taskDescription) contextParts.push(`Context: ${ctx.taskDescription.substring(0, 200)}`);
+    }
+
+    // Fetch role context from hiring goal
+    let roleContextBlock = '';
+    if (body.hiring_goal_id) {
+      const { data: goal } = await supabaseAdmin.from('hiring_goal_drafts').select('role_title, description').eq('id', body.hiring_goal_id).maybeSingle();
+      if (goal) {
+        roleContextBlock = `Role: ${goal.role_title || 'Professional role'}`;
+        if (goal.description) roleContextBlock += `\nDescription: ${goal.description.substring(0, 200)}`;
+      }
+    }
+
+    const companyContextBlock = contextParts.length > 0 ? contextParts.join('\n') : 'No specific company context provided — generate a realistic general business scenario.';
+    const langInstruction = getLanguageInstruction(locale);
+
+    const systemPrompt = `You are the XIMA Challenge Architect. You create L1 behavioral assessment scenarios for hiring on the XIMA psychometric talent platform.
+
+XIMA L1 challenges measure HOW a person thinks — their behavioral DNA — not what they know. Every candidate gets the same scenario structure (fairness). The scenario feels authentic to the company context but reveals behavioral patterns.
+
+THE XIMA L1 PATTERN (always present):
+- You join a team working on an important initiative
+- Progress is slow, ownership is unclear
+- Stakeholders have conflicting priorities
+- You have no formal authority but the deadline is approaching
+- There is no single correct answer — only trade-offs
+
+COMPANY CONTEXT:
+${companyContextBlock}
+
+${roleContextBlock ? `ROLE CONTEXT:\n${roleContextBlock}` : ''}
+
+GENERATE:
+1. "scenario": Adapted scenario (80-120 words). Keep core tensions. Make the business environment feel authentic. Do NOT reveal company name or proprietary info.
+2. "business_type": Brief label ("SaaS startup", "Industrial manufacturer", etc.)
+3. "evaluation_lens": For EACH of the 5 XIMA pillars, list 2-3 specific behavioral signals that a response to THIS scenario would reveal:
+   - drive_signals: Evidence of initiative, ownership, urgency, accountability
+   - computational_power_signals: Evidence of analytical thinking, structured approach, data-driven reasoning
+   - communication_signals: Evidence of stakeholder management, clarity, influence without authority
+   - creativity_signals: Evidence of novel approaches, reframing problems, lateral thinking
+   - knowledge_signals: Evidence of domain awareness, referencing best practices, contextual understanding
+4. "expected_tensions": The 2-3 specific dilemmas embedded in the scenario
+5. "estimated_time_minutes": Realistic time for a thoughtful response (15-30)
+
+LANGUAGE: ${langInstruction}
+
+Return ONLY valid JSON:
+{
+  "scenario": "string",
+  "business_type": "string",
+  "evaluation_lens": {
+    "drive_signals": ["string", "string"],
+    "computational_power_signals": ["string", "string"],
+    "communication_signals": ["string", "string"],
+    "creativity_signals": ["string", "string"],
+    "knowledge_signals": ["string", "string"]
+  },
+  "expected_tensions": ["string", "string"],
+  "estimated_time_minutes": number
+}`;
+
+    const userPrompt = `Generate an L1 behavioral challenge scenario based on the company and role context above. Return ONLY the JSON object.`;
+
+    try {
+      const aiResp = await callAnthropicApi({
+        system: systemPrompt,
+        userMessage: userPrompt,
+        correlationId,
+        functionName: 'generate-challenge',
+        inputSummary: `l1_gen:locale=${locale},has_company=${!!companyProfile},has_goal=${!!body.hiring_goal_id}`,
+        temperature: 0.8,
+        maxTokens: 2048,
+      });
+
+      const jsonStr = extractJsonFromAiContent(aiResp.content);
+      const parsed = JSON.parse(jsonStr);
+      const validated = validateXimaCoreResult(parsed);
+
+      if (!validated) {
+        console.log(JSON.stringify({ type: 'validation_fallback', correlation_id: correlationId, function_name: 'generate-challenge' }));
+        const fallback = buildFallbackResponse();
+        return jsonResponse({ ...fallback, used_fallback: true });
+      }
+
+      // Store evaluation_lens on the challenge
+      if (body.challenge_id) {
+        await supabaseAdmin.from('business_challenges').update({
+          evaluation_lens: validated.evaluation_lens,
+          expected_tensions: validated.expected_tensions,
+        }).eq('id', body.challenge_id);
+      }
+
+      // Audit
+      emitAuditEventWithMetric({
+        actorType: "business",
+        actorId: user.id,
+        action: "challenge.l1_generated",
+        entityType: "business_challenge",
+        entityId: body.hiring_goal_id || null,
+        correlationId,
+        metadata: { business_type: validated.business_type, locale, used_fallback: false },
+      }, "l1_challenges_generated");
+
+      return jsonResponse({ ...validated, used_fallback: false });
+
+    } catch (e) {
+      if (e instanceof AnthropicError) {
+        if (e.statusCode === 429) return errorResponse(429, 'RATE_LIMITED', e.message);
+      }
+      console.error(JSON.stringify({ type: 'ai_fallback', correlation_id: correlationId, function_name: 'generate-challenge', error: e instanceof Error ? e.message : 'Unknown' }));
+      const fallback = buildFallbackResponse();
+      return jsonResponse({ ...fallback, used_fallback: true });
+    }
 
   } catch (err) {
-    console.error(JSON.stringify({
-      type: 'unhandled_error', correlation_id: correlationId,
-      function_name: 'generate-challenge',
-      error: err instanceof Error ? err.message : 'Unknown error',
-    }));
+    console.error(JSON.stringify({ type: 'unhandled_error', correlation_id: correlationId, function_name: 'generate-challenge', error: err instanceof Error ? err.message : 'Unknown error' }));
     return errorResponse(500, 'INTERNAL_ERROR', err instanceof Error ? err.message : 'Unknown error');
   }
 });
 
-async function handleXimaCoreGeneration(request: GenerateXimaCoreRequest, userId: string, correlationId: string): Promise<Response> {
-  const { context, locale = 'en' } = request;
-  const langInstruction = getLanguageInstruction(locale);
+// =====================================================
+// Fallback
+// =====================================================
 
-  const contextParts: string[] = [];
-  if (context.companyIndustry) contextParts.push(`Industry: ${context.companyIndustry}`);
-  if (context.companySize) contextParts.push(`Company size: ${context.companySize}`);
-  if (context.companyMaturity) contextParts.push(`Organizational maturity: ${context.companyMaturity}`);
-  if (context.decisionStyle) contextParts.push(`Decision-making environment: ${context.decisionStyle}`);
-  if (context.roleTitle) contextParts.push(`Role being hired: ${context.roleTitle}`);
-  if (context.functionArea) contextParts.push(`Function area: ${context.functionArea}`);
-  if (context.experienceLevel) contextParts.push(`Seniority: ${context.experienceLevel}`);
-  if (context.taskDescription) contextParts.push(`Role context: ${context.taskDescription.substring(0, 200)}`);
-
-  const hasContext = contextParts.length > 0;
-  const contextBlock = hasContext 
-    ? `\n\nOrganizational context (use to make the scenario feel realistic, but do NOT include company-specific details):\n${contextParts.join('\n')}`
-    : '';
-
-  const systemPrompt = `You are an expert organizational psychologist creating assessment scenarios for hiring.
-Your task is to generate a realistic business scenario that:
-- Features ambiguous ownership and conflicting priorities
-- Has no single correct answer
-- Feels authentic to the given organizational context
-- Does NOT reveal or reference specific company information
-- Creates genuine tension that requires judgment to navigate
-
-The scenario should feel like a real situation a professional might encounter.${langInstruction}`;
-
-  const userPrompt = `Generate a scenario for a hiring assessment challenge.
-
-Base template (adapt but keep the core tension):
-"${XIMA_CORE_BASE_SCENARIO}"
-${contextBlock}
-
-Requirements:
-1. Keep the scenario 80-120 words
-2. Maintain the core tension: unclear ownership, deadline pressure, conflicting stakeholders
-3. Adapt the business type and environment to feel realistic
-4. Do NOT use real company names or specific proprietary details
-5. Make it feel like a genuine professional challenge
-
-Return ONLY a JSON object:
-{
-  "scenario": "The adapted scenario text...",
-  "business_type": "Brief label like 'SaaS startup' or 'Enterprise consulting'"
-}`;
-
-  try {
-    const aiResp = await callAiGateway({
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      temperature: 0.8,
-      correlationId,
-      functionName: 'generate-challenge',
-    });
-
-    const jsonStr = extractJsonFromAiContent(aiResp.content);
-    const parsed = JSON.parse(jsonStr);
-    const validated = validateXimaCoreScenario(parsed);
-
-    if (!validated) {
-      console.log(JSON.stringify({
-        type: 'validation_fallback', correlation_id: correlationId,
-        function_name: 'generate-challenge', used_fallback: true,
-      }));
-      return jsonResponse({ scenario: XIMA_CORE_BASE_SCENARIO, business_type: 'General business', used_fallback: true });
-    }
-
-    return jsonResponse(validated);
-  } catch (e) {
-    if (e instanceof AiGatewayError) {
-      if (e.statusCode === 429 || e.statusCode === 402) return e.toResponse();
-    }
-    // Deterministic fallback
-    return jsonResponse({ scenario: XIMA_CORE_BASE_SCENARIO, business_type: 'General business', used_fallback: true });
-  }
+function buildFallbackResponse(): XimaCoreResult {
+  return {
+    scenario: XIMA_CORE_BASE_SCENARIO,
+    business_type: 'General business',
+    evaluation_lens: DEFAULT_EVALUATION_LENS,
+    expected_tensions: [
+      "Speed vs. quality under deadline pressure",
+      "Individual initiative vs. team alignment without authority"
+    ],
+    estimated_time_minutes: 20,
+  };
 }
+
+// =====================================================
+// Legacy handler (backward compatibility)
+// =====================================================
 
 async function handleLegacyGeneration(body: GenerateChallengeRequest, userId: string, correlationId: string): Promise<Response> {
   const { task_description, role_title, experience_level, work_model, country, locale = 'en' } = body;
-  const langInstruction = getLanguageInstruction(locale);
-
-  if (!task_description) {
-    return errorResponse(400, 'INVALID_INPUT', 'task_description is required');
-  }
+  if (!task_description) return errorResponse(400, 'INVALID_INPUT', 'task_description is required');
 
   const contextParts = [
     `Task Description: ${task_description}`,
@@ -178,65 +348,30 @@ async function handleLegacyGeneration(body: GenerateChallengeRequest, userId: st
     country ? `Location: ${country}` : '',
   ].filter(Boolean).join('\n');
 
-  const systemPrompt = `You are an expert HR professional creating hiring challenges. 
-Generate a practical, skills-based challenge that evaluates candidates fairly and effectively.
-The challenge should be realistic, take-home style, and focus on demonstrating relevant skills.
-Keep the tone professional but approachable.${langInstruction}`;
-
-  const userPrompt = `Based on this hiring context:
-${contextParts}
-
-Generate a hiring challenge with:
-1. A compelling title (5-8 words)
-2. A candidate-facing description (120-200 words) explaining what they'll do and why it matters
-3. Exactly 3 success criteria as bullet points (what makes a great submission)
-4. Estimated time to complete in minutes (realistic range like 30-60)
-
-Return ONLY a JSON object with this exact structure:
-{
-  "title_suggestion": "string",
-  "candidate_facing_description": "string",
-  "success_criteria": ["string", "string", "string"],
-  "time_estimate_minutes": number
-}`;
+  const langName = LANGUAGE_NAMES[locale] || 'English';
 
   try {
-    const aiResp = await callAiGateway({
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      temperature: 0.7,
+    const aiResp = await callAnthropicApi({
+      system: `You are an expert HR professional creating hiring challenges. Generate a practical, skills-based challenge. Keep the tone professional. Respond in ${langName}. JSON keys in English, values in ${langName}.`,
+      userMessage: `Based on this hiring context:\n${contextParts}\n\nGenerate a hiring challenge. Return ONLY JSON:\n{"title_suggestion":"string","candidate_facing_description":"string","success_criteria":["string","string","string"],"time_estimate_minutes":number}`,
       correlationId,
       functionName: 'generate-challenge',
+      temperature: 0.7,
+      maxTokens: 1024,
     });
 
     const jsonStr = extractJsonFromAiContent(aiResp.content);
     const parsed = JSON.parse(jsonStr);
-    const validated = validateGeneratedChallenge(parsed);
-
-    if (!validated) {
-      // Deterministic fallback
-      return jsonResponse({
-        title_suggestion: `${role_title || 'Skills'} Challenge`,
-        candidate_facing_description: task_description,
-        success_criteria: ['Clear and structured response', 'Demonstrates relevant skills', 'Realistic and practical approach'],
-        time_estimate_minutes: 45,
-        used_fallback: true,
-      });
+    if (typeof parsed?.title_suggestion === 'string' && Array.isArray(parsed?.success_criteria)) {
+      return jsonResponse(parsed);
     }
+  } catch { /* fall through to fallback */ }
 
-    return jsonResponse(validated);
-  } catch (e) {
-    if (e instanceof AiGatewayError) {
-      if (e.statusCode === 429 || e.statusCode === 402) return e.toResponse();
-    }
-    return jsonResponse({
-      title_suggestion: `${role_title || 'Skills'} Challenge`,
-      candidate_facing_description: task_description || '',
-      success_criteria: ['Clear and structured response', 'Demonstrates relevant skills', 'Realistic approach'],
-      time_estimate_minutes: 45,
-      used_fallback: true,
-    });
-  }
+  return jsonResponse({
+    title_suggestion: `${role_title || 'Skills'} Challenge`,
+    candidate_facing_description: task_description || '',
+    success_criteria: ['Clear and structured response', 'Demonstrates relevant skills', 'Realistic approach'],
+    time_estimate_minutes: 45,
+    used_fallback: true,
+  });
 }
