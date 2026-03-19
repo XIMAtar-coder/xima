@@ -819,6 +819,8 @@ export type Database = {
           description: string | null
           difficulty: number | null
           end_at: string | null
+          evaluation_lens: Json | null
+          expected_tensions: Json | null
           generation_error: string | null
           generation_status: string | null
           hiring_goal_id: string | null
@@ -846,6 +848,8 @@ export type Database = {
           description?: string | null
           difficulty?: number | null
           end_at?: string | null
+          evaluation_lens?: Json | null
+          expected_tensions?: Json | null
           generation_error?: string | null
           generation_status?: string | null
           hiring_goal_id?: string | null
@@ -873,6 +877,8 @@ export type Database = {
           description?: string | null
           difficulty?: number | null
           end_at?: string | null
+          evaluation_lens?: Json | null
+          expected_tensions?: Json | null
           generation_error?: string | null
           generation_status?: string | null
           hiring_goal_id?: string | null
@@ -3596,6 +3602,54 @@ export type Database = {
           },
         ]
       }
+      pillar_trajectory_log: {
+        Row: {
+          communication_delta: number | null
+          computational_power_delta: number | null
+          correlation_id: string | null
+          created_at: string | null
+          creativity_delta: number | null
+          drive_delta: number | null
+          id: string
+          knowledge_delta: number | null
+          reasoning: string | null
+          source_entity_id: string | null
+          source_function: string
+          source_type: string
+          user_id: string
+        }
+        Insert: {
+          communication_delta?: number | null
+          computational_power_delta?: number | null
+          correlation_id?: string | null
+          created_at?: string | null
+          creativity_delta?: number | null
+          drive_delta?: number | null
+          id?: string
+          knowledge_delta?: number | null
+          reasoning?: string | null
+          source_entity_id?: string | null
+          source_function: string
+          source_type: string
+          user_id: string
+        }
+        Update: {
+          communication_delta?: number | null
+          computational_power_delta?: number | null
+          correlation_id?: string | null
+          created_at?: string | null
+          creativity_delta?: number | null
+          drive_delta?: number | null
+          id?: string
+          knowledge_delta?: number | null
+          reasoning?: string | null
+          source_entity_id?: string | null
+          source_function?: string
+          source_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       professionals: {
         Row: {
           avatar_path: string | null
@@ -3668,6 +3722,7 @@ export type Database = {
       profiles: {
         Row: {
           account_status: string
+          archetype_history: Json | null
           avatar: Json | null
           created_at: string
           creation_source: string | null
@@ -3678,11 +3733,15 @@ export type Database = {
           drive_updated_at: string | null
           email: string | null
           email_verified_at: string | null
+          evolution_eligible: boolean | null
           first_name: string | null
           free_intro_session_used_at: string | null
           full_name: string | null
           id: string
           last_name: string | null
+          level_start_scores: Json | null
+          level_started_at: string | null
+          level_up_eligible: boolean | null
           membership_renewal_at: string | null
           membership_started_at: string | null
           membership_tier: Database["public"]["Enums"]["membership_tier"]
@@ -3696,6 +3755,7 @@ export type Database = {
           referral_code: string | null
           referred_by_code: string | null
           strongest_pillar: string | null
+          suggested_new_archetype: string | null
           updated_at: string
           user_id: string
           verification_required_until: string
@@ -3706,11 +3766,13 @@ export type Database = {
           ximatar_growth_path: string | null
           ximatar_id: string | null
           ximatar_image: string | null
+          ximatar_level: number | null
           ximatar_name: string | null
           ximatar_storytelling: string | null
         }
         Insert: {
           account_status?: string
+          archetype_history?: Json | null
           avatar?: Json | null
           created_at?: string
           creation_source?: string | null
@@ -3721,11 +3783,15 @@ export type Database = {
           drive_updated_at?: string | null
           email?: string | null
           email_verified_at?: string | null
+          evolution_eligible?: boolean | null
           first_name?: string | null
           free_intro_session_used_at?: string | null
           full_name?: string | null
           id?: string
           last_name?: string | null
+          level_start_scores?: Json | null
+          level_started_at?: string | null
+          level_up_eligible?: boolean | null
           membership_renewal_at?: string | null
           membership_started_at?: string | null
           membership_tier?: Database["public"]["Enums"]["membership_tier"]
@@ -3739,6 +3805,7 @@ export type Database = {
           referral_code?: string | null
           referred_by_code?: string | null
           strongest_pillar?: string | null
+          suggested_new_archetype?: string | null
           updated_at?: string
           user_id: string
           verification_required_until?: string
@@ -3749,11 +3816,13 @@ export type Database = {
           ximatar_growth_path?: string | null
           ximatar_id?: string | null
           ximatar_image?: string | null
+          ximatar_level?: number | null
           ximatar_name?: string | null
           ximatar_storytelling?: string | null
         }
         Update: {
           account_status?: string
+          archetype_history?: Json | null
           avatar?: Json | null
           created_at?: string
           creation_source?: string | null
@@ -3764,11 +3833,15 @@ export type Database = {
           drive_updated_at?: string | null
           email?: string | null
           email_verified_at?: string | null
+          evolution_eligible?: boolean | null
           first_name?: string | null
           free_intro_session_used_at?: string | null
           full_name?: string | null
           id?: string
           last_name?: string | null
+          level_start_scores?: Json | null
+          level_started_at?: string | null
+          level_up_eligible?: boolean | null
           membership_renewal_at?: string | null
           membership_started_at?: string | null
           membership_tier?: Database["public"]["Enums"]["membership_tier"]
@@ -3782,6 +3855,7 @@ export type Database = {
           referral_code?: string | null
           referred_by_code?: string | null
           strongest_pillar?: string | null
+          suggested_new_archetype?: string | null
           updated_at?: string
           user_id?: string
           verification_required_until?: string
@@ -3792,6 +3866,7 @@ export type Database = {
           ximatar_growth_path?: string | null
           ximatar_id?: string | null
           ximatar_image?: string | null
+          ximatar_level?: number | null
           ximatar_name?: string | null
           ximatar_storytelling?: string | null
         }
