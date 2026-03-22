@@ -305,6 +305,9 @@ Deno.serve(async (req: Request) => {
           "ai_messages",
           "activity_logs",
           "bot_events",
+          "cv_credentials",
+          "cv_identity_analysis",
+          "pillar_trajectory_log",
         ],
       },
       tables: {
