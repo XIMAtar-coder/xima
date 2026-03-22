@@ -259,6 +259,28 @@ Deno.serve(async (req: Request) => {
       console.error("[data-export] Notifications error:", notificationsError);
     }
 
+    // NEW: CV credentials (B2B matching data)
+    const { data: cvCredentials, error: cvCredError } = await supabase
+      .from("cv_credentials")
+      .select("*")
+      .eq("user_id", userId);
+    if (cvCredError) console.error("[data-export] CV credentials error:", cvCredError);
+
+    // NEW: CV identity analysis (tension data)
+    const { data: cvIdentityAnalysis, error: cvIdentError } = await supabase
+      .from("cv_identity_analysis")
+      .select("*")
+      .eq("user_id", userId);
+    if (cvIdentError) console.error("[data-export] CV identity analysis error:", cvIdentError);
+
+    // NEW: Pillar trajectory log (growth history)
+    const { data: pillarTrajectory, error: trajError } = await supabase
+      .from("pillar_trajectory_log")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: true });
+    if (trajError) console.error("[data-export] Pillar trajectory error:", trajError);
+
     // 3. Compile export data
     const exportData = {
       export_metadata: {
@@ -283,6 +305,9 @@ Deno.serve(async (req: Request) => {
           "ai_messages",
           "activity_logs",
           "bot_events",
+          "cv_credentials",
+          "cv_identity_analysis",
+          "pillar_trajectory_log",
         ],
       },
       tables: {
@@ -365,6 +390,21 @@ Deno.serve(async (req: Request) => {
           description: "Bot interaction events",
           record_count: botEvents?.length || 0,
           data: botEvents || [],
+        },
+        cv_credentials: {
+          description: "Structured credentials extracted from uploaded CV (education, skills, work history)",
+          record_count: cvCredentials?.length || 0,
+          data: cvCredentials || [],
+        },
+        cv_identity_analysis: {
+          description: "Psychometric analysis of CV vs XIMAtar identity (tension, improvements, role fit)",
+          record_count: cvIdentityAnalysis?.length || 0,
+          data: cvIdentityAnalysis || [],
+        },
+        pillar_trajectory_log: {
+          description: "History of pillar score changes from platform interactions (challenges, assessments, Growth Hub)",
+          record_count: pillarTrajectory?.length || 0,
+          data: pillarTrajectory || [],
         },
       },
     };

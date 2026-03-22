@@ -1,4 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { emitAuditEvent } from "../_shared/auditEvents.ts";
+import { extractCorrelationId } from "../_shared/correlationId.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -28,7 +30,6 @@ Deno.serve(async (req) => {
     }
 
     // Check if this is a service-role call (internal/admin)
-    // Service role key in apikey header indicates server-side call
     if (!isAuthorized && apiKeyHeader === serviceRoleKey) {
       isAuthorized = true;
     }
@@ -40,7 +41,6 @@ Deno.serve(async (req) => {
       const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
       
       if (!authError && user) {
-        // Check if user has admin role
         const { data: roleData } = await supabaseClient
           .from("user_roles")
           .select("role")
@@ -61,6 +61,7 @@ Deno.serve(async (req) => {
       );
     }
 
+    const correlationId = extractCorrelationId(req);
     const { email, new_password, create_if_missing } = await req.json();
 
     if (!email || typeof email !== "string") {
@@ -81,7 +82,17 @@ Deno.serve(async (req) => {
       auth: { autoRefreshToken: false, persistSession: false }
     });
 
-    // Check if user exists
+    // Check if user exists — direct lookup
+    const { data: existingUsers, error: lookupError } = await adminClient.auth.admin.listUsers({
+      page: 1,
+      perPage: 1,
+    });
+
+    if (lookupError) {
+      console.error("Error looking up users:", lookupError);
+    }
+
+    // Use listUsers with manual filter (admin API filter syntax varies)
     const { data: { users }, error: listError } = await adminClient.auth.admin.listUsers();
     
     if (listError) {
@@ -96,7 +107,6 @@ Deno.serve(async (req) => {
 
     if (!existingUser) {
       if (create_if_missing) {
-        // Create the user with the specified password
         const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
           email: email,
           password: new_password,
@@ -111,21 +121,20 @@ Deno.serve(async (req) => {
           );
         }
 
-        // Link to mentor by email pattern match
-        const { data: mentorData, error: linkError } = await adminClient
-          .from("mentors")
-          .update({ user_id: newUser.user!.id, updated_at: new Date().toISOString() })
-          .ilike("name", "%roberta%")
-          .is("user_id", null)
-          .select("id, name");
+        emitAuditEvent({
+          actorType: 'system',
+          action: 'admin.user_created',
+          entityType: 'auth_user',
+          entityId: newUser.user!.id,
+          correlationId,
+          metadata: { email, action: 'created' },
+        });
 
         return new Response(
           JSON.stringify({ 
             success: true, 
             action: "created",
             user_id: newUser.user!.id,
-            mentor_linked: mentorData && mentorData.length > 0,
-            mentor: mentorData?.[0] || null
           }),
           { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
@@ -151,21 +160,20 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Also ensure mentor is linked if not already
-    const { data: mentorData, error: linkError } = await adminClient
-      .from("mentors")
-      .update({ user_id: existingUser.id, updated_at: new Date().toISOString() })
-      .ilike("name", "%roberta%")
-      .is("user_id", null)
-      .select("id, name");
+    emitAuditEvent({
+      actorType: 'system',
+      action: 'admin.password_reset',
+      entityType: 'auth_user',
+      entityId: existingUser.id,
+      correlationId,
+      metadata: { email, action: 'password_updated' },
+    });
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         action: "password_updated",
         user_id: existingUser.id,
-        mentor_linked: mentorData && mentorData.length > 0,
-        mentor: mentorData?.[0] || null
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
