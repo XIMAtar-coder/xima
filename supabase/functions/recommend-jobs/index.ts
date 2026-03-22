@@ -1,348 +1,492 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.3';
+/**
+ * XIMA recommend-jobs v2.0 — Identity-First Job Matching Engine
+ *
+ * 3-stage scoring: Identity (0-60) + Credentials (0/25) + Growth Fit (0-15) = max 100
+ * Claude generates personalized match narratives for top results.
+ */
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { callAnthropicApi, AnthropicError } from "../_shared/anthropicClient.ts";
+import { extractJsonFromAiContent, generateCorrelationId } from "../_shared/aiClient.ts";
+import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
+import { extractCorrelationId } from "../_shared/correlationId.ts";
+import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
+import { XIMATAR_PROFILES, computePillarDistance, type XimatarPillars } from "../_shared/ximatarTaxonomy.ts";
 
-interface Job {
+// =====================================================
+// Types
+// =====================================================
+
+interface JobRecord {
   id: string;
   title: string;
-  company: string;
-  location: string;
-  skills: string[];
-  sourceUrl: string;
-  summary: string;
-  idealXimatar?: string[];
+  description: string | null;
+  location: string | null;
+  employment_type: string | null;
+  seniority: string | null;
+  department: string | null;
+  requirements_must: string | null;
+  requirements_nice: string | null;
+  benefits: string | null;
+  business_id: string;
+  content_json: any;
+  status: string;
+  created_at: string;
 }
 
-const skillToPillar: Record<string, string> = {
-  data: 'computational',
-  analysis: 'computational',
-  analytics: 'computational',
-  python: 'computational',
-  sql: 'computational',
-  presentation: 'communication',
-  communication: 'communication',
-  storytelling: 'communication',
-  research: 'knowledge',
-  domain: 'knowledge',
-  strategy: 'knowledge',
-  design: 'creativity',
-  creativity: 'creativity',
-  innovation: 'creativity',
-  initiative: 'drive',
-  leadership: 'drive',
-  ownership: 'drive',
-};
+interface ScoredJob {
+  id: string;
+  title: string;
+  companyName: string;
+  location: string | null;
+  seniority: string | null;
+  employmentType: string | null;
+  totalScore: number;
+  identityScore: number;
+  identityBreakdown: Record<string, number>;
+  credentialScore: number;
+  credentialDetails: string[];
+  growthFitScore: number;
+  fitType: string;
+}
 
-Deno.serve(async (req) => {
-  // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
+// =====================================================
+// Stage 1: Identity Match Score (0-60)
+// =====================================================
+
+function computeIdentityScore(
+  userArchetype: string,
+  userLevel: number,
+  userPillars: Record<string, number>,
+  userTrajectory: Record<string, number> | null,
+  jobIdealArchetypes: string[],
+  companyPillarVector: Record<string, number> | null
+): { score: number; breakdown: Record<string, number> } {
+  const breakdown: Record<string, number> = {};
+
+  // 1a. Archetype match (0-25)
+  if (jobIdealArchetypes.length > 0 && jobIdealArchetypes.includes(userArchetype)) {
+    breakdown.archetype_match = 25;
+  } else if (jobIdealArchetypes.length > 0) {
+    const userVector: XimatarPillars = {
+      drive: userPillars.drive ?? 50,
+      comp_power: userPillars.computational_power ?? userPillars.comp_power ?? 50,
+      communication: userPillars.communication ?? 50,
+      creativity: userPillars.creativity ?? 50,
+      knowledge: userPillars.knowledge ?? 50,
+    };
+    let minDistance = Infinity;
+    for (const idealId of jobIdealArchetypes) {
+      const idealProfile = XIMATAR_PROFILES[idealId];
+      if (idealProfile) {
+        minDistance = Math.min(minDistance, computePillarDistance(userVector, idealProfile.pillars));
+      }
+    }
+    breakdown.archetype_match = Math.max(0, Math.round(25 * (1 - minDistance / 50)));
+  } else {
+    breakdown.archetype_match = 12; // Neutral when no ideal archetypes defined
+  }
+
+  // 1b. Pillar alignment with company vector (0-20)
+  if (companyPillarVector) {
+    const userVec: XimatarPillars = {
+      drive: userPillars.drive ?? 50,
+      comp_power: userPillars.computational_power ?? userPillars.comp_power ?? 50,
+      communication: userPillars.communication ?? 50,
+      creativity: userPillars.creativity ?? 50,
+      knowledge: userPillars.knowledge ?? 50,
+    };
+    const compVec: XimatarPillars = {
+      drive: companyPillarVector.drive ?? 50,
+      comp_power: companyPillarVector.computational_power ?? companyPillarVector.comp_power ?? 50,
+      communication: companyPillarVector.communication ?? 50,
+      creativity: companyPillarVector.creativity ?? 50,
+      knowledge: companyPillarVector.knowledge ?? 50,
+    };
+    const distance = computePillarDistance(userVec, compVec);
+    breakdown.pillar_alignment = Math.max(0, Math.round(20 * (1 - distance / 60)));
+  } else {
+    breakdown.pillar_alignment = 10;
+  }
+
+  // 1c. XIMAtar level bonus (0-8)
+  breakdown.level_bonus = Math.min(8, (userLevel - 1) * 4);
+
+  // 1d. Trajectory momentum (0-7)
+  if (userTrajectory) {
+    const totalPositiveTrend = Object.values(userTrajectory).filter(v => v > 0).reduce((a, b) => a + b, 0);
+    breakdown.trajectory = Math.min(7, Math.round(totalPositiveTrend / 3));
+  } else {
+    breakdown.trajectory = 0;
+  }
+
+  const score = Math.min(60, Object.values(breakdown).reduce((a, b) => a + b, 0));
+  return { score, breakdown };
+}
+
+// =====================================================
+// Stage 2: Credential Filter (pass/fail → 0 or 25)
+// =====================================================
+
+function checkCredentialFit(
+  credentials: any | null,
+  jobSeniority: string | null,
+  requirementsMust: string | null
+): { passes: boolean; score: number; matchDetails: string[] } {
+  if (!credentials) {
+    return { passes: true, score: 15, matchDetails: ["No CV uploaded — credential check skipped"] };
+  }
+
+  const details: string[] = [];
+  let passes = true;
+
+  // Seniority check
+  const seniorityOrder = ["junior", "mid", "senior", "lead", "executive"];
+  if (jobSeniority && credentials.seniority_level) {
+    const requiredIdx = seniorityOrder.indexOf(jobSeniority.toLowerCase());
+    const userIdx = seniorityOrder.indexOf(credentials.seniority_level.toLowerCase());
+    if (requiredIdx >= 0 && userIdx >= 0 && userIdx < requiredIdx - 1) {
+      // Allow one level below (stretch opportunity), fail if 2+ below
+      passes = false;
+      details.push(`Seniority gap: role needs ${jobSeniority}, you're ${credentials.seniority_level}`);
+    } else {
+      details.push("Seniority: meets requirement");
+    }
+  }
+
+  // Skills overlap from requirements_must (soft check)
+  if (requirementsMust && credentials.hard_skills) {
+    const userSkills = (credentials.hard_skills || []).map((s: any) => (s.name || "").toLowerCase());
+    const reqWords = requirementsMust.toLowerCase().split(/[\s,;.]+/).filter((w: string) => w.length > 3);
+    const matched = reqWords.filter((w: string) =>
+      userSkills.some((us: string) => us.includes(w) || w.includes(us))
+    );
+    if (reqWords.length > 0) {
+      details.push(`Skills overlap: ${matched.length} keyword matches`);
+    }
+  }
+
+  // Experience years
+  if (credentials.total_years_experience != null) {
+    details.push(`Experience: ${credentials.total_years_experience} years`);
+  }
+
+  return { passes, score: passes ? 25 : 0, matchDetails: details };
+}
+
+// =====================================================
+// Stage 3: Growth Fit Bonus (0-15)
+// =====================================================
+
+function computeGrowthFitScore(
+  jobTitle: string,
+  cvAnalysis: { cv_qualified_roles?: string[]; archetype_aligned_roles?: string[]; growth_bridge_roles?: string[] } | null
+): { score: number; fitType: string } {
+  if (!cvAnalysis) return { score: 5, fitType: "pending" };
+
+  const normalizedTitle = jobTitle.toLowerCase();
+
+  const matchesAny = (roles: string[]) =>
+    roles.some(r => normalizedTitle.includes(r.toLowerCase()) || r.toLowerCase().includes(normalizedTitle));
+
+  if (matchesAny(cvAnalysis.archetype_aligned_roles || [])) return { score: 15, fitType: "archetype_aligned" };
+  if (matchesAny(cvAnalysis.growth_bridge_roles || [])) return { score: 10, fitType: "growth_bridge" };
+  if (matchesAny(cvAnalysis.cv_qualified_roles || [])) return { score: 8, fitType: "cv_qualified" };
+
+  return { score: 3, fitType: "exploratory" };
+}
+
+// =====================================================
+// Fallback narrative
+// =====================================================
+
+function fallbackNarrative(match: ScoredJob, userArchetype: string): string {
+  const profile = XIMATAR_PROFILES[userArchetype];
+  if (!profile) return "Recommended based on your profile.";
+  const topPillar = Object.entries(profile.pillars).sort((a, b) => b[1] - a[1])[0][0];
+  return `Your ${profile.name} profile aligns well with this role's emphasis on ${topPillar.replace("_", " ")}.`;
+}
+
+// =====================================================
+// Main handler
+// =====================================================
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const correlationId = extractCorrelationId(req) || generateCorrelationId();
+
   try {
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    // SECURITY: Validate authentication
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      console.error('[recommend-jobs] Missing Authorization header');
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized', message: 'Authorization header required' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    // Auth — required
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) return unauthorizedResponse();
 
-    // Create client with user's auth context
     const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } }
+      global: { headers: { Authorization: authHeader } },
     });
+    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
+    if (authError || !user) return unauthorizedResponse("Invalid or expired token");
 
-    // Use getClaims() instead of getUser() - validates JWT signature without checking session existence
-    // This matches PostgREST behavior and is more resilient to stale sessions
-    const token = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
-    
-    if (claimsError || !claimsData?.claims?.sub) {
-      console.error('[recommend-jobs] JWT validation failed:', claimsError?.message);
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized', message: 'Invalid or expired token' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Use the user ID from JWT claims
-    const userId = claimsData.claims.sub as string;
-    console.log(`[recommend-jobs] Generating recommendations for authenticated user: ${userId}`);
-
-    // Use service role for database operations that need RLS bypass
+    const userId = user.id;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // 1. Fetch user's latest assessment with pillar scores
-    const { data: assessmentData, error: assessmentError } = await supabase
-      .from('assessment_results')
-      .select(`
-        id,
-        ximatar_id,
-        ximatars (label, id)
-      `)
-      .eq('user_id', userId)
-      .order('computed_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    console.log(JSON.stringify({ type: "recommend_jobs_start", correlation_id: correlationId, user_id: userId }));
 
-    if (assessmentError || !assessmentData) {
-      console.log('[recommend-jobs] No assessment found for user:', userId);
-      return new Response(
-        JSON.stringify({ 
-          recommendations: [], 
-          message: 'Complete your XIMA assessment to get personalized recommendations' 
-        }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    // ---- Fetch user data in parallel ----
+    const [profileRes, credentialsRes, cvAnalysisRes, trajectoryRes] = await Promise.all([
+      supabase.from("profiles").select("ximatar_archetype, ximatar_level, assessment_scores").eq("user_id", userId).single(),
+      supabase.from("cv_credentials").select("hard_skills, seniority_level, total_years_experience, industries_worked, career_trajectory, languages").eq("user_id", userId).maybeSingle(),
+      supabase.from("cv_identity_analysis").select("cv_qualified_roles, archetype_aligned_roles, growth_bridge_roles").eq("user_id", userId).maybeSingle(),
+      supabase.rpc("get_user_trajectory_90d", { p_user_id: userId }).maybeSingle(),
+    ]);
+
+    const profile = profileRes.data;
+    if (!profile?.ximatar_archetype || !profile?.assessment_scores) {
+      return jsonResponse({
+        recommendations: [],
+        total: 0,
+        message: "Complete your XIMA assessment to get personalized recommendations",
+        generated_at: new Date().toISOString(),
+      });
+    }
+
+    const userArchetype = profile.ximatar_archetype;
+    const userLevel = profile.ximatar_level || 1;
+    const userPillars = profile.assessment_scores as Record<string, number>;
+    const credentials = credentialsRes.data;
+    const cvAnalysis = cvAnalysisRes.data;
+
+    // Trajectory — if the RPC doesn't exist, compute from raw query
+    let userTrajectory: Record<string, number> | null = null;
+    if (trajectoryRes.data) {
+      userTrajectory = trajectoryRes.data;
+    } else {
+      // Fallback: direct query
+      const { data: trajData } = await supabase
+        .from("pillar_trajectory_log")
+        .select("drive_delta, computational_power_delta, communication_delta, creativity_delta, knowledge_delta")
+        .eq("user_id", userId)
+        .gte("created_at", new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString());
+
+      if (trajData && trajData.length > 0) {
+        userTrajectory = {
+          drive: trajData.reduce((s, r) => s + (Number(r.drive_delta) || 0), 0),
+          computational_power: trajData.reduce((s, r) => s + (Number(r.computational_power_delta) || 0), 0),
+          communication: trajData.reduce((s, r) => s + (Number(r.communication_delta) || 0), 0),
+          creativity: trajData.reduce((s, r) => s + (Number(r.creativity_delta) || 0), 0),
+          knowledge: trajData.reduce((s, r) => s + (Number(r.knowledge_delta) || 0), 0),
+        };
+      }
+    }
+
+    // ---- Fetch active job posts ----
+    const { data: jobPosts, error: jobsError } = await supabase
+      .from("job_posts")
+      .select("id, title, description, location, employment_type, seniority, department, requirements_must, requirements_nice, benefits, business_id, content_json, status, created_at")
+      .not("status", "in", '("draft","archived","closed")')
+      .order("created_at", { ascending: false })
+      .limit(200);
+
+    if (jobsError) {
+      console.error(JSON.stringify({ type: "jobs_fetch_error", correlation_id: correlationId, error: jobsError.message }));
+    }
+
+    const allJobs: JobRecord[] = jobPosts || [];
+
+    if (allJobs.length === 0) {
+      return jsonResponse({
+        recommendations: [],
+        total: 0,
+        message: "No active job opportunities available right now. Check back soon.",
+        user_context: { ximatar: userArchetype, level: userLevel, cv_uploaded: !!credentials },
+        generated_at: new Date().toISOString(),
+      });
+    }
+
+    // ---- Fetch company data for all unique business_ids ----
+    const businessIds = [...new Set(allJobs.map(j => j.business_id))];
+
+    const [companyProfilesRes, businessProfilesRes] = await Promise.all([
+      supabase.from("company_profiles").select("company_id, pillar_vector, ideal_ximatar_profile_ids, summary").in("company_id", businessIds),
+      supabase.from("business_profiles").select("user_id, company_name, snapshot_industry, manual_industry").in("user_id", businessIds),
+    ]);
+
+    const companyMap = new Map<string, any>();
+    (companyProfilesRes.data || []).forEach((cp: any) => companyMap.set(cp.company_id, cp));
+
+    const businessMap = new Map<string, any>();
+    (businessProfilesRes.data || []).forEach((bp: any) => businessMap.set(bp.user_id, bp));
+
+    // ---- Score all jobs ----
+    const scoredJobs: ScoredJob[] = [];
+
+    for (const job of allJobs) {
+      const company = companyMap.get(job.business_id);
+      const business = businessMap.get(job.business_id);
+      const companyName = business?.company_name || "Company";
+
+      const idealArchetypes: string[] = company?.ideal_ximatar_profile_ids || [];
+      const companyPillarVector = company?.pillar_vector || null;
+
+      // Stage 1: Identity
+      const identity = computeIdentityScore(
+        userArchetype, userLevel, userPillars, userTrajectory,
+        idealArchetypes, companyPillarVector
       );
+
+      // Stage 2: Credentials
+      const credCheck = checkCredentialFit(credentials, job.seniority, job.requirements_must);
+      if (!credCheck.passes) continue; // Hard filter
+
+      // Stage 3: Growth Fit
+      const growthFit = computeGrowthFitScore(job.title, cvAnalysis);
+
+      const totalScore = identity.score + credCheck.score + growthFit.score;
+
+      scoredJobs.push({
+        id: job.id,
+        title: job.title,
+        companyName,
+        location: job.location,
+        seniority: job.seniority,
+        employmentType: job.employment_type,
+        totalScore,
+        identityScore: identity.score,
+        identityBreakdown: identity.breakdown,
+        credentialScore: credCheck.score,
+        credentialDetails: credCheck.matchDetails,
+        growthFitScore: growthFit.score,
+        fitType: growthFit.fitType,
+      });
     }
 
-    // Fetch pillar scores for this assessment
-    const { data: pillarData, error: pillarError } = await supabase
-      .from('pillar_scores')
-      .select('pillar, score')
-      .eq('assessment_result_id', assessmentData.id);
-
-    if (pillarError || !pillarData || pillarData.length === 0) {
-      console.log('[recommend-jobs] No pillar scores found for user:', userId);
-      return new Response(
-        JSON.stringify({ 
-          recommendations: [], 
-          message: 'Complete your XIMA assessment to get personalized recommendations' 
-        }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Convert pillar data to object
-    const userPillars: Record<string, number> = {};
-    pillarData.forEach(p => {
-      const key = p.pillar === 'computational_power' ? 'computational' : p.pillar;
-      userPillars[key] = p.score;
-    });
-
-    const userXimatar = (assessmentData.ximatars as any)?.label?.toLowerCase();
-
-    console.log('[recommend-jobs] User pillars:', userPillars);
-    console.log('[recommend-jobs] User ximatar:', userXimatar);
-
-    // 2. Fetch opportunities from database
-    const { data: opportunities, error: jobsError } = await supabase
-      .from('opportunities')
-      .select('*')
-      .eq('is_public', true);
-
-    let jobs: Job[] = [];
-
-    if (!jobsError && opportunities) {
-      // Convert opportunities to Job format
-      jobs = opportunities.map(opp => ({
-        id: opp.id,
-        title: opp.title,
-        company: opp.company,
-        location: opp.location || 'Remote',
-        skills: opp.skills || [],
-        sourceUrl: opp.source_url || '',
-        summary: opp.description || '',
-        idealXimatar: [] as string[], // Will be computed dynamically
-      }));
-    }
-
-    // Fallback: Also fetch from jobs.json for additional opportunities
-    try {
-      const jobsUrl = `${supabaseUrl.replace('https://', 'https://iyckvvnecpnldrxqmzta.')}/jobs.json`;
-      const jobsResponse = await fetch(jobsUrl);
-      if (jobsResponse.ok) {
-        const staticJobs = await jobsResponse.json();
-        jobs = [...jobs, ...staticJobs];
-      }
-    } catch (e) {
-      console.warn('[recommend-jobs] Could not fetch static jobs:', e);
-    }
-
-    // If still no jobs, use fallback
-    if (jobs.length === 0) {
-      jobs = [
-        {
-          id: '1',
-          title: 'Data Analyst',
-          company: 'Aurora Insights',
-          location: 'Milan, IT',
-          skills: ['data', 'analysis', 'sql', 'presentation'],
-          sourceUrl: 'https://example.com/jobs/1',
-          summary: 'Analyze datasets to deliver insights for business teams and stakeholders.',
-          idealXimatar: ['owl', 'elephant'],
-        },
-        {
-          id: '2',
-          title: 'Product Marketing Manager',
-          company: 'NovaTech',
-          location: 'Remote',
-          skills: ['communication', 'storytelling', 'strategy', 'ownership'],
-          sourceUrl: 'https://example.com/jobs/2',
-          summary: 'Own product positioning and go-to-market narratives across channels.',
-          idealXimatar: ['parrot', 'fox'],
-        },
-        {
-          id: '3',
-          title: 'UX Designer',
-          company: 'BlueWave Studio',
-          location: 'Rome, IT',
-          skills: ['design', 'creativity', 'research', 'communication'],
-          sourceUrl: 'https://example.com/jobs/3',
-          summary: 'Design intuitive experiences backed by research and rapid iteration.',
-          idealXimatar: ['cat', 'dolphin'],
-        },
-      ];
-    }
-
-    console.log(`[recommend-jobs] Loaded ${jobs.length} jobs`);
-
-    // 3. Calculate match scores with enhanced algorithm
-    const recommendations = jobs.map((job) => {
-      // Calculate pillar weights from skills
-      const pillarWeights: Record<string, number> = {};
-      for (const skill of job.skills) {
-        const pillar = skillToPillar[skill.toLowerCase()];
-        if (pillar) {
-          pillarWeights[pillar] = (pillarWeights[pillar] || 0) + 1;
-        }
-      }
-
-      // Dynamic XIMAtar inference based on skill pillars
-      const inferredXimatar: string[] = [];
-      const dominantPillars = Object.entries(pillarWeights)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 2)
-        .map(([pillar]) => pillar);
-
-      // Map pillar combinations to XIMAtar types
-      if (dominantPillars.includes('creativity') && dominantPillars.includes('communication')) {
-        inferredXimatar.push('parrot', 'fox');
-      } else if (dominantPillars.includes('knowledge') && dominantPillars.includes('computational')) {
-        inferredXimatar.push('owl', 'elephant');
-      } else if (dominantPillars.includes('drive') && dominantPillars.includes('knowledge')) {
-        inferredXimatar.push('elephant', 'horse');
-      } else if (dominantPillars.includes('communication') && dominantPillars.includes('drive')) {
-        inferredXimatar.push('dolphin', 'parrot');
-      } else if (dominantPillars.includes('computational') && dominantPillars.includes('creativity')) {
-        inferredXimatar.push('cat', 'bee');
-      } else if (dominantPillars.includes('drive')) {
-        inferredXimatar.push('horse', 'lion', 'wolf');
-      } else if (dominantPillars.includes('creativity')) {
-        inferredXimatar.push('fox', 'cat');
-      } else if (dominantPillars.includes('computational')) {
-        inferredXimatar.push('owl', 'bee');
-      }
-
-      // Use provided idealXimatar or inferred
-      const targetXimatar = job.idealXimatar && job.idealXimatar.length > 0 
-        ? job.idealXimatar 
-        : inferredXimatar;
-
-      const totalWeight = Object.values(pillarWeights).reduce((a, b) => a + b, 0) || 1;
-
-      // Compute weighted pillar score with alignment penalty/bonus
-      let pillarScore = 0;
-      const pillarContributions: Array<{ pillar: string; weight: number; userScore: number; contribution: number }> = [];
-
-      for (const [pillar, weight] of Object.entries(pillarWeights)) {
-        const normalizedWeight = weight / totalWeight;
-        const userScore = userPillars[pillar] || 5;
-        const normalizedUserScore = userScore / 10; // 0-1 range
-        
-        // Apply alignment bonus: reward high scores in required pillars
-        const alignmentBonus = normalizedUserScore > 0.7 ? 1.15 : 1.0;
-        const contribution = normalizedUserScore * normalizedWeight * 100 * alignmentBonus;
-        pillarScore += contribution;
-
-        pillarContributions.push({
-          pillar,
-          weight: normalizedWeight * 100,
-          userScore,
-          contribution: Math.round(contribution),
-        });
-      }
-
-      // XIMAtar match bonus
-      const ximatarMatch = targetXimatar.includes(userXimatar || '');
-      const ximatarBonus = ximatarMatch ? 20 : 0;
-
-      // Skill coverage bonus (how many required skills align with user strengths)
-      const skillCoverage = job.skills.length > 0 
-        ? (job.skills.filter(skill => {
-            const pillar = skillToPillar[skill.toLowerCase()];
-            return pillar && userPillars[pillar] >= 7;
-          }).length / job.skills.length) * 10
-        : 0;
-
-      // Final score
-      const rawScore = pillarScore + ximatarBonus + skillCoverage;
-      const matchScore = Math.min(100, Math.round(rawScore));
-
-      return {
-        job,
-        matchScore,
-        ximatarMatch,
-        pillarContributions,
-        skillCoverage: Math.round(skillCoverage),
-        inferredXimatar: targetXimatar,
-      };
-    });
-
-    // 4. Filter and sort
-    const filtered = recommendations
-      .filter((r) => r.matchScore >= 65)
-      .sort((a, b) => b.matchScore - a.matchScore)
+    // ---- Filter and rank ----
+    const topMatches = scoredJobs
+      .filter(j => j.totalScore >= 40)
+      .sort((a, b) => b.totalScore - a.totalScore)
       .slice(0, 10);
 
-    console.log(`[recommend-jobs] Returning ${filtered.length} recommendations`);
+    // ---- Claude narratives for top matches ----
+    let narratives: string[] = [];
 
-    // 5. Update user_job_links with recommended status
-    const recommendedJobIds = filtered.map((r) => r.job.id);
-    
-    // First, delete old recommendations
-    await supabase
-      .from('user_job_links')
-      .delete()
-      .eq('user_id', userId)
-      .eq('status', 'recommended');
+    if (topMatches.length > 0) {
+      try {
+        const topPillars = Object.entries(userPillars)
+          .sort((a, b) => (b[1] as number) - (a[1] as number))
+          .slice(0, 2)
+          .map(([k]) => k.replace("_", " "))
+          .join(" and ");
 
-    // Insert new recommendations
-    if (recommendedJobIds.length > 0) {
-      const recommendedLinks = recommendedJobIds.map((jobId) => ({
-        user_id: userId,
-        job_id: jobId,
-        status: 'recommended',
-      }));
+        const trajectoryDesc = userTrajectory
+          ? Object.entries(userTrajectory).filter(([, v]) => v > 0).map(([k]) => k.replace("_", " ")).join(", ") || "stable"
+          : "not yet tracked";
 
-      await supabase
-        .from('user_job_links')
-        .insert(recommendedLinks);
+        const archetypeProfile = XIMATAR_PROFILES[userArchetype];
+
+        const narrativePrompt = `You are XIMA, a psychometric talent intelligence platform.
+Generate a short, personalized match explanation for each job recommendation.
+
+USER PROFILE:
+- XIMAtar: ${userArchetype} L${userLevel} (${archetypeProfile?.title || userArchetype})
+- Top pillars: ${topPillars}
+- Trajectory: ${trajectoryDesc}
+- Career trajectory: ${credentials?.career_trajectory || "unknown"}
+
+For each job below, write a 1-2 sentence explanation of why this person is a good fit.
+Focus on IDENTITY alignment first (archetype, pillar strengths, trajectory), then practical fit.
+Write in Italian if the user seems Italian-based, otherwise English.
+
+JOBS:
+${topMatches.map((m, i) => `${i + 1}. ${m.title} at ${m.companyName} (${m.fitType}, score ${m.totalScore})`).join("\n")}
+
+Return ONLY a JSON array of strings, one per job:
+["explanation for job 1", "explanation for job 2", ...]`;
+
+        const result = await callAnthropicApi({
+          system: "You generate short personalized job match explanations for XIMA users. Return ONLY a JSON array of strings.",
+          userMessage: narrativePrompt,
+          correlationId,
+          functionName: "recommend-jobs",
+          inputSummary: `narratives:${topMatches.length}jobs`,
+          maxTokens: 2048,
+          temperature: 0.7,
+        });
+
+        const extracted = extractJsonFromAiContent(result.content);
+        const parsed = JSON.parse(extracted || result.content);
+        if (Array.isArray(parsed)) {
+          narratives = parsed;
+        }
+      } catch (e) {
+        console.warn(JSON.stringify({ type: "narrative_fallback", correlation_id: correlationId, error: e instanceof Error ? e.message : String(e) }));
+      }
     }
 
-    return new Response(
-      JSON.stringify({
-        recommendations: filtered,
-        total: filtered.length,
-        generatedAt: new Date().toISOString(),
-      }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    // ---- Build response ----
+    const trajectoryDirection = userTrajectory
+      ? (Object.values(userTrajectory).filter(v => v > 0).length >= 3 ? "ascending" : Object.values(userTrajectory).every(v => v === 0) ? "stable" : "mixed")
+      : "not_tracked";
+
+    const response = {
+      recommendations: topMatches.map((match, i) => ({
+        job: {
+          id: match.id,
+          title: match.title,
+          company: match.companyName,
+          location: match.location,
+          seniority: match.seniority,
+          employment_type: match.employmentType,
+        },
+        match_score: match.totalScore,
+        score_breakdown: {
+          identity: match.identityScore,
+          credentials: match.credentialScore,
+          growth_fit: match.growthFitScore,
+        },
+        fit_type: match.fitType,
+        identity_details: match.identityBreakdown,
+        credential_details: match.credentialDetails,
+        xima_narrative: narratives[i] || fallbackNarrative(match, userArchetype),
+      })),
+      total: topMatches.length,
+      user_context: {
+        ximatar: userArchetype,
+        level: userLevel,
+        trajectory_direction: trajectoryDirection,
+        cv_uploaded: !!credentials,
+      },
+      generated_at: new Date().toISOString(),
+    };
+
+    // ---- Audit ----
+    emitAuditEventWithMetric({
+      actorType: "candidate",
+      actorId: userId,
+      action: "jobs.recommended",
+      entityType: "job_recommendation",
+      correlationId,
+      metadata: {
+        total_jobs_scanned: allJobs.length,
+        matches_returned: topMatches.length,
+        top_match_score: topMatches[0]?.totalScore || 0,
+        user_ximatar: userArchetype,
+        user_level: userLevel,
+        cv_available: !!credentials,
+      },
+    }, "job_recommendations");
+
+    console.log(JSON.stringify({ type: "recommend_jobs_done", correlation_id: correlationId, scanned: allJobs.length, returned: topMatches.length }));
+
+    return jsonResponse(response);
   } catch (error) {
-    console.error('[recommend-jobs] Error generating recommendations:', error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    console.error(JSON.stringify({ type: "recommend_jobs_error", correlation_id: correlationId, error: error instanceof Error ? error.message : String(error) }));
+    return errorResponse(500, "INTERNAL_ERROR", "Failed to generate job recommendations");
   }
 });
