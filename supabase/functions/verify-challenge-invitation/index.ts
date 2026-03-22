@@ -142,6 +142,16 @@ serve(async (req) => {
       },
     };
 
+    // Audit: track invitation verification funnel
+    emitAuditEvent({
+      actorType: 'candidate',
+      action: 'challenge.invitation_verified',
+      entityType: 'challenge_invitation',
+      entityId: invitation.id,
+      correlationId,
+      metadata: { token_prefix: token.substring(0, 8), status: invitation.status },
+    });
+
     return new Response(JSON.stringify(response), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

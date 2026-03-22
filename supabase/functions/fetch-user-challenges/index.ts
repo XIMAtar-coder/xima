@@ -196,7 +196,14 @@ serve(async (req) => {
     console.log(`Returning ${matchedChallenges.length} matched challenges`);
 
     return new Response(
-      JSON.stringify({ success: true, challenges: matchedChallenges }), 
+      JSON.stringify({
+        success: true,
+        challenges: matchedChallenges,
+        user_context: {
+          ximatar: profile.ximatar_archetype,
+          level: profile.ximatar_level || 1,
+        },
+      }), 
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 

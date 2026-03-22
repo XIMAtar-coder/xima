@@ -1,73 +1,26 @@
-// deno-lint-ignore-file no-explicit-any
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.3";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req: Request) => {
+/**
+ * @deprecated This function returned hardcoded stub data and has no production use.
+ * Company sentiment is now derived from generate-company-profile analysis.
+ */
+serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
-  try {
-    // Authenticate request
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
-    }
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
-    const token = authHeader.replace("Bearer ", "");
-    const { error: claimsError } = await supabase.auth.getClaims(token);
-    if (claimsError) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
-    }
+  console.warn("[DEPRECATED] sentiment-aggregator is deprecated. Company sentiment is now part of generate-company-profile.");
 
-    const { company } = await req.json();
-
-    // Placeholder logic: return canned data for known companies
-    const samples: Record<string, any> = {
-      "Aurora Insights": {
-        overallScore: 0.78,
-        pros: ["Strong learning culture", "Supportive team"],
-        cons: ["Fast-paced environment"],
-        highlights: [
-          { text: "Great mentorship opportunities", source: "Glassdoor", timestamp: new Date().toISOString() },
-          { text: "Innovative analytics projects", source: "LinkedIn", timestamp: new Date().toISOString() }
-        ]
-      },
-      "NovaTech": {
-        overallScore: 0.71,
-        pros: ["Flexible hours", "Remote-friendly"],
-        cons: ["Ambitious deadlines"],
-        highlights: [
-          { text: "Collaborative teams across EU", source: "Community", timestamp: new Date().toISOString() }
-        ]
-      }
-    };
-
-    const payload = samples[company as string] ?? {};
-
-    return new Response(JSON.stringify(payload), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
-  } catch (e) {
-    return new Response(JSON.stringify({ error: String(e) }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
-  }
+  return new Response(
+    JSON.stringify({
+      deprecated: true,
+      message: "This endpoint is deprecated. Company sentiment data is now part of the company profile.",
+    }),
+    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+  );
 });
