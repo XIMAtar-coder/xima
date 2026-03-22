@@ -1,32 +1,142 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.3';
+/**
+ * XIMA Company Intelligence Engine v2.0
+ * 
+ * Analyzes company websites using Claude to create psychometric profiles.
+ * Replaces regex-based pattern matching with genuine AI company understanding.
+ * 
+ * Feeds into: L1 challenge generation, job matching, L2 challenge generation.
+ */
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { callAnthropicApi, AnthropicError } from "../_shared/anthropicClient.ts";
+import { extractJsonFromAiContent, generateCorrelationId } from "../_shared/aiClient.ts";
+import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse, forbiddenResponse } from "../_shared/errors.ts";
+import { extractCorrelationId } from "../_shared/correlationId.ts";
+import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
+import { XIMATAR_PROFILES, rankXimatarsByDistance, type XimatarPillars } from "../_shared/ximatarTaxonomy.ts";
 
-interface CompanyData {
-  company_id: string;
-  company_name: string;
-  website: string;
+// =====================================================
+// Website content fetching
+// =====================================================
+
+async function fetchCompanyContent(website: string): Promise<string> {
+  let baseUrl = website.trim();
+  if (!baseUrl.startsWith("http")) baseUrl = `https://${baseUrl}`;
+  baseUrl = baseUrl.replace(/\/$/, "");
+
+  const pages = [
+    baseUrl,
+    baseUrl + "/about",
+    baseUrl + "/about-us",
+    baseUrl + "/chi-siamo",
+    baseUrl + "/company",
+  ];
+
+  const contents: string[] = [];
+
+  for (const url of pages) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+
+      const response = await fetch(url, {
+        headers: { "User-Agent": "Mozilla/5.0 (compatible; XIMABot/1.0)" },
+        signal: controller.signal,
+        redirect: "follow",
+      });
+      clearTimeout(timeout);
+
+      if (response.ok) {
+        const html = await response.text();
+        const text = html
+          .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+          .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "")
+          .replace(/<nav\b[^<]*(?:(?!<\/nav>)<[^<]*)*<\/nav>/gi, "")
+          .replace(/<footer\b[^<]*(?:(?!<\/footer>)<[^<]*)*<\/footer>/gi, "")
+          .replace(/<[^>]+>/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+
+        if (text.length > 100) {
+          contents.push(text.substring(0, 3000));
+        }
+      }
+    } catch (_e) {
+      // Silently skip failed pages
+    }
+  }
+
+  return contents.join("\n\n---PAGE BREAK---\n\n").substring(0, 12000);
 }
 
-interface CompanyProfile {
+// =====================================================
+// Claude system prompt
+// =====================================================
+
+function buildCompanyProfilePrompt(): string {
+  // Build XIMAtar reference from canonical taxonomy
+  const ximatarRef = Object.entries(XIMATAR_PROFILES)
+    .map(([id, p]) => `- ${p.name} (${id}): Drive ${p.pillars.drive}, CompPower ${p.pillars.comp_power}, Comm ${p.pillars.communication}, Creativity ${p.pillars.creativity}, Knowledge ${p.pillars.knowledge} — ${p.title}`)
+    .join("\n");
+
+  return `You are the XIMA Company Intelligence Engine. You analyze company websites to create a psychometric profile that captures the organization's behavioral DNA.
+
+Your analysis goes far beyond keyword detection. You read like a senior organizational consultant: inferring leadership philosophy from how they talk about teams, detecting innovation culture from product descriptions, understanding pace and pressure from job-related language, and sensing communication style from tone and structure.
+
+XIMA'S 5 PILLARS (score each 30-95 for the company's ideal employee):
+- drive: How much does this company value initiative, speed, ownership, proactivity?
+- comp_power: How much does this company value technical depth, analytical rigor, data-driven thinking?
+- communication: How much does this company value collaboration, stakeholder management, team dynamics?
+- creativity: How much does this company value innovation, unconventional thinking, experimentation?
+- knowledge: How much does this company value domain expertise, formal qualifications, depth of experience?
+
+SCORING GUIDE:
+- 30-45: Company doesn't emphasize this pillar
+- 46-60: Moderate emphasis
+- 61-75: Strong emphasis
+- 76-95: Core defining trait
+
+RECOMMENDED XIMATARS (pick top 3 from these 12 archetypes):
+${ximatarRef}
+
+SNAPSHOT EXTRACTION:
+Also extract factual data if present in the website content:
+- HQ city and country
+- Industry (standardized)
+- Employee count (number or estimate)
+- Revenue range (if mentioned)
+- Founded year
+
+LANGUAGE: Detect the website language. Write summary, operating_style, communication_style, ideal_traits, risk_areas, and values in the SAME language as the website.
+
+Return ONLY valid JSON:
+{
+  "summary": "3-4 sentence nuanced description of the company's culture and identity",
+  "values": ["value1", "value2", "value3", "value4"],
+  "operating_style": "2-3 sentence description of how the company operates",
+  "communication_style": "1-2 sentence description of communication culture",
+  "ideal_traits": ["trait1", "trait2", "trait3", "trait4", "trait5"],
+  "risk_areas": ["risk1", "risk2"],
+  "pillar_vector": { "drive": 65, "comp_power": 70, "communication": 60, "creativity": 55, "knowledge": 60 },
+  "recommended_ximatars": ["archetype1", "archetype2", "archetype3"],
+  "snapshot": { "hq_city": "string or null", "hq_country": "string or null", "industry": "string or null", "employees_count": null, "revenue_range": "string or null", "founded_year": null },
+  "detected_language": "en"
+}`;
+}
+
+// =====================================================
+// Validation
+// =====================================================
+
+interface ValidatedProfile {
   summary: string;
   values: string[];
   operating_style: string;
   communication_style: string;
   ideal_traits: string[];
   risk_areas: string[];
-  pillar_vector: {
-    drive: number;
-    comp_power: number;
-    communication: number;
-    creativity: number;
-    knowledge: number;
-  };
+  pillar_vector: { drive: number; comp_power: number; communication: number; creativity: number; knowledge: number };
   recommended_ximatars: string[];
-  // Structured snapshot fields for Company Snapshot banner
   snapshot: {
     hq_city: string | null;
     hq_country: string | null;
@@ -35,501 +145,219 @@ interface CompanyProfile {
     revenue_range: string | null;
     founded_year: number | null;
   };
+  detected_language: string;
 }
 
+function validateProfileResponse(parsed: unknown): ValidatedProfile | null {
+  if (!parsed || typeof parsed !== "object") return null;
+  const obj = parsed as Record<string, unknown>;
+
+  if (typeof obj.summary !== "string" || obj.summary.length < 10) return null;
+  if (typeof obj.operating_style !== "string" || obj.operating_style.length < 5) return null;
+  if (!Array.isArray(obj.values) || obj.values.length < 2) return null;
+
+  // Validate pillar vector
+  const pv = obj.pillar_vector as Record<string, unknown> | undefined;
+  if (!pv || typeof pv !== "object") return null;
+  const pillarKeys = ["drive", "comp_power", "communication", "creativity", "knowledge"];
+  for (const k of pillarKeys) {
+    if (typeof pv[k] !== "number" || (pv[k] as number) < 30 || (pv[k] as number) > 95) return null;
+  }
+
+  // Validate recommended_ximatars
+  if (!Array.isArray(obj.recommended_ximatars) || obj.recommended_ximatars.length < 1) return null;
+  const validIds = Object.keys(XIMATAR_PROFILES);
+  const validArchetypes = (obj.recommended_ximatars as string[]).filter(id => validIds.includes(id));
+  if (validArchetypes.length === 0) return null;
+
+  const snapshot = (obj.snapshot as Record<string, unknown>) || {};
+
+  return {
+    summary: obj.summary as string,
+    values: obj.values as string[],
+    operating_style: obj.operating_style as string,
+    communication_style: (obj.communication_style as string) || "",
+    ideal_traits: Array.isArray(obj.ideal_traits) ? obj.ideal_traits as string[] : [],
+    risk_areas: Array.isArray(obj.risk_areas) ? obj.risk_areas as string[] : [],
+    pillar_vector: pv as ValidatedProfile["pillar_vector"],
+    recommended_ximatars: validArchetypes.slice(0, 3),
+    snapshot: {
+      hq_city: typeof snapshot.hq_city === "string" ? snapshot.hq_city : null,
+      hq_country: typeof snapshot.hq_country === "string" ? snapshot.hq_country : null,
+      industry: typeof snapshot.industry === "string" ? snapshot.industry : null,
+      employees_count: typeof snapshot.employees_count === "number" ? snapshot.employees_count : null,
+      revenue_range: typeof snapshot.revenue_range === "string" ? snapshot.revenue_range : null,
+      founded_year: typeof snapshot.founded_year === "number" ? snapshot.founded_year : null,
+    },
+    detected_language: typeof obj.detected_language === "string" ? obj.detected_language : "en",
+  };
+}
+
+// =====================================================
+// Main handler
+// =====================================================
+
 Deno.serve(async (req) => {
-  // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const correlationId = extractCorrelationId(req);
+
   try {
-    console.log('Starting company profile generation...');
-
-    // Authenticate request
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Unauthorized' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
-      );
+    // Auth
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return unauthorizedResponse();
     }
-    
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
-    const authClient = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } }
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+    const userClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
     });
-    const token = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await authClient.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims?.sub) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Unauthorized' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
-      );
+
+    const { data: { user }, error: authErr } = await userClient.auth.getUser();
+    if (authErr || !user) {
+      return unauthorizedResponse();
     }
-    const callerUserId = claimsData.claims.sub as string;
+    const callerUserId = user.id;
 
-    // Initialize service role client for DB operations
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = createClient(supabaseUrl, serviceKey);
 
-    // Parse request body
-    const { company_id, company_name, website }: CompanyData = await req.json();
-    
+    // Parse request
+    const { company_id, company_name, website } = await req.json();
     if (!company_id || !company_name || !website) {
-      throw new Error('Missing required fields: company_id, company_name, website');
+      return errorResponse(400, "MISSING_FIELDS", "company_id, company_name, and website are required");
     }
 
-    // Ownership validation: company_id must match the authenticated user
+    // Ownership check
     if (company_id !== callerUserId) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Forbidden: can only generate profile for your own company' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
-      );
+      return forbiddenResponse("Can only generate profile for your own company");
     }
 
-    console.log(`Generating profile for: ${company_name} (${website})`);
+    console.log(JSON.stringify({ type: "company_profile_start", correlation_id: correlationId, company_name, website }));
 
-    // Fetch website content
-    let websiteContent = '';
+    // Fetch website content (multiple pages)
+    const websiteContent = await fetchCompanyContent(website);
+    if (websiteContent.length < 100) {
+      return errorResponse(400, "INSUFFICIENT_CONTENT", "Could not extract enough content from the website. Please check the URL.");
+    }
+
+    // Call Claude
+    const systemPrompt = buildCompanyProfilePrompt();
+    const userMessage = `Analyze this company's website content and create their XIMA psychometric profile.\n\nCompany name: ${company_name}\nWebsite: ${website}\n\n---WEBSITE CONTENT---\n${websiteContent}\n---END---`;
+
+    const result = await callAnthropicApi({
+      system: systemPrompt,
+      userMessage,
+      correlationId,
+      functionName: "generate-company-profile",
+      inputSummary: `company:${company_name},content_len:${websiteContent.length}`,
+      maxTokens: 4096,
+      promptTemplateVersion: "2.0",
+    });
+
+    // Parse and validate
+    const cleanedJson = extractJsonFromAiContent(result.content);
+    let parsed: unknown;
     try {
-      const response = await fetch(website, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
-      });
-      websiteContent = await response.text();
-      console.log(`Fetched ${websiteContent.length} characters from website`);
-    } catch (error) {
-      console.error('Error fetching website:', error);
-      websiteContent = `Unable to fetch website content for ${website}`;
+      parsed = JSON.parse(cleanedJson);
+    } catch {
+      console.error(JSON.stringify({ type: "json_parse_error", correlation_id: correlationId }));
+      return errorResponse(502, "AI_PARSE_FAILED", "Failed to parse AI response");
     }
 
-    // Extract text content (simple HTML stripping)
-    const textContent = websiteContent
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
-      .replace(/<[^>]+>/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim()
-      .substring(0, 5000); // Limit to first 5000 chars
+    const validated = validateProfileResponse(parsed);
+    if (!validated) {
+      console.error(JSON.stringify({ type: "validation_failed", correlation_id: correlationId }));
+      return errorResponse(502, "AI_VALIDATION_FAILED", "AI response did not pass validation");
+    }
 
-    console.log(`Extracted ${textContent.length} characters of text content`);
+    // Cross-check recommended XIMatars against algorithmic ranking
+    const pillarVec: XimatarPillars = {
+      drive: validated.pillar_vector.drive,
+      comp_power: validated.pillar_vector.comp_power,
+      communication: validated.pillar_vector.communication,
+      creativity: validated.pillar_vector.creativity,
+      knowledge: validated.pillar_vector.knowledge,
+    };
+    const algorithmicRanking = rankXimatarsByDistance(pillarVec).slice(0, 3).map(r => r.id);
+    const overlap = validated.recommended_ximatars.filter(id => algorithmicRanking.includes(id));
+    if (overlap.length === 0) {
+      console.warn(JSON.stringify({
+        type: "ximatar_divergence",
+        correlation_id: correlationId,
+        claude: validated.recommended_ximatars,
+        algorithmic: algorithmicRanking,
+      }));
+    }
 
-    // Generate company profile using AI analysis
-    const profile = await generateCompanyProfile(company_name, website, textContent);
-
-    console.log('Generated profile:', JSON.stringify(profile, null, 2));
-
-    // Store profile in database (including snapshot fields)
+    // Store to company_profiles
     const { data, error } = await supabase
-      .from('company_profiles')
+      .from("company_profiles")
       .upsert({
         company_id,
         website,
-        summary: profile.summary,
-        values: profile.values,
-        operating_style: profile.operating_style,
-        communication_style: profile.communication_style,
-        ideal_traits: profile.ideal_traits,
-        risk_areas: profile.risk_areas,
-        pillar_vector: profile.pillar_vector,
-        recommended_ximatars: profile.recommended_ximatars,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'company_id' })
+        summary: validated.summary,
+        values: validated.values,
+        operating_style: validated.operating_style,
+        communication_style: validated.communication_style,
+        ideal_traits: validated.ideal_traits,
+        risk_areas: validated.risk_areas,
+        pillar_vector: validated.pillar_vector,
+        recommended_ximatars: validated.recommended_ximatars,
+        ideal_ximatar_profile_ids: validated.recommended_ximatars,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: "company_id" })
       .select()
       .single();
 
     if (error) {
-      console.error('Error storing profile:', error);
-      throw error;
+      console.error(JSON.stringify({ type: "db_error", correlation_id: correlationId, error: error.message }));
+      return errorResponse(500, "DB_ERROR", "Failed to store company profile");
     }
 
-    // Also update business_profiles with snapshot fields if we have a user context
-    // Try to find the business profile by company_id (which is actually user_id in this context)
-    const { error: snapshotError } = await supabase
-      .from('business_profiles')
+    // Update business_profiles snapshot
+    await supabase
+      .from("business_profiles")
       .update({
-        snapshot_hq_city: profile.snapshot.hq_city,
-        snapshot_hq_country: profile.snapshot.hq_country,
-        snapshot_industry: profile.snapshot.industry,
-        snapshot_employees_count: profile.snapshot.employees_count,
-        snapshot_revenue_range: profile.snapshot.revenue_range,
-        snapshot_founded_year: profile.snapshot.founded_year,
-        snapshot_last_enriched_at: new Date().toISOString()
+        snapshot_hq_city: validated.snapshot.hq_city,
+        snapshot_hq_country: validated.snapshot.hq_country,
+        snapshot_industry: validated.snapshot.industry,
+        snapshot_employees_count: validated.snapshot.employees_count,
+        snapshot_revenue_range: validated.snapshot.revenue_range,
+        snapshot_founded_year: validated.snapshot.founded_year,
+        snapshot_last_enriched_at: new Date().toISOString(),
       })
-      .eq('user_id', company_id);
+      .eq("user_id", company_id);
 
-    if (snapshotError) {
-      console.warn('Could not update business_profiles snapshot:', snapshotError);
-      // Don't fail the whole operation if this update fails
+    // Audit
+    emitAuditEventWithMetric({
+      actorType: "business",
+      actorId: callerUserId,
+      action: "company.profile_generated",
+      entityType: "company_profile",
+      entityId: company_id,
+      correlationId,
+      metadata: {
+        website,
+        detected_language: validated.detected_language,
+        top_ximatar: validated.recommended_ximatars[0],
+      },
+    }, "company_profiles_generated");
+
+    console.log(JSON.stringify({ type: "company_profile_success", correlation_id: correlationId, top_ximatar: validated.recommended_ximatars[0] }));
+
+    return jsonResponse({ success: true, profile: data });
+  } catch (e) {
+    if (e instanceof AnthropicError) {
+      console.error(JSON.stringify({ type: "anthropic_error", correlation_id: correlationId, code: e.errorCode, status: e.statusCode }));
+      return errorResponse(e.statusCode, e.errorCode, e.message);
     }
-
-    if (error) {
-      console.error('Error storing profile:', error);
-      throw error;
-    }
-
-    console.log('Successfully stored company profile');
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-        profile: data
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      }
-    );
-
-  } catch (error) {
-    console.error('Error in generate-company-profile:', error);
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: error.message
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400
-      }
-    );
+    console.error(JSON.stringify({ type: "unhandled_error", correlation_id: correlationId, error: e instanceof Error ? e.message : String(e) }));
+    return errorResponse(500, "INTERNAL_ERROR", "An unexpected error occurred");
   }
 });
-
-/**
- * Generate company profile using AI-based analysis
- */
-async function generateCompanyProfile(
-  companyName: string,
-  website: string,
-  textContent: string
-): Promise<CompanyProfile> {
-  console.log('Analyzing company with AI...');
-
-  // Analyze company characteristics from website content
-  const analysis = analyzeCompanyContent(companyName, textContent);
-
-  // Generate pillar vector based on company characteristics
-  const pillarVector = generatePillarVector(analysis);
-
-  // Determine recommended XIMAtars based on pillar vector
-  const recommendedXimatars = determineRecommendedXimatars(pillarVector);
-
-  // Extract snapshot fields from content
-  const snapshot = extractSnapshotFields(companyName, textContent);
-
-  return {
-    summary: analysis.summary,
-    values: analysis.values,
-    operating_style: analysis.operating_style,
-    communication_style: analysis.communication_style,
-    ideal_traits: analysis.ideal_traits,
-    risk_areas: analysis.risk_areas,
-    pillar_vector: pillarVector,
-    recommended_ximatars: recommendedXimatars,
-    snapshot
-  };
-}
-
-/**
- * Extract structured snapshot fields from website content
- * This extracts location, industry, employee count, etc.
- */
-function extractSnapshotFields(companyName: string, content: string): {
-  hq_city: string | null;
-  hq_country: string | null;
-  industry: string | null;
-  employees_count: number | null;
-  revenue_range: string | null;
-  founded_year: number | null;
-} {
-  // Extract industry
-  let industry: string | null = null;
-  if (/technology|software|tech|digital|ai|saas|platform/gi.test(content)) {
-    industry = 'Technology';
-  } else if (/consulting|advisory|professional services/gi.test(content)) {
-    industry = 'Consulting';
-  } else if (/finance|banking|investment|financial/gi.test(content)) {
-    industry = 'Financial Services';
-  } else if (/marketing|advertising|creative|design agency/gi.test(content)) {
-    industry = 'Marketing & Creative';
-  } else if (/manufacturing|industrial|production/gi.test(content)) {
-    industry = 'Manufacturing';
-  } else if (/healthcare|medical|health|pharma/gi.test(content)) {
-    industry = 'Healthcare';
-  } else if (/retail|e-commerce|ecommerce|shopping/gi.test(content)) {
-    industry = 'Retail & E-commerce';
-  } else if (/education|university|school|learning/gi.test(content)) {
-    industry = 'Education';
-  } else if (/real estate|property|realty/gi.test(content)) {
-    industry = 'Real Estate';
-  }
-
-  // Try to extract employee count from common patterns
-  let employees_count: number | null = null;
-  const employeePatterns = [
-    /(\d{1,3}(?:,\d{3})*|\d+)\s*(?:\+\s*)?employees/gi,
-    /team of (\d{1,3}(?:,\d{3})*|\d+)/gi,
-    /(\d{1,3}(?:,\d{3})*|\d+)\s*team members/gi,
-    /over (\d{1,3}(?:,\d{3})*|\d+) people/gi,
-    /(\d{1,3}(?:,\d{3})*|\d+)\s*professionals/gi,
-  ];
-  
-  for (const pattern of employeePatterns) {
-    const match = pattern.exec(content);
-    if (match) {
-      const numStr = match[1].replace(/,/g, '');
-      const num = parseInt(numStr, 10);
-      if (num > 0 && num < 1000000) {
-        employees_count = num;
-        break;
-      }
-    }
-  }
-
-  // Try to extract founded year
-  let founded_year: number | null = null;
-  const foundedPatterns = [
-    /founded\s*(?:in\s*)?(\d{4})/gi,
-    /established\s*(?:in\s*)?(\d{4})/gi,
-    /since\s+(\d{4})/gi,
-    /started\s*(?:in\s*)?(\d{4})/gi,
-  ];
-  
-  for (const pattern of foundedPatterns) {
-    const match = pattern.exec(content);
-    if (match) {
-      const year = parseInt(match[1], 10);
-      if (year >= 1800 && year <= new Date().getFullYear()) {
-        founded_year = year;
-        break;
-      }
-    }
-  }
-
-  // Try to extract HQ location from common patterns
-  let hq_city: string | null = null;
-  let hq_country: string | null = null;
-  
-  // Common location patterns
-  const locationPatterns = [
-    /headquarters?\s*(?:in|:)\s*([A-Z][a-zA-Z\s]+),?\s*([A-Z][a-zA-Z\s]+)?/gi,
-    /based\s*in\s*([A-Z][a-zA-Z\s]+),?\s*([A-Z][a-zA-Z\s]+)?/gi,
-    /located\s*in\s*([A-Z][a-zA-Z\s]+),?\s*([A-Z][a-zA-Z\s]+)?/gi,
-  ];
-  
-  for (const pattern of locationPatterns) {
-    const match = pattern.exec(content);
-    if (match) {
-      hq_city = match[1]?.trim() || null;
-      hq_country = match[2]?.trim() || null;
-      if (hq_city) break;
-    }
-  }
-
-  // Try to extract revenue range (less common, usually not on websites)
-  let revenue_range: string | null = null;
-  const revenuePatterns = [
-    /revenue\s*(?:of\s*)?\$?(\d+(?:\.\d+)?)\s*([BMK])/gi,
-    /\$(\d+(?:\.\d+)?)\s*([BMK])\s*(?:revenue|turnover)/gi,
-  ];
-  
-  for (const pattern of revenuePatterns) {
-    const match = pattern.exec(content);
-    if (match) {
-      const num = match[1];
-      const unit = match[2].toUpperCase();
-      revenue_range = `$${num}${unit}`;
-      break;
-    }
-  }
-
-  console.log('Extracted snapshot:', { industry, employees_count, founded_year, hq_city, hq_country, revenue_range });
-
-  return {
-    hq_city,
-    hq_country,
-    industry,
-    employees_count,
-    revenue_range,
-    founded_year,
-  };
-}
-
-/**
- * Analyze company content and extract key characteristics
- */
-function analyzeCompanyContent(companyName: string, content: string): any {
-  const lowerContent = content.toLowerCase();
-
-  // Detect industry and sector
-  const isTech = /technology|software|digital|ai|data|cloud|saas|platform/gi.test(content);
-  const isConsulting = /consulting|advisory|strategy|professional services/gi.test(content);
-  const isFinance = /finance|banking|investment|financial services/gi.test(content);
-  const isCreative = /design|creative|marketing|advertising|brand/gi.test(content);
-  const isManufacturing = /manufacturing|production|industrial|engineering/gi.test(content);
-
-  // Detect company values
-  const values: string[] = [];
-  if (/innovation|innovative|cutting-edge/gi.test(content)) values.push('Innovation');
-  if (/quality|excellence|precision/gi.test(content)) values.push('Quality Excellence');
-  if (/team|collaboration|together/gi.test(content)) values.push('Collaboration');
-  if (/customer|client|service/gi.test(content)) values.push('Customer Focus');
-  if (/integrity|trust|honest/gi.test(content)) values.push('Integrity');
-  if (/growth|learning|development/gi.test(content)) values.push('Continuous Learning');
-  if (/sustainability|environment|green/gi.test(content)) values.push('Sustainability');
-
-  // Generate summary based on detected characteristics
-  let summary = `${companyName} is a `;
-  if (isTech) summary += 'technology-driven company focusing on innovation and digital solutions. ';
-  else if (isConsulting) summary += 'professional services firm providing strategic advisory and consulting. ';
-  else if (isFinance) summary += 'financial services organization delivering value to clients through expertise. ';
-  else if (isCreative) summary += 'creative organization focused on design, branding, and marketing excellence. ';
-  else if (isManufacturing) summary += 'industrial company specializing in production and engineering. ';
-  else summary += 'company dedicated to delivering exceptional results. ';
-
-  summary += `The organization values ${values.slice(0, 3).join(', ')} and seeks professionals who align with these principles.`;
-
-  // Determine operating style
-  let operating_style = 'Dynamic and Adaptive';
-  if (isTech) operating_style = 'Agile and Innovation-Driven';
-  else if (isConsulting) operating_style = 'Strategic and Client-Focused';
-  else if (isFinance) operating_style = 'Structured and Compliance-Oriented';
-  else if (isCreative) operating_style = 'Creative and Collaborative';
-
-  // Determine communication style
-  let communication_style = 'Professional and Clear';
-  if (isTech) communication_style = 'Direct and Data-Driven';
-  else if (isConsulting) communication_style = 'Consultative and Persuasive';
-  else if (isCreative) communication_style = 'Visual and Storytelling';
-
-  // Generate ideal traits
-  const ideal_traits: string[] = [];
-  if (isTech) {
-    ideal_traits.push('Technical proficiency', 'Problem-solving mindset', 'Continuous learner');
-  } else if (isConsulting) {
-    ideal_traits.push('Analytical thinking', 'Client relationship skills', 'Strategic mindset');
-  } else if (isCreative) {
-    ideal_traits.push('Creative thinking', 'Attention to detail', 'Collaborative spirit');
-  } else {
-    ideal_traits.push('Adaptability', 'Strong work ethic', 'Team player');
-  }
-
-  // Generate risk areas
-  const risk_areas: string[] = [];
-  if (isTech) risk_areas.push('May struggle with highly structured, non-technical roles');
-  if (isConsulting) risk_areas.push('High-pressure environment may not suit all candidates');
-  if (values.includes('Innovation')) risk_areas.push('Traditional, risk-averse candidates may not thrive');
-
-  return {
-    summary,
-    values: values.length > 0 ? values : ['Excellence', 'Teamwork', 'Integrity'],
-    operating_style,
-    communication_style,
-    ideal_traits: ideal_traits.length > 0 ? ideal_traits : ['Reliability', 'Communication', 'Adaptability'],
-    risk_areas: risk_areas.length > 0 ? risk_areas : ['Fast-paced environment requires flexibility']
-  };
-}
-
-/**
- * Generate pillar vector based on company analysis
- */
-function generatePillarVector(analysis: any): {
-  drive: number;
-  comp_power: number;
-  communication: number;
-  creativity: number;
-  knowledge: number;
-} {
-  const vector = {
-    drive: 60,
-    comp_power: 60,
-    communication: 60,
-    creativity: 60,
-    knowledge: 60
-  };
-
-  // Adjust based on operating style
-  const style = analysis.operating_style.toLowerCase();
-  if (style.includes('agile') || style.includes('innovation')) {
-    vector.drive += 15;
-    vector.comp_power += 10;
-    vector.creativity += 15;
-  }
-  if (style.includes('strategic')) {
-    vector.knowledge += 15;
-    vector.communication += 10;
-  }
-  if (style.includes('creative')) {
-    vector.creativity += 20;
-    vector.communication += 10;
-  }
-  if (style.includes('structured')) {
-    vector.comp_power += 15;
-    vector.knowledge += 10;
-  }
-
-  // Adjust based on values
-  if (analysis.values.includes('Innovation')) {
-    vector.creativity += 10;
-    vector.comp_power += 5;
-  }
-  if (analysis.values.includes('Collaboration')) {
-    vector.communication += 10;
-    vector.drive += 5;
-  }
-  if (analysis.values.includes('Quality Excellence')) {
-    vector.knowledge += 10;
-    vector.comp_power += 5;
-  }
-
-  // Normalize to 0-100 range
-  Object.keys(vector).forEach(key => {
-    vector[key as keyof typeof vector] = Math.min(95, Math.max(40, vector[key as keyof typeof vector]));
-  });
-
-  return vector;
-}
-
-/**
- * Determine recommended XIMAtars based on pillar vector
- */
-function determineRecommendedXimatars(pillarVector: any): string[] {
-  const ximatars: { name: string; score: number }[] = [];
-
-  // XIMAtar vectors (from the database)
-  const ximatarVectors: Record<string, any> = {
-    lion: { drive: 95, comp_power: 70, communication: 85, creativity: 60, knowledge: 65 },
-    fox: { creativity: 95, communication: 88, drive: 70, comp_power: 60, knowledge: 55 },
-    dolphin: { communication: 95, creativity: 80, drive: 60, comp_power: 50, knowledge: 50 },
-    cat: { comp_power: 90, creativity: 85, communication: 55, drive: 65, knowledge: 75 },
-    bear: { knowledge: 90, drive: 85, communication: 55, comp_power: 60, creativity: 40 },
-    bee: { drive: 92, communication: 70, comp_power: 55, creativity: 35, knowledge: 65 },
-    wolf: { comp_power: 75, drive: 88, knowledge: 70, communication: 60, creativity: 45 },
-    owl: { knowledge: 98, comp_power: 90, communication: 55, creativity: 60, drive: 50 },
-    parrot: { communication: 98, creativity: 75, drive: 55, comp_power: 50, knowledge: 45 },
-    elephant: { knowledge: 95, communication: 65, drive: 60, comp_power: 55, creativity: 45 },
-    horse: { drive: 90, knowledge: 60, communication: 70, comp_power: 55, creativity: 40 },
-    chameleon: { creativity: 88, communication: 82, knowledge: 70, comp_power: 65, drive: 50 }
-  };
-
-  // Calculate distance to each XIMAtar
-  for (const [name, vector] of Object.entries(ximatarVectors)) {
-    const distance = Math.sqrt(
-      Math.pow(pillarVector.drive - vector.drive, 2) +
-      Math.pow(pillarVector.comp_power - vector.comp_power, 2) +
-      Math.pow(pillarVector.communication - vector.communication, 2) +
-      Math.pow(pillarVector.creativity - vector.creativity, 2) +
-      Math.pow(pillarVector.knowledge - vector.knowledge, 2)
-    );
-    ximatars.push({ name, score: 100 - distance });
-  }
-
-  // Sort by score and return top 3
-  ximatars.sort((a, b) => b.score - a.score);
-  return ximatars.slice(0, 3).map(x => x.name);
-}
