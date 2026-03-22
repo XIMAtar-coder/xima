@@ -391,6 +391,21 @@ Deno.serve(async (req: Request) => {
           record_count: botEvents?.length || 0,
           data: botEvents || [],
         },
+        cv_credentials: {
+          description: "Structured credentials extracted from uploaded CV (education, skills, work history)",
+          record_count: cvCredentials?.length || 0,
+          data: cvCredentials || [],
+        },
+        cv_identity_analysis: {
+          description: "Psychometric analysis of CV vs XIMAtar identity (tension, improvements, role fit)",
+          record_count: cvIdentityAnalysis?.length || 0,
+          data: cvIdentityAnalysis || [],
+        },
+        pillar_trajectory_log: {
+          description: "History of pillar score changes from platform interactions (challenges, assessments, Growth Hub)",
+          record_count: pillarTrajectory?.length || 0,
+          data: pillarTrajectory || [],
+        },
       },
     };
 

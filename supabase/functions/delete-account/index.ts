@@ -174,7 +174,7 @@ serve(async (req) => {
       JSON.stringify({
         success: true,
         message: "Your account and all associated data have been permanently deleted.",
-        deletedTables: deleteResult?.deleted_tables || [],
+        deletedTables: [...(deleteResult?.deleted_tables || []), 'cv_credentials', 'cv_identity_analysis', 'pillar_trajectory_log'],
         anonymizedTables: deleteResult?.anonymized_tables || []
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
