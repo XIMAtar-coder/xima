@@ -82,28 +82,21 @@ Deno.serve(async (req) => {
       auth: { autoRefreshToken: false, persistSession: false }
     });
 
-    // Check if user exists — direct lookup
-    const { data: existingUsers, error: lookupError } = await adminClient.auth.admin.listUsers({
+    // Look up user by email
+    const { data: { users }, error: listError } = await adminClient.auth.admin.listUsers({
       page: 1,
-      perPage: 1,
+      perPage: 50,
     });
-
-    if (lookupError) {
-      console.error("Error looking up users:", lookupError);
-    }
-
-    // Use listUsers with manual filter (admin API filter syntax varies)
-    const { data: { users }, error: listError } = await adminClient.auth.admin.listUsers();
     
     if (listError) {
       console.error("Error listing users:", listError);
       return new Response(
-        JSON.stringify({ error: "Failed to list users" }),
+        JSON.stringify({ error: "Failed to look up users" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const existingUser = users?.find(u => u.email?.toLowerCase() === email.toLowerCase());
+    const existingUser = users?.find(u => u.email?.toLowerCase() === email.toLowerCase()) || null;
 
     if (!existingUser) {
       if (create_if_missing) {

@@ -1,5 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.3";
+import { emitAuditEvent } from "../_shared/auditEvents.ts";
+import { extractCorrelationId } from "../_shared/correlationId.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -48,6 +50,7 @@ serve(async (req) => {
       );
     }
 
+    const correlationId = extractCorrelationId(req);
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     
@@ -138,6 +141,16 @@ serve(async (req) => {
         challenge_status: challengeResult.data?.status || null,
       },
     };
+
+    // Audit: track invitation verification funnel
+    emitAuditEvent({
+      actorType: 'candidate',
+      action: 'challenge.invitation_verified',
+      entityType: 'challenge_invitation',
+      entityId: invitation.id,
+      correlationId,
+      metadata: { token_prefix: token.substring(0, 8), status: invitation.status },
+    });
 
     return new Response(JSON.stringify(response), {
       status: 200,

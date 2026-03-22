@@ -42,10 +42,10 @@ serve(async (req) => {
 
     console.log('Fetching profile for user:', user.id);
 
-    // Get user profile with pillar scores
+    // Get user profile with pillar scores (aligned with v2 column names)
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("ximatar, pillar_scores, strongest_pillar, weakest_pillar")
+      .select("ximatar_archetype, assessment_scores, ximatar_level")
       .eq("user_id", user.id)
       .single();
 
@@ -107,7 +107,7 @@ serve(async (req) => {
     console.log(`Processing ${challenges.length} challenges`);
 
     // Calculate match scores for each challenge
-    const pillarScores = profile.pillar_scores as Record<string, number> || {};
+    const pillarScores = profile.assessment_scores as Record<string, number> || {};
     
     // If no pillar scores, return all challenges with default scores
     if (!pillarScores || Object.keys(pillarScores).length === 0) {
@@ -196,7 +196,14 @@ serve(async (req) => {
     console.log(`Returning ${matchedChallenges.length} matched challenges`);
 
     return new Response(
-      JSON.stringify({ success: true, challenges: matchedChallenges }), 
+      JSON.stringify({
+        success: true,
+        challenges: matchedChallenges,
+        user_context: {
+          ximatar: profile.ximatar_archetype,
+          level: profile.ximatar_level || 1,
+        },
+      }), 
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
