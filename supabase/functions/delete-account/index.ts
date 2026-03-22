@@ -89,6 +89,29 @@ serve(async (req) => {
 
     console.log("[delete-account] Database cleanup complete:", deleteResult);
 
+    // Step 1b: Delete from recently added tables (belt-and-suspenders — CASCADE may handle these)
+    const adminClientEarly = createClient(supabaseUrl, supabaseServiceKey);
+
+    const { error: cvCredError } = await adminClientEarly
+      .from('cv_credentials')
+      .delete()
+      .eq('user_id', user.id);
+    if (cvCredError) console.warn("[delete-account] cv_credentials cleanup:", cvCredError.message);
+
+    const { error: cvIdentError } = await adminClientEarly
+      .from('cv_identity_analysis')
+      .delete()
+      .eq('user_id', user.id);
+    if (cvIdentError) console.warn("[delete-account] cv_identity_analysis cleanup:", cvIdentError.message);
+
+    const { error: trajError } = await adminClientEarly
+      .from('pillar_trajectory_log')
+      .delete()
+      .eq('user_id', user.id);
+    if (trajError) console.warn("[delete-account] pillar_trajectory_log cleanup:", trajError.message);
+
+    console.log("[delete-account] New tables cleanup complete");
+
     // Step 2: Delete storage files (CV uploads + challenge videos)
     try {
       const adminClient = createClient(supabaseUrl, supabaseServiceKey);
