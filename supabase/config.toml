@@ -104,3 +104,9 @@ verify_jwt = true
 
 [functions.contact-sales]
 verify_jwt = false
+
+[functions.generate-l3-interview]
+verify_jwt = false
+
+[functions.analyze-l3-frames]
+verify_jwt = false
