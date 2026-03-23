@@ -41,6 +41,7 @@ export interface PillarDeltas {
 export type TrajectorySource = 
   | "l1_challenge"
   | "l2_challenge"
+  | "l3_challenge"
   | "open_answer"
   | "growth_hub_test"
   | "mentor_session";
