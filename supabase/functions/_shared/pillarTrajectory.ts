@@ -63,6 +63,7 @@ export interface TrajectoryEvent {
 const GRADIENT_CONFIG: Record<TrajectorySource, { maxPositive: number; maxNegative: number }> = {
   l1_challenge:     { maxPositive: 5, maxNegative: -3 },
   l2_challenge:     { maxPositive: 5, maxNegative: -3 },
+  l3_challenge:     { maxPositive: 4, maxNegative: -2 },
   open_answer:      { maxPositive: 4, maxNegative: -2 },
   growth_hub_test:  { maxPositive: 3, maxNegative: -1 },
   mentor_session:   { maxPositive: 0, maxNegative: 0 },
