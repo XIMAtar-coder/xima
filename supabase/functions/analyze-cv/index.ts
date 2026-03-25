@@ -754,7 +754,7 @@ serve(async (req) => {
       drive: identity.cv_pillar_scores.drive,
     };
 
-    await supabase
+    await serviceClient
       .from("profiles")
       .update({
         cv_scores: cvScores,
@@ -763,7 +763,7 @@ serve(async (req) => {
       .eq("user_id", user.id);
 
     // ===== Insert assessment_cv_analysis (backward compat) =====
-    await supabase.from("assessment_cv_analysis").insert({
+    await serviceClient.from("assessment_cv_analysis").insert({
       user_id: user.id,
       cv_text: truncatedText.substring(0, 2000),
       summary: tension.overall_narrative || archetype.explanation || "",
