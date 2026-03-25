@@ -2533,6 +2533,122 @@ export type Database = {
           },
         ]
       }
+      growth_hub_progress: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          path_id: string | null
+          pillar_deltas: Json | null
+          primary_pillar: string | null
+          resource_id: string
+          resource_platform: string | null
+          resource_title: string
+          resource_type: string
+          resource_url: string | null
+          started_at: string | null
+          status: string | null
+          test_answers: Json | null
+          test_config: Json | null
+          test_passed: boolean | null
+          test_score: number | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          path_id?: string | null
+          pillar_deltas?: Json | null
+          primary_pillar?: string | null
+          resource_id: string
+          resource_platform?: string | null
+          resource_title: string
+          resource_type: string
+          resource_url?: string | null
+          started_at?: string | null
+          status?: string | null
+          test_answers?: Json | null
+          test_config?: Json | null
+          test_passed?: boolean | null
+          test_score?: number | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          path_id?: string | null
+          pillar_deltas?: Json | null
+          primary_pillar?: string | null
+          resource_id?: string
+          resource_platform?: string | null
+          resource_title?: string
+          resource_type?: string
+          resource_url?: string | null
+          started_at?: string | null
+          status?: string | null
+          test_answers?: Json | null
+          test_config?: Json | null
+          test_passed?: boolean | null
+          test_score?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "growth_hub_progress_path_id_fkey"
+            columns: ["path_id"]
+            isOneToOne: false
+            referencedRelation: "growth_paths"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      growth_paths: {
+        Row: {
+          created_at: string | null
+          estimated_total_hours: number | null
+          growth_insight: string | null
+          id: string
+          next_milestone: string | null
+          path_objective: string | null
+          path_title: string
+          resources: Json
+          status: string | null
+          target_pillar: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          estimated_total_hours?: number | null
+          growth_insight?: string | null
+          id?: string
+          next_milestone?: string | null
+          path_objective?: string | null
+          path_title: string
+          resources: Json
+          status?: string | null
+          target_pillar: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          estimated_total_hours?: number | null
+          growth_insight?: string | null
+          id?: string
+          next_milestone?: string | null
+          path_objective?: string | null
+          path_title?: string
+          resources?: Json
+          status?: string | null
+          target_pillar?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       hiring_goal_drafts: {
         Row: {
           business_id: string
