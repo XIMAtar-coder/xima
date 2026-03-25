@@ -149,7 +149,7 @@ Return ONLY valid JSON:
 }`;
 
     const result = await callAnthropicApi({
-      systemPrompt,
+      system: systemPrompt,
       userMessage: "Evaluate the test answers and return the results. Return ONLY valid JSON.",
       correlationId,
       functionName: "evaluate-growth-test",
@@ -265,7 +265,7 @@ Return ONLY valid JSON:
   } catch (err) {
     console.error("evaluate-growth-test error:", err);
     if (err instanceof AnthropicError) {
-      return errorResponse(502, "AI_ERROR", `AI service error: ${err.message}`);
+      return errorResponse(err.statusCode, err.errorCode, err.message);
     }
     return errorResponse(500, "INTERNAL_ERROR", err instanceof Error ? err.message : "Unknown error");
   }

@@ -152,7 +152,7 @@ Return ONLY valid JSON:
 }`;
 
     const result = await callAnthropicApi({
-      systemPrompt,
+      system: systemPrompt,
       userMessage: `Generate the Growth Hub test for the completed resource "${progress.resource_title}". Return ONLY valid JSON.`,
       correlationId,
       functionName: "generate-growth-test",
@@ -208,7 +208,7 @@ Return ONLY valid JSON:
   } catch (err) {
     console.error("generate-growth-test error:", err);
     if (err instanceof AnthropicError) {
-      return errorResponse(502, "AI_ERROR", `AI service error: ${err.message}`);
+      return errorResponse(err.statusCode, err.errorCode, err.message);
     }
     return errorResponse(500, "INTERNAL_ERROR", err instanceof Error ? err.message : "Unknown error");
   }

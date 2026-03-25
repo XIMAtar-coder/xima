@@ -225,7 +225,7 @@ Return ONLY valid JSON:
 }`;
 
     const result = await callAnthropicApi({
-      systemPrompt,
+      system: systemPrompt,
       userMessage: `Generate the personalized Growth Hub learning path for this user. Focus on strengthening ${weakestPillar} (score: ${weakestScore}). Return ONLY valid JSON.`,
       correlationId,
       functionName: "generate-growth-path",
@@ -348,7 +348,7 @@ Return ONLY valid JSON:
   } catch (err) {
     console.error("generate-growth-path error:", err);
     if (err instanceof AnthropicError) {
-      return errorResponse(502, "AI_ERROR", `AI service error: ${err.message}`);
+      return errorResponse(err.statusCode, err.errorCode, err.message);
     }
     return errorResponse(500, "INTERNAL_ERROR", err instanceof Error ? err.message : "Unknown error");
   }

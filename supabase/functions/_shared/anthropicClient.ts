@@ -39,6 +39,54 @@ export class AnthropicError extends Error {
   }
 }
 
+function parseAnthropicError(responseStatus: number, errorText: string) {
+  let apiMessage = `Anthropic API error: ${responseStatus}`;
+
+  try {
+    const parsed = JSON.parse(errorText);
+    const candidateMessage = parsed?.error?.message;
+    if (typeof candidateMessage === "string" && candidateMessage.trim()) {
+      apiMessage = candidateMessage.trim();
+    }
+  } catch {
+    if (errorText.trim()) {
+      apiMessage = errorText.trim().slice(0, 500);
+    }
+  }
+
+  const normalizedMessage = apiMessage.toLowerCase();
+
+  if (normalizedMessage.includes("credit balance is too low") || normalizedMessage.includes("purchase credits")) {
+    return {
+      statusCode: 402,
+      errorCode: "INSUFFICIENT_CREDITS",
+      message: "Anthropic credits are too low to process this request. Please add more credits in Plans & Billing and try again.",
+    };
+  }
+
+  if (responseStatus === 429) {
+    return {
+      statusCode: 429,
+      errorCode: "RATE_LIMITED",
+      message: "Rate limited — please try again shortly",
+    };
+  }
+
+  if (responseStatus === 400) {
+    return {
+      statusCode: 400,
+      errorCode: "INVALID_REQUEST",
+      message: apiMessage,
+    };
+  }
+
+  return {
+    statusCode: 502,
+    errorCode: `ANTHROPIC_${responseStatus}`,
+    message: apiMessage,
+  };
+}
+
 /**
  * Call Claude via the Anthropic API with retry and audit envelope logging.
  */
@@ -129,12 +177,12 @@ export async function callAnthropicApi(options: AnthropicCallOptions): Promise<A
   if (!response.ok) {
     const errorText = await response.text().catch(() => "");
     console.error(`[${functionName}] Anthropic error: ${response.status}`, errorText.substring(0, 300));
-    const errorCode = response.status === 429 ? "RATE_LIMITED" : `ANTHROPIC_${response.status}`;
-    await persistEnvelope({ output_summary: `error:${response.status}`, status: response.status === 429 ? "rate_limited" : "error", error_code: errorCode, latency_ms: latencyMs });
+    const mappedError = parseAnthropicError(response.status, errorText);
+    await persistEnvelope({ output_summary: `error:${response.status}`, status: mappedError.statusCode === 429 ? "rate_limited" : "error", error_code: mappedError.errorCode, latency_ms: latencyMs });
     throw new AnthropicError(
-      response.status === 429 ? 429 : 502,
-      errorCode,
-      response.status === 429 ? "Rate limited — please try again shortly" : "AI service error"
+      mappedError.statusCode,
+      mappedError.errorCode,
+      mappedError.message,
     );
   }
 

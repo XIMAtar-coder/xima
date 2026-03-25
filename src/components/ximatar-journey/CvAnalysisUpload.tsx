@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Upload, Loader2, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { getSupabaseFunctionErrorMessage } from '@/lib/supabaseFunctionError';
 
 interface CvAnalysisUploadProps {
   userId: string;
@@ -56,9 +57,10 @@ export const CvAnalysisUpload: React.FC<CvAnalysisUploadProps> = ({ userId }) =>
       });
     } catch (error) {
       console.error('Error:', error);
+      const message = await getSupabaseFunctionErrorMessage(error, 'Failed to analyze CV');
       toast({
         title: t('common.error', 'Error'),
-        description: error instanceof Error ? error.message : 'Failed to analyze CV',
+        description: message,
         variant: 'destructive'
       });
     } finally {

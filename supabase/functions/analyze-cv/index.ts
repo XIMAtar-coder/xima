@@ -133,6 +133,65 @@ interface AnthropicCallResult {
   requestId: string;
 }
 
+class AnalyzeCvAnthropicError extends Error {
+  constructor(
+    public readonly statusCode: number,
+    public readonly errorCode: string,
+    message: string
+  ) {
+    super(message);
+    this.name = "AnalyzeCvAnthropicError";
+  }
+}
+
+function parseAnalyzeCvAnthropicError(responseStatus: number, errorText: string) {
+  let apiMessage = `Anthropic API error: ${responseStatus}`;
+
+  try {
+    const parsed = JSON.parse(errorText);
+    const candidateMessage = parsed?.error?.message;
+    if (typeof candidateMessage === "string" && candidateMessage.trim()) {
+      apiMessage = candidateMessage.trim();
+    }
+  } catch {
+    if (errorText.trim()) {
+      apiMessage = errorText.trim().slice(0, 500);
+    }
+  }
+
+  const normalizedMessage = apiMessage.toLowerCase();
+
+  if (normalizedMessage.includes("credit balance is too low") || normalizedMessage.includes("purchase credits")) {
+    return {
+      statusCode: 402,
+      errorCode: "INSUFFICIENT_CREDITS",
+      message: "Anthropic credits are too low to process this request. Please add more credits in Plans & Billing and try again.",
+    };
+  }
+
+  if (responseStatus === 429) {
+    return {
+      statusCode: 429,
+      errorCode: "RATE_LIMITED",
+      message: "Rate limited — please try again shortly",
+    };
+  }
+
+  if (responseStatus === 400) {
+    return {
+      statusCode: 400,
+      errorCode: "INVALID_REQUEST",
+      message: apiMessage,
+    };
+  }
+
+  return {
+    statusCode: 502,
+    errorCode: `ANTHROPIC_${responseStatus}`,
+    message: apiMessage,
+  };
+}
+
 async function callAnthropicApi(options: AnthropicCallOptions): Promise<AnthropicCallResult> {
   const {
     system,
@@ -224,7 +283,7 @@ async function callAnthropicApi(options: AnthropicCallOptions): Promise<Anthropi
   } catch (fetchError) {
     const latencyMs = Date.now() - start;
     await persistEnvelope({ output_summary: null, status: "error", error_code: "NETWORK_ERROR", latency_ms: latencyMs });
-    throw fetchError;
+    throw new AnalyzeCvAnthropicError(502, "NETWORK_ERROR", "Failed to reach Anthropic API");
   }
 
   const latencyMs = Date.now() - start;
@@ -232,13 +291,14 @@ async function callAnthropicApi(options: AnthropicCallOptions): Promise<Anthropi
   if (!response.ok) {
     const errorText = await response.text().catch(() => "");
     console.error(`[analyze-cv] Anthropic error: ${response.status}`, errorText.substring(0, 300));
+    const mappedError = parseAnalyzeCvAnthropicError(response.status, errorText);
     await persistEnvelope({
       output_summary: `error:${response.status}`,
-      status: response.status === 429 ? "rate_limited" : "error",
-      error_code: `ANTHROPIC_${response.status}`,
+      status: mappedError.statusCode === 429 ? "rate_limited" : "error",
+      error_code: mappedError.errorCode,
       latency_ms: latencyMs,
     });
-    throw new Error(`Anthropic API error: ${response.status}`);
+    throw new AnalyzeCvAnthropicError(mappedError.statusCode, mappedError.errorCode, mappedError.message);
   }
 
   const data = await response.json();
@@ -771,6 +831,9 @@ serve(async (req) => {
         error: err instanceof Error ? err.message : "Unknown error",
       })
     );
+    if (err instanceof AnalyzeCvAnthropicError) {
+      return errorResponse(err.statusCode, err.errorCode, err.message);
+    }
     return errorResponse(500, "INTERNAL_ERROR", err instanceof Error ? err.message : "An unexpected error occurred");
   }
 });
