@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { getSupabaseFunctionErrorMessage } from '@/lib/supabaseFunctionError';
 
 export interface GrowthResource {
   id: string;
@@ -122,7 +123,8 @@ export function useGrowthHub() {
       toast({ title: 'Growth Hub', description: 'Your personalized Growth Path is ready!' });
       await fetchData();
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message || 'Failed to generate growth path', variant: 'destructive' });
+      const message = await getSupabaseFunctionErrorMessage(err, 'Failed to generate growth path');
+      toast({ title: 'Error', description: message, variant: 'destructive' });
     } finally {
       setGenerating(false);
     }
@@ -150,7 +152,8 @@ export function useGrowthHub() {
       setActiveTest({ ...data.test, progress_id: progressId });
       await fetchData();
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message || 'Failed to generate test', variant: 'destructive' });
+      const message = await getSupabaseFunctionErrorMessage(err, 'Failed to generate test');
+      toast({ title: 'Error', description: message, variant: 'destructive' });
     } finally {
       setTestingResourceId(null);
     }
@@ -168,7 +171,8 @@ export function useGrowthHub() {
       await fetchData();
       return data;
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message || 'Failed to evaluate test', variant: 'destructive' });
+      const message = await getSupabaseFunctionErrorMessage(err, 'Failed to evaluate test');
+      toast({ title: 'Error', description: message, variant: 'destructive' });
     } finally {
       setEvaluating(false);
     }
