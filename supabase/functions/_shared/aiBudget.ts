@@ -13,7 +13,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const TIER_LIMITS: Record<string, number> = {
-  freemium: 3,
+  freemium: 1,
   basic: 15,
   premium: 50,
   pro: 500,
