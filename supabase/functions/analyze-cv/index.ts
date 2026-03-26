@@ -668,6 +668,40 @@ serve(async (req) => {
       ximatar_name: ximatarName,
     }));
 
+    // ===== AI Budget Check =====
+    const budgetCheck = await checkAiBudget(user.id, "analyze-cv");
+
+    if (!budgetCheck.allowed) {
+      console.log(JSON.stringify({
+        type: "budget_exceeded",
+        correlation_id: correlationId,
+        function_name: "analyze-cv",
+        calls_used: budgetCheck.calls_used,
+        calls_limit: budgetCheck.calls_limit,
+        tier: budgetCheck.tier,
+      }));
+
+      if (budgetCheck.cached_result) {
+        return jsonResponse({
+          ...budgetCheck.cached_result,
+          _budget: {
+            exceeded: true,
+            calls_used: budgetCheck.calls_used,
+            calls_limit: budgetCheck.calls_limit,
+            tier: budgetCheck.tier,
+            message: budgetCheck.budget_message,
+            cached: true,
+          },
+        });
+      }
+
+      return errorResponse(
+        429,
+        "AI_BUDGET_EXCEEDED",
+        budgetCheck.budget_message || "Monthly AI analysis limit reached. Upgrade your plan for more analyses."
+      );
+    }
+
     // ===== File validation =====
     const formData = await req.formData();
     const file = formData.get("file");
