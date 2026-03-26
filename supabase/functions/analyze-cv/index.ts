@@ -762,7 +762,9 @@ serve(async (req) => {
       })
       .eq("user_id", user.id);
 
-    // ===== Insert assessment_cv_analysis (backward compat) =====
+    // ===== Upsert assessment_cv_analysis (backward compat) =====
+    // Delete previous entries first, then insert fresh
+    await serviceClient.from("assessment_cv_analysis").delete().eq("user_id", user.id);
     await serviceClient.from("assessment_cv_analysis").insert({
       user_id: user.id,
       cv_text: truncatedText.substring(0, 2000),

@@ -86,7 +86,8 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
       formData.append('file', file);
 
       // Get Supabase URL
-      const supabaseUrl = 'https://iyckvvnecpnldrxqmzta.supabase.co';
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://iyckvvnecpnldrxqmzta.supabase.co';
+      const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
       
       // Call analyze-cv edge function with FormData
       const response = await fetch(
@@ -95,6 +96,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${session.access_token}`,
+            'apikey': anonKey,
           },
           body: formData,
         }
