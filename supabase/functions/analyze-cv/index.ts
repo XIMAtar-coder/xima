@@ -17,6 +17,7 @@ import { corsHeaders, errorResponse, jsonResponse, profilingOptOutResponse, unau
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric, hashForAudit } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES, type XimatarPillars } from "../_shared/ximatarTaxonomy.ts";
+import { checkAiBudget, recordAiCall, cacheAiResult } from "../_shared/aiBudget.ts";
 
 // =====================================================
 // Helper 1: Text extraction from file bytes
