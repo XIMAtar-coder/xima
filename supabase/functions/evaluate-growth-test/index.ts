@@ -76,13 +76,18 @@ serve(async (req) => {
     // 2. User profile
     const { data: profile } = await supabase
       .from("profiles")
-      .select("ximatar_archetype, ximatar_level, assessment_scores")
+      .select("*")
       .eq("user_id", user.id)
       .single();
 
     if (!profile) {
       return errorResponse(404, "PROFILE_NOT_FOUND", "User profile not found");
     }
+
+    // Resolve fields
+    const _ximatarArchetype = (profile.ximatar_archetype || profile.ximatar || profile.ximatar_id || "unknown") as string;
+    const _ximatarLevel = (profile.ximatar_level || 1) as number;
+    const _assessmentScores = (profile.assessment_scores || profile.pillar_scores) as Record<string, number> || {};
 
     const scores = profile.assessment_scores as Record<string, number> || {};
     const pillarScore = scores[progress.primary_pillar] ?? 50;
