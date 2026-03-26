@@ -283,8 +283,8 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           open_answers,
           assessment_rationale: latestResultRes.data?.rationale ?? null,
           cv_analysis: {
-            summary: cvAnalysisRes.data?.summary ?? null,
-            strengths: cvAnalysisRes.data?.strengths ?? null,
+            summary: cvAnalysisRes.data?.summary ?? (profile?.cv_comments as any)?.summary ?? null,
+            strengths: cvAnalysisRes.data?.strengths ?? ((cvCredentialsRes.data?.hard_skills as any[] | null)?.slice(0, 5).map((skill) => skill?.name || String(skill)) ?? null),
             soft_skills: cvAnalysisRes.data?.soft_skills ?? null,
             cv_comments: (profile?.cv_comments as any) ?? null,
           },
