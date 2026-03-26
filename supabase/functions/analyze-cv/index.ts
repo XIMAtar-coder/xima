@@ -456,6 +456,8 @@ function buildUserMessage(
 ${cvText}
 ---
 
+The text may include PDF extraction noise, broken spacing, or formatting artifacts. Reconstruct the intended professional meaning before scoring.
+
 Their XIMA assessment results:
 - XIMAtar: ${ximatarId} — ${ximatarName} (${ximatarTitle})
 - Pillar scores: Drive ${assessmentScores.drive ?? "N/A"}, Computational Power ${assessmentScores.comp_power ?? assessmentScores.computational_power ?? "N/A"}, Communication ${assessmentScores.communication ?? "N/A"}, Creativity ${assessmentScores.creativity ?? "N/A"}, Knowledge ${assessmentScores.knowledge ?? "N/A"}
