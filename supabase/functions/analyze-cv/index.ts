@@ -583,14 +583,27 @@ serve(async (req) => {
     }
 
     const jwt = authHeader.replace("Bearer ", "").trim();
-    const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY");
+    const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+    if (!supabaseAnonKey) {
+      throw new Error("Missing Supabase publishable key in Edge Function environment");
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: `Bearer ${jwt}` } },
     });
+
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(jwt);
+    if (claimsError || !claimsData?.claims?.sub) {
+      return unauthorizedResponse("Authentication required. Please log in and try again.");
+    }
 
     const {
       data: { user },
       error: userError,
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.getUser(jwt);
     if (userError || !user) {
       return unauthorizedResponse("Authentication required. Please log in and try again.");
     }
@@ -623,7 +636,7 @@ serve(async (req) => {
 
     if (!resolvedXimatarKey && profile?.ximatar_id) {
       // Resolve UUID → taxonomy key via ximatars table
-      const serviceClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+      const serviceClient = createClient(supabaseUrl, supabaseServiceRoleKey);
       const { data: ximatarRecord } = await serviceClient
         .from("ximatars")
         .select("label")
@@ -776,7 +789,7 @@ serve(async (req) => {
     const { credentials, identity } = validated;
 
     // ===== Service role client for upserts =====
-    const serviceClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const serviceClient = createClient(supabaseUrl, supabaseServiceRoleKey);
 
     // ===== Store credentials (Layer B) =====
     const location = credentials.location || {};
