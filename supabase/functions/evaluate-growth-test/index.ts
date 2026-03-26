@@ -76,7 +76,7 @@ serve(async (req) => {
     // 2. User profile
     const { data: profile } = await supabase
       .from("profiles")
-      .select("ximatar_archetype, ximatar_level, assessment_scores")
+      .select("*")
       .eq("user_id", user.id)
       .single();
 
@@ -84,7 +84,12 @@ serve(async (req) => {
       return errorResponse(404, "PROFILE_NOT_FOUND", "User profile not found");
     }
 
-    const scores = profile.assessment_scores as Record<string, number> || {};
+    // Resolve fields
+    const _ximatarArchetype = (profile.ximatar_archetype || profile.ximatar || profile.ximatar_id || "unknown") as string;
+    const _ximatarLevel = (profile.ximatar_level || 1) as number;
+    const _assessmentScores = (profile.assessment_scores || profile.pillar_scores) as Record<string, number> || {};
+
+    const scores = _assessmentScores;
     const pillarScore = scores[progress.primary_pillar] ?? 50;
     const testConfig = progress.test_config as any;
 
@@ -101,7 +106,7 @@ User's answer: ${userAnswer?.answer_text || "(no answer provided)"}`;
 
     const systemPrompt = `You are the XIMA Growth Test Evaluator. Score test answers and determine pillar trajectory impact.
 
-USER: ${profile.ximatar_archetype || "unknown"} L${profile.ximatar_level || 1}, strengthening ${progress.primary_pillar} (score: ${pillarScore})
+USER: ${_ximatarArchetype} L${_ximatarLevel}, strengthening ${progress.primary_pillar} (score: ${pillarScore})
 Resource completed: "${progress.resource_title}" (${progress.resource_type})
 
 SCORING RULES:
@@ -239,7 +244,7 @@ Return ONLY valid JSON:
         target_pillar: progress.primary_pillar,
         score: v.total_score,
         passed: v.passed,
-        ximatar: profile.ximatar_archetype,
+        ximatar: _ximatarArchetype,
         path_completed: pathCompleted,
       },
     }, "growth_tests_completed");

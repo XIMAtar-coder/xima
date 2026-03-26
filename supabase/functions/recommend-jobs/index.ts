@@ -241,14 +241,17 @@ serve(async (req) => {
 
     // ---- Fetch user data in parallel ----
     const [profileRes, credentialsRes, cvAnalysisRes, trajectoryRes] = await Promise.all([
-      supabase.from("profiles").select("ximatar, ximatar_level, pillar_scores").eq("user_id", userId).single(),
+      supabase.from("profiles").select("*").eq("user_id", userId).single(),
       supabase.from("cv_credentials").select("hard_skills, seniority_level, total_years_experience, industries_worked, career_trajectory, languages").eq("user_id", userId).maybeSingle(),
       supabase.from("cv_identity_analysis").select("cv_qualified_roles, archetype_aligned_roles, growth_bridge_roles").eq("user_id", userId).maybeSingle(),
       supabase.rpc("get_user_trajectory_90d", { p_user_id: userId }).maybeSingle(),
     ]);
 
     const profile = profileRes.data;
-    if (!profile?.ximatar || !profile?.pillar_scores) {
+    const resolvedXimatar = (profile?.ximatar || profile?.ximatar_archetype || profile?.ximatar_id) as string | null;
+    const resolvedPillars = (profile?.pillar_scores || profile?.assessment_scores) as Record<string, number> | null;
+
+    if (!resolvedXimatar || !resolvedPillars) {
       return jsonResponse({
         success: true,
         recommendations: [],
@@ -259,9 +262,9 @@ serve(async (req) => {
       });
     }
 
-    const userArchetype = profile.ximatar as string;
-    const userLevel = (profile.ximatar_level as number) || 1;
-    const userPillars = profile.pillar_scores as Record<string, number>;
+    const userArchetype = resolvedXimatar;
+    const userLevel = (profile?.ximatar_level as number) || 1;
+    const userPillars = resolvedPillars;
     const credentials = credentialsRes.data;
     const cvAnalysis = cvAnalysisRes.data;
 

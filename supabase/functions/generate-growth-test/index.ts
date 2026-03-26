@@ -67,13 +67,18 @@ serve(async (req) => {
     // 2. User profile
     const { data: profile } = await supabase
       .from("profiles")
-      .select("ximatar_archetype, ximatar_level, assessment_scores")
+      .select("*")
       .eq("user_id", user.id)
       .single();
 
     if (!profile) {
       return errorResponse(404, "PROFILE_NOT_FOUND", "User profile not found");
     }
+
+    // Resolve fields
+    const _ximatarArchetype = (profile.ximatar_archetype || profile.ximatar || profile.ximatar_id || "unknown") as string;
+    const _ximatarLevel = (profile.ximatar_level || 1) as number;
+    const _assessmentScores = (profile.assessment_scores || profile.pillar_scores) as Record<string, number> || {};
 
     // 3. CV tension
     const { data: cvAnalysis } = await supabase
@@ -82,7 +87,7 @@ serve(async (req) => {
       .eq("user_id", user.id)
       .maybeSingle();
 
-    const scores = profile.assessment_scores as Record<string, number> || {};
+    const scores = _assessmentScores;
     const pillarScore = scores[progress.primary_pillar] ?? 50;
     const tensionSummary = cvAnalysis?.tension_gaps
       ? JSON.stringify(cvAnalysis.tension_gaps)
@@ -105,7 +110,7 @@ serve(async (req) => {
 
     const systemPrompt = `You are the XIMA Growth Test Architect. You generate personalized assessment questions that verify whether a user truly absorbed learning material in the context of their specific professional growth needs.
 
-USER: ${profile.ximatar_archetype || "unknown"} L${profile.ximatar_level || 1}, strengthening ${progress.primary_pillar} (score: ${pillarScore})
+USER: ${_ximatarArchetype} L${_ximatarLevel}, strengthening ${progress.primary_pillar} (score: ${pillarScore})
 Key tension: ${tensionSummary}
 
 RESOURCE COMPLETED:
