@@ -15,6 +15,27 @@ export interface MentorProfile {
   calendar_url?: string | null;
 }
 
+interface CvTensionGap {
+  pillar: string;
+  ximatar_score: number;
+  cv_score: number;
+  gap_direction: 'undersold' | 'oversold' | string;
+  narrative: string;
+}
+
+interface CvTechnicalImprovement {
+  category: string;
+  recommendation: string;
+  priority: 'high' | 'medium' | 'low' | string;
+}
+
+interface CvIdentityImprovement {
+  target_pillar: string;
+  recommendation: string;
+  example_before?: string | null;
+  example_after?: string | null;
+}
+
 interface ProfileData {
   full_name: string;
   ximatar: string | null;
@@ -48,7 +69,26 @@ interface ProfileData {
     summary?: string | null;
     strengths?: string[] | null;
     soft_skills?: string[] | null;
+    alignmentScore?: number | null;
+    tensionNarrative?: string | null;
+    tensionGaps?: CvTensionGap[] | null;
+    technicalImprovements?: CvTechnicalImprovement[] | null;
+    identityImprovements?: CvIdentityImprovement[] | null;
+    roleFit?: {
+      cvQualifiedRoles: string[];
+      archetypeAlignedRoles: string[];
+      growthBridgeRoles: string[];
+    } | null;
+    mentorHook?: {
+      suggestedFocus?: string | null;
+      keyQuestion?: string | null;
+    } | null;
+    cvArchetype?: {
+      primary?: string | null;
+      secondary?: string | null;
+    } | null;
     cv_comments?: {
+      summary?: string;
       computational_power?: string;
       communication?: string;
       knowledge?: string;
@@ -60,6 +100,18 @@ interface ProfileData {
   isLoading: boolean;
   error: string | null;
 }
+
+const normalizePillars = (raw: any) => {
+  if (!raw) return null;
+
+  return {
+    computational_power: Number(raw.computational_power ?? raw.comp_power ?? raw.computational ?? 0),
+    communication: Number(raw.communication ?? 0),
+    knowledge: Number(raw.knowledge ?? 0),
+    creativity: Number(raw.creativity ?? 0),
+    drive: Number(raw.drive ?? 0),
+  };
+};
 
 /**
  * Robust hook to load the user's profile and related dynamic data
@@ -92,7 +144,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
   useEffect(() => {
     const load = async () => {
       console.log('[useProfileData] LOAD START', { isAuthenticated, userId: user?.id });
-      
+
       try {
         const { data: authUser } = await supabase.auth.getUser();
         console.log('[useProfileData] auth.getUser result', authUser?.user?.id);
@@ -108,7 +160,6 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
 
       try {
         console.log('[useProfileData] Fetching profile for user:', user.id);
-        // 1) Base profile
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select(`
@@ -140,7 +191,6 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           return;
         }
 
-        // Get profile ID for mentor_matches query
         const profileId = profile?.id;
         if (!profileId) {
           console.error('[useProfileData] No profile ID found');
@@ -148,8 +198,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           return;
         }
 
-        // 2) Related data in parallel
-        const [mentorMatchRes, openRespRes, latestResultRes, cvAnalysisRes, cvCredentialsRes] = await Promise.all([
+        const [mentorMatchRes, openRespRes, latestResultRes, cvAnalysisRes, cvCredentialsRes, cvIdentityRes] = await Promise.all([
           supabase
             .from('mentor_matches')
             .select('mentor_user_id')
@@ -183,16 +232,21 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             .select('hard_skills')
             .eq('user_id', user.id)
             .maybeSingle(),
+          supabase
+            .from('cv_identity_analysis')
+            .select('alignment_score, cv_archetype_primary, cv_archetype_secondary, tension_narrative, tension_gaps, technical_improvements, identity_improvements, cv_qualified_roles, archetype_aligned_roles, growth_bridge_roles, mentor_suggested_focus, mentor_key_question, cv_pillar_scores')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle(),
         ]);
 
         const mentor_profile_id = mentorMatchRes.data?.mentor_user_id || null;
 
-        // Fetch mentor profile details
         let mentor_profile: MentorProfile | null = null;
         let mentor_user_id: string | null = null;
-        
+
         if (profile?.mentor) {
-          // Use cached mentor data from profile
           const m = profile.mentor as any;
           mentor_profile = {
             name: m?.name ?? '',
@@ -202,68 +256,71 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           };
           console.log('[useProfileData] Using cached mentor from profile:', mentor_profile.name);
         } else if (mentor_profile_id) {
-          // Fetch from unified mentors table
           console.log('[useProfileData] Fetching mentor from mentors table:', mentor_profile_id);
           const { data: mentorData, error: profError } = await supabase
             .from('mentors')
             .select('id, user_id, name, title, profile_image_url, bio, specialties, xima_pillars')
             .eq('id', mentor_profile_id)
             .maybeSingle();
-          
+
           if (profError) {
             console.error('[useProfileData] Error fetching mentor:', profError);
           } else if (mentorData) {
             console.log('[useProfileData] Found mentor:', mentorData.name);
             mentor_user_id = mentorData.user_id;
-            
+
             mentor_profile = {
               name: mentorData.name || '',
               bio: mentorData.bio || null,
               avatar_url: mentorData.profile_image_url || null,
-              calendar_url: null, // Booking via availability slots
+              calendar_url: null,
             };
           } else {
             console.warn('[useProfileData] Mentor not found for ID:', mentor_profile_id);
           }
         }
 
-        // Normalize pillars from profile
-        const ps = (profile?.pillar_scores as any) || null;
-        const pillar_scores = ps
-          ? {
-              computational_power: Number(ps.computational_power ?? ps.computational ?? 0),
-              communication: Number(ps.communication ?? 0),
-              knowledge: Number(ps.knowledge ?? 0),
-              creativity: Number(ps.creativity ?? 0),
-              drive: Number(ps.drive ?? 0),
-            }
-          : null;
+        const pillar_scores = normalizePillars(profile?.pillar_scores);
+        const cv_pillar_scores = normalizePillars(
+          (cvIdentityRes.data?.cv_pillar_scores as any) ||
+          (profile?.cv_scores as any) ||
+          (cvAnalysisRes.data?.pillar_vector as any)
+        );
 
-        // CV pillar vector normalization (now from profiles.cv_scores)
-        const pv = (cvAnalysisRes.data?.pillar_vector as any) || null;
-        const cvScores = (profile?.cv_scores as any) || pv;
-        const cv_pillar_scores = cvScores
-          ? {
-              computational_power: Number(cvScores.computational_power ?? cvScores.comp_power ?? 0),
-              communication: Number(cvScores.communication ?? 0),
-              knowledge: Number(cvScores.knowledge ?? 0),
-              creativity: Number(cvScores.creativity ?? 0),
-              drive: Number(cvScores.drive ?? 0),
-            }
-          : null;
+        const tensionGaps = Array.isArray(cvIdentityRes.data?.tension_gaps)
+          ? (cvIdentityRes.data?.tension_gaps as unknown as CvTensionGap[])
+          : [];
 
-        // Open answers mapping
+        const commentsFromTension = tensionGaps.reduce<Record<string, string>>((acc, item) => {
+          if (item?.pillar && item?.narrative) {
+            acc[item.pillar] = item.narrative;
+          }
+          return acc;
+        }, {});
+
         const open_answers: OpenAnswerItem[] = (openRespRes.data || []).map((row: any) => {
           const formatted = (row.open_key as string)?.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
           return { question: formatted, answer: row.answer, score: row.score ?? undefined };
         });
 
-        // Full name fallback handling
         let full_name = profile?.full_name || profile?.name || user?.name || '';
         const anyProfile: any = profile;
         if (!profile?.full_name && (anyProfile?.first_name || anyProfile?.last_name)) {
           full_name = `${anyProfile?.first_name || ''} ${anyProfile?.last_name || ''}`.trim() || full_name;
         }
+
+        const skillsFallback = ((cvCredentialsRes.data?.hard_skills as any[] | null) || [])
+          .slice(0, 5)
+          .map((skill) => skill?.name || String(skill))
+          .filter(Boolean);
+
+        const technicalImprovements = Array.isArray(cvIdentityRes.data?.technical_improvements)
+          ? (cvIdentityRes.data.technical_improvements as unknown as CvTechnicalImprovement[])
+          : null;
+
+        const identityImprovements = Array.isArray(cvIdentityRes.data?.identity_improvements)
+          ? (cvIdentityRes.data.identity_improvements as unknown as CvIdentityImprovement[])
+          : null;
 
         const next: ProfileData = {
           full_name,
@@ -283,10 +340,31 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           open_answers,
           assessment_rationale: latestResultRes.data?.rationale ?? null,
           cv_analysis: {
-            summary: cvAnalysisRes.data?.summary ?? (profile?.cv_comments as any)?.summary ?? null,
-            strengths: cvAnalysisRes.data?.strengths ?? ((cvCredentialsRes.data?.hard_skills as any[] | null)?.slice(0, 5).map((skill) => skill?.name || String(skill)) ?? null),
+            summary: cvAnalysisRes.data?.summary ?? cvIdentityRes.data?.tension_narrative ?? (profile?.cv_comments as any)?.summary ?? null,
+            strengths: cvAnalysisRes.data?.strengths ?? (skillsFallback.length ? skillsFallback : null),
             soft_skills: cvAnalysisRes.data?.soft_skills ?? null,
-            cv_comments: (profile?.cv_comments as any) ?? null,
+            alignmentScore: typeof cvIdentityRes.data?.alignment_score === 'number' ? cvIdentityRes.data.alignment_score : null,
+            tensionNarrative: (cvIdentityRes.data?.tension_narrative as string | null) ?? null,
+            tensionGaps: tensionGaps.length ? tensionGaps : null,
+            technicalImprovements,
+            identityImprovements,
+            roleFit: {
+              cvQualifiedRoles: Array.isArray(cvIdentityRes.data?.cv_qualified_roles) ? cvIdentityRes.data.cv_qualified_roles as string[] : [],
+              archetypeAlignedRoles: Array.isArray(cvIdentityRes.data?.archetype_aligned_roles) ? cvIdentityRes.data.archetype_aligned_roles as string[] : [],
+              growthBridgeRoles: Array.isArray(cvIdentityRes.data?.growth_bridge_roles) ? cvIdentityRes.data.growth_bridge_roles as string[] : [],
+            },
+            mentorHook: {
+              suggestedFocus: (cvIdentityRes.data?.mentor_suggested_focus as string | null) ?? null,
+              keyQuestion: (cvIdentityRes.data?.mentor_key_question as string | null) ?? null,
+            },
+            cvArchetype: {
+              primary: (cvIdentityRes.data?.cv_archetype_primary as string | null) ?? null,
+              secondary: (cvIdentityRes.data?.cv_archetype_secondary as string | null) ?? null,
+            },
+            cv_comments: {
+              ...((profile?.cv_comments as any) ?? {}),
+              ...commentsFromTension,
+            },
           },
           hasAssessment: !!((profile?.ximatar || profile?.ximatar_id) && pillar_scores),
           isLoading: false,

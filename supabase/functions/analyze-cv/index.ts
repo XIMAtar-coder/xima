@@ -369,6 +369,13 @@ Now analyze how this CV represents (or misrepresents) that identity:
 - Compare roles: what the CV qualifies for vs. what the archetype is built for vs. growth bridge roles between them
 - Provide a mentor hook: a suggested focus and key question for a free mentor session to explore the gap
 
+IMPORTANT SCORING RULES:
+- PDF or DOC extraction may contain noise, broken spacing, or partial formatting artifacts. Clean and reconstruct meaning before scoring.
+- Do NOT assign all five CV pillars as 0 unless the text is genuinely unreadable and no coherent education, experience, achievements, or skills can be recovered.
+- If even partial evidence exists, assign conservative non-zero scores based on the recoverable signals.
+- Treat extraction noise as a document-quality issue, not as proof that the candidate has no evidence.
+- Reserve "corrupted", "unreadable", or "complete technical failure" language for cases where fewer than three coherent professional signals can be identified.
+
 XIMA PHILOSOPHY — follow these principles:
 - CVs are necessary but insufficient — they capture credentials, not identity
 - Knowledge and credentials ARE important — XIMA does not dismiss them
@@ -377,7 +384,7 @@ XIMA PHILOSOPHY — follow these principles:
 - The mentor session explores the real archetype and boosts growth, it does not judge
 
 SCORING CALIBRATION for CV pillar scores:
-- 0-20: No evidence in the CV document
+- 0-20: No evidence or almost no recoverable evidence in the CV document
 - 21-40: Minimal or indirect evidence
 - 41-60: Moderate, typical for the role level
 - 61-80: Strong evidence with concrete examples
@@ -448,6 +455,8 @@ function buildUserMessage(
 ---
 ${cvText}
 ---
+
+The text may include PDF extraction noise, broken spacing, or formatting artifacts. Reconstruct the intended professional meaning before scoring.
 
 Their XIMA assessment results:
 - XIMAtar: ${ximatarId} — ${ximatarName} (${ximatarTitle})
