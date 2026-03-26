@@ -26,10 +26,12 @@ async function extractTextFromFile(
   fileBytes: Uint8Array,
   mimeType: string
 ): Promise<{ text: string; method: string }> {
+  // Plain text
   if (mimeType === "text/plain") {
     return { text: new TextDecoder("utf-8").decode(fileBytes), method: "plaintext" };
   }
 
+  // DOCX
   if (mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
     try {
       const JSZip = (await import("https://esm.sh/jszip@3.10.1")).default;
@@ -47,13 +49,14 @@ async function extractTextFromFile(
         }
       }
     } catch (_e) {
-      console.warn("[extract] DOCX XML extraction failed, falling back to string extraction");
+      console.warn("[extract] DOCX XML extraction failed, falling back");
     }
   }
 
-  const rawText = new TextDecoder("utf-8", { fatal: false }).decode(fileBytes);
-
+  // PDF — try regex first, then Claude vision fallback
   if (mimeType === "application/pdf") {
+    // Attempt 1: regex-based extraction (works for uncompressed PDFs)
+    const rawText = new TextDecoder("utf-8", { fatal: false }).decode(fileBytes);
     const textParts: string[] = [];
     const parenMatches = rawText.match(/\(([^)]{2,})\)/g) || [];
     for (const match of parenMatches) {
@@ -69,18 +72,83 @@ async function extractTextFromFile(
       }
     }
 
-    if (textParts.join("").length < 200) {
-      const readable = rawText.match(/[\x20-\x7E\xC0-\xFF]{10,}/g) || [];
-      const filtered = readable.filter(
-        (s: string) => /[a-zA-ZÀ-ÿ]{3,}/.test(s) && !/^[%\/\[\]<>{}]+$/.test(s)
-      );
-      return { text: filtered.join("\n").substring(0, 15000), method: "pdf-regex-fallback" };
+    const regexText = textParts.join(" ").trim();
+    if (regexText.length > 200) {
+      console.log(`[extract] pdf-regex extracted ${regexText.length} chars`);
+      return { text: regexText.substring(0, 15000), method: "pdf-regex" };
     }
 
-    return { text: textParts.join(" ").substring(0, 15000), method: "pdf-text-extract" };
+    // Attempt 2: readable ASCII strings fallback
+    const readable = rawText.match(/[\x20-\x7E\xC0-\xFF]{10,}/g) || [];
+    const filtered = readable.filter(
+      (s: string) => /[a-zA-ZÀ-ÿ]{3,}/.test(s) && !/^[%\/\[\]<>{}]+$/.test(s)
+    );
+    const fallbackText = filtered.join("\n").trim();
+    if (fallbackText.length > 200) {
+      console.log(`[extract] pdf-ascii-fallback extracted ${fallbackText.length} chars`);
+      return { text: fallbackText.substring(0, 15000), method: "pdf-ascii-fallback" };
+    }
+
+    // Attempt 3: Claude vision — send PDF as base64 document for Claude to read
+    console.log("[extract] Text extraction insufficient, using Claude vision to read PDF");
+    try {
+      const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+      if (ANTHROPIC_API_KEY) {
+        // Convert to base64
+        const binaryStr = Array.from(fileBytes).map(b => String.fromCharCode(b)).join("");
+        const base64Pdf = btoa(binaryStr);
+
+        const visionResponse = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "x-api-key": ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 4096,
+            messages: [{
+              role: "user",
+              content: [
+                {
+                  type: "document",
+                  source: {
+                    type: "base64",
+                    media_type: "application/pdf",
+                    data: base64Pdf,
+                  },
+                },
+                {
+                  type: "text",
+                  text: "Extract all text from this PDF document. Return ONLY the raw text content, preserving section headings and structure. No commentary."
+                }
+              ]
+            }],
+          }),
+        });
+
+        if (visionResponse.ok) {
+          const visionData = await visionResponse.json();
+          const visionText = visionData.content?.[0]?.text || "";
+          if (visionText.length > 50) {
+            console.log(`[extract] claude-vision-pdf extracted ${visionText.length} chars`);
+            return { text: visionText.substring(0, 15000), method: "claude-vision-pdf" };
+          }
+        } else {
+          console.warn(`[extract] Claude vision failed: ${visionResponse.status}`);
+        }
+      }
+    } catch (visionErr) {
+      console.warn("[extract] Claude vision fallback error:", visionErr instanceof Error ? visionErr.message : "unknown");
+    }
+
+    // Return whatever we have
+    return { text: (fallbackText || regexText).substring(0, 15000), method: "pdf-regex-fallback" };
   }
 
   // DOC (legacy binary)
+  const rawText = new TextDecoder("utf-8", { fatal: false }).decode(fileBytes);
   const readable = rawText.match(/[\x20-\x7E\xC0-\xFF]{8,}/g) || [];
   const filtered = readable.filter((s: string) => /[a-zA-ZÀ-ÿ]{3,}/.test(s));
   return { text: filtered.join("\n").substring(0, 15000), method: "doc-strings" };
@@ -530,7 +598,7 @@ serve(async (req) => {
     // ===== GDPR + XIMAtar fetch =====
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("profiling_opt_out, ximatar_id, ximatar_name, ximatar_storytelling, pillar_scores")
+      .select("profiling_opt_out, ximatar_id, ximatar, ximatar_name, ximatar_storytelling, pillar_scores")
       .eq("user_id", user.id)
       .single();
 
@@ -548,10 +616,25 @@ serve(async (req) => {
     }
 
     // ===== Check XIMAtar assessment exists =====
-    const ximatarId = profile?.ximatar_id as string | null;
+    // The `ximatar` column (enum) holds the taxonomy key like "owl"
+    // The `ximatar_id` column (uuid) is a FK to the ximatars table
     const pillarScores = profile?.pillar_scores as Record<string, number> | null;
+    let resolvedXimatarKey = (profile?.ximatar as string | null) || null;
 
-    if (!ximatarId || !pillarScores) {
+    if (!resolvedXimatarKey && profile?.ximatar_id) {
+      // Resolve UUID → taxonomy key via ximatars table
+      const serviceClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+      const { data: ximatarRecord } = await serviceClient
+        .from("ximatars")
+        .select("label")
+        .eq("id", profile.ximatar_id as string)
+        .maybeSingle();
+      if (ximatarRecord?.label) {
+        resolvedXimatarKey = ximatarRecord.label.toLowerCase();
+      }
+    }
+
+    if (!resolvedXimatarKey || !pillarScores) {
       return errorResponse(
         400,
         "ASSESSMENT_REQUIRED",
@@ -560,9 +643,16 @@ serve(async (req) => {
     }
 
     // Look up XIMAtar profile from taxonomy
-    const ximatarProfile = XIMATAR_PROFILES[ximatarId];
-    const ximatarName = (profile?.ximatar_name as string) || ximatarProfile?.name || ximatarId;
+    const ximatarProfile = XIMATAR_PROFILES[resolvedXimatarKey];
+    const ximatarName = (profile?.ximatar_name as string) || ximatarProfile?.name || resolvedXimatarKey;
     const ximatarTitle = ximatarProfile?.title || "";
+
+    console.log(JSON.stringify({
+      type: "ximatar_resolved",
+      correlation_id: correlationId,
+      ximatar_key: resolvedXimatarKey,
+      ximatar_name: ximatarName,
+    }));
 
     // ===== File validation =====
     const formData = await req.formData();
@@ -648,6 +738,7 @@ serve(async (req) => {
     const detectedLanguage = detectLanguage(truncatedText);
 
     // ===== Build prompt & call Claude =====
+    const ximatarId = resolvedXimatarKey;
     const systemPrompt = buildSystemPrompt(ximatarId, ximatarName, ximatarTitle, pillarScores, detectedLanguage);
     const userMessage = buildUserMessage(truncatedText, ximatarId, ximatarName, ximatarTitle, pillarScores);
 

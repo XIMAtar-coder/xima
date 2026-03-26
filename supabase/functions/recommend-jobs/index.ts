@@ -241,25 +241,27 @@ serve(async (req) => {
 
     // ---- Fetch user data in parallel ----
     const [profileRes, credentialsRes, cvAnalysisRes, trajectoryRes] = await Promise.all([
-      supabase.from("profiles").select("ximatar_archetype, ximatar_level, assessment_scores").eq("user_id", userId).single(),
+      supabase.from("profiles").select("ximatar, ximatar_level, pillar_scores").eq("user_id", userId).single(),
       supabase.from("cv_credentials").select("hard_skills, seniority_level, total_years_experience, industries_worked, career_trajectory, languages").eq("user_id", userId).maybeSingle(),
       supabase.from("cv_identity_analysis").select("cv_qualified_roles, archetype_aligned_roles, growth_bridge_roles").eq("user_id", userId).maybeSingle(),
       supabase.rpc("get_user_trajectory_90d", { p_user_id: userId }).maybeSingle(),
     ]);
 
     const profile = profileRes.data;
-    if (!profile?.ximatar_archetype || !profile?.assessment_scores) {
+    if (!profile?.ximatar || !profile?.pillar_scores) {
       return jsonResponse({
+        success: true,
         recommendations: [],
+        opportunities: [],
         total: 0,
         message: "Complete your XIMA assessment to get personalized recommendations",
         generated_at: new Date().toISOString(),
       });
     }
 
-    const userArchetype = profile.ximatar_archetype;
-    const userLevel = profile.ximatar_level || 1;
-    const userPillars = profile.assessment_scores as Record<string, number>;
+    const userArchetype = profile.ximatar as string;
+    const userLevel = (profile.ximatar_level as number) || 1;
+    const userPillars = profile.pillar_scores as Record<string, number>;
     const credentials = credentialsRes.data;
     const cvAnalysis = cvAnalysisRes.data;
 
@@ -302,7 +304,9 @@ serve(async (req) => {
 
     if (allJobs.length === 0) {
       return jsonResponse({
+        success: true,
         recommendations: [],
+        opportunities: [],
         total: 0,
         message: "No active job opportunities available right now. Check back soon.",
         user_context: { ximatar: userArchetype, level: userLevel, cv_uploaded: !!credentials },
@@ -434,26 +438,41 @@ Return ONLY a JSON array of strings, one per job:
       ? (Object.values(userTrajectory).filter(v => v > 0).length >= 3 ? "ascending" : Object.values(userTrajectory).every(v => v === 0) ? "stable" : "mixed")
       : "not_tracked";
 
+    const recommendationItems = topMatches.map((match, i) => ({
+      job: {
+        id: match.id,
+        title: match.title,
+        company: match.companyName,
+        location: match.location,
+        seniority: match.seniority,
+        employment_type: match.employmentType,
+      },
+      match_score: match.totalScore,
+      score_breakdown: {
+        identity: match.identityScore,
+        credentials: match.credentialScore,
+        growth_fit: match.growthFitScore,
+      },
+      fit_type: match.fitType,
+      identity_details: match.identityBreakdown,
+      credential_details: match.credentialDetails,
+      xima_narrative: narratives[i] || fallbackNarrative(match, userArchetype),
+    }));
+
     const response = {
-      recommendations: topMatches.map((match, i) => ({
-        job: {
-          id: match.id,
-          title: match.title,
-          company: match.companyName,
-          location: match.location,
-          seniority: match.seniority,
-          employment_type: match.employmentType,
-        },
-        match_score: match.totalScore,
-        score_breakdown: {
-          identity: match.identityScore,
-          credentials: match.credentialScore,
-          growth_fit: match.growthFitScore,
-        },
-        fit_type: match.fitType,
-        identity_details: match.identityBreakdown,
-        credential_details: match.credentialDetails,
-        xima_narrative: narratives[i] || fallbackNarrative(match, userArchetype),
+      success: true,
+      recommendations: recommendationItems,
+      // Backward-compatible format for MyOpportunitiesSection
+      opportunities: recommendationItems.map(r => ({
+        id: r.job.id,
+        title: r.job.title,
+        company: r.job.company,
+        description: r.xima_narrative,
+        location: r.job.location,
+        skills: null,
+        source_url: null,
+        created_at: new Date().toISOString(),
+        matchScore: r.match_score,
       })),
       total: topMatches.length,
       user_context: {
