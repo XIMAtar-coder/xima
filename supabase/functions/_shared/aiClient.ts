@@ -330,13 +330,30 @@ export async function callAiGateway(
 /**
  * Extract JSON from AI response content (handles markdown code blocks)
  */
-export function extractJsonFromAiContent(content: string): string {
-  const codeBlockMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
-  if (codeBlockMatch) {
-    return codeBlockMatch[1].trim();
+export function extractJsonFromAiContent(content: string): any {
+  let text = content.trim();
+
+  // Strip markdown code fences: ```json\n{...}\n``` or ```\n{...}\n```
+  const fenceMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
+  if (fenceMatch) {
+    text = fenceMatch[1].trim();
   }
-  const jsonMatch = content.match(/\{[\s\S]*\}/);
-  return jsonMatch ? jsonMatch[0] : content.trim();
+
+  // If not starting with { or [, find the first JSON object
+  if (!text.startsWith("{") && !text.startsWith("[")) {
+    const firstBrace = text.indexOf("{");
+    const lastBrace = text.lastIndexOf("}");
+    if (firstBrace !== -1 && lastBrace > firstBrace) {
+      text = text.substring(firstBrace, lastBrace + 1);
+    }
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    console.error("[extractJsonFromAiContent] Parse failed. Preview:", text.substring(0, 500));
+    return null;
+  }
 }
 
 /**
