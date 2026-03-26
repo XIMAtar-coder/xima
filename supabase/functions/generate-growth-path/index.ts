@@ -87,8 +87,39 @@ serve(async (req) => {
 
     const completedTitles = completedProgress?.map(p => p.resource_title) || [];
 
+    // Resolve fields from whichever column names exist
+    const assessmentScores = (profile.assessment_scores || profile.pillar_scores) as Record<string, number> | null;
+    const ximatarRaw = (profile.ximatar_archetype || profile.ximatar || profile.ximatar_id) as string | null;
+    const ximatarLevel = (profile.ximatar_level || 1) as number;
+    const preferredLang = (profile.preferred_language || profile.language || locale) as string;
+
+    if (!assessmentScores) {
+      return errorResponse(400, "ASSESSMENT_REQUIRED", "Please complete the XIMA assessment before generating a growth path.");
+    }
+
+    // Resolve XIMAtar key (might be UUID)
+    let ximatarKey = ximatarRaw || "unknown";
+    let archetypeInfo = XIMATAR_PROFILES[ximatarKey.toLowerCase()];
+
+    if (!archetypeInfo && ximatarKey && ximatarKey.includes("-")) {
+      // Likely a UUID — look up from ximatars table
+      const { data: ximatarRecord } = await supabase
+        .from("ximatars")
+        .select("label, animal")
+        .eq("id", ximatarKey)
+        .maybeSingle();
+
+      if (ximatarRecord) {
+        const animalLower = (ximatarRecord.animal || ximatarRecord.label || "").toLowerCase().trim();
+        archetypeInfo = XIMATAR_PROFILES[animalLower];
+        if (archetypeInfo) ximatarKey = animalLower;
+      }
+    }
+
+    const archetype = ximatarKey.toLowerCase();
+
     // Compute weakest pillars
-    const scores = profile.assessment_scores as Record<string, number> || {};
+    const scores = assessmentScores;
     const pillarEntries = VALID_PILLARS.map(p => ({ pillar: p, score: scores[p] ?? 50 }));
     pillarEntries.sort((a, b) => a.score - b.score);
     const weakestPillar = pillarEntries[0].pillar;
@@ -116,11 +147,8 @@ serve(async (req) => {
       ? JSON.stringify(cvAnalysis.tension_gaps)
       : "No CV analysis yet";
 
-    const archetype = profile.ximatar_archetype || "unknown";
-    const level = profile.ximatar_level || 1;
+    const level = ximatarLevel;
     const nextLevel = Math.min(level + 1, 3);
-    const archetypeInfo = XIMATAR_PROFILES[archetype];
-    const preferredLang = profile.preferred_language || locale;
 
     const systemPrompt = `You are the XIMA Growth Advisor — a personal development coach powered by psychometric intelligence. You recommend specific, real, free learning resources across three formats: video courses, books, and podcasts.
 

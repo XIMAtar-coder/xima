@@ -248,7 +248,10 @@ serve(async (req) => {
     ]);
 
     const profile = profileRes.data;
-    if (!profile?.ximatar || !profile?.pillar_scores) {
+    const resolvedXimatar = (profile?.ximatar || profile?.ximatar_archetype || profile?.ximatar_id) as string | null;
+    const resolvedPillars = (profile?.pillar_scores || profile?.assessment_scores) as Record<string, number> | null;
+
+    if (!resolvedXimatar || !resolvedPillars) {
       return jsonResponse({
         success: true,
         recommendations: [],
@@ -259,9 +262,9 @@ serve(async (req) => {
       });
     }
 
-    const userArchetype = profile.ximatar as string;
-    const userLevel = (profile.ximatar_level as number) || 1;
-    const userPillars = profile.pillar_scores as Record<string, number>;
+    const userArchetype = resolvedXimatar;
+    const userLevel = (profile?.ximatar_level as number) || 1;
+    const userPillars = resolvedPillars;
     const credentials = credentialsRes.data;
     const cvAnalysis = cvAnalysisRes.data;
 

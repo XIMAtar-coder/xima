@@ -110,7 +110,7 @@ serve(async (req) => {
 
     const systemPrompt = `You are the XIMA Growth Test Architect. You generate personalized assessment questions that verify whether a user truly absorbed learning material in the context of their specific professional growth needs.
 
-USER: ${profile.ximatar_archetype || "unknown"} L${profile.ximatar_level || 1}, strengthening ${progress.primary_pillar} (score: ${pillarScore})
+USER: ${_ximatarArchetype} L${_ximatarLevel}, strengthening ${progress.primary_pillar} (score: ${pillarScore})
 Key tension: ${tensionSummary}
 
 RESOURCE COMPLETED:

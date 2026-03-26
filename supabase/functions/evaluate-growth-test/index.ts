@@ -244,7 +244,7 @@ Return ONLY valid JSON:
         target_pillar: progress.primary_pillar,
         score: v.total_score,
         passed: v.passed,
-        ximatar: profile.ximatar_archetype,
+        ximatar: _ximatarArchetype,
         path_completed: pathCompleted,
       },
     }, "growth_tests_completed");

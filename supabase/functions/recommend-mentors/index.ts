@@ -250,17 +250,18 @@ serve(async (req) => {
     if (userId) {
       // Fetch authenticated user data
       const [profileRes, cvAnalysisRes] = await Promise.all([
-        supabase.from("profiles").select("ximatar_archetype, ximatar_level, assessment_scores").eq("user_id", userId).single(),
-        supabase.from("cv_identity_analysis").select("tension_gaps, tension_narrative, mentor_suggested_focus, mentor_key_question, cv_archetype_primary, alignment_score").eq("user_id", userId).maybeSingle(),
+        supabase.from("profiles").select("*").eq("user_id", userId).single(),
+        supabase.from("cv_identity_analysis").select("*").eq("user_id", userId).maybeSingle(),
       ]);
 
       const profile = profileRes.data;
-      if (profile?.ximatar_archetype) {
-        userArchetype = profile.ximatar_archetype;
-        userLevel = profile.ximatar_level || 1;
-        // Convert assessment_scores to pillar_scores array
-        if (profile.assessment_scores) {
-          const scores = profile.assessment_scores as Record<string, number>;
+      const resolvedXimatar = (profile?.ximatar_archetype || profile?.ximatar || profile?.ximatar_id) as string | null;
+      if (resolvedXimatar) {
+        userArchetype = resolvedXimatar;
+        userLevel = (profile?.ximatar_level || 1) as number;
+        // Convert assessment_scores/pillar_scores to pillar_scores array
+        const scores = (profile?.assessment_scores || profile?.pillar_scores) as Record<string, number> | null;
+        if (scores) {
           userPillarScores = Object.entries(scores).map(([pillar, score]) => ({ pillar, score }));
         }
       }

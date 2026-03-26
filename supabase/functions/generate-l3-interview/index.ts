@@ -252,9 +252,9 @@ serve(async (req) => {
     const businessProfile = businessProfileRes.data;
     const goalData = goalRes.data;
 
-    const archetype = candidateProfile.ximatar_name || "unknown";
-    const archetypeProfile = XIMATAR_PROFILES[archetype];
-    const scores = (candidateProfile.pillar_scores || {}) as Record<string, number>;
+    const archetype = (candidateProfile.ximatar_name || candidateProfile.ximatar || candidateProfile.ximatar_archetype || candidateProfile.ximatar_id || "unknown") as string;
+    const archetypeProfile = XIMATAR_PROFILES[archetype.toLowerCase()];
+    const scores = (candidateProfile.pillar_scores || candidateProfile.assessment_scores || {}) as Record<string, number>;
     const roleTitle = (goalData as Record<string, string> | null)?.role_title || challenge.title || "the role";
     const companyName = businessProfile?.company_name || "the company";
 

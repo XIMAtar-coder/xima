@@ -166,13 +166,13 @@ serve(async (req) => {
     if (submission.candidate_profile_id) {
       const { data: candProfile } = await supabase
         .from('profiles')
-        .select('ximatar_name, pillar_scores')
+        .select('*')
         .eq('id', submission.candidate_profile_id)
         .single();
 
       if (candProfile) {
-        candidateXimatar = candProfile.ximatar_name || '';
-        candidateScores = candProfile.pillar_scores as Record<string, number> | null;
+        candidateXimatar = (candProfile.ximatar_name || candProfile.ximatar || candProfile.ximatar_archetype || candProfile.ximatar_id || '') as string;
+        candidateScores = (candProfile.pillar_scores || candProfile.assessment_scores) as Record<string, number> | null;
       }
     }
 
