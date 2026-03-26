@@ -248,18 +248,20 @@ serve(async (req) => {
     ]);
 
     const profile = profileRes.data;
-    if (!profile?.ximatar_archetype || !profile?.assessment_scores) {
+    if (!profile?.ximatar || !profile?.pillar_scores) {
       return jsonResponse({
+        success: true,
         recommendations: [],
+        opportunities: [],
         total: 0,
         message: "Complete your XIMA assessment to get personalized recommendations",
         generated_at: new Date().toISOString(),
       });
     }
 
-    const userArchetype = profile.ximatar_archetype;
-    const userLevel = profile.ximatar_level || 1;
-    const userPillars = profile.assessment_scores as Record<string, number>;
+    const userArchetype = profile.ximatar as string;
+    const userLevel = (profile.ximatar_level as number) || 1;
+    const userPillars = profile.pillar_scores as Record<string, number>;
     const credentials = credentialsRes.data;
     const cvAnalysis = cvAnalysisRes.data;
 
