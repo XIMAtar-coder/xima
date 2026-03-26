@@ -169,6 +169,75 @@ export type Database = {
           },
         ]
       }
+      ai_result_cache: {
+        Row: {
+          created_at: string | null
+          function_name: string
+          id: string
+          input_hash: string | null
+          result_data: Json
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          function_name: string
+          id?: string
+          input_hash?: string | null
+          result_data: Json
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          function_name?: string
+          id?: string
+          input_hash?: string | null
+          result_data?: Json
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_usage_budget: {
+        Row: {
+          calls_limit: number | null
+          calls_used: number | null
+          created_at: string | null
+          id: string
+          last_call_at: string | null
+          last_function_called: string | null
+          month_key: string
+          tier: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          calls_limit?: number | null
+          calls_used?: number | null
+          created_at?: string | null
+          id?: string
+          last_call_at?: string | null
+          last_function_called?: string | null
+          month_key: string
+          tier?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          calls_limit?: number | null
+          calls_used?: number | null
+          created_at?: string | null
+          id?: string
+          last_call_at?: string | null
+          last_function_called?: string | null
+          month_key?: string
+          tier?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       answer_options: {
         Row: {
           id: string
