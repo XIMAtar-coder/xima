@@ -19,6 +19,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { toast } from 'sonner';
+import { getSupabaseFunctionErrorMessage } from '@/lib/supabaseFunctionError';
 
 interface CvTensionGap {
   pillar: string;
@@ -154,46 +155,18 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
     const analysisStartedAt = new Date().toISOString();
 
     try {
-      // Force token refresh by calling getUser first
-      const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
-      if (authError || !authUser) {
-        throw new Error('Authentication required. Please refresh the page and try again.');
-      }
-
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) {
-        // Try refreshing the session explicitly
-        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
-        if (refreshError || !refreshData.session?.access_token) {
-          throw new Error('No active session. Please log in again.');
-        }
-        // Use the refreshed token
-        var accessToken = refreshData.session.access_token;
-      } else {
-        var accessToken = session.access_token;
-      }
-
       const formData = new FormData();
       formData.append('file', file);
 
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://iyckvvnecpnldrxqmzta.supabase.co';
-      const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-
-      const response = await fetch(`${supabaseUrl}/functions/v1/analyze-cv`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          apikey: anonKey,
-        },
+      const { data, error } = await supabase.functions.invoke('analyze-cv', {
         body: formData,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.error || `Upload failed with status ${response.status}`);
+      if (error) {
+        const message = await getSupabaseFunctionErrorMessage(error, 'Failed to analyze CV');
+        throw new Error(message);
       }
 
-      const data = await response.json().catch(() => null);
       if (!data?.success) {
         throw new Error(data?.error || 'CV analysis failed');
       }
