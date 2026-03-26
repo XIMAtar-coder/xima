@@ -106,7 +106,7 @@ User's answer: ${userAnswer?.answer_text || "(no answer provided)"}`;
 
     const systemPrompt = `You are the XIMA Growth Test Evaluator. Score test answers and determine pillar trajectory impact.
 
-USER: ${profile.ximatar_archetype || "unknown"} L${profile.ximatar_level || 1}, strengthening ${progress.primary_pillar} (score: ${pillarScore})
+USER: ${_ximatarArchetype} L${_ximatarLevel}, strengthening ${progress.primary_pillar} (score: ${pillarScore})
 Resource completed: "${progress.resource_title}" (${progress.resource_type})
 
 SCORING RULES:
