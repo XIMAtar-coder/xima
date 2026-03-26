@@ -723,6 +723,8 @@ serve(async (req) => {
 
     const truncatedText = extractedText.substring(0, 12000);
 
+    const ximatarId = resolvedXimatarKey;
+
     console.log(
       JSON.stringify({
         type: "request",
@@ -738,7 +740,6 @@ serve(async (req) => {
     const detectedLanguage = detectLanguage(truncatedText);
 
     // ===== Build prompt & call Claude =====
-    const ximatarId = resolvedXimatarKey;
     const systemPrompt = buildSystemPrompt(ximatarId, ximatarName, ximatarTitle, pillarScores, detectedLanguage);
     const userMessage = buildUserMessage(truncatedText, ximatarId, ximatarName, ximatarTitle, pillarScores);
 
