@@ -65,7 +65,7 @@ serve(async (req) => {
     // 2. CV tension analysis
     const { data: cvAnalysis } = await supabase
       .from("cv_identity_analysis")
-      .select("tension_gaps, cv_pillar_scores, alignment_score")
+      .select("*")
       .eq("user_id", user.id)
       .maybeSingle();
 
