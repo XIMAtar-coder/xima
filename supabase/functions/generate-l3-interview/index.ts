@@ -181,7 +181,7 @@ serve(async (req) => {
     // ---- GDPR check ----
     const { data: candidateProfile } = await supabase
       .from("profiles")
-      .select("id, user_id, ximatar_name, ximatar_level, pillar_scores, profiling_opt_out")
+      .select("*")
       .eq("id", candidate_profile_id)
       .single();
     if (!candidateProfile) return errorResponse(404, "NOT_FOUND", "Candidate not found");
