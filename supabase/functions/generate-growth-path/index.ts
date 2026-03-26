@@ -42,12 +42,13 @@ serve(async (req) => {
     // 1. Fetch user profile
     const { data: profile, error: profileErr } = await supabase
       .from("profiles")
-      .select("ximatar_archetype, ximatar_level, assessment_scores, preferred_language")
+      .select("*")
       .eq("user_id", user.id)
       .single();
 
     if (profileErr || !profile) {
-      return errorResponse(404, "PROFILE_NOT_FOUND", "User profile not found");
+      console.error("[generate-growth-path] Profile error:", profileErr?.message || "not found");
+      return errorResponse(404, "PROFILE_NOT_FOUND", "User profile not found. Please complete the assessment first.");
     }
 
     // Check profiling opt-out
