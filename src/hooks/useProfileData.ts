@@ -288,7 +288,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
         );
 
         const tensionGaps = Array.isArray(cvIdentityRes.data?.tension_gaps)
-          ? (cvIdentityRes.data?.tension_gaps as CvTensionGap[])
+          ? (cvIdentityRes.data?.tension_gaps as unknown as CvTensionGap[])
           : [];
 
         const commentsFromTension = tensionGaps.reduce<Record<string, string>>((acc, item) => {
@@ -314,6 +314,14 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           .map((skill) => skill?.name || String(skill))
           .filter(Boolean);
 
+        const technicalImprovements = Array.isArray(cvIdentityRes.data?.technical_improvements)
+          ? (cvIdentityRes.data.technical_improvements as unknown as CvTechnicalImprovement[])
+          : null;
+
+        const identityImprovements = Array.isArray(cvIdentityRes.data?.identity_improvements)
+          ? (cvIdentityRes.data.identity_improvements as unknown as CvIdentityImprovement[])
+          : null;
+
         const next: ProfileData = {
           full_name,
           ximatar: (profile?.ximatar as any) ?? null,
@@ -338,12 +346,8 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             alignmentScore: typeof cvIdentityRes.data?.alignment_score === 'number' ? cvIdentityRes.data.alignment_score : null,
             tensionNarrative: (cvIdentityRes.data?.tension_narrative as string | null) ?? null,
             tensionGaps: tensionGaps.length ? tensionGaps : null,
-            technicalImprovements: Array.isArray(cvIdentityRes.data?.technical_improvements)
-              ? (cvIdentityRes.data.technical_improvements as CvTechnicalImprovement[])
-              : null,
-            identityImprovements: Array.isArray(cvIdentityRes.data?.identity_improvements)
-              ? (cvIdentityRes.data.identity_improvements as CvIdentityImprovement[])
-              : null,
+            technicalImprovements,
+            identityImprovements,
             roleFit: {
               cvQualifiedRoles: Array.isArray(cvIdentityRes.data?.cv_qualified_roles) ? cvIdentityRes.data.cv_qualified_roles as string[] : [],
               archetypeAlignedRoles: Array.isArray(cvIdentityRes.data?.archetype_aligned_roles) ? cvIdentityRes.data.archetype_aligned_roles as string[] : [],
