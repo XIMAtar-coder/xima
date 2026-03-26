@@ -51,11 +51,39 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
+  const waitForCvAnalysisPersistence = async (startedAt: string) => {
+    if (!user?.id) return false;
+
+    const startedAtMs = new Date(startedAt).getTime();
+
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 2500));
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('updated_at, cv_scores, cv_comments')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (error || !data?.updated_at) continue;
+
+      const updatedAtMs = new Date(data.updated_at).getTime();
+      const cvScores = data.cv_scores as Record<string, unknown> | null;
+      const hasCvScores = !!cvScores && Object.keys(cvScores).length > 0;
+      const hasCvSummary = !!(data.cv_comments as { summary?: string } | null)?.summary;
+
+      if (updatedAtMs >= startedAtMs && (hasCvScores || hasCvSummary)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     const validTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword'];
     if (!validTypes.includes(file.type)) {
       setUploadError('Please upload a PDF or DOCX file');
@@ -63,7 +91,6 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
       return;
     }
 
-    // Validate file size (10MB max)
     if (file.size > 10 * 1024 * 1024) {
       setUploadError('File size must be less than 10MB');
       toast.error('File size must be less than 10MB');
@@ -73,58 +100,59 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
     setIsUploading(true);
     setUploadError(null);
 
+    const analysisStartedAt = new Date().toISOString();
+
     try {
-      // Get current session for authentication
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       if (!session?.access_token) {
         throw new Error('No active session. Please log in again.');
       }
 
-      // Create FormData with the file
       const formData = new FormData();
       formData.append('file', file);
 
-      // Get Supabase URL
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://iyckvvnecpnldrxqmzta.supabase.co';
       const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-      
-      // Call analyze-cv edge function with FormData
-      const response = await fetch(
-        `${supabaseUrl}/functions/v1/analyze-cv`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-            'apikey': anonKey,
-          },
-          body: formData,
-        }
-      );
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/analyze-cv`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          apikey: anonKey,
+        },
+        body: formData,
+      });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Upload failed with status ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || `Upload failed with status ${response.status}`);
       }
 
-      const data = await response.json();
-
+      const data = await response.json().catch(() => null);
       if (!data?.success) {
         throw new Error(data?.error || 'CV analysis failed');
       }
 
       toast.success('CV analyzed successfully! Your profile has been updated.');
       setUploadError(null);
-      
-      // Trigger refresh without hard reload
-      if (onUploadSuccess) {
-        onUploadSuccess();
-      }
+      onUploadSuccess?.();
     } catch (error: any) {
       console.error('CV upload error:', error);
-      const errorMsg = error.message || 'Failed to analyze CV';
-      
-      // Provide user-friendly error messages
+      const errorMsg = error?.message || 'Failed to analyze CV';
+      const looksLikeBrowserTimeout = errorMsg.includes('Load failed') || errorMsg.includes('Failed to fetch');
+
+      if (looksLikeBrowserTimeout) {
+        const persisted = await waitForCvAnalysisPersistence(analysisStartedAt);
+
+        if (persisted) {
+          toast.success('CV analyzed successfully! Your profile has been updated.');
+          setUploadError(null);
+          onUploadSuccess?.();
+          return;
+        }
+      }
+
       if (errorMsg.includes('Authentication') || errorMsg.includes('log in') || errorMsg.includes('session')) {
         setUploadError('Authentication required. Please refresh the page and try again.');
         toast.error('Please log in again to upload your CV');

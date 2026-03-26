@@ -149,7 +149,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
         }
 
         // 2) Related data in parallel
-        const [mentorMatchRes, openRespRes, latestResultRes, cvAnalysisRes] = await Promise.all([
+        const [mentorMatchRes, openRespRes, latestResultRes, cvAnalysisRes, cvCredentialsRes] = await Promise.all([
           supabase
             .from('mentor_matches')
             .select('mentor_user_id')
@@ -177,6 +177,11 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             .eq('user_id', user.id)
             .order('created_at', { ascending: false })
             .limit(1)
+            .maybeSingle(),
+          supabase
+            .from('cv_credentials')
+            .select('hard_skills')
+            .eq('user_id', user.id)
             .maybeSingle(),
         ]);
 
@@ -278,8 +283,8 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           open_answers,
           assessment_rationale: latestResultRes.data?.rationale ?? null,
           cv_analysis: {
-            summary: cvAnalysisRes.data?.summary ?? null,
-            strengths: cvAnalysisRes.data?.strengths ?? null,
+            summary: cvAnalysisRes.data?.summary ?? (profile?.cv_comments as any)?.summary ?? null,
+            strengths: cvAnalysisRes.data?.strengths ?? ((cvCredentialsRes.data?.hard_skills as any[] | null)?.slice(0, 5).map((skill) => skill?.name || String(skill)) ?? null),
             soft_skills: cvAnalysisRes.data?.soft_skills ?? null,
             cv_comments: (profile?.cv_comments as any) ?? null,
           },
