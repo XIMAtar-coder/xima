@@ -89,7 +89,7 @@ serve(async (req) => {
     const _ximatarLevel = (profile.ximatar_level || 1) as number;
     const _assessmentScores = (profile.assessment_scores || profile.pillar_scores) as Record<string, number> || {};
 
-    const scores = profile.assessment_scores as Record<string, number> || {};
+    const scores = _assessmentScores;
     const pillarScore = scores[progress.primary_pillar] ?? 50;
     const testConfig = progress.test_config as any;
 
