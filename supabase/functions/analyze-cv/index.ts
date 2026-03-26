@@ -598,7 +598,7 @@ serve(async (req) => {
     // ===== GDPR + XIMAtar fetch =====
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("profiling_opt_out, ximatar_id, ximatar_name, ximatar_storytelling, pillar_scores")
+      .select("profiling_opt_out, ximatar_id, ximatar, ximatar_name, ximatar_storytelling, pillar_scores")
       .eq("user_id", user.id)
       .single();
 
@@ -616,10 +616,25 @@ serve(async (req) => {
     }
 
     // ===== Check XIMAtar assessment exists =====
-    const ximatarId = profile?.ximatar_id as string | null;
+    // The `ximatar` column (enum) holds the taxonomy key like "owl"
+    // The `ximatar_id` column (uuid) is a FK to the ximatars table
     const pillarScores = profile?.pillar_scores as Record<string, number> | null;
+    let resolvedXimatarKey = (profile?.ximatar as string | null) || null;
 
-    if (!ximatarId || !pillarScores) {
+    if (!resolvedXimatarKey && profile?.ximatar_id) {
+      // Resolve UUID → taxonomy key via ximatars table
+      const serviceClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+      const { data: ximatarRecord } = await serviceClient
+        .from("ximatars")
+        .select("label")
+        .eq("id", profile.ximatar_id as string)
+        .maybeSingle();
+      if (ximatarRecord?.label) {
+        resolvedXimatarKey = ximatarRecord.label.toLowerCase();
+      }
+    }
+
+    if (!resolvedXimatarKey || !pillarScores) {
       return errorResponse(
         400,
         "ASSESSMENT_REQUIRED",
@@ -628,9 +643,16 @@ serve(async (req) => {
     }
 
     // Look up XIMAtar profile from taxonomy
-    const ximatarProfile = XIMATAR_PROFILES[ximatarId];
-    const ximatarName = (profile?.ximatar_name as string) || ximatarProfile?.name || ximatarId;
+    const ximatarProfile = XIMATAR_PROFILES[resolvedXimatarKey];
+    const ximatarName = (profile?.ximatar_name as string) || ximatarProfile?.name || resolvedXimatarKey;
     const ximatarTitle = ximatarProfile?.title || "";
+
+    console.log(JSON.stringify({
+      type: "ximatar_resolved",
+      correlation_id: correlationId,
+      ximatar_key: resolvedXimatarKey,
+      ximatar_name: ximatarName,
+    }));
 
     // ===== File validation =====
     const formData = await req.formData();
