@@ -87,7 +87,7 @@ serve(async (req) => {
       .eq("user_id", user.id)
       .maybeSingle();
 
-    const scores = profile.assessment_scores as Record<string, number> || {};
+    const scores = _assessmentScores;
     const pillarScore = scores[progress.primary_pillar] ?? 50;
     const tensionSummary = cvAnalysis?.tension_gaps
       ? JSON.stringify(cvAnalysis.tension_gaps)
