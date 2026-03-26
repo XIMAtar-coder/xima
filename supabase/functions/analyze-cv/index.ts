@@ -54,62 +54,38 @@ async function extractTextFromFile(
     }
   }
 
-  // PDF — try regex first, then Claude vision fallback
+  // PDF — use Claude vision API to read the document directly
+  // Regex-based extraction is unreliable for modern PDFs (compressed streams, CIDFonts)
   if (mimeType === "application/pdf") {
-    // Attempt 1: regex-based extraction (works for uncompressed PDFs)
-    const rawText = new TextDecoder("utf-8", { fatal: false }).decode(fileBytes);
-    const textParts: string[] = [];
-    const parenMatches = rawText.match(/\(([^)]{2,})\)/g) || [];
-    for (const match of parenMatches) {
-      const inner = match
-        .slice(1, -1)
-        .replace(/\\n/g, "\n")
-        .replace(/\\r/g, "")
-        .replace(/\\\(/g, "(")
-        .replace(/\\\)/g, ")")
-        .replace(/\\(\d{3})/g, (_: string, oct: string) => String.fromCharCode(parseInt(oct, 8)));
-      if (inner.length > 3 && /[a-zA-ZÀ-ÿ\s]/.test(inner)) {
-        textParts.push(inner);
-      }
-    }
-
-    const regexText = textParts.join(" ").trim();
-    if (regexText.length > 200) {
-      console.log(`[extract] pdf-regex extracted ${regexText.length} chars`);
-      return { text: regexText.substring(0, 15000), method: "pdf-regex" };
-    }
-
-    // Attempt 2: readable ASCII strings fallback
-    const readable = rawText.match(/[\x20-\x7E\xC0-\xFF]{10,}/g) || [];
-    const filtered = readable.filter(
-      (s: string) => /[a-zA-ZÀ-ÿ]{3,}/.test(s) && !/^[%\/\[\]<>{}]+$/.test(s)
-    );
-    const fallbackText = filtered.join("\n").trim();
-    if (fallbackText.length > 200) {
-      console.log(`[extract] pdf-ascii-fallback extracted ${fallbackText.length} chars`);
-      return { text: fallbackText.substring(0, 15000), method: "pdf-ascii-fallback" };
-    }
-
-    // Attempt 3: Claude vision — send PDF as base64 document for Claude to read
-    console.log("[extract] Text extraction insufficient, using Claude vision to read PDF");
+    console.log("[extract] PDF detected — using Claude vision for reliable text extraction");
+    
     try {
       const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
-      if (ANTHROPIC_API_KEY) {
-        // Convert to base64
-        const binaryStr = Array.from(fileBytes).map(b => String.fromCharCode(b)).join("");
-        const base64Pdf = btoa(binaryStr);
+      if (!ANTHROPIC_API_KEY) {
+        throw new Error("No API key for PDF extraction");
+      }
 
-        const visionResponse = await fetch("https://api.anthropic.com/v1/messages", {
-          method: "POST",
-          headers: {
-            "x-api-key": ANTHROPIC_API_KEY,
-            "anthropic-version": "2023-06-01",
-            "content-type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "claude-sonnet-4-20250514",
-            max_tokens: 4096,
-            messages: [{
+      // Convert bytes to base64
+      let base64Pdf = "";
+      const CHUNK_SIZE = 8192;
+      for (let i = 0; i < fileBytes.length; i += CHUNK_SIZE) {
+        const chunk = fileBytes.subarray(i, Math.min(i + CHUNK_SIZE, fileBytes.length));
+        base64Pdf += String.fromCharCode(...chunk);
+      }
+      base64Pdf = btoa(base64Pdf);
+
+      const visionResponse = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "x-api-key": ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 4096,
+          messages: [
+            {
               role: "user",
               content: [
                 {
@@ -122,30 +98,55 @@ async function extractTextFromFile(
                 },
                 {
                   type: "text",
-                  text: "Extract all text from this PDF document. Return ONLY the raw text content, preserving section headings and structure. No commentary."
-                }
-              ]
-            }],
-          }),
-        });
+                  text: "Extract ALL text content from this CV/resume PDF document. Return ONLY the raw text content exactly as it appears in the document. Preserve all section headings, job titles, company names, dates, education details, skills lists, and all other professional information. Do not add any commentary, analysis, or markdown formatting — just output the document's text content faithfully.",
+                },
+              ],
+            },
+          ],
+        }),
+      });
 
-        if (visionResponse.ok) {
-          const visionData = await visionResponse.json();
-          const visionText = visionData.content?.[0]?.text || "";
-          if (visionText.length > 50) {
-            console.log(`[extract] claude-vision-pdf extracted ${visionText.length} chars`);
-            return { text: visionText.substring(0, 15000), method: "claude-vision-pdf" };
-          }
+      if (visionResponse.ok) {
+        const visionData = await visionResponse.json();
+        const visionText = visionData.content?.[0]?.text || "";
+        if (visionText.length > 50) {
+          console.log(`[extract] Claude vision extracted ${visionText.length} chars from PDF`);
+          return { text: visionText.substring(0, 15000), method: "claude-vision-pdf" };
         } else {
-          console.warn(`[extract] Claude vision failed: ${visionResponse.status}`);
+          console.warn(`[extract] Claude vision returned only ${visionText.length} chars`);
         }
+      } else {
+        const errText = await visionResponse.text().catch(() => "");
+        console.error(`[extract] Claude vision HTTP ${visionResponse.status}:`, errText.substring(0, 300));
       }
-    } catch (visionErr) {
-      console.warn("[extract] Claude vision fallback error:", visionErr instanceof Error ? visionErr.message : "unknown");
+    } catch (visionError) {
+      console.error("[extract] Claude vision error:", visionError instanceof Error ? visionError.message : "unknown");
     }
 
-    // Return whatever we have
-    return { text: (fallbackText || regexText).substring(0, 15000), method: "pdf-regex-fallback" };
+    // Fallback: if Claude vision fails, try regex as last resort
+    console.warn("[extract] Claude vision failed, trying regex fallback");
+    const rawText = new TextDecoder("utf-8", { fatal: false }).decode(fileBytes);
+    const textParts: string[] = [];
+    const parenMatches = rawText.match(/\(([^)]{2,})\)/g) || [];
+    for (const match of parenMatches) {
+      const inner = match
+        .slice(1, -1)
+        .replace(/\\n/g, "\n")
+        .replace(/\\r/g, "")
+        .replace(/\\\(/g, "(")
+        .replace(/\\\)/g, ")")
+        .replace(/\\(\d{3})/g, (_: string, oct: string) => String.fromCharCode(parseInt(oct, 8)));
+      if (inner.length > 10 && /[a-zA-ZÀ-ÿ]{4,}/.test(inner) && (inner.match(/\s/g) || []).length >= 2) {
+        textParts.push(inner);
+      }
+    }
+    
+    const regexText = textParts.join(" ").trim();
+    if (regexText.length > 200) {
+      return { text: regexText.substring(0, 15000), method: "pdf-regex-strict" };
+    }
+
+    return { text: "", method: "pdf-extraction-failed" };
   }
 
   // DOC (legacy binary)
