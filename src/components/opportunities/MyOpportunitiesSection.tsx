@@ -41,14 +41,27 @@ export const MyOpportunitiesSection: React.FC = () => {
     setOpportunitiesError(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('fetch-opportunities');
+      const { data, error } = await supabase.functions.invoke('recommend-jobs');
 
       if (error) throw error;
 
-      if (data?.success && data?.opportunities) {
+      if (data?.opportunities && Array.isArray(data.opportunities)) {
         setOpportunities(data.opportunities);
+      } else if (data?.recommendations && Array.isArray(data.recommendations)) {
+        // Map new format to old format
+        setOpportunities(data.recommendations.map((r: any) => ({
+          id: r.job?.id || r.id,
+          title: r.job?.title || r.title,
+          company: r.job?.company || r.company || 'Company',
+          description: r.xima_narrative || r.description || null,
+          location: r.job?.location || r.location || null,
+          skills: null,
+          source_url: null,
+          created_at: new Date().toISOString(),
+        })));
       } else {
-        throw new Error('Invalid response format');
+        // No opportunities available — not an error
+        setOpportunities([]);
       }
     } catch (error: any) {
       console.error('Error fetching opportunities:', error);

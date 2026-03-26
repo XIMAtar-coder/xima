@@ -436,26 +436,41 @@ Return ONLY a JSON array of strings, one per job:
       ? (Object.values(userTrajectory).filter(v => v > 0).length >= 3 ? "ascending" : Object.values(userTrajectory).every(v => v === 0) ? "stable" : "mixed")
       : "not_tracked";
 
+    const recommendationItems = topMatches.map((match, i) => ({
+      job: {
+        id: match.id,
+        title: match.title,
+        company: match.companyName,
+        location: match.location,
+        seniority: match.seniority,
+        employment_type: match.employmentType,
+      },
+      match_score: match.totalScore,
+      score_breakdown: {
+        identity: match.identityScore,
+        credentials: match.credentialScore,
+        growth_fit: match.growthFitScore,
+      },
+      fit_type: match.fitType,
+      identity_details: match.identityBreakdown,
+      credential_details: match.credentialDetails,
+      xima_narrative: narratives[i] || fallbackNarrative(match, userArchetype),
+    }));
+
     const response = {
-      recommendations: topMatches.map((match, i) => ({
-        job: {
-          id: match.id,
-          title: match.title,
-          company: match.companyName,
-          location: match.location,
-          seniority: match.seniority,
-          employment_type: match.employmentType,
-        },
-        match_score: match.totalScore,
-        score_breakdown: {
-          identity: match.identityScore,
-          credentials: match.credentialScore,
-          growth_fit: match.growthFitScore,
-        },
-        fit_type: match.fitType,
-        identity_details: match.identityBreakdown,
-        credential_details: match.credentialDetails,
-        xima_narrative: narratives[i] || fallbackNarrative(match, userArchetype),
+      success: true,
+      recommendations: recommendationItems,
+      // Backward-compatible format for MyOpportunitiesSection
+      opportunities: recommendationItems.map(r => ({
+        id: r.job.id,
+        title: r.job.title,
+        company: r.job.company,
+        description: r.xima_narrative,
+        location: r.job.location,
+        skills: null,
+        source_url: null,
+        created_at: new Date().toISOString(),
+        matchScore: r.match_score,
       })),
       total: topMatches.length,
       user_context: {
