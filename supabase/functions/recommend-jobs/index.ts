@@ -241,7 +241,7 @@ serve(async (req) => {
 
     // ---- Fetch user data in parallel ----
     const [profileRes, credentialsRes, cvAnalysisRes, trajectoryRes] = await Promise.all([
-      supabase.from("profiles").select("ximatar_archetype, ximatar_level, assessment_scores").eq("user_id", userId).single(),
+      supabase.from("profiles").select("ximatar, ximatar_level, pillar_scores").eq("user_id", userId).single(),
       supabase.from("cv_credentials").select("hard_skills, seniority_level, total_years_experience, industries_worked, career_trajectory, languages").eq("user_id", userId).maybeSingle(),
       supabase.from("cv_identity_analysis").select("cv_qualified_roles, archetype_aligned_roles, growth_bridge_roles").eq("user_id", userId).maybeSingle(),
       supabase.rpc("get_user_trajectory_90d", { p_user_id: userId }).maybeSingle(),
