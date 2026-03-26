@@ -154,10 +154,23 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
     const analysisStartedAt = new Date().toISOString();
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      // Force token refresh by calling getUser first
+      const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+      if (authError || !authUser) {
+        throw new Error('Authentication required. Please refresh the page and try again.');
+      }
 
+      const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) {
-        throw new Error('No active session. Please log in again.');
+        // Try refreshing the session explicitly
+        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+        if (refreshError || !refreshData.session?.access_token) {
+          throw new Error('No active session. Please log in again.');
+        }
+        // Use the refreshed token
+        var accessToken = refreshData.session.access_token;
+      } else {
+        var accessToken = session.access_token;
       }
 
       const formData = new FormData();
@@ -169,7 +182,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
       const response = await fetch(`${supabaseUrl}/functions/v1/analyze-cv`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${accessToken}`,
           apikey: anonKey,
         },
         body: formData,
