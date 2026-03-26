@@ -17,6 +17,7 @@ import { corsHeaders, errorResponse, jsonResponse, profilingOptOutResponse, unau
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric, hashForAudit } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES, type XimatarPillars } from "../_shared/ximatarTaxonomy.ts";
+import { checkAiBudget, recordAiCall, cacheAiResult } from "../_shared/aiBudget.ts";
 
 // =====================================================
 // Helper 1: Text extraction from file bytes
@@ -667,6 +668,40 @@ serve(async (req) => {
       ximatar_name: ximatarName,
     }));
 
+    // ===== AI Budget Check =====
+    const budgetCheck = await checkAiBudget(user.id, "analyze-cv");
+
+    if (!budgetCheck.allowed) {
+      console.log(JSON.stringify({
+        type: "budget_exceeded",
+        correlation_id: correlationId,
+        function_name: "analyze-cv",
+        calls_used: budgetCheck.calls_used,
+        calls_limit: budgetCheck.calls_limit,
+        tier: budgetCheck.tier,
+      }));
+
+      if (budgetCheck.cached_result) {
+        return jsonResponse({
+          ...budgetCheck.cached_result,
+          _budget: {
+            exceeded: true,
+            calls_used: budgetCheck.calls_used,
+            calls_limit: budgetCheck.calls_limit,
+            tier: budgetCheck.tier,
+            message: budgetCheck.budget_message,
+            cached: true,
+          },
+        });
+      }
+
+      return errorResponse(
+        429,
+        "AI_BUDGET_EXCEEDED",
+        budgetCheck.budget_message || "Monthly AI analysis limit reached. Upgrade your plan for more analyses."
+      );
+    }
+
     // ===== File validation =====
     const formData = await req.formData();
     const file = formData.get("file");
@@ -917,26 +952,36 @@ serve(async (req) => {
       JSON.stringify({ type: "success", correlation_id: correlationId, function_name: "analyze-cv", ximatar: ximatarId, cv_archetype: archetype.primary })
     );
 
-    // ===== Return response =====
-    return jsonResponse({
+    // ===== Record AI call and cache result =====
+    const responsePayload = {
       success: true,
-      // Identity layer
       cv_archetype: identity.cv_archetype,
       cv_pillar_scores: identity.cv_pillar_scores,
       tension: identity.tension,
       improvements: identity.improvements,
       role_fit: identity.role_fit,
       mentor_hook: identity.mentor_hook,
-      // Credential summary
       seniority_level: credentials.seniority_level,
       total_years_experience: credentials.total_years_experience,
       career_trajectory: credentials.career_trajectory,
       education_count: credentials.education?.length ?? 0,
       skills_count: credentials.hard_skills?.length ?? 0,
-      // Meta
       detected_language: detectedLanguage,
       extraction_method: extractionMethod,
       assessment_ximatar: ximatarId,
+    };
+
+    await recordAiCall(user.id, "analyze-cv");
+    await cacheAiResult(user.id, "analyze-cv", responsePayload);
+
+    return jsonResponse({
+      ...responsePayload,
+      _budget: {
+        exceeded: false,
+        calls_used: budgetCheck.calls_used + 1,
+        calls_limit: budgetCheck.calls_limit,
+        tier: budgetCheck.tier,
+      },
     });
   } catch (err) {
     console.error(
