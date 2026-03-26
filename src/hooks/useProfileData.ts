@@ -149,7 +149,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
         }
 
         // 2) Related data in parallel
-        const [mentorMatchRes, openRespRes, latestResultRes, cvAnalysisRes] = await Promise.all([
+        const [mentorMatchRes, openRespRes, latestResultRes, cvAnalysisRes, cvCredentialsRes] = await Promise.all([
           supabase
             .from('mentor_matches')
             .select('mentor_user_id')
@@ -177,6 +177,11 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             .eq('user_id', user.id)
             .order('created_at', { ascending: false })
             .limit(1)
+            .maybeSingle(),
+          supabase
+            .from('cv_credentials')
+            .select('hard_skills')
+            .eq('user_id', user.id)
             .maybeSingle(),
         ]);
 
