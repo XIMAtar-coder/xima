@@ -304,7 +304,9 @@ serve(async (req) => {
 
     if (allJobs.length === 0) {
       return jsonResponse({
+        success: true,
         recommendations: [],
+        opportunities: [],
         total: 0,
         message: "No active job opportunities available right now. Check back soon.",
         user_context: { ximatar: userArchetype, level: userLevel, cv_uploaded: !!credentials },
