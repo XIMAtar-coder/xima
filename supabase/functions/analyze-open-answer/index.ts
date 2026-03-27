@@ -6,6 +6,7 @@ import { corsHeaders, errorResponse, jsonResponse, profilingOptOutResponse } fro
 import { emitAuditEventWithMetric, hashForAudit } from "../_shared/auditEvents.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { persistTrajectoryEvent } from "../_shared/pillarTrajectory.ts";
+import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 
 // =====================================================
 // NON-ANSWER DETECTION (Pre-LLM Hard Rules) — KEPT EXACTLY
