@@ -434,7 +434,7 @@ Return ONLY a JSON array of strings:
       }
     }
 
-    // Update progressive AI context
+    // Update progressive AI context + deposit inference
     if (userId && topMentors.length > 0) {
       const existingMatching = (userId ? (await loadUserAiContext(userId)).matching_preferences : null) || {};
       await updateUserAiContext(userId, {
@@ -445,6 +445,17 @@ Return ONLY a JSON array of strings:
           last_mentor_match_at: new Date().toISOString(),
         },
         matching_updated_at: new Date().toISOString(),
+      });
+
+      // Deposit into intelligence engine
+      await depositInference(userId, "recommend-mentors", {
+        top_mentor: topMentors[0].name,
+        top_score: topMentors[0].score,
+        matching_context: hasTension ? "tension" : "basic",
+        user_archetype: userArchetype,
+      }, {
+        patternType: "mentor_matching",
+        archetype: userArchetype || undefined,
       });
     }
 
