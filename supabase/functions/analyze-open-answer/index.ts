@@ -221,6 +221,8 @@ Also compute how this answer affects each XIMA pillar (-5 to +5):
 - creativity: Novel ideas, reframing, lateral thinking
 - knowledge: Domain expertise, best practices, references
 
+` + contextBlock + `
+
 Return ONLY valid JSON:
 {
   "score": <total 0-100>,
