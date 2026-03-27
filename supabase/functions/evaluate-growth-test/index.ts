@@ -105,6 +105,10 @@ Evaluation criteria:
 User's answer: ${userAnswer?.answer_text || "(no answer provided)"}`;
     }).join("\n\n");
 
+    // Load AI context
+    const userContext = await loadUserAiContext(user.id);
+    const contextBlock = buildContextBlock(userContext);
+
     const systemPrompt = `You are the XIMA Growth Test Evaluator. Score test answers and determine pillar trajectory impact.
 
 USER: ${_ximatarArchetype} L${_ximatarLevel}, strengthening ${progress.primary_pillar} (score: ${pillarScore})

@@ -179,7 +179,10 @@ This is an L1 challenge response. Use these behavioral signals to evaluate:
       }
     }
 
-    // STEP 2: Claude Evaluation
+    // STEP 2: Load AI context & Claude Evaluation
+    const userContext = user_id ? await loadUserAiContext(user_id) : {};
+    const contextBlock = buildContextBlock(userContext);
+
     const systemPrompt = `You are a strict but fair professional assessment evaluator for the XIMA psychometric talent platform.
 
 CRITICAL RULES:
