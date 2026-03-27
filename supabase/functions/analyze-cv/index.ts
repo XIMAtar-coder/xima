@@ -803,8 +803,11 @@ serve(async (req) => {
     // ===== Detect language =====
     const detectedLanguage = detectLanguage(truncatedText);
 
-    // ===== Build prompt & call Claude =====
-    const systemPrompt = buildSystemPrompt(ximatarId, ximatarName, ximatarTitle, pillarScores, detectedLanguage);
+    // ===== Load AI context & build prompt =====
+    const userContext = await loadUserAiContext(user.id);
+    const contextBlock = buildContextBlock(userContext);
+
+    const systemPrompt = buildSystemPrompt(ximatarId, ximatarName, ximatarTitle, pillarScores, detectedLanguage) + contextBlock;
     const userMessage = buildUserMessage(truncatedText, ximatarId, ximatarName, ximatarTitle, pillarScores);
 
     const ipHash = await hashForAudit(req.headers.get("x-forwarded-for") || "unknown");
