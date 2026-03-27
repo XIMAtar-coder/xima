@@ -5,6 +5,7 @@ import { extractJsonFromAiContent, generateCorrelationId } from "../_shared/aiCl
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse, forbiddenResponse } from "../_shared/errors.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES } from "../_shared/ximatarTaxonomy.ts";
+import { checkDatabaseFirst, depositInference } from "../_shared/intelligenceEngine.ts";
 
 // =====================================================
 // Types
