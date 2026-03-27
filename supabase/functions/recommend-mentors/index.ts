@@ -420,6 +420,20 @@ Return ONLY a JSON array of strings:
       }
     }
 
+    // Update progressive AI context
+    if (userId && topMentors.length > 0) {
+      const existingMatching = (userId ? (await loadUserAiContext(userId)).matching_preferences : null) || {};
+      await updateUserAiContext(userId, {
+        matching_preferences: {
+          ...existingMatching,
+          mentor_matched: topMentors[0].name,
+          mentor_focus: mentorSuggestedFocus,
+          last_mentor_match_at: new Date().toISOString(),
+        },
+        matching_updated_at: new Date().toISOString(),
+      });
+    }
+
     // ---- Build response ----
     const primaryGap = tensionGaps.find(g => g.gap_direction === "undersold");
 
