@@ -4367,6 +4367,81 @@ export type Database = {
           },
         ]
       }
+      user_ai_context: {
+        Row: {
+          assessment_summary: Json | null
+          assessment_updated_at: string | null
+          challenge_history_summary: Json | null
+          challenges_updated_at: string | null
+          created_at: string | null
+          cv_analyzed_at: string | null
+          cv_credentials_summary: Json | null
+          cv_extracted_text: string | null
+          cv_extraction_method: string | null
+          cv_file_hash: string | null
+          cv_identity_summary: Json | null
+          cv_language: string | null
+          growth_summary: Json | null
+          growth_updated_at: string | null
+          l3_summary: Json | null
+          l3_updated_at: string | null
+          matching_preferences: Json | null
+          matching_updated_at: string | null
+          total_ai_calls: number | null
+          total_tokens_saved: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          assessment_summary?: Json | null
+          assessment_updated_at?: string | null
+          challenge_history_summary?: Json | null
+          challenges_updated_at?: string | null
+          created_at?: string | null
+          cv_analyzed_at?: string | null
+          cv_credentials_summary?: Json | null
+          cv_extracted_text?: string | null
+          cv_extraction_method?: string | null
+          cv_file_hash?: string | null
+          cv_identity_summary?: Json | null
+          cv_language?: string | null
+          growth_summary?: Json | null
+          growth_updated_at?: string | null
+          l3_summary?: Json | null
+          l3_updated_at?: string | null
+          matching_preferences?: Json | null
+          matching_updated_at?: string | null
+          total_ai_calls?: number | null
+          total_tokens_saved?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          assessment_summary?: Json | null
+          assessment_updated_at?: string | null
+          challenge_history_summary?: Json | null
+          challenges_updated_at?: string | null
+          created_at?: string | null
+          cv_analyzed_at?: string | null
+          cv_credentials_summary?: Json | null
+          cv_extracted_text?: string | null
+          cv_extraction_method?: string | null
+          cv_file_hash?: string | null
+          cv_identity_summary?: Json | null
+          cv_language?: string | null
+          growth_summary?: Json | null
+          growth_updated_at?: string | null
+          l3_summary?: Json | null
+          l3_updated_at?: string | null
+          matching_preferences?: Json | null
+          matching_updated_at?: string | null
+          total_ai_calls?: number | null
+          total_tokens_saved?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_consents: {
         Row: {
           consent_type: string
