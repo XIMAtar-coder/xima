@@ -128,7 +128,7 @@ QUESTIONS, CRITERIA, AND USER ANSWERS:
 ${qaContext}
 
 LANGUAGE: ${locale}
-
+${contextBlock}
 Return ONLY valid JSON:
 {
   "results": {
