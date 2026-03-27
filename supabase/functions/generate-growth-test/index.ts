@@ -12,6 +12,7 @@ import { extractJsonFromAiContent } from "../_shared/aiClient.ts";
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
+import { loadUserAiContext, buildContextBlock } from "../_shared/aiContext.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
