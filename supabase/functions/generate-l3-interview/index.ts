@@ -311,7 +311,7 @@ INTERVIEW DESIGN RULES:
 7. DO NOT ask about demographics, personal life, or anything that could introduce bias
 
 LANGUAGE: Generate all questions and viewing guides in ${locale}.
-
+${contextBlock}
 Return ONLY valid JSON:
 {
   "questions": [
