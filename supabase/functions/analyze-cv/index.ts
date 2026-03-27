@@ -728,6 +728,20 @@ serve(async (req) => {
 
     const fileBytes = new Uint8Array(await file.arrayBuffer());
 
+    // ===== CV file hash check — skip duplicate analysis =====
+    const existingHash = await checkCvHash(user.id, fileBytes);
+    if (existingHash) {
+      const budgetCheckEarly = await checkAiBudget(user.id, "analyze-cv");
+      if (budgetCheckEarly.cached_result) {
+        console.log("[analyze-cv] Same CV file detected, returning cached result");
+        return jsonResponse({
+          ...budgetCheckEarly.cached_result,
+          _cached: true,
+          _message: "This CV has already been analyzed. Upload a different CV for a new analysis.",
+        });
+      }
+    }
+
     // Magic bytes validation
     if (file.type === "application/pdf") {
       const isPDF = fileBytes[0] === 0x25 && fileBytes[1] === 0x50 && fileBytes[2] === 0x44 && fileBytes[3] === 0x46;
