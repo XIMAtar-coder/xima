@@ -84,19 +84,10 @@ serve(async (req) => {
       : "No specific tension data";
 
     const questionTypeGuide = progress.resource_type === "course"
-      ? `For COURSES:
-   - 2 scenario-based: "Given this situation, how would you apply what you learned?"
-   - 2 conceptual: "Explain the key principle behind X and how it relates to your work"
-   - 1 self-reflection: "How has this course changed your approach to [pillar aspect]?"`
+      ? "2 scenario-based + 2 conceptual + 1 self-reflection"
       : progress.resource_type === "book"
-      ? `For BOOKS:
-   - 2 conceptual: "The author argues X. How does this apply to your professional context?"
-   - 2 application: "Describe how you would use [concept from book] in a real situation"
-   - 1 critical thinking: "What is the strongest/weakest argument in the book and why?"`
-      : `For PODCASTS:
-   - 2 insight-based: "What was the key insight from [episode/podcast] and how does it relate to [pillar]?"
-   - 2 application: "The host/guest discussed X. How would you apply this?"
-   - 1 self-reflection: "What perspective shift did this give you about [pillar aspect]?"`;
+      ? "2 conceptual + 2 application + 1 critical thinking"
+      : "2 insight-based + 2 application + 1 self-reflection";
 
     // Load AI context
     const userContext = await loadUserAiContext(user.id);

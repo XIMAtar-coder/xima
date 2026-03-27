@@ -103,49 +103,28 @@ User's answer: ${userAnswer?.answer_text || "(no answer provided)"}`;
     const systemPrompt = `You are the XIMA Growth Test Evaluator. Score test answers and determine pillar trajectory impact.
 
 USER: ${_ximatarArchetype} L${_ximatarLevel}, strengthening ${progress.primary_pillar} (score: ${pillarScore})
-Resource completed: "${progress.resource_title}" (${progress.resource_type})
+Resource: "${progress.resource_title}" (${progress.resource_type})
 
-SCORING RULES:
-- Each question scored 0-20 (5 questions = max 100)
-- Provide specific, constructive feedback per question in ${locale}
-- Be honest but encouraging — growth mindset framing
+SCORING: Each question 0-20 (5 questions = max 100). Pass threshold: 60.
+Provide specific, constructive feedback per question in ${locale}. Growth mindset framing.
 
-PILLAR DELTA RULES (Growth Hub gradient: ±1 to ±3 max):
-- Score 90-100 → primary pillar +3, secondary +1
-- Score 75-89 → primary pillar +2, secondary +1
-- Score 60-74 → primary pillar +1
-- Score below 60 → no positive deltas (learning attempt not punished, score 0)
-- NEVER apply negative deltas for Growth Hub tests — failed tests = no change, not regression
+PILLAR DELTAS (0 to +3 max, NEVER negative for Growth Hub):
+90-100→primary +3 secondary +1, 75-89→primary +2 secondary +1, 60-74→primary +1, <60→no deltas.
 
-PASS THRESHOLD: 60/100
-
-QUESTIONS, CRITERIA, AND USER ANSWERS:
+QUESTIONS AND ANSWERS:
 ${qaContext}
 
-LANGUAGE: ${locale}
 ${contextBlock}
 Return ONLY valid JSON:
 {
   "results": {
     "total_score": number,
     "passed": boolean,
-    "per_question": [
-      {
-        "question_id": "tq1",
-        "score": number,
-        "feedback": "Specific feedback"
-      }
-    ],
-    "pillar_deltas": {
-      "drive": number,
-      "computational_power": number,
-      "communication": number,
-      "creativity": number,
-      "knowledge": number
-    },
-    "delta_reasoning": "1 sentence explaining why these deltas",
-    "overall_feedback": "2-3 sentence growth feedback",
-    "next_recommendation": "What to study or do next"
+    "per_question": [{"question_id":"tq1","score":number,"feedback":"str"}],
+    "pillar_deltas": {"drive":0,"computational_power":0,"communication":0,"creativity":0,"knowledge":0},
+    "delta_reasoning": "1 sentence",
+    "overall_feedback": "2-3 sentences",
+    "next_recommendation": "str"
   }
 }`;
 
