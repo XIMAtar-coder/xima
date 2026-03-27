@@ -133,6 +133,8 @@ IMPORTANT: Use your knowledge of what "${progress.resource_title}" typically cov
 
 LANGUAGE: ${locale}
 
+` + contextBlock + `
+
 Return ONLY valid JSON:
 {
   "test": {

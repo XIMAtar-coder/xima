@@ -407,6 +407,16 @@ Return ONLY valid JSON:
       "l3_interviews_generated"
     );
 
+    // Update AI context for L3
+    await updateUserAiContext(candidateProfile.user_id, {
+      l3_summary: {
+        questions_count: (validated.questions as unknown[]).length,
+        question_types: (validated.questions as any[]).map((q: any) => q.question_type),
+        last_l3_at: new Date().toISOString(),
+      },
+      l3_updated_at: new Date().toISOString(),
+    });
+
     return jsonResponse({
       success: true,
       interview: validated,

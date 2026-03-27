@@ -364,6 +364,19 @@ Return ONLY valid JSON:
       },
     }, "growth_paths_generated");
 
+    // Update progressive AI context
+    await updateUserAiContext(user.id, {
+      assessment_summary: {
+        ximatar: archetype,
+        level,
+        scores: assessmentScores,
+        edge: pillarEntries[pillarEntries.length - 1]?.pillar,
+        friction: weakestPillar,
+        trajectory_direction: trajectorySummary !== "No trajectory data yet" ? "active" : "not_started",
+      },
+      assessment_updated_at: new Date().toISOString(),
+    });
+
     return jsonResponse({
       success: true,
       growth_path: v.growth_path,

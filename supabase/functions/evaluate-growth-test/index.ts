@@ -250,6 +250,33 @@ Return ONLY valid JSON:
       },
     }, "growth_tests_completed");
 
+    // Update progressive AI context
+    const existingGrowth = userContext.growth_summary || {
+      courses_completed: 0, books_completed: 0, podcasts_completed: 0,
+      tests_taken: 0, tests_passed: 0,
+      total_deltas: { drive: 0, computational_power: 0, communication: 0, creativity: 0, knowledge: 0 },
+    };
+    const resourceType = progress.resource_type || "course";
+    const typeKey = `${resourceType}s_completed`;
+
+    await updateUserAiContext(user.id, {
+      growth_summary: {
+        ...existingGrowth,
+        [typeKey]: (existingGrowth[typeKey] || 0) + 1,
+        tests_taken: (existingGrowth.tests_taken || 0) + 1,
+        tests_passed: (existingGrowth.tests_passed || 0) + (v.passed ? 1 : 0),
+        total_deltas: v.passed ? {
+          drive: (existingGrowth.total_deltas?.drive || 0) + (cleanDeltas.drive || 0),
+          computational_power: (existingGrowth.total_deltas?.computational_power || 0) + (cleanDeltas.computational_power || 0),
+          communication: (existingGrowth.total_deltas?.communication || 0) + (cleanDeltas.communication || 0),
+          creativity: (existingGrowth.total_deltas?.creativity || 0) + (cleanDeltas.creativity || 0),
+          knowledge: (existingGrowth.total_deltas?.knowledge || 0) + (cleanDeltas.knowledge || 0),
+        } : existingGrowth.total_deltas,
+        preferred_type: resourceType,
+      },
+      growth_updated_at: new Date().toISOString(),
+    });
+
     return jsonResponse({
       success: true,
       results: {

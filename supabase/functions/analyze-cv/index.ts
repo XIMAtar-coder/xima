@@ -993,6 +993,35 @@ serve(async (req) => {
     await recordAiCall(user.id, "analyze-cv");
     await cacheAiResult(user.id, "analyze-cv", responsePayload);
 
+    // ===== Update progressive AI context =====
+    const cvFileHash = await computeFileHash(fileBytes);
+    await updateUserAiContext(user.id, {
+      cv_credentials_summary: {
+        full_name: credentials.full_name,
+        total_years_experience: credentials.total_years_experience,
+        seniority_level: credentials.seniority_level,
+        top_skills: credentials.hard_skills?.slice(0, 8)?.map((s: any) => s.name || String(s)),
+        education_summary: credentials.education?.[0]
+          ? `${credentials.education[0].degree_type} ${credentials.education[0].field_of_study} @ ${credentials.education[0].institution}`
+          : null,
+        industries: credentials.industries_worked?.slice(0, 5),
+        career_trajectory: credentials.career_trajectory,
+      },
+      cv_identity_summary: {
+        cv_archetype: archetype.primary,
+        alignment_score: tension.alignment_score,
+        top_tensions: tension.primary_gaps?.slice(0, 3)?.map((g: any) =>
+          `${g.pillar} ${g.gap_direction} (CV ${g.cv_score} vs Assessment ${g.ximatar_score})`
+        ),
+        narrative_snippet: tension.overall_narrative?.substring(0, 200),
+      },
+      cv_language: detectedLanguage,
+      cv_analyzed_at: new Date().toISOString(),
+      cv_extracted_text: truncatedText.substring(0, 3000),
+      cv_extraction_method: extractionMethod,
+      cv_file_hash: cvFileHash,
+    });
+
     return jsonResponse({
       ...responsePayload,
       _budget: {

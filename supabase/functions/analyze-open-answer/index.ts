@@ -421,6 +421,29 @@ Return ONLY the JSON object.`;
       has_pillar_impact: !!pillarImpact,
     }));
 
+    // Update progressive AI context for challenge history
+    if (user_id && typeof user_id === 'string') {
+      const existingChallenges = userContext.challenge_history_summary || {
+        l1_completed: 0, l2_completed: 0, l1_avg_score: 0, l2_avg_score: 0,
+        strongest_area: null, weakest_area: null,
+      };
+      const isL1 = scoring_context === 'l1_challenge';
+      const isL2 = scoring_context === 'l2_challenge';
+      const countKey = isL2 ? 'l2_completed' : 'l1_completed';
+      const avgKey = isL2 ? 'l2_avg_score' : 'l1_avg_score';
+      const prevCount = existingChallenges[countKey] || 0;
+      const prevAvg = existingChallenges[avgKey] || 0;
+
+      await updateUserAiContext(user_id, {
+        challenge_history_summary: {
+          ...existingChallenges,
+          [countKey]: prevCount + 1,
+          [avgKey]: Math.round(((prevAvg * prevCount) + finalScore) / (prevCount + 1)),
+        },
+        challenges_updated_at: new Date().toISOString(),
+      });
+    }
+
     return jsonResponse({
       score_total: finalScore,
       score_breakdown: scoreBreakdown,

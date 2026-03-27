@@ -444,6 +444,19 @@ Return ONLY valid JSON:
       })
       .eq("id", submission_id);
 
+    // ---- Update AI context for L3 frames ----
+    if (candidateProfile?.user_id) {
+      await updateUserAiContext(candidateProfile.user_id, {
+        l3_summary: {
+          ...(await loadUserAiContext(candidateProfile.user_id)).l3_summary,
+          engagement_notes: validated.viewing_guide.congruence_summary,
+          visual_analysis: validated.visual_analysis_available,
+          last_l3_frames_at: new Date().toISOString(),
+        },
+        l3_updated_at: new Date().toISOString(),
+      });
+    }
+
     // ---- Pillar trajectory ----
     if (candidateProfile?.user_id && validated.visual_analysis_available) {
       const deltas = computeL3Deltas(validated);

@@ -379,8 +379,13 @@ serve(async (req) => {
           ? [...userPillarScores].sort((a: any, b: any) => a.score - b.score)[0]?.pillar
           : null;
 
+        // Load AI context for narrative enrichment
+        const userContextData = userId ? await loadUserAiContext(userId) : {};
+        const contextBlock = buildContextBlock(userContextData);
+
         const narrativePrompt = `You are XIMA, a psychometric talent platform.
 Generate a personalized 1-2 sentence explanation for each mentor match.
+${contextBlock}
 
 USER CONTEXT:
 - XIMAtar: ${userArchetype || "unknown"} L${userLevel} (${archetypeProfile?.title || "unknown"})

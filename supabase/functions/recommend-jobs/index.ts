@@ -398,8 +398,13 @@ serve(async (req) => {
 
         const archetypeProfile = XIMATAR_PROFILES[userArchetype];
 
+        // Load AI context for narrative enrichment
+        const userContext = await loadUserAiContext(userId);
+        const contextBlock = buildContextBlock(userContext);
+
         const narrativePrompt = `You are XIMA, a psychometric talent intelligence platform.
 Generate a short, personalized match explanation for each job recommendation.
+${contextBlock}
 
 USER PROFILE:
 - XIMAtar: ${userArchetype} L${userLevel} (${archetypeProfile?.title || userArchetype})
