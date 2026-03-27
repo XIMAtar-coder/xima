@@ -246,10 +246,32 @@ export async function callAnthropicApi(options: AnthropicCallOptions): Promise<A
     throw new AnthropicError(502, "EMPTY_RESPONSE", "Empty response from Claude");
   }
 
-  // Fire-and-forget success envelope
-  persistEnvelope({ output_summary: `len=${content.length},retried=${retried}`, status: "success", error_code: null, latency_ms: latencyMs });
+  // Cost estimation
+  const inputTokens = data.usage?.input_tokens || 0;
+  const outputTokens = data.usage?.output_tokens || 0;
+  const estimatedCost =
+    (inputTokens / 1000) * (COST_PER_1K_INPUT[model] || 0.003) +
+    (outputTokens / 1000) * (COST_PER_1K_OUTPUT[model] || 0.015);
 
-  console.log(JSON.stringify({ type: "anthropic_success", correlation_id: correlationId, function_name: functionName, latency_ms: latencyMs, retried }));
+  // Fire-and-forget success envelope with cost info
+  persistEnvelope({
+    output_summary: `tokens:${inputTokens}+${outputTokens},cost:$${estimatedCost.toFixed(4)},model:${model}`,
+    status: "success", error_code: null, latency_ms: latencyMs,
+  });
+
+  console.log(JSON.stringify({
+    type: "anthropic_success", correlation_id: correlationId, function_name: functionName,
+    latency_ms: latencyMs, retried, model,
+    input_tokens: inputTokens, output_tokens: outputTokens,
+    estimated_cost_usd: Math.round(estimatedCost * 10000) / 10000,
+  }));
+
+  // Separate cost estimate log for easy querying
+  console.log(JSON.stringify({
+    type: "cost_estimate", correlation_id: correlationId, function_name: functionName,
+    model, input_tokens: inputTokens, output_tokens: outputTokens,
+    estimated_cost_usd: Math.round(estimatedCost * 10000) / 10000,
+  }));
 
   return { content, model, latencyMs, requestId };
 }
