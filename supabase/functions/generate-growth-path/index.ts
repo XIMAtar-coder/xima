@@ -151,6 +151,10 @@ serve(async (req) => {
     const level = ximatarLevel;
     const nextLevel = Math.min(level + 1, 3);
 
+    // Load AI context
+    const userContext = await loadUserAiContext(user.id);
+    const contextBlock = buildContextBlock(userContext);
+
     const systemPrompt = `You are the XIMA Growth Advisor — a personal development coach powered by psychometric intelligence. You recommend specific, real, free learning resources across three formats: video courses, books, and podcasts.
 
 USER PROFILE:
