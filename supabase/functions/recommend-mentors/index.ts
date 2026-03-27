@@ -18,6 +18,7 @@ import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES, type XimatarPillars } from "../_shared/ximatarTaxonomy.ts";
 import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
+import { matchMentorsByGap, depositInference } from "../_shared/intelligenceEngine.ts";
 
 // =====================================================
 // Types
@@ -227,6 +228,15 @@ serve(async (req) => {
 
     console.log(JSON.stringify({ type: "recommend_mentors_start", correlation_id: correlationId, user_id: userId, mode: mode || "initial", is_guest: !userId }));
 
+    // ---- Intelligence Engine: try vector gap matching first (FREE) ----
+    let vectorMentorMatches: any[] = [];
+    if (userId) {
+      vectorMentorMatches = await matchMentorsByGap(userId, 10);
+      if (vectorMentorMatches.length > 0) {
+        console.log(`[intelligence] Vector gap-matched ${vectorMentorMatches.length} mentors for user ${userId.substring(0, 8)}`);
+      }
+    }
+
     // ---- Fetch mentors ----
     const { data: mentors, error: mentorsError } = await supabase
       .from("mentors")
@@ -424,7 +434,7 @@ Return ONLY a JSON array of strings:
       }
     }
 
-    // Update progressive AI context
+    // Update progressive AI context + deposit inference
     if (userId && topMentors.length > 0) {
       const existingMatching = (userId ? (await loadUserAiContext(userId)).matching_preferences : null) || {};
       await updateUserAiContext(userId, {
@@ -435,6 +445,17 @@ Return ONLY a JSON array of strings:
           last_mentor_match_at: new Date().toISOString(),
         },
         matching_updated_at: new Date().toISOString(),
+      });
+
+      // Deposit into intelligence engine
+      await depositInference(userId, "recommend-mentors", {
+        top_mentor: topMentors[0].name,
+        top_score: topMentors[0].score,
+        matching_context: hasTension ? "tension" : "basic",
+        user_archetype: userArchetype,
+      }, {
+        patternType: "mentor_matching",
+        archetype: userArchetype || undefined,
       });
     }
 

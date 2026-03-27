@@ -1784,6 +1784,7 @@ export type Database = {
           ideal_ximatar_profile_reasoning: string | null
           operating_style: string | null
           pillar_vector: Json
+          pillar_vector_col: string | null
           recommended_ximatars: string[] | null
           risk_areas: string[] | null
           summary: string | null
@@ -1801,6 +1802,7 @@ export type Database = {
           ideal_ximatar_profile_reasoning?: string | null
           operating_style?: string | null
           pillar_vector?: Json
+          pillar_vector_col?: string | null
           recommended_ximatars?: string[] | null
           risk_areas?: string[] | null
           summary?: string | null
@@ -1818,6 +1820,7 @@ export type Database = {
           ideal_ximatar_profile_reasoning?: string | null
           operating_style?: string | null
           pillar_vector?: Json
+          pillar_vector_col?: string | null
           recommended_ximatars?: string[] | null
           risk_areas?: string[] | null
           summary?: string | null
@@ -2887,6 +2890,89 @@ export type Database = {
           },
         ]
       }
+      intelligence_deposits: {
+        Row: {
+          created_at: string | null
+          deposit_data: Json
+          deposit_type: string
+          function_name: string
+          id: string
+          pattern_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          deposit_data: Json
+          deposit_type: string
+          function_name: string
+          id?: string
+          pattern_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          deposit_data?: Json
+          deposit_type?: string
+          function_name?: string
+          id?: string
+          pattern_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "intelligence_deposits_pattern_id_fkey"
+            columns: ["pattern_id"]
+            isOneToOne: false
+            referencedRelation: "intelligence_patterns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      intelligence_patterns: {
+        Row: {
+          archetype: string | null
+          confidence: number | null
+          created_at: string | null
+          difficulty: string | null
+          id: string
+          last_used_at: string | null
+          pattern_data: Json
+          pattern_type: string
+          source_count: number | null
+          target_pillar: string | null
+          updated_at: string | null
+          usage_count: number | null
+        }
+        Insert: {
+          archetype?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          difficulty?: string | null
+          id?: string
+          last_used_at?: string | null
+          pattern_data: Json
+          pattern_type: string
+          source_count?: number | null
+          target_pillar?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Update: {
+          archetype?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          difficulty?: string | null
+          id?: string
+          last_used_at?: string | null
+          pattern_data?: Json
+          pattern_type?: string
+          source_count?: number | null
+          target_pillar?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Relationships: []
+      }
       job_posts: {
         Row: {
           benefits: string | null
@@ -2900,6 +2986,7 @@ export type Database = {
           id: string
           locale: string | null
           location: string | null
+          requirement_vector: string | null
           requirements_must: string | null
           requirements_nice: string | null
           responsibilities: string | null
@@ -2922,6 +3009,7 @@ export type Database = {
           id?: string
           locale?: string | null
           location?: string | null
+          requirement_vector?: string | null
           requirements_must?: string | null
           requirements_nice?: string | null
           responsibilities?: string | null
@@ -2944,6 +3032,7 @@ export type Database = {
           id?: string
           locale?: string | null
           location?: string | null
+          requirement_vector?: string | null
           requirements_must?: string | null
           requirements_nice?: string | null
           responsibilities?: string | null
@@ -3484,6 +3573,7 @@ export type Database = {
           rating: number | null
           requires_candidate_cv_consent: boolean | null
           specialties: string[]
+          strength_vector: string | null
           title: string | null
           total_coached_profiles_count: number
           total_sessions: number | null
@@ -3518,6 +3608,7 @@ export type Database = {
           rating?: number | null
           requires_candidate_cv_consent?: boolean | null
           specialties: string[]
+          strength_vector?: string | null
           title?: string | null
           total_coached_profiles_count?: number
           total_sessions?: number | null
@@ -3552,6 +3643,7 @@ export type Database = {
           rating?: number | null
           requires_candidate_cv_consent?: boolean | null
           specialties?: string[]
+          strength_vector?: string | null
           title?: string | null
           total_coached_profiles_count?: number
           total_sessions?: number | null
@@ -3933,6 +4025,7 @@ export type Database = {
           mentor: Json | null
           name: string | null
           pillar_scores: Json | null
+          pillar_vector: string | null
           pillars: Json | null
           preferred_lang: Database["public"]["Enums"]["lang_code"] | null
           profile_complete: boolean | null
@@ -3983,6 +4076,7 @@ export type Database = {
           mentor?: Json | null
           name?: string | null
           pillar_scores?: Json | null
+          pillar_vector?: string | null
           pillars?: Json | null
           preferred_lang?: Database["public"]["Enums"]["lang_code"] | null
           profile_complete?: boolean | null
@@ -4033,6 +4127,7 @@ export type Database = {
           mentor?: Json | null
           name?: string | null
           pillar_scores?: Json | null
+          pillar_vector?: string | null
           pillars?: Json | null
           preferred_lang?: Database["public"]["Enums"]["lang_code"] | null
           profile_complete?: boolean | null
@@ -4955,6 +5050,30 @@ export type Database = {
         Args: { p_mentor: string; p_user: string }
         Returns: string
       }
+      find_matching_patterns: {
+        Args: {
+          p_archetype?: string
+          p_limit?: number
+          p_min_confidence?: number
+          p_pattern_type: string
+          p_target_pillar?: string
+        }
+        Returns: {
+          confidence: number
+          pattern_data: Json
+          pattern_id: string
+          source_count: number
+          usage_count: number
+        }[]
+      }
+      find_similar_profiles: {
+        Args: { p_limit?: number; p_user_id: string }
+        Returns: {
+          archetype: string
+          similar_user_id: string
+          similarity: number
+        }[]
+      }
       get_admin_stats: { Args: never; Returns: Json }
       get_candidate_invitations: {
         Args: { p_user_id: string }
@@ -5065,6 +5184,25 @@ export type Database = {
       log_user_activity: {
         Args: { p_action: string; p_context?: Json }
         Returns: string
+      }
+      match_jobs_by_vector: {
+        Args: { p_limit?: number; p_user_id: string }
+        Returns: {
+          company_name: string
+          job_data: Json
+          job_id: string
+          role_title: string
+          similarity_score: number
+        }[]
+      }
+      match_mentors_by_gap: {
+        Args: { p_limit?: number; p_user_id: string }
+        Returns: {
+          gap_fill_score: number
+          mentor_data: Json
+          mentor_id: string
+          mentor_name: string
+        }[]
       }
       mentor_cancel_session: { Args: { p_session_id: string }; Returns: Json }
       mentor_complete_session: { Args: { p_session_id: string }; Returns: Json }

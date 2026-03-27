@@ -14,6 +14,7 @@ import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES } from "../_shared/ximatarTaxonomy.ts";
 import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
+import { checkDatabaseFirst, depositInference } from "../_shared/intelligenceEngine.ts";
 
 const VALID_PILLARS = ["drive", "computational_power", "communication", "creativity", "knowledge"];
 
@@ -137,6 +138,47 @@ serve(async (req) => {
 
     const level = ximatarLevel;
     const nextLevel = Math.min(level + 1, 3);
+
+    // ---- Intelligence Engine: check pattern library first (FREE) ----
+    const dbDecision = await checkDatabaseFirst("growth_path", archetype, weakestPillar);
+    if (dbDecision.source === "database" && dbDecision.data?.growth_path?.resources) {
+      console.log(`[intelligence] Growth path served from pattern library (confidence: ${dbDecision.confidence})`);
+
+      await supabase
+        .from("growth_paths")
+        .update({ status: "archived", updated_at: new Date().toISOString() })
+        .eq("user_id", user.id)
+        .eq("status", "active");
+
+      const v = dbDecision.data;
+      v.growth_path.target_pillar = weakestPillar;
+
+      const { data: newPath } = await supabase
+        .from("growth_paths")
+        .insert({
+          user_id: user.id,
+          path_title: v.growth_path.title,
+          path_objective: v.growth_path.objective,
+          target_pillar: weakestPillar,
+          resources: v.growth_path.resources,
+          growth_insight: v.growth_insight,
+          next_milestone: v.next_milestone,
+          estimated_total_hours: v.growth_path.estimated_total_hours,
+          status: "active",
+        })
+        .select()
+        .single();
+
+      return jsonResponse({
+        success: true,
+        growth_path: v.growth_path,
+        growth_insight: v.growth_insight,
+        next_milestone: v.next_milestone,
+        path_id: newPath?.id,
+        user_context: { ximatar: archetype, level, weakest_pillar: weakestPillar, weakest_score: weakestScore },
+        _intelligence: { source: "database", confidence: dbDecision.confidence, cost: 0 },
+      });
+    }
 
     // Load AI context
     const userContext = await loadUserAiContext(user.id);
@@ -302,6 +344,13 @@ Return ONLY valid JSON:
         trajectory_direction: trajectorySummary !== "No trajectory data yet" ? "active" : "not_started",
       },
       assessment_updated_at: new Date().toISOString(),
+    });
+
+    // Deposit into intelligence engine for future pattern matching
+    await depositInference(user.id, "generate-growth-path", v, {
+      patternType: "growth_path",
+      archetype,
+      targetPillar: weakestPillar,
     });
 
     return jsonResponse({

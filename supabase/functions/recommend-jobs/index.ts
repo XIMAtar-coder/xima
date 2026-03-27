@@ -14,6 +14,7 @@ import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES, computePillarDistance, type XimatarPillars } from "../_shared/ximatarTaxonomy.ts";
 import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
+import { matchJobsByVector, depositInference } from "../_shared/intelligenceEngine.ts";
 
 // =====================================================
 // Types
@@ -240,6 +241,12 @@ serve(async (req) => {
 
     console.log(JSON.stringify({ type: "recommend_jobs_start", correlation_id: correlationId, user_id: userId }));
 
+    // ---- Intelligence Engine: try vector matching first (FREE) ----
+    const vectorMatches = await matchJobsByVector(userId, 15);
+    if (vectorMatches.length > 0) {
+      console.log(`[intelligence] Vector matched ${vectorMatches.length} jobs for user ${userId.substring(0, 8)}`);
+    }
+
     // ---- Fetch user data in parallel ----
     const [profileRes, credentialsRes, cvAnalysisRes, trajectoryRes] = await Promise.all([
       supabase.from("profiles").select("*").eq("user_id", userId).single(),
@@ -442,7 +449,7 @@ Return ONLY a JSON array of strings, one per job:
       }
     }
 
-    // Update progressive AI context
+    // Update progressive AI context + deposit inference
     await updateUserAiContext(userId, {
       matching_preferences: {
         industries: [...new Set(topMatches.map(m => m.companyName))].slice(0, 5),
@@ -450,6 +457,16 @@ Return ONLY a JSON array of strings, one per job:
         last_matched_at: new Date().toISOString(),
       },
       matching_updated_at: new Date().toISOString(),
+    });
+
+    // Deposit into intelligence engine
+    await depositInference(userId, "recommend-jobs", {
+      matches: topMatches.slice(0, 5).map(m => ({ title: m.title, score: m.totalScore, fitType: m.fitType })),
+      user_archetype: userArchetype,
+      user_level: userLevel,
+    }, {
+      patternType: "job_matching",
+      archetype: userArchetype,
     });
 
     // ---- Build response ----
