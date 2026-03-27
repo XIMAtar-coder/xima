@@ -442,6 +442,16 @@ Return ONLY a JSON array of strings, one per job:
       }
     }
 
+    // Update progressive AI context
+    await updateUserAiContext(userId, {
+      matching_preferences: {
+        industries: [...new Set(topMatches.map(m => m.companyName))].slice(0, 5),
+        roles_explored: topMatches.map(m => m.title).slice(0, 5),
+        last_matched_at: new Date().toISOString(),
+      },
+      matching_updated_at: new Date().toISOString(),
+    });
+
     // ---- Build response ----
     const trajectoryDirection = userTrajectory
       ? (Object.values(userTrajectory).filter(v => v > 0).length >= 3 ? "ascending" : Object.values(userTrajectory).every(v => v === 0) ? "stable" : "mixed")
