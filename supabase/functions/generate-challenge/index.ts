@@ -259,6 +259,28 @@ Return ONLY valid JSON:
 
     const userPrompt = `Generate an L1 behavioral challenge scenario based on the company and role context above. Return ONLY the JSON object.`;
 
+    // ---- Intelligence Engine: check challenge pattern library first (FREE) ----
+    const targetPillar = companyProfile?.pillar_vector
+      ? Object.entries(companyProfile.pillar_vector as Record<string, number>).sort((a, b) => b[1] - a[1])[0]?.[0]
+      : undefined;
+    const dbDecision = await checkDatabaseFirst("challenge", undefined, targetPillar);
+    if (dbDecision.source === "database") {
+      const validated = validateXimaCoreResult(dbDecision.data);
+      if (validated) {
+        console.log(`[intelligence] Challenge served from pattern library (confidence: ${dbDecision.confidence})`);
+
+        if (body.challenge_id) {
+          const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+          await supabaseAdmin.from("business_challenges").update({
+            evaluation_lens: validated.evaluation_lens,
+            expected_tensions: validated.expected_tensions,
+          }).eq("id", body.challenge_id);
+        }
+
+        return jsonResponse({ ...validated, used_fallback: false, _intelligence: { source: "database", confidence: dbDecision.confidence } });
+      }
+    }
+
     try {
       const aiResp = await callAnthropicApi({
         system: systemPrompt,
@@ -287,6 +309,12 @@ Return ONLY valid JSON:
           expected_tensions: validated.expected_tensions,
         }).eq('id', body.challenge_id);
       }
+
+      // Deposit into intelligence engine
+      await depositInference(user.id, "generate-challenge", validated, {
+        patternType: "challenge",
+        targetPillar: targetPillar || undefined,
+      });
 
       // Audit
       emitAuditEventWithMetric({

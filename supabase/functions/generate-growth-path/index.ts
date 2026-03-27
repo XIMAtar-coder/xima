@@ -346,6 +346,13 @@ Return ONLY valid JSON:
       assessment_updated_at: new Date().toISOString(),
     });
 
+    // Deposit into intelligence engine for future pattern matching
+    await depositInference(user.id, "generate-growth-path", v, {
+      patternType: "growth_path",
+      archetype,
+      targetPillar: weakestPillar,
+    });
+
     return jsonResponse({
       success: true,
       growth_path: v.growth_path,
