@@ -228,6 +228,15 @@ serve(async (req) => {
 
     console.log(JSON.stringify({ type: "recommend_mentors_start", correlation_id: correlationId, user_id: userId, mode: mode || "initial", is_guest: !userId }));
 
+    // ---- Intelligence Engine: try vector gap matching first (FREE) ----
+    let vectorMentorMatches: any[] = [];
+    if (userId) {
+      vectorMentorMatches = await matchMentorsByGap(userId, 10);
+      if (vectorMentorMatches.length > 0) {
+        console.log(`[intelligence] Vector gap-matched ${vectorMentorMatches.length} mentors for user ${userId.substring(0, 8)}`);
+      }
+    }
+
     // ---- Fetch mentors ----
     const { data: mentors, error: mentorsError } = await supabase
       .from("mentors")
