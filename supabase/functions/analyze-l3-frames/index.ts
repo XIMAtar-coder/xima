@@ -22,6 +22,7 @@ import {
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { persistTrajectoryEvent, type PillarDeltas } from "../_shared/pillarTrajectory.ts";
+import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 
 // ---------------------------------------------------------------------
 // Types
