@@ -145,7 +145,7 @@ function parseAnthropicError(responseStatus: number, errorText: string) {
 export async function callAnthropicApi(options: AnthropicCallOptions): Promise<AnthropicCallResult> {
   const {
     system, userMessage, correlationId, functionName,
-    inputSummary, model = "claude-sonnet-4-20250514",
+    inputSummary, model = getModelForFunction(functionName),
     maxTokens = 4096, temperature,
     promptTemplateVersion = "2.0",
   } = options;
