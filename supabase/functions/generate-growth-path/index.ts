@@ -197,6 +197,8 @@ LANGUAGE RULES:
 - If user prefers English: recommend English resources. Write all descriptions in English.
 - Always indicate the resource language.
 
+` + contextBlock + `
+
 Return ONLY valid JSON:
 {
   "growth_path": {
