@@ -13,6 +13,7 @@ import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES, computePillarDistance, type XimatarPillars } from "../_shared/ximatarTaxonomy.ts";
+import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 
 // =====================================================
 // Types
@@ -397,8 +398,13 @@ serve(async (req) => {
 
         const archetypeProfile = XIMATAR_PROFILES[userArchetype];
 
+        // Load AI context for narrative enrichment
+        const userContext = await loadUserAiContext(userId);
+        const contextBlock = buildContextBlock(userContext);
+
         const narrativePrompt = `You are XIMA, a psychometric talent intelligence platform.
 Generate a short, personalized match explanation for each job recommendation.
+${contextBlock}
 
 USER PROFILE:
 - XIMAtar: ${userArchetype} L${userLevel} (${archetypeProfile?.title || userArchetype})
@@ -435,6 +441,16 @@ Return ONLY a JSON array of strings, one per job:
         console.warn(JSON.stringify({ type: "narrative_fallback", correlation_id: correlationId, error: e instanceof Error ? e.message : String(e) }));
       }
     }
+
+    // Update progressive AI context
+    await updateUserAiContext(userId, {
+      matching_preferences: {
+        industries: [...new Set(topMatches.map(m => m.companyName))].slice(0, 5),
+        roles_explored: topMatches.map(m => m.title).slice(0, 5),
+        last_matched_at: new Date().toISOString(),
+      },
+      matching_updated_at: new Date().toISOString(),
+    });
 
     // ---- Build response ----
     const trajectoryDirection = userTrajectory

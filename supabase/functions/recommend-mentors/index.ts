@@ -17,6 +17,7 @@ import { corsHeaders, errorResponse, jsonResponse } from "../_shared/errors.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES, type XimatarPillars } from "../_shared/ximatarTaxonomy.ts";
+import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 
 // =====================================================
 // Types
@@ -378,8 +379,13 @@ serve(async (req) => {
           ? [...userPillarScores].sort((a: any, b: any) => a.score - b.score)[0]?.pillar
           : null;
 
+        // Load AI context for narrative enrichment
+        const userContextData = userId ? await loadUserAiContext(userId) : {};
+        const contextBlock = buildContextBlock(userContextData);
+
         const narrativePrompt = `You are XIMA, a psychometric talent platform.
 Generate a personalized 1-2 sentence explanation for each mentor match.
+${contextBlock}
 
 USER CONTEXT:
 - XIMAtar: ${userArchetype || "unknown"} L${userLevel} (${archetypeProfile?.title || "unknown"})
@@ -412,6 +418,20 @@ Return ONLY a JSON array of strings:
       } catch (e) {
         console.warn(JSON.stringify({ type: "mentor_narrative_fallback", correlation_id: correlationId, error: e instanceof Error ? e.message : String(e) }));
       }
+    }
+
+    // Update progressive AI context
+    if (userId && topMentors.length > 0) {
+      const existingMatching = (userId ? (await loadUserAiContext(userId)).matching_preferences : null) || {};
+      await updateUserAiContext(userId, {
+        matching_preferences: {
+          ...existingMatching,
+          mentor_matched: topMentors[0].name,
+          mentor_focus: mentorSuggestedFocus,
+          last_mentor_match_at: new Date().toISOString(),
+        },
+        matching_updated_at: new Date().toISOString(),
+      });
     }
 
     // ---- Build response ----

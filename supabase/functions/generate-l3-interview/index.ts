@@ -22,6 +22,7 @@ import {
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES } from "../_shared/ximatarTaxonomy.ts";
+import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 
 // ---------------------------------------------------------------------
 // Types
@@ -310,7 +311,7 @@ INTERVIEW DESIGN RULES:
 7. DO NOT ask about demographics, personal life, or anything that could introduce bias
 
 LANGUAGE: Generate all questions and viewing guides in ${locale}.
-
+${contextBlock}
 Return ONLY valid JSON:
 {
   "questions": [
@@ -405,6 +406,16 @@ Return ONLY valid JSON:
       },
       "l3_interviews_generated"
     );
+
+    // Update AI context for L3
+    await updateUserAiContext(candidateProfile.user_id, {
+      l3_summary: {
+        questions_count: (validated.questions as unknown[]).length,
+        question_types: (validated.questions as any[]).map((q: any) => q.question_type),
+        last_l3_at: new Date().toISOString(),
+      },
+      l3_updated_at: new Date().toISOString(),
+    });
 
     return jsonResponse({
       success: true,

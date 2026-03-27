@@ -12,6 +12,7 @@ import { extractJsonFromAiContent } from "../_shared/aiClient.ts";
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
+import { loadUserAiContext, buildContextBlock } from "../_shared/aiContext.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -108,6 +109,10 @@ serve(async (req) => {
    - 2 application: "The host/guest discussed X. How would you apply this?"
    - 1 self-reflection: "What perspective shift did this give you about [pillar aspect]?"`;
 
+    // Load AI context
+    const userContext = await loadUserAiContext(user.id);
+    const contextBlock = buildContextBlock(userContext);
+
     const systemPrompt = `You are the XIMA Growth Test Architect. You generate personalized assessment questions that verify whether a user truly absorbed learning material in the context of their specific professional growth needs.
 
 USER: ${_ximatarArchetype} L${_ximatarLevel}, strengthening ${progress.primary_pillar} (score: ${pillarScore})
@@ -131,6 +136,8 @@ ${questionTypeGuide}
 IMPORTANT: Use your knowledge of what "${progress.resource_title}" typically covers. If it's a well-known resource, reference specific concepts, frameworks, or ideas from it.
 
 LANGUAGE: ${locale}
+
+` + contextBlock + `
 
 Return ONLY valid JSON:
 {

@@ -13,6 +13,7 @@ import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES } from "../_shared/ximatarTaxonomy.ts";
+import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 
 const VALID_PILLARS = ["drive", "computational_power", "communication", "creativity", "knowledge"];
 
@@ -150,6 +151,10 @@ serve(async (req) => {
     const level = ximatarLevel;
     const nextLevel = Math.min(level + 1, 3);
 
+    // Load AI context
+    const userContext = await loadUserAiContext(user.id);
+    const contextBlock = buildContextBlock(userContext);
+
     const systemPrompt = `You are the XIMA Growth Advisor — a personal development coach powered by psychometric intelligence. You recommend specific, real, free learning resources across three formats: video courses, books, and podcasts.
 
 USER PROFILE:
@@ -195,6 +200,8 @@ LANGUAGE RULES:
 - If user prefers Italian: prioritize Italian-language resources, include English ones only when no Italian equivalent exists. Write all descriptions in Italian.
 - If user prefers English: recommend English resources. Write all descriptions in English.
 - Always indicate the resource language.
+
+` + contextBlock + `
 
 Return ONLY valid JSON:
 {
@@ -360,6 +367,19 @@ Return ONLY valid JSON:
         level,
       },
     }, "growth_paths_generated");
+
+    // Update progressive AI context
+    await updateUserAiContext(user.id, {
+      assessment_summary: {
+        ximatar: archetype,
+        level,
+        scores: assessmentScores,
+        edge: pillarEntries[pillarEntries.length - 1]?.pillar,
+        friction: weakestPillar,
+        trajectory_direction: trajectorySummary !== "No trajectory data yet" ? "active" : "not_started",
+      },
+      assessment_updated_at: new Date().toISOString(),
+    });
 
     return jsonResponse({
       success: true,

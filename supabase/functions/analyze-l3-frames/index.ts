@@ -22,6 +22,7 @@ import {
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { persistTrajectoryEvent, type PillarDeltas } from "../_shared/pillarTrajectory.ts";
+import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 
 // ---------------------------------------------------------------------
 // Types
@@ -442,6 +443,19 @@ Return ONLY valid JSON:
         signals_version: "v2_claude_l3",
       })
       .eq("id", submission_id);
+
+    // ---- Update AI context for L3 frames ----
+    if (candidateProfile?.user_id) {
+      await updateUserAiContext(candidateProfile.user_id, {
+        l3_summary: {
+          ...(await loadUserAiContext(candidateProfile.user_id)).l3_summary,
+          engagement_notes: validated.viewing_guide.congruence_summary,
+          visual_analysis: validated.visual_analysis_available,
+          last_l3_frames_at: new Date().toISOString(),
+        },
+        l3_updated_at: new Date().toISOString(),
+      });
+    }
 
     // ---- Pillar trajectory ----
     if (candidateProfile?.user_id && validated.visual_analysis_available) {

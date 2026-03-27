@@ -6,6 +6,7 @@ import { corsHeaders, errorResponse, jsonResponse, profilingOptOutResponse } fro
 import { emitAuditEventWithMetric, hashForAudit } from "../_shared/auditEvents.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { persistTrajectoryEvent } from "../_shared/pillarTrajectory.ts";
+import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 
 // =====================================================
 // NON-ANSWER DETECTION (Pre-LLM Hard Rules) — KEPT EXACTLY
@@ -178,7 +179,10 @@ This is an L1 challenge response. Use these behavioral signals to evaluate:
       }
     }
 
-    // STEP 2: Claude Evaluation
+    // STEP 2: Load AI context & Claude Evaluation
+    const userContext = user_id ? await loadUserAiContext(user_id) : {};
+    const contextBlock = buildContextBlock(userContext);
+
     const systemPrompt = `You are a strict but fair professional assessment evaluator for the XIMA psychometric talent platform.
 
 CRITICAL RULES:
@@ -219,6 +223,8 @@ Also compute how this answer affects each XIMA pillar (-5 to +5):
 - communication: Clarity, stakeholder awareness, persuasion
 - creativity: Novel ideas, reframing, lateral thinking
 - knowledge: Domain expertise, best practices, references
+
+` + contextBlock + `
 
 Return ONLY valid JSON:
 {
@@ -417,6 +423,29 @@ Return ONLY the JSON object.`;
       quality_label: qualityLabel, red_flags_count: redFlags.length,
       has_pillar_impact: !!pillarImpact,
     }));
+
+    // Update progressive AI context for challenge history
+    if (user_id && typeof user_id === 'string') {
+      const existingChallenges = userContext.challenge_history_summary || {
+        l1_completed: 0, l2_completed: 0, l1_avg_score: 0, l2_avg_score: 0,
+        strongest_area: null, weakest_area: null,
+      };
+      const isL1 = scoring_context === 'l1_challenge';
+      const isL2 = scoring_context === 'l2_challenge';
+      const countKey = isL2 ? 'l2_completed' : 'l1_completed';
+      const avgKey = isL2 ? 'l2_avg_score' : 'l1_avg_score';
+      const prevCount = existingChallenges[countKey] || 0;
+      const prevAvg = existingChallenges[avgKey] || 0;
+
+      await updateUserAiContext(user_id, {
+        challenge_history_summary: {
+          ...existingChallenges,
+          [countKey]: prevCount + 1,
+          [avgKey]: Math.round(((prevAvg * prevCount) + finalScore) / (prevCount + 1)),
+        },
+        challenges_updated_at: new Date().toISOString(),
+      });
+    }
 
     return jsonResponse({
       score_total: finalScore,

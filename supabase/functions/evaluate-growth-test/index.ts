@@ -13,6 +13,7 @@ import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { persistTrajectoryEvent } from "../_shared/pillarTrajectory.ts";
+import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -104,6 +105,10 @@ Evaluation criteria:
 User's answer: ${userAnswer?.answer_text || "(no answer provided)"}`;
     }).join("\n\n");
 
+    // Load AI context
+    const userContext = await loadUserAiContext(user.id);
+    const contextBlock = buildContextBlock(userContext);
+
     const systemPrompt = `You are the XIMA Growth Test Evaluator. Score test answers and determine pillar trajectory impact.
 
 USER: ${_ximatarArchetype} L${_ximatarLevel}, strengthening ${progress.primary_pillar} (score: ${pillarScore})
@@ -127,7 +132,7 @@ QUESTIONS, CRITERIA, AND USER ANSWERS:
 ${qaContext}
 
 LANGUAGE: ${locale}
-
+${contextBlock}
 Return ONLY valid JSON:
 {
   "results": {
@@ -248,6 +253,33 @@ Return ONLY valid JSON:
         path_completed: pathCompleted,
       },
     }, "growth_tests_completed");
+
+    // Update progressive AI context
+    const existingGrowth = userContext.growth_summary || {
+      courses_completed: 0, books_completed: 0, podcasts_completed: 0,
+      tests_taken: 0, tests_passed: 0,
+      total_deltas: { drive: 0, computational_power: 0, communication: 0, creativity: 0, knowledge: 0 },
+    };
+    const resourceType = progress.resource_type || "course";
+    const typeKey = `${resourceType}s_completed`;
+
+    await updateUserAiContext(user.id, {
+      growth_summary: {
+        ...existingGrowth,
+        [typeKey]: (existingGrowth[typeKey] || 0) + 1,
+        tests_taken: (existingGrowth.tests_taken || 0) + 1,
+        tests_passed: (existingGrowth.tests_passed || 0) + (v.passed ? 1 : 0),
+        total_deltas: v.passed ? {
+          drive: (existingGrowth.total_deltas?.drive || 0) + (cleanDeltas.drive || 0),
+          computational_power: (existingGrowth.total_deltas?.computational_power || 0) + (cleanDeltas.computational_power || 0),
+          communication: (existingGrowth.total_deltas?.communication || 0) + (cleanDeltas.communication || 0),
+          creativity: (existingGrowth.total_deltas?.creativity || 0) + (cleanDeltas.creativity || 0),
+          knowledge: (existingGrowth.total_deltas?.knowledge || 0) + (cleanDeltas.knowledge || 0),
+        } : existingGrowth.total_deltas,
+        preferred_type: resourceType,
+      },
+      growth_updated_at: new Date().toISOString(),
+    });
 
     return jsonResponse({
       success: true,
