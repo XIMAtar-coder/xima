@@ -241,6 +241,12 @@ serve(async (req) => {
 
     console.log(JSON.stringify({ type: "recommend_jobs_start", correlation_id: correlationId, user_id: userId }));
 
+    // ---- Intelligence Engine: try vector matching first (FREE) ----
+    const vectorMatches = await matchJobsByVector(userId, 15);
+    if (vectorMatches.length > 0) {
+      console.log(`[intelligence] Vector matched ${vectorMatches.length} jobs for user ${userId.substring(0, 8)}`);
+    }
+
     // ---- Fetch user data in parallel ----
     const [profileRes, credentialsRes, cvAnalysisRes, trajectoryRes] = await Promise.all([
       supabase.from("profiles").select("*").eq("user_id", userId).single(),
