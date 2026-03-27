@@ -449,7 +449,7 @@ Return ONLY a JSON array of strings, one per job:
       }
     }
 
-    // Update progressive AI context
+    // Update progressive AI context + deposit inference
     await updateUserAiContext(userId, {
       matching_preferences: {
         industries: [...new Set(topMatches.map(m => m.companyName))].slice(0, 5),
@@ -457,6 +457,16 @@ Return ONLY a JSON array of strings, one per job:
         last_matched_at: new Date().toISOString(),
       },
       matching_updated_at: new Date().toISOString(),
+    });
+
+    // Deposit into intelligence engine
+    await depositInference(userId, "recommend-jobs", {
+      matches: topMatches.slice(0, 5).map(m => ({ title: m.title, score: m.totalScore, fitType: m.fitType })),
+      user_archetype: userArchetype,
+      user_level: userLevel,
+    }, {
+      patternType: "job_matching",
+      archetype: userArchetype,
     });
 
     // ---- Build response ----
