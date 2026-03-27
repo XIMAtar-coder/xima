@@ -43,26 +43,23 @@ serve(async (req) => {
       return errorResponse(400, "MISSING_FIELD", "progress_id and answers array are required");
     }
 
-    // Check profiling opt-out
-    const { data: optCheck } = await supabase
-      .from("profiles")
-      .select("profiling_opt_out")
-      .eq("user_id", user.id)
-      .single();
-    if (optCheck?.profiling_opt_out === true) {
-      return errorResponse(403, "PROFILING_OPT_OUT",
-        "Automated profiling is disabled for this account.");
+    // Fetch data in parallel
+    const [optResult, progressResult, profileResult] = await Promise.all([
+      supabase.from("profiles").select("profiling_opt_out").eq("user_id", user.id).single(),
+      supabase.from("growth_hub_progress")
+        .select("resource_title, resource_type, primary_pillar, test_config, path_id, status")
+        .eq("id", progress_id).eq("user_id", user.id).single(),
+      supabase.from("profiles")
+        .select("ximatar_archetype, ximatar, ximatar_id, ximatar_level, assessment_scores, pillar_scores")
+        .eq("user_id", user.id).single(),
+    ]);
+
+    if (optResult.data?.profiling_opt_out === true) {
+      return errorResponse(403, "PROFILING_OPT_OUT", "Automated profiling is disabled for this account.");
     }
 
-    // 1. Progress with test config
-    const { data: progress, error: progressErr } = await supabase
-      .from("growth_hub_progress")
-      .select("resource_title, resource_type, primary_pillar, test_config, path_id, status")
-      .eq("id", progress_id)
-      .eq("user_id", user.id)
-      .single();
-
-    if (progressErr || !progress) {
+    const progress = progressResult.data;
+    if (progressResult.error || !progress) {
       return errorResponse(404, "PROGRESS_NOT_FOUND", "Progress record not found");
     }
 
@@ -74,13 +71,7 @@ serve(async (req) => {
       return errorResponse(400, "INVALID_STATUS", `Cannot evaluate test in status: ${progress.status}`);
     }
 
-    // 2. User profile
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
-
+    const profile = profileResult.data;
     if (!profile) {
       return errorResponse(404, "PROFILE_NOT_FOUND", "User profile not found");
     }
