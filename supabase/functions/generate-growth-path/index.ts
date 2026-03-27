@@ -40,53 +40,40 @@ serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const locale = body.locale || "en";
 
-    // 1. Fetch user profile
-    const { data: profile, error: profileErr } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
+    // Fetch user data in parallel
+    const [profileResult, optCheckResult, cvAnalysisResult, trajectoryResult, completedResult] = await Promise.all([
+      supabase.from("profiles")
+        .select("ximatar_archetype, ximatar, ximatar_id, ximatar_level, assessment_scores, pillar_scores, preferred_language, language, profiling_opt_out")
+        .eq("user_id", user.id).single(),
+      Promise.resolve(null), // opt-out checked inline
+      supabase.from("cv_identity_analysis")
+        .select("alignment_score, tension_gaps")
+        .eq("user_id", user.id).maybeSingle(),
+      supabase.from("pillar_trajectory_log")
+        .select("drive_delta, computational_power_delta, communication_delta, creativity_delta, knowledge_delta, source_type, created_at")
+        .eq("user_id", user.id)
+        .gte("created_at", new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString())
+        .order("created_at", { ascending: false })
+        .limit(50),
+      supabase.from("growth_hub_progress")
+        .select("resource_title")
+        .eq("user_id", user.id)
+        .in("status", ["completed", "test_passed"]),
+    ]);
 
-    if (profileErr || !profile) {
-      console.error("[generate-growth-path] Profile error:", profileErr?.message || "not found");
+    const profile = profileResult.data;
+    if (profileResult.error || !profile) {
+      console.error("[generate-growth-path] Profile error:", profileResult.error?.message || "not found");
       return errorResponse(404, "PROFILE_NOT_FOUND", "User profile not found. Please complete the assessment first.");
     }
 
-    // Check profiling opt-out
-    const { data: optCheck } = await supabase
-      .from("profiles")
-      .select("profiling_opt_out")
-      .eq("user_id", user.id)
-      .single();
-    if (optCheck?.profiling_opt_out === true) {
-      return errorResponse(403, "PROFILING_OPT_OUT",
-        "Automated profiling is disabled for this account.");
+    if (profile.profiling_opt_out === true) {
+      return errorResponse(403, "PROFILING_OPT_OUT", "Automated profiling is disabled for this account.");
     }
 
-    // 2. CV tension analysis
-    const { data: cvAnalysis } = await supabase
-      .from("cv_identity_analysis")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    // 3. Pillar trajectory (last 90 days)
-    const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
-    const { data: trajectory } = await supabase
-      .from("pillar_trajectory_log")
-      .select("drive_delta, computational_power_delta, communication_delta, creativity_delta, knowledge_delta, source_type, created_at")
-      .eq("user_id", user.id)
-      .gte("created_at", ninetyDaysAgo)
-      .order("created_at", { ascending: false });
-
-    // 4. Completed resources (avoid repeats)
-    const { data: completedProgress } = await supabase
-      .from("growth_hub_progress")
-      .select("resource_title")
-      .eq("user_id", user.id)
-      .in("status", ["completed", "test_passed"]);
-
-    const completedTitles = completedProgress?.map(p => p.resource_title) || [];
+    const cvAnalysis = cvAnalysisResult.data;
+    const trajectory = trajectoryResult.data;
+    const completedTitles = completedResult.data?.map(p => p.resource_title) || [];
 
     // Resolve fields from whichever column names exist
     const assessmentScores = (profile.assessment_scores || profile.pillar_scores) as Record<string, number> | null;
