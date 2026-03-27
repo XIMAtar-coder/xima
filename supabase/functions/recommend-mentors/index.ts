@@ -251,8 +251,12 @@ serve(async (req) => {
     if (userId) {
       // Fetch authenticated user data
       const [profileRes, cvAnalysisRes] = await Promise.all([
-        supabase.from("profiles").select("*").eq("user_id", userId).single(),
-        supabase.from("cv_identity_analysis").select("*").eq("user_id", userId).maybeSingle(),
+        supabase.from("profiles")
+          .select("ximatar_archetype, ximatar, ximatar_id, ximatar_level, assessment_scores, pillar_scores")
+          .eq("user_id", userId).single(),
+        supabase.from("cv_identity_analysis")
+          .select("tension_gaps, alignment_score, mentor_suggested_focus, mentor_key_question")
+          .eq("user_id", userId).maybeSingle(),
       ]);
 
       const profile = profileRes.data;

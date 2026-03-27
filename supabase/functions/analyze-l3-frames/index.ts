@@ -349,7 +349,7 @@ Return ONLY valid JSON:
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 4096,
+        max_tokens: 3072,
         messages: [{ role: "user", content: contentParts }],
         temperature: 0.5,
       }),
