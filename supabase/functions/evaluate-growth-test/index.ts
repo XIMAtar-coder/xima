@@ -43,26 +43,23 @@ serve(async (req) => {
       return errorResponse(400, "MISSING_FIELD", "progress_id and answers array are required");
     }
 
-    // Check profiling opt-out
-    const { data: optCheck } = await supabase
-      .from("profiles")
-      .select("profiling_opt_out")
-      .eq("user_id", user.id)
-      .single();
-    if (optCheck?.profiling_opt_out === true) {
-      return errorResponse(403, "PROFILING_OPT_OUT",
-        "Automated profiling is disabled for this account.");
+    // Fetch data in parallel
+    const [optResult, progressResult, profileResult] = await Promise.all([
+      supabase.from("profiles").select("profiling_opt_out").eq("user_id", user.id).single(),
+      supabase.from("growth_hub_progress")
+        .select("resource_title, resource_type, primary_pillar, test_config, path_id, status")
+        .eq("id", progress_id).eq("user_id", user.id).single(),
+      supabase.from("profiles")
+        .select("ximatar_archetype, ximatar, ximatar_id, ximatar_level, assessment_scores, pillar_scores")
+        .eq("user_id", user.id).single(),
+    ]);
+
+    if (optResult.data?.profiling_opt_out === true) {
+      return errorResponse(403, "PROFILING_OPT_OUT", "Automated profiling is disabled for this account.");
     }
 
-    // 1. Progress with test config
-    const { data: progress, error: progressErr } = await supabase
-      .from("growth_hub_progress")
-      .select("resource_title, resource_type, primary_pillar, test_config, path_id, status")
-      .eq("id", progress_id)
-      .eq("user_id", user.id)
-      .single();
-
-    if (progressErr || !progress) {
+    const progress = progressResult.data;
+    if (progressResult.error || !progress) {
       return errorResponse(404, "PROGRESS_NOT_FOUND", "Progress record not found");
     }
 
@@ -74,13 +71,7 @@ serve(async (req) => {
       return errorResponse(400, "INVALID_STATUS", `Cannot evaluate test in status: ${progress.status}`);
     }
 
-    // 2. User profile
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
-
+    const profile = profileResult.data;
     if (!profile) {
       return errorResponse(404, "PROFILE_NOT_FOUND", "User profile not found");
     }
@@ -112,49 +103,28 @@ User's answer: ${userAnswer?.answer_text || "(no answer provided)"}`;
     const systemPrompt = `You are the XIMA Growth Test Evaluator. Score test answers and determine pillar trajectory impact.
 
 USER: ${_ximatarArchetype} L${_ximatarLevel}, strengthening ${progress.primary_pillar} (score: ${pillarScore})
-Resource completed: "${progress.resource_title}" (${progress.resource_type})
+Resource: "${progress.resource_title}" (${progress.resource_type})
 
-SCORING RULES:
-- Each question scored 0-20 (5 questions = max 100)
-- Provide specific, constructive feedback per question in ${locale}
-- Be honest but encouraging — growth mindset framing
+SCORING: Each question 0-20 (5 questions = max 100). Pass threshold: 60.
+Provide specific, constructive feedback per question in ${locale}. Growth mindset framing.
 
-PILLAR DELTA RULES (Growth Hub gradient: ±1 to ±3 max):
-- Score 90-100 → primary pillar +3, secondary +1
-- Score 75-89 → primary pillar +2, secondary +1
-- Score 60-74 → primary pillar +1
-- Score below 60 → no positive deltas (learning attempt not punished, score 0)
-- NEVER apply negative deltas for Growth Hub tests — failed tests = no change, not regression
+PILLAR DELTAS (0 to +3 max, NEVER negative for Growth Hub):
+90-100→primary +3 secondary +1, 75-89→primary +2 secondary +1, 60-74→primary +1, <60→no deltas.
 
-PASS THRESHOLD: 60/100
-
-QUESTIONS, CRITERIA, AND USER ANSWERS:
+QUESTIONS AND ANSWERS:
 ${qaContext}
 
-LANGUAGE: ${locale}
 ${contextBlock}
 Return ONLY valid JSON:
 {
   "results": {
     "total_score": number,
     "passed": boolean,
-    "per_question": [
-      {
-        "question_id": "tq1",
-        "score": number,
-        "feedback": "Specific feedback"
-      }
-    ],
-    "pillar_deltas": {
-      "drive": number,
-      "computational_power": number,
-      "communication": number,
-      "creativity": number,
-      "knowledge": number
-    },
-    "delta_reasoning": "1 sentence explaining why these deltas",
-    "overall_feedback": "2-3 sentence growth feedback",
-    "next_recommendation": "What to study or do next"
+    "per_question": [{"question_id":"tq1","score":number,"feedback":"str"}],
+    "pillar_deltas": {"drive":0,"computational_power":0,"communication":0,"creativity":0,"knowledge":0},
+    "delta_reasoning": "1 sentence",
+    "overall_feedback": "2-3 sentences",
+    "next_recommendation": "str"
   }
 }`;
 

@@ -175,7 +175,7 @@ serve(async (req) => {
     // ---- GDPR check ----
     const { data: candidateProfile } = await supabase
       .from("profiles")
-      .select("*")
+      .select("user_id, ximatar_name, ximatar, ximatar_archetype, ximatar_id, ximatar_level, profiling_opt_out")
       .eq("id", submission.candidate_profile_id)
       .single();
     if (candidateProfile?.profiling_opt_out === true) return profilingOptOutResponse();
@@ -349,7 +349,7 @@ Return ONLY valid JSON:
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 4096,
+        max_tokens: 3072,
         messages: [{ role: "user", content: contentParts }],
         temperature: 0.5,
       }),

@@ -42,36 +42,30 @@ serve(async (req) => {
       return errorResponse(400, "MISSING_FIELD", "progress_id is required");
     }
 
-    // Check profiling opt-out
-    const { data: optCheck } = await supabase
-      .from("profiles")
-      .select("profiling_opt_out")
-      .eq("user_id", user.id)
-      .single();
-    if (optCheck?.profiling_opt_out === true) {
-      return errorResponse(403, "PROFILING_OPT_OUT",
-        "Automated profiling is disabled for this account.");
+    // Fetch data in parallel
+    const [optResult, progressResult, profileResult, cvResult] = await Promise.all([
+      supabase.from("profiles").select("profiling_opt_out").eq("user_id", user.id).single(),
+      supabase.from("growth_hub_progress")
+        .select("resource_id, resource_type, resource_title, resource_platform, primary_pillar, path_id")
+        .eq("id", progress_id).eq("user_id", user.id).single(),
+      supabase.from("profiles")
+        .select("ximatar_archetype, ximatar, ximatar_id, ximatar_level, assessment_scores, pillar_scores")
+        .eq("user_id", user.id).single(),
+      supabase.from("cv_identity_analysis")
+        .select("tension_gaps, alignment_score")
+        .eq("user_id", user.id).maybeSingle(),
+    ]);
+
+    if (optResult.data?.profiling_opt_out === true) {
+      return errorResponse(403, "PROFILING_OPT_OUT", "Automated profiling is disabled for this account.");
     }
 
-    // 1. Progress record
-    const { data: progress, error: progressErr } = await supabase
-      .from("growth_hub_progress")
-      .select("resource_id, resource_type, resource_title, resource_platform, primary_pillar, path_id")
-      .eq("id", progress_id)
-      .eq("user_id", user.id)
-      .single();
-
-    if (progressErr || !progress) {
+    const progress = progressResult.data;
+    if (progressResult.error || !progress) {
       return errorResponse(404, "PROGRESS_NOT_FOUND", "Progress record not found");
     }
 
-    // 2. User profile
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
-
+    const profile = profileResult.data;
     if (!profile) {
       return errorResponse(404, "PROFILE_NOT_FOUND", "User profile not found");
     }
@@ -81,12 +75,7 @@ serve(async (req) => {
     const _ximatarLevel = (profile.ximatar_level || 1) as number;
     const _assessmentScores = (profile.assessment_scores || profile.pillar_scores) as Record<string, number> || {};
 
-    // 3. CV tension
-    const { data: cvAnalysis } = await supabase
-      .from("cv_identity_analysis")
-      .select("tension_gaps, alignment_score")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    const cvAnalysis = cvResult.data;
 
     const scores = _assessmentScores;
     const pillarScore = scores[progress.primary_pillar] ?? 50;
@@ -95,19 +84,10 @@ serve(async (req) => {
       : "No specific tension data";
 
     const questionTypeGuide = progress.resource_type === "course"
-      ? `For COURSES:
-   - 2 scenario-based: "Given this situation, how would you apply what you learned?"
-   - 2 conceptual: "Explain the key principle behind X and how it relates to your work"
-   - 1 self-reflection: "How has this course changed your approach to [pillar aspect]?"`
+      ? "2 scenario-based + 2 conceptual + 1 self-reflection"
       : progress.resource_type === "book"
-      ? `For BOOKS:
-   - 2 conceptual: "The author argues X. How does this apply to your professional context?"
-   - 2 application: "Describe how you would use [concept from book] in a real situation"
-   - 1 critical thinking: "What is the strongest/weakest argument in the book and why?"`
-      : `For PODCASTS:
-   - 2 insight-based: "What was the key insight from [episode/podcast] and how does it relate to [pillar]?"
-   - 2 application: "The host/guest discussed X. How would you apply this?"
-   - 1 self-reflection: "What perspective shift did this give you about [pillar aspect]?"`;
+      ? "2 conceptual + 2 application + 1 critical thinking"
+      : "2 insight-based + 2 application + 1 self-reflection";
 
     // Load AI context
     const userContext = await loadUserAiContext(user.id);

@@ -1,13 +1,65 @@
 /**
- * Shared Anthropic Client — v2.0
+ * Shared Anthropic Client — v3.0
  * 
  * Direct Anthropic API wrapper for Claude calls.
- * Provides: retry logic, audit envelope logging, structured error handling.
+ * Provides: smart model routing, retry logic, audit envelope logging,
+ * cost estimation, structured error handling.
  * Coexists with aiClient.ts (which handles Lovable Gateway calls).
  */
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { SCORING_SCHEMA_VERSION } from "./aiClient.ts";
+
+/**
+ * Model routing configuration.
+ * Each function is assigned a model tier based on reasoning complexity.
+ * 
+ * SONNET: Complex psychometric reasoning, tension analysis, multi-layered output
+ * HAIKU: Structured extraction, scoring, straightforward generation
+ * 
+ * Cost comparison (approximate per 1K tokens):
+ * - Sonnet: $3 input / $15 output
+ * - Haiku:  $0.25 input / $1.25 output
+ */
+const MODEL_ROUTING: Record<string, string> = {
+  // SONNET — complex reasoning required
+  "analyze-cv":                      "claude-sonnet-4-20250514",
+  "generate-l3-interview":           "claude-sonnet-4-20250514",
+  "analyze-l3-frames":               "claude-sonnet-4-20250514",
+  "recommend-jobs":                  "claude-sonnet-4-20250514",
+  "generate-company-profile":        "claude-sonnet-4-20250514",
+
+  // HAIKU — structured tasks, cheaper model sufficient
+  "generate-challenge":              "claude-haiku-4-5-20251001",
+  "analyze-open-answer":             "claude-haiku-4-5-20251001",
+  "generate-l2-challenge-from-job-post": "claude-haiku-4-5-20251001",
+  "compute-level2-signals":          "claude-haiku-4-5-20251001",
+  "recommend-mentors":               "claude-haiku-4-5-20251001",
+  "generate-growth-path":            "claude-haiku-4-5-20251001",
+  "generate-growth-test":            "claude-haiku-4-5-20251001",
+  "evaluate-growth-test":            "claude-haiku-4-5-20251001",
+  "send-challenge-invitation":       "claude-haiku-4-5-20251001",
+  "contact-sales":                   "claude-haiku-4-5-20251001",
+  "analyze-cv-pdf-extract":          "claude-haiku-4-5-20251001",
+};
+
+/**
+ * Get the appropriate model for a function.
+ * Falls back to Haiku if function is not in the routing table.
+ */
+export function getModelForFunction(functionName: string): string {
+  return MODEL_ROUTING[functionName] || "claude-haiku-4-5-20251001";
+}
+
+// Approximate cost estimation per model (per 1K tokens)
+const COST_PER_1K_INPUT: Record<string, number> = {
+  "claude-sonnet-4-20250514": 0.003,
+  "claude-haiku-4-5-20251001": 0.00025,
+};
+const COST_PER_1K_OUTPUT: Record<string, number> = {
+  "claude-sonnet-4-20250514": 0.015,
+  "claude-haiku-4-5-20251001": 0.00125,
+};
 
 export interface AnthropicCallOptions {
   system: string;
@@ -93,7 +145,7 @@ function parseAnthropicError(responseStatus: number, errorText: string) {
 export async function callAnthropicApi(options: AnthropicCallOptions): Promise<AnthropicCallResult> {
   const {
     system, userMessage, correlationId, functionName,
-    inputSummary, model = "claude-sonnet-4-20250514",
+    inputSummary, model = getModelForFunction(functionName),
     maxTokens = 4096, temperature,
     promptTemplateVersion = "2.0",
   } = options;
@@ -194,10 +246,32 @@ export async function callAnthropicApi(options: AnthropicCallOptions): Promise<A
     throw new AnthropicError(502, "EMPTY_RESPONSE", "Empty response from Claude");
   }
 
-  // Fire-and-forget success envelope
-  persistEnvelope({ output_summary: `len=${content.length},retried=${retried}`, status: "success", error_code: null, latency_ms: latencyMs });
+  // Cost estimation
+  const inputTokens = data.usage?.input_tokens || 0;
+  const outputTokens = data.usage?.output_tokens || 0;
+  const estimatedCost =
+    (inputTokens / 1000) * (COST_PER_1K_INPUT[model] || 0.003) +
+    (outputTokens / 1000) * (COST_PER_1K_OUTPUT[model] || 0.015);
 
-  console.log(JSON.stringify({ type: "anthropic_success", correlation_id: correlationId, function_name: functionName, latency_ms: latencyMs, retried }));
+  // Fire-and-forget success envelope with cost info
+  persistEnvelope({
+    output_summary: `tokens:${inputTokens}+${outputTokens},cost:$${estimatedCost.toFixed(4)},model:${model}`,
+    status: "success", error_code: null, latency_ms: latencyMs,
+  });
+
+  console.log(JSON.stringify({
+    type: "anthropic_success", correlation_id: correlationId, function_name: functionName,
+    latency_ms: latencyMs, retried, model,
+    input_tokens: inputTokens, output_tokens: outputTokens,
+    estimated_cost_usd: Math.round(estimatedCost * 10000) / 10000,
+  }));
+
+  // Separate cost estimate log for easy querying
+  console.log(JSON.stringify({
+    type: "cost_estimate", correlation_id: correlationId, function_name: functionName,
+    model, input_tokens: inputTokens, output_tokens: outputTokens,
+    estimated_cost_usd: Math.round(estimatedCost * 10000) / 10000,
+  }));
 
   return { content, model, latencyMs, requestId };
 }

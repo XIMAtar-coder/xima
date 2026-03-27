@@ -166,7 +166,7 @@ serve(async (req) => {
     if (submission.candidate_profile_id) {
       const { data: candProfile } = await supabase
         .from('profiles')
-        .select('*')
+        .select('ximatar_name, ximatar, ximatar_archetype, ximatar_id, pillar_scores, assessment_scores')
         .eq('id', submission.candidate_profile_id)
         .single();
 

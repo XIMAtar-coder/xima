@@ -40,53 +40,40 @@ serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const locale = body.locale || "en";
 
-    // 1. Fetch user profile
-    const { data: profile, error: profileErr } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
+    // Fetch user data in parallel
+    const [profileResult, optCheckResult, cvAnalysisResult, trajectoryResult, completedResult] = await Promise.all([
+      supabase.from("profiles")
+        .select("ximatar_archetype, ximatar, ximatar_id, ximatar_level, assessment_scores, pillar_scores, preferred_language, language, profiling_opt_out")
+        .eq("user_id", user.id).single(),
+      Promise.resolve(null), // opt-out checked inline
+      supabase.from("cv_identity_analysis")
+        .select("alignment_score, tension_gaps")
+        .eq("user_id", user.id).maybeSingle(),
+      supabase.from("pillar_trajectory_log")
+        .select("drive_delta, computational_power_delta, communication_delta, creativity_delta, knowledge_delta, source_type, created_at")
+        .eq("user_id", user.id)
+        .gte("created_at", new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString())
+        .order("created_at", { ascending: false })
+        .limit(50),
+      supabase.from("growth_hub_progress")
+        .select("resource_title")
+        .eq("user_id", user.id)
+        .in("status", ["completed", "test_passed"]),
+    ]);
 
-    if (profileErr || !profile) {
-      console.error("[generate-growth-path] Profile error:", profileErr?.message || "not found");
+    const profile = profileResult.data;
+    if (profileResult.error || !profile) {
+      console.error("[generate-growth-path] Profile error:", profileResult.error?.message || "not found");
       return errorResponse(404, "PROFILE_NOT_FOUND", "User profile not found. Please complete the assessment first.");
     }
 
-    // Check profiling opt-out
-    const { data: optCheck } = await supabase
-      .from("profiles")
-      .select("profiling_opt_out")
-      .eq("user_id", user.id)
-      .single();
-    if (optCheck?.profiling_opt_out === true) {
-      return errorResponse(403, "PROFILING_OPT_OUT",
-        "Automated profiling is disabled for this account.");
+    if (profile.profiling_opt_out === true) {
+      return errorResponse(403, "PROFILING_OPT_OUT", "Automated profiling is disabled for this account.");
     }
 
-    // 2. CV tension analysis
-    const { data: cvAnalysis } = await supabase
-      .from("cv_identity_analysis")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    // 3. Pillar trajectory (last 90 days)
-    const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
-    const { data: trajectory } = await supabase
-      .from("pillar_trajectory_log")
-      .select("drive_delta, computational_power_delta, communication_delta, creativity_delta, knowledge_delta, source_type, created_at")
-      .eq("user_id", user.id)
-      .gte("created_at", ninetyDaysAgo)
-      .order("created_at", { ascending: false });
-
-    // 4. Completed resources (avoid repeats)
-    const { data: completedProgress } = await supabase
-      .from("growth_hub_progress")
-      .select("resource_title")
-      .eq("user_id", user.id)
-      .in("status", ["completed", "test_passed"]);
-
-    const completedTitles = completedProgress?.map(p => p.resource_title) || [];
+    const cvAnalysis = cvAnalysisResult.data;
+    const trajectory = trajectoryResult.data;
+    const completedTitles = completedResult.data?.map(p => p.resource_title) || [];
 
     // Resolve fields from whichever column names exist
     const assessmentScores = (profile.assessment_scores || profile.pillar_scores) as Record<string, number> | null;
@@ -155,109 +142,45 @@ serve(async (req) => {
     const userContext = await loadUserAiContext(user.id);
     const contextBlock = buildContextBlock(userContext);
 
-    const systemPrompt = `You are the XIMA Growth Advisor — a personal development coach powered by psychometric intelligence. You recommend specific, real, free learning resources across three formats: video courses, books, and podcasts.
+    const systemPrompt = `You are the XIMA Growth Advisor — a personal development coach powered by psychometric intelligence. Recommend specific, real, free learning resources.
 
 USER PROFILE:
 - XIMAtar: ${archetype} L${level} (${archetypeInfo?.title || archetype})
-- Pillar scores: Drive ${scores.drive ?? 50}, CompPower ${scores.computational_power ?? 50}, Communication ${scores.communication ?? 50}, Creativity ${scores.creativity ?? 50}, Knowledge ${scores.knowledge ?? 50}
-- Weakest pillar: ${weakestPillar} (score: ${weakestScore})
-- Second weakest: ${secondWeakest} (score: ${secondScore})
-- CV alignment score: ${cvAnalysis?.alignment_score ?? 'N/A'}/100
-- Key tension gaps: ${tensionSummary}
-- Recent trajectory: ${trajectorySummary}
-- Already completed: ${completedTitles.length > 0 ? completedTitles.join(", ") : "None yet"}
-- Preferred language: ${preferredLang}
+- Scores: Drive ${scores.drive ?? 50}, CompPower ${scores.computational_power ?? 50}, Comm ${scores.communication ?? 50}, Creativity ${scores.creativity ?? 50}, Knowledge ${scores.knowledge ?? 50}
+- Weakest: ${weakestPillar} (${weakestScore}), Second weakest: ${secondWeakest} (${secondScore})
+- CV alignment: ${cvAnalysis?.alignment_score ?? 'N/A'}/100
+- Tensions: ${tensionSummary}
+- Trajectory: ${trajectorySummary}
+- Completed: ${completedTitles.length > 0 ? completedTitles.join(", ") : "None"}
+- Language: ${preferredLang}
 
-GROWTH OBJECTIVE:
-Strengthen the weakest pillar (${weakestPillar}) to support progression toward XIMAtar L${nextLevel}. Leveling requires sustained growth in the weakest pillar, 5 mentor interactions, and 5 L2 challenges.
+OBJECTIVE: Strengthen ${weakestPillar} for XIMAtar L${nextLevel} progression.
 
-RESOURCE TYPES TO RECOMMEND:
+SOURCES (free content only):
+Courses: Coursera/edX (audit), YouTube (TED, HBR, Stanford, CrashCourse), Khan Academy, FreeCodeCamp, Google Digital Garage, HubSpot Academy, Great Learning, Alison
+Books: widely available titles, link to OpenLibrary/Google Books/Amazon
+Podcasts: Spotify/Apple/YouTube — recommend specific shows or episodes
 
-1. VIDEO COURSES (4-5 courses):
-   Sources: Coursera (free audit), edX (free audit), YouTube (TED, HBR, Y Combinator, Google Talks, Stanford Online, MIT OCW, CrashCourse, Ali Abdaal, etc.), Khan Academy, Great Learning Academy, FreeCodeCamp, Google Digital Garage, HubSpot Academy, Alison, FutureLearn (free access period)
-   Rules:
-   - Must be completely free or have a free audit/access option
-   - Include the real, specific course title
-   - Include the platform and a URL (exact URL if known, search URL if not)
-   - Include estimated completion hours
-   - Mix of 3 courses for weakest pillar + 1-2 for second weakest
-
-2. BOOKS (3-4 books):
-   Recommend real, specific books. For each include exact title, author, a read_url (OpenLibrary, Google Books, Amazon, or free PDF if legally available), key takeaway relevant to the user's gap, estimated reading hours.
-   For Italian users, also consider Italian-language books when they exist.
-
-3. PODCASTS (3-4 podcasts or specific episodes):
-   Recommend real, specific podcasts on Spotify, Apple Podcasts, or YouTube. For each include podcast name, specific episode if applicable, host, platform/URL, relevance, length.
-   For Italian users, include Italian podcasts when available.
-
-RESOURCE MIX:
-- Total: 10-13 resources (4-5 courses + 3-4 books + 3-4 podcasts)
-- 60% targeting weakest pillar
-- 30% targeting second weakest pillar
-- 10% bridging weakest with strongest
-
-LANGUAGE RULES:
-- If user prefers Italian: prioritize Italian-language resources, include English ones only when no Italian equivalent exists. Write all descriptions in Italian.
-- If user prefers English: recommend English resources. Write all descriptions in English.
-- Always indicate the resource language.
+Return 10-13 resources: 4-5 courses + 3-4 books + 3-4 podcasts. 60% weakest pillar, 30% second weakest, 10% bridging.
+For Italian users, prioritize Italian resources. Write descriptions in user's preferred language.
 
 ` + contextBlock + `
 
 Return ONLY valid JSON:
 {
   "growth_path": {
-    "title": "Personalized path name",
+    "title": "Path name",
     "objective": "1-2 sentence description",
-    "target_pillar": "the weakest pillar",
+    "target_pillar": "${weakestPillar}",
     "estimated_total_hours": number,
     "resources": {
-      "courses": [
-        {
-          "id": "course_1",
-          "title": "Exact course name",
-          "platform": "Coursera|edX|YouTube|Khan Academy|etc",
-          "url": "https://...",
-          "primary_pillar": "drive|computational_power|communication|creativity|knowledge",
-          "secondary_pillar": "string or null",
-          "difficulty": "beginner|intermediate|advanced",
-          "estimated_hours": number,
-          "why_for_you": "1-2 sentences",
-          "language": "en|it",
-          "free_access_note": "How to access for free"
-        }
-      ],
-      "books": [
-        {
-          "id": "book_1",
-          "title": "Exact book title",
-          "author": "Author name",
-          "read_url": "https://...",
-          "primary_pillar": "drive|computational_power|communication|creativity|knowledge",
-          "estimated_hours": number,
-          "key_takeaway": "1-2 sentences",
-          "why_for_you": "Why THIS book for THIS user",
-          "language": "en|it",
-          "availability": "Free PDF|OpenLibrary|Purchase required|Library"
-        }
-      ],
-      "podcasts": [
-        {
-          "id": "podcast_1",
-          "title": "Podcast name",
-          "episode_title": "Specific episode or null",
-          "host": "Host name(s)",
-          "platform": "Spotify|Apple Podcasts|YouTube",
-          "url": "https://...",
-          "primary_pillar": "drive|computational_power|communication|creativity|knowledge",
-          "episode_length_minutes": number,
-          "why_for_you": "Why this for this user",
-          "language": "en|it"
-        }
-      ]
+      "courses": [{"id":"course_1","title":"str","platform":"str","url":"str","primary_pillar":"str","secondary_pillar":"str|null","difficulty":"str","estimated_hours":0,"why_for_you":"str","language":"en|it","free_access_note":"str"}],
+      "books": [{"id":"book_1","title":"str","author":"str","read_url":"str","primary_pillar":"str","estimated_hours":0,"key_takeaway":"str","why_for_you":"str","language":"en|it","availability":"str"}],
+      "podcasts": [{"id":"podcast_1","title":"str","episode_title":"str|null","host":"str","platform":"str","url":"str","primary_pillar":"str","episode_length_minutes":0,"why_for_you":"str","language":"en|it"}]
     }
   },
   "growth_insight": "2-3 sentence motivational insight",
-  "next_milestone": "What completing this path means for XIMAtar evolution"
+  "next_milestone": "What completing this path means"
 }`;
 
     const result = await callAnthropicApi({
