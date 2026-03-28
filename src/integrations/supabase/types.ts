@@ -2381,51 +2381,93 @@ export type Database = {
       }
       feed_items: {
         Row: {
+          action_label: string | null
+          action_url: string | null
+          actor_avatar: string | null
+          actor_id: string | null
+          actor_name: string | null
+          actor_type: string | null
           audience_type:
             | Database["public"]["Enums"]["audience_type_enum"]
             | null
+          body: string | null
           business_id: string | null
           candidate_profile_id: string | null
           created_at: string
+          expires_at: string | null
+          feed_type: string | null
+          icon: string | null
           id: string
+          is_read: boolean | null
           mentor_profile_id: string | null
+          metadata: Json | null
           payload: Json
           priority: number | null
-          source: string
-          subject_ximatar_id: string
-          type: string
+          source: string | null
+          subject_ximatar_id: string | null
+          title: string | null
+          type: string | null
+          user_id: string | null
           visibility: Json
         }
         Insert: {
+          action_label?: string | null
+          action_url?: string | null
+          actor_avatar?: string | null
+          actor_id?: string | null
+          actor_name?: string | null
+          actor_type?: string | null
           audience_type?:
             | Database["public"]["Enums"]["audience_type_enum"]
             | null
+          body?: string | null
           business_id?: string | null
           candidate_profile_id?: string | null
           created_at?: string
+          expires_at?: string | null
+          feed_type?: string | null
+          icon?: string | null
           id?: string
+          is_read?: boolean | null
           mentor_profile_id?: string | null
+          metadata?: Json | null
           payload?: Json
           priority?: number | null
-          source: string
-          subject_ximatar_id: string
-          type: string
+          source?: string | null
+          subject_ximatar_id?: string | null
+          title?: string | null
+          type?: string | null
+          user_id?: string | null
           visibility?: Json
         }
         Update: {
+          action_label?: string | null
+          action_url?: string | null
+          actor_avatar?: string | null
+          actor_id?: string | null
+          actor_name?: string | null
+          actor_type?: string | null
           audience_type?:
             | Database["public"]["Enums"]["audience_type_enum"]
             | null
+          body?: string | null
           business_id?: string | null
           candidate_profile_id?: string | null
           created_at?: string
+          expires_at?: string | null
+          feed_type?: string | null
+          icon?: string | null
           id?: string
+          is_read?: boolean | null
           mentor_profile_id?: string | null
+          metadata?: Json | null
           payload?: Json
           priority?: number | null
-          source?: string
-          subject_ximatar_id?: string
-          type?: string
+          source?: string | null
+          subject_ximatar_id?: string | null
+          title?: string | null
+          type?: string | null
+          user_id?: string | null
           visibility?: Json
         }
         Relationships: [

@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { MessageCircle } from 'lucide-react';
 import { FeedHeader } from './FeedHeader';
-import { SingleFeedCard } from './SingleFeedCard';
 import { InterestSignalsCard } from './InterestSignalsCard';
 import { FeedActiveThreads } from './FeedActiveThreads';
+import { PersonalFeedView } from './PersonalFeedView';
 import { Card, CardContent } from '@/components/ui/card';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useRealtimeChat, RecentThread } from '@/hooks/useRealtimeChat';
@@ -17,10 +17,8 @@ interface XimaFeedProps {
 }
 
 /**
- * GDPR-Safe XIMA Feed - "One news per login" pattern.
- * 
- * Includes contextual chat threads (mentor/business only).
- * No global visibility, strict RLS enforcement at database level.
+ * XIMA Feed - Social Intelligence Layer.
+ * Database-driven personal feed with category tabs.
  */
 export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations }: XimaFeedProps) => {
   const { t } = useTranslation();
@@ -29,7 +27,6 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
   const { recentThreads, loadingThreads } = useRealtimeChat(user?.id);
 
   const handleOpenThread = (threadId: string) => {
-    // Navigate to conversations view with the thread pre-selected
     onOpenConversations?.();
   };
 
@@ -37,7 +34,7 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
     <div className="max-w-2xl mx-auto">
       <FeedHeader />
 
-      {/* Interest signals for candidates - shows companies that showed interest */}
+      {/* Interest signals for candidates */}
       {!isBusiness && (
         <div className="mb-6">
           <InterestSignalsCard onChatOpen={() => onOpenConversations?.()} />
@@ -53,7 +50,7 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
         />
       )}
 
-      {/* Chat access notice - only shown when mutual interest exists */}
+      {/* Chat access notice */}
       {showChatAccess && hasPendingChats && (
         <Card className="mb-6 border-primary/30 bg-primary/5">
           <CardContent className="py-4 flex items-center justify-between">
@@ -68,25 +65,15 @@ export const XimaFeed = ({ showChatAccess, hasPendingChats, onOpenConversations 
                 </p>
               </div>
             </div>
-            <Button 
-              size="sm" 
-              onClick={onOpenConversations}
-            >
+            <Button size="sm" onClick={onOpenConversations}>
               {t('feed.open_chats', 'Open Chats')}
             </Button>
           </CardContent>
         </Card>
       )}
 
-      {/* Single feed card - "One news per login" */}
-      <SingleFeedCard className="mb-6" />
-
-      {/* Privacy notice */}
-      <p className="text-xs text-muted-foreground/60 text-center mt-8 max-w-md mx-auto">
-        {t('feed.privacy_notice', 
-          'All signals are anonymized and AI-normalized. XIMAtar identities are shown, not personal information. Reactions are aggregated and never attributed to individuals.'
-        )}
-      </p>
+      {/* Personal Feed - database-driven, categorized */}
+      <PersonalFeedView />
     </div>
   );
 };
