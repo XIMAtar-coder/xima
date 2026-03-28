@@ -81,7 +81,7 @@ export const usePersonalFeed = (category: FeedCategory = 'for_you') => {
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
-      return data as { created_at: string; completed_at: string | null } | null;
+      return data as unknown as { created_at: string; completed_at: string | null } | null;
     },
     enabled: !!user?.id,
     staleTime: 60000,
