@@ -5231,5 +5231,27 @@
     "tagline": "Your professional growth, one insight at a time",
     "subtitle": "Personalized updates, curated content, and opportunities",
     "legend": "Only verified milestones · Curated insights · Privacy by design"
+  },
+  "profile_completion": {
+    "title": "Complete your profile for better matches",
+    "subtitle": "Tell us where you want to work and what you're looking for. Companies will find you faster with a complete profile.",
+    "time_estimate": "Takes less than 2 minutes",
+    "complete_now": "Complete Now",
+    "later": "Later",
+    "locations_label": "Where would you like to work?",
+    "locations_hint": "Add one or more cities, or select Remote",
+    "work_mode_label": "What's your preferred work style?",
+    "relocate_label": "Would you relocate for the right opportunity?",
+    "salary_label": "What's your expected salary range?",
+    "salary_hint": "This is private and never shared with companies directly",
+    "availability_label": "When are you available to start?",
+    "industry_label": "Which industries interest you?",
+    "industry_hint": "Select all that apply",
+    "save": "Save Preferences",
+    "success_title": "Profile Complete!",
+    "success_body": "Your job preferences are set. Companies can now find you based on location, availability, and industry match.",
+    "section_title": "Job Preferences",
+    "not_set": "Not set",
+    "edit": "Edit Preferences"
   }
 }

@@ -150,6 +150,33 @@ const Profile = () => {
         </div>
 
         <div className="space-y-6 relative z-10 dashboard-stagger">
+          {/* Profile completion prompt */}
+          {profileData.hasAssessment && !(profileData as any).profile_completed && !dismissedPrompt && (
+            <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold">{t('profile_completion.title')}</h3>
+                  <p className="text-muted-foreground mt-1 text-sm">{t('profile_completion.subtitle')}</p>
+                  <p className="text-xs text-muted-foreground mt-2">{t('profile_completion.time_estimate')}</p>
+                </div>
+                <button onClick={() => setDismissedPrompt(true)} className="text-muted-foreground hover:text-foreground">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="mt-4 flex gap-3">
+                <Button onClick={() => setProfileModalOpen(true)}>{t('profile_completion.complete_now')}</Button>
+                <Button variant="ghost" onClick={() => setDismissedPrompt(true)}>{t('profile_completion.later')}</Button>
+              </div>
+            </div>
+          )}
+
+          <ProfileCompletionModal
+            open={profileModalOpen}
+            onClose={() => setProfileModalOpen(false)}
+            userId={user?.id || ''}
+            onSuccess={() => setProfileRefreshKey(prev => prev + 1)}
+          />
+
           <MembershipSummaryCard />
           <XimatarHeroCard
             ximatarName={profileData.ximatar_name} ximatarImage={profileData.ximatar_image}
