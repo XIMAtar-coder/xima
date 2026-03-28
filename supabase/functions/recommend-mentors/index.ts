@@ -454,15 +454,19 @@ Return ONLY a JSON array of strings:
       });
 
       // Deposit into intelligence engine
-      await depositInference(userId, "recommend-mentors", {
-        top_mentor: topMentors[0].name,
-        top_score: topMentors[0].score,
-        matching_context: hasTension ? "tension" : "basic",
-        user_archetype: userArchetype,
-      }, {
-        patternType: "mentor_matching",
-        archetype: userArchetype || undefined,
-      });
+      try {
+        if (typeof depositInference === "function") {
+          await depositInference(userId, "recommend-mentors", {
+            top_mentor: topMentors[0].name,
+            top_score: topMentors[0].score,
+            matching_context: hasTension ? "tension" : "basic",
+            user_archetype: userArchetype,
+          }, {
+            patternType: "mentor_matching",
+            archetype: userArchetype || undefined,
+          });
+        }
+      } catch (e) { console.warn("[recommend-mentors] Deposit failed:", e instanceof Error ? e.message : e); }
     }
 
     // ---- Build response ----
