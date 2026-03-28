@@ -172,6 +172,13 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
     hasAssessment: false,
     isLoading: true,
     error: null,
+    profile_completed: false,
+    desired_locations: [],
+    work_preference: null,
+    willing_to_relocate: null,
+    salary_expectation: null,
+    availability_date: null,
+    industry_preferences: [],
   });
 
   useEffect(() => {
