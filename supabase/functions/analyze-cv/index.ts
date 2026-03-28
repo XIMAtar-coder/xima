@@ -638,24 +638,117 @@ serve(async (req) => {
     }
 
     // ===== Parse & validate response =====
+    console.log(`[analyze-cv] Raw AI response length: ${aiResult.content.length}`);
+    console.log(`[analyze-cv] Raw AI response first 300 chars: ${aiResult.content.substring(0, 300)}`);
+    console.log(`[analyze-cv] Raw AI response last 200 chars: ${aiResult.content.substring(Math.max(0, aiResult.content.length - 200))}`);
+
     let jsonStr: string;
-    if (extractJsonFromAiContent) {
-      try { jsonStr = extractJsonFromAiContent(aiResult.content); } catch { jsonStr = extractJsonRobust(aiResult.content); }
-    } else {
+    try {
+      if (extractJsonFromAiContent) {
+        jsonStr = extractJsonFromAiContent(aiResult.content);
+      } else {
+        jsonStr = extractJsonRobust(aiResult.content);
+      }
+    } catch (extractErr) {
+      console.warn("[analyze-cv] JSON extraction failed, trying robust fallback:", extractErr);
       jsonStr = extractJsonRobust(aiResult.content);
     }
 
-    let parsed: unknown;
+    console.log(`[analyze-cv] Extracted JSON length: ${jsonStr.length}`);
+    console.log(`[analyze-cv] Extracted JSON first 200 chars: ${jsonStr.substring(0, 200)}`);
+
+    let parsed: any;
     try {
       parsed = JSON.parse(jsonStr);
-    } catch (_parseErr) {
-      console.error("[analyze-cv] JSON parse failed. Raw preview:", aiResult.content.substring(0, 500));
-      return errorResponse(502, "AI_PARSE_FAILED", "AI analysis did not return valid JSON. Please try again.");
+    } catch (parseErr) {
+      console.error("[analyze-cv] JSON.parse failed:", parseErr instanceof Error ? parseErr.message : parseErr);
+      console.error("[analyze-cv] Failed JSON first 500 chars:", jsonStr.substring(0, 500));
+      console.error("[analyze-cv] Failed JSON last 500 chars:", jsonStr.substring(Math.max(0, jsonStr.length - 500)));
+
+      try {
+        const manualMatch = aiResult.content.match(/\{[\s\S]*"credentials"[\s\S]*"identity"[\s\S]*\}/);
+        if (manualMatch) {
+          parsed = JSON.parse(manualMatch[0]);
+          console.log("[analyze-cv] Manual JSON extraction succeeded");
+        }
+      } catch (_manualErr) {
+        console.error("[analyze-cv] Manual extraction also failed");
+      }
+
+      if (!parsed) {
+        return errorResponse(502, "AI_PARSE_FAILED", "AI analysis did not return valid JSON. Please try again.");
+      }
     }
 
-    const validated = validateAnalyzeCvResponse(parsed);
+    console.log("[analyze-cv] Parsed JSON keys:", Object.keys(parsed));
+
+    let validated: { credentials: any; identity: any } | null = null;
+
+    if (parsed.credentials && parsed.identity) {
+      const creds = parsed.credentials;
+      const ident = parsed.identity;
+
+      if (!Array.isArray(creds.education)) creds.education = [];
+      if (!Array.isArray(creds.work_experience)) creds.work_experience = [];
+      if (!Array.isArray(creds.hard_skills)) creds.hard_skills = [];
+
+      if (!ident.cv_pillar_scores || typeof ident.cv_pillar_scores !== "object") {
+        ident.cv_pillar_scores = { drive: 0, computational_power: 0, communication: 0, creativity: 0, knowledge: 0 };
+      }
+      for (const pillar of ["drive", "computational_power", "communication", "creativity", "knowledge"]) {
+        if (typeof ident.cv_pillar_scores[pillar] !== "number") ident.cv_pillar_scores[pillar] = 0;
+        ident.cv_pillar_scores[pillar] = Math.max(0, Math.min(100, ident.cv_pillar_scores[pillar]));
+      }
+      if (!ident.cv_archetype || typeof ident.cv_archetype !== "object") {
+        ident.cv_archetype = { primary: ximatarId, secondary: null, explanation: "" };
+      }
+      if (!ident.tension || typeof ident.tension !== "object") {
+        ident.tension = { alignment_score: 0, primary_gaps: [], overall_narrative: "" };
+      }
+      if (!ident.improvements || typeof ident.improvements !== "object") {
+        ident.improvements = { technical: [], identity_aligned: [] };
+      }
+      if (!ident.role_fit || typeof ident.role_fit !== "object") {
+        ident.role_fit = { cv_qualified_roles: [], archetype_aligned_roles: [], growth_bridge_roles: [] };
+      }
+      if (!ident.mentor_hook || typeof ident.mentor_hook !== "object") {
+        ident.mentor_hook = { suggested_focus: "", key_question: "" };
+      }
+
+      validated = { credentials: creds, identity: ident };
+      console.log("[analyze-cv] Validation passed (with defaults applied)");
+    } else {
+      console.error("[analyze-cv] Parsed JSON missing credentials or identity keys:", Object.keys(parsed));
+
+      if (parsed.cv_pillar_scores || parsed.computational_power !== undefined) {
+        console.log("[analyze-cv] Attempting flat-structure salvage");
+        validated = {
+          credentials: {
+            full_name: parsed.full_name || null, education: parsed.education || [],
+            work_experience: parsed.work_experience || [], hard_skills: parsed.hard_skills || [],
+            certifications: parsed.certifications || [], languages: parsed.languages || [],
+            total_years_experience: parsed.total_years_experience || null,
+            seniority_level: parsed.seniority_level || null,
+            industries_worked: parsed.industries_worked || [],
+            career_trajectory: parsed.career_trajectory || null,
+            publications: [], patents: [], awards: [], volunteer_work: [], professional_associations: [],
+          },
+          identity: {
+            cv_archetype: { primary: ximatarId, secondary: null, explanation: parsed.summary || "" },
+            cv_pillar_scores: parsed.cv_pillar_scores || {
+              drive: parsed.drive || 0, computational_power: parsed.computational_power || 0,
+              communication: parsed.communication || 0, creativity: parsed.creativity || 0, knowledge: parsed.knowledge || 0,
+            },
+            tension: { alignment_score: 0, primary_gaps: [], overall_narrative: parsed.summary || "" },
+            improvements: { technical: [], identity_aligned: [] },
+            role_fit: { cv_qualified_roles: [], archetype_aligned_roles: [], growth_bridge_roles: [] },
+            mentor_hook: { suggested_focus: "", key_question: "" },
+          },
+        };
+      }
+    }
+
     if (!validated) {
-      console.error(JSON.stringify({ type: "validation_error", correlation_id: correlationId, function_name: "analyze-cv" }));
       return errorResponse(502, "AI_PARSE_FAILED", "AI analysis did not return valid results. Please try again.");
     }
 
