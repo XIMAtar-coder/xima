@@ -390,6 +390,13 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           hasAssessment: !!((profile?.ximatar || profile?.ximatar_id) && pillar_scores),
           isLoading: false,
           error: null,
+          profile_completed: !!(profile as any)?.profile_completed,
+          desired_locations: ((profile as any)?.desired_locations as any[]) || [],
+          work_preference: ((profile as any)?.work_preference as string) || null,
+          willing_to_relocate: ((profile as any)?.willing_to_relocate as string) || null,
+          salary_expectation: (profile as any)?.salary_expectation || null,
+          availability_date: ((profile as any)?.availability_date as string) || null,
+          industry_preferences: ((profile as any)?.industry_preferences as string[]) || [],
         };
 
         console.log('[useProfileData] FINAL STATE UPDATE:', next);
