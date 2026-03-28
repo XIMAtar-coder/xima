@@ -32,18 +32,28 @@ const CandidateSettings = () => {
   }, [completeStep, hasCompletedStep]);
 
   useEffect(() => {
-    const fetchMentorInfo = async () => {
+    const fetchData = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
+        setUserId(user.id);
 
         const { data: profile } = await supabase
           .from('profiles')
-          .select('id')
+          .select('id, desired_locations, work_preference, willing_to_relocate, salary_expectation, availability_date, industry_preferences')
           .eq('user_id', user.id)
           .maybeSingle();
 
         if (!profile) return;
+
+        setJobPrefs({
+          desired_locations: (profile as any).desired_locations || [],
+          work_preference: (profile as any).work_preference,
+          willing_to_relocate: (profile as any).willing_to_relocate,
+          salary_expectation: (profile as any).salary_expectation,
+          availability_date: (profile as any).availability_date,
+          industry_preferences: (profile as any).industry_preferences || [],
+        });
 
         let mentorId = null;
         let mentorName = null;
@@ -73,12 +83,12 @@ const CandidateSettings = () => {
           profileId: profile.id,
         });
       } catch (err) {
-        console.error('[CandidateSettings] Error fetching mentor info:', err);
+        console.error('[CandidateSettings] Error fetching data:', err);
       }
     };
 
-    fetchMentorInfo();
-  }, []);
+    fetchData();
+  }, [refreshKey]);
 
   return (
     <MainLayout>
