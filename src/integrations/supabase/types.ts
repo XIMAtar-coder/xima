@@ -4123,6 +4123,7 @@ export type Database = {
           evolution_eligible: boolean | null
           first_name: string | null
           free_intro_session_used_at: string | null
+          free_mentor_session_used: boolean | null
           full_name: string | null
           id: string
           industry_preferences: string[] | null
@@ -4134,6 +4135,7 @@ export type Database = {
           membership_started_at: string | null
           membership_tier: Database["public"]["Enums"]["membership_tier"]
           mentor: Json | null
+          mentor_messages_sent: number | null
           name: string | null
           pillar_scores: Json | null
           pillar_vector: string | null
@@ -4182,6 +4184,7 @@ export type Database = {
           evolution_eligible?: boolean | null
           first_name?: string | null
           free_intro_session_used_at?: string | null
+          free_mentor_session_used?: boolean | null
           full_name?: string | null
           id?: string
           industry_preferences?: string[] | null
@@ -4193,6 +4196,7 @@ export type Database = {
           membership_started_at?: string | null
           membership_tier?: Database["public"]["Enums"]["membership_tier"]
           mentor?: Json | null
+          mentor_messages_sent?: number | null
           name?: string | null
           pillar_scores?: Json | null
           pillar_vector?: string | null
@@ -4241,6 +4245,7 @@ export type Database = {
           evolution_eligible?: boolean | null
           first_name?: string | null
           free_intro_session_used_at?: string | null
+          free_mentor_session_used?: boolean | null
           full_name?: string | null
           id?: string
           industry_preferences?: string[] | null
@@ -4252,6 +4257,7 @@ export type Database = {
           membership_started_at?: string | null
           membership_tier?: Database["public"]["Enums"]["membership_tier"]
           mentor?: Json | null
+          mentor_messages_sent?: number | null
           name?: string | null
           pillar_scores?: Json | null
           pillar_vector?: string | null
