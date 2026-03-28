@@ -8,6 +8,7 @@ import { ProfilingOptOutSection } from '@/components/settings/ProfilingOptOutSec
 import { AccountDeletionSection } from '@/components/settings/AccountDeletionSection';
 import { MentorCVConsentToggle } from '@/components/settings/MentorCVConsentToggle';
 import { MembershipSection } from '@/components/settings/MembershipSection';
+import { JobPreferencesSection } from '@/components/settings/JobPreferencesSection';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 
