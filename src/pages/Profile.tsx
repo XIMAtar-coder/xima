@@ -39,6 +39,8 @@ const Profile = () => {
   const profileData = useProfileData(profileRefreshKey);
   const { shouldAutoShowGuide, completeStep } = useOnboardingState();
   const [guideOpen, setGuideOpen] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [dismissedPrompt, setDismissedPrompt] = useState(false);
 
   const hasMentor = !!profileData.mentor_profile;
 
