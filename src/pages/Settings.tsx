@@ -116,6 +116,18 @@ const CandidateSettings = () => {
           </>
         )}
 
+        {/* Job Preferences */}
+        {userId && (
+          <>
+            <JobPreferencesSection
+              userId={userId}
+              profileData={jobPrefs}
+              onUpdate={() => setRefreshKey(prev => prev + 1)}
+            />
+            <Separator />
+          </>
+        )}
+
         {/* Membership Plan */}
         <MembershipSection />
 
