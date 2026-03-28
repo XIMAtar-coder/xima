@@ -15,6 +15,9 @@ import { supabase } from '@/integrations/supabase/client';
 const CandidateSettings = () => {
   const { t } = useTranslation();
   const { completeStep, hasCompletedStep } = useOnboardingState();
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [jobPrefs, setJobPrefs] = useState<any>({});
   const [mentorInfo, setMentorInfo] = useState<{ mentorId: string | null; mentorName: string | null; profileId: string | null }>({
     mentorId: null,
     mentorName: null,
