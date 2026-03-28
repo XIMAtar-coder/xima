@@ -89,12 +89,20 @@ try {
 // Helper: Direct Claude API call (fallback if shared module unavailable)
 // =====================================================
 
-async function callClaudeDirectly(system: string, userMessage: string, model = "claude-sonnet-4-20250514", maxTokens = 6000): Promise<{ content: string; model: string; latencyMs: number; requestId: string }> {
+async function callClaudeDirectly(
+  system: string,
+  userContent: string | any[],
+  model = "claude-sonnet-4-20250514",
+  maxTokens = 6000
+): Promise<{ content: string; model: string; latencyMs: number; requestId: string }> {
   const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
   if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY not configured");
 
   const requestId = crypto.randomUUID();
   const start = Date.now();
+  const msgContent = typeof userContent === "string" ? userContent : userContent;
+
+  const body = JSON.stringify({ model, max_tokens: maxTokens, system, messages: [{ role: "user", content: msgContent }] });
 
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -103,24 +111,22 @@ async function callClaudeDirectly(system: string, userMessage: string, model = "
       "anthropic-version": "2023-06-01",
       "content-type": "application/json",
     },
-    body: JSON.stringify({ model, max_tokens: maxTokens, system, messages: [{ role: "user", content: userMessage }] }),
+    body,
   });
 
   const latencyMs = Date.now() - start;
 
   if (!response.ok) {
     const errText = await response.text().catch(() => "");
-    // Check for credit issues
     if (errText.toLowerCase().includes("credit balance is too low") || errText.toLowerCase().includes("purchase credits")) {
       throw Object.assign(new Error("Anthropic credits are too low. Please add more credits."), { statusCode: 402, errorCode: "INSUFFICIENT_CREDITS" });
     }
     if (response.status === 429) {
-      // Retry once
       await new Promise(r => setTimeout(r, 2000));
       const retry = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "x-api-key": ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-        body: JSON.stringify({ model, max_tokens: maxTokens, system, messages: [{ role: "user", content: userMessage }] }),
+        body,
       });
       if (!retry.ok) throw new Error(`Anthropic API error ${retry.status}`);
       const data = await retry.json();
