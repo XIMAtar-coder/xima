@@ -5225,5 +5225,11 @@
     "open_score_influence_note": "Open answers can influence up to 10% of selected pillars (Creativity, Communication, Knowledge, and Drive).",
     "closing_pullquote": "A XIMAtar is not a label — it is a compass. It shows who you are, what shapes your progress, and what will elevate your next chapter.",
     "closing_cta": "Choose your mentor to continue →"
+  },
+  "feed": {
+    "title": "Your Feed",
+    "tagline": "Your professional growth, one insight at a time",
+    "subtitle": "Personalized updates, curated content, and opportunities",
+    "legend": "Only verified milestones · Curated insights · Privacy by design"
   }
 }
