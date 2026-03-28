@@ -282,6 +282,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         {[
                           { path: '/profile', label: t('nav.dashboard') },
                           { path: '/chat', label: t('nav.feed') },
+                          { path: '/messages', label: t('nav.messages') },
                           { path: '/development-plan', label: t('nav.tests') },
                           { path: '/settings', label: t('nav.settings', 'Impostazioni') },
                         ].map(({ path, label }) => (
