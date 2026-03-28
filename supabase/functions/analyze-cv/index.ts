@@ -605,17 +605,36 @@ serve(async (req) => {
     const { error: uploadError } = await supabase.storage.from("cv-uploads").upload(storagePath, fileBytes, { upsert: true, contentType: file.type });
     if (uploadError) return errorResponse(400, "UPLOAD_FAILED", `Upload failed: ${uploadError.message}`);
 
-    // ===== Extract text =====
-    const { text: extractedText, method: extractionMethod } = await extractTextFromFile(fileBytes, file.type);
-    if (extractedText.length < 100) return errorResponse(400, "INSUFFICIENT_TEXT", "Could not extract sufficient text from the file. Please upload a text-based PDF or DOCX.");
-
-    const truncatedText = extractedText.substring(0, 12000);
+    // ===== Extract text OR prepare PDF for direct analysis =====
+    let truncatedText = "";
+    let extractionMethod = "direct-pdf";
+    let pdfBase64: string | null = null;
     const ximatarId = resolvedXimatarKey;
+
+    if (file.type === "application/pdf") {
+      // For PDFs: send directly to Claude in ONE call (no separate text extraction)
+      console.log("[analyze-cv] PDF detected — will send directly to Claude for combined extraction + analysis");
+      let base64Str = "";
+      const CHUNK = 8192;
+      for (let i = 0; i < fileBytes.length; i += CHUNK) {
+        const chunk = fileBytes.subarray(i, Math.min(i + CHUNK, fileBytes.length));
+        base64Str += String.fromCharCode(...chunk);
+      }
+      pdfBase64 = btoa(base64Str);
+      extractionMethod = "claude-direct-pdf";
+      truncatedText = "[PDF sent directly to Claude for analysis]";
+    } else {
+      // For non-PDF files: extract text as before
+      const { text: extractedText, method } = await extractTextFromFile(fileBytes, file.type);
+      if (extractedText.length < 100) return errorResponse(400, "INSUFFICIENT_TEXT", "Could not extract sufficient text from the file. Please upload a text-based PDF or DOCX.");
+      truncatedText = extractedText.substring(0, 12000);
+      extractionMethod = method;
+    }
 
     console.log(JSON.stringify({ type: "request", correlation_id: correlationId, function_name: "analyze-cv", text_length: truncatedText.length, extraction_method: extractionMethod, ximatar_id: ximatarId }));
 
     // ===== Detect language =====
-    const detectedLanguage = detectLanguage(truncatedText);
+    const detectedLanguage = pdfBase64 ? "auto" : detectLanguage(truncatedText);
 
     // ===== Load AI context & build prompt =====
     let contextBlock = "";
@@ -629,14 +648,27 @@ serve(async (req) => {
     }
 
     const systemPrompt = buildSystemPrompt(ximatarId, ximatarName, ximatarTitle, pillarScores, detectedLanguage) + contextBlock;
-    const userMessage = buildUserMessage(truncatedText, ximatarId, ximatarName, ximatarTitle, pillarScores);
 
     const ipHash = hashForAudit ? await hashForAudit(req.headers.get("x-forwarded-for") || "unknown") : await hashForAuditFallback(req.headers.get("x-forwarded-for") || "unknown");
 
-    // ===== Call Claude (with fallback) =====
+    // ===== Build user content (PDF as document OR extracted text) =====
+    let userContent: string | any[];
+    if (pdfBase64) {
+      userContent = [
+        { type: "document", source: { type: "base64", media_type: "application/pdf", data: pdfBase64 } },
+        {
+          type: "text",
+          text: `This is the candidate's CV/resume PDF. Read the entire document and perform both tasks:\n1. Extract all structured credentials (education, work experience, skills, certifications, etc.)\n2. Perform psychometric identity analysis comparing the CV to their assessment results.\n\nTheir XIMA assessment results:\n- XIMAtar: ${ximatarId} — ${ximatarName} (${ximatarTitle})\n- Pillar scores: Drive ${pillarScores.drive ?? "N/A"}, Computational Power ${pillarScores.comp_power ?? pillarScores.computational_power ?? "N/A"}, Communication ${pillarScores.communication ?? "N/A"}, Creativity ${pillarScores.creativity ?? "N/A"}, Knowledge ${pillarScores.knowledge ?? "N/A"}\n\nReturn ONLY the JSON object as specified in your instructions.`,
+        },
+      ];
+    } else {
+      userContent = buildUserMessage(truncatedText, ximatarId, ximatarName, ximatarTitle, pillarScores);
+    }
+
+    // ===== Call Claude — SINGLE call =====
     let aiResult: { content: string; model: string; latencyMs: number; requestId: string };
     try {
-      aiResult = await callClaudeDirectly(systemPrompt, userMessage);
+      aiResult = await callClaudeDirectly(systemPrompt, userContent);
     } catch (aiErr: any) {
       console.error("[analyze-cv] AI call failed:", aiErr.message);
       if (aiErr.statusCode === 402) return errorResponse(402, "INSUFFICIENT_CREDITS", aiErr.message);
