@@ -89,12 +89,20 @@ try {
 // Helper: Direct Claude API call (fallback if shared module unavailable)
 // =====================================================
 
-async function callClaudeDirectly(system: string, userMessage: string, model = "claude-sonnet-4-20250514", maxTokens = 6000): Promise<{ content: string; model: string; latencyMs: number; requestId: string }> {
+async function callClaudeDirectly(
+  system: string,
+  userContent: string | any[],
+  model = "claude-sonnet-4-20250514",
+  maxTokens = 6000
+): Promise<{ content: string; model: string; latencyMs: number; requestId: string }> {
   const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
   if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY not configured");
 
   const requestId = crypto.randomUUID();
   const start = Date.now();
+  const msgContent = typeof userContent === "string" ? userContent : userContent;
+
+  const body = JSON.stringify({ model, max_tokens: maxTokens, system, messages: [{ role: "user", content: msgContent }] });
 
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -103,24 +111,22 @@ async function callClaudeDirectly(system: string, userMessage: string, model = "
       "anthropic-version": "2023-06-01",
       "content-type": "application/json",
     },
-    body: JSON.stringify({ model, max_tokens: maxTokens, system, messages: [{ role: "user", content: userMessage }] }),
+    body,
   });
 
   const latencyMs = Date.now() - start;
 
   if (!response.ok) {
     const errText = await response.text().catch(() => "");
-    // Check for credit issues
     if (errText.toLowerCase().includes("credit balance is too low") || errText.toLowerCase().includes("purchase credits")) {
       throw Object.assign(new Error("Anthropic credits are too low. Please add more credits."), { statusCode: 402, errorCode: "INSUFFICIENT_CREDITS" });
     }
     if (response.status === 429) {
-      // Retry once
       await new Promise(r => setTimeout(r, 2000));
       const retry = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "x-api-key": ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-        body: JSON.stringify({ model, max_tokens: maxTokens, system, messages: [{ role: "user", content: userMessage }] }),
+        body,
       });
       if (!retry.ok) throw new Error(`Anthropic API error ${retry.status}`);
       const data = await retry.json();
@@ -320,7 +326,14 @@ function buildSystemPrompt(
   assessmentScores: Record<string, number>, language: string
 ): string {
   const langNames: Record<string, string> = { it: "Italian", en: "English", pt: "Portuguese", es: "Spanish", de: "German", fr: "French" };
-  const langName = langNames[language] || "English";
+
+  let langInstruction: string;
+  if (language === "auto") {
+    langInstruction = "Detect the language of the CV automatically. Write ALL narratives in the same language as the CV. Keep JSON field names in English.";
+  } else {
+    const langName = langNames[language] || "English";
+    langInstruction = `Write ALL narratives, recommendations, explanations, summaries, mentor_hook, and role names in ${langName}. Keep JSON field names in English.`;
+  }
 
   return `You are the XIMA CV Intelligence Engine — an expert psychometric analyst for the XIMA talent platform. You perform two tasks simultaneously on a candidate's CV.
 
@@ -358,7 +371,7 @@ IMPORTANT SCORING RULES:
 CV PILLAR SCORING: 0-20=no evidence, 21-40=minimal, 41-60=moderate, 61-80=strong with examples, 81-100=exceptional.
 PHILOSOPHY: CVs capture credentials not identity. Tension = growth opportunity. Improvements help CV tell the true story.
 
-LANGUAGE: Write ALL narratives, recommendations, explanations, summaries, mentor_hook, and role names in ${langName}. Keep JSON field names in English.
+LANGUAGE: ${langInstruction}
 
 Return ONLY valid JSON with this exact structure (no markdown, no extra text):
 {
@@ -599,17 +612,36 @@ serve(async (req) => {
     const { error: uploadError } = await supabase.storage.from("cv-uploads").upload(storagePath, fileBytes, { upsert: true, contentType: file.type });
     if (uploadError) return errorResponse(400, "UPLOAD_FAILED", `Upload failed: ${uploadError.message}`);
 
-    // ===== Extract text =====
-    const { text: extractedText, method: extractionMethod } = await extractTextFromFile(fileBytes, file.type);
-    if (extractedText.length < 100) return errorResponse(400, "INSUFFICIENT_TEXT", "Could not extract sufficient text from the file. Please upload a text-based PDF or DOCX.");
-
-    const truncatedText = extractedText.substring(0, 12000);
+    // ===== Extract text OR prepare PDF for direct analysis =====
+    let truncatedText = "";
+    let extractionMethod = "direct-pdf";
+    let pdfBase64: string | null = null;
     const ximatarId = resolvedXimatarKey;
+
+    if (file.type === "application/pdf") {
+      // For PDFs: send directly to Claude in ONE call (no separate text extraction)
+      console.log("[analyze-cv] PDF detected — will send directly to Claude for combined extraction + analysis");
+      let base64Str = "";
+      const CHUNK = 8192;
+      for (let i = 0; i < fileBytes.length; i += CHUNK) {
+        const chunk = fileBytes.subarray(i, Math.min(i + CHUNK, fileBytes.length));
+        base64Str += String.fromCharCode(...chunk);
+      }
+      pdfBase64 = btoa(base64Str);
+      extractionMethod = "claude-direct-pdf";
+      truncatedText = "[PDF sent directly to Claude for analysis]";
+    } else {
+      // For non-PDF files: extract text as before
+      const { text: extractedText, method } = await extractTextFromFile(fileBytes, file.type);
+      if (extractedText.length < 100) return errorResponse(400, "INSUFFICIENT_TEXT", "Could not extract sufficient text from the file. Please upload a text-based PDF or DOCX.");
+      truncatedText = extractedText.substring(0, 12000);
+      extractionMethod = method;
+    }
 
     console.log(JSON.stringify({ type: "request", correlation_id: correlationId, function_name: "analyze-cv", text_length: truncatedText.length, extraction_method: extractionMethod, ximatar_id: ximatarId }));
 
     // ===== Detect language =====
-    const detectedLanguage = detectLanguage(truncatedText);
+    const detectedLanguage = pdfBase64 ? "auto" : detectLanguage(truncatedText);
 
     // ===== Load AI context & build prompt =====
     let contextBlock = "";
@@ -623,14 +655,27 @@ serve(async (req) => {
     }
 
     const systemPrompt = buildSystemPrompt(ximatarId, ximatarName, ximatarTitle, pillarScores, detectedLanguage) + contextBlock;
-    const userMessage = buildUserMessage(truncatedText, ximatarId, ximatarName, ximatarTitle, pillarScores);
 
     const ipHash = hashForAudit ? await hashForAudit(req.headers.get("x-forwarded-for") || "unknown") : await hashForAuditFallback(req.headers.get("x-forwarded-for") || "unknown");
 
-    // ===== Call Claude (with fallback) =====
+    // ===== Build user content (PDF as document OR extracted text) =====
+    let userContent: string | any[];
+    if (pdfBase64) {
+      userContent = [
+        { type: "document", source: { type: "base64", media_type: "application/pdf", data: pdfBase64 } },
+        {
+          type: "text",
+          text: `This is the candidate's CV/resume PDF. Read the entire document and perform both tasks:\n1. Extract all structured credentials (education, work experience, skills, certifications, etc.)\n2. Perform psychometric identity analysis comparing the CV to their assessment results.\n\nTheir XIMA assessment results:\n- XIMAtar: ${ximatarId} — ${ximatarName} (${ximatarTitle})\n- Pillar scores: Drive ${pillarScores.drive ?? "N/A"}, Computational Power ${pillarScores.comp_power ?? pillarScores.computational_power ?? "N/A"}, Communication ${pillarScores.communication ?? "N/A"}, Creativity ${pillarScores.creativity ?? "N/A"}, Knowledge ${pillarScores.knowledge ?? "N/A"}\n\nReturn ONLY the JSON object as specified in your instructions.`,
+        },
+      ];
+    } else {
+      userContent = buildUserMessage(truncatedText, ximatarId, ximatarName, ximatarTitle, pillarScores);
+    }
+
+    // ===== Call Claude — SINGLE call =====
     let aiResult: { content: string; model: string; latencyMs: number; requestId: string };
     try {
-      aiResult = await callClaudeDirectly(systemPrompt, userMessage);
+      aiResult = await callClaudeDirectly(systemPrompt, userContent);
     } catch (aiErr: any) {
       console.error("[analyze-cv] AI call failed:", aiErr.message);
       if (aiErr.statusCode === 402) return errorResponse(402, "INSUFFICIENT_CREDITS", aiErr.message);
@@ -850,7 +895,7 @@ serve(async (req) => {
       await serviceClient.from("assessment_cv_analysis").delete().eq("user_id", user.id);
       await serviceClient.from("assessment_cv_analysis").insert({
         user_id: user.id,
-        cv_text: truncatedText.substring(0, 2000),
+        cv_text: pdfBase64 ? "PDF analyzed directly by AI — no text extraction" : truncatedText.substring(0, 2000),
         summary: tension.overall_narrative || archetype.explanation || "",
         strengths: credentials.hard_skills?.slice(0, 5)?.map((s: any) => s.name || String(s)) || [],
         soft_skills: [],
