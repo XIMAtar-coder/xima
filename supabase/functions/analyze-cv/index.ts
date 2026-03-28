@@ -888,7 +888,7 @@ serve(async (req) => {
       await serviceClient.from("assessment_cv_analysis").delete().eq("user_id", user.id);
       await serviceClient.from("assessment_cv_analysis").insert({
         user_id: user.id,
-        cv_text: truncatedText.substring(0, 2000),
+        cv_text: pdfBase64 ? "PDF analyzed directly by AI — no text extraction" : truncatedText.substring(0, 2000),
         summary: tension.overall_narrative || archetype.explanation || "",
         strengths: credentials.hard_skills?.slice(0, 5)?.map((s: any) => s.name || String(s)) || [],
         soft_skills: [],
