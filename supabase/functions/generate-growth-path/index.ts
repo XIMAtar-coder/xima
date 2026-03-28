@@ -354,11 +354,15 @@ Return ONLY valid JSON:
     });
 
     // Deposit into intelligence engine for future pattern matching
-    await depositInference(user.id, "generate-growth-path", v, {
-      patternType: "growth_path",
-      archetype,
-      targetPillar: weakestPillar,
-    });
+    try {
+      if (typeof depositInference === "function") {
+        await depositInference(user.id, "generate-growth-path", v, {
+          patternType: "growth_path",
+          archetype,
+          targetPillar: weakestPillar,
+        });
+      }
+    } catch (e) { console.warn("[generate-growth-path] Deposit failed:", e instanceof Error ? e.message : e); }
 
     return jsonResponse({
       success: true,

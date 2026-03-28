@@ -276,12 +276,12 @@ serve(async (req) => {
       ]);
 
       const profile = profileRes.data;
-      const resolvedXimatar = (profile?.ximatar_archetype || profile?.ximatar || profile?.ximatar_id) as string | null;
+      const resolvedXimatar = (profile?.ximatar || profile?.ximatar_id || profile?.ximatar_name) as string | null;
       if (resolvedXimatar) {
         userArchetype = resolvedXimatar;
         userLevel = (profile?.ximatar_level || 1) as number;
-        // Convert assessment_scores/pillar_scores to pillar_scores array
-        const scores = (profile?.assessment_scores || profile?.pillar_scores) as Record<string, number> | null;
+        // Convert pillar_scores to pillar_scores array
+        const scores = (profile?.pillar_scores) as Record<string, number> | null;
         if (scores) {
           userPillarScores = Object.entries(scores).map(([pillar, score]) => ({ pillar, score }));
         }

@@ -192,7 +192,7 @@ serve(async (req) => {
     const interviewQuestions = (l3Interview?.questions || []) as Array<Record<string, unknown>>;
     const interviewBrief = (l3Interview?.interview_brief || {}) as Record<string, unknown>;
 
-    const archetype = (candidateProfile?.ximatar_name || candidateProfile?.ximatar || candidateProfile?.ximatar_archetype || candidateProfile?.ximatar_id || "unknown") as string;
+    const archetype = (candidateProfile?.ximatar_name || candidateProfile?.ximatar || candidateProfile?.ximatar_id || "unknown") as string;
     const level = (candidateProfile?.ximatar_level || 1) as number;
 
     // ---- Fallback: no frames ----

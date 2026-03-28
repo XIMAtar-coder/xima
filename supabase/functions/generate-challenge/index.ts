@@ -317,10 +317,14 @@ Return ONLY valid JSON:
       }
 
       // Deposit into intelligence engine
-      await depositInference(user.id, "generate-challenge", validated, {
-        patternType: "challenge",
-        targetPillar: targetPillar || undefined,
-      });
+      try {
+        if (typeof depositInference === "function") {
+          await depositInference(user.id, "generate-challenge", validated, {
+            patternType: "challenge",
+            targetPillar: targetPillar || undefined,
+          });
+        }
+      } catch (e) { console.warn("[generate-challenge] Deposit failed:", e instanceof Error ? e.message : e); }
 
       // Audit
       emitAuditEventWithMetric({

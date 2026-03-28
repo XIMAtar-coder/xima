@@ -200,7 +200,7 @@ serve(async (req) => {
         success: true,
         challenges: matchedChallenges,
         user_context: {
-          ximatar: profile.ximatar_archetype,
+          ximatar: profile.ximatar || profile.ximatar_id || profile.ximatar_name,
           level: profile.ximatar_level || 1,
         },
       }), 

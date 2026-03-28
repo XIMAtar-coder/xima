@@ -263,8 +263,8 @@ serve(async (req) => {
     ]);
 
     const profile = profileRes.data;
-    const resolvedXimatar = (profile?.ximatar || profile?.ximatar_archetype || profile?.ximatar_id) as string | null;
-    const resolvedPillars = (profile?.pillar_scores || profile?.assessment_scores) as Record<string, number> | null;
+    const resolvedXimatar = (profile?.ximatar || profile?.ximatar_id || profile?.ximatar_name) as string | null;
+    const resolvedPillars = (profile?.pillar_scores) as Record<string, number> | null;
 
     if (!resolvedXimatar || !resolvedPillars) {
       return jsonResponse({
