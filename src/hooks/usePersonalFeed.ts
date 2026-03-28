@@ -168,7 +168,7 @@ export const usePersonalFeed = (category: FeedCategory = 'for_you') => {
 
   const unreadCount = feedItems.filter(i => !i.is_read && i._source === 'personal').length;
 
-  return { feedItems, isLoading, refetch, markAsRead, trackEngagement, unreadCount, userArchetype };
+  return { feedItems, isLoading, refetch, markAsRead, trackEngagement, unreadCount, userArchetype, hoursSinceLastGrowth };
 };
 
 async function fetchExternalContent(archetype: string, pillar?: string): Promise<ExternalContentItem[]> {

@@ -66,6 +66,7 @@ export const PersonalFeedView = () => {
               onMarkRead={handleMarkRead}
               onTrackEngagement={handleTrackEngagement}
               userArchetype={userArchetype}
+              hoursSinceLastGrowth={hoursSinceLastGrowth}
             />
           ))}
         </div>
