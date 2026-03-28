@@ -44,7 +44,7 @@ serve(async (req) => {
     // Fetch user data in parallel
     const [profileResult, optCheckResult, cvAnalysisResult, trajectoryResult, completedResult] = await Promise.all([
       supabase.from("profiles")
-        .select("ximatar_archetype, ximatar, ximatar_id, ximatar_level, assessment_scores, pillar_scores, preferred_language, language, profiling_opt_out")
+        .select("user_id, ximatar_id, ximatar, ximatar_name, ximatar_level, pillar_scores, preferred_lang, profiling_opt_out, level_start_scores")
         .eq("user_id", user.id).single(),
       Promise.resolve(null), // opt-out checked inline
       supabase.from("cv_identity_analysis")
