@@ -454,6 +454,7 @@ USER PROFILE:
 - Top pillars: ${topPillars}
 - Trajectory: ${trajectoryDesc}
 - Career trajectory: ${credentials?.career_trajectory || "unknown"}
+${prefBlock}
 
 For each job below, write a 1-2 sentence explanation of why this person is a good fit.
 Focus on IDENTITY alignment first (archetype, pillar strengths, trajectory), then practical fit.
