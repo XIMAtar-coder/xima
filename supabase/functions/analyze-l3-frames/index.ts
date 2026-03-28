@@ -175,7 +175,7 @@ serve(async (req) => {
     // ---- GDPR check ----
     const { data: candidateProfile } = await supabase
       .from("profiles")
-      .select("user_id, ximatar_name, ximatar, ximatar_archetype, ximatar_id, ximatar_level, profiling_opt_out")
+      .select("user_id, ximatar_name, ximatar, ximatar_id, ximatar_level, profiling_opt_out")
       .eq("id", submission.candidate_profile_id)
       .single();
     if (candidateProfile?.profiling_opt_out === true) return profilingOptOutResponse();
