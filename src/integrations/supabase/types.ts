@@ -2403,10 +2403,10 @@ export type Database = {
           metadata: Json | null
           payload: Json
           priority: number | null
-          source: string
-          subject_ximatar_id: string
+          source: string | null
+          subject_ximatar_id: string | null
           title: string | null
-          type: string
+          type: string | null
           user_id: string | null
           visibility: Json
         }
@@ -2433,10 +2433,10 @@ export type Database = {
           metadata?: Json | null
           payload?: Json
           priority?: number | null
-          source: string
-          subject_ximatar_id: string
+          source?: string | null
+          subject_ximatar_id?: string | null
           title?: string | null
-          type: string
+          type?: string | null
           user_id?: string | null
           visibility?: Json
         }
@@ -2463,10 +2463,10 @@ export type Database = {
           metadata?: Json | null
           payload?: Json
           priority?: number | null
-          source?: string
-          subject_ximatar_id?: string
+          source?: string | null
+          subject_ximatar_id?: string | null
           title?: string | null
-          type?: string
+          type?: string | null
           user_id?: string | null
           visibility?: Json
         }
