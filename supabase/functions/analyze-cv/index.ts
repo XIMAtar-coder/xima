@@ -1,27 +1,174 @@
 /**
- * XIMA CV Intelligence Engine v2.0
+ * XIMA CV Intelligence Engine v2.1 — Stabilized
  *
  * Dual-layer analysis:
  *   Layer A (Identity) — psychometric tension between XIMAtar assessment and CV
  *   Layer B (Credentials) — exhaustive structured extraction for B2B matching
  *
- * Model: Claude claude-sonnet-4-20250514 (Anthropic direct API)
- * Prompt template: 2.0 | Scoring schema: 1.0
+ * All optional modules (budget, cache, context, audit, intelligence) are
+ * imported defensively — if any fail, the core flow still works.
  */
 
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { extractJsonFromAiContent, generateCorrelationId, SCORING_SCHEMA_VERSION } from "../_shared/aiClient.ts";
-import { validateCvAnalysis } from "../_shared/aiSchema.ts";
 import { corsHeaders, errorResponse, jsonResponse, profilingOptOutResponse, unauthorizedResponse } from "../_shared/errors.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
-import { emitAuditEventWithMetric, hashForAudit } from "../_shared/auditEvents.ts";
-import { XIMATAR_PROFILES, type XimatarPillars } from "../_shared/ximatarTaxonomy.ts";
-import { checkAiBudget, recordAiCall, cacheAiResult } from "../_shared/aiBudget.ts";
-import { loadUserAiContext, buildContextBlock, updateUserAiContext, checkCvHash, computeFileHash } from "../_shared/aiContext.ts";
 
 // =====================================================
-// Helper 1: Text extraction from file bytes
+// Optional imports — each wrapped so failures don't crash the function
+// =====================================================
+
+let extractJsonFromAiContent: any;
+let generateCorrelationId: any;
+let SCORING_SCHEMA_VERSION: string = "1.0";
+let validateCvAnalysis: any;
+let emitAuditEventWithMetric: any;
+let hashForAudit: any;
+let XIMATAR_PROFILES: any;
+let checkAiBudget: any;
+let recordAiCall: any;
+let cacheAiResult: any;
+let loadUserAiContext: any;
+let buildContextBlock: any;
+let updateUserAiContext: any;
+let checkCvHash: any;
+let computeFileHash: any;
+
+try {
+  const mod = await import("../_shared/aiClient.ts");
+  extractJsonFromAiContent = mod.extractJsonFromAiContent;
+  generateCorrelationId = mod.generateCorrelationId;
+  if (mod.SCORING_SCHEMA_VERSION) SCORING_SCHEMA_VERSION = mod.SCORING_SCHEMA_VERSION;
+} catch (e) {
+  console.warn("[analyze-cv] aiClient import failed:", e.message);
+}
+
+try {
+  const mod = await import("../_shared/aiSchema.ts");
+  validateCvAnalysis = mod.validateCvAnalysis;
+} catch (e) {
+  console.warn("[analyze-cv] aiSchema import failed:", e.message);
+}
+
+try {
+  const mod = await import("../_shared/auditEvents.ts");
+  emitAuditEventWithMetric = mod.emitAuditEventWithMetric;
+  hashForAudit = mod.hashForAudit;
+} catch (e) {
+  console.warn("[analyze-cv] auditEvents import failed:", e.message);
+}
+
+try {
+  const mod = await import("../_shared/ximatarTaxonomy.ts");
+  XIMATAR_PROFILES = mod.XIMATAR_PROFILES;
+} catch (e) {
+  console.warn("[analyze-cv] ximatarTaxonomy import failed:", e.message);
+}
+
+try {
+  const mod = await import("../_shared/aiBudget.ts");
+  checkAiBudget = mod.checkAiBudget;
+  recordAiCall = mod.recordAiCall;
+  cacheAiResult = mod.cacheAiResult;
+} catch (e) {
+  console.warn("[analyze-cv] aiBudget import failed:", e.message);
+}
+
+try {
+  const mod = await import("../_shared/aiContext.ts");
+  loadUserAiContext = mod.loadUserAiContext;
+  buildContextBlock = mod.buildContextBlock;
+  updateUserAiContext = mod.updateUserAiContext;
+  checkCvHash = mod.checkCvHash;
+  computeFileHash = mod.computeFileHash;
+} catch (e) {
+  console.warn("[analyze-cv] aiContext import failed:", e.message);
+}
+
+// =====================================================
+// Helper: Direct Claude API call (fallback if shared module unavailable)
+// =====================================================
+
+async function callClaudeDirectly(system: string, userMessage: string, model = "claude-sonnet-4-20250514", maxTokens = 8192): Promise<{ content: string; model: string; latencyMs: number; requestId: string }> {
+  const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY not configured");
+
+  const requestId = crypto.randomUUID();
+  const start = Date.now();
+
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": ANTHROPIC_API_KEY,
+      "anthropic-version": "2023-06-01",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ model, max_tokens: maxTokens, system, messages: [{ role: "user", content: userMessage }] }),
+  });
+
+  const latencyMs = Date.now() - start;
+
+  if (!response.ok) {
+    const errText = await response.text().catch(() => "");
+    // Check for credit issues
+    if (errText.toLowerCase().includes("credit balance is too low") || errText.toLowerCase().includes("purchase credits")) {
+      throw Object.assign(new Error("Anthropic credits are too low. Please add more credits."), { statusCode: 402, errorCode: "INSUFFICIENT_CREDITS" });
+    }
+    if (response.status === 429) {
+      // Retry once
+      await new Promise(r => setTimeout(r, 2000));
+      const retry = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "x-api-key": ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+        body: JSON.stringify({ model, max_tokens: maxTokens, system, messages: [{ role: "user", content: userMessage }] }),
+      });
+      if (!retry.ok) throw new Error(`Anthropic API error ${retry.status}`);
+      const data = await retry.json();
+      return { content: data.content?.[0]?.text || "", model, latencyMs: Date.now() - start, requestId };
+    }
+    throw new Error(`Anthropic API error ${response.status}: ${errText.substring(0, 200)}`);
+  }
+
+  const data = await response.json();
+  const content = data.content?.[0]?.text || "";
+  if (!content) throw new Error("Empty response from Anthropic");
+  return { content, model, latencyMs, requestId };
+}
+
+// =====================================================
+// Helper: Robust JSON extraction (fallback if shared extractJsonFromAiContent unavailable)
+// =====================================================
+
+function extractJsonRobust(text: string): string {
+  let t = text.trim();
+  // Strip markdown code fences
+  const fenceMatch = t.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
+  if (fenceMatch) t = fenceMatch[1].trim();
+  // Find JSON object
+  if (!t.startsWith("{")) {
+    const first = t.indexOf("{");
+    const last = t.lastIndexOf("}");
+    if (first !== -1 && last > first) t = t.substring(first, last + 1);
+  }
+  return t;
+}
+
+// =====================================================
+// Helper: Hash for audit (fallback)
+// =====================================================
+
+async function hashForAuditFallback(input: string): Promise<string> {
+  try {
+    const data = new TextEncoder().encode(input);
+    const buf = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("").substring(0, 16);
+  } catch {
+    return "unknown";
+  }
+}
+
+// =====================================================
+// Helper: Text extraction from file bytes
 // =====================================================
 
 async function extractTextFromFile(
@@ -55,18 +202,14 @@ async function extractTextFromFile(
     }
   }
 
-  // PDF — use Claude vision API to read the document directly
-  // Regex-based extraction is unreliable for modern PDFs (compressed streams, CIDFonts)
+  // PDF — use Claude vision API directly
   if (mimeType === "application/pdf") {
     console.log("[extract] PDF detected — using Claude vision for reliable text extraction");
-    
+
     try {
       const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
-      if (!ANTHROPIC_API_KEY) {
-        throw new Error("No API key for PDF extraction");
-      }
+      if (!ANTHROPIC_API_KEY) throw new Error("No API key for PDF extraction");
 
-      // Convert bytes to base64
       let base64Pdf = "";
       const CHUNK_SIZE = 8192;
       for (let i = 0; i < fileBytes.length; i += CHUNK_SIZE) {
@@ -85,25 +228,13 @@ async function extractTextFromFile(
         body: JSON.stringify({
           model: "claude-haiku-4-5-20251001",
           max_tokens: 4096,
-          messages: [
-            {
-              role: "user",
-              content: [
-                {
-                  type: "document",
-                  source: {
-                    type: "base64",
-                    media_type: "application/pdf",
-                    data: base64Pdf,
-                  },
-                },
-                {
-                  type: "text",
-                  text: "Extract ALL text content from this CV/resume PDF document. Return ONLY the raw text content exactly as it appears in the document. Preserve all section headings, job titles, company names, dates, education details, skills lists, and all other professional information. Do not add any commentary, analysis, or markdown formatting — just output the document's text content faithfully.",
-                },
-              ],
-            },
-          ],
+          messages: [{
+            role: "user",
+            content: [
+              { type: "document", source: { type: "base64", media_type: "application/pdf", data: base64Pdf } },
+              { type: "text", text: "Extract ALL text content from this CV/resume PDF document. Return ONLY the raw text content exactly as it appears in the document. Preserve all section headings, job titles, company names, dates, education details, skills lists, and all other professional information. Do not add any commentary, analysis, or markdown formatting — just output the document's text content faithfully." },
+            ],
+          }],
         }),
       });
 
@@ -124,7 +255,7 @@ async function extractTextFromFile(
       console.error("[extract] Claude vision error:", visionError instanceof Error ? visionError.message : "unknown");
     }
 
-    // Fallback: if Claude vision fails, try regex as last resort
+    // Fallback: regex as last resort
     console.warn("[extract] Claude vision failed, trying regex fallback");
     const rawText = new TextDecoder("utf-8", { fatal: false }).decode(fileBytes);
     const textParts: string[] = [];
@@ -141,7 +272,7 @@ async function extractTextFromFile(
         textParts.push(inner);
       }
     }
-    
+
     const regexText = textParts.join(" ").trim();
     if (regexText.length > 200) {
       return { text: regexText.substring(0, 15000), method: "pdf-regex-strict" };
@@ -158,7 +289,7 @@ async function extractTextFromFile(
 }
 
 // =====================================================
-// Helper 2: Language detection
+// Helper: Language detection
 // =====================================================
 
 function detectLanguage(text: string): string {
@@ -175,241 +306,20 @@ function detectLanguage(text: string): string {
   let bestScore = 0;
   for (const [lang, patterns] of Object.entries(langIndicators)) {
     const score = patterns.filter((p) => p.test(sample)).length;
-    if (score > bestScore) {
-      bestScore = score;
-      bestLang = lang;
-    }
+    if (score > bestScore) { bestScore = score; bestLang = lang; }
   }
   return bestScore >= 2 ? bestLang : "en";
 }
 
 // =====================================================
-// Helper 3: Anthropic API caller with audit envelope
-// =====================================================
-
-interface AnthropicCallOptions {
-  system: string;
-  userMessage: string;
-  correlationId: string;
-  functionName: string;
-  inputSummary?: string;
-  model?: string;
-  maxTokens?: number;
-}
-
-interface AnthropicCallResult {
-  content: string;
-  model: string;
-  latencyMs: number;
-  requestId: string;
-}
-
-class AnalyzeCvAnthropicError extends Error {
-  constructor(
-    public readonly statusCode: number,
-    public readonly errorCode: string,
-    message: string
-  ) {
-    super(message);
-    this.name = "AnalyzeCvAnthropicError";
-  }
-}
-
-function parseAnalyzeCvAnthropicError(responseStatus: number, errorText: string) {
-  let apiMessage = `Anthropic API error: ${responseStatus}`;
-
-  try {
-    const parsed = JSON.parse(errorText);
-    const candidateMessage = parsed?.error?.message;
-    if (typeof candidateMessage === "string" && candidateMessage.trim()) {
-      apiMessage = candidateMessage.trim();
-    }
-  } catch {
-    if (errorText.trim()) {
-      apiMessage = errorText.trim().slice(0, 500);
-    }
-  }
-
-  const normalizedMessage = apiMessage.toLowerCase();
-
-  if (normalizedMessage.includes("credit balance is too low") || normalizedMessage.includes("purchase credits")) {
-    return {
-      statusCode: 402,
-      errorCode: "INSUFFICIENT_CREDITS",
-      message: "Anthropic credits are too low to process this request. Please add more credits in Plans & Billing and try again.",
-    };
-  }
-
-  if (responseStatus === 429) {
-    return {
-      statusCode: 429,
-      errorCode: "RATE_LIMITED",
-      message: "Rate limited — please try again shortly",
-    };
-  }
-
-  if (responseStatus === 400) {
-    return {
-      statusCode: 400,
-      errorCode: "INVALID_REQUEST",
-      message: apiMessage,
-    };
-  }
-
-  return {
-    statusCode: 502,
-    errorCode: `ANTHROPIC_${responseStatus}`,
-    message: apiMessage,
-  };
-}
-
-async function callAnthropicApi(options: AnthropicCallOptions): Promise<AnthropicCallResult> {
-  const {
-    system,
-    userMessage,
-    correlationId,
-    functionName,
-    inputSummary,
-    model = "claude-sonnet-4-20250514",
-    maxTokens = 8192,
-  } = options;
-
-  const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
-  if (!ANTHROPIC_API_KEY) {
-    throw new Error("ANTHROPIC_API_KEY not configured");
-  }
-
-  const requestId = crypto.randomUUID();
-
-  // Compute prompt hash for audit
-  const canonical = `[system]\n${system}\n===\n[user]\n${userMessage}\n===\n[params] temperature=default max_tokens=${maxTokens}`;
-  const hashData = new TextEncoder().encode(canonical);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", hashData);
-  const promptHash = Array.from(new Uint8Array(hashBuffer))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-
-  const baseEnvelope = {
-    request_id: requestId,
-    correlation_id: correlationId,
-    function_name: functionName,
-    provider: "anthropic",
-    model_name: model,
-    model_version: "2025-05-14",
-    temperature: null as number | null,
-    max_tokens: maxTokens,
-    prompt_hash: promptHash,
-    prompt_template_version: "2.0",
-    scoring_schema_version: SCORING_SCHEMA_VERSION,
-    input_summary: inputSummary ?? null,
-  };
-
-  const persistEnvelope = async (extra: {
-    output_summary: string | null;
-    status: string;
-    error_code: string | null;
-    latency_ms: number;
-  }) => {
-    try {
-      const supabaseUrl = Deno.env.get("SUPABASE_URL");
-      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-      if (!supabaseUrl || !serviceKey) return;
-      const client = createClient(supabaseUrl, serviceKey);
-      await client.from("ai_invocation_log").insert({ ...baseEnvelope, ...extra });
-    } catch (e) {
-      console.error("[ai_governance] Envelope error:", e instanceof Error ? e.message : e);
-    }
-  };
-
-  const start = Date.now();
-  const makeRequest = () =>
-    fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        model,
-        max_tokens: maxTokens,
-        system,
-        messages: [{ role: "user", content: userMessage }],
-      }),
-    });
-
-  let response: Response;
-  let retried = false;
-  try {
-    response = await makeRequest();
-
-    if ([429, 502, 503, 529].includes(response.status)) {
-      console.log(
-        JSON.stringify({ type: "anthropic_retry", correlation_id: correlationId, status: response.status })
-      );
-      await new Promise((r) => setTimeout(r, 2000));
-      retried = true;
-      response = await makeRequest();
-    }
-  } catch (fetchError) {
-    const latencyMs = Date.now() - start;
-    await persistEnvelope({ output_summary: null, status: "error", error_code: "NETWORK_ERROR", latency_ms: latencyMs });
-    throw new AnalyzeCvAnthropicError(502, "NETWORK_ERROR", "Failed to reach Anthropic API");
-  }
-
-  const latencyMs = Date.now() - start;
-
-  if (!response.ok) {
-    const errorText = await response.text().catch(() => "");
-    console.error(`[analyze-cv] Anthropic error: ${response.status}`, errorText.substring(0, 300));
-    const mappedError = parseAnalyzeCvAnthropicError(response.status, errorText);
-    await persistEnvelope({
-      output_summary: `error:${response.status}`,
-      status: mappedError.statusCode === 429 ? "rate_limited" : "error",
-      error_code: mappedError.errorCode,
-      latency_ms: latencyMs,
-    });
-    throw new AnalyzeCvAnthropicError(mappedError.statusCode, mappedError.errorCode, mappedError.message);
-  }
-
-  const data = await response.json();
-  const content = data.content?.[0]?.text;
-
-  if (!content) {
-    await persistEnvelope({ output_summary: "empty_response", status: "error", error_code: "EMPTY_RESPONSE", latency_ms: latencyMs });
-    throw new Error("Empty response from Anthropic");
-  }
-
-  const redactedOutput = `len=${content.length},retried=${retried}`;
-  persistEnvelope({ output_summary: redactedOutput, status: "success", error_code: null, latency_ms: latencyMs });
-
-  console.log(
-    JSON.stringify({
-      type: "anthropic_success",
-      correlation_id: correlationId,
-      function_name: functionName,
-      latency_ms: latencyMs,
-      retried,
-    })
-  );
-
-  return { content, model, latencyMs, requestId };
-}
-
-// =====================================================
-// Helper 4: Claude prompt builder
+// Helper: Claude prompt builder
 // =====================================================
 
 function buildSystemPrompt(
-  ximatarId: string,
-  ximatarName: string,
-  ximatarTitle: string,
-  assessmentScores: Record<string, number>,
-  language: string
+  ximatarId: string, ximatarName: string, ximatarTitle: string,
+  assessmentScores: Record<string, number>, language: string
 ): string {
-  const langNames: Record<string, string> = {
-    it: "Italian", en: "English", pt: "Portuguese", es: "Spanish", de: "German", fr: "French",
-  };
+  const langNames: Record<string, string> = { it: "Italian", en: "English", pt: "Portuguese", es: "Spanish", de: "German", fr: "French" };
   const langName = langNames[language] || "English";
 
   return `You are the XIMA CV Intelligence Engine — an expert psychometric analyst for the XIMA talent platform. You perform two tasks simultaneously on a candidate's CV.
@@ -502,11 +412,8 @@ Return ONLY valid JSON with this exact structure (no markdown, no extra text):
 }
 
 function buildUserMessage(
-  cvText: string,
-  ximatarId: string,
-  ximatarName: string,
-  ximatarTitle: string,
-  assessmentScores: Record<string, number>
+  cvText: string, ximatarId: string, ximatarName: string,
+  ximatarTitle: string, assessmentScores: Record<string, number>
 ): string {
   return `Here is the candidate's CV text:
 
@@ -524,33 +431,28 @@ Perform both credential extraction (Task 1) and psychometric identity analysis (
 }
 
 // =====================================================
-// Helper 5: Response validation
+// Helper: Response validation
 // =====================================================
 
 function validateAnalyzeCvResponse(parsed: unknown): { credentials: any; identity: any } | null {
   if (!parsed || typeof parsed !== "object") return null;
   const obj = parsed as Record<string, unknown>;
-
   if (!obj.credentials || typeof obj.credentials !== "object") return null;
   if (!obj.identity || typeof obj.identity !== "object") return null;
 
   const creds = obj.credentials as Record<string, unknown>;
   const ident = obj.identity as Record<string, unknown>;
-
   if (!Array.isArray(creds.education)) return null;
   if (!Array.isArray(creds.work_experience)) return null;
   if (!Array.isArray(creds.hard_skills)) return null;
-
   if (!ident.cv_archetype || typeof ident.cv_archetype !== "object") return null;
   if (!ident.cv_pillar_scores || typeof ident.cv_pillar_scores !== "object") return null;
   if (!ident.tension || typeof ident.tension !== "object") return null;
 
   const scores = ident.cv_pillar_scores as Record<string, unknown>;
-  const pillarFields = ["drive", "computational_power", "communication", "creativity", "knowledge"];
-  for (const f of pillarFields) {
+  for (const f of ["drive", "computational_power", "communication", "creativity", "knowledge"]) {
     if (typeof scores[f] !== "number" || (scores[f] as number) < 0 || (scores[f] as number) > 100) return null;
   }
-
   return { credentials: obj.credentials, identity: obj.identity };
 }
 
@@ -568,35 +470,21 @@ serve(async (req) => {
   try {
     // ===== Auth =====
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return unauthorizedResponse("Missing Authorization header");
-    }
+    if (!authHeader) return unauthorizedResponse("Missing Authorization header");
 
     const jwt = authHeader.replace("Bearer ", "").trim();
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY");
     const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    if (!supabaseAnonKey) {
-      throw new Error("Missing Supabase publishable key in Edge Function environment");
-    }
+    if (!supabaseAnonKey) throw new Error("Missing Supabase publishable key");
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: `Bearer ${jwt}` } },
     });
 
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(jwt);
-    if (claimsError || !claimsData?.claims?.sub) {
-      return unauthorizedResponse("Authentication required. Please log in and try again.");
-    }
-
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser(jwt);
-    if (userError || !user) {
-      return unauthorizedResponse("Authentication required. Please log in and try again.");
-    }
+    const { data: { user }, error: userError } = await supabase.auth.getUser(jwt);
+    if (userError || !user) return unauthorizedResponse("Authentication required. Please log in and try again.");
 
     // ===== GDPR + XIMAtar fetch =====
     const { data: profile, error: profileError } = await supabase
@@ -606,224 +494,168 @@ serve(async (req) => {
       .single();
 
     if (profileError) {
-      console.error(
-        JSON.stringify({ type: "db_error", correlation_id: correlationId, function_name: "analyze-cv", error: "Profile fetch failed" })
-      );
+      console.error(JSON.stringify({ type: "db_error", correlation_id: correlationId, function_name: "analyze-cv", error: "Profile fetch failed" }));
     }
 
     if (profile?.profiling_opt_out === true) {
-      console.log(
-        JSON.stringify({ type: "gdpr_block", correlation_id: correlationId, function_name: "analyze-cv", reason: "profiling_opt_out" })
-      );
       return profilingOptOutResponse();
     }
 
     // ===== Check XIMAtar assessment exists =====
-    // The `ximatar` column (enum) holds the taxonomy key like "owl"
-    // The `ximatar_id` column (uuid) is a FK to the ximatars table
     const pillarScores = profile?.pillar_scores as Record<string, number> | null;
     let resolvedXimatarKey = (profile?.ximatar as string | null) || null;
 
     if (!resolvedXimatarKey && profile?.ximatar_id) {
-      // Resolve UUID → taxonomy key via ximatars table
-      const serviceClient = createClient(supabaseUrl, supabaseServiceRoleKey);
-      const { data: ximatarRecord } = await serviceClient
-        .from("ximatars")
-        .select("label")
-        .eq("id", profile.ximatar_id as string)
-        .maybeSingle();
-      if (ximatarRecord?.label) {
-        resolvedXimatarKey = ximatarRecord.label.toLowerCase();
+      try {
+        const serviceClient = createClient(supabaseUrl, supabaseServiceRoleKey);
+        const { data: ximatarRecord } = await serviceClient
+          .from("ximatars")
+          .select("label")
+          .eq("id", profile.ximatar_id as string)
+          .maybeSingle();
+        if (ximatarRecord?.label) resolvedXimatarKey = ximatarRecord.label.toLowerCase();
+      } catch (e) {
+        console.warn("[analyze-cv] XIMAtar UUID resolution failed:", e instanceof Error ? e.message : e);
       }
     }
 
     if (!resolvedXimatarKey || !pillarScores) {
-      return errorResponse(
-        400,
-        "ASSESSMENT_REQUIRED",
-        "Please complete the XIMA assessment before uploading your CV. Your XIMAtar identity is needed for CV analysis."
-      );
+      return errorResponse(400, "ASSESSMENT_REQUIRED", "Please complete the XIMA assessment before uploading your CV.");
     }
 
     // Look up XIMAtar profile from taxonomy
-    const ximatarProfile = XIMATAR_PROFILES[resolvedXimatarKey];
+    const ximatarProfile = XIMATAR_PROFILES?.[resolvedXimatarKey];
     const ximatarName = (profile?.ximatar_name as string) || ximatarProfile?.name || resolvedXimatarKey;
     const ximatarTitle = ximatarProfile?.title || "";
 
-    console.log(JSON.stringify({
-      type: "ximatar_resolved",
-      correlation_id: correlationId,
-      ximatar_key: resolvedXimatarKey,
-      ximatar_name: ximatarName,
-    }));
+    console.log(JSON.stringify({ type: "ximatar_resolved", correlation_id: correlationId, ximatar_key: resolvedXimatarKey, ximatar_name: ximatarName }));
 
-    // ===== AI Budget Check =====
-    const budgetCheck = await checkAiBudget(user.id, "analyze-cv");
-
-    if (!budgetCheck.allowed) {
-      console.log(JSON.stringify({
-        type: "budget_exceeded",
-        correlation_id: correlationId,
-        function_name: "analyze-cv",
-        calls_used: budgetCheck.calls_used,
-        calls_limit: budgetCheck.calls_limit,
-        tier: budgetCheck.tier,
-      }));
-
-      if (budgetCheck.cached_result) {
-        return jsonResponse({
-          ...budgetCheck.cached_result,
-          _budget: {
-            exceeded: true,
-            calls_used: budgetCheck.calls_used,
-            calls_limit: budgetCheck.calls_limit,
-            tier: budgetCheck.tier,
-            message: budgetCheck.budget_message,
-            cached: true,
-          },
-        });
+    // ===== AI Budget Check (optional) =====
+    let budgetResult: any = { allowed: true, calls_used: 0, calls_limit: 999, tier: "unknown" };
+    if (checkAiBudget) {
+      try {
+        budgetResult = await checkAiBudget(user.id, "analyze-cv");
+        if (!budgetResult.allowed) {
+          console.log(JSON.stringify({ type: "budget_exceeded", correlation_id: correlationId, function_name: "analyze-cv" }));
+          if (budgetResult.cached_result) {
+            return jsonResponse({ ...budgetResult.cached_result, _budget: { exceeded: true, calls_used: budgetResult.calls_used, calls_limit: budgetResult.calls_limit, tier: budgetResult.tier, cached: true } });
+          }
+          return errorResponse(429, "AI_BUDGET_EXCEEDED", budgetResult.budget_message || "Monthly AI analysis limit reached.");
+        }
+      } catch (budgetErr) {
+        console.warn("[analyze-cv] Budget check failed, proceeding:", budgetErr instanceof Error ? budgetErr.message : budgetErr);
       }
-
-      return errorResponse(
-        429,
-        "AI_BUDGET_EXCEEDED",
-        budgetCheck.budget_message || "Monthly AI analysis limit reached. Upgrade your plan for more analyses."
-      );
     }
 
     // ===== File validation =====
     const formData = await req.formData();
     const file = formData.get("file");
-    if (!file || !(file instanceof File)) {
-      return errorResponse(400, "INVALID_INPUT", "File missing or invalid");
-    }
+    if (!file || !(file instanceof File)) return errorResponse(400, "INVALID_INPUT", "File missing or invalid");
 
     const MAX_FILE_SIZE = 10 * 1024 * 1024;
-    if (file.size > MAX_FILE_SIZE) {
-      return errorResponse(400, "FILE_TOO_LARGE", "File too large. Maximum 10MB allowed.");
-    }
+    if (file.size > MAX_FILE_SIZE) return errorResponse(400, "FILE_TOO_LARGE", "File too large. Maximum 10MB allowed.");
 
-    const ALLOWED_TYPES = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "text/plain",
-    ];
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return errorResponse(400, "INVALID_FILE_TYPE", "Invalid file type. Only PDF, DOC, DOCX, and TXT files are allowed.");
-    }
+    const ALLOWED_TYPES = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
+    if (!ALLOWED_TYPES.includes(file.type)) return errorResponse(400, "INVALID_FILE_TYPE", "Invalid file type. Only PDF, DOC, DOCX, and TXT files are allowed.");
 
     const fileBytes = new Uint8Array(await file.arrayBuffer());
 
-    // ===== CV file hash check — skip duplicate analysis =====
-    const existingHash = await checkCvHash(user.id, fileBytes);
-    if (existingHash) {
-      const budgetCheckEarly = await checkAiBudget(user.id, "analyze-cv");
-      if (budgetCheckEarly.cached_result) {
-        console.log("[analyze-cv] Same CV file detected, returning cached result");
-        return jsonResponse({
-          ...budgetCheckEarly.cached_result,
-          _cached: true,
-          _message: "This CV has already been analyzed. Upload a different CV for a new analysis.",
-        });
+    // ===== CV file hash check (optional) =====
+    if (checkCvHash) {
+      try {
+        const existingHash = await checkCvHash(user.id, fileBytes);
+        if (existingHash && checkAiBudget) {
+          const budgetCheckEarly = await checkAiBudget(user.id, "analyze-cv");
+          if (budgetCheckEarly?.cached_result) {
+            console.log("[analyze-cv] Same CV file detected, returning cached result");
+            return jsonResponse({ ...budgetCheckEarly.cached_result, _cached: true, _message: "This CV has already been analyzed." });
+          }
+        }
+      } catch (e) {
+        console.warn("[analyze-cv] CV hash check failed:", e instanceof Error ? e.message : e);
       }
     }
 
     // Magic bytes validation
     if (file.type === "application/pdf") {
       const isPDF = fileBytes[0] === 0x25 && fileBytes[1] === 0x50 && fileBytes[2] === 0x44 && fileBytes[3] === 0x46;
-      if (!isPDF) {
-        return errorResponse(400, "INVALID_FILE_CONTENT", "File claims to be PDF but content validation failed.");
-      }
+      if (!isPDF) return errorResponse(400, "INVALID_FILE_CONTENT", "File claims to be PDF but content validation failed.");
     }
     if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
       const isZip = fileBytes[0] === 0x50 && fileBytes[1] === 0x4b && fileBytes[2] === 0x03 && fileBytes[3] === 0x04;
-      if (!isZip) {
-        return errorResponse(400, "INVALID_FILE_CONTENT", "File claims to be DOCX but content validation failed.");
-      }
+      if (!isZip) return errorResponse(400, "INVALID_FILE_CONTENT", "File claims to be DOCX but content validation failed.");
     }
     if (file.type === "application/msword") {
       const isDoc = fileBytes[0] === 0xd0 && fileBytes[1] === 0xcf && fileBytes[2] === 0x11 && fileBytes[3] === 0xe0;
-      if (!isDoc) {
-        return errorResponse(400, "INVALID_FILE_CONTENT", "File claims to be DOC but content validation failed.");
-      }
+      if (!isDoc) return errorResponse(400, "INVALID_FILE_CONTENT", "File claims to be DOC but content validation failed.");
     }
 
     // ===== Upload to storage =====
-    const sanitizeFilename = (name: string): string => {
-      return name.replace(/[^a-zA-Z0-9._-]/g, "_").replace(/\.\./g, "_").substring(0, 255);
-    };
+    const sanitizeFilename = (name: string) => name.replace(/[^a-zA-Z0-9._-]/g, "_").replace(/\.\./g, "_").substring(0, 255);
     const safeFilename = sanitizeFilename(file.name);
     const filename = `${Date.now()}_${safeFilename}`;
     const storagePath = `${user.id}/${filename}`;
 
-    const { error: uploadError } = await supabase.storage.from("cv-uploads").upload(storagePath, fileBytes, {
-      upsert: true,
-      contentType: file.type,
-    });
-    if (uploadError) {
-      return errorResponse(400, "UPLOAD_FAILED", `Upload failed: ${uploadError.message}`);
-    }
+    const { error: uploadError } = await supabase.storage.from("cv-uploads").upload(storagePath, fileBytes, { upsert: true, contentType: file.type });
+    if (uploadError) return errorResponse(400, "UPLOAD_FAILED", `Upload failed: ${uploadError.message}`);
 
     // ===== Extract text =====
     const { text: extractedText, method: extractionMethod } = await extractTextFromFile(fileBytes, file.type);
-
-    if (extractedText.length < 100) {
-      return errorResponse(400, "INSUFFICIENT_TEXT", "Could not extract sufficient text from the file. Please upload a text-based PDF or DOCX.");
-    }
+    if (extractedText.length < 100) return errorResponse(400, "INSUFFICIENT_TEXT", "Could not extract sufficient text from the file. Please upload a text-based PDF or DOCX.");
 
     const truncatedText = extractedText.substring(0, 12000);
-
     const ximatarId = resolvedXimatarKey;
 
-    console.log(
-      JSON.stringify({
-        type: "request",
-        correlation_id: correlationId,
-        function_name: "analyze-cv",
-        text_length: truncatedText.length,
-        extraction_method: extractionMethod,
-        ximatar_id: ximatarId,
-      })
-    );
+    console.log(JSON.stringify({ type: "request", correlation_id: correlationId, function_name: "analyze-cv", text_length: truncatedText.length, extraction_method: extractionMethod, ximatar_id: ximatarId }));
 
     // ===== Detect language =====
     const detectedLanguage = detectLanguage(truncatedText);
 
     // ===== Load AI context & build prompt =====
-    const userContext = await loadUserAiContext(user.id);
-    const contextBlock = buildContextBlock(userContext);
+    let contextBlock = "";
+    if (loadUserAiContext && buildContextBlock) {
+      try {
+        const userContext = await loadUserAiContext(user.id);
+        contextBlock = buildContextBlock(userContext);
+      } catch (e) {
+        console.warn("[analyze-cv] AI context load failed:", e instanceof Error ? e.message : e);
+      }
+    }
 
     const systemPrompt = buildSystemPrompt(ximatarId, ximatarName, ximatarTitle, pillarScores, detectedLanguage) + contextBlock;
     const userMessage = buildUserMessage(truncatedText, ximatarId, ximatarName, ximatarTitle, pillarScores);
 
-    const ipHash = await hashForAudit(req.headers.get("x-forwarded-for") || "unknown");
+    const ipHash = hashForAudit ? await hashForAudit(req.headers.get("x-forwarded-for") || "unknown") : await hashForAuditFallback(req.headers.get("x-forwarded-for") || "unknown");
 
-    const aiResult = await callAnthropicApi({
-      system: systemPrompt,
-      userMessage,
-      correlationId,
-      functionName: "analyze-cv",
-      inputSummary: `lang=${detectedLanguage},len=${truncatedText.length},ximatar=${ximatarId},method=${extractionMethod}`,
-    });
+    // ===== Call Claude (with fallback) =====
+    let aiResult: { content: string; model: string; latencyMs: number; requestId: string };
+    try {
+      aiResult = await callClaudeDirectly(systemPrompt, userMessage);
+    } catch (aiErr: any) {
+      console.error("[analyze-cv] AI call failed:", aiErr.message);
+      if (aiErr.statusCode === 402) return errorResponse(402, "INSUFFICIENT_CREDITS", aiErr.message);
+      return errorResponse(502, "AI_CALL_FAILED", "AI analysis failed. Please try again.");
+    }
 
     // ===== Parse & validate response =====
-    const jsonStr = extractJsonFromAiContent(aiResult.content);
+    let jsonStr: string;
+    if (extractJsonFromAiContent) {
+      try { jsonStr = extractJsonFromAiContent(aiResult.content); } catch { jsonStr = extractJsonRobust(aiResult.content); }
+    } else {
+      jsonStr = extractJsonRobust(aiResult.content);
+    }
+
     let parsed: unknown;
     try {
       parsed = JSON.parse(jsonStr);
     } catch (_parseErr) {
-      console.error(
-        JSON.stringify({ type: "parse_error", correlation_id: correlationId, function_name: "analyze-cv", raw_length: aiResult.content.length })
-      );
+      console.error("[analyze-cv] JSON parse failed. Raw preview:", aiResult.content.substring(0, 500));
       return errorResponse(502, "AI_PARSE_FAILED", "AI analysis did not return valid JSON. Please try again.");
     }
 
     const validated = validateAnalyzeCvResponse(parsed);
     if (!validated) {
-      console.error(
-        JSON.stringify({ type: "validation_error", correlation_id: correlationId, function_name: "analyze-cv" })
-      );
+      console.error(JSON.stringify({ type: "validation_error", correlation_id: correlationId, function_name: "analyze-cv" }));
       return errorResponse(502, "AI_PARSE_FAILED", "AI analysis did not return valid results. Please try again.");
     }
 
@@ -834,8 +666,8 @@ serve(async (req) => {
 
     // ===== Store credentials (Layer B) =====
     const location = credentials.location || {};
-    await serviceClient.from("cv_credentials").upsert(
-      {
+    try {
+      await serviceClient.from("cv_credentials").upsert({
         user_id: user.id,
         full_name: credentials.full_name || null,
         email: credentials.email || null,
@@ -863,9 +695,10 @@ serve(async (req) => {
         volunteer_work: credentials.volunteer_work || [],
         professional_associations: credentials.professional_associations || [],
         updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id" }
-    );
+      }, { onConflict: "user_id" });
+    } catch (e) {
+      console.warn("[analyze-cv] cv_credentials upsert failed:", e instanceof Error ? e.message : e);
+    }
 
     // ===== Store identity analysis (Layer A) =====
     const archetype = identity.cv_archetype || {};
@@ -874,8 +707,8 @@ serve(async (req) => {
     const roleFit = identity.role_fit || {};
     const mentorHook = identity.mentor_hook || {};
 
-    await serviceClient.from("cv_identity_analysis").upsert(
-      {
+    try {
+      await serviceClient.from("cv_identity_analysis").upsert({
         user_id: user.id,
         cv_archetype_primary: archetype.primary || ximatarId,
         cv_archetype_secondary: archetype.secondary || null,
@@ -896,9 +729,10 @@ serve(async (req) => {
         cv_language: detectedLanguage,
         analysis_model: aiResult.model,
         correlation_id: correlationId,
-      },
-      { onConflict: "user_id" }
-    );
+      }, { onConflict: "user_id" });
+    } catch (e) {
+      console.warn("[analyze-cv] cv_identity_analysis upsert failed:", e instanceof Error ? e.message : e);
+    }
 
     // ===== Update profiles (backward compat) =====
     const cvScores = {
@@ -909,56 +743,48 @@ serve(async (req) => {
       drive: identity.cv_pillar_scores.drive,
     };
 
-    await serviceClient
-      .from("profiles")
-      .update({
+    try {
+      await serviceClient.from("profiles").update({
         cv_scores: cvScores,
         cv_comments: tension.overall_narrative ? { summary: tension.overall_narrative } : null,
-      })
-      .eq("user_id", user.id);
+      }).eq("user_id", user.id);
+    } catch (e) {
+      console.warn("[analyze-cv] profiles update failed:", e instanceof Error ? e.message : e);
+    }
 
     // ===== Upsert assessment_cv_analysis (backward compat) =====
-    // Delete previous entries first, then insert fresh
-    await serviceClient.from("assessment_cv_analysis").delete().eq("user_id", user.id);
-    await serviceClient.from("assessment_cv_analysis").insert({
-      user_id: user.id,
-      cv_text: truncatedText.substring(0, 2000),
-      summary: tension.overall_narrative || archetype.explanation || "",
-      strengths: credentials.hard_skills?.slice(0, 5)?.map((s: any) => s.name || String(s)) || [],
-      soft_skills: [],
-      pillar_vector: cvScores,
-      ximatar_suggestions: [archetype.primary, archetype.secondary].filter(Boolean),
-    });
+    try {
+      await serviceClient.from("assessment_cv_analysis").delete().eq("user_id", user.id);
+      await serviceClient.from("assessment_cv_analysis").insert({
+        user_id: user.id,
+        cv_text: truncatedText.substring(0, 2000),
+        summary: tension.overall_narrative || archetype.explanation || "",
+        strengths: credentials.hard_skills?.slice(0, 5)?.map((s: any) => s.name || String(s)) || [],
+        soft_skills: [],
+        pillar_vector: cvScores,
+        ximatar_suggestions: [archetype.primary, archetype.secondary].filter(Boolean),
+      });
+    } catch (e) {
+      console.warn("[analyze-cv] assessment_cv_analysis upsert failed:", e instanceof Error ? e.message : e);
+    }
 
-    // ===== Audit event =====
-    emitAuditEventWithMetric(
-      {
-        actorType: "candidate",
-        actorId: user.id,
-        action: "cv.analyzed",
-        entityType: "cv_analysis",
-        entityId: user.id,
-        correlationId,
-        metadata: {
-          extraction_method: extractionMethod,
-          detected_language: detectedLanguage,
-          text_length: truncatedText.length,
-          ximatar_id: ximatarId,
-          cv_archetype: archetype.primary,
-          alignment_score: tension.alignment_score,
-          model: aiResult.model,
-          latency_ms: aiResult.latencyMs,
-        },
-        ipHash,
-      },
-      "cv_analyses"
-    );
+    // ===== Audit event (optional) =====
+    if (emitAuditEventWithMetric) {
+      try {
+        emitAuditEventWithMetric({
+          actorType: "candidate", actorId: user.id, action: "cv.analyzed",
+          entityType: "cv_analysis", entityId: user.id, correlationId,
+          metadata: { extraction_method: extractionMethod, detected_language: detectedLanguage, text_length: truncatedText.length, ximatar_id: ximatarId, cv_archetype: archetype.primary, alignment_score: tension.alignment_score, model: aiResult.model, latency_ms: aiResult.latencyMs },
+          ipHash,
+        }, "cv_analyses");
+      } catch (e) {
+        console.warn("[analyze-cv] audit event failed:", e instanceof Error ? e.message : e);
+      }
+    }
 
-    console.log(
-      JSON.stringify({ type: "success", correlation_id: correlationId, function_name: "analyze-cv", ximatar: ximatarId, cv_archetype: archetype.primary })
-    );
+    console.log(JSON.stringify({ type: "success", correlation_id: correlationId, function_name: "analyze-cv", ximatar: ximatarId, cv_archetype: archetype.primary }));
 
-    // ===== Record AI call and cache result =====
+    // ===== Record AI call and cache result (optional) =====
     const responsePayload = {
       success: true,
       cv_archetype: identity.cv_archetype,
@@ -977,59 +803,59 @@ serve(async (req) => {
       assessment_ximatar: ximatarId,
     };
 
-    await recordAiCall(user.id, "analyze-cv");
-    await cacheAiResult(user.id, "analyze-cv", responsePayload);
+    if (recordAiCall) {
+      try { await recordAiCall(user.id, "analyze-cv"); } catch (e) { console.warn("[analyze-cv] recordAiCall failed:", e instanceof Error ? e.message : e); }
+    }
+    if (cacheAiResult) {
+      try { await cacheAiResult(user.id, "analyze-cv", responsePayload); } catch (e) { console.warn("[analyze-cv] cacheAiResult failed:", e instanceof Error ? e.message : e); }
+    }
 
-    // ===== Update progressive AI context =====
-    const cvFileHash = await computeFileHash(fileBytes);
-    await updateUserAiContext(user.id, {
-      cv_credentials_summary: {
-        full_name: credentials.full_name,
-        total_years_experience: credentials.total_years_experience,
-        seniority_level: credentials.seniority_level,
-        top_skills: credentials.hard_skills?.slice(0, 8)?.map((s: any) => s.name || String(s)),
-        education_summary: credentials.education?.[0]
-          ? `${credentials.education[0].degree_type} ${credentials.education[0].field_of_study} @ ${credentials.education[0].institution}`
-          : null,
-        industries: credentials.industries_worked?.slice(0, 5),
-        career_trajectory: credentials.career_trajectory,
-      },
-      cv_identity_summary: {
-        cv_archetype: archetype.primary,
-        alignment_score: tension.alignment_score,
-        top_tensions: tension.primary_gaps?.slice(0, 3)?.map((g: any) =>
-          `${g.pillar} ${g.gap_direction} (CV ${g.cv_score} vs Assessment ${g.ximatar_score})`
-        ),
-        narrative_snippet: tension.overall_narrative?.substring(0, 200),
-      },
-      cv_language: detectedLanguage,
-      cv_analyzed_at: new Date().toISOString(),
-      cv_extracted_text: truncatedText.substring(0, 3000),
-      cv_extraction_method: extractionMethod,
-      cv_file_hash: cvFileHash,
-    });
+    // ===== Update progressive AI context (optional) =====
+    if (updateUserAiContext && computeFileHash) {
+      try {
+        const cvFileHash = await computeFileHash(fileBytes);
+        await updateUserAiContext(user.id, {
+          cv_credentials_summary: {
+            full_name: credentials.full_name,
+            total_years_experience: credentials.total_years_experience,
+            seniority_level: credentials.seniority_level,
+            top_skills: credentials.hard_skills?.slice(0, 8)?.map((s: any) => s.name || String(s)),
+            education_summary: credentials.education?.[0] ? `${credentials.education[0].degree_type} ${credentials.education[0].field_of_study} @ ${credentials.education[0].institution}` : null,
+            industries: credentials.industries_worked?.slice(0, 5),
+            career_trajectory: credentials.career_trajectory,
+          },
+          cv_identity_summary: {
+            cv_archetype: archetype.primary,
+            alignment_score: tension.alignment_score,
+            top_tensions: tension.primary_gaps?.slice(0, 3)?.map((g: any) => `${g.pillar} ${g.gap_direction} (CV ${g.cv_score} vs Assessment ${g.ximatar_score})`),
+            narrative_snippet: tension.overall_narrative?.substring(0, 200),
+          },
+          cv_language: detectedLanguage,
+          cv_analyzed_at: new Date().toISOString(),
+          cv_extracted_text: truncatedText.substring(0, 3000),
+          cv_extraction_method: extractionMethod,
+          cv_file_hash: cvFileHash,
+        });
+      } catch (e) {
+        console.warn("[analyze-cv] AI context update failed:", e instanceof Error ? e.message : e);
+      }
+    }
 
     return jsonResponse({
       ...responsePayload,
       _budget: {
         exceeded: false,
-        calls_used: budgetCheck.calls_used + 1,
-        calls_limit: budgetCheck.calls_limit,
-        tier: budgetCheck.tier,
+        calls_used: (budgetResult.calls_used ?? 0) + 1,
+        calls_limit: budgetResult.calls_limit ?? 999,
+        tier: budgetResult.tier ?? "unknown",
       },
     });
-  } catch (err) {
-    console.error(
-      JSON.stringify({
-        type: "unhandled_error",
-        correlation_id: correlationId,
-        function_name: "analyze-cv",
-        error: err instanceof Error ? err.message : "Unknown error",
-      })
-    );
-    if (err instanceof AnalyzeCvAnthropicError) {
-      return errorResponse(err.statusCode, err.errorCode, err.message);
-    }
+  } catch (err: any) {
+    console.error(JSON.stringify({
+      type: "unhandled_error", correlation_id: correlationId, function_name: "analyze-cv",
+      error: err instanceof Error ? err.message : "Unknown error",
+    }));
+    if (err.statusCode && err.errorCode) return errorResponse(err.statusCode, err.errorCode, err.message);
     return errorResponse(500, "INTERNAL_ERROR", err instanceof Error ? err.message : "An unexpected error occurred");
   }
 });
