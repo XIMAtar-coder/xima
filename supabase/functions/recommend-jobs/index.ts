@@ -349,10 +349,29 @@ serve(async (req) => {
     // ---- Score all jobs ----
     const scoredJobs: ScoredJob[] = [];
 
+    // Location preference filter helper
+    const userLocations = profile?.desired_locations as any[] | null;
+    const locationMatch = (jobLocation: string | null) => {
+      if (!userLocations || userLocations.length === 0) return true;
+      if (!jobLocation) return userLocations.some((p: any) => p.type === 'remote');
+      const loc = jobLocation.toLowerCase();
+      if (userLocations.some((p: any) => p.type === 'remote') && loc.includes('remote')) return true;
+      return userLocations.some((p: any) =>
+        (p.city && loc.includes(p.city.toLowerCase())) ||
+        (p.region && loc.includes(p.region.toLowerCase())) ||
+        (p.country && loc.includes(p.country.toLowerCase()))
+      );
+    };
+
     for (const job of allJobs) {
       const company = companyMap.get(job.business_id);
       const business = businessMap.get(job.business_id);
       const companyName = business?.company_name || "Company";
+
+      // Location filter — soft (skip only if user has strong preferences and no match)
+      if (userLocations && userLocations.length > 0 && !locationMatch(job.location)) {
+        continue;
+      }
 
       const idealArchetypes: string[] = company?.ideal_ximatar_profile_ids || [];
       const companyPillarVector = company?.pillar_vector || null;
