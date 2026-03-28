@@ -19,6 +19,7 @@ import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import XimatarJourney from "./pages/XimatarJourney";
 import XimaChat from "./pages/XimaChat";
+import Messages from "./pages/Messages";
 import DevelopmentPlan from "./pages/DevelopmentPlan";
 import TestDataAnalysis from "./pages/TestDataAnalysis";
 import TestLogicalProblemSolving from "./pages/TestLogicalProblemSolving";
