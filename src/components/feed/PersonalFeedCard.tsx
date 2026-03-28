@@ -62,9 +62,10 @@ interface PersonalFeedCardProps {
   onMarkRead?: (id: string) => void;
   onTrackEngagement?: (id: string) => void;
   userArchetype?: string;
+  hoursSinceLastGrowth?: number | null;
 }
 
-export const PersonalFeedCard = ({ item, onMarkRead, onTrackEngagement, userArchetype }: PersonalFeedCardProps) => {
+export const PersonalFeedCard = ({ item, onMarkRead, onTrackEngagement, userArchetype, hoursSinceLastGrowth }: PersonalFeedCardProps) => {
   const navigate = useNavigate();
   const isExternal = item._source === 'external';
 
@@ -79,7 +80,7 @@ export const PersonalFeedCard = ({ item, onMarkRead, onTrackEngagement, userArch
   }
 
   return (
-    <JourneyCard item={item} onMarkRead={onMarkRead} />
+    <JourneyCard item={item} onMarkRead={onMarkRead} hoursSinceLastGrowth={hoursSinceLastGrowth} />
   );
 };
 
