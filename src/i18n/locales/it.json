@@ -4947,5 +4947,11 @@
     "open_score_influence_note": "Le risposte aperte influenzano fino al 10% dei pilastri selezionati (Creatività, Comunicazione, Conoscenza e Drive).",
     "closing_pullquote": "Un XIMAtar non è un'etichetta — è una bussola. Mostra chi sei, cosa modella il tuo progresso e cosa eleverà il tuo prossimo capitolo.",
     "closing_cta": "Scegli il tuo mentore per continuare →"
+  },
+  "feed": {
+    "title": "Il Tuo Feed",
+    "tagline": "La tua crescita professionale, un passo alla volta",
+    "subtitle": "Aggiornamenti personalizzati, contenuti curati e opportunità",
+    "legend": "Solo traguardi verificati · Contenuti curati · Privacy by design"
   }
 }
