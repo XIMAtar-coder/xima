@@ -125,6 +125,13 @@ interface ProfileData {
   hasAssessment: boolean;
   isLoading: boolean;
   error: string | null;
+  profile_completed: boolean;
+  desired_locations: any[];
+  work_preference: string | null;
+  willing_to_relocate: string | null;
+  salary_expectation: any | null;
+  availability_date: string | null;
+  industry_preferences: string[];
 }
 
 const normalizePillars = (raw: any) => {
