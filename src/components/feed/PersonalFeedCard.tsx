@@ -85,7 +85,7 @@ export const PersonalFeedCard = ({ item, onMarkRead, onTrackEngagement, userArch
 };
 
 // Personal journey items
-const JourneyCard = ({ item, onMarkRead }: { item: PersonalFeedItem; onMarkRead?: (id: string) => void }) => {
+const JourneyCard = ({ item, onMarkRead, hoursSinceLastGrowth }: { item: PersonalFeedItem; onMarkRead?: (id: string) => void; hoursSinceLastGrowth?: number | null }) => {
   const navigate = useNavigate();
   const IconComponent = iconMap[item.icon || 'info'] || Info;
 
