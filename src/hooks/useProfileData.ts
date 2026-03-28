@@ -218,7 +218,14 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             weakest_pillar,
             ximatar_storytelling,
             ximatar_growth_path,
-            mentor
+            mentor,
+            profile_completed,
+            desired_locations,
+            work_preference,
+            willing_to_relocate,
+            salary_expectation,
+            availability_date,
+            industry_preferences
           `)
           .eq('user_id', user.id)
           .single();
