@@ -8,12 +8,16 @@ import { ProfilingOptOutSection } from '@/components/settings/ProfilingOptOutSec
 import { AccountDeletionSection } from '@/components/settings/AccountDeletionSection';
 import { MentorCVConsentToggle } from '@/components/settings/MentorCVConsentToggle';
 import { MembershipSection } from '@/components/settings/MembershipSection';
+import { JobPreferencesSection } from '@/components/settings/JobPreferencesSection';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 
 const CandidateSettings = () => {
   const { t } = useTranslation();
   const { completeStep, hasCompletedStep } = useOnboardingState();
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [jobPrefs, setJobPrefs] = useState<any>({});
   const [mentorInfo, setMentorInfo] = useState<{ mentorId: string | null; mentorName: string | null; profileId: string | null }>({
     mentorId: null,
     mentorName: null,
@@ -28,18 +32,28 @@ const CandidateSettings = () => {
   }, [completeStep, hasCompletedStep]);
 
   useEffect(() => {
-    const fetchMentorInfo = async () => {
+    const fetchData = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
+        setUserId(user.id);
 
         const { data: profile } = await supabase
           .from('profiles')
-          .select('id')
+          .select('id, desired_locations, work_preference, willing_to_relocate, salary_expectation, availability_date, industry_preferences')
           .eq('user_id', user.id)
           .maybeSingle();
 
         if (!profile) return;
+
+        setJobPrefs({
+          desired_locations: (profile as any).desired_locations || [],
+          work_preference: (profile as any).work_preference,
+          willing_to_relocate: (profile as any).willing_to_relocate,
+          salary_expectation: (profile as any).salary_expectation,
+          availability_date: (profile as any).availability_date,
+          industry_preferences: (profile as any).industry_preferences || [],
+        });
 
         let mentorId = null;
         let mentorName = null;
@@ -69,12 +83,12 @@ const CandidateSettings = () => {
           profileId: profile.id,
         });
       } catch (err) {
-        console.error('[CandidateSettings] Error fetching mentor info:', err);
+        console.error('[CandidateSettings] Error fetching data:', err);
       }
     };
 
-    fetchMentorInfo();
-  }, []);
+    fetchData();
+  }, [refreshKey]);
 
   return (
     <MainLayout>
@@ -97,6 +111,18 @@ const CandidateSettings = () => {
               candidateProfileId={mentorInfo.profileId}
               mentorId={mentorInfo.mentorId}
               mentorName={mentorInfo.mentorName}
+            />
+            <Separator />
+          </>
+        )}
+
+        {/* Job Preferences */}
+        {userId && (
+          <>
+            <JobPreferencesSection
+              userId={userId}
+              profileData={jobPrefs}
+              onUpdate={() => setRefreshKey(prev => prev + 1)}
             />
             <Separator />
           </>

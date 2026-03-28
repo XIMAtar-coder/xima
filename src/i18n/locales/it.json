@@ -4953,5 +4953,27 @@
     "tagline": "La tua crescita professionale, un passo alla volta",
     "subtitle": "Aggiornamenti personalizzati, contenuti curati e opportunità",
     "legend": "Solo traguardi verificati · Contenuti curati · Privacy by design"
+  },
+  "profile_completion": {
+    "title": "Completa il tuo profilo per abbinamenti migliori",
+    "subtitle": "Dicci dove vuoi lavorare e cosa cerchi. Le aziende ti troveranno più facilmente con un profilo completo.",
+    "time_estimate": "Meno di 2 minuti",
+    "complete_now": "Completa Ora",
+    "later": "Dopo",
+    "locations_label": "Dove vorresti lavorare?",
+    "locations_hint": "Aggiungi una o più città, oppure seleziona Remoto",
+    "work_mode_label": "Qual è il tuo stile di lavoro preferito?",
+    "relocate_label": "Saresti disposto a trasferirti per l'opportunità giusta?",
+    "salary_label": "Qual è la tua aspettativa salariale?",
+    "salary_hint": "Questa informazione è privata e non viene condivisa direttamente con le aziende",
+    "availability_label": "Quando saresti disponibile per iniziare?",
+    "industry_label": "Quali settori ti interessano?",
+    "industry_hint": "Seleziona tutti quelli pertinenti",
+    "save": "Salva Preferenze",
+    "success_title": "Profilo Completato!",
+    "success_body": "Le tue preferenze lavorative sono impostate. Le aziende possono ora trovarti in base a posizione, disponibilità e settore.",
+    "section_title": "Preferenze Lavorative",
+    "not_set": "Non impostato",
+    "edit": "Modifica Preferenze"
   }
 }

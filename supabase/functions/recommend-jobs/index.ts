@@ -256,7 +256,7 @@ serve(async (req) => {
 
     // ---- Fetch user data in parallel ----
     const [profileRes, credentialsRes, cvAnalysisRes, trajectoryRes] = await Promise.all([
-      supabase.from("profiles").select("user_id, ximatar_id, ximatar, ximatar_name, ximatar_level, pillar_scores").eq("user_id", userId).single(),
+      supabase.from("profiles").select("user_id, ximatar_id, ximatar, ximatar_name, ximatar_level, pillar_scores, desired_locations, work_preference, willing_to_relocate, salary_expectation, availability_date, industry_preferences").eq("user_id", userId).single(),
       supabase.from("cv_credentials").select("hard_skills, seniority_level, total_years_experience, industries_worked, career_trajectory, languages").eq("user_id", userId).maybeSingle(),
       supabase.from("cv_identity_analysis").select("cv_qualified_roles, archetype_aligned_roles, growth_bridge_roles").eq("user_id", userId).maybeSingle(),
       supabase.rpc("get_user_trajectory_90d", { p_user_id: userId }).maybeSingle(),
@@ -349,10 +349,29 @@ serve(async (req) => {
     // ---- Score all jobs ----
     const scoredJobs: ScoredJob[] = [];
 
+    // Location preference filter helper
+    const userLocations = profile?.desired_locations as any[] | null;
+    const locationMatch = (jobLocation: string | null) => {
+      if (!userLocations || userLocations.length === 0) return true;
+      if (!jobLocation) return userLocations.some((p: any) => p.type === 'remote');
+      const loc = jobLocation.toLowerCase();
+      if (userLocations.some((p: any) => p.type === 'remote') && loc.includes('remote')) return true;
+      return userLocations.some((p: any) =>
+        (p.city && loc.includes(p.city.toLowerCase())) ||
+        (p.region && loc.includes(p.region.toLowerCase())) ||
+        (p.country && loc.includes(p.country.toLowerCase()))
+      );
+    };
+
     for (const job of allJobs) {
       const company = companyMap.get(job.business_id);
       const business = businessMap.get(job.business_id);
       const companyName = business?.company_name || "Company";
+
+      // Location filter — soft (skip only if user has strong preferences and no match)
+      if (userLocations && userLocations.length > 0 && !locationMatch(job.location)) {
+        continue;
+      }
 
       const idealArchetypes: string[] = company?.ideal_ximatar_profile_ids || [];
       const companyPillarVector = company?.pillar_vector || null;
@@ -412,6 +431,16 @@ serve(async (req) => {
 
         const archetypeProfile = XIMATAR_PROFILES[userArchetype];
 
+        // Build preference context for narrative
+        const prefParts: string[] = [];
+        if (userLocations && userLocations.length > 0) {
+          const locs = userLocations.map((l: any) => l.type === 'remote' ? 'Remote' : `${l.city || l.region || ''}, ${l.country || ''}`.replace(/, $/, '')).filter(Boolean).join('; ');
+          prefParts.push(`Desired locations: ${locs}`);
+        }
+        if (profile?.work_preference) prefParts.push(`Work mode: ${profile.work_preference}`);
+        if (profile?.industry_preferences && (profile.industry_preferences as string[]).length > 0) prefParts.push(`Industries: ${(profile.industry_preferences as string[]).join(', ')}`);
+        const prefBlock = prefParts.length > 0 ? `\nUSER PREFERENCES:\n${prefParts.join('\n')}` : '';
+
         // Load AI context for narrative enrichment
         const userContext = await loadUserAiContext(userId);
         const contextBlock = buildContextBlock(userContext);
@@ -425,6 +454,7 @@ USER PROFILE:
 - Top pillars: ${topPillars}
 - Trajectory: ${trajectoryDesc}
 - Career trajectory: ${credentials?.career_trajectory || "unknown"}
+${prefBlock}
 
 For each job below, write a 1-2 sentence explanation of why this person is a good fit.
 Focus on IDENTITY alignment first (archetype, pillar strengths, trajectory), then practical fit.

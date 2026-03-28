@@ -99,6 +99,13 @@ interface ProfileData {
   hasAssessment: boolean;
   isLoading: boolean;
   error: string | null;
+  profile_completed: boolean;
+  desired_locations: any[];
+  work_preference: string | null;
+  willing_to_relocate: string | null;
+  salary_expectation: any | null;
+  availability_date: string | null;
+  industry_preferences: string[];
 }
 
 const normalizePillars = (raw: any) => {
@@ -139,6 +146,13 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
     hasAssessment: false,
     isLoading: true,
     error: null,
+    profile_completed: false,
+    desired_locations: [],
+    work_preference: null,
+    willing_to_relocate: null,
+    salary_expectation: null,
+    availability_date: null,
+    industry_preferences: [],
   });
 
   useEffect(() => {
@@ -178,7 +192,14 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             weakest_pillar,
             ximatar_storytelling,
             ximatar_growth_path,
-            mentor
+            mentor,
+            profile_completed,
+            desired_locations,
+            work_preference,
+            willing_to_relocate,
+            salary_expectation,
+            availability_date,
+            industry_preferences
           `)
           .eq('user_id', user.id)
           .single();
@@ -369,6 +390,13 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           hasAssessment: !!((profile?.ximatar || profile?.ximatar_id) && pillar_scores),
           isLoading: false,
           error: null,
+          profile_completed: !!(profile as any)?.profile_completed,
+          desired_locations: ((profile as any)?.desired_locations as any[]) || [],
+          work_preference: ((profile as any)?.work_preference as string) || null,
+          willing_to_relocate: ((profile as any)?.willing_to_relocate as string) || null,
+          salary_expectation: (profile as any)?.salary_expectation || null,
+          availability_date: ((profile as any)?.availability_date as string) || null,
+          industry_preferences: ((profile as any)?.industry_preferences as string[]) || [],
         };
 
         console.log('[useProfileData] FINAL STATE UPDATE:', next);
