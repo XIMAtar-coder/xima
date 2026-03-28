@@ -2379,6 +2379,72 @@ export type Database = {
           },
         ]
       }
+      feed_external_content: {
+        Row: {
+          content_type: string | null
+          created_at: string | null
+          engagement_count: number | null
+          expires_at: string | null
+          id: string
+          image_url: string | null
+          is_sponsored: boolean | null
+          language: string | null
+          priority: number | null
+          published_at: string | null
+          source_name: string
+          source_url: string
+          sponsor_logo_url: string | null
+          sponsor_name: string | null
+          summary: string
+          tags: string[] | null
+          target_archetypes: string[] | null
+          target_pillars: string[] | null
+          title: string
+        }
+        Insert: {
+          content_type?: string | null
+          created_at?: string | null
+          engagement_count?: number | null
+          expires_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_sponsored?: boolean | null
+          language?: string | null
+          priority?: number | null
+          published_at?: string | null
+          source_name: string
+          source_url: string
+          sponsor_logo_url?: string | null
+          sponsor_name?: string | null
+          summary: string
+          tags?: string[] | null
+          target_archetypes?: string[] | null
+          target_pillars?: string[] | null
+          title: string
+        }
+        Update: {
+          content_type?: string | null
+          created_at?: string | null
+          engagement_count?: number | null
+          expires_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_sponsored?: boolean | null
+          language?: string | null
+          priority?: number | null
+          published_at?: string | null
+          source_name?: string
+          source_url?: string
+          sponsor_logo_url?: string | null
+          sponsor_name?: string | null
+          summary?: string
+          tags?: string[] | null
+          target_archetypes?: string[] | null
+          target_pillars?: string[] | null
+          title?: string
+        }
+        Relationships: []
+      }
       feed_items: {
         Row: {
           action_label: string | null
@@ -5204,6 +5270,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      increment_engagement: { Args: { content_id: string }; Returns: undefined }
       internal_log_activity: {
         Args: { p_action: string; p_context?: Json; p_user_id: string }
         Returns: string
