@@ -45,7 +45,7 @@ serve(async (req) => {
     // Get user profile with pillar scores (aligned with v2 column names)
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("ximatar_archetype, assessment_scores, ximatar_level")
+      .select("ximatar_id, ximatar, ximatar_name, ximatar_level, pillar_scores")
       .eq("user_id", user.id)
       .single();
 
