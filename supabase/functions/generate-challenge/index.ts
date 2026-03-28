@@ -263,22 +263,28 @@ Return ONLY valid JSON:
     const targetPillar = companyProfile?.pillar_vector
       ? Object.entries(companyProfile.pillar_vector as Record<string, number>).sort((a, b) => b[1] - a[1])[0]?.[0]
       : undefined;
-    const dbDecision = await checkDatabaseFirst("challenge", undefined, targetPillar);
-    if (dbDecision.source === "database") {
-      const validated = validateXimaCoreResult(dbDecision.data);
-      if (validated) {
-        console.log(`[intelligence] Challenge served from pattern library (confidence: ${dbDecision.confidence})`);
+    try {
+      if (typeof checkDatabaseFirst === "function") {
+        const dbDecision = await checkDatabaseFirst("challenge", undefined, targetPillar);
+        if (dbDecision.source === "database") {
+          const validated = validateXimaCoreResult(dbDecision.data);
+          if (validated) {
+            console.log(`[intelligence] Challenge served from pattern library (confidence: ${dbDecision.confidence})`);
 
-        if (body.challenge_id) {
-          const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
-          await supabaseAdmin.from("business_challenges").update({
-            evaluation_lens: validated.evaluation_lens,
-            expected_tensions: validated.expected_tensions,
-          }).eq("id", body.challenge_id);
+            if (body.challenge_id) {
+              const supabaseAdmin2 = createClient(supabaseUrl, supabaseServiceKey);
+              await supabaseAdmin2.from("business_challenges").update({
+                evaluation_lens: validated.evaluation_lens,
+                expected_tensions: validated.expected_tensions,
+              }).eq("id", body.challenge_id);
+            }
+
+            return jsonResponse({ ...validated, used_fallback: false, _intelligence: { source: "database", confidence: dbDecision.confidence } });
+          }
         }
-
-        return jsonResponse({ ...validated, used_fallback: false, _intelligence: { source: "database", confidence: dbDecision.confidence } });
       }
+    } catch (e) {
+      console.warn("[generate-challenge] Pattern check failed:", e instanceof Error ? e.message : e);
     }
 
     try {
