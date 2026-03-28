@@ -62,9 +62,10 @@ interface PersonalFeedCardProps {
   onMarkRead?: (id: string) => void;
   onTrackEngagement?: (id: string) => void;
   userArchetype?: string;
+  hoursSinceLastGrowth?: number | null;
 }
 
-export const PersonalFeedCard = ({ item, onMarkRead, onTrackEngagement, userArchetype }: PersonalFeedCardProps) => {
+export const PersonalFeedCard = ({ item, onMarkRead, onTrackEngagement, userArchetype, hoursSinceLastGrowth }: PersonalFeedCardProps) => {
   const navigate = useNavigate();
   const isExternal = item._source === 'external';
 
@@ -79,12 +80,12 @@ export const PersonalFeedCard = ({ item, onMarkRead, onTrackEngagement, userArch
   }
 
   return (
-    <JourneyCard item={item} onMarkRead={onMarkRead} />
+    <JourneyCard item={item} onMarkRead={onMarkRead} hoursSinceLastGrowth={hoursSinceLastGrowth} />
   );
 };
 
 // Personal journey items
-const JourneyCard = ({ item, onMarkRead }: { item: PersonalFeedItem; onMarkRead?: (id: string) => void }) => {
+const JourneyCard = ({ item, onMarkRead, hoursSinceLastGrowth }: { item: PersonalFeedItem; onMarkRead?: (id: string) => void; hoursSinceLastGrowth?: number | null }) => {
   const navigate = useNavigate();
   const IconComponent = iconMap[item.icon || 'info'] || Info;
 
@@ -134,6 +135,17 @@ const JourneyCard = ({ item, onMarkRead }: { item: PersonalFeedItem; onMarkRead?
 
             {item.body && (
               <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{item.body}</p>
+            )}
+
+            {(item.feed_type === 'growth_recommendation' || item.feed_type === 'growth_test_result') && hoursSinceLastGrowth !== null && hoursSinceLastGrowth !== undefined && hoursSinceLastGrowth > 0 && (
+              <p className="text-xs text-muted-foreground/70 mt-1.5">
+                {hoursSinceLastGrowth < 24
+                  ? `${hoursSinceLastGrowth}h since your last Growth Hub activity`
+                  : hoursSinceLastGrowth < 48
+                    ? '1 day since your last activity'
+                    : `${Math.floor(hoursSinceLastGrowth / 24)} days since your last activity — keep the momentum!`
+                }
+              </p>
             )}
 
             <div className="flex items-center justify-between mt-2.5">

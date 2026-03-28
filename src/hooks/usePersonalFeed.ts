@@ -69,6 +69,31 @@ export const usePersonalFeed = (category: FeedCategory = 'for_you') => {
     staleTime: 60000,
   });
 
+  // Last Growth Hub activity
+  const { data: lastGrowthActivity } = useQuery({
+    queryKey: ['lastGrowthActivity', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const { data } = await supabase
+        .from('growth_hub_progress' as any)
+        .select('created_at, completed_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data as unknown as { created_at: string; completed_at: string | null } | null;
+    },
+    enabled: !!user?.id,
+    staleTime: 60000,
+  });
+
+  const hoursSinceLastGrowth = (() => {
+    if (!lastGrowthActivity) return null;
+    const lastDate = (lastGrowthActivity as any).completed_at || (lastGrowthActivity as any).created_at;
+    if (!lastDate) return null;
+    return Math.floor((Date.now() - new Date(lastDate).getTime()) / (1000 * 60 * 60));
+  })();
+
   const userArchetype = (profile?.ximatar || '').toLowerCase();
   const pillarScores = (profile?.pillar_scores || {}) as Record<string, number>;
   const weakestPillar = Object.entries(pillarScores).sort(([, a], [, b]) => a - b)[0]?.[0] || '';
@@ -143,7 +168,7 @@ export const usePersonalFeed = (category: FeedCategory = 'for_you') => {
 
   const unreadCount = feedItems.filter(i => !i.is_read && i._source === 'personal').length;
 
-  return { feedItems, isLoading, refetch, markAsRead, trackEngagement, unreadCount, userArchetype };
+  return { feedItems, isLoading, refetch, markAsRead, trackEngagement, unreadCount, userArchetype, hoursSinceLastGrowth };
 };
 
 async function fetchExternalContent(archetype: string, pillar?: string): Promise<ExternalContentItem[]> {
