@@ -242,9 +242,16 @@ serve(async (req) => {
     console.log(JSON.stringify({ type: "recommend_jobs_start", correlation_id: correlationId, user_id: userId }));
 
     // ---- Intelligence Engine: try vector matching first (FREE) ----
-    const vectorMatches = await matchJobsByVector(userId, 15);
-    if (vectorMatches.length > 0) {
-      console.log(`[intelligence] Vector matched ${vectorMatches.length} jobs for user ${userId.substring(0, 8)}`);
+    let vectorMatches: any[] = [];
+    try {
+      if (typeof matchJobsByVector === "function") {
+        vectorMatches = await matchJobsByVector(userId, 15);
+        if (vectorMatches.length > 0) {
+          console.log(`[intelligence] Vector matched ${vectorMatches.length} jobs for user ${userId.substring(0, 8)}`);
+        }
+      }
+    } catch (e) {
+      console.warn("[recommend-jobs] Vector matching unavailable:", e instanceof Error ? e.message : e);
     }
 
     // ---- Fetch user data in parallel ----
