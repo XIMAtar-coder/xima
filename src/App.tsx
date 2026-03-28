@@ -123,6 +123,7 @@ const AppContent = () => {
           <Route path="/assessment-guide" element={<AssessmentGuide />} />
           <Route path="/dashboard" element={<Profile />} />
           <Route path="/chat" element={<XimaChat />} />
+          <Route path="/messages" element={<Messages />} />
           <Route path="/settings" element={<CandidateSettings />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/eligibility" element={<EligibilityReview />} />
