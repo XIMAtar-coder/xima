@@ -50,7 +50,7 @@ serve(async (req) => {
         .select("resource_title, resource_type, primary_pillar, test_config, path_id, status")
         .eq("id", progress_id).eq("user_id", user.id).single(),
       supabase.from("profiles")
-        .select("ximatar_archetype, ximatar, ximatar_id, ximatar_level, assessment_scores, pillar_scores")
+        .select("user_id, ximatar_id, ximatar, ximatar_name, ximatar_level, pillar_scores, level_start_scores")
         .eq("user_id", user.id).single(),
     ]);
 
@@ -76,10 +76,18 @@ serve(async (req) => {
       return errorResponse(404, "PROFILE_NOT_FOUND", "User profile not found");
     }
 
-    // Resolve fields
-    const _ximatarArchetype = (profile.ximatar_archetype || profile.ximatar || profile.ximatar_id || "unknown") as string;
+    // Resolve fields + XIMAtar UUID resolution
+    let _ximatarArchetype = (profile.ximatar || profile.ximatar_id || profile.ximatar_name || "unknown") as string;
     const _ximatarLevel = (profile.ximatar_level || 1) as number;
-    const _assessmentScores = (profile.assessment_scores || profile.pillar_scores) as Record<string, number> || {};
+    const _assessmentScores = (profile.pillar_scores) as Record<string, number> || {};
+
+    if (_ximatarArchetype && _ximatarArchetype.includes("-")) {
+      try {
+        const serviceClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+        const { data: rec } = await serviceClient.from("ximatars").select("label, animal").eq("id", _ximatarArchetype).maybeSingle();
+        if (rec) _ximatarArchetype = (rec.animal || rec.label || _ximatarArchetype).toLowerCase();
+      } catch (e) { console.warn("[evaluate-growth-test] XIMAtar resolution failed:", e); }
+    }
 
     const scores = _assessmentScores;
     const pillarScore = scores[progress.primary_pillar] ?? 50;

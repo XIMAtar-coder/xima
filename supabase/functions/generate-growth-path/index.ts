@@ -44,7 +44,7 @@ serve(async (req) => {
     // Fetch user data in parallel
     const [profileResult, optCheckResult, cvAnalysisResult, trajectoryResult, completedResult] = await Promise.all([
       supabase.from("profiles")
-        .select("ximatar_archetype, ximatar, ximatar_id, ximatar_level, assessment_scores, pillar_scores, preferred_language, language, profiling_opt_out")
+        .select("user_id, ximatar_id, ximatar, ximatar_name, ximatar_level, pillar_scores, preferred_lang, profiling_opt_out, level_start_scores")
         .eq("user_id", user.id).single(),
       Promise.resolve(null), // opt-out checked inline
       supabase.from("cv_identity_analysis")
@@ -76,11 +76,11 @@ serve(async (req) => {
     const trajectory = trajectoryResult.data;
     const completedTitles = completedResult.data?.map(p => p.resource_title) || [];
 
-    // Resolve fields from whichever column names exist
-    const assessmentScores = (profile.assessment_scores || profile.pillar_scores) as Record<string, number> | null;
-    const ximatarRaw = (profile.ximatar_archetype || profile.ximatar || profile.ximatar_id) as string | null;
+    // Resolve fields from actual column names
+    const assessmentScores = (profile.pillar_scores || null) as Record<string, number> | null;
+    const ximatarRaw = (profile.ximatar || profile.ximatar_id || profile.ximatar_name || null) as string | null;
     const ximatarLevel = (profile.ximatar_level || 1) as number;
-    const preferredLang = (profile.preferred_language || profile.language || locale) as string;
+    const preferredLang = (profile.preferred_lang || locale) as string;
 
     if (!assessmentScores) {
       return errorResponse(400, "ASSESSMENT_REQUIRED", "Please complete the XIMA assessment before generating a growth path.");
