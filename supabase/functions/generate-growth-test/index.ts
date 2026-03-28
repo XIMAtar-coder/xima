@@ -49,7 +49,7 @@ serve(async (req) => {
         .select("resource_id, resource_type, resource_title, resource_platform, primary_pillar, path_id")
         .eq("id", progress_id).eq("user_id", user.id).single(),
       supabase.from("profiles")
-        .select("ximatar_archetype, ximatar, ximatar_id, ximatar_level, assessment_scores, pillar_scores")
+        .select("user_id, ximatar_id, ximatar, ximatar_name, ximatar_level, pillar_scores, level_start_scores")
         .eq("user_id", user.id).single(),
       supabase.from("cv_identity_analysis")
         .select("tension_gaps, alignment_score")
