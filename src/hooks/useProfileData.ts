@@ -66,32 +66,6 @@ interface ProfileData {
   open_answers: OpenAnswerItem[];
   assessment_rationale: any;
   cv_analysis: {
-  ximatar_name: string | null;
-  ximatar_image: string | null;
-  drive_level: 'high' | 'medium' | 'low' | null;
-  pillar_scores: {
-    computational_power: number;
-    communication: number;
-    knowledge: number;
-    creativity: number;
-    drive: number;
-  } | null;
-  cv_pillar_scores: {
-    computational_power: number;
-    communication: number;
-    knowledge: number;
-    creativity: number;
-    drive: number;
-  } | null;
-  strongest_pillar: string | null;
-  weakest_pillar: string | null;
-  ximatar_storytelling: string | null;
-  ximatar_growth_path: string | null;
-  mentor_id: string | null;
-  mentor_profile: MentorProfile | null;
-  open_answers: OpenAnswerItem[];
-  assessment_rationale: any;
-  cv_analysis: {
     summary?: string | null;
     strengths?: string[] | null;
     soft_skills?: string[] | null;
