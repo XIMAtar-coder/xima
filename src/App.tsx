@@ -19,6 +19,7 @@ import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import XimatarJourney from "./pages/XimatarJourney";
 import XimaChat from "./pages/XimaChat";
+import Messages from "./pages/Messages";
 import DevelopmentPlan from "./pages/DevelopmentPlan";
 import TestDataAnalysis from "./pages/TestDataAnalysis";
 import TestLogicalProblemSolving from "./pages/TestLogicalProblemSolving";
@@ -122,6 +123,7 @@ const AppContent = () => {
           <Route path="/assessment-guide" element={<AssessmentGuide />} />
           <Route path="/dashboard" element={<Profile />} />
           <Route path="/chat" element={<XimaChat />} />
+          <Route path="/messages" element={<Messages />} />
           <Route path="/settings" element={<CandidateSettings />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/eligibility" element={<EligibilityReview />} />

@@ -183,6 +183,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         <button onClick={() => navigate('/chat')} className={navLinkClass(location.pathname === '/chat')}>
                           {t('nav.feed')}
                         </button>
+                        <button onClick={() => navigate('/messages')} className={navLinkClass(location.pathname === '/messages')}>
+                          {t('nav.messages')}
+                        </button>
                         <button onClick={() => navigate('/development-plan')} className={navLinkClass(location.pathname.startsWith('/test') || location.pathname === '/development-plan')}>
                           {t('nav.tests')}
                         </button>
@@ -278,6 +281,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         {[
                           { path: '/profile', label: t('nav.dashboard') },
                           { path: '/chat', label: t('nav.feed') },
+                          { path: '/messages', label: t('nav.messages') },
                           { path: '/development-plan', label: t('nav.tests') },
                           { path: '/settings', label: t('nav.settings', 'Impostazioni') },
                         ].map(({ path, label }) => (
