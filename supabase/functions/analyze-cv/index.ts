@@ -326,7 +326,14 @@ function buildSystemPrompt(
   assessmentScores: Record<string, number>, language: string
 ): string {
   const langNames: Record<string, string> = { it: "Italian", en: "English", pt: "Portuguese", es: "Spanish", de: "German", fr: "French" };
-  const langName = langNames[language] || "English";
+
+  let langInstruction: string;
+  if (language === "auto") {
+    langInstruction = "Detect the language of the CV automatically. Write ALL narratives in the same language as the CV. Keep JSON field names in English.";
+  } else {
+    const langName = langNames[language] || "English";
+    langInstruction = `Write ALL narratives, recommendations, explanations, summaries, mentor_hook, and role names in ${langName}. Keep JSON field names in English.`;
+  }
 
   return `You are the XIMA CV Intelligence Engine — an expert psychometric analyst for the XIMA talent platform. You perform two tasks simultaneously on a candidate's CV.
 
