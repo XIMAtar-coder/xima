@@ -140,7 +140,14 @@ serve(async (req) => {
     const nextLevel = Math.min(level + 1, 3);
 
     // ---- Intelligence Engine: check pattern library first (FREE) ----
-    const dbDecision = await checkDatabaseFirst("growth_path", archetype, weakestPillar);
+    let dbDecision: any = { source: "llm" };
+    try {
+      if (typeof checkDatabaseFirst === "function") {
+        dbDecision = await checkDatabaseFirst("growth_path", archetype, weakestPillar);
+      }
+    } catch (e) {
+      console.warn("[generate-growth-path] Pattern check failed:", e instanceof Error ? e.message : e);
+    }
     if (dbDecision.source === "database" && dbDecision.data?.growth_path?.resources) {
       console.log(`[intelligence] Growth path served from pattern library (confidence: ${dbDecision.confidence})`);
 
@@ -347,11 +354,15 @@ Return ONLY valid JSON:
     });
 
     // Deposit into intelligence engine for future pattern matching
-    await depositInference(user.id, "generate-growth-path", v, {
-      patternType: "growth_path",
-      archetype,
-      targetPillar: weakestPillar,
-    });
+    try {
+      if (typeof depositInference === "function") {
+        await depositInference(user.id, "generate-growth-path", v, {
+          patternType: "growth_path",
+          archetype,
+          targetPillar: weakestPillar,
+        });
+      }
+    } catch (e) { console.warn("[generate-growth-path] Deposit failed:", e instanceof Error ? e.message : e); }
 
     return jsonResponse({
       success: true,

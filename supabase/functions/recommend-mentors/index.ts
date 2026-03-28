@@ -231,9 +231,15 @@ serve(async (req) => {
     // ---- Intelligence Engine: try vector gap matching first (FREE) ----
     let vectorMentorMatches: any[] = [];
     if (userId) {
-      vectorMentorMatches = await matchMentorsByGap(userId, 10);
-      if (vectorMentorMatches.length > 0) {
-        console.log(`[intelligence] Vector gap-matched ${vectorMentorMatches.length} mentors for user ${userId.substring(0, 8)}`);
+      try {
+        if (typeof matchMentorsByGap === "function") {
+          vectorMentorMatches = await matchMentorsByGap(userId, 10);
+          if (vectorMentorMatches.length > 0) {
+            console.log(`[intelligence] Vector gap-matched ${vectorMentorMatches.length} mentors for user ${userId.substring(0, 8)}`);
+          }
+        }
+      } catch (e) {
+        console.warn("[recommend-mentors] Vector matching unavailable:", e instanceof Error ? e.message : e);
       }
     }
 
@@ -262,7 +268,7 @@ serve(async (req) => {
       // Fetch authenticated user data
       const [profileRes, cvAnalysisRes] = await Promise.all([
         supabase.from("profiles")
-          .select("ximatar_archetype, ximatar, ximatar_id, ximatar_level, assessment_scores, pillar_scores")
+          .select("ximatar_id, ximatar, ximatar_name, ximatar_level, pillar_scores")
           .eq("user_id", userId).single(),
         supabase.from("cv_identity_analysis")
           .select("tension_gaps, alignment_score, mentor_suggested_focus, mentor_key_question")
@@ -270,12 +276,12 @@ serve(async (req) => {
       ]);
 
       const profile = profileRes.data;
-      const resolvedXimatar = (profile?.ximatar_archetype || profile?.ximatar || profile?.ximatar_id) as string | null;
+      const resolvedXimatar = (profile?.ximatar || profile?.ximatar_id || profile?.ximatar_name) as string | null;
       if (resolvedXimatar) {
         userArchetype = resolvedXimatar;
         userLevel = (profile?.ximatar_level || 1) as number;
-        // Convert assessment_scores/pillar_scores to pillar_scores array
-        const scores = (profile?.assessment_scores || profile?.pillar_scores) as Record<string, number> | null;
+        // Convert pillar_scores to pillar_scores array
+        const scores = (profile?.pillar_scores) as Record<string, number> | null;
         if (scores) {
           userPillarScores = Object.entries(scores).map(([pillar, score]) => ({ pillar, score }));
         }
@@ -448,15 +454,19 @@ Return ONLY a JSON array of strings:
       });
 
       // Deposit into intelligence engine
-      await depositInference(userId, "recommend-mentors", {
-        top_mentor: topMentors[0].name,
-        top_score: topMentors[0].score,
-        matching_context: hasTension ? "tension" : "basic",
-        user_archetype: userArchetype,
-      }, {
-        patternType: "mentor_matching",
-        archetype: userArchetype || undefined,
-      });
+      try {
+        if (typeof depositInference === "function") {
+          await depositInference(userId, "recommend-mentors", {
+            top_mentor: topMentors[0].name,
+            top_score: topMentors[0].score,
+            matching_context: hasTension ? "tension" : "basic",
+            user_archetype: userArchetype,
+          }, {
+            patternType: "mentor_matching",
+            archetype: userArchetype || undefined,
+          });
+        }
+      } catch (e) { console.warn("[recommend-mentors] Deposit failed:", e instanceof Error ? e.message : e); }
     }
 
     // ---- Build response ----

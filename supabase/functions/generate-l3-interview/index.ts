@@ -182,7 +182,7 @@ serve(async (req) => {
     // ---- GDPR check ----
     const { data: candidateProfile } = await supabase
       .from("profiles")
-      .select("user_id, ximatar_name, ximatar, ximatar_archetype, ximatar_id, ximatar_level, pillar_scores, assessment_scores, profiling_opt_out")
+      .select("user_id, ximatar_name, ximatar, ximatar_id, ximatar_level, pillar_scores, profiling_opt_out")
       .eq("id", candidate_profile_id)
       .single();
     if (!candidateProfile) return errorResponse(404, "NOT_FOUND", "Candidate not found");
@@ -253,9 +253,9 @@ serve(async (req) => {
     const businessProfile = businessProfileRes.data;
     const goalData = goalRes.data;
 
-    const archetype = (candidateProfile.ximatar_name || candidateProfile.ximatar || candidateProfile.ximatar_archetype || candidateProfile.ximatar_id || "unknown") as string;
+    const archetype = (candidateProfile.ximatar_name || candidateProfile.ximatar || candidateProfile.ximatar_id || "unknown") as string;
     const archetypeProfile = XIMATAR_PROFILES[archetype.toLowerCase()];
-    const scores = (candidateProfile.pillar_scores || candidateProfile.assessment_scores || {}) as Record<string, number>;
+    const scores = (candidateProfile.pillar_scores || {}) as Record<string, number>;
     const roleTitle = (goalData as Record<string, string> | null)?.role_title || challenge.title || "the role";
     const companyName = businessProfile?.company_name || "the company";
 
@@ -311,7 +311,7 @@ INTERVIEW DESIGN RULES:
 7. DO NOT ask about demographics, personal life, or anything that could introduce bias
 
 LANGUAGE: Generate all questions and viewing guides in ${locale}.
-${contextBlock}
+
 Return ONLY valid JSON:
 {
   "questions": [

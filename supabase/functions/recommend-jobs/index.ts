@@ -242,22 +242,29 @@ serve(async (req) => {
     console.log(JSON.stringify({ type: "recommend_jobs_start", correlation_id: correlationId, user_id: userId }));
 
     // ---- Intelligence Engine: try vector matching first (FREE) ----
-    const vectorMatches = await matchJobsByVector(userId, 15);
-    if (vectorMatches.length > 0) {
-      console.log(`[intelligence] Vector matched ${vectorMatches.length} jobs for user ${userId.substring(0, 8)}`);
+    let vectorMatches: any[] = [];
+    try {
+      if (typeof matchJobsByVector === "function") {
+        vectorMatches = await matchJobsByVector(userId, 15);
+        if (vectorMatches.length > 0) {
+          console.log(`[intelligence] Vector matched ${vectorMatches.length} jobs for user ${userId.substring(0, 8)}`);
+        }
+      }
+    } catch (e) {
+      console.warn("[recommend-jobs] Vector matching unavailable:", e instanceof Error ? e.message : e);
     }
 
     // ---- Fetch user data in parallel ----
     const [profileRes, credentialsRes, cvAnalysisRes, trajectoryRes] = await Promise.all([
-      supabase.from("profiles").select("*").eq("user_id", userId).single(),
+      supabase.from("profiles").select("user_id, ximatar_id, ximatar, ximatar_name, ximatar_level, pillar_scores").eq("user_id", userId).single(),
       supabase.from("cv_credentials").select("hard_skills, seniority_level, total_years_experience, industries_worked, career_trajectory, languages").eq("user_id", userId).maybeSingle(),
       supabase.from("cv_identity_analysis").select("cv_qualified_roles, archetype_aligned_roles, growth_bridge_roles").eq("user_id", userId).maybeSingle(),
       supabase.rpc("get_user_trajectory_90d", { p_user_id: userId }).maybeSingle(),
     ]);
 
     const profile = profileRes.data;
-    const resolvedXimatar = (profile?.ximatar || profile?.ximatar_archetype || profile?.ximatar_id) as string | null;
-    const resolvedPillars = (profile?.pillar_scores || profile?.assessment_scores) as Record<string, number> | null;
+    const resolvedXimatar = (profile?.ximatar || profile?.ximatar_id || profile?.ximatar_name) as string | null;
+    const resolvedPillars = (profile?.pillar_scores) as Record<string, number> | null;
 
     if (!resolvedXimatar || !resolvedPillars) {
       return jsonResponse({
@@ -450,24 +457,30 @@ Return ONLY a JSON array of strings, one per job:
     }
 
     // Update progressive AI context + deposit inference
-    await updateUserAiContext(userId, {
-      matching_preferences: {
-        industries: [...new Set(topMatches.map(m => m.companyName))].slice(0, 5),
-        roles_explored: topMatches.map(m => m.title).slice(0, 5),
-        last_matched_at: new Date().toISOString(),
-      },
-      matching_updated_at: new Date().toISOString(),
-    });
+    try {
+      await updateUserAiContext(userId, {
+        matching_preferences: {
+          industries: [...new Set(topMatches.map(m => m.companyName))].slice(0, 5),
+          roles_explored: topMatches.map(m => m.title).slice(0, 5),
+          last_matched_at: new Date().toISOString(),
+        },
+        matching_updated_at: new Date().toISOString(),
+      });
+    } catch (e) { console.warn("[recommend-jobs] Context update failed:", e instanceof Error ? e.message : e); }
 
     // Deposit into intelligence engine
-    await depositInference(userId, "recommend-jobs", {
-      matches: topMatches.slice(0, 5).map(m => ({ title: m.title, score: m.totalScore, fitType: m.fitType })),
-      user_archetype: userArchetype,
-      user_level: userLevel,
-    }, {
-      patternType: "job_matching",
-      archetype: userArchetype,
-    });
+    try {
+      if (typeof depositInference === "function") {
+        await depositInference(userId, "recommend-jobs", {
+          matches: topMatches.slice(0, 5).map(m => ({ title: m.title, score: m.totalScore, fitType: m.fitType })),
+          user_archetype: userArchetype,
+          user_level: userLevel,
+        }, {
+          patternType: "job_matching",
+          archetype: userArchetype,
+        });
+      }
+    } catch (e) { console.warn("[recommend-jobs] Deposit failed:", e instanceof Error ? e.message : e); }
 
     // ---- Build response ----
     const trajectoryDirection = userTrajectory
