@@ -107,7 +107,7 @@ serve(async (req) => {
     console.log(`Processing ${challenges.length} challenges`);
 
     // Calculate match scores for each challenge
-    const pillarScores = profile.assessment_scores as Record<string, number> || {};
+    const pillarScores = (profile.pillar_scores || {}) as Record<string, number>;
     
     // If no pillar scores, return all challenges with default scores
     if (!pillarScores || Object.keys(pillarScores).length === 0) {
