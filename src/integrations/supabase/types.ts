@@ -4108,11 +4108,13 @@ export type Database = {
         Row: {
           account_status: string
           archetype_history: Json | null
+          availability_date: string | null
           avatar: Json | null
           created_at: string
           creation_source: string | null
           cv_comments: Json | null
           cv_scores: Json | null
+          desired_locations: Json | null
           drive_level: string | null
           drive_score: number | null
           drive_updated_at: string | null
@@ -4123,6 +4125,7 @@ export type Database = {
           free_intro_session_used_at: string | null
           full_name: string | null
           id: string
+          industry_preferences: string[] | null
           last_name: string | null
           level_start_scores: Json | null
           level_started_at: string | null
@@ -4137,9 +4140,12 @@ export type Database = {
           pillars: Json | null
           preferred_lang: Database["public"]["Enums"]["lang_code"] | null
           profile_complete: boolean | null
+          profile_completed: boolean | null
+          profile_completed_at: string | null
           profiling_opt_out: boolean
           referral_code: string | null
           referred_by_code: string | null
+          salary_expectation: Json | null
           strongest_pillar: string | null
           suggested_new_archetype: string | null
           updated_at: string
@@ -4147,6 +4153,8 @@ export type Database = {
           verification_required_until: string
           weakest_pillar: string | null
           welcome_email_sent_at: string | null
+          willing_to_relocate: string | null
+          work_preference: string | null
           ximatar: Database["public"]["Enums"]["ximatar_type"] | null
           ximatar_assigned_at: string | null
           ximatar_growth_path: string | null
@@ -4159,11 +4167,13 @@ export type Database = {
         Insert: {
           account_status?: string
           archetype_history?: Json | null
+          availability_date?: string | null
           avatar?: Json | null
           created_at?: string
           creation_source?: string | null
           cv_comments?: Json | null
           cv_scores?: Json | null
+          desired_locations?: Json | null
           drive_level?: string | null
           drive_score?: number | null
           drive_updated_at?: string | null
@@ -4174,6 +4184,7 @@ export type Database = {
           free_intro_session_used_at?: string | null
           full_name?: string | null
           id?: string
+          industry_preferences?: string[] | null
           last_name?: string | null
           level_start_scores?: Json | null
           level_started_at?: string | null
@@ -4188,9 +4199,12 @@ export type Database = {
           pillars?: Json | null
           preferred_lang?: Database["public"]["Enums"]["lang_code"] | null
           profile_complete?: boolean | null
+          profile_completed?: boolean | null
+          profile_completed_at?: string | null
           profiling_opt_out?: boolean
           referral_code?: string | null
           referred_by_code?: string | null
+          salary_expectation?: Json | null
           strongest_pillar?: string | null
           suggested_new_archetype?: string | null
           updated_at?: string
@@ -4198,6 +4212,8 @@ export type Database = {
           verification_required_until?: string
           weakest_pillar?: string | null
           welcome_email_sent_at?: string | null
+          willing_to_relocate?: string | null
+          work_preference?: string | null
           ximatar?: Database["public"]["Enums"]["ximatar_type"] | null
           ximatar_assigned_at?: string | null
           ximatar_growth_path?: string | null
@@ -4210,11 +4226,13 @@ export type Database = {
         Update: {
           account_status?: string
           archetype_history?: Json | null
+          availability_date?: string | null
           avatar?: Json | null
           created_at?: string
           creation_source?: string | null
           cv_comments?: Json | null
           cv_scores?: Json | null
+          desired_locations?: Json | null
           drive_level?: string | null
           drive_score?: number | null
           drive_updated_at?: string | null
@@ -4225,6 +4243,7 @@ export type Database = {
           free_intro_session_used_at?: string | null
           full_name?: string | null
           id?: string
+          industry_preferences?: string[] | null
           last_name?: string | null
           level_start_scores?: Json | null
           level_started_at?: string | null
@@ -4239,9 +4258,12 @@ export type Database = {
           pillars?: Json | null
           preferred_lang?: Database["public"]["Enums"]["lang_code"] | null
           profile_complete?: boolean | null
+          profile_completed?: boolean | null
+          profile_completed_at?: string | null
           profiling_opt_out?: boolean
           referral_code?: string | null
           referred_by_code?: string | null
+          salary_expectation?: Json | null
           strongest_pillar?: string | null
           suggested_new_archetype?: string | null
           updated_at?: string
@@ -4249,6 +4271,8 @@ export type Database = {
           verification_required_until?: string
           weakest_pillar?: string | null
           welcome_email_sent_at?: string | null
+          willing_to_relocate?: string | null
+          work_preference?: string | null
           ximatar?: Database["public"]["Enums"]["ximatar_type"] | null
           ximatar_assigned_at?: string | null
           ximatar_growth_path?: string | null
