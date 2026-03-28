@@ -364,7 +364,7 @@ IMPORTANT SCORING RULES:
 CV PILLAR SCORING: 0-20=no evidence, 21-40=minimal, 41-60=moderate, 61-80=strong with examples, 81-100=exceptional.
 PHILOSOPHY: CVs capture credentials not identity. Tension = growth opportunity. Improvements help CV tell the true story.
 
-LANGUAGE: Write ALL narratives, recommendations, explanations, summaries, mentor_hook, and role names in ${langName}. Keep JSON field names in English.
+LANGUAGE: ${langInstruction}
 
 Return ONLY valid JSON with this exact structure (no markdown, no extra text):
 {
