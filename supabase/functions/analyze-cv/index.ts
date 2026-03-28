@@ -89,7 +89,7 @@ try {
 // Helper: Direct Claude API call (fallback if shared module unavailable)
 // =====================================================
 
-async function callClaudeDirectly(system: string, userMessage: string, model = "claude-sonnet-4-20250514", maxTokens = 8192): Promise<{ content: string; model: string; latencyMs: number; requestId: string }> {
+async function callClaudeDirectly(system: string, userMessage: string, model = "claude-sonnet-4-20250514", maxTokens = 6000): Promise<{ content: string; model: string; latencyMs: number; requestId: string }> {
   const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
   if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY not configured");
 
