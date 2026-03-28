@@ -76,11 +76,11 @@ serve(async (req) => {
     const trajectory = trajectoryResult.data;
     const completedTitles = completedResult.data?.map(p => p.resource_title) || [];
 
-    // Resolve fields from whichever column names exist
-    const assessmentScores = (profile.assessment_scores || profile.pillar_scores) as Record<string, number> | null;
-    const ximatarRaw = (profile.ximatar_archetype || profile.ximatar || profile.ximatar_id) as string | null;
+    // Resolve fields from actual column names
+    const assessmentScores = (profile.pillar_scores || null) as Record<string, number> | null;
+    const ximatarRaw = (profile.ximatar || profile.ximatar_id || profile.ximatar_name || null) as string | null;
     const ximatarLevel = (profile.ximatar_level || 1) as number;
-    const preferredLang = (profile.preferred_language || profile.language || locale) as string;
+    const preferredLang = (profile.preferred_lang || locale) as string;
 
     if (!assessmentScores) {
       return errorResponse(400, "ASSESSMENT_REQUIRED", "Please complete the XIMA assessment before generating a growth path.");
