@@ -186,7 +186,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         <button onClick={() => navigate('/messages')} className={navLinkClass(location.pathname === '/messages')}>
                           {t('nav.messages')}
                         </button>
-                        </button>
                         <button onClick={() => navigate('/development-plan')} className={navLinkClass(location.pathname.startsWith('/test') || location.pathname === '/development-plan')}>
                           {t('nav.tests')}
                         </button>
