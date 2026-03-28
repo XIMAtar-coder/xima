@@ -231,9 +231,15 @@ serve(async (req) => {
     // ---- Intelligence Engine: try vector gap matching first (FREE) ----
     let vectorMentorMatches: any[] = [];
     if (userId) {
-      vectorMentorMatches = await matchMentorsByGap(userId, 10);
-      if (vectorMentorMatches.length > 0) {
-        console.log(`[intelligence] Vector gap-matched ${vectorMentorMatches.length} mentors for user ${userId.substring(0, 8)}`);
+      try {
+        if (typeof matchMentorsByGap === "function") {
+          vectorMentorMatches = await matchMentorsByGap(userId, 10);
+          if (vectorMentorMatches.length > 0) {
+            console.log(`[intelligence] Vector gap-matched ${vectorMentorMatches.length} mentors for user ${userId.substring(0, 8)}`);
+          }
+        }
+      } catch (e) {
+        console.warn("[recommend-mentors] Vector matching unavailable:", e instanceof Error ? e.message : e);
       }
     }
 
