@@ -12,7 +12,7 @@ export const PersonalFeedView = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [category, setCategory] = useState<FeedCategory>('for_you');
-  const { feedItems, isLoading, markAsRead, trackEngagement, unreadCount, userArchetype } = usePersonalFeed(category);
+  const { feedItems, isLoading, markAsRead, trackEngagement, unreadCount, userArchetype, hoursSinceLastGrowth } = usePersonalFeed(category);
 
   const handleMarkRead = (id: string) => {
     markAsRead.mutate(id);
