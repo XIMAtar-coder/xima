@@ -431,6 +431,16 @@ serve(async (req) => {
 
         const archetypeProfile = XIMATAR_PROFILES[userArchetype];
 
+        // Build preference context for narrative
+        const prefParts: string[] = [];
+        if (userLocations && userLocations.length > 0) {
+          const locs = userLocations.map((l: any) => l.type === 'remote' ? 'Remote' : `${l.city || l.region || ''}, ${l.country || ''}`.replace(/, $/, '')).filter(Boolean).join('; ');
+          prefParts.push(`Desired locations: ${locs}`);
+        }
+        if (profile?.work_preference) prefParts.push(`Work mode: ${profile.work_preference}`);
+        if (profile?.industry_preferences && (profile.industry_preferences as string[]).length > 0) prefParts.push(`Industries: ${(profile.industry_preferences as string[]).join(', ')}`);
+        const prefBlock = prefParts.length > 0 ? `\nUSER PREFERENCES:\n${prefParts.join('\n')}` : '';
+
         // Load AI context for narrative enrichment
         const userContext = await loadUserAiContext(userId);
         const contextBlock = buildContextBlock(userContext);
