@@ -687,16 +687,27 @@ serve(async (req) => {
     console.log(`[analyze-cv] Raw AI response first 300 chars: ${aiResult.content.substring(0, 300)}`);
     console.log(`[analyze-cv] Raw AI response last 200 chars: ${aiResult.content.substring(Math.max(0, aiResult.content.length - 200))}`);
 
-    let jsonStr: string;
+    let jsonStr: string = "";
     try {
-      if (extractJsonFromAiContent) {
-        jsonStr = extractJsonFromAiContent(aiResult.content);
+      const raw = aiResult.content;
+      if (typeof raw !== "string") {
+        jsonStr = JSON.stringify(raw);
       } else {
-        jsonStr = extractJsonRobust(aiResult.content);
+        if (extractJsonFromAiContent) {
+          try {
+            const result = extractJsonFromAiContent(raw);
+            jsonStr = typeof result === "string" ? result : JSON.stringify(result);
+          } catch {
+            jsonStr = extractJsonRobust(raw);
+          }
+        } else {
+          jsonStr = extractJsonRobust(raw);
+        }
       }
-    } catch (extractErr) {
-      console.warn("[analyze-cv] JSON extraction failed, trying robust fallback:", extractErr);
-      jsonStr = extractJsonRobust(aiResult.content);
+      if (typeof jsonStr !== "string") jsonStr = String(jsonStr);
+    } catch (e) {
+      console.error("[analyze-cv] JSON extraction error:", e);
+      jsonStr = extractJsonRobust(String(aiResult.content));
     }
 
     console.log(`[analyze-cv] Extracted JSON length: ${jsonStr.length}`);
