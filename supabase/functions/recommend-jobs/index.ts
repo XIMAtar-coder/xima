@@ -457,24 +457,30 @@ Return ONLY a JSON array of strings, one per job:
     }
 
     // Update progressive AI context + deposit inference
-    await updateUserAiContext(userId, {
-      matching_preferences: {
-        industries: [...new Set(topMatches.map(m => m.companyName))].slice(0, 5),
-        roles_explored: topMatches.map(m => m.title).slice(0, 5),
-        last_matched_at: new Date().toISOString(),
-      },
-      matching_updated_at: new Date().toISOString(),
-    });
+    try {
+      await updateUserAiContext(userId, {
+        matching_preferences: {
+          industries: [...new Set(topMatches.map(m => m.companyName))].slice(0, 5),
+          roles_explored: topMatches.map(m => m.title).slice(0, 5),
+          last_matched_at: new Date().toISOString(),
+        },
+        matching_updated_at: new Date().toISOString(),
+      });
+    } catch (e) { console.warn("[recommend-jobs] Context update failed:", e instanceof Error ? e.message : e); }
 
     // Deposit into intelligence engine
-    await depositInference(userId, "recommend-jobs", {
-      matches: topMatches.slice(0, 5).map(m => ({ title: m.title, score: m.totalScore, fitType: m.fitType })),
-      user_archetype: userArchetype,
-      user_level: userLevel,
-    }, {
-      patternType: "job_matching",
-      archetype: userArchetype,
-    });
+    try {
+      if (typeof depositInference === "function") {
+        await depositInference(userId, "recommend-jobs", {
+          matches: topMatches.slice(0, 5).map(m => ({ title: m.title, score: m.totalScore, fitType: m.fitType })),
+          user_archetype: userArchetype,
+          user_level: userLevel,
+        }, {
+          patternType: "job_matching",
+          archetype: userArchetype,
+        });
+      }
+    } catch (e) { console.warn("[recommend-jobs] Deposit failed:", e instanceof Error ? e.message : e); }
 
     // ---- Build response ----
     const trajectoryDirection = userTrajectory
