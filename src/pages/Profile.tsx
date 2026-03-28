@@ -5,11 +5,12 @@ import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Loader2, User, Sparkles, ArrowRight } from 'lucide-react';
+import { Calendar, Loader2, User, Sparkles, ArrowRight, X } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { useProfileData } from '@/hooks/useProfileData';
 import { XimatarProfileCard } from '@/components/results/XimatarProfileCard';
 import { MentorSection } from '@/components/profile/MentorSection';
+import { ProfileCompletionModal } from '@/components/profile/ProfileCompletionModal';
 
 import { PillarRadarChart } from '@/components/profile/PillarRadarChart';
 import { XimatarHeroCard } from '@/components/profile/XimatarHeroCard';
