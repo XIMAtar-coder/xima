@@ -16,10 +16,14 @@ import { HiringGoalCard } from '@/components/business/HiringGoalCard';
 import { HiringGoalOverviewCard } from '@/components/business/HiringGoalOverviewCard';
 import { ActiveChallengesOverview } from '@/components/business/ActiveChallengesOverview';
 import { BusinessCommandCenter } from '@/components/business/BusinessCommandCenter';
+import { CompanyIdentityCard } from '@/components/business/CompanyIdentityCard';
+import { TeamIntelligenceCard } from '@/components/business/TeamIntelligenceCard';
 import { CompanyProfileCard } from '@/components/business/CompanyProfileCard';
 import { RecommendationDebugPanel } from '@/components/business/RecommendationDebugPanel';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useChallengeStatsMap } from '@/hooks/useChallengeResponsesData';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Info, ChevronDown } from 'lucide-react';
 
 const isDev = import.meta.env.DEV;
 
