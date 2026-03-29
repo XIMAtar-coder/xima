@@ -1092,9 +1092,12 @@ export type Database = {
         Row: {
           company_logo: string | null
           company_name: string
+          company_size: string | null
           created_at: string | null
           default_challenge_difficulty: number | null
           default_challenge_duration: number | null
+          growth_stage: string | null
+          hiring_approach: string | null
           hr_contact_email: string | null
           id: string
           manual_employees_count: number | null
@@ -1104,6 +1107,7 @@ export type Database = {
           manual_industry: string | null
           manual_revenue_range: string | null
           manual_website: string | null
+          metadata: Json | null
           snapshot_employees_count: number | null
           snapshot_founded_year: number | null
           snapshot_hq_city: string | null
@@ -1112,6 +1116,7 @@ export type Database = {
           snapshot_last_enriched_at: string | null
           snapshot_manual_override: boolean | null
           snapshot_revenue_range: string | null
+          team_culture: string | null
           updated_at: string | null
           user_id: string
           website: string | null
@@ -1119,9 +1124,12 @@ export type Database = {
         Insert: {
           company_logo?: string | null
           company_name: string
+          company_size?: string | null
           created_at?: string | null
           default_challenge_difficulty?: number | null
           default_challenge_duration?: number | null
+          growth_stage?: string | null
+          hiring_approach?: string | null
           hr_contact_email?: string | null
           id?: string
           manual_employees_count?: number | null
@@ -1131,6 +1139,7 @@ export type Database = {
           manual_industry?: string | null
           manual_revenue_range?: string | null
           manual_website?: string | null
+          metadata?: Json | null
           snapshot_employees_count?: number | null
           snapshot_founded_year?: number | null
           snapshot_hq_city?: string | null
@@ -1139,6 +1148,7 @@ export type Database = {
           snapshot_last_enriched_at?: string | null
           snapshot_manual_override?: boolean | null
           snapshot_revenue_range?: string | null
+          team_culture?: string | null
           updated_at?: string | null
           user_id: string
           website?: string | null
@@ -1146,9 +1156,12 @@ export type Database = {
         Update: {
           company_logo?: string | null
           company_name?: string
+          company_size?: string | null
           created_at?: string | null
           default_challenge_difficulty?: number | null
           default_challenge_duration?: number | null
+          growth_stage?: string | null
+          hiring_approach?: string | null
           hr_contact_email?: string | null
           id?: string
           manual_employees_count?: number | null
@@ -1158,6 +1171,7 @@ export type Database = {
           manual_industry?: string | null
           manual_revenue_range?: string | null
           manual_website?: string | null
+          metadata?: Json | null
           snapshot_employees_count?: number | null
           snapshot_founded_year?: number | null
           snapshot_hq_city?: string | null
@@ -1166,6 +1180,7 @@ export type Database = {
           snapshot_last_enriched_at?: string | null
           snapshot_manual_override?: boolean | null
           snapshot_revenue_range?: string | null
+          team_culture?: string | null
           updated_at?: string | null
           user_id?: string
           website?: string | null
@@ -5392,6 +5407,22 @@ export type Database = {
       record_business_interest: {
         Args: { p_feed_item_id: string; p_hiring_goal_id?: string }
         Returns: string
+      }
+      register_business_account: {
+        Args: {
+          p_company_name: string
+          p_company_size?: string
+          p_growth_stage?: string
+          p_headquarters_city?: string
+          p_headquarters_country?: string
+          p_hiring_approach?: string
+          p_industry?: string
+          p_recruiter_email?: string
+          p_team_culture?: string
+          p_user_id: string
+          p_website_url?: string
+        }
+        Returns: Json
       }
       request_free_intro_session: { Args: { p_slot_id: string }; Returns: Json }
       request_mentor_session: { Args: { p_slot_id: string }; Returns: Json }
