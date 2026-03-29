@@ -473,7 +473,15 @@ const BusinessDashboard = () => {
   return (
     <BusinessLayout>
       <div className="space-y-8">
-        {/* Command Center - TOP OF DASHBOARD (includes XIMA Overview Banner) */}
+        {/* Section 1: Company Identity Card */}
+        <CompanyIdentityCard
+          businessProfile={businessProfile}
+          companyProfile={companyProfile}
+          profileStatus={profileLoading ? 'loading' : (profileCompleteness.percentage === 100 ? 'ready' : 'incomplete')}
+          onGenerate={handleGenerateProfile}
+        />
+
+        {/* Section 2: Hiring Pipeline (Command Center) */}
         <BusinessCommandCenter
           companyName={businessProfile?.company_name || null}
           profileStatus={profileLoading ? 'loading' : (profileCompleteness.percentage === 100 ? 'ready' : 'incomplete')}
@@ -492,7 +500,14 @@ const BusinessDashboard = () => {
           businessId={user?.id}
         />
 
-        {/* Active Challenges Overview - Operational Activity Priority */}
+        {/* Section 3: Team Intelligence */}
+        <TeamIntelligenceCard
+          businessId={user?.id}
+          teamCulture={businessProfile?.team_culture || (businessProfile?.metadata as any)?.team_culture}
+          recommendedXimatars={companyProfile?.recommended_ximatars || []}
+        />
+
+        {/* Active Challenges Overview */}
         <ActiveChallengesOverview 
           challenges={activeChallengesWithStats} 
           loading={activeChallengesLoading || statsLoading} 
@@ -500,15 +515,15 @@ const BusinessDashboard = () => {
 
         {/* DEV Debug Panel for Challenge Stats */}
         {isDev && activeChallengesBase.length > 0 && (
-          <Card className="border-dashed border-yellow-500/50 bg-yellow-500/5">
+          <Card className="border-dashed border-amber-500/50 bg-amber-500/5">
             <CardContent className="py-3">
-              <div className="flex items-center gap-2 text-xs font-mono text-yellow-600 flex-wrap">
+              <div className="flex items-center gap-2 text-xs font-mono text-amber-600 flex-wrap">
                 <Bug className="h-3 w-3" />
                 <span>DEV Challenge Stats:</span>
                 {activeChallengesBase.slice(0, 3).map(c => {
                   const s = statsDebug[c.id];
                   return (
-                    <span key={c.id} className="bg-yellow-500/10 px-1 rounded">
+                    <span key={c.id} className="bg-amber-500/10 px-1 rounded">
                       {c.title.slice(0, 15)}... inv={s?.invCount || 0} sub={s?.subCount || 0}
                     </span>
                   );
@@ -518,7 +533,7 @@ const BusinessDashboard = () => {
           </Card>
         )}
 
-        {/* Hiring Goal Card - Show for first-time (none) or draft state */}
+        {/* Hiring Goal Card */}
         {!hiringGoalLoading && hiringGoalStatus !== 'completed' && (
           <HiringGoalCard 
             key={hiringGoalDraftId || 'new'}
@@ -530,7 +545,6 @@ const BusinessDashboard = () => {
           />
         )}
 
-        {/* Next Step Panel - Show after hiring goal is completed */}
         {!hiringGoalLoading && hiringGoalStatus === 'completed' && (
           <Card className="border-green-500/30 bg-gradient-to-br from-green-500/5 to-background">
             <CardContent className="p-6">
@@ -556,7 +570,6 @@ const BusinessDashboard = () => {
                     <Button 
                       variant="outline" 
                       onClick={async () => {
-                        console.log('[Dashboard] Edit Goal clicked, updating status to draft...');
                         if (hiringGoalDraftId) {
                           await supabase
                             .from('hiring_goal_drafts')
@@ -571,23 +584,11 @@ const BusinessDashboard = () => {
                   </div>
                 </div>
               </div>
-              {process.env.NODE_ENV === 'development' && (
-                <div className="mt-4 pt-4 border-t border-border/50 text-xs text-muted-foreground font-mono">
-                  [DEV] draftId: {hiringGoalDraftId || 'null'} | status: {hiringGoalStatus}
-                </div>
-              )}
             </CardContent>
           </Card>
         )}
 
-        {/* Dev logging for draft/none states */}
-        {process.env.NODE_ENV === 'development' && !hiringGoalLoading && hiringGoalStatus !== 'completed' && (
-          <div className="text-xs text-muted-foreground font-mono bg-muted/50 p-2 rounded">
-            [DEV] Hiring Goal: draftId={hiringGoalDraftId || 'null'} | status={hiringGoalStatus}
-          </div>
-        )}
-
-        {/* Hiring Goals Portfolio - ONLY ACTIVE GOALS */}
+        {/* Hiring Goals Portfolio */}
         {(() => {
           const activeGoals = hiringGoals.filter(goal => goal.status === 'active');
           const hasActiveChallenges = activeChallengesWithStats.length > 0;
@@ -653,20 +654,35 @@ const BusinessDashboard = () => {
           );
         })()}
 
-        {/* XIMAtar Recommendation Debug Panel - Only visible with ?debug=1 or in DEV */}
+        {/* Recommendation Debug Panel */}
         <RecommendationDebugPanel 
           businessId={user?.id}
           hiringGoalId={hiringGoalDraftId}
         />
 
-        {/* Company Profile Card - ORIGINAL UI RESTORED */}
-        <CompanyProfileCard
-          profile={companyProfile}
-          loading={profileLoading}
-          onGenerate={handleGenerateProfile}
-        />
+        {/* Section 6: How XIMA Works — collapsible reference */}
+        <Collapsible>
+          <Card className="border-border/50">
+            <CollapsibleTrigger className="w-full p-4 flex items-center justify-between cursor-pointer hover:bg-secondary/20 rounded-xl transition-colors">
+              <div className="flex items-center gap-2">
+                <Info className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm font-medium text-foreground">How XIMA's 3-Level Pipeline Works</span>
+              </div>
+              <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform" />
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="px-4 pb-4">
+                <CompanyProfileCard
+                  profile={companyProfile}
+                  loading={profileLoading}
+                  onGenerate={handleGenerateProfile}
+                />
+              </div>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
 
-        {/* Candidate Engagement */}
+        {/* Section 5: Candidate Engagement */}
         <div>
           <h2 className="text-2xl font-bold text-foreground mb-4">{t('businessPortal.candidate_engagement_title')}</h2>
           <CandidateEngagement />
