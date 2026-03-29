@@ -28,6 +28,12 @@ export interface BusinessProfile {
   manual_revenue_range: string | null;
   manual_founded_year: number | null;
   manual_website: string | null;
+  // Registration fields
+  company_size: string | null;
+  hiring_approach: string | null;
+  team_culture: string | null;
+  growth_stage: string | null;
+  metadata: Record<string, any> | null;
   created_at: string | null;
   updated_at: string | null;
 }
