@@ -238,6 +238,16 @@ const BusinessDashboard = () => {
           attentionItems={attentionItems}
           loading={loading || statsLoading}
           hiringGoalId={hiringGoalDraftId}
+          onImportJob={() => setShowImportModal(true)}
+        />
+
+        {/* Import Job Modal */}
+        <ImportJobModal
+          open={showImportModal}
+          onClose={() => setShowImportModal(false)}
+          onImported={() => { navigate('/business/jobs'); }}
+          businessId={user?.id || ''}
+          companyName={businessProfile?.company_name || ''}
         />
 
         {/* Section 3: Team Intelligence + Candidate Engagement side by side */}
