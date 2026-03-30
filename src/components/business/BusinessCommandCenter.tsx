@@ -14,7 +14,8 @@ import {
   AlertCircle,
   CheckCircle,
   Clock,
-  TrendingUp
+  TrendingUp,
+  Download
 } from 'lucide-react';
 
 interface CommandCenterProps {
@@ -32,6 +33,7 @@ interface CommandCenterProps {
   }[];
   loading?: boolean;
   hiringGoalId?: string | null;
+  onImportJob?: () => void;
 }
 
 export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
@@ -39,6 +41,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
   attentionItems,
   loading = false,
   hiringGoalId,
+  onImportJob,
 }) => {
   const { t } = useTranslation();
 
@@ -83,10 +86,18 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
 
   const actionButtons = [
     {
+      key: 'import_job',
+      labelKey: 'import_job.button',
+      icon: Download,
+      primary: true,
+      link: '',
+      onClick: onImportJob,
+    },
+    {
       key: 'create_challenge',
       labelKey: 'businessPortal.quick_action_create_challenge',
       icon: Plus,
-      primary: true,
+      primary: false,
       link: '/business/challenges/new'
     },
     {
@@ -117,14 +128,24 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
         </CardHeader>
         <CardContent className="pt-0">
           <div className="flex flex-wrap gap-3">
-            {actionButtons.map((action) => (
-              <Link key={action.key} to={action.link}>
-                <Button variant={action.primary ? 'default' : 'outline'} className="gap-2">
-                  <action.icon className="h-4 w-4" />
-                  {t(action.labelKey)}
-                </Button>
-              </Link>
-            ))}
+            {actionButtons.map((action) => {
+              if (action.onClick) {
+                return (
+                  <Button key={action.key} variant={action.primary ? 'default' : 'outline'} className="gap-2" onClick={action.onClick}>
+                    <action.icon className="h-4 w-4" />
+                    {t(action.labelKey)}
+                  </Button>
+                );
+              }
+              return (
+                <Link key={action.key} to={action.link}>
+                  <Button variant={action.primary ? 'default' : 'outline'} className="gap-2">
+                    <action.icon className="h-4 w-4" />
+                    {t(action.labelKey)}
+                  </Button>
+                </Link>
+              );
+            })}
           </div>
         </CardContent>
       </Card>

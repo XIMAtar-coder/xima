@@ -5070,5 +5070,38 @@
       "balanced": "Equilibrato",
       "balanced_desc": "Competenze, cultura e potenziale in egual misura"
     }
+  },
+  "import_job": {
+    "title": "Importa una Posizione",
+    "subtitle": "Porta i tuoi annunci di lavoro esistenti in XIMA e collegali alla pipeline di sfide comportamentali.",
+    "tab_url": "Incolla URL",
+    "tab_file": "Carica File",
+    "tab_search": "Ricerca AI",
+    "url_label": "URL dell'annuncio",
+    "url_hint": "Incolla un link da LinkedIn, Indeed, Glassdoor o dalla pagina carriere della tua azienda",
+    "url_placeholder": "https://www.linkedin.com/jobs/view/...",
+    "extract_button": "Estrai Dettagli",
+    "extracting": "Estrazione in corso...",
+    "file_drop": "Trascina qui un file con la descrizione del lavoro",
+    "file_hint": "PDF o DOCX, massimo 10MB",
+    "search_title": "Ricerca AI Automatica",
+    "search_hint": "L'AI di XIMA cercherà su LinkedIn le posizioni aperte della tua azienda.",
+    "search_button": "Cerca posizioni su LinkedIn",
+    "searching": "Ricerca su LinkedIn in corso...",
+    "found_positions": "Trovate {{count}} posizioni",
+    "review_title": "Dettagli estratti con successo",
+    "review_hint": "Rivedi e modifica prima di importare",
+    "confirm_import": "Importa in XIMA e Crea Pipeline Sfide",
+    "importing": "Importazione...",
+    "success": "Posizione importata con successo!",
+    "back": "Indietro",
+    "import_btn": "Importa",
+    "field_title": "Titolo Posizione",
+    "field_location": "Località",
+    "field_type": "Tipo di Impiego",
+    "field_description": "Descrizione",
+    "field_skills": "Competenze Richieste",
+    "field_salary": "Range Salariale",
+    "button": "Importa Posizione"
   }
 }

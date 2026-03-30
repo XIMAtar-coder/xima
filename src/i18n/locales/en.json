@@ -5348,5 +5348,38 @@
       "balanced": "Balanced",
       "balanced_desc": "Skills, culture, and potential equally"
     }
+  },
+  "import_job": {
+    "title": "Import a Job Position",
+    "subtitle": "Bring your existing job posts into XIMA and connect them to the behavioral challenge pipeline.",
+    "tab_url": "Paste URL",
+    "tab_file": "Upload File",
+    "tab_search": "AI Search",
+    "url_label": "Job post URL",
+    "url_hint": "Paste a link from LinkedIn, Indeed, Glassdoor, or your company careers page",
+    "url_placeholder": "https://www.linkedin.com/jobs/view/...",
+    "extract_button": "Extract Job Details",
+    "extracting": "Extracting job details...",
+    "file_drop": "Drop a job description file here",
+    "file_hint": "PDF or DOCX, max 10MB",
+    "search_title": "AI-Powered Job Search",
+    "search_hint": "XIMA's AI will search LinkedIn for your company's open positions.",
+    "search_button": "Search for jobs on LinkedIn",
+    "searching": "Searching LinkedIn...",
+    "found_positions": "Found {{count}} positions",
+    "review_title": "Job details extracted successfully",
+    "review_hint": "Review and edit before importing",
+    "confirm_import": "Import to XIMA & Create Challenge Pipeline",
+    "importing": "Importing...",
+    "success": "Job imported successfully!",
+    "back": "Back",
+    "import_btn": "Import",
+    "field_title": "Job Title",
+    "field_location": "Location",
+    "field_type": "Employment Type",
+    "field_description": "Description",
+    "field_skills": "Required Skills",
+    "field_salary": "Salary Range",
+    "button": "Import Job"
   }
 }
