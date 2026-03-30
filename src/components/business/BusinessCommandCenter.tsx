@@ -128,14 +128,24 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
         </CardHeader>
         <CardContent className="pt-0">
           <div className="flex flex-wrap gap-3">
-            {actionButtons.map((action) => (
-              <Link key={action.key} to={action.link}>
-                <Button variant={action.primary ? 'default' : 'outline'} className="gap-2">
-                  <action.icon className="h-4 w-4" />
-                  {t(action.labelKey)}
-                </Button>
-              </Link>
-            ))}
+            {actionButtons.map((action) => {
+              if (action.onClick) {
+                return (
+                  <Button key={action.key} variant={action.primary ? 'default' : 'outline'} className="gap-2" onClick={action.onClick}>
+                    <action.icon className="h-4 w-4" />
+                    {t(action.labelKey)}
+                  </Button>
+                );
+              }
+              return (
+                <Link key={action.key} to={action.link}>
+                  <Button variant={action.primary ? 'default' : 'outline'} className="gap-2">
+                    <action.icon className="h-4 w-4" />
+                    {t(action.labelKey)}
+                  </Button>
+                </Link>
+              );
+            })}
           </div>
         </CardContent>
       </Card>
