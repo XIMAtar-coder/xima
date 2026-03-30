@@ -14,7 +14,8 @@ import {
   AlertCircle,
   CheckCircle,
   Clock,
-  TrendingUp
+  TrendingUp,
+  Download
 } from 'lucide-react';
 
 interface CommandCenterProps {
