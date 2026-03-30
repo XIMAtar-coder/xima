@@ -59,6 +59,7 @@ const BusinessDashboard = () => {
   const [hiringGoalLoading, setHiringGoalLoading] = useState(true);
   const [activeChallengesBase, setActiveChallengesBase] = useState<{id: string; title: string; hiring_goal_id: string | null; hiring_goal_title: string | null; created_at: string; start_at: string | null; end_at: string | null; status: string}[]>([]);
   const [activeChallengesLoading, setActiveChallengesLoading] = useState(true);
+  const [showImportModal, setShowImportModal] = useState(false);
   
   const { goals: hiringGoals, loading: hiringGoalsLoading, updateGoalStatus, createGoal, refetch: refetchGoals } = useHiringGoals();
 
