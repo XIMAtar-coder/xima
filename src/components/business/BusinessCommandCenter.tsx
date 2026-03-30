@@ -86,10 +86,18 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
 
   const actionButtons = [
     {
+      key: 'import_job',
+      labelKey: 'import_job.button',
+      icon: Download,
+      primary: true,
+      link: '',
+      onClick: onImportJob,
+    },
+    {
       key: 'create_challenge',
       labelKey: 'businessPortal.quick_action_create_challenge',
       icon: Plus,
-      primary: true,
+      primary: false,
       link: '/business/challenges/new'
     },
     {
