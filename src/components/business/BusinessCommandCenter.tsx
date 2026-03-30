@@ -41,6 +41,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
   attentionItems,
   loading = false,
   hiringGoalId,
+  onImportJob,
 }) => {
   const { t } = useTranslation();
 
