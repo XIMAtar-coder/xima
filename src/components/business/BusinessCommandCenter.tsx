@@ -1,14 +1,11 @@
 import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { BusinessOverviewBanner } from './BusinessOverviewBanner';
-import { BusinessJobPostsOverviewBanner } from './BusinessJobPostsOverviewBanner';
 import { 
-  Briefcase, 
   Target, 
   Users, 
   MessageSquare, 
@@ -21,9 +18,6 @@ import {
 } from 'lucide-react';
 
 interface CommandCenterProps {
-  companyName: string | null;
-  profileStatus: 'ready' | 'incomplete' | 'loading';
-  lastGenerated: string | null;
   stats: {
     activeChallenges: number;
     pendingReviews: number;
@@ -38,24 +32,14 @@ interface CommandCenterProps {
   }[];
   loading?: boolean;
   hiringGoalId?: string | null;
-  companyProfile?: any;
-  businessProfile?: any;
-  businessId?: string;
 }
 
 export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
-  companyName,
-  profileStatus,
-  lastGenerated,
   stats,
   attentionItems,
   loading = false,
   hiringGoalId,
-  companyProfile,
-  businessProfile,
-  businessId
 }) => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const kpiCards = [
@@ -122,47 +106,8 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-              {companyName || t('business.command_center.welcome')}
-            </h1>
-            <Badge 
-              variant={profileStatus === 'ready' ? 'default' : 'secondary'}
-              className={profileStatus === 'ready' 
-                ? 'bg-green-500/20 text-green-600 border-green-500/30' 
-                : 'bg-amber-500/20 text-amber-600 border-amber-500/30'
-              }
-            >
-              {profileStatus === 'loading' 
-                ? t('common.loading')
-                : t(`businessPortal.dashboard_profile_ready`)}
-            </Badge>
-          </div>
-          <p className="text-muted-foreground text-sm">
-            {t('businessPortal.dashboard_subtitle')}
-          </p>
-          {lastGenerated && profileStatus === 'ready' && (
-            <p className="text-xs text-muted-foreground mt-1">
-              {t('businessPortal.dashboard_last_updated', { date: new Date(lastGenerated).toLocaleDateString() })}
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* XIMA Overview Banner - RIGHT AFTER HEADER */}
-      <BusinessOverviewBanner 
-        companyProfile={companyProfile}
-        businessProfile={businessProfile}
-      />
-
-      {/* Job Posts Overview Banner - BEFORE Quick Actions */}
-      <BusinessJobPostsOverviewBanner businessId={businessId} />
-
-      {/* Next Actions Row */}
+    <div className="space-y-4">
+      {/* Quick Actions */}
       <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-medium flex items-center gap-2">
@@ -174,10 +119,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
           <div className="flex flex-wrap gap-3">
             {actionButtons.map((action) => (
               <Link key={action.key} to={action.link}>
-                <Button 
-                  variant={action.primary ? 'default' : 'outline'}
-                  className={action.primary ? 'gap-2' : 'gap-2'}
-                >
+                <Button variant={action.primary ? 'default' : 'outline'} className="gap-2">
                   <action.icon className="h-4 w-4" />
                   {t(action.labelKey)}
                 </Button>
@@ -206,12 +148,8 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
                       </div>
                       <ChevronRight className="h-4 w-4 text-muted-foreground" />
                     </div>
-                    <p className="text-2xl font-bold text-foreground">
-                      {kpi.value}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {t(kpi.labelKey)}
-                    </p>
+                    <p className="text-2xl font-bold text-foreground">{kpi.value}</p>
+                    <p className="text-xs text-muted-foreground">{t(kpi.labelKey)}</p>
                   </>
                 )}
               </CardContent>
@@ -220,7 +158,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
         ))}
       </div>
 
-      {/* Attention Needed Section */}
+      {/* Attention Needed */}
       {attentionItems.length > 0 && (
         <Card className="border-amber-500/30 bg-amber-500/5">
           <CardHeader className="pb-3">
@@ -243,9 +181,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
                     {item.type === 'followup' && <Users className="h-4 w-4 text-blue-500" />}
                     <span className="text-sm text-foreground">{item.label}</span>
                   </div>
-                  <Badge variant="secondary" className="text-xs">
-                    {item.count}
-                  </Badge>
+                  <Badge variant="secondary" className="text-xs">{item.count}</Badge>
                 </Link>
               ))}
             </div>
