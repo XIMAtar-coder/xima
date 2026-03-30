@@ -1,0 +1,4 @@
+ALTER TABLE job_posts ADD COLUMN IF NOT EXISTS import_source TEXT;
+ALTER TABLE job_posts ADD COLUMN IF NOT EXISTS import_source_url TEXT;
+ALTER TABLE job_posts ADD COLUMN IF NOT EXISTS import_raw_data JSONB;
+ALTER TABLE job_posts ADD COLUMN IF NOT EXISTS imported_at TIMESTAMPTZ;

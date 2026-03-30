@@ -3107,6 +3107,10 @@ export type Database = {
           description: string | null
           employment_type: string | null
           id: string
+          import_raw_data: Json | null
+          import_source: string | null
+          import_source_url: string | null
+          imported_at: string | null
           locale: string | null
           location: string | null
           requirement_vector: string | null
@@ -3130,6 +3134,10 @@ export type Database = {
           description?: string | null
           employment_type?: string | null
           id?: string
+          import_raw_data?: Json | null
+          import_source?: string | null
+          import_source_url?: string | null
+          imported_at?: string | null
           locale?: string | null
           location?: string | null
           requirement_vector?: string | null
@@ -3153,6 +3161,10 @@ export type Database = {
           description?: string | null
           employment_type?: string | null
           id?: string
+          import_raw_data?: Json | null
+          import_source?: string | null
+          import_source_url?: string | null
+          imported_at?: string | null
           locale?: string | null
           location?: string | null
           requirement_vector?: string | null
