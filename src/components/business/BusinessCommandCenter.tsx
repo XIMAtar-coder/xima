@@ -33,6 +33,7 @@ interface CommandCenterProps {
   }[];
   loading?: boolean;
   hiringGoalId?: string | null;
+  onImportJob?: () => void;
 }
 
 export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
