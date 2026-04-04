@@ -228,6 +228,9 @@ const BusinessDashboard = () => {
           onGenerate={handleGenerateProfile}
         />
 
+        {/* Discovered positions from website scan */}
+        <DiscoveredPositionsBanner businessId={user?.id} />
+
         {/* Section 2: Hiring Pipeline */}
         <BusinessCommandCenter
           stats={{
