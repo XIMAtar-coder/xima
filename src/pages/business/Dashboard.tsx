@@ -376,8 +376,8 @@ const BusinessDashboard = () => {
           );
         })()}
 
-        {/* Recommendation Debug Panel */}
-        <RecommendationDebugPanel businessId={user?.id} hiringGoalId={hiringGoalDraftId} />
+        {/* Recommendation Debug Panel — DEV only */}
+        {isDev && <RecommendationDebugPanel businessId={user?.id} hiringGoalId={hiringGoalDraftId} />}
 
         {/* How XIMA Works — collapsible reference */}
         <Collapsible>
