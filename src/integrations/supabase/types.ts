@@ -1791,13 +1791,19 @@ export type Database = {
       company_profiles: {
         Row: {
           communication_style: string | null
+          company_culture: string | null
           company_id: string
           created_at: string | null
+          culture_insights: Json | null
           id: string
           ideal_traits: string[] | null
           ideal_ximatar_profile_ids: string[] | null
           ideal_ximatar_profile_reasoning: string | null
+          industry_focus: string | null
+          last_scan_at: string | null
+          open_positions_found: Json | null
           operating_style: string | null
+          pages_scanned: Json | null
           pillar_vector: Json
           pillar_vector_col: string | null
           recommended_ximatars: string[] | null
@@ -1809,13 +1815,19 @@ export type Database = {
         }
         Insert: {
           communication_style?: string | null
+          company_culture?: string | null
           company_id: string
           created_at?: string | null
+          culture_insights?: Json | null
           id?: string
           ideal_traits?: string[] | null
           ideal_ximatar_profile_ids?: string[] | null
           ideal_ximatar_profile_reasoning?: string | null
+          industry_focus?: string | null
+          last_scan_at?: string | null
+          open_positions_found?: Json | null
           operating_style?: string | null
+          pages_scanned?: Json | null
           pillar_vector?: Json
           pillar_vector_col?: string | null
           recommended_ximatars?: string[] | null
@@ -1827,13 +1839,19 @@ export type Database = {
         }
         Update: {
           communication_style?: string | null
+          company_culture?: string | null
           company_id?: string
           created_at?: string | null
+          culture_insights?: Json | null
           id?: string
           ideal_traits?: string[] | null
           ideal_ximatar_profile_ids?: string[] | null
           ideal_ximatar_profile_reasoning?: string | null
+          industry_focus?: string | null
+          last_scan_at?: string | null
+          open_positions_found?: Json | null
           operating_style?: string | null
+          pages_scanned?: Json | null
           pillar_vector?: Json
           pillar_vector_col?: string | null
           recommended_ximatars?: string[] | null
@@ -3095,6 +3113,59 @@ export type Database = {
           usage_count?: number | null
         }
         Relationships: []
+      }
+      job_post_drafts: {
+        Row: {
+          business_id: string
+          created_at: string | null
+          department: string | null
+          description: string | null
+          employment_type: string | null
+          id: string
+          import_source: string | null
+          imported_job_id: string | null
+          location: string | null
+          role_title: string
+          source_url: string | null
+          status: string | null
+        }
+        Insert: {
+          business_id: string
+          created_at?: string | null
+          department?: string | null
+          description?: string | null
+          employment_type?: string | null
+          id?: string
+          import_source?: string | null
+          imported_job_id?: string | null
+          location?: string | null
+          role_title: string
+          source_url?: string | null
+          status?: string | null
+        }
+        Update: {
+          business_id?: string
+          created_at?: string | null
+          department?: string | null
+          description?: string | null
+          employment_type?: string | null
+          id?: string
+          import_source?: string | null
+          imported_job_id?: string | null
+          location?: string | null
+          role_title?: string
+          source_url?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_post_drafts_imported_job_id_fkey"
+            columns: ["imported_job_id"]
+            isOneToOne: false
+            referencedRelation: "job_posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       job_posts: {
         Row: {

@@ -5380,6 +5380,11 @@
     "field_description": "Description",
     "field_skills": "Required Skills",
     "field_salary": "Salary Range",
-    "button": "Import Job"
+    "button": "Import Job",
+    "positions_discovered": "{{count}} open positions discovered on your website",
+    "positions_discovered_desc": "XIMA found these positions on your careers page. Import them to start building your challenge pipeline.",
+    "import_button": "Import",
+    "draft_imported": "\"{{title}}\" imported successfully!",
+    "draft_import_failed": "Failed to import position"
   }
 }
