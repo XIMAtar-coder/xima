@@ -5102,6 +5102,11 @@
     "field_description": "Descrizione",
     "field_skills": "Competenze Richieste",
     "field_salary": "Range Salariale",
-    "button": "Importa Posizione"
+    "button": "Importa Posizione",
+    "positions_discovered": "{{count}} posizioni aperte trovate sul tuo sito web",
+    "positions_discovered_desc": "XIMA ha trovato queste posizioni sulla tua pagina carriere. Importale per iniziare a costruire la pipeline di sfide.",
+    "import_button": "Importa",
+    "draft_imported": "\"{{title}}\" importata con successo!",
+    "draft_import_failed": "Impossibile importare la posizione"
   }
 }
