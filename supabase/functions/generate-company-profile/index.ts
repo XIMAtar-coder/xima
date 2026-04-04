@@ -420,13 +420,28 @@ Deno.serve(async (req) => {
       promptTemplateVersion: "3.0",
     });
 
-    const cleanedJson = extractJsonFromAiContent(result.content);
     let parsed: unknown;
     try {
-      parsed = JSON.parse(cleanedJson);
-    } catch {
-      console.error(JSON.stringify({ type: "json_parse_error", correlation_id: correlationId }));
-      return errorResponse(502, "AI_PARSE_FAILED", "Failed to parse AI response");
+      const extracted = extractJsonFromAiContent(result.content);
+      if (extracted && typeof extracted === "object") {
+        parsed = extracted;
+      } else if (typeof extracted === "string") {
+        parsed = JSON.parse(extracted);
+      } else {
+        // Manual extraction fallback
+        let raw = result.content.trim();
+        const fenceMatch = raw.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
+        if (fenceMatch) raw = fenceMatch[1].trim();
+        if (!raw.startsWith("{")) {
+          const first = raw.indexOf("{");
+          const last = raw.lastIndexOf("}");
+          if (first !== -1 && last > first) raw = raw.substring(first, last + 1);
+        }
+        parsed = JSON.parse(raw);
+      }
+    } catch (parseErr) {
+      console.error(JSON.stringify({ type: "json_parse_error", correlation_id: correlationId, preview: result.content.substring(0, 300) }));
+      return errorResponse(502, "AI_PARSE_FAILED", "Failed to parse AI response. Please try regenerating.");
     }
 
     const validated = validateProfileResponse(parsed);
