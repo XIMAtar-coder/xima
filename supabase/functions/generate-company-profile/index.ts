@@ -367,6 +367,34 @@ Deno.serve(async (req) => {
 
     console.log(JSON.stringify({ type: "company_profile_start", correlation_id: correlationId, company_name, website }));
 
+    // ===== Fetch registration data for richer context =====
+    let registrationContext = "";
+    try {
+      const { data: bizProfile } = await supabase
+        .from("business_profiles")
+        .select("company_size, team_culture, hiring_approach, growth_stage, snapshot_hq_city, snapshot_hq_country, snapshot_industry, manual_industry, manual_hq_city, manual_hq_country")
+        .eq("user_id", company_id)
+        .maybeSingle();
+
+      if (bizProfile) {
+        const industry = bizProfile.manual_industry || bizProfile.snapshot_industry;
+        const city = bizProfile.manual_hq_city || bizProfile.snapshot_hq_city;
+        const country = bizProfile.manual_hq_country || bizProfile.snapshot_hq_country;
+        const parts: string[] = [];
+        if (industry) parts.push(`Industry: ${industry}`);
+        if (bizProfile.company_size) parts.push(`Company size: ${bizProfile.company_size}`);
+        if (bizProfile.team_culture) parts.push(`Team culture (self-declared): ${bizProfile.team_culture}`);
+        if (bizProfile.hiring_approach) parts.push(`Hiring approach (self-declared): ${bizProfile.hiring_approach}`);
+        if (bizProfile.growth_stage) parts.push(`Growth stage: ${bizProfile.growth_stage}`);
+        if (city || country) parts.push(`HQ: ${[city, country].filter(Boolean).join(", ")}`);
+        if (parts.length > 0) {
+          registrationContext = `\n\nREGISTRATION DATA (self-declared by the company):\n${parts.join("\n")}`;
+        }
+      }
+    } catch (e) {
+      console.warn("[generate-company-profile] Failed to fetch registration data:", e);
+    }
+
     // ===== Multi-page scanning =====
     const pages = await fetchAllPages(website);
     if (pages.length === 0 || pages.every(p => p.text.length < 100)) {
@@ -380,7 +408,7 @@ Deno.serve(async (req) => {
 
     // ===== Claude call =====
     const systemPrompt = buildCompanyProfilePrompt(pageTypes);
-    const userMessage = `Analyze this company's website content and create their XIMA psychometric profile.\n\nCompany name: ${company_name}\nWebsite: ${website}\n\n${pagesContext}`;
+    const userMessage = `Analyze this company's website content and create their XIMA psychometric profile.\n\nCompany name: ${company_name}\nWebsite: ${website}${registrationContext}\n\n${pagesContext}`;
 
     const result = await callAnthropicApi({
       system: systemPrompt,

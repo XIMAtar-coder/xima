@@ -173,8 +173,12 @@ const BusinessDashboard = () => {
     setProfileLoading(true);
     toast({ title: t('business.dashboard.generating_profile'), description: t('business.dashboard.generating_profile_desc') });
     try {
-      const { data, error } = await supabase.functions.invoke('analyze-company-profile', {
-        body: { website: businessProfile.website, locale: i18n.language?.split('-')[0] || 'en' }
+      const { data, error } = await supabase.functions.invoke('generate-company-profile', {
+        body: {
+          company_id: user.id,
+          company_name: businessProfile.company_name,
+          website: businessProfile.website,
+        }
       });
       if (error) throw error;
       toast({ title: t('business.dashboard.success'), description: t('business.dashboard.profile_generated') });
@@ -372,8 +376,8 @@ const BusinessDashboard = () => {
           );
         })()}
 
-        {/* Recommendation Debug Panel */}
-        <RecommendationDebugPanel businessId={user?.id} hiringGoalId={hiringGoalDraftId} />
+        {/* Recommendation Debug Panel — DEV only */}
+        {isDev && <RecommendationDebugPanel businessId={user?.id} hiringGoalId={hiringGoalDraftId} />}
 
         {/* How XIMA Works — collapsible reference */}
         <Collapsible>
