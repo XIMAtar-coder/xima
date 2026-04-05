@@ -9,6 +9,9 @@ export interface InvitationWithSubmission {
   invitationId: string;
   candidateProfileId: string;
   candidateName: string;
+  anonymousLabel: string | null;
+  ximatarArchetype: string | null;
+  ximatarLevel: number;
   invitationStatus: string;
   invitedAt: string;
   submissionId: string | null;
