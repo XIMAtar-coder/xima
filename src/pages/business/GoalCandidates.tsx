@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
+import { PipelineView } from '@/components/business/PipelineView';
 import { GoalContextHeader } from '@/components/business/GoalContextHeader';
 import { SelectionActionBar } from '@/components/business/SelectionActionBar';
 // ChallengePickerModal removed - pipeline always starts with XIMA Core (L1)
