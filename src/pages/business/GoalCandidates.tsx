@@ -489,6 +489,18 @@ const GoalCandidates: React.FC = () => {
             )}
           </TabsContent>
 
+          <TabsContent value="pipeline" className="mt-6">
+            {goalId && (
+              <PipelineView
+                hiringGoalId={goalId}
+                onInviteToL1={(userId) => {
+                  const match = candidates.find(c => c.user_id === userId);
+                  if (match) handleInviteToXimaCore([match.profile_id]);
+                }}
+              />
+            )}
+          </TabsContent>
+
           <TabsContent value="all" className="mt-6">
             {/* Recommendation label */}
             <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
