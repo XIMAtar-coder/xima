@@ -5194,5 +5194,38 @@
     "saved": "Candidato salvato",
     "saved_desc": "Aggiunto alla tua lista",
     "load_error": "Errore nel caricamento dei candidati"
+  },
+  "anonymous": {
+    "candidate_label": "Candidato #{{number}}",
+    "identity_hidden": "Identità nascosta — rivelata alla fase di offerta",
+    "reveal_title": "Rivela identità del candidato",
+    "reveal_warning": "Una volta rivelata, vedrai nome, CV e contatti del candidato. Questa azione viene registrata e non può essere annullata.",
+    "reveal_button": "Rivela Identità e Prepara Offerta",
+    "revealing": "Rivelazione in corso...",
+    "offer_title": "Fai un'offerta",
+    "offer_message_label": "Messaggio al candidato",
+    "offer_salary_label": "Offerta salariale",
+    "offer_start_label": "Data di inizio",
+    "send_offer": "Invia Offerta",
+    "offer_sent": "Offerta inviata!",
+    "identity_revealed": "Identità rivelata",
+    "make_offer": "Fai un'offerta",
+    "pipeline_tab": "Pipeline",
+    "no_pipeline": "Nessun candidato in pipeline. Genera prima una shortlist.",
+    "stage": {
+      "shortlisted": "In lista",
+      "l1_invited": "L1 Invitato",
+      "l1_completed": "L1 Completato",
+      "l1_evaluated": "L1 Valutato",
+      "l2_invited": "L2 Invitato",
+      "l2_completed": "L2 Completato",
+      "l2_evaluated": "L2 Valutato",
+      "l3_invited": "L3 Invitato",
+      "l3_completed": "L3 Completato",
+      "l3_evaluated": "L3 Valutato",
+      "offer_pending": "Offerta",
+      "offered": "Offerto",
+      "hired": "Assunto"
+    }
   }
 }

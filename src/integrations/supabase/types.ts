@@ -1409,6 +1409,7 @@ export type Database = {
       }
       challenge_invitations: {
         Row: {
+          anonymous_label: string | null
           business_id: string
           candidate_profile_id: string
           challenge_id: string | null
@@ -1421,6 +1422,7 @@ export type Database = {
           status: string
         }
         Insert: {
+          anonymous_label?: string | null
           business_id: string
           candidate_profile_id: string
           challenge_id?: string | null
@@ -1433,6 +1435,7 @@ export type Database = {
           status?: string
         }
         Update: {
+          anonymous_label?: string | null
           business_id?: string
           candidate_profile_id?: string
           challenge_id?: string | null
@@ -2986,6 +2989,68 @@ export type Database = {
             columns: ["hiring_goal_id"]
             isOneToOne: true
             referencedRelation: "hiring_goal_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hiring_offers: {
+        Row: {
+          business_id: string
+          candidate_response: string | null
+          candidate_user_id: string
+          created_at: string | null
+          hiring_goal_id: string
+          id: string
+          identity_revealed_at: string | null
+          offer_message: string | null
+          offer_notes: string | null
+          offer_salary: string | null
+          offer_start_date: string | null
+          offer_status: string | null
+          responded_at: string | null
+          shortlist_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          business_id: string
+          candidate_response?: string | null
+          candidate_user_id: string
+          created_at?: string | null
+          hiring_goal_id: string
+          id?: string
+          identity_revealed_at?: string | null
+          offer_message?: string | null
+          offer_notes?: string | null
+          offer_salary?: string | null
+          offer_start_date?: string | null
+          offer_status?: string | null
+          responded_at?: string | null
+          shortlist_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          business_id?: string
+          candidate_response?: string | null
+          candidate_user_id?: string
+          created_at?: string | null
+          hiring_goal_id?: string
+          id?: string
+          identity_revealed_at?: string | null
+          offer_message?: string | null
+          offer_notes?: string | null
+          offer_salary?: string | null
+          offer_start_date?: string | null
+          offer_status?: string | null
+          responded_at?: string | null
+          shortlist_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hiring_offers_shortlist_id_fkey"
+            columns: ["shortlist_id"]
+            isOneToOne: false
+            referencedRelation: "shortlist_results"
             referencedColumns: ["id"]
           },
         ]
@@ -4613,6 +4678,7 @@ export type Database = {
       }
       shortlist_results: {
         Row: {
+          anonymous_label: string | null
           availability: string | null
           business_id: string
           candidate_user_id: string
@@ -4622,11 +4688,15 @@ export type Database = {
           engagement_score: number | null
           hiring_goal_id: string
           id: string
+          identity_revealed: boolean | null
+          identity_revealed_at: string | null
+          identity_revealed_by: string | null
           identity_score: number | null
           location_match: string | null
           location_score: number | null
           match_narrative: string | null
           pillar_scores: Json | null
+          pipeline_stage: string | null
           status: string | null
           total_score: number
           trajectory_score: number | null
@@ -4636,6 +4706,7 @@ export type Database = {
           ximatar_level: number | null
         }
         Insert: {
+          anonymous_label?: string | null
           availability?: string | null
           business_id: string
           candidate_user_id: string
@@ -4645,11 +4716,15 @@ export type Database = {
           engagement_score?: number | null
           hiring_goal_id: string
           id?: string
+          identity_revealed?: boolean | null
+          identity_revealed_at?: string | null
+          identity_revealed_by?: string | null
           identity_score?: number | null
           location_match?: string | null
           location_score?: number | null
           match_narrative?: string | null
           pillar_scores?: Json | null
+          pipeline_stage?: string | null
           status?: string | null
           total_score?: number
           trajectory_score?: number | null
@@ -4659,6 +4734,7 @@ export type Database = {
           ximatar_level?: number | null
         }
         Update: {
+          anonymous_label?: string | null
           availability?: string | null
           business_id?: string
           candidate_user_id?: string
@@ -4668,11 +4744,15 @@ export type Database = {
           engagement_score?: number | null
           hiring_goal_id?: string
           id?: string
+          identity_revealed?: boolean | null
+          identity_revealed_at?: string | null
+          identity_revealed_by?: string | null
           identity_score?: number | null
           location_match?: string | null
           location_score?: number | null
           match_narrative?: string | null
           pillar_scores?: Json | null
+          pipeline_stage?: string | null
           status?: string | null
           total_score?: number
           trajectory_score?: number | null

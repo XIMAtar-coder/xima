@@ -7,7 +7,9 @@ import { Progress } from '@/components/ui/progress';
 import { TrendingUp, MapPin, Clock, Activity, Zap, Send, User } from 'lucide-react';
 
 interface ShortlistCandidate {
+  id?: string;
   candidate_user_id: string;
+  anonymous_label?: string | null;
   total_score: number;
   identity_score: number;
   trajectory_score: number;
@@ -22,6 +24,8 @@ interface ShortlistCandidate {
   location_match: string;
   availability: string;
   status: string;
+  identity_revealed?: boolean;
+  pipeline_stage?: string;
 }
 
 interface ShortlistCardProps {
@@ -83,7 +87,11 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, o
             <div className="flex items-center gap-2">
               <span className="text-2xl">{emoji}</span>
               <div>
-                <p className="font-semibold text-sm text-foreground">{archetypeName}</p>
+                <p className="font-semibold text-sm text-foreground">
+                  {candidate.anonymous_label
+                    ? `Candidate #${candidate.anonymous_label} — ${archetypeName}`
+                    : archetypeName}
+                </p>
                 <p className="text-xs text-muted-foreground">L{candidate.ximatar_level}</p>
               </div>
             </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
+import { PipelineView } from '@/components/business/PipelineView';
 import { GoalContextHeader } from '@/components/business/GoalContextHeader';
 import { SelectionActionBar } from '@/components/business/SelectionActionBar';
 // ChallengePickerModal removed - pipeline always starts with XIMA Core (L1)
@@ -16,7 +17,7 @@ import { useHiringGoalRequirements } from '@/hooks/useHiringGoalRequirements';
 import { supabase } from '@/integrations/supabase/client';
 import { getChallengeLevel } from '@/lib/challenges/challengeLevels';
 import { computeXimatarRecommendations, type XimatarRecommendation } from '@/lib/recommendations';
-import { Users, Target, RefreshCw, Bookmark, Sparkles, Zap } from 'lucide-react';
+import { Users, Target, RefreshCw, Bookmark, Sparkles, Zap, GitBranch } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ShortlistView } from '@/components/business/ShortlistView';
 
@@ -456,6 +457,10 @@ const GoalCandidates: React.FC = () => {
               <Zap className="h-4 w-4" />
               {t('shortlist.tab_label', 'AI Shortlist')}
             </TabsTrigger>
+            <TabsTrigger value="pipeline" className="gap-2">
+              <GitBranch className="h-4 w-4" />
+              {t('anonymous.pipeline_tab', 'Pipeline')}
+            </TabsTrigger>
             <TabsTrigger value="all" className="gap-2">
               <Users className="h-4 w-4" />
               {t('business.candidates.all_matches')}
@@ -480,6 +485,18 @@ const GoalCandidates: React.FC = () => {
                   handleInviteToXimaCore(profileIds);
                 }}
                 onViewProfile={() => {/* future: open anonymous profile drawer */}}
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="pipeline" className="mt-6">
+            {goalId && (
+              <PipelineView
+                hiringGoalId={goalId}
+                onInviteToL1={(userId) => {
+                  const match = candidates.find(c => c.user_id === userId);
+                  if (match) handleInviteToXimaCore([match.profile_id]);
+                }}
               />
             )}
           </TabsContent>
