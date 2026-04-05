@@ -60,7 +60,7 @@ const GoalCandidates: React.FC = () => {
   const [eligibleIds, setEligibleIds] = useState<Set<string>>(new Set());
   const [activeChallenges, setActiveChallenges] = useState<ActiveChallenge[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('shortlist');
   const [companyProfile, setCompanyProfile] = useState<any>(null);
   
   // Modal state (legacy - keeping for potential future use)
