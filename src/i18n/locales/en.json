@@ -5472,5 +5472,38 @@
     "saved": "Candidate saved",
     "saved_desc": "Added to your saved list",
     "load_error": "Failed to load candidates"
+  },
+  "anonymous": {
+    "candidate_label": "Candidate #{{number}}",
+    "identity_hidden": "Identity hidden — revealed at offer stage",
+    "reveal_title": "Reveal candidate identity",
+    "reveal_warning": "Once revealed, you'll see the candidate's name, CV, and contact details. This action is logged and cannot be undone.",
+    "reveal_button": "Reveal Identity & Prepare Offer",
+    "revealing": "Revealing identity...",
+    "offer_title": "Make an offer",
+    "offer_message_label": "Message to candidate",
+    "offer_salary_label": "Salary offer",
+    "offer_start_label": "Start date",
+    "send_offer": "Send Offer",
+    "offer_sent": "Offer sent!",
+    "identity_revealed": "Identity revealed",
+    "make_offer": "Make Offer",
+    "pipeline_tab": "Pipeline",
+    "no_pipeline": "No candidates in pipeline yet. Generate a shortlist first.",
+    "stage": {
+      "shortlisted": "Shortlisted",
+      "l1_invited": "L1 Invited",
+      "l1_completed": "L1 Done",
+      "l1_evaluated": "L1 Evaluated",
+      "l2_invited": "L2 Invited",
+      "l2_completed": "L2 Done",
+      "l2_evaluated": "L2 Evaluated",
+      "l3_invited": "L3 Invited",
+      "l3_completed": "L3 Done",
+      "l3_evaluated": "L3 Evaluated",
+      "offer_pending": "Offer",
+      "offered": "Offered",
+      "hired": "Hired"
+    }
   }
 }
