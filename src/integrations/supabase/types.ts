@@ -4198,6 +4198,115 @@ export type Database = {
         }
         Relationships: []
       }
+      pipeline_chat_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          message_type: string | null
+          read_at: string | null
+          sender_id: string
+          sender_role: string
+          stage_from: string | null
+          stage_to: string | null
+          thread_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          message_type?: string | null
+          read_at?: string | null
+          sender_id: string
+          sender_role: string
+          stage_from?: string | null
+          stage_to?: string | null
+          thread_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          message_type?: string | null
+          read_at?: string | null
+          sender_id?: string
+          sender_role?: string
+          stage_from?: string | null
+          stage_to?: string | null
+          thread_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pipeline_chat_messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "pipeline_chat_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pipeline_chat_threads: {
+        Row: {
+          anonymous_label: string | null
+          business_id: string
+          candidate_user_id: string
+          company_name: string | null
+          created_at: string | null
+          current_stage: string | null
+          hiring_goal_id: string
+          id: string
+          is_active: boolean | null
+          last_message_at: string | null
+          shortlist_id: string | null
+          unread_business: number | null
+          unread_candidate: number | null
+          updated_at: string | null
+          ximatar_archetype: string | null
+        }
+        Insert: {
+          anonymous_label?: string | null
+          business_id: string
+          candidate_user_id: string
+          company_name?: string | null
+          created_at?: string | null
+          current_stage?: string | null
+          hiring_goal_id: string
+          id?: string
+          is_active?: boolean | null
+          last_message_at?: string | null
+          shortlist_id?: string | null
+          unread_business?: number | null
+          unread_candidate?: number | null
+          updated_at?: string | null
+          ximatar_archetype?: string | null
+        }
+        Update: {
+          anonymous_label?: string | null
+          business_id?: string
+          candidate_user_id?: string
+          company_name?: string | null
+          created_at?: string | null
+          current_stage?: string | null
+          hiring_goal_id?: string
+          id?: string
+          is_active?: boolean | null
+          last_message_at?: string | null
+          shortlist_id?: string | null
+          unread_business?: number | null
+          unread_candidate?: number | null
+          updated_at?: string | null
+          ximatar_archetype?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pipeline_chat_threads_shortlist_id_fkey"
+            columns: ["shortlist_id"]
+            isOneToOne: false
+            referencedRelation: "shortlist_results"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       professionals: {
         Row: {
           avatar_path: string | null
@@ -5556,6 +5665,10 @@ export type Database = {
         Returns: string
       }
       is_email_verified: { Args: never; Returns: boolean }
+      is_pipeline_thread_participant: {
+        Args: { _thread_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_thread_participant: {
         Args: { p_thread_id: string; p_user_id: string }
         Returns: boolean

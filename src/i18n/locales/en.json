@@ -4990,6 +4990,7 @@
     "nav_reports": "Reports & Analytics",
     "nav_settings": "Settings",
     "nav_guide": "Guide",
+     "nav_messages": "Messages",
     "nav_logout": "Logout",
     "dashboard_subtitle": "Your next actions and hiring pipeline — at a glance.",
     "dashboard_last_updated": "Last updated:",
@@ -5503,7 +5504,24 @@
       "l3_evaluated": "L3 Evaluated",
       "offer_pending": "Offer",
       "offered": "Offered",
-      "hired": "Hired"
+     "hired": "Hired"
     }
+  },
+  "pipeline_chat": {
+    "title": "Messages",
+    "no_threads": "No active conversations",
+    "no_threads_hint": "Conversations start when you invite candidates to challenges",
+    "no_messages": "No messages yet. Start the conversation!",
+    "select_conversation": "Select a conversation",
+    "placeholder_business": "Message candidate (anonymous)...",
+    "placeholder_candidate": "Message company...",
+    "stage_shortlisted": "Shortlisted",
+    "stage_l1_invited": "L1 Invited",
+    "stage_l1_completed": "L1 Completed",
+    "stage_l2_invited": "L2 Invited",
+    "stage_l2_completed": "L2 Completed",
+    "stage_l3_invited": "L3 Invited",
+    "stage_offer_pending": "Offer Stage",
+    "stage_hired": "Hired"
   }
 }

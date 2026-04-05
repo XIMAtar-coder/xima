@@ -5,8 +5,10 @@ import { useUser } from '@/context/UserContext';
 import { Button } from '@/components/ui/button';
 import { 
   LayoutDashboard, Users, Target, FileText, BarChart3, 
-  Settings, LogOut, Menu, X, Building2, Briefcase, Globe, HelpCircle
+  Settings, LogOut, Menu, X, Building2, Briefcase, Globe, HelpCircle, MessageSquare
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { useOnboardingState } from '@/hooks/useOnboardingState';
 import { BusinessJourneyGuideModal } from '@/components/business/BusinessJourneyGuideModal';
 import {
@@ -38,6 +40,20 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
   const { shouldAutoShowBusinessGuide, completeStep } = useOnboardingState();
   const [guideOpen, setGuideOpen] = useState(false);
   const [guideAutoTriggered, setGuideAutoTriggered] = useState(false);
+
+  // Unread pipeline chat count
+  const { data: unreadChatCount = 0 } = useQuery({
+    queryKey: ['unread-pipeline-chat'],
+    queryFn: async () => {
+      const { data: threads } = await supabase
+        .from('pipeline_chat_threads')
+        .select('unread_business')
+        .eq('is_active', true);
+      if (!threads) return 0;
+      return threads.reduce((sum, t) => sum + (t.unread_business || 0), 0);
+    },
+    refetchInterval: 30000,
+  });
 
   useEffect(() => {
     if (shouldAutoShowBusinessGuide && !guideAutoTriggered) {
@@ -75,6 +91,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
     { path: '/business/dashboard', icon: LayoutDashboard, labelKey: 'businessPortal.nav_overview' },
     { path: '/business/candidates', icon: Users, labelKey: 'businessPortal.nav_candidates' },
     { path: '/business/challenges', icon: Target, labelKey: 'businessPortal.nav_challenges' },
+    { path: '/business/messages', icon: MessageSquare, labelKey: 'businessPortal.nav_messages' },
     { path: '/business/jobs', icon: Briefcase, labelKey: 'businessPortal.nav_jobs' },
     { path: '/business/evaluations', icon: FileText, labelKey: 'businessPortal.nav_evaluations' },
     { path: '/business/reports', icon: BarChart3, labelKey: 'businessPortal.nav_reports' },
@@ -117,6 +134,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
+              const isMessages = item.path === '/business/messages';
               
               return (
                 <Link
@@ -129,7 +147,16 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
                   }`}
                 >
                   <Icon size={20} />
-                  {sidebarOpen && <span className="font-medium">{t(item.labelKey)}</span>}
+                  {sidebarOpen && (
+                    <>
+                      <span className="font-medium flex-1">{t(item.labelKey)}</span>
+                      {isMessages && unreadChatCount > 0 && (
+                        <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
+                          {unreadChatCount}
+                        </span>
+                      )}
+                    </>
+                  )}
                 </Link>
               );
             })}
