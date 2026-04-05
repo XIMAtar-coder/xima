@@ -134,13 +134,13 @@ export function useChallengeResponsesData(
 
       const submissionInvitationIds = submissionsData.map(s => s.invitation_id);
 
-      // Step 4: Get profile info for candidate names
+      // Step 4: Get profile info for candidate display (anonymous by default)
       const candidateProfileIds = (invitationsData || []).map(inv => inv.candidate_profile_id);
       let profilesData: any[] = [];
       if (candidateProfileIds.length > 0) {
         const { data } = await supabase
           .from('profiles')
-          .select('id, full_name, name')
+          .select('id, full_name, name, ximatar, ximatar_archetype, ximatar_level')
           .in('id', candidateProfileIds);
         profilesData = data || [];
       }
