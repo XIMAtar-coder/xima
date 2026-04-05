@@ -5,8 +5,10 @@ import { useUser } from '@/context/UserContext';
 import { Button } from '@/components/ui/button';
 import { 
   LayoutDashboard, Users, Target, FileText, BarChart3, 
-  Settings, LogOut, Menu, X, Building2, Briefcase, Globe, HelpCircle
+  Settings, LogOut, Menu, X, Building2, Briefcase, Globe, HelpCircle, MessageSquare
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { useOnboardingState } from '@/hooks/useOnboardingState';
 import { BusinessJourneyGuideModal } from '@/components/business/BusinessJourneyGuideModal';
 import {

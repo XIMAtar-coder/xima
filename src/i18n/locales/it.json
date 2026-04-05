@@ -5225,7 +5225,24 @@
       "l3_evaluated": "L3 Valutato",
       "offer_pending": "Offerta",
       "offered": "Offerto",
-      "hired": "Assunto"
+     "hired": "Assunto"
     }
+  },
+  "pipeline_chat": {
+    "title": "Messaggi",
+    "no_threads": "Nessuna conversazione attiva",
+    "no_threads_hint": "Le conversazioni iniziano quando inviti i candidati alle sfide",
+    "no_messages": "Nessun messaggio. Inizia la conversazione!",
+    "select_conversation": "Seleziona una conversazione",
+    "placeholder_business": "Scrivi al candidato (anonimo)...",
+    "placeholder_candidate": "Scrivi all'azienda...",
+    "stage_shortlisted": "In shortlist",
+    "stage_l1_invited": "L1 Invitato",
+    "stage_l1_completed": "L1 Completato",
+    "stage_l2_invited": "L2 Invitato",
+    "stage_l2_completed": "L2 Completato",
+    "stage_l3_invited": "L3 Invitato",
+    "stage_offer_pending": "Fase Offerta",
+    "stage_hired": "Assunto"
   }
 }
