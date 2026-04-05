@@ -5164,5 +5164,35 @@
       "industry_placeholder": "Qualsiasi (es. tecnologia)",
       "any": "Qualsiasi (consigliato)"
     }
+  },
+  "candidate_pool": {
+    "title": "Pool Candidati",
+    "subtitle": "Esplora i talenti XIMA per identità, non per credenziali",
+    "candidates": "candidati",
+    "all": "Tutti",
+    "any_work_mode": "Qualsiasi modalità",
+    "remote": "Remoto",
+    "hybrid": "Ibrido",
+    "onsite": "In sede",
+    "location_placeholder": "Città o paese...",
+    "any_seniority": "Qualsiasi seniority",
+    "industry_placeholder": "Settore...",
+    "any_activity": "Qualsiasi attività",
+    "highly_active": "Molto attivo",
+    "active": "Attivo",
+    "any_availability": "Qualsiasi disponibilità",
+    "available_now": "Disponibile ora",
+    "within_month": "Entro 1 mese",
+    "within_3months": "Entro 3 mesi",
+    "clear_filters": "Cancella filtri",
+    "plan_limit": "Vista limitata a {{count}} candidati con il tuo piano",
+    "upgrade_hint": "Aggiorna il piano per vedere tutti i candidati e sbloccare i filtri avanzati.",
+    "upgrade": "Aggiorna Piano",
+    "no_results": "Nessun candidato corrisponde ai tuoi filtri",
+    "try_adjusting": "Prova a modificare i filtri",
+    "invite": "Invita",
+    "saved": "Candidato salvato",
+    "saved_desc": "Aggiunto alla tua lista",
+    "load_error": "Errore nel caricamento dei candidati"
   }
 }

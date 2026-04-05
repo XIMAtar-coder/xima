@@ -5442,5 +5442,35 @@
       "industry_placeholder": "Any (e.g. technology)",
       "any": "Any (recommended)"
     }
+  },
+  "candidate_pool": {
+    "title": "Candidate Pool",
+    "subtitle": "Browse XIMA talent by identity, not credentials",
+    "candidates": "candidates",
+    "all": "All",
+    "any_work_mode": "Any work mode",
+    "remote": "Remote",
+    "hybrid": "Hybrid",
+    "onsite": "On-site",
+    "location_placeholder": "City or country...",
+    "any_seniority": "Any seniority",
+    "industry_placeholder": "Industry...",
+    "any_activity": "Any activity level",
+    "highly_active": "Highly active",
+    "active": "Active",
+    "any_availability": "Any availability",
+    "available_now": "Available now",
+    "within_month": "Within 1 month",
+    "within_3months": "Within 3 months",
+    "clear_filters": "Clear all",
+    "plan_limit": "Viewing limited to {{count}} candidates on your plan",
+    "upgrade_hint": "Upgrade to see the full candidate pool and unlock advanced filters.",
+    "upgrade": "Upgrade Plan",
+    "no_results": "No candidates match your filters",
+    "try_adjusting": "Try adjusting your filters",
+    "invite": "Invite",
+    "saved": "Candidate saved",
+    "saved_desc": "Added to your saved list",
+    "load_error": "Failed to load candidates"
   }
 }
