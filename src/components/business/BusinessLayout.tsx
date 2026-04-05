@@ -120,6 +120,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
+              const isMessages = item.path === '/business/messages';
               
               return (
                 <Link
@@ -132,7 +133,16 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
                   }`}
                 >
                   <Icon size={20} />
-                  {sidebarOpen && <span className="font-medium">{t(item.labelKey)}</span>}
+                  {sidebarOpen && (
+                    <>
+                      <span className="font-medium flex-1">{t(item.labelKey)}</span>
+                      {isMessages && unreadChatCount > 0 && (
+                        <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
+                          {unreadChatCount}
+                        </span>
+                      )}
+                    </>
+                  )}
                 </Link>
               );
             })}
