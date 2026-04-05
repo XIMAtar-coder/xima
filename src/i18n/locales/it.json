@@ -5108,5 +5108,61 @@
     "import_button": "Importa",
     "draft_imported": "\"{{title}}\" importata con successo!",
     "draft_import_failed": "Impossibile importare la posizione"
+  },
+  "shortlist": {
+    "header_title": "Shortlist per: {{role}}",
+    "header_subtitle": "{{count}} candidati su {{total}} valutati",
+    "generate": "Genera Shortlist",
+    "refresh": "Aggiorna Shortlist",
+    "invite_top_5": "Invita i Top 5",
+    "invite_to_challenge": "Invita alla Sfida",
+    "generating": "Valutazione candidati in corso...",
+    "no_results_title": "Nessun risultato",
+    "no_results_desc": "Prova a rimuovere i filtri o attendi che più candidati si uniscano a XIMA.",
+    "error_title": "Errore",
+    "error_desc": "Impossibile generare la shortlist",
+    "empty_title": "Nessun candidato corrispondente",
+    "empty_desc": "Prova ad ampliare i filtri o ricontrolla quando nuovi candidati si uniscono a XIMA.",
+    "ready_title": "Pronto per creare la tua shortlist",
+    "ready_desc": "Clicca \"Genera Shortlist\" per trovare i candidati più adatti a questo ruolo usando il motore multi-segnale di XIMA.",
+    "scoring_title": "Come XIMA valuta i candidati:",
+    "scoring_desc": "Corrispondenza identità (40%) · Traiettoria di crescita (20%) · Engagement (15%) · Località (15%) · Credenziali (10%, opzionale)",
+    "anonymous_note": "I candidati sono anonimi — l'identità viene rivelata solo nella fase di offerta/assunzione.",
+    "tab_label": "Shortlist AI",
+    "score": {
+      "identity": "Identità",
+      "trajectory": "Traiettoria",
+      "engagement": "Engagement",
+      "location": "Località",
+      "credentials": "Credenziali"
+    },
+    "engagement": {
+      "highly_active": "Molto attivo",
+      "active": "Attivo",
+      "moderate": "Moderato",
+      "new": "Nuovo"
+    },
+    "location": {
+      "exact": "Corrispondenza esatta",
+      "remote": "Remoto OK",
+      "region": "Stessa regione",
+      "relocate": "Disponibile a trasferirsi",
+      "any": "Qualsiasi località"
+    },
+    "availability": {
+      "immediately": "Disponibile subito",
+      "2_weeks": "Tra 2 settimane",
+      "1_month": "Tra 1 mese",
+      "3_months": "Tra 3 mesi"
+    },
+    "filters": {
+      "title": "Filtri avanzati (titolo di studio, esperienza, settore)",
+      "warning": "XIMA raccomanda il matching identity-first. Questi filtri sono opzionali e riducono il pool di candidati.",
+      "degree": "Titolo di studio",
+      "experience": "Min. esperienza (anni)",
+      "industry": "Settore",
+      "industry_placeholder": "Qualsiasi (es. tecnologia)",
+      "any": "Qualsiasi (consigliato)"
+    }
   }
 }

@@ -5386,5 +5386,61 @@
     "import_button": "Import",
     "draft_imported": "\"{{title}}\" imported successfully!",
     "draft_import_failed": "Failed to import position"
+  },
+  "shortlist": {
+    "header_title": "Shortlist for: {{role}}",
+    "header_subtitle": "{{count}} candidates from {{total}} evaluated",
+    "generate": "Generate Shortlist",
+    "refresh": "Refresh Shortlist",
+    "invite_top_5": "Invite Top 5",
+    "invite_to_challenge": "Invite to Challenge",
+    "generating": "Evaluating candidates...",
+    "no_results_title": "No matches found",
+    "no_results_desc": "Try removing filters or wait for more candidates to join XIMA.",
+    "error_title": "Error",
+    "error_desc": "Failed to generate shortlist",
+    "empty_title": "No matching candidates",
+    "empty_desc": "Try broadening your filters or check back as more candidates join XIMA.",
+    "ready_title": "Ready to build your shortlist",
+    "ready_desc": "Click \"Generate Shortlist\" to find the best-matched candidates for this role using XIMA's multi-signal scoring engine.",
+    "scoring_title": "How XIMA scores candidates:",
+    "scoring_desc": "Identity match (40%) · Growth trajectory (20%) · Platform engagement (15%) · Location fit (15%) · Credentials (10%, optional)",
+    "anonymous_note": "Candidates are anonymous — identity revealed only at hire/offer stage.",
+    "tab_label": "AI Shortlist",
+    "score": {
+      "identity": "Identity",
+      "trajectory": "Trajectory",
+      "engagement": "Engagement",
+      "location": "Location",
+      "credentials": "Credentials"
+    },
+    "engagement": {
+      "highly_active": "Highly active",
+      "active": "Active",
+      "moderate": "Moderate",
+      "new": "New"
+    },
+    "location": {
+      "exact": "Location match",
+      "remote": "Remote OK",
+      "region": "Region match",
+      "relocate": "Open to relocate",
+      "any": "Any location"
+    },
+    "availability": {
+      "immediately": "Available now",
+      "2_weeks": "In 2 weeks",
+      "1_month": "In 1 month",
+      "3_months": "In 3 months"
+    },
+    "filters": {
+      "title": "Advanced filters (degree, experience, industry)",
+      "warning": "XIMA recommends identity-first matching. These filters are optional and reduce the candidate pool.",
+      "degree": "Degree type",
+      "experience": "Min. experience (years)",
+      "industry": "Industry",
+      "industry_placeholder": "Any (e.g. technology)",
+      "any": "Any (recommended)"
+    }
   }
 }

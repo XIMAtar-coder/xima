@@ -4611,6 +4611,78 @@ export type Database = {
         }
         Relationships: []
       }
+      shortlist_results: {
+        Row: {
+          availability: string | null
+          business_id: string
+          candidate_user_id: string
+          created_at: string | null
+          credential_score: number | null
+          engagement_level: string | null
+          engagement_score: number | null
+          hiring_goal_id: string
+          id: string
+          identity_score: number | null
+          location_match: string | null
+          location_score: number | null
+          match_narrative: string | null
+          pillar_scores: Json | null
+          status: string | null
+          total_score: number
+          trajectory_score: number | null
+          trajectory_summary: string | null
+          updated_at: string | null
+          ximatar_archetype: string | null
+          ximatar_level: number | null
+        }
+        Insert: {
+          availability?: string | null
+          business_id: string
+          candidate_user_id: string
+          created_at?: string | null
+          credential_score?: number | null
+          engagement_level?: string | null
+          engagement_score?: number | null
+          hiring_goal_id: string
+          id?: string
+          identity_score?: number | null
+          location_match?: string | null
+          location_score?: number | null
+          match_narrative?: string | null
+          pillar_scores?: Json | null
+          status?: string | null
+          total_score?: number
+          trajectory_score?: number | null
+          trajectory_summary?: string | null
+          updated_at?: string | null
+          ximatar_archetype?: string | null
+          ximatar_level?: number | null
+        }
+        Update: {
+          availability?: string | null
+          business_id?: string
+          candidate_user_id?: string
+          created_at?: string | null
+          credential_score?: number | null
+          engagement_level?: string | null
+          engagement_score?: number | null
+          hiring_goal_id?: string
+          id?: string
+          identity_score?: number | null
+          location_match?: string | null
+          location_score?: number | null
+          match_narrative?: string | null
+          pillar_scores?: Json | null
+          status?: string | null
+          total_score?: number
+          trajectory_score?: number | null
+          trajectory_summary?: string | null
+          updated_at?: string | null
+          ximatar_archetype?: string | null
+          ximatar_level?: number | null
+        }
+        Relationships: []
+      }
       test_attempts: {
         Row: {
           completed_at: string | null

@@ -16,8 +16,9 @@ import { useHiringGoalRequirements } from '@/hooks/useHiringGoalRequirements';
 import { supabase } from '@/integrations/supabase/client';
 import { getChallengeLevel } from '@/lib/challenges/challengeLevels';
 import { computeXimatarRecommendations, type XimatarRecommendation } from '@/lib/recommendations';
-import { Users, Target, RefreshCw, Bookmark, Sparkles } from 'lucide-react';
+import { Users, Target, RefreshCw, Bookmark, Sparkles, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { ShortlistView } from '@/components/business/ShortlistView';
 
 interface Candidate {
   profile_id: string;
@@ -59,7 +60,7 @@ const GoalCandidates: React.FC = () => {
   const [eligibleIds, setEligibleIds] = useState<Set<string>>(new Set());
   const [activeChallenges, setActiveChallenges] = useState<ActiveChallenge[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('shortlist');
   const [companyProfile, setCompanyProfile] = useState<any>(null);
   
   // Modal state (legacy - keeping for potential future use)
@@ -451,6 +452,10 @@ const GoalCandidates: React.FC = () => {
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList>
+            <TabsTrigger value="shortlist" className="gap-2">
+              <Zap className="h-4 w-4" />
+              {t('shortlist.tab_label', 'AI Shortlist')}
+            </TabsTrigger>
             <TabsTrigger value="all" className="gap-2">
               <Users className="h-4 w-4" />
               {t('business.candidates.all_matches')}
@@ -460,6 +465,24 @@ const GoalCandidates: React.FC = () => {
               {t('business.candidates.saved')} ({shortlistedIds.size})
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="shortlist" className="mt-6">
+            {currentGoal && goalId && (
+              <ShortlistView
+                goalId={goalId}
+                roleTitle={currentGoal.role_title || 'Untitled Role'}
+                onInviteToChallenge={(userIds) => {
+                  // Map user IDs to profile IDs for the invite flow
+                  const profileIds = userIds.map(uid => {
+                    const match = candidates.find(c => c.user_id === uid);
+                    return match?.profile_id || uid;
+                  });
+                  handleInviteToXimaCore(profileIds);
+                }}
+                onViewProfile={() => {/* future: open anonymous profile drawer */}}
+              />
+            )}
+          </TabsContent>
 
           <TabsContent value="all" className="mt-6">
             {/* Recommendation label */}
