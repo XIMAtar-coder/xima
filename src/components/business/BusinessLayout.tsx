@@ -77,6 +77,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
     { path: '/business/dashboard', icon: LayoutDashboard, labelKey: 'businessPortal.nav_overview' },
     { path: '/business/candidates', icon: Users, labelKey: 'businessPortal.nav_candidates' },
     { path: '/business/challenges', icon: Target, labelKey: 'businessPortal.nav_challenges' },
+    { path: '/business/messages', icon: MessageSquare, labelKey: 'businessPortal.nav_messages' },
     { path: '/business/jobs', icon: Briefcase, labelKey: 'businessPortal.nav_jobs' },
     { path: '/business/evaluations', icon: FileText, labelKey: 'businessPortal.nav_evaluations' },
     { path: '/business/reports', icon: BarChart3, labelKey: 'businessPortal.nav_reports' },

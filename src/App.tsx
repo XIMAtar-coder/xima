@@ -158,6 +158,7 @@ const AppContent = () => {
           <Route path="/business/goals/:goalId/settings" element={<GoalSettings />} />
           <Route path="/business/goals/:goalId/decision-pack" element={<GoalDecisionPack />} />
           <Route path="/business/goals/:goalId/challenges/:challengeId/responses" element={<ChallengeResponses />} />
+          <Route path="/business/messages" element={<BusinessPipelineChat />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/challenge/accept" element={<ChallengeAccept />} />
           {/* Candidate challenge completion */}
