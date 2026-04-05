@@ -99,7 +99,7 @@ export function useChallengeResponsesData(
       // Step 1: Fetch invitations for this challenge
       const { data: invitationsData, error: invError } = await supabase
         .from('challenge_invitations')
-        .select('id, candidate_profile_id, status, created_at')
+        .select('id, candidate_profile_id, status, created_at, anonymous_label')
         .eq('challenge_id', challengeId)
         .eq('business_id', businessId);
 
