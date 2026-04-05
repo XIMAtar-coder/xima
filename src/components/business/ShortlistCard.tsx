@@ -87,7 +87,11 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, o
             <div className="flex items-center gap-2">
               <span className="text-2xl">{emoji}</span>
               <div>
-                <p className="font-semibold text-sm text-foreground">{archetypeName}</p>
+                <p className="font-semibold text-sm text-foreground">
+                  {candidate.anonymous_label
+                    ? `Candidate #${candidate.anonymous_label} — ${archetypeName}`
+                    : archetypeName}
+                </p>
                 <p className="text-xs text-muted-foreground">L{candidate.ximatar_level}</p>
               </div>
             </div>
