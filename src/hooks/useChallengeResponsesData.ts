@@ -149,8 +149,8 @@ export function useChallengeResponsesData(
       const submissionsByInvitation = new Map(submissionsData.map(s => [s.invitation_id, s]));
       const reviewsByInvitation = new Map(reviewsData.map(r => [r.invitation_id, r]));
 
-      // Step 5: Build unified rows
-      const mapped: InvitationWithSubmission[] = (invitationsData || []).map(inv => {
+      // Step 5: Build unified rows (anonymous display — candidateName kept for internal ref but not shown to users)
+      const mapped: InvitationWithSubmission[] = (invitationsData || []).map((inv, index) => {
         const profile = profilesMap.get(inv.candidate_profile_id);
         const submission = submissionsByInvitation.get(inv.id);
         const review = reviewsByInvitation.get(inv.id);
@@ -164,10 +164,16 @@ export function useChallengeResponsesData(
           derivedStatus = 'draft';
         }
 
+        const archetype = (profile?.ximatar_archetype || profile?.ximatar || 'unknown').toString().toLowerCase();
+        const anonLabel = (inv as any).anonymous_label || String(index + 1);
+
         return {
           invitationId: inv.id,
           candidateProfileId: inv.candidate_profile_id,
-          candidateName: profile?.full_name || profile?.name || 'Unknown',
+          candidateName: `Candidate #${anonLabel} — ${archetype.charAt(0).toUpperCase() + archetype.slice(1)}`,
+          anonymousLabel: anonLabel,
+          ximatarArchetype: archetype,
+          ximatarLevel: profile?.ximatar_level || 1,
           invitationStatus: inv.status,
           invitedAt: inv.created_at,
           submissionId: submission?.id || null,
