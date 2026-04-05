@@ -254,10 +254,10 @@ const BusinessCandidates = () => {
 
         {/* Plan restriction banner */}
         {isRestricted && (
-          <Card className="border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/20">
+          <Card className="border-border bg-muted/50">
             <CardContent className="p-4 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <Lock className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0" />
+                <Lock className="h-5 w-5 text-muted-foreground shrink-0" />
                 <div>
                   <p className="text-sm font-medium text-foreground">
                     {t('candidate_pool.plan_limit', 'Viewing limited to {{count}} candidates on your plan', { count: planLimit })}

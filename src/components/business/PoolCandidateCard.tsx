@@ -106,7 +106,7 @@ export const PoolCandidateCard: React.FC<PoolCandidateCardProps> = ({ candidate,
             </Badge>
           )}
           {candidate.trajectory_trend && (
-            <Badge variant="secondary" className="text-xs gap-1 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+            <Badge variant="secondary" className="text-xs gap-1">
               <TrendingUp className="h-3 w-3" />
               {candidate.trajectory_trend === 'growing_fast' ? 'Growing fast' : 'Growing'}
             </Badge>
