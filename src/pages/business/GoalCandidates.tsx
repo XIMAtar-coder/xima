@@ -16,8 +16,9 @@ import { useHiringGoalRequirements } from '@/hooks/useHiringGoalRequirements';
 import { supabase } from '@/integrations/supabase/client';
 import { getChallengeLevel } from '@/lib/challenges/challengeLevels';
 import { computeXimatarRecommendations, type XimatarRecommendation } from '@/lib/recommendations';
-import { Users, Target, RefreshCw, Bookmark, Sparkles } from 'lucide-react';
+import { Users, Target, RefreshCw, Bookmark, Sparkles, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { ShortlistView } from '@/components/business/ShortlistView';
 
 interface Candidate {
   profile_id: string;
