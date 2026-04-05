@@ -41,6 +41,20 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
   const [guideOpen, setGuideOpen] = useState(false);
   const [guideAutoTriggered, setGuideAutoTriggered] = useState(false);
 
+  // Unread pipeline chat count
+  const { data: unreadChatCount = 0 } = useQuery({
+    queryKey: ['unread-pipeline-chat'],
+    queryFn: async () => {
+      const { data: threads } = await supabase
+        .from('pipeline_chat_threads')
+        .select('unread_business')
+        .eq('is_active', true);
+      if (!threads) return 0;
+      return threads.reduce((sum, t) => sum + (t.unread_business || 0), 0);
+    },
+    refetchInterval: 30000,
+  });
+
   useEffect(() => {
     if (shouldAutoShowBusinessGuide && !guideAutoTriggered) {
       setGuideOpen(true);
