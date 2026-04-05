@@ -457,6 +457,10 @@ const GoalCandidates: React.FC = () => {
               <Zap className="h-4 w-4" />
               {t('shortlist.tab_label', 'AI Shortlist')}
             </TabsTrigger>
+            <TabsTrigger value="pipeline" className="gap-2">
+              <GitBranch className="h-4 w-4" />
+              {t('anonymous.pipeline_tab', 'Pipeline')}
+            </TabsTrigger>
             <TabsTrigger value="all" className="gap-2">
               <Users className="h-4 w-4" />
               {t('business.candidates.all_matches')}
