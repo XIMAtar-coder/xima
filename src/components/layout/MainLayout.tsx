@@ -55,6 +55,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
   });
 
 
+  useEffect(() => {
     if (requireAuth && !isAuthenticated) {
       navigate('/login');
     }
