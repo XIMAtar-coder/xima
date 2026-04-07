@@ -38,7 +38,23 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const headerData = useUserHeaderData(user?.id);
 
-  useEffect(() => {
+  const { data: pendingOffersCount = 0 } = useQuery({
+    queryKey: ['pending-offers-count'],
+    queryFn: async () => {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) return 0;
+      const { count } = await supabase
+        .from('hiring_offers')
+        .select('id', { count: 'exact', head: true })
+        .eq('candidate_user_id', authUser.id)
+        .eq('offer_status', 'sent');
+      return count || 0;
+    },
+    enabled: isAuthenticated,
+    refetchInterval: 60000,
+  });
+
+
     if (requireAuth && !isAuthenticated) {
       navigate('/login');
     }
