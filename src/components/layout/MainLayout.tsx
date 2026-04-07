@@ -11,7 +11,7 @@ import { useUserHeaderData } from '@/hooks/useUserHeaderData';
 import { supabase } from '@/integrations/supabase/client';
 import { NotificationsDropdown } from '../NotificationsDropdown';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, Settings, HelpCircle } from 'lucide-react';
+import { Menu, GraduationCap, Settings, HelpCircle, Gift } from 'lucide-react';
 import Footer from './Footer';
 import { MobileTabBar } from './MobileTabBar';
 import { XimaJourneyGuideModal } from '../onboarding/XimaJourneyGuideModal';
