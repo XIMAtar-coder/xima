@@ -5523,5 +5523,27 @@
     "stage_l3_invited": "L3 Invited",
     "stage_offer_pending": "Offer Stage",
     "stage_hired": "Hired"
+  },
+  "offers": {
+    "title": "Job Offers",
+    "subtitle": "Review and respond to offers from companies",
+    "no_offers": "No offers yet",
+    "no_offers_hint": "Complete challenges to get noticed by companies",
+    "response_placeholder": "Optional message to the company...",
+    "accept": "Accept Offer",
+    "decline": "Decline",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "pending": "Pending",
+    "start": "Start",
+    "your_response": "Your response"
+  },
+  "hiring": {
+    "offer_sent": "Offer sent successfully",
+    "position_filled": "Position marked as filled",
+    "active_goals": "Active Goals",
+    "in_pipeline": "In Pipeline",
+    "pending_offers": "Pending Offers",
+    "hired": "Hired"
   }
 }

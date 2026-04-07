@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
+import { useQuery } from '@tanstack/react-query';
 import { useUser } from '../../context/UserContext';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useAssessment } from '../../contexts/AssessmentContext';
@@ -10,7 +11,7 @@ import { useUserHeaderData } from '@/hooks/useUserHeaderData';
 import { supabase } from '@/integrations/supabase/client';
 import { NotificationsDropdown } from '../NotificationsDropdown';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, Settings, HelpCircle } from 'lucide-react';
+import { Menu, GraduationCap, Settings, HelpCircle, Gift } from 'lucide-react';
 import Footer from './Footer';
 import { MobileTabBar } from './MobileTabBar';
 import { XimaJourneyGuideModal } from '../onboarding/XimaJourneyGuideModal';
@@ -36,6 +37,23 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
   const { completeStep } = useOnboardingState();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const headerData = useUserHeaderData(user?.id);
+
+  const { data: pendingOffersCount = 0 } = useQuery({
+    queryKey: ['pending-offers-count'],
+    queryFn: async () => {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) return 0;
+      const { count } = await supabase
+        .from('hiring_offers')
+        .select('id', { count: 'exact', head: true })
+        .eq('candidate_user_id', authUser.id)
+        .eq('offer_status', 'sent');
+      return count || 0;
+    },
+    enabled: isAuthenticated,
+    refetchInterval: 60000,
+  });
+
 
   useEffect(() => {
     if (requireAuth && !isAuthenticated) {
@@ -185,6 +203,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         </button>
                         <button onClick={() => navigate('/messages')} className={navLinkClass(location.pathname === '/messages')}>
                           {t('nav.messages')}
+                        </button>
+                        <button onClick={() => navigate('/offers')} className={navLinkClass(location.pathname === '/offers')}>
+                          <span className="flex items-center gap-1">
+                            <Gift className="h-4 w-4" strokeWidth={1.5} />
+                            {t('offers.title', 'Job Offers')}
+                            {pendingOffersCount > 0 && (
+                              <span className="w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center">
+                                {pendingOffersCount}
+                              </span>
+                            )}
+                          </span>
                         </button>
                         <button onClick={() => navigate('/development-plan')} className={navLinkClass(location.pathname.startsWith('/test') || location.pathname === '/development-plan')}>
                           {t('nav.tests')}
