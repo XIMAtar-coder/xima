@@ -5245,5 +5245,27 @@
     "stage_l3_invited": "L3 Invitato",
     "stage_offer_pending": "Fase Offerta",
     "stage_hired": "Assunto"
+  },
+  "offers": {
+    "title": "Offerte di Lavoro",
+    "subtitle": "Rivedi e rispondi alle offerte delle aziende",
+    "no_offers": "Nessuna offerta",
+    "no_offers_hint": "Completa le sfide per farti notare dalle aziende",
+    "response_placeholder": "Messaggio opzionale all'azienda...",
+    "accept": "Accetta Offerta",
+    "decline": "Rifiuta",
+    "accepted": "Accettata",
+    "declined": "Rifiutata",
+    "pending": "In attesa",
+    "start": "Inizio",
+    "your_response": "La tua risposta"
+  },
+  "hiring": {
+    "offer_sent": "Offerta inviata con successo",
+    "position_filled": "Posizione contrassegnata come coperta",
+    "active_goals": "Obiettivi Attivi",
+    "in_pipeline": "In Pipeline",
+    "pending_offers": "Offerte in Attesa",
+    "hired": "Assunti"
   }
 }

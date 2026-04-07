@@ -169,6 +169,7 @@ const AppContent = () => {
           {/* Candidate session detail */}
           <Route path="/sessions/:sessionId" element={<CandidateSessionDetail />} />
           <Route path="/sessions/:sessionId/room" element={<CandidateSessionRoom />} />
+          <Route path="/offers" element={<MyOffers />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         {/* <ChatEntry /> */}

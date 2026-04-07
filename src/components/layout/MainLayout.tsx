@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
+import { useQuery } from '@tanstack/react-query';
 import { useUser } from '../../context/UserContext';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useAssessment } from '../../contexts/AssessmentContext';
