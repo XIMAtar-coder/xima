@@ -78,6 +78,7 @@ import MentorPreview from "./pages/mentor/MentorPreview";
 import Pricing from "./pages/Pricing";
 import ContactSales from "./pages/ContactSales";
 import BusinessPipelineChat from "./pages/business/PipelineChat";
+import MyOffers from "./pages/candidate/MyOffers";
 
 const queryClient = new QueryClient();
 

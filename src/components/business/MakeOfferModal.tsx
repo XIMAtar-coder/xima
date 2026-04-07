@@ -74,11 +74,35 @@ export const MakeOfferModal: React.FC<MakeOfferModalProps> = ({
     if (!revealedProfile) return;
     setSendingOffer(true);
     try {
-      // Update the hiring_offers record via edge function or direct update
-      // For now we just show success — the offer was created during reveal
-      toast({ title: t('anonymous.offer_sent', 'Offer sent!'), description: `${t('anonymous.send_offer', 'Send Offer')} → ${revealedProfile.full_name}` });
+      // First find the offer record created during identity reveal
+      const { data: offers } = await supabase
+        .from('hiring_offers')
+        .select('id')
+        .eq('shortlist_id', candidate.id)
+        .eq('offer_status', 'draft')
+        .limit(1);
+
+      const offerId = offers?.[0]?.id;
+      if (!offerId) {
+        toast({ title: t('common.error'), description: 'No draft offer found', variant: 'destructive' });
+        return;
+      }
+
+      const { error } = await supabase.functions.invoke('send-hiring-offer', {
+        body: {
+          offer_id: offerId,
+          offer_message: offerMessage || undefined,
+          offer_salary: offerSalary || undefined,
+          offer_start_date: startDate || undefined,
+        },
+      });
+      if (error) throw error;
+
+      toast({ title: t('hiring.offer_sent', 'Offer sent successfully'), description: `→ ${revealedProfile.full_name}` });
       onComplete?.();
       onOpenChange(false);
+    } catch (err: any) {
+      toast({ title: t('common.error'), description: err.message || 'Failed to send offer', variant: 'destructive' });
     } finally {
       setSendingOffer(false);
     }
