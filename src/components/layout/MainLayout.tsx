@@ -204,6 +204,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         <button onClick={() => navigate('/messages')} className={navLinkClass(location.pathname === '/messages')}>
                           {t('nav.messages')}
                         </button>
+                        <button onClick={() => navigate('/offers')} className={navLinkClass(location.pathname === '/offers')}>
+                          <span className="flex items-center gap-1">
+                            <Gift className="h-4 w-4" strokeWidth={1.5} />
+                            {t('offers.title', 'Job Offers')}
+                            {pendingOffersCount > 0 && (
+                              <span className="w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center">
+                                {pendingOffersCount}
+                              </span>
+                            )}
+                          </span>
+                        </button>
                         <button onClick={() => navigate('/development-plan')} className={navLinkClass(location.pathname.startsWith('/test') || location.pathname === '/development-plan')}>
                           {t('nav.tests')}
                         </button>
