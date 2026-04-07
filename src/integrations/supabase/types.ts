@@ -2871,9 +2871,13 @@ export type Database = {
           candidate_count: number | null
           challenge_count: number | null
           city_region: string | null
+          closed_at: string | null
+          closed_reason: string | null
           country: string | null
           created_at: string | null
           experience_level: string | null
+          filled_at: string | null
+          filled_by: string | null
           function_area: string | null
           id: string
           role_title: string | null
@@ -2892,9 +2896,13 @@ export type Database = {
           candidate_count?: number | null
           challenge_count?: number | null
           city_region?: string | null
+          closed_at?: string | null
+          closed_reason?: string | null
           country?: string | null
           created_at?: string | null
           experience_level?: string | null
+          filled_at?: string | null
+          filled_by?: string | null
           function_area?: string | null
           id?: string
           role_title?: string | null
@@ -2913,9 +2921,13 @@ export type Database = {
           candidate_count?: number | null
           challenge_count?: number | null
           city_region?: string | null
+          closed_at?: string | null
+          closed_reason?: string | null
           country?: string | null
           created_at?: string | null
           experience_level?: string | null
+          filled_at?: string | null
+          filled_by?: string | null
           function_area?: string | null
           id?: string
           role_title?: string | null
