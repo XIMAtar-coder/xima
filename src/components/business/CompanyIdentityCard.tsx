@@ -37,42 +37,42 @@ interface CompanyIdentityCardProps {
   onGenerate: () => void;
 }
 
-const formatCulture = (c: string) => ({
-  high_performance: 'High-Performance',
-  collaborative: 'Collaborative',
-  innovation_first: 'Innovation-First',
-  people_centered: 'People-Centered',
-  mission_driven: 'Mission-Driven',
+const formatCulture = (c: string, t: (key: string, fallback: string) => string) => ({
+  high_performance: t('businessPortal.culture_high_performance', 'High-Performance'),
+  collaborative: t('businessPortal.culture_collaborative', 'Collaborative'),
+  innovation_first: t('businessPortal.culture_innovation_first', 'Innovation-First'),
+  people_centered: t('businessPortal.culture_people_centered', 'People-Centered'),
+  mission_driven: t('businessPortal.culture_mission_driven', 'Mission-Driven'),
 }[c] || c);
 
-const cultureDescription = (c: string) => ({
-  high_performance: 'Results and excellence drive your organization',
-  collaborative: 'Teamwork and trust are your foundation',
-  innovation_first: 'You experiment, disrupt, and move fast',
-  people_centered: 'Growth, wellbeing, and balance lead your decisions',
-  mission_driven: 'United by purpose and impact over profit',
+const cultureDescription = (c: string, t: (key: string, fallback: string) => string) => ({
+  high_performance: t('businessPortal.culture_high_performance_desc', 'Results and excellence drive your organization'),
+  collaborative: t('businessPortal.culture_collaborative_desc', 'Teamwork and trust are your foundation'),
+  innovation_first: t('businessPortal.culture_innovation_first_desc', 'You experiment, disrupt, and move fast'),
+  people_centered: t('businessPortal.culture_people_centered_desc', 'Growth, wellbeing, and balance lead your decisions'),
+  mission_driven: t('businessPortal.culture_mission_driven_desc', 'United by purpose and impact over profit'),
 }[c] || '');
 
-const formatHiringApproach = (h: string) => ({
-  skills_first: 'Skills-First',
-  cultural_fit: 'Cultural Fit',
-  potential: 'Potential Over Experience',
-  balanced: 'Balanced Approach',
+const formatHiringApproach = (h: string, t: (key: string, fallback: string) => string) => ({
+  skills_first: t('businessPortal.hiring_skills_first', 'Skills-First'),
+  cultural_fit: t('businessPortal.hiring_cultural_fit', 'Cultural Fit'),
+  potential: t('businessPortal.hiring_potential', 'Potential Over Experience'),
+  balanced: t('businessPortal.hiring_balanced', 'Balanced Approach'),
 }[h] || h);
 
-const hiringDescription = (h: string) => ({
-  skills_first: 'You evaluate what people can do, not credentials',
-  cultural_fit: 'Values alignment matters as much as capabilities',
-  potential: 'You hire for trajectory, not just track record',
-  balanced: 'You weigh skills, culture, and potential equally',
+const hiringDescription = (h: string, t: (key: string, fallback: string) => string) => ({
+  skills_first: t('businessPortal.hiring_skills_first_desc', 'You evaluate what people can do, not credentials'),
+  cultural_fit: t('businessPortal.hiring_cultural_fit_desc', 'Values alignment matters as much as capabilities'),
+  potential: t('businessPortal.hiring_potential_desc', 'You hire for trajectory, not just track record'),
+  balanced: t('businessPortal.hiring_balanced_desc', 'You weigh skills, culture, and potential equally'),
 }[h] || '');
 
-const formatGrowthStage = (g: string) => ({
-  startup: 'Startup',
-  scaleup: 'Scale-up',
-  established: 'Established',
-  enterprise: 'Enterprise',
-  nonprofit: 'Non-profit / Public',
+const formatGrowthStage = (g: string, t: (key: string, fallback: string) => string) => ({
+  startup: t('businessPortal.stage_startup', 'Startup'),
+  scaleup: t('businessPortal.stage_scaleup', 'Scale-up'),
+  established: t('businessPortal.stage_established', 'Established'),
+  enterprise: t('businessPortal.stage_enterprise', 'Enterprise'),
+  nonprofit: t('businessPortal.stage_nonprofit', 'Non-profit / Public'),
 }[g] || g);
 
 const PILLAR_LABELS: Record<string, string> = {

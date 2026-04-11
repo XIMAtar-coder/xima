@@ -416,8 +416,14 @@ Deno.serve(async (req) => {
     ).join('\n\n');
 
     // ===== Claude call =====
+    const langOverride: Record<string, string> = {
+      it: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields (summary, values, operating_style, communication_style, ideal_traits, risk_areas, company_culture, culture_insights) in ITALIAN. Core values and candidate traits must be Italian words/phrases (e.g. "Onestà", "Expertise tecnica"). Do NOT mix English and Italian.`,
+      es: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in SPANISH.`,
+      fr: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in FRENCH.`,
+      de: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in GERMAN.`,
+    };
     const systemPrompt = buildCompanyProfilePrompt(pageTypes);
-    const userMessage = `Analyze this company's website content and create their XIMA psychometric profile.\n\nCompany name: ${company_name}\nWebsite: ${website}${registrationContext}\n\n${pagesContext}`;
+    const userMessage = `Analyze this company's website content and create their XIMA psychometric profile.\n\nCompany name: ${company_name}\nWebsite: ${website}${registrationContext}${langOverride[userLang] || ''}\n\n${pagesContext}`;
 
     const result = await callAnthropicApi({
       system: systemPrompt,
