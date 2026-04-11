@@ -290,6 +290,17 @@ const BusinessSettings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Logo Upload */}
+              <div className="space-y-2">
+                <Label className="text-foreground">{t('business.settings.logo', 'Logo aziendale')}</Label>
+                <LogoUploader
+                  currentLogo={logoUrl}
+                  onUpload={(url) => { setLogoUrl(url); invalidateBusinessProfile(); }}
+                />
+              </div>
+
+              <Separator />
+
               <div className="space-y-2">
                 <Label htmlFor="companyName" className="text-foreground">{t('businessPortal.settings_company_name_label')}</Label>
                 <Input
