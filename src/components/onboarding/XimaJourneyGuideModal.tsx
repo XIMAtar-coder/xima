@@ -67,10 +67,10 @@ export const XimaJourneyGuideModal = ({ open, onClose, isAutoOpen = false }: Xim
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute right-4 top-4 z-10 rounded-full p-1 text-muted-foreground hover:text-foreground transition-colors"
+          className="absolute right-4 top-4 z-10 rounded-full p-2 bg-secondary/80 hover:bg-secondary text-foreground transition-colors"
           aria-label={t('guide.buttons.close', 'Close')}
         >
-          <X className="h-4 w-4" />
+          <X className="h-5 w-5" />
         </button>
 
         {/* Progress dots */}
@@ -130,9 +130,8 @@ export const XimaJourneyGuideModal = ({ open, onClose, isAutoOpen = false }: Xim
               <Checkbox
                 checked={dontShowAgain}
                 onCheckedChange={(v) => setDontShowAgain(!!v)}
-                className="h-3.5 w-3.5"
               />
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm font-medium text-foreground">
                 {t('guide.buttons.dont_show_again', "Don't show again")}
               </span>
             </label>

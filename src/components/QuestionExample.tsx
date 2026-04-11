@@ -42,25 +42,7 @@ function renderMarkdown(text: string) {
                     </strong>
                   );
                 }
-                // Handle links - simple pattern for YouTube links
-                const linkPattern = /(https?:\/\/[^\s]+)/g;
-                const linkParts = part.split(linkPattern);
-                return linkParts.map((linkPart, linkIdx) => {
-                  if (linkPart.match(/^https?:\/\//)) {
-                    return (
-                      <a
-                        key={`${partIdx}-${linkIdx}`}
-                        href={linkPart}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline break-all"
-                      >
-                        {linkPart.includes('youtube') ? '🎥 Watch Video' : linkPart}
-                      </a>
-                    );
-                  }
-                  return <span key={`${partIdx}-${linkIdx}`}>{linkPart}</span>;
-                });
+                return <span key={partIdx}>{part}</span>;
               })}
             </React.Fragment>
           );
