@@ -175,7 +175,7 @@ const DevelopmentPlan = () => {
             </p>
           </div>
           <Button variant="outline" onClick={() => navigate('/profile')} className="gap-2">
-            <ArrowLeft className="h-4 w-4" /> {t('developmentPlan.back_button', 'Back to Profile')}
+            <ArrowLeft className="h-4 w-4" /> {t('developmentPlan.back_button', 'Dashboard')}
           </Button>
         </div>
 

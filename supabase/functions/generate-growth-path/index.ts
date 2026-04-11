@@ -44,7 +44,7 @@ serve(async (req) => {
     // Fetch user data in parallel
     const [profileResult, optCheckResult, cvAnalysisResult, trajectoryResult, completedResult] = await Promise.all([
       supabase.from("profiles")
-        .select("user_id, ximatar_id, ximatar, ximatar_name, ximatar_level, pillar_scores, preferred_lang, profiling_opt_out, level_start_scores")
+        .select("user_id, ximatar_id, ximatar, ximatar_name, ximatar_level, pillar_scores, preferred_lang, profiling_opt_out, level_start_scores, content_language")
         .eq("user_id", user.id).single(),
       Promise.resolve(null), // opt-out checked inline
       supabase.from("cv_identity_analysis")
@@ -80,7 +80,7 @@ serve(async (req) => {
     const assessmentScores = (profile.pillar_scores || null) as Record<string, number> | null;
     const ximatarRaw = (profile.ximatar || profile.ximatar_id || profile.ximatar_name || null) as string | null;
     const ximatarLevel = (profile.ximatar_level || 1) as number;
-    const preferredLang = (profile.preferred_lang || locale) as string;
+    const preferredLang = ((profile as any).content_language || profile.preferred_lang || locale) as string;
 
     if (!assessmentScores) {
       return errorResponse(400, "ASSESSMENT_REQUIRED", "Please complete the XIMA assessment before generating a growth path.");
@@ -191,7 +191,17 @@ serve(async (req) => {
     const userContext = await loadUserAiContext(user.id);
     const contextBlock = buildContextBlock(userContext);
 
+    const langInstructions: Record<string, string> = {
+      it: `IMPORTANT: Recommend resources in ITALIAN whenever possible. Prefer Italian-language courses on Coursera, edX, YouTube (e.g., DIMA, Politecnico di Milano). Prefer Italian podcasts on Spotify (e.g., "Storie di Brand", "Marketing Espresso"). Prefer Italian books and authors. If only English content is available for a specific topic, mark it as (EN). ALL descriptions, titles, and explanations MUST be in Italian.`,
+      en: `Recommend resources in English. All descriptions and titles in English.`,
+      es: `IMPORTANT: Recommend resources in SPANISH whenever possible. Prefer Spanish-language courses, podcasts, and books. All descriptions in Spanish.`,
+      fr: `IMPORTANT: Recommend resources in FRENCH whenever possible. All descriptions in French.`,
+      de: `IMPORTANT: Recommend resources in GERMAN whenever possible. All descriptions in German.`,
+    };
+
     const systemPrompt = `You are the XIMA Growth Advisor — a personal development coach powered by psychometric intelligence. Recommend specific, real, free learning resources.
+
+${langInstructions[preferredLang] || langInstructions.en}
 
 USER PROFILE:
 - XIMAtar: ${archetype} L${level} (${archetypeInfo?.title || archetype})
@@ -211,7 +221,6 @@ Books: widely available titles, link to OpenLibrary/Google Books/Amazon
 Podcasts: Spotify/Apple/YouTube — recommend specific shows or episodes
 
 Return 10-13 resources: 4-5 courses + 3-4 books + 3-4 podcasts. 60% weakest pillar, 30% second weakest, 10% bridging.
-For Italian users, prioritize Italian resources. Write descriptions in user's preferred language.
 
 ` + contextBlock + `
 
