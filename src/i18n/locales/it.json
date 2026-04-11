@@ -155,7 +155,9 @@
     "tests": "Growth Hub",
     "mentor_portal": "Portale Mentore",
     "settings": "Impostazioni",
-    "messages": "Messaggi"
+    "messages": "Messaggi",
+    "browse_jobs": "Offerte di Lavoro",
+    "my_offers": "Le Tue Offerte"
   },
   "hero": {
     "eyebrow": "PSICOMETRIA · AI HIRING · GDPR ART. 22 COMPLIANT",
