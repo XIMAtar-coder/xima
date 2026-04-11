@@ -146,6 +146,9 @@ const Register = () => {
           title: t('auth.register_success', 'Account created successfully'),
           description: syncSuccess ? t('register.assessment_synced', 'Your assessment data has been saved to your profile') : t('register.welcome_message'),
         });
+      }
+
+      navigate('/profile');
     } catch (error) {
       toast({ title: t('register.registration_failed'), description: t('register.try_again'), variant: "destructive" });
     } finally {
