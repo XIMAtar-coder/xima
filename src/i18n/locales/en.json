@@ -5619,7 +5619,13 @@
     "invite": "Invite",
     "saved": "Candidate saved",
     "saved_desc": "Added to your saved list",
-    "load_error": "Failed to load candidates"
+    "load_error": "Failed to load candidates",
+    "empty_platform": "The candidate pool is empty",
+    "empty_platform_hint": "As XIMA grows, candidates with completed XIMAtars will appear here. In the meantime, create a hiring goal to auto-generate a shortlist.",
+    "create_goal": "Create Hiring Goal",
+    "growing_fast": "Growing fast",
+    "growing": "Growing",
+    "filter_by_archetype": "Filter by XIMAtar"
   },
   "anonymous": {
     "candidate_label": "Candidate #{{number}}",

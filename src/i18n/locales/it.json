@@ -5344,7 +5344,13 @@
     "invite": "Invita",
     "saved": "Candidato salvato",
     "saved_desc": "Aggiunto alla tua lista",
-    "load_error": "Errore nel caricamento dei candidati"
+    "load_error": "Errore nel caricamento dei candidati",
+    "empty_platform": "Il pool candidati è vuoto",
+    "empty_platform_hint": "Man mano che XIMA cresce, i candidati con XIMAtar completo appariranno qui. Nel frattempo, crea un obiettivo di assunzione per generare automaticamente una shortlist.",
+    "create_goal": "Crea Obiettivo di Assunzione",
+    "growing_fast": "Crescita rapida",
+    "growing": "In crescita",
+    "filter_by_archetype": "Filtra per XIMAtar"
   },
   "anonymous": {
     "candidate_label": "Candidato #{{number}}",
