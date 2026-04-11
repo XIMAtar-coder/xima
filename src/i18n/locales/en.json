@@ -304,7 +304,9 @@
     "tests": "Growth Hub",
     "mentor_portal": "Mentor Portal",
     "settings": "Settings",
-    "messages": "Messages"
+    "messages": "Messages",
+    "browse_jobs": "Job Listings",
+    "my_offers": "Your Offers"
   },
   "hero": {
     "eyebrow": "PSYCHOMETRICS · AI HIRING · GDPR ART. 22 COMPLIANT",
@@ -4382,7 +4384,51 @@
       "open_chat": "Chat",
       "accepted_success": "Interest accepted! Chat is now available.",
       "privacy_note": "Company names are revealed only after showing interest. Your identity remains anonymous until you accept."
-    }
+    },
+    "tab": {
+      "for_you": "For You",
+      "growth": "Growth",
+      "opportunities": "Opportunities",
+      "discover": "Discover"
+    },
+    "for_you_welcome_title": "Your personal Feed",
+    "for_you_welcome_subtitle": "Your Feed tracks your professional growth story: pillar updates, company challenges, curated content for your archetype, and personalized recommendations.",
+    "complete_these": "Complete these steps to enrich your Feed:",
+    "upload_cv_title": "Upload your CV",
+    "upload_cv_hint": "We analyze your CV to show tensions between identity and credentials",
+    "activate_growth_title": "Activate Growth Hub",
+    "activate_growth_hint": "Get courses, books and podcasts tailored to grow your weakest pillars",
+    "complete_profile_title": "Complete your profile",
+    "complete_profile_hint": "Add desired roles, locations and preferences for better opportunities",
+    "all_set": "You've completed all initial steps. Your Feed will populate as you interact with the platform.",
+    "growth_activate_title": "Activate your Growth Hub",
+    "growth_activate_subtitle": "The Growth Hub offers a personalized path of AI-curated courses, books and podcasts to grow your weakest pillars.",
+    "activate_growth_hub": "Activate Growth Hub",
+    "your_growth_path": "Your growth path",
+    "growth_active_hint": "Growth Hub active — progress will appear here",
+    "go_to_hub": "Go to Hub",
+    "no_growth_activity": "Start completing resources in the Growth Hub to see your progress here",
+    "no_opportunities_yet": "No opportunities right now",
+    "no_opportunities_hint": "Complete your profile and XIMAtar to receive personalized matches.",
+    "browse_all_jobs": "Browse all positions",
+    "matches_for_you": "Matches for you",
+    "latest_on_platform": "Latest opportunities on the platform",
+    "for_you_chip": "For you",
+    "see_all_jobs": "See all positions",
+    "discover_empty_title": "Content coming soon",
+    "discover_empty_description": "Curated and verified articles from authoritative sources will be added soon, personalized for your archetype and pillars."
+  },
+  "jobs": {
+    "title": "Job Listings",
+    "subtitle": "Explore all available opportunities on the XIMA platform",
+    "location_placeholder": "City or country",
+    "any_work_mode": "Any work mode",
+    "any_seniority": "Any seniority",
+    "matches_for_you": "Matches for you",
+    "all_jobs": "All opportunities",
+    "no_results": "No opportunities match your filters",
+    "why_match": "Why it's a match",
+    "view_details": "Details"
   },
   "settings": {
     "page_title": "Settings",

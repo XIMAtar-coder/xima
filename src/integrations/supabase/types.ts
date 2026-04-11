@@ -2424,6 +2424,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_sponsored: boolean | null
+          is_verified: boolean | null
           language: string | null
           priority: number | null
           published_at: string | null
@@ -2436,6 +2437,8 @@ export type Database = {
           target_archetypes: string[] | null
           target_pillars: string[] | null
           title: string
+          verified_at: string | null
+          verified_by: string | null
         }
         Insert: {
           content_type?: string | null
@@ -2445,6 +2448,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_sponsored?: boolean | null
+          is_verified?: boolean | null
           language?: string | null
           priority?: number | null
           published_at?: string | null
@@ -2457,6 +2461,8 @@ export type Database = {
           target_archetypes?: string[] | null
           target_pillars?: string[] | null
           title: string
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Update: {
           content_type?: string | null
@@ -2466,6 +2472,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_sponsored?: boolean | null
+          is_verified?: boolean | null
           language?: string | null
           priority?: number | null
           published_at?: string | null
@@ -2478,6 +2485,8 @@ export type Database = {
           target_archetypes?: string[] | null
           target_pillars?: string[] | null
           title?: string
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Relationships: []
       }

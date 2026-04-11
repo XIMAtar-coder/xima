@@ -175,6 +175,7 @@ async function fetchExternalContent(archetype: string, pillar?: string): Promise
   let query = supabase
     .from('feed_external_content' as any)
     .select('*')
+    .eq('is_verified', true)
     .gt('expires_at', new Date().toISOString())
     .order('priority', { ascending: false })
     .order('published_at', { ascending: false })

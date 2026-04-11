@@ -79,6 +79,7 @@ import Pricing from "./pages/Pricing";
 import ContactSales from "./pages/ContactSales";
 import BusinessPipelineChat from "./pages/business/PipelineChat";
 import MyOffers from "./pages/candidate/MyOffers";
+import JobsBrowse from "./pages/JobsBrowse";
 
 const queryClient = new QueryClient();
 
@@ -169,6 +170,8 @@ const AppContent = () => {
           {/* Candidate session detail */}
           <Route path="/sessions/:sessionId" element={<CandidateSessionDetail />} />
           <Route path="/sessions/:sessionId/room" element={<CandidateSessionRoom />} />
+          <Route path="/jobs" element={<JobsBrowse />} />
+          <Route path="/my-offers" element={<MyOffers />} />
           <Route path="/offers" element={<MyOffers />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

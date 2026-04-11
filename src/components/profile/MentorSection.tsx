@@ -169,11 +169,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
         console.error('[MentorSection] Error fetching availability:', error);
         setAvailabilityState('no_availability');
         setAvailabilityMessage(t('profile.error_fetching_availability', 'Error loading availability'));
-        toast({
-          title: t('common.error'),
-          description: t('profile.error_fetching_slots', 'Error fetching availability'),
-          variant: 'destructive',
-        });
+        // Silently fail — don't show disruptive toast for non-critical feature
         return;
       }
 
@@ -197,11 +193,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
     } catch (error) {
       console.error('[MentorSection] Exception fetching availability:', error);
       setAvailabilityState('no_availability');
-      toast({
-        title: t('common.error'),
-        description: t('profile.error_fetching_slots', 'Error fetching availability'),
-        variant: 'destructive',
-      });
+      // Silently handle — don't show error toast for mentor availability
     } finally {
       setIsLoadingSlots(false);
     }

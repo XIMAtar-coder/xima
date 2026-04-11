@@ -11,7 +11,7 @@ import { useUserHeaderData } from '@/hooks/useUserHeaderData';
 import { supabase } from '@/integrations/supabase/client';
 import { NotificationsDropdown } from '../NotificationsDropdown';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, Settings, HelpCircle, Gift } from 'lucide-react';
+import { Menu, GraduationCap, Settings, HelpCircle, Gift, Briefcase } from 'lucide-react';
 import Footer from './Footer';
 import { MobileTabBar } from './MobileTabBar';
 import { XimaJourneyGuideModal } from '../onboarding/XimaJourneyGuideModal';
@@ -204,10 +204,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         <button onClick={() => navigate('/messages')} className={navLinkClass(location.pathname === '/messages')}>
                           {t('nav.messages')}
                         </button>
-                        <button onClick={() => navigate('/offers')} className={navLinkClass(location.pathname === '/offers')}>
+                        <button onClick={() => navigate('/jobs')} className={navLinkClass(location.pathname === '/jobs')}>
+                          <span className="flex items-center gap-1">
+                            <Briefcase className="h-4 w-4" strokeWidth={1.5} />
+                            {t('nav.browse_jobs', 'Offerte di Lavoro')}
+                          </span>
+                        </button>
+                        <button onClick={() => navigate('/my-offers')} className={navLinkClass(location.pathname === '/my-offers')}>
                           <span className="flex items-center gap-1">
                             <Gift className="h-4 w-4" strokeWidth={1.5} />
-                            {t('offers.title', 'Job Offers')}
+                            {t('nav.my_offers', 'Le Tue Offerte')}
                             {pendingOffersCount > 0 && (
                               <span className="w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center">
                                 {pendingOffersCount}
@@ -311,6 +317,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                           { path: '/profile', label: t('nav.dashboard') },
                           { path: '/chat', label: t('nav.feed') },
                           { path: '/messages', label: t('nav.messages') },
+                          { path: '/jobs', label: t('nav.browse_jobs', 'Offerte di Lavoro') },
+                          { path: '/my-offers', label: t('nav.my_offers', 'Le Tue Offerte') },
                           { path: '/development-plan', label: t('nav.tests') },
                           { path: '/settings', label: t('nav.settings', 'Impostazioni') },
                         ].map(({ path, label }) => (
