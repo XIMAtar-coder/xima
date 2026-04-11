@@ -204,10 +204,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         <button onClick={() => navigate('/messages')} className={navLinkClass(location.pathname === '/messages')}>
                           {t('nav.messages')}
                         </button>
-                        <button onClick={() => navigate('/offers')} className={navLinkClass(location.pathname === '/offers')}>
+                        <button onClick={() => navigate('/jobs')} className={navLinkClass(location.pathname === '/jobs')}>
+                          <span className="flex items-center gap-1">
+                            <Briefcase className="h-4 w-4" strokeWidth={1.5} />
+                            {t('nav.browse_jobs', 'Offerte di Lavoro')}
+                          </span>
+                        </button>
+                        <button onClick={() => navigate('/my-offers')} className={navLinkClass(location.pathname === '/my-offers')}>
                           <span className="flex items-center gap-1">
                             <Gift className="h-4 w-4" strokeWidth={1.5} />
-                            {t('offers.title', 'Job Offers')}
+                            {t('nav.my_offers', 'Le Tue Offerte')}
                             {pendingOffersCount > 0 && (
                               <span className="w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center">
                                 {pendingOffersCount}
