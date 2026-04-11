@@ -180,7 +180,10 @@
     "strongest": "Il Tuo Vantaggio",
     "area_to_develop": "Area di Crescita",
     "minutes": "min",
-    "this_role": "questo ruolo"
+    "this_role": "questo ruolo",
+    "start": "Inizia",
+    "activate": "Attiva",
+    "complete": "Completa"
   },
   "ximatar_intro": {
     "storytelling": "Non definiamo le persone con etichette. Riveliamo la dinamica tra ciò che le muove, ciò che le eleva e ciò che le trattiene",
