@@ -100,9 +100,26 @@ const BusinessSettings = () => {
         snapshot_revenue_range: sharedProfile.snapshot_revenue_range || '',
         snapshot_founded_year: sharedProfile.snapshot_founded_year?.toString() || ''
       });
+      setLogoUrl((sharedProfile as any).logo_url || (sharedProfile as any).company_logo || null);
       setInitialized(true);
     }
   }, [sharedProfile, initialized]);
+
+  const handleRegenerateProfile = async () => {
+    setRegenerating(true);
+    try {
+      const { error } = await supabase.functions.invoke('generate-company-profile', {
+        body: { company_id: user?.id, company_name: formData.companyName, website: formData.website, force_regenerate: true },
+      });
+      if (error) throw error;
+      sonnerToast.success(t('business.profile.regenerated', 'Profilo rigenerato con successo'));
+      invalidateBusinessProfile();
+    } catch (err: any) {
+      sonnerToast.error(err.message || t('business.profile.regenerate_error', 'Errore nella rigenerazione'));
+    } finally {
+      setRegenerating(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
