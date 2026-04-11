@@ -145,7 +145,21 @@
     "you": "You",
     "as_strength": "As Strength",
     "as_weakness": "As Weakness",
-    "minutes": "min"
+    "minutes": "min",
+    "start": "Start",
+    "activate": "Activate",
+    "complete": "Complete",
+    "close": "Close",
+    "next": "Next",
+    "finish": "Finish",
+    "save": "Save",
+    "cancel": "Cancel",
+    "add": "Add",
+    "dashboard": "Dashboard",
+    "previous": "Previous"
+  },
+  "tutorial": {
+    "dont_show_again": "Don't show again"
   },
   "profile": {
     "page_title": "Welcome, {{name}}",
