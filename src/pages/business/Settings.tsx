@@ -388,15 +388,33 @@ const BusinessSettings = () => {
             </CardContent>
           </Card>
 
-          {/* Save Button */}
-          <Button
-            type="submit"
-            className="w-full bg-primary hover:bg-primary/90"
-            disabled={loading}
-          >
-            <Save className="mr-2" size={16} />
-            {loading ? t('business_portal.saving') : t('businessPortal.settings_save_cta')}
-          </Button>
+          {/* Save + Regenerate */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              type="submit"
+              className="flex-1"
+              disabled={loading}
+            >
+              <Save className="mr-2" size={16} />
+              {loading ? t('business_portal.saving') : t('businessPortal.settings_save_cta')}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1"
+              onClick={handleRegenerateProfile}
+              disabled={regenerating}
+            >
+              {regenerating ? (
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t('business.profile.regenerating', 'Rigenerazione in corso...')}</>
+              ) : (
+                <><Sparkles className="w-4 h-4 mr-2" />{t('business.profile.regenerate', 'Rigenera Profilo AI')}</>
+              )}
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">
+            {t('business.profile.regenerate_hint', "Dopo aver modificato le informazioni, rigenera il profilo AI per aggiornare DNA pilastri, valori e tratti ideali del candidato.")}
+          </p>
         </form>
 
         <Separator className="my-8" />
