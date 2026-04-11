@@ -44,12 +44,12 @@ serve(async (req) => {
 
     // Fetch data in parallel
     const [optResult, progressResult, profileResult, cvResult] = await Promise.all([
-      supabase.from("profiles").select("profiling_opt_out").eq("user_id", user.id).single(),
+      supabase.from("profiles").select("profiling_opt_out, content_language, preferred_lang").eq("user_id", user.id).single(),
       supabase.from("growth_hub_progress")
         .select("resource_id, resource_type, resource_title, resource_platform, primary_pillar, path_id")
         .eq("id", progress_id).eq("user_id", user.id).single(),
       supabase.from("profiles")
-        .select("user_id, ximatar_id, ximatar, ximatar_name, ximatar_level, pillar_scores, level_start_scores")
+        .select("user_id, ximatar_id, ximatar, ximatar_name, ximatar_level, pillar_scores, level_start_scores, content_language, preferred_lang")
         .eq("user_id", user.id).single(),
       supabase.from("cv_identity_analysis")
         .select("tension_gaps, alignment_score")
@@ -91,6 +91,8 @@ serve(async (req) => {
       ? JSON.stringify(cvAnalysis.tension_gaps)
       : "No specific tension data";
 
+    const contentLang = ((profile as any).content_language || (profile as any).preferred_lang || locale) as string;
+
     const questionTypeGuide = progress.resource_type === "course"
       ? "2 scenario-based + 2 conceptual + 1 self-reflection"
       : progress.resource_type === "book"
@@ -123,7 +125,8 @@ ${questionTypeGuide}
 
 IMPORTANT: Use your knowledge of what "${progress.resource_title}" typically covers. If it's a well-known resource, reference specific concepts, frameworks, or ideas from it.
 
-LANGUAGE: ${locale}
+LANGUAGE: ${contentLang}
+IMPORTANT: Write ALL questions, answer options, and explanations in ${contentLang === 'it' ? 'ITALIAN' : contentLang === 'es' ? 'SPANISH' : contentLang === 'fr' ? 'FRENCH' : contentLang === 'de' ? 'GERMAN' : 'ENGLISH'}.
 
 ` + contextBlock + `
 
