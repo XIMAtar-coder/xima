@@ -119,8 +119,8 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
             <h2 className="text-2xl font-semibold text-foreground">{bp.company_name}</h2>
             <div className="flex gap-2 mt-2 flex-wrap">
               {industry && <Badge variant="outline">{industry}</Badge>}
-              {growthStage && <Badge variant="outline">{formatGrowthStage(growthStage)}</Badge>}
-              {companySize && <Badge variant="outline">{companySize} employees</Badge>}
+              {growthStage && <Badge variant="outline">{formatGrowthStage(growthStage, t)}</Badge>}
+              {companySize && <Badge variant="outline">{companySize} {t('businessPortal.employees', 'employees')}</Badge>}
               {city && (
                 <Badge variant="outline" className="flex items-center gap-1">
                   <MapPin className="h-3 w-3" />
@@ -155,15 +155,15 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
             {teamCulture && (
               <div className="p-4 rounded-lg bg-secondary/30">
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">{t('businessPortal.team_culture_label', 'Team Culture')}</p>
-                <p className="font-medium mt-1 text-foreground">{formatCulture(teamCulture)}</p>
-                <p className="text-sm text-muted-foreground mt-1">{cultureDescription(teamCulture)}</p>
+                <p className="font-medium mt-1 text-foreground">{formatCulture(teamCulture, t)}</p>
+                <p className="text-sm text-muted-foreground mt-1">{cultureDescription(teamCulture, t)}</p>
               </div>
             )}
             {hiringApproach && (
               <div className="p-4 rounded-lg bg-secondary/30">
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">{t('businessPortal.hiring_approach_label', 'Hiring Approach')}</p>
-                <p className="font-medium mt-1 text-foreground">{formatHiringApproach(hiringApproach)}</p>
-                <p className="text-sm text-muted-foreground mt-1">{hiringDescription(hiringApproach)}</p>
+                <p className="font-medium mt-1 text-foreground">{formatHiringApproach(hiringApproach, t)}</p>
+                <p className="text-sm text-muted-foreground mt-1">{hiringDescription(hiringApproach, t)}</p>
               </div>
             )}
           </div>
