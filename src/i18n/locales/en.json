@@ -243,11 +243,10 @@
     "processed": "Your CV has been processed",
     "baseline_ready": "Your baseline assessment is ready"
   },
-  "auth": {
-    "login_success": "Login successful",
-    "welcome_back": "Welcome back to XIMA",
-    "register_success": "Account created successfully",
-    "or": "or"
+  "assessment_toasts": {
+    "guest_complete": "Base assessment completed",
+    "save_progress": "Create an account to save your progress",
+    "ximatar_unlocked": "XIMAtar unlocked"
   },
   "progress": {
     "journey_progress": "Your Journey Progress",
@@ -1108,7 +1107,10 @@
     "or": "or",
     "continue_with_google": "Continue with Google",
     "authenticating": "Authenticating...",
-    "syncing_data": "Syncing your data..."
+    "syncing_data": "Syncing your data...",
+    "login_success": "Login successful",
+    "welcome_back": "Welcome back to XIMA",
+    "register_success": "Account created successfully"
   },
   "register": {
     "title": "Create an account",
