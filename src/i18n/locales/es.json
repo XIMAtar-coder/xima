@@ -173,11 +173,10 @@
     "processed": "Tu CV ha sido procesado",
     "baseline_ready": "Tu evaluación base está lista"
   },
-  "auth": {
-    "login_success": "Inicio de sesión exitoso",
-    "welcome_back": "Bienvenido de vuelta a XIMA",
-    "register_success": "Cuenta creada con éxito",
-    "or": "o"
+  "assessment_toasts": {
+    "guest_complete": "Evaluación base completada",
+    "save_progress": "Crea una cuenta para guardar tu progreso",
+    "ximatar_unlocked": "XIMAtar desbloqueado"
   },
   "progress": {
     "journey_progress": "Progreso de Tu Viaje",
@@ -1238,7 +1237,10 @@
     "or": "o",
     "continue_with_google": "Continuar con Google",
     "authenticating": "Autenticando...",
-    "syncing_data": "Sincronizando tus datos..."
+    "syncing_data": "Sincronizando tus datos...",
+    "login_success": "Inicio de sesión exitoso",
+    "welcome_back": "Bienvenido de vuelta a XIMA",
+    "register_success": "Cuenta creada con éxito"
   },
   "register": {
     "title": "Crear Cuenta",
