@@ -183,7 +183,18 @@
     "this_role": "questo ruolo",
     "start": "Inizia",
     "activate": "Attiva",
-    "complete": "Completa"
+    "complete": "Completa",
+    "close": "Chiudi",
+    "next": "Avanti",
+    "finish": "Fine",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "add": "Aggiungi",
+    "dashboard": "Dashboard",
+    "previous": "Precedente"
+  },
+  "tutorial": {
+    "dont_show_again": "Non mostrare più"
   },
   "ximatar_intro": {
     "storytelling": "Non definiamo le persone con etichette. Riveliamo la dinamica tra ciò che le muove, ciò che le eleva e ciò che le trattiene",
