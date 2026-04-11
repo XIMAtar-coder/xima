@@ -29,6 +29,9 @@ import CompanyLegalSettings from '@/components/business/CompanyLegalSettings';
 import { ProfilingOptOutSection } from '@/components/settings/ProfilingOptOutSection';
 import { AccountDeletionSection } from '@/components/settings/AccountDeletionSection';
 import { BusinessPlanCard } from '@/components/business/BusinessPlanCard';
+import { LogoUploader } from '@/components/business/LogoUploader';
+import { Loader2 } from 'lucide-react';
+import { toast as sonnerToast } from 'sonner';
 
 const BusinessSettings = () => {
   const { t } = useTranslation();
@@ -37,7 +40,9 @@ const BusinessSettings = () => {
   const { businessProfile: sharedProfile, invalidate: invalidateBusinessProfile, updateOptimistically } = useBusinessProfile();
   const [loading, setLoading] = useState(false);
   const [snapshotLoading, setSnapshotLoading] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
   const [initialized, setInitialized] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
   
   // Basic profile data
   const [formData, setFormData] = useState({
