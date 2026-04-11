@@ -161,6 +161,24 @@
     "complete": "¡Análisis de CV Completo!",
     "success": "Tu CV ha sido analizado exitosamente."
   },
+  "cv": {
+    "upload_success": "CV subido con éxito",
+    "upload_error": "Error al subir el CV",
+    "auto_imported": "Tu CV ha sido importado y analizado",
+    "analysis_complete": "Análisis de CV completado",
+    "invalid_type": "Tipo de archivo no válido",
+    "pdf_only": "Por favor sube un archivo PDF",
+    "file_too_large": "Archivo demasiado grande",
+    "max_size": "El tamaño máximo es 5MB",
+    "processed": "Tu CV ha sido procesado",
+    "baseline_ready": "Tu evaluación base está lista"
+  },
+  "auth": {
+    "login_success": "Inicio de sesión exitoso",
+    "welcome_back": "Bienvenido de vuelta a XIMA",
+    "register_success": "Cuenta creada con éxito",
+    "or": "o"
+  },
   "progress": {
     "journey_progress": "Progreso de Tu Viaje",
     "assessment_complete": "Evaluación Completa",
