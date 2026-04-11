@@ -23,6 +23,7 @@ import { DiscoveredPositionsBanner } from '@/components/business/DiscoveredPosit
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useChallengeStatsMap } from '@/hooks/useChallengeResponsesData';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { HowXimaWorksExplainer } from '@/components/business/HowXimaWorksExplainer';
 
 const isDev = import.meta.env.DEV;
 
@@ -379,24 +380,8 @@ const BusinessDashboard = () => {
         {/* Recommendation Debug Panel — DEV only */}
         {isDev && <RecommendationDebugPanel businessId={user?.id} hiringGoalId={hiringGoalDraftId} />}
 
-        {/* How XIMA Works — collapsible reference */}
-        <Collapsible>
-          <Card className="border-border/50">
-            <CollapsibleTrigger className="w-full p-4 flex items-center justify-between cursor-pointer hover:bg-secondary/20 rounded-xl transition-colors">
-              <div className="flex items-center gap-2">
-                <Info className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm font-medium text-foreground">{t('businessPortal.how_xima_works_title', "How XIMA's 3-Level Pipeline Works")}</span>
-              </div>
-              <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform" />
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <div className="px-4 pb-4 text-sm text-muted-foreground space-y-2">
-                <p>{t('businessPortal.how_xima_works_body')}</p>
-                <p>{t('businessPortal.how_xima_works_privacy')}</p>
-              </div>
-            </CollapsibleContent>
-          </Card>
-        </Collapsible>
+        {/* How XIMA Works — interactive explainer */}
+        <HowXimaWorksExplainer />
       </div>
     </BusinessLayout>
   );

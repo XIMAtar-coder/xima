@@ -97,6 +97,7 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
   if (!businessProfile) return null;
 
   const bp = businessProfile;
+  const logoUrl = (bp as any).logo_url || (bp as any).company_logo;
   const industry = bp.manual_industry || bp.snapshot_industry || (bp.metadata as any)?.industry;
   const city = bp.manual_hq_city || bp.snapshot_hq_city || (bp.metadata as any)?.headquarters_city;
   const country = bp.manual_hq_country || bp.snapshot_hq_country || (bp.metadata as any)?.headquarters_country;
@@ -115,8 +116,16 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
       <CardContent className="p-6">
         {/* Header row */}
         <div className="flex items-start justify-between">
-          <div>
-            <h2 className="text-2xl font-semibold text-foreground">{bp.company_name}</h2>
+          <div className="flex items-center gap-4">
+            {logoUrl ? (
+              <img src={logoUrl} alt={bp.company_name} className="w-14 h-14 rounded-xl object-contain border border-border bg-background" />
+            ) : (
+              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-xl font-bold text-primary">
+                {bp.company_name?.[0] || 'C'}
+              </div>
+            )}
+            <div>
+              <h2 className="text-2xl font-semibold text-foreground">{bp.company_name}</h2>
             <div className="flex gap-2 mt-2 flex-wrap">
               {industry && <Badge variant="outline">{industry}</Badge>}
               {growthStage && <Badge variant="outline">{formatGrowthStage(growthStage, t)}</Badge>}
@@ -127,6 +136,7 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
                   {city}{country ? `, ${country}` : ''}
                 </Badge>
               )}
+            </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
