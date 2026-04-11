@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Upload, FileText, Check } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
@@ -13,6 +14,7 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
   const [uploading, setUploading] = useState(false);
   const [uploadComplete, setUploadComplete] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,8 +23,8 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
       
       if (selectedFile.type !== 'application/pdf') {
         toast({
-          title: "Invalid file type",
-          description: "Please upload a PDF file",
+          title: t('cv.invalid_type', 'Invalid file type'),
+          description: t('cv.pdf_only', 'Please upload a PDF file'),
           variant: "destructive"
         });
         return;
@@ -30,8 +32,8 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
       
       if (selectedFile.size > 5 * 1024 * 1024) {
         toast({
-          title: "File too large",
-          description: "Maximum file size is 5MB",
+          title: t('cv.file_too_large', 'File too large'),
+          description: t('cv.max_size', 'Maximum file size is 5MB'),
           variant: "destructive"
         });
         return;
@@ -54,8 +56,8 @@ const CvUploader: React.FC<CvUploaderProps> = ({ onCvUploaded }) => {
       setUploadComplete(true);
       
       toast({
-        title: "CV uploaded successfully",
-        description: "Your CV has been processed",
+        title: t('cv.upload_success', 'CV uploaded successfully'),
+        description: t('cv.processed', 'Your CV has been processed'),
         variant: "default"
       });
     }, 2000);
