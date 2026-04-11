@@ -4394,11 +4394,13 @@ export type Database = {
           archetype_history: Json | null
           availability_date: string | null
           avatar: Json | null
+          content_language: string | null
           created_at: string
           creation_source: string | null
           cv_comments: Json | null
           cv_scores: Json | null
           desired_locations: Json | null
+          desired_roles: Json | null
           drive_level: string | null
           drive_score: number | null
           drive_updated_at: string | null
@@ -4415,6 +4417,7 @@ export type Database = {
           level_start_scores: Json | null
           level_started_at: string | null
           level_up_eligible: boolean | null
+          max_commute_minutes: number | null
           membership_renewal_at: string | null
           membership_started_at: string | null
           membership_tier: Database["public"]["Enums"]["membership_tier"]
@@ -4434,6 +4437,7 @@ export type Database = {
           salary_expectation: Json | null
           strongest_pillar: string | null
           suggested_new_archetype: string | null
+          transportation_options: Json | null
           updated_at: string
           user_id: string
           verification_required_until: string
@@ -4455,11 +4459,13 @@ export type Database = {
           archetype_history?: Json | null
           availability_date?: string | null
           avatar?: Json | null
+          content_language?: string | null
           created_at?: string
           creation_source?: string | null
           cv_comments?: Json | null
           cv_scores?: Json | null
           desired_locations?: Json | null
+          desired_roles?: Json | null
           drive_level?: string | null
           drive_score?: number | null
           drive_updated_at?: string | null
@@ -4476,6 +4482,7 @@ export type Database = {
           level_start_scores?: Json | null
           level_started_at?: string | null
           level_up_eligible?: boolean | null
+          max_commute_minutes?: number | null
           membership_renewal_at?: string | null
           membership_started_at?: string | null
           membership_tier?: Database["public"]["Enums"]["membership_tier"]
@@ -4495,6 +4502,7 @@ export type Database = {
           salary_expectation?: Json | null
           strongest_pillar?: string | null
           suggested_new_archetype?: string | null
+          transportation_options?: Json | null
           updated_at?: string
           user_id: string
           verification_required_until?: string
@@ -4516,11 +4524,13 @@ export type Database = {
           archetype_history?: Json | null
           availability_date?: string | null
           avatar?: Json | null
+          content_language?: string | null
           created_at?: string
           creation_source?: string | null
           cv_comments?: Json | null
           cv_scores?: Json | null
           desired_locations?: Json | null
+          desired_roles?: Json | null
           drive_level?: string | null
           drive_score?: number | null
           drive_updated_at?: string | null
@@ -4537,6 +4547,7 @@ export type Database = {
           level_start_scores?: Json | null
           level_started_at?: string | null
           level_up_eligible?: boolean | null
+          max_commute_minutes?: number | null
           membership_renewal_at?: string | null
           membership_started_at?: string | null
           membership_tier?: Database["public"]["Enums"]["membership_tier"]
@@ -4556,6 +4567,7 @@ export type Database = {
           salary_expectation?: Json | null
           strongest_pillar?: string | null
           suggested_new_archetype?: string | null
+          transportation_options?: Json | null
           updated_at?: string
           user_id?: string
           verification_required_until?: string
