@@ -32,11 +32,11 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0];
       if (selectedFile.type !== 'application/pdf') {
-        toast({ title: "Invalid file type", description: "Please upload a PDF file", variant: "destructive" });
+        toast({ title: t('cv.invalid_type', 'Invalid file type'), description: t('cv.pdf_only', 'Please upload a PDF file'), variant: "destructive" });
         return;
       }
       if (selectedFile.size > 5 * 1024 * 1024) {
-        toast({ title: "File too large", description: "Maximum file size is 5MB", variant: "destructive" });
+        toast({ title: t('cv.file_too_large', 'File too large'), description: t('cv.max_size', 'Maximum file size is 5MB'), variant: "destructive" });
         return;
       }
       setFile(selectedFile);
