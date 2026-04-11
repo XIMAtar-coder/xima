@@ -1187,6 +1187,45 @@
       "submit": "Create Business Account",
       "have_account": "Already have an account?",
       "sign_in": "Sign in"
+    },
+    "logo": {
+      "upload": "Upload logo",
+      "change": "Change logo",
+      "upload_success": "Logo uploaded successfully",
+      "upload_error": "Error uploading logo",
+      "too_large": "File is too large (max 2MB)",
+      "wrong_type": "Unsupported format (PNG, JPG, SVG, WebP)",
+      "hint": "PNG, JPG, SVG or WebP — max 2MB"
+    },
+    "profile": {
+      "regenerating": "Regenerating...",
+      "regenerate": "Regenerate AI Profile",
+      "regenerated": "Profile regenerated successfully",
+      "regenerate_error": "Error regenerating profile",
+      "regenerate_hint": "After editing your information, regenerate the AI profile to update pillar DNA, values, and ideal candidate traits."
+    },
+    "settings": {
+      "logo": "Company logo"
+    },
+    "how_xima": {
+      "title": "How XIMA Works",
+      "subtitle": "From brief to hire in 4 steps",
+      "step1_title": "1. Define your hiring goal",
+      "step1_desc": "Describe the role with responsibilities, location, seniority. XIMA analyzes cultural fit with your company DNA.",
+      "step2_title": "2. Smart anonymous shortlist",
+      "step2_desc": "Receive candidates ranked by behavioral identity (XIMAtar), growth trajectory, engagement, and location. No name, no photo, no CV: signals only.",
+      "step3_title": "3. 3-level challenge pipeline",
+      "step3_desc": "L1 evaluates behaviors, L2 technical skills, L3 communication. Candidates see the next level only if you unlock advancement.",
+      "step4_title": "4. Identity reveal and offer",
+      "step4_desc": "Only when you decide to make an offer is the candidate's identity revealed. Zero bias throughout the process.",
+      "create_goal": "Create your first goal",
+      "browse_pool": "Explore the pool",
+      "benefit1_title": "Zero bias",
+      "benefit1_desc": "Total anonymity until the offer",
+      "benefit2_title": "Behavioral AI",
+      "benefit2_desc": "Matching on 5 psychometric pillars",
+      "benefit3_title": "Growth trajectory",
+      "benefit3_desc": "Choose who's growing, not just who's arrived"
     }
   },
   "not_found": {
