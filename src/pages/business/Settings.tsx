@@ -29,6 +29,9 @@ import CompanyLegalSettings from '@/components/business/CompanyLegalSettings';
 import { ProfilingOptOutSection } from '@/components/settings/ProfilingOptOutSection';
 import { AccountDeletionSection } from '@/components/settings/AccountDeletionSection';
 import { BusinessPlanCard } from '@/components/business/BusinessPlanCard';
+import { LogoUploader } from '@/components/business/LogoUploader';
+import { Loader2 } from 'lucide-react';
+import { toast as sonnerToast } from 'sonner';
 
 const BusinessSettings = () => {
   const { t } = useTranslation();
@@ -37,7 +40,9 @@ const BusinessSettings = () => {
   const { businessProfile: sharedProfile, invalidate: invalidateBusinessProfile, updateOptimistically } = useBusinessProfile();
   const [loading, setLoading] = useState(false);
   const [snapshotLoading, setSnapshotLoading] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
   const [initialized, setInitialized] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
   
   // Basic profile data
   const [formData, setFormData] = useState({
@@ -95,9 +100,26 @@ const BusinessSettings = () => {
         snapshot_revenue_range: sharedProfile.snapshot_revenue_range || '',
         snapshot_founded_year: sharedProfile.snapshot_founded_year?.toString() || ''
       });
+      setLogoUrl((sharedProfile as any).logo_url || (sharedProfile as any).company_logo || null);
       setInitialized(true);
     }
   }, [sharedProfile, initialized]);
+
+  const handleRegenerateProfile = async () => {
+    setRegenerating(true);
+    try {
+      const { error } = await supabase.functions.invoke('generate-company-profile', {
+        body: { company_id: user?.id, company_name: formData.companyName, website: formData.website, force_regenerate: true },
+      });
+      if (error) throw error;
+      sonnerToast.success(t('business.profile.regenerated', 'Profilo rigenerato con successo'));
+      invalidateBusinessProfile();
+    } catch (err: any) {
+      sonnerToast.error(err.message || t('business.profile.regenerate_error', 'Errore nella rigenerazione'));
+    } finally {
+      setRegenerating(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -268,6 +290,17 @@ const BusinessSettings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Logo Upload */}
+              <div className="space-y-2">
+                <Label className="text-foreground">{t('business.settings.logo', 'Logo aziendale')}</Label>
+                <LogoUploader
+                  currentLogo={logoUrl}
+                  onUpload={(url) => { setLogoUrl(url); invalidateBusinessProfile(); }}
+                />
+              </div>
+
+              <Separator />
+
               <div className="space-y-2">
                 <Label htmlFor="companyName" className="text-foreground">{t('businessPortal.settings_company_name_label')}</Label>
                 <Input
@@ -355,15 +388,33 @@ const BusinessSettings = () => {
             </CardContent>
           </Card>
 
-          {/* Save Button */}
-          <Button
-            type="submit"
-            className="w-full bg-primary hover:bg-primary/90"
-            disabled={loading}
-          >
-            <Save className="mr-2" size={16} />
-            {loading ? t('business_portal.saving') : t('businessPortal.settings_save_cta')}
-          </Button>
+          {/* Save + Regenerate */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              type="submit"
+              className="flex-1"
+              disabled={loading}
+            >
+              <Save className="mr-2" size={16} />
+              {loading ? t('business_portal.saving') : t('businessPortal.settings_save_cta')}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1"
+              onClick={handleRegenerateProfile}
+              disabled={regenerating}
+            >
+              {regenerating ? (
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t('business.profile.regenerating', 'Rigenerazione in corso...')}</>
+              ) : (
+                <><Sparkles className="w-4 h-4 mr-2" />{t('business.profile.regenerate', 'Rigenera Profilo AI')}</>
+              )}
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">
+            {t('business.profile.regenerate_hint', "Dopo aver modificato le informazioni, rigenera il profilo AI per aggiornare DNA pilastri, valori e tratti ideali del candidato.")}
+          </p>
         </form>
 
         <Separator className="my-8" />

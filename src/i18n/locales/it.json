@@ -1323,6 +1323,45 @@
       "submit": "Crea Account Business",
       "have_account": "Hai già un account?",
       "sign_in": "Accedi"
+    },
+    "logo": {
+      "upload": "Carica logo",
+      "change": "Cambia logo",
+      "upload_success": "Logo caricato con successo",
+      "upload_error": "Errore nel caricamento del logo",
+      "too_large": "Il file è troppo grande (max 2MB)",
+      "wrong_type": "Formato non supportato (PNG, JPG, SVG, WebP)",
+      "hint": "PNG, JPG, SVG o WebP — max 2MB"
+    },
+    "profile": {
+      "regenerating": "Rigenerazione in corso...",
+      "regenerate": "Rigenera Profilo AI",
+      "regenerated": "Profilo rigenerato con successo",
+      "regenerate_error": "Errore nella rigenerazione",
+      "regenerate_hint": "Dopo aver modificato le informazioni, rigenera il profilo AI per aggiornare DNA pilastri, valori e tratti ideali del candidato."
+    },
+    "settings": {
+      "logo": "Logo aziendale"
+    },
+    "how_xima": {
+      "title": "Come funziona XIMA",
+      "subtitle": "Dal brief all'assunzione in 4 passaggi",
+      "step1_title": "1. Definisci il tuo obiettivo di assunzione",
+      "step1_desc": "Descrivi il ruolo con responsabilità, location, seniority. XIMA analizza il fit culturale con il DNA della tua azienda.",
+      "step2_title": "2. Shortlist intelligente e anonima",
+      "step2_desc": "Ricevi candidati ordinati per identità comportamentale (XIMAtar), traiettoria di crescita, engagement e località. Nessun nome, nessuna foto, nessun CV: solo segnali.",
+      "step3_title": "3. Pipeline a 3 livelli di sfide",
+      "step3_desc": "L1 valuta i comportamenti, L2 le competenze tecniche, L3 le capacità comunicative. I candidati vedono solo il livello successivo se sblocchi l'avanzamento.",
+      "step4_title": "4. Rivelazione identità e offerta",
+      "step4_desc": "Solo quando decidi di fare un'offerta, l'identità del candidato viene rivelata. Zero bias durante tutto il processo.",
+      "create_goal": "Crea il tuo primo obiettivo",
+      "browse_pool": "Esplora il pool",
+      "benefit1_title": "Zero bias",
+      "benefit1_desc": "Anonimato totale fino all'offerta",
+      "benefit2_title": "AI comportamentale",
+      "benefit2_desc": "Matching su 5 pilastri psicometrici",
+      "benefit3_title": "Traiettoria di crescita",
+      "benefit3_desc": "Scegli chi sta crescendo, non solo chi è arrivato"
     }
   },
   "not_found": {
