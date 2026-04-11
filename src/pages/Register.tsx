@@ -103,8 +103,47 @@ const Register = () => {
         }
 
         const syncSuccess = await syncGuestAssessmentToProfile(newUserId);
+        
+        // Auto-import CV from guest onboarding if available
+        try {
+          const pendingCvRaw = sessionStorage.getItem('xima_pending_cv');
+          if (pendingCvRaw) {
+            const pendingCv = JSON.parse(pendingCvRaw);
+            // Convert base64 data URL back to File
+            const res = await fetch(pendingCv.base64_data);
+            const blob = await res.blob();
+            const file = new File([blob], pendingCv.file_name, { type: pendingCv.file_type });
+            
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const { data: sessionData } = await supabase.auth.getSession();
+            const accessToken = sessionData?.session?.access_token;
+            if (accessToken) {
+              const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+              const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+              
+              fetch(`${supabaseUrl}/functions/v1/analyze-cv`, {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'apikey': supabaseAnonKey,
+                },
+                body: formData,
+              }).then(() => {
+                console.log('✅ Pending CV auto-imported after registration');
+              }).catch(e => {
+                console.warn('[Register] CV auto-import failed (non-blocking):', e);
+              });
+            }
+            sessionStorage.removeItem('xima_pending_cv');
+          }
+        } catch (e) {
+          console.warn('[Register] CV auto-import error (non-blocking):', e);
+        }
+
         toast({
-          title: t('register.registration_success'),
+          title: t('auth.register_success', 'Account created successfully'),
           description: syncSuccess ? t('register.assessment_synced', 'Your assessment data has been saved to your profile') : t('register.welcome_message'),
         });
       }

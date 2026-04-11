@@ -241,7 +241,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
       }
     }
 
-    // Clean up sessionStorage after successful sync
+    // Clean up sessionStorage after successful sync (keep xima_pending_cv for CV import)
     sessionStorage.removeItem('latest_assessment_result_id');
     sessionStorage.removeItem('guest_pillar_scores');
     sessionStorage.removeItem('guest_ximatar');

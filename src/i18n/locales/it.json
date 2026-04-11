@@ -996,7 +996,25 @@
     "uploading": "Caricamento...",
     "analyzing": "Analisi del tuo CV...",
     "complete": "Analisi CV Completata!",
-    "success": "Il tuo CV è stato analizzato con successo."
+    "success": "Il tuo CV è stato analizzato con successo.",
+    "cached": "Mostro l'analisi più recente (limite mensile raggiunto)."
+  },
+  "cv": {
+    "upload_success": "CV caricato con successo",
+    "upload_error": "Errore nel caricamento del CV",
+    "auto_imported": "Il tuo CV è stato importato e analizzato",
+    "analysis_complete": "Analisi del CV completata",
+    "invalid_type": "Tipo di file non valido",
+    "pdf_only": "Carica un file PDF",
+    "file_too_large": "File troppo grande",
+    "max_size": "La dimensione massima è 5MB",
+    "processed": "Il tuo CV è stato elaborato",
+    "baseline_ready": "La tua valutazione di base è pronta"
+  },
+  "assessment_toasts": {
+    "guest_complete": "Valutazione di base completata",
+    "save_progress": "Crea un account per salvare i tuoi progressi",
+    "ximatar_unlocked": "XIMAtar sbloccato"
   },
   "progress": {
     "journey_progress": "Progresso del Tuo Percorso",
@@ -1224,7 +1242,10 @@
     "or": "oppure",
     "continue_with_google": "Continua con Google",
     "authenticating": "Autenticazione...",
-    "syncing_data": "Sincronizzazione dei tuoi dati..."
+    "syncing_data": "Sincronizzazione dei tuoi dati...",
+    "login_success": "Accesso effettuato",
+    "welcome_back": "Bentornato su XIMA",
+    "register_success": "Account creato con successo"
   },
   "register": {
     "title": "Crea un Account",

@@ -228,7 +228,25 @@
     "uploading": "Uploading...",
     "analyzing": "Analyzing your CV...",
     "complete": "CV Analysis Complete!",
-    "success": "Your CV has been analyzed successfully."
+    "success": "Your CV has been analyzed successfully.",
+    "cached": "Showing your most recent analysis (monthly limit reached)."
+  },
+  "cv": {
+    "upload_success": "CV uploaded successfully",
+    "upload_error": "Error uploading CV",
+    "auto_imported": "Your CV has been imported and analyzed",
+    "analysis_complete": "CV analysis complete",
+    "invalid_type": "Invalid file type",
+    "pdf_only": "Please upload a PDF file",
+    "file_too_large": "File too large",
+    "max_size": "Maximum file size is 5MB",
+    "processed": "Your CV has been processed",
+    "baseline_ready": "Your baseline assessment is ready"
+  },
+  "assessment_toasts": {
+    "guest_complete": "Base assessment completed",
+    "save_progress": "Create an account to save your progress",
+    "ximatar_unlocked": "XIMAtar unlocked"
   },
   "progress": {
     "journey_progress": "Your Journey Progress",
@@ -1089,7 +1107,10 @@
     "or": "or",
     "continue_with_google": "Continue with Google",
     "authenticating": "Authenticating...",
-    "syncing_data": "Syncing your data..."
+    "syncing_data": "Syncing your data...",
+    "login_success": "Login successful",
+    "welcome_back": "Welcome back to XIMA",
+    "register_success": "Account created successfully"
   },
   "register": {
     "title": "Create an account",
