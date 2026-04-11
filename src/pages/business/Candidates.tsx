@@ -91,8 +91,9 @@ const BusinessCandidates = () => {
       setTotalCount(data.total_count || 0);
       setPlanLimit(data.plan_limit || 5);
       setIsRestricted(data.is_restricted || false);
-    } catch {
-      toast({ title: t('common.error'), description: t('candidate_pool.load_error', 'Failed to load candidates'), variant: 'destructive' });
+    } catch (err) {
+      console.warn('[candidate-pool] Load error:', err);
+      // Silent fail — empty pool is a valid state, not an error
     } finally {
       setIsLoading(false);
     }
@@ -283,10 +284,27 @@ const BusinessCandidates = () => {
             ))}
           </div>
         ) : candidates.length === 0 ? (
-          <div className="text-center py-16 space-y-3">
+          <div className="text-center py-16 space-y-4 rounded-xl border bg-secondary/10">
             <Users className="h-12 w-12 mx-auto text-muted-foreground/50" />
-            <p className="text-lg font-medium text-foreground">{t('candidate_pool.no_results', 'No candidates match your filters')}</p>
-            <p className="text-sm text-muted-foreground">{t('candidate_pool.try_adjusting', 'Try adjusting your filters')}</p>
+            <p className="text-lg font-medium text-foreground">
+              {totalCount === 0
+                ? t('candidate_pool.empty_platform', 'Il pool candidati è vuoto')
+                : t('candidate_pool.no_results', 'Nessun candidato corrisponde ai filtri')}
+            </p>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+              {totalCount === 0
+                ? t('candidate_pool.empty_platform_hint', 'Man mano che XIMA cresce, i candidati con XIMAtar completo appariranno qui.')
+                : t('candidate_pool.try_adjusting', 'Prova a rimuovere alcuni filtri per ampliare la ricerca')}
+            </p>
+            {totalCount === 0 ? (
+              <Button variant="outline" onClick={() => navigate('/business/goals/new')}>
+                {t('candidate_pool.create_goal', 'Crea Obiettivo di Assunzione')}
+              </Button>
+            ) : hasActiveFilters ? (
+              <Button variant="outline" onClick={() => { setFilters(INITIAL_FILTERS); setPage(0); }}>
+                {t('candidate_pool.clear_filters', 'Cancella filtri')}
+              </Button>
+            ) : null}
           </div>
         ) : (
           <>

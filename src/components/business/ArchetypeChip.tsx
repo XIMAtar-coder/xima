@@ -1,11 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-const ARCHETYPE_EMOJI: Record<string, string> = {
-  lion: '🦁', owl: '🦉', dolphin: '🐬', fox: '🦊', bear: '🐻', bee: '🐝',
-  wolf: '🐺', cat: '🐱', parrot: '🦜', elephant: '🐘', horse: '🐴', chameleon: '🦎',
-};
-
 interface ArchetypeChipProps {
   id: string;
   label: string;
@@ -14,19 +9,30 @@ interface ArchetypeChipProps {
 }
 
 export const ArchetypeChip: React.FC<ArchetypeChipProps> = ({ id, label, selected, onClick }) => {
-  const emoji = ARCHETYPE_EMOJI[id] || '';
+  const isAll = id === 'all';
 
   return (
     <button
       onClick={onClick}
       className={cn(
-        'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors border',
+        'flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all border-2',
         selected
-          ? 'bg-primary text-primary-foreground border-primary'
-          : 'bg-card text-foreground border-border hover:bg-muted'
+          ? 'bg-primary/10 text-foreground border-primary shadow-sm'
+          : 'bg-background text-foreground border-border hover:border-primary/50'
       )}
     >
-      {emoji && <span>{emoji}</span>}
+      {isAll ? (
+        <span className="w-5 h-5 flex items-center justify-center text-xs">★</span>
+      ) : (
+        <img
+          src={`/ximatars/${id}.png`}
+          alt={label}
+          className="w-5 h-5 rounded-full object-cover"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = 'none';
+          }}
+        />
+      )}
       {label}
     </button>
   );
