@@ -30,8 +30,10 @@ serve(async (req) => {
 
     const serviceClient = createClient(supabaseUrl, serviceKey);
 
-    const body = await req.json();
+    const body = await req.json().catch(() => ({}));
     const { filters = {}, page = 0, page_size = 20 } = body;
+
+    console.log("[browse-pool] Filters:", JSON.stringify(filters), "Page:", page);
 
     // Resolve business plan tier
     const { data: entitlement } = await serviceClient
@@ -93,8 +95,16 @@ serve(async (req) => {
 
     const { data: candidates, error: queryError, count } = await query;
     if (queryError) {
-      console.error("[browse-pool] Query error:", queryError.message);
-      return errorResponse(500, "QUERY_FAILED", "Failed to load candidates");
+      console.error("[browse-pool] Query error:", queryError.message, queryError.details);
+      return jsonResponse({
+        candidates: [],
+        total_count: 0,
+        plan_limit: planLimit,
+        plan,
+        is_restricted: false,
+        error: "query_failed",
+        error_message: queryError.message,
+      });
     }
 
     const candidateIds = (candidates || []).map((c: any) => c.user_id);
@@ -225,7 +235,15 @@ serve(async (req) => {
       page_size,
     });
   } catch (err: any) {
-    console.error("[browse-pool] Error:", err.message);
-    return errorResponse(500, "INTERNAL_ERROR", err.message);
+    console.error("[browse-pool] Error:", err.message, err.stack);
+    return jsonResponse({
+      candidates: [],
+      total_count: 0,
+      plan_limit: 5,
+      plan: 'free',
+      is_restricted: false,
+      error: "internal_error",
+      error_message: err.message,
+    });
   }
 });

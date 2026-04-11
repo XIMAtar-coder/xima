@@ -62,14 +62,14 @@ export const BusinessJourneyGuideModal = ({ open, onClose, isAutoOpen = false }:
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
-      <DialogContent className="max-w-lg p-0 rounded-2xl border-[#3A9FFF]/20 bg-gradient-to-b from-[#0F1419] to-[#0A0F1C] overflow-hidden text-white">
+      <DialogContent className="max-w-lg p-0 rounded-2xl border-border bg-background shadow-2xl overflow-hidden">
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute right-4 top-4 z-10 rounded-full p-1 text-[#A3ABB5] hover:text-white transition-colors"
-          aria-label={t('guide.buttons.close', 'Close')}
+          className="absolute right-4 top-4 z-10 rounded-full p-2 hover:bg-secondary transition-colors"
+          aria-label={t('common.close', 'Close')}
         >
-          <X className="h-4 w-4" />
+          <X className="h-5 w-5 text-muted-foreground" />
         </button>
 
         {/* Progress dots */}
@@ -79,33 +79,33 @@ export const BusinessJourneyGuideModal = ({ open, onClose, isAutoOpen = false }:
               key={i}
               className={`h-1.5 rounded-full transition-all duration-300 motion-reduce:transition-none ${
                 i === currentStep
-                  ? 'w-6 bg-[#3A9FFF]'
+                  ? 'w-6 bg-primary'
                   : i < currentStep
-                    ? 'w-1.5 bg-[#3A9FFF]/50'
-                    : 'w-1.5 bg-[#A3ABB5]/20'
+                    ? 'w-1.5 bg-primary/50'
+                    : 'w-1.5 bg-muted-foreground/20'
               }`}
             />
           ))}
         </div>
 
         {/* Step counter */}
-        <p className="text-xs text-[#A3ABB5] text-center">
+        <p className="text-xs text-muted-foreground text-center">
           {currentStep + 1} / {STEPS.length}
         </p>
 
         {/* Content */}
         <div className="px-8 pb-2 pt-2 text-center animate-onboarding-fade-in motion-reduce:animate-none" key={currentStep}>
           <div className="flex justify-center mb-5">
-            <div className="p-3.5 rounded-full bg-[#3A9FFF]/10 border border-[#3A9FFF]/20">
-              <Icon className="h-8 w-8 text-[#3A9FFF]" />
+            <div className="p-3.5 rounded-full bg-primary/10 border border-primary/20">
+              <Icon className="h-8 w-8 text-primary" />
             </div>
           </div>
 
-          <h2 className="text-xl font-bold mb-2 text-white">
+          <h2 className="text-xl font-bold mb-2 text-foreground">
             {t(`business_guide.steps.${step.key}.title`, step.key)}
           </h2>
 
-          <p className="text-sm text-[#A3ABB5] leading-relaxed mb-1">
+          <p className="text-sm text-muted-foreground leading-relaxed mb-1">
             {t(`business_guide.steps.${step.key}.body`, '')}
           </p>
 
@@ -113,7 +113,7 @@ export const BusinessJourneyGuideModal = ({ open, onClose, isAutoOpen = false }:
             <Button
               variant="link"
               size="sm"
-              className="text-xs text-[#3A9FFF] font-medium px-0 h-auto"
+              className="text-xs text-primary font-medium px-0 h-auto"
               onClick={handleCtaNavigate}
             >
               {t(`business_guide.steps.${step.key}.cta`, 'Go there →')}
@@ -128,10 +128,10 @@ export const BusinessJourneyGuideModal = ({ open, onClose, isAutoOpen = false }:
               <Checkbox
                 checked={dontShowAgain}
                 onCheckedChange={(v) => setDontShowAgain(!!v)}
-                className="h-3.5 w-3.5 border-[#A3ABB5]/40"
+                className="border-2"
               />
-              <span className="text-xs text-[#A3ABB5]">
-                {t('guide.buttons.dont_show_again', "Don't show again")}
+              <span className="text-sm font-medium text-foreground">
+                {t('tutorial.dont_show_again', "Non mostrare più")}
               </span>
             </label>
           )}
@@ -142,18 +142,18 @@ export const BusinessJourneyGuideModal = ({ open, onClose, isAutoOpen = false }:
               size="sm"
               onClick={handleBack}
               disabled={isFirst}
-              className="gap-1.5 text-[#A3ABB5] hover:text-white hover:bg-[#3A9FFF]/10"
+              className="gap-1.5"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              {t('guide.buttons.back', 'Back')}
+              {t('common.back', 'Indietro')}
             </Button>
 
             <Button
               size="sm"
               onClick={handleNext}
-              className="gap-1.5 bg-[#3A9FFF] hover:bg-[#3A9FFF]/80 text-white"
+              className="gap-1.5"
             >
-              {isLast ? t('guide.buttons.finish', 'Finish') : t('guide.buttons.next', 'Next')}
+              {isLast ? t('common.finish', 'Fine') : t('common.next', 'Avanti')}
               {!isLast && <ArrowRight className="h-3.5 w-3.5" />}
             </Button>
           </div>

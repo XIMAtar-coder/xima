@@ -7,11 +7,6 @@ import { Progress } from '@/components/ui/progress';
 import { Send, Bookmark, TrendingUp, Zap, MapPin, Clock } from 'lucide-react';
 import { XIMATAR_PROFILES } from '@/lib/ximatarTaxonomy';
 
-const ARCHETYPE_EMOJI: Record<string, string> = {
-  lion: '🦁', owl: '🦉', dolphin: '🐬', fox: '🦊', bear: '🐻', bee: '🐝',
-  wolf: '🐺', cat: '🐱', parrot: '🦜', elephant: '🐘', horse: '🐴', chameleon: '🦎',
-};
-
 const PILLAR_LABELS: Record<string, string> = {
   drive: 'Drive',
   comp_power: 'Comp.',
@@ -41,7 +36,6 @@ interface PoolCandidateCardProps {
 export const PoolCandidateCard: React.FC<PoolCandidateCardProps> = ({ candidate, onInvite, onSave }) => {
   const { t } = useTranslation();
   const profile = XIMATAR_PROFILES[candidate.ximatar_archetype];
-  const emoji = ARCHETYPE_EMOJI[candidate.ximatar_archetype] || '🔮';
 
   const resolvePillar = (key: string) => {
     const scores = candidate.pillar_scores || {};
@@ -52,9 +46,16 @@ export const PoolCandidateCard: React.FC<PoolCandidateCardProps> = ({ candidate,
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardContent className="p-5 space-y-4">
-        {/* Header: archetype identity */}
+        {/* Header: archetype identity with real image */}
         <div className="flex items-center gap-3">
-          <span className="text-3xl">{emoji}</span>
+          <img
+            src={`/ximatars/${candidate.ximatar_archetype}.png`}
+            alt={profile?.name || candidate.ximatar_archetype}
+            className="w-10 h-10 rounded-full object-cover border-2 border-primary/20"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = 'none';
+            }}
+          />
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-foreground truncate">
               {profile?.name || candidate.ximatar_archetype}
@@ -85,8 +86,8 @@ export const PoolCandidateCard: React.FC<PoolCandidateCardProps> = ({ candidate,
             <Badge variant="secondary" className="text-xs gap-1">
               <Zap className="h-3 w-3" />
               {candidate.engagement_level === 'highly_active'
-                ? t('candidate_pool.highly_active', 'Highly active')
-                : t('candidate_pool.active', 'Active')}
+                ? t('candidate_pool.highly_active', 'Molto attivo')
+                : t('candidate_pool.active', 'Attivo')}
             </Badge>
           )}
           {candidate.work_preference && (
@@ -99,16 +100,18 @@ export const PoolCandidateCard: React.FC<PoolCandidateCardProps> = ({ candidate,
             <Badge variant="outline" className="text-xs gap-1">
               <Clock className="h-3 w-3" />
               {candidate.availability === 'immediately'
-                ? t('candidate_pool.available_now', 'Available now')
+                ? t('candidate_pool.available_now', 'Disponibile ora')
                 : candidate.availability === '1_month'
-                ? t('candidate_pool.within_month', 'Within 1 month')
-                : t('candidate_pool.within_3months', 'Within 3 months')}
+                ? t('candidate_pool.within_month', 'Entro 1 mese')
+                : t('candidate_pool.within_3months', 'Entro 3 mesi')}
             </Badge>
           )}
           {candidate.trajectory_trend && (
             <Badge variant="secondary" className="text-xs gap-1">
               <TrendingUp className="h-3 w-3" />
-              {candidate.trajectory_trend === 'growing_fast' ? 'Growing fast' : 'Growing'}
+              {candidate.trajectory_trend === 'growing_fast'
+                ? t('candidate_pool.growing_fast', 'Crescita rapida')
+                : t('candidate_pool.growing', 'In crescita')}
             </Badge>
           )}
         </div>
@@ -117,7 +120,7 @@ export const PoolCandidateCard: React.FC<PoolCandidateCardProps> = ({ candidate,
         <div className="flex gap-2 pt-1">
           <Button size="sm" className="flex-1 text-xs" onClick={() => onInvite(candidate)}>
             <Send className="h-3 w-3 mr-1" />
-            {t('candidate_pool.invite', 'Invite')}
+            {t('candidate_pool.invite', 'Invita')}
           </Button>
           <Button size="sm" variant="outline" onClick={() => onSave(candidate)}>
             <Bookmark className="h-3.5 w-3.5" />

@@ -173,7 +173,7 @@ Also extract factual data if present in the website content:
 - Revenue range (if mentioned)
 - Founded year
 
-LANGUAGE: Detect the website language. Write summary, operating_style, communication_style, ideal_traits, risk_areas, values, company_culture, and culture_insights in the SAME language as the website.
+LANGUAGE: Detect the website language. Write summary, operating_style, communication_style, ideal_traits, risk_areas, values, company_culture, and culture_insights in the SAME language as the website. If user_output_language is specified, use THAT language for all text output fields regardless of website language.
 
 Return ONLY valid JSON:
 {
@@ -367,14 +367,23 @@ Deno.serve(async (req) => {
 
     console.log(JSON.stringify({ type: "company_profile_start", correlation_id: correlationId, company_name, website }));
 
-    // ===== Fetch registration data for richer context =====
+    // ===== Fetch registration data + user language for richer context =====
     let registrationContext = "";
+    let userLang = "en";
     try {
       const { data: bizProfile } = await supabase
         .from("business_profiles")
         .select("company_size, team_culture, hiring_approach, growth_stage, snapshot_hq_city, snapshot_hq_country, snapshot_industry, manual_industry, manual_hq_city, manual_hq_country")
         .eq("user_id", company_id)
         .maybeSingle();
+
+      // Fetch user's preferred language
+      const { data: userProfile } = await supabase
+        .from("profiles")
+        .select("preferred_language")
+        .eq("user_id", company_id)
+        .maybeSingle();
+      userLang = userProfile?.preferred_language || "en";
 
       if (bizProfile) {
         const industry = bizProfile.manual_industry || bizProfile.snapshot_industry;
@@ -407,8 +416,14 @@ Deno.serve(async (req) => {
     ).join('\n\n');
 
     // ===== Claude call =====
+    const langOverride: Record<string, string> = {
+      it: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields (summary, values, operating_style, communication_style, ideal_traits, risk_areas, company_culture, culture_insights) in ITALIAN. Core values and candidate traits must be Italian words/phrases (e.g. "Onestà", "Expertise tecnica"). Do NOT mix English and Italian.`,
+      es: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in SPANISH.`,
+      fr: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in FRENCH.`,
+      de: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in GERMAN.`,
+    };
     const systemPrompt = buildCompanyProfilePrompt(pageTypes);
-    const userMessage = `Analyze this company's website content and create their XIMA psychometric profile.\n\nCompany name: ${company_name}\nWebsite: ${website}${registrationContext}\n\n${pagesContext}`;
+    const userMessage = `Analyze this company's website content and create their XIMA psychometric profile.\n\nCompany name: ${company_name}\nWebsite: ${website}${registrationContext}${langOverride[userLang] || ''}\n\n${pagesContext}`;
 
     const result = await callAnthropicApi({
       system: systemPrompt,
