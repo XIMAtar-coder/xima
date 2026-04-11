@@ -1100,6 +1100,8 @@ export type Database = {
           hiring_approach: string | null
           hr_contact_email: string | null
           id: string
+          logo_uploaded_at: string | null
+          logo_url: string | null
           manual_employees_count: number | null
           manual_founded_year: number | null
           manual_hq_city: string | null
@@ -1132,6 +1134,8 @@ export type Database = {
           hiring_approach?: string | null
           hr_contact_email?: string | null
           id?: string
+          logo_uploaded_at?: string | null
+          logo_url?: string | null
           manual_employees_count?: number | null
           manual_founded_year?: number | null
           manual_hq_city?: string | null
@@ -1164,6 +1168,8 @@ export type Database = {
           hiring_approach?: string | null
           hr_contact_email?: string | null
           id?: string
+          logo_uploaded_at?: string | null
+          logo_url?: string | null
           manual_employees_count?: number | null
           manual_founded_year?: number | null
           manual_hq_city?: string | null
