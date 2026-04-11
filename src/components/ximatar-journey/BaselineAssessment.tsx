@@ -46,11 +46,30 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
   const handleUpload = async () => {
     if (!file || !dataConsent) return;
     setUploading(true);
+
+    // Store the CV file as base64 in sessionStorage for post-registration import
+    try {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        sessionStorage.setItem('xima_pending_cv', JSON.stringify({
+          file_name: file.name,
+          file_type: file.type,
+          file_size: file.size,
+          base64_data: base64,
+          uploaded_at: new Date().toISOString(),
+        }));
+      };
+      reader.readAsDataURL(file);
+    } catch (e) {
+      console.warn('[BaselineAssessment] Failed to cache CV for later import:', e);
+    }
+
     setTimeout(() => {
       setUploading(false);
       setUploadComplete(true);
       onCvUpload(true);
-      toast({ title: "CV uploaded successfully", description: "Your baseline assessment is ready" });
+      toast({ title: t('cv.upload_success', 'CV uploaded successfully'), description: t('cv.baseline_ready', 'Your baseline assessment is ready') });
     }, 2000);
   };
 
