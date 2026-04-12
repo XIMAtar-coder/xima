@@ -17,6 +17,7 @@ const PILLAR_LABELS: Record<string, string> = {
 
 interface PoolCandidate {
   id: string;
+  is_synthetic?: boolean;
   ximatar_archetype: string;
   ximatar_level: number;
   pillar_scores: Record<string, number>;
