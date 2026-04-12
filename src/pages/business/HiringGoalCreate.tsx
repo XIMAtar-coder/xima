@@ -40,7 +40,7 @@ const HiringGoalCreate = () => {
     salary_min: 0,
     salary_max: 0,
     salary_currency: 'EUR',
-    salary_period: 'annual',
+    salary_period: 'yearly',
   });
 
   const updateField = (field: keyof FormData, value: any) => setFormData(prev => ({ ...prev, [field]: value }));
@@ -77,7 +77,7 @@ const HiringGoalCreate = () => {
           salary_max: formData.salary_max,
           salary_currency: formData.salary_currency,
           salary_period: formData.salary_period,
-          status: 'active',
+          status: 'draft',
         })
         .select()
         .single();
@@ -292,11 +292,9 @@ const Step1Responsibilities = ({ formData, updateField }: { formData: FormData; 
 const Step2SeniorityWorkMode = ({ formData, updateField }: { formData: FormData; updateField: (f: keyof FormData, v: any) => void }) => {
   const { t } = useTranslation();
   const seniorities = [
-    { value: 'junior', label: 'Junior', desc: t('hiring_goal.seniority_junior_desc', '0-2 anni') },
-    { value: 'mid', label: 'Mid', desc: t('hiring_goal.seniority_mid_desc', '3-5 anni') },
-    { value: 'senior', label: 'Senior', desc: t('hiring_goal.seniority_senior_desc', '6-10 anni') },
-    { value: 'lead', label: 'Lead', desc: t('hiring_goal.seniority_lead_desc', '10-15 anni') },
-    { value: 'executive', label: 'Executive', desc: t('hiring_goal.seniority_exec_desc', '15+ anni') },
+    { value: 'first_time', label: t('hiring_goal.seniority_first_time', 'Prima esperienza'), desc: t('hiring_goal.seniority_first_time_desc', '0-2 anni, in apprendimento') },
+    { value: 'independent', label: t('hiring_goal.seniority_independent', 'Autonomo'), desc: t('hiring_goal.seniority_independent_desc', '3-7 anni, lavora in autonomia') },
+    { value: 'led_others', label: t('hiring_goal.seniority_led_others', 'Ha guidato altri'), desc: t('hiring_goal.seniority_led_others_desc', '7+ anni, esperienza di leadership') },
   ];
 
   return (
@@ -444,7 +442,7 @@ const Step4SalaryReview = ({ formData, updateField }: { formData: FormData; upda
           </select>
           <select value={formData.salary_period} onChange={e => updateField('salary_period', e.target.value)}
             className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none">
-            <option value="annual">{t('hiring_goal.annual', 'Annuale')}</option>
+            <option value="yearly">{t('hiring_goal.annual', 'Annuale')}</option>
             <option value="monthly">{t('hiring_goal.monthly', 'Mensile')}</option>
           </select>
         </div>
