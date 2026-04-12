@@ -1800,74 +1800,92 @@ export type Database = {
       company_profiles: {
         Row: {
           communication_style: string | null
+          communication_style_override: string | null
           company_culture: string | null
           company_id: string
           created_at: string | null
           culture_insights: Json | null
           id: string
           ideal_traits: string[] | null
+          ideal_traits_override: Json | null
           ideal_ximatar_profile_ids: string[] | null
           ideal_ximatar_profile_reasoning: string | null
           industry_focus: string | null
           last_scan_at: string | null
           open_positions_found: Json | null
           operating_style: string | null
+          operating_style_override: string | null
+          overrides_updated_at: string | null
           pages_scanned: Json | null
           pillar_vector: Json
           pillar_vector_col: string | null
           recommended_ximatars: string[] | null
           risk_areas: string[] | null
           summary: string | null
+          summary_override: string | null
           updated_at: string | null
           values: string[] | null
+          values_override: Json | null
           website: string
         }
         Insert: {
           communication_style?: string | null
+          communication_style_override?: string | null
           company_culture?: string | null
           company_id: string
           created_at?: string | null
           culture_insights?: Json | null
           id?: string
           ideal_traits?: string[] | null
+          ideal_traits_override?: Json | null
           ideal_ximatar_profile_ids?: string[] | null
           ideal_ximatar_profile_reasoning?: string | null
           industry_focus?: string | null
           last_scan_at?: string | null
           open_positions_found?: Json | null
           operating_style?: string | null
+          operating_style_override?: string | null
+          overrides_updated_at?: string | null
           pages_scanned?: Json | null
           pillar_vector?: Json
           pillar_vector_col?: string | null
           recommended_ximatars?: string[] | null
           risk_areas?: string[] | null
           summary?: string | null
+          summary_override?: string | null
           updated_at?: string | null
           values?: string[] | null
+          values_override?: Json | null
           website: string
         }
         Update: {
           communication_style?: string | null
+          communication_style_override?: string | null
           company_culture?: string | null
           company_id?: string
           created_at?: string | null
           culture_insights?: Json | null
           id?: string
           ideal_traits?: string[] | null
+          ideal_traits_override?: Json | null
           ideal_ximatar_profile_ids?: string[] | null
           ideal_ximatar_profile_reasoning?: string | null
           industry_focus?: string | null
           last_scan_at?: string | null
           open_positions_found?: Json | null
           operating_style?: string | null
+          operating_style_override?: string | null
+          overrides_updated_at?: string | null
           pages_scanned?: Json | null
           pillar_vector?: Json
           pillar_vector_col?: string | null
           recommended_ximatars?: string[] | null
           risk_areas?: string[] | null
           summary?: string | null
+          summary_override?: string | null
           updated_at?: string | null
           values?: string[] | null
+          values_override?: Json | null
           website?: string
         }
         Relationships: []
