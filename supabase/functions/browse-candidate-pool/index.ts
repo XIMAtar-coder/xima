@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
+import { corsHeaders, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
 
 const PLAN_LIMITS: Record<string, number> = {
   free: 5,
@@ -9,6 +9,8 @@ const PLAN_LIMITS: Record<string, number> = {
   growth: 200,
   enterprise: 999999,
 };
+
+const isUuid = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -45,25 +47,39 @@ serve(async (req) => {
     const plan = (entitlement?.plan_tier || "free").toLowerCase();
     const planLimit = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
 
-    // Build query
+    // DIAGNOSTIC: count profiles by identity column to debug empty results
+    const [totalRes, ximatarRes, ximatarIdRes, pillarRes] = await Promise.all([
+      serviceClient.from("profiles").select("*", { count: "exact", head: true }),
+      serviceClient.from("profiles").select("*", { count: "exact", head: true }).not("ximatar", "is", null),
+      serviceClient.from("profiles").select("*", { count: "exact", head: true }).not("ximatar_id", "is", null),
+      serviceClient.from("profiles").select("*", { count: "exact", head: true }).not("pillar_scores", "is", null),
+    ]);
+
+    console.log("[browse-pool] DIAGNOSTIC:", {
+      totalProfiles: totalRes.count,
+      withXimatar: ximatarRes.count,
+      withXimatarId: ximatarIdRes.count,
+      withPillarScores: pillarRes.count,
+    });
+
+    // Build query — profiles table has `ximatar` (enum) and `ximatar_id` (uuid) but NOT `ximatar_archetype`
     let query = serviceClient
       .from("profiles")
       .select(
-        `user_id, ximatar, ximatar_archetype, ximatar_name, ximatar_level,
+        `user_id, ximatar, ximatar_id, ximatar_name, ximatar_level,
          pillar_scores, assessment_scores,
          desired_locations, work_preference, willing_to_relocate,
          availability_date, industry_preferences,
          profile_completed, updated_at, profiling_opt_out`,
         { count: "exact" }
       )
-      .not("pillar_scores", "is", null)
+      // Match if ANY identity column is set
+      .or("ximatar.not.is.null,ximatar_id.not.is.null")
       .or("profiling_opt_out.is.null,profiling_opt_out.eq.false");
 
-    // Apply archetype filter
-    if (filters.archetype) {
-      query = query.or(
-        `ximatar.eq.${filters.archetype},ximatar_archetype.eq.${filters.archetype}`
-      );
+    // Apply archetype filter — only filter on `ximatar` column (it's the enum)
+    if (filters.archetype && filters.archetype !== 'all') {
+      query = query.eq("ximatar", filters.archetype);
     }
 
     // Apply work mode filter
@@ -106,6 +122,8 @@ serve(async (req) => {
         error_message: queryError.message,
       });
     }
+
+    console.log(`[browse-pool] Found ${count} total, returning ${candidates?.length || 0}`);
 
     const candidateIds = (candidates || []).map((c: any) => c.user_id);
 
@@ -157,10 +175,36 @@ serve(async (req) => {
       credMap[c.user_id] = { seniority: c.seniority_level || "", industries: c.industries_worked || [] };
     });
 
+    // Resolve ximatar_id UUIDs to archetype names if needed
+    const uuidXimatarIds = (candidates || [])
+      .filter((c: any) => !c.ximatar && c.ximatar_id && isUuid(c.ximatar_id))
+      .map((c: any) => c.ximatar_id);
+
+    let ximatarLookup: Record<string, string> = {};
+    if (uuidXimatarIds.length > 0) {
+      const { data: ximatarRows } = await serviceClient
+        .from("ximatars")
+        .select("id, animal")
+        .in("id", uuidXimatarIds);
+      (ximatarRows || []).forEach((x: any) => {
+        ximatarLookup[x.id] = x.animal || "chameleon";
+      });
+    }
+
     // Transform to anonymous results with client-side filtering
     const anonymousCandidates = (candidates || []).map((c: any) => {
       const pillarScores = c.pillar_scores || c.assessment_scores || {};
-      const ximatarKey = (c.ximatar || c.ximatar_archetype || "unknown").toString().toLowerCase();
+
+      // Resolve archetype: prefer `ximatar` enum, then lookup UUID, then ximatar_name
+      let ximatarKey = (c.ximatar || "").toString().toLowerCase().trim();
+      if (!ximatarKey && c.ximatar_id) {
+        if (isUuid(c.ximatar_id)) {
+          ximatarKey = (ximatarLookup[c.ximatar_id] || c.ximatar_name || "chameleon").toLowerCase().trim();
+        } else {
+          ximatarKey = c.ximatar_id.toLowerCase().trim();
+        }
+      }
+      if (!ximatarKey) ximatarKey = (c.ximatar_name || "chameleon").toLowerCase().trim();
 
       // Engagement level
       const engCount = engagementCounts[c.user_id] || 0;
@@ -189,9 +233,9 @@ serve(async (req) => {
       if (filters.location) {
         const loc = filters.location.toLowerCase();
         const desiredLocs = (c.desired_locations || []) as any[];
-        const match = desiredLocs.some((l: any) =>
-          (l.city || "").toLowerCase().includes(loc) ||
-          (l.country || "").toLowerCase().includes(loc)
+        const match = Array.isArray(desiredLocs) && desiredLocs.some((l: any) =>
+          (l?.city || "").toLowerCase().includes(loc) ||
+          (l?.country || "").toLowerCase().includes(loc)
         );
         if (!match && c.work_preference !== "remote") return null;
       }

@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Sparkles, Settings, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { getCompanyDisplayField } from '@/utils/companyProfileDisplay';
 
 interface CompanyIdentityCardProps {
   businessProfile: {
@@ -27,10 +28,15 @@ interface CompanyIdentityCardProps {
     pillar_vector?: Record<string, number> | null;
     recommended_ximatars?: string[] | null;
     summary?: string | null;
+    summary_override?: string | null;
     values?: string[] | null;
+    values_override?: any | null;
     operating_style?: string | null;
+    operating_style_override?: string | null;
     communication_style?: string | null;
+    communication_style_override?: string | null;
     ideal_traits?: string[] | null;
+    ideal_traits_override?: any | null;
     risk_areas?: string[] | null;
   } | null;
   profileStatus: 'ready' | 'incomplete' | 'loading';
@@ -108,8 +114,14 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
   const recommendedXimatars = companyProfile?.recommended_ximatars || [];
   const pillarVector = companyProfile?.pillar_vector;
 
-  // Profile is "ready" when AI company profile exists with a summary
-  const resolvedStatus = profileStatus === 'loading' ? 'loading' : (companyProfile?.summary ? 'ready' : 'incomplete');
+  // Use override-aware display helpers
+  const displaySummary = getCompanyDisplayField(companyProfile, 'summary');
+  const displayValues = getCompanyDisplayField(companyProfile, 'values') || [];
+  const displayOperatingStyle = getCompanyDisplayField(companyProfile, 'operating_style');
+  const displayCommunicationStyle = getCompanyDisplayField(companyProfile, 'communication_style');
+  const displayIdealTraits = getCompanyDisplayField(companyProfile, 'ideal_traits') || [];
+
+  const resolvedStatus = profileStatus === 'loading' ? 'loading' : (displaySummary ? 'ready' : 'incomplete');
 
   return (
     <Card className="border-border/50">
@@ -126,17 +138,17 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
             )}
             <div>
               <h2 className="text-2xl font-semibold text-foreground">{bp.company_name}</h2>
-            <div className="flex gap-2 mt-2 flex-wrap">
-              {industry && <Badge variant="outline">{industry}</Badge>}
-              {growthStage && <Badge variant="outline">{formatGrowthStage(growthStage, t)}</Badge>}
-              {companySize && <Badge variant="outline">{companySize} {t('businessPortal.employees', 'employees')}</Badge>}
-              {city && (
-                <Badge variant="outline" className="flex items-center gap-1">
-                  <MapPin className="h-3 w-3" />
-                  {city}{country ? `, ${country}` : ''}
-                </Badge>
-              )}
-            </div>
+              <div className="flex gap-2 mt-2 flex-wrap">
+                {industry && <Badge variant="outline">{industry}</Badge>}
+                {growthStage && <Badge variant="outline">{formatGrowthStage(growthStage, t)}</Badge>}
+                {companySize && <Badge variant="outline">{companySize} {t('businessPortal.employees', 'employees')}</Badge>}
+                {city && (
+                  <Badge variant="outline" className="flex items-center gap-1">
+                    <MapPin className="h-3 w-3" />
+                    {city}{country ? `, ${country}` : ''}
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -223,7 +235,7 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
         )}
 
         {/* Collapsible AI Profile */}
-        {companyProfile && companyProfile.summary && (
+        {companyProfile && displaySummary && (
           <div className="mt-4 pt-4 border-t border-border">
             <button 
               onClick={() => setAiProfileOpen(!aiProfileOpen)}
@@ -234,42 +246,42 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
             </button>
             {aiProfileOpen && (
               <div className="mt-4 space-y-4">
-                {companyProfile.summary && (
+                {displaySummary && (
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide">{t('businessPortal.company_summary', 'Company Summary')}</p>
-                    <p className="text-sm mt-1 text-foreground">{companyProfile.summary}</p>
+                    <p className="text-sm mt-1 text-foreground">{displaySummary}</p>
                   </div>
                 )}
-                {companyProfile.values && companyProfile.values.length > 0 && (
+                {displayValues.length > 0 && (
                   <div>
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide">{t('businessPortal.core_values', 'Core Values')}</p>
-                    <div className="flex flex-wrap gap-1.5 mt-1">
-                      {companyProfile.values.map((v: string) => (
-                        <span key={v} className="text-xs px-2 py-0.5 rounded-full bg-secondary text-foreground">{v}</span>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">{t('businessPortal.core_values', 'Core Values')}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {displayValues.map((v: string) => (
+                        <span key={v} className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-purple-100 text-purple-900 border border-purple-200 dark:bg-purple-950 dark:text-purple-100 dark:border-purple-800">{v}</span>
                       ))}
                     </div>
                   </div>
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {companyProfile.operating_style && (
+                  {displayOperatingStyle && (
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide">{t('businessPortal.operating_style', 'Operating Style')}</p>
-                      <p className="text-sm mt-1 text-foreground">{companyProfile.operating_style}</p>
+                      <p className="text-sm mt-1 text-foreground">{displayOperatingStyle}</p>
                     </div>
                   )}
-                  {companyProfile.communication_style && (
+                  {displayCommunicationStyle && (
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide">{t('businessPortal.communication_style', 'Communication Style')}</p>
-                      <p className="text-sm mt-1 text-foreground">{companyProfile.communication_style}</p>
+                      <p className="text-sm mt-1 text-foreground">{displayCommunicationStyle}</p>
                     </div>
                   )}
                 </div>
-                {companyProfile.ideal_traits && companyProfile.ideal_traits.length > 0 && (
+                {displayIdealTraits.length > 0 && (
                   <div>
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide">{t('businessPortal.ideal_traits', 'Ideal Candidate Traits')}</p>
-                    <div className="flex flex-wrap gap-1.5 mt-1">
-                      {companyProfile.ideal_traits.map((trait: string) => (
-                        <span key={trait} className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">{trait}</span>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">{t('businessPortal.ideal_traits', 'Ideal Candidate Traits')}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {displayIdealTraits.map((trait: string) => (
+                        <span key={trait} className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-teal-100 text-teal-900 border border-teal-200 dark:bg-teal-950 dark:text-teal-100 dark:border-teal-800">{trait}</span>
                       ))}
                     </div>
                   </div>
