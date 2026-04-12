@@ -17,6 +17,7 @@ const PILLAR_LABELS: Record<string, string> = {
 
 interface PoolCandidate {
   id: string;
+  is_synthetic?: boolean;
   ximatar_archetype: string;
   ximatar_level: number;
   pillar_scores: Record<string, number>;
@@ -44,7 +45,14 @@ export const PoolCandidateCard: React.FC<PoolCandidateCardProps> = ({ candidate,
   };
 
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card className={`hover:shadow-lg transition-shadow relative ${candidate.is_synthetic ? 'border-dashed border-2 border-border opacity-80' : ''}`}>
+      {candidate.is_synthetic && (
+        <div className="absolute top-2 right-2 z-10">
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200 dark:bg-amber-950 dark:text-amber-100 font-medium">
+            Demo
+          </span>
+        </div>
+      )}
       <CardContent className="p-5 space-y-4">
         {/* Header: archetype identity with real image */}
         <div className="flex items-center gap-3">

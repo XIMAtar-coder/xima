@@ -94,7 +94,7 @@ export const HowXimaWorksExplainer = () => {
                 {steps[activeStep].description}
               </p>
               {activeStep === 0 && (
-                <Button size="sm" onClick={() => navigate('/business')}>
+                <Button size="sm" onClick={() => navigate('/business/hiring-goals/new')}>
                   {t('business.how_xima.create_goal', 'Crea il tuo primo obiettivo')}
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
