@@ -1096,6 +1096,8 @@ export type Database = {
           created_at: string | null
           default_challenge_difficulty: number | null
           default_challenge_duration: number | null
+          dna_last_regenerated_at: string | null
+          dna_locked_until: string | null
           growth_stage: string | null
           hiring_approach: string | null
           hr_contact_email: string | null
@@ -1118,6 +1120,7 @@ export type Database = {
           snapshot_last_enriched_at: string | null
           snapshot_manual_override: boolean | null
           snapshot_revenue_range: string | null
+          strategic_focus: Json | null
           team_culture: string | null
           updated_at: string | null
           user_id: string
@@ -1130,6 +1133,8 @@ export type Database = {
           created_at?: string | null
           default_challenge_difficulty?: number | null
           default_challenge_duration?: number | null
+          dna_last_regenerated_at?: string | null
+          dna_locked_until?: string | null
           growth_stage?: string | null
           hiring_approach?: string | null
           hr_contact_email?: string | null
@@ -1152,6 +1157,7 @@ export type Database = {
           snapshot_last_enriched_at?: string | null
           snapshot_manual_override?: boolean | null
           snapshot_revenue_range?: string | null
+          strategic_focus?: Json | null
           team_culture?: string | null
           updated_at?: string | null
           user_id: string
@@ -1164,6 +1170,8 @@ export type Database = {
           created_at?: string | null
           default_challenge_difficulty?: number | null
           default_challenge_duration?: number | null
+          dna_last_regenerated_at?: string | null
+          dna_locked_until?: string | null
           growth_stage?: string | null
           hiring_approach?: string | null
           hr_contact_email?: string | null
@@ -1186,6 +1194,7 @@ export type Database = {
           snapshot_last_enriched_at?: string | null
           snapshot_manual_override?: boolean | null
           snapshot_revenue_range?: string | null
+          strategic_focus?: Json | null
           team_culture?: string | null
           updated_at?: string | null
           user_id?: string
@@ -1743,6 +1752,36 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      company_dna_history: {
+        Row: {
+          best_fit_ximatars: Json | null
+          business_id: string
+          created_at: string | null
+          id: string
+          pillar_scores: Json
+          regeneration_reason: string | null
+          triggered_by_user: string | null
+        }
+        Insert: {
+          best_fit_ximatars?: Json | null
+          business_id: string
+          created_at?: string | null
+          id?: string
+          pillar_scores: Json
+          regeneration_reason?: string | null
+          triggered_by_user?: string | null
+        }
+        Update: {
+          best_fit_ximatars?: Json | null
+          business_id?: string
+          created_at?: string | null
+          id?: string
+          pillar_scores?: Json
+          regeneration_reason?: string | null
+          triggered_by_user?: string | null
+        }
+        Relationships: []
       }
       company_legal: {
         Row: {
