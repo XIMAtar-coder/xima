@@ -267,16 +267,49 @@ serve(async (req) => {
       };
     }).filter(Boolean);
 
+    // Inject synthetic placeholders if pool is too small (ensures pool never looks empty)
+    const SYNTHETIC_THRESHOLD = 12;
+    const ALL_ARCHETYPES = ['lion', 'owl', 'dolphin', 'fox', 'bear', 'bee', 'wolf', 'cat', 'parrot', 'elephant', 'horse', 'chameleon'];
+
+    if (anonymousCandidates.length < SYNTHETIC_THRESHOLD) {
+      const existingArchetypes = new Set(anonymousCandidates.map((c: any) => c.ximatar_archetype));
+      const needed = SYNTHETIC_THRESHOLD - anonymousCandidates.length;
+      const available = ALL_ARCHETYPES.filter(a => !existingArchetypes.has(a));
+
+      const synthetics = available.slice(0, needed).map((archetype, i) => ({
+        id: `synthetic-${archetype}`,
+        is_synthetic: true,
+        ximatar_archetype: archetype,
+        ximatar_level: Math.floor(Math.random() * 3) + 1,
+        pillar_scores: {
+          drive: 50 + Math.floor(Math.random() * 40),
+          knowledge: 50 + Math.floor(Math.random() * 40),
+          comp_power: 50 + Math.floor(Math.random() * 40),
+          creativity: 50 + Math.floor(Math.random() * 40),
+          communication: 50 + Math.floor(Math.random() * 40),
+        },
+        work_preference: ['remote', 'hybrid', 'onsite'][i % 3],
+        availability: ['immediately', '1_month', '3_months'][i % 3],
+        engagement_level: ['highly_active', 'active', 'moderate'][i % 3],
+        trajectory_trend: null,
+        profile_completed: false,
+      }));
+
+      anonymousCandidates.push(...synthetics);
+    }
+
     const isRestricted = (count || 0) > planLimit;
+    const hasSynthetic = anonymousCandidates.some((c: any) => c.is_synthetic);
 
     return jsonResponse({
-      candidates: anonymousCandidates,
-      total_count: count || 0,
+      candidates: anonymousCandidates.slice(0, Math.max(planLimit, SYNTHETIC_THRESHOLD)),
+      total_count: Math.max(count || 0, SYNTHETIC_THRESHOLD),
       plan_limit: planLimit,
       plan,
       is_restricted: isRestricted,
       page,
       page_size,
+      has_synthetic: hasSynthetic,
     });
   } catch (err: any) {
     console.error("[browse-pool] Error:", err.message, err.stack);
