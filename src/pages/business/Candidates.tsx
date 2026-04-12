@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,7 +14,7 @@ import { XIMATAR_PROFILES } from '@/lib/ximatarTaxonomy';
 import { PoolCandidateCard } from '@/components/business/PoolCandidateCard';
 import { ArchetypeChip } from '@/components/business/ArchetypeChip';
 import { ChallengePickerModal, type Challenge } from '@/components/business/ChallengePickerModal';
-import { Users, ChevronLeft, ChevronRight, X, Sparkles, Lock } from 'lucide-react';
+import { Users, ChevronLeft, ChevronRight, X, Sparkles, Lock, Filter } from 'lucide-react';
 
 const PAGE_SIZE = 20;
 
@@ -93,11 +92,10 @@ const BusinessCandidates = () => {
       setIsRestricted(data.is_restricted || false);
     } catch (err) {
       console.warn('[candidate-pool] Load error:', err);
-      // Silent fail — empty pool is a valid state, not an error
     } finally {
       setIsLoading(false);
     }
-  }, [user?.id, filters, page, toast, t]);
+  }, [user?.id, filters, page]);
 
   useEffect(() => { fetchCandidates(); }, [fetchCandidates]);
 
@@ -143,6 +141,7 @@ const BusinessCandidates = () => {
     toast({ title: t('candidate_pool.saved', 'Candidate saved'), description: t('candidate_pool.saved_desc', 'Added to your saved list') });
   };
 
+  const clearFilters = () => { setFilters(INITIAL_FILTERS); setPage(0); };
   const hasActiveFilters = Object.entries(filters).some(([k, v]) => k === 'min_level' ? v > 1 : Boolean(v));
 
   return (
@@ -151,12 +150,12 @@ const BusinessCandidates = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">{t('candidate_pool.title', 'Candidate Pool')}</h1>
-            <p className="text-muted-foreground text-sm mt-1">{t('candidate_pool.subtitle', 'Browse XIMA talent by identity, not credentials')}</p>
+            <h1 className="text-2xl font-bold text-foreground">{t('candidate_pool.title', 'Pool Candidati')}</h1>
+            <p className="text-muted-foreground text-sm mt-1">{t('candidate_pool.subtitle', 'Esplora i talenti XIMA per identità, non per credenziali')}</p>
           </div>
           <Badge variant="secondary" className="text-sm">
             <Users className="h-3.5 w-3.5 mr-1" />
-            {totalCount} {t('candidate_pool.candidates', 'candidates')}
+            {totalCount} {t('candidate_pool.candidates', 'candidati')}
           </Badge>
         </div>
 
@@ -164,7 +163,7 @@ const BusinessCandidates = () => {
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
           <ArchetypeChip
             id="all"
-            label={t('candidate_pool.all', 'All')}
+            label={t('candidate_pool.all', 'Tutti')}
             selected={!filters.archetype}
             onClick={() => { setFilters(f => ({ ...f, archetype: '' })); setPage(0); }}
           />
@@ -179,78 +178,97 @@ const BusinessCandidates = () => {
           ))}
         </div>
 
-        {/* Filter bar */}
-        <div className="flex flex-wrap gap-2 items-center">
-          <select
-            value={filters.work_mode}
-            onChange={e => { setFilters(f => ({ ...f, work_mode: e.target.value })); setPage(0); }}
-            className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
-          >
-            <option value="">{t('candidate_pool.any_work_mode', 'Any work mode')}</option>
-            <option value="remote">{t('candidate_pool.remote', 'Remote')}</option>
-            <option value="hybrid">{t('candidate_pool.hybrid', 'Hybrid')}</option>
-            <option value="on-site">{t('candidate_pool.onsite', 'On-site')}</option>
-          </select>
-
-          <Input
-            value={filters.location}
-            onChange={e => setFilters(f => ({ ...f, location: e.target.value }))}
-            onBlur={() => setPage(0)}
-            placeholder={t('candidate_pool.location_placeholder', 'City or country...')}
-            className="w-40 text-sm"
-          />
-
-          <select
-            value={filters.seniority}
-            onChange={e => { setFilters(f => ({ ...f, seniority: e.target.value })); setPage(0); }}
-            className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
-          >
-            <option value="">{t('candidate_pool.any_seniority', 'Any seniority')}</option>
-            <option value="junior">Junior (0-2yr)</option>
-            <option value="mid">Mid (3-5yr)</option>
-            <option value="senior">Senior (6-10yr)</option>
-            <option value="lead">Lead (10-15yr)</option>
-            <option value="executive">Executive (15+yr)</option>
-          </select>
-
-          <Input
-            value={filters.industry}
-            onChange={e => setFilters(f => ({ ...f, industry: e.target.value }))}
-            onBlur={() => setPage(0)}
-            placeholder={t('candidate_pool.industry_placeholder', 'Industry...')}
-            className="w-40 text-sm"
-          />
-
-          <select
-            value={filters.engagement}
-            onChange={e => { setFilters(f => ({ ...f, engagement: e.target.value })); setPage(0); }}
-            className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
-          >
-            <option value="">{t('candidate_pool.any_activity', 'Any activity level')}</option>
-            <option value="highly_active">{t('candidate_pool.highly_active', 'Highly active')}</option>
-            <option value="active">{t('candidate_pool.active', 'Active')}</option>
-          </select>
-
-          <select
-            value={filters.availability}
-            onChange={e => { setFilters(f => ({ ...f, availability: e.target.value })); setPage(0); }}
-            className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
-          >
-            <option value="">{t('candidate_pool.any_availability', 'Any availability')}</option>
-            <option value="immediately">{t('candidate_pool.available_now', 'Available now')}</option>
-            <option value="1_month">{t('candidate_pool.within_month', 'Within 1 month')}</option>
-            <option value="3_months">{t('candidate_pool.within_3months', 'Within 3 months')}</option>
-          </select>
-
-          {hasActiveFilters && (
-            <button
-              onClick={() => { setFilters(INITIAL_FILTERS); setPage(0); }}
-              className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
-            >
-              <X className="h-3 w-3" />
-              {t('candidate_pool.clear_filters', 'Clear all')}
-            </button>
-          )}
+        {/* Filter bar — card-based layout */}
+        <div className="rounded-2xl border border-border bg-background p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Filter className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-foreground">{t('candidate_pool.filters', 'Filtri')}</span>
+            </div>
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="h-7 text-xs">
+                <X className="w-3 h-3 mr-1" />
+                {t('candidate_pool.clear_filters', 'Cancella tutti')}
+              </Button>
+            )}
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">{t('candidate_pool.work_mode', 'Modalità')}</label>
+              <select
+                value={filters.work_mode}
+                onChange={e => { setFilters(f => ({ ...f, work_mode: e.target.value })); setPage(0); }}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+              >
+                <option value="">{t('candidate_pool.any', 'Qualsiasi')}</option>
+                <option value="remote">{t('candidate_pool.remote', 'Remote')}</option>
+                <option value="hybrid">{t('candidate_pool.hybrid', 'Ibrido')}</option>
+                <option value="on-site">{t('candidate_pool.onsite', 'In sede')}</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">{t('candidate_pool.location', 'Località')}</label>
+              <input
+                type="text"
+                value={filters.location}
+                onChange={e => setFilters(f => ({ ...f, location: e.target.value }))}
+                onBlur={() => setPage(0)}
+                placeholder={t('candidate_pool.location_placeholder', 'Città o paese')}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">{t('candidate_pool.seniority', 'Seniority')}</label>
+              <select
+                value={filters.seniority}
+                onChange={e => { setFilters(f => ({ ...f, seniority: e.target.value })); setPage(0); }}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+              >
+                <option value="">{t('candidate_pool.any', 'Qualsiasi')}</option>
+                <option value="junior">Junior (0-2yr)</option>
+                <option value="mid">Mid (3-5yr)</option>
+                <option value="senior">Senior (6-10yr)</option>
+                <option value="lead">Lead (10-15yr)</option>
+                <option value="executive">Executive (15+yr)</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">{t('candidate_pool.industry', 'Settore')}</label>
+              <input
+                type="text"
+                value={filters.industry}
+                onChange={e => setFilters(f => ({ ...f, industry: e.target.value }))}
+                onBlur={() => setPage(0)}
+                placeholder={t('candidate_pool.industry_placeholder', 'es. Tech')}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">{t('candidate_pool.activity', 'Attività')}</label>
+              <select
+                value={filters.engagement}
+                onChange={e => { setFilters(f => ({ ...f, engagement: e.target.value })); setPage(0); }}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+              >
+                <option value="">{t('candidate_pool.any', 'Qualsiasi')}</option>
+                <option value="highly_active">{t('candidate_pool.highly_active', 'Molto attivo')}</option>
+                <option value="active">{t('candidate_pool.active', 'Attivo')}</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">{t('candidate_pool.availability', 'Disponibilità')}</label>
+              <select
+                value={filters.availability}
+                onChange={e => { setFilters(f => ({ ...f, availability: e.target.value })); setPage(0); }}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+              >
+                <option value="">{t('candidate_pool.any', 'Qualsiasi')}</option>
+                <option value="immediately">{t('candidate_pool.now', 'Ora')}</option>
+                <option value="1_month">{t('candidate_pool.month', '1 mese')}</option>
+                <option value="3_months">{t('candidate_pool.three_months', '3 mesi')}</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         {/* Plan restriction banner */}
@@ -297,11 +315,11 @@ const BusinessCandidates = () => {
                 : t('candidate_pool.try_adjusting', 'Prova a rimuovere alcuni filtri per ampliare la ricerca')}
             </p>
             {totalCount === 0 ? (
-              <Button variant="outline" onClick={() => navigate('/business/goals/new')}>
-                {t('candidate_pool.create_goal', 'Crea Obiettivo di Assunzione')}
+              <Button variant="outline" onClick={() => navigate('/business')}>
+                {t('candidate_pool.go_to_dashboard', 'Vai alla Dashboard')}
               </Button>
             ) : hasActiveFilters ? (
-              <Button variant="outline" onClick={() => { setFilters(INITIAL_FILTERS); setPage(0); }}>
+              <Button variant="outline" onClick={clearFilters}>
                 {t('candidate_pool.clear_filters', 'Cancella filtri')}
               </Button>
             ) : null}
