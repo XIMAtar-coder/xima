@@ -315,8 +315,8 @@ const BusinessCandidates = () => {
                 : t('candidate_pool.try_adjusting', 'Prova a rimuovere alcuni filtri per ampliare la ricerca')}
             </p>
             {totalCount === 0 ? (
-              <Button variant="outline" onClick={() => navigate('/business')}>
-                {t('candidate_pool.go_to_dashboard', 'Vai alla Dashboard')}
+              <Button variant="outline" onClick={() => navigate('/business/hiring-goals/new')}>
+                {t('candidate_pool.create_goal', 'Crea Obiettivo di Assunzione')}
               </Button>
             ) : hasActiveFilters ? (
               <Button variant="outline" onClick={clearFilters}>

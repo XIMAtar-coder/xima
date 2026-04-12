@@ -73,8 +73,8 @@ serve(async (req) => {
          profile_completed, updated_at, profiling_opt_out`,
         { count: "exact" }
       )
-      // Match if ANY identity column is set
-      .or("ximatar.not.is.null,ximatar_id.not.is.null")
+      // Match if ANY identity or assessment signal is set (maximally permissive)
+      .or("ximatar.not.is.null,ximatar_id.not.is.null,ximatar_name.not.is.null,pillar_scores.not.is.null,assessment_scores.not.is.null")
       .or("profiling_opt_out.is.null,profiling_opt_out.eq.false");
 
     // Apply archetype filter — only filter on `ximatar` column (it's the enum)
