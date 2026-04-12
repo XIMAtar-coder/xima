@@ -347,7 +347,7 @@ const BusinessDashboard = () => {
                   <h2 className="text-2xl font-bold text-foreground">{t('businessPortal.hiring_goals_title')}</h2>
                   <p className="text-sm text-muted-foreground">{t('businessPortal.hiring_goals_subtitle')}</p>
                 </div>
-                <Button onClick={async () => { const newGoal = await createGoal(); if (newGoal) toast({ title: t('business.goals.created'), description: t('business.goals.created_desc') }); }}>
+                <Button onClick={() => navigate('/business/hiring-goals/new')}>
                   <Plus className="h-4 w-4 mr-2" />
                   {t('businessPortal.hiring_goals_new_cta')}
                 </Button>
@@ -366,7 +366,7 @@ const BusinessDashboard = () => {
                     </div>
                     <h3 className="text-lg font-semibold text-foreground mb-2">{t('business.goals.no_active_title')}</h3>
                     <p className="text-sm text-muted-foreground mb-4">{t('business.goals.no_active_desc')}</p>
-                    <Button onClick={async () => { const newGoal = await createGoal(); if (newGoal) toast({ title: t('business.goals.created'), description: t('business.goals.created_desc') }); }}>
+                    <Button onClick={() => navigate('/business/hiring-goals/new')}>
                       <Plus className="h-4 w-4 mr-2" />
                       {t('business.goals.create_first')}
                     </Button>
