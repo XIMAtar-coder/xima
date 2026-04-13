@@ -61,8 +61,8 @@ serve(async (req) => {
       .from("profiles")
       .select(`
         user_id, id,
-        ximatar_id, ximatar, ximatar_archetype, ximatar_name, ximatar_level,
-        pillar_scores, assessment_scores,
+        ximatar_id, ximatar, ximatar_name, ximatar_level,
+        pillar_scores,
         desired_locations, work_preference, willing_to_relocate,
         salary_expectation, availability_date, industry_preferences,
         profile_completed, created_at, updated_at
@@ -130,8 +130,8 @@ serve(async (req) => {
 
     // Score candidates
     const scoredCandidates = candidates.map(candidate => {
-      const pillarScores = (candidate.pillar_scores || candidate.assessment_scores || {}) as Record<string, number>;
-      const ximatarKey = ((candidate.ximatar as string) || (candidate.ximatar_archetype as string) || "").toString().toLowerCase();
+      const pillarScores = (candidate.pillar_scores || {}) as Record<string, number>;
+      const ximatarKey = ((candidate.ximatar as string) || "").toString().toLowerCase();
 
       // SIGNAL 1: Identity match (0-40 pts)
       let identityScore = 0;
