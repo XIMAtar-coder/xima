@@ -67,14 +67,14 @@ serve(async (req) => {
       .from("profiles")
       .select(
         `user_id, ximatar, ximatar_id, ximatar_name, ximatar_level,
-         pillar_scores, assessment_scores,
+         pillar_scores,
          desired_locations, work_preference, willing_to_relocate,
          availability_date, industry_preferences,
          profile_completed, updated_at, profiling_opt_out`,
         { count: "exact" }
       )
       // Match if ANY identity or assessment signal is set (maximally permissive)
-      .or("ximatar.not.is.null,ximatar_id.not.is.null,ximatar_name.not.is.null,pillar_scores.not.is.null,assessment_scores.not.is.null")
+      .or("ximatar.not.is.null,ximatar_id.not.is.null,ximatar_name.not.is.null,pillar_scores.not.is.null")
       .or("profiling_opt_out.is.null,profiling_opt_out.eq.false");
 
     // Apply archetype filter — only filter on `ximatar` column (it's the enum)
@@ -193,7 +193,7 @@ serve(async (req) => {
 
     // Transform to anonymous results with client-side filtering
     const anonymousCandidates = (candidates || []).map((c: any) => {
-      const pillarScores = c.pillar_scores || c.assessment_scores || {};
+      const pillarScores = c.pillar_scores || {};
 
       // Resolve archetype: prefer `ximatar` enum, then lookup UUID, then ximatar_name
       let ximatarKey = (c.ximatar || "").toString().toLowerCase().trim();
