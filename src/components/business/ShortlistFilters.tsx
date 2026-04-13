@@ -44,7 +44,7 @@ export const ShortlistFilters: React.FC<ShortlistFiltersProps> = ({ filters, onC
                 <SelectValue placeholder={t('shortlist.filters.any', 'Any (recommended)')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{t('shortlist.filters.any', 'Any (recommended)')}</SelectItem>
+                <SelectItem value="any">{t('shortlist.filters.any', 'Any (recommended)')}</SelectItem>
                 <SelectItem value="bachelor">Bachelor's</SelectItem>
                 <SelectItem value="laurea triennale">Laurea Triennale</SelectItem>
                 <SelectItem value="master">Master's</SelectItem>
