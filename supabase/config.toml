@@ -119,3 +119,9 @@ verify_jwt = false
 
 [functions.evaluate-growth-test]
 verify_jwt = false
+
+[functions.suggest-hiring-goal-field]
+verify_jwt = false
+
+[functions.request-xima-hr]
+verify_jwt = false
