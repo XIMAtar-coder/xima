@@ -1,3 +1,10 @@
+// SCHEMA PREFLIGHT — verified columns as of 2026-04-14:
+// profiles: id, user_id, full_name, ximatar, ximatar_id, ximatar_name, ximatar_level,
+//   pillar_scores, desired_locations, work_preference, willing_to_relocate,
+//   salary_expectation, availability_date, industry_preferences, profile_completed,
+//   created_at, updated_at
+// (Run information_schema query before adding new column references)
+
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";

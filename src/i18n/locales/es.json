@@ -1,15 +1,6 @@
 {
   "common": {
-    "login_required": "Inicio de sesión requerido",
-    "login": "Iniciar sesión",
-    "loading": "Cargando...",
-    "back": "Atrás",
-    "error": "Error",
-    "strongest": "Tu Ventaja",
-    "area_to_develop": "Área de Crecimiento",
-    "you": "Tú",
-    "as_strength": "Como Fortaleza",
-    "as_weakness": "Como Debilidad"
+    "cancel": "Cancelar"
   },
   "nav": {
     "home": "Inicio",
@@ -850,38 +841,252 @@
       "title": "Crea tu XIMAtar",
       "subtitle": "Completa nuestra evaluación para descubrir tus fortalezas profesionales",
       "questions": {
-        "q1": { "category": "Potencia Computacional", "question": "Al revisar un panel de KPIs, ¿cuál es tu primer paso?", "options": ["Detectar anomalías vs objetivos", "Profundizar por segmentos", "Comparar con tendencias históricas", "Exportar datos para análisis aparte"] },
-        "q2": { "category": "Comunicación", "question": "Necesitas aprobación del board para un pivote estratégico. El CFO quiere proyecciones de ROI, el fundador se preocupa por alineamiento con la misión, y dos directores independientes han expresado escepticismo sobre el riesgo de ejecución. Tienes una sola franja de 30 minutos. ¿Cómo te preparas?", "options": ["Construyes un deck completo cubriendo finanzas, razón de misión y mitigación de riesgos en secuencia — dejas que la exhaustividad construya credibilidad", "Estructuras alrededor de la pregunta '¿Por qué ahora?' — tejiendo respuestas financieras, de misión y de riesgo en un arco narrativo al que cada stakeholder pueda anclarse", "Programas breves pre-reuniones con el CFO y los directores escépticos para identificar objeciones específicas, luego adaptas la sesión del board para abordar solo las preocupaciones no resueltas", "Envías un memo pre-lectura con el análisis completo 3 días antes, usas la sesión en vivo enteramente para Q&A para que cada stakeholder dirija la conversación hacia su preocupación"] },
-        "q3": { "category": "Conocimiento", "question": "Tu estrategia se basa en una asunción de mercado respaldada por un informe de analista reputado. Un movimiento de la competencia sugiere que la asunción puede ser incorrecta. Tú:", "options": ["Encargas un análisis independiente rápido para probar la asunción desde un ángulo diferente", "Ajustas la estrategia para funcionar bajo ambas asunciones, la original y la alternativa", "Hablas con los vendedores de primera línea para obtener señales cualitativas sobre cuál asunción se sostiene", "Documentas la incertidumbre y estableces un punto de activación donde revisitarías la asunción"] },
-        "q4": { "category": "Creatividad", "question": "Tu empresa necesita entrar en un nuevo segmento de mercado, pero el producto no fue diseñado para esa audiencia y un rediseño completo tomaría 18 meses. El board quiere tracción en 6 meses. Tú:", "options": ["Reempaquetas el producto existente con posicionamiento, precios y flujo de onboarding diferentes, adaptados al lenguaje del nuevo segmento", "Te asocias con una empresa que ya sirve ese segmento y ofreces tu producto como un complemento integrado a su solución existente", "Lanzas una versión simplificada dirigida solo al caso de uso con la mayor superposición entre tu producto actual y las necesidades del nuevo segmento", "Redefinir el objetivo: identificas un nicho dentro del nuevo segmento donde tu producto actual ya encaja, y expandir desde ahí"] },
-        "q5": { "category": "Drive", "question": "Tu presentación al board falló porque tu storytelling financiero carecía de profundidad. Tú:", "options": ["Pides a un CFO peer que revise tu próximo deck y señale puntos débiles específicos", "Reconstruyes la misma presentación desde cero con una estructura narrativa diferente", "Estudias tres presentaciones de board ejemplares e identificas qué técnicas no estás usando", "Presentas primero a una audiencia interna más pequeña para obtener feedback en tiempo real"] },
-        "q6": { "category": "Potencia Computacional", "question": "Ante caídas ambiguas de ingresos, primero:", "options": ["Segmento por canal/cohorte", "Correlaciono con precios/promos", "Verifico integridad de medición", "Comparo con estacionalidad"] },
-        "q7": { "category": "Comunicación", "question": "Tu equipo acaba de ser reestructurado. Dos miembros están ansiosos por los cambios de rol, uno está abiertamente frustrado, y otro parece desconectado. Necesitas comunicar nuevas responsabilidades en una reunión de equipo. ¿Cómo lo abordas?", "options": ["Presentas la nueva estructura con definiciones explícitas de roles, líneas de reporte y cronogramas — eliminas la ambigüedad que alimenta la ansiedad", "Encuadras la reestructuración alrededor de resultados a nivel equipo en lugar de cambios individuales de rol, luego haces seguimiento individual con detalles", "Abres preguntando a cada persona qué necesita clarificar más, luego estructuras la reunión alrededor de esas brechas de información reales", "Envías descripciones de rol escritas antes de la reunión para que las personas puedan procesar en privado, usas la sesión en vivo solo para preguntas y preocupaciones"] },
-        "q8": { "category": "Conocimiento", "question": "Estás entrando en un mercado donde los datos disponibles son escasos y contradictorios. Los expertos de la industria no se ponen de acuerdo en los fundamentos. Tú:", "options": ["Ejecutas un piloto a pequeña escala para generar tus propios datos antes de comprometerte", "Mapeas los desacuerdos para identificar qué evidencia específica los resolvería", "Adoptas la visión del experto cuyo razonamiento es más transparente, mientras monitoreas señales desconfirmatorias", "Construyes business cases separados para los dos escenarios más plausibles"] },
-        "q9": { "category": "Creatividad", "question": "Un lanzamiento clave de producto es en dos semanas. El equipo de marketing descubre que el competidor principal acaba de lanzar una funcionalidad casi idéntica con cobertura de PR fuerte. Tú:", "options": ["Cambias la narrativa de lanzamiento: en lugar de paridad de funcionalidades, posicionas tu lanzamiento alrededor de una propuesta de valor diferente que el competidor no abordó", "Aceleras una capacidad única que te diferencia, incluso si eso significa desprioritizar el pulido en las funcionalidades compartidas", "Agrupas el lanzamiento con una oferta complementaria (prueba gratuita, integración, partnership) que cambia el marco de comparación por completo", "Retrasas el lanzamiento una semana para añadir un diferenciador pequeño pero visible, y usas el tiempo extra para crear una contra-narrativa"] },
-        "q10": { "category": "Drive", "question": "El output de planificación estratégica de tu equipo es más débil que el de tus pares. Sospechas que es tu facilitación. Tú:", "options": ["Observas la sesión estratégica de otro líder y tomas notas estructuradas sobre su método", "Grabas tu próxima sesión y autocritias qué cambiarías", "Traes un facilitador externo una vez y participas como observador para aprender su técnica", "Rediseñas tu plantilla de planning basándote en qué produjo output débil la última vez"] },
-        "q11": { "category": "Potencia Computacional", "question": "Al evaluar un cambio de precio, tú:", "options": ["Análisis de sensibilidad", "Tests A/B de precios", "Elasticidad por segmento", "Validación con entrevistas"] },
-        "q12": { "category": "Comunicación", "question": "Un cliente clave escala su insatisfacción directamente a tu CEO. La queja del cliente mezcla brechas de servicio legítimas con asunciones inexactas sobre tu proceso. Tu CEO te pide redactar la respuesta. ¿Cómo manejas las inexactitudes?", "options": ["Abordas cada punto con hechos — reconoces explícitamente las brechas válidas, corriges las inexactitudes con evidencia, mantienes un tono profesional pero inequívoco", "Lideras con reconocimiento de la experiencia del cliente, luego reencuadras los puntos inexactos como 'áreas donde nuestro proceso difiere de lo esperado' sin contradicción directa", "Redactas una respuesta que aborda las brechas legítimas, luego señalas las inexactitudes por separado a tu CEO con una recomendación sobre cuán directamente corregirlas", "Sugieres a tu CEO proponer una llamada en lugar de intercambio escrito — las inexactitudes son más fáciles de abordar conversacionalmente sin crear un rastro escrito confrontacional"] },
-        "q13": { "category": "Conocimiento", "question": "Te has basado en un modelo estratégico durante meses. Un miembro junior del equipo presenta evidencia preliminar de que una de sus asunciones fundamentales es incorrecta. Tú:", "options": ["Pausas tu trabajo actual con el modelo y testas ambas versiones contra datos de mercado recientes antes de comprometerte", "Revisas la evidencia cruda del miembro del equipo tú mismo/a para evaluar su solidez antes de involucrar a nadie más", "Anotas el desafío formalmente y continúas con el modelo, pero defines un punto de activación específico que forzaría una reevaluación completa", "Pides a dos personas no involucradas en ninguno de los análisis que evalúen independientemente la evidencia contradictoria"] },
-        "q14": { "category": "Creatividad", "question": "El plan trimestral de tu equipo es sólido, pero un cliente importante solicita una funcionalidad personalizada que consumiría el 40% de tu capacidad de ingeniería. Decir no arriesga perder al cliente; decir sí arriesga el roadmap. Tú:", "options": ["Propones construir una versión generalizada de la funcionalidad que sirva tanto la necesidad del cliente como tu roadmap — toma un poco más pero crea valor duradero", "Ofreces al cliente un workaround interino usando capacidades existentes mientras programas la funcionalidad completa para el próximo trimestre", "Renegocias el plan trimestral: identificas los items del roadmap de menor impacto para aplazar y reasignas capacidad a la funcionalidad del cliente", "Reencuadras la petición: exploras si el problema subyacente del cliente puede resolverse de forma diferente con algo que ya tienes o estás construyendo"] },
-        "q15": { "category": "Drive", "question": "Un lanzamiento de producto fue peor de lo esperado porque juzgaste mal el timing de mercado. Tú:", "options": ["Entrevistas a cinco clientes para entender qué señales leíste mal", "Construyes un framework de post-mortem para comparar tus suposiciones versus los datos reales", "Te asocias con alguien que predijo el mercado correctamente para entender su razonamiento", "Lanzas un test más pequeño para el próximo producto para validar timing antes del compromiso total"] },
-        "q16": { "category": "Potencia Computacional", "question": "Para pronosticar el próximo trimestre:", "options": ["Bottom-up + top-down", "Pruebas de estrés de escenarios", "Validación con ventas", "Simular restricciones de capacidad"] },
-        "q17": { "category": "Comunicación", "question": "Dos departamentos que supervisas tienen un conflicto de recursos. Ambos líderes te presentan su caso en privado, cada uno encuadrando al otro como irrazonable. Debes comunicar una resolución que ninguno aceptará completamente. ¿Cómo la entregas?", "options": ["Presentas la decisión con razonamiento completo y análisis de trade-offs a ambos líderes simultáneamente, para que ninguno sienta que el otro tuvo ventaja privada", "Encuadras la decisión alrededor de la restricción organizacional que hace necesario el compromiso, en lugar de evaluar el caso de cada líder", "Te reúnes con cada líder por separado primero para adelantar la decisión y evaluar su reacción probable, luego celebras una sesión conjunta con encuadre calibrado", "Comunicas la decisión por escrito con razonamiento claro, luego ofreces conversaciones de seguimiento individuales para que cada líder exprese preocupaciones sin presión de audiencia"] },
-        "q18": { "category": "Conocimiento", "question": "Un cambio regulatorio afectará tu negocio, pero la interpretación es ambigua y los pares de la industria la leen de forma diferente. Tú:", "options": ["Contratas a un especialista legal y haces pruebas de estrés de múltiples interpretaciones contra tus operaciones", "Esperas a que un organismo de la industria emita orientación, mientras preparas planes de contingencia", "Adoptas la interpretación más conservadora ahora y la relajas a medida que emerge claridad", "Comparas cómo se resolvieron ambigüedades similares históricamente para predecir el resultado probable"] },
-        "q19": { "category": "Creatividad", "question": "El producto core de tu empresa es maduro y el crecimiento se ha estancado. El board quiere una nueva fuente de ingresos, pero el presupuesto de I+D está limitado al 15% del gasto actual. Tú:", "options": ["Identificas activos infrautilizados (datos, APIs, expertise) y los empaquetas como una nueva oferta para un buyer persona diferente", "Redefinir los límites del producto: conviertes una funcionalidad gratuita en un tier premium, o desagrupas capacidades en productos independientes", "Ejecutas tres experimentos pequeños y acotados en tiempo dirigidos a diferentes hipótesis de ingresos antes de comprometer presupuesto a una sola apuesta", "Te asocias con una empresa complementaria para codesarrollar una oferta conjunta que ninguna podría construir sola dentro de la restricción presupuestaria"] },
-        "q20": { "category": "Drive", "question": "Recibes feedback constante de que tu delegación es débil, ralentizando al equipo. Tú:", "options": ["Eliges una tarea que normalmente retendrías y la delegas completamente esta semana, rastreando qué pasa", "Preguntas a tus reportes directos qué necesitan de ti para tomar ownership más efectivamente", "Estudias cómo un líder par delega — qué pasa, cuándo y cómo", "Estableces check-ins semanales en lugar de diarios y mides si la calidad se mantiene"] },
-        "q21": { "category": "Potencia Computacional", "question": "Al evaluar un programa de transformación, primero:", "options": ["Definir métricas de éxito", "Piloto con grupo de control", "Analizar preparación y riesgo", "Estudiar casos de referencia"] },
-        "open1": { "question": "Describe una decisión de liderazgo de la que estés orgulloso/a. ¿Qué compromisos pesaste y por qué?" },
-        "open2": { "question": "¿Cuál es tu mayor área de crecimiento como líder y cómo la estás abordando?" }
+        "q1": {
+          "category": "Potencia Computacional",
+          "question": "Al revisar un panel de KPIs, ¿cuál es tu primer paso?",
+          "options": [
+            "Detectar anomalías vs objetivos",
+            "Profundizar por segmentos",
+            "Comparar con tendencias históricas",
+            "Exportar datos para análisis aparte"
+          ]
+        },
+        "q2": {
+          "category": "Comunicación",
+          "question": "Necesitas aprobación del board para un pivote estratégico. El CFO quiere proyecciones de ROI, el fundador se preocupa por alineamiento con la misión, y dos directores independientes han expresado escepticismo sobre el riesgo de ejecución. Tienes una sola franja de 30 minutos. ¿Cómo te preparas?",
+          "options": [
+            "Construyes un deck completo cubriendo finanzas, razón de misión y mitigación de riesgos en secuencia — dejas que la exhaustividad construya credibilidad",
+            "Estructuras alrededor de la pregunta '¿Por qué ahora?' — tejiendo respuestas financieras, de misión y de riesgo en un arco narrativo al que cada stakeholder pueda anclarse",
+            "Programas breves pre-reuniones con el CFO y los directores escépticos para identificar objeciones específicas, luego adaptas la sesión del board para abordar solo las preocupaciones no resueltas",
+            "Envías un memo pre-lectura con el análisis completo 3 días antes, usas la sesión en vivo enteramente para Q&A para que cada stakeholder dirija la conversación hacia su preocupación"
+          ]
+        },
+        "q3": {
+          "category": "Conocimiento",
+          "question": "Tu estrategia se basa en una asunción de mercado respaldada por un informe de analista reputado. Un movimiento de la competencia sugiere que la asunción puede ser incorrecta. Tú:",
+          "options": [
+            "Encargas un análisis independiente rápido para probar la asunción desde un ángulo diferente",
+            "Ajustas la estrategia para funcionar bajo ambas asunciones, la original y la alternativa",
+            "Hablas con los vendedores de primera línea para obtener señales cualitativas sobre cuál asunción se sostiene",
+            "Documentas la incertidumbre y estableces un punto de activación donde revisitarías la asunción"
+          ]
+        },
+        "q4": {
+          "category": "Creatividad",
+          "question": "Tu empresa necesita entrar en un nuevo segmento de mercado, pero el producto no fue diseñado para esa audiencia y un rediseño completo tomaría 18 meses. El board quiere tracción en 6 meses. Tú:",
+          "options": [
+            "Reempaquetas el producto existente con posicionamiento, precios y flujo de onboarding diferentes, adaptados al lenguaje del nuevo segmento",
+            "Te asocias con una empresa que ya sirve ese segmento y ofreces tu producto como un complemento integrado a su solución existente",
+            "Lanzas una versión simplificada dirigida solo al caso de uso con la mayor superposición entre tu producto actual y las necesidades del nuevo segmento",
+            "Redefinir el objetivo: identificas un nicho dentro del nuevo segmento donde tu producto actual ya encaja, y expandir desde ahí"
+          ]
+        },
+        "q5": {
+          "category": "Drive",
+          "question": "Tu presentación al board falló porque tu storytelling financiero carecía de profundidad. Tú:",
+          "options": [
+            "Pides a un CFO peer que revise tu próximo deck y señale puntos débiles específicos",
+            "Reconstruyes la misma presentación desde cero con una estructura narrativa diferente",
+            "Estudias tres presentaciones de board ejemplares e identificas qué técnicas no estás usando",
+            "Presentas primero a una audiencia interna más pequeña para obtener feedback en tiempo real"
+          ]
+        },
+        "q6": {
+          "category": "Potencia Computacional",
+          "question": "Ante caídas ambiguas de ingresos, primero:",
+          "options": [
+            "Segmento por canal/cohorte",
+            "Correlaciono con precios/promos",
+            "Verifico integridad de medición",
+            "Comparo con estacionalidad"
+          ]
+        },
+        "q7": {
+          "category": "Comunicación",
+          "question": "Tu equipo acaba de ser reestructurado. Dos miembros están ansiosos por los cambios de rol, uno está abiertamente frustrado, y otro parece desconectado. Necesitas comunicar nuevas responsabilidades en una reunión de equipo. ¿Cómo lo abordas?",
+          "options": [
+            "Presentas la nueva estructura con definiciones explícitas de roles, líneas de reporte y cronogramas — eliminas la ambigüedad que alimenta la ansiedad",
+            "Encuadras la reestructuración alrededor de resultados a nivel equipo en lugar de cambios individuales de rol, luego haces seguimiento individual con detalles",
+            "Abres preguntando a cada persona qué necesita clarificar más, luego estructuras la reunión alrededor de esas brechas de información reales",
+            "Envías descripciones de rol escritas antes de la reunión para que las personas puedan procesar en privado, usas la sesión en vivo solo para preguntas y preocupaciones"
+          ]
+        },
+        "q8": {
+          "category": "Conocimiento",
+          "question": "Estás entrando en un mercado donde los datos disponibles son escasos y contradictorios. Los expertos de la industria no se ponen de acuerdo en los fundamentos. Tú:",
+          "options": [
+            "Ejecutas un piloto a pequeña escala para generar tus propios datos antes de comprometerte",
+            "Mapeas los desacuerdos para identificar qué evidencia específica los resolvería",
+            "Adoptas la visión del experto cuyo razonamiento es más transparente, mientras monitoreas señales desconfirmatorias",
+            "Construyes business cases separados para los dos escenarios más plausibles"
+          ]
+        },
+        "q9": {
+          "category": "Creatividad",
+          "question": "Un lanzamiento clave de producto es en dos semanas. El equipo de marketing descubre que el competidor principal acaba de lanzar una funcionalidad casi idéntica con cobertura de PR fuerte. Tú:",
+          "options": [
+            "Cambias la narrativa de lanzamiento: en lugar de paridad de funcionalidades, posicionas tu lanzamiento alrededor de una propuesta de valor diferente que el competidor no abordó",
+            "Aceleras una capacidad única que te diferencia, incluso si eso significa desprioritizar el pulido en las funcionalidades compartidas",
+            "Agrupas el lanzamiento con una oferta complementaria (prueba gratuita, integración, partnership) que cambia el marco de comparación por completo",
+            "Retrasas el lanzamiento una semana para añadir un diferenciador pequeño pero visible, y usas el tiempo extra para crear una contra-narrativa"
+          ]
+        },
+        "q10": {
+          "category": "Drive",
+          "question": "El output de planificación estratégica de tu equipo es más débil que el de tus pares. Sospechas que es tu facilitación. Tú:",
+          "options": [
+            "Observas la sesión estratégica de otro líder y tomas notas estructuradas sobre su método",
+            "Grabas tu próxima sesión y autocritias qué cambiarías",
+            "Traes un facilitador externo una vez y participas como observador para aprender su técnica",
+            "Rediseñas tu plantilla de planning basándote en qué produjo output débil la última vez"
+          ]
+        },
+        "q11": {
+          "category": "Potencia Computacional",
+          "question": "Al evaluar un cambio de precio, tú:",
+          "options": [
+            "Análisis de sensibilidad",
+            "Tests A/B de precios",
+            "Elasticidad por segmento",
+            "Validación con entrevistas"
+          ]
+        },
+        "q12": {
+          "category": "Comunicación",
+          "question": "Un cliente clave escala su insatisfacción directamente a tu CEO. La queja del cliente mezcla brechas de servicio legítimas con asunciones inexactas sobre tu proceso. Tu CEO te pide redactar la respuesta. ¿Cómo manejas las inexactitudes?",
+          "options": [
+            "Abordas cada punto con hechos — reconoces explícitamente las brechas válidas, corriges las inexactitudes con evidencia, mantienes un tono profesional pero inequívoco",
+            "Lideras con reconocimiento de la experiencia del cliente, luego reencuadras los puntos inexactos como 'áreas donde nuestro proceso difiere de lo esperado' sin contradicción directa",
+            "Redactas una respuesta que aborda las brechas legítimas, luego señalas las inexactitudes por separado a tu CEO con una recomendación sobre cuán directamente corregirlas",
+            "Sugieres a tu CEO proponer una llamada en lugar de intercambio escrito — las inexactitudes son más fáciles de abordar conversacionalmente sin crear un rastro escrito confrontacional"
+          ]
+        },
+        "q13": {
+          "category": "Conocimiento",
+          "question": "Te has basado en un modelo estratégico durante meses. Un miembro junior del equipo presenta evidencia preliminar de que una de sus asunciones fundamentales es incorrecta. Tú:",
+          "options": [
+            "Pausas tu trabajo actual con el modelo y testas ambas versiones contra datos de mercado recientes antes de comprometerte",
+            "Revisas la evidencia cruda del miembro del equipo tú mismo/a para evaluar su solidez antes de involucrar a nadie más",
+            "Anotas el desafío formalmente y continúas con el modelo, pero defines un punto de activación específico que forzaría una reevaluación completa",
+            "Pides a dos personas no involucradas en ninguno de los análisis que evalúen independientemente la evidencia contradictoria"
+          ]
+        },
+        "q14": {
+          "category": "Creatividad",
+          "question": "El plan trimestral de tu equipo es sólido, pero un cliente importante solicita una funcionalidad personalizada que consumiría el 40% de tu capacidad de ingeniería. Decir no arriesga perder al cliente; decir sí arriesga el roadmap. Tú:",
+          "options": [
+            "Propones construir una versión generalizada de la funcionalidad que sirva tanto la necesidad del cliente como tu roadmap — toma un poco más pero crea valor duradero",
+            "Ofreces al cliente un workaround interino usando capacidades existentes mientras programas la funcionalidad completa para el próximo trimestre",
+            "Renegocias el plan trimestral: identificas los items del roadmap de menor impacto para aplazar y reasignas capacidad a la funcionalidad del cliente",
+            "Reencuadras la petición: exploras si el problema subyacente del cliente puede resolverse de forma diferente con algo que ya tienes o estás construyendo"
+          ]
+        },
+        "q15": {
+          "category": "Drive",
+          "question": "Un lanzamiento de producto fue peor de lo esperado porque juzgaste mal el timing de mercado. Tú:",
+          "options": [
+            "Entrevistas a cinco clientes para entender qué señales leíste mal",
+            "Construyes un framework de post-mortem para comparar tus suposiciones versus los datos reales",
+            "Te asocias con alguien que predijo el mercado correctamente para entender su razonamiento",
+            "Lanzas un test más pequeño para el próximo producto para validar timing antes del compromiso total"
+          ]
+        },
+        "q16": {
+          "category": "Potencia Computacional",
+          "question": "Para pronosticar el próximo trimestre:",
+          "options": [
+            "Bottom-up + top-down",
+            "Pruebas de estrés de escenarios",
+            "Validación con ventas",
+            "Simular restricciones de capacidad"
+          ]
+        },
+        "q17": {
+          "category": "Comunicación",
+          "question": "Dos departamentos que supervisas tienen un conflicto de recursos. Ambos líderes te presentan su caso en privado, cada uno encuadrando al otro como irrazonable. Debes comunicar una resolución que ninguno aceptará completamente. ¿Cómo la entregas?",
+          "options": [
+            "Presentas la decisión con razonamiento completo y análisis de trade-offs a ambos líderes simultáneamente, para que ninguno sienta que el otro tuvo ventaja privada",
+            "Encuadras la decisión alrededor de la restricción organizacional que hace necesario el compromiso, en lugar de evaluar el caso de cada líder",
+            "Te reúnes con cada líder por separado primero para adelantar la decisión y evaluar su reacción probable, luego celebras una sesión conjunta con encuadre calibrado",
+            "Comunicas la decisión por escrito con razonamiento claro, luego ofreces conversaciones de seguimiento individuales para que cada líder exprese preocupaciones sin presión de audiencia"
+          ]
+        },
+        "q18": {
+          "category": "Conocimiento",
+          "question": "Un cambio regulatorio afectará tu negocio, pero la interpretación es ambigua y los pares de la industria la leen de forma diferente. Tú:",
+          "options": [
+            "Contratas a un especialista legal y haces pruebas de estrés de múltiples interpretaciones contra tus operaciones",
+            "Esperas a que un organismo de la industria emita orientación, mientras preparas planes de contingencia",
+            "Adoptas la interpretación más conservadora ahora y la relajas a medida que emerge claridad",
+            "Comparas cómo se resolvieron ambigüedades similares históricamente para predecir el resultado probable"
+          ]
+        },
+        "q19": {
+          "category": "Creatividad",
+          "question": "El producto core de tu empresa es maduro y el crecimiento se ha estancado. El board quiere una nueva fuente de ingresos, pero el presupuesto de I+D está limitado al 15% del gasto actual. Tú:",
+          "options": [
+            "Identificas activos infrautilizados (datos, APIs, expertise) y los empaquetas como una nueva oferta para un buyer persona diferente",
+            "Redefinir los límites del producto: conviertes una funcionalidad gratuita en un tier premium, o desagrupas capacidades en productos independientes",
+            "Ejecutas tres experimentos pequeños y acotados en tiempo dirigidos a diferentes hipótesis de ingresos antes de comprometer presupuesto a una sola apuesta",
+            "Te asocias con una empresa complementaria para codesarrollar una oferta conjunta que ninguna podría construir sola dentro de la restricción presupuestaria"
+          ]
+        },
+        "q20": {
+          "category": "Drive",
+          "question": "Recibes feedback constante de que tu delegación es débil, ralentizando al equipo. Tú:",
+          "options": [
+            "Eliges una tarea que normalmente retendrías y la delegas completamente esta semana, rastreando qué pasa",
+            "Preguntas a tus reportes directos qué necesitan de ti para tomar ownership más efectivamente",
+            "Estudias cómo un líder par delega — qué pasa, cuándo y cómo",
+            "Estableces check-ins semanales en lugar de diarios y mides si la calidad se mantiene"
+          ]
+        },
+        "q21": {
+          "category": "Potencia Computacional",
+          "question": "Al evaluar un programa de transformación, primero:",
+          "options": [
+            "Definir métricas de éxito",
+            "Piloto con grupo de control",
+            "Analizar preparación y riesgo",
+            "Estudiar casos de referencia"
+          ]
+        },
+        "open1": {
+          "question": "Describe una decisión de liderazgo de la que estés orgulloso/a. ¿Qué compromisos pesaste y por qué?"
+        },
+        "open2": {
+          "question": "¿Cuál es tu mayor área de crecimiento como líder y cómo la estás abordando?"
+        }
       },
       "examples": {
-        "q1": { "title": "Entendiendo Tu Enfoque", "body": "**Opción A (Detectar anomalías):** Priorizas la detección rápida de problemas.\n\n**Opción B (Profundizar segmentos):** Prefieres entender causas raíz.\n\n**Opción C (Comparar histórico):** Contextualizas el rendimiento actual.\n\n**Opción D (Exportar offline):** Te tomas tiempo para análisis profundo.\n\n**Cómo responder:** Elige lo que REALMENTE haces primero. Mira: https://www.youtube.com/watch?v=d4cKVgpHlCY" },
-        "q2": { "title": "Entendiendo Tu Enfoque", "body": "**Opción A (Sintetizar):** Lideras encontrando el problema subyacente.\n\n**Opción B (Preguntas para alinear):** Crees que el desalineamiento viene de contextos diferentes.\n\n**Opción C (Resumir decisiones):** Te orientas hacia la acción.\n\n**Opción D (Desescalar):** Priorizas la cohesión del equipo.\n\n**Cómo responder:** Piensa en tus últimas 3 reuniones con conflicto. ¿Qué comportamiento mostraste?" },
-        "q3": { "title": "Entendiendo Tu Enfoque", "body": "**Opción A (Informes del sector):** Prefieres información curada y sintetizada.\n\n**Opción B (Analistas/competidores):** Quieres inteligencia competitiva basada en datos.\n\n**Opción C (Conferencias/webinars):** Valoras el aprendizaje entre pares.\n\n**Opción D (Entrevistas a clientes):** Priorizas señales de mercado de primera mano." },
-        "q4": { "title": "Entendiendo Tu Enfoque", "body": "**Opción A (Prototipar rápido):** Crees en probar ideas rápidamente.\n\n**Opción B (Adaptar playbooks):** Prefieres frameworks probados.\n\n**Opción C (Ideas de otros sectores):** Encuentras innovación en cross-polinización.\n\n**Opción D (Cocrear):** Crees que las mejores estrategias emergen del input colaborativo." },
-        "q5": { "title": "Entendiendo Tu Motivación", "body": "**Opción A (Hitos/scorecards):** Te energiza el progreso medible.\n\n**Opción B (Propósito/impacto):** Sacas energía de outcomes significativos.\n\n**Opción C (Aprendizaje/iteración):** Te motiva el crecimiento.\n\n**Opción D (Reconocimiento/victorias):** Prosperas con el reconocimiento." },
-        "open1": { "title": "Cómo Responder Bien", "body": "Sigue el formato STAR-L: Situación, Tarea, Acción, Resultado, Aprendizaje. Describe una decisión específica con stakes reales. Nombra los trade-offs explícitamente. Cuantifica outcomes cuando sea posible. Mira: https://www.youtube.com/watch?v=0vNUxleEyoo" },
-        "open2": { "title": "Cómo Responder Bien", "body": "Muestra autoconciencia nombrando un área de crecimiento genuina. Describe acciones específicas que estás tomando. Ejemplo: 'Tiendo a excederme en datos y retrasar decisiones. Lo estoy abordando poniendo deadlines de decisión por adelantado.' Mira: https://www.youtube.com/watch?v=tJxFZrMxT3s" }
+        "q1": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Detectar anomalías):** Priorizas la detección rápida de problemas.\n\n**Opción B (Profundizar segmentos):** Prefieres entender causas raíz.\n\n**Opción C (Comparar histórico):** Contextualizas el rendimiento actual.\n\n**Opción D (Exportar offline):** Te tomas tiempo para análisis profundo.\n\n**Cómo responder:** Elige lo que REALMENTE haces primero. Mira: https://www.youtube.com/watch?v=d4cKVgpHlCY"
+        },
+        "q2": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Sintetizar):** Lideras encontrando el problema subyacente.\n\n**Opción B (Preguntas para alinear):** Crees que el desalineamiento viene de contextos diferentes.\n\n**Opción C (Resumir decisiones):** Te orientas hacia la acción.\n\n**Opción D (Desescalar):** Priorizas la cohesión del equipo.\n\n**Cómo responder:** Piensa en tus últimas 3 reuniones con conflicto. ¿Qué comportamiento mostraste?"
+        },
+        "q3": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Informes del sector):** Prefieres información curada y sintetizada.\n\n**Opción B (Analistas/competidores):** Quieres inteligencia competitiva basada en datos.\n\n**Opción C (Conferencias/webinars):** Valoras el aprendizaje entre pares.\n\n**Opción D (Entrevistas a clientes):** Priorizas señales de mercado de primera mano."
+        },
+        "q4": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Prototipar rápido):** Crees en probar ideas rápidamente.\n\n**Opción B (Adaptar playbooks):** Prefieres frameworks probados.\n\n**Opción C (Ideas de otros sectores):** Encuentras innovación en cross-polinización.\n\n**Opción D (Cocrear):** Crees que las mejores estrategias emergen del input colaborativo."
+        },
+        "q5": {
+          "title": "Entendiendo Tu Motivación",
+          "body": "**Opción A (Hitos/scorecards):** Te energiza el progreso medible.\n\n**Opción B (Propósito/impacto):** Sacas energía de outcomes significativos.\n\n**Opción C (Aprendizaje/iteración):** Te motiva el crecimiento.\n\n**Opción D (Reconocimiento/victorias):** Prosperas con el reconocimiento."
+        },
+        "open1": {
+          "title": "Cómo Responder Bien",
+          "body": "Sigue el formato STAR-L: Situación, Tarea, Acción, Resultado, Aprendizaje. Describe una decisión específica con stakes reales. Nombra los trade-offs explícitamente. Cuantifica outcomes cuando sea posible. Mira: https://www.youtube.com/watch?v=0vNUxleEyoo"
+        },
+        "open2": {
+          "title": "Cómo Responder Bien",
+          "body": "Muestra autoconciencia nombrando un área de crecimiento genuina. Describe acciones específicas que estás tomando. Ejemplo: 'Tiendo a excederme en datos y retrasar decisiones. Lo estoy abordando poniendo deadlines de decisión por adelantado.' Mira: https://www.youtube.com/watch?v=tJxFZrMxT3s"
+        }
       },
       "examplesByCategory": {
         "comp_power": "Las preguntas de Potencia Computacional de Negocios evalúan tu capacidad de trabajar con datos, métricas y frameworks analíticos. Los top performers segmentan problemas sistemáticamente y validan calidad de datos.",
@@ -895,35 +1100,240 @@
       "title": "Crea tu XIMAtar",
       "subtitle": "Completa nuestra evaluación para descubrir tus fortalezas profesionales",
       "questions": {
-        "q1": { "category": "Potencia Computacional", "question": "Al evaluar datos de rendimiento creativo, primero:", "options": ["Comparo con objetivos", "Comparo formatos y ubicaciones", "Analizo segmentos de audiencia", "Verifico la medición"] },
-        "q2": { "category": "Comunicación", "question": "Tu concepto creativo ha sido aprobado, pero el equipo de producción interpreta el brief de forma diferente a tu intención. Su versión es técnicamente válida pero pierde tu intención tonal. Retrabajar costaría dos días que el proyecto no tiene. ¿Cómo abordas la brecha?", "options": ["Documentas los elementos tonales exactos que difieren con referencias específicas, pides al equipo evaluar cuáles son factibles de ajustar dentro del cronograma", "Describes la reacción de audiencia prevista en lugar de especificaciones técnicas — dejas al equipo encontrar su propio camino hacia el tono correcto", "Pides al equipo que explique su interpretación del brief — identificas dónde ocurrió la desconexión antes de proponer cambios", "Creas una rápida comparación visual lado a lado de intención vs. ejecución, reemplazando la descripción verbal con una referencia concreta a la que el equipo pueda reaccionar"] },
-        "q3": { "category": "Conocimiento", "question": "Has desarrollado un fuerte estilo visual, pero un nuevo proyecto requiere un lenguaje visual que desconoces. El brief es vago y las referencias son escasas. Tú:", "options": ["Estudias los ejemplos existentes más cercanos e identificas los principios de diseño subyacentes", "Creas experimentos rápidos en el nuevo estilo y recoges feedback antes de comprometerte", "Entrevistas a los stakeholders para clarificar qué asocian con el lenguaje visual deseado", "Adaptas elementos de tu estilo existente que puedan servir de puente hacia la nueva dirección"] },
-        "q4": { "category": "Creatividad", "question": "Un cliente quiere una campaña audaz y distintiva, pero su equipo legal ha señalado restricciones: sin afirmaciones comparativas, sin superlativos, y todas las imágenes deben incluir elementos de marca existentes. Tú:", "options": ["Usas los elementos de marca como fundamento creativo — haces de las restricciones el concepto estético en lugar de trabajar alrededor de ellas", "Desarrollas un lenguaje visual que se siente distintivo a través de composición, ritmo y tono mientras permaneces dentro de cada restricción legal", "Propones tres conceptos en diferentes puntos del espectro de audacia, cada uno plenamente conforme, para que el cliente elija su nivel de comodidad", "Redefines 'audaz' lejos de las afirmaciones y hacia el storytelling: creas una campaña narrativa que logra impacto a través de la emoción en lugar de la aserción"] },
-        "q5": { "category": "Drive", "question": "Un cliente rechazó tu trabajo por falta de profundidad estratégica — un área que sabes que es débil. Tú:", "options": ["Pides al cliente que te muestre un ejemplo del trabajo con la profundidad que buscaba", "Te emparejas con un/a estratega en tu próximo proyecto para observar cómo construye narrativa", "Reescribes tú mismo/a la capa estratégica del brief rechazado y pides crítica honesta", "Dedicas tiempo semanal a ejercicios de estrategia de una disciplina creativa diferente"] },
-        "q6": { "category": "Potencia Computacional", "question": "Para elegir un visual de campaña, te apoyas en:", "options": ["Tests A/B de miniaturas", "Heatmaps/eye-tracking", "Patrones históricos", "Investigación de usuarios"] },
-        "q7": { "category": "Comunicación", "question": "Un cliente da feedback que contradice su propio brief aprobado. No se da cuenta de la contradicción. Señalarlo directamente arriesga hacerlo sentir incompetente. Ignorarlo significa construir algo desalineado. ¿Cómo navegas esto?", "options": ["Haces referencia al brief original directamente, recorres los puntos de contradicción de forma directa, y preguntas qué dirección prefieren ahora", "Lo presentas como 'el proyecto ha evolucionado desde el brief' — encuadras la contradicción como evolución natural del alcance en lugar de un error", "Pides al cliente que describa su visión actual con sus propias palabras, luego sacas la contradicción solo si no la captan ellos mismos", "Creas dos mockups rápidos reflejando cada dirección, dejas al cliente elegir visualmente en lugar de navegar la contradicción verbal"] },
-        "q8": { "category": "Conocimiento", "question": "Tu dirección creativa se basa en investigación de audiencia, pero los primeros tests de usuario devuelven señales mixtas — algunos aman el resultado, otros lo encuentran confuso. Tú:", "options": ["Segmentas las respuestas para entender si diferentes grupos de audiencia reaccionan de forma diferente", "Testas una versión simplificada para aislar si la confusión es sobre el concepto o la ejecución", "Revisitas la investigación original para verificar si pasaste por alto matices en los datos", "Traes un nuevo set de testers con un protocolo de testing más claro para reducir el ruido"] },
-        "q9": { "category": "Creatividad", "question": "Estás diseñando una identidad visual para una marca que opera en dos mercados muy diferentes — lujo y asequible. Quieren una identidad que funcione para ambos sin alienar a ninguna audiencia. Tú:", "options": ["Creas un sistema de identidad flexible con elementos core compartidos pero expresiones visuales distintas que cambian según contexto y canal", "Encuentras la superposición emocional entre las dos audiencias y diseñas la identidad alrededor de ese valor compartido en lugar del posicionamiento de precio", "Diseñas una identidad primaria optimizada para el segmento de mercado más grande y creas un tratamiento de sub-marca para el otro", "Testas tres enfoques diferentes con representantes de ambas audiencias antes de comprometerte con una dirección"] },
-        "q10": { "category": "Drive", "question": "Tus habilidades de motion design están por debajo de las expectativas del equipo y afectan tus proyectos. Tú:", "options": ["Tomas un pequeño proyecto interno que requiera motion, con un plazo realista", "Pides a un/a colega experto/a que trabaje contigo en tu próxima animación con feedback directo", "Sigues un curso estructurado y aplicas cada lección a un entregable real en 48 horas", "Analizas cinco piezas de motion excelentes para identificar técnicas específicas que no estás usando"] },
-        "q11": { "category": "Potencia Computacional", "question": "Para asignar presupuesto de producción, tú:", "options": ["Modelo costo vs impacto", "Priorizar activos de alto impacto", "Prototipo barato primero", "Reutilizar/adaptar activos"] },
-        "q12": { "category": "Comunicación", "question": "Estás liderando una revisión creativa donde el trabajo de un miembro junior tiene problemas significativos, pero claramente ha invertido mucho esfuerzo. Dos colegas senior están en la sala. ¿Cómo das feedback honesto sin ser destructivo?", "options": ["Abordas el trabajo directamente: nombras qué funciona, qué no, proporcionas dirección específica de revisión — tratas al junior como un profesional", "Encuadras el feedback alrededor de los requisitos del proyecto en lugar de la calidad del trabajo — 'el brief necesita X, y esto entrega Y' lo mantiene estructural", "Pides al junior que se autoevalúe primero — '¿Qué cambiarías si tuvieras otro día?' — luego construyes tu feedback sobre las brechas que ellos mismos identificaron", "Das dirección de alto nivel en la sesión grupal, programas un seguimiento privado para crítica detallada donde el junior pueda hacer preguntas sin presión de audiencia"] },
-        "q13": { "category": "Conocimiento", "question": "Te has basado en una dirección creativa durante meses. Un diseñador junior presenta datos preliminares de usuario sugiriendo que una de tus asunciones estéticas fundamentales puede ser incorrecta. Tú:", "options": ["Pausas tu dirección actual y testas ambas versiones con una muestra de audiencia fresca antes de comprometerte", "Revisas los datos crudos del diseñador junior tú mismo/a para evaluar su validez antes de involucrar a nadie más", "Anotas el desafío formalmente y continúas con tu dirección, pero defines un umbral específico de feedback que activaría una reevaluación completa", "Pides a dos personas no involucradas en ninguna dirección que evalúen independientemente la evidencia contradictoria"] },
-        "q14": { "category": "Creatividad", "question": "Has desarrollado una dirección creativa durante semanas. En la revisión final, el cliente dice que adora el trabajo pero necesita adaptarlo a un medio para el que no lo diseñaste (ej. la campaña era para video pero ahora necesitan una serie OOH estática). La fecha límite no cambia. Tú:", "options": ["Extraes los momentos visuales más fuertes del concepto de video y los reestructuras como narrativa estática secuencial", "Rediseñas la idea central para el nuevo medio desde cero — lo que funcionó en video puede no traducirse, así que partes del insight en lugar de la ejecución", "Creas un híbrido: adaptas los frames clave pero añades un elemento escaneable/interactivo que trae de vuelta algo del movimiento", "Propones entregar la adaptación OOH en dos fases — una versión rápida usando activos existentes ahora, y una versión optimizada para el medio dos semanas después"] },
-        "q15": { "category": "Drive", "question": "La revisión de tu portfolio reveló que tu trabajo tipográfico es consistentemente tu área más débil. Tú:", "options": ["Rediseñas un proyecto pasado enfocándote solo en tipografía y comparas el resultado", "Buscas una crítica de un/a especialista en tipografía sobre qué necesita mejorar específicamente", "Rastreas tus decisiones tipográficas durante el próximo mes para detectar errores recurrentes", "Restringes tu próximo proyecto a solo elementos tipográficos — sin ilustración ni color"] },
-        "q16": { "category": "Potencia Computacional", "question": "Cuando tu flujo de trabajo creativo encuentra un cuello de botella, tú:", "options": ["Perfilas cada paso para encontrar la etapa más lenta", "Rediseñas la secuencia para eliminar traspasos", "Evalúas la curva de aprendizaje de herramientas alternativas", "Evalúas costo y licencias de reemplazos"] },
-        "q17": { "category": "Comunicación", "question": "Un colaborador de una disciplina diferente (ej. un ingeniero trabajando con un diseñador) sigue usando el vocabulario de su propio dominio para describir vuestro proyecto compartido. Las reuniones son productivas en la superficie pero sospechas desalineamiento fundamental bajo los términos compartidos. ¿Cómo lo verificas?", "options": ["Creas un glosario compartido definiendo términos clave como se usan en este proyecto, sacando a la superficie las brechas de definición explícitamente", "Cambias de vocabulario a resultados — preguntas '¿cómo se ve el éxito para ti?' y comparas expectativas concretas en lugar de terminología", "En la próxima reunión, parafraseas sus afirmaciones en tu vocabulario y observas señales de corrección o confusión", "Propones una sesión conjunta de sketch o prototipo donde ambas disciplinas expresan intención visualmente en lugar de verbalmente, evitando el problema del vocabulario"] },
-        "q18": { "category": "Conocimiento", "question": "Un cliente insiste en que su audiencia quiere una estética específica, pero tu investigación sugiere lo contrario. La convicción del cliente es fuerte. Tú:", "options": ["Propones un test A/B con ambos enfoques en una muestra pequeña antes de la producción completa", "Presentas tu investigación de forma transparente y pides al cliente que explique qué evidencia respalda su visión", "Encuentras una solución creativa que incorpora elementos de ambas perspectivas", "Documentas ambas posiciones y acuerdas criterios de éxito que resolverán el desacuerdo después del lanzamiento"] },
-        "q19": { "category": "Creatividad", "question": "Tu equipo ha desarrollado un concepto visual innovador que testa bien con audiencias jóvenes pero aliena la base de clientes existente más mayor del brand. El cliente quiere mantener ambos. Tú:", "options": ["Encuentras elementos tanto del nuevo concepto como del lenguaje visual existente que pueden coexistir, creando una estética puente", "Reencuadras la estrategia: usas el concepto innovador en canales de adquisición (social, digital) y retienes el estilo familiar en canales de retención (email, loyalty)", "Evolucionas el lenguaje visual existente gradualmente, incorporando los principios del nuevo concepto en pequeñas dosis a través de los touchpoints", "Propones un rollout A/B: testas el nuevo concepto con un segmento controlado de la audiencia mayor para encontrar el umbral real de tolerancia antes del despliegue completo"] },
-        "q20": { "category": "Drive", "question": "Has llegado a una meseta en tus habilidades de dirección creativa y te sientes estancado/a. Tú:", "options": ["Tomas un proyecto en un formato o género que nunca has hecho", "Pides a tres pares de confianza que nombren cada uno un área específica donde tu dirección puede mejorar", "Comparas tu trabajo reciente con el de hace 12 meses para identificar qué ha cambiado realmente", "Estableces objetivos trimestrales de habilidad con entregables concretos que demuestren mejora"] },
-        "q21": { "category": "Potencia Computacional", "question": "Para juzgar calidad de activos a escala, tú:", "options": ["Criterios medibles", "Revisiones por lotes", "Tests con audiencia", "Automatizar controles"] },
-        "open1": { "question": "Cuéntanos una pieza que cambió resultados. ¿Por qué funcionó?" },
-        "open2": { "question": "¿Qué habilidad creativa más quieres mejorar este año y cómo?" }
+        "q1": {
+          "category": "Potencia Computacional",
+          "question": "Al evaluar datos de rendimiento creativo, primero:",
+          "options": [
+            "Comparo con objetivos",
+            "Comparo formatos y ubicaciones",
+            "Analizo segmentos de audiencia",
+            "Verifico la medición"
+          ]
+        },
+        "q2": {
+          "category": "Comunicación",
+          "question": "Tu concepto creativo ha sido aprobado, pero el equipo de producción interpreta el brief de forma diferente a tu intención. Su versión es técnicamente válida pero pierde tu intención tonal. Retrabajar costaría dos días que el proyecto no tiene. ¿Cómo abordas la brecha?",
+          "options": [
+            "Documentas los elementos tonales exactos que difieren con referencias específicas, pides al equipo evaluar cuáles son factibles de ajustar dentro del cronograma",
+            "Describes la reacción de audiencia prevista en lugar de especificaciones técnicas — dejas al equipo encontrar su propio camino hacia el tono correcto",
+            "Pides al equipo que explique su interpretación del brief — identificas dónde ocurrió la desconexión antes de proponer cambios",
+            "Creas una rápida comparación visual lado a lado de intención vs. ejecución, reemplazando la descripción verbal con una referencia concreta a la que el equipo pueda reaccionar"
+          ]
+        },
+        "q3": {
+          "category": "Conocimiento",
+          "question": "Has desarrollado un fuerte estilo visual, pero un nuevo proyecto requiere un lenguaje visual que desconoces. El brief es vago y las referencias son escasas. Tú:",
+          "options": [
+            "Estudias los ejemplos existentes más cercanos e identificas los principios de diseño subyacentes",
+            "Creas experimentos rápidos en el nuevo estilo y recoges feedback antes de comprometerte",
+            "Entrevistas a los stakeholders para clarificar qué asocian con el lenguaje visual deseado",
+            "Adaptas elementos de tu estilo existente que puedan servir de puente hacia la nueva dirección"
+          ]
+        },
+        "q4": {
+          "category": "Creatividad",
+          "question": "Un cliente quiere una campaña audaz y distintiva, pero su equipo legal ha señalado restricciones: sin afirmaciones comparativas, sin superlativos, y todas las imágenes deben incluir elementos de marca existentes. Tú:",
+          "options": [
+            "Usas los elementos de marca como fundamento creativo — haces de las restricciones el concepto estético en lugar de trabajar alrededor de ellas",
+            "Desarrollas un lenguaje visual que se siente distintivo a través de composición, ritmo y tono mientras permaneces dentro de cada restricción legal",
+            "Propones tres conceptos en diferentes puntos del espectro de audacia, cada uno plenamente conforme, para que el cliente elija su nivel de comodidad",
+            "Redefines 'audaz' lejos de las afirmaciones y hacia el storytelling: creas una campaña narrativa que logra impacto a través de la emoción en lugar de la aserción"
+          ]
+        },
+        "q5": {
+          "category": "Drive",
+          "question": "Un cliente rechazó tu trabajo por falta de profundidad estratégica — un área que sabes que es débil. Tú:",
+          "options": [
+            "Pides al cliente que te muestre un ejemplo del trabajo con la profundidad que buscaba",
+            "Te emparejas con un/a estratega en tu próximo proyecto para observar cómo construye narrativa",
+            "Reescribes tú mismo/a la capa estratégica del brief rechazado y pides crítica honesta",
+            "Dedicas tiempo semanal a ejercicios de estrategia de una disciplina creativa diferente"
+          ]
+        },
+        "q6": {
+          "category": "Potencia Computacional",
+          "question": "Para elegir un visual de campaña, te apoyas en:",
+          "options": [
+            "Tests A/B de miniaturas",
+            "Heatmaps/eye-tracking",
+            "Patrones históricos",
+            "Investigación de usuarios"
+          ]
+        },
+        "q7": {
+          "category": "Comunicación",
+          "question": "Un cliente da feedback que contradice su propio brief aprobado. No se da cuenta de la contradicción. Señalarlo directamente arriesga hacerlo sentir incompetente. Ignorarlo significa construir algo desalineado. ¿Cómo navegas esto?",
+          "options": [
+            "Haces referencia al brief original directamente, recorres los puntos de contradicción de forma directa, y preguntas qué dirección prefieren ahora",
+            "Lo presentas como 'el proyecto ha evolucionado desde el brief' — encuadras la contradicción como evolución natural del alcance en lugar de un error",
+            "Pides al cliente que describa su visión actual con sus propias palabras, luego sacas la contradicción solo si no la captan ellos mismos",
+            "Creas dos mockups rápidos reflejando cada dirección, dejas al cliente elegir visualmente en lugar de navegar la contradicción verbal"
+          ]
+        },
+        "q8": {
+          "category": "Conocimiento",
+          "question": "Tu dirección creativa se basa en investigación de audiencia, pero los primeros tests de usuario devuelven señales mixtas — algunos aman el resultado, otros lo encuentran confuso. Tú:",
+          "options": [
+            "Segmentas las respuestas para entender si diferentes grupos de audiencia reaccionan de forma diferente",
+            "Testas una versión simplificada para aislar si la confusión es sobre el concepto o la ejecución",
+            "Revisitas la investigación original para verificar si pasaste por alto matices en los datos",
+            "Traes un nuevo set de testers con un protocolo de testing más claro para reducir el ruido"
+          ]
+        },
+        "q9": {
+          "category": "Creatividad",
+          "question": "Estás diseñando una identidad visual para una marca que opera en dos mercados muy diferentes — lujo y asequible. Quieren una identidad que funcione para ambos sin alienar a ninguna audiencia. Tú:",
+          "options": [
+            "Creas un sistema de identidad flexible con elementos core compartidos pero expresiones visuales distintas que cambian según contexto y canal",
+            "Encuentras la superposición emocional entre las dos audiencias y diseñas la identidad alrededor de ese valor compartido en lugar del posicionamiento de precio",
+            "Diseñas una identidad primaria optimizada para el segmento de mercado más grande y creas un tratamiento de sub-marca para el otro",
+            "Testas tres enfoques diferentes con representantes de ambas audiencias antes de comprometerte con una dirección"
+          ]
+        },
+        "q10": {
+          "category": "Drive",
+          "question": "Tus habilidades de motion design están por debajo de las expectativas del equipo y afectan tus proyectos. Tú:",
+          "options": [
+            "Tomas un pequeño proyecto interno que requiera motion, con un plazo realista",
+            "Pides a un/a colega experto/a que trabaje contigo en tu próxima animación con feedback directo",
+            "Sigues un curso estructurado y aplicas cada lección a un entregable real en 48 horas",
+            "Analizas cinco piezas de motion excelentes para identificar técnicas específicas que no estás usando"
+          ]
+        },
+        "q11": {
+          "category": "Potencia Computacional",
+          "question": "Para asignar presupuesto de producción, tú:",
+          "options": [
+            "Modelo costo vs impacto",
+            "Priorizar activos de alto impacto",
+            "Prototipo barato primero",
+            "Reutilizar/adaptar activos"
+          ]
+        },
+        "q12": {
+          "category": "Comunicación",
+          "question": "Estás liderando una revisión creativa donde el trabajo de un miembro junior tiene problemas significativos, pero claramente ha invertido mucho esfuerzo. Dos colegas senior están en la sala. ¿Cómo das feedback honesto sin ser destructivo?",
+          "options": [
+            "Abordas el trabajo directamente: nombras qué funciona, qué no, proporcionas dirección específica de revisión — tratas al junior como un profesional",
+            "Encuadras el feedback alrededor de los requisitos del proyecto en lugar de la calidad del trabajo — 'el brief necesita X, y esto entrega Y' lo mantiene estructural",
+            "Pides al junior que se autoevalúe primero — '¿Qué cambiarías si tuvieras otro día?' — luego construyes tu feedback sobre las brechas que ellos mismos identificaron",
+            "Das dirección de alto nivel en la sesión grupal, programas un seguimiento privado para crítica detallada donde el junior pueda hacer preguntas sin presión de audiencia"
+          ]
+        },
+        "q13": {
+          "category": "Conocimiento",
+          "question": "Te has basado en una dirección creativa durante meses. Un diseñador junior presenta datos preliminares de usuario sugiriendo que una de tus asunciones estéticas fundamentales puede ser incorrecta. Tú:",
+          "options": [
+            "Pausas tu dirección actual y testas ambas versiones con una muestra de audiencia fresca antes de comprometerte",
+            "Revisas los datos crudos del diseñador junior tú mismo/a para evaluar su validez antes de involucrar a nadie más",
+            "Anotas el desafío formalmente y continúas con tu dirección, pero defines un umbral específico de feedback que activaría una reevaluación completa",
+            "Pides a dos personas no involucradas en ninguna dirección que evalúen independientemente la evidencia contradictoria"
+          ]
+        },
+        "q14": {
+          "category": "Creatividad",
+          "question": "Has desarrollado una dirección creativa durante semanas. En la revisión final, el cliente dice que adora el trabajo pero necesita adaptarlo a un medio para el que no lo diseñaste (ej. la campaña era para video pero ahora necesitan una serie OOH estática). La fecha límite no cambia. Tú:",
+          "options": [
+            "Extraes los momentos visuales más fuertes del concepto de video y los reestructuras como narrativa estática secuencial",
+            "Rediseñas la idea central para el nuevo medio desde cero — lo que funcionó en video puede no traducirse, así que partes del insight en lugar de la ejecución",
+            "Creas un híbrido: adaptas los frames clave pero añades un elemento escaneable/interactivo que trae de vuelta algo del movimiento",
+            "Propones entregar la adaptación OOH en dos fases — una versión rápida usando activos existentes ahora, y una versión optimizada para el medio dos semanas después"
+          ]
+        },
+        "q15": {
+          "category": "Drive",
+          "question": "La revisión de tu portfolio reveló que tu trabajo tipográfico es consistentemente tu área más débil. Tú:",
+          "options": [
+            "Rediseñas un proyecto pasado enfocándote solo en tipografía y comparas el resultado",
+            "Buscas una crítica de un/a especialista en tipografía sobre qué necesita mejorar específicamente",
+            "Rastreas tus decisiones tipográficas durante el próximo mes para detectar errores recurrentes",
+            "Restringes tu próximo proyecto a solo elementos tipográficos — sin ilustración ni color"
+          ]
+        },
+        "q16": {
+          "category": "Potencia Computacional",
+          "question": "Cuando tu flujo de trabajo creativo encuentra un cuello de botella, tú:",
+          "options": [
+            "Perfilas cada paso para encontrar la etapa más lenta",
+            "Rediseñas la secuencia para eliminar traspasos",
+            "Evalúas la curva de aprendizaje de herramientas alternativas",
+            "Evalúas costo y licencias de reemplazos"
+          ]
+        },
+        "q17": {
+          "category": "Comunicación",
+          "question": "Un colaborador de una disciplina diferente (ej. un ingeniero trabajando con un diseñador) sigue usando el vocabulario de su propio dominio para describir vuestro proyecto compartido. Las reuniones son productivas en la superficie pero sospechas desalineamiento fundamental bajo los términos compartidos. ¿Cómo lo verificas?",
+          "options": [
+            "Creas un glosario compartido definiendo términos clave como se usan en este proyecto, sacando a la superficie las brechas de definición explícitamente",
+            "Cambias de vocabulario a resultados — preguntas '¿cómo se ve el éxito para ti?' y comparas expectativas concretas en lugar de terminología",
+            "En la próxima reunión, parafraseas sus afirmaciones en tu vocabulario y observas señales de corrección o confusión",
+            "Propones una sesión conjunta de sketch o prototipo donde ambas disciplinas expresan intención visualmente en lugar de verbalmente, evitando el problema del vocabulario"
+          ]
+        },
+        "q18": {
+          "category": "Conocimiento",
+          "question": "Un cliente insiste en que su audiencia quiere una estética específica, pero tu investigación sugiere lo contrario. La convicción del cliente es fuerte. Tú:",
+          "options": [
+            "Propones un test A/B con ambos enfoques en una muestra pequeña antes de la producción completa",
+            "Presentas tu investigación de forma transparente y pides al cliente que explique qué evidencia respalda su visión",
+            "Encuentras una solución creativa que incorpora elementos de ambas perspectivas",
+            "Documentas ambas posiciones y acuerdas criterios de éxito que resolverán el desacuerdo después del lanzamiento"
+          ]
+        },
+        "q19": {
+          "category": "Creatividad",
+          "question": "Tu equipo ha desarrollado un concepto visual innovador que testa bien con audiencias jóvenes pero aliena la base de clientes existente más mayor del brand. El cliente quiere mantener ambos. Tú:",
+          "options": [
+            "Encuentras elementos tanto del nuevo concepto como del lenguaje visual existente que pueden coexistir, creando una estética puente",
+            "Reencuadras la estrategia: usas el concepto innovador en canales de adquisición (social, digital) y retienes el estilo familiar en canales de retención (email, loyalty)",
+            "Evolucionas el lenguaje visual existente gradualmente, incorporando los principios del nuevo concepto en pequeñas dosis a través de los touchpoints",
+            "Propones un rollout A/B: testas el nuevo concepto con un segmento controlado de la audiencia mayor para encontrar el umbral real de tolerancia antes del despliegue completo"
+          ]
+        },
+        "q20": {
+          "category": "Drive",
+          "question": "Has llegado a una meseta en tus habilidades de dirección creativa y te sientes estancado/a. Tú:",
+          "options": [
+            "Tomas un proyecto en un formato o género que nunca has hecho",
+            "Pides a tres pares de confianza que nombren cada uno un área específica donde tu dirección puede mejorar",
+            "Comparas tu trabajo reciente con el de hace 12 meses para identificar qué ha cambiado realmente",
+            "Estableces objetivos trimestrales de habilidad con entregables concretos que demuestren mejora"
+          ]
+        },
+        "q21": {
+          "category": "Potencia Computacional",
+          "question": "Para juzgar calidad de activos a escala, tú:",
+          "options": [
+            "Criterios medibles",
+            "Revisiones por lotes",
+            "Tests con audiencia",
+            "Automatizar controles"
+          ]
+        },
+        "open1": {
+          "question": "Cuéntanos una pieza que cambió resultados. ¿Por qué funcionó?"
+        },
+        "open2": {
+          "question": "¿Qué habilidad creativa más quieres mejorar este año y cómo?"
+        }
       },
       "examples": {
-        "q1": { "title": "Entendiendo Tu Enfoque", "body": "**Opción A (Comparar objetivos):** Priorizas medir si el creativo cumple metas.\n\n**Opción B (Formatos/ubicaciones):** Analizas qué formatos funcionan mejor.\n\n**Opción C (Segmentos audiencia):** Miras cómo responden diferentes audiencias.\n\n**Opción D (Verificar medición):** Validas calidad de datos primero." },
-        "q2": { "title": "Entendiendo Tu Enfoque", "body": "**Opción A (Historia de decisiones):** Explicas el razonamiento y lógica creativa.\n\n**Opción B (Antes/después visual):** Muestras transformaciones tangibles.\n\n**Opción C (Objetivos de negocio):** Conectas elecciones a outcomes que importan.\n\n**Opción D (Invitar preguntas):** Construyes comprensión a través del diálogo." },
-        "open1": { "title": "Cómo Responder Bien", "body": "Describe una pieza específica con impacto medible: Qué creaste, El desafío, Tus elecciones creativas, El outcome. Ejemplo: 'Rediseñé las ilustraciones del checkout de abstractas a imágenes concretas. Esto aumentó la conversión un 23%.' Mira: https://www.youtube.com/watch?v=0vNUxleEyoo" },
-        "open2": { "title": "Cómo Responder Bien", "body": "Nombra un gap de habilidad genuino y describe pasos activos. Evita respuestas genéricas. Ejemplo: 'Quiero mejorar en motion design. Estoy tomando un curso de 12 semanas, practico 30 min diarios y comparto progreso en una comunidad online.' Mira: https://www.youtube.com/watch?v=tJxFZrMxT3s" }
+        "q1": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Comparar objetivos):** Priorizas medir si el creativo cumple metas.\n\n**Opción B (Formatos/ubicaciones):** Analizas qué formatos funcionan mejor.\n\n**Opción C (Segmentos audiencia):** Miras cómo responden diferentes audiencias.\n\n**Opción D (Verificar medición):** Validas calidad de datos primero."
+        },
+        "q2": {
+          "title": "Entendiendo Tu Enfoque",
+          "body": "**Opción A (Historia de decisiones):** Explicas el razonamiento y lógica creativa.\n\n**Opción B (Antes/después visual):** Muestras transformaciones tangibles.\n\n**Opción C (Objetivos de negocio):** Conectas elecciones a outcomes que importan.\n\n**Opción D (Invitar preguntas):** Construyes comprensión a través del diálogo."
+        },
+        "open1": {
+          "title": "Cómo Responder Bien",
+          "body": "Describe una pieza específica con impacto medible: Qué creaste, El desafío, Tus elecciones creativas, El outcome. Ejemplo: 'Rediseñé las ilustraciones del checkout de abstractas a imágenes concretas. Esto aumentó la conversión un 23%.' Mira: https://www.youtube.com/watch?v=0vNUxleEyoo"
+        },
+        "open2": {
+          "title": "Cómo Responder Bien",
+          "body": "Nombra un gap de habilidad genuino y describe pasos activos. Evita respuestas genéricas. Ejemplo: 'Quiero mejorar en motion design. Estoy tomando un curso de 12 semanas, practico 30 min diarios y comparto progreso en una comunidad online.' Mira: https://www.youtube.com/watch?v=tJxFZrMxT3s"
+        }
       },
       "examplesByCategory": {
         "comp_power": "Las preguntas de Potencia Computacional Creativa evalúan tu capacidad de usar datos para informar decisiones creativas. Los top performers validan suposiciones con evidencia.",
@@ -937,29 +1347,222 @@
       "title": "Crea tu XIMAtar",
       "subtitle": "Completa nuestra evaluación para descubrir tus fortalezas profesionales",
       "questions": {
-        "q1": { "category": "Potencia Computacional", "question": "Cuando bajan las métricas de servicio, primero:", "options": ["Segmento por turno/sede", "Verifico cumplimiento de procesos", "Comparo con histórico", "Compruebo integridad de datos"] },
-        "q2": { "category": "Comunicación", "question": "Un cambio de proceso que implementaste está causando confusión entre el personal de primera línea. Algunos están volviendo a los procedimientos antiguos. No puedes imponer cumplimiento sin entender el problema. ¿Cómo diagnosticas y abordas la brecha comunicativa?", "options": ["Reemites la documentación del procedimiento con detalle paso a paso, excepciones numeradas y comparaciones explícitas con el proceso antiguo", "Explicas el porqué detrás del cambio — conectas el nuevo proceso con resultados que importan al personal, en lugar de reemitir el cómo", "Pasas un turno observando dónde el personal revierte, les preguntas qué no está claro en sus propias palabras, luego revisas la comunicación basándote en los puntos reales de confusión", "Reemplazas las instrucciones escritas con un breve video walkthrough mostrando el nuevo proceso en contexto, complementado con una tarjeta de referencia rápida"] },
-        "q3": { "category": "Conocimiento", "question": "Tu equipo sigue un procedimiento estándar, pero un caso inusual no encaja en el protocolo existente. El manual de procedimientos no cubre este escenario. Tú:", "options": ["Identificas qué partes del procedimiento estándar aún aplican y adaptas el resto con razonamiento documentado", "Consultas a un/a colega que haya manejado casos similares para entender cómo lo abordó", "Escalas a un supervisor con una descripción clara de por qué el procedimiento estándar no aplica", "Lo manejas usando tu mejor juicio y escribes el caso para que el procedimiento pueda actualizarse"] },
-        "q4": { "category": "Creatividad", "question": "Tu equipo de servicio necesita reducir el tiempo promedio de gestión un 20%, pero recortar pasos perjudicaría los puntajes de calidad. No puedes contratar más personal. Tú:", "options": ["Rediseñas el flujo de servicio para que los casos comunes sigan un camino simplificado mientras los casos complejos reciben el proceso completo — gestionando ambos más rápido en promedio", "Identificas el paso que más tiempo consume y encuentras una forma de ejecutarlo en paralelo con otro paso en lugar de secuencialmente", "Redefinir 'tiempo de gestión' moviendo algunos pasos a seguimiento asíncrono, reduciendo el tiempo de interacción en vivo sin recortar contenido", "Creas respuestas plantilla para el 30% más frecuente de solicitudes, liberando agentes para dedicar más tiempo a los casos complejos restantes"] },
-        "q5": { "category": "Drive", "question": "El tiempo de respuesta a incidentes de tu equipo ha sido más lento que el objetivo, y tú eres parte del problema. Tú:", "options": ["Acompañas al responder más rápido del turno y documentas qué hace diferente", "Revisas tus últimos cinco incidentes para encontrar el paso específico donde perdiste tiempo", "Practicas respondiendo a incidentes simulados con un cronómetro para ganar velocidad", "Rediseñas tu checklist personal de triaje basándote en lo que realmente te ha ralentizado"] },
-        "q6": { "category": "Potencia Computacional", "question": "Para planificar turnos eficaces, tú:", "options": ["Modelas demanda por hora", "Consideras mezcla de habilidades", "Incluyes buffers para picos", "Revisas restricciones y normas"] },
-        "q7": { "category": "Comunicación", "question": "Un cliente está escalando una queja. Está factualmente equivocado sobre lo ocurrido, pero emocionalmente ha tenido una experiencia genuinamente mala. Tu respuesta será revisada por tu manager. ¿Cómo manejas la inexactitud factual mientras abordas la experiencia?", "options": ["Reconoces su frustración, luego recorres lo que realmente ocurrió con timestamps y detalles — la claridad previene futuras disputas", "Enfocas la respuesta en la brecha de experiencia en lugar de la secuencia factual — 'independientemente de los detalles, el resultado fue insuficiente' — y propones resolución", "Pides al cliente que confirme detalles específicos de su experiencia — le dejas autocorregirse a través de preguntas clarificadoras en lugar de contradicción directa", "Respondes por escrito con empatía y resolución, luego ofreces una llamada para discutir detalles — el intercambio verbal reduce la dinámica adversarial de la corrección escrita"] },
-        "q8": { "category": "Conocimiento", "question": "Dos miembros experimentados del equipo te dan consejos contradictorios sobre cómo manejar una situación de servicio. Ambos tienen sólida trayectoria. Tú:", "options": ["Pides a cada uno que explique el razonamiento detrás de su recomendación, no solo la conclusión", "Analizas qué es diferente en esta situación comparado con cuando cada enfoque funcionó antes", "Pruebas el enfoque con menor riesgo de caída y evalúas el resultado", "Verificas si existe un precedente documentado para este tipo de situación antes de decidir"] },
-        "q9": { "category": "Creatividad", "question": "Un proveedor clave te notifica que un componente crítico no estará disponible durante tres semanas. Tu servicio depende de él diariamente. Cambiar de proveedor permanentemente no es viable por contratos. Tú:", "options": ["Buscas una alternativa temporal que cubra la brecha, aunque no sea idéntica, y ajustas tu proceso para acomodar las diferencias", "Rediseñas el flujo de servicio afectado para funcionar sin el componente durante tres semanas, aunque signifique una experiencia de cliente diferente (pero aceptable)", "Negocias con el proveedor entregas parciales o sustitutivas, priorizando las variantes específicas que necesitas con más urgencia", "Construyes una pequeña reserva reduciendo uso en aplicaciones de menor prioridad y redirigiendo inventario a las líneas de servicio más críticas"] },
-        "q10": { "category": "Drive", "question": "El feedback de clientes muestra que las explicaciones de tu equipo durante cortes son confusas — y los guiones los escribiste tú. Tú:", "options": ["Grabas explicaciones reales y las revisas para identificar qué no está claro", "Practicas con escenarios simulados usando guiones en lenguaje simple hasta que se sienta natural", "Pides a un/a formador/a de comunicación que observe una interacción y dé consejos específicos", "Creas una biblioteca de plantillas para explicaciones comunes y la pruebas con usuarios"] },
-        "q11": { "category": "Potencia Computacional", "question": "Para reducir errores, tú:", "options": ["Introduces checklists", "Estandarizas y 5S", "Automatizas pasos repetitivos", "Trazas cada error hasta el paso donde apareció por primera vez"] },
-        "q12": { "category": "Comunicación", "question": "Necesitas comunicar una reducción de nivel de servicio a clientes de largo plazo. La reducción es permanente y no negociable. Algunos clientes se verán significativamente impactados. Debes preservar la relación siendo transparente. ¿Cómo entregas el mensaje?", "options": ["Declaras el cambio claramente con fechas efectivas e impactos específicos por segmento de cliente — la ambigüedad sería peor que la mala noticia", "Encuadras dentro de una narrativa más amplia de evolución del servicio — posicionas la reducción como parte de un cambio estratégico que incluye mejoras en otras áreas", "Contactas a los clientes más impactados individualmente primero, evalúas sus preocupaciones, luego usas esos insights para refinar el anuncio más amplio", "Reemplazas un anuncio masivo con revisiones individuales de cuenta — cada cliente escucha la noticia en el contexto de su relación específica y uso"] },
-        "q13": { "category": "Conocimiento", "question": "Te has basado en un procedimiento operativo durante meses. Un miembro junior del equipo presenta datos preliminares sugiriendo que una de sus asunciones fundamentales es incorrecta. Tú:", "options": ["Pausas la aplicación del procedimiento en los casos afectados y testas ambos enfoques en casos recientes antes de comprometerte", "Revisas los datos crudos del miembro del equipo tú mismo/a para evaluar su solidez antes de involucrar a nadie más", "Anotas el desafío formalmente y continúas con el procedimiento, pero defines un umbral específico de resultado que activaría una reevaluación completa", "Pides a dos personas no involucradas en ninguno de los análisis que evalúen independientemente la evidencia contradictoria"] },
-        "q14": { "category": "Creatividad", "question": "La dirección quiere introducir un canal digital de autoservicio para reducir el volumen de llamadas un 30%. Pero tus datos muestran que el 60% de los clientes que prueban el autoservicio terminan llamando de todos modos porque los problemas son demasiado complejos. Tú:", "options": ["Rediseñas el flujo de autoservicio para manejar solo los casos que realmente puede resolver bien, y diriges los casos complejos a agentes más rápido en lugar de intentar contenerlos", "Creas un híbrido: dejas que los clientes inicien en autoservicio pero ofreces una escalación fluida que preserva el contexto, para que la llamada al agente sea más corta", "Reencuadras el objetivo del 30%: en lugar de reducir llamadas totales, te enfocas en reducir llamadas repetidas usando autoservicio para seguimientos y consultas de estado", "Pilotas tres enfoques de autoservicio diferentes en distintos tipos de caso para identificar qué categorías realmente se benefician de la automatización antes de escalar"] },
-        "q15": { "category": "Drive", "question": "Una auditoría encontró lagunas recurrentes en tu documentación de compliance — una habilidad que no has desarrollado. Tú:", "options": ["Identificas las 2 lagunas más comunes y creas una checklist personal para esas áreas", "Pides al auditor que te guíe a través de cómo es exactamente una buena documentación", "Comparas tu documentación con la de un/a colega que puntuó bien, lado a lado", "Rehaces un documento reciente desde cero usando el estándar correcto y cronometrándote"] },
-        "q16": { "category": "Potencia Computacional", "question": "Eligiendo una herramienta, tú:", "options": ["Ajuste a requisitos", "Piloto con grupo pequeño", "Coste/beneficio y riesgo", "Integración con sistemas"] },
-        "q17": { "category": "Comunicación", "question": "Te han pedido formar a un nuevo equipo en un flujo de trabajo complejo. La mitad del grupo tiene experiencia operativa en un campo relacionado; la otra mitad son principiantes absolutos. Tienes una sola sesión de formación. ¿Cómo la estructuras?", "options": ["Enseñas el flujo completo de principio a fin a nivel principiante, luego ofreces una sesión suplementaria avanzada para los miembros experimentados que quieran más contexto", "Comienzas con el modelo conceptual — por qué existe el flujo — luego dejas que los experimentados lo conecten con lo que saben mientras los principiantes construyen desde cero", "Inicias con un ejercicio diagnóstico que revela qué sabe ya cada persona, luego ajustas la profundidad dinámicamente según las brechas reales", "Emparejas miembros experimentados y principiantes, proporcionas un escenario de práctica guiada, y circulas para responder preguntas individuales — reemplazas la clase con aprendizaje estructurado entre pares"] },
-        "q18": { "category": "Conocimiento", "question": "Una nueva directriz del sector contradice una práctica que tu equipo ha usado con éxito durante años. La base de evidencia de la directriz es limitada pero creciente. Tú:", "options": ["Revisas la evidencia detrás de la directriz y la comparas con los datos de resultados de tu equipo", "Pilotas la nueva directriz en un subconjunto de casos manteniendo la práctica antigua como control", "Adoptas la directriz pero rastreas los resultados de cerca para verificar que funciona como afirma", "Consultas a pares en otras organizaciones para entender cómo están interpretando e implementando la directriz"] },
-        "q19": { "category": "Creatividad", "question": "Tu equipo gestiona una operación 24/7. Una nueva regulación requiere documentación adicional en cada traspaso entre turnos, pero añadir papeleo ralentizaría las transiciones y crearía un vacío de cobertura de 15 minutos. Tú:", "options": ["Rediseñas el formato de traspaso: reemplazas el enfoque en papel con un log digital estructurado que se auto-completa con los datos de actividad del turno", "Solapas los turnos 15 minutos y usas el periodo de solapamiento tanto para el traspaso como para la documentación, absorbiendo el costo temporal dentro del horario", "Divides el requisito de documentación: capturas los elementos críticos durante el traspaso y aplazas las notas detalladas a un momento más tranquilo dentro del siguiente turno", "Redefinir el alcance de documentación: trabajas con compliance para identificar la documentación mínima viable que satisface la regulación sin la carga completa"] },
-        "q20": { "category": "Drive", "question": "Te han dicho que tus propuestas de mejora de procesos carecen de soporte de datos — una habilidad que no has desarrollado. Tú:", "options": ["Adjuntas baselines medibles a tu próxima propuesta, aunque recoger los datos tome tiempo extra", "Te asocias con un/a analista para aprender cómo construye argumentos basados en datos", "Tomas un curso corto de análisis de datos operativos y lo aplicas a un caso de mejora real", "Revisas tres propuestas aprobadas para hacer ingeniería inversa de qué datos las hicieron convincentes"] },
-        "q21": { "category": "Potencia Computacional", "question": "Al evaluar un cambio de proceso, tú:", "options": ["Definir métricas por adelantado", "Comparar datos antes/después", "Prueba controlada", "Documentar impacto y siguientes pasos"] },
-        "open1": { "question": "Describe una vez que mejoraste un proceso de servicio. ¿Qué cambió y cómo lo hiciste sostenible?" },
-        "open2": { "question": "¿Qué área de tu práctica operativa quieres hacer crecer este año y cuál es tu plan?" }
+        "q1": {
+          "category": "Potencia Computacional",
+          "question": "Cuando bajan las métricas de servicio, primero:",
+          "options": [
+            "Segmento por turno/sede",
+            "Verifico cumplimiento de procesos",
+            "Comparo con histórico",
+            "Compruebo integridad de datos"
+          ]
+        },
+        "q2": {
+          "category": "Comunicación",
+          "question": "Un cambio de proceso que implementaste está causando confusión entre el personal de primera línea. Algunos están volviendo a los procedimientos antiguos. No puedes imponer cumplimiento sin entender el problema. ¿Cómo diagnosticas y abordas la brecha comunicativa?",
+          "options": [
+            "Reemites la documentación del procedimiento con detalle paso a paso, excepciones numeradas y comparaciones explícitas con el proceso antiguo",
+            "Explicas el porqué detrás del cambio — conectas el nuevo proceso con resultados que importan al personal, en lugar de reemitir el cómo",
+            "Pasas un turno observando dónde el personal revierte, les preguntas qué no está claro en sus propias palabras, luego revisas la comunicación basándote en los puntos reales de confusión",
+            "Reemplazas las instrucciones escritas con un breve video walkthrough mostrando el nuevo proceso en contexto, complementado con una tarjeta de referencia rápida"
+          ]
+        },
+        "q3": {
+          "category": "Conocimiento",
+          "question": "Tu equipo sigue un procedimiento estándar, pero un caso inusual no encaja en el protocolo existente. El manual de procedimientos no cubre este escenario. Tú:",
+          "options": [
+            "Identificas qué partes del procedimiento estándar aún aplican y adaptas el resto con razonamiento documentado",
+            "Consultas a un/a colega que haya manejado casos similares para entender cómo lo abordó",
+            "Escalas a un supervisor con una descripción clara de por qué el procedimiento estándar no aplica",
+            "Lo manejas usando tu mejor juicio y escribes el caso para que el procedimiento pueda actualizarse"
+          ]
+        },
+        "q4": {
+          "category": "Creatividad",
+          "question": "Tu equipo de servicio necesita reducir el tiempo promedio de gestión un 20%, pero recortar pasos perjudicaría los puntajes de calidad. No puedes contratar más personal. Tú:",
+          "options": [
+            "Rediseñas el flujo de servicio para que los casos comunes sigan un camino simplificado mientras los casos complejos reciben el proceso completo — gestionando ambos más rápido en promedio",
+            "Identificas el paso que más tiempo consume y encuentras una forma de ejecutarlo en paralelo con otro paso en lugar de secuencialmente",
+            "Redefinir 'tiempo de gestión' moviendo algunos pasos a seguimiento asíncrono, reduciendo el tiempo de interacción en vivo sin recortar contenido",
+            "Creas respuestas plantilla para el 30% más frecuente de solicitudes, liberando agentes para dedicar más tiempo a los casos complejos restantes"
+          ]
+        },
+        "q5": {
+          "category": "Drive",
+          "question": "El tiempo de respuesta a incidentes de tu equipo ha sido más lento que el objetivo, y tú eres parte del problema. Tú:",
+          "options": [
+            "Acompañas al responder más rápido del turno y documentas qué hace diferente",
+            "Revisas tus últimos cinco incidentes para encontrar el paso específico donde perdiste tiempo",
+            "Practicas respondiendo a incidentes simulados con un cronómetro para ganar velocidad",
+            "Rediseñas tu checklist personal de triaje basándote en lo que realmente te ha ralentizado"
+          ]
+        },
+        "q6": {
+          "category": "Potencia Computacional",
+          "question": "Para planificar turnos eficaces, tú:",
+          "options": [
+            "Modelas demanda por hora",
+            "Consideras mezcla de habilidades",
+            "Incluyes buffers para picos",
+            "Revisas restricciones y normas"
+          ]
+        },
+        "q7": {
+          "category": "Comunicación",
+          "question": "Un cliente está escalando una queja. Está factualmente equivocado sobre lo ocurrido, pero emocionalmente ha tenido una experiencia genuinamente mala. Tu respuesta será revisada por tu manager. ¿Cómo manejas la inexactitud factual mientras abordas la experiencia?",
+          "options": [
+            "Reconoces su frustración, luego recorres lo que realmente ocurrió con timestamps y detalles — la claridad previene futuras disputas",
+            "Enfocas la respuesta en la brecha de experiencia en lugar de la secuencia factual — 'independientemente de los detalles, el resultado fue insuficiente' — y propones resolución",
+            "Pides al cliente que confirme detalles específicos de su experiencia — le dejas autocorregirse a través de preguntas clarificadoras en lugar de contradicción directa",
+            "Respondes por escrito con empatía y resolución, luego ofreces una llamada para discutir detalles — el intercambio verbal reduce la dinámica adversarial de la corrección escrita"
+          ]
+        },
+        "q8": {
+          "category": "Conocimiento",
+          "question": "Dos miembros experimentados del equipo te dan consejos contradictorios sobre cómo manejar una situación de servicio. Ambos tienen sólida trayectoria. Tú:",
+          "options": [
+            "Pides a cada uno que explique el razonamiento detrás de su recomendación, no solo la conclusión",
+            "Analizas qué es diferente en esta situación comparado con cuando cada enfoque funcionó antes",
+            "Pruebas el enfoque con menor riesgo de caída y evalúas el resultado",
+            "Verificas si existe un precedente documentado para este tipo de situación antes de decidir"
+          ]
+        },
+        "q9": {
+          "category": "Creatividad",
+          "question": "Un proveedor clave te notifica que un componente crítico no estará disponible durante tres semanas. Tu servicio depende de él diariamente. Cambiar de proveedor permanentemente no es viable por contratos. Tú:",
+          "options": [
+            "Buscas una alternativa temporal que cubra la brecha, aunque no sea idéntica, y ajustas tu proceso para acomodar las diferencias",
+            "Rediseñas el flujo de servicio afectado para funcionar sin el componente durante tres semanas, aunque signifique una experiencia de cliente diferente (pero aceptable)",
+            "Negocias con el proveedor entregas parciales o sustitutivas, priorizando las variantes específicas que necesitas con más urgencia",
+            "Construyes una pequeña reserva reduciendo uso en aplicaciones de menor prioridad y redirigiendo inventario a las líneas de servicio más críticas"
+          ]
+        },
+        "q10": {
+          "category": "Drive",
+          "question": "El feedback de clientes muestra que las explicaciones de tu equipo durante cortes son confusas — y los guiones los escribiste tú. Tú:",
+          "options": [
+            "Grabas explicaciones reales y las revisas para identificar qué no está claro",
+            "Practicas con escenarios simulados usando guiones en lenguaje simple hasta que se sienta natural",
+            "Pides a un/a formador/a de comunicación que observe una interacción y dé consejos específicos",
+            "Creas una biblioteca de plantillas para explicaciones comunes y la pruebas con usuarios"
+          ]
+        },
+        "q11": {
+          "category": "Potencia Computacional",
+          "question": "Para reducir errores, tú:",
+          "options": [
+            "Introduces checklists",
+            "Estandarizas y 5S",
+            "Automatizas pasos repetitivos",
+            "Trazas cada error hasta el paso donde apareció por primera vez"
+          ]
+        },
+        "q12": {
+          "category": "Comunicación",
+          "question": "Necesitas comunicar una reducción de nivel de servicio a clientes de largo plazo. La reducción es permanente y no negociable. Algunos clientes se verán significativamente impactados. Debes preservar la relación siendo transparente. ¿Cómo entregas el mensaje?",
+          "options": [
+            "Declaras el cambio claramente con fechas efectivas e impactos específicos por segmento de cliente — la ambigüedad sería peor que la mala noticia",
+            "Encuadras dentro de una narrativa más amplia de evolución del servicio — posicionas la reducción como parte de un cambio estratégico que incluye mejoras en otras áreas",
+            "Contactas a los clientes más impactados individualmente primero, evalúas sus preocupaciones, luego usas esos insights para refinar el anuncio más amplio",
+            "Reemplazas un anuncio masivo con revisiones individuales de cuenta — cada cliente escucha la noticia en el contexto de su relación específica y uso"
+          ]
+        },
+        "q13": {
+          "category": "Conocimiento",
+          "question": "Te has basado en un procedimiento operativo durante meses. Un miembro junior del equipo presenta datos preliminares sugiriendo que una de sus asunciones fundamentales es incorrecta. Tú:",
+          "options": [
+            "Pausas la aplicación del procedimiento en los casos afectados y testas ambos enfoques en casos recientes antes de comprometerte",
+            "Revisas los datos crudos del miembro del equipo tú mismo/a para evaluar su solidez antes de involucrar a nadie más",
+            "Anotas el desafío formalmente y continúas con el procedimiento, pero defines un umbral específico de resultado que activaría una reevaluación completa",
+            "Pides a dos personas no involucradas en ninguno de los análisis que evalúen independientemente la evidencia contradictoria"
+          ]
+        },
+        "q14": {
+          "category": "Creatividad",
+          "question": "La dirección quiere introducir un canal digital de autoservicio para reducir el volumen de llamadas un 30%. Pero tus datos muestran que el 60% de los clientes que prueban el autoservicio terminan llamando de todos modos porque los problemas son demasiado complejos. Tú:",
+          "options": [
+            "Rediseñas el flujo de autoservicio para manejar solo los casos que realmente puede resolver bien, y diriges los casos complejos a agentes más rápido en lugar de intentar contenerlos",
+            "Creas un híbrido: dejas que los clientes inicien en autoservicio pero ofreces una escalación fluida que preserva el contexto, para que la llamada al agente sea más corta",
+            "Reencuadras el objetivo del 30%: en lugar de reducir llamadas totales, te enfocas en reducir llamadas repetidas usando autoservicio para seguimientos y consultas de estado",
+            "Pilotas tres enfoques de autoservicio diferentes en distintos tipos de caso para identificar qué categorías realmente se benefician de la automatización antes de escalar"
+          ]
+        },
+        "q15": {
+          "category": "Drive",
+          "question": "Una auditoría encontró lagunas recurrentes en tu documentación de compliance — una habilidad que no has desarrollado. Tú:",
+          "options": [
+            "Identificas las 2 lagunas más comunes y creas una checklist personal para esas áreas",
+            "Pides al auditor que te guíe a través de cómo es exactamente una buena documentación",
+            "Comparas tu documentación con la de un/a colega que puntuó bien, lado a lado",
+            "Rehaces un documento reciente desde cero usando el estándar correcto y cronometrándote"
+          ]
+        },
+        "q16": {
+          "category": "Potencia Computacional",
+          "question": "Eligiendo una herramienta, tú:",
+          "options": [
+            "Ajuste a requisitos",
+            "Piloto con grupo pequeño",
+            "Coste/beneficio y riesgo",
+            "Integración con sistemas"
+          ]
+        },
+        "q17": {
+          "category": "Comunicación",
+          "question": "Te han pedido formar a un nuevo equipo en un flujo de trabajo complejo. La mitad del grupo tiene experiencia operativa en un campo relacionado; la otra mitad son principiantes absolutos. Tienes una sola sesión de formación. ¿Cómo la estructuras?",
+          "options": [
+            "Enseñas el flujo completo de principio a fin a nivel principiante, luego ofreces una sesión suplementaria avanzada para los miembros experimentados que quieran más contexto",
+            "Comienzas con el modelo conceptual — por qué existe el flujo — luego dejas que los experimentados lo conecten con lo que saben mientras los principiantes construyen desde cero",
+            "Inicias con un ejercicio diagnóstico que revela qué sabe ya cada persona, luego ajustas la profundidad dinámicamente según las brechas reales",
+            "Emparejas miembros experimentados y principiantes, proporcionas un escenario de práctica guiada, y circulas para responder preguntas individuales — reemplazas la clase con aprendizaje estructurado entre pares"
+          ]
+        },
+        "q18": {
+          "category": "Conocimiento",
+          "question": "Una nueva directriz del sector contradice una práctica que tu equipo ha usado con éxito durante años. La base de evidencia de la directriz es limitada pero creciente. Tú:",
+          "options": [
+            "Revisas la evidencia detrás de la directriz y la comparas con los datos de resultados de tu equipo",
+            "Pilotas la nueva directriz en un subconjunto de casos manteniendo la práctica antigua como control",
+            "Adoptas la directriz pero rastreas los resultados de cerca para verificar que funciona como afirma",
+            "Consultas a pares en otras organizaciones para entender cómo están interpretando e implementando la directriz"
+          ]
+        },
+        "q19": {
+          "category": "Creatividad",
+          "question": "Tu equipo gestiona una operación 24/7. Una nueva regulación requiere documentación adicional en cada traspaso entre turnos, pero añadir papeleo ralentizaría las transiciones y crearía un vacío de cobertura de 15 minutos. Tú:",
+          "options": [
+            "Rediseñas el formato de traspaso: reemplazas el enfoque en papel con un log digital estructurado que se auto-completa con los datos de actividad del turno",
+            "Solapas los turnos 15 minutos y usas el periodo de solapamiento tanto para el traspaso como para la documentación, absorbiendo el costo temporal dentro del horario",
+            "Divides el requisito de documentación: capturas los elementos críticos durante el traspaso y aplazas las notas detalladas a un momento más tranquilo dentro del siguiente turno",
+            "Redefinir el alcance de documentación: trabajas con compliance para identificar la documentación mínima viable que satisface la regulación sin la carga completa"
+          ]
+        },
+        "q20": {
+          "category": "Drive",
+          "question": "Te han dicho que tus propuestas de mejora de procesos carecen de soporte de datos — una habilidad que no has desarrollado. Tú:",
+          "options": [
+            "Adjuntas baselines medibles a tu próxima propuesta, aunque recoger los datos tome tiempo extra",
+            "Te asocias con un/a analista para aprender cómo construye argumentos basados en datos",
+            "Tomas un curso corto de análisis de datos operativos y lo aplicas a un caso de mejora real",
+            "Revisas tres propuestas aprobadas para hacer ingeniería inversa de qué datos las hicieron convincentes"
+          ]
+        },
+        "q21": {
+          "category": "Potencia Computacional",
+          "question": "Al evaluar un cambio de proceso, tú:",
+          "options": [
+            "Definir métricas por adelantado",
+            "Comparar datos antes/después",
+            "Prueba controlada",
+            "Documentar impacto y siguientes pasos"
+          ]
+        },
+        "open1": {
+          "question": "Describe una vez que mejoraste un proceso de servicio. ¿Qué cambió y cómo lo hiciste sostenible?"
+        },
+        "open2": {
+          "question": "¿Qué área de tu práctica operativa quieres hacer crecer este año y cuál es tu plan?"
+        }
       },
       "examples": {
         "q1": {
@@ -1075,34 +1678,88 @@
     "calendly_placeholder": "El widget de Calendly aparecerá aquí"
   },
   "dashboard": {
-    "title": "Dashboard",
-    "welcome": "Bienvenido de vuelta",
-    "your_ximatar": "Tu XIMAtar",
-    "xima_score": "Puntuación XIMA",
-    "matched_professional": "Profesional Coincidente",
-    "book_session": "Reservar Sesión",
-    "development_plan": "Plan de Desarrollo",
-    "job_matches": "Coincidencias de Trabajo",
-    "recent_activity": "Actividad Reciente",
-    "assessment_completed": "Evaluación completada",
-    "profile_updated": "Perfil actualizado",
-    "session_booked": "Sesión reservada",
-    "perfect_ximater_title": "Podrías ser el XIMAter perfecto para...",
-    "match_quality": "Calidad de Coincidencia",
-    "assessment_completion": "Finalización de Evaluación"
+    "page_label": "DASHBOARD",
+    "welcome_headline": "Bienvenido, {{name}}.",
+    "welcome_subheadline": "Tu perfil XIMAtar y tu recorrido de desarrollo personal.",
+    "growth_path_title": "TU CAMINO DE CRECIMIENTO",
+    "growth_path_freemium_body": "Estás al principio del viaje. Tu XIMAtar está listo — ahora es el momento de activarlo. Invita a un amigo para ganar tus primeros créditos y desbloquear sesiones reales con tu mentor.",
+    "growth_path_credits_label": "créditos disponibles",
+    "growth_path_invite_cta": "Invita a un Amigo y Gana Créditos",
+    "growth_path_manage_cta": "Gestionar Membresía →",
+    "growth_path_credit_note": "Una sesión estándar de 45 min con el mentor cuesta 5 créditos. Cada referido válido cuenta.",
+    "ximatar_label": "TU XIMATAR",
+    "ximatar_tagline": "No definimos a las personas con etiquetas. Revelamos la dinámica entre lo que las mueve, lo que las eleva y lo que las retiene.",
+    "ximatar_advantage_label": "TU VENTAJA",
+    "ximatar_friction_label": "TU PUNTO DE FRICCIÓN",
+    "ximatar_drive_prefix": "Drive",
+    "advantage_friction_title": "VENTAJA Y PUNTO DE FRICCIÓN",
+    "advantage_title": "TU VENTAJA",
+    "advantage_body": "Esta es tu fortaleza natural — aprovéchala.",
+    "friction_title": "TU PUNTO DE FRICCIÓN",
+    "friction_body": "Desarrolla esta dimensión a través de la experimentación, la exposición a ideas diversas y la práctica deliberada.",
+    "growth_path_label": "TU CAMINO DE CRECIMIENTO",
+    "pillars_title": "TU PERFIL DE PILARES",
+    "assessment_overview_title": "RESUMEN DE LA EVALUACIÓN",
+    "drive_section_title": "Drive (Velocidad de Crecimiento)",
+    "drive_section_body": "Velocidad de mejora en tus áreas más débiles. Drive no mide de dónde partes — mide la velocidad de tu trayectoria.",
+    "drive_refining": "El Drive aún se está calibrando — completa más desafíos para medir tu velocidad de crecimiento.",
+    "pillar_scores_title": "PUNTUACIONES DE PILARES",
+    "pillar_scores_note": "Los pilares son dinámicos — evolucionan con la práctica y los desafíos.",
+    "story_title": "TU HISTORIA",
+    "story_body": "No definimos a las personas con etiquetas. Revelamos la dinámica entre lo que las mueve, lo que las eleva y lo que las retiene.",
+    "mentor_title": "Tu Mentor",
+    "mentor_guide": "Tu mentor te guiará en el desarrollo profesional con consejos personalizados basados en tu perfil XIMA.",
+    "mentor_no_availability": "Tu mentor aún no ha publicado disponibilidad.",
+    "mentor_check_back": "Vuelve pronto o usa la reserva externa si está disponible.",
+    "mentor_check_again": "Comprobar de Nuevo",
+    "cv_analysis_title": "Análisis de CV",
+    "cv_score_alignment": "Alineación de Puntuación",
+    "cv_comparison_title": "Comparación CV vs Evaluación",
+    "cv_best_improvement": "Mayor Mejora",
+    "cv_score_label": "Puntuación CV",
+    "cv_assessment_label": "Puntuación Evaluación",
+    "cv_reupload": "Volver a Subir CV",
+    "cv_upload": "Subir CV",
+    "cv_analyzing": "Analizando...",
+    "challenges_title": "DESAFÍOS PARA TI",
+    "challenges_empty_headline": "Sin desafíos por ahora.",
+    "challenges_empty_body": "Cuando las empresas te inviten a participar en un proceso de selección, los desafíos aparecerán aquí. Completa tu evaluación para aumentar las probabilidades de ser invitado.",
+    "opportunities_title": "Mis Oportunidades",
+    "opportunities_refresh": "Actualizar",
+    "opportunities_tab_for_you": "Para Ti",
+    "opportunities_tab_saved": "Guardadas",
+    "opportunities_tab_applied": "Candidaturas",
+    "opportunities_empty_headline": "Sin oportunidades disponibles por ahora.",
+    "opportunities_empty_body": "Completa tu evaluación para mejorar el matching y empezar a recibir oportunidades adaptadas a tu perfil.",
+    "pillar_computational_power": "Potencia Computacional",
+    "pillar_communication": "Comunicación",
+    "pillar_knowledge": "Conocimiento",
+    "pillar_creativity": "Creatividad",
+    "pillar_drive": "Drive (Velocidad de Crecimiento)",
+    "membership": {
+      "title": "Tu camino de crecimiento",
+      "subtitle": "Estás empezando. Invita a un amigo para ganar tus primeros créditos — desbloquean sesiones reales con tu mentor.",
+      "creditLine": "Tienes {{credits}} créditos disponibles",
+      "tier_freemium": "Freemium",
+      "tier_basic": "Basic",
+      "tier_premium": "Premium",
+      "tier_pro": "Pro",
+      "manage": "Gestionar suscripción",
+      "invite": "Invita a un amigo y gana créditos",
+      "hint": "Una sesión estándar de 45 min cuesta 5 créditos. Cada invitación cuenta.",
+      "settingsHelper": "Puedes cambiar tu plan o gestionar invitaciones en cualquier momento desde Ajustes."
+    }
   },
   "about": {
     "eyebrow": "Sobre XIMA",
     "hero_headline": "Construido por Ingenieros.\nDiseñado para las Personas.",
     "hero_subheadline": "XIMA nace de la ingeniería de precisión de AlphaLink Engineering — aplicada al problema que ningún sistema de selección había resuelto realmente: ver quién es una persona, no dónde ha estado.",
     "hero_pullquote": "\"Si eliminases cada credencial — cada institución, cada nombre de marca en un CV — ¿qué sabrías realmente de alguien?\"",
-
     "origin_label": "// EL ORIGEN",
     "origin_headline": "De Sistemas Embebidos\na Identidades Conductuales.",
     "origin_body_1": "AlphaLink Engineering nació como estudio de ingeniería de sistemas — sistemas embebidos para vehículos inteligentes, drones, aeronáutica. El método siempre ha sido el mismo: descomponer problemas complejos en señales medibles, construir sistemas que funcionen bajo presión, no hacer suposiciones que los datos no respalden.",
     "origin_body_2": "XIMA nació del mismo método — aplicado a las personas. Cuando Pietro Cozzi comenzó a observar cómo contrataban las empresas, vio el mismo error sistemático en todas partes: decisiones basadas en proxies — el nombre de la universidad, la marca del último empleador, la impresión de la entrevista. Señales ruidosas que no miden lo que realmente importa.",
     "origin_body_3": "La pregunta de ingeniería era obvia: ¿existe una señal más limpia? La respuesta es XIMA — un sistema de medición conductual construido con la misma precisión que AlphaLink aplica a los sistemas de control. Cinco pilares independientes. Doce arquetipos canónicos. Cero proxies demográficos.",
-
     "problem_label": "// EL PROBLEMA",
     "problem_headline": "El Sistema de Selección\nEstá Roto. Todos lo Saben.",
     "problem_subheadline": "Los CV y las entrevistas miden dónde has estado — no cómo piensas, decides o trabajas bajo presión.",
@@ -1114,11 +1771,9 @@
     "problem_item_4": "Recursos desperdiciados — procesos largos y costosos para resultados inciertos",
     "problem_item_5": "Sesgo estructural — el pedigree académico como proxy de competencia",
     "problem_solution": "XIMA fue construido para medir lo que los CV no pueden capturar — con la precisión y auditabilidad de un sistema de ingeniería.",
-
     "model_label": "// EL MODELO",
     "model_headline": "Cinco Señales.\nUna Verdad Conductual.",
     "model_body": "Cada CV cuenta una historia construida. Cada entrevista es una actuación. XIMA mide algo diferente: cómo una persona estructura el pensamiento, afronta el cambio, comunica bajo presión, crece con el tiempo. Cinco dimensiones independientes — sin proxies demográficos, sin sesgo de credenciales.",
-
     "pillar_1_name": "Drive",
     "pillar_1_body": "El motor detrás de la persona. Persistencia en objetivos, iniciativa, motivación interna. No mide agresividad — mide la fuerza de voluntad que permanece cuando la situación se complica.",
     "pillar_2_name": "Creatividad",
@@ -1130,15 +1785,12 @@
     "pillar_5_name": "Potencia Computacional",
     "pillar_5_body": "La arquitectura del pensamiento. Razonamiento analítico, reconocimiento de patrones, pensamiento sistemático. No mide habilidad matemática — mide cómo se descompone un problema complejo en pasos resolubles.",
     "model_pullquote": "\"Sin datos demográficos en la puntuación. Sin proxies de credenciales. Cinco señales que dicen la verdad sobre cómo trabaja alguien.\"",
-
     "ximatar_label": "// LA IDENTIDAD",
     "ximatar_headline": "12 Arquetipos.\nUno Es El Tuyo.",
     "ximatar_body": "Tu vector de cinco pilares se compara con 12 perfiles de arquetipos canónicos mediante distancia euclidiana. Se te asigna el más cercano. No es una etiqueta que te define — es una brújula que muestra la dinámica entre tu máximo potencial, tu limitación actual y tu fuerza interior. Persistente. Portable. Tuyo para siempre.",
-
     "value_label": "// EL VALOR",
     "value_headline": "Dos Entradas.\nUn Sistema.",
     "value_subheadline": "XIMA funciona porque sirve a ambos lados del problema — con la misma profundidad, la misma precisión, la misma honestidad.",
-
     "candidates_label": "Para Candidatos",
     "candidates_headline": "La Primera Herramienta\nque Trabaja para Ti.",
     "candidate_1": "Descubre quién eres profesionalmente — no quién pareces ser en papel",
@@ -1146,7 +1798,6 @@
     "candidate_3": "Recibe un plan de desarrollo construido sobre tus brechas reales — no competencias genéricas",
     "candidate_4": "Conéctate con un mentor que tiene fortaleza donde tú tienes fricción",
     "candidate_5": "Tu XIMAtar te acompaña — hazlo una vez, úsalo en todas partes",
-
     "employers_label": "Para Empresas",
     "employers_headline": "Selección Basada\nen Señal, No en Pedigree.",
     "employer_1": "Ve el perfil conductual antes de abrir el CV",
@@ -1154,7 +1805,6 @@
     "employer_3": "Lista corta filtrada por adecuación real — no por nombre de universidad",
     "employer_4": "GDPR Art. 22 por arquitectura — rastro de auditoría SHA-256 en cada decisión IA",
     "employer_5": "Accesible para pymes — desde startups a equipos en crecimiento, sin contrato enterprise",
-
     "numbers_label": "// EL SISTEMA",
     "numbers_headline": "Diseñado con\nPrecisión de Ingeniería.",
     "numbers_subheadline": "Cada número detrás de XIMA es el resultado de una elección metodológica precisa — no de una convención del sector.",
@@ -1166,18 +1816,15 @@
     "stat_3_label": "Ítems psicométricos por evaluación — más 2 respuestas abiertas evaluadas por IA",
     "stat_4_value": "4",
     "stat_4_label": "Campos profesionales — Business, Tech, Creative, Social",
-
     "team_label": "// LAS PERSONAS",
     "team_headline": "Quién Está Detrás de XIMA.",
     "team_subheadline": "Un ingeniero que construyó sistemas complejos. Un advisor que los llevó a escala internacional.",
-
     "founder_label": "Fundador",
     "founder_name": "Pietro Cozzi",
     "founder_role": "Fundador, XIMA · Ingeniero",
     "founder_bio_1": "El instinto de Pietro para los sistemas empezó pronto — creciendo entre motores y mecánica, aprendió que los problemas más interesantes son aquellos en que todo está conectado con todo lo demás. En el Politecnico di Torino diseñó JUNO con el Equipo H2PolitO, luego transformó ese instinto en investigación: su tesis examinó si el battery pooling y el swapping podían desbloquear el mercado EV italiano — una pregunta que lo puso directamente en la órbita de Brilhon, la red de carga EV que se construía en São Paulo.",
     "founder_bio_2": "Luego co-fundó Way2Go, una plataforma de turismo en e-bike en el sur de Italia, trabajó en desarrollo de negocio de IA-robótica en Voaige en Pittsburgh, y pasó años haciendo la misma pregunta en distintas formas y países: ¿cómo es realmente la buena tecnología cuando está diseñada para las personas — no en su contra? Durante los últimos tres años ha sido Business Manager en Alten Automotive, liderando una Unidad de Negocio de más de 100 ingenieros con una sola filosofía: responsabilízate de todo lo que construyes y convierte a cada ingeniero en líder en su día a día. Con este enfoque llevó la rotación del equipo por debajo del 15% — menos de la mitad del benchmark del sector.",
     "founder_bio_3": "XIMA es su respuesta. Un sistema de selección diseñado desde cero para ver a la persona, no el papel. Construido dentro de AlphaLink Engineering, donde Pietro tiene una participación mayoritaria tras la adquisición. Disponible en ximatar.com.",
-
     "advisor_label": "Advisor",
     "advisor_name": "Dr. Daniel Cracau",
     "advisor_role": "Director de Start-up & Outreach, IT:U · Ex Co-Fundador & CEO, AlphaLink Engineering",
@@ -1185,7 +1832,6 @@
     "advisor_bio_2": "Hoy, Daniel es Director de Start-up & Outreach en IT:U — la Interdisciplinary Transformation University Austria — una de las universidades nuevas más avanzadas de Europa, dedicada a comprender y liderar la transformación digital en beneficio de la sociedad, la economía y el medio ambiente.",
     "advisor_bio_3": "Para XIMA, Daniel aporta tres cosas que el dinero no puede comprar: la credibilidad de ingeniería del equipo fundador de AlphaLink, la red institucional de una universidad europea de vanguardia, y la experiencia vivida de quien ha construido realmente una empresa deep-tech desde una tesis doctoral hasta escala internacional.",
     "advisor_pullquote": "\"Credibilidad de ingeniería. Red institucional. La experiencia de haber construido deep tech desde la tesis al mercado internacional.\"",
-
     "cta_headline": "¿Listo para Descubrir\nTu XIMAtar?",
     "cta_body": "La evaluación es gratuita. El XIMAtar es tuyo. La primera herramienta de selección que realmente trabaja para el candidato.",
     "cta_button": "Empezar Ahora →"
@@ -1266,315 +1912,54 @@
   },
   "legal": {
     "privacyPolicy": "Política de Privacidad",
-    "termsOfService": "Términos de Servicio"
-  },
-  "business": {
-    "register": {
-      "title": "Portal de Negocios",
-      "subtitle": "Crea tu cuenta de negocios XIMA para acceder a los mejores talentos",
-      "company_name": "Nombre de la Empresa",
-      "company_placeholder": "Acme Corporation",
-      "email": "Correo Empresarial",
-      "email_placeholder": "rrhh@empresa.com",
-      "password": "Contraseña",
-      "website": "Sitio Web de la Empresa (Requerido)",
-      "website_hint": "Por favor ingresa una URL válida que comience con http:// o https://",
-      "website_desc": "El perfil de tu empresa se generará automáticamente desde este sitio web",
-      "hr_email": "Correo de Contacto RRHH (Opcional)",
-      "hr_placeholder": "reclutador@empresa.com",
-      "invalid_website": "Sitio Web Inválido",
-      "invalid_website_desc": "Por favor ingresa una URL válida que comience con http:// o https://",
-      "success": "¡Éxito!",
-      "success_desc": "Cuenta de negocios creada exitosamente. El perfil de tu empresa se está generando. Por favor revisa tu correo para verificar tu cuenta.",
-      "failed": "Registro Fallido",
-      "failed_desc": "Ocurrió un error durante el registro",
-      "creating": "Creando Cuenta...",
-      "submit": "Crear Cuenta de Negocios",
-      "have_account": "¿Ya tienes una cuenta?",
-      "sign_in": "Iniciar sesión"
+    "termsOfService": "Términos de Servicio",
+    "privacy": {
+      "title": "Política de Privacidad",
+      "last_updated": "Última actualización",
+      "intro": "En XIMA S.r.l., nos comprometemos a proteger tu privacidad y datos personales. Esta Política de Privacidad explica cómo recopilamos, usamos, almacenamos y protegemos tu información cuando utilizas nuestra plataforma. Al usar XIMA, consientes las prácticas descritas en esta política.",
+      "data_collection_title": "Datos que Recopilamos",
+      "data_collection_content": "Recopilamos los siguientes tipos de datos personales:\n\n• Información de cuenta: dirección de correo electrónico, nombre y detalles del perfil que proporcionas durante el registro\n• Datos profesionales: cargas de CV, respuestas de evaluación y preferencias de carrera\n• Datos de uso: cómo interactúas con nuestra plataforma, incluyendo páginas visitadas y funciones utilizadas\n• Datos técnicos: información del dispositivo, dirección IP y tipo de navegador para fines de seguridad y optimización\n\nTodos los datos se recopilan con tu consentimiento explícito y son necesarios para proporcionar nuestros servicios.",
+      "data_usage_title": "Cómo Usamos Tus Datos",
+      "data_usage_content": "Tus datos se utilizan para los siguientes propósitos:\n\n• Crear y mantener tu perfil profesional XIMAtar\n• Análisis de evaluación impulsado por IA para proporcionar información personalizada\n• Conectarte con oportunidades de carrera y desafíos relevantes\n• Facilitar la comunicación entre candidatos, empresas y mentores\n• Mejorar nuestra plataforma y desarrollar nuevas funciones\n• Cumplir con obligaciones legales y prevenir fraudes\n\nUtilizamos toma de decisiones automatizada (perfilado) para generar tu arquetipo XIMAtar. Puedes oponerte a este procesamiento en cualquier momento a través de la configuración de tu cuenta.",
+      "data_security_title": "Seguridad de Datos",
+      "data_security_content": "Implementamos medidas de seguridad estándar de la industria para proteger tus datos:\n\n• Cifrado de datos en tránsito (TLS/SSL) y en reposo\n• Infraestructura de nube segura alojada en centros de datos de la UE\n• Seguridad a nivel de fila que garantiza que los usuarios solo puedan acceder a sus propios datos\n• Auditorías de seguridad regulares y evaluaciones de vulnerabilidad\n• Controles de acceso estrictos para los miembros de nuestro equipo\n\nA pesar de nuestros mejores esfuerzos, ningún sistema es 100% seguro. Te animamos a usar contraseñas seguras y mantener confidenciales las credenciales de tu cuenta.",
+      "your_rights_title": "Tus Derechos (RGPD)",
+      "your_rights_content": "Bajo el Reglamento General de Protección de Datos (RGPD), tienes los siguientes derechos:\n\n• Derecho de Acceso: Solicitar una copia de todos los datos personales que tenemos sobre ti\n• Derecho de Rectificación: Corregir cualquier dato inexacto o incompleto\n• Derecho de Supresión: Solicitar la eliminación de tus datos personales ('derecho al olvido')\n• Derecho a la Limitación: Limitar cómo procesamos tus datos en ciertas circunstancias\n• Derecho a la Portabilidad: Recibir tus datos en un formato estructurado y legible por máquina\n• Derecho de Oposición: Oponerte al perfilado automatizado y marketing directo\n• Derecho a Retirar el Consentimiento: Retirar el consentimiento en cualquier momento sin afectar el procesamiento anterior\n\nPara ejercer cualquiera de estos derechos, contacta a nuestro Delegado de Protección de Datos en privacy@xima.app.",
+      "contact_title": "Información de Contacto",
+      "contact_content": "Para cualquier consulta relacionada con la privacidad o para ejercer tus derechos, contacta:\n\nXIMA S.r.l.\nVia Torino, 2\n20123 Milano (MI), Italia\n\nDelegado de Protección de Datos: privacy@xima.app\nConsultas generales: info@xima.app\n\nTambién tienes derecho a presentar una queja ante la Autoridad de Protección de Datos italiana (Garante per la protezione dei dati personali) si crees que se han violado tus derechos."
+    },
+    "terms": {
+      "title": "Términos de Servicio",
+      "last_updated": "Última actualización",
+      "intro": "Bienvenido a XIMA. Estos Términos de Servicio rigen tu acceso y uso de la plataforma XIMA operada por XIMA S.r.l. Al registrar una cuenta o usar nuestros servicios, aceptas estar vinculado por estos términos. Por favor léelos cuidadosamente.",
+      "acceptance_title": "Aceptación de Términos",
+      "acceptance_content": "Al crear una cuenta o acceder a XIMA, confirmas que:\n\n• Tienes al menos 18 años o tienes consentimiento parental\n• Has leído y entendido estos Términos de Servicio\n• Aceptas estar vinculado por estos términos y nuestra Política de Privacidad\n• La información que proporcionas es precisa y completa\n\nSi no estás de acuerdo con estos términos, por favor no uses nuestra plataforma.",
+      "services_title": "Nuestros Servicios",
+      "services_content": "XIMA proporciona una plataforma de evaluación profesional y emparejamiento que incluye:\n\n• Evaluación XIMAtar: evaluación impulsada por IA de tu perfil profesional a través de cinco pilares (Poder Computacional, Comunicación, Conocimiento, Creatividad, Impulso)\n• Career Matching: conexión con empresas que buscan candidatos que coincidan con tu perfil\n• Sistema de Desafíos: desafíos estructurados para demostrar tus capacidades a potenciales empleadores\n• Red de Mentores: acceso a mentores profesionales para orientación profesional\n• Feed y Comunicación: herramientas para interactuar con oportunidades y comunicarte con empresas\n\nNos reservamos el derecho de modificar, suspender o discontinuar cualquier parte de nuestros servicios con aviso razonable.",
+      "user_obligations_title": "Obligaciones del Usuario",
+      "user_obligations_content": "Al usar XIMA, aceptas:\n\n• Proporcionar información precisa y veraz en tu perfil y evaluaciones\n• Mantener seguras las credenciales de tu cuenta y no compartirlas con otros\n• No intentar manipular los resultados de evaluación o enviar información falsa\n• Respetar a otros usuarios y mantener una conducta profesional en todas las comunicaciones\n• No usar la plataforma para ningún propósito ilegal o para acosar a otros\n• No intentar realizar ingeniería inversa, extraer datos o interferir con la plataforma\n\nLa violación de estas obligaciones puede resultar en la suspensión o terminación de la cuenta.",
+      "liability_title": "Limitación de Responsabilidad",
+      "liability_content": "En la máxima medida permitida por la ley:\n\n• XIMA proporciona servicios 'tal cual' sin garantías de ningún tipo\n• No garantizamos resultados de empleo o resultados comerciales\n• No somos responsables de las decisiones tomadas por terceros basadas en tu perfil\n• Nuestra responsabilidad está limitada a daños directos hasta el monto que nos pagaste (si lo hay) en los últimos 12 meses\n• No somos responsables de daños indirectos, consecuentes o punitivos\n\nNada en estos términos limita nuestra responsabilidad por fraude, negligencia grave o asuntos que no pueden ser excluidos por ley.",
+      "termination_title": "Terminación de Cuenta",
+      "termination_content": "Puedes eliminar tu cuenta en cualquier momento a través de la configuración de tu cuenta. Al eliminar:\n\n• Tu perfil y datos personales serán eliminados permanentemente\n• Los resultados de evaluación y perfil XIMAtar serán eliminados\n• Las presentaciones de desafíos serán anonimizadas\n• Los mensajes de chat serán anonimizados\n\nPodemos suspender o terminar cuentas que violen estos términos o participen en actividad fraudulenta. Proporcionaremos aviso cuando sea razonablemente posible.",
+      "changes_title": "Cambios a Estos Términos",
+      "changes_content": "Podemos actualizar estos Términos de Servicio de vez en cuando para reflejar cambios en nuestros servicios o requisitos legales. Cuando hagamos cambios materiales:\n\n• Te notificaremos por correo electrónico o notificación en la aplicación\n• Los términos actualizados se publicarán con una nueva fecha de 'Última actualización'\n• El uso continuado de XIMA después de que los cambios entren en vigencia constituye aceptación\n\nPara preguntas sobre estos términos, contáctanos en info@xima.app."
+    },
+    "imprint": {
+      "title": "Aviso Legal",
+      "subtitle": "Información de la empresa y divulgaciones legales según lo requerido por las regulaciones de la UE",
+      "company_info": "Información de la Empresa",
+      "contact": "Contacto",
+      "representative": "Representante Legal",
+      "registration": "Registro",
+      "vat": "Número de IVA",
+      "rea": "Número REA",
+      "share_capital": "Capital Social",
+      "registered_at": "Registrado en",
+      "dpo_title": "Delegado de Protección de Datos",
+      "dpo_info": "Para cualquier consulta relacionada con la privacidad, solicitudes de acceso a datos o para ejercer tus derechos RGPD, contacta a nuestro Delegado de Protección de Datos:",
+      "last_updated": "Última actualización"
     }
-  },
-  "not_found": {
-    "title": "Página No Encontrada",
-    "description": "La página que buscas no existe.",
-    "back_home": "Volver al Inicio"
-  },
-  "footer": {
-    "copyright": "© 2024 XIMA. Todos los derechos reservados."
-  },
-  "field": {
-    "science_tech": {
-      "title": "Ciencia y Tecnología",
-      "desc": "Ingeniería, datos, investigación, producto, desarrollo."
-    },
-    "business_leadership": {
-      "title": "Negocios y Liderazgo",
-      "desc": "Estrategia, gestión, consultoría, ventas, RR. HH."
-    },
-    "arts_creative": {
-      "title": "Artes y Creatividad",
-      "desc": "Diseño, contenido, marketing creativo, medios, UX/UI."
-    },
-    "service_ops": {
-      "title": "Servicios y Operaciones",
-      "desc": "Salud, educación, hostelería, sector público, soporte."
-    }
-  },
-  "language": {
-    "switch_to": "Cambiar a {{language}}"
-  },
-  "process": {
-    "step1_title": "Subir CV",
-    "step1_desc": "Comienza subiendo tu currículum para una evaluación inicial.",
-    "step2_title": "Completar Evaluación",
-    "step2_desc": "Responde nuestra evaluación integral de los cinco pilares.",
-    "step3_title": "Descubrir XIMAtar",
-    "step3_desc": "Recibe tu identidad animal profesional única.",
-    "step4_title": "Conectar & Crecer",
-    "step4_desc": "Encuentra oportunidades perfectas y desarrolla tus habilidades."
-  },
-  "avatar_explanation": {
-    "title": "Tu Identidad Animal Profesional",
-    "description": "Cada XIMAtar representa un conjunto único de fortalezas profesionales y características de personalidad que te definen en el lugar de trabajo.",
-    "eagle_traits": "Visionario, Estratégico, Orientado al liderazgo",
-    "wolf_traits": "Colaborativo, Leal, Fuerte trabajo en equipo",
-    "dolphin_traits": "Comunicativo, Adaptable, Socialmente inteligente",
-    "owl_traits": "Analítico, Sabio, Solucionador de problemas",
-    "lion_traits": "Líder natural, Carismático, Inspirador"
-  },
-  "xima_score_tooltip": {
-    "computational_power": "Tu capacidad para procesar información compleja y resolver problemas analíticos",
-    "communication": "Tu efectividad para expresar ideas y colaborar con otros",
-    "knowledge": "Tu comprensión técnica y experiencia en el dominio",
-    "creativity": "Tu capacidad para innovar y pensar creativamente",
-    "drive": "Tu motivación y determinación para alcanzar objetivos"
-  },
-  "development": {
-    "title": "Plan de Desarrollo",
-    "subtitle": "Ruta de aprendizaje personalizada basada en tu evaluación XIMA",
-    "back_to_dashboard": "Volver al Dashboard",
-    "overall_progress": "Progreso General",
-    "tests_completed": "Pruebas Completadas",
-    "tests_remaining": "Pruebas Restantes",
-    "progress": "Progreso",
-    "areas": {
-      "analytical": {
-        "title": "Mejorar Habilidades Analíticas",
-        "description": "Fortalece tu pensamiento computacional y capacidades de análisis de datos"
-      },
-      "communication": {
-        "title": "Taller de Comunicación",
-        "description": "Mejora tus habilidades de presentación y comunicación interpersonal"
-      },
-      "creative": {
-        "title": "Entrenamiento en Innovación Creativa",
-        "description": "Desarrolla la resolución creativa de problemas y mentalidad innovadora"
-      }
-    },
-    "tests": {
-      "data_analysis": {
-        "title": "Fundamentos de Análisis de Datos",
-        "description": "Evalúa tu capacidad para interpretar conjuntos de datos complejos"
-      },
-      "logical_problem_solving": {
-        "title": "Resolución Lógica de Problemas",
-        "description": "Evalúa el enfoque sistemático para problemas complejos"
-      },
-      "presentation_skills": {
-        "title": "Evaluación de Habilidades de Presentación",
-        "description": "Evalúa tu capacidad para presentar ideas complejas claramente"
-      },
-      "creative_thinking": {
-        "title": "Desafío de Pensamiento Creativo",
-        "description": "Evalúa tu capacidad para generar soluciones innovadoras"
-      }
-    },
-    "priority": {
-      "high": "Prioritario",
-      "medium": "Recomendado",
-      "low": "Opcional"
-    },
-    "questions": "Preguntas",
-    "time_limit": "Límite de Tiempo",
-    "minutes": "minutos",
-    "skill_area": "Área de Habilidad",
-    "skill_areas": {
-      "computational": "Computacional",
-      "communication": "Comunicación",
-      "creativity": "Creatividad"
-    },
-    "start_test": "Iniciar Prueba",
-    "completed": "Completado",
-    "next_steps": "Próximos Pasos",
-    "recommendations": {
-      "focus_priority": {
-        "title": "Enfócate en Elementos Prioritarios",
-        "description": "Comienza con las pruebas de habilidades analíticas para maximizar tu puntuación de poder computacional."
-      },
-      "schedule_practice": {
-        "title": "Programa Práctica Regular",
-        "description": "Completa 1-2 pruebas por semana para un desarrollo óptimo de habilidades."
-      },
-      "connect_mentor": {
-        "title": "Conecta con Tu Mentor",
-        "description": "Discute tu progreso y recibe consejos personalizados sobre áreas de mejora."
-      }
-    },
-    "estimated_time": "Tiempo Estimado",
-    "no_tests_available": "No hay pruebas disponibles en este momento",
-    "expand_section": "Expandir sección",
-    "collapse_section": "Contraer sección"
-  },
-  "developmentPlan": {
-    "page_label": "GROWTH HUB",
-    "page_title": "Growth Hub",
-    "page_subtitle": "Tu camino de crecimiento personalizado — construido sobre tus pilares, calibrado sobre tus puntos de fricción.",
-    "back_button": "← Dashboard",
-    "progress_title": "Progreso General",
-    "progress_tests_completed_label": "Tests Completados",
-    "stat_completed_label": "Tests Completados",
-    "stat_remaining_label": "Tests Restantes",
-    "stat_progress_label": "Progreso",
-    "priority_badge": "Prioridad",
-    "recommended_badge": "Recomendado",
-    "optional_badge": "Opcional",
-    "questions_label": "Preguntas",
-    "minutes_label": "minutos",
-    "start_test_button": "Empezar →",
-    "completed_badge": "Completado",
-    "next_steps_title": "Próximos Pasos",
-    "next_step_1_title": "Empieza por las Prioridades",
-    "next_step_1_body": "Los tests marcados como Prioridad tienen el mayor impacto en tu perfil. Empieza por ahí — cada finalización actualiza tu XIMAtar en tiempo real.",
-    "next_step_2_title": "Práctica Constante",
-    "next_step_2_body": "1–2 tests por semana produce el desarrollo óptimo. La constancia supera a la intensidad. El Drive se mide en el tiempo, no en una sola sesión.",
-    "next_step_3_title": "Activa a Tu Mentor",
-    "next_step_3_body": "Habla de tus progresos con tu mentor. Los consejos personalizados aceleran el crecimiento exactamente en las áreas donde tienes fricción.",
-    "category_computational_title": "Potencia la Potencia Computacional",
-    "category_computational_body": "Refuerza el razonamiento analítico, el reconocimiento de patrones y el pensamiento sistemático.",
-    "category_communication_title": "Desarrolla la Comunicación",
-    "category_communication_body": "Mejora la claridad, la escucha activa y las habilidades de expresión interpersonal.",
-    "category_creativity_title": "Entrena la Creatividad",
-    "category_creativity_body": "Desarrolla el pensamiento divergente y la mentalidad innovadora.",
-    "category_knowledge_title": "Profundiza el Conocimiento",
-    "category_knowledge_body": "Amplía la profundidad de expertise y las capacidades de síntesis de información.",
-    "category_drive_title": "Aumenta el Drive",
-    "category_drive_body": "Mide y acelera tu velocidad de crecimiento en tus áreas más débiles."
-  },
-  "ximai": {
-    "aria_open": "Abrir chat XIM-AI",
-    "aria_dialog": "Diálogo de chat XIM-AI",
-    "bot_language": "Idioma del bot",
-    "clear_history": "Limpiar historial",
-    "close": "Cerrar",
-    "thinking": "Pensando...",
-    "input_placeholder": "Escribe tu mensaje...",
-    "send": "Enviar",
-    "welcome_message": "¡Hola! Soy XIM-AI, tu asistente personal de XIMA. ¿En qué puedo ayudarte hoy?",
-    "action_booking": "Reservar Sesión",
-    "action_tests": "Pruebas de Desarrollo",
-    "action_chat": "Chat XIMA",
-    "login_required": "Necesitas iniciar sesión para acceder a esta función. Por favor, inicia sesión o crea una cuenta.",
-    "fallback_reply": "Lo siento, no pude procesar tu solicitud en este momento. Por favor, inténtalo de nuevo.",
-    "not_configured": "Lo siento, el servicio de chat no está configurado correctamente.",
-    "preview": {
-      "dashboard": "¿Necesitas ayuda para entender tus puntuaciones o reservar una sesión?",
-      "about": "Aprende cómo XIMA puede transformar tu carrera profesional.",
-      "how_it_works": "Descubre el proceso paso a paso de XIMA.",
-      "development": "Obtén orientación sobre tu plan de desarrollo personalizado.",
-      "profile": "Gestiona tu perfil y configuraciones de XIMA.",
-      "chat": "Conecta con profesionales que coincidan con tu XIMAtar.",
-      "opportunity": "Explora oportunidades de trabajo adaptadas a ti.",
-      "default": "¿Tienes preguntas sobre XIMA? ¡Estoy aquí para ayudar!"
-    },
-    "open": "Abrir"
-  },
-  "chat": {
-    "title": "Chat XIMA",
-    "conversations": "Conversaciones",
-    "search_users": "Buscar por nombre...",
-    "search_placeholder": "Buscar profesionales...",
-    "search_hint": "Escribe al menos 2 caracteres para buscar",
-    "searching": "Buscando...",
-    "no_users_found": "Ningún usuario coincide con tu búsqueda",
-    "no_other_users": "No hay otros usuarios registrados aún",
-    "error_loading": "Error al cargar usuarios",
-    "no_conversations": "Sin conversaciones aún. Selecciona un usuario para comenzar a chatear.",
-    "no_messages": "Sin mensajes aún",
-    "start_conversation": "Envía un mensaje para iniciar la conversación",
-    "type_message": "Escribe un mensaje...",
-    "send": "Enviar",
-    "online": "En línea",
-    "away": "Ausente",
-    "offline": "Desconectado",
-    "yesterday": "Ayer",
-    "welcome_title": "Bienvenido a XIMA Chat",
-    "welcome_subtitle": "Busca un usuario por nombre para iniciar una conversación. Tus mensajes son privados y seguros.",
-    "welcome_message": "¡Hola! Soy XIM-AI, tu asistente personal de XIMA. ¿En qué puedo ayudarte hoy?",
-    "best_match": "Mejor Coincidencia",
-    "message_placeholder": "Escribe un mensaje...",
-    "typing": "Escribiendo...",
-    "loading": "Cargando conversaciones...",
-    "login_required": "Inicia sesión para acceder al chat",
-    "sending": "Enviando...",
-    "message_sent": "Mensaje enviado",
-    "new_message": "Nuevo mensaje",
-    "connecting": "Conectando...",
-    "connection_error": "Error de conexión",
-    "recent": "Recientes",
-    "search_results": "Resultados de búsqueda",
-    "loading_conversations": "Cargando conversaciones...",
-    "no_conversations": "Sin conversaciones"
-  },
-  "errors": {
-    "generic": "Ocurrió un error inesperado",
-    "auth_required": "Debes iniciar sesión para acceder a esta página",
-    "not_found": "La página o recurso solicitado no fue encontrado",
-    "network": "Error de conexión. Verifica tu internet e inténtalo de nuevo",
-    "validation": "Por favor, verifica los datos ingresados"
-  },
-  "empty": {
-    "no_data": "No hay datos disponibles",
-    "complete_assessment": "Completa tu evaluación para ver los resultados",
-    "no_messages": "No hay mensajes aún",
-    "no_matches": "No se encontraron coincidencias"
-  },
-  "opportunity": {
-    "view": "Ver Oportunidad",
-    "apply": "Aplicar",
-    "save": "Guardar",
-    "share": "Compartir",
-    "location": "Ubicación",
-    "salary": "Salario",
-    "type": "Tipo",
-    "experience": "Experiencia",
-    "skills": "Habilidades",
-    "description": "Descripción",
-    "requirements": "Requisitos",
-    "benefits": "Beneficios",
-    "company": "Empresa",
-    "posted": "Publicado",
-    "deadline": "Fecha límite",
-    "match_score": "Puntuación de Coincidencia",
-    "sentiment_title": "Análisis de Sentimientos",
-    "sentiment_positive": "Positivo",
-    "sentiment_neutral": "Neutral",
-    "sentiment_negative": "Negativo"
-  },
-  "professionals": {
-    "title": "Elige a tu mentor",
-    "subtitle": "Selecciona el mentor que mejor se adapta a tus objetivos",
-    "select": "Seleccionar",
-    "view_linkedin": "Ver en LinkedIn",
-    "compatibility": "Compatibilidad",
-    "selected": "Seleccionado",
-    "specialties": "Especialidades",
-    "xima_pillars": "Pilares XIMA",
-    "active_coachees": "Activos",
-    "total_coached": "Total guiados",
-    "refresh_mentors": "Actualizar mentores",
-    "refresh_hint": "¿No estás satisfecho? Actualiza para ver otros mentores compatibles.",
-    "showing_compatible": "Mostrando mentores compatibles con tu perfil",
-    "your_selection": "Tu selección"
   },
   "business": {
     "eyebrow": "PARA EMPRESAS",
@@ -1888,7 +2273,15 @@
       "select_hiring_goal": "Seleccionar Objetivo de Contratación",
       "go_to_challenges": "Ir a Desafíos",
       "no_goals_hint": "Necesitas un objetivo de contratación para invitar candidatos.",
-      "create_goal": "Crear Objetivo de Contratación"
+      "create_goal": "Crear Objetivo de Contratación",
+      "subtitle": "Explora los candidatos activos en la plataforma y crea tu shortlist inteligente",
+      "refresh": "Actualizar",
+      "active_challenges": "Desafíos activos",
+      "manage_challenges": "Gestionar desafíos",
+      "all_matches": "Todos los matches",
+      "saved": "Guardados",
+      "not_computed": "No calculado",
+      "invitation_sent": "Invitación enviada"
     },
     "shortlist": {
       "title": "Lista Basada en Tu Objetivo de Contratación",
@@ -2238,6 +2631,287 @@
       }
     }
   },
+  "not_found": {
+    "title": "404 - Página No Encontrada",
+    "message": "¡Ups! La página que buscas no existe.",
+    "return_home": "Volver al Inicio"
+  },
+  "footer": {
+    "copyright": "© 2024 XIMA. Todos los derechos reservados."
+  },
+  "field": {
+    "science_tech": {
+      "title": "Ciencia y Tecnología",
+      "desc": "Ingeniería, datos, investigación, producto, desarrollo."
+    },
+    "business_leadership": {
+      "title": "Negocios y Liderazgo",
+      "desc": "Estrategia, gestión, consultoría, ventas, RR. HH."
+    },
+    "arts_creative": {
+      "title": "Artes y Creatividad",
+      "desc": "Diseño, contenido, marketing creativo, medios, UX/UI."
+    },
+    "service_ops": {
+      "title": "Servicios y Operaciones",
+      "desc": "Salud, educación, hostelería, sector público, soporte."
+    }
+  },
+  "language": {
+    "switch_to": "Cambiar a {{language}}"
+  },
+  "process": {
+    "step1_title": "Subir CV",
+    "step1_desc": "Comienza subiendo tu currículum para una evaluación inicial.",
+    "step2_title": "Completar Evaluación",
+    "step2_desc": "Responde nuestra evaluación integral de los cinco pilares.",
+    "step3_title": "Descubrir XIMAtar",
+    "step3_desc": "Recibe tu identidad animal profesional única.",
+    "step4_title": "Conectar & Crecer",
+    "step4_desc": "Encuentra oportunidades perfectas y desarrolla tus habilidades."
+  },
+  "avatar_explanation": {
+    "title": "Tu Identidad Animal Profesional",
+    "description": "Cada XIMAtar representa un conjunto único de fortalezas profesionales y características de personalidad que te definen en el lugar de trabajo.",
+    "eagle_traits": "Visionario, Estratégico, Orientado al liderazgo",
+    "wolf_traits": "Colaborativo, Leal, Fuerte trabajo en equipo",
+    "dolphin_traits": "Comunicativo, Adaptable, Socialmente inteligente",
+    "owl_traits": "Analítico, Sabio, Solucionador de problemas",
+    "lion_traits": "Líder natural, Carismático, Inspirador"
+  },
+  "xima_score_tooltip": {
+    "computational_power": "Tu capacidad para procesar información compleja y resolver problemas analíticos",
+    "communication": "Tu efectividad para expresar ideas y colaborar con otros",
+    "knowledge": "Tu comprensión técnica y experiencia en el dominio",
+    "creativity": "Tu capacidad para innovar y pensar creativamente",
+    "drive": "Tu motivación y determinación para alcanzar objetivos"
+  },
+  "development": {
+    "title": "Plan de Desarrollo",
+    "subtitle": "Ruta de aprendizaje personalizada basada en tu evaluación XIMA",
+    "back_to_dashboard": "Volver al Dashboard",
+    "overall_progress": "Progreso General",
+    "tests_completed": "Pruebas Completadas",
+    "tests_remaining": "Pruebas Restantes",
+    "progress": "Progreso",
+    "areas": {
+      "analytical": {
+        "title": "Mejorar Habilidades Analíticas",
+        "description": "Fortalece tu pensamiento computacional y capacidades de análisis de datos"
+      },
+      "communication": {
+        "title": "Taller de Comunicación",
+        "description": "Mejora tus habilidades de presentación y comunicación interpersonal"
+      },
+      "creative": {
+        "title": "Entrenamiento en Innovación Creativa",
+        "description": "Desarrolla la resolución creativa de problemas y mentalidad innovadora"
+      }
+    },
+    "tests": {
+      "data_analysis": {
+        "title": "Fundamentos de Análisis de Datos",
+        "description": "Evalúa tu capacidad para interpretar conjuntos de datos complejos"
+      },
+      "logical_problem_solving": {
+        "title": "Resolución Lógica de Problemas",
+        "description": "Evalúa el enfoque sistemático para problemas complejos"
+      },
+      "presentation_skills": {
+        "title": "Evaluación de Habilidades de Presentación",
+        "description": "Evalúa tu capacidad para presentar ideas complejas claramente"
+      },
+      "creative_thinking": {
+        "title": "Desafío de Pensamiento Creativo",
+        "description": "Evalúa tu capacidad para generar soluciones innovadoras"
+      }
+    },
+    "priority": {
+      "high": "Prioritario",
+      "medium": "Recomendado",
+      "low": "Opcional"
+    },
+    "questions": "Preguntas",
+    "time_limit": "Límite de Tiempo",
+    "minutes": "minutos",
+    "skill_area": "Área de Habilidad",
+    "skill_areas": {
+      "computational": "Computacional",
+      "communication": "Comunicación",
+      "creativity": "Creatividad"
+    },
+    "start_test": "Iniciar Prueba",
+    "completed": "Completado",
+    "next_steps": "Próximos Pasos",
+    "recommendations": {
+      "focus_priority": {
+        "title": "Enfócate en Elementos Prioritarios",
+        "description": "Comienza con las pruebas de habilidades analíticas para maximizar tu puntuación de poder computacional."
+      },
+      "schedule_practice": {
+        "title": "Programa Práctica Regular",
+        "description": "Completa 1-2 pruebas por semana para un desarrollo óptimo de habilidades."
+      },
+      "connect_mentor": {
+        "title": "Conecta con Tu Mentor",
+        "description": "Discute tu progreso y recibe consejos personalizados sobre áreas de mejora."
+      }
+    },
+    "estimated_time": "Tiempo Estimado",
+    "no_tests_available": "No hay pruebas disponibles en este momento",
+    "expand_section": "Expandir sección",
+    "collapse_section": "Contraer sección"
+  },
+  "developmentPlan": {
+    "page_label": "GROWTH HUB",
+    "page_title": "Growth Hub",
+    "page_subtitle": "Tu camino de crecimiento personalizado — construido sobre tus pilares, calibrado sobre tus puntos de fricción.",
+    "back_button": "← Dashboard",
+    "progress_title": "Progreso General",
+    "progress_tests_completed_label": "Tests Completados",
+    "stat_completed_label": "Tests Completados",
+    "stat_remaining_label": "Tests Restantes",
+    "stat_progress_label": "Progreso",
+    "priority_badge": "Prioridad",
+    "recommended_badge": "Recomendado",
+    "optional_badge": "Opcional",
+    "questions_label": "Preguntas",
+    "minutes_label": "minutos",
+    "start_test_button": "Empezar →",
+    "completed_badge": "Completado",
+    "next_steps_title": "Próximos Pasos",
+    "next_step_1_title": "Empieza por las Prioridades",
+    "next_step_1_body": "Los tests marcados como Prioridad tienen el mayor impacto en tu perfil. Empieza por ahí — cada finalización actualiza tu XIMAtar en tiempo real.",
+    "next_step_2_title": "Práctica Constante",
+    "next_step_2_body": "1–2 tests por semana produce el desarrollo óptimo. La constancia supera a la intensidad. El Drive se mide en el tiempo, no en una sola sesión.",
+    "next_step_3_title": "Activa a Tu Mentor",
+    "next_step_3_body": "Habla de tus progresos con tu mentor. Los consejos personalizados aceleran el crecimiento exactamente en las áreas donde tienes fricción.",
+    "category_computational_title": "Potencia la Potencia Computacional",
+    "category_computational_body": "Refuerza el razonamiento analítico, el reconocimiento de patrones y el pensamiento sistemático.",
+    "category_communication_title": "Desarrolla la Comunicación",
+    "category_communication_body": "Mejora la claridad, la escucha activa y las habilidades de expresión interpersonal.",
+    "category_creativity_title": "Entrena la Creatividad",
+    "category_creativity_body": "Desarrolla el pensamiento divergente y la mentalidad innovadora.",
+    "category_knowledge_title": "Profundiza el Conocimiento",
+    "category_knowledge_body": "Amplía la profundidad de expertise y las capacidades de síntesis de información.",
+    "category_drive_title": "Aumenta el Drive",
+    "category_drive_body": "Mide y acelera tu velocidad de crecimiento en tus áreas más débiles."
+  },
+  "ximai": {
+    "aria_open": "Abrir chat XIM-AI",
+    "aria_dialog": "Diálogo de chat XIM-AI",
+    "bot_language": "Idioma del bot",
+    "clear_history": "Limpiar historial",
+    "close": "Cerrar",
+    "thinking": "Pensando...",
+    "input_placeholder": "Escribe tu mensaje...",
+    "send": "Enviar",
+    "welcome_message": "¡Hola! Soy XIM-AI, tu asistente personal de XIMA. ¿En qué puedo ayudarte hoy?",
+    "action_booking": "Reservar Sesión",
+    "action_tests": "Pruebas de Desarrollo",
+    "action_chat": "Chat XIMA",
+    "login_required": "Necesitas iniciar sesión para acceder a esta función. Por favor, inicia sesión o crea una cuenta.",
+    "fallback_reply": "Lo siento, no pude procesar tu solicitud en este momento. Por favor, inténtalo de nuevo.",
+    "not_configured": "Lo siento, el servicio de chat no está configurado correctamente.",
+    "preview": {
+      "dashboard": "¿Necesitas ayuda para entender tus puntuaciones o reservar una sesión?",
+      "about": "Aprende cómo XIMA puede transformar tu carrera profesional.",
+      "how_it_works": "Descubre el proceso paso a paso de XIMA.",
+      "development": "Obtén orientación sobre tu plan de desarrollo personalizado.",
+      "profile": "Gestiona tu perfil y configuraciones de XIMA.",
+      "chat": "Conecta con profesionales que coincidan con tu XIMAtar.",
+      "opportunity": "Explora oportunidades de trabajo adaptadas a ti.",
+      "default": "¿Tienes preguntas sobre XIMA? ¡Estoy aquí para ayudar!"
+    },
+    "open": "Abrir"
+  },
+  "chat": {
+    "title": "Chat XIMA",
+    "conversations": "Conversaciones",
+    "search_users": "Buscar por nombre...",
+    "search_placeholder": "Buscar profesionales...",
+    "search_hint": "Escribe al menos 2 caracteres para buscar",
+    "searching": "Buscando...",
+    "no_users_found": "Ningún usuario coincide con tu búsqueda",
+    "no_other_users": "No hay otros usuarios registrados aún",
+    "error_loading": "Error al cargar usuarios",
+    "no_conversations": "Sin conversaciones",
+    "no_messages": "Sin mensajes aún",
+    "start_conversation": "Envía un mensaje para iniciar la conversación",
+    "type_message": "Escribe un mensaje...",
+    "send": "Enviar",
+    "online": "En línea",
+    "away": "Ausente",
+    "offline": "Desconectado",
+    "yesterday": "Ayer",
+    "welcome_title": "Bienvenido a XIMA Chat",
+    "welcome_subtitle": "Busca un usuario por nombre para iniciar una conversación. Tus mensajes son privados y seguros.",
+    "welcome_message": "¡Hola! Soy XIM-AI, tu asistente personal de XIMA. ¿En qué puedo ayudarte hoy?",
+    "best_match": "Mejor Coincidencia",
+    "message_placeholder": "Escribe un mensaje...",
+    "typing": "Escribiendo...",
+    "loading": "Cargando conversaciones...",
+    "login_required": "Inicia sesión para acceder al chat",
+    "sending": "Enviando...",
+    "message_sent": "Mensaje enviado",
+    "new_message": "Nuevo mensaje",
+    "connecting": "Conectando...",
+    "connection_error": "Error de conexión",
+    "recent": "Recientes",
+    "search_results": "Resultados de búsqueda",
+    "loading_conversations": "Cargando conversaciones..."
+  },
+  "errors": {
+    "generic": "Ocurrió un error inesperado",
+    "auth_required": "Debes iniciar sesión para acceder a esta página",
+    "not_found": "La página o recurso solicitado no fue encontrado",
+    "network": "Error de conexión. Verifica tu internet e inténtalo de nuevo",
+    "validation": "Por favor, verifica los datos ingresados"
+  },
+  "empty": {
+    "no_data": "No hay datos disponibles",
+    "complete_assessment": "Completa tu evaluación para ver los resultados",
+    "no_messages": "No hay mensajes aún",
+    "no_matches": "No se encontraron coincidencias"
+  },
+  "opportunity": {
+    "view": "Ver Oportunidad",
+    "apply": "Aplicar",
+    "save": "Guardar",
+    "share": "Compartir",
+    "location": "Ubicación",
+    "salary": "Salario",
+    "type": "Tipo",
+    "experience": "Experiencia",
+    "skills": "Habilidades",
+    "description": "Descripción",
+    "requirements": "Requisitos",
+    "benefits": "Beneficios",
+    "company": "Empresa",
+    "posted": "Publicado",
+    "deadline": "Fecha límite",
+    "match_score": "Puntuación de Coincidencia",
+    "sentiment_title": "Análisis de Sentimientos",
+    "sentiment_positive": "Positivo",
+    "sentiment_neutral": "Neutral",
+    "sentiment_negative": "Negativo"
+  },
+  "professionals": {
+    "title": "Elige a tu mentor",
+    "subtitle": "Selecciona el mentor que mejor se adapta a tus objetivos",
+    "select": "Seleccionar",
+    "view_linkedin": "Ver en LinkedIn",
+    "compatibility": "Compatibilidad",
+    "selected": "Seleccionado",
+    "specialties": "Especialidades",
+    "xima_pillars": "Pilares XIMA",
+    "active_coachees": "Activos",
+    "total_coached": "Total guiados",
+    "refresh_mentors": "Actualizar mentores",
+    "refresh_hint": "¿No estás satisfecho? Actualiza para ver otros mentores compatibles.",
+    "showing_compatible": "Mostrando mentores compatibles con tu perfil",
+    "your_selection": "Tu selección"
+  },
   "guide": {
     "badge": "Guía de Evaluación",
     "title": "Cómo Funciona la Evaluación XIMAtar",
@@ -2510,11 +3184,6 @@
     "skill_coverage": "Cobertura de Habilidades",
     "ximatar_match": "Match XIMAtar"
   },
-  "not_found": {
-    "title": "404 - Página No Encontrada",
-    "message": "¡Ups! La página que buscas no existe.",
-    "return_home": "Volver al Inicio"
-  },
   "challenge_invitation": {
     "banner_title": "¡Tienes invitaciones a desafíos!",
     "pending": "pendiente",
@@ -2641,14 +3310,15 @@
     "duplicate_error": "Error al duplicar desafío.",
     "save_changes": "Guardar Cambios"
   },
-  "common": {
-    "edit": "Editar",
-    "actions": "Acciones",
-    "back_to_profile": "Volver al perfil"
-  },
   "challenge": {
     "not_found": "Challenge no encontrada",
-    "status": { "upcoming": "Próxima", "active": "Activa", "expired": "Expirada", "submitted": "Enviada", "declined": "Rechazada" },
+    "status": {
+      "upcoming": "Próxima",
+      "active": "Activa",
+      "expired": "Expirada",
+      "submitted": "Enviada",
+      "declined": "Rechazada"
+    },
     "open_challenge": "Abrir Desafío",
     "view_submission": "Ver Respuesta",
     "expired_message": "Esta challenge ya no está disponible.",
@@ -2685,7 +3355,14 @@
     "submitted_title": "Respuesta Recibida",
     "submitted_desc": "Tu respuesta ha sido enviada con éxito.",
     "submitted_at": "Enviada el",
-    "validation": { "incomplete": "Envío incompleto", "approach_required": "El enfoque es requerido", "assumptions_required": "Las suposiciones son requeridas", "actions_required": "Proporciona las 3 acciones", "tradeoff_required": "Selecciona un trade-off", "confidence_required": "Selecciona el nivel de confianza" }
+    "validation": {
+      "incomplete": "Envío incompleto",
+      "approach_required": "El enfoque es requerido",
+      "assumptions_required": "Las suposiciones son requeridas",
+      "actions_required": "Proporciona las 3 acciones",
+      "tradeoff_required": "Selecciona un trade-off",
+      "confidence_required": "Selecciona el nivel de confianza"
+    }
   },
   "notifications": {
     "new_challenge_invitation": "Nueva Invitación a Desafío",
@@ -2769,96 +3446,21 @@
     }
   },
   "feed": {
-    "signals": "Señales",
-    "conversations": "Conversaciones",
-    "title": "XIMA Feed",
-    "tagline": "En XIMA no sigues a personas. Sigues señales.",
-    "subtitle": "Señales anónimas de logros verificados. Sin ruido, solo señales.",
-    "legend": "Solo hitos verificados · Sin publicaciones sociales · Privacidad by design",
-    "loading": "Cargando señales...",
-    "failed_to_load": "Error al cargar el feed",
-    "failed_to_load_desc": "Hubo un problema al cargar tus señales. Por favor, inténtalo de nuevo.",
-    "try_again": "Reintentar",
-    "refresh": "Actualizar",
-    "load_more": "Cargar más señales",
-    "chat_available": "Tienes conversaciones disponibles",
-    "chat_hint": "Basadas en señales de interés mutuo",
-    "open_chats": "Abrir Chats",
-    "back_to_feed": "Volver al Feed",
-    "privacy_notice": "Todas las señales están anonimizadas y normalizadas por IA. Se muestran identidades XIMAtar, no información personal. Las reacciones son agregadas y nunca se atribuyen a individuos.",
-    "states": {
-      "loading": "Cargando señales…",
-      "empty_title": "Sin señales aún",
-      "empty_desc": "Solo hitos verificados aparecerán aquí.",
-      "error_title": "Error al cargar el feed",
-      "error_cta": "Reintentar"
+    "thread_type": {
+      "mentor": "Mentor",
+      "business": "Empresa"
     },
-    "empty": {
-      "title": "Sin señales aún",
-      "description": "Completa desafíos para mostrar tu progreso verificado.",
-      "hint": "Sin publicaciones sociales. Solo hitos verificados."
-    },
-    "tabs": {
-      "signals": "Señales",
-      "conversations": "Conversaciones"
-    },
-    "titles": {
-      "challenge_completed": "Reto completado",
-      "skill_validated": "Competencia validada",
-      "level_reached": "Actualización de progreso",
-      "interest_aggregated": "Señal de mercado"
-    },
-    "card": {
-      "primary": {
-        "level_completed": "Reto completado (Nivel {{level}})",
-        "advanced_to_level": "Avanzó al Nivel {{level}}",
-        "interest_count": "{{count}} empresas mostraron interés"
-      },
-      "secondary": {
-        "verified": "Señal verificada",
-        "identity_unlock": "La identidad se desbloquea solo con interés mutuo"
-      },
-      "fallback": {
-        "primary": "Actualización verificada"
-      }
-    },
-    "chips": {
-      "verified": "Verificado",
-      "challenge": "Reto",
-      "skill": "Competencia",
-      "market": "Señal de mercado",
-      "level": "Nivel {{level}}"
-    },
-    "type": {
-      "challenge_completed": "Desafío Completado",
-      "skill_validated": "Habilidad Validada",
-      "level_reached": "Nivel Alcanzado",
-      "badge_unlocked": "Insignia Desbloqueada",
-      "interest_aggregated": "Señal de Interés"
-    },
-    "reaction": {
-      "interested": "Interesado",
-      "relevant": "Relevante",
-      "save": "Guardar"
-    },
-    "interest": {
-      "title": "Señales de Interés",
-      "pending": "pendientes",
-      "subtitle": "Empresas han mostrado interés en tu perfil. Acepta para desbloquear el chat.",
-      "accept": "Aceptar",
-      "open_chat": "Chat",
-      "accepted_success": "¡Interés aceptado! El chat ya está disponible.",
-      "privacy_note": "Los nombres de las empresas se revelan solo después de mostrar interés. Tu identidad permanece anónima hasta que aceptes."
-    }
+    "open_thread": "Abrir",
+    "active_threads_title": "Tus conversaciones",
+    "active_threads_subtitle": "Mensajes con tu mentor y las empresas con las que estás conectado.",
+    "no_active_threads": "Aún no hay conversaciones. Aparecerán aquí cuando un mentor o empresa se conecte contigo."
   },
   "settings": {
     "page_title": "Configuración",
     "page_subtitle": "Gestiona tu cuenta, preferencias de privacidad y datos.",
-
     "mentor_cv_title": "Acceso CV del Mentor",
     "mentor_cv_body": "Controla si tu mentor puede acceder a tu CV durante las sesiones. Deshabilitado por defecto — tu CV permanece privado hasta que elijas compartirlo.",
     "mentor_cv_incomplete": "Completa tu evaluación para obtener un mentor y gestionar el acceso al CV.",
-
     "membership_title": "Plan de Membresía",
     "membership_subtitle": "Tu plan actual y sus beneficios.",
     "membership_freemium_badge": "Freemium",
@@ -2866,7 +3468,6 @@
     "membership_benefit_2": "Gana créditos invitando amigos",
     "membership_credits_label": "Créditos disponibles",
     "membership_credits_note": "Una sesión estándar con el mentor (45 min) cuesta 5 créditos.",
-
     "referral_title": "Invita Amigos, Gana Créditos",
     "referral_body": "Cuando alguien se registra con tu enlace y completa su primera sesión introductoria gratuita con un mentor, el referido queda validado.",
     "referral_credit_rule": "✦ Cada referido validado te da +1 crédito.",
@@ -2876,10 +3477,8 @@
     "referral_link_label": "Tu enlace de invitación",
     "referral_email_label": "Enviar invitación por email",
     "referral_email_placeholder": "amigo@ejemplo.com",
-
     "upgrade_title": "Actualiza tu Plan",
     "upgrade_subtitle": "Desbloquea sesiones ilimitadas con tu mentor, acceso prioritario a oportunidades y herramientas avanzadas de desarrollo.",
-
     "plan_freemium_name": "Freemium",
     "plan_freemium_tagline": "Tu punto de partida — gratuito para siempre",
     "plan_basic_name": "Basic",
@@ -2897,7 +3496,6 @@
     "plan_pro_period": "/mes",
     "plan_pro_tagline": "Para quienes están seriamente comprometidos con su desarrollo",
     "plan_pro_cta": "Contactar Ventas",
-
     "export_title": "Exportar tus Datos",
     "export_body": "Descarga una copia de todos tus datos personales almacenados en XIMA. Tus datos te pertenecen — siempre.",
     "export_includes_label": "Esta exportación incluye:",
@@ -2908,7 +3506,6 @@
     "export_item_5": "Mensajes de chat y asistente AI",
     "export_item_6": "Registros de actividad y preferencias",
     "export_button": "Descargar mis Datos",
-
     "ai_profiling_title": "Preferencias de Perfilado AI",
     "ai_profiling_subtitle": "Controla cómo XIMA usa el análisis automatizado en tus datos.",
     "ai_profiling_what_title": "¿Qué es el perfilado AI?",
@@ -2919,7 +3516,6 @@
     "ai_profiling_opt_out_label": "Oponerse al perfilado automatizado",
     "ai_profiling_opt_out_body": "Deshabilitar el análisis IA de tus datos (GDPR Art. 21/22)",
     "ai_profiling_human_review": "Puedes solicitar revisión humana de cualquier decisión automatizada contactando:",
-
     "delete_title": "Eliminar Cuenta",
     "delete_subtitle": "Elimina permanentemente tu cuenta y todos los datos asociados.",
     "delete_warning_label": "Esta acción no puede deshacerse:",
@@ -2928,7 +3524,6 @@
     "delete_warning_3": "Los envíos a desafíos serán anonimizados",
     "delete_warning_4": "Los mensajes de chat serán anonimizados",
     "delete_button": "Eliminar mi Cuenta",
-
     "deletion": {
       "title": "Eliminar Cuenta",
       "description": "Elimina permanentemente tu cuenta y todos los datos asociados.",
@@ -3012,133 +3607,6 @@
     "standard_session_title": "Reserva una sesión de 45 minutos",
     "standard_session_subtitle": "Desbloqueada con créditos (5 créditos)."
   },
-  "common": {
-    "cancel": "Cancelar"
-  },
-  "legal": {
-    "privacyPolicy": "Política de Privacidad",
-    "termsOfService": "Términos de Servicio",
-    "privacy": {
-      "title": "Política de Privacidad",
-      "last_updated": "Última actualización",
-      "intro": "En XIMA S.r.l., nos comprometemos a proteger tu privacidad y datos personales. Esta Política de Privacidad explica cómo recopilamos, usamos, almacenamos y protegemos tu información cuando utilizas nuestra plataforma. Al usar XIMA, consientes las prácticas descritas en esta política.",
-      "data_collection_title": "Datos que Recopilamos",
-      "data_collection_content": "Recopilamos los siguientes tipos de datos personales:\n\n• Información de cuenta: dirección de correo electrónico, nombre y detalles del perfil que proporcionas durante el registro\n• Datos profesionales: cargas de CV, respuestas de evaluación y preferencias de carrera\n• Datos de uso: cómo interactúas con nuestra plataforma, incluyendo páginas visitadas y funciones utilizadas\n• Datos técnicos: información del dispositivo, dirección IP y tipo de navegador para fines de seguridad y optimización\n\nTodos los datos se recopilan con tu consentimiento explícito y son necesarios para proporcionar nuestros servicios.",
-      "data_usage_title": "Cómo Usamos Tus Datos",
-      "data_usage_content": "Tus datos se utilizan para los siguientes propósitos:\n\n• Crear y mantener tu perfil profesional XIMAtar\n• Análisis de evaluación impulsado por IA para proporcionar información personalizada\n• Conectarte con oportunidades de carrera y desafíos relevantes\n• Facilitar la comunicación entre candidatos, empresas y mentores\n• Mejorar nuestra plataforma y desarrollar nuevas funciones\n• Cumplir con obligaciones legales y prevenir fraudes\n\nUtilizamos toma de decisiones automatizada (perfilado) para generar tu arquetipo XIMAtar. Puedes oponerte a este procesamiento en cualquier momento a través de la configuración de tu cuenta.",
-      "data_security_title": "Seguridad de Datos",
-      "data_security_content": "Implementamos medidas de seguridad estándar de la industria para proteger tus datos:\n\n• Cifrado de datos en tránsito (TLS/SSL) y en reposo\n• Infraestructura de nube segura alojada en centros de datos de la UE\n• Seguridad a nivel de fila que garantiza que los usuarios solo puedan acceder a sus propios datos\n• Auditorías de seguridad regulares y evaluaciones de vulnerabilidad\n• Controles de acceso estrictos para los miembros de nuestro equipo\n\nA pesar de nuestros mejores esfuerzos, ningún sistema es 100% seguro. Te animamos a usar contraseñas seguras y mantener confidenciales las credenciales de tu cuenta.",
-      "your_rights_title": "Tus Derechos (RGPD)",
-      "your_rights_content": "Bajo el Reglamento General de Protección de Datos (RGPD), tienes los siguientes derechos:\n\n• Derecho de Acceso: Solicitar una copia de todos los datos personales que tenemos sobre ti\n• Derecho de Rectificación: Corregir cualquier dato inexacto o incompleto\n• Derecho de Supresión: Solicitar la eliminación de tus datos personales ('derecho al olvido')\n• Derecho a la Limitación: Limitar cómo procesamos tus datos en ciertas circunstancias\n• Derecho a la Portabilidad: Recibir tus datos en un formato estructurado y legible por máquina\n• Derecho de Oposición: Oponerte al perfilado automatizado y marketing directo\n• Derecho a Retirar el Consentimiento: Retirar el consentimiento en cualquier momento sin afectar el procesamiento anterior\n\nPara ejercer cualquiera de estos derechos, contacta a nuestro Delegado de Protección de Datos en privacy@xima.app.",
-      "contact_title": "Información de Contacto",
-      "contact_content": "Para cualquier consulta relacionada con la privacidad o para ejercer tus derechos, contacta:\n\nXIMA S.r.l.\nVia Torino, 2\n20123 Milano (MI), Italia\n\nDelegado de Protección de Datos: privacy@xima.app\nConsultas generales: info@xima.app\n\nTambién tienes derecho a presentar una queja ante la Autoridad de Protección de Datos italiana (Garante per la protezione dei dati personali) si crees que se han violado tus derechos."
-    },
-    "terms": {
-      "title": "Términos de Servicio",
-      "last_updated": "Última actualización",
-      "intro": "Bienvenido a XIMA. Estos Términos de Servicio rigen tu acceso y uso de la plataforma XIMA operada por XIMA S.r.l. Al registrar una cuenta o usar nuestros servicios, aceptas estar vinculado por estos términos. Por favor léelos cuidadosamente.",
-      "acceptance_title": "Aceptación de Términos",
-      "acceptance_content": "Al crear una cuenta o acceder a XIMA, confirmas que:\n\n• Tienes al menos 18 años o tienes consentimiento parental\n• Has leído y entendido estos Términos de Servicio\n• Aceptas estar vinculado por estos términos y nuestra Política de Privacidad\n• La información que proporcionas es precisa y completa\n\nSi no estás de acuerdo con estos términos, por favor no uses nuestra plataforma.",
-      "services_title": "Nuestros Servicios",
-      "services_content": "XIMA proporciona una plataforma de evaluación profesional y emparejamiento que incluye:\n\n• Evaluación XIMAtar: evaluación impulsada por IA de tu perfil profesional a través de cinco pilares (Poder Computacional, Comunicación, Conocimiento, Creatividad, Impulso)\n• Career Matching: conexión con empresas que buscan candidatos que coincidan con tu perfil\n• Sistema de Desafíos: desafíos estructurados para demostrar tus capacidades a potenciales empleadores\n• Red de Mentores: acceso a mentores profesionales para orientación profesional\n• Feed y Comunicación: herramientas para interactuar con oportunidades y comunicarte con empresas\n\nNos reservamos el derecho de modificar, suspender o discontinuar cualquier parte de nuestros servicios con aviso razonable.",
-      "user_obligations_title": "Obligaciones del Usuario",
-      "user_obligations_content": "Al usar XIMA, aceptas:\n\n• Proporcionar información precisa y veraz en tu perfil y evaluaciones\n• Mantener seguras las credenciales de tu cuenta y no compartirlas con otros\n• No intentar manipular los resultados de evaluación o enviar información falsa\n• Respetar a otros usuarios y mantener una conducta profesional en todas las comunicaciones\n• No usar la plataforma para ningún propósito ilegal o para acosar a otros\n• No intentar realizar ingeniería inversa, extraer datos o interferir con la plataforma\n\nLa violación de estas obligaciones puede resultar en la suspensión o terminación de la cuenta.",
-      "liability_title": "Limitación de Responsabilidad",
-      "liability_content": "En la máxima medida permitida por la ley:\n\n• XIMA proporciona servicios 'tal cual' sin garantías de ningún tipo\n• No garantizamos resultados de empleo o resultados comerciales\n• No somos responsables de las decisiones tomadas por terceros basadas en tu perfil\n• Nuestra responsabilidad está limitada a daños directos hasta el monto que nos pagaste (si lo hay) en los últimos 12 meses\n• No somos responsables de daños indirectos, consecuentes o punitivos\n\nNada en estos términos limita nuestra responsabilidad por fraude, negligencia grave o asuntos que no pueden ser excluidos por ley.",
-      "termination_title": "Terminación de Cuenta",
-      "termination_content": "Puedes eliminar tu cuenta en cualquier momento a través de la configuración de tu cuenta. Al eliminar:\n\n• Tu perfil y datos personales serán eliminados permanentemente\n• Los resultados de evaluación y perfil XIMAtar serán eliminados\n• Las presentaciones de desafíos serán anonimizadas\n• Los mensajes de chat serán anonimizados\n\nPodemos suspender o terminar cuentas que violen estos términos o participen en actividad fraudulenta. Proporcionaremos aviso cuando sea razonablemente posible.",
-      "changes_title": "Cambios a Estos Términos",
-      "changes_content": "Podemos actualizar estos Términos de Servicio de vez en cuando para reflejar cambios en nuestros servicios o requisitos legales. Cuando hagamos cambios materiales:\n\n• Te notificaremos por correo electrónico o notificación en la aplicación\n• Los términos actualizados se publicarán con una nueva fecha de 'Última actualización'\n• El uso continuado de XIMA después de que los cambios entren en vigencia constituye aceptación\n\nPara preguntas sobre estos términos, contáctanos en info@xima.app."
-    },
-    "imprint": {
-      "title": "Aviso Legal",
-      "subtitle": "Información de la empresa y divulgaciones legales según lo requerido por las regulaciones de la UE",
-      "company_info": "Información de la Empresa",
-      "contact": "Contacto",
-      "representative": "Representante Legal",
-      "registration": "Registro",
-      "vat": "Número de IVA",
-      "rea": "Número REA",
-      "share_capital": "Capital Social",
-      "registered_at": "Registrado en",
-      "dpo_title": "Delegado de Protección de Datos",
-      "dpo_info": "Para cualquier consulta relacionada con la privacidad, solicitudes de acceso a datos o para ejercer tus derechos RGPD, contacta a nuestro Delegado de Protección de Datos:",
-      "last_updated": "Última actualización"
-    }
-  },
-  "dashboard": {
-    "page_label": "DASHBOARD",
-    "welcome_headline": "Bienvenido, {{name}}.",
-    "welcome_subheadline": "Tu perfil XIMAtar y tu recorrido de desarrollo personal.",
-    "growth_path_title": "TU CAMINO DE CRECIMIENTO",
-    "growth_path_freemium_body": "Estás al principio del viaje. Tu XIMAtar está listo — ahora es el momento de activarlo. Invita a un amigo para ganar tus primeros créditos y desbloquear sesiones reales con tu mentor.",
-    "growth_path_credits_label": "créditos disponibles",
-    "growth_path_invite_cta": "Invita a un Amigo y Gana Créditos",
-    "growth_path_manage_cta": "Gestionar Membresía →",
-    "growth_path_credit_note": "Una sesión estándar de 45 min con el mentor cuesta 5 créditos. Cada referido válido cuenta.",
-    "ximatar_label": "TU XIMATAR",
-    "ximatar_tagline": "No definimos a las personas con etiquetas. Revelamos la dinámica entre lo que las mueve, lo que las eleva y lo que las retiene.",
-    "ximatar_advantage_label": "TU VENTAJA",
-    "ximatar_friction_label": "TU PUNTO DE FRICCIÓN",
-    "ximatar_drive_prefix": "Drive",
-    "advantage_friction_title": "VENTAJA Y PUNTO DE FRICCIÓN",
-    "advantage_title": "TU VENTAJA",
-    "advantage_body": "Esta es tu fortaleza natural — aprovéchala.",
-    "friction_title": "TU PUNTO DE FRICCIÓN",
-    "friction_body": "Desarrolla esta dimensión a través de la experimentación, la exposición a ideas diversas y la práctica deliberada.",
-    "growth_path_label": "TU CAMINO DE CRECIMIENTO",
-    "pillars_title": "TU PERFIL DE PILARES",
-    "assessment_overview_title": "RESUMEN DE LA EVALUACIÓN",
-    "drive_section_title": "Drive (Velocidad de Crecimiento)",
-    "drive_section_body": "Velocidad de mejora en tus áreas más débiles. Drive no mide de dónde partes — mide la velocidad de tu trayectoria.",
-    "drive_refining": "El Drive aún se está calibrando — completa más desafíos para medir tu velocidad de crecimiento.",
-    "pillar_scores_title": "PUNTUACIONES DE PILARES",
-    "pillar_scores_note": "Los pilares son dinámicos — evolucionan con la práctica y los desafíos.",
-    "story_title": "TU HISTORIA",
-    "story_body": "No definimos a las personas con etiquetas. Revelamos la dinámica entre lo que las mueve, lo que las eleva y lo que las retiene.",
-    "mentor_title": "Tu Mentor",
-    "mentor_guide": "Tu mentor te guiará en el desarrollo profesional con consejos personalizados basados en tu perfil XIMA.",
-    "mentor_no_availability": "Tu mentor aún no ha publicado disponibilidad.",
-    "mentor_check_back": "Vuelve pronto o usa la reserva externa si está disponible.",
-    "mentor_check_again": "Comprobar de Nuevo",
-    "cv_analysis_title": "Análisis de CV",
-    "cv_score_alignment": "Alineación de Puntuación",
-    "cv_comparison_title": "Comparación CV vs Evaluación",
-    "cv_best_improvement": "Mayor Mejora",
-    "cv_score_label": "Puntuación CV",
-    "cv_assessment_label": "Puntuación Evaluación",
-    "cv_reupload": "Volver a Subir CV",
-    "cv_upload": "Subir CV",
-    "cv_analyzing": "Analizando...",
-    "challenges_title": "DESAFÍOS PARA TI",
-    "challenges_empty_headline": "Sin desafíos por ahora.",
-    "challenges_empty_body": "Cuando las empresas te inviten a participar en un proceso de selección, los desafíos aparecerán aquí. Completa tu evaluación para aumentar las probabilidades de ser invitado.",
-    "opportunities_title": "Mis Oportunidades",
-    "opportunities_refresh": "Actualizar",
-    "opportunities_tab_for_you": "Para Ti",
-    "opportunities_tab_saved": "Guardadas",
-    "opportunities_tab_applied": "Candidaturas",
-    "opportunities_empty_headline": "Sin oportunidades disponibles por ahora.",
-    "opportunities_empty_body": "Completa tu evaluación para mejorar el matching y empezar a recibir oportunidades adaptadas a tu perfil.",
-    "pillar_computational_power": "Potencia Computacional",
-    "pillar_communication": "Comunicación",
-    "pillar_knowledge": "Conocimiento",
-    "pillar_creativity": "Creatividad",
-    "pillar_drive": "Drive (Velocidad de Crecimiento)",
-    "membership": {
-      "title": "Tu camino de crecimiento",
-      "subtitle": "Estás empezando. Invita a un amigo para ganar tus primeros créditos — desbloquean sesiones reales con tu mentor.",
-      "creditLine": "Tienes {{credits}} créditos disponibles",
-      "tier_freemium": "Freemium",
-      "tier_basic": "Basic",
-      "tier_premium": "Premium",
-      "tier_pro": "Pro",
-      "manage": "Gestionar suscripción",
-      "invite": "Invita a un amigo y gana créditos",
-      "hint": "Una sesión estándar de 45 min cuesta 5 créditos. Cada invitación cuenta.",
-      "settingsHelper": "Puedes cambiar tu plan o gestionar invitaciones en cualquier momento desde Ajustes."
-    }
-  },
   "onboarding": {
     "welcome_title": "Bienvenido a tu viaje XIMA",
     "welcome_copy": "Este es tu espacio de crecimiento personal. Descubramos juntos cómo funciona.",
@@ -3156,16 +3624,6 @@
       "settings_title": "Ajustes",
       "settings_body": "Gestiona tu plan, créditos, invitaciones y preferencias de tu cuenta."
     }
-  },
-  "feed": {
-    "thread_type": {
-      "mentor": "Mentor",
-      "business": "Empresa"
-    },
-    "open_thread": "Abrir",
-    "active_threads_title": "Tus conversaciones",
-    "active_threads_subtitle": "Mensajes con tu mentor y las empresas con las que estás conectado.",
-    "no_active_threads": "Aún no hay conversaciones. Aparecerán aquí cuando un mentor o empresa se conecte contigo."
   },
   "assessmentGuide": {
     "eyebrow": "Guía de Evaluación",
