@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Send, Eye, Gift, Loader2 } from 'lucide-react';
-import { getDisplayName, getArchetypeEmoji, canRevealIdentity, PIPELINE_STAGES } from '@/utils/anonymousDisplay';
+import { getDisplayName, getArchetypeImageUrl, canRevealIdentity, PIPELINE_STAGES } from '@/utils/anonymousDisplay';
 import { MakeOfferModal } from './MakeOfferModal';
 
 interface PipelineViewProps {
@@ -71,7 +71,7 @@ export const PipelineView: React.FC<PipelineViewProps> = ({ hiringGoalId, onInvi
       {/* Candidate list */}
       <div className="space-y-2">
         {pipeline.map(candidate => {
-          const emoji = getArchetypeEmoji(candidate.ximatar_archetype);
+          const imgUrl = getArchetypeImageUrl(candidate.ximatar_archetype);
           const displayName = getDisplayName(candidate);
           const showReveal = canRevealIdentity(candidate.pipeline_stage);
 
@@ -79,7 +79,7 @@ export const PipelineView: React.FC<PipelineViewProps> = ({ hiringGoalId, onInvi
             <Card key={candidate.id} className="hover:shadow-sm transition-shadow">
               <CardContent className="p-3 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
-                  <span className="text-xl shrink-0">{emoji}</span>
+                  <img src={imgUrl} alt={candidate.ximatar_archetype} className="h-10 w-10 object-contain shrink-0" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
                   <div className="min-w-0">
                     <p className="font-medium text-sm text-foreground truncate">{displayName}</p>
                     <p className="text-xs text-muted-foreground">

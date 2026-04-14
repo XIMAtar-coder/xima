@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Loader2, ShieldAlert, User, Send } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { getArchetypeEmoji } from '@/utils/anonymousDisplay';
+import { getArchetypeImageUrl } from '@/utils/anonymousDisplay';
 
 interface RevealedProfile {
   full_name: string;
@@ -52,7 +52,7 @@ export const MakeOfferModal: React.FC<MakeOfferModalProps> = ({
   const [startDate, setStartDate] = useState('');
   const [sendingOffer, setSendingOffer] = useState(false);
 
-  const emoji = getArchetypeEmoji(candidate.ximatar_archetype);
+  const imgUrl = getArchetypeImageUrl(candidate.ximatar_archetype);
   const archetypeName = (candidate.ximatar_archetype || 'unknown').charAt(0).toUpperCase() + (candidate.ximatar_archetype || 'unknown').slice(1);
 
   const revealIdentity = async () => {
@@ -132,7 +132,7 @@ export const MakeOfferModal: React.FC<MakeOfferModalProps> = ({
           <div className="space-y-4">
             {/* Anonymous profile */}
             <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-              <span className="text-3xl">{emoji}</span>
+              <img src={imgUrl} alt={archetypeName} className="h-10 w-10 object-contain" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
               <div>
                 <p className="font-semibold text-foreground">
                   {t('anonymous.candidate_label', 'Candidate #{{number}}', { number: candidate.anonymous_label || '?' })} — {archetypeName}

@@ -35,10 +35,8 @@ interface ShortlistCardProps {
   onViewProfile: (candidateUserId: string) => void;
 }
 
-const ARCHETYPE_EMOJI: Record<string, string> = {
-  lion: '🦁', owl: '🦉', dolphin: '🐬', fox: '🦊', bear: '🐻', bee: '🐝',
-  wolf: '🐺', cat: '🐱', parrot: '🦜', elephant: '🐘', horse: '🐴', chameleon: '🦎',
-};
+const getArchetypeImageUrl = (archetype: string) =>
+  `/ximatars/${(archetype || 'chameleon').toLowerCase()}.png`;
 
 const ScoreBar: React.FC<{ label: string; value: number; max: number }> = ({ label, value, max }) => (
   <div className="flex items-center gap-2 text-xs">
@@ -50,7 +48,7 @@ const ScoreBar: React.FC<{ label: string; value: number; max: number }> = ({ lab
 
 export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, onInviteToChallenge, onViewProfile }) => {
   const { t } = useTranslation();
-  const emoji = ARCHETYPE_EMOJI[candidate.ximatar_archetype] || '🔮';
+  const imageUrl = getArchetypeImageUrl(candidate.ximatar_archetype);
   const archetypeName = candidate.ximatar_archetype.charAt(0).toUpperCase() + candidate.ximatar_archetype.slice(1);
 
   const engagementLabel = {
@@ -85,7 +83,12 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, o
               #{rank}
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-2xl">{emoji}</span>
+              <img
+                src={imageUrl}
+                alt={candidate.ximatar_archetype}
+                className="h-10 w-10 object-contain shrink-0"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+              />
               <div>
                 <p className="font-semibold text-sm text-foreground">
                   {candidate.anonymous_label

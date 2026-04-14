@@ -34,8 +34,14 @@ export function getDisplayName(candidate: AnonymousCandidate): string {
   return `Candidate #${label} — ${capitalizedArchetype}`;
 }
 
+/** @deprecated Use getArchetypeImageUrl() + <img> instead */
 export function getArchetypeEmoji(archetype: string | null | undefined): string {
   return ARCHETYPE_EMOJI[(archetype || '').toLowerCase()] || '🔮';
+}
+
+/** Returns the public URL for a XIMAtar archetype image */
+export function getArchetypeImageUrl(archetype: string | null | undefined): string {
+  return `/ximatars/${(archetype || 'chameleon').toLowerCase()}.png`;
 }
 
 export function getDisplayAvatar(candidate: AnonymousCandidate): string {

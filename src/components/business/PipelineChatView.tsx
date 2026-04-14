@@ -8,7 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Send, Loader2, ArrowLeft, MessageCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getArchetypeEmoji } from '@/utils/anonymousDisplay';
+import { getArchetypeImageUrl } from '@/utils/anonymousDisplay';
 import { toast } from 'sonner';
 
 interface PipelineChatViewProps {
@@ -147,8 +147,8 @@ export const PipelineChatView: React.FC<PipelineChatViewProps> = ({
           </div>
         )}
         <div className="flex-1">
-          <p className="font-medium">
-            {role === 'business' && <span className="mr-1">{getArchetypeEmoji(thread?.ximatar_archetype)}</span>}
+          <p className="font-medium flex items-center gap-2">
+            {role === 'business' && <img src={getArchetypeImageUrl(thread?.ximatar_archetype)} alt="" className="h-6 w-6 object-contain inline" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />}
             {headerName}
           </p>
           <Badge variant="secondary" className="text-xs capitalize mt-0.5">
