@@ -236,6 +236,20 @@ const BusinessDashboard = () => {
           onGenerate={handleGenerateProfile}
         />
 
+        {/* Entry points card — visible only when no active hiring goal */}
+        {!hiringGoalLoading && (hiringGoalStatus === 'none' || hiringGoalStatus === 'draft') && (
+          <BusinessEntryPointsCard onXimaHrClick={() => setShowXimaHrModal(true)} />
+        )}
+
+        {/* XIMA HR Request Modal */}
+        <XimaHrRequestModal
+          open={showXimaHrModal}
+          onClose={() => setShowXimaHrModal(false)}
+          source="dashboard"
+          businessId={businessProfile?.id || user?.id || ''}
+          contactEmail={businessProfile?.hr_contact_email || user?.email || ''}
+        />
+
         {/* Discovered positions from website scan */}
         <DiscoveredPositionsBanner businessId={user?.id} />
 
