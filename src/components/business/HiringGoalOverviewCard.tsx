@@ -98,13 +98,13 @@ export const HiringGoalOverviewCard: React.FC<HiringGoalOverviewCardProps> = ({
                 <DropdownMenuItem onClick={() => navigate(`/business/goals/${goal.id}/edit`)}>
                   {t('business.goals.edit_goal')}
                 </DropdownMenuItem>
-                {goal.status !== 'active' && goal.status !== 'completed' && (
+                {goal.status !== 'active' && (
                   <DropdownMenuItem onClick={() => onStatusChange(goal.id, 'active')}>
                     <Play className="h-4 w-4 mr-2" />
                     {t('business.goals.activate')}
                   </DropdownMenuItem>
                 )}
-                {(goal.status === 'active' || goal.status === 'completed') && (
+                {goal.status === 'active' && (
                   <DropdownMenuItem onClick={() => onStatusChange(goal.id, 'paused')}>
                     <Pause className="h-4 w-4 mr-2" />
                     {t('business.goals.pause')}

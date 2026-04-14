@@ -56,7 +56,7 @@ const BusinessDashboard = () => {
   const [companyProfile, setCompanyProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const { businessProfile, isLoading: businessProfileLoading } = useBusinessProfile();
-  const [hiringGoalStatus, setHiringGoalStatus] = useState<'none' | 'draft' | 'completed'>('none');
+  const [hiringGoalStatus, setHiringGoalStatus] = useState<'none' | 'draft' | 'active'>('none');
   const [hiringGoalDraftId, setHiringGoalDraftId] = useState<string | null>(null);
   const [hiringGoalLoading, setHiringGoalLoading] = useState(true);
   const [activeChallengesBase, setActiveChallengesBase] = useState<{id: string; title: string; hiring_goal_id: string | null; hiring_goal_title: string | null; created_at: string; start_at: string | null; end_at: string | null; status: string}[]>([]);
@@ -129,7 +129,7 @@ const BusinessDashboard = () => {
       const { data, error } = await supabase.from('hiring_goal_drafts').select('id, status').eq('business_id', user.id).order('updated_at', { ascending: false }).limit(1).maybeSingle();
       if (error) { console.error('[Dashboard] Error fetching hiring goal:', error); setHiringGoalStatus('none'); return; }
       if (!data) { setHiringGoalStatus('none'); setHiringGoalDraftId(null); }
-      else if (data.status === 'completed') { setHiringGoalStatus('completed'); setHiringGoalDraftId(data.id); }
+      else if (['active', 'paused', 'filled', 'closed'].includes(data.status)) { setHiringGoalStatus('active'); setHiringGoalDraftId(data.id); }
       else { setHiringGoalStatus('draft'); setHiringGoalDraftId(data.id); }
     } catch (err) { console.error('[Dashboard] Error loading hiring goal status:', err); setHiringGoalStatus('none'); setHiringGoalDraftId(null); } finally { setHiringGoalLoading(false); }
   };
@@ -138,7 +138,7 @@ const BusinessDashboard = () => {
     try {
       const { count: candidatesCount } = await supabase.from('assessment_results').select('*', { count: 'exact', head: true });
       let shortlistedCount = 0;
-      if (hiringGoalDraftId && hiringGoalStatus === 'completed') {
+      if (hiringGoalDraftId && hiringGoalStatus === 'active') {
         const { count } = await supabase.from('business_shortlists').select('*', { count: 'exact', head: true }).eq('business_id', user?.id).eq('hiring_goal_id', hiringGoalDraftId);
         shortlistedCount = count || 0;
       } else {
