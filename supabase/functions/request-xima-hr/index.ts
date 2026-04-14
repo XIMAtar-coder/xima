@@ -31,11 +31,14 @@ serve(async (req) => {
     const body = await req.json();
     const { business_id, source, source_id } = body;
 
-    if (!business_id || !source || !source_id) {
-      return errorResponse(400, "INVALID_INPUT", "business_id, source ('listing'|'hiring_goal'), and source_id are required");
+    if (!business_id || !source) {
+      return errorResponse(400, "INVALID_INPUT", "business_id and source ('listing'|'hiring_goal'|'generic') are required");
     }
-    if (!["listing", "hiring_goal"].includes(source)) {
-      return errorResponse(400, "INVALID_SOURCE", "source must be 'listing' or 'hiring_goal'");
+    if (!["listing", "hiring_goal", "generic"].includes(source)) {
+      return errorResponse(400, "INVALID_SOURCE", "source must be 'listing', 'hiring_goal', or 'generic'");
+    }
+    if (source !== "generic" && !source_id) {
+      return errorResponse(400, "INVALID_INPUT", "source_id is required for listing and hiring_goal sources");
     }
 
     const serviceClient = createClient(supabaseUrl, serviceKey);
