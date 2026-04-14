@@ -1602,7 +1602,24 @@
       "invited": "invitati",
       "responses": "risposte",
       "view_responses": "Visualizza Risposte",
-      "expiring_soon": "In scadenza"
+      "expiring_soon": "In scadenza",
+      "entry_points": {
+        "heading": "Come vuoi iniziare?",
+        "subheading": "Scegli il percorso che fa per te — puoi sempre cambiare più tardi",
+        "recommended": "Consigliato",
+        "create_goal": {
+          "title": "Crea un Obiettivo XIMA",
+          "description": "Definisci il ruolo che cerchi e ricevi una shortlist AI di candidati comportamentalmente compatibili"
+        },
+        "import_jd": {
+          "title": "Importa un Job Post",
+          "description": "Hai già un annuncio? Caricalo e XIMA estrarrà automaticamente tutti i dettagli per te"
+        },
+        "xima_hr": {
+          "title": "Attiva XIMA HR",
+          "description": "Il nostro team gestisce la selezione per te usando le XIMA Challenge — tu ricevi solo i finalisti"
+        }
+      }
     },
     "candidates": {
       "title": "Pool di Candidati",
@@ -1690,6 +1707,59 @@
       "no_challenge_desc": "Crea e attiva prima una sfida",
       "activate_first": "Attiva prima una sfida",
       "go_to_challenges": "Vai alle Sfide"
+    },
+    "jobs": {
+      "import": {
+        "title": "Importa un Job Post",
+        "step1": {
+          "heading": "Da dove vuoi importare?",
+          "tab_paste": "Incolla testo",
+          "tab_upload": "Carica file",
+          "tab_url": "URL",
+          "paste_placeholder": "Incolla qui il testo del tuo annuncio di lavoro...",
+          "upload_hint": "Trascina un file PDF, DOCX o TXT (max 5MB)",
+          "analyze_cta": "Analizza con AI",
+          "analyzing": "Sto leggendo il tuo annuncio...",
+          "analyzing_hint": "Questo può richiedere 15-30 secondi"
+        },
+        "step2": {
+          "heading": "Rivedi i dati estratti",
+          "role_section": "Ruolo",
+          "skills_section": "Responsabilità e competenze",
+          "where_section": "Dove e come",
+          "salary_section": "Compensazione lorda annuale (RAL)",
+          "salary_tooltip": "XIMA mostra sempre la retribuzione lorda annua. Il candidato vedrà questo valore.",
+          "salary_estimated_warning": "Il valore è stato stimato (convertito da netto a lordo con fattore 1.4). Verifica e correggi se necessario.",
+          "archetype_section": "Suggerimento XIMA",
+          "archetype_hint": "Puoi sempre cambiare questa scelta più tardi",
+          "save_as_listing": "Salva come Job Post",
+          "convert_to_goal": "Converti in Obiettivo XIMA",
+          "activate_xima_hr": "Attiva XIMA HR"
+        },
+        "saved_toast": "Job post salvato come bozza",
+        "converted_toast": "Job post convertito — rivedi l'Obiettivo XIMA"
+      }
+    },
+    "xima_hr": {
+      "modal": {
+        "title": "Attiva XIMA HR",
+        "intro": "Il team XIMA HR gestisce la selezione al posto tuo usando il flusso XIMA: definisce l'obiettivo, crea le challenge, valuta i candidati e ti presenta solo i finalisti già filtrati. Tu non tocchi la pipeline — ricevi solo i migliori candidati pronti per l'offerta.",
+        "benefit_1": "Selezione comportamentale completa",
+        "benefit_2": "Anonimato preservato fino all'offerta",
+        "benefit_3": "Il team XIMA ti contatta entro 24 ore",
+        "cancel": "Annulla",
+        "continue": "Continua",
+        "back": "Indietro",
+        "confirm_title": "Conferma richiesta",
+        "confirm_body": "Stiamo per inviare una richiesta al team XIMA HR. Ti contatteranno all'indirizzo email registrato per raccogliere i dettagli della selezione.",
+        "contact_email_label": "Email di contatto",
+        "submit": "Invia richiesta",
+        "submitting": "Invio in corso...",
+        "success_title": "Richiesta ricevuta",
+        "success_body": "Il team XIMA HR ti contatterà entro 24 ore.",
+        "close": "Chiudi",
+        "error_generic": "Si è verificato un errore. Riprova tra qualche istante."
+      }
     },
     "goals": {
       "portfolio_title": "I Tuoi Obiettivi di Assunzione",

@@ -19,6 +19,8 @@ import { CompanyIdentityCard } from '@/components/business/CompanyIdentityCard';
 import { TeamIntelligenceCard } from '@/components/business/TeamIntelligenceCard';
 import { RecommendationDebugPanel } from '@/components/business/RecommendationDebugPanel';
 import { ImportJobModal } from '@/components/business/ImportJobModal';
+import BusinessEntryPointsCard from '@/components/business/BusinessEntryPointsCard';
+import XimaHrRequestModal from '@/components/business/XimaHrRequestModal';
 import { DiscoveredPositionsBanner } from '@/components/business/DiscoveredPositionsBanner';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useChallengeStatsMap } from '@/hooks/useChallengeResponsesData';
@@ -62,6 +64,7 @@ const BusinessDashboard = () => {
   const [activeChallengesBase, setActiveChallengesBase] = useState<{id: string; title: string; hiring_goal_id: string | null; hiring_goal_title: string | null; created_at: string; start_at: string | null; end_at: string | null; status: string}[]>([]);
   const [activeChallengesLoading, setActiveChallengesLoading] = useState(true);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [showXimaHrModal, setShowXimaHrModal] = useState(false);
   
   const { goals: hiringGoals, loading: hiringGoalsLoading, updateGoalStatus, createGoal, refetch: refetchGoals } = useHiringGoals();
 
@@ -231,6 +234,20 @@ const BusinessDashboard = () => {
           companyProfile={companyProfile}
           profileStatus={profileLoading ? 'loading' : 'ready'}
           onGenerate={handleGenerateProfile}
+        />
+
+        {/* Entry points card — visible only when no active hiring goal */}
+        {!hiringGoalLoading && (hiringGoalStatus === 'none' || hiringGoalStatus === 'draft') && (
+          <BusinessEntryPointsCard onXimaHrClick={() => setShowXimaHrModal(true)} />
+        )}
+
+        {/* XIMA HR Request Modal */}
+        <XimaHrRequestModal
+          open={showXimaHrModal}
+          onClose={() => setShowXimaHrModal(false)}
+          source="dashboard"
+          businessId={businessProfile?.id || user?.id || ''}
+          contactEmail={businessProfile?.hr_contact_email || user?.email || ''}
         />
 
         {/* Discovered positions from website scan */}

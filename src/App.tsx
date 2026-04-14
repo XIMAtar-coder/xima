@@ -81,6 +81,7 @@ import BusinessPipelineChat from "./pages/business/PipelineChat";
 import MyOffers from "./pages/candidate/MyOffers";
 import JobsBrowse from "./pages/JobsBrowse";
 import HiringGoalCreate from "./pages/business/HiringGoalCreate";
+import JobImportWizard from "./pages/business/JobImportWizard";
 
 const queryClient = new QueryClient();
 
@@ -154,6 +155,7 @@ const AppContent = () => {
           <Route path="/business/settings" element={<BusinessSettings />} />
           <Route path="/business/jobs" element={<BusinessJobs />} />
           <Route path="/business/jobs/new" element={<CreateJobOffer />} />
+          <Route path="/business/jobs/import" element={<JobImportWizard />} />
           <Route path="/business/jobs/:jobId/matches" element={<JobCandidateMatching />} />
           {/* Goal-scoped routes */}
           <Route path="/business/goals/:goalId/candidates" element={<GoalCandidates />} />

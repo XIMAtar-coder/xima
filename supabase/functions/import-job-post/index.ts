@@ -197,6 +197,9 @@ serve(async (req) => {
         }
         await searchResponse.body?.cancel().catch(() => {});
         return errorResponse(502, "SEARCH_FAILED", "AI search failed. Please try again.");
+      } else if (importMethod === "paste") {
+        rawText = body.raw_text || "";
+        console.log("[import-job-post] Paste text import, length:", rawText.length);
       }
     }
 

@@ -31,11 +31,14 @@ serve(async (req) => {
     const body = await req.json();
     const { business_id, source, source_id } = body;
 
-    if (!business_id || !source || !source_id) {
-      return errorResponse(400, "INVALID_INPUT", "business_id, source ('listing'|'hiring_goal'), and source_id are required");
+    if (!business_id || !source) {
+      return errorResponse(400, "INVALID_INPUT", "business_id and source ('listing'|'hiring_goal'|'generic') are required");
     }
-    if (!["listing", "hiring_goal"].includes(source)) {
-      return errorResponse(400, "INVALID_SOURCE", "source must be 'listing' or 'hiring_goal'");
+    if (!["listing", "hiring_goal", "generic"].includes(source)) {
+      return errorResponse(400, "INVALID_SOURCE", "source must be 'listing', 'hiring_goal', or 'generic'");
+    }
+    if (source !== "generic" && !source_id) {
+      return errorResponse(400, "INVALID_INPUT", "source_id is required for listing and hiring_goal sources");
     }
 
     const serviceClient = createClient(supabaseUrl, serviceKey);
@@ -53,7 +56,7 @@ serve(async (req) => {
 
     let roleTitle = "Unknown role";
 
-    // Update the source record
+    // Update the source record (skip for generic requests)
     if (source === "listing") {
       const { data: jobPost, error: jpError } = await serviceClient
         .from("job_posts")
@@ -71,7 +74,7 @@ serve(async (req) => {
         .from("job_posts")
         .update({ xima_hr_requested: true, xima_hr_requested_at: new Date().toISOString(), xima_hr_status: "pending" })
         .eq("id", source_id);
-    } else {
+    } else if (source === "hiring_goal") {
       const { data: goal, error: gError } = await serviceClient
         .from("hiring_goal_drafts")
         .select("id, role_title, business_id")
@@ -88,6 +91,9 @@ serve(async (req) => {
         .from("hiring_goal_drafts")
         .update({ xima_hr_requested: true })
         .eq("id", source_id);
+    } else if (source === "generic") {
+      roleTitle = "Open XIMA HR request";
+      console.log("[request-xima-hr] Generic request — no source record to update");
     }
 
     // Insert admin notification
@@ -96,7 +102,7 @@ serve(async (req) => {
       company_name: bp.company_name,
       contact_email: bp.hr_contact_email || user.email,
       source,
-      source_id,
+      source_id: source_id || null,
       role_title: roleTitle,
       requested_at: new Date().toISOString(),
     };
