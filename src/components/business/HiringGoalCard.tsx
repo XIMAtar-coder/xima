@@ -104,7 +104,7 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
         if (initialDraftId) {
           query = query.eq('id', initialDraftId);
         } else {
-          query = query.neq('status', 'completed').order('updated_at', { ascending: false }).limit(1);
+          query = query.eq('status', 'draft').order('updated_at', { ascending: false }).limit(1);
         }
         
         const { data, error } = await query.maybeSingle();
@@ -310,7 +310,7 @@ export function HiringGoalCard({ draftId: initialDraftId, onComplete }: HiringGo
         salary_max: draft.salary_max,
         salary_currency: draft.salary_currency,
         salary_period: draft.salary_period,
-        status: 'completed'
+        status: 'active'
       };
 
       console.log('[HiringGoalCard] Submitting:', { draftId: draft.id, payload });
