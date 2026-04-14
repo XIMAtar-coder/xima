@@ -2328,6 +2328,59 @@
       "activate_first": "Activa un desafío primero",
       "go_to_challenges": "Ir a Desafíos"
     },
+    "jobs": {
+      "import": {
+        "title": "Importar un Puesto de Trabajo",
+        "step1": {
+          "heading": "¿De dónde quieres importar?",
+          "tab_paste": "Pegar texto",
+          "tab_upload": "Subir archivo",
+          "tab_url": "URL",
+          "paste_placeholder": "Pega aquí el texto de tu oferta de trabajo...",
+          "upload_hint": "Arrastra un archivo PDF, DOCX o TXT (máx 5MB)",
+          "analyze_cta": "Analizar con IA",
+          "analyzing": "Leyendo tu anuncio...",
+          "analyzing_hint": "Esto puede tardar 15-30 segundos"
+        },
+        "step2": {
+          "heading": "Revisa los datos extraídos",
+          "role_section": "Puesto",
+          "skills_section": "Responsabilidades y competencias",
+          "where_section": "Dónde y cómo",
+          "salary_section": "Compensación bruta anual",
+          "salary_tooltip": "XIMA siempre muestra la retribución bruta anual. El candidato verá este valor.",
+          "salary_estimated_warning": "El valor fue estimado (convertido de neto a bruto con factor 1.4). Verifica y corrige si es necesario.",
+          "archetype_section": "Sugerencia XIMA",
+          "archetype_hint": "Siempre puedes cambiar esta elección más tarde",
+          "save_as_listing": "Guardar como Puesto",
+          "convert_to_goal": "Convertir en Objetivo XIMA",
+          "activate_xima_hr": "Activar XIMA HR"
+        },
+        "saved_toast": "Puesto guardado como borrador",
+        "converted_toast": "Puesto convertido — revisa el Objetivo XIMA"
+      }
+    },
+    "xima_hr": {
+      "modal": {
+        "title": "Activar XIMA HR",
+        "intro": "El equipo XIMA HR gestiona la selección por ti usando el flujo XIMA: definen el objetivo, crean los desafíos, evalúan a los candidatos y te presentan solo los finalistas ya filtrados. Tú no tocas el pipeline — solo recibes los mejores candidatos listos para la oferta.",
+        "benefit_1": "Selección conductual completa",
+        "benefit_2": "Anonimato preservado hasta la oferta",
+        "benefit_3": "El equipo XIMA te contacta en 24 horas",
+        "cancel": "Cancelar",
+        "continue": "Continuar",
+        "back": "Atrás",
+        "confirm_title": "Confirmar solicitud",
+        "confirm_body": "Estamos por enviar una solicitud al equipo XIMA HR. Te contactarán al email registrado para recopilar los detalles de la selección.",
+        "contact_email_label": "Email de contacto",
+        "submit": "Enviar solicitud",
+        "submitting": "Enviando...",
+        "success_title": "Solicitud recibida",
+        "success_body": "El equipo XIMA HR te contactará en 24 horas.",
+        "close": "Cerrar",
+        "error_generic": "Ocurrió un error. Intenta de nuevo en unos momentos."
+      }
+    },
     "goals": {
       "portfolio_title": "Tus Objetivos de Contratación",
       "portfolio_desc": "Gestiona tus iniciativas de contratación activas",

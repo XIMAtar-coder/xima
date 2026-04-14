@@ -1212,6 +1212,78 @@
         "insufficient": "Needs more detail"
       }
     },
+    "dashboard": {
+      "entry_points": {
+        "heading": "How would you like to start?",
+        "subheading": "Choose the path that suits you — you can always change later",
+        "recommended": "Recommended",
+        "create_goal": {
+          "title": "Create a XIMA Goal",
+          "description": "Define the role you're hiring for and receive an AI shortlist of behaviourally compatible candidates"
+        },
+        "import_jd": {
+          "title": "Import a Job Post",
+          "description": "Already have a listing? Upload it and XIMA will automatically extract all the details for you"
+        },
+        "xima_hr": {
+          "title": "Activate XIMA HR",
+          "description": "Our team manages the selection for you using XIMA Challenges — you only receive the finalists"
+        }
+      }
+    },
+    "jobs": {
+      "import": {
+        "title": "Import a Job Post",
+        "step1": {
+          "heading": "Where do you want to import from?",
+          "tab_paste": "Paste text",
+          "tab_upload": "Upload file",
+          "tab_url": "URL",
+          "paste_placeholder": "Paste your job listing text here...",
+          "upload_hint": "Drag a PDF, DOCX or TXT file (max 5MB)",
+          "analyze_cta": "Analyze with AI",
+          "analyzing": "Reading your listing...",
+          "analyzing_hint": "This may take 15-30 seconds"
+        },
+        "step2": {
+          "heading": "Review extracted data",
+          "role_section": "Role",
+          "skills_section": "Responsibilities & Skills",
+          "where_section": "Location & Work Model",
+          "salary_section": "Gross Annual Compensation",
+          "salary_tooltip": "XIMA always shows gross annual compensation. The candidate will see this value.",
+          "salary_estimated_warning": "This value was estimated (converted from net to gross with a 1.4× factor). Please verify and correct if needed.",
+          "archetype_section": "XIMA Suggestion",
+          "archetype_hint": "You can always change this choice later",
+          "save_as_listing": "Save as Job Post",
+          "convert_to_goal": "Convert to XIMA Goal",
+          "activate_xima_hr": "Activate XIMA HR"
+        },
+        "saved_toast": "Job post saved as draft",
+        "converted_toast": "Job post converted — review the XIMA Goal"
+      }
+    },
+    "xima_hr": {
+      "modal": {
+        "title": "Activate XIMA HR",
+        "intro": "The XIMA HR team manages the selection on your behalf using the XIMA flow: they define the goal, create challenges, evaluate candidates, and present only the pre-filtered finalists. You don't touch the pipeline — you only receive the best candidates ready for an offer.",
+        "benefit_1": "Complete behavioural selection",
+        "benefit_2": "Anonymity preserved until offer",
+        "benefit_3": "The XIMA team contacts you within 24 hours",
+        "cancel": "Cancel",
+        "continue": "Continue",
+        "back": "Back",
+        "confirm_title": "Confirm request",
+        "confirm_body": "We're about to send a request to the XIMA HR team. They will contact you at the registered email address to collect the selection details.",
+        "contact_email_label": "Contact email",
+        "submit": "Send request",
+        "submitting": "Sending...",
+        "success_title": "Request received",
+        "success_body": "The XIMA HR team will contact you within 24 hours.",
+        "close": "Close",
+        "error_generic": "An error occurred. Please try again shortly."
+      }
+    },
     "candidates": {
       "title": "Candidate Pool",
       "subtitle": "Browse active candidates on the platform and build your intelligent shortlist",
