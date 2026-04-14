@@ -299,7 +299,7 @@ const BusinessDashboard = () => {
         )}
 
         {/* Hiring Goal Card */}
-        {!hiringGoalLoading && hiringGoalStatus !== 'completed' && (
+        {!hiringGoalLoading && hiringGoalStatus !== 'active' && (
           <HiringGoalCard 
             key={hiringGoalDraftId || 'new'}
             draftId={hiringGoalDraftId}
@@ -307,7 +307,7 @@ const BusinessDashboard = () => {
           />
         )}
 
-        {!hiringGoalLoading && hiringGoalStatus === 'completed' && (
+        {!hiringGoalLoading && hiringGoalStatus === 'active' && (
           <Card className="border-green-500/30 bg-gradient-to-br from-green-500/5 to-background">
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
