@@ -2246,7 +2246,24 @@
       "invited": "invitados",
       "responses": "respuestas",
       "view_responses": "Ver Respuestas",
-      "expiring_soon": "Por vencer"
+      "expiring_soon": "Por vencer",
+      "entry_points": {
+        "heading": "¿Cómo quieres empezar?",
+        "subheading": "Elige el camino que más te convenga — siempre puedes cambiar después",
+        "recommended": "Recomendado",
+        "create_goal": {
+          "title": "Crear un Objetivo XIMA",
+          "description": "Define el puesto que buscas y recibe una shortlist IA de candidatos conductualmente compatibles"
+        },
+        "import_jd": {
+          "title": "Importar un Puesto de Trabajo",
+          "description": "¿Ya tienes un anuncio? Súbelo y XIMA extraerá automáticamente todos los detalles"
+        },
+        "xima_hr": {
+          "title": "Activar XIMA HR",
+          "description": "Nuestro equipo gestiona la selección por ti usando los Desafíos XIMA — tú solo recibes los finalistas"
+        }
+      }
     },
     "candidates": {
       "title": "Grupo de Candidatos",
