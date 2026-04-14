@@ -132,7 +132,7 @@ export const MakeOfferModal: React.FC<MakeOfferModalProps> = ({
           <div className="space-y-4">
             {/* Anonymous profile */}
             <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-              <span className="text-3xl">{emoji}</span>
+              <img src={imgUrl} alt={archetypeName} className="h-10 w-10 object-contain" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
               <div>
                 <p className="font-semibold text-foreground">
                   {t('anonymous.candidate_label', 'Candidate #{{number}}', { number: candidate.anonymous_label || '?' })} — {archetypeName}
