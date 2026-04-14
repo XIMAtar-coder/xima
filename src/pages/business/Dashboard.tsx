@@ -19,6 +19,8 @@ import { CompanyIdentityCard } from '@/components/business/CompanyIdentityCard';
 import { TeamIntelligenceCard } from '@/components/business/TeamIntelligenceCard';
 import { RecommendationDebugPanel } from '@/components/business/RecommendationDebugPanel';
 import { ImportJobModal } from '@/components/business/ImportJobModal';
+import BusinessEntryPointsCard from '@/components/business/BusinessEntryPointsCard';
+import XimaHrRequestModal from '@/components/business/XimaHrRequestModal';
 import { DiscoveredPositionsBanner } from '@/components/business/DiscoveredPositionsBanner';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useChallengeStatsMap } from '@/hooks/useChallengeResponsesData';
