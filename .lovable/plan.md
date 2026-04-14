@@ -1,104 +1,40 @@
 
 
-# Phase 1 — Semantic Status Rename Review + Execution
+# Phase 3B Execution — Ready to Execute
 
-## Status Reference Analysis
+All preflight confirmed. The plan from the previous message is fully approved with three clarifications resolved. Here's the execution summary:
 
-### 1. HiringGoalCard.tsx line 107
-```js
-query = query.neq('status', 'completed').order('updated_at', { ascending: false }).limit(1);
-```
-**Context**: Fetches the most recent goal that is NOT "fully submitted" — i.e., finds an in-progress draft to resume editing in the wizard.
-**Semantic meaning**: "give me a goal still being drafted"
-**Correct fix**: `.eq('status', 'draft')` — explicitly fetch only drafts. The original `.neq('completed')` was a shortcut when only two statuses existed. Now with 5 statuses, we must be explicit: only drafts should be resumed in the wizard. Active/paused/filled/closed goals are done being edited.
+## Execution Order
 
-### 2. HiringGoalCard.tsx line 313
-```js
-status: 'completed'
-```
-**Context**: Final submission payload — wizard is done, all fields validated, goal is "ready to use."
-**Semantic meaning**: "form is fully filled out, activate this goal"
-**Correct fix**: `status: 'active'`
+### Step 1: Edge Function Fixes
+1. **import-job-post** — Add `else if (importMethod === "paste")` handler after line 200 (after `ai_search` block closes, before the closing `}` of the JSON body branch)
+2. **request-xima-hr** — Extend validation (lines 34-38) to accept `source: 'generic'` with optional `source_id`, skip source record update when generic
 
-### 3. Dashboard.tsx line 59
-```ts
-const [hiringGoalStatus, setHiringGoalStatus] = useState<'none' | 'draft' | 'completed'>('none');
-```
-**Context**: UI state variable tracking whether the business has no goal, a draft, or a ready goal.
-**Semantic meaning**: Three-state lifecycle indicator for dashboard routing.
-**Correct fix**: `'none' | 'draft' | 'active'`
+### Step 2: New Components
+1. **BusinessEntryPointsCard.tsx** — 3-card grid (Target/FileUp/Users), visible when `hiringGoalStatus === 'none' || 'draft'`
+2. **XimaHrRequestModal.tsx** — 2-screen modal (explain → confirm → success), calls request-xima-hr
+3. **JobImportWizard.tsx** — 2-step wizard (paste/upload → editable review form → 3 action buttons)
 
-### 4. Dashboard.tsx line 132
-```js
-else if (data.status === 'completed') { setHiringGoalStatus('completed'); ... }
-```
-**Context**: Reads the most recent goal's status and maps it. If status is "ready/submitted", set UI state accordingly.
-**Semantic meaning**: "is this goal fully set up and live?"
-**Correct fix**: `data.status === 'active'` → `setHiringGoalStatus('active')`. Also add: `else if (['paused','filled','closed'].includes(data.status)) { setHiringGoalStatus('active'); ... }` — these are all "past draft" states that should show the same dashboard experience.
+### Step 3: Routing & Dashboard Wiring
+- Add `/business/jobs/import` route in App.tsx (after line 156)
+- Import BusinessEntryPointsCard + XimaHrRequestModal into Dashboard.tsx
+- Render entry points card after CompanyIdentityCard when status is 'none' or 'draft'
 
-### 5. Dashboard.tsx line 141
-```js
-if (hiringGoalDraftId && hiringGoalStatus === 'completed') {
-```
-**Context**: Scopes shortlist count query to the specific goal only when the goal is ready.
-**Semantic meaning**: "goal is ready, show its shortlist stats"
-**Correct fix**: `hiringGoalStatus === 'active'`
+### Step 4: i18n
+- Add all keys to it.json, en.json, es.json under `business.dashboard.entry_points.*`, `business.jobs.import.*`, `business.xima_hr.modal.*`
 
-### 6. HiringGoalOverviewCard.tsx line 101
-```js
-{goal.status !== 'active' && goal.status !== 'completed' && (
-```
-**Context**: Show "Activate" menu item only if goal is neither active nor completed (i.e., show for draft/paused/closed).
-**Semantic meaning**: "can this goal be activated?"
-**Correct fix**: Remove `&& goal.status !== 'completed'` — `completed` won't exist anymore. Keep `goal.status !== 'active'`.
+### Key Technical Details
+- **employment_type**: already extracted by Haiku (line 235) — no change needed
+- **XIMA HR publish comment**: will be added above the job_posts insert
+- **Seniority mapping TODO**: comment for Phase 3C granular display
+- **salary_period**: forced to `'yearly'` per CHECK constraint
+- **job_posts.salary_range**: text field, store formatted string like `"55000-70000 EUR/yr"`
+- **request-xima-hr generic**: skip source record update, create notification with `source: 'generic'`, `source_id: null`
 
-### 7. HiringGoalOverviewCard.tsx line 107
-```js
-{(goal.status === 'active' || goal.status === 'completed') && (
-```
-**Context**: Show "Pause" menu item only if goal is currently live.
-**Semantic meaning**: "is this goal pausable?"
-**Correct fix**: Remove `|| goal.status === 'completed'`. Keep `goal.status === 'active'`.
-
-## CHECK Constraint Value: `closed` not `archived`
-
-The existing frontend (HiringGoalOverviewCard lines 113-116) already uses `'closed'` with `t('business.goals.close')`. The memory doc confirms `draft|active|paused|filled|closed`. The migration will use `closed`, not `archived`.
-
-## Final Migration SQL
-
-```sql
-ALTER TABLE hiring_goal_drafts DROP CONSTRAINT hiring_goal_drafts_status_check;
-ALTER TABLE hiring_goal_drafts DROP CONSTRAINT hiring_goal_completed_fields_check;
-
-ALTER TABLE hiring_goal_drafts ADD CONSTRAINT hiring_goal_drafts_status_check
-  CHECK (status IN ('draft', 'active', 'paused', 'filled', 'closed'));
-
-ALTER TABLE hiring_goal_drafts ADD CONSTRAINT hiring_goal_active_fields_check
-  CHECK ((status <> 'active') OR (
-    task_description IS NOT NULL AND task_description <> '' AND
-    experience_level IS NOT NULL AND work_model IS NOT NULL AND
-    country IS NOT NULL AND country <> '' AND
-    salary_min IS NOT NULL AND salary_max IS NOT NULL AND
-    salary_min <= salary_max AND salary_currency IS NOT NULL AND
-    salary_period IS NOT NULL
-  ));
-
-UPDATE hiring_goal_drafts SET status = 'active' WHERE status = 'completed';
-```
-
-Then immediately: remaining 5 migrations (is_template, job_posts extension, usage counters, admin_notifications, saved_candidates) + frontend status fixes above.
-
-## Summary of Frontend Changes
-
-| File | Line | Old | New | Reasoning |
-|------|------|-----|-----|-----------|
-| HiringGoalCard.tsx | 107 | `.neq('status','completed')` | `.eq('status','draft')` | Fetch only resumable drafts |
-| HiringGoalCard.tsx | 313 | `status:'completed'` | `status:'active'` | Wizard submission activates goal |
-| Dashboard.tsx | 59 | `'completed'` type | `'active'` type | UI state enum |
-| Dashboard.tsx | 132 | `=== 'completed'` | `=== 'active'` + handle paused/filled/closed as active-tier | Goal is past draft stage |
-| Dashboard.tsx | 141 | `=== 'completed'` | `=== 'active'` | Scope shortlist to ready goals |
-| HiringGoalOverviewCard.tsx | 101 | `!== 'completed'` | remove clause | completed gone |
-| HiringGoalOverviewCard.tsx | 107 | `=== 'completed'` | remove clause | completed gone |
-
-Post-migration verification: `SELECT status, count(*) FROM hiring_goal_drafts GROUP BY status;` + `SELECT is_template, count(*) FROM business_challenges GROUP BY is_template;`
+### Verification
+- Deploy edge functions and check logs
+- Test entry points card visibility (set Capgemini goal to draft, verify card shows, revert)
+- Paste Italian Lead Engineer JD, verify Step 2 extraction
+- Click "Attiva XIMA HR" from dashboard, verify admin_notifications row
+- Click "Converti in Obiettivo XIMA", verify redirect to `/business/hiring-goals/new?from_listing=<id>`
 
