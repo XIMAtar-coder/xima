@@ -102,7 +102,7 @@ serve(async (req) => {
       company_name: bp.company_name,
       contact_email: bp.hr_contact_email || user.email,
       source,
-      source_id,
+      source_id: source_id || null,
       role_title: roleTitle,
       requested_at: new Date().toISOString(),
     };
