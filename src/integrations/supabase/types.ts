@@ -41,6 +41,39 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_notifications: {
+        Row: {
+          actioned_at: string | null
+          actioned_by: string | null
+          created_at: string | null
+          id: string
+          payload: Json
+          severity: string | null
+          status: string | null
+          type: string
+        }
+        Insert: {
+          actioned_at?: string | null
+          actioned_by?: string | null
+          created_at?: string | null
+          id?: string
+          payload?: Json
+          severity?: string | null
+          status?: string | null
+          type: string
+        }
+        Update: {
+          actioned_at?: string | null
+          actioned_by?: string | null
+          created_at?: string | null
+          id?: string
+          payload?: Json
+          severity?: string | null
+          status?: string | null
+          type?: string
+        }
+        Relationships: []
+      }
       ai_conversations: {
         Row: {
           cleared_at: string | null
@@ -895,6 +928,7 @@ export type Database = {
           hiring_goal_id: string | null
           id: string
           is_public: boolean | null
+          is_template: boolean | null
           job_post_id: string | null
           level: number
           rubric: Json | null
@@ -924,6 +958,7 @@ export type Database = {
           hiring_goal_id?: string | null
           id?: string
           is_public?: boolean | null
+          is_template?: boolean | null
           job_post_id?: string | null
           level?: number
           rubric?: Json | null
@@ -953,6 +988,7 @@ export type Database = {
           hiring_goal_id?: string | null
           id?: string
           is_public?: boolean | null
+          is_template?: boolean | null
           job_post_id?: string | null
           level?: number
           rubric?: Json | null
@@ -1230,6 +1266,44 @@ export type Database = {
             columns: ["hiring_goal_id"]
             isOneToOne: false
             referencedRelation: "hiring_goal_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_usage_counters: {
+        Row: {
+          business_id: string
+          challenge_templates_created: number | null
+          created_at: string | null
+          id: string
+          pool_detail_views: number | null
+          updated_at: string | null
+          week_start: string
+        }
+        Insert: {
+          business_id: string
+          challenge_templates_created?: number | null
+          created_at?: string | null
+          id?: string
+          pool_detail_views?: number | null
+          updated_at?: string | null
+          week_start: string
+        }
+        Update: {
+          business_id?: string
+          challenge_templates_created?: number | null
+          created_at?: string | null
+          id?: string
+          pool_detail_views?: number | null
+          updated_at?: string | null
+          week_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_usage_counters_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2939,6 +3013,7 @@ export type Database = {
       }
       hiring_goal_drafts: {
         Row: {
+          ai_suggested_ximatar: string | null
           business_id: string
           candidate_count: number | null
           challenge_count: number | null
@@ -2952,6 +3027,7 @@ export type Database = {
           filled_by: string | null
           function_area: string | null
           id: string
+          imported_from_listing_id: string | null
           role_title: string | null
           salary_benchmark_json: Json | null
           salary_currency: string | null
@@ -2962,8 +3038,10 @@ export type Database = {
           task_description: string | null
           updated_at: string | null
           work_model: string | null
+          xima_hr_requested: boolean | null
         }
         Insert: {
+          ai_suggested_ximatar?: string | null
           business_id: string
           candidate_count?: number | null
           challenge_count?: number | null
@@ -2977,6 +3055,7 @@ export type Database = {
           filled_by?: string | null
           function_area?: string | null
           id?: string
+          imported_from_listing_id?: string | null
           role_title?: string | null
           salary_benchmark_json?: Json | null
           salary_currency?: string | null
@@ -2987,8 +3066,10 @@ export type Database = {
           task_description?: string | null
           updated_at?: string | null
           work_model?: string | null
+          xima_hr_requested?: boolean | null
         }
         Update: {
+          ai_suggested_ximatar?: string | null
           business_id?: string
           candidate_count?: number | null
           challenge_count?: number | null
@@ -3002,6 +3083,7 @@ export type Database = {
           filled_by?: string | null
           function_area?: string | null
           id?: string
+          imported_from_listing_id?: string | null
           role_title?: string | null
           salary_benchmark_json?: Json | null
           salary_currency?: string | null
@@ -3012,8 +3094,17 @@ export type Database = {
           task_description?: string | null
           updated_at?: string | null
           work_model?: string | null
+          xima_hr_requested?: boolean | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "hiring_goal_drafts_imported_from_listing_id_fkey"
+            columns: ["imported_from_listing_id"]
+            isOneToOne: false
+            referencedRelation: "job_posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       hiring_goal_requirements: {
         Row: {
@@ -3318,6 +3409,7 @@ export type Database = {
       }
       job_posts: {
         Row: {
+          ai_suggested_ximatar: string | null
           benefits: string | null
           business_id: string
           content_html: string | null
@@ -3326,13 +3418,16 @@ export type Database = {
           department: string | null
           description: string | null
           employment_type: string | null
+          filled_at: string | null
           id: string
           import_raw_data: Json | null
           import_source: string | null
           import_source_url: string | null
           imported_at: string | null
+          linked_hiring_goal_id: string | null
           locale: string | null
           location: string | null
+          published_at: string | null
           requirement_vector: string | null
           requirements_must: string | null
           requirements_nice: string | null
@@ -3343,8 +3438,12 @@ export type Database = {
           status: string
           title: string
           updated_at: string
+          xima_hr_requested: boolean | null
+          xima_hr_requested_at: string | null
+          xima_hr_status: string | null
         }
         Insert: {
+          ai_suggested_ximatar?: string | null
           benefits?: string | null
           business_id: string
           content_html?: string | null
@@ -3353,13 +3452,16 @@ export type Database = {
           department?: string | null
           description?: string | null
           employment_type?: string | null
+          filled_at?: string | null
           id?: string
           import_raw_data?: Json | null
           import_source?: string | null
           import_source_url?: string | null
           imported_at?: string | null
+          linked_hiring_goal_id?: string | null
           locale?: string | null
           location?: string | null
+          published_at?: string | null
           requirement_vector?: string | null
           requirements_must?: string | null
           requirements_nice?: string | null
@@ -3370,8 +3472,12 @@ export type Database = {
           status?: string
           title: string
           updated_at?: string
+          xima_hr_requested?: boolean | null
+          xima_hr_requested_at?: string | null
+          xima_hr_status?: string | null
         }
         Update: {
+          ai_suggested_ximatar?: string | null
           benefits?: string | null
           business_id?: string
           content_html?: string | null
@@ -3380,13 +3486,16 @@ export type Database = {
           department?: string | null
           description?: string | null
           employment_type?: string | null
+          filled_at?: string | null
           id?: string
           import_raw_data?: Json | null
           import_source?: string | null
           import_source_url?: string | null
           imported_at?: string | null
+          linked_hiring_goal_id?: string | null
           locale?: string | null
           location?: string | null
+          published_at?: string | null
           requirement_vector?: string | null
           requirements_must?: string | null
           requirements_nice?: string | null
@@ -3397,8 +3506,19 @@ export type Database = {
           status?: string
           title?: string
           updated_at?: string
+          xima_hr_requested?: boolean | null
+          xima_hr_requested_at?: string | null
+          xima_hr_status?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "job_posts_linked_hiring_goal_id_fkey"
+            columns: ["linked_hiring_goal_id"]
+            isOneToOne: false
+            referencedRelation: "hiring_goal_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mentor_access_audit_logs: {
         Row: {
@@ -4844,6 +4964,41 @@ export type Database = {
           status?: string
         }
         Relationships: []
+      }
+      saved_candidates: {
+        Row: {
+          business_id: string
+          candidate_user_id: string
+          expires_at: string | null
+          id: string
+          saved_at: string | null
+          saved_under_plan: string | null
+        }
+        Insert: {
+          business_id: string
+          candidate_user_id: string
+          expires_at?: string | null
+          id?: string
+          saved_at?: string | null
+          saved_under_plan?: string | null
+        }
+        Update: {
+          business_id?: string
+          candidate_user_id?: string
+          expires_at?: string | null
+          id?: string
+          saved_at?: string | null
+          saved_under_plan?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_candidates_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       saved_opportunities: {
         Row: {
