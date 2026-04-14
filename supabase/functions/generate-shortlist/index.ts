@@ -1,3 +1,20 @@
+// SCHEMA PREFLIGHT — verified columns as of 2026-04-14:
+// profiles: id, user_id, full_name, ximatar, ximatar_id, ximatar_name, ximatar_level,
+//   pillar_scores, desired_locations, work_preference, willing_to_relocate,
+//   salary_expectation, availability_date, industry_preferences, profile_completed,
+//   created_at, updated_at
+// hiring_goal_drafts: id, business_id, role_title, task_description, experience_level,
+//   work_model, country, city_region, function_area, salary_min, salary_max,
+//   salary_currency, salary_period, status
+// business_profiles: id, user_id, company_name, manual_industry, snapshot_industry,
+//   team_culture, hiring_approach, manual_hq_city, manual_hq_country
+// shortlist_results: id, hiring_goal_id, business_id, candidate_user_id, total_score,
+//   identity_score, trajectory_score, engagement_score, location_score, credential_score,
+//   ximatar_archetype, ximatar_level, pillar_scores, trajectory_summary, engagement_level,
+//   location_match, availability, match_narrative, status, anonymous_label,
+//   identity_revealed, pipeline_stage
+// (Run information_schema query before adding new column references)
+
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
@@ -26,16 +43,23 @@ serve(async (req) => {
 
     const serviceClient = createClient(supabaseUrl, serviceKey);
 
-    const body = await req.json();
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return errorResponse(400, "INVALID_INPUT", "Invalid JSON body");
+    }
     const { hiring_goal_id, filters } = body;
 
     if (!hiring_goal_id) return errorResponse(400, "INVALID_INPUT", "hiring_goal_id required");
+
+    console.log(`[generate-shortlist] START`, JSON.stringify({ hiring_goal_id, business_id: user.id, correlation_id: correlationId }));
 
     // Fetch goal, company profile, biz profile in parallel
     const [goalRes, companyRes, bizRes] = await Promise.all([
       serviceClient
         .from("hiring_goal_drafts")
-        .select("id, role_title, task_description, experience_level, work_model, country, city_region, function_area, seniority_level")
+        .select("id, role_title, task_description, experience_level, work_model, country, city_region, function_area")
         .eq("id", hiring_goal_id)
         .eq("business_id", user.id)
         .single(),
@@ -46,15 +70,24 @@ serve(async (req) => {
         .maybeSingle(),
       serviceClient
         .from("business_profiles")
-        .select("industry, team_culture, hiring_approach, manual_hq_city, manual_hq_country")
+        .select("manual_industry, snapshot_industry, team_culture, hiring_approach, manual_hq_city, manual_hq_country")
         .eq("user_id", user.id)
         .maybeSingle(),
     ]);
 
-    if (goalRes.error || !goalRes.data) return errorResponse(404, "GOAL_NOT_FOUND", "Hiring goal not found");
+    if (goalRes.error) {
+      console.error(`[generate-shortlist] hiring_goal_drafts query error:`, JSON.stringify(goalRes.error));
+      return errorResponse(404, "GOAL_NOT_FOUND", `Hiring goal not found: ${goalRes.error.message}`);
+    }
+    if (!goalRes.data) return errorResponse(404, "GOAL_NOT_FOUND", "Hiring goal not found");
+
     const goal = goalRes.data;
     const companyProfile = companyRes.data;
     const bizProfile = bizRes.data;
+    // COALESCE: manual override wins over AI snapshot
+    const bizIndustry = bizProfile?.manual_industry || bizProfile?.snapshot_industry || null;
+
+    console.log(`[generate-shortlist] Goal loaded: ${goal.role_title}, experience_level: ${goal.experience_level}`);
 
     // Fetch candidates with pillar scores
     const { data: candidates, error: candidateError } = await serviceClient
@@ -70,7 +103,14 @@ serve(async (req) => {
       .not("pillar_scores", "is", null)
       .limit(500);
 
-    if (candidateError || !candidates || candidates.length === 0) {
+    if (candidateError) {
+      console.error(`[generate-shortlist] profiles query error:`, JSON.stringify(candidateError));
+      return errorResponse(500, "QUERY_ERROR", `Failed to load candidates: ${candidateError.message}`);
+    }
+
+    console.log(`[generate-shortlist] Candidates loaded: ${candidates?.length ?? 0}`);
+
+    if (!candidates || candidates.length === 0) {
       return jsonResponse({ success: true, shortlist: [], message: "No candidates found", total_candidates_evaluated: 0 });
     }
 
@@ -283,11 +323,16 @@ serve(async (req) => {
     const topCandidates = scoredCandidates.slice(0, limit);
 
     // Store results: delete old, insert new
-    await serviceClient
+    const { error: deleteError } = await serviceClient
       .from("shortlist_results")
       .delete()
       .eq("hiring_goal_id", hiring_goal_id)
       .eq("business_id", user.id);
+
+    if (deleteError) {
+      console.error(`[generate-shortlist] delete old shortlist error:`, JSON.stringify(deleteError));
+      // Non-fatal — continue with insert
+    }
 
     if (topCandidates.length > 0) {
       const inserts = topCandidates.map(c => ({
@@ -309,7 +354,12 @@ serve(async (req) => {
         availability: c.availability,
         status: "shortlisted",
       }));
-      await serviceClient.from("shortlist_results").insert(inserts);
+
+      const { error: insertError } = await serviceClient.from("shortlist_results").insert(inserts);
+      if (insertError) {
+        console.error(`[generate-shortlist] insert shortlist error:`, JSON.stringify(insertError));
+        return errorResponse(500, "INSERT_ERROR", `Failed to save shortlist: ${insertError.message}`);
+      }
     }
 
     console.log(JSON.stringify({
@@ -332,7 +382,7 @@ serve(async (req) => {
       },
     });
   } catch (err: any) {
-    console.error(JSON.stringify({ type: "error", correlation_id: correlationId, error: err.message }));
+    console.error(`[generate-shortlist] FATAL:`, err?.message, err?.stack);
     return errorResponse(500, "INTERNAL_ERROR", err.message || "Unexpected error");
   }
 });
