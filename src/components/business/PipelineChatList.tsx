@@ -82,9 +82,7 @@ export const PipelineChatList: React.FC<PipelineChatListProps> = ({
             ? `Candidate #${thread.anonymous_label || '?'} — ${(thread.ximatar_archetype || 'unknown').charAt(0).toUpperCase() + (thread.ximatar_archetype || 'unknown').slice(1)}`
             : (thread.company_name || 'Company');
 
-          const emoji = role === 'business'
-            ? getArchetypeEmoji(thread.ximatar_archetype)
-            : null;
+          // emoji removed — image already rendered above via <img>
 
           const stageLabel = (thread.current_stage || 'shortlisted').replace(/_/g, ' ');
 
@@ -115,7 +113,6 @@ export const PipelineChatList: React.FC<PipelineChatListProps> = ({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
                   <p className="font-medium text-sm truncate">
-                    {emoji && <span className="mr-1">{emoji}</span>}
                     {displayName}
                   </p>
                   {unread > 0 && (

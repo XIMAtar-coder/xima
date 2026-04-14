@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Loader2, ShieldAlert, User, Send } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { getArchetypeEmoji } from '@/utils/anonymousDisplay';
+import { getArchetypeImageUrl } from '@/utils/anonymousDisplay';
 
 interface RevealedProfile {
   full_name: string;
@@ -52,7 +52,7 @@ export const MakeOfferModal: React.FC<MakeOfferModalProps> = ({
   const [startDate, setStartDate] = useState('');
   const [sendingOffer, setSendingOffer] = useState(false);
 
-  const emoji = getArchetypeEmoji(candidate.ximatar_archetype);
+  const imgUrl = getArchetypeImageUrl(candidate.ximatar_archetype);
   const archetypeName = (candidate.ximatar_archetype || 'unknown').charAt(0).toUpperCase() + (candidate.ximatar_archetype || 'unknown').slice(1);
 
   const revealIdentity = async () => {
