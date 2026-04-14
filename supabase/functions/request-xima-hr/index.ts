@@ -56,7 +56,7 @@ serve(async (req) => {
 
     let roleTitle = "Unknown role";
 
-    // Update the source record
+    // Update the source record (skip for generic requests)
     if (source === "listing") {
       const { data: jobPost, error: jpError } = await serviceClient
         .from("job_posts")
@@ -74,7 +74,7 @@ serve(async (req) => {
         .from("job_posts")
         .update({ xima_hr_requested: true, xima_hr_requested_at: new Date().toISOString(), xima_hr_status: "pending" })
         .eq("id", source_id);
-    } else {
+    } else if (source === "hiring_goal") {
       const { data: goal, error: gError } = await serviceClient
         .from("hiring_goal_drafts")
         .select("id, role_title, business_id")
@@ -91,6 +91,9 @@ serve(async (req) => {
         .from("hiring_goal_drafts")
         .update({ xima_hr_requested: true })
         .eq("id", source_id);
+    } else if (source === "generic") {
+      roleTitle = "Open XIMA HR request";
+      console.log("[request-xima-hr] Generic request — no source record to update");
     }
 
     // Insert admin notification
