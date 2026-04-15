@@ -1,11 +1,18 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Sparkles, Target, Users, MapPin, DollarSign } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, Sparkles, Target, Users, MapPin, DollarSign, FileDown, Info, ChevronDown, X, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
+import SuggestFieldButton from '@/components/business/SuggestFieldButton';
 
 const TOTAL_STEPS = 5;
 
@@ -13,6 +20,8 @@ interface FormData {
   role_title: string;
   task_description: string;
   responsibilities: string[];
+  required_skills: string[];
+  nice_to_have_skills: string[];
   experience_level: string;
   work_model: string;
   country: string;
@@ -21,18 +30,48 @@ interface FormData {
   salary_max: number;
   salary_currency: string;
   salary_period: string;
+  years_experience_min: number | null;
+  years_experience_max: number | null;
+  education_level: string;
+  languages: { language: string; level: string }[];
+  original_seniority: string;
+  imported_from_listing_id: string | null;
+  ai_suggested_ximatar: string | null;
+  xima_hr_requested: boolean;
 }
+
+const collapseToExperienceLevel = (seniority: string): string => {
+  switch (seniority?.toLowerCase()) {
+    case 'entry': case 'junior': case 'internship': return 'first_time';
+    case 'mid': case 'mid-level': return 'independent';
+    case 'senior': case 'lead': case 'principal': case 'staff': case 'executive': return 'led_others';
+    default: return 'independent';
+  }
+};
+
+const SENIORITY_DISPLAY: Record<string, string> = {
+  first_time: 'Prima esperienza',
+  independent: 'Autonomo',
+  led_others: 'Ha guidato altri',
+};
 
 const HiringGoalCreate = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const fromListingId = searchParams.get('from_listing');
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [importedListing, setImportedListing] = useState<any>(null);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+  const [userId, setUserId] = useState('');
 
   const [formData, setFormData] = useState<FormData>({
     role_title: '',
     task_description: '',
     responsibilities: [],
+    required_skills: [],
+    nice_to_have_skills: [],
     experience_level: '',
     work_model: '',
     country: '',
@@ -41,9 +80,68 @@ const HiringGoalCreate = () => {
     salary_max: 0,
     salary_currency: 'EUR',
     salary_period: 'yearly',
+    years_experience_min: null,
+    years_experience_max: null,
+    education_level: '',
+    languages: [],
+    original_seniority: '',
+    imported_from_listing_id: null,
+    ai_suggested_ximatar: null,
+    xima_hr_requested: false,
   });
 
   const updateField = (field: keyof FormData, value: any) => setFormData(prev => ({ ...prev, [field]: value }));
+
+  // Load user id
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) setUserId(user.id);
+    });
+  }, []);
+
+  // Pre-fill from ?from_listing=<id>
+  useEffect(() => {
+    if (!fromListingId) return;
+    const load = async () => {
+      const { data: jp, error } = await supabase
+        .from('job_posts')
+        .select('*')
+        .eq('id', fromListingId)
+        .single();
+      if (error || !jp) { console.error('Failed to load listing:', error); return; }
+      setImportedListing(jp);
+      const raw = (jp as any).import_raw_data || {};
+      const seniority = raw.seniority || jp.seniority || '';
+      const taskParts: string[] = [];
+      if (raw.role_summary) taskParts.push(raw.role_summary);
+
+      setFormData(prev => ({
+        ...prev,
+        role_title: raw.title || jp.title || '',
+        task_description: taskParts.join('\n'),
+        responsibilities: raw.responsibilities || [],
+        required_skills: raw.required_skills || [],
+        nice_to_have_skills: raw.nice_to_have_skills || [],
+        experience_level: collapseToExperienceLevel(seniority),
+        work_model: raw.work_model || '',
+        country: raw.location_country || '',
+        city_region: raw.location_city || '',
+        salary_min: raw.salary_min ? Math.round(raw.salary_min) : 0,
+        salary_max: raw.salary_max ? Math.round(raw.salary_max) : 0,
+        salary_currency: raw.salary_currency || 'EUR',
+        salary_period: 'yearly',
+        years_experience_min: raw.years_experience_min ?? null,
+        years_experience_max: raw.years_experience_max ?? null,
+        education_level: raw.education_level || '',
+        languages: raw.languages || [],
+        original_seniority: seniority,
+        imported_from_listing_id: fromListingId,
+        ai_suggested_ximatar: raw.suggested_ximatar || (jp as any).ai_suggested_ximatar || null,
+        xima_hr_requested: false,
+      }));
+    };
+    load();
+  }, [fromListingId]);
 
   const next = () => setStep(s => Math.min(s + 1, TOTAL_STEPS - 1));
   const prev = () => setStep(s => Math.max(s - 1, 0));
@@ -63,12 +161,14 @@ const HiringGoalCreate = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
+      const isXimaHr = formData.xima_hr_requested;
+
       const { data: goal, error } = await supabase
         .from('hiring_goal_drafts')
         .insert({
           business_id: user.id,
           role_title: formData.role_title,
-          task_description: [formData.task_description, ...formData.responsibilities].filter(Boolean).join('\n• '),
+          task_description: formData.task_description,
           experience_level: formData.experience_level,
           work_model: formData.work_model,
           country: formData.country,
@@ -77,21 +177,52 @@ const HiringGoalCreate = () => {
           salary_max: formData.salary_max,
           salary_currency: formData.salary_currency,
           salary_period: formData.salary_period,
-          status: 'draft',
-        })
+          status: isXimaHr ? 'active' : 'draft',
+          required_skills: formData.required_skills as any,
+          nice_to_have_skills: formData.nice_to_have_skills as any,
+          years_experience_min: formData.years_experience_min,
+          years_experience_max: formData.years_experience_max,
+          education_level: formData.education_level || null,
+          languages: formData.languages as any,
+          original_seniority: formData.original_seniority || null,
+          imported_from_listing_id: formData.imported_from_listing_id,
+          ai_suggested_ximatar: formData.ai_suggested_ximatar,
+          xima_hr_requested: isXimaHr,
+        } as any)
         .select()
         .single();
 
       if (error) throw error;
 
-      toast.success(t('hiring_goal.created', 'Obiettivo creato con successo'));
-      navigate(`/business/goals/${goal.id}/candidates`);
+      if (isXimaHr) {
+        // XIMA HR flow: call request-xima-hr, do NOT generate shortlist
+        try {
+          const { data: fnData, error: fnErr } = await supabase.functions.invoke('request-xima-hr', {
+            body: { business_id: user.id, source: 'hiring_goal', source_id: goal.id },
+          });
+          if (fnErr) throw fnErr;
+          if (fnData?.error) throw new Error(fnData.error);
+        } catch (hrErr: any) {
+          // Goal is saved even if XIMA HR call fails — user can retry later
+          console.error('[HiringGoalCreate] XIMA HR request failed:', hrErr);
+          toast.error(t('businessPortal.hiring_goal.xima_hr_checkbox.error', 'XIMA HR non è riuscito a ricevere la richiesta. L\'obiettivo è stato salvato — puoi riprovare.'));
+          navigate('/business/dashboard');
+          return;
+        }
+        toast.success(t('businessPortal.hiring_goal.xima_hr_checkbox.success', 'Obiettivo attivato — XIMA HR ti contatterà entro 24 ore'));
+        navigate('/business/dashboard');
+      } else {
+        toast.success(t('hiring_goal.created', 'Obiettivo creato con successo'));
+        navigate(`/business/goals/${goal.id}/candidates`);
+      }
     } catch (err: any) {
       toast.error(err.message);
     } finally {
       setSubmitting(false);
     }
   };
+
+  const stepProps = { formData, updateField, userId, importedListing };
 
   return (
     <BusinessLayout>
@@ -115,6 +246,14 @@ const HiringGoalCreate = () => {
           </p>
         </div>
 
+        {/* Import banner */}
+        {importedListing && (
+          <ImportBanner
+            listing={importedListing}
+            onModify={() => setShowLeaveConfirm(true)}
+          />
+        )}
+
         {/* Step indicator */}
         <div className="flex items-center gap-2 mb-8">
           {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
@@ -128,11 +267,11 @@ const HiringGoalCreate = () => {
 
         {/* Step content */}
         <div className="min-h-[320px]">
-          {step === 0 && <Step0Role formData={formData} updateField={updateField} />}
-          {step === 1 && <Step1Responsibilities formData={formData} updateField={updateField} />}
-          {step === 2 && <Step2SeniorityWorkMode formData={formData} updateField={updateField} />}
-          {step === 3 && <Step3Location formData={formData} updateField={updateField} />}
-          {step === 4 && <Step4SalaryReview formData={formData} updateField={updateField} />}
+          {step === 0 && <Step0Role {...stepProps} />}
+          {step === 1 && <Step1Responsibilities {...stepProps} />}
+          {step === 2 && <Step2SeniorityWorkMode {...stepProps} />}
+          {step === 3 && <Step3Location {...stepProps} />}
+          {step === 4 && <Step4SalaryReview {...stepProps} />}
         </div>
 
         {/* Navigation */}
@@ -151,17 +290,66 @@ const HiringGoalCreate = () => {
               <Sparkles className="w-4 h-4 mr-2" />
               {submitting
                 ? t('hiring_goal.creating', 'Creazione...')
-                : t('hiring_goal.create_and_shortlist', 'Crea e Genera Shortlist')}
+                : formData.xima_hr_requested
+                  ? t('businessPortal.hiring_goal.xima_hr_checkbox.activate', 'Attiva con XIMA HR')
+                  : t('hiring_goal.create_and_shortlist', 'Crea e Genera Shortlist')}
             </Button>
           )}
         </div>
+
+        {/* Leave confirmation dialog */}
+        <Dialog open={showLeaveConfirm} onOpenChange={setShowLeaveConfirm}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t('businessPortal.hiring_goal.import_banner.leave_title', 'Tornare all\'importazione?')}</DialogTitle>
+            </DialogHeader>
+            <p className="text-sm text-muted-foreground">
+              {t('businessPortal.hiring_goal.import_banner.leave_body', 'Le modifiche non salvate andranno perse. Vuoi continuare?')}
+            </p>
+            <DialogFooter className="gap-2">
+              <Button variant="ghost" onClick={() => setShowLeaveConfirm(false)}>{t('common.cancel', 'Annulla')}</Button>
+              <Button variant="destructive" onClick={() => navigate('/business/jobs/import')}>
+                {t('businessPortal.hiring_goal.import_banner.leave_confirm', 'Sì, torna all\'importazione')}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </BusinessLayout>
   );
 };
 
-// STEP 0 — Role title
-const Step0Role = ({ formData, updateField }: { formData: FormData; updateField: (f: keyof FormData, v: any) => void }) => {
+// ── Import Banner ──
+const ImportBanner = ({ listing, onModify }: { listing: any; onModify: () => void }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 mb-6 flex items-start gap-3">
+      <FileDown className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-foreground">
+          {t('businessPortal.hiring_goal.import_banner.title', 'Importato da')}: {listing.title}
+        </p>
+        <p className="text-xs text-muted-foreground mt-0.5">
+          {t('businessPortal.hiring_goal.import_banner.subtitle', 'I dati sono pre-popolati. Verifica ogni step prima di attivare l\'obiettivo.')}
+        </p>
+      </div>
+      <Button variant="ghost" size="sm" className="text-xs flex-shrink-0" onClick={onModify}>
+        {t('businessPortal.hiring_goal.import_banner.modify', 'Modifica importazione')}
+      </Button>
+    </div>
+  );
+};
+
+// ── Shared step props ──
+interface StepProps {
+  formData: FormData;
+  updateField: (f: keyof FormData, v: any) => void;
+  userId: string;
+  importedListing: any;
+}
+
+// ── STEP 0 — Role title ──
+const Step0Role = ({ formData, updateField, userId }: StepProps) => {
   const { t } = useTranslation();
   return (
     <div className="space-y-6">
@@ -187,9 +375,21 @@ const Step0Role = ({ formData, updateField }: { formData: FormData; updateField:
         />
       </div>
       <div>
-        <label className="text-sm font-medium text-foreground mb-1.5 block">
-          {t('hiring_goal.role_summary', 'Sintesi del ruolo (opzionale)')}
-        </label>
+        <div className="flex items-center justify-between mb-1.5">
+          <label className="text-sm font-medium text-foreground">
+            {t('hiring_goal.role_summary', 'Sintesi del ruolo (opzionale)')}
+          </label>
+          {userId && (
+            <SuggestFieldButton
+              fieldName="role_summary"
+              mode="replace"
+              roleTitle={formData.role_title}
+              currentValues={formData.task_description}
+              onApply={(v) => updateField('task_description', v as string)}
+              businessId={userId}
+            />
+          )}
+        </div>
         <textarea
           value={formData.task_description}
           onChange={e => updateField('task_description', e.target.value)}
@@ -202,29 +402,66 @@ const Step0Role = ({ formData, updateField }: { formData: FormData; updateField:
   );
 };
 
-// STEP 1 — Responsibilities
-const Step1Responsibilities = ({ formData, updateField }: { formData: FormData; updateField: (f: keyof FormData, v: any) => void }) => {
+// ── Chip Editor (inline) ──
+const ChipEditor = ({
+  items, onChange, placeholder, label, suggestFieldName, roleTitle, userId,
+}: {
+  items: string[]; onChange: (v: string[]) => void; placeholder: string; label: string;
+  suggestFieldName?: 'responsibilities' | 'required_skills' | 'nice_to_have';
+  roleTitle: string; userId: string;
+}) => {
   const { t } = useTranslation();
   const [input, setInput] = useState('');
-
-  const SUGGESTIONS = [
-    t('hiring_goal.suggestion_pipeline', 'Gestire pipeline commerciale'),
-    t('hiring_goal.suggestion_conversion', 'Migliorare conversion rate'),
-    t('hiring_goal.suggestion_team', 'Guidare un piccolo team'),
-    t('hiring_goal.suggestion_partnerships', 'Sviluppare partnership'),
-    t('hiring_goal.suggestion_reports', 'Automatizzare reportistica'),
-    t('hiring_goal.suggestion_strategy', 'Definire strategia di prodotto'),
-  ];
-
   const add = (text: string) => {
-    if (!text.trim() || formData.responsibilities.includes(text)) return;
-    updateField('responsibilities', [...formData.responsibilities, text]);
+    if (!text.trim() || items.includes(text)) return;
+    onChange([...items, text]);
     setInput('');
   };
+  const remove = (i: number) => onChange(items.filter((_, idx) => idx !== i));
 
-  const remove = (i: number) => {
-    updateField('responsibilities', formData.responsibilities.filter((_, idx) => idx !== i));
-  };
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <label className="text-sm font-medium text-foreground">{label}</label>
+        {suggestFieldName && userId && (
+          <SuggestFieldButton
+            fieldName={suggestFieldName}
+            mode="additive"
+            roleTitle={roleTitle}
+            currentValues={items}
+            onApply={(v) => onChange(v as string[])}
+            businessId={userId}
+          />
+        )}
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {items.map((item, i) => (
+          <Badge key={i} variant="secondary" className="gap-1 pr-1">
+            {item}
+            <button onClick={() => remove(i)} className="ml-1 hover:text-destructive"><X className="h-3 w-3" /></button>
+          </Badge>
+        ))}
+      </div>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); add(input); } }}
+          placeholder={placeholder}
+          className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none"
+        />
+        <Button type="button" size="sm" onClick={() => add(input)}>
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+// ── STEP 1 — Responsibilities + Skills ──
+const Step1Responsibilities = ({ formData, updateField, userId }: StepProps) => {
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-6">
@@ -234,68 +471,64 @@ const Step1Responsibilities = ({ formData, updateField }: { formData: FormData; 
         </div>
         <div>
           <h2 className="text-xl font-semibold text-foreground">{t('hiring_goal.step1_title', 'Quali sono le responsabilità chiave?')}</h2>
-          <p className="text-sm text-muted-foreground">{t('hiring_goal.step1_subtitle', 'Aggiungi 2-5 responsabilità.')}</p>
+          <p className="text-sm text-muted-foreground">{t('hiring_goal.step1_subtitle', 'Aggiungi 2-5 responsabilità e le competenze richieste.')}</p>
         </div>
       </div>
 
-      <div>
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">{t('hiring_goal.suggestions', 'Suggerimenti comuni')}</p>
-        <div className="flex flex-wrap gap-2">
-          {SUGGESTIONS.map(s => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => add(s)}
-              disabled={formData.responsibilities.includes(s)}
-              className="text-xs px-3 py-1.5 rounded-full border border-border bg-background hover:bg-secondary hover:border-primary/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-foreground"
-            >
-              + {s}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ChipEditor
+        items={formData.responsibilities}
+        onChange={v => updateField('responsibilities', v)}
+        placeholder={t('hiring_goal.custom_placeholder', 'es. Negoziare contratti enterprise')}
+        label={t('businessPortal.hiring_goal.advanced.responsibilities', 'Responsabilità chiave')}
+        suggestFieldName="responsibilities"
+        roleTitle={formData.role_title}
+        userId={userId}
+      />
 
-      <div>
-        <label className="text-sm font-medium text-foreground mb-1.5 block">{t('hiring_goal.add_custom', 'Oppure scrivi una responsabilità')}</label>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); add(input); } }}
-            placeholder={t('hiring_goal.custom_placeholder', 'es. Negoziare contratti enterprise')}
-            className="flex-1 rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none"
-          />
-          <Button type="button" onClick={() => add(input)}>{t('common.add', 'Aggiungi')}</Button>
-        </div>
-      </div>
+      <ChipEditor
+        items={formData.required_skills}
+        onChange={v => updateField('required_skills', v)}
+        placeholder={t('businessPortal.hiring_goal.advanced.required_skills_placeholder', 'es. React, Project Management')}
+        label={t('businessPortal.hiring_goal.advanced.required_skills', 'Competenze richieste')}
+        suggestFieldName="required_skills"
+        roleTitle={formData.role_title}
+        userId={userId}
+      />
 
-      {formData.responsibilities.length > 0 && (
-        <div className="space-y-2">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-            {t('hiring_goal.selected', 'Selezionate')} ({formData.responsibilities.length})
-          </p>
-          {formData.responsibilities.map((r, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 rounded-lg border border-border bg-secondary/20">
-              <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-semibold text-primary">{i + 1}</div>
-              <span className="flex-1 text-sm text-foreground">{r}</span>
-              <button type="button" onClick={() => remove(i)} className="text-muted-foreground hover:text-destructive">×</button>
-            </div>
-          ))}
-        </div>
-      )}
+      <ChipEditor
+        items={formData.nice_to_have_skills}
+        onChange={v => updateField('nice_to_have_skills', v)}
+        placeholder={t('businessPortal.hiring_goal.advanced.nice_to_have_placeholder', 'es. TypeScript, Scrum')}
+        label={t('businessPortal.hiring_goal.advanced.nice_to_have_skills', 'Competenze gradite')}
+        suggestFieldName="nice_to_have"
+        roleTitle={formData.role_title}
+        userId={userId}
+      />
     </div>
   );
 };
 
-// STEP 2 — Seniority + Work mode
-const Step2SeniorityWorkMode = ({ formData, updateField }: { formData: FormData; updateField: (f: keyof FormData, v: any) => void }) => {
+// ── STEP 2 — Seniority + Work mode + Advanced ──
+const Step2SeniorityWorkMode = ({ formData, updateField }: StepProps) => {
   const { t } = useTranslation();
+  const [advancedOpen, setAdvancedOpen] = useState(
+    !!(formData.years_experience_min || formData.education_level || formData.languages.length)
+  );
+
   const seniorities = [
     { value: 'first_time', label: t('hiring_goal.seniority_first_time', 'Prima esperienza'), desc: t('hiring_goal.seniority_first_time_desc', '0-2 anni, in apprendimento') },
     { value: 'independent', label: t('hiring_goal.seniority_independent', 'Autonomo'), desc: t('hiring_goal.seniority_independent_desc', '3-7 anni, lavora in autonomia') },
     { value: 'led_others', label: t('hiring_goal.seniority_led_others', 'Ha guidato altri'), desc: t('hiring_goal.seniority_led_others_desc', '7+ anni, esperienza di leadership') },
   ];
+
+  const [newLang, setNewLang] = useState('');
+  const [newLangLevel, setNewLangLevel] = useState('fluent');
+
+  const addLanguage = () => {
+    if (!newLang.trim()) return;
+    updateField('languages', [...formData.languages, { language: newLang.trim(), level: newLangLevel }]);
+    setNewLang('');
+  };
 
   return (
     <div className="space-y-6">
@@ -330,6 +563,18 @@ const Step2SeniorityWorkMode = ({ formData, updateField }: { formData: FormData;
             </label>
           ))}
         </div>
+        {/* Original seniority note */}
+        {formData.original_seniority && (
+          <div className="flex items-start gap-2 mt-2 p-2.5 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
+            <Info className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+            <p className="text-xs text-blue-700 dark:text-blue-300">
+              {t('businessPortal.hiring_goal.original_seniority_note', 'Importato come "{{original}}" (mappato a "{{mapped}}")', {
+                original: formData.original_seniority,
+                mapped: SENIORITY_DISPLAY[formData.experience_level] || formData.experience_level,
+              })}
+            </p>
+          </div>
+        )}
       </div>
 
       <div>
@@ -357,12 +602,102 @@ const Step2SeniorityWorkMode = ({ formData, updateField }: { formData: FormData;
           ))}
         </div>
       </div>
+
+      {/* Advanced details */}
+      <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
+        <CollapsibleTrigger asChild>
+          <button type="button" className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <ChevronDown className={`h-4 w-4 transition-transform ${advancedOpen ? 'rotate-180' : ''}`} />
+            {t('businessPortal.hiring_goal.advanced.title', 'Dettagli avanzati')}
+          </button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="space-y-4 pt-4">
+          {/* Years experience */}
+          <div>
+            <label className="text-sm font-medium text-foreground mb-1.5 block">
+              {t('businessPortal.hiring_goal.advanced.years_experience', 'Anni di esperienza')}
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <Input
+                type="number"
+                min={0}
+                value={formData.years_experience_min ?? ''}
+                onChange={e => updateField('years_experience_min', e.target.value ? Number(e.target.value) : null)}
+                placeholder={t('businessPortal.hiring_goal.advanced.min', 'Min')}
+              />
+              <Input
+                type="number"
+                min={0}
+                value={formData.years_experience_max ?? ''}
+                onChange={e => updateField('years_experience_max', e.target.value ? Number(e.target.value) : null)}
+                placeholder={t('businessPortal.hiring_goal.advanced.max', 'Max')}
+              />
+            </div>
+          </div>
+
+          {/* Education level */}
+          <div>
+            <label className="text-sm font-medium text-foreground mb-1.5 block">
+              {t('businessPortal.hiring_goal.advanced.education_level', 'Livello di istruzione')}
+            </label>
+            <Select value={formData.education_level} onValueChange={v => updateField('education_level', v)}>
+              <SelectTrigger><SelectValue placeholder={t('businessPortal.hiring_goal.advanced.select_education', 'Seleziona...')} /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none_required">{t('businessPortal.education_levels.none_required', 'Nessun requisito')}</SelectItem>
+                <SelectItem value="high_school">{t('businessPortal.education_levels.high_school', 'Diploma')}</SelectItem>
+                <SelectItem value="bachelor">{t('businessPortal.education_levels.bachelor', 'Laurea triennale')}</SelectItem>
+                <SelectItem value="master">{t('businessPortal.education_levels.master', 'Laurea magistrale')}</SelectItem>
+                <SelectItem value="phd">{t('businessPortal.education_levels.phd', 'Dottorato')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Languages */}
+          <div>
+            <label className="text-sm font-medium text-foreground mb-1.5 block">
+              {t('businessPortal.hiring_goal.advanced.languages', 'Lingue')}
+            </label>
+            <div className="space-y-2">
+              {formData.languages.map((l, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <Badge variant="outline" className="gap-1.5 py-1">
+                    {l.language} ({t(`businessPortal.language_levels.${l.level}`, l.level)})
+                    <button onClick={() => updateField('languages', formData.languages.filter((_, j) => j !== i))} className="hover:text-destructive">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                </div>
+              ))}
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={newLang}
+                  onChange={e => setNewLang(e.target.value)}
+                  placeholder={t('businessPortal.hiring_goal.advanced.language_placeholder', 'es. Italiano')}
+                  className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none"
+                />
+                <Select value={newLangLevel} onValueChange={setNewLangLevel}>
+                  <SelectTrigger className="w-[130px]"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="basic">{t('businessPortal.language_levels.basic', 'Base')}</SelectItem>
+                    <SelectItem value="fluent">{t('businessPortal.language_levels.fluent', 'Fluente')}</SelectItem>
+                    <SelectItem value="native">{t('businessPortal.language_levels.native', 'Madrelingua')}</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button type="button" size="sm" variant="outline" onClick={addLanguage}>
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 };
 
-// STEP 3 — Location
-const Step3Location = ({ formData, updateField }: { formData: FormData; updateField: (f: keyof FormData, v: any) => void }) => {
+// ── STEP 3 — Location ──
+const Step3Location = ({ formData, updateField }: StepProps) => {
   const { t } = useTranslation();
   return (
     <div className="space-y-6">
@@ -409,9 +744,14 @@ const Step3Location = ({ formData, updateField }: { formData: FormData; updateFi
   );
 };
 
-// STEP 4 — Salary + Review
-const Step4SalaryReview = ({ formData, updateField }: { formData: FormData; updateField: (f: keyof FormData, v: any) => void }) => {
+// ── STEP 4 — Salary + Review + XIMA HR ──
+const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
   const { t } = useTranslation();
+  const isYearly = formData.salary_period === 'yearly';
+  const salaryLabel = isYearly
+    ? t('businessPortal.hiring_goal.gross_salary.ral_label', 'RAL')
+    : t('businessPortal.hiring_goal.gross_salary.monthly_label', 'Mensile lordo');
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
@@ -419,8 +759,12 @@ const Step4SalaryReview = ({ formData, updateField }: { formData: FormData; upda
           <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
         </div>
         <div>
-          <h2 className="text-xl font-semibold text-foreground">{t('hiring_goal.step4_title', 'Range salariale')}</h2>
-          <p className="text-sm text-muted-foreground">{t('hiring_goal.step4_subtitle', 'I candidati vedono il range.')}</p>
+          <h2 className="text-xl font-semibold text-foreground">
+            {t('businessPortal.hiring_goal.gross_salary.title', 'Compensazione lorda annuale (RAL)')}
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {t('businessPortal.hiring_goal.gross_salary.subtitle', 'XIMA mostra sempre la retribuzione lorda. Il candidato vedrà questo valore.')}
+          </p>
         </div>
       </div>
 
@@ -428,23 +772,34 @@ const Step4SalaryReview = ({ formData, updateField }: { formData: FormData; upda
         <label className="text-sm font-medium text-foreground mb-2 block">
           {t('hiring_goal.salary_range', 'Range')} <span className="text-destructive">*</span>
         </label>
-        <div className="grid grid-cols-[1fr_auto_1fr_auto_auto] gap-2 items-center">
-          <input type="number" min="0" step="1000" value={formData.salary_min || ''}
-            onChange={e => updateField('salary_min', Number(e.target.value))} placeholder="Min"
-            className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none" />
+        <div className="grid grid-cols-[1fr_auto_1fr_auto] gap-2 items-center">
+          <Input type="number" min={0} step={1000} value={formData.salary_min || ''}
+            onChange={e => updateField('salary_min', Number(e.target.value))} placeholder={`${salaryLabel} Min`} />
           <span className="text-muted-foreground">—</span>
-          <input type="number" min="0" step="1000" value={formData.salary_max || ''}
-            onChange={e => updateField('salary_max', Number(e.target.value))} placeholder="Max"
-            className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none" />
+          <Input type="number" min={0} step={1000} value={formData.salary_max || ''}
+            onChange={e => updateField('salary_max', Number(e.target.value))} placeholder={`${salaryLabel} Max`} />
           <select value={formData.salary_currency} onChange={e => updateField('salary_currency', e.target.value)}
-            className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none">
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none">
             <option value="EUR">EUR</option><option value="USD">USD</option><option value="GBP">GBP</option>
           </select>
-          <select value={formData.salary_period} onChange={e => updateField('salary_period', e.target.value)}
-            className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none">
-            <option value="yearly">{t('hiring_goal.annual', 'Annuale')}</option>
-            <option value="monthly">{t('hiring_goal.monthly', 'Mensile')}</option>
-          </select>
+        </div>
+        {/* Period toggle — yearly default, monthly de-emphasized */}
+        <div className="flex items-center gap-3 mt-2">
+          <span className="text-xs text-muted-foreground">{t('businessPortal.hiring_goal.gross_salary.period', 'Periodo')}:</span>
+          <button
+            type="button"
+            onClick={() => updateField('salary_period', 'yearly')}
+            className={`text-xs px-2.5 py-1 rounded-md transition-colors ${isYearly ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+          >
+            {t('hiring_goal.annual', 'Annuale')}
+          </button>
+          <button
+            type="button"
+            onClick={() => updateField('salary_period', 'monthly')}
+            className={`text-xs px-2.5 py-1 rounded-md transition-colors ${!isYearly ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+          >
+            {t('hiring_goal.monthly', 'Mensile')}
+          </button>
         </div>
       </div>
 
@@ -453,11 +808,36 @@ const Step4SalaryReview = ({ formData, updateField }: { formData: FormData; upda
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">{t('hiring_goal.review_title', 'Riepilogo')}</p>
         <div className="rounded-lg bg-secondary/30 p-4 space-y-2 text-sm">
           <div className="flex justify-between"><span className="text-muted-foreground">{t('hiring_goal.review_role', 'Ruolo')}:</span><span className="font-medium text-foreground">{formData.role_title}</span></div>
-          <div className="flex justify-between"><span className="text-muted-foreground">{t('hiring_goal.review_seniority', 'Seniority')}:</span><span className="font-medium capitalize text-foreground">{formData.experience_level}</span></div>
+          <div className="flex justify-between"><span className="text-muted-foreground">{t('hiring_goal.review_seniority', 'Seniority')}:</span><span className="font-medium capitalize text-foreground">{SENIORITY_DISPLAY[formData.experience_level] || formData.experience_level}</span></div>
           <div className="flex justify-between"><span className="text-muted-foreground">{t('hiring_goal.review_mode', 'Modalità')}:</span><span className="font-medium capitalize text-foreground">{formData.work_model}</span></div>
           <div className="flex justify-between"><span className="text-muted-foreground">{t('hiring_goal.review_location', 'Località')}:</span><span className="font-medium text-foreground">{[formData.city_region, formData.country].filter(Boolean).join(', ')}</span></div>
           <div className="flex justify-between"><span className="text-muted-foreground">{t('hiring_goal.review_responsibilities', 'Responsabilità')}:</span><span className="font-medium text-foreground">{formData.responsibilities.length}</span></div>
+          {formData.required_skills.length > 0 && (
+            <div className="flex justify-between"><span className="text-muted-foreground">{t('businessPortal.hiring_goal.advanced.required_skills', 'Competenze richieste')}:</span><span className="font-medium text-foreground">{formData.required_skills.length}</span></div>
+          )}
+          {formData.salary_min > 0 && (
+            <div className="flex justify-between"><span className="text-muted-foreground">{salaryLabel}:</span><span className="font-medium text-foreground">{formData.salary_min.toLocaleString()}–{formData.salary_max.toLocaleString()} {formData.salary_currency}</span></div>
+          )}
         </div>
+      </div>
+
+      {/* XIMA HR checkbox */}
+      <div className="border-t pt-4">
+        <label className="flex items-start gap-3 cursor-pointer">
+          <Checkbox
+            checked={formData.xima_hr_requested}
+            onCheckedChange={v => updateField('xima_hr_requested', !!v)}
+            className="mt-0.5 h-5 w-5 border-2"
+          />
+          <div>
+            <p className="text-sm font-medium text-foreground">
+              {t('businessPortal.hiring_goal.xima_hr_checkbox.label', 'Preferisco che XIMA HR gestisca la selezione per me')}
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {t('businessPortal.hiring_goal.xima_hr_checkbox.description', 'Il team XIMA HR creerà le challenge, valuterà i candidati e ti presenterà solo i finalisti pronti per l\'offerta.')}
+            </p>
+          </div>
+        </label>
       </div>
     </div>
   );
