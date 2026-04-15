@@ -447,7 +447,7 @@ const JobImportWizard = () => {
               <CardContent className="p-6 space-y-4">
                 <h3 className="font-semibold text-foreground">{t('business.jobs.import.step2.where_section')}</h3>
                 <div>
-                  <Label>Work Model</Label>
+                  <Label>{t('businessPortal.jobs.import.fields.work_model', 'Modalità di lavoro')}</Label>
                   <Select value={extracted.work_model || ''} onValueChange={(v) => setExtracted({ ...extracted, work_model: v })}>
                     <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
                     <SelectContent>
@@ -459,11 +459,11 @@ const JobImportWizard = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label>City</Label>
+                    <Label>{t('businessPortal.jobs.import.fields.city', 'Città')}</Label>
                     <Input value={extracted.location_city || ''} onChange={(e) => setExtracted({ ...extracted, location_city: e.target.value })} />
                   </div>
                   <div>
-                    <Label>Country</Label>
+                    <Label>{t('businessPortal.jobs.import.fields.country', 'Paese')}</Label>
                     <Input value={extracted.location_country || ''} onChange={(e) => setExtracted({ ...extracted, location_country: e.target.value })} />
                   </div>
                 </div>
