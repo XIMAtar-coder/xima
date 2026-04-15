@@ -414,16 +414,16 @@ const JobImportWizard = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label>Years Experience (min)</Label>
+                    <Label>{t('businessPortal.jobs.import.fields.years_experience_min', 'Anni di esperienza (min)')}</Label>
                     <Input type="number" value={extracted.years_experience_min ?? ''} onChange={(e) => setExtracted({ ...extracted, years_experience_min: e.target.value ? Number(e.target.value) : null })} />
                   </div>
                   <div>
-                    <Label>Years Experience (max)</Label>
+                    <Label>{t('businessPortal.jobs.import.fields.years_experience_max', 'Anni di esperienza (max)')}</Label>
                     <Input type="number" value={extracted.years_experience_max ?? ''} onChange={(e) => setExtracted({ ...extracted, years_experience_max: e.target.value ? Number(e.target.value) : null })} />
                   </div>
                 </div>
                 <div>
-                  <Label>Education Level</Label>
+                  <Label>{t('businessPortal.jobs.import.fields.education_level', 'Livello di istruzione')}</Label>
                   <Select value={extracted.education_level || ''} onValueChange={(v) => setExtracted({ ...extracted, education_level: v })}>
                     <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
                     <SelectContent>
@@ -436,7 +436,7 @@ const JobImportWizard = () => {
                   </Select>
                 </div>
                 <div>
-                  <Label>Languages</Label>
+                  <Label>{t('businessPortal.jobs.import.fields.languages', 'Lingue')}</Label>
                   <LanguageEditor languages={extracted.languages || []} onChange={(v) => setExtracted({ ...extracted, languages: v })} />
                 </div>
               </CardContent>
