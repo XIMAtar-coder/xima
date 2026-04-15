@@ -31,6 +31,8 @@ serve(async (req) => {
     const body = await req.json();
     const { business_id, source, source_id } = body;
 
+    console.log("[request-xima-hr] START", { business_id, source, source_id, auth_uid: user.id });
+
     if (!business_id || !source) {
       return errorResponse(400, "INVALID_INPUT", "business_id and source ('listing'|'hiring_goal'|'generic') are required");
     }
@@ -43,14 +45,20 @@ serve(async (req) => {
 
     const serviceClient = createClient(supabaseUrl, serviceKey);
 
-    // Verify ownership
-    const { data: bp } = await serviceClient
+    // Verify ownership — business_id is the auth user_id (used across job_posts, hiring_goal_drafts)
+    const { data: bp, error: bpError } = await serviceClient
       .from("business_profiles")
       .select("id, company_name, hr_contact_email, user_id")
-      .eq("id", business_id)
+      .eq("user_id", business_id)
       .maybeSingle();
 
+    if (bpError) {
+      console.error("[request-xima-hr] business_profiles lookup error:", bpError.message);
+      return errorResponse(500, "INTERNAL_ERROR", "Failed to verify business profile");
+    }
+
     if (!bp || bp.user_id !== user.id) {
+      console.warn("[request-xima-hr] Ownership check failed", { bp_user_id: bp?.user_id, auth_uid: user.id });
       return errorResponse(403, "FORBIDDEN", "Not authorized for this business");
     }
 
