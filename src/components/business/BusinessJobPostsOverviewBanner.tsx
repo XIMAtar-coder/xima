@@ -87,7 +87,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
 
   const getStatusBadge = (status: JobStatus) => {
     switch (status) {
-      case 'active':
+      case 'published':
         return (
           <Badge className="bg-green-500/20 text-green-600 border-green-500/30">
             {t('business.job_posts_overview.status.active')}
