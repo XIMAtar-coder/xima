@@ -125,7 +125,7 @@ export default function JobPostDetailDrawer({
   };
 
   const handleToggleStatus = async () => {
-    const newStatus = job.status === 'active' ? 'draft' : 'active';
+    const newStatus = job.status === 'published' ? 'draft' : 'published';
     try {
       const { error } = await supabase
         .from('job_posts')
@@ -135,7 +135,7 @@ export default function JobPostDetailDrawer({
 
       if (error) throw error;
 
-      toast.success(newStatus === 'active' ? t('jobs.job_published') : t('jobs.job_unpublished'));
+      toast.success(newStatus === 'published' ? t('jobs.job_published') : t('jobs.job_unpublished'));
       onUpdate();
     } catch (error: any) {
       toast.error(error.message || t('common.error'));
@@ -144,7 +144,7 @@ export default function JobPostDetailDrawer({
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'active':
+      case 'published':
         return <Badge className="bg-green-500/20 text-green-600 border-green-500/30">{t('jobs.published')}</Badge>;
       case 'archived':
         return <Badge variant="outline" className="text-muted-foreground">{t('jobs.archived')}</Badge>;
@@ -200,7 +200,7 @@ export default function JobPostDetailDrawer({
 
           {job.status !== 'archived' && (
             <Button variant="outline" onClick={handleToggleStatus} className="gap-2">
-              {job.status === 'active' ? (
+              {job.status === 'published' ? (
                 <>
                   <EyeOff className="h-4 w-4" />
                   {t('jobs.unpublish')}
