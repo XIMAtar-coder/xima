@@ -5302,7 +5302,84 @@
     "settings_delete_warning_2": "Tutte le sfide e le valutazioni saranno rimosse",
     "settings_delete_warning_3": "Le candidature e i dati dei candidati saranno anonimizzati",
     "settings_delete_warning_4": "I dati di fatturazione e le sottoscrizioni saranno cancellati",
-    "settings_delete_cta": "Elimina Account Aziendale"
+    "settings_delete_cta": "Elimina Account Aziendale",
+    "hiring_goal": {
+      "import_banner": {
+        "title": "Importato da",
+        "subtitle": "I dati sono pre-popolati. Verifica ogni step prima di attivare l'obiettivo.",
+        "modify": "Modifica importazione",
+        "leave_title": "Tornare all'importazione?",
+        "leave_body": "Le modifiche non salvate andranno perse. Vuoi continuare?",
+        "leave_confirm": "Sì, torna all'importazione"
+      },
+      "suggest": {
+        "button": "Suggerisci con AI",
+        "replace_title": "Suggerimento AI",
+        "replace_confirm": "Sostituisci campo attuale",
+        "additive_hint": "Clicca per aggiungere",
+        "add_all": "Aggiungi tutti",
+        "error": "Errore nella generazione dei suggerimenti"
+      },
+      "gross_salary": {
+        "title": "Compensazione lorda annuale (RAL)",
+        "subtitle": "XIMA mostra sempre la retribuzione lorda. Il candidato vedrà questo valore.",
+        "ral_label": "RAL",
+        "monthly_label": "Mensile lordo",
+        "period": "Periodo"
+      },
+      "advanced": {
+        "title": "Dettagli avanzati",
+        "responsibilities": "Responsabilità chiave",
+        "required_skills": "Competenze richieste",
+        "required_skills_placeholder": "es. React, Project Management",
+        "nice_to_have_skills": "Competenze gradite",
+        "nice_to_have_placeholder": "es. TypeScript, Scrum",
+        "years_experience": "Anni di esperienza",
+        "min": "Min",
+        "max": "Max",
+        "education_level": "Livello di istruzione",
+        "select_education": "Seleziona...",
+        "languages": "Lingue",
+        "language_placeholder": "es. Italiano"
+      },
+      "original_seniority_note": "Importato come \"{{original}}\" (mappato a \"{{mapped}}\")",
+      "xima_hr_checkbox": {
+        "label": "Preferisco che XIMA HR gestisca la selezione per me",
+        "description": "Il team XIMA HR creerà le challenge, valuterà i candidati e ti presenterà solo i finalisti pronti per l'offerta.",
+        "activate": "Attiva con XIMA HR",
+        "success": "Obiettivo attivato — XIMA HR ti contatterà entro 24 ore",
+        "error": "XIMA HR non è riuscito a ricevere la richiesta. L'obiettivo è stato salvato — puoi riprovare."
+      }
+    },
+    "education_levels": {
+      "none_required": "Nessun requisito",
+      "high_school": "Diploma",
+      "bachelor": "Laurea triennale",
+      "master": "Laurea magistrale",
+      "phd": "Dottorato"
+    },
+    "language_levels": {
+      "basic": "Base",
+      "fluent": "Fluente",
+      "native": "Madrelingua"
+    },
+    "jobs": {
+      "import": {
+        "fields": {
+          "summary": "Riepilogo",
+          "seniority": "Livello di seniority",
+          "responsibilities": "Responsabilità",
+          "required_skills": "Competenze richieste",
+          "nice_to_have": "Competenze gradite",
+          "years_experience_min": "Anni di esperienza (min)",
+          "years_experience_max": "Anni di esperienza (max)",
+          "education_level": "Livello di istruzione",
+          "city": "Città",
+          "country": "Paese",
+          "work_model": "Modalità di lavoro"
+        }
+      }
+    }
   },
   "ximatarJourney": {
     "page_title": "Il Tuo Viaggio XIMAtar",
