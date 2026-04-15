@@ -3022,12 +3022,17 @@ export type Database = {
           closed_reason: string | null
           country: string | null
           created_at: string | null
+          education_level: string | null
           experience_level: string | null
           filled_at: string | null
           filled_by: string | null
           function_area: string | null
           id: string
           imported_from_listing_id: string | null
+          languages: Json | null
+          nice_to_have_skills: Json | null
+          original_seniority: string | null
+          required_skills: Json | null
           role_title: string | null
           salary_benchmark_json: Json | null
           salary_currency: string | null
@@ -3039,6 +3044,8 @@ export type Database = {
           updated_at: string | null
           work_model: string | null
           xima_hr_requested: boolean | null
+          years_experience_max: number | null
+          years_experience_min: number | null
         }
         Insert: {
           ai_suggested_ximatar?: string | null
@@ -3050,12 +3057,17 @@ export type Database = {
           closed_reason?: string | null
           country?: string | null
           created_at?: string | null
+          education_level?: string | null
           experience_level?: string | null
           filled_at?: string | null
           filled_by?: string | null
           function_area?: string | null
           id?: string
           imported_from_listing_id?: string | null
+          languages?: Json | null
+          nice_to_have_skills?: Json | null
+          original_seniority?: string | null
+          required_skills?: Json | null
           role_title?: string | null
           salary_benchmark_json?: Json | null
           salary_currency?: string | null
@@ -3067,6 +3079,8 @@ export type Database = {
           updated_at?: string | null
           work_model?: string | null
           xima_hr_requested?: boolean | null
+          years_experience_max?: number | null
+          years_experience_min?: number | null
         }
         Update: {
           ai_suggested_ximatar?: string | null
@@ -3078,12 +3092,17 @@ export type Database = {
           closed_reason?: string | null
           country?: string | null
           created_at?: string | null
+          education_level?: string | null
           experience_level?: string | null
           filled_at?: string | null
           filled_by?: string | null
           function_area?: string | null
           id?: string
           imported_from_listing_id?: string | null
+          languages?: Json | null
+          nice_to_have_skills?: Json | null
+          original_seniority?: string | null
+          required_skills?: Json | null
           role_title?: string | null
           salary_benchmark_json?: Json | null
           salary_currency?: string | null
@@ -3095,6 +3114,8 @@ export type Database = {
           updated_at?: string | null
           work_model?: string | null
           xima_hr_requested?: boolean | null
+          years_experience_max?: number | null
+          years_experience_min?: number | null
         }
         Relationships: [
           {
