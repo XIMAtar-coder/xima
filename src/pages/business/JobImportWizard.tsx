@@ -376,11 +376,11 @@ const JobImportWizard = () => {
                     <Input value={extracted.title || ''} onChange={(e) => setExtracted({ ...extracted, title: e.target.value })} />
                   </div>
                   <div>
-                    <Label>Summary</Label>
+                    <Label>{t('businessPortal.jobs.import.fields.summary', 'Riepilogo')}</Label>
                     <Textarea value={extracted.role_summary || ''} onChange={(e) => setExtracted({ ...extracted, role_summary: e.target.value })} rows={3} />
                   </div>
                   <div>
-                    <Label>Seniority</Label>
+                    <Label>{t('businessPortal.jobs.import.fields.seniority', 'Livello di seniority')}</Label>
                     <Select value={extracted.seniority || ''} onValueChange={(v) => setExtracted({ ...extracted, seniority: v })}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -401,29 +401,29 @@ const JobImportWizard = () => {
               <CardContent className="p-6 space-y-4">
                 <h3 className="font-semibold text-foreground">{t('business.jobs.import.step2.skills_section')}</h3>
                 <div>
-                  <Label>Responsibilities</Label>
+                  <Label>{t('businessPortal.jobs.import.fields.responsibilities', 'Responsabilità')}</Label>
                   <ChipListEditor items={extracted.responsibilities || []} onChange={(v) => setExtracted({ ...extracted, responsibilities: v })} placeholder="Add responsibility..." />
                 </div>
                 <div>
-                  <Label>Required Skills</Label>
+                  <Label>{t('businessPortal.jobs.import.fields.required_skills', 'Competenze richieste')}</Label>
                   <ChipListEditor items={extracted.required_skills || []} onChange={(v) => setExtracted({ ...extracted, required_skills: v })} placeholder="Add skill..." />
                 </div>
                 <div>
-                  <Label>Nice to Have</Label>
+                  <Label>{t('businessPortal.jobs.import.fields.nice_to_have', 'Competenze gradite')}</Label>
                   <ChipListEditor items={extracted.nice_to_have_skills || []} onChange={(v) => setExtracted({ ...extracted, nice_to_have_skills: v })} placeholder="Add skill..." />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label>Years Experience (min)</Label>
+                    <Label>{t('businessPortal.jobs.import.fields.years_experience_min', 'Anni di esperienza (min)')}</Label>
                     <Input type="number" value={extracted.years_experience_min ?? ''} onChange={(e) => setExtracted({ ...extracted, years_experience_min: e.target.value ? Number(e.target.value) : null })} />
                   </div>
                   <div>
-                    <Label>Years Experience (max)</Label>
+                    <Label>{t('businessPortal.jobs.import.fields.years_experience_max', 'Anni di esperienza (max)')}</Label>
                     <Input type="number" value={extracted.years_experience_max ?? ''} onChange={(e) => setExtracted({ ...extracted, years_experience_max: e.target.value ? Number(e.target.value) : null })} />
                   </div>
                 </div>
                 <div>
-                  <Label>Education Level</Label>
+                  <Label>{t('businessPortal.jobs.import.fields.education_level', 'Livello di istruzione')}</Label>
                   <Select value={extracted.education_level || ''} onValueChange={(v) => setExtracted({ ...extracted, education_level: v })}>
                     <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
                     <SelectContent>
@@ -436,7 +436,7 @@ const JobImportWizard = () => {
                   </Select>
                 </div>
                 <div>
-                  <Label>Languages</Label>
+                  <Label>{t('businessPortal.jobs.import.fields.languages', 'Lingue')}</Label>
                   <LanguageEditor languages={extracted.languages || []} onChange={(v) => setExtracted({ ...extracted, languages: v })} />
                 </div>
               </CardContent>
@@ -447,7 +447,7 @@ const JobImportWizard = () => {
               <CardContent className="p-6 space-y-4">
                 <h3 className="font-semibold text-foreground">{t('business.jobs.import.step2.where_section')}</h3>
                 <div>
-                  <Label>Work Model</Label>
+                  <Label>{t('businessPortal.jobs.import.fields.work_model', 'Modalità di lavoro')}</Label>
                   <Select value={extracted.work_model || ''} onValueChange={(v) => setExtracted({ ...extracted, work_model: v })}>
                     <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
                     <SelectContent>
@@ -459,11 +459,11 @@ const JobImportWizard = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label>City</Label>
+                    <Label>{t('businessPortal.jobs.import.fields.city', 'Città')}</Label>
                     <Input value={extracted.location_city || ''} onChange={(e) => setExtracted({ ...extracted, location_city: e.target.value })} />
                   </div>
                   <div>
-                    <Label>Country</Label>
+                    <Label>{t('businessPortal.jobs.import.fields.country', 'Paese')}</Label>
                     <Input value={extracted.location_country || ''} onChange={(e) => setExtracted({ ...extracted, location_country: e.target.value })} />
                   </div>
                 </div>
