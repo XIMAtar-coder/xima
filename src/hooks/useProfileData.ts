@@ -279,7 +279,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
         } else if (mentor_profile_id) {
           console.log('[useProfileData] Fetching mentor from mentors table:', mentor_profile_id);
           const { data: mentorData, error: profError } = await supabase
-            .from('mentors')
+            .from('mentors_public')
             .select('id, user_id, name, title, profile_image_url, bio, specialties, xima_pillars')
             .eq('id', mentor_profile_id)
             .maybeSingle();

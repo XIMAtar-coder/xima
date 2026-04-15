@@ -66,7 +66,7 @@ const CandidateSettings = () => {
 
         if (match?.mentor_user_id) {
           const { data: mentor } = await supabase
-            .from('mentors')
+            .from('mentors_public')
             .select('id, name')
             .eq('user_id', match.mentor_user_id)
             .maybeSingle();
