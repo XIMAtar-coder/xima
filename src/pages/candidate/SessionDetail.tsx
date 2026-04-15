@@ -140,7 +140,7 @@ export default function SessionDetail() {
 
       // Fetch mentor info
       const { data: mentorData } = await supabase
-        .from('mentors')
+        .from('mentors_public')
         .select('id, name, bio, profile_image_url, title')
         .eq('id', sessionData.mentor_id)
         .single();
