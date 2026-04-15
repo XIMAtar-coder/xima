@@ -376,11 +376,11 @@ const JobImportWizard = () => {
                     <Input value={extracted.title || ''} onChange={(e) => setExtracted({ ...extracted, title: e.target.value })} />
                   </div>
                   <div>
-                    <Label>Summary</Label>
+                    <Label>{t('businessPortal.jobs.import.fields.summary', 'Riepilogo')}</Label>
                     <Textarea value={extracted.role_summary || ''} onChange={(e) => setExtracted({ ...extracted, role_summary: e.target.value })} rows={3} />
                   </div>
                   <div>
-                    <Label>Seniority</Label>
+                    <Label>{t('businessPortal.jobs.import.fields.seniority', 'Livello di seniority')}</Label>
                     <Select value={extracted.seniority || ''} onValueChange={(v) => setExtracted({ ...extracted, seniority: v })}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -401,15 +401,15 @@ const JobImportWizard = () => {
               <CardContent className="p-6 space-y-4">
                 <h3 className="font-semibold text-foreground">{t('business.jobs.import.step2.skills_section')}</h3>
                 <div>
-                  <Label>Responsibilities</Label>
+                  <Label>{t('businessPortal.jobs.import.fields.responsibilities', 'Responsabilità')}</Label>
                   <ChipListEditor items={extracted.responsibilities || []} onChange={(v) => setExtracted({ ...extracted, responsibilities: v })} placeholder="Add responsibility..." />
                 </div>
                 <div>
-                  <Label>Required Skills</Label>
+                  <Label>{t('businessPortal.jobs.import.fields.required_skills', 'Competenze richieste')}</Label>
                   <ChipListEditor items={extracted.required_skills || []} onChange={(v) => setExtracted({ ...extracted, required_skills: v })} placeholder="Add skill..." />
                 </div>
                 <div>
-                  <Label>Nice to Have</Label>
+                  <Label>{t('businessPortal.jobs.import.fields.nice_to_have', 'Competenze gradite')}</Label>
                   <ChipListEditor items={extracted.nice_to_have_skills || []} onChange={(v) => setExtracted({ ...extracted, nice_to_have_skills: v })} placeholder="Add skill..." />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
