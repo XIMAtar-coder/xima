@@ -5601,6 +5601,7 @@ export type Database = {
           title: string | null
           total_coached_profiles_count: number | null
           updated_at: string | null
+          user_id: string | null
           xima_pillars: string[] | null
         }
         Insert: {
@@ -5624,6 +5625,7 @@ export type Database = {
           title?: string | null
           total_coached_profiles_count?: number | null
           updated_at?: string | null
+          user_id?: string | null
           xima_pillars?: string[] | null
         }
         Update: {
@@ -5647,6 +5649,7 @@ export type Database = {
           title?: string | null
           total_coached_profiles_count?: number | null
           updated_at?: string | null
+          user_id?: string | null
           xima_pillars?: string[] | null
         }
         Relationships: []
