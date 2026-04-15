@@ -1,40 +1,29 @@
 
+# Phase 3C: Hiring Goal Wizard Upgrade — Execution Confirmation
 
-# Phase 3B Execution — Ready to Execute
+Plan was already approved. Execution will proceed in this order:
 
-All preflight confirmed. The plan from the previous message is fully approved with three clarifications resolved. Here's the execution summary:
+## 1. Database Migration
+Add 7 columns to `hiring_goal_drafts`: `required_skills` (jsonb), `nice_to_have_skills` (jsonb), `years_experience_min` (int), `years_experience_max` (int), `education_level` (text + CHECK), `languages` (jsonb), `original_seniority` (text).
 
-## Execution Order
+## 2. SuggestFieldButton Component
+New `src/components/business/SuggestFieldButton.tsx` — replace mode (dialog) for role_summary, additive mode (popover chips) for responsibilities/required_skills/nice_to_have.
 
-### Step 1: Edge Function Fixes
-1. **import-job-post** — Add `else if (importMethod === "paste")` handler after line 200 (after `ai_search` block closes, before the closing `}` of the JSON body branch)
-2. **request-xima-hr** — Extend validation (lines 34-38) to accept `source: 'generic'` with optional `source_id`, skip source record update when generic
+## 3. HiringGoalCreate.tsx Expansion
+- `?from_listing=<id>` pre-fill from job_posts.import_raw_data
+- ImportBanner across all 5 steps
+- required_skills + nice_to_have_skills chip editors in Step 1
+- "Dettagli avanzati" collapsible in Step 2 (years exp, education, languages)
+- original_seniority info note in Step 2
+- RAL labels on Step 4, monthly de-emphasized
+- XIMA HR checkbox on Step 4 review
+- Branching submit: unchecked → draft + candidates; checked → active + request-xima-hr + dashboard (no shortlist)
 
-### Step 2: New Components
-1. **BusinessEntryPointsCard.tsx** — 3-card grid (Target/FileUp/Users), visible when `hiringGoalStatus === 'none' || 'draft'`
-2. **XimaHrRequestModal.tsx** — 2-screen modal (explain → confirm → success), calls request-xima-hr
-3. **JobImportWizard.tsx** — 2-step wizard (paste/upload → editable review form → 3 action buttons)
+## 4. JobImportWizard i18n
+Wrap all English Step 2 labels in `t()`.
 
-### Step 3: Routing & Dashboard Wiring
-- Add `/business/jobs/import` route in App.tsx (after line 156)
-- Import BusinessEntryPointsCard + XimaHrRequestModal into Dashboard.tsx
-- Render entry points card after CompanyIdentityCard when status is 'none' or 'draft'
+## 5. i18n Keys
+Add all new keys to it.json, en.json, es.json.
 
-### Step 4: i18n
-- Add all keys to it.json, en.json, es.json under `business.dashboard.entry_points.*`, `business.jobs.import.*`, `business.xima_hr.modal.*`
-
-### Key Technical Details
-- **employment_type**: already extracted by Haiku (line 235) — no change needed
-- **XIMA HR publish comment**: will be added above the job_posts insert
-- **Seniority mapping TODO**: comment for Phase 3C granular display
-- **salary_period**: forced to `'yearly'` per CHECK constraint
-- **job_posts.salary_range**: text field, store formatted string like `"55000-70000 EUR/yr"`
-- **request-xima-hr generic**: skip source record update, create notification with `source: 'generic'`, `source_id: null`
-
-### Verification
-- Deploy edge functions and check logs
-- Test entry points card visibility (set Capgemini goal to draft, verify card shows, revert)
-- Paste Italian Lead Engineer JD, verify Step 2 extraction
-- Click "Attiva XIMA HR" from dashboard, verify admin_notifications row
-- Click "Converti in Obiettivo XIMA", verify redirect to `/business/hiring-goals/new?from_listing=<id>`
-
+## Verification
+Both scenarios (XIMA HR unchecked + checked) with SQL confirmation queries.
