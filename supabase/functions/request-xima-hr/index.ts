@@ -127,8 +127,10 @@ serve(async (req) => {
       .single();
 
     if (notifError) {
-      console.error("[request-xima-hr] Failed to insert admin notification:", notifError.message);
+      console.error("[request-xima-hr] admin_notifications INSERT FAILED:", notifError.message, notifError.details, notifError.hint);
+      return errorResponse(500, "NOTIFICATION_INSERT_FAILED", `Failed to create notification: ${notifError.message}`);
     }
+    console.log("[request-xima-hr] admin_notifications insert OK", { id: notification?.id });
 
     console.log("[request-xima-hr] XIMA HR request created:", {
       business_id,
