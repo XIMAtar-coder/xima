@@ -52,8 +52,9 @@ serve(async (req) => {
     const serviceClient = createClient(supabaseUrl, serviceKey);
 
     // Load business DNA context
+    console.log("[suggest-hiring-goal-field] START", { business_id, field_name, role_title });
     const [profileRes, dnaRes] = await Promise.all([
-      serviceClient.from("business_profiles").select("company_name, website, team_culture, strategic_focus, metadata").eq("id", business_id).maybeSingle(),
+      serviceClient.from("business_profiles").select("company_name, website, team_culture, strategic_focus, metadata").eq("user_id", business_id).maybeSingle(),
       serviceClient.from("company_profiles").select("summary, summary_override, values, values_override, ideal_traits, ideal_traits_override, communication_style, communication_style_override, operating_style, operating_style_override, pillar_vector").eq("company_id", business_id).maybeSingle(),
     ]);
 
