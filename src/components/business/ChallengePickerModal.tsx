@@ -21,7 +21,7 @@ export interface Challenge {
   goal_title?: string;
   end_at?: string | null;
   level?: number | null;
-  rubric?: { type?: string; isXimaCore?: boolean; level?: number } | null;
+  rubric?: any;
 }
 
 interface ChallengePickerModalProps {
