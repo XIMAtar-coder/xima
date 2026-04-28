@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { TrendingUp, MapPin, Clock, Activity, Zap, Send, User } from 'lucide-react';
+import { PillarScoreBar, formatRoundedScore } from './PillarScoreBar';
 
 interface ShortlistCandidate {
   id?: string;
@@ -31,6 +31,7 @@ interface ShortlistCandidate {
 interface ShortlistCardProps {
   candidate: ShortlistCandidate;
   rank: number;
+  locked?: boolean;
   onInviteToChallenge: (candidateUserId: string) => void;
   onViewProfile: (candidateUserId: string) => void;
 }
@@ -38,15 +39,7 @@ interface ShortlistCardProps {
 const getArchetypeImageUrl = (archetype: string) =>
   `/ximatars/${(archetype || 'chameleon').toLowerCase()}.png`;
 
-const ScoreBar: React.FC<{ label: string; value: number; max: number }> = ({ label, value, max }) => (
-  <div className="flex items-center gap-2 text-xs">
-    <span className="w-20 text-muted-foreground truncate">{label}</span>
-    <Progress value={(value / max) * 100} className="h-1.5 flex-1" />
-    <span className="w-8 text-right font-mono text-muted-foreground">{value}</span>
-  </div>
-);
-
-export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, onInviteToChallenge, onViewProfile }) => {
+export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, locked = false, onInviteToChallenge, onViewProfile }) => {
   const { t } = useTranslation();
   const imageUrl = getArchetypeImageUrl(candidate.ximatar_archetype);
   const archetypeName = candidate.ximatar_archetype.charAt(0).toUpperCase() + candidate.ximatar_archetype.slice(1);
@@ -74,8 +67,8 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, o
   }[candidate.availability];
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-200">
-      <CardContent className="p-5 space-y-4">
+    <Card className="hover:shadow-lg transition-all duration-200 relative overflow-hidden">
+      <CardContent className={`p-5 space-y-4 ${locked ? 'blur-sm pointer-events-none select-none' : ''}`}>
         {/* Header: rank + archetype + score */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
@@ -100,18 +93,18 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, o
             </div>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold text-foreground">{candidate.total_score}</p>
+            <p className="text-2xl font-bold text-foreground">{formatRoundedScore(candidate.total_score)}</p>
             <p className="text-xs text-muted-foreground">/100</p>
           </div>
         </div>
 
         {/* Score breakdown */}
         <div className="space-y-1.5">
-          <ScoreBar label={t('shortlist.score.identity', 'Identity')} value={candidate.identity_score} max={40} />
-          <ScoreBar label={t('shortlist.score.trajectory', 'Trajectory')} value={candidate.trajectory_score} max={20} />
-          <ScoreBar label={t('shortlist.score.engagement', 'Engagement')} value={candidate.engagement_score} max={15} />
-          <ScoreBar label={t('shortlist.score.location', 'Location')} value={candidate.location_score} max={15} />
-          <ScoreBar label={t('shortlist.score.credentials', 'Credentials')} value={candidate.credential_score} max={10} />
+          <PillarScoreBar label={t('shortlist.score.identity', 'Identity')} value={candidate.identity_score} max={40} />
+          <PillarScoreBar label={t('shortlist.score.trajectory', 'Trajectory')} value={candidate.trajectory_score} max={20} />
+          <PillarScoreBar label={t('shortlist.score.engagement', 'Engagement')} value={candidate.engagement_score} max={15} />
+          <PillarScoreBar label={t('shortlist.score.location', 'Location')} value={candidate.location_score} max={15} />
+          <PillarScoreBar label={t('shortlist.score.credentials', 'Credentials')} value={candidate.credential_score} max={10} />
         </div>
 
         {/* Signal badges */}
@@ -151,6 +144,15 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, o
           </Button>
         </div>
       </CardContent>
+      {locked && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/70 backdrop-blur-sm p-5">
+          <div className="text-center space-y-3">
+            <Badge variant="secondary">{t('shortlist.upgrade_badge', 'Upgrade')}</Badge>
+            <p className="text-sm font-semibold text-foreground">{t('shortlist.upgrade_title', 'Unlock the full shortlist')}</p>
+            <Button size="sm" variant="outline">{t('shortlist.upgrade_cta', 'Upgrade plan')}</Button>
+          </div>
+        </div>
+      )}
     </Card>
   );
 };
