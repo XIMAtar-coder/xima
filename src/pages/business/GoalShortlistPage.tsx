@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { Sparkles, Users } from 'lucide-react';
 
 const GoalShortlistPage: React.FC = () => {
@@ -16,13 +17,27 @@ const GoalShortlistPage: React.FC = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { goals, loading } = useHiringGoals();
-  const currentGoal = goals.find((goal) => goal.id === goalId) || null;
+  const [directGoal, setDirectGoal] = React.useState<any>(null);
+  const [directLoading, setDirectLoading] = React.useState(false);
+  const currentGoal = goals.find((goal) => goal.id === goalId) || directGoal;
+
+  React.useEffect(() => {
+    if (!goalId || goals.some((goal) => goal.id === goalId)) return;
+    setDirectLoading(true);
+    supabase
+      .from('hiring_goal_drafts')
+      .select('*')
+      .eq('id', goalId)
+      .maybeSingle()
+      .then(({ data }) => setDirectGoal(data))
+      .finally(() => setDirectLoading(false));
+  }, [goalId, goals]);
 
   const handleGoalSwitch = (newGoalId: string) => {
     navigate(`/business/goals/${newGoalId}/shortlist`);
   };
 
-  if (loading) {
+  if (loading || directLoading) {
     return (
       <BusinessLayout>
         <div className="flex justify-center items-center min-h-[60vh]">
