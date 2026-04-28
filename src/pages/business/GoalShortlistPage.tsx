@@ -24,13 +24,16 @@ const GoalShortlistPage: React.FC = () => {
   React.useEffect(() => {
     if (!goalId || goals.some((goal) => goal.id === goalId)) return;
     setDirectLoading(true);
-    supabase
-      .from('hiring_goal_drafts')
-      .select('*')
-      .eq('id', goalId)
-      .maybeSingle()
-      .then(({ data }) => setDirectGoal(data))
-      .finally(() => setDirectLoading(false));
+    const loadGoal = async () => {
+      const { data } = await supabase
+        .from('hiring_goal_drafts')
+        .select('*')
+        .eq('id', goalId)
+        .maybeSingle();
+      setDirectGoal(data);
+      setDirectLoading(false);
+    };
+    loadGoal();
   }, [goalId, goals]);
 
   const handleGoalSwitch = (newGoalId: string) => {
