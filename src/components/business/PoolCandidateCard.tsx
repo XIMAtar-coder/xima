@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Send, Bookmark, TrendingUp, Zap, MapPin, Clock } from 'lucide-react';
 import { XIMATAR_PROFILES } from '@/lib/ximatarTaxonomy';
+import { PillarScoreBar } from './PillarScoreBar';
 
 const PILLAR_LABELS: Record<string, string> = {
   drive: 'Drive',
@@ -79,11 +79,7 @@ export const PoolCandidateCard: React.FC<PoolCandidateCardProps> = ({ candidate,
           {Object.entries(PILLAR_LABELS).map(([key, label]) => {
             const score = resolvePillar(key);
             return (
-              <div key={key} className="flex items-center gap-2 text-xs">
-                <span className="w-12 text-muted-foreground">{label}</span>
-                <Progress value={score} className="h-1.5 flex-1" />
-                <span className="w-6 text-right text-muted-foreground">{score}</span>
-              </div>
+              <PillarScoreBar key={key} label={label} value={score} compact />
             );
           })}
         </div>
