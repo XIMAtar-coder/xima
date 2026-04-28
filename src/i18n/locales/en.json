@@ -1317,7 +1317,12 @@
       "select_hiring_goal": "Select hiring goal",
       "go_to_challenges": "Go to challenges",
       "no_goals_hint": "Create a hiring goal first",
-      "create_goal": "Create Goal"
+      "create_goal": "Create Goal",
+      "page_indicator": "Page {{page}} of {{maxPage}} ({{total}} candidates)",
+      "fetch_error": "Error loading candidates. Please try again.",
+      "no_results": "No candidates match the selected filters",
+      "pool_empty": "The platform does not have candidates with completed XIMAtar yet",
+      "loading": "Loading candidates..."
     },
     "shortlist": {
       "create_challenge_banner": {
