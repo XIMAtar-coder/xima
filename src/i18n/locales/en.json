@@ -4968,7 +4968,16 @@
       "industry": "Industry",
       "industry_placeholder": "Any (e.g. technology)",
       "any": "Any (recommended)"
-    }
+    },
+    "goal_not_found": "Hiring goal not found",
+    "page_title": "AI Shortlist",
+    "page_subtitle": "The 12 candidates matched to this hiring goal and your company DNA.",
+    "explanation_title": "Shortlist and Pool are separate",
+    "explanation_desc": "This page is goal-specific: XIMA ranks candidates against the role requirements, company DNA, growth trajectory, engagement, location and credentials. The Candidate Pool remains the full browseable talent base.",
+    "upgrade_badge": "Upgrade",
+    "upgrade_title": "Unlock the full shortlist",
+    "upgrade_cta": "Upgrade plan",
+    "invite_from_pipeline": "Open the challenge pipeline to invite candidates"
   },
   "candidate_pool": {
     "title": "Candidate Pool",
@@ -5004,7 +5013,18 @@
     "create_goal": "Create Hiring Goal",
     "growing_fast": "Growing fast",
     "growing": "Growing",
-    "filter_by_archetype": "Filter by XIMAtar"
+    "filter_by_archetype": "Filter by XIMAtar",
+    "filters": "Filters",
+    "work_mode": "Work mode",
+    "location": "Location",
+    "seniority": "Seniority",
+    "industry": "Industry",
+    "activity": "Activity",
+    "availability": "Availability",
+    "any": "Any",
+    "now": "Now",
+    "month": "1 month",
+    "three_months": "3 months"
   },
   "anonymous": {
     "candidate_label": "Candidate #{{number}}",

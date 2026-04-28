@@ -5689,10 +5689,19 @@
       "industry": "Settore",
       "industry_placeholder": "Qualsiasi (es. tecnologia)",
       "any": "Qualsiasi (consigliato)"
-    }
+    },
+    "goal_not_found": "Obiettivo di assunzione non trovato",
+    "page_title": "Shortlist AI",
+    "page_subtitle": "I 12 candidati abbinati a questo obiettivo e al DNA della tua azienda.",
+    "explanation_title": "Shortlist e Pool sono separati",
+    "explanation_desc": "Questa pagina è specifica per l’obiettivo: XIMA ordina i candidati rispetto a requisiti del ruolo, DNA aziendale, traiettoria di crescita, coinvolgimento, posizione e credenziali. Il Candidate Pool resta la base talenti completa da esplorare.",
+    "upgrade_badge": "Upgrade",
+    "upgrade_title": "Sblocca tutta la shortlist",
+    "upgrade_cta": "Aggiorna piano",
+    "invite_from_pipeline": "Apri la pipeline sfide per invitare i candidati"
   },
   "candidate_pool": {
-    "title": "Pool Candidati",
+    "title": "Candidate Pool",
     "subtitle": "Esplora i talenti XIMA per identità, non per credenziali",
     "candidates": "candidati",
     "all": "Tutti",
@@ -5725,7 +5734,18 @@
     "create_goal": "Crea Obiettivo di Assunzione",
     "growing_fast": "Crescita rapida",
     "growing": "In crescita",
-    "filter_by_archetype": "Filtra per XIMAtar"
+    "filter_by_archetype": "Filtra per XIMAtar",
+    "filters": "Filtri",
+    "work_mode": "Modalità",
+    "location": "Località",
+    "seniority": "Seniority",
+    "industry": "Settore",
+    "activity": "Attività",
+    "availability": "Disponibilità",
+    "any": "Qualsiasi",
+    "now": "Ora",
+    "month": "1 mese",
+    "three_months": "3 mesi"
   },
   "anonymous": {
     "candidate_label": "Candidato #{{number}}",
