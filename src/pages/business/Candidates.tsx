@@ -368,14 +368,18 @@ const BusinessCandidates = () => {
             {/* Pagination */}
             {totalCount > PAGE_SIZE && (
               <div className="flex items-center justify-center gap-4 pt-4">
-                <Button size="sm" variant="outline" disabled={page === 0} onClick={() => setPage(p => Math.max(0, p - 1))}>
+                <Button size="sm" variant="outline" disabled={page <= 0 || isLoading} onClick={() => setPage(p => Math.max(0, p - 1))}>
                   <ChevronLeft className="h-4 w-4 mr-1" />
                   {t('common.previous', 'Previous')}
                 </Button>
                 <span className="text-sm text-muted-foreground">
-                  {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, totalCount)} / {totalCount}
+                  {t('business.candidates.page_indicator', 'Pagina {{page}} di {{maxPage}} ({{total}} candidati)', {
+                    page: displayedPage,
+                    maxPage,
+                    total: totalCount,
+                  })}
                 </span>
-                <Button size="sm" variant="outline" disabled={(page + 1) * PAGE_SIZE >= totalCount} onClick={() => setPage(p => p + 1)}>
+                <Button size="sm" variant="outline" disabled={(page + 1) * PAGE_SIZE >= totalCount || isLoading} onClick={() => setPage(p => p + 1)}>
                   {t('common.next', 'Next')}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
