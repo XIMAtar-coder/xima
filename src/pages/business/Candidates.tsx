@@ -95,11 +95,6 @@ const BusinessCandidates = () => {
       if (data?.error) throw new Error(data.error_message || data.error);
       const nextCandidates = Array.isArray(data?.candidates) ? data.candidates : [];
       const nextTotal = Math.max(0, Number(data?.total_count ?? 0));
-      const maxPage = Math.max(0, Math.ceil(nextTotal / PAGE_SIZE) - 1);
-      if (page > maxPage) {
-        setPage(maxPage);
-        return;
-      }
       setCandidates(nextCandidates);
       setTotalCount(nextTotal);
       setPlanLimit(Number(data?.plan_limit ?? 5));
