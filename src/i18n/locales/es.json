@@ -2321,7 +2321,21 @@
       "regenerated_desc": "Tu lista ha sido actualizada. Los candidatos guardados permanecen arriba.",
       "show_more": "Mostrar {{count}} más",
       "invite_to_challenge": "Invitar al Desafío",
-      "select_hint": "Selecciona candidatos para invitarlos a tu desafío. Guardar es solo para análisis."
+      "select_hint": "Selecciona candidatos para invitarlos a tu desafío. Guardar es solo para análisis.",
+      "create_challenge_banner": {
+        "title": "Siguiente paso: crea una XIMA Challenge",
+        "description": "Para invitar candidatos desde la shortlist, primero debes crear un desafío conductual para este rol. XIMA te ayuda a construirlo a partir de los requisitos de tu objetivo.",
+        "cta": "Crear Challenge para este rol"
+      },
+      "invite_disabled_tooltip": "Crea primero un desafío para este rol",
+      "invite_level_picker": {
+        "title": "Selecciona el nivel del desafío",
+        "l1": "L1 — Conductual",
+        "l2": "L2 — Técnico",
+        "l3": "L3 — Video"
+      },
+      "challenge_created_toast": "¡Challenge creada! Ahora puedes invitar candidatos desde la shortlist",
+      "invite_top5_disabled": "Crea primero un desafío para invitar al top 5"
     },
     "selection": {
       "selected": "{{count}} seleccionados",
@@ -4247,7 +4261,9 @@
       "industry": "Industria",
       "industry_placeholder": "Cualquiera (ej. tecnología)",
       "any": "Cualquiera (recomendado)"
-    }
+    },
+    "invite_disabled_tooltip": "Crea primero un desafío para este rol",
+    "invite_top5_disabled": "Crea primero un desafío para invitar al top 5"
   },
   "candidate_pool": {
     "title": "Candidate Pool",

@@ -1684,7 +1684,21 @@
       "regenerated_desc": "La tua lista è stata aggiornata. I candidati salvati rimangono in cima.",
       "show_more": "Mostra altri {{count}}",
       "invite_to_challenge": "Invita alla Sfida",
-      "select_hint": "Seleziona i candidati per invitarli alla sfida. Il salvataggio è solo per l'analisi."
+      "select_hint": "Seleziona i candidati per invitarli alla sfida. Il salvataggio è solo per l'analisi.",
+      "create_challenge_banner": {
+        "title": "Prossimo passo: crea una XIMA Challenge",
+        "description": "Per invitare i candidati dalla shortlist, devi prima creare una challenge comportamentale per questo ruolo. XIMA ti aiuta a costruirla a partire dai requisiti del tuo obiettivo.",
+        "cta": "Crea Challenge per questo ruolo"
+      },
+      "invite_disabled_tooltip": "Crea prima una challenge per questo ruolo",
+      "invite_level_picker": {
+        "title": "Seleziona il livello della challenge",
+        "l1": "L1 — Comportamentale",
+        "l2": "L2 — Tecnico",
+        "l3": "L3 — Video"
+      },
+      "challenge_created_toast": "Challenge creata! Ora puoi invitare candidati dalla shortlist",
+      "invite_top5_disabled": "Crea prima una challenge per invitare i top 5"
     },
     "selection": {
       "selected": "{{count}} selezionati",
@@ -5698,7 +5712,9 @@
     "upgrade_badge": "Upgrade",
     "upgrade_title": "Sblocca tutta la shortlist",
     "upgrade_cta": "Aggiorna piano",
-    "invite_from_pipeline": "Apri la pipeline sfide per invitare i candidati"
+    "invite_from_pipeline": "Apri la pipeline sfide per invitare i candidati",
+    "invite_disabled_tooltip": "Crea prima una challenge per questo ruolo",
+    "invite_top5_disabled": "Crea prima una challenge per invitare i top 5"
   },
   "candidate_pool": {
     "title": "Candidate Pool",
