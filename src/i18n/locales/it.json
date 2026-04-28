@@ -1654,7 +1654,12 @@
       "all_matches": "Tutti i match",
       "saved": "Salvati",
       "not_computed": "Non calcolato",
-      "invitation_sent": "Invito inviato"
+      "invitation_sent": "Invito inviato",
+      "page_indicator": "Pagina {{page}} di {{maxPage}} ({{total}} candidati)",
+      "fetch_error": "Errore nel caricamento dei candidati. Riprova.",
+      "no_results": "Nessun candidato corrisponde ai filtri selezionati",
+      "pool_empty": "La piattaforma non ha ancora candidati con XIMAtar completato",
+      "loading": "Caricamento candidati..."
     },
     "recommendations": {
       "based_on_label": "Consigliati in base al tuo Profilo Aziendale + questo Obiettivo di Assunzione",
