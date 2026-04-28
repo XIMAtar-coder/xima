@@ -372,7 +372,7 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
                 <div key={item.pillar} className="space-y-1">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{item.pillar}</span>
-                    <span className="font-bold text-foreground">{item.score.toFixed(1)}</span>
+                    <span className="font-bold text-foreground">{formatRoundedScore(item.score)}</span>
                   </div>
                   <div className="w-full bg-muted rounded-full h-2">
                     <div
@@ -388,8 +388,8 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
               <h4 className="text-sm font-semibold mb-2">XIMAtar Summary</h4>
               <p className="text-sm text-muted-foreground">
                 This candidate exhibits strong {ximatarLabel} characteristics, 
-                with an overall evaluation score of {evaluationScore.toFixed(1)} and 
-                balanced pillar performance averaging {pillarAverage.toFixed(1)}.
+                with an overall evaluation score of {roundedEvaluationScore} and 
+                balanced pillar performance averaging {roundedPillarAverage}.
               </p>
             </div>
           </div>
