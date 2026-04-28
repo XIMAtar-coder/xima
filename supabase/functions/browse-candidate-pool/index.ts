@@ -105,7 +105,7 @@ serve(async (req) => {
     if (effectiveLimit <= 0) {
       return jsonResponse({
         candidates: [],
-        total_count: 0,
+        total_count: planLimit,
         plan_limit: planLimit,
         is_restricted: true,
         page,
