@@ -37,6 +37,7 @@ const CreateXimaCoreChallenge = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const goalId = searchParams.get('goal');
+  const returnTo = searchParams.get('returnTo');
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
@@ -95,7 +96,7 @@ const CreateXimaCoreChallenge = () => {
           description: t('xima_core.already_active_desc'),
           variant: 'destructive'
         });
-        navigate(`/business/candidates?fromGoal=${goalId}`);
+        navigate(returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : `/business/candidates?fromGoal=${goalId}`);
         return;
       }
     }
@@ -238,7 +239,7 @@ const CreateXimaCoreChallenge = () => {
 
       // Navigate back
       if (goalId) {
-        navigate(`/business/candidates?fromGoal=${goalId}`);
+        navigate(returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : `/business/candidates?fromGoal=${goalId}`);
       } else {
         navigate('/business/challenges');
       }
@@ -291,7 +292,7 @@ const CreateXimaCoreChallenge = () => {
         <div className="space-y-4">
           <Button 
             variant="ghost" 
-            onClick={() => navigate(goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/challenges')}
+            onClick={() => navigate(goalId && returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/challenges')}
             className="gap-2 -ml-2"
           >
             <ArrowLeft size={16} />

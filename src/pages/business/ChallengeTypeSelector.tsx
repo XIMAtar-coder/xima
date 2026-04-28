@@ -14,6 +14,8 @@ const ChallengeTypeSelector = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const goalId = searchParams.get('goal');
+  const returnTo = searchParams.get('returnTo');
+  const returnParam = returnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : '';
   const { t } = useTranslation();
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: businessLoading } = useBusinessRole();
@@ -67,16 +69,16 @@ const ChallengeTypeSelector = () => {
       setLoading(false);
     } else {
       // No XIMA Core exists - redirect directly to XIMA Core page
-      navigate(`/business/challenges/xima-core?goal=${goalId}`);
+      navigate(`/business/challenges/xima-core?goal=${goalId}${returnParam}`);
     }
   };
 
   const handleSelectXimaCore = () => {
-    navigate(`/business/challenges/xima-core?goal=${goalId}`);
+    navigate(`/business/challenges/xima-core?goal=${goalId}${returnParam}`);
   };
 
   const handleSelectCustom = () => {
-    navigate(`/business/challenges/new?goal=${goalId}&type=custom`);
+    navigate(`/business/challenges/new?goal=${goalId}&type=custom${returnParam}`);
   };
 
   if (loading || businessLoading) {
@@ -96,7 +98,7 @@ const ChallengeTypeSelector = () => {
         <div className="space-y-4">
           <Button 
             variant="ghost" 
-            onClick={() => navigate(goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/dashboard')}
+            onClick={() => navigate(goalId && returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/dashboard')}
             className="gap-2 -ml-2"
           >
             <ArrowLeft size={16} />
