@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import BusinessLayout from '@/components/business/BusinessLayout';
@@ -49,6 +49,7 @@ const BusinessCandidates = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
+  const fetchSeq = useRef(0);
 
   // Challenge invite flow
   const [allChallenges, setAllChallenges] = useState<Challenge[]>([]);
@@ -81,29 +82,36 @@ const BusinessCandidates = () => {
 
   const fetchCandidates = useCallback(async () => {
     if (!user?.id) return;
+    const seq = fetchSeq.current + 1;
+    fetchSeq.current = seq;
     setIsLoading(true);
+    setLoadError(null);
     try {
       const { data, error } = await supabase.functions.invoke('browse-candidate-pool', {
         body: { filters, page, page_size: PAGE_SIZE },
       });
+      if (seq !== fetchSeq.current) return;
       if (error) throw error;
       if (data?.error) throw new Error(data.error_message || data.error);
       const nextCandidates = Array.isArray(data?.candidates) ? data.candidates : [];
-      const nextTotal = Math.max(0, Number(data?.total_count || 0));
+      const nextTotal = Math.max(0, Number(data?.total_count ?? 0));
+      const maxPage = Math.max(0, Math.ceil(nextTotal / PAGE_SIZE) - 1);
+      if (page > maxPage) {
+        setPage(maxPage);
+        return;
+      }
       setCandidates(nextCandidates);
       setTotalCount(nextTotal);
-      setPlanLimit(data.plan_limit || 5);
-      setIsRestricted(data.is_restricted || false);
-      setLoadError(null);
-      const maxPage = Math.max(0, Math.ceil(nextTotal / PAGE_SIZE) - 1);
-      if (page > maxPage) setPage(maxPage);
+      setPlanLimit(Number(data?.plan_limit ?? 5));
+      setIsRestricted(Boolean(data?.is_restricted));
     } catch (err) {
-      console.warn('[candidate-pool] Load error:', err);
+      console.error('[Pool] Fetch error:', err);
+      if (seq !== fetchSeq.current) return;
       setCandidates([]);
       setTotalCount(0);
-      setLoadError(err instanceof Error ? err.message : t('candidate_pool.load_error', 'Failed to load candidates'));
+      setLoadError(t('business.candidates.fetch_error', 'Errore nel caricamento dei candidati. Riprova.'));
     } finally {
-      setIsLoading(false);
+      if (seq === fetchSeq.current) setIsLoading(false);
     }
   }, [user?.id, filters, page, t]);
 
@@ -153,6 +161,8 @@ const BusinessCandidates = () => {
 
   const clearFilters = () => { setFilters(INITIAL_FILTERS); setPage(0); };
   const hasActiveFilters = Object.entries(filters).some(([k, v]) => k === 'min_level' ? v > 1 : Boolean(v));
+  const maxPage = useMemo(() => Math.max(1, Math.ceil(totalCount / PAGE_SIZE)), [totalCount]);
+  const displayedPage = Math.min(page + 1, maxPage);
 
   return (
     <BusinessLayout>
@@ -221,8 +231,7 @@ const BusinessCandidates = () => {
               <input
                 type="text"
                 value={filters.location}
-                onChange={e => setFilters(f => ({ ...f, location: e.target.value }))}
-                onBlur={() => setPage(0)}
+                onChange={e => { setFilters(f => ({ ...f, location: e.target.value })); setPage(0); }}
                 placeholder={t('candidate_pool.location_placeholder', 'Città o paese')}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
               />
@@ -247,8 +256,7 @@ const BusinessCandidates = () => {
               <input
                 type="text"
                 value={filters.industry}
-                onChange={e => setFilters(f => ({ ...f, industry: e.target.value }))}
-                onBlur={() => setPage(0)}
+                onChange={e => { setFilters(f => ({ ...f, industry: e.target.value })); setPage(0); }}
                 placeholder={t('candidate_pool.industry_placeholder', 'es. Tech')}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
               />
@@ -306,15 +314,18 @@ const BusinessCandidates = () => {
 
         {/* Candidate grid */}
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-64 rounded-xl" />
-            ))}
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">{t('business.candidates.loading', 'Caricamento candidati...')}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-64 rounded-xl" />
+              ))}
+            </div>
           </div>
         ) : loadError ? (
           <div className="text-center py-16 space-y-4 rounded-xl border bg-secondary/10">
             <Users className="h-12 w-12 mx-auto text-muted-foreground/50" />
-            <p className="text-lg font-medium text-foreground">{t('candidate_pool.load_error', 'Failed to load candidates')}</p>
+            <p className="text-lg font-medium text-foreground">{t('business.candidates.fetch_error', 'Errore nel caricamento dei candidati. Riprova.')}</p>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">{loadError}</p>
             <Button variant="outline" onClick={fetchCandidates}>{t('common.retry', 'Retry')}</Button>
           </div>
@@ -323,8 +334,8 @@ const BusinessCandidates = () => {
             <Users className="h-12 w-12 mx-auto text-muted-foreground/50" />
             <p className="text-lg font-medium text-foreground">
               {totalCount === 0
-                ? t('candidate_pool.empty_platform', 'Il pool candidati è vuoto')
-                : t('candidate_pool.no_results', 'Nessun candidato corrisponde ai filtri')}
+                ? t('business.candidates.pool_empty', 'La piattaforma non ha ancora candidati con XIMAtar completato')
+                : t('business.candidates.no_results', 'Nessun candidato corrisponde ai filtri selezionati')}
             </p>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
               {totalCount === 0
@@ -357,14 +368,18 @@ const BusinessCandidates = () => {
             {/* Pagination */}
             {totalCount > PAGE_SIZE && (
               <div className="flex items-center justify-center gap-4 pt-4">
-                <Button size="sm" variant="outline" disabled={page === 0} onClick={() => setPage(p => Math.max(0, p - 1))}>
+                <Button size="sm" variant="outline" disabled={page <= 0 || isLoading} onClick={() => setPage(p => Math.max(0, p - 1))}>
                   <ChevronLeft className="h-4 w-4 mr-1" />
                   {t('common.previous', 'Previous')}
                 </Button>
                 <span className="text-sm text-muted-foreground">
-                  {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, totalCount)} / {totalCount}
+                  {t('business.candidates.page_indicator', 'Pagina {{page}} di {{maxPage}} ({{total}} candidati)', {
+                    page: displayedPage,
+                    maxPage,
+                    total: totalCount,
+                  })}
                 </span>
-                <Button size="sm" variant="outline" disabled={(page + 1) * PAGE_SIZE >= totalCount} onClick={() => setPage(p => p + 1)}>
+                <Button size="sm" variant="outline" disabled={(page + 1) * PAGE_SIZE >= totalCount || isLoading} onClick={() => setPage(p => p + 1)}>
                   {t('common.next', 'Next')}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
