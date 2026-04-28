@@ -2298,7 +2298,12 @@
       "all_matches": "Todos los matches",
       "saved": "Guardados",
       "not_computed": "No calculado",
-      "invitation_sent": "Invitación enviada"
+      "invitation_sent": "Invitación enviada",
+      "page_indicator": "Página {{page}} de {{maxPage}} ({{total}} candidatos)",
+      "fetch_error": "Error al cargar candidatos. Inténtalo de nuevo.",
+      "no_results": "Ningún candidato coincide con los filtros seleccionados",
+      "pool_empty": "La plataforma aún no tiene candidatos con XIMAtar completado",
+      "loading": "Cargando candidatos..."
     },
     "shortlist": {
       "title": "Lista Basada en Tu Objetivo de Contratación",
