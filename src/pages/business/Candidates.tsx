@@ -231,8 +231,7 @@ const BusinessCandidates = () => {
               <input
                 type="text"
                 value={filters.location}
-                onChange={e => setFilters(f => ({ ...f, location: e.target.value }))}
-                onBlur={() => setPage(0)}
+                onChange={e => { setFilters(f => ({ ...f, location: e.target.value })); setPage(0); }}
                 placeholder={t('candidate_pool.location_placeholder', 'Città o paese')}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
               />
@@ -257,8 +256,7 @@ const BusinessCandidates = () => {
               <input
                 type="text"
                 value={filters.industry}
-                onChange={e => setFilters(f => ({ ...f, industry: e.target.value }))}
-                onBlur={() => setPage(0)}
+                onChange={e => { setFilters(f => ({ ...f, industry: e.target.value })); setPage(0); }}
                 placeholder={t('candidate_pool.industry_placeholder', 'es. Tech')}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
               />
@@ -316,15 +314,18 @@ const BusinessCandidates = () => {
 
         {/* Candidate grid */}
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-64 rounded-xl" />
-            ))}
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">{t('business.candidates.loading', 'Caricamento candidati...')}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-64 rounded-xl" />
+              ))}
+            </div>
           </div>
         ) : loadError ? (
           <div className="text-center py-16 space-y-4 rounded-xl border bg-secondary/10">
             <Users className="h-12 w-12 mx-auto text-muted-foreground/50" />
-            <p className="text-lg font-medium text-foreground">{t('candidate_pool.load_error', 'Failed to load candidates')}</p>
+            <p className="text-lg font-medium text-foreground">{t('business.candidates.fetch_error', 'Errore nel caricamento dei candidati. Riprova.')}</p>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">{loadError}</p>
             <Button variant="outline" onClick={fetchCandidates}>{t('common.retry', 'Retry')}</Button>
           </div>
@@ -333,8 +334,8 @@ const BusinessCandidates = () => {
             <Users className="h-12 w-12 mx-auto text-muted-foreground/50" />
             <p className="text-lg font-medium text-foreground">
               {totalCount === 0
-                ? t('candidate_pool.empty_platform', 'Il pool candidati è vuoto')
-                : t('candidate_pool.no_results', 'Nessun candidato corrisponde ai filtri')}
+                ? t('business.candidates.pool_empty', 'La piattaforma non ha ancora candidati con XIMAtar completato')
+                : t('business.candidates.no_results', 'Nessun candidato corrisponde ai filtri selezionati')}
             </p>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
               {totalCount === 0
