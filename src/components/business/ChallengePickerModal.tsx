@@ -20,7 +20,8 @@ export interface Challenge {
   hiring_goal_id?: string;
   goal_title?: string;
   end_at?: string | null;
-  rubric?: { type?: string; isXimaCore?: boolean; level?: number } | null;
+  level?: number | null;
+  rubric?: any;
 }
 
 interface ChallengePickerModalProps {
@@ -57,13 +58,21 @@ export const ChallengePickerModal: React.FC<ChallengePickerModalProps> = ({
     }
   };
 
+  const getLevelLabel = (challenge: Challenge) => {
+    const level = challenge.rubric?.level || challenge.level;
+    if (level === 1) return t('business.shortlist.invite_level_picker.l1', 'L1 — Behavioural');
+    if (level === 2) return t('business.shortlist.invite_level_picker.l2', 'L2 — Technical');
+    if (level === 3) return t('business.shortlist.invite_level_picker.l3', 'L3 — Video');
+    return null;
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-card border-border max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Target className="h-5 w-5 text-primary" />
-            {t('business.invite.choose_challenge')}
+            {t('business.shortlist.invite_level_picker.title', t('business.invite.choose_challenge'))}
           </DialogTitle>
         </DialogHeader>
 
@@ -89,7 +98,10 @@ export const ChallengePickerModal: React.FC<ChallengePickerModalProps> = ({
               >
                 <RadioGroupItem value={challenge.id} id={challenge.id} className="mt-0.5" />
                 <Label htmlFor={challenge.id} className="flex-1 cursor-pointer">
-                  <div className="font-medium text-foreground">{challenge.title}</div>
+                  <div className="font-medium text-foreground">{getLevelLabel(challenge) || challenge.title}</div>
+                  {getLevelLabel(challenge) && (
+                    <div className="text-xs text-muted-foreground mt-0.5">{challenge.title}</div>
+                  )}
                   {challenge.goal_title && (
                     <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
                       <Briefcase size={12} />

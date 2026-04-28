@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, MapPin, Clock, Activity, Zap, Send, User } from 'lucide-react';
 import { PillarScoreBar, formatRoundedScore } from './PillarScoreBar';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ShortlistCandidate {
   id?: string;
@@ -32,6 +33,8 @@ interface ShortlistCardProps {
   candidate: ShortlistCandidate;
   rank: number;
   locked?: boolean;
+  inviteDisabled?: boolean;
+  inviteDisabledReason?: string;
   onInviteToChallenge: (candidateUserId: string) => void;
   onViewProfile: (candidateUserId: string) => void;
 }
@@ -39,7 +42,7 @@ interface ShortlistCardProps {
 const getArchetypeImageUrl = (archetype: string) =>
   `/ximatars/${(archetype || 'chameleon').toLowerCase()}.png`;
 
-export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, locked = false, onInviteToChallenge, onViewProfile }) => {
+export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, locked = false, inviteDisabled = false, inviteDisabledReason, onInviteToChallenge, onViewProfile }) => {
   const { t } = useTranslation();
   const imageUrl = getArchetypeImageUrl(candidate.ximatar_archetype);
   const archetypeName = candidate.ximatar_archetype.charAt(0).toUpperCase() + candidate.ximatar_archetype.slice(1);
@@ -135,10 +138,24 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, l
 
         {/* Actions */}
         <div className="flex gap-2 pt-1">
-          <Button size="sm" className="flex-1 gap-1" onClick={() => onInviteToChallenge(candidate.candidate_user_id)}>
-            <Send className="w-3.5 h-3.5" />
-            {t('shortlist.invite_to_challenge', 'Invite to Challenge')}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="flex-1">
+                <Button
+                  size="sm"
+                  className="w-full gap-1"
+                  onClick={() => onInviteToChallenge(candidate.candidate_user_id)}
+                  disabled={inviteDisabled}
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  {t('shortlist.invite_to_challenge', 'Invite to Challenge')}
+                </Button>
+              </span>
+            </TooltipTrigger>
+            {inviteDisabled && inviteDisabledReason && (
+              <TooltipContent>{inviteDisabledReason}</TooltipContent>
+            )}
+          </Tooltip>
           <Button size="sm" variant="outline" onClick={() => onViewProfile(candidate.candidate_user_id)}>
             <User className="w-3.5 h-3.5" />
           </Button>

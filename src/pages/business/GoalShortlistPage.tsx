@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { GoalContextHeader } from '@/components/business/GoalContextHeader';
@@ -14,11 +14,14 @@ import { Sparkles, Users } from 'lucide-react';
 const GoalShortlistPage: React.FC = () => {
   const { goalId } = useParams<{ goalId: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
   const { toast } = useToast();
   const { goals, loading } = useHiringGoals();
   const [directGoal, setDirectGoal] = React.useState<any>(null);
   const [directLoading, setDirectLoading] = React.useState(false);
+  const [activeChallenges, setActiveChallenges] = React.useState<any[]>([]);
+  const [challengeLoading, setChallengeLoading] = React.useState(false);
   const currentGoal = goals.find((goal) => goal.id === goalId) || directGoal;
 
   React.useEffect(() => {
@@ -35,6 +38,98 @@ const GoalShortlistPage: React.FC = () => {
     };
     loadGoal();
   }, [goalId, goals]);
+
+
+
+  const loadActiveChallenges = React.useCallback(async () => {
+    if (!goalId) return;
+    setChallengeLoading(true);
+    const { data, error } = await supabase
+      .from('business_challenges')
+      .select('id, title, level, status, updated_at, end_at, rubric, hiring_goal_id')
+      .eq('hiring_goal_id', goalId)
+      .eq('status', 'active')
+      .order('level', { ascending: true });
+
+    if (error) {
+      toast({ title: t('common.error'), description: error.message, variant: 'destructive' });
+      setActiveChallenges([]);
+    } else {
+      setActiveChallenges(data || []);
+    }
+    setChallengeLoading(false);
+  }, [goalId, toast, t]);
+
+  React.useEffect(() => {
+    loadActiveChallenges();
+  }, [loadActiveChallenges]);
+
+  React.useEffect(() => {
+    if (searchParams.get('challengeCreated') === '1') {
+      toast({ title: t('business.shortlist.challenge_created_toast', 'Challenge created! You can now invite candidates from the shortlist') });
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete('challengeCreated');
+      setSearchParams(nextParams, { replace: true });
+      loadActiveChallenges();
+    }
+  }, [searchParams, setSearchParams, toast, t, loadActiveChallenges]);
+
+  const handleInviteToChallenge = async (candidateUserIds: string[], challenge: any) => {
+    if (!goalId || !challenge?.id || candidateUserIds.length === 0) return;
+    const { data: authData } = await supabase.auth.getUser();
+    const user = authData.user;
+    if (!user) {
+      navigate('/business/login');
+      return;
+    }
+
+    try {
+      const { data: profiles, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, user_id, display_name')
+        .in('user_id', candidateUserIds);
+      if (profileError) throw profileError;
+
+      const profileMap = new Map((profiles || []).map((profile: any) => [profile.user_id, profile]));
+      let successCount = 0;
+
+      for (const candidateUserId of candidateUserIds) {
+        const profile = profileMap.get(candidateUserId);
+        if (!profile?.id) continue;
+
+        const { data: existingInvitation, error: existingError } = await supabase
+          .from('challenge_invitations')
+          .select('id')
+          .eq('business_id', user.id)
+          .eq('hiring_goal_id', goalId)
+          .eq('candidate_profile_id', profile.id)
+          .eq('challenge_id', challenge.id)
+          .maybeSingle();
+        if (existingError) throw existingError;
+        if (existingInvitation) continue;
+
+        const { error: insertError } = await supabase
+          .from('challenge_invitations')
+          .insert({
+            business_id: user.id,
+            hiring_goal_id: goalId,
+            candidate_profile_id: profile.id,
+            challenge_id: challenge.id,
+            status: 'invited',
+            sent_via: ['platform'],
+          });
+        if (insertError) throw insertError;
+        successCount += 1;
+      }
+
+      toast({
+        title: t('business.invite.success_title', 'Invitation sent'),
+        description: t('business.invite.success_desc', '{{count}} candidate(s) invited', { count: successCount }),
+      });
+    } catch (error: any) {
+      toast({ title: t('common.error'), description: error.message, variant: 'destructive' });
+    }
+  };
 
   const handleGoalSwitch = (newGoalId: string) => {
     navigate(`/business/goals/${newGoalId}/shortlist`);
@@ -91,7 +186,10 @@ const GoalShortlistPage: React.FC = () => {
         <ShortlistView
           goalId={goalId}
           roleTitle={currentGoal.role_title || t('business.goals.untitled')}
-          onInviteToChallenge={() => toast({ title: t('shortlist.invite_from_pipeline', 'Open the challenge pipeline to invite candidates') })}
+          activeChallenges={activeChallenges}
+          challengeLoading={challengeLoading}
+          onCreateChallenge={() => navigate(`/business/challenges/select?goal=${goalId}&returnTo=shortlist`)}
+          onInviteToChallenge={handleInviteToChallenge}
           onViewProfile={() => toast({ title: t('anonymous.identity_hidden', 'Identity hidden — revealed at offer stage') })}
         />
       </div>

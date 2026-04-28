@@ -96,6 +96,8 @@ const CreateChallenge = () => {
   const [searchParams] = useSearchParams();
   const { id: challengeId } = useParams();
   const goalId = searchParams.get('goal');
+  const returnTo = searchParams.get('returnTo');
+  const returnParam = returnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : '';
   const challengeType = searchParams.get('type'); // 'custom' means they explicitly chose custom
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
@@ -134,7 +136,7 @@ const CreateChallenge = () => {
     if (!isEditMode && goalId && challengeType !== 'custom') {
       // User navigated directly to /challenges/new?goal=X without going through selector
       // Redirect them to the challenge type selector
-      navigate(`/business/challenges/select?goal=${goalId}`, { replace: true });
+      navigate(`/business/challenges/select?goal=${goalId}${returnParam}`, { replace: true });
       return;
     }
   }, [isEditMode, goalId, challengeType, navigate]);
@@ -393,7 +395,9 @@ const CreateChallenge = () => {
       });
 
       // Navigate back
-      if (effectiveGoalId) {
+      if (effectiveGoalId && returnTo === 'shortlist' && newStatus === 'active') {
+        navigate(`/business/goals/${effectiveGoalId}/shortlist?challengeCreated=1`);
+      } else if (effectiveGoalId) {
         navigate(`/business/candidates?fromGoal=${effectiveGoalId}`);
       } else {
         navigate('/business/challenges');
@@ -418,6 +422,9 @@ const CreateChallenge = () => {
 
   const getBackUrl = () => {
     const effectiveGoalId = isEditMode ? existingChallenge?.hiring_goal_id : goalId;
+    if (effectiveGoalId && returnTo === 'shortlist') {
+      return `/business/goals/${effectiveGoalId}/shortlist`;
+    }
     if (effectiveGoalId) {
       return `/business/candidates?fromGoal=${effectiveGoalId}`;
     }

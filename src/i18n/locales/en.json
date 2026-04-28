@@ -1318,6 +1318,22 @@
       "go_to_challenges": "Go to challenges",
       "no_goals_hint": "Create a hiring goal first",
       "create_goal": "Create Goal"
+    },
+    "shortlist": {
+      "create_challenge_banner": {
+        "title": "Next step: create a XIMA Challenge",
+        "description": "To invite candidates from the shortlist, first create a behavioural challenge for this role. XIMA helps build it from your goal requirements.",
+        "cta": "Create Challenge for this role"
+      },
+      "invite_disabled_tooltip": "Create a challenge for this role first",
+      "invite_level_picker": {
+        "title": "Select the challenge level",
+        "l1": "L1 — Behavioural",
+        "l2": "L2 — Technical",
+        "l3": "L3 — Video"
+      },
+      "challenge_created_toast": "Challenge created! You can now invite candidates from the shortlist",
+      "invite_top5_disabled": "Create a challenge before inviting the top 5"
     }
   },
   "not_found": {
@@ -4977,7 +4993,9 @@
     "upgrade_badge": "Upgrade",
     "upgrade_title": "Unlock the full shortlist",
     "upgrade_cta": "Upgrade plan",
-    "invite_from_pipeline": "Open the challenge pipeline to invite candidates"
+    "invite_from_pipeline": "Open the challenge pipeline to invite candidates",
+    "invite_disabled_tooltip": "Create a challenge for this role first",
+    "invite_top5_disabled": "Create a challenge before inviting the top 5"
   },
   "candidate_pool": {
     "title": "Candidate Pool",
