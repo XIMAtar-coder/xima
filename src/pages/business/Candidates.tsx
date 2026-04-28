@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import BusinessLayout from '@/components/business/BusinessLayout';
@@ -49,6 +49,7 @@ const BusinessCandidates = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
+  const fetchSeq = useRef(0);
 
   // Challenge invite flow
   const [allChallenges, setAllChallenges] = useState<Challenge[]>([]);
@@ -81,29 +82,36 @@ const BusinessCandidates = () => {
 
   const fetchCandidates = useCallback(async () => {
     if (!user?.id) return;
+    const seq = fetchSeq.current + 1;
+    fetchSeq.current = seq;
     setIsLoading(true);
+    setLoadError(null);
     try {
       const { data, error } = await supabase.functions.invoke('browse-candidate-pool', {
         body: { filters, page, page_size: PAGE_SIZE },
       });
+      if (seq !== fetchSeq.current) return;
       if (error) throw error;
       if (data?.error) throw new Error(data.error_message || data.error);
       const nextCandidates = Array.isArray(data?.candidates) ? data.candidates : [];
-      const nextTotal = Math.max(0, Number(data?.total_count || 0));
+      const nextTotal = Math.max(0, Number(data?.total_count ?? 0));
+      const maxPage = Math.max(0, Math.ceil(nextTotal / PAGE_SIZE) - 1);
+      if (page > maxPage) {
+        setPage(maxPage);
+        return;
+      }
       setCandidates(nextCandidates);
       setTotalCount(nextTotal);
-      setPlanLimit(data.plan_limit || 5);
-      setIsRestricted(data.is_restricted || false);
-      setLoadError(null);
-      const maxPage = Math.max(0, Math.ceil(nextTotal / PAGE_SIZE) - 1);
-      if (page > maxPage) setPage(maxPage);
+      setPlanLimit(Number(data?.plan_limit ?? 5));
+      setIsRestricted(Boolean(data?.is_restricted));
     } catch (err) {
-      console.warn('[candidate-pool] Load error:', err);
+      console.error('[Pool] Fetch error:', err);
+      if (seq !== fetchSeq.current) return;
       setCandidates([]);
       setTotalCount(0);
-      setLoadError(err instanceof Error ? err.message : t('candidate_pool.load_error', 'Failed to load candidates'));
+      setLoadError(t('business.candidates.fetch_error', 'Errore nel caricamento dei candidati. Riprova.'));
     } finally {
-      setIsLoading(false);
+      if (seq === fetchSeq.current) setIsLoading(false);
     }
   }, [user?.id, filters, page, t]);
 
@@ -153,6 +161,8 @@ const BusinessCandidates = () => {
 
   const clearFilters = () => { setFilters(INITIAL_FILTERS); setPage(0); };
   const hasActiveFilters = Object.entries(filters).some(([k, v]) => k === 'min_level' ? v > 1 : Boolean(v));
+  const maxPage = useMemo(() => Math.max(1, Math.ceil(totalCount / PAGE_SIZE)), [totalCount]);
+  const displayedPage = Math.min(page + 1, maxPage);
 
   return (
     <BusinessLayout>
