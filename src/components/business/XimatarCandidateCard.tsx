@@ -11,6 +11,7 @@ import { Star, Target, TrendingUp, Bookmark, BookmarkCheck, Send, CheckCircle2, 
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer } from 'recharts';
 import { CandidateLevelBadge } from './CandidateLevelBadge';
 import { CandidateLevelProgress } from '@/lib/challenges/challengeLevels';
+import { formatRoundedScore } from './PillarScoreBar';
 
 export interface XimatarRecommendationExplanation {
   shortReason: string;
@@ -93,6 +94,8 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
   const { t } = useTranslation();
   const [showDetail, setShowDetail] = useState(false);
   const level = getLevelBadge(evaluationScore);
+  const roundedEvaluationScore = formatRoundedScore(evaluationScore);
+  const roundedPillarAverage = formatRoundedScore(pillarAverage);
 
   // Check if pillars have real data
   const hasPillarData = pillarAverage > 0;
@@ -223,20 +226,20 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-white/70">{t('business.candidates.evaluation_score', 'Evaluation Score')}</span>
-              <span className="text-sm font-bold text-white">{evaluationScore.toFixed(1)}</span>
+              <span className="text-sm font-bold text-white">{roundedEvaluationScore}</span>
             </div>
 
             <div className="flex items-center justify-between">
               <span className="text-sm text-white/70">{t('business.candidates.pillar_average', 'Pillar Average')}</span>
               <span className="text-sm font-bold text-white">
-                {hasPillarData ? pillarAverage.toFixed(1) : t('business.candidates.not_computed', 'Not computed')}
+                {hasPillarData ? roundedPillarAverage : t('business.candidates.not_computed', 'Not computed')}
               </span>
             </div>
 
             <div className="w-full bg-muted rounded-full h-2">
               <div
                 className="bg-gradient-to-r from-primary to-purple-500 h-2 rounded-full transition-all"
-                style={{ width: `${Math.min(100, evaluationScore)}%` }}
+                style={{ width: `${Math.min(100, Math.max(0, roundedEvaluationScore))}%` }}
               />
             </div>
           </div>
