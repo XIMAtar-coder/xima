@@ -213,7 +213,7 @@ const HiringGoalCreate = () => {
         navigate('/business/dashboard');
       } else {
         toast.success(t('hiring_goal.created', 'Obiettivo creato con successo'));
-        navigate(`/business/goals/${goal.id}/candidates`);
+        navigate(`/business/goals/${goal.id}/shortlist`);
       }
     } catch (err: any) {
       toast.error(err.message);

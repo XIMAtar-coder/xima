@@ -59,6 +59,7 @@ import GoalChallenges from "./pages/business/GoalChallenges";
 import GoalSettings from "./pages/business/GoalSettings";
 import GoalDecisionPack from "./pages/business/GoalDecisionPack";
 import ChallengeResponses from "./pages/business/ChallengeResponses";
+import GoalShortlistPage from "./pages/business/GoalShortlistPage";
 import ChallengeCompletion from "./pages/candidate/ChallengeCompletion";
 import ChallengeFollowup from "./pages/candidate/ChallengeFollowup";
 import StandingVideoSession from "./pages/candidate/StandingVideoSession";
@@ -158,6 +159,7 @@ const AppContent = () => {
           <Route path="/business/jobs/import" element={<JobImportWizard />} />
           <Route path="/business/jobs/:jobId/matches" element={<JobCandidateMatching />} />
           {/* Goal-scoped routes */}
+          <Route path="/business/goals/:goalId/shortlist" element={<GoalShortlistPage />} />
           <Route path="/business/goals/:goalId/candidates" element={<GoalCandidates />} />
           <Route path="/business/goals/:goalId/challenges" element={<GoalChallenges />} />
           <Route path="/business/goals/:goalId/settings" element={<GoalSettings />} />

@@ -47,6 +47,7 @@ const BusinessCandidates = () => {
   const [planLimit, setPlanLimit] = useState(5);
   const [isRestricted, setIsRestricted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
 
   // Challenge invite flow
@@ -86,16 +87,25 @@ const BusinessCandidates = () => {
         body: { filters, page, page_size: PAGE_SIZE },
       });
       if (error) throw error;
-      setCandidates(data.candidates || []);
-      setTotalCount(data.total_count || 0);
+      if (data?.error) throw new Error(data.error_message || data.error);
+      const nextCandidates = Array.isArray(data?.candidates) ? data.candidates : [];
+      const nextTotal = Math.max(0, Number(data?.total_count || 0));
+      setCandidates(nextCandidates);
+      setTotalCount(nextTotal);
       setPlanLimit(data.plan_limit || 5);
       setIsRestricted(data.is_restricted || false);
+      setLoadError(null);
+      const maxPage = Math.max(0, Math.ceil(nextTotal / PAGE_SIZE) - 1);
+      if (page > maxPage) setPage(maxPage);
     } catch (err) {
       console.warn('[candidate-pool] Load error:', err);
+      setCandidates([]);
+      setTotalCount(0);
+      setLoadError(err instanceof Error ? err.message : t('candidate_pool.load_error', 'Failed to load candidates'));
     } finally {
       setIsLoading(false);
     }
-  }, [user?.id, filters, page]);
+  }, [user?.id, filters, page, t]);
 
   useEffect(() => { fetchCandidates(); }, [fetchCandidates]);
 
@@ -301,6 +311,13 @@ const BusinessCandidates = () => {
               <Skeleton key={i} className="h-64 rounded-xl" />
             ))}
           </div>
+        ) : loadError ? (
+          <div className="text-center py-16 space-y-4 rounded-xl border bg-secondary/10">
+            <Users className="h-12 w-12 mx-auto text-muted-foreground/50" />
+            <p className="text-lg font-medium text-foreground">{t('candidate_pool.load_error', 'Failed to load candidates')}</p>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">{loadError}</p>
+            <Button variant="outline" onClick={fetchCandidates}>{t('common.retry', 'Retry')}</Button>
+          </div>
         ) : candidates.length === 0 ? (
           <div className="text-center py-16 space-y-4 rounded-xl border bg-secondary/10">
             <Users className="h-12 w-12 mx-auto text-muted-foreground/50" />
@@ -340,7 +357,7 @@ const BusinessCandidates = () => {
             {/* Pagination */}
             {totalCount > PAGE_SIZE && (
               <div className="flex items-center justify-center gap-4 pt-4">
-                <Button size="sm" variant="outline" disabled={page === 0} onClick={() => setPage(p => p - 1)}>
+                <Button size="sm" variant="outline" disabled={page === 0} onClick={() => setPage(p => Math.max(0, p - 1))}>
                   <ChevronLeft className="h-4 w-4 mr-1" />
                   {t('common.previous', 'Previous')}
                 </Button>

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -7,6 +7,7 @@ import { ShortlistCard } from './ShortlistCard';
 import { ShortlistFilters, type ShortlistFilterValues } from './ShortlistFilters';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useBusinessEntitlements } from '@/hooks/useBusinessEntitlements';
 import { RefreshCw, Sparkles, Info, Users, Zap } from 'lucide-react';
 
 interface ShortlistCandidate {
@@ -37,11 +38,55 @@ interface ShortlistViewProps {
 export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle, onInviteToChallenge, onViewProfile }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { planTier } = useBusinessEntitlements();
   const [shortlist, setShortlist] = useState<ShortlistCandidate[]>([]);
   const [totalEvaluated, setTotalEvaluated] = useState(0);
   const [loading, setLoading] = useState(false);
   const [generated, setGenerated] = useState(false);
   const [filters, setFilters] = useState<ShortlistFilterValues>({});
+  const locksAfterFive = !['growth', 'enterprise'].includes(String(planTier));
+
+  const fetchPersistedShortlist = useCallback(async () => {
+    if (!goalId) return;
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('shortlist_results')
+        .select('candidate_user_id,total_score,identity_score,trajectory_score,engagement_score,location_score,credential_score,ximatar_archetype,ximatar_level,pillar_scores,trajectory_summary,engagement_level,location_match,availability,status,anonymous_label,identity_revealed,pipeline_stage')
+        .eq('hiring_goal_id', goalId)
+        .order('total_score', { ascending: false })
+        .limit(12);
+      if (error) throw error;
+      const rows = (data || []).map((row: any) => ({
+        ...row,
+        total_score: row.total_score || 0,
+        identity_score: row.identity_score || 0,
+        trajectory_score: row.trajectory_score || 0,
+        engagement_score: row.engagement_score || 0,
+        location_score: row.location_score || 0,
+        credential_score: row.credential_score || 0,
+        ximatar_archetype: row.ximatar_archetype || 'chameleon',
+        ximatar_level: row.ximatar_level || 1,
+        pillar_scores: (row.pillar_scores || {}) as Record<string, number>,
+        trajectory_summary: row.trajectory_summary || '',
+        engagement_level: row.engagement_level || 'low',
+        location_match: row.location_match || 'no_match',
+        availability: row.availability || 'unknown',
+        status: row.status || 'shortlisted',
+      }));
+      setShortlist(rows);
+      setGenerated(rows.length > 0);
+      setTotalEvaluated(rows.length);
+    } catch (err: any) {
+      toast({ title: t('shortlist.error_title', 'Error'), description: err.message || t('shortlist.error_desc', 'Failed to generate shortlist'), variant: 'destructive' });
+    } finally {
+      setLoading(false);
+    }
+  }, [goalId, toast, t]);
+
+  useEffect(() => {
+    fetchPersistedShortlist();
+  }, [fetchPersistedShortlist]);
 
   const generateShortlist = useCallback(async () => {
     setLoading(true);
@@ -50,7 +95,7 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
         body: { hiring_goal_id: goalId, filters },
       });
       if (error) throw error;
-      setShortlist(data.shortlist || []);
+      await fetchPersistedShortlist();
       setTotalEvaluated(data.total_candidates_evaluated || 0);
       setGenerated(true);
       if (data.shortlist?.length === 0) {
@@ -61,7 +106,7 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
     } finally {
       setLoading(false);
     }
-  }, [goalId, filters, toast, t]);
+  }, [goalId, filters, toast, t, fetchPersistedShortlist]);
 
   return (
     <div className="space-y-5">
@@ -134,6 +179,7 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
               rank={index + 1}
               onInviteToChallenge={(id) => onInviteToChallenge([id])}
               onViewProfile={onViewProfile}
+              locked={locksAfterFive && index >= 5}
             />
           ))}
         </div>

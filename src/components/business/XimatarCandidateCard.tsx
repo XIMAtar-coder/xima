@@ -11,6 +11,7 @@ import { Star, Target, TrendingUp, Bookmark, BookmarkCheck, Send, CheckCircle2, 
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer } from 'recharts';
 import { CandidateLevelBadge } from './CandidateLevelBadge';
 import { CandidateLevelProgress } from '@/lib/challenges/challengeLevels';
+import { formatRoundedScore } from './PillarScoreBar';
 
 export interface XimatarRecommendationExplanation {
   shortReason: string;
@@ -93,6 +94,8 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
   const { t } = useTranslation();
   const [showDetail, setShowDetail] = useState(false);
   const level = getLevelBadge(evaluationScore);
+  const roundedEvaluationScore = formatRoundedScore(evaluationScore);
+  const roundedPillarAverage = formatRoundedScore(pillarAverage);
 
   // Check if pillars have real data
   const hasPillarData = pillarAverage > 0;
@@ -223,20 +226,20 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-white/70">{t('business.candidates.evaluation_score', 'Evaluation Score')}</span>
-              <span className="text-sm font-bold text-white">{evaluationScore.toFixed(1)}</span>
+              <span className="text-sm font-bold text-white">{roundedEvaluationScore}</span>
             </div>
 
             <div className="flex items-center justify-between">
               <span className="text-sm text-white/70">{t('business.candidates.pillar_average', 'Pillar Average')}</span>
               <span className="text-sm font-bold text-white">
-                {hasPillarData ? pillarAverage.toFixed(1) : t('business.candidates.not_computed', 'Not computed')}
+                {hasPillarData ? roundedPillarAverage : t('business.candidates.not_computed', 'Not computed')}
               </span>
             </div>
 
             <div className="w-full bg-muted rounded-full h-2">
               <div
                 className="bg-gradient-to-r from-primary to-purple-500 h-2 rounded-full transition-all"
-                style={{ width: `${Math.min(100, evaluationScore)}%` }}
+                style={{ width: `${Math.min(100, Math.max(0, roundedEvaluationScore))}%` }}
               />
             </div>
           </div>
@@ -369,12 +372,12 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
                 <div key={item.pillar} className="space-y-1">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{item.pillar}</span>
-                    <span className="font-bold text-foreground">{item.score.toFixed(1)}</span>
+                    <span className="font-bold text-foreground">{formatRoundedScore(item.score)}</span>
                   </div>
                   <div className="w-full bg-muted rounded-full h-2">
                     <div
                       className="bg-primary h-2 rounded-full transition-all"
-                      style={{ width: `${(item.score / 10) * 100}%` }}
+                      style={{ width: `${Math.min(100, Math.max(0, (formatRoundedScore(item.score) / 10) * 100))}%` }}
                     />
                   </div>
                 </div>
@@ -385,8 +388,8 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
               <h4 className="text-sm font-semibold mb-2">XIMAtar Summary</h4>
               <p className="text-sm text-muted-foreground">
                 This candidate exhibits strong {ximatarLabel} characteristics, 
-                with an overall evaluation score of {evaluationScore.toFixed(1)} and 
-                balanced pillar performance averaging {pillarAverage.toFixed(1)}.
+                with an overall evaluation score of {roundedEvaluationScore} and 
+                balanced pillar performance averaging {roundedPillarAverage}.
               </p>
             </div>
           </div>

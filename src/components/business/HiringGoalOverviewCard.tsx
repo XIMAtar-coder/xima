@@ -73,7 +73,7 @@ export const HiringGoalOverviewCard: React.FC<HiringGoalOverviewCardProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => navigate(`/business/goals/${goal.id}/candidates`)}
+              onClick={() => navigate(`/business/goals/${goal.id}/shortlist`)}
             >
               <Users className="h-4 w-4 mr-1" />
               {t('business.goals.view_candidates')}
