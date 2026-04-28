@@ -377,7 +377,7 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
                   <div className="w-full bg-muted rounded-full h-2">
                     <div
                       className="bg-primary h-2 rounded-full transition-all"
-                      style={{ width: `${(item.score / 10) * 100}%` }}
+                      style={{ width: `${Math.min(100, Math.max(0, (formatRoundedScore(item.score) / 10) * 100))}%` }}
                     />
                   </div>
                 </div>
