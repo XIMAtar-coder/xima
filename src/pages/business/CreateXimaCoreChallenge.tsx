@@ -96,7 +96,7 @@ const CreateXimaCoreChallenge = () => {
           description: t('xima_core.already_active_desc'),
           variant: 'destructive'
         });
-        navigate(returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : `/business/candidates?fromGoal=${goalId}`);
+        navigate(returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist?challengeCreated=1` : `/business/candidates?fromGoal=${goalId}`);
         return;
       }
     }
