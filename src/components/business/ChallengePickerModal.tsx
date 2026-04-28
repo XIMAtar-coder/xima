@@ -59,7 +59,7 @@ export const ChallengePickerModal: React.FC<ChallengePickerModalProps> = ({
   };
 
   const getLevelLabel = (challenge: Challenge) => {
-    const level = challenge.level || challenge.rubric?.level;
+    const level = challenge.rubric?.level || challenge.level;
     if (level === 1) return t('business.shortlist.invite_level_picker.l1', 'L1 — Behavioural');
     if (level === 2) return t('business.shortlist.invite_level_picker.l2', 'L2 — Technical');
     if (level === 3) return t('business.shortlist.invite_level_picker.l3', 'L3 — Video');
