@@ -36,20 +36,11 @@ export const useHiringGoals = () => {
         return;
       }
 
-      const { data: ownGoals, error: ownGoalsError } = await supabase
+      const { data, error: fetchError } = await supabase
         .from('hiring_goal_drafts')
         .select('*')
         .eq('business_id', user.id)
         .order('updated_at', { ascending: false });
-
-      const { data: sharedGoals, error: sharedGoalsError } = await supabase
-        .from('hiring_goal_drafts')
-        .select('*')
-        .neq('business_id', user.id)
-        .order('updated_at', { ascending: false });
-
-      const data = [...(ownGoals || []), ...(sharedGoals || [])];
-      const fetchError = ownGoalsError || sharedGoalsError;
 
       if (fetchError) {
         console.error('Error fetching hiring goals:', fetchError);
