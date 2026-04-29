@@ -196,39 +196,35 @@ serve(async (req) => {
       goal = data;
     }
 
-    // Build company context block
-    const contextParts: string[] = [];
-    if (businessProfile?.company_name) contextParts.push(`Company: ${businessProfile.company_name}`);
-    const industry = businessProfile?.snapshot_industry || businessProfile?.manual_industry;
-    if (industry) contextParts.push(`Industry: ${industry}`);
-    if (companyProfile?.operating_style) contextParts.push(`Operating style: ${companyProfile.operating_style}`);
-    if (companyProfile?.communication_style) contextParts.push(`Communication style: ${companyProfile.communication_style}`);
-    if (companyProfile?.summary) contextParts.push(`Company summary: ${companyProfile.summary}`);
-
-    // Fall back to legacy context params
-    if (contextParts.length === 0 && body.context) {
-      const ctx = body.context;
-      if (ctx.companyIndustry) contextParts.push(`Industry: ${ctx.companyIndustry}`);
-      if (ctx.companySize) contextParts.push(`Company size: ${ctx.companySize}`);
-      if (ctx.companyMaturity) contextParts.push(`Organizational maturity: ${ctx.companyMaturity}`);
-      if (ctx.decisionStyle) contextParts.push(`Decision-making: ${ctx.decisionStyle}`);
-      if (ctx.roleTitle) contextParts.push(`Role: ${ctx.roleTitle}`);
-      if (ctx.functionArea) contextParts.push(`Function: ${ctx.functionArea}`);
-      if (ctx.experienceLevel) contextParts.push(`Seniority: ${ctx.experienceLevel}`);
-      if (ctx.taskDescription) contextParts.push(`Context: ${ctx.taskDescription.substring(0, 200)}`);
-    }
-
-    // Fetch role context from hiring goal
-    let roleContextBlock = '';
-    if (body.hiring_goal_id) {
-      const { data: goal } = await supabaseAdmin.from('hiring_goal_drafts').select('role_title, description').eq('id', body.hiring_goal_id).maybeSingle();
-      if (goal) {
-        roleContextBlock = `Role: ${goal.role_title || 'Professional role'}`;
-        if (goal.description) roleContextBlock += `\nDescription: ${goal.description.substring(0, 200)}`;
-      }
-    }
-
-    const companyContextBlock = contextParts.length > 0 ? contextParts.join('\n') : 'No specific company context provided — generate a realistic general business scenario.';
+    const industry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || companyProfile?.industry_focus || body.context?.companyIndustry || 'Business context';
+    const roleTitle = String(goal?.role_title || body.context?.roleTitle || 'Professional role');
+    const contextTag = `${roleTitle} · ${industry}`;
+    const contextPayload = {
+      company_name: businessProfile?.company_name || null,
+      industry,
+      company_size: businessProfile?.company_size || null,
+      team_culture: businessProfile?.team_culture || companyProfile?.company_culture || null,
+      hiring_approach: businessProfile?.hiring_approach || null,
+      growth_stage: businessProfile?.growth_stage || null,
+      dna_pillars: companyProfile?.pillar_vector || null,
+      strategic_focus: businessProfile?.strategic_focus || null,
+      company_summary: companyProfile?.summary_override || companyProfile?.summary || null,
+      core_values: companyProfile?.values_override || companyProfile?.values || null,
+      operating_style: companyProfile?.operating_style_override || companyProfile?.operating_style || body.context?.decisionStyle || null,
+      communication_style: companyProfile?.communication_style_override || companyProfile?.communication_style || null,
+      culture_insights: companyProfile?.culture_insights || null,
+      role_title: roleTitle,
+      task_description: goal?.task_description || body.context?.taskDescription || null,
+      function_area: goal?.function_area || body.context?.functionArea || null,
+      experience_level: goal?.experience_level || body.context?.experienceLevel || null,
+      required_skills: goal?.required_skills || null,
+      nice_to_have_skills: goal?.nice_to_have_skills || null,
+      work_model: goal?.work_model || null,
+      country: goal?.country || null,
+      preferred_language: locale,
+      context_tag: contextTag,
+      generated_at: new Date().toISOString(),
+    };
     const langInstruction = getLanguageInstruction(locale);
 
     const systemPrompt = `You are the XIMA Challenge Architect. You create L1 behavioral assessment scenarios for hiring on the XIMA psychometric talent platform.
