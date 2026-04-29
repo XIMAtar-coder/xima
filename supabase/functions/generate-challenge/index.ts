@@ -280,7 +280,7 @@ Return ONLY valid JSON:
       ? Object.entries(companyProfile.pillar_vector as Record<string, number>).sort((a, b) => b[1] - a[1])[0]?.[0]
       : undefined;
     try {
-      if (typeof checkDatabaseFirst === "function") {
+      if (typeof checkDatabaseFirst === "function" && !body.hiring_goal_id) {
         const dbDecision = await checkDatabaseFirst("challenge", undefined, targetPillar);
         if (dbDecision.source === "database") {
           const validated = validateXimaCoreResult(dbDecision.data);
@@ -292,6 +292,7 @@ Return ONLY valid JSON:
               await supabaseAdmin2.from("business_challenges").update({
                 evaluation_lens: validated.evaluation_lens,
                 expected_tensions: validated.expected_tensions,
+                context_snapshot: validated.context_snapshot,
               }).eq("id", body.challenge_id);
             }
 
@@ -329,6 +330,7 @@ Return ONLY valid JSON:
         await supabaseAdmin.from('business_challenges').update({
           evaluation_lens: validated.evaluation_lens,
           expected_tensions: validated.expected_tensions,
+          context_snapshot: validated.context_snapshot,
         }).eq('id', body.challenge_id);
       }
 
