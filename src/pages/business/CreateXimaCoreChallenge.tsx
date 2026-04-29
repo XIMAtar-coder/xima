@@ -1,20 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
 import { XIMA_CORE_CHALLENGE } from '@/lib/challenges/ximaCoreChallenge';
-import { 
-  ArrowLeft, Loader2, Rocket, Clock, Target, 
-  CheckCircle2, Sparkles, Shield, Lock, CalendarClock, Brain
+import {
+  ArrowLeft,
+  Brain,
+  CalendarClock,
+  CheckCircle2,
+  ChevronDown,
+  Clock,
+  FileText,
+  Loader2,
+  Lock,
+  Rocket,
+  Shield,
+  Sparkles,
+  Target,
 } from 'lucide-react';
 
 interface HiringGoal {
@@ -25,13 +49,52 @@ interface HiringGoal {
   function_area: string | null;
   work_model: string | null;
   country: string | null;
+  required_skills: Json | null;
+  nice_to_have_skills: Json | null;
 }
 
 interface CompanyProfile {
+  summary: string | null;
+  summary_override: string | null;
   operating_style: string | null;
+  operating_style_override: string | null;
   communication_style: string | null;
   values: string[] | null;
+  values_override: Json | null;
+  pillar_vector: Json | null;
+  company_culture: string | null;
 }
+
+interface BusinessProfile {
+  company_name: string;
+  manual_industry: string | null;
+  snapshot_industry: string | null;
+  company_size: string | null;
+  team_culture: string | null;
+  hiring_approach: string | null;
+}
+
+interface GeneratedChallengeContext {
+  scenario: string;
+  business_type?: string;
+  context_tag?: string;
+  context_snapshot?: Json;
+  evaluation_lens?: Json;
+  expected_tensions?: Json;
+  estimated_time_minutes?: number;
+}
+
+const QUESTION_IDS = ['q1', 'q2', 'q3', 'q4', 'q5'] as const;
+
+const normalizeLocale = (language?: string) => {
+  const locale = language?.split('-')[0];
+  return locale && ['en', 'it', 'es'].includes(locale) ? locale : 'en';
+};
+
+const asTextList = (value: Json | string[] | null | undefined): string[] => {
+  if (Array.isArray(value)) return value.map(String).filter(Boolean);
+  return [];
+};
 
 const CreateXimaCoreChallenge = () => {
   const navigate = useNavigate();
@@ -45,18 +108,35 @@ const CreateXimaCoreChallenge = () => {
 
   const [hiringGoal, setHiringGoal] = useState<HiringGoal | null>(null);
   const [companyProfile, setCompanyProfile] = useState<CompanyProfile | null>(null);
+  const [businessProfile, setBusinessProfile] = useState<BusinessProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [isActivated, setIsActivated] = useState(false);
-  
-  // Challenge state
+  const [whatIsOpen, setWhatIsOpen] = useState(true);
+
   const [scenario, setScenario] = useState(XIMA_CORE_CHALLENGE.scenarioTemplate);
   const [businessType, setBusinessType] = useState('');
+  const [contextTag, setContextTag] = useState('');
+  const [contextSnapshot, setContextSnapshot] = useState<Json | null>(null);
+  const [evaluationLens, setEvaluationLens] = useState<Json | null>(null);
+  const [expectedTensions, setExpectedTensions] = useState<Json | null>(null);
+  const [generatedTimeEstimate, setGeneratedTimeEstimate] = useState<number>(XIMA_CORE_CHALLENGE.timeEstimateMinutes);
   const [startAt, setStartAt] = useState<string>('');
   const [endAt, setEndAt] = useState<string>('');
 
-  // Set default dates
+  const industry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || t('challenge.xima_core.context_fallback_industry');
+  const roleTitle = hiringGoal?.role_title || t('challenge.xima_core.context_fallback_role');
+  const displayContextTag = contextTag || t('challenge.xima_core.context_tag', { role: roleTitle, industry });
+  const localizedQuestions = useMemo(
+    () => QUESTION_IDS.map((id) => ({
+      id,
+      title: t(`challenge.xima_core.questions.${id}_title`),
+      text: t(`challenge.xima_core.questions.${id}_text`),
+    })),
+    [t, i18n.language]
+  );
+
   useEffect(() => {
     if (!startAt) {
       const now = new Date();
@@ -66,7 +146,6 @@ const CreateXimaCoreChallenge = () => {
     }
   }, [startAt]);
 
-  // Load data
   useEffect(() => {
     if (!isAuthenticated || (businessLoading === false && !isBusiness)) {
       navigate('/business/login');
@@ -79,7 +158,6 @@ const CreateXimaCoreChallenge = () => {
   }, [goalId, user?.id, isAuthenticated, isBusiness, businessLoading, navigate]);
 
   const loadData = async () => {
-    // Check if XIMA Core already active for this goal
     if (goalId) {
       const { data: existingCore } = await supabase
         .from('business_challenges')
@@ -88,35 +166,30 @@ const CreateXimaCoreChallenge = () => {
         .eq('hiring_goal_id', goalId)
         .eq('status', 'active')
         .contains('rubric', { isXimaCore: true })
-        .single();
+        .maybeSingle();
 
       if (existingCore) {
         toast({
           title: t('xima_core.already_active_title'),
           description: t('xima_core.already_active_desc'),
-          variant: 'destructive'
+          variant: 'destructive',
         });
         navigate(returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : `/business/candidates?fromGoal=${goalId}`);
         return;
       }
     }
 
-    // Load hiring goal if provided
     let loadedGoal: HiringGoal | null = null;
     if (goalId) {
       const { data: goalData, error: goalError } = await supabase
         .from('hiring_goal_drafts')
-        .select('id, role_title, task_description, experience_level, function_area, work_model, country')
+        .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills')
         .eq('id', goalId)
         .eq('business_id', user?.id)
         .single();
 
       if (goalError || !goalData) {
-        toast({
-          title: t('common.error'),
-          description: 'Hiring goal not found',
-          variant: 'destructive'
-        });
+        toast({ title: t('common.error'), description: t('challenge.xima_core.goal_not_found'), variant: 'destructive' });
         navigate('/business/dashboard');
         return;
       }
@@ -125,78 +198,105 @@ const CreateXimaCoreChallenge = () => {
       setHiringGoal(goalData);
     }
 
-    // Load company profile
-    let loadedCompanyProfile: CompanyProfile | null = null;
-    const { data: companyData } = await supabase
-      .from('company_profiles')
-      .select('operating_style, communication_style, values')
-      .eq('company_id', user?.id)
-      .single();
+    const [{ data: businessData }, { data: companyData }] = await Promise.all([
+      supabase
+        .from('business_profiles')
+        .select('company_name, manual_industry, snapshot_industry, company_size, team_culture, hiring_approach')
+        .eq('user_id', user?.id)
+        .maybeSingle(),
+      supabase
+        .from('company_profiles')
+        .select('summary, summary_override, operating_style, operating_style_override, communication_style, values, values_override, pillar_vector, company_culture')
+        .eq('company_id', user?.id)
+        .maybeSingle(),
+    ]);
 
-    if (companyData) {
-      loadedCompanyProfile = companyData;
-      setCompanyProfile(companyData);
-    }
+    if (businessData) setBusinessProfile(businessData);
+    if (companyData) setCompanyProfile(companyData);
 
     setLoading(false);
-    
-    // Auto-generate scenario - pass data directly instead of relying on state
-    generateScenario(loadedGoal, loadedCompanyProfile);
+    generateScenario(loadedGoal, companyData, businessData);
   };
 
-  const generateScenario = async (goalData?: HiringGoal | null, companyData?: CompanyProfile | null) => {
-    if (isActivated) return; // Can't regenerate after activation
-    
-    // Use passed data or fall back to current state
+  const generateScenario = async (
+    goalData?: HiringGoal | null,
+    companyData?: CompanyProfile | null,
+    businessData?: BusinessProfile | null,
+  ) => {
+    if (isActivated) return;
+
     const goal = goalData !== undefined ? goalData : hiringGoal;
-    const company = companyData !== undefined ? companyData : companyProfile;
-    
+    const business = businessData !== undefined ? businessData : businessProfile;
+
     setGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke('generate-challenge', {
+      const { data, error } = await supabase.functions.invoke<GeneratedChallengeContext>('generate-challenge', {
         body: {
           mode: 'xima_core',
-          locale: i18n.language?.split('-')[0] || 'en',
+          locale: normalizeLocale(i18n.language),
+          business_id: user?.id,
+          hiring_goal_id: goal?.id || goalId || undefined,
           context: {
+            companyIndustry: business?.manual_industry || business?.snapshot_industry || undefined,
+            companySize: business?.company_size || undefined,
+            decisionStyle: companyData?.operating_style_override || companyData?.operating_style || undefined,
             roleTitle: goal?.role_title || undefined,
             functionArea: goal?.function_area || undefined,
             experienceLevel: goal?.experience_level || undefined,
             taskDescription: goal?.task_description || undefined,
-            decisionStyle: company?.operating_style || undefined,
-          }
-        }
+          },
+        },
       });
 
       if (error) throw error;
-      
+
       if (data?.scenario) {
         setScenario(data.scenario);
         setBusinessType(data.business_type || '');
+        setContextTag(data.context_tag || '');
+        setContextSnapshot(data.context_snapshot || null);
+        setEvaluationLens(data.evaluation_lens || null);
+        setExpectedTensions(data.expected_tensions || null);
+        setGeneratedTimeEstimate(data.estimated_time_minutes || XIMA_CORE_CHALLENGE.timeEstimateMinutes);
       }
     } catch (err) {
       console.error('Failed to generate scenario:', err);
-      // Keep default scenario
+      toast({
+        title: t('common.error'),
+        description: t('challenge.xima_core.generate_error'),
+        variant: 'destructive',
+      });
     } finally {
       setGenerating(false);
     }
   };
 
+  const buildChallengeDescription = (): string => {
+    const parts = [
+      t('challenge.xima_core.candidate_intro'),
+      '',
+      '---',
+      '',
+      `**${t('challenge.xima_core.scenario_label')}:**`,
+      scenario,
+      '',
+      '---',
+      '',
+      `**${t('challenge.xima_core.questions_title')}:**`,
+      '',
+      ...localizedQuestions.map((q, idx) => `${idx + 1}. **${q.title}**\n${q.text}`),
+    ];
+    return parts.join('\n');
+  };
+
   const handleActivate = async () => {
     if (!startAt || !endAt) {
-      toast({
-        title: t('common.error'),
-        description: t('challenge_builder.dates_required'),
-        variant: 'destructive'
-      });
+      toast({ title: t('common.error'), description: t('challenge_builder.dates_required'), variant: 'destructive' });
       return;
     }
 
     setSaving(true);
     try {
-      // Build the full description with intro + scenario + questions
-      const fullDescription = buildChallengeDescription();
-      
-      // Archive any existing active challenges for this goal
       if (goalId) {
         await supabase
           .from('business_challenges')
@@ -206,38 +306,48 @@ const CreateXimaCoreChallenge = () => {
           .eq('status', 'active');
       }
 
-      // Create the challenge
-      const { error } = await supabase
-        .from('business_challenges')
-        .insert([{
-          title: XIMA_CORE_CHALLENGE.title,
-          description: fullDescription,
-          success_criteria: XIMA_CORE_CHALLENGE.questions.map(q => q.label),
-          time_estimate_minutes: XIMA_CORE_CHALLENGE.timeEstimateMinutes,
-          rubric: {
-            criteria: { framing: 1, decision_quality: 1, execution_bias: 1, impact_thinking: 1 },
-            scenario,
-            level: 1,
-            isXimaCore: true,
-          },
-          status: 'active',
-          business_id: user?.id,
-          hiring_goal_id: goalId || null,
-          start_at: new Date(startAt).toISOString(),
-          end_at: new Date(endAt).toISOString(),
-          difficulty: 1, // Level 1
-        }]);
+      const { error } = await supabase.from('business_challenges').insert([{
+        title: XIMA_CORE_CHALLENGE.title,
+        description: buildChallengeDescription(),
+        success_criteria: localizedQuestions.map((q) => q.title),
+        time_estimate_minutes: XIMA_CORE_CHALLENGE.timeEstimateMinutes,
+        rubric: {
+          criteria: XIMA_CORE_CHALLENGE.rubric.criteria,
+          scenario,
+          level: 1,
+          isXimaCore: true,
+          context_tag: displayContextTag,
+          candidate_intro: t('challenge.xima_core.candidate_intro'),
+        },
+        config_json: {
+          xima_core: true,
+          questions: localizedQuestions,
+          candidate_intro: t('challenge.xima_core.candidate_intro'),
+          generated_time_estimate: generatedTimeEstimate,
+          context_tag: displayContextTag,
+        },
+        context_snapshot: (contextSnapshot || {
+          role_title: roleTitle,
+          industry,
+          context_tag: displayContextTag,
+          generated_at: new Date().toISOString(),
+        }) as Json,
+        evaluation_lens: evaluationLens,
+        expected_tensions: expectedTensions,
+        status: 'active',
+        business_id: user?.id,
+        hiring_goal_id: goalId || null,
+        start_at: new Date(startAt).toISOString(),
+        end_at: new Date(endAt).toISOString(),
+        difficulty: 1,
+        level: 1,
+      }]);
 
       if (error) throw error;
 
       setIsActivated(true);
+      toast({ title: t('xima_core.activated_title'), description: t('xima_core.activated_desc') });
 
-      toast({
-        title: t('xima_core.activated_title'),
-        description: t('xima_core.activated_desc'),
-      });
-
-      // Navigate back
       if (goalId) {
         navigate(returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist?challengeCreated=1` : `/business/candidates?fromGoal=${goalId}`);
       } else {
@@ -245,40 +355,16 @@ const CreateXimaCoreChallenge = () => {
       }
     } catch (err: any) {
       console.error('Save error:', err);
-      toast({
-        title: t('common.error'),
-        description: err.message,
-        variant: 'destructive'
-      });
+      toast({ title: t('common.error'), description: err.message, variant: 'destructive' });
     } finally {
       setSaving(false);
     }
   };
 
-  const buildChallengeDescription = (): string => {
-    const parts = [
-      XIMA_CORE_CHALLENGE.intro,
-      '',
-      '---',
-      '',
-      '**Scenario:**',
-      scenario,
-      '',
-      '---',
-      '',
-      '**Questions:**',
-      '',
-      ...XIMA_CORE_CHALLENGE.questions.map((q, idx) => 
-        `${idx + 1}. **${q.label}**\n${q.prompt}`
-      ),
-    ];
-    return parts.join('\n');
-  };
-
   if (loading || businessLoading) {
     return (
       <BusinessLayout>
-        <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex min-h-[60vh] items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       </BusinessLayout>
@@ -287,272 +373,196 @@ const CreateXimaCoreChallenge = () => {
 
   return (
     <BusinessLayout>
-      <div className="max-w-5xl mx-auto space-y-6">
-        {/* Header - Distinctive XIMA Core branding */}
-        <div className="space-y-4">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate(goalId && returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/challenges')}
-            className="gap-2 -ml-2"
-          >
-            <ArrowLeft size={16} />
-            {t('common.back')}
-          </Button>
+      <main className="mx-auto flex max-w-4xl flex-col gap-6 pb-32">
+        <Button
+          variant="ghost"
+          onClick={() => navigate(goalId && returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/challenges')}
+          className="w-fit gap-2 -ml-2"
+        >
+          <ArrowLeft size={16} />
+          {t('common.back')}
+        </Button>
 
+        <header className="space-y-5">
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/20">
+            <div className="rounded-2xl border border-primary/20 bg-primary/10 p-3">
               <Brain className="h-7 w-7 text-primary" />
             </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2 flex-wrap">
-                <h1 className="text-3xl font-bold text-foreground">
-                  {XIMA_CORE_CHALLENGE.title}
-                </h1>
-                <Badge className="bg-primary text-primary-foreground">
-                  {t('xima_core.level_1_badge')}
-                </Badge>
-                <Badge variant="outline" className="gap-1">
-                  <Lock className="h-3 w-3" />
-                  {t('xima_core.standardized')}
-                </Badge>
+            <div className="min-w-0 flex-1 space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-3xl font-semibold tracking-normal text-foreground">{t('challenge.xima_core.title')}</h1>
+                <Badge variant="secondary">{t('challenge.xima_core.level_1')}</Badge>
+                <Badge variant="outline" className="gap-1"><Lock className="h-3 w-3" />{t('challenge.xima_core.standardized')}</Badge>
+                <Badge variant="outline">{displayContextTag}</Badge>
               </div>
-              <p className="text-muted-foreground">
-                {t('xima_core.page_subtitle')}
-              </p>
-              {hiringGoal?.role_title && (
-                <Badge variant="secondary" className="mt-2">
-                  {hiringGoal.role_title}
-                </Badge>
-              )}
+              <p className="max-w-2xl text-base text-muted-foreground">{t('challenge.xima_core.subtitle')}</p>
+              {hiringGoal?.role_title && <Badge className="rounded-full px-3 py-1">{hiringGoal.role_title}</Badge>}
             </div>
           </div>
+        </header>
 
-          {/* Helper text - makes it clear this is different */}
-          <div className="p-4 rounded-lg bg-muted/50 border border-border/50 flex items-start gap-3">
-            <Shield className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+        <Collapsible open={whatIsOpen} onOpenChange={setWhatIsOpen}>
+          <Card className="border-border/70 bg-card/80 shadow-sm">
+            <CollapsibleTrigger asChild>
+              <CardHeader className="cursor-pointer pb-4">
+                <div className="flex items-center justify-between gap-4">
+                  <CardTitle className="flex items-center gap-2 text-xl">
+                    <Target className="h-5 w-5 text-primary" />
+                    {t('challenge.xima_core.what_is_title')}
+                  </CardTitle>
+                  <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${whatIsOpen ? 'rotate-180' : ''}`} />
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="space-y-5 pt-0">
+                <p className="text-sm leading-6 text-muted-foreground">{t('challenge.xima_core.what_is_description')}</p>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {[1, 2, 3].map((item) => (
+                    <div key={item} className="flex items-start gap-2 rounded-lg border border-border/60 bg-secondary/40 p-3 text-sm text-foreground">
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                      <span>{t(`challenge.xima_core.feature_${item}`)}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
+
+        <section className="space-y-4">
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
+                <Sparkles className="h-5 w-5 text-primary" />
+                {t('challenge.xima_core.scenario_title')}
+              </h2>
+              <Badge variant="outline">{displayContextTag}</Badge>
+            </div>
             <p className="text-sm text-muted-foreground">
-              {t('xima_core.helper_text')}
+              {t('challenge.xima_core.scenario_subtitle', { company: businessProfile?.company_name || 'XIMA', role: roleTitle })}
             </p>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Info & Scenario */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* What is XIMA Core - compact */}
-            <Card className="border-primary/20">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Target className="h-5 w-5 text-primary" />
-                  {t('xima_core.what_is_title')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  {t('xima_core.what_is_desc')}
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="flex items-start gap-2 text-sm">
-                    <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                    <span>{t('xima_core.feature_1')}</span>
-                  </div>
-                  <div className="flex items-start gap-2 text-sm">
-                    <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                    <span>{t('xima_core.feature_2')}</span>
-                  </div>
-                  <div className="flex items-start gap-2 text-sm">
-                    <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                    <span>{t('xima_core.feature_3')}</span>
-                  </div>
+          <Card className="border-l-4 border-l-primary bg-card shadow-sm">
+            <CardContent className="p-6">
+              {generating ? (
+                <div className="flex min-h-40 items-center justify-center gap-3 text-muted-foreground">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span>{t('challenge.xima_core.generating')}</span>
                 </div>
-              </CardContent>
-            </Card>
+              ) : (
+                <p className="whitespace-pre-wrap text-[17px] leading-8 text-foreground">{scenario}</p>
+              )}
+            </CardContent>
+          </Card>
 
-            {/* AI-Generated Scenario - read-only with explicit AI label */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between flex-wrap gap-2">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <Sparkles className="h-5 w-5 text-amber-500" />
-                      {t('xima_core.scenario_title')}
-                    </CardTitle>
-                    {/* Explicit AI personalization label */}
-                    <CardDescription className="flex items-center gap-1.5 mt-1">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 text-xs font-medium">
-                        <Sparkles className="h-3 w-3" />
-                        {t('xima_core.ai_generated_label')}
-                      </span>
-                    </CardDescription>
-                  </div>
-                  {/* Regenerate only before activation */}
-                  {!isActivated && (
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => generateScenario()}
-                      disabled={generating}
-                      className="gap-2"
-                    >
-                      {generating ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Sparkles className="h-4 w-4" />
-                      )}
-                      {t('xima_core.regenerate')}
-                    </Button>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent>
-                {generating ? (
-                  <div className="flex items-center justify-center py-8">
-                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                  </div>
-                ) : (
-                  <div className="p-4 rounded-lg bg-muted/50 border relative">
-                    {/* Read-only indicator */}
-                    <div className="absolute top-2 right-2">
-                      <Lock className="h-3.5 w-3.5 text-muted-foreground/50" />
-                    </div>
-                    <p className="text-foreground whitespace-pre-wrap pr-6">{scenario}</p>
-                    {businessType && (
-                      <Badge variant="outline" className="mt-3">
-                        {businessType}
-                      </Badge>
-                    )}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-muted-foreground">{t('challenge.xima_core.scenario_locked_note')}</p>
+            {!isActivated && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" className="gap-2" disabled={generating}>
+                    {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                    {t('challenge.xima_core.scenario_regenerate')}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{t('challenge.xima_core.scenario_regenerate')}</AlertDialogTitle>
+                    <AlertDialogDescription>{t('challenge.xima_core.scenario_regenerate_confirm')}</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => generateScenario()}>{t('common.confirm')}</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
+        </section>
 
-            {/* Fixed Questions - READ ONLY */}
-            <Card>
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    {t('xima_core.questions_label')}
-                  </CardTitle>
-                  <Badge variant="outline" className="gap-1 text-xs">
-                    <Lock className="h-3 w-3" />
-                    {t('xima_core.fixed_structure')}
-                  </Badge>
-                </div>
-                <CardDescription>
-                  {t('xima_core.questions_desc')}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {XIMA_CORE_CHALLENGE.questions.map((q, idx) => (
-                  <div key={q.id} className="p-3 rounded-lg bg-muted/30 border border-border/50">
-                    <p className="font-medium text-foreground text-sm">
-                      {idx + 1}. {q.label}
-                    </p>
-                    <p className="text-muted-foreground text-sm mt-1">
-                      {q.prompt}
-                    </p>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+        <section className="space-y-4">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div className="space-y-2">
+              <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
+                <FileText className="h-5 w-5 text-primary" />
+                {t('challenge.xima_core.questions_title')}
+              </h2>
+              <p className="text-sm text-muted-foreground">{t('challenge.xima_core.questions_subtitle')}</p>
+            </div>
+            <Badge variant="outline" className="gap-1"><Lock className="h-3 w-3" />{t('challenge.xima_core.questions_fixed_badge')}</Badge>
           </div>
 
-          {/* Right Column - Settings & Preview */}
-          <div className="space-y-6">
-            {/* Fixed Time */}
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <Clock className="h-5 w-5 text-primary" />
+          <div className="space-y-3">
+            {localizedQuestions.map((question, idx) => (
+              <Card key={question.id} className="border-l-2 border-l-primary/70 bg-card/80 shadow-sm">
+                <CardContent className="p-4">
+                  <div className="flex gap-4">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                      {idx + 1}
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-semibold text-foreground">{question.title}</h3>
+                      <p className="text-sm leading-6 text-muted-foreground">{question.text}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">
-                      {t('xima_core.estimated_time')}
-                    </p>
-                    <p className="text-2xl font-bold text-foreground">
-                      {XIMA_CORE_CHALLENGE.timeEstimateMinutes} {t('common.minutes')}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
 
-            {/* Time Window */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base flex items-center gap-2">
-                  <CalendarClock className="h-4 w-4 text-primary" />
-                  {t('challenge_builder.time_window_label')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
-                    {t('challenge_builder.start_date')}
-                  </label>
-                  <Input
-                    type="datetime-local"
-                    value={startAt}
-                    onChange={(e) => setStartAt(e.target.value)}
-                    className="text-sm"
-                  />
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold text-foreground">{t('challenge.xima_core.config_title')}</h2>
+          <Card className="bg-card/80 shadow-sm">
+            <CardContent className="space-y-6 p-6">
+              <div className="flex items-center gap-3 rounded-lg border border-border/60 bg-secondary/30 p-4">
+                <div className="rounded-lg bg-primary/10 p-2">
+                  <Clock className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
-                    {t('challenge_builder.end_date')}
-                  </label>
-                  <Input
-                    type="datetime-local"
-                    value={endAt}
-                    onChange={(e) => setEndAt(e.target.value)}
-                    className="text-sm"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Intro Preview */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">{t('xima_core.intro_preview')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
-                  <p className="text-foreground text-sm italic">
-                    {XIMA_CORE_CHALLENGE.intro}
+                  <p className="text-sm font-medium text-muted-foreground">{t('challenge.xima_core.time_estimate')}</p>
+                  <p className="text-2xl font-semibold text-foreground">
+                    {t('challenge.xima_core.time_estimate_value', { minutes: XIMA_CORE_CHALLENGE.timeEstimateMinutes })}
                   </p>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
+              </div>
 
-      {/* Bottom spacer */}
-      <div className="h-24" />
+              <div className="space-y-3">
+                <h3 className="flex items-center gap-2 font-semibold text-foreground">
+                  <CalendarClock className="h-4 w-4 text-primary" />
+                  {t('challenge.xima_core.time_window')}
+                </h3>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="xima-core-start">{t('challenge.xima_core.start_date')}</Label>
+                    <Input id="xima-core-start" type="datetime-local" value={startAt} onChange={(e) => setStartAt(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="xima-core-end">{t('challenge.xima_core.end_date')}</Label>
+                    <Input id="xima-core-end" type="datetime-local" value={endAt} onChange={(e) => setEndAt(e.target.value)} />
+                  </div>
+                </div>
+              </div>
 
-      {/* Fixed CTA bar - distinctive styling */}
-      <div 
-        className="fixed bottom-0 inset-x-0 bg-background/95 backdrop-blur-md border-t p-4"
-        style={{ zIndex: 9999 }}
-      >
-        <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground hidden sm:block">
-            {t('xima_core.cta_helper')}
-          </p>
-          <Button 
-            onClick={handleActivate} 
-            disabled={saving || generating || !startAt || !endAt}
-            className="gap-2 bg-primary hover:bg-primary/90"
-            size="lg"
-          >
-            {saving ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Rocket className="h-4 w-4" />
-            )}
-            {t('xima_core.activate_button')}
+              <div className="space-y-3">
+                <h3 className="font-semibold text-foreground">{t('challenge.xima_core.candidate_intro_title')}</h3>
+                <div className="rounded-lg border border-border/70 bg-secondary/30 p-4">
+                  <p className="text-sm italic leading-6 text-foreground">{t('challenge.xima_core.candidate_intro')}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+      </main>
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/85 p-4 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted-foreground">{t('challenge.xima_core.scenario_locked_note')}</p>
+          <Button onClick={handleActivate} disabled={saving || generating || !startAt || !endAt} className="gap-2" size="lg">
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
+            {t('challenge.xima_core.activate_button')}
           </Button>
         </div>
       </div>
