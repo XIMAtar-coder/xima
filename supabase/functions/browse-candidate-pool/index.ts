@@ -1,4 +1,6 @@
-// SCHEMA PREFLIGHT (verified 2026-04-14):
+// SCHEMA PREFLIGHT (verified 2026-04-29):
+// profiles: user_id, full_name, ximatar, ximatar_id, pillar_scores, ...
+// PAGINATION: page is normalized to 1-indexed, then converted to 0-indexed range
 // profiles: id, user_id, full_name, ximatar, ximatar_id, ximatar_name, ximatar_level,
 //   pillar_scores, desired_locations, work_preference, willing_to_relocate,
 //   salary_expectation, availability_date, industry_preferences, profile_completed,
@@ -50,7 +52,10 @@ serve(async (req) => {
     const serviceClient = createClient(supabaseUrl, serviceKey);
 
     const body = await req.json().catch(() => ({}));
-    const { filters = {}, page = 0, page_size = 20 } = body;
+    const { filters = {}, page_size = 20 } = body;
+    const requestedPage = Number(body.page ?? 1);
+    const pageSize = Number(page_size) || 20;
+    const page = Math.max(1, Number.isFinite(requestedPage) ? requestedPage : 1);
 
     console.log("[browse-pool] Filters:", JSON.stringify(filters), "Page:", page);
 
@@ -100,8 +105,9 @@ serve(async (req) => {
 
     query = query.order("updated_at", { ascending: false });
 
-    // Plan-limited pagination
-    const effectiveLimit = Math.min(page_size, planLimit - page * page_size);
+    // Plan-limited pagination. Supabase range is 0-indexed and inclusive.
+    const from = (page - 1) * pageSize;
+    const effectiveLimit = Math.min(pageSize, planLimit - from);
     if (effectiveLimit <= 0) {
       return jsonResponse({
         candidates: [],
@@ -109,11 +115,12 @@ serve(async (req) => {
         plan_limit: planLimit,
         is_restricted: true,
         page,
-        page_size,
+        page_size: pageSize,
       });
     }
 
-    query = query.range(page * page_size, page * page_size + effectiveLimit - 1);
+    const to = from + effectiveLimit - 1;
+    query = query.range(from, to);
 
     const { data: candidates, error: queryError, count } = await query;
     if (queryError) {
@@ -129,6 +136,14 @@ serve(async (req) => {
       });
     }
 
+    console.log('[browse-pool] Pagination:', {
+      requestedPage: page,
+      pageSize,
+      from,
+      to,
+      resultCount: candidates?.length || 0,
+      totalCount: count,
+    });
     console.log(`[browse-pool] Found ${count} total, returning ${candidates?.length || 0}`);
 
     const candidateIds = (candidates || []).map((c: any) => c.user_id);
@@ -384,7 +399,7 @@ serve(async (req) => {
       plan,
       is_restricted: isRestricted,
       page,
-      page_size,
+      page_size: pageSize,
       has_synthetic: hasSynthetic,
     });
   } catch (err: any) {
