@@ -169,18 +169,32 @@ serve(async (req) => {
       return await handleLegacyGeneration(body, user.id, correlationId);
     }
 
-    const locale = ['en', 'it', 'es'].includes(body.locale || '') ? body.locale! : 'en';
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
     // Fetch company context from DB
     const businessId = body.business_id || user.id;
-    const [companyProfileRes, businessProfileRes] = await Promise.all([
-      supabaseAdmin.from('company_profiles').select('summary, operating_style, communication_style, pillar_vector, ideal_ximatar_profile_ids, values').eq('company_id', businessId).maybeSingle(),
-      supabaseAdmin.from('business_profiles').select('company_name, snapshot_industry, manual_industry').eq('user_id', businessId).maybeSingle(),
+    const [companyProfileRes, businessProfileRes, userProfileRes] = await Promise.all([
+      supabaseAdmin.from('company_profiles').select('summary, summary_override, operating_style, operating_style_override, communication_style, communication_style_override, pillar_vector, ideal_ximatar_profile_ids, values, values_override, company_culture, culture_insights, industry_focus').eq('company_id', businessId).maybeSingle(),
+      supabaseAdmin.from('business_profiles').select('company_name, snapshot_industry, manual_industry, company_size, team_culture, hiring_approach, growth_stage, metadata, strategic_focus').eq('user_id', businessId).maybeSingle(),
+      supabaseAdmin.from('profiles').select('preferred_lang, content_language').eq('user_id', user.id).maybeSingle(),
     ]);
 
     const companyProfile = companyProfileRes.data;
     const businessProfile = businessProfileRes.data;
+    const profileLocale = String(userProfileRes.data?.preferred_lang || userProfileRes.data?.content_language || '').split('-')[0];
+    const requestedLocale = String(body.locale || '').split('-')[0];
+    const locale = ['en', 'it', 'es'].includes(requestedLocale) ? requestedLocale : ['en', 'it', 'es'].includes(profileLocale) ? profileLocale : 'en';
+
+    let goal: Record<string, unknown> | null = null;
+    if (body.hiring_goal_id) {
+      const { data } = await supabaseAdmin
+        .from('hiring_goal_drafts')
+        .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills')
+        .eq('id', body.hiring_goal_id)
+        .eq('business_id', businessId)
+        .maybeSingle();
+      goal = data;
+    }
 
     // Build company context block
     const contextParts: string[] = [];
