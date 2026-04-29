@@ -1,6 +1,6 @@
 // SCHEMA PREFLIGHT (verified 2026-04-29):
 // profiles: user_id, full_name, ximatar, ximatar_id, pillar_scores, ...
-// PAGINATION: page is normalized to 1-indexed, then converted to 0-indexed range
+// PAGINATION: frontend page state is 0-indexed, normalized to 1-indexed, then converted to 0-indexed range
 // profiles: id, user_id, full_name, ximatar, ximatar_id, ximatar_name, ximatar_level,
 //   pillar_scores, desired_locations, work_preference, willing_to_relocate,
 //   salary_expectation, availability_date, industry_preferences, profile_completed,
@@ -53,9 +53,9 @@ serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const { filters = {}, page_size = 20 } = body;
-    const requestedPage = Number(body.page ?? 1);
+    const rawPage = Number(body.page ?? 0);
     const pageSize = Number(page_size) || 20;
-    const page = Math.max(1, Number.isFinite(requestedPage) ? requestedPage : 1);
+    const page = Math.max(1, Number.isFinite(rawPage) ? rawPage + 1 : 1);
 
     console.log("[browse-pool] Filters:", JSON.stringify(filters), "Page:", page);
 
@@ -105,21 +105,9 @@ serve(async (req) => {
 
     query = query.order("updated_at", { ascending: false });
 
-    // Plan-limited pagination. Supabase range is 0-indexed and inclusive.
+    // Supabase range is 0-indexed and inclusive.
     const from = (page - 1) * pageSize;
-    const effectiveLimit = Math.min(pageSize, planLimit - from);
-    if (effectiveLimit <= 0) {
-      return jsonResponse({
-        candidates: [],
-        total_count: planLimit,
-        plan_limit: planLimit,
-        is_restricted: true,
-        page,
-        page_size: pageSize,
-      });
-    }
-
-    const to = from + effectiveLimit - 1;
+    const to = from + pageSize - 1;
     query = query.range(from, to);
 
     const { data: candidates, error: queryError, count } = await query;
@@ -137,7 +125,8 @@ serve(async (req) => {
     }
 
     console.log('[browse-pool] Pagination:', {
-      requestedPage: page,
+      requestedPage: rawPage,
+      normalizedPage: page,
       pageSize,
       from,
       to,
