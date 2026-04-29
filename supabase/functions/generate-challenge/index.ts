@@ -379,7 +379,9 @@ Return ONLY valid JSON:
 function buildFallbackResponse(): XimaCoreResult {
   return {
     scenario: XIMA_CORE_BASE_SCENARIO,
-    business_type: 'General business',
+    business_type: 'Role-specific business context',
+    context_tag: 'Professional role · Business context',
+    context_snapshot: {},
     evaluation_lens: DEFAULT_EVALUATION_LENS,
     expected_tensions: [
       "Speed vs. quality under deadline pressure",
