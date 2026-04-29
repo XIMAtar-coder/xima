@@ -115,7 +115,7 @@ const CreateXimaCoreChallenge = () => {
   const [isActivated, setIsActivated] = useState(false);
   const [whatIsOpen, setWhatIsOpen] = useState(true);
 
-  const [scenario, setScenario] = useState(XIMA_CORE_CHALLENGE.scenarioTemplate);
+  const [scenario, setScenario] = useState<string>(XIMA_CORE_CHALLENGE.scenarioTemplate);
   const [businessType, setBusinessType] = useState('');
   const [contextTag, setContextTag] = useState('');
   const [contextSnapshot, setContextSnapshot] = useState<Json | null>(null);
