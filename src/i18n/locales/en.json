@@ -3358,7 +3358,11 @@
         "q4_text": "If you could improve only one thing in the next two weeks, what would it be? How would you evaluate success?",
         "q5_title": "Collaboration and communication",
         "q5_text": "How would you communicate your approach to the team? What reactions would you expect, and how would you handle them?"
-      }
+      },
+      "already_active_title": "XIMA Core already active",
+      "already_active_desc": "Only one XIMA Core Challenge can be active per hiring goal.",
+      "activated_title": "XIMA Core activated",
+      "activated_desc": "The XIMA Core Challenge is now live and ready for candidates."
     }
   },
   "notifications": {

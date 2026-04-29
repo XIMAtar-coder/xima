@@ -3503,7 +3503,11 @@
         "q4_text": "Si pudieras mejorar solo una cosa en las próximas dos semanas, ¿cuál sería? ¿Cómo evaluarías el éxito?",
         "q5_title": "Colaboración y comunicación",
         "q5_text": "¿Cómo comunicarías tu enfoque al equipo? ¿Qué reacciones esperarías y cómo las gestionarías?"
-      }
+      },
+      "already_active_title": "XIMA Core ya está activa",
+      "already_active_desc": "Solo una XIMA Core Challenge puede estar activa por objetivo de contratación.",
+      "activated_title": "XIMA Core activada",
+      "activated_desc": "La XIMA Core Challenge ya está activa y lista para los candidatos."
     }
   },
   "notifications": {
