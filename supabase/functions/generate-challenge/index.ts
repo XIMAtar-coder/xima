@@ -227,40 +227,41 @@ serve(async (req) => {
     };
     const langInstruction = getLanguageInstruction(locale);
 
-    const systemPrompt = `You are the XIMA Challenge Architect. You create L1 behavioral assessment scenarios for hiring on the XIMA psychometric talent platform.
+    const systemPrompt = `You are XIMA's challenge architect. Your job is to write a realistic, ambiguous workplace scenario that will reveal how candidates think under pressure.
 
-XIMA L1 challenges measure HOW a person thinks — their behavioral DNA — not what they know. Every candidate gets the same scenario structure (fairness). The scenario feels authentic to the company context but reveals behavioral patterns.
+RULES:
+1. The scenario MUST be specific to this company's industry and the role being hired for. Never write a generic "you join a team" scenario.
+2. The scenario describes a realistic situation the candidate would actually face in this specific role at this specific type of company.
+3. The scenario must involve genuine ambiguity — no clear "right answer", competing priorities, incomplete information, and interpersonal complexity.
+4. The scenario should naturally surface behavioral signals across all 5 XIMA dimensions: Decision Making, Agency/Ownership, Ambiguity Tolerance, Impact Orientation, and Collaboration.
+5. ${langInstruction} If Italian, write naturally in Italian, not as a literal translation from English.
+6. Keep the scenario between 80-150 words. Concise but rich enough to provoke real thinking.
+7. End with a clear but open-ended situation — the candidate must decide what to do.
+8. Do NOT include questions in the scenario — the 5 fixed questions are separate.
 
-THE XIMA L1 PATTERN (always present):
-- You join a team working on an important initiative
-- Progress is slow, ownership is unclear
-- Stakeholders have conflicting priorities
-- You have no formal authority but the deadline is approaching
-- There is no single correct answer — only trade-offs
-
-COMPANY CONTEXT:
-${companyContextBlock}
-
-${roleContextBlock ? `ROLE CONTEXT:\n${roleContextBlock}` : ''}
+COMPANY AND ROLE CONTEXT:
+${JSON.stringify(contextPayload, null, 2)}
 
 GENERATE:
-1. "scenario": Adapted scenario (80-120 words). Keep core tensions. Make the business environment feel authentic. Do NOT reveal company name or proprietary info.
-2. "business_type": Brief label ("SaaS startup", "Industrial manufacturer", etc.)
-3. "evaluation_lens": For EACH of the 5 XIMA pillars, list 2-3 specific behavioral signals that a response to THIS scenario would reveal:
+1. "scenario": The role-specific scenario only.
+2. "business_type": Brief contextual label based on the actual role and industry.
+3. "context_tag": "${contextTag}" or a shorter natural equivalent if needed.
+4. "context_snapshot": Copy the context object you used for generation.
+5. "evaluation_lens": For EACH of the 5 XIMA pillars, list 2-3 specific behavioral signals that a response to THIS scenario would reveal:
    - drive_signals: Evidence of initiative, ownership, urgency, accountability
    - computational_power_signals: Evidence of analytical thinking, structured approach, data-driven reasoning
    - communication_signals: Evidence of stakeholder management, clarity, influence without authority
    - creativity_signals: Evidence of novel approaches, reframing problems, lateral thinking
    - knowledge_signals: Evidence of domain awareness, referencing best practices, contextual understanding
-4. "expected_tensions": The 2-3 specific dilemmas embedded in the scenario
-5. "estimated_time_minutes": Realistic time for a thoughtful response (15-30)
-
-LANGUAGE: ${langInstruction}
+6. "expected_tensions": The 2-3 specific dilemmas embedded in the scenario.
+7. "estimated_time_minutes": Always return 40.
 
 Return ONLY valid JSON:
 {
   "scenario": "string",
   "business_type": "string",
+  "context_tag": "string",
+  "context_snapshot": {},
   "evaluation_lens": {
     "drive_signals": ["string", "string"],
     "computational_power_signals": ["string", "string"],
@@ -272,7 +273,7 @@ Return ONLY valid JSON:
   "estimated_time_minutes": number
 }`;
 
-    const userPrompt = `Generate an L1 behavioral challenge scenario based on the company and role context above. Return ONLY the JSON object.`;
+    const userPrompt = `Generate the XIMA Core scenario from the supplied company DNA and hiring goal context. Return ONLY the JSON object.`;
 
     // ---- Intelligence Engine: check challenge pattern library first (FREE) ----
     const targetPillar = companyProfile?.pillar_vector
