@@ -170,8 +170,8 @@ const CreateXimaCoreChallenge = () => {
 
       if (existingCore) {
         toast({
-          title: t('xima_core.already_active_title'),
-          description: t('xima_core.already_active_desc'),
+          title: t('challenge.xima_core.already_active_title'),
+          description: t('challenge.xima_core.already_active_desc'),
           variant: 'destructive',
         });
         navigate(returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : `/business/candidates?fromGoal=${goalId}`);
@@ -347,7 +347,7 @@ const CreateXimaCoreChallenge = () => {
       if (error) throw error;
 
       setIsActivated(true);
-      toast({ title: t('xima_core.activated_title'), description: t('xima_core.activated_desc') });
+      toast({ title: t('challenge.xima_core.activated_title'), description: t('challenge.xima_core.activated_desc') });
 
       if (goalId) {
         navigate(returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist?challengeCreated=1` : `/business/candidates?fromGoal=${goalId}`);
