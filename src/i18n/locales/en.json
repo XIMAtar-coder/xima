@@ -298,7 +298,13 @@
     "already_active_desc": "Only one XIMA Core Challenge can be active per hiring goal."
   },
   "common": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "back": "Back",
+    "minutes": "minutes",
+    "activate": "Activate",
+    "regenerate": "Regenerate",
+    "confirm": "Confirm",
+    "error": "Error"
   },
   "tutorial": {
     "dont_show_again": "Don't show again"
@@ -3306,6 +3312,53 @@
       "decisions_required": "Key Decisions & Trade-offs is required",
       "tools_required": "Tools & Methods is required",
       "risks_required": "Risks & Failure Points is required"
+    },
+    "xima_core": {
+      "title": "XIMA Core Challenge",
+      "subtitle": "A standardized decision-making instrument with an AI-personalized scenario",
+      "level_1": "Level 1",
+      "standardized": "Standardized",
+      "what_is_title": "What is XIMA Core?",
+      "what_is_description": "A standardized Level 1 instrument that evaluates how candidates think in ambiguous situations. The scenario is personalized, but the structure is identical for fair comparison.",
+      "feature_1": "5 fixed questions measuring decision signals",
+      "feature_2": "AI-personalized scenario for your context",
+      "feature_3": "No right/wrong answers — we evaluate reasoning",
+      "scenario_title": "Personalized scenario",
+      "scenario_subtitle": "AI-generated for {{company}} and the {{role}} role",
+      "scenario_label": "Scenario",
+      "scenario_regenerate": "Regenerate Scenario",
+      "scenario_regenerate_confirm": "Do you want to regenerate the scenario? The current text will be replaced.",
+      "scenario_locked_note": "Once activated, the challenge scenario is locked and candidates can begin.",
+      "questions_title": "Fixed questions",
+      "questions_subtitle": "These questions are standardized across all XIMA Core Challenges",
+      "questions_fixed_badge": "Fixed structure",
+      "config_title": "Configuration",
+      "time_estimate": "Estimated time",
+      "time_estimate_value": "{{minutes}} minutes",
+      "time_window": "Time window",
+      "start_date": "Start date",
+      "end_date": "End date",
+      "candidate_intro_title": "Candidate introduction",
+      "candidate_intro": "This challenge explores how you approach decisions in complex, ambiguous situations. There are no right or wrong answers. We care about your reasoning.",
+      "activate_button": "Activate XIMA Core Challenge",
+      "context_tag": "{{role}} · {{industry}}",
+      "context_fallback_role": "Professional role",
+      "context_fallback_industry": "Business context",
+      "goal_not_found": "Hiring goal not found",
+      "generate_error": "We could not generate the scenario. Please try again shortly.",
+      "generating": "Generating scenario...",
+      "questions": {
+        "q1_title": "Decision making",
+        "q1_text": "What is the very first concrete action you would take in this situation? Why?",
+        "q2_title": "Agency and ownership",
+        "q2_text": "Even without formal ownership, what do you consider your responsibility here? Where do you draw the line?",
+        "q3_title": "Ambiguity and structure",
+        "q3_text": "What information would you try to clarify first? What would you explicitly not try to solve immediately?",
+        "q4_title": "Impact and priorities",
+        "q4_text": "If you could improve only one thing in the next two weeks, what would it be? How would you evaluate success?",
+        "q5_title": "Collaboration and communication",
+        "q5_text": "How would you communicate your approach to the team? What reactions would you expect, and how would you handle them?"
+      }
     }
   },
   "notifications": {
