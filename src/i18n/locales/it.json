@@ -330,7 +330,13 @@
     "login": "Accedi"
   },
   "common": {
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "back": "Indietro",
+    "minutes": "minuti",
+    "activate": "Attiva",
+    "regenerate": "Rigenera",
+    "confirm": "Conferma",
+    "error": "Errore"
   },
   "tutorial": {
     "dont_show_again": "Non mostrare più"
@@ -4115,6 +4121,57 @@
       "actions_required": "Fornisci tutte e 3 le azioni",
       "tradeoff_required": "Seleziona un trade-off",
       "confidence_required": "Seleziona il livello di confidenza"
+    },
+    "xima_core": {
+      "title": "XIMA Core Challenge",
+      "subtitle": "Uno strumento decisionale standardizzato con scenario personalizzato dall'IA",
+      "level_1": "Livello 1",
+      "standardized": "Standardizzato",
+      "what_is_title": "Cos'è XIMA Core?",
+      "what_is_description": "Uno strumento standardizzato di Livello 1 che valuta come i candidati pensano in situazioni ambigue. Lo scenario è personalizzato, ma la struttura è identica per un confronto equo.",
+      "feature_1": "5 domande fisse che misurano segnali decisionali",
+      "feature_2": "Scenario personalizzato dall'IA per il tuo contesto",
+      "feature_3": "Nessuna risposta giusta/sbagliata — valutiamo il ragionamento",
+      "scenario_title": "Scenario personalizzato",
+      "scenario_subtitle": "Generato dall'IA per {{company}} e il ruolo di {{role}}",
+      "scenario_label": "Scenario",
+      "scenario_regenerate": "Rigenera Scenario",
+      "scenario_regenerate_confirm": "Vuoi rigenerare lo scenario? Il testo attuale sarà sostituito.",
+      "scenario_locked_note": "Una volta attivata la challenge, lo scenario è bloccato e i candidati possono iniziare.",
+      "questions_title": "Domande fisse",
+      "questions_subtitle": "Queste domande sono standardizzate in tutte le XIMA Core Challenge",
+      "questions_fixed_badge": "Struttura fissa",
+      "config_title": "Configurazione",
+      "time_estimate": "Tempo stimato",
+      "time_estimate_value": "{{minutes}} minuti",
+      "time_window": "Finestra temporale",
+      "start_date": "Data inizio",
+      "end_date": "Data fine",
+      "candidate_intro_title": "Introduzione candidato",
+      "candidate_intro": "Questa challenge esplora come affronti le decisioni in situazioni complesse e ambigue. Non esistono risposte giuste o sbagliate. Ci interessa il tuo ragionamento.",
+      "activate_button": "Attiva XIMA Core Challenge",
+      "context_tag": "{{role}} · {{industry}}",
+      "context_fallback_role": "Ruolo professionale",
+      "context_fallback_industry": "Contesto aziendale",
+      "goal_not_found": "Obiettivo di assunzione non trovato",
+      "generate_error": "Non siamo riusciti a generare lo scenario. Puoi riprovare tra poco.",
+      "generating": "Generazione dello scenario...",
+      "questions": {
+        "q1_title": "Processo decisionale",
+        "q1_text": "Qual è la prima azione concreta che prenderesti in questa situazione? Perché?",
+        "q2_title": "Iniziativa e responsabilità",
+        "q2_text": "Anche senza un ruolo formale di responsabilità, cosa consideri di tua competenza? Dove tracci il confine?",
+        "q3_title": "Gestione dell'ambiguità",
+        "q3_text": "Quali informazioni cercheresti di chiarire per prime? Cosa sceglieresti esplicitamente di NON affrontare subito?",
+        "q4_title": "Impatto e priorità",
+        "q4_text": "Se potessi migliorare solo una cosa nelle prossime due settimane, quale sarebbe? Come valuteresti il successo?",
+        "q5_title": "Collaborazione e comunicazione",
+        "q5_text": "Come comunicheresti il tuo approccio al team? Quali reazioni ti aspetteresti e come le gestiresti?"
+      },
+      "already_active_title": "XIMA Core già attiva",
+      "already_active_desc": "Solo una XIMA Core Challenge può essere attiva per obiettivo di assunzione.",
+      "activated_title": "XIMA Core attivata",
+      "activated_desc": "La XIMA Core Challenge è ora attiva e pronta per i candidati."
     }
   },
   "notifications": {

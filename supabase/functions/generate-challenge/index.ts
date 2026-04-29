@@ -39,6 +39,8 @@ interface GenerateChallengeRequest {
 interface XimaCoreResult {
   scenario: string;
   business_type: string;
+  context_tag: string;
+  context_snapshot: Record<string, unknown>;
   evaluation_lens: {
     drive_signals: string[];
     computational_power_signals: string[];
@@ -56,7 +58,7 @@ interface XimaCoreResult {
 
 const LANGUAGE_NAMES: Record<string, string> = { en: 'English', it: 'Italian', es: 'Spanish' };
 
-const XIMA_CORE_BASE_SCENARIO = `You join a team working on an important initiative. The goal is clear, but progress is slow. Stakeholders have different expectations, priorities conflict, and no one fully owns the outcome. You have no formal authority, but the deadline is approaching.`;
+const XIMA_CORE_BASE_SCENARIO = `A realistic role-specific situation emerges with competing priorities, incomplete information, stakeholder pressure, and operational constraints. The candidate must decide how to proceed while balancing quality, timing, collaboration, and accountability.`;
 
 const DEFAULT_EVALUATION_LENS = {
   drive_signals: [
@@ -89,8 +91,9 @@ function validateXimaCoreResult(parsed: unknown): XimaCoreResult | null {
   if (!parsed || typeof parsed !== "object") return null;
   const obj = parsed as Record<string, unknown>;
 
-  if (typeof obj.scenario !== "string" || obj.scenario.length < 50 || obj.scenario.length > 500) return null;
+  if (typeof obj.scenario !== "string" || obj.scenario.length < 50 || obj.scenario.length > 1200) return null;
   if (typeof obj.business_type !== "string" || obj.business_type.length === 0) return null;
+  if (typeof obj.context_tag !== "string" || obj.context_tag.length === 0) return null;
 
   const lens = obj.evaluation_lens;
   if (!lens || typeof lens !== "object") return null;
@@ -108,6 +111,8 @@ function validateXimaCoreResult(parsed: unknown): XimaCoreResult | null {
   return {
     scenario: String(obj.scenario),
     business_type: String(obj.business_type),
+    context_tag: String(obj.context_tag),
+    context_snapshot: typeof obj.context_snapshot === "object" && obj.context_snapshot !== null ? obj.context_snapshot as Record<string, unknown> : {},
     evaluation_lens: {
       drive_signals: (l.drive_signals as unknown[]).map(String),
       computational_power_signals: (l.computational_power_signals as unknown[]).map(String),
@@ -164,88 +169,99 @@ serve(async (req) => {
       return await handleLegacyGeneration(body, user.id, correlationId);
     }
 
-    const locale = ['en', 'it', 'es'].includes(body.locale || '') ? body.locale! : 'en';
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
     // Fetch company context from DB
     const businessId = body.business_id || user.id;
-    const [companyProfileRes, businessProfileRes] = await Promise.all([
-      supabaseAdmin.from('company_profiles').select('summary, operating_style, communication_style, pillar_vector, ideal_ximatar_profile_ids, values').eq('company_id', businessId).maybeSingle(),
-      supabaseAdmin.from('business_profiles').select('company_name, snapshot_industry, manual_industry').eq('user_id', businessId).maybeSingle(),
+    const [companyProfileRes, businessProfileRes, userProfileRes] = await Promise.all([
+      supabaseAdmin.from('company_profiles').select('summary, summary_override, operating_style, operating_style_override, communication_style, communication_style_override, pillar_vector, ideal_ximatar_profile_ids, values, values_override, company_culture, culture_insights, industry_focus').eq('company_id', businessId).maybeSingle(),
+      supabaseAdmin.from('business_profiles').select('company_name, snapshot_industry, manual_industry, company_size, team_culture, hiring_approach, growth_stage, metadata, strategic_focus').eq('user_id', businessId).maybeSingle(),
+      supabaseAdmin.from('profiles').select('preferred_lang, content_language').eq('user_id', user.id).maybeSingle(),
     ]);
 
     const companyProfile = companyProfileRes.data;
     const businessProfile = businessProfileRes.data;
+    const profileLocale = String(userProfileRes.data?.preferred_lang || userProfileRes.data?.content_language || '').split('-')[0];
+    const requestedLocale = String(body.locale || '').split('-')[0];
+    const locale = ['en', 'it', 'es'].includes(requestedLocale) ? requestedLocale : ['en', 'it', 'es'].includes(profileLocale) ? profileLocale : 'en';
 
-    // Build company context block
-    const contextParts: string[] = [];
-    if (businessProfile?.company_name) contextParts.push(`Company: ${businessProfile.company_name}`);
-    const industry = businessProfile?.snapshot_industry || businessProfile?.manual_industry;
-    if (industry) contextParts.push(`Industry: ${industry}`);
-    if (companyProfile?.operating_style) contextParts.push(`Operating style: ${companyProfile.operating_style}`);
-    if (companyProfile?.communication_style) contextParts.push(`Communication style: ${companyProfile.communication_style}`);
-    if (companyProfile?.summary) contextParts.push(`Company summary: ${companyProfile.summary}`);
-
-    // Fall back to legacy context params
-    if (contextParts.length === 0 && body.context) {
-      const ctx = body.context;
-      if (ctx.companyIndustry) contextParts.push(`Industry: ${ctx.companyIndustry}`);
-      if (ctx.companySize) contextParts.push(`Company size: ${ctx.companySize}`);
-      if (ctx.companyMaturity) contextParts.push(`Organizational maturity: ${ctx.companyMaturity}`);
-      if (ctx.decisionStyle) contextParts.push(`Decision-making: ${ctx.decisionStyle}`);
-      if (ctx.roleTitle) contextParts.push(`Role: ${ctx.roleTitle}`);
-      if (ctx.functionArea) contextParts.push(`Function: ${ctx.functionArea}`);
-      if (ctx.experienceLevel) contextParts.push(`Seniority: ${ctx.experienceLevel}`);
-      if (ctx.taskDescription) contextParts.push(`Context: ${ctx.taskDescription.substring(0, 200)}`);
-    }
-
-    // Fetch role context from hiring goal
-    let roleContextBlock = '';
+    let goal: any = null;
     if (body.hiring_goal_id) {
-      const { data: goal } = await supabaseAdmin.from('hiring_goal_drafts').select('role_title, description').eq('id', body.hiring_goal_id).maybeSingle();
-      if (goal) {
-        roleContextBlock = `Role: ${goal.role_title || 'Professional role'}`;
-        if (goal.description) roleContextBlock += `\nDescription: ${goal.description.substring(0, 200)}`;
-      }
+      const { data } = await supabaseAdmin
+        .from('hiring_goal_drafts')
+        .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills')
+        .eq('id', body.hiring_goal_id)
+        .eq('business_id', businessId)
+        .maybeSingle();
+      goal = data;
     }
 
-    const companyContextBlock = contextParts.length > 0 ? contextParts.join('\n') : 'No specific company context provided — generate a realistic general business scenario.';
+    const industry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || companyProfile?.industry_focus || body.context?.companyIndustry || 'Business context';
+    const roleTitle = String(goal?.role_title || body.context?.roleTitle || 'Professional role');
+    const contextTag = `${roleTitle} · ${industry}`;
+    const contextPayload = {
+      company_name: businessProfile?.company_name || null,
+      industry,
+      company_size: businessProfile?.company_size || null,
+      team_culture: businessProfile?.team_culture || companyProfile?.company_culture || null,
+      hiring_approach: businessProfile?.hiring_approach || null,
+      growth_stage: businessProfile?.growth_stage || null,
+      dna_pillars: companyProfile?.pillar_vector || null,
+      strategic_focus: businessProfile?.strategic_focus || null,
+      company_summary: companyProfile?.summary_override || companyProfile?.summary || null,
+      core_values: companyProfile?.values_override || companyProfile?.values || null,
+      operating_style: companyProfile?.operating_style_override || companyProfile?.operating_style || body.context?.decisionStyle || null,
+      communication_style: companyProfile?.communication_style_override || companyProfile?.communication_style || null,
+      culture_insights: companyProfile?.culture_insights || null,
+      role_title: roleTitle,
+      task_description: goal?.task_description || body.context?.taskDescription || null,
+      function_area: goal?.function_area || body.context?.functionArea || null,
+      experience_level: goal?.experience_level || body.context?.experienceLevel || null,
+      required_skills: goal?.required_skills || null,
+      nice_to_have_skills: goal?.nice_to_have_skills || null,
+      work_model: goal?.work_model || null,
+      country: goal?.country || null,
+      preferred_language: locale,
+      context_tag: contextTag,
+      generated_at: new Date().toISOString(),
+    };
     const langInstruction = getLanguageInstruction(locale);
 
-    const systemPrompt = `You are the XIMA Challenge Architect. You create L1 behavioral assessment scenarios for hiring on the XIMA psychometric talent platform.
+    const systemPrompt = `You are XIMA's challenge architect. Your job is to write a realistic, ambiguous workplace scenario that will reveal how candidates think under pressure.
 
-XIMA L1 challenges measure HOW a person thinks — their behavioral DNA — not what they know. Every candidate gets the same scenario structure (fairness). The scenario feels authentic to the company context but reveals behavioral patterns.
+RULES:
+1. The scenario MUST be specific to this company's industry and the role being hired for. Never write a generic "you join a team" scenario.
+2. The scenario describes a realistic situation the candidate would actually face in this specific role at this specific type of company.
+3. The scenario must involve genuine ambiguity — no clear "right answer", competing priorities, incomplete information, and interpersonal complexity.
+4. The scenario should naturally surface behavioral signals across all 5 XIMA dimensions: Decision Making, Agency/Ownership, Ambiguity Tolerance, Impact Orientation, and Collaboration.
+5. ${langInstruction} If Italian, write naturally in Italian, not as a literal translation from English.
+6. Keep the scenario between 80-150 words. Concise but rich enough to provoke real thinking.
+7. End with a clear but open-ended situation — the candidate must decide what to do.
+8. Do NOT include questions in the scenario — the 5 fixed questions are separate.
 
-THE XIMA L1 PATTERN (always present):
-- You join a team working on an important initiative
-- Progress is slow, ownership is unclear
-- Stakeholders have conflicting priorities
-- You have no formal authority but the deadline is approaching
-- There is no single correct answer — only trade-offs
-
-COMPANY CONTEXT:
-${companyContextBlock}
-
-${roleContextBlock ? `ROLE CONTEXT:\n${roleContextBlock}` : ''}
+COMPANY AND ROLE CONTEXT:
+${JSON.stringify(contextPayload, null, 2)}
 
 GENERATE:
-1. "scenario": Adapted scenario (80-120 words). Keep core tensions. Make the business environment feel authentic. Do NOT reveal company name or proprietary info.
-2. "business_type": Brief label ("SaaS startup", "Industrial manufacturer", etc.)
-3. "evaluation_lens": For EACH of the 5 XIMA pillars, list 2-3 specific behavioral signals that a response to THIS scenario would reveal:
+1. "scenario": The role-specific scenario only.
+2. "business_type": Brief contextual label based on the actual role and industry.
+3. "context_tag": "${contextTag}" or a shorter natural equivalent if needed.
+4. "context_snapshot": Copy the context object you used for generation.
+5. "evaluation_lens": For EACH of the 5 XIMA pillars, list 2-3 specific behavioral signals that a response to THIS scenario would reveal:
    - drive_signals: Evidence of initiative, ownership, urgency, accountability
    - computational_power_signals: Evidence of analytical thinking, structured approach, data-driven reasoning
    - communication_signals: Evidence of stakeholder management, clarity, influence without authority
    - creativity_signals: Evidence of novel approaches, reframing problems, lateral thinking
    - knowledge_signals: Evidence of domain awareness, referencing best practices, contextual understanding
-4. "expected_tensions": The 2-3 specific dilemmas embedded in the scenario
-5. "estimated_time_minutes": Realistic time for a thoughtful response (15-30)
-
-LANGUAGE: ${langInstruction}
+6. "expected_tensions": The 2-3 specific dilemmas embedded in the scenario.
+7. "estimated_time_minutes": Always return 40.
 
 Return ONLY valid JSON:
 {
   "scenario": "string",
   "business_type": "string",
+  "context_tag": "string",
+  "context_snapshot": {},
   "evaluation_lens": {
     "drive_signals": ["string", "string"],
     "computational_power_signals": ["string", "string"],
@@ -257,14 +273,14 @@ Return ONLY valid JSON:
   "estimated_time_minutes": number
 }`;
 
-    const userPrompt = `Generate an L1 behavioral challenge scenario based on the company and role context above. Return ONLY the JSON object.`;
+    const userPrompt = `Generate the XIMA Core scenario from the supplied company DNA and hiring goal context. Return ONLY the JSON object.`;
 
     // ---- Intelligence Engine: check challenge pattern library first (FREE) ----
     const targetPillar = companyProfile?.pillar_vector
       ? Object.entries(companyProfile.pillar_vector as Record<string, number>).sort((a, b) => b[1] - a[1])[0]?.[0]
       : undefined;
     try {
-      if (typeof checkDatabaseFirst === "function") {
+      if (typeof checkDatabaseFirst === "function" && !body.hiring_goal_id) {
         const dbDecision = await checkDatabaseFirst("challenge", undefined, targetPillar);
         if (dbDecision.source === "database") {
           const validated = validateXimaCoreResult(dbDecision.data);
@@ -276,6 +292,7 @@ Return ONLY valid JSON:
               await supabaseAdmin2.from("business_challenges").update({
                 evaluation_lens: validated.evaluation_lens,
                 expected_tensions: validated.expected_tensions,
+                context_snapshot: validated.context_snapshot,
               }).eq("id", body.challenge_id);
             }
 
@@ -313,6 +330,7 @@ Return ONLY valid JSON:
         await supabaseAdmin.from('business_challenges').update({
           evaluation_lens: validated.evaluation_lens,
           expected_tensions: validated.expected_tensions,
+          context_snapshot: validated.context_snapshot,
         }).eq('id', body.challenge_id);
       }
 
@@ -361,7 +379,9 @@ Return ONLY valid JSON:
 function buildFallbackResponse(): XimaCoreResult {
   return {
     scenario: XIMA_CORE_BASE_SCENARIO,
-    business_type: 'General business',
+    business_type: 'Role-specific business context',
+    context_tag: 'Professional role · Business context',
+    context_snapshot: {},
     evaluation_lens: DEFAULT_EVALUATION_LENS,
     expected_tensions: [
       "Speed vs. quality under deadline pressure",
