@@ -227,6 +227,7 @@ const CreateXimaCoreChallenge = () => {
 
     const goal = goalData !== undefined ? goalData : hiringGoal;
     const business = businessData !== undefined ? businessData : businessProfile;
+    const company = companyData !== undefined ? companyData : companyProfile;
 
     setGenerating(true);
     try {
@@ -239,7 +240,7 @@ const CreateXimaCoreChallenge = () => {
           context: {
             companyIndustry: business?.manual_industry || business?.snapshot_industry || undefined,
             companySize: business?.company_size || undefined,
-            decisionStyle: companyData?.operating_style_override || companyData?.operating_style || undefined,
+            decisionStyle: company?.operating_style_override || company?.operating_style || undefined,
             roleTitle: goal?.role_title || undefined,
             functionArea: goal?.function_area || undefined,
             experienceLevel: goal?.experience_level || undefined,
