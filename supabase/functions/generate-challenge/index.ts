@@ -39,6 +39,8 @@ interface GenerateChallengeRequest {
 interface XimaCoreResult {
   scenario: string;
   business_type: string;
+  context_tag: string;
+  context_snapshot: Record<string, unknown>;
   evaluation_lens: {
     drive_signals: string[];
     computational_power_signals: string[];
@@ -56,7 +58,7 @@ interface XimaCoreResult {
 
 const LANGUAGE_NAMES: Record<string, string> = { en: 'English', it: 'Italian', es: 'Spanish' };
 
-const XIMA_CORE_BASE_SCENARIO = `You join a team working on an important initiative. The goal is clear, but progress is slow. Stakeholders have different expectations, priorities conflict, and no one fully owns the outcome. You have no formal authority, but the deadline is approaching.`;
+const XIMA_CORE_BASE_SCENARIO = `A realistic role-specific situation emerges with competing priorities, incomplete information, stakeholder pressure, and operational constraints. The candidate must decide how to proceed while balancing quality, timing, collaboration, and accountability.`;
 
 const DEFAULT_EVALUATION_LENS = {
   drive_signals: [
@@ -89,8 +91,9 @@ function validateXimaCoreResult(parsed: unknown): XimaCoreResult | null {
   if (!parsed || typeof parsed !== "object") return null;
   const obj = parsed as Record<string, unknown>;
 
-  if (typeof obj.scenario !== "string" || obj.scenario.length < 50 || obj.scenario.length > 500) return null;
+  if (typeof obj.scenario !== "string" || obj.scenario.length < 50 || obj.scenario.length > 1200) return null;
   if (typeof obj.business_type !== "string" || obj.business_type.length === 0) return null;
+  if (typeof obj.context_tag !== "string" || obj.context_tag.length === 0) return null;
 
   const lens = obj.evaluation_lens;
   if (!lens || typeof lens !== "object") return null;
@@ -108,6 +111,8 @@ function validateXimaCoreResult(parsed: unknown): XimaCoreResult | null {
   return {
     scenario: String(obj.scenario),
     business_type: String(obj.business_type),
+    context_tag: String(obj.context_tag),
+    context_snapshot: typeof obj.context_snapshot === "object" && obj.context_snapshot !== null ? obj.context_snapshot as Record<string, unknown> : {},
     evaluation_lens: {
       drive_signals: (l.drive_signals as unknown[]).map(String),
       computational_power_signals: (l.computational_power_signals as unknown[]).map(String),
