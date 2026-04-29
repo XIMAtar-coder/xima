@@ -115,7 +115,7 @@ const CreateXimaCoreChallenge = () => {
   const [isActivated, setIsActivated] = useState(false);
   const [whatIsOpen, setWhatIsOpen] = useState(true);
 
-  const [scenario, setScenario] = useState<string>(XIMA_CORE_CHALLENGE.scenarioTemplate);
+  const [scenario, setScenario] = useState<string>('');
   const [businessType, setBusinessType] = useState('');
   const [contextTag, setContextTag] = useState('');
   const [contextSnapshot, setContextSnapshot] = useState<Json | null>(null);
@@ -447,7 +447,7 @@ const CreateXimaCoreChallenge = () => {
 
           <Card className="border-l-4 border-l-primary bg-card shadow-sm">
             <CardContent className="p-6">
-              {generating ? (
+              {generating || !scenario ? (
                 <div className="flex min-h-40 items-center justify-center gap-3 text-muted-foreground">
                   <Loader2 className="h-5 w-5 animate-spin" />
                   <span>{t('challenge.xima_core.generating')}</span>
@@ -561,7 +561,7 @@ const CreateXimaCoreChallenge = () => {
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/85 p-4 backdrop-blur-xl">
         <div className="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-muted-foreground">{t('challenge.xima_core.scenario_locked_note')}</p>
-          <Button onClick={handleActivate} disabled={saving || generating || !startAt || !endAt} className="gap-2" size="lg">
+          <Button onClick={handleActivate} disabled={saving || generating || !scenario.trim() || !startAt || !endAt} className="gap-2" size="lg">
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
             {t('challenge.xima_core.activate_button')}
           </Button>
