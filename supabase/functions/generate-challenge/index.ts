@@ -185,7 +185,7 @@ serve(async (req) => {
     const requestedLocale = String(body.locale || '').split('-')[0];
     const locale = ['en', 'it', 'es'].includes(requestedLocale) ? requestedLocale : ['en', 'it', 'es'].includes(profileLocale) ? profileLocale : 'en';
 
-    let goal: Record<string, unknown> | null = null;
+    let goal: any = null;
     if (body.hiring_goal_id) {
       const { data } = await supabaseAdmin
         .from('hiring_goal_drafts')
