@@ -414,7 +414,7 @@ Restituisci SOLO un oggetto JSON valido con questa struttura esatta:
         if (e.statusCode === 429) return errorResponse(429, 'RATE_LIMITED', e.message);
       }
       console.error(JSON.stringify({ type: 'ai_fallback', correlation_id: correlationId, function_name: 'generate-challenge', error: e instanceof Error ? e.message : 'Unknown' }));
-      const fallback = buildFallbackResponse();
+      const fallback = buildFallbackResponse(locale, contextTag);
       return jsonResponse({ ...fallback, used_fallback: true });
     }
 
