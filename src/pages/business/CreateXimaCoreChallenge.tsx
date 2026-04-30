@@ -281,15 +281,18 @@ const CreateXimaCoreChallenge = () => {
           mode: 'xima_core',
           locale: normalizeLocale(i18n.language),
           business_id: user?.id,
-          hiring_goal_id: goal?.id || goalId || undefined,
+          // Only pass a real hiring_goal_id (not a synthetic id derived from job_posts).
+          hiring_goal_id: goalId || undefined,
+          job_post_id: jobPostId || undefined,
           context: {
             companyIndustry: business?.manual_industry || business?.snapshot_industry || undefined,
             companySize: business?.company_size || undefined,
             decisionStyle: company?.operating_style_override || company?.operating_style || undefined,
-            roleTitle: goal?.role_title || undefined,
+            roleTitle: goal?.role_title || listingTitle || undefined,
             functionArea: goal?.function_area || undefined,
             experienceLevel: goal?.experience_level || undefined,
             taskDescription: goal?.task_description || undefined,
+            jobPostId: jobPostId || undefined,
           },
         },
       });
