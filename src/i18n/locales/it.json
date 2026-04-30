@@ -4184,8 +4184,9 @@
       "context_fallback_role": "Ruolo professionale",
       "context_fallback_industry": "Contesto aziendale",
       "goal_not_found": "Obiettivo di assunzione non trovato",
-      "generate_error": "Non siamo riusciti a generare lo scenario. Puoi riprovare tra poco.",
-      "fallback_warning": "Lo scenario è stato generato con contesto limitato. Prova a rigenerare per un risultato più specifico.",
+      "generate_error": "Errore nella generazione dello scenario. Riprova.",
+      "scenario_generation_failed": "Non è stato possibile generare lo scenario. Clicca 'Rigenera Scenario' per riprovare.",
+      "fallback_warning": "Non è stato possibile generare uno scenario valido. Rigenera lo scenario per continuare.",
       "generating": "Generazione dello scenario...",
       "questions": {
         "q1_title": "Processo decisionale",
