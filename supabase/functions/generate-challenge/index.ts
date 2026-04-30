@@ -58,7 +58,14 @@ interface XimaCoreResult {
 
 const LANGUAGE_NAMES: Record<string, string> = { en: 'English', it: 'Italian', es: 'Spanish' };
 
-const XIMA_CORE_BASE_SCENARIO = `A realistic role-specific situation emerges with competing priorities, incomplete information, stakeholder pressure, and operational constraints. The candidate must decide how to proceed while balancing quality, timing, collaboration, and accountability.`;
+// Per-language fallback narrative scenarios. Used ONLY when AI generation fails.
+// These are concrete narratives — never meta-descriptions.
+const XIMA_CORE_FALLBACK_SCENARIOS: Record<string, string> = {
+  it: `Sei appena entrato in un nuovo ruolo. Nella tua prima settimana scopri che un progetto importante è in ritardo: il team non condivide la stessa lettura delle priorità, alcune informazioni chiave mancano e uno stakeholder esterno chiede aggiornamenti quotidiani. Hai a disposizione due settimane prima di una scadenza visibile, risorse limitate e un collega più senior che ha già un'opinione forte ma non è stato coinvolto nelle ultime decisioni. Devi capire come muoverti: non hai un'autorità formale per imporre nulla, ma ci si aspetta che tu faccia avanzare la situazione.`,
+  es: `Acabas de incorporarte a un nuevo rol. En tu primera semana descubres que un proyecto importante va retrasado: el equipo no comparte la misma lectura de prioridades, falta información clave y un stakeholder externo pide actualizaciones diarias. Tienes dos semanas antes de una entrega visible, recursos limitados y un colega más sénior con una opinión fuerte que no estuvo en las últimas decisiones. Debes decidir cómo moverte: no tienes autoridad formal para imponer nada, pero se espera que hagas avanzar la situación.`,
+  en: `You have just stepped into a new role. In your first week you discover that an important project is behind schedule: the team does not share the same reading of priorities, key information is missing, and an external stakeholder is asking for daily updates. You have two weeks before a visible deadline, limited resources, and a more senior colleague with a strong opinion who was not part of the last decisions. You need to decide how to move: you have no formal authority to impose anything, but you are expected to move the situation forward.`,
+};
+const XIMA_CORE_BASE_SCENARIO = XIMA_CORE_FALLBACK_SCENARIOS.en;
 
 const DEFAULT_EVALUATION_LENS = {
   drive_signals: [
