@@ -17,7 +17,6 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useBusinessJobPostsOverview } from '@/hooks/useBusinessJobPostsOverview';
-import { useCreateL2ChallengeFromJobPost } from '@/hooks/useCreateL2ChallengeFromJobPost';
 import { toast } from 'sonner';
 
 interface BusinessJobPostsOverviewBannerProps {
@@ -32,7 +31,6 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { data, loading, error } = useBusinessJobPostsOverview(businessId);
-  const { createL2Challenge, creatingFor } = useCreateL2ChallengeFromJobPost();
 
   // Show error toast but keep banner visible
   React.useEffect(() => {
@@ -119,13 +117,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
     jobPost: typeof jobPosts[0]
   ) => {
     e.stopPropagation();
-    await createL2Challenge({
-      id: jobPost.id,
-      title: jobPost.title,
-      description: jobPost.description,
-      responsibilities: jobPost.responsibilities,
-      requirements_must: jobPost.requirements_must,
-    });
+    navigate(`/business/challenges/select?from_listing=${jobPost.id}`);
   };
 
   return (
@@ -268,12 +260,9 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
                       size="sm"
                       className="gap-1.5 h-7 px-2 text-xs"
                       onClick={(e) => handleCreateChallenge(e, job)}
-                      disabled={creatingFor === job.id}
                     >
                       <Zap className="h-3.5 w-3.5" />
-                      {creatingFor === job.id
-                        ? t('common.loading')
-                        : t('business.jobs.create_challenge')}
+                      {t('business.jobs.create_challenge')}
                     </Button>
                     
                     <ChevronRight className="h-4 w-4 text-muted-foreground hidden sm:block" />
