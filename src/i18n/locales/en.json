@@ -3391,6 +3391,13 @@
         "q5_title": "Collaboration and communication",
         "q5_text": "How would you communicate your approach to the team? What reactions would you expect, and how would you handle them?"
       },
+      "preview_button": "Candidate preview",
+      "preview_title": "Candidate preview",
+      "preview_subtitle": "This is what the candidate will see when they receive the challenge.",
+      "preview_badge": "Preview — this is the candidate's view",
+      "preview_close": "Close preview",
+      "preview_submit_disabled": "Submit answers",
+      "context_tag_fallback": "Professional role · Business context",
       "already_active_title": "XIMA Core already active",
       "already_active_desc": "Only one XIMA Core Challenge can be active per hiring goal.",
       "activated_title": "XIMA Core activated",
