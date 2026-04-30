@@ -397,11 +397,11 @@ Restituisci SOLO JSON valido:
       const isFallbackEcho = typeof parsed?.scenario === 'string' &&
         FALLBACK_MARKERS.some((m) => parsed.scenario.includes(m));
       if (isFallbackEcho) {
-        console.warn('[generate-challenge] Fallback-pattern scenario detected — AI may not have used full context', JSON.stringify({
+        console.error('[generate-challenge] Fallback-pattern scenario detected — AI may not have used full context', JSON.stringify({
           correlationId,
           scenarioPreview: String(parsed.scenario).slice(0, 200),
         }));
-        parsed.is_fallback = true;
+        return errorResponse(422, 'SCENARIO_FALLBACK_PATTERN', 'Generated scenario matched a generic fallback pattern. Please regenerate.', { correlation_id: correlationId });
       }
 
       const validated = validateXimaCoreResult(parsed);
