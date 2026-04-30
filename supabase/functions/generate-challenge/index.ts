@@ -203,9 +203,39 @@ serve(async (req) => {
       goal = data;
     }
 
-    const industry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || companyProfile?.industry_focus || body.context?.companyIndustry || 'Business context';
+    const rawIndustry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || companyProfile?.industry_focus || body.context?.companyIndustry || 'Business context';
+    const industry = rawIndustry;
+    const industryLabels: Record<string, string> = {
+      'real_estate': 'Edilizia / Immobiliare',
+      'construction': 'Edilizia',
+      'technology': 'Tecnologia',
+      'tech': 'Tecnologia',
+      'software': 'Software / IT',
+      'automotive': 'Automotive',
+      'healthcare': 'Sanità',
+      'health': 'Sanità',
+      'finance': 'Finanza',
+      'financial_services': 'Servizi Finanziari',
+      'consulting': 'Consulenza',
+      'manufacturing': 'Manifatturiero',
+      'energy': 'Energia',
+      'retail': 'Commercio',
+      'education': 'Istruzione',
+      'logistics': 'Logistica / Trasporti',
+      'food': 'Alimentare',
+      'pharma': 'Farmaceutico',
+      'pharmaceutical': 'Farmaceutico',
+      'media': 'Media',
+      'hospitality': 'Hospitality / Turismo',
+      'legal': 'Legale',
+      'agriculture': 'Agricoltura',
+      'telecom': 'Telecomunicazioni',
+      'insurance': 'Assicurazioni',
+      'nonprofit': 'No Profit',
+    };
+    const displayIndustry = industryLabels[String(rawIndustry).toLowerCase()] || rawIndustry;
     const roleTitle = String(goal?.role_title || body.context?.roleTitle || 'Professional role');
-    const contextTag = `${roleTitle} · ${industry}`;
+    const contextTag = `${roleTitle} · ${displayIndustry}`;
     const contextPayload = {
       company_name: businessProfile?.company_name || null,
       industry,
