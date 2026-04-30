@@ -451,6 +451,17 @@ const CreateXimaCoreChallenge = () => {
           </div>
         </header>
 
+        {showNoContextWarning && (
+          <Card className="border-amber-500/40 bg-amber-500/5">
+            <CardContent className="flex items-start gap-3 p-4">
+              <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+              <p className="text-sm text-foreground">
+                {t('business.challenges.context_selector.no_context.warning')}
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
         <Collapsible open={whatIsOpen} onOpenChange={setWhatIsOpen}>
           <Card className="border-border/70 bg-card/80 shadow-sm">
             <CollapsibleTrigger asChild>
