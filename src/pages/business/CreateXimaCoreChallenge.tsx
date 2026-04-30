@@ -375,6 +375,7 @@ const CreateXimaCoreChallenge = () => {
         setEvaluationLens(data.evaluation_lens || null);
         setExpectedTensions(data.expected_tensions || null);
         setGeneratedTimeEstimate(data.estimated_time_minutes || XIMA_CORE_CHALLENGE.timeEstimateMinutes);
+        setIsFallbackScenario(!!(data.is_fallback || data.used_fallback));
       }
     } catch (err) {
       console.error('Failed to generate scenario:', err);
