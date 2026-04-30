@@ -469,7 +469,7 @@ Restituisci SOLO JSON valido:
         metadata: { business_type: validated.business_type, locale, used_fallback: false },
       }, "l1_challenges_generated");
 
-      return jsonResponse({ ...validated, used_fallback: false });
+      return jsonResponse({ ...validated, used_fallback: false, is_fallback: !!parsed.is_fallback });
 
     } catch (e) {
       if (e instanceof AnthropicError) {
@@ -477,7 +477,7 @@ Restituisci SOLO JSON valido:
       }
       console.error(JSON.stringify({ type: 'ai_fallback', correlation_id: correlationId, function_name: 'generate-challenge', error: e instanceof Error ? e.message : 'Unknown' }));
       const fallback = buildFallbackResponse(locale, contextTag);
-      return jsonResponse({ ...fallback, used_fallback: true });
+      return jsonResponse({ ...fallback, used_fallback: true, is_fallback: true });
     }
 
   } catch (err) {
