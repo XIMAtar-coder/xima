@@ -402,6 +402,13 @@ Restituisci SOLO JSON valido:
         'NON una descrizione generica',
         'competing priorities, incomplete information, stakeholder pressure',
       ];
+      const FALLBACK_MARKERS = [
+        'Sei appena entrato in un nuovo ruolo',
+        'You have just stepped into a new role',
+        'You just started a new role',
+        'Acabas de incorporarte',
+        'Acabas de empezar',
+      ];
       const looksLikeMeta = typeof parsed?.scenario === 'string' && (
         parsed.scenario.length < 80 ||
         META_MARKERS.some((m) => parsed.scenario.includes(m))
@@ -412,7 +419,16 @@ Restituisci SOLO JSON valido:
           scenarioPreview: String(parsed.scenario).slice(0, 200),
         }));
         const fallback = buildFallbackResponse(locale, contextTag);
-        return jsonResponse({ ...fallback, used_fallback: true, fallback_reason: 'meta_description_detected' });
+        return jsonResponse({ ...fallback, used_fallback: true, is_fallback: true, fallback_reason: 'meta_description_detected' });
+      }
+      const isFallbackEcho = typeof parsed?.scenario === 'string' &&
+        FALLBACK_MARKERS.some((m) => parsed.scenario.includes(m));
+      if (isFallbackEcho) {
+        console.warn('[generate-challenge] Fallback-pattern scenario detected — AI may not have used full context', JSON.stringify({
+          correlationId,
+          scenarioPreview: String(parsed.scenario).slice(0, 200),
+        }));
+        parsed.is_fallback = true;
       }
 
       const validated = validateXimaCoreResult(parsed);
