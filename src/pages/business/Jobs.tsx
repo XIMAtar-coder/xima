@@ -329,16 +329,11 @@ export default function Jobs() {
                           className="h-8 px-2"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleCreateChallenge(job);
+                            navigate(`/business/challenges/select?from_listing=${job.id}`);
                           }}
-                          disabled={creatingChallengeForJob === job.id}
                         >
-                          {creatingChallengeForJob === job.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Target className="h-4 w-4" />
-                          )}
-                          <span className="ml-1 hidden sm:inline">{t('jobs.create_challenge')}</span>
+                          <Target className="h-4 w-4" />
+                          <span className="ml-1 hidden sm:inline">{t('business.challenges.create_from_listing')}</span>
                         </Button>
 
                         {job.status !== 'archived' && (
