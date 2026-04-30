@@ -428,18 +428,19 @@ Restituisci SOLO un oggetto JSON valido con questa struttura esatta:
 // Fallback
 // =====================================================
 
-function buildFallbackResponse(): XimaCoreResult {
+function buildFallbackResponse(locale: string = 'en', contextTag: string = 'Professional role · Business context'): XimaCoreResult {
+  const scenario = XIMA_CORE_FALLBACK_SCENARIOS[locale] || XIMA_CORE_FALLBACK_SCENARIOS.en;
   return {
-    scenario: XIMA_CORE_BASE_SCENARIO,
+    scenario,
     business_type: 'Role-specific business context',
-    context_tag: 'Professional role · Business context',
+    context_tag: contextTag,
     context_snapshot: {},
     evaluation_lens: DEFAULT_EVALUATION_LENS,
     expected_tensions: [
       "Speed vs. quality under deadline pressure",
       "Individual initiative vs. team alignment without authority"
     ],
-    estimated_time_minutes: 20,
+    estimated_time_minutes: 40,
   };
 }
 
