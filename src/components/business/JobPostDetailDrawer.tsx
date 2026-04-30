@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Sheet,
@@ -32,7 +33,6 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
-import { useCreateL2ChallengeFromJobPost } from '@/hooks/useCreateL2ChallengeFromJobPost';
 import { toast } from 'sonner';
 import JobPostCandidatePreview from './JobPostCandidatePreview';
 
@@ -72,15 +72,13 @@ export default function JobPostDetailDrawer({
   onOpenChange,
   onUpdate
 }: JobPostDetailDrawerProps) {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { user } = useUser();
-  const { createL2Challenge, creatingFor } = useCreateL2ChallengeFromJobPost();
   const [activeTab, setActiveTab] = useState<string>('preview');
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<JobPost>>({});
   
-  const isCreatingChallenge = creatingFor === job?.id;
-
   React.useEffect(() => {
     if (job) {
       setFormData({ ...job });
@@ -178,23 +176,10 @@ export default function JobPostDetailDrawer({
         {/* Actions */}
         <div className="flex flex-wrap gap-2 mb-4">
           <Button
-            onClick={() => createL2Challenge({
-              id: job.id,
-              title: job.title,
-              description: job.description,
-              responsibilities: job.responsibilities,
-              requirements_must: job.requirements_must,
-              requirements_nice: job.requirements_nice,
-              locale: job.locale,
-            })}
-            disabled={isCreatingChallenge}
+            onClick={() => navigate(`/business/challenges/select?from_listing=${job.id}`)}
             className="gap-2"
           >
-            {isCreatingChallenge ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Target className="h-4 w-4" />
-            )}
+            <Target className="h-4 w-4" />
             {t('jobs.create_challenge')}
           </Button>
 
