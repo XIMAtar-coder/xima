@@ -3536,6 +3536,13 @@
         "q5_title": "Colaboración y comunicación",
         "q5_text": "¿Cómo comunicarías tu enfoque al equipo? ¿Qué reacciones esperarías y cómo las gestionarías?"
       },
+      "preview_button": "Vista previa del candidato",
+      "preview_title": "Vista previa del candidato",
+      "preview_subtitle": "Esto es lo que el candidato verá cuando reciba el reto.",
+      "preview_badge": "Vista previa — esta es la vista del candidato",
+      "preview_close": "Cerrar vista previa",
+      "preview_submit_disabled": "Enviar respuestas",
+      "context_tag_fallback": "Rol profesional · Contexto de negocio",
       "already_active_title": "XIMA Core ya está activa",
       "already_active_desc": "Solo una XIMA Core Challenge puede estar activa por objetivo de contratación.",
       "activated_title": "XIMA Core activada",
