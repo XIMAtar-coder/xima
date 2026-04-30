@@ -34,6 +34,7 @@ interface CommandCenterProps {
   loading?: boolean;
   hiringGoalId?: string | null;
   onImportJob?: () => void;
+  onCreateChallenge?: () => void;
 }
 
 export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
@@ -42,6 +43,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
   loading = false,
   hiringGoalId,
   onImportJob,
+  onCreateChallenge,
 }) => {
   const { t } = useTranslation();
 
@@ -98,7 +100,8 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
       labelKey: 'businessPortal.quick_action_create_challenge',
       icon: Plus,
       primary: false,
-      link: hiringGoalId ? `/business/challenges/select?goal=${hiringGoalId}` : '/business/challenges'
+      link: hiringGoalId ? `/business/challenges/select?goal=${hiringGoalId}` : '',
+      onClick: hiringGoalId ? undefined : onCreateChallenge,
     },
     {
       key: 'invite_candidates',
