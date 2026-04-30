@@ -386,6 +386,7 @@ const CreateXimaCoreChallenge = () => {
         status: 'active',
         business_id: user?.id,
         hiring_goal_id: goalId || null,
+        job_post_id: jobPostId || null,
         start_at: new Date(startAt).toISOString(),
         end_at: new Date(endAt).toISOString(),
         difficulty: 1,
