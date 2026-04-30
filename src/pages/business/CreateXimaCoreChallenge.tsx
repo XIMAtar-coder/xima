@@ -196,6 +196,7 @@ const CreateXimaCoreChallenge = () => {
   const [endAt, setEndAt] = useState<string>('');
   const [previewOpen, setPreviewOpen] = useState(false);
   const [isFallbackScenario, setIsFallbackScenario] = useState(false);
+  const [generationError, setGenerationError] = useState(false);
 
   const showNoContextWarning = noContextFlag && !goalId && !jobPostId;
   const rawIndustry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || '';
@@ -204,6 +205,7 @@ const CreateXimaCoreChallenge = () => {
   const industryIcon = INDUSTRY_ICONS[industryKey] || '🧭';
   const roleTitle = hiringGoal?.role_title || listingTitle || t('challenge.xima_core.context_fallback_role');
   const displayContextTag = contextTag || t('challenge.xima_core.context_tag', { role: roleTitle, industry });
+  const hasValidScenario = !!scenario.trim() && !generationError && !isFallbackScenario;
   const localizedQuestions = useMemo(
     () => QUESTION_IDS.map((id) => ({
       id,
@@ -343,6 +345,9 @@ const CreateXimaCoreChallenge = () => {
     const company = companyData !== undefined ? companyData : companyProfile;
 
     setGenerating(true);
+    setGenerationError(false);
+    setIsFallbackScenario(false);
+    setScenario('');
     try {
       const { data, error } = await supabase.functions.invoke<GeneratedChallengeContext>('generate-challenge', {
         body: {
@@ -367,7 +372,7 @@ const CreateXimaCoreChallenge = () => {
 
       if (error) throw error;
 
-      if (data?.scenario) {
+      if (data?.scenario && !(data.is_fallback || data.used_fallback)) {
         setScenario(data.scenario);
         setBusinessType(data.business_type || '');
         setContextTag(data.context_tag || '');
@@ -375,10 +380,15 @@ const CreateXimaCoreChallenge = () => {
         setEvaluationLens(data.evaluation_lens || null);
         setExpectedTensions(data.expected_tensions || null);
         setGeneratedTimeEstimate(data.estimated_time_minutes || XIMA_CORE_CHALLENGE.timeEstimateMinutes);
-        setIsFallbackScenario(!!(data.is_fallback || data.used_fallback));
+        setIsFallbackScenario(false);
+      } else {
+        throw new Error('Scenario generation returned no valid scenario');
       }
     } catch (err) {
       console.error('Failed to generate scenario:', err);
+      setScenario(t('challenge.xima_core.scenario_generation_failed'));
+      setGenerationError(true);
+      setIsFallbackScenario(false);
       toast({
         title: t('common.error'),
         description: t('challenge.xima_core.generate_error'),
@@ -408,6 +418,11 @@ const CreateXimaCoreChallenge = () => {
   };
 
   const handleActivate = async () => {
+    if (!hasValidScenario) {
+      toast({ title: t('common.error'), description: t('challenge.xima_core.generate_error'), variant: 'destructive' });
+      return;
+    }
+
     if (!startAt || !endAt) {
       toast({ title: t('common.error'), description: t('challenge_builder.dates_required'), variant: 'destructive' });
       return;
@@ -574,10 +589,10 @@ const CreateXimaCoreChallenge = () => {
             </p>
           </div>
 
-          {!generating && scenario && isFallbackScenario && (
+          {!generating && (generationError || isFallbackScenario) && (
             <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm text-foreground flex items-start gap-2">
               <Sparkles className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
-              <span>{t('challenge.xima_core.fallback_warning')}</span>
+              <span>{generationError ? t('challenge.xima_core.scenario_generation_failed') : t('challenge.xima_core.fallback_warning')}</span>
             </div>
           )}
 
@@ -602,7 +617,7 @@ const CreateXimaCoreChallenge = () => {
             {!isActivated && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline" className="gap-2" disabled={generating}>
+                  <Button variant={!hasValidScenario ? 'default' : 'outline'} className="gap-2" disabled={generating}>
                     {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                     {t('challenge.xima_core.scenario_regenerate')}
                   </Button>
@@ -706,12 +721,12 @@ const CreateXimaCoreChallenge = () => {
               size="lg"
               className="gap-2"
               onClick={() => setPreviewOpen(true)}
-              disabled={generating || !scenario.trim()}
+              disabled={generating || !hasValidScenario}
             >
               <Eye className="h-4 w-4" />
               {t('challenge.xima_core.preview_button')}
             </Button>
-            <Button onClick={handleActivate} disabled={saving || generating || !scenario.trim() || !startAt || !endAt} className="gap-2" size="lg">
+            <Button onClick={handleActivate} disabled={saving || generating || !hasValidScenario || !startAt || !endAt} className="gap-2" size="lg">
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
               {t('challenge.xima_core.activate_button')}
             </Button>

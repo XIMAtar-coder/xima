@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { callAnthropicApi, AnthropicError } from "../_shared/anthropicClient.ts";
+import { callAnthropicApi, AnthropicError, getModelForFunction } from "../_shared/anthropicClient.ts";
 import { extractJsonFromAiContent, generateCorrelationId } from "../_shared/aiClient.ts";
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse, forbiddenResponse } from "../_shared/errors.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
@@ -57,38 +57,6 @@ interface XimaCoreResult {
 // =====================================================
 
 const LANGUAGE_NAMES: Record<string, string> = { en: 'English', it: 'Italian', es: 'Spanish' };
-
-// Per-language fallback narrative scenarios. Used ONLY when AI generation fails.
-// These are concrete narratives — never meta-descriptions.
-const XIMA_CORE_FALLBACK_SCENARIOS: Record<string, string> = {
-  it: `Sei appena entrato in un nuovo ruolo. Nella tua prima settimana scopri che un progetto importante è in ritardo: il team non condivide la stessa lettura delle priorità, alcune informazioni chiave mancano e uno stakeholder esterno chiede aggiornamenti quotidiani. Hai a disposizione due settimane prima di una scadenza visibile, risorse limitate e un collega più senior che ha già un'opinione forte ma non è stato coinvolto nelle ultime decisioni. Devi capire come muoverti: non hai un'autorità formale per imporre nulla, ma ci si aspetta che tu faccia avanzare la situazione.`,
-  es: `Acabas de incorporarte a un nuevo rol. En tu primera semana descubres que un proyecto importante va retrasado: el equipo no comparte la misma lectura de prioridades, falta información clave y un stakeholder externo pide actualizaciones diarias. Tienes dos semanas antes de una entrega visible, recursos limitados y un colega más sénior con una opinión fuerte que no estuvo en las últimas decisiones. Debes decidir cómo moverte: no tienes autoridad formal para imponer nada, pero se espera que hagas avanzar la situación.`,
-  en: `You have just stepped into a new role. In your first week you discover that an important project is behind schedule: the team does not share the same reading of priorities, key information is missing, and an external stakeholder is asking for daily updates. You have two weeks before a visible deadline, limited resources, and a more senior colleague with a strong opinion who was not part of the last decisions. You need to decide how to move: you have no formal authority to impose anything, but you are expected to move the situation forward.`,
-};
-const XIMA_CORE_BASE_SCENARIO = XIMA_CORE_FALLBACK_SCENARIOS.en;
-
-const DEFAULT_EVALUATION_LENS = {
-  drive_signals: [
-    "Takes ownership of the situation despite lacking formal authority",
-    "Proposes concrete next steps with urgency"
-  ],
-  computational_power_signals: [
-    "Breaks the problem into components before acting",
-    "References data or evidence to support decisions"
-  ],
-  communication_signals: [
-    "Addresses multiple stakeholders with differentiated messaging",
-    "Seeks alignment through dialogue rather than decree"
-  ],
-  creativity_signals: [
-    "Proposes an unconventional approach to break the deadlock",
-    "Reframes the problem to find new angles"
-  ],
-  knowledge_signals: [
-    "References relevant frameworks or best practices",
-    "Shows awareness of organizational dynamics"
-  ],
-};
 
 // =====================================================
 // Validation
@@ -380,18 +348,24 @@ Restituisci SOLO JSON valido:
     }
 
     try {
+      const model = getModelForFunction('generate-challenge');
+      console.log('[generate-challenge] ABOUT TO CALL CLAUDE with model:', model);
+      console.log('[generate-challenge] System prompt first 200 chars:', systemPrompt.substring(0, 200));
+      console.log('[generate-challenge] Company context:', companyName, industry, roleTitle);
+
       const aiResp = await callAnthropicApi({
         system: systemPrompt,
         userMessage: userPrompt,
         correlationId,
         functionName: 'generate-challenge',
+        model,
         inputSummary: `l1_gen:locale=${locale},has_company=${!!companyProfile},has_goal=${!!body.hiring_goal_id}`,
         temperature: 0.8,
         maxTokens: 2048,
       });
 
       const jsonStr = extractJsonFromAiContent(aiResp.content);
-      const parsed = JSON.parse(jsonStr);
+      const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
 
       // QUALITY CHECK: detect when the model echoed the prompt template instead of generating actual content.
       const META_MARKERS = [
@@ -403,41 +377,48 @@ Restituisci SOLO JSON valido:
         'competing priorities, incomplete information, stakeholder pressure',
       ];
       const FALLBACK_MARKERS = [
-        'Sei appena entrato in un nuovo ruolo',
-        'You have just stepped into a new role',
-        'You just started a new role',
-        'Acabas de incorporarte',
-        'Acabas de empezar',
+        'prima settimana scopri che un progetto importante',
+        'important project is behind schedule',
+        'important initiative. The goal is clear',
+        'proyecto importante va retrasado',
+        'stakeholders have different expectations',
       ];
       const looksLikeMeta = typeof parsed?.scenario === 'string' && (
         parsed.scenario.length < 80 ||
         META_MARKERS.some((m) => parsed.scenario.includes(m))
       );
       if (looksLikeMeta) {
-        console.error('[generate-challenge] QUALITY CHECK FAILED: scenario appears to be meta-description, not actual narrative content. Falling back.', JSON.stringify({
+        console.error('[generate-challenge] QUALITY CHECK FAILED: scenario appears to be meta-description, not actual narrative content.', JSON.stringify({
           correlationId,
           scenarioPreview: String(parsed.scenario).slice(0, 200),
         }));
-        const fallback = buildFallbackResponse(locale, contextTag);
-        return jsonResponse({ ...fallback, used_fallback: true, is_fallback: true, fallback_reason: 'meta_description_detected' });
+        return errorResponse(422, 'SCENARIO_QUALITY_FAILED', 'Generated scenario was too generic. Please regenerate.', { correlation_id: correlationId });
       }
       const isFallbackEcho = typeof parsed?.scenario === 'string' &&
         FALLBACK_MARKERS.some((m) => parsed.scenario.includes(m));
       if (isFallbackEcho) {
-        console.warn('[generate-challenge] Fallback-pattern scenario detected — AI may not have used full context', JSON.stringify({
+        console.error('[generate-challenge] Fallback-pattern scenario detected — AI may not have used full context', JSON.stringify({
           correlationId,
           scenarioPreview: String(parsed.scenario).slice(0, 200),
         }));
-        parsed.is_fallback = true;
+        return errorResponse(422, 'SCENARIO_FALLBACK_PATTERN', 'Generated scenario matched a generic fallback pattern. Please regenerate.', { correlation_id: correlationId });
       }
 
       const validated = validateXimaCoreResult(parsed);
 
       if (!validated) {
-        console.log(JSON.stringify({ type: 'validation_fallback', correlation_id: correlationId, function_name: 'generate-challenge' }));
-        const fallback = buildFallbackResponse(locale, contextTag);
-        return jsonResponse({ ...fallback, used_fallback: true });
+        console.error(JSON.stringify({
+          type: 'validation_failed',
+          correlation_id: correlationId,
+          function_name: 'generate-challenge',
+          parsed_preview: typeof parsed?.scenario === 'string' ? parsed.scenario.slice(0, 200) : String(parsed).slice(0, 200),
+        }));
+        return errorResponse(422, 'INVALID_AI_RESPONSE', 'Generated scenario response was invalid. Please regenerate.', { correlation_id: correlationId });
       }
+
+      const responseIsFallback = !!parsed.is_fallback;
+      console.log('[generate-challenge] Claude response received, scenario first 100 chars:', validated.scenario?.substring(0, 100));
+      console.log('[generate-challenge] Is fallback?', responseIsFallback);
 
       // Store evaluation_lens on the challenge
       if (body.challenge_id) {
@@ -469,15 +450,21 @@ Restituisci SOLO JSON valido:
         metadata: { business_type: validated.business_type, locale, used_fallback: false },
       }, "l1_challenges_generated");
 
-      return jsonResponse({ ...validated, used_fallback: false, is_fallback: !!parsed.is_fallback });
+      return jsonResponse({ ...validated, used_fallback: false, is_fallback: responseIsFallback });
 
     } catch (e) {
       if (e instanceof AnthropicError) {
         if (e.statusCode === 429) return errorResponse(429, 'RATE_LIMITED', e.message);
       }
-      console.error(JSON.stringify({ type: 'ai_fallback', correlation_id: correlationId, function_name: 'generate-challenge', error: e instanceof Error ? e.message : 'Unknown' }));
-      const fallback = buildFallbackResponse(locale, contextTag);
-      return jsonResponse({ ...fallback, used_fallback: true, is_fallback: true });
+      console.error('[generate-challenge] Claude generation failed:', e);
+      console.error(JSON.stringify({
+        type: 'ai_generation_failed',
+        correlation_id: correlationId,
+        function_name: 'generate-challenge',
+        error: e instanceof Error ? e.message : String(e),
+        stack: e instanceof Error ? e.stack : undefined,
+      }));
+      return errorResponse(502, 'AI_GENERATION_FAILED', 'Scenario generation failed. Please retry.', { correlation_id: correlationId });
     }
 
   } catch (err) {
@@ -485,26 +472,6 @@ Restituisci SOLO JSON valido:
     return errorResponse(500, 'INTERNAL_ERROR', err instanceof Error ? err.message : 'Unknown error');
   }
 });
-
-// =====================================================
-// Fallback
-// =====================================================
-
-function buildFallbackResponse(locale: string = 'en', contextTag: string = 'Professional role · Business context'): XimaCoreResult {
-  const scenario = XIMA_CORE_FALLBACK_SCENARIOS[locale] || XIMA_CORE_FALLBACK_SCENARIOS.en;
-  return {
-    scenario,
-    business_type: 'Role-specific business context',
-    context_tag: contextTag,
-    context_snapshot: {},
-    evaluation_lens: DEFAULT_EVALUATION_LENS,
-    expected_tensions: [
-      "Speed vs. quality under deadline pressure",
-      "Individual initiative vs. team alignment without authority"
-    ],
-    estimated_time_minutes: 40,
-  };
-}
 
 // =====================================================
 // Legacy handler (backward compatibility)

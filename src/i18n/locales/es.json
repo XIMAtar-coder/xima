@@ -3522,8 +3522,9 @@
       "context_fallback_role": "Rol profesional",
       "context_fallback_industry": "Contexto empresarial",
       "goal_not_found": "Objetivo de contratación no encontrado",
-      "generate_error": "No pudimos generar el escenario. Inténtalo de nuevo en unos momentos.",
-      "fallback_warning": "Escenario generado con contexto limitado. Intenta regenerar para un resultado más específico.",
+      "generate_error": "Error al generar el escenario. Inténtalo de nuevo.",
+      "scenario_generation_failed": "No fue posible generar el escenario. Haz clic en 'Regenerar escenario' para intentarlo de nuevo.",
+      "fallback_warning": "No fue posible generar un escenario válido. Regenera el escenario para continuar.",
       "generating": "Generando escenario...",
       "questions": {
         "q1_title": "Toma de decisiones",

@@ -3377,8 +3377,9 @@
       "context_fallback_role": "Professional role",
       "context_fallback_industry": "Business context",
       "goal_not_found": "Hiring goal not found",
-      "generate_error": "We could not generate the scenario. Please try again shortly.",
-      "fallback_warning": "Scenario generated with limited context. Try regenerating for a more specific result.",
+      "generate_error": "Error generating the scenario. Please try again.",
+      "scenario_generation_failed": "We could not generate the scenario. Click 'Regenerate Scenario' to try again.",
+      "fallback_warning": "We could not generate a valid scenario. Regenerate the scenario to continue.",
       "generating": "Generating scenario...",
       "questions": {
         "q1_title": "Decision making",

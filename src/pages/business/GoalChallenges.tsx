@@ -189,7 +189,7 @@ const GoalChallenges: React.FC = () => {
               {t('business.challenges.subtitle')}
             </p>
           </div>
-          <Link to={`/business/challenges/new?goal=${goalId}`}>
+          <Link to={`/business/challenges/select?goal=${goalId}`}>
             <Button>
               <Plus className="h-4 w-4 mr-2" />
               {t('business.challenges.create')}
@@ -272,7 +272,7 @@ const GoalChallenges: React.FC = () => {
               <Target className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">{t('business.challenges.empty_title')}</h3>
               <p className="text-muted-foreground mb-4">{t('business.challenges.empty_desc')}</p>
-              <Link to={`/business/challenges/new?goal=${goalId}`}>
+              <Link to={`/business/challenges/select?goal=${goalId}`}>
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
                   {t('business.challenges.create_first')}
