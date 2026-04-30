@@ -85,7 +85,67 @@ interface GeneratedChallengeContext {
   evaluation_lens?: Json;
   expected_tensions?: Json;
   estimated_time_minutes?: number;
+  is_fallback?: boolean;
+  used_fallback?: boolean;
 }
+
+const INDUSTRY_ICONS: Record<string, string> = {
+  real_estate: '🏗️',
+  construction: '🏗️',
+  technology: '💻',
+  tech: '💻',
+  software: '💻',
+  automotive: '🚗',
+  healthcare: '🏥',
+  health: '🏥',
+  finance: '📊',
+  financial_services: '📊',
+  consulting: '🤝',
+  manufacturing: '🏭',
+  energy: '⚡',
+  retail: '🛍️',
+  education: '🎓',
+  logistics: '🚚',
+  food: '🍽️',
+  pharma: '💊',
+  pharmaceutical: '💊',
+  media: '🎬',
+  hospitality: '🏨',
+  legal: '⚖️',
+  agriculture: '🌾',
+  telecom: '📡',
+  insurance: '🛡️',
+  nonprofit: '🤲',
+};
+
+const INDUSTRY_LABELS: Record<string, string> = {
+  real_estate: 'Edilizia / Immobiliare',
+  construction: 'Edilizia',
+  technology: 'Tecnologia',
+  tech: 'Tecnologia',
+  software: 'Software / IT',
+  automotive: 'Automotive',
+  healthcare: 'Sanità',
+  health: 'Sanità',
+  finance: 'Finanza',
+  financial_services: 'Servizi Finanziari',
+  consulting: 'Consulenza',
+  manufacturing: 'Manifatturiero',
+  energy: 'Energia',
+  retail: 'Commercio',
+  education: 'Istruzione',
+  logistics: 'Logistica / Trasporti',
+  food: 'Alimentare',
+  pharma: 'Farmaceutico',
+  pharmaceutical: 'Farmaceutico',
+  media: 'Media',
+  hospitality: 'Hospitality / Turismo',
+  legal: 'Legale',
+  agriculture: 'Agricoltura',
+  telecom: 'Telecomunicazioni',
+  insurance: 'Assicurazioni',
+  nonprofit: 'No Profit',
+};
 
 const QUESTION_IDS = ['q1', 'q2', 'q3', 'q4', 'q5'] as const;
 
