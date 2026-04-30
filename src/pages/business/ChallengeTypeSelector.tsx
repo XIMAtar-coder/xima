@@ -14,6 +14,8 @@ const ChallengeTypeSelector = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const goalId = searchParams.get('goal');
+  const fromListing = searchParams.get('from_listing');
+  const noContext = searchParams.get('no_context') === '1';
   const returnTo = searchParams.get('returnTo');
   const returnParam = returnTo ? `&returnTo=${encodeURIComponent(returnTo)}` : '';
   const { t } = useTranslation();
@@ -22,7 +24,18 @@ const ChallengeTypeSelector = () => {
 
   const [loading, setLoading] = useState(true);
   const [hasActiveXimaCore, setHasActiveXimaCore] = useState(false);
-  const [hiringGoalTitle, setHiringGoalTitle] = useState<string | null>(null);
+  const [contextLabel, setContextLabel] = useState<string | null>(null);
+
+  // Build downstream context query string preserving goal/from_listing/no_context.
+  const buildContextParams = (extra = '') => {
+    const parts: string[] = [];
+    if (goalId) parts.push(`goal=${goalId}`);
+    if (fromListing) parts.push(`from_listing=${fromListing}`);
+    if (noContext) parts.push(`no_context=1`);
+    if (returnTo) parts.push(`returnTo=${encodeURIComponent(returnTo)}`);
+    if (extra) parts.push(extra);
+    return parts.length ? `?${parts.join('&')}` : '';
+  };
 
   useEffect(() => {
     if (!isAuthenticated || (businessLoading === false && !isBusiness)) {
@@ -33,11 +46,31 @@ const ChallengeTypeSelector = () => {
     if (!businessLoading && user?.id) {
       checkExistingChallenges();
     }
-  }, [goalId, user?.id, isAuthenticated, isBusiness, businessLoading, navigate]);
+  }, [goalId, fromListing, noContext, user?.id, isAuthenticated, isBusiness, businessLoading, navigate]);
 
   const checkExistingChallenges = async () => {
+    // No context flag → show selector (no auto-redirect, no goal lookup)
+    if (noContext && !goalId && !fromListing) {
+      setLoading(false);
+      return;
+    }
+
+    // From listing → fetch listing title for context label
+    if (fromListing && !goalId) {
+      const { data: jobData } = await supabase
+        .from('job_posts')
+        .select('title')
+        .eq('id', fromListing)
+        .eq('business_id', user?.id)
+        .maybeSingle();
+
+      if (jobData?.title) setContextLabel(jobData.title);
+      setLoading(false);
+      return;
+    }
+
+    // Legacy: no context provided at all → fall back to direct XIMA Core (preserves old behavior)
     if (!goalId) {
-      // No goal specified - redirect to XIMA Core by default
       navigate('/business/challenges/xima-core');
       return;
     }
@@ -51,7 +84,7 @@ const ChallengeTypeSelector = () => {
       .single();
 
     if (goalData?.role_title) {
-      setHiringGoalTitle(goalData.role_title);
+      setContextLabel(goalData.role_title);
     }
 
     // Check if XIMA Core already exists for this goal
@@ -69,16 +102,16 @@ const ChallengeTypeSelector = () => {
       setLoading(false);
     } else {
       // No XIMA Core exists - redirect directly to XIMA Core page
-      navigate(`/business/challenges/xima-core?goal=${goalId}${returnParam}`);
+      navigate(`/business/challenges/xima-core${buildContextParams()}`);
     }
   };
 
   const handleSelectXimaCore = () => {
-    navigate(`/business/challenges/xima-core?goal=${goalId}${returnParam}`);
+    navigate(`/business/challenges/xima-core${buildContextParams()}`);
   };
 
   const handleSelectCustom = () => {
-    navigate(`/business/challenges/new?goal=${goalId}&type=custom${returnParam}`);
+    navigate(`/business/challenges/new${buildContextParams('type=custom')}`);
   };
 
   if (loading || businessLoading) {
