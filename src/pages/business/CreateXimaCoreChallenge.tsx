@@ -134,6 +134,7 @@ const CreateXimaCoreChallenge = () => {
   const [generatedTimeEstimate, setGeneratedTimeEstimate] = useState<number>(XIMA_CORE_CHALLENGE.timeEstimateMinutes);
   const [startAt, setStartAt] = useState<string>('');
   const [endAt, setEndAt] = useState<string>('');
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const showNoContextWarning = noContextFlag && !goalId && !jobPostId;
   const industry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || t('challenge.xima_core.context_fallback_industry');
