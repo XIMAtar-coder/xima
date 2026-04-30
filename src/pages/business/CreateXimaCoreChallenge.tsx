@@ -196,6 +196,7 @@ const CreateXimaCoreChallenge = () => {
   const [endAt, setEndAt] = useState<string>('');
   const [previewOpen, setPreviewOpen] = useState(false);
   const [isFallbackScenario, setIsFallbackScenario] = useState(false);
+  const [generationError, setGenerationError] = useState(false);
 
   const showNoContextWarning = noContextFlag && !goalId && !jobPostId;
   const rawIndustry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || '';
@@ -204,6 +205,7 @@ const CreateXimaCoreChallenge = () => {
   const industryIcon = INDUSTRY_ICONS[industryKey] || '🧭';
   const roleTitle = hiringGoal?.role_title || listingTitle || t('challenge.xima_core.context_fallback_role');
   const displayContextTag = contextTag || t('challenge.xima_core.context_tag', { role: roleTitle, industry });
+  const hasValidScenario = !!scenario.trim() && !generationError && !isFallbackScenario;
   const localizedQuestions = useMemo(
     () => QUESTION_IDS.map((id) => ({
       id,
@@ -343,6 +345,9 @@ const CreateXimaCoreChallenge = () => {
     const company = companyData !== undefined ? companyData : companyProfile;
 
     setGenerating(true);
+    setGenerationError(false);
+    setIsFallbackScenario(false);
+    setScenario('');
     try {
       const { data, error } = await supabase.functions.invoke<GeneratedChallengeContext>('generate-challenge', {
         body: {
@@ -367,7 +372,7 @@ const CreateXimaCoreChallenge = () => {
 
       if (error) throw error;
 
-      if (data?.scenario) {
+      if (data?.scenario && !(data.is_fallback || data.used_fallback)) {
         setScenario(data.scenario);
         setBusinessType(data.business_type || '');
         setContextTag(data.context_tag || '');
@@ -375,10 +380,15 @@ const CreateXimaCoreChallenge = () => {
         setEvaluationLens(data.evaluation_lens || null);
         setExpectedTensions(data.expected_tensions || null);
         setGeneratedTimeEstimate(data.estimated_time_minutes || XIMA_CORE_CHALLENGE.timeEstimateMinutes);
-        setIsFallbackScenario(!!(data.is_fallback || data.used_fallback));
+        setIsFallbackScenario(false);
+      } else {
+        throw new Error('Scenario generation returned no valid scenario');
       }
     } catch (err) {
       console.error('Failed to generate scenario:', err);
+      setScenario(t('challenge.xima_core.scenario_generation_failed'));
+      setGenerationError(true);
+      setIsFallbackScenario(false);
       toast({
         title: t('common.error'),
         description: t('challenge.xima_core.generate_error'),
