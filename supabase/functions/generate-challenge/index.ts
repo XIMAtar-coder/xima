@@ -234,53 +234,75 @@ serve(async (req) => {
     };
     const langInstruction = getLanguageInstruction(locale);
 
-    const systemPrompt = `You are XIMA's challenge architect. Your job is to write a realistic, ambiguous workplace scenario that will reveal how candidates think under pressure.
+    // Per-locale strings for the prompt itself.
+    const promptLang = locale === 'it' ? 'Italiano' : locale === 'es' ? 'Español' : 'English';
+    const companyName = businessProfile?.company_name || 'Non specificato';
+    const teamCulture = (businessProfile?.team_culture || companyProfile?.company_culture || 'Non specificato') as string;
+    const operatingStyle = (companyProfile?.operating_style_override || companyProfile?.operating_style || body.context?.decisionStyle || 'Non specificato') as string;
+    const coreValuesRaw = companyProfile?.values_override || companyProfile?.values;
+    const coreValues = Array.isArray(coreValuesRaw) ? (coreValuesRaw as unknown[]).map(String).join(', ') : (typeof coreValuesRaw === 'string' ? coreValuesRaw : 'Non specificato');
+    const taskDescription = goal?.task_description || body.context?.taskDescription || 'Non specificato';
+    const requiredSkillsRaw = goal?.required_skills;
+    const requiredSkills = Array.isArray(requiredSkillsRaw) ? (requiredSkillsRaw as unknown[]).map(String).join(', ') : 'Non specificato';
+    const experienceLevel = goal?.experience_level || body.context?.experienceLevel || 'Non specificato';
+    const workModel = goal?.work_model || 'Non specificato';
 
-RULES:
-1. The scenario MUST be specific to this company's industry and the role being hired for. Never write a generic "you join a team" scenario.
-2. The scenario describes a realistic situation the candidate would actually face in this specific role at this specific type of company.
-3. The scenario must involve genuine ambiguity — no clear "right answer", competing priorities, incomplete information, and interpersonal complexity.
-4. The scenario should naturally surface behavioral signals across all 5 XIMA dimensions: Decision Making, Agency/Ownership, Ambiguity Tolerance, Impact Orientation, and Collaboration.
-5. ${langInstruction} If Italian, write naturally in Italian, not as a literal translation from English.
-6. Keep the scenario between 80-150 words. Concise but rich enough to provoke real thinking.
-7. End with a clear but open-ended situation — the candidate must decide what to do.
-8. Do NOT include questions in the scenario — the 5 fixed questions are separate.
+    // Diagnostic log of context being sent to Claude (no PII beyond company name).
+    console.log('[generate-challenge] Context being sent to Claude:', JSON.stringify({
+      companyName,
+      industry,
+      roleTitle,
+      taskDescription: typeof taskDescription === 'string' ? taskDescription.substring(0, 100) : null,
+      requiredSkillsCount: Array.isArray(requiredSkillsRaw) ? requiredSkillsRaw.length : 0,
+      locale,
+      hasCompanyContext: !!(companyProfile || businessProfile),
+      hasRoleContext: !!goal,
+    }, null, 2));
 
-COMPANY AND ROLE CONTEXT:
-${JSON.stringify(contextPayload, null, 2)}
+    const systemPrompt = `Sei l'architetto delle XIMA Challenge. Crea scenari realistici e ambigui per valutazioni comportamentali L1.
 
-GENERATE:
-1. "scenario": The role-specific scenario only.
-2. "business_type": Brief contextual label based on the actual role and industry.
-3. "context_tag": "${contextTag}" or a shorter natural equivalent if needed.
-4. "context_snapshot": Copy the context object you used for generation.
-5. "evaluation_lens": For EACH of the 5 XIMA pillars, list 2-3 specific behavioral signals that a response to THIS scenario would reveal:
-   - drive_signals: Evidence of initiative, ownership, urgency, accountability
-   - computational_power_signals: Evidence of analytical thinking, structured approach, data-driven reasoning
-   - communication_signals: Evidence of stakeholder management, clarity, influence without authority
-   - creativity_signals: Evidence of novel approaches, reframing problems, lateral thinking
-   - knowledge_signals: Evidence of domain awareness, referencing best practices, contextual understanding
-6. "expected_tensions": The 2-3 specific dilemmas embedded in the scenario.
-7. "estimated_time_minutes": Always return 40.
+REGOLE OBBLIGATORIE:
+- Lo scenario DEVE essere specifico per l'azienda e il ruolo indicati sotto.
+- Lo scenario descrive una situazione CONCRETA che il candidato affronterebbe in questo ruolo specifico.
+- NON scrivere meta-descrizioni o spiegazioni. Scrivi SOLO lo scenario narrativo.
+- Lo scenario deve contenere: priorità in conflitto, informazioni incomplete, pressione degli stakeholder, vincoli operativi.
+- Lunghezza: 80-150 parole.
+- Lingua dell'output: ${promptLang}. ${langInstruction}
+- NON includere domande nello scenario.
+- NON rivelare il nome dell'azienda nello scenario.
 
-Return ONLY valid JSON:
+CONTESTO AZIENDA:
+- Nome: ${companyName}
+- Settore: ${industry}
+- Cultura: ${teamCulture}
+- Stile operativo: ${operatingStyle}
+- Valori: ${coreValues}
+
+RUOLO DA ASSUMERE:
+- Titolo: ${roleTitle}
+- Descrizione: ${taskDescription}
+- Competenze richieste: ${requiredSkills}
+- Livello: ${experienceLevel}
+- Modalità: ${workModel}
+
+Restituisci SOLO un oggetto JSON valido con questa struttura esatta:
 {
-  "scenario": "string",
-  "business_type": "string",
-  "context_tag": "string",
+  "scenario": "IL TESTO DELLO SCENARIO QUI - una narrazione concreta di 80-150 parole nel ruolo di ${roleTitle} nel settore ${industry}, NON una descrizione generica",
+  "business_type": "etichetta breve del settore",
+  "context_tag": "${roleTitle} · ${industry}",
   "context_snapshot": {},
   "evaluation_lens": {
-    "drive_signals": ["string", "string"],
-    "computational_power_signals": ["string", "string"],
-    "communication_signals": ["string", "string"],
-    "creativity_signals": ["string", "string"],
-    "knowledge_signals": ["string", "string"]
+    "drive_signals": ["segnale1", "segnale2"],
+    "computational_power_signals": ["segnale1", "segnale2"],
+    "communication_signals": ["segnale1", "segnale2"],
+    "creativity_signals": ["segnale1", "segnale2"],
+    "knowledge_signals": ["segnale1", "segnale2"]
   },
-  "expected_tensions": ["string", "string"],
-  "estimated_time_minutes": number
+  "expected_tensions": ["tensione1", "tensione2"],
+  "estimated_time_minutes": 40
 }`;
 
-    const userPrompt = `Generate the XIMA Core scenario from the supplied company DNA and hiring goal context. Return ONLY the JSON object.`;
+    const userPrompt = `Genera uno scenario L1 per il ruolo di ${roleTitle} presso un'azienda del settore ${industry}. Lo scenario deve essere una NARRAZIONE CONCRETA in ${promptLang} (non una descrizione astratta) di una situazione lavorativa reale con conflitti e ambiguità specifici per questo ruolo. Rispondi SOLO con il JSON.`;
 
     // ---- Intelligence Engine: check challenge pattern library first (FREE) ----
     const targetPillar = companyProfile?.pillar_vector
