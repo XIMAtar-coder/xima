@@ -131,7 +131,7 @@ const ChallengeTypeSelector = () => {
         <div className="space-y-4">
           <Button 
             variant="ghost" 
-            onClick={() => navigate(goalId && returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/dashboard')}
+            onClick={() => navigate(goalId && returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/challenges')}
             className="gap-2 -ml-2"
           >
             <ArrowLeft size={16} />
@@ -145,9 +145,9 @@ const ChallengeTypeSelector = () => {
             <p className="text-muted-foreground">
               {t('challenge_type.subtitle')}
             </p>
-            {hiringGoalTitle && (
+            {contextLabel && (
               <Badge variant="secondary" className="mt-3">
-                {hiringGoalTitle}
+                {contextLabel}
               </Badge>
             )}
           </div>
