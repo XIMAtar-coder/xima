@@ -4198,6 +4198,13 @@
         "q5_title": "Collaborazione e comunicazione",
         "q5_text": "Come comunicheresti il tuo approccio al team? Quali reazioni ti aspetteresti e come le gestiresti?"
       },
+      "preview_button": "Anteprima candidato",
+      "preview_title": "Anteprima candidato",
+      "preview_subtitle": "Questo è ciò che il candidato vedrà quando riceverà la sfida.",
+      "preview_badge": "Anteprima — questa è la vista del candidato",
+      "preview_close": "Chiudi anteprima",
+      "preview_submit_disabled": "Invia risposte",
+      "context_tag_fallback": "Ruolo professionale · Contesto aziendale",
       "already_active_title": "XIMA Core già attiva",
       "already_active_desc": "Solo una XIMA Core Challenge può essere attiva per obiettivo di assunzione.",
       "activated_title": "XIMA Core attivata",
