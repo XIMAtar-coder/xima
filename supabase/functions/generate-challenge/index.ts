@@ -377,11 +377,11 @@ Restituisci SOLO JSON valido:
         'competing priorities, incomplete information, stakeholder pressure',
       ];
       const FALLBACK_MARKERS = [
-        'Sei appena entrato in un nuovo ruolo',
-        'You have just stepped into a new role',
-        'You just started a new role',
-        'Acabas de incorporarte',
-        'Acabas de empezar',
+        'prima settimana scopri che un progetto importante',
+        'important project is behind schedule',
+        'important initiative. The goal is clear',
+        'proyecto importante va retrasado',
+        'stakeholders have different expectations',
       ];
       const looksLikeMeta = typeof parsed?.scenario === 'string' && (
         parsed.scenario.length < 80 ||
