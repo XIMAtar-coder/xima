@@ -1345,6 +1345,38 @@
       },
       "challenge_created_toast": "Challenge created! You can now invite candidates from the shortlist",
       "invite_top5_disabled": "Create a challenge before inviting the top 5"
+    },
+    "challenges": {
+      "context_selector": {
+        "title": "Where do you want to start from to create the challenge?",
+        "subtitle": "The challenge will be tailored to the context you choose. The more context you provide, the more accurate the scenario will be.",
+        "status_active": "active",
+        "status_draft": "draft",
+        "untitled": "Untitled",
+        "from_goal": {
+          "title": "From a XIMA Hiring Goal",
+          "description": "Select an active or draft hiring goal to create a challenge tailored to that role.",
+          "select_placeholder": "Select hiring goal",
+          "empty": "No hiring goals available",
+          "continue": "Continue"
+        },
+        "from_listing": {
+          "title": "From a Job Post",
+          "description": "Use an already imported job listing or import a new one to extract the context.",
+          "select_placeholder": "Select job post",
+          "empty": "No job posts available",
+          "import_new": "Import new",
+          "continue": "Continue"
+        },
+        "no_context": {
+          "title": "Without specific context",
+          "description": "Create a generic challenge based only on the company profile. The scenario will be less specific.",
+          "continue": "Continue",
+          "warning": "The scenario will be based only on the company profile. For better results, link a hiring goal or a job post."
+        },
+        "cancel": "Cancel"
+      },
+      "create_from_listing": "Create Challenge"
     }
   },
   "not_found": {

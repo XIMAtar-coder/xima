@@ -2724,6 +2724,38 @@
         "needs_clarification": "Necesita aclaraciones",
         "insufficient": "Necesita más detalle"
       }
+    },
+    "challenges": {
+      "context_selector": {
+        "title": "¿Desde dónde quieres empezar para crear el desafío?",
+        "subtitle": "El desafío se personalizará según el contexto que elijas. Cuanto más contexto aportes, más preciso será el escenario.",
+        "status_active": "activo",
+        "status_draft": "borrador",
+        "untitled": "Sin título",
+        "from_goal": {
+          "title": "Desde un Objetivo XIMA",
+          "description": "Selecciona un objetivo de contratación activo o en borrador para crear un desafío personalizado para ese rol.",
+          "select_placeholder": "Seleccionar objetivo",
+          "empty": "No hay objetivos disponibles",
+          "continue": "Continuar"
+        },
+        "from_listing": {
+          "title": "Desde una Oferta",
+          "description": "Usa una oferta de trabajo ya importada o importa una nueva para extraer el contexto.",
+          "select_placeholder": "Seleccionar oferta",
+          "empty": "No hay ofertas disponibles",
+          "import_new": "Importar nueva",
+          "continue": "Continuar"
+        },
+        "no_context": {
+          "title": "Sin contexto específico",
+          "description": "Crea un desafío genérico basado solo en el perfil de la empresa. El escenario será menos específico.",
+          "continue": "Continuar",
+          "warning": "El escenario se basará solo en el perfil de la empresa. Para mejores resultados, vincula un objetivo o una oferta de trabajo."
+        },
+        "cancel": "Cancelar"
+      },
+      "create_from_listing": "Crear Desafío"
     }
   },
   "not_found": {

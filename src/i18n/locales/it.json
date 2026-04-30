@@ -1832,7 +1832,37 @@
       "status_updated_desc": "Lo stato della sfida è stato aggiornato",
       "duplicated": "Sfida Duplicata",
       "duplicated_desc": "È stata creata una copia della sfida",
-      "error": "Errore"
+      "error": "Errore",
+      "context_selector": {
+        "title": "Da dove vuoi partire per creare la sfida?",
+        "subtitle": "La challenge sarà personalizzata in base al contesto che scegli. Più contesto fornisci, più lo scenario sarà accurato.",
+        "status_active": "attivo",
+        "status_draft": "bozza",
+        "untitled": "Senza titolo",
+        "from_goal": {
+          "title": "Da un Obiettivo XIMA",
+          "description": "Seleziona un obiettivo di assunzione attivo o in bozza per creare una challenge personalizzata per quel ruolo.",
+          "select_placeholder": "Seleziona obiettivo",
+          "empty": "Nessun obiettivo disponibile",
+          "continue": "Continua"
+        },
+        "from_listing": {
+          "title": "Da un Job Post",
+          "description": "Usa un annuncio di lavoro già importato o importane uno nuovo per estrarre il contesto.",
+          "select_placeholder": "Seleziona job post",
+          "empty": "Nessun job post disponibile",
+          "import_new": "Importa nuovo",
+          "continue": "Continua"
+        },
+        "no_context": {
+          "title": "Senza contesto specifico",
+          "description": "Crea una challenge generica basata solo sul profilo aziendale. Lo scenario sarà meno specifico.",
+          "continue": "Continua",
+          "warning": "Lo scenario sarà basato solo sul profilo aziendale. Per risultati migliori, collega un obiettivo di assunzione o un job post."
+        },
+        "cancel": "Annulla"
+      },
+      "create_from_listing": "Crea Challenge"
     },
     "responses": {
       "subtitle": "Rivedi le risposte dei candidati",
