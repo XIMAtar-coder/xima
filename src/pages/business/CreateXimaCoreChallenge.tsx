@@ -574,6 +574,13 @@ const CreateXimaCoreChallenge = () => {
             </p>
           </div>
 
+          {!generating && scenario && isFallbackScenario && (
+            <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm text-foreground flex items-start gap-2">
+              <Sparkles className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+              <span>{t('challenge.xima_core.fallback_warning')}</span>
+            </div>
+          )}
+
           <Card className="border-l-4 border-l-primary bg-card shadow-sm">
             <CardContent className="p-6">
               {generating || !scenario ? (
@@ -582,7 +589,10 @@ const CreateXimaCoreChallenge = () => {
                   <span>{t('challenge.xima_core.generating')}</span>
                 </div>
               ) : (
-                <p className="whitespace-pre-wrap text-[17px] leading-8 text-foreground">{scenario}</p>
+                <div className="flex items-start gap-4">
+                  <span className="text-4xl opacity-60 mt-1 leading-none select-none" aria-hidden="true">{industryIcon}</span>
+                  <p className="flex-1 whitespace-pre-wrap text-[17px] leading-8 text-foreground">{scenario}</p>
+                </div>
               )}
             </CardContent>
           </Card>
