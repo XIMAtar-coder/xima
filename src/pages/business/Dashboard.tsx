@@ -22,6 +22,7 @@ import { ImportJobModal } from '@/components/business/ImportJobModal';
 import BusinessEntryPointsCard from '@/components/business/BusinessEntryPointsCard';
 import XimaHrRequestModal from '@/components/business/XimaHrRequestModal';
 import { DiscoveredPositionsBanner } from '@/components/business/DiscoveredPositionsBanner';
+import ChallengeContextSelector from '@/components/business/ChallengeContextSelector';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useChallengeStatsMap } from '@/hooks/useChallengeResponsesData';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -65,6 +66,7 @@ const BusinessDashboard = () => {
   const [activeChallengesLoading, setActiveChallengesLoading] = useState(true);
   const [showImportModal, setShowImportModal] = useState(false);
   const [showXimaHrModal, setShowXimaHrModal] = useState(false);
+  const [contextSelectorOpen, setContextSelectorOpen] = useState(false);
   
   const { goals: hiringGoals, loading: hiringGoalsLoading, updateGoalStatus, createGoal, refetch: refetchGoals } = useHiringGoals();
 
@@ -265,6 +267,7 @@ const BusinessDashboard = () => {
           loading={loading || statsLoading}
           hiringGoalId={hiringGoalDraftId}
           onImportJob={() => setShowImportModal(true)}
+          onCreateChallenge={() => setContextSelectorOpen(true)}
         />
 
         {/* Import Job Modal */}
@@ -399,6 +402,7 @@ const BusinessDashboard = () => {
 
         {/* How XIMA Works — interactive explainer */}
         <HowXimaWorksExplainer />
+        <ChallengeContextSelector open={contextSelectorOpen} onOpenChange={setContextSelectorOpen} />
       </div>
     </BusinessLayout>
   );
