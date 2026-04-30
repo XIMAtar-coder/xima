@@ -14,6 +14,7 @@ import {
   Target, Calendar, Briefcase 
 } from 'lucide-react';
 import { format } from 'date-fns';
+import ChallengeContextSelector from '@/components/business/ChallengeContextSelector';
 
 interface Challenge {
   id: string;
@@ -35,6 +36,7 @@ const BusinessChallenges = () => {
   const [loading, setLoading] = useState(true);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [contextSelectorOpen, setContextSelectorOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated || (businessLoading === false && !isBusiness)) {
@@ -255,7 +257,7 @@ const BusinessChallenges = () => {
             </div>
           </div>
           <Button 
-            onClick={() => navigate('/business/challenges/new')}
+            onClick={() => setContextSelectorOpen(true)}
             className="gap-2"
           >
             <Plus className="h-4 w-4" />
@@ -274,7 +276,7 @@ const BusinessChallenges = () => {
               <p className="text-muted-foreground mb-4">
                 {t('challenges.no_challenges_desc')}
               </p>
-              <Button onClick={() => navigate('/business/challenges/new')}>
+              <Button onClick={() => setContextSelectorOpen(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 {t('challenges.create_first')}
               </Button>
@@ -358,6 +360,10 @@ const BusinessChallenges = () => {
           </div>
         )}
       </div>
+      <ChallengeContextSelector
+        open={contextSelectorOpen}
+        onOpenChange={setContextSelectorOpen}
+      />
     </BusinessLayout>
   );
 };

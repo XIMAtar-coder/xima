@@ -99,12 +99,19 @@ const asTextList = (value: Json | string[] | null | undefined): string[] => {
 const CreateXimaCoreChallenge = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const goalId = searchParams.get('goal');
+  const goalIdParam = searchParams.get('goal');
+  const fromListingParam = searchParams.get('from_listing');
+  const noContextFlag = searchParams.get('no_context') === '1';
   const returnTo = searchParams.get('returnTo');
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: businessLoading } = useBusinessRole();
+
+  // Effective goalId may resolve from job_posts.linked_hiring_goal_id when arriving via from_listing.
+  const [goalId, setGoalId] = useState<string | null>(goalIdParam);
+  const [jobPostId, setJobPostId] = useState<string | null>(fromListingParam);
+  const [listingTitle, setListingTitle] = useState<string | null>(null);
 
   const [hiringGoal, setHiringGoal] = useState<HiringGoal | null>(null);
   const [companyProfile, setCompanyProfile] = useState<CompanyProfile | null>(null);
@@ -125,8 +132,9 @@ const CreateXimaCoreChallenge = () => {
   const [startAt, setStartAt] = useState<string>('');
   const [endAt, setEndAt] = useState<string>('');
 
+  const showNoContextWarning = noContextFlag && !goalId && !jobPostId;
   const industry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || t('challenge.xima_core.context_fallback_industry');
-  const roleTitle = hiringGoal?.role_title || t('challenge.xima_core.context_fallback_role');
+  const roleTitle = hiringGoal?.role_title || listingTitle || t('challenge.xima_core.context_fallback_role');
   const displayContextTag = contextTag || t('challenge.xima_core.context_tag', { role: roleTitle, industry });
   const localizedQuestions = useMemo(
     () => QUESTION_IDS.map((id) => ({
@@ -155,15 +163,52 @@ const CreateXimaCoreChallenge = () => {
     if (!businessLoading && user?.id) {
       loadData();
     }
-  }, [goalId, user?.id, isAuthenticated, isBusiness, businessLoading, navigate]);
+  }, [goalIdParam, fromListingParam, user?.id, isAuthenticated, isBusiness, businessLoading, navigate]);
 
   const loadData = async () => {
-    if (goalId) {
+    let effectiveGoalId: string | null = goalIdParam;
+
+    // 1) If arriving via from_listing, fetch the job_post and resolve a linked hiring goal if present.
+    if (!effectiveGoalId && fromListingParam) {
+      const { data: jobPost } = await supabase
+        .from('job_posts')
+        .select('id, title, responsibilities, requirements_must, requirements_nice, seniority, department, description, linked_hiring_goal_id')
+        .eq('id', fromListingParam)
+        .eq('business_id', user?.id)
+        .maybeSingle();
+
+      if (jobPost) {
+        setListingTitle(jobPost.title || null);
+        if (jobPost.linked_hiring_goal_id) {
+          effectiveGoalId = jobPost.linked_hiring_goal_id;
+          setGoalId(effectiveGoalId);
+        } else {
+          // Synthesize a HiringGoal-like object from job_post fields so generateScenario has rich context.
+          const synthetic: HiringGoal = {
+            id: jobPost.id,
+            role_title: jobPost.title || null,
+            task_description: jobPost.responsibilities || jobPost.description || null,
+            experience_level: jobPost.seniority || null,
+            function_area: jobPost.department || null,
+            work_model: null,
+            country: null,
+            required_skills: jobPost.requirements_must as Json,
+            nice_to_have_skills: jobPost.requirements_nice as Json,
+          };
+          setHiringGoal(synthetic);
+        }
+        setJobPostId(jobPost.id);
+      }
+    }
+
+    // 2) If we have an effective hiring goal, check for existing XIMA Core and load it.
+    let loadedGoal: HiringGoal | null = null;
+    if (effectiveGoalId) {
       const { data: existingCore } = await supabase
         .from('business_challenges')
         .select('id')
         .eq('business_id', user?.id)
-        .eq('hiring_goal_id', goalId)
+        .eq('hiring_goal_id', effectiveGoalId)
         .eq('status', 'active')
         .contains('rubric', { isXimaCore: true })
         .maybeSingle();
@@ -174,28 +219,28 @@ const CreateXimaCoreChallenge = () => {
           description: t('challenge.xima_core.already_active_desc'),
           variant: 'destructive',
         });
-        navigate(returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : `/business/candidates?fromGoal=${goalId}`);
+        navigate(returnTo === 'shortlist' ? `/business/goals/${effectiveGoalId}/shortlist` : `/business/candidates?fromGoal=${effectiveGoalId}`);
         return;
       }
-    }
 
-    let loadedGoal: HiringGoal | null = null;
-    if (goalId) {
       const { data: goalData, error: goalError } = await supabase
         .from('hiring_goal_drafts')
         .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills')
-        .eq('id', goalId)
+        .eq('id', effectiveGoalId)
         .eq('business_id', user?.id)
         .single();
 
       if (goalError || !goalData) {
-        toast({ title: t('common.error'), description: t('challenge.xima_core.goal_not_found'), variant: 'destructive' });
-        navigate('/business/dashboard');
-        return;
+        // If we came from a listing and the linked goal lookup failed, fall through using the synthetic profile.
+        if (!fromListingParam) {
+          toast({ title: t('common.error'), description: t('challenge.xima_core.goal_not_found'), variant: 'destructive' });
+          navigate('/business/dashboard');
+          return;
+        }
+      } else {
+        loadedGoal = goalData;
+        setHiringGoal(goalData);
       }
-
-      loadedGoal = goalData;
-      setHiringGoal(goalData);
     }
 
     const [{ data: businessData }, { data: companyData }] = await Promise.all([
@@ -215,7 +260,7 @@ const CreateXimaCoreChallenge = () => {
     if (companyData) setCompanyProfile(companyData);
 
     setLoading(false);
-    generateScenario(loadedGoal, companyData, businessData);
+    generateScenario(loadedGoal || (effectiveGoalId ? null : hiringGoal), companyData, businessData);
   };
 
   const generateScenario = async (
@@ -236,15 +281,18 @@ const CreateXimaCoreChallenge = () => {
           mode: 'xima_core',
           locale: normalizeLocale(i18n.language),
           business_id: user?.id,
-          hiring_goal_id: goal?.id || goalId || undefined,
+          // Only pass a real hiring_goal_id (not a synthetic id derived from job_posts).
+          hiring_goal_id: goalId || undefined,
+          job_post_id: jobPostId || undefined,
           context: {
             companyIndustry: business?.manual_industry || business?.snapshot_industry || undefined,
             companySize: business?.company_size || undefined,
             decisionStyle: company?.operating_style_override || company?.operating_style || undefined,
-            roleTitle: goal?.role_title || undefined,
+            roleTitle: goal?.role_title || listingTitle || undefined,
             functionArea: goal?.function_area || undefined,
             experienceLevel: goal?.experience_level || undefined,
             taskDescription: goal?.task_description || undefined,
+            jobPostId: jobPostId || undefined,
           },
         },
       });
@@ -338,6 +386,7 @@ const CreateXimaCoreChallenge = () => {
         status: 'active',
         business_id: user?.id,
         hiring_goal_id: goalId || null,
+        job_post_id: jobPostId || null,
         start_at: new Date(startAt).toISOString(),
         end_at: new Date(endAt).toISOString(),
         difficulty: 1,
@@ -401,6 +450,17 @@ const CreateXimaCoreChallenge = () => {
             </div>
           </div>
         </header>
+
+        {showNoContextWarning && (
+          <Card className="border-amber-500/40 bg-amber-500/5">
+            <CardContent className="flex items-start gap-3 p-4">
+              <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+              <p className="text-sm text-foreground">
+                {t('business.challenges.context_selector.no_context.warning')}
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         <Collapsible open={whatIsOpen} onOpenChange={setWhatIsOpen}>
           <Card className="border-border/70 bg-card/80 shadow-sm">

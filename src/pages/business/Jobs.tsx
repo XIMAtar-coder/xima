@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
-import { useCreateL2ChallengeFromJobPost } from '@/hooks/useCreateL2ChallengeFromJobPost';
+
 import BusinessLayout from '@/components/business/BusinessLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -60,9 +60,6 @@ export default function Jobs() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   
-  // L2 Challenge creation hook
-  const { createL2Challenge, creatingFor: creatingChallengeForJob } = useCreateL2ChallengeFromJobPost();
-
   // Handle jobPostId from URL query param (for redirect after PDF import)
   useEffect(() => {
     const jobPostIdFromUrl = searchParams.get('jobPostId');
@@ -147,20 +144,7 @@ export default function Jobs() {
     archived: jobs.filter(j => j.status === 'archived').length
   };
 
-  /**
-   * Create L2 challenge from job post using AI generation
-   */
-  const handleCreateChallenge = async (job: JobPost) => {
-    await createL2Challenge({
-      id: job.id,
-      title: job.title,
-      description: job.description,
-      responsibilities: job.responsibilities,
-      requirements_must: job.requirements_must,
-      requirements_nice: job.requirements_nice,
-      locale: job.locale,
-    });
-  };
+
 
   const handleArchiveJob = async (jobId: string) => {
     try {
@@ -329,16 +313,11 @@ export default function Jobs() {
                           className="h-8 px-2"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleCreateChallenge(job);
+                            navigate(`/business/challenges/select?from_listing=${job.id}`);
                           }}
-                          disabled={creatingChallengeForJob === job.id}
                         >
-                          {creatingChallengeForJob === job.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Target className="h-4 w-4" />
-                          )}
-                          <span className="ml-1 hidden sm:inline">{t('jobs.create_challenge')}</span>
+                          <Target className="h-4 w-4" />
+                          <span className="ml-1 hidden sm:inline">{t('business.challenges.create_from_listing')}</span>
                         </Button>
 
                         {job.status !== 'archived' && (
