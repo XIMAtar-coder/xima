@@ -195,9 +195,13 @@ const CreateXimaCoreChallenge = () => {
   const [startAt, setStartAt] = useState<string>('');
   const [endAt, setEndAt] = useState<string>('');
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [isFallbackScenario, setIsFallbackScenario] = useState(false);
 
   const showNoContextWarning = noContextFlag && !goalId && !jobPostId;
-  const industry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || t('challenge.xima_core.context_fallback_industry');
+  const rawIndustry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || '';
+  const industryKey = String(rawIndustry).toLowerCase();
+  const industry = INDUSTRY_LABELS[industryKey] || rawIndustry || t('challenge.xima_core.context_fallback_industry');
+  const industryIcon = INDUSTRY_ICONS[industryKey] || '🧭';
   const roleTitle = hiringGoal?.role_title || listingTitle || t('challenge.xima_core.context_fallback_role');
   const displayContextTag = contextTag || t('challenge.xima_core.context_tag', { role: roleTitle, industry });
   const localizedQuestions = useMemo(
