@@ -418,6 +418,11 @@ const CreateXimaCoreChallenge = () => {
   };
 
   const handleActivate = async () => {
+    if (!hasValidScenario) {
+      toast({ title: t('common.error'), description: t('challenge.xima_core.generate_error'), variant: 'destructive' });
+      return;
+    }
+
     if (!startAt || !endAt) {
       toast({ title: t('common.error'), description: t('challenge_builder.dates_required'), variant: 'destructive' });
       return;
@@ -584,10 +589,10 @@ const CreateXimaCoreChallenge = () => {
             </p>
           </div>
 
-          {!generating && scenario && isFallbackScenario && (
+          {!generating && (generationError || isFallbackScenario) && (
             <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm text-foreground flex items-start gap-2">
               <Sparkles className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
-              <span>{t('challenge.xima_core.fallback_warning')}</span>
+              <span>{generationError ? t('challenge.xima_core.scenario_generation_failed') : t('challenge.xima_core.fallback_warning')}</span>
             </div>
           )}
 
@@ -612,7 +617,7 @@ const CreateXimaCoreChallenge = () => {
             {!isActivated && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline" className="gap-2" disabled={generating}>
+                  <Button variant={!hasValidScenario ? 'default' : 'outline'} className="gap-2" disabled={generating}>
                     {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                     {t('challenge.xima_core.scenario_regenerate')}
                   </Button>
@@ -716,12 +721,12 @@ const CreateXimaCoreChallenge = () => {
               size="lg"
               className="gap-2"
               onClick={() => setPreviewOpen(true)}
-              disabled={generating || !scenario.trim()}
+              disabled={generating || !hasValidScenario}
             >
               <Eye className="h-4 w-4" />
               {t('challenge.xima_core.preview_button')}
             </Button>
-            <Button onClick={handleActivate} disabled={saving || generating || !scenario.trim() || !startAt || !endAt} className="gap-2" size="lg">
+            <Button onClick={handleActivate} disabled={saving || generating || !hasValidScenario || !startAt || !endAt} className="gap-2" size="lg">
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
               {t('challenge.xima_core.activate_button')}
             </Button>
