@@ -98,7 +98,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
       labelKey: 'businessPortal.quick_action_create_challenge',
       icon: Plus,
       primary: false,
-      link: '/business/challenges/new'
+      link: hiringGoalId ? `/business/challenges/select?goal=${hiringGoalId}` : '/business/challenges'
     },
     {
       key: 'invite_candidates',
