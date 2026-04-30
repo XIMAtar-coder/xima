@@ -12,7 +12,7 @@ export const XIMA_CORE_CHALLENGE = {
   
   intro: `This challenge explores how you approach decisions in complex, ambiguous situations. There are no right or wrong answers. We care about your reasoning.`,
   
-  scenarioTemplate: `You join a team working on an important initiative. The goal is clear, but progress is slow. Stakeholders have different expectations, priorities conflict, and no one fully owns the outcome. You have no formal authority, but the deadline is approaching.`,
+  scenarioTemplate: '',
   
   questions: [
     {
