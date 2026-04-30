@@ -85,7 +85,67 @@ interface GeneratedChallengeContext {
   evaluation_lens?: Json;
   expected_tensions?: Json;
   estimated_time_minutes?: number;
+  is_fallback?: boolean;
+  used_fallback?: boolean;
 }
+
+const INDUSTRY_ICONS: Record<string, string> = {
+  real_estate: '🏗️',
+  construction: '🏗️',
+  technology: '💻',
+  tech: '💻',
+  software: '💻',
+  automotive: '🚗',
+  healthcare: '🏥',
+  health: '🏥',
+  finance: '📊',
+  financial_services: '📊',
+  consulting: '🤝',
+  manufacturing: '🏭',
+  energy: '⚡',
+  retail: '🛍️',
+  education: '🎓',
+  logistics: '🚚',
+  food: '🍽️',
+  pharma: '💊',
+  pharmaceutical: '💊',
+  media: '🎬',
+  hospitality: '🏨',
+  legal: '⚖️',
+  agriculture: '🌾',
+  telecom: '📡',
+  insurance: '🛡️',
+  nonprofit: '🤲',
+};
+
+const INDUSTRY_LABELS: Record<string, string> = {
+  real_estate: 'Edilizia / Immobiliare',
+  construction: 'Edilizia',
+  technology: 'Tecnologia',
+  tech: 'Tecnologia',
+  software: 'Software / IT',
+  automotive: 'Automotive',
+  healthcare: 'Sanità',
+  health: 'Sanità',
+  finance: 'Finanza',
+  financial_services: 'Servizi Finanziari',
+  consulting: 'Consulenza',
+  manufacturing: 'Manifatturiero',
+  energy: 'Energia',
+  retail: 'Commercio',
+  education: 'Istruzione',
+  logistics: 'Logistica / Trasporti',
+  food: 'Alimentare',
+  pharma: 'Farmaceutico',
+  pharmaceutical: 'Farmaceutico',
+  media: 'Media',
+  hospitality: 'Hospitality / Turismo',
+  legal: 'Legale',
+  agriculture: 'Agricoltura',
+  telecom: 'Telecomunicazioni',
+  insurance: 'Assicurazioni',
+  nonprofit: 'No Profit',
+};
 
 const QUESTION_IDS = ['q1', 'q2', 'q3', 'q4', 'q5'] as const;
 
@@ -135,9 +195,13 @@ const CreateXimaCoreChallenge = () => {
   const [startAt, setStartAt] = useState<string>('');
   const [endAt, setEndAt] = useState<string>('');
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [isFallbackScenario, setIsFallbackScenario] = useState(false);
 
   const showNoContextWarning = noContextFlag && !goalId && !jobPostId;
-  const industry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || t('challenge.xima_core.context_fallback_industry');
+  const rawIndustry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || '';
+  const industryKey = String(rawIndustry).toLowerCase();
+  const industry = INDUSTRY_LABELS[industryKey] || rawIndustry || t('challenge.xima_core.context_fallback_industry');
+  const industryIcon = INDUSTRY_ICONS[industryKey] || '🧭';
   const roleTitle = hiringGoal?.role_title || listingTitle || t('challenge.xima_core.context_fallback_role');
   const displayContextTag = contextTag || t('challenge.xima_core.context_tag', { role: roleTitle, industry });
   const localizedQuestions = useMemo(
@@ -311,6 +375,7 @@ const CreateXimaCoreChallenge = () => {
         setEvaluationLens(data.evaluation_lens || null);
         setExpectedTensions(data.expected_tensions || null);
         setGeneratedTimeEstimate(data.estimated_time_minutes || XIMA_CORE_CHALLENGE.timeEstimateMinutes);
+        setIsFallbackScenario(!!(data.is_fallback || data.used_fallback));
       }
     } catch (err) {
       console.error('Failed to generate scenario:', err);
@@ -509,6 +574,13 @@ const CreateXimaCoreChallenge = () => {
             </p>
           </div>
 
+          {!generating && scenario && isFallbackScenario && (
+            <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm text-foreground flex items-start gap-2">
+              <Sparkles className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+              <span>{t('challenge.xima_core.fallback_warning')}</span>
+            </div>
+          )}
+
           <Card className="border-l-4 border-l-primary bg-card shadow-sm">
             <CardContent className="p-6">
               {generating || !scenario ? (
@@ -517,7 +589,10 @@ const CreateXimaCoreChallenge = () => {
                   <span>{t('challenge.xima_core.generating')}</span>
                 </div>
               ) : (
-                <p className="whitespace-pre-wrap text-[17px] leading-8 text-foreground">{scenario}</p>
+                <div className="flex items-start gap-4">
+                  <span className="text-4xl opacity-60 mt-1 leading-none select-none" aria-hidden="true">{industryIcon}</span>
+                  <p className="flex-1 whitespace-pre-wrap text-[17px] leading-8 text-foreground">{scenario}</p>
+                </div>
               )}
             </CardContent>
           </Card>

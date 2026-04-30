@@ -203,9 +203,39 @@ serve(async (req) => {
       goal = data;
     }
 
-    const industry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || companyProfile?.industry_focus || body.context?.companyIndustry || 'Business context';
+    const rawIndustry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || companyProfile?.industry_focus || body.context?.companyIndustry || 'Business context';
+    const industry = rawIndustry;
+    const industryLabels: Record<string, string> = {
+      'real_estate': 'Edilizia / Immobiliare',
+      'construction': 'Edilizia',
+      'technology': 'Tecnologia',
+      'tech': 'Tecnologia',
+      'software': 'Software / IT',
+      'automotive': 'Automotive',
+      'healthcare': 'Sanità',
+      'health': 'Sanità',
+      'finance': 'Finanza',
+      'financial_services': 'Servizi Finanziari',
+      'consulting': 'Consulenza',
+      'manufacturing': 'Manifatturiero',
+      'energy': 'Energia',
+      'retail': 'Commercio',
+      'education': 'Istruzione',
+      'logistics': 'Logistica / Trasporti',
+      'food': 'Alimentare',
+      'pharma': 'Farmaceutico',
+      'pharmaceutical': 'Farmaceutico',
+      'media': 'Media',
+      'hospitality': 'Hospitality / Turismo',
+      'legal': 'Legale',
+      'agriculture': 'Agricoltura',
+      'telecom': 'Telecomunicazioni',
+      'insurance': 'Assicurazioni',
+      'nonprofit': 'No Profit',
+    };
+    const displayIndustry = industryLabels[String(rawIndustry).toLowerCase()] || rawIndustry;
     const roleTitle = String(goal?.role_title || body.context?.roleTitle || 'Professional role');
-    const contextTag = `${roleTitle} · ${industry}`;
+    const contextTag = `${roleTitle} · ${displayIndustry}`;
     const contextPayload = {
       company_name: businessProfile?.company_name || null,
       industry,
@@ -259,21 +289,26 @@ serve(async (req) => {
       hasRoleContext: !!goal,
     }, null, 2));
 
-    const systemPrompt = `Sei l'architetto delle XIMA Challenge. Crea scenari realistici e ambigui per valutazioni comportamentali L1.
+    const systemPrompt = `Sei l'architetto delle XIMA Challenge. Crea scenari realistici per valutazioni comportamentali.
 
-REGOLE OBBLIGATORIE:
-- Lo scenario DEVE essere specifico per l'azienda e il ruolo indicati sotto.
-- Lo scenario descrive una situazione CONCRETA che il candidato affronterebbe in questo ruolo specifico.
-- NON scrivere meta-descrizioni o spiegazioni. Scrivi SOLO lo scenario narrativo.
-- Lo scenario deve contenere: priorità in conflitto, informazioni incomplete, pressione degli stakeholder, vincoli operativi.
-- Lunghezza: 80-150 parole.
-- Lingua dell'output: ${promptLang}. ${langInstruction}
-- NON includere domande nello scenario.
-- NON rivelare il nome dell'azienda nello scenario.
+REGOLA FONDAMENTALE: Lo scenario DEVE descrivere una situazione CONCRETA e SPECIFICA per il settore e il ruolo indicati. MAI scrivere scenari generici "da ufficio". Il candidato deve riconoscere il proprio mondo lavorativo leggendo lo scenario.
+
+ESEMPI DI SCENARI ECCELLENTI (il tuo output deve avere questo livello di specificità):
+
+ESEMPIO 1 — Capocantiere, settore edile:
+"Arrivi in cantiere lunedì mattina e trovi il ponteggio del fronte sud parzialmente smontato: il subappaltatore ha ritirato tre operai dopo una disputa sul compenso delle ore extra. Il direttore lavori ti chiama per informarti che l'ispezione ASL è stata anticipata a giovedì. Il progettista strutturale segnala via email che i carichi sul solaio del terzo piano superano i limiti previsti dal calcolo originale e chiede una verifica immediata. Hai quattro operai disponibili, di cui uno al primo cantiere. Il committente ha già minacciato penali per ogni giorno di ritardo oltre la data contrattuale."
+
+ESEMPIO 2 — Lead Engineer, settore automotive:
+"Il tuo team di sei ingegneri sta sviluppando il firmware per un nuovo modulo di gestione batteria. A tre settimane dalla milestone di validazione, il fornitore del BMS comunica che il protocollo CAN è stato aggiornato e non è retrocompatibile. Il cliente OEM vuole mantenere la data di consegna. Due dei tuoi ingegneri senior sono impegnati su un altro progetto critico. Il test di sicurezza funzionale ISO 26262 richiede documentazione aggiornata che nessuno ha ancora iniziato. Il tuo responsabile ti chiede un piano d'azione entro domani."
+
+ESEMPIO 3 — Responsabile HR, settore consulenza:
+"Stai gestendo il processo di selezione per una posizione senior che il partner ha definito urgente. Dopo due mesi hai tre finalisti, ma il partner cambia idea sui requisiti e vuole qualcuno con esperienza internazionale — nessuno dei tre ce l'ha. Un candidato ti scrive dicendo di aver ricevuto un'offerta da un concorrente e ti dà 48 ore per rispondere. Il budget per la posizione è stato tagliato del 15% rispetto all'offerta inizialmente approvata. La hiring manager insiste che vuole incontrare almeno altri due candidati prima di decidere."
+
+NOTA: questi sono ESEMPI dello stile. Il TUO scenario deve essere completamente diverso, inventato da zero per il contesto specifico sotto.
 
 CONTESTO AZIENDA:
 - Nome: ${companyName}
-- Settore: ${industry}
+- Settore: ${displayIndustry}
 - Cultura: ${teamCulture}
 - Stile operativo: ${operatingStyle}
 - Valori: ${coreValues}
@@ -285,11 +320,22 @@ RUOLO DA ASSUMERE:
 - Livello: ${experienceLevel}
 - Modalità: ${workModel}
 
-Restituisci SOLO un oggetto JSON valido con questa struttura esatta:
+ISTRUZIONI:
+1. Scrivi UNO scenario di 80-150 parole SPECIFICO per il ruolo e settore sopra.
+2. Includi: nomi di oggetti, strumenti, normative, situazioni REALI del settore.
+3. Includi: almeno 2 attori specifici (colleghi, fornitori, clienti, ispettori) con ruoli concreti.
+4. Includi: almeno 1 vincolo tecnico specifico del settore.
+5. Includi: pressione temporale concreta (una scadenza specifica, non generica).
+6. NON usare frasi generiche come "un progetto importante", "stakeholder esterni", "risorse limitate".
+7. Lingua: ${promptLang}. ${langInstruction}
+8. NON includere domande.
+9. NON rivelare il nome dell'azienda.
+
+Restituisci SOLO JSON valido:
 {
-  "scenario": "IL TESTO DELLO SCENARIO QUI - una narrazione concreta di 80-150 parole nel ruolo di ${roleTitle} nel settore ${industry}, NON una descrizione generica",
-  "business_type": "etichetta breve del settore",
-  "context_tag": "${roleTitle} · ${industry}",
+  "scenario": "testo dello scenario specifico per il ruolo",
+  "business_type": "etichetta breve settore",
+  "context_tag": "${roleTitle} · ${displayIndustry}",
   "context_snapshot": {},
   "evaluation_lens": {
     "drive_signals": ["segnale1", "segnale2"],
@@ -302,7 +348,7 @@ Restituisci SOLO un oggetto JSON valido con questa struttura esatta:
   "estimated_time_minutes": 40
 }`;
 
-    const userPrompt = `Genera uno scenario L1 per il ruolo di ${roleTitle} presso un'azienda del settore ${industry}. Lo scenario deve essere una NARRAZIONE CONCRETA in ${promptLang} (non una descrizione astratta) di una situazione lavorativa reale con conflitti e ambiguità specifici per questo ruolo. Rispondi SOLO con il JSON.`;
+    const userPrompt = `Genera uno scenario L1 per il ruolo di "${roleTitle}" nel settore "${displayIndustry}". Lo scenario DEVE contenere riferimenti concreti a strumenti, normative, situazioni e attori tipici di questo specifico settore — come negli esempi sopra. Rispondi SOLO con il JSON.`;
 
     // ---- Intelligence Engine: check challenge pattern library first (FREE) ----
     const targetPillar = companyProfile?.pillar_vector
@@ -356,6 +402,13 @@ Restituisci SOLO un oggetto JSON valido con questa struttura esatta:
         'NON una descrizione generica',
         'competing priorities, incomplete information, stakeholder pressure',
       ];
+      const FALLBACK_MARKERS = [
+        'Sei appena entrato in un nuovo ruolo',
+        'You have just stepped into a new role',
+        'You just started a new role',
+        'Acabas de incorporarte',
+        'Acabas de empezar',
+      ];
       const looksLikeMeta = typeof parsed?.scenario === 'string' && (
         parsed.scenario.length < 80 ||
         META_MARKERS.some((m) => parsed.scenario.includes(m))
@@ -366,7 +419,16 @@ Restituisci SOLO un oggetto JSON valido con questa struttura esatta:
           scenarioPreview: String(parsed.scenario).slice(0, 200),
         }));
         const fallback = buildFallbackResponse(locale, contextTag);
-        return jsonResponse({ ...fallback, used_fallback: true, fallback_reason: 'meta_description_detected' });
+        return jsonResponse({ ...fallback, used_fallback: true, is_fallback: true, fallback_reason: 'meta_description_detected' });
+      }
+      const isFallbackEcho = typeof parsed?.scenario === 'string' &&
+        FALLBACK_MARKERS.some((m) => parsed.scenario.includes(m));
+      if (isFallbackEcho) {
+        console.warn('[generate-challenge] Fallback-pattern scenario detected — AI may not have used full context', JSON.stringify({
+          correlationId,
+          scenarioPreview: String(parsed.scenario).slice(0, 200),
+        }));
+        parsed.is_fallback = true;
       }
 
       const validated = validateXimaCoreResult(parsed);
@@ -407,7 +469,7 @@ Restituisci SOLO un oggetto JSON valido con questa struttura esatta:
         metadata: { business_type: validated.business_type, locale, used_fallback: false },
       }, "l1_challenges_generated");
 
-      return jsonResponse({ ...validated, used_fallback: false });
+      return jsonResponse({ ...validated, used_fallback: false, is_fallback: !!parsed.is_fallback });
 
     } catch (e) {
       if (e instanceof AnthropicError) {
@@ -415,7 +477,7 @@ Restituisci SOLO un oggetto JSON valido con questa struttura esatta:
       }
       console.error(JSON.stringify({ type: 'ai_fallback', correlation_id: correlationId, function_name: 'generate-challenge', error: e instanceof Error ? e.message : 'Unknown' }));
       const fallback = buildFallbackResponse(locale, contextTag);
-      return jsonResponse({ ...fallback, used_fallback: true });
+      return jsonResponse({ ...fallback, used_fallback: true, is_fallback: true });
     }
 
   } catch (err) {
