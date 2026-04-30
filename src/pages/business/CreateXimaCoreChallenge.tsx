@@ -625,12 +625,99 @@ const CreateXimaCoreChallenge = () => {
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/85 p-4 backdrop-blur-xl">
         <div className="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-muted-foreground">{t('challenge.xima_core.scenario_locked_note')}</p>
-          <Button onClick={handleActivate} disabled={saving || generating || !scenario.trim() || !startAt || !endAt} className="gap-2" size="lg">
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
-            {t('challenge.xima_core.activate_button')}
-          </Button>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <Button
+              variant="outline"
+              size="lg"
+              className="gap-2"
+              onClick={() => setPreviewOpen(true)}
+              disabled={generating || !scenario.trim()}
+            >
+              <Eye className="h-4 w-4" />
+              {t('challenge.xima_core.preview_button')}
+            </Button>
+            <Button onClick={handleActivate} disabled={saving || generating || !scenario.trim() || !startAt || !endAt} className="gap-2" size="lg">
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
+              {t('challenge.xima_core.activate_button')}
+            </Button>
+          </div>
         </div>
       </div>
+
+      {/* Candidate preview modal — read-only view of what the candidate will see */}
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-2xl">
+              <Eye className="h-5 w-5 text-primary" />
+              {t('challenge.xima_core.preview_title')}
+            </DialogTitle>
+            <DialogDescription>
+              {t('challenge.xima_core.preview_subtitle')}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm text-foreground flex items-center gap-2">
+              <Eye className="h-4 w-4 text-amber-600" />
+              {t('challenge.xima_core.preview_badge')}
+            </div>
+
+            <Card className="border-l-4 border-l-primary">
+              <CardContent className="space-y-5 p-6">
+                <div className="space-y-1">
+                  <h3 className="text-xl font-semibold text-foreground">{t('challenge.xima_core.title')}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {roleTitle}{businessProfile?.company_name ? ` — ${businessProfile.company_name}` : ''}
+                  </p>
+                </div>
+
+                <div className="rounded-md bg-secondary/50 p-3 text-sm leading-6 text-foreground">
+                  {t('challenge.xima_core.candidate_intro')}
+                </div>
+
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Clock className="h-4 w-4" />
+                  {t('challenge.xima_core.time_estimate_value', { minutes: generatedTimeEstimate || XIMA_CORE_CHALLENGE.timeEstimateMinutes })}
+                </div>
+
+                <div className="border-t border-border pt-4 space-y-2">
+                  <h4 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    {t('challenge.xima_core.scenario_label')}
+                  </h4>
+                  <p className="whitespace-pre-wrap text-[15px] leading-7 text-foreground">{scenario}</p>
+                </div>
+
+                <div className="border-t border-border pt-4 space-y-4">
+                  {localizedQuestions.map((q, idx) => (
+                    <div key={q.id} className="space-y-2">
+                      <h4 className="font-semibold text-foreground">{idx + 1}. {q.title}</h4>
+                      <p className="text-sm text-muted-foreground">{q.text}</p>
+                      <Textarea
+                        readOnly
+                        disabled
+                        value=""
+                        placeholder=""
+                        className="min-h-[90px] cursor-not-allowed opacity-70"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <Button disabled className="w-full" size="lg">
+                  {t('challenge.xima_core.preview_submit_disabled')}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPreviewOpen(false)}>
+              {t('challenge.xima_core.preview_close')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </BusinessLayout>
   );
 };
