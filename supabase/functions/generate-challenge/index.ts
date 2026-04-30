@@ -346,11 +346,34 @@ Restituisci SOLO un oggetto JSON valido con questa struttura esatta:
 
       const jsonStr = extractJsonFromAiContent(aiResp.content);
       const parsed = JSON.parse(jsonStr);
+
+      // QUALITY CHECK: detect when the model echoed the prompt template instead of generating actual content.
+      const META_MARKERS = [
+        'realistic role-specific',
+        'A realistic',
+        'IL TESTO DELLO SCENARIO',
+        'una narrazione concreta di 80-150',
+        'NON una descrizione generica',
+        'competing priorities, incomplete information, stakeholder pressure',
+      ];
+      const looksLikeMeta = typeof parsed?.scenario === 'string' && (
+        parsed.scenario.length < 80 ||
+        META_MARKERS.some((m) => parsed.scenario.includes(m))
+      );
+      if (looksLikeMeta) {
+        console.error('[generate-challenge] QUALITY CHECK FAILED: scenario appears to be meta-description, not actual narrative content. Falling back.', JSON.stringify({
+          correlationId,
+          scenarioPreview: String(parsed.scenario).slice(0, 200),
+        }));
+        const fallback = buildFallbackResponse(locale, contextTag);
+        return jsonResponse({ ...fallback, used_fallback: true, fallback_reason: 'meta_description_detected' });
+      }
+
       const validated = validateXimaCoreResult(parsed);
 
       if (!validated) {
         console.log(JSON.stringify({ type: 'validation_fallback', correlation_id: correlationId, function_name: 'generate-challenge' }));
-        const fallback = buildFallbackResponse();
+        const fallback = buildFallbackResponse(locale, contextTag);
         return jsonResponse({ ...fallback, used_fallback: true });
       }
 
