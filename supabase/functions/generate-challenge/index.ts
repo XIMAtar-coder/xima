@@ -348,18 +348,24 @@ Restituisci SOLO JSON valido:
     }
 
     try {
+      const model = getModelForFunction('generate-challenge');
+      console.log('[generate-challenge] ABOUT TO CALL CLAUDE with model:', model);
+      console.log('[generate-challenge] System prompt first 200 chars:', systemPrompt.substring(0, 200));
+      console.log('[generate-challenge] Company context:', companyName, industry, roleTitle);
+
       const aiResp = await callAnthropicApi({
         system: systemPrompt,
         userMessage: userPrompt,
         correlationId,
         functionName: 'generate-challenge',
+        model,
         inputSummary: `l1_gen:locale=${locale},has_company=${!!companyProfile},has_goal=${!!body.hiring_goal_id}`,
         temperature: 0.8,
         maxTokens: 2048,
       });
 
       const jsonStr = extractJsonFromAiContent(aiResp.content);
-      const parsed = JSON.parse(jsonStr);
+      const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
 
       // QUALITY CHECK: detect when the model echoed the prompt template instead of generating actual content.
       const META_MARKERS = [
@@ -382,12 +388,11 @@ Restituisci SOLO JSON valido:
         META_MARKERS.some((m) => parsed.scenario.includes(m))
       );
       if (looksLikeMeta) {
-        console.error('[generate-challenge] QUALITY CHECK FAILED: scenario appears to be meta-description, not actual narrative content. Falling back.', JSON.stringify({
+        console.error('[generate-challenge] QUALITY CHECK FAILED: scenario appears to be meta-description, not actual narrative content.', JSON.stringify({
           correlationId,
           scenarioPreview: String(parsed.scenario).slice(0, 200),
         }));
-        const fallback = buildFallbackResponse(locale, contextTag);
-        return jsonResponse({ ...fallback, used_fallback: true, is_fallback: true, fallback_reason: 'meta_description_detected' });
+        return errorResponse(422, 'SCENARIO_QUALITY_FAILED', 'Generated scenario was too generic. Please regenerate.', { correlation_id: correlationId });
       }
       const isFallbackEcho = typeof parsed?.scenario === 'string' &&
         FALLBACK_MARKERS.some((m) => parsed.scenario.includes(m));
@@ -402,10 +407,18 @@ Restituisci SOLO JSON valido:
       const validated = validateXimaCoreResult(parsed);
 
       if (!validated) {
-        console.log(JSON.stringify({ type: 'validation_fallback', correlation_id: correlationId, function_name: 'generate-challenge' }));
-        const fallback = buildFallbackResponse(locale, contextTag);
-        return jsonResponse({ ...fallback, used_fallback: true });
+        console.error(JSON.stringify({
+          type: 'validation_failed',
+          correlation_id: correlationId,
+          function_name: 'generate-challenge',
+          parsed_preview: typeof parsed?.scenario === 'string' ? parsed.scenario.slice(0, 200) : String(parsed).slice(0, 200),
+        }));
+        return errorResponse(422, 'INVALID_AI_RESPONSE', 'Generated scenario response was invalid. Please regenerate.', { correlation_id: correlationId });
       }
+
+      const responseIsFallback = !!parsed.is_fallback;
+      console.log('[generate-challenge] Claude response received, scenario first 100 chars:', validated.scenario?.substring(0, 100));
+      console.log('[generate-challenge] Is fallback?', responseIsFallback);
 
       // Store evaluation_lens on the challenge
       if (body.challenge_id) {
@@ -437,15 +450,21 @@ Restituisci SOLO JSON valido:
         metadata: { business_type: validated.business_type, locale, used_fallback: false },
       }, "l1_challenges_generated");
 
-      return jsonResponse({ ...validated, used_fallback: false, is_fallback: !!parsed.is_fallback });
+      return jsonResponse({ ...validated, used_fallback: false, is_fallback: responseIsFallback });
 
     } catch (e) {
       if (e instanceof AnthropicError) {
         if (e.statusCode === 429) return errorResponse(429, 'RATE_LIMITED', e.message);
       }
-      console.error(JSON.stringify({ type: 'ai_fallback', correlation_id: correlationId, function_name: 'generate-challenge', error: e instanceof Error ? e.message : 'Unknown' }));
-      const fallback = buildFallbackResponse(locale, contextTag);
-      return jsonResponse({ ...fallback, used_fallback: true, is_fallback: true });
+      console.error('[generate-challenge] Claude generation failed:', e);
+      console.error(JSON.stringify({
+        type: 'ai_generation_failed',
+        correlation_id: correlationId,
+        function_name: 'generate-challenge',
+        error: e instanceof Error ? e.message : String(e),
+        stack: e instanceof Error ? e.stack : undefined,
+      }));
+      return errorResponse(502, 'AI_GENERATION_FAILED', 'Scenario generation failed. Please retry.', { correlation_id: correlationId });
     }
 
   } catch (err) {
@@ -453,26 +472,6 @@ Restituisci SOLO JSON valido:
     return errorResponse(500, 'INTERNAL_ERROR', err instanceof Error ? err.message : 'Unknown error');
   }
 });
-
-// =====================================================
-// Fallback
-// =====================================================
-
-function buildFallbackResponse(locale: string = 'en', contextTag: string = 'Professional role · Business context'): XimaCoreResult {
-  const scenario = XIMA_CORE_FALLBACK_SCENARIOS[locale] || XIMA_CORE_FALLBACK_SCENARIOS.en;
-  return {
-    scenario,
-    business_type: 'Role-specific business context',
-    context_tag: contextTag,
-    context_snapshot: {},
-    evaluation_lens: DEFAULT_EVALUATION_LENS,
-    expected_tensions: [
-      "Speed vs. quality under deadline pressure",
-      "Individual initiative vs. team alignment without authority"
-    ],
-    estimated_time_minutes: 40,
-  };
-}
 
 // =====================================================
 // Legacy handler (backward compatibility)
