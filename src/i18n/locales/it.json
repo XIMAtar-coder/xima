@@ -5760,6 +5760,8 @@
     "generating": "Valutazione candidati in corso...",
     "no_results_title": "Nessun risultato",
     "no_results_desc": "Prova a rimuovere i filtri o attendi che più candidati si uniscano a XIMA.",
+    "refresh_success_title": "Shortlist aggiornata",
+    "refresh_success_desc": "La shortlist è stata aggiornata con i candidati più recenti.",
     "error_title": "Errore",
     "error_desc": "Impossibile generare la shortlist",
     "empty_title": "Nessun candidato corrispondente",
