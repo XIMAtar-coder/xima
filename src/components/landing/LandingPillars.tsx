@@ -80,8 +80,8 @@ export const LandingPillars: React.FC = () => {
                 aria-expanded={isOpen}
                 className="text-left transition-all duration-300 relative"
                 style={{
-                  background: '#FFFFFF',
-                  border: `1px solid ${isOpen ? 'rgba(11,107,255,0.35)' : 'rgba(10,40,80,0.06)'}`,
+                  background: 'var(--xima-surface)',
+                  border: `1px solid ${isOpen ? 'rgba(11,107,255,0.35)' : 'var(--xima-border)'}`,
                   borderRadius: 20,
                   padding: 24,
                   boxShadow: isOpen
