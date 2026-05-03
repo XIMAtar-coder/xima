@@ -1,4 +1,44 @@
 {
+  "landing": {
+    "nav": {
+      "how_it_works": "How It Works",
+      "guide": "Guide",
+      "about": "About",
+      "business": "Business",
+      "login": "Login"
+    },
+    "hero": {
+      "label": "PSYCHOMETRICS · AI HIRING · GDPR ART. 22 COMPLIANT",
+      "headline_1": "The résumé was",
+      "headline_2": "never about you.",
+      "headline_3_prefix": "The",
+      "headline_3_brand": "XIMAtar",
+      "headline_3_suffix": "is.",
+      "body": "XIMA replaces credential-based hiring with validated behavioral science and AI-powered signal extraction. Every candidate receives a XIMAtar — a persistent behavioral identity they own, carry, and reuse across every company they ever apply to.",
+      "cta_primary": "Discover Your XIMAtar",
+      "cta_secondary": "For Companies"
+    },
+    "ximatar_card": {
+      "label": "YOUR XIMATAR",
+      "name": "Horse",
+      "trait": "High Drive",
+      "description": "We don't define people with labels. We reveal the dynamic between what moves them, what lifts them, and what holds them back."
+    },
+    "features": {
+      "gdpr_title": "GDPR Art. 22",
+      "gdpr_subtitle": "Compliant by design",
+      "demographic_title": "Zero demographic",
+      "demographic_subtitle": "proxies",
+      "pillars_title": "Five pillars.",
+      "pillars_subtitle": "One truth.",
+      "ai_title": "AI-powered",
+      "ai_subtitle": "signal extraction"
+    },
+    "slide": {
+      "current": "01",
+      "total": "06"
+    }
+  },
   "profile": {
     "welcome": "Welcome",
     "view_dashboard": "View Dashboard",
