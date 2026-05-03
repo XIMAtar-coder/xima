@@ -44,10 +44,10 @@ export const XimatarGlassCard: React.FC<Props> = ({ archetype, transitioning }) 
             {archetype.name}
           </h3>
           <p className="text-[13px] font-semibold mb-2" style={{ color: '#7DB3FF' }}>
-            {archetype.trait}
+            {t(`landing.archetypes.${archetype.id}.trait`, archetype.trait)}
           </p>
           <p className="text-[12px] leading-[1.5]" style={{ color: 'rgba(255,255,255,0.85)' }}>
-            {archetype.description}
+            {t(`landing.archetypes.${archetype.id}.description`, archetype.description)}
           </p>
         </div>
 
