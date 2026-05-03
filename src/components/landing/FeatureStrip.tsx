@@ -18,8 +18,8 @@ export const FeatureStrip: React.FC = () => {
       style={{
         marginTop: -50,
         maxWidth: '92%',
-        background: 'rgba(255,255,255,0.92)',
-        border: '1px solid rgba(10,40,80,0.08)',
+        background: 'var(--xima-surface-soft)',
+        border: '1px solid var(--xima-border)',
         borderRadius: 28,
         boxShadow: '0 24px 70px rgba(7,30,58,0.10)',
         backdropFilter: 'blur(18px)',
@@ -34,15 +34,16 @@ export const FeatureStrip: React.FC = () => {
           <div
             key={i}
             className={`flex items-center gap-4 ${
-              i > 0 ? 'lg:pl-8 lg:border-l lg:border-[rgba(10,40,80,0.08)]' : ''
+              i > 0 ? 'lg:pl-8 lg:border-l' : ''
             } lg:pr-4`}
+            style={i > 0 ? { borderLeftColor: 'var(--xima-border)' } : undefined}
           >
-            <f.Icon className="w-9 h-9 flex-shrink-0" strokeWidth={1.5} style={{ color: '#0B6BFF' }} />
+            <f.Icon className="w-9 h-9 flex-shrink-0" strokeWidth={1.5} style={{ color: 'var(--xima-blue)' }} />
             <div>
-              <div className="text-[15px] font-semibold leading-tight" style={{ color: '#071E3A' }}>
+              <div className="text-[15px] font-semibold leading-tight" style={{ color: 'var(--xima-text)' }}>
                 {f.title}
               </div>
-              <div className="text-[14px]" style={{ color: '#607089' }}>
+              <div className="text-[14px]" style={{ color: 'var(--xima-text-muted)' }}>
                 {f.sub}
               </div>
             </div>

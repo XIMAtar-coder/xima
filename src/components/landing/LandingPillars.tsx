@@ -27,9 +27,9 @@ const STRENGTH_ROOT: Record<PillarKey, string> = {
   drive: 'drive',
 };
 
-const NAVY = '#071E3A';
-const MUTED = '#607089';
-const BLUE = '#0B6BFF';
+const NAVY = 'var(--xima-text)';
+const MUTED = 'var(--xima-text-muted)';
+const BLUE = 'var(--xima-blue)';
 
 export const LandingPillars: React.FC = () => {
   const { t } = useTranslation();
@@ -37,7 +37,7 @@ export const LandingPillars: React.FC = () => {
   const [expanded, setExpanded] = useState<PillarKey | null>(null);
 
   return (
-    <section className="py-20 px-6 lg:px-10" style={{ background: '#F7FAFF' }}>
+    <section className="py-20 px-6 lg:px-10" style={{ background: 'var(--xima-bg)' }}>
       <div className="max-w-[1200px] mx-auto">
         <h2
           className="text-center mb-5"
@@ -80,8 +80,8 @@ export const LandingPillars: React.FC = () => {
                 aria-expanded={isOpen}
                 className="text-left transition-all duration-300 relative"
                 style={{
-                  background: '#FFFFFF',
-                  border: `1px solid ${isOpen ? 'rgba(11,107,255,0.35)' : 'rgba(10,40,80,0.06)'}`,
+                  background: 'var(--xima-surface)',
+                  border: `1px solid ${isOpen ? 'rgba(11,107,255,0.35)' : 'var(--xima-border)'}`,
                   borderRadius: 20,
                   padding: 24,
                   boxShadow: isOpen
@@ -111,7 +111,7 @@ export const LandingPillars: React.FC = () => {
                 <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.6 }}>{tagline}</p>
 
                 {isOpen && (
-                  <div className="mt-6 pt-6 animate-fade-in" style={{ borderTop: '1px solid rgba(10,40,80,0.08)' }}>
+                  <div className="mt-6 pt-6 animate-fade-in" style={{ borderTop: '1px solid var(--xima-border)' }}>
                     <div className="grid md:grid-cols-3 gap-8">
                       <div>
                         <h4 style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, color: MUTED, textTransform: 'uppercase', marginBottom: 10 }}>
@@ -195,7 +195,7 @@ export const LandingPillars: React.FC = () => {
             onClick={() => navigate('/ximatar-journey')}
             className="inline-flex items-center justify-center gap-2 transition-all"
             style={{
-              background: BLUE,
+              background: 'var(--xima-blue)',
               color: 'white',
               borderRadius: 14,
               padding: '16px 32px',

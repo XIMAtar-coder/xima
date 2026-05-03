@@ -62,6 +62,18 @@
     /* Dividers */
     --divider: rgba(60,60,67,0.12);
 
+    /* Landing (homepage) tokens */
+    --xima-bg: #F7FAFF;
+    --xima-surface: #FFFFFF;
+    --xima-surface-soft: rgba(255,255,255,0.92);
+    --xima-text: #071E3A;
+    --xima-text-muted: #607089;
+    --xima-text-faint: #8794A8;
+    --xima-blue: #0B6BFF;
+    --xima-border: rgba(10,40,80,0.08);
+    --xima-border-strong: rgba(10,40,80,0.10);
+    --xima-header-bg: rgba(255,255,255,0.82);
+
     /* Sidebar */
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 6% 12%;
@@ -129,6 +141,18 @@
     /* Dark apple colors */
     --apple-blue: #6366f1;
     --apple-indigo: #818cf8;
+
+    /* Landing dark tokens */
+    --xima-bg: #0A0F1C;
+    --xima-surface: #11182A;
+    --xima-surface-soft: rgba(255,255,255,0.04);
+    --xima-text: #F2F5FB;
+    --xima-text-muted: rgba(242,245,251,0.62);
+    --xima-text-faint: rgba(242,245,251,0.42);
+    --xima-blue: #5B8DFF;
+    --xima-border: rgba(255,255,255,0.08);
+    --xima-border-strong: rgba(255,255,255,0.14);
+    --xima-header-bg: rgba(8,12,22,0.78);
 
     /* Sidebar dark */
     --sidebar-background: 240 10% 6%;

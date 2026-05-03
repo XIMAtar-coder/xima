@@ -30,7 +30,7 @@ export const HeroSection: React.FC = () => {
   return (
     <section
       className="relative w-full overflow-hidden"
-      style={{ background: '#F7FAFF', minHeight: 'calc(100vh - 76px)' }}
+      style={{ background: 'var(--xima-bg)', minHeight: 'calc(100vh - 76px)' }}
     >
       {/* Hero image right side (desktop only) */}
       <div
@@ -47,7 +47,7 @@ export const HeroSection: React.FC = () => {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'linear-gradient(90deg, #F7FAFF 0%, rgba(247,250,255,0.92) 28%, rgba(247,250,255,0.35) 55%, rgba(247,250,255,0.05) 100%)',
+              'linear-gradient(90deg, var(--xima-bg) 0%, color-mix(in srgb, var(--xima-bg) 92%, transparent) 28%, color-mix(in srgb, var(--xima-bg) 35%, transparent) 55%, transparent 100%)',
           }}
         />
 
@@ -56,16 +56,16 @@ export const HeroSection: React.FC = () => {
 
         {/* Slide controls */}
         <div className="absolute left-1/2 -translate-x-1/2 bottom-[40px] flex items-center gap-4 z-20">
-          <span className="text-[13px] font-medium tabular-nums" style={{ color: '#071E3A' }}>
+          <span className="text-[13px] font-medium tabular-nums" style={{ color: 'var(--xima-text)' }}>
             {String(index + 1).padStart(2, '0')} / {String(ARCHETYPES.length).padStart(2, '0')}
           </span>
           <button
             onClick={goPrev}
             className="w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-105"
             style={{
-              background: 'rgba(255,255,255,0.85)',
-              border: '1px solid rgba(10,40,80,0.10)',
-              color: '#071E3A',
+              background: 'var(--xima-surface-soft)',
+              border: '1px solid var(--xima-border-strong)',
+              color: 'var(--xima-text)',
             }}
             aria-label="Previous archetype"
           >
@@ -75,9 +75,9 @@ export const HeroSection: React.FC = () => {
             onClick={goNext}
             className="w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-105"
             style={{
-              background: 'rgba(255,255,255,0.85)',
-              border: '1px solid rgba(10,40,80,0.10)',
-              color: '#071E3A',
+              background: 'var(--xima-surface-soft)',
+              border: '1px solid var(--xima-border-strong)',
+              color: 'var(--xima-text)',
             }}
             aria-label="Next archetype"
           >
@@ -93,7 +93,7 @@ export const HeroSection: React.FC = () => {
                 style={{
                   width: i === index ? 22 : 8,
                   height: 8,
-                  background: i === index ? '#0B6BFF' : 'rgba(7,30,58,0.18)',
+                  background: i === index ? 'var(--xima-blue)' : 'var(--xima-border-strong)',
                 }}
               />
             ))}
@@ -113,7 +113,7 @@ export const HeroSection: React.FC = () => {
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(180deg, rgba(247,250,255,0) 40%, #F7FAFF 100%)',
+              'linear-gradient(180deg, transparent 40%, var(--xima-bg) 100%)',
           }}
         />
       </div>
@@ -124,7 +124,7 @@ export const HeroSection: React.FC = () => {
           <p
             className="font-semibold uppercase mb-6"
             style={{
-              color: '#0B6BFF',
+              color: 'var(--xima-blue)',
               fontSize: 12,
               letterSpacing: 2,
             }}
@@ -135,7 +135,7 @@ export const HeroSection: React.FC = () => {
           <h1
             className="font-extrabold mb-8"
             style={{
-              color: '#071E3A',
+              color: 'var(--xima-text)',
               fontSize: 'clamp(32px, 5.2vw, 64px)',
               lineHeight: 1.08,
               letterSpacing: '-0.02em',
@@ -145,7 +145,7 @@ export const HeroSection: React.FC = () => {
             <span className="block">{t('landing.hero.headline_2')}</span>
             <span className="block">
               {t('landing.hero.headline_3_prefix')}{' '}
-              <span style={{ color: '#0B6BFF' }}>{t('landing.hero.headline_3_brand')}</span>{' '}
+              <span style={{ color: 'var(--xima-blue)' }}>{t('landing.hero.headline_3_brand')}</span>{' '}
               {t('landing.hero.headline_3_suffix')}
             </span>
           </h1>
@@ -153,7 +153,7 @@ export const HeroSection: React.FC = () => {
           <p
             className="mb-10"
             style={{
-              color: '#607089',
+              color: 'var(--xima-text-muted)',
               fontSize: 18,
               lineHeight: 1.65,
               maxWidth: 560,
@@ -167,7 +167,7 @@ export const HeroSection: React.FC = () => {
               onClick={() => navigate('/ximatar-journey')}
               className="inline-flex items-center justify-center gap-2 transition-all"
               style={{
-                background: '#0B6BFF',
+                background: 'var(--xima-blue)',
                 color: 'white',
                 borderRadius: 14,
                 padding: '16px 28px',
@@ -192,8 +192,8 @@ export const HeroSection: React.FC = () => {
               onClick={() => navigate('/business')}
               className="inline-flex items-center justify-center gap-2 transition-colors"
               style={{
-                background: 'rgba(255,255,255,0.70)',
-                color: '#0B6BFF',
+                background: 'var(--xima-surface-soft)',
+                color: 'var(--xima-blue)',
                 border: '1px solid rgba(11,107,255,0.45)',
                 borderRadius: 14,
                 padding: '16px 28px',
