@@ -37,7 +37,7 @@ export const LandingPillars: React.FC = () => {
   const [expanded, setExpanded] = useState<PillarKey | null>(null);
 
   return (
-    <section className="py-20 px-6 lg:px-10" style={{ background: '#F7FAFF' }}>
+    <section className="py-20 px-6 lg:px-10" style={{ background: 'var(--xima-bg)' }}>
       <div className="max-w-[1200px] mx-auto">
         <h2
           className="text-center mb-5"
