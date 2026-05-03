@@ -124,7 +124,7 @@ export const HeroSection: React.FC = () => {
           <p
             className="font-semibold uppercase mb-6"
             style={{
-              color: '#0B6BFF',
+              color: 'var(--xima-blue)',
               fontSize: 12,
               letterSpacing: 2,
             }}
@@ -135,7 +135,7 @@ export const HeroSection: React.FC = () => {
           <h1
             className="font-extrabold mb-8"
             style={{
-              color: '#071E3A',
+              color: 'var(--xima-text)',
               fontSize: 'clamp(32px, 5.2vw, 64px)',
               lineHeight: 1.08,
               letterSpacing: '-0.02em',
@@ -145,7 +145,7 @@ export const HeroSection: React.FC = () => {
             <span className="block">{t('landing.hero.headline_2')}</span>
             <span className="block">
               {t('landing.hero.headline_3_prefix')}{' '}
-              <span style={{ color: '#0B6BFF' }}>{t('landing.hero.headline_3_brand')}</span>{' '}
+              <span style={{ color: 'var(--xima-blue)' }}>{t('landing.hero.headline_3_brand')}</span>{' '}
               {t('landing.hero.headline_3_suffix')}
             </span>
           </h1>
@@ -153,7 +153,7 @@ export const HeroSection: React.FC = () => {
           <p
             className="mb-10"
             style={{
-              color: '#607089',
+              color: 'var(--xima-text-muted)',
               fontSize: 18,
               lineHeight: 1.65,
               maxWidth: 560,
