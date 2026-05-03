@@ -126,9 +126,12 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
       if (error) throw error;
       await fetchPersistedShortlist();
       setTotalEvaluated(data.total_candidates_evaluated || 0);
+      const wasGenerated = generated;
       setGenerated(true);
       if (data.shortlist?.length === 0) {
         toast({ title: t('shortlist.no_results_title', 'No matches found'), description: t('shortlist.no_results_desc', 'Try removing filters or wait for more candidates to join XIMA.') });
+      } else if (wasGenerated) {
+        toast({ title: t('shortlist.refresh_success_title', 'Shortlist updated'), description: t('shortlist.refresh_success_desc', 'The shortlist has been refreshed with the latest candidates.') });
       }
     } catch (err: any) {
       toast({ title: t('shortlist.error_title', 'Error'), description: err.message || t('shortlist.error_desc', 'Failed to generate shortlist'), variant: 'destructive' });
