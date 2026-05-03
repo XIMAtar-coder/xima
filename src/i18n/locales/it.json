@@ -37,7 +37,10 @@
     "slide": {
       "current": "01",
       "total": "06"
-    }
+    },
+    "free_cta_title": "La valutazione è gratuita.",
+    "free_cta_subtitle": "Il XIMAtar è tuo. Fallo una volta. Portalo ovunque.",
+    "free_cta_button": "Inizia Gratuitamente"
   },
   "profile": {
     "page_title": "Benvenuto, {{name}}",
@@ -376,7 +379,9 @@
     "activate": "Attiva",
     "regenerate": "Rigenera",
     "confirm": "Conferma",
-    "error": "Errore"
+    "error": "Errore",
+    "as_strength": "Come punto di forza",
+    "as_weakness": "Come punto di debolezza"
   },
   "tutorial": {
     "dont_show_again": "Non mostrare più"
