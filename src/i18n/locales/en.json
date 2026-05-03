@@ -37,7 +37,10 @@
     "slide": {
       "current": "01",
       "total": "06"
-    }
+    },
+    "free_cta_title": "The assessment is free.",
+    "free_cta_subtitle": "The XIMAtar is yours. Take it once. Bring it everywhere.",
+    "free_cta_button": "Start Free"
   },
   "profile": {
     "welcome": "Welcome",
@@ -344,7 +347,9 @@
     "activate": "Activate",
     "regenerate": "Regenerate",
     "confirm": "Confirm",
-    "error": "Error"
+    "error": "Error",
+    "as_strength": "As a strength",
+    "as_weakness": "As a weakness"
   },
   "tutorial": {
     "dont_show_again": "Don't show again"

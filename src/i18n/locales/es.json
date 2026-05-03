@@ -37,7 +37,10 @@
     "slide": {
       "current": "01",
       "total": "06"
-    }
+    },
+    "free_cta_title": "La evaluación es gratuita.",
+    "free_cta_subtitle": "El XIMAtar es tuyo. Hazlo una vez. Llévalo a todas partes.",
+    "free_cta_button": "Empieza gratis"
   },
   "common": {
     "cancel": "Cancelar",
@@ -46,7 +49,9 @@
     "activate": "Activar",
     "regenerate": "Regenerar",
     "confirm": "Confirmar",
-    "error": "Error"
+    "error": "Error",
+    "as_strength": "Como fortaleza",
+    "as_weakness": "Como debilidad"
   },
   "nav": {
     "home": "Inicio",
