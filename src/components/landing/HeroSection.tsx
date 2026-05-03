@@ -113,7 +113,7 @@ export const HeroSection: React.FC = () => {
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(180deg, rgba(247,250,255,0) 40%, #F7FAFF 100%)',
+              'linear-gradient(180deg, transparent 40%, var(--xima-bg) 100%)',
           }}
         />
       </div>
