@@ -192,8 +192,8 @@ export const HeroSection: React.FC = () => {
               onClick={() => navigate('/business')}
               className="inline-flex items-center justify-center gap-2 transition-colors"
               style={{
-                background: 'rgba(255,255,255,0.70)',
-                color: '#0B6BFF',
+                background: 'var(--xima-surface-soft)',
+                color: 'var(--xima-blue)',
                 border: '1px solid rgba(11,107,255,0.45)',
                 borderRadius: 14,
                 padding: '16px 28px',
