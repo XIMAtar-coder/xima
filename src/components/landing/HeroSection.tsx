@@ -1,14 +1,31 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import heroPortrait from '@/assets/hero-portrait.jpg';
 import { RadarGlassCard } from './RadarGlassCard';
 import { XimatarGlassCard } from './XimatarGlassCard';
+import { ARCHETYPES } from './archetypes';
 
 export const HeroSection: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [index, setIndex] = useState(0);
+  const [transitioning, setTransitioning] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const change = (next: number) => {
+    if (transitioning) return;
+    setTransitioning(true);
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      setIndex(((next % ARCHETYPES.length) + ARCHETYPES.length) % ARCHETYPES.length);
+      setTransitioning(false);
+    }, 300);
+  };
+  const goNext = () => change(index + 1);
+  const goPrev = () => change(index - 1);
+  const current = ARCHETYPES[index];
 
   return (
     <section
