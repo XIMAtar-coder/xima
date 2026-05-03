@@ -9,50 +9,50 @@ export const XimatarGlassCard: React.FC = () => {
     <div
       className="absolute hidden lg:block animate-fade-in"
       style={{
-        right: '5%',
-        top: 372,
-        width: 480,
-        minHeight: 240,
-        background: 'rgba(20,35,55,0.32)',
-        backdropFilter: 'blur(22px)',
-        WebkitBackdropFilter: 'blur(22px)',
-        border: '1px solid rgba(255,255,255,0.42)',
+        right: '3%',
+        top: 420,
+        width: 400,
+        minHeight: 200,
+        background: 'rgba(20,35,55,0.16)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        border: '1px solid rgba(255,255,255,0.36)',
         borderRadius: 28,
         boxShadow: '0 24px 70px rgba(7,30,58,0.22)',
         color: 'white',
         animationDelay: '0.5s',
       }}
     >
-      <div className="flex h-full p-6 gap-4">
+      <div className="flex h-full p-5 gap-3">
         <div className="flex-1 flex flex-col">
           <span
-            className="text-[10px] font-semibold tracking-[2px] mb-2"
-            style={{ color: 'rgba(255,255,255,0.7)' }}
+            className="text-[10px] font-semibold tracking-[2px] mb-1.5"
+            style={{ color: 'rgba(255,255,255,0.75)' }}
           >
             {t('landing.ximatar_card.label')}
           </span>
-          <h3 className="text-[34px] font-bold leading-none mb-1" style={{ color: 'white' }}>
+          <h3 className="text-[28px] font-bold leading-none mb-1" style={{ color: 'white' }}>
             {t('landing.ximatar_card.name')}
           </h3>
           <p
-            className="text-[15px] font-semibold mb-3"
+            className="text-[13px] font-semibold mb-2"
             style={{ color: '#7DB3FF' }}
           >
             {t('landing.ximatar_card.trait')}
           </p>
           <p
-            className="text-[12.5px] leading-[1.55]"
-            style={{ color: 'rgba(255,255,255,0.82)' }}
+            className="text-[12px] leading-[1.5]"
+            style={{ color: 'rgba(255,255,255,0.85)' }}
           >
             {t('landing.ximatar_card.description')}
           </p>
         </div>
 
-        <div className="relative flex items-center justify-center" style={{ width: 150 }}>
+        <div className="relative flex items-center justify-center" style={{ width: 120 }}>
           <div
             style={{
-              width: 140,
-              height: 140,
+              width: 110,
+              height: 110,
               clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
               background:
                 'linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05))',
