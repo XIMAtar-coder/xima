@@ -40,7 +40,33 @@
     },
     "free_cta_title": "La evaluación es gratuita.",
     "free_cta_subtitle": "El XIMAtar es tuyo. Hazlo una vez. Llévalo a todas partes.",
-    "free_cta_button": "Empieza gratis"
+    "free_cta_button": "Empieza gratis",
+    "archetypes": {
+      "horse": {
+        "trait": "Alto Drive",
+        "description": "No definimos a las personas con etiquetas. Revelamos la dinámica entre lo que las mueve, lo que las eleva y lo que las frena."
+      },
+      "owl": {
+        "trait": "Conocimiento profundo",
+        "description": "El Búho ve lo que otros no notan. Profundidad analítica y observación paciente — una mente que encuentra patrones donde otros ven ruido."
+      },
+      "lion": {
+        "trait": "Líder natural",
+        "description": "El León lidera no por título, sino por presencia. El Drive se une a la comunicación en quien mueve equipos con claridad y convicción."
+      },
+      "dolphin": {
+        "trait": "Comunicador creativo",
+        "description": "El Delfín conecta mundos. Alta creatividad se une a una fuerte comunicación — las ideas fluyen libremente y conectan con todos."
+      },
+      "fox": {
+        "trait": "Pensador estratégico",
+        "description": "El Zorro se adapta y supera. La potencia computacional se une a la creatividad en quien encuentra soluciones elegantes a problemas complejos."
+      },
+      "wolf": {
+        "trait": "Estratega de la manada",
+        "description": "El Lobo construye y lidera desde dentro. Pensamiento estratégico y Drive inquebrantable — quien mantiene unida a la manada bajo presión."
+      }
+    }
   },
   "common": {
     "cancel": "Cancelar",

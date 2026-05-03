@@ -40,7 +40,33 @@
     },
     "free_cta_title": "La valutazione è gratuita.",
     "free_cta_subtitle": "Il XIMAtar è tuo. Fallo una volta. Portalo ovunque.",
-    "free_cta_button": "Inizia Gratuitamente"
+    "free_cta_button": "Inizia Gratuitamente",
+    "archetypes": {
+      "horse": {
+        "trait": "Alto Drive",
+        "description": "Non definiamo le persone con etichette. Riveliamo la dinamica tra ciò che le muove, ciò che le eleva e ciò che le trattiene."
+      },
+      "owl": {
+        "trait": "Conoscenza profonda",
+        "description": "Il Gufo vede ciò che gli altri non notano. Profondità analitica e osservazione paziente — una mente che trova schemi dove altri vedono rumore."
+      },
+      "lion": {
+        "trait": "Leader naturale",
+        "description": "Il Leone guida non per titolo, ma per presenza. Il Drive incontra la comunicazione in chi muove i team con chiarezza e convinzione."
+      },
+      "dolphin": {
+        "trait": "Comunicatore creativo",
+        "description": "Il Delfino collega mondi. Alta creatività incontra forte comunicazione — le idee fluiscono liberamente e connettono tutti."
+      },
+      "fox": {
+        "trait": "Pensatore strategico",
+        "description": "La Volpe si adatta e supera. La potenza computazionale incontra la creatività in chi trova soluzioni eleganti a problemi complessi."
+      },
+      "wolf": {
+        "trait": "Stratega del branco",
+        "description": "Il Lupo costruisce e guida dall'interno. Pensiero strategico e Drive incrollabile — chi tiene unito il gruppo sotto pressione."
+      }
+    }
   },
   "profile": {
     "page_title": "Benvenuto, {{name}}",

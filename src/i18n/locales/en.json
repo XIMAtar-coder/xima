@@ -40,7 +40,33 @@
     },
     "free_cta_title": "The assessment is free.",
     "free_cta_subtitle": "The XIMAtar is yours. Take it once. Bring it everywhere.",
-    "free_cta_button": "Start Free"
+    "free_cta_button": "Start Free",
+    "archetypes": {
+      "horse": {
+        "trait": "High Drive",
+        "description": "We don't define people with labels. We reveal the dynamic between what moves them, what lifts them, and what holds them back."
+      },
+      "owl": {
+        "trait": "Deep Knowledge",
+        "description": "The Owl sees what others miss. Analytical depth meets patient observation — a mind that finds patterns where others see noise."
+      },
+      "lion": {
+        "trait": "Natural Leader",
+        "description": "The Lion leads not by title, but by presence. Drive meets communication in someone who moves teams by clarity and conviction."
+      },
+      "dolphin": {
+        "trait": "Creative Communicator",
+        "description": "The Dolphin bridges worlds. High creativity meets strong communication — ideas flow freely and connect with everyone around them."
+      },
+      "fox": {
+        "trait": "Strategic Thinker",
+        "description": "The Fox adapts and outmaneuvers. Computational power meets creativity in someone who finds elegant solutions to complex problems."
+      },
+      "wolf": {
+        "trait": "Pack Strategist",
+        "description": "The Wolf builds and leads from within. Strategic thinking meets unwavering drive — the one who holds the pack together under pressure."
+      }
+    }
   },
   "profile": {
     "welcome": "Welcome",
