@@ -1,5 +1,5 @@
 import React from 'react';
-import symbolImg from '@/assets/symbol.png';
+import { useTheme } from 'next-themes';
 import type { Archetype } from './archetypes';
 
 const PILLAR_DEFS = [
