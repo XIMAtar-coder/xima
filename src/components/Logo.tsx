@@ -1,24 +1,29 @@
-import logoFull from '@/assets/logo_full.png';
-import symbolImg from '@/assets/symbol.png';
+import React from 'react';
 
 interface LogoProps {
   variant?: 'full' | 'symbol';
+  /** Force a color variant. If omitted, uses the dark logo (works on light backgrounds). */
+  tone?: 'dark' | 'white';
   className?: string;
   alt?: string;
 }
 
-export const Logo: React.FC<LogoProps> = ({ 
-  variant = 'full', 
-  className = '', 
-  alt = 'XIMA Logo' 
+export const Logo: React.FC<LogoProps> = ({
+  variant = 'full',
+  tone = 'dark',
+  className = '',
+  alt = 'XIMA',
 }) => {
-  const src = variant === 'full' ? logoFull : symbolImg;
-  
-  return (
-    <img 
-      src={src}
-      alt={alt}
-      className={className}
-    />
-  );
+  const file =
+    variant === 'symbol'
+      ? tone === 'white'
+        ? '/images/xima-symbol-white.svg'
+        : '/images/xima-symbol-dark.svg'
+      : tone === 'white'
+        ? '/images/xima-full-white.svg'
+        : '/images/xima-full-dark.svg';
+
+  return <img src={file} alt={alt} className={className} />;
 };
+
+export default Logo;
