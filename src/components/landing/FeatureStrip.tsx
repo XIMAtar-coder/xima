@@ -34,15 +34,16 @@ export const FeatureStrip: React.FC = () => {
           <div
             key={i}
             className={`flex items-center gap-4 ${
-              i > 0 ? 'lg:pl-8 lg:border-l lg:border-[rgba(10,40,80,0.08)]' : ''
+              i > 0 ? 'lg:pl-8 lg:border-l' : ''
             } lg:pr-4`}
+            style={i > 0 ? { borderLeftColor: 'var(--xima-border)' } : undefined}
           >
-            <f.Icon className="w-9 h-9 flex-shrink-0" strokeWidth={1.5} style={{ color: '#0B6BFF' }} />
+            <f.Icon className="w-9 h-9 flex-shrink-0" strokeWidth={1.5} style={{ color: 'var(--xima-blue)' }} />
             <div>
-              <div className="text-[15px] font-semibold leading-tight" style={{ color: '#071E3A' }}>
+              <div className="text-[15px] font-semibold leading-tight" style={{ color: 'var(--xima-text)' }}>
                 {f.title}
               </div>
-              <div className="text-[14px]" style={{ color: '#607089' }}>
+              <div className="text-[14px]" style={{ color: 'var(--xima-text-muted)' }}>
                 {f.sub}
               </div>
             </div>
