@@ -27,9 +27,9 @@ const STRENGTH_ROOT: Record<PillarKey, string> = {
   drive: 'drive',
 };
 
-const NAVY = '#071E3A';
-const MUTED = '#607089';
-const BLUE = '#0B6BFF';
+const NAVY = 'var(--xima-text)';
+const MUTED = 'var(--xima-text-muted)';
+const BLUE = 'var(--xima-blue)';
 
 export const LandingPillars: React.FC = () => {
   const { t } = useTranslation();
