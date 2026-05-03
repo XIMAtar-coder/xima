@@ -167,7 +167,7 @@ export const HeroSection: React.FC = () => {
               onClick={() => navigate('/ximatar-journey')}
               className="inline-flex items-center justify-center gap-2 transition-all"
               style={{
-                background: '#0B6BFF',
+                background: 'var(--xima-blue)',
                 color: 'white',
                 borderRadius: 14,
                 padding: '16px 28px',
