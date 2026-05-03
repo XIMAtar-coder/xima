@@ -1,8 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
+import type { Archetype } from './archetypes';
 
-export const XimatarGlassCard: React.FC = () => {
+interface Props {
+  archetype: Archetype;
+  transitioning: boolean;
+  onNext: () => void;
+}
+
+export const XimatarGlassCard: React.FC<Props> = ({ archetype, transitioning, onNext }) => {
   const { t } = useTranslation();
 
   return (
@@ -23,28 +30,25 @@ export const XimatarGlassCard: React.FC = () => {
         animationDelay: '0.5s',
       }}
     >
-      <div className="flex h-full p-5 gap-3">
+      <div
+        className="flex h-full p-5 gap-3"
+        style={{
+          opacity: transitioning ? 0 : 1,
+          transition: 'opacity 0.3s ease-in-out',
+        }}
+      >
         <div className="flex-1 flex flex-col">
-          <span
-            className="text-[10px] font-semibold tracking-[2px] mb-1.5"
-            style={{ color: 'rgba(255,255,255,0.75)' }}
-          >
+          <span className="text-[10px] font-semibold tracking-[2px] mb-1.5" style={{ color: 'rgba(255,255,255,0.75)' }}>
             {t('landing.ximatar_card.label')}
           </span>
           <h3 className="text-[28px] font-bold leading-none mb-1" style={{ color: 'white' }}>
-            {t('landing.ximatar_card.name')}
+            {archetype.name}
           </h3>
-          <p
-            className="text-[13px] font-semibold mb-2"
-            style={{ color: '#7DB3FF' }}
-          >
-            {t('landing.ximatar_card.trait')}
+          <p className="text-[13px] font-semibold mb-2" style={{ color: '#7DB3FF' }}>
+            {archetype.trait}
           </p>
-          <p
-            className="text-[12px] leading-[1.5]"
-            style={{ color: 'rgba(255,255,255,0.85)' }}
-          >
-            {t('landing.ximatar_card.description')}
+          <p className="text-[12px] leading-[1.5]" style={{ color: 'rgba(255,255,255,0.85)' }}>
+            {archetype.description}
           </p>
         </div>
 
@@ -54,15 +58,14 @@ export const XimatarGlassCard: React.FC = () => {
               width: 110,
               height: 110,
               clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-              background:
-                'linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05))',
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05))',
               border: '1px solid rgba(255,255,255,0.3)',
               padding: 4,
             }}
           >
             <img
-              src="/ximatars/horse.png"
-              alt="Horse XIMAtar"
+              src={archetype.image}
+              alt={`${archetype.name} XIMAtar`}
               style={{
                 width: '100%',
                 height: '100%',
@@ -75,7 +78,8 @@ export const XimatarGlassCard: React.FC = () => {
       </div>
 
       <button
-        aria-label="More archetypes"
+        onClick={onNext}
+        aria-label="Next archetype"
         className="absolute -bottom-3 -right-3 flex items-center justify-center transition-transform hover:scale-110"
         style={{
           width: 44,
