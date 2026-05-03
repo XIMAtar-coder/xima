@@ -151,7 +151,7 @@ const QUESTION_IDS = ['q1', 'q2', 'q3', 'q4', 'q5'] as const;
 
 const normalizeLocale = (language?: string) => {
   const locale = language?.split('-')[0];
-  return locale && ['en', 'it', 'es'].includes(locale) ? locale : 'en';
+  return locale && ['en', 'it', 'es'].includes(locale) ? locale : 'it';
 };
 
 const asTextList = (value: Json | string[] | null | undefined): string[] => {
