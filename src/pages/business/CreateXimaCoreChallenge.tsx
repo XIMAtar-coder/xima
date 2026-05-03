@@ -340,12 +340,14 @@ const CreateXimaCoreChallenge = () => {
     goalData?: HiringGoal | null,
     companyData?: CompanyProfile | null,
     businessData?: BusinessProfile | null,
+    listingTitleOverride?: string | null,
   ) => {
     if (isActivated) return;
 
     const goal = goalData !== undefined ? goalData : hiringGoal;
     const business = businessData !== undefined ? businessData : businessProfile;
     const company = companyData !== undefined ? companyData : companyProfile;
+    const effectiveListingTitle = listingTitleOverride !== undefined ? listingTitleOverride : listingTitle;
 
     setGenerating(true);
     setGenerationError(false);
@@ -364,7 +366,7 @@ const CreateXimaCoreChallenge = () => {
             companyIndustry: business?.manual_industry || business?.snapshot_industry || undefined,
             companySize: business?.company_size || undefined,
             decisionStyle: company?.operating_style_override || company?.operating_style || undefined,
-            roleTitle: goal?.role_title || listingTitle || undefined,
+            roleTitle: goal?.role_title || effectiveListingTitle || undefined,
             functionArea: goal?.function_area || undefined,
             experienceLevel: goal?.experience_level || undefined,
             taskDescription: goal?.task_description || undefined,
