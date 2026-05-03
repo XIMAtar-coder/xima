@@ -451,7 +451,7 @@ Restituisci SOLO JSON valido:
         metadata: { business_type: validated.business_type, locale, used_fallback: false },
       }, "l1_challenges_generated");
 
-      return jsonResponse({ ...validated, used_fallback: false, is_fallback: responseIsFallback });
+      return jsonResponse({ ...validated, context_tag: contextTag || validated.context_tag, used_fallback: false, is_fallback: responseIsFallback });
 
     } catch (e) {
       if (e instanceof AnthropicError) {
