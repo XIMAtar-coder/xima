@@ -30,7 +30,7 @@ export const HeroSection: React.FC = () => {
   return (
     <section
       className="relative w-full overflow-hidden"
-      style={{ background: '#F7FAFF', minHeight: 'calc(100vh - 76px)' }}
+      style={{ background: 'var(--xima-bg)', minHeight: 'calc(100vh - 76px)' }}
     >
       {/* Hero image right side (desktop only) */}
       <div
@@ -47,7 +47,7 @@ export const HeroSection: React.FC = () => {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'linear-gradient(90deg, #F7FAFF 0%, rgba(247,250,255,0.92) 28%, rgba(247,250,255,0.35) 55%, rgba(247,250,255,0.05) 100%)',
+              'linear-gradient(90deg, var(--xima-bg) 0%, color-mix(in srgb, var(--xima-bg) 92%, transparent) 28%, color-mix(in srgb, var(--xima-bg) 35%, transparent) 55%, transparent 100%)',
           }}
         />
 
