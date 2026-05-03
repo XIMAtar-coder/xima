@@ -1,8 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Globe, Menu } from 'lucide-react';
-import { Logo } from '@/components/Logo';
+import { Menu } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -31,7 +30,7 @@ export const LandingHeader: React.FC = () => {
     >
       <div className="max-w-[1440px] mx-auto h-full px-6 lg:px-10 flex items-center justify-between">
         <button onClick={() => navigate('/')} className="flex items-center" aria-label="XIMA Home">
-          <Logo variant="full" className="h-9 w-auto" />
+          <img src="/assets/logo_dark.png" alt="XIMA" style={{ height: 38, width: 'auto' }} />
         </button>
 
         <nav className="hidden md:flex items-center gap-10">
@@ -50,7 +49,6 @@ export const LandingHeader: React.FC = () => {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Globe className="hidden sm:block w-5 h-5" style={{ color: '#071E3A' }} />
           <div className="hidden sm:block"><LanguageSwitcher /></div>
           <ThemeToggle />
           <button
