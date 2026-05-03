@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTheme } from 'next-themes';
 import type { Archetype } from './archetypes';
 
 const PILLAR_DEFS = [
