@@ -101,7 +101,7 @@ function validateXimaCoreResult(parsed: unknown): XimaCoreResult | null {
 }
 
 function getLanguageInstruction(locale: string): string {
-  const normalizedLocale = ['en', 'it', 'es'].includes(locale) ? locale : 'en';
+  const normalizedLocale = ['en', 'it', 'es'].includes(locale) ? locale : 'it';
   const targetLanguage = LANGUAGE_NAMES[normalizedLocale];
   return `Write ALL text values in ${targetLanguage}. JSON keys remain English.`;
 }
@@ -158,7 +158,7 @@ serve(async (req) => {
     const businessProfile = businessProfileRes.data;
     const profileLocale = String(userProfileRes.data?.preferred_lang || userProfileRes.data?.content_language || '').split('-')[0];
     const requestedLocale = String(body.locale || '').split('-')[0];
-    const locale = ['en', 'it', 'es'].includes(requestedLocale) ? requestedLocale : ['en', 'it', 'es'].includes(profileLocale) ? profileLocale : 'en';
+    const locale = ['en', 'it', 'es'].includes(requestedLocale) ? requestedLocale : ['en', 'it', 'es'].includes(profileLocale) ? profileLocale : 'it';
 
     let goal: any = null;
     if (body.hiring_goal_id) {
@@ -202,8 +202,9 @@ serve(async (req) => {
       'nonprofit': 'No Profit',
     };
     const displayIndustry = industryLabels[String(rawIndustry).toLowerCase()] || rawIndustry;
-    const roleTitle = String(goal?.role_title || body.context?.roleTitle || 'Professional role');
-    const contextTag = `${roleTitle} · ${displayIndustry}`;
+    const roleTitle = String(goal?.role_title || body.context?.roleTitle || '').trim();
+    const contextTagParts = [roleTitle, displayIndustry].filter(p => p && String(p).trim().length > 0);
+    const contextTag = contextTagParts.length > 0 ? contextTagParts.join(' · ') : (businessProfile?.company_name || '');
     const contextPayload = {
       company_name: businessProfile?.company_name || null,
       industry,
