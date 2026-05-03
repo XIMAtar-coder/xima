@@ -18,8 +18,8 @@ export const FeatureStrip: React.FC = () => {
       style={{
         marginTop: -50,
         maxWidth: '92%',
-        background: 'rgba(255,255,255,0.92)',
-        border: '1px solid rgba(10,40,80,0.08)',
+        background: 'var(--xima-surface-soft)',
+        border: '1px solid var(--xima-border)',
         borderRadius: 28,
         boxShadow: '0 24px 70px rgba(7,30,58,0.10)',
         backdropFilter: 'blur(18px)',
