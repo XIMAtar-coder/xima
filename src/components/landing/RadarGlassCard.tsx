@@ -15,6 +15,12 @@ interface Props {
 }
 
 export const RadarGlassCard: React.FC<Props> = ({ archetype }) => {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+  const symbolSrc = mounted && resolvedTheme === 'dark'
+    ? '/images/xima-symbol-white.svg'
+    : '/images/xima-symbol-white.svg'; // always white on translucent dark glass
   const cx = 160;
   const cy = 140;
   const maxR = 88;
