@@ -1,5 +1,4 @@
 import React from 'react';
-import symbolImg from '@/assets/symbol.png';
 import type { Archetype } from './archetypes';
 
 const PILLAR_DEFS = [
@@ -15,6 +14,8 @@ interface Props {
 }
 
 export const RadarGlassCard: React.FC<Props> = ({ archetype }) => {
+  // Radar sits on a translucent dark glass — always use the white symbol.
+  const symbolSrc = '/images/xima-symbol-white.svg';
   const cx = 160;
   const cy = 140;
   const maxR = 88;
@@ -106,8 +107,8 @@ export const RadarGlassCard: React.FC<Props> = ({ archetype }) => {
             />
           );
         })}
-        <foreignObject x={cx - 18} y={cy - 18} width={36} height={36}>
-          <img src={symbolImg} alt="" style={{ width: '100%', height: '100%', opacity: 0.95 }} />
+        <foreignObject x={cx - 14} y={cy - 14} width={28} height={28}>
+          <img src={symbolSrc} alt="" style={{ width: '100%', height: '100%', opacity: 0.95 }} />
         </foreignObject>
         {pillars.map((p, i) => {
           const pt = point(i, maxR + 24);
