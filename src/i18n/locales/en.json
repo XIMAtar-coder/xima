@@ -5043,6 +5043,8 @@
     "generating": "Evaluating candidates...",
     "no_results_title": "No matches found",
     "no_results_desc": "Try removing filters or wait for more candidates to join XIMA.",
+    "refresh_success_title": "Shortlist updated",
+    "refresh_success_desc": "The shortlist has been refreshed with the latest candidates.",
     "error_title": "Error",
     "error_desc": "Failed to generate shortlist",
     "empty_title": "No matching candidates",

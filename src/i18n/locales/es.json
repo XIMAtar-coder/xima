@@ -4311,6 +4311,8 @@
     "generating": "Evaluando candidatos...",
     "no_results_title": "No se encontraron coincidencias",
     "no_results_desc": "Elimina filtros o espera a que se unan más candidatos a XIMA.",
+    "refresh_success_title": "Shortlist actualizada",
+    "refresh_success_desc": "La shortlist se ha actualizado con los candidatos más recientes.",
     "error_title": "Error",
     "error_desc": "No se pudo generar la shortlist",
     "empty_title": "No hay candidatos compatibles",
