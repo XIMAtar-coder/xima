@@ -1,19 +1,29 @@
 import React from 'react';
 import symbolImg from '@/assets/symbol.png';
+import type { Archetype } from './archetypes';
 
-const PILLARS = [
-  { key: 'drive', label: 'Drive', sub: '(Growth Velocity)', value: 8.1 },
-  { key: 'computational', label: 'Computational', sub: 'Power', value: 7.1 },
-  { key: 'knowledge', label: 'Knowledge', sub: '', value: 5.6 },
-  { key: 'communication', label: 'Communication', sub: '', value: 2.6 },
-  { key: 'creativity', label: 'Creativity', sub: '', value: 5.8 },
-];
+const PILLAR_DEFS = [
+  { key: 'drive', label: 'Drive', sub: '(Growth Velocity)' },
+  { key: 'computational', label: 'Computational', sub: 'Power' },
+  { key: 'knowledge', label: 'Knowledge', sub: '' },
+  { key: 'communication', label: 'Communication', sub: '' },
+  { key: 'creativity', label: 'Creativity', sub: '' },
+] as const;
 
-export const RadarGlassCard: React.FC = () => {
+interface Props {
+  archetype: Archetype;
+}
+
+export const RadarGlassCard: React.FC<Props> = ({ archetype }) => {
   const cx = 160;
   const cy = 140;
   const maxR = 88;
   const max = 10;
+
+  const pillars = PILLAR_DEFS.map((p) => ({
+    ...p,
+    value: archetype.pillarScores[p.key],
+  }));
 
   const angle = (i: number) => -Math.PI / 2 + (i * 2 * Math.PI) / 5;
   const point = (i: number, r: number) => ({
@@ -22,13 +32,13 @@ export const RadarGlassCard: React.FC = () => {
   });
 
   const ringPath = (r: number) =>
-    PILLARS.map((_, i) => {
+    pillars.map((_, i) => {
       const p = point(i, r);
       return `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`;
     }).join(' ') + 'Z';
 
   const dataPath =
-    PILLARS.map((p, i) => {
+    pillars.map((p, i) => {
       const pt = point(i, (p.value / max) * maxR);
       return `${i === 0 ? 'M' : 'L'}${pt.x.toFixed(1)},${pt.y.toFixed(1)}`;
     }).join(' ') + 'Z';
@@ -50,7 +60,6 @@ export const RadarGlassCard: React.FC = () => {
       }}
     >
       <svg viewBox="0 0 320 280" className="w-full h-full">
-        {/* Grid rings */}
         {[0.25, 0.5, 0.75, 1].map((s, idx) => (
           <path
             key={idx}
@@ -60,8 +69,7 @@ export const RadarGlassCard: React.FC = () => {
             strokeWidth={1}
           />
         ))}
-        {/* Spokes */}
-        {PILLARS.map((_, i) => {
+        {pillars.map((_, i) => {
           const p = point(i, maxR);
           return (
             <line
@@ -75,7 +83,6 @@ export const RadarGlassCard: React.FC = () => {
             />
           );
         })}
-        {/* Data polygon */}
         <path
           d={dataPath}
           fill="rgba(11,107,255,0.35)"
@@ -83,10 +90,10 @@ export const RadarGlassCard: React.FC = () => {
           strokeWidth={1.5}
           style={{
             filter: 'drop-shadow(0 0 8px rgba(11,107,255,0.5))',
+            transition: 'd 0.4s ease',
           }}
         />
-        {/* Vertex dots */}
-        {PILLARS.map((p, i) => {
+        {pillars.map((p, i) => {
           const pt = point(i, (p.value / max) * maxR);
           return (
             <circle
@@ -95,50 +102,26 @@ export const RadarGlassCard: React.FC = () => {
               cy={pt.y}
               r={3.5}
               fill="white"
-              style={{ filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.9))' }}
+              style={{ filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.9))', transition: 'all 0.4s ease' }}
             />
           );
         })}
-        {/* Center logo */}
         <foreignObject x={cx - 18} y={cy - 18} width={36} height={36}>
           <img src={symbolImg} alt="" style={{ width: '100%', height: '100%', opacity: 0.95 }} />
         </foreignObject>
-        {/* Labels */}
-        {PILLARS.map((p, i) => {
+        {pillars.map((p, i) => {
           const pt = point(i, maxR + 24);
           const anchor = pt.x < cx - 5 ? 'end' : pt.x > cx + 5 ? 'start' : 'middle';
           return (
-            <g key={i}>
-              <text
-                x={pt.x}
-                y={pt.y - 6}
-                textAnchor={anchor}
-                fill="white"
-                fontSize={13}
-                fontWeight={600}
-                opacity={0.95}
-              >
+            <g key={i} style={{ transition: 'opacity 0.3s ease' }}>
+              <text x={pt.x} y={pt.y - 6} textAnchor={anchor} fill="white" fontSize={13} fontWeight={600} opacity={0.95}>
                 {p.value.toFixed(1)}
               </text>
-              <text
-                x={pt.x}
-                y={pt.y + 8}
-                textAnchor={anchor}
-                fill="white"
-                fontSize={10}
-                opacity={0.75}
-              >
+              <text x={pt.x} y={pt.y + 8} textAnchor={anchor} fill="white" fontSize={10} opacity={0.75}>
                 {p.label}
               </text>
               {p.sub && (
-                <text
-                  x={pt.x}
-                  y={pt.y + 20}
-                  textAnchor={anchor}
-                  fill="white"
-                  fontSize={9}
-                  opacity={0.6}
-                >
+                <text x={pt.x} y={pt.y + 20} textAnchor={anchor} fill="white" fontSize={9} opacity={0.6}>
                   {p.sub}
                 </text>
               )}

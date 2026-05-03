@@ -1,14 +1,31 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import heroPortrait from '@/assets/hero-portrait.jpg';
 import { RadarGlassCard } from './RadarGlassCard';
 import { XimatarGlassCard } from './XimatarGlassCard';
+import { ARCHETYPES } from './archetypes';
 
 export const HeroSection: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [index, setIndex] = useState(0);
+  const [transitioning, setTransitioning] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const change = (next: number) => {
+    if (transitioning) return;
+    setTransitioning(true);
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      setIndex(((next % ARCHETYPES.length) + ARCHETYPES.length) % ARCHETYPES.length);
+      setTransitioning(false);
+    }, 300);
+  };
+  const goNext = () => change(index + 1);
+  const goPrev = () => change(index - 1);
+  const current = ARCHETYPES[index];
 
   return (
     <section
@@ -34,8 +51,54 @@ export const HeroSection: React.FC = () => {
           }}
         />
 
-        <RadarGlassCard />
-        <XimatarGlassCard />
+        <RadarGlassCard archetype={current} />
+        <XimatarGlassCard archetype={current} transitioning={transitioning} onNext={goNext} />
+
+        {/* Slide controls */}
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-[40px] flex items-center gap-4 z-20">
+          <span className="text-[13px] font-medium tabular-nums" style={{ color: '#071E3A' }}>
+            {String(index + 1).padStart(2, '0')} / {String(ARCHETYPES.length).padStart(2, '0')}
+          </span>
+          <button
+            onClick={goPrev}
+            className="w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-105"
+            style={{
+              background: 'rgba(255,255,255,0.85)',
+              border: '1px solid rgba(10,40,80,0.10)',
+              color: '#071E3A',
+            }}
+            aria-label="Previous archetype"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button
+            onClick={goNext}
+            className="w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-105"
+            style={{
+              background: 'rgba(255,255,255,0.85)',
+              border: '1px solid rgba(10,40,80,0.10)',
+              color: '#071E3A',
+            }}
+            aria-label="Next archetype"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+          <div className="flex items-center gap-1.5 ml-2">
+            {ARCHETYPES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => change(i)}
+                aria-label={`Go to archetype ${i + 1}`}
+                className="block rounded-full transition-all"
+                style={{
+                  width: i === index ? 22 : 8,
+                  height: 8,
+                  background: i === index ? '#0B6BFF' : 'rgba(7,30,58,0.18)',
+                }}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Mobile/tablet hero image (stacked) */}
