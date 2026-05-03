@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import heroPortrait from '@/assets/hero-portrait.jpg';
 import { RadarGlassCard } from './RadarGlassCard';
 import { XimatarGlassCard } from './XimatarGlassCard';
@@ -36,48 +36,6 @@ export const HeroSection: React.FC = () => {
 
         <RadarGlassCard />
         <XimatarGlassCard />
-
-        {/* Slide controls */}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-[110px] flex items-center gap-4 z-20">
-          <span className="text-[13px] font-medium" style={{ color: '#071E3A' }}>
-            {t('landing.slide.current')} / {t('landing.slide.total')}
-          </span>
-          <button
-            className="w-9 h-9 rounded-full flex items-center justify-center"
-            style={{
-              background: 'rgba(255,255,255,0.85)',
-              border: '1px solid rgba(10,40,80,0.10)',
-              color: '#071E3A',
-            }}
-            aria-label="Previous"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <button
-            className="w-9 h-9 rounded-full flex items-center justify-center"
-            style={{
-              background: 'rgba(255,255,255,0.85)',
-              border: '1px solid rgba(10,40,80,0.10)',
-              color: '#071E3A',
-            }}
-            aria-label="Next"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-          <div className="flex items-center gap-1.5 ml-2">
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <span
-                key={i}
-                className="block rounded-full"
-                style={{
-                  width: i === 0 ? 22 : 8,
-                  height: 8,
-                  background: i === 0 ? '#0B6BFF' : 'rgba(7,30,58,0.18)',
-                }}
-              />
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Mobile/tablet hero image (stacked) */}

@@ -10,9 +10,9 @@ const PILLARS = [
 ];
 
 export const RadarGlassCard: React.FC = () => {
-  const cx = 190;
-  const cy = 160;
-  const maxR = 110;
+  const cx = 160;
+  const cy = 140;
+  const maxR = 88;
   const max = 10;
 
   const angle = (i: number) => -Math.PI / 2 + (i * 2 * Math.PI) / 5;
@@ -37,19 +37,19 @@ export const RadarGlassCard: React.FC = () => {
     <div
       className="absolute hidden lg:block animate-fade-in"
       style={{
-        right: '6%',
-        top: 32,
-        width: 380,
-        height: 320,
-        background: 'rgba(20,35,55,0.18)',
-        backdropFilter: 'blur(18px)',
-        WebkitBackdropFilter: 'blur(18px)',
+        right: '2%',
+        top: 60,
+        width: 320,
+        height: 280,
+        background: 'rgba(20,35,55,0.12)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
         border: '1px solid rgba(255,255,255,0.36)',
         borderRadius: 28,
         boxShadow: '0 24px 70px rgba(7,30,58,0.18)',
       }}
     >
-      <svg viewBox="0 0 380 320" className="w-full h-full">
+      <svg viewBox="0 0 320 280" className="w-full h-full">
         {/* Grid rings */}
         {[0.25, 0.5, 0.75, 1].map((s, idx) => (
           <path
