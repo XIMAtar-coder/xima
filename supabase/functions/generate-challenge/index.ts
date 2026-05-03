@@ -340,7 +340,7 @@ Restituisci SOLO JSON valido:
               }).eq("id", body.challenge_id);
             }
 
-            return jsonResponse({ ...validated, used_fallback: false, _intelligence: { source: "database", confidence: dbDecision.confidence } });
+            return jsonResponse({ ...validated, context_tag: contextTag || validated.context_tag, used_fallback: false, _intelligence: { source: "database", confidence: dbDecision.confidence } });
           }
         }
       }
