@@ -77,22 +77,6 @@ export const XimatarGlassCard: React.FC<Props> = ({ archetype, transitioning, on
         </div>
       </div>
 
-      <button
-        onClick={onNext}
-        aria-label="Next archetype"
-        className="absolute -bottom-3 -right-3 flex items-center justify-center transition-transform hover:scale-110"
-        style={{
-          width: 44,
-          height: 44,
-          borderRadius: '50%',
-          background: '#0B6BFF',
-          color: 'white',
-          boxShadow: '0 8px 24px rgba(11,107,255,0.45)',
-          border: '2px solid white',
-        }}
-      >
-        <ArrowRight className="w-5 h-5" />
-      </button>
     </div>
   );
 };
