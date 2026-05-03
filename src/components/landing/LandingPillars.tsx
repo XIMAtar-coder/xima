@@ -111,7 +111,7 @@ export const LandingPillars: React.FC = () => {
                 <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.6 }}>{tagline}</p>
 
                 {isOpen && (
-                  <div className="mt-6 pt-6 animate-fade-in" style={{ borderTop: '1px solid rgba(10,40,80,0.08)' }}>
+                  <div className="mt-6 pt-6 animate-fade-in" style={{ borderTop: '1px solid var(--xima-border)' }}>
                     <div className="grid md:grid-cols-3 gap-8">
                       <div>
                         <h4 style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, color: MUTED, textTransform: 'uppercase', marginBottom: 10 }}>
