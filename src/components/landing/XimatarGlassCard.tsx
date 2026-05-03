@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight } from 'lucide-react';
 import type { Archetype } from './archetypes';
 
 interface Props {
@@ -9,7 +8,7 @@ interface Props {
   onNext: () => void;
 }
 
-export const XimatarGlassCard: React.FC<Props> = ({ archetype, transitioning, onNext }) => {
+export const XimatarGlassCard: React.FC<Props> = ({ archetype, transitioning }) => {
   const { t } = useTranslation();
 
   return (
