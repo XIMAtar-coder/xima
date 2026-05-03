@@ -237,6 +237,8 @@ const CreateXimaCoreChallenge = () => {
 
   const loadData = async () => {
     let effectiveGoalId: string | null = goalIdParam;
+    let syntheticGoal: HiringGoal | null = null;
+    let resolvedListingTitle: string | null = null;
 
     // 1) If arriving via from_listing, fetch the job_post and resolve a linked hiring goal if present.
     if (!effectiveGoalId && fromListingParam) {
@@ -248,13 +250,14 @@ const CreateXimaCoreChallenge = () => {
         .maybeSingle();
 
       if (jobPost) {
-        setListingTitle(jobPost.title || null);
+        resolvedListingTitle = jobPost.title || null;
+        setListingTitle(resolvedListingTitle);
         if (jobPost.linked_hiring_goal_id) {
           effectiveGoalId = jobPost.linked_hiring_goal_id;
           setGoalId(effectiveGoalId);
         } else {
           // Synthesize a HiringGoal-like object from job_post fields so generateScenario has rich context.
-          const synthetic: HiringGoal = {
+          syntheticGoal = {
             id: jobPost.id,
             role_title: jobPost.title || null,
             task_description: jobPost.responsibilities || jobPost.description || null,
@@ -265,7 +268,7 @@ const CreateXimaCoreChallenge = () => {
             required_skills: jobPost.requirements_must as Json,
             nice_to_have_skills: jobPost.requirements_nice as Json,
           };
-          setHiringGoal(synthetic);
+          setHiringGoal(syntheticGoal);
         }
         setJobPostId(jobPost.id);
       }
@@ -330,7 +333,7 @@ const CreateXimaCoreChallenge = () => {
     if (companyData) setCompanyProfile(companyData);
 
     setLoading(false);
-    generateScenario(loadedGoal || (effectiveGoalId ? null : hiringGoal), companyData, businessData);
+    generateScenario(loadedGoal || syntheticGoal, companyData, businessData, resolvedListingTitle);
   };
 
   const generateScenario = async (
