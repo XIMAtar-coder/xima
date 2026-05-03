@@ -1,11 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Logo } from '@/components/Logo';
+import { useTheme } from 'next-themes';
 
 export const LandingFooter: React.FC = () => {
   const { t } = useTranslation();
-  const year = new Date().getFullYear();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+  const isDark = mounted && resolvedTheme === 'dark';
+  const logoSrc = isDark ? '/images/xima-full-white.svg' : '/images/xima-full-dark.svg';
 
   const links = [
     { href: '/privacy', label: t('footer.privacy') },
@@ -16,32 +20,30 @@ export const LandingFooter: React.FC = () => {
   return (
     <footer
       style={{
-        background: '#F7FAFF',
-        borderTop: '1px solid rgba(10,40,80,0.08)',
+        background: 'var(--xima-bg)',
+        borderTop: '1px solid var(--xima-border)',
         padding: '32px 0',
       }}
     >
       <div className="max-w-[1440px] mx-auto px-6 lg:px-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-5">
-          <Logo variant="full" alt="XIMA" className="h-7 w-auto" />
+          <img src={logoSrc} alt="XIMA" style={{ height: 28, width: 'auto' }} />
 
           <nav className="flex flex-wrap items-center gap-6">
             {links.map((l) => (
               <Link
                 key={l.href}
                 to={l.href}
-                className="transition-colors"
-                style={{ fontSize: 14, color: '#607089' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#0B6BFF')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = '#607089')}
+                className="transition-colors hover:opacity-80"
+                style={{ fontSize: 14, color: 'var(--xima-text-muted)' }}
               >
                 {l.label}
               </Link>
             ))}
           </nav>
 
-          <p style={{ fontSize: 13, color: '#8794A8' }}>
-            © {year} XIMA. {t('footer.all_rights_reserved')}
+          <p style={{ fontSize: 13, color: 'var(--xima-text-faint)' }}>
+            © 2026 XIMA. {t('footer.all_rights_reserved')}
           </p>
         </div>
       </div>
