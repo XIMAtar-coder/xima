@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'next-themes';
 import { Menu } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -9,6 +10,11 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 export const LandingHeader: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+  const isDark = mounted && resolvedTheme === 'dark';
+  const logoSrc = isDark ? '/images/xima-full-white.svg' : '/images/xima-full-dark.svg';
 
   const navItems = [
     { label: t('landing.nav.how_it_works'), href: '/how-it-works' },
@@ -22,15 +28,15 @@ export const LandingHeader: React.FC = () => {
       className="sticky top-0 z-50 w-full"
       style={{
         height: 76,
-        background: 'rgba(255,255,255,0.82)',
+        background: 'var(--xima-header-bg)',
         backdropFilter: 'blur(18px)',
         WebkitBackdropFilter: 'blur(18px)',
-        borderBottom: '1px solid rgba(10,40,80,0.08)',
+        borderBottom: '1px solid var(--xima-border)',
       }}
     >
       <div className="max-w-[1440px] mx-auto h-full px-6 lg:px-10 flex items-center justify-between">
         <button onClick={() => navigate('/')} className="flex items-center" aria-label="XIMA Home">
-          <img src="/assets/logo_dark.png" alt="XIMA" style={{ height: 38, width: 'auto' }} />
+          <img src={logoSrc} alt="XIMA" style={{ height: 40, width: 'auto' }} />
         </button>
 
         <nav className="hidden md:flex items-center gap-10">
@@ -38,10 +44,8 @@ export const LandingHeader: React.FC = () => {
             <button
               key={item.href}
               onClick={() => navigate(item.href)}
-              className="text-[15px] font-medium transition-colors"
-              style={{ color: '#071E3A' }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#0B6BFF')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = '#071E3A')}
+              className="text-[15px] font-medium transition-colors hover:opacity-80"
+              style={{ color: 'var(--xima-text)' }}
             >
               {item.label}
             </button>
@@ -55,11 +59,11 @@ export const LandingHeader: React.FC = () => {
             onClick={() => navigate('/login')}
             className="hidden sm:inline-flex items-center font-medium text-[15px]"
             style={{
-              background: 'white',
-              color: '#0B6BFF',
+              background: 'var(--xima-surface)',
+              color: 'var(--xima-blue)',
               borderRadius: 14,
               padding: '10px 22px',
-              border: '1px solid rgba(10,40,80,0.10)',
+              border: '1px solid var(--xima-border-strong)',
               boxShadow: '0 2px 8px rgba(7,30,58,0.06)',
             }}
           >
@@ -69,7 +73,7 @@ export const LandingHeader: React.FC = () => {
           <Sheet>
             <SheetTrigger asChild>
               <button className="md:hidden p-2" aria-label="Menu">
-                <Menu className="w-6 h-6" style={{ color: '#071E3A' }} />
+                <Menu className="w-6 h-6" style={{ color: 'var(--xima-text)' }} />
               </button>
             </SheetTrigger>
             <SheetContent side="right" className="w-72">
@@ -86,7 +90,7 @@ export const LandingHeader: React.FC = () => {
                 <button
                   onClick={() => navigate('/login')}
                   className="mt-4 text-left text-base font-semibold py-2"
-                  style={{ color: '#0B6BFF' }}
+                  style={{ color: 'var(--xima-blue)' }}
                 >
                   {t('landing.nav.login')}
                 </button>
