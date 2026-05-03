@@ -8,7 +8,7 @@ import { LandingFooter } from '@/components/landing/LandingFooter';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#F7FAFF' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: 'var(--xima-bg)' }}>
       <LandingHeader />
       <main className="flex-1">
         <HeroSection />
