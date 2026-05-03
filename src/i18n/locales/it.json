@@ -1,4 +1,44 @@
 {
+  "landing": {
+    "nav": {
+      "how_it_works": "Come Funziona",
+      "guide": "Guida",
+      "about": "Chi Siamo",
+      "business": "Aziende",
+      "login": "Accedi"
+    },
+    "hero": {
+      "label": "PSICOMETRIA · AI HIRING · CONFORME GDPR ART. 22",
+      "headline_1": "Il curriculum non ha",
+      "headline_2": "mai parlato di te.",
+      "headline_3_prefix": "Lo",
+      "headline_3_brand": "XIMAtar",
+      "headline_3_suffix": "sì.",
+      "body": "XIMA sostituisce le assunzioni basate sulle credenziali con scienza comportamentale validata e intelligenza artificiale. Ogni candidato riceve uno XIMAtar — un'identità comportamentale persistente che possiedi, porti con te e riutilizzi in ogni azienda a cui ti candidi.",
+      "cta_primary": "Scopri il tuo XIMAtar",
+      "cta_secondary": "Per le Aziende"
+    },
+    "ximatar_card": {
+      "label": "IL TUO XIMATAR",
+      "name": "Cavallo",
+      "trait": "Alto Drive",
+      "description": "Non definiamo le persone con etichette. Riveliamo la dinamica tra ciò che le muove, ciò che le eleva e ciò che le trattiene."
+    },
+    "features": {
+      "gdpr_title": "GDPR Art. 22",
+      "gdpr_subtitle": "Conforme per design",
+      "demographic_title": "Zero proxy",
+      "demographic_subtitle": "demografici",
+      "pillars_title": "Cinque pilastri.",
+      "pillars_subtitle": "Una sola verità.",
+      "ai_title": "AI per",
+      "ai_subtitle": "l'estrazione dei segnali"
+    },
+    "slide": {
+      "current": "01",
+      "total": "06"
+    }
+  },
   "profile": {
     "page_title": "Benvenuto, {{name}}",
     "welcome_name": "Benvenuto, {{name}}!",
