@@ -1,23 +1,19 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Archetype } from './archetypes';
 
-const PILLAR_DEFS = [
-  { key: 'drive', label: 'Drive', sub: '(Growth Velocity)' },
-  { key: 'computational', label: 'Computational', sub: 'Power' },
-  { key: 'knowledge', label: 'Knowledge', sub: '' },
-  { key: 'communication', label: 'Communication', sub: '' },
-  { key: 'creativity', label: 'Creativity', sub: '' },
-] as const;
+const PILLAR_KEYS = ['drive', 'computational', 'knowledge', 'communication', 'creativity'] as const;
 
 interface Props {
   archetype: Archetype;
 }
 
 export const RadarGlassCard: React.FC<Props> = ({ archetype }) => {
+  const { t } = useTranslation();
   // Radar sits on a translucent dark glass — always use the white symbol.
   const symbolSrc = '/images/xima-symbol-white.svg';
-  const cx = 160;
-  const cy = 140;
+  const cx = 190;
+  const cy = 150;
   const maxR = 88;
   const max = 10;
 

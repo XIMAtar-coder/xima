@@ -35,7 +35,6 @@ const LanguageSwitcher: React.FC = () => {
           aria-label={`Current language: ${currentLanguage.name}`}
         >
           <Globe size={16} />
-          <span className="hidden sm:inline">{currentLanguage.flag}</span>
           <span className="text-sm font-medium">{currentLanguage.code.toUpperCase()}</span>
         </Button>
       </DropdownMenuTrigger>
