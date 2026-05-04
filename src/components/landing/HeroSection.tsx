@@ -55,7 +55,7 @@ export const HeroSection: React.FC = () => {
         <XimatarGlassCard archetype={current} transitioning={transitioning} onNext={goNext} />
 
         {/* Slide controls */}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-[40px] flex items-center gap-4 z-20">
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-[120px] flex items-center gap-4 z-20">
           <span className="text-[13px] font-medium tabular-nums" style={{ color: 'var(--xima-text)' }}>
             {String(index + 1).padStart(2, '0')} / {String(ARCHETYPES.length).padStart(2, '0')}
           </span>
