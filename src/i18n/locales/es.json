@@ -24,6 +24,14 @@
       "trait": "Alto Drive",
       "description": "No definimos a las personas con etiquetas. Revelamos la dinámica entre lo que las mueve, lo que las eleva y lo que las detiene."
     },
+    "radar": {
+      "drive": "Motivación",
+      "drive_subtitle": "(Velocidad de crecimiento)",
+      "computational": "Pot. Comp.",
+      "knowledge": "Conocimiento",
+      "communication": "Comunicación",
+      "creativity": "Creatividad"
+    },
     "features": {
       "gdpr_title": "GDPR Art. 22",
       "gdpr_subtitle": "Conforme por diseño",
@@ -31,8 +39,8 @@
       "demographic_subtitle": "demográficos",
       "pillars_title": "Cinco pilares.",
       "pillars_subtitle": "Una sola verdad.",
-      "ai_title": "IA para",
-      "ai_subtitle": "extracción de señales"
+      "ai_title": "IA de señales",
+      "ai_subtitle": "Extracción automática"
     },
     "slide": {
       "current": "01",
