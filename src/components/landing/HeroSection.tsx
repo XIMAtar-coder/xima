@@ -53,51 +53,51 @@ export const HeroSection: React.FC = () => {
 
         <RadarGlassCard archetype={current} />
         <XimatarGlassCard archetype={current} transitioning={transitioning} onNext={goNext} />
+      </div>
 
-        {/* Slide controls */}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-[120px] flex items-center gap-4 z-20">
-          <span className="text-[13px] font-medium tabular-nums" style={{ color: 'var(--xima-text)' }}>
-            {String(index + 1).padStart(2, '0')} / {String(ARCHETYPES.length).padStart(2, '0')}
-          </span>
-          <button
-            onClick={goPrev}
-            className="w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-105"
-            style={{
-              background: 'var(--xima-surface-soft)',
-              border: '1px solid var(--xima-border-strong)',
-              color: 'var(--xima-text)',
-            }}
-            aria-label="Previous archetype"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <button
-            onClick={goNext}
-            className="w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-105"
-            style={{
-              background: 'var(--xima-surface-soft)',
-              border: '1px solid var(--xima-border-strong)',
-              color: 'var(--xima-text)',
-            }}
-            aria-label="Next archetype"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-          <div className="flex items-center gap-1.5 ml-2">
-            {ARCHETYPES.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => change(i)}
-                aria-label={`Go to archetype ${i + 1}`}
-                className="block rounded-full transition-all"
-                style={{
-                  width: i === index ? 22 : 8,
-                  height: 8,
-                  background: i === index ? 'var(--xima-blue)' : 'var(--xima-border-strong)',
-                }}
-              />
-            ))}
-          </div>
+      {/* Slide controls — between XIMAtar card and feature strip */}
+      <div className="hidden lg:flex absolute right-[3%] bottom-8 items-center gap-4 z-20" style={{ marginTop: 32, marginBottom: 32 }}>
+        <span className="text-[13px] font-medium tabular-nums" style={{ color: 'var(--xima-text)' }}>
+          {String(index + 1).padStart(2, '0')} / {String(ARCHETYPES.length).padStart(2, '0')}
+        </span>
+        <button
+          onClick={goPrev}
+          className="w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-105"
+          style={{
+            background: 'var(--xima-surface-soft)',
+            border: '1px solid var(--xima-border-strong)',
+            color: 'var(--xima-text)',
+          }}
+          aria-label="Previous archetype"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+        <button
+          onClick={goNext}
+          className="w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-105"
+          style={{
+            background: 'var(--xima-surface-soft)',
+            border: '1px solid var(--xima-border-strong)',
+            color: 'var(--xima-text)',
+          }}
+          aria-label="Next archetype"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
+        <div className="flex items-center gap-1.5 ml-2">
+          {ARCHETYPES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => change(i)}
+              aria-label={`Go to archetype ${i + 1}`}
+              className="block rounded-full transition-all"
+              style={{
+                width: i === index ? 22 : 8,
+                height: 8,
+                background: i === index ? 'var(--xima-blue)' : 'var(--xima-border-strong)',
+              }}
+            />
+          ))}
         </div>
       </div>
 
