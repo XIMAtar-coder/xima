@@ -24,6 +24,14 @@
       "trait": "Alto Drive",
       "description": "Non definiamo le persone con etichette. Riveliamo la dinamica tra ciò che le muove, ciò che le eleva e ciò che le trattiene."
     },
+    "radar": {
+      "drive": "Motivazione",
+      "drive_subtitle": "(Velocità di crescita)",
+      "computational": "Potenza Comp.",
+      "knowledge": "Conoscenza",
+      "communication": "Comunicazione",
+      "creativity": "Creatività"
+    },
     "features": {
       "gdpr_title": "GDPR Art. 22",
       "gdpr_subtitle": "Conforme per design",
@@ -31,8 +39,8 @@
       "demographic_subtitle": "demografici",
       "pillars_title": "Cinque pilastri.",
       "pillars_subtitle": "Una sola verità.",
-      "ai_title": "AI per",
-      "ai_subtitle": "l'estrazione dei segnali"
+      "ai_title": "AI per i segnali",
+      "ai_subtitle": "Estrazione automatica"
     },
     "slide": {
       "current": "01",

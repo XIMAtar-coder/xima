@@ -24,6 +24,14 @@
       "trait": "High Drive",
       "description": "We don't define people with labels. We reveal the dynamic between what moves them, what lifts them, and what holds them back."
     },
+    "radar": {
+      "drive": "Drive",
+      "drive_subtitle": "(Growth Velocity)",
+      "computational": "Comp. Power",
+      "knowledge": "Knowledge",
+      "communication": "Communication",
+      "creativity": "Creativity"
+    },
     "features": {
       "gdpr_title": "GDPR Art. 22",
       "gdpr_subtitle": "Compliant by design",
@@ -31,8 +39,8 @@
       "demographic_subtitle": "proxies",
       "pillars_title": "Five pillars.",
       "pillars_subtitle": "One truth.",
-      "ai_title": "AI-powered",
-      "ai_subtitle": "signal extraction"
+      "ai_title": "AI signals",
+      "ai_subtitle": "Automatic extraction"
     },
     "slide": {
       "current": "01",

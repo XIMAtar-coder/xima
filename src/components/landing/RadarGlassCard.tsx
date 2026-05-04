@@ -1,29 +1,27 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Archetype } from './archetypes';
 
-const PILLAR_DEFS = [
-  { key: 'drive', label: 'Drive', sub: '(Growth Velocity)' },
-  { key: 'computational', label: 'Computational', sub: 'Power' },
-  { key: 'knowledge', label: 'Knowledge', sub: '' },
-  { key: 'communication', label: 'Communication', sub: '' },
-  { key: 'creativity', label: 'Creativity', sub: '' },
-] as const;
+const PILLAR_KEYS = ['drive', 'computational', 'knowledge', 'communication', 'creativity'] as const;
 
 interface Props {
   archetype: Archetype;
 }
 
 export const RadarGlassCard: React.FC<Props> = ({ archetype }) => {
+  const { t } = useTranslation();
   // Radar sits on a translucent dark glass — always use the white symbol.
   const symbolSrc = '/images/xima-symbol-white.svg';
-  const cx = 160;
-  const cy = 140;
+  const cx = 190;
+  const cy = 150;
   const maxR = 88;
   const max = 10;
 
-  const pillars = PILLAR_DEFS.map((p) => ({
-    ...p,
-    value: archetype.pillarScores[p.key],
+  const pillars = PILLAR_KEYS.map((key) => ({
+    key,
+    label: t(`landing.radar.${key}`),
+    sub: key === 'drive' ? t('landing.radar.drive_subtitle') : '',
+    value: archetype.pillarScores[key],
   }));
 
   const angle = (i: number) => -Math.PI / 2 + (i * 2 * Math.PI) / 5;
@@ -50,8 +48,8 @@ export const RadarGlassCard: React.FC<Props> = ({ archetype }) => {
       style={{
         right: '2%',
         top: 60,
-        width: 320,
-        height: 280,
+        width: 380,
+        height: 300,
         background: 'rgba(20,35,55,0.12)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
@@ -60,7 +58,7 @@ export const RadarGlassCard: React.FC<Props> = ({ archetype }) => {
         boxShadow: '0 24px 70px rgba(7,30,58,0.18)',
       }}
     >
-      <svg viewBox="0 0 320 280" className="w-full h-full">
+      <svg viewBox="0 0 380 300" className="w-full h-full" style={{ overflow: 'visible' }}>
         {[0.25, 0.5, 0.75, 1].map((s, idx) => (
           <path
             key={idx}
