@@ -17,9 +17,11 @@ export const RadarGlassCard: React.FC<Props> = ({ archetype }) => {
   const maxR = 88;
   const max = 10;
 
-  const pillars = PILLAR_DEFS.map((p) => ({
-    ...p,
-    value: archetype.pillarScores[p.key],
+  const pillars = PILLAR_KEYS.map((key) => ({
+    key,
+    label: t(`landing.radar.${key}`),
+    sub: key === 'drive' ? t('landing.radar.drive_subtitle') : '',
+    value: archetype.pillarScores[key],
   }));
 
   const angle = (i: number) => -Math.PI / 2 + (i * 2 * Math.PI) / 5;
@@ -46,8 +48,8 @@ export const RadarGlassCard: React.FC<Props> = ({ archetype }) => {
       style={{
         right: '2%',
         top: 60,
-        width: 320,
-        height: 280,
+        width: 380,
+        height: 300,
         background: 'rgba(20,35,55,0.12)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
@@ -56,7 +58,7 @@ export const RadarGlassCard: React.FC<Props> = ({ archetype }) => {
         boxShadow: '0 24px 70px rgba(7,30,58,0.18)',
       }}
     >
-      <svg viewBox="0 0 320 280" className="w-full h-full">
+      <svg viewBox="0 0 380 300" className="w-full h-full" style={{ overflow: 'visible' }}>
         {[0.25, 0.5, 0.75, 1].map((s, idx) => (
           <path
             key={idx}
