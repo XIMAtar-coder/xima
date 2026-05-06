@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import MainLayout from '@/components/layout/MainLayout';
+import LandingLayout from '@/components/landing/LandingLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Building2, Mail, Phone, MapPin, FileText, User, Shield } from 'lucide-react';
 
@@ -64,7 +64,7 @@ const Imprint = () => {
   const { t } = useTranslation();
 
   return (
-    <MainLayout>
+    <LandingLayout>
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
@@ -196,7 +196,7 @@ const Imprint = () => {
           {t('legal.imprint.last_updated')}: {new Date().toLocaleDateString()}
         </p>
       </div>
-    </MainLayout>
+    </LandingLayout>
   );
 };
 

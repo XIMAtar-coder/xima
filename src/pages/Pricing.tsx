@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, ArrowRight, Building2, Users, Shield, Sparkles, BarChart3, Zap } from 'lucide-react';
-import MainLayout from '@/components/layout/MainLayout';
+import LandingLayout from '@/components/landing/LandingLayout';
 
 const TIERS = [
   {
@@ -67,7 +67,7 @@ const Pricing: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <MainLayout>
+    <LandingLayout>
       <div className="max-w-6xl mx-auto px-4 py-16">
         {/* Header */}
         <div className="text-center mb-12">
@@ -148,7 +148,7 @@ const Pricing: React.FC = () => {
           </div>
         </div>
       </div>
-    </MainLayout>
+    </LandingLayout>
   );
 };
 

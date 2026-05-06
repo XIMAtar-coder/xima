@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import MainLayout from '../components/layout/MainLayout';
+import LandingLayout from '@/components/landing/LandingLayout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { BookOpen, Upload, ClipboardCheck, Sparkles, Calendar, Brain, MessageCircle, Lightbulb, Zap, ArrowRight } from 'lucide-react';
@@ -19,7 +19,7 @@ const HowItWorks = () => {
   const { t } = useTranslation();
 
   return (
-    <MainLayout>
+    <LandingLayout>
       <div className="container max-w-4xl mx-auto px-4 md:px-8">
 
         {/* ── HERO ── */}
@@ -218,7 +218,7 @@ const HowItWorks = () => {
         </Card>
 
       </div>
-    </MainLayout>
+    </LandingLayout>
   );
 };
 
