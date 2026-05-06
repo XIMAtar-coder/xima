@@ -4,6 +4,8 @@ import { HeroSection } from '@/components/landing/HeroSection';
 import { FeatureStrip } from '@/components/landing/FeatureStrip';
 import { LandingProblem } from '@/components/landing/LandingProblem';
 import { LandingPillars } from '@/components/landing/LandingPillars';
+import { LandingHowItWorks } from '@/components/landing/LandingHowItWorks';
+import { LandingFinalCTA } from '@/components/landing/LandingFinalCTA';
 import { LandingFooter } from '@/components/landing/LandingFooter';
 
 const Index = () => {
@@ -17,6 +19,8 @@ const Index = () => {
         </div>
         <LandingProblem />
         <LandingPillars />
+        <LandingHowItWorks />
+        <LandingFinalCTA />
       </main>
       <LandingFooter />
     </div>

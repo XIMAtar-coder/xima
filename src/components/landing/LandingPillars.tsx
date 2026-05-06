@@ -3,29 +3,20 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
   Cpu, MessageCircle, BookOpen, Lightbulb, Zap,
-  ChevronDown, ChevronUp, ArrowRight,
+  ChevronDown, ChevronUp, ArrowRight, Check, AlertTriangle,
 } from 'lucide-react';
 
-type PillarKey = 'computational_power' | 'communication' | 'knowledge' | 'creativity' | 'drive';
+type PillarKey = 'drive' | 'computational' | 'knowledge' | 'communication' | 'creativity';
 
 const ICONS: Record<PillarKey, React.ReactNode> = {
-  computational_power: <Cpu className="w-7 h-7" strokeWidth={1.6} />,
-  communication: <MessageCircle className="w-7 h-7" strokeWidth={1.6} />,
-  knowledge: <BookOpen className="w-7 h-7" strokeWidth={1.6} />,
-  creativity: <Lightbulb className="w-7 h-7" strokeWidth={1.6} />,
-  drive: <Zap className="w-7 h-7" strokeWidth={1.6} />,
+  drive: <Zap className="w-8 h-8" strokeWidth={1.6} />,
+  computational: <Cpu className="w-8 h-8" strokeWidth={1.6} />,
+  knowledge: <BookOpen className="w-8 h-8" strokeWidth={1.6} />,
+  communication: <MessageCircle className="w-8 h-8" strokeWidth={1.6} />,
+  creativity: <Lightbulb className="w-8 h-8" strokeWidth={1.6} />,
 };
 
-const ORDER: PillarKey[] = ['computational_power', 'communication', 'knowledge', 'creativity', 'drive'];
-
-// Maps card key -> i18n root key for as_strength/as_weakness (which lives at pillars.<root>)
-const STRENGTH_ROOT: Record<PillarKey, string> = {
-  computational_power: 'computational',
-  communication: 'communication',
-  knowledge: 'knowledge',
-  creativity: 'creativity',
-  drive: 'drive',
-};
+const ORDER: PillarKey[] = ['drive', 'computational', 'knowledge', 'communication', 'creativity'];
 
 const NAVY = 'var(--xima-text)';
 const MUTED = 'var(--xima-text-muted)';
@@ -37,41 +28,31 @@ export const LandingPillars: React.FC = () => {
   const [expanded, setExpanded] = useState<PillarKey | null>(null);
 
   return (
-    <section className="py-20 px-6 lg:px-10" style={{ background: 'var(--xima-bg)' }}>
+    <section className="py-24 px-6 lg:px-10" style={{ background: 'var(--xima-bg)' }}>
       <div className="max-w-[1200px] mx-auto">
-        <h2
-          className="text-center mb-5"
-          style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 700, color: NAVY, letterSpacing: '-0.01em' }}
-        >
-          {t('pillars.title')}
-        </h2>
-
-        <div className="max-w-[680px] mx-auto text-center mb-12">
-          <p style={{ fontSize: 18, color: MUTED, fontStyle: 'italic', lineHeight: 1.6 }}>
-            {t('pillars.storytelling')}
-          </p>
-        </div>
-
-        <div
-          className="grid gap-5"
+        <p
+          className="text-center"
           style={{
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            fontSize: 12, fontWeight: 600, letterSpacing: 2,
+            color: BLUE, textTransform: 'uppercase', marginBottom: 18,
           }}
         >
+          {t('landing.pillars.label')}
+        </p>
+        <h2
+          className="text-center mb-4"
+          style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 700, color: NAVY, letterSpacing: '-0.01em' }}
+        >
+          {t('landing.pillars.title')}
+        </h2>
+        <p className="text-center mb-14" style={{ fontSize: 18, color: MUTED, lineHeight: 1.6 }}>
+          {t('landing.pillars.subtitle')}
+        </p>
+
+        {/* Cards row */}
+        <div className="grid gap-4 sm:gap-5" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))' }}>
           {ORDER.map((key) => {
             const isOpen = expanded === key;
-            const name = t(`pillars.items.${key}.name`);
-            const tagline = t(`pillars.items.${key}.tagline`);
-            const description = t(`pillars.items.${key}.description`);
-            const root = STRENGTH_ROOT[key];
-            const strength = t(`pillars.${root}.as_strength`);
-            const weakness = t(`pillars.${root}.as_weakness`);
-
-            const evalRaw = t(`pillars.items.${key}.how_we_evaluate`, { returnObjects: true });
-            const evalList = Array.isArray(evalRaw) ? (evalRaw as string[]) : [];
-            const tipsRaw = t(`pillars.items.${key}.tips`, { returnObjects: true });
-            const tipsList = Array.isArray(tipsRaw) ? (tipsRaw as string[]) : [];
-
             return (
               <button
                 key={key}
@@ -82,106 +63,119 @@ export const LandingPillars: React.FC = () => {
                 style={{
                   background: 'var(--xima-surface)',
                   border: `1px solid ${isOpen ? 'rgba(11,107,255,0.35)' : 'var(--xima-border)'}`,
-                  borderRadius: 20,
-                  padding: 24,
+                  borderRadius: 16,
+                  padding: 22,
                   boxShadow: isOpen
                     ? '0 16px 40px rgba(7,30,58,0.10)'
-                    : '0 4px 20px rgba(7,30,58,0.04)',
-                  gridColumn: isOpen ? '1 / -1' : 'auto',
+                    : '0 4px 18px rgba(7,30,58,0.04)',
                 }}
                 onMouseEnter={(e) => {
                   if (!isOpen) {
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = '0 12px 32px rgba(7,30,58,0.08)';
+                    e.currentTarget.style.transform = 'translateY(-3px)';
+                    e.currentTarget.style.boxShadow = '0 12px 28px rgba(7,30,58,0.08)';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isOpen) {
                     e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(7,30,58,0.04)';
+                    e.currentTarget.style.boxShadow = '0 4px 18px rgba(7,30,58,0.04)';
                   }
                 }}
               >
-                <div className="absolute top-5 right-5" style={{ color: MUTED }}>
-                  {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                <div className="absolute top-4 right-4" style={{ color: MUTED }}>
+                  {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </div>
-
                 <div className="mb-4" style={{ color: BLUE }}>{ICONS[key]}</div>
-                <h3 style={{ fontSize: 18, fontWeight: 600, color: NAVY, marginBottom: 8 }}>{name}</h3>
-                <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.6 }}>{tagline}</p>
-
-                {isOpen && (
-                  <div className="mt-6 pt-6 animate-fade-in" style={{ borderTop: '1px solid var(--xima-border)' }}>
-                    <div className="grid md:grid-cols-3 gap-8">
-                      <div>
-                        <h4 style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, color: MUTED, textTransform: 'uppercase', marginBottom: 10 }}>
-                          {t('pillars.detail_description', 'Descrizione')}
-                        </h4>
-                        <p style={{ fontSize: 14, color: NAVY, lineHeight: 1.6, marginBottom: 14 }}>
-                          {description}
-                        </p>
-                        <div className="space-y-2">
-                          <p style={{ fontSize: 13, color: NAVY, lineHeight: 1.5 }}>
-                            <span style={{ fontWeight: 600, color: BLUE }}>{t('common.as_strength')}: </span>
-                            {strength}
-                          </p>
-                          <p style={{ fontSize: 13, color: NAVY, lineHeight: 1.5 }}>
-                            <span style={{ fontWeight: 600, color: '#C2410C' }}>{t('common.as_weakness')}: </span>
-                            {weakness}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div>
-                        <h4 style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, color: MUTED, textTransform: 'uppercase', marginBottom: 10 }}>
-                          {t('pillars.how_we_evaluate', 'Come valutiamo')}
-                        </h4>
-                        <ul className="space-y-2">
-                          {evalList.map((item, i) => (
-                            <li key={i} className="flex gap-2" style={{ fontSize: 13, color: NAVY, lineHeight: 1.5 }}>
-                              <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: BLUE }} />
-                              <span>{item}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div>
-                        <h4 style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, color: MUTED, textTransform: 'uppercase', marginBottom: 10 }}>
-                          {t('pillars.tips_to_improve', 'Suggerimenti per migliorare')}
-                        </h4>
-                        <ul className="space-y-2">
-                          {tipsList.map((item, i) => (
-                            <li key={i} className="flex gap-2" style={{ fontSize: 13, color: NAVY, lineHeight: 1.5 }}>
-                              <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: BLUE }} />
-                              <span>{item}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: NAVY, marginBottom: 6 }}>
+                  {t(`landing.pillars.items.${key}.title`)}
+                </h3>
+                <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.5 }}>
+                  {t(`landing.pillars.items.${key}.subtitle`)}
+                </p>
               </button>
             );
           })}
         </div>
 
-        {/* Archetype explanation */}
-        <div className="max-w-[760px] mx-auto text-center mt-16 space-y-5">
-          <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.7 }}>
-            {t('pillars.assignment_logic')}
-          </p>
-          <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.7 }}>
-            {t('pillars.drive_paths')}
-          </p>
-          <p style={{ fontSize: 18, color: BLUE, fontWeight: 500, fontStyle: 'italic', lineHeight: 1.6, paddingTop: 8 }}>
-            {t('pillars.compass')}
-          </p>
-          <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.7 }}>
-            {t('pillars.explanation')}
-          </p>
-        </div>
+        {/* Expanded panel below the row */}
+        {expanded && (
+          <div
+            className="mt-6 animate-fade-in"
+            style={{
+              background: 'var(--xima-surface-soft, #F7FAFF)',
+              border: '1px solid var(--xima-border)',
+              borderRadius: 20,
+              padding: 32,
+            }}
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <span style={{ color: BLUE }}>{ICONS[expanded]}</span>
+              <h3 style={{ fontSize: 22, fontWeight: 700, color: NAVY, letterSpacing: '-0.01em' }}>
+                {t(`landing.pillars.items.${expanded}.title`)}
+              </h3>
+            </div>
+
+            {/* What */}
+            <div className="mb-6">
+              <h4 style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: MUTED, textTransform: 'uppercase', marginBottom: 10 }}>
+                {t('landing.pillars.what_label')}
+              </h4>
+              <p style={{ fontSize: 16, color: NAVY, lineHeight: 1.7 }}>
+                {t(`landing.pillars.items.${expanded}.what`)}
+              </p>
+            </div>
+
+            {/* Strong / Weak */}
+            <div className="grid md:grid-cols-2 gap-4 mb-6">
+              <div
+                style={{
+                  background: 'var(--xima-surface)',
+                  border: '1px solid rgba(11,107,255,0.18)',
+                  borderRadius: 14,
+                  padding: 20,
+                }}
+              >
+                <div className="flex items-center gap-2 mb-2" style={{ color: BLUE }}>
+                  <Check className="w-4 h-4" strokeWidth={2.5} />
+                  <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                    {t('landing.pillars.strong_label')}
+                  </span>
+                </div>
+                <p style={{ fontSize: 15, color: NAVY, lineHeight: 1.6 }}>
+                  {t(`landing.pillars.items.${expanded}.strong`)}
+                </p>
+              </div>
+              <div
+                style={{
+                  background: 'var(--xima-surface)',
+                  border: '1px solid rgba(194,65,12,0.18)',
+                  borderRadius: 14,
+                  padding: 20,
+                }}
+              >
+                <div className="flex items-center gap-2 mb-2" style={{ color: '#C2410C' }}>
+                  <AlertTriangle className="w-4 h-4" strokeWidth={2.2} />
+                  <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                    {t('landing.pillars.weak_label')}
+                  </span>
+                </div>
+                <p style={{ fontSize: 15, color: NAVY, lineHeight: 1.6 }}>
+                  {t(`landing.pillars.items.${expanded}.weak`)}
+                </p>
+              </div>
+            </div>
+
+            {/* How */}
+            <div>
+              <h4 style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: MUTED, textTransform: 'uppercase', marginBottom: 10 }}>
+                {t('landing.pillars.how_label')}
+              </h4>
+              <p style={{ fontSize: 15, color: NAVY, lineHeight: 1.7 }}>
+                {t(`landing.pillars.items.${expanded}.how`)}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Free CTA */}
         <div className="max-w-[720px] mx-auto text-center mt-20">
@@ -195,21 +189,13 @@ export const LandingPillars: React.FC = () => {
             onClick={() => navigate('/ximatar-journey')}
             className="inline-flex items-center justify-center gap-2 transition-all"
             style={{
-              background: 'var(--xima-blue)',
+              background: BLUE,
               color: 'white',
               borderRadius: 14,
               padding: '16px 32px',
               fontWeight: 600,
               fontSize: 16,
               boxShadow: '0 16px 35px rgba(11,107,255,0.20)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 20px 40px rgba(11,107,255,0.28)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 16px 35px rgba(11,107,255,0.20)';
             }}
           >
             {t('landing.free_cta_button')}
