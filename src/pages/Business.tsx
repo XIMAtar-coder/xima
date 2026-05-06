@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import MainLayout from '../components/layout/MainLayout';
+import LandingLayout from '@/components/landing/LandingLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Users, Layers, Shield, Building2, Check, ShieldCheck } from 'lucide-react';
@@ -18,7 +18,7 @@ const Business = () => {
   const { t } = useTranslation();
 
   return (
-    <MainLayout>
+    <LandingLayout>
       <div className="container max-w-7xl mx-auto px-4 md:px-8 xl:px-12">
 
         {/* Hero */}
@@ -213,7 +213,7 @@ const Business = () => {
         </section>
 
       </div>
-    </MainLayout>
+    </LandingLayout>
   );
 };
 

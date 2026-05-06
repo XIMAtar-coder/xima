@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import MainLayout from '../components/layout/MainLayout';
+import LandingLayout from '@/components/landing/LandingLayout';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -49,7 +49,7 @@ const About = () => {
   ];
 
   return (
-    <MainLayout>
+    <LandingLayout>
       <div className="container max-w-4xl mx-auto px-4 py-12 md:py-20">
         {/* Hero Section */}
         <div className="text-center mb-16 md:mb-20 animate-fade-in">
@@ -383,7 +383,7 @@ const About = () => {
           </Button>
         </section>
       </div>
-    </MainLayout>
+    </LandingLayout>
   );
 };
 

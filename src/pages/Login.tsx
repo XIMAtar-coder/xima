@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import MainLayout from '../components/layout/MainLayout';
+import LandingLayout from '@/components/landing/LandingLayout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -86,7 +86,7 @@ const Login = () => {
   };
   
   return (
-    <MainLayout>
+    <LandingLayout>
       <div className="container max-w-md mx-auto pt-8 pb-16 px-4">
         <Card>
           <CardHeader className="space-y-6 text-center">
@@ -187,7 +187,7 @@ const Login = () => {
           </CardFooter>
         </Card>
       </div>
-    </MainLayout>
+    </LandingLayout>
   );
 };
 

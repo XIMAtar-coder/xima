@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Mail, CheckCircle, ArrowLeft, Loader2 } from 'lucide-react';
-import MainLayout from '@/components/layout/MainLayout';
+import LandingLayout from '@/components/landing/LandingLayout';
 
 const ContactSales: React.FC = () => {
   const { t } = useTranslation();
@@ -70,7 +70,7 @@ const ContactSales: React.FC = () => {
 
   if (submitted) {
     return (
-      <MainLayout>
+      <LandingLayout>
         <div className="max-w-lg mx-auto px-4 py-24 text-center">
           <div className="mx-auto h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">
             <CheckCircle className="h-8 w-8 text-primary" />
@@ -91,12 +91,12 @@ const ContactSales: React.FC = () => {
             </Button>
           </div>
         </div>
-      </MainLayout>
+      </LandingLayout>
     );
   }
 
   return (
-    <MainLayout>
+    <LandingLayout>
       <div className="max-w-lg mx-auto px-4 py-16">
         <div className="text-center mb-8">
           <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
@@ -197,7 +197,7 @@ const ContactSales: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-    </MainLayout>
+    </LandingLayout>
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import MainLayout from '@/components/layout/MainLayout';
+import LandingLayout from '@/components/landing/LandingLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -184,7 +184,7 @@ const AssessmentGuide = () => {
   ];
 
   return (
-    <MainLayout>
+    <LandingLayout>
       <div className="container max-w-6xl mx-auto py-8 px-4 md:px-8">
         {/* Hero Section */}
         <div 
@@ -576,7 +576,7 @@ const AssessmentGuide = () => {
           </Card>
         </section>
       </div>
-    </MainLayout>
+    </LandingLayout>
   );
 };
 
