@@ -251,33 +251,85 @@ const HowItWorks = () => {
           </p>
         </section>
 
-        {/* ── CTA ── */}
-        <section
-          className="rounded-3xl p-8 md:p-12 text-center mb-16"
-          style={{ background: 'hsl(var(--primary) / 0.06)' }}
-        >
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-foreground whitespace-pre-line">
-            {t('howItWorks.cta_headline')}
-          </h2>
-          <p className="text-base md:text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-            {t('howItWorks.cta_body')}
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button asChild size="lg" className="bg-primary hover:bg-primary/90 px-8">
-              <Link to="/ximatar-journey">
-                {t('howItWorks.cta_button')}
-                <ArrowRight size={20} className="ml-2" />
-              </Link>
-            </Button>
-            <Button variant="outline" asChild size="lg">
-              <Link to="/assessment-guide">
-                {t('howItWorks.cta_secondary')}
-              </Link>
-            </Button>
-          </div>
-        </section>
-
       </div>
+
+      {/* ── FINAL CTA (full-width dark gradient) ── */}
+      <section
+        className="relative w-full overflow-hidden mt-16"
+        style={{
+          background:
+            'linear-gradient(135deg, #071E3A 0%, #0A2A5E 60%, #0B3D7A 100%)',
+        }}
+      >
+        {/* subtle wave decoration */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox="0 0 1440 400"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+          style={{ opacity: 0.12 }}
+        >
+          <path
+            d="M0,180 C240,260 480,100 720,180 C960,260 1200,100 1440,180 L1440,400 L0,400 Z"
+            fill="none"
+            stroke="#7FB3FF"
+            strokeWidth="1.5"
+          />
+          <path
+            d="M0,240 C240,320 480,160 720,240 C960,320 1200,160 1440,240"
+            fill="none"
+            stroke="#7FB3FF"
+            strokeWidth="1"
+          />
+          <path
+            d="M0,120 C240,200 480,40 720,120 C960,200 1200,40 1440,120"
+            fill="none"
+            stroke="#7FB3FF"
+            strokeWidth="1"
+          />
+        </svg>
+
+        <div className="container max-w-6xl mx-auto px-4 md:px-8 py-20 md:py-24 relative">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-10 md:gap-12 items-center">
+            <div className="md:col-span-3">
+              <img
+                src="/images/xima-full-white.svg"
+                alt="XIMA"
+                className="h-12 w-auto mb-6"
+              />
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 whitespace-pre-line leading-[1.15]">
+                {t('howItWorks.cta_headline')}
+              </h2>
+              <p className="text-base md:text-lg text-white/70 max-w-xl leading-relaxed">
+                {t('howItWorks.cta_body')}
+              </p>
+            </div>
+            <div className="md:col-span-2 flex flex-col gap-4 w-full">
+              <Button
+                asChild
+                size="lg"
+                className="w-full bg-[#0B6BFF] hover:bg-[#0B6BFF]/90 text-white shadow-[0_4px_16px_rgba(11,107,255,0.35)]"
+              >
+                <Link to="/ximatar-journey">
+                  {t('howItWorks.cta_button')}
+                  <ArrowRight size={20} className="ml-2" />
+                </Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="w-full bg-transparent border-white/70 text-white hover:bg-white/10 hover:text-white"
+              >
+                <Link to="/business">
+                  {t('howItWorks.cta_secondary')}
+                  <ArrowRight size={20} className="ml-2" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
     </LandingLayout>
   );
 };
