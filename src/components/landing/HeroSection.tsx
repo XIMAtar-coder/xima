@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -7,41 +7,103 @@ import { RadarGlassCard } from './RadarGlassCard';
 import { XimatarGlassCard } from './XimatarGlassCard';
 import { ARCHETYPES } from './archetypes';
 
+const heroSlides = [
+  { heroImage: heroPortrait, objectPosition: 'center top' },
+  { heroImage: '/images/heroes/slide-02.png', objectPosition: 'center center' },
+  { heroImage: '/images/heroes/slide-03.png', objectPosition: 'center center' },
+  { heroImage: '/images/heroes/slide-04.png', objectPosition: 'center center' },
+  { heroImage: '/images/heroes/slide-05.png', objectPosition: 'center center' },
+  { heroImage: '/images/heroes/slide-06.png', objectPosition: 'center center' },
+];
+
+const AUTOPLAY_MS = 6000;
+const FADE_MS = 600;
+
 export const HeroSection: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [index, setIndex] = useState(0);
+  const [prevIndex, setPrevIndex] = useState(0);
   const [transitioning, setTransitioning] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [paused, setPaused] = useState(false);
+  const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Preload all hero images on mount
+  useEffect(() => {
+    heroSlides.forEach((s) => {
+      const img = new Image();
+      img.src = typeof s.heroImage === 'string' ? s.heroImage : (s.heroImage as string);
+    });
+  }, []);
 
   const change = (next: number) => {
-    if (transitioning) return;
+    const total = ARCHETYPES.length;
+    const target = ((next % total) + total) % total;
+    setPrevIndex(index);
+    setIndex(target);
     setTransitioning(true);
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => {
-      setIndex(((next % ARCHETYPES.length) + ARCHETYPES.length) % ARCHETYPES.length);
-      setTransitioning(false);
-    }, 300);
+    if (fadeTimer.current) clearTimeout(fadeTimer.current);
+    fadeTimer.current = setTimeout(() => setTransitioning(false), FADE_MS);
   };
+
   const goNext = () => change(index + 1);
   const goPrev = () => change(index - 1);
+
+  // Auto-play (paused on hover or when transitioning)
+  useEffect(() => {
+    if (paused) return;
+    autoTimer.current = setInterval(() => {
+      setPrevIndex((p) => p); // no-op, ensures fresh closure
+      setIndex((i) => {
+        const next = (i + 1) % ARCHETYPES.length;
+        setPrevIndex(i);
+        setTransitioning(true);
+        if (fadeTimer.current) clearTimeout(fadeTimer.current);
+        fadeTimer.current = setTimeout(() => setTransitioning(false), FADE_MS);
+        return next;
+      });
+    }, AUTOPLAY_MS);
+    return () => {
+      if (autoTimer.current) clearInterval(autoTimer.current);
+    };
+  }, [paused, index]);
+
   const current = ARCHETYPES[index];
+  const currentSlide = heroSlides[index];
+  const prevSlide = heroSlides[prevIndex];
 
   return (
     <section
       className="relative w-full overflow-hidden"
       style={{ background: 'var(--xima-bg)', minHeight: 'calc(100vh - 76px)' }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
     >
-      {/* Hero image right side (desktop only) */}
+      {/* Hero image right side (desktop only) — cross-fade between slides */}
       <div
         className="hidden lg:block absolute top-0 right-0 h-full"
         style={{ width: '58%' }}
       >
         <img
-          src={heroPortrait}
+          src={typeof prevSlide.heroImage === 'string' ? prevSlide.heroImage : (prevSlide.heroImage as string)}
           alt=""
-          className="w-full h-full object-cover animate-fade-in"
-          style={{ objectPosition: 'center top' }}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            objectPosition: prevSlide.objectPosition,
+            opacity: transitioning ? 0 : 1,
+            transition: `opacity ${FADE_MS}ms ease-in-out`,
+          }}
+        />
+        <img
+          src={typeof currentSlide.heroImage === 'string' ? currentSlide.heroImage : (currentSlide.heroImage as string)}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            objectPosition: currentSlide.objectPosition,
+            opacity: transitioning ? 1 : 1,
+            transition: `opacity ${FADE_MS}ms ease-in-out`,
+          }}
         />
         <div
           className="absolute inset-0 pointer-events-none"
@@ -104,10 +166,10 @@ export const HeroSection: React.FC = () => {
       {/* Mobile/tablet hero image (stacked) */}
       <div className="lg:hidden w-full relative" style={{ height: 360 }}>
         <img
-          src={heroPortrait}
+          src={typeof currentSlide.heroImage === 'string' ? currentSlide.heroImage : (currentSlide.heroImage as string)}
           alt=""
           className="w-full h-full object-cover"
-          style={{ objectPosition: 'center top' }}
+          style={{ objectPosition: currentSlide.objectPosition, transition: `opacity ${FADE_MS}ms ease-in-out` }}
         />
         <div
           className="absolute inset-0"
