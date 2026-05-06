@@ -74,6 +74,104 @@
         "trait": "Pack Strategist",
         "description": "The Wolf builds and leads from within. Strategic thinking meets unwavering drive — the one who holds the pack together under pressure."
       }
+    },
+    "problem": {
+      "label": "// THE PROBLEM",
+      "headline_html": "The hiring system is <span style=\"color: var(--xima-blue)\">broken</span>.<br/>Everyone knows it.",
+      "body": [
+        "For decades we've selected people by reading pages. Degrees, years of experience, keywords.",
+        "But a CV doesn't say how you think under pressure. It doesn't say how you lead a team through chaos. It doesn't say who you'll be in a year.",
+        "The result? 80% of small companies use no psychometric tool at all. Interviews reward people who speak well, not people who work well. And real talent stays invisible."
+      ],
+      "quote": "\"What if we could see the person, not the paper?\""
+    },
+    "pillars": {
+      "label": "// THE FIVE PILLARS OF XIMA INTELLIGENCE",
+      "title": "Five dimensions. One truth.",
+      "subtitle": "XIMA measures how you think, decide, communicate, create and grow.",
+      "what_label": "What it is",
+      "strong_label": "When it runs strong",
+      "weak_label": "When it runs low",
+      "how_label": "How we measure it",
+      "items": {
+        "drive": {
+          "title": "Drive",
+          "subtitle": "The inner energy that fuels motivation, ambition and growth.",
+          "what": "Drive isn't just ambition — it's the speed at which you turn potential into progress. It measures how fast you learn what you don't know yet, how quickly you adapt, and how strong the push is when no one is watching.",
+          "strong": "When Drive is high, you are unstoppable. You learn faster than the rest, you chase challenges instead of dodging them, and you turn obstacles into springboards.",
+          "weak": "When Drive is low, your potential stays asleep. The skills are there — you just don't activate them. The talent is real; the fuel isn't.",
+          "how": "We analyse behavioural responses under time pressure, choice patterns in uncertain situations, and how fast you adapt to new contexts."
+        },
+        "computational": {
+          "title": "Computational Power",
+          "subtitle": "The ability to analyse, solve and act with a sharp, logical mind.",
+          "what": "Computational Power is your analytical engine. It's not just doing math — it's how quickly you break down a complex problem, spot the hidden patterns, and build structured solutions where others see chaos.",
+          "strong": "High Computational Power makes you the problem-solver of the team. You see structure where others see confusion, you automate processes, and you make decisions on data, not gut feelings.",
+          "weak": "Low Computational Power tends to dodge complexity. Multi-variable problems slow you down, and you tend to oversimplify.",
+          "how": "Structured problem solving, pattern analysis on behavioural datasets, and an assessment of systemic thinking."
+        },
+        "knowledge": {
+          "title": "Knowledge",
+          "subtitle": "The depth of what you know and the skill to apply it with mastery.",
+          "what": "Knowledge isn't how many things you know — it's how deeply you understand them and how effectively you apply them. It's the difference between having read a book and knowing how to use what's in it when it counts.",
+          "strong": "High Knowledge makes you the team's reference point. People come to you because you don't just know things — you understand them in context and apply them with precision.",
+          "weak": "Low Knowledge risks acting without depth. Decisions can stay surface-level, and you may miss the nuances that make the difference.",
+          "how": "We analyse the depth of your answers, your ability to connect concepts across domains, and how well you apply what you claim to know."
+        },
+        "communication": {
+          "title": "Communication",
+          "subtitle": "The clarity that creates impact and the ability to influence.",
+          "what": "Communication isn't speaking well — it's being understood when it matters. It's adapting the message to the listener, influencing without formal authority, and building bridges between people who don't understand each other.",
+          "strong": "High Communication moves people. You convince without manipulating, you explain without dumbing down, and you build alliances where others build walls.",
+          "weak": "Low Communication leaves your ideas trapped. You may have the right answer but fail to get it through to the people who need to hear it.",
+          "how": "We analyse writing style, the ability to structure arguments, and persuasive effectiveness across multi-stakeholder contexts."
+        },
+        "creativity": {
+          "title": "Creativity",
+          "subtitle": "The originality that generates new ideas and unexpected connections.",
+          "what": "Creativity isn't art — it's the ability to see connections where others see separate pieces. It's applied lateral thinking: finding non-obvious solutions to real problems, reframing the questions, and imagining alternatives no one else has considered.",
+          "strong": "High Creativity makes you the innovator. You reframe problems, propose unconventional approaches, and find elegance where others find complexity.",
+          "weak": "Low Creativity tends to follow the well-trodden path. It's not a flaw — but you may miss better solutions because you don't look off the trail.",
+          "how": "We evaluate divergent answers, the ability to reframe problems, and how original the proposed solutions are."
+        }
+      }
+    },
+    "how_it_works": {
+      "label": "// HOW XIMA WORKS",
+      "title": "Your journey. Five steps.",
+      "s1": {
+        "title": "Discover who you really are",
+        "desc": "The XIMA Assessment maps how you think, decide and act. Scientific, bias-free, private."
+      },
+      "s2": {
+        "title": "Your five pillars",
+        "desc": "The AI maps your unique behavioural profile across five dimensions of professional intelligence."
+      },
+      "s3": {
+        "title": "Your XIMAtar is born",
+        "desc": "A persistent identity that speaks the language of your potential. Yours forever."
+      },
+      "s4": {
+        "title": "You decide what to share",
+        "desc": "Granular permissions, full transparency. Control always stays with you."
+      },
+      "s5": {
+        "title": "Companies see what matters",
+        "desc": "Matches built on behavioural signals — not titles or convenience. Better outcomes."
+      }
+    },
+    "final_cta": {
+      "headline": "Your XIMAtar. Your future.",
+      "subtitle": "One identity. Infinite opportunities. Because potential deserves to be seen.",
+      "primary": "Discover your XIMAtar",
+      "secondary": "For Companies"
+    },
+    "footer": {
+      "copyright": "© 2026 XIMA. All rights reserved.",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "imprint": "Legal Notice",
+      "gdpr_badge": "GDPR Art. 22 Compliant"
     }
   },
   "profile": {

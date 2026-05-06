@@ -74,6 +74,104 @@
         "trait": "Estratega de la manada",
         "description": "El Lobo construye y lidera desde dentro. Pensamiento estratégico y Drive inquebrantable — quien mantiene unida a la manada bajo presión."
       }
+    },
+    "problem": {
+      "label": "// EL PROBLEMA",
+      "headline_html": "El sistema de selección está <span style=\"color: var(--xima-blue)\">roto</span>.<br/>Todos lo saben.",
+      "body": [
+        "Durante décadas hemos seleccionado personas leyendo papeles. Títulos, años de experiencia, palabras clave.",
+        "Pero un CV no dice cómo piensas bajo presión. No dice cómo lideras un equipo en el caos. No dice quién serás dentro de un año.",
+        "¿El resultado? El 80% de las pymes no usa ninguna herramienta psicométrica. Las entrevistas premian a quien habla bien, no a quien trabaja bien. Y el talento real queda invisible."
+      ],
+      "quote": "\"¿Y si pudiéramos ver a la persona, no el papel?\""
+    },
+    "pillars": {
+      "label": "// LOS CINCO PILARES DE LA INTELIGENCIA XIMA",
+      "title": "Cinco dimensiones. Una verdad.",
+      "subtitle": "XIMA mide cómo piensas, decides, comunicas, creas y creces.",
+      "what_label": "Qué es",
+      "strong_label": "Cuando es fuerte",
+      "weak_label": "Cuando es bajo",
+      "how_label": "Cómo lo medimos",
+      "items": {
+        "drive": {
+          "title": "Drive",
+          "subtitle": "La energía interior que enciende motivación, ambición y crecimiento.",
+          "what": "El Drive no es sólo ambición: es la velocidad con la que conviertes potencial en progreso. Mide qué tan rápido aprendes lo que aún no sabes, qué tan rápido te adaptas y qué tan fuerte es el impulso que te mueve cuando nadie te mira.",
+          "strong": "Cuando el Drive es alto, eres imparable. Aprendes más rápido que los demás, buscas retos en vez de evitarlos, y conviertes los obstáculos en trampolines.",
+          "weak": "Cuando el Drive es bajo, el potencial se queda dormido. Tienes la capacidad pero no la activas. El talento está; falta el combustible.",
+          "how": "Analizamos respuestas conductuales bajo presión temporal, patrones de elección en situaciones inciertas y velocidad de adaptación a nuevos contextos."
+        },
+        "computational": {
+          "title": "Potencia Computacional",
+          "subtitle": "La capacidad de analizar, resolver y actuar con mente ágil y lógica.",
+          "what": "La Potencia Computacional es tu motor analítico. No es sólo hacer cálculos: es qué tan rápido descompones un problema complejo, encuentras los patrones ocultos y construyes soluciones estructuradas donde otros ven caos.",
+          "strong": "Con alta Potencia Computacional, eres quien resuelve los problemas del equipo. Ves estructura donde otros ven confusión, automatizas procesos y decides con datos, no con corazonadas.",
+          "weak": "Con baja Potencia Computacional, tiendes a evitar la complejidad. Los problemas multi-variable te frenan y simplificas en exceso.",
+          "how": "Resolución de problemas estructurados, análisis de patrones en datasets de conducta y evaluación del pensamiento sistémico."
+        },
+        "knowledge": {
+          "title": "Conocimiento",
+          "subtitle": "La profundidad de lo que sabes y la capacidad de aplicarlo con maestría.",
+          "what": "El Conocimiento no es cuántas cosas sabes: es qué tan a fondo las entiendes y qué tan bien las aplicas. Es la diferencia entre haber leído un libro y saber usar lo que dice cuando importa.",
+          "strong": "Con alto Conocimiento, eres el referente del equipo. La gente acude a ti porque no sólo sabes las cosas: las entiendes en contexto y las aplicas con precisión.",
+          "weak": "Con bajo Conocimiento, corres el riesgo de actuar sin profundidad. Las decisiones pueden quedarse en la superficie y se te escapan los matices que marcan la diferencia.",
+          "how": "Analizamos la profundidad de las respuestas, la capacidad de conectar conceptos entre dominios y la aplicación práctica del conocimiento declarado."
+        },
+        "communication": {
+          "title": "Comunicación",
+          "subtitle": "La claridad que crea impacto y la capacidad de influir.",
+          "what": "La Comunicación no es hablar bien: es hacerse entender cuando importa. Es adaptar el mensaje al interlocutor, influir sin autoridad formal y construir puentes entre personas que no se entienden.",
+          "strong": "Con alta Comunicación, mueves a las personas. Convences sin manipular, explicas sin simplificar de más y construyes alianzas donde otros construyen muros.",
+          "weak": "Con baja Comunicación, tus ideas quedan atrapadas. Puedes tener la solución correcta pero no conseguir que llegue a quien debe escucharla.",
+          "how": "Analizamos el estilo de escritura, la capacidad de estructurar argumentos y la eficacia persuasiva en contextos multi-stakeholder."
+        },
+        "creativity": {
+          "title": "Creatividad",
+          "subtitle": "La originalidad que genera ideas nuevas y conexiones inesperadas.",
+          "what": "La Creatividad no es arte: es la capacidad de ver conexiones donde otros ven piezas separadas. Es pensamiento lateral aplicado: encontrar soluciones no obvias a problemas reales, reformular las preguntas e imaginar alternativas que nadie consideró.",
+          "strong": "Con alta Creatividad, eres el innovador. Reformulas problemas, propones enfoques poco convencionales y encuentras elegancia donde otros ven complejidad.",
+          "weak": "Con baja Creatividad, tiendes a seguir los caminos conocidos. No es un defecto, pero puedes perderte mejores soluciones porque no las buscas fuera del sendero.",
+          "how": "Evaluamos respuestas divergentes, la capacidad de reformular problemas y la originalidad de las soluciones propuestas."
+        }
+      }
+    },
+    "how_it_works": {
+      "label": "// CÓMO FUNCIONA XIMA",
+      "title": "Tu camino. Cinco pasos.",
+      "s1": {
+        "title": "Descubre quién eres de verdad",
+        "desc": "El Assessment XIMA analiza cómo piensas, decides y actúas. Científico, sin sesgos, privado."
+      },
+      "s2": {
+        "title": "Tus cinco pilares",
+        "desc": "La IA mapea tu perfil conductual único sobre cinco dimensiones de la inteligencia profesional."
+      },
+      "s3": {
+        "title": "Nace tu XIMAtar",
+        "desc": "Una identidad persistente que habla el idioma de tu potencial. Tuya para siempre."
+      },
+      "s4": {
+        "title": "Tú decides qué compartir",
+        "desc": "Permisos granulares, transparencia total. El control siempre es tuyo."
+      },
+      "s5": {
+        "title": "Las empresas ven lo que importa",
+        "desc": "Matches basados en señales conductuales, no en títulos ni conveniencia. Mejores resultados."
+      }
+    },
+    "final_cta": {
+      "headline": "Tu XIMAtar. Tu futuro.",
+      "subtitle": "Una identidad. Infinitas oportunidades. Porque el potencial merece ser visto.",
+      "primary": "Descubre tu XIMAtar",
+      "secondary": "Para Empresas"
+    },
+    "footer": {
+      "copyright": "© 2026 XIMA. Todos los derechos reservados.",
+      "privacy": "Política de Privacidad",
+      "terms": "Términos de Servicio",
+      "imprint": "Aviso Legal",
+      "gdpr_badge": "GDPR Art. 22 Compliant"
     }
   },
   "common": {
