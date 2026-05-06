@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'next-themes';
 import { Menu } from 'lucide-react';
@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 export const LandingHeader: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
@@ -40,16 +41,22 @@ export const LandingHeader: React.FC = () => {
         </button>
 
         <nav className="hidden md:flex items-center gap-10">
-          {navItems.map((item) => (
-            <button
-              key={item.href}
-              onClick={() => navigate(item.href)}
-              className="text-[15px] font-medium transition-colors hover:opacity-80"
-              style={{ color: 'var(--xima-text)' }}
-            >
-              {item.label}
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const active = location.pathname === item.href;
+            return (
+              <button
+                key={item.href}
+                onClick={() => navigate(item.href)}
+                className="text-[15px] font-medium transition-colors hover:opacity-80 relative pb-1"
+                style={{
+                  color: active ? 'var(--xima-blue)' : 'var(--xima-text)',
+                  borderBottom: active ? '2px solid var(--xima-blue)' : '2px solid transparent',
+                }}
+              >
+                {item.label}
+              </button>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">
