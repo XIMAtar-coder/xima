@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { CrackedCV } from './CrackedCV';
+
 
 export const LandingProblem: React.FC = () => {
   const { t } = useTranslation();
@@ -71,7 +71,7 @@ export const LandingProblem: React.FC = () => {
 
         {/* Visual */}
         <div className="flex justify-center lg:justify-end">
-          <CrackedCV />
+          <img src="/images/problem-cv-breaking.png" alt="" className="w-full max-w-lg" />
         </div>
       </div>
     </section>
