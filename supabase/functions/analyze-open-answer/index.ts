@@ -467,6 +467,6 @@ Return ONLY the JSON object.`;
       function_name: 'analyze-open-answer',
       error: error instanceof Error ? error.message : 'Unknown error',
     }));
-    return errorResponse(500, 'INTERNAL_ERROR', error instanceof Error ? error.message : 'Unknown error');
+    return errorResponse(500, 'INTERNAL_ERROR', 'Internal server error');
   }
 });

@@ -610,7 +610,7 @@ serve(async (req) => {
     const storagePath = `${user.id}/${filename}`;
 
     const { error: uploadError } = await supabase.storage.from("cv-uploads").upload(storagePath, fileBytes, { upsert: true, contentType: file.type });
-    if (uploadError) return errorResponse(400, "UPLOAD_FAILED", `Upload failed: ${uploadError.message}`);
+    if (uploadError) { console.error("[analyze-cv] upload error:", uploadError.message); return errorResponse(400, "UPLOAD_FAILED", "Upload failed"); }
 
     // ===== Extract text OR prepare PDF for direct analysis =====
     let truncatedText = "";
@@ -1005,6 +1005,6 @@ serve(async (req) => {
       error: err instanceof Error ? err.message : "Unknown error",
     }));
     if (err.statusCode && err.errorCode) return errorResponse(err.statusCode, err.errorCode, err.message);
-    return errorResponse(500, "INTERNAL_ERROR", err instanceof Error ? err.message : "An unexpected error occurred");
+    return errorResponse(500, "INTERNAL_ERROR", "Internal server error");
   }
 });

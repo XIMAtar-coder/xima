@@ -77,7 +77,8 @@ serve(async (req) => {
 
     if (goalRes.error) {
       console.error(`[generate-shortlist] hiring_goal_drafts query error:`, JSON.stringify(goalRes.error));
-      return errorResponse(404, "GOAL_NOT_FOUND", `Hiring goal not found: ${goalRes.error.message}`);
+      console.error("[generate-shortlist] goal load error:", goalRes.error.message);
+      return errorResponse(404, "GOAL_NOT_FOUND", "Hiring goal not found");
     }
     if (!goalRes.data) return errorResponse(404, "GOAL_NOT_FOUND", "Hiring goal not found");
 
@@ -101,11 +102,13 @@ serve(async (req) => {
         profile_completed, created_at, updated_at
       `)
       .not("pillar_scores", "is", null)
+      // GDPR: exclude candidates who opted out of profiling/shortlisting
+      .or('profiling_opt_out.is.null,profiling_opt_out.eq.false')
       .limit(500);
 
     if (candidateError) {
       console.error(`[generate-shortlist] profiles query error:`, JSON.stringify(candidateError));
-      return errorResponse(500, "QUERY_ERROR", `Failed to load candidates: ${candidateError.message}`);
+      return errorResponse(500, "QUERY_ERROR", "Failed to load candidates");
     }
 
     console.log(`[generate-shortlist] Candidates loaded: ${candidates?.length ?? 0}`);
@@ -142,10 +145,12 @@ serve(async (req) => {
     let credentialData: any[] = [];
     const useCredentialFilters = filters?.degree_type || filters?.min_experience || filters?.industry;
     if (useCredentialFilters) {
+      // Restrict to candidate user_ids already filtered for opt-out above
+      const optedInUserIds = (candidates || []).map(c => c.user_id);
       const { data: creds } = await serviceClient
         .from("cv_credentials")
         .select("user_id, education, total_years_experience, industries_worked")
-        .in("user_id", candidateUserIds)
+        .in("user_id", optedInUserIds)
         .limit(500);
       credentialData = creds || [];
     }
@@ -358,7 +363,8 @@ serve(async (req) => {
       const { error: insertError } = await serviceClient.from("shortlist_results").insert(inserts);
       if (insertError) {
         console.error(`[generate-shortlist] insert shortlist error:`, JSON.stringify(insertError));
-        return errorResponse(500, "INSERT_ERROR", `Failed to save shortlist: ${insertError.message}`);
+        console.error("[generate-shortlist] insert error:", insertError.message);
+        return errorResponse(500, "INSERT_ERROR", "Failed to save shortlist");
       }
     }
 
@@ -383,6 +389,6 @@ serve(async (req) => {
     });
   } catch (err: any) {
     console.error(`[generate-shortlist] FATAL:`, err?.message, err?.stack);
-    return errorResponse(500, "INTERNAL_ERROR", err.message || "Unexpected error");
+    return errorResponse(500, "INTERNAL_ERROR", "Internal server error");
   }
 });

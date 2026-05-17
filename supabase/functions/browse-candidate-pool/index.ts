@@ -120,7 +120,7 @@ serve(async (req) => {
         plan,
         is_restricted: false,
         error: "query_failed",
-        error_message: queryError.message,
+        error_message: "Query failed",
       });
     }
 
@@ -400,7 +400,7 @@ serve(async (req) => {
       plan: 'free',
       is_restricted: false,
       error: "internal_error",
-      error_message: err.message,
+      error_message: "Internal server error",
     });
   }
 });

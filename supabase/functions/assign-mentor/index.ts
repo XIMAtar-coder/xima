@@ -132,7 +132,7 @@ Deno.serve(async (req) => {
       if (updateError) {
         console.error('[assign-mentor] Error updating mentor match:', updateError);
         return new Response(
-          JSON.stringify({ error: 'Failed to update mentor assignment', details: updateError.message }),
+          JSON.stringify({ error: 'Failed to update mentor assignment' }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
@@ -157,7 +157,7 @@ Deno.serve(async (req) => {
       if (insertError) {
         console.error('[assign-mentor] Error creating mentor match:', insertError);
         return new Response(
-          JSON.stringify({ error: 'Failed to create mentor assignment', details: insertError.message }),
+          JSON.stringify({ error: 'Failed to create mentor assignment' }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
@@ -204,7 +204,7 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('[assign-mentor] Unexpected error:', error);
     return new Response(
-      JSON.stringify({ error: 'Internal server error', details: error.message }),
+      JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

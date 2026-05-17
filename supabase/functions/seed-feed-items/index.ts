@@ -24,15 +24,23 @@ serve(async (req) => {
   }
 
   try {
-    // DEV-only gate: check for dev token header
+    // DEV-only gate: require DEV_SEED_TOKEN secret to be configured (no fallback).
     const devToken = req.headers.get('x-dev-token');
-    const expectedToken = Deno.env.get('DEV_SEED_TOKEN') || 'xima-dev-seed-2024';
-    
-    if (devToken !== expectedToken) {
+    const expectedToken = Deno.env.get('DEV_SEED_TOKEN');
+
+    if (!expectedToken || expectedToken.length < 16) {
+      console.log('[seed-feed-items] Refusing to run: DEV_SEED_TOKEN not configured');
+      return new Response(
+        JSON.stringify({ success: false, error: 'Disabled' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!devToken || devToken !== expectedToken) {
       console.log('[seed-feed-items] Unauthorized: invalid dev token');
       return new Response(
-        JSON.stringify({ success: false, error: 'Unauthorized - DEV only' }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: false, error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
