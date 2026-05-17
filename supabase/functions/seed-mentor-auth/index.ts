@@ -101,6 +101,14 @@ Deno.serve(async (req) => {
       );
     }
 
+    const { seeds: MENTORS_TO_SEED, error: seedError } = loadMentorSeeds();
+    if (seedError) {
+      return new Response(
+        JSON.stringify({ error: seedError }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const results: { email: string; status: string; userId?: string; error?: string }[] = [];
 
     for (const mentor of MENTORS_TO_SEED) {
