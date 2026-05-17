@@ -127,7 +127,7 @@ Deno.serve(async (req) => {
       if (createError) {
         console.error("Error creating user:", createError);
         return new Response(
-          JSON.stringify({ error: `Failed to create user: ${createError.message}` }),
+          JSON.stringify({ error: 'Failed to create user' }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
@@ -144,7 +144,7 @@ Deno.serve(async (req) => {
       if (updateError) {
         console.error("Error updating user:", updateError);
         return new Response(
-          JSON.stringify({ error: `Failed to update user: ${updateError.message}` }),
+          JSON.stringify({ error: 'Failed to update user' }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
@@ -188,7 +188,7 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error("Unexpected error:", error);
     return new Response(
-      JSON.stringify({ error: `Internal server error: ${error.message}` }),
+      JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

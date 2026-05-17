@@ -445,6 +445,6 @@ Respond with valid JSON only.`;
       function_name: 'compute-level2-signals',
       error: error instanceof Error ? error.message : 'Unknown error',
     }));
-    return errorResponse(500, 'INTERNAL_ERROR', error instanceof Error ? error.message : 'Unknown error');
+    return errorResponse(500, 'INTERNAL_ERROR', 'Internal server error');
   }
 });
