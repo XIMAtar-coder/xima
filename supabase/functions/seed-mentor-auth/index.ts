@@ -11,18 +11,41 @@ interface MentorSeed {
   mentorId: string;
 }
 
-const MENTORS_TO_SEED: MentorSeed[] = [
+// Mentor seed records. Passwords MUST be supplied at runtime via the
+// MENTOR_SEED_PASSWORDS secret as JSON: { "<email>": "<password>", ... }.
+// Never commit credentials to source.
+const MENTOR_SEED_TARGETS: Array<Omit<MentorSeed, 'password'>> = [
   {
     email: 'roberta.fazz@gmail.com',
-    password: 'XimaMentor2026',
     mentorId: '928dbd7d-1d4f-4abd-b069-d6bb18fd725e',
   },
   {
     email: 'cozzi.pietro94@gmail.com',
-    password: 'XimaMentor2026',
     mentorId: '8f879039-36cb-4367-8064-49ba9a9fdbf2',
   },
 ];
+
+function loadMentorSeeds(): { seeds: MentorSeed[]; error: string | null } {
+  const raw = Deno.env.get('MENTOR_SEED_PASSWORDS');
+  if (!raw) {
+    return { seeds: [], error: 'MENTOR_SEED_PASSWORDS secret is not configured' };
+  }
+  let map: Record<string, string>;
+  try {
+    map = JSON.parse(raw);
+  } catch {
+    return { seeds: [], error: 'MENTOR_SEED_PASSWORDS is not valid JSON' };
+  }
+  const seeds: MentorSeed[] = [];
+  for (const target of MENTOR_SEED_TARGETS) {
+    const pw = map[target.email];
+    if (!pw || typeof pw !== 'string' || pw.length < 12) {
+      return { seeds: [], error: `Missing/weak password for ${target.email}` };
+    }
+    seeds.push({ ...target, password: pw });
+  }
+  return { seeds, error: null };
+}
 
 Deno.serve(async (req) => {
   // Handle CORS
@@ -75,6 +98,14 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({ error: 'Admin access required' }),
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { seeds: MENTORS_TO_SEED, error: seedError } = loadMentorSeeds();
+    if (seedError) {
+      return new Response(
+        JSON.stringify({ error: seedError }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
