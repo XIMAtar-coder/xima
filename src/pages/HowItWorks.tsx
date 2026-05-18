@@ -9,6 +9,7 @@ import {
   Cpu, MessageCircle, Lightbulb, Zap, ArrowRight,
   Brain, Swords, Video,
 } from 'lucide-react';
+import Seo from '@/components/Seo';
 
 const XIMATAR_ANIMALS = [
   'bear', 'bee', 'cat', 'chameleon', 'dolphin', 'elephant',
@@ -25,6 +26,11 @@ const HowItWorks = () => {
 
   return (
     <LandingLayout>
+      <Seo
+        title="How XIMA works — From assessment to challenges to matching"
+        description="Walk through the XIMA journey: take the assessment, earn your XIMAtar, complete behavioral challenges, and connect with mentors and employers."
+        path="/how-it-works"
+      />
       <div className="container max-w-6xl mx-auto px-4 md:px-8 pt-12 md:pt-16">
 
         {/* ── HERO ── */}

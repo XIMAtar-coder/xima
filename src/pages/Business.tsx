@@ -5,6 +5,7 @@ import LandingLayout from '@/components/landing/LandingLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Users, Layers, Shield, Building2, Check, ShieldCheck } from 'lucide-react';
+import Seo from '@/components/Seo';
 
 const FEATURE_ICONS = [
   <Users className="w-8 h-8" />,
@@ -19,6 +20,11 @@ const Business = () => {
 
   return (
     <LandingLayout>
+      <Seo
+        title="XIMA for Business — Hire on behavioral signals, not résumés"
+        description="XIMA gives hiring teams structured decision intelligence: behavioral challenges, candidate signals, and shortlists grounded in real potential."
+        path="/business"
+      />
       <div className="container max-w-7xl mx-auto px-4 md:px-8 xl:px-12">
 
         {/* Hero */}

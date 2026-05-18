@@ -4,6 +4,7 @@ import LandingLayout from '@/components/landing/LandingLayout';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Seo from '@/components/Seo';
 
 const About = () => {
   const navigate = useNavigate();
@@ -50,6 +51,11 @@ const About = () => {
 
   return (
     <LandingLayout>
+      <Seo
+        title="About XIMA — The five-pillar decision-intelligence platform"
+        description="Learn how XIMA's five-pillar model and XIMAtar avatars help people and companies see beyond résumés to real professional potential."
+        path="/about"
+      />
       <div className="container max-w-4xl mx-auto px-4 py-12 md:py-20">
         {/* Hero Section */}
         <div className="text-center mb-16 md:mb-20 animate-fade-in">
