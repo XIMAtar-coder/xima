@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, ArrowRight, Building2, Users, Shield, Sparkles, BarChart3, Zap } from 'lucide-react';
 import LandingLayout from '@/components/landing/LandingLayout';
+import Seo from '@/components/Seo';
 
 const TIERS = [
   {
@@ -68,6 +69,11 @@ const Pricing: React.FC = () => {
 
   return (
     <LandingLayout>
+      <Seo
+        title="XIMA Pricing — Plans for every stage of hiring"
+        description="Compare XIMA plans: Starter for small teams, Growth for scaling companies, and custom enterprise tiers with advanced hiring intelligence."
+        path="/pricing"
+      />
       <div className="max-w-6xl mx-auto px-4 py-16">
         {/* Header */}
         <div className="text-center mb-12">

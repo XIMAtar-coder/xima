@@ -7,10 +7,16 @@ import { LandingPillars } from '@/components/landing/LandingPillars';
 import { LandingHowItWorks } from '@/components/landing/LandingHowItWorks';
 import { LandingFinalCTA } from '@/components/landing/LandingFinalCTA';
 import { LandingFooter } from '@/components/landing/LandingFooter';
+import Seo from '@/components/Seo';
 
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col" style={{ background: 'var(--xima-bg)' }}>
+      <Seo
+        title="XIMA — Discover Your Professional Potential"
+        description="XIMA is a decision-intelligence platform that reveals professional potential through AI-powered assessment, personalized XIMAtars, and behavioral challenges."
+        path="/"
+      />
       <LandingHeader />
       <main className="flex-1">
         <HeroSection />

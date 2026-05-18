@@ -1,0 +1,18 @@
+# XIMA
+
+> XIMA is a decision-intelligence platform that helps people discover their professional potential through AI-powered assessment and personalized XIMAtar avatars, and helps companies hire on behavioral signals rather than résumés.
+
+## Pages
+
+- [Home](/): Overview of XIMA's assessment, XIMAtars, and how the platform works.
+- [About](/about): Mission, the five-pillar model, and what XIMA offers candidates and companies.
+- [How It Works](/how-it-works): The candidate journey from assessment to challenges to mentor matching.
+- [For Business](/business): How companies use XIMA to identify and shortlist talent.
+- [Pricing](/pricing): Plans for individuals and businesses.
+- [Contact Sales](/contact-sales): Reach the XIMA team for enterprise inquiries.
+
+## Optional
+
+- [Privacy Policy](/privacy): Data handling, GDPR rights, and profiling opt-out.
+- [Terms](/terms): Terms of service.
+- [Imprint](/imprint): Legal entity information.
