@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Briefcase, Sparkles, MapPin, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import Seo from '@/components/Seo';
 
 interface JobFilters {
   location: string;
@@ -68,6 +69,11 @@ const JobsBrowse = () => {
 
   return (
     <MainLayout requireAuth>
+      <Seo
+        title="Job Opportunities — Browse Open Roles | XIMA"
+        description="Browse open job opportunities matched to your XIMAtar profile. Discover roles aligned with your behavioral strengths and growth path."
+        path="/jobs"
+      />
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-foreground">
