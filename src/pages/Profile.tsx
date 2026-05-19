@@ -26,6 +26,7 @@ import { useOnboardingState } from '@/hooks/useOnboardingState';
 
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import Seo from '@/components/Seo';
 
 const Profile = () => {
   const { user, isAuthenticated } = useUser();

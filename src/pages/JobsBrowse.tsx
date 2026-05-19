@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Briefcase, Sparkles, MapPin, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import Seo from '@/components/Seo';
 
 interface JobFilters {
   location: string;

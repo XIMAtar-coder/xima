@@ -24,6 +24,7 @@ import {
   BarChart3,
   Shield
 } from 'lucide-react';
+import Seo from '@/components/Seo';
 
 const AssessmentGuide = () => {
   const { t } = useTranslation();
