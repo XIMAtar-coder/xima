@@ -79,17 +79,23 @@ export default function OpportunityDetails() {
     const title = `${job.title} at ${job.company} – XIMA`;
     document.title = title;
 
-    const metaName = "description";
-    let meta = document.querySelector(`meta[name="${metaName}"]`);
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", metaName);
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute(
-      "content",
-      `${job.title} • ${job.location} • ${job.summary}`.slice(0, 155)
-    );
+    const descContent = `${job.title} • ${job.location} • ${job.summary}`.slice(0, 155);
+    const ensureMeta = (selector: string, attr: string, key: string, value: string) => {
+      let el = document.querySelector(selector) as HTMLMetaElement | null;
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', value);
+    };
+    ensureMeta('meta[name="description"]', 'name', 'description', descContent);
+    ensureMeta('meta[property="og:title"]', 'property', 'og:title', title);
+    ensureMeta('meta[property="og:description"]', 'property', 'og:description', descContent);
+    ensureMeta('meta[property="og:url"]', 'property', 'og:url', window.location.href);
+    ensureMeta('meta[property="og:type"]', 'property', 'og:type', 'article');
+    ensureMeta('meta[name="twitter:title"]', 'name', 'twitter:title', title);
+    ensureMeta('meta[name="twitter:description"]', 'name', 'twitter:description', descContent);
 
     createCanonical(window.location.href);
 
