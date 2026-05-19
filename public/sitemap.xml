@@ -31,6 +31,26 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://ximatar.com/assessment-guide</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ximatar.com/jobs</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ximatar.com/login</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://ximatar.com/register</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://ximatar.com/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
