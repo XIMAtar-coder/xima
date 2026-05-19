@@ -137,6 +137,12 @@ const Profile = () => {
 
   return (
     <MainLayout>
+      <Seo
+        title="Your Profile — XIMA Dashboard"
+        description="Your personal XIMA dashboard: XIMAtar profile, pillar insights, mentor sessions, and matched opportunities."
+        path="/profile"
+        noindex
+      />
       <div className="container max-w-7xl mx-auto py-6 md:py-10 px-4 md:px-8 space-y-6 watermark-bg">
         <XimaJourneyGuideModal open={guideOpen} onClose={handleGuideClose} isAutoOpen={shouldAutoShowGuide} />
 

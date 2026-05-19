@@ -186,6 +186,11 @@ const AssessmentGuide = () => {
 
   return (
     <LandingLayout>
+      <Seo
+        title="Assessment Guide — How the XIMA Five-Pillar Test Works"
+        description="Learn how the XIMA assessment evaluates your five pillars: Knowledge, Communication, Computation, Creativity, and Drive — and what your XIMAtar reveals."
+        path="/assessment-guide"
+      />
       <div className="container max-w-6xl mx-auto py-8 px-4 md:px-8">
         {/* Hero Section */}
         <div 
