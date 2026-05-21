@@ -24,6 +24,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import Seo from '@/components/Seo';
 
 const XimatarJourney = () => {
   const navigate = useNavigate();
