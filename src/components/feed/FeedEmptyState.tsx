@@ -22,7 +22,7 @@ export const FeedEmptyState = () => {
             'Complete challenges to surface verified progress.'
           )}
         </p>
-        <p className="text-xs text-muted-foreground/50 max-w-xs mx-auto">
+        <p className="text-xs text-muted-foreground max-w-xs mx-auto">
           {t('feed.empty.hint', 
             'No social posts. Only verified milestones.'
           )}
