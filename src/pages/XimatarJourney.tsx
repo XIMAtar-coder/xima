@@ -91,6 +91,7 @@ const XimatarJourney = () => {
 
   return (
     <MainLayout>
+      <Seo title="XIMAtar Journey — XIMA" description="Your personalized assessment journey." path="/ximatar-journey" noindex />
       {/* Resume Modal */}
       <AlertDialog open={showResumeModal} onOpenChange={setShowResumeModal}>
         <AlertDialogContent>
