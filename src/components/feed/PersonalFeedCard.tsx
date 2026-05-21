@@ -226,7 +226,7 @@ const ExternalContentCard = ({
           {isSponsored && (
             <>
               <span className="text-muted-foreground/40">·</span>
-              <span className="text-xs text-muted-foreground/50 italic">Sponsored</span>
+              <span className="text-xs text-muted-foreground italic">Sponsored</span>
             </>
           )}
         </div>
