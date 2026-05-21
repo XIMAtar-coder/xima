@@ -142,6 +142,7 @@ const XimaChat = () => {
   if (!user) {
     return (
       <MainLayout fullHeight>
+        <Seo title="Feed — XIMA" description="Your XIMA feed." path="/xima-chat" noindex />
         <div className="h-full flex items-center justify-center">
           <Card className="p-8 text-center">
             <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
