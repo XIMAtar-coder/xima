@@ -119,7 +119,12 @@ const AuthCallback = () => {
     };
   }, [navigate, isProcessing]);
 
-  return <LoadingScreen isLoading={true} />;
+  return (
+    <>
+      <Seo title="Signing you in — XIMA" description="Completing authentication." path="/auth/callback" noindex />
+      <LoadingScreen isLoading={true} />
+    </>
+  );
 };
 
 export default AuthCallback;
