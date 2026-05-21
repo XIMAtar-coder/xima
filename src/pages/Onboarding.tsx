@@ -164,6 +164,7 @@ const Onboarding = () => {
   
   return (
     <MainLayout requireAuth>
+      <Seo title="Onboarding — XIMA" description="Set up your XIMA profile." path="/onboarding" noindex />
       <div className="container max-w-4xl mx-auto pt-4">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2 text-foreground">
