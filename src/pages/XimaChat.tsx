@@ -14,6 +14,7 @@ import { useRealtimeChat, ChatMessage, RecentThread, ChatUser } from '@/hooks/us
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { XimaFeed } from '@/components/feed/XimaFeed';
+import Seo from '@/components/Seo';
 
 const XimaChat = () => {
   const { t } = useTranslation();
@@ -141,6 +142,7 @@ const XimaChat = () => {
   if (!user) {
     return (
       <MainLayout fullHeight>
+        <Seo title="Feed — XIMA" description="Your XIMA feed." path="/xima-chat" noindex />
         <div className="h-full flex items-center justify-center">
           <Card className="p-8 text-center">
             <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
@@ -157,6 +159,7 @@ const XimaChat = () => {
   if (showConversations) {
     return (
       <MainLayout fullHeight>
+        <Seo title="Conversations — XIMA" description="Your conversations." path="/xima-chat" noindex />
         <div className="h-full flex flex-col overflow-hidden">
           <div className="flex-1 container max-w-7xl mx-auto px-4 py-4 overflow-hidden">
             {/* Back to Feed button */}
@@ -398,6 +401,7 @@ const XimaChat = () => {
   // Default: Show the XIMA Feed (read-only, anonymous signals)
   return (
     <MainLayout>
+      <Seo title="Feed — XIMA" description="Your XIMA feed." path="/xima-chat" noindex />
       <div className="container max-w-4xl mx-auto px-4 py-8">
         
         <XimaFeed 

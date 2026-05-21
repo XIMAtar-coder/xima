@@ -24,6 +24,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import Seo from '@/components/Seo';
 
 const XimatarJourney = () => {
   const navigate = useNavigate();
@@ -90,6 +91,7 @@ const XimatarJourney = () => {
 
   return (
     <MainLayout>
+      <Seo title="XIMAtar Journey — XIMA" description="Your personalized assessment journey." path="/ximatar-journey" noindex />
       {/* Resume Modal */}
       <AlertDialog open={showResumeModal} onOpenChange={setShowResumeModal}>
         <AlertDialogContent>

@@ -98,6 +98,8 @@ export const HeroSection: React.FC = () => {
         <img
           src={typeof currentSlide.heroImage === 'string' ? currentSlide.heroImage : (currentSlide.heroImage as string)}
           alt=""
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover"
           style={{
             objectPosition: currentSlide.objectPosition,
@@ -168,6 +170,8 @@ export const HeroSection: React.FC = () => {
         <img
           src={typeof currentSlide.heroImage === 'string' ? currentSlide.heroImage : (currentSlide.heroImage as string)}
           alt=""
+          fetchPriority="high"
+          decoding="async"
           className="w-full h-full object-cover"
           style={{ objectPosition: currentSlide.objectPosition, transition: `opacity ${FADE_MS}ms ease-in-out` }}
         />
