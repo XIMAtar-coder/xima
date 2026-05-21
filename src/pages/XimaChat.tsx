@@ -401,6 +401,7 @@ const XimaChat = () => {
   // Default: Show the XIMA Feed (read-only, anonymous signals)
   return (
     <MainLayout>
+      <Seo title="Feed — XIMA" description="Your XIMA feed." path="/xima-chat" noindex />
       <div className="container max-w-4xl mx-auto px-4 py-8">
         
         <XimaFeed 
