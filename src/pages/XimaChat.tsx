@@ -159,6 +159,7 @@ const XimaChat = () => {
   if (showConversations) {
     return (
       <MainLayout fullHeight>
+        <Seo title="Conversations — XIMA" description="Your conversations." path="/xima-chat" noindex />
         <div className="h-full flex flex-col overflow-hidden">
           <div className="flex-1 container max-w-7xl mx-auto px-4 py-4 overflow-hidden">
             {/* Back to Feed button */}
