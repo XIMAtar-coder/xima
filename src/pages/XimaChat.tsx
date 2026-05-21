@@ -14,6 +14,7 @@ import { useRealtimeChat, ChatMessage, RecentThread, ChatUser } from '@/hooks/us
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { XimaFeed } from '@/components/feed/XimaFeed';
+import Seo from '@/components/Seo';
 
 const XimaChat = () => {
   const { t } = useTranslation();
