@@ -11,6 +11,7 @@ import XimaAvatar from '../components/XimaAvatar';
 import XimaScoreCard from '../components/XimaScoreCard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowRight, Check } from 'lucide-react';
+import Seo from '@/components/Seo';
 
 const initialPillars: XimaPillars = {
   computational: 0,
