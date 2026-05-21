@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
 import { getPostLoginRedirectPath } from '@/hooks/usePostLoginRedirect';
+import Seo from '@/components/Seo';
 
 const AuthCallback = () => {
   const navigate = useNavigate();
