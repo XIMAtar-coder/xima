@@ -157,10 +157,10 @@ const Business: React.FC = () => {
                   </div>
                   <div>
                     <div className="font-semibold font-mono text-white" style={{ fontSize: 14 }}>
-                      Candidato #{HERO_CANDIDATE.code}
+                      {t('business.mock_candidate_m')} #{HERO_CANDIDATE.code}
                     </div>
                     <div className="text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
-                      XIMAtar · {HERO_CANDIDATE.archetype} — anonimo fino all'offerta
+                      XIMAtar · {HERO_CANDIDATE.archetype} — {t('business.mock_anonymous_suffix')}
                     </div>
                   </div>
                 </div>
