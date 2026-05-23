@@ -24,12 +24,25 @@ const NAVY_DEEP = '#0A2A5E';
 const BLUE = '#0B6BFF';
 
 const XIMATAR_CANDIDATES = [
-  { name: 'lion', label: 'Sofia Rossi', score: 92, tier: 'Alto' },
-  { name: 'fox', label: 'Marco Bianchi', score: 88, tier: 'Alto' },
-  { name: 'owl', label: 'Giulia Conti', score: 76, tier: 'Medio' },
-  { name: 'dolphin', label: 'Luca Ferri', score: 64, tier: 'Medio' },
-  { name: 'bear', label: 'Alessandro Greco', score: 48, tier: 'Basso' },
+  { name: 'lion', archetype: 'Lion', code: 'C-2847', score: 92, tier: 'Alto' },
+  { name: 'fox', archetype: 'Fox', code: 'C-3194', score: 88, tier: 'Alto' },
+  { name: 'owl', archetype: 'Owl', code: 'C-1762', score: 76, tier: 'Medio' },
+  { name: 'dolphin', archetype: 'Dolphin', code: 'C-4081', score: 64, tier: 'Medio' },
+  { name: 'bear', archetype: 'Bear', code: 'C-2509', score: 48, tier: 'Basso' },
 ] as const;
+
+const HERO_CANDIDATE = {
+  name: 'lion',
+  archetype: 'Lion',
+  code: 'C-2847',
+  pillars: [
+    { key: 'drive', label: 'Drive', value: 8.4 },
+    { key: 'computational', label: 'Computazionale', value: 7.2 },
+    { key: 'knowledge', label: 'Knowledge', value: 6.8 },
+    { key: 'communication', label: 'Comunicazione', value: 9.1 },
+    { key: 'creativity', label: 'Creatività', value: 8.6 },
+  ],
+} as const;
 
 const Label: React.FC<{ children: React.ReactNode; className?: string }> = ({
   children,
@@ -115,111 +128,211 @@ const Business: React.FC = () => {
             </div>
           </div>
 
-          {/* Hero card mock */}
+          {/* Hero card — anon candidate + landing-style pentagon radar */}
           <div className="flex justify-center lg:justify-end">
             <div
-              className="rounded-2xl border border-border bg-card p-6 w-full max-w-[460px]"
-              style={{ boxShadow: '0 24px 60px rgba(7,30,58,0.18)' }}
+              className="rounded-[28px] p-6 w-full max-w-[480px] relative overflow-hidden"
+              style={{
+                background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY_DEEP} 100%)`,
+                border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: '0 30px 70px rgba(7,30,58,0.35)',
+              }}
             >
-              <div className="flex items-start justify-between gap-4">
+              {/* Header */}
+              <div className="flex items-start justify-between gap-4 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-border bg-muted">
+                  <div
+                    className="w-12 h-12 rounded-full overflow-hidden"
+                    style={{
+                      background: 'rgba(255,255,255,0.10)',
+                      border: '1px solid rgba(255,255,255,0.25)',
+                    }}
+                  >
                     <img
-                      src="/ximatars/lion.png"
-                      alt="XIMAtar Lion"
+                      src={`/ximatars/${HERO_CANDIDATE.name}.png`}
+                      alt={HERO_CANDIDATE.archetype}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
                   </div>
                   <div>
-                    <div className="font-semibold text-foreground">Candidata</div>
-                    <div className="text-xs text-muted-foreground">Valutata su 5 pilastri</div>
+                    <div className="font-semibold font-mono text-white" style={{ fontSize: 14 }}>
+                      Candidato #{HERO_CANDIDATE.code}
+                    </div>
+                    <div className="text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                      XIMAtar · {HERO_CANDIDATE.archetype} — anonimo fino all'offerta
+                    </div>
                   </div>
                 </div>
                 <span
-                  className="text-xs font-semibold px-2.5 py-1 rounded-full"
-                  style={{ background: 'rgba(16,185,129,0.12)', color: '#10B981' }}
+                  className="text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap"
+                  style={{ background: 'rgba(16,185,129,0.18)', color: '#34D399' }}
                 >
                   ● 8.6/10
                 </span>
               </div>
 
-              <div className="mt-5 grid grid-cols-2 gap-4 items-center">
-                {/* Mini radar */}
-                <svg viewBox="0 0 160 160" className="w-full h-auto">
-                  {[0.25, 0.5, 0.75, 1].map((r) => (
-                    <polygon
-                      key={r}
-                      points={[0, 72, 144, 216, 288].map((deg) => {
-                        const a = ((deg - 90) * Math.PI) / 180;
-                        return `${80 + Math.cos(a) * 60 * r},${80 + Math.sin(a) * 60 * r}`;
-                      }).join(' ')}
-                      fill="none"
-                      stroke="hsl(var(--border))"
-                      strokeWidth="1"
-                    />
-                  ))}
-                  <polygon
-                    points={[0.85, 0.7, 0.9, 0.65, 0.8].map((v, i) => {
-                      const deg = i * 72;
-                      const a = ((deg - 90) * Math.PI) / 180;
-                      return `${80 + Math.cos(a) * 60 * v},${80 + Math.sin(a) * 60 * v}`;
-                    }).join(' ')}
-                    fill={BLUE}
-                    fillOpacity="0.18"
-                    stroke={BLUE}
-                    strokeWidth="2"
-                  />
-                  {['Drive', 'Creatività', 'Comunicazione', 'Computazionale', 'Knowledge'].map(
-                    (lbl, i) => {
-                      const deg = i * 72;
-                      const a = ((deg - 90) * Math.PI) / 180;
-                      const x = 80 + Math.cos(a) * 74;
-                      const y = 80 + Math.sin(a) * 74;
-                      return (
-                        <text
-                          key={lbl}
-                          x={x}
-                          y={y}
-                          fontSize="7"
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          fill="hsl(var(--muted-foreground))"
-                        >
-                          {lbl}
-                        </text>
-                      );
-                    },
-                  )}
+              {/* Pentagon radar — landing-style glass */}
+              <div className="mt-3 relative z-10">
+                <svg viewBox="0 0 380 270" className="w-full h-auto" style={{ overflow: 'visible' }}>
+                  {(() => {
+                    const cx = 190;
+                    const cy = 130;
+                    const maxR = 78;
+                    const max = 10;
+                    const angle = (i: number) => -Math.PI / 2 + (i * 2 * Math.PI) / 5;
+                    const point = (i: number, r: number) => ({
+                      x: cx + r * Math.cos(angle(i)),
+                      y: cy + r * Math.sin(angle(i)),
+                    });
+                    const ringPath = (r: number) =>
+                      HERO_CANDIDATE.pillars
+                        .map((_, i) => {
+                          const p = point(i, r);
+                          return `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+                        })
+                        .join(' ') + 'Z';
+                    const dataPath =
+                      HERO_CANDIDATE.pillars
+                        .map((p, i) => {
+                          const pt = point(i, (p.value / max) * maxR);
+                          return `${i === 0 ? 'M' : 'L'}${pt.x.toFixed(1)},${pt.y.toFixed(1)}`;
+                        })
+                        .join(' ') + 'Z';
+                    return (
+                      <>
+                        {[0.25, 0.5, 0.75, 1].map((s, idx) => (
+                          <path
+                            key={idx}
+                            d={ringPath(maxR * s)}
+                            fill="none"
+                            stroke="rgba(255,255,255,0.18)"
+                            strokeWidth={1}
+                          />
+                        ))}
+                        {HERO_CANDIDATE.pillars.map((_, i) => {
+                          const p = point(i, maxR);
+                          return (
+                            <line
+                              key={i}
+                              x1={cx}
+                              y1={cy}
+                              x2={p.x}
+                              y2={p.y}
+                              stroke="rgba(255,255,255,0.14)"
+                              strokeWidth={1}
+                            />
+                          );
+                        })}
+                        <path
+                          d={dataPath}
+                          fill="rgba(11,107,255,0.35)"
+                          stroke="rgba(140,190,255,0.95)"
+                          strokeWidth={1.5}
+                          style={{ filter: 'drop-shadow(0 0 8px rgba(11,107,255,0.5))' }}
+                        />
+                        {HERO_CANDIDATE.pillars.map((p, i) => {
+                          const pt = point(i, (p.value / max) * maxR);
+                          return (
+                            <circle
+                              key={i}
+                              cx={pt.x}
+                              cy={pt.y}
+                              r={3.5}
+                              fill="white"
+                              style={{ filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.9))' }}
+                            />
+                          );
+                        })}
+                        <foreignObject x={cx - 14} y={cy - 14} width={28} height={28}>
+                          <img
+                            src="/images/xima-symbol-white.svg"
+                            alt=""
+                            style={{ width: '100%', height: '100%', opacity: 0.95 }}
+                          />
+                        </foreignObject>
+                        {HERO_CANDIDATE.pillars.map((p, i) => {
+                          const pt = point(i, maxR + 22);
+                          const anchor =
+                            pt.x < cx - 5 ? 'end' : pt.x > cx + 5 ? 'start' : 'middle';
+                          return (
+                            <g key={i}>
+                              <text
+                                x={pt.x}
+                                y={pt.y - 4}
+                                textAnchor={anchor}
+                                fill="white"
+                                fontSize={12}
+                                fontWeight={600}
+                                opacity={0.95}
+                              >
+                                {p.value.toFixed(1)}
+                              </text>
+                              <text
+                                x={pt.x}
+                                y={pt.y + 9}
+                                textAnchor={anchor}
+                                fill="white"
+                                fontSize={9.5}
+                                opacity={0.7}
+                              >
+                                {p.label}
+                              </text>
+                            </g>
+                          );
+                        })}
+                      </>
+                    );
+                  })()}
                 </svg>
+              </div>
 
-                <div className="space-y-3">
-                  <div>
-                    <div className="text-xs text-muted-foreground">Adattamento al ruolo</div>
-                    <div className="flex items-baseline justify-between">
-                      <span className="font-bold text-foreground text-xl">92%</span>
-                    </div>
-                    <div className="h-1.5 mt-1 rounded-full bg-muted overflow-hidden">
-                      <div className="h-full" style={{ width: '92%', background: BLUE }} />
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">Rischio di Attrito</span>
-                    <span
-                      className="text-xs font-semibold px-2 py-0.5 rounded-full"
-                      style={{ background: 'rgba(16,185,129,0.12)', color: '#10B981' }}
-                    >
-                      ● Basso
+              {/* Bottom stats strip */}
+              <div
+                className="mt-4 rounded-2xl p-4 relative z-10 space-y-3"
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.10)',
+                  backdropFilter: 'blur(8px)',
+                }}
+              >
+                <div>
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                      Adattamento al ruolo
                     </span>
+                    <span className="font-bold text-white" style={{ fontSize: 18 }}>92%</span>
                   </div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">Sfida L2 – Product Designer</div>
-                    <div className="flex items-baseline justify-between">
-                      <span className="font-bold text-foreground">84%</span>
-                    </div>
-                    <div className="h-1.5 mt-1 rounded-full bg-muted overflow-hidden">
-                      <div className="h-full" style={{ width: '84%', background: BLUE }} />
-                    </div>
+                  <div
+                    className="h-1.5 mt-1.5 rounded-full overflow-hidden"
+                    style={{ background: 'rgba(255,255,255,0.10)' }}
+                  >
+                    <div className="h-full" style={{ width: '92%', background: '#5BA0FF' }} />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                    Rischio di Attrito
+                  </span>
+                  <span
+                    className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                    style={{ background: 'rgba(16,185,129,0.18)', color: '#34D399' }}
+                  >
+                    ● Basso
+                  </span>
+                </div>
+                <div>
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                      Sfida L2 — Product Designer
+                    </span>
+                    <span className="font-bold text-white" style={{ fontSize: 16 }}>84%</span>
+                  </div>
+                  <div
+                    className="h-1.5 mt-1.5 rounded-full overflow-hidden"
+                    style={{ background: 'rgba(255,255,255,0.10)' }}
+                  >
+                    <div className="h-full" style={{ width: '84%', background: '#5BA0FF' }} />
                   </div>
                 </div>
               </div>
@@ -227,6 +340,7 @@ const Business: React.FC = () => {
           </div>
         </div>
       </section>
+
 
       {/* SECTION 2 — Why XIMA */}
       <section className="px-6 lg:px-10 pb-16 md:pb-20">
@@ -356,18 +470,21 @@ const Business: React.FC = () => {
             </div>
             <ul className="divide-y divide-border">
               {XIMATAR_CANDIDATES.map((c) => (
-                <li key={c.label} className="flex items-center gap-3 py-3">
+                <li key={c.code} className="flex items-center gap-3 py-3">
                   <div className="w-10 h-10 rounded-full overflow-hidden border border-border bg-muted shrink-0">
                     <img
                       src={`/ximatars/${c.name}.png`}
-                      alt={c.label}
+                      alt={c.archetype}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-foreground truncate" style={{ fontSize: 14 }}>
-                      {c.label}
+                    <div className="font-medium text-foreground truncate font-mono" style={{ fontSize: 13 }}>
+                      Candidato #{c.code}
+                    </div>
+                    <div className="text-xs text-muted-foreground truncate">
+                      XIMAtar · {c.archetype}
                     </div>
                   </div>
                   <span className="text-sm font-semibold text-foreground tabular-nums">
