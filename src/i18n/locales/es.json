@@ -2162,7 +2162,7 @@
   },
   "business": {
     "eyebrow": "PARA EMPRESAS",
-    "hero_headline": "Encuentra el Talento Adecuado.\nAntes de Ver su CV.",
+    "hero_headline": "Encuentra el Talento Adecuado.\nNo te dejes influir por el CV.",
     "hero_subheadline": "XIMA lleva la psicometría enterprise a las pymes. Perfiles conductuales validados, desafíos IA generados para el rol específico, listas cortas filtradas por adecuación real — no por credenciales.",
     "hero_cta_primary": "Iniciar Prueba Gratuita →",
     "hero_cta_secondary": "Acceder",
@@ -2189,7 +2189,7 @@
     "pipeline_step1_body": "Crea una posición en XIMA. Define el campo profesional, el rol y el objetivo de contratación. El sistema calibra automáticamente la evaluación para tu contexto específico.",
     "pipeline_step2_number": "02",
     "pipeline_step2_title": "Los Candidatos Afrontan el XIMA Challenge",
-    "pipeline_step2_body": "Primer paso obligatorio para cada candidato: el XIMA Challenge — el Core Assessment conductual que revela su XIMAtar sobre los cinco pilares. Es el filtro de entrada común a todos, comparable por definición. Los perfiles se generan antes de que veas su nombre: cero sesgo de credenciales en el screening. Solo quien supera el XIMA Challenge accede luego al reto L2 específico para tu rol.",
+    "pipeline_step2_body": "Primer paso para todos: el XIMA Challenge. Revela el XIMAtar sobre los cinco pilares, antes incluso de que veas su nombre. Solo quien lo supera accede al reto L2 sobre tu rol.",
     "pipeline_step3_number": "03",
     "pipeline_step3_title": "Lanza el Desafío Específico",
     "pipeline_step3_body": "Para los candidatos preseleccionados, XIMA genera un desafío L2 específico para tu rol — simulación IA construida sobre tu oferta real. Rúbrica personalizada. Señal extraída de cómo piensan realmente sobre tu problema.",
