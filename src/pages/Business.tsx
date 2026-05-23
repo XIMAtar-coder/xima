@@ -36,11 +36,11 @@ const HERO_CANDIDATE = {
   archetype: 'Lion',
   code: 'C-2847',
   pillars: [
-    { key: 'drive', label: 'Drive', value: 8.4 },
-    { key: 'computational', label: 'Computazionale', value: 7.2 },
-    { key: 'knowledge', label: 'Knowledge', value: 6.8 },
-    { key: 'communication', label: 'Comunicazione', value: 9.1 },
-    { key: 'creativity', label: 'Creatività', value: 8.6 },
+    { key: 'drive', value: 8.4 },
+    { key: 'computational', value: 7.2 },
+    { key: 'knowledge', value: 6.8 },
+    { key: 'communication', value: 9.1 },
+    { key: 'creativity', value: 8.6 },
   ],
 } as const;
 
