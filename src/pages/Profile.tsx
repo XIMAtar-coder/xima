@@ -49,6 +49,34 @@ const Profile = () => {
     if (shouldAutoShowGuide) setGuideOpen(true);
   }, [shouldAutoShowGuide]);
 
+  // Send welcome email once after user lands on dashboard with a created profile
+  useEffect(() => {
+    if (!isAuthenticated || !user?.id) return;
+    if (!profileData || profileData.loading) return;
+    const raw = sessionStorage.getItem('xima_pending_welcome');
+    if (!raw) return;
+    try {
+      const pending = JSON.parse(raw);
+      const recipient = pending.email || user.email;
+      if (!recipient) return;
+      supabase.functions.invoke('send-transactional-email', {
+        body: {
+          templateName: 'welcome',
+          recipientEmail: recipient,
+          idempotencyKey: `welcome:${pending.userId || user.id}`,
+          templateData: {
+            name: pending.name || (user as any)?.user_metadata?.name || '',
+            locale: pending.locale || 'en',
+          },
+        },
+      }).catch((e) => console.warn('[Profile] welcome email failed:', e));
+    } catch (e) {
+      console.warn('[Profile] welcome email parse error:', e);
+    } finally {
+      sessionStorage.removeItem('xima_pending_welcome');
+    }
+  }, [isAuthenticated, user?.id, profileData?.loading]);
+
   useEffect(() => {
     if (hasMentor) completeStep('choose_mentor');
   }, [hasMentor, completeStep]);
