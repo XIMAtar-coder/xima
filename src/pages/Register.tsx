@@ -143,6 +143,23 @@ const Register = () => {
           console.warn('[Register] CV auto-import error (non-blocking):', e);
         }
 
+        // Fire welcome email (non-blocking)
+        try {
+          supabase.functions.invoke('send-transactional-email', {
+            body: {
+              templateName: 'welcome',
+              recipientEmail: formData.email,
+              idempotencyKey: `welcome:${newUserId}`,
+              templateData: {
+                name: formData.name?.split(' ')[0] || formData.name,
+                locale: (i18n.language || 'en').slice(0, 2),
+              },
+            },
+          }).catch((e) => console.warn('[Register] welcome email failed:', e));
+        } catch (e) {
+          console.warn('[Register] welcome email exception:', e);
+        }
+
         toast({
           title: t('auth.register_success', 'Account created successfully'),
           description: syncSuccess ? t('register.assessment_synced', 'Your assessment data has been saved to your profile') : t('register.welcome_message'),
