@@ -411,9 +411,9 @@ const Business: React.FC = () => {
             {/* Icon row */}
             <div className="mt-8 flex items-center gap-2">
               {[FileText, ClipboardCheck, Sparkles, BarChart3].map((Ic, i) => (
-                <React.Fragment key={i}>
+                <div key={i} className="flex items-center gap-2 flex-1 last:flex-none">
                   <div
-                    className="flex items-center justify-center rounded-xl"
+                    className="flex items-center justify-center rounded-xl shrink-0"
                     style={{
                       width: 48,
                       height: 48,
@@ -429,7 +429,7 @@ const Business: React.FC = () => {
                       style={{ borderColor: 'rgba(11,107,255,0.35)' }}
                     />
                   )}
-                </React.Fragment>
+                </div>
               ))}
             </div>
 
