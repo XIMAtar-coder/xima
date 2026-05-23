@@ -483,7 +483,7 @@ const Business: React.FC = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-foreground truncate font-mono" style={{ fontSize: 13 }}>
-                      {c.gender === 'f' ? 'Candidata' : 'Candidato'} #{c.code}
+                      {c.gender === 'f' ? t('business.mock_candidate_f') : t('business.mock_candidate_m')} #{c.code}
                     </div>
                     <div className="text-xs text-muted-foreground truncate">
                       XIMAtar · {c.archetype}
