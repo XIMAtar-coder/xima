@@ -504,7 +504,7 @@ const Business: React.FC = () => {
             <button
               className="mt-3 w-full text-sm font-semibold py-2.5 rounded-lg border border-border text-foreground hover:bg-muted/40 transition"
             >
-              Confronta candidati
+              {t('business.mock_compare')}
             </button>
           </div>
         </div>
