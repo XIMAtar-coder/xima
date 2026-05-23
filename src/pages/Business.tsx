@@ -369,18 +369,21 @@ const Business: React.FC = () => {
             </div>
             <ul className="divide-y divide-border">
               {XIMATAR_CANDIDATES.map((c) => (
-                <li key={c.label} className="flex items-center gap-3 py-3">
+                <li key={c.code} className="flex items-center gap-3 py-3">
                   <div className="w-10 h-10 rounded-full overflow-hidden border border-border bg-muted shrink-0">
                     <img
                       src={`/ximatars/${c.name}.png`}
-                      alt={c.label}
+                      alt={c.archetype}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-foreground truncate" style={{ fontSize: 14 }}>
-                      {c.label}
+                    <div className="font-medium text-foreground truncate font-mono" style={{ fontSize: 13 }}>
+                      Candidato #{c.code}
+                    </div>
+                    <div className="text-xs text-muted-foreground truncate">
+                      XIMAtar · {c.archetype}
                     </div>
                   </div>
                   <span className="text-sm font-semibold text-foreground tabular-nums">
