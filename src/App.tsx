@@ -30,6 +30,7 @@ import NotFound from "./pages/NotFound";
 import { XimAIProvider } from "./context/XimAIProvider";
 import ChatEntry from "./components/ximai/ChatEntry";
 import OpportunityDetails from "./pages/OpportunityDetails";
+import Unsubscribe from "./pages/Unsubscribe";
 
 import { AssessmentProvider } from "./contexts/AssessmentContext";
 // Legal pages
@@ -112,6 +113,7 @@ const AppContent = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/unsubscribe" element={<Unsubscribe />} />
           {/* Legal Pages */}
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />
