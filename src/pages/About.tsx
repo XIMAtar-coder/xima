@@ -1,394 +1,454 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import LandingLayout from '@/components/landing/LandingLayout';
-import { Button } from '@/components/ui/button';
-import { ChevronRight, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import LandingLayout from '@/components/landing/LandingLayout';
+import LandingFinalCTA from '@/components/landing/LandingFinalCTA';
 import Seo from '@/components/Seo';
+import {
+  Network,
+  Hexagon,
+  ShieldCheck,
+  Zap,
+  Lightbulb,
+  BookOpen,
+  MessageCircle,
+  Cpu,
+  Check,
+  Users,
+  Layers,
+  Globe2,
+  Target,
+} from 'lucide-react';
 
-const About = () => {
-  const navigate = useNavigate();
+const XIMATARS = [
+  'bear', 'bee', 'cat', 'chameleon', 'dolphin', 'elephant',
+  'fox', 'horse', 'lion', 'owl', 'parrot', 'wolf',
+] as const;
+
+const PILLARS = [
+  { key: 'drive', Icon: Zap },
+  { key: 'creativity', Icon: Lightbulb },
+  { key: 'knowledge', Icon: BookOpen },
+  { key: 'communication', Icon: MessageCircle },
+  { key: 'computation', Icon: Cpu },
+] as const;
+
+const NAVY = '#071E3A';
+const NAVY_DEEP = '#0A2A5E';
+const BLUE = '#0B6BFF';
+
+const Label: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
+  <p
+    className={`text-xs font-mono uppercase tracking-[0.2em] mb-3 ${className}`}
+    style={{ color: BLUE }}
+  >
+    {children}
+  </p>
+);
+
+const About: React.FC = () => {
   const { t } = useTranslation();
-  
-  const pillars = [
-    { key: '1', color: 'from-rose-500 to-rose-600' },
-    { key: '2', color: 'from-purple-500 to-purple-600' },
-    { key: '3', color: 'from-blue-500 to-blue-600' },
-    { key: '4', color: 'from-emerald-500 to-emerald-600' },
-    { key: '5', color: 'from-amber-500 to-amber-600' },
-  ];
-
-  const problemItems = [
-    t('about.problem_item_1'),
-    t('about.problem_item_2'),
-    t('about.problem_item_3'),
-    t('about.problem_item_4'),
-    t('about.problem_item_5'),
-  ];
-
-  const candidateBenefits = [
-    t('about.candidate_1'),
-    t('about.candidate_2'),
-    t('about.candidate_3'),
-    t('about.candidate_4'),
-    t('about.candidate_5'),
-  ];
-
-  const employerBenefits = [
-    t('about.employer_1'),
-    t('about.employer_2'),
-    t('about.employer_3'),
-    t('about.employer_4'),
-    t('about.employer_5'),
-  ];
-
-  const stats = [
-    { value: t('about.stat_1_value'), label: t('about.stat_1_label') },
-    { value: t('about.stat_2_value'), label: t('about.stat_2_label') },
-    { value: t('about.stat_3_value'), label: t('about.stat_3_label') },
-    { value: t('about.stat_4_value'), label: t('about.stat_4_label') },
-  ];
+  const navigate = useNavigate();
 
   return (
     <LandingLayout>
       <Seo
-        title="About XIMA — The five-pillar decision-intelligence platform"
-        description="Learn how XIMA's five-pillar model and XIMAtar avatars help people and companies see beyond résumés to real professional potential."
+        title="Chi Siamo — XIMA"
+        description="XIMA nasce dall'ingegneria di precisione di AlphaLink Engineering. Cinque pilastri, dodici archetipi, zero proxy demografici."
         path="/about"
       />
-      <div className="container max-w-4xl mx-auto px-4 py-12 md:py-20">
-        {/* Hero Section */}
-        <div className="text-center mb-16 md:mb-20 animate-fade-in">
-          <div 
-            className="h-0.5 w-16 mx-auto rounded-full mb-8"
-            style={{
-              background: 'linear-gradient(90deg, hsl(var(--xima-blue)), hsl(var(--xima-teal)))'
-            }}
-          />
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-4">
-            {t('about.eyebrow')}
-          </p>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-foreground leading-tight whitespace-pre-line">
-            {t('about.hero_headline')}
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-8">
-            {t('about.hero_subheadline')}
-          </p>
-          <p className="text-lg italic text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            {t('about.hero_pullquote')}
+
+      {/* SECTION 1 — Hero */}
+      <section className="px-6 lg:px-10 pt-16 md:pt-24 pb-16 md:pb-20">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div>
+            <Label>{t('about.hero.label')}</Label>
+            <h1
+              className="font-bold text-foreground leading-[1.1]"
+              style={{ fontSize: 'clamp(32px, 4.5vw, 46px)', letterSpacing: '-0.02em' }}
+            >
+              {t('about.hero.titlePre')}
+              <span style={{ color: BLUE }}>{t('about.hero.titleAccent1')}</span>
+              {t('about.hero.titleMid')}
+              <span style={{ color: BLUE }}>{t('about.hero.titleAccent2')}</span>
+              {t('about.hero.titlePost')}
+            </h1>
+            <p
+              className="mt-6 text-muted-foreground"
+              style={{ fontSize: 18, lineHeight: 1.65, maxWidth: 520 }}
+            >
+              {t('about.hero.body')}
+            </p>
+            <blockquote
+              className="mt-8 italic text-muted-foreground"
+              style={{
+                borderLeft: `3px solid ${BLUE}`,
+                paddingLeft: 16,
+                fontSize: 16,
+                lineHeight: 1.6,
+                maxWidth: 520,
+              }}
+            >
+              {t('about.hero.quote')}
+            </blockquote>
+          </div>
+          <div className="flex justify-center lg:justify-end">
+            <img
+              src="/images/assessment-layers.png"
+              alt=""
+              aria-hidden="true"
+              className="w-full max-w-[400px] h-auto"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 2 — L'Origine */}
+      <section className="px-6 lg:px-10 pb-12 md:pb-16">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-10 items-start">
+          {/* Image / placeholder (40%) */}
+          <div className="md:col-span-2">
+            <div
+              className="w-full rounded-2xl overflow-hidden relative"
+              style={{
+                aspectRatio: '4 / 3',
+                background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY_DEEP} 100%)`,
+                boxShadow: '0 24px 60px rgba(7,30,58,0.25)',
+              }}
+            >
+              {/* subtle blueprint grid pattern */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage:
+                    'linear-gradient(rgba(11,107,255,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(11,107,255,0.18) 1px, transparent 1px)',
+                  backgroundSize: '32px 32px',
+                  opacity: 0.5,
+                }}
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    'radial-gradient(circle at 30% 40%, rgba(11,107,255,0.35) 0%, transparent 60%)',
+                }}
+              />
+            </div>
+          </div>
+          {/* Text (60%) */}
+          <div className="md:col-span-3">
+            <Label>{t('about.origin.label')}</Label>
+            <h2
+              className="font-bold text-foreground whitespace-pre-line"
+              style={{ fontSize: 'clamp(24px, 3vw, 32px)', lineHeight: 1.2, letterSpacing: '-0.01em' }}
+            >
+              {t('about.origin.title')}
+            </h2>
+            <div className="mt-5 space-y-4">
+              {(['p1', 'p2', 'p3'] as const).map((k) => (
+                <p key={k} className="text-muted-foreground" style={{ fontSize: 16, lineHeight: 1.65 }}>
+                  {t(`about.origin.${k}`)}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 3 — Principles strip */}
+      <section className="px-6 lg:px-10 pb-16 md:pb-20">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="rounded-2xl border border-border bg-card grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
+            {[
+              { Icon: Network, key: 'p1' },
+              { Icon: Hexagon, key: 'p2' },
+              { Icon: ShieldCheck, key: 'p3' },
+            ].map(({ Icon, key }) => (
+              <div key={key} className="flex items-center gap-4 px-6 py-6 md:py-7">
+                <Icon className="flex-shrink-0" size={28} strokeWidth={1.5} style={{ color: BLUE }} />
+                <p className="font-semibold text-foreground" style={{ fontSize: 15, lineHeight: 1.35 }}>
+                  {t(`about.principles.${key}`)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 4 — Il Problema */}
+      <section className="px-6 lg:px-10 pb-16 md:pb-20">
+        <div
+          className="max-w-[1200px] mx-auto rounded-2xl overflow-hidden"
+          style={{ background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY_DEEP} 100%)` }}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center px-8 md:px-12 py-10 md:py-12">
+            <div>
+              <p
+                className="text-xs font-mono uppercase tracking-[0.2em] mb-3"
+                style={{ color: '#5BA0FF' }}
+              >
+                {t('about.problem.label')}
+              </p>
+              <h2
+                className="font-bold whitespace-pre-line"
+                style={{
+                  color: '#FFFFFF',
+                  fontSize: 'clamp(26px, 3.4vw, 36px)',
+                  lineHeight: 1.15,
+                  letterSpacing: '-0.01em',
+                }}
+              >
+                {t('about.problem.title')}
+              </h2>
+              <p
+                className="mt-4"
+                style={{ color: 'rgba(255,255,255,0.82)', fontSize: 18, lineHeight: 1.6 }}
+              >
+                {t('about.problem.body')}
+              </p>
+            </div>
+            <div className="flex justify-center md:justify-end">
+              <img
+                src="/images/problem-cv-breaking.png"
+                alt=""
+                aria-hidden="true"
+                className="w-full max-w-[300px] h-auto"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 5 — Il Modello */}
+      <section className="px-6 lg:px-10 pb-16 md:pb-20">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="text-center mb-10">
+            <Label className="!text-center">{t('about.model.label')}</Label>
+            <h2
+              className="font-bold text-foreground"
+              style={{ fontSize: 'clamp(24px, 3vw, 32px)', lineHeight: 1.2, letterSpacing: '-0.01em' }}
+            >
+              {t('about.model.title')}
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {PILLARS.map(({ key, Icon }) => (
+              <div
+                key={key}
+                className="rounded-2xl border border-border bg-card p-5 flex flex-col"
+              >
+                <Icon size={28} strokeWidth={1.5} style={{ color: BLUE }} />
+                <h3 className="mt-4 font-bold text-foreground" style={{ fontSize: 16 }}>
+                  {t(`about.model.${key}_name`)}
+                </h3>
+                <p
+                  className="mt-2 text-muted-foreground"
+                  style={{ fontSize: 14, lineHeight: 1.55 }}
+                >
+                  {t(`about.model.${key}_body`)}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p
+            className="mt-10 italic text-center text-muted-foreground mx-auto"
+            style={{ fontSize: 16, lineHeight: 1.6, maxWidth: 720, color: BLUE }}
+          >
+            {t('about.model.quote')}
           </p>
         </div>
+      </section>
 
-        {/* Origin Section */}
-        <section className="mb-16 md:mb-20 animate-fade-in">
-          <div className="premium-card rounded-2xl p-6 md:p-8 border-l-4 border-l-primary">
-            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">
-              {t('about.origin_label')}
-            </p>
-            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-4 whitespace-pre-line">
-              {t('about.origin_headline')}
+      {/* SECTION 6 — 12 Archetipi (tinted band) */}
+      <section
+        className="px-6 lg:px-10 py-16 md:py-20"
+        style={{ background: 'hsl(var(--muted) / 0.4)' }}
+      >
+        <div className="max-w-[1200px] mx-auto">
+          <div className="mb-10">
+            <Label>{t('about.archetypes.label')}</Label>
+            <h2
+              className="font-bold text-foreground whitespace-pre-line"
+              style={{ fontSize: 'clamp(26px, 3.4vw, 36px)', lineHeight: 1.15, letterSpacing: '-0.01em' }}
+            >
+              {t('about.archetypes.title')}
             </h2>
-            <div className="space-y-4">
-              <p className="text-muted-foreground leading-relaxed">
-                {t('about.origin_body_1')}
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                {t('about.origin_body_2')}
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                {t('about.origin_body_3')}
-              </p>
-            </div>
           </div>
-        </section>
-        
-        {/* Problem Section */}
-        <section className="mb-16 md:mb-20">
-          <div className="premium-card rounded-2xl overflow-hidden">
-            <div className="accent-gradient py-8 md:py-10 px-6 md:px-8">
-              <p className="text-xs font-mono uppercase tracking-widest text-white/70 mb-3">
-                {t('about.problem_label')}
-              </p>
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 whitespace-pre-line">
-                {t('about.problem_headline')}
-              </h2>
-              <p className="text-lg text-white/90 leading-relaxed">
-                {t('about.problem_subheadline')}
-              </p>
-            </div>
-            <div className="p-6 md:p-8 space-y-6">
-              <p className="text-foreground leading-relaxed text-base md:text-lg">
-                {t('about.problem_body')}
-              </p>
-              
-              <p className="text-muted-foreground leading-relaxed">
-                {t('about.problem_list_intro')}
-              </p>
-              
-              <ul className="space-y-3 pl-1">
-                {problemItems.map((item, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <span className="mt-1 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary" />
-                    <span className="text-muted-foreground leading-relaxed">{item}</span>
-                  </li>
-                ))}
-              </ul>
-              
-              <div className="pt-2 border-t border-border">
-                <p className="text-foreground leading-relaxed font-medium">
-                  {t('about.problem_solution')}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* Model Section */}
-        <section className="mb-16 md:mb-20">
-          <div className="text-center mb-10">
-            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">
-              {t('about.model_label')}
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4 whitespace-pre-line">
-              {t('about.model_headline')}
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              {t('about.model_body')}
-            </p>
-          </div>
-          
-          <div className="space-y-4 mb-8">
-            {pillars.map((pillar) => (
-              <div 
-                key={pillar.key}
-                className="premium-card p-5 rounded-xl"
-              >
-                <div className="flex items-start gap-4">
-                  <div className={`w-2 h-full min-h-[2rem] rounded-full bg-gradient-to-b ${pillar.color} flex-shrink-0 mt-1`} />
-                  <div>
-                    <h3 className="font-bold text-foreground mb-1">
-                      {t(`about.pillar_${pillar.key}_name`)}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {t(`about.pillar_${pillar.key}_body`)}
-                    </p>
-                  </div>
+          <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-12 gap-4 md:gap-3">
+            {XIMATARS.map((name) => (
+              <div key={name} className="flex flex-col items-center">
+                <div
+                  className="rounded-full overflow-hidden border-2"
+                  style={{
+                    width: 72,
+                    height: 72,
+                    borderColor: 'hsl(var(--border))',
+                    background: 'hsl(var(--card))',
+                  }}
+                >
+                  <img
+                    src={`/ximatars/${name}.png`}
+                    alt={t(`about.archetypes.name_${name}`)}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </div>
+                <span className="mt-2 text-xs font-medium text-foreground">
+                  {t(`about.archetypes.name_${name}`)}
+                </span>
               </div>
             ))}
           </div>
-
-          <p className="text-lg italic text-muted-foreground text-center leading-relaxed max-w-2xl mx-auto">
-            {t('about.model_pullquote')}
-          </p>
-        </section>
-
-        {/* XIMAtar Section */}
-        <section className="mb-16 md:mb-20">
-          <div className="premium-card rounded-2xl p-6 md:p-8 border-l-4 border-l-primary">
-            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">
-              {t('about.ximatar_label')}
-            </p>
-            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-4 whitespace-pre-line">
-              {t('about.ximatar_headline')}
-            </h2>
-            <p className="text-muted-foreground leading-relaxed">
-              {t('about.ximatar_body')}
-            </p>
-          </div>
-        </section>
-
-        {/* Value Section */}
-        <section className="mb-16 md:mb-20">
-          <div className="premium-card rounded-2xl p-6 md:p-10">
-            <div className="text-center mb-10">
-              <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">
-                {t('about.value_label')}
-              </p>
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3 whitespace-pre-line">
-                {t('about.value_headline')}
-              </h2>
-              <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                {t('about.value_subheadline')}
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
-              {/* Candidates */}
-              <div>
-                <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">
-                  {t('about.candidates_label')}
-                </p>
-                <h3 className="text-lg font-bold text-foreground mb-6 whitespace-pre-line">
-                  {t('about.candidates_headline')}
-                </h3>
-                <ul className="space-y-4">
-                  {candidateBenefits.map((benefit, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <Check className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
-                      <span className="text-muted-foreground leading-relaxed">{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              
-              {/* Employers */}
-              <div>
-                <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">
-                  {t('about.employers_label')}
-                </p>
-                <h3 className="text-lg font-bold text-foreground mb-6 whitespace-pre-line">
-                  {t('about.employers_headline')}
-                </h3>
-                <ul className="space-y-4">
-                  {employerBenefits.map((benefit, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <Check className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
-                      <span className="text-muted-foreground leading-relaxed">{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Numbers Section */}
-        <section className="mb-16 md:mb-20">
-          <div className="text-center mb-10">
-            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">
-              {t('about.numbers_label')}
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2 whitespace-pre-line">
-              {t('about.numbers_headline')}
-            </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              {t('about.numbers_subheadline')}
-            </p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <div key={index} className="premium-card rounded-xl p-6 text-center">
-                <p className="text-4xl font-bold text-primary mb-2">{stat.value}</p>
-                <p className="text-sm text-muted-foreground text-center leading-relaxed">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Team Section */}
-        <section className="mb-16 md:mb-20">
-          <div className="text-center mb-10">
-            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">
-              {t('about.team_label')}
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-              {t('about.team_headline')}
-            </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              {t('about.team_subheadline')}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Pietro Card */}
-            <div className="premium-card border border-border rounded-2xl p-8">
-              <div className="flex items-center gap-4 mb-5">
-                <img 
-                  src="/avatars/pietro-cozzi.jpg" 
-                  alt="Pietro Cozzi" 
-                   className="w-20 h-20 rounded-2xl object-cover flex-shrink-0"
-                />
-                <div>
-                  <span className="inline-block text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full mb-1">
-                    {t('about.founder_label')}
-                  </span>
-                  <h3 className="text-xl font-bold text-foreground">
-                    {t('about.founder_name')}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {t('about.founder_role')}
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <p className="text-muted-foreground leading-relaxed">
-                  {t('about.founder_bio_1')}
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  {t('about.founder_bio_2')}
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  {t('about.founder_bio_3')}
-                </p>
-              </div>
-            </div>
-
-            {/* Daniel Card */}
-            <div className="premium-card border border-border rounded-2xl p-8">
-              <div className="flex items-center gap-4 mb-5">
-                <img 
-                  src="/avatars/daniel-cracau.jpg" 
-                  alt="Dr. Daniel Cracau" 
-                  className="w-20 h-20 rounded-full object-cover flex-shrink-0"
-                />
-                <div>
-                  <span className="inline-block text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full mb-1">
-                    {t('about.advisor_label')}
-                  </span>
-                  <h3 className="text-xl font-bold text-foreground">
-                    {t('about.advisor_name')}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {t('about.advisor_role')}
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-4 mb-6">
-                <p className="text-muted-foreground leading-relaxed">
-                  {t('about.advisor_bio_1')}
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  {t('about.advisor_bio_2')}
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  {t('about.advisor_bio_3')}
-                </p>
-              </div>
-              <div className="border-t border-border pt-5">
-                <p className="text-sm italic text-muted-foreground leading-relaxed">
-                  {t('about.advisor_pullquote')}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* CTA Section */}
-        <section className="text-center py-12 md:py-16">
-          <div 
-            className="h-0.5 w-16 mx-auto rounded-full mb-8"
-            style={{
-              background: 'linear-gradient(90deg, hsl(var(--xima-blue)), hsl(var(--xima-teal)))'
-            }}
-          />
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4 whitespace-pre-line">
-            {t('about.cta_headline')}
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed">
-            {t('about.cta_body')}
-          </p>
-          
-          <Button 
-            size="lg"
-            className="accent-gradient text-white hover:opacity-90 transition-opacity shadow-lg text-base md:text-lg px-8 py-6 rounded-xl"
-            onClick={() => navigate('/register')}
+          <p
+            className="mt-10 text-muted-foreground mx-auto text-center"
+            style={{ fontSize: 16, lineHeight: 1.65, maxWidth: 800 }}
           >
-            {t('about.cta_button')}
-            <ChevronRight size={20} className="ml-2" />
-          </Button>
-        </section>
-      </div>
+            {t('about.archetypes.body')}
+          </p>
+        </div>
+      </section>
+
+      {/* SECTION 7 — Le Persone dietro XIMA */}
+      <section className="px-6 lg:px-10 py-16 md:py-20">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="mb-10">
+            <Label>{t('about.team.label')}</Label>
+            <h2
+              className="font-bold text-foreground"
+              style={{ fontSize: 'clamp(24px, 3vw, 32px)', lineHeight: 1.2, letterSpacing: '-0.01em' }}
+            >
+              {t('about.team.title')}
+            </h2>
+            <p
+              className="mt-3 text-muted-foreground"
+              style={{ fontSize: 18, lineHeight: 1.6, maxWidth: 720 }}
+            >
+              {t('about.team.subtitle')}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {(['pietro', 'daniel'] as const).map((p) => (
+              <div
+                key={p}
+                className="rounded-2xl border border-border bg-card p-6 md:p-7 flex gap-5 items-start"
+              >
+                <img
+                  src={`/avatars/${p === 'pietro' ? 'pietro-cozzi' : 'daniel-cracau'}.jpg`}
+                  alt={t(`about.team.${p}_name`)}
+                  className="w-20 h-20 rounded-2xl object-cover flex-shrink-0"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-foreground" style={{ fontSize: 18 }}>
+                    {t(`about.team.${p}_name`)}
+                  </h3>
+                  <p className="mt-0.5 font-medium" style={{ color: BLUE, fontSize: 14 }}>
+                    {t(`about.team.${p}_role`)}
+                  </p>
+                  <p
+                    className="mt-3 text-muted-foreground"
+                    style={{ fontSize: 14, lineHeight: 1.6 }}
+                  >
+                    {t(`about.team.${p}_bio`)}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 8 — Stats strip */}
+      <section className="px-6 lg:px-10 pb-16 md:pb-20">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="rounded-2xl border border-border bg-card grid grid-cols-2 md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-border">
+            {[
+              { Icon: Users, vKey: 'team_value', lKey: 'team_label' },
+              { Icon: Users, vKey: 'people_value', lKey: 'people_label' },
+              { Icon: Layers, vKey: 'disciplines_value', lKey: 'disciplines_label' },
+              { Icon: Globe2, vKey: 'countries_value', lKey: 'countries_label' },
+              { Icon: Target, vKey: 'mission_value', lKey: 'mission_label', subKey: 'mission_sub' as const },
+            ].map(({ Icon, vKey, lKey, subKey }) => (
+              <div key={vKey} className="flex items-center gap-4 px-6 py-6">
+                <Icon className="flex-shrink-0 text-muted-foreground" size={26} strokeWidth={1.5} />
+                <div className="min-w-0">
+                  <div className="font-bold leading-none" style={{ color: BLUE, fontSize: 26 }}>
+                    {t(`about.stats.${vKey}`)}
+                  </div>
+                  <div className="mt-1.5 text-muted-foreground" style={{ fontSize: 13, lineHeight: 1.3 }}>
+                    {t(`about.stats.${lKey}`)}
+                  </div>
+                  {subKey && (
+                    <div className="mt-1 text-muted-foreground" style={{ fontSize: 12, lineHeight: 1.3 }}>
+                      {t(`about.stats.${subKey}`)}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 9 — Due Entrate. Un Sistema. */}
+      <section className="px-6 lg:px-10 pb-16 md:pb-20">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="mb-10">
+            <Label>{t('about.value.label')}</Label>
+            <h2
+              className="font-bold text-foreground"
+              style={{ fontSize: 'clamp(24px, 3vw, 32px)', lineHeight: 1.2, letterSpacing: '-0.01em' }}
+            >
+              {t('about.value.title')}
+            </h2>
+            <p
+              className="mt-3 text-muted-foreground"
+              style={{ fontSize: 18, lineHeight: 1.6, maxWidth: 720 }}
+            >
+              {t('about.value.subtitle')}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {(['candidates', 'business'] as const).map((side) => (
+              <div
+                key={side}
+                className="rounded-2xl border border-border bg-card p-6 md:p-7"
+              >
+                <p
+                  className="text-xs font-mono uppercase tracking-[0.2em] mb-4"
+                  style={{ color: BLUE }}
+                >
+                  {t(`about.value.${side}_label`)}
+                </p>
+                <ul className="space-y-3">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <Check
+                        className="flex-shrink-0 mt-0.5"
+                        size={18}
+                        strokeWidth={2.5}
+                        style={{ color: BLUE }}
+                      />
+                      <span className="text-foreground" style={{ fontSize: 14, lineHeight: 1.55 }}>
+                        {t(`about.value.${side}_${i}`)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 10 — Final CTA (shared) */}
+      <LandingFinalCTA />
     </LandingLayout>
   );
 };
