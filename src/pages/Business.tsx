@@ -481,7 +481,7 @@ const Business: React.FC = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-foreground truncate font-mono" style={{ fontSize: 13 }}>
-                      Candidato #{c.code}
+                      {c.gender === 'f' ? 'Candidata' : 'Candidato'} #{c.code}
                     </div>
                     <div className="text-xs text-muted-foreground truncate">
                       XIMAtar · {c.archetype}
