@@ -24,12 +24,25 @@ const NAVY_DEEP = '#0A2A5E';
 const BLUE = '#0B6BFF';
 
 const XIMATAR_CANDIDATES = [
-  { name: 'lion', label: 'Sofia Rossi', score: 92, tier: 'Alto' },
-  { name: 'fox', label: 'Marco Bianchi', score: 88, tier: 'Alto' },
-  { name: 'owl', label: 'Giulia Conti', score: 76, tier: 'Medio' },
-  { name: 'dolphin', label: 'Luca Ferri', score: 64, tier: 'Medio' },
-  { name: 'bear', label: 'Alessandro Greco', score: 48, tier: 'Basso' },
+  { name: 'lion', archetype: 'Lion', code: 'C-2847', score: 92, tier: 'Alto' },
+  { name: 'fox', archetype: 'Fox', code: 'C-3194', score: 88, tier: 'Alto' },
+  { name: 'owl', archetype: 'Owl', code: 'C-1762', score: 76, tier: 'Medio' },
+  { name: 'dolphin', archetype: 'Dolphin', code: 'C-4081', score: 64, tier: 'Medio' },
+  { name: 'bear', archetype: 'Bear', code: 'C-2509', score: 48, tier: 'Basso' },
 ] as const;
+
+const HERO_CANDIDATE = {
+  name: 'lion',
+  archetype: 'Lion',
+  code: 'C-2847',
+  pillars: [
+    { key: 'drive', label: 'Drive', value: 8.4 },
+    { key: 'computational', label: 'Computazionale', value: 7.2 },
+    { key: 'knowledge', label: 'Knowledge', value: 6.8 },
+    { key: 'communication', label: 'Comunicazione', value: 9.1 },
+    { key: 'creativity', label: 'Creatività', value: 8.6 },
+  ],
+} as const;
 
 const Label: React.FC<{ children: React.ReactNode; className?: string }> = ({
   children,
