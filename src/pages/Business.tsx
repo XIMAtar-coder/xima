@@ -24,11 +24,11 @@ const NAVY_DEEP = '#0A2A5E';
 const BLUE = '#0B6BFF';
 
 const XIMATAR_CANDIDATES = [
-  { name: 'lion', archetype: 'Lion', code: 'C-2847', score: 92, tier: 'Alto' },
-  { name: 'fox', archetype: 'Fox', code: 'C-3194', score: 88, tier: 'Alto' },
-  { name: 'owl', archetype: 'Owl', code: 'C-1762', score: 76, tier: 'Medio' },
-  { name: 'dolphin', archetype: 'Dolphin', code: 'C-4081', score: 64, tier: 'Medio' },
-  { name: 'bear', archetype: 'Bear', code: 'C-2509', score: 48, tier: 'Basso' },
+  { name: 'lion', archetype: 'Lion', code: 'C-2847', score: 92, tier: 'Alto', gender: 'f' as const },
+  { name: 'fox', archetype: 'Fox', code: 'C-3194', score: 88, tier: 'Alto', gender: 'm' as const },
+  { name: 'owl', archetype: 'Owl', code: 'C-1762', score: 76, tier: 'Medio', gender: 'f' as const },
+  { name: 'dolphin', archetype: 'Dolphin', code: 'C-4081', score: 64, tier: 'Medio', gender: 'm' as const },
+  { name: 'bear', archetype: 'Bear', code: 'C-2509', score: 48, tier: 'Basso', gender: 'f' as const },
 ] as const;
 
 const HERO_CANDIDATE = {
@@ -481,7 +481,7 @@ const Business: React.FC = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-foreground truncate font-mono" style={{ fontSize: 13 }}>
-                      Candidato #{c.code}
+                      {c.gender === 'f' ? 'Candidata' : 'Candidato'} #{c.code}
                     </div>
                     <div className="text-xs text-muted-foreground truncate">
                       XIMAtar · {c.archetype}
