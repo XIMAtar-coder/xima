@@ -11,6 +11,7 @@ import {
   Html,
   Link,
   Preview,
+  Section,
   Text,
 } from 'npm:@react-email/components@0.0.22'
 
@@ -27,31 +28,54 @@ export const SignupEmail = ({
   recipient,
   confirmationUrl,
 }: SignupEmailProps) => (
-  <Html lang="en" dir="ltr">
+  <Html lang="it" dir="ltr">
     <Head />
-    <Preview>Confirm your email for {siteName}</Preview>
+    <Preview>Conferma la tua email per {siteName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Confirm your email</Heading>
+        <Section style={brand}>
+          <Text style={brandText}>XIMA</Text>
+        </Section>
+
+        <Heading style={h1}>Conferma la tua email</Heading>
         <Text style={text}>
-          Thanks for signing up for{' '}
+          Grazie per esserti registrato su{' '}
           <Link href={siteUrl} style={link}>
             <strong>{siteName}</strong>
           </Link>
-          !
+          . Per attivare il tuo account e iniziare la XIMA Challenge,
+          conferma il tuo indirizzo email ({recipient}) cliccando il
+          pulsante qui sotto.
         </Text>
-        <Text style={text}>
-          Please confirm your email address (
-          <Link href={`mailto:${recipient}`} style={link}>
-            {recipient}
-          </Link>
-          ) by clicking the button below:
+
+        <Section style={{ textAlign: 'center', margin: '32px 0' }}>
+          <Button style={button} href={confirmationUrl}>
+            Verifica la mia email
+          </Button>
+        </Section>
+
+        <Text style={textMuted}>
+          Il link rimane valido per 24 ore. Se non riesci a cliccare il
+          pulsante, copia e incolla questo indirizzo nel browser:
         </Text>
-        <Button style={button} href={confirmationUrl}>
-          Verify Email
-        </Button>
+        <Text style={urlText}>{confirmationUrl}</Text>
+
+        <Text style={divider}>— English —</Text>
+        <Text style={textMuted}>
+          Thanks for signing up for {siteName}. Confirm your email
+          ({recipient}) using the button above. The link is valid for 24 hours.
+        </Text>
+
+        <Text style={divider}>— Español —</Text>
+        <Text style={textMuted}>
+          Gracias por registrarte en {siteName}. Confirma tu correo
+          ({recipient}) usando el botón de arriba. El enlace es válido
+          durante 24 horas.
+        </Text>
+
         <Text style={footer}>
-          If you didn't create an account, you can safely ignore this email.
+          Se non hai creato un account, puoi ignorare questa email. /
+          If you didn't sign up, you can safely ignore this email.
         </Text>
       </Container>
     </Body>
@@ -60,27 +84,62 @@ export const SignupEmail = ({
 
 export default SignupEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '20px 25px' }
+const main = {
+  backgroundColor: '#ffffff',
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Arial, sans-serif',
+}
+const container = { padding: '32px 28px', maxWidth: '560px', margin: '0 auto' }
+const brand = { marginBottom: '24px' }
+const brandText = {
+  fontSize: '14px',
+  fontWeight: 700 as const,
+  letterSpacing: '0.18em',
+  color: '#0B6BFF',
+  margin: 0,
+}
 const h1 = {
-  fontSize: '22px',
-  fontWeight: 'bold' as const,
-  color: '#000000',
+  fontSize: '26px',
+  fontWeight: 700 as const,
+  color: '#071E3A',
+  letterSpacing: '-0.01em',
+  lineHeight: 1.2,
   margin: '0 0 20px',
 }
 const text = {
-  fontSize: '14px',
-  color: '#55575d',
-  lineHeight: '1.5',
-  margin: '0 0 25px',
+  fontSize: '15px',
+  color: '#3a4a5c',
+  lineHeight: 1.6,
+  margin: '0 0 16px',
 }
-const link = { color: 'inherit', textDecoration: 'underline' }
+const textMuted = {
+  fontSize: '13px',
+  color: '#64748b',
+  lineHeight: 1.6,
+  margin: '0 0 10px',
+}
+const urlText = {
+  fontSize: '12px',
+  color: '#0B6BFF',
+  wordBreak: 'break-all' as const,
+  margin: '0 0 20px',
+}
+const link = { color: '#0B6BFF', textDecoration: 'underline' }
 const button = {
-  backgroundColor: '#000000',
+  backgroundColor: '#0B6BFF',
   color: '#ffffff',
-  fontSize: '14px',
-  borderRadius: '8px',
-  padding: '12px 20px',
+  fontSize: '15px',
+  fontWeight: 600 as const,
+  borderRadius: '12px',
+  padding: '14px 28px',
   textDecoration: 'none',
 }
-const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
+const divider = {
+  fontSize: '11px',
+  color: '#94a3b8',
+  letterSpacing: '0.1em',
+  textTransform: 'uppercase' as const,
+  margin: '24px 0 8px',
+  textAlign: 'center' as const,
+}
+const footer = { fontSize: '12px', color: '#94a3b8', margin: '32px 0 0', lineHeight: 1.5 }
