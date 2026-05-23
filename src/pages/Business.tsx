@@ -244,13 +244,15 @@ const Business: React.FC = () => {
                             />
                           );
                         })}
-                        <foreignObject x={cx - 14} y={cy - 14} width={28} height={28}>
-                          <img
-                            src="/images/xima-symbol-white.svg"
-                            alt=""
-                            style={{ width: '100%', height: '100%', opacity: 0.95 }}
-                          />
-                        </foreignObject>
+                        <image
+                          href="/images/xima-symbol-white.svg"
+                          x={cx - 14}
+                          y={cy - 14}
+                          width={28}
+                          height={28}
+                          opacity={0.95}
+                        />
+
                         {HERO_CANDIDATE.pillars.map((p, i) => {
                           const pt = point(i, maxR + 22);
                           const anchor =
