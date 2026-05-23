@@ -2,223 +2,621 @@ import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LandingLayout from '@/components/landing/LandingLayout';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Users, Layers, Shield, Building2, Check, ShieldCheck } from 'lucide-react';
 import Seo from '@/components/Seo';
+import {
+  Users,
+  Layers,
+  ShieldCheck,
+  Building2,
+  Check,
+  ArrowRight,
+  FileText,
+  ClipboardCheck,
+  Sparkles,
+  BarChart3,
+  Globe2,
+  UserCheck,
+  FileSearch,
+} from 'lucide-react';
 
-const FEATURE_ICONS = [
-  <Users className="w-8 h-8" />,
-  <Layers className="w-8 h-8" />,
-  <Shield className="w-8 h-8" />,
-  <Building2 className="w-8 h-8" />,
-];
+const NAVY = '#071E3A';
+const NAVY_DEEP = '#0A2A5E';
+const BLUE = '#0B6BFF';
 
-const Business = () => {
+const XIMATAR_CANDIDATES = [
+  { name: 'lion', label: 'Sofia Rossi', score: 92, tier: 'Alto' },
+  { name: 'fox', label: 'Marco Bianchi', score: 88, tier: 'Alto' },
+  { name: 'owl', label: 'Giulia Conti', score: 76, tier: 'Medio' },
+  { name: 'dolphin', label: 'Luca Ferri', score: 64, tier: 'Medio' },
+  { name: 'bear', label: 'Alessandro Greco', score: 48, tier: 'Basso' },
+] as const;
+
+const Label: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className = '',
+}) => (
+  <p
+    className={`text-xs font-mono uppercase tracking-[0.2em] mb-3 ${className}`}
+    style={{ color: BLUE }}
+  >
+    {children}
+  </p>
+);
+
+const tierColor = (tier: string) => {
+  if (tier === 'Alto') return '#10B981';
+  if (tier === 'Medio') return '#F59E0B';
+  return '#EF4444';
+};
+
+const Business: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   return (
     <LandingLayout>
       <Seo
-        title="XIMA for Business — Hire on behavioral signals, not résumés"
-        description="XIMA gives hiring teams structured decision intelligence: behavioral challenges, candidate signals, and shortlists grounded in real potential."
+        title="XIMA per le Aziende — Assumi sui segnali, non sui CV"
+        description="Psicometria enterprise per le PMI. Profili comportamentali validati, sfide AI per ruolo, selezione filtrata per adattamento reale."
         path="/business"
       />
-      <div className="container max-w-7xl mx-auto px-4 md:px-8 xl:px-12">
 
-        {/* Hero */}
-        <section className="flex flex-col items-center text-center py-16 md:py-24 space-y-8 max-w-4xl mx-auto">
-          <span className="font-mono text-xs uppercase tracking-widest text-primary">
-            {t('business.eyebrow')}
-          </span>
-          <h1 className="text-[28px] md:text-[40px] xl:text-[48px] font-bold leading-tight text-foreground whitespace-pre-line">
-            {t('business.hero_headline')}
-          </h1>
-          <p className="text-[14px] md:text-[17px] text-muted-foreground max-w-2xl">
-            {t('business.hero_subheadline')}
-          </p>
-          <div className="flex flex-wrap justify-center gap-4 pt-4">
-            <Button size="lg" onClick={() => navigate('/business/register')}>
-              {t('business.hero_cta_primary')}
-            </Button>
-            <Button variant="outline" size="lg" onClick={() => navigate('/business/login')}>
-              {t('business.hero_cta_secondary')}
-            </Button>
+      {/* SECTION 1 — Hero */}
+      <section className="px-6 lg:px-10 pt-16 md:pt-24 pb-16 md:pb-20">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div>
+            <Label>{t('business.eyebrow')}</Label>
+            <h1
+              className="font-bold text-foreground leading-[1.1] whitespace-pre-line"
+              style={{ fontSize: 'clamp(32px, 4.5vw, 46px)', letterSpacing: '-0.02em' }}
+            >
+              {t('business.hero_headline')}
+            </h1>
+            <p
+              className="mt-6 text-muted-foreground"
+              style={{ fontSize: 17, lineHeight: 1.65, maxWidth: 520 }}
+            >
+              {t('business.hero_subheadline')}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <button
+                onClick={() => navigate('/business/register')}
+                className="inline-flex items-center gap-2 font-semibold transition-all"
+                style={{
+                  background: BLUE,
+                  color: '#FFFFFF',
+                  borderRadius: 12,
+                  padding: '14px 24px',
+                  fontSize: 15,
+                  boxShadow: '0 14px 32px rgba(11,107,255,0.28)',
+                }}
+              >
+                {t('business.hero_cta_primary')}
+              </button>
+              <button
+                onClick={() => navigate('/business/login')}
+                className="inline-flex items-center gap-2 font-semibold transition-all border border-border bg-card text-foreground"
+                style={{ borderRadius: 12, padding: '14px 24px', fontSize: 15 }}
+              >
+                {t('business.hero_cta_secondary')}
+              </button>
+            </div>
+            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+              {[
+                'Nessuna carta di credito',
+                'Setup in 2 minuti',
+                'Primo candidato in 24h',
+              ].map((s) => (
+                <span key={s} className="flex items-center gap-2">
+                  <Check size={16} style={{ color: BLUE }} />
+                  {s}
+                </span>
+              ))}
+            </div>
           </div>
-        </section>
 
-        {/* Why XIMA */}
-        <section className="py-16 md:py-20">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <span className="font-mono text-xs uppercase tracking-widest text-primary">
-              {t('business.why_label')}
-            </span>
-            <h2 className="text-[24px] md:text-[32px] xl:text-[36px] font-bold leading-tight text-foreground mt-4 whitespace-pre-line">
+          {/* Hero card mock */}
+          <div className="flex justify-center lg:justify-end">
+            <div
+              className="rounded-2xl border border-border bg-card p-6 w-full max-w-[460px]"
+              style={{ boxShadow: '0 24px 60px rgba(7,30,58,0.18)' }}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-border bg-muted">
+                    <img
+                      src="/ximatars/lion.png"
+                      alt="XIMAtar Lion"
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-foreground">Candidata</div>
+                    <div className="text-xs text-muted-foreground">Valutata su 5 pilastri</div>
+                  </div>
+                </div>
+                <span
+                  className="text-xs font-semibold px-2.5 py-1 rounded-full"
+                  style={{ background: 'rgba(16,185,129,0.12)', color: '#10B981' }}
+                >
+                  ● 8.6/10
+                </span>
+              </div>
+
+              <div className="mt-5 grid grid-cols-2 gap-4 items-center">
+                {/* Mini radar */}
+                <svg viewBox="0 0 160 160" className="w-full h-auto">
+                  {[0.25, 0.5, 0.75, 1].map((r) => (
+                    <polygon
+                      key={r}
+                      points={[0, 72, 144, 216, 288].map((deg) => {
+                        const a = ((deg - 90) * Math.PI) / 180;
+                        return `${80 + Math.cos(a) * 60 * r},${80 + Math.sin(a) * 60 * r}`;
+                      }).join(' ')}
+                      fill="none"
+                      stroke="hsl(var(--border))"
+                      strokeWidth="1"
+                    />
+                  ))}
+                  <polygon
+                    points={[0.85, 0.7, 0.9, 0.65, 0.8].map((v, i) => {
+                      const deg = i * 72;
+                      const a = ((deg - 90) * Math.PI) / 180;
+                      return `${80 + Math.cos(a) * 60 * v},${80 + Math.sin(a) * 60 * v}`;
+                    }).join(' ')}
+                    fill={BLUE}
+                    fillOpacity="0.18"
+                    stroke={BLUE}
+                    strokeWidth="2"
+                  />
+                  {['Drive', 'Creatività', 'Comunicazione', 'Computazionale', 'Knowledge'].map(
+                    (lbl, i) => {
+                      const deg = i * 72;
+                      const a = ((deg - 90) * Math.PI) / 180;
+                      const x = 80 + Math.cos(a) * 74;
+                      const y = 80 + Math.sin(a) * 74;
+                      return (
+                        <text
+                          key={lbl}
+                          x={x}
+                          y={y}
+                          fontSize="7"
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          fill="hsl(var(--muted-foreground))"
+                        >
+                          {lbl}
+                        </text>
+                      );
+                    },
+                  )}
+                </svg>
+
+                <div className="space-y-3">
+                  <div>
+                    <div className="text-xs text-muted-foreground">Adattamento al ruolo</div>
+                    <div className="flex items-baseline justify-between">
+                      <span className="font-bold text-foreground text-xl">92%</span>
+                    </div>
+                    <div className="h-1.5 mt-1 rounded-full bg-muted overflow-hidden">
+                      <div className="h-full" style={{ width: '92%', background: BLUE }} />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">Rischio di Attrito</span>
+                    <span
+                      className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                      style={{ background: 'rgba(16,185,129,0.12)', color: '#10B981' }}
+                    >
+                      ● Basso
+                    </span>
+                  </div>
+                  <div>
+                    <div className="text-xs text-muted-foreground">Sfida L2 – Product Designer</div>
+                    <div className="flex items-baseline justify-between">
+                      <span className="font-bold text-foreground">84%</span>
+                    </div>
+                    <div className="h-1.5 mt-1 rounded-full bg-muted overflow-hidden">
+                      <div className="h-full" style={{ width: '84%', background: BLUE }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 2 — Why XIMA */}
+      <section className="px-6 lg:px-10 pb-16 md:pb-20">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="text-center mb-12">
+            <Label className="!text-center">{t('business.why_label')}</Label>
+            <h2
+              className="font-bold text-foreground whitespace-pre-line"
+              style={{ fontSize: 'clamp(26px, 3.4vw, 36px)', lineHeight: 1.15, letterSpacing: '-0.01em' }}
+            >
               {t('business.why_headline')}
             </h2>
-            <p className="text-muted-foreground mt-4 text-[15px] md:text-[17px]">
+            <p
+              className="mt-4 text-muted-foreground mx-auto"
+              style={{ fontSize: 16, lineHeight: 1.6, maxWidth: 760 }}
+            >
               {t('business.why_subheadline')}
             </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <Card key={i}>
-                <CardContent className="p-6 space-y-4">
-                  <div className="text-primary">{FEATURE_ICONS[i - 1]}</div>
-                  <h3 className="text-xl font-bold text-foreground">
-                    {t(`business.feature${i}_title`)}
-                  </h3>
-                  <p className="text-muted-foreground">
-                    {t(`business.feature${i}_body`)}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Pipeline */}
-        <section className="py-16 md:py-20">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <span className="font-mono text-xs uppercase tracking-widest text-primary">
-              {t('business.pipeline_label')}
-            </span>
-            <h2 className="text-[24px] md:text-[32px] xl:text-[36px] font-bold leading-tight text-foreground mt-4">
-              {t('business.pipeline_headline')}
-            </h2>
-            <p className="text-muted-foreground mt-4 text-[15px] md:text-[17px]">
-              {t('business.pipeline_subheadline')}
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-8">
-            {[1, 2, 3, 4].map((step) => (
-              <div key={step} className="flex flex-col gap-3">
-                <span className="text-5xl font-bold text-primary">
-                  {t(`business.pipeline_step${step}_number`)}
-                </span>
-                <h3 className="text-xl font-bold text-foreground">
-                  {t(`business.pipeline_step${step}_title`)}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { Icon: Users, n: 1 },
+              { Icon: Layers, n: 2 },
+              { Icon: ShieldCheck, n: 3 },
+              { Icon: Building2, n: 4 },
+            ].map(({ Icon, n }) => (
+              <div
+                key={n}
+                className="rounded-2xl border border-border bg-card p-6 flex flex-col"
+              >
+                <Icon size={28} strokeWidth={1.5} style={{ color: BLUE }} />
+                <h3
+                  className="mt-4 font-bold text-foreground"
+                  style={{ fontSize: 16, lineHeight: 1.3 }}
+                >
+                  {t(`business.feature${n}_title`)}
                 </h3>
-                <p className="text-muted-foreground">
-                  {t(`business.pipeline_step${step}_body`)}
+                <p
+                  className="mt-3 text-muted-foreground"
+                  style={{ fontSize: 14, lineHeight: 1.6 }}
+                >
+                  {t(`business.feature${n}_body`)}
                 </p>
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Pricing */}
-        <section className="py-16 md:py-20">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <span className="font-mono text-xs uppercase tracking-widest text-primary">
-              {t('business.pricing_label')}
-            </span>
-            <h2 className="text-[24px] md:text-[32px] xl:text-[36px] font-bold leading-tight text-foreground mt-4">
+      {/* SECTION 3 — Pipeline */}
+      <section className="px-6 lg:px-10 pb-16 md:pb-20">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          <div>
+            <Label>{t('business.pipeline_label')}</Label>
+            <h2
+              className="font-bold text-foreground"
+              style={{ fontSize: 'clamp(26px, 3.4vw, 36px)', lineHeight: 1.15, letterSpacing: '-0.01em' }}
+            >
+              {t('business.pipeline_headline')}
+            </h2>
+            <p
+              className="mt-4 text-muted-foreground"
+              style={{ fontSize: 16, lineHeight: 1.6, maxWidth: 520 }}
+            >
+              {t('business.pipeline_subheadline')}
+            </p>
+
+            {/* Icon row */}
+            <div className="mt-8 flex items-center gap-2">
+              {[FileText, ClipboardCheck, Sparkles, BarChart3].map((Ic, i) => (
+                <React.Fragment key={i}>
+                  <div
+                    className="flex items-center justify-center rounded-xl"
+                    style={{
+                      width: 48,
+                      height: 48,
+                      background: i === 0 ? BLUE : 'rgba(11,107,255,0.10)',
+                      color: i === 0 ? '#FFFFFF' : BLUE,
+                    }}
+                  >
+                    <Ic size={22} strokeWidth={1.8} />
+                  </div>
+                  {i < 3 && (
+                    <div
+                      className="flex-1 border-t border-dashed"
+                      style={{ borderColor: 'rgba(11,107,255,0.35)' }}
+                    />
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-6">
+              {[1, 2, 3, 4].map((step) => (
+                <div key={step}>
+                  <div
+                    className="font-mono text-sm font-semibold"
+                    style={{ color: BLUE }}
+                  >
+                    {t(`business.pipeline_step${step}_number`)}
+                  </div>
+                  <h3
+                    className="mt-1 font-bold text-foreground"
+                    style={{ fontSize: 15, lineHeight: 1.35 }}
+                  >
+                    {t(`business.pipeline_step${step}_title`)}
+                  </h3>
+                  <p
+                    className="mt-2 text-muted-foreground"
+                    style={{ fontSize: 13, lineHeight: 1.55 }}
+                  >
+                    {t(`business.pipeline_step${step}_body`)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Candidate list mock */}
+          <div
+            className="rounded-2xl border border-border bg-card p-5"
+            style={{ boxShadow: '0 24px 60px rgba(7,30,58,0.18)' }}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-border">
+              <span className="font-semibold text-foreground">Candidati</span>
+              <span className="text-xs text-muted-foreground">Ordina per Adattamento ▾</span>
+            </div>
+            <ul className="divide-y divide-border">
+              {XIMATAR_CANDIDATES.map((c) => (
+                <li key={c.label} className="flex items-center gap-3 py-3">
+                  <div className="w-10 h-10 rounded-full overflow-hidden border border-border bg-muted shrink-0">
+                    <img
+                      src={`/ximatars/${c.name}.png`}
+                      alt={c.label}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-foreground truncate" style={{ fontSize: 14 }}>
+                      {c.label}
+                    </div>
+                  </div>
+                  <span className="text-sm font-semibold text-foreground tabular-nums">
+                    {c.score}%
+                  </span>
+                  <span
+                    className="text-xs font-semibold w-16 text-right"
+                    style={{ color: tierColor(c.tier) }}
+                  >
+                    ● {c.tier}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <button
+              className="mt-3 w-full text-sm font-semibold py-2.5 rounded-lg border border-border text-foreground hover:bg-muted/40 transition"
+            >
+              Confronta candidati
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 4 — Pricing */}
+      <section className="px-6 lg:px-10 pb-16 md:pb-20">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="text-center mb-12">
+            <Label className="!text-center">{t('business.pricing_label')}</Label>
+            <h2
+              className="font-bold text-foreground"
+              style={{ fontSize: 'clamp(26px, 3.4vw, 36px)', lineHeight: 1.15, letterSpacing: '-0.01em' }}
+            >
               {t('business.pricing_headline')}
             </h2>
-            <p className="text-muted-foreground mt-4 text-[15px] md:text-[17px]">
+            <p
+              className="mt-4 text-muted-foreground mx-auto"
+              style={{ fontSize: 16, lineHeight: 1.6, maxWidth: 640 }}
+            >
               {t('business.pricing_subheadline')}
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[1, 2, 3].map((plan) => {
               const isGrowth = plan === 2;
               return (
-                <Card
+                <div
                   key={plan}
-                  className={isGrowth ? 'border-primary border-2 relative' : ''}
+                  className="rounded-2xl bg-card p-6 flex flex-col"
+                  style={{
+                    border: isGrowth ? `2px solid ${BLUE}` : '1px solid hsl(var(--border))',
+                    boxShadow: isGrowth ? '0 24px 60px rgba(11,107,255,0.18)' : undefined,
+                  }}
                 >
-                  <CardContent className="p-6 flex flex-col gap-5">
-                    <div className="flex items-center gap-2">
-                      <span className="bg-primary/10 text-primary text-xs font-mono px-3 py-1 rounded-full">
-                        {t(`business.plan${plan}_badge`)}
-                      </span>
-                      {isGrowth && (
-                        <span className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
-                          {t('business.plan2_highlight')}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <span className="text-4xl font-bold text-foreground">
-                        {t(`business.plan${plan}_price`)}
-                      </span>
-                      <span className="text-muted-foreground text-sm ml-1">
-                        {t(`business.plan${plan}_period`)}
-                      </span>
-                    </div>
-                    <p className="text-muted-foreground text-sm">
-                      {t(`business.plan${plan}_tagline`)}
-                    </p>
-                    <ul className="space-y-2 flex-1">
-                      {[1, 2, 3, 4, 5].map((f) => (
-                        <li key={f} className="flex items-start gap-2 text-sm text-foreground">
-                          <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                          {t(`business.plan${plan}_feature${f}`)}
-                        </li>
-                      ))}
-                    </ul>
-                    <Button
-                      variant={isGrowth ? 'default' : 'outline'}
-                      className="w-full"
-                      onClick={() => navigate(plan === 3 ? '/contact-sales' : '/business/register')}
+                  <div className="flex items-center justify-between">
+                    <span
+                      className="text-xs font-mono font-semibold px-3 py-1 rounded-full"
+                      style={{ background: 'rgba(11,107,255,0.10)', color: BLUE }}
                     >
-                      {t(`business.plan${plan}_cta`)}
-                    </Button>
-                  </CardContent>
-                </Card>
+                      {t(`business.plan${plan}_badge`)}
+                    </span>
+                    {isGrowth && (
+                      <span
+                        className="text-xs font-semibold px-3 py-1 rounded-full"
+                        style={{ background: BLUE, color: '#FFFFFF' }}
+                      >
+                        {t('business.plan2_highlight')}
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-5">
+                    <span
+                      className="font-bold text-foreground"
+                      style={{ fontSize: 36, letterSpacing: '-0.02em' }}
+                    >
+                      {t(`business.plan${plan}_price`)}
+                    </span>
+                    <span className="text-muted-foreground text-sm ml-1">
+                      {t(`business.plan${plan}_period`)}
+                    </span>
+                  </div>
+                  <p
+                    className="mt-3 text-muted-foreground"
+                    style={{ fontSize: 14, lineHeight: 1.55 }}
+                  >
+                    {t(`business.plan${plan}_tagline`)}
+                  </p>
+                  <ul className="mt-5 space-y-2.5 flex-1">
+                    {[1, 2, 3, 4, 5].map((f) => (
+                      <li key={f} className="flex items-start gap-2.5">
+                        <Check
+                          size={16}
+                          strokeWidth={2.5}
+                          className="mt-0.5 flex-shrink-0"
+                          style={{ color: BLUE }}
+                        />
+                        <span
+                          className="text-foreground"
+                          style={{ fontSize: 13.5, lineHeight: 1.55 }}
+                        >
+                          {t(`business.plan${plan}_feature${f}`)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    onClick={() =>
+                      navigate(plan === 3 ? '/contact-sales' : '/business/register')
+                    }
+                    className="mt-6 w-full font-semibold transition-all"
+                    style={{
+                      background: isGrowth ? BLUE : 'transparent',
+                      color: isGrowth ? '#FFFFFF' : 'hsl(var(--foreground))',
+                      border: isGrowth ? 'none' : '1px solid hsl(var(--border))',
+                      borderRadius: 10,
+                      padding: '12px 18px',
+                      fontSize: 14,
+                    }}
+                  >
+                    {t(`business.plan${plan}_cta`)}
+                  </button>
+                </div>
               );
             })}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Trust & Compliance */}
-        <section className="py-16 md:py-20">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <span className="font-mono text-xs uppercase tracking-widest text-primary">
-              {t('business.trust_label')}
-            </span>
-            <h2 className="text-[24px] md:text-[32px] xl:text-[36px] font-bold leading-tight text-foreground mt-4 whitespace-pre-line">
+      {/* SECTION 5 — Trust & Compliance */}
+      <section className="px-6 lg:px-10 pb-16 md:pb-20">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10">
+          <div className="lg:col-span-2">
+            <Label>{t('business.trust_label')}</Label>
+            <h2
+              className="font-bold text-foreground whitespace-pre-line"
+              style={{ fontSize: 'clamp(24px, 3vw, 32px)', lineHeight: 1.2, letterSpacing: '-0.01em' }}
+            >
               {t('business.trust_headline')}
             </h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex gap-4">
-                <ShieldCheck className="w-6 h-6 text-primary mt-1 shrink-0" />
-                <div>
-                  <h3 className="font-bold text-foreground">
-                    {t(`business.trust_${i}_title`)}
-                  </h3>
-                  <p className="text-muted-foreground mt-1 text-sm">
-                    {t(`business.trust_${i}_body`)}
-                  </p>
-                </div>
+          <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {[
+              { Icon: ShieldCheck, n: 1 },
+              { Icon: UserCheck, n: 2 },
+              { Icon: FileSearch, n: 3 },
+              { Icon: Globe2, n: 4 },
+            ].map(({ Icon, n }) => (
+              <div key={n}>
+                <Icon size={26} strokeWidth={1.5} style={{ color: BLUE }} />
+                <h3
+                  className="mt-3 font-bold text-foreground"
+                  style={{ fontSize: 15, lineHeight: 1.3 }}
+                >
+                  {t(`business.trust_${n}_title`)}
+                </h3>
+                <p
+                  className="mt-2 text-muted-foreground"
+                  style={{ fontSize: 13.5, lineHeight: 1.6 }}
+                >
+                  {t(`business.trust_${n}_body`)}
+                </p>
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* CTA */}
-        <section className="py-16 md:py-20 text-center max-w-3xl mx-auto">
-          <h2 className="text-[28px] md:text-[36px] font-bold text-foreground whitespace-pre-line">
-            {t('business.cta_headline')}
-          </h2>
-          <p className="text-muted-foreground mt-4 text-[15px] md:text-[17px] max-w-xl mx-auto">
-            {t('business.cta_body')}
-          </p>
-          <div className="flex flex-wrap justify-center gap-4 mt-8">
-            <Button size="lg" onClick={() => navigate('/business/register')}>
-              {t('business.cta_primary')}
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <Link to="/contact-sales">{t('business.cta_secondary')}</Link>
-            </Button>
+      {/* SECTION 6 — Final CTA */}
+      <section className="px-6 lg:px-10 pb-16 md:pb-20">
+        <div
+          className="max-w-[1200px] mx-auto rounded-2xl overflow-hidden relative"
+          style={{ background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY_DEEP} 100%)` }}
+        >
+          <svg
+            className="absolute right-0 bottom-0 pointer-events-none"
+            width="60%"
+            height="100%"
+            viewBox="0 0 800 400"
+            aria-hidden="true"
+            style={{ opacity: 0.3 }}
+          >
+            <defs>
+              <linearGradient id="biz-cta-wave" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#0B6BFF" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="#0B6BFF" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            {Array.from({ length: 18 }).map((_, i) => (
+              <path
+                key={i}
+                d={`M ${100 + i * 30} 400 Q ${300 + i * 18} ${200 - i * 6}, ${800} ${140 + i * 4}`}
+                fill="none"
+                stroke="url(#biz-cta-wave)"
+                strokeWidth="1"
+              />
+            ))}
+          </svg>
+          <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center px-8 md:px-12 py-12 md:py-14">
+            <div>
+              <h2
+                className="font-bold whitespace-pre-line"
+                style={{
+                  color: '#FFFFFF',
+                  fontSize: 'clamp(26px, 3.4vw, 36px)',
+                  lineHeight: 1.15,
+                  letterSpacing: '-0.01em',
+                }}
+              >
+                {t('business.cta_headline')}
+              </h2>
+            </div>
+            <div className="flex flex-col gap-4">
+              <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: 16, lineHeight: 1.6 }}>
+                {t('business.cta_body')}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => navigate('/business/register')}
+                  className="inline-flex items-center gap-2 font-semibold"
+                  style={{
+                    background: BLUE,
+                    color: '#FFFFFF',
+                    borderRadius: 12,
+                    padding: '14px 24px',
+                    fontSize: 15,
+                    boxShadow: '0 14px 32px rgba(11,107,255,0.4)',
+                  }}
+                >
+                  {t('business.cta_primary')}
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+                <Link
+                  to="/contact-sales"
+                  className="inline-flex items-center gap-2 font-semibold"
+                  style={{
+                    background: 'transparent',
+                    color: '#FFFFFF',
+                    border: '1.5px solid rgba(255,255,255,0.55)',
+                    borderRadius: 12,
+                    padding: '14px 24px',
+                    fontSize: 15,
+                  }}
+                >
+                  {t('business.cta_secondary')}
+                </Link>
+              </div>
+            </div>
           </div>
-        </section>
-
-      </div>
+        </div>
+      </section>
     </LandingLayout>
   );
 };
