@@ -111,7 +111,8 @@ const AppContent = () => {
           <Route path="/contact-sales" element={<ContactSales />} />
           <Route path="/business" element={<Business />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+         <Route path="/register" element={<Register />} />
+         <Route path="/check-email" element={<CheckEmail />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
