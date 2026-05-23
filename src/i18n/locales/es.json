@@ -2949,7 +2949,24 @@
         "cancel": "Cancelar"
       },
       "create_from_listing": "Crear Desafío"
-    }
+    },
+    "mock_candidate_m": "Candidato",
+    "mock_candidate_f": "Candidata",
+    "mock_anonymous_suffix": "anónimo hasta la oferta",
+    "mock_fit_role": "Adaptación al puesto",
+    "mock_attrition_risk": "Riesgo de abandono",
+    "mock_low": "Bajo",
+    "mock_l2_role": "Reto L2 — Product Designer",
+    "mock_candidates_title": "Candidatos",
+    "mock_sort_fit": "Ordenar por Adaptación ▾",
+    "mock_compare": "Comparar candidatos",
+    "pillar_drive": "Drive",
+    "pillar_computational": "Computacional",
+    "pillar_knowledge": "Conocimiento",
+    "pillar_communication": "Comunicación",
+    "pillar_creativity": "Creatividad",
+    "seo_title": "XIMA para Empresas — Contrata por señales, no por CV",
+    "seo_description": "Psicometría enterprise para pymes. Perfiles conductuales validados, retos IA por rol, selección filtrada por adaptación real."
   },
   "not_found": {
     "title": "404 - Página No Encontrada",

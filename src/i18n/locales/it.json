@@ -2334,7 +2334,24 @@
         "needs_clarification": "Necessita chiarimenti",
         "insufficient": "Necessita più dettagli"
       }
-    }
+    },
+    "mock_candidate_m": "Candidato",
+    "mock_candidate_f": "Candidata",
+    "mock_anonymous_suffix": "anonimo fino all'offerta",
+    "mock_fit_role": "Adattamento al ruolo",
+    "mock_attrition_risk": "Rischio di Attrito",
+    "mock_low": "Basso",
+    "mock_l2_role": "Sfida L2 — Product Designer",
+    "mock_candidates_title": "Candidati",
+    "mock_sort_fit": "Ordina per Adattamento ▾",
+    "mock_compare": "Confronta candidati",
+    "pillar_drive": "Drive",
+    "pillar_computational": "Computazionale",
+    "pillar_knowledge": "Knowledge",
+    "pillar_communication": "Comunicazione",
+    "pillar_creativity": "Creatività",
+    "seo_title": "XIMA per le Aziende — Assumi sui segnali, non sui CV",
+    "seo_description": "Psicometria enterprise per le PMI. Profili comportamentali validati, sfide AI per ruolo, selezione filtrata per adattamento reale."
   },
   "not_found": {
     "title": "404 - Pagina Non Trovata",

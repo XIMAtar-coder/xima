@@ -36,11 +36,11 @@ const HERO_CANDIDATE = {
   archetype: 'Lion',
   code: 'C-2847',
   pillars: [
-    { key: 'drive', label: 'Drive', value: 8.4 },
-    { key: 'computational', label: 'Computazionale', value: 7.2 },
-    { key: 'knowledge', label: 'Knowledge', value: 6.8 },
-    { key: 'communication', label: 'Comunicazione', value: 9.1 },
-    { key: 'creativity', label: 'Creatività', value: 8.6 },
+    { key: 'drive', value: 8.4 },
+    { key: 'computational', value: 7.2 },
+    { key: 'knowledge', value: 6.8 },
+    { key: 'communication', value: 9.1 },
+    { key: 'creativity', value: 8.6 },
   ],
 } as const;
 
@@ -69,8 +69,8 @@ const Business: React.FC = () => {
   return (
     <LandingLayout>
       <Seo
-        title="XIMA per le Aziende — Assumi sui segnali, non sui CV"
-        description="Psicometria enterprise per le PMI. Profili comportamentali validati, sfide AI per ruolo, selezione filtrata per adattamento reale."
+        title={t('business.seo_title')}
+        description={t('business.seo_description')}
         path="/business"
       />
 
@@ -157,10 +157,10 @@ const Business: React.FC = () => {
                   </div>
                   <div>
                     <div className="font-semibold font-mono text-white" style={{ fontSize: 14 }}>
-                      Candidato #{HERO_CANDIDATE.code}
+                      {t('business.mock_candidate_m')} #{HERO_CANDIDATE.code}
                     </div>
                     <div className="text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
-                      XIMAtar · {HERO_CANDIDATE.archetype} — anonimo fino all'offerta
+                      XIMAtar · {HERO_CANDIDATE.archetype} — {t('business.mock_anonymous_suffix')}
                     </div>
                   </div>
                 </div>
@@ -278,7 +278,7 @@ const Business: React.FC = () => {
                                 fontSize={9.5}
                                 opacity={0.7}
                               >
-                                {p.label}
+                                {t(`business.pillar_${p.key}`)}
                               </text>
                             </g>
                           );
@@ -301,7 +301,7 @@ const Business: React.FC = () => {
                 <div>
                   <div className="flex items-baseline justify-between">
                     <span className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                      Adattamento al ruolo
+                      {t('business.mock_fit_role')}
                     </span>
                     <span className="font-bold text-white" style={{ fontSize: 18 }}>92%</span>
                   </div>
@@ -314,19 +314,19 @@ const Business: React.FC = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                    Rischio di Attrito
+                    {t('business.mock_attrition_risk')}
                   </span>
                   <span
                     className="text-xs font-semibold px-2 py-0.5 rounded-full"
                     style={{ background: 'rgba(16,185,129,0.18)', color: '#34D399' }}
                   >
-                    ● Basso
+                    ● {t('business.mock_low')}
                   </span>
                 </div>
                 <div>
                   <div className="flex items-baseline justify-between">
                     <span className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                      Sfida L2 — Product Designer
+                      {t('business.mock_l2_role')}
                     </span>
                     <span className="font-bold text-white" style={{ fontSize: 16 }}>84%</span>
                   </div>
@@ -467,8 +467,8 @@ const Business: React.FC = () => {
             style={{ boxShadow: '0 24px 60px rgba(7,30,58,0.18)' }}
           >
             <div className="flex items-center justify-between pb-3 border-b border-border">
-              <span className="font-semibold text-foreground">Candidati</span>
-              <span className="text-xs text-muted-foreground">Ordina per Adattamento ▾</span>
+              <span className="font-semibold text-foreground">{t('business.mock_candidates_title')}</span>
+              <span className="text-xs text-muted-foreground">{t('business.mock_sort_fit')}</span>
             </div>
             <ul className="divide-y divide-border">
               {XIMATAR_CANDIDATES.map((c) => (
@@ -483,7 +483,7 @@ const Business: React.FC = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-foreground truncate font-mono" style={{ fontSize: 13 }}>
-                      {c.gender === 'f' ? 'Candidata' : 'Candidato'} #{c.code}
+                      {c.gender === 'f' ? t('business.mock_candidate_f') : t('business.mock_candidate_m')} #{c.code}
                     </div>
                     <div className="text-xs text-muted-foreground truncate">
                       XIMAtar · {c.archetype}
@@ -504,7 +504,7 @@ const Business: React.FC = () => {
             <button
               className="mt-3 w-full text-sm font-semibold py-2.5 rounded-lg border border-border text-foreground hover:bg-muted/40 transition"
             >
-              Confronta candidati
+              {t('business.mock_compare')}
             </button>
           </div>
         </div>
