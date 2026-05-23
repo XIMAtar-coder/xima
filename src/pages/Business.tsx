@@ -278,7 +278,7 @@ const Business: React.FC = () => {
                                 fontSize={9.5}
                                 opacity={0.7}
                               >
-                                {p.label}
+                                {t(`business.pillar_${p.key}`)}
                               </text>
                             </g>
                           );
