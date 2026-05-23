@@ -69,8 +69,8 @@ const Business: React.FC = () => {
   return (
     <LandingLayout>
       <Seo
-        title="XIMA per le Aziende — Assumi sui segnali, non sui CV"
-        description="Psicometria enterprise per le PMI. Profili comportamentali validati, sfide AI per ruolo, selezione filtrata per adattamento reale."
+        title={t('business.seo_title')}
+        description={t('business.seo_description')}
         path="/business"
       />
 
