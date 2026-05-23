@@ -467,8 +467,8 @@ const Business: React.FC = () => {
             style={{ boxShadow: '0 24px 60px rgba(7,30,58,0.18)' }}
           >
             <div className="flex items-center justify-between pb-3 border-b border-border">
-              <span className="font-semibold text-foreground">Candidati</span>
-              <span className="text-xs text-muted-foreground">Ordina per Adattamento ▾</span>
+              <span className="font-semibold text-foreground">{t('business.mock_candidates_title')}</span>
+              <span className="text-xs text-muted-foreground">{t('business.mock_sort_fit')}</span>
             </div>
             <ul className="divide-y divide-border">
               {XIMATAR_CANDIDATES.map((c) => (
