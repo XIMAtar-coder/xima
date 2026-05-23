@@ -9,6 +9,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '../context/UserContext';
 import { RegistrationForm } from '../types';
 import { Logo } from '@/components/Logo';
+import LandingLayout from '@/components/landing/LandingLayout';
 import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
 import { supabase } from '@/integrations/supabase/client';
 import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
@@ -157,8 +158,8 @@ const Register = () => {
   };
   
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 40%, #ffffff, #eeeef3 70%)' }}>
-      <div className="w-full max-w-md animate-[fade-in_0.4s_ease-out]">
+    <LandingLayout>
+      <div className="container max-w-md mx-auto pt-8 pb-16 px-4">
         <Card>
           <CardHeader className="space-y-4 text-center">
             <div className="mx-auto mb-2">
@@ -177,7 +178,7 @@ const Register = () => {
                   id="name" name="name"
                   placeholder={t('register.name_placeholder')}
                   value={formData.name} onChange={handleChange}
-                  className={errors.name ? "ring-2 ring-destructive" : ""}
+                  className={`min-h-[48px] ${errors.name ? "ring-2 ring-destructive" : ""}`}
                 />
                 {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
               </div>
@@ -188,7 +189,7 @@ const Register = () => {
                   id="email" name="email" type="email"
                   placeholder={t('register.email_placeholder')}
                   value={formData.email} onChange={handleChange}
-                  className={errors.email ? "ring-2 ring-destructive" : ""}
+                  className={`min-h-[48px] ${errors.email ? "ring-2 ring-destructive" : ""}`}
                 />
                 {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
               </div>
@@ -199,7 +200,7 @@ const Register = () => {
                   id="password" name="password" type="password"
                   placeholder={t('register.password_placeholder')}
                   value={formData.password} onChange={handleChange}
-                  className={errors.password ? "ring-2 ring-destructive" : ""}
+                  className={`min-h-[48px] ${errors.password ? "ring-2 ring-destructive" : ""}`}
                 />
                 {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
               </div>
@@ -210,7 +211,7 @@ const Register = () => {
                   id="confirmPassword" name="confirmPassword" type="password"
                   placeholder={t('register.confirm_placeholder')}
                   value={formData.confirmPassword} onChange={handleChange}
-                  className={errors.confirmPassword ? "ring-2 ring-destructive" : ""}
+                  className={`min-h-[48px] ${errors.confirmPassword ? "ring-2 ring-destructive" : ""}`}
                 />
                 {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword}</p>}
               </div>
@@ -221,7 +222,7 @@ const Register = () => {
                 showError={showConsentError} className="pt-2"
               />
               
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
+              <Button type="submit" className="w-full min-h-[48px]" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -257,7 +258,7 @@ const Register = () => {
           </CardFooter>
         </Card>
       </div>
-    </div>
+    </LandingLayout>
   );
 };
 
