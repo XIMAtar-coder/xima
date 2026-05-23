@@ -52,7 +52,7 @@ const Profile = () => {
   // Send welcome email once after user lands on dashboard with a created profile
   useEffect(() => {
     if (!isAuthenticated || !user?.id) return;
-    if (!profileData || profileData.loading) return;
+    if (!profileData || profileData.isLoading) return;
     const raw = sessionStorage.getItem('xima_pending_welcome');
     if (!raw) return;
     try {
@@ -75,7 +75,7 @@ const Profile = () => {
     } finally {
       sessionStorage.removeItem('xima_pending_welcome');
     }
-  }, [isAuthenticated, user?.id, profileData?.loading]);
+  }, [isAuthenticated, user?.id, profileData?.isLoading]);
 
   useEffect(() => {
     if (hasMentor) completeStep('choose_mentor');
