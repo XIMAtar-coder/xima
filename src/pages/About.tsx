@@ -19,6 +19,7 @@ import {
   Globe2,
   Target,
 } from 'lucide-react';
+import originEngineering from '@/assets/origin-engineering.png';
 
 const XIMATARS = [
   'bear', 'bee', 'cat', 'chameleon', 'dolphin', 'elephant',
@@ -110,32 +111,17 @@ const About: React.FC = () => {
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-10 items-start">
           {/* Image / placeholder (40%) */}
           <div className="md:col-span-2">
-            <div
-              className="w-full rounded-2xl overflow-hidden relative"
+            <img
+              src={originEngineering}
+              alt={t('about.origin.title')}
+              className="w-full rounded-2xl object-cover"
               style={{
                 aspectRatio: '4 / 3',
-                background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY_DEEP} 100%)`,
                 boxShadow: '0 24px 60px rgba(7,30,58,0.25)',
               }}
-            >
-              {/* subtle blueprint grid pattern */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage:
-                    'linear-gradient(rgba(11,107,255,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(11,107,255,0.18) 1px, transparent 1px)',
-                  backgroundSize: '32px 32px',
-                  opacity: 0.5,
-                }}
-              />
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    'radial-gradient(circle at 30% 40%, rgba(11,107,255,0.35) 0%, transparent 60%)',
-                }}
-              />
-            </div>
+              loading="lazy"
+              decoding="async"
+            />
           </div>
           {/* Text (60%) */}
           <div className="md:col-span-3">
