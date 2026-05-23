@@ -30,6 +30,7 @@ import NotFound from "./pages/NotFound";
 import { XimAIProvider } from "./context/XimAIProvider";
 import ChatEntry from "./components/ximai/ChatEntry";
 import OpportunityDetails from "./pages/OpportunityDetails";
+import Unsubscribe from "./pages/Unsubscribe";
 
 import { AssessmentProvider } from "./contexts/AssessmentContext";
 // Legal pages
