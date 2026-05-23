@@ -301,7 +301,7 @@ const Business: React.FC = () => {
                 <div>
                   <div className="flex items-baseline justify-between">
                     <span className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                      Adattamento al ruolo
+                      {t('business.mock_fit_role')}
                     </span>
                     <span className="font-bold text-white" style={{ fontSize: 18 }}>92%</span>
                   </div>
@@ -314,19 +314,19 @@ const Business: React.FC = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                    Rischio di Attrito
+                    {t('business.mock_attrition_risk')}
                   </span>
                   <span
                     className="text-xs font-semibold px-2 py-0.5 rounded-full"
                     style={{ background: 'rgba(16,185,129,0.18)', color: '#34D399' }}
                   >
-                    ● Basso
+                    ● {t('business.mock_low')}
                   </span>
                 </div>
                 <div>
                   <div className="flex items-baseline justify-between">
                     <span className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                      Sfida L2 — Product Designer
+                      {t('business.mock_l2_role')}
                     </span>
                     <span className="font-bold text-white" style={{ fontSize: 16 }}>84%</span>
                   </div>
