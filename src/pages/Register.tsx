@@ -9,6 +9,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '../context/UserContext';
 import { RegistrationForm } from '../types';
 import { Logo } from '@/components/Logo';
+import LandingLayout from '@/components/landing/LandingLayout';
 import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
 import { supabase } from '@/integrations/supabase/client';
 import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
