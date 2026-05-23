@@ -89,77 +89,41 @@ const Register = () => {
       }
 
       const newUserId = data?.user?.id;
-      if (newUserId) {
+      const hasSession = !!data?.session;
+
+      // Persist pending post-signup actions (run after email confirm + first login)
+      try {
+        sessionStorage.setItem('xima_pending_welcome', JSON.stringify({
+          userId: newUserId,
+          email: formData.email,
+          name: formData.name?.split(' ')[0] || formData.name,
+          locale: (i18n.language || 'en').slice(0, 2),
+        }));
+        if (refCode) sessionStorage.setItem('xima_pending_ref', refCode);
+      } catch {}
+
+      if (newUserId && hasSession) {
+        // Session available (email confirmation disabled) → run consents + sync now
         const consentResult = await recordUserConsents(newUserId, i18n.language);
         if (!consentResult.success) {
           await supabase.auth.signOut();
           toast({ title: t('register.consent_error_title', 'Registration Error'), description: t('register.consent_error_desc', 'Failed to record your consent. Please try registering again.'), variant: "destructive" });
           return;
         }
-        
+
         if (refCode) {
           try {
             await supabase.rpc('apply_referral_on_signup', { invite_code: refCode });
           } catch (refErr) { console.warn('[Register] Referral apply exception:', refErr); }
         }
 
-        const syncSuccess = await syncGuestAssessmentToProfile(newUserId);
-        
-        // Auto-import CV from guest onboarding if available
-        try {
-          const pendingCvRaw = sessionStorage.getItem('xima_pending_cv');
-          if (pendingCvRaw) {
-            const pendingCv = JSON.parse(pendingCvRaw);
-            // Convert base64 data URL back to File
-            const res = await fetch(pendingCv.base64_data);
-            const blob = await res.blob();
-            const file = new File([blob], pendingCv.file_name, { type: pendingCv.file_type });
-            
-            const formData = new FormData();
-            formData.append('file', file);
-
-            const { data: sessionData } = await supabase.auth.getSession();
-            const accessToken = sessionData?.session?.access_token;
-            if (accessToken) {
-              const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-              const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-              
-              fetch(`${supabaseUrl}/functions/v1/analyze-cv`, {
-                method: 'POST',
-                headers: {
-                  'Authorization': `Bearer ${accessToken}`,
-                  'apikey': supabaseAnonKey,
-                },
-                body: formData,
-              }).then(() => {
-                console.log('✅ Pending CV auto-imported after registration');
-              }).catch(e => {
-                console.warn('[Register] CV auto-import failed (non-blocking):', e);
-              });
-            }
-            sessionStorage.removeItem('xima_pending_cv');
-          }
-        } catch (e) {
-          console.warn('[Register] CV auto-import error (non-blocking):', e);
-        }
-
-        // Defer welcome email until profile exists (sent on dashboard landing)
-        try {
-          sessionStorage.setItem('xima_pending_welcome', JSON.stringify({
-            userId: newUserId,
-            email: formData.email,
-            name: formData.name?.split(' ')[0] || formData.name,
-            locale: (i18n.language || 'en').slice(0, 2),
-          }));
-        } catch {}
-
-        toast({
-          title: t('auth.register_success', 'Account created successfully'),
-          description: syncSuccess ? t('register.assessment_synced', 'Your assessment data has been saved to your profile') : t('register.welcome_message'),
-        });
+        await syncGuestAssessmentToProfile(newUserId);
+        navigate('/profile');
+        return;
       }
 
-      navigate('/profile');
+      // Email confirmation required → go to check-email page
+      navigate('/check-email', { state: { email: formData.email } });
     } catch (error) {
       toast({ title: t('register.registration_failed'), description: t('register.try_again'), variant: "destructive" });
     } finally {
