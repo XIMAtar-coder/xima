@@ -6,7 +6,7 @@ import LandingFinalCTA from '@/components/landing/LandingFinalCTA';
 import Seo from '@/components/Seo';
 import {
   Network,
-  Hexagon,
+  Columns3,
   ShieldCheck,
   Zap,
   Lightbulb,
@@ -15,6 +15,7 @@ import {
   Cpu,
   Check,
   Users,
+  UsersRound,
   Layers,
   Globe2,
   Target,
@@ -148,8 +149,8 @@ const About: React.FC = () => {
         <div className="max-w-[1200px] mx-auto">
           <div className="rounded-2xl border border-border bg-card grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
             {[
-              { Icon: Network, key: 'p1' },
-              { Icon: Hexagon, key: 'p2' },
+              { Icon: Columns3, key: 'p1' },
+              { Icon: UsersRound, key: 'p2' },
               { Icon: ShieldCheck, key: 'p3' },
             ].map(({ Icon, key }) => (
               <div key={key} className="flex items-center gap-4 px-6 py-6 md:py-7">
