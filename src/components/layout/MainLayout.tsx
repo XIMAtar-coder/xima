@@ -366,6 +366,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
       </nav>
 
       <main className={`pt-16 md:pt-[72px] ${isAuthenticated ? 'pb-20 md:pb-0' : ''} ${fullHeight ? 'flex-1 overflow-hidden' : 'flex-1'}`}>
+        <EmailVerificationBanner />
         {children}
       </main>
 
