@@ -91,7 +91,7 @@ const Register = () => {
       const newUserId = data?.user?.id;
       const hasSession = !!data?.session;
 
-      // Persist pending post-signup actions (run after email confirm + first login)
+      // Persist pending post-signup actions
       try {
         sessionStorage.setItem('xima_pending_welcome', JSON.stringify({
           userId: newUserId,
@@ -103,7 +103,6 @@ const Register = () => {
       } catch {}
 
       if (newUserId && hasSession) {
-        // Session available (email confirmation disabled) → run consents + sync now
         const consentResult = await recordUserConsents(newUserId, i18n.language);
         if (!consentResult.success) {
           await supabase.auth.signOut();
@@ -112,18 +111,47 @@ const Register = () => {
         }
 
         if (refCode) {
-          try {
-            await supabase.rpc('apply_referral_on_signup', { invite_code: refCode });
-          } catch (refErr) { console.warn('[Register] Referral apply exception:', refErr); }
+          try { await supabase.rpc('apply_referral_on_signup', { invite_code: refCode }); }
+          catch (refErr) { console.warn('[Register] Referral apply exception:', refErr); }
         }
+
+        // 48h verification window
+        const deadline = new Date();
+        deadline.setHours(deadline.getHours() + 48);
+
+        try {
+          await supabase.from('profiles').update({
+            verification_required_until: deadline.toISOString(),
+            email_verified_at: null,
+          }).eq('user_id', newUserId);
+        } catch (e) { console.warn('[Register] verification deadline update failed', e); }
+
+        try {
+          const { error: emailErr } = await supabase.functions.invoke('send-verification-email', {
+            body: {
+              user_id: newUserId,
+              email: formData.email,
+              name: formData.name,
+              verification_deadline: deadline.toISOString(),
+            },
+          });
+          if (emailErr) {
+            console.error('[Register] Verification email failed:', emailErr);
+            toast({ title: 'Account creato', description: 'La mail di verifica potrebbe arrivare con qualche minuto di ritardo.' });
+          } else {
+            toast({ title: 'Account creato!', description: 'Controlla la tua email per confermare entro 48 ore.' });
+          }
+        } catch (emailErr) { console.error('[Register] verification email exception', emailErr); }
 
         await syncGuestAssessmentToProfile(newUserId);
         navigate('/profile');
         return;
       }
 
-      // Email confirmation required → go to check-email page
-      navigate('/check-email', { state: { email: formData.email } });
+      // Fallback: no session (e.g. confirm-email still enabled somehow) → go to login
+      toast({ title: 'Account creato', description: 'Accedi per continuare.' });
+      navigate('/login');
+
     } catch (error) {
       toast({ title: t('register.registration_failed'), description: t('register.try_again'), variant: "destructive" });
     } finally {
