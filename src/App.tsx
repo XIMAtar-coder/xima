@@ -15,7 +15,7 @@ import HowItWorks from "./pages/HowItWorks";
 import Business from "./pages/Business";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import CheckEmail from "./pages/CheckEmail";
+import VerifyEmail from "./pages/VerifyEmail";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import XimatarJourney from "./pages/XimatarJourney";
