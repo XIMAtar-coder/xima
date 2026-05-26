@@ -12,6 +12,36 @@ import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
 
+// SSRF guard: only allow https public URLs (block private/loopback/link-local ranges)
+function assertSafePublicUrl(rawUrl: string): URL {
+  let parsed: URL;
+  try { parsed = new URL(rawUrl); } catch { throw new Error("Invalid URL"); }
+  if (parsed.protocol !== "https:") throw new Error("Only https URLs are allowed");
+  const host = parsed.hostname.toLowerCase().replace(/^\[|\]$/g, "");
+  const privateRanges = [
+    /^localhost$/,
+    /^127\./,
+    /^10\./,
+    /^192\.168\./,
+    /^172\.(1[6-9]|2\d|3[01])\./,
+    /^169\.254\./,
+    /^0\./,
+    /^::1$/,
+    /^fc[0-9a-f]{2}:/i,
+    /^fd[0-9a-f]{2}:/i,
+    /^fe80:/i,
+  ];
+  if (privateRanges.some((r) => r.test(host))) throw new Error("Private or reserved address blocked");
+  return parsed;
+}
+
+// Sanitize free-text user input destined for an LLM prompt to mitigate prompt injection
+function sanitizePromptInput(value: unknown, maxLength = 200): string {
+  if (typeof value !== "string") throw new Error("Input must be a string");
+  const trimmed = value.trim().slice(0, maxLength);
+  return trimmed.replace(/[<>\x00-\x1F\x7F]/g, "").replace(/\s+/g, " ").trim();
+}
+
 function extractJsonSafe(text: string): any {
   let s = typeof text === "string" ? text.trim() : String(text);
   const fence = s.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
