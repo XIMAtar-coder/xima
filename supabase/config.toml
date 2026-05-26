@@ -72,6 +72,8 @@ project_id = "iyckvvnecpnldrxqmzta"
   [functions.send-referral-invite]
     verify_jwt = false
   [functions.send-verification-email]
+    verify_jwt = true
+  [functions.verify-email-token]
     verify_jwt = false
   [functions.send-welcome-email]
     verify_jwt = false
