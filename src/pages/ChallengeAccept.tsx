@@ -100,6 +100,14 @@ const ChallengeAccept = () => {
 
     setProcessing(true);
     try {
+      const { canPerformSensitiveAction } = await import('@/lib/auth/verificationGuard');
+      const gate = await canPerformSensitiveAction();
+      if (!gate.allowed) {
+        toast({ title: 'Email non verificata', description: gate.reason, variant: 'destructive' });
+        setProcessing(false);
+        return;
+      }
+
       // Get user's profile_id
       const { data: profile } = await supabase
         .from('profiles')
