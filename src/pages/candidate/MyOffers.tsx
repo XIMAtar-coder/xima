@@ -36,6 +36,15 @@ const OfferCard = ({ offer, onResponded }: { offer: HiringOffer; onResponded: ()
   const respondToOffer = async (decision: 'accepted' | 'declined') => {
     setIsResponding(true);
     try {
+      if (decision === 'accepted') {
+        const { canPerformSensitiveAction } = await import('@/lib/auth/verificationGuard');
+        const gate = await canPerformSensitiveAction();
+        if (!gate.allowed) {
+          toast({ title: 'Email non verificata', description: gate.reason, variant: 'destructive' });
+          setIsResponding(false);
+          return;
+        }
+      }
       const { error } = await supabase.functions.invoke('respond-to-offer', {
         body: { offer_id: offer.id, response: decision, candidate_message: message || undefined },
       });

@@ -49,6 +49,10 @@ export const useMutualInterest = () => {
     if (!user) return { success: false, error: 'Not authenticated' };
 
     try {
+      const { canPerformSensitiveAction } = await import('@/lib/auth/verificationGuard');
+      const gate = await canPerformSensitiveAction();
+      if (!gate.allowed) return { success: false, error: gate.reason };
+
       const { data, error } = await supabase.rpc('accept_interest', {
         p_interest_id: interestId
       });

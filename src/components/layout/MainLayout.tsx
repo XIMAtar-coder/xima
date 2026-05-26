@@ -17,6 +17,7 @@ import { MobileTabBar } from './MobileTabBar';
 import { XimaJourneyGuideModal } from '../onboarding/XimaJourneyGuideModal';
 import { useOnboardingState } from '@/hooks/useOnboardingState';
 import { ThemeToggle } from '../ThemeToggle';
+import { EmailVerificationBanner } from '../auth/EmailVerificationBanner';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -366,6 +367,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
       </nav>
 
       <main className={`pt-16 md:pt-[72px] ${isAuthenticated ? 'pb-20 md:pb-0' : ''} ${fullHeight ? 'flex-1 overflow-hidden' : 'flex-1'}`}>
+        <EmailVerificationBanner />
         {children}
       </main>
 
