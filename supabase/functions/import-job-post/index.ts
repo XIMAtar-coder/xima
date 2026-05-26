@@ -159,8 +159,10 @@ serve(async (req) => {
 
       if (importMethod === "url" && sourceUrl) {
         try {
-          const resp = await fetch(sourceUrl, {
+          const safeUrl = assertSafePublicUrl(sourceUrl);
+          const resp = await fetch(safeUrl.toString(), {
             headers: { "User-Agent": "Mozilla/5.0 (compatible; XIMA Job Importer)" },
+            redirect: "manual",
           });
           if (resp.ok) {
             const html = await resp.text();
