@@ -45,9 +45,8 @@ const Profile = () => {
 
   const hasMentor = !!profileData.mentor_profile;
 
-  useEffect(() => {
-    if (shouldAutoShowGuide) setGuideOpen(true);
-  }, [shouldAutoShowGuide]);
+  // Onboarding tour is no longer auto-started. Users can open it via the "Tour guidato" button below.
+
 
   // Send welcome email once after user lands on dashboard with a created profile
   useEffect(() => {
