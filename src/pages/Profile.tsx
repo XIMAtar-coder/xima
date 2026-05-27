@@ -45,9 +45,8 @@ const Profile = () => {
 
   const hasMentor = !!profileData.mentor_profile;
 
-  useEffect(() => {
-    if (shouldAutoShowGuide) setGuideOpen(true);
-  }, [shouldAutoShowGuide]);
+  // Onboarding tour is no longer auto-started. Users can open it via the "Tour guidato" button below.
+
 
   // Send welcome email once after user lands on dashboard with a created profile
   useEffect(() => {
@@ -174,14 +173,20 @@ const Profile = () => {
       <div className="container max-w-7xl mx-auto py-6 md:py-10 px-4 md:px-8 space-y-6 watermark-bg">
         <XimaJourneyGuideModal open={guideOpen} onClose={handleGuideClose} isAutoOpen={shouldAutoShowGuide} />
 
-        <div className="space-y-2 relative z-10">
-          <p className="text-[12px] font-medium text-primary uppercase tracking-[0.04em]">
-            {t('dashboard.page_label', 'Dashboard')}
-          </p>
-          <h1 className="text-[28px] md:text-[34px] font-bold text-foreground">
-            {t('dashboard.welcome_headline', { name: profileData.full_name || user?.name || t('profile.user') })}
-          </h1>
-          <p className="text-[15px] text-muted-foreground max-w-lg">{t('dashboard.welcome_subheadline')}</p>
+        <div className="flex items-start justify-between gap-4 relative z-10">
+          <div className="space-y-2">
+            <p className="text-[12px] font-medium text-primary uppercase tracking-[0.04em]">
+              {t('dashboard.page_label', 'Dashboard')}
+            </p>
+            <h1 className="text-[28px] md:text-[34px] font-bold text-foreground">
+              {t('dashboard.welcome_headline', { name: profileData.full_name || user?.name || t('profile.user') })}
+            </h1>
+            <p className="text-[15px] text-muted-foreground max-w-lg">{t('dashboard.welcome_subheadline')}</p>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => setGuideOpen(true)} className="shrink-0">
+            <Sparkles className="mr-2 h-4 w-4" strokeWidth={1.5} />
+            {t('dashboard.guided_tour', 'Tour guidato')}
+          </Button>
         </div>
 
         <div className="space-y-6 relative z-10 dashboard-stagger">

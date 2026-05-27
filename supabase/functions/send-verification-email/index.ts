@@ -15,8 +15,8 @@ function escapeHtml(s: string): string {
     .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
-const APP_BASE = "https://ximatar.com";
-const LOGO_URL = "https://ximatar.com/images/xima-full-dark.png";
+const APP_BASE = Deno.env.get("PUBLIC_APP_URL") ?? "https://preview--xima.lovable.app";
+const LOGO_URL = `${APP_BASE}/images/xima-full-dark.png`;
 
 async function sha256Hex(input: string): Promise<string> {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
