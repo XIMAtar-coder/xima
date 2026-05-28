@@ -231,10 +231,11 @@ const JobImportWizard = () => {
       }
 
       // 3. Insert hiring goal draft
+      if (!businessProfile?.id) throw new Error('Business profile not found');
       const { error: hgErr } = await supabase
         .from('hiring_goal_drafts')
         .insert({
-          business_id: user!.id,
+          business_id: businessProfile.id,
           role_title: extracted.title || 'Untitled',
           task_description: taskParts.join('\n'),
           experience_level: mapSeniorityToExperienceLevel(extracted.seniority),
