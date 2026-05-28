@@ -114,7 +114,6 @@ const JobImportWizard = () => {
   const { toast } = useToast();
   const { user } = useUser();
   const { businessProfile } = useBusinessProfile();
-  const { businessProfile } = useBusinessProfile();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState<1 | 2>(1);
