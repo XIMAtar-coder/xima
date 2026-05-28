@@ -5966,6 +5966,7 @@ export type Database = {
         Args: { p_action: string; p_context?: Json; p_user_id: string }
         Returns: string
       }
+      is_business_owner: { Args: { _business_id: string }; Returns: boolean }
       is_email_verified: { Args: never; Returns: boolean }
       is_pipeline_thread_participant: {
         Args: { _thread_id: string; _user_id: string }
