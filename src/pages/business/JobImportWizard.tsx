@@ -114,6 +114,7 @@ const JobImportWizard = () => {
   const { toast } = useToast();
   const { user } = useUser();
   const { businessProfile } = useBusinessProfile();
+  const { businessProfile } = useBusinessProfile();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState<1 | 2>(1);
@@ -231,10 +232,11 @@ const JobImportWizard = () => {
       }
 
       // 3. Insert hiring goal draft
+      if (!businessProfile?.id) throw new Error('Business profile not found');
       const { error: hgErr } = await supabase
         .from('hiring_goal_drafts')
         .insert({
-          business_id: user!.id,
+          business_id: businessProfile.id,
           role_title: extracted.title || 'Untitled',
           task_description: taskParts.join('\n'),
           experience_level: mapSeniorityToExperienceLevel(extracted.seniority),
