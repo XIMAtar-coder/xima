@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import LandingLayout from '@/components/landing/LandingLayout';
+import Seo from '@/components/Seo';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield, Database, Eye, Lock, UserCheck, Mail } from 'lucide-react';
 
@@ -37,6 +38,11 @@ const PrivacyPolicy = () => {
 
   return (
     <LandingLayout>
+      <Seo
+        title="Privacy Policy — XIMA"
+        description="How XIMA collects, uses, and protects your personal data. GDPR-compliant data handling for candidates, mentors, and business users."
+        path="/privacy"
+      />
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">

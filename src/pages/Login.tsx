@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LandingLayout from '@/components/landing/LandingLayout';
+import Seo from '@/components/Seo';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -87,6 +88,12 @@ const Login = () => {
   
   return (
     <LandingLayout>
+      <Seo
+        title="Log in — XIMA"
+        description="Sign in to your XIMA account to access your XIMAtar, challenges, mentor sessions, and personalized job matches."
+        path="/login"
+        noindex
+      />
       <div className="container max-w-md mx-auto pt-8 pb-16 px-4">
         <Card>
           <CardHeader className="space-y-6 text-center">

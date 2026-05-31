@@ -12,6 +12,7 @@ import { useUser } from '@/context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Mail, CheckCircle, ArrowLeft, Loader2 } from 'lucide-react';
 import LandingLayout from '@/components/landing/LandingLayout';
+import Seo from '@/components/Seo';
 
 const ContactSales: React.FC = () => {
   const { t } = useTranslation();
@@ -97,6 +98,11 @@ const ContactSales: React.FC = () => {
 
   return (
     <LandingLayout>
+      <Seo
+        title="Contact sales — XIMA"
+        description="Talk to the XIMA team about enterprise hiring, premium tiers, custom integrations, and decision-intelligence rollouts for your organization."
+        path="/contact-sales"
+      />
       <div className="max-w-lg mx-auto px-4 py-16">
         <div className="text-center mb-8">
           <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">

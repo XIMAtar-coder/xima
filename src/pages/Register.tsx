@@ -10,6 +10,7 @@ import { useUser } from '../context/UserContext';
 import { RegistrationForm } from '../types';
 import { Logo } from '@/components/Logo';
 import LandingLayout from '@/components/landing/LandingLayout';
+import Seo from '@/components/Seo';
 import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
 import { supabase } from '@/integrations/supabase/client';
 import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
@@ -161,6 +162,11 @@ const Register = () => {
   
   return (
     <LandingLayout>
+      <Seo
+        title="Create your account — XIMA"
+        description="Join XIMA and build your XIMAtar — a behavioral identity across five pillars that connects you with the right mentors and employers."
+        path="/register"
+      />
       <div className="container max-w-md mx-auto pt-8 pb-16 px-4">
         <Card>
           <CardHeader className="space-y-4 text-center">

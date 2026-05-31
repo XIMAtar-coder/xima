@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import LandingLayout from '@/components/landing/LandingLayout';
+import Seo from '@/components/Seo';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText, CheckCircle, AlertTriangle, Scale, Ban, RefreshCw } from 'lucide-react';
 
@@ -42,6 +43,11 @@ const Terms = () => {
 
   return (
     <LandingLayout>
+      <Seo
+        title="Terms of Service — XIMA"
+        description="The terms that govern your use of the XIMA decision-intelligence platform — accounts, content, payments, liabilities, and dispute resolution."
+        path="/terms"
+      />
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">

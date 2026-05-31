@@ -55,9 +55,21 @@ const About: React.FC = () => {
   return (
     <LandingLayout>
       <Seo
-        title="Chi Siamo — XIMA"
-        description="XIMA nasce dall'ingegneria di precisione di AlphaLink Engineering. Cinque pilastri, dodici archetipi, zero proxy demografici."
+        title={t('about.seo_title', 'About XIMA — Five pillars, twelve archetypes')}
+        description={t('about.seo_description', 'XIMA was born from AlphaLink Engineering precision. Five pillars, twelve archetypes, zero demographic proxies — a decision-intelligence platform for talent.')}
         path="/about"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'AboutPage',
+          name: t('about.seo_title', 'About XIMA'),
+          description: t('about.seo_description', 'XIMA was born from AlphaLink Engineering precision.'),
+          url: 'https://ximatar.com/about',
+          mainEntity: {
+            '@type': 'Organization',
+            name: 'XIMA',
+            url: 'https://ximatar.com',
+          },
+        }}
       />
 
       {/* SECTION 1 — Hero */}
