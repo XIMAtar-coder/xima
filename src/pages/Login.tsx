@@ -87,6 +87,12 @@ const Login = () => {
   
   return (
     <LandingLayout>
+      <Seo
+        title="Log in — XIMA"
+        description="Sign in to your XIMA account to access your XIMAtar, challenges, mentor sessions, and personalized job matches."
+        path="/login"
+        noindex
+      />
       <div className="container max-w-md mx-auto pt-8 pb-16 px-4">
         <Card>
           <CardHeader className="space-y-6 text-center">
