@@ -13,4 +13,17 @@ Allow: /
 User-agent: *
 Allow: /
 
+# Authenticated-only routes — intentionally excluded from the sitemap and crawl
+Disallow: /auth/callback
+Disallow: /onboarding
+Disallow: /profile
+Disallow: /ximatar-journey
+Disallow: /xima-chat
+Disallow: /settings
+Disallow: /messages
+Disallow: /admin
+Disallow: /business/
+Disallow: /mentor/
+Disallow: /candidate/
+
 Sitemap: https://ximatar.com/sitemap.xml
