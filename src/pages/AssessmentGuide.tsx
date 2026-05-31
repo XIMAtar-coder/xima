@@ -190,6 +190,15 @@ const AssessmentGuide = () => {
         title="Assessment Guide — How the XIMA Five-Pillar Test Works"
         description="Learn how the XIMA assessment evaluates your five pillars: Knowledge, Communication, Computation, Creativity, and Drive — and what your XIMAtar reveals."
         path="/assessment-guide"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: 'Assessment Guide — How the XIMA Five-Pillar Test Works',
+          description: 'Learn how the XIMA assessment evaluates your five pillars and what your XIMAtar reveals.',
+          author: { '@type': 'Organization', name: 'XIMA' },
+          publisher: { '@type': 'Organization', name: 'XIMA', url: 'https://ximatar.com' },
+          mainEntityOfPage: 'https://ximatar.com/assessment-guide',
+        }}
       />
       <div className="container max-w-6xl mx-auto py-8 px-4 md:px-8">
         {/* Hero Section */}

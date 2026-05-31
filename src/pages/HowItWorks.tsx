@@ -30,6 +30,18 @@ const HowItWorks = () => {
         title="How XIMA works — From assessment to challenges to matching"
         description="Walk through the XIMA journey: take the assessment, earn your XIMAtar, complete behavioral challenges, and connect with mentors and employers."
         path="/how-it-works"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'HowTo',
+          name: 'How XIMA works',
+          description: 'From assessment to XIMAtar to matching with mentors and employers.',
+          step: [
+            { '@type': 'HowToStep', position: 1, name: 'Take the assessment', text: 'Complete the five-pillar XIMA assessment.' },
+            { '@type': 'HowToStep', position: 2, name: 'Earn your XIMAtar', text: 'Receive your behavioral archetype based on Knowledge, Communication, Computation, Creativity, and Drive.' },
+            { '@type': 'HowToStep', position: 3, name: 'Complete challenges', text: 'Run scenario-based challenges that refine your profile.' },
+            { '@type': 'HowToStep', position: 4, name: 'Match with mentors and employers', text: 'Get matched on identity and growth fit, not demographics.' },
+          ],
+        }}
       />
       <div className="container max-w-6xl mx-auto px-4 md:px-8 pt-12 md:pt-16">
 

@@ -72,6 +72,16 @@ const Business: React.FC = () => {
         title={t('business.seo_title')}
         description={t('business.seo_description')}
         path="/business"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Service',
+          name: 'XIMA for Business',
+          serviceType: 'Decision-intelligence platform for hiring',
+          provider: { '@type': 'Organization', name: 'XIMA', url: 'https://ximatar.com' },
+          areaServed: 'Global',
+          description: t('business.seo_description'),
+          url: 'https://ximatar.com/business',
+        }}
       />
 
       {/* SECTION 1 — Hero */}
