@@ -12,6 +12,7 @@ import { useUser } from '@/context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Mail, CheckCircle, ArrowLeft, Loader2 } from 'lucide-react';
 import LandingLayout from '@/components/landing/LandingLayout';
+import Seo from '@/components/Seo';
 
 const ContactSales: React.FC = () => {
   const { t } = useTranslation();
