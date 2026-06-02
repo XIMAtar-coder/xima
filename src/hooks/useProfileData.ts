@@ -155,6 +155,8 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
     salary_expectation: null,
     availability_date: null,
     industry_preferences: [],
+    subscriber_code: null,
+    subscriber_no: null,
   });
 
   useEffect(() => {
