@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { TrendingUp, MapPin, Clock, Activity, Zap, Send, User } from 'lucide-react';
 import { PillarScoreBar, formatRoundedScore } from './PillarScoreBar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { MemberCodeBadge } from './MemberCodeBadge';
 
 interface ShortlistCandidate {
   id?: string;
@@ -27,6 +28,7 @@ interface ShortlistCandidate {
   status: string;
   identity_revealed?: boolean;
   pipeline_stage?: string;
+  subscriber_code?: string | null;
 }
 
 interface ShortlistCardProps {
@@ -85,13 +87,16 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, l
                 className="h-10 w-10 object-contain shrink-0"
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
               />
-              <div>
+              <div className="space-y-1">
                 <p className="font-semibold text-sm text-foreground">
                   {candidate.anonymous_label
                     ? `Candidate #${candidate.anonymous_label} — ${archetypeName}`
                     : archetypeName}
                 </p>
-                <p className="text-xs text-muted-foreground">L{candidate.ximatar_level}</p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="text-xs text-muted-foreground">L{candidate.ximatar_level}</p>
+                  <MemberCodeBadge code={candidate.subscriber_code} />
+                </div>
               </div>
             </div>
           </div>

@@ -21,6 +21,7 @@ import { CVAnalysisCard } from '@/components/profile/CVAnalysisCard';
 import { MyOpportunitiesSection } from '@/components/opportunities/MyOpportunitiesSection';
 import { MembershipSummaryCard } from '@/components/profile/MembershipSummaryCard';
 import { ChallengesForYouSection } from '@/components/profile/ChallengesForYouSection';
+import { MemberCodeBadge } from '@/components/business/MemberCodeBadge';
 import { XimaJourneyGuideModal } from '@/components/onboarding/XimaJourneyGuideModal';
 import { useOnboardingState } from '@/hooks/useOnboardingState';
 
@@ -181,6 +182,9 @@ const Profile = () => {
             <h1 className="text-[28px] md:text-[34px] font-bold text-foreground">
               {t('dashboard.welcome_headline', { name: profileData.full_name || user?.name || t('profile.user') })}
             </h1>
+            {profileData.subscriber_code && (
+              <MemberCodeBadge code={profileData.subscriber_code} variant="founding" className="text-sm px-3 py-1" />
+            )}
             <p className="text-[15px] text-muted-foreground max-w-lg">{t('dashboard.welcome_subheadline')}</p>
           </div>
           <Button variant="outline" size="sm" onClick={() => setGuideOpen(true)} className="shrink-0">

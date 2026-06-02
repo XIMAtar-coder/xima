@@ -106,6 +106,8 @@ interface ProfileData {
   salary_expectation: any | null;
   availability_date: string | null;
   industry_preferences: string[];
+  subscriber_code: string | null;
+  subscriber_no: number | null;
 }
 
 const normalizePillars = (raw: any) => {
@@ -199,7 +201,9 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             willing_to_relocate,
             salary_expectation,
             availability_date,
-            industry_preferences
+            industry_preferences,
+            subscriber_code,
+            subscriber_no
           `)
           .eq('user_id', user.id)
           .single();
@@ -397,6 +401,8 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           salary_expectation: (profile as any)?.salary_expectation || null,
           availability_date: ((profile as any)?.availability_date as string) || null,
           industry_preferences: ((profile as any)?.industry_preferences as string[]) || [],
+          subscriber_code: ((profile as any)?.subscriber_code as string) ?? null,
+          subscriber_no: ((profile as any)?.subscriber_no as number) ?? null,
         };
 
         console.log('[useProfileData] FINAL STATE UPDATE:', next);

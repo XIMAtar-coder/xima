@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Send, Bookmark, TrendingUp, Zap, MapPin, Clock } from 'lucide-react';
 import { XIMATAR_PROFILES } from '@/lib/ximatarTaxonomy';
 import { PillarScoreBar } from './PillarScoreBar';
+import { MemberCodeBadge } from './MemberCodeBadge';
 
 const PILLAR_LABELS: Record<string, string> = {
   drive: 'Drive',
@@ -26,6 +27,7 @@ interface PoolCandidate {
   engagement_level: string;
   trajectory_trend: string | null;
   profile_completed: boolean;
+  subscriber_code?: string | null;
 }
 
 interface PoolCandidateCardProps {
@@ -64,13 +66,14 @@ export const PoolCandidateCard: React.FC<PoolCandidateCardProps> = ({ candidate,
               (e.currentTarget as HTMLImageElement).style.display = 'none';
             }}
           />
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 space-y-1">
             <p className="font-semibold text-foreground truncate">
               {profile?.name || candidate.ximatar_archetype}
             </p>
             <p className="text-xs text-muted-foreground">
               {profile?.title || ''} · L{candidate.ximatar_level}
             </p>
+            <MemberCodeBadge code={candidate.subscriber_code} />
           </div>
         </div>
 

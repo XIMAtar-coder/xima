@@ -77,7 +77,8 @@ serve(async (req) => {
          pillar_scores, salary_expectation,
          desired_locations, work_preference, willing_to_relocate,
          availability_date, industry_preferences,
-         profile_completed, updated_at, profiling_opt_out`,
+         profile_completed, updated_at, profiling_opt_out,
+         subscriber_code`,
         { count: "exact" }
       )
       .or("ximatar.not.is.null,ximatar_id.not.is.null,ximatar_name.not.is.null,pillar_scores.not.is.null")
@@ -346,6 +347,7 @@ serve(async (req) => {
         engagement_level: engLevel,
         trajectory_trend: trajectoryTrend,
         profile_completed: c.profile_completed || false,
+        subscriber_code: c.subscriber_code ?? null,
       };
     }).filter(Boolean);
 
