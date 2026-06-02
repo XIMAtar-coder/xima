@@ -4676,6 +4676,8 @@ export type Database = {
           referred_by_code: string | null
           salary_expectation: Json | null
           strongest_pillar: string | null
+          subscriber_code: string | null
+          subscriber_no: number | null
           suggested_new_archetype: string | null
           transportation_options: Json | null
           updated_at: string
@@ -4741,6 +4743,8 @@ export type Database = {
           referred_by_code?: string | null
           salary_expectation?: Json | null
           strongest_pillar?: string | null
+          subscriber_code?: string | null
+          subscriber_no?: number | null
           suggested_new_archetype?: string | null
           transportation_options?: Json | null
           updated_at?: string
@@ -4806,6 +4810,8 @@ export type Database = {
           referred_by_code?: string | null
           salary_expectation?: Json | null
           strongest_pillar?: string | null
+          subscriber_code?: string | null
+          subscriber_no?: number | null
           suggested_new_archetype?: string | null
           transportation_options?: Json | null
           updated_at?: string
