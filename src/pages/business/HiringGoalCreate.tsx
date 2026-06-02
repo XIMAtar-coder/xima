@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import SuggestFieldButton from '@/components/business/SuggestFieldButton';
-import { useBusinessProfile } from '@/hooks/useBusinessProfile';
+
 
 const TOTAL_STEPS = 5;
 
@@ -61,7 +61,7 @@ const HiringGoalCreate = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const fromListingId = searchParams.get('from_listing');
-  const { businessProfile } = useBusinessProfile();
+  
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [importedListing, setImportedListing] = useState<any>(null);
@@ -162,14 +162,13 @@ const HiringGoalCreate = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
-      if (!businessProfile?.id) throw new Error('Business profile not found');
 
       const isXimaHr = formData.xima_hr_requested;
 
       const { data: goal, error } = await supabase
         .from('hiring_goal_drafts')
         .insert({
-          business_id: businessProfile.id,
+          business_id: user.id,
           role_title: formData.role_title,
           task_description: formData.task_description,
           experience_level: formData.experience_level,

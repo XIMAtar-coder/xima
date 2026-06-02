@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/context/UserContext';
-import { useBusinessProfile } from '@/hooks/useBusinessProfile';
+
 import { supabase } from '@/integrations/supabase/client';
 import { FileUp, Upload, ClipboardPaste, Loader2, AlertTriangle, X, Plus } from 'lucide-react';
 import XimaHrRequestModal from '@/components/business/XimaHrRequestModal';
@@ -113,7 +113,7 @@ const JobImportWizard = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user } = useUser();
-  const { businessProfile } = useBusinessProfile();
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState<1 | 2>(1);
@@ -231,11 +231,11 @@ const JobImportWizard = () => {
       }
 
       // 3. Insert hiring goal draft
-      if (!businessProfile?.id) throw new Error('Business profile not found');
+      if (!user?.id) throw new Error('Not authenticated');
       const { error: hgErr } = await supabase
         .from('hiring_goal_drafts')
         .insert({
-          business_id: businessProfile.id,
+          business_id: user.id,
           role_title: extracted.title || 'Untitled',
           task_description: taskParts.join('\n'),
           experience_level: mapSeniorityToExperienceLevel(extracted.seniority),

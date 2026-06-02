@@ -22,25 +22,7 @@ export interface HiringGoal {
   updated_at: string | null;
 }
 
-/**
- * Resolve the business_profiles.id for the currently authenticated user.
- * hiring_goal_drafts.business_id references business_profiles.id (NOT auth.uid()).
- * RLS policy: is_business_owner(business_id) checks business_profiles.id = _id AND user_id = auth.uid().
- */
-async function getCurrentBusinessProfileId(): Promise<string | null> {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  const { data, error } = await supabase
-    .from('business_profiles')
-    .select('id')
-    .eq('user_id', user.id)
-    .maybeSingle();
-  if (error) {
-    console.error('[useHiringGoals] business_profiles lookup failed:', error);
-    return null;
-  }
-  return data?.id ?? null;
-}
+// hiring_goal_drafts.business_id is the authenticated user's id (auth.users.id).
 
 export const useHiringGoals = () => {
   const [goals, setGoals] = useState<HiringGoal[]>([]);
@@ -50,9 +32,9 @@ export const useHiringGoals = () => {
   const fetchGoals = useCallback(async () => {
     try {
       setLoading(true);
-      const businessProfileId = await getCurrentBusinessProfileId();
-      if (!businessProfileId) {
-        setError('Business profile not found');
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setError('Not authenticated');
         setGoals([]);
         return;
       }
@@ -60,7 +42,7 @@ export const useHiringGoals = () => {
       const { data, error: fetchError } = await supabase
         .from('hiring_goal_drafts')
         .select('*')
-        .eq('business_id', businessProfileId)
+        .eq('business_id', user.id)
         .order('updated_at', { ascending: false });
 
       if (fetchError) {
@@ -113,13 +95,13 @@ export const useHiringGoals = () => {
   }, [fetchGoals]);
 
   const createGoal = useCallback(async () => {
-    const businessProfileId = await getCurrentBusinessProfileId();
-    if (!businessProfileId) throw new Error('Business profile not found');
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
 
     const { data, error } = await supabase
       .from('hiring_goal_drafts')
       .insert({
-        business_id: businessProfileId,
+        business_id: user.id,
         status: 'draft'
       })
       .select()
