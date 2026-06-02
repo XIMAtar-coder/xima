@@ -5919,6 +5919,13 @@ export type Database = {
         Args: { p_ximatar_id: string }
         Returns: number
       }
+      get_member_codes: {
+        Args: { _user_ids: string[] }
+        Returns: {
+          subscriber_code: string
+          user_id: string
+        }[]
+      }
       get_membership_status: { Args: never; Returns: Json }
       get_my_credit_balance: { Args: never; Returns: number }
       get_next_feed_item: {
