@@ -1,42 +1,35 @@
-# Revert: `business_id` = `user.id` across business pipeline
+## Status
 
-A recent change resolved `business_profiles.id` and sent that as `business_id` on inserts. The pipeline tables (`hiring_goal_drafts`, `job_posts`, `business_shortlists`, `business_challenges`) actually FK to `auth.users.id`, so inserts now fail RLS. Revert to using `user.id`.
+- ✅ Migration **applied** (RPC `public.get_member_codes(uuid[])` created, `EXECUTE` revoked from `public`/`anon`, granted only to `authenticated`).
+- ⏳ Code edits below pending build-mode approval.
 
-## Files & lines to touch
+## Goal
 
-### 1. `src/hooks/useHiringGoals.ts`
-- Lines 25–43 — **delete** the `getCurrentBusinessProfileId()` helper and its doc comment.
-- Lines 50–58 (`fetchGoals`) — replace the profile lookup with `supabase.auth.getUser()`; filter `.eq('business_id', user.id)`.
-- Lines 115–117 (`createGoal`) — same; insert `business_id: user.id`.
+Surface `profiles.subscriber_code` as a small, anonymity-preserving "Member #A001" badge on shortlist cards, candidate pool cards, and the candidate's own dashboard. Hide gracefully when missing.
 
-### 2. `src/pages/business/HiringGoalCreate.tsx`
-- Line 16 — **remove** `import { useBusinessProfile } from '@/hooks/useBusinessProfile'` (not used elsewhere in this file).
-- Line 64 — remove `const { businessProfile } = useBusinessProfile();`.
-- Line 165 — remove `if (!businessProfile?.id) throw …` (the `user` guard on line 164 is sufficient).
-- Line 172 — `business_id: businessProfile.id` → `business_id: user.id`.
-- Line 204 already correct (`business_id: user.id` to `request-xima-hr`).
+## Code changes to apply
 
-### 3. `src/pages/business/JobImportWizard.tsx`
-- Line 15 — **remove** `import { useBusinessProfile } from '@/hooks/useBusinessProfile'`.
-- Line 116 — remove `const { businessProfile } = useBusinessProfile();`.
-- Line 174 already correct (`business_id: user!.id` in `buildJobPostRow`).
-- Line 234 — remove `if (!businessProfile?.id) throw …`; add a `user?.id` guard instead.
-- Line 238 — `business_id: businessProfile.id` → `business_id: user!.id`.
-- Lines 277 already correct (`business_id: user!.id`).
+1. **`src/components/business/MemberCodeBadge.tsx`** *(new)* — small chip `{ code, variant?: 'default' | 'founding' }`; renders nothing when `code` is falsy. `default` uses `bg-muted/60` + `BadgeCheck`; `founding` uses amber accent + `Crown`.
 
-## Out of scope (verified, no change)
+2. **`src/components/business/ShortlistView.tsx`** (lines 62–86) — after the `shortlist_results` select, collect `candidate_user_id`s and call `supabase.rpc('get_member_codes', { _user_ids: ids })`, build a `Map`, attach `subscriber_code` to each row. **No direct `profiles` query.**
 
-- `src/pages/business/Dashboard.tsx:134` — already `user.id`, untouched per instruction.
-- `src/components/business/HiringGoalCard.tsx` (lines 102, 158, 302) — already uses `user.id`.
-- `src/components/business/DiscoveredPositionsBanner.tsx`, `SubmissionDetailDrawer.tsx`, `Level2InviteModal.tsx`, `Level3InviteModal.tsx`, `CreateChallengeModal.tsx`, `ImportJobModal.tsx`, `SuggestFieldButton.tsx`, `TeamIntelligenceCard.tsx` — these receive a `businessId` prop; all current callers pass `user?.id` (verified via Dashboard wiring), so no change.
-- `src/hooks/useCompanyLegal.ts` — writes to `company_legal`, not a pipeline table; leave alone.
-- Mutual-interest flow (RPCs) — explicitly excluded; not touched.
+3. **`src/components/business/ShortlistCard.tsx`** — add `subscriber_code?: string | null` to interface; import `MemberCodeBadge`; render under the archetype name (next to `L{level}`), kept visually separate from the `#rank` circle and the `/100` score.
 
-## Flag for your review (not changing)
+4. **`supabase/functions/browse-candidate-pool/index.ts`** — add `subscriber_code` to profiles select (~L76) and to the returned candidate object (~L340). Server runs as `service_role`, so direct read is fine.
 
-- `src/pages/business/Dashboard.tsx:251` passes `businessProfile?.id || user?.id` as `businessId` to `XimaHrRequestModal`, which forwards it to the `request-xima-hr` edge function. `HiringGoalCreate.handleSubmit` sends `user.id` to the same function. These should be consistent — but it's a function-invoke payload, not a direct pipeline-table write, so I'm leaving it unless you confirm.
+5. **`src/components/business/PoolCandidateCard.tsx`** — add `subscriber_code?: string | null` to interface; import `MemberCodeBadge`; render under archetype title. Synthetic placeholders leave it null → badge hidden.
 
-## Verification after edits
+6. **`src/hooks/useProfileData.ts`** — add `subscriber_code`, `subscriber_no` to `profiles` select and to the returned state shape.
 
-- Re-run `rg "businessProfile\.id|getCurrentBusinessProfileId"` and confirm only `useCompanyLegal.ts` and the Dashboard XIMA-HR modal line remain.
-- Smoke test: create a hiring goal, import a job post, convert to goal.
+7. **`src/pages/Profile.tsx`** — render `<MemberCodeBadge code={profileData.subscriber_code} variant="founding" className="text-sm px-3 py-1" />` between the welcome `<h1>` and the subheadline.
+
+## Out of scope
+
+Pipeline/Kanban cards, mutual-interest flow, identity-reveal logic — unchanged.
+
+## Verification
+
+- `rg "subscriber_code"` appears in MemberCodeBadge, ShortlistView, ShortlistCard, PoolCandidateCard, Profile.tsx, useProfileData.ts, browse-candidate-pool/index.ts.
+- Business shortlist card shows "Member #A001" under the archetype line.
+- `/business/candidates`: real candidates show the badge; "Demo" synthetics do not.
+- Candidate `/dashboard`: founding-styled chip under the welcome headline; absent if no code.

@@ -66,6 +66,22 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
         .order('total_score', { ascending: false })
         .limit(12);
       if (error) throw error;
+
+      // Fetch anonymous member codes via SECURITY DEFINER RPC
+      // (business users have no direct RLS read on candidate profiles)
+      const candidateIds = (data || [])
+        .map((r: any) => r.candidate_user_id)
+        .filter(Boolean);
+      const codeMap = new Map<string, string>();
+      if (candidateIds.length > 0) {
+        const { data: codes } = await supabase.rpc('get_member_codes', { _user_ids: candidateIds } as any);
+        ((codes as any[]) || []).forEach((row: any) => {
+          if (row?.user_id && row?.subscriber_code) {
+            codeMap.set(row.user_id, row.subscriber_code);
+          }
+        });
+      }
+
       const rows = (data || []).map((row: any) => ({
         ...row,
         total_score: row.total_score || 0,
@@ -82,6 +98,7 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
         location_match: row.location_match || 'no_match',
         availability: row.availability || 'unknown',
         status: row.status || 'shortlisted',
+        subscriber_code: codeMap.get(row.candidate_user_id) ?? null,
       }));
       setShortlist(rows);
       setGenerated(rows.length > 0);
