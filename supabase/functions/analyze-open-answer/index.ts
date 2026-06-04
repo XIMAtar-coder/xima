@@ -350,7 +350,7 @@ Return ONLY the JSON object.`;
     if (redFlags.includes('admission_of_not_knowing') && finalScore > 45) finalScore = 45;
 
     const wordCount = cleanedText.split(/\s+/).filter(Boolean).length;
-    if (wordCount < 30 && finalScore > 35) {
+    if (!isMindset && wordCount < 30 && finalScore > 35) {
       finalScore = 35;
       if (!redFlags.includes('too_short')) redFlags.push('too_short');
     }
