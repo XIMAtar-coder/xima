@@ -311,11 +311,11 @@ Return ONLY the JSON object.`;
 
     try {
       const aiResp = await callAnthropicApi({
-        system: systemPrompt,
+        system: finalSystemPrompt,
         userMessage: userPrompt,
         correlationId,
         functionName: 'analyze-open-answer',
-        inputSummary: `open_answer:field=${field},lang=${language},key=${openKey},len=${cleanedText.length},ctx=${scoring_context || 'core'}`,
+        inputSummary: `${isMindset ? 'mindset' : 'open_answer'}:field=${effectiveField},lang=${effectiveLanguage},key=${effectiveOpenKey},len=${cleanedText.length},ctx=${scoring_context || 'core'}`,
         maxTokens: 2048,
       });
 
