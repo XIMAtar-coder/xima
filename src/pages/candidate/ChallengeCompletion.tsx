@@ -278,6 +278,7 @@ export default function ChallengeCompletion() {
           roleFamily,
           skillFocus,
           scenarioContext,
+          configJson: (challengeData?.config_json as Record<string, any> | null) || null,
         });
 
         // Check progression prerequisites for this hiring goal
