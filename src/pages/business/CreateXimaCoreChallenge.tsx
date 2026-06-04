@@ -87,6 +87,7 @@ interface GeneratedChallengeContext {
   estimated_time_minutes?: number;
   is_fallback?: boolean;
   used_fallback?: boolean;
+  mindset?: Record<string, unknown> | null;
 }
 
 const INDUSTRY_ICONS: Record<string, string> = {
@@ -197,6 +198,7 @@ const CreateXimaCoreChallenge = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [isFallbackScenario, setIsFallbackScenario] = useState(false);
   const [generationError, setGenerationError] = useState(false);
+  const [generatedMindset, setGeneratedMindset] = useState<Record<string, unknown> | null>(null);
 
   const showNoContextWarning = noContextFlag && !goalId && !jobPostId;
   const rawIndustry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || '';
@@ -386,6 +388,9 @@ const CreateXimaCoreChallenge = () => {
         setExpectedTensions(data.expected_tensions || null);
         setGeneratedTimeEstimate(data.estimated_time_minutes || XIMA_CORE_CHALLENGE.timeEstimateMinutes);
         setIsFallbackScenario(false);
+        setGeneratedMindset(
+          data.mindset && typeof data.mindset === 'object' ? (data.mindset as Record<string, unknown>) : null
+        );
       } else {
         throw new Error('Scenario generation returned no valid scenario');
       }
@@ -463,6 +468,7 @@ const CreateXimaCoreChallenge = () => {
           candidate_intro: t('challenge.xima_core.candidate_intro'),
           generated_time_estimate: generatedTimeEstimate,
           context_tag: displayContextTag,
+          ...(generatedMindset ? generatedMindset : {}),
         },
         context_snapshot: (contextSnapshot || {
           role_title: roleTitle,

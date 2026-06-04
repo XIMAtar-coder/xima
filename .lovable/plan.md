@@ -1,162 +1,139 @@
-# Mindset L1 Challenge Experience
+## Goal
 
-## 1. Branch the candidate page (no behavior change for free-text)
+Additively generate role-contextual mindset content during L1 challenge generation, so every newly created XIMA Core Challenge carries an `experience: "mindset"` block in its `config_json` — flavored to the same role + industry + scenario the L1 was built around (Geometra → real cantiere Monday, Lead Engineer → real BMS day, etc.).
 
-**File:** `src/pages/candidate/ChallengeCompletion.tsx`
+No change to scenario, questions, evaluation_lens, rubric, expected_tensions, validation, pattern-library short-circuit, or the legacy handler.
 
-- Extend the invitation→challenge select to also pull `config_json` from `business_challenges`.
-- Store it on `ChallengeDetails` as `configJson: Record<string, any> | null`.
-- Compute `const isMindset = challenge?.configJson?.experience === 'mindset'` once challenge is loaded.
-- Branch **early** in render (after `loading` / `!challenge` / `prerequisiteBlock?.blocked` guards, BEFORE the PreChallengeBriefing block and BEFORE the submitted/active free-text returns):
-  ```tsx
-  if (isMindset) {
-    return (
-      <MainLayout>
-        <MindsetChallenge
-          invitationId={invitationId!}
-          challenge={challenge}
-          existingSubmission={{ id: submissionId, status: submissionStatus, submittedAt, payload: loadedMindsetPayload }}
-        />
-      </MainLayout>
-    );
+## Files to change
+
+1. `supabase/functions/generate-challenge/index.ts` — add a second, isolated Claude call after the existing L1 scenario call succeeds; return its result on the response.
+2. `src/pages/business/CreateXimaCoreChallenge.tsx` — when inserting the challenge, if the generate-challenge response carried a `mindset` block, spread it into `config_json` alongside the existing `xima_core` keys.
+
+Nothing else is touched.
+
+## generate-challenge — additive logic
+
+After `validateXimaCoreResult` succeeds and BEFORE the final `jsonResponse(...)` return (the success path around lines 408–454, and also the pattern-library short-circuit path around 329–344):
+
+- Build a `mindsetSystemPrompt` reusing the SAME variables already in scope: `companyName`, `displayIndustry`, `teamCulture`, `operatingStyle`, `coreValues`, `roleTitle`, `taskDescription`, `requiredSkills`, `experienceLevel`, `workModel`, `contextTag`, `promptLang`, `langInstruction`, AND the freshly generated `validated.scenario`. The mindset content must live in the same world as the scenario.
+- Call `callAnthropicApi` a second time with:
+  - `functionName: 'generate-challenge'` (keeps existing model routing — Haiku)
+  - `inputSummary: 'l1_mindset_gen:...'`
+  - `temperature: 0.85`, `maxTokens: 1800`
+  - `correlationId` reused
+- Parse with `extractJsonFromAiContent` + `JSON.parse`.
+- Run a strict `validateMindset(parsed)` helper (new, local to this file):
+  - `experience === "mindset"`
+  - `instinct_cards` is an array of EXACTLY 3, each `{ id, prompt, a:{label,facet}, b:{label,facet} }` with non-empty strings; coerce/normalize ids to `c1|c2|c3`.
+  - `day.clock`, `day.title` strings; `day.gestures` exactly 4 with ids `jump|delegate|wait|smooth`, each `{id, emoji, label}`; `day.items` exactly 4, each `{id, source, body}` with body ≥ 40 chars; ids normalized to `d1..d4`.
+  - `guide.name` (default `"Aria"` if missing), `guide.intro` (string), `guide.debrief_focus` must be one of the item ids (default `"d1"`), `guide.debrief_instruction`, `guide.resolve_line`.
+- On any failure of the mindset call (network, AnthropicError, validation fail, parse fail): swallow, log a single warning line, and continue. The L1 response MUST still go out — mindset is best-effort. No new error responses.
+- On success: attach `mindset: <validatedBlock>` to the existing response payload returned at the two success points:
+  - `jsonResponse({ ...validated, context_tag: ..., used_fallback: false, mindset })` (Claude path)
+  - `jsonResponse({ ...validated, context_tag: ..., used_fallback: false, _intelligence: ..., mindset })` (pattern-library path)
+- Do NOT write the mindset block to `business_challenges` from the edge function; persistence stays in the client insert (single source of truth, matches today's pattern where the function writes only `evaluation_lens / expected_tensions / context_snapshot` to an existing row).
+
+### Mindset prompt shape (Italian when locale=it; otherwise `promptLang`)
+
+System prompt sketch (will be tuned in code, conceptually):
+
+```text
+Sei "Aria", una guida calda e non giudicante. Devi creare il contenuto MINDSET per un
+candidato che affronterà il ruolo qui sotto, NELLO STESSO MONDO dello scenario L1.
+
+Lo scenario L1 (per ancorare tono, attori, strumenti, vincoli):
+<<< {validated.scenario} >>>
+
+CONTESTO RUOLO: {roleTitle} — {displayIndustry}
+Azienda: {companyName} · Cultura: {teamCulture} · Stile: {operatingStyle}
+Mansione: {taskDescription}
+Competenze: {requiredSkills} · Livello: {experienceLevel} · Modalità: {workModel}
+
+REGOLE:
+- TUTTO il contenuto deve essere SPECIFICO per questo ruolo e settore. MAI generico da ufficio.
+  Esempio: per un Geometra in cantiere il lunedì è un VERO cantiere (ponteggi, DL, ASL, fornitori,
+  betoniere), non una riunione team in open space.
+- 3 instinct_cards: dilemmi di pancia, due opzioni brevi e tangibili nel mondo del ruolo.
+  Le "facet" sono etichette UMANE e CORTE (2–4 parole), es. "Propensione all'azione",
+  "Prudente, basso rischio", "Decide d'istinto", "Cerca consenso", "Focus sul risultato",
+  "Focus sulle persone". Mai sigle psicometriche.
+- day.clock: orario di inizio plausibile per il ruolo ("7:30" cantiere, "8:45" ufficio…).
+  day.title: il giorno (es. "Lunedì in cantiere", "Lunedì in reparto").
+- 4 day.items: dilemmi reali del lunedì del ruolo, con attori e oggetti concreti
+  (fornitore X, ispettore Y, email del DL, sample QA scartato, sprint planning…).
+  source = chi/cosa porta l'evento ("DL", "WhatsApp capo squadra", "Email cliente", "Slack #qa").
+  body = 1–3 frasi, niente domande.
+- 4 gesture FISSI: ids `jump|delegate|wait|smooth`, emoji `🏃 🤝 ⏳ 🕊️`,
+  label localizzata e calda ("Ci salto dentro", "Delego e seguo", "Aspetto e osservo", "Smusso e medio").
+- guide.intro: 1–2 frasi calde, niente giudizio. guide.debrief_focus = "d1".
+  guide.debrief_instruction in italiano, calda, mai punitiva.
+  guide.resolve_line: 1 frase che riconosce lo stile senza dare un voto.
+- Lingua: {promptLang}. {langInstruction}. JSON keys in inglese.
+
+Restituisci SOLO JSON valido con ESATTAMENTE questa forma:
+{
+  "experience": "mindset",
+  "instinct_cards": [ {"id":"c1","prompt":"…","a":{"label":"…","facet":"…"},"b":{"label":"…","facet":"…"}},
+                      {"id":"c2",…}, {"id":"c3",…} ],
+  "day": {
+    "clock":"…","title":"…",
+    "gestures":[{"id":"jump","emoji":"🏃","label":"…"},
+                {"id":"delegate","emoji":"🤝","label":"…"},
+                {"id":"wait","emoji":"⏳","label":"…"},
+                {"id":"smooth","emoji":"🕊️","label":"…"}],
+    "items":[{"id":"d1","source":"…","body":"…"}, …4 items]
+  },
+  "guide":{"name":"Aria","intro":"…","debrief_focus":"d1",
+           "debrief_instruction":"…","resolve_line":"…"}
+}
+```
+
+User message: short — "Genera il blocco MINDSET per {roleTitle} ({displayIndustry}), ancorato allo scenario sopra. Rispondi SOLO con il JSON."
+
+### Validator pseudo-shape
+
+```ts
+function validateMindset(p: any): MindsetBlock | null {
+  if (!p || p.experience !== 'mindset') return null;
+  if (!Array.isArray(p.instinct_cards) || p.instinct_cards.length !== 3) return null;
+  // normalize ids c1..c3, check a/b shape + non-empty label/facet
+  // day: clock, title strings; gestures length 4 with required ids + emojis; items length 4 with d1..d4
+  // guide: default name "Aria"; debrief_focus must match an item id else 'd1'
+  return normalized;
+}
+```
+
+## CreateXimaCoreChallenge.tsx — additive merge
+
+Where `generate-challenge` is invoked (the existing call that already populates `scenario`, `localizedQuestions`, `evaluationLens`, etc.):
+- Capture `response.mindset` into a local `generatedMindset` state.
+- In the insert at lines 460–466, change the `config_json` literal to:
+  ```ts
+  config_json: {
+    xima_core: true,
+    questions: localizedQuestions,
+    candidate_intro: t('challenge.xima_core.candidate_intro'),
+    generated_time_estimate: generatedTimeEstimate,
+    context_tag: displayContextTag,
+    ...(generatedMindset ? generatedMindset : {}),
   }
   ```
-- For mindset, **bypass** `timeInfo` / `isExpired` / `isUpcoming` / `isReadOnly`: no countdown, no "closed" state, no gating on `end_at`. This is local to the branch — the existing free-text path keeps `timeInfo` exactly as today.
-- The existing `payload` / `level2Payload` / `saveDraft` / `handleSubmit` code and all free-text JSX remain untouched.
+- That naturally yields `experience: "mindset"` plus `instinct_cards`, `day`, `guide` at the top level of `config_json`, which is exactly what `ChallengeCompletion.tsx` already branches on (`configJson.experience === 'mindset'`) and what the mindset components consume.
+- No UI changes, no new buttons, no preview surface. If `generatedMindset` is null (mindset call failed), the challenge still saves exactly as today.
 
-When loading an existing submission, if `submission.submitted_payload?.format === 'mindset'` or `submission.draft_payload?.format === 'mindset'`, hand the parsed payload to `<MindsetChallenge>` via `existingSubmission.payload`; do not try to coerce it into the L1/L2 free-text shapes.
+## Scope guarantees
 
-## 2. New <MindsetChallenge> orchestrator
-
-**File:** `src/components/candidate/mindset/MindsetChallenge.tsx`
-
-State machine (single component, internal `step` state):
-`'intro' → 'instinct' → 'day' → 'debrief' → 'resolve'`.
-
-Reads everything from `challenge.configJson`:
-```ts
-type MindsetConfig = {
-  experience: 'mindset';
-  guide: { name?: string; intro: string; debrief_focus: string };
-  instinct_cards: Array<{ id: string; prompt: string; a: { label: string; facet: string }; b: { label: string; facet: string } }>;
-  day: { clock: string; items: Array<{ id: string; source: string; body: string }>; gestures: Array<{ id: string; emoji: string; label: string }> };
-};
-```
-
-Local payload state:
-```ts
-type MindsetPayload = {
-  format: 'mindset';
-  instinct_choices: Array<{ card_id: string; choice: 'a' | 'b'; facet: string }>;
-  day_log: Array<{ item_id: string; gesture: string }>;
-  debrief: Array<{ q: string; a: string }>;
-  lit_facets: string[];
-};
-```
-
-Visual shell: existing `Card`, `Button`, `Badge`, `Progress`, `toast`, lucide icons; dark-theme tokens from `index.css`. No new color literals.
-
-### Step 2.a — Intro (`MindsetIntro.tsx`)
-Card with guide name (default "Aria"), `config.guide.intro`, a "nessuna risposta giusta" reassurance line (hardcoded IT string, since mindset is IT-only today), and a primary "Inizia" button → `setStep('instinct')`.
-
-### Step 2.b — Instinct cards (`InstinctCards.tsx`)
-- One card at a time, index in local state.
-- Two large tappable option buttons (variant=outline, hover lift), label from `card.a.label` / `card.b.label`.
-- Non-blocking urgency: thin `Progress`-style bar that fills over ~6s using CSS animation; **does not** auto-advance, just visual urgency.
-- On tap: push `{card_id, choice, facet}` to `instinct_choices`, add facet to `lit_facets` (dedup), show a brief inline pill "Facet acceso: <facet>" for 900ms via local state, then `setIndex(i+1)`.
-- When last card answered → `setStep('day')`.
-
-### Step 2.c — Living day (`LivingDay.tsx`)
-- Header: small clock badge with `config.day.clock`, title "Lunedì".
-- One day item card at a time (`source` as small label, `body` as content).
-- Below the item: row of gesture buttons rendered from `config.day.gestures` (`emoji` + `label`).
-- On tap: push `{item_id, gesture}` to `day_log`, advance. No correctness feedback.
-- After last item → `setStep('debrief')`.
-
-### Step 2.d — Guide debrief (`GuideDebrief.tsx`)
-- Find item where `item.id === config.guide.debrief_focus`; find the gesture the candidate chose for it from `day_log`.
-- Aria asks a warm "perché" referencing the chosen gesture (template: `"Su «${item.source}» hai scelto ${gesture.emoji} ${gesture.label}. Cosa ti ha guidato?"`).
-- Small `Textarea` (2–3 rows), submit button enabled when length ≥ 20 chars.
-- On submit: push `{ q, a }` to `debrief`, show one-line warm ack from Aria ("Grazie, lo annoto."), advance to resolve.
-
-### Step 2.e — Resolve (`ResolveScreen.tsx`)
-- Lit facets rendered as `Badge` pills.
-- Warm one-liner from Aria (config-overridable: `config.guide.resolve_line`, fallback hardcoded IT).
-- "XIMAtar in fase di affinamento" cue with a static `Progress` showing L1 ✓ (no numeric score, no percentages).
-- CTA: "Torna al profilo" → navigate `/profile`.
-
-## 3. Persistence (`useMindsetDraft.ts`)
-
-Mirrors the existing free-text upsert path 1:1 — same authoritative re-fetch of the invitation, same `onConflict: 'invitation_id'`, same status strings.
-
-- `loadDraft(invitationId)` → returns existing `MindsetPayload | null` from `draft_payload` (or `submitted_payload` if status `'submitted'`), plus `{id, status, submittedAt}`.
-- `saveDraftDebounced(payload)` — 1.5s debounce, upsert `{ draft_payload: payload, status: 'draft' }` with the same five FK columns the free-text path writes (`invitation_id, candidate_profile_id, business_id, hiring_goal_id, challenge_id`).
-- `submit(payload)` — reuses **exactly** the free-text submit's status transitions:
-  1. Re-fetch invitation for authoritative FKs.
-  2. Upsert/update `challenge_submissions` with `status:'submitted'`, `submitted_payload: payload`, `draft_payload: payload`, `submitted_at: now`, `signals_version:'v1'` (kept to satisfy NOT NULL).
-  3. `challenge_invitations.update({ status: 'submitted', responded_at: now })`.
-- Calls `saveDraftDebounced` from `<MindsetChallenge>` after every state mutation (instinct choice, gesture choice, debrief saved).
-
-## 4. Scoring call (non-blocking)
-
-In `submit`, immediately after the DB submission succeeds and BEFORE navigating to resolve:
-
-```ts
-supabase.functions
-  .invoke('analyze-open-answer', {
-    body: {
-      challenge_id: challenge.challengeId,
-      user_id: authUserId,
-      language: 'it',
-      scoring_context: 'l1_challenge',
-      format: 'mindset',
-      mindset_payload: { instinct_choices, day_log, debrief },
-    },
-  })
-  .then(async ({ data, error }) => {
-    if (error || !data) return; // never block
-    await supabase
-      .from('challenge_submissions')
-      .update({ signals_payload: data })
-      .eq('invitation_id', invitationId);
-  })
-  .catch(() => {/* swallow */});
-```
-
-Resolve screen renders regardless of the call's outcome.
-
-## 5. analyze-open-answer: accept mindset format
-
-**File:** `supabase/functions/analyze-open-answer/index.ts`
-
-Minimal additive change at the top of the handler:
-
-- If `body.format === 'mindset'`, skip the existing `text` / `field` / `openKey` requirements and the non-answer detection.
-- Build a synthetic "answer" string from `mindset_payload` (facets chosen + day_log gestures + debrief Q/A) and feed it through the same Claude scoring path but with a mindset-specific system prompt addendum:
-  - Ask Claude to map `instinct_choices` facets and the debrief reasoning to the five pillars (drive / computational_power / communication / creativity / knowledge) producing `pillar_impact` and a `lit_facets` echo.
-  - Score is computed internally but **not** returned to the client in a candidate-visible way — we only persist `signals_payload`. Existing `score_total` etc. still go into `signals_payload`; the candidate-facing resolve screen never reads them.
-- Keep existing audit / evidence-ledger / trajectory code paths; gate the evidence-ledger insert behind `format !== 'mindset'` for now (no `assessment_open_responses` row exists for mindset).
-
-No change to other callers — all existing requests still set `text` / `field` / `openKey` and fall into the unchanged branch.
-
-## 6. Scope guarantees
-
-- `challenge.configJson?.experience !== 'mindset'` → identical code path as today (no diff in rendered output, autosave cadence, validation, submit payload shape, signals computation, invitation status update).
-- Business-side review, L2 flow, L3 flow, and any other challenge: untouched.
-- No new DB migration. `config_json` already exists on `business_challenges`. No new RLS, no new edge function.
+- Existing L1 response shape is a strict superset (only `mindset` added) — no caller breaks.
+- Pattern-library short-circuit still wins for FREE; mindset call only runs after a real or cached L1 is in hand.
+- No DB migration. `config_json` already exists; no schema change.
+- Legacy `handleLegacyGeneration` untouched.
+- compute-level2-signals, analyze-l3-frames, generate-l3-interview, generate-l2-challenge-from-job-post: untouched.
+- Mindset is best-effort: a failure in the mindset call never blocks L1 activation.
 
 ## Technical notes
 
-- Type the new payload as `Json`-compatible (plain objects, no `Date`, no `undefined`); cast `as any` only at the Supabase boundary, matching current free-text code.
-- All copy strings inside mindset components are IT literals for now; later i18n migration is trivial since they're isolated to the mindset folder.
-- No new dependencies; reuse existing `Card`, `Button`, `Badge`, `Progress`, `Textarea`, lucide icons, sonner/use-toast.
-- ASCII flow:
-  ```text
-  ChallengeCompletion (load + branch)
-    └── isMindset? ─┬─ yes → <MindsetChallenge>
-                    │           intro → instinct → day → debrief → resolve
-                    │           (autosave draft_payload on each step)
-                    │           submit → submitted_payload + invitation status
-                    │                 → analyze-open-answer (fire-and-forget) → signals_payload
-                    └─ no  → existing free-text UI (unchanged)
-  ```
+- Reuse `callAnthropicApi` so audit envelope, cost tracking, and retry logic apply identically.
+- Same model as L1 (Haiku via `getModelForFunction`); no new routing entry needed.
+- Locale handling: same `locale` resolution already computed at the top of the handler.
+- Emoji literals (`🏃 🤝 ⏳ 🕊️`) are pinned in the prompt AND re-asserted by the validator — if the model returns wrong/missing emojis we backfill the canonical ones during normalization rather than rejecting.
+- No new dependencies, no new shared files, no new env vars.

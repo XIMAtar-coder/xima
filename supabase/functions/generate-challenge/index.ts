@@ -107,6 +107,185 @@ function getLanguageInstruction(locale: string): string {
 }
 
 // =====================================================
+// Mindset block validation (additive)
+// =====================================================
+
+const CANONICAL_GESTURES = [
+  { id: 'jump', emoji: '🏃' },
+  { id: 'delegate', emoji: '🤝' },
+  { id: 'wait', emoji: '⏳' },
+  { id: 'smooth', emoji: '🕊️' },
+];
+
+function nonEmptyString(v: unknown): v is string {
+  return typeof v === 'string' && v.trim().length > 0;
+}
+
+function validateMindsetBlock(parsed: unknown): Record<string, unknown> | null {
+  if (!parsed || typeof parsed !== 'object') return null;
+  const p = parsed as Record<string, any>;
+  if (p.experience !== 'mindset') return null;
+
+  // instinct_cards: exactly 3
+  if (!Array.isArray(p.instinct_cards) || p.instinct_cards.length !== 3) return null;
+  const cards = p.instinct_cards.map((c: any, i: number) => {
+    if (!c || typeof c !== 'object') return null;
+    if (!nonEmptyString(c.prompt)) return null;
+    const a = c.a, b = c.b;
+    if (!a || !b || !nonEmptyString(a.label) || !nonEmptyString(a.facet) || !nonEmptyString(b.label) || !nonEmptyString(b.facet)) return null;
+    return {
+      id: `c${i + 1}`,
+      prompt: String(c.prompt).trim(),
+      a: { label: String(a.label).trim(), facet: String(a.facet).trim() },
+      b: { label: String(b.label).trim(), facet: String(b.facet).trim() },
+    };
+  });
+  if (cards.some((c: any) => c === null)) return null;
+
+  // day
+  const day = p.day;
+  if (!day || typeof day !== 'object') return null;
+  if (!nonEmptyString(day.clock) || !nonEmptyString(day.title)) return null;
+
+  // gestures: backfill canonical ids/emojis from model output by index
+  if (!Array.isArray(day.gestures) || day.gestures.length !== 4) return null;
+  const gestures = CANONICAL_GESTURES.map((canon, i) => {
+    const g = day.gestures[i];
+    if (!g || !nonEmptyString(g.label)) return null;
+    return { id: canon.id, emoji: canon.emoji, label: String(g.label).trim() };
+  });
+  if (gestures.some((g) => g === null)) return null;
+
+  // items: exactly 4
+  if (!Array.isArray(day.items) || day.items.length !== 4) return null;
+  const items = day.items.map((it: any, i: number) => {
+    if (!it || typeof it !== 'object') return null;
+    if (!nonEmptyString(it.source) || !nonEmptyString(it.body)) return null;
+    if (String(it.body).trim().length < 40) return null;
+    return { id: `d${i + 1}`, source: String(it.source).trim(), body: String(it.body).trim() };
+  });
+  if (items.some((it: any) => it === null)) return null;
+
+  // guide
+  const guide = p.guide;
+  if (!guide || typeof guide !== 'object') return null;
+  if (!nonEmptyString(guide.intro) || !nonEmptyString(guide.debrief_instruction) || !nonEmptyString(guide.resolve_line)) return null;
+  const itemIds = items.map((it: any) => it.id);
+  const debriefFocus = nonEmptyString(guide.debrief_focus) && itemIds.includes(guide.debrief_focus) ? guide.debrief_focus : 'd1';
+
+  return {
+    experience: 'mindset',
+    instinct_cards: cards,
+    day: { clock: String(day.clock).trim(), title: String(day.title).trim(), gestures, items },
+    guide: {
+      name: nonEmptyString(guide.name) ? String(guide.name).trim() : 'Aria',
+      intro: String(guide.intro).trim(),
+      debrief_focus: debriefFocus,
+      debrief_instruction: String(guide.debrief_instruction).trim(),
+      resolve_line: String(guide.resolve_line).trim(),
+    },
+  };
+}
+
+interface MindsetContextInput {
+  scenario: string;
+  roleTitle: string;
+  displayIndustry: string;
+  companyName: string;
+  teamCulture: string;
+  operatingStyle: string;
+  coreValues: string;
+  taskDescription: string;
+  requiredSkills: string;
+  experienceLevel: string;
+  workModel: string;
+  promptLang: string;
+  langInstruction: string;
+  locale: string;
+  correlationId: string;
+}
+
+async function generateMindsetBlock(ctx: MindsetContextInput): Promise<Record<string, unknown> | null> {
+  const systemPrompt = `Sei "Aria", una guida calda e non giudicante. Devi creare il contenuto MINDSET per un candidato che affronterà il ruolo qui sotto, NELLO STESSO MONDO dello scenario L1.
+
+Lo scenario L1 (per ancorare tono, attori, strumenti, vincoli):
+<<< ${ctx.scenario} >>>
+
+CONTESTO RUOLO: ${ctx.roleTitle} — ${ctx.displayIndustry}
+Azienda: ${ctx.companyName} · Cultura: ${ctx.teamCulture} · Stile: ${ctx.operatingStyle}
+Valori: ${ctx.coreValues}
+Mansione: ${ctx.taskDescription}
+Competenze: ${ctx.requiredSkills} · Livello: ${ctx.experienceLevel} · Modalità: ${ctx.workModel}
+
+REGOLE FONDAMENTALI:
+- TUTTO il contenuto deve essere SPECIFICO per questo ruolo e settore. MAI generico da ufficio. Esempio: per un Geometra in cantiere il lunedì è un VERO cantiere (ponteggi, DL, ASL, fornitori, betoniere, verbale, computo metrico), non una riunione in open space. Per un Lead Engineer automotive il lunedì parla di BMS, CAN, OEM, ISO 26262.
+- 3 instinct_cards: dilemmi di pancia, due opzioni brevi e tangibili nel mondo del ruolo.
+- Le "facet" sono etichette UMANE e CORTE (2–4 parole), es. "Propensione all'azione", "Prudente, basso rischio", "Decide d'istinto", "Cerca consenso", "Focus sul risultato", "Focus sulle persone", "Pragmatico", "Visione lunga". Mai sigle psicometriche, mai numeri.
+- day.clock: orario di inizio plausibile per il ruolo ("7:30" cantiere, "8:45" ufficio, "6:00" reparto produttivo…).
+- day.title: il giorno (es. "Lunedì in cantiere", "Lunedì in reparto", "Lunedì al desk").
+- 4 day.items: dilemmi REALI del lunedì del ruolo, con attori e oggetti concreti (fornitore X, ispettore Y, email del DL, sample QA scartato, sprint planning, etc.). source = chi/cosa porta l'evento ("DL", "WhatsApp capo squadra", "Email cliente", "Slack #qa"). body = 1–3 frasi descrittive, niente domande, almeno 40 caratteri.
+- 4 gesture FISSI in ordine: ids "jump"/"delegate"/"wait"/"smooth", emoji "🏃"/"🤝"/"⏳"/"🕊️", label localizzata e calda (es. "Ci salto dentro", "Delego e seguo", "Aspetto e osservo", "Smusso e medio").
+- guide.intro: 1–2 frasi calde, niente giudizio. guide.debrief_focus = "d1". guide.debrief_instruction: calda, mai punitiva, invita a raccontare il perché. guide.resolve_line: 1 frase che riconosce lo stile senza dare un voto.
+- Lingua: ${ctx.promptLang}. ${ctx.langInstruction}. JSON keys in inglese.
+
+Restituisci SOLO JSON valido con ESATTAMENTE questa forma (nessun commento, nessun testo extra):
+{
+  "experience": "mindset",
+  "instinct_cards": [
+    {"id":"c1","prompt":"…","a":{"label":"…","facet":"…"},"b":{"label":"…","facet":"…"}},
+    {"id":"c2","prompt":"…","a":{"label":"…","facet":"…"},"b":{"label":"…","facet":"…"}},
+    {"id":"c3","prompt":"…","a":{"label":"…","facet":"…"},"b":{"label":"…","facet":"…"}}
+  ],
+  "day": {
+    "clock":"…","title":"…",
+    "gestures":[
+      {"id":"jump","emoji":"🏃","label":"…"},
+      {"id":"delegate","emoji":"🤝","label":"…"},
+      {"id":"wait","emoji":"⏳","label":"…"},
+      {"id":"smooth","emoji":"🕊️","label":"…"}
+    ],
+    "items":[
+      {"id":"d1","source":"…","body":"…"},
+      {"id":"d2","source":"…","body":"…"},
+      {"id":"d3","source":"…","body":"…"},
+      {"id":"d4","source":"…","body":"…"}
+    ]
+  },
+  "guide":{"name":"Aria","intro":"…","debrief_focus":"d1","debrief_instruction":"…","resolve_line":"…"}
+}`;
+
+  const userPrompt = `Genera il blocco MINDSET per "${ctx.roleTitle}" (${ctx.displayIndustry}), ancorato allo scenario sopra. Rispondi SOLO con il JSON.`;
+
+  try {
+    const model = getModelForFunction('generate-challenge');
+    const resp = await callAnthropicApi({
+      system: systemPrompt,
+      userMessage: userPrompt,
+      correlationId: ctx.correlationId,
+      functionName: 'generate-challenge',
+      model,
+      inputSummary: `l1_mindset_gen:locale=${ctx.locale},role=${ctx.roleTitle.slice(0, 40)}`,
+      temperature: 0.85,
+      maxTokens: 1800,
+    });
+    const jsonStr = extractJsonFromAiContent(resp.content);
+    const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
+    const validated = validateMindsetBlock(parsed);
+    if (!validated) {
+      console.warn('[generate-challenge] mindset block failed validation', JSON.stringify({
+        correlation_id: ctx.correlationId,
+        preview: typeof parsed === 'object' ? JSON.stringify(parsed).slice(0, 200) : String(parsed).slice(0, 200),
+      }));
+      return null;
+    }
+    return validated;
+  } catch (e) {
+    console.warn('[generate-challenge] mindset generation failed (non-blocking):', e instanceof Error ? e.message : String(e));
+    return null;
+  }
+}
+
+// =====================================================
 // Main handler
 // =====================================================
 
@@ -340,7 +519,15 @@ Restituisci SOLO JSON valido:
               }).eq("id", body.challenge_id);
             }
 
-            return jsonResponse({ ...validated, context_tag: contextTag || validated.context_tag, used_fallback: false, _intelligence: { source: "database", confidence: dbDecision.confidence } });
+            const mindset = await generateMindsetBlock({
+              scenario: validated.scenario,
+              roleTitle, displayIndustry, companyName,
+              teamCulture, operatingStyle, coreValues,
+              taskDescription: typeof taskDescription === 'string' ? taskDescription : String(taskDescription ?? ''),
+              requiredSkills, experienceLevel, workModel,
+              promptLang, langInstruction, locale, correlationId,
+            });
+            return jsonResponse({ ...validated, context_tag: contextTag || validated.context_tag, used_fallback: false, _intelligence: { source: "database", confidence: dbDecision.confidence }, mindset });
           }
         }
       }
@@ -451,7 +638,16 @@ Restituisci SOLO JSON valido:
         metadata: { business_type: validated.business_type, locale, used_fallback: false },
       }, "l1_challenges_generated");
 
-      return jsonResponse({ ...validated, context_tag: contextTag || validated.context_tag, used_fallback: false, is_fallback: responseIsFallback });
+      const mindset = await generateMindsetBlock({
+        scenario: validated.scenario,
+        roleTitle, displayIndustry, companyName,
+        teamCulture, operatingStyle, coreValues,
+        taskDescription: typeof taskDescription === 'string' ? taskDescription : String(taskDescription ?? ''),
+        requiredSkills, experienceLevel, workModel,
+        promptLang, langInstruction, locale, correlationId,
+      });
+
+      return jsonResponse({ ...validated, context_tag: contextTag || validated.context_tag, used_fallback: false, is_fallback: responseIsFallback, mindset });
 
     } catch (e) {
       if (e instanceof AnthropicError) {
