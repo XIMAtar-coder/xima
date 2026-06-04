@@ -781,6 +781,21 @@ export default function ChallengeCompletion() {
     );
   }
 
+  // MINDSET BRANCH — runs only when challenge.config_json.experience === 'mindset'
+  // No countdown, no end_at gating, no free-text form.
+  if (challenge.configJson?.experience === 'mindset' && invitationId) {
+    return (
+      <MainLayout>
+        <MindsetChallenge
+          invitationId={invitationId}
+          challengeId={challenge.challengeId}
+          config={challenge.configJson as MindsetConfig}
+        />
+      </MainLayout>
+    );
+  }
+
+
   // Handle briefing start - mark as completed, trigger reassurance, and store in localStorage
   const handleStartChallenge = () => {
     if (invitationId) {
