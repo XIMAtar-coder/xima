@@ -388,6 +388,9 @@ const CreateXimaCoreChallenge = () => {
         setExpectedTensions(data.expected_tensions || null);
         setGeneratedTimeEstimate(data.estimated_time_minutes || XIMA_CORE_CHALLENGE.timeEstimateMinutes);
         setIsFallbackScenario(false);
+        setGeneratedMindset(
+          data.mindset && typeof data.mindset === 'object' ? (data.mindset as Record<string, unknown>) : null
+        );
       } else {
         throw new Error('Scenario generation returned no valid scenario');
       }
