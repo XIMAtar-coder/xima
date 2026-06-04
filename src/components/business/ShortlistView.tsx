@@ -2,15 +2,12 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { ShortlistCard } from './ShortlistCard';
 import { ShortlistFilters, type ShortlistFilterValues } from './ShortlistFilters';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useBusinessEntitlements } from '@/hooks/useBusinessEntitlements';
 import { RefreshCw, Sparkles, Info, Users, Zap } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { ChallengePickerModal, type Challenge } from '@/components/business/ChallengePickerModal';
 
 interface ShortlistCandidate {
   candidate_user_id: string;
@@ -28,19 +25,16 @@ interface ShortlistCandidate {
   location_match: string;
   availability: string;
   status: string;
+  subscriber_code?: string | null;
 }
 
 interface ShortlistViewProps {
   goalId: string;
   roleTitle: string;
-  activeChallenges: Challenge[];
-  challengeLoading?: boolean;
-  onCreateChallenge: () => void;
-  onInviteToChallenge: (candidateUserIds: string[], challenge: Challenge) => void;
   onViewProfile: (candidateUserId: string) => void;
 }
 
-export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle, activeChallenges, challengeLoading = false, onCreateChallenge, onInviteToChallenge, onViewProfile }) => {
+export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle, onViewProfile }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { planTier } = useBusinessEntitlements();
@@ -49,11 +43,9 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
   const [loading, setLoading] = useState(false);
   const [generated, setGenerated] = useState(false);
   const [filters, setFilters] = useState<ShortlistFilterValues>({});
-  const [pendingInviteIds, setPendingInviteIds] = useState<string[]>([]);
-  const [showChallengePicker, setShowChallengePicker] = useState(false);
+  const [invitedIds, setInvitedIds] = useState<Set<string>>(new Set());
+  const [invitingIds, setInvitingIds] = useState<Set<string>>(new Set());
   const locksAfterFive = !['growth', 'enterprise'].includes(String(planTier));
-  const inviteDisabled = activeChallenges.length === 0;
-  const inviteDisabledReason = t('business.shortlist.invite_disabled_tooltip', 'Create a challenge for this role first');
 
   const fetchPersistedShortlist = useCallback(async () => {
     if (!goalId) return;
@@ -67,11 +59,7 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
         .limit(12);
       if (error) throw error;
 
-      // Fetch anonymous member codes via SECURITY DEFINER RPC
-      // (business users have no direct RLS read on candidate profiles)
-      const candidateIds = (data || [])
-        .map((r: any) => r.candidate_user_id)
-        .filter(Boolean);
+      const candidateIds = (data || []).map((r: any) => r.candidate_user_id).filter(Boolean);
       const codeMap = new Map<string, string>();
       if (candidateIds.length > 0) {
         const { data: codes } = await supabase.rpc('get_member_codes', { _user_ids: candidateIds } as any);
@@ -81,6 +69,18 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
           }
         });
       }
+
+      // Detect already-invited candidates for this goal (any L1 invite)
+      const { data: existingInvites } = await supabase
+        .from('challenge_invitations')
+        .select('candidate_profile_id, profiles!challenge_invitations_candidate_profile_id_fkey(user_id)')
+        .eq('hiring_goal_id', goalId);
+      const alreadyInvited = new Set<string>();
+      ((existingInvites as any[]) || []).forEach((row: any) => {
+        const uid = row?.profiles?.user_id;
+        if (uid) alreadyInvited.add(uid);
+      });
+      setInvitedIds(alreadyInvited);
 
       const rows = (data || []).map((row: any) => ({
         ...row,
@@ -114,25 +114,54 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
     fetchPersistedShortlist();
   }, [fetchPersistedShortlist]);
 
-
-
-  const inviteCandidates = useCallback((candidateUserIds: string[]) => {
-    if (activeChallenges.length === 0 || candidateUserIds.length === 0) return;
-    if (activeChallenges.length === 1) {
-      onInviteToChallenge(candidateUserIds, activeChallenges[0]);
-      return;
+  const inviteOne = useCallback(async (candidateUserId: string): Promise<boolean> => {
+    if (!goalId || invitedIds.has(candidateUserId)) return false;
+    setInvitingIds(prev => new Set(prev).add(candidateUserId));
+    try {
+      const { error } = await supabase.rpc('invite_candidate_to_l1', {
+        p_candidate_user_id: candidateUserId,
+        p_hiring_goal_id: goalId,
+      } as any);
+      if (error) throw error;
+      setInvitedIds(prev => new Set(prev).add(candidateUserId));
+      return true;
+    } catch (err: any) {
+      toast({
+        title: t('shortlist.invite_failed_title', 'Invite failed'),
+        description: err?.message || t('shortlist.invite_failed_desc', 'Could not send invitation'),
+        variant: 'destructive',
+      });
+      return false;
+    } finally {
+      setInvitingIds(prev => {
+        const next = new Set(prev);
+        next.delete(candidateUserId);
+        return next;
+      });
     }
-    setPendingInviteIds(candidateUserIds);
-    setShowChallengePicker(true);
-  }, [activeChallenges, onInviteToChallenge]);
+  }, [goalId, invitedIds, toast, t]);
 
-  const confirmChallengeSelection = (challengeId: string) => {
-    const challenge = activeChallenges.find((item) => item.id === challengeId);
-    if (!challenge) return;
-    onInviteToChallenge(pendingInviteIds, challenge);
-    setPendingInviteIds([]);
-    setShowChallengePicker(false);
-  };
+  const handleInviteSingle = useCallback(async (candidateUserId: string) => {
+    const ok = await inviteOne(candidateUserId);
+    if (ok) {
+      toast({ title: t('shortlist.invited_title', 'Invited to L1 Core Challenge') });
+    }
+  }, [inviteOne, toast, t]);
+
+  const handleInviteTop5 = useCallback(async () => {
+    const targets = shortlist.slice(0, 5).map(c => c.candidate_user_id).filter(id => !invitedIds.has(id));
+    let success = 0;
+    for (const id of targets) {
+      const ok = await inviteOne(id);
+      if (ok) success += 1;
+    }
+    if (success > 0) {
+      toast({
+        title: t('shortlist.invited_top5_title', 'Invitations sent'),
+        description: t('shortlist.invited_top5_desc', '{{count}} candidate(s) invited to L1 Core Challenge', { count: success }),
+      });
+    }
+  }, [shortlist, invitedIds, inviteOne, toast, t]);
 
   const generateShortlist = useCallback(async () => {
     setLoading(true);
@@ -155,7 +184,7 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
     } finally {
       setLoading(false);
     }
-  }, [goalId, filters, toast, t, fetchPersistedShortlist]);
+  }, [goalId, filters, toast, t, fetchPersistedShortlist, generated]);
 
   return (
     <div className="space-y-5">
@@ -178,24 +207,10 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
             {generated ? t('shortlist.refresh', 'Refresh Shortlist') : t('shortlist.generate', 'Generate Shortlist')}
           </Button>
           {shortlist.length >= 5 && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span>
-                  <Button
-                    variant="outline"
-                    onClick={() => inviteCandidates(shortlist.slice(0, 5).map(c => c.candidate_user_id))}
-                    disabled={challengeLoading || inviteDisabled}
-                    className="gap-2"
-                  >
-                    <Zap className="w-4 h-4" />
-                    {t('shortlist.invite_top_5', 'Invite Top 5')}
-                  </Button>
-                </span>
-              </TooltipTrigger>
-              {inviteDisabled && (
-                <TooltipContent>{t('business.shortlist.invite_top5_disabled', 'Create a challenge before inviting the top 5')}</TooltipContent>
-              )}
-            </Tooltip>
+            <Button variant="outline" onClick={handleInviteTop5} className="gap-2">
+              <Zap className="w-4 h-4" />
+              {t('shortlist.invite_top_5', 'Invite Top 5')}
+            </Button>
           )}
         </div>
       </div>
@@ -214,30 +229,6 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
           </div>
         </CardContent>
       </Card>
-
-
-
-      {generated && shortlist.length > 0 && inviteDisabled && !challengeLoading && (
-        <Card className="border-primary/30 bg-primary/5">
-          <CardContent className="p-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-start gap-3">
-              <div className="mt-0.5 rounded-full bg-primary/10 p-2">
-                <Zap className="h-5 w-5 text-primary" />
-              </div>
-              <div className="space-y-1">
-                <p className="font-semibold text-foreground">{t('business.shortlist.create_challenge_banner.title', 'Next step: create a XIMA Challenge')}</p>
-                <p className="text-sm text-muted-foreground max-w-3xl">
-                  {t('business.shortlist.create_challenge_banner.description', 'To invite candidates from the shortlist, first create a behavioural challenge for this role. XIMA helps build it from your goal requirements.')}
-                </p>
-              </div>
-            </div>
-            <Button onClick={onCreateChallenge} className="gap-2 shrink-0">
-              <Sparkles className="w-4 h-4" />
-              {t('business.shortlist.create_challenge_banner.cta', 'Create Challenge for this role')}
-            </Button>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Results */}
       {loading && (
@@ -264,11 +255,11 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
               key={candidate.candidate_user_id}
               candidate={candidate}
               rank={index + 1}
-              onInviteToChallenge={(id) => inviteCandidates([id])}
+              onInviteToChallenge={handleInviteSingle}
               onViewProfile={onViewProfile}
               locked={locksAfterFive && index >= 5}
-              inviteDisabled={inviteDisabled}
-              inviteDisabledReason={inviteDisabledReason}
+              invited={invitedIds.has(candidate.candidate_user_id)}
+              inviting={invitingIds.has(candidate.candidate_user_id)}
             />
           ))}
         </div>
@@ -287,13 +278,6 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
           </CardContent>
         </Card>
       )}
-      <ChallengePickerModal
-        open={showChallengePicker}
-        onOpenChange={setShowChallengePicker}
-        challenges={activeChallenges}
-        selectedCount={pendingInviteIds.length}
-        onConfirm={confirmChallengeSelection}
-      />
     </div>
   );
 };

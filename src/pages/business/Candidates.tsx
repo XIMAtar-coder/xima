@@ -13,8 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { XIMATAR_PROFILES } from '@/lib/ximatarTaxonomy';
 import { PoolCandidateCard } from '@/components/business/PoolCandidateCard';
 import { ArchetypeChip } from '@/components/business/ArchetypeChip';
-import { ChallengePickerModal, type Challenge } from '@/components/business/ChallengePickerModal';
-import { Users, ChevronLeft, ChevronRight, X, Sparkles, Lock, Filter } from 'lucide-react';
+import { Users, ChevronLeft, ChevronRight, X, Sparkles, Lock, Filter, Target } from 'lucide-react';
 
 const PAGE_SIZE = 20;
 
@@ -51,10 +50,9 @@ const BusinessCandidates = () => {
   const [page, setPage] = useState(0);
   const fetchSeq = useRef(0);
 
-  // Challenge invite flow
-  const [allChallenges, setAllChallenges] = useState<Challenge[]>([]);
-  const [showChallengePicker, setShowChallengePicker] = useState(false);
-  const [pendingInviteId, setPendingInviteId] = useState<string | null>(null);
+  // Hiring goal selector for invite flow
+  const [hiringGoals, setHiringGoals] = useState<{ id: string; role_title: string | null }[]>([]);
+  const [selectedGoalId, setSelectedGoalId] = useState<string>('');
 
   useEffect(() => {
     if (!isAuthenticated || (businessLoading === false && !isBusiness)) {
@@ -62,21 +60,16 @@ const BusinessCandidates = () => {
     }
   }, [isAuthenticated, isBusiness, businessLoading, navigate]);
 
-  // Load all active challenges for invite flow
+  // Load this business's hiring goals for the invite goal-selector
   useEffect(() => {
     if (!user?.id) return;
     supabase
-      .from('business_challenges')
-      .select('id, title, updated_at, end_at, rubric, hiring_goal_id, hiring_goal_drafts!business_challenges_hiring_goal_id_fkey(role_title)')
+      .from('hiring_goal_drafts')
+      .select('id, role_title')
       .eq('business_id', user.id)
-      .eq('status', 'active')
       .order('updated_at', { ascending: false })
       .then(({ data }) => {
-        setAllChallenges((data || []).map((c: any) => ({
-          id: c.id, title: c.title, updated_at: c.updated_at, end_at: c.end_at,
-          rubric: c.rubric, hiring_goal_id: c.hiring_goal_id,
-          goal_title: c.hiring_goal_drafts?.role_title || '',
-        })));
+        setHiringGoals((data || []) as any);
       });
   }, [user?.id]);
 
@@ -112,42 +105,32 @@ const BusinessCandidates = () => {
 
   useEffect(() => { fetchCandidates(); }, [fetchCandidates]);
 
-  const handleInvite = (candidate: any) => {
-    if (allChallenges.length === 0) {
-      toast({ title: t('business.challenges.no_active'), description: t('business.challenges.create_first', 'Create a challenge first') });
+  const handleInvite = async (candidate: any) => {
+    // Defensive guard: synthetic placeholders are not invitable
+    if (candidate?.is_synthetic) return;
+    if (!user?.id) return;
+    if (!selectedGoalId) {
+      toast({
+        title: t('candidate_pool.pick_goal_title', 'Pick a hiring goal first'),
+        description: t('candidate_pool.pick_goal_desc', 'Select one of your hiring goals to send an L1 invitation.'),
+        variant: 'destructive',
+      });
       return;
     }
-    setPendingInviteId(candidate.id);
-    if (allChallenges.length === 1) {
-      executeInvite(candidate.id, allChallenges[0]);
-    } else {
-      setShowChallengePicker(true);
-    }
-  };
-
-  const executeInvite = async (candidateId: string, challenge: Challenge) => {
-    if (!user?.id) return;
     try {
-      const { data: bizProfile } = await supabase
-        .from('business_profiles')
-        .select('company_name')
-        .eq('user_id', user.id)
-        .single();
-
-      await supabase.functions.invoke('send-challenge-invitation', {
-        body: {
-          candidate_profile_id: candidateId,
-          challenge_id: challenge.id,
-          hiring_goal_id: challenge.hiring_goal_id,
-          company_name: bizProfile?.company_name || 'Company',
-        },
-      });
+      const { error } = await supabase.rpc('invite_candidate_to_l1', {
+        p_candidate_user_id: candidate.id,
+        p_hiring_goal_id: selectedGoalId,
+      } as any);
+      if (error) throw error;
       toast({ title: t('business.candidates.invitation_sent', 'Invitation sent') });
-    } catch {
-      toast({ title: t('common.error'), variant: 'destructive' });
+    } catch (err: any) {
+      toast({
+        title: t('common.error', 'Error'),
+        description: err?.message || t('candidate_pool.invite_failed', 'Could not send invitation'),
+        variant: 'destructive',
+      });
     }
-    setPendingInviteId(null);
-    setShowChallengePicker(false);
   };
 
   const handleSave = (candidate: any) => {
@@ -173,6 +156,31 @@ const BusinessCandidates = () => {
             {totalCount} {t('candidate_pool.candidates', 'candidati')}
           </Badge>
         </div>
+
+        {/* Goal selector — required to send L1 invitations from the pool */}
+        <div className="rounded-2xl border border-border bg-background p-4 shadow-sm flex flex-col md:flex-row md:items-center gap-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <Target className="w-4 h-4 text-primary" />
+            {t('candidate_pool.invite_goal_label', 'Invite candidates to hiring goal')}
+          </div>
+          <select
+            value={selectedGoalId}
+            onChange={(e) => setSelectedGoalId(e.target.value)}
+            className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+          >
+            <option value="">{t('candidate_pool.select_goal', 'Select a hiring goal…')}</option>
+            {hiringGoals.map((g) => (
+              <option key={g.id} value={g.id}>{g.role_title || t('business.goals.untitled', 'Untitled role')}</option>
+            ))}
+          </select>
+          {hiringGoals.length === 0 && (
+            <Button size="sm" variant="outline" onClick={() => navigate('/business/hiring-goals/new')}>
+              {t('candidate_pool.create_goal', 'Crea Obiettivo di Assunzione')}
+            </Button>
+          )}
+        </div>
+
+
 
         {/* Archetype chips */}
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
@@ -384,19 +392,6 @@ const BusinessCandidates = () => {
         )}
       </div>
 
-      {/* Challenge picker modal */}
-      {showChallengePicker && pendingInviteId && (
-        <ChallengePickerModal
-          open={showChallengePicker}
-          onOpenChange={(open) => { if (!open) { setShowChallengePicker(false); setPendingInviteId(null); } }}
-          challenges={allChallenges}
-          selectedCount={1}
-          onConfirm={(challengeId, hiringGoalId) => {
-            const challenge = allChallenges.find(c => c.id === challengeId);
-            if (challenge) executeInvite(pendingInviteId, challenge);
-          }}
-        />
-      )}
     </BusinessLayout>
   );
 };
