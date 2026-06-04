@@ -226,7 +226,7 @@ CRITICAL RULES:
 
 EVALUATION CONTEXT:
 - Field: ${fieldContext}
-- Question type: ${openKey === 'open1' ? 'Creative thinking and problem-solving' : 'Goal-setting and professional drive'}
+- Question type: ${effectiveOpenKey === 'open1' ? 'Creative thinking and problem-solving' : effectiveOpenKey === 'mindset' ? 'L1 mindset/attitude experience' : 'Goal-setting and professional drive'}
 ${evaluationLensBlock}
 
 SCORING CRITERIA (strict scale 0-100, broken into 4 dimensions each 0-25):
