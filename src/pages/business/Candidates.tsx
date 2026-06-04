@@ -157,6 +157,31 @@ const BusinessCandidates = () => {
           </Badge>
         </div>
 
+        {/* Goal selector — required to send L1 invitations from the pool */}
+        <div className="rounded-2xl border border-border bg-background p-4 shadow-sm flex flex-col md:flex-row md:items-center gap-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <Target className="w-4 h-4 text-primary" />
+            {t('candidate_pool.invite_goal_label', 'Invite candidates to hiring goal')}
+          </div>
+          <select
+            value={selectedGoalId}
+            onChange={(e) => setSelectedGoalId(e.target.value)}
+            className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+          >
+            <option value="">{t('candidate_pool.select_goal', 'Select a hiring goal…')}</option>
+            {hiringGoals.map((g) => (
+              <option key={g.id} value={g.id}>{g.role_title || t('business.goals.untitled', 'Untitled role')}</option>
+            ))}
+          </select>
+          {hiringGoals.length === 0 && (
+            <Button size="sm" variant="outline" onClick={() => navigate('/business/hiring-goals/new')}>
+              {t('candidate_pool.create_goal', 'Crea Obiettivo di Assunzione')}
+            </Button>
+          )}
+        </div>
+
+
+
         {/* Archetype chips */}
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
           <ArchetypeChip
