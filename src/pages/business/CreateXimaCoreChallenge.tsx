@@ -87,6 +87,7 @@ interface GeneratedChallengeContext {
   estimated_time_minutes?: number;
   is_fallback?: boolean;
   used_fallback?: boolean;
+  mindset?: Record<string, unknown> | null;
 }
 
 const INDUSTRY_ICONS: Record<string, string> = {
