@@ -488,3 +488,152 @@ Return ONLY the JSON object.`;
     return errorResponse(500, 'INTERNAL_ERROR', 'Internal server error');
   }
 });
+
+// =====================================================
+// MINDSET FORMAT HANDLER
+// =====================================================
+
+async function handleMindsetScoring(args: {
+  mindsetPayload: any;
+  userId?: string;
+  challengeId?: string;
+  language: string;
+  correlationId: string;
+  ipHash: string | null;
+  scoringContext: string;
+  req: Request;
+}) {
+  const { mindsetPayload, userId, challengeId, language, correlationId, ipHash, scoringContext, req } = args;
+
+  // GDPR opt-out
+  if (userId && typeof userId === 'string') {
+    const authHeader = req.headers.get('Authorization');
+    if (authHeader) {
+      const supabase = createClient(
+        Deno.env.get('SUPABASE_URL')!,
+        Deno.env.get('SUPABASE_ANON_KEY')!,
+        { global: { headers: { Authorization: authHeader } } }
+      );
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('profiling_opt_out')
+        .eq('user_id', userId)
+        .single();
+      if (profile?.profiling_opt_out === true) {
+        return profilingOptOutResponse();
+      }
+    }
+  }
+
+  const instinctChoices = Array.isArray(mindsetPayload.instinct_choices) ? mindsetPayload.instinct_choices : [];
+  const dayLog = Array.isArray(mindsetPayload.day_log) ? mindsetPayload.day_log : [];
+  const debrief = Array.isArray(mindsetPayload.debrief) ? mindsetPayload.debrief : [];
+  const litFacets: string[] = Array.from(new Set(instinctChoices.map((c: any) => String(c?.facet || '')).filter(Boolean)));
+
+  const synthetic = [
+    `Lit facets from instinct cards: ${litFacets.join(', ') || 'none'}.`,
+    `Instinct choices: ${instinctChoices.map((c: any) => `${c.card_id}->${c.choice}(${c.facet})`).join(' | ')}.`,
+    `Day reactions: ${dayLog.map((d: any) => `${d.item_id}->${d.gesture}`).join(' | ')}.`,
+    `Debrief: ${debrief.map((d: any) => `Q: ${d.q}\nA: ${d.a}`).join('\n')}.`,
+  ].join('\n');
+
+  console.log(JSON.stringify({
+    type: 'request', correlation_id: correlationId,
+    function_name: 'analyze-open-answer', format: 'mindset',
+    lit_facet_count: litFacets.length, day_log_count: dayLog.length, debrief_len: debrief.length,
+    scoring_context: scoringContext,
+  }));
+
+  const systemPrompt = `You evaluate a candidate's L1 "mindset" challenge for the XIMA platform.
+
+Input is structured behavior (not free-text): facets they activated, micro-decisions during a simulated day, and a short "why" reflection.
+
+Your job:
+1. Map activated facets + decisions + the debrief reasoning to the five XIMA pillars (-5 to +5 each):
+   - drive, computational_power, communication, creativity, knowledge
+2. Produce a warm, plain-language summary (max 2 sentences, in ${language === 'it' ? 'Italian' : language === 'es' ? 'Spanish' : 'English'}).
+3. NEVER expose a numeric score to the candidate; we only persist signals internally.
+
+Return ONLY valid JSON:
+{
+  "summary": "<warm 1-2 sentence reflection>",
+  "lit_facets": [<facet strings>],
+  "pillar_impact": {
+    "drive": <-5..5>,
+    "computational_power": <-5..5>,
+    "communication": <-5..5>,
+    "creativity": <-5..5>,
+    "knowledge": <-5..5>
+  },
+  "pillar_reasoning": "<brief why>"
+}`;
+
+  const userPrompt = `Mindset payload:\n\n${synthetic}\n\nReturn ONLY the JSON.`;
+
+  let parsed: any;
+  let aiRequestId = '';
+  try {
+    const aiResp = await callAnthropicApi({
+      system: systemPrompt,
+      userMessage: userPrompt,
+      correlationId,
+      functionName: 'analyze-open-answer',
+      inputSummary: `mindset:facets=${litFacets.length},day=${dayLog.length},debrief=${debrief.length}`,
+      maxTokens: 1024,
+    });
+    aiRequestId = aiResp.requestId;
+    parsed = JSON.parse(extractJsonFromAiContent(aiResp.content));
+  } catch (e) {
+    if (e instanceof AnthropicError) {
+      return errorResponse(e.statusCode, e.errorCode, e.message);
+    }
+    console.error(JSON.stringify({ type: 'mindset_parse_error', correlation_id: correlationId, error: e instanceof Error ? e.message : 'unknown' }));
+    return errorResponse(502, 'MINDSET_PARSE_FAILED', 'Mindset evaluation failed to produce valid results.');
+  }
+
+  const pillarImpact = parsed?.pillar_impact || null;
+
+  emitAuditEventWithMetric({
+    actorType: 'system',
+    actorId: null,
+    action: 'assessment.mindset_scored',
+    entityType: 'mindset_submission',
+    entityId: challengeId || 'unknown',
+    correlationId,
+    metadata: { ai_request_id: aiRequestId, lit_facet_count: litFacets.length, scoring_context: scoringContext },
+    ipHash,
+  }, 'mindset.scored');
+
+  // Trajectory
+  if (userId && typeof userId === 'string' && pillarImpact) {
+    try {
+      await persistTrajectoryEvent({
+        user_id: userId,
+        source_function: 'analyze-open-answer',
+        source_type: 'l1_challenge',
+        source_entity_id: challengeId || 'mindset',
+        correlation_id: correlationId,
+        deltas: {
+          drive: pillarImpact.drive || 0,
+          computational_power: pillarImpact.computational_power || 0,
+          communication: pillarImpact.communication || 0,
+          creativity: pillarImpact.creativity || 0,
+          knowledge: pillarImpact.knowledge || 0,
+        },
+        reasoning: parsed?.pillar_reasoning || 'mindset experience',
+      });
+    } catch (trajErr) {
+      console.error('[mindset trajectory] error:', trajErr instanceof Error ? trajErr.message : trajErr);
+    }
+  }
+
+  return jsonResponse({
+    format: 'mindset',
+    summary: parsed?.summary || '',
+    lit_facets: parsed?.lit_facets || litFacets,
+    pillar_impact: pillarImpact,
+    pillar_reasoning: parsed?.pillar_reasoning || '',
+    scoring_context: scoringContext,
+  });
+}
+
