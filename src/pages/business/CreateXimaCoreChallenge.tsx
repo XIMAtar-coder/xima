@@ -198,6 +198,7 @@ const CreateXimaCoreChallenge = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [isFallbackScenario, setIsFallbackScenario] = useState(false);
   const [generationError, setGenerationError] = useState(false);
+  const [generatedMindset, setGeneratedMindset] = useState<Record<string, unknown> | null>(null);
 
   const showNoContextWarning = noContextFlag && !goalId && !jobPostId;
   const rawIndustry = businessProfile?.manual_industry || businessProfile?.snapshot_industry || '';
