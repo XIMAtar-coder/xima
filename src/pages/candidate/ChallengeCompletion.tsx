@@ -15,6 +15,8 @@ import { toast } from '@/hooks/use-toast';
 import { Clock, CheckCircle, AlertTriangle, Timer, Loader2, Send, Target } from 'lucide-react';
 import { getChallengeTimeInfo, ChallengeTimeStatus } from '@/utils/challengeTimeUtils';
 import MainLayout from '@/components/layout/MainLayout';
+import { MindsetChallenge } from '@/components/candidate/mindset/MindsetChallenge';
+import type { MindsetConfig } from '@/components/candidate/mindset/types';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipelineProgress';
 import { CandidateReflectionPanel } from '@/components/signals/CandidateReflectionPanel';
