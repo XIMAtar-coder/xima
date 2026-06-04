@@ -519,7 +519,15 @@ Restituisci SOLO JSON valido:
               }).eq("id", body.challenge_id);
             }
 
-            return jsonResponse({ ...validated, context_tag: contextTag || validated.context_tag, used_fallback: false, _intelligence: { source: "database", confidence: dbDecision.confidence } });
+            const mindset = await generateMindsetBlock({
+              scenario: validated.scenario,
+              roleTitle, displayIndustry, companyName,
+              teamCulture, operatingStyle, coreValues,
+              taskDescription: typeof taskDescription === 'string' ? taskDescription : String(taskDescription ?? ''),
+              requiredSkills, experienceLevel, workModel,
+              promptLang, langInstruction, locale, correlationId,
+            });
+            return jsonResponse({ ...validated, context_tag: contextTag || validated.context_tag, used_fallback: false, _intelligence: { source: "database", confidence: dbDecision.confidence }, mindset });
           }
         }
       }
