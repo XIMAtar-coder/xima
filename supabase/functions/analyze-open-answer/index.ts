@@ -77,28 +77,21 @@ serve(async (req) => {
     const body = await req.json();
     const { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload } = body;
 
-    // ===== MINDSET FORMAT (L1 mindset experience) =====
-    // Short-circuits the open-answer pipeline: no text/field/openKey required,
-    // no non-answer detection, no evidence-ledger insert (no open_response row).
-    if (format === 'mindset' && mindset_payload && typeof mindset_payload === 'object') {
-      return await handleMindsetScoring({
-        mindsetPayload: mindset_payload,
-        userId: user_id,
-        challengeId: challenge_id,
-        language: language || 'it',
-        correlationId,
-        ipHash,
-        scoringContext: scoring_context || 'l1_challenge',
-        req,
-      });
+    const isMindset = format === 'mindset' && mindset_payload && typeof mindset_payload === 'object';
+
+    // Mindset bypasses (!field || !language || !openKey) — payload is structured, not free-text.
+    if (!isMindset) {
+      if (!field || !language || !openKey) {
+        return errorResponse(400, 'INVALID_INPUT', 'Missing required parameters');
+      }
     }
 
-    if (!field || !language || !openKey) {
-      return errorResponse(400, 'INVALID_INPUT', 'Missing required parameters');
-    }
+    const effectiveLanguage: string = isMindset ? (language || 'it') : language;
+    const effectiveField: string = isMindset ? (field || 'business_leadership') : field;
+    const effectiveOpenKey: string = isMindset ? (openKey || 'mindset') : openKey;
 
     const rawText = text || '';
-    if (rawText.length > MAX_ANSWER_LENGTH) {
+    if (!isMindset && rawText.length > MAX_ANSWER_LENGTH) {
       return errorResponse(400, 'INPUT_TOO_LONG', `Answer too long. Maximum ${MAX_ANSWER_LENGTH} characters allowed.`);
     }
 
