@@ -69,7 +69,7 @@ const GoalShortlistPage: React.FC = () => {
   return (
     <BusinessLayout>
       <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto">
-        <GoalContextHeader currentGoal={currentGoal} allGoals={goals} onGoalSwitch={handleGoalSwitch} />
+        <GoalContextHeader currentGoal={currentGoal} allGoals={goals} onGoalSwitch={(newGoalId) => navigate(`/business/goals/${newGoalId}/shortlist`)} />
 
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
