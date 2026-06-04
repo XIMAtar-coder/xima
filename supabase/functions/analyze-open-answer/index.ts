@@ -401,8 +401,8 @@ Return ONLY the JSON object.`;
             .from('assessment_open_responses')
             .select('id, attempt_id')
             .eq('user_id', user_id)
-            .eq('field_key', field)
-            .eq('open_key', openKey)
+            .eq('field_key', effectiveField)
+            .eq('open_key', effectiveOpenKey)
             .order('created_at', { ascending: false })
             .limit(1)
             .single();
@@ -412,8 +412,8 @@ Return ONLY the JSON object.`;
               open_response_id: openResp.id,
               subject_profile_id: profile.id,
               attempt_id: openResp.attempt_id,
-              field_key: field,
-              open_key: openKey,
+              field_key: effectiveField,
+              open_key: effectiveOpenKey,
               ai_request_id: aiRequestId,
               final_score: finalScore,
               quality_label: qualityLabel,
@@ -422,7 +422,7 @@ Return ONLY the JSON object.`;
               score_breakdown: scoreBreakdown,
               content_hash: contentHash,
               content_length: cleanedText.length,
-              content_language: language,
+              content_language: effectiveLanguage,
             });
           }
         }
