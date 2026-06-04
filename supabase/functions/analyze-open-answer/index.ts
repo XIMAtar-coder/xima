@@ -74,7 +74,24 @@ serve(async (req) => {
   const ipHash = req.headers.get('x-forwarded-for') ? await hashForAudit(req.headers.get('x-forwarded-for')!) : null;
 
   try {
-    const { text, field, language, openKey, user_id, challenge_id, scoring_context } = await req.json();
+    const body = await req.json();
+    const { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload } = body;
+
+    // ===== MINDSET FORMAT (L1 mindset experience) =====
+    // Short-circuits the open-answer pipeline: no text/field/openKey required,
+    // no non-answer detection, no evidence-ledger insert (no open_response row).
+    if (format === 'mindset' && mindset_payload && typeof mindset_payload === 'object') {
+      return await handleMindsetScoring({
+        mindsetPayload: mindset_payload,
+        userId: user_id,
+        challengeId: challenge_id,
+        language: language || 'it',
+        correlationId,
+        ipHash,
+        scoringContext: scoring_context || 'l1_challenge',
+        req,
+      });
+    }
 
     if (!field || !language || !openKey) {
       return errorResponse(400, 'INVALID_INPUT', 'Missing required parameters');
@@ -84,6 +101,7 @@ serve(async (req) => {
     if (rawText.length > MAX_ANSWER_LENGTH) {
       return errorResponse(400, 'INPUT_TOO_LONG', `Answer too long. Maximum ${MAX_ANSWER_LENGTH} characters allowed.`);
     }
+
 
     // ===== GDPR: Profiling opt-out check — KEPT EXACTLY =====
     if (user_id && typeof user_id === 'string') {
