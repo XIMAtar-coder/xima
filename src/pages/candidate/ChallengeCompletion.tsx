@@ -199,7 +199,8 @@ export default function ChallengeCompletion() {
               start_at,
               end_at,
               status,
-              rubric
+              rubric,
+              config_json
             ),
             hiring_goal_drafts!challenge_invitations_hiring_goal_id_fkey (
               role_title
