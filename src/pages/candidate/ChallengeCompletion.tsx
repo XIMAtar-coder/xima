@@ -54,6 +54,7 @@ interface ChallengeDetails {
   roleFamily?: RoleFamily | null;
   skillFocus?: string[];
   scenarioContext?: string | null; // AI-generated scenario from XIMA Core
+  configJson?: Record<string, any> | null;
 }
 
 interface SubmissionPayload {
