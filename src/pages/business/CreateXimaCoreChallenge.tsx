@@ -468,6 +468,7 @@ const CreateXimaCoreChallenge = () => {
           candidate_intro: t('challenge.xima_core.candidate_intro'),
           generated_time_estimate: generatedTimeEstimate,
           context_tag: displayContextTag,
+          ...(generatedMindset ? generatedMindset : {}),
         },
         context_snapshot: (contextSnapshot || {
           role_title: roleTitle,
