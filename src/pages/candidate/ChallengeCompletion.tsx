@@ -15,6 +15,8 @@ import { toast } from '@/hooks/use-toast';
 import { Clock, CheckCircle, AlertTriangle, Timer, Loader2, Send, Target } from 'lucide-react';
 import { getChallengeTimeInfo, ChallengeTimeStatus } from '@/utils/challengeTimeUtils';
 import MainLayout from '@/components/layout/MainLayout';
+import { MindsetChallenge } from '@/components/candidate/mindset/MindsetChallenge';
+import type { MindsetConfig } from '@/components/candidate/mindset/types';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipelineProgress';
 import { CandidateReflectionPanel } from '@/components/signals/CandidateReflectionPanel';
@@ -52,6 +54,7 @@ interface ChallengeDetails {
   roleFamily?: RoleFamily | null;
   skillFocus?: string[];
   scenarioContext?: string | null; // AI-generated scenario from XIMA Core
+  configJson?: Record<string, any> | null;
 }
 
 interface SubmissionPayload {
@@ -196,7 +199,8 @@ export default function ChallengeCompletion() {
               start_at,
               end_at,
               status,
-              rubric
+              rubric,
+              config_json
             ),
             hiring_goal_drafts!challenge_invitations_hiring_goal_id_fkey (
               role_title
@@ -274,6 +278,7 @@ export default function ChallengeCompletion() {
           roleFamily,
           skillFocus,
           scenarioContext,
+          configJson: (challengeData?.config_json as Record<string, any> | null) || null,
         });
 
         // Check progression prerequisites for this hiring goal
@@ -775,6 +780,21 @@ export default function ChallengeCompletion() {
       </MainLayout>
     );
   }
+
+  // MINDSET BRANCH — runs only when challenge.config_json.experience === 'mindset'
+  // No countdown, no end_at gating, no free-text form.
+  if (challenge.configJson?.experience === 'mindset' && invitationId) {
+    return (
+      <MainLayout>
+        <MindsetChallenge
+          invitationId={invitationId}
+          challengeId={challenge.challengeId}
+          config={challenge.configJson as MindsetConfig}
+        />
+      </MainLayout>
+    );
+  }
+
 
   // Handle briefing start - mark as completed, trigger reassurance, and store in localStorage
   const handleStartChallenge = () => {
