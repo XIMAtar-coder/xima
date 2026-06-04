@@ -118,28 +118,50 @@ serve(async (req) => {
       }
     }
 
-    // Input cleaning — KEPT EXACTLY
-    const cleanedText = rawText
-      .replace(/[._]{2,}/g, ' ')
-      .replace(/\s+/g, ' ')
-      .replace(/^\s*[._]+\s*/g, '')
-      .replace(/\s*[._]+\s*$/g, '')
-      .trim();
+    // Input cleaning — KEPT EXACTLY for free-text; mindset builds a synthetic IT transcript.
+    let cleanedText: string;
+    if (isMindset) {
+      const instinctChoices = Array.isArray(mindset_payload.instinct_choices) ? mindset_payload.instinct_choices : [];
+      const dayLog = Array.isArray(mindset_payload.day_log) ? mindset_payload.day_log : [];
+      const debrief = Array.isArray(mindset_payload.debrief) ? mindset_payload.debrief : [];
 
-    const langConfig = LANGUAGE_CONFIGS[language] || LANGUAGE_CONFIGS.en;
-    const fieldContext = FIELD_CONTEXTS[field] || 'professional skills';
+      const instinctLine = instinctChoices.length
+        ? 'Istinti: ' + instinctChoices.map((c: any) => `«${String(c?.facet || '')}»`).join(', ')
+        : 'Istinti: (nessuno)';
+      const dayLine = dayLog.length
+        ? 'Giornata (lunedì): ha reagito con ' + dayLog.map((d: any) => String(d?.gesture || '')).join(', ')
+        : 'Giornata (lunedì): (nessuna reazione)';
+      const debriefLine = debrief.length
+        ? debrief.map((d: any) => `Riflessione — D: ${String(d?.q || '')} / R: ${String(d?.a || '')}`).join('\n')
+        : 'Riflessione — (nessuna)';
 
-    // STEP 1: Pre-LLM Non-Answer Detection — KEPT EXACTLY
-    const nonAnswerCheck = detectNonAnswer(cleanedText);
+      cleanedText = [instinctLine, dayLine, debriefLine].join('\n');
+    } else {
+      cleanedText = rawText
+        .replace(/[._]{2,}/g, ' ')
+        .replace(/\s+/g, ' ')
+        .replace(/^\s*[._]+\s*/g, '')
+        .replace(/\s*[._]+\s*$/g, '')
+        .trim();
+    }
+
+    const langConfig = LANGUAGE_CONFIGS[effectiveLanguage] || LANGUAGE_CONFIGS.en;
+    const fieldContext = FIELD_CONTEXTS[effectiveField] || 'professional skills';
+
+    // STEP 1: Pre-LLM Non-Answer Detection — skipped for mindset (structured payload).
+    const nonAnswerCheck = isMindset
+      ? { isNonAnswer: false as const, debugInfo: { normalizedLength: cleanedText.length, wordCount: cleanedText.split(/\s+/).filter(Boolean).length, matchedPattern: undefined as string | undefined } }
+      : detectNonAnswer(cleanedText);
 
     console.log(JSON.stringify({
       type: 'request', correlation_id: correlationId,
       function_name: 'analyze-open-answer',
-      field, language, openKey,
+      field: effectiveField, language: effectiveLanguage, openKey: effectiveOpenKey,
       answer_length: cleanedText.length,
       word_count: nonAnswerCheck.debugInfo.wordCount,
       non_answer_detected: nonAnswerCheck.isNonAnswer,
       scoring_context: scoring_context || 'core_assessment',
+      format: isMindset ? 'mindset' : 'free_text',
     }));
 
     if (nonAnswerCheck.isNonAnswer) {
