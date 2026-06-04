@@ -5979,6 +5979,10 @@ export type Database = {
         Args: { p_action: string; p_context?: Json; p_user_id: string }
         Returns: string
       }
+      invite_candidate_to_l1: {
+        Args: { p_candidate_user_id: string; p_hiring_goal_id: string }
+        Returns: string
+      }
       is_business_owner: { Args: { _business_id: string }; Returns: boolean }
       is_email_verified: { Args: never; Returns: boolean }
       is_pipeline_thread_participant: {
