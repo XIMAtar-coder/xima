@@ -1,69 +1,162 @@
-## Context
+# Mindset L1 Challenge Experience
 
-A `SECURITY DEFINER` RPC `invite_candidate_to_l1(p_candidate_user_id uuid, p_hiring_goal_id uuid)` already exists. It resolves `candidate_profile_id` and creates the L1 XIMA Core Challenge invitation server-side. The shortlist invite currently fails silently because the client tries to resolve `profiles.id` under RLS that blocks business reads. The shortlist also exposes a challenge picker that can target L2 — must go. L2 invitations belong only to the L1 review / Evaluations flow.
+## 1. Branch the candidate page (no behavior change for free-text)
 
-`browse-candidate-pool` injects synthetic placeholder cards (`is_synthetic: true`, ids like `synthetic-lion`) when the real pool is small. These must never be invitable.
+**File:** `src/pages/candidate/ChallengeCompletion.tsx`
 
-## Files to touch
-
-1. `src/components/business/ShortlistView.tsx` — strip challenge picker + activeChallenges gating; call the L1 RPC directly; track invited state.
-2. `src/components/business/ShortlistCard.tsx` — accept `invited?: boolean`, swap CTA to disabled "Invited" pill; drop `inviteDisabled*`.
-3. `src/pages/business/GoalShortlistPage.tsx` — drop `activeChallenges` load, `handleInviteToChallenge` profile-resolution block, `challengeCreated` toast, and the `onInviteToChallenge`/`activeChallenges` props passed to `ShortlistView`.
-4. `src/pages/business/Candidates.tsx` — replace challenge-picker invite with goal-selector + L1 RPC; defensive synthetic guard.
-5. `src/components/business/PoolCandidateCard.tsx` — when `is_synthetic`, hide "Invita" CTA and show "Profilo di esempio" badge.
-
-No new SQL — RPC already exists.
-
-## Behaviour changes
-
-### Shortlist (`ShortlistView` + `ShortlistCard`)
-
-- Remove `ChallengePickerModal`, `pendingInviteIds`, `showChallengePicker`, `confirmChallengeSelection`, `activeChallenges`/`challengeLoading` props, `inviteDisabled`/`inviteDisabledReason`, and the "Create Challenge for this role" banner.
-- New `ShortlistView` props: `goalId`, `roleTitle`, `onViewProfile`. Invite handled internally.
-- Track `invitedIds: Set<string>` in state.
-- `handleInviteL1(candidateUserId)`:
-  ```ts
-  const { error } = await supabase.rpc('invite_candidate_to_l1', {
-    p_candidate_user_id: candidateUserId,
-    p_hiring_goal_id: goalId,
-  });
-  if (error) { toast({ title: 'Invite failed', description: error.message, variant: 'destructive' }); return; }
-  setInvitedIds(prev => new Set(prev).add(candidateUserId));
-  toast({ title: t('shortlist.invited_title', 'Invited to L1 Core Challenge') });
+- Extend the invitation→challenge select to also pull `config_json` from `business_challenges`.
+- Store it on `ChallengeDetails` as `configJson: Record<string, any> | null`.
+- Compute `const isMindset = challenge?.configJson?.experience === 'mindset'` once challenge is loaded.
+- Branch **early** in render (after `loading` / `!challenge` / `prerequisiteBlock?.blocked` guards, BEFORE the PreChallengeBriefing block and BEFORE the submitted/active free-text returns):
+  ```tsx
+  if (isMindset) {
+    return (
+      <MainLayout>
+        <MindsetChallenge
+          invitationId={invitationId!}
+          challenge={challenge}
+          existingSubmission={{ id: submissionId, status: submissionStatus, submittedAt, payload: loadedMindsetPayload }}
+        />
+      </MainLayout>
+    );
+  }
   ```
-- "Invite Top 5" loops top 5 not-yet-invited ids sequentially; one aggregate toast with success count.
-- `ShortlistCard` receives `invited` — when true the primary button becomes a disabled "Invited" chip (CheckCircle icon). All `inviteDisabled*` props removed.
+- For mindset, **bypass** `timeInfo` / `isExpired` / `isUpcoming` / `isReadOnly`: no countdown, no "closed" state, no gating on `end_at`. This is local to the branch — the existing free-text path keeps `timeInfo` exactly as today.
+- The existing `payload` / `level2Payload` / `saveDraft` / `handleSubmit` code and all free-text JSX remain untouched.
 
-### Shortlist page (`GoalShortlistPage`)
+When loading an existing submission, if `submission.submitted_payload?.format === 'mindset'` or `submission.draft_payload?.format === 'mindset'`, hand the parsed payload to `<MindsetChallenge>` via `existingSubmission.payload`; do not try to coerce it into the L1/L2 free-text shapes.
 
-- Remove `activeChallenges`, `challengeLoading`, `loadActiveChallenges`, `challengeCreated` query handling, and the entire `handleInviteToChallenge` block.
-- `<ShortlistView>` simplifies to `goalId`, `roleTitle`, `onViewProfile`.
+## 2. New <MindsetChallenge> orchestrator
 
-### Pool (`Candidates.tsx`)
+**File:** `src/components/candidate/mindset/MindsetChallenge.tsx`
 
-- Remove `allChallenges` load, `ChallengePickerModal` usage, `executeInvite`, `pendingInviteId`, `showChallengePicker`.
-- Add `selectedGoalId: string | null` state and a small `<select>` in the header listing this business's hiring goals (loaded from `hiring_goal_drafts` where `business_id = user.id`).
-- `handleInvite(candidate)`:
-  - **If `candidate.is_synthetic` → return early (defensive, no toast).**
-  - If `!selectedGoalId` → toast "Pick a hiring goal first" and focus the selector; no network call.
-  - Else call `supabase.rpc('invite_candidate_to_l1', { p_candidate_user_id: candidate.id, p_hiring_goal_id: selectedGoalId })`; success/error toasts identical to shortlist.
+State machine (single component, internal `step` state):
+`'intro' → 'instinct' → 'day' → 'debrief' → 'resolve'`.
 
-### Pool card (`PoolCandidateCard`)
+Reads everything from `challenge.configJson`:
+```ts
+type MindsetConfig = {
+  experience: 'mindset';
+  guide: { name?: string; intro: string; debrief_focus: string };
+  instinct_cards: Array<{ id: string; prompt: string; a: { label: string; facet: string }; b: { label: string; facet: string } }>;
+  day: { clock: string; items: Array<{ id: string; source: string; body: string }>; gestures: Array<{ id: string; emoji: string; label: string }> };
+};
+```
 
-- When `candidate.is_synthetic`:
-  - Do **not** render the "Invita" button; the save (bookmark) button is hidden too (synthetic cards have no real backing record).
-  - Render a subtle badge in the actions row: `<Badge variant="outline" className="text-xs">{t('candidate_pool.sample_profile', 'Profilo di esempio')}</Badge>`.
-- Real candidates: unchanged.
+Local payload state:
+```ts
+type MindsetPayload = {
+  format: 'mindset';
+  instinct_choices: Array<{ card_id: string; choice: 'a' | 'b'; facet: string }>;
+  day_log: Array<{ item_id: string; gesture: string }>;
+  debrief: Array<{ q: string; a: string }>;
+  lit_facets: string[];
+};
+```
 
-### Scope guard
+Visual shell: existing `Card`, `Button`, `Badge`, `Progress`, `toast`, lucide icons; dark-theme tokens from `index.css`. No new color literals.
 
-- No code path in shortlist or pool inserts into `challenge_invitations` directly or calls `send-challenge-invitation` with a non-L1 challenge. L2 entry points remain in the L1 review / Evaluations flow (out of scope, unchanged).
+### Step 2.a — Intro (`MindsetIntro.tsx`)
+Card with guide name (default "Aria"), `config.guide.intro`, a "nessuna risposta giusta" reassurance line (hardcoded IT string, since mindset is IT-only today), and a primary "Inizia" button → `setStep('instinct')`.
 
-## Verification
+### Step 2.b — Instinct cards (`InstinctCards.tsx`)
+- One card at a time, index in local state.
+- Two large tappable option buttons (variant=outline, hover lift), label from `card.a.label` / `card.b.label`.
+- Non-blocking urgency: thin `Progress`-style bar that fills over ~6s using CSS animation; **does not** auto-advance, just visual urgency.
+- On tap: push `{card_id, choice, facet}` to `instinct_choices`, add facet to `lit_facets` (dedup), show a brief inline pill "Facet acceso: <facet>" for 900ms via local state, then `setIndex(i+1)`.
+- When last card answered → `setStep('day')`.
 
-- Shortlist "Invite to Challenge" → single `rpc/invite_candidate_to_l1` call; success flips card to "Invited"; second click no-op; errors surface verbatim.
-- `rg "ChallengePickerModal"` returns zero hits in `ShortlistView.tsx` and `Candidates.tsx`.
-- `rg "challenge_invitations" src/` shows no remaining client inserts from shortlist/pool.
-- Pool: synthetic cards show "Profilo di esempio" badge and no Invita button; clicking via any path (defensive) does nothing.
-- Pool: real candidate with no selected goal → toast prompt, no network call. With goal → RPC call, success toast.
-- DB check: `challenge_invitations` row lands with correct `candidate_profile_id` and the L1 XIMA Core Challenge `challenge_id`.
+### Step 2.c — Living day (`LivingDay.tsx`)
+- Header: small clock badge with `config.day.clock`, title "Lunedì".
+- One day item card at a time (`source` as small label, `body` as content).
+- Below the item: row of gesture buttons rendered from `config.day.gestures` (`emoji` + `label`).
+- On tap: push `{item_id, gesture}` to `day_log`, advance. No correctness feedback.
+- After last item → `setStep('debrief')`.
+
+### Step 2.d — Guide debrief (`GuideDebrief.tsx`)
+- Find item where `item.id === config.guide.debrief_focus`; find the gesture the candidate chose for it from `day_log`.
+- Aria asks a warm "perché" referencing the chosen gesture (template: `"Su «${item.source}» hai scelto ${gesture.emoji} ${gesture.label}. Cosa ti ha guidato?"`).
+- Small `Textarea` (2–3 rows), submit button enabled when length ≥ 20 chars.
+- On submit: push `{ q, a }` to `debrief`, show one-line warm ack from Aria ("Grazie, lo annoto."), advance to resolve.
+
+### Step 2.e — Resolve (`ResolveScreen.tsx`)
+- Lit facets rendered as `Badge` pills.
+- Warm one-liner from Aria (config-overridable: `config.guide.resolve_line`, fallback hardcoded IT).
+- "XIMAtar in fase di affinamento" cue with a static `Progress` showing L1 ✓ (no numeric score, no percentages).
+- CTA: "Torna al profilo" → navigate `/profile`.
+
+## 3. Persistence (`useMindsetDraft.ts`)
+
+Mirrors the existing free-text upsert path 1:1 — same authoritative re-fetch of the invitation, same `onConflict: 'invitation_id'`, same status strings.
+
+- `loadDraft(invitationId)` → returns existing `MindsetPayload | null` from `draft_payload` (or `submitted_payload` if status `'submitted'`), plus `{id, status, submittedAt}`.
+- `saveDraftDebounced(payload)` — 1.5s debounce, upsert `{ draft_payload: payload, status: 'draft' }` with the same five FK columns the free-text path writes (`invitation_id, candidate_profile_id, business_id, hiring_goal_id, challenge_id`).
+- `submit(payload)` — reuses **exactly** the free-text submit's status transitions:
+  1. Re-fetch invitation for authoritative FKs.
+  2. Upsert/update `challenge_submissions` with `status:'submitted'`, `submitted_payload: payload`, `draft_payload: payload`, `submitted_at: now`, `signals_version:'v1'` (kept to satisfy NOT NULL).
+  3. `challenge_invitations.update({ status: 'submitted', responded_at: now })`.
+- Calls `saveDraftDebounced` from `<MindsetChallenge>` after every state mutation (instinct choice, gesture choice, debrief saved).
+
+## 4. Scoring call (non-blocking)
+
+In `submit`, immediately after the DB submission succeeds and BEFORE navigating to resolve:
+
+```ts
+supabase.functions
+  .invoke('analyze-open-answer', {
+    body: {
+      challenge_id: challenge.challengeId,
+      user_id: authUserId,
+      language: 'it',
+      scoring_context: 'l1_challenge',
+      format: 'mindset',
+      mindset_payload: { instinct_choices, day_log, debrief },
+    },
+  })
+  .then(async ({ data, error }) => {
+    if (error || !data) return; // never block
+    await supabase
+      .from('challenge_submissions')
+      .update({ signals_payload: data })
+      .eq('invitation_id', invitationId);
+  })
+  .catch(() => {/* swallow */});
+```
+
+Resolve screen renders regardless of the call's outcome.
+
+## 5. analyze-open-answer: accept mindset format
+
+**File:** `supabase/functions/analyze-open-answer/index.ts`
+
+Minimal additive change at the top of the handler:
+
+- If `body.format === 'mindset'`, skip the existing `text` / `field` / `openKey` requirements and the non-answer detection.
+- Build a synthetic "answer" string from `mindset_payload` (facets chosen + day_log gestures + debrief Q/A) and feed it through the same Claude scoring path but with a mindset-specific system prompt addendum:
+  - Ask Claude to map `instinct_choices` facets and the debrief reasoning to the five pillars (drive / computational_power / communication / creativity / knowledge) producing `pillar_impact` and a `lit_facets` echo.
+  - Score is computed internally but **not** returned to the client in a candidate-visible way — we only persist `signals_payload`. Existing `score_total` etc. still go into `signals_payload`; the candidate-facing resolve screen never reads them.
+- Keep existing audit / evidence-ledger / trajectory code paths; gate the evidence-ledger insert behind `format !== 'mindset'` for now (no `assessment_open_responses` row exists for mindset).
+
+No change to other callers — all existing requests still set `text` / `field` / `openKey` and fall into the unchanged branch.
+
+## 6. Scope guarantees
+
+- `challenge.configJson?.experience !== 'mindset'` → identical code path as today (no diff in rendered output, autosave cadence, validation, submit payload shape, signals computation, invitation status update).
+- Business-side review, L2 flow, L3 flow, and any other challenge: untouched.
+- No new DB migration. `config_json` already exists on `business_challenges`. No new RLS, no new edge function.
+
+## Technical notes
+
+- Type the new payload as `Json`-compatible (plain objects, no `Date`, no `undefined`); cast `as any` only at the Supabase boundary, matching current free-text code.
+- All copy strings inside mindset components are IT literals for now; later i18n migration is trivial since they're isolated to the mindset folder.
+- No new dependencies; reuse existing `Card`, `Button`, `Badge`, `Progress`, `Textarea`, lucide icons, sonner/use-toast.
+- ASCII flow:
+  ```text
+  ChallengeCompletion (load + branch)
+    └── isMindset? ─┬─ yes → <MindsetChallenge>
+                    │           intro → instinct → day → debrief → resolve
+                    │           (autosave draft_payload on each step)
+                    │           submit → submitted_payload + invitation status
+                    │                 → analyze-open-answer (fire-and-forget) → signals_payload
+                    └─ no  → existing free-text UI (unchanged)
+  ```
