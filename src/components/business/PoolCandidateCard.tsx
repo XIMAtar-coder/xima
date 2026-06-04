@@ -124,15 +124,23 @@ export const PoolCandidateCard: React.FC<PoolCandidateCardProps> = ({ candidate,
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2 pt-1">
-          <Button size="sm" className="flex-1 text-xs" onClick={() => onInvite(candidate)}>
-            <Send className="h-3 w-3 mr-1" />
-            {t('candidate_pool.invite', 'Invita')}
-          </Button>
-          <Button size="sm" variant="outline" onClick={() => onSave(candidate)}>
-            <Bookmark className="h-3.5 w-3.5" />
-          </Button>
-        </div>
+        {candidate.is_synthetic ? (
+          <div className="pt-1">
+            <Badge variant="outline" className="text-xs">
+              {t('candidate_pool.sample_profile', 'Profilo di esempio')}
+            </Badge>
+          </div>
+        ) : (
+          <div className="flex gap-2 pt-1">
+            <Button size="sm" className="flex-1 text-xs" onClick={() => onInvite(candidate)}>
+              <Send className="h-3 w-3 mr-1" />
+              {t('candidate_pool.invite', 'Invita')}
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => onSave(candidate)}>
+              <Bookmark className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
