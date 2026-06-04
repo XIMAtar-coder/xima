@@ -282,6 +282,20 @@ Return ONLY valid JSON:
   "pillar_reasoning": "Brief explanation of pillar impact..."
 }`;
 
+    const mindsetAddendum = isMindset ? `
+
+MINDSET ADDENDUM:
+This submission is NOT a free-text answer. It is an L1 mindset/attitude exercise made of:
+  (a) gut-instinct choices between paired options (each option lights a "facet"),
+  (b) a simulated Monday in which the candidate reacted with gestures to incoming items,
+  (c) a short reflective "why" debrief on one of those reactions.
+Read it for mindset signals (orientation, instinct, values, reflectiveness), NOT for prose quality.
+Ignore the SELF-CHECK RULES about word counts and prose specifics — they do not apply to this structured payload.
+Still return EXACTLY the same JSON schema. In particular, pillar_impact MUST contain all five keys:
+drive, computational_power, communication, creativity, knowledge (each -5..+5). This output feeds the XIMAtar.` : '';
+
+    const finalSystemPrompt = systemPrompt + mindsetAddendum;
+
     const userPrompt = `Evaluate this professional assessment answer strictly and fairly.
 
 ANSWER TO EVALUATE:
