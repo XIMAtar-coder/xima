@@ -77,28 +77,21 @@ serve(async (req) => {
     const body = await req.json();
     const { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload } = body;
 
-    // ===== MINDSET FORMAT (L1 mindset experience) =====
-    // Short-circuits the open-answer pipeline: no text/field/openKey required,
-    // no non-answer detection, no evidence-ledger insert (no open_response row).
-    if (format === 'mindset' && mindset_payload && typeof mindset_payload === 'object') {
-      return await handleMindsetScoring({
-        mindsetPayload: mindset_payload,
-        userId: user_id,
-        challengeId: challenge_id,
-        language: language || 'it',
-        correlationId,
-        ipHash,
-        scoringContext: scoring_context || 'l1_challenge',
-        req,
-      });
+    const isMindset = format === 'mindset' && mindset_payload && typeof mindset_payload === 'object';
+
+    // Mindset bypasses (!field || !language || !openKey) — payload is structured, not free-text.
+    if (!isMindset) {
+      if (!field || !language || !openKey) {
+        return errorResponse(400, 'INVALID_INPUT', 'Missing required parameters');
+      }
     }
 
-    if (!field || !language || !openKey) {
-      return errorResponse(400, 'INVALID_INPUT', 'Missing required parameters');
-    }
+    const effectiveLanguage: string = isMindset ? (language || 'it') : language;
+    const effectiveField: string = isMindset ? (field || 'business_leadership') : field;
+    const effectiveOpenKey: string = isMindset ? (openKey || 'mindset') : openKey;
 
     const rawText = text || '';
-    if (rawText.length > MAX_ANSWER_LENGTH) {
+    if (!isMindset && rawText.length > MAX_ANSWER_LENGTH) {
       return errorResponse(400, 'INPUT_TOO_LONG', `Answer too long. Maximum ${MAX_ANSWER_LENGTH} characters allowed.`);
     }
 
@@ -125,28 +118,50 @@ serve(async (req) => {
       }
     }
 
-    // Input cleaning — KEPT EXACTLY
-    const cleanedText = rawText
-      .replace(/[._]{2,}/g, ' ')
-      .replace(/\s+/g, ' ')
-      .replace(/^\s*[._]+\s*/g, '')
-      .replace(/\s*[._]+\s*$/g, '')
-      .trim();
+    // Input cleaning — KEPT EXACTLY for free-text; mindset builds a synthetic IT transcript.
+    let cleanedText: string;
+    if (isMindset) {
+      const instinctChoices = Array.isArray(mindset_payload.instinct_choices) ? mindset_payload.instinct_choices : [];
+      const dayLog = Array.isArray(mindset_payload.day_log) ? mindset_payload.day_log : [];
+      const debrief = Array.isArray(mindset_payload.debrief) ? mindset_payload.debrief : [];
 
-    const langConfig = LANGUAGE_CONFIGS[language] || LANGUAGE_CONFIGS.en;
-    const fieldContext = FIELD_CONTEXTS[field] || 'professional skills';
+      const instinctLine = instinctChoices.length
+        ? 'Istinti: ' + instinctChoices.map((c: any) => `«${String(c?.facet || '')}»`).join(', ')
+        : 'Istinti: (nessuno)';
+      const dayLine = dayLog.length
+        ? 'Giornata (lunedì): ha reagito con ' + dayLog.map((d: any) => String(d?.gesture || '')).join(', ')
+        : 'Giornata (lunedì): (nessuna reazione)';
+      const debriefLine = debrief.length
+        ? debrief.map((d: any) => `Riflessione — D: ${String(d?.q || '')} / R: ${String(d?.a || '')}`).join('\n')
+        : 'Riflessione — (nessuna)';
 
-    // STEP 1: Pre-LLM Non-Answer Detection — KEPT EXACTLY
-    const nonAnswerCheck = detectNonAnswer(cleanedText);
+      cleanedText = [instinctLine, dayLine, debriefLine].join('\n');
+    } else {
+      cleanedText = rawText
+        .replace(/[._]{2,}/g, ' ')
+        .replace(/\s+/g, ' ')
+        .replace(/^\s*[._]+\s*/g, '')
+        .replace(/\s*[._]+\s*$/g, '')
+        .trim();
+    }
+
+    const langConfig = LANGUAGE_CONFIGS[effectiveLanguage] || LANGUAGE_CONFIGS.en;
+    const fieldContext = FIELD_CONTEXTS[effectiveField] || 'professional skills';
+
+    // STEP 1: Pre-LLM Non-Answer Detection — skipped for mindset (structured payload).
+    const nonAnswerCheck = isMindset
+      ? { isNonAnswer: false as const, debugInfo: { normalizedLength: cleanedText.length, wordCount: cleanedText.split(/\s+/).filter(Boolean).length, matchedPattern: undefined as string | undefined } }
+      : detectNonAnswer(cleanedText);
 
     console.log(JSON.stringify({
       type: 'request', correlation_id: correlationId,
       function_name: 'analyze-open-answer',
-      field, language, openKey,
+      field: effectiveField, language: effectiveLanguage, openKey: effectiveOpenKey,
       answer_length: cleanedText.length,
       word_count: nonAnswerCheck.debugInfo.wordCount,
       non_answer_detected: nonAnswerCheck.isNonAnswer,
       scoring_context: scoring_context || 'core_assessment',
+      format: isMindset ? 'mindset' : 'free_text',
     }));
 
     if (nonAnswerCheck.isNonAnswer) {
@@ -211,7 +226,7 @@ CRITICAL RULES:
 
 EVALUATION CONTEXT:
 - Field: ${fieldContext}
-- Question type: ${openKey === 'open1' ? 'Creative thinking and problem-solving' : 'Goal-setting and professional drive'}
+- Question type: ${effectiveOpenKey === 'open1' ? 'Creative thinking and problem-solving' : effectiveOpenKey === 'mindset' ? 'L1 mindset/attitude experience' : 'Goal-setting and professional drive'}
 ${evaluationLensBlock}
 
 SCORING CRITERIA (strict scale 0-100, broken into 4 dimensions each 0-25):
@@ -267,6 +282,20 @@ Return ONLY valid JSON:
   "pillar_reasoning": "Brief explanation of pillar impact..."
 }`;
 
+    const mindsetAddendum = isMindset ? `
+
+MINDSET ADDENDUM:
+This submission is NOT a free-text answer. It is an L1 mindset/attitude exercise made of:
+  (a) gut-instinct choices between paired options (each option lights a "facet"),
+  (b) a simulated Monday in which the candidate reacted with gestures to incoming items,
+  (c) a short reflective "why" debrief on one of those reactions.
+Read it for mindset signals (orientation, instinct, values, reflectiveness), NOT for prose quality.
+Ignore the SELF-CHECK RULES about word counts and prose specifics — they do not apply to this structured payload.
+Still return EXACTLY the same JSON schema. In particular, pillar_impact MUST contain all five keys:
+drive, computational_power, communication, creativity, knowledge (each -5..+5). This output feeds the XIMAtar.` : '';
+
+    const finalSystemPrompt = systemPrompt + mindsetAddendum;
+
     const userPrompt = `Evaluate this professional assessment answer strictly and fairly.
 
 ANSWER TO EVALUATE:
@@ -282,11 +311,11 @@ Return ONLY the JSON object.`;
 
     try {
       const aiResp = await callAnthropicApi({
-        system: systemPrompt,
+        system: finalSystemPrompt,
         userMessage: userPrompt,
         correlationId,
         functionName: 'analyze-open-answer',
-        inputSummary: `open_answer:field=${field},lang=${language},key=${openKey},len=${cleanedText.length},ctx=${scoring_context || 'core'}`,
+        inputSummary: `${isMindset ? 'mindset' : 'open_answer'}:field=${effectiveField},lang=${effectiveLanguage},key=${effectiveOpenKey},len=${cleanedText.length},ctx=${scoring_context || 'core'}`,
         maxTokens: 2048,
       });
 
@@ -321,7 +350,7 @@ Return ONLY the JSON object.`;
     if (redFlags.includes('admission_of_not_knowing') && finalScore > 45) finalScore = 45;
 
     const wordCount = cleanedText.split(/\s+/).filter(Boolean).length;
-    if (wordCount < 30 && finalScore > 35) {
+    if (!isMindset && wordCount < 30 && finalScore > 35) {
       finalScore = 35;
       if (!redFlags.includes('too_short')) redFlags.push('too_short');
     }
@@ -351,16 +380,16 @@ Return ONLY the JSON object.`;
     emitAuditEventWithMetric({
       actorType: 'system',
       actorId: null,
-      action: 'assessment.open_answer_scored',
-      entityType: 'open_answer',
-      entityId: `${field}:${openKey}`,
+      action: isMindset ? 'assessment.mindset_scored' : 'assessment.open_answer_scored',
+      entityType: isMindset ? 'mindset_submission' : 'open_answer',
+      entityId: isMindset ? (challenge_id || 'mindset') : `${effectiveField}:${effectiveOpenKey}`,
       correlationId,
-      metadata: { field, openKey, finalScore, qualityLabel, redFlagsCount: redFlags.length, ai_request_id: aiRequestId, scoring_context: scoring_context || 'core_assessment' },
+      metadata: { field: effectiveField, openKey: effectiveOpenKey, finalScore, qualityLabel, redFlagsCount: redFlags.length, ai_request_id: aiRequestId, scoring_context: scoring_context || 'core_assessment', format: isMindset ? 'mindset' : 'free_text' },
       ipHash,
-    }, 'open_answer.scored');
+    }, isMindset ? 'mindset.scored' : 'open_answer.scored');
 
-    // ===== EVIDENCE LEDGER — KEPT EXACTLY =====
-    if (user_id && typeof user_id === 'string') {
+    // ===== EVIDENCE LEDGER — gated: no assessment_open_responses row exists for mindset =====
+    if (!isMindset && user_id && typeof user_id === 'string') {
       try {
         const contentHash = await computeContentHash(cleanedText);
         const serviceClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
@@ -372,8 +401,8 @@ Return ONLY the JSON object.`;
             .from('assessment_open_responses')
             .select('id, attempt_id')
             .eq('user_id', user_id)
-            .eq('field_key', field)
-            .eq('open_key', openKey)
+            .eq('field_key', effectiveField)
+            .eq('open_key', effectiveOpenKey)
             .order('created_at', { ascending: false })
             .limit(1)
             .single();
@@ -383,8 +412,8 @@ Return ONLY the JSON object.`;
               open_response_id: openResp.id,
               subject_profile_id: profile.id,
               attempt_id: openResp.attempt_id,
-              field_key: field,
-              open_key: openKey,
+              field_key: effectiveField,
+              open_key: effectiveOpenKey,
               ai_request_id: aiRequestId,
               final_score: finalScore,
               quality_label: qualityLabel,
@@ -393,7 +422,7 @@ Return ONLY the JSON object.`;
               score_breakdown: scoreBreakdown,
               content_hash: contentHash,
               content_length: cleanedText.length,
-              content_language: language,
+              content_language: effectiveLanguage,
             });
           }
         }
@@ -414,7 +443,7 @@ Return ONLY the JSON object.`;
           user_id,
           source_function: "analyze-open-answer",
           source_type: sourceType,
-          source_entity_id: challenge_id || `${field}:${openKey}`,
+          source_entity_id: challenge_id || `${effectiveField}:${effectiveOpenKey}`,
           correlation_id: correlationId,
           deltas: {
             drive: pillarImpact.drive || 0,
@@ -488,152 +517,4 @@ Return ONLY the JSON object.`;
     return errorResponse(500, 'INTERNAL_ERROR', 'Internal server error');
   }
 });
-
-// =====================================================
-// MINDSET FORMAT HANDLER
-// =====================================================
-
-async function handleMindsetScoring(args: {
-  mindsetPayload: any;
-  userId?: string;
-  challengeId?: string;
-  language: string;
-  correlationId: string;
-  ipHash: string | null;
-  scoringContext: string;
-  req: Request;
-}) {
-  const { mindsetPayload, userId, challengeId, language, correlationId, ipHash, scoringContext, req } = args;
-
-  // GDPR opt-out
-  if (userId && typeof userId === 'string') {
-    const authHeader = req.headers.get('Authorization');
-    if (authHeader) {
-      const supabase = createClient(
-        Deno.env.get('SUPABASE_URL')!,
-        Deno.env.get('SUPABASE_ANON_KEY')!,
-        { global: { headers: { Authorization: authHeader } } }
-      );
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('profiling_opt_out')
-        .eq('user_id', userId)
-        .single();
-      if (profile?.profiling_opt_out === true) {
-        return profilingOptOutResponse();
-      }
-    }
-  }
-
-  const instinctChoices = Array.isArray(mindsetPayload.instinct_choices) ? mindsetPayload.instinct_choices : [];
-  const dayLog = Array.isArray(mindsetPayload.day_log) ? mindsetPayload.day_log : [];
-  const debrief = Array.isArray(mindsetPayload.debrief) ? mindsetPayload.debrief : [];
-  const litFacets: string[] = Array.from(new Set(instinctChoices.map((c: any) => String(c?.facet || '')).filter(Boolean)));
-
-  const synthetic = [
-    `Lit facets from instinct cards: ${litFacets.join(', ') || 'none'}.`,
-    `Instinct choices: ${instinctChoices.map((c: any) => `${c.card_id}->${c.choice}(${c.facet})`).join(' | ')}.`,
-    `Day reactions: ${dayLog.map((d: any) => `${d.item_id}->${d.gesture}`).join(' | ')}.`,
-    `Debrief: ${debrief.map((d: any) => `Q: ${d.q}\nA: ${d.a}`).join('\n')}.`,
-  ].join('\n');
-
-  console.log(JSON.stringify({
-    type: 'request', correlation_id: correlationId,
-    function_name: 'analyze-open-answer', format: 'mindset',
-    lit_facet_count: litFacets.length, day_log_count: dayLog.length, debrief_len: debrief.length,
-    scoring_context: scoringContext,
-  }));
-
-  const systemPrompt = `You evaluate a candidate's L1 "mindset" challenge for the XIMA platform.
-
-Input is structured behavior (not free-text): facets they activated, micro-decisions during a simulated day, and a short "why" reflection.
-
-Your job:
-1. Map activated facets + decisions + the debrief reasoning to the five XIMA pillars (-5 to +5 each):
-   - drive, computational_power, communication, creativity, knowledge
-2. Produce a warm, plain-language summary (max 2 sentences, in ${language === 'it' ? 'Italian' : language === 'es' ? 'Spanish' : 'English'}).
-3. NEVER expose a numeric score to the candidate; we only persist signals internally.
-
-Return ONLY valid JSON:
-{
-  "summary": "<warm 1-2 sentence reflection>",
-  "lit_facets": [<facet strings>],
-  "pillar_impact": {
-    "drive": <-5..5>,
-    "computational_power": <-5..5>,
-    "communication": <-5..5>,
-    "creativity": <-5..5>,
-    "knowledge": <-5..5>
-  },
-  "pillar_reasoning": "<brief why>"
-}`;
-
-  const userPrompt = `Mindset payload:\n\n${synthetic}\n\nReturn ONLY the JSON.`;
-
-  let parsed: any;
-  let aiRequestId = '';
-  try {
-    const aiResp = await callAnthropicApi({
-      system: systemPrompt,
-      userMessage: userPrompt,
-      correlationId,
-      functionName: 'analyze-open-answer',
-      inputSummary: `mindset:facets=${litFacets.length},day=${dayLog.length},debrief=${debrief.length}`,
-      maxTokens: 1024,
-    });
-    aiRequestId = aiResp.requestId;
-    parsed = JSON.parse(extractJsonFromAiContent(aiResp.content));
-  } catch (e) {
-    if (e instanceof AnthropicError) {
-      return errorResponse(e.statusCode, e.errorCode, e.message);
-    }
-    console.error(JSON.stringify({ type: 'mindset_parse_error', correlation_id: correlationId, error: e instanceof Error ? e.message : 'unknown' }));
-    return errorResponse(502, 'MINDSET_PARSE_FAILED', 'Mindset evaluation failed to produce valid results.');
-  }
-
-  const pillarImpact = parsed?.pillar_impact || null;
-
-  emitAuditEventWithMetric({
-    actorType: 'system',
-    actorId: null,
-    action: 'assessment.mindset_scored',
-    entityType: 'mindset_submission',
-    entityId: challengeId || 'unknown',
-    correlationId,
-    metadata: { ai_request_id: aiRequestId, lit_facet_count: litFacets.length, scoring_context: scoringContext },
-    ipHash,
-  }, 'mindset.scored');
-
-  // Trajectory
-  if (userId && typeof userId === 'string' && pillarImpact) {
-    try {
-      await persistTrajectoryEvent({
-        user_id: userId,
-        source_function: 'analyze-open-answer',
-        source_type: 'l1_challenge',
-        source_entity_id: challengeId || 'mindset',
-        correlation_id: correlationId,
-        deltas: {
-          drive: pillarImpact.drive || 0,
-          computational_power: pillarImpact.computational_power || 0,
-          communication: pillarImpact.communication || 0,
-          creativity: pillarImpact.creativity || 0,
-          knowledge: pillarImpact.knowledge || 0,
-        },
-        reasoning: parsed?.pillar_reasoning || 'mindset experience',
-      });
-    } catch (trajErr) {
-      console.error('[mindset trajectory] error:', trajErr instanceof Error ? trajErr.message : trajErr);
-    }
-  }
-
-  return jsonResponse({
-    format: 'mindset',
-    summary: parsed?.summary || '',
-    lit_facets: parsed?.lit_facets || litFacets,
-    pillar_impact: pillarImpact,
-    pillar_reasoning: parsed?.pillar_reasoning || '',
-    scoring_context: scoringContext,
-  });
-}
 
