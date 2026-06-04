@@ -638,7 +638,16 @@ Restituisci SOLO JSON valido:
         metadata: { business_type: validated.business_type, locale, used_fallback: false },
       }, "l1_challenges_generated");
 
-      return jsonResponse({ ...validated, context_tag: contextTag || validated.context_tag, used_fallback: false, is_fallback: responseIsFallback });
+      const mindset = await generateMindsetBlock({
+        scenario: validated.scenario,
+        roleTitle, displayIndustry, companyName,
+        teamCulture, operatingStyle, coreValues,
+        taskDescription: typeof taskDescription === 'string' ? taskDescription : String(taskDescription ?? ''),
+        requiredSkills, experienceLevel, workModel,
+        promptLang, langInstruction, locale, correlationId,
+      });
+
+      return jsonResponse({ ...validated, context_tag: contextTag || validated.context_tag, used_fallback: false, is_fallback: responseIsFallback, mindset });
 
     } catch (e) {
       if (e instanceof AnthropicError) {
