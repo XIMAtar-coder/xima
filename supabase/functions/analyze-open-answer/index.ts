@@ -443,7 +443,7 @@ Return ONLY the JSON object.`;
           user_id,
           source_function: "analyze-open-answer",
           source_type: sourceType,
-          source_entity_id: challenge_id || `${field}:${openKey}`,
+          source_entity_id: challenge_id || `${effectiveField}:${effectiveOpenKey}`,
           correlation_id: correlationId,
           deltas: {
             drive: pillarImpact.drive || 0,
