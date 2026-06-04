@@ -1,35 +1,69 @@
-## Status
+## Context
 
-- ✅ Migration **applied** (RPC `public.get_member_codes(uuid[])` created, `EXECUTE` revoked from `public`/`anon`, granted only to `authenticated`).
-- ⏳ Code edits below pending build-mode approval.
+A `SECURITY DEFINER` RPC `invite_candidate_to_l1(p_candidate_user_id uuid, p_hiring_goal_id uuid)` already exists. It resolves `candidate_profile_id` and creates the L1 XIMA Core Challenge invitation server-side. The shortlist invite currently fails silently because the client tries to resolve `profiles.id` under RLS that blocks business reads. The shortlist also exposes a challenge picker that can target L2 — must go. L2 invitations belong only to the L1 review / Evaluations flow.
 
-## Goal
+`browse-candidate-pool` injects synthetic placeholder cards (`is_synthetic: true`, ids like `synthetic-lion`) when the real pool is small. These must never be invitable.
 
-Surface `profiles.subscriber_code` as a small, anonymity-preserving "Member #A001" badge on shortlist cards, candidate pool cards, and the candidate's own dashboard. Hide gracefully when missing.
+## Files to touch
 
-## Code changes to apply
+1. `src/components/business/ShortlistView.tsx` — strip challenge picker + activeChallenges gating; call the L1 RPC directly; track invited state.
+2. `src/components/business/ShortlistCard.tsx` — accept `invited?: boolean`, swap CTA to disabled "Invited" pill; drop `inviteDisabled*`.
+3. `src/pages/business/GoalShortlistPage.tsx` — drop `activeChallenges` load, `handleInviteToChallenge` profile-resolution block, `challengeCreated` toast, and the `onInviteToChallenge`/`activeChallenges` props passed to `ShortlistView`.
+4. `src/pages/business/Candidates.tsx` — replace challenge-picker invite with goal-selector + L1 RPC; defensive synthetic guard.
+5. `src/components/business/PoolCandidateCard.tsx` — when `is_synthetic`, hide "Invita" CTA and show "Profilo di esempio" badge.
 
-1. **`src/components/business/MemberCodeBadge.tsx`** *(new)* — small chip `{ code, variant?: 'default' | 'founding' }`; renders nothing when `code` is falsy. `default` uses `bg-muted/60` + `BadgeCheck`; `founding` uses amber accent + `Crown`.
+No new SQL — RPC already exists.
 
-2. **`src/components/business/ShortlistView.tsx`** (lines 62–86) — after the `shortlist_results` select, collect `candidate_user_id`s and call `supabase.rpc('get_member_codes', { _user_ids: ids })`, build a `Map`, attach `subscriber_code` to each row. **No direct `profiles` query.**
+## Behaviour changes
 
-3. **`src/components/business/ShortlistCard.tsx`** — add `subscriber_code?: string | null` to interface; import `MemberCodeBadge`; render under the archetype name (next to `L{level}`), kept visually separate from the `#rank` circle and the `/100` score.
+### Shortlist (`ShortlistView` + `ShortlistCard`)
 
-4. **`supabase/functions/browse-candidate-pool/index.ts`** — add `subscriber_code` to profiles select (~L76) and to the returned candidate object (~L340). Server runs as `service_role`, so direct read is fine.
+- Remove `ChallengePickerModal`, `pendingInviteIds`, `showChallengePicker`, `confirmChallengeSelection`, `activeChallenges`/`challengeLoading` props, `inviteDisabled`/`inviteDisabledReason`, and the "Create Challenge for this role" banner.
+- New `ShortlistView` props: `goalId`, `roleTitle`, `onViewProfile`. Invite handled internally.
+- Track `invitedIds: Set<string>` in state.
+- `handleInviteL1(candidateUserId)`:
+  ```ts
+  const { error } = await supabase.rpc('invite_candidate_to_l1', {
+    p_candidate_user_id: candidateUserId,
+    p_hiring_goal_id: goalId,
+  });
+  if (error) { toast({ title: 'Invite failed', description: error.message, variant: 'destructive' }); return; }
+  setInvitedIds(prev => new Set(prev).add(candidateUserId));
+  toast({ title: t('shortlist.invited_title', 'Invited to L1 Core Challenge') });
+  ```
+- "Invite Top 5" loops top 5 not-yet-invited ids sequentially; one aggregate toast with success count.
+- `ShortlistCard` receives `invited` — when true the primary button becomes a disabled "Invited" chip (CheckCircle icon). All `inviteDisabled*` props removed.
 
-5. **`src/components/business/PoolCandidateCard.tsx`** — add `subscriber_code?: string | null` to interface; import `MemberCodeBadge`; render under archetype title. Synthetic placeholders leave it null → badge hidden.
+### Shortlist page (`GoalShortlistPage`)
 
-6. **`src/hooks/useProfileData.ts`** — add `subscriber_code`, `subscriber_no` to `profiles` select and to the returned state shape.
+- Remove `activeChallenges`, `challengeLoading`, `loadActiveChallenges`, `challengeCreated` query handling, and the entire `handleInviteToChallenge` block.
+- `<ShortlistView>` simplifies to `goalId`, `roleTitle`, `onViewProfile`.
 
-7. **`src/pages/Profile.tsx`** — render `<MemberCodeBadge code={profileData.subscriber_code} variant="founding" className="text-sm px-3 py-1" />` between the welcome `<h1>` and the subheadline.
+### Pool (`Candidates.tsx`)
 
-## Out of scope
+- Remove `allChallenges` load, `ChallengePickerModal` usage, `executeInvite`, `pendingInviteId`, `showChallengePicker`.
+- Add `selectedGoalId: string | null` state and a small `<select>` in the header listing this business's hiring goals (loaded from `hiring_goal_drafts` where `business_id = user.id`).
+- `handleInvite(candidate)`:
+  - **If `candidate.is_synthetic` → return early (defensive, no toast).**
+  - If `!selectedGoalId` → toast "Pick a hiring goal first" and focus the selector; no network call.
+  - Else call `supabase.rpc('invite_candidate_to_l1', { p_candidate_user_id: candidate.id, p_hiring_goal_id: selectedGoalId })`; success/error toasts identical to shortlist.
 
-Pipeline/Kanban cards, mutual-interest flow, identity-reveal logic — unchanged.
+### Pool card (`PoolCandidateCard`)
+
+- When `candidate.is_synthetic`:
+  - Do **not** render the "Invita" button; the save (bookmark) button is hidden too (synthetic cards have no real backing record).
+  - Render a subtle badge in the actions row: `<Badge variant="outline" className="text-xs">{t('candidate_pool.sample_profile', 'Profilo di esempio')}</Badge>`.
+- Real candidates: unchanged.
+
+### Scope guard
+
+- No code path in shortlist or pool inserts into `challenge_invitations` directly or calls `send-challenge-invitation` with a non-L1 challenge. L2 entry points remain in the L1 review / Evaluations flow (out of scope, unchanged).
 
 ## Verification
 
-- `rg "subscriber_code"` appears in MemberCodeBadge, ShortlistView, ShortlistCard, PoolCandidateCard, Profile.tsx, useProfileData.ts, browse-candidate-pool/index.ts.
-- Business shortlist card shows "Member #A001" under the archetype line.
-- `/business/candidates`: real candidates show the badge; "Demo" synthetics do not.
-- Candidate `/dashboard`: founding-styled chip under the welcome headline; absent if no code.
+- Shortlist "Invite to Challenge" → single `rpc/invite_candidate_to_l1` call; success flips card to "Invited"; second click no-op; errors surface verbatim.
+- `rg "ChallengePickerModal"` returns zero hits in `ShortlistView.tsx` and `Candidates.tsx`.
+- `rg "challenge_invitations" src/` shows no remaining client inserts from shortlist/pool.
+- Pool: synthetic cards show "Profilo di esempio" badge and no Invita button; clicking via any path (defensive) does nothing.
+- Pool: real candidate with no selected goal → toast prompt, no network call. With goal → RPC call, success toast.
+- DB check: `challenge_invitations` row lands with correct `candidate_profile_id` and the L1 XIMA Core Challenge `challenge_id`.
