@@ -367,19 +367,6 @@ const BusinessCandidates = () => {
         )}
       </div>
 
-      {/* Challenge picker modal */}
-      {showChallengePicker && pendingInviteId && (
-        <ChallengePickerModal
-          open={showChallengePicker}
-          onOpenChange={(open) => { if (!open) { setShowChallengePicker(false); setPendingInviteId(null); } }}
-          challenges={allChallenges}
-          selectedCount={1}
-          onConfirm={(challengeId, hiringGoalId) => {
-            const challenge = allChallenges.find(c => c.id === challengeId);
-            if (challenge) executeInvite(pendingInviteId, challenge);
-          }}
-        />
-      )}
     </BusinessLayout>
   );
 };
