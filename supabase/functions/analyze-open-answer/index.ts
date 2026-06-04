@@ -380,16 +380,16 @@ Return ONLY the JSON object.`;
     emitAuditEventWithMetric({
       actorType: 'system',
       actorId: null,
-      action: 'assessment.open_answer_scored',
-      entityType: 'open_answer',
-      entityId: `${field}:${openKey}`,
+      action: isMindset ? 'assessment.mindset_scored' : 'assessment.open_answer_scored',
+      entityType: isMindset ? 'mindset_submission' : 'open_answer',
+      entityId: isMindset ? (challenge_id || 'mindset') : `${effectiveField}:${effectiveOpenKey}`,
       correlationId,
-      metadata: { field, openKey, finalScore, qualityLabel, redFlagsCount: redFlags.length, ai_request_id: aiRequestId, scoring_context: scoring_context || 'core_assessment' },
+      metadata: { field: effectiveField, openKey: effectiveOpenKey, finalScore, qualityLabel, redFlagsCount: redFlags.length, ai_request_id: aiRequestId, scoring_context: scoring_context || 'core_assessment', format: isMindset ? 'mindset' : 'free_text' },
       ipHash,
-    }, 'open_answer.scored');
+    }, isMindset ? 'mindset.scored' : 'open_answer.scored');
 
-    // ===== EVIDENCE LEDGER — KEPT EXACTLY =====
-    if (user_id && typeof user_id === 'string') {
+    // ===== EVIDENCE LEDGER — gated: no assessment_open_responses row exists for mindset =====
+    if (!isMindset && user_id && typeof user_id === 'string') {
       try {
         const contentHash = await computeContentHash(cleanedText);
         const serviceClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
