@@ -476,18 +476,9 @@ const GoalCandidates: React.FC = () => {
               <ShortlistView
                 goalId={goalId}
                 roleTitle={currentGoal.role_title || 'Untitled Role'}
-                activeChallenges={activeChallenges}
-                onCreateChallenge={() => navigate(`/business/challenges/select?goal=${goalId}&returnTo=shortlist`)}
-                onInviteToChallenge={(userIds) => {
-                  // Map user IDs to profile IDs for the invite flow
-                  const profileIds = userIds.map(uid => {
-                    const match = candidates.find(c => c.user_id === uid);
-                    return match?.profile_id || uid;
-                  });
-                  handleInviteToXimaCore(profileIds);
-                }}
                 onViewProfile={() => {/* future: open anonymous profile drawer */}}
               />
+
             )}
           </TabsContent>
 

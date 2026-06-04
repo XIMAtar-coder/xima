@@ -186,12 +186,9 @@ const GoalShortlistPage: React.FC = () => {
         <ShortlistView
           goalId={goalId}
           roleTitle={currentGoal.role_title || t('business.goals.untitled')}
-          activeChallenges={activeChallenges}
-          challengeLoading={challengeLoading}
-          onCreateChallenge={() => navigate(`/business/challenges/select?goal=${goalId}&returnTo=shortlist`)}
-          onInviteToChallenge={handleInviteToChallenge}
           onViewProfile={() => toast({ title: t('anonymous.identity_hidden', 'Identity hidden — revealed at offer stage') })}
         />
+
       </div>
     </BusinessLayout>
   );
