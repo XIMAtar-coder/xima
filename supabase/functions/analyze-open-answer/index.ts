@@ -216,7 +216,7 @@ This is an L1 challenge response. Use these behavioral signals to evaluate:
     const userContext = user_id ? await loadUserAiContext(user_id) : {};
     const contextBlock = buildContextBlock(userContext);
 
-    const systemPrompt = `You are a strict but fair professional assessment evaluator for the XIMA psychometric talent platform.
+    const freeTextSystemPrompt = `You are a strict but fair professional assessment evaluator for the XIMA psychometric talent platform.
 
 CRITICAL RULES:
 - ALWAYS respond in ${langConfig.name}. Every word must be in ${langConfig.name}.
@@ -282,19 +282,63 @@ Return ONLY valid JSON:
   "pillar_reasoning": "Brief explanation of pillar impact..."
 }`;
 
-    const mindsetAddendum = isMindset ? `
+    const mindsetSystemPrompt = `You are an L1 mindset evaluator for the XIMA psychometric talent platform.
 
-MINDSET ADDENDUM:
-This submission is NOT a free-text answer. It is an L1 mindset/attitude exercise made of:
-  (a) gut-instinct choices between paired options (each option lights a "facet"),
-  (b) a simulated Monday in which the candidate reacted with gestures to incoming items,
+CRITICAL RULES:
+- ALWAYS respond in ${langConfig.name}. Every word of "summary" must be in ${langConfig.name}.
+- ${langConfig.feedbackStyle}
+- Be honest. Do NOT inflate scores. This is a structured mindset payload, not prose.
+
+EVALUATION CONTEXT:
+- Field: ${fieldContext}
+- Question type: L1 mindset/attitude experience (gut-instinct pairs, day-of-week gestures, short debrief)
+${evaluationLensBlock}
+
+INPUT SHAPE:
+The submission is NOT free text. It is composed of:
+  (a) gut-instinct choices between paired options (each option lights a behavioral "facet"),
+  (b) a simulated Monday in which the candidate reacted to incoming items with gestures,
   (c) a short reflective "why" debrief on one of those reactions.
-Read it for mindset signals (orientation, instinct, values, reflectiveness), NOT for prose quality.
-Ignore the SELF-CHECK RULES about word counts and prose specifics — they do not apply to this structured payload.
-Still return EXACTLY the same JSON schema. In particular, pillar_impact MUST contain all five keys:
-drive, computational_power, communication, creativity, knowledge (each -5..+5). This output feeds the XIMAtar.` : '';
+Evaluate mindset, instinct, values, and reflectiveness — NOT prose quality, word count, or specifics.
 
-    const finalSystemPrompt = systemPrompt + mindsetAddendum;
+SCORING RUBRIC (each 0-100):
+- framing: How the candidate frames the situation — stakes, who's affected, what's at risk.
+- execution_bias: Propensity to act, decide, move; vs deliberation or avoidance.
+- impact_thinking: Awareness of downstream consequences and second-order effects.
+- decision_quality: Coherence between gut instincts, day reactions, and the debrief reasoning.
+
+OVERALL (0-100): a balanced read across the four. NOT a sum, NOT a strict average — weight what stands out.
+
+PILLAR IMPACT (-5 to +5 each):
+- drive: Initiative, ownership, ambition shown
+- computational_power: Analytical thinking, structured reasoning
+- communication: Clarity, stakeholder awareness, persuasion
+- creativity: Novel ideas, reframing, lateral thinking
+- knowledge: Domain expertise, best practices, references
+
+` + contextBlock + `
+
+Return ONLY valid JSON:
+{
+  "framing": <0-100>,
+  "execution_bias": <0-100>,
+  "impact_thinking": <0-100>,
+  "decision_quality": <0-100>,
+  "overall": <0-100>,
+  "summary": "<short, in ${langConfig.name}>",
+  "flags": ["<string>", "..."],
+  "confidence": "low" | "medium" | "high",
+  "pillar_impact": {
+    "drive": <-5 to 5>,
+    "computational_power": <-5 to 5>,
+    "communication": <-5 to 5>,
+    "creativity": <-5 to 5>,
+    "knowledge": <-5 to 5>
+  },
+  "pillar_reasoning": "Brief explanation of pillar impact..."
+}`;
+
+    const finalSystemPrompt = isMindset ? mindsetSystemPrompt : freeTextSystemPrompt;
 
     const userPrompt = `Evaluate this professional assessment answer strictly and fairly.
 
