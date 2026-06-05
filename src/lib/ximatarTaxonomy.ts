@@ -333,3 +333,64 @@ export function checkSeniorityFit(
   const level = seniorityMap[seniority] || 2;
   return level >= profile.seniorityRange.min && level <= profile.seniorityRange.max;
 }
+
+/**
+ * Assessment-time pillar scores are on a 0–10 scale (different from the
+ * 0–100 vectors in XIMATAR_PROFILES).
+ */
+export type AssessmentPillarScores = {
+  computational_power: number;
+  communication: number;
+  knowledge: number;
+  creativity: number;
+  drive: number;
+};
+
+export type AssessmentPillarKey = keyof AssessmentPillarScores;
+
+export interface DerivedArchetypeResult {
+  label: string;
+  name: string;
+  driveLevel: 'high' | 'medium' | 'low';
+  strongest: AssessmentPillarKey;
+  weakest: AssessmentPillarKey;
+}
+
+/**
+ * Select archetype + drive/strongest/weakest from assessment-scale (0–10)
+ * pillar scores using the EXACT logic in XimatarAssessment guest path.
+ * Keep this in sync with that component — both call this helper so the
+ * archetype derived during post-registration sync matches what the user saw.
+ */
+export function selectArchetypeFromAssessmentPillars(
+  scores: AssessmentPillarScores
+): DerivedArchetypeResult {
+  const pillarEntries = (Object.entries(scores) as [AssessmentPillarKey, number][])
+    .sort((a, b) => b[1] - a[1]);
+  const top2 = [pillarEntries[0][0], pillarEntries[1][0]];
+
+  let label = 'fox';
+  if (top2.includes('creativity') && top2.includes('communication')) label = 'parrot';
+  else if (top2.includes('knowledge') && top2.includes('computational_power')) label = 'owl';
+  else if (top2.includes('drive') && top2.includes('knowledge')) label = 'elephant';
+  else if (top2.includes('communication') && top2.includes('drive')) label = 'dolphin';
+  else if (top2.includes('computational_power') && top2.includes('creativity')) label = 'cat';
+  else if (top2.includes('drive')) label = 'horse';
+  else if (top2.includes('creativity')) label = 'fox';
+  else if (top2.includes('computational_power')) label = 'bee';
+  else if (top2.includes('knowledge')) label = 'owl';
+  else if (top2.includes('communication')) label = 'dolphin';
+  else label = 'chameleon';
+
+  const driveScore = scores.drive ?? 0;
+  const driveLevel: 'high' | 'medium' | 'low' =
+    driveScore >= 7.5 ? 'high' : driveScore >= 5 ? 'medium' : 'low';
+
+  return {
+    label,
+    name: label.charAt(0).toUpperCase() + label.slice(1),
+    driveLevel,
+    strongest: pillarEntries[0][0],
+    weakest: pillarEntries[pillarEntries.length - 1][0],
+  };
+}

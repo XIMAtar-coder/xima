@@ -214,47 +214,21 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
           console.info('[XIMA] Guest pillar scores:', mockPillarScores);
         }
         
-        // Determine XIMAtar based on top 2 pillars
-        const pillarEntries = Object.entries(mockPillarScores).sort((a, b) => b[1] - a[1]);
-        const top2Pillars = [pillarEntries[0][0], pillarEntries[1][0]];
-        
-        let ximatarLabel = 'fox'; // fallback
-        if (top2Pillars.includes('creativity') && top2Pillars.includes('communication')) {
-          ximatarLabel = 'parrot';
-        } else if (top2Pillars.includes('knowledge') && top2Pillars.includes('computational_power')) {
-          ximatarLabel = 'owl';
-        } else if (top2Pillars.includes('drive') && top2Pillars.includes('knowledge')) {
-          ximatarLabel = 'elephant';
-        } else if (top2Pillars.includes('communication') && top2Pillars.includes('drive')) {
-          ximatarLabel = 'dolphin';
-        } else if (top2Pillars.includes('computational_power') && top2Pillars.includes('creativity')) {
-          ximatarLabel = 'cat';
-        } else if (top2Pillars.includes('drive')) {
-          ximatarLabel = 'horse';
-        } else if (top2Pillars.includes('creativity')) {
-          ximatarLabel = 'fox';
-        } else if (top2Pillars.includes('computational_power')) {
-          ximatarLabel = 'bee';
-        } else if (top2Pillars.includes('knowledge')) {
-          ximatarLabel = 'owl';
-        } else if (top2Pillars.includes('communication')) {
-          ximatarLabel = 'dolphin';
-        } else {
-          ximatarLabel = 'chameleon';
-        }
-        
-        // Calculate drive level
-        const driveScore = mockPillarScores.drive;
-        const driveLevel = driveScore >= 7.5 ? 'high' : driveScore >= 5 ? 'medium' : 'low';
-        
-        // Find strongest and weakest pillars
-        const strongest = pillarEntries[0][0];
-        const weakest = pillarEntries[pillarEntries.length - 1][0];
-        
-        // Store ALL assessment data in sessionStorage for sync after registration (more secure)
+        // Determine XIMAtar from pillar scores via shared helper.
+        // The same helper is used by post-registration sync so the persisted
+        // archetype always matches what the candidate sees here.
+        const derived = selectArchetypeFromAssessmentPillars(mockPillarScores);
+        const ximatarLabel = derived.label;
+        const driveLevel = derived.driveLevel;
+        const strongest = derived.strongest;
+        const weakest = derived.weakest;
+
+        // Store ALL assessment data in sessionStorage for sync after registration (more secure).
+        // Writes are synchronous and grouped so guest_ximatar and guest_pillar_scores
+        // can never diverge.
         sessionStorage.setItem('guest_pillar_scores', JSON.stringify(mockPillarScores));
         sessionStorage.setItem('guest_ximatar', ximatarLabel);
-        sessionStorage.setItem('guest_ximatar_name', ximatarLabel.charAt(0).toUpperCase() + ximatarLabel.slice(1));
+        sessionStorage.setItem('guest_ximatar_name', derived.name);
         sessionStorage.setItem('guest_drive_level', driveLevel);
         sessionStorage.setItem('guest_strongest_pillar', strongest);
         sessionStorage.setItem('guest_weakest_pillar', weakest);
