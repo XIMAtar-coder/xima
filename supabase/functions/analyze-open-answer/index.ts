@@ -368,11 +368,19 @@ Return ONLY the JSON object.`;
       const parsed = JSON.parse(jsonStr);
 
       // Validate required fields
-      if (typeof parsed?.score !== 'number' || parsed.score < 0 || parsed.score > 100) throw new Error('Invalid score');
-      if (!Array.isArray(parsed?.reasons)) throw new Error('Missing reasons');
-      if (!Array.isArray(parsed?.improvement_tips)) throw new Error('Missing tips');
-      if (!Array.isArray(parsed?.detected_red_flags)) throw new Error('Missing flags');
-      if (!parsed?.score_breakdown || typeof parsed.score_breakdown !== 'object') throw new Error('Missing breakdown');
+      if (isMindset) {
+        const numKeys = ['framing', 'execution_bias', 'impact_thinking', 'decision_quality'];
+        for (const k of numKeys) {
+          if (typeof parsed?.[k] !== 'number') throw new Error(`Missing mindset rubric key: ${k}`);
+        }
+        if (!parsed?.pillar_impact || typeof parsed.pillar_impact !== 'object') throw new Error('Missing pillar_impact');
+      } else {
+        if (typeof parsed?.score !== 'number' || parsed.score < 0 || parsed.score > 100) throw new Error('Invalid score');
+        if (!Array.isArray(parsed?.reasons)) throw new Error('Missing reasons');
+        if (!Array.isArray(parsed?.improvement_tips)) throw new Error('Missing tips');
+        if (!Array.isArray(parsed?.detected_red_flags)) throw new Error('Missing flags');
+        if (!parsed?.score_breakdown || typeof parsed.score_breakdown !== 'object') throw new Error('Missing breakdown');
+      }
 
       parsedResult = parsed;
     } catch (e) {
@@ -383,20 +391,50 @@ Return ONLY the JSON object.`;
       return errorResponse(502, 'OPEN_ANSWER_PARSE_FAILED', 'AI evaluation failed to produce valid results. Please try again.');
     }
 
-    // STEP 3: Post-LLM Guardrails — KEPT EXACTLY
-    let finalScore = Math.round(parsedResult.score);
-    const redFlags: string[] = parsedResult.detected_red_flags.map(String);
+    const clamp = (n: any, lo: number, hi: number) => {
+      const v = typeof n === 'number' && Number.isFinite(n) ? n : 0;
+      return Math.max(lo, Math.min(hi, v));
+    };
+    const clampRound = (n: any, lo: number, hi: number) => Math.round(clamp(n, lo, hi));
 
-    if (redFlags.includes('generic') && finalScore > 40) finalScore = 40;
-    if (redFlags.includes('off_topic') && finalScore > 25) finalScore = 25;
-    if (redFlags.includes('contradiction') && finalScore > 35) finalScore = 35;
-    if (redFlags.includes('copy_paste') && finalScore > 30) finalScore = 30;
-    if (redFlags.includes('admission_of_not_knowing') && finalScore > 45) finalScore = 45;
+    // STEP 3: Post-LLM Guardrails — free-text path KEPT EXACTLY; mindset skips red-flag caps
+    let finalScore: number;
+    const redFlags: string[] = isMindset ? [] : parsedResult.detected_red_flags.map(String);
 
-    const wordCount = cleanedText.split(/\s+/).filter(Boolean).length;
-    if (!isMindset && wordCount < 30 && finalScore > 35) {
-      finalScore = 35;
-      if (!redFlags.includes('too_short')) redFlags.push('too_short');
+    // Mindset-specific normalized values
+    let mindsetRubric = { framing: 0, execution_bias: 0, impact_thinking: 0, decision_quality: 0 };
+    let mindsetOverall = 0;
+    let mindsetSummary = '';
+    let mindsetFlags: string[] = [];
+    let mindsetConfidence: 'low' | 'medium' | 'high' = 'medium';
+
+    if (isMindset) {
+      mindsetRubric = {
+        framing: clampRound(parsedResult.framing, 0, 100),
+        execution_bias: clampRound(parsedResult.execution_bias, 0, 100),
+        impact_thinking: clampRound(parsedResult.impact_thinking, 0, 100),
+        decision_quality: clampRound(parsedResult.decision_quality, 0, 100),
+      };
+      const avg = Math.round((mindsetRubric.framing + mindsetRubric.execution_bias + mindsetRubric.impact_thinking + mindsetRubric.decision_quality) / 4);
+      mindsetOverall = typeof parsedResult.overall === 'number' ? clampRound(parsedResult.overall, 0, 100) : avg;
+      mindsetSummary = typeof parsedResult.summary === 'string' ? parsedResult.summary : '';
+      mindsetFlags = Array.isArray(parsedResult.flags) ? parsedResult.flags.map(String) : [];
+      const conf = String(parsedResult.confidence || '').toLowerCase();
+      mindsetConfidence = (conf === 'low' || conf === 'high') ? conf : 'medium';
+      finalScore = mindsetOverall;
+    } else {
+      finalScore = Math.round(parsedResult.score);
+      if (redFlags.includes('generic') && finalScore > 40) finalScore = 40;
+      if (redFlags.includes('off_topic') && finalScore > 25) finalScore = 25;
+      if (redFlags.includes('contradiction') && finalScore > 35) finalScore = 35;
+      if (redFlags.includes('copy_paste') && finalScore > 30) finalScore = 30;
+      if (redFlags.includes('admission_of_not_knowing') && finalScore > 45) finalScore = 45;
+
+      const wordCount = cleanedText.split(/\s+/).filter(Boolean).length;
+      if (wordCount < 30 && finalScore > 35) {
+        finalScore = 35;
+        if (!redFlags.includes('too_short')) redFlags.push('too_short');
+      }
     }
 
     let qualityLabel: string;
@@ -405,13 +443,13 @@ Return ONLY the JSON object.`;
     else if (finalScore <= 75) qualityLabel = 'good';
     else qualityLabel = 'excellent';
 
-    // Use real breakdown from Claude (not synthetic proportional split)
-    const scoreBreakdown = parsedResult.score_breakdown || {
+    // Free-text breakdown only; mindset uses its own rubric structure
+    const scoreBreakdown = isMindset ? null : (parsedResult.score_breakdown || {
       relevance: Math.round(25 * finalScore / 100),
       depth: Math.round(25 * finalScore / 100),
       structure: Math.round(25 * finalScore / 100),
       originality: Math.round(25 * finalScore / 100),
-    };
+    });
 
     const cleanText = (str: string) => {
       if (!str) return '';
