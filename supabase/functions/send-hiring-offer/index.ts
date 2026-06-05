@@ -131,7 +131,7 @@ Deno.serve(async (req) => {
     return jsonResponse({ success: true, offer_id, status: "sent" });
 
   } catch (err: any) {
-    console.error(JSON.stringify({ type: "error", correlation_id: correlationId, error: err.message }));
-    return errorResponse(500, "INTERNAL_ERROR", err.message);
+    console.error(JSON.stringify({ type: "error", correlation_id: correlationId, error: err?.message, stack: err?.stack }));
+    return errorResponse(500, "INTERNAL_ERROR", "An unexpected error occurred.");
   }
 });

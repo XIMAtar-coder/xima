@@ -83,12 +83,25 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Restrict to specific mentor emails for safety
-    const allowedEmails = [
-      "roberta.fazz@gmail.com",
-      "daniel.cracau@gmail.com",
-      "cozzi.pietro94@gmail.com"
-    ];
+    // Restrict to specific mentor emails for safety. The allow-list is
+    // read from a secret (JSON array of lowercase email strings) to avoid
+    // committing PII to source.
+    let allowedEmails: string[] = [];
+    try {
+      allowedEmails = JSON.parse(Deno.env.get("MENTOR_ALLOWED_EMAILS") || "[]");
+      if (!Array.isArray(allowedEmails)) allowedEmails = [];
+      allowedEmails = allowedEmails
+        .filter((e): e is string => typeof e === "string")
+        .map((e) => e.toLowerCase());
+    } catch {
+      allowedEmails = [];
+    }
+    if (allowedEmails.length === 0) {
+      return new Response(
+        JSON.stringify({ error: "Mentor allow-list is not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     if (!allowedEmails.includes(email.toLowerCase())) {
       return new Response(

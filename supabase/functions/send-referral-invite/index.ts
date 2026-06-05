@@ -98,17 +98,30 @@ Deno.serve(async (req) => {
       );
     }
 
+    // HTML-escape user-controlled values before interpolating into the email
+    // body to prevent HTML/markup injection in recipients' inboxes.
+    const escapeHtml = (s: string) =>
+      s
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+    const safeInviterName = escapeHtml(inviterName.slice(0, 100));
+    const safeInviteLink = encodeURI(inviteLink);
+
     const emailSubject = locale === "it"
-      ? `${inviterName} ti invita su XIMA`
+      ? `${safeInviterName} ti invita su XIMA`
       : locale === "es"
-        ? `${inviterName} te invita a XIMA`
-        : `${inviterName} invites you to XIMA`;
+        ? `${safeInviterName} te invita a XIMA`
+        : `${safeInviterName} invites you to XIMA`;
 
     const emailBody = locale === "it"
-      ? `<h2>Sei stato invitato su XIMA!</h2><p>${inviterName} ti ha invitato a unirti a XIMA — la piattaforma che valorizza le tue soft skills professionali.</p><p><a href="${inviteLink}" style="display:inline-block;padding:12px 24px;background:#3A9FFF;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;">Registrati ora</a></p><p style="color:#888;font-size:12px;">Se non conosci chi ti ha inviato questo invito, puoi ignorare questa email.</p>`
+      ? `<h2>Sei stato invitato su XIMA!</h2><p>${safeInviterName} ti ha invitato a unirti a XIMA — la piattaforma che valorizza le tue soft skills professionali.</p><p><a href="${safeInviteLink}" style="display:inline-block;padding:12px 24px;background:#3A9FFF;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;">Registrati ora</a></p><p style="color:#888;font-size:12px;">Se non conosci chi ti ha inviato questo invito, puoi ignorare questa email.</p>`
       : locale === "es"
-        ? `<h2>¡Te han invitado a XIMA!</h2><p>${inviterName} te ha invitado a unirte a XIMA — la plataforma que valora tus habilidades profesionales.</p><p><a href="${inviteLink}" style="display:inline-block;padding:12px 24px;background:#3A9FFF;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;">Regístrate ahora</a></p><p style="color:#888;font-size:12px;">Si no conoces a quien te envió esta invitación, puedes ignorar este correo.</p>`
-        : `<h2>You've been invited to XIMA!</h2><p>${inviterName} has invited you to join XIMA — the platform that values your professional soft skills.</p><p><a href="${inviteLink}" style="display:inline-block;padding:12px 24px;background:#3A9FFF;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;">Sign up now</a></p><p style="color:#888;font-size:12px;">If you don't know who sent you this invitation, you can safely ignore this email.</p>`;
+        ? `<h2>¡Te han invitado a XIMA!</h2><p>${safeInviterName} te ha invitado a unirte a XIMA — la plataforma que valora tus habilidades profesionales.</p><p><a href="${safeInviteLink}" style="display:inline-block;padding:12px 24px;background:#3A9FFF;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;">Regístrate ahora</a></p><p style="color:#888;font-size:12px;">Si no conoces a quien te envió esta invitación, puedes ignorar este correo.</p>`
+        : `<h2>You've been invited to XIMA!</h2><p>${safeInviterName} has invited you to join XIMA — the platform that values your professional soft skills.</p><p><a href="${safeInviteLink}" style="display:inline-block;padding:12px 24px;background:#3A9FFF;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;">Sign up now</a></p><p style="color:#888;font-size:12px;">If you don't know who sent you this invitation, you can safely ignore this email.</p>`;
 
     const resendRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
