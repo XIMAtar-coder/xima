@@ -1,4 +1,8 @@
 import { supabase } from '@/integrations/supabase/client';
+import {
+  selectArchetypeFromAssessmentPillars,
+  type AssessmentPillarScores,
+} from '@/lib/ximatarTaxonomy';
 
 interface GuestAssessmentData {
   result_id?: string;
@@ -152,61 +156,111 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
       }
     }
 
-    // Update profiles table with COMPLETE XIMAtar assessment data
-    if (guestXimatar) {
-      // Get XIMAtar ID and full data from label
-      const { data: ximatarData } = await supabase
-        .from('ximatars')
-        .select('id, image_url')
-        .eq('label', guestXimatar.toLowerCase())
-        .single();
+    // Update profiles table with COMPLETE XIMAtar assessment data.
+    // CRITICAL: this block is gated ONLY on guest_pillar_scores existing.
+    // The archetype is resolved from guest_ximatar when present, otherwise
+    // derived from pillar scores using the same helper the assessment UI uses.
+    if (guestPillarScores) {
+      let parsedScores: AssessmentPillarScores | null = null;
+      try {
+        parsedScores = JSON.parse(guestPillarScores) as AssessmentPillarScores;
+      } catch (e) {
+        console.error('[sync] invalid guest_pillar_scores JSON, aborting profile write', e);
+      }
 
-      if (ximatarData) {
-        // Prepare complete profile update with ALL assessment fields
+      if (parsedScores) {
+        // Resolve archetype label (guest value first, derived second)
+        let resolvedLabel = guestXimatar?.toLowerCase() || '';
+        let resolvedName = guestXimatarName || '';
+        let driveLevel = guestDriveLevel || '';
+        let strongestPillar = guestStrongestPillar || '';
+        let weakestPillar = guestWeakestPillar || '';
+
+        if (!resolvedLabel) {
+          const derived = selectArchetypeFromAssessmentPillars(parsedScores);
+          resolvedLabel = derived.label;
+          resolvedName = resolvedName || derived.name;
+          driveLevel = driveLevel || derived.driveLevel;
+          strongestPillar = strongestPillar || derived.strongest;
+          weakestPillar = weakestPillar || derived.weakest;
+          console.warn(
+            '[sync] guest_ximatar missing in sessionStorage — derived archetype from pillar_scores',
+            { resolvedLabel }
+          );
+        }
+
+        if (!resolvedName) {
+          resolvedName = resolvedLabel.charAt(0).toUpperCase() + resolvedLabel.slice(1);
+        }
+
+        // Best-effort ximatar_id lookup
+        const { data: ximatarData, error: ximatarLookupError } = await supabase
+          .from('ximatars')
+          .select('id, image_url')
+          .eq('label', resolvedLabel)
+          .maybeSingle();
+
+        if (ximatarLookupError) {
+          console.error('[sync] ximatars lookup error (continuing)', ximatarLookupError);
+        }
+
         const profileUpdate: any = {
-          ximatar: guestXimatar.toLowerCase() as any,
-          ximatar_id: ximatarData.id,
+          ximatar: resolvedLabel as any,
+          ximatar_name: resolvedName,
           ximatar_assigned_at: new Date().toISOString(),
           creation_source: 'assessment',
-          profile_complete: true
+          profile_complete: true,
+          pillar_scores: parsedScores,
         };
-
-        // Add optional fields if available
-        if (guestXimatarName) profileUpdate.ximatar_name = guestXimatarName;
-        if (guestXimatarImage) profileUpdate.ximatar_image = guestXimatarImage;
-        else if (ximatarData.image_url) profileUpdate.ximatar_image = ximatarData.image_url;
-        if (guestDriveLevel) profileUpdate.drive_level = guestDriveLevel;
-        if (guestStrongestPillar) profileUpdate.strongest_pillar = guestStrongestPillar;
-        if (guestWeakestPillar) profileUpdate.weakest_pillar = guestWeakestPillar;
+        if (driveLevel) profileUpdate.drive_level = driveLevel;
+        if (strongestPillar) profileUpdate.strongest_pillar = strongestPillar;
+        if (weakestPillar) profileUpdate.weakest_pillar = weakestPillar;
         if (guestStorytelling) profileUpdate.ximatar_storytelling = guestStorytelling;
         if (guestGrowthPath) profileUpdate.ximatar_growth_path = guestGrowthPath;
-        
-        // Add pillar scores as JSONB
-        if (guestPillarScores) {
-          try {
-            profileUpdate.pillar_scores = JSON.parse(guestPillarScores);
-          } catch (e) {
-            console.warn('[sync] invalid pillar_scores JSON, skipping');
-          }
+
+        if (ximatarData) {
+          profileUpdate.ximatar_id = ximatarData.id;
+          profileUpdate.ximatar_image = guestXimatarImage || ximatarData.image_url;
+        } else {
+          console.error(
+            '[sync] CRITICAL: ximatars row not found for label — writing profile without ximatar_id',
+            { resolvedLabel }
+          );
+          if (guestXimatarImage) profileUpdate.ximatar_image = guestXimatarImage;
         }
 
-        const { error: profileError } = await supabase
+        // Affected-row check: 0-row updates (RLS mismatch / row not visible)
+        // currently return {error:null}; surface them as ERROR.
+        const { data: updatedRows, error: profileError } = await supabase
           .from('profiles')
           .update(profileUpdate)
-          .eq('user_id', userId);
+          .eq('user_id', userId)
+          .select('user_id');
 
         if (profileError) {
-          console.error('Error updating profile with complete data:', profileError);
+          console.error('[sync] ERROR updating profile with assessment data:', profileError);
+        } else if (!updatedRows || updatedRows.length === 0) {
+          console.error(
+            '[sync] ERROR: profile UPDATE affected 0 rows — likely RLS mismatch or missing profile row',
+            { userId }
+          );
         } else {
-          console.log('✅ Successfully updated profile with complete XIMAtar assessment data');
+          console.log('[sync] ✅ profile updated with archetype', {
+            userId,
+            ximatar: resolvedLabel,
+            hasXimatarId: !!ximatarData,
+          });
         }
 
-        // Update assessment_result with ximatar_id if we have a result
-        if (guestResultId) {
-          await supabase
+        // Link assessment_result to ximatar (best effort, only if both present)
+        if (guestResultId && ximatarData) {
+          const { error: arError } = await supabase
             .from('assessment_results')
             .update({ ximatar_id: ximatarData.id })
             .eq('id', guestResultId);
+          if (arError) {
+            console.warn('[sync] failed to link assessment_result to ximatar', arError);
+          }
         }
       }
     }
