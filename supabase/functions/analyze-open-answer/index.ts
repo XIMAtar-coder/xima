@@ -620,6 +620,18 @@ Return ONLY the JSON object.`;
       });
     }
 
+    if (isMindset) {
+      return jsonResponse({
+        score_total: finalScore,
+        quality_label: qualityLabel,
+        pillar_impact: pillarImpact,
+        scoring_context: 'l1_challenge',
+        signals: mindsetSignals,
+        non_answer_detected: false,
+        ...(levelUpStatus ? { level_up_status: levelUpStatus } : {}),
+      });
+    }
+
     return jsonResponse({
       score_total: finalScore,
       score_breakdown: scoreBreakdown,
