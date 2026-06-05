@@ -2479,6 +2479,60 @@ export type Database = {
         }
         Relationships: []
       }
+      email_send_log: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          message_id: string | null
+          metadata: Json | null
+          recipient_email: string | null
+          status: string
+          template_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          message_id?: string | null
+          metadata?: Json | null
+          recipient_email?: string | null
+          status: string
+          template_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          message_id?: string | null
+          metadata?: Json | null
+          recipient_email?: string | null
+          status?: string
+          template_name?: string | null
+        }
+        Relationships: []
+      }
+      email_unsubscribe_tokens: {
+        Row: {
+          created_at: string
+          email: string
+          token: string
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          token: string
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          token?: string
+          used_at?: string | null
+        }
+        Relationships: []
+      }
       email_verification_tokens: {
         Row: {
           created_at: string
@@ -5177,6 +5231,30 @@ export type Database = {
         }
         Relationships: []
       }
+      suppressed_emails: {
+        Row: {
+          created_at: string
+          email: string
+          metadata: Json | null
+          reason: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          metadata?: Json | null
+          reason: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          metadata?: Json | null
+          reason?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       test_attempts: {
         Row: {
           completed_at: string | null
@@ -5840,17 +5918,19 @@ export type Database = {
         Args: { p_count: number; p_ximatar_id: string }
         Returns: string
       }
-      enqueue_email: {
-        Args: {
-          p_email_type: string
-          p_html_body: string
-          p_idempotency_key: string
-          p_metadata?: Json
-          p_recipient_email: string
-          p_subject: string
-        }
-        Returns: string
-      }
+      enqueue_email:
+        | {
+            Args: {
+              p_email_type: string
+              p_html_body: string
+              p_idempotency_key: string
+              p_metadata?: Json
+              p_recipient_email: string
+              p_subject: string
+            }
+            Returns: string
+          }
+        | { Args: { payload: Json; queue_name: string }; Returns: number }
       ensure_mentor_thread: {
         Args: { p_mentor: string; p_user: string }
         Returns: string
