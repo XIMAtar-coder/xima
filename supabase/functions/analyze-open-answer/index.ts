@@ -592,7 +592,7 @@ Return ONLY the JSON object.`;
     console.log(JSON.stringify({
       type: 'success', correlation_id: correlationId,
       function_name: 'analyze-open-answer',
-      original_score: parsedResult.score, final_score: finalScore,
+      original_score: isMindset ? mindsetOverall : parsedResult.score, final_score: finalScore,
       quality_label: qualityLabel, red_flags_count: redFlags.length,
       has_pillar_impact: !!pillarImpact,
     }));
