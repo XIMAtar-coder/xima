@@ -1,138 +1,88 @@
-# Mindset L1 Rubric Scoring + Server-Side Signals Write
+# Trace report: archetype not persisted to profiles
 
-## Goal
+Reporting findings only. No code changes yet.
 
-In the mindset branch only:
-1. Make `analyze-open-answer` ask Claude for the **L1 rubric** (`framing / execution_bias / impact_thinking / decision_quality`) — the same shape `rubric.criteria` uses for L1 challenges — instead of the free-text rubric (`relevance / depth / structure / originality`).
-2. Build a `signals` object from those keys and write it to `challenge_submissions.signals_payload` **server-side via service role**, keyed by `invitation_id`, because the row is already `submitted` and the client-side update is being blocked.
-3. Frontend: include `invitation_id` in the invoke body and drop the client-side `signals_payload` write.
+## 1. Where the persistence write lives
 
-Free-text scoring path is untouched. Evidence-ledger gating, trajectory persistence, and the response shape stay as they are today.
+There is **no edge function** writing the archetype. There are two client paths plus one DB trigger:
 
-## Files changed
+- **Guest path** (assessment before account exists) — `src/components/ximatar-journey/XimatarAssessment.tsx` lines 176–272. Computes `mockPillarScores` and `ximatarLabel` locally and stores them in **sessionStorage** under keys `guest_pillar_scores`, `guest_ximatar`, `guest_ximatar_name`, `guest_drive_level`, `guest_strongest_pillar`, `guest_weakest_pillar`, `guest_ximatar_storytelling`, `guest_ximatar_growth_path`. No DB write here.
+- **Sync after sign-up** — `src/utils/assessmentSync.ts` `syncGuestAssessmentToProfile(userId)`. Called from `src/pages/Register.tsx:147` (after `signUp`) and `src/pages/AuthCallback.tsx:50,81` (Google OAuth). This is the only place that writes `profiles.pillar_scores`, `profiles.ximatar`, `profiles.ximatar_id`, `profiles.ximatar_assigned_at`, `profiles.ximatar_name`, `profiles.drive_level`, `profiles.profile_complete=true`, `profiles.creation_source='assessment'` — all inside one `.update(profileUpdate).eq('user_id', userId)` call at lines 193–196.
+- **Logged-in path** (assessment after account exists) — `XimatarAssessment.tsx` lines 275–454. Inserts `assessment_results` (completed=false), inserts `assessment_answers`, then updates `assessment_results.completed=true`. Relies on the DB trigger `trg_assessment_completed → on_assessment_completed_trigger → compute_pillar_scores_from_assessment + assign_ximatar_by_pillars` to fill `assessment_results.pillars` and `ximatar_id`, then `trg_sync_assessment → sync_assessment_to_profile` to copy them onto `profiles`. This path **never writes `profiles.ximatar`, `ximatar_name`, `ximatar_assigned_at`, `drive_level`, or `profile_complete`** — `sync_assessment_to_profile` only copies `pillar_scores` and `ximatar_id`.
 
-1. `supabase/functions/analyze-open-answer/index.ts`
-2. `src/hooks/useMindsetDraft.ts`
+## 2. What the two broken June-5 users actually look like in the DB
 
-Nothing else.
+`ecae1787-…` and `fa00ec30-…`:
 
-## 1) `supabase/functions/analyze-open-answer/index.ts`
+- `profiles`: `ximatar=null`, `ximatar_assigned_at=null`, `pillar_scores={}`, `profile_complete=false`, `creation_source='assessment'`, `verification_required_until` = `created_at + 48h`, `updated_at` exactly equals the assessment_results `computed_at` (microsecond match).
+- `assessment_results`: 1 row, `completed=true`, `computed_at` set (column default `now()`), `total_score` = 32.72 / 37.53 (≈ sum of 5 pillar scores), `attempt_id=null`, `field_key=null`, `pillars=null`, `ximatar_id=null`.
+- `assessment_answers`: **0 rows** for these result ids.
+- `pillar_scores` (the table): **0 rows** for these result ids.
 
-### Body parsing
-- Add `invitation_id` to the destructured body (only used in the mindset branch).
+Last user who persisted correctly (89545475-…, June 4 22:08) has `ximatar='horse'`, full `pillar_scores`, `profile_complete=true`, `creation_source='assessment'`.
 
-### System prompt — mindset branch only
-Today every request uses the same prompt that asks for `score_breakdown.{relevance, depth, structure, originality}`. When `isMindset === true`, swap the rubric and the JSON contract to:
+## 3. What the data proves about which branches ran
 
-```text
-SCORING RUBRIC (each 0–100):
-- framing — how the candidate frames the situation: stakes, who's affected, what's at risk
-- execution_bias — propensity to act, decide, move; vs deliberation/avoidance
-- impact_thinking — awareness of downstream consequences and second-order effects
-- decision_quality — coherence between instincts, day reactions, and the debrief reasoning
+- `verification_required_until = created_at + 48h` proves the `profiles.update({ verification_required_until, email_verified_at: null })` at `Register.tsx:124-127` ran → so the user got a session and made it past `signUp`. (`handle_new_user` sets the column to `+24h`; only the client write sets `+48h`.)
+- `creation_source='assessment'` is the **column default** (`'assessment'::text`), so it does NOT prove that `assessmentSync`'s profile UPDATE ran.
+- `pillar_scores={}` is also the column default (`'{}'::jsonb`).
+- `profile_complete=false` is the column default.
+- `assessment_results` row exists with `total_score≈32` and `field_key=null, attempt_id=null` — that exactly matches the **sync-path INSERT** at `assessmentSync.ts:85-95` (the logged-in path always sets `field_key` and `attempt_id`). So sync ran far enough to insert `assessment_results`, which means the supabase client had a valid session at that moment (RLS on `assessment_results` requires `auth.uid() = user_id` for INSERT, and the row exists).
+- `assessment_results.pillars=null, ximatar_id=null` because `on_assessment_completed_trigger` short-circuits with `IF answer_count = 0 THEN RETURN NEW` — sync never inserts `assessment_answers`, so server-side computation is a no-op. (This is by design for the sync path; the trigger is intended for the logged-in path.) Consequence: `sync_assessment_to_profile`'s `COALESCE(NEW.pillars, pillar_scores)` does nothing.
+- `profiles.updated_at` matches `assessment_results.computed_at` to the microsecond — this is the timestamp from `sync_assessment_to_profile`'s `updated_at = now()` fired by the sync's `assessment_results` INSERT. If the sync's profile `UPDATE` at `assessmentSync.ts:193-196` had run, `updated_at` would have been bumped to a later timestamp.
+- The `pillar_scores` table insert at `assessmentSync.ts:111-113` silently failed: `pillar_scores` has **only SELECT RLS policies, no INSERT policy**, so authenticated client INSERTs are rejected. The error is logged but execution continues. Not the cause of the profile bug, but confirms `error`-only checks aren't enough.
 
-OVERALL = balanced read across the four (0–100). NOT a sum.
+**Conclusion for each of your four checks:**
+
+1. **Is the write invoked on completion?** Yes for the assessment_results INSERT (lines 85–95). **No** for the profile UPDATE (lines 193–196) — it never executed for these users.
+2. **Is the update awaited and the error / row count checked?** It is awaited and `error` is checked, but **row count is not**. An `UPDATE … .eq('user_id', userId)` that hits 0 rows (RLS mismatch, or row not yet visible to this session) returns `{ error: null, data: null }` and logs `'✅ Successfully updated profile…'`. This is a real footgun, but for these specific users it is not what fired — the UPDATE block was skipped entirely (next point).
+3. **Does it run after the session is established?** Yes for the assessment_results INSERT (the row exists, so `auth.uid()` matched `user_id`). Same client, same call stack, microseconds later, so the session is also live for the subsequent profile UPDATE. Session timing is not the cause here.
+4. **Does the failing transactional/verification email abort the flow?** No. `Register.tsx:130-145` wraps `send-verification-email` in try/catch and only toasts on error. `syncGuestAssessmentToProfile` is called unconditionally on line 147 right after. We have proof it ran (assessment_results row + 48h deadline).
+
+## 4. Why the profile UPDATE was skipped
+
+The profile UPDATE in `assessmentSync.ts` is gated by **two nested ifs**:
+
 ```
-
-JSON contract returned to Claude (mindset only):
-```json
-{
-  "framing": 0-100,
-  "execution_bias": 0-100,
-  "impact_thinking": 0-100,
-  "decision_quality": 0-100,
-  "overall": 0-100,
-  "summary": "<short, in the challenge language>",
-  "flags": ["..."],
-  "confidence": "low" | "medium" | "high",
-  "pillar_impact": { "drive": -5..5, "computational_power": -5..5, "communication": -5..5, "creativity": -5..5, "knowledge": -5..5 },
-  "pillar_reasoning": "..."
+if (guestXimatar) {                          // line 156
+  const { data: ximatarData } = await ...    // line 158, .single()
+  if (ximatarData) {                         // line 164
+    profileUpdate = { ximatar, ximatar_id, ximatar_assigned_at,
+                      creation_source, profile_complete, pillar_scores, … }
+    await supabase.from('profiles').update(profileUpdate).eq('user_id', userId)
+  }
 }
 ```
 
-Implementation note: keep one `callAnthropicApi` call. Build `finalSystemPrompt` as either the existing free-text prompt (today) OR a mindset-specific prompt (above + the existing pillar block + context block). The mindset addendum currently glued to the free-text prompt is removed in favor of a clean dedicated prompt.
+`pillar_scores`, `ximatar`, `profile_complete`, and every other ximatar field are written **only inside this nested block**. So if `guestXimatar` is missing OR if the `ximatars` row lookup returns null, **nothing** about the archetype/pillars lands on `profiles`, even though `guestPillarScores` is sitting right there in sessionStorage and `total_score` was just computed from it.
 
-### Validation (mindset branch)
-Replace the free-text validators (`score`, `reasons`, `improvement_tips`, `detected_red_flags`, `score_breakdown`) with mindset validators:
-- All four rubric keys are numbers in `[0,100]` (clamp + round).
-- `overall` is a number in `[0,100]` (clamp + round). If missing, fall back to the average of the four.
-- `summary` is a string (default `''`).
-- `flags` is `string[]` (default `[]`).
-- `confidence` is `"low" | "medium" | "high"` (default `"medium"`).
-- `pillar_impact` must contain all five keys; clamp each to `[-5,5]`.
+We know for these users:
 
-Free-text path keeps its existing validators byte-for-byte.
+- `guestPillarScores` WAS present in sessionStorage (the `assessment_results` insert path is itself gated by `if (guestPillarScores)` at line 76, and `total_score` was computed from it).
+- The `ximatars` table contains all 12 labels used by `XimatarAssessment.tsx` (`horse, owl, lion, dolphin, fox, wolf, parrot, elephant, cat, bee, chameleon, bear`) and the `ximatar_type` enum matches — so `ximatarData` lookup cannot return null for any valid label.
+- Therefore `guestXimatar` must have been **null/empty** in sessionStorage at the moment sync ran, while `guest_pillar_scores` was still there.
 
-### Post-LLM guardrails / red flags / quality label
-For mindset: skip the free-text red-flag caps (`generic`, `off_topic`, `contradiction`, `copy_paste`, `admission_of_not_knowing`, `too_short`) — they don't apply to a structured payload. `flags` flows through as-is. `finalScore = overall` for downstream logs/audit/AI-context update. `qualityLabel` derived from `overall` using the existing thresholds (kept consistent so `challenge_history_summary` math still works).
+Likely upstream causes (to confirm with the user, not investigate yet):
 
-### Build & persist signals (mindset only)
-After the AI call validates, build the canonical signals object:
-```ts
-const signals = {
-  framing,
-  execution_bias,
-  impact_thinking,
-  decision_quality,
-  overall,
-  summary,
-  flags,
-  confidence,
-  pillar_impact,
-  pillar_reasoning,
-  signals_version: 'v1',
-  scoring_context: 'l1_challenge',
-  format: 'mindset',
-  ai_request_id: aiRequestId,
-};
-```
+- The two keys are written together in `XimatarAssessment.tsx:255-256`, so a same-tab same-flow run shouldn't lose only one. Plausible scenarios:
+  - User completed the assessment in one tab/browser and registered in another (sessionStorage is per-tab).
+  - User reloaded or hit a route that selectively wrote `guest_pillar_scores` from a different code path without setting `guest_ximatar` (need to grep — only one writer found today, but worth double-checking after release notes).
+  - Two parallel `syncGuestAssessmentToProfile` calls (e.g. `AuthCallback` `onAuthStateChange` + `getSession`) — the first call clears all `guest_*` keys at lines 245-254, the second call then sees `guestPillarScores=null AND guestXimatar=null`. But that would leave the profile in the **correct** state from the first call. Not what we see here (Register path, not OAuth, only one assessment_results row).
+  - Most likely: the user took the assessment **after** registration via the logged-in path, which inserts `assessment_results` + `assessment_answers` — but `assessment_answers` is empty, ruling this out too. So the genuinely puzzling residue is: `guest_pillar_scores` set, `guest_ximatar` not. This deserves a quick repro before any code fix.
 
-Then, only when `isMindset && invitation_id` is a non-empty string, write server-side with the service-role client (already used for the evidence-ledger block):
+## 5. Secondary observations (not the root cause, but real)
 
-```ts
-await serviceClient
-  .from('challenge_submissions')
-  .update({ signals_payload: signals })
-  .eq('invitation_id', invitation_id);
-```
+- `pillar_scores` table has no INSERT RLS policy → the client INSERT at `assessmentSync.ts:111-113` always fails. Errors are logged, execution continues. The table is effectively never populated by sync.
+- `assessmentSync` checks `error` but never `count`/affected rows on the critical profile UPDATE — a future RLS or `eq` regression will look like success.
+- The logged-in assessment path in `XimatarAssessment.tsx` relies entirely on DB triggers to populate `profiles`, and `sync_assessment_to_profile` only copies `pillar_scores` and `ximatar_id` — never `ximatar` (enum), `ximatar_name`, `ximatar_assigned_at`, `drive_level`, `profile_complete`, `strongest_pillar`, `weakest_pillar`, `ximatar_storytelling`, `ximatar_growth_path`. So a user who registers first and assesses second can never get a "complete" profile through this path alone, regardless of the current bug.
+- `send-verification-email` failures do **not** block the sync. Not involved here.
 
-Wrap in try/catch — log a single warn line on failure but do not change the response. Service role bypasses RLS, so the `status='submitted'` block on the candidate's client update does not apply here.
+## 6. Suggested next step (not executed)
 
-### Evidence ledger
-Stays exactly as today: gated behind `!isMindset` (no `assessment_open_responses` row for mindset).
+Before changing code, decide whether to:
 
-### Trajectory
-Stays exactly as today: `persistTrajectoryEvent({ source_type: 'l1_challenge', deltas: pillarImpact, ... })` runs whenever `pillarImpact` is present and `user_id` exists. Mindset already provides `pillar_impact`, so the XIMAtar continues to move.
+(a) Move the `pillar_scores` / `profile_complete` / `drive_level` writes **out** of the `if (guestXimatar) { if (ximatarData) { … } }` nest so they land whenever the data exists, with the ximatar fields layered on top when available; and
+(b) Add an affected-row check (`.select('user_id')` after the update or `returning=representation`) so a future RLS regression is loud, not silent; and
+(c) Optionally have `sync_assessment_to_profile` also copy the ximatar label/name/assigned_at so the logged-in path produces a complete profile too.
 
-### Response shape
-Mindset branch returns the same envelope the client expects, with `signals` echoed back so the call remains harmless to consumers:
-```ts
-return jsonResponse({
-  score_total: overall,
-  quality_label: qualityLabel,
-  pillar_impact,
-  scoring_context: 'l1_challenge',
-  signals,           // echoed; client no longer writes it
-  ...(levelUpStatus ? { level_up_status: levelUpStatus } : {}),
-});
-```
-
-Free-text response is unchanged.
-
-## 2) `src/hooks/useMindsetDraft.ts`
-
-Inside the fire-and-forget block in `submit`:
-
-- Add `invitation_id: invitationId` to the `body` of `supabase.functions.invoke('analyze-open-answer', { body: ... })`.
-- **Remove** the `.then(async ({ data, error }) => { ... .update({ signals_payload: data })  })` chain entirely. Keep only the invoke as fire-and-forget (`.catch(() => {})`), since the edge function now performs the write.
-- Everything else in `submit` (submission upsert, invitation status flip, navigation to resolve screen) is unchanged. Navigation already happens regardless of the invoke result.
-
-No other callers of `analyze-open-answer` change (free-text path keeps sending `text/field/openKey/language` without `format` and hits the unchanged branch).
-
-## Scope guarantees
-
-- Free-text path: identical prompt, validators, breakdown, guardrails, evidence ledger, response.
-- No DB migration. `signals_payload` column already exists on `challenge_submissions`.
-- No new env var, no new shared file, no new edge function.
-- Service-role write is bounded to the mindset branch and to a single row matched by `invitation_id`.
-- Candidate UX: resolve screen still appears immediately on submit regardless of scoring outcome.
+Awaiting confirmation before touching code.
