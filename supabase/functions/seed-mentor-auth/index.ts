@@ -11,36 +11,45 @@ interface MentorSeed {
   mentorId: string;
 }
 
-// Mentor seed records. Passwords MUST be supplied at runtime via the
-// MENTOR_SEED_PASSWORDS secret as JSON: { "<email>": "<password>", ... }.
-// Never commit credentials to source.
-const MENTOR_SEED_TARGETS: Array<Omit<MentorSeed, 'password'>> = [
-  {
-    email: 'roberta.fazz@gmail.com',
-    mentorId: '928dbd7d-1d4f-4abd-b069-d6bb18fd725e',
-  },
-  {
-    email: 'cozzi.pietro94@gmail.com',
-    mentorId: '8f879039-36cb-4367-8064-49ba9a9fdbf2',
-  },
-];
+// Mentor seed records. Both the {email -> mentorId} mapping and the
+// {email -> password} mapping MUST be supplied at runtime via secrets:
+//   MENTOR_SEED_TARGETS:   { "<email>": "<mentorId>", ... }
+//   MENTOR_SEED_PASSWORDS: { "<email>": "<password>", ... }
+// Never commit credentials or PII to source.
 
 function loadMentorSeeds(): { seeds: MentorSeed[]; error: string | null } {
-  const raw = Deno.env.get('MENTOR_SEED_PASSWORDS');
-  if (!raw) {
+  const rawTargets = Deno.env.get('MENTOR_SEED_TARGETS');
+  if (!rawTargets) {
+    return { seeds: [], error: 'MENTOR_SEED_TARGETS secret is not configured' };
+  }
+  let targetMap: Record<string, string>;
+  try {
+    targetMap = JSON.parse(rawTargets);
+  } catch {
+    return { seeds: [], error: 'MENTOR_SEED_TARGETS is not valid JSON' };
+  }
+  const targets: Array<Omit<MentorSeed, 'password'>> = Object.entries(targetMap)
+    .filter(([email, mentorId]) => typeof email === 'string' && typeof mentorId === 'string')
+    .map(([email, mentorId]) => ({ email: email.toLowerCase(), mentorId }));
+  if (targets.length === 0) {
+    return { seeds: [], error: 'MENTOR_SEED_TARGETS contains no entries' };
+  }
+
+  const rawPw = Deno.env.get('MENTOR_SEED_PASSWORDS');
+  if (!rawPw) {
     return { seeds: [], error: 'MENTOR_SEED_PASSWORDS secret is not configured' };
   }
-  let map: Record<string, string>;
+  let pwMap: Record<string, string>;
   try {
-    map = JSON.parse(raw);
+    pwMap = JSON.parse(rawPw);
   } catch {
     return { seeds: [], error: 'MENTOR_SEED_PASSWORDS is not valid JSON' };
   }
   const seeds: MentorSeed[] = [];
-  for (const target of MENTOR_SEED_TARGETS) {
-    const pw = map[target.email];
+  for (const target of targets) {
+    const pw = pwMap[target.email];
     if (!pw || typeof pw !== 'string' || pw.length < 12) {
-      return { seeds: [], error: `Missing/weak password for ${target.email}` };
+      return { seeds: [], error: 'Missing/weak password for one or more mentors' };
     }
     seeds.push({ ...target, password: pw });
   }
