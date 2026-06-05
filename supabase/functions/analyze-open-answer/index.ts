@@ -75,7 +75,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload } = body;
+    const { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload, invitation_id } = body;
 
     const isMindset = format === 'mindset' && mindset_payload && typeof mindset_payload === 'object';
 
@@ -216,7 +216,7 @@ This is an L1 challenge response. Use these behavioral signals to evaluate:
     const userContext = user_id ? await loadUserAiContext(user_id) : {};
     const contextBlock = buildContextBlock(userContext);
 
-    const systemPrompt = `You are a strict but fair professional assessment evaluator for the XIMA psychometric talent platform.
+    const freeTextSystemPrompt = `You are a strict but fair professional assessment evaluator for the XIMA psychometric talent platform.
 
 CRITICAL RULES:
 - ALWAYS respond in ${langConfig.name}. Every word must be in ${langConfig.name}.
@@ -282,19 +282,63 @@ Return ONLY valid JSON:
   "pillar_reasoning": "Brief explanation of pillar impact..."
 }`;
 
-    const mindsetAddendum = isMindset ? `
+    const mindsetSystemPrompt = `You are an L1 mindset evaluator for the XIMA psychometric talent platform.
 
-MINDSET ADDENDUM:
-This submission is NOT a free-text answer. It is an L1 mindset/attitude exercise made of:
-  (a) gut-instinct choices between paired options (each option lights a "facet"),
-  (b) a simulated Monday in which the candidate reacted with gestures to incoming items,
+CRITICAL RULES:
+- ALWAYS respond in ${langConfig.name}. Every word of "summary" must be in ${langConfig.name}.
+- ${langConfig.feedbackStyle}
+- Be honest. Do NOT inflate scores. This is a structured mindset payload, not prose.
+
+EVALUATION CONTEXT:
+- Field: ${fieldContext}
+- Question type: L1 mindset/attitude experience (gut-instinct pairs, day-of-week gestures, short debrief)
+${evaluationLensBlock}
+
+INPUT SHAPE:
+The submission is NOT free text. It is composed of:
+  (a) gut-instinct choices between paired options (each option lights a behavioral "facet"),
+  (b) a simulated Monday in which the candidate reacted to incoming items with gestures,
   (c) a short reflective "why" debrief on one of those reactions.
-Read it for mindset signals (orientation, instinct, values, reflectiveness), NOT for prose quality.
-Ignore the SELF-CHECK RULES about word counts and prose specifics — they do not apply to this structured payload.
-Still return EXACTLY the same JSON schema. In particular, pillar_impact MUST contain all five keys:
-drive, computational_power, communication, creativity, knowledge (each -5..+5). This output feeds the XIMAtar.` : '';
+Evaluate mindset, instinct, values, and reflectiveness — NOT prose quality, word count, or specifics.
 
-    const finalSystemPrompt = systemPrompt + mindsetAddendum;
+SCORING RUBRIC (each 0-100):
+- framing: How the candidate frames the situation — stakes, who's affected, what's at risk.
+- execution_bias: Propensity to act, decide, move; vs deliberation or avoidance.
+- impact_thinking: Awareness of downstream consequences and second-order effects.
+- decision_quality: Coherence between gut instincts, day reactions, and the debrief reasoning.
+
+OVERALL (0-100): a balanced read across the four. NOT a sum, NOT a strict average — weight what stands out.
+
+PILLAR IMPACT (-5 to +5 each):
+- drive: Initiative, ownership, ambition shown
+- computational_power: Analytical thinking, structured reasoning
+- communication: Clarity, stakeholder awareness, persuasion
+- creativity: Novel ideas, reframing, lateral thinking
+- knowledge: Domain expertise, best practices, references
+
+` + contextBlock + `
+
+Return ONLY valid JSON:
+{
+  "framing": <0-100>,
+  "execution_bias": <0-100>,
+  "impact_thinking": <0-100>,
+  "decision_quality": <0-100>,
+  "overall": <0-100>,
+  "summary": "<short, in ${langConfig.name}>",
+  "flags": ["<string>", "..."],
+  "confidence": "low" | "medium" | "high",
+  "pillar_impact": {
+    "drive": <-5 to 5>,
+    "computational_power": <-5 to 5>,
+    "communication": <-5 to 5>,
+    "creativity": <-5 to 5>,
+    "knowledge": <-5 to 5>
+  },
+  "pillar_reasoning": "Brief explanation of pillar impact..."
+}`;
+
+    const finalSystemPrompt = isMindset ? mindsetSystemPrompt : freeTextSystemPrompt;
 
     const userPrompt = `Evaluate this professional assessment answer strictly and fairly.
 
@@ -324,11 +368,19 @@ Return ONLY the JSON object.`;
       const parsed = JSON.parse(jsonStr);
 
       // Validate required fields
-      if (typeof parsed?.score !== 'number' || parsed.score < 0 || parsed.score > 100) throw new Error('Invalid score');
-      if (!Array.isArray(parsed?.reasons)) throw new Error('Missing reasons');
-      if (!Array.isArray(parsed?.improvement_tips)) throw new Error('Missing tips');
-      if (!Array.isArray(parsed?.detected_red_flags)) throw new Error('Missing flags');
-      if (!parsed?.score_breakdown || typeof parsed.score_breakdown !== 'object') throw new Error('Missing breakdown');
+      if (isMindset) {
+        const numKeys = ['framing', 'execution_bias', 'impact_thinking', 'decision_quality'];
+        for (const k of numKeys) {
+          if (typeof parsed?.[k] !== 'number') throw new Error(`Missing mindset rubric key: ${k}`);
+        }
+        if (!parsed?.pillar_impact || typeof parsed.pillar_impact !== 'object') throw new Error('Missing pillar_impact');
+      } else {
+        if (typeof parsed?.score !== 'number' || parsed.score < 0 || parsed.score > 100) throw new Error('Invalid score');
+        if (!Array.isArray(parsed?.reasons)) throw new Error('Missing reasons');
+        if (!Array.isArray(parsed?.improvement_tips)) throw new Error('Missing tips');
+        if (!Array.isArray(parsed?.detected_red_flags)) throw new Error('Missing flags');
+        if (!parsed?.score_breakdown || typeof parsed.score_breakdown !== 'object') throw new Error('Missing breakdown');
+      }
 
       parsedResult = parsed;
     } catch (e) {
@@ -339,20 +391,50 @@ Return ONLY the JSON object.`;
       return errorResponse(502, 'OPEN_ANSWER_PARSE_FAILED', 'AI evaluation failed to produce valid results. Please try again.');
     }
 
-    // STEP 3: Post-LLM Guardrails — KEPT EXACTLY
-    let finalScore = Math.round(parsedResult.score);
-    const redFlags: string[] = parsedResult.detected_red_flags.map(String);
+    const clamp = (n: any, lo: number, hi: number) => {
+      const v = typeof n === 'number' && Number.isFinite(n) ? n : 0;
+      return Math.max(lo, Math.min(hi, v));
+    };
+    const clampRound = (n: any, lo: number, hi: number) => Math.round(clamp(n, lo, hi));
 
-    if (redFlags.includes('generic') && finalScore > 40) finalScore = 40;
-    if (redFlags.includes('off_topic') && finalScore > 25) finalScore = 25;
-    if (redFlags.includes('contradiction') && finalScore > 35) finalScore = 35;
-    if (redFlags.includes('copy_paste') && finalScore > 30) finalScore = 30;
-    if (redFlags.includes('admission_of_not_knowing') && finalScore > 45) finalScore = 45;
+    // STEP 3: Post-LLM Guardrails — free-text path KEPT EXACTLY; mindset skips red-flag caps
+    let finalScore: number;
+    const redFlags: string[] = isMindset ? [] : parsedResult.detected_red_flags.map(String);
 
-    const wordCount = cleanedText.split(/\s+/).filter(Boolean).length;
-    if (!isMindset && wordCount < 30 && finalScore > 35) {
-      finalScore = 35;
-      if (!redFlags.includes('too_short')) redFlags.push('too_short');
+    // Mindset-specific normalized values
+    let mindsetRubric = { framing: 0, execution_bias: 0, impact_thinking: 0, decision_quality: 0 };
+    let mindsetOverall = 0;
+    let mindsetSummary = '';
+    let mindsetFlags: string[] = [];
+    let mindsetConfidence: 'low' | 'medium' | 'high' = 'medium';
+
+    if (isMindset) {
+      mindsetRubric = {
+        framing: clampRound(parsedResult.framing, 0, 100),
+        execution_bias: clampRound(parsedResult.execution_bias, 0, 100),
+        impact_thinking: clampRound(parsedResult.impact_thinking, 0, 100),
+        decision_quality: clampRound(parsedResult.decision_quality, 0, 100),
+      };
+      const avg = Math.round((mindsetRubric.framing + mindsetRubric.execution_bias + mindsetRubric.impact_thinking + mindsetRubric.decision_quality) / 4);
+      mindsetOverall = typeof parsedResult.overall === 'number' ? clampRound(parsedResult.overall, 0, 100) : avg;
+      mindsetSummary = typeof parsedResult.summary === 'string' ? parsedResult.summary : '';
+      mindsetFlags = Array.isArray(parsedResult.flags) ? parsedResult.flags.map(String) : [];
+      const conf = String(parsedResult.confidence || '').toLowerCase();
+      mindsetConfidence = (conf === 'low' || conf === 'high') ? conf : 'medium';
+      finalScore = mindsetOverall;
+    } else {
+      finalScore = Math.round(parsedResult.score);
+      if (redFlags.includes('generic') && finalScore > 40) finalScore = 40;
+      if (redFlags.includes('off_topic') && finalScore > 25) finalScore = 25;
+      if (redFlags.includes('contradiction') && finalScore > 35) finalScore = 35;
+      if (redFlags.includes('copy_paste') && finalScore > 30) finalScore = 30;
+      if (redFlags.includes('admission_of_not_knowing') && finalScore > 45) finalScore = 45;
+
+      const wordCount = cleanedText.split(/\s+/).filter(Boolean).length;
+      if (wordCount < 30 && finalScore > 35) {
+        finalScore = 35;
+        if (!redFlags.includes('too_short')) redFlags.push('too_short');
+      }
     }
 
     let qualityLabel: string;
@@ -361,20 +443,64 @@ Return ONLY the JSON object.`;
     else if (finalScore <= 75) qualityLabel = 'good';
     else qualityLabel = 'excellent';
 
-    // Use real breakdown from Claude (not synthetic proportional split)
-    const scoreBreakdown = parsedResult.score_breakdown || {
+    // Free-text breakdown only; mindset uses its own rubric structure
+    const scoreBreakdown = isMindset ? null : (parsedResult.score_breakdown || {
       relevance: Math.round(25 * finalScore / 100),
       depth: Math.round(25 * finalScore / 100),
       structure: Math.round(25 * finalScore / 100),
       originality: Math.round(25 * finalScore / 100),
-    };
+    });
 
     const cleanText = (str: string) => {
       if (!str) return '';
       return str.replace(/[._]{2,}/g, ' ').replace(/^\s*[._]+/g, '').replace(/[._]+\s*$/g, '').replace(/\s+/g, ' ').trim();
     };
 
-    const pillarImpact = parsedResult.pillar_impact || null;
+    const rawPillar = parsedResult.pillar_impact || null;
+    const pillarImpact = rawPillar ? {
+      drive: clamp(rawPillar.drive, -5, 5),
+      computational_power: clamp(rawPillar.computational_power, -5, 5),
+      communication: clamp(rawPillar.communication, -5, 5),
+      creativity: clamp(rawPillar.creativity, -5, 5),
+      knowledge: clamp(rawPillar.knowledge, -5, 5),
+    } : null;
+
+    // ===== MINDSET: build signals and persist server-side =====
+    let mindsetSignals: any = null;
+    if (isMindset) {
+      mindsetSignals = {
+        framing: mindsetRubric.framing,
+        execution_bias: mindsetRubric.execution_bias,
+        impact_thinking: mindsetRubric.impact_thinking,
+        decision_quality: mindsetRubric.decision_quality,
+        overall: mindsetOverall,
+        summary: mindsetSummary,
+        flags: mindsetFlags,
+        confidence: mindsetConfidence,
+        pillar_impact: pillarImpact,
+        pillar_reasoning: parsedResult.pillar_reasoning || '',
+        signals_version: 'v1',
+        scoring_context: 'l1_challenge',
+        format: 'mindset',
+        ai_request_id: aiRequestId,
+      };
+
+      if (typeof invitation_id === 'string' && invitation_id.length > 0) {
+        try {
+          const serviceClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+          const { error: updErr } = await serviceClient
+            .from('challenge_submissions')
+            .update({ signals_payload: mindsetSignals })
+            .eq('invitation_id', invitation_id);
+          if (updErr) {
+            console.warn(JSON.stringify({ type: 'mindset_signals_write_failed', correlation_id: correlationId, function_name: 'analyze-open-answer', error: updErr.message }));
+          }
+        } catch (writeErr) {
+          console.warn(JSON.stringify({ type: 'mindset_signals_write_error', correlation_id: correlationId, function_name: 'analyze-open-answer', error: writeErr instanceof Error ? writeErr.message : 'Unknown' }));
+        }
+      }
+    }
+
 
     // Audit event
     emitAuditEventWithMetric({
@@ -466,7 +592,7 @@ Return ONLY the JSON object.`;
     console.log(JSON.stringify({
       type: 'success', correlation_id: correlationId,
       function_name: 'analyze-open-answer',
-      original_score: parsedResult.score, final_score: finalScore,
+      original_score: isMindset ? mindsetOverall : parsedResult.score, final_score: finalScore,
       quality_label: qualityLabel, red_flags_count: redFlags.length,
       has_pillar_impact: !!pillarImpact,
     }));
@@ -491,6 +617,18 @@ Return ONLY the JSON object.`;
           [avgKey]: Math.round(((prevAvg * prevCount) + finalScore) / (prevCount + 1)),
         },
         challenges_updated_at: new Date().toISOString(),
+      });
+    }
+
+    if (isMindset) {
+      return jsonResponse({
+        score_total: finalScore,
+        quality_label: qualityLabel,
+        pillar_impact: pillarImpact,
+        scoring_context: 'l1_challenge',
+        signals: mindsetSignals,
+        non_answer_detected: false,
+        ...(levelUpStatus ? { level_up_status: levelUpStatus } : {}),
       });
     }
 

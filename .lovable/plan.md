@@ -1,84 +1,138 @@
-# Mindset Content Generation in L1 Pipeline — Additive Plan
+# Mindset L1 Rubric Scoring + Server-Side Signals Write
 
 ## Goal
 
-When an L1 (XIMA Core) challenge is generated, also generate role-contextual **mindset** content anchored to the SAME scenario / role / industry / company context, and merge it into `config_json` so the candidate's `ChallengeCompletion.tsx` route detects `experience: "mindset"` and renders the immersive flow.
+In the mindset branch only:
+1. Make `analyze-open-answer` ask Claude for the **L1 rubric** (`framing / execution_bias / impact_thinking / decision_quality`) — the same shape `rubric.criteria` uses for L1 challenges — instead of the free-text rubric (`relevance / depth / structure / originality`).
+2. Build a `signals` object from those keys and write it to `challenge_submissions.signals_payload` **server-side via service role**, keyed by `invitation_id`, because the row is already `submitted` and the client-side update is being blocked.
+3. Frontend: include `invitation_id` in the invoke body and drop the client-side `signals_payload` write.
 
-Existing scenario, questions, evaluation_lens, rubric, expected_tensions, validators, pattern-library short-circuit, and the legacy handler are NOT touched. Mindset is best-effort: any failure leaves the L1 response byte-for-byte identical to today.
+Free-text scoring path is untouched. Evidence-ledger gating, trajectory persistence, and the response shape stay as they are today.
 
-## Files changed (only these two)
+## Files changed
 
-1. `supabase/functions/generate-challenge/index.ts` — add an isolated second Claude call + a strict local validator, attach result to the existing response.
-2. `src/pages/business/CreateXimaCoreChallenge.tsx` — capture the returned `mindset` block and spread it into the `config_json` literal at insert time.
+1. `supabase/functions/analyze-open-answer/index.ts`
+2. `src/hooks/useMindsetDraft.ts`
 
-Nothing else (no DB migration, no shared file, no new env var, no new dep, no other edge function, no client UI work).
+Nothing else.
 
-## generate-challenge — additive logic
+## 1) `supabase/functions/analyze-open-answer/index.ts`
 
-After `validateXimaCoreResult` succeeds, before each `jsonResponse(...)` return (both the Claude path AND the pattern-library short-circuit path), call a new local `generateMindsetBlock(...)` helper.
+### Body parsing
+- Add `invitation_id` to the destructured body (only used in the mindset branch).
 
-`generateMindsetBlock` reuses variables already in scope: `companyName`, `displayIndustry`, `teamCulture`, `operatingStyle`, `coreValues`, `roleTitle`, `taskDescription`, `requiredSkills`, `experienceLevel`, `workModel`, `contextTag`, `promptLang`, `langInstruction`, AND `validated.scenario` (so mindset lives in the exact same world as the scenario).
+### System prompt — mindset branch only
+Today every request uses the same prompt that asks for `score_breakdown.{relevance, depth, structure, originality}`. When `isMindset === true`, swap the rubric and the JSON contract to:
 
-Call settings via existing `callAnthropicApi`:
-- `functionName: 'generate-challenge'` (keeps Haiku routing, audit envelope, cost tracking)
-- `inputSummary: 'l1_mindset_gen:<role>:<industry>'`
-- `temperature: 0.85`, `maxTokens: 1800`
-- `correlationId` reused
+```text
+SCORING RUBRIC (each 0–100):
+- framing — how the candidate frames the situation: stakes, who's affected, what's at risk
+- execution_bias — propensity to act, decide, move; vs deliberation/avoidance
+- impact_thinking — awareness of downstream consequences and second-order effects
+- decision_quality — coherence between instincts, day reactions, and the debrief reasoning
 
-Parse with `extractJsonFromAiContent` + `JSON.parse`, then run `validateMindsetBlock`:
-- `experience === "mindset"`
-- `instinct_cards` length EXACTLY 3, each `{id, prompt, a:{label,facet}, b:{label,facet}}` non-empty; ids normalized to `c1|c2|c3`
-- `day.clock`, `day.title` non-empty strings
-- `day.gestures` length EXACTLY 4 with canonical ids `jump|delegate|wait|smooth`; emojis backfilled to `🏃 🤝 ⏳ 🕊️` if missing/wrong
-- `day.items` length EXACTLY 4, ids normalized to `d1..d4`, each `{source, body}` non-empty (body ≥ ~40 chars)
-- `guide.name` defaults to `"Aria"`; `guide.debrief_focus` must match an item id (else `"d1"`); `guide.intro`, `debrief_instruction`, `resolve_line` non-empty strings
+OVERALL = balanced read across the four (0–100). NOT a sum.
+```
 
-On ANY failure (network, AnthropicError, parse, validation): swallow, log a single warning line, return `null`. L1 response still goes out unchanged.
-
-On success: attach `mindset: <validatedBlock>` to BOTH existing response payloads:
-- `jsonResponse({ ...validated, context_tag, used_fallback: false, mindset })`
-- `jsonResponse({ ...validated, context_tag, used_fallback: false, _intelligence, mindset })`
-
-Persistence stays in the client insert (matches today's pattern — function only writes `evaluation_lens / expected_tensions / context_snapshot` to existing rows).
-
-### Mindset system prompt (Italian when promptLang=it)
-
-Anchors hard to the role world, forbids generic-office output, pins the schema, pins canonical gesture ids/emojis, asks for short human facet labels (e.g. "Propensione all'azione", "Prudente, basso rischio"), warm non-judgmental guide tone. The L1 `validated.scenario` is injected verbatim so the mindset day lives in the same world (cantiere for Geometra, reparto for Lead Engineer, etc.). Returns JSON only, exact shape requested.
-
-## CreateXimaCoreChallenge.tsx — additive merge
-
-- Add `mindset?: Record<string, unknown> | null` to the existing `GeneratedChallengeContext` interface (or capture in a local `generatedMindset` state).
-- After the `generate-challenge` invoke succeeds, save `response.mindset ?? null`.
-- In the existing insert `config_json` literal, append spread at the end:
-
-```ts
-config_json: {
-  xima_core: true,
-  questions: localizedQuestions,
-  candidate_intro: t('challenge.xima_core.candidate_intro'),
-  generated_time_estimate: generatedTimeEstimate,
-  context_tag: displayContextTag,
-  ...(generatedMindset ? generatedMindset : {}),
+JSON contract returned to Claude (mindset only):
+```json
+{
+  "framing": 0-100,
+  "execution_bias": 0-100,
+  "impact_thinking": 0-100,
+  "decision_quality": 0-100,
+  "overall": 0-100,
+  "summary": "<short, in the challenge language>",
+  "flags": ["..."],
+  "confidence": "low" | "medium" | "high",
+  "pillar_impact": { "drive": -5..5, "computational_power": -5..5, "communication": -5..5, "creativity": -5..5, "knowledge": -5..5 },
+  "pillar_reasoning": "..."
 }
 ```
 
-That naturally yields top-level `experience: "mindset"` + `instinct_cards` + `day` + `guide`, which is exactly what `ChallengeCompletion.tsx` already branches on and what the `src/components/candidate/mindset/*` components consume.
+Implementation note: keep one `callAnthropicApi` call. Build `finalSystemPrompt` as either the existing free-text prompt (today) OR a mindset-specific prompt (above + the existing pillar block + context block). The mindset addendum currently glued to the free-text prompt is removed in favor of a clean dedicated prompt.
 
-No new UI, no preview surface, no copy changes. If `generatedMindset` is null, the insert is byte-for-byte identical to today.
+### Validation (mindset branch)
+Replace the free-text validators (`score`, `reasons`, `improvement_tips`, `detected_red_flags`, `score_breakdown`) with mindset validators:
+- All four rubric keys are numbers in `[0,100]` (clamp + round).
+- `overall` is a number in `[0,100]` (clamp + round). If missing, fall back to the average of the four.
+- `summary` is a string (default `''`).
+- `flags` is `string[]` (default `[]`).
+- `confidence` is `"low" | "medium" | "high"` (default `"medium"`).
+- `pillar_impact` must contain all five keys; clamp each to `[-5,5]`.
+
+Free-text path keeps its existing validators byte-for-byte.
+
+### Post-LLM guardrails / red flags / quality label
+For mindset: skip the free-text red-flag caps (`generic`, `off_topic`, `contradiction`, `copy_paste`, `admission_of_not_knowing`, `too_short`) — they don't apply to a structured payload. `flags` flows through as-is. `finalScore = overall` for downstream logs/audit/AI-context update. `qualityLabel` derived from `overall` using the existing thresholds (kept consistent so `challenge_history_summary` math still works).
+
+### Build & persist signals (mindset only)
+After the AI call validates, build the canonical signals object:
+```ts
+const signals = {
+  framing,
+  execution_bias,
+  impact_thinking,
+  decision_quality,
+  overall,
+  summary,
+  flags,
+  confidence,
+  pillar_impact,
+  pillar_reasoning,
+  signals_version: 'v1',
+  scoring_context: 'l1_challenge',
+  format: 'mindset',
+  ai_request_id: aiRequestId,
+};
+```
+
+Then, only when `isMindset && invitation_id` is a non-empty string, write server-side with the service-role client (already used for the evidence-ledger block):
+
+```ts
+await serviceClient
+  .from('challenge_submissions')
+  .update({ signals_payload: signals })
+  .eq('invitation_id', invitation_id);
+```
+
+Wrap in try/catch — log a single warn line on failure but do not change the response. Service role bypasses RLS, so the `status='submitted'` block on the candidate's client update does not apply here.
+
+### Evidence ledger
+Stays exactly as today: gated behind `!isMindset` (no `assessment_open_responses` row for mindset).
+
+### Trajectory
+Stays exactly as today: `persistTrajectoryEvent({ source_type: 'l1_challenge', deltas: pillarImpact, ... })` runs whenever `pillarImpact` is present and `user_id` exists. Mindset already provides `pillar_impact`, so the XIMAtar continues to move.
+
+### Response shape
+Mindset branch returns the same envelope the client expects, with `signals` echoed back so the call remains harmless to consumers:
+```ts
+return jsonResponse({
+  score_total: overall,
+  quality_label: qualityLabel,
+  pillar_impact,
+  scoring_context: 'l1_challenge',
+  signals,           // echoed; client no longer writes it
+  ...(levelUpStatus ? { level_up_status: levelUpStatus } : {}),
+});
+```
+
+Free-text response is unchanged.
+
+## 2) `src/hooks/useMindsetDraft.ts`
+
+Inside the fire-and-forget block in `submit`:
+
+- Add `invitation_id: invitationId` to the `body` of `supabase.functions.invoke('analyze-open-answer', { body: ... })`.
+- **Remove** the `.then(async ({ data, error }) => { ... .update({ signals_payload: data })  })` chain entirely. Keep only the invoke as fire-and-forget (`.catch(() => {})`), since the edge function now performs the write.
+- Everything else in `submit` (submission upsert, invitation status flip, navigation to resolve screen) is unchanged. Navigation already happens regardless of the invoke result.
+
+No other callers of `analyze-open-answer` change (free-text path keeps sending `text/field/openKey/language` without `format` and hits the unchanged branch).
 
 ## Scope guarantees
 
-- L1 response shape is a strict superset (only `mindset` added) — no caller breaks.
-- Pattern-library short-circuit still wins for FREE; mindset only runs after an L1 is in hand.
-- No DB migration, no schema change, no RLS change.
-- Legacy `handleLegacyGeneration` untouched.
-- `compute-level2-signals`, `analyze-l3-frames`, `generate-l3-interview`, `generate-l2-challenge-from-job-post`, `analyze-open-answer`: untouched.
-- Mindset is best-effort: a failure NEVER blocks L1 activation.
-
-## Technical notes
-
-- Reuse `callAnthropicApi` → identical audit envelope, cost tracking, retry.
-- Same model routing as L1 (Haiku via `getModelForFunction`); no routing change.
-- Locale comes from the same `locale`/`promptLang` already resolved at the top of the handler.
-- Canonical gesture emojis (`🏃 🤝 ⏳ 🕊️`) are pinned in the prompt AND backfilled by the validator — wrong/missing emojis are normalized, not rejected.
-- No new dependencies, no new shared files, no new env vars.
+- Free-text path: identical prompt, validators, breakdown, guardrails, evidence ledger, response.
+- No DB migration. `signals_payload` column already exists on `challenge_submissions`.
+- No new env var, no new shared file, no new edge function.
+- Service-role write is bounded to the mindset branch and to a single row matched by `invitation_id`.
+- Candidate UX: resolve screen still appears immediately on submit regardless of scoring outcome.
