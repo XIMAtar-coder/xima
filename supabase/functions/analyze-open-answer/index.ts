@@ -75,7 +75,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload } = body;
+    const { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload, invitation_id } = body;
 
     const isMindset = format === 'mindset' && mindset_payload && typeof mindset_payload === 'object';
 
