@@ -12,6 +12,7 @@ import { getPillarForQuestion, getQuestionIdsByPillar, type PillarKey } from '@/
 import { useToast } from '@/hooks/use-toast';
 import { useAssessment } from '@/contexts/AssessmentContext';
 import QuestionExample from '@/components/QuestionExample';
+import { selectArchetypeFromAssessmentPillars } from '@/lib/ximatarTaxonomy';
 
 interface XimatarAssessmentProps {
   onComplete: (step: number) => void;
