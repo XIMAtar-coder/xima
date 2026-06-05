@@ -456,7 +456,51 @@ Return ONLY the JSON object.`;
       return str.replace(/[._]{2,}/g, ' ').replace(/^\s*[._]+/g, '').replace(/[._]+\s*$/g, '').replace(/\s+/g, ' ').trim();
     };
 
-    const pillarImpact = parsedResult.pillar_impact || null;
+    const rawPillar = parsedResult.pillar_impact || null;
+    const pillarImpact = rawPillar ? {
+      drive: clamp(rawPillar.drive, -5, 5),
+      computational_power: clamp(rawPillar.computational_power, -5, 5),
+      communication: clamp(rawPillar.communication, -5, 5),
+      creativity: clamp(rawPillar.creativity, -5, 5),
+      knowledge: clamp(rawPillar.knowledge, -5, 5),
+    } : null;
+
+    // ===== MINDSET: build signals and persist server-side =====
+    let mindsetSignals: any = null;
+    if (isMindset) {
+      mindsetSignals = {
+        framing: mindsetRubric.framing,
+        execution_bias: mindsetRubric.execution_bias,
+        impact_thinking: mindsetRubric.impact_thinking,
+        decision_quality: mindsetRubric.decision_quality,
+        overall: mindsetOverall,
+        summary: mindsetSummary,
+        flags: mindsetFlags,
+        confidence: mindsetConfidence,
+        pillar_impact: pillarImpact,
+        pillar_reasoning: parsedResult.pillar_reasoning || '',
+        signals_version: 'v1',
+        scoring_context: 'l1_challenge',
+        format: 'mindset',
+        ai_request_id: aiRequestId,
+      };
+
+      if (typeof invitation_id === 'string' && invitation_id.length > 0) {
+        try {
+          const serviceClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+          const { error: updErr } = await serviceClient
+            .from('challenge_submissions')
+            .update({ signals_payload: mindsetSignals })
+            .eq('invitation_id', invitation_id);
+          if (updErr) {
+            console.warn(JSON.stringify({ type: 'mindset_signals_write_failed', correlation_id: correlationId, function_name: 'analyze-open-answer', error: updErr.message }));
+          }
+        } catch (writeErr) {
+          console.warn(JSON.stringify({ type: 'mindset_signals_write_error', correlation_id: correlationId, function_name: 'analyze-open-answer', error: writeErr instanceof Error ? writeErr.message : 'Unknown' }));
+        }
+      }
+    }
+
 
     // Audit event
     emitAuditEventWithMetric({
