@@ -147,13 +147,14 @@ export function useMindsetDraft(invitationId: string) {
 
       statusRef.current = 'submitted';
 
-      // Fire-and-forget scoring; never block candidate
+      // Fire-and-forget scoring; never block candidate. Edge function persists signals_payload via service role.
       try {
         const { data: { user } } = await supabase.auth.getUser();
         supabase.functions
           .invoke('analyze-open-answer', {
             body: {
               challenge_id: challengeId,
+              invitation_id: invitationId,
               user_id: user?.id,
               language: 'it',
               scoring_context: 'l1_challenge',
@@ -164,13 +165,6 @@ export function useMindsetDraft(invitationId: string) {
                 debrief: payload.debrief,
               },
             },
-          })
-          .then(async ({ data, error }) => {
-            if (error || !data) return;
-            await supabase
-              .from('challenge_submissions')
-              .update({ signals_payload: data as any })
-              .eq('invitation_id', invitationId);
           })
           .catch(() => {});
       } catch {
