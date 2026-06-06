@@ -4667,6 +4667,33 @@
       "risks_helper": "Quali sono le maggiori incertezze?",
       "questions_label": "Domande per l'Azienda (opzionale)",
       "questions_placeholder": "Dato lo scenario, cosa vorresti chiarire prima di iniziare?"
+    },
+    "l2_conversation": {
+      "intro_kicker": "Una conversazione, non un test",
+      "intro_title": "Parli con {{name}}",
+      "counterpart_label": "Il tuo interlocutore",
+      "blind_badge": "Valutazione alla cieca",
+      "scenario_label": "La situazione",
+      "frame_line": "Non è un test con punteggio — è un confronto. Il tuo XIMAtar si affina ascoltandoti.",
+      "intro_cta": "Inizia la conversazione",
+      "thread_label": "Conversazione",
+      "with": "Con {{name}}",
+      "composer_placeholder": "Scrivi la tua risposta a {{name}}…",
+      "want_to_conclude": "Voglio concludere",
+      "send": "Invia",
+      "send_failed": "Non sono riuscito a inviare",
+      "send_failed_hint": "Riprova tra qualche secondo.",
+      "submit_failed": "Errore nell'invio finale",
+      "finish_submit": "Termina e invia",
+      "done_max": "Avete raggiunto la fine della conversazione. Quando sei pronto, invia il tutto.",
+      "done_concludi": "La conversazione si è chiusa. Quando sei pronto, invia il tutto.",
+      "resolve_kicker": "Conversazione conclusa",
+      "resolve_title": "Il tuo XIMAtar si è rafforzato",
+      "resolve_body": "Hai affrontato un confronto reale con {{name}}. Ogni risposta ha affinato sfaccettature del tuo XIMAtar.",
+      "shared_with_company": "Condiviso con l'azienda.",
+      "progress_label": "XIMAtar in fase di affinamento",
+      "progress_hint": "L2 ✓ — il prossimo livello si sblocca quando l'azienda riguarderà il tuo profilo.",
+      "back_to_profile": "Torna al profilo"
     }
   },
   "signals": {

@@ -17,6 +17,8 @@ import { getChallengeTimeInfo, ChallengeTimeStatus } from '@/utils/challengeTime
 import MainLayout from '@/components/layout/MainLayout';
 import { MindsetChallenge } from '@/components/candidate/mindset/MindsetChallenge';
 import type { MindsetConfig } from '@/components/candidate/mindset/types';
+import { L2ConversationChallenge } from '@/components/candidate/l2converse/L2ConversationChallenge';
+import type { L2ChallengeConfig } from '@/components/candidate/l2converse/types';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipelineProgress';
 import { CandidateReflectionPanel } from '@/components/signals/CandidateReflectionPanel';
@@ -790,6 +792,21 @@ export default function ChallengeCompletion() {
           invitationId={invitationId}
           challengeId={challenge.challengeId}
           config={challenge.configJson as MindsetConfig}
+        />
+      </MainLayout>
+    );
+  }
+
+  // L2 CONVERSATION BRANCH — runs only when challenge.config_json.experience === 'l2_conversation'
+  // Replaces the static "System Design con Vincoli" form with a live counterpart conversation.
+  // Old form path remains live for L2 challenges without this flag.
+  if (challenge.configJson?.experience === 'l2_conversation' && invitationId) {
+    return (
+      <MainLayout>
+        <L2ConversationChallenge
+          invitationId={invitationId}
+          challengeId={challenge.challengeId}
+          config={challenge.configJson as L2ChallengeConfig}
         />
       </MainLayout>
     );

@@ -4624,5 +4624,34 @@
     "within_3months": "En 3 meses",
     "growing_fast": "Crecimiento rápido",
     "growing": "En crecimiento"
+  },
+  "candidate": {
+    "l2_conversation": {
+      "intro_kicker": "Una conversación, no una prueba",
+      "intro_title": "Hablas con {{name}}",
+      "counterpart_label": "Tu interlocutor",
+      "blind_badge": "Evaluación a ciegas",
+      "scenario_label": "La situación",
+      "frame_line": "No es una prueba con puntaje — es una conversación. Tu XIMAtar se afina al hablar.",
+      "intro_cta": "Iniciar la conversación",
+      "thread_label": "Conversación",
+      "with": "Con {{name}}",
+      "composer_placeholder": "Escribe tu respuesta a {{name}}…",
+      "want_to_conclude": "Quiero concluir",
+      "send": "Enviar",
+      "send_failed": "No se pudo enviar",
+      "send_failed_hint": "Inténtalo de nuevo en un momento.",
+      "submit_failed": "Error al enviar",
+      "finish_submit": "Terminar y enviar",
+      "done_max": "Han llegado al final de la conversación. Envía cuando estés listo.",
+      "done_concludi": "La conversación ha terminado. Envía cuando estés listo.",
+      "resolve_kicker": "Conversación cerrada",
+      "resolve_title": "Tu XIMAtar se ha fortalecido",
+      "resolve_body": "Tuviste un intercambio real con {{name}}. Cada respuesta afinó facetas de tu XIMAtar.",
+      "shared_with_company": "Compartido con la empresa.",
+      "progress_label": "XIMAtar afinándose",
+      "progress_hint": "L2 ✓ — el siguiente nivel se desbloquea cuando la empresa revise tu perfil.",
+      "back_to_profile": "Volver al perfil"
+    }
   }
 }
