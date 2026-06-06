@@ -426,7 +426,7 @@ serve(async (req) => {
     if (body.hiring_goal_id) {
       const { data } = await supabaseAdmin
         .from('hiring_goal_drafts')
-        .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills')
+        .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills, salary_min, salary_max, salary_currency, ral_min, ral_max, ccnl')
         .eq('id', body.hiring_goal_id)
         .eq('business_id', businessId)
         .maybeSingle();
