@@ -54,6 +54,10 @@ interface HiringGoal {
   country: string | null;
   required_skills: Json | null;
   nice_to_have_skills: Json | null;
+  ral_min?: number | null;
+  ral_max?: number | null;
+  ccnl?: string | null;
+  salary_currency?: string | null;
 }
 
 interface CompanyProfile {
