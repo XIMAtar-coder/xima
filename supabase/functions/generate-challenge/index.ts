@@ -559,19 +559,34 @@ serve(async (req) => {
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } }
-    });
+    // Internal admin bypass: server-to-server call with service-role key + explicit header.
+    // Requires body.business_id. Used by the dev L2 trigger harness.
+    const bearerToken = authHeader.replace(/^Bearer\s+/i, '').trim();
+    const isServiceRoleCall =
+      bearerToken === supabaseServiceKey && req.headers.get('x-internal-admin') === '1';
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) return unauthorizedResponse('Authentication failed');
-
-    const { data: roles } = await supabase.from('user_roles').select('role').eq('user_id', user.id);
-    const hasBusiness = roles?.some(r => r.role === 'business');
-    const hasAdmin = roles?.some(r => r.role === 'admin');
-    if (!hasBusiness && !hasAdmin) return forbiddenResponse('Business role required to generate challenges');
+    let user: { id: string } | null = null;
+    if (isServiceRoleCall) {
+      console.log('[generate-challenge] service-role internal call accepted', JSON.stringify({ correlation_id: correlationId }));
+    } else {
+      const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+        global: { headers: { Authorization: authHeader } }
+      });
+      const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+      if (authError || !authUser) return unauthorizedResponse('Authentication failed');
+      const { data: roles } = await supabase.from('user_roles').select('role').eq('user_id', authUser.id);
+      const hasBusiness = roles?.some(r => r.role === 'business');
+      const hasAdmin = roles?.some(r => r.role === 'admin');
+      if (!hasBusiness && !hasAdmin) return forbiddenResponse('Business role required to generate challenges');
+      user = { id: authUser.id };
+    }
 
     const body: GenerateChallengeRequest = await req.json();
+
+    if (isServiceRoleCall && !body.business_id) {
+      return errorResponse(400, 'MISSING_BUSINESS_ID', 'business_id is required for service-role internal calls', { correlation_id: correlationId });
+    }
+    if (!user) user = { id: body.business_id! };
 
     // Legacy mode support
     if (body.mode !== 'xima_core' && body.task_description) {
