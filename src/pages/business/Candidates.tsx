@@ -53,6 +53,9 @@ const BusinessCandidates = () => {
   // Hiring goal selector for invite flow
   const [hiringGoals, setHiringGoals] = useState<{ id: string; role_title: string | null }[]>([]);
   const [selectedGoalId, setSelectedGoalId] = useState<string>('');
+  // Set of hiring_goal_ids that already have an active L1 (XIMA Core) challenge.
+  // L1 invitations must bind a goal-scoped challenge — goals not in this set show a "create challenge first" gate.
+  const [l1ReadyGoalIds, setL1ReadyGoalIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!isAuthenticated || (businessLoading === false && !isBusiness)) {
@@ -60,17 +63,26 @@ const BusinessCandidates = () => {
     }
   }, [isAuthenticated, isBusiness, businessLoading, navigate]);
 
-  // Load this business's hiring goals for the invite goal-selector
+  // Load this business's hiring goals + which ones already have an active L1 XIMA Core challenge
   useEffect(() => {
     if (!user?.id) return;
-    supabase
-      .from('hiring_goal_drafts')
-      .select('id, role_title')
-      .eq('business_id', user.id)
-      .order('updated_at', { ascending: false })
-      .then(({ data }) => {
-        setHiringGoals((data || []) as any);
-      });
+    (async () => {
+      const [{ data: goals }, { data: l1s }] = await Promise.all([
+        supabase
+          .from('hiring_goal_drafts')
+          .select('id, role_title')
+          .eq('business_id', user.id)
+          .order('updated_at', { ascending: false }),
+        supabase
+          .from('business_challenges')
+          .select('hiring_goal_id')
+          .eq('business_id', user.id)
+          .eq('level', 1)
+          .eq('status', 'active'),
+      ]);
+      setHiringGoals((goals || []) as any);
+      setL1ReadyGoalIds(new Set((l1s || []).map((r: any) => r.hiring_goal_id).filter(Boolean)));
+    })();
   }, [user?.id]);
 
   const fetchCandidates = useCallback(async () => {
