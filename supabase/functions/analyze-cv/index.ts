@@ -1004,7 +1004,7 @@ serve(async (req) => {
       type: "unhandled_error", correlation_id: correlationId, function_name: "analyze-cv",
       error: err instanceof Error ? err.message : "Unknown error",
     }));
-    if (err.statusCode && err.errorCode) return errorResponse(err.statusCode, err.errorCode, err.message);
+    if (err.statusCode && err.errorCode) return errorResponse(err.statusCode, err.errorCode, "Request failed");
     return errorResponse(500, "INTERNAL_ERROR", "Internal server error");
   }
 });
