@@ -132,17 +132,18 @@ export function L2ChatScreen({
       }
 
       // Append counterpart reply (server already persisted the full transcript).
+      const data = (result as { ok: true; data: import('@/hooks/useL2Converse').L2ConverseResponse }).data;
       const reply: TranscriptEntry = {
         role: 'counterpart',
-        text: result.data.reply,
+        text: data.reply,
         turn: sentTurnIndex,
-        ...(result.data.curveball_fired_this_turn ? { curveball: true } : {}),
-        ...(result.data.degraded ? { degraded: true } : {}),
+        ...(data.curveball_fired_this_turn ? { curveball: true } : {}),
+        ...(data.degraded ? { degraded: true } : {}),
       };
       setTranscript((cur) => [...cur, reply]);
-      setCurveballFired(result.data.curveball_fired);
-      setDone(result.data.done);
-      setReason(result.data.reason);
+      setCurveballFired(data.curveball_fired);
+      setDone(data.done);
+      setReason(data.reason);
     },
     [
       challengeId,
