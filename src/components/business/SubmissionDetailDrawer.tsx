@@ -460,11 +460,11 @@ export function SubmissionDetailDrawer({
     }
   };
 
-  const handleShortlist = () => saveReview('shortlist');
-  const handlePass = () => saveReview('pass');
+  const handleShortlist = () => { saveReview('shortlist').catch(() => {}); };
+  const handlePass = () => { saveReview('pass').catch(() => {}); };
   const handleFollowup = () => {
     if (followupMode && followupQuestion.trim()) {
-      saveReview('followup', followupQuestion.trim());
+      saveReview('followup', followupQuestion.trim()).catch(() => {});
     } else {
       setFollowupMode(true);
     }
