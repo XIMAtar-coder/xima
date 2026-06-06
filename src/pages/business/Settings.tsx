@@ -472,7 +472,11 @@ const RegenerateDnaModal = ({ onClose, pillarScores, bestFitXimatars, onSuccess 
         dna_locked_until: lockUntil.toISOString(),
       }).eq('user_id', user?.id);
 
-      sonnerToast.success(t('business.dna.regenerated', 'DNA rigenerato. Prossima rigenerazione disponibile tra 90 giorni.'));
+      if (partialScan) {
+        sonnerToast(t('business.dashboard.profile_generated_partial', 'Non siamo riusciti a leggere bene il sito — abbiamo usato i dati che hai inserito; puoi modificare il profilo.'));
+      } else {
+        sonnerToast.success(t('business.dna.regenerated', 'DNA rigenerato. Prossima rigenerazione disponibile tra 90 giorni.'));
+      }
       onSuccess();
       onClose();
     } catch (err: any) {
