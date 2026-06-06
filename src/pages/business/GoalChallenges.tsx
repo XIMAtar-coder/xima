@@ -189,13 +189,42 @@ const GoalChallenges: React.FC = () => {
               {t('business.challenges.subtitle')}
             </p>
           </div>
-          <Link to={`/business/challenges/select?goal=${goalId}`}>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              {t('business.challenges.create')}
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            {goalId === 'eab2f3b2-fd0a-4bc5-9ef4-ceab67cdbbf3' && (
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  toast({ title: 'L2 Sim', description: 'Generating…' });
+                  const { data, error } = await supabase.functions.invoke('generate-challenge', {
+                    body: {
+                      mode: 'xima_core',
+                      hiring_goal_id: 'eab2f3b2-fd0a-4bc5-9ef4-ceab67cdbbf3',
+                      challenge_id: '34abbebd-b221-40d8-b174-0f45869b995c',
+                      level: 2,
+                      force_regenerate: true,
+                    },
+                  });
+                  if (error) {
+                    console.error('[L2 sim] error', error, data);
+                    toast({ title: 'L2 Sim failed', description: error.message || JSON.stringify(data), variant: 'destructive' });
+                    return;
+                  }
+                  console.log('[L2 sim] result', data);
+                  toast({ title: 'L2 Sim generated', description: `correlation_id: ${(data as any)?.correlation_id ?? 'n/a'}` });
+                }}
+              >
+                Genera L2 Simulation (dev)
+              </Button>
+            )}
+            <Link to={`/business/challenges/select?goal=${goalId}`}>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                {t('business.challenges.create')}
+              </Button>
+            </Link>
+          </div>
         </div>
+
 
         {/* Active challenges */}
         {activeChallenges.length > 0 && (
