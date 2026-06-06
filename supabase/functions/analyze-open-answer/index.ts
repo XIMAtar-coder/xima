@@ -364,8 +364,11 @@ Return ONLY the JSON object.`;
       });
 
       aiRequestId = aiResp.requestId;
-      const jsonStr = extractJsonFromAiContent(aiResp.content);
-      const parsed = JSON.parse(jsonStr);
+      // extractJsonFromAiContent already returns the parsed JSON value (not a string).
+      const parsed = extractJsonFromAiContent(aiResp.content);
+      if (!parsed || typeof parsed !== 'object') {
+        throw new Error('AI returned non-JSON or empty content');
+      }
 
       // Validate required fields
       if (isMindset) {
