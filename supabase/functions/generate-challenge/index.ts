@@ -218,6 +218,7 @@ Mansione: ${ctx.taskDescription}
 Competenze: ${ctx.requiredSkills} · Livello: ${ctx.experienceLevel} · Modalità: ${ctx.workModel}
 
 REGOLE FONDAMENTALI:
+- VALUTAZIONE ALLA CIECA: NON menzionare MAI il nome dell'azienda committente ("${ctx.companyName}") né nomi reali di clienti, concorrenti, fornitori o partner. Usa solo descrittori generici ("un cliente importante", "un fornitore strategico", "un concorrente del settore"). Il candidato non deve poter identificare l'azienda.
 - TUTTO il contenuto deve essere SPECIFICO per questo ruolo e settore. MAI generico da ufficio. Esempio: per un Geometra in cantiere il lunedì è un VERO cantiere (ponteggi, DL, ASL, fornitori, betoniere, verbale, computo metrico), non una riunione in open space. Per un Lead Engineer automotive il lunedì parla di BMS, CAN, OEM, ISO 26262.
 - 3 instinct_cards: dilemmi di pancia, due opzioni brevi e tangibili nel mondo del ruolo.
 - Le "facet" sono etichette UMANE e CORTE (2–4 parole), es. "Propensione all'azione", "Prudente, basso rischio", "Decide d'istinto", "Cerca consenso", "Focus sul risultato", "Focus sulle persone", "Pragmatico", "Visione lunga". Mai sigle psicometriche, mai numeri.
