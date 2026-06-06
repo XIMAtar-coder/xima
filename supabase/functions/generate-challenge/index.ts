@@ -680,6 +680,141 @@ serve(async (req) => {
     const experienceLevel = goal?.experience_level || body.context?.experienceLevel || 'Non specificato';
     const workModel = goal?.work_model || 'Non specificato';
 
+    // =====================================================
+    // Stage A: L2 "Worst Tuesday" simulation spec generation
+    // Generates and persists config_json.l2_simulation on the target business_challenges row.
+    // Static L2 candidate UI is unaffected (keys off legacy template); the future L2 UI keys off
+    // config_json.experience === "l2_conversation".
+    // =====================================================
+    if (body.level === 2) {
+      if (!body.challenge_id) {
+        return errorResponse(400, 'MISSING_CHALLENGE_ID', 'challenge_id is required when level=2', { correlation_id: correlationId });
+      }
+
+      // Load existing challenge to check (1) it exists, (2) level matches, (3) skip-if-present.
+      const { data: existingChallenge, error: loadErr } = await supabaseAdmin
+        .from('business_challenges')
+        .select('id, level, config_json, hiring_goal_id')
+        .eq('id', body.challenge_id)
+        .maybeSingle();
+      if (loadErr || !existingChallenge) {
+        return errorResponse(404, 'CHALLENGE_NOT_FOUND', 'Target challenge not found', { correlation_id: correlationId });
+      }
+      if (existingChallenge.level !== 2) {
+        return errorResponse(400, 'WRONG_CHALLENGE_LEVEL', `Challenge level is ${existingChallenge.level}, expected 2`, { correlation_id: correlationId });
+      }
+      const existingCfg: Record<string, unknown> = (existingChallenge.config_json as Record<string, unknown>) || {};
+      if (!body.force_regenerate && existingCfg.l2_simulation) {
+        return jsonResponse({
+          ok: true,
+          regenerated: false,
+          experience: existingCfg.experience || null,
+          l2_simulation: existingCfg.l2_simulation,
+          correlation_id: correlationId,
+        });
+      }
+
+      // Build forbidden-terms list + sanitizer (same source as L1).
+      const forbiddenTermsL2 = [
+        businessProfile?.company_name,
+        ...(Array.isArray((businessProfile as any)?.metadata?.brand_aliases) ? (businessProfile as any).metadata.brand_aliases : []),
+      ].filter((s): s is string => typeof s === 'string' && s.trim().length >= 3);
+      const scrubL2 = buildBlindSanitizer(forbiddenTermsL2);
+
+      const niceToHaveRaw = goal?.nice_to_have_skills;
+      const niceToHave = Array.isArray(niceToHaveRaw) ? (niceToHaveRaw as unknown[]).map(String).join(', ') : 'Non specificato';
+      const growthStage = (businessProfile?.growth_stage || 'Non specificato') as string;
+      const companySize = (businessProfile?.company_size || 'Non specificato') as string;
+
+      const l2Ctx: L2GenContext = {
+        roleTitle: roleTitle || 'Non specificato',
+        displayIndustry,
+        experienceLevel,
+        workModel,
+        country: goal?.country || 'IT',
+        ralMin: (goal?.ral_min ?? goal?.salary_min) ?? null,
+        ralMax: (goal?.ral_max ?? goal?.salary_max) ?? null,
+        currency: goal?.salary_currency || 'EUR',
+        ccnl: goal?.ccnl ?? null,
+        taskDescription: typeof taskDescription === 'string' ? taskDescription : String(taskDescription ?? 'Non specificato'),
+        requiredSkills,
+        niceToHave,
+        teamCulture,
+        operatingStyle,
+        coreValues,
+        growthStage,
+        companySize,
+        correlationId,
+      };
+
+      console.log('[generate-challenge] L2 generation starting', JSON.stringify({
+        correlation_id: correlationId,
+        challenge_id: body.challenge_id,
+        hiring_goal_id: body.hiring_goal_id || existingChallenge.hiring_goal_id,
+        role: roleTitle,
+        industry: displayIndustry,
+        force_regenerate: !!body.force_regenerate,
+      }));
+
+      const rawSpec = await generateL2Simulation(l2Ctx);
+      if (!rawSpec) {
+        return errorResponse(422, 'INVALID_L2_SIMULATION', 'Generated L2 simulation was invalid. Please retry.', { correlation_id: correlationId });
+      }
+      const safeSpec = sanitizeL2Simulation(rawSpec, scrubL2, correlationId);
+
+      const l2SimulationPayload = {
+        ...safeSpec,
+        version: '1.0',
+        locale,
+        generated_at: new Date().toISOString(),
+        correlation_id: correlationId,
+      };
+
+      const nextConfig = {
+        ...existingCfg,
+        experience: 'l2_conversation',
+        l2_simulation: l2SimulationPayload,
+      };
+
+      const { error: updateErr } = await supabaseAdmin
+        .from('business_challenges')
+        .update({ config_json: nextConfig })
+        .eq('id', body.challenge_id);
+      if (updateErr) {
+        console.error('[generate-challenge] L2 persist failed', JSON.stringify({ correlation_id: correlationId, error: updateErr.message }));
+        return errorResponse(500, 'L2_PERSIST_FAILED', updateErr.message, { correlation_id: correlationId });
+      }
+
+      try {
+        emitAuditEventWithMetric({
+          actorType: 'business',
+          actorId: user.id,
+          action: 'challenge.l2_simulation_generated',
+          entityType: 'business_challenge',
+          entityId: body.challenge_id,
+          correlationId,
+          metadata: {
+            hiring_goal_id: body.hiring_goal_id || existingChallenge.hiring_goal_id,
+            role: roleTitle,
+            locale,
+            regenerated: !!existingCfg.l2_simulation,
+          },
+        }, 'l2_simulations_generated');
+      } catch (e) {
+        console.warn('[generate-challenge] L2 audit emit failed (non-blocking):', e instanceof Error ? e.message : String(e));
+      }
+
+      return jsonResponse({
+        ok: true,
+        regenerated: !!existingCfg.l2_simulation,
+        experience: 'l2_conversation',
+        l2_simulation: l2SimulationPayload,
+        correlation_id: correlationId,
+      });
+    }
+
+
+
     // Diagnostic log of context being sent to Claude (no PII beyond company name).
     console.log('[generate-challenge] Context being sent to Claude:', JSON.stringify({
       companyName,
