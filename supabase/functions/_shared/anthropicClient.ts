@@ -41,6 +41,7 @@ const MODEL_ROUTING: Record<string, string> = {
   "send-challenge-invitation":       "claude-haiku-4-5-20251001",
   "contact-sales":                   "claude-haiku-4-5-20251001",
   "analyze-cv-pdf-extract":          "claude-haiku-4-5-20251001",
+  "l2-converse":                     "claude-haiku-4-5-20251001",
 };
 
 /**

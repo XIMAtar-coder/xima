@@ -27,6 +27,8 @@ project_id = "iyckvvnecpnldrxqmzta"
     verify_jwt = true
   [functions.dev-trigger-l2]
     verify_jwt = false
+  [functions.l2-converse]
+    verify_jwt = false
   [functions.evaluate-growth-test]
     verify_jwt = false
   [functions.fetch-mentor-availability]
