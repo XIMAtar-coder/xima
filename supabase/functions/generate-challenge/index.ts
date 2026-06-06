@@ -802,7 +802,8 @@ serve(async (req) => {
       const { error: updateErr } = await supabaseAdmin
         .from('business_challenges')
         .update({ config_json: nextConfig })
-        .eq('id', body.challenge_id);
+        .eq('id', body.challenge_id)
+        .eq('level', 2);
       if (updateErr) {
         console.error('[generate-challenge] L2 persist failed', JSON.stringify({ correlation_id: correlationId, error: updateErr.message }));
         return errorResponse(500, 'L2_PERSIST_FAILED', updateErr.message, { correlation_id: correlationId });
