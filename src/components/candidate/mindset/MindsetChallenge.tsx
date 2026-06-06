@@ -127,7 +127,12 @@ export function MindsetChallenge({ invitationId, challengeId, config }: Props) {
   return (
     <div className="container max-w-3xl py-8 space-y-6">
       {step === 'intro' && (
-        <MindsetIntro guideName={guideName} intro={intro} onStart={() => setStep('instinct')} />
+        <MindsetIntro
+          guideName={guideName}
+          intro={intro}
+          introContext={config.intro_context}
+          onStart={() => setStep('instinct')}
+        />
       )}
 
       {step === 'instinct' && instinctCards.length > 0 && (
