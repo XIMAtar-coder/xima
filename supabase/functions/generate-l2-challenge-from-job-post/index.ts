@@ -291,7 +291,8 @@ Return ONLY valid JSON.`;
         generation_error: generationError,
         time_estimate_minutes: config.estimated_time_minutes,
       })
-      .eq('id', challenge_id);
+      .eq('id', challenge_id)
+      .eq('business_id', user.id);
 
     if (updateError) {
       return errorResponse(500, 'DB_ERROR', 'Failed to save challenge configuration');
