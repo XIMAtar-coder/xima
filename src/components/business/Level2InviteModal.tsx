@@ -225,9 +225,65 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
         });
       }
 
-      // First, check if an ACTIVE invitation already exists for this exact challenge
-      // Only block if the invitation is still valid (not withdrawn/expired/cancelled)
-      const { data: existingInvitation } = await supabase
+      // Submission-gated atomic upsert of the proceed_level2 review.
+      // Mirrors the trigger's Gate B: only record an advancement decision when
+      // the candidate has an L1 challenge invitation with a SUBMITTED submission.
+      // Skipping when not submitted lets Gate A reject the L2 insert below
+      // and keeps Gate A / Gate B consistent (no pre-earned advancement).
+      try {
+        const { data: l1Challenge } = await supabase
+          .from('business_challenges')
+          .select('id')
+          .eq('hiring_goal_id', hiringGoalId)
+          .eq('business_id', businessId)
+          .or('rubric->>type.eq.xima_core,rubric->>isXimaCore.eq.true,rubric->>level.eq.1')
+          .in('status', ['active', 'published'])
+          .maybeSingle();
+
+        if (l1Challenge?.id) {
+          const { data: l1Inv } = await supabase
+            .from('challenge_invitations')
+            .select('id, challenge_submissions!inner(id, status)')
+            .eq('business_id', businessId)
+            .eq('hiring_goal_id', hiringGoalId)
+            .eq('candidate_profile_id', candidateProfileId)
+            .eq('challenge_id', l1Challenge.id)
+            .eq('challenge_submissions.status', 'submitted')
+            .maybeSingle();
+
+          if (l1Inv?.id) {
+            const { error: reviewErr } = await supabase
+              .from('challenge_reviews')
+              .upsert({
+                business_id: businessId,
+                challenge_id: l1Challenge.id,
+                invitation_id: l1Inv.id,
+                candidate_profile_id: candidateProfileId,
+                decision: 'proceed_level2',
+              }, { onConflict: 'invitation_id' });
+
+            if (reviewErr) {
+              console.error('[Level2InviteModal] proceed_level2 review upsert failed:', reviewErr);
+              toast({
+                title: t('business.level2.review_failed'),
+                description: reviewErr.message,
+                variant: 'destructive',
+              });
+              return;
+            }
+            if (import.meta.env.DEV) {
+              console.log('[Level2InviteModal] proceed_level2 review upserted for invitation', l1Inv.id);
+            }
+          } else if (import.meta.env.DEV) {
+            console.log('[Level2InviteModal] No submitted L1 found — skipping review upsert; Gate A will enforce.');
+          }
+        }
+      } catch (preErr) {
+        // Non-fatal — fall through and let Gate A/B return the canonical error if applicable.
+        console.error('[Level2InviteModal] Pre-flight review upsert errored:', preErr);
+      }
+
+
         .from('challenge_invitations')
         .select('id, status, created_at')
         .eq('business_id', businessId)
