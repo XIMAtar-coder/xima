@@ -17,6 +17,10 @@ interface GenerateChallengeRequest {
   business_id?: string;
   hiring_goal_id?: string;
   challenge_id?: string;
+  /** Stage A: when 2, generate the L2 'worst Tuesday' simulation spec and persist to config_json. */
+  level?: 1 | 2;
+  /** Stage A: when true, overwrite an existing config_json.l2_simulation. */
+  force_regenerate?: boolean;
   // Legacy fields for backward compatibility
   context?: {
     companyIndustry?: string;
@@ -287,6 +291,173 @@ Restituisci SOLO JSON valido con ESATTAMENTE questa forma (nessun commento, ness
 }
 
 // =====================================================
+// L2 "Worst Tuesday" simulation spec (Stage A)
+// =====================================================
+
+const L2_STANCE_ENUM = ['antagonista', 'scettico', 'ostile', 'impaziente', 'tecnico_critico'] as const;
+const L2_PILLAR_ENUM = ['drive', 'computational_power', 'communication', 'creativity', 'knowledge'] as const;
+
+interface L2SimulationSpec {
+  scenario: string;
+  counterpart: { name: string; role: string; stance: string; opening_line: string };
+  curveball: { trigger_turn: number; event: string };
+  rubric: Array<{ criterion: string; primary_pillar: string; weight: number; description: string }>;
+}
+
+function validateL2Simulation(parsed: unknown): L2SimulationSpec | null {
+  if (!parsed || typeof parsed !== 'object') return null;
+  const p = parsed as any;
+  if (typeof p.scenario !== 'string' || p.scenario.length < 200 || p.scenario.length > 600) return null;
+
+  const c = p.counterpart;
+  if (!c || typeof c !== 'object') return null;
+  if (!nonEmptyString(c.name) || !nonEmptyString(c.role) || !nonEmptyString(c.opening_line)) return null;
+  if (!L2_STANCE_ENUM.includes(c.stance)) return null;
+  if (c.opening_line.length < 80 || c.opening_line.length > 220) return null;
+
+  const cb = p.curveball;
+  if (!cb || typeof cb !== 'object') return null;
+  if (typeof cb.trigger_turn !== 'number' || !Number.isInteger(cb.trigger_turn) || cb.trigger_turn < 3 || cb.trigger_turn > 6) return null;
+  if (!nonEmptyString(cb.event) || cb.event.length < 100 || cb.event.length > 300) return null;
+
+  if (!Array.isArray(p.rubric) || p.rubric.length < 3 || p.rubric.length > 5) return null;
+  let weightSum = 0;
+  const rubric: L2SimulationSpec['rubric'] = [];
+  for (const r of p.rubric) {
+    if (!r || typeof r !== 'object') return null;
+    if (!nonEmptyString(r.criterion) || !nonEmptyString(r.description)) return null;
+    if (!L2_PILLAR_ENUM.includes(r.primary_pillar)) return null;
+    if (typeof r.weight !== 'number' || !Number.isInteger(r.weight) || r.weight <= 0) return null;
+    weightSum += r.weight;
+    rubric.push({
+      criterion: String(r.criterion).trim(),
+      primary_pillar: String(r.primary_pillar),
+      weight: r.weight,
+      description: String(r.description).trim(),
+    });
+  }
+  if (weightSum !== 100) return null;
+
+  return {
+    scenario: String(p.scenario).trim(),
+    counterpart: {
+      name: String(c.name).trim(),
+      role: String(c.role).trim(),
+      stance: String(c.stance),
+      opening_line: String(c.opening_line).trim(),
+    },
+    curveball: { trigger_turn: cb.trigger_turn, event: String(cb.event).trim() },
+    rubric,
+  };
+}
+
+function sanitizeL2Simulation(spec: L2SimulationSpec, scrub: (s: string) => string, correlationId: string): L2SimulationSpec {
+  let hits = 0;
+  const count = (orig: string, next: string) => { if (orig !== next) hits++; return next; };
+  const out: L2SimulationSpec = JSON.parse(JSON.stringify(spec));
+  out.scenario = count(out.scenario, scrub(out.scenario));
+  out.counterpart.role = count(out.counterpart.role, scrub(out.counterpart.role));
+  out.counterpart.opening_line = count(out.counterpart.opening_line, scrub(out.counterpart.opening_line));
+  out.curveball.event = count(out.curveball.event, scrub(out.curveball.event));
+  for (const r of out.rubric) {
+    r.criterion = count(r.criterion, scrub(r.criterion));
+    r.description = count(r.description, scrub(r.description));
+  }
+  if (hits > 0) {
+    console.warn('[generate-challenge] l2 blind-scope sanitizer redacted strings', JSON.stringify({ correlation_id: correlationId, hits }));
+  }
+  return out;
+}
+
+interface L2GenContext {
+  roleTitle: string;
+  displayIndustry: string;
+  experienceLevel: string;
+  workModel: string;
+  country: string;
+  ralMin: number | null;
+  ralMax: number | null;
+  currency: string;
+  ccnl: string | null;
+  taskDescription: string;
+  requiredSkills: string;
+  niceToHave: string;
+  teamCulture: string;
+  operatingStyle: string;
+  coreValues: string;
+  growthStage: string;
+  companySize: string;
+  correlationId: string;
+}
+
+function buildL2SystemPrompt(ctx: L2GenContext): string {
+  return `Sei un casting director di simulazioni B2B realistiche. Devi generare il "Martedì peggiore" per il ruolo qui sotto: una scena adversariale in cui il candidato dovrà gestire una conversazione difficile con UN solo interlocutore ostile o critico, nello stesso mondo del ruolo (settore, normative, strumenti, attori reali del mestiere).
+
+CONTESTO RUOLO: ${ctx.roleTitle} — ${ctx.displayIndustry}
+Livello: ${ctx.experienceLevel} · Modalità: ${ctx.workModel} · Paese: ${ctx.country}
+RAL indicativa: ${ctx.ralMin ?? 'n/d'}-${ctx.ralMax ?? 'n/d'} ${ctx.currency} · CCNL: ${ctx.ccnl ?? 'n/d'}
+Mansione: ${ctx.taskDescription}
+Competenze richieste: ${ctx.requiredSkills}
+Nice-to-have: ${ctx.niceToHave}
+
+CONTESTO AZIENDA (per tono, NON da nominare):
+Cultura: ${ctx.teamCulture} · Stile operativo: ${ctx.operatingStyle} · Valori: ${ctx.coreValues}
+Fase: ${ctx.growthStage} · Dimensione: ${ctx.companySize}
+
+REGOLE FONDAMENTALI:
+- VALUTAZIONE ALLA CIECA: NON menzionare MAI il nome dell'azienda committente né nomi reali di clienti, concorrenti, fornitori, partner o brand. Usa descrittori generici ("il principale fornitore", "un cliente strategico nel Nord Italia", "il responsabile della commessa"). Il candidato non deve poter identificare l'azienda.
+- La scena è di MARTEDÌ — non lunedì. È il giorno in cui le cose che sembravano gestibili lunedì esplodono. Tono concreto, niente retorica HR, niente "leadership generica".
+- Lo scenario DEVE essere SPECIFICO per questo ruolo. Per un Geometra di cantiere parla di ponteggi, POS/PSC, DL, ASL, computi, betoniere, verbali. Per un Production Planner parla di MRP, lead time, fornitori critici, MOQ, stockout, OEE. Mai "kickoff meeting" generico.
+- counterpart: UN SOLO interlocutore, con nome di battesimo plausibile italiano (mai cognome, mai brand). Ruolo concreto e settoriale. stance ∈ {antagonista, scettico, ostile, impaziente, tecnico_critico}. opening_line: la prima battuta che dice al candidato, in carattere, 80–220 caratteri, in italiano parlato realistico.
+- curveball: un evento che peggiora le cose al turno trigger_turn (intero 3–6). Deve essere un fatto concreto del settore (un ispettore arriva in anticipo, un ordine raddoppia, un componente critico è fuori stock, un cliente cancella). NON una "lezione di vita".
+- rubric: 3–5 criteri, ciascuno derivato 1:1 da una competenza richiesta dal goal (required_skills / task_description). Ogni criterio mappa a UN pillar tra: drive, computational_power, communication, creativity, knowledge. Pesi interi che sommano a ESATTAMENTE 100. description: cosa significa "fatto bene" IN QUESTA scena specifica, non in astratto.
+- Scenario: 200–600 caratteri. opening_line: 80–220 caratteri. curveball.event: 100–300 caratteri.
+- Lingua: Italiano. JSON keys in inglese.
+
+Restituisci SOLO JSON valido con ESATTAMENTE questa forma (nessun commento, nessun testo extra):
+{
+  "scenario": "…",
+  "counterpart": {"name":"…","role":"…","stance":"…","opening_line":"…"},
+  "curveball": {"trigger_turn": 4, "event":"…"},
+  "rubric": [
+    {"criterion":"…","primary_pillar":"…","weight": 25, "description":"…"}
+  ]
+}`;
+}
+
+async function generateL2Simulation(ctx: L2GenContext): Promise<L2SimulationSpec | null> {
+  const systemPrompt = buildL2SystemPrompt(ctx);
+  const userPrompt = `Genera il "Martedì peggiore" per ${ctx.roleTitle} (${ctx.displayIndustry}). Rispondi SOLO con il JSON.`;
+  try {
+    const model = getModelForFunction('generate-challenge');
+    const resp = await callAnthropicApi({
+      system: systemPrompt,
+      userMessage: userPrompt,
+      correlationId: ctx.correlationId,
+      functionName: 'generate-challenge',
+      model,
+      inputSummary: `l2_simulation_gen:role=${ctx.roleTitle.slice(0, 40)}`,
+      temperature: 0.8,
+      maxTokens: 2200,
+    });
+    const jsonStr = extractJsonFromAiContent(resp.content);
+    const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
+    const validated = validateL2Simulation(parsed);
+    if (!validated) {
+      console.warn('[generate-challenge] l2 simulation failed validation', JSON.stringify({
+        correlation_id: ctx.correlationId,
+        preview: typeof parsed === 'object' ? JSON.stringify(parsed).slice(0, 300) : String(parsed).slice(0, 300),
+      }));
+      return null;
+    }
+    return validated;
+  } catch (e) {
+    console.error('[generate-challenge] l2 simulation generation failed:', e instanceof Error ? e.message : String(e));
+    return null;
+  }
+}
+
+// =====================================================
 // PART 5 — Blind-scope sanitizer.
 // Strips company name / known aliases / third-party names from candidate-facing strings.
 // Business-side payloads keep the unredacted scenario.
@@ -508,6 +679,141 @@ serve(async (req) => {
     const requiredSkills = Array.isArray(requiredSkillsRaw) ? (requiredSkillsRaw as unknown[]).map(String).join(', ') : 'Non specificato';
     const experienceLevel = goal?.experience_level || body.context?.experienceLevel || 'Non specificato';
     const workModel = goal?.work_model || 'Non specificato';
+
+    // =====================================================
+    // Stage A: L2 "Worst Tuesday" simulation spec generation
+    // Generates and persists config_json.l2_simulation on the target business_challenges row.
+    // Static L2 candidate UI is unaffected (keys off legacy template); the future L2 UI keys off
+    // config_json.experience === "l2_conversation".
+    // =====================================================
+    if (body.level === 2) {
+      if (!body.challenge_id) {
+        return errorResponse(400, 'MISSING_CHALLENGE_ID', 'challenge_id is required when level=2', { correlation_id: correlationId });
+      }
+
+      // Load existing challenge to check (1) it exists, (2) level matches, (3) skip-if-present.
+      const { data: existingChallenge, error: loadErr } = await supabaseAdmin
+        .from('business_challenges')
+        .select('id, level, config_json, hiring_goal_id')
+        .eq('id', body.challenge_id)
+        .maybeSingle();
+      if (loadErr || !existingChallenge) {
+        return errorResponse(404, 'CHALLENGE_NOT_FOUND', 'Target challenge not found', { correlation_id: correlationId });
+      }
+      if (existingChallenge.level !== 2) {
+        return errorResponse(400, 'WRONG_CHALLENGE_LEVEL', `Challenge level is ${existingChallenge.level}, expected 2`, { correlation_id: correlationId });
+      }
+      const existingCfg: Record<string, unknown> = (existingChallenge.config_json as Record<string, unknown>) || {};
+      if (!body.force_regenerate && existingCfg.l2_simulation) {
+        return jsonResponse({
+          ok: true,
+          regenerated: false,
+          experience: existingCfg.experience || null,
+          l2_simulation: existingCfg.l2_simulation,
+          correlation_id: correlationId,
+        });
+      }
+
+      // Build forbidden-terms list + sanitizer (same source as L1).
+      const forbiddenTermsL2 = [
+        businessProfile?.company_name,
+        ...(Array.isArray((businessProfile as any)?.metadata?.brand_aliases) ? (businessProfile as any).metadata.brand_aliases : []),
+      ].filter((s): s is string => typeof s === 'string' && s.trim().length >= 3);
+      const scrubL2 = buildBlindSanitizer(forbiddenTermsL2);
+
+      const niceToHaveRaw = goal?.nice_to_have_skills;
+      const niceToHave = Array.isArray(niceToHaveRaw) ? (niceToHaveRaw as unknown[]).map(String).join(', ') : 'Non specificato';
+      const growthStage = (businessProfile?.growth_stage || 'Non specificato') as string;
+      const companySize = (businessProfile?.company_size || 'Non specificato') as string;
+
+      const l2Ctx: L2GenContext = {
+        roleTitle: roleTitle || 'Non specificato',
+        displayIndustry,
+        experienceLevel,
+        workModel,
+        country: goal?.country || 'IT',
+        ralMin: (goal?.ral_min ?? goal?.salary_min) ?? null,
+        ralMax: (goal?.ral_max ?? goal?.salary_max) ?? null,
+        currency: goal?.salary_currency || 'EUR',
+        ccnl: goal?.ccnl ?? null,
+        taskDescription: typeof taskDescription === 'string' ? taskDescription : String(taskDescription ?? 'Non specificato'),
+        requiredSkills,
+        niceToHave,
+        teamCulture,
+        operatingStyle,
+        coreValues,
+        growthStage,
+        companySize,
+        correlationId,
+      };
+
+      console.log('[generate-challenge] L2 generation starting', JSON.stringify({
+        correlation_id: correlationId,
+        challenge_id: body.challenge_id,
+        hiring_goal_id: body.hiring_goal_id || existingChallenge.hiring_goal_id,
+        role: roleTitle,
+        industry: displayIndustry,
+        force_regenerate: !!body.force_regenerate,
+      }));
+
+      const rawSpec = await generateL2Simulation(l2Ctx);
+      if (!rawSpec) {
+        return errorResponse(422, 'INVALID_L2_SIMULATION', 'Generated L2 simulation was invalid. Please retry.', { correlation_id: correlationId });
+      }
+      const safeSpec = sanitizeL2Simulation(rawSpec, scrubL2, correlationId);
+
+      const l2SimulationPayload = {
+        ...safeSpec,
+        version: '1.0',
+        locale,
+        generated_at: new Date().toISOString(),
+        correlation_id: correlationId,
+      };
+
+      const nextConfig = {
+        ...existingCfg,
+        experience: 'l2_conversation',
+        l2_simulation: l2SimulationPayload,
+      };
+
+      const { error: updateErr } = await supabaseAdmin
+        .from('business_challenges')
+        .update({ config_json: nextConfig })
+        .eq('id', body.challenge_id);
+      if (updateErr) {
+        console.error('[generate-challenge] L2 persist failed', JSON.stringify({ correlation_id: correlationId, error: updateErr.message }));
+        return errorResponse(500, 'L2_PERSIST_FAILED', updateErr.message, { correlation_id: correlationId });
+      }
+
+      try {
+        emitAuditEventWithMetric({
+          actorType: 'business',
+          actorId: user.id,
+          action: 'challenge.l2_simulation_generated',
+          entityType: 'business_challenge',
+          entityId: body.challenge_id,
+          correlationId,
+          metadata: {
+            hiring_goal_id: body.hiring_goal_id || existingChallenge.hiring_goal_id,
+            role: roleTitle,
+            locale,
+            regenerated: !!existingCfg.l2_simulation,
+          },
+        }, 'l2_simulations_generated');
+      } catch (e) {
+        console.warn('[generate-challenge] L2 audit emit failed (non-blocking):', e instanceof Error ? e.message : String(e));
+      }
+
+      return jsonResponse({
+        ok: true,
+        regenerated: !!existingCfg.l2_simulation,
+        experience: 'l2_conversation',
+        l2_simulation: l2SimulationPayload,
+        correlation_id: correlationId,
+      });
+    }
+
+
 
     // Diagnostic log of context being sent to Claude (no PII beyond company name).
     console.log('[generate-challenge] Context being sent to Claude:', JSON.stringify({
