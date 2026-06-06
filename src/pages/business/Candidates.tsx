@@ -200,9 +200,15 @@ const BusinessCandidates = () => {
             className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
           >
             <option value="">{t('candidate_pool.select_goal', 'Select a hiring goal…')}</option>
-            {hiringGoals.map((g) => (
-              <option key={g.id} value={g.id}>{g.role_title || t('business.goals.untitled', 'Untitled role')}</option>
-            ))}
+            {hiringGoals.map((g) => {
+              const ready = l1ReadyGoalIds.has(g.id);
+              const title = g.role_title || t('business.goals.untitled', 'Untitled role');
+              return (
+                <option key={g.id} value={g.id}>
+                  {ready ? title : `${title} — ${t('candidate_pool.no_l1_tag', 'crea sfida XIMA Core')}`}
+                </option>
+              );
+            })}
           </select>
           {hiringGoals.length === 0 && (
             <Button size="sm" variant="outline" onClick={() => navigate('/business/hiring-goals/new')}>
