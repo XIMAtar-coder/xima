@@ -818,6 +818,44 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
         </div>
       </div>
 
+      {/* PART 1 — Trasparenza retributiva (D.Lgs. 96/2026, in vigore dal 7 giugno 2026) */}
+      <div className="pt-2">
+        <label className="text-sm font-medium text-foreground mb-2 block">
+          Trasparenza retributiva — RAL e CCNL <span className="text-destructive">*</span>
+        </label>
+        <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-center mb-2">
+          <Input
+            type="number"
+            min={0}
+            step={1000}
+            value={formData.ral_min || ''}
+            onChange={(e) => updateField('ral_min', Number(e.target.value))}
+            placeholder="RAL min (€/anno)"
+          />
+          <span className="text-muted-foreground">—</span>
+          <Input
+            type="number"
+            min={0}
+            step={1000}
+            value={formData.ral_max || ''}
+            onChange={(e) => updateField('ral_max', Number(e.target.value))}
+            placeholder="RAL max (€/anno)"
+          />
+        </div>
+        <select
+          value={formData.ccnl}
+          onChange={(e) => updateField('ccnl', e.target.value)}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none"
+        >
+          <option value="">— Seleziona CCNL —</option>
+          {CCNL_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+        <p className="text-xs text-muted-foreground mt-2">{CCNL_HELPER_IT}</p>
+      </div>
+
+
       {/* Review */}
       <div className="pt-6 border-t">
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">{t('hiring_goal.review_title', 'Riepilogo')}</p>
