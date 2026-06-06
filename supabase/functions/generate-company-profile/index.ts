@@ -88,12 +88,35 @@ interface PageResult {
   pageType: string;
 }
 
+function extractMetaPrefix(html: string): string {
+  const parts: string[] = [];
+  const pick = (re: RegExp, label: string) => {
+    const m = html.match(re);
+    if (m && m[1]) {
+      const v = m[1].replace(/\s+/g, " ").trim();
+      if (v) parts.push(`${label}: ${v}`);
+    }
+  };
+  pick(/<title[^>]*>([^<]+)<\/title>/i, "TITLE");
+  pick(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i, "DESCRIPTION");
+  pick(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i, "DESCRIPTION");
+  pick(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i, "OG_TITLE");
+  pick(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i, "OG_TITLE");
+  pick(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i, "OG_DESCRIPTION");
+  pick(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:description["']/i, "OG_DESCRIPTION");
+  return parts.join("\n");
+}
+
 async function fetchPage(url: string, maxChars = 8000): Promise<PageResult> {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
     const response = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; XIMABot/1.0)" },
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "it,en;q=0.8",
+      },
       signal: controller.signal,
       redirect: "follow",
     });
@@ -102,7 +125,10 @@ async function fetchPage(url: string, maxChars = 8000): Promise<PageResult> {
     if (!response.ok) return { url, text: '', rawHtml: '', pageType: identifyPageType(url) };
 
     const html = await response.text();
-    const text = stripHtmlToText(html).substring(0, maxChars);
+    const metaPrefix = extractMetaPrefix(html);
+    const body = stripHtmlToText(html);
+    const combined = (metaPrefix ? metaPrefix + "\n\n" : "") + body;
+    const text = combined.substring(0, maxChars);
     return { url, text, rawHtml: html, pageType: identifyPageType(url) };
   } catch (_e) {
     console.warn(`[generate-company-profile] Failed to fetch ${url}`);
@@ -117,7 +143,7 @@ async function fetchAllPages(website: string): Promise<PageResult[]> {
 
   // Step 1: Fetch homepage
   const homepage = await fetchPage(baseUrl);
-  if (homepage.text.length < 100) return homepage.text.length > 0 ? [homepage] : [];
+  if (homepage.text.length < 40) return homepage.text.length > 0 ? [homepage] : [];
 
   // Step 2: Discover key pages from homepage links
   const keyPageUrls = discoverKeyPages(baseUrl, homepage.rawHtml);
@@ -127,7 +153,7 @@ async function fetchAllPages(website: string): Promise<PageResult[]> {
     keyPageUrls.map(url => fetchPage(url))
   );
 
-  const allPages = [homepage, ...additionalPages].filter(p => p.text.length > 100);
+  const allPages = [homepage, ...additionalPages].filter(p => p.text.length > 40);
   console.log(`[generate-company-profile] Scanned ${allPages.length} pages: ${allPages.map(p => p.pageType).join(', ')}`);
   return allPages;
 }
@@ -406,14 +432,19 @@ Deno.serve(async (req) => {
 
     // ===== Multi-page scanning =====
     const pages = await fetchAllPages(website);
-    if (pages.length === 0 || pages.every(p => p.text.length < 100)) {
+    const hasUsableText = pages.some(p => p.text.length > 0);
+    const hasRegistrationContext = registrationContext.length > 0;
+    const hasName = !!company_name;
+    const websiteScanStatus: 'ok' | 'insufficient' = hasUsableText ? 'ok' : 'insufficient';
+
+    if (!hasUsableText && !hasRegistrationContext && !hasName) {
       return errorResponse(400, "INSUFFICIENT_CONTENT", "Could not extract enough content from the website. Please check the URL.");
     }
 
     const pageTypes = pages.map(p => p.pageType);
-    const pagesContext = pages.map(p =>
-      `=== ${p.pageType.toUpperCase()} PAGE (${p.url}) ===\n${p.text}`
-    ).join('\n\n');
+    const pagesContext = pages.length > 0
+      ? pages.map(p => `=== ${p.pageType.toUpperCase()} PAGE (${p.url}) ===\n${p.text}`).join('\n\n')
+      : "(Website content was limited or unavailable.)";
 
     // ===== Claude call =====
     const langOverride: Record<string, string> = {
@@ -422,8 +453,11 @@ Deno.serve(async (req) => {
       fr: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in FRENCH.`,
       de: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in GERMAN.`,
     };
+    const degradedNote = websiteScanStatus === 'insufficient'
+      ? `\n\nNOTE: Website content was limited or unavailable. Base the profile primarily on the self-declared registration data above. Be conservative; do not invent specifics, employee counts, founding year, locations, or values that are not explicitly stated.`
+      : '';
     const systemPrompt = buildCompanyProfilePrompt(pageTypes);
-    const userMessage = `Analyze this company's website content and create their XIMA psychometric profile.\n\nCompany name: ${company_name}\nWebsite: ${website}${registrationContext}${langOverride[userLang] || ''}\n\n${pagesContext}`;
+    const userMessage = `Analyze this company's website content and create their XIMA psychometric profile.\n\nCompany name: ${company_name}\nWebsite: ${website}${registrationContext}${langOverride[userLang] || ''}${degradedNote}\n\n${pagesContext}`;
 
     const result = await callAnthropicApi({
       system: systemPrompt,
@@ -507,6 +541,7 @@ Deno.serve(async (req) => {
         pages_scanned: pagesScanned,
         open_positions_found: validated.open_positions,
         last_scan_at: new Date().toISOString(),
+        website_scan_status: websiteScanStatus,
         updated_at: new Date().toISOString(),
       }, { onConflict: "company_id" })
       .select()
@@ -584,6 +619,7 @@ Deno.serve(async (req) => {
       profile: data,
       pages_scanned: pagesScanned.length,
       open_positions_found: validated.open_positions.length,
+      website_scan_status: websiteScanStatus,
     });
   } catch (e) {
     if (e instanceof AnthropicError) {

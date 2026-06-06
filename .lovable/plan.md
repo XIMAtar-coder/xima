@@ -1,159 +1,78 @@
-# Six-part plan — pay transparency, mindset UX, audio, blind scope, controlled L1 nudge
+# Plan — Resilient Company-Profile Generation
 
-Mirroring `xima-candidate-journey.html` and `xima-business-create.html`. All DB changes ship as Supabase migrations. `transcribe-audio` and `aria-speak` are pre-existing — only called via `supabase.functions.invoke`, never (re)deployed.
+Scope: `supabase/functions/generate-company-profile/index.ts` + one column migration + the three UI call sites that handle its response. No other functions or flows touched.
 
----
+## Files to touch
 
-## PART 1 — RAL range + CCNL on the hiring goal
+1. `supabase/functions/generate-company-profile/index.ts` — UA, meta capture, graceful degrade.
+2. New migration `supabase/migrations/<ts>_company_profiles_scan_status.sql` — add `website_scan_status` column.
+3. `src/pages/business/Dashboard.tsx` — treat degraded success as success, show gentle inline note.
+4. `src/pages/business/Register.tsx` — same handling (already calls the function during onboarding).
+5. `src/pages/business/Settings.tsx` — same handling.
+6. `src/i18n/locales/*` — 1 new string ("website scan insufficient" note), IT/EN/ES.
 
-### Migration
-Add to `public.hiring_goal_drafts` (the business-side hiring-goal table; `salary_min/max/period/currency` already live there):
+No edits to other edge functions, challenge flow, mindset, scoring, RLS, types, or shared modules.
+
+## Edge function changes (additive only)
+
+### a) Realistic headers in `fetchPage` (line 91-111)
+Replace the `XIMABot` UA. New `headers`:
+- `User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36`
+- `Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8`
+- `Accept-Language: it,en;q=0.8`
+
+Keep 10s `AbortController` timeout and `redirect: "follow"` unchanged.
+
+### b) Capture meta before stripping (new helper used inside `fetchPage`)
+Before `stripHtmlToText(html)`, extract from raw HTML via small regexes:
+- `<title>…</title>`
+- `<meta name="description" content="…">`
+- `<meta property="og:title" content="…">`
+- `<meta property="og:description" content="…">`
+
+Build a `metaPrefix` string (each on its own line, labeled `TITLE:`, `DESCRIPTION:`, `OG_TITLE:`, `OG_DESCRIPTION:`) and PREPEND it to the page `text` before the `substring(0, maxChars)` truncation. This keeps Fiocchi-style JS shells viable because the only prose lives in meta.
+
+Also relax the `fetchAllPages` length gate (line 120 / 130) from `< 100` to `< 40` so a meta-only page still counts.
+
+### c) Graceful degrade — replace the 400 (line 408-411)
+Compute `hasUsableText = pages.some(p => p.text.length > 0)`. Compute `hasRegistrationContext = registrationContext.length > 0`. Compute `hasName = !!company_name`.
+
+Branching:
+- If `!hasUsableText && !hasRegistrationContext && !hasName` → keep a `400 INSUFFICIENT_CONTENT` (genuinely nothing).
+- Otherwise → set `websiteScanStatus = hasUsableText ? 'ok' : 'insufficient'` and PROCEED to Claude.
+  - If `pages` is empty/thin, set `pagesContext = "(Website content was limited or unavailable.)"` and append a clear instruction line to `userMessage`:
+    > "Website content was limited or unavailable. Base the profile primarily on the self-declared registration data above. Be conservative; do not invent specifics, employee counts, founding year, locations, or values that are not explicitly stated."
+  - Pass whatever pages we do have plus `registrationContext` as today.
+
+### d) Persist scan status
+Add `website_scan_status: websiteScanStatus` to the `company_profiles` upsert (line 492-511). Always 200 in the degrade path. The function already returns the stored row — keep that contract.
+
+## Migration
 
 ```sql
-ALTER TABLE public.hiring_goal_drafts
-  ADD COLUMN ral_min integer,
-  ADD COLUMN ral_max integer,
-  ADD COLUMN ccnl text;
-
--- Validation trigger (not a CHECK — keeps it editable later):
--- ral_min ≤ ral_max when both set, both ≥ 0.
+ALTER TABLE public.company_profiles
+  ADD COLUMN IF NOT EXISTS website_scan_status text
+  CHECK (website_scan_status IN ('ok','insufficient','failed'))
+  DEFAULT 'ok';
 ```
 
-Also add `ral_min`, `ral_max`, `ccnl` to `public.job_posts` so the candidate-facing job render and the mindset intro (Part 3) can read them without joining drafts. Backfill: leave NULL.
+No RLS or grant changes (column on existing table).
 
-No grants/policies change — existing ones cover the new columns.
+## UI changes
 
-### Business form (`src/pages/business/HiringGoalCreate.tsx` + the create-challenge surface in Part 2)
-- New "Trasparenza retributiva" group with three inputs:
-  - `RAL minima` (€/anno, integer)
-  - `RAL massima` (€/anno, integer)
-  - `CCNL` select — options seeded from a static constant `CCNL_OPTIONS` in `src/lib/business/ccnl.ts`: Commercio e Terziario, Dirigenti Industria, Metalmeccanico Industria, Metalmeccanico Artigianato, Edilizia Industria, Studi Professionali, Pubblici Esercizi/Turismo, Trasporti e Logistica, Chimico-Farmaceutico, Credito (ABI), Assicurazioni (ANIA), Telecomunicazioni, Sanità Privata, Altro (free text).
-  - Helper microcopy: "Obbligatorio dal 7 giugno 2026 (D.Lgs. 96/2026 — Direttiva UE 2023/970 sulla trasparenza retributiva)."
-- Wired into the existing draft-save mutation; on goal activation we copy the three fields onto the linked `job_posts` row.
+In all three call sites (Dashboard, Register, Settings):
+- Treat a 200 response as success even when `data.website_scan_status === 'insufficient'`.
+- When insufficient, replace the red error toast with a neutral inline note / non-destructive toast:
+  > "Non siamo riusciti a leggere bene il sito — abbiamo usato i dati che hai inserito; puoi modificare il profilo."
+- Keep red error banner only for actual `error` from `functions.invoke` or a non-2xx response.
 
-### Guardrail (cross-cutting)
-- Audit every candidate-facing form/profile field for "current/previous salary" prompts; remove or hide. Concretely: `src/pages/Profile.tsx`, candidate onboarding, `candidate_job_preferences` UI (the existing private `salary_expectation` stays — that's the candidate's own ASK, allowed; **never** ask for past/current compensation).
-- Add a lint-style comment + a unit/runtime invariant in the relevant form components so future fields don't reintroduce it.
+Implementation detail: `Dashboard.tsx` already destructures `data`; check `data?.website_scan_status` after success and branch the toast variant. Same shape in `Register.tsx` and `Settings.tsx`. Add an i18n key `business.dashboard.profile_generated_partial` (IT/EN/ES).
 
----
+## Out of scope (explicitly not changed)
+- `generate-challenge`, `analyze-open-answer`, mindset flow, scoring, RLS, shared AI client, business_profiles snapshot logic, job_post_drafts insertion.
+- No retries, no headless rendering, no third-party scraping service.
 
-## PART 2 — Business "Create XIMA Core Challenge" page
-
-File: `src/pages/business/CreateXimaCoreChallenge.tsx` (existing). Restructure to match `xima-business-create.html`.
-
-- **Remove** the "5 fixed questions" preview block from the *candidate-facing framing* section.
-- **Replace** with "L'esperienza del candidato" — a 4-step horizontal stepper:
-  1. Istinto — carte rapide, scelta di pancia
-  2. La giornata — micro-decisioni durante una giornata simulata
-  3. Debrief con Aria — riflessione guidata
-  4. Esito — sfaccettature accese, niente punteggi visibili
-  Keep the existing wording: "standardizzato · confronto equo".
-- **New "Cosa misura" panel**: two columns.
-  - Sinistra — i 5 pilastri: Drive, Potenza computazionale, Comunicazione, Creatività, Conoscenza (with one-line definitions sourced from `mem://logic/pillar-definitions`).
-  - Destra — i 5 tipi di signal (framing, decision quality, execution bias, impact thinking, collaboration/communication) from `src/lib/signals/qualitativeSignals.ts`.
-- **New "Valutazione alla cieca" panel**: selling-point card explaining that the candidate never sees the company name in L1/L2 — only role + sector descriptor. Reinforces fairness.
-- **New "Trasparenza retributiva" block**: shows RAL min–max + CCNL pulled from Part 1 (read-only mirror of what the business set on the hiring goal; with a "Modifica" link back to the goal settings).
-- **"Anteprima candidato" button**: route to a preview that renders the actual `MindsetChallenge` flow (Intro → Instinct → Day → Debrief → Resolve) with a sandbox `invitationId` flag so submissions aren't persisted — not the deprecated 5-question Q&A preview.
-
-No DB change here beyond Part 1.
-
----
-
-## PART 3 — Candidate mindset intro screen with Aria's context
-
-File: `src/components/candidate/mindset/MindsetIntro.tsx` (existing) — extend; add a new step before `'instinct'` in `MindsetChallenge.tsx` (the current `'intro'` step already exists — we enrich it, no flow change).
-
-Intro content blocks (Italian copy, all required):
-1. **Aria's greeting** — existing `guideName` + `intro`. Keep "non ci sono risposte giuste" framing.
-2. **Contesto azienda (senza identità)**: sector/nature + one-line descriptor — e.g. "Un'azienda del settore logistica, mid-size, in fase di scale-up." **Never the company name.**
-3. **L'obiettivo**: role title + 1–2 line "cosa cercano" summary.
-4. **Trasparenza retributiva**: "RAL €X.000 – €Y.000 · CCNL <name>" pulled from the job post.
-5. **Crescita (qualitativa)**: "Completare questa sfida rafforza il tuo XIMAtar e rende il tuo profilo più rilevante per le aziende." — **never a number, never a level-up promise**.
-6. Primary CTA `Inizia` → existing `setStep('instinct')`.
-
-### Data source
-Add `intro_context` to the mindset config payload, generated by `generate-challenge` alongside the existing mindset content, shape:
-
-```ts
-intro_context: {
-  company_descriptor: string;   // sector + one-line, NO company name (Part 5 enforces)
-  role_title: string;
-  role_summary: string;         // 1–2 lines, what they look for
-  compensation: { ral_min: number|null; ral_max: number|null; ccnl: string|null; currency: 'EUR' };
-  growth_line: string;          // qualitative only
-}
-```
-
-Compose client-side as fallback when the generator hasn't filled it (read role/comp from the linked `job_posts` row via the existing invitation→challenge→job_post chain).
-
-Strings stored in IT (locale will follow `candidate.locale` later if needed; no i18n key change in this round).
-
----
-
-## PART 4 — Audio (call existing edge functions)
-
-No edge function changes; only client wiring.
-
-### A) Spoken answers
-New reusable component `src/components/candidate/audio/VoiceDictateButton.tsx`:
-- Toggles `MediaRecorder` (`audio/webm`).
-- On stop → base64-encode the Blob → `supabase.functions.invoke('transcribe-audio', { body: { audio, mimeType: 'audio/webm', language: 'it' } })`.
-- Receives `{ text }` → appends to the bound textarea (`existing + ' ' + text` when non-empty, else `text`); typing remains free.
-- Privacy line under the button: "L'audio viene trascritto e poi eliminato — conserviamo solo le parole."
-- Never persists the blob; URL.revokeObjectURL on any preview.
-- Mount in: `GuideDebrief.tsx` textarea(s), and any L2 open-answer field (`src/pages/candidate/ChallengeCompletion.tsx` open-text inputs).
-
-### B) Aria's voice ("Ascolta")
-New `src/components/candidate/audio/AriaSpeakButton.tsx`:
-- Props: `text`, `messageKey`.
-- On click → `supabase.functions.invoke('aria-speak', { body: { text } })`; receives `{ audio_base64 }`; plays `new Audio('data:audio/mpeg;base64,' + audio_base64)`.
-- Caches the base64 per `messageKey` in component state (Map). Re-plays from cache on subsequent clicks — no re-invoke.
-- On error → toast suppressed, button hidden/disabled; never blocks the flow.
-- Mount next to Aria's intro line (Part 3 intro) and each Aria debrief line in `GuideDebrief.tsx`.
-
-No new secrets, no config.toml change.
-
----
-
-## PART 5 — Blind scope in `generate-challenge`
-
-File: `supabase/functions/generate-challenge/index.ts`.
-
-System-prompt additions for the candidate-facing scenario AND all mindset payload fields (`guide.intro`, `instinct_cards[].prompt`, `day.items[].context`, `guide.debrief_focus` copy):
-
-> "Lo scenario e tutte le interazioni con il candidato non devono MAI contenere il nome dell'azienda committente né nomi reali di clienti, concorrenti o partner. Usa descrittori generici: 'un grande operatore logistico', 'un concorrente del settore', 'un cliente importante del mercato EMEA', 'un fornitore strategico'. Il candidato non deve poter identificare l'azienda dal testo."
-
-Post-generation server-side sanitizer:
-- Pull `company.name` + `company.brand_aliases` (from `company_profiles`) and `job_post.title`/known third-party names if listed.
-- Run a case-insensitive regex strip on every candidate-facing string field; replace hits with the matching generic descriptor and log a `correlation_id` warning when triggered.
-- Business-side view (`shortlist_results`, business challenge detail) keeps the unredacted scenario from `business_payload` — only the `candidate_payload` is sanitized.
-
-`intro_context.company_descriptor` (Part 3) generated under the same constraints.
-
----
-
-## PART 6 — Controlled pillar nudge in L1 mindset
-
-File: `supabase/functions/analyze-open-answer/index.ts`, `format === 'mindset'` branch only. Reverses one piece of the last change.
-
-- **Re-add** `persistTrajectoryEvent({ source_type: 'l1_challenge', user_id, correlation_id, deltas: pillar_impact, … })` inside the mindset branch, so pillar scores move. Existing caps in `persistTrajectoryEvent` keep deltas bounded (±N per pillar per event); do not relax them.
-- **Do NOT** re-add `level_up_status`, do NOT call any archetype-recompute / re-labeling. Archetype stays anchored — re-derivation only happens on the quarterly DNA cadence (separate codepath).
-- Keep the `challenge_submissions.signals_payload` write exactly as today (framing/decision_quality/execution_bias/impact_thinking/overall/summary/flags/confidence + descriptive `pillar_impact`/`pillar_reasoning` inside the signals envelope).
-- Candidate response payload: still **no numbers**. Add a single qualitative cue field `growth_cue: 'xima_strengthened'` that the client renders as "Il tuo XIMAtar si è rafforzato" on the Resolve screen. No numeric deltas, no pillar names exposed.
-- Free-text scoring path unchanged (the wrap stays `if (!isMindset)` for everything except the trajectory call, which is now allowed for both branches with the bounded `pillar_impact` source).
-
----
-
-## Execution order (when approved)
-
-1. Migration: `ral_min/ral_max/ccnl` on `hiring_goal_drafts` + `job_posts` + validation trigger.
-2. Part 1 UI on hiring goal + Part 2 restructure of `CreateXimaCoreChallenge.tsx` (depends on migration types).
-3. `generate-challenge` blind-scope + `intro_context` (Parts 3 + 5) → deploy.
-4. `MindsetIntro` enrichment + new mindset intro context wiring (Part 3).
-5. Audio components + mount points (Part 4).
-6. `analyze-open-answer` mindset branch: re-add trajectory call only, add `growth_cue` (Part 6) → deploy. Client Resolve screen renders the cue.
-7. Smoke: business creates goal with RAL+CCNL → generates challenge → candidate sees intro with descriptor + RAL, completes mindset → trajectory event lands, archetype unchanged, audio round-trips, no company name in candidate strings.
-
-Free-text scoring, mentor flows, business pipeline beyond the create page, and email infra (Part 4 of the previous plan) are untouched.
-
-Awaiting approval to execute.
+## Validation after build
+- Manual: invoke `generate-company-profile` with Fiocchi URL → expect 200 + `website_scan_status='insufficient'` + a conservative profile derived from registration data.
+- Manual: invoke with a normal site (e.g. a public SaaS landing) → expect 200 + `website_scan_status='ok'` and same quality as before.
+- Manual: invoke with garbage URL and no business_profiles row → still 400 `INSUFFICIENT_CONTENT`.
