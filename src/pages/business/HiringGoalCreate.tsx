@@ -31,6 +31,9 @@ interface FormData {
   salary_max: number;
   salary_currency: string;
   salary_period: string;
+  ral_min: number;
+  ral_max: number;
+  ccnl: string;
   years_experience_min: number | null;
   years_experience_max: number | null;
   education_level: string;
