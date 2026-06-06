@@ -181,7 +181,7 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
   }) => {
     setCreatingChallenge(true);
     try {
-      // Create the challenge
+      // Create the L2 challenge — destructure { data, error }, surface real error
       const { data: newChallenge, error: createError } = await supabase
         .from('business_challenges')
         .insert([{
@@ -192,25 +192,46 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
           rubric: challengeData.rubric as unknown as Record<string, never>,
           time_estimate_minutes: challengeData.time_estimate_minutes,
           status: 'active',
+          level: 2, // explicit (DB default is 2 — belt-and-braces)
         }])
-        .select('id')
+        .select('id, level')
         .single();
 
-      if (createError) throw createError;
+      if (createError || !newChallenge) {
+        console.error('[L2] business_challenges insert failed', createError, {
+          businessId,
+          hiringGoalId,
+          payload: challengeData,
+        });
+        toast({
+          title: t('common.error'),
+          description: t('business.level2.create_failed', {
+            message: createError?.message ?? 'unknown',
+          }),
+          variant: 'destructive',
+        });
+        return; // ABORT — do not run the invitation insert
+      }
 
-      // Now send the invitation
+      if (newChallenge.level !== 2) {
+        console.error('[L2] created challenge has wrong level', newChallenge);
+        toast({
+          title: t('common.error'),
+          description: t('business.level2.create_failed', {
+            message: `level=${newChallenge.level}`,
+          }),
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      // Only run the invitation insert when the L2 row landed cleanly
       await sendInvitation(newChallenge.id);
-    } catch (err) {
-      console.error('Error creating challenge:', err);
-      toast({
-        title: t('common.error'),
-        description: t('level2.create_failed'),
-        variant: 'destructive',
-      });
     } finally {
       setCreatingChallenge(false);
     }
   };
+
 
   const sendInvitation = async (challengeId: string) => {
     setSending(true);
@@ -369,11 +390,19 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
       onOpenChange(false);
       onInviteSent?.();
     } catch (err) {
-      console.error('Error sending Level 2 invite:', err);
+      const message = err instanceof Error ? err.message : String(err);
+      console.error('[L2] sendInvitation failed', err, {
+        businessId,
+        hiringGoalId,
+        challengeId,
+        candidateProfileId,
+      });
       toast({
         title: t('common.error'),
+        description: t('business.level2.invite_failed', { message }),
         variant: 'destructive',
       });
+
     } finally {
       setSending(false);
     }
