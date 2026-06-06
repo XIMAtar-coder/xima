@@ -629,7 +629,10 @@ Restituisci SOLO JSON valido:
               requiredSkills, experienceLevel, workModel,
               promptLang, langInstruction, locale, correlationId,
             });
-            return jsonResponse({ ...validated, context_tag: contextTag || validated.context_tag, used_fallback: false, _intelligence: { source: "database", confidence: dbDecision.confidence }, mindset });
+            const safeScenario = scrub(validated.scenario);
+            const safeMindset = sanitizeMindsetBlock(mindset, scrub, correlationId);
+            const enrichedMindset = safeMindset ? { ...safeMindset, intro_context: introContext } : { experience: 'mindset', intro_context: introContext };
+            return jsonResponse({ ...validated, scenario: safeScenario, context_tag: contextTag || validated.context_tag, used_fallback: false, _intelligence: { source: "database", confidence: dbDecision.confidence }, mindset: enrichedMindset });
           }
         }
       }
