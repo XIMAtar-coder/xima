@@ -1940,6 +1940,7 @@ export type Database = {
           values: string[] | null
           values_override: Json | null
           website: string
+          website_scan_status: string | null
         }
         Insert: {
           communication_style?: string | null
@@ -1970,6 +1971,7 @@ export type Database = {
           values?: string[] | null
           values_override?: Json | null
           website: string
+          website_scan_status?: string | null
         }
         Update: {
           communication_style?: string | null
@@ -2000,6 +2002,7 @@ export type Database = {
           values?: string[] | null
           values_override?: Json | null
           website?: string
+          website_scan_status?: string | null
         }
         Relationships: []
       }
