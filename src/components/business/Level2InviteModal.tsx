@@ -283,7 +283,9 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
         console.error('[Level2InviteModal] Pre-flight review upsert errored:', preErr);
       }
 
-
+      // First, check if an ACTIVE invitation already exists for this exact challenge
+      // Only block if the invitation is still valid (not withdrawn/expired/cancelled)
+      const { data: existingInvitation } = await supabase
         .from('challenge_invitations')
         .select('id, status, created_at')
         .eq('business_id', businessId)
