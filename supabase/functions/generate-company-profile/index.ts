@@ -541,6 +541,7 @@ Deno.serve(async (req) => {
         pages_scanned: pagesScanned,
         open_positions_found: validated.open_positions,
         last_scan_at: new Date().toISOString(),
+        website_scan_status: websiteScanStatus,
         updated_at: new Date().toISOString(),
       }, { onConflict: "company_id" })
       .select()
