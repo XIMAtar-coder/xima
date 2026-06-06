@@ -364,7 +364,13 @@ function buildIntroContext(args: {
     growth_line:
       'Completare questa sfida rafforza il tuo XIMAtar e rende il tuo profilo più rilevante per le aziende.',
   };
+}
+
 // =====================================================
+// Main handler
+// =====================================================
+
+
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
