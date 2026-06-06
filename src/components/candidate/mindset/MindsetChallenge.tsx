@@ -175,6 +175,7 @@ export function MindsetChallenge({ invitationId, challengeId, config }: Props) {
           guideName={guideName}
           litFacets={payload.lit_facets}
           resolveLine={config.guide?.resolve_line}
+          growthCue="xima_strengthened"
           onBack={() => navigate('/profile')}
         />
       )}
