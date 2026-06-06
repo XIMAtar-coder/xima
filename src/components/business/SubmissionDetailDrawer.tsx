@@ -449,7 +449,12 @@ export function SubmissionDetailDrawer({
       onReviewSaved?.(decision, question);
     } catch (error) {
       console.error('Error saving review:', error);
-      toast({ title: t('common.error'), variant: 'destructive' });
+      toast({
+        title: t('common.error'),
+        description: error instanceof Error ? error.message : undefined,
+        variant: 'destructive',
+      });
+      throw error;
     } finally {
       setSavingReview(false);
     }
