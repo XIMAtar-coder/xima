@@ -625,8 +625,8 @@ Return ONLY the JSON object.`;
     }
 
     if (isMindset) {
-      // Mindset response intentionally omits level_up_status — L1 mindset
-      // submissions describe the candidate, they don't level the archetype.
+      // Mindset response intentionally omits level_up_status — the archetype
+      // stays anchored. We send a single qualitative cue; never numbers.
       return jsonResponse({
         score_total: finalScore,
         quality_label: qualityLabel,
@@ -634,6 +634,7 @@ Return ONLY the JSON object.`;
         scoring_context: 'l1_challenge',
         signals: mindsetSignals,
         non_answer_detected: false,
+        growth_cue: 'xima_strengthened',
       });
     }
 
