@@ -88,12 +88,35 @@ interface PageResult {
   pageType: string;
 }
 
+function extractMetaPrefix(html: string): string {
+  const parts: string[] = [];
+  const pick = (re: RegExp, label: string) => {
+    const m = html.match(re);
+    if (m && m[1]) {
+      const v = m[1].replace(/\s+/g, " ").trim();
+      if (v) parts.push(`${label}: ${v}`);
+    }
+  };
+  pick(/<title[^>]*>([^<]+)<\/title>/i, "TITLE");
+  pick(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i, "DESCRIPTION");
+  pick(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i, "DESCRIPTION");
+  pick(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i, "OG_TITLE");
+  pick(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i, "OG_TITLE");
+  pick(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i, "OG_DESCRIPTION");
+  pick(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:description["']/i, "OG_DESCRIPTION");
+  return parts.join("\n");
+}
+
 async function fetchPage(url: string, maxChars = 8000): Promise<PageResult> {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
     const response = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; XIMABot/1.0)" },
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "it,en;q=0.8",
+      },
       signal: controller.signal,
       redirect: "follow",
     });
@@ -102,7 +125,10 @@ async function fetchPage(url: string, maxChars = 8000): Promise<PageResult> {
     if (!response.ok) return { url, text: '', rawHtml: '', pageType: identifyPageType(url) };
 
     const html = await response.text();
-    const text = stripHtmlToText(html).substring(0, maxChars);
+    const metaPrefix = extractMetaPrefix(html);
+    const body = stripHtmlToText(html);
+    const combined = (metaPrefix ? metaPrefix + "\n\n" : "") + body;
+    const text = combined.substring(0, maxChars);
     return { url, text, rawHtml: html, pageType: identifyPageType(url) };
   } catch (_e) {
     console.warn(`[generate-company-profile] Failed to fetch ${url}`);
