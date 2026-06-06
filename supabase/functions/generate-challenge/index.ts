@@ -701,7 +701,30 @@ serve(async (req) => {
         return errorResponse(404, 'CHALLENGE_NOT_FOUND', 'Target challenge not found', { correlation_id: correlationId });
       }
       if (existingChallenge.level !== 2) {
-        return errorResponse(400, 'WRONG_CHALLENGE_LEVEL', `Challenge level is ${existingChallenge.level}, expected 2`, { correlation_id: correlationId });
+        console.error('[generate-challenge] L2 refused: wrong level', JSON.stringify({
+          correlation_id: correlationId,
+          challenge_id: body.challenge_id,
+          actual_level: existingChallenge.level,
+        }));
+        return errorResponse(
+          400,
+          'WRONG_CHALLENGE_LEVEL',
+          `Refusing to write L2 simulation: target challenge ${body.challenge_id} has level=${existingChallenge.level} (expected 2). An L2 spec must never overwrite an L1 row.`,
+          { correlation_id: correlationId, actual_level: existingChallenge.level }
+        );
+      }
+      // Extra guard: never clobber an L1 mindset experience flag, even if level was somehow misread.
+      if ((existingChallenge.config_json as Record<string, unknown> | null)?.experience === 'mindset') {
+        console.error('[generate-challenge] L2 refused: target row carries experience=mindset (L1)', JSON.stringify({
+          correlation_id: correlationId,
+          challenge_id: body.challenge_id,
+        }));
+        return errorResponse(
+          400,
+          'WRONG_CHALLENGE_EXPERIENCE',
+          'Refusing to write L2 simulation: target row already carries experience="mindset" (L1 mindset journey).',
+          { correlation_id: correlationId }
+        );
       }
       const existingCfg: Record<string, unknown> = (existingChallenge.config_json as Record<string, unknown>) || {};
       if (!body.force_regenerate && existingCfg.l2_simulation) {
