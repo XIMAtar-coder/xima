@@ -458,10 +458,11 @@ const RegenerateDnaModal = ({ onClose, pillarScores, bestFitXimatars, onSuccess 
         });
       }
 
-      const { error } = await supabase.functions.invoke('generate-company-profile', {
+      const { data: profileData, error } = await supabase.functions.invoke('generate-company-profile', {
         body: { company_id: user?.id, force_regenerate: true, regeneration_reason: reason },
       });
       if (error) throw error;
+      const partialScan = (profileData as any)?.website_scan_status === 'insufficient';
 
       // Lock DNA for 90 days
       const lockUntil = new Date();
