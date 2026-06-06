@@ -17,6 +17,10 @@ interface GenerateChallengeRequest {
   business_id?: string;
   hiring_goal_id?: string;
   challenge_id?: string;
+  /** Stage A: when 2, generate the L2 'worst Tuesday' simulation spec and persist to config_json. */
+  level?: 1 | 2;
+  /** Stage A: when true, overwrite an existing config_json.l2_simulation. */
+  force_regenerate?: boolean;
   // Legacy fields for backward compatibility
   context?: {
     companyIndustry?: string;
