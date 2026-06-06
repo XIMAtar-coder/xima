@@ -439,8 +439,6 @@ Deno.serve(async (req) => {
     if (!hasUsableText && !hasRegistrationContext) {
       return errorResponse(400, "INSUFFICIENT_CONTENT", "Could not extract enough content from the website. Please check the URL.");
     }
-      return errorResponse(400, "INSUFFICIENT_CONTENT", "Could not extract enough content from the website. Please check the URL.");
-    }
 
     const pageTypes = pages.map(p => p.pageType);
     const pagesContext = pages.length > 0
