@@ -223,6 +223,8 @@ const GoalChallenges: React.FC = () => {
               </Button>
             </Link>
           </div>
+        </div>
+
 
         {/* Active challenges */}
         {activeChallenges.length > 0 && (
