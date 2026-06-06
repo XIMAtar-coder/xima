@@ -873,7 +873,12 @@ export function SubmissionDetailDrawer({
                             <Button 
                               variant="default"
                               onClick={async () => {
-                                await saveReview('proceed_level2');
+                                try {
+                                  await saveReview('proceed_level2');
+                                } catch {
+                                  // saveReview already surfaced a destructive toast; don't open the modal.
+                                  return;
+                                }
                                 setLevel2ModalOpen(true);
                               }}
                               disabled={savingReview || checkingLevel2}
