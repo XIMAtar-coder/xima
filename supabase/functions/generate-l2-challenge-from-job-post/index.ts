@@ -326,6 +326,6 @@ Return ONLY valid JSON.`;
       function_name: 'generate-l2-challenge-from-job-post',
       error: err instanceof Error ? err.message : 'Unknown error',
     }));
-    return errorResponse(500, 'INTERNAL_ERROR', err instanceof Error ? err.message : 'Unknown error');
+    return errorResponse(500, 'INTERNAL_ERROR', 'An unexpected error occurred.');
   }
 });
