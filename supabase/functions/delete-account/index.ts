@@ -82,7 +82,7 @@ serve(async (req) => {
     if (deleteError) {
       console.error("[delete-account] RPC error:", deleteError);
       return new Response(
-        JSON.stringify({ error: `Failed to delete account data: ${deleteError.message}` }),
+        JSON.stringify({ error: "Failed to delete account data. Please contact support." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -183,7 +183,7 @@ serve(async (req) => {
   } catch (err) {
     console.error("[delete-account] Unexpected error:", err);
     return new Response(
-      JSON.stringify({ error: err.message || "An unexpected error occurred" }),
+      JSON.stringify({ error: "An unexpected error occurred" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

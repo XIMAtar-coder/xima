@@ -144,9 +144,20 @@ serve(async (req) => {
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
     const { data: jobPost, error: jobError } = await supabaseAdmin
-      .from('job_posts').select('*').eq('id', job_post_id).single();
+      .from('job_posts').select('*').eq('id', job_post_id).eq('business_id', user.id).single();
 
     if (jobError || !jobPost) return errorResponse(404, 'NOT_FOUND', 'Job post not found');
+
+    // Verify caller owns the target challenge
+    const { data: existingChallenge, error: challengeOwnerErr } = await supabaseAdmin
+      .from('business_challenges')
+      .select('id, business_id')
+      .eq('id', challenge_id)
+      .eq('business_id', user.id)
+      .maybeSingle();
+    if (challengeOwnerErr || !existingChallenge) {
+      return errorResponse(404, 'NOT_FOUND', 'Challenge not found');
+    }
 
     const [companyProfileRes, businessProfileRes] = await Promise.all([
       supabaseAdmin.from('company_profiles').select('*').eq('company_id', jobPost.business_id).maybeSingle(),
@@ -280,7 +291,8 @@ Return ONLY valid JSON.`;
         generation_error: generationError,
         time_estimate_minutes: config.estimated_time_minutes,
       })
-      .eq('id', challenge_id);
+      .eq('id', challenge_id)
+      .eq('business_id', user.id);
 
     if (updateError) {
       return errorResponse(500, 'DB_ERROR', 'Failed to save challenge configuration');
@@ -314,6 +326,6 @@ Return ONLY valid JSON.`;
       function_name: 'generate-l2-challenge-from-job-post',
       error: err instanceof Error ? err.message : 'Unknown error',
     }));
-    return errorResponse(500, 'INTERNAL_ERROR', err instanceof Error ? err.message : 'Unknown error');
+    return errorResponse(500, 'INTERNAL_ERROR', 'An unexpected error occurred.');
   }
 });
