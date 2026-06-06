@@ -503,7 +503,7 @@ Return ONLY valid JSON:
   } catch (err) {
     console.error("[analyze-l3-frames] Error:", err);
     if (err instanceof AnthropicError) {
-      return errorResponse(err.statusCode, err.errorCode, err.message);
+      return errorResponse(err.statusCode, err.errorCode, "AI provider request failed");
     }
     return errorResponse(500, "INTERNAL_ERROR", "Failed to analyze L3 frames");
   }
