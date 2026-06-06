@@ -112,6 +112,17 @@ const BusinessRegister = () => {
             company_name: formData.companyName,
             website: formData.website,
           },
+        }).then(({ data, error }) => {
+          if (error) {
+            console.error('Company profile gen error:', error);
+            return;
+          }
+          if ((data as any)?.website_scan_status === 'insufficient') {
+            toast({
+              title: t('businessRegistration.success', 'Account Created!'),
+              description: t('business.dashboard.profile_generated_partial', 'Non siamo riusciti a leggere bene il sito — abbiamo usato i dati che hai inserito; puoi modificare il profilo.'),
+            });
+          }
         }).catch(e => console.error('Company profile gen error:', e));
       }
 

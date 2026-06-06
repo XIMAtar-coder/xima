@@ -458,10 +458,11 @@ const RegenerateDnaModal = ({ onClose, pillarScores, bestFitXimatars, onSuccess 
         });
       }
 
-      const { error } = await supabase.functions.invoke('generate-company-profile', {
+      const { data: profileData, error } = await supabase.functions.invoke('generate-company-profile', {
         body: { company_id: user?.id, force_regenerate: true, regeneration_reason: reason },
       });
       if (error) throw error;
+      const partialScan = (profileData as any)?.website_scan_status === 'insufficient';
 
       // Lock DNA for 90 days
       const lockUntil = new Date();
@@ -471,7 +472,11 @@ const RegenerateDnaModal = ({ onClose, pillarScores, bestFitXimatars, onSuccess 
         dna_locked_until: lockUntil.toISOString(),
       }).eq('user_id', user?.id);
 
-      sonnerToast.success(t('business.dna.regenerated', 'DNA rigenerato. Prossima rigenerazione disponibile tra 90 giorni.'));
+      if (partialScan) {
+        sonnerToast(t('business.dashboard.profile_generated_partial', 'Non siamo riusciti a leggere bene il sito — abbiamo usato i dati che hai inserito; puoi modificare il profilo.'));
+      } else {
+        sonnerToast.success(t('business.dna.regenerated', 'DNA rigenerato. Prossima rigenerazione disponibile tra 90 giorni.'));
+      }
       onSuccess();
       onClose();
     } catch (err: any) {
