@@ -1380,7 +1380,9 @@
     "level2": {
       "pipeline_locked": "Pipeline Locked",
       "pipeline_locked_desc": "The candidate must complete Level 1 (XIMA Core) before being invited to Level 2.",
-      "review_failed": "Could not record the advancement decision"
+      "review_failed": "Could not record the advancement decision",
+      "create_failed": "Could not create the Level 2 challenge: {{message}}",
+      "invite_failed": "Could not send the Level 2 invitation: {{message}}"
     },
     "level3": {
       "already_invited": "Already invited to Level 3",
