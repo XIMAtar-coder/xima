@@ -619,6 +619,7 @@ Deno.serve(async (req) => {
       profile: data,
       pages_scanned: pagesScanned.length,
       open_positions_found: validated.open_positions.length,
+      website_scan_status: websiteScanStatus,
     });
   } catch (e) {
     if (e instanceof AnthropicError) {
