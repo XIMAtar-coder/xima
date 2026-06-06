@@ -53,6 +53,9 @@ const BusinessCandidates = () => {
   // Hiring goal selector for invite flow
   const [hiringGoals, setHiringGoals] = useState<{ id: string; role_title: string | null }[]>([]);
   const [selectedGoalId, setSelectedGoalId] = useState<string>('');
+  // Set of hiring_goal_ids that already have an active L1 (XIMA Core) challenge.
+  // L1 invitations must bind a goal-scoped challenge — goals not in this set show a "create challenge first" gate.
+  const [l1ReadyGoalIds, setL1ReadyGoalIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!isAuthenticated || (businessLoading === false && !isBusiness)) {
@@ -60,17 +63,26 @@ const BusinessCandidates = () => {
     }
   }, [isAuthenticated, isBusiness, businessLoading, navigate]);
 
-  // Load this business's hiring goals for the invite goal-selector
+  // Load this business's hiring goals + which ones already have an active L1 XIMA Core challenge
   useEffect(() => {
     if (!user?.id) return;
-    supabase
-      .from('hiring_goal_drafts')
-      .select('id, role_title')
-      .eq('business_id', user.id)
-      .order('updated_at', { ascending: false })
-      .then(({ data }) => {
-        setHiringGoals((data || []) as any);
-      });
+    (async () => {
+      const [{ data: goals }, { data: l1s }] = await Promise.all([
+        supabase
+          .from('hiring_goal_drafts')
+          .select('id, role_title')
+          .eq('business_id', user.id)
+          .order('updated_at', { ascending: false }),
+        supabase
+          .from('business_challenges')
+          .select('hiring_goal_id')
+          .eq('business_id', user.id)
+          .eq('level', 1)
+          .eq('status', 'active'),
+      ]);
+      setHiringGoals((goals || []) as any);
+      setL1ReadyGoalIds(new Set((l1s || []).map((r: any) => r.hiring_goal_id).filter(Boolean)));
+    })();
   }, [user?.id]);
 
   const fetchCandidates = useCallback(async () => {
@@ -111,10 +123,19 @@ const BusinessCandidates = () => {
     if (!user?.id) return;
     if (!selectedGoalId) {
       toast({
-        title: t('candidate_pool.pick_goal_title', 'Pick a hiring goal first'),
-        description: t('candidate_pool.pick_goal_desc', 'Select one of your hiring goals to send an L1 invitation.'),
+        title: t('candidate_pool.pick_goal_title', 'Seleziona prima un obiettivo di assunzione'),
+        description: t('candidate_pool.pick_goal_desc', 'Scegli uno dei tuoi obiettivi per inviare l\'invito.'),
         variant: 'destructive',
       });
+      return;
+    }
+    // Pre-check: the selected goal must already have an active L1 XIMA Core challenge.
+    if (!l1ReadyGoalIds.has(selectedGoalId)) {
+      toast({
+        title: t('candidate_pool.no_l1_title', 'Crea prima una sfida XIMA Core'),
+        description: t('candidate_pool.no_l1_desc', 'Questo obiettivo non ha ancora una sfida XIMA Core attiva. Creala per inviare candidati.'),
+      });
+      navigate(`/business/challenges/create-xima-core?goal=${selectedGoalId}`);
       return;
     }
     try {
@@ -123,11 +144,21 @@ const BusinessCandidates = () => {
         p_hiring_goal_id: selectedGoalId,
       } as any);
       if (error) throw error;
-      toast({ title: t('business.candidates.invitation_sent', 'Invitation sent') });
+      toast({ title: t('business.candidates.invitation_sent', 'Invito inviato') });
     } catch (err: any) {
+      const msg = String(err?.message || '');
+      // Backstop: the RPC guarantees no NULL-challenge invitation can be written.
+      if (msg.includes('no_xima_core_challenge')) {
+        toast({
+          title: t('candidate_pool.no_l1_title', 'Crea prima una sfida XIMA Core'),
+          description: t('candidate_pool.no_l1_desc', 'Questo obiettivo non ha ancora una sfida XIMA Core attiva. Creala per inviare candidati.'),
+        });
+        navigate(`/business/challenges/create-xima-core?goal=${selectedGoalId}`);
+        return;
+      }
       toast({
-        title: t('common.error', 'Error'),
-        description: err?.message || t('candidate_pool.invite_failed', 'Could not send invitation'),
+        title: t('common.error', 'Errore'),
+        description: msg || t('candidate_pool.invite_failed', 'Impossibile inviare l\'invito'),
         variant: 'destructive',
       });
     }
@@ -169,9 +200,15 @@ const BusinessCandidates = () => {
             className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
           >
             <option value="">{t('candidate_pool.select_goal', 'Select a hiring goal…')}</option>
-            {hiringGoals.map((g) => (
-              <option key={g.id} value={g.id}>{g.role_title || t('business.goals.untitled', 'Untitled role')}</option>
-            ))}
+            {hiringGoals.map((g) => {
+              const ready = l1ReadyGoalIds.has(g.id);
+              const title = g.role_title || t('business.goals.untitled', 'Untitled role');
+              return (
+                <option key={g.id} value={g.id}>
+                  {ready ? title : `${title} — ${t('candidate_pool.no_l1_tag', 'crea sfida XIMA Core')}`}
+                </option>
+              );
+            })}
           </select>
           {hiringGoals.length === 0 && (
             <Button size="sm" variant="outline" onClick={() => navigate('/business/hiring-goals/new')}>
@@ -179,6 +216,26 @@ const BusinessCandidates = () => {
             </Button>
           )}
         </div>
+
+        {/* Inline gate: selected goal has no active XIMA Core challenge yet */}
+        {selectedGoalId && !l1ReadyGoalIds.has(selectedGoalId) && (
+          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 flex flex-col md:flex-row md:items-center gap-3">
+            <div className="flex-1 text-sm text-foreground">
+              <div className="font-medium">{t('candidate_pool.no_l1_title', 'Crea prima una sfida XIMA Core')}</div>
+              <div className="text-muted-foreground mt-0.5">
+                {t('candidate_pool.no_l1_desc', 'Questo obiettivo non ha ancora una sfida XIMA Core attiva. Creala per inviare candidati.')}
+              </div>
+            </div>
+            <Button
+              size="sm"
+              onClick={() => navigate(`/business/challenges/create-xima-core?goal=${selectedGoalId}`)}
+            >
+              {t('candidate_pool.create_xima_core', 'Crea sfida XIMA Core')}
+            </Button>
+          </div>
+        )}
+
+
 
 
 
