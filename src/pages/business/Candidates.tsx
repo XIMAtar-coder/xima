@@ -135,7 +135,7 @@ const BusinessCandidates = () => {
         title: t('candidate_pool.no_l1_title', 'Crea prima una sfida XIMA Core'),
         description: t('candidate_pool.no_l1_desc', 'Questo obiettivo non ha ancora una sfida XIMA Core attiva. Creala per inviare candidati.'),
       });
-      navigate(`/business/challenges/create-xima-core?goal=${selectedGoalId}`);
+      navigate(`/business/challenges/xima-core?goal=${selectedGoalId}`);
       return;
     }
     try {
@@ -153,7 +153,7 @@ const BusinessCandidates = () => {
           title: t('candidate_pool.no_l1_title', 'Crea prima una sfida XIMA Core'),
           description: t('candidate_pool.no_l1_desc', 'Questo obiettivo non ha ancora una sfida XIMA Core attiva. Creala per inviare candidati.'),
         });
-        navigate(`/business/challenges/create-xima-core?goal=${selectedGoalId}`);
+        navigate(`/business/challenges/xima-core?goal=${selectedGoalId}`);
         return;
       }
       toast({
@@ -228,7 +228,7 @@ const BusinessCandidates = () => {
             </div>
             <Button
               size="sm"
-              onClick={() => navigate(`/business/challenges/create-xima-core?goal=${selectedGoalId}`)}
+              onClick={() => navigate(`/business/challenges/xima-core?goal=${selectedGoalId}`)}
             >
               {t('candidate_pool.create_xima_core', 'Crea sfida XIMA Core')}
             </Button>

@@ -364,8 +364,11 @@ Return ONLY the JSON object.`;
       });
 
       aiRequestId = aiResp.requestId;
-      const jsonStr = extractJsonFromAiContent(aiResp.content);
-      const parsed = JSON.parse(jsonStr);
+      // extractJsonFromAiContent already returns the parsed JSON value (not a string).
+      const parsed = extractJsonFromAiContent(aiResp.content);
+      if (!parsed || typeof parsed !== 'object') {
+        throw new Error('AI returned non-JSON or empty content');
+      }
 
       // Validate required fields
       if (isMindset) {
@@ -567,29 +570,72 @@ Return ONLY the JSON object.`;
         : scoring_context === 'l2_challenge' ? 'l2_challenge' as const
         : 'open_answer' as const;
 
-      try {
-        const levelCheck = await persistTrajectoryEvent({
-          user_id,
-          source_function: "analyze-open-answer",
-          source_type: sourceType,
-          source_entity_id: challenge_id || `${effectiveField}:${effectiveOpenKey}`,
-          correlation_id: correlationId,
-          deltas: {
-            drive: pillarImpact.drive || 0,
-            computational_power: pillarImpact.computational_power || 0,
-            communication: pillarImpact.communication || 0,
-            creativity: pillarImpact.creativity || 0,
-            knowledge: pillarImpact.knowledge || 0,
-          },
-          reasoning: parsedResult.pillar_reasoning || "",
-        });
+      // For mindset: use invitation_id as source_entity_id so we can dedupe per-submission.
+      const trajectoryEntityId = isMindset && typeof invitation_id === 'string' && invitation_id
+        ? invitation_id
+        : (challenge_id || `${effectiveField}:${effectiveOpenKey}`);
 
-        // Mindset NEVER returns level_up_status — archetype stays anchored.
-        if (!isMindset && (levelCheck?.eligible || levelCheck?.evolution_eligible)) {
-          levelUpStatus = { eligible: levelCheck.eligible, evolution_eligible: levelCheck.evolution_eligible, current_level: levelCheck.current_level };
+      // Idempotency guard (mindset only): "Genera Segnali" can be re-clicked.
+      // Display/signals_payload regenerates freely, but the pillar nudge must fire once per submission.
+      let shouldPersistTrajectory = true;
+      if (isMindset && typeof invitation_id === 'string' && invitation_id) {
+        try {
+          const dedupeClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+          const { data: existing } = await dedupeClient
+            .from('pillar_trajectory_log')
+            .select('id')
+            .eq('user_id', user_id)
+            .eq('source_type', 'l1_challenge')
+            .eq('source_entity_id', invitation_id)
+            .limit(1)
+            .maybeSingle();
+          if (existing) {
+            shouldPersistTrajectory = false;
+            console.log(JSON.stringify({
+              type: 'trajectory_skipped_idempotent',
+              correlation_id: correlationId,
+              function_name: 'analyze-open-answer',
+              invitation_id,
+              existing_log_id: existing.id,
+            }));
+          }
+        } catch (dedupeErr) {
+          console.warn(JSON.stringify({
+            type: 'trajectory_dedupe_check_failed',
+            correlation_id: correlationId,
+            function_name: 'analyze-open-answer',
+            error: dedupeErr instanceof Error ? dedupeErr.message : 'Unknown',
+          }));
+          // Fail safe: if we can't verify, do NOT double-write — skip.
+          shouldPersistTrajectory = false;
         }
-      } catch (trajErr) {
-        console.error('[trajectory] Error:', trajErr instanceof Error ? trajErr.message : trajErr);
+      }
+
+      if (shouldPersistTrajectory) {
+        try {
+          const levelCheck = await persistTrajectoryEvent({
+            user_id,
+            source_function: "analyze-open-answer",
+            source_type: sourceType,
+            source_entity_id: trajectoryEntityId,
+            correlation_id: correlationId,
+            deltas: {
+              drive: pillarImpact.drive || 0,
+              computational_power: pillarImpact.computational_power || 0,
+              communication: pillarImpact.communication || 0,
+              creativity: pillarImpact.creativity || 0,
+              knowledge: pillarImpact.knowledge || 0,
+            },
+            reasoning: parsedResult.pillar_reasoning || "",
+          });
+
+          // Mindset NEVER returns level_up_status — archetype stays anchored.
+          if (!isMindset && (levelCheck?.eligible || levelCheck?.evolution_eligible)) {
+            levelUpStatus = { eligible: levelCheck.eligible, evolution_eligible: levelCheck.evolution_eligible, current_level: levelCheck.current_level };
+          }
+        } catch (trajErr) {
+          console.error('[trajectory] Error:', trajErr instanceof Error ? trajErr.message : trajErr);
+        }
       }
     }
 
