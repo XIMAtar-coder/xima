@@ -892,14 +892,14 @@ const CreateXimaCoreChallenge = () => {
             <Card className="border-l-4 border-l-primary">
               <CardContent className="space-y-5 p-6">
                 <div className="space-y-1">
-                  <h3 className="text-xl font-semibold text-foreground">{t('challenge.xima_core.title')}</h3>
+                  <h3 className="text-xl font-semibold text-foreground">Anteprima esperienza mindset</h3>
                   <p className="text-sm text-muted-foreground">
-                    {roleTitle}{businessProfile?.company_name ? ` — ${businessProfile.company_name}` : ''}
+                    Quello che il candidato vede — senza il nome della tua azienda.
                   </p>
                 </div>
 
-                <div className="rounded-md bg-secondary/50 p-3 text-sm leading-6 text-foreground">
-                  {t('challenge.xima_core.candidate_intro')}
+                <div className="rounded-md bg-secondary/50 p-3 text-sm leading-6 text-foreground italic">
+                  {(generatedMindset as any)?.guide?.intro || 'Ciao, sono Aria. Non ci sono risposte giuste — segui l\'istinto e ti accompagno io.'}
                 </div>
 
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -907,31 +907,36 @@ const CreateXimaCoreChallenge = () => {
                   {t('challenge.xima_core.time_estimate_value', { minutes: generatedTimeEstimate || XIMA_CORE_CHALLENGE.timeEstimateMinutes })}
                 </div>
 
-                <div className="border-t border-border pt-4 space-y-2">
-                  <h4 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                    {t('challenge.xima_core.scenario_label')}
-                  </h4>
-                  <p className="whitespace-pre-wrap text-[15px] leading-7 text-foreground">{scenario}</p>
-                </div>
-
-                <div className="border-t border-border pt-4 space-y-4">
-                  {localizedQuestions.map((q, idx) => (
-                    <div key={q.id} className="space-y-2">
-                      <h4 className="font-semibold text-foreground">{idx + 1}. {q.title}</h4>
-                      <p className="text-sm text-muted-foreground">{q.text}</p>
-                      <Textarea
-                        readOnly
-                        disabled
-                        value=""
-                        placeholder=""
-                        className="min-h-[90px] cursor-not-allowed opacity-70"
-                      />
+                <div className="border-t border-border pt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {[
+                    { n: 1, t: 'Istinto', d: 'Carte rapide' },
+                    { n: 2, t: 'La giornata', d: 'Micro-decisioni' },
+                    { n: 3, t: 'Debrief', d: 'Voce o testo con Aria' },
+                    { n: 4, t: 'Esito', d: 'Sfaccettature accese' },
+                  ].map((s) => (
+                    <div key={s.n} className="rounded-lg border border-border/60 bg-card/80 p-3 text-center space-y-1">
+                      <div className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">{s.n}</div>
+                      <p className="text-sm font-semibold text-foreground">{s.t}</p>
+                      <p className="text-[11px] text-muted-foreground">{s.d}</p>
                     </div>
                   ))}
                 </div>
 
+                {Array.isArray((generatedMindset as any)?.instinct_cards) && (generatedMindset as any).instinct_cards.length > 0 && (
+                  <div className="border-t border-border pt-4 space-y-3">
+                    <h4 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Esempio · prima carta istinto</h4>
+                    <div className="rounded-lg border border-border/60 bg-card/80 p-4 space-y-2">
+                      <p className="text-sm text-foreground">{(generatedMindset as any).instinct_cards[0]?.prompt}</p>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="rounded-md bg-secondary/40 p-2">A · {(generatedMindset as any).instinct_cards[0]?.a?.label}</div>
+                        <div className="rounded-md bg-secondary/40 p-2">B · {(generatedMindset as any).instinct_cards[0]?.b?.label}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <Button disabled className="w-full" size="lg">
-                  {t('challenge.xima_core.preview_submit_disabled')}
+                  Anteprima · invio disabilitato
                 </Button>
               </CardContent>
             </Card>
