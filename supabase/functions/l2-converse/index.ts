@@ -207,6 +207,11 @@ ${closing ? `\nQuesto è il tuo turno finale: chiudi la conversazione in 1–2 f
   let degraded = false;
 
   try {
+    // Dev-only failure hook (gated by env). Used by the Stage B validation harness
+    // to exercise the degraded-fallback code path without breaking other functions.
+    if (Deno.env.get("L2_DEV_FORCE_FAIL") === "1") {
+      throw new AnthropicError(502, "DEV_FORCED_FAIL", "dev-forced failure");
+    }
     const result = await callAnthropicApi({
       system,
       userMessage,
