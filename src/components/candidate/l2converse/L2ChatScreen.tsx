@@ -94,10 +94,10 @@ export function L2ChatScreen({
         turnIndex: sentTurnIndex,
       });
 
-      if (!result.ok) {
+      if (result.ok !== true) {
         // Drop the optimistic candidate bubble in all error cases.
         setTranscript((cur) => cur.filter((e) => e !== optimistic));
-        const err = result.error;
+        const err = (result as { ok: false; error: import('@/hooks/useL2Converse').L2ConverseError }).error;
 
         if (err.kind === 'turn_mismatch') {
           // Silent resync from server-of-truth draft.
