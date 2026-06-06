@@ -8,10 +8,12 @@ type Props = {
   guideName: string;
   litFacets: string[];
   resolveLine?: string;
+  /** Qualitative-only cue from the scorer. We render a friendly string; never numbers. */
+  growthCue?: 'xima_strengthened' | null;
   onBack: () => void;
 };
 
-export function ResolveScreen({ guideName, litFacets, resolveLine, onBack }: Props) {
+export function ResolveScreen({ guideName, litFacets, resolveLine, growthCue, onBack }: Props) {
   const line =
     resolveLine ||
     'Ho visto come reagisci. Ora il tuo XIMAtar sta prendendo forma — ogni sfaccettatura accesa è un pezzo di te.';
@@ -30,6 +32,13 @@ export function ResolveScreen({ guideName, litFacets, resolveLine, onBack }: Pro
         </div>
 
         <p className="text-foreground leading-relaxed">{line}</p>
+
+        {growthCue === 'xima_strengthened' && (
+          <div className="rounded-lg border border-primary/30 bg-primary/10 p-4 flex items-center gap-2 text-sm text-foreground">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span>Il tuo XIMAtar si è rafforzato.</span>
+          </div>
+        )}
 
         {litFacets.length > 0 && (
           <div className="space-y-2">
