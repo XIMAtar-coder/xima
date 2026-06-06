@@ -97,8 +97,9 @@ export function L2ChatScreen({
       if (!result.ok) {
         // Drop the optimistic candidate bubble in all error cases.
         setTranscript((cur) => cur.filter((e) => e !== optimistic));
+        const err = result.error;
 
-        if (result.error.kind === 'turn_mismatch') {
+        if (err.kind === 'turn_mismatch') {
           // Silent resync from server-of-truth draft.
           const fresh = await refreshDraft();
           setTranscript(
@@ -115,7 +116,7 @@ export function L2ChatScreen({
           setInput(text);
           return;
         }
-        if (result.error.kind === 'conversation_done' || result.error.kind === 'already_submitted') {
+        if (err.kind === 'conversation_done' || err.kind === 'already_submitted') {
           const fresh = await refreshDraft();
           setTranscript(fresh.transcript || []);
           setDone(true);
