@@ -390,11 +390,19 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
       onOpenChange(false);
       onInviteSent?.();
     } catch (err) {
-      console.error('Error sending Level 2 invite:', err);
+      const message = err instanceof Error ? err.message : String(err);
+      console.error('[L2] sendInvitation failed', err, {
+        businessId,
+        hiringGoalId,
+        challengeId,
+        candidateProfileId,
+      });
       toast({
         title: t('common.error'),
+        description: t('business.level2.invite_failed', { message }),
         variant: 'destructive',
       });
+
     } finally {
       setSending(false);
     }
