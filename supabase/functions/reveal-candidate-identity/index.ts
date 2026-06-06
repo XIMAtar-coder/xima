@@ -142,7 +142,7 @@ serve(async (req) => {
     });
 
   } catch (err: any) {
-    console.error("[reveal-identity] Error:", err.message);
-    return errorResponse(500, "INTERNAL_ERROR", err.message);
+    console.error("[reveal-identity] Error:", err);
+    return errorResponse(500, "INTERNAL_ERROR", "An unexpected error occurred.");
   }
 });
