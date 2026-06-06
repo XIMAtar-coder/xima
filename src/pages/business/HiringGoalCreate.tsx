@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import SuggestFieldButton from '@/components/business/SuggestFieldButton';
+import { CCNL_OPTIONS, CCNL_HELPER_IT } from '@/lib/business/ccnl';
 
 
 const TOTAL_STEPS = 5;
