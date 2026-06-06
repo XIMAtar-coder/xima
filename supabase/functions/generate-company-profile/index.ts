@@ -434,10 +434,11 @@ Deno.serve(async (req) => {
     const pages = await fetchAllPages(website);
     const hasUsableText = pages.some(p => p.text.length > 0);
     const hasRegistrationContext = registrationContext.length > 0;
-    const hasName = !!company_name;
     const websiteScanStatus: 'ok' | 'insufficient' = hasUsableText ? 'ok' : 'insufficient';
 
-    if (!hasUsableText && !hasRegistrationContext && !hasName) {
+    if (!hasUsableText && !hasRegistrationContext) {
+      return errorResponse(400, "INSUFFICIENT_CONTENT", "Could not extract enough content from the website. Please check the URL.");
+    }
       return errorResponse(400, "INSUFFICIENT_CONTENT", "Could not extract enough content from the website. Please check the URL.");
     }
 
