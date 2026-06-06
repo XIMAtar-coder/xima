@@ -1,115 +1,141 @@
-# L1→L2 Pipeline Fix — Verified Values + Submission-Gated Atomic Landing
+# L2 "Crea e Invia Invito" — Surface Real Errors
 
-## Value verification (what saveReview & the L2 upsert actually SET)
+## Root cause (verified)
 
-Traced every field through the call chain (not assumed):
+`createChallengeAndInvite` (`src/components/business/Level2InviteModal.tsx:176-213`) wraps both Supabase calls in a single try/catch and toasts `t('level2.create_failed')` — an undefined key in the wrong namespace. Result:
+- Postgres error from either INSERT is logged to console only, never shown.
+- Toast renders the raw key (or empty) → looks "silent."
+- `sendInvitation` is invoked unconditionally after the challenge insert resolves; if it throws, the same generic toast hides the real reason (RLS denial, FK, pipeline_locked, etc.).
 
-**SubmissionDetailDrawer.saveReview** (`src/components/business/SubmissionDetailDrawer.tsx`) inserts:
+## DB defaults (verified, no changes needed)
 
-| Field | Source | Value for Fiocchi / candidate `5218a7a2-…` |
-|---|---|---|
-| `business_id` | prop `businessId` | `ChallengeResponses.tsx:701` → `userId` → `supabase.auth.getUser().id` = **`auth.uid()` = `6217364b-…`** ✓ satisfies `is_business_owner(business_id)` |
-| `challenge_id` | prop `challengeId` | URL param, validated against `business_challenges` at line 103 → `29fc9923-…` ✓ |
-| `invitation_id` | `submission.invitationId` | `useChallengeResponsesData.ts:171` ← `inv.id` → `f50fe834-…` ✓ |
-| `candidate_profile_id` | `submission.candidateProfileId` | `useChallengeResponsesData.ts:172` ← `inv.candidate_profile_id` → `5218a7a2-…` ✓ |
-| `decision` | literal | `'proceed_level2'` ✓ |
-| `followup_question` | literal | `null` (nullable) ✓ |
+`SELECT column_default FROM information_schema.columns WHERE table_name='business_challenges'`:
+- `level integer NOT NULL DEFAULT 2` ✓ — L2 inserts that omit `level` already resolve to 2.
+- `status text NOT NULL DEFAULT 'draft'` — modal explicitly sets `'active'` ✓.
+- `rubric jsonb` defaults to a stub; modal passes the full L2 rubric ✓.
 
-All four required columns are populated, `business_id` IS `auth.uid()` (not a profile.id, not a goal field), and RLS would permit. Live postgres ERROR scan shows no `challenge_reviews` insert failures in recent windows. With 0 rows in the table, the only consistent explanation is that `saveReview` discards the `{ error }` Supabase-js returns instead of throwing — the modal advances on success-looking state regardless. Both the swallow and the missing landing guarantee at L2-invite time are fixed below.
+Even though `level` defaults to 2, we will set it **explicitly** in the payload as a belt-and-braces guard against future default drift.
 
-## Fixes (single pass)
+## Fix (Level2InviteModal.tsx only)
 
-### A. `src/components/business/SubmissionDetailDrawer.tsx` — surface errors and gate modal opening
-- In `saveReview`, destructure `{ error }` from BOTH the UPDATE and the INSERT and `throw error` if present (the existing `catch` then fires a destructive toast).
-- Move the optimistic `setCurrentReview({ id: 'temp', … })` to AFTER `await`, gated on success.
-- In the proceed button onClick, wrap `saveReview('proceed_level2')` in try/catch and only call `setLevel2ModalOpen(true)` when it resolves cleanly.
-
-### B. `src/components/business/Level2InviteModal.tsx` — submission-gated atomic upsert BEFORE the L2 invite insert
-In `sendInvitation`, immediately before the duplicate-invitation check, resolve the candidate's L1 invitation AND verify a submitted L1 submission exists. Only then upsert the review:
+### A. `createChallengeAndInvite` — destructure + surface + abort
 
 ```ts
-// 1. Find this candidate's L1 (XIMA Core) challenge for this goal
-const { data: l1Challenge } = await supabase
-  .from('business_challenges')
-  .select('id')
-  .eq('hiring_goal_id', hiringGoalId)
-  .eq('business_id', businessId)
-  .or('rubric->>type.eq.xima_core,rubric->>isXimaCore.eq.true,rubric->>level.eq.1')
-  .in('status', ['active', 'published'])
-  .maybeSingle();
+const createChallengeAndInvite = async (challengeData) => {
+  setCreatingChallenge(true);
+  try {
+    const { data: newChallenge, error: createError } = await supabase
+      .from('business_challenges')
+      .insert([{
+        business_id: businessId,
+        hiring_goal_id: hiringGoalId,
+        title: challengeData.title,
+        description: challengeData.description,
+        rubric: challengeData.rubric,
+        time_estimate_minutes: challengeData.time_estimate_minutes,
+        status: 'active',
+        level: 2,                       // explicit, despite DB default = 2
+      }])
+      .select('id, level')
+      .single();
 
-// 2. Find this candidate's invitation to that L1, JOINED with a submitted submission.
-//    Only proceed if L1 was actually SUBMITTED (not just invited).
-const { data: l1Inv } = l1Challenge ? await supabase
-  .from('challenge_invitations')
-  .select('id, challenge_submissions!inner(id, status)')
-  .eq('business_id', businessId)
-  .eq('hiring_goal_id', hiringGoalId)
-  .eq('candidate_profile_id', candidateProfileId)
-  .eq('challenge_id', l1Challenge.id)
-  .eq('challenge_submissions.status', 'submitted')
-  .maybeSingle() : { data: null };
+    if (createError || !newChallenge) {
+      console.error('[L2] business_challenges insert failed', createError, {
+        businessId, hiringGoalId, payload: challengeData,
+      });
+      toast({
+        title: t('common.error'),
+        description: t('business.level2.create_failed', {
+          message: createError?.message ?? 'unknown',
+        }),
+        variant: 'destructive',
+      });
+      return;                          // ABORT — do not invite
+    }
 
-// 3. Upsert the proceed_level2 review only when L1 is genuinely submitted.
-//    If not submitted, skip — Gate A will (correctly) reject the L2 invite below.
-if (l1Challenge && l1Inv) {
-  const { error: reviewErr } = await supabase
-    .from('challenge_reviews')
-    .upsert({
-      business_id: businessId,            // = auth.uid() (verified above)
-      challenge_id: l1Challenge.id,
-      invitation_id: l1Inv.id,
-      candidate_profile_id: candidateProfileId,
-      decision: 'proceed_level2',
-    }, { onConflict: 'invitation_id' });
-  if (reviewErr) {
-    console.error('proceed_level2 review upsert failed', reviewErr);
-    toast({
-      title: t('business.level2.review_failed'),
-      description: reviewErr.message,
-      variant: 'destructive',
-    });
-    return;
+    if (newChallenge.level !== 2) {
+      console.error('[L2] created row has wrong level', newChallenge);
+      toast({
+        title: t('common.error'),
+        description: t('business.level2.create_failed', {
+          message: `level=${newChallenge.level}`,
+        }),
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    await sendInvitation(newChallenge.id);   // success path only
+  } finally {
+    setCreatingChallenge(false);
   }
-}
-// else: do NOT pre-write a review the candidate hasn't earned.
-// Gate A enforces "L1 submission required"; the toast mapping in (C) surfaces it.
+};
 ```
 
-Then run the existing `challenge_invitations` insert. Behavior matrix:
+Key changes vs. current:
+- Drops the outer catch-all that masked the real message.
+- `createError.message` is now in the toast description.
+- The success path runs **only** when `newChallenge` is non-null AND `level === 2`.
 
-| L1 state for this candidate | Review upsert | L2 invite insert | Outcome |
-|---|---|---|---|
-| Submitted | ✅ lands `proceed_level2` | ✅ Gate A + B pass | L2 sent |
-| Invited, not submitted | ⏭ skipped (no row written) | ❌ Gate A blocks: `pipeline_locked: Level 1 submission required` | Toast shown, no spurious review |
-| No L1 invitation | ⏭ skipped | ❌ Gate A blocks | Toast shown |
+### B. `sendInvitation` — destructure the challenge_invitations insert
 
-This keeps Gate A and Gate B consistent: a future fresh L1 submission by the same candidate will still require an explicit human "Procedi allo Step Successivo" click before another L2 attempt can pass Gate B.
+Current code (around line ~330) already `throw`s on most branches, but the final `challenge_invitations` INSERT must explicitly destructure `{ error }` and:
+- `console.error` the full error object with `{ businessId, hiringGoalId, challengeId, candidateProfileId }`.
+- Toast `t('business.level2.invite_failed', { message: error.message })` for generic failures (the existing specific mappings for `pipeline_locked` and duplicate-invitation stay).
+- Return without showing the success toast.
 
-### C. Error mapping + badge (carry over)
-- Map `pipeline_locked: Level 1 submission required` → "Il candidato non ha ancora completato la XIMA Core."
-- Map `pipeline_locked: Business must select Proceed to Level 2` → defensive toast (should be unreachable after B for submitted candidates).
-- Candidate-row "L1 in attesa di revisione" badge remains.
+No success toast unless the invitation row was actually returned.
 
-## Validation — row landing, not just toasts
+## i18n (it / en / es) — `src/i18n/locales/{it,en,es}.json`
 
-1. Pre-state: `SELECT count(*) FROM challenge_reviews WHERE invitation_id='f50fe834-0923-40f6-a1eb-767e3872f3da'` → 0.
-2. As Fiocchi, open candidate `5218a7a2-…` → "Crea e Invia Invito" on an L2 template.
-3. Post-state (live query):
-   - `SELECT id, business_id, challenge_id, invitation_id, candidate_profile_id, decision FROM challenge_reviews WHERE invitation_id='f50fe834-…'` → **exactly one row**, `decision='proceed_level2'`, `business_id=6217364b-…`, `challenge_id=29fc9923-…`, `candidate_profile_id=5218a7a2-…`.
-   - New L2 row in `challenge_invitations` for `(candidate_profile_id, hiring_goal_id, new_challenge_id)`. No `pipeline_locked`.
-4. Idempotency: retry "Crea e Invia Invito" with a different L2 template → still exactly 1 row in `challenge_reviews` for `f50fe834-…` (upsert on `invitation_id`).
-5. Negative test — invited-but-not-submitted: candidate X with L1 invitation but `challenge_submissions.status != 'submitted'`. Click L2 invite → review upsert is SKIPPED (no row written), `challenge_invitations` insert fails Gate A with `pipeline_locked: Level 1 submission required`, toast shown. **No advancement decision is recorded.** When X later submits L1, a fresh "Procedi allo Step Successivo" click is still required before any L2 invite can succeed.
-6. Negative test — no L1 at all: same outcome as (5).
-7. Swallow regression test: force a transient bad value in dev → destructive toast fires, level2 modal stays closed.
+Add under `business.level2`:
 
-Success criterion is the row landing in step 3 (or its absence in steps 5–6), NOT a toast.
+- `create_failed`: "Errore nella creazione della sfida di Livello 2: {{message}}" (it) / EN / ES equivalents.
+- `invite_failed`: "Errore nell'invio dell'invito di Livello 2: {{message}}" / EN / ES.
 
-## Files
-- `src/components/business/SubmissionDetailDrawer.tsx`
+The legacy `level2.create_failed` key is no longer referenced after the modal switch; leave it in place for now (other call sites may still use it) but the modal stops reading it.
+
+## Payloads (for the user's records)
+
+**business_challenges INSERT** (the only place L2 rows are created from this modal):
+```json
+{
+  "business_id": "<auth.uid()>",
+  "hiring_goal_id": "<goal>",
+  "title": "<template or custom>",
+  "description": "<...>",
+  "rubric": { "level": 2, "type": "role_based", ... },
+  "time_estimate_minutes": 45,
+  "status": "active",
+  "level": 2
+}
+```
+Returns: `id, level` (asserted == 2).
+
+**challenge_invitations INSERT** (unchanged shape, now error-checked):
+```json
+{
+  "business_id": "<auth.uid()>",
+  "hiring_goal_id": "<goal>",
+  "candidate_profile_id": "<cand>",
+  "challenge_id": "<newChallenge.id>",
+  "status": "invited",
+  "sent_via": ["in_app"],
+  "invite_token": "<uuid>"
+}
+```
+
+## Validation
+
+1. As Fiocchi on goal `eab2f3b2-…` / candidate `5218a7a2-…`, click "Crea e Invia Invito" on an L2 template. Expect either:
+   - Success: a new `business_challenges` row with `level=2` AND a `challenge_invitations` row landing.
+   - Failure: a toast whose description contains the actual Postgres `message` (RLS / FK / pipeline_locked text), and **no** `challenge_invitations` row.
+2. Force-fail test (dev): temporarily pass an invalid `business_id` → toast must show the RLS error message, not the generic key.
+3. Regression: success path still shows `business.level2.invite_sent`.
+
+## Scope
+
 - `src/components/business/Level2InviteModal.tsx`
-- `src/i18n/locales/{it,en,es}.json` — add `business.level2.review_failed`, `business.level2.pipeline_locked`, `business.level2.pipeline_locked_desc` if missing
+- `src/i18n/locales/it.json`, `en.json`, `es.json`
 
-No trigger, RLS, or schema changes. The lock holds for every candidate without a submitted L1.
-
-Awaiting approval to switch to build mode.
+No trigger / RLS / schema / migration changes.
