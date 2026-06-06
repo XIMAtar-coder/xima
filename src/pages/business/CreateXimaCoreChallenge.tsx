@@ -304,7 +304,7 @@ const CreateXimaCoreChallenge = () => {
 
       const { data: goalData, error: goalError } = await supabase
         .from('hiring_goal_drafts')
-        .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills')
+        .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills, ral_min, ral_max, ccnl, salary_currency')
         .eq('id', effectiveGoalId)
         .eq('business_id', user?.id)
         .single();
