@@ -432,14 +432,19 @@ Deno.serve(async (req) => {
 
     // ===== Multi-page scanning =====
     const pages = await fetchAllPages(website);
-    if (pages.length === 0 || pages.every(p => p.text.length < 100)) {
+    const hasUsableText = pages.some(p => p.text.length > 0);
+    const hasRegistrationContext = registrationContext.length > 0;
+    const hasName = !!company_name;
+    const websiteScanStatus: 'ok' | 'insufficient' = hasUsableText ? 'ok' : 'insufficient';
+
+    if (!hasUsableText && !hasRegistrationContext && !hasName) {
       return errorResponse(400, "INSUFFICIENT_CONTENT", "Could not extract enough content from the website. Please check the URL.");
     }
 
     const pageTypes = pages.map(p => p.pageType);
-    const pagesContext = pages.map(p =>
-      `=== ${p.pageType.toUpperCase()} PAGE (${p.url}) ===\n${p.text}`
-    ).join('\n\n');
+    const pagesContext = pages.length > 0
+      ? pages.map(p => `=== ${p.pageType.toUpperCase()} PAGE (${p.url}) ===\n${p.text}`).join('\n\n')
+      : "(Website content was limited or unavailable.)";
 
     // ===== Claude call =====
     const langOverride: Record<string, string> = {
@@ -448,8 +453,11 @@ Deno.serve(async (req) => {
       fr: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in FRENCH.`,
       de: `\n\nCRITICAL LANGUAGE INSTRUCTION: Write ALL text output fields in GERMAN.`,
     };
+    const degradedNote = websiteScanStatus === 'insufficient'
+      ? `\n\nNOTE: Website content was limited or unavailable. Base the profile primarily on the self-declared registration data above. Be conservative; do not invent specifics, employee counts, founding year, locations, or values that are not explicitly stated.`
+      : '';
     const systemPrompt = buildCompanyProfilePrompt(pageTypes);
-    const userMessage = `Analyze this company's website content and create their XIMA psychometric profile.\n\nCompany name: ${company_name}\nWebsite: ${website}${registrationContext}${langOverride[userLang] || ''}\n\n${pagesContext}`;
+    const userMessage = `Analyze this company's website content and create their XIMA psychometric profile.\n\nCompany name: ${company_name}\nWebsite: ${website}${registrationContext}${langOverride[userLang] || ''}${degradedNote}\n\n${pagesContext}`;
 
     const result = await callAnthropicApi({
       system: systemPrompt,
