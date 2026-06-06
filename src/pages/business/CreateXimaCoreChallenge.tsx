@@ -35,14 +35,20 @@ import {
   CheckCircle2,
   ChevronDown,
   Clock,
+  Compass,
+  Euro,
   Eye,
+  EyeOff,
   FileText,
+  Heart,
   Loader2,
   Lock,
+  MessageCircle,
   Rocket,
   Shield,
   Sparkles,
   Target,
+  Zap,
 } from 'lucide-react';
 
 interface HiringGoal {
