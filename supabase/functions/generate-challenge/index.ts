@@ -582,6 +582,24 @@ Restituisci SOLO JSON valido:
 
     const userPrompt = `Genera uno scenario L1 per il ruolo di "${roleTitle}" nel settore "${displayIndustry}". Lo scenario DEVE contenere riferimenti concreti a strumenti, normative, situazioni e attori tipici di questo specifico settore — come negli esempi sopra. Rispondi SOLO con il JSON.`;
 
+    // PART 5 — Blind-scope sanitizer & PART 3 — Intro context for the candidate.
+    const forbiddenTerms = [
+      businessProfile?.company_name,
+      ...(Array.isArray((businessProfile as any)?.metadata?.brand_aliases) ? (businessProfile as any).metadata.brand_aliases : []),
+    ].filter((s): s is string => typeof s === 'string' && s.trim().length >= 3);
+    const scrub = buildBlindSanitizer(forbiddenTerms);
+    const introContext = buildIntroContext({
+      displayIndustry,
+      companySize: businessProfile?.company_size || null,
+      growthStage: businessProfile?.growth_stage || null,
+      roleTitle,
+      taskDescription: typeof taskDescription === 'string' ? taskDescription : String(taskDescription ?? ''),
+      ralMin: (goal?.ral_min ?? goal?.salary_min) ?? null,
+      ralMax: (goal?.ral_max ?? goal?.salary_max) ?? null,
+      ccnl: goal?.ccnl ?? null,
+      currency: goal?.salary_currency || 'EUR',
+    });
+
     // ---- Intelligence Engine: check challenge pattern library first (FREE) ----
     const targetPillar = companyProfile?.pillar_vector
       ? Object.entries(companyProfile.pillar_vector as Record<string, number>).sort((a, b) => b[1] - a[1])[0]?.[0]
