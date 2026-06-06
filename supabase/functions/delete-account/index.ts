@@ -82,7 +82,7 @@ serve(async (req) => {
     if (deleteError) {
       console.error("[delete-account] RPC error:", deleteError);
       return new Response(
-        JSON.stringify({ error: `Failed to delete account data: ${deleteError.message}` }),
+        JSON.stringify({ error: "Failed to delete account data. Please contact support." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
