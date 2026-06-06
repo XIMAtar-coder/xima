@@ -560,7 +560,7 @@ ISTRUZIONI:
 6. NON usare frasi generiche come "un progetto importante", "stakeholder esterni", "risorse limitate".
 7. Lingua: ${promptLang}. ${langInstruction}
 8. NON includere domande.
-9. NON rivelare il nome dell'azienda.
+9. VALUTAZIONE ALLA CIECA: lo scenario e qualsiasi testo che il candidato vedrà NON deve MAI contenere il nome dell'azienda committente né nomi reali di clienti, concorrenti, fornitori o partner. Usa SEMPRE descrittori generici: "un grande operatore logistico", "un concorrente del settore", "un cliente importante del mercato EMEA", "un fornitore strategico". Il candidato non deve poter identificare l'azienda dal testo.
 
 Restituisci SOLO JSON valido:
 {
