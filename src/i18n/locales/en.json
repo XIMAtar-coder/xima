@@ -1377,6 +1377,11 @@
     }
   },
   "business": {
+    "level2": {
+      "pipeline_locked": "Pipeline Locked",
+      "pipeline_locked_desc": "The candidate must complete Level 1 (XIMA Core) before being invited to Level 2.",
+      "review_failed": "Could not record the advancement decision"
+    },
     "level3": {
       "already_invited": "Already invited to Level 3",
       "pipeline_locked": "Pipeline Locked",

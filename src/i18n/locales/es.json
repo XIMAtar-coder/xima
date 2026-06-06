@@ -2881,6 +2881,7 @@
       "invite_sent_desc": "{{name}} ha sido invitado al desafío Nivel 2.",
       "pipeline_locked": "Pipeline Bloqueado",
       "pipeline_locked_desc": "El candidato debe completar Nivel 1 (XIMA Core) antes de poder ser invitado al Nivel 2.",
+      "review_failed": "No se pudo registrar la decisión de avance",
       "xima_core_required": "XIMA Core Requerido",
       "xima_core_required_desc": "Debes activar XIMA Core (Nivel 1) antes de invitar al Nivel 2. Crea y activa primero un desafío XIMA Core."
     },

@@ -379,9 +379,11 @@ export function SubmissionDetailDrawer({
         followup_question: question || null,
       };
 
+      let persistedReviewId: string | null = currentReview?.id ?? null;
+
       if (currentReview) {
         // Update existing
-        await supabase
+        const { error: updateErr } = await supabase
           .from('challenge_reviews')
           .update({
             decision,
@@ -389,11 +391,16 @@ export function SubmissionDetailDrawer({
             updated_at: new Date().toISOString(),
           })
           .eq('id', currentReview.id);
+        if (updateErr) throw updateErr;
       } else {
-        // Insert new
-        await supabase
+        // Insert new — destructure error so Supabase-js failures aren't swallowed.
+        const { data: inserted, error: insertErr } = await supabase
           .from('challenge_reviews')
-          .insert(reviewData);
+          .insert(reviewData)
+          .select('id')
+          .single();
+        if (insertErr) throw insertErr;
+        persistedReviewId = inserted?.id ?? null;
       }
 
       // If follow-up decision, create/upsert challenge_followups
@@ -423,8 +430,9 @@ export function SubmissionDetailDrawer({
         }
       }
 
+      // Only flip local review state after the DB write actually succeeded.
       setCurrentReview({
-        id: currentReview?.id || 'temp',
+        id: persistedReviewId || 'temp',
         decision,
         followup_question: question || null,
         created_at: new Date().toISOString(),
@@ -441,17 +449,22 @@ export function SubmissionDetailDrawer({
       onReviewSaved?.(decision, question);
     } catch (error) {
       console.error('Error saving review:', error);
-      toast({ title: t('common.error'), variant: 'destructive' });
+      toast({
+        title: t('common.error'),
+        description: error instanceof Error ? error.message : undefined,
+        variant: 'destructive',
+      });
+      throw error;
     } finally {
       setSavingReview(false);
     }
   };
 
-  const handleShortlist = () => saveReview('shortlist');
-  const handlePass = () => saveReview('pass');
+  const handleShortlist = () => { saveReview('shortlist').catch(() => {}); };
+  const handlePass = () => { saveReview('pass').catch(() => {}); };
   const handleFollowup = () => {
     if (followupMode && followupQuestion.trim()) {
-      saveReview('followup', followupQuestion.trim());
+      saveReview('followup', followupQuestion.trim()).catch(() => {});
     } else {
       setFollowupMode(true);
     }
@@ -865,7 +878,12 @@ export function SubmissionDetailDrawer({
                             <Button 
                               variant="default"
                               onClick={async () => {
-                                await saveReview('proceed_level2');
+                                try {
+                                  await saveReview('proceed_level2');
+                                } catch {
+                                  // saveReview already surfaced a destructive toast; don't open the modal.
+                                  return;
+                                }
                                 setLevel2ModalOpen(true);
                               }}
                               disabled={savingReview || checkingLevel2}
