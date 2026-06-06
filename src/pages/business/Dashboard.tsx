@@ -187,7 +187,17 @@ const BusinessDashboard = () => {
         }
       });
       if (error) throw error;
-      toast({ title: t('business.dashboard.success'), description: t('business.dashboard.profile_generated') });
+      if (data?.website_scan_status === 'insufficient') {
+        toast({
+          title: t('business.dashboard.success'),
+          description: t(
+            'business.dashboard.profile_generated_partial',
+            'Non siamo riusciti a leggere bene il sito — abbiamo usato i dati che hai inserito; puoi modificare il profilo.'
+          ),
+        });
+      } else {
+        toast({ title: t('business.dashboard.success'), description: t('business.dashboard.profile_generated') });
+      }
       await loadCompanyProfile();
     } catch (error: any) {
       console.error('Error generating profile:', error);
