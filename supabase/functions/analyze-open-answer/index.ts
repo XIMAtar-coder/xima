@@ -558,12 +558,12 @@ Return ONLY the JSON object.`;
     }
 
     // ===== PILLAR TRAJECTORY =====
-    // Mindset (L1) submissions DESCRIBE the candidate to the company; they
-    // must NEVER modify the archetype, pillar_scores, or level. Only the
-    // free-text scoring path may persist trajectory deltas.
+    // L1 mindset NUDGES pillar scores (bounded by persistTrajectoryEvent caps) but
+    // MUST NOT change the archetype or trigger level-up. Archetype re-derivation
+    // happens only on the quarterly DNA cadence (separate codepath).
     let levelUpStatus: any = null;
-    if (!isMindset && user_id && typeof user_id === 'string' && pillarImpact && !nonAnswerCheck.isNonAnswer) {
-      const sourceType = scoring_context === 'l1_challenge' ? 'l1_challenge' as const
+    if (user_id && typeof user_id === 'string' && pillarImpact && !nonAnswerCheck.isNonAnswer) {
+      const sourceType = isMindset || scoring_context === 'l1_challenge' ? 'l1_challenge' as const
         : scoring_context === 'l2_challenge' ? 'l2_challenge' as const
         : 'open_answer' as const;
 
@@ -584,7 +584,8 @@ Return ONLY the JSON object.`;
           reasoning: parsedResult.pillar_reasoning || "",
         });
 
-        if (levelCheck?.eligible || levelCheck?.evolution_eligible) {
+        // Mindset NEVER returns level_up_status — archetype stays anchored.
+        if (!isMindset && (levelCheck?.eligible || levelCheck?.evolution_eligible)) {
           levelUpStatus = { eligible: levelCheck.eligible, evolution_eligible: levelCheck.evolution_eligible, current_level: levelCheck.current_level };
         }
       } catch (trajErr) {
@@ -624,8 +625,8 @@ Return ONLY the JSON object.`;
     }
 
     if (isMindset) {
-      // Mindset response intentionally omits level_up_status — L1 mindset
-      // submissions describe the candidate, they don't level the archetype.
+      // Mindset response intentionally omits level_up_status — the archetype
+      // stays anchored. We send a single qualitative cue; never numbers.
       return jsonResponse({
         score_total: finalScore,
         quality_label: qualityLabel,
@@ -633,6 +634,7 @@ Return ONLY the JSON object.`;
         scoring_context: 'l1_challenge',
         signals: mindsetSignals,
         non_answer_detected: false,
+        growth_cue: 'xima_strengthened',
       });
     }
 

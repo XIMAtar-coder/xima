@@ -22,6 +22,21 @@ export type DayGesture = {
   label: string;
 };
 
+export type IntroContext = {
+  /** Sector + 1-line descriptor. NEVER the company name. */
+  company_descriptor?: string;
+  role_title?: string;
+  role_summary?: string;
+  compensation?: {
+    ral_min?: number | null;
+    ral_max?: number | null;
+    ccnl?: string | null;
+    currency?: string;
+  };
+  /** Qualitative only — no numbers, no level promises. */
+  growth_line?: string;
+};
+
 export type MindsetConfig = {
   experience: 'mindset';
   guide?: {
@@ -36,6 +51,7 @@ export type MindsetConfig = {
     items?: DayItem[];
     gestures?: DayGesture[];
   };
+  intro_context?: IntroContext;
 };
 
 export type InstinctChoice = { card_id: string; choice: 'a' | 'b'; facet: string };

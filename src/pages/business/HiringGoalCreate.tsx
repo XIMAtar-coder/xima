@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import SuggestFieldButton from '@/components/business/SuggestFieldButton';
+import { CCNL_OPTIONS, CCNL_HELPER_IT } from '@/lib/business/ccnl';
 
 
 const TOTAL_STEPS = 5;
@@ -31,6 +32,9 @@ interface FormData {
   salary_max: number;
   salary_currency: string;
   salary_period: string;
+  ral_min: number;
+  ral_max: number;
+  ccnl: string;
   years_experience_min: number | null;
   years_experience_max: number | null;
   education_level: string;
@@ -82,6 +86,9 @@ const HiringGoalCreate = () => {
     salary_max: 0,
     salary_currency: 'EUR',
     salary_period: 'yearly',
+    ral_min: 0,
+    ral_max: 0,
+    ccnl: '',
     years_experience_min: null,
     years_experience_max: null,
     education_level: '',
@@ -132,6 +139,9 @@ const HiringGoalCreate = () => {
         salary_max: raw.salary_max ? Math.round(raw.salary_max) : 0,
         salary_currency: raw.salary_currency || 'EUR',
         salary_period: 'yearly',
+        ral_min: raw.salary_min ? Math.round(raw.salary_min) : 0,
+        ral_max: raw.salary_max ? Math.round(raw.salary_max) : 0,
+        ccnl: raw.ccnl || '',
         years_experience_min: raw.years_experience_min ?? null,
         years_experience_max: raw.years_experience_max ?? null,
         education_level: raw.education_level || '',
@@ -179,6 +189,9 @@ const HiringGoalCreate = () => {
           salary_max: formData.salary_max,
           salary_currency: formData.salary_currency,
           salary_period: formData.salary_period,
+          ral_min: formData.ral_min || null,
+          ral_max: formData.ral_max || null,
+          ccnl: formData.ccnl || null,
           status: isXimaHr ? 'active' : 'draft',
           required_skills: formData.required_skills as any,
           nice_to_have_skills: formData.nice_to_have_skills as any,
@@ -804,6 +817,44 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
           </button>
         </div>
       </div>
+
+      {/* PART 1 — Trasparenza retributiva (D.Lgs. 96/2026, in vigore dal 7 giugno 2026) */}
+      <div className="pt-2">
+        <label className="text-sm font-medium text-foreground mb-2 block">
+          Trasparenza retributiva — RAL e CCNL <span className="text-destructive">*</span>
+        </label>
+        <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-center mb-2">
+          <Input
+            type="number"
+            min={0}
+            step={1000}
+            value={formData.ral_min || ''}
+            onChange={(e) => updateField('ral_min', Number(e.target.value))}
+            placeholder="RAL min (€/anno)"
+          />
+          <span className="text-muted-foreground">—</span>
+          <Input
+            type="number"
+            min={0}
+            step={1000}
+            value={formData.ral_max || ''}
+            onChange={(e) => updateField('ral_max', Number(e.target.value))}
+            placeholder="RAL max (€/anno)"
+          />
+        </div>
+        <select
+          value={formData.ccnl}
+          onChange={(e) => updateField('ccnl', e.target.value)}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none"
+        >
+          <option value="">— Seleziona CCNL —</option>
+          {CCNL_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+        <p className="text-xs text-muted-foreground mt-2">{CCNL_HELPER_IT}</p>
+      </div>
+
 
       {/* Review */}
       <div className="pt-6 border-t">

@@ -27,6 +27,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
 import { XIMA_CORE_CHALLENGE } from '@/lib/challenges/ximaCoreChallenge';
+import { labelForCcnl } from '@/lib/business/ccnl';
 import {
   ArrowLeft,
   Brain,
@@ -34,14 +35,20 @@ import {
   CheckCircle2,
   ChevronDown,
   Clock,
+  Compass,
+  Euro,
   Eye,
+  EyeOff,
   FileText,
+  Heart,
   Loader2,
   Lock,
+  MessageCircle,
   Rocket,
   Shield,
   Sparkles,
   Target,
+  Zap,
 } from 'lucide-react';
 
 interface HiringGoal {
@@ -54,6 +61,10 @@ interface HiringGoal {
   country: string | null;
   required_skills: Json | null;
   nice_to_have_skills: Json | null;
+  ral_min?: number | null;
+  ral_max?: number | null;
+  ccnl?: string | null;
+  salary_currency?: string | null;
 }
 
 interface CompanyProfile {
@@ -300,7 +311,7 @@ const CreateXimaCoreChallenge = () => {
 
       const { data: goalData, error: goalError } = await supabase
         .from('hiring_goal_drafts')
-        .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills')
+        .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills, ral_min, ral_max, ccnl, salary_currency')
         .eq('id', effectiveGoalId)
         .eq('business_id', user?.id)
         .single();
@@ -648,36 +659,150 @@ const CreateXimaCoreChallenge = () => {
           </div>
         </section>
 
+        {/* PART 2 — L'esperienza del candidato (4-step preview) */}
         <section className="space-y-4">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="space-y-2">
               <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
-                <FileText className="h-5 w-5 text-primary" />
-                {t('challenge.xima_core.questions_title')}
+                <Sparkles className="h-5 w-5 text-primary" />
+                L'esperienza del candidato
               </h2>
-              <p className="text-sm text-muted-foreground">{t('challenge.xima_core.questions_subtitle')}</p>
+              <p className="text-sm text-muted-foreground">Standardizzato · confronto equo</p>
             </div>
-            <Badge variant="outline" className="gap-1"><Lock className="h-3 w-3" />{t('challenge.xima_core.questions_fixed_badge')}</Badge>
           </div>
 
-          <div className="space-y-3">
-            {localizedQuestions.map((question, idx) => (
-              <Card key={question.id} className="border-l-2 border-l-primary/70 bg-card/80 shadow-sm">
-                <CardContent className="p-4">
-                  <div className="flex gap-4">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-                      {idx + 1}
-                    </div>
-                    <div className="space-y-1">
-                      <h3 className="font-semibold text-foreground">{question.title}</h3>
-                      <p className="text-sm leading-6 text-muted-foreground">{question.text}</p>
-                    </div>
+          <div className="grid gap-3 sm:grid-cols-4">
+            {[
+              { icon: Zap, title: 'Istinto', desc: 'Carte rapide, scelte di pancia' },
+              { icon: Compass, title: 'La giornata', desc: 'Micro-decisioni in una giornata simulata' },
+              { icon: MessageCircle, title: 'Debrief con Aria', desc: 'Riflessione guidata, voce o testo' },
+              { icon: Heart, title: 'Esito', desc: 'Sfaccettature accese, nessun punteggio visibile' },
+            ].map((s, i) => (
+              <Card key={i} className="border-border/60 bg-card/80 shadow-sm">
+                <CardContent className="p-4 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">{i + 1}</div>
+                    <s.icon className="h-4 w-4 text-primary" />
                   </div>
+                  <h3 className="text-sm font-semibold text-foreground">{s.title}</h3>
+                  <p className="text-xs text-muted-foreground leading-5">{s.desc}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
         </section>
+
+        {/* PART 2 — Cosa misura: 5 pilastri + 5 signal */}
+        <section className="space-y-4">
+          <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
+            <Target className="h-5 w-5 text-primary" />
+            Cosa misura
+          </h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card className="bg-card/80">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">5 Pilastri</CardTitle>
+                <CardDescription>I tratti di identità professionale</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm text-foreground">
+                {[
+                  { p: 'Drive', d: 'Energia, iniziativa, perseveranza' },
+                  { p: 'Potenza computazionale', d: 'Analisi, rigore, ragionamento strutturato' },
+                  { p: 'Comunicazione', d: 'Chiarezza, ascolto, persuasione' },
+                  { p: 'Creatività', d: 'Originalità, esplorazione, sintesi nuove' },
+                  { p: 'Conoscenza', d: 'Padronanza del dominio e contesto' },
+                ].map((x) => (
+                  <div key={x.p} className="flex gap-2">
+                    <span className="font-semibold min-w-[170px]">{x.p}</span>
+                    <span className="text-muted-foreground">{x.d}</span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+            <Card className="bg-card/80">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">5 Tipi di signal</CardTitle>
+                <CardDescription>Lenti qualitative, niente punteggi al candidato</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm text-foreground">
+                {[
+                  { s: 'Framing', d: 'Come legge il problema' },
+                  { s: 'Decision quality', d: 'Qualità del ragionamento decisionale' },
+                  { s: 'Execution bias', d: 'Spinta all\'azione concreta' },
+                  { s: 'Impact thinking', d: 'Visione del risultato e delle priorità' },
+                  { s: 'Collaboration', d: 'Come coinvolge persone e contesti' },
+                ].map((x) => (
+                  <div key={x.s} className="flex gap-2">
+                    <span className="font-semibold min-w-[150px]">{x.s}</span>
+                    <span className="text-muted-foreground">{x.d}</span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* PART 2 — Valutazione alla cieca */}
+        <section className="space-y-3">
+          <Card className="border-primary/30 bg-primary/5">
+            <CardContent className="p-5 flex items-start gap-4">
+              <div className="rounded-xl bg-primary/15 p-3">
+                <EyeOff className="h-6 w-6 text-primary" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-lg font-semibold text-foreground">Valutazione alla cieca</h3>
+                <p className="text-sm text-muted-foreground leading-6">
+                  Il candidato non vede mai il nome della tua azienda nei Livelli 1 e 2 — solo il settore e una descrizione neutra del ruolo.
+                  Riduce i bias e rende il confronto fra candidati davvero equo.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* PART 2 — Trasparenza retributiva */}
+        <section className="space-y-3">
+          <Card className="bg-card/80">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Euro className="h-4 w-4 text-primary" />
+                Trasparenza retributiva
+              </CardTitle>
+              <CardDescription>Obbligatoria dal 7 giugno 2026 (D.Lgs. 96/2026)</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm text-foreground space-y-2">
+              {(hiringGoal?.ral_min || hiringGoal?.ral_max || hiringGoal?.ccnl) ? (
+                <>
+                  <div>
+                    <span className="text-muted-foreground">RAL: </span>
+                    <span className="font-semibold">
+                      {hiringGoal?.ral_min ? `€${hiringGoal.ral_min.toLocaleString('it-IT')}` : '—'}
+                      {' – '}
+                      {hiringGoal?.ral_max ? `€${hiringGoal.ral_max.toLocaleString('it-IT')}` : '—'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">CCNL: </span>
+                    <span className="font-semibold">{labelForCcnl(hiringGoal?.ccnl)}</span>
+                  </div>
+                </>
+              ) : (
+                <p className="text-amber-600">
+                  Manca RAL o CCNL sull'obiettivo di assunzione.{' '}
+                  {goalId && (
+                    <button
+                      onClick={() => navigate(`/business/goals/${goalId}/settings`)}
+                      className="underline hover:text-foreground"
+                    >
+                      Modifica l'obiettivo
+                    </button>
+                  )}
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </section>
+
 
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold text-foreground">{t('challenge.xima_core.config_title')}</h2>
@@ -767,14 +892,14 @@ const CreateXimaCoreChallenge = () => {
             <Card className="border-l-4 border-l-primary">
               <CardContent className="space-y-5 p-6">
                 <div className="space-y-1">
-                  <h3 className="text-xl font-semibold text-foreground">{t('challenge.xima_core.title')}</h3>
+                  <h3 className="text-xl font-semibold text-foreground">Anteprima esperienza mindset</h3>
                   <p className="text-sm text-muted-foreground">
-                    {roleTitle}{businessProfile?.company_name ? ` — ${businessProfile.company_name}` : ''}
+                    Quello che il candidato vede — senza il nome della tua azienda.
                   </p>
                 </div>
 
-                <div className="rounded-md bg-secondary/50 p-3 text-sm leading-6 text-foreground">
-                  {t('challenge.xima_core.candidate_intro')}
+                <div className="rounded-md bg-secondary/50 p-3 text-sm leading-6 text-foreground italic">
+                  {(generatedMindset as any)?.guide?.intro || 'Ciao, sono Aria. Non ci sono risposte giuste — segui l\'istinto e ti accompagno io.'}
                 </div>
 
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -782,31 +907,36 @@ const CreateXimaCoreChallenge = () => {
                   {t('challenge.xima_core.time_estimate_value', { minutes: generatedTimeEstimate || XIMA_CORE_CHALLENGE.timeEstimateMinutes })}
                 </div>
 
-                <div className="border-t border-border pt-4 space-y-2">
-                  <h4 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                    {t('challenge.xima_core.scenario_label')}
-                  </h4>
-                  <p className="whitespace-pre-wrap text-[15px] leading-7 text-foreground">{scenario}</p>
-                </div>
-
-                <div className="border-t border-border pt-4 space-y-4">
-                  {localizedQuestions.map((q, idx) => (
-                    <div key={q.id} className="space-y-2">
-                      <h4 className="font-semibold text-foreground">{idx + 1}. {q.title}</h4>
-                      <p className="text-sm text-muted-foreground">{q.text}</p>
-                      <Textarea
-                        readOnly
-                        disabled
-                        value=""
-                        placeholder=""
-                        className="min-h-[90px] cursor-not-allowed opacity-70"
-                      />
+                <div className="border-t border-border pt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {[
+                    { n: 1, t: 'Istinto', d: 'Carte rapide' },
+                    { n: 2, t: 'La giornata', d: 'Micro-decisioni' },
+                    { n: 3, t: 'Debrief', d: 'Voce o testo con Aria' },
+                    { n: 4, t: 'Esito', d: 'Sfaccettature accese' },
+                  ].map((s) => (
+                    <div key={s.n} className="rounded-lg border border-border/60 bg-card/80 p-3 text-center space-y-1">
+                      <div className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">{s.n}</div>
+                      <p className="text-sm font-semibold text-foreground">{s.t}</p>
+                      <p className="text-[11px] text-muted-foreground">{s.d}</p>
                     </div>
                   ))}
                 </div>
 
+                {Array.isArray((generatedMindset as any)?.instinct_cards) && (generatedMindset as any).instinct_cards.length > 0 && (
+                  <div className="border-t border-border pt-4 space-y-3">
+                    <h4 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Esempio · prima carta istinto</h4>
+                    <div className="rounded-lg border border-border/60 bg-card/80 p-4 space-y-2">
+                      <p className="text-sm text-foreground">{(generatedMindset as any).instinct_cards[0]?.prompt}</p>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="rounded-md bg-secondary/40 p-2">A · {(generatedMindset as any).instinct_cards[0]?.a?.label}</div>
+                        <div className="rounded-md bg-secondary/40 p-2">B · {(generatedMindset as any).instinct_cards[0]?.b?.label}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <Button disabled className="w-full" size="lg">
-                  {t('challenge.xima_core.preview_submit_disabled')}
+                  Anteprima · invio disabilitato
                 </Button>
               </CardContent>
             </Card>

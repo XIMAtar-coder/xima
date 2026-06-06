@@ -218,6 +218,7 @@ Mansione: ${ctx.taskDescription}
 Competenze: ${ctx.requiredSkills} · Livello: ${ctx.experienceLevel} · Modalità: ${ctx.workModel}
 
 REGOLE FONDAMENTALI:
+- VALUTAZIONE ALLA CIECA: NON menzionare MAI il nome dell'azienda committente ("${ctx.companyName}") né nomi reali di clienti, concorrenti, fornitori o partner. Usa solo descrittori generici ("un cliente importante", "un fornitore strategico", "un concorrente del settore"). Il candidato non deve poter identificare l'azienda.
 - TUTTO il contenuto deve essere SPECIFICO per questo ruolo e settore. MAI generico da ufficio. Esempio: per un Geometra in cantiere il lunedì è un VERO cantiere (ponteggi, DL, ASL, fornitori, betoniere, verbale, computo metrico), non una riunione in open space. Per un Lead Engineer automotive il lunedì parla di BMS, CAN, OEM, ISO 26262.
 - 3 instinct_cards: dilemmi di pancia, due opzioni brevi e tangibili nel mondo del ruolo.
 - Le "facet" sono etichette UMANE e CORTE (2–4 parole), es. "Propensione all'azione", "Prudente, basso rischio", "Decide d'istinto", "Cerca consenso", "Focus sul risultato", "Focus sulle persone", "Pragmatico", "Visione lunga". Mai sigle psicometriche, mai numeri.
@@ -286,8 +287,91 @@ Restituisci SOLO JSON valido con ESATTAMENTE questa forma (nessun commento, ness
 }
 
 // =====================================================
+// PART 5 — Blind-scope sanitizer.
+// Strips company name / known aliases / third-party names from candidate-facing strings.
+// Business-side payloads keep the unredacted scenario.
+// =====================================================
+function buildBlindSanitizer(forbiddenTerms: string[]): (s: string) => string {
+  const cleaned = Array.from(new Set(
+    forbiddenTerms
+      .map((t) => (typeof t === 'string' ? t.trim() : ''))
+      .filter((t) => t.length >= 3),
+  ));
+  if (cleaned.length === 0) return (s) => s;
+  // Sort by length desc so longer matches win.
+  cleaned.sort((a, b) => b.length - a.length);
+  const escaped = cleaned.map((t) => t.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'));
+  const re = new RegExp(`\\b(${escaped.join('|')})\\b`, 'gi');
+  return (s) => (typeof s === 'string' ? s.replace(re, "un'azienda del settore") : s);
+}
+
+function sanitizeMindsetBlock(mindset: Record<string, unknown> | null, scrub: (s: string) => string, correlationId: string): Record<string, unknown> | null {
+  if (!mindset) return mindset;
+  let hits = 0;
+  const count = (orig: string, next: string) => { if (orig !== next) hits++; return next; };
+  const m: any = JSON.parse(JSON.stringify(mindset));
+  if (m.guide) {
+    if (typeof m.guide.intro === 'string') m.guide.intro = count(m.guide.intro, scrub(m.guide.intro));
+    if (typeof m.guide.debrief_instruction === 'string') m.guide.debrief_instruction = count(m.guide.debrief_instruction, scrub(m.guide.debrief_instruction));
+    if (typeof m.guide.resolve_line === 'string') m.guide.resolve_line = count(m.guide.resolve_line, scrub(m.guide.resolve_line));
+  }
+  if (Array.isArray(m.instinct_cards)) {
+    for (const c of m.instinct_cards) {
+      if (typeof c.prompt === 'string') c.prompt = count(c.prompt, scrub(c.prompt));
+    }
+  }
+  if (m.day) {
+    if (typeof m.day.title === 'string') m.day.title = count(m.day.title, scrub(m.day.title));
+    if (Array.isArray(m.day.items)) {
+      for (const it of m.day.items) {
+        if (typeof it.body === 'string') it.body = count(it.body, scrub(it.body));
+        if (typeof it.source === 'string') it.source = count(it.source, scrub(it.source));
+      }
+    }
+  }
+  if (hits > 0) {
+    console.warn('[generate-challenge] blind-scope sanitizer redacted candidate-facing strings', JSON.stringify({ correlation_id: correlationId, hits }));
+  }
+  return m;
+}
+
+function buildIntroContext(args: {
+  displayIndustry: string;
+  companySize?: string | null;
+  growthStage?: string | null;
+  roleTitle: string;
+  taskDescription: string;
+  ralMin: number | null;
+  ralMax: number | null;
+  ccnl: string | null;
+  currency: string;
+}): Record<string, unknown> {
+  const sizeLabel = args.companySize ? `, ${args.companySize}` : '';
+  const stageLabel = args.growthStage ? `, in fase di ${args.growthStage}` : '';
+  const desc = `Un'azienda del settore ${args.displayIndustry}${sizeLabel}${stageLabel}.`;
+  const summary = (args.taskDescription && args.taskDescription !== 'Non specificato')
+    ? args.taskDescription.slice(0, 240)
+    : '';
+  return {
+    company_descriptor: desc,
+    role_title: args.roleTitle || null,
+    role_summary: summary || null,
+    compensation: {
+      ral_min: args.ralMin,
+      ral_max: args.ralMax,
+      ccnl: args.ccnl,
+      currency: args.currency || 'EUR',
+    },
+    growth_line:
+      'Completare questa sfida rafforza il tuo XIMAtar e rende il tuo profilo più rilevante per le aziende.',
+  };
+}
+
+// =====================================================
 // Main handler
 // =====================================================
+
+
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -343,7 +427,7 @@ serve(async (req) => {
     if (body.hiring_goal_id) {
       const { data } = await supabaseAdmin
         .from('hiring_goal_drafts')
-        .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills')
+        .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills, salary_min, salary_max, salary_currency, ral_min, ral_max, ccnl')
         .eq('id', body.hiring_goal_id)
         .eq('business_id', businessId)
         .maybeSingle();
@@ -477,7 +561,7 @@ ISTRUZIONI:
 6. NON usare frasi generiche come "un progetto importante", "stakeholder esterni", "risorse limitate".
 7. Lingua: ${promptLang}. ${langInstruction}
 8. NON includere domande.
-9. NON rivelare il nome dell'azienda.
+9. VALUTAZIONE ALLA CIECA: lo scenario e qualsiasi testo che il candidato vedrà NON deve MAI contenere il nome dell'azienda committente né nomi reali di clienti, concorrenti, fornitori o partner. Usa SEMPRE descrittori generici: "un grande operatore logistico", "un concorrente del settore", "un cliente importante del mercato EMEA", "un fornitore strategico". Il candidato non deve poter identificare l'azienda dal testo.
 
 Restituisci SOLO JSON valido:
 {
@@ -497,6 +581,24 @@ Restituisci SOLO JSON valido:
 }`;
 
     const userPrompt = `Genera uno scenario L1 per il ruolo di "${roleTitle}" nel settore "${displayIndustry}". Lo scenario DEVE contenere riferimenti concreti a strumenti, normative, situazioni e attori tipici di questo specifico settore — come negli esempi sopra. Rispondi SOLO con il JSON.`;
+
+    // PART 5 — Blind-scope sanitizer & PART 3 — Intro context for the candidate.
+    const forbiddenTerms = [
+      businessProfile?.company_name,
+      ...(Array.isArray((businessProfile as any)?.metadata?.brand_aliases) ? (businessProfile as any).metadata.brand_aliases : []),
+    ].filter((s): s is string => typeof s === 'string' && s.trim().length >= 3);
+    const scrub = buildBlindSanitizer(forbiddenTerms);
+    const introContext = buildIntroContext({
+      displayIndustry,
+      companySize: businessProfile?.company_size || null,
+      growthStage: businessProfile?.growth_stage || null,
+      roleTitle,
+      taskDescription: typeof taskDescription === 'string' ? taskDescription : String(taskDescription ?? ''),
+      ralMin: (goal?.ral_min ?? goal?.salary_min) ?? null,
+      ralMax: (goal?.ral_max ?? goal?.salary_max) ?? null,
+      ccnl: goal?.ccnl ?? null,
+      currency: goal?.salary_currency || 'EUR',
+    });
 
     // ---- Intelligence Engine: check challenge pattern library first (FREE) ----
     const targetPillar = companyProfile?.pillar_vector
@@ -527,7 +629,10 @@ Restituisci SOLO JSON valido:
               requiredSkills, experienceLevel, workModel,
               promptLang, langInstruction, locale, correlationId,
             });
-            return jsonResponse({ ...validated, context_tag: contextTag || validated.context_tag, used_fallback: false, _intelligence: { source: "database", confidence: dbDecision.confidence }, mindset });
+            const safeScenario = scrub(validated.scenario);
+            const safeMindset = sanitizeMindsetBlock(mindset, scrub, correlationId);
+            const enrichedMindset = safeMindset ? { ...safeMindset, intro_context: introContext } : { experience: 'mindset', intro_context: introContext };
+            return jsonResponse({ ...validated, scenario: safeScenario, context_tag: contextTag || validated.context_tag, used_fallback: false, _intelligence: { source: "database", confidence: dbDecision.confidence }, mindset: enrichedMindset });
           }
         }
       }
@@ -647,7 +752,10 @@ Restituisci SOLO JSON valido:
         promptLang, langInstruction, locale, correlationId,
       });
 
-      return jsonResponse({ ...validated, context_tag: contextTag || validated.context_tag, used_fallback: false, is_fallback: responseIsFallback, mindset });
+      const safeScenario = scrub(validated.scenario);
+      const safeMindset = sanitizeMindsetBlock(mindset, scrub, correlationId);
+      const enrichedMindset = safeMindset ? { ...safeMindset, intro_context: introContext } : { experience: 'mindset', intro_context: introContext };
+      return jsonResponse({ ...validated, scenario: safeScenario, context_tag: contextTag || validated.context_tag, used_fallback: false, is_fallback: responseIsFallback, mindset: enrichedMindset });
 
     } catch (e) {
       if (e instanceof AnthropicError) {

@@ -3,7 +3,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Sparkles } from 'lucide-react';
-import { DayGesture, DayItem, DayLogEntry, DebriefEntry } from './types';
+import { DayGesture, DayItem, DebriefEntry } from './types';
+import { VoiceDictateButton } from '@/components/candidate/audio/VoiceDictateButton';
+import { AriaSpeakButton } from '@/components/candidate/audio/AriaSpeakButton';
 
 type Props = {
   guideName: string;
@@ -28,15 +30,22 @@ export function GuideDebrief({ guideName, focusItem, chosenGesture, onComplete }
     setTimeout(() => onComplete([entry]), 1100);
   };
 
+  const appendDictated = (text: string) => {
+    setAnswer((prev) => (prev.trim().length > 0 ? `${prev} ${text}` : text));
+  };
+
   return (
     <Card>
       <CardContent className="py-8 space-y-5">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
             <Sparkles className="h-5 w-5 text-primary" />
           </div>
-          <div>
-            <p className="text-sm text-muted-foreground">{guideName}</p>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-muted-foreground">{guideName}</p>
+              <AriaSpeakButton text={question} messageKey={`debrief:${focusItem?.id ?? 'q'}`} />
+            </div>
             <p className="text-foreground leading-relaxed">{question}</p>
           </div>
         </div>
@@ -48,7 +57,13 @@ export function GuideDebrief({ guideName, focusItem, chosenGesture, onComplete }
           rows={3}
           disabled={ack}
         />
-        <p className="text-xs text-muted-foreground">{answer.trim().length} caratteri · min. 20</p>
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <p className="text-xs text-muted-foreground">{answer.trim().length} caratteri · min. 20</p>
+          <VoiceDictateButton onAppend={appendDictated} disabled={ack} />
+        </div>
+        <p className="text-[11px] text-muted-foreground">
+          L'audio viene trascritto e poi eliminato — conserviamo solo le parole.
+        </p>
 
         {!ack ? (
           <Button onClick={handleSubmit} disabled={!canSubmit}>Continua</Button>
