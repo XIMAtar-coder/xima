@@ -217,6 +217,26 @@ const BusinessCandidates = () => {
           )}
         </div>
 
+        {/* Inline gate: selected goal has no active XIMA Core challenge yet */}
+        {selectedGoalId && !l1ReadyGoalIds.has(selectedGoalId) && (
+          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 flex flex-col md:flex-row md:items-center gap-3">
+            <div className="flex-1 text-sm text-foreground">
+              <div className="font-medium">{t('candidate_pool.no_l1_title', 'Crea prima una sfida XIMA Core')}</div>
+              <div className="text-muted-foreground mt-0.5">
+                {t('candidate_pool.no_l1_desc', 'Questo obiettivo non ha ancora una sfida XIMA Core attiva. Creala per inviare candidati.')}
+              </div>
+            </div>
+            <Button
+              size="sm"
+              onClick={() => navigate(`/business/challenges/create-xima-core?goal=${selectedGoalId}`)}
+            >
+              {t('candidate_pool.create_xima_core', 'Crea sfida XIMA Core')}
+            </Button>
+          </div>
+        )}
+
+
+
 
 
         {/* Archetype chips */}
