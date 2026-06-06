@@ -3943,6 +3943,33 @@
       "risks_helper": "What are the biggest uncertainties?",
       "questions_label": "Questions for the Company (optional)",
       "questions_placeholder": "Given the scenario, what would you want to clarify before starting?"
+    },
+    "l2_conversation": {
+      "intro_kicker": "A conversation, not a test",
+      "intro_title": "You’re talking with {{name}}",
+      "counterpart_label": "Your counterpart",
+      "blind_badge": "Blind evaluation",
+      "scenario_label": "The situation",
+      "frame_line": "This isn’t a scored test — it’s a real exchange. Your XIMAtar sharpens as you speak.",
+      "intro_cta": "Start the conversation",
+      "thread_label": "Conversation",
+      "with": "With {{name}}",
+      "composer_placeholder": "Type your reply to {{name}}…",
+      "want_to_conclude": "I want to wrap up",
+      "send": "Send",
+      "send_failed": "Couldn’t send",
+      "send_failed_hint": "Try again in a moment.",
+      "submit_failed": "Submission failed",
+      "finish_submit": "Finish and submit",
+      "done_max": "You’ve reached the end of the conversation. Submit when you’re ready.",
+      "done_concludi": "The conversation has ended. Submit when you’re ready.",
+      "resolve_kicker": "Conversation closed",
+      "resolve_title": "Your XIMAtar has grown stronger",
+      "resolve_body": "You held a real exchange with {{name}}. Every reply sharpened facets of your XIMAtar.",
+      "shared_with_company": "Shared with the company.",
+      "progress_label": "XIMAtar refining",
+      "progress_hint": "L2 ✓ — the next level unlocks when the company revisits your profile.",
+      "back_to_profile": "Back to profile"
     }
   },
   "signals": {
