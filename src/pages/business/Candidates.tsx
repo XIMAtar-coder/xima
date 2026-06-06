@@ -123,10 +123,19 @@ const BusinessCandidates = () => {
     if (!user?.id) return;
     if (!selectedGoalId) {
       toast({
-        title: t('candidate_pool.pick_goal_title', 'Pick a hiring goal first'),
-        description: t('candidate_pool.pick_goal_desc', 'Select one of your hiring goals to send an L1 invitation.'),
+        title: t('candidate_pool.pick_goal_title', 'Seleziona prima un obiettivo di assunzione'),
+        description: t('candidate_pool.pick_goal_desc', 'Scegli uno dei tuoi obiettivi per inviare l\'invito.'),
         variant: 'destructive',
       });
+      return;
+    }
+    // Pre-check: the selected goal must already have an active L1 XIMA Core challenge.
+    if (!l1ReadyGoalIds.has(selectedGoalId)) {
+      toast({
+        title: t('candidate_pool.no_l1_title', 'Crea prima una sfida XIMA Core'),
+        description: t('candidate_pool.no_l1_desc', 'Questo obiettivo non ha ancora una sfida XIMA Core attiva. Creala per inviare candidati.'),
+      });
+      navigate(`/business/challenges/create-xima-core?goal=${selectedGoalId}`);
       return;
     }
     try {
@@ -135,11 +144,21 @@ const BusinessCandidates = () => {
         p_hiring_goal_id: selectedGoalId,
       } as any);
       if (error) throw error;
-      toast({ title: t('business.candidates.invitation_sent', 'Invitation sent') });
+      toast({ title: t('business.candidates.invitation_sent', 'Invito inviato') });
     } catch (err: any) {
+      const msg = String(err?.message || '');
+      // Backstop: the RPC guarantees no NULL-challenge invitation can be written.
+      if (msg.includes('no_xima_core_challenge')) {
+        toast({
+          title: t('candidate_pool.no_l1_title', 'Crea prima una sfida XIMA Core'),
+          description: t('candidate_pool.no_l1_desc', 'Questo obiettivo non ha ancora una sfida XIMA Core attiva. Creala per inviare candidati.'),
+        });
+        navigate(`/business/challenges/create-xima-core?goal=${selectedGoalId}`);
+        return;
+      }
       toast({
-        title: t('common.error', 'Error'),
-        description: err?.message || t('candidate_pool.invite_failed', 'Could not send invitation'),
+        title: t('common.error', 'Errore'),
+        description: msg || t('candidate_pool.invite_failed', 'Impossibile inviare l\'invito'),
         variant: 'destructive',
       });
     }
