@@ -3097,6 +3097,7 @@ export type Database = {
           ai_suggested_ximatar: string | null
           business_id: string
           candidate_count: number | null
+          ccnl: string | null
           challenge_count: number | null
           city_region: string | null
           closed_at: string | null
@@ -3113,6 +3114,8 @@ export type Database = {
           languages: Json | null
           nice_to_have_skills: Json | null
           original_seniority: string | null
+          ral_max: number | null
+          ral_min: number | null
           required_skills: Json | null
           role_title: string | null
           salary_benchmark_json: Json | null
@@ -3132,6 +3135,7 @@ export type Database = {
           ai_suggested_ximatar?: string | null
           business_id: string
           candidate_count?: number | null
+          ccnl?: string | null
           challenge_count?: number | null
           city_region?: string | null
           closed_at?: string | null
@@ -3148,6 +3152,8 @@ export type Database = {
           languages?: Json | null
           nice_to_have_skills?: Json | null
           original_seniority?: string | null
+          ral_max?: number | null
+          ral_min?: number | null
           required_skills?: Json | null
           role_title?: string | null
           salary_benchmark_json?: Json | null
@@ -3167,6 +3173,7 @@ export type Database = {
           ai_suggested_ximatar?: string | null
           business_id?: string
           candidate_count?: number | null
+          ccnl?: string | null
           challenge_count?: number | null
           city_region?: string | null
           closed_at?: string | null
@@ -3183,6 +3190,8 @@ export type Database = {
           languages?: Json | null
           nice_to_have_skills?: Json | null
           original_seniority?: string | null
+          ral_max?: number | null
+          ral_min?: number | null
           required_skills?: Json | null
           role_title?: string | null
           salary_benchmark_json?: Json | null
@@ -3514,6 +3523,7 @@ export type Database = {
           ai_suggested_ximatar: string | null
           benefits: string | null
           business_id: string
+          ccnl: string | null
           content_html: string | null
           content_json: Json | null
           created_at: string
@@ -3530,6 +3540,8 @@ export type Database = {
           locale: string | null
           location: string | null
           published_at: string | null
+          ral_max: number | null
+          ral_min: number | null
           requirement_vector: string | null
           requirements_must: string | null
           requirements_nice: string | null
@@ -3548,6 +3560,7 @@ export type Database = {
           ai_suggested_ximatar?: string | null
           benefits?: string | null
           business_id: string
+          ccnl?: string | null
           content_html?: string | null
           content_json?: Json | null
           created_at?: string
@@ -3564,6 +3577,8 @@ export type Database = {
           locale?: string | null
           location?: string | null
           published_at?: string | null
+          ral_max?: number | null
+          ral_min?: number | null
           requirement_vector?: string | null
           requirements_must?: string | null
           requirements_nice?: string | null
@@ -3582,6 +3597,7 @@ export type Database = {
           ai_suggested_ximatar?: string | null
           benefits?: string | null
           business_id?: string
+          ccnl?: string | null
           content_html?: string | null
           content_json?: Json | null
           created_at?: string
@@ -3598,6 +3614,8 @@ export type Database = {
           locale?: string | null
           location?: string | null
           published_at?: string | null
+          ral_max?: number | null
+          ral_min?: number | null
           requirement_vector?: string | null
           requirements_must?: string | null
           requirements_nice?: string | null
