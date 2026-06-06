@@ -286,7 +286,84 @@ Restituisci SOLO JSON valido con ESATTAMENTE questa forma (nessun commento, ness
 }
 
 // =====================================================
-// Main handler
+// PART 5 — Blind-scope sanitizer.
+// Strips company name / known aliases / third-party names from candidate-facing strings.
+// Business-side payloads keep the unredacted scenario.
+// =====================================================
+function buildBlindSanitizer(forbiddenTerms: string[]): (s: string) => string {
+  const cleaned = Array.from(new Set(
+    forbiddenTerms
+      .map((t) => (typeof t === 'string' ? t.trim() : ''))
+      .filter((t) => t.length >= 3),
+  ));
+  if (cleaned.length === 0) return (s) => s;
+  // Sort by length desc so longer matches win.
+  cleaned.sort((a, b) => b.length - a.length);
+  const escaped = cleaned.map((t) => t.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'));
+  const re = new RegExp(`\\b(${escaped.join('|')})\\b`, 'gi');
+  return (s) => (typeof s === 'string' ? s.replace(re, "un'azienda del settore") : s);
+}
+
+function sanitizeMindsetBlock(mindset: Record<string, unknown> | null, scrub: (s: string) => string, correlationId: string): Record<string, unknown> | null {
+  if (!mindset) return mindset;
+  let hits = 0;
+  const count = (orig: string, next: string) => { if (orig !== next) hits++; return next; };
+  const m: any = JSON.parse(JSON.stringify(mindset));
+  if (m.guide) {
+    if (typeof m.guide.intro === 'string') m.guide.intro = count(m.guide.intro, scrub(m.guide.intro));
+    if (typeof m.guide.debrief_instruction === 'string') m.guide.debrief_instruction = count(m.guide.debrief_instruction, scrub(m.guide.debrief_instruction));
+    if (typeof m.guide.resolve_line === 'string') m.guide.resolve_line = count(m.guide.resolve_line, scrub(m.guide.resolve_line));
+  }
+  if (Array.isArray(m.instinct_cards)) {
+    for (const c of m.instinct_cards) {
+      if (typeof c.prompt === 'string') c.prompt = count(c.prompt, scrub(c.prompt));
+    }
+  }
+  if (m.day) {
+    if (typeof m.day.title === 'string') m.day.title = count(m.day.title, scrub(m.day.title));
+    if (Array.isArray(m.day.items)) {
+      for (const it of m.day.items) {
+        if (typeof it.body === 'string') it.body = count(it.body, scrub(it.body));
+        if (typeof it.source === 'string') it.source = count(it.source, scrub(it.source));
+      }
+    }
+  }
+  if (hits > 0) {
+    console.warn('[generate-challenge] blind-scope sanitizer redacted candidate-facing strings', JSON.stringify({ correlation_id: correlationId, hits }));
+  }
+  return m;
+}
+
+function buildIntroContext(args: {
+  displayIndustry: string;
+  companySize?: string | null;
+  growthStage?: string | null;
+  roleTitle: string;
+  taskDescription: string;
+  ralMin: number | null;
+  ralMax: number | null;
+  ccnl: string | null;
+  currency: string;
+}): Record<string, unknown> {
+  const sizeLabel = args.companySize ? `, ${args.companySize}` : '';
+  const stageLabel = args.growthStage ? `, in fase di ${args.growthStage}` : '';
+  const desc = `Un'azienda del settore ${args.displayIndustry}${sizeLabel}${stageLabel}.`;
+  const summary = (args.taskDescription && args.taskDescription !== 'Non specificato')
+    ? args.taskDescription.slice(0, 240)
+    : '';
+  return {
+    company_descriptor: desc,
+    role_title: args.roleTitle || null,
+    role_summary: summary || null,
+    compensation: {
+      ral_min: args.ralMin,
+      ral_max: args.ralMax,
+      ccnl: args.ccnl,
+      currency: args.currency || 'EUR',
+    },
+    growth_line:
+      'Completare questa sfida rafforza il tuo XIMAtar e rende il tuo profilo più rilevante per le aziende.',
+  };
 // =====================================================
 
 serve(async (req) => {
