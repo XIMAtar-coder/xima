@@ -144,9 +144,20 @@ serve(async (req) => {
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
     const { data: jobPost, error: jobError } = await supabaseAdmin
-      .from('job_posts').select('*').eq('id', job_post_id).single();
+      .from('job_posts').select('*').eq('id', job_post_id).eq('business_id', user.id).single();
 
     if (jobError || !jobPost) return errorResponse(404, 'NOT_FOUND', 'Job post not found');
+
+    // Verify caller owns the target challenge
+    const { data: existingChallenge, error: challengeOwnerErr } = await supabaseAdmin
+      .from('business_challenges')
+      .select('id, business_id')
+      .eq('id', challenge_id)
+      .eq('business_id', user.id)
+      .maybeSingle();
+    if (challengeOwnerErr || !existingChallenge) {
+      return errorResponse(404, 'NOT_FOUND', 'Challenge not found');
+    }
 
     const [companyProfileRes, businessProfileRes] = await Promise.all([
       supabaseAdmin.from('company_profiles').select('*').eq('company_id', jobPost.business_id).maybeSingle(),
