@@ -143,7 +143,7 @@ async function fetchAllPages(website: string): Promise<PageResult[]> {
 
   // Step 1: Fetch homepage
   const homepage = await fetchPage(baseUrl);
-  if (homepage.text.length < 100) return homepage.text.length > 0 ? [homepage] : [];
+  if (homepage.text.length < 40) return homepage.text.length > 0 ? [homepage] : [];
 
   // Step 2: Discover key pages from homepage links
   const keyPageUrls = discoverKeyPages(baseUrl, homepage.rawHtml);
@@ -153,7 +153,7 @@ async function fetchAllPages(website: string): Promise<PageResult[]> {
     keyPageUrls.map(url => fetchPage(url))
   );
 
-  const allPages = [homepage, ...additionalPages].filter(p => p.text.length > 100);
+  const allPages = [homepage, ...additionalPages].filter(p => p.text.length > 40);
   console.log(`[generate-company-profile] Scanned ${allPages.length} pages: ${allPages.map(p => p.pageType).join(', ')}`);
   return allPages;
 }
