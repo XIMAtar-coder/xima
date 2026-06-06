@@ -379,9 +379,11 @@ export function SubmissionDetailDrawer({
         followup_question: question || null,
       };
 
+      let persistedReviewId: string | null = currentReview?.id ?? null;
+
       if (currentReview) {
         // Update existing
-        await supabase
+        const { error: updateErr } = await supabase
           .from('challenge_reviews')
           .update({
             decision,
@@ -389,11 +391,16 @@ export function SubmissionDetailDrawer({
             updated_at: new Date().toISOString(),
           })
           .eq('id', currentReview.id);
+        if (updateErr) throw updateErr;
       } else {
-        // Insert new
-        await supabase
+        // Insert new — destructure error so Supabase-js failures aren't swallowed.
+        const { data: inserted, error: insertErr } = await supabase
           .from('challenge_reviews')
-          .insert(reviewData);
+          .insert(reviewData)
+          .select('id')
+          .single();
+        if (insertErr) throw insertErr;
+        persistedReviewId = inserted?.id ?? null;
       }
 
       // If follow-up decision, create/upsert challenge_followups
@@ -423,8 +430,9 @@ export function SubmissionDetailDrawer({
         }
       }
 
+      // Only flip local review state after the DB write actually succeeded.
       setCurrentReview({
-        id: currentReview?.id || 'temp',
+        id: persistedReviewId || 'temp',
         decision,
         followup_question: question || null,
         created_at: new Date().toISOString(),
