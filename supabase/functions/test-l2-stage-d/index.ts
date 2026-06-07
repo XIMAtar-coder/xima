@@ -51,14 +51,15 @@ serve(async (req) => {
       body: JSON.stringify({
         invitation_id: INV,
         challenge_id: CHAL,
-        candidate_message: candidateMessages[i],
+        latest_candidate_message: candidateMessages[i],
+        turn_index: i,
         language: "it",
       }),
     });
     const txt = await r.text();
     let body: any = null;
     try { body = JSON.parse(txt); } catch { body = { raw: txt.slice(0, 400) }; }
-    log.push({ turn: i, status: r.status, ok: r.ok, summary: body?.counterpart_reply?.slice?.(0, 80) || body?.error || body?.raw });
+    log.push({ turn: i, status: r.status, ok: r.ok, done: body?.done, summary: body?.counterpart_reply?.slice?.(0, 80) || body?.error || body?.raw });
     lastResponse = body;
     if (!r.ok) {
       report.l2_converse_failed = { turn: i, status: r.status, body };
