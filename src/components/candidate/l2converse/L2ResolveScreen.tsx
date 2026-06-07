@@ -23,7 +23,7 @@ export function L2ResolveScreen({ counterpartName, onBack }: Props) {
               {t('candidate.l2_conversation.resolve_kicker', 'Conversazione conclusa')}
             </p>
             <h2 className="text-xl font-semibold text-foreground">
-              {t('candidate.l2_conversation.resolve_title', 'Il tuo XIMAtar si è rafforzato')}
+              {t('candidate.l2_conversation.resolve_title', 'Il tuo XIMAtar si è arricchito')}
             </h2>
           </div>
         </div>

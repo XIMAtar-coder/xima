@@ -36,7 +36,7 @@ export function ResolveScreen({ guideName, litFacets, resolveLine, growthCue, on
         {growthCue === 'xima_strengthened' && (
           <div className="rounded-lg border border-primary/30 bg-primary/10 p-4 flex items-center gap-2 text-sm text-foreground">
             <Sparkles className="h-4 w-4 text-primary" />
-            <span>Il tuo XIMAtar si è rafforzato.</span>
+            <span>Il tuo XIMAtar si è arricchito.</span>
           </div>
         )}
 
