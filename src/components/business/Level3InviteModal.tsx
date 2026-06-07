@@ -246,7 +246,7 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
         .select('id, status')
         .eq('business_id', businessId)
         .eq('hiring_goal_id', hiringGoalId)
-        .eq('challenge_id', STANDING_VIDEO_CHALLENGE_ID)
+        .eq('challenge_id', l3ChallengeId)
         .eq('candidate_profile_id', candidateProfileId)
         .not('status', 'in', '("withdrawn","expired","cancelled")')
         .maybeSingle();
@@ -266,7 +266,7 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
         .insert({
           business_id: businessId,
           hiring_goal_id: hiringGoalId,
-          challenge_id: STANDING_VIDEO_CHALLENGE_ID,
+          challenge_id: l3ChallengeId,
           candidate_profile_id: candidateProfileId,
           status: 'invited',
           sent_via: ['in_app'],
