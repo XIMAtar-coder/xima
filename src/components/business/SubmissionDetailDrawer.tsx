@@ -58,11 +58,22 @@ interface ChallengeInfo {
   rubric?: { type?: string } | null;
 }
 
+type ReviewDecision = 'shortlist' | 'followup' | 'pass' | 'proceed_level2' | 'proceed_level3';
+
 interface ChallengeReview {
   id: string;
-  decision: 'shortlist' | 'followup' | 'pass' | 'proceed_level2';
+  decision: ReviewDecision;
   followup_question: string | null;
   created_at: string;
+}
+
+interface L2RubricBreakdownItem {
+  criterion: string;
+  criterion_id?: string;
+  primary_pillar?: string;
+  score?: number | null;
+  weight?: number;
+  evidence_quote?: string;
 }
 
 interface ChallengeFollowup {
@@ -397,7 +408,7 @@ export function SubmissionDetailDrawer({
     }
   };
 
-  const saveReview = async (decision: 'shortlist' | 'followup' | 'pass' | 'proceed_level2', question?: string) => {
+  const saveReview = async (decision: ReviewDecision, question?: string) => {
     if (!submission) return;
 
     setSavingReview(true);
@@ -473,6 +484,7 @@ export function SubmissionDetailDrawer({
       const toastTitle = decision === 'shortlist' ? t('business.review.shortlisted') :
                decision === 'pass' ? t('business.review.passed') :
                decision === 'proceed_level2' ? t('business.review.advanced_to_level2') :
+               decision === 'proceed_level3' ? t('business.review.advanced_to_level3') :
                t('business.review.followup_sent');
       
       toast({ title: toastTitle });
@@ -527,8 +539,22 @@ export function SubmissionDetailDrawer({
         return <Badge variant="outline"><MessageSquare className="h-3 w-3 mr-1" />{t('business.review.followup_pending')}</Badge>;
       case 'proceed_level2':
         return <Badge className="bg-primary"><ArrowRight className="h-3 w-3 mr-1" />{t('business.review.advanced_to_level2')}</Badge>;
+      case 'proceed_level3':
+        return <Badge className="bg-primary"><ArrowRight className="h-3 w-3 mr-1" />{t('business.review.advanced_to_level3')}</Badge>;
     }
   };
+
+  // L2 conversation rubric breakdown (rendered alongside generic signals, not replacing them).
+  const l2RubricBreakdown: L2RubricBreakdownItem[] | null = useMemo(() => {
+    const sp = submission?.signalsPayload as { format?: string; rubric_breakdown?: L2RubricBreakdownItem[] } | null;
+    if (!sp || sp.format !== 'l2_conversation') return null;
+    return Array.isArray(sp.rubric_breakdown) && sp.rubric_breakdown.length > 0 ? sp.rubric_breakdown : null;
+  }, [submission?.signalsPayload]);
+
+  // "L2 in attesa di revisione" badge: L2 submission with no review decision yet.
+  const showL2PendingReviewBadge = currentChallengeLevel === 2
+    && submission?.submissionStatus === 'submitted'
+    && !currentReview;
 
   // Always render Sheet, check submission inside content
   return (
