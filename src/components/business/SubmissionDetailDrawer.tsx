@@ -589,6 +589,12 @@ export function SubmissionDetailDrawer({
                       : t('business.responses.not_submitted_yet')}
                   </div>
                 </div>
+                {showL2PendingReviewBadge && (
+                  <Badge variant="outline" className="bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400">
+                    <Clock className="h-3 w-3 mr-1" />
+                    {t('business.review.l2_pending_review')}
+                  </Badge>
+                )}
                 {getDecisionBadge()}
               </div>
             </SheetHeader>
