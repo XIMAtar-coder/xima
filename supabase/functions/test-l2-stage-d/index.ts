@@ -40,65 +40,60 @@ serve(async (req) => {
     "Marco, capisco che sei scettico. Proponi tu un criterio di go/no-go: se ti porto un piano dettagliato entro venerdi' con budget firmato dal CFO e timeline validata da Produzione, ci diamo 2 settimane per il pilot. Se non regge, torniamo al disegno originale a volumi ridotti. Concludi.",
   ];
 
-  let lastResponse: any = null;
+  // Build a synthetic l2_conversation submitted_payload directly (l2-converse requires a candidate JWT;
+  // for Stage D validation we exercise the scoring branch, not the converse engine).
+  const transcript: any[] = [
+    { role: "counterpart", text: "Allora, mi serve capire come pensi di gestire il raddoppio volumi con il fornitore in ritardo. Sono scettico.", turn: -1 },
+  ];
   for (let i = 0; i < candidateMessages.length; i++) {
-    const r = await fetch(`${SUPABASE_URL}/functions/v1/l2-converse`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${SERVICE_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        invitation_id: INV,
-        challenge_id: CHAL,
-        latest_candidate_message: candidateMessages[i],
-        turn_index: i,
-        language: "it",
-      }),
+    transcript.push({ role: "candidate", text: candidateMessages[i], turn: i });
+    const isCurveball = i === 1;
+    transcript.push({
+      role: "counterpart",
+      text: i === 0
+        ? "Ok, ma il fornitore principale ci ha appena confermato 8 settimane di ritardo. Cosa fai?"
+        : i === 1
+          ? "[CURVEBALL] La Direzione ha appena annunciato che il volume sale ancora: 1200 pezzi, non 1000. Hai 90 secondi."
+          : i === 2
+            ? "E sulla sicurezza? Non mi raccontare che la valutazione la facciamo a fine progetto."
+            : "Ok. Ti aspetto venerdi'.",
+      turn: i,
+      curveball: isCurveball,
     });
-    const txt = await r.text();
-    let body: any = null;
-    try { body = JSON.parse(txt); } catch { body = { raw: txt.slice(0, 400) }; }
-    log.push({ turn: i, status: r.status, ok: r.ok, done: body?.done, summary: body?.counterpart_reply?.slice?.(0, 80) || body?.error || body?.raw });
-    lastResponse = body;
-    if (!r.ok) {
-      report.l2_converse_failed = { turn: i, status: r.status, body };
-      break;
-    }
-    if (body?.done) break;
   }
-  report.l2_converse_log = log;
 
-  // Load submission and submit it via direct UPDATE (mirroring useL2ConverseDraft.submit())
-  const { data: sub0 } = await service
+  const submittedPayload = {
+    format: "l2_conversation",
+    opening_line: transcript[0].text,
+    transcript,
+    curveball_fired: true,
+    last_turn_index: candidateMessages.length - 1,
+    reason: "concludi_signal",
+  };
+  log.push({ stage: "synthetic_payload_built", candidate_turns: candidateMessages.length });
+
+  // INSERT the submission directly as 'submitted' (mirrors what useL2ConverseDraft.submit() ends up writing)
+  const { data: insertedSub, error: insertErr } = await service
     .from("challenge_submissions")
-    .select("id, submitted_payload, status")
-    .eq("invitation_id", INV)
-    .maybeSingle();
-  report.draft_submission = sub0 ? { id: sub0.id, status: sub0.status, has_payload: !!sub0.submitted_payload, format: (sub0.submitted_payload as any)?.format } : null;
+    .insert({
+      invitation_id: INV,
+      status: "submitted",
+      submitted_payload: submittedPayload,
+      signals_version: "v1",
+    })
+    .select("id")
+    .single();
+  report.submit_insert_error = insertErr?.message || null;
+  report.submission_id = insertedSub?.id || null;
 
-  if (!sub0) {
-    return new Response(JSON.stringify({ error: "no_draft_submission", report, log }, null, 2), {
+  await service.from("challenge_invitations").update({ status: "completed", responded_at: new Date().toISOString() }).eq("id", INV);
+
+  if (insertErr) {
+    return new Response(JSON.stringify({ error: "submit_insert_failed", report, log }, null, 2), {
       headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500,
     });
   }
 
-  const draftPayload = sub0.submitted_payload as any;
-  const transcript = draftPayload?.transcript || [];
-  const submitPayload = {
-    format: "l2_conversation",
-    transcript,
-    opening_line: draftPayload?.opening_line || "",
-    curveball_fired: !!draftPayload?.curveball_fired,
-    last_turn_index: typeof draftPayload?.last_turn_index === "number" ? draftPayload.last_turn_index : transcript.length - 1,
-    reason: draftPayload?.reason || (lastResponse?.done ? "concludi_signal" : "max_turns"),
-  };
-
-  const { error: submitErr } = await service
-    .from("challenge_submissions")
-    .update({ status: "submitted", submitted_payload: submitPayload, signals_version: "v1" })
-    .eq("id", sub0.id);
-  report.submit_update_error = submitErr?.message || null;
 
   // Invoke analyze-open-answer (l2_conversation branch)
   const invokeOnce = async (label: string) => {
