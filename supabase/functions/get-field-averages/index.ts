@@ -124,7 +124,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in get-field-averages:', error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+      JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
