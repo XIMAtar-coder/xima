@@ -74,6 +74,23 @@ serve(async (req) => {
   const ipHash = req.headers.get('x-forwarded-for') ? await hashForAudit(req.headers.get('x-forwarded-for')!) : null;
 
   try {
+    // Mandatory authentication: reject unauthenticated callers
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return errorResponse(401, 'UNAUTHORIZED', 'Authentication required');
+    }
+    {
+      const authClient = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!,
+        { global: { headers: { Authorization: authHeader } } }
+      );
+      const { data: { user: authUser }, error: authErr } = await authClient.auth.getUser();
+      if (authErr || !authUser) {
+        return errorResponse(401, 'UNAUTHORIZED', 'Invalid or expired token');
+      }
+    }
+
     const body = await req.json();
     const { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload, invitation_id } = body;
 
