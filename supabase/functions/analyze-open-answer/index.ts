@@ -94,6 +94,21 @@ serve(async (req) => {
     const body = await req.json();
     const { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload, invitation_id } = body;
 
+    // =====================================================
+    // L2 CONVERSATION BRANCH — self-contained; returns before mindset/free-text path.
+    // Server-side user_id resolution (ignore any client-passed user_id),
+    // Opus per-call override with empirical fallback chain, identity-based rubric matching.
+    // =====================================================
+    if (format === 'l2_conversation') {
+      return await handleL2Conversation({
+        invitation_id,
+        challenge_id,
+        language: language || 'it',
+        correlationId,
+        ipHash,
+      });
+    }
+
     const isMindset = format === 'mindset' && mindset_payload && typeof mindset_payload === 'object';
 
     // Mindset bypasses (!field || !language || !openKey) — payload is structured, not free-text.
