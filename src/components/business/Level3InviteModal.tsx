@@ -49,7 +49,7 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
   roleTitle,
   onInviteSent,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [sending, setSending] = useState(false);
   const [contextData, setContextData] = useState<{ companyName: string; roleTitle: string } | null>(null);
@@ -83,9 +83,94 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
     fetchContext();
   }, [open, businessId, hiringGoalId, companyName, roleTitle]);
 
+  // Resolve the (business_id, hiring_goal_id) L3 challenge using
+  // authoritative-level-first detection. If none exists, lazily create one
+  // that matches the canonical Standing Video row shape verbatim so the
+  // candidate router (level === 3 → /candidate/challenges/:invitationId/standing)
+  // and the pipeline trigger (rubric.type === 'standing_presence') both work.
+  const resolveOrCreateL3ChallengeId = async (): Promise<string> => {
+    const { data: candidates, error: fetchErr } = await supabase
+      .from('business_challenges')
+      .select('id, level, rubric, title, created_at')
+      .eq('business_id', businessId)
+      .eq('hiring_goal_id', hiringGoalId)
+      .in('status', ['active', 'published'])
+      .order('created_at', { ascending: false });
+    if (fetchErr) throw fetchErr;
+
+    const l3s = (candidates || []).filter((c) => {
+      if (c.level === 3) return true;
+      if (c.level === 1 || c.level === 2) return false;
+      const r = (c.rubric as { type?: string; level?: string } | null) ?? {};
+      return r.type === 'standing_presence' || r.type === 'video' || r.level === '3';
+    });
+
+    if (l3s.length > 0) {
+      if (l3s.length > 1) {
+        console.warn(
+          `[Level3InviteModal] Multiple L3 challenges for goal ${hiringGoalId}; using most recent.`,
+          l3s.map((c) => c.id),
+        );
+      }
+      return l3s[0].id;
+    }
+
+    // Lazy create — replicates row 9ae27a4a verbatim except for IDs and context.
+    const ctx = contextData ?? { companyName: companyName || 'Company', roleTitle: roleTitle || 'Role' };
+    const { data: created, error: createErr } = await supabase
+      .from('business_challenges')
+      .insert({
+        business_id: businessId,
+        hiring_goal_id: hiringGoalId,
+        title: 'Standing Video',
+        description:
+          'A short, guided video session to evaluate communication and professional presence.',
+        status: 'active',
+        level: 3,
+        is_public: true,
+        is_template: false,
+        generation_status: 'draft',
+        time_estimate_minutes: 5,
+        success_criteria: [],
+        rubric: {
+          type: 'standing_presence',
+          deliverable_type: 'video',
+          duration_minutes: 5,
+          prompt_count: 4,
+          level: 3,
+          locale: i18n.language || 'en',
+          company_context: { companyName: ctx.companyName, roleTitle: ctx.roleTitle },
+        },
+      })
+      .select('id')
+      .single();
+    if (createErr) throw createErr;
+    if (import.meta.env.DEV) {
+      console.log('[Level3InviteModal] Auto-created L3 challenge', created.id, 'for goal', hiringGoalId);
+    }
+    return created.id;
+  };
+
   const sendInvitation = async () => {
     setSending(true);
     try {
+      // Write order:
+      // 1) resolve-or-create the L3 challenge for this goal
+      // 2) upsert the proceed_level3 review onto the SUBMITTED L2 invitation (Gate B)
+      // 3) insert the L3 invitation (trigger checks Gate A + Gate B)
+      let l3ChallengeId: string;
+      try {
+        l3ChallengeId = await resolveOrCreateL3ChallengeId();
+      } catch (resolveErr) {
+        console.error('[Level3InviteModal] L3 resolve/create failed:', resolveErr);
+        toast({
+          title: t('business.level3.challenge_setup_failed', 'Could not prepare the Standing Video challenge'),
+          description: (resolveErr as Error).message,
+          variant: 'destructive',
+        });
+        return;
+      }
+
       // Submission-gated atomic upsert of the proceed_level3 review.
       // Mirrors trigger Gate B: only record advancement when the candidate has
       // an L2 challenge_invitations row with a SUBMITTED submission for the
