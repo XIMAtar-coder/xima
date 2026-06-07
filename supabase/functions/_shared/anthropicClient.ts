@@ -56,10 +56,16 @@ export function getModelForFunction(functionName: string): string {
 const COST_PER_1K_INPUT: Record<string, number> = {
   "claude-sonnet-4-20250514": 0.003,
   "claude-haiku-4-5-20251001": 0.00025,
+  "claude-opus-4-8": 0.005,
+  "claude-opus-4-7": 0.005,
+  "claude-opus-4-6": 0.005,
 };
 const COST_PER_1K_OUTPUT: Record<string, number> = {
   "claude-sonnet-4-20250514": 0.015,
   "claude-haiku-4-5-20251001": 0.00125,
+  "claude-opus-4-8": 0.025,
+  "claude-opus-4-7": 0.025,
+  "claude-opus-4-6": 0.025,
 };
 
 export interface AnthropicCallOptions {

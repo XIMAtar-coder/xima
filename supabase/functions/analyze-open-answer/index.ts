@@ -74,12 +74,16 @@ serve(async (req) => {
   const ipHash = req.headers.get('x-forwarded-for') ? await hashForAudit(req.headers.get('x-forwarded-for')!) : null;
 
   try {
-    // Mandatory authentication: reject unauthenticated callers
+    // Mandatory authentication: reject unauthenticated callers.
+    // Service-role bearer is accepted for internal/edge-to-edge calls (bypasses getUser).
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       return errorResponse(401, 'UNAUTHORIZED', 'Authentication required');
     }
-    {
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || '';
+    const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
+    const isServiceRole = serviceKey && bearer === serviceKey;
+    if (!isServiceRole) {
       const authClient = createClient(
         Deno.env.get("SUPABASE_URL")!,
         Deno.env.get("SUPABASE_ANON_KEY")!,
@@ -93,6 +97,21 @@ serve(async (req) => {
 
     const body = await req.json();
     const { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload, invitation_id } = body;
+
+    // =====================================================
+    // L2 CONVERSATION BRANCH — self-contained; returns before mindset/free-text path.
+    // Server-side user_id resolution (ignore any client-passed user_id),
+    // Opus per-call override with empirical fallback chain, identity-based rubric matching.
+    // =====================================================
+    if (format === 'l2_conversation') {
+      return await handleL2Conversation({
+        invitation_id,
+        challenge_id,
+        language: language || 'it',
+        correlationId,
+        ipHash,
+      });
+    }
 
     const isMindset = format === 'mindset' && mindset_payload && typeof mindset_payload === 'object';
 
@@ -724,4 +743,396 @@ Return ONLY the JSON object.`;
     return errorResponse(500, 'INTERNAL_ERROR', 'Internal server error');
   }
 });
+
+// =====================================================
+// L2 CONVERSATION HANDLER
+// =====================================================
+
+const OPUS_FALLBACK_CHAIN = ['claude-opus-4-8', 'claude-opus-4-7', 'claude-opus-4-6'] as const;
+const SONNET_LAST_RESORT = 'claude-sonnet-4-20250514';
+
+async function sha1Hex12(input: string): Promise<string> {
+  const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(input));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 12);
+}
+
+const PILLAR_KEYS_L2 = ['drive', 'computational_power', 'communication', 'creativity', 'knowledge'] as const;
+type PillarKey = typeof PILLAR_KEYS_L2[number];
+
+interface L2HandlerArgs {
+  invitation_id: unknown;
+  challenge_id: unknown;
+  language: string;
+  correlationId: string;
+  ipHash: string | null;
+}
+
+async function handleL2Conversation(args: L2HandlerArgs): Promise<Response> {
+  const { invitation_id, challenge_id, language, correlationId, ipHash } = args;
+
+  if (typeof invitation_id !== 'string' || !invitation_id) {
+    return errorResponse(400, 'INVALID_INPUT', 'invitation_id required');
+  }
+  if (typeof challenge_id !== 'string' || !challenge_id) {
+    return errorResponse(400, 'INVALID_INPUT', 'challenge_id required');
+  }
+
+  const service = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+  );
+
+  // 1. Resolve user_id server-side from the invitation
+  const { data: invitation, error: invErr } = await service
+    .from('challenge_invitations')
+    .select('id, candidate_profile_id, challenge_id')
+    .eq('id', invitation_id)
+    .maybeSingle();
+  if (invErr || !invitation) {
+    return errorResponse(404, 'INVITATION_NOT_FOUND', 'Invitation not found');
+  }
+  if (!invitation.candidate_profile_id) {
+    return errorResponse(404, 'PROFILE_NOT_FOUND', 'Invitation has no candidate profile');
+  }
+
+  const { data: profile, error: profErr } = await service
+    .from('profiles')
+    .select('id, user_id, ximatar_name')
+    .eq('id', invitation.candidate_profile_id)
+    .maybeSingle();
+  if (profErr || !profile?.user_id) {
+    return errorResponse(404, 'PROFILE_NOT_FOUND', 'Candidate profile/user not found');
+  }
+  const resolvedUserId: string = profile.user_id;
+
+  // 2. Load submission + challenge
+  const { data: submission, error: subErr } = await service
+    .from('challenge_submissions')
+    .select('id, invitation_id, submitted_payload, signals_payload, status')
+    .eq('invitation_id', invitation_id)
+    .maybeSingle();
+  if (subErr || !submission) {
+    return errorResponse(404, 'SUBMISSION_NOT_FOUND', 'No submission for invitation');
+  }
+  const payload = submission.submitted_payload as Record<string, any> | null;
+  if (!payload || payload.format !== 'l2_conversation') {
+    return errorResponse(400, 'NOT_L2_CONVERSATION', 'Submission is not an l2_conversation payload');
+  }
+
+  const { data: challenge, error: chErr } = await service
+    .from('business_challenges')
+    .select('id, config_json')
+    .eq('id', challenge_id)
+    .maybeSingle();
+  if (chErr || !challenge) {
+    return errorResponse(404, 'CHALLENGE_NOT_FOUND', 'Challenge not found');
+  }
+  const sim = (challenge.config_json as any)?.l2_simulation || {};
+  const rubricCfg: Array<{ criterion: string; description?: string; weight: number; primary_pillar: string }> =
+    Array.isArray(sim.rubric) ? sim.rubric : [];
+  if (rubricCfg.length === 0) {
+    return errorResponse(400, 'NO_RUBRIC', 'Challenge has no l2_simulation.rubric');
+  }
+  const counterpart = sim.counterpart || {};
+  const scenario = String(sim.scenario || '');
+
+  // 3. Idempotency pre-check
+  const sigPayloadExisting = submission.signals_payload as Record<string, any> | null;
+  const { data: existingTraj } = await service
+    .from('pillar_trajectory_log')
+    .select('id')
+    .eq('user_id', resolvedUserId)
+    .eq('source_type', 'l2_challenge')
+    .eq('source_entity_id', invitation_id)
+    .maybeSingle();
+  if (existingTraj && sigPayloadExisting?.format === 'l2_conversation') {
+    console.log(JSON.stringify({
+      type: 'l2_idempotent_skip', correlation_id: correlationId,
+      function_name: 'analyze-open-answer', invitation_id,
+    }));
+    return jsonResponse({ status: 'idempotent_skip', signals_payload: sigPayloadExisting });
+  }
+
+  // 4. Build prompt with stable criterion_ids
+  const enriched = await Promise.all(rubricCfg.map(async (r) => ({
+    ...r,
+    criterion_id: await sha1Hex12(`${r.primary_pillar}|${r.criterion}`),
+  })));
+  const criterionMap = new Map(enriched.map(e => [e.criterion_id, e]));
+
+  const transcript = Array.isArray(payload.transcript) ? payload.transcript : [];
+  const candidateTurns = transcript.filter((t: any) => t?.role === 'candidate').length;
+  const langName = language === 'en' ? 'English' : language === 'es' ? 'Spanish' : 'Italian';
+
+  const systemPrompt = `You are a senior interviewer evaluating an L2 simulated conversation for the XIMA platform.
+
+PRINCIPLE: "Comprendere, non la perfezione" — read the candidate's behavior under tension, not their elegance.
+Reward how the candidate handled the curveball more than baseline politeness.
+
+CONTEXT:
+- Counterpart: ${counterpart.name || 'counterpart'} (${counterpart.role || 'unknown role'}). Stance: ${counterpart.stance || 'neutral'}.
+- Scenario: ${scenario}
+
+RUBRIC (score each criterion 0-100 with a one-line verbatim evidence quote from the candidate's transcript):
+${enriched.map(e => `- [${e.criterion_id}] (${e.primary_pillar}, weight ${e.weight}) ${e.criterion} — ${e.description || ''}`).join('\n')}
+
+FLAGS — include any that apply: refusal, off_topic, hostile, evasion, non_answer, low_engagement.
+
+OUTPUT: respond in ${langName}. Return ONLY valid JSON with this exact shape:
+{
+  "framing": <0-100>,
+  "execution_bias": <0-100>,
+  "impact_thinking": <0-100>,
+  "decision_quality": <0-100>,
+  "overall": <0-100>,
+  "summary": "<= 60 words in ${langName}>",
+  "flags": [],
+  "confidence": "low" | "medium" | "high",
+  "rubric_breakdown": [
+    { "criterion_id": "<echo exact id>", "score": <0-100>, "evidence_quote": "<one short verbatim quote>" }
+  ],
+  "pillar_reasoning": "<brief>"
+}
+
+The rubric_breakdown MUST echo every criterion_id from the rubric above, exactly once. Do not invent ids.`;
+
+  const transcriptText = transcript
+    .map((t: any) => `[${t.role}${t.curveball ? '/CURVEBALL' : ''} t=${t.turn}] ${String(t.text || '').slice(0, 800)}`)
+    .join('\n');
+  const userPrompt = `OPENING LINE: ${String(payload.opening_line || '')}
+
+TRANSCRIPT:
+${transcriptText}
+
+CURVEBALL FIRED: ${payload.curveball_fired ? 'yes' : 'no'}
+END REASON: ${payload.reason || 'unknown'}
+
+Evaluate. Return ONLY the JSON object.`;
+
+  // 5. Model call with Opus fallback chain
+  let aiContent = '';
+  let usedModel = '';
+  let aiRequestId = '';
+  let lastError: { code: string; message: string } | null = null;
+  const tried: string[] = [];
+
+  for (const model of OPUS_FALLBACK_CHAIN) {
+    tried.push(model);
+    try {
+      const resp = await callAnthropicApi({
+        system: systemPrompt,
+        userMessage: userPrompt,
+        correlationId,
+        functionName: 'analyze-open-answer',
+        inputSummary: `l2_conversation:inv=${invitation_id},model=${model},turns=${candidateTurns}`,
+        model,
+        maxTokens: 2500,
+        // Opus 4.x deprecates `temperature`; omit per-call override.
+        promptTemplateVersion: 'l2_conversation_v1',
+      });
+      aiContent = resp.content;
+      usedModel = resp.model;
+      aiRequestId = resp.requestId;
+      lastError = null;
+      break;
+    } catch (e) {
+      if (e instanceof AnthropicError) {
+        lastError = { code: e.errorCode, message: e.message };
+        const msg = (e.message || '').toLowerCase();
+        const isNotFound = e.statusCode === 404
+          || (e.statusCode === 400 && msg.includes('model') && (msg.includes('not_found') || msg.includes('not found') || msg.includes('invalid') || msg.includes('does not exist')));
+        if (!isNotFound) {
+          return errorResponse(e.statusCode, e.errorCode, e.message);
+        }
+        console.warn(JSON.stringify({
+          type: 'opus_model_fallback_attempt', correlation_id: correlationId,
+          function_name: 'analyze-open-answer', tried_model: model, error: e.message,
+        }));
+        continue;
+      }
+      throw e;
+    }
+  }
+
+  if (!aiContent) {
+    try {
+      const resp = await callAnthropicApi({
+        system: systemPrompt,
+        userMessage: userPrompt,
+        correlationId,
+        functionName: 'analyze-open-answer',
+        inputSummary: `l2_conversation:inv=${invitation_id},sonnet_last_resort`,
+        model: SONNET_LAST_RESORT,
+        maxTokens: 2500,
+        promptTemplateVersion: 'l2_conversation_v1',
+      });
+      aiContent = resp.content;
+      usedModel = resp.model;
+      aiRequestId = resp.requestId;
+      tried.push(SONNET_LAST_RESORT);
+      console.warn(JSON.stringify({
+        type: 'model_fallback_to_sonnet', correlation_id: correlationId,
+        function_name: 'analyze-open-answer', tried, last_opus_error: lastError,
+      }));
+    } catch (e) {
+      if (e instanceof AnthropicError) return errorResponse(e.statusCode, e.errorCode, e.message);
+      throw e;
+    }
+  }
+
+  // 6. Parse + validate
+  let parsed: any;
+  try {
+    parsed = extractJsonFromAiContent(aiContent);
+    if (!parsed || typeof parsed !== 'object') throw new Error('non-object');
+    for (const k of ['framing', 'execution_bias', 'impact_thinking', 'decision_quality', 'overall']) {
+      if (typeof parsed[k] !== 'number') throw new Error(`missing ${k}`);
+    }
+    if (!Array.isArray(parsed.rubric_breakdown)) throw new Error('missing rubric_breakdown');
+  } catch (e) {
+    console.error(JSON.stringify({
+      type: 'l2_parse_error', correlation_id: correlationId,
+      function_name: 'analyze-open-answer', error: e instanceof Error ? e.message : 'unknown',
+    }));
+    return errorResponse(502, 'L2_PARSE_FAILED', 'AI evaluation failed to produce valid JSON');
+  }
+
+  const clamp = (n: any, lo: number, hi: number) => {
+    const v = typeof n === 'number' && Number.isFinite(n) ? n : 0;
+    return Math.max(lo, Math.min(hi, v));
+  };
+  const clampRound = (n: any, lo: number, hi: number) => Math.round(clamp(n, lo, hi));
+
+  // 7. Confidence — string enum + low-engagement downgrade
+  let confidence: 'low' | 'medium' | 'high';
+  const rawConf = String(parsed.confidence || '').toLowerCase();
+  confidence = (rawConf === 'low' || rawConf === 'high') ? rawConf : 'medium';
+  const flags: string[] = Array.isArray(parsed.flags) ? parsed.flags.map((f: any) => String(f)) : [];
+  if (candidateTurns < 4) {
+    confidence = 'low';
+    if (!flags.includes('low_engagement')) flags.push('low_engagement');
+  }
+
+  // 8. Rubric matching by criterion_id (not array order)
+  const expectedIds = new Set(criterionMap.keys());
+  const gotIds: string[] = [];
+  const enrichedBreakdown: Array<Record<string, any>> = [];
+  const pillarImpactFloat: Record<PillarKey, number> = {
+    drive: 0, computational_power: 0, communication: 0, creativity: 0, knowledge: 0,
+  };
+  let nudgeSkipped = false;
+
+  for (const entry of parsed.rubric_breakdown) {
+    const cid = String(entry?.criterion_id || '');
+    gotIds.push(cid);
+    const cfg = criterionMap.get(cid);
+    if (!cfg) continue;
+    const score = clampRound(entry?.score, 0, 100);
+    enrichedBreakdown.push({
+      criterion_id: cid,
+      criterion: cfg.criterion,
+      primary_pillar: cfg.primary_pillar,
+      weight: cfg.weight,
+      score,
+      evidence_quote: String(entry?.evidence_quote || '').slice(0, 500),
+    });
+    const pk = cfg.primary_pillar as PillarKey;
+    if ((PILLAR_KEYS_L2 as readonly string[]).includes(pk)) {
+      pillarImpactFloat[pk] += ((score - 50) / 50) * (cfg.weight / 100) * 5;
+    }
+  }
+
+  const gotIdsSet = new Set(gotIds);
+  const missing = [...expectedIds].filter(id => !gotIdsSet.has(id));
+  const unknown = gotIds.filter(id => !expectedIds.has(id));
+  if (missing.length > 0 || unknown.length > 0 || enrichedBreakdown.length !== rubricCfg.length) {
+    nudgeSkipped = true;
+    console.warn(JSON.stringify({
+      type: 'rubric_mismatch', correlation_id: correlationId,
+      function_name: 'analyze-open-answer',
+      expected_ids: [...expectedIds], got_ids: gotIds, missing, unknown,
+    }));
+  }
+
+  const pillarImpact: Record<PillarKey, number> = {
+    drive: 0, computational_power: 0, communication: 0, creativity: 0, knowledge: 0,
+  };
+  for (const k of PILLAR_KEYS_L2) {
+    const clamped = Math.max(-5, Math.min(5, pillarImpactFloat[k]));
+    pillarImpact[k] = Math.round(clamped * 100) / 100;
+  }
+
+  const framing = clampRound(parsed.framing, 0, 100);
+  const execution_bias = clampRound(parsed.execution_bias, 0, 100);
+  const impact_thinking = clampRound(parsed.impact_thinking, 0, 100);
+  const decision_quality = clampRound(parsed.decision_quality, 0, 100);
+  const overall = clampRound(parsed.overall, 0, 100);
+
+  // 9. Persist signals_payload
+  const signalsPayload = {
+    format: 'l2_conversation',
+    signals_version: 'v1',
+    scoring_context: 'l2_challenge',
+    scored_at: new Date().toISOString(),
+    model: usedModel,
+    correlation_id: correlationId,
+    framing, execution_bias, impact_thinking, decision_quality, overall,
+    summary: typeof parsed.summary === 'string' ? parsed.summary.slice(0, 600) : '',
+    flags,
+    confidence,
+    rubric_breakdown: enrichedBreakdown,
+    pillar_reasoning: typeof parsed.pillar_reasoning === 'string' ? parsed.pillar_reasoning : '',
+    pillar_impact: pillarImpact,
+    nudge_skipped: nudgeSkipped,
+    ai_request_id: aiRequestId,
+  };
+
+  const { error: updErr } = await service
+    .from('challenge_submissions')
+    .update({ signals_payload: signalsPayload, signals_version: 'v1' })
+    .eq('invitation_id', invitation_id);
+  if (updErr) {
+    console.error(JSON.stringify({
+      type: 'l2_signals_write_failed', correlation_id: correlationId,
+      function_name: 'analyze-open-answer', error: updErr.message,
+    }));
+    return errorResponse(500, 'L2_PERSIST_FAILED', updErr.message);
+  }
+
+  // 10. Trajectory persist (skipped on rubric mismatch)
+  if (!nudgeSkipped) {
+    try {
+      await persistTrajectoryEvent({
+        user_id: resolvedUserId,
+        source_function: 'analyze-open-answer',
+        source_type: 'l2_challenge',
+        source_entity_id: invitation_id,
+        correlation_id: correlationId,
+        deltas: { ...pillarImpact },
+        reasoning: signalsPayload.summary,
+      });
+    } catch (e) {
+      console.error('[l2_trajectory] Error:', e instanceof Error ? e.message : e);
+    }
+  }
+
+  emitAuditEventWithMetric({
+    actorType: 'system',
+    actorId: null,
+    action: 'assessment.l2_conversation_scored',
+    entityType: 'l2_submission',
+    entityId: String(invitation_id),
+    correlationId,
+    metadata: { model: usedModel, tried, overall, confidence, nudge_skipped: nudgeSkipped, ai_request_id: aiRequestId },
+    ipHash,
+  }, 'l2_conversation.scored');
+
+  console.log(JSON.stringify({
+    type: 'l2_success', correlation_id: correlationId,
+    function_name: 'analyze-open-answer', model: usedModel, tried, overall, confidence,
+    nudge_skipped: nudgeSkipped, pillar_impact: pillarImpact,
+  }));
+
+  return jsonResponse({ status: 'ok', signals_payload: signalsPayload });
+}
 
