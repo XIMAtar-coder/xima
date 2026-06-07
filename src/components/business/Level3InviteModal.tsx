@@ -32,10 +32,11 @@ interface Level3InviteModalProps {
   onInviteSent?: () => void;
 }
 
-// TODO(stage-F): resolve the L3 challenge per (business_id, hiring_goal_id)
-// the same way L2 is resolved in Level2InviteModal. Hard-coding the seeded
-// "Standing Video" row is only safe while there is one global L3 challenge.
-const STANDING_VIDEO_CHALLENGE_ID = '9ae27a4a-3d12-4bcc-b665-95b0414e325d';
+// Stage F: per-goal L3 resolution. We no longer hard-code a global
+// Standing Video challenge id. resolveOrCreateL3Challenge() finds the
+// (business_id, hiring_goal_id) L3 challenge or lazily creates one that
+// matches the row shape `StandingVideoSession` and the pipeline trigger
+// expect (level=3, rubric.type='standing_presence').
 
 export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
   open,
