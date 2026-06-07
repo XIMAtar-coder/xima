@@ -72,11 +72,16 @@ serve(async (req) => {
   };
   log.push({ stage: "synthetic_payload_built", candidate_turns: candidateMessages.length });
 
-  // INSERT the submission directly as 'submitted' (mirrors what useL2ConverseDraft.submit() ends up writing)
+  // INSERT the submission directly as 'submitted' (mirrors useL2ConverseDraft.submit() final state)
+  const candidateProfileId = (
+    await service.from("challenge_invitations").select("candidate_profile_id").eq("id", INV).single()
+  ).data!.candidate_profile_id;
   const { data: insertedSub, error: insertErr } = await service
     .from("challenge_submissions")
     .insert({
       invitation_id: INV,
+      candidate_profile_id: candidateProfileId,
+      challenge_id: CHAL,
       status: "submitted",
       submitted_payload: submittedPayload,
       signals_version: "v1",
