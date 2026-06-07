@@ -219,7 +219,39 @@ export function SubmissionDetailDrawer({
     setLevel2Error(null);
     
     console.log('[L2 Signals] Starting AI generation for submission:', submissionKey);
-    
+
+    // New L2 conversation path: dispatch to analyze-open-answer instead of the legacy compute-level2-signals.
+    const submittedFormat = (submission?.submittedPayload as any)?.format;
+    if (submittedFormat === 'l2_conversation') {
+      try {
+        const { data, error } = await supabase.functions.invoke('analyze-open-answer', {
+          body: {
+            format: 'l2_conversation',
+            invitation_id: submission!.invitationId,
+            challenge_id: submission!.challengeId,
+            language: i18n.language,
+          },
+        });
+        if (error) throw error;
+        const sig = (data as any)?.signals_payload;
+        if (sig) setLocalLevel2Signals(sig as Level2SignalsPayload);
+        onSignalsGenerated?.();
+        toast({
+          title: t('business.level2_interpretation.signals_generated'),
+          description: t('business.level2_interpretation.ai_complete'),
+        });
+      } catch (err) {
+        console.error('[L2 Signals] l2_conversation scoring failed:', err);
+        const msg = err instanceof Error ? err.message : String(err);
+        setLevel2Error(msg);
+        toast({ title: t('common.error'), description: msg, variant: 'destructive' });
+      } finally {
+        setIsGeneratingLevel2(false);
+        console.log('[L2 Signals] Generation complete (l2_conversation)');
+      }
+      return;
+    }
+
     try {
       // Call edge function for AI-powered analysis
       const l2Signals = await computeLevel2SignalsAsync(submissionKey);
