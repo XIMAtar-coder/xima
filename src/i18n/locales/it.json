@@ -2158,9 +2158,14 @@
       "proceed_to_next_step": "Procedi allo Step Successivo",
       "proceed_helper": "Questo segnerà il candidato per l'avanzamento e aprirà il selettore di challenge.",
       "advanced_to_level2": "Avanzato al Livello 2",
-      "proceed_to_level3": "Invita al Livello 3",
+      "advanced_to_level3": "Avanzato al Livello 3",
+      "proceed_to_level3": "Procedi a L3",
+      "open_level3_invite": "Apri Invito Livello 3",
       "level3_helper": "Invita il candidato a dimostrare Standing e Presenza Professionale.",
-      "level3_invite_sent": "Invito Livello 3 Inviato"
+      "level3_invite_sent": "Invito Livello 3 Inviato",
+      "l2_pending_review": "L2 in attesa di revisione",
+      "l2_rubric_breakdown": "Valutazione Criteri Livello 2",
+      "l2_rubric_breakdown_desc": "Punteggi per criterio della rubrica con evidenza estratta dalla conversazione."
     },
     "reports": {
       "title": "Report e Analisi",
