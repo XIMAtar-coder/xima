@@ -2850,9 +2850,14 @@
       "proceed_to_next_step": "Proceder al Siguiente Paso",
       "proceed_helper": "Esto marcará al candidato para avance y abrirá el selector de desafíos.",
       "advanced_to_level2": "Avanzado al Nivel 2",
-      "proceed_to_level3": "Invitar al Nivel 3",
+      "advanced_to_level3": "Avanzado al Nivel 3",
+      "proceed_to_level3": "Proceder a L3",
+      "open_level3_invite": "Abrir Invitación Nivel 3",
       "level3_helper": "Invita al candidato a demostrar Standing y Presencia Profesional.",
-      "level3_invite_sent": "Invitación Nivel 3 Enviada"
+      "level3_invite_sent": "Invitación Nivel 3 Enviada",
+      "l2_pending_review": "L2 pendiente de revisión",
+      "l2_rubric_breakdown": "Evaluación de Criterios Nivel 2",
+      "l2_rubric_breakdown_desc": "Puntuaciones por criterio de la rúbrica con evidencia extraída de la conversación."
     },
     "level2": {
       "hard_skills_title": "Nivel 2 — Desafío de Hard Skills para el Rol",
@@ -2894,7 +2899,12 @@
       "invite_sent": "Invitación Nivel 3 Enviada",
       "invite_sent_desc": "{{name}} ha sido invitado al desafío Nivel 3.",
       "proceed_to_level3": "Invitar al Nivel 3",
-      "level3_sent": "Nivel 3 Enviado"
+      "level3_sent": "Nivel 3 Enviado",
+      "review_failed": "No se pudo registrar la decisión de avance a L3",
+      "gate_a_failed": "Nivel 2 no completado",
+      "gate_a_failed_desc": "El candidato debe tener una submission de Nivel 2 enviada antes de poder ser invitado al Nivel 3.",
+      "gate_b_failed": "Decisión de avance faltante",
+      "gate_b_failed_desc": "Primero debes registrar \"Proceder a L3\" en la revisión del Nivel 2."
     },
     "level2_interpretation": {
       "title": "Nivel 2 — Interpretación de Hard Skills (IA)",
