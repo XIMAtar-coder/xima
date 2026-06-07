@@ -927,7 +927,7 @@ Evaluate. Return ONLY the JSON object.`;
         inputSummary: `l2_conversation:inv=${invitation_id},model=${model},turns=${candidateTurns}`,
         model,
         maxTokens: 2500,
-        temperature: 0.2,
+        // Opus 4.x deprecates `temperature`; omit per-call override.
         promptTemplateVersion: 'l2_conversation_v1',
       });
       aiContent = resp.content;
@@ -964,7 +964,6 @@ Evaluate. Return ONLY the JSON object.`;
         inputSummary: `l2_conversation:inv=${invitation_id},sonnet_last_resort`,
         model: SONNET_LAST_RESORT,
         maxTokens: 2500,
-        temperature: 0.2,
         promptTemplateVersion: 'l2_conversation_v1',
       });
       aiContent = resp.content;
