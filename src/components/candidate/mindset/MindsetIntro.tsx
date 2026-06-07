@@ -28,7 +28,7 @@ export function MindsetIntro({ guideName, intro, introContext, onStart }: Props)
   const hasComp = ral || (introContext?.compensation?.ccnl ?? null);
   const growthLine =
     introContext?.growth_line ||
-    'Completare questa sfida rafforza il tuo XIMAtar e rende il tuo profilo più rilevante per le aziende.';
+    'Completare questa sfida arricchisce il tuo XIMAtar e rende il tuo profilo più rilevante per le aziende.';
 
   return (
     <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
