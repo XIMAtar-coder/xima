@@ -1025,7 +1025,10 @@ export function SubmissionDetailDrawer({
                       </div>
                     )}
 
-                    {/* Proceed to Level 3 - Only show for Level 2 submissions */}
+                    {/* Proceed to Level 3 - Only show for Level 2 submissions.
+                        Mirrors the L1→L2 two-state pattern: gated saveReview('proceed_level3')
+                        runs first, then opens the modal — so the trigger's Gate B is
+                        satisfied before the L3 invitation insert hits the DB. */}
                     {currentChallengeLevel === 2 && hiringGoalId && submission.submissionStatus === 'submitted' && (
                       <div className="border-t pt-3">
                         {alreadyInvitedToLevel3 ? (
@@ -1033,15 +1036,37 @@ export function SubmissionDetailDrawer({
                             <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
                             {t('business.review.level3_invite_sent')}
                           </Button>
+                        ) : currentReview?.decision === 'proceed_level3' ? (
+                          <Button
+                            variant="secondary"
+                            onClick={() => setLevel3ModalOpen(true)}
+                            disabled={checkingLevel3}
+                            className="w-full"
+                          >
+                            {checkingLevel3 ? (
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            ) : (
+                              <Users className="h-4 w-4 mr-2" />
+                            )}
+                            {t('business.review.open_level3_invite')}
+                          </Button>
                         ) : (
                           <div>
-                            <Button 
+                            <Button
                               variant="default"
-                              onClick={() => setLevel3ModalOpen(true)}
-                              disabled={checkingLevel3}
+                              onClick={async () => {
+                                try {
+                                  await saveReview('proceed_level3');
+                                } catch {
+                                  // saveReview already surfaced a destructive toast; don't open the modal.
+                                  return;
+                                }
+                                setLevel3ModalOpen(true);
+                              }}
+                              disabled={savingReview || checkingLevel3}
                               className="w-full"
                             >
-                              {checkingLevel3 ? (
+                              {(savingReview || checkingLevel3) ? (
                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                               ) : (
                                 <Users className="h-4 w-4 mr-2" />
