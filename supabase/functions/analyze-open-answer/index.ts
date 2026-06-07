@@ -74,12 +74,16 @@ serve(async (req) => {
   const ipHash = req.headers.get('x-forwarded-for') ? await hashForAudit(req.headers.get('x-forwarded-for')!) : null;
 
   try {
-    // Mandatory authentication: reject unauthenticated callers
+    // Mandatory authentication: reject unauthenticated callers.
+    // Service-role bearer is accepted for internal/edge-to-edge calls (bypasses getUser).
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       return errorResponse(401, 'UNAUTHORIZED', 'Authentication required');
     }
-    {
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || '';
+    const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
+    const isServiceRole = serviceKey && bearer === serviceKey;
+    if (!isServiceRole) {
       const authClient = createClient(
         Deno.env.get("SUPABASE_URL")!,
         Deno.env.get("SUPABASE_ANON_KEY")!,
