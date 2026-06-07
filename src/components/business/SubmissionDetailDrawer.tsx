@@ -100,7 +100,7 @@ export function SubmissionDetailDrawer({
   onLevel2InviteSent,
   onLevel3InviteSent,
 }: SubmissionDetailDrawerProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isPremium } = useBusinessPremium();
   const [generatingSignals, setGeneratingSignals] = useState(false);
   const [savingReview, setSavingReview] = useState(false);
@@ -228,7 +228,7 @@ export function SubmissionDetailDrawer({
           body: {
             format: 'l2_conversation',
             invitation_id: submission!.invitationId,
-            challenge_id: submission!.challengeId,
+            challenge_id: challengeId,
             language: i18n.language,
           },
         });
