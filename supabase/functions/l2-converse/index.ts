@@ -149,6 +149,9 @@ serve(async (req) => {
   if (invitation.challenge_id !== challenge_id) {
     return errorResponse(409, "INVITATION_CHALLENGE_MISMATCH", "Invitation does not belong to this challenge");
   }
+  if (invitation.candidate_profile_id !== callerProfile.id) {
+    return errorResponse(403, "FORBIDDEN", "Invitation does not belong to caller");
+  }
 
   // Load existing draft submission for this invitation, if any
   const { data: existingSub } = await supabase
