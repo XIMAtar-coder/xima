@@ -95,7 +95,28 @@ serve(async (req) => {
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+
+  // Mandatory authentication
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader) return errorResponse(401, "UNAUTHORIZED", "Authentication required");
+  const authClient = createClient(supabaseUrl, anonKey, {
+    global: { headers: { Authorization: authHeader } },
+  });
+  const { data: { user: authUser }, error: authErr } = await authClient.auth.getUser();
+  if (authErr || !authUser) return errorResponse(401, "UNAUTHORIZED", "Invalid or expired token");
+
   const supabase = createClient(supabaseUrl, serviceKey);
+
+  // Resolve caller's profile id (candidate_profile_id is profiles.id, not auth.uid)
+  const { data: callerProfile } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("user_id", authUser.id)
+    .maybeSingle();
+  if (!callerProfile?.id) {
+    return errorResponse(403, "FORBIDDEN", "Caller has no profile");
+  }
 
   // Load challenge + l2_simulation spec
   const { data: challenge, error: chErr } = await supabase
