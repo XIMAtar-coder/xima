@@ -608,6 +608,63 @@ export function SubmissionDetailDrawer({
               isRegenerating={isGeneratingLevel2}
             />
           )}
+
+          {/* L2 Conversation Rubric Breakdown — role-specific criterion scores from analyze-open-answer.
+              Rendered alongside (not replacing) the generic signals panels above. */}
+          {currentChallengeLevel === 2 && l2RubricBreakdown && (
+            <Card className="border-primary/20">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Target className="h-4 w-4 text-primary" />
+                  {t('business.review.l2_rubric_breakdown')}
+                </CardTitle>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t('business.review.l2_rubric_breakdown_desc')}
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {l2RubricBreakdown.map((row, i) => (
+                  <div
+                    key={row.criterion_id || `${i}-${row.criterion}`}
+                    className="p-3 rounded-lg bg-muted/30 border border-border/50 space-y-2"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-sm font-medium text-foreground flex-1">
+                        {row.criterion}
+                      </span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {row.primary_pillar && (
+                          <Badge variant="outline" className="text-[10px] uppercase tracking-wide">
+                            {row.primary_pillar.replace(/_/g, ' ')}
+                          </Badge>
+                        )}
+                        <Badge
+                          className={
+                            typeof row.score === 'number'
+                              ? row.score >= 70
+                                ? 'bg-green-500/15 text-green-700 dark:text-green-400 border border-green-500/25'
+                                : row.score >= 50
+                                  ? 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/25'
+                                  : 'bg-red-500/15 text-red-700 dark:text-red-400 border border-red-500/25'
+                              : 'bg-muted text-muted-foreground border border-border'
+                          }
+                        >
+                          {typeof row.score === 'number' ? row.score : '–'}
+                        </Badge>
+                      </div>
+                    </div>
+                    {row.evidence_quote && (
+                      <p className="text-xs italic text-muted-foreground leading-relaxed border-l-2 border-primary/30 pl-2">
+                        "{row.evidence_quote}"
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
+
+
           
           {/* Level 2 Loading State - Only show when actively generating AND no signals yet */}
           {currentChallengeLevel === 2 && isGeneratingLevel2 && !effectiveLevel2Signals && (
