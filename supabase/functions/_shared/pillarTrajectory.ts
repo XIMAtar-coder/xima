@@ -101,11 +101,14 @@ function applyDiminishingReturns(currentScore: number, rawDelta: number): number
   if (rawDelta <= 0) return rawDelta;
   const headroom = 100 - currentScore;
   const factor = Math.max(0.2, headroom / 50);
-  return Math.round(rawDelta * factor * 10) / 10;
+  // 2-decimal precision matches pillar_trajectory_log numeric(5,2); avoids drift across many events.
+  return Math.round(rawDelta * factor * 100) / 100;
 }
 
 function clampScore(score: number): number {
-  return Math.max(0, Math.min(100, Math.round(score)));
+  // Keep 2-decimal precision in pillar_scores jsonb; UI rounds at the display layer.
+  const bounded = Math.max(0, Math.min(100, score));
+  return Math.round(bounded * 100) / 100;
 }
 
 /**
