@@ -2316,7 +2316,12 @@
       "invite_sent": "Invito Livello 3 Inviato",
       "invite_sent_desc": "{{name}} è stato invitato alla challenge Livello 3.",
       "proceed_to_level3": "Invita al Livello 3",
-      "level3_sent": "Livello 3 Inviato"
+      "level3_sent": "Livello 3 Inviato",
+      "review_failed": "Impossibile registrare la decisione di avanzamento a L3",
+      "gate_a_failed": "Livello 2 non completato",
+      "gate_a_failed_desc": "Il candidato deve avere una submission di Livello 2 inviata prima di poter essere invitato al Livello 3.",
+      "gate_b_failed": "Decisione di avanzamento mancante",
+      "gate_b_failed_desc": "Devi prima registrare \"Procedi a L3\" sulla revisione del Livello 2."
     },
     "level2_interpretation": {
       "title": "Livello 2 — Interpretazione Hard Skill (IA)",
