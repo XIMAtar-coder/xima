@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dialog,
@@ -9,23 +9,16 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
-import { 
-  Users, 
-  Loader2, 
-  Clock, 
+import {
+  Loader2,
   Video,
   Building2,
   Briefcase,
   User,
-  MessageSquare,
 } from 'lucide-react';
-import { useBusinessLocale, BusinessLocale } from '@/hooks/useBusinessLocale';
 
 interface Level3InviteModalProps {
   open: boolean;
@@ -39,17 +32,10 @@ interface Level3InviteModalProps {
   onInviteSent?: () => void;
 }
 
-const DURATION_OPTIONS = [
-  { value: 4, label: '4 min' },
-  { value: 5, label: '5 min' },
-  { value: 6, label: '6 min' },
-];
-
-const PROMPT_COUNT_OPTIONS = [
-  { value: 3, label: '3' },
-  { value: 4, label: '4' },
-  { value: 5, label: '5' },
-];
+// TODO(stage-F): resolve the L3 challenge per (business_id, hiring_goal_id)
+// the same way L2 is resolved in Level2InviteModal. Hard-coding the seeded
+// "Standing Video" row is only safe while there is one global L3 challenge.
+const STANDING_VIDEO_CHALLENGE_ID = '9ae27a4a-3d12-4bcc-b665-95b0414e325d';
 
 export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
   open,
@@ -63,25 +49,14 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
   onInviteSent,
 }) => {
   const { t } = useTranslation();
-  const { locale } = useBusinessLocale();
-  
-  const [duration, setDuration] = useState(5);
-  const [promptCount, setPromptCount] = useState(4);
+
   const [sending, setSending] = useState(false);
   const [contextData, setContextData] = useState<{ companyName: string; roleTitle: string } | null>(null);
-
-  // Reset state when modal closes
-  useEffect(() => {
-    if (!open) {
-      setDuration(5);
-      setPromptCount(4);
-    }
-  }, [open]);
 
   // Fetch context data if not provided
   useEffect(() => {
     if (!open) return;
-    
+
     if (companyName && roleTitle) {
       setContextData({ companyName, roleTitle });
       return;
@@ -107,44 +82,85 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
     fetchContext();
   }, [open, businessId, hiringGoalId, companyName, roleTitle]);
 
-  const createChallengeAndInvite = async () => {
+  const sendInvitation = async () => {
     setSending(true);
     try {
-      const title = t('level3.standing.title');
-      const description = t('level3.standing.description');
+      // Submission-gated atomic upsert of the proceed_level3 review.
+      // Mirrors trigger Gate B: only record advancement when the candidate has
+      // an L2 challenge_invitations row with a SUBMITTED submission for the
+      // same (business, hiring_goal). Authoritative-level-first detector so
+      // a future rubric drift can't misclassify the L2 row.
+      try {
+        // L2 = the active/published challenge for this goal whose level=2 (or,
+        // for legacy rows with level NULL, NOT L1 and NOT L3 by rubric/title).
+        const { data: candidateL2Challenges } = await supabase
+          .from('business_challenges')
+          .select('id, level, rubric, title')
+          .eq('business_id', businessId)
+          .eq('hiring_goal_id', hiringGoalId)
+          .in('status', ['active', 'published']);
 
-      // Create the Level 3 Standing challenge
-      const { data: newChallenge, error: createError } = await supabase
-        .from('business_challenges')
-        .insert([{
-          business_id: businessId,
-          hiring_goal_id: hiringGoalId,
-          title,
-          description,
-          rubric: {
-            level: 3,
-            type: 'standing_presence',
-            deliverable_type: 'video',
-            duration_minutes: duration,
-            prompt_count: promptCount,
-            locale,
-            company_context: contextData,
-          },
-          time_estimate_minutes: duration,
-          status: 'active',
-        }])
-        .select('id')
-        .single();
+        const l2Challenge = (candidateL2Challenges || []).find((c) => {
+          if (c.level === 2) return true;
+          if (c.level === 1 || c.level === 3) return false;
+          // Fallback heuristic only when level column is null.
+          const r = (c.rubric as { type?: string; isXimaCore?: unknown; level?: string } | null) ?? {};
+          const title = (c.title || '').toLowerCase();
+          const isL1 = r.type === 'xima_core' || r.isXimaCore === true || r.level === '1' || title.includes('xima core');
+          const isL3 = r.type === 'standing_presence' || r.type === 'video' || r.level === '3';
+          return !isL1 && !isL3;
+        });
 
-      if (createError) throw createError;
+        if (l2Challenge?.id) {
+          const { data: l2Inv } = await supabase
+            .from('challenge_invitations')
+            .select('id, challenge_submissions!inner(id, status)')
+            .eq('business_id', businessId)
+            .eq('hiring_goal_id', hiringGoalId)
+            .eq('candidate_profile_id', candidateProfileId)
+            .eq('challenge_id', l2Challenge.id)
+            .eq('challenge_submissions.status', 'submitted')
+            .maybeSingle();
 
-      // Check for existing invitation
+          if (l2Inv?.id) {
+            const { error: reviewErr } = await supabase
+              .from('challenge_reviews')
+              .upsert({
+                business_id: businessId,
+                challenge_id: l2Challenge.id,
+                invitation_id: l2Inv.id,
+                candidate_profile_id: candidateProfileId,
+                decision: 'proceed_level3',
+              }, { onConflict: 'invitation_id' });
+
+            if (reviewErr) {
+              console.error('[Level3InviteModal] proceed_level3 review upsert failed:', reviewErr);
+              toast({
+                title: t('business.level3.review_failed'),
+                description: reviewErr.message,
+                variant: 'destructive',
+              });
+              return;
+            }
+            if (import.meta.env.DEV) {
+              console.log('[Level3InviteModal] proceed_level3 review upserted for invitation', l2Inv.id);
+            }
+          } else if (import.meta.env.DEV) {
+            console.log('[Level3InviteModal] No submitted L2 found — skipping review upsert; Gate A will enforce.');
+          }
+        }
+      } catch (preErr) {
+        // Non-fatal — fall through and let Gate A/B return the canonical error.
+        console.error('[Level3InviteModal] Pre-flight review upsert errored:', preErr);
+      }
+
+      // Already-active L3 invitation check (for THIS challenge id).
       const { data: existingInvitation } = await supabase
         .from('challenge_invitations')
         .select('id, status')
         .eq('business_id', businessId)
         .eq('hiring_goal_id', hiringGoalId)
-        .eq('challenge_id', newChallenge.id)
+        .eq('challenge_id', STANDING_VIDEO_CHALLENGE_ID)
         .eq('candidate_profile_id', candidateProfileId)
         .not('status', 'in', '("withdrawn","expired","cancelled")')
         .maybeSingle();
@@ -158,27 +174,51 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
         return;
       }
 
-      // Create new invitation
+      // Create the L3 invitation on the seeded Standing Video challenge.
       const { error } = await supabase
         .from('challenge_invitations')
         .insert({
           business_id: businessId,
           hiring_goal_id: hiringGoalId,
-          challenge_id: newChallenge.id,
+          challenge_id: STANDING_VIDEO_CHALLENGE_ID,
           candidate_profile_id: candidateProfileId,
           status: 'invited',
           sent_via: ['in_app'],
         });
 
       if (error) {
-        if (error.message?.includes('pipeline_locked')) {
+        const msg = error.message || '';
+        if (msg.includes('pipeline_locked')) {
+          if (msg.includes('Level 2 submission required')) {
+            toast({
+              title: t('business.level3.gate_a_failed'),
+              description: t('business.level3.gate_a_failed_desc'),
+              variant: 'destructive',
+            });
+          } else if (msg.includes('Proceed to Level 3')) {
+            toast({
+              title: t('business.level3.gate_b_failed'),
+              description: t('business.level3.gate_b_failed_desc'),
+              variant: 'destructive',
+            });
+          } else {
+            toast({
+              title: t('business.level3.pipeline_locked'),
+              description: t('business.level3.pipeline_locked_desc'),
+              variant: 'destructive',
+            });
+          }
+        } else if (error.code === '23505') {
+          toast({ title: t('business.level3.already_invited') });
+          onOpenChange(false);
+          onInviteSent?.();
+        } else {
+          console.error('[Level3InviteModal] invite insert failed', error);
           toast({
-            title: t('business.level3.pipeline_locked'),
-            description: t('business.level3.pipeline_locked_desc'),
+            title: t('common.error'),
+            description: msg,
             variant: 'destructive',
           });
-        } else {
-          throw error;
         }
         return;
       }
@@ -192,10 +232,7 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
       onInviteSent?.();
     } catch (err) {
       console.error('Error sending Level 3 invite:', err);
-      toast({
-        title: t('common.error'),
-        variant: 'destructive',
-      });
+      toast({ title: t('common.error'), variant: 'destructive' });
     } finally {
       setSending(false);
     }
@@ -251,59 +288,13 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
               </div>
             </CardContent>
           </Card>
-
-          {/* Configuration */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-sm flex items-center gap-1">
-                <Clock className="h-3.5 w-3.5" />
-                {t('level3.standing.duration_label')}
-              </Label>
-              <Select value={duration.toString()} onValueChange={(v) => setDuration(parseInt(v))}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {DURATION_OPTIONS.map(opt => (
-                    <SelectItem key={opt.value} value={opt.value.toString()}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label className="text-sm flex items-center gap-1">
-                <MessageSquare className="h-3.5 w-3.5" />
-                {t('level3.standing.prompts_label')}
-              </Label>
-              <Select value={promptCount.toString()} onValueChange={(v) => setPromptCount(parseInt(v))}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {PROMPT_COUNT_OPTIONS.map(opt => (
-                    <SelectItem key={opt.value} value={opt.value.toString()}>
-                      {opt.label} {t('level3.standing.prompts_suffix')}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Summary */}
-          <div className="text-xs text-muted-foreground text-center py-2 border-t">
-            {t('level3.standing.summary', { duration, promptCount })}
-          </div>
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={sending}>
             {t('level3.standing.not_now')}
           </Button>
-          <Button onClick={createChallengeAndInvite} disabled={sending || !contextData}>
+          <Button onClick={sendInvitation} disabled={sending || !contextData}>
             {sending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
             <Video className="h-4 w-4 mr-2" />
             {t('level3.standing.send_invite')}

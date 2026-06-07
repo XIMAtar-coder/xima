@@ -58,11 +58,22 @@ interface ChallengeInfo {
   rubric?: { type?: string } | null;
 }
 
+type ReviewDecision = 'shortlist' | 'followup' | 'pass' | 'proceed_level2' | 'proceed_level3';
+
 interface ChallengeReview {
   id: string;
-  decision: 'shortlist' | 'followup' | 'pass' | 'proceed_level2';
+  decision: ReviewDecision;
   followup_question: string | null;
   created_at: string;
+}
+
+interface L2RubricBreakdownItem {
+  criterion: string;
+  criterion_id?: string;
+  primary_pillar?: string;
+  score?: number | null;
+  weight?: number;
+  evidence_quote?: string;
 }
 
 interface ChallengeFollowup {
@@ -397,7 +408,7 @@ export function SubmissionDetailDrawer({
     }
   };
 
-  const saveReview = async (decision: 'shortlist' | 'followup' | 'pass' | 'proceed_level2', question?: string) => {
+  const saveReview = async (decision: ReviewDecision, question?: string) => {
     if (!submission) return;
 
     setSavingReview(true);
@@ -473,6 +484,7 @@ export function SubmissionDetailDrawer({
       const toastTitle = decision === 'shortlist' ? t('business.review.shortlisted') :
                decision === 'pass' ? t('business.review.passed') :
                decision === 'proceed_level2' ? t('business.review.advanced_to_level2') :
+               decision === 'proceed_level3' ? t('business.review.advanced_to_level3') :
                t('business.review.followup_sent');
       
       toast({ title: toastTitle });
@@ -527,8 +539,22 @@ export function SubmissionDetailDrawer({
         return <Badge variant="outline"><MessageSquare className="h-3 w-3 mr-1" />{t('business.review.followup_pending')}</Badge>;
       case 'proceed_level2':
         return <Badge className="bg-primary"><ArrowRight className="h-3 w-3 mr-1" />{t('business.review.advanced_to_level2')}</Badge>;
+      case 'proceed_level3':
+        return <Badge className="bg-primary"><ArrowRight className="h-3 w-3 mr-1" />{t('business.review.advanced_to_level3')}</Badge>;
     }
   };
+
+  // L2 conversation rubric breakdown (rendered alongside generic signals, not replacing them).
+  const l2RubricBreakdown: L2RubricBreakdownItem[] | null = useMemo(() => {
+    const sp = submission?.signalsPayload as { format?: string; rubric_breakdown?: L2RubricBreakdownItem[] } | null;
+    if (!sp || sp.format !== 'l2_conversation') return null;
+    return Array.isArray(sp.rubric_breakdown) && sp.rubric_breakdown.length > 0 ? sp.rubric_breakdown : null;
+  }, [submission?.signalsPayload]);
+
+  // "L2 in attesa di revisione" badge: L2 submission with no review decision yet.
+  const showL2PendingReviewBadge = currentChallengeLevel === 2
+    && submission?.submissionStatus === 'submitted'
+    && !currentReview;
 
   // Always render Sheet, check submission inside content
   return (
@@ -563,6 +589,12 @@ export function SubmissionDetailDrawer({
                       : t('business.responses.not_submitted_yet')}
                   </div>
                 </div>
+                {showL2PendingReviewBadge && (
+                  <Badge variant="outline" className="bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400">
+                    <Clock className="h-3 w-3 mr-1" />
+                    {t('business.review.l2_pending_review')}
+                  </Badge>
+                )}
                 {getDecisionBadge()}
               </div>
             </SheetHeader>
@@ -576,6 +608,63 @@ export function SubmissionDetailDrawer({
               isRegenerating={isGeneratingLevel2}
             />
           )}
+
+          {/* L2 Conversation Rubric Breakdown — role-specific criterion scores from analyze-open-answer.
+              Rendered alongside (not replacing) the generic signals panels above. */}
+          {currentChallengeLevel === 2 && l2RubricBreakdown && (
+            <Card className="border-primary/20">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Target className="h-4 w-4 text-primary" />
+                  {t('business.review.l2_rubric_breakdown')}
+                </CardTitle>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t('business.review.l2_rubric_breakdown_desc')}
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {l2RubricBreakdown.map((row, i) => (
+                  <div
+                    key={row.criterion_id || `${i}-${row.criterion}`}
+                    className="p-3 rounded-lg bg-muted/30 border border-border/50 space-y-2"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-sm font-medium text-foreground flex-1">
+                        {row.criterion}
+                      </span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {row.primary_pillar && (
+                          <Badge variant="outline" className="text-[10px] uppercase tracking-wide">
+                            {row.primary_pillar.replace(/_/g, ' ')}
+                          </Badge>
+                        )}
+                        <Badge
+                          className={
+                            typeof row.score === 'number'
+                              ? row.score >= 70
+                                ? 'bg-green-500/15 text-green-700 dark:text-green-400 border border-green-500/25'
+                                : row.score >= 50
+                                  ? 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/25'
+                                  : 'bg-red-500/15 text-red-700 dark:text-red-400 border border-red-500/25'
+                              : 'bg-muted text-muted-foreground border border-border'
+                          }
+                        >
+                          {typeof row.score === 'number' ? row.score : '–'}
+                        </Badge>
+                      </div>
+                    </div>
+                    {row.evidence_quote && (
+                      <p className="text-xs italic text-muted-foreground leading-relaxed border-l-2 border-primary/30 pl-2">
+                        "{row.evidence_quote}"
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
+
+
           
           {/* Level 2 Loading State - Only show when actively generating AND no signals yet */}
           {currentChallengeLevel === 2 && isGeneratingLevel2 && !effectiveLevel2Signals && (
@@ -936,7 +1025,10 @@ export function SubmissionDetailDrawer({
                       </div>
                     )}
 
-                    {/* Proceed to Level 3 - Only show for Level 2 submissions */}
+                    {/* Proceed to Level 3 - Only show for Level 2 submissions.
+                        Mirrors the L1→L2 two-state pattern: gated saveReview('proceed_level3')
+                        runs first, then opens the modal — so the trigger's Gate B is
+                        satisfied before the L3 invitation insert hits the DB. */}
                     {currentChallengeLevel === 2 && hiringGoalId && submission.submissionStatus === 'submitted' && (
                       <div className="border-t pt-3">
                         {alreadyInvitedToLevel3 ? (
@@ -944,15 +1036,37 @@ export function SubmissionDetailDrawer({
                             <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
                             {t('business.review.level3_invite_sent')}
                           </Button>
+                        ) : currentReview?.decision === 'proceed_level3' ? (
+                          <Button
+                            variant="secondary"
+                            onClick={() => setLevel3ModalOpen(true)}
+                            disabled={checkingLevel3}
+                            className="w-full"
+                          >
+                            {checkingLevel3 ? (
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            ) : (
+                              <Users className="h-4 w-4 mr-2" />
+                            )}
+                            {t('business.review.open_level3_invite')}
+                          </Button>
                         ) : (
                           <div>
-                            <Button 
+                            <Button
                               variant="default"
-                              onClick={() => setLevel3ModalOpen(true)}
-                              disabled={checkingLevel3}
+                              onClick={async () => {
+                                try {
+                                  await saveReview('proceed_level3');
+                                } catch {
+                                  // saveReview already surfaced a destructive toast; don't open the modal.
+                                  return;
+                                }
+                                setLevel3ModalOpen(true);
+                              }}
+                              disabled={savingReview || checkingLevel3}
                               className="w-full"
                             >
-                              {checkingLevel3 ? (
+                              {(savingReview || checkingLevel3) ? (
                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                               ) : (
                                 <Users className="h-4 w-4 mr-2" />

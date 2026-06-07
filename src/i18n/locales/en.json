@@ -1391,7 +1391,12 @@
       "invite_sent": "Level 3 Invitation Sent",
       "invite_sent_desc": "{{name}} has been invited to the Level 3 challenge.",
       "proceed_to_level3": "Invite to Level 3",
-      "level3_sent": "Level 3 Sent"
+      "level3_sent": "Level 3 Sent",
+      "review_failed": "Could not record the L3 advancement decision",
+      "gate_a_failed": "Level 2 not completed",
+      "gate_a_failed_desc": "The candidate must have a submitted Level 2 submission before being invited to Level 3.",
+      "gate_b_failed": "Advancement decision missing",
+      "gate_b_failed_desc": "You must first record \"Proceed to L3\" on the Level 2 review."
     },
     "level2_interpretation": {
       "title": "Level 2 — Hard Skill Interpretation (AI)",
