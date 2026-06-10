@@ -49,7 +49,7 @@ export const EmailVerificationBanner: React.FC = () => {
     if (!user?.id || !user.email) return;
     setResending(true);
     try {
-      const deadline = status?.deadline ?? new Date(Date.now() + 48 * 3600 * 1000);
+      const deadline = status?.deadline ?? new Date(Date.now() + 72 * 3600 * 1000);
       const { error } = await supabase.functions.invoke('send-verification-email', {
         body: {
           user_id: user.id,

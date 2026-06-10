@@ -116,9 +116,9 @@ const Register = () => {
           catch (refErr) { console.warn('[Register] Referral apply exception:', refErr); }
         }
 
-        // 48h verification window
+        // 72h verification window
         const deadline = new Date();
-        deadline.setHours(deadline.getHours() + 48);
+        deadline.setHours(deadline.getHours() + 72);
 
         try {
           await supabase.from('profiles').update({
@@ -140,7 +140,7 @@ const Register = () => {
             console.error('[Register] Verification email failed:', emailErr);
             toast({ title: 'Account creato', description: 'La mail di verifica potrebbe arrivare con qualche minuto di ritardo.' });
           } else {
-            toast({ title: 'Account creato!', description: 'Controlla la tua email per confermare entro 48 ore.' });
+            toast({ title: 'Account creato!', description: 'Controlla la tua email per confermare entro 72 ore.' });
           }
         } catch (emailErr) { console.error('[Register] verification email exception', emailErr); }
 
