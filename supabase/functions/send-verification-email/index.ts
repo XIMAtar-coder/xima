@@ -39,7 +39,7 @@ function renderEmailHtml(name: string, verifyUrl: string, deadlineText: string):
         <tr><td style="padding:36px 32px 8px 32px;">
           <h1 style="margin:0 0 12px 0; font-size:24px; line-height:1.3; color:#071E3A;">Benvenuto in XIMA${safeName ? ", " + safeName : ""}</h1>
           <p style="margin:0 0 18px 0; font-size:15px; line-height:1.6; color:#3C4A63;">
-            Hai 48 ore per confermare la tua email e mantenere pieno accesso a tutte le funzionalit&agrave; XIMA.
+            Hai 72 ore per confermare la tua email e mantenere pieno accesso a tutte le funzionalit&agrave; XIMA.
             Puoi gi&agrave; usare la dashboard, completare il tuo XIMAtar e modificare il profilo.
           </p>
           <p style="margin:0 0 24px 0; font-size:14px; line-height:1.6; color:#6B7790;">
@@ -129,7 +129,7 @@ serve(async (req) => {
     const emailResp = await resend.emails.send({
       from: "XIMA <noreply@ximatar.com>",
       to: [email],
-      subject: "Conferma il tuo account XIMA (entro 48 ore)",
+      subject: "Conferma il tuo account XIMA (entro 72 ore)",
       html: renderEmailHtml(name || "", verifyUrl, deadlineText),
     });
 
