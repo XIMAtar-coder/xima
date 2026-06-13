@@ -28,7 +28,7 @@ import Seo from '@/components/Seo';
 const XimatarJourney = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, isAuthenticated } = useUser();
+  useUser();
   const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
   
