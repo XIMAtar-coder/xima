@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Upload, FileText, Check, AlertCircle, SkipForward } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import FieldSelector, { FieldKey } from '@/components/FieldSelector';
+import { CV_PROCESSING_VERSION } from '@/lib/legal/consentVersions';
 
 interface BaselineAssessmentProps {
   onComplete: (step: number) => void;
@@ -16,11 +17,13 @@ interface BaselineAssessmentProps {
 const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onCvUpload }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [uploadComplete, setUploadComplete] = useState(false);
+  const [uploadComplete, setUploadComplete] = useState(
+    typeof window !== 'undefined' && !!sessionStorage.getItem('guest_cv_analysis')
+  );
   const [dataConsent, setDataConsent] = useState(false);
   const [field, setField] = useState<FieldKey | null>(null);
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -47,30 +50,71 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
     if (!file || !dataConsent) return;
     setUploading(true);
 
-    // Store the CV file as base64 in sessionStorage for post-registration import
     try {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64 = reader.result as string;
-        sessionStorage.setItem('xima_pending_cv', JSON.stringify({
-          file_name: file.name,
-          file_type: file.type,
-          file_size: file.size,
-          base64_data: base64,
-          uploaded_at: new Date().toISOString(),
-        }));
-      };
-      reader.readAsDataURL(file);
-    } catch (e) {
-      console.warn('[BaselineAssessment] Failed to cache CV for later import:', e);
-    }
+      const formData = new FormData();
+      formData.append('file', file);
+      // Assessment hasn't run yet at step 1 — send whatever the journey produced
+      // so the edge can enrich. Missing values are tolerated server-side.
+      const guestPillarScores = sessionStorage.getItem('guest_pillar_scores');
+      const guestXimatar = sessionStorage.getItem('guest_ximatar');
+      const guestXimatarName = sessionStorage.getItem('guest_ximatar_name');
+      if (guestPillarScores) formData.append('guest_pillar_scores', guestPillarScores);
+      if (guestXimatar) formData.append('guest_ximatar', guestXimatar);
+      if (guestXimatarName) formData.append('guest_ximatar_name', guestXimatarName);
 
-    setTimeout(() => {
-      setUploading(false);
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey =
+        import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/analyze-cv-guest`, {
+        method: 'POST',
+        headers: {
+          apikey: supabaseAnonKey,
+          Authorization: `Bearer ${supabaseAnonKey}`,
+          'x-guest-consent': '1',
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({ error: response.statusText }));
+        throw new Error(errorBody.error || errorBody.message || `Analysis failed (${response.status})`);
+      }
+
+      const data = await response.json();
+
+      sessionStorage.setItem('guest_cv_filename', file.name);
+      sessionStorage.setItem('guest_cv_analysis', JSON.stringify(data));
+      sessionStorage.setItem(
+        'guest_cv_pillar_scores',
+        JSON.stringify(data.identity?.cv_pillar_scores || {})
+      );
+      sessionStorage.setItem(
+        'guest_cv_consent',
+        JSON.stringify({
+          version: CV_PROCESSING_VERSION,
+          locale: i18n.language?.split('-')[0] || 'it',
+          accepted_at: new Date().toISOString(),
+          user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
+        })
+      );
+
       setUploadComplete(true);
       onCvUpload(true);
-      toast({ title: t('cv.upload_success', 'CV uploaded successfully'), description: t('cv.baseline_ready', 'Your baseline assessment is ready') });
-    }, 2000);
+      toast({
+        title: t('guestCv.completed', 'CV analizzato'),
+        description: t('guestCv.success', 'I risultati saranno collegati al tuo profilo al momento della registrazione.'),
+      });
+    } catch (error) {
+      console.error('[BaselineAssessment] CV upload error:', error);
+      toast({
+        title: t('common.error', 'Errore'),
+        description: error instanceof Error ? error.message : 'Failed to analyze CV',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSkip = () => {
@@ -160,9 +204,8 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
                 <AlertCircle className="text-primary mt-0.5" size={20} />
                 <div className="space-y-3">
                   <div>
-                    <h4 className="font-medium text-foreground">{t('baseline.data_consent_title')}</h4>
                     <p className="text-sm text-muted-foreground">
-                      {t('baseline.data_consent_text')}
+                      {t('guestCv.disclaimer', "Il CV è usato solo per calcolare il tuo profilo. Il file non viene conservato sui nostri server: i risultati restano sul tuo dispositivo finché non completi la registrazione.")}
                     </p>
                   </div>
                   
@@ -176,7 +219,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
                       htmlFor="data-consent" 
                       className="text-sm text-foreground cursor-pointer"
                     >
-                      {t('baseline.consent_checkbox')}
+                      {t('guestCv.consent_label', 'Acconsento al trattamento del mio CV per il calcolo del profilo XIMAtar.')}
                     </label>
                   </div>
                 </div>
