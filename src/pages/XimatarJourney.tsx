@@ -12,8 +12,6 @@ import BaselineAssessment from '../components/ximatar-journey/BaselineAssessment
 import XimatarAssessment from '../components/ximatar-journey/XimatarAssessment';
 import ResultsComparison from '../components/ximatar-journey/ResultsComparison';
 import { Logo } from '../components/Logo';
-import { CvAnalysisUpload } from '../components/ximatar-journey/CvAnalysisUpload';
-import { GuestCvUpload } from '../components/ximatar-journey/GuestCvUpload';
 import { useXimatarJourneyState } from '@/hooks/useXimatarJourneyState';
 import {
   AlertDialog,
