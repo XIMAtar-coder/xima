@@ -3095,6 +3095,33 @@ export type Database = {
         }
         Relationships: []
       }
+      guest_rate_limit: {
+        Row: {
+          count: number
+          created_at: string
+          id: string
+          ip_hash: string
+          updated_at: string
+          window_start: string
+        }
+        Insert: {
+          count?: number
+          created_at?: string
+          id?: string
+          ip_hash: string
+          updated_at?: string
+          window_start?: string
+        }
+        Update: {
+          count?: number
+          created_at?: string
+          id?: string
+          ip_hash?: string
+          updated_at?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       hiring_goal_drafts: {
         Row: {
           ai_suggested_ximatar: string | null
@@ -5887,6 +5914,7 @@ export type Database = {
         Returns: boolean
       }
       check_verification_expiry: { Args: never; Returns: undefined }
+      cleanup_guest_rate_limit: { Args: never; Returns: undefined }
       compute_drive_for_current_user: { Args: never; Returns: number }
       compute_drive_score: { Args: { p_user_id: string }; Returns: number }
       compute_pillar_scores_from_assessment:
