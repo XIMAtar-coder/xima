@@ -396,7 +396,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
                     <div className="flex flex-wrap items-center gap-2">
                       {pillarKey && (
                         <span className="text-sm font-medium">
-                          {t(`pillars.${pillarKey}.name`, pillarKey.replace(/_/g, ' '))}
+                          {String(t(`pillars.${pillarKey}.name`, pillarKey.replace(/_/g, ' ')))}
                         </span>
                       )}
                       {gap.gap_direction && (
