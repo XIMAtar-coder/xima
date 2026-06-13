@@ -406,7 +406,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
                             ? 'border-primary/20 bg-primary/5 text-primary'
                             : 'border-destructive/20 bg-destructive/5 text-destructive'}
                         >
-                          {gap.gap_direction}
+                          {String(gap.gap_direction)}
                         </Badge>
                       )}
                       {(hasCv || hasXim) && (
