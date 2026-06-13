@@ -323,7 +323,7 @@ serve(async (req) => {
       base64 = btoa(base64);
       userContent = [
         { type: "document", source: { type: "base64", media_type: "application/pdf", data: base64 } },
-        { type: "text", text: `Analyze this CV against XIMAtar ${ximatarId} (${ximatarName}). Return ONLY the JSON specified.` },
+        { type: "text", text: ximatarId ? `Analyze this CV against XIMAtar ${ximatarId} (${ximatarName}). Return ONLY the JSON specified.` : `Analyze this CV (no prior assessment). Return ONLY the JSON specified.` },
       ];
     } else {
       const text = new TextDecoder("utf-8", { fatal: false }).decode(fileBytes).substring(0, 12000);
