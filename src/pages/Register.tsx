@@ -11,7 +11,7 @@ import { RegistrationForm } from '../types';
 import { Logo } from '@/components/Logo';
 import LandingLayout from '@/components/landing/LandingLayout';
 import Seo from '@/components/Seo';
-import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
+import { syncGuestAssessmentToProfile, syncGuestCvToProfile } from '@/utils/assessmentSync';
 import { supabase } from '@/integrations/supabase/client';
 import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
 import { ConsentCheckboxes } from '@/components/auth/ConsentCheckboxes';
@@ -145,6 +145,9 @@ const Register = () => {
         } catch (emailErr) { console.error('[Register] verification email exception', emailErr); }
 
         await syncGuestAssessmentToProfile(newUserId);
+        await syncGuestCvToProfile(newUserId).catch((e) =>
+          console.warn('[Register] cv sync failed (non-fatal)', e)
+        );
         navigate('/profile');
         return;
       }

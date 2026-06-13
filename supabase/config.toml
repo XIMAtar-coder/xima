@@ -9,6 +9,8 @@ project_id = "iyckvvnecpnldrxqmzta"
     verify_jwt = false
   [functions.analyze-cv]
     verify_jwt = false
+  [functions.analyze-cv-guest]
+    verify_jwt = false
   [functions.analyze-l3-frames]
     verify_jwt = false
   [functions.analyze-open-answer]

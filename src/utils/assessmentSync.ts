@@ -317,3 +317,140 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
     return false;
   }
 };
+
+/**
+ * Claims guest CV analysis stored in sessionStorage by GuestCvUpload.
+ * Persists results into cv_identity_analysis + cv_credentials and records
+ * the cv_processing consent in user_consents. Best-effort: any failure is
+ * logged but never blocks the registration flow.
+ *
+ * Idempotent: if no guest_cv_* keys are present, returns false silently.
+ * Always clears the sessionStorage CV blob on success or terminal failure.
+ */
+export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => {
+  const blob = sessionStorage.getItem('guest_cv_analysis');
+  if (!blob) {
+    console.log('[sync-cv] no guest CV analysis to claim');
+    return false;
+  }
+
+  try {
+    const data = JSON.parse(blob);
+    const credentials = data.credentials || {};
+    const identity = data.identity || {};
+    const archetype = identity.cv_archetype || {};
+    const tension = identity.tension || {};
+    const improvements = identity.improvements || {};
+    const roleFit = identity.role_fit || {};
+    const mentorHook = identity.mentor_hook || {};
+    const cvPillarScores = identity.cv_pillar_scores || {
+      drive: 0, computational_power: 0, communication: 0, creativity: 0, knowledge: 0,
+    };
+    const assessmentXimatar: string = data.assessment_ximatar || '';
+    const assessmentPillarScores = data.assessment_pillar_scores || {};
+
+    // Upsert cv_identity_analysis (NOT NULL: cv_archetype_primary, cv_pillar_scores,
+    // assessment_ximatar, assessment_pillar_scores — all populated below).
+    const { error: identityErr } = await supabase
+      .from('cv_identity_analysis')
+      .upsert({
+        user_id: userId,
+        cv_archetype_primary: archetype.primary || assessmentXimatar,
+        cv_archetype_secondary: archetype.secondary || null,
+        cv_archetype_explanation: archetype.explanation || null,
+        cv_pillar_scores: cvPillarScores,
+        assessment_ximatar: assessmentXimatar,
+        assessment_pillar_scores: assessmentPillarScores,
+        alignment_score: tension.alignment_score ?? null,
+        tension_gaps: tension.primary_gaps || null,
+        tension_narrative: tension.overall_narrative || null,
+        technical_improvements: improvements.technical || null,
+        identity_improvements: improvements.identity_aligned || null,
+        cv_qualified_roles: roleFit.cv_qualified_roles || [],
+        archetype_aligned_roles: roleFit.archetype_aligned_roles || [],
+        growth_bridge_roles: roleFit.growth_bridge_roles || [],
+        mentor_suggested_focus: mentorHook.suggested_focus || null,
+        mentor_key_question: mentorHook.key_question || null,
+        correlation_id: data.correlation_id || null,
+      }, { onConflict: 'user_id' });
+
+    if (identityErr) {
+      console.error('[sync-cv] cv_identity_analysis upsert error:', identityErr);
+    } else {
+      console.log('[sync-cv] cv_identity_analysis claimed');
+    }
+
+    // Best-effort: cv_credentials
+    try {
+      const location = credentials.location || {};
+      await supabase.from('cv_credentials').upsert({
+        user_id: userId,
+        full_name: credentials.full_name || null,
+        email: credentials.email || null,
+        phone: credentials.phone || null,
+        location_city: location.city || null,
+        location_region: location.region || null,
+        location_country: location.country || null,
+        linkedin_url: credentials.linkedin_url || null,
+        portfolio_url: credentials.portfolio_url || null,
+        education: credentials.education || [],
+        work_experience: credentials.work_experience || [],
+        hard_skills: credentials.hard_skills || [],
+        certifications: credentials.certifications || [],
+        languages: credentials.languages || [],
+        total_years_experience: credentials.total_years_experience ?? null,
+        seniority_level: credentials.seniority_level || null,
+        industries_worked: credentials.industries_worked || [],
+        career_trajectory: credentials.career_trajectory || null,
+      }, { onConflict: 'user_id' });
+    } catch (e) {
+      console.warn('[sync-cv] cv_credentials upsert failed (non-fatal):', e);
+    }
+
+    // Back-compat: mirror cv_scores onto profiles
+    try {
+      await supabase.from('profiles').update({
+        cv_scores: {
+          computational_power: cvPillarScores.computational_power ?? 0,
+          communication: cvPillarScores.communication ?? 0,
+          knowledge: cvPillarScores.knowledge ?? 0,
+          creativity: cvPillarScores.creativity ?? 0,
+          drive: cvPillarScores.drive ?? 0,
+        },
+        cv_comments: tension.overall_narrative ? { summary: tension.overall_narrative } : null,
+      }).eq('user_id', userId);
+    } catch (e) {
+      console.warn('[sync-cv] profiles cv_scores update failed (non-fatal):', e);
+    }
+
+    // Record consent (guard against missing blob, but it should be present)
+    try {
+      const consentRaw = sessionStorage.getItem('guest_cv_consent');
+      const consentBlob = consentRaw ? JSON.parse(consentRaw) : null;
+      const { error: consentErr } = await supabase.from('user_consents').insert({
+        user_id: userId,
+        consent_type: 'cv_processing',
+        consent_version: consentBlob?.version || '2026-06-13-v1',
+        locale: consentBlob?.locale || null,
+        user_agent: consentBlob?.user_agent || (typeof navigator !== 'undefined' ? navigator.userAgent : null),
+      });
+      if (consentErr) {
+        console.warn('[sync-cv] user_consents insert error (non-fatal):', consentErr);
+      } else {
+        console.log('[sync-cv] cv_processing consent recorded');
+      }
+    } catch (e) {
+      console.warn('[sync-cv] consent insert exception (non-fatal):', e);
+    }
+
+    return !identityErr;
+  } catch (e) {
+    console.error('[sync-cv] unexpected error claiming guest CV:', e);
+    return false;
+  } finally {
+    sessionStorage.removeItem('guest_cv_analysis');
+    sessionStorage.removeItem('guest_cv_pillar_scores');
+    sessionStorage.removeItem('guest_cv_filename');
+    sessionStorage.removeItem('guest_cv_consent');
+  }
+};

@@ -335,6 +335,17 @@
     "complete": "¡Análisis de CV Completo!",
     "success": "Tu CV ha sido analizado exitosamente."
   },
+  "guestCv": {
+    "title": "Sube tu CV (opcional)",
+    "disclaimer": "Tu CV se usa solo para calcular tu perfil XIMAtar. El archivo no se conserva en nuestros servidores: los resultados quedan en tu dispositivo hasta que completes el registro.",
+    "consent_label": "Acepto el tratamiento de mi CV para calcular mi perfil XIMAtar.",
+    "upload_button": "Subir CV ahora (opcional)",
+    "completed": "CV analizado",
+    "success": "Los resultados se vincularán a tu perfil al registrarte.",
+    "error_consent_required_title": "Consentimiento requerido",
+    "error_consent_required": "Acepta el tratamiento del CV para continuar.",
+    "error_assessment_required": "Completa primero el assessment XIMAtar."
+  },
   "cv": {
     "upload_success": "CV subido con éxito",
     "upload_error": "Error al subir el CV",

@@ -13,6 +13,7 @@ import XimatarAssessment from '../components/ximatar-journey/XimatarAssessment';
 import ResultsComparison from '../components/ximatar-journey/ResultsComparison';
 import { Logo } from '../components/Logo';
 import { CvAnalysisUpload } from '../components/ximatar-journey/CvAnalysisUpload';
+import { GuestCvUpload } from '../components/ximatar-journey/GuestCvUpload';
 import { useXimatarJourneyState } from '@/hooks/useXimatarJourneyState';
 import {
   AlertDialog,
@@ -170,8 +171,10 @@ const XimatarJourney = () => {
         <Card className="p-8 shadow-lg border-0">
           {currentStep === 1 && (
             <div className="space-y-6">
-              {isAuthenticated && user?.id && (
+              {isAuthenticated && user?.id ? (
                 <CvAnalysisUpload userId={user.id} />
+              ) : (
+                <GuestCvUpload />
               )}
               <BaselineAssessment 
                 onComplete={handleStepComplete}
