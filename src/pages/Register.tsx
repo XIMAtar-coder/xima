@@ -145,6 +145,9 @@ const Register = () => {
         } catch (emailErr) { console.error('[Register] verification email exception', emailErr); }
 
         await syncGuestAssessmentToProfile(newUserId);
+        await syncGuestCvToProfile(newUserId).catch((e) =>
+          console.warn('[Register] cv sync failed (non-fatal)', e)
+        );
         navigate('/profile');
         return;
       }
