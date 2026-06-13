@@ -177,7 +177,7 @@ function buildSystemPrompt(
     ? `The candidate has completed the XIMA assessment but is NOT yet registered.
 - XIMAtar archetype: ${ximatarId} — ${ximatarName}
 - Assessment pillar scores: Drive ${pillarScores.drive ?? "N/A"}, Computational Power ${pillarScores.computational_power ?? "N/A"}, Communication ${pillarScores.communication ?? "N/A"}, Creativity ${pillarScores.creativity ?? "N/A"}, Knowledge ${pillarScores.knowledge ?? "N/A"}`
-    : `The candidate has NOT yet completed the XIMA assessment. Infer the CV archetype from the CV alone (12 XIMAtar archetypes) and produce CV pillar scores independently. Tension vs assessment will be reconciled later on the client.`;
+    : `The candidate has NOT yet completed the XIMA assessment. Infer the CV archetype from the CV alone (12 XIMAtar archetypes) and produce CV pillar scores independently (0-100 scale). IMPORTANT: since no reference assessment is available, you MUST return tension.primary_gaps: [], tension.alignment_score: 0, and a neutral tension.overall_narrative stating that tension will be calculated after the assessment. Do NOT invent gaps or alignments without a reference assessment to compare against.`;
 
   return `You are the XIMA CV Intelligence Engine — guest variant.
 
