@@ -383,27 +383,42 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
               Tension Map
             </h4>
             <div className="space-y-3">
-              {cvAnalysis.tensionGaps.map((gap, idx) => (
-                <div key={`${gap.pillar}-${idx}`} className="rounded-lg border border-border bg-muted/20 p-3 space-y-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm font-medium">
-                      {t(`pillars.${gap.pillar}.name`, gap.pillar.replace(/_/g, ' '))}
-                    </span>
-                    <Badge
-                      variant="outline"
-                      className={gap.gap_direction === 'undersold'
-                        ? 'border-primary/20 bg-primary/5 text-primary'
-                        : 'border-destructive/20 bg-destructive/5 text-destructive'}
-                    >
-                      {gap.gap_direction}
-                    </Badge>
-                    <span className="text-xs text-muted-foreground">
-                      CV {Number(gap.cv_score || 0).toFixed(1)} → Assessment {Number(gap.ximatar_score || 0).toFixed(1)}
-                    </span>
+              {cvAnalysis.tensionGaps.map((rawGap: any, idx) => {
+                const gap = typeof rawGap === 'string'
+                  ? { pillar: null, narrative: rawGap }
+                  : (rawGap || {});
+                const pillarKey = typeof gap.pillar === 'string' ? gap.pillar : null;
+                const hasCv = gap.cv_score !== undefined && gap.cv_score !== null;
+                const hasXim = gap.ximatar_score !== undefined && gap.ximatar_score !== null;
+                const description = gap.narrative || (typeof rawGap === 'string' ? rawGap : '');
+                return (
+                  <div key={`${pillarKey ?? 'gap'}-${idx}`} className="rounded-lg border border-border bg-muted/20 p-3 space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {pillarKey && (
+                        <span className="text-sm font-medium">
+                          {t(`pillars.${pillarKey}.name`, pillarKey.replace(/_/g, ' '))}
+                        </span>
+                      )}
+                      {gap.gap_direction && (
+                        <Badge
+                          variant="outline"
+                          className={gap.gap_direction === 'undersold'
+                            ? 'border-primary/20 bg-primary/5 text-primary'
+                            : 'border-destructive/20 bg-destructive/5 text-destructive'}
+                        >
+                          {gap.gap_direction}
+                        </Badge>
+                      )}
+                      {(hasCv || hasXim) && (
+                        <span className="text-xs text-muted-foreground">
+                          CV {Number(gap.cv_score || 0).toFixed(1)} → Assessment {Number(gap.ximatar_score || 0).toFixed(1)}
+                        </span>
+                      )}
+                    </div>
+                    {description && <p className="text-sm text-muted-foreground">{description}</p>}
                   </div>
-                  <p className="text-sm text-muted-foreground">{gap.narrative}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
