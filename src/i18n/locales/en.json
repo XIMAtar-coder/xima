@@ -510,6 +510,17 @@
     "success": "Your CV has been analyzed successfully.",
     "cached": "Showing your most recent analysis (monthly limit reached)."
   },
+  "guestCv": {
+    "title": "Upload your CV (optional)",
+    "disclaimer": "Your CV is used only to compute your XIMAtar profile. The file is not stored on our servers: results stay on your device until you complete registration.",
+    "consent_label": "I consent to processing my CV to compute my XIMAtar profile.",
+    "upload_button": "Upload CV now (optional)",
+    "completed": "CV analyzed",
+    "success": "Results will be linked to your profile when you register.",
+    "error_consent_required_title": "Consent required",
+    "error_consent_required": "Accept CV processing to continue.",
+    "error_assessment_required": "Complete the XIMAtar assessment first."
+  },
   "cv": {
     "upload_success": "CV uploaded successfully",
     "upload_error": "Error uploading CV",
