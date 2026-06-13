@@ -264,19 +264,22 @@ serve(async (req) => {
     if (!file || !(file instanceof File)) {
       return errorResponse(400, "INVALID_INPUT", "File missing or invalid.");
     }
-    if (typeof guestPillarRaw !== "string" || typeof guestXimatar !== "string") {
-      return errorResponse(400, "ASSESSMENT_REQUIRED", "Guest assessment data (pillar scores + XIMAtar) is required before CV analysis.");
+
+    // Assessment context is OPTIONAL at guest upload time: in the /ximatar-journey
+    // flow, CV upload (step 1) can happen before the XIMAtar assessment (step 2).
+    // The client claim (syncGuestCvToProfile) overwrites assessment_ximatar and
+    // assessment_pillar_scores at register time using the real assessment values.
+    let pillarScores: Record<string, number> = {};
+    if (typeof guestPillarRaw === "string" && guestPillarRaw.length > 0) {
+      try {
+        pillarScores = JSON.parse(guestPillarRaw);
+      } catch {
+        return errorResponse(400, "INVALID_PILLAR_SCORES", "guest_pillar_scores must be valid JSON.");
+      }
     }
 
-    let pillarScores: Record<string, number>;
-    try {
-      pillarScores = JSON.parse(guestPillarRaw);
-    } catch {
-      return errorResponse(400, "INVALID_PILLAR_SCORES", "guest_pillar_scores must be valid JSON.");
-    }
-
-    const ximatarId = guestXimatar.toLowerCase();
-    const ximatarName = typeof guestXimatarName === "string" ? guestXimatarName : ximatarId;
+    const ximatarId = typeof guestXimatar === "string" && guestXimatar ? guestXimatar.toLowerCase() : "";
+    const ximatarName = typeof guestXimatarName === "string" && guestXimatarName ? guestXimatarName : ximatarId;
 
     // ===== 5. File validation =====
     if (file.size > MAX_FILE_SIZE) {
