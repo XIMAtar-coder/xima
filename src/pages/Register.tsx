@@ -11,7 +11,7 @@ import { RegistrationForm } from '../types';
 import { Logo } from '@/components/Logo';
 import LandingLayout from '@/components/landing/LandingLayout';
 import Seo from '@/components/Seo';
-import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
+import { syncGuestAssessmentToProfile, syncGuestCvToProfile } from '@/utils/assessmentSync';
 import { supabase } from '@/integrations/supabase/client';
 import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
 import { ConsentCheckboxes } from '@/components/auth/ConsentCheckboxes';
