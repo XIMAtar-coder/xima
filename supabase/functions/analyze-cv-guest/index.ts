@@ -172,11 +172,16 @@ function buildSystemPrompt(
   ximatarName: string,
   pillarScores: Record<string, number>,
 ): string {
+  const hasAssessment = !!ximatarId && Object.keys(pillarScores).length > 0;
+  const assessmentBlock = hasAssessment
+    ? `The candidate has completed the XIMA assessment but is NOT yet registered.
+- XIMAtar archetype: ${ximatarId} — ${ximatarName}
+- Assessment pillar scores: Drive ${pillarScores.drive ?? "N/A"}, Computational Power ${pillarScores.computational_power ?? "N/A"}, Communication ${pillarScores.communication ?? "N/A"}, Creativity ${pillarScores.creativity ?? "N/A"}, Knowledge ${pillarScores.knowledge ?? "N/A"}`
+    : `The candidate has NOT yet completed the XIMA assessment. Infer the CV archetype from the CV alone (12 XIMAtar archetypes) and produce CV pillar scores independently. Tension vs assessment will be reconciled later on the client.`;
+
   return `You are the XIMA CV Intelligence Engine — guest variant.
 
-The candidate has completed the XIMA assessment but is NOT yet registered.
-- XIMAtar archetype: ${ximatarId} — ${ximatarName}
-- Assessment pillar scores: Drive ${pillarScores.drive ?? "N/A"}, Computational Power ${pillarScores.computational_power ?? "N/A"}, Communication ${pillarScores.communication ?? "N/A"}, Creativity ${pillarScores.creativity ?? "N/A"}, Knowledge ${pillarScores.knowledge ?? "N/A"}
+${assessmentBlock}
 
 Perform two tasks on the CV:
 1. CREDENTIAL EXTRACTION — extract education, work_experience, hard_skills, certifications, languages, total_years_experience, seniority_level, industries_worked, career_trajectory. If a field is absent use null/[].
