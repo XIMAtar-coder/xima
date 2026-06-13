@@ -1,95 +1,83 @@
-# Stage C — Candidate L2 Conversation UI
+# Fase 1bis — Consolidamento percorso CV guest
 
-Mirror the proven Mindset pattern (`MindsetChallenge` branch in `ChallengeCompletion.tsx`, `useMindsetDraft` hook, `MindsetIntro`/`ResolveScreen` shells). Old "System Design con Vincoli" Level 2 form stays live until `experience === "l2_conversation"` is set on the challenge's `config_json`.
+## Cosa ho trovato (DB + codice)
 
-## Pre-build report
+**Utente test 3cf0c80e-f576-4ca0-b1fb-80bf1d82ec69 (profiles.id 4fc6c6ff…):**
+- `profiles.cv_scores = {}` — non popolato davvero, è un oggetto vuoto.
+- `cv_identity_analysis` 0 righe, `cv_credentials` 0 righe, nessun consenso `cv_processing`.
 
-**Flag-gating point — exactly one place:**
-`src/pages/candidate/ChallengeCompletion.tsx` ~ line 786, immediately after the existing Mindset branch:
+**Causa reale (peggio del previsto):** in `/ximatar-journey` step 1 ci sono **due uploader CV** che fanno cose diverse:
 
-```ts
-if (challenge.configJson?.experience === 'l2_conversation' && invitationId) {
-  return <MainLayout><L2ConversationChallenge invitationId={invitationId} challengeId={challenge.challengeId} config={challenge.configJson} /></MainLayout>;
-}
-```
+| Uploader | File | Cosa fa davvero | Consenso |
+|---|---|---|---|
+| `GuestCvUpload` (nostro, in cima) | `GuestCvUpload.tsx` | Chiama `analyze-cv-guest`, salva `guest_cv_*` in sessionStorage → al register `syncGuestCvToProfile` scrive `cv_identity_analysis` + `cv_credentials` + `user_consents.cv_processing` | Opzione A — "il file non viene conservato" |
+| `BaselineAssessment` (preesistente, sotto) | `BaselineAssessment.tsx` linee 46–73 | **Non analizza nulla.** Fa solo `sessionStorage.setItem('xima_pending_cv', base64)`. La chiave `xima_pending_cv` **non è letta da nessuna parte** (verificato con ripgrep: solo BaselineAssessment scrive, nessun lettore). È un dead-end. | "Conferma di Conservazione Dati / conservato in modo sicuro" — bugia: niente viene conservato |
 
-Everything below — `PreChallengeBriefing`, `level2Payload` form, `submissionStatus === 'submitted'` block, the `submitted_payload: submissionPayload` insert at line 658 — is bypassed for the new flow. The static L2 form path is otherwise untouched.
+L'utente ha usato l'uploader del BaselineAssessment (più visibile, integrato col field selector). Risultato: zero analisi CV, zero righe DB, zero consenso registrato → buco di compliance.
 
-**Submit flips status — exactly one place (new code):**
-Inside the new `useL2ConverseDraft.submit()` (modeled on `useMindsetDraft.submit`), an UPDATE on `challenge_submissions` setting:
-- `status = 'submitted'`
-- `submitted_at = now()`
-- `submitted_payload = { format: 'l2_conversation', transcript, opening_line, curveball_fired, done, reason }` (mirror of `draft_payload` last written by `l2-converse`)
-- `signals_version = 'v1'` (NOT NULL guard)
+`Register.tsx` chiama già `syncGuestCvToProfile` (riga 148) ma resta no-op senza `guest_cv_analysis` in sessionStorage.
 
-This single write fires the existing `emit_feed_signal` trigger downstream — no client signal computation.
+## Decisione di consolidamento
 
-## New files
+Tengo **un solo uploader**, integrato nel BaselineAssessment (mantiene `FieldSelector` + progressione + bottoni Skip/Continue richiesti dal flusso), e **rimuovo il GuestCvUpload standalone**. La logica di analisi/persistenza diventa quella del percorso GuestCvUpload (analyze-cv-guest → sessionStorage `guest_cv_*` → syncGuestCvToProfile al register), con consenso Opzione A.
+
+## Mappa prima → dopo
 
 ```
-src/components/candidate/l2converse/
-  L2ConversationChallenge.tsx   # top-level state machine: intro | chat | resolve
-  L2Intro.tsx                   # scene-set screen (counterpart name/role + scenario string, "conversation not test")
-  L2ChatScreen.tsx              # thread + composer + send/end controls
-  L2MessageBubble.tsx           # counterpart vs candidate styling, subtle degraded indicator
-  L2TypingIndicator.tsx         # shimmer "Marco sta scrivendo…"
-  L2ResolveScreen.tsx           # qualitative "il tuo XIMAtar si è rafforzato" mirror of ResolveScreen
-  types.ts                      # TranscriptEntry, L2Payload, L2SimulationConfig (mirrors server contract)
+PRIMA                                          DOPO
+─────                                          ────
+/ximatar-journey step 1                        /ximatar-journey step 1
+ ├─ <GuestCvUpload/> (analizza, Opt. A)         └─ <BaselineAssessment/>
+ └─ <BaselineAssessment/>                            ├─ FieldSelector
+      ├─ FieldSelector                               ├─ Upload CV (PDF)
+      ├─ Upload CV → base64 in xima_pending_cv      ├─ Consenso UNICO Opzione A
+      ├─ Consenso "conservato in modo sicuro"       ├─ POST /analyze-cv-guest (auth user OK pass-through)
+      └─ Skip / Continue                             ├─ Salva guest_cv_* in sessionStorage
+                                                     └─ Skip / Continue
 
-src/hooks/
-  useL2ConverseDraft.ts         # load existing draft/submitted row, expose transcript+turn_index, submit()
-  useL2Converse.ts              # sendMessage(latest, turnIndex) → invokes l2-converse, handles 409 resync, degraded flag
+/register (invariato)
+ └─ syncGuestAssessmentToProfile + syncGuestCvToProfile
+      ↳ ora gira sempre quando l'utente carica un CV
 ```
 
-i18n keys added to `src/i18n/locales/{it,en,es}.json` under `candidate.l2_conversation.*` (Italian primary, EN/ES mirrored).
+## File toccati
 
-## Behavior
+1. **`src/components/ximatar-journey/BaselineAssessment.tsx`** — riscrivere `handleUpload`:
+   - rimuovere il blocco base64 → `xima_pending_cv` (dead code).
+   - leggere `guest_pillar_scores` / `guest_ximatar` da sessionStorage; se assenti, mostrare errore "completa prima l'assessment" e bloccare l'upload del CV (lo skip resta disponibile).
+   - costruire `FormData`, chiamare `${VITE_SUPABASE_URL}/functions/v1/analyze-cv-guest` con header `x-guest-consent: 1`, anon key.
+   - su success: `sessionStorage.setItem('guest_cv_filename'|'guest_cv_analysis'|'guest_cv_pillar_scores'|'guest_cv_consent', …)` come fa oggi `GuestCvUpload`.
+   - sostituire le i18n keys del blocco consenso: `baseline.data_consent_title` → `guestCv.consent_title` ("Trattamento del CV"); `baseline.data_consent_text` → `guestCv.disclaimer` (Opzione A); `baseline.consent_checkbox` → `guestCv.consent_label`. Nessun nuovo file di copy — `guestCv.*` esistono già in IT/EN/ES.
+   - per utenti auth (caso raro qui, già loggati che rifanno l'assessment): stesso flusso guest — l'analisi viene salvata al successivo "claim" o, se preferisci, possiamo aggiungere uno short-circuit verso `analyze-cv` autenticato. **Domanda per te:** vuoi che per gli utenti già loggati si chiami `analyze-cv` (auth) invece di `analyze-cv-guest`? Default proposto: no, manteniamo un solo path guest anche per loro (la riga `cv_identity_analysis` verrà comunque scritta via `syncGuestCvToProfile` se la chiamiamo anche post-login — vedi punto 5).
 
-**Intro screen** (mirrors `MindsetIntro`):
-- Reads `config.l2_simulation.counterpart.{name, role}` and renders `config.l2_simulation.scenario` (a full string — there is no `scenario.framing` subfield) as the scene-set body text, blind-scoped as authored.
-- Reuses `Level2ContextBlock` if available for the RAL/role context band already present in the candidate context.
-- Frame copy (IT primary, EN/ES via keys): "Stai per avere una conversazione con {{name}}, {{role}}. Non è un test con punteggio — è un confronto. Il tuo XIMAtar si affina ascoltandoti."
-- CTA: "Inizia la conversazione". No score language anywhere.
+2. **`src/pages/XimatarJourney.tsx`** — rimuovere import e render di `GuestCvUpload` **e** di `CvAnalysisUpload` dallo step 1. Lo step 1 mostra solo `<BaselineAssessment/>`. (Mantengo `CvAnalysisUpload.tsx` in repo per usi futuri da `/profile`; non lo cancello.)
 
-**Conversation screen**:
-- On mount: seed thread from existing `draft_payload.transcript` if present, else show only `counterpart.opening_line` from spec as turn=-1 bubble. `turn_index` state = count of candidate replies already in transcript (0 on fresh start).
-- Composer: textarea + send button + a subtle secondary "concludi" affordance (small text link "Voglio concludere" that inserts the word "concludi" into the next message, not a separate API call).
-- On send → POST `l2-converse` with `{challenge_id, invitation_id, latest_candidate_message, turn_index}`. Optimistically append candidate bubble; show `L2TypingIndicator` while awaiting.
-- On 200: replace server-returned `transcript` wholesale (server is source of truth), increment `turn_index`. If `degraded === true`, render the line normally with a subtle low-key visual cue (no error toast). If `done === true`, lock the composer and surface "Termina e invia".
-- On 409 `TURN_INDEX_MISMATCH`: silently re-fetch `challenge_submissions.draft_payload`, rehydrate transcript, set `turn_index` from server `last_turn_index + 1`, drop optimistic bubble, allow retry.
-- Hard stop at `turn_index === 7` (server enforces; UI mirrors). Composer disabled when `done === true`.
+3. **`src/components/ximatar-journey/GuestCvUpload.tsx`** — **elimino** il file (consolidato dentro BaselineAssessment).
 
-**Termina e invia**:
-- Explicit button shown when `done === true` OR after the candidate has sent ≥1 turn (server handles `concludi` server-side; client just persists current transcript).
-- Calls `useL2ConverseDraft.submit()` → flips `status='submitted'`, copies last `draft_payload` into `submitted_payload` with `format='l2_conversation'`. Navigates to resolve.
+4. **`src/i18n/locales/{it,en,es}.json`** — niente nuove chiavi; il blocco `guestCv.*` già aggiunto in Fase 1 viene riutilizzato. Le vecchie `baseline.data_consent_*` e `baseline.consent_checkbox` restano nei file ma non vengono più referenziate (non le rimuovo per evitare regressioni se usate altrove — verifico con grep prima di scrivere).
 
-**Resolve screen** (mirrors `ResolveScreen`):
-- "Il tuo XIMAtar si è rafforzato." + facet shimmer + "Condiviso con l'azienda." Back to `/profile`. Zero numbers, no scores, no transcript replay.
+5. **`src/utils/assessmentSync.ts`** — invariato. Già copre tutti i NOT NULL (`cv_archetype_primary`, `cv_pillar_scores`, `assessment_ximatar`, `assessment_pillar_scores`), `cv_credentials`, `profiles.cv_scores` e l'insert `user_consents` `cv_processing`.
 
-**Resume**:
-- `useL2ConverseDraft` loads the single `challenge_submissions` row for the invitation. If `status='submitted'` with `submitted_payload.format='l2_conversation'`, jump to resolve. If `status='draft'` with `draft_payload.format='l2_conversation'`, hydrate chat at the correct `turn_index` (= candidate-role entries count). Otherwise start at intro.
+6. **`src/pages/Register.tsx`** — invariato (già chiama `syncGuestCvToProfile`).
 
-## Design
+## Cosa NON tocco
+- `analyze-cv-guest/index.ts` (Fase 1 OK, rate-limit + service_role già a posto).
+- `analyze-cv/index.ts` (auth-only, invariato).
+- Schema DB: nessuna migration.
+- `CvAnalysisUpload.tsx` (resta disponibile per `/profile` post-login).
 
-Mobile-first, matches Liquid Glass tokens (light #f2f2f7, dark #08080d, glass surfaces from index.css). Counterpart bubble: muted surface, initials chip — no avatar photo. Candidate bubble: `primary` / `primary-foreground`. Typing indicator uses existing shimmer pattern. All copy via i18n keys; IT strings are primary, EN/ES literal mirrors.
+## Smoke test (nuovo account)
+1. Logout → `/ximatar-journey` step 1: vedo **un solo** uploader dentro BaselineAssessment, consenso Opzione A.
+2. Seleziono field → completo l'assessment (step 2) almeno fino a generare `guest_pillar_scores` + `guest_ximatar`. *(Nota: oggi l'ordine è step 1 = upload CV → step 2 = assessment. L'analyze-cv-guest **richiede** `guest_pillar_scores` e `guest_ximatar` in FormData. Va riconsiderato l'ordine: o (a) spostiamo l'upload CV dopo l'assessment, o (b) rendiamo opzionali quei campi nell'edge. **Domanda critica per te.**)*
+3. Register → in console `[sync-cv] cv_identity_analysis claimed`.
+4. DB: `SELECT * FROM cv_identity_analysis WHERE user_id=<new>` → 1 riga; `SELECT * FROM user_consents WHERE user_id=<new> AND consent_type='cv_processing'` → 1 riga; `profiles.cv_scores` non vuoto.
 
-## Out of scope (Stages D/E)
+## Domande aperte prima di scrivere
+- **Q1 (ordine step)**: oggi CV viene caricato a step 1, assessment a step 2 — ma l'edge guest richiede i pillar scores dell'assessment. Opzioni:
+  - **A.** Inverti: step 1 = assessment, step 2 = (opzionale) upload CV. Più pulito, l'edge resta strict.
+  - **B.** Tieni l'ordine, rendi `guest_pillar_scores`/`guest_ximatar` **opzionali** nell'edge guest. Il `cv_identity_analysis.assessment_ximatar` NOT NULL viene poi popolato al register dal sync usando i valori sessionStorage prodotti dall'assessment (eseguito dopo l'upload). Richiede di non chiamare il sync se mancano ancora — già gestito.
+  - **C.** Sposta solo l'uploader CV dentro lo step 3 (ResultsComparison), dopo l'assessment.
+  Default proposto: **A**, perché è coerente con il prompt dell'edge (che usa i pillar per il matching). Confermi?
+- **Q2 (utenti loggati su `/ximatar-journey`)**: forziamo path guest anche per loro (semplicità) o teniamo un branch verso `analyze-cv` auth? Default: path guest unico.
 
-No changes to `l2-converse`, `compute-level2-signals`, scorer, business-side surfaces, triggers, or RLS. The static L2 form code path is not touched.
-
-## File list (final)
-
-Added:
-- `src/components/candidate/l2converse/L2ConversationChallenge.tsx`
-- `src/components/candidate/l2converse/L2Intro.tsx`
-- `src/components/candidate/l2converse/L2ChatScreen.tsx`
-- `src/components/candidate/l2converse/L2MessageBubble.tsx`
-- `src/components/candidate/l2converse/L2TypingIndicator.tsx`
-- `src/components/candidate/l2converse/L2ResolveScreen.tsx`
-- `src/components/candidate/l2converse/types.ts`
-- `src/hooks/useL2ConverseDraft.ts`
-- `src/hooks/useL2Converse.ts`
-
-Edited:
-- `src/pages/candidate/ChallengeCompletion.tsx` (one branch, ~6 lines, right after Mindset branch at line 786)
-- `src/i18n/locales/it.json`, `en.json`, `es.json` (add `candidate.l2_conversation.*` keys)
+Nessun file scritto. Attendo OK su Q1 e Q2 prima di procedere.

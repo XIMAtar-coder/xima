@@ -12,8 +12,6 @@ import BaselineAssessment from '../components/ximatar-journey/BaselineAssessment
 import XimatarAssessment from '../components/ximatar-journey/XimatarAssessment';
 import ResultsComparison from '../components/ximatar-journey/ResultsComparison';
 import { Logo } from '../components/Logo';
-import { CvAnalysisUpload } from '../components/ximatar-journey/CvAnalysisUpload';
-import { GuestCvUpload } from '../components/ximatar-journey/GuestCvUpload';
 import { useXimatarJourneyState } from '@/hooks/useXimatarJourneyState';
 import {
   AlertDialog,
@@ -30,7 +28,7 @@ import Seo from '@/components/Seo';
 const XimatarJourney = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, isAuthenticated } = useUser();
+  useUser();
   const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
   
@@ -170,17 +168,10 @@ const XimatarJourney = () => {
         
         <Card className="p-8 shadow-lg border-0">
           {currentStep === 1 && (
-            <div className="space-y-6">
-              {isAuthenticated && user?.id ? (
-                <CvAnalysisUpload userId={user.id} />
-              ) : (
-                <GuestCvUpload />
-              )}
-              <BaselineAssessment 
-                onComplete={handleStepComplete}
-                onCvUpload={setCvUploaded}
-              />
-            </div>
+            <BaselineAssessment 
+              onComplete={handleStepComplete}
+              onCvUpload={setCvUploaded}
+            />
           )}
           
           {currentStep === 2 && (

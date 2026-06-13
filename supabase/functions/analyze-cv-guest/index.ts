@@ -172,11 +172,16 @@ function buildSystemPrompt(
   ximatarName: string,
   pillarScores: Record<string, number>,
 ): string {
+  const hasAssessment = !!ximatarId && Object.keys(pillarScores).length > 0;
+  const assessmentBlock = hasAssessment
+    ? `The candidate has completed the XIMA assessment but is NOT yet registered.
+- XIMAtar archetype: ${ximatarId} — ${ximatarName}
+- Assessment pillar scores: Drive ${pillarScores.drive ?? "N/A"}, Computational Power ${pillarScores.computational_power ?? "N/A"}, Communication ${pillarScores.communication ?? "N/A"}, Creativity ${pillarScores.creativity ?? "N/A"}, Knowledge ${pillarScores.knowledge ?? "N/A"}`
+    : `The candidate has NOT yet completed the XIMA assessment. Infer the CV archetype from the CV alone (12 XIMAtar archetypes) and produce CV pillar scores independently. Tension vs assessment will be reconciled later on the client.`;
+
   return `You are the XIMA CV Intelligence Engine — guest variant.
 
-The candidate has completed the XIMA assessment but is NOT yet registered.
-- XIMAtar archetype: ${ximatarId} — ${ximatarName}
-- Assessment pillar scores: Drive ${pillarScores.drive ?? "N/A"}, Computational Power ${pillarScores.computational_power ?? "N/A"}, Communication ${pillarScores.communication ?? "N/A"}, Creativity ${pillarScores.creativity ?? "N/A"}, Knowledge ${pillarScores.knowledge ?? "N/A"}
+${assessmentBlock}
 
 Perform two tasks on the CV:
 1. CREDENTIAL EXTRACTION — extract education, work_experience, hard_skills, certifications, languages, total_years_experience, seniority_level, industries_worked, career_trajectory. If a field is absent use null/[].
@@ -264,19 +269,22 @@ serve(async (req) => {
     if (!file || !(file instanceof File)) {
       return errorResponse(400, "INVALID_INPUT", "File missing or invalid.");
     }
-    if (typeof guestPillarRaw !== "string" || typeof guestXimatar !== "string") {
-      return errorResponse(400, "ASSESSMENT_REQUIRED", "Guest assessment data (pillar scores + XIMAtar) is required before CV analysis.");
+
+    // Assessment context is OPTIONAL at guest upload time: in the /ximatar-journey
+    // flow, CV upload (step 1) can happen before the XIMAtar assessment (step 2).
+    // The client claim (syncGuestCvToProfile) overwrites assessment_ximatar and
+    // assessment_pillar_scores at register time using the real assessment values.
+    let pillarScores: Record<string, number> = {};
+    if (typeof guestPillarRaw === "string" && guestPillarRaw.length > 0) {
+      try {
+        pillarScores = JSON.parse(guestPillarRaw);
+      } catch {
+        return errorResponse(400, "INVALID_PILLAR_SCORES", "guest_pillar_scores must be valid JSON.");
+      }
     }
 
-    let pillarScores: Record<string, number>;
-    try {
-      pillarScores = JSON.parse(guestPillarRaw);
-    } catch {
-      return errorResponse(400, "INVALID_PILLAR_SCORES", "guest_pillar_scores must be valid JSON.");
-    }
-
-    const ximatarId = guestXimatar.toLowerCase();
-    const ximatarName = typeof guestXimatarName === "string" ? guestXimatarName : ximatarId;
+    const ximatarId = typeof guestXimatar === "string" && guestXimatar ? guestXimatar.toLowerCase() : "";
+    const ximatarName = typeof guestXimatarName === "string" && guestXimatarName ? guestXimatarName : ximatarId;
 
     // ===== 5. File validation =====
     if (file.size > MAX_FILE_SIZE) {
@@ -315,7 +323,7 @@ serve(async (req) => {
       base64 = btoa(base64);
       userContent = [
         { type: "document", source: { type: "base64", media_type: "application/pdf", data: base64 } },
-        { type: "text", text: `Analyze this CV against XIMAtar ${ximatarId} (${ximatarName}). Return ONLY the JSON specified.` },
+        { type: "text", text: ximatarId ? `Analyze this CV against XIMAtar ${ximatarId} (${ximatarName}). Return ONLY the JSON specified.` : `Analyze this CV (no prior assessment). Return ONLY the JSON specified.` },
       ];
     } else {
       const text = new TextDecoder("utf-8", { fatal: false }).decode(fileBytes).substring(0, 12000);
