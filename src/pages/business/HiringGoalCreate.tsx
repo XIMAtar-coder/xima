@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Sparkles, Target, Users, MapPin, DollarSign, FileDown, Info, ChevronDown, X, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -64,6 +64,8 @@ const HiringGoalCreate = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { goalId } = useParams<{ goalId: string }>();
+  const isEditMode = !!goalId;
   const fromListingId = searchParams.get('from_listing');
   
   const [step, setStep] = useState(0);
@@ -71,6 +73,7 @@ const HiringGoalCreate = () => {
   const [importedListing, setImportedListing] = useState<any>(null);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [userId, setUserId] = useState('');
+  const [editLoading, setEditLoading] = useState(isEditMode);
 
   const [formData, setFormData] = useState<FormData>({
     role_title: '',
@@ -108,8 +111,9 @@ const HiringGoalCreate = () => {
     });
   }, []);
 
-  // Pre-fill from ?from_listing=<id>
+  // Pre-fill from ?from_listing=<id> (only in "new" mode)
   useEffect(() => {
+    if (isEditMode) return;
     if (!fromListingId) return;
     const load = async () => {
       const { data: jp, error } = await supabase
@@ -153,7 +157,58 @@ const HiringGoalCreate = () => {
       }));
     };
     load();
-  }, [fromListingId]);
+  }, [fromListingId, isEditMode]);
+
+  // Edit mode: load existing draft and prefill
+  useEffect(() => {
+    if (!isEditMode || !goalId) return;
+    const load = async () => {
+      const { data, error } = await supabase
+        .from('hiring_goal_drafts')
+        .select('*')
+        .eq('id', goalId)
+        .single();
+      if (error || !data) {
+        console.error('[HiringGoalCreate] Failed to load draft:', error);
+        toast.error(t('hiring_goal.load_error', 'Impossibile caricare l\'obiettivo'));
+        navigate('/business/hiring-goals');
+        return;
+      }
+      if (data.status && data.status !== 'draft') {
+        navigate(`/business/hiring-goals/${goalId}/settings`, { replace: true });
+        return;
+      }
+      const d: any = data;
+      setFormData({
+        role_title: d.role_title || '',
+        task_description: d.task_description || '',
+        responsibilities: Array.isArray(d.responsibilities) ? d.responsibilities : [],
+        required_skills: Array.isArray(d.required_skills) ? d.required_skills : [],
+        nice_to_have_skills: Array.isArray(d.nice_to_have_skills) ? d.nice_to_have_skills : [],
+        experience_level: d.experience_level || '',
+        work_model: d.work_model || '',
+        country: d.country || '',
+        city_region: d.city_region || '',
+        salary_min: d.salary_min || 0,
+        salary_max: d.salary_max || 0,
+        salary_currency: d.salary_currency || 'EUR',
+        salary_period: d.salary_period || 'yearly',
+        ral_min: d.ral_min || 0,
+        ral_max: d.ral_max || 0,
+        ccnl: d.ccnl || '',
+        years_experience_min: d.years_experience_min ?? null,
+        years_experience_max: d.years_experience_max ?? null,
+        education_level: d.education_level || '',
+        languages: Array.isArray(d.languages) ? d.languages : [],
+        original_seniority: d.original_seniority || '',
+        imported_from_listing_id: d.imported_from_listing_id || null,
+        ai_suggested_ximatar: d.ai_suggested_ximatar || null,
+        xima_hr_requested: !!d.xima_hr_requested,
+      });
+      setEditLoading(false);
+    };
+    load();
+  }, [isEditMode, goalId, navigate, t]);
 
   const next = () => setStep(s => Math.min(s + 1, TOTAL_STEPS - 1));
   const prev = () => setStep(s => Math.max(s - 1, 0));
@@ -175,39 +230,55 @@ const HiringGoalCreate = () => {
 
       const isXimaHr = formData.xima_hr_requested;
 
-      const { data: goal, error } = await supabase
-        .from('hiring_goal_drafts')
-        .insert({
-          business_id: user.id,
-          role_title: formData.role_title,
-          task_description: formData.task_description,
-          experience_level: formData.experience_level,
-          work_model: formData.work_model,
-          country: formData.country,
-          city_region: formData.city_region,
-          salary_min: formData.salary_min,
-          salary_max: formData.salary_max,
-          salary_currency: formData.salary_currency,
-          salary_period: formData.salary_period,
-          ral_min: formData.ral_min || null,
-          ral_max: formData.ral_max || null,
-          ccnl: formData.ccnl || null,
-          status: isXimaHr ? 'active' : 'draft',
-          required_skills: formData.required_skills as any,
-          nice_to_have_skills: formData.nice_to_have_skills as any,
-          years_experience_min: formData.years_experience_min,
-          years_experience_max: formData.years_experience_max,
-          education_level: formData.education_level || null,
-          languages: formData.languages as any,
-          original_seniority: formData.original_seniority || null,
-          imported_from_listing_id: formData.imported_from_listing_id,
-          ai_suggested_ximatar: formData.ai_suggested_ximatar,
-          xima_hr_requested: isXimaHr,
-        } as any)
-        .select()
-        .single();
+      const payload = {
+        role_title: formData.role_title,
+        task_description: formData.task_description,
+        experience_level: formData.experience_level,
+        work_model: formData.work_model,
+        country: formData.country,
+        city_region: formData.city_region,
+        salary_min: formData.salary_min,
+        salary_max: formData.salary_max,
+        salary_currency: formData.salary_currency,
+        salary_period: formData.salary_period,
+        ral_min: formData.ral_min || null,
+        ral_max: formData.ral_max || null,
+        ccnl: formData.ccnl || null,
+        required_skills: formData.required_skills as any,
+        nice_to_have_skills: formData.nice_to_have_skills as any,
+        years_experience_min: formData.years_experience_min,
+        years_experience_max: formData.years_experience_max,
+        education_level: formData.education_level || null,
+        languages: formData.languages as any,
+        original_seniority: formData.original_seniority || null,
+        imported_from_listing_id: formData.imported_from_listing_id,
+        ai_suggested_ximatar: formData.ai_suggested_ximatar,
+        xima_hr_requested: isXimaHr,
+      };
 
-      if (error) throw error;
+      let goal: any;
+      if (isEditMode && goalId) {
+        const { data, error } = await supabase
+          .from('hiring_goal_drafts')
+          .update({ ...payload, ...(isXimaHr ? { status: 'active' } : {}) } as any)
+          .eq('id', goalId)
+          .select()
+          .single();
+        if (error) throw error;
+        goal = data;
+      } else {
+        const { data, error } = await supabase
+          .from('hiring_goal_drafts')
+          .insert({
+            business_id: user.id,
+            status: isXimaHr ? 'active' : 'draft',
+            ...payload,
+          } as any)
+          .select()
+          .single();
+        if (error) throw error;
+        goal = data;
+      }
 
       if (isXimaHr) {
         // XIMA HR flow: call request-xima-hr, do NOT generate shortlist
@@ -239,6 +310,16 @@ const HiringGoalCreate = () => {
 
   const stepProps = { formData, updateField, userId, importedListing };
 
+  if (isEditMode && editLoading) {
+    return (
+      <BusinessLayout>
+        <div className="flex justify-center items-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+        </div>
+      </BusinessLayout>
+    );
+  }
+
   return (
     <BusinessLayout>
       <div className="max-w-2xl mx-auto py-8 px-4">
@@ -254,10 +335,14 @@ const HiringGoalCreate = () => {
         {/* Title */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-foreground">
-            {t('hiring_goal.create_title', 'Crea un nuovo obiettivo di assunzione')}
+            {isEditMode
+              ? t('hiring_goal.edit_title', 'Modifica obiettivo di assunzione')
+              : t('hiring_goal.create_title', 'Crea un nuovo obiettivo di assunzione')}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {t('hiring_goal.create_subtitle', 'XIMA trasformerà questo brief in una shortlist intelligente di candidati per identità comportamentale.')}
+            {isEditMode
+              ? t('hiring_goal.edit_subtitle', 'Aggiorna il brief: XIMA rigenererà la shortlist al salvataggio.')
+              : t('hiring_goal.create_subtitle', 'XIMA trasformerà questo brief in una shortlist intelligente di candidati per identità comportamentale.')}
           </p>
         </div>
 

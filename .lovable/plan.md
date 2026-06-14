@@ -1,53 +1,50 @@
-# Fase 2.1c — Unificazione rotte goal
+# Fase 2.1d — Edit goal status-aware (opzione C)
 
-## Occorrenze trovate (`/business/goals`)
+## Stato attuale del wizard `HiringGoalCreate.tsx`
 
-**Registrazione rotte (`src/App.tsx`, 6 rotte):**
-- `/business/goals/:goalId/shortlist` → `GoalShortlistPage`
-- `/business/goals/:goalId/candidates` → `GoalCandidates`
-- `/business/goals/:goalId/challenges` → `GoalChallenges`
-- `/business/goals/:goalId/settings` → `GoalSettings`
-- `/business/goals/:goalId/decision-pack` → `GoalDecisionPack`
-- `/business/goals/:goalId/challenges/:challengeId/responses` → `ChallengeResponses`
-
-Nota: non esiste oggi una rotta `/business/goals/:id/edit` registrata (solo un `navigate` ad essa nel dropdown della overview card → quel link è già "morto", andrà comunque rimappato al nuovo prefisso).
-Nessuna rotta "bare" `/business/goals` esistente.
-
-**Target di navigazione (`navigate` / `Link to` / `window.location.href`):**
-- `src/pages/business/HiringGoalCreate.tsx:231`
-- `src/pages/business/GoalShortlistPage.tsx:72`
-- `src/pages/business/GoalSettings.tsx:35, 45`
-- `src/pages/business/GoalDecisionPack.tsx:156`
-- `src/pages/business/GoalChallenges.tsx:79, 375`
-- `src/pages/business/GoalCandidates.tsx:172, 427`
-- `src/pages/business/Dashboard.tsx:214`
-- `src/pages/business/CreateXimaCoreChallenge.tsx:308, 508, 535, 794`
-- `src/pages/business/CreateChallenge.tsx:399, 426`
-- `src/pages/business/ChallengeTypeSelector.tsx:134`
-- `src/pages/business/ChallengeResponses.tsx:112, 355, 366`
-- `src/components/business/BusinessCommandCenter.tsx:67, 118`
-- `src/components/business/GoalContextHeader.tsx:85`
-- `src/components/business/ActiveChallengesOverview.tsx:127`
-- `src/components/business/HiringGoalOverviewCard.tsx:76, 85, 98` (incluso Edit)
+- **Non** supporta oggi il caricamento di una bozza esistente. L'unico pre-fill è da `?from_listing=<jobPostId>` (job_posts → form). Non c'è alcuna lettura da `hiring_goal_drafts`.
+- `handleSubmit` esegue sempre un `INSERT` in `hiring_goal_drafts` → ogni passaggio dal wizard crea una nuova riga.
+- Niente persistenza intermedia step-per-step (la riga nasce solo al submit finale).
+- Non distingue `new` vs `edit`: la modalità è implicitamente "new". Useremo la presenza di `:goalId` nella URL come unico switch.
 
 ## Modifiche
 
-1. **`src/App.tsx`**: rinominare le 6 rotte da `/business/goals/...` → `/business/hiring-goals/...` (parametri `:goalId` e `:challengeId` invariati). Aggiungere 6 redirect dalle vecchie rotte:
-   ```tsx
-   <Route path="/business/goals/:goalId/shortlist" element={<Navigate to="/business/hiring-goals/:goalId/shortlist" replace />} />
-   ```
-   Poiché `<Navigate to>` non interpola i params, useremo un piccolo componente wrapper `GoalsRedirect` che legge `useParams` + `useLocation` e fa `<Navigate to={\`/business/hiring-goals/...\`} replace />` per ogni sotto-rotta. In alternativa più semplice: una singola route catch-all `/business/goals/*` con wrapper che ricostruisce il path preservando il resto. Useremo il catch-all wrapper per coprire anche eventuali link futuri (incluso `/:id/edit`).
+### 1. Rotta (`src/App.tsx`)
+Aggiungere accanto a `/business/hiring-goals/new`:
+```tsx
+<Route path="/business/hiring-goals/:goalId/edit" element={<HiringGoalCreate />} />
+```
+Nessun nuovo componente: stesso `HiringGoalCreate`, modalità decisa dalla presenza di `:goalId`.
 
-2. **Tutti i file elencati sopra**: sostituire stringhe `/business/goals/` con `/business/hiring-goals/`. Nessun cambio di parametri o logica.
+### 2. Wizard (`src/pages/business/HiringGoalCreate.tsx`)
+- Importare `useParams`; estrarre `goalId`. `isEditMode = !!goalId`.
+- Nuovo `useEffect` (quando `goalId` cambia): carica la riga da `hiring_goal_drafts` con `.eq('id', goalId).single()`, e prefilla `formData` con tutti i campi mappati uno-a-uno (gli stessi che oggi vengono scritti in `INSERT`). Gestire errore: toast + redirect a `/business/hiring-goals`.
+- Hard-guard: se la riga caricata ha `status !== 'draft'`, redirect immediato a `/business/hiring-goals/${goalId}/settings` (difesa in profondità: la card già lo evita, ma evitiamo che un URL diretto bypassi la regola).
+- In `handleSubmit`:
+  - Se `isEditMode`: `UPDATE hiring_goal_drafts SET ... WHERE id = goalId` (stessi campi dell'insert; preservare `status` esistente a meno che `xima_hr_requested` → `status='active'` come oggi). Niente nuova riga.
+  - Altrimenti: comportamento attuale (INSERT).
+- Titolo pagina: variante "Modifica obiettivo" quando in edit (i18n: nuove chiavi `hiring_goal.edit_title` / `hiring_goal.edit_subtitle` in en/it/es).
+- Nessuna modifica al pre-fill `from_listing`: resta usabile solo in modalità "new" (in `edit` la query string è ignorata; aggiungiamo guard `if (isEditMode) return;` nell'effetto `from_listing`).
 
-3. **`HiringGoalOverviewCard.tsx`** (Edit): il target diventa `/business/hiring-goals/${goal.id}/edit` (la rotta concreta verrà aggiunta in futuro; oggi resta non registrata come prima, ma coerente col nuovo prefisso).
+### 3. Azione Edit (`src/components/business/HiringGoalOverviewCard.tsx`)
+- Sostituire il target statico dell'item "Edit" con uno status-aware:
+  ```tsx
+  const editPath = goal.status === 'draft'
+    ? `/business/hiring-goals/${goal.id}/edit`
+    : `/business/hiring-goals/${goal.id}/settings`;
+  ```
+  Usato in `onClick`.
+
+## Stats Overview
+Le stats della Dashboard leggono la riga più recente in `hiring_goal_drafts`. L'UPDATE in edit non crea duplicati e aggiorna automaticamente `updated_at` se la colonna ha trigger/default (già il caso oggi). Niente regressioni attese.
 
 ## Out of scope
-- Logica delle pagine goal (invariata).
-- Nuove rotte (es. `:id/edit`) non vengono create.
-- Altre voci sidebar / pagine non goal.
+- Auto-save step-per-step.
+- Modifica di goal con `status='active'` (per design vanno in Settings).
+- Cambi al flusso `new` o al pre-fill `from_listing`.
 
 ## Verifica
-- `rg "/business/goals" src/` deve restituire solo le 6 entry di redirect in `App.tsx` (o nessuna, se uso il catch-all wrapper).
-- Edit nella overview card naviga a `/business/hiring-goals/:id/edit`.
-- Vecchi URL `/business/goals/:id/shortlist` (etc.) redirigono al nuovo path con replace.
+- `Edit` su una bozza apre il wizard con tutti i campi precompilati; "Crea e Genera Shortlist" aggiorna la stessa riga (verificabile via `select id, updated_at, status from hiring_goal_drafts where id = ...`).
+- `Edit` su un goal `active` apre `/business/hiring-goals/:id/settings`.
+- `/business/hiring-goals/new` (senza `:goalId`) continua a creare una nuova riga.
+- Nessuna riga duplicata in `hiring_goal_drafts` dopo un ciclo open-edit-save.

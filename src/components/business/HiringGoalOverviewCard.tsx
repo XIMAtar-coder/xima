@@ -95,7 +95,11 @@ export const HiringGoalOverviewCard: React.FC<HiringGoalOverviewCardProps> = ({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-popover border-border">
-                <DropdownMenuItem onClick={() => navigate(`/business/hiring-goals/${goal.id}/edit`)}>
+                <DropdownMenuItem onClick={() => navigate(
+                  goal.status === 'draft' || !goal.status
+                    ? `/business/hiring-goals/${goal.id}/edit`
+                    : `/business/hiring-goals/${goal.id}/settings`
+                )}>
                   {t('business.goals.edit_goal')}
                 </DropdownMenuItem>
                 {goal.status !== 'active' && (

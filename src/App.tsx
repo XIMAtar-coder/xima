@@ -177,6 +177,7 @@ const AppContent = () => {
           <Route path="/business/hiring-goals/:goalId/challenges/:challengeId/responses" element={<ChallengeResponses />} />
           <Route path="/business/hiring-goals" element={<BusinessHiringGoals />} />
           <Route path="/business/hiring-goals/new" element={<HiringGoalCreate />} />
+          <Route path="/business/hiring-goals/:goalId/edit" element={<HiringGoalCreate />} />
           {/* Legacy redirects: /business/goals/* → /business/hiring-goals/* */}
           <Route path="/business/goals/*" element={<LegacyGoalsRedirect />} />
           <Route path="/business/messages" element={<BusinessPipelineChat />} />
