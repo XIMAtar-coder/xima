@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Users, CheckCircle, Plus, Briefcase, Bug, Info, ChevronDown } from 'lucide-react';
 import { CandidateEngagement } from '@/components/business/CandidateEngagement';
-import { HiringGoalCard } from '@/components/business/HiringGoalCard';
+
 import { HiringGoalOverviewCard } from '@/components/business/HiringGoalOverviewCard';
 import { ActiveChallengesOverview } from '@/components/business/ActiveChallengesOverview';
 import { BusinessCommandCenter } from '@/components/business/BusinessCommandCenter';
