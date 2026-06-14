@@ -328,84 +328,20 @@ const BusinessDashboard = () => {
           </Card>
         )}
 
-        {/* Hiring Goal Card */}
-        {!hiringGoalLoading && hiringGoalStatus !== 'active' && (
-          <HiringGoalCard 
-            key={hiringGoalDraftId || 'new'}
-            draftId={hiringGoalDraftId}
-            onComplete={() => loadHiringGoalStatus()} 
-          />
-        )}
-
-        {!hiringGoalLoading && hiringGoalStatus === 'active' && (
-          <Card className="border-green-500/30 bg-gradient-to-br from-green-500/5 to-background">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-green-500/20">
-                  <CheckCircle className="h-6 w-6 text-green-500" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-foreground mb-1">{t('businessPortal.hiring_goal_saved_title')}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{t('businessPortal.hiring_goal_saved_body')}</p>
-                  <div className="flex flex-wrap gap-3">
-                    <Button className="gap-2" onClick={() => navigate(`/business/candidates?fromGoal=${hiringGoalDraftId}`)}>
-                      <Users className="h-4 w-4" />
-                      {t('businessPortal.hiring_goal_generate_shortlist')}
-                    </Button>
-                    <Button variant="outline" onClick={async () => {
-                      if (hiringGoalDraftId) await supabase.from('hiring_goal_drafts').update({ status: 'draft' }).eq('id', hiringGoalDraftId);
-                      await loadHiringGoalStatus();
-                    }}>
-                      {t('businessPortal.hiring_goal_edit')}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Hiring Goals Portfolio */}
-        {(() => {
-          const activeGoals = hiringGoals.filter(goal => goal.status === 'active');
-          const hasActiveChallenges = activeChallengesWithStats.length > 0;
-          const showEmptyState = activeGoals.length === 0 && !hasActiveChallenges && !activeChallengesLoading;
-          return (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-foreground">{t('businessPortal.hiring_goals_title')}</h2>
-                  <p className="text-sm text-muted-foreground">{t('businessPortal.hiring_goals_subtitle')}</p>
-                </div>
-                <Button onClick={() => navigate('/business/hiring-goals/new')}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  {t('businessPortal.hiring_goals_new_cta')}
-                </Button>
-              </div>
-              {activeGoals.length > 0 ? (
-                <div className="space-y-3">
-                  {activeGoals.map((goal) => (
-                    <HiringGoalOverviewCard key={goal.id} goal={goal} onStatusChange={updateGoalStatus} />
-                  ))}
-                </div>
-              ) : showEmptyState ? (
-                <Card className="border-dashed border-2 border-muted-foreground/30">
-                  <CardContent className="p-8 text-center">
-                    <div className="p-4 rounded-full bg-muted/50 w-fit mx-auto mb-4">
-                      <Briefcase className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-2">{t('business.goals.no_active_title')}</h3>
-                    <p className="text-sm text-muted-foreground mb-4">{t('business.goals.no_active_desc')}</p>
-                    <Button onClick={() => navigate('/business/hiring-goals/new')}>
-                      <Plus className="h-4 w-4 mr-2" />
-                      {t('business.goals.create_first')}
-                    </Button>
-                  </CardContent>
-                </Card>
-              ) : null}
+        {/* Single CTA → Hiring Goals page */}
+        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-background">
+          <CardContent className="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-semibold text-foreground mb-1">{t('businessPortal.overview_create_goal_cta')}</h3>
+              <p className="text-sm text-muted-foreground">{t('businessPortal.overview_create_goal_hint')}</p>
             </div>
-          );
-        })()}
+            <Button className="gap-2" onClick={() => navigate('/business/hiring-goals')}>
+              <Plus className="h-4 w-4" />
+              {t('businessPortal.overview_create_goal_cta')}
+            </Button>
+          </CardContent>
+        </Card>
+
 
         {/* Recommendation Debug Panel — DEV only */}
         {isDev && <RecommendationDebugPanel businessId={user?.id} hiringGoalId={hiringGoalDraftId} />}
