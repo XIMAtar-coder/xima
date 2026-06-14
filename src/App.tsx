@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
 import { LoadingScreen } from "./components/LoadingScreen";
 import { useState, useEffect } from "react";
@@ -48,7 +48,7 @@ import CreateXimaCoreChallenge from "./pages/business/CreateXimaCoreChallenge";
 import ChallengeTypeSelector from "./pages/business/ChallengeTypeSelector";
 import BusinessChallenges from "./pages/business/Challenges";
 import BusinessEvaluations from "./pages/business/Evaluations";
-import BusinessReports from "./pages/business/Reports";
+import BusinessHiringGoals from "./pages/business/HiringGoals";
 import BusinessSettings from "./pages/business/Settings";
 import BusinessJobs from "./pages/business/Jobs";
 import CreateJobOffer from "./pages/business/CreateJobOffer";
@@ -156,7 +156,7 @@ const AppContent = () => {
           <Route path="/business/challenges/xima-core" element={<CreateXimaCoreChallenge />} />
           <Route path="/business/challenges/:id/edit" element={<CreateChallenge />} />
           <Route path="/business/evaluations" element={<BusinessEvaluations />} />
-          <Route path="/business/reports" element={<BusinessReports />} />
+          <Route path="/business/reports" element={<Navigate to="/business/evaluations" replace />} />
           <Route path="/business/settings" element={<BusinessSettings />} />
           <Route path="/business/jobs" element={<BusinessJobs />} />
           <Route path="/business/jobs/new" element={<CreateJobOffer />} />
