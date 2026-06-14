@@ -40,6 +40,7 @@ const Register = () => {
   const [showConsentError, setShowConsentError] = useState(false);
   
   React.useEffect(() => {
+    if (isSubmitting) return;
     if (isAuthenticated) {
       const savedSelection = localStorage.getItem('selectedProfessional');
       if (savedSelection) {
@@ -49,7 +50,7 @@ const Register = () => {
         navigate('/profile');
       }
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, isSubmitting, navigate]);
   
   const validateForm = () => {
     const newErrors: Partial<RegistrationForm> = {};
@@ -144,10 +145,26 @@ const Register = () => {
           }
         } catch (emailErr) { console.error('[Register] verification email exception', emailErr); }
 
-        await syncGuestAssessmentToProfile(newUserId);
-        await syncGuestCvToProfile(newUserId).catch((e) =>
-          console.warn('[Register] cv sync failed (non-fatal)', e)
-        );
+        const assessmentSynced = await syncGuestAssessmentToProfile(newUserId).catch((e) => {
+          console.error('[Register] assessment sync failed:', e);
+          return false;
+        });
+        if (!assessmentSynced) {
+          console.error('[Register] assessment sync did not complete for user:', newUserId);
+        }
+
+        const cvSynced = await syncGuestCvToProfile(newUserId).catch((e) => {
+          console.error('[Register] cv sync failed (non-fatal):', e);
+          return false;
+        });
+        console.log('[Register] guest sync completed before dashboard navigation', {
+          assessmentSynced,
+          cvSynced,
+        });
+
+        try {
+          sessionStorage.setItem('xima_profile_sync_completed', String(Date.now()));
+        } catch {}
         navigate('/profile');
         return;
       }
