@@ -3,6 +3,8 @@ import {
   selectArchetypeFromAssessmentPillars,
   type AssessmentPillarScores,
 } from '@/lib/ximatarTaxonomy';
+import { CV_PROCESSING_VERSION } from '@/lib/legal/consentVersions';
+
 
 interface GuestAssessmentData {
   result_id?: string;
@@ -411,10 +413,10 @@ export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => 
       console.log('[sync-cv] cv_identity_analysis claimed');
     }
 
-    // Best-effort: cv_credentials
+    // cv_credentials — surface Supabase errors (do not swallow)
     try {
       const location = credentials.location || {};
-      await supabase.from('cv_credentials').upsert({
+      const { error: credErr } = await supabase.from('cv_credentials').upsert({
         user_id: userId,
         full_name: credentials.full_name || null,
         email: credentials.email || null,
@@ -434,13 +436,18 @@ export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => 
         industries_worked: credentials.industries_worked || [],
         career_trajectory: credentials.career_trajectory || null,
       }, { onConflict: 'user_id' });
+      if (credErr) {
+        console.error('[sync-cv] cv_credentials upsert error:', credErr);
+      } else {
+        console.log('[sync-cv] cv_credentials claimed');
+      }
     } catch (e) {
-      console.warn('[sync-cv] cv_credentials upsert failed (non-fatal):', e);
+      console.error('[sync-cv] cv_credentials upsert exception:', e);
     }
 
-    // Back-compat: mirror cv_scores onto profiles
+    // Mirror cv_scores onto profiles — surface Supabase errors
     try {
-      await supabase.from('profiles').update({
+      const { error: scoresErr } = await supabase.from('profiles').update({
         cv_scores: {
           computational_power: cvPillarScores.computational_power ?? 0,
           communication: cvPillarScores.communication ?? 0,
@@ -450,29 +457,35 @@ export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => 
         },
         cv_comments: tension.overall_narrative ? { summary: tension.overall_narrative } : null,
       }).eq('user_id', userId);
+      if (scoresErr) {
+        console.error('[sync-cv] profiles cv_scores update error:', scoresErr);
+      } else {
+        console.log('[sync-cv] profiles.cv_scores updated');
+      }
     } catch (e) {
-      console.warn('[sync-cv] profiles cv_scores update failed (non-fatal):', e);
+      console.error('[sync-cv] profiles cv_scores update exception:', e);
     }
 
-    // Record consent (guard against missing blob, but it should be present)
+    // Record cv_processing consent (consent was given at guest upload time)
     try {
       const consentRaw = sessionStorage.getItem('guest_cv_consent');
       const consentBlob = consentRaw ? JSON.parse(consentRaw) : null;
       const { error: consentErr } = await supabase.from('user_consents').insert({
         user_id: userId,
         consent_type: 'cv_processing',
-        consent_version: consentBlob?.version || '2026-06-13-v1',
+        consent_version: consentBlob?.version || CV_PROCESSING_VERSION,
         locale: consentBlob?.locale || null,
         user_agent: consentBlob?.user_agent || (typeof navigator !== 'undefined' ? navigator.userAgent : null),
       });
       if (consentErr) {
-        console.warn('[sync-cv] user_consents insert error (non-fatal):', consentErr);
+        console.error('[sync-cv] user_consents insert error:', consentErr);
       } else {
         console.log('[sync-cv] cv_processing consent recorded');
       }
     } catch (e) {
-      console.warn('[sync-cv] consent insert exception (non-fatal):', e);
+      console.error('[sync-cv] consent insert exception:', e);
     }
+
 
     return !identityErr;
   } catch (e) {
