@@ -310,6 +310,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           ximatar: resolvedLabel as any,
           ximatar_name: resolvedName,
           ximatar_assigned_at: new Date().toISOString(),
+          ximatar_level: 1,
           creation_source: 'assessment',
           profile_complete: true,
           pillar_scores: parsedScores,
