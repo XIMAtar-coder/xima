@@ -310,6 +310,16 @@ const HiringGoalCreate = () => {
 
   const stepProps = { formData, updateField, userId, importedListing };
 
+  if (isEditMode && editLoading) {
+    return (
+      <BusinessLayout>
+        <div className="flex justify-center items-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+        </div>
+      </BusinessLayout>
+    );
+  }
+
   return (
     <BusinessLayout>
       <div className="max-w-2xl mx-auto py-8 px-4">
@@ -325,10 +335,14 @@ const HiringGoalCreate = () => {
         {/* Title */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-foreground">
-            {t('hiring_goal.create_title', 'Crea un nuovo obiettivo di assunzione')}
+            {isEditMode
+              ? t('hiring_goal.edit_title', 'Modifica obiettivo di assunzione')
+              : t('hiring_goal.create_title', 'Crea un nuovo obiettivo di assunzione')}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {t('hiring_goal.create_subtitle', 'XIMA trasformerà questo brief in una shortlist intelligente di candidati per identità comportamentale.')}
+            {isEditMode
+              ? t('hiring_goal.edit_subtitle', 'Aggiorna il brief: XIMA rigenererà la shortlist al salvataggio.')
+              : t('hiring_goal.create_subtitle', 'XIMA trasformerà questo brief in una shortlist intelligente di candidati per identità comportamentale.')}
           </p>
         </div>
 
