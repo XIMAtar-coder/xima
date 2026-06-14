@@ -241,7 +241,13 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             .limit(50),
           supabase
             .from('assessment_results')
-            .select('rationale')
+            .select(`
+              id,
+              ximatar_id,
+              rationale,
+              pillar_scores (pillar, score),
+              ximatars (id, label, image_url)
+            `)
             .eq('user_id', user.id)
             .eq('completed', true)
             .order('computed_at', { ascending: false })
@@ -307,7 +313,18 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           }
         }
 
-        const pillar_scores = normalizePillars(profile?.pillar_scores);
+        const latestResult: any = latestResultRes.data || null;
+        const latestPillarRows = Array.isArray(latestResult?.pillar_scores) ? latestResult.pillar_scores : [];
+        const latestAssessmentPillars = latestPillarRows.length > 0
+          ? latestPillarRows.reduce<Record<string, number>>((acc, row: any) => {
+              acc[row.pillar] = Number(row.score ?? 0);
+              return acc;
+            }, {})
+          : null;
+        const latestXimatar = Array.isArray(latestResult?.ximatars)
+          ? latestResult.ximatars[0]
+          : latestResult?.ximatars;
+        const pillar_scores = normalizePillars(profile?.pillar_scores) || normalizePillars(latestAssessmentPillars);
         const cv_pillar_scores = normalizePillars(
           (cvIdentityRes.data?.cv_pillar_scores as any) ||
           (profile?.cv_scores as any) ||
@@ -351,10 +368,10 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
 
         const next: ProfileData = {
           full_name,
-          ximatar: (profile?.ximatar as any) ?? null,
-          ximatar_id: (profile?.ximatar_id as any) ?? null,
-          ximatar_name: (profile?.ximatar_name as any) ?? null,
-          ximatar_image: (profile?.ximatar_image as any) ?? null,
+          ximatar: (profile?.ximatar as any) ?? latestXimatar?.label ?? null,
+          ximatar_id: (profile?.ximatar_id as any) ?? latestResult?.ximatar_id ?? latestXimatar?.id ?? null,
+          ximatar_name: (profile?.ximatar_name as any) ?? latestXimatar?.label ?? null,
+          ximatar_image: (profile?.ximatar_image as any) ?? latestXimatar?.image_url ?? null,
           drive_level: (profile?.drive_level as any) ?? null,
           pillar_scores,
           cv_pillar_scores,
@@ -365,7 +382,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           mentor_id: mentor_user_id,
           mentor_profile,
           open_answers,
-          assessment_rationale: latestResultRes.data?.rationale ?? null,
+          assessment_rationale: latestResult?.rationale ?? null,
           cv_analysis: {
             summary: cvAnalysisRes.data?.summary ?? cvIdentityRes.data?.tension_narrative ?? (profile?.cv_comments as any)?.summary ?? null,
             strengths: cvAnalysisRes.data?.strengths ?? (skillsFallback.length ? skillsFallback : null),
@@ -393,7 +410,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
               ...commentsFromTension,
             },
           },
-          hasAssessment: !!((profile?.ximatar || profile?.ximatar_id) && pillar_scores),
+          hasAssessment: !!(((profile?.ximatar || profile?.ximatar_id) || latestResult?.ximatar_id || latestXimatar?.label) && pillar_scores),
           isLoading: false,
           error: null,
           profile_completed: !!(profile as any)?.profile_completed,
