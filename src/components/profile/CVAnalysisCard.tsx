@@ -430,18 +430,23 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
               Identity-aligned suggestions
             </h4>
             <div className="space-y-3">
-              {cvAnalysis.identityImprovements.map((item: any, idx) => {
+              {cvAnalysis.identityImprovements.map((rawItem: any, idx) => {
+                const item = typeof rawItem === 'string'
+                  ? { recommendation: rawItem }
+                  : (rawItem || {});
                 const pillar = typeof item?.target_pillar === 'string' ? item.target_pillar : '';
+                const recommendation = typeof item?.recommendation === 'string' ? item.recommendation : '';
+                if (!recommendation && !pillar && !item?.example_before && !item?.example_after) return null;
                 return (
                 <div key={`${pillar || 'item'}-${idx}`} className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    {pillar && (
+                  {pillar && (
+                    <div className="flex flex-wrap items-center gap-2">
                       <Badge variant="outline" className="border-primary/20 text-primary">
                         {String(t(`pillars.${pillar}.name`, pillar.replace(/_/g, ' ')))}
                       </Badge>
-                    )}
-                  </div>
-                  {item?.recommendation && <p className="text-sm text-foreground">{item.recommendation}</p>}
+                    </div>
+                  )}
+                  {recommendation && <p className="text-sm text-foreground">{recommendation}</p>}
                   {item?.example_before && (
                     <p className="text-xs text-muted-foreground">
                       <span className="font-medium text-foreground">Before:</span> {item.example_before}
@@ -466,24 +471,37 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
               Technical CV fixes
             </h4>
             <div className="space-y-3">
-              {cvAnalysis.technicalImprovements.map((item, idx) => (
-                <div key={`${item.category}-${idx}`} className="rounded-lg border border-border bg-muted/20 p-3 space-y-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Badge variant="outline">{item.category}</Badge>
-                    <Badge
-                      variant="outline"
-                      className={item.priority === 'high'
-                        ? 'border-destructive/20 bg-destructive/5 text-destructive'
-                        : item.priority === 'medium'
-                        ? 'border-primary/20 bg-primary/5 text-primary'
-                        : ''}
-                    >
-                      {item.priority}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{item.recommendation}</p>
+              {cvAnalysis.technicalImprovements.map((rawItem: any, idx) => {
+                const item = typeof rawItem === 'string'
+                  ? { recommendation: rawItem }
+                  : (rawItem || {});
+                const category = typeof item?.category === 'string' ? item.category : '';
+                const priority = typeof item?.priority === 'string' ? item.priority : '';
+                const recommendation = typeof item?.recommendation === 'string' ? item.recommendation : '';
+                if (!recommendation && !category && !priority) return null;
+                return (
+                <div key={`${category || 'item'}-${idx}`} className="rounded-lg border border-border bg-muted/20 p-3 space-y-2">
+                  {(category || priority) && (
+                    <div className="flex flex-wrap items-center gap-2">
+                      {category && <Badge variant="outline">{category}</Badge>}
+                      {priority && (
+                        <Badge
+                          variant="outline"
+                          className={priority === 'high'
+                            ? 'border-destructive/20 bg-destructive/5 text-destructive'
+                            : priority === 'medium'
+                            ? 'border-primary/20 bg-primary/5 text-primary'
+                            : ''}
+                        >
+                          {priority}
+                        </Badge>
+                      )}
+                    </div>
+                  )}
+                  {recommendation && <p className="text-sm text-muted-foreground">{recommendation}</p>}
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

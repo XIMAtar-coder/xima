@@ -204,7 +204,10 @@ Return ONLY valid JSON with this exact shape:
     "cv_archetype": { "primary": "ximatar_id", "secondary": null, "explanation": "" },
     "cv_pillar_scores": { "drive": 0, "computational_power": 0, "communication": 0, "creativity": 0, "knowledge": 0 },
     "tension": { "alignment_score": 0, "primary_gaps": [ { "pillar": "<one of: drive|computational_power|communication|creativity|knowledge>", "cv_score": 0, "ximatar_score": 0, "gap_direction": "oversold|undersold", "narrative": "" } ], "overall_narrative": "" },
-    "improvements": { "technical": [], "identity_aligned": [] },
+    "improvements": {
+      "technical": [ { "category": "<short tag, es: quantification|skills|certifications|structure>", "priority": "high|medium|low", "recommendation": "" } ],
+      "identity_aligned": [ { "recommendation": "", "target_pillar": "<one of: drive|computational_power|communication|creativity|knowledge>", "example_before": "", "example_after": "" } ]
+    },
     "role_fit": { "cv_qualified_roles": [], "archetype_aligned_roles": [], "growth_bridge_roles": [] },
     "mentor_hook": { "suggested_focus": "", "key_question": "" }
   }
