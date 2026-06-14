@@ -3,6 +3,8 @@ import {
   selectArchetypeFromAssessmentPillars,
   type AssessmentPillarScores,
 } from '@/lib/ximatarTaxonomy';
+import { CV_PROCESSING_VERSION } from '@/lib/legal/consentVersions';
+
 
 interface GuestAssessmentData {
   result_id?: string;
