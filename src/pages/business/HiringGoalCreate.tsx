@@ -111,8 +111,9 @@ const HiringGoalCreate = () => {
     });
   }, []);
 
-  // Pre-fill from ?from_listing=<id>
+  // Pre-fill from ?from_listing=<id> (only in "new" mode)
   useEffect(() => {
+    if (isEditMode) return;
     if (!fromListingId) return;
     const load = async () => {
       const { data: jp, error } = await supabase
