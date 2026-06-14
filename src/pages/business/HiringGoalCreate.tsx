@@ -230,39 +230,55 @@ const HiringGoalCreate = () => {
 
       const isXimaHr = formData.xima_hr_requested;
 
-      const { data: goal, error } = await supabase
-        .from('hiring_goal_drafts')
-        .insert({
-          business_id: user.id,
-          role_title: formData.role_title,
-          task_description: formData.task_description,
-          experience_level: formData.experience_level,
-          work_model: formData.work_model,
-          country: formData.country,
-          city_region: formData.city_region,
-          salary_min: formData.salary_min,
-          salary_max: formData.salary_max,
-          salary_currency: formData.salary_currency,
-          salary_period: formData.salary_period,
-          ral_min: formData.ral_min || null,
-          ral_max: formData.ral_max || null,
-          ccnl: formData.ccnl || null,
-          status: isXimaHr ? 'active' : 'draft',
-          required_skills: formData.required_skills as any,
-          nice_to_have_skills: formData.nice_to_have_skills as any,
-          years_experience_min: formData.years_experience_min,
-          years_experience_max: formData.years_experience_max,
-          education_level: formData.education_level || null,
-          languages: formData.languages as any,
-          original_seniority: formData.original_seniority || null,
-          imported_from_listing_id: formData.imported_from_listing_id,
-          ai_suggested_ximatar: formData.ai_suggested_ximatar,
-          xima_hr_requested: isXimaHr,
-        } as any)
-        .select()
-        .single();
+      const payload = {
+        role_title: formData.role_title,
+        task_description: formData.task_description,
+        experience_level: formData.experience_level,
+        work_model: formData.work_model,
+        country: formData.country,
+        city_region: formData.city_region,
+        salary_min: formData.salary_min,
+        salary_max: formData.salary_max,
+        salary_currency: formData.salary_currency,
+        salary_period: formData.salary_period,
+        ral_min: formData.ral_min || null,
+        ral_max: formData.ral_max || null,
+        ccnl: formData.ccnl || null,
+        required_skills: formData.required_skills as any,
+        nice_to_have_skills: formData.nice_to_have_skills as any,
+        years_experience_min: formData.years_experience_min,
+        years_experience_max: formData.years_experience_max,
+        education_level: formData.education_level || null,
+        languages: formData.languages as any,
+        original_seniority: formData.original_seniority || null,
+        imported_from_listing_id: formData.imported_from_listing_id,
+        ai_suggested_ximatar: formData.ai_suggested_ximatar,
+        xima_hr_requested: isXimaHr,
+      };
 
-      if (error) throw error;
+      let goal: any;
+      if (isEditMode && goalId) {
+        const { data, error } = await supabase
+          .from('hiring_goal_drafts')
+          .update({ ...payload, ...(isXimaHr ? { status: 'active' } : {}) } as any)
+          .eq('id', goalId)
+          .select()
+          .single();
+        if (error) throw error;
+        goal = data;
+      } else {
+        const { data, error } = await supabase
+          .from('hiring_goal_drafts')
+          .insert({
+            business_id: user.id,
+            status: isXimaHr ? 'active' : 'draft',
+            ...payload,
+          } as any)
+          .select()
+          .single();
+        if (error) throw error;
+        goal = data;
+      }
 
       if (isXimaHr) {
         // XIMA HR flow: call request-xima-hr, do NOT generate shortlist
