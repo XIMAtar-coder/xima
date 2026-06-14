@@ -437,7 +437,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
                   <div className="flex flex-wrap items-center gap-2">
                     {pillar && (
                       <Badge variant="outline" className="border-primary/20 text-primary">
-                        {t(`pillars.${pillar}.name`, pillar.replace(/_/g, ' '))}
+                        {String(t(`pillars.${pillar}.name`, pillar.replace(/_/g, ' ')))}
                       </Badge>
                     )}
                   </div>
