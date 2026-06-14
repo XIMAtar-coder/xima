@@ -124,7 +124,7 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
                 className="shrink-0"
                 onClick={() => {
                   if (challenge.hiring_goal_id) {
-                    navigate(`/business/goals/${challenge.hiring_goal_id}/challenges/${challenge.id}/responses`);
+                    navigate(`/business/hiring-goals/${challenge.hiring_goal_id}/challenges/${challenge.id}/responses`);
                   } else {
                     navigate(`/business/challenges/${challenge.id}/responses`);
                   }

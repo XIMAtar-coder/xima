@@ -305,7 +305,7 @@ const CreateXimaCoreChallenge = () => {
           description: t('challenge.xima_core.already_active_desc'),
           variant: 'destructive',
         });
-        navigate(returnTo === 'shortlist' ? `/business/goals/${effectiveGoalId}/shortlist` : `/business/candidates?fromGoal=${effectiveGoalId}`);
+        navigate(returnTo === 'shortlist' ? `/business/hiring-goals/${effectiveGoalId}/shortlist` : `/business/candidates?fromGoal=${effectiveGoalId}`);
         return;
       }
 
@@ -505,7 +505,7 @@ const CreateXimaCoreChallenge = () => {
       toast({ title: t('challenge.xima_core.activated_title'), description: t('challenge.xima_core.activated_desc') });
 
       if (goalId) {
-        navigate(returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist?challengeCreated=1` : `/business/candidates?fromGoal=${goalId}`);
+        navigate(returnTo === 'shortlist' ? `/business/hiring-goals/${goalId}/shortlist?challengeCreated=1` : `/business/candidates?fromGoal=${goalId}`);
       } else {
         navigate('/business/challenges');
       }
@@ -532,7 +532,7 @@ const CreateXimaCoreChallenge = () => {
       <main className="mx-auto flex max-w-4xl flex-col gap-6 pb-32">
         <Button
           variant="ghost"
-          onClick={() => navigate(goalId && returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/challenges')}
+          onClick={() => navigate(goalId && returnTo === 'shortlist' ? `/business/hiring-goals/${goalId}/shortlist` : goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/challenges')}
           className="w-fit gap-2 -ml-2"
         >
           <ArrowLeft size={16} />
@@ -791,7 +791,7 @@ const CreateXimaCoreChallenge = () => {
                   Manca RAL o CCNL sull'obiettivo di assunzione.{' '}
                   {goalId && (
                     <button
-                      onClick={() => navigate(`/business/goals/${goalId}/settings`)}
+                      onClick={() => navigate(`/business/hiring-goals/${goalId}/settings`)}
                       className="underline hover:text-foreground"
                     >
                       Modifica l'obiettivo

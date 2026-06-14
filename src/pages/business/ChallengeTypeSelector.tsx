@@ -131,7 +131,7 @@ const ChallengeTypeSelector = () => {
         <div className="space-y-4">
           <Button 
             variant="ghost" 
-            onClick={() => navigate(goalId && returnTo === 'shortlist' ? `/business/goals/${goalId}/shortlist` : goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/challenges')}
+            onClick={() => navigate(goalId && returnTo === 'shortlist' ? `/business/hiring-goals/${goalId}/shortlist` : goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/challenges')}
             className="gap-2 -ml-2"
           >
             <ArrowLeft size={16} />

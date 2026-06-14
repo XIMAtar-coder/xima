@@ -76,7 +76,7 @@ const GoalChallenges: React.FC = () => {
   }, [fetchChallenges]);
 
   const handleGoalSwitch = (newGoalId: string) => {
-    navigate(`/business/goals/${newGoalId}/challenges`);
+    navigate(`/business/hiring-goals/${newGoalId}/challenges`);
   };
 
   const updateChallengeStatus = async (challengeId: string, newStatus: string) => {
@@ -372,7 +372,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-popover border-border">
-              <DropdownMenuItem onClick={() => navigate(`/business/goals/${goalId}/challenges/${challenge.id}/responses`)}>
+              <DropdownMenuItem onClick={() => navigate(`/business/hiring-goals/${goalId}/challenges/${challenge.id}/responses`)}>
                 <Eye className="h-4 w-4 mr-2" />
                 {t('business.dashboard.view_responses')}
               </DropdownMenuItem>

@@ -169,7 +169,7 @@ const GoalCandidates: React.FC = () => {
   }, [fetchCandidates]);
 
   const handleGoalSwitch = (newGoalId: string) => {
-    navigate(`/business/goals/${newGoalId}/candidates`);
+    navigate(`/business/hiring-goals/${newGoalId}/candidates`);
   };
 
   const toggleShortlist = async (profileId: string) => {
@@ -424,7 +424,7 @@ const GoalCandidates: React.FC = () => {
                 {t('business.candidates.active_challenges')}: <strong>{activeChallenges.length}</strong>
               </span>
             </div>
-            <Link to={`/business/goals/${goalId}/challenges`}>
+            <Link to={`/business/hiring-goals/${goalId}/challenges`}>
               <Button variant="link" size="sm">
                 {t('business.candidates.manage_challenges')}
               </Button>

@@ -88,6 +88,12 @@ import JobImportWizard from "./pages/business/JobImportWizard";
 
 const queryClient = new QueryClient();
 
+const LegacyGoalsRedirect = () => {
+  const location = useLocation();
+  const rest = location.pathname.replace(/^\/business\/goals/, '');
+  return <Navigate to={`/business/hiring-goals${rest}${location.search}${location.hash}`} replace />;
+};
+
 const AppContent = () => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
@@ -163,14 +169,16 @@ const AppContent = () => {
           <Route path="/business/jobs/import" element={<JobImportWizard />} />
           <Route path="/business/jobs/:jobId/matches" element={<JobCandidateMatching />} />
           {/* Goal-scoped routes */}
-          <Route path="/business/goals/:goalId/shortlist" element={<GoalShortlistPage />} />
-          <Route path="/business/goals/:goalId/candidates" element={<GoalCandidates />} />
-          <Route path="/business/goals/:goalId/challenges" element={<GoalChallenges />} />
-          <Route path="/business/goals/:goalId/settings" element={<GoalSettings />} />
-          <Route path="/business/goals/:goalId/decision-pack" element={<GoalDecisionPack />} />
-          <Route path="/business/goals/:goalId/challenges/:challengeId/responses" element={<ChallengeResponses />} />
+          <Route path="/business/hiring-goals/:goalId/shortlist" element={<GoalShortlistPage />} />
+          <Route path="/business/hiring-goals/:goalId/candidates" element={<GoalCandidates />} />
+          <Route path="/business/hiring-goals/:goalId/challenges" element={<GoalChallenges />} />
+          <Route path="/business/hiring-goals/:goalId/settings" element={<GoalSettings />} />
+          <Route path="/business/hiring-goals/:goalId/decision-pack" element={<GoalDecisionPack />} />
+          <Route path="/business/hiring-goals/:goalId/challenges/:challengeId/responses" element={<ChallengeResponses />} />
           <Route path="/business/hiring-goals" element={<BusinessHiringGoals />} />
           <Route path="/business/hiring-goals/new" element={<HiringGoalCreate />} />
+          {/* Legacy redirects: /business/goals/* → /business/hiring-goals/* */}
+          <Route path="/business/goals/*" element={<LegacyGoalsRedirect />} />
           <Route path="/business/messages" element={<BusinessPipelineChat />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/challenge/accept" element={<ChallengeAccept />} />

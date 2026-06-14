@@ -73,7 +73,7 @@ export const HiringGoalOverviewCard: React.FC<HiringGoalOverviewCardProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => navigate(`/business/goals/${goal.id}/shortlist`)}
+              onClick={() => navigate(`/business/hiring-goals/${goal.id}/shortlist`)}
             >
               <Users className="h-4 w-4 mr-1" />
               {t('business.goals.view_candidates')}
@@ -82,7 +82,7 @@ export const HiringGoalOverviewCard: React.FC<HiringGoalOverviewCardProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => navigate(`/business/goals/${goal.id}/challenges`)}
+              onClick={() => navigate(`/business/hiring-goals/${goal.id}/challenges`)}
             >
               <Target className="h-4 w-4 mr-1" />
               {t('business.goals.manage_challenges')}
@@ -95,7 +95,7 @@ export const HiringGoalOverviewCard: React.FC<HiringGoalOverviewCardProps> = ({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-popover border-border">
-                <DropdownMenuItem onClick={() => navigate(`/business/goals/${goal.id}/edit`)}>
+                <DropdownMenuItem onClick={() => navigate(`/business/hiring-goals/${goal.id}/edit`)}>
                   {t('business.goals.edit_goal')}
                 </DropdownMenuItem>
                 {goal.status !== 'active' && (
