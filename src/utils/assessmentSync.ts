@@ -198,6 +198,16 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         return false;
       }
 
+      if (!latestAssessment.ximatar_id) {
+        const { error: fallbackAssessmentLinkError } = await supabase
+          .from('assessment_results')
+          .update({ ximatar_id: fallbackXimatar.id })
+          .eq('id', latestAssessment.id);
+        if (fallbackAssessmentLinkError) {
+          console.error('[sync] latest assessment fallback ximatar link error:', fallbackAssessmentLinkError);
+        }
+      }
+
       console.log('[sync] ✅ profile recovered from latest completed assessment fallback', { userId, ximatar: fallbackLabel });
       return true;
     }
@@ -473,6 +483,15 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
             console.error('[sync] completed assessment fallback profile update affected 0 rows:', { userId });
           } else {
             assessmentProfileSynced = true;
+            if (!latestAssessment.ximatar_id) {
+              const { error: fallbackAssessmentLinkError } = await supabase
+                .from('assessment_results')
+                .update({ ximatar_id: fallbackXimatar.id })
+                .eq('id', latestAssessment.id);
+              if (fallbackAssessmentLinkError) {
+                console.error('[sync] completed assessment fallback ximatar link error:', fallbackAssessmentLinkError);
+              }
+            }
             console.log('[sync] ✅ profile recovered from completed assessment fallback', { userId, ximatar: fallbackLabel });
           }
         } else {
