@@ -64,6 +64,8 @@ const HiringGoalCreate = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { goalId } = useParams<{ goalId: string }>();
+  const isEditMode = !!goalId;
   const fromListingId = searchParams.get('from_listing');
   
   const [step, setStep] = useState(0);
@@ -71,6 +73,7 @@ const HiringGoalCreate = () => {
   const [importedListing, setImportedListing] = useState<any>(null);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [userId, setUserId] = useState('');
+  const [editLoading, setEditLoading] = useState(isEditMode);
 
   const [formData, setFormData] = useState<FormData>({
     role_title: '',
