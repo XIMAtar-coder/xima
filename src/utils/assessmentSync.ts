@@ -425,7 +425,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
 
       if (latestAssessmentError) {
         console.error('[sync] completed assessment fallback query error:', latestAssessmentError);
-      } else if (latestAssessment?.ximatar_id) {
+      } else if (latestAssessment) {
         const { data: latestPillars, error: latestPillarsError } = await supabase
           .from('pillar_scores')
           .select('pillar, score')
@@ -438,16 +438,15 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
               return acc;
             }, {})
           : ((latestAssessment.pillars as Record<string, number> | null) || {});
-        const { data: fallbackXimatar, error: fallbackXimatarError } = await supabase
-          .from('ximatars')
-          .select('id, label, image_url')
-          .eq('id', latestAssessment.ximatar_id)
-          .maybeSingle();
+        const derived = selectArchetypeFromAssessmentPillars(fallbackScores as AssessmentPillarScores);
+        const fallbackXimatarQuery = latestAssessment.ximatar_id
+          ? supabase.from('ximatars').select('id, label, image_url').eq('id', latestAssessment.ximatar_id).maybeSingle()
+          : supabase.from('ximatars').select('id, label, image_url').eq('label', derived.label).maybeSingle();
+        const { data: fallbackXimatar, error: fallbackXimatarError } = await fallbackXimatarQuery;
         if (fallbackXimatarError) console.error('[sync] completed assessment fallback ximatar query error:', fallbackXimatarError);
 
         if (fallbackXimatar?.label && Object.keys(fallbackScores).length > 0) {
           const fallbackLabel = String(fallbackXimatar.label).toLowerCase();
-          const derived = selectArchetypeFromAssessmentPillars(fallbackScores as AssessmentPillarScores);
           const { data: fallbackRows, error: fallbackProfileError } = await supabase
             .from('profiles')
             .update({
