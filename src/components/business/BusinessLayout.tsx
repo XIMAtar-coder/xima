@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useUser } from '@/context/UserContext';
 import { Button } from '@/components/ui/button';
 import { 
-  LayoutDashboard, Users, Target, FileText, BarChart3, 
+  LayoutDashboard, Users, Target, FileText, Swords, 
   Settings, LogOut, Menu, X, Building2, Briefcase, Globe, HelpCircle, MessageSquare
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
@@ -89,12 +89,12 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
 
   const navItems = [
     { path: '/business/dashboard', icon: LayoutDashboard, labelKey: 'businessPortal.nav_overview' },
+    { path: '/business/hiring-goals', icon: Target, labelKey: 'businessPortal.nav_hiring_goals' },
     { path: '/business/candidates', icon: Users, labelKey: 'businessPortal.nav_candidates' },
-    { path: '/business/challenges', icon: Target, labelKey: 'businessPortal.nav_challenges' },
+    { path: '/business/challenges', icon: Swords, labelKey: 'businessPortal.nav_challenges' },
     { path: '/business/messages', icon: MessageSquare, labelKey: 'businessPortal.nav_messages' },
     { path: '/business/jobs', icon: Briefcase, labelKey: 'businessPortal.nav_jobs' },
     { path: '/business/evaluations', icon: FileText, labelKey: 'businessPortal.nav_evaluations' },
-    { path: '/business/reports', icon: BarChart3, labelKey: 'businessPortal.nav_reports' },
     { path: '/business/settings', icon: Settings, labelKey: 'businessPortal.nav_settings' }
   ];
 
