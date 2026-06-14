@@ -125,7 +125,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         console.error('[sync] latest assessment fallback query error:', latestAssessmentError);
         return false;
       }
-      if (!latestAssessment?.ximatar_id) {
+      if (!latestAssessment) {
         console.log('[sync] no guest assessment data and no completed assessment fallback found');
         return false;
       }
@@ -145,25 +145,29 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           }, {})
         : ((latestAssessment.pillars as Record<string, number> | null) || {});
 
-      const { data: fallbackXimatar, error: fallbackXimatarError } = await supabase
-        .from('ximatars')
-        .select('id, label, image_url')
-        .eq('id', latestAssessment.ximatar_id)
-        .maybeSingle();
+      if (!Object.keys(fallbackScores).length) {
+        console.error('[sync] latest assessment fallback incomplete:', { hasScores: false });
+        return false;
+      }
+
+      const derived = selectArchetypeFromAssessmentPillars(fallbackScores as AssessmentPillarScores);
+      const fallbackXimatarQuery = latestAssessment.ximatar_id
+        ? supabase.from('ximatars').select('id, label, image_url').eq('id', latestAssessment.ximatar_id).maybeSingle()
+        : supabase.from('ximatars').select('id, label, image_url').eq('label', derived.label).maybeSingle();
+      const { data: fallbackXimatar, error: fallbackXimatarError } = await fallbackXimatarQuery;
       if (fallbackXimatarError) {
         console.error('[sync] latest assessment ximatar fallback query error:', fallbackXimatarError);
         return false;
       }
-      if (!fallbackXimatar?.label || !Object.keys(fallbackScores).length) {
+      if (!fallbackXimatar?.label) {
         console.error('[sync] latest assessment fallback incomplete:', {
           hasXimatar: !!fallbackXimatar?.label,
-          hasScores: !!Object.keys(fallbackScores).length,
+          derivedLabel: derived.label,
         });
         return false;
       }
 
       const fallbackLabel = String(fallbackXimatar.label).toLowerCase();
-      const derived = selectArchetypeFromAssessmentPillars(fallbackScores as AssessmentPillarScores);
       const { data: fallbackRows, error: fallbackProfileError } = await supabase
         .from('profiles')
         .update({
