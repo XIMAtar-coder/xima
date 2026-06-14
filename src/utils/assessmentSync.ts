@@ -56,10 +56,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
     const guestGrowthPath = sessionStorage.getItem('guest_ximatar_growth_path');
     const guestAttemptId = sessionStorage.getItem('current_attempt_id');
 
-    if (!guestResultId && !guestPillarScores && !guestXimatar) {
-      console.log('No guest assessment data found to sync');
-      return false;
-    }
+    const hasGuestAssessmentData = !!(guestResultId || guestPillarScores || guestXimatar);
 
     // Ensure a profile row exists BEFORE linking/creating assessment_results.
     // assessment_results.user_id has an FK to profiles.user_id, so doing this
@@ -102,6 +99,94 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
     if (!hasProfile) {
       console.error('[sync] CRITICAL: profile row unavailable; preserving guest assessment data for retry', { userId });
       return false;
+    }
+
+    if (!hasGuestAssessmentData) {
+      console.warn('[sync] no guest assessment data in sessionStorage; trying latest completed assessment fallback');
+      const { data: latestAssessment, error: latestAssessmentError } = await supabase
+        .from('assessment_results')
+        .select('id, ximatar_id, pillars, rationale')
+        .eq('user_id', userId)
+        .eq('completed', true)
+        .order('computed_at', { ascending: false, nullsFirst: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (latestAssessmentError) {
+        console.error('[sync] latest assessment fallback query error:', latestAssessmentError);
+        return false;
+      }
+      if (!latestAssessment?.ximatar_id) {
+        console.log('[sync] no guest assessment data and no completed assessment fallback found');
+        return false;
+      }
+
+      const { data: latestPillars, error: latestPillarsError } = await supabase
+        .from('pillar_scores')
+        .select('pillar, score')
+        .eq('assessment_result_id', latestAssessment.id);
+      if (latestPillarsError) {
+        console.error('[sync] latest assessment pillar fallback query error:', latestPillarsError);
+      }
+
+      const fallbackScores = Array.isArray(latestPillars) && latestPillars.length > 0
+        ? latestPillars.reduce<Record<string, number>>((acc, row: any) => {
+            acc[row.pillar] = Number(row.score ?? 0);
+            return acc;
+          }, {})
+        : ((latestAssessment.pillars as Record<string, number> | null) || {});
+
+      const { data: fallbackXimatar, error: fallbackXimatarError } = await supabase
+        .from('ximatars')
+        .select('id, label, image_url')
+        .eq('id', latestAssessment.ximatar_id)
+        .maybeSingle();
+      if (fallbackXimatarError) {
+        console.error('[sync] latest assessment ximatar fallback query error:', fallbackXimatarError);
+        return false;
+      }
+      if (!fallbackXimatar?.label || !Object.keys(fallbackScores).length) {
+        console.error('[sync] latest assessment fallback incomplete:', {
+          hasXimatar: !!fallbackXimatar?.label,
+          hasScores: !!Object.keys(fallbackScores).length,
+        });
+        return false;
+      }
+
+      const fallbackLabel = String(fallbackXimatar.label).toLowerCase();
+      const derived = selectArchetypeFromAssessmentPillars(fallbackScores as AssessmentPillarScores);
+      const { data: fallbackRows, error: fallbackProfileError } = await supabase
+        .from('profiles')
+        .update({
+          ximatar: fallbackLabel as any,
+          ximatar_id: fallbackXimatar.id,
+          ximatar_name: derived.name || fallbackLabel.charAt(0).toUpperCase() + fallbackLabel.slice(1),
+          ximatar_image: fallbackXimatar.image_url,
+          ximatar_assigned_at: new Date().toISOString(),
+          ximatar_level: 1,
+          creation_source: 'assessment',
+          profile_complete: true,
+          pillar_scores: fallbackScores as any,
+          drive_level: derived.driveLevel,
+          strongest_pillar: derived.strongest,
+          weakest_pillar: derived.weakest,
+          ximatar_storytelling: (latestAssessment.rationale as any)?.storytelling || null,
+          ximatar_growth_path: (latestAssessment.rationale as any)?.growth_path || null,
+        })
+        .eq('user_id', userId)
+        .select('user_id');
+
+      if (fallbackProfileError) {
+        console.error('[sync] latest assessment fallback profile update error:', fallbackProfileError);
+        return false;
+      }
+      if (!fallbackRows || fallbackRows.length === 0) {
+        console.error('[sync] latest assessment fallback profile update affected 0 rows:', { userId });
+        return false;
+      }
+
+      console.log('[sync] ✅ profile recovered from latest completed assessment fallback', { userId, ximatar: fallbackLabel });
+      return true;
     }
 
     let assessmentResultId = guestResultId || '';
