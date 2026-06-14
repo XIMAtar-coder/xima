@@ -316,7 +316,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
         const latestResult: any = latestResultRes.data || null;
         const latestPillarRows = Array.isArray(latestResult?.pillar_scores) ? latestResult.pillar_scores : [];
         const latestAssessmentPillars = latestPillarRows.length > 0
-          ? latestPillarRows.reduce<Record<string, number>>((acc, row: any) => {
+          ? latestPillarRows.reduce((acc: Record<string, number>, row: any) => {
               acc[row.pillar] = Number(row.score ?? 0);
               return acc;
             }, {})
