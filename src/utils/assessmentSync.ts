@@ -87,6 +87,15 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           .maybeSingle();
         if (insertProfileError) {
           console.error('[sync] error inserting profile row before assessment sync:', insertProfileError);
+          const { data: refetchedProfile, error: refetchError } = await supabase
+            .from('profiles')
+            .select('user_id')
+            .eq('user_id', userId)
+            .maybeSingle();
+          if (refetchError) {
+            console.error('[sync] profile refetch after insert error failed:', refetchError);
+          }
+          hasProfile = !!refetchedProfile;
         } else {
           hasProfile = !!insertedProfile;
           console.log('[sync] inserted profile row before assessment sync');
@@ -130,7 +139,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
       }
 
       const fallbackScores = Array.isArray(latestPillars) && latestPillars.length > 0
-        ? latestPillars.reduce<Record<string, number>>((acc, row: any) => {
+        ? latestPillars.reduce((acc: Record<string, number>, row: any) => {
             acc[row.pillar] = Number(row.score ?? 0);
             return acc;
           }, {})
