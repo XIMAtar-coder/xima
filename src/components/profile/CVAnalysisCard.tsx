@@ -430,26 +430,31 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
               Identity-aligned suggestions
             </h4>
             <div className="space-y-3">
-              {cvAnalysis.identityImprovements.map((item, idx) => (
-                <div key={`${item.target_pillar}-${idx}`} className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-2">
+              {cvAnalysis.identityImprovements.map((item: any, idx) => {
+                const pillar = typeof item?.target_pillar === 'string' ? item.target_pillar : '';
+                return (
+                <div key={`${pillar || 'item'}-${idx}`} className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <Badge variant="outline" className="border-primary/20 text-primary">
-                      {t(`pillars.${item.target_pillar}.name`, item.target_pillar.replace(/_/g, ' '))}
-                    </Badge>
+                    {pillar && (
+                      <Badge variant="outline" className="border-primary/20 text-primary">
+                        {String(t(`pillars.${pillar}.name`, pillar.replace(/_/g, ' ')))}
+                      </Badge>
+                    )}
                   </div>
-                  <p className="text-sm text-foreground">{item.recommendation}</p>
-                  {item.example_before && (
+                  {item?.recommendation && <p className="text-sm text-foreground">{item.recommendation}</p>}
+                  {item?.example_before && (
                     <p className="text-xs text-muted-foreground">
                       <span className="font-medium text-foreground">Before:</span> {item.example_before}
                     </p>
                   )}
-                  {item.example_after && (
+                  {item?.example_after && (
                     <p className="text-xs text-muted-foreground">
                       <span className="font-medium text-foreground">After:</span> {item.example_after}
                     </p>
                   )}
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
