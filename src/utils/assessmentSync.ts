@@ -35,6 +35,7 @@ interface GuestAssessmentData {
 export const syncGuestAssessmentToProfile = async (userId: string): Promise<boolean> => {
   try {
     console.log('Starting assessment sync for user:', userId);
+    let assessmentProfileSynced = false;
 
     try {
       const { data: authUser } = await supabase.auth.getUser();
@@ -60,6 +61,51 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
       return false;
     }
 
+    // Ensure a profile row exists BEFORE linking/creating assessment_results.
+    // assessment_results.user_id has an FK to profiles.user_id, so doing this
+    // after the insert can race with the signup profile trigger and abort sync.
+    let hasProfile = false;
+    try {
+      const { data: existingProfile, error: profileFetchError } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (existingProfile) hasProfile = true;
+      if (profileFetchError && profileFetchError.code !== 'PGRST116') {
+        console.error('[sync] profile fetch error before assessment sync:', profileFetchError);
+      }
+    } catch (e) {
+      console.error('[sync] error checking existing profile before assessment sync', e);
+    }
+
+    if (!hasProfile) {
+      try {
+        const { data: authUser } = await supabase.auth.getUser();
+        const displayName = authUser?.user?.user_metadata?.name || authUser?.user?.email || '';
+        const { data: insertedProfile, error: insertProfileError } = await supabase
+          .from('profiles')
+          .insert({ user_id: userId, name: displayName, profile_complete: false })
+          .select('user_id')
+          .maybeSingle();
+        if (insertProfileError) {
+          console.error('[sync] error inserting profile row before assessment sync:', insertProfileError);
+        } else {
+          hasProfile = !!insertedProfile;
+          console.log('[sync] inserted profile row before assessment sync');
+        }
+      } catch (e) {
+        console.error('[sync] unexpected error inserting profile before assessment sync', e);
+      }
+    }
+
+    if (!hasProfile) {
+      console.error('[sync] CRITICAL: profile row unavailable; preserving guest assessment data for retry', { userId });
+      return false;
+    }
+
+    let assessmentResultId = guestResultId || '';
+
     // If we have a result_id from guest flow, link it to the user
     if (guestResultId) {
       const { error: linkError } = await supabase
@@ -83,7 +129,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
       const scores = JSON.parse(guestPillarScores) as Record<string, number>;
       
       // Get or create assessment_result
-      let resultId = guestResultId;
+      let resultId = assessmentResultId;
       if (!resultId) {
         // Create a new assessment_result for this data
         const totalScore: number = Object.values(scores).reduce((sum: number, val: number) => sum + val, 0);
@@ -94,6 +140,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
             user_id: userId,
             completed: true,
             total_score: totalScore,
+            pillars: scores as any,
             language: localStorage.getItem('i18nextLng')?.split('-')[0] || 'it',
             attempt_id: guestAttemptId || undefined
           }])
@@ -105,6 +152,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           return false;
         }
         resultId = newResult.id;
+        assessmentResultId = newResult.id;
       }
 
       // Insert pillar scores (they won't duplicate due to unique constraint)
@@ -122,39 +170,6 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         console.error('Error syncing pillar scores:', pillarError);
       } else {
         console.log('Successfully synced pillar scores');
-      }
-    }
-
-    // Ensure a profile row exists for this user
-    let hasProfile = false;
-    try {
-      const { data: existingProfile, error: profileFetchError } = await supabase
-        .from('profiles')
-        .select('user_id')
-        .eq('user_id', userId)
-        .maybeSingle();
-      if (existingProfile) hasProfile = true;
-      if (profileFetchError && profileFetchError.code !== 'PGRST116') {
-        console.warn('[sync] profile fetch error (ignored if not found):', profileFetchError);
-      }
-    } catch (e) {
-      console.warn('[sync] error checking existing profile', e);
-    }
-
-    if (!hasProfile) {
-      try {
-        const { data: authUser } = await supabase.auth.getUser();
-        const displayName = authUser?.user?.user_metadata?.name || authUser?.user?.email || '';
-        const { error: insertProfileError } = await supabase
-          .from('profiles')
-          .insert({ user_id: userId, name: displayName, profile_complete: false });
-        if (insertProfileError) {
-          console.error('[sync] error inserting profile row:', insertProfileError);
-        } else {
-          console.log('[sync] inserted new profile row');
-        }
-      } catch (e) {
-        console.error('[sync] unexpected error inserting profile', e);
       }
     }
 
