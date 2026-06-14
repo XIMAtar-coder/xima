@@ -262,6 +262,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
             { userId }
           );
         } else {
+          assessmentProfileSynced = true;
           console.log('[sync] ✅ profile updated with archetype', {
             userId,
             ximatar: resolvedLabel,
@@ -270,11 +271,11 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         }
 
         // Link assessment_result to ximatar (best effort, only if both present)
-        if (guestResultId && ximatarData) {
+        if (assessmentResultId && ximatarData) {
           const { error: arError } = await supabase
             .from('assessment_results')
             .update({ ximatar_id: ximatarData.id })
-            .eq('id', guestResultId);
+            .eq('id', assessmentResultId);
           if (arError) {
             console.warn('[sync] failed to link assessment_result to ximatar', arError);
           }
@@ -300,7 +301,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
             user_id: userId,
             source: 'assessment_initial',
             pillar_scores: snapshotScores,
-            metadata: { result_id: guestResultId || null },
+            metadata: { result_id: assessmentResultId || null },
           });
         if (snapshotError) {
           console.warn('[sync] snapshot insert error (non-fatal):', snapshotError);
@@ -312,7 +313,12 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
       }
     }
 
-    // Clean up sessionStorage after successful sync (keep xima_pending_cv for CV import)
+    if (!assessmentProfileSynced) {
+      console.error('[sync] CRITICAL: assessment profile write did not complete; preserving guest assessment data for retry', { userId });
+      return false;
+    }
+
+    // Clean up sessionStorage after successful profile write (keep xima_pending_cv for CV import)
     sessionStorage.removeItem('latest_assessment_result_id');
     sessionStorage.removeItem('guest_pillar_scores');
     sessionStorage.removeItem('guest_ximatar');
