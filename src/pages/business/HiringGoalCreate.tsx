@@ -157,7 +157,58 @@ const HiringGoalCreate = () => {
       }));
     };
     load();
-  }, [fromListingId]);
+  }, [fromListingId, isEditMode]);
+
+  // Edit mode: load existing draft and prefill
+  useEffect(() => {
+    if (!isEditMode || !goalId) return;
+    const load = async () => {
+      const { data, error } = await supabase
+        .from('hiring_goal_drafts')
+        .select('*')
+        .eq('id', goalId)
+        .single();
+      if (error || !data) {
+        console.error('[HiringGoalCreate] Failed to load draft:', error);
+        toast.error(t('hiring_goal.load_error', 'Impossibile caricare l\'obiettivo'));
+        navigate('/business/hiring-goals');
+        return;
+      }
+      if (data.status && data.status !== 'draft') {
+        navigate(`/business/hiring-goals/${goalId}/settings`, { replace: true });
+        return;
+      }
+      const d: any = data;
+      setFormData({
+        role_title: d.role_title || '',
+        task_description: d.task_description || '',
+        responsibilities: Array.isArray(d.responsibilities) ? d.responsibilities : [],
+        required_skills: Array.isArray(d.required_skills) ? d.required_skills : [],
+        nice_to_have_skills: Array.isArray(d.nice_to_have_skills) ? d.nice_to_have_skills : [],
+        experience_level: d.experience_level || '',
+        work_model: d.work_model || '',
+        country: d.country || '',
+        city_region: d.city_region || '',
+        salary_min: d.salary_min || 0,
+        salary_max: d.salary_max || 0,
+        salary_currency: d.salary_currency || 'EUR',
+        salary_period: d.salary_period || 'yearly',
+        ral_min: d.ral_min || 0,
+        ral_max: d.ral_max || 0,
+        ccnl: d.ccnl || '',
+        years_experience_min: d.years_experience_min ?? null,
+        years_experience_max: d.years_experience_max ?? null,
+        education_level: d.education_level || '',
+        languages: Array.isArray(d.languages) ? d.languages : [],
+        original_seniority: d.original_seniority || '',
+        imported_from_listing_id: d.imported_from_listing_id || null,
+        ai_suggested_ximatar: d.ai_suggested_ximatar || null,
+        xima_hr_requested: !!d.xima_hr_requested,
+      });
+      setEditLoading(false);
+    };
+    load();
+  }, [isEditMode, goalId, navigate, t]);
 
   const next = () => setStep(s => Math.min(s + 1, TOTAL_STEPS - 1));
   const prev = () => setStep(s => Math.max(s - 1, 0));
