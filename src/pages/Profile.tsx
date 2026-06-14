@@ -49,6 +49,14 @@ const Profile = () => {
   // Onboarding tour is no longer auto-started. Users can open it via the "Tour guidato" button below.
 
 
+  useEffect(() => {
+    const completedAt = sessionStorage.getItem('xima_profile_sync_completed');
+    if (!completedAt) return;
+    sessionStorage.removeItem('xima_profile_sync_completed');
+    setProfileRefreshKey(prev => prev + 1);
+  }, []);
+
+
   // Send welcome email once after user lands on dashboard with a created profile
   useEffect(() => {
     if (!isAuthenticated || !user?.id) return;
