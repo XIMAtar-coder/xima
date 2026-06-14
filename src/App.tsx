@@ -88,6 +88,12 @@ import JobImportWizard from "./pages/business/JobImportWizard";
 
 const queryClient = new QueryClient();
 
+const LegacyGoalsRedirect = () => {
+  const location = useLocation();
+  const rest = location.pathname.replace(/^\/business\/goals/, '');
+  return <Navigate to={`/business/hiring-goals${rest}${location.search}${location.hash}`} replace />;
+};
+
 const AppContent = () => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
