@@ -211,7 +211,7 @@ const BusinessDashboard = () => {
   const attentionItems = useMemo(() => {
     const items: { type: 'review' | 'expiring' | 'followup'; count: number; label: string; link: string }[] = [];
     if (pendingReviewsCount > 0) {
-      items.push({ type: 'review', count: pendingReviewsCount, label: t('business.command_center.attention.reviews_waiting', { count: pendingReviewsCount }), link: hiringGoalDraftId ? `/business/goals/${hiringGoalDraftId}/challenges` : '/business/challenges' });
+      items.push({ type: 'review', count: pendingReviewsCount, label: t('business.command_center.attention.reviews_waiting', { count: pendingReviewsCount }), link: hiringGoalDraftId ? `/business/hiring-goals/${hiringGoalDraftId}/challenges` : '/business/challenges' });
     }
     const expiringChallenges = activeChallengesWithStats.filter(c => {
       if (!c.end_at) return false;

@@ -153,7 +153,7 @@ const GoalDecisionPack: React.FC = () => {
   };
 
   const handleGoalSwitch = (newGoalId: string) => {
-    navigate(`/business/goals/${newGoalId}/decision-pack`);
+    navigate(`/business/hiring-goals/${newGoalId}/decision-pack`);
   };
 
   const handlePrint = () => {

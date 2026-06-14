@@ -396,7 +396,7 @@ const CreateChallenge = () => {
 
       // Navigate back
       if (effectiveGoalId && returnTo === 'shortlist' && newStatus === 'active') {
-        navigate(`/business/goals/${effectiveGoalId}/shortlist?challengeCreated=1`);
+        navigate(`/business/hiring-goals/${effectiveGoalId}/shortlist?challengeCreated=1`);
       } else if (effectiveGoalId) {
         navigate(`/business/candidates?fromGoal=${effectiveGoalId}`);
       } else {
@@ -423,7 +423,7 @@ const CreateChallenge = () => {
   const getBackUrl = () => {
     const effectiveGoalId = isEditMode ? existingChallenge?.hiring_goal_id : goalId;
     if (effectiveGoalId && returnTo === 'shortlist') {
-      return `/business/goals/${effectiveGoalId}/shortlist`;
+      return `/business/hiring-goals/${effectiveGoalId}/shortlist`;
     }
     if (effectiveGoalId) {
       return `/business/candidates?fromGoal=${effectiveGoalId}`;

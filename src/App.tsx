@@ -163,12 +163,12 @@ const AppContent = () => {
           <Route path="/business/jobs/import" element={<JobImportWizard />} />
           <Route path="/business/jobs/:jobId/matches" element={<JobCandidateMatching />} />
           {/* Goal-scoped routes */}
-          <Route path="/business/goals/:goalId/shortlist" element={<GoalShortlistPage />} />
-          <Route path="/business/goals/:goalId/candidates" element={<GoalCandidates />} />
-          <Route path="/business/goals/:goalId/challenges" element={<GoalChallenges />} />
-          <Route path="/business/goals/:goalId/settings" element={<GoalSettings />} />
-          <Route path="/business/goals/:goalId/decision-pack" element={<GoalDecisionPack />} />
-          <Route path="/business/goals/:goalId/challenges/:challengeId/responses" element={<ChallengeResponses />} />
+          <Route path="/business/hiring-goals/:goalId/shortlist" element={<GoalShortlistPage />} />
+          <Route path="/business/hiring-goals/:goalId/candidates" element={<GoalCandidates />} />
+          <Route path="/business/hiring-goals/:goalId/challenges" element={<GoalChallenges />} />
+          <Route path="/business/hiring-goals/:goalId/settings" element={<GoalSettings />} />
+          <Route path="/business/hiring-goals/:goalId/decision-pack" element={<GoalDecisionPack />} />
+          <Route path="/business/hiring-goals/:goalId/challenges/:challengeId/responses" element={<ChallengeResponses />} />
           <Route path="/business/hiring-goals" element={<BusinessHiringGoals />} />
           <Route path="/business/hiring-goals/new" element={<HiringGoalCreate />} />
           <Route path="/business/messages" element={<BusinessPipelineChat />} />

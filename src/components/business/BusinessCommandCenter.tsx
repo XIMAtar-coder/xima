@@ -64,7 +64,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
       icon: MessageSquare,
       color: 'text-amber-500',
       bgColor: 'bg-amber-500/10',
-      link: hiringGoalId ? `/business/goals/${hiringGoalId}/challenges` : '/business/challenges'
+      link: hiringGoalId ? `/business/hiring-goals/${hiringGoalId}/challenges` : '/business/challenges'
     },
     {
       key: 'pipeline_candidates',
@@ -115,7 +115,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
       labelKey: 'businessPortal.quick_action_evaluate',
       icon: MessageSquare,
       primary: false,
-      link: hiringGoalId ? `/business/goals/${hiringGoalId}/challenges` : '/business/challenges'
+      link: hiringGoalId ? `/business/hiring-goals/${hiringGoalId}/challenges` : '/business/challenges'
     }
   ];
 

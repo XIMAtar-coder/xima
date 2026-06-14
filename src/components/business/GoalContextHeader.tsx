@@ -82,7 +82,7 @@ export const GoalContextHeader: React.FC<GoalContextHeaderProps> = ({
       </div>
 
       {currentGoal && !isOnSettingsPage && (
-        <Link to={`/business/goals/${currentGoal.id}/settings`}>
+        <Link to={`/business/hiring-goals/${currentGoal.id}/settings`}>
           <Button variant="outline" size="sm" className="gap-2">
             <Settings className="h-4 w-4" />
             {t('eligibility.title')}

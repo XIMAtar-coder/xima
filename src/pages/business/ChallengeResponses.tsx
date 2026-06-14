@@ -109,7 +109,7 @@ export default function ChallengeResponses() {
 
         if (challengeError || !challengeData) {
           toast({ title: t('common.error'), description: 'Challenge not found', variant: 'destructive' });
-          navigate(`/business/goals/${goalId}/challenges`);
+          navigate(`/business/hiring-goals/${goalId}/challenges`);
           return;
         }
 
@@ -352,7 +352,7 @@ export default function ChallengeResponses() {
         <GoalContextHeader
           currentGoal={currentGoal}
           allGoals={allGoals}
-          onGoalSwitch={(id) => navigate(`/business/goals/${id}/challenges`)}
+          onGoalSwitch={(id) => navigate(`/business/hiring-goals/${id}/challenges`)}
         />
 
         {/* Challenge Header */}
@@ -363,7 +363,7 @@ export default function ChallengeResponses() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigate(`/business/goals/${goalId}/challenges`)}
+                  onClick={() => navigate(`/business/hiring-goals/${goalId}/challenges`)}
                   className="mb-2 -ml-2"
                 >
                   <ArrowLeft className="h-4 w-4 mr-1" />

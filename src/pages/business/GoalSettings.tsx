@@ -32,7 +32,7 @@ const GoalSettings: React.FC = () => {
         <GoalContextHeader
           currentGoal={currentGoal}
           allGoals={goals}
-          onGoalSwitch={(newGoalId) => window.location.href = `/business/goals/${newGoalId}/settings`}
+          onGoalSwitch={(newGoalId) => window.location.href = `/business/hiring-goals/${newGoalId}/settings`}
         />
 
         <div className="flex items-center justify-between">
@@ -42,7 +42,7 @@ const GoalSettings: React.FC = () => {
               {t('eligibility.subtitle')}
             </p>
           </div>
-          <Link to={`/business/goals/${goalId}/candidates`}>
+          <Link to={`/business/hiring-goals/${goalId}/candidates`}>
             <Button variant="outline">
               <ArrowLeft className="h-4 w-4 mr-2" />
               {t('common.back')}
