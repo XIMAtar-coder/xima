@@ -346,8 +346,39 @@ export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => 
     const cvPillarScores = identity.cv_pillar_scores || {
       drive: 0, computational_power: 0, communication: 0, creativity: 0, knowledge: 0,
     };
-    const assessmentXimatar: string = data.assessment_ximatar || '';
-    const assessmentPillarScores = data.assessment_pillar_scores || {};
+
+    // Resolve real assessment archetype + pillars.
+    // Priority: 1) profiles row (already written by syncGuestAssessmentToProfile),
+    // 2) sessionStorage (if assessment sync hasn't cleared it), 3) CV blob fallback.
+    let assessmentXimatar: string = '';
+    let assessmentPillarScores: Record<string, number> = {};
+    try {
+      const { data: prof } = await supabase
+        .from('profiles')
+        .select('ximatar, pillar_scores')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (prof?.ximatar) assessmentXimatar = String(prof.ximatar).toLowerCase();
+      if (prof?.pillar_scores && typeof prof.pillar_scores === 'object') {
+        assessmentPillarScores = prof.pillar_scores as Record<string, number>;
+      }
+    } catch (e) {
+      console.warn('[sync-cv] profile lookup for assessment data failed:', e);
+    }
+    if (!assessmentXimatar) {
+      const ss = sessionStorage.getItem('guest_ximatar');
+      if (ss) assessmentXimatar = ss.toLowerCase();
+    }
+    if (!Object.keys(assessmentPillarScores).length) {
+      const ss = sessionStorage.getItem('guest_pillar_scores');
+      if (ss) {
+        try { assessmentPillarScores = JSON.parse(ss); } catch {}
+      }
+    }
+    if (!assessmentXimatar) assessmentXimatar = (data.assessment_ximatar || '').toLowerCase();
+    if (!Object.keys(assessmentPillarScores).length) {
+      assessmentPillarScores = data.assessment_pillar_scores || {};
+    }
 
     // Upsert cv_identity_analysis (NOT NULL: cv_archetype_primary, cv_pillar_scores,
     // assessment_ximatar, assessment_pillar_scores — all populated below).
