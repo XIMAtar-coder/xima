@@ -471,24 +471,37 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
               Technical CV fixes
             </h4>
             <div className="space-y-3">
-              {cvAnalysis.technicalImprovements.map((item, idx) => (
-                <div key={`${item.category}-${idx}`} className="rounded-lg border border-border bg-muted/20 p-3 space-y-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Badge variant="outline">{item.category}</Badge>
-                    <Badge
-                      variant="outline"
-                      className={item.priority === 'high'
-                        ? 'border-destructive/20 bg-destructive/5 text-destructive'
-                        : item.priority === 'medium'
-                        ? 'border-primary/20 bg-primary/5 text-primary'
-                        : ''}
-                    >
-                      {item.priority}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{item.recommendation}</p>
+              {cvAnalysis.technicalImprovements.map((rawItem: any, idx) => {
+                const item = typeof rawItem === 'string'
+                  ? { recommendation: rawItem }
+                  : (rawItem || {});
+                const category = typeof item?.category === 'string' ? item.category : '';
+                const priority = typeof item?.priority === 'string' ? item.priority : '';
+                const recommendation = typeof item?.recommendation === 'string' ? item.recommendation : '';
+                if (!recommendation && !category && !priority) return null;
+                return (
+                <div key={`${category || 'item'}-${idx}`} className="rounded-lg border border-border bg-muted/20 p-3 space-y-2">
+                  {(category || priority) && (
+                    <div className="flex flex-wrap items-center gap-2">
+                      {category && <Badge variant="outline">{category}</Badge>}
+                      {priority && (
+                        <Badge
+                          variant="outline"
+                          className={priority === 'high'
+                            ? 'border-destructive/20 bg-destructive/5 text-destructive'
+                            : priority === 'medium'
+                            ? 'border-primary/20 bg-primary/5 text-primary'
+                            : ''}
+                        >
+                          {priority}
+                        </Badge>
+                      )}
+                    </div>
+                  )}
+                  {recommendation && <p className="text-sm text-muted-foreground">{recommendation}</p>}
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
