@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import { selectArchetypeFromAssessmentPillars, type AssessmentPillarScores } from '@/lib/ximatarTaxonomy';
 
 export interface OpenAnswerItem {
   question: string;
@@ -325,6 +326,9 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           ? latestResult.ximatars[0]
           : latestResult?.ximatars;
         const pillar_scores = normalizePillars(profile?.pillar_scores) || normalizePillars(latestAssessmentPillars);
+        const derivedAssessment = pillar_scores
+          ? selectArchetypeFromAssessmentPillars(pillar_scores as AssessmentPillarScores)
+          : null;
         const cv_pillar_scores = normalizePillars(
           (cvIdentityRes.data?.cv_pillar_scores as any) ||
           (profile?.cv_scores as any) ||
@@ -368,15 +372,15 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
 
         const next: ProfileData = {
           full_name,
-          ximatar: (profile?.ximatar as any) ?? latestXimatar?.label ?? null,
+          ximatar: (profile?.ximatar as any) ?? latestXimatar?.label ?? derivedAssessment?.label ?? null,
           ximatar_id: (profile?.ximatar_id as any) ?? latestResult?.ximatar_id ?? latestXimatar?.id ?? null,
-          ximatar_name: (profile?.ximatar_name as any) ?? latestXimatar?.label ?? null,
+          ximatar_name: (profile?.ximatar_name as any) ?? latestXimatar?.label ?? derivedAssessment?.name ?? null,
           ximatar_image: (profile?.ximatar_image as any) ?? latestXimatar?.image_url ?? null,
-          drive_level: (profile?.drive_level as any) ?? null,
+          drive_level: (profile?.drive_level as any) ?? derivedAssessment?.driveLevel ?? null,
           pillar_scores,
           cv_pillar_scores,
-          strongest_pillar: (profile?.strongest_pillar as any) ?? null,
-          weakest_pillar: (profile?.weakest_pillar as any) ?? null,
+          strongest_pillar: (profile?.strongest_pillar as any) ?? derivedAssessment?.strongest ?? null,
+          weakest_pillar: (profile?.weakest_pillar as any) ?? derivedAssessment?.weakest ?? null,
           ximatar_storytelling: (profile?.ximatar_storytelling as any) ?? null,
           ximatar_growth_path: (profile?.ximatar_growth_path as any) ?? null,
           mentor_id: mentor_user_id,
@@ -410,7 +414,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
               ...commentsFromTension,
             },
           },
-          hasAssessment: !!(((profile?.ximatar || profile?.ximatar_id) || latestResult?.ximatar_id || latestXimatar?.label) && pillar_scores),
+          hasAssessment: !!(((profile?.ximatar || profile?.ximatar_id) || latestResult?.ximatar_id || latestXimatar?.label || derivedAssessment?.label) && pillar_scores),
           isLoading: false,
           error: null,
           profile_completed: !!(profile as any)?.profile_completed,
