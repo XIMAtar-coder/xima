@@ -430,18 +430,23 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
               Identity-aligned suggestions
             </h4>
             <div className="space-y-3">
-              {cvAnalysis.identityImprovements.map((item: any, idx) => {
+              {cvAnalysis.identityImprovements.map((rawItem: any, idx) => {
+                const item = typeof rawItem === 'string'
+                  ? { recommendation: rawItem }
+                  : (rawItem || {});
                 const pillar = typeof item?.target_pillar === 'string' ? item.target_pillar : '';
+                const recommendation = typeof item?.recommendation === 'string' ? item.recommendation : '';
+                if (!recommendation && !pillar && !item?.example_before && !item?.example_after) return null;
                 return (
                 <div key={`${pillar || 'item'}-${idx}`} className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    {pillar && (
+                  {pillar && (
+                    <div className="flex flex-wrap items-center gap-2">
                       <Badge variant="outline" className="border-primary/20 text-primary">
                         {String(t(`pillars.${pillar}.name`, pillar.replace(/_/g, ' ')))}
                       </Badge>
-                    )}
-                  </div>
-                  {item?.recommendation && <p className="text-sm text-foreground">{item.recommendation}</p>}
+                    </div>
+                  )}
+                  {recommendation && <p className="text-sm text-foreground">{recommendation}</p>}
                   {item?.example_before && (
                     <p className="text-xs text-muted-foreground">
                       <span className="font-medium text-foreground">Before:</span> {item.example_before}
