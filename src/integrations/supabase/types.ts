@@ -5865,6 +5865,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      admin_get_candidate_analytics: { Args: never; Returns: Json }
+      admin_get_interactions: { Args: { p_days?: number }; Returns: Json }
+      admin_get_overview: { Args: never; Returns: Json }
+      admin_get_xima_evolution: { Args: { p_limit?: number }; Returns: Json }
       admin_set_business_plan: {
         Args: {
           p_business_id: string
