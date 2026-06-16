@@ -861,6 +861,198 @@ serve(async (req) => {
     }
 
 
+    // =====================================================
+    // L1 CUSTOM (AI-driven) — business-oriented alternative to XIMA Core.
+    // Same scaffold as xima_core (DNA + goal + 5-pillar evaluation_lens +
+    // blind-scope scrub), but accepts focus_pillars / scenario hint /
+    // difficulty / num_questions, and returns the generated questions inline.
+    // =====================================================
+    if (body.mode === 'l1_custom') {
+      const ALL_PILLARS = ['drive', 'computational_power', 'communication', 'creativity', 'knowledge'] as const;
+      type PillarKey = typeof ALL_PILLARS[number];
+      const rawFocus = Array.isArray(body.params?.focus_pillars) ? body.params!.focus_pillars! : [];
+      const focusPillars: PillarKey[] = rawFocus
+        .map((p) => String(p))
+        .filter((p): p is PillarKey => (ALL_PILLARS as readonly string[]).includes(p));
+      const difficulty: 1 | 2 | 3 = ([1, 2, 3] as const).includes(body.params?.difficulty as 1 | 2 | 3)
+        ? (body.params!.difficulty as 1 | 2 | 3)
+        : 2;
+      const durationMinutes = Math.min(60, Math.max(10, Math.round(Number(body.params?.duration_minutes) || 30)));
+      const numQuestions = Math.min(6, Math.max(3, Math.round(Number(body.params?.num_questions) || 4)));
+      const customHint = typeof body.params?.custom_scenario_hint === 'string'
+        ? body.params!.custom_scenario_hint!.trim().slice(0, 500)
+        : '';
+
+      const focusBlock = focusPillars.length > 0
+        ? `PILASTRI DA ENFATIZZARE (signals più ricchi e numerosi su questi): ${focusPillars.join(', ')}.
+GLI ALTRI PILASTRI restano valutati con almeno 2 signals ciascuno (mai vuoti).`
+        : `Nessun pilastro prioritario: tratta i 5 pilastri in modo bilanciato (2-3 signals ciascuno).`;
+
+      const hintBlock = customHint
+        ? `SPUNTO DEL BUSINESS (usalo come ancora, NON copiarlo letterale):
+"${customHint}"`
+        : '';
+
+      const difficultyBlock = difficulty === 1
+        ? `Difficoltà BASE: una tensione dominante chiara, vincoli limitati.`
+        : difficulty === 2
+        ? `Difficoltà MEDIA: 2 tensioni concorrenti, vincoli realistici di tempo e risorse.`
+        : `Difficoltà ALTA: 3+ tensioni concorrenti, ambiguità informativa, stakeholder con interessi divergenti.`;
+
+      // Forbidden terms / blind-scope scrub (same source as xima_core).
+      const forbiddenTermsCustom = [
+        businessProfile?.company_name,
+        ...(Array.isArray((businessProfile as any)?.metadata?.brand_aliases) ? (businessProfile as any).metadata.brand_aliases : []),
+      ].filter((s): s is string => typeof s === 'string' && s.trim().length >= 3);
+      const scrubCustom = buildBlindSanitizer(forbiddenTermsCustom);
+
+      const customSystemPrompt = `Sei l'architetto delle XIMA Challenge L1 (versione Custom, orientata dal business).
+Devi creare uno scenario soft-skills concreto e specifico per ruolo + settore + DNA aziendale, accompagnato da ${numQuestions} domande aperte (free-text).
+
+REGOLA FONDAMENTALE: lo scenario DEVE essere CONCRETO e SPECIFICO per il settore. MAI generico da ufficio. Oggetti, strumenti, normative, attori reali del mestiere.
+
+CONTESTO AZIENDA:
+- Nome: ${companyName}
+- Settore: ${displayIndustry}
+- Cultura: ${teamCulture}
+- Stile operativo: ${operatingStyle}
+- Valori: ${coreValues}
+
+RUOLO:
+- Titolo: ${roleTitle}
+- Descrizione: ${taskDescription}
+- Competenze richieste: ${requiredSkills}
+- Livello: ${experienceLevel}
+- Modalità: ${workModel}
+
+${focusBlock}
+
+${difficultyBlock}
+
+${hintBlock}
+
+ISTRUZIONI:
+1. Scrivi UNO scenario di 80-180 parole specifico per il ruolo e settore sopra.
+2. Includi nomi di oggetti/strumenti/normative, almeno 2 attori specifici, almeno 1 vincolo tecnico, pressione temporale concreta.
+3. NON includere domande nello scenario.
+4. Genera ESATTAMENTE ${numQuestions} domande aperte (free-text) che facciano EMERGERE i pilastri target attraverso la risposta del candidato.
+5. Ogni domanda ha un "title" breve (3-7 parole) e un "text" di 1-3 frasi che invita a una risposta articolata.
+6. Le domande devono richiedere ragionamento, non risposte sì/no.
+7. evaluation_lens: produci signals SPECIFICI per il ruolo/settore. I pilastri enfatizzati devono avere 4-6 signals (più ricchi, più specifici); gli altri 2-3 signals (ma MAI vuoti — il profilo 5-pilastri resta completo).
+8. estimated_time_minutes: vicino a ${durationMinutes} (±5).
+9. Lingua: ${promptLang}. ${langInstruction}
+10. VALUTAZIONE ALLA CIECA: NON nominare mai l'azienda committente ("${companyName}") né clienti/fornitori/concorrenti reali. Usa descrittori generici.
+
+Restituisci SOLO JSON valido (no commenti, no testo extra):
+{
+  "scenario": "testo dello scenario specifico per il ruolo",
+  "business_type": "etichetta breve settore",
+  "context_tag": "${roleTitle} · ${displayIndustry}",
+  "context_snapshot": {},
+  "evaluation_lens": {
+    "drive_signals": ["..."],
+    "computational_power_signals": ["..."],
+    "communication_signals": ["..."],
+    "creativity_signals": ["..."],
+    "knowledge_signals": ["..."]
+  },
+  "expected_tensions": ["..."],
+  "estimated_time_minutes": ${durationMinutes},
+  "questions": [
+    { "id": "q1", "title": "...", "text": "..." }
+  ]
+}`;
+
+      const customUserPrompt = `Genera la sfida L1 Custom per "${roleTitle}" (${displayIndustry}) con ${numQuestions} domande aperte. Pilastri prioritari: ${focusPillars.length ? focusPillars.join(', ') : 'nessuno (bilanciata)'}. Difficoltà: ${difficulty}. Rispondi SOLO con il JSON.`;
+
+      try {
+        const model = getModelForFunction('generate-challenge');
+        const aiResp = await callAnthropicApi({
+          system: customSystemPrompt,
+          userMessage: customUserPrompt,
+          correlationId,
+          functionName: 'generate-challenge',
+          model,
+          inputSummary: `l1_custom:locale=${locale},focus=${focusPillars.join('|') || 'none'},diff=${difficulty},nq=${numQuestions}`,
+          temperature: 0.8,
+          maxTokens: 3000,
+        });
+        const jsonStr = extractJsonFromAiContent(aiResp.content);
+        const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
+
+        // Validate base xima-core shape (scenario, evaluation_lens, etc.).
+        const validatedBase = validateXimaCoreResult(parsed);
+        if (!validatedBase) {
+          console.error('[generate-challenge:l1_custom] base validation failed', JSON.stringify({
+            correlation_id: correlationId,
+            preview: typeof parsed?.scenario === 'string' ? String(parsed.scenario).slice(0, 200) : String(parsed).slice(0, 200),
+          }));
+          return errorResponse(422, 'INVALID_AI_RESPONSE', 'Generated L1 Custom response was invalid. Please regenerate.', { correlation_id: correlationId });
+        }
+
+        // Validate questions array.
+        const rawQuestions = Array.isArray(parsed?.questions) ? parsed.questions : [];
+        if (rawQuestions.length < 3 || rawQuestions.length > 6) {
+          return errorResponse(422, 'INVALID_QUESTIONS_COUNT', 'AI returned an invalid number of questions. Please regenerate.', { correlation_id: correlationId });
+        }
+        const safeScenario = scrubCustom(validatedBase.scenario);
+        const questions = rawQuestions.map((q: any, i: number) => {
+          if (!q || typeof q !== 'object') return null;
+          if (typeof q.title !== 'string' || typeof q.text !== 'string') return null;
+          const title = scrubCustom(q.title.trim());
+          const text = scrubCustom(q.text.trim());
+          if (!title || !text || title.length > 120 || text.length < 20) return null;
+          return { id: `q${i + 1}`, title, text };
+        }).filter(Boolean) as Array<{ id: string; title: string; text: string }>;
+
+        if (questions.length < 3) {
+          return errorResponse(422, 'INVALID_QUESTIONS', 'AI returned malformed questions. Please regenerate.', { correlation_id: correlationId });
+        }
+
+        // Audit (lightweight).
+        try {
+          emitAuditEventWithMetric({
+            actorType: 'business',
+            actorId: user.id,
+            action: 'challenge.l1_custom_generated',
+            entityType: 'business_challenge',
+            entityId: body.hiring_goal_id || null,
+            correlationId,
+            metadata: {
+              business_type: validatedBase.business_type,
+              locale,
+              focus_pillars: focusPillars,
+              difficulty,
+              num_questions: questions.length,
+            },
+          }, 'l1_custom_challenges_generated');
+        } catch (e) {
+          console.warn('[generate-challenge:l1_custom] audit emit failed (non-blocking):', e instanceof Error ? e.message : String(e));
+        }
+
+        return jsonResponse({
+          ...validatedBase,
+          scenario: safeScenario,
+          context_tag: contextTag || validatedBase.context_tag,
+          context_snapshot: { ...contextPayload, ...validatedBase.context_snapshot },
+          questions,
+          estimated_time_minutes: validatedBase.estimated_time_minutes || durationMinutes,
+          mode: 'l1_custom',
+          used_fallback: false,
+        });
+      } catch (e) {
+        if (e instanceof AnthropicError && e.statusCode === 429) {
+          return errorResponse(429, 'RATE_LIMITED', e.message);
+        }
+        console.error('[generate-challenge:l1_custom] generation failed:', e instanceof Error ? e.message : String(e));
+        return errorResponse(502, 'AI_GENERATION_FAILED', 'L1 Custom generation failed. Please retry.', { correlation_id: correlationId });
+      }
+    }
+
+
+
+
+
 
     // Diagnostic log of context being sent to Claude (no PII beyond company name).
     console.log('[generate-challenge] Context being sent to Claude:', JSON.stringify({
