@@ -181,6 +181,10 @@ export function SubmissionDetailDrawer({
       setFollowupData(null);
       setIsGeneratingLevel2(false);
       setLevel2Error(null);
+      setIsGeneratingCustomL1(false);
+      setCustomL1Error(null);
+      setLocalCustomL1Signals(null);
+      setCustomL1Questions(null);
       lastOpenedKeyRef.current = null;
       return;
     }
@@ -194,8 +198,33 @@ export function SubmissionDetailDrawer({
       setIsGeneratingLevel2(false);
       // Initialize L1 signals
       setLocalSignals(submission?.signalsPayload ?? null);
+      // Initialize Custom L1 signals if the existing payload matches
+      const sp = submission?.signalsPayload as any;
+      setLocalCustomL1Signals(sp && sp.format === 'custom_l1_ai' ? sp : null);
+      setCustomL1Error(null);
+      setIsGeneratingCustomL1(false);
     }
   }, [open, submissionKey, signalsFromDb, submission?.signalsPayload]);
+
+  // Load Custom L1 questions (config_json.questions) when needed to render answers.
+  useEffect(() => {
+    if (!open || !isCustomL1 || !challengeId) {
+      return;
+    }
+    if (customL1Questions !== null) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from('business_challenges')
+        .select('config_json')
+        .eq('id', challengeId)
+        .maybeSingle();
+      if (cancelled) return;
+      const qs = (data?.config_json as any)?.questions;
+      setCustomL1Questions(Array.isArray(qs) ? qs : []);
+    })();
+    return () => { cancelled = true; };
+  }, [open, isCustomL1, challengeId, customL1Questions]);
 
   // Fetch existing review and followup when drawer opens
   useEffect(() => {
