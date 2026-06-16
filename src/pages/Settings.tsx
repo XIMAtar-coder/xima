@@ -13,12 +13,25 @@ import { MentorCVConsentToggle } from '@/components/settings/MentorCVConsentTogg
 import { MembershipSection } from '@/components/settings/MembershipSection';
 import { JobPreferencesSection } from '@/components/settings/JobPreferencesSection';
 import { Separator } from '@/components/ui/separator';
-import { supabase } from '@/integrations/supabase/client';
 
 const CandidateSettings = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { user } = useUser();
   const { completeStep, hasCompletedStep } = useOnboardingState();
   const [refreshKey, setRefreshKey] = useState(0);
+
+  // Admin redirect: admins should never see the candidate settings page
+  useEffect(() => {
+    if (!user?.id) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase.from('user_roles').select('role').eq('user_id', user.id);
+      if (cancelled) return;
+      if (data?.some((r: any) => r.role === 'admin')) navigate('/admin', { replace: true });
+    })();
+    return () => { cancelled = true; };
+  }, [user?.id, navigate]);
   const [userId, setUserId] = useState<string | null>(null);
   const [jobPrefs, setJobPrefs] = useState<any>({});
   const [mentorInfo, setMentorInfo] = useState<{ mentorId: string | null; mentorName: string | null; profileId: string | null }>({
