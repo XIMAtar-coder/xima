@@ -194,36 +194,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                   <ThemeToggle />
 
                   <div className="hidden xl:flex items-center gap-1">
-                    {!(isMentor && location.pathname.startsWith('/mentor')) && (
+                    {isAdmin ? (
                       <>
-                        <button onClick={() => navigate('/profile')} className={navLinkClass(location.pathname === '/profile' || location.pathname === '/dashboard')}>
-                          {t('nav.dashboard')}
+                        <button onClick={() => navigate('/admin')} className={navLinkClass(location.pathname === '/admin')}>
+                          {t('nav.xima_manager', 'XIMA Manager')}
                         </button>
-                        <button onClick={() => navigate('/chat')} className={navLinkClass(location.pathname === '/chat')}>
-                          {t('nav.feed')}
-                        </button>
-                        <button onClick={() => navigate('/messages')} className={navLinkClass(location.pathname === '/messages')}>
-                          {t('nav.messages')}
-                        </button>
-                        <button onClick={() => navigate('/jobs')} className={navLinkClass(location.pathname === '/jobs')}>
-                          <span className="flex items-center gap-1">
-                            <Briefcase className="h-4 w-4" strokeWidth={1.5} />
-                            {t('nav.browse_jobs', 'Offerte di Lavoro')}
-                          </span>
-                        </button>
-                        <button onClick={() => navigate('/my-offers')} className={navLinkClass(location.pathname === '/my-offers')}>
-                          <span className="flex items-center gap-1">
-                            <Gift className="h-4 w-4" strokeWidth={1.5} />
-                            {t('nav.my_offers', 'Le Tue Offerte')}
-                            {pendingOffersCount > 0 && (
-                              <span className="w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center">
-                                {pendingOffersCount}
-                              </span>
-                            )}
-                          </span>
-                        </button>
-                        <button onClick={() => navigate('/development-plan')} className={navLinkClass(location.pathname.startsWith('/test') || location.pathname === '/development-plan')}>
-                          {t('nav.tests')}
+                        <button onClick={() => navigate('/analytics')} className={navLinkClass(location.pathname === '/analytics')}>
+                          {t('nav.analytics', 'Analytics')}
                         </button>
                         <button onClick={() => navigate('/settings')} className={navLinkClass(location.pathname === '/settings')}>
                           <span className="flex items-center gap-1">
@@ -231,33 +208,66 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                             {t('nav.settings', 'Impostazioni')}
                           </span>
                         </button>
-                        <button onClick={() => setGuideOpen(true)} className={navLinkClass(false)}>
-                          <span className="flex items-center gap-1">
-                            <HelpCircle className="h-4 w-4" strokeWidth={1.5} />
-                            Help
-                          </span>
-                        </button>
                       </>
-                    )}
-                    {isAdmin && (
+                    ) : (
                       <>
-                        <button onClick={() => navigate('/analytics')} className={navLinkClass(location.pathname === '/analytics')}>
-                          {t('nav.analytics')}
-                        </button>
-                        <button onClick={() => navigate('/admin')} className={navLinkClass(location.pathname === '/admin')}>
-                          {t('nav.developer')}
-                        </button>
+                        {!(isMentor && location.pathname.startsWith('/mentor')) && (
+                          <>
+                            <button onClick={() => navigate('/profile')} className={navLinkClass(location.pathname === '/profile' || location.pathname === '/dashboard')}>
+                              {t('nav.dashboard')}
+                            </button>
+                            <button onClick={() => navigate('/chat')} className={navLinkClass(location.pathname === '/chat')}>
+                              {t('nav.feed')}
+                            </button>
+                            <button onClick={() => navigate('/messages')} className={navLinkClass(location.pathname === '/messages')}>
+                              {t('nav.messages')}
+                            </button>
+                            <button onClick={() => navigate('/jobs')} className={navLinkClass(location.pathname === '/jobs')}>
+                              <span className="flex items-center gap-1">
+                                <Briefcase className="h-4 w-4" strokeWidth={1.5} />
+                                {t('nav.browse_jobs', 'Offerte di Lavoro')}
+                              </span>
+                            </button>
+                            <button onClick={() => navigate('/my-offers')} className={navLinkClass(location.pathname === '/my-offers')}>
+                              <span className="flex items-center gap-1">
+                                <Gift className="h-4 w-4" strokeWidth={1.5} />
+                                {t('nav.my_offers', 'Le Tue Offerte')}
+                                {pendingOffersCount > 0 && (
+                                  <span className="w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center">
+                                    {pendingOffersCount}
+                                  </span>
+                                )}
+                              </span>
+                            </button>
+                            <button onClick={() => navigate('/development-plan')} className={navLinkClass(location.pathname.startsWith('/test') || location.pathname === '/development-plan')}>
+                              {t('nav.tests')}
+                            </button>
+                            <button onClick={() => navigate('/settings')} className={navLinkClass(location.pathname === '/settings')}>
+                              <span className="flex items-center gap-1">
+                                <Settings className="h-4 w-4" strokeWidth={1.5} />
+                                {t('nav.settings', 'Impostazioni')}
+                              </span>
+                            </button>
+                            <button onClick={() => setGuideOpen(true)} className={navLinkClass(false)}>
+                              <span className="flex items-center gap-1">
+                                <HelpCircle className="h-4 w-4" strokeWidth={1.5} />
+                                Help
+                              </span>
+                            </button>
+                          </>
+                        )}
+                        {isMentor && (
+                          <button onClick={() => navigate('/mentor')} className={navLinkClass(location.pathname.startsWith('/mentor') && !location.pathname.includes('/login'))}>
+                            <span className="flex items-center gap-1.5">
+                              <GraduationCap className="h-4 w-4" strokeWidth={1.5} />
+                              {t('nav.mentor_portal', 'Mentor Portal')}
+                            </span>
+                          </button>
+                        )}
                       </>
-                    )}
-                    {isMentor && (
-                      <button onClick={() => navigate('/mentor')} className={navLinkClass(location.pathname.startsWith('/mentor') && !location.pathname.includes('/login'))}>
-                        <span className="flex items-center gap-1.5">
-                          <GraduationCap className="h-4 w-4" strokeWidth={1.5} />
-                          {t('nav.mentor_portal', 'Mentor Portal')}
-                        </span>
-                      </button>
                     )}
                   </div>
+
 
                   {/* Credits badge — desktop only */}
                   <div className="hidden xl:flex items-center gap-3">
