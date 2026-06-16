@@ -2,56 +2,68 @@
  * Unified challenge payload builder.
  *
  * Single source of truth for INSERT/UPDATE payloads on `business_challenges`,
- * shared by both creation flows:
- *   - XIMA Core L1 builder (`/business/challenges/xima-core`)
- *   - Custom L1 builder    (`/business/challenges/new?type=custom`)
+ * shared by three creation flows:
+ *   - XIMA Core L1 builder (`/business/challenges/xima-core`)               → type: 'xima-core'
+ *   - Custom L1 AI-driven  (`/business/challenges/new?type=custom`)          → type: 'custom-ai'
+ *   - Legacy Custom edit   (existing rows w/o AI scenario, edit-mode only)   → type: 'custom'
  *
- * Product decision: BOTH types persist `level: 1` EXPLICITLY (never relying on
- * the DB default, which is 2). Custom is an L1 alternative to XIMA Core.
+ * Product decision: ALL L1 payloads persist `level: 1` EXPLICITLY (never
+ * relying on the DB default of 2). Custom (legacy and AI-driven) are L1
+ * alternatives to XIMA Core; they can COEXIST per goal (one XCore + one
+ * Custom-AI active simultaneously — see archiveSiblingsScope below).
  *
- * The XCore branch reproduces today's CreateXimaCoreChallenge.tsx insert
- * payload bit-per-bit (markers `rubric.isXimaCore` + `config_json.xima_core`,
- * `context_snapshot`, `evaluation_lens`, `expected_tensions`,
- * `success_criteria` from localized questions, `difficulty: 1`, status forced
- * to 'active').
- *
- * The custom branch reproduces today's CreateChallenge.tsx insert payload
- * (generic rubric, user-chosen status, no XCore markers, no config_json)
- * with the SINGLE intentional change: `level: 1` is now explicit.
+ * Markers (use these for type-scoped queries / detection):
+ *   - XIMA Core      → rubric.isXimaCore = true   AND config_json.xima_core = true
+ *   - Custom L1 AI   → rubric.isXimaCore = false  AND config_json.custom_l1_ai = true
+ *   - Legacy Custom  → no AI markers (rubric.criteria = {outcome,clarity,reasoning})
  */
 
 import type { Json } from '@/integrations/supabase/types';
 
-export type ChallengeBuilderType = 'xima-core' | 'custom';
+export type ChallengeBuilderType = 'xima-core' | 'custom' | 'custom-ai';
 
 export type ChallengeStatus = 'draft' | 'active' | 'archived';
+
+export type PillarKey =
+  | 'drive'
+  | 'computational_power'
+  | 'communication'
+  | 'creativity'
+  | 'knowledge';
+
+export const ALL_PILLARS: PillarKey[] = [
+  'drive',
+  'computational_power',
+  'communication',
+  'creativity',
+  'knowledge',
+];
 
 interface XimaCoreInput {
   type: 'xima-core';
   businessId: string;
   goalId: string | null;
   jobPostId: string | null;
-  startAt: string; // datetime-local string, required
-  endAt: string;   // datetime-local string, required
+  startAt: string;
+  endAt: string;
   ximaCoreTitle: string;
   description: string;
-  successCriteria: string[]; // titles of the 4 localized questions
+  successCriteria: string[];
   timeEstimateMinutes: number;
   canonicalRubricCriteria: Json;
   scenario: string;
   contextTag: string;
   candidateIntro: string;
-  questions: unknown; // localized question objects
+  questions: unknown;
   generatedTimeEstimate: number;
   generatedMindset: Record<string, unknown> | null;
   contextSnapshot: Json | null;
   evaluationLens: Json | null;
   expectedTensions: Json | null;
-  // Fallback context snapshot when contextSnapshot is null
   fallbackContext: { roleTitle: string; industry: string };
 }
 
-interface CustomInput {
+interface CustomLegacyInput {
   type: 'custom';
   businessId: string;
   goalId: string | null;
@@ -64,15 +76,74 @@ interface CustomInput {
   endAt: string | null;
 }
 
-export type BuildChallengePayloadInput = XimaCoreInput | CustomInput;
+export interface CustomL1Question {
+  id: string;
+  title: string;
+  text: string;
+}
+
+interface CustomAiInput {
+  type: 'custom-ai';
+  businessId: string;
+  goalId: string | null;
+  title: string;
+  description: string;
+  successCriteria: string[];
+  timeEstimateMinutes: number;
+  status: ChallengeStatus;
+  startAt: string | null;
+  endAt: string | null;
+  // AI-generated rich payload (same shape as XCore for the evaluator)
+  scenario: string;
+  contextTag: string;
+  candidateIntro: string;
+  questions: CustomL1Question[];
+  contextSnapshot: Json | null;
+  evaluationLens: Json | null;
+  expectedTensions: Json | null;
+  // Business orientation parameters
+  focusPillars: PillarKey[];
+  customScenarioHint: string | null;
+  difficulty: 1 | 2 | 3;
+  locale: string;
+  durationMinutes: number;
+  numQuestions: number;
+}
+
+export type BuildChallengePayloadInput =
+  | XimaCoreInput
+  | CustomLegacyInput
+  | CustomAiInput;
 
 /**
- * Build the payload to INSERT into `business_challenges`.
- * Returns a plain object ready for `supabase.from('business_challenges').insert(payload)`.
+ * Build a "balanced 5-pillar" rubric weighted by focus pillars.
  *
- * INVARIANT: payload.level === 1 for both types.
+ * NOTE on evaluator behavior (verified against analyze-open-answer):
+ * the L1 evaluator does NOT read `rubric.criteria`. For
+ * scoring_context='l1_challenge' it reads `evaluation_lens` (signals across
+ * the 5 pillars). The rubric.criteria here is therefore innocuous metadata —
+ * we keep it for audit / future use, but the real "focus" lever lives in
+ * the evaluation_lens produced by the edge function (which is asked to
+ * emit RICHER signals for the focused pillars).
  */
-export function buildChallengePayload(input: BuildChallengePayloadInput): Record<string, unknown> {
+export function buildBalancedRubricCriteria(
+  focusPillars: PillarKey[] = []
+): Record<PillarKey, number> {
+  const focus = new Set<PillarKey>(focusPillars);
+  const base = 2;
+  const emphasized = 4;
+  return {
+    drive: focus.has('drive') ? emphasized : base,
+    computational_power: focus.has('computational_power') ? emphasized : base,
+    communication: focus.has('communication') ? emphasized : base,
+    creativity: focus.has('creativity') ? emphasized : base,
+    knowledge: focus.has('knowledge') ? emphasized : base,
+  };
+}
+
+export function buildChallengePayload(
+  input: BuildChallengePayloadInput
+): Record<string, unknown> {
   if (input.type === 'xima-core') {
     const contextSnapshot: Json =
       input.contextSnapshot ??
@@ -114,11 +185,60 @@ export function buildChallengePayload(input: BuildChallengePayloadInput): Record
       start_at: new Date(input.startAt).toISOString(),
       end_at: new Date(input.endAt).toISOString(),
       difficulty: 1,
-      level: 1, // ← explicit, never rely on DB default
+      level: 1,
     };
   }
 
-  // type === 'custom'
+  if (input.type === 'custom-ai') {
+    return {
+      title: input.title,
+      description: input.description,
+      success_criteria: input.successCriteria,
+      time_estimate_minutes: input.timeEstimateMinutes,
+      rubric: {
+        // 5-pillar criteria, weighted by focus (kept for audit; evaluator
+        // reads evaluation_lens, not these weights).
+        criteria: buildBalancedRubricCriteria(input.focusPillars),
+        scenario: input.scenario,
+        level: 1,
+        isXimaCore: false, // explicit negative marker
+        context_tag: input.contextTag,
+        candidate_intro: input.candidateIntro,
+        focus_pillars: input.focusPillars,
+        difficulty: input.difficulty,
+      },
+      config_json: {
+        xima_core: false, // explicit negative marker
+        custom_l1_ai: true, // positive marker for Custom L1 AI-driven
+        questions: input.questions,
+        candidate_intro: input.candidateIntro,
+        generated_time_estimate: input.timeEstimateMinutes,
+        context_tag: input.contextTag,
+        params: {
+          focus_pillars: input.focusPillars,
+          custom_scenario_hint: input.customScenarioHint,
+          difficulty: input.difficulty,
+          locale: input.locale,
+          duration_minutes: input.durationMinutes,
+          num_questions: input.numQuestions,
+        },
+      },
+      context_snapshot: input.contextSnapshot,
+      evaluation_lens: input.evaluationLens,
+      expected_tensions: input.expectedTensions,
+      status: input.status,
+      business_id: input.businessId,
+      hiring_goal_id: input.goalId,
+      job_post_id: null,
+      start_at: input.startAt ? new Date(input.startAt).toISOString() : null,
+      end_at: input.endAt ? new Date(input.endAt).toISOString() : null,
+      difficulty: input.difficulty,
+      level: 1,
+      locale: input.locale,
+    };
+  }
+
+  // type === 'custom' (legacy)
   return {
     title: input.title,
     description: input.description,
@@ -130,15 +250,10 @@ export function buildChallengePayload(input: BuildChallengePayloadInput): Record
     end_at: input.endAt ? new Date(input.endAt).toISOString() : null,
     business_id: input.businessId,
     hiring_goal_id: input.goalId,
-    level: 1, // ← explicit; previously implicit DB default (=2)
+    level: 1,
   };
 }
 
-/**
- * Build the payload to UPDATE an existing custom challenge (edit-mode).
- * Subset of fields that the custom editor is allowed to mutate.
- * XCore challenges are NOT editable — callers must guard before invoking this.
- */
 export function buildCustomChallengeUpdate(input: {
   title: string;
   description: string;
@@ -157,19 +272,53 @@ export function buildCustomChallengeUpdate(input: {
     status: input.status,
     start_at: input.startAt ? new Date(input.startAt).toISOString() : null,
     end_at: input.endAt ? new Date(input.endAt).toISOString() : null,
-    level: 1, // re-assert L1 on every update (idempotent)
+    level: 1,
     updated_at: new Date().toISOString(),
   };
 }
 
-/**
- * Detect whether a loaded challenge row is a XIMA Core challenge.
- * Tolerates legacy rows where the marker exists in only one of the two places.
- */
-export function isXimaCoreChallenge(row: {
-  config_json?: any;
-  rubric?: any;
-} | null | undefined): boolean {
+export function isXimaCoreChallenge(
+  row: { config_json?: any; rubric?: any } | null | undefined
+): boolean {
   if (!row) return false;
   return row.config_json?.xima_core === true || row.rubric?.isXimaCore === true;
+}
+
+export function isCustomL1AiChallenge(
+  row: { config_json?: any; rubric?: any } | null | undefined
+): boolean {
+  if (!row) return false;
+  if (row.config_json?.custom_l1_ai === true) return true;
+  // Defensive: a row with level=1 + isXimaCore=false + rubric.scenario looks
+  // like a Custom-AI row even if config_json marker is missing.
+  return (
+    row.rubric?.level === 1 &&
+    row.rubric?.isXimaCore === false &&
+    typeof row.rubric?.scenario === 'string'
+  );
+}
+
+/**
+ * Type-scoped archive query helper.
+ *
+ * Product rule: max ONE active XCore + max ONE active Custom-AI per goal.
+ * Activating an XCore archives only OTHER active XCore rows on the same
+ * goal (NEVER the Custom-AI). Activating a Custom-AI archives only OTHER
+ * active Custom-AI rows (NEVER the XCore). Legacy custom rows (no AI
+ * markers) are not auto-archived by either flow.
+ *
+ * Returns an `.eq(...)` / `.contains(...)` filter spec the caller applies
+ * to a supabase update query against `business_challenges`.
+ */
+export type ArchiveScope = 'xima-core' | 'custom-ai';
+
+export function archiveSiblingsContainsFilter(
+  scope: ArchiveScope
+): Record<string, unknown> {
+  if (scope === 'xima-core') {
+    // Match by rubric.isXimaCore = true (canonical XCore marker).
+    return { isXimaCore: true };
+  }
+  // Custom-AI: match by config_json.custom_l1_ai = true.
+  return { custom_l1_ai: true };
 }

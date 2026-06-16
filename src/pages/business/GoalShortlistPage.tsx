@@ -83,7 +83,7 @@ const GoalShortlistPage: React.FC = () => {
               <Users className="h-4 w-4" />
               {t('candidate_pool.title', 'Candidate Pool')}
             </Button>
-            <Button onClick={() => navigate(`/business/challenges/select?goal=${goalId}`)} className="gap-2">
+            <Button onClick={() => navigate(`/business/challenges/select?goal=${goalId}&returnTo=shortlist`)} className="gap-2">
               <Sparkles className="h-4 w-4" />
               {t('shortlist.create_l1_challenge', 'Crea sfida L1 / XIMA Challenge')}
             </Button>
