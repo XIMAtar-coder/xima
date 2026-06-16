@@ -27,6 +27,7 @@ export const EmailVerificationBanner: React.FC = () => {
   const { toast } = useToast();
   const [status, setStatus] = useState<VerificationStatus | null>(null);
   const [resending, setResending] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const load = useCallback(async () => {
     if (!user?.id) return;
@@ -39,11 +40,22 @@ export const EmailVerificationBanner: React.FC = () => {
   }, [user?.id]);
 
   useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!user?.id) { setIsAdmin(false); return; }
+      const { data } = await supabase.from('user_roles').select('role').eq('user_id', user.id);
+      if (!cancelled) setIsAdmin(!!data?.some((r: any) => r.role === 'admin'));
+    })();
+    return () => { cancelled = true; };
+  }, [user?.id]);
+
+  useEffect(() => {
     if (!isAuthenticated) { setStatus(null); return; }
     load();
     const t = setInterval(load, 60_000);
     return () => clearInterval(t);
   }, [isAuthenticated, load]);
+
 
   const handleResend = async () => {
     if (!user?.id || !user.email) return;
@@ -68,7 +80,9 @@ export const EmailVerificationBanner: React.FC = () => {
   };
 
   if (!isAuthenticated || !status || status.verified) return null;
+  if (isAdmin) return null;
   if (!status.deadline) return null;
+
 
   const expired = status.expired;
   const remaining = formatRemaining(status);

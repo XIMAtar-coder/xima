@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Home, MessageCircle, BookOpen, Settings, HelpCircle } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const tabs = [
   { path: '/profile', icon: Home, labelKey: 'nav.dashboard' },
@@ -13,12 +14,24 @@ const tabs = [
 ];
 
 export const MobileTabBar: React.FC = () => {
-  const { isAuthenticated } = useUser();
+  const { isAuthenticated, user } = useUser();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  if (!isAuthenticated) return null;
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!user?.id) { setIsAdmin(false); return; }
+      const { data } = await supabase.from('user_roles').select('role').eq('user_id', user.id);
+      if (!cancelled) setIsAdmin(!!data?.some((r: any) => r.role === 'admin'));
+    })();
+    return () => { cancelled = true; };
+  }, [user?.id]);
+
+  if (!isAuthenticated || isAdmin) return null;
+
 
   const isActive = (path: string) => {
     if (path === '/profile') return location.pathname === '/profile' || location.pathname === '/dashboard';

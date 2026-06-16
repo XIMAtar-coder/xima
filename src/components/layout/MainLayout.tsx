@@ -110,9 +110,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
 
   const handleLogoClick = () => {
     if (assessmentInProgress) return;
-    if (isAuthenticated) navigate('/dashboard');
+    if (isAuthenticated) navigate(isAdmin ? '/admin' : '/dashboard');
     else navigate('/');
   };
+
 
   const navLinkClass = (active: boolean) =>
     `text-[14px] xl:text-[15px] font-medium transition-all duration-200 ease-out relative px-2 xl:px-3 py-1.5 rounded-[10px] ${
@@ -194,36 +195,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                   <ThemeToggle />
 
                   <div className="hidden xl:flex items-center gap-1">
-                    {!(isMentor && location.pathname.startsWith('/mentor')) && (
+                    {isAdmin ? (
                       <>
-                        <button onClick={() => navigate('/profile')} className={navLinkClass(location.pathname === '/profile' || location.pathname === '/dashboard')}>
-                          {t('nav.dashboard')}
+                        <button onClick={() => navigate('/admin')} className={navLinkClass(location.pathname === '/admin')}>
+                          {t('nav.xima_manager', 'XIMA Manager')}
                         </button>
-                        <button onClick={() => navigate('/chat')} className={navLinkClass(location.pathname === '/chat')}>
-                          {t('nav.feed')}
-                        </button>
-                        <button onClick={() => navigate('/messages')} className={navLinkClass(location.pathname === '/messages')}>
-                          {t('nav.messages')}
-                        </button>
-                        <button onClick={() => navigate('/jobs')} className={navLinkClass(location.pathname === '/jobs')}>
-                          <span className="flex items-center gap-1">
-                            <Briefcase className="h-4 w-4" strokeWidth={1.5} />
-                            {t('nav.browse_jobs', 'Offerte di Lavoro')}
-                          </span>
-                        </button>
-                        <button onClick={() => navigate('/my-offers')} className={navLinkClass(location.pathname === '/my-offers')}>
-                          <span className="flex items-center gap-1">
-                            <Gift className="h-4 w-4" strokeWidth={1.5} />
-                            {t('nav.my_offers', 'Le Tue Offerte')}
-                            {pendingOffersCount > 0 && (
-                              <span className="w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center">
-                                {pendingOffersCount}
-                              </span>
-                            )}
-                          </span>
-                        </button>
-                        <button onClick={() => navigate('/development-plan')} className={navLinkClass(location.pathname.startsWith('/test') || location.pathname === '/development-plan')}>
-                          {t('nav.tests')}
+                        <button onClick={() => navigate('/analytics')} className={navLinkClass(location.pathname === '/analytics')}>
+                          {t('nav.analytics', 'Analytics')}
                         </button>
                         <button onClick={() => navigate('/settings')} className={navLinkClass(location.pathname === '/settings')}>
                           <span className="flex items-center gap-1">
@@ -231,49 +209,85 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                             {t('nav.settings', 'Impostazioni')}
                           </span>
                         </button>
-                        <button onClick={() => setGuideOpen(true)} className={navLinkClass(false)}>
-                          <span className="flex items-center gap-1">
-                            <HelpCircle className="h-4 w-4" strokeWidth={1.5} />
-                            Help
-                          </span>
-                        </button>
                       </>
-                    )}
-                    {isAdmin && (
+                    ) : (
                       <>
-                        <button onClick={() => navigate('/analytics')} className={navLinkClass(location.pathname === '/analytics')}>
-                          {t('nav.analytics')}
-                        </button>
-                        <button onClick={() => navigate('/admin')} className={navLinkClass(location.pathname === '/admin')}>
-                          {t('nav.developer')}
-                        </button>
+                        {!(isMentor && location.pathname.startsWith('/mentor')) && (
+                          <>
+                            <button onClick={() => navigate('/profile')} className={navLinkClass(location.pathname === '/profile' || location.pathname === '/dashboard')}>
+                              {t('nav.dashboard')}
+                            </button>
+                            <button onClick={() => navigate('/chat')} className={navLinkClass(location.pathname === '/chat')}>
+                              {t('nav.feed')}
+                            </button>
+                            <button onClick={() => navigate('/messages')} className={navLinkClass(location.pathname === '/messages')}>
+                              {t('nav.messages')}
+                            </button>
+                            <button onClick={() => navigate('/jobs')} className={navLinkClass(location.pathname === '/jobs')}>
+                              <span className="flex items-center gap-1">
+                                <Briefcase className="h-4 w-4" strokeWidth={1.5} />
+                                {t('nav.browse_jobs', 'Offerte di Lavoro')}
+                              </span>
+                            </button>
+                            <button onClick={() => navigate('/my-offers')} className={navLinkClass(location.pathname === '/my-offers')}>
+                              <span className="flex items-center gap-1">
+                                <Gift className="h-4 w-4" strokeWidth={1.5} />
+                                {t('nav.my_offers', 'Le Tue Offerte')}
+                                {pendingOffersCount > 0 && (
+                                  <span className="w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center">
+                                    {pendingOffersCount}
+                                  </span>
+                                )}
+                              </span>
+                            </button>
+                            <button onClick={() => navigate('/development-plan')} className={navLinkClass(location.pathname.startsWith('/test') || location.pathname === '/development-plan')}>
+                              {t('nav.tests')}
+                            </button>
+                            <button onClick={() => navigate('/settings')} className={navLinkClass(location.pathname === '/settings')}>
+                              <span className="flex items-center gap-1">
+                                <Settings className="h-4 w-4" strokeWidth={1.5} />
+                                {t('nav.settings', 'Impostazioni')}
+                              </span>
+                            </button>
+                            <button onClick={() => setGuideOpen(true)} className={navLinkClass(false)}>
+                              <span className="flex items-center gap-1">
+                                <HelpCircle className="h-4 w-4" strokeWidth={1.5} />
+                                Help
+                              </span>
+                            </button>
+                          </>
+                        )}
+                        {isMentor && (
+                          <button onClick={() => navigate('/mentor')} className={navLinkClass(location.pathname.startsWith('/mentor') && !location.pathname.includes('/login'))}>
+                            <span className="flex items-center gap-1.5">
+                              <GraduationCap className="h-4 w-4" strokeWidth={1.5} />
+                              {t('nav.mentor_portal', 'Mentor Portal')}
+                            </span>
+                          </button>
+                        )}
                       </>
-                    )}
-                    {isMentor && (
-                      <button onClick={() => navigate('/mentor')} className={navLinkClass(location.pathname.startsWith('/mentor') && !location.pathname.includes('/login'))}>
-                        <span className="flex items-center gap-1.5">
-                          <GraduationCap className="h-4 w-4" strokeWidth={1.5} />
-                          {t('nav.mentor_portal', 'Mentor Portal')}
-                        </span>
-                      </button>
                     )}
                   </div>
 
-                  {/* Credits badge — desktop only */}
-                  <div className="hidden xl:flex items-center gap-3">
-                    {!headerData.isLoading && headerData.ximatarImage && (
-                      <img
-                        src={headerData.ximatarImage}
-                        alt="XIMAtar"
-                        className="w-8 h-8 xl:w-9 xl:h-9 rounded-[18px] object-cover border border-[var(--divider)] shadow-sm"
-                      />
-                    )}
-                    {!headerData.isLoading && headerData.totalScore > 0 && (
-                      <span className="text-sm font-semibold text-secondary">
-                        {headerData.totalScore}
-                      </span>
-                    )}
-                  </div>
+
+                  {/* Credits badge — desktop only, hidden for admins */}
+                  {!isAdmin && (
+                    <div className="hidden xl:flex items-center gap-3">
+                      {!headerData.isLoading && headerData.ximatarImage && (
+                        <img
+                          src={headerData.ximatarImage}
+                          alt="XIMAtar"
+                          className="w-8 h-8 xl:w-9 xl:h-9 rounded-[18px] object-cover border border-[var(--divider)] shadow-sm"
+                        />
+                      )}
+                      {!headerData.isLoading && headerData.totalScore > 0 && (
+                        <span className="text-sm font-semibold text-secondary">
+                          {headerData.totalScore}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
 
                   <Button variant="ghost" size="sm" onClick={handleLogout} className="hidden md:inline-flex">
                     {t('nav.logout')}
@@ -314,15 +328,22 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                       </>
                     ) : (
                       <>
-                        {[
-                          { path: '/profile', label: t('nav.dashboard') },
-                          { path: '/chat', label: t('nav.feed') },
-                          { path: '/messages', label: t('nav.messages') },
-                          { path: '/jobs', label: t('nav.browse_jobs', 'Offerte di Lavoro') },
-                          { path: '/my-offers', label: t('nav.my_offers', 'Le Tue Offerte') },
-                          { path: '/development-plan', label: t('nav.tests') },
-                          { path: '/settings', label: t('nav.settings', 'Impostazioni') },
-                        ].map(({ path, label }) => (
+                        {(isAdmin
+                          ? [
+                              { path: '/admin', label: t('nav.xima_manager', 'XIMA Manager') },
+                              { path: '/analytics', label: t('nav.analytics', 'Analytics') },
+                              { path: '/settings', label: t('nav.settings', 'Impostazioni') },
+                            ]
+                          : [
+                              { path: '/profile', label: t('nav.dashboard') },
+                              { path: '/chat', label: t('nav.feed') },
+                              { path: '/messages', label: t('nav.messages') },
+                              { path: '/jobs', label: t('nav.browse_jobs', 'Offerte di Lavoro') },
+                              { path: '/my-offers', label: t('nav.my_offers', 'Le Tue Offerte') },
+                              { path: '/development-plan', label: t('nav.tests') },
+                              { path: '/settings', label: t('nav.settings', 'Impostazioni') },
+                            ]
+                        ).map(({ path, label }) => (
                           <button
                             key={path}
                             onClick={() => { navigate(path); setMobileMenuOpen(false); }}
@@ -331,14 +352,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                             {label}
                           </button>
                         ))}
-                        <button
-                          onClick={() => { setGuideOpen(true); setMobileMenuOpen(false); }}
-                          className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-3 min-h-[48px] flex items-center gap-2 transition-all duration-200"
-                        >
-                          <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.5} />
-                          Help
-                        </button>
-                        {isMentor && (
+
+                        {!isAdmin && (
+                          <button
+                            onClick={() => { setGuideOpen(true); setMobileMenuOpen(false); }}
+                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-3 min-h-[48px] flex items-center gap-2 transition-all duration-200"
+                          >
+                            <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.5} />
+                            Help
+                          </button>
+                        )}
+                        {isMentor && !isAdmin && (
                           <button
                             onClick={() => { navigate('/mentor'); setMobileMenuOpen(false); }}
                             className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-3 min-h-[48px] flex items-center gap-2 transition-all duration-200"
@@ -347,6 +371,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                             {t('nav.mentor_portal', 'Mentor Portal')}
                           </button>
                         )}
+
                         <div className="h-px bg-[var(--divider)] my-3" />
                         <div className="flex items-center gap-3 px-3">
                           <LanguageSwitcher />
