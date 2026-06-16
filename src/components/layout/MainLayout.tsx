@@ -110,9 +110,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
 
   const handleLogoClick = () => {
     if (assessmentInProgress) return;
-    if (isAuthenticated) navigate('/dashboard');
+    if (isAuthenticated) navigate(isAdmin ? '/admin' : '/dashboard');
     else navigate('/');
   };
+
 
   const navLinkClass = (active: boolean) =>
     `text-[14px] xl:text-[15px] font-medium transition-all duration-200 ease-out relative px-2 xl:px-3 py-1.5 rounded-[10px] ${
