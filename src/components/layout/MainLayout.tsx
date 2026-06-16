@@ -352,14 +352,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                           </button>
                         ))}
 
-                        <button
-                          onClick={() => { setGuideOpen(true); setMobileMenuOpen(false); }}
-                          className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-3 min-h-[48px] flex items-center gap-2 transition-all duration-200"
-                        >
-                          <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.5} />
-                          Help
-                        </button>
-                        {isMentor && (
+                        {!isAdmin && (
+                          <button
+                            onClick={() => { setGuideOpen(true); setMobileMenuOpen(false); }}
+                            className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-3 min-h-[48px] flex items-center gap-2 transition-all duration-200"
+                          >
+                            <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.5} />
+                            Help
+                          </button>
+                        )}
+                        {isMentor && !isAdmin && (
                           <button
                             onClick={() => { navigate('/mentor'); setMobileMenuOpen(false); }}
                             className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-3 min-h-[48px] flex items-center gap-2 transition-all duration-200"
@@ -368,6 +370,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                             {t('nav.mentor_portal', 'Mentor Portal')}
                           </button>
                         )}
+
                         <div className="h-px bg-[var(--divider)] my-3" />
                         <div className="flex items-center gap-3 px-3">
                           <LanguageSwitcher />
