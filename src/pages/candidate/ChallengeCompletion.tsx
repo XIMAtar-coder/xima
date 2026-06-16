@@ -19,6 +19,7 @@ import { MindsetChallenge } from '@/components/candidate/mindset/MindsetChalleng
 import type { MindsetConfig } from '@/components/candidate/mindset/types';
 import { L2ConversationChallenge } from '@/components/candidate/l2converse/L2ConversationChallenge';
 import type { L2ChallengeConfig } from '@/components/candidate/l2converse/types';
+import CustomL1Challenge from '@/components/candidate/customl1/CustomL1Challenge';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipelineProgress';
 import { CandidateReflectionPanel } from '@/components/signals/CandidateReflectionPanel';
