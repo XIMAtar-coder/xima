@@ -398,15 +398,28 @@ const CreateChallenge = () => {
       const trimmedCriteria = successCriteria.filter(c => c.trim());
       const effectiveGoalId = isEditMode ? existingChallenge?.hiring_goal_id : goalId;
 
-      // If activating, archive other active challenges for the same goal
+      // If activating, archive other active LEGACY-CUSTOM challenges for the
+      // same goal. XCore and Custom-AI rows are preserved (they live in
+      // separate type-scoped slots — see saveChallenge.archiveSiblingsContainsFilter).
       if (newStatus === 'active' && effectiveGoalId) {
-        await supabase
+        const { data: siblings } = await supabase
           .from('business_challenges')
-          .update({ status: 'archived', updated_at: new Date().toISOString() })
+          .select('id, rubric, config_json')
           .eq('business_id', user?.id)
           .eq('hiring_goal_id', effectiveGoalId)
           .eq('status', 'active')
           .neq('id', challengeId || '');
+
+        const legacyIds = (siblings || [])
+          .filter((s: any) => !isXimaCoreChallenge(s) && !isCustomL1AiChallenge(s))
+          .map((s: any) => s.id);
+
+        if (legacyIds.length > 0) {
+          await supabase
+            .from('business_challenges')
+            .update({ status: 'archived', updated_at: new Date().toISOString() })
+            .in('id', legacyIds);
+        }
       }
 
       if (isEditMode) {
