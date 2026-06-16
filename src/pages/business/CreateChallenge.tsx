@@ -136,9 +136,20 @@ const CreateChallenge = () => {
     }
   }, [isEditMode, startAt]);
 
+  // Soft alias: if someone navigates to /challenges/new?type=xima-core,
+  // forward to the dedicated XIMA Core route (preserves other query params).
+  useEffect(() => {
+    if (!isEditMode && challengeType === 'xima-core') {
+      const params = new URLSearchParams(searchParams);
+      params.delete('type');
+      const qs = params.toString();
+      navigate(`/business/challenges/xima-core${qs ? `?${qs}` : ''}`, { replace: true });
+    }
+  }, [isEditMode, challengeType, searchParams, navigate]);
+
   // Redirect to selector if not editing and not explicitly choosing custom
   useEffect(() => {
-    if (!isEditMode && goalId && challengeType !== 'custom') {
+    if (!isEditMode && goalId && challengeType !== 'custom' && challengeType !== 'xima-core') {
       // User navigated directly to /challenges/new?goal=X without going through selector
       // Redirect them to the challenge type selector
       navigate(`/business/challenges/select?goal=${goalId}${returnParam}`, { replace: true });
