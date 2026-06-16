@@ -173,13 +173,16 @@ const ChallengeTypeSelector = () => {
                 </div>
                 <div className="flex-1">
                   <CardTitle className="text-xl flex items-center gap-3">
-                    {t('challenge_type.xima_core_title')}
+                    {t('challenge_type.xima_core_title', 'XIMA Core')}
                     <Badge variant="outline" className="text-xs">
-                      {t('xima_core.level_1_badge')}
+                      {t('xima_core.level_1_badge', 'Level 1')}
                     </Badge>
                   </CardTitle>
                   <CardDescription className="mt-2 text-base">
-                    {t('challenge_type.xima_core_desc')}
+                    {t(
+                      'challenge_type.xima_core_desc_v2',
+                      'Sfida soft-skills standard generata da XIMA su obiettivo + DNA aziendale. Comparabile tra candidati. Scegli quando vuoi il benchmark canonico XIMA.'
+                    )}
                   </CardDescription>
                 </div>
               </div>
@@ -188,32 +191,32 @@ const ChallengeTypeSelector = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-                  <span>{t('challenge_type.xima_feature_1')}</span>
+                  <span>{t('challenge_type.xima_feature_1', 'Domande standard XIMA')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Sparkles className="h-4 w-4 text-amber-500 shrink-0" />
-                  <span>{t('challenge_type.xima_feature_2')}</span>
+                  <span>{t('challenge_type.xima_feature_2', 'Scenario AI su DNA azienda')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-                  <span>{t('challenge_type.xima_feature_3')}</span>
+                  <span>{t('challenge_type.xima_feature_3', 'Profilo 5 pilastri completo')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-                  <span>{t('challenge_type.xima_feature_4')}</span>
+                  <span>{t('challenge_type.xima_feature_4', 'Comparabile tra candidati')}</span>
                 </div>
               </div>
 
               {hasActiveXimaCore && (
                 <div className="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-sm text-amber-600">
-                  {t('challenge_type.xima_core_active_note')}
+                  {t('challenge_type.xima_core_active_note', 'Una XIMA Core è già attiva per questo obiettivo.')}
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* Custom Challenge - Secondary Option */}
-          <Card 
+          {/* Custom L1 AI-driven — alternative L1 option */}
+          <Card
             className="border border-border/50 hover:border-border hover:shadow-md transition-all cursor-pointer group"
             onClick={handleSelectCustom}
           >
@@ -223,18 +226,27 @@ const ChallengeTypeSelector = () => {
                   <Wrench className="h-7 w-7 text-muted-foreground" />
                 </div>
                 <div className="flex-1">
-                  <CardTitle className="text-xl">
-                    {t('challenge_type.custom_title')}
+                  <CardTitle className="text-xl flex items-center gap-3">
+                    {t('challenge_type.custom_title', 'L1 Custom')}
+                    <Badge variant="outline" className="text-xs">
+                      {t('xima_core.level_1_badge', 'Level 1')}
+                    </Badge>
                   </CardTitle>
                   <CardDescription className="mt-2 text-base">
-                    {t('challenge_type.custom_desc')}
+                    {t(
+                      'challenge_type.custom_desc_v2',
+                      'Stessa profondità della Core (motore AI + DNA + contesto), ma orientata dal business: scegli pilastri da enfatizzare, scenario specifico, difficoltà, lingua, durata e numero di domande.'
+                    )}
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="pb-6">
               <div className="text-sm text-muted-foreground">
-                {t('challenge_type.custom_use_cases')}
+                {t(
+                  'challenge_type.custom_use_cases_v2',
+                  'Scegli quando hai un focus specifico (es. ruolo molto particolare o una soft-skill prioritaria). Profilo 5 pilastri sempre completo.'
+                )}
               </div>
             </CardContent>
           </Card>
