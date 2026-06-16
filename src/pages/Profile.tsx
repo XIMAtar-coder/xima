@@ -44,7 +44,20 @@ const Profile = () => {
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [dismissedPrompt, setDismissedPrompt] = useState(false);
 
+  // Admin redirect: admins should never see the candidate dashboard
+  useEffect(() => {
+    if (!user?.id) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase.from('user_roles').select('role').eq('user_id', user.id);
+      if (cancelled) return;
+      if (data?.some((r: any) => r.role === 'admin')) navigate('/admin', { replace: true });
+    })();
+    return () => { cancelled = true; };
+  }, [user?.id, navigate]);
+
   const hasMentor = !!profileData.mentor_profile;
+
 
   // Onboarding tour is no longer auto-started. Users can open it via the "Tour guidato" button below.
 
