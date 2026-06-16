@@ -485,7 +485,7 @@ const CreateXimaCoreChallenge = () => {
         fallbackContext: { roleTitle, industry },
       });
 
-      const { error } = await supabase.from('business_challenges').insert([payload]);
+      const { error } = await supabase.from('business_challenges').insert([payload as any]);
 
       if (error) throw error;
 
