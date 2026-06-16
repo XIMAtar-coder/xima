@@ -87,7 +87,8 @@ const ChallengeTypeSelector = () => {
       setContextLabel(goalData.role_title);
     }
 
-    // Check if XIMA Core already exists for this goal
+    // Check if XIMA Core already exists for this goal (to inform the user,
+    // but ALWAYS render both cards — never auto-redirect to xima-core).
     const { data: existingCore } = await supabase
       .from('business_challenges')
       .select('id')
@@ -95,15 +96,12 @@ const ChallengeTypeSelector = () => {
       .eq('hiring_goal_id', goalId)
       .eq('status', 'active')
       .contains('rubric', { isXimaCore: true })
-      .single();
+      .maybeSingle();
 
     if (existingCore) {
       setHasActiveXimaCore(true);
-      setLoading(false);
-    } else {
-      // No XIMA Core exists - redirect directly to XIMA Core page
-      navigate(`/business/challenges/xima-core${buildContextParams()}`);
     }
+    setLoading(false);
   };
 
   const handleSelectXimaCore = () => {
