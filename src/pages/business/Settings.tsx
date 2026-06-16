@@ -642,13 +642,13 @@ const BusinessSettings = () => {
     e.preventDefault();
     setLoading(true);
     try {
+      if (!user?.id) throw new Error('Not authenticated');
       const { error } = await supabase
         .from('business_profiles')
-        .upsert({
-          user_id: user?.id,
+        .update({
           company_name: formData.companyName,
-          website: formData.website,
-          hr_contact_email: formData.hrContactEmail,
+          website: formData.website || null,
+          hr_contact_email: formData.hrContactEmail || null,
           default_challenge_duration: formData.defaultChallengeDuration,
           default_challenge_difficulty: formData.defaultChallengeDifficulty,
           manual_hq_city: formData.manual_hq_city || null,
@@ -658,7 +658,9 @@ const BusinessSettings = () => {
           manual_revenue_range: formData.manual_revenue_range || null,
           manual_founded_year: formData.manual_founded_year ? parseInt(formData.manual_founded_year) : null,
           snapshot_manual_override: true,
-        });
+          updated_at: new Date().toISOString(),
+        })
+        .eq('user_id', user.id);
       if (error) throw error;
       toast({ title: t('business_portal.success'), description: t('business_portal.settings_updated') });
       invalidateBusinessProfile();
