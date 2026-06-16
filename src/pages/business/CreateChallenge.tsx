@@ -17,7 +17,9 @@ import {
   buildChallengePayload,
   buildCustomChallengeUpdate,
   isXimaCoreChallenge,
+  isCustomL1AiChallenge,
 } from '@/features/challenge-builder/saveChallenge';
+import CustomL1Builder from '@/features/challenge-builder/CustomL1Builder';
 import { 
   ArrowLeft, Sparkles, Loader2, Rocket, Save, Eye, Clock, 
   Target, CheckCircle2, Wand2, AlertCircle, Archive, CalendarClock
