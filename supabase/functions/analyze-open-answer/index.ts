@@ -113,6 +113,21 @@ serve(async (req) => {
       });
     }
 
+    // =====================================================
+    // CUSTOM L1 BRANCH — on-demand scoring of the AI-driven custom L1 challenge.
+    // Holistic 5-pillar reading driven by the LLM (not derived from per-question primary_pillar).
+    // Single nudge per invitation, idempotency handled here (handler-level pre-check).
+    // =====================================================
+    if (format === 'custom_l1') {
+      return await handleCustomL1({
+        invitation_id,
+        challenge_id,
+        language: language || 'it',
+        correlationId,
+        ipHash,
+      });
+    }
+
     const isMindset = format === 'mindset' && mindset_payload && typeof mindset_payload === 'object';
 
     // Mindset bypasses (!field || !language || !openKey) — payload is structured, not free-text.
