@@ -135,10 +135,16 @@ export function SubmissionDetailDrawer({
   // State for L2 generation - co-located with other state
   const [isGeneratingLevel2, setIsGeneratingLevel2] = useState(false);
   const [level2Error, setLevel2Error] = useState<string | null>(null);
-  
+
+  // State for Custom L1 (AI-driven L1 challenge) — separate from generic L1 signals.
+  const [isGeneratingCustomL1, setIsGeneratingCustomL1] = useState(false);
+  const [customL1Error, setCustomL1Error] = useState<string | null>(null);
+  const [localCustomL1Signals, setLocalCustomL1Signals] = useState<any | null>(null);
+  const [customL1Questions, setCustomL1Questions] = useState<Array<{ id: string; title: string; text: string }> | null>(null);
+
   // Stable submission key for guards
   const submissionKey = submission?.submissionId ?? null;
-  
+
   // Track if drawer was ever opened for this submission (reset guard)
   const lastOpenedKeyRef = useRef<string | null>(null);
 
@@ -146,6 +152,11 @@ export function SubmissionDetailDrawer({
   const currentChallengeLevel = useMemo((): ChallengeLevel => {
     return getChallengeLevel({ rubric: challenge?.rubric });
   }, [challenge?.rubric]);
+
+  // Detect Custom L1 (AI-driven) from the submission payload.
+  const submittedFormat = (submission?.submittedPayload as any)?._format
+    ?? (submission?.submittedPayload as any)?.format;
+  const isCustomL1 = submittedFormat === 'custom_l1_ai';
 
   // Extract L2 signals from DB/submission (stable reference)
   const signalsFromDb = useMemo((): Level2SignalsPayload | null => {
@@ -170,6 +181,10 @@ export function SubmissionDetailDrawer({
       setFollowupData(null);
       setIsGeneratingLevel2(false);
       setLevel2Error(null);
+      setIsGeneratingCustomL1(false);
+      setCustomL1Error(null);
+      setLocalCustomL1Signals(null);
+      setCustomL1Questions(null);
       lastOpenedKeyRef.current = null;
       return;
     }
@@ -183,8 +198,33 @@ export function SubmissionDetailDrawer({
       setIsGeneratingLevel2(false);
       // Initialize L1 signals
       setLocalSignals(submission?.signalsPayload ?? null);
+      // Initialize Custom L1 signals if the existing payload matches
+      const sp = submission?.signalsPayload as any;
+      setLocalCustomL1Signals(sp && sp.format === 'custom_l1_ai' ? sp : null);
+      setCustomL1Error(null);
+      setIsGeneratingCustomL1(false);
     }
   }, [open, submissionKey, signalsFromDb, submission?.signalsPayload]);
+
+  // Load Custom L1 questions (config_json.questions) when needed to render answers.
+  useEffect(() => {
+    if (!open || !isCustomL1 || !challengeId) {
+      return;
+    }
+    if (customL1Questions !== null) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from('business_challenges')
+        .select('config_json')
+        .eq('id', challengeId)
+        .maybeSingle();
+      if (cancelled) return;
+      const qs = (data?.config_json as any)?.questions;
+      setCustomL1Questions(Array.isArray(qs) ? qs : []);
+    })();
+    return () => { cancelled = true; };
+  }, [open, isCustomL1, challengeId, customL1Questions]);
 
   // Fetch existing review and followup when drawer opens
   useEffect(() => {
@@ -381,6 +421,36 @@ export function SubmissionDetailDrawer({
   const payload = submission?.submissionStatus === 'submitted'
     ? submission.submittedPayload
     : submission?.draftPayload;
+
+  // Custom L1 (AI) on-demand scoring — invokes analyze-open-answer with format:'custom_l1'.
+  const handleGenerateCustomL1Signals = async () => {
+    if (!submission?.invitationId) return;
+    if (isGeneratingCustomL1) return;
+    setIsGeneratingCustomL1(true);
+    setCustomL1Error(null);
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-open-answer', {
+        body: {
+          format: 'custom_l1',
+          invitation_id: submission.invitationId,
+          challenge_id: challengeId,
+          language: i18n.language,
+        },
+      });
+      if (error) throw error;
+      const sig = (data as any)?.signals_payload;
+      if (sig) setLocalCustomL1Signals(sig);
+      onSignalsGenerated?.();
+      toast({ title: t('business.compare.signals_generated', 'Segnali generati') });
+    } catch (err) {
+      console.error('[CustomL1] signals generation failed:', err);
+      const msg = err instanceof Error ? err.message : String(err);
+      setCustomL1Error(msg);
+      toast({ title: t('common.error', 'Errore'), description: msg, variant: 'destructive' });
+    } finally {
+      setIsGeneratingCustomL1(false);
+    }
+  };
 
   const handleGenerateSignals = async () => {
     if (!submission?.submissionId || !payload) return;
@@ -705,8 +775,171 @@ export function SubmissionDetailDrawer({
             </Card>
           )}
 
-          {/* XIMA Signals Panel - Qualitative Insights (Level 1) */}
-          {currentChallengeLevel === 1 && localSignals ? (
+          {/* Custom L1 (AI-driven) signals — shown for L1 Custom challenges */}
+          {currentChallengeLevel === 1 && isCustomL1 && localCustomL1Signals && (
+            <>
+              <Card className="border-primary/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    {t('business.custom_l1.signals_title', 'Custom L1 — Insights AI')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">
+                      {t('business.compare.overall', 'Overall')}
+                    </span>
+                    <Badge
+                      className={
+                        localCustomL1Signals.overall >= 70
+                          ? 'bg-green-500/15 text-green-700 dark:text-green-400 border border-green-500/25'
+                          : localCustomL1Signals.overall >= 50
+                            ? 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/25'
+                            : 'bg-red-500/15 text-red-700 dark:text-red-400 border border-red-500/25'
+                      }
+                    >
+                      {localCustomL1Signals.overall}
+                    </Badge>
+                  </div>
+                  {localCustomL1Signals.summary && (
+                    <p className="text-sm text-foreground/90 whitespace-pre-wrap">
+                      {localCustomL1Signals.summary}
+                    </p>
+                  )}
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">{t('business.compare.confidence', 'Confidence')}:</span>
+                    <Badge variant="outline" className="text-[10px] h-5">{localCustomL1Signals.confidence}</Badge>
+                  </div>
+                  {Array.isArray(localCustomL1Signals.flags) && localCustomL1Signals.flags.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {localCustomL1Signals.flags.map((f: string, i: number) => (
+                        <Badge key={i} variant="outline" className="text-[10px] h-5 bg-amber-500/10 border-amber-500/30">
+                          {f.replace(/_/g, ' ')}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                  {localCustomL1Signals.pillar_impact && (
+                    <div className="pt-2 border-t border-border/50">
+                      <div className="text-xs text-muted-foreground mb-2">
+                        {t('business.custom_l1.pillar_impact', 'Impatto sui pilastri (±5)')}
+                      </div>
+                      <div className="grid grid-cols-5 gap-2">
+                        {['drive', 'computational_power', 'communication', 'creativity', 'knowledge'].map((pk) => {
+                          const v = localCustomL1Signals.pillar_impact?.[pk] ?? 0;
+                          return (
+                            <div key={pk} className="bg-muted/40 rounded p-2 text-center">
+                              <div className={`text-sm font-bold ${v > 0 ? 'text-green-600' : v < 0 ? 'text-red-600' : 'text-muted-foreground'}`}>
+                                {v > 0 ? `+${v}` : v}
+                              </div>
+                              <div className="text-[10px] text-muted-foreground leading-tight capitalize">
+                                {pk.replace(/_/g, ' ')}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {localCustomL1Signals.pillar_reasoning && (
+                        <p className="text-xs italic text-muted-foreground mt-2">
+                          {localCustomL1Signals.pillar_reasoning}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Per-question breakdown (rubric_breakdown shape compatible with L2 card) */}
+              {Array.isArray(localCustomL1Signals.per_question) && localCustomL1Signals.per_question.length > 0 && (
+                <Card className="border-primary/20">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Target className="h-4 w-4 text-primary" />
+                      {t('business.custom_l1.per_question_breakdown', 'Breakdown per domanda')}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {localCustomL1Signals.per_question.map((row: any, i: number) => (
+                      <div
+                        key={row.question_id || i}
+                        className="p-3 rounded-lg bg-muted/30 border border-border/50 space-y-2"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="text-sm font-medium text-foreground flex-1">
+                            {i + 1}. {row.title}
+                          </span>
+                          <div className="flex items-center gap-2 shrink-0">
+                            {row.primary_pillar && (
+                              <Badge variant="outline" className="text-[10px] uppercase tracking-wide">
+                                {String(row.primary_pillar).replace(/_/g, ' ')}
+                              </Badge>
+                            )}
+                            <Badge
+                              className={
+                                typeof row.score === 'number'
+                                  ? row.score >= 70
+                                    ? 'bg-green-500/15 text-green-700 dark:text-green-400 border border-green-500/25'
+                                    : row.score >= 50
+                                      ? 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/25'
+                                      : 'bg-red-500/15 text-red-700 dark:text-red-400 border border-red-500/25'
+                                  : 'bg-muted text-muted-foreground border border-border'
+                              }
+                            >
+                              {typeof row.score === 'number' ? row.score : '–'}
+                            </Badge>
+                          </div>
+                        </div>
+                        {row.evidence_quote && (
+                          <p className="text-xs italic text-muted-foreground leading-relaxed border-l-2 border-primary/30 pl-2">
+                            "{row.evidence_quote}"
+                          </p>
+                        )}
+                        {row.notes && (
+                          <p className="text-xs text-muted-foreground">{row.notes}</p>
+                        )}
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+            </>
+          )}
+
+          {/* Custom L1 — generate / regenerate / error states */}
+          {currentChallengeLevel === 1 && isCustomL1 && submission.submissionStatus === 'submitted' && !localCustomL1Signals && (
+            <Card className="border-dashed">
+              <CardContent className="py-6 text-center">
+                {isGeneratingCustomL1 ? (
+                  <>
+                    <Loader2 className="h-8 w-8 mx-auto mb-2 text-primary animate-spin" />
+                    <p className="text-muted-foreground">{t('business.custom_l1.generating', 'Generazione segnali AI in corso…')}</p>
+                  </>
+                ) : customL1Error ? (
+                  <>
+                    <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-destructive" />
+                    <p className="text-destructive mb-2">{t('business.custom_l1.error', 'Generazione fallita')}</p>
+                    <p className="text-xs text-muted-foreground mb-3">{customL1Error}</p>
+                    <Button onClick={handleGenerateCustomL1Signals} variant="outline" size="sm">
+                      {t('business.custom_l1.retry', 'Riprova')}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                    <p className="text-muted-foreground mb-3">{t('business.custom_l1.ready', 'Pronto per generare gli insights AI di questa risposta')}</p>
+                    <Button onClick={handleGenerateCustomL1Signals}>
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      {t('business.custom_l1.generate_signals', 'Genera segnali')}
+                    </Button>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* XIMA Signals Panel - Qualitative Insights (Level 1, non-Custom) */}
+          {currentChallengeLevel === 1 && !isCustomL1 && localSignals ? (
             <>
               <XimaSignalsPanel signals={localSignals} />
               
@@ -794,7 +1027,7 @@ export function SubmissionDetailDrawer({
                 </details>
               </TooltipProvider>
             </>
-          ) : currentChallengeLevel === 1 && submission.submissionStatus === 'submitted' ? (
+          ) : currentChallengeLevel === 1 && !isCustomL1 && submission.submissionStatus === 'submitted' ? (
             <Card className="border-dashed">
               <CardContent className="py-6 text-center">
                 <Sparkles className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
@@ -831,6 +1064,30 @@ export function SubmissionDetailDrawer({
                 <CardTitle className="text-base">{t('business.responses.submission_content')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Custom L1 (AI-driven) answers — match q.title with payload[q.id] */}
+                {isCustomL1 && customL1Questions && customL1Questions.length > 0 && (
+                  <div className="space-y-4">
+                    {customL1Questions.map((q, idx) => {
+                      const answer = String((payload as any)?.[q.id] || '').trim();
+                      return (
+                        <div key={q.id}>
+                          <Label className="text-sm font-medium">
+                            {idx + 1}. {q.title}
+                          </Label>
+                          {q.text && (
+                            <p className="text-xs text-muted-foreground italic mt-0.5 mb-1">{q.text}</p>
+                          )}
+                          <p className="text-sm text-foreground/90 mt-1 whitespace-pre-wrap">
+                            {answer || <span className="text-muted-foreground italic">{t('business.custom_l1.no_answer', '(nessuna risposta)')}</span>}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {isCustomL1 && customL1Questions === null && (
+                  <p className="text-sm text-muted-foreground italic">{t('common.loading', 'Caricamento…')}</p>
+                )}
                 {/* Candidate preferences - only for Level 1 */}
                 {(payload.tradeoff_priority || payload.confidence) && (
                   <div className="flex flex-wrap gap-2">

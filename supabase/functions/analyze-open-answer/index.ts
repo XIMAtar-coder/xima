@@ -113,6 +113,21 @@ serve(async (req) => {
       });
     }
 
+    // =====================================================
+    // CUSTOM L1 BRANCH — on-demand scoring of the AI-driven custom L1 challenge.
+    // Holistic 5-pillar reading driven by the LLM (not derived from per-question primary_pillar).
+    // Single nudge per invitation, idempotency handled here (handler-level pre-check).
+    // =====================================================
+    if (format === 'custom_l1') {
+      return await handleCustomL1({
+        invitation_id,
+        challenge_id,
+        language: language || 'it',
+        correlationId,
+        ipHash,
+      });
+    }
+
     const isMindset = format === 'mindset' && mindset_payload && typeof mindset_payload === 'object';
 
     // Mindset bypasses (!field || !language || !openKey) — payload is structured, not free-text.
@@ -1135,4 +1150,418 @@ Evaluate. Return ONLY the JSON object.`;
 
   return jsonResponse({ status: 'ok', signals_payload: signalsPayload });
 }
+
+// =====================================================
+// CUSTOM L1 HANDLER
+// On-demand scoring for `_format='custom_l1_ai'` submissions.
+// - Holistic pillar_impact from LLM (NOT derived per-question).
+// - per_question carries score + evidence_quote (+ optional display primary_pillar).
+// - Single trajectory nudge with handler-level idempotency pre-check (no internal dedupe).
+// =====================================================
+
+interface CustomL1HandlerArgs {
+  invitation_id: unknown;
+  challenge_id: unknown;
+  language: string;
+  correlationId: string;
+  ipHash: string | null;
+}
+
+async function handleCustomL1(args: CustomL1HandlerArgs): Promise<Response> {
+  const { invitation_id, challenge_id, language, correlationId, ipHash } = args;
+
+  if (typeof invitation_id !== 'string' || !invitation_id) {
+    return errorResponse(400, 'INVALID_INPUT', 'invitation_id required');
+  }
+  if (typeof challenge_id !== 'string' || !challenge_id) {
+    return errorResponse(400, 'INVALID_INPUT', 'challenge_id required');
+  }
+
+  const service = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+  );
+
+  // 1. Resolve user_id server-side
+  const { data: invitation, error: invErr } = await service
+    .from('challenge_invitations')
+    .select('id, candidate_profile_id, challenge_id')
+    .eq('id', invitation_id)
+    .maybeSingle();
+  if (invErr || !invitation) {
+    return errorResponse(404, 'INVITATION_NOT_FOUND', 'Invitation not found');
+  }
+  if (!invitation.candidate_profile_id) {
+    return errorResponse(404, 'PROFILE_NOT_FOUND', 'Invitation has no candidate profile');
+  }
+
+  const { data: profile, error: profErr } = await service
+    .from('profiles')
+    .select('id, user_id')
+    .eq('id', invitation.candidate_profile_id)
+    .maybeSingle();
+  if (profErr || !profile?.user_id) {
+    return errorResponse(404, 'PROFILE_NOT_FOUND', 'Candidate profile/user not found');
+  }
+  const resolvedUserId: string = profile.user_id;
+
+  // 2. Load submission + challenge
+  const { data: submission, error: subErr } = await service
+    .from('challenge_submissions')
+    .select('id, invitation_id, submitted_payload, signals_payload, status')
+    .eq('invitation_id', invitation_id)
+    .maybeSingle();
+  if (subErr || !submission) {
+    return errorResponse(404, 'SUBMISSION_NOT_FOUND', 'No submission for invitation');
+  }
+  const payload = submission.submitted_payload as Record<string, any> | null;
+  if (!payload || payload._format !== 'custom_l1_ai') {
+    return errorResponse(400, 'NOT_CUSTOM_L1', 'Submission is not a custom_l1_ai payload');
+  }
+
+  const { data: challenge, error: chErr } = await service
+    .from('business_challenges')
+    .select('id, title, description, config_json, evaluation_lens, context_snapshot')
+    .eq('id', challenge_id)
+    .maybeSingle();
+  if (chErr || !challenge) {
+    return errorResponse(404, 'CHALLENGE_NOT_FOUND', 'Challenge not found');
+  }
+  const cfg = (challenge.config_json as any) || {};
+  const questions: Array<{ id: string; title: string; text: string }> = Array.isArray(cfg.questions) ? cfg.questions : [];
+  if (questions.length === 0) {
+    return errorResponse(400, 'NO_QUESTIONS', 'Challenge has no config_json.questions');
+  }
+  const focusPillars: string[] = Array.isArray(cfg.focus_pillars) ? cfg.focus_pillars : [];
+  const contextTag: string = String(cfg.context_tag || '');
+  const lens = (challenge as any).evaluation_lens || cfg.evaluation_lens || null;
+
+  // 3. Idempotency pre-check (handler-level; fail-safe: skip nudge on error)
+  let nudgePreExists = false;
+  let nudgePreCheckFailed = false;
+  try {
+    const { data: existingTraj, error: trajErr } = await service
+      .from('pillar_trajectory_log')
+      .select('id')
+      .eq('user_id', resolvedUserId)
+      .eq('source_type', 'l1_challenge')
+      .eq('source_entity_id', invitation_id)
+      .maybeSingle();
+    if (trajErr) {
+      nudgePreCheckFailed = true;
+      console.warn(JSON.stringify({
+        type: 'custom_l1_trajectory_precheck_failed', correlation_id: correlationId,
+        function_name: 'analyze-open-answer', error: trajErr.message,
+      }));
+    } else if (existingTraj) {
+      nudgePreExists = true;
+    }
+  } catch (e) {
+    nudgePreCheckFailed = true;
+    console.warn('[custom_l1] trajectory pre-check threw:', e instanceof Error ? e.message : e);
+  }
+
+  const sigPayloadExisting = submission.signals_payload as Record<string, any> | null;
+  if (nudgePreExists && sigPayloadExisting?.format === 'custom_l1_ai') {
+    console.log(JSON.stringify({
+      type: 'custom_l1_idempotent_skip', correlation_id: correlationId,
+      function_name: 'analyze-open-answer', invitation_id,
+    }));
+    return jsonResponse({ status: 'idempotent_skip', signals_payload: sigPayloadExisting });
+  }
+
+  // 4. Build holistic prompt — LLM produces 5-pillar pillar_impact directly.
+  const langName = language === 'en' ? 'English' : language === 'es' ? 'Spanish' : 'Italian';
+  const lensJson = lens ? JSON.stringify(lens).slice(0, 2000) : '(none)';
+  const focusLine = focusPillars.length ? focusPillars.join(', ') : '(none — score all 5 equally)';
+  const scenario = String((challenge as any).description || cfg.scenario || '').slice(0, 2000);
+
+  const systemPrompt = `You are a senior assessor evaluating a Custom L1 soft-skills challenge for the XIMA platform.
+
+PRINCIPLE: "Comprendere, non la perfezione" — read how the candidate reasons under realistic tension across the whole submission. Be generous when they show structure, self-awareness, trade-off thinking; strict on hand-waving and surface answers.
+
+CONTEXT:
+- Scenario (markdown): ${scenario}
+- Focus pillars (emphasize, but score all 5): ${focusLine}
+- Context tag: ${contextTag || '(none)'}
+- Evaluation lens (per-pillar weighting + cues): ${lensJson}
+
+FLAGS — include any that apply: refusal, off_topic, hostile, evasion, non_answer, low_engagement, low_specificity.
+
+TASK:
+1. Read all N answers as a single body of evidence.
+2. Produce a HOLISTIC pillar_impact across all 5 pillars (drive, computational_power, communication, creativity, knowledge), each in [-5, +5]. Focus pillars receive more weight, but every pillar gets a value (0 if no evidence). This is the only pillar signal that matters — do not try to attribute one pillar per question.
+3. For EACH question, produce a per-question diagnostic: score (0-100), one short verbatim evidence_quote from the candidate's answer, and (optional) a single primary_pillar label for display only.
+4. Compute an overall (0-100), a <=60-word summary in ${langName}, confidence, and flags.
+
+OUTPUT: respond in ${langName}. Return ONLY valid JSON with this exact shape:
+{
+  "overall": <0-100>,
+  "summary": "<= 60 words in ${langName}>",
+  "confidence": "low" | "medium" | "high",
+  "flags": [],
+  "pillar_impact": {
+    "drive": <-5..5>,
+    "computational_power": <-5..5>,
+    "communication": <-5..5>,
+    "creativity": <-5..5>,
+    "knowledge": <-5..5>
+  },
+  "pillar_reasoning": "<brief 1-2 sentences>",
+  "per_question": [
+    {
+      "question_id": "<echo exact id>",
+      "score": <0-100>,
+      "evidence_quote": "<one short verbatim quote from the candidate>",
+      "primary_pillar": "drive|computational_power|communication|creativity|knowledge",
+      "notes": "<<=160c>"
+    }
+  ]
+}
+
+The per_question array MUST echo every question_id from the input, exactly once. Do not invent ids.`;
+
+  const answersBlock = questions
+    .map((q, i) => {
+      const ans = String(payload?.[q.id] || '').slice(0, 4000);
+      return `[Q${i + 1}] id=${q.id}\nTITLE: ${q.title}\nPROMPT: ${q.text}\nANSWER: ${ans}`;
+    })
+    .join('\n\n');
+
+  const userPrompt = `Evaluate the following ${questions.length} answers as a single body of evidence:\n\n${answersBlock}\n\nReturn ONLY the JSON object.`;
+
+  // 5. Model call with Opus fallback chain
+  let aiContent = '';
+  let usedModel = '';
+  let aiRequestId = '';
+  let lastError: { code: string; message: string } | null = null;
+  const tried: string[] = [];
+
+  for (const model of OPUS_FALLBACK_CHAIN) {
+    tried.push(model);
+    try {
+      const resp = await callAnthropicApi({
+        system: systemPrompt,
+        userMessage: userPrompt,
+        correlationId,
+        functionName: 'analyze-open-answer',
+        inputSummary: `custom_l1:inv=${invitation_id},model=${model},n=${questions.length}`,
+        model,
+        maxTokens: 3000,
+        promptTemplateVersion: 'custom_l1_v1',
+      });
+      aiContent = resp.content;
+      usedModel = resp.model;
+      aiRequestId = resp.requestId;
+      lastError = null;
+      break;
+    } catch (e) {
+      if (e instanceof AnthropicError) {
+        lastError = { code: e.errorCode, message: e.message };
+        const msg = (e.message || '').toLowerCase();
+        const isNotFound = e.statusCode === 404
+          || (e.statusCode === 400 && msg.includes('model') && (msg.includes('not_found') || msg.includes('not found') || msg.includes('invalid') || msg.includes('does not exist')));
+        if (!isNotFound) {
+          return errorResponse(e.statusCode, e.errorCode, e.message);
+        }
+        continue;
+      }
+      throw e;
+    }
+  }
+
+  if (!aiContent) {
+    try {
+      const resp = await callAnthropicApi({
+        system: systemPrompt,
+        userMessage: userPrompt,
+        correlationId,
+        functionName: 'analyze-open-answer',
+        inputSummary: `custom_l1:inv=${invitation_id},sonnet_last_resort`,
+        model: SONNET_LAST_RESORT,
+        maxTokens: 3000,
+        promptTemplateVersion: 'custom_l1_v1',
+      });
+      aiContent = resp.content;
+      usedModel = resp.model;
+      aiRequestId = resp.requestId;
+      tried.push(SONNET_LAST_RESORT);
+      console.warn(JSON.stringify({
+        type: 'custom_l1_model_fallback_to_sonnet', correlation_id: correlationId,
+        function_name: 'analyze-open-answer', tried, last_opus_error: lastError,
+      }));
+    } catch (e) {
+      if (e instanceof AnthropicError) return errorResponse(e.statusCode, e.errorCode, e.message);
+      throw e;
+    }
+  }
+
+  // 6. Parse + validate
+  let parsed: any;
+  try {
+    parsed = extractJsonFromAiContent(aiContent);
+    if (!parsed || typeof parsed !== 'object') throw new Error('non-object');
+    if (typeof parsed.overall !== 'number') throw new Error('missing overall');
+    if (!parsed.pillar_impact || typeof parsed.pillar_impact !== 'object') throw new Error('missing pillar_impact');
+    if (!Array.isArray(parsed.per_question)) throw new Error('missing per_question');
+  } catch (e) {
+    console.error(JSON.stringify({
+      type: 'custom_l1_parse_error', correlation_id: correlationId,
+      function_name: 'analyze-open-answer', error: e instanceof Error ? e.message : 'unknown',
+    }));
+    return errorResponse(502, 'CUSTOM_L1_PARSE_FAILED', 'AI evaluation failed to produce valid JSON');
+  }
+
+  const clamp = (n: any, lo: number, hi: number) => {
+    const v = typeof n === 'number' && Number.isFinite(n) ? n : 0;
+    return Math.max(lo, Math.min(hi, v));
+  };
+  const clampRound = (n: any, lo: number, hi: number) => Math.round(clamp(n, lo, hi));
+
+  // 7. Confidence + flags (low-engagement downgrade if too many empty answers)
+  let confidence: 'low' | 'medium' | 'high';
+  const rawConf = String(parsed.confidence || '').toLowerCase();
+  confidence = (rawConf === 'low' || rawConf === 'high') ? rawConf : 'medium';
+  const flags: string[] = Array.isArray(parsed.flags) ? parsed.flags.map((f: any) => String(f)) : [];
+  const filledCount = questions.filter(q => String(payload?.[q.id] || '').trim().length >= 80).length;
+  if (filledCount < Math.ceil(questions.length / 2)) {
+    confidence = 'low';
+    if (!flags.includes('low_engagement')) flags.push('low_engagement');
+  }
+
+  // 8. Holistic pillar_impact (LLM-driven, clamped to ±5)
+  const pillarImpact: Record<PillarKey, number> = {
+    drive: 0, computational_power: 0, communication: 0, creativity: 0, knowledge: 0,
+  };
+  for (const k of PILLAR_KEYS_L2) {
+    const raw = parsed.pillar_impact?.[k];
+    const clamped = Math.max(-5, Math.min(5, typeof raw === 'number' ? raw : 0));
+    pillarImpact[k] = Math.round(clamped * 100) / 100;
+  }
+
+  // 9. per_question matching by question_id
+  const qById = new Map(questions.map(q => [q.id, q]));
+  const expectedIds = new Set(qById.keys());
+  const gotIds: string[] = [];
+  const enrichedPerQuestion: Array<Record<string, any>> = [];
+  const rubricBreakdown: Array<Record<string, any>> = [];
+  for (const entry of parsed.per_question) {
+    const qid = String(entry?.question_id || '');
+    gotIds.push(qid);
+    const q = qById.get(qid);
+    if (!q) continue;
+    const score = clampRound(entry?.score, 0, 100);
+    const evidence_quote = String(entry?.evidence_quote || '').slice(0, 500);
+    const primary_pillar = (PILLAR_KEYS_L2 as readonly string[]).includes(String(entry?.primary_pillar))
+      ? String(entry.primary_pillar) : undefined;
+    const notes = String(entry?.notes || '').slice(0, 160);
+    const answerExcerpt = String(payload?.[qid] || '').slice(0, 400);
+    enrichedPerQuestion.push({
+      question_id: qid,
+      title: q.title,
+      text: q.text,
+      answer_excerpt: answerExcerpt,
+      score,
+      evidence_quote,
+      primary_pillar,
+      notes,
+    });
+    rubricBreakdown.push({
+      criterion_id: `q_${qid}`,
+      criterion: q.title,
+      primary_pillar,
+      weight: Math.round(100 / questions.length),
+      score,
+      evidence_quote,
+    });
+  }
+  const gotIdsSet = new Set(gotIds);
+  const missing = [...expectedIds].filter(id => !gotIdsSet.has(id));
+  const unknown = gotIds.filter(id => !expectedIds.has(id));
+  const perQuestionMismatch = missing.length > 0 || unknown.length > 0 || enrichedPerQuestion.length !== questions.length;
+  if (perQuestionMismatch) {
+    console.warn(JSON.stringify({
+      type: 'custom_l1_per_question_mismatch', correlation_id: correlationId,
+      function_name: 'analyze-open-answer',
+      expected_ids: [...expectedIds], got_ids: gotIds, missing, unknown,
+    }));
+  }
+
+  const overall = clampRound(parsed.overall, 0, 100);
+  const summary = typeof parsed.summary === 'string' ? parsed.summary.slice(0, 600) : '';
+  const pillar_reasoning = typeof parsed.pillar_reasoning === 'string' ? parsed.pillar_reasoning : '';
+
+  // Nudge skipped if pre-check failed (fail-safe) OR per_question mismatch (data quality)
+  const nudgeSkipped = nudgePreCheckFailed || perQuestionMismatch || nudgePreExists;
+
+  // 10. Persist signals_payload
+  const signalsPayload = {
+    format: 'custom_l1_ai',
+    signals_version: 'v1',
+    scoring_context: 'l1_challenge',
+    scored_at: new Date().toISOString(),
+    model: usedModel,
+    correlation_id: correlationId,
+    ai_request_id: aiRequestId,
+    overall,
+    summary,
+    confidence,
+    flags,
+    pillar_impact: pillarImpact,
+    pillar_reasoning,
+    rubric_breakdown: rubricBreakdown,
+    per_question: enrichedPerQuestion,
+    focus_pillars: focusPillars,
+    nudge_skipped: nudgeSkipped,
+  };
+
+  const { error: updErr } = await service
+    .from('challenge_submissions')
+    .update({ signals_payload: signalsPayload, signals_version: 'v1' })
+    .eq('invitation_id', invitation_id);
+  if (updErr) {
+    console.error(JSON.stringify({
+      type: 'custom_l1_signals_write_failed', correlation_id: correlationId,
+      function_name: 'analyze-open-answer', error: updErr.message,
+    }));
+    return errorResponse(500, 'CUSTOM_L1_PERSIST_FAILED', updErr.message);
+  }
+
+  // 11. Trajectory persist — single nudge (idempotent via handler pre-check)
+  if (!nudgeSkipped) {
+    try {
+      await persistTrajectoryEvent({
+        user_id: resolvedUserId,
+        source_function: 'analyze-open-answer',
+        source_type: 'l1_challenge',
+        source_entity_id: invitation_id,
+        correlation_id: correlationId,
+        deltas: { ...pillarImpact },
+        reasoning: summary,
+      });
+    } catch (e) {
+      console.error('[custom_l1_trajectory] Error:', e instanceof Error ? e.message : e);
+    }
+  }
+
+  emitAuditEventWithMetric({
+    actorType: 'system',
+    actorId: null,
+    action: 'assessment.custom_l1_scored',
+    entityType: 'custom_l1_submission',
+    entityId: String(invitation_id),
+    correlationId,
+    metadata: { model: usedModel, tried, overall, confidence, nudge_skipped: nudgeSkipped, ai_request_id: aiRequestId },
+    ipHash,
+  }, 'custom_l1.scored');
+
+  console.log(JSON.stringify({
+    type: 'custom_l1_success', correlation_id: correlationId,
+    function_name: 'analyze-open-answer', model: usedModel, tried, overall, confidence,
+    nudge_skipped: nudgeSkipped, pillar_impact: pillarImpact,
+  }));
+
+  return jsonResponse({ status: 'ok', signals_payload: signalsPayload });
+}
+
 

@@ -5,19 +5,14 @@
  *
  * Renders the N AI-generated free-text questions from
  * `config_json.questions: [{ id, title, text }]`. On submit:
- *   1. Persists the answers in `challenge_submissions.submitted_payload`.
+ *   1. Persists the answers in `challenge_submissions.submitted_payload`
+ *      with `_format: 'custom_l1_ai'`.
  *   2. Marks the invitation as `submitted`.
- *   3. Fires one `analyze-open-answer` call per question with the
- *      `l1_challenge` free-text contract:
- *        { text, field: 'business_leadership', language: <locale>,
- *          openKey: 'custom_l1_<questionId>',
- *          scoring_context: 'l1_challenge',
- *          challenge_id, user_id }
- *      → drives the pillar nudge / evidence ledger like XCore mindset does.
  *
- * The edge function requires `field`, `language`, `openKey` (otherwise 400).
- * We hard-code `field='business_leadership'` (no per-question selector — Custom
- * L1 is a soft-skills challenge; rubric/lens carry the per-pillar nuance).
+ * NO AI calls at submit time. Scoring is on-demand from the business panel
+ * via `analyze-open-answer` with `format: 'custom_l1'` (single holistic
+ * 5-pillar reading + one trajectory nudge per invitation). This mirrors
+ * the L2-conversation pattern.
  */
 
 import { useEffect, useMemo, useState } from 'react';
@@ -25,7 +20,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -172,31 +166,9 @@ export default function CustomL1Challenge({
         .update({ status: 'submitted', responded_at: now })
         .eq('id', invitationId);
 
-      // 3) Get auth user id for analyze-open-answer payload.
-      const { data: authData } = await supabase.auth.getUser();
-      const userId = authData?.user?.id;
-
-      // 4) Fire one analyze-open-answer per question (free-text branch).
-      //    Sequential to keep load bounded; errors are non-blocking.
-      for (const q of questions) {
-        const text = (answers[q.id] || '').trim();
-        if (!text) continue;
-        try {
-          await supabase.functions.invoke('analyze-open-answer', {
-            body: {
-              text,
-              field: 'business_leadership',
-              language: locale,
-              openKey: `custom_l1_${q.id}`,
-              scoring_context: 'l1_challenge',
-              challenge_id: challengeId,
-              user_id: userId,
-            },
-          });
-        } catch (e) {
-          console.warn('[CustomL1Challenge] analyze-open-answer failed for', q.id, e);
-        }
-      }
+      // NOTE: scoring is on-demand from the business side via
+      // analyze-open-answer (format: 'custom_l1'). We do NOT call AI here:
+      // per-question nudges would over-credit the pillar trajectory.
 
       setStatus('submitted');
       toast({ title: t('challenge.submission_success', 'Risposte inviate') });
