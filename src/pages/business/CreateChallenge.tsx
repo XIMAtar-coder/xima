@@ -13,6 +13,11 @@ import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { validateChallengeDates, getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
+import {
+  buildChallengePayload,
+  buildCustomChallengeUpdate,
+  isXimaCoreChallenge,
+} from '@/features/challenge-builder/saveChallenge';
 import { 
   ArrowLeft, Sparkles, Loader2, Rocket, Save, Eye, Clock, 
   Target, CheckCircle2, Wand2, AlertCircle, Archive, CalendarClock
@@ -131,9 +136,20 @@ const CreateChallenge = () => {
     }
   }, [isEditMode, startAt]);
 
+  // Soft alias: if someone navigates to /challenges/new?type=xima-core,
+  // forward to the dedicated XIMA Core route (preserves other query params).
+  useEffect(() => {
+    if (!isEditMode && challengeType === 'xima-core') {
+      const params = new URLSearchParams(searchParams);
+      params.delete('type');
+      const qs = params.toString();
+      navigate(`/business/challenges/xima-core${qs ? `?${qs}` : ''}`, { replace: true });
+    }
+  }, [isEditMode, challengeType, searchParams, navigate]);
+
   // Redirect to selector if not editing and not explicitly choosing custom
   useEffect(() => {
-    if (!isEditMode && goalId && challengeType !== 'custom') {
+    if (!isEditMode && goalId && challengeType !== 'custom' && challengeType !== 'xima-core') {
       // User navigated directly to /challenges/new?goal=X without going through selector
       // Redirect them to the challenge type selector
       navigate(`/business/challenges/select?goal=${goalId}${returnParam}`, { replace: true });
@@ -198,6 +214,22 @@ const CreateChallenge = () => {
         title: t('common.error'),
         description: 'Challenge not found',
         variant: 'destructive'
+      });
+      navigate('/business/challenges');
+      return;
+    }
+
+    // GUARDRAIL: XIMA Core challenges are NOT editable through the custom builder.
+    // Mounting the custom form on an XCore row would risk persisting a partial
+    // payload (losing config_json.xima_core, evaluation_lens, expected_tensions,
+    // etc.). Redirect gently to the list with an informational toast.
+    if (isXimaCoreChallenge(data)) {
+      toast({
+        title: t('challenge.xima_core.not_editable_title', 'XIMA Core challenges are read-only'),
+        description: t(
+          'challenge.xima_core.not_editable_desc',
+          'XIMA Core challenges cannot be edited. Archive this one and create a new challenge if you need changes.'
+        ),
       });
       navigate('/business/challenges');
       return;
@@ -337,18 +369,7 @@ const CreateChallenge = () => {
 
     setSaving(true);
     try {
-      const challengeData = {
-        title: title.trim(),
-        description: description.trim(),
-        success_criteria: successCriteria.filter(c => c.trim()),
-        time_estimate_minutes: timeEstimate,
-        rubric: { criteria: { outcome: 3, clarity: 3, reasoning: 3 } },
-        status: newStatus,
-        start_at: startAt ? new Date(startAt).toISOString() : null,
-        end_at: endAt ? new Date(endAt).toISOString() : null,
-        updated_at: new Date().toISOString()
-      };
-
+      const trimmedCriteria = successCriteria.filter(c => c.trim());
       const effectiveGoalId = isEditMode ? existingChallenge?.hiring_goal_id : goalId;
 
       // If activating, archive other active challenges for the same goal
@@ -363,22 +384,41 @@ const CreateChallenge = () => {
       }
 
       if (isEditMode) {
-        // Update existing
+        // Update existing (custom only — XCore guard already redirected at load)
+        const updatePayload = buildCustomChallengeUpdate({
+          title: title.trim(),
+          description: description.trim(),
+          successCriteria: trimmedCriteria,
+          timeEstimateMinutes: timeEstimate,
+          status: newStatus,
+          startAt: startAt || null,
+          endAt: endAt || null,
+        });
+
         const { error } = await supabase
           .from('business_challenges')
-          .update(challengeData)
+          .update(updatePayload as any)
           .eq('id', challengeId);
 
         if (error) throw error;
       } else {
-        // Create new
+        // Create new (custom L1 — level=1 explicit via builder)
+        const insertPayload = buildChallengePayload({
+          type: 'custom',
+          businessId: user!.id,
+          goalId: goalId || null,
+          title: title.trim(),
+          description: description.trim(),
+          successCriteria: trimmedCriteria,
+          timeEstimateMinutes: timeEstimate,
+          status: newStatus,
+          startAt: startAt || null,
+          endAt: endAt || null,
+        });
+
         const { error } = await supabase
           .from('business_challenges')
-          .insert({
-            ...challengeData,
-            business_id: user?.id,
-            hiring_goal_id: goalId || null
-          });
+          .insert(insertPayload as any);
 
         if (error) throw error;
       }

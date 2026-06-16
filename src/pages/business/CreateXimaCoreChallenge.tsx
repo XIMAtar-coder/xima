@@ -27,6 +27,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
 import { XIMA_CORE_CHALLENGE } from '@/lib/challenges/ximaCoreChallenge';
+import { buildChallengePayload } from '@/features/challenge-builder/saveChallenge';
 import { labelForCcnl } from '@/lib/business/ccnl';
 import {
   ArrowLeft,
@@ -460,44 +461,31 @@ const CreateXimaCoreChallenge = () => {
           .eq('status', 'active');
       }
 
-      const { error } = await supabase.from('business_challenges').insert([{
-        title: XIMA_CORE_CHALLENGE.title,
+      const payload = buildChallengePayload({
+        type: 'xima-core',
+        businessId: user!.id,
+        goalId: goalId || null,
+        jobPostId: jobPostId || null,
+        startAt,
+        endAt,
+        ximaCoreTitle: XIMA_CORE_CHALLENGE.title,
         description: buildChallengeDescription(),
-        success_criteria: localizedQuestions.map((q) => q.title),
-        time_estimate_minutes: XIMA_CORE_CHALLENGE.timeEstimateMinutes,
-        rubric: {
-          criteria: XIMA_CORE_CHALLENGE.rubric.criteria,
-          scenario,
-          level: 1,
-          isXimaCore: true,
-          context_tag: displayContextTag,
-          candidate_intro: t('challenge.xima_core.candidate_intro'),
-        },
-        config_json: {
-          xima_core: true,
-          questions: localizedQuestions,
-          candidate_intro: t('challenge.xima_core.candidate_intro'),
-          generated_time_estimate: generatedTimeEstimate,
-          context_tag: displayContextTag,
-          ...(generatedMindset ? generatedMindset : {}),
-        },
-        context_snapshot: (contextSnapshot || {
-          role_title: roleTitle,
-          industry,
-          context_tag: displayContextTag,
-          generated_at: new Date().toISOString(),
-        }) as Json,
-        evaluation_lens: evaluationLens,
-        expected_tensions: expectedTensions,
-        status: 'active',
-        business_id: user?.id,
-        hiring_goal_id: goalId || null,
-        job_post_id: jobPostId || null,
-        start_at: new Date(startAt).toISOString(),
-        end_at: new Date(endAt).toISOString(),
-        difficulty: 1,
-        level: 1,
-      }]);
+        successCriteria: localizedQuestions.map((q) => q.title),
+        timeEstimateMinutes: XIMA_CORE_CHALLENGE.timeEstimateMinutes,
+        canonicalRubricCriteria: XIMA_CORE_CHALLENGE.rubric.criteria as unknown as Json,
+        scenario,
+        contextTag: displayContextTag,
+        candidateIntro: t('challenge.xima_core.candidate_intro'),
+        questions: localizedQuestions,
+        generatedTimeEstimate,
+        generatedMindset,
+        contextSnapshot,
+        evaluationLens,
+        expectedTensions,
+        fallbackContext: { roleTitle, industry },
+      });
+
+      const { error } = await supabase.from('business_challenges').insert([payload as any]);
 
       if (error) throw error;
 
