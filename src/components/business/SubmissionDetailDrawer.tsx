@@ -1027,7 +1027,7 @@ export function SubmissionDetailDrawer({
                 </details>
               </TooltipProvider>
             </>
-          ) : currentChallengeLevel === 1 && submission.submissionStatus === 'submitted' ? (
+          ) : currentChallengeLevel === 1 && !isCustomL1 && submission.submissionStatus === 'submitted' ? (
             <Card className="border-dashed">
               <CardContent className="py-6 text-center">
                 <Sparkles className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
