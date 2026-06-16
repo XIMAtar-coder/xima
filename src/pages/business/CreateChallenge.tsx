@@ -13,6 +13,11 @@ import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { validateChallengeDates, getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
+import {
+  buildChallengePayload,
+  buildCustomChallengeUpdate,
+  isXimaCoreChallenge,
+} from '@/features/challenge-builder/saveChallenge';
 import { 
   ArrowLeft, Sparkles, Loader2, Rocket, Save, Eye, Clock, 
   Target, CheckCircle2, Wand2, AlertCircle, Archive, CalendarClock
