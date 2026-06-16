@@ -115,6 +115,7 @@ const CreateChallenge = () => {
 
   const [hiringGoal, setHiringGoal] = useState<HiringGoal | null>(null);
   const [existingChallenge, setExistingChallenge] = useState<ExistingChallenge | null>(null);
+  const [businessProfile, setBusinessProfile] = useState<{ company_name: string | null; manual_industry: string | null; snapshot_industry: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
