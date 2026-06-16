@@ -166,31 +166,9 @@ export default function CustomL1Challenge({
         .update({ status: 'submitted', responded_at: now })
         .eq('id', invitationId);
 
-      // 3) Get auth user id for analyze-open-answer payload.
-      const { data: authData } = await supabase.auth.getUser();
-      const userId = authData?.user?.id;
-
-      // 4) Fire one analyze-open-answer per question (free-text branch).
-      //    Sequential to keep load bounded; errors are non-blocking.
-      for (const q of questions) {
-        const text = (answers[q.id] || '').trim();
-        if (!text) continue;
-        try {
-          await supabase.functions.invoke('analyze-open-answer', {
-            body: {
-              text,
-              field: 'business_leadership',
-              language: locale,
-              openKey: `custom_l1_${q.id}`,
-              scoring_context: 'l1_challenge',
-              challenge_id: challengeId,
-              user_id: userId,
-            },
-          });
-        } catch (e) {
-          console.warn('[CustomL1Challenge] analyze-open-answer failed for', q.id, e);
-        }
-      }
+      // NOTE: scoring is on-demand from the business side via
+      // analyze-open-answer (format: 'custom_l1'). We do NOT call AI here:
+      // per-question nudges would over-credit the pillar trajectory.
 
       setStatus('submitted');
       toast({ title: t('challenge.submission_success', 'Risposte inviate') });
