@@ -369,18 +369,7 @@ const CreateChallenge = () => {
 
     setSaving(true);
     try {
-      const challengeData = {
-        title: title.trim(),
-        description: description.trim(),
-        success_criteria: successCriteria.filter(c => c.trim()),
-        time_estimate_minutes: timeEstimate,
-        rubric: { criteria: { outcome: 3, clarity: 3, reasoning: 3 } },
-        status: newStatus,
-        start_at: startAt ? new Date(startAt).toISOString() : null,
-        end_at: endAt ? new Date(endAt).toISOString() : null,
-        updated_at: new Date().toISOString()
-      };
-
+      const trimmedCriteria = successCriteria.filter(c => c.trim());
       const effectiveGoalId = isEditMode ? existingChallenge?.hiring_goal_id : goalId;
 
       // If activating, archive other active challenges for the same goal
@@ -395,22 +384,41 @@ const CreateChallenge = () => {
       }
 
       if (isEditMode) {
-        // Update existing
+        // Update existing (custom only — XCore guard already redirected at load)
+        const updatePayload = buildCustomChallengeUpdate({
+          title: title.trim(),
+          description: description.trim(),
+          successCriteria: trimmedCriteria,
+          timeEstimateMinutes: timeEstimate,
+          status: newStatus,
+          startAt: startAt || null,
+          endAt: endAt || null,
+        });
+
         const { error } = await supabase
           .from('business_challenges')
-          .update(challengeData)
+          .update(updatePayload as any)
           .eq('id', challengeId);
 
         if (error) throw error;
       } else {
-        // Create new
+        // Create new (custom L1 — level=1 explicit via builder)
+        const insertPayload = buildChallengePayload({
+          type: 'custom',
+          businessId: user!.id,
+          goalId: goalId || null,
+          title: title.trim(),
+          description: description.trim(),
+          successCriteria: trimmedCriteria,
+          timeEstimateMinutes: timeEstimate,
+          status: newStatus,
+          startAt: startAt || null,
+          endAt: endAt || null,
+        });
+
         const { error } = await supabase
           .from('business_challenges')
-          .insert({
-            ...challengeData,
-            business_id: user?.id,
-            hiring_goal_id: goalId || null
-          });
+          .insert(insertPayload as any);
 
         if (error) throw error;
       }
