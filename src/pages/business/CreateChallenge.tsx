@@ -180,12 +180,19 @@ const CreateChallenge = () => {
   }, [challengeId, goalId, challengeType, user?.id, isAuthenticated, isBusiness, businessLoading, navigate]);
 
   const loadHiringGoal = async () => {
-    const { data, error } = await supabase
-      .from('hiring_goal_drafts')
-      .select('id, role_title, task_description, experience_level, work_model, country')
-      .eq('id', goalId)
-      .eq('business_id', user?.id)
-      .single();
+    const [{ data, error }, { data: bp }] = await Promise.all([
+      supabase
+        .from('hiring_goal_drafts')
+        .select('id, role_title, task_description, experience_level, work_model, country')
+        .eq('id', goalId)
+        .eq('business_id', user?.id)
+        .single(),
+      supabase
+        .from('business_profiles')
+        .select('company_name, manual_industry, snapshot_industry')
+        .eq('user_id', user?.id)
+        .maybeSingle(),
+    ]);
 
     if (error || !data) {
       toast({
@@ -198,6 +205,7 @@ const CreateChallenge = () => {
     }
 
     setHiringGoal(data);
+    if (bp) setBusinessProfile(bp);
     if (data.role_title) {
       setTitle(`${data.role_title} Challenge`);
     }
