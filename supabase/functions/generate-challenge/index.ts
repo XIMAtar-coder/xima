@@ -12,7 +12,7 @@ import { checkDatabaseFirst, depositInference } from "../_shared/intelligenceEng
 // =====================================================
 
 interface GenerateChallengeRequest {
-  mode: 'xima_core';
+  mode: 'xima_core' | 'l1_custom';
   locale?: string;
   business_id?: string;
   hiring_goal_id?: string;
@@ -38,6 +38,14 @@ interface GenerateChallengeRequest {
   experience_level?: string;
   work_model?: string;
   country?: string;
+  // L1 Custom (AI-driven) parameters — business orientation knobs.
+  params?: {
+    focus_pillars?: string[];           // 0..5 of: drive|computational_power|communication|creativity|knowledge
+    custom_scenario_hint?: string;      // free-form orientation hint (max ~500 chars)
+    difficulty?: 1 | 2 | 3;             // base | media | alta
+    duration_minutes?: number;          // 10..60
+    num_questions?: number;             // 3..6
+  };
 }
 
 interface XimaCoreResult {
