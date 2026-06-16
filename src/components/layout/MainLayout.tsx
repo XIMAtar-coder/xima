@@ -200,9 +200,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         <button onClick={() => navigate('/admin')} className={navLinkClass(location.pathname === '/admin')}>
                           {t('nav.xima_manager', 'XIMA Manager')}
                         </button>
-                        <button onClick={() => navigate('/analytics')} className={navLinkClass(location.pathname === '/analytics')}>
-                          {t('nav.analytics', 'Analytics')}
-                        </button>
                         <button onClick={() => navigate('/settings')} className={navLinkClass(location.pathname === '/settings')}>
                           <span className="flex items-center gap-1">
                             <Settings className="h-4 w-4" strokeWidth={1.5} />
@@ -331,7 +328,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         {(isAdmin
                           ? [
                               { path: '/admin', label: t('nav.xima_manager', 'XIMA Manager') },
-                              { path: '/analytics', label: t('nav.analytics', 'Analytics') },
                               { path: '/settings', label: t('nav.settings', 'Impostazioni') },
                             ]
                           : [

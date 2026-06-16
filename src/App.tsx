@@ -53,7 +53,7 @@ import BusinessSettings from "./pages/business/Settings";
 import BusinessJobs from "./pages/business/Jobs";
 import CreateJobOffer from "./pages/business/CreateJobOffer";
 import JobCandidateMatching from "./pages/business/JobCandidateMatching";
-import Analytics from "./pages/Analytics";
+
 import AssessmentGuide from "./pages/AssessmentGuide";
 import ChallengeAccept from "./pages/ChallengeAccept";
 import GoalCandidates from "./pages/business/GoalCandidates";
@@ -181,7 +181,7 @@ const AppContent = () => {
           {/* Legacy redirects: /business/goals/* → /business/hiring-goals/* */}
           <Route path="/business/goals/*" element={<LegacyGoalsRedirect />} />
           <Route path="/business/messages" element={<BusinessPipelineChat />} />
-          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/analytics" element={<Navigate to="/admin?tab=overview" replace />} />
           <Route path="/challenge/accept" element={<ChallengeAccept />} />
           {/* Candidate challenge completion */}
           <Route path="/candidate/challenges/:invitationId" element={<ChallengeCompletion />} />
