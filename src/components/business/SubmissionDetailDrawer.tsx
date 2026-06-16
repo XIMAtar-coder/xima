@@ -1064,6 +1064,30 @@ export function SubmissionDetailDrawer({
                 <CardTitle className="text-base">{t('business.responses.submission_content')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Custom L1 (AI-driven) answers — match q.title with payload[q.id] */}
+                {isCustomL1 && customL1Questions && customL1Questions.length > 0 && (
+                  <div className="space-y-4">
+                    {customL1Questions.map((q, idx) => {
+                      const answer = String((payload as any)?.[q.id] || '').trim();
+                      return (
+                        <div key={q.id}>
+                          <Label className="text-sm font-medium">
+                            {idx + 1}. {q.title}
+                          </Label>
+                          {q.text && (
+                            <p className="text-xs text-muted-foreground italic mt-0.5 mb-1">{q.text}</p>
+                          )}
+                          <p className="text-sm text-foreground/90 mt-1 whitespace-pre-wrap">
+                            {answer || <span className="text-muted-foreground italic">{t('business.custom_l1.no_answer', '(nessuna risposta)')}</span>}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {isCustomL1 && customL1Questions === null && (
+                  <p className="text-sm text-muted-foreground italic">{t('common.loading', 'Caricamento…')}</p>
+                )}
                 {/* Candidate preferences - only for Level 1 */}
                 {(payload.tradeoff_priority || payload.confidence) && (
                   <div className="flex flex-wrap gap-2">
