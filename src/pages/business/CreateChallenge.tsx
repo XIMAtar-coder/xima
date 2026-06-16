@@ -17,7 +17,9 @@ import {
   buildChallengePayload,
   buildCustomChallengeUpdate,
   isXimaCoreChallenge,
+  isCustomL1AiChallenge,
 } from '@/features/challenge-builder/saveChallenge';
+import CustomL1Builder from '@/features/challenge-builder/CustomL1Builder';
 import { 
   ArrowLeft, Sparkles, Loader2, Rocket, Save, Eye, Clock, 
   Target, CheckCircle2, Wand2, AlertCircle, Archive, CalendarClock
@@ -113,6 +115,7 @@ const CreateChallenge = () => {
 
   const [hiringGoal, setHiringGoal] = useState<HiringGoal | null>(null);
   const [existingChallenge, setExistingChallenge] = useState<ExistingChallenge | null>(null);
+  const [businessProfile, setBusinessProfile] = useState<{ company_name: string | null; manual_industry: string | null; snapshot_industry: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -177,12 +180,19 @@ const CreateChallenge = () => {
   }, [challengeId, goalId, challengeType, user?.id, isAuthenticated, isBusiness, businessLoading, navigate]);
 
   const loadHiringGoal = async () => {
-    const { data, error } = await supabase
-      .from('hiring_goal_drafts')
-      .select('id, role_title, task_description, experience_level, work_model, country')
-      .eq('id', goalId)
-      .eq('business_id', user?.id)
-      .single();
+    const [{ data, error }, { data: bp }] = await Promise.all([
+      supabase
+        .from('hiring_goal_drafts')
+        .select('id, role_title, task_description, experience_level, work_model, country')
+        .eq('id', goalId)
+        .eq('business_id', user?.id)
+        .single(),
+      supabase
+        .from('business_profiles')
+        .select('company_name, manual_industry, snapshot_industry')
+        .eq('user_id', user?.id)
+        .maybeSingle(),
+    ]);
 
     if (error || !data) {
       toast({
@@ -195,6 +205,7 @@ const CreateChallenge = () => {
     }
 
     setHiringGoal(data);
+    if (bp) setBusinessProfile(bp);
     if (data.role_title) {
       setTitle(`${data.role_title} Challenge`);
     }
@@ -229,6 +240,21 @@ const CreateChallenge = () => {
         description: t(
           'challenge.xima_core.not_editable_desc',
           'XIMA Core challenges cannot be edited. Archive this one and create a new challenge if you need changes.'
+        ),
+      });
+      navigate('/business/challenges');
+      return;
+    }
+
+    // GUARDRAIL: Custom L1 AI challenges are also NOT editable (same reason —
+    // the AI-generated rich payload would be silently truncated by the legacy
+    // form). Read-only redirect like XCore.
+    if (isCustomL1AiChallenge(data)) {
+      toast({
+        title: t('challenge.custom_l1.not_editable_title', 'L1 Custom challenges are read-only'),
+        description: t(
+          'challenge.custom_l1.not_editable_desc',
+          'L1 Custom (AI-driven) challenges cannot be edited. Archive this one and create a new challenge if you need changes.'
         ),
       });
       navigate('/business/challenges');
@@ -372,15 +398,28 @@ const CreateChallenge = () => {
       const trimmedCriteria = successCriteria.filter(c => c.trim());
       const effectiveGoalId = isEditMode ? existingChallenge?.hiring_goal_id : goalId;
 
-      // If activating, archive other active challenges for the same goal
+      // If activating, archive other active LEGACY-CUSTOM challenges for the
+      // same goal. XCore and Custom-AI rows are preserved (they live in
+      // separate type-scoped slots — see saveChallenge.archiveSiblingsContainsFilter).
       if (newStatus === 'active' && effectiveGoalId) {
-        await supabase
+        const { data: siblings } = await supabase
           .from('business_challenges')
-          .update({ status: 'archived', updated_at: new Date().toISOString() })
+          .select('id, rubric, config_json')
           .eq('business_id', user?.id)
           .eq('hiring_goal_id', effectiveGoalId)
           .eq('status', 'active')
           .neq('id', challengeId || '');
+
+        const legacyIds = (siblings || [])
+          .filter((s: any) => !isXimaCoreChallenge(s) && !isCustomL1AiChallenge(s))
+          .map((s: any) => s.id);
+
+        if (legacyIds.length > 0) {
+          await supabase
+            .from('business_challenges')
+            .update({ status: 'archived', updated_at: new Date().toISOString() })
+            .in('id', legacyIds);
+        }
       }
 
       if (isEditMode) {
@@ -476,6 +515,32 @@ const CreateChallenge = () => {
       <BusinessLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </BusinessLayout>
+    );
+  }
+
+  // CREATE MODE + type=custom → mount the new AI-driven Custom L1 builder.
+  // Edit mode for custom-legacy rows falls through to the legacy form below.
+  if (!isEditMode && challengeType === 'custom' && user?.id) {
+    return (
+      <BusinessLayout>
+        <div className="max-w-5xl mx-auto py-6 space-y-6">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(getBackUrl())}
+            className="gap-2 -ml-2"
+          >
+            <ArrowLeft size={16} />
+            {t('common.back')}
+          </Button>
+          <CustomL1Builder
+            businessId={user.id}
+            goalId={goalId || null}
+            hiringGoal={hiringGoal}
+            businessProfile={businessProfile}
+            returnTo={returnTo}
+          />
         </div>
       </BusinessLayout>
     );

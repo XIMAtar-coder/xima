@@ -453,12 +453,16 @@ const CreateXimaCoreChallenge = () => {
     setSaving(true);
     try {
       if (goalId) {
+        // Type-scoped: only archive OTHER active XIMA Core rows on the same
+        // goal. Custom L1 AI rows are NOT touched (XCore and Custom-AI can
+        // coexist — max 1 active each per goal).
         await supabase
           .from('business_challenges')
           .update({ status: 'archived', updated_at: new Date().toISOString() })
           .eq('business_id', user?.id)
           .eq('hiring_goal_id', goalId)
-          .eq('status', 'active');
+          .eq('status', 'active')
+          .contains('rubric', { isXimaCore: true });
       }
 
       const payload = buildChallengePayload({

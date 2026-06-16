@@ -19,6 +19,7 @@ import { MindsetChallenge } from '@/components/candidate/mindset/MindsetChalleng
 import type { MindsetConfig } from '@/components/candidate/mindset/types';
 import { L2ConversationChallenge } from '@/components/candidate/l2converse/L2ConversationChallenge';
 import type { L2ChallengeConfig } from '@/components/candidate/l2converse/types';
+import CustomL1Challenge from '@/components/candidate/customl1/CustomL1Challenge';
 import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipelineProgress';
 import { CandidateReflectionPanel } from '@/components/signals/CandidateReflectionPanel';
@@ -780,6 +781,28 @@ export default function ChallengeCompletion() {
           </Card>
         </div>
       </MainLayout>
+    );
+  }
+
+  // CUSTOM L1 AI BRANCH — runs when challenge.config_json.custom_l1_ai === true
+  // Renders the N AI-generated free-text questions and dispatches each answer
+  // to analyze-open-answer (scoring_context='l1_challenge').
+  if (challenge.configJson?.custom_l1_ai === true && invitationId) {
+    const localeFromConfig = (challenge.configJson?.params as any)?.locale;
+    const runnerLocale = (localeFromConfig || 'it') as string;
+    return (
+      <CustomL1Challenge
+        invitationId={invitationId}
+        challengeId={challenge.challengeId}
+        challengeTitle={challenge.challengeTitle}
+        scenarioMarkdownDescription={challenge.description}
+        companyName={challenge.companyName}
+        config={challenge.configJson as any}
+        locale={runnerLocale}
+        candidateProfileId={challenge.candidateProfileId}
+        businessId={challenge.businessId}
+        hiringGoalId={challenge.hiringGoalId}
+      />
     );
   }
 
