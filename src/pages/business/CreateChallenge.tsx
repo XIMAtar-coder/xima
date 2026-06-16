@@ -219,6 +219,22 @@ const CreateChallenge = () => {
       return;
     }
 
+    // GUARDRAIL: XIMA Core challenges are NOT editable through the custom builder.
+    // Mounting the custom form on an XCore row would risk persisting a partial
+    // payload (losing config_json.xima_core, evaluation_lens, expected_tensions,
+    // etc.). Redirect gently to the list with an informational toast.
+    if (isXimaCoreChallenge(data)) {
+      toast({
+        title: t('challenge.xima_core.not_editable_title', 'XIMA Core challenges are read-only'),
+        description: t(
+          'challenge.xima_core.not_editable_desc',
+          'XIMA Core challenges cannot be edited. Archive this one and create a new challenge if you need changes.'
+        ),
+      });
+      navigate('/business/challenges');
+      return;
+    }
+
     setExistingChallenge(data as unknown as ExistingChallenge);
     setTitle(data.title);
     setDescription(data.description || '');
