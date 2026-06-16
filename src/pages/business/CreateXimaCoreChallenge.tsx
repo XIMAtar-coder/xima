@@ -27,6 +27,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
 import { XIMA_CORE_CHALLENGE } from '@/lib/challenges/ximaCoreChallenge';
+import { buildChallengePayload } from '@/features/challenge-builder/saveChallenge';
 import { labelForCcnl } from '@/lib/business/ccnl';
 import {
   ArrowLeft,
