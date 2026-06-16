@@ -6,7 +6,7 @@
 // SALARY CONVENTION: salary_min/salary_max are ALWAYS gross (RAL). Net-to-gross ×1.4 at import.
 // AI MODEL ROUTING:
 //   - Haiku (claude-haiku-4-5-20251001): structural field extraction
-//   - Sonnet (claude-sonnet-4-20250514): XIMAtar archetype suggestion
+//   - Sonnet (claude-sonnet-4-6): XIMAtar archetype suggestion
 
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -197,7 +197,7 @@ serve(async (req) => {
             "content-type": "application/json",
           },
           body: JSON.stringify({
-            model: "claude-sonnet-4-20250514",
+            model: "claude-sonnet-4-6",
             max_tokens: 4096,
             tools: [{ type: "web_search_20250305", name: "web_search" }],
             messages: [{
@@ -338,7 +338,7 @@ IMPORTANT: All salary values MUST be gross annual (RAL). If the JD states a net 
           "content-type": "application/json",
         },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
+          model: "claude-sonnet-4-6",
           max_tokens: 500,
           system: `You are a behavioral profiling expert for the XIMA platform. Given a job description's role summary, responsibilities, and required skills, determine which of the 12 XIMAtar behavioral archetypes best fits the ideal candidate for this role.
 

@@ -90,7 +90,7 @@ serve(async (req) => {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         max_tokens: 1000,
         system: `You are a hiring expert helping a company define a job position. Generate contextually relevant ${fieldCfg.label} for the given role, tailored to the company's DNA and culture.
 
