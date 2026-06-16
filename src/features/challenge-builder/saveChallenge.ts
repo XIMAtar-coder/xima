@@ -234,7 +234,6 @@ export function buildChallengePayload(
       end_at: input.endAt ? new Date(input.endAt).toISOString() : null,
       difficulty: input.difficulty,
       level: 1,
-      locale: input.locale,
     };
   }
 
