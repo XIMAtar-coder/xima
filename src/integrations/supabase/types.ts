@@ -4661,6 +4661,51 @@ export type Database = {
           },
         ]
       }
+      platform_costs: {
+        Row: {
+          active: boolean
+          amount: number
+          category: Database["public"]["Enums"]["cost_category"]
+          created_at: string | null
+          created_by: string | null
+          currency: string
+          id: string
+          incurred_on: string
+          label: string
+          notes: string | null
+          recurrence: Database["public"]["Enums"]["cost_recurrence"]
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean
+          amount: number
+          category: Database["public"]["Enums"]["cost_category"]
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string
+          id?: string
+          incurred_on?: string
+          label: string
+          notes?: string | null
+          recurrence?: Database["public"]["Enums"]["cost_recurrence"]
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean
+          amount?: number
+          category?: Database["public"]["Enums"]["cost_category"]
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string
+          id?: string
+          incurred_on?: string
+          label?: string
+          notes?: string | null
+          recurrence?: Database["public"]["Enums"]["cost_recurrence"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       professionals: {
         Row: {
           avatar_path: string | null
@@ -5866,9 +5911,11 @@ export type Database = {
         Returns: boolean
       }
       admin_get_candidate_analytics: { Args: never; Returns: Json }
+      admin_get_costs_summary: { Args: never; Returns: Json }
       admin_get_interactions: { Args: { p_days?: number }; Returns: Json }
       admin_get_overview: { Args: never; Returns: Json }
       admin_get_xima_evolution: { Args: { p_limit?: number }; Returns: Json }
+      admin_list_costs: { Args: never; Returns: Json }
       admin_set_business_plan: {
         Args: {
           p_business_id: string
@@ -6318,6 +6365,13 @@ export type Database = {
       ai_message_role: "user" | "assistant" | "system" | "tool"
       app_role: "admin" | "user" | "business" | "operator"
       audience_type_enum: "candidate" | "business" | "mentor"
+      cost_category:
+        | "ai"
+        | "hosting_site"
+        | "database"
+        | "development"
+        | "other"
+      cost_recurrence: "monthly" | "one_off"
       lang_code: "it" | "en" | "es"
       membership_tier: "freemium" | "basic" | "premium" | "pro"
       thread_type_enum: "business_candidate" | "mentor_candidate"
@@ -6464,6 +6518,8 @@ export const Constants = {
       ai_message_role: ["user", "assistant", "system", "tool"],
       app_role: ["admin", "user", "business", "operator"],
       audience_type_enum: ["candidate", "business", "mentor"],
+      cost_category: ["ai", "hosting_site", "database", "development", "other"],
+      cost_recurrence: ["monthly", "one_off"],
       lang_code: ["it", "en", "es"],
       membership_tier: ["freemium", "basic", "premium", "pro"],
       thread_type_enum: ["business_candidate", "mentor_candidate"],
