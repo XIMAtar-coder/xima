@@ -135,10 +135,16 @@ export function SubmissionDetailDrawer({
   // State for L2 generation - co-located with other state
   const [isGeneratingLevel2, setIsGeneratingLevel2] = useState(false);
   const [level2Error, setLevel2Error] = useState<string | null>(null);
-  
+
+  // State for Custom L1 (AI-driven L1 challenge) — separate from generic L1 signals.
+  const [isGeneratingCustomL1, setIsGeneratingCustomL1] = useState(false);
+  const [customL1Error, setCustomL1Error] = useState<string | null>(null);
+  const [localCustomL1Signals, setLocalCustomL1Signals] = useState<any | null>(null);
+  const [customL1Questions, setCustomL1Questions] = useState<Array<{ id: string; title: string; text: string }> | null>(null);
+
   // Stable submission key for guards
   const submissionKey = submission?.submissionId ?? null;
-  
+
   // Track if drawer was ever opened for this submission (reset guard)
   const lastOpenedKeyRef = useRef<string | null>(null);
 
@@ -146,6 +152,11 @@ export function SubmissionDetailDrawer({
   const currentChallengeLevel = useMemo((): ChallengeLevel => {
     return getChallengeLevel({ rubric: challenge?.rubric });
   }, [challenge?.rubric]);
+
+  // Detect Custom L1 (AI-driven) from the submission payload.
+  const submittedFormat = (submission?.submittedPayload as any)?._format
+    ?? (submission?.submittedPayload as any)?.format;
+  const isCustomL1 = submittedFormat === 'custom_l1_ai';
 
   // Extract L2 signals from DB/submission (stable reference)
   const signalsFromDb = useMemo((): Level2SignalsPayload | null => {
