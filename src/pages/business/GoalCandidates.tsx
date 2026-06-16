@@ -219,24 +219,25 @@ const GoalCandidates: React.FC = () => {
 
   const clearSelection = () => setSelectedIds(new Set());
 
-  // Find the active XIMA Core (Level 1) challenge for this goal
+  // Find the active L1 challenge for this goal (XCore OR Custom-AI).
+  // Per product rule: a Custom L1 AI is a valid L1 alternative to XCore;
+  // either one unlocks the L1 invite.
   const getXimaCoreChallenge = async (userId: string) => {
     const { data: allChallenges } = await supabase
       .from('business_challenges')
-      .select('id, rubric, title')
+      .select('id, rubric, title, config_json')
       .eq('business_id', userId)
       .eq('hiring_goal_id', goalId)
       .in('status', ['active', 'published']);
 
     const l1Challenge = allChallenges?.find(c => {
-      // Pass rubric and title for full detection
       const rubric = c.rubric as { type?: string; isXimaCore?: boolean; level?: number } | null;
       return getChallengeLevel({ rubric, title: c.title }) === 1;
     });
     return l1Challenge || null;
   };
 
-  // Invite candidates to XIMA Core (Level 1) - primary action
+  // Invite candidates to L1 (XCore OR Custom-AI) - primary action
   const handleInviteToXimaCore = async (profileIds: string[]) => {
     if (!goalId) return;
     const { data: { user } } = await supabase.auth.getUser();
@@ -246,8 +247,8 @@ const GoalCandidates: React.FC = () => {
     
     if (!l1Challenge) {
       toast({
-        title: t('business.invite.no_xima_core_title', 'No XIMA Core challenge'),
-        description: t('business.invite.no_xima_core_desc', 'Create an active XIMA Core (Level 1) challenge first.'),
+        title: t('business.invite.no_l1_title', 'No active L1 challenge'),
+        description: t('business.invite.no_l1_desc', 'Create an active L1 challenge (XIMA Core or L1 Custom) for this goal first.'),
         variant: 'destructive'
       });
       return;
