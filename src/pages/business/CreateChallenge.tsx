@@ -507,6 +507,32 @@ const CreateChallenge = () => {
     );
   }
 
+  // CREATE MODE + type=custom → mount the new AI-driven Custom L1 builder.
+  // Edit mode for custom-legacy rows falls through to the legacy form below.
+  if (!isEditMode && challengeType === 'custom' && user?.id) {
+    return (
+      <BusinessLayout>
+        <div className="max-w-5xl mx-auto py-6 space-y-6">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(getBackUrl())}
+            className="gap-2 -ml-2"
+          >
+            <ArrowLeft size={16} />
+            {t('common.back')}
+          </Button>
+          <CustomL1Builder
+            businessId={user.id}
+            goalId={goalId || null}
+            hiringGoal={hiringGoal}
+            businessProfile={businessProfile}
+            returnTo={returnTo}
+          />
+        </div>
+      </BusinessLayout>
+    );
+  }
+
   return (
     <BusinessLayout>
       <div className="max-w-5xl mx-auto space-y-6">
