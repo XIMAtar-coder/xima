@@ -348,7 +348,7 @@ Return ONLY valid JSON:
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         max_tokens: 3072,
         messages: [{ role: "user", content: contentParts }],
         temperature: 0.5,
@@ -374,7 +374,7 @@ Return ONLY valid JSON:
       correlation_id: correlationId,
       function_name: "analyze-l3-frames",
       provider: "anthropic",
-      model_name: "claude-sonnet-4-20250514",
+      model_name: "claude-sonnet-4-6",
       model_version: "2025-05-14",
       temperature: 0.5,
       max_tokens: 4096,

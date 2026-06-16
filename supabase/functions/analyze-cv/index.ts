@@ -92,7 +92,7 @@ try {
 async function callClaudeDirectly(
   system: string,
   userContent: string | any[],
-  model = "claude-sonnet-4-20250514",
+  model = "claude-sonnet-4-6",
   maxTokens = 6000
 ): Promise<{ content: string; model: string; latencyMs: number; requestId: string }> {
   const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");

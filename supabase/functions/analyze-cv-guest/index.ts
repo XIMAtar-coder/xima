@@ -125,7 +125,7 @@ async function callClaude(system: string, userContent: any[] | string, maxTokens
   if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY not configured");
 
   const body = JSON.stringify({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: maxTokens,
     system,
     messages: [{ role: "user", content: userContent }],

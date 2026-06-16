@@ -749,7 +749,7 @@ Return ONLY the JSON object.`;
 // =====================================================
 
 const OPUS_FALLBACK_CHAIN = ['claude-opus-4-8', 'claude-opus-4-7', 'claude-opus-4-6'] as const;
-const SONNET_LAST_RESORT = 'claude-sonnet-4-20250514';
+const SONNET_LAST_RESORT = 'claude-sonnet-4-6';
 
 async function sha1Hex12(input: string): Promise<string> {
   const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(input));

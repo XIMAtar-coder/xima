@@ -23,11 +23,11 @@ import { SCORING_SCHEMA_VERSION } from "./aiClient.ts";
  */
 const MODEL_ROUTING: Record<string, string> = {
   // SONNET — complex reasoning required
-  "analyze-cv":                      "claude-sonnet-4-20250514",
-  "generate-l3-interview":           "claude-sonnet-4-20250514",
-  "analyze-l3-frames":               "claude-sonnet-4-20250514",
-  "recommend-jobs":                  "claude-sonnet-4-20250514",
-  "generate-company-profile":        "claude-sonnet-4-20250514",
+  "analyze-cv":                      "claude-sonnet-4-6",
+  "generate-l3-interview":           "claude-sonnet-4-6",
+  "analyze-l3-frames":               "claude-sonnet-4-6",
+  "recommend-jobs":                  "claude-sonnet-4-6",
+  "generate-company-profile":        "claude-sonnet-4-6",
 
   // HAIKU — structured tasks, cheaper model sufficient
   "generate-challenge":              "claude-haiku-4-5-20251001",
@@ -54,14 +54,14 @@ export function getModelForFunction(functionName: string): string {
 
 // Approximate cost estimation per model (per 1K tokens)
 const COST_PER_1K_INPUT: Record<string, number> = {
-  "claude-sonnet-4-20250514": 0.003,
+  "claude-sonnet-4-6": 0.003,
   "claude-haiku-4-5-20251001": 0.00025,
   "claude-opus-4-8": 0.005,
   "claude-opus-4-7": 0.005,
   "claude-opus-4-6": 0.005,
 };
 const COST_PER_1K_OUTPUT: Record<string, number> = {
-  "claude-sonnet-4-20250514": 0.015,
+  "claude-sonnet-4-6": 0.015,
   "claude-haiku-4-5-20251001": 0.00125,
   "claude-opus-4-8": 0.025,
   "claude-opus-4-7": 0.025,
