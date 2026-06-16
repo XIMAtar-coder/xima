@@ -78,10 +78,16 @@ const GoalShortlistPage: React.FC = () => {
               {t('shortlist.page_subtitle', 'The 12 candidates matched to this hiring goal and your company DNA.')}
             </p>
           </div>
-          <Button variant="outline" onClick={() => navigate('/business/candidates')} className="gap-2">
-            <Users className="h-4 w-4" />
-            {t('candidate_pool.title', 'Candidate Pool')}
-          </Button>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <Button variant="outline" onClick={() => navigate('/business/candidates')} className="gap-2">
+              <Users className="h-4 w-4" />
+              {t('candidate_pool.title', 'Candidate Pool')}
+            </Button>
+            <Button onClick={() => navigate(`/business/challenges/select?goal=${goalId}`)} className="gap-2">
+              <Sparkles className="h-4 w-4" />
+              {t('shortlist.create_l1_challenge', 'Crea sfida L1 / XIMA Challenge')}
+            </Button>
+          </div>
         </div>
 
         <Card className="border-border/50 bg-muted/30">
