@@ -596,8 +596,8 @@ serve(async (req) => {
     }
     if (!user) user = { id: body.business_id! };
 
-    // Legacy mode support
-    if (body.mode !== 'xima_core' && body.task_description) {
+    // Legacy mode support: only when no recognized mode is supplied.
+    if (body.mode !== 'xima_core' && body.mode !== 'l1_custom' && body.task_description) {
       return await handleLegacyGeneration(body, user.id, correlationId);
     }
 
