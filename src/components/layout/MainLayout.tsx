@@ -195,19 +195,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                   <ThemeToggle />
 
                   <div className="hidden xl:flex items-center gap-1">
-                    {isAdmin ? (
-                      <>
-                        <button onClick={() => navigate('/admin')} className={navLinkClass(location.pathname === '/admin')}>
-                          {t('nav.xima_manager', 'XIMA Manager')}
-                        </button>
-                        <button onClick={() => navigate('/settings')} className={navLinkClass(location.pathname === '/settings')}>
-                          <span className="flex items-center gap-1">
-                            <Settings className="h-4 w-4" strokeWidth={1.5} />
-                            {t('nav.settings', 'Impostazioni')}
-                          </span>
-                        </button>
-                      </>
-                    ) : (
+                        {isAdmin ? (
+                          <>
+                            <button onClick={() => navigate('/admin')} className={navLinkClass(location.pathname === '/admin')}>
+                              {t('nav.xima_manager', 'XIMA Manager')}
+                            </button>
+                          </>
+                        ) : (
                       <>
                         {!(isMentor && location.pathname.startsWith('/mentor')) && (
                           <>
@@ -328,7 +322,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         {(isAdmin
                           ? [
                               { path: '/admin', label: t('nav.xima_manager', 'XIMA Manager') },
-                              { path: '/settings', label: t('nav.settings', 'Impostazioni') },
                             ]
                           : [
                               { path: '/profile', label: t('nav.dashboard') },

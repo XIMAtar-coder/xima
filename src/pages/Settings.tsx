@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Settings } from 'lucide-react';
 import { useOnboardingState } from '@/hooks/useOnboardingState';
+import { useUser } from '@/context/UserContext';
 import MainLayout from '@/components/layout/MainLayout';
+import { supabase } from '@/integrations/supabase/client';
 import { DataExportButton } from '@/components/profile/DataExportButton';
 import { ProfilingOptOutSection } from '@/components/settings/ProfilingOptOutSection';
 import { AccountDeletionSection } from '@/components/settings/AccountDeletionSection';
