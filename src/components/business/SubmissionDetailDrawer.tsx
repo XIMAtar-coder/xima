@@ -422,6 +422,36 @@ export function SubmissionDetailDrawer({
     ? submission.submittedPayload
     : submission?.draftPayload;
 
+  // Custom L1 (AI) on-demand scoring — invokes analyze-open-answer with format:'custom_l1'.
+  const handleGenerateCustomL1Signals = async () => {
+    if (!submission?.invitationId) return;
+    if (isGeneratingCustomL1) return;
+    setIsGeneratingCustomL1(true);
+    setCustomL1Error(null);
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-open-answer', {
+        body: {
+          format: 'custom_l1',
+          invitation_id: submission.invitationId,
+          challenge_id: challengeId,
+          language: i18n.language,
+        },
+      });
+      if (error) throw error;
+      const sig = (data as any)?.signals_payload;
+      if (sig) setLocalCustomL1Signals(sig);
+      onSignalsGenerated?.();
+      toast({ title: t('business.compare.signals_generated', 'Segnali generati') });
+    } catch (err) {
+      console.error('[CustomL1] signals generation failed:', err);
+      const msg = err instanceof Error ? err.message : String(err);
+      setCustomL1Error(msg);
+      toast({ title: t('common.error', 'Errore'), description: msg, variant: 'destructive' });
+    } finally {
+      setIsGeneratingCustomL1(false);
+    }
+  };
+
   const handleGenerateSignals = async () => {
     if (!submission?.submissionId || !payload) return;
 
