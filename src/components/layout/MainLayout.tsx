@@ -327,15 +327,22 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                       </>
                     ) : (
                       <>
-                        {[
-                          { path: '/profile', label: t('nav.dashboard') },
-                          { path: '/chat', label: t('nav.feed') },
-                          { path: '/messages', label: t('nav.messages') },
-                          { path: '/jobs', label: t('nav.browse_jobs', 'Offerte di Lavoro') },
-                          { path: '/my-offers', label: t('nav.my_offers', 'Le Tue Offerte') },
-                          { path: '/development-plan', label: t('nav.tests') },
-                          { path: '/settings', label: t('nav.settings', 'Impostazioni') },
-                        ].map(({ path, label }) => (
+                        {(isAdmin
+                          ? [
+                              { path: '/admin', label: t('nav.xima_manager', 'XIMA Manager') },
+                              { path: '/analytics', label: t('nav.analytics', 'Analytics') },
+                              { path: '/settings', label: t('nav.settings', 'Impostazioni') },
+                            ]
+                          : [
+                              { path: '/profile', label: t('nav.dashboard') },
+                              { path: '/chat', label: t('nav.feed') },
+                              { path: '/messages', label: t('nav.messages') },
+                              { path: '/jobs', label: t('nav.browse_jobs', 'Offerte di Lavoro') },
+                              { path: '/my-offers', label: t('nav.my_offers', 'Le Tue Offerte') },
+                              { path: '/development-plan', label: t('nav.tests') },
+                              { path: '/settings', label: t('nav.settings', 'Impostazioni') },
+                            ]
+                        ).map(({ path, label }) => (
                           <button
                             key={path}
                             onClick={() => { navigate(path); setMobileMenuOpen(false); }}
@@ -344,6 +351,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                             {label}
                           </button>
                         ))}
+
                         <button
                           onClick={() => { setGuideOpen(true); setMobileMenuOpen(false); }}
                           className="text-left text-[15px] font-medium text-muted-foreground hover:text-foreground hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.08)] rounded-[10px] px-3 py-3 min-h-[48px] flex items-center gap-2 transition-all duration-200"
