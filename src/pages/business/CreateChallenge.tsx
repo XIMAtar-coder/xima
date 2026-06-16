@@ -246,6 +246,21 @@ const CreateChallenge = () => {
       return;
     }
 
+    // GUARDRAIL: Custom L1 AI challenges are also NOT editable (same reason —
+    // the AI-generated rich payload would be silently truncated by the legacy
+    // form). Read-only redirect like XCore.
+    if (isCustomL1AiChallenge(data)) {
+      toast({
+        title: t('challenge.custom_l1.not_editable_title', 'L1 Custom challenges are read-only'),
+        description: t(
+          'challenge.custom_l1.not_editable_desc',
+          'L1 Custom (AI-driven) challenges cannot be edited. Archive this one and create a new challenge if you need changes.'
+        ),
+      });
+      navigate('/business/challenges');
+      return;
+    }
+
     setExistingChallenge(data as unknown as ExistingChallenge);
     setTitle(data.title);
     setDescription(data.description || '');
