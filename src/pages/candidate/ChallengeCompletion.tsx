@@ -784,6 +784,28 @@ export default function ChallengeCompletion() {
     );
   }
 
+  // CUSTOM L1 AI BRANCH — runs when challenge.config_json.custom_l1_ai === true
+  // Renders the N AI-generated free-text questions and dispatches each answer
+  // to analyze-open-answer (scoring_context='l1_challenge').
+  if (challenge.configJson?.custom_l1_ai === true && invitationId) {
+    const localeFromConfig = (challenge.configJson?.params as any)?.locale;
+    const runnerLocale = (localeFromConfig || 'it') as string;
+    return (
+      <CustomL1Challenge
+        invitationId={invitationId}
+        challengeId={challenge.challengeId}
+        challengeTitle={challenge.challengeTitle}
+        scenarioMarkdownDescription={challenge.description}
+        companyName={challenge.companyName}
+        config={challenge.configJson as any}
+        locale={runnerLocale}
+        candidateProfileId={challenge.candidateProfileId}
+        businessId={challenge.businessId}
+        hiringGoalId={challenge.hiringGoalId}
+      />
+    );
+  }
+
   // MINDSET BRANCH — runs only when challenge.config_json.experience === 'mindset'
   // No countdown, no end_at gating, no free-text form.
   if (challenge.configJson?.experience === 'mindset' && invitationId) {
