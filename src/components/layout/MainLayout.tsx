@@ -269,21 +269,24 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                   </div>
 
 
-                  {/* Credits badge — desktop only */}
-                  <div className="hidden xl:flex items-center gap-3">
-                    {!headerData.isLoading && headerData.ximatarImage && (
-                      <img
-                        src={headerData.ximatarImage}
-                        alt="XIMAtar"
-                        className="w-8 h-8 xl:w-9 xl:h-9 rounded-[18px] object-cover border border-[var(--divider)] shadow-sm"
-                      />
-                    )}
-                    {!headerData.isLoading && headerData.totalScore > 0 && (
-                      <span className="text-sm font-semibold text-secondary">
-                        {headerData.totalScore}
-                      </span>
-                    )}
-                  </div>
+                  {/* Credits badge — desktop only, hidden for admins */}
+                  {!isAdmin && (
+                    <div className="hidden xl:flex items-center gap-3">
+                      {!headerData.isLoading && headerData.ximatarImage && (
+                        <img
+                          src={headerData.ximatarImage}
+                          alt="XIMAtar"
+                          className="w-8 h-8 xl:w-9 xl:h-9 rounded-[18px] object-cover border border-[var(--divider)] shadow-sm"
+                        />
+                      )}
+                      {!headerData.isLoading && headerData.totalScore > 0 && (
+                        <span className="text-sm font-semibold text-secondary">
+                          {headerData.totalScore}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
 
                   <Button variant="ghost" size="sm" onClick={handleLogout} className="hidden md:inline-flex">
                     {t('nav.logout')}
