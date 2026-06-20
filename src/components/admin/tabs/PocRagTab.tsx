@@ -38,6 +38,7 @@ export default function PocRagTab() {
   const [mode, setMode] = useState<Mode>("rerank");
   const [k, setK] = useState(10);
   const [sampleSize, setSampleSize] = useState(80);
+  const [sampleStrategy, setSampleStrategy] = useState<"recent" | "rich">("recent");
 
   const [busy, setBusy] = useState<string | null>(null);
   const [baseline, setBaseline] = useState<Row[]>([]);
@@ -45,6 +46,7 @@ export default function PocRagTab() {
   const [overlap, setOverlap] = useState<number | null>(null);
   const [novelty, setNovelty] = useState<number | null>(null);
   const [embeddedCount, setEmbeddedCount] = useState<number | null>(null);
+  const [richAvailable, setRichAvailable] = useState<number | null>(null);
   const [refs, setRefs] = useState<Record<string, string>>({});
   const [sanity, setSanity] = useState<Record<string, Sanity>>({});
   const [goalLocation, setGoalLocation] = useState<string | null>(null);
@@ -64,25 +66,28 @@ export default function PocRagTab() {
       setGoals(list);
       if (!goalId && list.length) setGoalId(list[0].id);
     })();
-    refreshEmbedded();
+    refreshPoolStats();
   }, []);
 
-  async function refreshEmbedded() {
-    const { count } = await supabase
-      .from("poc_candidate_embeddings")
-      .select("id", { head: true, count: "exact" });
-    setEmbeddedCount(count ?? 0);
+  async function refreshPoolStats() {
+    const { data, error } = await supabase.functions.invoke("poc-embed", {
+      body: { scope: "pool_stats" },
+    });
+    if (error) return;
+    setEmbeddedCount(data?.embedded_count ?? 0);
+    setRichAvailable(data?.rich_available ?? null);
   }
 
   async function embedSample() {
     setBusy("embed-candidates");
     const { data, error } = await supabase.functions.invoke("poc-embed", {
-      body: { scope: "candidates", candidate_limit: sampleSize },
+      body: { scope: "candidates", candidate_limit: sampleSize, sample_strategy: sampleStrategy },
     });
     setBusy(null);
     if (error) { toast.error(error.message); return; }
-    toast.success(`Sample embedded: ${data?.results?.embedded ?? 0} new, ${data?.results?.skipped ?? 0} cached`);
-    refreshEmbedded();
+    if (typeof data?.rich_available === "number") setRichAvailable(data.rich_available);
+    toast.success(`Sample (${sampleStrategy}) embedded: ${data?.results?.embedded ?? 0} new, ${data?.results?.skipped ?? 0} cached`);
+    refreshPoolStats();
   }
 
   async function embedGoal() {
