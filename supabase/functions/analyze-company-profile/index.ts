@@ -73,9 +73,6 @@ serve(async (req) => {
     // Service role for DB writes
     const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
-    // Fetch and aggregate website text (homepage + likely subpages)
-    const pages = [website];
-    try {
     // Fetch and aggregate website text (homepage + likely subpages) — SSRF-guarded
     const pages: string[] = [safeWebsiteUrl];
     try {
