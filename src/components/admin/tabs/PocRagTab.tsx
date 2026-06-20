@@ -369,16 +369,12 @@ export default function PocRagTab() {
             {baseline.length === 0 ? (
               <p className="text-sm text-muted-foreground flex items-center gap-2"><AlertCircle className="h-4 w-4" /> Nessun risultato. Run compare.</p>
             ) : (
-              <ol className="space-y-1 text-sm font-mono">
-                {baseline.slice(0, k).map((r, i) => (
-                  <li key={r.candidate_user_id} className="flex items-center justify-between">
-                    <span>
-                      <span className="text-muted-foreground">#{i + 1}</span> {refs[r.candidate_user_id] || "…"}
-                    </span>
-                    <span className="text-xs text-muted-foreground">score {r.total_score?.toFixed(1)}</span>
-                  </li>
-                ))}
-              </ol>
+              <>
+                <ol className="space-y-0">
+                  {baseline.slice(0, k).map((r, i) => renderRow(r, i))}
+                </ol>
+                {renderSummary(baseline.slice(0, k))}
+              </>
             )}
           </CardContent>
         </Card>
@@ -389,20 +385,15 @@ export default function PocRagTab() {
             {semantic.length === 0 ? (
               <p className="text-sm text-muted-foreground flex items-center gap-2"><AlertCircle className="h-4 w-4" /> Nessun risultato.</p>
             ) : (
-              <ol className="space-y-1 text-sm font-mono">
-                {semantic.map((r, i) => {
-                  const isNew = mode === "discovery" && !baselineIds.has(r.candidate_user_id);
-                  return (
-                    <li key={r.candidate_user_id} className="flex items-center justify-between gap-2">
-                      <span className="truncate">
-                        <span className="text-muted-foreground">#{i + 1}</span> {refs[r.candidate_user_id] || "…"}
-                        {isNew && <Badge variant="default" className="ml-2 text-[10px] py-0">NUOVO</Badge>}
-                      </span>
-                      <span className="text-xs text-muted-foreground">sim {r.similarity?.toFixed(3)}</span>
-                    </li>
-                  );
-                })}
-              </ol>
+              <>
+                <ol className="space-y-0">
+                  {semantic.map((r, i) => {
+                    const isNew = mode === "discovery" && !baselineIds.has(r.candidate_user_id);
+                    return renderRow(r, i, isNew ? <Badge variant="default" className="ml-2 text-[10px] py-0">NUOVO</Badge> : null);
+                  })}
+                </ol>
+                {renderSummary(semantic)}
+              </>
             )}
           </CardContent>
         </Card>
