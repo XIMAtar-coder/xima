@@ -271,6 +271,7 @@ export default function CostsTab() {
   const { toast } = useToast();
   const qc = useQueryClient();
   const summary = useCostsSummary();
+  const aiCosts = useAiCostsSummary();
   const list = useCostsList();
 
   const refresh = () => {
