@@ -6093,11 +6093,54 @@ export type Database = {
         }
         Returns: boolean
       }
+      admin_get_ai_budget_overview: { Args: never; Returns: Json }
+      admin_get_ai_by_function: {
+        Args: { p_days?: number }
+        Returns: {
+          avg_latency_ms: number
+          cost_usd: number
+          function_name: string
+          invocations: number
+          success_rate: number
+        }[]
+      }
+      admin_get_ai_by_model: {
+        Args: { p_days?: number }
+        Returns: {
+          avg_latency_ms: number
+          cost_usd: number
+          invocations: number
+          model_name: string
+        }[]
+      }
+      admin_get_ai_cache_stats: { Args: never; Returns: Json }
       admin_get_ai_costs_summary: { Args: never; Returns: Json }
+      admin_get_ai_daily_trend: {
+        Args: { p_days?: number }
+        Returns: {
+          cost_usd: number
+          day: string
+          errors: number
+          invocations: number
+        }[]
+      }
+      admin_get_ai_quality_kpis: { Args: { p_days?: number }; Returns: Json }
+      admin_get_ai_recent_errors: {
+        Args: { p_limit?: number }
+        Returns: {
+          correlation_id: string
+          error_code: string
+          function_name: string
+          invoked_at: string
+          latency_ms: number
+          model_name: string
+        }[]
+      }
       admin_get_candidate_analytics: { Args: never; Returns: Json }
       admin_get_costs_summary: { Args: never; Returns: Json }
       admin_get_interactions: { Args: { p_days?: number }; Returns: Json }
       admin_get_overview: { Args: never; Returns: Json }
+      admin_get_quality_indicators: { Args: { p_days?: number }; Returns: Json }
       admin_get_xima_evolution: { Args: { p_limit?: number }; Returns: Json }
       admin_list_costs: { Args: never; Returns: Json }
       admin_set_business_plan: {
