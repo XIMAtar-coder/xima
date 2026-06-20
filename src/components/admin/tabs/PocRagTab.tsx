@@ -168,7 +168,7 @@ export default function PocRagTab() {
         if (!refMap[r.candidate_user_id]) refMap[r.candidate_user_id] = await md5Hex(r.candidate_user_id);
       }
       setRefs(refMap);
-      refreshEmbedded();
+      refreshPoolStats();
     } catch (err: any) {
       toast.error(err?.message || String(err));
     } finally {
