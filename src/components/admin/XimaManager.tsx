@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Shield, BarChart3, Users, Activity, Wrench, LineChart, Wallet, Sparkles, Radio, BrainCircuit } from 'lucide-react';
+import { Shield, BarChart3, Users, Activity, Wrench, LineChart, Wallet, Sparkles, Radio, BrainCircuit, TrendingUp } from 'lucide-react';
 import OverviewTab from './tabs/OverviewTab';
 import InteractionsTab from './tabs/InteractionsTab';
 import CandidatesTab from './tabs/CandidatesTab';
@@ -11,6 +11,7 @@ import CostsTab from './tabs/CostsTab';
 import PocRagTab from './tabs/PocRagTab';
 import ActivityTab from './tabs/ActivityTab';
 import AIQualityTab from './tabs/AIQualityTab';
+import AnalyticsTab from './tabs/AnalyticsTab';
 
 const TABS = [
   { value: 'overview', label: 'Overview', icon: BarChart3 },
