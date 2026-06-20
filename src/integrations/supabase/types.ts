@@ -6136,9 +6136,30 @@ export type Database = {
           model_name: string
         }[]
       }
+      admin_get_business_funnel: { Args: { p_days?: number }; Returns: Json }
       admin_get_candidate_analytics: { Args: never; Returns: Json }
+      admin_get_candidate_funnel: { Args: { p_days?: number }; Returns: Json }
       admin_get_costs_summary: { Args: never; Returns: Json }
+      admin_get_feed_overview: { Args: { p_days?: number }; Returns: Json }
       admin_get_interactions: { Args: { p_days?: number }; Returns: Json }
+      admin_get_metrics_catalog: {
+        Args: never
+        Returns: {
+          days: number
+          first_day: string
+          last_day: string
+          metric_name: string
+          total: number
+        }[]
+      }
+      admin_get_metrics_trend: {
+        Args: { p_days?: number; p_metric_names: string[] }
+        Returns: {
+          metric_date: string
+          metric_name: string
+          metric_value: number
+        }[]
+      }
       admin_get_overview: { Args: never; Returns: Json }
       admin_get_quality_indicators: { Args: { p_days?: number }; Returns: Json }
       admin_get_xima_evolution: { Args: { p_limit?: number }; Returns: Json }
