@@ -338,12 +338,19 @@ export async function callAiGateway(
   const outputLen = content.length;
   const redactedOutput = `len=${outputLen},truncated=${content.substring(0, 60).replace(/[^a-zA-Z0-9_:={},\s]/g, '.')}`;
 
+  // Token usage from Lovable Gateway (OpenAI-compatible)
+  const usage = data.usage || {};
+  const inputTokens = usage.prompt_tokens ?? usage.input_tokens ?? null;
+  const outputTokens = usage.completion_tokens ?? usage.output_tokens ?? null;
+
   persistInvocationEnvelope({
     ...baseEnvelope,
     output_summary: redactedOutput,
     status: "success",
     error_code: null,
     latency_ms: latencyMs,
+    input_tokens: inputTokens,
+    output_tokens: outputTokens,
   }); // intentionally not awaited on success path for latency
 
   return { content, model: selectedModel, latencyMs, requestId };
