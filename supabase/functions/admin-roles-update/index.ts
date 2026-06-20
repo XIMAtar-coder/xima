@@ -49,16 +49,31 @@ serve(async (req) => {
     const { data: target, error: tErr } = await svc.auth.admin.getUserById(target_user_id);
     if (tErr || !target?.user) return json({ error: "Target user not found" }, 404);
 
+    let last_audit_error: string | null = null;
     const audit = async (action: string, metadata: Record<string, unknown> = {}) => {
-      await svc.from("audit_events").insert({
+      const payload = {
         actor_type: "admin",
         actor_id: user.id,
         action,
         entity_type: "user_roles",
         entity_id: target_user_id,
         correlation_id,
-        metadata: { role, ...metadata },
-      });
+        metadata: { role, target_user_id, ...metadata },
+      };
+      const { error } = await svc.from("audit_events").insert(payload);
+      if (error) {
+        last_audit_error = error.message;
+        console.error("[admin-roles-update] audit insert failed", {
+          action,
+          correlation_id,
+          code: (error as any).code,
+          message: error.message,
+          details: (error as any).details,
+          hint: (error as any).hint,
+        });
+      } else {
+        console.log("[admin-roles-update] audit inserted", { action, correlation_id, target_user_id });
+      }
     };
 
     if (op === "grant") {
