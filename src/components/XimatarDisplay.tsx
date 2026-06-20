@@ -22,7 +22,7 @@ export const XimatarDisplay: React.FC<XimatarDisplayProps> = ({
   };
   return <div className="flex flex-col items-center text-center space-y-2">
       <div className={`${sizeClasses[size]} rounded-full overflow-hidden border-2 border-primary/20`}>
-        <img src={ximatar.image} alt={ximatar.title} className="w-full h-full object-cover" />
+        <img loading="lazy" decoding="async" src={ximatar.image} alt={ximatar.title} className="w-full h-full object-cover" />
       </div>
       <div>
         

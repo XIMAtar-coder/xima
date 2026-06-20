@@ -161,7 +161,7 @@ const Messages = () => {
                           <div className="flex items-center gap-3">
                             <Avatar className="h-10 w-10 border-2 border-background">
                               {thread.other_user.ximatar && (
-                                <AvatarImage src={`/ximatars/${thread.other_user.ximatar}.png`} alt="" />
+                                <AvatarImage src={`/ximatars/${thread.other_user.ximatar}.png`} alt="" loading="lazy" decoding="async" />
                               )}
                               <AvatarFallback className="bg-primary/10 text-primary text-sm">
                                 {initials(thread.other_user.name)}
@@ -212,7 +212,7 @@ const Messages = () => {
                       </Button>
                       <Avatar className="h-10 w-10 border-2 border-primary/20">
                         {selectedThreadData.other_user.ximatar && (
-                          <AvatarImage src={`/ximatars/${selectedThreadData.other_user.ximatar}.png`} alt="" />
+                          <AvatarImage src={`/ximatars/${selectedThreadData.other_user.ximatar}.png`} alt="" loading="lazy" decoding="async" />
                         )}
                         <AvatarFallback className="bg-primary/10 text-primary">
                           {initials(selectedThreadData.other_user.name)}

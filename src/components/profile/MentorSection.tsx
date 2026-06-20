@@ -460,7 +460,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
           {/* Mentor Identity Section */}
           <div className="flex items-start gap-4">
             <Avatar className="h-16 w-16 border-2 border-primary/20 ring-2 ring-background shadow-md">
-              <AvatarImage src={photoUrl} alt={displayName || t('profile.your_mentor')} />
+              <AvatarImage src={photoUrl} alt={displayName || t('profile.your_mentor')} loading="lazy" decoding="async" />
               <AvatarFallback className="bg-primary/10 text-primary text-xl font-semibold">
                 {(displayName || '?').charAt(0)}
               </AvatarFallback>

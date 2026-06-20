@@ -145,9 +145,13 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
 
           <div className="text-center mb-4">
             <div className="w-20 h-20 rounded-full mx-auto mb-3 overflow-hidden border-2 border-primary/50">
-              <img 
-                src={ximatarImage} 
-                alt={ximatarLabel} 
+              <img
+                src={ximatarImage}
+                alt={ximatarLabel}
+                width={80}
+                height={80}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/placeholder.svg';
@@ -330,9 +334,13 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
         <DialogContent className="bg-card border-border max-w-2xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-3">
-              <img 
-                src={ximatarImage} 
-                alt={ximatarLabel} 
+              <img
+                src={ximatarImage}
+                alt={ximatarLabel}
+                width={48}
+                height={48}
+                loading="lazy"
+                decoding="async"
                 className="w-12 h-12 rounded-full object-cover border-2 border-primary/50"
               />
               <div>

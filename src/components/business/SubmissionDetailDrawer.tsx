@@ -640,7 +640,7 @@ export function SubmissionDetailDrawer({
               {/* Candidate Header — Anonymous display */}
               <div className="flex items-center gap-3">
                 <Avatar className="h-12 w-12">
-                  <AvatarImage src={`/ximatars/${(submission.ximatarArchetype || 'fox').toLowerCase()}.png`} />
+                  <AvatarImage src={`/ximatars/${(submission.ximatarArchetype || 'fox').toLowerCase()}.png`} loading="lazy" decoding="async" />
                   <AvatarFallback>
                     <User className="h-6 w-6" />
                   </AvatarFallback>

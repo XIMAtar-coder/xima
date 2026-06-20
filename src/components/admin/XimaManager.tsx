@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Shield, BarChart3, Users, Activity, Wrench, LineChart, Wallet, Sparkles, Radio, BrainCircuit, TrendingUp, Inbox, ScrollText, ShieldCheck } from 'lucide-react';
+import { Shield, BarChart3, Users, Activity, Wrench, LineChart, Wallet, Sparkles, Radio, BrainCircuit, TrendingUp, Inbox, ScrollText, ShieldCheck, ImageIcon } from 'lucide-react';
 import OverviewTab from './tabs/OverviewTab';
 import InteractionsTab from './tabs/InteractionsTab';
 import CandidatesTab from './tabs/CandidatesTab';
@@ -15,6 +15,7 @@ import AnalyticsTab from './tabs/AnalyticsTab';
 import RequestsTab from './tabs/RequestsTab';
 import AuditTab from './tabs/AuditTab';
 import RolesTab from './tabs/RolesTab';
+import MediaTab from './tabs/MediaTab';
 
 const TABS = [
   { value: 'overview', label: 'Overview', icon: BarChart3 },
@@ -29,6 +30,7 @@ const TABS = [
   { value: 'requests', label: 'Richieste', icon: Inbox },
   { value: 'audit', label: 'Audit', icon: ScrollText },
   { value: 'roles', label: 'Roles', icon: ShieldCheck },
+  { value: 'media', label: 'Media', icon: ImageIcon },
   { value: 'poc-rag', label: 'PoC RAG', icon: Sparkles },
 ] as const;
 
@@ -75,6 +77,7 @@ export default function XimaManager() {
         <TabsContent value="requests"><RequestsTab /></TabsContent>
         <TabsContent value="audit"><AuditTab /></TabsContent>
         <TabsContent value="roles"><RolesTab /></TabsContent>
+        <TabsContent value="media"><MediaTab /></TabsContent>
         <TabsContent value="poc-rag"><PocRagTab /></TabsContent>
       </Tabs>
     </div>

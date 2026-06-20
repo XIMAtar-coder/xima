@@ -29,7 +29,7 @@ export const FeedChatThreadCard = ({ thread, threadType, contextLabel, onOpen }:
       <CardContent className="py-3 px-4">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10 border-2 border-primary/10">
-            {ximatarSrc && <AvatarImage src={ximatarSrc} alt="" />}
+            {ximatarSrc && <AvatarImage src={ximatarSrc} alt="" loading="lazy" decoding="async" />}
             <AvatarFallback className="bg-primary/10 text-primary text-xs">
               {getInitials(thread.other_user.name)}
             </AvatarFallback>

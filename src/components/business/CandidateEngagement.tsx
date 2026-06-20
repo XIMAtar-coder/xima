@@ -163,7 +163,7 @@ export const CandidateEngagement = () => {
                 >
                   <div className="flex items-center gap-3">
                     <Avatar>
-                      <AvatarImage src={candidate.avatar} />
+                      <AvatarImage src={candidate.avatar} loading="lazy" decoding="async" />
                       <AvatarFallback>
                         {candidate.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>

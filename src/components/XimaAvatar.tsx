@@ -22,9 +22,11 @@ const XimaAvatar: React.FC<XimaAvatarProps> = ({
   return (
     <div className={`flex flex-col items-center ${showDetails ? 'space-y-4' : ''}`}>
       <div className={`${sizeClasses[size]} rounded-full overflow-hidden border-4 border-primary bg-background flex items-center justify-center`}>
-        <img 
-          src={avatar.image || "/placeholder.svg"} 
-          alt={`${avatar.animal} Avatar`} 
+        <img
+          src={avatar.image || "/placeholder.svg"}
+          alt={`${avatar.animal} Avatar`}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover"
         />
       </div>

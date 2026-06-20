@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { Upload, X, Image, Loader2, CheckCircle } from 'lucide-react';
+import { prepareImageForUpload } from '@/lib/images/prepareImageForUpload';
 
 interface MentorAvatarUploadProps {
   mentorId: string;
@@ -67,9 +68,9 @@ export function MentorAvatarUpload({
     setUploadProgress(0);
 
     try {
-      // Get file extension
-      const ext = selectedFile.name.split('.').pop()?.toLowerCase() || 'jpg';
-      const fileName = `avatar.${ext}`;
+      // Downscale + webp before upload (EXIF-safe)
+      const prepared = await prepareImageForUpload(selectedFile, { longSide: 512 });
+      const fileName = `avatar.${prepared.ext}`;
       const filePath = `${mentorId}/${fileName}`;
 
       // Simulate progress (Supabase doesn't provide upload progress)
@@ -80,9 +81,10 @@ export function MentorAvatarUpload({
       // Upload to storage
       const { error: uploadError } = await supabase.storage
         .from('mentor-avatars')
-        .upload(filePath, selectedFile, {
-          cacheControl: '3600',
+        .upload(filePath, prepared.file, {
+          cacheControl: '604800',
           upsert: true,
+          contentType: prepared.file.type,
         });
 
       clearInterval(progressInterval);

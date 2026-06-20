@@ -380,7 +380,7 @@ const AssessmentGuide = () => {
             >
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="w-5 h-5 text-primary animate-bounce" />
-                <span className="font-semibold inline-flex items-center gap-2">{t('assessmentGuide.example_result_label')} <img src="/ximatars/fox.png" alt="XIMAtar Fox" className="h-6 w-6 rounded-full object-cover bg-muted/40 ring-1 ring-border/40 inline-block" /></span>
+                <span className="font-semibold inline-flex items-center gap-2">{t('assessmentGuide.example_result_label')} <img loading="lazy" decoding="async" src="/ximatars/fox.png" alt="XIMAtar Fox" className="h-6 w-6 rounded-full object-cover bg-muted/40 ring-1 ring-border/40 inline-block" /></span>
               </div>
               <p className="text-sm text-muted-foreground">
                 {t('assessmentGuide.example_result_body')}
@@ -423,7 +423,7 @@ const AssessmentGuide = () => {
                 style={{ transitionDelay: `${index * 50}ms` }}
               >
                 <div className="w-12 h-12 mx-auto mb-2 flex items-center justify-center">
-                  <img 
+                  <img loading="lazy" decoding="async" 
                     src={ximatar.image} 
                     alt={`XIMAtar ${ximatar.name}`}
                     className="h-10 w-10 rounded-full object-cover bg-muted/40 ring-1 ring-border/40 p-0.5 transition-transform duration-300 group-hover:scale-125"

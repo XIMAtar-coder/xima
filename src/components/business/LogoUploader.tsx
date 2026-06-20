@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { prepareImageForUpload } from '@/lib/images/prepareImageForUpload';
+import { OptimizedImage } from '@/components/ui/OptimizedImage';
 
 interface LogoUploaderProps {
   currentLogo?: string | null;
@@ -33,12 +35,17 @@ export const LogoUploader = ({ currentLogo, onUpload }: LogoUploaderProps) => {
       const user = (await supabase.auth.getUser()).data.user;
       if (!user) throw new Error('Not authenticated');
 
-      const ext = file.name.split('.').pop();
-      const filePath = `${user.id}/logo-${Date.now()}.${ext}`;
+      // SVG passthrough; raster → webp 512px (EXIF-safe).
+      const prepared = await prepareImageForUpload(file, { longSide: 512 });
+      const filePath = `${user.id}/logo-${Date.now()}.${prepared.ext}`;
 
       const { error: uploadError } = await supabase.storage
         .from('business-logos')
-        .upload(filePath, file, { upsert: true, cacheControl: '3600' });
+        .upload(filePath, prepared.file, {
+          upsert: true,
+          cacheControl: '604800',
+          contentType: prepared.file.type,
+        });
       if (uploadError) throw uploadError;
 
       const { data: urlData } = supabase.storage
@@ -67,7 +74,15 @@ export const LogoUploader = ({ currentLogo, onUpload }: LogoUploaderProps) => {
     <div className="flex items-center gap-4">
       <div className="relative w-20 h-20 rounded-xl border-2 border-dashed border-border overflow-hidden bg-muted flex items-center justify-center">
         {currentLogo ? (
-          <img src={currentLogo} alt="Company logo" className="w-full h-full object-contain" />
+          <OptimizedImage
+            src={currentLogo}
+            alt="Company logo"
+            width={80}
+            height={80}
+            objectFit="contain"
+            className="w-full h-full"
+            fallback={<Building2 className="w-8 h-8 text-muted-foreground" />}
+          />
         ) : (
           <Building2 className="w-8 h-8 text-muted-foreground" />
         )}
