@@ -46,6 +46,9 @@ export default function PocRagTab() {
   const [novelty, setNovelty] = useState<number | null>(null);
   const [embeddedCount, setEmbeddedCount] = useState<number | null>(null);
   const [refs, setRefs] = useState<Record<string, string>>({});
+  const [sanity, setSanity] = useState<Record<string, Sanity>>({});
+  const [goalLocation, setGoalLocation] = useState<string | null>(null);
+  const [goalWorkModel, setGoalWorkModel] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
