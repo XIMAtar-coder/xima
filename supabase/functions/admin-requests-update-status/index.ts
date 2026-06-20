@@ -76,8 +76,8 @@ serve(async (req) => {
 
     if (upsertErr) return json({ error: upsertErr.message }, 500);
 
-    // Audit — actor_id must be set explicitly under service role
-    await svc.from("audit_events").insert({
+    // Audit — service role bypasses RLS; log any failure explicitly
+    const { error: auditErr } = await svc.from("audit_events").insert({
       actor_type: "admin",
       actor_id: adminUserId,
       action: "request.status_changed",
@@ -91,8 +91,16 @@ serve(async (req) => {
         note,
       },
     });
+    if (auditErr) {
+      console.error("[admin-requests-update-status] audit insert failed", {
+        code: (auditErr as any).code,
+        message: auditErr.message,
+        details: (auditErr as any).details,
+        hint: (auditErr as any).hint,
+      });
+    }
 
-    return json({ ok: true, record: upserted });
+    return json({ ok: true, record: upserted, audit_error: auditErr?.message ?? null });
   } catch (e) {
     console.error("[admin-requests-update-status]", e instanceof Error ? e.message : e);
     return json({ error: "Internal error" }, 500);
