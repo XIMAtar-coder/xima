@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,16 @@ import { toast } from "sonner";
 
 type Mode = "rerank" | "discovery";
 type Row = { candidate_user_id: string; similarity?: number; total_score?: number };
+type Sanity = {
+  assessment_total: number | null;
+  candidate_location: string | null;
+  candidate_work_preference: string | null;
+  goal_location: string | null;
+  goal_work_model: string | null;
+  location_match: "same_region" | "same_country" | "different" | "unknown";
+  work_match: "match" | "mismatch" | "unknown";
+  doc_chars: number | null;
+};
 
 async function md5Hex(input: string): Promise<string> {
   // Lightweight ref hash (not crypto): xmur3 + cyrb53 isn't necessary; we
@@ -36,6 +46,9 @@ export default function PocRagTab() {
   const [novelty, setNovelty] = useState<number | null>(null);
   const [embeddedCount, setEmbeddedCount] = useState<number | null>(null);
   const [refs, setRefs] = useState<Record<string, string>>({});
+  const [sanity, setSanity] = useState<Record<string, Sanity>>({});
+  const [goalLocation, setGoalLocation] = useState<string | null>(null);
+  const [goalWorkModel, setGoalWorkModel] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -88,6 +101,7 @@ export default function PocRagTab() {
     if (!goalId) return;
     setBusy("run");
     setBaseline([]); setSemantic([]); setOverlap(null); setNovelty(null);
+    setSanity({}); setGoalLocation(null); setGoalWorkModel(null);
 
     try {
       // 1) Baseline dry_run
@@ -139,6 +153,9 @@ export default function PocRagTab() {
       setSemantic(sList);
       setOverlap(sData?.overlap_count ?? null);
       setNovelty(sData?.novelty_count ?? null);
+      setSanity((sData?.sanity || {}) as Record<string, Sanity>);
+      setGoalLocation(sData?.goal_location ?? null);
+      setGoalWorkModel(sData?.goal_work_model ?? null);
 
       // 5) Build display refs
       const refMap: Record<string, string> = {};
@@ -158,19 +175,44 @@ export default function PocRagTab() {
   const semanticIds = useMemo(() => new Set(semantic.map((r) => r.candidate_user_id)), [semantic]);
 
   function exportCsv() {
-    const rows: string[] = ["rank,baseline_ref,baseline_score,semantic_ref,similarity,is_new"];
+    const header = [
+      "rank",
+      "baseline_ref", "baseline_score", "b_assessment_total", "b_candidate_location", "b_location_match", "b_work_match", "b_doc_chars",
+      "semantic_ref", "similarity", "is_new", "s_assessment_total", "s_candidate_location", "s_location_match", "s_work_match", "s_doc_chars",
+      "goal_location", "goal_work_model",
+    ];
+    const rows: string[] = [header.join(",")];
+    const esc = (v: any) => {
+      if (v == null) return "";
+      const s = String(v).replace(/"/g, '""');
+      return /[",\n]/.test(s) ? `"${s}"` : s;
+    };
     const maxN = Math.max(baseline.length, semantic.length);
     for (let i = 0; i < maxN; i++) {
       const b = baseline[i];
       const s = semantic[i];
+      const bs = b ? sanity[b.candidate_user_id] : undefined;
+      const ss = s ? sanity[s.candidate_user_id] : undefined;
       const isNew = s ? (!baselineIds.has(s.candidate_user_id) ? "1" : "0") : "";
       rows.push([
         i + 1,
         b ? refs[b.candidate_user_id] : "",
         b?.total_score ?? "",
+        bs?.assessment_total ?? "",
+        esc(bs?.candidate_location),
+        bs?.location_match ?? "",
+        bs?.work_match ?? "",
+        bs?.doc_chars ?? "",
         s ? refs[s.candidate_user_id] : "",
         s?.similarity != null ? s.similarity.toFixed(4) : "",
         isNew,
+        ss?.assessment_total ?? "",
+        esc(ss?.candidate_location),
+        ss?.location_match ?? "",
+        ss?.work_match ?? "",
+        ss?.doc_chars ?? "",
+        esc(goalLocation),
+        esc(goalWorkModel),
       ].join(","));
     }
     const blob = new Blob([rows.join("\n")], { type: "text/csv" });
@@ -180,6 +222,73 @@ export default function PocRagTab() {
     a.download = `poc-rag-${goalId}-${mode}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  function summarize(list: Row[]) {
+    const sans = list.map((r) => sanity[r.candidate_user_id]).filter(Boolean) as Sanity[];
+    if (!sans.length) return null;
+    const sameRegion = sans.filter((x) => x.location_match === "same_region").length;
+    const sameCountry = sans.filter((x) => x.location_match === "same_country").length;
+    const scores = sans.map((x) => x.assessment_total).filter((x): x is number => x != null);
+    const docs = sans.map((x) => x.doc_chars).filter((x): x is number => x != null);
+    const workMatches = sans.filter((x) => x.work_match === "match").length;
+    const avg = (arr: number[]) => arr.length ? (arr.reduce((a, b) => a + b, 0) / arr.length) : null;
+    return {
+      n: list.length,
+      sameRegion,
+      sameCountry,
+      workMatches,
+      avgScore: avg(scores),
+      avgDoc: avg(docs),
+    };
+  }
+
+  function locBadge(m: Sanity["location_match"] | undefined) {
+    if (!m || m === "unknown") return <Badge variant="outline" className="text-[10px] py-0">loc ?</Badge>;
+    const cls = m === "same_region"
+      ? "bg-emerald-600 text-white"
+      : m === "same_country" ? "bg-amber-500 text-white" : "bg-red-600 text-white";
+    return <Badge className={`text-[10px] py-0 ${cls}`}>{m === "same_region" ? "regione" : m === "same_country" ? "paese" : "diversa"}</Badge>;
+  }
+  function workBadge(m: Sanity["work_match"] | undefined) {
+    if (!m || m === "unknown") return <Badge variant="outline" className="text-[10px] py-0">work ?</Badge>;
+    const cls = m === "match" ? "bg-emerald-600 text-white" : "bg-red-600 text-white";
+    return <Badge className={`text-[10px] py-0 ${cls}`}>{m === "match" ? "work✓" : "work✗"}</Badge>;
+  }
+
+  function renderRow(r: Row, i: number, extra?: React.ReactNode) {
+    const s = sanity[r.candidate_user_id];
+    return (
+      <li key={r.candidate_user_id} className="border-b last:border-b-0 py-1.5">
+        <div className="flex items-center justify-between gap-2">
+          <span className="truncate font-mono text-sm">
+            <span className="text-muted-foreground">#{i + 1}</span> {refs[r.candidate_user_id] || "…"}
+            {extra}
+          </span>
+          <span className="text-xs text-muted-foreground whitespace-nowrap">
+            {r.similarity != null ? `sim ${r.similarity.toFixed(3)}` : r.total_score != null ? `score ${r.total_score.toFixed(1)}` : ""}
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center gap-1.5 mt-1 text-[11px] text-muted-foreground">
+          {locBadge(s?.location_match)}
+          {workBadge(s?.work_match)}
+          {s?.assessment_total != null && <span>asses {Math.round(s.assessment_total)}</span>}
+          {s?.candidate_location && <span className="truncate max-w-[180px]" title={s.candidate_location}>📍 {s.candidate_location}</span>}
+          {s?.doc_chars != null && <span>{s.doc_chars} ch</span>}
+        </div>
+      </li>
+    );
+  }
+
+  function renderSummary(list: Row[]) {
+    const s = summarize(list);
+    if (!s) return null;
+    return (
+      <div className="text-[11px] text-muted-foreground mt-2 pt-2 border-t">
+        {s.sameRegion}/{s.n} stessa regione · {s.sameCountry}/{s.n} stesso paese · {s.workMatches}/{s.n} work · 
+        asses media {s.avgScore != null ? s.avgScore.toFixed(1) : "—"} · doc medio {s.avgDoc != null ? Math.round(s.avgDoc) : "—"} ch
+      </div>
+    );
   }
 
   return (
@@ -260,16 +369,12 @@ export default function PocRagTab() {
             {baseline.length === 0 ? (
               <p className="text-sm text-muted-foreground flex items-center gap-2"><AlertCircle className="h-4 w-4" /> Nessun risultato. Run compare.</p>
             ) : (
-              <ol className="space-y-1 text-sm font-mono">
-                {baseline.slice(0, k).map((r, i) => (
-                  <li key={r.candidate_user_id} className="flex items-center justify-between">
-                    <span>
-                      <span className="text-muted-foreground">#{i + 1}</span> {refs[r.candidate_user_id] || "…"}
-                    </span>
-                    <span className="text-xs text-muted-foreground">score {r.total_score?.toFixed(1)}</span>
-                  </li>
-                ))}
-              </ol>
+              <>
+                <ol className="space-y-0">
+                  {baseline.slice(0, k).map((r, i) => renderRow(r, i))}
+                </ol>
+                {renderSummary(baseline.slice(0, k))}
+              </>
             )}
           </CardContent>
         </Card>
@@ -280,20 +385,15 @@ export default function PocRagTab() {
             {semantic.length === 0 ? (
               <p className="text-sm text-muted-foreground flex items-center gap-2"><AlertCircle className="h-4 w-4" /> Nessun risultato.</p>
             ) : (
-              <ol className="space-y-1 text-sm font-mono">
-                {semantic.map((r, i) => {
-                  const isNew = mode === "discovery" && !baselineIds.has(r.candidate_user_id);
-                  return (
-                    <li key={r.candidate_user_id} className="flex items-center justify-between gap-2">
-                      <span className="truncate">
-                        <span className="text-muted-foreground">#{i + 1}</span> {refs[r.candidate_user_id] || "…"}
-                        {isNew && <Badge variant="default" className="ml-2 text-[10px] py-0">NUOVO</Badge>}
-                      </span>
-                      <span className="text-xs text-muted-foreground">sim {r.similarity?.toFixed(3)}</span>
-                    </li>
-                  );
-                })}
-              </ol>
+              <>
+                <ol className="space-y-0">
+                  {semantic.map((r, i) => {
+                    const isNew = mode === "discovery" && !baselineIds.has(r.candidate_user_id);
+                    return renderRow(r, i, isNew ? <Badge variant="default" className="ml-2 text-[10px] py-0">NUOVO</Badge> : null);
+                  })}
+                </ol>
+                {renderSummary(semantic)}
+              </>
             )}
           </CardContent>
         </Card>

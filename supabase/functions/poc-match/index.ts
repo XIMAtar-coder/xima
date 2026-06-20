@@ -81,6 +81,75 @@ serve(async (req) => {
       ? [...topIds].filter((id) => !baselineIds.has(id)).length
       : 0;
 
+    // ---- SANITY columns (no impact on ranking) ----
+    const allIds = Array.from(new Set([
+      ...top.map((r) => r.candidate_user_id),
+      ...baselineResults.map((r) => r.candidate_user_id),
+    ]));
+
+    const { data: goalRow } = await serviceClient
+      .from("hiring_goal_drafts")
+      .select("country, city_region, work_model")
+      .eq("id", goalId)
+      .maybeSingle();
+    const goalCountry = (goalRow?.country || "").toString().trim();
+    const goalRegion = (goalRow?.city_region || "").toString().trim();
+    const goalWork = (goalRow?.work_model || "").toString().trim().toLowerCase();
+    const goal_location = [goalRegion, goalCountry].filter(Boolean).join(", ");
+
+    const sanity: Record<string, any> = {};
+    if (allIds.length) {
+      const [{ data: profs }, { data: assess }, { data: embs }] = await Promise.all([
+        serviceClient.from("profiles").select("user_id, desired_locations, work_preference").in("user_id", allIds),
+        serviceClient.from("assessment_results").select("user_id, total_score, computed_at").in("user_id", allIds).order("computed_at", { ascending: false }),
+        serviceClient.from("poc_candidate_embeddings").select("candidate_user_id, source_text").in("candidate_user_id", allIds),
+      ]);
+
+      const profMap = new Map<string, any>((profs || []).map((p: any) => [p.user_id, p]));
+      const scoreMap = new Map<string, number>();
+      for (const a of (assess || [])) {
+        if (!scoreMap.has(a.user_id) && a.total_score != null) scoreMap.set(a.user_id, Number(a.total_score));
+      }
+      const docMap = new Map<string, number>((embs || []).map((e: any) => [e.candidate_user_id, (e.source_text || "").length]));
+
+      const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const goalRegionN = norm(goalRegion);
+      const goalCountryN = norm(goalCountry);
+
+      for (const id of allIds) {
+        const p = profMap.get(id) || {};
+        const locs = Array.isArray(p.desired_locations) ? p.desired_locations : [];
+        const candLocLabel = locs.map((l: any) => [l?.city, l?.region].filter(Boolean).join("/")).filter(Boolean).join(" | ");
+        const haystack = norm(JSON.stringify(locs || ""));
+
+        let location_match: "same_region" | "same_country" | "different" | "unknown" = "unknown";
+        if (locs.length === 0 || !goal_location) {
+          location_match = "unknown";
+        } else if (goalRegionN && haystack.includes(goalRegionN)) {
+          location_match = "same_region";
+        } else if (goalCountryN && haystack.includes(goalCountryN)) {
+          location_match = "same_country";
+        } else {
+          location_match = "different";
+        }
+
+        const candWork = (p.work_preference || "").toString().trim().toLowerCase();
+        let work_match: "match" | "mismatch" | "unknown" = "unknown";
+        if (candWork && goalWork) work_match = candWork === goalWork ? "match" : "mismatch";
+
+        sanity[id] = {
+          assessment_total: scoreMap.get(id) ?? null,
+          candidate_location: candLocLabel || null,
+          candidate_work_preference: candWork || null,
+          goal_location: goal_location || null,
+          goal_work_model: goalWork || null,
+          location_match,
+          work_match,
+          doc_chars: docMap.get(id) ?? null,
+        };
+      }
+    }
+
     let runId: string | null = null;
     if (saveRun) {
       const { data: run } = await serviceClient
@@ -108,6 +177,9 @@ serve(async (req) => {
       results: top,
       overlap_count: overlap,
       novelty_count: novelty,
+      sanity,
+      goal_location,
+      goal_work_model: goalWork || null,
       run_id: runId,
     });
   } catch (err: any) {
