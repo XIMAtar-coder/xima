@@ -91,7 +91,7 @@ serve(async (req) => {
       if (data && data.length > 0) {
         await audit("role.granted");
       }
-      return json({ ok: true, noop: !data || data.length === 0, correlation_id });
+      return json({ ok: true, noop: !data || data.length === 0, correlation_id, audit_error: last_audit_error });
     }
 
     // revoke
