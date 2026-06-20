@@ -82,6 +82,41 @@ function useCostsSummary() {
   });
 }
 
+function useCostsSummary() {
+  return useQuery({
+    queryKey: ['admin', 'costs-summary'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('admin_get_costs_summary');
+      if (error) throw error;
+      return data as unknown as CostsSummary;
+    },
+    refetchInterval: 60_000,
+  });
+}
+
+type AiCostsSummary = {
+  last30d_usd: number;
+  mtd_usd: number;
+  by_function: Array<{ function_name: string; calls: number; input_tokens: number; output_tokens: number; cost_usd: number }>;
+  by_model: Array<{ provider: string; model_name: string; calls: number; input_tokens: number; output_tokens: number; cost_usd: number }>;
+  unpriced_models: Array<{ provider: string; model_name: string }>;
+  missing_usage_pct: number;
+  total_calls_30d: number;
+  missing_calls_30d: number;
+};
+
+function useAiCostsSummary() {
+  return useQuery({
+    queryKey: ['admin', 'ai-costs-summary'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('admin_get_ai_costs_summary');
+      if (error) throw error;
+      return data as unknown as AiCostsSummary;
+    },
+    refetchInterval: 60_000,
+  });
+}
+
 function useCostsList() {
   return useQuery({
     queryKey: ['admin', 'costs-list'],
