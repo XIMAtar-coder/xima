@@ -91,16 +91,19 @@ serve(async (req) => {
         note,
       },
     });
+    const auditError = auditErr
+      ? {
+          code: (auditErr as any).code,
+          message: auditErr.message,
+          details: (auditErr as any).details,
+          hint: (auditErr as any).hint,
+        }
+      : null;
     if (auditErr) {
-      console.error("[admin-requests-update-status] audit insert failed", {
-        code: (auditErr as any).code,
-        message: auditErr.message,
-        details: (auditErr as any).details,
-        hint: (auditErr as any).hint,
-      });
+      console.error("AUDIT_FAIL", auditError);
     }
 
-    return json({ ok: true, record: upserted, audit_error: auditErr?.message ?? null });
+    return json({ ok: true, record: upserted, audit_error: auditError });
   } catch (e) {
     console.error("[admin-requests-update-status]", e instanceof Error ? e.message : e);
     return json({ error: "Internal error" }, 500);
