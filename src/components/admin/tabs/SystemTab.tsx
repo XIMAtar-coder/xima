@@ -21,7 +21,7 @@ function classify(latencyMs: number, threshold: number): HealthStatus {
 async function checkDatabase(): Promise<HealthResult> {
   const t0 = performance.now();
   try {
-    const { error } = await supabase.from('model_prices').select('id', { count: 'exact', head: true }).limit(1);
+    const { error } = await supabase.rpc('health_db');
     const latencyMs = Math.round(performance.now() - t0);
     if (error) return { status: 'down', latencyMs, lastCheckedAt: Date.now(), error: error.message };
     return { status: classify(latencyMs, 600), latencyMs, lastCheckedAt: Date.now() };
