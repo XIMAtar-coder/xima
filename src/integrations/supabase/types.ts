@@ -4706,6 +4706,138 @@ export type Database = {
         }
         Relationships: []
       }
+      poc_candidate_embeddings: {
+        Row: {
+          candidate_user_id: string
+          created_at: string
+          dimensions: number
+          embedding: string
+          id: string
+          metadata: Json
+          model: string
+          source_hash: string
+          source_text: string
+          task_type: string | null
+          token_count: number | null
+          updated_at: string
+        }
+        Insert: {
+          candidate_user_id: string
+          created_at?: string
+          dimensions?: number
+          embedding: string
+          id?: string
+          metadata?: Json
+          model: string
+          source_hash: string
+          source_text: string
+          task_type?: string | null
+          token_count?: number | null
+          updated_at?: string
+        }
+        Update: {
+          candidate_user_id?: string
+          created_at?: string
+          dimensions?: number
+          embedding?: string
+          id?: string
+          metadata?: Json
+          model?: string
+          source_hash?: string
+          source_text?: string
+          task_type?: string | null
+          token_count?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      poc_goal_embeddings: {
+        Row: {
+          created_at: string
+          dimensions: number
+          embedding: string
+          hiring_goal_id: string
+          id: string
+          metadata: Json
+          model: string
+          source_hash: string
+          source_text: string
+          task_type: string | null
+          token_count: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dimensions?: number
+          embedding: string
+          hiring_goal_id: string
+          id?: string
+          metadata?: Json
+          model: string
+          source_hash: string
+          source_text: string
+          task_type?: string | null
+          token_count?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dimensions?: number
+          embedding?: string
+          hiring_goal_id?: string
+          id?: string
+          metadata?: Json
+          model?: string
+          source_hash?: string
+          source_text?: string
+          task_type?: string | null
+          token_count?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      poc_match_runs: {
+        Row: {
+          baseline_results: Json
+          candidate_ids_count: number | null
+          created_at: string
+          created_by: string | null
+          hiring_goal_id: string
+          id: string
+          k: number
+          mode: string
+          novelty_count: number | null
+          overlap_count: number | null
+          top_results: Json
+        }
+        Insert: {
+          baseline_results?: Json
+          candidate_ids_count?: number | null
+          created_at?: string
+          created_by?: string | null
+          hiring_goal_id: string
+          id?: string
+          k: number
+          mode: string
+          novelty_count?: number | null
+          overlap_count?: number | null
+          top_results?: Json
+        }
+        Update: {
+          baseline_results?: Json
+          candidate_ids_count?: number | null
+          created_at?: string
+          created_by?: string | null
+          hiring_goal_id?: string
+          id?: string
+          k?: number
+          mode?: string
+          novelty_count?: number | null
+          overlap_count?: number | null
+          top_results?: Json
+        }
+        Relationships: []
+      }
       professionals: {
         Row: {
           avatar_path: string | null
@@ -6244,6 +6376,13 @@ export type Database = {
           error_rate: number
           threshold: number
           total_count: number
+        }[]
+      }
+      poc_search_candidates: {
+        Args: { p_candidate_ids?: string[]; p_goal_id: string; p_k?: number }
+        Returns: {
+          candidate_user_id: string
+          similarity: number
         }[]
       }
       qualify_referral_and_reward: {
