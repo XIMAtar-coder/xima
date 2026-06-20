@@ -102,3 +102,7 @@ project_id = "iyckvvnecpnldrxqmzta"
   [functions.handle-email-suppression]
     verify_jwt = false
 
+  [functions.admin-roles-list]
+    verify_jwt = false
+  [functions.admin-roles-update]
+    verify_jwt = false
