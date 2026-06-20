@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Shield, BarChart3, Users, Activity, Wrench, LineChart, Wallet, Sparkles } from 'lucide-react';
+import { Shield, BarChart3, Users, Activity, Wrench, LineChart, Wallet, Sparkles, Radio } from 'lucide-react';
 import OverviewTab from './tabs/OverviewTab';
 import InteractionsTab from './tabs/InteractionsTab';
 import CandidatesTab from './tabs/CandidatesTab';
@@ -9,9 +9,11 @@ import EvolutionTab from './tabs/EvolutionTab';
 import SystemTab from './tabs/SystemTab';
 import CostsTab from './tabs/CostsTab';
 import PocRagTab from './tabs/PocRagTab';
+import ActivityTab from './tabs/ActivityTab';
 
 const TABS = [
   { value: 'overview', label: 'Overview', icon: BarChart3 },
+  { value: 'activity', label: 'Activity', icon: Radio },
   { value: 'interactions', label: 'Interazioni', icon: LineChart },
   { value: 'candidates', label: 'Candidati', icon: Users },
   { value: 'evolution', label: 'Evoluzione', icon: Activity },
@@ -19,6 +21,7 @@ const TABS = [
   { value: 'costs', label: 'Costi', icon: Wallet },
   { value: 'poc-rag', label: 'PoC RAG', icon: Sparkles },
 ] as const;
+
 
 export default function XimaManager() {
   const [params, setParams] = useSearchParams();
@@ -51,6 +54,7 @@ export default function XimaManager() {
         </TabsList>
 
         <TabsContent value="overview"><OverviewTab /></TabsContent>
+        <TabsContent value="activity"><ActivityTab /></TabsContent>
         <TabsContent value="interactions"><InteractionsTab /></TabsContent>
         <TabsContent value="candidates"><CandidatesTab /></TabsContent>
         <TabsContent value="evolution"><EvolutionTab /></TabsContent>
