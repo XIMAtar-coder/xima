@@ -20,6 +20,7 @@ const TABS = [
   { value: 'evolution', label: 'Evoluzione', icon: Activity },
   { value: 'system', label: 'Developer & System', icon: Wrench },
   { value: 'costs', label: 'Costi', icon: Wallet },
+  { value: 'ai-quality', label: 'AI & Qualità', icon: BrainCircuit },
   { value: 'poc-rag', label: 'PoC RAG', icon: Sparkles },
 ] as const;
 
