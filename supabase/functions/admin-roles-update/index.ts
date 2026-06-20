@@ -49,7 +49,7 @@ serve(async (req) => {
     const { data: target, error: tErr } = await svc.auth.admin.getUserById(target_user_id);
     if (tErr || !target?.user) return json({ error: "Target user not found" }, 404);
 
-    let last_audit_error: string | null = null;
+    let last_audit_error: Record<string, unknown> | null = null;
     const audit = async (action: string, metadata: Record<string, unknown> = {}) => {
       const payload = {
         actor_type: "admin",
@@ -60,17 +60,18 @@ serve(async (req) => {
         correlation_id,
         metadata: { role, target_user_id, ...metadata },
       };
+      // IMPORTANT: audit_events only allows service_role writes. Never use the JWT client here.
       const { error } = await svc.from("audit_events").insert(payload);
       if (error) {
-        last_audit_error = error.message;
-        console.error("[admin-roles-update] audit insert failed", {
+        last_audit_error = {
           action,
           correlation_id,
           code: (error as any).code,
           message: error.message,
           details: (error as any).details,
           hint: (error as any).hint,
-        });
+        };
+        console.error("AUDIT_FAIL", last_audit_error);
       } else {
         console.log("[admin-roles-update] audit inserted", { action, correlation_id, target_user_id });
       }
@@ -119,7 +120,7 @@ serve(async (req) => {
       }
       if (msg.includes("LOCKOUT_DETECTED")) {
         await audit("role.revoked.lockout_detected", { severity: "critical" });
-        return json({ error: "LOCKOUT_DETECTED" }, 500);
+        return json({ error: "LOCKOUT_DETECTED", audit_error: last_audit_error }, 500);
       }
       if (msg.includes("FORBIDDEN")) {
         return json({ error: "Admin access required" }, 403);
