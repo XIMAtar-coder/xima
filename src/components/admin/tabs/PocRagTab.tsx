@@ -38,6 +38,7 @@ export default function PocRagTab() {
   const [mode, setMode] = useState<Mode>("rerank");
   const [k, setK] = useState(10);
   const [sampleSize, setSampleSize] = useState(80);
+  const [sampleStrategy, setSampleStrategy] = useState<"recent" | "rich">("recent");
 
   const [busy, setBusy] = useState<string | null>(null);
   const [baseline, setBaseline] = useState<Row[]>([]);
@@ -45,6 +46,7 @@ export default function PocRagTab() {
   const [overlap, setOverlap] = useState<number | null>(null);
   const [novelty, setNovelty] = useState<number | null>(null);
   const [embeddedCount, setEmbeddedCount] = useState<number | null>(null);
+  const [richAvailable, setRichAvailable] = useState<number | null>(null);
   const [refs, setRefs] = useState<Record<string, string>>({});
   const [sanity, setSanity] = useState<Record<string, Sanity>>({});
   const [goalLocation, setGoalLocation] = useState<string | null>(null);
@@ -64,25 +66,28 @@ export default function PocRagTab() {
       setGoals(list);
       if (!goalId && list.length) setGoalId(list[0].id);
     })();
-    refreshEmbedded();
+    refreshPoolStats();
   }, []);
 
-  async function refreshEmbedded() {
-    const { count } = await supabase
-      .from("poc_candidate_embeddings")
-      .select("id", { head: true, count: "exact" });
-    setEmbeddedCount(count ?? 0);
+  async function refreshPoolStats() {
+    const { data, error } = await supabase.functions.invoke("poc-embed", {
+      body: { scope: "pool_stats" },
+    });
+    if (error) return;
+    setEmbeddedCount(data?.embedded_count ?? 0);
+    setRichAvailable(data?.rich_available ?? null);
   }
 
   async function embedSample() {
     setBusy("embed-candidates");
     const { data, error } = await supabase.functions.invoke("poc-embed", {
-      body: { scope: "candidates", candidate_limit: sampleSize },
+      body: { scope: "candidates", candidate_limit: sampleSize, sample_strategy: sampleStrategy },
     });
     setBusy(null);
     if (error) { toast.error(error.message); return; }
-    toast.success(`Sample embedded: ${data?.results?.embedded ?? 0} new, ${data?.results?.skipped ?? 0} cached`);
-    refreshEmbedded();
+    if (typeof data?.rich_available === "number") setRichAvailable(data.rich_available);
+    toast.success(`Sample (${sampleStrategy}) embedded: ${data?.results?.embedded ?? 0} new, ${data?.results?.skipped ?? 0} cached`);
+    refreshPoolStats();
   }
 
   async function embedGoal() {
@@ -163,7 +168,7 @@ export default function PocRagTab() {
         if (!refMap[r.candidate_user_id]) refMap[r.candidate_user_id] = await md5Hex(r.candidate_user_id);
       }
       setRefs(refMap);
-      refreshEmbedded();
+      refreshPoolStats();
     } catch (err: any) {
       toast.error(err?.message || String(err));
     } finally {
@@ -333,6 +338,13 @@ export default function PocRagTab() {
               <Label className="text-xs">Sample size (candidati)</Label>
               <Input type="number" min={1} max={500} value={sampleSize} onChange={(e) => setSampleSize(Number(e.target.value) || 80)} className="w-32" />
             </div>
+            <div>
+              <Label className="text-xs">Sample</Label>
+              <ToggleGroup type="single" value={sampleStrategy} onValueChange={(v) => v && setSampleStrategy(v as "recent" | "rich")} className="justify-start">
+                <ToggleGroupItem value="recent">Recent</ToggleGroupItem>
+                <ToggleGroupItem value="rich">Rich</ToggleGroupItem>
+              </ToggleGroup>
+            </div>
             <Button variant="outline" onClick={embedSample} disabled={!!busy}>
               {busy === "embed-candidates" ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Database className="h-4 w-4 mr-2" />}
               Embed sample
@@ -348,8 +360,11 @@ export default function PocRagTab() {
             <Button variant="ghost" onClick={exportCsv} disabled={!baseline.length && !semantic.length}>
               <Download className="h-4 w-4 mr-2" /> CSV
             </Button>
-            <div className="ml-auto text-xs text-muted-foreground">
-              Pool embeddato: <span className="font-mono">{embeddedCount ?? "…"}</span>
+            <div className="ml-auto text-xs text-muted-foreground space-x-3">
+              <span>Pool embeddato: <span className="font-mono">{embeddedCount ?? "…"}</span></span>
+              {sampleStrategy === "rich" && (
+                <span>rich disponibili: <span className="font-mono">{richAvailable ?? "…"}</span></span>
+              )}
             </div>
           </div>
 

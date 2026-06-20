@@ -98,8 +98,23 @@ serve(async (req) => {
     try { body = await req.json(); } catch { return errorResponse(400, "INVALID_INPUT", "Invalid JSON"); }
     const scope = String(body?.scope || "");
     const candidateLimit = Math.min(500, Math.max(1, Number(body?.candidate_limit ?? 80)));
+    const sampleStrategy: "recent" | "rich" = body?.sample_strategy === "rich" ? "rich" : "recent";
     const candidateIds: string[] | undefined = Array.isArray(body?.candidate_ids) ? body.candidate_ids : undefined;
     const goalIds: string[] | undefined = Array.isArray(body?.goal_ids) ? body.goal_ids : undefined;
+
+    // Helper: count distinct "rich" candidates across enrichment tables.
+    async function countRichAvailable(): Promise<number> {
+      const [a, b, c] = await Promise.all([
+        serviceClient.from("assessment_cv_analysis").select("user_id").limit(5000),
+        serviceClient.from("cv_identity_analysis").select("user_id").limit(5000),
+        serviceClient.from("assessment_open_responses").select("user_id").limit(5000),
+      ]);
+      const seen = new Set<string>();
+      for (const r of [...(a.data || []), ...(b.data || []), ...(c.data || [])]) {
+        if (r?.user_id) seen.add(r.user_id);
+      }
+      return seen.size;
+    }
 
     if (scope === "list_goals") {
       const { data, error } = await serviceClient
@@ -111,39 +126,71 @@ serve(async (req) => {
       return jsonResponse({ ok: true, scope, goals: data || [] });
     }
 
+    if (scope === "pool_stats") {
+      const [{ count: embeddedCount }, richAvailable] = await Promise.all([
+        serviceClient.from("poc_candidate_embeddings").select("id", { head: true, count: "exact" }),
+        countRichAvailable(),
+      ]);
+      return jsonResponse({
+        ok: true,
+        scope,
+        embedded_count: embeddedCount ?? 0,
+        rich_available: richAvailable,
+      });
+    }
+
     if (scope !== "candidates" && scope !== "goals") {
-      return errorResponse(400, "INVALID_INPUT", "scope must be 'candidates', 'goals' or 'list_goals'");
+      return errorResponse(400, "INVALID_INPUT", "scope must be 'candidates', 'goals', 'list_goals' or 'pool_stats'");
     }
 
     const results = { processed: 0, embedded: 0, skipped: 0, errors: [] as Array<{ id: string; error: string }> };
+    let richAvailable: number | null = null;
 
     if (scope === "candidates") {
-      // Resolve target user_ids: explicit list OR sample.
+      // Resolve target user_ids: explicit list OR sample (recent | rich).
       let targetIds: string[] = [];
       if (candidateIds && candidateIds.length) {
         targetIds = candidateIds.slice(0, 500);
       } else {
-        const { data: contextUsers } = await serviceClient
-          .from("user_ai_context")
-          .select("user_id")
-          .limit(2000);
-        const { data: arUsers } = await serviceClient
-          .from("assessment_results")
-          .select("user_id")
-          .limit(2000);
-        const seen = new Set<string>();
-        for (const r of [...(contextUsers || []), ...(arUsers || [])]) {
-          if (r?.user_id && !seen.has(r.user_id)) seen.add(r.user_id);
+        let candidatePoolIds: string[] = [];
+        if (sampleStrategy === "rich") {
+          const [a, b, c] = await Promise.all([
+            serviceClient.from("assessment_cv_analysis").select("user_id").limit(5000),
+            serviceClient.from("cv_identity_analysis").select("user_id").limit(5000),
+            serviceClient.from("assessment_open_responses").select("user_id").limit(5000),
+          ]);
+          const seen = new Set<string>();
+          for (const r of [...(a.data || []), ...(b.data || []), ...(c.data || [])]) {
+            if (r?.user_id) seen.add(r.user_id);
+          }
+          candidatePoolIds = Array.from(seen);
+          richAvailable = candidatePoolIds.length;
+        } else {
+          const { data: contextUsers } = await serviceClient
+            .from("user_ai_context")
+            .select("user_id")
+            .limit(2000);
+          const { data: arUsers } = await serviceClient
+            .from("assessment_results")
+            .select("user_id")
+            .limit(2000);
+          const seen = new Set<string>();
+          for (const r of [...(contextUsers || []), ...(arUsers || [])]) {
+            if (r?.user_id && !seen.has(r.user_id)) seen.add(r.user_id);
+          }
+          candidatePoolIds = Array.from(seen);
         }
-        const candidateUserIds = Array.from(seen);
-        if (candidateUserIds.length === 0) {
-          return jsonResponse({ ok: true, scope, results });
+
+        if (candidatePoolIds.length === 0) {
+          // Still report rich_available so the UI can show it.
+          if (richAvailable === null) richAvailable = await countRichAvailable();
+          return jsonResponse({ ok: true, scope, sample_strategy: sampleStrategy, rich_available: richAvailable, results });
         }
         // Order by profiles.updated_at desc and take candidate_limit
         const { data: ordered } = await serviceClient
           .from("profiles")
           .select("user_id, updated_at")
-          .in("user_id", candidateUserIds)
+          .in("user_id", candidatePoolIds)
           .order("updated_at", { ascending: false })
           .limit(candidateLimit);
         targetIds = (ordered || []).map((r: any) => r.user_id);
@@ -319,7 +366,17 @@ serve(async (req) => {
       }
     }
 
-    return jsonResponse({ ok: true, scope, results });
+    // Always compute rich_available for candidates scope so the UI can keep its counter fresh.
+    if (scope === "candidates" && richAvailable === null) {
+      try { richAvailable = await countRichAvailable(); } catch { /* non-fatal */ }
+    }
+
+    return jsonResponse({
+      ok: true,
+      scope,
+      ...(scope === "candidates" ? { sample_strategy: sampleStrategy, rich_available: richAvailable } : {}),
+      results,
+    });
   } catch (err: any) {
     console.error("[poc-embed] FATAL:", err?.message, err?.stack);
     return errorResponse(500, "INTERNAL_ERROR", String(err?.message || "internal error"));
