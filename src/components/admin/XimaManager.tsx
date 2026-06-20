@@ -54,6 +54,7 @@ export default function XimaManager() {
         </TabsList>
 
         <TabsContent value="overview"><OverviewTab /></TabsContent>
+        <TabsContent value="activity"><ActivityTab /></TabsContent>
         <TabsContent value="interactions"><InteractionsTab /></TabsContent>
         <TabsContent value="candidates"><CandidatesTab /></TabsContent>
         <TabsContent value="evolution"><EvolutionTab /></TabsContent>
