@@ -65,6 +65,7 @@ export default function XimaManager() {
         <TabsContent value="system"><SystemTab /></TabsContent>
         <TabsContent value="costs"><CostsTab /></TabsContent>
         <TabsContent value="ai-quality"><AIQualityTab /></TabsContent>
+        <TabsContent value="analytics"><AnalyticsTab /></TabsContent>
         <TabsContent value="poc-rag"><PocRagTab /></TabsContent>
       </Tabs>
     </div>
