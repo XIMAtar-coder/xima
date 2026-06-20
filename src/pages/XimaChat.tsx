@@ -213,9 +213,11 @@ const XimaChat = () => {
                               <div className="flex items-center gap-3">
                                 <Avatar className="h-10 w-10 border-2 border-background">
                                   {thread.other_user.ximatar ? (
-                                    <AvatarImage 
-                                      src={getXimatarImage(thread.other_user.ximatar)} 
-                                      alt={thread.other_user.name} 
+                                    <AvatarImage
+                                      src={getXimatarImage(thread.other_user.ximatar)}
+                                      alt={thread.other_user.name}
+                                      loading="lazy"
+                                      decoding="async"
                                     />
                                   ) : null}
                                   <AvatarFallback className="bg-primary/10 text-primary text-sm">
@@ -262,9 +264,11 @@ const XimaChat = () => {
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10 border-2 border-primary/20">
                           {selectedUser.ximatar ? (
-                            <AvatarImage 
-                              src={getXimatarImage(selectedUser.ximatar)} 
-                              alt={selectedUser.name} 
+                            <AvatarImage
+                              src={getXimatarImage(selectedUser.ximatar)}
+                              alt={selectedUser.name}
+                              loading="lazy"
+                              decoding="async"
                             />
                           ) : null}
                           <AvatarFallback className="bg-primary/10 text-primary">
