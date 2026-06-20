@@ -6338,6 +6338,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      health_db: { Args: never; Returns: string }
       increment_daily_metric: {
         Args: {
           p_date?: string
