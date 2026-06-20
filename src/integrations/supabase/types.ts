@@ -107,16 +107,19 @@ export type Database = {
       ai_invocation_log: {
         Row: {
           correlation_id: string
+          cost_usd: number | null
           error_code: string | null
           function_name: string
           id: string
           input_summary: string | null
+          input_tokens: number | null
           invoked_at: string
           latency_ms: number | null
           max_tokens: number | null
           model_name: string
           model_version: string
           output_summary: string | null
+          output_tokens: number | null
           prompt_hash: string
           prompt_template_version: string
           provider: string
@@ -124,19 +127,23 @@ export type Database = {
           scoring_schema_version: string
           status: string
           temperature: number | null
+          total_tokens: number | null
         }
         Insert: {
           correlation_id: string
+          cost_usd?: number | null
           error_code?: string | null
           function_name: string
           id?: string
           input_summary?: string | null
+          input_tokens?: number | null
           invoked_at?: string
           latency_ms?: number | null
           max_tokens?: number | null
           model_name: string
           model_version?: string
           output_summary?: string | null
+          output_tokens?: number | null
           prompt_hash: string
           prompt_template_version?: string
           provider?: string
@@ -144,19 +151,23 @@ export type Database = {
           scoring_schema_version?: string
           status: string
           temperature?: number | null
+          total_tokens?: number | null
         }
         Update: {
           correlation_id?: string
+          cost_usd?: number | null
           error_code?: string | null
           function_name?: string
           id?: string
           input_summary?: string | null
+          input_tokens?: number | null
           invoked_at?: string
           latency_ms?: number | null
           max_tokens?: number | null
           model_name?: string
           model_version?: string
           output_summary?: string | null
+          output_tokens?: number | null
           prompt_hash?: string
           prompt_template_version?: string
           provider?: string
@@ -164,6 +175,7 @@ export type Database = {
           scoring_schema_version?: string
           status?: string
           temperature?: number | null
+          total_tokens?: number | null
         }
         Relationships: []
       }
@@ -4305,6 +4317,45 @@ export type Database = {
         }
         Relationships: []
       }
+      model_prices: {
+        Row: {
+          active: boolean
+          created_at: string
+          currency: string
+          id: string
+          input_price_per_1k: number
+          model_name: string
+          notes: string | null
+          output_price_per_1k: number
+          provider: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          currency?: string
+          id?: string
+          input_price_per_1k: number
+          model_name: string
+          notes?: string | null
+          output_price_per_1k: number
+          provider: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          currency?: string
+          id?: string
+          input_price_per_1k?: number
+          model_name?: string
+          notes?: string | null
+          output_price_per_1k?: number
+          provider?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mutual_interest: {
         Row: {
           business_id: string
@@ -6042,6 +6093,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      admin_get_ai_costs_summary: { Args: never; Returns: Json }
       admin_get_candidate_analytics: { Args: never; Returns: Json }
       admin_get_costs_summary: { Args: never; Returns: Json }
       admin_get_interactions: { Args: { p_days?: number }; Returns: Json }
@@ -6098,6 +6150,15 @@ export type Database = {
       }
       check_verification_expiry: { Args: never; Returns: undefined }
       cleanup_guest_rate_limit: { Args: never; Returns: undefined }
+      compute_ai_cost_usd: {
+        Args: {
+          _input_tokens: number
+          _model_name: string
+          _output_tokens: number
+          _provider: string
+        }
+        Returns: number
+      }
       compute_drive_for_current_user: { Args: never; Returns: number }
       compute_drive_score: { Args: { p_user_id: string }; Returns: number }
       compute_pillar_scores_from_assessment:
