@@ -22,6 +22,7 @@ const TABS = [
   { value: 'system', label: 'Developer & System', icon: Wrench },
   { value: 'costs', label: 'Costi', icon: Wallet },
   { value: 'ai-quality', label: 'AI & Qualità', icon: BrainCircuit },
+  { value: 'analytics', label: 'Analytics', icon: TrendingUp },
   { value: 'poc-rag', label: 'PoC RAG', icon: Sparkles },
 ] as const;
 
