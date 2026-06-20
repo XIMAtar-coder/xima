@@ -79,7 +79,7 @@ export const PipelineView: React.FC<PipelineViewProps> = ({ hiringGoalId, onInvi
             <Card key={candidate.id} className="hover:shadow-sm transition-shadow">
               <CardContent className="p-3 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
-                  <img src={imgUrl} alt={candidate.ximatar_archetype} className="h-10 w-10 object-contain shrink-0" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+                  <img src={imgUrl} alt={candidate.ximatar_archetype} width={40} height={40} loading="lazy" decoding="async" className="h-10 w-10 object-contain shrink-0" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
                   <div className="min-w-0">
                     <p className="font-medium text-sm text-foreground truncate">{displayName}</p>
                     <p className="text-xs text-muted-foreground">
