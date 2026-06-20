@@ -185,13 +185,43 @@ export async function callAnthropicApi(options: AnthropicCallOptions): Promise<A
     input_summary: inputSummary ?? null,
   };
 
-  const persistEnvelope = async (extra: { output_summary: string | null; status: string; error_code: string | null; latency_ms: number }) => {
+  const persistEnvelope = async (extra: {
+    output_summary: string | null;
+    status: string;
+    error_code: string | null;
+    latency_ms: number;
+    input_tokens?: number | null;
+    output_tokens?: number | null;
+  }) => {
     try {
       const supabaseUrl = Deno.env.get("SUPABASE_URL");
       const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
       if (!supabaseUrl || !serviceKey) return;
       const client = createClient(supabaseUrl, serviceKey);
-      await client.from("ai_invocation_log").insert({ ...baseEnvelope, ...extra });
+      let cost_usd: number | null = null;
+      const inTok = extra.input_tokens ?? 0;
+      const outTok = extra.output_tokens ?? 0;
+      if (inTok > 0 || outTok > 0) {
+        try {
+          const { data: c } = await client.rpc("compute_ai_cost_usd", {
+            _provider: "anthropic",
+            _model_name: model,
+            _input_tokens: inTok,
+            _output_tokens: outTok,
+          });
+          if (c !== null && c !== undefined) cost_usd = Number(c);
+        } catch (_) { /* leave NULL — surfaces in unpriced_models */ }
+      }
+      await client.from("ai_invocation_log").insert({
+        ...baseEnvelope,
+        output_summary: extra.output_summary,
+        status: extra.status,
+        error_code: extra.error_code,
+        latency_ms: extra.latency_ms,
+        input_tokens: extra.input_tokens ?? null,
+        output_tokens: extra.output_tokens ?? null,
+        cost_usd,
+      });
     } catch (e) {
       console.error("[anthropic_audit] Envelope error:", e instanceof Error ? e.message : e);
     }
