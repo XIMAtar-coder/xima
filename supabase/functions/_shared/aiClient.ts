@@ -125,6 +125,8 @@ async function persistInvocationEnvelope(envelope: {
   status: string;
   error_code: string | null;
   latency_ms: number;
+  input_tokens?: number | null;
+  output_tokens?: number | null;
 }): Promise<void> {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
@@ -134,7 +136,27 @@ async function persistInvocationEnvelope(envelope: {
       return;
     }
     const client = createClient(supabaseUrl, serviceKey);
-    const { error } = await client.from("ai_invocation_log").insert(envelope);
+    let cost_usd: number | null = null;
+    const inTok = envelope.input_tokens ?? 0;
+    const outTok = envelope.output_tokens ?? 0;
+    if (inTok > 0 || outTok > 0) {
+      try {
+        const { data: c } = await client.rpc("compute_ai_cost_usd", {
+          _provider: envelope.provider,
+          _model_name: envelope.model_name,
+          _input_tokens: inTok,
+          _output_tokens: outTok,
+        });
+        if (c !== null && c !== undefined) cost_usd = Number(c);
+      } catch (_) { /* leave NULL — surfaces in unpriced_models */ }
+    }
+    const row = {
+      ...envelope,
+      input_tokens: envelope.input_tokens ?? null,
+      output_tokens: envelope.output_tokens ?? null,
+      cost_usd,
+    };
+    const { error } = await client.from("ai_invocation_log").insert(row);
     if (error) {
       console.error("[ai_governance] Failed to persist invocation envelope:", error.message);
     }
