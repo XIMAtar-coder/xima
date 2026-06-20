@@ -291,7 +291,7 @@ export default function PocRagTab() {
     );
   }
 
-
+  return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
