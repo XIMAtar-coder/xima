@@ -144,34 +144,53 @@ serve(async (req) => {
     }
 
     const results = { processed: 0, embedded: 0, skipped: 0, errors: [] as Array<{ id: string; error: string }> };
+    let richAvailable: number | null = null;
 
     if (scope === "candidates") {
-      // Resolve target user_ids: explicit list OR sample.
+      // Resolve target user_ids: explicit list OR sample (recent | rich).
       let targetIds: string[] = [];
       if (candidateIds && candidateIds.length) {
         targetIds = candidateIds.slice(0, 500);
       } else {
-        const { data: contextUsers } = await serviceClient
-          .from("user_ai_context")
-          .select("user_id")
-          .limit(2000);
-        const { data: arUsers } = await serviceClient
-          .from("assessment_results")
-          .select("user_id")
-          .limit(2000);
-        const seen = new Set<string>();
-        for (const r of [...(contextUsers || []), ...(arUsers || [])]) {
-          if (r?.user_id && !seen.has(r.user_id)) seen.add(r.user_id);
+        let candidatePoolIds: string[] = [];
+        if (sampleStrategy === "rich") {
+          const [a, b, c] = await Promise.all([
+            serviceClient.from("assessment_cv_analysis").select("user_id").limit(5000),
+            serviceClient.from("cv_identity_analysis").select("user_id").limit(5000),
+            serviceClient.from("assessment_open_responses").select("user_id").limit(5000),
+          ]);
+          const seen = new Set<string>();
+          for (const r of [...(a.data || []), ...(b.data || []), ...(c.data || [])]) {
+            if (r?.user_id) seen.add(r.user_id);
+          }
+          candidatePoolIds = Array.from(seen);
+          richAvailable = candidatePoolIds.length;
+        } else {
+          const { data: contextUsers } = await serviceClient
+            .from("user_ai_context")
+            .select("user_id")
+            .limit(2000);
+          const { data: arUsers } = await serviceClient
+            .from("assessment_results")
+            .select("user_id")
+            .limit(2000);
+          const seen = new Set<string>();
+          for (const r of [...(contextUsers || []), ...(arUsers || [])]) {
+            if (r?.user_id && !seen.has(r.user_id)) seen.add(r.user_id);
+          }
+          candidatePoolIds = Array.from(seen);
         }
-        const candidateUserIds = Array.from(seen);
-        if (candidateUserIds.length === 0) {
-          return jsonResponse({ ok: true, scope, results });
+
+        if (candidatePoolIds.length === 0) {
+          // Still report rich_available so the UI can show it.
+          if (richAvailable === null) richAvailable = await countRichAvailable();
+          return jsonResponse({ ok: true, scope, sample_strategy: sampleStrategy, rich_available: richAvailable, results });
         }
         // Order by profiles.updated_at desc and take candidate_limit
         const { data: ordered } = await serviceClient
           .from("profiles")
           .select("user_id, updated_at")
-          .in("user_id", candidateUserIds)
+          .in("user_id", candidatePoolIds)
           .order("updated_at", { ascending: false })
           .limit(candidateLimit);
         targetIds = (ordered || []).map((r: any) => r.user_id);
