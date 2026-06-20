@@ -101,6 +101,7 @@ export default function PocRagTab() {
     if (!goalId) return;
     setBusy("run");
     setBaseline([]); setSemantic([]); setOverlap(null); setNovelty(null);
+    setSanity({}); setGoalLocation(null); setGoalWorkModel(null);
 
     try {
       // 1) Baseline dry_run
