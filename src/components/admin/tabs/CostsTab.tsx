@@ -343,17 +343,140 @@ export default function CostsTab() {
         </Card>
       </div>
 
-      {/* AI cost note */}
+      {/* Real AI costs (from ai_invocation_log) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="border-border/50">
+          <CardHeader className="pb-2">
+            <CardDescription className="flex items-center gap-1.5"><DollarSign className="h-3.5 w-3.5" /> Costo AI reale (30g)</CardDescription>
+            <CardTitle className="text-3xl">${Number(aiCosts.data?.last30d_usd ?? 0).toFixed(2)}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-muted-foreground">
+              {aiCosts.data?.total_calls_30d ?? 0} chiamate · {Number(aiCosts.data?.missing_usage_pct ?? 0)}% senza usage
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="border-border/50">
+          <CardHeader className="pb-2">
+            <CardDescription className="flex items-center gap-1.5"><DollarSign className="h-3.5 w-3.5" /> Costo AI mese corrente</CardDescription>
+            <CardTitle className="text-3xl">${Number(aiCosts.data?.mtd_usd ?? 0).toFixed(2)}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-muted-foreground">Somma di cost_usd da ai_invocation_log (MTD)</p>
+          </CardContent>
+        </Card>
+        <Card className="border-border/50">
+          <CardHeader className="pb-2">
+            <CardDescription>Modelli senza prezzo</CardDescription>
+            <CardTitle className="text-3xl">{aiCosts.data?.unpriced_models?.length ?? 0}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-muted-foreground">Modelli osservati ma non in model_prices</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {aiCosts.data?.unpriced_models && aiCosts.data.unpriced_models.length > 0 && (
+        <Card className="border-yellow-500/40 bg-yellow-500/5">
+          <CardContent className="pt-4 flex gap-3 text-sm">
+            <AlertTriangle className="h-4 w-4 mt-0.5 text-yellow-600 shrink-0" />
+            <div className="text-foreground/90">
+              <strong>Modelli senza prezzo:</strong> aggiungili a <code>model_prices</code> per non sottostimare il costo.
+              <div className="mt-1 flex flex-wrap gap-1.5">
+                {aiCosts.data.unpriced_models.map((m, i) => (
+                  <Badge key={`${m.provider}-${m.model_name}-${i}`} variant="outline" className="border-yellow-500/50 text-yellow-700 dark:text-yellow-300">
+                    {m.provider} / {m.model_name}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card className="border-border/50">
+          <CardHeader>
+            <CardTitle className="text-base">Costo AI per function (30g)</CardTitle>
+            <CardDescription>Aggregato da ai_invocation_log</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Function</TableHead>
+                    <TableHead className="text-right">Calls</TableHead>
+                    <TableHead className="text-right">In tok</TableHead>
+                    <TableHead className="text-right">Out tok</TableHead>
+                    <TableHead className="text-right">USD</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(aiCosts.data?.by_function ?? []).map(r => (
+                    <TableRow key={r.function_name}>
+                      <TableCell className="font-mono text-xs">{r.function_name}</TableCell>
+                      <TableCell className="text-right tabular-nums">{r.calls}</TableCell>
+                      <TableCell className="text-right tabular-nums">{r.input_tokens}</TableCell>
+                      <TableCell className="text-right tabular-nums">{r.output_tokens}</TableCell>
+                      <TableCell className="text-right tabular-nums">${Number(r.cost_usd ?? 0).toFixed(4)}</TableCell>
+                    </TableRow>
+                  ))}
+                  {(aiCosts.data?.by_function?.length ?? 0) === 0 && (
+                    <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground text-sm">Nessun dato</TableCell></TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/50">
+          <CardHeader>
+            <CardTitle className="text-base">Costo AI per modello (30g)</CardTitle>
+            <CardDescription>Provider / modello</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Provider</TableHead>
+                    <TableHead>Model</TableHead>
+                    <TableHead className="text-right">Calls</TableHead>
+                    <TableHead className="text-right">USD</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(aiCosts.data?.by_model ?? []).map((r, i) => (
+                    <TableRow key={`${r.provider}-${r.model_name}-${i}`}>
+                      <TableCell className="text-xs">{r.provider}</TableCell>
+                      <TableCell className="font-mono text-xs">{r.model_name}</TableCell>
+                      <TableCell className="text-right tabular-nums">{r.calls}</TableCell>
+                      <TableCell className="text-right tabular-nums">${Number(r.cost_usd ?? 0).toFixed(4)}</TableCell>
+                    </TableRow>
+                  ))}
+                  {(aiCosts.data?.by_model?.length ?? 0) === 0 && (
+                    <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground text-sm">Nessun dato</TableCell></TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Manual platform_costs note */}
       <Card className="border-primary/30 bg-primary/5">
         <CardContent className="pt-4 flex gap-3 text-sm">
           <Info className="h-4 w-4 mt-0.5 text-primary shrink-0" />
           <p className="text-foreground/90">
-            Il <strong>costo AI</strong> va inserito come voce manuale (categoria <em>AI</em>, es. fattura mensile Anthropic).
-            I token non sono tracciati, quindi <strong>non è auto-calcolato</strong>. Token-accurate billing è un follow-up
-            (colonne token su <code>ai_invocation_log</code> + tabella prezzi per modello).
+            Le voci sotto (categoria <em>AI</em>, Hosting, DB, Sviluppo) restano un override manuale per fatture o costi non tracciati.
+            Il costo AI <strong>reale</strong> sopra è calcolato dai token registrati in <code>ai_invocation_log</code> × prezzi attivi in <code>model_prices</code>.
           </p>
         </CardContent>
       </Card>
+
 
       {/* Breakdown charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
