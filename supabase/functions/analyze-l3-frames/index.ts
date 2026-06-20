@@ -367,26 +367,45 @@ Return ONLY valid JSON:
     const content = data.content?.[0]?.text;
     if (!content) return errorResponse(502, "EMPTY_RESPONSE", "Empty response from Claude");
 
-    // ---- Persist audit envelope (fire-and-forget) ----
+    // ---- Persist audit envelope with token usage + computed cost (fire-and-forget) ----
     const auditClient = createClient(supabaseUrl, serviceKey);
-    auditClient.from("ai_invocation_log").insert({
-      request_id: requestId,
-      correlation_id: correlationId,
-      function_name: "analyze-l3-frames",
-      provider: "anthropic",
-      model_name: "claude-sonnet-4-6",
-      model_version: "2025-05-14",
-      temperature: 0.5,
-      max_tokens: 4096,
-      prompt_hash: "vision_frames",
-      prompt_template_version: "1.0",
-      scoring_schema_version: "1.0",
-      input_summary: `submission=${submission_id},frames=${frames.length}`,
-      output_summary: `len=${content.length}`,
-      status: "success",
-      error_code: null,
-      latency_ms: latencyMs,
-    }).then(() => {}).catch((e: unknown) => console.error("[audit] error:", e));
+    const inputTokens = data.usage?.input_tokens ?? null;
+    const outputTokens = data.usage?.output_tokens ?? null;
+    (async () => {
+      let cost_usd: number | null = null;
+      if ((inputTokens ?? 0) > 0 || (outputTokens ?? 0) > 0) {
+        try {
+          const { data: c } = await auditClient.rpc("compute_ai_cost_usd", {
+            _provider: "anthropic",
+            _model_name: "claude-sonnet-4-6",
+            _input_tokens: inputTokens ?? 0,
+            _output_tokens: outputTokens ?? 0,
+          });
+          if (c !== null && c !== undefined) cost_usd = Number(c);
+        } catch (_) { /* leave NULL */ }
+      }
+      await auditClient.from("ai_invocation_log").insert({
+        request_id: requestId,
+        correlation_id: correlationId,
+        function_name: "analyze-l3-frames",
+        provider: "anthropic",
+        model_name: "claude-sonnet-4-6",
+        model_version: "2025-05-14",
+        temperature: 0.5,
+        max_tokens: 4096,
+        prompt_hash: "vision_frames",
+        prompt_template_version: "1.0",
+        scoring_schema_version: "1.0",
+        input_summary: `submission=${submission_id},frames=${frames.length}`,
+        output_summary: `len=${content.length},tokens:${inputTokens ?? "?"}+${outputTokens ?? "?"}`,
+        status: "success",
+        error_code: null,
+        latency_ms: latencyMs,
+        input_tokens: inputTokens,
+        output_tokens: outputTokens,
+        cost_usd,
+      });
+    })().catch((e: unknown) => console.error("[audit] error:", e));
 
     // ---- Parse and validate ----
     let validated: L3Analysis;
