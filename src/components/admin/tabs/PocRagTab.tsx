@@ -338,6 +338,13 @@ export default function PocRagTab() {
               <Label className="text-xs">Sample size (candidati)</Label>
               <Input type="number" min={1} max={500} value={sampleSize} onChange={(e) => setSampleSize(Number(e.target.value) || 80)} className="w-32" />
             </div>
+            <div>
+              <Label className="text-xs">Sample</Label>
+              <ToggleGroup type="single" value={sampleStrategy} onValueChange={(v) => v && setSampleStrategy(v as "recent" | "rich")} className="justify-start">
+                <ToggleGroupItem value="recent">Recent</ToggleGroupItem>
+                <ToggleGroupItem value="rich">Rich</ToggleGroupItem>
+              </ToggleGroup>
+            </div>
             <Button variant="outline" onClick={embedSample} disabled={!!busy}>
               {busy === "embed-candidates" ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Database className="h-4 w-4 mr-2" />}
               Embed sample
@@ -353,8 +360,11 @@ export default function PocRagTab() {
             <Button variant="ghost" onClick={exportCsv} disabled={!baseline.length && !semantic.length}>
               <Download className="h-4 w-4 mr-2" /> CSV
             </Button>
-            <div className="ml-auto text-xs text-muted-foreground">
-              Pool embeddato: <span className="font-mono">{embeddedCount ?? "…"}</span>
+            <div className="ml-auto text-xs text-muted-foreground space-x-3">
+              <span>Pool embeddato: <span className="font-mono">{embeddedCount ?? "…"}</span></span>
+              {sampleStrategy === "rich" && (
+                <span>rich disponibili: <span className="font-mono">{richAvailable ?? "…"}</span></span>
+              )}
             </div>
           </div>
 
