@@ -366,7 +366,17 @@ serve(async (req) => {
       }
     }
 
-    return jsonResponse({ ok: true, scope, results });
+    // Always compute rich_available for candidates scope so the UI can keep its counter fresh.
+    if (scope === "candidates" && richAvailable === null) {
+      try { richAvailable = await countRichAvailable(); } catch { /* non-fatal */ }
+    }
+
+    return jsonResponse({
+      ok: true,
+      scope,
+      ...(scope === "candidates" ? { sample_strategy: sampleStrategy, rich_available: richAvailable } : {}),
+      results,
+    });
   } catch (err: any) {
     console.error("[poc-embed] FATAL:", err?.message, err?.stack);
     return errorResponse(500, "INTERNAL_ERROR", String(err?.message || "internal error"));
