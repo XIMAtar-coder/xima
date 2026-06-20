@@ -30,9 +30,13 @@ export const XimatarProfileCard: React.FC<XimatarProfileCardProps> = ({ ximatar,
         {/* XIMAtar Image and Name */}
         <div className="flex flex-col md:flex-row items-center gap-6">
           <div className="relative w-32 h-32 flex-shrink-0 animate-[scale-in_0.5s_ease-out]">
-            <img 
-              src={imageUrl} 
-              alt={ximatar.label} 
+            <img
+              src={imageUrl}
+              alt={ximatar.label}
+              width={128}
+              height={128}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-contain rounded-full border-4 border-[#3A9FFF]/30 shadow-lg"
               onError={(e) => {
                 e.currentTarget.src = '/ximatars/fox.png';
