@@ -49,29 +49,51 @@ serve(async (req) => {
     } catch {
       return errorResponse(400, "INVALID_INPUT", "Invalid JSON body");
     }
-    const { hiring_goal_id, filters } = body;
+    const { hiring_goal_id, filters, dry_run } = body;
+    const isDryRun = dry_run === true;
 
     if (!hiring_goal_id) return errorResponse(400, "INVALID_INPUT", "hiring_goal_id required");
 
-    console.log(`[generate-shortlist] START`, JSON.stringify({ hiring_goal_id, business_id: user.id, correlation_id: correlationId }));
+    // PoC dry-run path: admin-only, no business ownership required, no writes.
+    let isAdminDryRun = false;
+    if (isDryRun) {
+      const { data: roleRows } = await serviceClient
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id);
+      if (!roleRows?.some((r: any) => r.role === "admin")) {
+        return errorResponse(403, "FORBIDDEN", "dry_run requires admin role");
+      }
+      isAdminDryRun = true;
+    }
 
-    // Fetch goal, company profile, biz profile in parallel
-    const [goalRes, companyRes, bizRes] = await Promise.all([
-      serviceClient
-        .from("hiring_goal_drafts")
-        .select("id, role_title, task_description, experience_level, work_model, country, city_region, function_area")
-        .eq("id", hiring_goal_id)
-        .eq("business_id", user.id)
-        .single(),
+    console.log(`[generate-shortlist] START`, JSON.stringify({ hiring_goal_id, business_id: user.id, dry_run: isDryRun, correlation_id: correlationId }));
+
+    // Goal lookup: in dry_run admin mode skip owner filter; otherwise scope to caller.
+    const goalQuery = serviceClient
+      .from("hiring_goal_drafts")
+      .select("id, business_id, role_title, task_description, experience_level, work_model, country, city_region, function_area")
+      .eq("id", hiring_goal_id);
+    const goalRes = isAdminDryRun
+      ? await goalQuery.single()
+      : await goalQuery.eq("business_id", user.id).single();
+
+    if (goalRes.error || !goalRes.data) {
+      console.error(`[generate-shortlist] hiring_goal_drafts query error:`, JSON.stringify(goalRes.error));
+      return errorResponse(404, "GOAL_NOT_FOUND", "Hiring goal not found");
+    }
+    const ownerId = (goalRes.data as any).business_id || user.id;
+
+    const [companyRes, bizRes] = await Promise.all([
       serviceClient
         .from("company_profiles")
         .select("pillar_vector, recommended_ximatars, values, ideal_traits")
-        .eq("company_id", user.id)
+        .eq("company_id", ownerId)
         .maybeSingle(),
       serviceClient
         .from("business_profiles")
         .select("manual_industry, snapshot_industry, team_culture, hiring_approach, manual_hq_city, manual_hq_country")
-        .eq("user_id", user.id)
+        .eq("user_id", ownerId)
         .maybeSingle(),
     ]);
 
