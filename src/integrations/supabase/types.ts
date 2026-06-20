@@ -6200,6 +6200,29 @@ export type Database = {
       admin_get_quality_indicators: { Args: { p_days?: number }; Returns: Json }
       admin_get_xima_evolution: { Args: { p_limit?: number }; Returns: Json }
       admin_list_costs: { Args: never; Returns: Json }
+      admin_list_users_with_roles: {
+        Args: {
+          _admin: string
+          _limit: number
+          _offset: number
+          _search: string
+        }
+        Returns: {
+          created_at: string
+          email: string
+          full_name: string
+          roles: Database["public"]["Enums"]["app_role"][]
+          user_id: string
+        }[]
+      }
+      admin_revoke_role: {
+        Args: {
+          _admin: string
+          _role: Database["public"]["Enums"]["app_role"]
+          _target: string
+        }
+        Returns: Json
+      }
       admin_set_business_plan: {
         Args: {
           p_business_id: string
