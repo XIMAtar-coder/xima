@@ -98,6 +98,10 @@ export const ProfilePhotoUpload: React.FC = () => {
             <img
               src={avatarUrl}
               alt="Profile"
+              width={128}
+              height={128}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover"
             />
           ) : (

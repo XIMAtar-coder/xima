@@ -130,7 +130,15 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
             {logoUrl ? (
-              <img src={logoUrl} alt={bp.company_name} className="w-14 h-14 rounded-xl object-contain border border-border bg-background" />
+              <img
+                src={logoUrl}
+                alt={bp.company_name}
+                width={56}
+                height={56}
+                loading="lazy"
+                decoding="async"
+                className="w-14 h-14 rounded-xl object-contain border border-border bg-background"
+              />
             ) : (
               <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-xl font-bold text-primary">
                 {bp.company_name?.[0] || 'C'}

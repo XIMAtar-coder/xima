@@ -386,7 +386,7 @@ export default function SessionDetail() {
             {/* Mentor Info */}
             <div className="flex items-center gap-4 bg-muted/50 rounded-lg p-4">
               <Avatar className="h-14 w-14 border-2 border-primary/20">
-                <AvatarImage src={mentor?.profile_image_url || undefined} alt={mentorName} />
+                <AvatarImage src={mentor?.profile_image_url || undefined} alt={mentorName} loading="lazy" decoding="async" />
                 <AvatarFallback className="bg-primary/10 text-primary">
                   {mentorName.charAt(0)}
                 </AvatarFallback>

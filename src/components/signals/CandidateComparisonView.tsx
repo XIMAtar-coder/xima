@@ -121,7 +121,7 @@ function CandidateColumn({ candidate, onRemove }: { candidate: CandidateForCompa
       <div className="flex items-center justify-between gap-2 p-3 bg-muted/30 rounded-t-lg border-b">
         <div className="flex items-center gap-2 min-w-0">
           <Avatar className="h-8 w-8 shrink-0">
-            <AvatarImage src={candidate.avatarUrl} />
+            <AvatarImage src={candidate.avatarUrl} loading="lazy" decoding="async" />
             <AvatarFallback>
               <User className="h-4 w-4" />
             </AvatarFallback>

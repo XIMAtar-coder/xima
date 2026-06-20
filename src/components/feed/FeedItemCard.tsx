@@ -247,9 +247,11 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
           <div className="flex-shrink-0">
             <Avatar className="h-11 w-11 border-2 border-primary/20">
               {ximatar.image && (
-                <AvatarImage 
-                  src={ximatar.image.startsWith('/') ? ximatar.image : `/ximatars/${ximatar.image}.png`} 
+                <AvatarImage
+                  src={ximatar.image.startsWith('/') ? ximatar.image : `/ximatars/${ximatar.image}.png`}
                   alt={ximatar.name}
+                  loading="lazy"
+                  decoding="async"
                 />
               )}
               <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
