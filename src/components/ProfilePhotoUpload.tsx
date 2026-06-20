@@ -5,6 +5,7 @@ import { Upload, User, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { toast } from 'sonner';
+import { prepareImageForUpload } from '@/lib/images/prepareImageForUpload';
 
 export const ProfilePhotoUpload: React.FC = () => {
   const { user } = useUser();
@@ -32,14 +33,18 @@ export const ProfilePhotoUpload: React.FC = () => {
     setUploading(true);
 
     try {
-      // Upload to Supabase Storage
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+      // Downscale + re-encode (webp 512px, EXIF-safe) BEFORE upload.
+      const prepared = await prepareImageForUpload(file, { longSide: 512 });
+      const fileName = `${user.id}-${Date.now()}.${prepared.ext}`;
       const filePath = `${user.id}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, file, { upsert: true });
+        .upload(filePath, prepared.file, {
+          upsert: true,
+          cacheControl: '604800',
+          contentType: prepared.file.type,
+        });
 
       if (uploadError) throw uploadError;
 

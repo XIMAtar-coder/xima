@@ -6,6 +6,8 @@ import { Sparkles, TrendingUp, AlertCircle, Upload, Loader2, Flame, Zap, Target 
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { toast } from 'sonner';
+import { prepareImageForUpload } from '@/lib/images/prepareImageForUpload';
+import { OptimizedImage } from '@/components/ui/OptimizedImage';
 
 interface XimatarHeroCardProps {
   ximatarName: string | null;
@@ -37,10 +39,16 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
     if (file.size > 2 * 1024 * 1024) { toast.error('File size must be less than 2MB'); return; }
     setUploading(true);
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+      const prepared = await prepareImageForUpload(file, { longSide: 512 });
+      const fileName = `${user.id}-${Date.now()}.${prepared.ext}`;
       const filePath = `${user.id}/${fileName}`;
-      const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true });
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, prepared.file, {
+          upsert: true,
+          cacheControl: '604800',
+          contentType: prepared.file.type,
+        });
       if (uploadError) throw uploadError;
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
       const { error: updateError } = await supabase.from('profiles').update({ avatar: { image: publicUrl, type: 'custom' } }).eq('user_id', user.id);
@@ -79,7 +87,15 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
             <div className="relative group">
               <div className="w-24 h-24 md:w-28 md:h-28 rounded-[18px] overflow-hidden bg-[rgba(118,118,128,0.12)] flex items-center justify-center border border-[rgba(60,60,67,0.12)] shadow-sm">
                 {currentAvatar ? (
-                  <img src={currentAvatar} alt={fullName || 'Profile'} className="w-full h-full object-cover" />
+                  <OptimizedImage
+                    src={currentAvatar}
+                    alt={fullName || 'Profile'}
+                    width={112}
+                    height={112}
+                    priority
+                    className="w-full h-full"
+                    fallback={<div className="text-2xl font-bold text-secondary">{getInitials()}</div>}
+                  />
                 ) : (
                   <div className="text-2xl font-bold text-secondary">{getInitials()}</div>
                 )}
@@ -157,7 +173,14 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
               <div className="absolute inset-0 flex items-center justify-center p-3">
                 {ximatarImage ? (
                   <div className="w-full h-full rounded-full overflow-hidden bg-[rgba(118,118,128,0.08)] border border-[rgba(60,60,67,0.12)] shadow-lg">
-                    <img src={ximatarImage} alt={ximatarName || 'XIMAtar'} className="w-full h-full object-cover" />
+                    <OptimizedImage
+                      src={ximatarImage}
+                      alt={ximatarName || 'XIMAtar'}
+                      width={144}
+                      height={144}
+                      priority
+                      className="w-full h-full"
+                    />
                   </div>
                 ) : (
                   <div className="w-full h-full rounded-full bg-[rgba(118,118,128,0.08)] flex items-center justify-center border border-[rgba(60,60,67,0.12)]">
