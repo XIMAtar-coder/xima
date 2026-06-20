@@ -1,13 +1,14 @@
 import { useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Shield, BarChart3, Users, Activity, Wrench, LineChart, Wallet } from 'lucide-react';
+import { Shield, BarChart3, Users, Activity, Wrench, LineChart, Wallet, Sparkles } from 'lucide-react';
 import OverviewTab from './tabs/OverviewTab';
 import InteractionsTab from './tabs/InteractionsTab';
 import CandidatesTab from './tabs/CandidatesTab';
 import EvolutionTab from './tabs/EvolutionTab';
 import SystemTab from './tabs/SystemTab';
 import CostsTab from './tabs/CostsTab';
+import PocRagTab from './tabs/PocRagTab';
 
 const TABS = [
   { value: 'overview', label: 'Overview', icon: BarChart3 },
@@ -16,6 +17,7 @@ const TABS = [
   { value: 'evolution', label: 'Evoluzione', icon: Activity },
   { value: 'system', label: 'Developer & System', icon: Wrench },
   { value: 'costs', label: 'Costi', icon: Wallet },
+  { value: 'poc-rag', label: 'PoC RAG', icon: Sparkles },
 ] as const;
 
 export default function XimaManager() {
@@ -54,6 +56,7 @@ export default function XimaManager() {
         <TabsContent value="evolution"><EvolutionTab /></TabsContent>
         <TabsContent value="system"><SystemTab /></TabsContent>
         <TabsContent value="costs"><CostsTab /></TabsContent>
+        <TabsContent value="poc-rag"><PocRagTab /></TabsContent>
       </Tabs>
     </div>
   );
