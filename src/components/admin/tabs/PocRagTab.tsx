@@ -12,6 +12,16 @@ import { toast } from "sonner";
 
 type Mode = "rerank" | "discovery";
 type Row = { candidate_user_id: string; similarity?: number; total_score?: number };
+type Sanity = {
+  assessment_total: number | null;
+  candidate_location: string | null;
+  candidate_work_preference: string | null;
+  goal_location: string | null;
+  goal_work_model: string | null;
+  location_match: "same_region" | "same_country" | "different" | "unknown";
+  work_match: "match" | "mismatch" | "unknown";
+  doc_chars: number | null;
+};
 
 async function md5Hex(input: string): Promise<string> {
   // Lightweight ref hash (not crypto): xmur3 + cyrb53 isn't necessary; we
