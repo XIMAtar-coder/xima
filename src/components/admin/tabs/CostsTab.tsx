@@ -70,29 +70,6 @@ const CATEGORY_COLORS: Record<Category, string> = {
 const fmtEUR = (n: number) =>
   new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 }).format(n || 0);
 
-function useCostsSummary() {
-  return useQuery({
-    queryKey: ['admin', 'costs-summary'],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc('admin_get_costs_summary');
-      if (error) throw error;
-      return data as unknown as CostsSummary;
-    },
-    refetchInterval: 60_000,
-  });
-}
-
-function useCostsSummary() {
-  return useQuery({
-    queryKey: ['admin', 'costs-summary'],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc('admin_get_costs_summary');
-      if (error) throw error;
-      return data as unknown as CostsSummary;
-    },
-    refetchInterval: 60_000,
-  });
-}
 
 type AiCostsSummary = {
   last30d_usd: number;
