@@ -42,12 +42,11 @@ export default function ActivityTab() {
   const [items, setItems] = useState<FeedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [liveStatus, setLiveStatus] = useState<'connecting' | 'live' | 'down'>('connecting');
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
 
   const mergeItems = useCallback((incoming: FeedItem[]) => {
     setItems(prev => {
       const map = new Map<string, FeedItem>();
-      // prepend incoming first so latest wins on duplicate id, then existing
       for (const it of incoming) map.set(it.id, it);
       for (const it of prev) if (!map.has(it.id)) map.set(it.id, it);
       const arr = Array.from(map.values());
@@ -74,6 +73,7 @@ export default function ActivityTab() {
         id: r.id, kind: 'trajectory', ts: r.created_at, raw: r,
       }));
       mergeItems([...audit, ...traj]);
+      setLastRefresh(new Date());
     } catch (e: any) {
       setError(e?.message || 'Errore caricamento');
     } finally {
@@ -84,39 +84,17 @@ export default function ActivityTab() {
   // Initial load
   useEffect(() => { loadInitial(); }, [loadInitial]);
 
-  // Realtime subscription
+  // Polling refresh (every 15s) — realtime broadcast was disabled to avoid
+  // leaking row-change events to non-admin subscribers.
   useEffect(() => {
-    setLiveStatus('connecting');
-    const channel = supabase
-      .channel('admin-activity-feed')
-      .on('postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'audit_events' },
-        (payload) => {
-          const r: any = payload.new;
-          mergeItems([{ id: r.id, kind: 'audit', ts: r.occurred_at, raw: r }]);
-        })
-      .on('postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'pillar_trajectory_log' },
-        (payload) => {
-          const r: any = payload.new;
-          mergeItems([{ id: r.id, kind: 'trajectory', ts: r.created_at, raw: r }]);
-        })
-      .subscribe((status) => {
-        if (status === 'SUBSCRIBED') setLiveStatus('live');
-        else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') setLiveStatus('down');
-      });
+    const id = setInterval(() => { loadInitial(); }, 15000);
+    return () => clearInterval(id);
+  }, [loadInitial]);
 
-    return () => { supabase.removeChannel(channel); };
-  }, [mergeItems]);
-
-  const liveBadge = useMemo(() => {
-    const map = {
-      connecting: { cls: 'bg-amber-500 hover:bg-amber-500', label: 'Connessione…' },
-      live: { cls: 'bg-emerald-500 hover:bg-emerald-500', label: 'Live' },
-      down: { cls: 'bg-destructive hover:bg-destructive', label: 'Offline' },
-    } as const;
-    return map[liveStatus];
-  }, [liveStatus]);
+  const liveBadge = useMemo(() => ({
+    cls: 'bg-emerald-500 hover:bg-emerald-500',
+    label: lastRefresh ? `Aggiornato ${relTime(lastRefresh.toISOString())}` : 'Polling 15s',
+  }), [lastRefresh]);
 
   return (
     <div className="space-y-4">

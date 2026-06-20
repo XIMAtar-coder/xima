@@ -109,9 +109,18 @@ function extractMetaPrefix(html: string): string {
 
 async function fetchPage(url: string, maxChars = 8000): Promise<PageResult> {
   try {
+    // SSRF guard: validate URL before any fetch
+    const { assertSafePublicUrl } = await import("../_shared/urlValidation.ts");
+    let safeUrl: string;
+    try {
+      safeUrl = assertSafePublicUrl(url).toString();
+    } catch (_e) {
+      console.warn(`[generate-company-profile] Blocked unsafe URL ${url}`);
+      return { url, text: '', rawHtml: '', pageType: identifyPageType(url) };
+    }
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
-    const response = await fetch(url, {
+    const response = await fetch(safeUrl, {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -138,8 +147,15 @@ async function fetchPage(url: string, maxChars = 8000): Promise<PageResult> {
 
 async function fetchAllPages(website: string): Promise<PageResult[]> {
   let baseUrl = website.trim();
-  if (!baseUrl.startsWith("http")) baseUrl = `https://${baseUrl}`;
-  baseUrl = baseUrl.replace(/\/$/, "");
+  if (!/^https?:\/\//i.test(baseUrl)) baseUrl = `https://${baseUrl}`;
+  // Force https + SSRF guard
+  const { assertSafePublicUrl } = await import("../_shared/urlValidation.ts");
+  try {
+    baseUrl = assertSafePublicUrl(baseUrl.replace(/^http:/i, "https:")).toString().replace(/\/$/, "");
+  } catch (e) {
+    console.warn(`[generate-company-profile] Unsafe base URL ${website}: ${(e as Error).message}`);
+    return [];
+  }
 
   // Step 1: Fetch homepage
   const homepage = await fetchPage(baseUrl);
