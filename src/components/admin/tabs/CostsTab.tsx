@@ -19,7 +19,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Pencil, Trash2, Info, Wallet, Zap } from 'lucide-react';
+import { Plus, Pencil, Trash2, Info, Wallet, Zap, AlertTriangle, DollarSign } from 'lucide-react';
 import {
   PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RTooltip,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
