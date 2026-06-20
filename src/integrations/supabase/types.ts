@@ -5904,6 +5904,42 @@ export type Database = {
           },
         ]
       }
+      xima_request_actions: {
+        Row: {
+          created_at: string
+          handled_at: string | null
+          handled_by: string | null
+          id: string
+          note: string | null
+          source_id: string
+          source_table: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          note?: string | null
+          source_id: string
+          source_table: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          note?: string | null
+          source_id?: string
+          source_table?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ximatar_translations: {
         Row: {
           behavior: string | null
