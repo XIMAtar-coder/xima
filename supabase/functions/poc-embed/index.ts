@@ -250,7 +250,7 @@ serve(async (req) => {
 
           const [reqRes, chRes, jpRes, bizRes, coRes] = await Promise.all([
             serviceClient.from("hiring_goal_requirements").select("*").eq("hiring_goal_id", gid).maybeSingle(),
-            serviceClient.from("business_challenges").select("title, description, target_skills, success_criteria").eq("business_id", goal.business_id).limit(5),
+            serviceClient.from("business_challenges").select("title, description, target_skills, success_criteria").eq("hiring_goal_id", gid).limit(5),
             serviceClient.from("job_posts").select("description, responsibilities, requirements_must, requirements_nice, seniority, department").eq("business_id", goal.business_id).limit(5),
             serviceClient.from("business_profiles").select("team_culture, hiring_approach, manual_industry, snapshot_industry").eq("user_id", goal.business_id).maybeSingle(),
             serviceClient.from("company_profiles").select("values, ideal_traits, recommended_ximatars").eq("company_id", goal.business_id).maybeSingle(),
