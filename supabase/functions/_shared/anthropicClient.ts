@@ -283,17 +283,18 @@ export async function callAnthropicApi(options: AnthropicCallOptions): Promise<A
     throw new AnthropicError(502, "EMPTY_RESPONSE", "Empty response from Claude");
   }
 
-  // Cost estimation
-  const inputTokens = data.usage?.input_tokens || 0;
-  const outputTokens = data.usage?.output_tokens || 0;
+  // Token usage from provider
+  const inputTokens = data.usage?.input_tokens ?? 0;
+  const outputTokens = data.usage?.output_tokens ?? 0;
   const estimatedCost =
     (inputTokens / 1000) * (COST_PER_1K_INPUT[model] || 0.003) +
     (outputTokens / 1000) * (COST_PER_1K_OUTPUT[model] || 0.015);
 
-  // Fire-and-forget success envelope with cost info
+  // Fire-and-forget success envelope with real token counts
   persistEnvelope({
-    output_summary: `tokens:${inputTokens}+${outputTokens},cost:$${estimatedCost.toFixed(4)},model:${model}`,
+    output_summary: `tokens:${inputTokens}+${outputTokens},model:${model}`,
     status: "success", error_code: null, latency_ms: latencyMs,
+    input_tokens: inputTokens, output_tokens: outputTokens,
   });
 
   console.log(JSON.stringify({
