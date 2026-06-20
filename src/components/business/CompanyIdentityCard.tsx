@@ -234,7 +234,7 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
             <div className="flex gap-2 mt-2 flex-wrap">
               {recommendedXimatars.map((x) => (
                 <div key={x} className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-sm">
-                  <img src={`/ximatars/${x}.png`} className="w-5 h-5" alt={x} />
+                  <img loading="lazy" decoding="async" src={`/ximatars/${x}.png`} className="w-5 h-5" alt={x} />
                   <span className="capitalize text-foreground">{x}</span>
                 </div>
               ))}

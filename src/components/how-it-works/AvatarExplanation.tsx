@@ -17,21 +17,21 @@ const AvatarExplanation = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-muted/40 rounded-full flex items-center justify-center mx-auto mb-3 ring-1 ring-border/40">
-                <img src="/ximatars/owl.png" alt="XIMAtar Owl" className="h-11 w-11 rounded-full object-cover" />
+                <img loading="lazy" decoding="async" src="/ximatars/owl.png" alt="XIMAtar Owl" className="h-11 w-11 rounded-full object-cover" />
               </div>
               <h3 className="font-semibold text-foreground">{t('avatar_explanation.eagle.title')}</h3>
               <p className="text-sm text-muted-foreground">{t('avatar_explanation.eagle.description')}</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-muted/40 rounded-full flex items-center justify-center mx-auto mb-3 ring-1 ring-border/40">
-                <img src="/ximatars/fox.png" alt="XIMAtar Fox" className="h-11 w-11 rounded-full object-cover" />
+                <img loading="lazy" decoding="async" src="/ximatars/fox.png" alt="XIMAtar Fox" className="h-11 w-11 rounded-full object-cover" />
               </div>
               <h3 className="font-semibold text-foreground">{t('avatar_explanation.fox.title')}</h3>
               <p className="text-sm text-muted-foreground">{t('avatar_explanation.fox.description')}</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-muted/40 rounded-full flex items-center justify-center mx-auto mb-3 ring-1 ring-border/40">
-                <img src="/ximatars/wolf.png" alt="XIMAtar Wolf" className="h-11 w-11 rounded-full object-cover" />
+                <img loading="lazy" decoding="async" src="/ximatars/wolf.png" alt="XIMAtar Wolf" className="h-11 w-11 rounded-full object-cover" />
               </div>
               <h3 className="font-semibold text-foreground">{t('avatar_explanation.wolf.title')}</h3>
               <p className="text-sm text-muted-foreground">{t('avatar_explanation.wolf.description')}</p>
