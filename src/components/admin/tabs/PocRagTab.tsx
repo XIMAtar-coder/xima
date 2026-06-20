@@ -153,6 +153,9 @@ export default function PocRagTab() {
       setSemantic(sList);
       setOverlap(sData?.overlap_count ?? null);
       setNovelty(sData?.novelty_count ?? null);
+      setSanity((sData?.sanity || {}) as Record<string, Sanity>);
+      setGoalLocation(sData?.goal_location ?? null);
+      setGoalWorkModel(sData?.goal_work_model ?? null);
 
       // 5) Build display refs
       const refMap: Record<string, string> = {};
