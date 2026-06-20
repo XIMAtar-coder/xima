@@ -129,7 +129,7 @@ serve(async (req) => {
 
     const deleted = (rpcData as any)?.deleted ?? 0;
     if (deleted > 0) await audit("role.revoked");
-    return json({ ok: true, noop: deleted === 0, correlation_id });
+    return json({ ok: true, noop: deleted === 0, correlation_id, audit_error: last_audit_error });
   } catch (e) {
     console.error("[admin-roles-update]", e instanceof Error ? e.message : e);
     return json({ error: "Internal error" }, 500);
