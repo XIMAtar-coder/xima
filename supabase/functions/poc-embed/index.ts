@@ -101,8 +101,18 @@ serve(async (req) => {
     const candidateIds: string[] | undefined = Array.isArray(body?.candidate_ids) ? body.candidate_ids : undefined;
     const goalIds: string[] | undefined = Array.isArray(body?.goal_ids) ? body.goal_ids : undefined;
 
+    if (scope === "list_goals") {
+      const { data, error } = await serviceClient
+        .from("hiring_goal_drafts")
+        .select("id, role_title, function_area, business_id, status, updated_at")
+        .eq("status", "active")
+        .order("updated_at", { ascending: false });
+      if (error) return errorResponse(500, "DB_ERROR", error.message);
+      return jsonResponse({ ok: true, scope, goals: data || [] });
+    }
+
     if (scope !== "candidates" && scope !== "goals") {
-      return errorResponse(400, "INVALID_INPUT", "scope must be 'candidates' or 'goals'");
+      return errorResponse(400, "INVALID_INPUT", "scope must be 'candidates', 'goals' or 'list_goals'");
     }
 
     const results = { processed: 0, embedded: 0, skipped: 0, errors: [] as Array<{ id: string; error: string }> };

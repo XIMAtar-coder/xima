@@ -39,12 +39,15 @@ export default function PocRagTab() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
-        .from("hiring_goal_drafts")
-        .select("id, role_title, status, updated_at")
-        .order("updated_at", { ascending: false })
-        .limit(100);
-      const list = (data || []) as any[];
+      const { data, error } = await supabase.functions.invoke("poc-embed", {
+        body: { scope: "list_goals" },
+      });
+      if (error) { toast.error(`Goals: ${error.message}`); return; }
+      const list = ((data?.goals || []) as any[]).map((g) => ({
+        id: g.id,
+        role_title: g.role_title,
+        status: g.status,
+      }));
       setGoals(list);
       if (!goalId && list.length) setGoalId(list[0].id);
     })();
