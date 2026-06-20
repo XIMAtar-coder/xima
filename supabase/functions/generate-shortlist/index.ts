@@ -49,29 +49,51 @@ serve(async (req) => {
     } catch {
       return errorResponse(400, "INVALID_INPUT", "Invalid JSON body");
     }
-    const { hiring_goal_id, filters } = body;
+    const { hiring_goal_id, filters, dry_run } = body;
+    const isDryRun = dry_run === true;
 
     if (!hiring_goal_id) return errorResponse(400, "INVALID_INPUT", "hiring_goal_id required");
 
-    console.log(`[generate-shortlist] START`, JSON.stringify({ hiring_goal_id, business_id: user.id, correlation_id: correlationId }));
+    // PoC dry-run path: admin-only, no business ownership required, no writes.
+    let isAdminDryRun = false;
+    if (isDryRun) {
+      const { data: roleRows } = await serviceClient
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id);
+      if (!roleRows?.some((r: any) => r.role === "admin")) {
+        return errorResponse(403, "FORBIDDEN", "dry_run requires admin role");
+      }
+      isAdminDryRun = true;
+    }
 
-    // Fetch goal, company profile, biz profile in parallel
-    const [goalRes, companyRes, bizRes] = await Promise.all([
-      serviceClient
-        .from("hiring_goal_drafts")
-        .select("id, role_title, task_description, experience_level, work_model, country, city_region, function_area")
-        .eq("id", hiring_goal_id)
-        .eq("business_id", user.id)
-        .single(),
+    console.log(`[generate-shortlist] START`, JSON.stringify({ hiring_goal_id, business_id: user.id, dry_run: isDryRun, correlation_id: correlationId }));
+
+    // Goal lookup: in dry_run admin mode skip owner filter; otherwise scope to caller.
+    const goalQuery = serviceClient
+      .from("hiring_goal_drafts")
+      .select("id, business_id, role_title, task_description, experience_level, work_model, country, city_region, function_area")
+      .eq("id", hiring_goal_id);
+    const goalRes = isAdminDryRun
+      ? await goalQuery.single()
+      : await goalQuery.eq("business_id", user.id).single();
+
+    if (goalRes.error || !goalRes.data) {
+      console.error(`[generate-shortlist] hiring_goal_drafts query error:`, JSON.stringify(goalRes.error));
+      return errorResponse(404, "GOAL_NOT_FOUND", "Hiring goal not found");
+    }
+    const ownerId = (goalRes.data as any).business_id || user.id;
+
+    const [companyRes, bizRes] = await Promise.all([
       serviceClient
         .from("company_profiles")
         .select("pillar_vector, recommended_ximatars, values, ideal_traits")
-        .eq("company_id", user.id)
+        .eq("company_id", ownerId)
         .maybeSingle(),
       serviceClient
         .from("business_profiles")
         .select("manual_industry, snapshot_industry, team_culture, hiring_approach, manual_hq_city, manual_hq_country")
-        .eq("user_id", user.id)
+        .eq("user_id", ownerId)
         .maybeSingle(),
     ]);
 
@@ -327,44 +349,46 @@ serve(async (req) => {
     const limit = filters?.limit || 20;
     const topCandidates = scoredCandidates.slice(0, limit);
 
-    // Store results: delete old, insert new
-    const { error: deleteError } = await serviceClient
-      .from("shortlist_results")
-      .delete()
-      .eq("hiring_goal_id", hiring_goal_id)
-      .eq("business_id", user.id);
+    // PoC dry_run: skip ALL writes to shortlist_results (zero production impact).
+    if (!isDryRun) {
+      // Store results: delete old, insert new
+      const { error: deleteError } = await serviceClient
+        .from("shortlist_results")
+        .delete()
+        .eq("hiring_goal_id", hiring_goal_id)
+        .eq("business_id", user.id);
 
-    if (deleteError) {
-      console.error(`[generate-shortlist] delete old shortlist error:`, JSON.stringify(deleteError));
-      // Non-fatal — continue with insert
-    }
+      if (deleteError) {
+        console.error(`[generate-shortlist] delete old shortlist error:`, JSON.stringify(deleteError));
+        // Non-fatal — continue with insert
+      }
 
-    if (topCandidates.length > 0) {
-      const inserts = topCandidates.map(c => ({
-        hiring_goal_id,
-        business_id: user.id,
-        candidate_user_id: c.candidate_user_id,
-        total_score: c.total_score,
-        identity_score: c.identity_score,
-        trajectory_score: c.trajectory_score,
-        engagement_score: c.engagement_score,
-        location_score: c.location_score,
-        credential_score: c.credential_score,
-        ximatar_archetype: c.ximatar_archetype,
-        ximatar_level: c.ximatar_level,
-        pillar_scores: c.pillar_scores,
-        trajectory_summary: c.trajectory_summary,
-        engagement_level: c.engagement_level,
-        location_match: c.location_match,
-        availability: c.availability,
-        status: "shortlisted",
-      }));
+      if (topCandidates.length > 0) {
+        const inserts = topCandidates.map(c => ({
+          hiring_goal_id,
+          business_id: user.id,
+          candidate_user_id: c.candidate_user_id,
+          total_score: c.total_score,
+          identity_score: c.identity_score,
+          trajectory_score: c.trajectory_score,
+          engagement_score: c.engagement_score,
+          location_score: c.location_score,
+          credential_score: c.credential_score,
+          ximatar_archetype: c.ximatar_archetype,
+          ximatar_level: c.ximatar_level,
+          pillar_scores: c.pillar_scores,
+          trajectory_summary: c.trajectory_summary,
+          engagement_level: c.engagement_level,
+          location_match: c.location_match,
+          availability: c.availability,
+          status: "shortlisted",
+        }));
 
-      const { error: insertError } = await serviceClient.from("shortlist_results").insert(inserts);
-      if (insertError) {
-        console.error(`[generate-shortlist] insert shortlist error:`, JSON.stringify(insertError));
-        console.error("[generate-shortlist] insert error:", insertError.message);
-        return errorResponse(500, "INSERT_ERROR", "Failed to save shortlist");
+        const { error: insertError } = await serviceClient.from("shortlist_results").insert(inserts);
+        if (insertError) {
+          console.error(`[generate-shortlist] insert shortlist error:`, JSON.stringify(insertError));
+          return errorResponse(500, "INSERT_ERROR", "Failed to save shortlist");
+        }
       }
     }
 
@@ -373,6 +397,7 @@ serve(async (req) => {
       hiring_goal_id, total_evaluated: candidates.length,
       shortlisted: topCandidates.length,
       top_score: topCandidates[0]?.total_score || 0,
+      dry_run: isDryRun,
     }));
 
     return jsonResponse({
