@@ -250,9 +250,8 @@ export default function AuditTab() {
               {rows.map((r) => {
                 const isOpen = expanded === r.id;
                 return (
-                  <>
+                  <FragmentRow key={r.id}>
                     <TableRow
-                      key={r.id}
                       className="cursor-pointer hover:bg-muted/40"
                       onClick={() => setExpanded(isOpen ? null : r.id)}
                     >
@@ -299,7 +298,7 @@ export default function AuditTab() {
                       </TableCell>
                     </TableRow>
                     {isOpen && (
-                      <TableRow key={`${r.id}-exp`}>
+                      <TableRow>
                         <TableCell colSpan={8} className="bg-muted/30">
                           <div className="space-y-2 p-2">
                             <div className="text-xs text-muted-foreground">Metadata</div>
@@ -311,7 +310,7 @@ export default function AuditTab() {
                         </TableCell>
                       </TableRow>
                     )}
-                  </>
+                  </FragmentRow>
                 );
               })}
             </TableBody>
