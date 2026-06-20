@@ -12,6 +12,7 @@ import {
 import { callAiGateway, extractJsonFromAiContent, generateCorrelationId, AiGatewayError } from "../_shared/aiClient.ts";
 import { validateCompanyAnalysis } from "../_shared/aiSchema.ts";
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
+import { assertSafePublicUrl, safeFetch } from "../_shared/urlValidation.ts";
 
 const LANGUAGE_NAMES: Record<string, string> = {
   en: 'English',
@@ -41,8 +42,11 @@ serve(async (req) => {
 
   try {
     const { website, locale = 'en' } = await req.json();
-    if (!website || !/^https?:\/\//i.test(website)) {
-      return errorResponse(400, 'INVALID_INPUT', 'Invalid website URL');
+    let safeWebsiteUrl: string;
+    try {
+      safeWebsiteUrl = assertSafePublicUrl(String(website || '')).toString();
+    } catch (e: any) {
+      return errorResponse(400, 'INVALID_INPUT', e?.message || 'Invalid website URL');
     }
 
     // ===== P0 SECURITY: Proper JWT verification (replaces manual decodeJwtSub) =====
@@ -72,14 +76,21 @@ serve(async (req) => {
     // Fetch and aggregate website text (homepage + likely subpages)
     const pages = [website];
     try {
-      const homepage = await fetch(website, { headers: { "User-Agent": ua() } });
+    // Fetch and aggregate website text (homepage + likely subpages) — SSRF-guarded
+    const pages: string[] = [safeWebsiteUrl];
+    try {
+      const homepage = await safeFetch(safeWebsiteUrl, { headers: { "User-Agent": ua() } });
       const html = await homepage.text();
       const $ = cheerio.load(html);
       $("a[href]").each((_, el) => {
         const href = ($(el).attr("href") || "").toLowerCase();
         if (href.includes("about") || href.includes("mission") || href.includes("values")) {
-          const url = toAbsUrl(website, href);
-          if (url && !pages.includes(url) && pages.length < 4) pages.push(url);
+          const abs = toAbsUrl(safeWebsiteUrl, href);
+          if (!abs) return;
+          try {
+            const safeAbs = assertSafePublicUrl(abs).toString();
+            if (!pages.includes(safeAbs) && pages.length < 4) pages.push(safeAbs);
+          } catch { /* skip unsafe links */ }
         }
       });
     } catch (_) { /* ignore */ }
@@ -87,7 +98,7 @@ serve(async (req) => {
     let textChunks: string[] = [];
     for (const url of pages) {
       try {
-        const res = await fetch(url, { headers: { "User-Agent": ua() } });
+        const res = await safeFetch(url, { headers: { "User-Agent": ua() } });
         const html = await res.text();
         const $ = cheerio.load(html);
         const text = [
