@@ -219,7 +219,14 @@ export function L2ChatScreen({
               counterpartName={counterpartName}
             />
           ))}
-          {pending && <L2TypingIndicator counterpartName={counterpartName} />}
+          {streamingReply && (
+            <L2MessageBubble
+              key="streaming-counterpart"
+              entry={{ role: 'counterpart', text: streamingReply, turn: turnIndex }}
+              counterpartName={counterpartName}
+            />
+          )}
+          {pending && !streamingReply && <L2TypingIndicator counterpartName={counterpartName} />}
         </div>
 
         {/* Composer (hidden once done) */}
