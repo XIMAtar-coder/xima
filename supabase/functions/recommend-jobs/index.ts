@@ -280,14 +280,14 @@ serve(async (req) => {
     const resolvedPillars = (profile?.pillar_scores) as Record<string, number> | null;
 
     if (!resolvedXimatar || !resolvedPillars) {
-      return jsonResponse({
+      return {
         success: true,
         recommendations: [],
         opportunities: [],
         total: 0,
         message: "Complete your XIMA assessment to get personalized recommendations",
         generated_at: new Date().toISOString(),
-      });
+      };
     }
 
     const userArchetype = resolvedXimatar;
@@ -334,7 +334,7 @@ serve(async (req) => {
     const allJobs: JobRecord[] = jobPosts || [];
 
     if (allJobs.length === 0) {
-      return jsonResponse({
+      return {
         success: true,
         recommendations: [],
         opportunities: [],
@@ -342,7 +342,7 @@ serve(async (req) => {
         message: "No active job opportunities available right now. Check back soon.",
         user_context: { ximatar: userArchetype, level: userLevel, cv_uploaded: !!credentials },
         generated_at: new Date().toISOString(),
-      });
+      };
     }
 
     // ---- Fetch company data for all unique business_ids ----
@@ -595,7 +595,11 @@ Return ONLY a JSON array of strings, one per job:
 
     console.log(JSON.stringify({ type: "recommend_jobs_done", correlation_id: correlationId, scanned: allJobs.length, returned: topMatches.length }));
 
-    return jsonResponse(response);
+        return response;
+      },
+    });
+
+    return jsonResponse(cachedPayload);
   } catch (error) {
     console.error(JSON.stringify({ type: "recommend_jobs_error", correlation_id: correlationId, error: error instanceof Error ? error.message : String(error) }));
     return errorResponse(500, "INTERNAL_ERROR", "Failed to generate job recommendations");
