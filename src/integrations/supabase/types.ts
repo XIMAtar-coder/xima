@@ -5700,9 +5700,9 @@ export type Database = {
           consented_at: string
           created_at: string
           id: string
-          ip_address: unknown
+          ip_address_hash: string | null
           locale: string | null
-          user_agent: string | null
+          user_agent_hash: string | null
           user_id: string
         }
         Insert: {
@@ -5711,9 +5711,9 @@ export type Database = {
           consented_at?: string
           created_at?: string
           id?: string
-          ip_address?: unknown
+          ip_address_hash?: string | null
           locale?: string | null
-          user_agent?: string | null
+          user_agent_hash?: string | null
           user_id: string
         }
         Update: {
@@ -5722,9 +5722,9 @@ export type Database = {
           consented_at?: string
           created_at?: string
           id?: string
-          ip_address?: unknown
+          ip_address_hash?: string | null
           locale?: string | null
-          user_agent?: string | null
+          user_agent_hash?: string | null
           user_id?: string
         }
         Relationships: []
@@ -6272,6 +6272,8 @@ export type Database = {
         Returns: boolean
       }
       check_verification_expiry: { Args: never; Returns: undefined }
+      cleanup_email_outbox: { Args: never; Returns: number }
+      cleanup_email_send_log: { Args: never; Returns: number }
       cleanup_guest_rate_limit: { Args: never; Returns: undefined }
       compute_ai_cost_usd: {
         Args: {

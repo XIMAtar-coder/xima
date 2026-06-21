@@ -15,14 +15,14 @@ export const recordUserConsents = async (
   locale: string
 ): Promise<RecordConsentResult> => {
   try {
-    const consents = getConsentRecords(locale);
-    
+    const consents = await getConsentRecords(locale);
+
     const insertData = consents.map((consent) => ({
       user_id: userId,
       consent_type: consent.consent_type,
       consent_version: consent.consent_version,
       locale: consent.locale,
-      user_agent: consent.user_agent,
+      user_agent_hash: consent.user_agent_hash,
     }));
 
     const { error } = await supabase

@@ -51,6 +51,21 @@ serve(async (req) => {
 
     const serviceClient = createClient(supabaseUrl, serviceKey);
 
+    // Gate: caller MUST hold the `business` role. Without this, candidates
+    // and mentors could enumerate other candidates' archetypes and pillar
+    // scores via this endpoint.
+    const { data: isBusiness, error: roleErr } = await serviceClient.rpc('has_role', {
+      _user_id: user.id,
+      _role: 'business',
+    });
+    if (roleErr || !isBusiness) {
+      console.warn('[browse-pool] Non-business caller blocked:', user.id, roleErr?.message);
+      return new Response(
+        JSON.stringify({ error: 'forbidden', error_message: 'Business account required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
+
     const body = await req.json().catch(() => ({}));
     const { filters = {}, page_size = 20 } = body;
     const rawPage = Number(body.page ?? 0);
