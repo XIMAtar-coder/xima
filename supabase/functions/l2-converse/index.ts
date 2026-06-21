@@ -230,121 +230,202 @@ ${closing ? `\nQuesto è il tuo turno finale: chiudi la conversazione in 1–2 f
 
   const userMessage = `Conversazione finora:\n${transcriptForPrompt}\n\nProduci SOLO la prossima battuta di ${counterpartName}, senza prefissi né virgolette.`;
 
-  let replyText: string;
-  let degraded = false;
+  // ---- Finalization helper: shared by JSON and SSE branches ----
+  //   Takes the raw model text (or "" on failure), applies the SAME sanitize +
+  //   fallback + persistence + audit pipeline used historically by the JSON branch.
+  //   Returns the final reply payload that both branches deliver to the client.
+  type FinalizePayload = {
+    reply: string;
+    turn_index: number;
+    curveball_fired: boolean;
+    curveball_fired_this_turn: boolean;
+    done: boolean;
+    reason: DraftPayload["reason"] | null;
+    degraded: boolean;
+    correlation_id: string;
+  };
 
-  try {
-    
-    const result = await callAnthropicApi({
-      system,
-      userMessage,
-      correlationId,
-      functionName: "l2-converse",
-      model: getModelForFunction("l2-converse"),
-      maxTokens: 350,
-      temperature: 0.85,
-      inputSummary: `challenge=${challenge_id} turn=${turn_index} curveball=${shouldFireCurveball} closing=${closing}`,
-    });
-    replyText = sanitizeReply(result.content);
-    if (!replyText) {
+  async function finalizeTurn(rawModelText: string, modelFailed: boolean, errCode?: string): Promise<
+    { ok: true; payload: FinalizePayload } | { ok: false; error: string; message: string }
+  > {
+    let replyText = sanitizeReply(rawModelText);
+    let degraded = false;
+    if (modelFailed || !replyText) {
       replyText = fallbackLine(stance);
       degraded = true;
+      if (modelFailed) {
+        emitAuditEvent({
+          actorType: "system",
+          action: "challenge.l2_degraded",
+          entityType: "challenge_submission",
+          entityId: invitation_id,
+          correlationId,
+          metadata: { challenge_id, invitation_id, turn_index, error_code: errCode || "MODEL_ERROR" },
+        });
+      }
     }
-  } catch (e) {
-    const code = e instanceof AnthropicError ? e.errorCode : "MODEL_ERROR";
-    console.error(`[l2-converse] model failure (${code}):`, e instanceof Error ? e.message : e);
-    replyText = fallbackLine(stance);
-    degraded = true;
+
+    const counterpartEntry: TranscriptEntry = {
+      role: "counterpart",
+      text: replyText,
+      turn: turn_index,
+      ...(shouldFireCurveball && !degraded ? { curveball: true } : {}),
+      ...(degraded ? { degraded: true } : {}),
+    };
+    transcript.push(counterpartEntry);
+
+    if (shouldFireCurveball && !degraded) curveball_fired = true;
+
+    const done = closing && !degraded ? true : false;
+    const reason: DraftPayload["reason"] | undefined = done
+      ? candidateConcludi ? "concludi_signal" : "max_turns"
+      : undefined;
+
+    const draftPayload: DraftPayload = {
+      format: "l2_conversation",
+      opening_line,
+      transcript,
+      curveball_fired,
+      last_turn_index: turn_index,
+      ...(done ? { done: true, reason } : {}),
+    };
+
+    if (existingSub) {
+      const { error: upErr } = await supabase
+        .from("challenge_submissions")
+        .update({ draft_payload: draftPayload, updated_at: new Date().toISOString() })
+        .eq("id", existingSub.id);
+      if (upErr) {
+        console.error("[l2-converse] draft update failed:", upErr.message);
+        return { ok: false, error: "DRAFT_PERSIST_FAILED", message: upErr.message };
+      }
+    } else {
+      const { error: insErr } = await supabase.from("challenge_submissions").insert({
+        invitation_id,
+        challenge_id,
+        candidate_profile_id: invitation.candidate_profile_id,
+        business_id: invitation.business_id ?? challenge.business_id,
+        hiring_goal_id: invitation.hiring_goal_id ?? challenge.hiring_goal_id,
+        status: "draft",
+        draft_payload: draftPayload,
+      });
+      if (insErr) {
+        console.error("[l2-converse] draft insert failed:", insErr.message);
+        return { ok: false, error: "DRAFT_PERSIST_FAILED", message: insErr.message };
+      }
+    }
+
     emitAuditEvent({
-      actorType: "system",
-      action: "challenge.l2_degraded",
+      actorType: "candidate",
+      actorId: invitation.candidate_profile_id ?? null,
+      action: done ? "challenge.l2_turn_final" : "challenge.l2_turn",
       entityType: "challenge_submission",
       entityId: invitation_id,
       correlationId,
-      metadata: { challenge_id, invitation_id, turn_index, error_code: code },
+      metadata: {
+        challenge_id,
+        turn_index,
+        curveball_fired_now: shouldFireCurveball && !degraded,
+        degraded,
+        done,
+        reason,
+      },
     });
+
+    return {
+      ok: true,
+      payload: {
+        reply: replyText,
+        turn_index,
+        curveball_fired,
+        curveball_fired_this_turn: shouldFireCurveball && !degraded,
+        done,
+        reason: reason ?? null,
+        degraded,
+        correlation_id: correlationId,
+      },
+    };
   }
 
-  // Append counterpart turn
-  const counterpartEntry: TranscriptEntry = {
-    role: "counterpart",
-    text: replyText,
-    turn: turn_index,
-    ...(shouldFireCurveball && !degraded ? { curveball: true } : {}),
-    ...(degraded ? { degraded: true } : {}),
-  };
-  transcript.push(counterpartEntry);
-
-  // Only consume curveball if it was actually woven into a real (non-degraded) reply
-  if (shouldFireCurveball && !degraded) curveball_fired = true;
-
-  const done = closing && !degraded ? true : false;
-  const reason: DraftPayload["reason"] | undefined = done
-    ? candidateConcludi
-      ? "concludi_signal"
-      : "max_turns"
-    : undefined;
-
-  const draftPayload: DraftPayload = {
-    format: "l2_conversation",
-    opening_line,
-    transcript,
-    curveball_fired,
-    last_turn_index: turn_index,
-    ...(done ? { done: true, reason } : {}),
-  };
-
-  // Upsert draft submission
-  if (existingSub) {
-    const { error: upErr } = await supabase
-      .from("challenge_submissions")
-      .update({ draft_payload: draftPayload, updated_at: new Date().toISOString() })
-      .eq("id", existingSub.id);
-    if (upErr) {
-      console.error("[l2-converse] draft update failed:", upErr.message);
-      return errorResponse(500, "DRAFT_PERSIST_FAILED", upErr.message);
-    }
-  } else {
-    const { error: insErr } = await supabase.from("challenge_submissions").insert({
-      invitation_id,
-      challenge_id,
-      candidate_profile_id: invitation.candidate_profile_id,
-      business_id: invitation.business_id ?? challenge.business_id,
-      hiring_goal_id: invitation.hiring_goal_id ?? challenge.hiring_goal_id,
-      status: "draft",
-      draft_payload: draftPayload,
-    });
-    if (insErr) {
-      console.error("[l2-converse] draft insert failed:", insErr.message);
-      return errorResponse(500, "DRAFT_PERSIST_FAILED", insErr.message);
-    }
-  }
-
-  emitAuditEvent({
-    actorType: "candidate",
-    actorId: invitation.candidate_profile_id ?? null,
-    action: done ? "challenge.l2_turn_final" : "challenge.l2_turn",
-    entityType: "challenge_submission",
-    entityId: invitation_id,
+  const modelOpts = {
+    system,
+    userMessage,
     correlationId,
-    metadata: {
-      challenge_id,
-      turn_index,
-      curveball_fired_now: shouldFireCurveball && !degraded,
-      degraded,
-      done,
-      reason,
+    functionName: "l2-converse",
+    model: getModelForFunction("l2-converse"),
+    maxTokens: 350,
+    temperature: 0.85,
+    inputSummary: `challenge=${challenge_id} turn=${turn_index} curveball=${shouldFireCurveball} closing=${closing}`,
+  };
+
+  // ============ JSON branch (back-compat) ============
+  if (!wantsStream) {
+    let raw = "";
+    let failed = false;
+    let errCode: string | undefined;
+    try {
+      const result = await callAnthropicApi(modelOpts);
+      raw = result.content;
+    } catch (e) {
+      failed = true;
+      errCode = e instanceof AnthropicError ? e.errorCode : "MODEL_ERROR";
+      console.error(`[l2-converse] model failure (${errCode}):`, e instanceof Error ? e.message : e);
+    }
+    const fin = await finalizeTurn(raw, failed, errCode);
+    if (!fin.ok) return errorResponse(500, fin.error, fin.message);
+    return jsonResponse(fin.payload);
+  }
+
+  // ============ SSE branch (streaming) ============
+  const encoder = new TextEncoder();
+  const sseStream = new ReadableStream({
+    async start(controller) {
+      const send = (event: string | null, data: unknown) => {
+        try {
+          let frame = "";
+          if (event) frame += `event: ${event}\n`;
+          frame += `data: ${typeof data === "string" ? data : JSON.stringify(data)}\n\n`;
+          controller.enqueue(encoder.encode(frame));
+        } catch (_) { /* controller closed by client abort */ }
+      };
+
+      let raw = "";
+      let failed = false;
+      let errCode: string | undefined;
+
+      try {
+        await streamAnthropicApi(modelOpts, (delta) => {
+          raw += delta;
+          send("delta", { text: delta });
+        });
+      } catch (e) {
+        failed = true;
+        errCode = e instanceof AnthropicError ? e.errorCode : "MODEL_ERROR";
+        console.error(`[l2-converse] stream model failure (${errCode}):`, e instanceof Error ? e.message : e);
+      }
+
+      const fin = await finalizeTurn(raw, failed, errCode);
+      if (!fin.ok) {
+        send("error", { error_code: fin.error, message: fin.message, correlation_id: correlationId });
+        try { controller.close(); } catch (_) { /* noop */ }
+        return;
+      }
+
+      // Authoritative final payload — client MUST replace its accumulated text
+      // with payload.reply (== persisted draft_payload.transcript[last].text).
+      send("meta", { ...fin.payload, final_text: fin.payload.reply });
+      send(null, "[DONE]");
+      try { controller.close(); } catch (_) { /* noop */ }
     },
   });
 
-  return jsonResponse({
-    reply: replyText,
-    turn_index,
-    curveball_fired,
-    curveball_fired_this_turn: shouldFireCurveball && !degraded,
-    done,
-    reason: reason ?? null,
-    degraded,
-    correlation_id: correlationId,
+  return new Response(sseStream, {
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache, no-transform",
+      "Connection": "keep-alive",
+      "X-Correlation-Id": correlationId,
+    },
   });
 });
