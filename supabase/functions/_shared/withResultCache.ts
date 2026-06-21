@@ -76,11 +76,15 @@ export async function withResultCache<T>(opts: WithResultCacheOptions<T>): Promi
 
   const client = getServiceClient();
   if (!client) {
-    // No service role — bypass cache silently.
+    console.error(JSON.stringify({
+      type: "cache_bypass_no_service_role",
+      function_name: functionName,
+      correlation_id: correlationId ?? null,
+    }));
     return await compute();
   }
 
-  // ---- Try cache GET (best-effort) ----
+  // ---- Try cache GET ----
   try {
     const { data, error } = await client.rpc("ai_shared_cache_get", {
       _function_name: functionName,
@@ -88,32 +92,44 @@ export async function withResultCache<T>(opts: WithResultCacheOptions<T>): Promi
       _user_id: scope === "user" ? effectiveUserId : null,
       _input_hash: inputHash,
     });
-    if (!error && data !== null && data !== undefined) {
+    if (error) {
+      console.error(JSON.stringify({
+        type: "cache_get_error",
+        function_name: functionName, scope,
+        correlation_id: correlationId ?? null,
+        error_message: error.message,
+        error_code: (error as any).code ?? null,
+        error_details: (error as any).details ?? null,
+        error_hint: (error as any).hint ?? null,
+      }));
+    } else if (data !== null && data !== undefined) {
       console.log(JSON.stringify({
-        type: "cache_hit",
-        function_name: functionName,
-        scope,
+        type: "cache_hit", function_name: functionName, scope,
         correlation_id: correlationId ?? null,
       }));
       return data as T;
     }
   } catch (e) {
-    console.warn(`[withResultCache] GET failed for ${functionName}:`, e instanceof Error ? e.message : e);
+    console.error(JSON.stringify({
+      type: "cache_get_exception",
+      function_name: functionName,
+      correlation_id: correlationId ?? null,
+      error: e instanceof Error ? e.message : String(e),
+    }));
   }
 
   console.log(JSON.stringify({
-    type: "cache_miss",
-    function_name: functionName,
-    scope,
+    type: "cache_miss", function_name: functionName, scope,
     correlation_id: correlationId ?? null,
   }));
 
   // ---- Compute ----
   const result = await compute();
 
-  // ---- PUT (fire-and-forget; never block on failure) ----
+  // ---- PUT — log loudly on failure, never block caller ----
   try {
     const serialized = JSON.parse(JSON.stringify(result));
+    const payloadBytes = JSON.stringify(serialized).length;
     const { error } = await client.rpc("ai_shared_cache_put", {
       _function_name: functionName,
       _scope: scope,
@@ -124,10 +140,32 @@ export async function withResultCache<T>(opts: WithResultCacheOptions<T>): Promi
       _ttl_seconds: ttlSeconds,
     });
     if (error) {
-      console.warn(`[withResultCache] PUT error for ${functionName}:`, error.message);
+      console.error(JSON.stringify({
+        type: "cache_put_error",
+        function_name: functionName, scope,
+        correlation_id: correlationId ?? null,
+        payload_bytes: payloadBytes,
+        error_message: error.message,
+        error_code: (error as any).code ?? null,
+        error_details: (error as any).details ?? null,
+        error_hint: (error as any).hint ?? null,
+      }));
+    } else {
+      console.log(JSON.stringify({
+        type: "cache_put_ok",
+        function_name: functionName, scope,
+        correlation_id: correlationId ?? null,
+        payload_bytes: payloadBytes,
+        ttl_seconds: ttlSeconds,
+      }));
     }
   } catch (e) {
-    console.warn(`[withResultCache] PUT failed for ${functionName}:`, e instanceof Error ? e.message : e);
+    console.error(JSON.stringify({
+      type: "cache_put_exception",
+      function_name: functionName,
+      correlation_id: correlationId ?? null,
+      error: e instanceof Error ? e.message : String(e),
+    }));
   }
 
   return result;
