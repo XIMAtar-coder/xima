@@ -62,6 +62,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
 
   useEffect(() => { if (open) scrollToBottom(); }, [open, messages.length]);
   useEffect(() => { if (controlledOpen !== undefined) setOpen(controlledOpen); }, [controlledOpen]);
+  useEffect(() => () => { streamStop(); }, [streamStop]);
 
   // Ensure a conversation exists for this user
   useEffect(() => {
