@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import MainLayout from '@/components/layout/MainLayout';
@@ -12,7 +12,9 @@ import { XimatarProfileCard } from '@/components/results/XimatarProfileCard';
 import { MentorSection } from '@/components/profile/MentorSection';
 import { ProfileCompletionModal } from '@/components/profile/ProfileCompletionModal';
 
-import { PillarRadarChart } from '@/components/profile/PillarRadarChart';
+const PillarRadarChart = lazy(() =>
+  import('@/components/profile/PillarRadarChart').then(m => ({ default: m.PillarRadarChart }))
+);
 import { XimatarHeroCard } from '@/components/profile/XimatarHeroCard';
 import { StrengthFrictionSummary } from '@/components/profile/StrengthFrictionSummary';
 import { AssessmentOverviewCard } from '@/components/profile/AssessmentOverviewCard';
@@ -254,7 +256,11 @@ const Profile = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
             <div className="space-y-6">
               <StrengthFrictionSummary strongestPillar={profileData.strongest_pillar} weakestPillar={profileData.weakest_pillar} growthPath={profileData.ximatar_growth_path} />
-              {profileData.pillar_scores && <PillarRadarChart pillars={profileData.pillar_scores} />}
+              {profileData.pillar_scores && (
+                <Suspense fallback={<div className="h-64 rounded-lg bg-muted animate-pulse" />}>
+                  <PillarRadarChart pillars={profileData.pillar_scores} />
+                </Suspense>
+              )}
               {profileData.pillar_scores && <AssessmentOverviewCard pillarScores={profileData.pillar_scores} driveLevel={profileData.drive_level} storytelling={profileData.ximatar_storytelling} />}
               {profileData.open_answers && profileData.open_answers.length > 0 && <OpenAnswerList openAnswers={profileData.open_answers} />}
             </div>
