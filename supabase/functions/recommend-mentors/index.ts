@@ -549,6 +549,22 @@ Return ONLY a JSON array of strings:
 
     console.log(JSON.stringify({ type: "recommend_mentors_done", correlation_id: correlationId, returned: topMentors.length, context: hasTension ? "tension" : "basic" }));
 
+    if (cacheable && cacheInputHash) {
+      try {
+        await supabase.rpc("ai_shared_cache_put", {
+          _function_name: "recommend-mentors",
+          _scope: "user",
+          _user_id: userId,
+          _input_hash: cacheInputHash,
+          _version_tag: cacheVersionTag,
+          _result_data: JSON.parse(JSON.stringify(response)),
+          _ttl_seconds: 60 * 60 * 4,
+        });
+      } catch (e) {
+        console.warn("[recommend-mentors] cache put failed:", e instanceof Error ? e.message : e);
+      }
+    }
+
     return jsonResponse(response);
   } catch (error) {
     console.error(JSON.stringify({ type: "recommend_mentors_error", correlation_id: correlationId, error: error instanceof Error ? error.message : String(error) }));
