@@ -6274,6 +6274,27 @@ export type Database = {
         }
         Returns: Json
       }
+      ai_shared_cache_get: {
+        Args: {
+          _function_name: string
+          _input_hash: string
+          _scope: string
+          _user_id: string
+        }
+        Returns: Json
+      }
+      ai_shared_cache_put: {
+        Args: {
+          _function_name: string
+          _input_hash: string
+          _result_data: Json
+          _scope: string
+          _ttl_seconds: number
+          _user_id: string
+          _version_tag: string
+        }
+        Returns: undefined
+      }
       apply_referral_on_signup: { Args: { invite_code: string }; Returns: Json }
       assign_role_to_user: {
         Args: {
