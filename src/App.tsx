@@ -12,6 +12,7 @@ import { XimAIProvider } from "./context/XimAIProvider";
 import { AssessmentProvider } from "./contexts/AssessmentContext";
 import RouteSkeleton from "./components/ui/RouteSkeleton";
 import ChunkErrorBoundary from "./components/ui/ChunkErrorBoundary";
+import { ChatEntry } from "./components/ximai/ChatEntry";
 
 // ---- Public / marketing ----
 const Index = lazy(() => import("./pages/Index"));
@@ -99,6 +100,14 @@ const LegacyGoalsRedirect = () => {
   const location = useLocation();
   const rest = location.pathname.replace(/^\/business\/goals/, '');
   return <Navigate to={`/business/hiring-goals${rest}${location.search}${location.hash}`} replace />;
+};
+
+const HIDDEN_AI_ROUTES = new Set(['/', '/login', '/register', '/verify-email', '/auth/callback']);
+
+const XimAILauncher = () => {
+  const { pathname } = useLocation();
+  if (HIDDEN_AI_ROUTES.has(pathname)) return null;
+  return <ChatEntry />;
 };
 
 const AppContent = () => {
@@ -206,6 +215,7 @@ const AppContent = () => {
             </Routes>
           </Suspense>
         </ChunkErrorBoundary>
+        <XimAILauncher />
       </XimAIProvider>
     </>
   );
