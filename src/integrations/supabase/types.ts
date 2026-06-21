@@ -244,6 +244,45 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_shared_cache: {
+        Row: {
+          created_at: string
+          expires_at: string
+          function_name: string
+          hits: number
+          id: string
+          input_hash: string
+          result_data: Json
+          scope: string
+          user_id: string | null
+          version_tag: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          function_name: string
+          hits?: number
+          id?: string
+          input_hash: string
+          result_data: Json
+          scope: string
+          user_id?: string | null
+          version_tag: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          function_name?: string
+          hits?: number
+          id?: string
+          input_hash?: string
+          result_data?: Json
+          scope?: string
+          user_id?: string | null
+          version_tag?: string
+        }
+        Relationships: []
+      }
       ai_usage_budget: {
         Row: {
           calls_limit: number | null
