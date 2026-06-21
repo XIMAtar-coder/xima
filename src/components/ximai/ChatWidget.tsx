@@ -181,29 +181,34 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
     }
 
     setSending(true);
+    // Insert empty assistant message; streaming tokens will append into it
+    const assistantId = crypto.randomUUID();
+    streamingIdRef.current = assistantId;
+    setMessages((prev) => [...prev, { id: assistantId, role: 'assistant', content: '' }]);
+
+    let fullReply = '';
     try {
-      const { data, error } = await supabase.functions.invoke('ximai-chat', {
-        body: { message: text, context: contextPayload }
-      });
-      if (error) throw error;
-
-      const reply = (data as any)?.generatedText || t('ximai.fallback_reply');
-      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: reply }]);
-
-      if (conversationId && user?.id) {
-        await supabase.from('ai_messages').insert({
-          conversation_id: conversationId,
-          role: 'assistant',
-          content: reply
-        });
-      }
+      fullReply = await streamSend({ message: text, context: contextPayload });
     } catch (e) {
-      console.error('AI call failed', e);
-      const reply = t('ximai.not_configured');
-      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: reply }]);
+      console.error('AI stream failed', e);
     } finally {
+      streamingIdRef.current = null;
       setSending(false);
       scrollToBottom();
+    }
+
+    if (!fullReply) {
+      const fb = t('ximai.fallback_reply');
+      setMessages((prev) => prev.map(m => m.id === assistantId && !m.content ? { ...m, content: fb } : m));
+      fullReply = fb;
+    }
+
+    if (conversationId && user?.id) {
+      await supabase.from('ai_messages').insert({
+        conversation_id: conversationId,
+        role: 'assistant',
+        content: fullReply
+      });
     }
   };
 
