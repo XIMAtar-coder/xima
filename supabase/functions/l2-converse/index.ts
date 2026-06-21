@@ -83,6 +83,8 @@ serve(async (req) => {
   }
 
   const { challenge_id, invitation_id, latest_candidate_message, turn_index } = body || ({} as ConverseRequest);
+  const acceptHdr = (req.headers.get("accept") || "").toLowerCase();
+  const wantsStream = acceptHdr.includes("text/event-stream") || body?.stream === true;
 
   // Validation
   if (!challenge_id || !UUID_RE.test(challenge_id)) return errorResponse(400, "INVALID_CHALLENGE_ID", "challenge_id must be a UUID");
