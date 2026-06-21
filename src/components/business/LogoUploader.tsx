@@ -52,14 +52,21 @@ export const LogoUploader = ({ currentLogo, onUpload }: LogoUploaderProps) => {
         .from('business-logos')
         .getPublicUrl(filePath);
 
-      const { error: updateError } = await supabase
+      const { data: updated, error: updateError } = await supabase
         .from('business_profiles')
         .update({
           logo_url: urlData.publicUrl,
           logo_uploaded_at: new Date().toISOString(),
         } as any)
-        .eq('user_id', user.id);
-      if (updateError) throw updateError;
+        .eq('user_id', user.id)
+        .select('user_id, logo_url');
+      if (updateError) {
+        console.error('[LogoUploader] business_profiles update failed', updateError);
+        throw updateError;
+      }
+      if (!updated || updated.length === 0) {
+        throw new Error('Business profile row not updated (auth/RLS mismatch).');
+      }
 
       toast.success(t('business.logo.upload_success', 'Logo caricato con successo'));
       onUpload(urlData.publicUrl);
