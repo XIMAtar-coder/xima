@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { withResultCache } from "../_shared/withResultCache.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -66,45 +67,47 @@ serve(async (req) => {
       });
     }
 
-    const countryCode = country?.toUpperCase();
-    let benchmark = benchmarks[countryCode]?.[experience_level];
-    let source = 'country';
-    let confidence: 'high' | 'medium' | 'low' = 'high';
+    const payload = await withResultCache<any>({
+      functionName: 'get-salary-benchmark',
+      scope: 'global',
+      inputObject: { country: (country || '').toUpperCase(), experience_level },
+      versionTag: 'v1',
+      ttlSeconds: 60 * 60 * 24, // 24h
+      compute: async () => {
+        const countryCode = country?.toUpperCase();
+        let benchmark = benchmarks[countryCode]?.[experience_level];
+        let source = 'country';
+        let confidence: 'high' | 'medium' | 'low' = 'high';
 
-    if (!benchmark) {
-      // Fall back to EU average
-      benchmark = euAverage[experience_level];
-      source = 'eu_average';
-      confidence = 'medium';
-    }
+        if (!benchmark) {
+          benchmark = euAverage[experience_level];
+          source = 'eu_average';
+          confidence = 'medium';
+        }
 
-    if (!benchmark) {
-      return new Response(JSON.stringify({
-        success: false,
-        error: 'No benchmark data available'
-      }), {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
+        if (!benchmark) {
+          return { success: false, error: 'No benchmark data available' };
+        }
+        if (source === 'eu_average') {
+          confidence = country ? 'low' : 'medium';
+        }
 
-    // Add some variance based on country data availability
-    if (source === 'eu_average') {
-      confidence = country ? 'low' : 'medium';
-    }
+        return {
+          success: true,
+          benchmark: {
+            min: benchmark.min,
+            max: benchmark.max,
+            median: benchmark.median,
+            currency: benchmark.currency,
+            source,
+            confidence,
+            country_name: countryCode || 'EU',
+          },
+        };
+      },
+    });
 
-    return new Response(JSON.stringify({
-      success: true,
-      benchmark: {
-        min: benchmark.min,
-        max: benchmark.max,
-        median: benchmark.median,
-        currency: benchmark.currency,
-        source,
-        confidence,
-        country_name: countryCode || 'EU'
-      }
-    }), {
+    return new Response(JSON.stringify(payload), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
