@@ -12,6 +12,7 @@ import { XimAIProvider } from "./context/XimAIProvider";
 import { AssessmentProvider } from "./contexts/AssessmentContext";
 import RouteSkeleton from "./components/ui/RouteSkeleton";
 import ChunkErrorBoundary from "./components/ui/ChunkErrorBoundary";
+import { ChatEntry } from "./components/ximai/ChatEntry";
 
 // ---- Public / marketing ----
 const Index = lazy(() => import("./pages/Index"));
