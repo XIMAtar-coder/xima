@@ -30,6 +30,7 @@ interface ConverseRequest {
   invitation_id: string;
   latest_candidate_message: string;
   turn_index: number;
+  stream?: boolean;
 }
 
 interface TranscriptEntry {
