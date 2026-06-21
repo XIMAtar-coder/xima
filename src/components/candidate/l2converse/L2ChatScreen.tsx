@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Send, Loader2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { useL2Converse } from '@/hooks/useL2Converse';
+import { useL2ConverseStream, type L2ConverseResponse } from '@/hooks/useL2Converse';
 import { L2MessageBubble } from './L2MessageBubble';
 import { L2TypingIndicator } from './L2TypingIndicator';
 import {
@@ -53,21 +53,85 @@ export function L2ChatScreen({
     initialDraft.reason ?? null
   );
   const [input, setInput] = useState('');
-  const { send, pending } = useL2Converse();
+  // Live, in-progress counterpart bubble while tokens are streaming.
+  const [streamingReply, setStreamingReply] = useState<string>('');
+  const lastSentTextRef = useRef<string>('');
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Derive next expected candidate turn_index from transcript (= candidate replies so far).
   const turnIndex = useMemo(
     () => transcript.filter((e) => e.role === 'candidate').length,
     [transcript]
   );
 
+  const handleResync = useCallback(async () => {
+    const fresh = await refreshDraft();
+    setTranscript(
+      fresh.transcript && fresh.transcript.length > 0
+        ? fresh.transcript
+        : openingLine
+        ? [{ role: 'counterpart', text: openingLine, turn: -1 }]
+        : []
+    );
+    setCurveballFired(!!fresh.curveball_fired);
+    setDone(!!fresh.done);
+    setReason(fresh.reason ?? null);
+    setStreamingReply('');
+    if (lastSentTextRef.current) setInput(lastSentTextRef.current);
+  }, [openingLine, refreshDraft]);
+
+  const { send, stop, pending } = useL2ConverseStream({
+    onToken: (delta) => {
+      setStreamingReply((cur) => cur + delta);
+    },
+    onFinal: (payload: L2ConverseResponse) => {
+      // Authoritative server text — replaces the streamed buffer (sanitize/fallback).
+      const reply: TranscriptEntry = {
+        role: 'counterpart',
+        text: payload.reply,
+        turn: payload.turn_index,
+        ...(payload.curveball_fired_this_turn ? { curveball: true } : {}),
+        ...(payload.degraded ? { degraded: true } : {}),
+      };
+      setTranscript((cur) => [...cur, reply]);
+      setStreamingReply('');
+      setCurveballFired(payload.curveball_fired);
+      setDone(payload.done);
+      setReason(payload.reason);
+    },
+    onError: async (err) => {
+      // Drop the optimistic candidate bubble (the one we appended before sending).
+      setStreamingReply('');
+      setTranscript((cur) => {
+        // remove last entry only if it's our optimistic candidate turn at turnIndex
+        const last = cur[cur.length - 1];
+        if (last && last.role === 'candidate' && last.text === lastSentTextRef.current) {
+          return cur.slice(0, -1);
+        }
+        return cur;
+      });
+
+      if (err.kind === 'turn_mismatch' || err.kind === 'conversation_done' || err.kind === 'already_submitted') {
+        await handleResync();
+        if (err.kind !== 'turn_mismatch') setDone(true);
+        return;
+      }
+      toast({
+        title: t('candidate.l2_conversation.send_failed', 'Non sono riuscito a inviare'),
+        description: t('candidate.l2_conversation.send_failed_hint', 'Riprova tra qualche secondo.'),
+        variant: 'destructive',
+      });
+      setInput(lastSentTextRef.current);
+    },
+  });
+
+  // Abort any live stream on unmount / route change.
+  useEffect(() => () => { stop(); }, [stop]);
+
   useEffect(() => {
-    // Auto-scroll to bottom when transcript grows.
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [transcript.length, pending]);
+  }, [transcript.length, pending, streamingReply]);
 
   const reachedMax = turnIndex >= MAX_CANDIDATE_TURNS;
   const composerDisabled = done || reachedMax || pending || submitting;
@@ -78,7 +142,7 @@ export function L2ChatScreen({
       if (!text || composerDisabled) return;
 
       const sentTurnIndex = turnIndex;
-      // Optimistic candidate bubble
+      lastSentTextRef.current = text;
       const optimistic: TranscriptEntry = {
         role: 'candidate',
         text,
@@ -86,76 +150,16 @@ export function L2ChatScreen({
       };
       setTranscript((cur) => [...cur, optimistic]);
       setInput('');
+      setStreamingReply('');
 
-      const result = await send({
-        challengeId,
-        invitationId,
+      await send({
+        challengeId: challengeId,
+        invitationId: invitationId,
         latestCandidateMessage: text,
         turnIndex: sentTurnIndex,
       });
-
-      if (result.ok !== true) {
-        // Drop the optimistic candidate bubble in all error cases.
-        setTranscript((cur) => cur.filter((e) => e !== optimistic));
-        const err = (result as { ok: false; error: import('@/hooks/useL2Converse').L2ConverseError }).error;
-
-        if (err.kind === 'turn_mismatch') {
-          // Silent resync from server-of-truth draft.
-          const fresh = await refreshDraft();
-          setTranscript(
-            fresh.transcript && fresh.transcript.length > 0
-              ? fresh.transcript
-              : openingLine
-              ? [{ role: 'counterpart', text: openingLine, turn: -1 }]
-              : []
-          );
-          setCurveballFired(!!fresh.curveball_fired);
-          setDone(!!fresh.done);
-          setReason(fresh.reason ?? null);
-          // Restore the candidate's typed text so they can retry.
-          setInput(text);
-          return;
-        }
-        if (err.kind === 'conversation_done' || err.kind === 'already_submitted') {
-          const fresh = await refreshDraft();
-          setTranscript(fresh.transcript || []);
-          setDone(true);
-          return;
-        }
-        toast({
-          title: t('candidate.l2_conversation.send_failed', 'Non sono riuscito a inviare'),
-          description: t('candidate.l2_conversation.send_failed_hint', 'Riprova tra qualche secondo.'),
-          variant: 'destructive',
-        });
-        setInput(text);
-        return;
-      }
-
-      // Append counterpart reply (server already persisted the full transcript).
-      const data = (result as { ok: true; data: import('@/hooks/useL2Converse').L2ConverseResponse }).data;
-      const reply: TranscriptEntry = {
-        role: 'counterpart',
-        text: data.reply,
-        turn: sentTurnIndex,
-        ...(data.curveball_fired_this_turn ? { curveball: true } : {}),
-        ...(data.degraded ? { degraded: true } : {}),
-      };
-      setTranscript((cur) => [...cur, reply]);
-      setCurveballFired(data.curveball_fired);
-      setDone(data.done);
-      setReason(data.reason);
     },
-    [
-      challengeId,
-      composerDisabled,
-      input,
-      invitationId,
-      openingLine,
-      refreshDraft,
-      send,
-      t,
-      turnIndex,
-    ]
+    [challengeId, composerDisabled, input, invitationId, send, turnIndex]
   );
 
   const handleConcludi = useCallback(() => {
@@ -215,7 +219,14 @@ export function L2ChatScreen({
               counterpartName={counterpartName}
             />
           ))}
-          {pending && <L2TypingIndicator counterpartName={counterpartName} />}
+          {streamingReply && (
+            <L2MessageBubble
+              key="streaming-counterpart"
+              entry={{ role: 'counterpart', text: streamingReply, turn: turnIndex }}
+              counterpartName={counterpartName}
+            />
+          )}
+          {pending && !streamingReply && <L2TypingIndicator counterpartName={counterpartName} />}
         </div>
 
         {/* Composer (hidden once done) */}
