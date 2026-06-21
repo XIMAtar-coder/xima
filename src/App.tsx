@@ -102,6 +102,14 @@ const LegacyGoalsRedirect = () => {
   return <Navigate to={`/business/hiring-goals${rest}${location.search}${location.hash}`} replace />;
 };
 
+const HIDDEN_AI_ROUTES = new Set(['/', '/login', '/register', '/verify-email', '/auth/callback']);
+
+const XimAILauncher = () => {
+  const { pathname } = useLocation();
+  if (HIDDEN_AI_ROUTES.has(pathname)) return null;
+  return <ChatEntry />;
+};
+
 const AppContent = () => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
