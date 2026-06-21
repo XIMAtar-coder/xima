@@ -313,3 +313,241 @@ export async function callAnthropicApi(options: AnthropicCallOptions): Promise<A
 
   return { content, model, latencyMs, requestId };
 }
+
+/* ------------------------------------------------------------------ */
+/* Streaming variant — same envelope, same logging, SSE-based delta API */
+/* ------------------------------------------------------------------ */
+
+export interface AnthropicStreamResult {
+  content: string;        // full assembled text (pre-sanitize)
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  latencyMs: number;
+  requestId: string;
+  stopReason: string | null;
+}
+
+/**
+ * Stream Claude responses via Anthropic Messages API.
+ * Invokes onDelta(text) for each text chunk as it arrives.
+ * Persists the SAME ai_invocation_log envelope as callAnthropicApi,
+ * using real input/output token counts from message_start + message_delta events.
+ */
+export async function streamAnthropicApi(
+  options: AnthropicCallOptions,
+  onDelta: (text: string) => void,
+): Promise<AnthropicStreamResult> {
+  const {
+    system, userMessage, correlationId, functionName,
+    inputSummary, model = getModelForFunction(functionName),
+    maxTokens = 4096, temperature,
+    promptTemplateVersion = "2.0",
+  } = options;
+
+  const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!ANTHROPIC_API_KEY) {
+    throw new AnthropicError(500, "ANTHROPIC_NOT_CONFIGURED", "ANTHROPIC_API_KEY not set");
+  }
+
+  const requestId = crypto.randomUUID();
+
+  const canonical = `[system]\n${system}\n===\n[user]\n${userMessage}\n===\n[params] temperature=${temperature ?? "default"} max_tokens=${maxTokens} stream=true`;
+  const hashData = new TextEncoder().encode(canonical);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", hashData);
+  const promptHash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+
+  const baseEnvelope = {
+    request_id: requestId,
+    correlation_id: correlationId,
+    function_name: functionName,
+    provider: "anthropic",
+    model_name: model,
+    model_version: "2025-05-14",
+    temperature: temperature ?? null,
+    max_tokens: maxTokens,
+    prompt_hash: promptHash,
+    prompt_template_version: promptTemplateVersion,
+    scoring_schema_version: SCORING_SCHEMA_VERSION,
+    input_summary: inputSummary ?? null,
+  };
+
+  const persistEnvelope = async (extra: {
+    output_summary: string | null;
+    status: string;
+    error_code: string | null;
+    latency_ms: number;
+    input_tokens?: number | null;
+    output_tokens?: number | null;
+  }) => {
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL");
+      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      if (!supabaseUrl || !serviceKey) return;
+      const client = createClient(supabaseUrl, serviceKey);
+      let cost_usd: number | null = null;
+      const inTok = extra.input_tokens ?? 0;
+      const outTok = extra.output_tokens ?? 0;
+      if (inTok > 0 || outTok > 0) {
+        try {
+          const { data: c } = await client.rpc("compute_ai_cost_usd", {
+            _provider: "anthropic",
+            _model_name: model,
+            _input_tokens: inTok,
+            _output_tokens: outTok,
+          });
+          if (c !== null && c !== undefined) cost_usd = Number(c);
+        } catch (_) { /* leave NULL */ }
+      }
+      await client.from("ai_invocation_log").insert({
+        ...baseEnvelope,
+        output_summary: extra.output_summary,
+        status: extra.status,
+        error_code: extra.error_code,
+        latency_ms: extra.latency_ms,
+        input_tokens: extra.input_tokens ?? null,
+        output_tokens: extra.output_tokens ?? null,
+        cost_usd,
+      });
+    } catch (e) {
+      console.error("[anthropic_audit_stream] Envelope error:", e instanceof Error ? e.message : e);
+    }
+  };
+
+  const start = Date.now();
+  let response: Response;
+  try {
+    response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+        "accept": "text/event-stream",
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: maxTokens,
+        system,
+        messages: [{ role: "user", content: userMessage }],
+        stream: true,
+        ...(temperature !== undefined ? { temperature } : {}),
+      }),
+    });
+  } catch (_fetchError) {
+    const latencyMs = Date.now() - start;
+    await persistEnvelope({ output_summary: null, status: "error", error_code: "NETWORK_ERROR", latency_ms: latencyMs });
+    throw new AnthropicError(502, "NETWORK_ERROR", "Failed to reach Anthropic API");
+  }
+
+  if (!response.ok || !response.body) {
+    const errorText = await response.text().catch(() => "");
+    const latencyMs = Date.now() - start;
+    console.error(`[${functionName}] Anthropic stream error: ${response.status}`, errorText.substring(0, 300));
+    const mappedError = parseAnthropicError(response.status, errorText);
+    await persistEnvelope({
+      output_summary: `error:${response.status}`,
+      status: mappedError.statusCode === 429 ? "rate_limited" : "error",
+      error_code: mappedError.errorCode, latency_ms: latencyMs,
+    });
+    throw new AnthropicError(mappedError.statusCode, mappedError.errorCode, mappedError.message);
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let fullText = "";
+  let inputTokens = 0;
+  let outputTokens = 0;
+  let stopReason: string | null = null;
+
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      let nlIdx: number;
+      while ((nlIdx = buffer.indexOf("\n\n")) !== -1) {
+        const rawEvent = buffer.slice(0, nlIdx);
+        buffer = buffer.slice(nlIdx + 2);
+
+        // Parse only "data:" line — event name is informational; type lives in payload
+        let dataLine = "";
+        for (const line of rawEvent.split("\n")) {
+          if (line.startsWith("data:")) {
+            dataLine = line.slice(5).trim();
+            break;
+          }
+        }
+        if (!dataLine) continue;
+
+        let evt: any;
+        try { evt = JSON.parse(dataLine); } catch { continue; }
+
+        const t = evt?.type;
+        if (t === "message_start") {
+          inputTokens = evt?.message?.usage?.input_tokens ?? inputTokens;
+          // Anthropic also reports a placeholder output_tokens here (usually 1); message_delta gives the true total
+          outputTokens = evt?.message?.usage?.output_tokens ?? outputTokens;
+        } else if (t === "content_block_delta") {
+          const d = evt?.delta;
+          if (d?.type === "text_delta" && typeof d.text === "string" && d.text.length > 0) {
+            fullText += d.text;
+            try { onDelta(d.text); } catch (_) { /* don't break the stream on callback error */ }
+          }
+        } else if (t === "message_delta") {
+          if (typeof evt?.usage?.output_tokens === "number") {
+            outputTokens = evt.usage.output_tokens;
+          }
+          if (typeof evt?.delta?.stop_reason === "string") {
+            stopReason = evt.delta.stop_reason;
+          }
+        } else if (t === "error") {
+          const msg = evt?.error?.message || "Anthropic stream error";
+          throw new AnthropicError(502, "STREAM_ERROR", msg);
+        }
+        // message_stop / content_block_start / ping / content_block_stop → no-op
+      }
+    }
+  } catch (e) {
+    const latencyMs = Date.now() - start;
+    await persistEnvelope({
+      output_summary: `stream_error:${fullText.length}chars`,
+      status: "error",
+      error_code: e instanceof AnthropicError ? e.errorCode : "STREAM_READ_ERROR",
+      latency_ms: latencyMs,
+      input_tokens: inputTokens || null,
+      output_tokens: outputTokens || null,
+    });
+    if (e instanceof AnthropicError) throw e;
+    throw new AnthropicError(502, "STREAM_READ_ERROR", e instanceof Error ? e.message : "Stream read failed");
+  }
+
+  const latencyMs = Date.now() - start;
+  const estimatedCost =
+    (inputTokens / 1000) * (COST_PER_1K_INPUT[model] || 0.003) +
+    (outputTokens / 1000) * (COST_PER_1K_OUTPUT[model] || 0.015);
+
+  // Fire-and-forget — identical envelope shape to non-streaming callAnthropicApi
+  persistEnvelope({
+    output_summary: `tokens:${inputTokens}+${outputTokens},model:${model},stream`,
+    status: "success", error_code: null, latency_ms: latencyMs,
+    input_tokens: inputTokens, output_tokens: outputTokens,
+  });
+
+  console.log(JSON.stringify({
+    type: "anthropic_success_stream", correlation_id: correlationId, function_name: functionName,
+    latency_ms: latencyMs, model,
+    input_tokens: inputTokens, output_tokens: outputTokens,
+    estimated_cost_usd: Math.round(estimatedCost * 10000) / 10000,
+    stop_reason: stopReason,
+  }));
+  console.log(JSON.stringify({
+    type: "cost_estimate", correlation_id: correlationId, function_name: functionName,
+    model, input_tokens: inputTokens, output_tokens: outputTokens,
+    estimated_cost_usd: Math.round(estimatedCost * 10000) / 10000,
+  }));
+
+  return { content: fullText, model, inputTokens, outputTokens, latencyMs, requestId, stopReason };
+}
