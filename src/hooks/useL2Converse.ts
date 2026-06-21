@@ -1,5 +1,6 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useSSEStream, SSE_SUPABASE_URL, type SSEEvent } from './useSSEStream';
 
 type SendArgs = {
   challengeId: string;
@@ -52,7 +53,6 @@ export function useL2Converse() {
 
         // supabase-js surfaces non-2xx as `error` with a context.response we can read.
         if (error) {
-          // Try to extract body from the underlying Response
           let parsed: any = null;
           try {
             const ctx = (error as any).context;
@@ -91,4 +91,102 @@ export function useL2Converse() {
   );
 
   return { send, pending };
+}
+
+/* ----------------------------------------------------------------- */
+/* Streaming variant                                                  */
+/* ----------------------------------------------------------------- */
+
+export interface UseL2ConverseStreamOptions {
+  /** Called for each incoming token; UI appends to the in-progress counterpart bubble. */
+  onToken?: (delta: string) => void;
+  /**
+   * Called once with the authoritative final payload (server-persisted).
+   * UI MUST replace the accumulated text with payload.reply (== final_text)
+   * because server-side sanitize/fallback may have rewritten it.
+   */
+  onFinal?: (payload: L2ConverseResponse) => void;
+  onError?: (err: L2ConverseError) => void;
+}
+
+export function useL2ConverseStream(opts: UseL2ConverseStreamOptions = {}) {
+  const [pending, setPending] = useState(false);
+  const optsRef = useRef(opts);
+  optsRef.current = opts;
+
+  const finalRef = useRef<L2ConverseResponse | null>(null);
+  const sawErrorRef = useRef(false);
+
+  const handleEvent = useCallback((e: SSEEvent) => {
+    if (!e.data || e.data === '[DONE]') return;
+    if (e.event === 'delta') {
+      try {
+        const j = JSON.parse(e.data);
+        const text = typeof j?.text === 'string' ? j.text : '';
+        if (text) optsRef.current.onToken?.(text);
+      } catch { /* ignore */ }
+    } else if (e.event === 'meta') {
+      try {
+        const j = JSON.parse(e.data);
+        finalRef.current = j as L2ConverseResponse;
+      } catch { /* ignore */ }
+    } else if (e.event === 'error') {
+      sawErrorRef.current = true;
+      try {
+        const j = JSON.parse(e.data);
+        const code = j?.error_code;
+        if (code === 'TURN_INDEX_MISMATCH') {
+          optsRef.current.onError?.({ kind: 'turn_mismatch', expected: j?.details?.expected ?? 0, got: j?.details?.got ?? 0 });
+        } else if (code === 'ALREADY_SUBMITTED') {
+          optsRef.current.onError?.({ kind: 'already_submitted' });
+        } else if (code === 'CONVERSATION_DONE') {
+          optsRef.current.onError?.({ kind: 'conversation_done' });
+        } else {
+          optsRef.current.onError?.({ kind: 'network', message: j?.message || code || 'error' });
+        }
+      } catch {
+        optsRef.current.onError?.({ kind: 'network', message: 'error' });
+      }
+    }
+  }, []);
+
+  const { send: sseSend, stop, streaming } = useSSEStream({
+    onEvent: handleEvent,
+    onJsonFallback: (json) => {
+      // Back-compat: edge replied JSON instead of SSE.
+      const j = json as L2ConverseResponse;
+      if (j && typeof j.reply === 'string') {
+        finalRef.current = j;
+      }
+    },
+    onDone: () => {
+      setPending(false);
+      if (!sawErrorRef.current && finalRef.current) {
+        optsRef.current.onFinal?.(finalRef.current);
+      }
+    },
+    onError: (err) => {
+      setPending(false);
+      sawErrorRef.current = true;
+      optsRef.current.onError?.({ kind: 'network', message: err.message });
+    },
+  });
+
+  const send = useCallback(async (args: SendArgs): Promise<void> => {
+    finalRef.current = null;
+    sawErrorRef.current = false;
+    setPending(true);
+    await sseSend({
+      url: `${SSE_SUPABASE_URL}/functions/v1/l2-converse`,
+      body: {
+        challenge_id: args.challengeId,
+        invitation_id: args.invitationId,
+        latest_candidate_message: args.latestCandidateMessage,
+        turn_index: args.turnIndex,
+        stream: true,
+      },
+    });
+  }, [sseSend]);
+
+  return { send, stop, streaming, pending };
 }
