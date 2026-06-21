@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Send, Loader2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { useL2Converse } from '@/hooks/useL2Converse';
+import { useL2ConverseStream, type L2ConverseResponse } from '@/hooks/useL2Converse';
 import { L2MessageBubble } from './L2MessageBubble';
 import { L2TypingIndicator } from './L2TypingIndicator';
 import {
