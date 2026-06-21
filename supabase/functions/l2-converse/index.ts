@@ -17,7 +17,7 @@
  */
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { callAnthropicApi, AnthropicError, getModelForFunction } from "../_shared/anthropicClient.ts";
+import { callAnthropicApi, streamAnthropicApi, AnthropicError, getModelForFunction } from "../_shared/anthropicClient.ts";
 import { generateCorrelationId } from "../_shared/aiClient.ts";
 import { corsHeaders, errorResponse, jsonResponse } from "../_shared/errors.ts";
 import { emitAuditEvent } from "../_shared/auditEvents.ts";
