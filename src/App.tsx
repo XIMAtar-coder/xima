@@ -215,6 +215,7 @@ const AppContent = () => {
             </Routes>
           </Suspense>
         </ChunkErrorBoundary>
+        <XimAILauncher />
       </XimAIProvider>
     </>
   );
