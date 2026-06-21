@@ -8,6 +8,7 @@ import {
 } from "../_shared/validation.ts";
 import { callAiGateway, generateCorrelationId, AiGatewayError } from "../_shared/aiClient.ts";
 import { corsHeaders, errorResponse, jsonResponse } from "../_shared/errors.ts";
+import { withResultCache } from "../_shared/withResultCache.ts";
 
 const LANGUAGE_NAMES: Record<string, string> = { en: 'English', it: 'Italian', es: 'Spanish' };
 const SUPPORTED_LOCALES = ['en', 'it', 'es'] as const;
@@ -59,25 +60,34 @@ STRICT RULES:
 - Return ONLY the translated text, no explanations or commentary.`;
 
     try {
-      const aiResp = await callAiGateway({
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: text },
-        ],
-        correlationId,
+      const cached = await withResultCache<{ translatedText: string }>({
         functionName: 'translate-content',
+        scope: 'global',
+        inputObject: { text, locale: normalizedLocale },
+        versionTag: 'v1',
+        ttlSeconds: 60 * 60 * 24 * 30, // 30 days
+        correlationId,
+        compute: async () => {
+          const aiResp = await callAiGateway({
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: text },
+            ],
+            correlationId,
+            functionName: 'translate-content',
+          });
+          return { translatedText: aiResp.content.trim() || text };
+        },
       });
-
-      const translatedText = aiResp.content.trim() || text;
 
       console.log(JSON.stringify({
         type: 'success', correlation_id: correlationId,
         function_name: 'translate-content',
         target_locale: normalizedLocale,
-        output_length: translatedText.length,
+        output_length: cached.translatedText.length,
       }));
 
-      return jsonResponse({ translatedText });
+      return jsonResponse(cached);
     } catch (e) {
       if (e instanceof AiGatewayError) {
         if (e.statusCode === 429 || e.statusCode === 402) return e.toResponse();
