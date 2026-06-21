@@ -53,18 +53,26 @@ export const ProfilePhotoUpload: React.FC = () => {
         .from('avatars')
         .getPublicUrl(filePath);
 
-      // Update profile
-      const { error: updateError } = await supabase
+      // Persist on profile (jsonb 'avatar' column read as user.avatar.image).
+      const avatarValue = { image: publicUrl, type: 'custom' as const };
+      const { data: updated, error: updateError } = await supabase
         .from('profiles')
         .update({
-          avatar: {
-            image: publicUrl,
-            type: 'custom'
-          }
+          avatar: avatarValue,
+          updated_at: new Date().toISOString(),
         })
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .select('user_id, avatar');
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error('[ProfilePhotoUpload] profile update failed', updateError);
+        throw updateError;
+      }
+      if (!updated || updated.length === 0) {
+        const err = new Error('Profile row not updated (auth/RLS mismatch). User: ' + user.id);
+        console.error('[ProfilePhotoUpload]', err);
+        throw err;
+      }
 
       setAvatarUrl(publicUrl);
       toast.success('Profile photo updated');

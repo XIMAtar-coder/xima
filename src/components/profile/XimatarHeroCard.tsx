@@ -51,8 +51,19 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
         });
       if (uploadError) throw uploadError;
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
-      const { error: updateError } = await supabase.from('profiles').update({ avatar: { image: publicUrl, type: 'custom' } }).eq('user_id', user.id);
-      if (updateError) throw updateError;
+      const avatarValue = { image: publicUrl, type: 'custom' as const };
+      const { data: updated, error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar: avatarValue, updated_at: new Date().toISOString() })
+        .eq('user_id', user.id)
+        .select('user_id, avatar');
+      if (updateError) {
+        console.error('[XimatarHeroCard] profile update failed', updateError);
+        throw updateError;
+      }
+      if (!updated || updated.length === 0) {
+        throw new Error('Profile row not updated (auth/RLS mismatch).');
+      }
       setCurrentAvatar(publicUrl);
       toast.success('Profile photo updated');
       onAvatarUpdate?.();
