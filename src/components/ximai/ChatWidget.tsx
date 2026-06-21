@@ -21,7 +21,7 @@ interface Message {
   kind?: 'text' | 'auth-cta';
 }
 
-export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (open: boolean) => void; hideLauncher?: boolean }> = ({ controlledOpen, onOpenChange, hideLauncher }) => {
+export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (open: boolean) => void; hideLauncher?: boolean }> = ({ controlledOpen, onOpenChange, hideLauncher = true }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   
