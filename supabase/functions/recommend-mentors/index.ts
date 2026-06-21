@@ -19,6 +19,7 @@ import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES, type XimatarPillars } from "../_shared/ximatarTaxonomy.ts";
 import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 import { matchMentorsByGap, depositInference } from "../_shared/intelligenceEngine.ts";
+import { withResultCache, buildUserVersionTag } from "../_shared/withResultCache.ts";
 
 // =====================================================
 // Types
