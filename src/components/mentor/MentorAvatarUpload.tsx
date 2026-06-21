@@ -109,17 +109,21 @@ export function MentorAvatarUpload({
       const publicUrl = `${urlData.publicUrl}?v=${Date.now()}`;
 
       // Update mentor record
-      const { error: updateError } = await supabase
+      const { data: updated, error: updateError } = await supabase
         .from('mentors')
         .update({
           profile_image_url: publicUrl,
           updated_at: new Date().toISOString(),
         })
-        .eq('id', mentorId);
+        .eq('id', mentorId)
+        .select('id, profile_image_url');
 
       if (updateError) {
         console.error('[MentorAvatarUpload] Update error:', updateError);
         throw updateError;
+      }
+      if (!updated || updated.length === 0) {
+        throw new Error('Mentor row not updated (auth/RLS mismatch).');
       }
 
       setUploadProgress(100);
