@@ -82,21 +82,33 @@ Deno.serve(async (req) => {
       auth: { autoRefreshToken: false, persistSession: false }
     });
 
-    // Look up user by email
-    const { data: { users }, error: listError } = await adminClient.auth.admin.listUsers({
-      page: 1,
-      perPage: 50,
-    });
-    
-    if (listError) {
-      console.error("Error listing users:", listError);
-      return new Response(
-        JSON.stringify({ error: "Failed to look up users" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    // Look up user by email — paginate through ALL users to avoid the
+    // 50-user ceiling that previously caused silent misses / accidental
+    // duplicate account creation under `create_if_missing: true`.
+    const normalizedEmail = email.toLowerCase();
+    let existingUser: { id: string; email?: string | null } | null = null;
+    const PER_PAGE = 1000;
+    const MAX_PAGES = 100; // hard upper bound: 100k users
+    for (let page = 1; page <= MAX_PAGES; page++) {
+      const { data, error: listError } = await adminClient.auth.admin.listUsers({
+        page,
+        perPage: PER_PAGE,
+      });
+      if (listError) {
+        console.error("Error listing users:", listError);
+        return new Response(
+          JSON.stringify({ error: "Failed to look up users" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      const users = data?.users ?? [];
+      const match = users.find((u) => u.email?.toLowerCase() === normalizedEmail);
+      if (match) {
+        existingUser = match;
+        break;
+      }
+      if (users.length < PER_PAGE) break; // last page reached
     }
-
-    const existingUser = users?.find(u => u.email?.toLowerCase() === email.toLowerCase()) || null;
 
     if (!existingUser) {
       if (create_if_missing) {
