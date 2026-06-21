@@ -19,6 +19,7 @@ import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES, type XimatarPillars } from "../_shared/ximatarTaxonomy.ts";
 import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 import { matchMentorsByGap, depositInference } from "../_shared/intelligenceEngine.ts";
+import { withResultCache, buildUserVersionTag } from "../_shared/withResultCache.ts";
 
 // =====================================================
 // Types
@@ -227,6 +228,37 @@ serve(async (req) => {
     const { pillar_scores, ximatar, refresh_seed, mode, current_mentor_id } = body;
 
     console.log(JSON.stringify({ type: "recommend_mentors_start", correlation_id: correlationId, user_id: userId, mode: mode || "initial", is_guest: !userId }));
+
+    // ---- Per-user versioned cache (4h TTL) — skip for re_evaluate / refresh / guest ----
+    const cacheable = !!userId && !mode && !refresh_seed;
+    let cacheVersionTag = "";
+    let cacheInputHash = "";
+    if (cacheable) {
+      cacheVersionTag = await buildUserVersionTag(userId!);
+      try {
+        const encoder = new TextEncoder();
+        const canonical = JSON.stringify({ ximatar: ximatar ?? null });
+        const buf = await crypto.subtle.digest(
+          "SHA-256",
+          encoder.encode(`recommend-mentors\n${cacheVersionTag}\n${canonical}`)
+        );
+        cacheInputHash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+        const { data: cached, error: cacheErr } = await supabase.rpc("ai_shared_cache_get", {
+          _function_name: "recommend-mentors",
+          _scope: "user",
+          _user_id: userId,
+          _input_hash: cacheInputHash,
+        });
+        if (!cacheErr && cached) {
+          console.log(JSON.stringify({ type: "cache_hit", function_name: "recommend-mentors", correlation_id: correlationId }));
+          return jsonResponse(cached);
+        }
+        console.log(JSON.stringify({ type: "cache_miss", function_name: "recommend-mentors", correlation_id: correlationId }));
+      } catch (e) {
+        console.warn("[recommend-mentors] cache lookup failed:", e instanceof Error ? e.message : e);
+      }
+    }
+
 
     // ---- Intelligence Engine: try vector gap matching first (FREE) ----
     let vectorMentorMatches: any[] = [];
@@ -516,6 +548,22 @@ Return ONLY a JSON array of strings:
     }
 
     console.log(JSON.stringify({ type: "recommend_mentors_done", correlation_id: correlationId, returned: topMentors.length, context: hasTension ? "tension" : "basic" }));
+
+    if (cacheable && cacheInputHash) {
+      try {
+        await supabase.rpc("ai_shared_cache_put", {
+          _function_name: "recommend-mentors",
+          _scope: "user",
+          _user_id: userId,
+          _input_hash: cacheInputHash,
+          _version_tag: cacheVersionTag,
+          _result_data: JSON.parse(JSON.stringify(response)),
+          _ttl_seconds: 60 * 60 * 4,
+        });
+      } catch (e) {
+        console.warn("[recommend-mentors] cache put failed:", e instanceof Error ? e.message : e);
+      }
+    }
 
     return jsonResponse(response);
   } catch (error) {

@@ -9,6 +9,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useUser } from '@/context/UserContext';
 import { useXimAI } from '@/context/XimAIProvider';
 import { supabase } from '@/integrations/supabase/client';
+import { useStreamingChat } from '@/hooks/useStreamingChat';
+import { toast } from 'sonner';
 import AssistantAvatar from './AssistantAvatar';
 
 interface Message {
@@ -31,7 +33,26 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
+  const streamingIdRef = useRef<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottomFn = () => requestAnimationFrame(() => listRef.current?.scrollIntoView({ behavior: 'smooth' }));
+  const { send: streamSend, stop: streamStop } = useStreamingChat({
+    onToken: (delta) => {
+      const id = streamingIdRef.current;
+      if (!id) return;
+      setMessages((prev) => prev.map(m => m.id === id ? { ...m, content: m.content + delta } : m));
+      scrollToBottomFn();
+    },
+    onError: (err) => {
+      console.error('XIM-AI stream error', err);
+      toast.error(err.message);
+      const id = streamingIdRef.current;
+      if (id) {
+        setMessages((prev) => prev.map(m => m.id === id && !m.content ? { ...m, content: t('ximai.not_configured') } : m));
+      }
+    },
+  });
 
   const botLang = xim.lang || i18n.language || 'en';
 
@@ -41,6 +62,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
 
   useEffect(() => { if (open) scrollToBottom(); }, [open, messages.length]);
   useEffect(() => { if (controlledOpen !== undefined) setOpen(controlledOpen); }, [controlledOpen]);
+  useEffect(() => () => { streamStop(); }, [streamStop]);
 
   // Ensure a conversation exists for this user
   useEffect(() => {
@@ -160,29 +182,34 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
     }
 
     setSending(true);
+    // Insert empty assistant message; streaming tokens will append into it
+    const assistantId = crypto.randomUUID();
+    streamingIdRef.current = assistantId;
+    setMessages((prev) => [...prev, { id: assistantId, role: 'assistant', content: '' }]);
+
+    let fullReply = '';
     try {
-      const { data, error } = await supabase.functions.invoke('ximai-chat', {
-        body: { message: text, context: contextPayload }
-      });
-      if (error) throw error;
-
-      const reply = (data as any)?.generatedText || t('ximai.fallback_reply');
-      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: reply }]);
-
-      if (conversationId && user?.id) {
-        await supabase.from('ai_messages').insert({
-          conversation_id: conversationId,
-          role: 'assistant',
-          content: reply
-        });
-      }
+      fullReply = await streamSend({ message: text, context: contextPayload });
     } catch (e) {
-      console.error('AI call failed', e);
-      const reply = t('ximai.not_configured');
-      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: reply }]);
+      console.error('AI stream failed', e);
     } finally {
+      streamingIdRef.current = null;
       setSending(false);
       scrollToBottom();
+    }
+
+    if (!fullReply) {
+      const fb = t('ximai.fallback_reply');
+      setMessages((prev) => prev.map(m => m.id === assistantId && !m.content ? { ...m, content: fb } : m));
+      fullReply = fb;
+    }
+
+    if (conversationId && user?.id) {
+      await supabase.from('ai_messages').insert({
+        conversation_id: conversationId,
+        role: 'assistant',
+        content: fullReply
+      });
     }
   };
 

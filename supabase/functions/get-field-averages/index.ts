@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { withResultCache } from "../_shared/withResultCache.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -47,72 +48,67 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get all scores for this field, grouped by open_key
-    const { data: responses, error } = await supabase
-      .from('assessment_open_responses')
-      .select('open_key, score, rubric')
-      .eq('field_key', field_key);
+    const result = await withResultCache<any>({
+      functionName: 'get-field-averages',
+      scope: 'global',
+      inputObject: { field_key },
+      versionTag: 'v1',
+      ttlSeconds: 60 * 60 * 24, // 24h
+      compute: async () => {
+        const { data: responses, error } = await supabase
+          .from('assessment_open_responses')
+          .select('open_key, score, rubric')
+          .eq('field_key', field_key);
 
-    if (error) {
-      console.error('Error fetching responses:', error);
-      throw error;
-    }
+        if (error) {
+          console.error('Error fetching responses:', error);
+          throw error;
+        }
 
-    if (!responses || responses.length === 0) {
-      // Return defaults if no data
-      return new Response(
-        JSON.stringify({
-          open1: { avg_score: 65, count: 0, rubric_averages: null },
-          open2: { avg_score: 65, count: 0, rubric_averages: null }
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+        if (!responses || responses.length === 0) {
+          return {
+            open1: { avg_score: 65, count: 0, rubric_averages: null },
+            open2: { avg_score: 65, count: 0, rubric_averages: null }
+          };
+        }
 
-    // Calculate averages for open1 and open2
-    const open1Responses = responses.filter(r => r.open_key === 'open1');
-    const open2Responses = responses.filter(r => r.open_key === 'open2');
+        const open1Responses = responses.filter(r => r.open_key === 'open1');
+        const open2Responses = responses.filter(r => r.open_key === 'open2');
 
-    const calculateAverages = (items: typeof responses) => {
-      if (items.length === 0) {
-        return { avg_score: 65, count: 0, rubric_averages: null };
-      }
-
-      const avgScore = Math.round(items.reduce((sum, r) => sum + (r.score || 0), 0) / items.length);
-      
-      // Calculate rubric averages
-      const rubricTotals: Record<string, number> = {};
-      const rubricCounts: Record<string, number> = {};
-      
-      items.forEach(r => {
-        const rubric = r.rubric as Record<string, number> | null;
-        if (rubric) {
-          ['length', 'relevance', 'structure', 'specificity', 'action'].forEach(key => {
-            if (typeof rubric[key] === 'number') {
-              rubricTotals[key] = (rubricTotals[key] || 0) + rubric[key];
-              rubricCounts[key] = (rubricCounts[key] || 0) + 1;
+        const calculateAverages = (items: typeof responses) => {
+          if (items.length === 0) return { avg_score: 65, count: 0, rubric_averages: null };
+          const avgScore = Math.round(items.reduce((sum, r) => sum + (r.score || 0), 0) / items.length);
+          const rubricTotals: Record<string, number> = {};
+          const rubricCounts: Record<string, number> = {};
+          items.forEach(r => {
+            const rubric = r.rubric as Record<string, number> | null;
+            if (rubric) {
+              ['length', 'relevance', 'structure', 'specificity', 'action'].forEach(key => {
+                if (typeof rubric[key] === 'number') {
+                  rubricTotals[key] = (rubricTotals[key] || 0) + rubric[key];
+                  rubricCounts[key] = (rubricCounts[key] || 0) + 1;
+                }
+              });
             }
           });
-        }
-      });
+          const rubricAverages: Record<string, number> = {};
+          Object.keys(rubricTotals).forEach(key => {
+            rubricAverages[key] = Math.round(rubricTotals[key] / rubricCounts[key]);
+          });
+          return {
+            avg_score: avgScore,
+            count: items.length,
+            rubric_averages: Object.keys(rubricAverages).length > 0 ? rubricAverages : null
+          };
+        };
 
-      const rubricAverages: Record<string, number> = {};
-      Object.keys(rubricTotals).forEach(key => {
-        rubricAverages[key] = Math.round(rubricTotals[key] / rubricCounts[key]);
-      });
-
-      return {
-        avg_score: avgScore,
-        count: items.length,
-        rubric_averages: Object.keys(rubricAverages).length > 0 ? rubricAverages : null
-      };
-    };
-
-    const result = {
-      open1: calculateAverages(open1Responses),
-      open2: calculateAverages(open2Responses),
-      total_responses: responses.length
-    };
+        return {
+          open1: calculateAverages(open1Responses),
+          open2: calculateAverages(open2Responses),
+          total_responses: responses.length,
+        };
+      },
+    });
 
     console.log('Field averages calculated:', { field_key, ...result });
 

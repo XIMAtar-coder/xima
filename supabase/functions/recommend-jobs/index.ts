@@ -15,6 +15,7 @@ import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES, computePillarDistance, type XimatarPillars } from "../_shared/ximatarTaxonomy.ts";
 import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 import { matchJobsByVector, depositInference } from "../_shared/intelligenceEngine.ts";
+import { withResultCache, buildUserVersionTag } from "../_shared/withResultCache.ts";
 
 // =====================================================
 // Types
@@ -241,6 +242,18 @@ serve(async (req) => {
 
     console.log(JSON.stringify({ type: "recommend_jobs_start", correlation_id: correlationId, user_id: userId }));
 
+    // ---- Per-user versioned cache (6h TTL) — auto-invalidates on profile/pillar change ----
+    const versionTag = await buildUserVersionTag(userId);
+    const cachedPayload = await withResultCache<any>({
+      functionName: "recommend-jobs",
+      scope: "user",
+      userId,
+      inputObject: {},
+      versionTag,
+      ttlSeconds: 60 * 60 * 6,
+      correlationId,
+      compute: async () => {
+
     // ---- Intelligence Engine: try vector matching first (FREE) ----
     let vectorMatches: any[] = [];
     try {
@@ -267,14 +280,14 @@ serve(async (req) => {
     const resolvedPillars = (profile?.pillar_scores) as Record<string, number> | null;
 
     if (!resolvedXimatar || !resolvedPillars) {
-      return jsonResponse({
+      return {
         success: true,
         recommendations: [],
         opportunities: [],
         total: 0,
         message: "Complete your XIMA assessment to get personalized recommendations",
         generated_at: new Date().toISOString(),
-      });
+      };
     }
 
     const userArchetype = resolvedXimatar;
@@ -321,7 +334,7 @@ serve(async (req) => {
     const allJobs: JobRecord[] = jobPosts || [];
 
     if (allJobs.length === 0) {
-      return jsonResponse({
+      return {
         success: true,
         recommendations: [],
         opportunities: [],
@@ -329,7 +342,7 @@ serve(async (req) => {
         message: "No active job opportunities available right now. Check back soon.",
         user_context: { ximatar: userArchetype, level: userLevel, cv_uploaded: !!credentials },
         generated_at: new Date().toISOString(),
-      });
+      };
     }
 
     // ---- Fetch company data for all unique business_ids ----
@@ -582,7 +595,11 @@ Return ONLY a JSON array of strings, one per job:
 
     console.log(JSON.stringify({ type: "recommend_jobs_done", correlation_id: correlationId, scanned: allJobs.length, returned: topMatches.length }));
 
-    return jsonResponse(response);
+        return response;
+      },
+    });
+
+    return jsonResponse(cachedPayload);
   } catch (error) {
     console.error(JSON.stringify({ type: "recommend_jobs_error", correlation_id: correlationId, error: error instanceof Error ? error.message : String(error) }));
     return errorResponse(500, "INTERNAL_ERROR", "Failed to generate job recommendations");
