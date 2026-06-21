@@ -13,6 +13,7 @@ import { AssessmentProvider } from "./contexts/AssessmentContext";
 import RouteSkeleton from "./components/ui/RouteSkeleton";
 import ChunkErrorBoundary from "./components/ui/ChunkErrorBoundary";
 import { ChatEntry } from "./components/ximai/ChatEntry";
+import { useUser } from "./context/UserContext";
 
 // ---- Public / marketing ----
 const Index = lazy(() => import("./pages/Index"));
@@ -102,10 +103,22 @@ const LegacyGoalsRedirect = () => {
   return <Navigate to={`/business/hiring-goals${rest}${location.search}${location.hash}`} replace />;
 };
 
-const HIDDEN_AI_ROUTES = new Set(['/', '/login', '/register', '/verify-email', '/auth/callback']);
+// Public/marketing/auth routes where XIM-AI must NEVER appear (even if a session exists).
+const HIDDEN_AI_ROUTES = new Set([
+  '/', '/about', '/how-it-works', '/business', '/pricing', '/contact-sales',
+  '/login', '/register', '/verify-email', '/unsubscribe',
+  '/privacy', '/terms', '/imprint',
+  '/business/login', '/business/register',
+  '/mentor/login',
+  '/challenge/accept',
+]);
 
 const XimAILauncher = () => {
   const { pathname } = useLocation();
+  const { isAuthenticated } = useUser();
+  // Gated: only authenticated users, never on public/auth routes, never under /auth/*.
+  if (!isAuthenticated) return null;
+  if (pathname.startsWith('/auth/')) return null;
   if (HIDDEN_AI_ROUTES.has(pathname)) return null;
   return <ChatEntry />;
 };
