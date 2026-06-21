@@ -242,6 +242,18 @@ serve(async (req) => {
 
     console.log(JSON.stringify({ type: "recommend_jobs_start", correlation_id: correlationId, user_id: userId }));
 
+    // ---- Per-user versioned cache (6h TTL) — auto-invalidates on profile/pillar change ----
+    const versionTag = await buildUserVersionTag(userId);
+    const cachedPayload = await withResultCache<any>({
+      functionName: "recommend-jobs",
+      scope: "user",
+      userId,
+      inputObject: {},
+      versionTag,
+      ttlSeconds: 60 * 60 * 6,
+      correlationId,
+      compute: async () => {
+
     // ---- Intelligence Engine: try vector matching first (FREE) ----
     let vectorMatches: any[] = [];
     try {
