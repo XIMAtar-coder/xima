@@ -681,12 +681,20 @@ export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => 
     try {
       const consentRaw = sessionStorage.getItem('guest_cv_consent');
       const consentBlob = consentRaw ? JSON.parse(consentRaw) : null;
+      const rawUa = consentBlob?.user_agent || (typeof navigator !== 'undefined' ? navigator.userAgent : null);
+      let user_agent_hash: string | null = consentBlob?.user_agent_hash || null;
+      if (!user_agent_hash && rawUa) {
+        try {
+          const { sha256Hex } = await import('@/lib/legal/consentVersions');
+          user_agent_hash = (await sha256Hex(rawUa)) || null;
+        } catch { /* ignore hashing failure */ }
+      }
       const { error: consentErr } = await supabase.from('user_consents').insert({
         user_id: userId,
         consent_type: 'cv_processing',
         consent_version: consentBlob?.version || CV_PROCESSING_VERSION,
         locale: consentBlob?.locale || null,
-        user_agent: consentBlob?.user_agent || (typeof navigator !== 'undefined' ? navigator.userAgent : null),
+        user_agent_hash,
       });
       if (consentErr) {
         console.error('[sync-cv] user_consents insert error:', consentErr);
