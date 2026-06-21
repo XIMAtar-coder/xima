@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,10 +8,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Star, Target, TrendingUp, Bookmark, BookmarkCheck, Send, CheckCircle2, Loader2, ChevronDown, Sparkles } from 'lucide-react';
-import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer } from 'recharts';
 import { CandidateLevelBadge } from './CandidateLevelBadge';
 import { CandidateLevelProgress } from '@/lib/challenges/challengeLevels';
 import { formatRoundedScore } from './PillarScoreBar';
+
+const XimatarPillarRadar = lazy(() => import('./XimatarPillarRadar'));
 
 export interface XimatarRecommendationExplanation {
   shortReason: string;
@@ -355,24 +356,9 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
           <div className="space-y-6">
             <div>
               <h4 className="text-sm font-semibold text-muted-foreground mb-2">Pillar Breakdown</h4>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart data={chartData}>
-                    <PolarGrid stroke="hsl(var(--border))" />
-                    <PolarAngleAxis 
-                      dataKey="pillar" 
-                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                    />
-                    <Radar 
-                      name="Score" 
-                      dataKey="score" 
-                      stroke="hsl(var(--primary))" 
-                      fill="hsl(var(--primary))" 
-                      fillOpacity={0.6} 
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </div>
+              <Suspense fallback={<div className="h-64 rounded-lg bg-muted animate-pulse" />}>
+                <XimatarPillarRadar data={chartData} />
+              </Suspense>
             </div>
 
             <div className="grid grid-cols-2 gap-4">

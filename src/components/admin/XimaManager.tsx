@@ -1,43 +1,48 @@
+import { lazy, Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Shield, BarChart3, Users, Activity, Wrench, LineChart, Wallet, Sparkles, Radio, BrainCircuit, TrendingUp, Inbox, ScrollText, ShieldCheck, ImageIcon } from 'lucide-react';
-import OverviewTab from './tabs/OverviewTab';
-import InteractionsTab from './tabs/InteractionsTab';
-import CandidatesTab from './tabs/CandidatesTab';
-import EvolutionTab from './tabs/EvolutionTab';
-import SystemTab from './tabs/SystemTab';
-import CostsTab from './tabs/CostsTab';
-import PocRagTab from './tabs/PocRagTab';
-import ActivityTab from './tabs/ActivityTab';
-import AIQualityTab from './tabs/AIQualityTab';
-import AnalyticsTab from './tabs/AnalyticsTab';
-import RequestsTab from './tabs/RequestsTab';
-import AuditTab from './tabs/AuditTab';
-import RolesTab from './tabs/RolesTab';
-import MediaTab from './tabs/MediaTab';
+import TabSkeleton from '@/components/ui/TabSkeleton';
+import ChunkErrorBoundary from '@/components/ui/ChunkErrorBoundary';
+
+const OverviewTab = lazy(() => import('./tabs/OverviewTab'));
+const ActivityTab = lazy(() => import('./tabs/ActivityTab'));
+const InteractionsTab = lazy(() => import('./tabs/InteractionsTab'));
+const CandidatesTab = lazy(() => import('./tabs/CandidatesTab'));
+const EvolutionTab = lazy(() => import('./tabs/EvolutionTab'));
+const SystemTab = lazy(() => import('./tabs/SystemTab'));
+const CostsTab = lazy(() => import('./tabs/CostsTab'));
+const AIQualityTab = lazy(() => import('./tabs/AIQualityTab'));
+const AnalyticsTab = lazy(() => import('./tabs/AnalyticsTab'));
+const RequestsTab = lazy(() => import('./tabs/RequestsTab'));
+const AuditTab = lazy(() => import('./tabs/AuditTab'));
+const RolesTab = lazy(() => import('./tabs/RolesTab'));
+const MediaTab = lazy(() => import('./tabs/MediaTab'));
+const PocRagTab = lazy(() => import('./tabs/PocRagTab'));
 
 const TABS = [
-  { value: 'overview', label: 'Overview', icon: BarChart3 },
-  { value: 'activity', label: 'Activity', icon: Radio },
-  { value: 'interactions', label: 'Interazioni', icon: LineChart },
-  { value: 'candidates', label: 'Candidati', icon: Users },
-  { value: 'evolution', label: 'Evoluzione', icon: Activity },
-  { value: 'system', label: 'Developer & System', icon: Wrench },
-  { value: 'costs', label: 'Costi', icon: Wallet },
-  { value: 'ai-quality', label: 'AI & Qualità', icon: BrainCircuit },
-  { value: 'analytics', label: 'Analytics', icon: TrendingUp },
-  { value: 'requests', label: 'Richieste', icon: Inbox },
-  { value: 'audit', label: 'Audit', icon: ScrollText },
-  { value: 'roles', label: 'Roles', icon: ShieldCheck },
-  { value: 'media', label: 'Media', icon: ImageIcon },
-  { value: 'poc-rag', label: 'PoC RAG', icon: Sparkles },
+  { value: 'overview', label: 'Overview', icon: BarChart3, Component: OverviewTab },
+  { value: 'activity', label: 'Activity', icon: Radio, Component: ActivityTab },
+  { value: 'interactions', label: 'Interazioni', icon: LineChart, Component: InteractionsTab },
+  { value: 'candidates', label: 'Candidati', icon: Users, Component: CandidatesTab },
+  { value: 'evolution', label: 'Evoluzione', icon: Activity, Component: EvolutionTab },
+  { value: 'system', label: 'Developer & System', icon: Wrench, Component: SystemTab },
+  { value: 'costs', label: 'Costi', icon: Wallet, Component: CostsTab },
+  { value: 'ai-quality', label: 'AI & Qualità', icon: BrainCircuit, Component: AIQualityTab },
+  { value: 'analytics', label: 'Analytics', icon: TrendingUp, Component: AnalyticsTab },
+  { value: 'requests', label: 'Richieste', icon: Inbox, Component: RequestsTab },
+  { value: 'audit', label: 'Audit', icon: ScrollText, Component: AuditTab },
+  { value: 'roles', label: 'Roles', icon: ShieldCheck, Component: RolesTab },
+  { value: 'media', label: 'Media', icon: ImageIcon, Component: MediaTab },
+  { value: 'poc-rag', label: 'PoC RAG', icon: Sparkles, Component: PocRagTab },
 ] as const;
 
 
 export default function XimaManager() {
   const [params, setParams] = useSearchParams();
   const active = params.get('tab') || 'overview';
+  const ActiveTab = TABS.find(t => t.value === active)?.Component ?? OverviewTab;
 
   return (
     <div className="container max-w-7xl mx-auto pt-6 pb-12 px-4">
@@ -65,20 +70,14 @@ export default function XimaManager() {
           ))}
         </TabsList>
 
-        <TabsContent value="overview"><OverviewTab /></TabsContent>
-        <TabsContent value="activity"><ActivityTab /></TabsContent>
-        <TabsContent value="interactions"><InteractionsTab /></TabsContent>
-        <TabsContent value="candidates"><CandidatesTab /></TabsContent>
-        <TabsContent value="evolution"><EvolutionTab /></TabsContent>
-        <TabsContent value="system"><SystemTab /></TabsContent>
-        <TabsContent value="costs"><CostsTab /></TabsContent>
-        <TabsContent value="ai-quality"><AIQualityTab /></TabsContent>
-        <TabsContent value="analytics"><AnalyticsTab /></TabsContent>
-        <TabsContent value="requests"><RequestsTab /></TabsContent>
-        <TabsContent value="audit"><AuditTab /></TabsContent>
-        <TabsContent value="roles"><RolesTab /></TabsContent>
-        <TabsContent value="media"><MediaTab /></TabsContent>
-        <TabsContent value="poc-rag"><PocRagTab /></TabsContent>
+        {/* Mount only the active tab — each tab chunk is loaded on demand */}
+        <TabsContent value={active} forceMount>
+          <ChunkErrorBoundary>
+            <Suspense fallback={<TabSkeleton />}>
+              <ActiveTab />
+            </Suspense>
+          </ChunkErrorBoundary>
+        </TabsContent>
       </Tabs>
     </div>
   );
