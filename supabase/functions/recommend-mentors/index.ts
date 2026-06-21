@@ -229,6 +229,37 @@ serve(async (req) => {
 
     console.log(JSON.stringify({ type: "recommend_mentors_start", correlation_id: correlationId, user_id: userId, mode: mode || "initial", is_guest: !userId }));
 
+    // ---- Per-user versioned cache (4h TTL) — skip for re_evaluate / refresh / guest ----
+    const cacheable = !!userId && !mode && !refresh_seed;
+    let cacheVersionTag = "";
+    let cacheInputHash = "";
+    if (cacheable) {
+      cacheVersionTag = await buildUserVersionTag(userId!);
+      try {
+        const encoder = new TextEncoder();
+        const canonical = JSON.stringify({ ximatar: ximatar ?? null });
+        const buf = await crypto.subtle.digest(
+          "SHA-256",
+          encoder.encode(`recommend-mentors\n${cacheVersionTag}\n${canonical}`)
+        );
+        cacheInputHash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+        const { data: cached, error: cacheErr } = await supabase.rpc("ai_shared_cache_get", {
+          _function_name: "recommend-mentors",
+          _scope: "user",
+          _user_id: userId,
+          _input_hash: cacheInputHash,
+        });
+        if (!cacheErr && cached) {
+          console.log(JSON.stringify({ type: "cache_hit", function_name: "recommend-mentors", correlation_id: correlationId }));
+          return jsonResponse(cached);
+        }
+        console.log(JSON.stringify({ type: "cache_miss", function_name: "recommend-mentors", correlation_id: correlationId }));
+      } catch (e) {
+        console.warn("[recommend-mentors] cache lookup failed:", e instanceof Error ? e.message : e);
+      }
+    }
+
+
     // ---- Intelligence Engine: try vector gap matching first (FREE) ----
     let vectorMentorMatches: any[] = [];
     if (userId) {
