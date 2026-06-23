@@ -20,6 +20,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { toast } from 'sonner';
 import { getSupabaseFunctionErrorMessage } from '@/lib/supabaseFunctionError';
+import { useCvAnalysisJob } from '@/hooks/useCvAnalysisJob';
 
 interface CvTensionGap {
   pillar: string;
