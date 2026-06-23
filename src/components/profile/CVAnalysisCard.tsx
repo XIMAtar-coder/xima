@@ -294,7 +294,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
           </div>
         )}
 
-        {!cvAnalysis && !isUploading && !uploadError && (
+        {!cvAnalysis && !isAnalyzing && !uploadError && (
           <div className="p-6 bg-muted/30 rounded-lg border border-dashed border-muted-foreground/30 text-center">
             <FileText className="w-12 h-12 mx-auto mb-3 text-muted-foreground/50" />
             <p className="text-sm text-muted-foreground mb-3">
