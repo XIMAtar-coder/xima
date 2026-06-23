@@ -470,7 +470,371 @@ function validateAnalyzeCvResponse(parsed: unknown): { credentials: any; identit
 }
 
 // =====================================================
-// Main handler
+// Background analysis runner
+// =====================================================
+
+interface RunAnalysisCtx {
+  cvUploadId: string;
+  userId: string;
+  correlationId: string;
+  fileBytes: Uint8Array;
+  fileType: string;
+  pillarScores: Record<string, number>;
+  ximatarId: string;
+  ximatarName: string;
+  ximatarTitle: string;
+  truncatedText: string;
+  extractionMethod: string;
+  pdfBase64: string | null;
+  supabaseUrl: string;
+  supabaseServiceRoleKey: string;
+  ipHash: string;
+}
+
+async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
+  const {
+    cvUploadId, userId, correlationId, pillarScores,
+    ximatarId, ximatarName, ximatarTitle, truncatedText, extractionMethod,
+    pdfBase64, supabaseUrl, supabaseServiceRoleKey, ipHash, fileBytes,
+  } = ctx;
+
+  const serviceClient = createClient(supabaseUrl, supabaseServiceRoleKey);
+
+  const markError = async (msg: string) => {
+    try {
+      await serviceClient.from("cv_uploads").update({
+        analysis_status: "error",
+        analysis_error_message: (msg || "Unknown error").substring(0, 500),
+        analysis_completed_at: new Date().toISOString(),
+      }).eq("id", cvUploadId);
+    } catch (e) {
+      console.error("[analyze-cv:bg] failed to mark error:", e instanceof Error ? e.message : e);
+    }
+  };
+
+  try {
+    const detectedLanguage = pdfBase64 ? "auto" : detectLanguage(truncatedText);
+
+    let contextBlock = "";
+    if (loadUserAiContext && buildContextBlock) {
+      try {
+        const userContext = await loadUserAiContext(userId);
+        contextBlock = buildContextBlock(userContext);
+      } catch (e) {
+        console.warn("[analyze-cv:bg] AI context load failed:", e instanceof Error ? e.message : e);
+      }
+    }
+
+    const systemPrompt = buildSystemPrompt(ximatarId, ximatarName, ximatarTitle, pillarScores, detectedLanguage) + contextBlock;
+
+    let userContent: string | any[];
+    if (pdfBase64) {
+      userContent = [
+        { type: "document", source: { type: "base64", media_type: "application/pdf", data: pdfBase64 } },
+        {
+          type: "text",
+          text: `This is the candidate's CV/resume PDF. Read the entire document and perform both tasks:\n1. Extract all structured credentials (education, work experience, skills, certifications, etc.)\n2. Perform psychometric identity analysis comparing the CV to their assessment results.\n\nTheir XIMA assessment results:\n- XIMAtar: ${ximatarId} — ${ximatarName} (${ximatarTitle})\n- Pillar scores: Drive ${pillarScores.drive ?? "N/A"}, Computational Power ${pillarScores.comp_power ?? pillarScores.computational_power ?? "N/A"}, Communication ${pillarScores.communication ?? "N/A"}, Creativity ${pillarScores.creativity ?? "N/A"}, Knowledge ${pillarScores.knowledge ?? "N/A"}\n\nReturn ONLY the JSON object as specified in your instructions.`,
+        },
+      ];
+    } else {
+      userContent = buildUserMessage(truncatedText, ximatarId, ximatarName, ximatarTitle, pillarScores);
+    }
+
+    let aiResult: { content: string; model: string; latencyMs: number; requestId: string };
+    try {
+      aiResult = await callClaudeDirectly(systemPrompt, userContent);
+    } catch (aiErr: any) {
+      console.error("[analyze-cv:bg] AI call failed:", aiErr.message);
+      await markError(aiErr.message || "AI call failed");
+      return;
+    }
+
+    let jsonStr = "";
+    try {
+      const raw = aiResult.content;
+      if (typeof raw !== "string") {
+        jsonStr = JSON.stringify(raw);
+      } else if (extractJsonFromAiContent) {
+        try {
+          const result = extractJsonFromAiContent(raw);
+          jsonStr = typeof result === "string" ? result : JSON.stringify(result);
+        } catch {
+          jsonStr = extractJsonRobust(raw);
+        }
+      } else {
+        jsonStr = extractJsonRobust(raw);
+      }
+      if (typeof jsonStr !== "string") jsonStr = String(jsonStr);
+    } catch (e) {
+      jsonStr = extractJsonRobust(String(aiResult.content));
+    }
+
+    let parsed: any;
+    try {
+      parsed = JSON.parse(jsonStr);
+    } catch {
+      try {
+        const manualMatch = aiResult.content.match(/\{[\s\S]*"credentials"[\s\S]*"identity"[\s\S]*\}/);
+        if (manualMatch) parsed = JSON.parse(manualMatch[0]);
+      } catch { /* ignore */ }
+      if (!parsed) {
+        await markError("AI analysis did not return valid JSON.");
+        return;
+      }
+    }
+
+    let validated: { credentials: any; identity: any } | null = null;
+    if (parsed.credentials && parsed.identity) {
+      const creds = parsed.credentials;
+      const ident = parsed.identity;
+      if (!Array.isArray(creds.education)) creds.education = [];
+      if (!Array.isArray(creds.work_experience)) creds.work_experience = [];
+      if (!Array.isArray(creds.hard_skills)) creds.hard_skills = [];
+      if (!ident.cv_pillar_scores || typeof ident.cv_pillar_scores !== "object") {
+        ident.cv_pillar_scores = { drive: 0, computational_power: 0, communication: 0, creativity: 0, knowledge: 0 };
+      }
+      for (const pillar of ["drive", "computational_power", "communication", "creativity", "knowledge"]) {
+        if (typeof ident.cv_pillar_scores[pillar] !== "number") ident.cv_pillar_scores[pillar] = 0;
+        ident.cv_pillar_scores[pillar] = Math.max(0, Math.min(100, ident.cv_pillar_scores[pillar]));
+      }
+      if (!ident.cv_archetype || typeof ident.cv_archetype !== "object") {
+        ident.cv_archetype = { primary: ximatarId, secondary: null, explanation: "" };
+      }
+      if (!ident.tension || typeof ident.tension !== "object") {
+        ident.tension = { alignment_score: 0, primary_gaps: [], overall_narrative: "" };
+      }
+      if (!ident.improvements || typeof ident.improvements !== "object") {
+        ident.improvements = { technical: [], identity_aligned: [] };
+      }
+      if (!ident.role_fit || typeof ident.role_fit !== "object") {
+        ident.role_fit = { cv_qualified_roles: [], archetype_aligned_roles: [], growth_bridge_roles: [] };
+      }
+      if (!ident.mentor_hook || typeof ident.mentor_hook !== "object") {
+        ident.mentor_hook = { suggested_focus: "", key_question: "" };
+      }
+      validated = { credentials: creds, identity: ident };
+    } else if (parsed.cv_pillar_scores || parsed.computational_power !== undefined) {
+      validated = {
+        credentials: {
+          full_name: parsed.full_name || null, education: parsed.education || [],
+          work_experience: parsed.work_experience || [], hard_skills: parsed.hard_skills || [],
+          certifications: parsed.certifications || [], languages: parsed.languages || [],
+          total_years_experience: parsed.total_years_experience || null,
+          seniority_level: parsed.seniority_level || null,
+          industries_worked: parsed.industries_worked || [],
+          career_trajectory: parsed.career_trajectory || null,
+          publications: [], patents: [], awards: [], volunteer_work: [], professional_associations: [],
+        },
+        identity: {
+          cv_archetype: { primary: ximatarId, secondary: null, explanation: parsed.summary || "" },
+          cv_pillar_scores: parsed.cv_pillar_scores || {
+            drive: parsed.drive || 0, computational_power: parsed.computational_power || 0,
+            communication: parsed.communication || 0, creativity: parsed.creativity || 0, knowledge: parsed.knowledge || 0,
+          },
+          tension: { alignment_score: 0, primary_gaps: [], overall_narrative: parsed.summary || "" },
+          improvements: { technical: [], identity_aligned: [] },
+          role_fit: { cv_qualified_roles: [], archetype_aligned_roles: [], growth_bridge_roles: [] },
+          mentor_hook: { suggested_focus: "", key_question: "" },
+        },
+      };
+    }
+
+    if (!validated) {
+      await markError("AI analysis did not return valid results.");
+      return;
+    }
+
+    const { credentials, identity } = validated;
+    const location = credentials.location || {};
+
+    try {
+      await serviceClient.from("cv_credentials").upsert({
+        user_id: userId,
+        full_name: credentials.full_name || null,
+        email: credentials.email || null,
+        phone: credentials.phone || null,
+        location_city: location.city || null,
+        location_region: location.region || null,
+        location_country: location.country || null,
+        nationality: credentials.nationality || null,
+        date_of_birth: credentials.date_of_birth || null,
+        linkedin_url: credentials.linkedin_url || null,
+        portfolio_url: credentials.portfolio_url || null,
+        education: credentials.education || [],
+        work_experience: credentials.work_experience || [],
+        hard_skills: credentials.hard_skills || [],
+        certifications: credentials.certifications || [],
+        languages: credentials.languages || [],
+        total_years_experience: credentials.total_years_experience ?? null,
+        seniority_level: credentials.seniority_level || null,
+        industries_worked: credentials.industries_worked || [],
+        career_trajectory: credentials.career_trajectory || null,
+        cv_language: detectedLanguage,
+        publications: credentials.publications || [],
+        patents: credentials.patents || [],
+        awards: credentials.awards || [],
+        volunteer_work: credentials.volunteer_work || [],
+        professional_associations: credentials.professional_associations || [],
+        updated_at: new Date().toISOString(),
+      }, { onConflict: "user_id" });
+    } catch (e) {
+      console.warn("[analyze-cv:bg] cv_credentials upsert failed:", e instanceof Error ? e.message : e);
+    }
+
+    const archetype = identity.cv_archetype || {};
+    const tension = identity.tension || {};
+    const improvements = identity.improvements || {};
+    const roleFit = identity.role_fit || {};
+    const mentorHook = identity.mentor_hook || {};
+
+    try {
+      await serviceClient.from("cv_identity_analysis").upsert({
+        user_id: userId,
+        cv_archetype_primary: archetype.primary || ximatarId,
+        cv_archetype_secondary: archetype.secondary || null,
+        cv_archetype_explanation: archetype.explanation || null,
+        cv_pillar_scores: identity.cv_pillar_scores,
+        assessment_ximatar: ximatarId,
+        assessment_pillar_scores: pillarScores,
+        alignment_score: tension.alignment_score ?? null,
+        tension_gaps: tension.primary_gaps || null,
+        tension_narrative: tension.overall_narrative || null,
+        technical_improvements: improvements.technical || null,
+        identity_improvements: improvements.identity_aligned || null,
+        cv_qualified_roles: roleFit.cv_qualified_roles || [],
+        archetype_aligned_roles: roleFit.archetype_aligned_roles || [],
+        growth_bridge_roles: roleFit.growth_bridge_roles || [],
+        mentor_suggested_focus: mentorHook.suggested_focus || null,
+        mentor_key_question: mentorHook.key_question || null,
+        cv_language: detectedLanguage,
+        analysis_model: aiResult.model,
+        correlation_id: correlationId,
+      }, { onConflict: "user_id" });
+    } catch (e) {
+      console.warn("[analyze-cv:bg] cv_identity_analysis upsert failed:", e instanceof Error ? e.message : e);
+    }
+
+    const cvScores = {
+      computational_power: identity.cv_pillar_scores.computational_power,
+      communication: identity.cv_pillar_scores.communication,
+      knowledge: identity.cv_pillar_scores.knowledge,
+      creativity: identity.cv_pillar_scores.creativity,
+      drive: identity.cv_pillar_scores.drive,
+    };
+
+    try {
+      await serviceClient.from("profiles").update({
+        cv_scores: cvScores,
+        cv_comments: tension.overall_narrative ? { summary: tension.overall_narrative } : null,
+      }).eq("user_id", userId);
+    } catch (e) {
+      console.warn("[analyze-cv:bg] profiles update failed:", e instanceof Error ? e.message : e);
+    }
+
+    try {
+      await serviceClient.from("assessment_cv_analysis").delete().eq("user_id", userId);
+      await serviceClient.from("assessment_cv_analysis").insert({
+        user_id: userId,
+        cv_text: pdfBase64 ? "PDF analyzed directly by AI — no text extraction" : truncatedText.substring(0, 2000),
+        summary: tension.overall_narrative || archetype.explanation || "",
+        strengths: credentials.hard_skills?.slice(0, 5)?.map((s: any) => s.name || String(s)) || [],
+        soft_skills: [],
+        pillar_vector: cvScores,
+        ximatar_suggestions: [archetype.primary, archetype.secondary].filter(Boolean),
+      });
+    } catch (e) {
+      console.warn("[analyze-cv:bg] assessment_cv_analysis upsert failed:", e instanceof Error ? e.message : e);
+    }
+
+    if (emitAuditEventWithMetric) {
+      try {
+        emitAuditEventWithMetric({
+          actorType: "candidate", actorId: userId, action: "cv.analyzed",
+          entityType: "cv_analysis", entityId: userId, correlationId,
+          metadata: { extraction_method: extractionMethod, detected_language: detectedLanguage, text_length: truncatedText.length, ximatar_id: ximatarId, cv_archetype: archetype.primary, alignment_score: tension.alignment_score, model: aiResult.model, latency_ms: aiResult.latencyMs },
+          ipHash,
+        }, "cv_analyses");
+      } catch (e) {
+        console.warn("[analyze-cv:bg] audit event failed:", e instanceof Error ? e.message : e);
+      }
+    }
+
+    const responsePayload = {
+      success: true,
+      cv_archetype: identity.cv_archetype,
+      cv_pillar_scores: identity.cv_pillar_scores,
+      tension: identity.tension,
+      improvements: identity.improvements,
+      role_fit: identity.role_fit,
+      mentor_hook: identity.mentor_hook,
+      seniority_level: credentials.seniority_level,
+      total_years_experience: credentials.total_years_experience,
+      career_trajectory: credentials.career_trajectory,
+      education_count: credentials.education?.length ?? 0,
+      skills_count: credentials.hard_skills?.length ?? 0,
+      detected_language: detectedLanguage,
+      extraction_method: extractionMethod,
+      assessment_ximatar: ximatarId,
+    };
+
+    if (recordAiCall) {
+      try { await recordAiCall(userId, "analyze-cv"); } catch (e) { console.warn("[analyze-cv:bg] recordAiCall failed:", e instanceof Error ? e.message : e); }
+    }
+    if (cacheAiResult) {
+      try { await cacheAiResult(userId, "analyze-cv", responsePayload); } catch (e) { console.warn("[analyze-cv:bg] cacheAiResult failed:", e instanceof Error ? e.message : e); }
+    }
+
+    if (updateUserAiContext && computeFileHash) {
+      try {
+        const cvFileHash = await computeFileHash(fileBytes);
+        await updateUserAiContext(userId, {
+          cv_credentials_summary: {
+            full_name: credentials.full_name,
+            total_years_experience: credentials.total_years_experience,
+            seniority_level: credentials.seniority_level,
+            top_skills: credentials.hard_skills?.slice(0, 8)?.map((s: any) => s.name || String(s)),
+            education_summary: credentials.education?.[0] ? `${credentials.education[0].degree_type} ${credentials.education[0].field_of_study} @ ${credentials.education[0].institution}` : null,
+            industries: credentials.industries_worked?.slice(0, 5),
+            career_trajectory: credentials.career_trajectory,
+          },
+          cv_identity_summary: {
+            cv_archetype: archetype.primary,
+            alignment_score: tension.alignment_score,
+            top_tensions: tension.primary_gaps?.slice(0, 3)?.map((g: any) => `${g.pillar} ${g.gap_direction} (CV ${g.cv_score} vs Assessment ${g.ximatar_score})`),
+            narrative_snippet: tension.overall_narrative?.substring(0, 200),
+          },
+          cv_language: detectedLanguage,
+          cv_analyzed_at: new Date().toISOString(),
+          cv_extracted_text: truncatedText.substring(0, 3000),
+          cv_extraction_method: extractionMethod,
+          cv_file_hash: cvFileHash,
+        });
+      } catch (e) {
+        console.warn("[analyze-cv:bg] AI context update failed:", e instanceof Error ? e.message : e);
+      }
+    }
+
+    // Finalize: mark cv_uploads row as done with payload
+    try {
+      await serviceClient.from("cv_uploads").update({
+        analysis_status: "done",
+        analysis_completed_at: new Date().toISOString(),
+        analysis_results: responsePayload,
+        analysis_error_message: null,
+      }).eq("id", cvUploadId);
+    } catch (e) {
+      console.error("[analyze-cv:bg] failed to mark done:", e instanceof Error ? e.message : e);
+    }
+
+    console.log(JSON.stringify({ type: "success", correlation_id: correlationId, function_name: "analyze-cv", ximatar: ximatarId, cv_archetype: archetype.primary, cv_upload_id: cvUploadId }));
+  } catch (err: any) {
+    console.error("[analyze-cv:bg] unhandled error:", err instanceof Error ? err.message : err);
+    await markError(err instanceof Error ? err.message : "Unhandled error");
+  }
+}
+
+// =====================================================
+// Main handler — fast return + background analysis
 // =====================================================
 
 serve(async (req) => {
@@ -514,7 +878,6 @@ serve(async (req) => {
       return profilingOptOutResponse();
     }
 
-    // ===== Check XIMAtar assessment exists =====
     const pillarScores = profile?.pillar_scores as Record<string, number> | null;
     let resolvedXimatarKey = (profile?.ximatar as string | null) || null;
 
@@ -536,20 +899,16 @@ serve(async (req) => {
       return errorResponse(400, "ASSESSMENT_REQUIRED", "Please complete the XIMA assessment before uploading your CV.");
     }
 
-    // Look up XIMAtar profile from taxonomy
     const ximatarProfile = XIMATAR_PROFILES?.[resolvedXimatarKey];
     const ximatarName = (profile?.ximatar_name as string) || ximatarProfile?.name || resolvedXimatarKey;
     const ximatarTitle = ximatarProfile?.title || "";
 
-    console.log(JSON.stringify({ type: "ximatar_resolved", correlation_id: correlationId, ximatar_key: resolvedXimatarKey, ximatar_name: ximatarName }));
-
-    // ===== AI Budget Check (optional) =====
+    // ===== AI Budget Check =====
     let budgetResult: any = { allowed: true, calls_used: 0, calls_limit: 999, tier: "unknown" };
     if (checkAiBudget) {
       try {
         budgetResult = await checkAiBudget(user.id, "analyze-cv");
         if (!budgetResult.allowed) {
-          console.log(JSON.stringify({ type: "budget_exceeded", correlation_id: correlationId, function_name: "analyze-cv" }));
           if (budgetResult.cached_result) {
             return jsonResponse({ ...budgetResult.cached_result, _budget: { exceeded: true, calls_used: budgetResult.calls_used, calls_limit: budgetResult.calls_limit, tier: budgetResult.tier, cached: true } });
           }
@@ -572,22 +931,6 @@ serve(async (req) => {
     if (!ALLOWED_TYPES.includes(file.type)) return errorResponse(400, "INVALID_FILE_TYPE", "Invalid file type. Only PDF, DOC, DOCX, and TXT files are allowed.");
 
     const fileBytes = new Uint8Array(await file.arrayBuffer());
-
-    // ===== CV file hash check (optional) =====
-    if (checkCvHash) {
-      try {
-        const existingHash = await checkCvHash(user.id, fileBytes);
-        if (existingHash && checkAiBudget) {
-          const budgetCheckEarly = await checkAiBudget(user.id, "analyze-cv");
-          if (budgetCheckEarly?.cached_result) {
-            console.log("[analyze-cv] Same CV file detected, returning cached result");
-            return jsonResponse({ ...budgetCheckEarly.cached_result, _cached: true, _message: "This CV has already been analyzed." });
-          }
-        }
-      } catch (e) {
-        console.warn("[analyze-cv] CV hash check failed:", e instanceof Error ? e.message : e);
-      }
-    }
 
     // Magic bytes validation
     if (file.type === "application/pdf") {
@@ -612,15 +955,12 @@ serve(async (req) => {
     const { error: uploadError } = await supabase.storage.from("cv-uploads").upload(storagePath, fileBytes, { upsert: true, contentType: file.type });
     if (uploadError) { console.error("[analyze-cv] upload error:", uploadError.message); return errorResponse(400, "UPLOAD_FAILED", "Upload failed"); }
 
-    // ===== Extract text OR prepare PDF for direct analysis =====
+    // ===== Extract text OR prepare PDF =====
     let truncatedText = "";
     let extractionMethod = "direct-pdf";
     let pdfBase64: string | null = null;
-    const ximatarId = resolvedXimatarKey;
 
     if (file.type === "application/pdf") {
-      // For PDFs: send directly to Claude in ONE call (no separate text extraction)
-      console.log("[analyze-cv] PDF detected — will send directly to Claude for combined extraction + analysis");
       let base64Str = "";
       const CHUNK = 8192;
       for (let i = 0; i < fileBytes.length; i += CHUNK) {
@@ -631,374 +971,81 @@ serve(async (req) => {
       extractionMethod = "claude-direct-pdf";
       truncatedText = "[PDF sent directly to Claude for analysis]";
     } else {
-      // For non-PDF files: extract text as before
       const { text: extractedText, method } = await extractTextFromFile(fileBytes, file.type);
       if (extractedText.length < 100) return errorResponse(400, "INSUFFICIENT_TEXT", "Could not extract sufficient text from the file. Please upload a text-based PDF or DOCX.");
       truncatedText = extractedText.substring(0, 12000);
       extractionMethod = method;
     }
 
-    console.log(JSON.stringify({ type: "request", correlation_id: correlationId, function_name: "analyze-cv", text_length: truncatedText.length, extraction_method: extractionMethod, ximatar_id: ximatarId }));
+    console.log(JSON.stringify({ type: "request", correlation_id: correlationId, function_name: "analyze-cv", text_length: truncatedText.length, extraction_method: extractionMethod, ximatar_id: resolvedXimatarKey }));
 
-    // ===== Detect language =====
-    const detectedLanguage = pdfBase64 ? "auto" : detectLanguage(truncatedText);
-
-    // ===== Load AI context & build prompt =====
-    let contextBlock = "";
-    if (loadUserAiContext && buildContextBlock) {
-      try {
-        const userContext = await loadUserAiContext(user.id);
-        contextBlock = buildContextBlock(userContext);
-      } catch (e) {
-        console.warn("[analyze-cv] AI context load failed:", e instanceof Error ? e.message : e);
-      }
-    }
-
-    const systemPrompt = buildSystemPrompt(ximatarId, ximatarName, ximatarTitle, pillarScores, detectedLanguage) + contextBlock;
-
-    const ipHash = hashForAudit ? await hashForAudit(req.headers.get("x-forwarded-for") || "unknown") : await hashForAuditFallback(req.headers.get("x-forwarded-for") || "unknown");
-
-    // ===== Build user content (PDF as document OR extracted text) =====
-    let userContent: string | any[];
-    if (pdfBase64) {
-      userContent = [
-        { type: "document", source: { type: "base64", media_type: "application/pdf", data: pdfBase64 } },
-        {
-          type: "text",
-          text: `This is the candidate's CV/resume PDF. Read the entire document and perform both tasks:\n1. Extract all structured credentials (education, work experience, skills, certifications, etc.)\n2. Perform psychometric identity analysis comparing the CV to their assessment results.\n\nTheir XIMA assessment results:\n- XIMAtar: ${ximatarId} — ${ximatarName} (${ximatarTitle})\n- Pillar scores: Drive ${pillarScores.drive ?? "N/A"}, Computational Power ${pillarScores.comp_power ?? pillarScores.computational_power ?? "N/A"}, Communication ${pillarScores.communication ?? "N/A"}, Creativity ${pillarScores.creativity ?? "N/A"}, Knowledge ${pillarScores.knowledge ?? "N/A"}\n\nReturn ONLY the JSON object as specified in your instructions.`,
-        },
-      ];
-    } else {
-      userContent = buildUserMessage(truncatedText, ximatarId, ximatarName, ximatarTitle, pillarScores);
-    }
-
-    // ===== Call Claude — SINGLE call =====
-    let aiResult: { content: string; model: string; latencyMs: number; requestId: string };
-    try {
-      aiResult = await callClaudeDirectly(systemPrompt, userContent);
-    } catch (aiErr: any) {
-      console.error("[analyze-cv] AI call failed:", aiErr.message);
-      if (aiErr.statusCode === 402) return errorResponse(402, "INSUFFICIENT_CREDITS", aiErr.message);
-      return errorResponse(502, "AI_CALL_FAILED", "AI analysis failed. Please try again.");
-    }
-
-    // ===== Parse & validate response =====
-    console.log(`[analyze-cv] Raw AI response length: ${aiResult.content.length}`);
-    console.log(`[analyze-cv] Raw AI response first 300 chars: ${aiResult.content.substring(0, 300)}`);
-    console.log(`[analyze-cv] Raw AI response last 200 chars: ${aiResult.content.substring(Math.max(0, aiResult.content.length - 200))}`);
-
-    let jsonStr: string = "";
-    try {
-      const raw = aiResult.content;
-      if (typeof raw !== "string") {
-        jsonStr = JSON.stringify(raw);
-      } else {
-        if (extractJsonFromAiContent) {
-          try {
-            const result = extractJsonFromAiContent(raw);
-            jsonStr = typeof result === "string" ? result : JSON.stringify(result);
-          } catch {
-            jsonStr = extractJsonRobust(raw);
-          }
-        } else {
-          jsonStr = extractJsonRobust(raw);
-        }
-      }
-      if (typeof jsonStr !== "string") jsonStr = String(jsonStr);
-    } catch (e) {
-      console.error("[analyze-cv] JSON extraction error:", e);
-      jsonStr = extractJsonRobust(String(aiResult.content));
-    }
-
-    console.log(`[analyze-cv] Extracted JSON length: ${jsonStr.length}`);
-    console.log(`[analyze-cv] Extracted JSON first 200 chars: ${jsonStr.substring(0, 200)}`);
-
-    let parsed: any;
-    try {
-      parsed = JSON.parse(jsonStr);
-    } catch (parseErr) {
-      console.error("[analyze-cv] JSON.parse failed:", parseErr instanceof Error ? parseErr.message : parseErr);
-      console.error("[analyze-cv] Failed JSON first 500 chars:", jsonStr.substring(0, 500));
-      console.error("[analyze-cv] Failed JSON last 500 chars:", jsonStr.substring(Math.max(0, jsonStr.length - 500)));
-
-      try {
-        const manualMatch = aiResult.content.match(/\{[\s\S]*"credentials"[\s\S]*"identity"[\s\S]*\}/);
-        if (manualMatch) {
-          parsed = JSON.parse(manualMatch[0]);
-          console.log("[analyze-cv] Manual JSON extraction succeeded");
-        }
-      } catch (_manualErr) {
-        console.error("[analyze-cv] Manual extraction also failed");
-      }
-
-      if (!parsed) {
-        return errorResponse(502, "AI_PARSE_FAILED", "AI analysis did not return valid JSON. Please try again.");
-      }
-    }
-
-    console.log("[analyze-cv] Parsed JSON keys:", Object.keys(parsed));
-
-    let validated: { credentials: any; identity: any } | null = null;
-
-    if (parsed.credentials && parsed.identity) {
-      const creds = parsed.credentials;
-      const ident = parsed.identity;
-
-      if (!Array.isArray(creds.education)) creds.education = [];
-      if (!Array.isArray(creds.work_experience)) creds.work_experience = [];
-      if (!Array.isArray(creds.hard_skills)) creds.hard_skills = [];
-
-      if (!ident.cv_pillar_scores || typeof ident.cv_pillar_scores !== "object") {
-        ident.cv_pillar_scores = { drive: 0, computational_power: 0, communication: 0, creativity: 0, knowledge: 0 };
-      }
-      for (const pillar of ["drive", "computational_power", "communication", "creativity", "knowledge"]) {
-        if (typeof ident.cv_pillar_scores[pillar] !== "number") ident.cv_pillar_scores[pillar] = 0;
-        ident.cv_pillar_scores[pillar] = Math.max(0, Math.min(100, ident.cv_pillar_scores[pillar]));
-      }
-      if (!ident.cv_archetype || typeof ident.cv_archetype !== "object") {
-        ident.cv_archetype = { primary: ximatarId, secondary: null, explanation: "" };
-      }
-      if (!ident.tension || typeof ident.tension !== "object") {
-        ident.tension = { alignment_score: 0, primary_gaps: [], overall_narrative: "" };
-      }
-      if (!ident.improvements || typeof ident.improvements !== "object") {
-        ident.improvements = { technical: [], identity_aligned: [] };
-      }
-      if (!ident.role_fit || typeof ident.role_fit !== "object") {
-        ident.role_fit = { cv_qualified_roles: [], archetype_aligned_roles: [], growth_bridge_roles: [] };
-      }
-      if (!ident.mentor_hook || typeof ident.mentor_hook !== "object") {
-        ident.mentor_hook = { suggested_focus: "", key_question: "" };
-      }
-
-      validated = { credentials: creds, identity: ident };
-      console.log("[analyze-cv] Validation passed (with defaults applied)");
-    } else {
-      console.error("[analyze-cv] Parsed JSON missing credentials or identity keys:", Object.keys(parsed));
-
-      if (parsed.cv_pillar_scores || parsed.computational_power !== undefined) {
-        console.log("[analyze-cv] Attempting flat-structure salvage");
-        validated = {
-          credentials: {
-            full_name: parsed.full_name || null, education: parsed.education || [],
-            work_experience: parsed.work_experience || [], hard_skills: parsed.hard_skills || [],
-            certifications: parsed.certifications || [], languages: parsed.languages || [],
-            total_years_experience: parsed.total_years_experience || null,
-            seniority_level: parsed.seniority_level || null,
-            industries_worked: parsed.industries_worked || [],
-            career_trajectory: parsed.career_trajectory || null,
-            publications: [], patents: [], awards: [], volunteer_work: [], professional_associations: [],
-          },
-          identity: {
-            cv_archetype: { primary: ximatarId, secondary: null, explanation: parsed.summary || "" },
-            cv_pillar_scores: parsed.cv_pillar_scores || {
-              drive: parsed.drive || 0, computational_power: parsed.computational_power || 0,
-              communication: parsed.communication || 0, creativity: parsed.creativity || 0, knowledge: parsed.knowledge || 0,
-            },
-            tension: { alignment_score: 0, primary_gaps: [], overall_narrative: parsed.summary || "" },
-            improvements: { technical: [], identity_aligned: [] },
-            role_fit: { cv_qualified_roles: [], archetype_aligned_roles: [], growth_bridge_roles: [] },
-            mentor_hook: { suggested_focus: "", key_question: "" },
-          },
-        };
-      }
-    }
-
-    if (!validated) {
-      return errorResponse(502, "AI_PARSE_FAILED", "AI analysis did not return valid results. Please try again.");
-    }
-
-    const { credentials, identity } = validated;
-
-    // ===== Service role client for upserts =====
+    // ===== Create cv_uploads row (authoritative state for polling) =====
     const serviceClient = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const nowIso = new Date().toISOString();
 
-    // ===== Store credentials (Layer B) =====
-    const location = credentials.location || {};
-    try {
-      await serviceClient.from("cv_credentials").upsert({
+    const { data: insertedRow, error: insertError } = await serviceClient
+      .from("cv_uploads")
+      .insert({
         user_id: user.id,
-        full_name: credentials.full_name || null,
-        email: credentials.email || null,
-        phone: credentials.phone || null,
-        location_city: location.city || null,
-        location_region: location.region || null,
-        location_country: location.country || null,
-        nationality: credentials.nationality || null,
-        date_of_birth: credentials.date_of_birth || null,
-        linkedin_url: credentials.linkedin_url || null,
-        portfolio_url: credentials.portfolio_url || null,
-        education: credentials.education || [],
-        work_experience: credentials.work_experience || [],
-        hard_skills: credentials.hard_skills || [],
-        certifications: credentials.certifications || [],
-        languages: credentials.languages || [],
-        total_years_experience: credentials.total_years_experience ?? null,
-        seniority_level: credentials.seniority_level || null,
-        industries_worked: credentials.industries_worked || [],
-        career_trajectory: credentials.career_trajectory || null,
-        cv_language: detectedLanguage,
-        publications: credentials.publications || [],
-        patents: credentials.patents || [],
-        awards: credentials.awards || [],
-        volunteer_work: credentials.volunteer_work || [],
-        professional_associations: credentials.professional_associations || [],
-        updated_at: new Date().toISOString(),
-      }, { onConflict: "user_id" });
-    } catch (e) {
-      console.warn("[analyze-cv] cv_credentials upsert failed:", e instanceof Error ? e.message : e);
+        file_name: file.name.substring(0, 255),
+        file_path: storagePath,
+        file_size: file.size,
+        mime_type: file.type,
+        analysis_status: "processing",
+        analysis_started_at: nowIso,
+        analysis_error_message: null,
+        analysis_completed_at: null,
+        analysis_results: null,
+      })
+      .select("id")
+      .single();
+
+    if (insertError || !insertedRow?.id) {
+      console.error("[analyze-cv] cv_uploads insert failed:", insertError?.message);
+      return errorResponse(500, "DB_INSERT_FAILED", "Could not register CV analysis job. Please try again.");
     }
 
-    // ===== Store identity analysis (Layer A) =====
-    const archetype = identity.cv_archetype || {};
-    const tension = identity.tension || {};
-    const improvements = identity.improvements || {};
-    const roleFit = identity.role_fit || {};
-    const mentorHook = identity.mentor_hook || {};
+    const cvUploadId = insertedRow.id as string;
+    const ipHash = hashForAudit
+      ? await hashForAudit(req.headers.get("x-forwarded-for") || "unknown")
+      : await hashForAuditFallback(req.headers.get("x-forwarded-for") || "unknown");
 
-    try {
-      await serviceClient.from("cv_identity_analysis").upsert({
-        user_id: user.id,
-        cv_archetype_primary: archetype.primary || ximatarId,
-        cv_archetype_secondary: archetype.secondary || null,
-        cv_archetype_explanation: archetype.explanation || null,
-        cv_pillar_scores: identity.cv_pillar_scores,
-        assessment_ximatar: ximatarId,
-        assessment_pillar_scores: pillarScores,
-        alignment_score: tension.alignment_score ?? null,
-        tension_gaps: tension.primary_gaps || null,
-        tension_narrative: tension.overall_narrative || null,
-        technical_improvements: improvements.technical || null,
-        identity_improvements: improvements.identity_aligned || null,
-        cv_qualified_roles: roleFit.cv_qualified_roles || [],
-        archetype_aligned_roles: roleFit.archetype_aligned_roles || [],
-        growth_bridge_roles: roleFit.growth_bridge_roles || [],
-        mentor_suggested_focus: mentorHook.suggested_focus || null,
-        mentor_key_question: mentorHook.key_question || null,
-        cv_language: detectedLanguage,
-        analysis_model: aiResult.model,
+    // ===== Kick off background analysis =====
+    const bgCtx: RunAnalysisCtx = {
+      cvUploadId, userId: user.id, correlationId, fileBytes, fileType: file.type,
+      pillarScores, ximatarId: resolvedXimatarKey, ximatarName, ximatarTitle,
+      truncatedText, extractionMethod, pdfBase64,
+      supabaseUrl, supabaseServiceRoleKey, ipHash,
+    };
+
+    const bgPromise = runAnalysis(bgCtx);
+    // Use EdgeRuntime.waitUntil when available; otherwise fire-and-forget with catch
+    const edgeRuntime = (globalThis as any).EdgeRuntime;
+    if (edgeRuntime && typeof edgeRuntime.waitUntil === "function") {
+      try { edgeRuntime.waitUntil(bgPromise); } catch (e) { console.warn("[analyze-cv] waitUntil failed:", e); }
+    } else {
+      bgPromise.catch((e) => console.error("[analyze-cv] background error:", e));
+    }
+
+    // ===== Return 202 immediately =====
+    return new Response(
+      JSON.stringify({
+        success: true,
+        status: "processing",
+        cv_upload_id: cvUploadId,
         correlation_id: correlationId,
-      }, { onConflict: "user_id" });
-    } catch (e) {
-      console.warn("[analyze-cv] cv_identity_analysis upsert failed:", e instanceof Error ? e.message : e);
-    }
-
-    // ===== Update profiles (backward compat) =====
-    const cvScores = {
-      computational_power: identity.cv_pillar_scores.computational_power,
-      communication: identity.cv_pillar_scores.communication,
-      knowledge: identity.cv_pillar_scores.knowledge,
-      creativity: identity.cv_pillar_scores.creativity,
-      drive: identity.cv_pillar_scores.drive,
-    };
-
-    try {
-      await serviceClient.from("profiles").update({
-        cv_scores: cvScores,
-        cv_comments: tension.overall_narrative ? { summary: tension.overall_narrative } : null,
-      }).eq("user_id", user.id);
-    } catch (e) {
-      console.warn("[analyze-cv] profiles update failed:", e instanceof Error ? e.message : e);
-    }
-
-    // ===== Upsert assessment_cv_analysis (backward compat) =====
-    try {
-      await serviceClient.from("assessment_cv_analysis").delete().eq("user_id", user.id);
-      await serviceClient.from("assessment_cv_analysis").insert({
-        user_id: user.id,
-        cv_text: pdfBase64 ? "PDF analyzed directly by AI — no text extraction" : truncatedText.substring(0, 2000),
-        summary: tension.overall_narrative || archetype.explanation || "",
-        strengths: credentials.hard_skills?.slice(0, 5)?.map((s: any) => s.name || String(s)) || [],
-        soft_skills: [],
-        pillar_vector: cvScores,
-        ximatar_suggestions: [archetype.primary, archetype.secondary].filter(Boolean),
-      });
-    } catch (e) {
-      console.warn("[analyze-cv] assessment_cv_analysis upsert failed:", e instanceof Error ? e.message : e);
-    }
-
-    // ===== Audit event (optional) =====
-    if (emitAuditEventWithMetric) {
-      try {
-        emitAuditEventWithMetric({
-          actorType: "candidate", actorId: user.id, action: "cv.analyzed",
-          entityType: "cv_analysis", entityId: user.id, correlationId,
-          metadata: { extraction_method: extractionMethod, detected_language: detectedLanguage, text_length: truncatedText.length, ximatar_id: ximatarId, cv_archetype: archetype.primary, alignment_score: tension.alignment_score, model: aiResult.model, latency_ms: aiResult.latencyMs },
-          ipHash,
-        }, "cv_analyses");
-      } catch (e) {
-        console.warn("[analyze-cv] audit event failed:", e instanceof Error ? e.message : e);
-      }
-    }
-
-    console.log(JSON.stringify({ type: "success", correlation_id: correlationId, function_name: "analyze-cv", ximatar: ximatarId, cv_archetype: archetype.primary }));
-
-    // ===== Record AI call and cache result (optional) =====
-    const responsePayload = {
-      success: true,
-      cv_archetype: identity.cv_archetype,
-      cv_pillar_scores: identity.cv_pillar_scores,
-      tension: identity.tension,
-      improvements: identity.improvements,
-      role_fit: identity.role_fit,
-      mentor_hook: identity.mentor_hook,
-      seniority_level: credentials.seniority_level,
-      total_years_experience: credentials.total_years_experience,
-      career_trajectory: credentials.career_trajectory,
-      education_count: credentials.education?.length ?? 0,
-      skills_count: credentials.hard_skills?.length ?? 0,
-      detected_language: detectedLanguage,
-      extraction_method: extractionMethod,
-      assessment_ximatar: ximatarId,
-    };
-
-    if (recordAiCall) {
-      try { await recordAiCall(user.id, "analyze-cv"); } catch (e) { console.warn("[analyze-cv] recordAiCall failed:", e instanceof Error ? e.message : e); }
-    }
-    if (cacheAiResult) {
-      try { await cacheAiResult(user.id, "analyze-cv", responsePayload); } catch (e) { console.warn("[analyze-cv] cacheAiResult failed:", e instanceof Error ? e.message : e); }
-    }
-
-    // ===== Update progressive AI context (optional) =====
-    if (updateUserAiContext && computeFileHash) {
-      try {
-        const cvFileHash = await computeFileHash(fileBytes);
-        await updateUserAiContext(user.id, {
-          cv_credentials_summary: {
-            full_name: credentials.full_name,
-            total_years_experience: credentials.total_years_experience,
-            seniority_level: credentials.seniority_level,
-            top_skills: credentials.hard_skills?.slice(0, 8)?.map((s: any) => s.name || String(s)),
-            education_summary: credentials.education?.[0] ? `${credentials.education[0].degree_type} ${credentials.education[0].field_of_study} @ ${credentials.education[0].institution}` : null,
-            industries: credentials.industries_worked?.slice(0, 5),
-            career_trajectory: credentials.career_trajectory,
-          },
-          cv_identity_summary: {
-            cv_archetype: archetype.primary,
-            alignment_score: tension.alignment_score,
-            top_tensions: tension.primary_gaps?.slice(0, 3)?.map((g: any) => `${g.pillar} ${g.gap_direction} (CV ${g.cv_score} vs Assessment ${g.ximatar_score})`),
-            narrative_snippet: tension.overall_narrative?.substring(0, 200),
-          },
-          cv_language: detectedLanguage,
-          cv_analyzed_at: new Date().toISOString(),
-          cv_extracted_text: truncatedText.substring(0, 3000),
-          cv_extraction_method: extractionMethod,
-          cv_file_hash: cvFileHash,
-        });
-      } catch (e) {
-        console.warn("[analyze-cv] AI context update failed:", e instanceof Error ? e.message : e);
-      }
-    }
-
-    return jsonResponse({
-      ...responsePayload,
-      _budget: {
-        exceeded: false,
-        calls_used: (budgetResult.calls_used ?? 0) + 1,
-        calls_limit: budgetResult.calls_limit ?? 999,
-        tier: budgetResult.tier ?? "unknown",
+        _budget: {
+          exceeded: false,
+          calls_used: (budgetResult.calls_used ?? 0) + 1,
+          calls_limit: budgetResult.calls_limit ?? 999,
+          tier: budgetResult.tier ?? "unknown",
+        },
+      }),
+      {
+        status: 202,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       },
-    });
+    );
   } catch (err: any) {
     console.error(JSON.stringify({
       type: "unhandled_error", correlation_id: correlationId, function_name: "analyze-cv",
