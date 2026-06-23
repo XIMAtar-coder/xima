@@ -20,6 +20,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { toast } from 'sonner';
 import { getSupabaseFunctionErrorMessage } from '@/lib/supabaseFunctionError';
+import { useCvAnalysisJob } from '@/hooks/useCvAnalysisJob';
 
 interface CvTensionGap {
   pillar: string;
@@ -99,38 +100,29 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
 }) => {
   const { t } = useTranslation();
   const { user } = useUser();
-  const [isUploading, setIsUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  const waitForCvAnalysisPersistence = async (startedAt: string) => {
-    if (!user?.id) return false;
+  const job = useCvAnalysisJob(activeJobId);
+  const isAnalyzing = isSubmitting || job.status === 'processing';
 
-    const startedAtMs = new Date(startedAt).getTime();
-
-    for (let attempt = 0; attempt < 10; attempt += 1) {
-      await new Promise((resolve) => setTimeout(resolve, 2500));
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('updated_at, cv_scores, cv_comments')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (error || !data?.updated_at) continue;
-
-      const updatedAtMs = new Date(data.updated_at).getTime();
-      const cvScores = data.cv_scores as Record<string, unknown> | null;
-      const hasCvScores = !!cvScores && Object.keys(cvScores).length > 0;
-      const hasCvSummary = !!(data.cv_comments as { summary?: string } | null)?.summary;
-
-      if (updatedAtMs >= startedAtMs && (hasCvScores || hasCvSummary)) {
-        return true;
-      }
+  // Notify parent when job completes
+  React.useEffect(() => {
+    if (job.status === 'done') {
+      toast.success('CV analyzed successfully! Your profile has been updated.');
+      setUploadError(null);
+      onUploadSuccess?.();
+      setActiveJobId(null);
+    } else if (job.status === 'error' || job.status === 'stale') {
+      const msg = job.errorMessage || 'CV analysis failed. Please retry.';
+      setUploadError(msg);
+      toast.error(msg);
+      setActiveJobId(null);
     }
-
-    return false;
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [job.status]);
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -149,10 +141,9 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
       return;
     }
 
-    setIsUploading(true);
+    setIsSubmitting(true);
     setUploadError(null);
-
-    const analysisStartedAt = new Date().toISOString();
+    setActiveJobId(null);
 
     try {
       const formData = new FormData();
@@ -167,28 +158,23 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
         throw new Error(message);
       }
 
-      if (!data?.success) {
-        throw new Error(data?.error || 'CV analysis failed');
+      // Cached path (budget exceeded but cached): returns success without cv_upload_id
+      if (data?.success && !data?.cv_upload_id) {
+        toast.success('Showing your most recent CV analysis.');
+        onUploadSuccess?.();
+        return;
       }
 
-      toast.success('CV analyzed successfully! Your profile has been updated.');
-      setUploadError(null);
-      onUploadSuccess?.();
+      if (!data?.cv_upload_id) {
+        throw new Error(data?.error || 'CV analysis failed to start.');
+      }
+
+      // Job accepted (202) → start polling via hook
+      setActiveJobId(data.cv_upload_id as string);
+      toast.message('CV uploaded. Analyzing in the background…');
     } catch (error: any) {
       console.error('CV upload error:', error);
       const errorMsg = error?.message || 'Failed to analyze CV';
-      const looksLikeBrowserTimeout = errorMsg.includes('Load failed') || errorMsg.includes('Failed to fetch');
-
-      if (looksLikeBrowserTimeout) {
-        const persisted = await waitForCvAnalysisPersistence(analysisStartedAt);
-
-        if (persisted) {
-          toast.success('CV analyzed successfully! Your profile has been updated.');
-          setUploadError(null);
-          onUploadSuccess?.();
-          return;
-        }
-      }
 
       if (errorMsg.includes('Authentication') || errorMsg.includes('log in') || errorMsg.includes('session')) {
         setUploadError('Authentication required. Please refresh the page and try again.');
@@ -201,7 +187,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
         toast.error(errorMsg);
       }
     } finally {
-      setIsUploading(false);
+      setIsSubmitting(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -270,11 +256,11 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
             />
             <Button
               onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
+              disabled={isAnalyzing}
               size="sm"
               variant={cvAnalysis ? 'outline' : 'default'}
             >
-              {isUploading ? (
+              {isAnalyzing ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   {t('dashboard.cv_analyzing', 'Analyzing...')}
@@ -308,7 +294,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
           </div>
         )}
 
-        {!cvAnalysis && !isUploading && !uploadError && (
+        {!cvAnalysis && !isAnalyzing && !uploadError && (
           <div className="p-6 bg-muted/30 rounded-lg border border-dashed border-muted-foreground/30 text-center">
             <FileText className="w-12 h-12 mx-auto mb-3 text-muted-foreground/50" />
             <p className="text-sm text-muted-foreground mb-3">
