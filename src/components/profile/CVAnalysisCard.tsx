@@ -256,11 +256,11 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
             />
             <Button
               onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
+              disabled={isAnalyzing}
               size="sm"
               variant={cvAnalysis ? 'outline' : 'default'}
             >
-              {isUploading ? (
+              {isAnalyzing ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   {t('dashboard.cv_analyzing', 'Analyzing...')}
