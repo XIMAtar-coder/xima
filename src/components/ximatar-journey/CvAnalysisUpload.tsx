@@ -51,23 +51,39 @@ export const CvAnalysisUpload: React.FC<CvAnalysisUploadProps> = ({ userId: _use
     setActiveJobId(null);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
       const { data: sessionData } = await supabase.auth.getSession();
       const accessToken = sessionData?.session?.access_token;
       if (!accessToken) throw new Error('Authentication required. Please refresh the page and try again.');
 
+      const authUserId = sessionData.session?.user?.id;
+      if (!authUserId) throw new Error('Authentication required. Please refresh the page and try again.');
+
+      const sanitizeFilename = (name: string) =>
+        name.replace(/[^a-zA-Z0-9._-]/g, '_').replace(/\.\./g, '_').substring(0, 255);
+      const storagePath = `${authUserId}/${Date.now()}_${sanitizeFilename(file.name)}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('cv-uploads')
+        .upload(storagePath, file, { upsert: false, contentType: file.type });
+
+      if (uploadError) throw new Error(uploadError.message || 'Failed to upload CV');
+
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY;
 
       const response = await fetch(`${supabaseUrl}/functions/v1/analyze-cv`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'apikey': supabaseAnonKey,
+          'Content-Type': 'application/json',
         },
-        body: formData,
+        body: JSON.stringify({
+          file_path: storagePath,
+          file_name: file.name,
+          file_size: file.size,
+          mime_type: file.type,
+        }),
       });
 
       if (!response.ok) {

@@ -146,11 +146,27 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
     setActiveJobId(null);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
+      const { data: sessionData } = await supabase.auth.getSession();
+      const authUserId = sessionData.session?.user?.id || user?.id;
+      if (!authUserId) throw new Error('Authentication required. Please refresh the page and try again.');
+
+      const sanitizeFilename = (name: string) =>
+        name.replace(/[^a-zA-Z0-9._-]/g, '_').replace(/\.\./g, '_').substring(0, 255);
+      const storagePath = `${authUserId}/${Date.now()}_${sanitizeFilename(file.name)}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('cv-uploads')
+        .upload(storagePath, file, { upsert: false, contentType: file.type });
+
+      if (uploadError) throw new Error(uploadError.message || 'Failed to upload CV');
 
       const { data, error } = await supabase.functions.invoke('analyze-cv', {
-        body: formData,
+        body: {
+          file_path: storagePath,
+          file_name: file.name,
+          file_size: file.size,
+          mime_type: file.type,
+        },
       });
 
       if (error) {
