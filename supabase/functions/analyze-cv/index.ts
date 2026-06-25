@@ -1008,81 +1008,26 @@ serve(async (req) => {
     const ximatarName = (profile?.ximatar_name as string) || ximatarProfile?.name || resolvedXimatarKey;
     const ximatarTitle = ximatarProfile?.title || "";
 
-    // ===== AI Budget Check =====
-    let budgetResult: any = { allowed: true, calls_used: 0, calls_limit: 999, tier: "unknown" };
-    if (checkAiBudget) {
-      try {
-        budgetResult = await checkAiBudget(user.id, "analyze-cv");
-        if (!budgetResult.allowed) {
-          if (budgetResult.cached_result) {
-            return jsonResponse({ ...budgetResult.cached_result, _budget: { exceeded: true, calls_used: budgetResult.calls_used, calls_limit: budgetResult.calls_limit, tier: budgetResult.tier, cached: true } });
-          }
-          return errorResponse(429, "AI_BUDGET_EXCEEDED", budgetResult.budget_message || "Monthly AI analysis limit reached.");
-        }
-      } catch (budgetErr) {
-        console.warn("[analyze-cv] Budget check failed, proceeding:", budgetErr instanceof Error ? budgetErr.message : budgetErr);
-      }
+    // ===== File metadata only — the client has already uploaded the CV to Storage =====
+    const contentType = req.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      return errorResponse(400, "INVALID_INPUT", "Upload the CV to Storage first, then call analyze-cv with file_path metadata.");
     }
 
-    // ===== File validation =====
-    const formData = await req.formData();
-    const file = formData.get("file");
-    if (!file || !(file instanceof File)) return errorResponse(400, "INVALID_INPUT", "File missing or invalid");
+    const body = await req.json().catch(() => null) as Record<string, unknown> | null;
+    const storagePath = String(body?.file_path || body?.filePath || "");
+    const fileName = String(body?.file_name || body?.fileName || "").substring(0, 255);
+    const fileSize = Number(body?.file_size ?? body?.fileSize ?? 0);
+    const mimeType = String(body?.mime_type || body?.mimeType || "");
 
-    const MAX_FILE_SIZE = 10 * 1024 * 1024;
-    if (file.size > MAX_FILE_SIZE) return errorResponse(400, "FILE_TOO_LARGE", "File too large. Maximum 10MB allowed.");
-
-    const ALLOWED_TYPES = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
-    if (!ALLOWED_TYPES.includes(file.type)) return errorResponse(400, "INVALID_FILE_TYPE", "Invalid file type. Only PDF, DOC, DOCX, and TXT files are allowed.");
-
-    const fileBytes = new Uint8Array(await file.arrayBuffer());
-
-    // Magic bytes validation
-    if (file.type === "application/pdf") {
-      const isPDF = fileBytes[0] === 0x25 && fileBytes[1] === 0x50 && fileBytes[2] === 0x44 && fileBytes[3] === 0x46;
-      if (!isPDF) return errorResponse(400, "INVALID_FILE_CONTENT", "File claims to be PDF but content validation failed.");
+    if (!storagePath || !fileName || !fileSize || !mimeType) {
+      return errorResponse(400, "INVALID_INPUT", "file_path, file_name, file_size, and mime_type are required.");
     }
-    if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
-      const isZip = fileBytes[0] === 0x50 && fileBytes[1] === 0x4b && fileBytes[2] === 0x03 && fileBytes[3] === 0x04;
-      if (!isZip) return errorResponse(400, "INVALID_FILE_CONTENT", "File claims to be DOCX but content validation failed.");
+    if (!storagePath.startsWith(`${user.id}/`) || storagePath.includes("..")) {
+      return errorResponse(400, "INVALID_FILE_PATH", "Invalid CV storage path.");
     }
-    if (file.type === "application/msword") {
-      const isDoc = fileBytes[0] === 0xd0 && fileBytes[1] === 0xcf && fileBytes[2] === 0x11 && fileBytes[3] === 0xe0;
-      if (!isDoc) return errorResponse(400, "INVALID_FILE_CONTENT", "File claims to be DOC but content validation failed.");
-    }
-
-    // ===== Upload to storage =====
-    const sanitizeFilename = (name: string) => name.replace(/[^a-zA-Z0-9._-]/g, "_").replace(/\.\./g, "_").substring(0, 255);
-    const safeFilename = sanitizeFilename(file.name);
-    const filename = `${Date.now()}_${safeFilename}`;
-    const storagePath = `${user.id}/${filename}`;
-
-    const { error: uploadError } = await supabase.storage.from("cv-uploads").upload(storagePath, fileBytes, { upsert: true, contentType: file.type });
-    if (uploadError) { console.error("[analyze-cv] upload error:", uploadError.message); return errorResponse(400, "UPLOAD_FAILED", "Upload failed"); }
-
-    // ===== Extract text OR prepare PDF =====
-    let truncatedText = "";
-    let extractionMethod = "direct-pdf";
-    let pdfBase64: string | null = null;
-
-    if (file.type === "application/pdf") {
-      let base64Str = "";
-      const CHUNK = 8192;
-      for (let i = 0; i < fileBytes.length; i += CHUNK) {
-        const chunk = fileBytes.subarray(i, Math.min(i + CHUNK, fileBytes.length));
-        base64Str += String.fromCharCode(...chunk);
-      }
-      pdfBase64 = btoa(base64Str);
-      extractionMethod = "claude-direct-pdf";
-      truncatedText = "[PDF sent directly to Claude for analysis]";
-    } else {
-      const { text: extractedText, method } = await extractTextFromFile(fileBytes, file.type);
-      if (extractedText.length < 100) return errorResponse(400, "INSUFFICIENT_TEXT", "Could not extract sufficient text from the file. Please upload a text-based PDF or DOCX.");
-      truncatedText = extractedText.substring(0, 12000);
-      extractionMethod = method;
-    }
-
-    console.log(JSON.stringify({ type: "request", correlation_id: correlationId, function_name: "analyze-cv", text_length: truncatedText.length, extraction_method: extractionMethod, ximatar_id: resolvedXimatarKey }));
+    if (fileSize > MAX_FILE_SIZE) return errorResponse(400, "FILE_TOO_LARGE", "File too large. Maximum 10MB allowed.");
+    if (!ALLOWED_TYPES.includes(mimeType)) return errorResponse(400, "INVALID_FILE_TYPE", "Invalid file type. Only PDF, DOC, DOCX, and TXT files are allowed.");
 
     // ===== Create cv_uploads row (authoritative state for polling) =====
     const serviceClient = createClient(supabaseUrl, supabaseServiceRoleKey);
@@ -1092,10 +1037,10 @@ serve(async (req) => {
       .from("cv_uploads")
       .insert({
         user_id: user.id,
-        file_name: file.name.substring(0, 255),
+        file_name: fileName,
         file_path: storagePath,
-        file_size: file.size,
-        mime_type: file.type,
+        file_size: fileSize,
+        mime_type: mimeType,
         analysis_status: "processing",
         analysis_started_at: nowIso,
         analysis_error_message: null,
@@ -1111,16 +1056,14 @@ serve(async (req) => {
     }
 
     const cvUploadId = insertedRow.id as string;
-    const ipHash = hashForAudit
-      ? await hashForAudit(req.headers.get("x-forwarded-for") || "unknown")
-      : await hashForAuditFallback(req.headers.get("x-forwarded-for") || "unknown");
+
+    console.log(JSON.stringify({ type: "accepted", correlation_id: correlationId, function_name: "analyze-cv", cv_upload_id: cvUploadId, file_path: storagePath, file_size: fileSize, mime_type: mimeType, waitUntil_available: typeof (globalThis as any).EdgeRuntime?.waitUntil === "function" }));
 
     // ===== Kick off background analysis =====
     const bgCtx: RunAnalysisCtx = {
-      cvUploadId, userId: user.id, correlationId, fileBytes, fileType: file.type,
+      cvUploadId, userId: user.id, correlationId, filePath: storagePath, fileSize, fileType: mimeType,
       pillarScores, ximatarId: resolvedXimatarKey, ximatarName, ximatarTitle,
-      truncatedText, extractionMethod, pdfBase64,
-      supabaseUrl, supabaseServiceRoleKey, ipHash,
+      supabaseUrl, supabaseServiceRoleKey, ipSource: req.headers.get("x-forwarded-for") || "unknown",
     };
 
     const bgPromise = runAnalysis(bgCtx);
@@ -1141,9 +1084,7 @@ serve(async (req) => {
         correlation_id: correlationId,
         _budget: {
           exceeded: false,
-          calls_used: (budgetResult.calls_used ?? 0) + 1,
-          calls_limit: budgetResult.calls_limit ?? 999,
-          tier: budgetResult.tier ?? "unknown",
+          deferred: true,
         },
       }),
       {
