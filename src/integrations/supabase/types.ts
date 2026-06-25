@@ -2313,11 +2313,13 @@ export type Database = {
       }
       cv_uploads: {
         Row: {
+          analysis_attempts: number
           analysis_completed_at: string | null
           analysis_error_message: string | null
           analysis_results: Json | null
           analysis_started_at: string | null
           analysis_status: string | null
+          analysis_worker_started_at: string | null
           created_at: string
           file_name: string
           file_path: string
@@ -2329,11 +2331,13 @@ export type Database = {
           virus_scan_status: string | null
         }
         Insert: {
+          analysis_attempts?: number
           analysis_completed_at?: string | null
           analysis_error_message?: string | null
           analysis_results?: Json | null
           analysis_started_at?: string | null
           analysis_status?: string | null
+          analysis_worker_started_at?: string | null
           created_at?: string
           file_name: string
           file_path: string
@@ -2345,11 +2349,13 @@ export type Database = {
           virus_scan_status?: string | null
         }
         Update: {
+          analysis_attempts?: number
           analysis_completed_at?: string | null
           analysis_error_message?: string | null
           analysis_results?: Json | null
           analysis_started_at?: string | null
           analysis_status?: string | null
+          analysis_worker_started_at?: string | null
           created_at?: string
           file_name?: string
           file_path?: string

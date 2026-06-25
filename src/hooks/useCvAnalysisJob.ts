@@ -54,9 +54,17 @@ export function useCvAnalysisJob(cvUploadId: string | null | undefined) {
       startedMs !== null &&
       Date.now() - startedMs > STALE_AFTER_MS;
 
-    const status: CvAnalysisJobStatus = isStale
-      ? 'stale'
-      : (data.analysis_status as CvAnalysisJobStatus) || 'unknown';
+    const rawStatus = data.analysis_status ?? null;
+    const normalizedStatus: CvAnalysisJobStatus =
+      rawStatus === 'completed' || rawStatus === 'done'
+        ? 'done'
+        : rawStatus === 'failed' || rawStatus === 'error'
+          ? 'error'
+          : rawStatus === 'processing'
+            ? 'processing'
+            : 'unknown';
+
+    const status: CvAnalysisJobStatus = isStale ? 'stale' : normalizedStatus;
 
     return {
       status,

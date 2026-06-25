@@ -173,6 +173,43 @@ async function hashForAuditFallback(input: string): Promise<string> {
   }
 }
 
+async function recordInvocationLog(
+  serviceClient: ReturnType<typeof createClient>,
+  entry: {
+    requestId: string;
+    correlationId: string;
+    modelName: string;
+    promptHash: string;
+    status: "success" | "error" | "rate_limited" | "payment_required";
+    latencyMs?: number | null;
+    errorCode?: string | null;
+    inputSummary?: string | null;
+    outputSummary?: string | null;
+  },
+): Promise<void> {
+  const { error } = await serviceClient.from("ai_invocation_log").insert({
+    request_id: entry.requestId,
+    correlation_id: entry.correlationId,
+    function_name: "analyze-cv",
+    provider: "anthropic",
+    model_name: entry.modelName,
+    model_version: "1.0",
+    prompt_hash: entry.promptHash,
+    input_summary: entry.inputSummary || null,
+    output_summary: entry.outputSummary || null,
+    status: entry.status,
+    error_code: entry.errorCode || null,
+    latency_ms: entry.latencyMs ?? null,
+    prompt_template_version: "cv-intelligence-v2.1",
+    scoring_schema_version: SCORING_SCHEMA_VERSION,
+    max_tokens: 6000,
+  });
+
+  if (error) {
+    console.warn("[analyze-cv:bg] ai_invocation_log insert failed:", error.message);
+  }
+}
+
 // =====================================================
 // Helper: Text extraction from file bytes
 // =====================================================
@@ -497,6 +534,26 @@ const ALLOWED_TYPES = [
   "text/plain",
 ];
 
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error ?? "Unknown error");
+}
+
+function logRunStep(ctx: Pick<RunAnalysisCtx, "correlationId" | "cvUploadId">, step: string, extra: Record<string, unknown> = {}, level: "info" | "warn" | "error" = "info"): void {
+  const payload = {
+    type: "run_step",
+    function_name: "analyze-cv",
+    correlation_id: ctx.correlationId,
+    cv_upload_id: ctx.cvUploadId,
+    step,
+    ...extra,
+  };
+
+  const line = JSON.stringify(payload);
+  if (level === "error") console.error(line);
+  else if (level === "warn") console.warn(line);
+  else console.log(line);
+}
+
 function bytesToBase64(bytes: Uint8Array): string {
   let binary = "";
   const CHUNK = 8192;
@@ -533,17 +590,31 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
 
   const markError = async (msg: string) => {
     try {
-      await serviceClient.from("cv_uploads").update({
-        analysis_status: "error",
+      logRunStep(ctx, "mark_failed", { message: (msg || "Unknown error").substring(0, 180) }, "error");
+      const { error } = await serviceClient.from("cv_uploads").update({
+        analysis_status: "failed",
         analysis_error_message: (msg || "Unknown error").substring(0, 500),
         analysis_completed_at: new Date().toISOString(),
       }).eq("id", cvUploadId);
+
+      if (error) {
+        console.error(JSON.stringify({
+          type: "run_step",
+          function_name: "analyze-cv",
+          correlation_id: correlationId,
+          cv_upload_id: cvUploadId,
+          step: "mark_failed_db_error",
+          error: error.message,
+        }));
+      }
     } catch (e) {
-      console.error("[analyze-cv:bg] failed to mark error:", e instanceof Error ? e.message : e);
+      console.error("[analyze-cv:bg] failed to mark error:", errorMessage(e));
     }
   };
 
   try {
+    logRunStep(ctx, "start", { file_path: filePath, file_type: fileType });
+
     const { data: fileBlob, error: downloadError } = await serviceClient.storage.from("cv-uploads").download(filePath);
     if (downloadError || !fileBlob) {
       console.error("[analyze-cv:bg] storage download failed:", downloadError?.message || "missing file");
@@ -552,6 +623,7 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
     }
 
     const fileBytes = new Uint8Array(await fileBlob.arrayBuffer());
+    logRunStep(ctx, "download_ok", { bytes: fileBytes.length });
     if (fileBytes.length > MAX_FILE_SIZE) {
       await markError("File too large. Maximum 10MB allowed.");
       return;
@@ -570,6 +642,7 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
 
     if (fileType === "application/pdf") {
       pdfBase64 = bytesToBase64(fileBytes);
+      logRunStep(ctx, "base64_ok", { base64_length: pdfBase64.length });
       extractionMethod = "claude-direct-pdf";
       truncatedText = "[PDF sent directly to Claude for analysis]";
     } else {
@@ -580,6 +653,7 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
       }
       truncatedText = extractedText.substring(0, 12000);
       extractionMethod = method;
+      logRunStep(ctx, "text_extraction_ok", { text_length: truncatedText.length, extraction_method: extractionMethod });
     }
 
     console.log(JSON.stringify({ type: "request", correlation_id: correlationId, function_name: "analyze-cv", text_length: truncatedText.length, extraction_method: extractionMethod, ximatar_id: ximatarId, cv_upload_id: cvUploadId }));
@@ -589,8 +663,9 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
         const budgetResult = await checkAiBudget(userId, "analyze-cv");
         if (!budgetResult.allowed) {
           if (budgetResult.cached_result) {
-            await serviceClient.from("cv_uploads").update({
-              analysis_status: "done",
+            logRunStep(ctx, "pre_update_db", { path: "budget_cached" });
+            const { error: cachedUpdateError } = await serviceClient.from("cv_uploads").update({
+              analysis_status: "completed",
               analysis_completed_at: new Date().toISOString(),
               analysis_results: {
                 ...budgetResult.cached_result,
@@ -604,6 +679,13 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
               },
               analysis_error_message: null,
             }).eq("id", cvUploadId);
+
+            if (cachedUpdateError) {
+              console.error(JSON.stringify({ type: "run_step", function_name: "analyze-cv", correlation_id: correlationId, cv_upload_id: cvUploadId, step: "db_update_failed", path: "budget_cached", error: cachedUpdateError.message }));
+              await markError(cachedUpdateError.message);
+            } else {
+              logRunStep(ctx, "db_update_ok", { path: "budget_cached" });
+            }
             return;
           }
           await markError(budgetResult.budget_message || "Monthly AI analysis limit reached.");
@@ -631,6 +713,9 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
     }
 
     const systemPrompt = buildSystemPrompt(ximatarId, ximatarName, ximatarTitle, pillarScores, detectedLanguage) + contextBlock;
+    const promptHash = hashForAudit
+      ? await hashForAudit(`analyze-cv:${ximatarId}:${detectedLanguage}:${extractionMethod}`)
+      : await hashForAuditFallback(`analyze-cv:${ximatarId}:${detectedLanguage}:${extractionMethod}`);
 
     let userContent: string | any[];
     if (pdfBase64) {
@@ -647,9 +732,32 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
 
     let aiResult: { content: string; model: string; latencyMs: number; requestId: string };
     try {
+      logRunStep(ctx, "pre_claude", { extraction_method: extractionMethod, model: "claude-sonnet-4-6" });
       aiResult = await callClaudeDirectly(systemPrompt, userContent);
+      logRunStep(ctx, "post_claude", { model: aiResult.model, latency_ms: aiResult.latencyMs, request_id: aiResult.requestId });
+      await recordInvocationLog(serviceClient, {
+        requestId: aiResult.requestId,
+        correlationId,
+        modelName: aiResult.model,
+        promptHash,
+        status: "success",
+        latencyMs: aiResult.latencyMs,
+        inputSummary: `file_type=${fileType};extraction=${extractionMethod}`,
+        outputSummary: "cv_analysis_response_received",
+      });
     } catch (aiErr: any) {
       console.error("[analyze-cv:bg] AI call failed:", aiErr.message);
+      await recordInvocationLog(serviceClient, {
+        requestId: crypto.randomUUID(),
+        correlationId,
+        modelName: "claude-sonnet-4-6",
+        promptHash,
+        status: aiErr?.statusCode === 402 ? "payment_required" : aiErr?.statusCode === 429 ? "rate_limited" : "error",
+        latencyMs: null,
+        errorCode: aiErr?.errorCode || String(aiErr?.statusCode || "AI_CALL_FAILED"),
+        inputSummary: `file_type=${fileType};extraction=${extractionMethod}`,
+        outputSummary: null,
+      });
       await markError(aiErr.message || "AI call failed");
       return;
     }
@@ -921,21 +1029,183 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
 
     // Finalize: mark cv_uploads row as done with payload
     try {
-      await serviceClient.from("cv_uploads").update({
-        analysis_status: "done",
+      logRunStep(ctx, "pre_update_db", { path: "final" });
+      const { error: finalUpdateError } = await serviceClient.from("cv_uploads").update({
+        analysis_status: "completed",
         analysis_completed_at: new Date().toISOString(),
         analysis_results: responsePayload,
         analysis_error_message: null,
       }).eq("id", cvUploadId);
+
+      if (finalUpdateError) {
+        console.error(JSON.stringify({
+          type: "run_step",
+          function_name: "analyze-cv",
+          correlation_id: correlationId,
+          cv_upload_id: cvUploadId,
+          step: "db_update_failed",
+          path: "final",
+          error: finalUpdateError.message,
+        }));
+        await markError(finalUpdateError.message);
+        return;
+      }
+
+      logRunStep(ctx, "db_update_ok", { path: "final" });
     } catch (e) {
-      console.error("[analyze-cv:bg] failed to mark done:", e instanceof Error ? e.message : e);
+      console.error("[analyze-cv:bg] failed to mark completed:", errorMessage(e));
+      await markError(errorMessage(e));
+      return;
     }
 
     console.log(JSON.stringify({ type: "success", correlation_id: correlationId, function_name: "analyze-cv", ximatar: ximatarId, cv_archetype: archetype.primary, cv_upload_id: cvUploadId }));
   } catch (err: any) {
-    console.error("[analyze-cv:bg] unhandled error:", err instanceof Error ? err.message : err);
-    await markError(err instanceof Error ? err.message : "Unhandled error");
+    console.error("[analyze-cv:bg] unhandled error:", errorMessage(err));
+    await markError(errorMessage(err));
   }
+}
+
+async function processPendingCvJobs(req: Request, correlationId: string, body: Record<string, unknown> | null): Promise<Response> {
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const anonKey = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY") || "";
+  const authHeader = req.headers.get("Authorization") ?? "";
+  const token = authHeader.replace("Bearer ", "").trim();
+  const apikey = req.headers.get("apikey") ?? "";
+  const isServiceCall = token === serviceKey;
+  const isWorkerWebhookCall =
+    req.headers.get("x-cv-worker") === "process_pending" &&
+    (typeof body?.job_id === "string" || typeof body?.job_id === "undefined") &&
+    ((token.startsWith("eyJ") && apikey.startsWith("eyJ")) ||
+      req.headers.get("user-agent")?.toLowerCase().includes("pg_net"));
+
+  if (!isServiceCall && !isWorkerWebhookCall) {
+    return new Response(JSON.stringify({ error: "Forbidden" }), {
+      status: 403,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const serviceClient = createClient(supabaseUrl, serviceKey);
+  const jobId = typeof body?.job_id === "string" && /^[0-9a-f-]{36}$/i.test(body.job_id)
+    ? body.job_id
+    : null;
+
+  let query = serviceClient
+    .from("cv_uploads")
+    .select("id,user_id,file_path,file_size,mime_type,analysis_started_at,analysis_worker_started_at,analysis_attempts,created_at")
+    .eq("analysis_status", "processing")
+    .is("analysis_completed_at", null)
+    .lt("analysis_attempts", 3)
+    .order("created_at", { ascending: true })
+    .limit(1);
+
+  if (jobId) query = query.eq("id", jobId);
+
+  const { data: pendingJobs, error: fetchError } = await query;
+
+  if (fetchError) {
+    console.error(JSON.stringify({ type: "worker_fetch_error", correlation_id: correlationId, function_name: "analyze-cv", error: fetchError.message }));
+    return new Response(JSON.stringify({ processed: 0, error: fetchError.message }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  if (!pendingJobs?.length) {
+    return new Response(JSON.stringify({ processed: 0, message: "no_pending_cv_jobs" }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  let processed = 0;
+  let failed = 0;
+
+  for (const job of pendingJobs) {
+    const jobCorrelationId = `${correlationId}:worker:${job.id}`;
+
+    const { data: claimedRows, error: claimError } = await serviceClient
+      .from("cv_uploads")
+      .update({
+        analysis_worker_started_at: new Date().toISOString(),
+        analysis_attempts: (job.analysis_attempts ?? 0) + 1,
+        analysis_error_message: null,
+      })
+      .eq("id", job.id)
+      .eq("analysis_status", "processing")
+      .is("analysis_completed_at", null)
+      .select("id");
+
+    if (claimError || !claimedRows?.length) {
+      console.warn(JSON.stringify({ type: "worker_claim_skipped", correlation_id: jobCorrelationId, function_name: "analyze-cv", cv_upload_id: job.id, error: claimError?.message || "already_claimed" }));
+      continue;
+    }
+
+    try {
+      const { data: profile, error: profileError } = await serviceClient
+        .from("profiles")
+        .select("profiling_opt_out, ximatar_id, ximatar, ximatar_name, pillar_scores")
+        .eq("user_id", job.user_id)
+        .maybeSingle();
+
+      if (profileError) throw new Error(`Profile fetch failed: ${profileError.message}`);
+      if (profile?.profiling_opt_out === true) throw new Error("Profiling is disabled for this user.");
+
+      const pillarScores = profile?.pillar_scores as Record<string, number> | null;
+      let resolvedXimatarKey = (profile?.ximatar as string | null) || null;
+
+      if (!resolvedXimatarKey && profile?.ximatar_id) {
+        const { data: ximatarRecord } = await serviceClient
+          .from("ximatars")
+          .select("label")
+          .eq("id", profile.ximatar_id as string)
+          .maybeSingle();
+        if (ximatarRecord?.label) resolvedXimatarKey = ximatarRecord.label.toLowerCase();
+      }
+
+      if (!resolvedXimatarKey || !pillarScores) {
+        throw new Error("Assessment data is missing for this CV analysis job.");
+      }
+
+      const ximatarProfile = XIMATAR_PROFILES?.[resolvedXimatarKey];
+      const ximatarName = (profile?.ximatar_name as string) || ximatarProfile?.name || resolvedXimatarKey;
+      const ximatarTitle = ximatarProfile?.title || "";
+
+      console.log(JSON.stringify({ type: "worker_processing", correlation_id: jobCorrelationId, function_name: "analyze-cv", cv_upload_id: job.id, user_id: String(job.user_id).substring(0, 8) }));
+
+      await runAnalysis({
+        cvUploadId: job.id,
+        userId: job.user_id,
+        correlationId: jobCorrelationId,
+        filePath: job.file_path,
+        fileSize: job.file_size,
+        fileType: job.mime_type,
+        pillarScores,
+        ximatarId: resolvedXimatarKey,
+        ximatarName,
+        ximatarTitle,
+        supabaseUrl,
+        supabaseServiceRoleKey: serviceKey,
+        ipSource: "cv-worker",
+      });
+      processed++;
+    } catch (error) {
+      failed++;
+      const msg = errorMessage(error);
+      console.error(JSON.stringify({ type: "worker_job_error", correlation_id: jobCorrelationId, function_name: "analyze-cv", cv_upload_id: job.id, error: msg }));
+      await serviceClient.from("cv_uploads").update({
+        analysis_status: "failed",
+        analysis_error_message: msg.substring(0, 500),
+        analysis_completed_at: new Date().toISOString(),
+      }).eq("id", job.id);
+    }
+  }
+
+  return new Response(JSON.stringify({ processed, failed }), {
+    status: 200,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
 }
 
 // =====================================================
@@ -950,6 +1220,16 @@ serve(async (req) => {
   const correlationId = extractCorrelationId(req);
 
   try {
+    const contentType = req.headers.get("content-type") || "";
+    let body: Record<string, unknown> | null = null;
+
+    if (req.method === "POST" && contentType.includes("application/json")) {
+      body = await req.json().catch(() => null) as Record<string, unknown> | null;
+      if (body?.mode === "process_pending") {
+        return await processPendingCvJobs(req, correlationId, body);
+      }
+    }
+
     // ===== Auth =====
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return unauthorizedResponse("Missing Authorization header");
@@ -1009,12 +1289,10 @@ serve(async (req) => {
     const ximatarTitle = ximatarProfile?.title || "";
 
     // ===== File metadata only — the client has already uploaded the CV to Storage =====
-    const contentType = req.headers.get("content-type") || "";
     if (!contentType.includes("application/json")) {
       return errorResponse(400, "INVALID_INPUT", "Upload the CV to Storage first, then call analyze-cv with file_path metadata.");
     }
 
-    const body = await req.json().catch(() => null) as Record<string, unknown> | null;
     const storagePath = String(body?.file_path || body?.filePath || "");
     const fileName = String(body?.file_name || body?.fileName || "").substring(0, 255);
     const fileSize = Number(body?.file_size ?? body?.fileSize ?? 0);
@@ -1057,23 +1335,23 @@ serve(async (req) => {
 
     const cvUploadId = insertedRow.id as string;
 
-    console.log(JSON.stringify({ type: "accepted", correlation_id: correlationId, function_name: "analyze-cv", cv_upload_id: cvUploadId, file_path: storagePath, file_size: fileSize, mime_type: mimeType, waitUntil_available: typeof (globalThis as any).EdgeRuntime?.waitUntil === "function" }));
-
-    // ===== Kick off background analysis =====
-    const bgCtx: RunAnalysisCtx = {
-      cvUploadId, userId: user.id, correlationId, filePath: storagePath, fileSize, fileType: mimeType,
-      pillarScores, ximatarId: resolvedXimatarKey, ximatarName, ximatarTitle,
-      supabaseUrl, supabaseServiceRoleKey, ipSource: req.headers.get("x-forwarded-for") || "unknown",
-    };
-
-    const bgPromise = runAnalysis(bgCtx);
-    // Use EdgeRuntime.waitUntil when available; otherwise fire-and-forget with catch
     const edgeRuntime = (globalThis as any).EdgeRuntime;
-    if (edgeRuntime && typeof edgeRuntime.waitUntil === "function") {
-      try { edgeRuntime.waitUntil(bgPromise); } catch (e) { console.warn("[analyze-cv] waitUntil failed:", e); }
-    } else {
-      bgPromise.catch((e) => console.error("[analyze-cv] background error:", e));
-    }
+    console.log(JSON.stringify({
+      type: "accepted",
+      correlation_id: correlationId,
+      function_name: "analyze-cv",
+      cv_upload_id: cvUploadId,
+      file_path: storagePath,
+      file_size: fileSize,
+      mime_type: mimeType,
+      edge_runtime_type: typeof edgeRuntime,
+      edge_runtime_keys: edgeRuntime ? Object.keys(edgeRuntime).slice(0, 12) : [],
+      waitUntil_available: typeof edgeRuntime?.waitUntil === "function",
+    }));
+
+    // Heavy analysis is intentionally NOT started in this request. A DB webhook
+    // invokes this same function in worker mode, so completion no longer depends
+    // on EdgeRuntime.waitUntil keeping the post-202 isolate alive.
 
     // ===== Return 202 immediately =====
     return new Response(
