@@ -100,6 +100,8 @@ export const HeroSection: React.FC = () => {
           alt=""
           fetchPriority="high"
           decoding="async"
+          width={1200}
+          height={1600}
           className="absolute inset-0 w-full h-full object-cover"
           style={{
             objectPosition: currentSlide.objectPosition,
@@ -107,6 +109,7 @@ export const HeroSection: React.FC = () => {
             transition: `opacity ${FADE_MS}ms ease-in-out`,
           }}
         />
+
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -172,9 +175,12 @@ export const HeroSection: React.FC = () => {
           alt=""
           fetchPriority="high"
           decoding="async"
+          width={800}
+          height={360}
           className="w-full h-full object-cover"
           style={{ objectPosition: currentSlide.objectPosition, transition: `opacity ${FADE_MS}ms ease-in-out` }}
         />
+
         <div
           className="absolute inset-0"
           style={{
