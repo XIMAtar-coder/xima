@@ -477,25 +477,56 @@ interface RunAnalysisCtx {
   cvUploadId: string;
   userId: string;
   correlationId: string;
-  fileBytes: Uint8Array;
+  filePath: string;
+  fileSize: number;
   fileType: string;
   pillarScores: Record<string, number>;
   ximatarId: string;
   ximatarName: string;
   ximatarTitle: string;
-  truncatedText: string;
-  extractionMethod: string;
-  pdfBase64: string | null;
   supabaseUrl: string;
   supabaseServiceRoleKey: string;
-  ipHash: string;
+  ipSource: string;
+}
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const ALLOWED_TYPES = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "text/plain",
+];
+
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = "";
+  const CHUNK = 8192;
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    const chunk = bytes.subarray(i, Math.min(i + CHUNK, bytes.length));
+    binary += String.fromCharCode(...chunk);
+  }
+  return btoa(binary);
+}
+
+function assertKnownFileContent(fileBytes: Uint8Array, fileType: string): void {
+  if (fileType === "application/pdf") {
+    const isPDF = fileBytes[0] === 0x25 && fileBytes[1] === 0x50 && fileBytes[2] === 0x44 && fileBytes[3] === 0x46;
+    if (!isPDF) throw new Error("File claims to be PDF but content validation failed.");
+  }
+  if (fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+    const isZip = fileBytes[0] === 0x50 && fileBytes[1] === 0x4b && fileBytes[2] === 0x03 && fileBytes[3] === 0x04;
+    if (!isZip) throw new Error("File claims to be DOCX but content validation failed.");
+  }
+  if (fileType === "application/msword") {
+    const isDoc = fileBytes[0] === 0xd0 && fileBytes[1] === 0xcf && fileBytes[2] === 0x11 && fileBytes[3] === 0xe0;
+    if (!isDoc) throw new Error("File claims to be DOC but content validation failed.");
+  }
 }
 
 async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
   const {
     cvUploadId, userId, correlationId, pillarScores,
-    ximatarId, ximatarName, ximatarTitle, truncatedText, extractionMethod,
-    pdfBase64, supabaseUrl, supabaseServiceRoleKey, ipHash, fileBytes,
+    ximatarId, ximatarName, ximatarTitle, filePath, fileType,
+    supabaseUrl, supabaseServiceRoleKey, ipSource,
   } = ctx;
 
   const serviceClient = createClient(supabaseUrl, supabaseServiceRoleKey);
@@ -513,6 +544,80 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
   };
 
   try {
+    const { data: fileBlob, error: downloadError } = await serviceClient.storage.from("cv-uploads").download(filePath);
+    if (downloadError || !fileBlob) {
+      console.error("[analyze-cv:bg] storage download failed:", downloadError?.message || "missing file");
+      await markError("Could not read uploaded CV from storage.");
+      return;
+    }
+
+    const fileBytes = new Uint8Array(await fileBlob.arrayBuffer());
+    if (fileBytes.length > MAX_FILE_SIZE) {
+      await markError("File too large. Maximum 10MB allowed.");
+      return;
+    }
+
+    try {
+      assertKnownFileContent(fileBytes, fileType);
+    } catch (validationError) {
+      await markError(validationError instanceof Error ? validationError.message : "Invalid file content.");
+      return;
+    }
+
+    let truncatedText = "";
+    let extractionMethod = "direct-pdf";
+    let pdfBase64: string | null = null;
+
+    if (fileType === "application/pdf") {
+      pdfBase64 = bytesToBase64(fileBytes);
+      extractionMethod = "claude-direct-pdf";
+      truncatedText = "[PDF sent directly to Claude for analysis]";
+    } else {
+      const { text: extractedText, method } = await extractTextFromFile(fileBytes, fileType);
+      if (extractedText.length < 100) {
+        await markError("Could not extract sufficient text from the file. Please upload a text-based PDF or DOCX.");
+        return;
+      }
+      truncatedText = extractedText.substring(0, 12000);
+      extractionMethod = method;
+    }
+
+    console.log(JSON.stringify({ type: "request", correlation_id: correlationId, function_name: "analyze-cv", text_length: truncatedText.length, extraction_method: extractionMethod, ximatar_id: ximatarId, cv_upload_id: cvUploadId }));
+
+    if (checkAiBudget) {
+      try {
+        const budgetResult = await checkAiBudget(userId, "analyze-cv");
+        if (!budgetResult.allowed) {
+          if (budgetResult.cached_result) {
+            await serviceClient.from("cv_uploads").update({
+              analysis_status: "done",
+              analysis_completed_at: new Date().toISOString(),
+              analysis_results: {
+                ...budgetResult.cached_result,
+                _budget: {
+                  exceeded: true,
+                  calls_used: budgetResult.calls_used,
+                  calls_limit: budgetResult.calls_limit,
+                  tier: budgetResult.tier,
+                  cached: true,
+                },
+              },
+              analysis_error_message: null,
+            }).eq("id", cvUploadId);
+            return;
+          }
+          await markError(budgetResult.budget_message || "Monthly AI analysis limit reached.");
+          return;
+        }
+      } catch (budgetErr) {
+        console.warn("[analyze-cv:bg] Budget check failed, proceeding:", budgetErr instanceof Error ? budgetErr.message : budgetErr);
+      }
+    }
+
+    const ipHash = hashForAudit
+      ? await hashForAudit(ipSource || "unknown")
+      : await hashForAuditFallback(ipSource || "unknown");
+
     const detectedLanguage = pdfBase64 ? "auto" : detectLanguage(truncatedText);
 
     let contextBlock = "";
