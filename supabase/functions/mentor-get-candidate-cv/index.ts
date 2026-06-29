@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { hashForAudit } from "../_shared/auditEvents.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
