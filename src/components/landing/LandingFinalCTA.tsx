@@ -44,7 +44,7 @@ export const LandingFinalCTA: React.FC = () => {
         <div>
           <img
             src="/images/xima-full-white.svg"
-            alt="XIMA"
+            alt="XIMA - Professional Potential Platform"
             style={{ height: 32, width: 'auto', marginBottom: 24 }}
           />
           <h2
