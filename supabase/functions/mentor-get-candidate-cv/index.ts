@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { hashForAudit } from "../_shared/auditEvents.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -203,7 +204,8 @@ Deno.serve(async (req) => {
     }
 
     // Log the access in audit log
-    const userAgent = req.headers.get("user-agent") || "unknown";
+    const rawUserAgent = req.headers.get("user-agent") || "unknown";
+    const userAgentHash = await hashForAudit(rawUserAgent);
     const { error: auditError } = await supabaseAdmin
       .from("mentor_access_audit_logs")
       .insert({
@@ -214,7 +216,7 @@ Deno.serve(async (req) => {
         actor_role: "mentor",
         metadata: {
           source: "mentor-get-candidate-cv",
-          user_agent: userAgent,
+          user_agent_hash: userAgentHash,
           has_active_relationship: !!relationshipData,
           cv_type: cvResult.type,
         },
