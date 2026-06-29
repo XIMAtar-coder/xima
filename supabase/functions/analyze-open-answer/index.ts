@@ -83,6 +83,7 @@ serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || '';
     const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
     const isServiceRole = serviceKey && bearer === serviceKey;
+    let authUserId: string | null = null;
     if (!isServiceRole) {
       const authClient = createClient(
         Deno.env.get("SUPABASE_URL")!,
@@ -93,10 +94,20 @@ serve(async (req) => {
       if (authErr || !authUser) {
         return errorResponse(401, 'UNAUTHORIZED', 'Invalid or expired token');
       }
+      authUserId = authUser.id;
     }
 
     const body = await req.json();
-    const { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload, invitation_id } = body;
+    let { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload, invitation_id } = body;
+
+    // SECURITY: when called with a user JWT, user_id MUST match the authenticated user.
+    // Prevents cross-user data manipulation via spoofed user_id in the request body.
+    if (!isServiceRole && authUserId) {
+      if (user_id && user_id !== authUserId) {
+        return errorResponse(403, 'FORBIDDEN', 'user_id must match authenticated user');
+      }
+      user_id = authUserId;
+    }
 
     // =====================================================
     // L2 CONVERSATION BRANCH — self-contained; returns before mindset/free-text path.
