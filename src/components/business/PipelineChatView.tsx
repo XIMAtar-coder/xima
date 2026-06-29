@@ -53,7 +53,7 @@ export const PipelineChatView: React.FC<PipelineChatViewProps> = ({
       // Mark as read
       const unreadField = role === 'business' ? 'unread_business' : 'unread_candidate';
       await supabase.from('pipeline_chat_threads')
-        .update({ [unreadField]: 0 })
+        .update({ [unreadField]: 0 } as never)
         .eq('id', threadId);
 
       return data || [];
@@ -94,7 +94,7 @@ export const PipelineChatView: React.FC<PipelineChatViewProps> = ({
         .update({
           last_message_at: new Date().toISOString(),
           [otherUnread]: currentUnread + 1,
-        })
+        } as never)
         .eq('id', threadId);
 
       queryClient.invalidateQueries({ queryKey: ['pipeline-messages', threadId] });
