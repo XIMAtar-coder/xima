@@ -31,6 +31,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const PrivacyPolicy = lazy(() => import("./pages/legal/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/legal/Terms"));
 const Imprint = lazy(() => import("./pages/legal/Imprint"));
+const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
 
 // ---- Candidate ----
 const Onboarding = lazy(() => import("./pages/Onboarding"));
@@ -111,6 +112,7 @@ const HIDDEN_AI_ROUTES = new Set([
   '/business/login', '/business/register',
   '/mentor/login',
   '/challenge/accept',
+  '/.lovable/oauth/consent',
 ]);
 
 const XimAILauncher = () => {
@@ -151,6 +153,7 @@ const AppContent = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/unsubscribe" element={<Unsubscribe />} />
               {/* Legal Pages */}

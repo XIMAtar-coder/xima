@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LandingLayout from '@/components/landing/LandingLayout';
 import Seo from '@/components/Seo';
@@ -15,17 +15,25 @@ import { supabase } from '@/integrations/supabase/client';
 
 const Login = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { signIn, isAuthenticated } = useUser();
   const { t } = useTranslation();
-  
+
+  const nextParam = searchParams.get('next');
+  const safeNext = nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : null;
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   React.useEffect(() => {
     const handleAuthRedirect = async () => {
       if (isAuthenticated) {
+        if (safeNext) {
+          navigate(safeNext);
+          return;
+        }
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           const redirectPath = await getPostLoginRedirectPath(user.id);
@@ -36,7 +44,7 @@ const Login = () => {
       }
     };
     handleAuthRedirect();
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, safeNext]);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,13 +74,17 @@ const Login = () => {
           title: t('login.login_success'),
           description: t('login.welcome_back')
         });
-        
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const redirectPath = await getPostLoginRedirectPath(user.id);
-          navigate(redirectPath);
+
+        if (safeNext) {
+          navigate(safeNext);
         } else {
-          navigate('/profile');
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const redirectPath = await getPostLoginRedirectPath(user.id);
+            navigate(redirectPath);
+          } else {
+            navigate('/profile');
+          }
         }
       }
     } catch (error) {
