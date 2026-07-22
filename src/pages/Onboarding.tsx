@@ -305,12 +305,12 @@ const Onboarding = () => {
               </div>
               
               <Tabs defaultValue="experience" className="w-full">
-                <TabsList className="grid grid-cols-5 mb-8">
-                  <TabsTrigger value="experience">Experience</TabsTrigger>
-                  <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
-                  <TabsTrigger value="motivation">Motivation</TabsTrigger>
-                  <TabsTrigger value="attitude">Attitude</TabsTrigger>
-                  <TabsTrigger value="analysis">Analysis</TabsTrigger>
+                <TabsList className="w-full flex sm:grid sm:grid-cols-5 overflow-x-auto no-scrollbar gap-1 mb-8">
+                  <TabsTrigger value="experience" className="whitespace-nowrap flex-shrink-0">Experience</TabsTrigger>
+                  <TabsTrigger value="intelligence" className="whitespace-nowrap flex-shrink-0">Intelligence</TabsTrigger>
+                  <TabsTrigger value="motivation" className="whitespace-nowrap flex-shrink-0">Motivation</TabsTrigger>
+                  <TabsTrigger value="attitude" className="whitespace-nowrap flex-shrink-0">Attitude</TabsTrigger>
+                  <TabsTrigger value="analysis" className="whitespace-nowrap flex-shrink-0">Analysis</TabsTrigger>
                 </TabsList>
                 
                 {['experience', 'intelligence', 'motivation', 'attitude', 'analysis'].map((pillar) => (

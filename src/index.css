@@ -724,3 +724,7 @@ html.dark .rounded-2xl[class*="border"],
 html.dark [class*="rounded-["][class*="border"] {
   border-color: rgba(255,255,255,0.08) !important;
 }
+
+/* Hide scrollbars on horizontally scrolling nav/tab rows */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
