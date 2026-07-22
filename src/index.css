@@ -728,3 +728,43 @@ html.dark [class*="rounded-["][class*="border"] {
 /* Hide scrollbars on horizontally scrolling nav/tab rows */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ------------------------------------------------------------------ */
+/* Capacitor (native iOS/Android) safe-area handling.                  */
+/* Scoped to .capacitor-native so the Lovable web build is unaffected. */
+/* (added by src/lib/native/capacitor.ts only on native platforms)     */
+/* ------------------------------------------------------------------ */
+@supports (padding: max(0px)) {
+  /* App shell fixed top nav (MainLayout) — grow into the notch so its
+     content clears the status bar; gradient/glass bg stays edge-to-edge. */
+  .capacitor-native nav.glass-nav {
+    padding-top: env(safe-area-inset-top);
+    box-sizing: content-box;
+  }
+
+  /* Landing/auth sticky header (LandingLayout, used by Login etc.). */
+  .capacitor-native header.landing-header {
+    padding-top: env(safe-area-inset-top);
+    box-sizing: content-box;
+  }
+
+  /* Offset MainLayout content by the status-bar inset on top of the
+     nav height it already accounts for (pt-16 = 4rem on mobile). */
+  .capacitor-native main.app-shell-main {
+    padding-top: calc(env(safe-area-inset-top) + 4rem);
+  }
+
+  /* Mobile bottom tab bar — lift icons above the home indicator. */
+  .capacitor-native .mobile-tab-bar {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Keep footer content above the home indicator. */
+  .capacitor-native footer {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  /* Generic helpers usable by any page/layout. */
+  .capacitor-native .safe-top { padding-top: env(safe-area-inset-top); }
+  .capacitor-native .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+}

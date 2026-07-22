@@ -380,7 +380,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
         </div>
       </nav>
 
-      <main className={`pt-16 md:pt-[72px] ${isAuthenticated ? 'pb-20 md:pb-0' : ''} ${fullHeight ? 'flex-1 overflow-hidden' : 'flex-1'}`}>
+      <main className={`app-shell-main pt-16 md:pt-[72px] ${isAuthenticated ? 'pb-20 md:pb-0' : ''} ${fullHeight ? 'flex-1 overflow-hidden' : 'flex-1'}`}>
         <EmailVerificationBanner />
         {children}
       </main>
