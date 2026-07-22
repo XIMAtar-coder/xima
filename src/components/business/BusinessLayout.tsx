@@ -225,13 +225,26 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
 
       {/* Main Content */}
       <main
-        className={`transition-all duration-300 min-h-screen ${
-          sidebarOpen ? 'ml-64' : 'ml-20'
+        className={`transition-all duration-300 min-h-screen ml-0 ${
+          sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'
         }`}
       >
         {/* Top Header */}
-        <header className="sticky top-0 z-40 flex items-center justify-end gap-2 px-6 py-3 bg-background/80 backdrop-blur-sm border-b border-border">
+        <header className="sticky top-0 z-30 flex items-center gap-2 px-4 sm:px-6 py-3 bg-background/80 backdrop-blur-sm border-b border-border">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMobileDrawerOpen(true)}
+            className="lg:hidden hover:bg-primary/10"
+            aria-label="Open menu"
+          >
+            <Menu size={20} />
+          </Button>
+
+          <div className="flex-1" />
+
           <ThemeToggle />
+
 
           <Button
             variant="ghost"
