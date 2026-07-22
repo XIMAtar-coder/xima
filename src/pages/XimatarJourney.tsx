@@ -112,7 +112,7 @@ const XimatarJourney = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <div className="container max-w-5xl mx-auto pt-4 watermark-bg">
+      <div className="container max-w-5xl mx-auto pt-4 px-4 sm:px-6 watermark-bg overflow-x-hidden">
         <div className="text-center mb-8 relative z-10">
           <Logo 
             variant="full"
