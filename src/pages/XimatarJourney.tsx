@@ -127,11 +127,11 @@ const XimatarJourney = () => {
         
         {/* Progress Steps */}
         <div className="mb-8">
-          <div className="flex justify-between items-center relative">
+          <div className="flex justify-between items-start relative gap-2">
             {steps.map((step, index) => (
-              <div key={step.number} className="flex flex-col items-center z-10 relative">
+              <div key={step.number} className="flex flex-col items-center z-10 relative flex-1 min-w-0">
                 <div 
-                  className={`w-12 h-12 rounded-full flex items-center justify-center border-2 
+                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 
                     ${currentStep === step.number 
                       ? 'bg-primary border-primary text-primary-foreground' 
                       : currentStep > step.number
@@ -142,7 +142,7 @@ const XimatarJourney = () => {
                   {currentStep > step.number ? <Check size={20} /> : step.icon}
                 </div>
                 <span 
-                  className={`text-sm mt-2 text-center max-w-20
+                  className={`text-xs sm:text-sm mt-2 text-center break-words
                     ${currentStep === step.number 
                       ? 'text-primary font-medium' 
                       : currentStep > step.number
