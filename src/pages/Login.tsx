@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LandingLayout from '@/components/landing/LandingLayout';
 import Seo from '@/components/Seo';
+import { Logo } from '@/components/Logo';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -110,11 +111,7 @@ const Login = () => {
         <Card>
           <CardHeader className="space-y-6 text-center">
             <div className="flex justify-center">
-              <img 
-                src="/src/assets/logo_full.png" 
-                alt="XIMA Logo" 
-                className="h-12 w-auto dark:brightness-200"
-              />
+              <Logo variant="full" alt="XIMA Logo" className="h-12 w-auto dark:brightness-200" />
             </div>
             <CardTitle className="text-[28px] font-bold">{t('login.title')}</CardTitle>
             <CardDescription>
