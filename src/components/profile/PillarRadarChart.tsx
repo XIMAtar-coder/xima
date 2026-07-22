@@ -55,9 +55,9 @@ export const PillarRadarChart: React.FC<PillarRadarChartProps> = ({ pillars }) =
 
       <div className="grid grid-cols-5 gap-1">
         {chartData.map((item) => (
-          <div key={item.pillar} className="text-center">
-            <p className="text-[17px] font-bold text-foreground stat-value">{item.score.toFixed(1)}</p>
-            <p className="text-[10px] text-muted-foreground truncate font-medium">{item.pillar}</p>
+          <div key={item.pillar} className="text-center min-w-0">
+            <p className="text-[15px] sm:text-[17px] font-bold text-foreground stat-value">{item.score.toFixed(1)}</p>
+            <p className="text-[9px] sm:text-[10px] text-muted-foreground font-medium leading-tight break-words">{item.pillar}</p>
           </div>
         ))}
       </div>

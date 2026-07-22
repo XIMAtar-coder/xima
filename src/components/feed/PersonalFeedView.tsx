@@ -30,11 +30,11 @@ export const PersonalFeedView = () => {
     <div className="space-y-5">
       {/* Category tabs */}
       <Tabs value={category} onValueChange={(v) => setCategory(v as FeedCategory)}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="for_you">{t('feed.tab.for_you', 'Per te')}</TabsTrigger>
-          <TabsTrigger value="growth">{t('feed.tab.growth', 'Growth')}</TabsTrigger>
-          <TabsTrigger value="opportunities">{t('feed.tab.opportunities', 'Opportunità')}</TabsTrigger>
-          <TabsTrigger value="discover">{t('feed.tab.discover', 'Scopri')}</TabsTrigger>
+        <TabsList className="w-full flex sm:grid sm:grid-cols-4 overflow-x-auto no-scrollbar gap-1">
+          <TabsTrigger value="for_you" className="whitespace-nowrap flex-shrink-0">{t('feed.tab.for_you', 'Per te')}</TabsTrigger>
+          <TabsTrigger value="growth" className="whitespace-nowrap flex-shrink-0">{t('feed.tab.growth', 'Growth')}</TabsTrigger>
+          <TabsTrigger value="opportunities" className="whitespace-nowrap flex-shrink-0">{t('feed.tab.opportunities', 'Opportunità')}</TabsTrigger>
+          <TabsTrigger value="discover" className="whitespace-nowrap flex-shrink-0">{t('feed.tab.discover', 'Scopri')}</TabsTrigger>
         </TabsList>
       </Tabs>
 
