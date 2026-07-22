@@ -286,12 +286,13 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
           </DropdownMenu>
         </header>
         
-        <div className="relative z-10 p-8 pb-16">
+        <div className="relative z-10 p-4 sm:p-8 pb-16">
           {children}
         </div>
         
         {/* Footer */}
-        <footer className="relative z-10 border-t border-border px-8 py-6">
+        <footer className="relative z-10 border-t border-border px-4 sm:px-8 py-6">
+
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-xs text-muted-foreground">
               © {new Date().getFullYear()} XIMA. {t('footer.all_rights_reserved')}
