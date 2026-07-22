@@ -37,6 +37,12 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
   const { user, signOut } = useUser();
   const { locale, changeLocale } = useBusinessLocale();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+
+  // Close mobile drawer on route change
+  useEffect(() => {
+    setMobileDrawerOpen(false);
+  }, [location.pathname]);
   const { shouldAutoShowBusinessGuide, completeStep } = useOnboardingState();
   const [guideOpen, setGuideOpen] = useState(false);
   const [guideAutoTriggered, setGuideAutoTriggered] = useState(false);
@@ -100,13 +106,22 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Mobile backdrop */}
+      {mobileDrawerOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setMobileDrawerOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full bg-card border-r border-border transition-all duration-300 z-50 ${
+        className={`fixed top-0 left-0 h-full max-h-screen overflow-y-auto bg-card border-r border-border transition-all duration-300 z-50 ${
           sidebarOpen ? 'w-64' : 'w-20'
-        }`}
+        } ${mobileDrawerOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full min-h-screen">
           {/* Header */}
           <div className="p-4 border-b border-border">
             <div className="flex items-center justify-between">
@@ -121,10 +136,16 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setSidebarOpen(!sidebarOpen)}
+                onClick={() => {
+                  if (mobileDrawerOpen) {
+                    setMobileDrawerOpen(false);
+                  } else {
+                    setSidebarOpen(!sidebarOpen);
+                  }
+                }}
                 className="hover:bg-primary/10"
               >
-                {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+                {sidebarOpen || mobileDrawerOpen ? <X size={20} /> : <Menu size={20} />}
               </Button>
             </div>
           </div>
@@ -135,11 +156,12 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
               const isMessages = item.path === '/business/messages';
-              
+
               return (
                 <Link
                   key={item.path}
                   to={item.path}
+                  onClick={() => setMobileDrawerOpen(false)}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all ${
                     isActive
                       ? 'bg-primary/20 text-primary border border-primary/30'
@@ -161,6 +183,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
               );
             })}
           </nav>
+
 
           {/* User Info */}
           <div className="p-4 border-t border-border">
@@ -202,13 +225,26 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
 
       {/* Main Content */}
       <main
-        className={`transition-all duration-300 min-h-screen ${
-          sidebarOpen ? 'ml-64' : 'ml-20'
+        className={`transition-all duration-300 min-h-screen ml-0 ${
+          sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'
         }`}
       >
         {/* Top Header */}
-        <header className="sticky top-0 z-40 flex items-center justify-end gap-2 px-6 py-3 bg-background/80 backdrop-blur-sm border-b border-border">
+        <header className="sticky top-0 z-30 flex items-center gap-2 px-4 sm:px-6 py-3 bg-background/80 backdrop-blur-sm border-b border-border">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMobileDrawerOpen(true)}
+            className="lg:hidden hover:bg-primary/10"
+            aria-label="Open menu"
+          >
+            <Menu size={20} />
+          </Button>
+
+          <div className="flex-1" />
+
           <ThemeToggle />
+
 
           <Button
             variant="ghost"
@@ -250,12 +286,13 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
           </DropdownMenu>
         </header>
         
-        <div className="relative z-10 p-8 pb-16">
+        <div className="relative z-10 p-4 sm:p-8 pb-16">
           {children}
         </div>
         
         {/* Footer */}
-        <footer className="relative z-10 border-t border-border px-8 py-6">
+        <footer className="relative z-10 border-t border-border px-4 sm:px-8 py-6">
+
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-xs text-muted-foreground">
               © {new Date().getFullYear()} XIMA. {t('footer.all_rights_reserved')}
