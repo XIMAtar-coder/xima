@@ -135,6 +135,10 @@ const XimAILauncher = () => {
  */
 const RoutesTree = () => {
   const location = useLocation();
+  console.log('[nav] render location =', location.pathname);
+  useEffect(() => {
+    console.log('[nav] committed location =', location.pathname);
+  }, [location.pathname]);
   return (
     <ChunkErrorBoundary>
       <Suspense key={location.pathname} fallback={<RouteSkeleton />}>
