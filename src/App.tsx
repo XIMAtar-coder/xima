@@ -112,6 +112,7 @@ const HIDDEN_AI_ROUTES = new Set([
   '/business/login', '/business/register',
   '/mentor/login',
   '/challenge/accept',
+  '/.lovable/oauth/consent',
 ]);
 
 const XimAILauncher = () => {
