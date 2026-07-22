@@ -26,7 +26,7 @@ export const LandingHeader: React.FC = () => {
 
   return (
     <header
-      className="sticky top-0 z-50 w-full"
+      className="landing-header sticky top-0 z-50 w-full"
       style={{
         height: 76,
         background: 'var(--xima-header-bg)',
