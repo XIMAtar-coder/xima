@@ -97,18 +97,18 @@ export default function QuestionExample({
       </Button>
 
       {open && (
-        <Card className="mt-3 p-4 space-y-2 border-blue-200 bg-blue-50/60 dark:bg-white/5">
-          <div className="flex items-start justify-between gap-4">
-            <div className="text-sm font-semibold">{title}</div>
+        <Card className="mt-3 p-4 space-y-2 border-blue-200 bg-blue-50/60 dark:bg-white/5 max-w-full overflow-hidden">
+          <div className="flex items-start justify-between gap-4 min-w-0">
+            <div className="text-sm font-semibold break-words min-w-0">{title}</div>
             <button
               onClick={() => setOpen(false)}
-              className="text-xs text-muted-foreground hover:underline"
+              className="text-xs text-muted-foreground hover:underline shrink-0"
               aria-label={t('assessment.example.close')}
             >
               {t('assessment.example.close')}
             </button>
           </div>
-          <div className="text-sm leading-6 text-muted-foreground">
+          <div className="text-sm leading-6 text-muted-foreground break-words">
             {renderMarkdown(body)}
           </div>
         </Card>

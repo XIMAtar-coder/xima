@@ -112,7 +112,7 @@ const XimatarJourney = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <div className="container max-w-5xl mx-auto pt-4 watermark-bg">
+      <div className="container max-w-5xl mx-auto pt-4 px-4 sm:px-6 watermark-bg overflow-x-hidden">
         <div className="text-center mb-8 relative z-10">
           <Logo 
             variant="full"
@@ -127,11 +127,11 @@ const XimatarJourney = () => {
         
         {/* Progress Steps */}
         <div className="mb-8">
-          <div className="flex justify-between items-center relative">
+          <div className="flex justify-between items-start relative gap-2">
             {steps.map((step, index) => (
-              <div key={step.number} className="flex flex-col items-center z-10 relative">
+              <div key={step.number} className="flex flex-col items-center z-10 relative flex-1 min-w-0">
                 <div 
-                  className={`w-12 h-12 rounded-full flex items-center justify-center border-2 
+                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 
                     ${currentStep === step.number 
                       ? 'bg-primary border-primary text-primary-foreground' 
                       : currentStep > step.number
@@ -142,7 +142,7 @@ const XimatarJourney = () => {
                   {currentStep > step.number ? <Check size={20} /> : step.icon}
                 </div>
                 <span 
-                  className={`text-sm mt-2 text-center max-w-20
+                  className={`text-xs sm:text-sm mt-2 text-center break-words
                     ${currentStep === step.number 
                       ? 'text-primary font-medium' 
                       : currentStep > step.number
@@ -166,7 +166,7 @@ const XimatarJourney = () => {
           </div>
         </div>
         
-        <Card className="p-8 shadow-lg border-0">
+        <Card className="p-5 sm:p-8 shadow-lg border-0">
           {currentStep === 1 && (
             <BaselineAssessment 
               onComplete={handleStepComplete}
@@ -199,7 +199,7 @@ const XimatarJourney = () => {
         {/* Mentor Selection Required Message */}
         {currentStep === 3 && (
           <div className="mt-8 mb-6 text-center">
-            <p className="text-lg font-semibold text-foreground bg-primary/10 border-2 border-primary/30 rounded-lg py-4 px-6 inline-block">
+            <p className="text-base sm:text-lg font-semibold text-foreground bg-primary/10 border-2 border-primary/30 rounded-lg py-4 px-4 sm:px-6 inline-block max-w-full break-words">
               {t('ximatarJourney.closing_cta')}
             </p>
           </div>

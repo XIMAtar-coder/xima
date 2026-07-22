@@ -458,12 +458,12 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
         </div>
       </div>
 
-      <Card className="p-8">
+      <Card className="p-5 sm:p-8">
         {currentMultipleChoice && (
           <div className="space-y-6">
             <div className="space-y-3">
-              <div className="flex items-center justify-between gap-4">
-                <div className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium max-w-full break-words">
                   {t(`${baseKey}.questions.${currentMultipleChoice.key}.category`)}
                 </div>
                 <QuestionExample
