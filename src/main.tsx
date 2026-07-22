@@ -15,6 +15,7 @@ if (import.meta.env.DEV) {
 }
 
 import { supabase } from '@/integrations/supabase/client'
+import { initNative } from '@/lib/native/capacitor'
 
 // Force logout on every app restart
 (async () => {
@@ -24,4 +25,6 @@ import { supabase } from '@/integrations/supabase/client'
       <App />
     </HelmetProvider>
   );
+  // Native (Capacitor) bootstrap — no-op on the web build.
+  initNative();
 })();
