@@ -20,8 +20,9 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading = true }
   if (!show) return null;
 
   return (
-    <div 
-      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-300 ${
+    <div
+      aria-hidden="true"
+      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-300 pointer-events-none ${
         isLoading ? 'opacity-100' : 'opacity-0'
       }`}
       style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 40%, #ffffff, #eeeef3 70%)' }}
