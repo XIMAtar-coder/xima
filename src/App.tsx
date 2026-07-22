@@ -258,7 +258,7 @@ const App = () => {
               <Sonner />
               <LoadingScreen isLoading={initialLoading} />
               {!initialLoading && (
-                <BrowserRouter>
+                <BrowserRouter useTransitions={false}>
                   <AppContent />
                 </BrowserRouter>
               )}
