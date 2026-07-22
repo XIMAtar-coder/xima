@@ -37,6 +37,12 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
   const { user, signOut } = useUser();
   const { locale, changeLocale } = useBusinessLocale();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+
+  // Close mobile drawer on route change
+  useEffect(() => {
+    setMobileDrawerOpen(false);
+  }, [location.pathname]);
   const { shouldAutoShowBusinessGuide, completeStep } = useOnboardingState();
   const [guideOpen, setGuideOpen] = useState(false);
   const [guideAutoTriggered, setGuideAutoTriggered] = useState(false);
