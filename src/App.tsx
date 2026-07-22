@@ -6,95 +6,94 @@ import { ThemeProvider } from "next-themes";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
 import { LoadingScreen } from "./components/LoadingScreen";
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect } from "react";
 import './i18n'; // Initialize i18n
 import { XimAIProvider } from "./context/XimAIProvider";
 import { AssessmentProvider } from "./contexts/AssessmentContext";
-import RouteSkeleton from "./components/ui/RouteSkeleton";
 import ChunkErrorBoundary from "./components/ui/ChunkErrorBoundary";
 import { ChatEntry } from "./components/ximai/ChatEntry";
 import { useUser } from "./context/UserContext";
 
 // ---- Public / marketing ----
-const Index = lazy(() => import("./pages/Index"));
-const About = lazy(() => import("./pages/About"));
-const HowItWorks = lazy(() => import("./pages/HowItWorks"));
-const Business = lazy(() => import("./pages/Business"));
-const Pricing = lazy(() => import("./pages/Pricing"));
-const ContactSales = lazy(() => import("./pages/ContactSales"));
-const Login = lazy(() => import("./pages/Login"));
-const Register = lazy(() => import("./pages/Register"));
-const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
-const AuthCallback = lazy(() => import("./pages/AuthCallback"));
-const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-const PrivacyPolicy = lazy(() => import("./pages/legal/PrivacyPolicy"));
-const Terms = lazy(() => import("./pages/legal/Terms"));
-const Imprint = lazy(() => import("./pages/legal/Imprint"));
-const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
+import Index from "./pages/Index";
+import About from "./pages/About";
+import HowItWorks from "./pages/HowItWorks";
+import Business from "./pages/Business";
+import Pricing from "./pages/Pricing";
+import ContactSales from "./pages/ContactSales";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import VerifyEmail from "./pages/VerifyEmail";
+import AuthCallback from "./pages/AuthCallback";
+import Unsubscribe from "./pages/Unsubscribe";
+import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
+import Terms from "./pages/legal/Terms";
+import Imprint from "./pages/legal/Imprint";
+import OAuthConsent from "./pages/OAuthConsent";
 
 // ---- Candidate ----
-const Onboarding = lazy(() => import("./pages/Onboarding"));
-const Profile = lazy(() => import("./pages/Profile"));
-const XimatarJourney = lazy(() => import("./pages/XimatarJourney"));
-const XimaChat = lazy(() => import("./pages/XimaChat"));
-const Messages = lazy(() => import("./pages/Messages"));
-const DevelopmentPlan = lazy(() => import("./pages/DevelopmentPlan"));
-const OpportunityDetails = lazy(() => import("./pages/OpportunityDetails"));
-const AssessmentGuide = lazy(() => import("./pages/AssessmentGuide"));
-const ChallengeAccept = lazy(() => import("./pages/ChallengeAccept"));
-const CandidateSettings = lazy(() => import("./pages/Settings"));
-const CandidateSessionDetail = lazy(() => import("./pages/candidate/SessionDetail"));
-const CandidateSessionRoom = lazy(() => import("./pages/candidate/SessionRoom"));
-const ChallengeCompletion = lazy(() => import("./pages/candidate/ChallengeCompletion"));
-const ChallengeFollowup = lazy(() => import("./pages/candidate/ChallengeFollowup"));
-const StandingVideoSession = lazy(() => import("./pages/candidate/StandingVideoSession"));
-const MyOffers = lazy(() => import("./pages/candidate/MyOffers"));
-const JobsBrowse = lazy(() => import("./pages/JobsBrowse"));
+import Onboarding from "./pages/Onboarding";
+import Profile from "./pages/Profile";
+import XimatarJourney from "./pages/XimatarJourney";
+import XimaChat from "./pages/XimaChat";
+import Messages from "./pages/Messages";
+import DevelopmentPlan from "./pages/DevelopmentPlan";
+import OpportunityDetails from "./pages/OpportunityDetails";
+import AssessmentGuide from "./pages/AssessmentGuide";
+import ChallengeAccept from "./pages/ChallengeAccept";
+import CandidateSettings from "./pages/Settings";
+import CandidateSessionDetail from "./pages/candidate/SessionDetail";
+import CandidateSessionRoom from "./pages/candidate/SessionRoom";
+import ChallengeCompletion from "./pages/candidate/ChallengeCompletion";
+import ChallengeFollowup from "./pages/candidate/ChallengeFollowup";
+import StandingVideoSession from "./pages/candidate/StandingVideoSession";
+import MyOffers from "./pages/candidate/MyOffers";
+import JobsBrowse from "./pages/JobsBrowse";
 
 // ---- Tests ----
-const TestDataAnalysis = lazy(() => import("./pages/TestDataAnalysis"));
-const TestLogicalProblemSolving = lazy(() => import("./pages/TestLogicalProblemSolving"));
-const TestPresentationSkills = lazy(() => import("./pages/TestPresentationSkills"));
-const TestCreativeThinking = lazy(() => import("./pages/TestCreativeThinking"));
+import TestDataAnalysis from "./pages/TestDataAnalysis";
+import TestLogicalProblemSolving from "./pages/TestLogicalProblemSolving";
+import TestPresentationSkills from "./pages/TestPresentationSkills";
+import TestCreativeThinking from "./pages/TestCreativeThinking";
 
 // ---- Business ----
-const BusinessRegister = lazy(() => import("./pages/business/Register"));
-const BusinessLogin = lazy(() => import("./pages/business/Login"));
-const BusinessDashboard = lazy(() => import("./pages/business/Dashboard"));
-const BusinessCandidates = lazy(() => import("./pages/business/Candidates"));
-const CreateChallenge = lazy(() => import("./pages/business/CreateChallenge"));
-const CreateXimaCoreChallenge = lazy(() => import("./pages/business/CreateXimaCoreChallenge"));
-const ChallengeTypeSelector = lazy(() => import("./pages/business/ChallengeTypeSelector"));
-const BusinessChallenges = lazy(() => import("./pages/business/Challenges"));
-const BusinessEvaluations = lazy(() => import("./pages/business/Evaluations"));
-const BusinessHiringGoals = lazy(() => import("./pages/business/HiringGoals"));
-const BusinessSettings = lazy(() => import("./pages/business/Settings"));
-const BusinessJobs = lazy(() => import("./pages/business/Jobs"));
-const CreateJobOffer = lazy(() => import("./pages/business/CreateJobOffer"));
-const JobCandidateMatching = lazy(() => import("./pages/business/JobCandidateMatching"));
-const GoalCandidates = lazy(() => import("./pages/business/GoalCandidates"));
-const GoalChallenges = lazy(() => import("./pages/business/GoalChallenges"));
-const GoalSettings = lazy(() => import("./pages/business/GoalSettings"));
-const GoalDecisionPack = lazy(() => import("./pages/business/GoalDecisionPack"));
-const ChallengeResponses = lazy(() => import("./pages/business/ChallengeResponses"));
-const GoalShortlistPage = lazy(() => import("./pages/business/GoalShortlistPage"));
-const BusinessPipelineChat = lazy(() => import("./pages/business/PipelineChat"));
-const HiringGoalCreate = lazy(() => import("./pages/business/HiringGoalCreate"));
-const JobImportWizard = lazy(() => import("./pages/business/JobImportWizard"));
+import BusinessRegister from "./pages/business/Register";
+import BusinessLogin from "./pages/business/Login";
+import BusinessDashboard from "./pages/business/Dashboard";
+import BusinessCandidates from "./pages/business/Candidates";
+import CreateChallenge from "./pages/business/CreateChallenge";
+import CreateXimaCoreChallenge from "./pages/business/CreateXimaCoreChallenge";
+import ChallengeTypeSelector from "./pages/business/ChallengeTypeSelector";
+import BusinessChallenges from "./pages/business/Challenges";
+import BusinessEvaluations from "./pages/business/Evaluations";
+import BusinessHiringGoals from "./pages/business/HiringGoals";
+import BusinessSettings from "./pages/business/Settings";
+import BusinessJobs from "./pages/business/Jobs";
+import CreateJobOffer from "./pages/business/CreateJobOffer";
+import JobCandidateMatching from "./pages/business/JobCandidateMatching";
+import GoalCandidates from "./pages/business/GoalCandidates";
+import GoalChallenges from "./pages/business/GoalChallenges";
+import GoalSettings from "./pages/business/GoalSettings";
+import GoalDecisionPack from "./pages/business/GoalDecisionPack";
+import ChallengeResponses from "./pages/business/ChallengeResponses";
+import GoalShortlistPage from "./pages/business/GoalShortlistPage";
+import BusinessPipelineChat from "./pages/business/PipelineChat";
+import HiringGoalCreate from "./pages/business/HiringGoalCreate";
+import JobImportWizard from "./pages/business/JobImportWizard";
 
 // ---- Mentor ----
-const MentorPortal = lazy(() => import("./pages/mentor/MentorPortal"));
-const MentorLogin = lazy(() => import("./pages/mentor/MentorLogin"));
-const MentorProfileEdit = lazy(() => import("./pages/mentor/MentorProfileEdit"));
-const MentorSessions = lazy(() => import("./pages/mentor/MentorSessions"));
-const MentorCalendar = lazy(() => import("./pages/mentor/MentorCalendar"));
-const MentorSessionDetail = lazy(() => import("./pages/mentor/MentorSessionDetail"));
-const MentorPreview = lazy(() => import("./pages/mentor/MentorPreview"));
+import MentorPortal from "./pages/mentor/MentorPortal";
+import MentorLogin from "./pages/mentor/MentorLogin";
+import MentorProfileEdit from "./pages/mentor/MentorProfileEdit";
+import MentorSessions from "./pages/mentor/MentorSessions";
+import MentorCalendar from "./pages/mentor/MentorCalendar";
+import MentorSessionDetail from "./pages/mentor/MentorSessionDetail";
+import MentorPreview from "./pages/mentor/MentorPreview";
 
 // ---- Admin ----
-const Admin = lazy(() => import("./pages/Admin"));
-const EligibilityReview = lazy(() => import("./pages/admin/EligibilityReview"));
+import Admin from "./pages/Admin";
+import EligibilityReview from "./pages/admin/EligibilityReview";
 
 const queryClient = new QueryClient();
 
@@ -141,8 +140,7 @@ const RoutesTree = () => {
   }, [location.pathname]);
   return (
     <ChunkErrorBoundary>
-      <Suspense key={location.pathname} fallback={<RouteSkeleton />}>
-        <Routes location={location}>
+      <Routes location={location}>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
@@ -228,8 +226,7 @@ const RoutesTree = () => {
           <Route path="/my-offers" element={<MyOffers />} />
           <Route path="/offers" element={<MyOffers />} />
           <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
+      </Routes>
     </ChunkErrorBoundary>
   );
 };
