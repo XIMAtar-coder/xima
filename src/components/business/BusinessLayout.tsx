@@ -106,13 +106,22 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Mobile backdrop */}
+      {mobileDrawerOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setMobileDrawerOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full bg-card border-r border-border transition-all duration-300 z-50 ${
+        className={`fixed top-0 left-0 h-full max-h-screen overflow-y-auto bg-card border-r border-border transition-all duration-300 z-50 ${
           sidebarOpen ? 'w-64' : 'w-20'
-        }`}
+        } ${mobileDrawerOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full min-h-screen">
           {/* Header */}
           <div className="p-4 border-b border-border">
             <div className="flex items-center justify-between">
@@ -127,10 +136,16 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setSidebarOpen(!sidebarOpen)}
+                onClick={() => {
+                  if (mobileDrawerOpen) {
+                    setMobileDrawerOpen(false);
+                  } else {
+                    setSidebarOpen(!sidebarOpen);
+                  }
+                }}
                 className="hover:bg-primary/10"
               >
-                {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+                {sidebarOpen || mobileDrawerOpen ? <X size={20} /> : <Menu size={20} />}
               </Button>
             </div>
           </div>
@@ -141,11 +156,12 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
               const isMessages = item.path === '/business/messages';
-              
+
               return (
                 <Link
                   key={item.path}
                   to={item.path}
+                  onClick={() => setMobileDrawerOpen(false)}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all ${
                     isActive
                       ? 'bg-primary/20 text-primary border border-primary/30'
@@ -167,6 +183,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
               );
             })}
           </nav>
+
 
           {/* User Info */}
           <div className="p-4 border-t border-border">
