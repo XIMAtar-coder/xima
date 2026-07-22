@@ -166,7 +166,7 @@ const XimatarJourney = () => {
           </div>
         </div>
         
-        <Card className="p-8 shadow-lg border-0">
+        <Card className="p-5 sm:p-8 shadow-lg border-0">
           {currentStep === 1 && (
             <BaselineAssessment 
               onComplete={handleStepComplete}
