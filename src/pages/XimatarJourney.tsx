@@ -199,7 +199,7 @@ const XimatarJourney = () => {
         {/* Mentor Selection Required Message */}
         {currentStep === 3 && (
           <div className="mt-8 mb-6 text-center">
-            <p className="text-lg font-semibold text-foreground bg-primary/10 border-2 border-primary/30 rounded-lg py-4 px-6 inline-block">
+            <p className="text-base sm:text-lg font-semibold text-foreground bg-primary/10 border-2 border-primary/30 rounded-lg py-4 px-4 sm:px-6 inline-block max-w-full break-words">
               {t('ximatarJourney.closing_cta')}
             </p>
           </div>
