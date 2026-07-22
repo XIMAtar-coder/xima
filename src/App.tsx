@@ -126,20 +126,10 @@ const XimAILauncher = () => {
 };
 
 const AppContent = () => {
-  const location = useLocation();
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    // Show loading on route change
-    setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, [location.pathname]);
-
   return (
     <>
-      <LoadingScreen isLoading={isLoading} />
       <XimAIProvider>
+
         <ChunkErrorBoundary>
           <Suspense fallback={<RouteSkeleton />}>
             <Routes>
