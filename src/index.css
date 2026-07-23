@@ -748,6 +748,12 @@ html.dark [class*="rounded-["][class*="border"] {
     box-sizing: content-box;
   }
 
+  /* Other sticky top headers (e.g. BusinessLayout) — keep the hamburger/
+     actions clear of the status bar. py-3 = 0.75rem is preserved on top. */
+  .capacitor-native header.sticky.top-0:not(.landing-header) {
+    padding-top: calc(env(safe-area-inset-top) + 0.75rem);
+  }
+
   /* Offset MainLayout content by the status-bar inset on top of the
      nav height it already accounts for (pt-16 = 4rem on mobile). */
   .capacitor-native main.app-shell-main {
