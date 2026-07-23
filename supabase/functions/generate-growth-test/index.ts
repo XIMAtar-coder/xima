@@ -13,6 +13,7 @@ import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { loadUserAiContext, buildContextBlock } from "../_shared/aiContext.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -33,6 +34,10 @@ serve(async (req) => {
     ).auth.getUser();
 
     if (authError || !user) return unauthorizedResponse();
+
+    // Per-user monthly AI budget cap → 429 before any model call.
+    const budgetGate = await enforceAiBudget(user.id, "generate-growth-test", corsHeaders);
+    if (budgetGate) return budgetGate;
 
     const body = await req.json().catch(() => ({}));
     const { progress_id } = body;
@@ -162,6 +167,9 @@ Return ONLY valid JSON:
       maxTokens: 2048,
       temperature: 0.6,
     });
+    // Accrue per-user cap after a successful model hit.
+    await recordAiCallSafe(user.id, "generate-growth-test");
+
 
     const parsed = extractJsonFromAiContent(result.content);
     if (!parsed?.test?.questions) {

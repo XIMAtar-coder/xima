@@ -23,6 +23,7 @@ import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES } from "../_shared/ximatarTaxonomy.ts";
 import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 // ---------------------------------------------------------------------
 // Types
@@ -137,7 +138,12 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await userClient.auth.getUser();
     if (authError || !user) return unauthorizedResponse();
 
+    // Per-user monthly AI budget cap → 429 before any model call.
+    const budgetGate = await enforceAiBudget(user.id, "generate-l3-interview", corsHeaders);
+    if (budgetGate) return budgetGate;
+
     const supabase = createClient(supabaseUrl, serviceKey);
+
 
     // Check business/admin role
     const { data: roleRow } = await supabase
@@ -349,6 +355,9 @@ Return ONLY valid JSON:
       temperature: 0.7,
       promptTemplateVersion: "1.0",
     });
+    // Accrue per-user cap after a successful model hit.
+    await recordAiCallSafe(user.id, "generate-l3-interview");
+
 
     // ---- Parse and validate ----
     let validated: Record<string, unknown>;

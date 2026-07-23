@@ -9,6 +9,7 @@ import {
 import { callAiGateway, generateCorrelationId, AiGatewayError } from "../_shared/aiClient.ts";
 import { corsHeaders, errorResponse, jsonResponse } from "../_shared/errors.ts";
 import { withResultCache } from "../_shared/withResultCache.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 const LANGUAGE_NAMES: Record<string, string> = { en: 'English', it: 'Italian', es: 'Spanish' };
 const SUPPORTED_LOCALES = ['en', 'it', 'es'] as const;
@@ -33,10 +34,11 @@ serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
     const token = authHeader.replace('Bearer ', '');
-    const { error: claimsError } = await supabase.auth.getClaims(token);
-    if (claimsError) {
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims?.sub) {
       return errorResponse(401, 'UNAUTHORIZED', 'Unauthorized');
     }
+    const userId = claimsData.claims.sub as string;
 
     const body = await req.json();
     
@@ -47,6 +49,10 @@ serve(async (req) => {
     if (normalizedLocale === 'en') {
       return jsonResponse({ translatedText: text });
     }
+
+    // Per-user monthly AI budget cap → 429 before any model call.
+    const budgetGate = await enforceAiBudget(userId, 'translate-content', corsHeaders);
+    if (budgetGate) return budgetGate;
 
     const systemPrompt = `You are a professional translator. Translate the following text to ${targetLanguage}.
 
@@ -76,6 +82,8 @@ STRICT RULES:
             correlationId,
             functionName: 'translate-content',
           });
+          // Record usage only on a real model hit (cache hits stay free).
+          await recordAiCallSafe(userId, 'translate-content');
           return { translatedText: aiResp.content.trim() || text };
         },
       });

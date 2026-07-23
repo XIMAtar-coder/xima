@@ -15,6 +15,7 @@ import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES } from "../_shared/ximatarTaxonomy.ts";
 import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 import { checkDatabaseFirst, depositInference } from "../_shared/intelligenceEngine.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 const VALID_PILLARS = ["drive", "computational_power", "communication", "creativity", "knowledge"];
 
@@ -37,6 +38,10 @@ serve(async (req) => {
     ).auth.getUser();
 
     if (authError || !user) return unauthorizedResponse();
+
+    // Per-user monthly AI budget cap → 429 before any model call.
+    const budgetGate = await enforceAiBudget(user.id, "generate-growth-path", corsHeaders);
+    if (budgetGate) return budgetGate;
 
     const body = await req.json().catch(() => ({}));
     const locale = body.locale || "en";
@@ -249,6 +254,9 @@ Return ONLY valid JSON:
       maxTokens: 4096,
       temperature: 0.7,
     });
+    // Accrue per-user cap after a successful model hit.
+    await recordAiCallSafe(user.id, "generate-growth-path");
+
 
     const parsed = extractJsonFromAiContent(result.content);
     if (!parsed || !parsed.growth_path?.resources) {

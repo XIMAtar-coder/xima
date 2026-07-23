@@ -7,6 +7,7 @@ import { emitAuditEventWithMetric, hashForAudit } from "../_shared/auditEvents.t
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { persistTrajectoryEvent } from "../_shared/pillarTrajectory.ts";
 import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 // =====================================================
 // NON-ANSWER DETECTION (Pre-LLM Hard Rules) — KEPT EXACTLY
@@ -96,6 +97,14 @@ serve(async (req) => {
       }
       authUserId = authUser.id;
     }
+
+    // Per-user monthly AI budget cap → 429 before any model call.
+    // Service-role callers (internal orchestration) bypass the per-user cap.
+    if (authUserId) {
+      const budgetGate = await enforceAiBudget(authUserId, 'analyze-open-answer', corsHeaders);
+      if (budgetGate) return budgetGate;
+    }
+
 
     const body = await req.json();
     let { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload, invitation_id } = body;
@@ -426,6 +435,8 @@ Return ONLY the JSON object.`;
       });
 
       aiRequestId = aiResp.requestId;
+      // Accrue per-user cap after a successful model hit (skip for service-role).
+      if (authUserId) await recordAiCallSafe(authUserId, 'analyze-open-answer');
       // extractJsonFromAiContent already returns the parsed JSON value (not a string).
       const parsed = extractJsonFromAiContent(aiResp.content);
       if (!parsed || typeof parsed !== 'object') {
