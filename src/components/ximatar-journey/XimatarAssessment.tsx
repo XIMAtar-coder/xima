@@ -543,7 +543,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
               className="min-h-[150px] resize-none"
             />
             
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
               <div className="flex items-center gap-4">
                 <Button
                   variant="outline"
@@ -557,12 +557,12 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
                   {openAnswers[currentOpenQuestion.id]?.length || 0} {t('assessment.characters')}
                 </p>
               </div>
-              
+
               {currentQuestion === totalQuestions - 1 ? (
-                <Button 
+                <Button
                   onClick={handleComplete}
                   disabled={!canProceed() || isCompleting}
-                  className="bg-primary hover:bg-primary/90"
+                  className="w-full sm:w-auto bg-primary hover:bg-primary/90"
                 >
                   {isCompleting ? (
                     <>
@@ -577,10 +577,10 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
                   )}
                 </Button>
               ) : (
-                <Button 
+                <Button
                   onClick={() => setCurrentQuestion(currentQuestion + 1)}
                   disabled={!canProceed()}
-                  className="bg-primary hover:bg-primary/90"
+                  className="w-full sm:w-auto bg-primary hover:bg-primary/90"
                 >
                   {t('assessment.next_question')}
                   <ArrowRight size={16} className="ml-2" />
