@@ -6,6 +6,7 @@ import { corsHeaders, errorResponse, jsonResponse, profilingOptOutResponse, unau
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES } from "../_shared/ximatarTaxonomy.ts";
 import { persistTrajectoryEvent } from "../_shared/pillarTrajectory.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 const LANGUAGE_NAMES: Record<string, string> = { en: 'English', it: 'Italian', es: 'Spanish' };
 
@@ -96,6 +97,11 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabaseUser.auth.getUser();
     if (authError || !user) return unauthorizedResponse('Invalid or expired token');
     const callerId = user.id;
+
+    // Per-user monthly AI budget cap → 429 before any model call.
+    const budgetGate = await enforceAiBudget(callerId, 'compute-level2-signals', corsHeaders);
+    if (budgetGate) return budgetGate;
+
 
     // ===== P0 SECURITY: Verify business/admin role =====
     const { data: roles } = await supabaseUser.from('user_roles').select('role').eq('user_id', callerId);
@@ -314,6 +320,8 @@ Respond with valid JSON only.`;
         inputSummary: `l2_eval:sub=${submission_id},locale=${normalizedLocale},has_ximatar=${!!candidateXimatar}`,
         maxTokens: 4096,
       });
+      // Accrue per-user cap after a successful model hit.
+      await recordAiCallSafe(callerId, 'compute-level2-signals');
     } catch (e) {
       if (e instanceof AnthropicError) return errorResponse(e.statusCode, e.errorCode, e.message);
       throw e;

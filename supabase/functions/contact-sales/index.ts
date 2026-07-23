@@ -12,6 +12,7 @@ import { extractJsonFromAiContent, generateCorrelationId } from "../_shared/aiCl
 import { corsHeaders, errorResponse, jsonResponse } from "../_shared/errors.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric, hashForAudit } from "../_shared/auditEvents.ts";
+import { enforceIpRateLimit } from "../_shared/ipRateLimit.ts";
 
 // =====================================================
 // Main handler
@@ -23,6 +24,22 @@ Deno.serve(async (req) => {
   }
 
   const correlationId = extractCorrelationId(req);
+
+  // Anonymous endpoint → fail-CLOSED per-IP rate limit (5/hour). Reuses the
+  // same guest_rate_limit table as analyze-cv-guest; blocks BEFORE any
+  // Anthropic call so bots can't burn credits.
+  try {
+    const gate = await enforceIpRateLimit(req, { key: "contact-sales", max: 5, windowMinutes: 60, correlationId });
+    if (!gate.allowed) {
+      return new Response(
+        JSON.stringify({ error: "RATE_LIMITED", message: "Too many requests. Please try again later.", limit: gate.limit }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": String(gate.retryAfterSeconds) } },
+      );
+    }
+  } catch (e) {
+    console.error(JSON.stringify({ type: "contact_sales_rate_limit_infra", correlation_id: correlationId, error: e instanceof Error ? e.message : String(e) }));
+    return errorResponse(503, "RATE_LIMIT_UNAVAILABLE", "Service temporarily unavailable, please retry.");
+  }
 
   try {
     const body = await req.json();

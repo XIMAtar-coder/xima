@@ -11,6 +11,7 @@
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 // SSRF guard: only allow https public URLs (block private/loopback/link-local ranges)
 function assertSafePublicUrl(rawUrl: string): URL {
@@ -86,6 +87,13 @@ serve(async (req) => {
     const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(jwt);
     if (claimsError || !claimsData?.claims?.sub) return unauthorizedResponse("Auth required");
     const userId = claimsData.claims.sub as string;
+
+    // Per-user monthly AI budget cap → 429 before the multi-step ingestion pipeline.
+    // A single import can fire several Anthropic calls (extract → search → archetype);
+    // gate once at entry to cap total spend per user.
+    const budgetGate = await enforceAiBudget(userId, "import-job-post", corsHeaders);
+    if (budgetGate) return budgetGate;
+
 
     const contentType = req.headers.get("content-type") || "";
     let importMethod: string;
@@ -301,6 +309,8 @@ IMPORTANT: All salary values MUST be gross annual (RAL). If the JD states a net 
 
     const extractData = await extractResponse.json();
     const extractedText = extractData.content?.[0]?.text || "";
+    // Accrue per-user cap once per successful ingestion (covers upstream sub-calls).
+    await recordAiCallSafe(userId, "import-job-post");
 
     let jobData: any;
     try {

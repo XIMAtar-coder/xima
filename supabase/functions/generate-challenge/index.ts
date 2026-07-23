@@ -6,6 +6,7 @@ import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse, forbidd
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES } from "../_shared/ximatarTaxonomy.ts";
 import { checkDatabaseFirst, depositInference } from "../_shared/intelligenceEngine.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 // =====================================================
 // Types
@@ -596,6 +597,14 @@ serve(async (req) => {
     }
     if (!user) user = { id: body.business_id! };
 
+    // Per-user monthly AI budget cap → 429 before any model call.
+    // Service-role internal calls bypass the per-user cap (batched/system flows).
+    if (!isServiceRoleCall) {
+      const budgetGate = await enforceAiBudget(user.id, 'generate-challenge', corsHeaders);
+      if (budgetGate) return budgetGate;
+    }
+
+
     // Legacy mode support: only when no recognized mode is supplied.
     if (body.mode !== 'xima_core' && body.mode !== 'l1_custom' && body.task_description) {
       return await handleLegacyGeneration(body, user.id, correlationId);
@@ -977,6 +986,8 @@ Restituisci SOLO JSON valido (no commenti, no testo extra):
           temperature: 0.8,
           maxTokens: 3000,
         });
+        // Accrue per-user cap after a successful model hit (skip service-role internal).
+        if (!isServiceRoleCall) await recordAiCallSafe(user.id, 'generate-challenge');
         const jsonStr = extractJsonFromAiContent(aiResp.content);
         const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
 
@@ -1201,6 +1212,8 @@ Restituisci SOLO JSON valido:
         temperature: 0.8,
         maxTokens: 2048,
       });
+      // Accrue per-user cap after a successful model hit (skip service-role internal).
+      if (!isServiceRoleCall) await recordAiCallSafe(user.id, 'generate-challenge');
 
       const jsonStr = extractJsonFromAiContent(aiResp.content);
       const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;

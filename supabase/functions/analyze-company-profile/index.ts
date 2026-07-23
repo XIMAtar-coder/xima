@@ -13,6 +13,7 @@ import { callAiGateway, extractJsonFromAiContent, generateCorrelationId, AiGatew
 import { validateCompanyAnalysis } from "../_shared/aiSchema.ts";
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
 import { assertSafePublicUrl, safeFetch } from "../_shared/urlValidation.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 const LANGUAGE_NAMES: Record<string, string> = {
   en: 'English',
@@ -69,6 +70,11 @@ serve(async (req) => {
       return unauthorizedResponse('Invalid or expired token');
     }
     const company_id = claimsData.claims.sub as string;
+
+    // Per-user monthly AI budget cap → 429 before scraping + model call.
+    const budgetGate = await enforceAiBudget(company_id, 'analyze-company-profile', corsHeaders);
+    if (budgetGate) return budgetGate;
+
 
     // Service role for DB writes
     const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
@@ -136,6 +142,8 @@ serve(async (req) => {
         functionName: 'analyze-company-profile',
       });
       aiContent = aiResp.content;
+      // Accrue per-user cap after a successful model hit.
+      await recordAiCallSafe(company_id, 'analyze-company-profile');
     } catch (e) {
       if (e instanceof AiGatewayError) return e.toResponse();
       throw e;

@@ -9,27 +9,18 @@ import {
   DEFAULT_MODEL,
 } from "../_shared/aiClient.ts";
 import { corsHeaders, errorResponse, unauthorizedResponse } from "../_shared/errors.ts";
+import { enforceIpRateLimit } from "../_shared/ipRateLimit.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
-// In-memory rate limit (per cold start)
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+// DB-backed per-user rate limit (20 msg/hour). Replaces the previous
+// in-memory Map, which reset on every cold start and could be bypassed by
+// rotating warm instances.
 const RATE_LIMIT_MAX = 20;
-const RATE_LIMIT_WINDOW_MS = 60 * 1000;
-
-function checkRateLimit(userId: string): { allowed: boolean; remaining: number } {
-  const now = Date.now();
-  const entry = rateLimitMap.get(userId);
-  if (!entry || now > entry.resetTime) {
-    rateLimitMap.set(userId, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
-    return { allowed: true, remaining: RATE_LIMIT_MAX - 1 };
-  }
-  if (entry.count >= RATE_LIMIT_MAX) return { allowed: false, remaining: 0 };
-  entry.count++;
-  return { allowed: true, remaining: RATE_LIMIT_MAX - entry.count };
-}
+const RATE_LIMIT_WINDOW_MIN = 60;
 
 const MAX_MESSAGE_LENGTH = 2000;
 const ALLOWED_LANGUAGES = ['it', 'en', 'es'];
@@ -64,18 +55,32 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) return unauthorizedResponse();
 
-    // 2. Rate limit
-    const rateLimit = checkRateLimit(user.id);
-    if (!rateLimit.allowed) {
-      console.log(JSON.stringify({
-        type: 'rate_limited', correlation_id: correlationId,
-        function_name: 'ximai-chat',
-      }));
-      return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please wait.' }), {
-        status: 429,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Retry-After': '60' }
+    // 2. DB-backed per-user rate limit (survives cold starts).
+    let rateRemaining = RATE_LIMIT_MAX;
+    try {
+      const gate = await enforceIpRateLimit(req, {
+        key: `ximai-chat:${user.id}`,
+        max: RATE_LIMIT_MAX,
+        windowMinutes: RATE_LIMIT_WINDOW_MIN,
+        correlationId,
       });
+      if (!gate.allowed) {
+        console.log(JSON.stringify({ type: 'rate_limited', correlation_id: correlationId, function_name: 'ximai-chat' }));
+        return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please wait.' }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Retry-After': String(gate.retryAfterSeconds) }
+        });
+      }
+      rateRemaining = Math.max(0, gate.limit - gate.count);
+    } catch (e) {
+      console.error(JSON.stringify({ type: 'rate_limit_infra', correlation_id: correlationId, function_name: 'ximai-chat', error: e instanceof Error ? e.message : String(e) }));
+      return errorResponse(503, 'RATE_LIMIT_UNAVAILABLE', 'Service temporarily unavailable, please retry.');
     }
+
+    // 2b. Per-user monthly AI budget cap → 429 before touching the model.
+    const budgetGate = await enforceAiBudget(user.id, 'ximai-chat', corsHeaders);
+    if (budgetGate) return budgetGate;
+    const rateLimit = { remaining: rateRemaining };
 
     // 3. Parse + validate
     const body = await req.json();
@@ -122,6 +127,8 @@ serve(async (req) => {
         const aiResp = await callAiGateway({
           messages, max_tokens: 500, correlationId, functionName: 'ximai-chat',
         });
+        // Record usage AFTER a successful call so the monthly cap actually accrues.
+        await recordAiCallSafe(user.id, 'ximai-chat');
         return new Response(JSON.stringify({ generatedText: aiResp.content }), {
           headers: {
             ...corsHeaders,
@@ -166,6 +173,10 @@ serve(async (req) => {
         { status: status === 429 ? 429 : status === 402 ? 402 : 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    // Record usage AFTER upstream accepts the stream (we count the request,
+    // not each token — matches the non-streaming path).
+    await recordAiCallSafe(user.id, 'ximai-chat');
 
     // Direct pass-through of upstream SSE
     return new Response(upstream.body, {
