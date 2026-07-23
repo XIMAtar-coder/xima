@@ -16,10 +16,13 @@ if (import.meta.env.DEV) {
 
 import { supabase } from '@/integrations/supabase/client'
 import { initNative } from '@/lib/native/capacitor'
+import { applyDeviceLanguage } from '@/lib/native/language'
 
 // Force logout on every app restart
 (async () => {
   await supabase.auth.signOut();
+  // Native: open in the device language (Italy-first), before first render.
+  await applyDeviceLanguage();
   createRoot(document.getElementById("root")!).render(
     <HelmetProvider>
       <App />
