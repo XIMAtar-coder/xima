@@ -168,27 +168,80 @@ export const HeroSection: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile/tablet hero image (stacked) */}
-      <div className="lg:hidden w-full relative" style={{ height: 360 }}>
-        <img
-          src={typeof currentSlide.heroImage === 'string' ? currentSlide.heroImage : (currentSlide.heroImage as string)}
-          alt=""
-          fetchPriority="high"
-          decoding="async"
-          width={800}
-          height={360}
-          className="w-full h-full object-cover"
-          style={{ objectPosition: currentSlide.objectPosition, transition: `opacity ${FADE_MS}ms ease-in-out` }}
-        />
+      {/* Mobile/tablet hero (stacked): image + radar + archetype card + carousel controls */}
+      <div className="lg:hidden w-full">
+        <div className="relative w-full" style={{ height: 280 }}>
+          <img
+            src={typeof currentSlide.heroImage === 'string' ? currentSlide.heroImage : (currentSlide.heroImage as string)}
+            alt=""
+            fetchPriority="high"
+            decoding="async"
+            width={800}
+            height={280}
+            className="w-full h-full object-cover"
+            style={{ objectPosition: currentSlide.objectPosition, transition: `opacity ${FADE_MS}ms ease-in-out` }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: 'linear-gradient(180deg, transparent 40%, var(--xima-bg) 100%)',
+            }}
+          />
+        </div>
 
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(180deg, transparent 40%, var(--xima-bg) 100%)',
-          }}
-        />
+        <div className="px-4 sm:px-6 pt-4 pb-2 flex flex-col gap-4">
+          <RadarGlassCard archetype={current} variant="mobile" />
+          <XimatarGlassCard archetype={current} transitioning={transitioning} onNext={goNext} variant="mobile" />
+
+          <div className="flex items-center justify-between gap-3 pt-1">
+            <span className="text-[13px] font-medium tabular-nums" style={{ color: 'var(--xima-text)' }}>
+              {String(index + 1).padStart(2, '0')} / {String(ARCHETYPES.length).padStart(2, '0')}
+            </span>
+            <div className="flex items-center gap-1.5 flex-1 justify-center flex-wrap">
+              {ARCHETYPES.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => change(i)}
+                  aria-label={`Go to archetype ${i + 1}`}
+                  className="block rounded-full transition-all"
+                  style={{
+                    width: i === index ? 22 : 8,
+                    height: 8,
+                    background: i === index ? 'var(--xima-blue)' : 'var(--xima-border-strong)',
+                  }}
+                />
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={goPrev}
+                className="w-9 h-9 rounded-full flex items-center justify-center"
+                style={{
+                  background: 'var(--xima-surface-soft)',
+                  border: '1px solid var(--xima-border-strong)',
+                  color: 'var(--xima-text)',
+                }}
+                aria-label="Previous archetype"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={goNext}
+                className="w-9 h-9 rounded-full flex items-center justify-center"
+                style={{
+                  background: 'var(--xima-surface-soft)',
+                  border: '1px solid var(--xima-border-strong)',
+                  color: 'var(--xima-text)',
+                }}
+                aria-label="Next archetype"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+
 
       {/* Content (left) */}
       <div className="relative max-w-[1440px] mx-auto px-6 lg:px-10 pt-10 lg:pt-20 pb-20 lg:pb-32">
