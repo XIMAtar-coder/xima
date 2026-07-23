@@ -203,26 +203,28 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
         {pillarVector && Object.keys(pillarVector).length > 0 && (
           <div className="mt-6">
             <p className="text-xs text-muted-foreground uppercase tracking-wide mb-3">{t('businessPortal.pillar_dna_label', 'Company Pillar DNA')}</p>
-            <div className="grid grid-cols-5 gap-2">
-              {Object.entries(pillarVector).map(([key, value]) => {
-                const score = typeof value === 'number' ? value : 0;
-                const label = PILLAR_LABELS[key] || key.replace(/_/g, ' ');
-                return (
-                  <div key={key} className="text-center">
-                    <div
-                      className="relative mx-auto w-12 h-12 rounded-full border-2 border-primary/30 flex items-center justify-center"
-                      style={{
-                        background: `conic-gradient(hsl(var(--primary)) ${score}%, transparent ${score}%)`,
-                      }}
-                    >
-                      <span className="text-xs font-bold text-foreground bg-background rounded-full w-8 h-8 flex items-center justify-center">
-                        {score}
-                      </span>
+            <div className="overflow-x-auto sm:overflow-visible pb-2 sm:pb-0">
+              <div className="flex sm:grid sm:grid-cols-5 gap-2 min-w-min">
+                {Object.entries(pillarVector).map(([key, value]) => {
+                  const score = typeof value === 'number' ? value : 0;
+                  const label = PILLAR_LABELS[key] || key.replace(/_/g, ' ');
+                  return (
+                    <div key={key} className="flex-shrink-0 w-20 sm:w-auto text-center min-w-0">
+                      <div
+                        className="relative mx-auto w-12 h-12 rounded-full border-2 border-primary/30 flex items-center justify-center"
+                        style={{
+                          background: `conic-gradient(hsl(var(--primary)) ${score}%, transparent ${score}%)`,
+                        }}
+                      >
+                        <span className="text-xs font-bold text-foreground bg-background rounded-full w-8 h-8 flex items-center justify-center">
+                          {score}
+                        </span>
+                      </div>
+                      <p className="text-[10px] sm:text-xs mt-1 text-muted-foreground capitalize break-words min-w-0 leading-tight">{label}</p>
                     </div>
-                    <p className="text-xs mt-1 text-muted-foreground capitalize">{label}</p>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}
