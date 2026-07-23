@@ -6,28 +6,44 @@ interface Props {
   archetype: Archetype;
   transitioning: boolean;
   onNext: () => void;
+  variant?: 'desktop' | 'mobile';
 }
 
-export const XimatarGlassCard: React.FC<Props> = ({ archetype, transitioning }) => {
+export const XimatarGlassCard: React.FC<Props> = ({ archetype, transitioning, variant = 'desktop' }) => {
   const { t } = useTranslation();
+  const isMobile = variant === 'mobile';
 
   return (
     <div
-      className="absolute hidden lg:block animate-fade-in"
-      style={{
-        right: '3%',
-        top: 420,
-        width: 400,
-        minHeight: 200,
-        background: 'rgba(255,255,255,0.18)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-        border: '1px solid rgba(255,255,255,0.28)',
-        borderRadius: 28,
-        boxShadow: '0 24px 70px rgba(7,30,58,0.22)',
-        color: 'white',
-        animationDelay: '0.5s',
-      }}
+      className={isMobile ? 'relative w-full animate-fade-in' : 'absolute hidden lg:block animate-fade-in'}
+      style={
+        isMobile
+          ? {
+              width: '100%',
+              minHeight: 180,
+              background: 'rgba(15,25,45,0.6)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255,255,255,0.18)',
+              borderRadius: 24,
+              boxShadow: '0 16px 40px rgba(7,30,58,0.35)',
+              color: 'white',
+            }
+          : {
+              right: '3%',
+              top: 420,
+              width: 400,
+              minHeight: 200,
+              background: 'rgba(255,255,255,0.18)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255,255,255,0.28)',
+              borderRadius: 28,
+              boxShadow: '0 24px 70px rgba(7,30,58,0.22)',
+              color: 'white',
+              animationDelay: '0.5s',
+            }
+      }
     >
       <div
         className="flex h-full p-5 gap-3"
