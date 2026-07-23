@@ -203,7 +203,7 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
         {pillarVector && Object.keys(pillarVector).length > 0 && (
           <div className="mt-6">
             <p className="text-xs text-muted-foreground uppercase tracking-wide mb-3">{t('businessPortal.pillar_dna_label', 'Company Pillar DNA')}</p>
-            <div className="overflow-x-auto sm:overflow-visible pb-2 sm:pb-0">
+            <div className="overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 no-scrollbar">
               <div className="flex sm:grid sm:grid-cols-5 gap-2 min-w-min">
                 {Object.entries(pillarVector).map(([key, value]) => {
                   const score = typeof value === 'number' ? value : 0;
