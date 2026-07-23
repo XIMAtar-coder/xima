@@ -6,9 +6,10 @@ const PILLAR_KEYS = ['drive', 'computational', 'knowledge', 'communication', 'cr
 
 interface Props {
   archetype: Archetype;
+  variant?: 'desktop' | 'mobile';
 }
 
-export const RadarGlassCard: React.FC<Props> = ({ archetype }) => {
+export const RadarGlassCard: React.FC<Props> = ({ archetype, variant = 'desktop' }) => {
   const { t } = useTranslation();
   // Radar sits on a translucent dark glass — always use the white symbol.
   const symbolSrc = '/images/xima-symbol-white.svg';
@@ -42,21 +43,37 @@ export const RadarGlassCard: React.FC<Props> = ({ archetype }) => {
       return `${i === 0 ? 'M' : 'L'}${pt.x.toFixed(1)},${pt.y.toFixed(1)}`;
     }).join(' ') + 'Z';
 
+  const isMobile = variant === 'mobile';
+
   return (
     <div
-      className="absolute hidden lg:block animate-fade-in"
-      style={{
-        right: '2%',
-        top: 60,
-        width: 380,
-        height: 300,
-        background: 'rgba(255,255,255,0.15)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-        border: '1px solid rgba(255,255,255,0.28)',
-        borderRadius: 28,
-        boxShadow: '0 24px 70px rgba(7,30,58,0.18)',
-      }}
+      className={isMobile ? 'relative w-full animate-fade-in' : 'absolute hidden lg:block animate-fade-in'}
+      style={
+        isMobile
+          ? {
+              width: '100%',
+              maxWidth: '100%',
+              aspectRatio: '380 / 300',
+              background: 'rgba(15,25,45,0.55)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255,255,255,0.18)',
+              borderRadius: 24,
+              boxShadow: '0 16px 40px rgba(7,30,58,0.35)',
+            }
+          : {
+              right: '2%',
+              top: 60,
+              width: 380,
+              height: 300,
+              background: 'rgba(255,255,255,0.15)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255,255,255,0.28)',
+              borderRadius: 28,
+              boxShadow: '0 24px 70px rgba(7,30,58,0.18)',
+            }
+      }
     >
       <svg viewBox="0 0 380 300" className="w-full h-full" style={{ overflow: 'visible' }}>
         {[0.25, 0.5, 0.75, 1].map((s, idx) => (
