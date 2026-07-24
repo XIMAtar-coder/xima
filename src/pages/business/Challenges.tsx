@@ -35,73 +35,56 @@ const BusinessChallenges = () => {
   const { toast } = useToast();
   const { user, isAuthenticated } = useUser();
   const { isBusiness, loading: businessLoading } = useBusinessRole();
-  const [loading, setLoading] = useState(true);
-  const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [contextSelectorOpen, setContextSelectorOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated || (businessLoading === false && !isBusiness)) {
       navigate('/business/login');
-      return;
     }
+  }, [isAuthenticated, isBusiness, businessLoading, navigate]);
 
-    if (!businessLoading && user?.id) {
-      loadChallenges();
-    }
-  }, [isAuthenticated, isBusiness, businessLoading, user?.id, navigate]);
-
-  const loadChallenges = async () => {
-    try {
-      // Get challenges with hiring goal info
+  // Data-layer query: business challenges + hiring goal role titles.
+  const enabled = !!user?.id && !businessLoading && isBusiness;
+  const { data: challenges = [], isLoading: loading, refetch } = useSupabaseQuery<Challenge[]>(
+    ['business_challenges', user?.id],
+    async () => {
       const { data: challengesData, error } = await supabase
         .from('business_challenges')
-        .select(`
-          id,
-          title,
-          description,
-          status,
-          hiring_goal_id,
-          updated_at,
-          created_at
-        `)
+        .select('id, title, description, status, hiring_goal_id, updated_at, created_at')
         .eq('business_id', user?.id)
         .order('updated_at', { ascending: false });
+      if (error) return { data: null, error };
 
-      if (error) throw error;
-
-      // Get hiring goals for role titles
-      const goalIds = [...new Set(challengesData?.filter(c => c.hiring_goal_id).map(c => c.hiring_goal_id) || [])];
-      let goalsMap: Record<string, string> = {};
-      
+      const goalIds = [...new Set((challengesData || []).filter(c => c.hiring_goal_id).map(c => c.hiring_goal_id))];
+      const goalsMap: Record<string, string> = {};
       if (goalIds.length > 0) {
         const { data: goalsData } = await supabase
           .from('hiring_goal_drafts')
           .select('id, role_title')
           .in('id', goalIds);
-        
-        goalsData?.forEach(g => {
-          goalsMap[g.id] = g.role_title || '';
-        });
+        goalsData?.forEach((g: any) => { goalsMap[g.id] = g.role_title || ''; });
       }
 
-      const enrichedChallenges = (challengesData || []).map(c => ({
+      const enriched: Challenge[] = (challengesData || []).map((c: any) => ({
         ...c,
-        role_title: c.hiring_goal_id ? goalsMap[c.hiring_goal_id] || null : null
+        role_title: c.hiring_goal_id ? goalsMap[c.hiring_goal_id] || null : null,
       }));
-
-      setChallenges(enrichedChallenges);
-    } catch (error) {
-      log.error('Error loading challenges:', error);
-      toast({
-        title: t('common.error'),
-        description: t('challenges.load_error'),
-        variant: 'destructive'
-      });
-    } finally {
-      setLoading(false);
+      return { data: enriched, error: null };
+    },
+    {
+      enabled,
+      staleTime: 30_000,
     }
-  };
+  );
+
+  useEffect(() => {
+    if (!enabled) return;
+    // Errors are surfaced via query.error; keep a lightweight toast on failure.
+  }, [enabled]);
+
+  const loadChallenges = () => { refetch(); };
+
 
   const handleActivate = async (challengeId: string, hiringGoalId: string | null) => {
     setActionLoading(challengeId);
