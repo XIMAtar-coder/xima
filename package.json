@@ -9,6 +9,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "render:reviewer-pack": "npx tsx scripts/renderReviewerPack.ts"
   },
   "dependencies": {
