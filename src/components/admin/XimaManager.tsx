@@ -19,7 +19,7 @@ const RequestsTab = lazy(() => import('./tabs/RequestsTab'));
 const AuditTab = lazy(() => import('./tabs/AuditTab'));
 const RolesTab = lazy(() => import('./tabs/RolesTab'));
 const MediaTab = lazy(() => import('./tabs/MediaTab'));
-const PocRagTab = lazy(() => import('./tabs/PocRagTab'));
+
 
 const TABS = [
   { value: 'overview', label: 'Overview', icon: BarChart3, Component: OverviewTab },
