@@ -10,6 +10,8 @@ export default tseslint.config(
       "dist",
       "build",
       "coverage",
+      "ios",
+      "android",
       "dev-dist",
       "node_modules",
       "src/integrations/supabase/types.ts",
