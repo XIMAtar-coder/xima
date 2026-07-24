@@ -50,7 +50,7 @@ import {
 interface Level2Challenge {
   id: string;
   title: string;
-  updated_at: string;
+  updated_at: string | null;
   rubric?: {
     role_family?: string;
     timebox_minutes?: number;

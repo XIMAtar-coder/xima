@@ -193,7 +193,7 @@ export const PipelineChatView: React.FC<PipelineChatViewProps> = ({
                       "text-xs mt-1",
                       isMine ? "text-primary-foreground/60" : "text-muted-foreground"
                     )}>
-                      {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                     </p>
                   </div>
                 </div>

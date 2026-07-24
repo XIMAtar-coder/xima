@@ -28,10 +28,10 @@ interface XimatarData {
   image_url: string;
   translations: {
     title: string;
-    core_traits?: string;
-    behavior?: string;
-    weaknesses?: string;
-    ideal_roles?: string;
+    core_traits?: string | null;
+    behavior?: string | null;
+    weaknesses?: string | null;
+    ideal_roles?: string | null;
   };
 }
 
@@ -134,7 +134,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         const { data: result, error } = await supabase
           .from('assessment_results')
           .select('id, ximatar_id, total_score, computed_at')
-          .eq('user_id', user.id)
+          .eq('user_id', user!.id)
           .eq('completed', true)
           .order('computed_at', { ascending: false, nullsFirst: false })
           .limit(1)
