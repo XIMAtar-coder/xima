@@ -450,16 +450,16 @@ const RegenerateDnaModal = ({ onClose, pillarScores, bestFitXimatars, onSuccess 
       // Save current DNA to history
       if (pillarScores) {
         await supabase.from('company_dna_history').insert({
-          business_id: user?.id,
+          business_id: user?.id ?? '',
           pillar_scores: pillarScores,
           best_fit_ximatars: bestFitXimatars,
           regeneration_reason: reason,
-          triggered_by_user: user?.id,
+          triggered_by_user: user?.id ?? '',
         });
       }
 
       const { data: profileData, error } = await supabase.functions.invoke('generate-company-profile', {
-        body: { company_id: user?.id, force_regenerate: true, regeneration_reason: reason },
+        body: { company_id: user?.id ?? '', force_regenerate: true, regeneration_reason: reason },
       });
       if (error) throw error;
       const partialScan = (profileData as any)?.website_scan_status === 'insufficient';
@@ -470,7 +470,7 @@ const RegenerateDnaModal = ({ onClose, pillarScores, bestFitXimatars, onSuccess 
       await supabase.from('business_profiles').update({
         dna_last_regenerated_at: new Date().toISOString(),
         dna_locked_until: lockUntil.toISOString(),
-      }).eq('user_id', user?.id);
+      }).eq('user_id', user?.id ?? '');
 
       if (partialScan) {
         sonnerToast(t('business.dashboard.profile_generated_partial', 'Non siamo riusciti a leggere bene il sito — abbiamo usato i dati che hai inserito; puoi modificare il profilo.'));
@@ -531,14 +531,14 @@ const StrategicFocusModal = ({ onClose, currentFocus, onSuccess }: { onClose: ()
 
   const handleSave = async () => {
     const focus = { pillar, weight_boost: boostLevel, expires_at: expiresAt, set_at: new Date().toISOString() };
-    await supabase.from('business_profiles').update({ strategic_focus: focus }).eq('user_id', user?.id);
+    await supabase.from('business_profiles').update({ strategic_focus: focus }).eq('user_id', user?.id ?? '');
     sonnerToast.success(t('business.dna.focus_saved', 'Focus strategico salvato'));
     onSuccess();
     onClose();
   };
 
   const handleClear = async () => {
-    await supabase.from('business_profiles').update({ strategic_focus: null }).eq('user_id', user?.id);
+    await supabase.from('business_profiles').update({ strategic_focus: null }).eq('user_id', user?.id ?? '');
     sonnerToast.success(t('business.dna.focus_cleared', 'Focus strategico rimosso'));
     onSuccess();
     onClose();
