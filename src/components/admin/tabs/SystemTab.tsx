@@ -30,20 +30,6 @@ async function checkDatabase(): Promise<HealthResult> {
   }
 }
 
-async function checkEdge(): Promise<HealthResult> {
-  const t0 = performance.now();
-  try {
-    const ctrl = new AbortController();
-    const timeout = setTimeout(() => ctrl.abort(), 5000);
-    const { data, error } = await supabase.functions.invoke('health-ping');
-    clearTimeout(timeout);
-    const latencyMs = Math.round(performance.now() - t0);
-    if (error || !data?.ok) return { status: 'down', latencyMs, lastCheckedAt: Date.now(), error: error?.message ?? 'no ok' };
-    return { status: classify(latencyMs, 800), latencyMs, lastCheckedAt: Date.now() };
-  } catch (e: any) {
-    return { status: 'down', latencyMs: null, lastCheckedAt: Date.now(), error: e?.message ?? 'error' };
-  }
-}
 
 function checkRealtime(): Promise<HealthResult> {
   return new Promise((resolve) => {
