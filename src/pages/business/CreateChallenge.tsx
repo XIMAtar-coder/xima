@@ -186,12 +186,12 @@ const CreateChallenge = () => {
         .from('hiring_goal_drafts')
         .select('id, role_title, task_description, experience_level, work_model, country')
         .eq('id', goalId)
-        .eq('business_id', user?.id)
+        .eq('business_id', user?.id ?? '')
         .single(),
       supabase
         .from('business_profiles')
         .select('company_name, manual_industry, snapshot_industry')
-        .eq('user_id', user?.id)
+        .eq('user_id', user?.id ?? '')
         .maybeSingle(),
     ]);
 
@@ -218,7 +218,7 @@ const CreateChallenge = () => {
       .from('business_challenges')
       .select('*')
       .eq('id', challengeId)
-      .eq('business_id', user?.id)
+      .eq('business_id', user?.id ?? '')
       .single();
 
     if (error || !data) {
@@ -406,7 +406,7 @@ const CreateChallenge = () => {
         const { data: siblings } = await supabase
           .from('business_challenges')
           .select('id, rubric, config_json')
-          .eq('business_id', user?.id)
+          .eq('business_id', user?.id ?? '')
           .eq('hiring_goal_id', effectiveGoalId)
           .eq('status', 'active')
           .neq('id', challengeId || '');

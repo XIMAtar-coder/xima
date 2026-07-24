@@ -145,14 +145,14 @@ const BusinessDashboard = () => {
       const { count: candidatesCount } = await supabase.from('assessment_results').select('*', { count: 'exact', head: true });
       let shortlistedCount = 0;
       if (hiringGoalDraftId && hiringGoalStatus === 'active') {
-        const { count } = await supabase.from('business_shortlists').select('*', { count: 'exact', head: true }).eq('business_id', user?.id).eq('hiring_goal_id', hiringGoalDraftId);
+        const { count } = await supabase.from('business_shortlists').select('*', { count: 'exact', head: true }).eq('business_id', user?.id ?? '').eq('hiring_goal_id', hiringGoalDraftId);
         shortlistedCount = count || 0;
       } else {
-        const { count } = await supabase.from('business_shortlists').select('*', { count: 'exact', head: true }).eq('business_id', user?.id);
+        const { count } = await supabase.from('business_shortlists').select('*', { count: 'exact', head: true }).eq('business_id', user?.id ?? '');
         shortlistedCount = count || 0;
       }
-      const { count: activeChallengesCount } = await supabase.from('business_challenges').select('*', { count: 'exact', head: true }).eq('business_id', user?.id).gte('deadline', new Date().toISOString());
-      const { data: businessChallenges } = await supabase.from('business_challenges').select('id').eq('business_id', user?.id);
+      const { count: activeChallengesCount } = await supabase.from('business_challenges').select('*', { count: 'exact', head: true }).eq('business_id', user?.id ?? '').gte('deadline', new Date().toISOString());
+      const { data: businessChallenges } = await supabase.from('business_challenges').select('id').eq('business_id', user?.id ?? '');
       const cIds = businessChallenges?.map(c => c.id) || [];
       let completedCount = 0;
       if (cIds.length > 0) {

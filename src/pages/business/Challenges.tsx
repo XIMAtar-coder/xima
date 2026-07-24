@@ -52,7 +52,7 @@ const BusinessChallenges = () => {
       const { data: challengesData, error } = await supabase
         .from('business_challenges')
         .select('id, title, description, status, hiring_goal_id, updated_at, created_at')
-        .eq('business_id', user?.id)
+        .eq('business_id', user?.id ?? '')
         .order('updated_at', { ascending: false });
       if (error) return { data: null, error };
 
@@ -94,7 +94,7 @@ const BusinessChallenges = () => {
         await supabase
           .from('business_challenges')
           .update({ status: 'archived', updated_at: new Date().toISOString() })
-          .eq('business_id', user?.id)
+          .eq('business_id', user?.id ?? '')
           .eq('hiring_goal_id', hiringGoalId)
           .eq('status', 'active')
           .neq('id', challengeId);
@@ -170,7 +170,7 @@ const BusinessChallenges = () => {
       const { error } = await supabase
         .from('business_challenges')
         .insert({
-          business_id: user?.id,
+          business_id: user?.id ?? '',
           hiring_goal_id: fullChallenge.hiring_goal_id,
           title: `${fullChallenge.title} (Copy)`,
           description: fullChallenge.description,

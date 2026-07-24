@@ -36,7 +36,7 @@ const BusinessEvaluations = () => {
       const { data: challenges } = await supabase
         .from('business_challenges')
         .select('id, title')
-        .eq('business_id', user?.id);
+        .eq('business_id', user?.id ?? '');
 
       if (!challenges) {
         setLoading(false);
