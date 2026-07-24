@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '../context/UserContext';
 import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
+import { Logo } from '@/components/Logo';
 import { getPostLoginRedirectPath } from '@/hooks/usePostLoginRedirect';
 import { supabase } from '@/integrations/supabase/client';
 
