@@ -12,6 +12,8 @@
     "render:reviewer-pack": "npx tsx scripts/renderReviewerPack.ts"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/manrope": "^5.3.0",
     "@hookform/resolvers": "^3.9.0",
     "@lovable.dev/mcp-js": "^0.24.0",
     "@radix-ui/react-accordion": "^1.2.0",
