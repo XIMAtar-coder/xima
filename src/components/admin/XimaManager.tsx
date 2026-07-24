@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Shield, BarChart3, Users, Activity, Wrench, LineChart, Wallet, Sparkles, Radio, BrainCircuit, TrendingUp, Inbox, ScrollText, ShieldCheck, ImageIcon } from 'lucide-react';
+import { Shield, BarChart3, Users, Activity, Wrench, LineChart, Wallet, Radio, BrainCircuit, TrendingUp, Inbox, ScrollText, ShieldCheck, ImageIcon } from 'lucide-react';
 import TabSkeleton from '@/components/ui/TabSkeleton';
 import ChunkErrorBoundary from '@/components/ui/ChunkErrorBoundary';
 
