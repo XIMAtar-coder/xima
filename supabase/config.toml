@@ -88,8 +88,6 @@ project_id = "iyckvvnecpnldrxqmzta"
     verify_jwt = false
   [functions.suggest-hiring-goal-field]
     verify_jwt = false
-  [functions.test-ximatar-patterns]
-    verify_jwt = true
   [functions.translate-content]
     verify_jwt = false
   [functions.verify-challenge-invitation]

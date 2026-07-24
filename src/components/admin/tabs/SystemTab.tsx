@@ -30,20 +30,6 @@ async function checkDatabase(): Promise<HealthResult> {
   }
 }
 
-async function checkEdge(): Promise<HealthResult> {
-  const t0 = performance.now();
-  try {
-    const ctrl = new AbortController();
-    const timeout = setTimeout(() => ctrl.abort(), 5000);
-    const { data, error } = await supabase.functions.invoke('health-ping');
-    clearTimeout(timeout);
-    const latencyMs = Math.round(performance.now() - t0);
-    if (error || !data?.ok) return { status: 'down', latencyMs, lastCheckedAt: Date.now(), error: error?.message ?? 'no ok' };
-    return { status: classify(latencyMs, 800), latencyMs, lastCheckedAt: Date.now() };
-  } catch (e: any) {
-    return { status: 'down', latencyMs: null, lastCheckedAt: Date.now(), error: e?.message ?? 'error' };
-  }
-}
 
 function checkRealtime(): Promise<HealthResult> {
   return new Promise((resolve) => {
@@ -95,16 +81,15 @@ export default function SystemTab() {
   const addLog = (m: string) => setLog(prev => [`[${new Date().toLocaleTimeString()}] ${m}`, ...prev].slice(0, 80));
 
   const [db, setDb] = useState<HealthResult>(INITIAL);
-  const [edge, setEdge] = useState<HealthResult>(INITIAL);
   const [rt, setRt] = useState<HealthResult>(INITIAL);
   const [checking, setChecking] = useState(false);
   const [now, setNow] = useState(Date.now());
 
   const runChecks = useCallback(async () => {
     setChecking(true);
-    setDb(INITIAL); setEdge(INITIAL); setRt(INITIAL);
-    const [d, e, r] = await Promise.all([checkDatabase(), checkEdge(), checkRealtime()]);
-    setDb(d); setEdge(e); setRt(r);
+    setDb(INITIAL); setRt(INITIAL);
+    const [d, r] = await Promise.all([checkDatabase(), checkRealtime()]);
+    setDb(d); setRt(r);
     setChecking(false);
   }, []);
 
@@ -197,10 +182,9 @@ export default function SystemTab() {
             <RefreshCw className={`mr-2 h-4 w-4 ${checking ? 'animate-spin' : ''}`} /> Refresh
           </Button>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {([
             { name: 'Database', r: db },
-            { name: 'Edge Functions', r: edge },
             { name: 'Realtime', r: rt },
           ] as const).map(({ name, r }) => {
             const c = badgeClasses(r.status);
