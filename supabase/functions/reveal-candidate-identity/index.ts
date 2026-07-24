@@ -27,6 +27,15 @@ serve(async (req) => {
 
     if (!shortlist_id) return errorResponse(400, "INVALID_INPUT", "shortlist_id required");
 
+    // Defense-in-depth: explicit business role check (ownership filter below is also required)
+    const { data: isBusiness, error: roleError } = await serviceClient.rpc("has_role", {
+      _user_id: user.id,
+      _role: "business",
+    });
+    if (roleError || !isBusiness) {
+      return forbiddenResponse("Business access required");
+    }
+
     // Verify ownership
     const { data: shortlistEntry, error: slError } = await serviceClient
       .from("shortlist_results")
