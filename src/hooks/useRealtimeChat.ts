@@ -8,12 +8,12 @@ export interface ChatUser {
   name: string;
   // SECURITY: email removed to prevent enumeration - P0-2 fix
   avatar?: any;
-  ximatar?: string;
-  lastSeen?: string;
+  ximatar?: string | null;
+  lastSeen?: string | null;
   status: 'online' | 'away' | 'offline';
   unreadCount?: number;
-  lastMessage?: string;
-  lastMessageTime?: string;
+  lastMessage?: string | null;
+  lastMessageTime?: string | null;
 }
 
 export interface ChatMessage {
@@ -21,7 +21,7 @@ export interface ChatMessage {
   thread_id: string;
   sender_id: string;
   body: string;
-  created_at: string;
+  created_at: string | null;
   is_read?: boolean;
   sender?: {
     name: string;

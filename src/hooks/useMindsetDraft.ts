@@ -89,7 +89,7 @@ export function useMindsetDraft(invitationId: string) {
           )
           .select('id')
           .single();
-        if (data?.id) submissionIdRef.current = data.id;
+        if (data?.id) submissionIdRef.current = data.id as string;
       }
     },
     [invitationId]
