@@ -32,8 +32,8 @@ interface Props {
 interface GoalOption {
   id: string;
   role_title: string | null;
-  status: string;
-  created_at: string;
+  status: string | null;
+  created_at: string | null;
 }
 
 interface JobPostOption {
@@ -56,19 +56,20 @@ const ChallengeContextSelector = ({ open, onOpenChange }: Props) => {
 
   useEffect(() => {
     if (!open || !user?.id) return;
+    const businessId = user.id;
     (async () => {
       setLoading(true);
       const [{ data: goalData }, { data: jobData }] = await Promise.all([
         supabase
           .from('hiring_goal_drafts')
           .select('id, role_title, status, created_at')
-          .eq('business_id', user.id)
+          .eq('business_id', businessId)
           .in('status', ['active', 'draft'])
           .order('created_at', { ascending: false }),
         supabase
           .from('job_posts')
           .select('id, title, status, created_at')
-          .eq('business_id', user.id)
+          .eq('business_id', businessId)
           .order('created_at', { ascending: false }),
       ]);
       setGoals(goalData || []);
@@ -77,7 +78,8 @@ const ChallengeContextSelector = ({ open, onOpenChange }: Props) => {
     })();
   }, [open, user?.id]);
 
-  const formatDate = (iso: string) => {
+  const formatDate = (iso: string | null) => {
+    if (!iso) return '';
     try {
       return format(new Date(iso), 'dd/MM/yyyy');
     } catch {
@@ -85,7 +87,7 @@ const ChallengeContextSelector = ({ open, onOpenChange }: Props) => {
     }
   };
 
-  const statusLabel = (status: string) =>
+  const statusLabel = (status: string | null) =>
     status === 'active'
       ? t('business.challenges.context_selector.status_active')
       : t('business.challenges.context_selector.status_draft');
