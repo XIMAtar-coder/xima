@@ -586,7 +586,7 @@ export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => 
     if (!Object.keys(assessmentPillarScores).length) {
       const ss = sessionStorage.getItem('guest_pillar_scores');
       if (ss) {
-        try { assessmentPillarScores = JSON.parse(ss); } catch {}
+        try { assessmentPillarScores = JSON.parse(ss); } catch (e) { log.warn('[assessmentSync] parse pillarScores failed', e); }
       }
     }
     if (!assessmentXimatar) assessmentXimatar = (data.assessment_ximatar || '').toLowerCase();

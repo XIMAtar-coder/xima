@@ -103,7 +103,7 @@ const Register = () => {
           locale: (i18n.language || 'en').slice(0, 2),
         }));
         if (refCode) sessionStorage.setItem('xima_pending_ref', refCode);
-      } catch {}
+      } catch (e) { log.warn('[Register] non-critical error', e); }
 
       if (newUserId && hasSession) {
         const consentResult = await recordUserConsents(newUserId, i18n.language);
@@ -165,7 +165,7 @@ const Register = () => {
 
         try {
           sessionStorage.setItem('xima_profile_sync_completed', String(Date.now()));
-        } catch {}
+        } catch (e) { log.warn('[Register] non-critical error', e); }
         navigate('/profile');
         return;
       }
