@@ -53,7 +53,7 @@ export const useChallengeInvitations = () => {
       const { data: profile } = await supabase
         .from('profiles')
         .select('id')
-        .eq('user_id', user?.id)
+        .eq('user_id', user?.id ?? '')
         .single();
 
       if (!profile) throw new Error('Profile not found');
@@ -92,7 +92,7 @@ export const useChallengeInvitations = () => {
       const { data: profile } = await supabase
         .from('profiles')
         .select('id')
-        .eq('user_id', user?.id)
+        .eq('user_id', user?.id ?? '')
         .single();
 
       if (!profile) throw new Error('Profile not found');

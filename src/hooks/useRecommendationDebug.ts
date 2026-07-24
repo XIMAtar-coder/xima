@@ -163,7 +163,7 @@ export function useRecommendationDebug(businessId: string | undefined, hiringGoa
         .maybeSingle();
       
       // 3. Load hiring goal if specified
-      let hiringGoal = null;
+      let hiringGoal: any = null;
       if (hiringGoalId) {
         const { data } = await supabase
           .from('hiring_goal_drafts')

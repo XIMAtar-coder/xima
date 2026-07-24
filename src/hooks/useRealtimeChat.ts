@@ -8,12 +8,12 @@ export interface ChatUser {
   name: string;
   // SECURITY: email removed to prevent enumeration - P0-2 fix
   avatar?: any;
-  ximatar?: string;
-  lastSeen?: string;
+  ximatar?: string | null;
+  lastSeen?: string | null;
   status: 'online' | 'away' | 'offline';
   unreadCount?: number;
-  lastMessage?: string;
-  lastMessageTime?: string;
+  lastMessage?: string | null;
+  lastMessageTime?: string | null;
 }
 
 export interface ChatMessage {
@@ -21,7 +21,7 @@ export interface ChatMessage {
   thread_id: string;
   sender_id: string;
   body: string;
-  created_at: string;
+  created_at: string | null;
   is_read?: boolean;
   sender?: {
     name: string;
@@ -151,7 +151,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
             status: 'offline'
           },
           last_message: lastMsg?.body,
-          last_message_time: lastMsg?.created_at
+          last_message_time: lastMsg?.created_at ?? undefined,
         });
       }
 
@@ -368,9 +368,9 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
       const { data, error } = await supabase.rpc('create_chat_thread', {
         p_thread_type: threadType,
         p_candidate_profile_id: candidateProfileId,
-        p_business_id: businessId || null,
-        p_mentor_profile_id: mentorProfileId || null
-      });
+        p_business_id: businessId || undefined,
+        p_mentor_profile_id: mentorProfileId || undefined,
+      } as any);
 
       if (error) {
         log.error('[useRealtimeChat] Error creating secure thread:', error);

@@ -237,7 +237,7 @@ export function computeLevel2Signals(payload: Level2Payload): Level2SignalsPaylo
   if (overallReadiness === 'ready') {
     summary = 'Strong Level 2 response demonstrating concrete hard skills and practical execution readiness. Consider proceeding to interview or Level 3.';
   } else if (overallReadiness === 'needs_clarification') {
-    const weakAreas = [];
+    const weakAreas: string[] = [];
     if (hardSkillClarity === 'fragmented') weakAreas.push('technical approach');
     if (riskAwareness === 'fragmented') weakAreas.push('risk awareness');
     if (executionRealism === 'fragmented') weakAreas.push('execution planning');

@@ -240,13 +240,14 @@ const Messages = () => {
                           messages.map((msg, idx) => {
                             const isMine = msg.sender_id === currentProfileId;
                             const showTime = idx === 0 ||
-                              new Date(msg.created_at).getTime() - new Date(messages[idx - 1].created_at).getTime() > 300000;
+                              (msg.created_at && messages[idx - 1].created_at &&
+                                new Date(msg.created_at).getTime() - new Date(messages[idx - 1].created_at!).getTime() > 300000);
                             return (
                               <React.Fragment key={msg.id}>
                                 {showTime && (
                                   <div className="flex justify-center">
                                     <span className="text-xs text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">
-                                      {formatMsgTime(msg.created_at)}
+                                      {msg.created_at ? formatMsgTime(msg.created_at) : ''}
                                     </span>
                                   </div>
                                 )}

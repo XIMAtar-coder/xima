@@ -261,7 +261,7 @@ const CreateXimaCoreChallenge = () => {
         .from('job_posts')
         .select('id, title, responsibilities, requirements_must, requirements_nice, seniority, department, description, linked_hiring_goal_id')
         .eq('id', fromListingParam)
-        .eq('business_id', user?.id)
+        .eq('business_id', user?.id ?? '')
         .maybeSingle();
 
       if (jobPost) {
@@ -295,7 +295,7 @@ const CreateXimaCoreChallenge = () => {
       const { data: existingCore } = await supabase
         .from('business_challenges')
         .select('id')
-        .eq('business_id', user?.id)
+        .eq('business_id', user?.id ?? '')
         .eq('hiring_goal_id', effectiveGoalId)
         .eq('status', 'active')
         .contains('rubric', { isXimaCore: true })
@@ -315,7 +315,7 @@ const CreateXimaCoreChallenge = () => {
         .from('hiring_goal_drafts')
         .select('id, role_title, task_description, experience_level, function_area, work_model, country, required_skills, nice_to_have_skills, ral_min, ral_max, ccnl, salary_currency')
         .eq('id', effectiveGoalId)
-        .eq('business_id', user?.id)
+        .eq('business_id', user?.id ?? '')
         .single();
 
       if (goalError || !goalData) {
@@ -335,12 +335,12 @@ const CreateXimaCoreChallenge = () => {
       supabase
         .from('business_profiles')
         .select('company_name, manual_industry, snapshot_industry, company_size, team_culture, hiring_approach')
-        .eq('user_id', user?.id)
+        .eq('user_id', user?.id ?? '')
         .maybeSingle(),
       supabase
         .from('company_profiles')
         .select('summary, summary_override, operating_style, operating_style_override, communication_style, values, values_override, pillar_vector, company_culture')
-        .eq('company_id', user?.id)
+        .eq('company_id', user?.id ?? '')
         .maybeSingle(),
     ]);
 
@@ -373,7 +373,7 @@ const CreateXimaCoreChallenge = () => {
         body: {
           mode: 'xima_core',
           locale: normalizeLocale(i18n.language),
-          business_id: user?.id,
+          business_id: user?.id ?? '',
           // Only pass a real hiring_goal_id (not a synthetic id derived from job_posts).
           hiring_goal_id: goalId || undefined,
           job_post_id: jobPostId || undefined,
@@ -460,7 +460,7 @@ const CreateXimaCoreChallenge = () => {
         await supabase
           .from('business_challenges')
           .update({ status: 'archived', updated_at: new Date().toISOString() })
-          .eq('business_id', user?.id)
+          .eq('business_id', user?.id ?? '')
           .eq('hiring_goal_id', goalId)
           .eq('status', 'active')
           .contains('rubric', { isXimaCore: true });

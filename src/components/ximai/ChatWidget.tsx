@@ -68,11 +68,12 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
   // Ensure a conversation exists for this user
   useEffect(() => {
     if (!open || !user?.id) return;
+    const uid = user.id;
     (async () => {
       const { data: existing, error } = await supabase
         .from('ai_conversations')
         .select('id, language')
-        .eq('user_id', user.id)
+        .eq('user_id', uid)
         .order('updated_at', { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -94,7 +95,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
       } else {
         const { data: created, error: createErr } = await supabase
           .from('ai_conversations')
-          .insert({ user_id: user.id, language: botLang })
+          .insert({ user_id: uid, language: botLang })
           .select('id')
           .single();
         if (createErr) { log.error(createErr); return; }

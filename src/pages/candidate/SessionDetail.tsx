@@ -119,7 +119,7 @@ export default function SessionDetail() {
       const { data: sessionData, error: sessionError } = await supabase
         .from('mentor_sessions')
         .select('id, mentor_id, candidate_profile_id, starts_at, ends_at, status, title, notes_shared, session_type, duration_minutes, price_cents, created_at, proposed_start_at, proposed_end_at, reschedule_status, requires_reschedule')
-        .eq('id', sessionId)
+        .eq('id', sessionId ?? '')
         .single();
 
       if (sessionError || !sessionData) {

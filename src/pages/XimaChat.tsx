@@ -214,7 +214,7 @@ const XimaChat = () => {
                                 <Avatar className="h-10 w-10 border-2 border-background">
                                   {thread.other_user.ximatar ? (
                                     <AvatarImage
-                                      src={getXimatarImage(thread.other_user.ximatar)}
+                                      src={getXimatarImage(thread.other_user.ximatar) ?? undefined}
                                       alt={thread.other_user.name}
                                       loading="lazy"
                                       decoding="async"
@@ -265,7 +265,7 @@ const XimaChat = () => {
                         <Avatar className="h-10 w-10 border-2 border-primary/20">
                           {selectedUser.ximatar ? (
                             <AvatarImage
-                              src={getXimatarImage(selectedUser.ximatar)}
+                              src={getXimatarImage(selectedUser.ximatar) ?? undefined}
                               alt={selectedUser.name}
                               loading="lazy"
                               decoding="async"
@@ -319,14 +319,15 @@ const XimaChat = () => {
                               {messages.map((msg, idx) => {
                                 const isSent = msg.sender_id === user?.id;
                                 const showTimestamp = idx === 0 || 
-                                  new Date(msg.created_at).getTime() - new Date(messages[idx-1].created_at).getTime() > 300000;
+                                  (!!msg.created_at && !!messages[idx-1].created_at &&
+                                    new Date(msg.created_at).getTime() - new Date(messages[idx-1].created_at!).getTime() > 300000);
                                 
                                 return (
                                   <React.Fragment key={msg.id}>
                                     {showTimestamp && (
                                       <div className="flex justify-center">
                                         <span className="text-xs text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">
-                                          {formatMessageTime(msg.created_at)}
+                                          {msg.created_at ? formatMessageTime(msg.created_at) : ''}
                                         </span>
                                       </div>
                                     )}

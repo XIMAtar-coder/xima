@@ -38,7 +38,7 @@ export const RoleCompatibilityPanel = ({ jobId, requiredSkills = [] }: RoleCompa
           ximatars(label),
           pillar_scores(pillar, score)
         `)
-        .eq('user_id', user?.id)
+        .eq('user_id', user?.id ?? '')
         .order('computed_at', { ascending: false })
         .limit(1)
         .single();
