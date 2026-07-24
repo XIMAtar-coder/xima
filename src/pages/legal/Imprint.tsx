@@ -148,12 +148,14 @@ const Imprint = () => {
             <p className="text-muted-foreground">
               {t('legal.imprint.dpo_info')}
             </p>
-            <a 
-              href={`mailto:${COMPANY_LEGAL.dpo.email}`}
-              className="text-primary hover:underline mt-2 inline-block"
-            >
-              {COMPANY_LEGAL.dpo.email}
-            </a>
+            {COMPANY_LEGAL.dpo.email && (
+              <a 
+                href={`mailto:${COMPANY_LEGAL.dpo.email}`}
+                className="text-primary hover:underline mt-2 inline-block"
+              >
+                {COMPANY_LEGAL.dpo.email}
+              </a>
+            )}
           </CardContent>
         </Card>
 
