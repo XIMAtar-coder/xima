@@ -93,7 +93,7 @@ const Imprint = () => {
                 <MapPin className="w-4 h-4 mt-1 flex-shrink-0" />
                 <span>
                   {COMPANY_LEGAL.address.street}<br />
-                  {COMPANY_LEGAL.address.postalCode} {COMPANY_LEGAL.address.city} ({COMPANY_LEGAL.address.province})<br />
+                  {COMPANY_LEGAL.address.postalCode} {COMPANY_LEGAL.address.city}<br />
                   {COMPANY_LEGAL.address.country}
                 </span>
               </div>
