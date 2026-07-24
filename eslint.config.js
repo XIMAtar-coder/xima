@@ -14,6 +14,8 @@ export default tseslint.config(
       "android",
       "dev-dist",
       "node_modules",
+      "ios",
+      "android",
       "src/integrations/supabase/types.ts",
       "supabase/functions/mcp/index.ts",
       "**/*.harness.ts",
