@@ -110,9 +110,13 @@ const Login = () => {
         <Card>
           <CardHeader className="space-y-6 text-center">
             <div className="flex justify-center">
-              <img 
-                src="/src/assets/logo_full.png" 
-                alt="XIMA Logo" 
+              <img
+                src="/src/assets/logo_full.png"
+                alt="XIMA Logo"
+                width={160}
+                height={48}
+                loading="lazy"
+                decoding="async"
                 className="h-12 w-auto dark:brightness-200"
               />
             </div>
