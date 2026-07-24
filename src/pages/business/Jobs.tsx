@@ -25,6 +25,7 @@ import { toast } from 'sonner';
 import PdfImportModal from '@/components/business/PdfImportModal';
 import JobPostDetailDrawer from '@/components/business/JobPostDetailDrawer';
 import { format } from 'date-fns';
+import { log } from '@/lib/log';
 
 interface JobPost {
   id: string;
@@ -119,7 +120,7 @@ export default function Jobs() {
 
       setJobs(jobsWithCounts);
     } catch (error) {
-      console.error('Error fetching jobs:', error);
+      log.error('Error fetching jobs:', error);
       toast.error(t('common.error'));
     } finally {
       setLoading(false);

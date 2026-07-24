@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 export const useUserHeaderData = (userId: string | undefined) => {
   const [data, setData] = useState<{
@@ -46,7 +47,7 @@ export const useUserHeaderData = (userId: string | undefined) => {
           setData({ ximatarImage: null, totalScore: 0, isLoading: false });
         }
       } catch (error) {
-        console.error('Error fetching user header data:', error);
+        log.error('Error fetching user header data:', error);
         setData({ ximatarImage: null, totalScore: 0, isLoading: false });
       }
     };

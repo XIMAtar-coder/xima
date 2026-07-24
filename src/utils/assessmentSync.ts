@@ -4,6 +4,7 @@ import {
   type AssessmentPillarScores,
 } from '@/lib/ximatarTaxonomy';
 import { CV_PROCESSING_VERSION } from '@/lib/legal/consentVersions';
+import { log } from '@/lib/log';
 
 
 interface GuestAssessmentData {
@@ -34,14 +35,14 @@ interface GuestAssessmentData {
  */
 export const syncGuestAssessmentToProfile = async (userId: string): Promise<boolean> => {
   try {
-    console.log('Starting assessment sync for user:', userId);
+    log.debug('Starting assessment sync for user:', userId);
     let assessmentProfileSynced = false;
 
     try {
       const { data: authUser } = await supabase.auth.getUser();
-      console.log('[sync] auth.getUser', authUser?.user?.id, authUser?.user?.email);
+      log.debug('[sync] auth.getUser', authUser?.user?.id, authUser?.user?.email);
     } catch (e) {
-      console.warn('[sync] auth.getUser failed', e);
+      log.warn('[sync] auth.getUser failed', e);
     }
     // Check sessionStorage for guest assessment data (more secure than localStorage)
     const guestResultId = sessionStorage.getItem('latest_assessment_result_id');
@@ -70,10 +71,10 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         .maybeSingle();
       if (existingProfile) hasProfile = true;
       if (profileFetchError && profileFetchError.code !== 'PGRST116') {
-        console.error('[sync] profile fetch error before assessment sync:', profileFetchError);
+        log.error('[sync] profile fetch error before assessment sync:', profileFetchError);
       }
     } catch (e) {
-      console.error('[sync] error checking existing profile before assessment sync', e);
+      log.error('[sync] error checking existing profile before assessment sync', e);
     }
 
     if (!hasProfile) {
@@ -86,32 +87,32 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           .select('user_id')
           .maybeSingle();
         if (insertProfileError) {
-          console.error('[sync] error inserting profile row before assessment sync:', insertProfileError);
+          log.error('[sync] error inserting profile row before assessment sync:', insertProfileError);
           const { data: refetchedProfile, error: refetchError } = await supabase
             .from('profiles')
             .select('user_id')
             .eq('user_id', userId)
             .maybeSingle();
           if (refetchError) {
-            console.error('[sync] profile refetch after insert error failed:', refetchError);
+            log.error('[sync] profile refetch after insert error failed:', refetchError);
           }
           hasProfile = !!refetchedProfile;
         } else {
           hasProfile = !!insertedProfile;
-          console.log('[sync] inserted profile row before assessment sync');
+          log.debug('[sync] inserted profile row before assessment sync');
         }
       } catch (e) {
-        console.error('[sync] unexpected error inserting profile before assessment sync', e);
+        log.error('[sync] unexpected error inserting profile before assessment sync', e);
       }
     }
 
     if (!hasProfile) {
-      console.error('[sync] CRITICAL: profile row unavailable; preserving guest assessment data for retry', { userId });
+      log.error('[sync] CRITICAL: profile row unavailable; preserving guest assessment data for retry', { userId });
       return false;
     }
 
     if (!hasGuestAssessmentData) {
-      console.warn('[sync] no guest assessment data in sessionStorage; trying latest completed assessment fallback');
+      log.warn('[sync] no guest assessment data in sessionStorage; trying latest completed assessment fallback');
       const { data: latestAssessment, error: latestAssessmentError } = await supabase
         .from('assessment_results')
         .select('id, ximatar_id, pillars, rationale')
@@ -122,11 +123,11 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         .maybeSingle();
 
       if (latestAssessmentError) {
-        console.error('[sync] latest assessment fallback query error:', latestAssessmentError);
+        log.error('[sync] latest assessment fallback query error:', latestAssessmentError);
         return false;
       }
       if (!latestAssessment) {
-        console.log('[sync] no guest assessment data and no completed assessment fallback found');
+        log.debug('[sync] no guest assessment data and no completed assessment fallback found');
         return false;
       }
 
@@ -135,7 +136,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         .select('pillar, score')
         .eq('assessment_result_id', latestAssessment.id);
       if (latestPillarsError) {
-        console.error('[sync] latest assessment pillar fallback query error:', latestPillarsError);
+        log.error('[sync] latest assessment pillar fallback query error:', latestPillarsError);
       }
 
       const fallbackScores = Array.isArray(latestPillars) && latestPillars.length > 0
@@ -146,7 +147,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         : ((latestAssessment.pillars as Record<string, number> | null) || {});
 
       if (!Object.keys(fallbackScores).length) {
-        console.error('[sync] latest assessment fallback incomplete:', { hasScores: false });
+        log.error('[sync] latest assessment fallback incomplete:', { hasScores: false });
         return false;
       }
 
@@ -156,11 +157,11 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         : supabase.from('ximatars').select('id, label, image_url').eq('label', derived.label).maybeSingle();
       const { data: fallbackXimatar, error: fallbackXimatarError } = await fallbackXimatarQuery;
       if (fallbackXimatarError) {
-        console.error('[sync] latest assessment ximatar fallback query error:', fallbackXimatarError);
+        log.error('[sync] latest assessment ximatar fallback query error:', fallbackXimatarError);
         return false;
       }
       if (!fallbackXimatar?.label) {
-        console.error('[sync] latest assessment fallback incomplete:', {
+        log.error('[sync] latest assessment fallback incomplete:', {
           hasXimatar: !!fallbackXimatar?.label,
           derivedLabel: derived.label,
         });
@@ -190,11 +191,11 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         .select('user_id');
 
       if (fallbackProfileError) {
-        console.error('[sync] latest assessment fallback profile update error:', fallbackProfileError);
+        log.error('[sync] latest assessment fallback profile update error:', fallbackProfileError);
         return false;
       }
       if (!fallbackRows || fallbackRows.length === 0) {
-        console.error('[sync] latest assessment fallback profile update affected 0 rows:', { userId });
+        log.error('[sync] latest assessment fallback profile update affected 0 rows:', { userId });
         return false;
       }
 
@@ -204,11 +205,11 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           .update({ ximatar_id: fallbackXimatar.id })
           .eq('id', latestAssessment.id);
         if (fallbackAssessmentLinkError) {
-          console.error('[sync] latest assessment fallback ximatar link error:', fallbackAssessmentLinkError);
+          log.error('[sync] latest assessment fallback ximatar link error:', fallbackAssessmentLinkError);
         }
       }
 
-      console.log('[sync] ✅ profile recovered from latest completed assessment fallback', { userId, ximatar: fallbackLabel });
+      log.debug('[sync] ✅ profile recovered from latest completed assessment fallback', { userId, ximatar: fallbackLabel });
       return true;
     }
 
@@ -226,9 +227,9 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         .is('user_id', null); // Only update if not already claimed
 
       if (linkError) {
-        console.error('Error linking assessment result:', linkError);
+        log.error('Error linking assessment result:', linkError);
       } else {
-        console.log('Successfully linked assessment result to user');
+        log.debug('Successfully linked assessment result to user');
       }
     }
 
@@ -256,7 +257,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           .single();
 
         if (createError || !newResult) {
-          console.error('Error creating assessment result:', createError);
+          log.error('Error creating assessment result:', createError);
           return false;
         }
         resultId = newResult.id;
@@ -275,9 +276,9 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         .insert(pillarInserts);
 
       if (pillarError) {
-        console.error('Error syncing pillar scores:', pillarError);
+        log.error('Error syncing pillar scores:', pillarError);
       } else {
-        console.log('Successfully synced pillar scores');
+        log.debug('Successfully synced pillar scores');
       }
     }
 
@@ -290,7 +291,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
       try {
         parsedScores = JSON.parse(guestPillarScores) as AssessmentPillarScores;
       } catch (e) {
-        console.error('[sync] invalid guest_pillar_scores JSON, aborting profile write', e);
+        log.error('[sync] invalid guest_pillar_scores JSON, aborting profile write', e);
       }
 
       if (parsedScores) {
@@ -308,7 +309,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           driveLevel = driveLevel || derived.driveLevel;
           strongestPillar = strongestPillar || derived.strongest;
           weakestPillar = weakestPillar || derived.weakest;
-          console.warn(
+          log.warn(
             '[sync] guest_ximatar missing in sessionStorage — derived archetype from pillar_scores',
             { resolvedLabel }
           );
@@ -326,7 +327,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           .maybeSingle();
 
         if (ximatarLookupError) {
-          console.error('[sync] ximatars lookup error (continuing)', ximatarLookupError);
+          log.error('[sync] ximatars lookup error (continuing)', ximatarLookupError);
         }
 
         const profileUpdate: any = {
@@ -348,7 +349,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           profileUpdate.ximatar_id = ximatarData.id;
           profileUpdate.ximatar_image = guestXimatarImage || ximatarData.image_url;
         } else {
-          console.error(
+          log.error(
             '[sync] CRITICAL: ximatars row not found for label — writing profile without ximatar_id',
             { resolvedLabel }
           );
@@ -364,15 +365,15 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           .select('user_id');
 
         if (profileError) {
-          console.error('[sync] ERROR updating profile with assessment data:', profileError);
+          log.error('[sync] ERROR updating profile with assessment data:', profileError);
         } else if (!updatedRows || updatedRows.length === 0) {
-          console.error(
+          log.error(
             '[sync] ERROR: profile UPDATE affected 0 rows — likely RLS mismatch or missing profile row',
             { userId }
           );
         } else {
           assessmentProfileSynced = true;
-          console.log('[sync] ✅ profile updated with archetype', {
+          log.debug('[sync] ✅ profile updated with archetype', {
             userId,
             ximatar: resolvedLabel,
             hasXimatarId: !!ximatarData,
@@ -386,7 +387,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
             .update({ ximatar_id: ximatarData.id })
             .eq('id', assessmentResultId);
           if (arError) {
-            console.warn('[sync] failed to link assessment_result to ximatar', arError);
+            log.warn('[sync] failed to link assessment_result to ximatar', arError);
           }
         }
       }
@@ -413,17 +414,17 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
             metadata: { result_id: assessmentResultId || null },
           });
         if (snapshotError) {
-          console.warn('[sync] snapshot insert error (non-fatal):', snapshotError);
+          log.warn('[sync] snapshot insert error (non-fatal):', snapshotError);
         } else {
-          console.log('✅ Inserted initial pillar progress snapshot for Drive');
+          log.debug('✅ Inserted initial pillar progress snapshot for Drive');
         }
       } catch (e) {
-        console.warn('[sync] snapshot insert failed (non-fatal):', e);
+        log.warn('[sync] snapshot insert failed (non-fatal):', e);
       }
     }
 
     if (!assessmentProfileSynced) {
-      console.warn('[sync] primary guest assessment profile write incomplete; trying completed assessment fallback before giving up', { userId });
+      log.warn('[sync] primary guest assessment profile write incomplete; trying completed assessment fallback before giving up', { userId });
       const { data: latestAssessment, error: latestAssessmentError } = await supabase
         .from('assessment_results')
         .select('id, ximatar_id, pillars, rationale')
@@ -434,13 +435,13 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
         .maybeSingle();
 
       if (latestAssessmentError) {
-        console.error('[sync] completed assessment fallback query error:', latestAssessmentError);
+        log.error('[sync] completed assessment fallback query error:', latestAssessmentError);
       } else if (latestAssessment) {
         const { data: latestPillars, error: latestPillarsError } = await supabase
           .from('pillar_scores')
           .select('pillar, score')
           .eq('assessment_result_id', latestAssessment.id);
-        if (latestPillarsError) console.error('[sync] completed assessment fallback pillar query error:', latestPillarsError);
+        if (latestPillarsError) log.error('[sync] completed assessment fallback pillar query error:', latestPillarsError);
 
         const fallbackScores = Array.isArray(latestPillars) && latestPillars.length > 0
           ? latestPillars.reduce((acc: Record<string, number>, row: any) => {
@@ -453,7 +454,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
           ? supabase.from('ximatars').select('id, label, image_url').eq('id', latestAssessment.ximatar_id).maybeSingle()
           : supabase.from('ximatars').select('id, label, image_url').eq('label', derived.label).maybeSingle();
         const { data: fallbackXimatar, error: fallbackXimatarError } = await fallbackXimatarQuery;
-        if (fallbackXimatarError) console.error('[sync] completed assessment fallback ximatar query error:', fallbackXimatarError);
+        if (fallbackXimatarError) log.error('[sync] completed assessment fallback ximatar query error:', fallbackXimatarError);
 
         if (fallbackXimatar?.label && Object.keys(fallbackScores).length > 0) {
           const fallbackLabel = String(fallbackXimatar.label).toLowerCase();
@@ -478,9 +479,9 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
             .eq('user_id', userId)
             .select('user_id');
           if (fallbackProfileError) {
-            console.error('[sync] completed assessment fallback profile update error:', fallbackProfileError);
+            log.error('[sync] completed assessment fallback profile update error:', fallbackProfileError);
           } else if (!fallbackRows || fallbackRows.length === 0) {
-            console.error('[sync] completed assessment fallback profile update affected 0 rows:', { userId });
+            log.error('[sync] completed assessment fallback profile update affected 0 rows:', { userId });
           } else {
             assessmentProfileSynced = true;
             if (!latestAssessment.ximatar_id) {
@@ -489,13 +490,13 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
                 .update({ ximatar_id: fallbackXimatar.id })
                 .eq('id', latestAssessment.id);
               if (fallbackAssessmentLinkError) {
-                console.error('[sync] completed assessment fallback ximatar link error:', fallbackAssessmentLinkError);
+                log.error('[sync] completed assessment fallback ximatar link error:', fallbackAssessmentLinkError);
               }
             }
-            console.log('[sync] ✅ profile recovered from completed assessment fallback', { userId, ximatar: fallbackLabel });
+            log.debug('[sync] ✅ profile recovered from completed assessment fallback', { userId, ximatar: fallbackLabel });
           }
         } else {
-          console.error('[sync] completed assessment fallback incomplete:', {
+          log.error('[sync] completed assessment fallback incomplete:', {
             hasXimatar: !!fallbackXimatar?.label,
             hasScores: !!Object.keys(fallbackScores).length,
           });
@@ -504,7 +505,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
     }
 
     if (!assessmentProfileSynced) {
-      console.error('[sync] CRITICAL: assessment profile write did not complete; preserving guest assessment data for retry', { userId });
+      log.error('[sync] CRITICAL: assessment profile write did not complete; preserving guest assessment data for retry', { userId });
       return false;
     }
 
@@ -522,11 +523,11 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
     sessionStorage.removeItem('guest_assessment_data');
     sessionStorage.removeItem('current_attempt_id');
     
-    console.log('✅ Assessment sync completed successfully - all data transferred to profile');
+    log.debug('✅ Assessment sync completed successfully - all data transferred to profile');
     return true;
 
   } catch (error) {
-    console.error('Error syncing guest assessment:', error);
+    log.error('Error syncing guest assessment:', error);
     return false;
   }
 };
@@ -543,7 +544,7 @@ export const syncGuestAssessmentToProfile = async (userId: string): Promise<bool
 export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => {
   const blob = sessionStorage.getItem('guest_cv_analysis');
   if (!blob) {
-    console.log('[sync-cv] no guest CV analysis to claim');
+    log.debug('[sync-cv] no guest CV analysis to claim');
     return false;
   }
 
@@ -576,7 +577,7 @@ export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => 
         assessmentPillarScores = prof.pillar_scores as Record<string, number>;
       }
     } catch (e) {
-      console.warn('[sync-cv] profile lookup for assessment data failed:', e);
+      log.warn('[sync-cv] profile lookup for assessment data failed:', e);
     }
     if (!assessmentXimatar) {
       const ss = sessionStorage.getItem('guest_ximatar');
@@ -585,7 +586,7 @@ export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => 
     if (!Object.keys(assessmentPillarScores).length) {
       const ss = sessionStorage.getItem('guest_pillar_scores');
       if (ss) {
-        try { assessmentPillarScores = JSON.parse(ss); } catch {}
+        try { assessmentPillarScores = JSON.parse(ss); } catch (e) { log.warn('[assessmentSync] parse pillarScores failed', e); }
       }
     }
     if (!assessmentXimatar) assessmentXimatar = (data.assessment_ximatar || '').toLowerCase();
@@ -619,9 +620,9 @@ export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => 
       }, { onConflict: 'user_id' });
 
     if (identityErr) {
-      console.error('[sync-cv] cv_identity_analysis upsert error:', identityErr);
+      log.error('[sync-cv] cv_identity_analysis upsert error:', identityErr);
     } else {
-      console.log('[sync-cv] cv_identity_analysis claimed');
+      log.debug('[sync-cv] cv_identity_analysis claimed');
     }
 
     // cv_credentials — surface Supabase errors (do not swallow)
@@ -648,12 +649,12 @@ export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => 
         career_trajectory: credentials.career_trajectory || null,
       }, { onConflict: 'user_id' });
       if (credErr) {
-        console.error('[sync-cv] cv_credentials upsert error:', credErr);
+        log.error('[sync-cv] cv_credentials upsert error:', credErr);
       } else {
-        console.log('[sync-cv] cv_credentials claimed');
+        log.debug('[sync-cv] cv_credentials claimed');
       }
     } catch (e) {
-      console.error('[sync-cv] cv_credentials upsert exception:', e);
+      log.error('[sync-cv] cv_credentials upsert exception:', e);
     }
 
     // Mirror cv_scores onto profiles — surface Supabase errors
@@ -669,12 +670,12 @@ export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => 
         cv_comments: tension.overall_narrative ? { summary: tension.overall_narrative } : null,
       }).eq('user_id', userId);
       if (scoresErr) {
-        console.error('[sync-cv] profiles cv_scores update error:', scoresErr);
+        log.error('[sync-cv] profiles cv_scores update error:', scoresErr);
       } else {
-        console.log('[sync-cv] profiles.cv_scores updated');
+        log.debug('[sync-cv] profiles.cv_scores updated');
       }
     } catch (e) {
-      console.error('[sync-cv] profiles cv_scores update exception:', e);
+      log.error('[sync-cv] profiles cv_scores update exception:', e);
     }
 
     // Record cv_processing consent (consent was given at guest upload time)
@@ -697,18 +698,18 @@ export const syncGuestCvToProfile = async (userId: string): Promise<boolean> => 
         user_agent_hash,
       });
       if (consentErr) {
-        console.error('[sync-cv] user_consents insert error:', consentErr);
+        log.error('[sync-cv] user_consents insert error:', consentErr);
       } else {
-        console.log('[sync-cv] cv_processing consent recorded');
+        log.debug('[sync-cv] cv_processing consent recorded');
       }
     } catch (e) {
-      console.error('[sync-cv] consent insert exception:', e);
+      log.error('[sync-cv] consent insert exception:', e);
     }
 
 
     return !identityErr;
   } catch (e) {
-    console.error('[sync-cv] unexpected error claiming guest CV:', e);
+    log.error('[sync-cv] unexpected error claiming guest CV:', e);
     return false;
   } finally {
     sessionStorage.removeItem('guest_cv_analysis');

@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Save, X, Plus } from 'lucide-react';
 import { MentorAvatarUpload } from '@/components/mentor/MentorAvatarUpload';
 import NotAMentor from './NotAMentor';
+import { log } from '@/lib/log';
 
 const AVAILABLE_PILLARS = [
   'computational_power',
@@ -83,7 +84,7 @@ export default function MentorProfileEdit() {
 
       await refetch();
     } catch (err) {
-      console.error('[MentorProfileEdit] Save error:', err);
+      log.error('[MentorProfileEdit] Save error:', err);
       toast({
         title: t('mentor.save_error', 'Error saving'),
         description: t('mentor.save_error_description', 'Failed to save your changes. Please try again.'),

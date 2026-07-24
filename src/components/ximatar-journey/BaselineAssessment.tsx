@@ -8,6 +8,7 @@ import { Upload, FileText, Check, AlertCircle, SkipForward } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox';
 import FieldSelector, { FieldKey } from '@/components/FieldSelector';
 import { CV_PROCESSING_VERSION } from '@/lib/legal/consentVersions';
+import { log } from '@/lib/log';
 
 interface BaselineAssessmentProps {
   onComplete: (step: number) => void;
@@ -106,7 +107,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
         description: t('guestCv.success', 'I risultati saranno collegati al tuo profilo al momento della registrazione.'),
       });
     } catch (error) {
-      console.error('[BaselineAssessment] CV upload error:', error);
+      log.error('[BaselineAssessment] CV upload error:', error);
       toast({
         title: t('common.error', 'Errore'),
         description: error instanceof Error ? error.message : 'Failed to analyze CV',

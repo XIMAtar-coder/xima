@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { log } from '@/lib/log';
 
 export interface MentorAvailabilitySlot {
   id: string;
@@ -80,7 +81,7 @@ export function useCandidateMentorCalendar(selectedMentorId: string | null) {
         setSlots([]);
       }
     } catch (err) {
-      console.error('[useCandidateMentorCalendar] Error:', err);
+      log.error('[useCandidateMentorCalendar] Error:', err);
     } finally {
       setLoading(false);
     }

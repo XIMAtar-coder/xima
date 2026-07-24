@@ -14,6 +14,7 @@ import { XIMATAR_PROFILES } from '@/lib/ximatarTaxonomy';
 import { PoolCandidateCard } from '@/components/business/PoolCandidateCard';
 import { ArchetypeChip } from '@/components/business/ArchetypeChip';
 import { Users, ChevronLeft, ChevronRight, X, Sparkles, Lock, Filter, Target } from 'lucide-react';
+import { log } from '@/lib/log';
 
 const PAGE_SIZE = 20;
 
@@ -105,7 +106,7 @@ const BusinessCandidates = () => {
       setPlanLimit(Number(data?.plan_limit ?? 5));
       setIsRestricted(Boolean(data?.is_restricted));
     } catch (err) {
-      console.error('[Pool] Fetch error:', err);
+      log.error('[Pool] Fetch error:', err);
       if (seq !== fetchSeq.current) return;
       setCandidates([]);
       setTotalCount(0);

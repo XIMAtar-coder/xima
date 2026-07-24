@@ -13,6 +13,7 @@ import { ConsentCheckboxes } from '@/components/auth/ConsentCheckboxes';
 import { recordUserConsents } from '@/hooks/useConsentRecording';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
+import { log } from '@/lib/log';
 
 const INDUSTRIES = [
   'technology', 'finance', 'consulting', 'manufacturing',
@@ -114,7 +115,7 @@ const BusinessRegister = () => {
           },
         }).then(({ data, error }) => {
           if (error) {
-            console.error('Company profile gen error:', error);
+            log.error('Company profile gen error:', error);
             return;
           }
           if ((data as any)?.website_scan_status === 'insufficient') {
@@ -123,7 +124,7 @@ const BusinessRegister = () => {
               description: t('business.dashboard.profile_generated_partial', 'Non siamo riusciti a leggere bene il sito — abbiamo usato i dati che hai inserito; puoi modificare il profilo.'),
             });
           }
-        }).catch(e => console.error('Company profile gen error:', e));
+        }).catch(e => log.error('Company profile gen error:', e));
       }
 
       toast({
@@ -132,7 +133,7 @@ const BusinessRegister = () => {
       });
       setTimeout(() => navigate('/business/login'), 2000);
     } catch (error: any) {
-      console.error('Registration error:', error);
+      log.error('Registration error:', error);
       toast({
         title: t('businessRegistration.failed', 'Registration Failed'),
         description: error.message,

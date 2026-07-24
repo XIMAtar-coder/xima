@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Shield, FileText, User, AlertCircle } from 'lucide-react';
+import { log } from '@/lib/log';
 
 interface MentorCVConsentToggleProps {
   candidateProfileId: string;
@@ -48,13 +49,13 @@ export function MentorCVConsentToggle({
         .maybeSingle();
 
       if (error) {
-        console.error('[MentorCVConsentToggle] Error fetching consent:', error);
+        log.error('[MentorCVConsentToggle] Error fetching consent:', error);
         return;
       }
 
       setIsAllowed(data?.is_allowed || false);
     } catch (err) {
-      console.error('[MentorCVConsentToggle] Error:', err);
+      log.error('[MentorCVConsentToggle] Error:', err);
     } finally {
       setLoading(false);
     }
@@ -82,7 +83,7 @@ export function MentorCVConsentToggle({
         });
 
       if (upsertError) {
-        console.error('[MentorCVConsentToggle] Error updating consent:', upsertError);
+        log.error('[MentorCVConsentToggle] Error updating consent:', upsertError);
         throw upsertError;
       }
 
@@ -104,7 +105,7 @@ export function MentorCVConsentToggle({
           });
 
         if (auditError) {
-          console.error('[MentorCVConsentToggle] Error logging audit:', auditError);
+          log.error('[MentorCVConsentToggle] Error logging audit:', auditError);
           // Don't fail the operation for audit errors
         }
       }
@@ -120,7 +121,7 @@ export function MentorCVConsentToggle({
           : t('settings.cv_access_revoked_desc', 'Your mentor can no longer view your CV'),
       });
     } catch (err: any) {
-      console.error('[MentorCVConsentToggle] Error:', err);
+      log.error('[MentorCVConsentToggle] Error:', err);
       toast({
         title: t('common.error'),
         description: err.message || t('settings.cv_consent_error', 'Failed to update consent'),

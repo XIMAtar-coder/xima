@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { RealtimeChannel } from '@supabase/supabase-js';
+import { log } from '@/lib/log';
 
 export interface ChatUser {
   id: string;
@@ -71,10 +72,10 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
         .maybeSingle();
 
       if (error) {
-        console.error('[useRealtimeChat] Error fetching profile id:', error);
+        log.error('[useRealtimeChat] Error fetching profile id:', error);
       } else if (data) {
         setCurrentProfileId(data.id);
-        console.log('[useRealtimeChat] Current profile id:', data.id);
+        log.debug('[useRealtimeChat] Current profile id:', data.id);
       }
     };
 
@@ -86,7 +87,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
     if (!currentProfileId) return;
     
     setLoadingThreads(true);
-    console.log('[useRealtimeChat] Fetching recent threads for profile:', currentProfileId);
+    log.debug('[useRealtimeChat] Fetching recent threads for profile:', currentProfileId);
 
     try {
       // Get threads the user participates in
@@ -96,7 +97,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
         .eq('user_id', currentProfileId);
 
       if (partError) {
-        console.error('[useRealtimeChat] Error fetching participations:', partError);
+        log.error('[useRealtimeChat] Error fetching participations:', partError);
         return;
       }
 
@@ -162,9 +163,9 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
       });
 
       setRecentThreads(threads);
-      console.log('[useRealtimeChat] Recent threads:', threads);
+      log.debug('[useRealtimeChat] Recent threads:', threads);
     } catch (err) {
-      console.error('[useRealtimeChat] Exception fetching threads:', err);
+      log.error('[useRealtimeChat] Exception fetching threads:', err);
     } finally {
       setLoadingThreads(false);
     }
@@ -239,7 +240,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
         .limit(MAX_RESULTS);
 
       if (error) {
-        console.error('[useRealtimeChat] Search error:', error);
+        log.error('[useRealtimeChat] Search error:', error);
         setFetchError(`Search failed: ${error.message}`);
         setUsers([]);
       } else if (data) {
@@ -258,7 +259,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
       }
       setHasSearched(true);
     } catch (err) {
-      console.error('[useRealtimeChat] Search exception:', err);
+      log.error('[useRealtimeChat] Search exception:', err);
       setFetchError('Search failed unexpectedly');
       setUsers([]);
       setHasSearched(true);
@@ -311,7 +312,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
         .order('created_at', { ascending: true });
 
       if (error) {
-        console.error('[useRealtimeChat] Error fetching messages:', error);
+        log.error('[useRealtimeChat] Error fetching messages:', error);
         return;
       }
 
@@ -335,14 +336,14 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
         );
       }
     } catch (err) {
-      console.error('[useRealtimeChat] Exception fetching messages:', err);
+      log.error('[useRealtimeChat] Exception fetching messages:', err);
     }
   }, []);
 
   // GDPR-SAFE: Thread creation is now restricted to B2C and M2C only via RPC
   // Legacy openThread is deprecated - use createSecureThread instead
   const openThread = useCallback(async (otherUserId: string) => {
-    console.warn('[useRealtimeChat] openThread is deprecated. Direct thread creation is no longer supported for privacy compliance.');
+    log.warn('[useRealtimeChat] openThread is deprecated. Direct thread creation is no longer supported for privacy compliance.');
     setThreadError('Direct thread creation is disabled. Use mutual interest or mentor match to initiate conversations.');
   }, []);
 
@@ -372,7 +373,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
       });
 
       if (error) {
-        console.error('[useRealtimeChat] Error creating secure thread:', error);
+        log.error('[useRealtimeChat] Error creating secure thread:', error);
         setThreadError(error.message);
         return null;
       }
@@ -387,7 +388,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
 
       return null;
     } catch (err) {
-      console.error('[useRealtimeChat] Exception creating secure thread:', err);
+      log.error('[useRealtimeChat] Exception creating secure thread:', err);
       setThreadError('Failed to create conversation');
       return null;
     }
@@ -402,11 +403,11 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
   }, [fetchMessages]);
   const sendMessage = useCallback(async (body: string): Promise<boolean> => {
     if (!selectedThread || !currentProfileId || !body.trim()) {
-      console.log('[useRealtimeChat] sendMessage: Missing required data', { selectedThread, currentProfileId, hasBody: !!body.trim() });
+      log.debug('[useRealtimeChat] sendMessage: Missing required data', { selectedThread, currentProfileId, hasBody: !!body.trim() });
       return false;
     }
 
-    console.log('[useRealtimeChat] Sending message:', { 
+    log.debug('[useRealtimeChat] Sending message:', { 
       thread_id: selectedThread, 
       sender_id: currentProfileId, 
       body: body.trim().substring(0, 50) + '...' 
@@ -441,14 +442,14 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
         .single();
 
       if (error) {
-        console.error('[useRealtimeChat] Error sending message:', error);
+        log.error('[useRealtimeChat] Error sending message:', error);
         setSendError(`Failed to send: ${error.message}`);
         // Remove optimistic message on error
         setMessages(prev => prev.filter(m => m.id !== optimisticId));
         return false;
       }
 
-      console.log('[useRealtimeChat] Message sent successfully:', data);
+      log.debug('[useRealtimeChat] Message sent successfully:', data);
       
       // Replace optimistic message with real one (realtime will also fire, but we handle duplicates)
       setMessages(prev => prev.map(m => 
@@ -459,7 +460,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
       
       return true;
     } catch (err) {
-      console.error('[useRealtimeChat] Exception sending message:', err);
+      log.error('[useRealtimeChat] Exception sending message:', err);
       setSendError('An unexpected error occurred');
       setMessages(prev => prev.filter(m => m.id !== optimisticId));
       return false;
@@ -472,7 +473,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
   useEffect(() => {
     if (!selectedThread) return;
 
-    console.log('[useRealtimeChat] Subscribing to thread:', selectedThread);
+    log.debug('[useRealtimeChat] Subscribing to thread:', selectedThread);
 
     const channel: RealtimeChannel = supabase
       .channel(`chat-thread-${selectedThread}`)
@@ -485,7 +486,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
           filter: `thread_id=eq.${selectedThread}`
         },
         async (payload) => {
-          console.log('[useRealtimeChat] New message received:', payload);
+          log.debug('[useRealtimeChat] New message received:', payload);
           // Fetch the new message with sender info
           const newMsg = payload.new as any;
           
@@ -516,11 +517,11 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
         }
       )
       .subscribe((status) => {
-        console.log('[useRealtimeChat] Subscription status:', status);
+        log.debug('[useRealtimeChat] Subscription status:', status);
       });
 
     return () => {
-      console.log('[useRealtimeChat] Unsubscribing from thread:', selectedThread);
+      log.debug('[useRealtimeChat] Unsubscribing from thread:', selectedThread);
       supabase.removeChannel(channel);
     };
   }, [selectedThread]);

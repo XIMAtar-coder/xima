@@ -20,6 +20,7 @@
 import enTranslations from '@/i18n/locales/en.json';
 import itTranslations from '@/i18n/locales/it.json';
 import esTranslations from '@/i18n/locales/es.json';
+import { log } from '@/lib/log';
 
 export const ASSESSMENT_VERSION = "1.2.1";
 
@@ -140,7 +141,7 @@ export function validateAssessmentFreeze(): Record<string, string> | null {
   // If any violations, fail loudly
   if (violations.length > 0) {
     const fullMessage = `🚨 FATAL: Assessment Freeze Check Failed\n\n${violations.join('\n\n')}`;
-    console.error(fullMessage);
+    log.error(fullMessage);
     
     if (import.meta.env.PROD) {
       // In production, throw to prevent app from starting with corrupted content
@@ -150,7 +151,7 @@ export function validateAssessmentFreeze(): Record<string, string> | null {
 
   if (!freezeInitialized) {
     freezeInitialized = true;
-    console.log(
+    log.debug(
       `✅ [Assessment Freeze] v${ASSESSMENT_VERSION} validated\n` +
       `   EN: ${currentHashes.en}\n` +
       `   IT: ${currentHashes.it}\n` +
@@ -181,7 +182,7 @@ export function verifyFreezeIntegrity(): boolean {
   }
 
   const status = allPass ? '✅ PASS' : '❌ FAIL';
-  console.log(`[Freeze Integrity Check] ${status}\n${results.join('\n')}`);
+  log.debug(`[Freeze Integrity Check] ${status}\n${results.join('\n')}`);
   return allPass;
 }
 
@@ -191,9 +192,9 @@ export function verifyFreezeIntegrity(): boolean {
  */
 export function regenerateHashes(): void {
   const hashes = computeAllHashes();
-  console.log('=== Assessment Freeze Hashes (copy into ASSESSMENT_FREEZE_HASHES) ===');
+  log.debug('=== Assessment Freeze Hashes (copy into ASSESSMENT_FREEZE_HASHES) ===');
   for (const [lang, hash] of Object.entries(hashes)) {
-    console.log(`  ${lang}: "${hash}",`);
+    log.debug(`  ${lang}: "${hash}",`);
   }
-  console.log('Replace null values in freezeGuard.ts with these hashes, then commit.');
+  log.debug('Replace null values in freezeGuard.ts with these hashes, then commit.');
 }

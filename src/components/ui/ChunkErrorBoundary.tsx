@@ -1,4 +1,5 @@
 import React from 'react';
+import { log } from '@/lib/log';
 
 interface State { hasError: boolean; reloaded: boolean }
 
@@ -33,7 +34,7 @@ export class ChunkErrorBoundary extends React.Component<{ children: React.ReactN
       }
     }
     // eslint-disable-next-line no-console
-    console.error('[ChunkErrorBoundary]', error);
+    log.error('[ChunkErrorBoundary]', error);
   }
 
   render() {
@@ -50,7 +51,7 @@ export class ChunkErrorBoundary extends React.Component<{ children: React.ReactN
             type="button"
             className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90"
             onClick={() => {
-              try { sessionStorage.removeItem('__xima_chunk_reload'); } catch {}
+              try { sessionStorage.removeItem('__xima_chunk_reload'); } catch (e) { /* storage unavailable */ void e; }
               window.location.reload();
             }}
           >

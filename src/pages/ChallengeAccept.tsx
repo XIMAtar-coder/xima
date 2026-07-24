@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Target, Building2, CheckCircle2, XCircle, Clock, ArrowRight, Loader2, AlertTriangle, CalendarClock } from 'lucide-react';
 import MainLayout from '@/components/layout/MainLayout';
 import { getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
+import { log } from '@/lib/log';
 
 interface InvitationDetails {
   id: string;
@@ -55,7 +56,7 @@ const ChallengeAccept = () => {
       });
 
       if (fnError || data?.error) {
-        console.error('Invitation verification failed:', fnError || data?.error);
+        log.error('Invitation verification failed:', fnError || data?.error);
         setError(data?.message || 'Invitation not found or expired');
         setLoading(false);
         return;
@@ -81,7 +82,7 @@ const ChallengeAccept = () => {
         challenge_status: inv.challenge_status || null
       });
     } catch (err) {
-      console.error('Error fetching invitation:', err);
+      log.error('Error fetching invitation:', err);
       setError('Failed to load invitation');
     } finally {
       setLoading(false);
@@ -143,7 +144,7 @@ const ChallengeAccept = () => {
         }
       });
     } catch (err: any) {
-      console.error('Error accepting invitation:', err);
+      log.error('Error accepting invitation:', err);
       toast({
         title: t('common.error'),
         description: err.message,
@@ -187,7 +188,7 @@ const ChallengeAccept = () => {
 
       navigate('/profile');
     } catch (err: any) {
-      console.error('Error declining invitation:', err);
+      log.error('Error declining invitation:', err);
       toast({
         title: t('common.error'),
         description: err.message,

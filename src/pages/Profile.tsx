@@ -28,8 +28,10 @@ import { XimaJourneyGuideModal } from '@/components/onboarding/XimaJourneyGuideM
 import { useOnboardingState } from '@/hooks/useOnboardingState';
 
 import { supabase } from '@/integrations/supabase/client';
+import { useSupabaseQuery } from '@/lib/data/useSupabaseQuery';
 import { useToast } from '@/hooks/use-toast';
 import Seo from '@/components/Seo';
+import { log } from '@/lib/log';
 
 const Profile = () => {
   const { user, isAuthenticated } = useUser();
@@ -46,17 +48,16 @@ const Profile = () => {
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [dismissedPrompt, setDismissedPrompt] = useState(false);
 
-  // Admin redirect: admins should never see the candidate dashboard
+  // Admin redirect: admins should never see the candidate dashboard.
+  // Uses the shared data layer so the roles fetch is cached across pages.
+  const { data: userRoles } = useSupabaseQuery<Array<{ role: string }>>(
+    ['user_roles', user?.id],
+    () => supabase.from('user_roles').select('role').eq('user_id', user!.id),
+    { enabled: !!user?.id, staleTime: 5 * 60_000 }
+  );
   useEffect(() => {
-    if (!user?.id) return;
-    let cancelled = false;
-    (async () => {
-      const { data } = await supabase.from('user_roles').select('role').eq('user_id', user.id);
-      if (cancelled) return;
-      if (data?.some((r: any) => r.role === 'admin')) navigate('/admin', { replace: true });
-    })();
-    return () => { cancelled = true; };
-  }, [user?.id, navigate]);
+    if (userRoles?.some((r) => r.role === 'admin')) navigate('/admin', { replace: true });
+  }, [userRoles, navigate]);
 
   const hasMentor = !!profileData.mentor_profile;
 
@@ -92,9 +93,9 @@ const Profile = () => {
             locale: pending.locale || 'en',
           },
         },
-      }).catch((e) => console.warn('[Profile] welcome email failed:', e));
+      }).catch((e) => log.warn('[Profile] welcome email failed:', e));
     } catch (e) {
-      console.warn('[Profile] welcome email parse error:', e);
+      log.warn('[Profile] welcome email parse error:', e);
     } finally {
       sessionStorage.removeItem('xima_pending_welcome');
     }
@@ -125,7 +126,7 @@ const Profile = () => {
           setProfileRefreshKey(prev => prev + 1);
         }
       } catch (error) {
-        console.error('[Profile] Failed to process mentor assignment:', error);
+        log.error('[Profile] Failed to process mentor assignment:', error);
       } finally { setProcessingMentor(false); }
     };
     const timeout = setTimeout(() => { processPendingMentorAssignment(); }, 1000);

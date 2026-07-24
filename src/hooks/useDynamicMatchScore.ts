@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { Job } from '@/services/jobFeed';
+import { log } from '@/lib/log';
 
 export interface DynamicMatchBreakdown {
   score: number;
@@ -111,7 +112,7 @@ export const useDynamicMatchScore = (job: Job | null) => {
           ximatarBonus,
         });
       } catch (error) {
-        console.error('Error computing dynamic match:', error);
+        log.error('Error computing dynamic match:', error);
         setMatch(null);
       } finally {
         setLoading(false);

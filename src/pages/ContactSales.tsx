@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Mail, CheckCircle, ArrowLeft, Loader2 } from 'lucide-react';
 import LandingLayout from '@/components/landing/LandingLayout';
 import Seo from '@/components/Seo';
+import { log } from '@/lib/log';
 
 const ContactSales: React.FC = () => {
   const { t } = useTranslation();
@@ -58,7 +59,7 @@ const ContactSales: React.FC = () => {
 
       setSubmitted(true);
     } catch (err: any) {
-      console.error('[ContactSales] Error:', err);
+      log.error('[ContactSales] Error:', err);
       toast({
         title: t('common.error', 'Error'),
         description: err.message || t('contact_sales.submit_failed', 'Failed to submit. Please try again.'),

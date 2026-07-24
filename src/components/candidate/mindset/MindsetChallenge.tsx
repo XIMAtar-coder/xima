@@ -9,6 +9,7 @@ import { InstinctCards } from './InstinctCards';
 import { LivingDay } from './LivingDay';
 import { GuideDebrief } from './GuideDebrief';
 import { ResolveScreen } from './ResolveScreen';
+import { log } from '@/lib/log';
 import {
   DayGesture,
   DayItem,
@@ -101,7 +102,7 @@ export function MindsetChallenge({ invitationId, challengeId, config }: Props) {
       await draft.submit(finalPayload, challengeId);
       setStep('resolve');
     } catch (e: any) {
-      console.error('[mindset] submit error', e);
+      log.error('[mindset] submit error', e);
       toast({
         title: 'Errore',
         description: e?.message || 'Non sono riuscito a salvare. Riprova.',

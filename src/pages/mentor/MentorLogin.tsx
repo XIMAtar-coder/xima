@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { useToast } from '@/hooks/use-toast';
 import { GraduationCap, Mail, Lock } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
+import { log } from '@/lib/log';
 
 const MentorLogin = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const MentorLogin = () => {
             }
           }
         } catch (error) {
-          console.error('Error checking mentor status:', error);
+          log.error('Error checking mentor status:', error);
         } finally {
           setCheckingMentor(false);
         }
@@ -87,7 +88,7 @@ const MentorLogin = () => {
 
       navigate('/mentor');
     } catch (error: any) {
-      console.error('Mentor login error:', error);
+      log.error('Mentor login error:', error);
       toast({
         title: t('login.login_failed', 'Login Failed'),
         description: error.message || t('login.invalid_credentials', 'Invalid email or password'),

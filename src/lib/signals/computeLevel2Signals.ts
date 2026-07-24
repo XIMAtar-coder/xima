@@ -40,25 +40,26 @@ interface Level2Payload {
 }
 
 import { getBusinessLocale } from '@/hooks/useBusinessLocale';
+import { log } from '@/lib/log';
 
 /**
  * Call the edge function to compute Level 2 signals using AI
  */
 export async function computeLevel2SignalsAsync(submissionId: string, locale?: string): Promise<Level2SignalsPayload> {
   const effectiveLocale = locale || getBusinessLocale();
-  console.log('Calling compute-level2-signals edge function for:', submissionId, 'locale:', effectiveLocale);
+  log.debug('Calling compute-level2-signals edge function for:', submissionId, 'locale:', effectiveLocale);
   
   const { data, error } = await supabase.functions.invoke('compute-level2-signals', {
     body: { submission_id: submissionId, locale: effectiveLocale }
   });
 
   if (error) {
-    console.error('Edge function error:', error);
+    log.error('Edge function error:', error);
     throw new Error(error.message || 'Failed to compute Level 2 signals');
   }
 
   if (data?.error) {
-    console.error('Edge function returned error:', data.error);
+    log.error('Edge function returned error:', data.error);
     throw new Error(data.error);
   }
 

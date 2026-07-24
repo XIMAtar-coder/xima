@@ -19,6 +19,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
 import { prepareImageForUpload } from '@/lib/images/prepareImageForUpload';
 import { toast } from 'sonner';
+import { log } from '@/lib/log';
 
 type RowStatus = 'ok' | 'skipped' | 'error';
 
@@ -81,7 +82,7 @@ export function MediaMaintenancePanel() {
       setTotal(found.length);
       toast.success(`Trovati ${found.length} file in "${BUCKET}"`);
     } catch (e: any) {
-      console.error(e);
+      log.error(e);
       toast.error(e?.message || 'Scan fallito');
     } finally {
       setScanning(false);

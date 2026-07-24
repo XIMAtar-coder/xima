@@ -23,6 +23,7 @@ import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
 import { signalTooltips } from '@/lib/signals/interpretSignals';
 import type { HiringGoal } from '@/hooks/useHiringGoals';
 import { useChallengeResponsesData, InvitationWithSubmission, ReviewDecision } from '@/hooks/useChallengeResponsesData';
+import { log } from '@/lib/log';
 
 interface ChallengeInfo {
   id: string;
@@ -136,7 +137,7 @@ export default function ChallengeResponses() {
         setCurrentGoal((goal || null) as HiringGoal | null);
 
       } catch (error) {
-        console.error('Error loading challenge data:', error);
+        log.error('Error loading challenge data:', error);
         toast({ title: t('common.error'), variant: 'destructive' });
       } finally {
         setChallengeLoading(false);
@@ -240,7 +241,7 @@ export default function ChallengeResponses() {
 
       toast({ title: t('business.compare.signals_generated') });
     } catch (error) {
-      console.error('Error generating signals:', error);
+      log.error('Error generating signals:', error);
       toast({ title: t('common.error'), variant: 'destructive' });
     } finally {
       setGeneratingSignals(null);

@@ -7,6 +7,7 @@
 
 import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { log } from '@/lib/log';
 
 export type BusinessLocale = 'en' | 'it' | 'es';
 
@@ -36,7 +37,7 @@ export function useBusinessLocale() {
       if (VALID_LOCALES.includes(normalizedLang as BusinessLocale)) {
         localStorage.setItem(LANGUAGE_STORAGE_KEY, normalizedLang);
         if (import.meta.env.DEV) {
-          console.log('[i18n] Language changed to:', normalizedLang);
+          log.debug('[i18n] Language changed to:', normalizedLang);
         }
       }
     };

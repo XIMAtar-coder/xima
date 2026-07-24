@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
+import { log } from '@/lib/log';
 import {
   Video,
   Camera,
@@ -109,7 +110,7 @@ export default function StandingUploadMode({
     try {
       duration = await getVideoDuration(file);
     } catch (err) {
-      console.warn('Could not read video duration:', err);
+      log.warn('Could not read video duration:', err);
       // Don't block - duration is optional
     }
 
@@ -215,7 +216,7 @@ export default function StandingUploadMode({
         });
 
       if (uploadError) {
-        console.error('Upload error:', uploadError);
+        log.error('Upload error:', uploadError);
         throw uploadError;
       }
 
@@ -276,7 +277,7 @@ export default function StandingUploadMode({
       
       onSubmitted(newSubmissionId || '', now);
     } catch (err) {
-      console.error('Upload error:', err);
+      log.error('Upload error:', err);
       toast({
         title: t('common.error'),
         description: t('level3.standing.upload_failed'),

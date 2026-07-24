@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { prepareImageForUpload } from '@/lib/images/prepareImageForUpload';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
+import { log } from '@/lib/log';
 
 interface LogoUploaderProps {
   currentLogo?: string | null;
@@ -61,7 +62,7 @@ export const LogoUploader = ({ currentLogo, onUpload }: LogoUploaderProps) => {
         .eq('user_id', user.id)
         .select('user_id, logo_url');
       if (updateError) {
-        console.error('[LogoUploader] business_profiles update failed', updateError);
+        log.error('[LogoUploader] business_profiles update failed', updateError);
         throw updateError;
       }
       if (!updated || updated.length === 0) {

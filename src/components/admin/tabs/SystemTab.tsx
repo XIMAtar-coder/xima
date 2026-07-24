@@ -8,6 +8,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { RefreshCw, Trash2, Database, Clock, Activity, Zap } from 'lucide-react';
+import { log } from '@/lib/log';
 
 type HealthStatus = 'ok' | 'degraded' | 'down' | 'checking';
 type HealthResult = { status: HealthStatus; latencyMs: number | null; lastCheckedAt: number | null; error?: string };
@@ -39,7 +40,7 @@ function checkRealtime(): Promise<HealthResult> {
     const finish = (r: HealthResult) => {
       if (done) return;
       done = true;
-      try { supabase.removeChannel(channel); } catch {}
+      try { supabase.removeChannel(channel); } catch (e) { log.warn('[SystemTab] removeChannel failed', e); }
       resolve(r);
     };
     const timeout = setTimeout(() => finish({ status: 'down', latencyMs: null, lastCheckedAt: Date.now(), error: 'timeout' }), 5000);

@@ -28,6 +28,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { format, parseISO, isAfter, isBefore, addMinutes, subMinutes } from 'date-fns';
 import { it, enUS } from 'date-fns/locale';
+import { log } from '@/lib/log';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -166,7 +167,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
       });
 
       if (error) {
-        console.error('[MentorSection] Error fetching availability:', error);
+        log.error('[MentorSection] Error fetching availability:', error);
         setAvailabilityState('no_availability');
         setAvailabilityMessage(t('profile.error_fetching_availability', 'Error loading availability'));
         // Silently fail — don't show disruptive toast for non-critical feature
@@ -191,7 +192,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
         }
       }
     } catch (error) {
-      console.error('[MentorSection] Exception fetching availability:', error);
+      log.error('[MentorSection] Exception fetching availability:', error);
       setAvailabilityState('no_availability');
       // Silently handle — don't show error toast for mentor availability
     } finally {
@@ -215,7 +216,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
       });
 
       if (error) {
-        console.error('[MentorSection] RPC error:', error);
+        log.error('[MentorSection] RPC error:', error);
         toast({
           title: t('common.error'),
           description: error.message || t('profile.booking_failed'),
@@ -266,7 +267,7 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ mentor, onBookingS
         setShowConfirmDialog(false);
       }
     } catch (error: any) {
-      console.error('[MentorSection] Booking error:', error);
+      log.error('[MentorSection] Booking error:', error);
       toast({
         title: t('common.error'),
         description: error.message || t('profile.booking_failed'),

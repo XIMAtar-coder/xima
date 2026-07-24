@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Briefcase, MapPin, ArrowLeft, Loader2, FileUp } from 'lucide-react';
 import PdfImportModal from '@/components/business/PdfImportModal';
+import { log } from '@/lib/log';
 
 const CreateJobOffer = () => {
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ const CreateJobOffer = () => {
 
       navigate('/business/jobs');
     } catch (error: any) {
-      console.error('Error creating job offer:', error);
+      log.error('Error creating job offer:', error);
       toast({
         title: t('common.error'),
         description: error.message || t('jobs.failed_create'),

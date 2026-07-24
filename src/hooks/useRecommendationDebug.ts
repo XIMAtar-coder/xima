@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 import { 
   XIMATAR_PROFILES, 
   XIMATAR_PILLAR_VECTORS,
@@ -308,11 +309,11 @@ export function useRecommendationDebug(businessId: string | undefined, hiringGoa
       setDebugData(data);
       
       // Log to console for easy debugging
-      console.log('[RecommendationDebug] Full debug data:', data);
-      console.log('[RecommendationDebug] Engine result:', engineResult);
+      log.debug('[RecommendationDebug] Full debug data:', data);
+      log.debug('[RecommendationDebug] Engine result:', engineResult);
       
     } catch (err: any) {
-      console.error('[RecommendationDebug] Error:', err);
+      log.error('[RecommendationDebug] Error:', err);
       setError(err.message || 'Failed to load debug data');
     } finally {
       setLoading(false);

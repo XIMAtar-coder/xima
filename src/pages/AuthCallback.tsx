@@ -5,6 +5,7 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
 import { getPostLoginRedirectPath } from '@/hooks/usePostLoginRedirect';
 import Seo from '@/components/Seo';
+import { log } from '@/lib/log';
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -15,8 +16,8 @@ const AuthCallback = () => {
     let timeoutId: ReturnType<typeof setTimeout>;
 
     const handleAuthCallback = async () => {
-      console.log('AuthCallback: Starting OAuth callback handling');
-      console.log('AuthCallback: Current URL:', window.location.href);
+      log.debug('AuthCallback: Starting OAuth callback handling');
+      log.debug('AuthCallback: Current URL:', window.location.href);
 
       // Check for error in URL params
       const urlParams = new URLSearchParams(window.location.search);
@@ -26,7 +27,7 @@ const AuthCallback = () => {
       const errorDescription = urlParams.get('error_description') || hashParams.get('error_description');
 
       if (errorParam) {
-        console.error('OAuth error from provider:', errorParam, errorDescription);
+        log.error('OAuth error from provider:', errorParam, errorDescription);
         if (isMounted) {
           navigate('/login', { replace: true });
         }
@@ -38,21 +39,21 @@ const AuthCallback = () => {
       // Set up a listener for auth state change
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         async (event, session) => {
-          console.log('AuthCallback: Auth state changed:', event, session?.user?.id);
+          log.debug('AuthCallback: Auth state changed:', event, session?.user?.id);
           
           if (!isMounted) return;
 
           if (event === 'SIGNED_IN' && session?.user) {
-            console.log('AuthCallback: User signed in via OAuth:', session.user.email);
+            log.debug('AuthCallback: User signed in via OAuth:', session.user.email);
             
             // Sync any guest assessment data to the new user's profile
             try {
               const synced = await syncGuestAssessmentToProfile(session.user.id);
               if (synced) {
-                console.log('✅ Guest assessment data synced successfully');
+                log.debug('✅ Guest assessment data synced successfully');
               }
             } catch (syncError) {
-              console.warn('Assessment sync warning (non-blocking):', syncError);
+              log.warn('Assessment sync warning (non-blocking):', syncError);
             }
 
             // Determine redirect based on user role
@@ -70,20 +71,20 @@ const AuthCallback = () => {
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error('AuthCallback: Error getting session:', error);
+          log.error('AuthCallback: Error getting session:', error);
         }
 
         if (session?.user && isMounted) {
-          console.log('AuthCallback: Existing session found for:', session.user.email);
+          log.debug('AuthCallback: Existing session found for:', session.user.email);
           
           // Sync any guest assessment data
           try {
             const synced = await syncGuestAssessmentToProfile(session.user.id);
             if (synced) {
-              console.log('✅ Guest assessment data synced successfully');
+              log.debug('✅ Guest assessment data synced successfully');
             }
           } catch (syncError) {
-            console.warn('Assessment sync warning (non-blocking):', syncError);
+            log.warn('Assessment sync warning (non-blocking):', syncError);
           }
 
           setIsProcessing(false);
@@ -92,13 +93,13 @@ const AuthCallback = () => {
           return;
         }
       } catch (err) {
-        console.error('AuthCallback: Exception checking session:', err);
+        log.error('AuthCallback: Exception checking session:', err);
       }
 
       // Set a timeout to redirect to login if nothing happens after 10 seconds
       timeoutId = setTimeout(() => {
         if (isMounted && isProcessing) {
-          console.log('AuthCallback: Timeout - no session established');
+          log.debug('AuthCallback: Timeout - no session established');
           navigate('/login', { replace: true });
         }
       }, 10000);

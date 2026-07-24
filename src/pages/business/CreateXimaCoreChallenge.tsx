@@ -29,6 +29,7 @@ import type { Json } from '@/integrations/supabase/types';
 import { XIMA_CORE_CHALLENGE } from '@/lib/challenges/ximaCoreChallenge';
 import { buildChallengePayload } from '@/features/challenge-builder/saveChallenge';
 import { labelForCcnl } from '@/lib/business/ccnl';
+import { log } from '@/lib/log';
 import {
   ArrowLeft,
   Brain,
@@ -407,7 +408,7 @@ const CreateXimaCoreChallenge = () => {
         throw new Error('Scenario generation returned no valid scenario');
       }
     } catch (err) {
-      console.error('Failed to generate scenario:', err);
+      log.error('Failed to generate scenario:', err);
       setScenario(t('challenge.xima_core.scenario_generation_failed'));
       setGenerationError(true);
       setIsFallbackScenario(false);
@@ -502,7 +503,7 @@ const CreateXimaCoreChallenge = () => {
         navigate('/business/challenges');
       }
     } catch (err: any) {
-      console.error('Save error:', err);
+      log.error('Save error:', err);
       toast({ title: t('common.error'), description: err.message, variant: 'destructive' });
     } finally {
       setSaving(false);

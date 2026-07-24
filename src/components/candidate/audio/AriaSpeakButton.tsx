@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Volume2, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 /**
  * PART 4B — Aria voice playback.
@@ -38,7 +39,7 @@ export function AriaSpeakButton({ text, messageKey }: Props) {
       audioRef.current = a;
       await a.play();
     } catch (err) {
-      console.warn('[aria-speak] error', err);
+      log.warn('[aria-speak] error', err);
       setHidden(true);
     } finally {
       setBusy(false);

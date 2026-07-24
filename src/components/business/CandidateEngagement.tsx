@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Users, TrendingUp, Award } from 'lucide-react';
+import { log } from '@/lib/log';
 
 interface CandidateEngagementData {
   totalViews: number;
@@ -87,7 +88,7 @@ export const CandidateEngagement = () => {
         recentCandidates
       });
     } catch (error) {
-      console.error('Error fetching engagement data:', error);
+      log.error('Error fetching engagement data:', error);
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import { log } from '@/lib/log';
 
 export type JobInteractionStatus = 'saved' | 'applied' | 'viewed';
 
@@ -37,7 +38,7 @@ export const useJobInteractions = (jobId?: string) => {
       if (error) throw error;
       setInteractions((data as JobInteraction[]) || []);
     } catch (error) {
-      console.error('Error fetching job interactions:', error);
+      log.error('Error fetching job interactions:', error);
     } finally {
       setLoading(false);
     }
@@ -76,7 +77,7 @@ export const useJobInteractions = (jobId?: string) => {
       await fetchInteractions();
       return true;
     } catch (error) {
-      console.error('Error tracking interaction:', error);
+      log.error('Error tracking interaction:', error);
       return false;
     }
   };

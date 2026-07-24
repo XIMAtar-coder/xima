@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { User } from "@/types";
 import { getJobs, computeMatch, Job } from "@/services/jobFeed";
+import { log } from '@/lib/log';
 
 export type JobMatch = {
   job: Job;
@@ -37,7 +38,7 @@ export function useJobMatches(user: User | null) {
     try {
       const rec: CacheRecord = { ts: Date.now(), pillarsJson, matches: top };
       localStorage.setItem(key(userId), JSON.stringify(rec));
-    } catch { }
+    } catch (e) { log.warn('[useJobMatches] fetch failed', e); }
     setLoading(false);
   };
 
@@ -58,7 +59,7 @@ export function useJobMatches(user: User | null) {
           return;
         }
       }
-    } catch { }
+    } catch (e) { log.warn('[useJobMatches] fetch failed', e); }
     // Otherwise compute
     compute();
     // eslint-disable-next-line react-hooks/exhaustive-deps
