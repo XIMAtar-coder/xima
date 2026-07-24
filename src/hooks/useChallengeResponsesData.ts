@@ -4,7 +4,7 @@ import type { SignalsPayload } from '@/lib/signals/computeSignals';
 import { log } from '@/lib/log';
 
 export type ResponseStatus = 'pending' | 'draft' | 'submitted';
-export type ReviewDecision = 'shortlist' | 'followup' | 'pass' | null;
+export type ReviewDecision = 'shortlist' | 'followup' | 'pass' | 'proceed_level2' | 'proceed_level3' | null;
 
 export interface InvitationWithSubmission {
   invitationId: string;
