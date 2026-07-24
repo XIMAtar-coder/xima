@@ -182,10 +182,9 @@ export default function SystemTab() {
             <RefreshCw className={`mr-2 h-4 w-4 ${checking ? 'animate-spin' : ''}`} /> Refresh
           </Button>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {([
             { name: 'Database', r: db },
-            { name: 'Edge Functions', r: edge },
             { name: 'Realtime', r: rt },
           ] as const).map(({ name, r }) => {
             const c = badgeClasses(r.status);
