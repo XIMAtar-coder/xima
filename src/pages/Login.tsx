@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '../context/UserContext';
 import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
+import { Logo } from '@/components/Logo';
 import { getPostLoginRedirectPath } from '@/hooks/usePostLoginRedirect';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -110,15 +111,7 @@ const Login = () => {
         <Card>
           <CardHeader className="space-y-6 text-center">
             <div className="flex justify-center">
-              <img
-                src="/src/assets/logo_full.png"
-                alt="XIMA Logo"
-                width={160}
-                height={48}
-                loading="lazy"
-                decoding="async"
-                className="h-12 w-auto dark:brightness-200"
-              />
+              <Logo variant="full" alt="XIMA Logo" className="h-12 w-auto dark:brightness-200" />
             </div>
             <CardTitle className="text-[28px] font-bold">{t('login.title')}</CardTitle>
             <CardDescription>
