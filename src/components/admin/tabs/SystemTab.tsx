@@ -81,16 +81,15 @@ export default function SystemTab() {
   const addLog = (m: string) => setLog(prev => [`[${new Date().toLocaleTimeString()}] ${m}`, ...prev].slice(0, 80));
 
   const [db, setDb] = useState<HealthResult>(INITIAL);
-  const [edge, setEdge] = useState<HealthResult>(INITIAL);
   const [rt, setRt] = useState<HealthResult>(INITIAL);
   const [checking, setChecking] = useState(false);
   const [now, setNow] = useState(Date.now());
 
   const runChecks = useCallback(async () => {
     setChecking(true);
-    setDb(INITIAL); setEdge(INITIAL); setRt(INITIAL);
-    const [d, e, r] = await Promise.all([checkDatabase(), checkEdge(), checkRealtime()]);
-    setDb(d); setEdge(e); setRt(r);
+    setDb(INITIAL); setRt(INITIAL);
+    const [d, r] = await Promise.all([checkDatabase(), checkRealtime()]);
+    setDb(d); setRt(r);
     setChecking(false);
   }, []);
 
