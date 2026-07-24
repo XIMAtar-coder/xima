@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import { log } from '@/lib/log';
 
 export interface BusinessProfile {
   id: string;
@@ -56,7 +57,7 @@ export function useBusinessProfile() {
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
-        console.error('[useBusinessProfile] Error:', error);
+        log.error('[useBusinessProfile] Error:', error);
         throw error;
       }
 

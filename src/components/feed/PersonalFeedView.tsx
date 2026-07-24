@@ -10,6 +10,7 @@ import { usePersonalFeed, FeedCategory } from '@/hooks/usePersonalFeed';
 import { PersonalFeedCard } from './PersonalFeedCard';
 import { useUser } from '@/context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 export const PersonalFeedView = () => {
   const { t } = useTranslation();
@@ -335,12 +336,12 @@ const OpportunitiesTab = ({ navigate, t, userId }: { navigate: any; t: any; user
           body: { user_id: userId, limit: 10 },
         });
         if (error) {
-          console.warn('[feed-opportunities] recommend-jobs failed:', error);
+          log.warn('[feed-opportunities] recommend-jobs failed:', error);
           return [];
         }
         return data?.recommendations || data?.opportunities || [];
       } catch (e) {
-        console.warn('[feed-opportunities] Error:', e);
+        log.warn('[feed-opportunities] Error:', e);
         return [];
       }
     },

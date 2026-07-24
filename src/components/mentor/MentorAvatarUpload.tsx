@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { Upload, X, Image, Loader2, CheckCircle } from 'lucide-react';
 import { prepareImageForUpload } from '@/lib/images/prepareImageForUpload';
+import { log } from '@/lib/log';
 
 interface MentorAvatarUploadProps {
   mentorId: string;
@@ -90,7 +91,7 @@ export function MentorAvatarUpload({
       clearInterval(progressInterval);
 
       if (uploadError) {
-        console.error('[MentorAvatarUpload] Upload error:', uploadError);
+        log.error('[MentorAvatarUpload] Upload error:', uploadError);
         throw uploadError;
       }
 
@@ -119,7 +120,7 @@ export function MentorAvatarUpload({
         .select('id, profile_image_url');
 
       if (updateError) {
-        console.error('[MentorAvatarUpload] Update error:', updateError);
+        log.error('[MentorAvatarUpload] Update error:', updateError);
         throw updateError;
       }
       if (!updated || updated.length === 0) {
@@ -143,7 +144,7 @@ export function MentorAvatarUpload({
       }
 
     } catch (error: any) {
-      console.error('[MentorAvatarUpload] Error:', error);
+      log.error('[MentorAvatarUpload] Error:', error);
       toast({
         title: t('mentor.avatar_error', 'Upload failed'),
         description: error.message || t('mentor.avatar_error_desc', 'Failed to upload photo. Please try again.'),

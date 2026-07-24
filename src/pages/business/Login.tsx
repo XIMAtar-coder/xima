@@ -10,6 +10,7 @@ import { Building2, Mail, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
+import { log } from '@/lib/log';
 
 const BusinessLogin = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ const BusinessLogin = () => {
 
       navigate('/business/dashboard');
     } catch (error: any) {
-      console.error('Login error:', error);
+      log.error('Login error:', error);
       toast({
         title: 'Login Failed',
         description: error.message || 'Invalid email or password',

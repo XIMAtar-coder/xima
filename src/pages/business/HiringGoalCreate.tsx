@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import SuggestFieldButton from '@/components/business/SuggestFieldButton';
 import { CCNL_OPTIONS, CCNL_HELPER_IT } from '@/lib/business/ccnl';
+import { log } from '@/lib/log';
 
 
 const TOTAL_STEPS = 5;
@@ -121,7 +122,7 @@ const HiringGoalCreate = () => {
         .select('*')
         .eq('id', fromListingId)
         .single();
-      if (error || !jp) { console.error('Failed to load listing:', error); return; }
+      if (error || !jp) { log.error('Failed to load listing:', error); return; }
       setImportedListing(jp);
       const raw = (jp as any).import_raw_data || {};
       const seniority = raw.seniority || jp.seniority || '';
@@ -169,7 +170,7 @@ const HiringGoalCreate = () => {
         .eq('id', goalId)
         .single();
       if (error || !data) {
-        console.error('[HiringGoalCreate] Failed to load draft:', error);
+        log.error('[HiringGoalCreate] Failed to load draft:', error);
         toast.error(t('hiring_goal.load_error', 'Impossibile caricare l\'obiettivo'));
         navigate('/business/hiring-goals');
         return;
@@ -290,7 +291,7 @@ const HiringGoalCreate = () => {
           if (fnData?.error) throw new Error(fnData.error);
         } catch (hrErr: any) {
           // Goal is saved even if XIMA HR call fails — user can retry later
-          console.error('[HiringGoalCreate] XIMA HR request failed:', hrErr);
+          log.error('[HiringGoalCreate] XIMA HR request failed:', hrErr);
           toast.error(t('businessPortal.hiring_goal.xima_hr_checkbox.error', 'XIMA HR non è riuscito a ricevere la richiesta. L\'obiettivo è stato salvato — puoi riprovare.'));
           navigate('/business/dashboard');
           return;

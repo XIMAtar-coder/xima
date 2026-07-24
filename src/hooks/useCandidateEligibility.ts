@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 export interface CandidateEligibility {
   id: string;
@@ -70,7 +71,7 @@ export const useCandidateEligibility = (hiringGoalId: string | undefined) => {
         .maybeSingle();
 
       if (eligError && eligError.code !== 'PGRST116') {
-        console.error('Error fetching eligibility:', eligError);
+        log.error('Error fetching eligibility:', eligError);
         setError(eligError.message);
         return;
       }
@@ -89,7 +90,7 @@ export const useCandidateEligibility = (hiringGoalId: string | undefined) => {
 
       setError(null);
     } catch (err) {
-      console.error('Error in useCandidateEligibility:', err);
+      log.error('Error in useCandidateEligibility:', err);
       setError('Failed to load eligibility');
     } finally {
       setLoading(false);

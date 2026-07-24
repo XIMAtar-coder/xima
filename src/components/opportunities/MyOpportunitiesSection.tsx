@@ -11,6 +11,7 @@ import { useUser } from '@/context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Bookmark, CheckCircle2, TrendingUp, ExternalLink, Sparkles, MapPin, Briefcase, RefreshCw, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { log } from '@/lib/log';
 
 interface Opportunity {
   id: string;
@@ -64,7 +65,7 @@ export const MyOpportunitiesSection: React.FC = () => {
         setOpportunities([]);
       }
     } catch (error: any) {
-      console.error('Error fetching opportunities:', error);
+      log.error('Error fetching opportunities:', error);
       setOpportunitiesError(error.message || 'Failed to fetch opportunities');
       toast.error('Failed to load job opportunities');
     } finally {

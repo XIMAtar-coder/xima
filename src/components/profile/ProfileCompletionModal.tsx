@@ -12,6 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { X, MapPin, Plus } from 'lucide-react';
+import { log } from '@/lib/log';
 
 interface LocationEntry {
   city?: string;
@@ -178,7 +179,7 @@ export const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
       onSuccess();
       onClose();
     } catch (err: any) {
-      console.error('[ProfileCompletionModal] Save error:', err);
+      log.error('[ProfileCompletionModal] Save error:', err);
       toast.error(t('profile_completion.save_error', 'Error saving preferences'));
     } finally {
       setSaving(false);

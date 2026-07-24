@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
+import { log } from '@/lib/log';
 
 export function useDataExport() {
   const [isExporting, setIsExporting] = useState(false);
@@ -51,7 +52,7 @@ export function useDataExport() {
         description: t("dataExport.downloadStarted"),
       });
     } catch (error) {
-      console.error("Data export failed:", error);
+      log.error("Data export failed:", error);
       toast({
         title: t("dataExport.error"),
         description: error instanceof Error ? error.message : t("dataExport.unknownError"),

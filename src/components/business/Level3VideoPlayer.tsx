@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Briefcase, Clock, AlertTriangle, Loader2, Video } from 'lucide-react';
 import type { TFunction } from 'i18next';
+import { log } from '@/lib/log';
 
 interface Level3VideoPlayerProps {
   videoPath: string;
@@ -41,13 +42,13 @@ export function Level3VideoPlayer({ videoPath, payload, t }: Level3VideoPlayerPr
           .createSignedUrl(videoPath, 3600); // 1 hour expiry
 
         if (signError) {
-          console.error('Error creating signed URL:', signError);
+          log.error('Error creating signed URL:', signError);
           setError('Unable to load video');
         } else if (data?.signedUrl) {
           setSignedUrl(data.signedUrl);
         }
       } catch (err) {
-        console.error('Error getting video URL:', err);
+        log.error('Error getting video URL:', err);
         setError('Unable to load video');
       } finally {
         setLoading(false);

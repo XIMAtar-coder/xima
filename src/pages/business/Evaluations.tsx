@@ -8,6 +8,7 @@ import { useUser } from '@/context/UserContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { FileText, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { log } from '@/lib/log';
 
 interface Evaluation {
   id: string;
@@ -82,7 +83,7 @@ const BusinessEvaluations = () => {
         setEvaluations(evaluationData);
       }
     } catch (error) {
-      console.error('Error loading evaluations:', error);
+      log.error('Error loading evaluations:', error);
       toast({
         title: t('business_portal.error'),
         description: t('business_portal.failed_load_profile'),

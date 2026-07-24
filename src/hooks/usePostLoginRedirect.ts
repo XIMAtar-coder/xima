@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 /**
  * Determines the correct redirect path after login based on user role.
@@ -14,7 +15,7 @@ export async function getPostLoginRedirectPath(userId: string): Promise<string> 
       .eq('user_id', userId);
 
     if (!roleErr && roles?.some((r: any) => r.role === 'admin')) {
-      console.log('[getPostLoginRedirectPath] User is admin → /admin');
+      log.debug('[getPostLoginRedirectPath] User is admin → /admin');
       return '/admin';
     }
 
@@ -26,18 +27,18 @@ export async function getPostLoginRedirectPath(userId: string): Promise<string> 
       .maybeSingle();
 
     if (error) {
-      console.warn('[getPostLoginRedirectPath] mentor check error:', error.message);
+      log.warn('[getPostLoginRedirectPath] mentor check error:', error.message);
       return '/profile';
     }
 
     if (data) {
-      console.log('[getPostLoginRedirectPath] User is mentor → /mentor');
+      log.debug('[getPostLoginRedirectPath] User is mentor → /mentor');
       return '/mentor';
     }
 
     return '/profile';
   } catch (err) {
-    console.error('[getPostLoginRedirectPath] Unexpected error:', err);
+    log.error('[getPostLoginRedirectPath] Unexpected error:', err);
     return '/profile';
   }
 }

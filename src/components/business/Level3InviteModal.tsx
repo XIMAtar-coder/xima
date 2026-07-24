@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { log } from '@/lib/log';
 import {
   Loader2,
   Video,
@@ -75,7 +76,7 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
           roleTitle: goalData?.role_title || 'Role',
         });
       } catch (err) {
-        console.error('Error fetching context:', err);
+        log.error('Error fetching context:', err);
         setContextData({ companyName: 'Company', roleTitle: 'Role' });
       }
     }
@@ -107,7 +108,7 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
 
     if (l3s.length > 0) {
       if (l3s.length > 1) {
-        console.warn(
+        log.warn(
           `[Level3InviteModal] Multiple L3 challenges for goal ${hiringGoalId}; using most recent.`,
           l3s.map((c) => c.id),
         );
@@ -146,7 +147,7 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
       .single();
     if (createErr) throw createErr;
     if (import.meta.env.DEV) {
-      console.log('[Level3InviteModal] Auto-created L3 challenge', created.id, 'for goal', hiringGoalId);
+      log.debug('[Level3InviteModal] Auto-created L3 challenge', created.id, 'for goal', hiringGoalId);
     }
     return created.id;
   };
@@ -162,7 +163,7 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
       try {
         l3ChallengeId = await resolveOrCreateL3ChallengeId();
       } catch (resolveErr) {
-        console.error('[Level3InviteModal] L3 resolve/create failed:', resolveErr);
+        log.error('[Level3InviteModal] L3 resolve/create failed:', resolveErr);
         toast({
           title: t('business.level3.challenge_setup_failed', 'Could not prepare the Standing Video challenge'),
           description: (resolveErr as Error).message,
@@ -220,7 +221,7 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
               }, { onConflict: 'invitation_id' });
 
             if (reviewErr) {
-              console.error('[Level3InviteModal] proceed_level3 review upsert failed:', reviewErr);
+              log.error('[Level3InviteModal] proceed_level3 review upsert failed:', reviewErr);
               toast({
                 title: t('business.level3.review_failed'),
                 description: reviewErr.message,
@@ -229,15 +230,15 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
               return;
             }
             if (import.meta.env.DEV) {
-              console.log('[Level3InviteModal] proceed_level3 review upserted for invitation', l2Inv.id);
+              log.debug('[Level3InviteModal] proceed_level3 review upserted for invitation', l2Inv.id);
             }
           } else if (import.meta.env.DEV) {
-            console.log('[Level3InviteModal] No submitted L2 found — skipping review upsert; Gate A will enforce.');
+            log.debug('[Level3InviteModal] No submitted L2 found — skipping review upsert; Gate A will enforce.');
           }
         }
       } catch (preErr) {
         // Non-fatal — fall through and let Gate A/B return the canonical error.
-        console.error('[Level3InviteModal] Pre-flight review upsert errored:', preErr);
+        log.error('[Level3InviteModal] Pre-flight review upsert errored:', preErr);
       }
 
       // Already-active L3 invitation check (for THIS challenge id).
@@ -299,7 +300,7 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
           onOpenChange(false);
           onInviteSent?.();
         } else {
-          console.error('[Level3InviteModal] invite insert failed', error);
+          log.error('[Level3InviteModal] invite insert failed', error);
           toast({
             title: t('common.error'),
             description: msg,
@@ -317,7 +318,7 @@ export const Level3InviteModal: React.FC<Level3InviteModalProps> = ({
       onOpenChange(false);
       onInviteSent?.();
     } catch (err) {
-      console.error('Error sending Level 3 invite:', err);
+      log.error('Error sending Level 3 invite:', err);
       toast({ title: t('common.error'), variant: 'destructive' });
     } finally {
       setSending(false);

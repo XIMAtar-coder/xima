@@ -49,6 +49,7 @@ import { ChallengeLevel, getChallengeLevel } from '@/lib/challenges/challengeLev
 import { isLevel2Rubric } from '@/lib/challenges/level2Templates';
 import { useBusinessPremium } from '@/hooks/useBusinessPremium';
 import { Level3VideoPlayer } from './Level3VideoPlayer';
+import { log } from '@/lib/log';
 
 interface ChallengeInfo {
   id: string;
@@ -269,7 +270,7 @@ export function SubmissionDetailDrawer({
     setIsGeneratingLevel2(true);
     setLevel2Error(null);
     
-    console.log('[L2 Signals] Starting AI generation for submission:', submissionKey);
+    log.debug('[L2 Signals] Starting AI generation for submission:', submissionKey);
 
     // New L2 conversation path: dispatch to analyze-open-answer instead of the legacy compute-level2-signals.
     const submittedFormat = (submission?.submittedPayload as any)?.format;
@@ -292,13 +293,13 @@ export function SubmissionDetailDrawer({
           description: t('business.level2_interpretation.ai_complete'),
         });
       } catch (err) {
-        console.error('[L2 Signals] l2_conversation scoring failed:', err);
+        log.error('[L2 Signals] l2_conversation scoring failed:', err);
         const msg = err instanceof Error ? err.message : String(err);
         setLevel2Error(msg);
         toast({ title: t('common.error'), description: msg, variant: 'destructive' });
       } finally {
         setIsGeneratingLevel2(false);
-        console.log('[L2 Signals] Generation complete (l2_conversation)');
+        log.debug('[L2 Signals] Generation complete (l2_conversation)');
       }
       return;
     }
@@ -307,7 +308,7 @@ export function SubmissionDetailDrawer({
       // Call edge function for AI-powered analysis
       const l2Signals = await computeLevel2SignalsAsync(submissionKey);
       
-      console.log('[L2 Signals] Received signals:', { 
+      log.debug('[L2 Signals] Received signals:', { 
         overallReadiness: l2Signals.overallReadiness,
         hasData: !!l2Signals.hardSkillClarity 
       });
@@ -320,13 +321,13 @@ export function SubmissionDetailDrawer({
         description: t('business.level2_interpretation.ai_complete'),
       });
     } catch (error) {
-      console.error('[L2 Signals] Error generating L2 signals via AI:', error);
+      log.error('[L2 Signals] Error generating L2 signals via AI:', error);
       
       // Fallback to local computation
       try {
         const existingPayload = submission?.submittedPayload as Record<string, any> | null;
         if (existingPayload) {
-          console.log('[L2 Signals] Falling back to local computation');
+          log.debug('[L2 Signals] Falling back to local computation');
           const fallbackSignals = computeLevel2Signals(existingPayload);
           
           await supabase
@@ -348,7 +349,7 @@ export function SubmissionDetailDrawer({
           throw new Error('No payload available for fallback');
         }
       } catch (fallbackError) {
-        console.error('[L2 Signals] Fallback signal generation also failed:', fallbackError);
+        log.error('[L2 Signals] Fallback signal generation also failed:', fallbackError);
         const errorMessage = error instanceof Error ? error.message : String(error);
         setLevel2Error(errorMessage);
         toast({ 
@@ -359,7 +360,7 @@ export function SubmissionDetailDrawer({
       }
     } finally {
       setIsGeneratingLevel2(false);
-      console.log('[L2 Signals] Generation complete');
+      log.debug('[L2 Signals] Generation complete');
     }
   };
 
@@ -408,7 +409,7 @@ export function SubmissionDetailDrawer({
         setAlreadyInvitedToLevel2(hasLevel2);
         setAlreadyInvitedToLevel3(hasLevel3);
       } catch (err) {
-        console.error('Error checking level invites:', err);
+        log.error('Error checking level invites:', err);
       } finally {
         setCheckingLevel2(false);
         setCheckingLevel3(false);
@@ -443,7 +444,7 @@ export function SubmissionDetailDrawer({
       onSignalsGenerated?.();
       toast({ title: t('business.compare.signals_generated', 'Segnali generati') });
     } catch (err) {
-      console.error('[CustomL1] signals generation failed:', err);
+      log.error('[CustomL1] signals generation failed:', err);
       const msg = err instanceof Error ? err.message : String(err);
       setCustomL1Error(msg);
       toast({ title: t('common.error', 'Errore'), description: msg, variant: 'destructive' });
@@ -471,7 +472,7 @@ export function SubmissionDetailDrawer({
       toast({ title: t('business.compare.signals_generated') });
       onSignalsGenerated?.();
     } catch (error) {
-      console.error('Error generating signals:', error);
+      log.error('Error generating signals:', error);
       toast({ title: t('common.error'), variant: 'destructive' });
     } finally {
       setGeneratingSignals(false);
@@ -530,7 +531,7 @@ export function SubmissionDetailDrawer({
           }, { onConflict: 'invitation_id' });
 
         if (followupError) {
-          console.error('Error creating followup:', followupError);
+          log.error('Error creating followup:', followupError);
         } else {
           // Update local followup data
           setFollowupData({
@@ -562,7 +563,7 @@ export function SubmissionDetailDrawer({
       setFollowupMode(false);
       onReviewSaved?.(decision, question);
     } catch (error) {
-      console.error('Error saving review:', error);
+      log.error('Error saving review:', error);
       toast({
         title: t('common.error'),
         description: error instanceof Error ? error.message : undefined,

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import { log } from '@/lib/log';
 
 export interface PendingInterest {
   id: string;
@@ -27,14 +28,14 @@ export const useMutualInterest = () => {
       const { data, error: fetchError } = await supabase.rpc('get_pending_interests');
 
       if (fetchError) {
-        console.error('[useMutualInterest] Error fetching interests:', fetchError);
+        log.error('[useMutualInterest] Error fetching interests:', fetchError);
         setError('Failed to load interest signals');
         return;
       }
 
       setPendingInterests((data || []) as PendingInterest[]);
     } catch (err) {
-      console.error('[useMutualInterest] Exception:', err);
+      log.error('[useMutualInterest] Exception:', err);
       setError('An error occurred');
     } finally {
       setLoading(false);
@@ -58,7 +59,7 @@ export const useMutualInterest = () => {
       });
 
       if (error) {
-        console.error('[useMutualInterest] Error accepting interest:', error);
+        log.error('[useMutualInterest] Error accepting interest:', error);
         return { success: false, error: error.message };
       }
 
@@ -78,7 +79,7 @@ export const useMutualInterest = () => {
 
       return { success: false, error: result.error };
     } catch (err) {
-      console.error('[useMutualInterest] Exception accepting:', err);
+      log.error('[useMutualInterest] Exception accepting:', err);
       return { success: false, error: 'An error occurred' };
     }
   }, [user]);

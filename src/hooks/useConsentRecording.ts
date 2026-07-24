@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { getConsentRecords } from '@/lib/legal/consentVersions';
+import { log } from '@/lib/log';
 
 export interface RecordConsentResult {
   success: boolean;
@@ -30,15 +31,15 @@ export const recordUserConsents = async (
       .insert(insertData);
 
     if (error) {
-      console.error('[Consent] Failed to record consents:', error);
+      log.error('[Consent] Failed to record consents:', error);
       return { success: false, error: error.message };
     }
 
-    console.log('[Consent] Successfully recorded consents for user:', userId);
+    log.debug('[Consent] Successfully recorded consents for user:', userId);
     return { success: true };
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
-    console.error('[Consent] Exception recording consents:', message);
+    log.error('[Consent] Exception recording consents:', message);
     return { success: false, error: message };
   }
 };

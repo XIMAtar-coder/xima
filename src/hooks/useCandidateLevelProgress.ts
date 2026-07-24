@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 import { 
   CandidateLevelProgress, 
   ChallengeLevel, 
@@ -44,7 +45,7 @@ export function useCandidateLevelProgress(
         .eq('hiring_goal_id', hiringGoalId);
 
       if (error) {
-        console.error('Error fetching submissions for level progress:', error);
+        log.error('Error fetching submissions for level progress:', error);
         setProgress(null);
         return;
       }
@@ -58,7 +59,7 @@ export function useCandidateLevelProgress(
       const computed = computeLevelProgress(mappedSubmissions);
       setProgress(computed);
     } catch (err) {
-      console.error('Error computing level progress:', err);
+      log.error('Error computing level progress:', err);
       setProgress(null);
     } finally {
       setLoading(false);
@@ -102,7 +103,7 @@ export function useCandidatesLevelProgress(
         .in('candidate_profile_id', candidateProfileIds);
 
       if (error) {
-        console.error('Error fetching batch submissions:', error);
+        log.error('Error fetching batch submissions:', error);
         setProgressMap(new Map());
         return;
       }
@@ -129,7 +130,7 @@ export function useCandidatesLevelProgress(
 
       setProgressMap(result);
     } catch (err) {
-      console.error('Error computing batch level progress:', err);
+      log.error('Error computing batch level progress:', err);
       setProgressMap(new Map());
     } finally {
       setLoading(false);

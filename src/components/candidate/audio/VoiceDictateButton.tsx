@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Mic, Square, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { log } from '@/lib/log';
 
 /**
  * PART 4A — Voice dictation for candidate open-answer fields.
@@ -56,7 +57,7 @@ export function VoiceDictateButton({ onAppend, language = 'it', disabled }: Prop
           const text = (data as any)?.text?.trim();
           if (text) onAppend(text);
         } catch (err: any) {
-          console.error('[voice-dictate] error', err);
+          log.error('[voice-dictate] error', err);
           toast({
             title: 'Trascrizione non riuscita',
             description: err?.message || 'Riprova oppure scrivi a mano.',
@@ -70,7 +71,7 @@ export function VoiceDictateButton({ onAppend, language = 'it', disabled }: Prop
       recorderRef.current = rec;
       setRecording(true);
     } catch (err: any) {
-      console.error('[voice-dictate] mic error', err);
+      log.error('[voice-dictate] mic error', err);
       toast({
         title: 'Microfono non disponibile',
         description: 'Concedi l\'accesso al microfono per dettare.',

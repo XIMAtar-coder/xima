@@ -23,6 +23,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { format, parseISO, isAfter, isBefore, addMinutes, subMinutes } from 'date-fns';
 import { it, enUS } from 'date-fns/locale';
+import { log } from '@/lib/log';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -122,7 +123,7 @@ export default function SessionDetail() {
         .single();
 
       if (sessionError || !sessionData) {
-        console.error('[SessionDetail] Error fetching session:', sessionError);
+        log.error('[SessionDetail] Error fetching session:', sessionError);
         toast({
           title: t('common.error'),
           description: t('sessions.session_not_found', 'Session not found'),
@@ -149,7 +150,7 @@ export default function SessionDetail() {
         setMentor(mentorData as MentorData);
       }
     } catch (error) {
-      console.error('[SessionDetail] Exception:', error);
+      log.error('[SessionDetail] Exception:', error);
     } finally {
       setLoading(false);
     }

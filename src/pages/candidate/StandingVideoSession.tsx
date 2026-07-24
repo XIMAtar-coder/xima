@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import MainLayout from '@/components/layout/MainLayout';
 import StandingUploadMode from '@/components/candidate/StandingUploadMode';
+import { log } from '@/lib/log';
 
 // Prompts for Standing session - communication, clarity, ownership, reflection
 const STANDING_PROMPTS = {
@@ -207,7 +208,7 @@ export default function StandingVideoSession() {
           }
         }
       } catch (err) {
-        console.error('Error loading standing challenge:', err);
+        log.error('Error loading standing challenge:', err);
         toast({ title: t('common.error'), variant: 'destructive' });
       } finally {
         setLoading(false);
@@ -260,17 +261,17 @@ export default function StandingVideoSession() {
       
       try {
         await videoEl.play();
-        console.log('Video preview playing successfully');
+        log.debug('Video preview playing successfully');
         setStreamReady(true);
         setPreviewError(null);
         return true;
       } catch (playError) {
-        console.warn('Autoplay blocked, waiting for user interaction:', playError);
+        log.warn('Autoplay blocked, waiting for user interaction:', playError);
         setPreviewError('tap_to_enable');
         return false;
       }
     } catch (err) {
-      console.error('Error attaching stream to preview:', err);
+      log.error('Error attaching stream to preview:', err);
       setPreviewError('stream_error');
       return false;
     }
@@ -298,7 +299,7 @@ export default function StandingVideoSession() {
         audio: true 
       });
       
-      console.log('Got media stream:', stream.getTracks().map(t => `${t.kind}: ${t.label}`));
+      log.debug('Got media stream:', stream.getTracks().map(t => `${t.kind}: ${t.label}`));
       mediaStreamRef.current = stream;
       setCameraPermission(true);
       setMicPermission(true);
@@ -306,7 +307,7 @@ export default function StandingVideoSession() {
       // Attach to preview after a small delay to ensure ref is ready
       setTimeout(() => attachStreamToPreview(), 100);
     } catch (err) {
-      console.error('Permission error:', err);
+      log.error('Permission error:', err);
       if (err instanceof DOMException) {
         if (err.name === 'NotAllowedError') {
           setCameraPermission(false);
@@ -326,7 +327,7 @@ export default function StandingVideoSession() {
         setStreamReady(true);
         setPreviewError(null);
       } catch (err) {
-        console.error('Failed to play on tap:', err);
+        log.error('Failed to play on tap:', err);
       }
     }
   };
@@ -344,12 +345,12 @@ export default function StandingVideoSession() {
     
     for (const type of types) {
       if (MediaRecorder.isTypeSupported(type)) {
-        console.log('Using mimeType:', type);
+        log.debug('Using mimeType:', type);
         return type;
       }
     }
     
-    console.warn('No supported mimeType found, using default');
+    log.warn('No supported mimeType found, using default');
     return '';
   };
 
@@ -382,7 +383,7 @@ export default function StandingVideoSession() {
   const beginRecording = () => {
     const stream = mediaStreamRef.current;
     if (!stream) {
-      console.error('No stream available for recording');
+      log.error('No stream available for recording');
       toast({
         title: t('common.error'),
         description: 'Camera stream lost. Please refresh and try again.',
@@ -418,16 +419,16 @@ export default function StandingVideoSession() {
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
           recordedChunksRef.current.push(event.data);
-          console.log('Recorded chunk:', event.data.size, 'bytes');
+          log.debug('Recorded chunk:', event.data.size, 'bytes');
         }
       };
 
       mediaRecorder.onerror = (event) => {
-        console.error('MediaRecorder error:', event);
+        log.error('MediaRecorder error:', event);
       };
 
       mediaRecorder.start(1000); // Collect data every second
-      console.log('MediaRecorder started');
+      log.debug('MediaRecorder started');
 
       // Start timer
       const startTime = Date.now();
@@ -456,7 +457,7 @@ export default function StandingVideoSession() {
         }
       }, 1000);
     } catch (err) {
-      console.error('Failed to start MediaRecorder:', err);
+      log.error('Failed to start MediaRecorder:', err);
       toast({
         title: t('common.error'),
         description: 'Failed to start recording. Please try again.',
@@ -502,7 +503,7 @@ export default function StandingVideoSession() {
         });
 
       if (uploadError) {
-        console.error('Upload error:', uploadError);
+        log.error('Upload error:', uploadError);
         throw uploadError;
       }
 
@@ -568,7 +569,7 @@ export default function StandingVideoSession() {
 
       toast({ title: t('level3.standing.submitted_success') });
     } catch (err) {
-      console.error('Upload error:', err);
+      log.error('Upload error:', err);
       toast({ 
         title: t('common.error'), 
         description: t('level3.standing.upload_failed'),

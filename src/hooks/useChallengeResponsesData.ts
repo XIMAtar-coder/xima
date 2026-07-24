@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { SignalsPayload } from '@/lib/signals/computeSignals';
+import { log } from '@/lib/log';
 
 export type ResponseStatus = 'pending' | 'draft' | 'submitted';
 export type ReviewDecision = 'shortlist' | 'followup' | 'pass' | null;
@@ -196,7 +197,7 @@ export function useChallengeResponsesData(
       });
 
     } catch (err) {
-      console.error('[useChallengeResponsesData] Error:', err);
+      log.error('[useChallengeResponsesData] Error:', err);
       setError(err instanceof Error ? err : new Error('Unknown error'));
     } finally {
       setLoading(false);
@@ -328,7 +329,7 @@ export function useChallengeStatsMap(
         setDebug(newDebug);
 
       } catch (err) {
-        console.error('[useChallengeStatsMap] Error:', err);
+        log.error('[useChallengeStatsMap] Error:', err);
       } finally {
         setLoading(false);
       }

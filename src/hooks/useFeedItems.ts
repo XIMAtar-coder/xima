@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
+import { log } from '@/lib/log';
 
 export type FeedItemType = 
   | 'challenge_completed' 
@@ -92,7 +93,7 @@ export const useFeedItems = () => {
       const { data, error: fetchError } = await query;
 
       if (fetchError) {
-        console.error('[useFeedItems] Error fetching feed:', fetchError);
+        log.error('[useFeedItems] Error fetching feed:', fetchError);
         setError('Failed to load feed');
         if (isDebugMode()) {
           setDebugError(`${fetchError.code}: ${fetchError.message} (hint: ${fetchError.hint || 'none'})`);
@@ -130,7 +131,7 @@ export const useFeedItems = () => {
               });
 
               if (reactionError) {
-                console.warn('[useFeedItems] Error fetching reactions for item:', item.id, reactionError);
+                log.warn('[useFeedItems] Error fetching reactions for item:', item.id, reactionError);
                 return {
                   ...item,
                   payload: item.payload as unknown as FeedItemPayload,
@@ -146,7 +147,7 @@ export const useFeedItems = () => {
                 reactions: reactions || {}
               } as FeedItem;
             } catch (err) {
-              console.warn('[useFeedItems] Exception fetching reactions:', err);
+              log.warn('[useFeedItems] Exception fetching reactions:', err);
               return {
                 ...item,
                 payload: item.payload as unknown as FeedItemPayload,
@@ -166,7 +167,7 @@ export const useFeedItems = () => {
         setHasMore(filteredData.length === 50);
       }
     } catch (err) {
-      console.error('[useFeedItems] Exception:', err);
+      log.error('[useFeedItems] Exception:', err);
       setError('An error occurred');
       if (isDebugMode() && err instanceof Error) {
         setDebugError(err.message);
@@ -191,7 +192,7 @@ export const useFeedItems = () => {
       });
 
       if (error) {
-        console.error('[useFeedItems] Error adding reaction:', error);
+        log.error('[useFeedItems] Error adding reaction:', error);
         return false;
       }
 
@@ -212,7 +213,7 @@ export const useFeedItems = () => {
 
       return true;
     } catch (err) {
-      console.error('[useFeedItems] Exception adding reaction:', err);
+      log.error('[useFeedItems] Exception adding reaction:', err);
       return false;
     }
   }, [user, isBusiness]);

@@ -20,6 +20,7 @@ import { computeXimatarRecommendations, type XimatarRecommendation } from '@/lib
 import { Users, Target, RefreshCw, Bookmark, Sparkles, Zap, GitBranch } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ShortlistView } from '@/components/business/ShortlistView';
+import { log } from '@/lib/log';
 
 interface Candidate {
   profile_id: string;
@@ -82,7 +83,7 @@ const GoalCandidates: React.FC = () => {
         .rpc('get_candidate_visibility');
 
       if (candidateError) {
-        console.error('Error fetching candidates:', candidateError);
+        log.error('Error fetching candidates:', candidateError);
         return;
       }
 
@@ -158,7 +159,7 @@ const GoalCandidates: React.FC = () => {
       
       setCompanyProfile(companyData);
     } catch (error) {
-      console.error('Error loading candidates:', error);
+      log.error('Error loading candidates:', error);
     } finally {
       setLoading(false);
     }

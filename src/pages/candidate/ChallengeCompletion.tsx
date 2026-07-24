@@ -29,6 +29,7 @@ import { PreChallengeBriefing } from '@/components/candidate/PreChallengeBriefin
 import { ReassuranceToast } from '@/components/candidate/ReassuranceToast';
 import { Level2ContextBlock } from '@/components/candidate/Level2ContextBlock';
 import { isLevel2Rubric, RoleFamily } from '@/lib/challenges/level2Templates';
+import { log } from '@/lib/log';
 import { 
   ChallengeLevel, 
   getChallengeLevel, 
@@ -231,7 +232,7 @@ export default function ChallengeCompletion() {
         // getChallengeLevel now handles type coercion internally
         const rubric = challengeData?.rubric || null;
         const level = getChallengeLevel({ rubric, title: challengeData?.title });
-        console.log('[ChallengeCompletion] Level detection:', { rubric, title: challengeData?.title, detectedLevel: level });
+        log.debug('[ChallengeCompletion] Level detection:', { rubric, title: challengeData?.title, detectedLevel: level });
 
         // Extract Level 2 specific fields from rubric
         let roleFamily: RoleFamily | null = null;
@@ -315,7 +316,7 @@ export default function ChallengeCompletion() {
           const invRubric = bc?.rubric || null;
           const invLevel = getChallengeLevel({ rubric: invRubric, title: bc?.title });
           const status = submissionMap.get(inv.id) || 'draft';
-          console.log('[ChallengeCompletion] Invitation level:', { invId: inv.id, rubric: invRubric, title: bc?.title, level: invLevel, status });
+          log.debug('[ChallengeCompletion] Invitation level:', { invId: inv.id, rubric: invRubric, title: bc?.title, level: invLevel, status });
           return { challenge_level: invLevel, status };
         });
 
@@ -392,7 +393,7 @@ export default function ChallengeCompletion() {
           }
         }
       } catch (error) {
-        console.error('Error loading challenge:', error);
+        log.error('Error loading challenge:', error);
         toast({ title: t('common.error'), variant: 'destructive' });
       } finally {
         setLoading(false);
@@ -435,7 +436,7 @@ export default function ChallengeCompletion() {
           .single();
 
         if (!invitation) {
-          console.error('Invitation not found for draft save');
+          log.error('Invitation not found for draft save');
           return;
         }
 
@@ -460,7 +461,7 @@ export default function ChallengeCompletion() {
         }
       }
     } catch (error) {
-      console.error('Autosave error:', error);
+      log.error('Autosave error:', error);
     } finally {
       setSaving(false);
       setLastSaveTime(new Date());
@@ -518,7 +519,7 @@ export default function ChallengeCompletion() {
           .single();
 
         if (!invitation) {
-          console.error('Invitation not found for draft save');
+          log.error('Invitation not found for draft save');
           return;
         }
 
@@ -543,7 +544,7 @@ export default function ChallengeCompletion() {
         }
       }
     } catch (error) {
-      console.error('Autosave error:', error);
+      log.error('Autosave error:', error);
     } finally {
       setSaving(false);
       setLastSaveTime(new Date());
@@ -629,14 +630,14 @@ export default function ChallengeCompletion() {
         .single();
 
       if (invError || !invitation) {
-        console.error('Invitation fetch error:', invError);
+        log.error('Invitation fetch error:', invError);
         toast({ title: t('common.error'), description: invError?.message || 'Invitation not found', variant: 'destructive' });
         return;
       }
 
       // Validation guard: ensure required fields are present
       if (!invitation.candidate_profile_id) {
-        console.error('Missing candidate_profile_id on invitation:', invitation);
+        log.error('Missing candidate_profile_id on invitation:', invitation);
         toast({ title: t('common.error'), description: 'Missing candidate profile', variant: 'destructive' });
         return;
       }
@@ -696,7 +697,7 @@ export default function ChallengeCompletion() {
           .eq('id', submissionId);
 
         if (updateError) {
-          console.error('Update error:', updateError);
+          log.error('Update error:', updateError);
           throw updateError;
         }
       } else {
@@ -712,7 +713,7 @@ export default function ChallengeCompletion() {
           });
 
         if (insertError) {
-          console.error('Insert error:', insertError);
+          log.error('Insert error:', insertError);
           throw insertError;
         }
       }
@@ -727,7 +728,7 @@ export default function ChallengeCompletion() {
       setSubmittedAt(now);
       toast({ title: t('challenge.submission_success') });
     } catch (error: any) {
-      console.error('Submit error:', error);
+      log.error('Submit error:', error);
       // Show real Supabase error message for debugging
       const errorMessage = error?.message || error?.details || 'Submission failed';
       toast({ title: t('common.error'), description: errorMessage, variant: 'destructive' });

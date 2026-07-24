@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Rocket, Loader2 } from 'lucide-react';
+import { log } from '@/lib/log';
 
 interface CreateChallengeModalProps {
   open: boolean;
@@ -77,7 +78,7 @@ export const CreateChallengeModal: React.FC<CreateChallengeModalProps> = ({
       onChallengeCreated(data.id, title.trim());
       onOpenChange(false);
     } catch (err: any) {
-      console.error('Error creating challenge:', err);
+      log.error('Error creating challenge:', err);
       toast({
         title: t('common.error'),
         description: err.message,

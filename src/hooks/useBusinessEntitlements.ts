@@ -1,11 +1,12 @@
 /**
- * useBusinessEntitlements — hook to fetch and check business entitlements
- * Gates features by plan tier and feature flags from business_entitlements table.
+ * useBusinessEntitlements — fetch business entitlements via react-query
+ * data layer. Gates features by plan tier and per-feature flags.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import { useSupabaseQuery } from '@/lib/data/useSupabaseQuery';
 
 export type PlanTier = 'starter' | 'growth' | 'enterprise';
 
@@ -45,68 +46,44 @@ const DEFAULT_FEATURES: Record<FeatureFlag, boolean> = {
 
 export const useBusinessEntitlements = () => {
   const { user } = useUser();
-  const [entitlements, setEntitlements] = useState<BusinessEntitlements | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!user?.id) {
-      setLoading(false);
-      return;
-    }
+  const { data: entitlements, isLoading: loading } = useSupabaseQuery<BusinessEntitlements>(
+    ['business_entitlements', user?.id],
+    async () => {
+      const { data: biz } = await supabase
+        .from('business_profiles')
+        .select('id')
+        .eq('user_id', user!.id)
+        .maybeSingle();
+      if (!biz) return { data: null, error: null };
 
-    const fetch = async () => {
-      try {
-        // First get business profile id
-        const { data: biz } = await supabase
-          .from('business_profiles')
-          .select('id')
-          .eq('user_id', user.id)
-          .maybeSingle();
+      const { data, error } = await supabase
+        .from('business_entitlements')
+        .select('*')
+        .eq('business_id', biz.id)
+        .maybeSingle();
+      if (error) return { data: null, error };
+      if (!data) return { data: null, error: null };
 
-        if (!biz) {
-          setLoading(false);
-          return;
-        }
-
-        const { data, error } = await supabase
-          .from('business_entitlements')
-          .select('*')
-          .eq('business_id', biz.id)
-          .maybeSingle();
-
-        if (error) {
-          console.error('[entitlements] Error:', error.message);
-        }
-
-        if (data) {
-          setEntitlements({
-            id: data.id,
-            businessId: data.business_id,
-            planTier: data.plan_tier as PlanTier,
-            maxSeats: data.max_seats,
-            seatsUsed: data.seats_used,
-            contractStart: data.contract_start,
-            contractEnd: data.contract_end,
-            renewalDate: data.renewal_date,
-            features: { ...DEFAULT_FEATURES, ...(data.features as Record<string, boolean>) },
-            notes: data.notes,
-          });
-        }
-      } catch (err) {
-        console.error('[entitlements] Fetch error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetch();
-  }, [user?.id]);
+      const mapped: BusinessEntitlements = {
+        id: data.id,
+        businessId: data.business_id,
+        planTier: data.plan_tier as PlanTier,
+        maxSeats: data.max_seats,
+        seatsUsed: data.seats_used,
+        contractStart: data.contract_start,
+        contractEnd: data.contract_end,
+        renewalDate: data.renewal_date,
+        features: { ...DEFAULT_FEATURES, ...(data.features as Record<string, boolean>) },
+        notes: data.notes,
+      };
+      return { data: mapped, error: null };
+    },
+    { enabled: !!user?.id, staleTime: 60_000 }
+  );
 
   const hasFeature = useCallback(
-    (feature: FeatureFlag): boolean => {
-      if (!entitlements) return false;
-      return entitlements.features[feature] === true;
-    },
+    (feature: FeatureFlag): boolean => !!entitlements?.features[feature],
     [entitlements]
   );
 
@@ -114,10 +91,10 @@ export const useBusinessEntitlements = () => {
   const isGrowthOrAbove = entitlements?.planTier === 'growth' || isEnterprise;
   const isContractActive = entitlements?.contractEnd
     ? new Date(entitlements.contractEnd) >= new Date()
-    : true; // No end date = active
+    : true;
 
   return {
-    entitlements,
+    entitlements: entitlements ?? null,
     loading,
     hasFeature,
     isEnterprise,

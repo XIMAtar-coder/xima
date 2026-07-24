@@ -15,6 +15,7 @@ import { useXimatarsCatalog } from '@/hooks/useXimatarsCatalog';
 import type { Rubric } from '@/lib/scoring/openResponse';
 import { normalizeXimatarImageUrl } from '@/utils/normalizeXimatarImage';
 import { useToast } from '@/hooks/use-toast';
+import { log } from '@/lib/log';
 
 interface ResultsComparisonProps {
   onComplete: (step: number) => void;
@@ -140,7 +141,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           .maybeSingle();
 
         if (error) {
-          console.error('Error fetching assessment:', error);
+          log.error('Error fetching assessment:', error);
           return false;
         }
 
@@ -168,7 +169,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           .maybeSingle();
 
         if (ximatarError) {
-          console.error('Error fetching XIMAtar:', ximatarError);
+          log.error('Error fetching XIMAtar:', ximatarError);
           return false;
         }
 
@@ -199,7 +200,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           .order('score', { ascending: false });
 
         if (scoresError) {
-          console.error('Error fetching pillar scores:', scoresError);
+          log.error('Error fetching pillar scores:', scoresError);
         }
 
         if (scores && scores.length > 0) {
@@ -222,7 +223,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         } else if (attempts < maxAttempts) {
           setTimeout(poll, pollInterval);
         } else {
-          console.warn('Max polling attempts reached - no assessment found');
+          log.warn('Max polling attempts reached - no assessment found');
           setHasNoAssessment(true);
           setIsAnalyzing(false);
           setShowResults(true);
@@ -283,38 +284,38 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   }, [showResults, user]);
 
   const handleMentorSelect = async (mentor: any) => {
-    console.log('[ResultsComparison] Mentor selected:', mentor);
-    console.log('[ResultsComparison] isAuthenticated:', isAuthenticated, 'user?.id:', user?.id);
+    log.debug('[ResultsComparison] Mentor selected:', mentor);
+    log.debug('[ResultsComparison] isAuthenticated:', isAuthenticated, 'user?.id:', user?.id);
     
     setSelectedProfessional(mentor.id);
     localStorage.setItem('selected_professional_data', JSON.stringify(mentor));
     
     // Call assign-mentor edge function to create the mentor match
     if (isAuthenticated && user?.id) {
-      console.log('[ResultsComparison] Calling assign-mentor edge function...');
+      log.debug('[ResultsComparison] Calling assign-mentor edge function...');
       try {
         const { data, error } = await supabase.functions.invoke('assign-mentor', {
           body: { professional_id: mentor.id },
         });
         
-        console.log('[ResultsComparison] Edge function response:', { data, error });
+        log.debug('[ResultsComparison] Edge function response:', { data, error });
         
         if (error) {
-          console.error('[ResultsComparison] Error assigning mentor:', error);
+          log.error('[ResultsComparison] Error assigning mentor:', error);
           toast({
             title: "Error",
             description: "Failed to assign mentor. Please try again.",
             variant: "destructive"
           });
         } else if (data?.success) {
-          console.log('[ResultsComparison] Mentor assigned successfully:', data.mentor);
+          log.debug('[ResultsComparison] Mentor assigned successfully:', data.mentor);
           toast({
             title: "Success",
             description: "Mentor assigned successfully!",
           });
         }
       } catch (error) {
-        console.error('[ResultsComparison] Failed to assign mentor:', error);
+        log.error('[ResultsComparison] Failed to assign mentor:', error);
         toast({
           title: "Error", 
           description: "Failed to assign mentor. Please try again.",
@@ -322,7 +323,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         });
       }
     } else {
-      console.log('[ResultsComparison] Not calling edge function - user not authenticated or no user ID');
+      log.debug('[ResultsComparison] Not calling edge function - user not authenticated or no user ID');
     }
   };
 

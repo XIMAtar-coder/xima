@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
 import { Loader2, MessageSquare, CheckCircle, ArrowLeft, Building2 } from 'lucide-react';
+import { log } from '@/lib/log';
 
 interface FollowupData {
   id: string;
@@ -153,7 +154,7 @@ export default function ChallengeFollowup() {
       setFollowup(prev => prev ? { ...prev, answer: answer.trim(), answered_at: new Date().toISOString() } : null);
       toast({ title: t('followup.answer_submitted') });
     } catch (error) {
-      console.error('Error submitting followup answer:', error);
+      log.error('Error submitting followup answer:', error);
       toast({ title: t('common.error'), variant: 'destructive' });
     } finally {
       setSubmitting(false);

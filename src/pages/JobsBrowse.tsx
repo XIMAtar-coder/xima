@@ -11,6 +11,7 @@ import { Briefcase, Sparkles, MapPin, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import Seo from '@/components/Seo';
+import { log } from '@/lib/log';
 
 interface JobFilters {
   location: string;
@@ -53,7 +54,7 @@ const JobsBrowse = () => {
           body: { user_id: user?.id, limit: 10 },
         });
         if (error) {
-          console.warn('[jobs-browse] recommend-jobs failed:', error);
+          log.warn('[jobs-browse] recommend-jobs failed:', error);
           return [];
         }
         return data?.recommendations || data?.opportunities || [];

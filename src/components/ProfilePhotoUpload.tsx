@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { toast } from 'sonner';
 import { prepareImageForUpload } from '@/lib/images/prepareImageForUpload';
+import { log } from '@/lib/log';
 
 export const ProfilePhotoUpload: React.FC = () => {
   const { user } = useUser();
@@ -65,19 +66,19 @@ export const ProfilePhotoUpload: React.FC = () => {
         .select('user_id, avatar');
 
       if (updateError) {
-        console.error('[ProfilePhotoUpload] profile update failed', updateError);
+        log.error('[ProfilePhotoUpload] profile update failed', updateError);
         throw updateError;
       }
       if (!updated || updated.length === 0) {
         const err = new Error('Profile row not updated (auth/RLS mismatch). User: ' + user.id);
-        console.error('[ProfilePhotoUpload]', err);
+        log.error('[ProfilePhotoUpload]', err);
         throw err;
       }
 
       setAvatarUrl(publicUrl);
       toast.success('Profile photo updated');
     } catch (error: any) {
-      console.error('Error uploading photo:', error);
+      log.error('Error uploading photo:', error);
       toast.error(error.message || 'Failed to upload photo');
     } finally {
       setUploading(false);

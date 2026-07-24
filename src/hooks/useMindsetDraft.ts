@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { EMPTY_MINDSET_PAYLOAD, MindsetPayload } from '@/components/candidate/mindset/types';
+import { log } from '@/lib/log';
 
 type LoadResult = {
   loading: boolean;
@@ -98,7 +99,7 @@ export function useMindsetDraft(invitationId: string) {
     (payload: MindsetPayload) => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
       saveTimer.current = setTimeout(() => {
-        upsertDraft(payload).catch((e) => console.error('[mindset] draft save error', e));
+        upsertDraft(payload).catch((e) => log.error('[mindset] draft save error', e));
       }, 1200);
     },
     [upsertDraft]

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import { log } from '@/lib/log';
 
 export interface JobRecommendation {
   job: {
@@ -73,7 +74,7 @@ export const useJobRecommendationEngine = () => {
                            errorMsg.includes('session');
         
         if (isAuthError) {
-          console.warn('[useJobRecommendationEngine] Auth error - clearing recommendations silently');
+          log.warn('[useJobRecommendationEngine] Auth error - clearing recommendations silently');
           setRecommendations([]);
           setError(null);
           return;
@@ -90,7 +91,7 @@ export const useJobRecommendationEngine = () => {
         setLastGenerated(response?.generatedAt || new Date().toISOString());
       }
     } catch (err: any) {
-      console.warn('[useJobRecommendationEngine] Error:', err);
+      log.warn('[useJobRecommendationEngine] Error:', err);
       // Always fail gracefully - no blank screens
       setRecommendations([]);
       setError(null);

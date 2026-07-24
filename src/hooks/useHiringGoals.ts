@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 export interface HiringGoal {
   id: string;
@@ -46,7 +47,7 @@ export const useHiringGoals = () => {
         .order('updated_at', { ascending: false });
 
       if (fetchError) {
-        console.error('Error fetching hiring goals:', fetchError);
+        log.error('Error fetching hiring goals:', fetchError);
         setError(fetchError.message);
         return;
       }
@@ -73,7 +74,7 @@ export const useHiringGoals = () => {
       setGoals(enrichedGoals);
       setError(null);
     } catch (err) {
-      console.error('Error in useHiringGoals:', err);
+      log.error('Error in useHiringGoals:', err);
       setError('Failed to load hiring goals');
     } finally {
       setLoading(false);
@@ -87,7 +88,7 @@ export const useHiringGoals = () => {
       .eq('id', goalId);
 
     if (error) {
-      console.error('Error updating goal status:', error);
+      log.error('Error updating goal status:', error);
       throw error;
     }
 

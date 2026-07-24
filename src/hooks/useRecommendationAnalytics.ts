@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 export interface RecommendationMetrics {
   totalRecommendations: number;
@@ -69,7 +70,7 @@ export const useRecommendationAnalytics = () => {
         matchScoreBuckets,
       });
     } catch (error) {
-      console.error('Error fetching recommendation analytics:', error);
+      log.error('Error fetching recommendation analytics:', error);
       setMetrics(null);
     } finally {
       setLoading(false);

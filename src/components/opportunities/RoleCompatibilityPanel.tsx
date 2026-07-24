@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { TrendingUp, Heart, Brain, Sparkles } from 'lucide-react';
+import { log } from '@/lib/log';
 
 interface RoleCompatibilityPanelProps {
   jobId: string;
@@ -61,7 +62,7 @@ export const RoleCompatibilityPanel = ({ jobId, requiredSkills = [] }: RoleCompa
         });
       }
     } catch (error) {
-      console.error('Error fetching compatibility:', error);
+      log.error('Error fetching compatibility:', error);
     } finally {
       setLoading(false);
     }

@@ -26,6 +26,7 @@ import { supabase } from '@/integrations/supabase/client';
 import MainLayout from '@/components/layout/MainLayout';
 import { CharacterCountTextarea } from '@/components/candidate/CharacterCountTextarea';
 import { CheckCircle, Loader2, Send, Target } from 'lucide-react';
+import { log } from '@/lib/log';
 
 interface CustomQuestion {
   id: string;
@@ -173,7 +174,7 @@ export default function CustomL1Challenge({
       setStatus('submitted');
       toast({ title: t('challenge.submission_success', 'Risposte inviate') });
     } catch (err: any) {
-      console.error('[CustomL1Challenge] submit failed:', err);
+      log.error('[CustomL1Challenge] submit failed:', err);
       toast({
         title: t('common.error', 'Errore'),
         description: err?.message || 'Submission failed',

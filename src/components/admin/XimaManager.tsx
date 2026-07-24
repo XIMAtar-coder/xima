@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Shield, BarChart3, Users, Activity, Wrench, LineChart, Wallet, Sparkles, Radio, BrainCircuit, TrendingUp, Inbox, ScrollText, ShieldCheck, ImageIcon } from 'lucide-react';
+import { Shield, BarChart3, Users, Activity, Wrench, LineChart, Wallet, Radio, BrainCircuit, TrendingUp, Inbox, ScrollText, ShieldCheck, ImageIcon } from 'lucide-react';
 import TabSkeleton from '@/components/ui/TabSkeleton';
 import ChunkErrorBoundary from '@/components/ui/ChunkErrorBoundary';
 
@@ -19,7 +19,7 @@ const RequestsTab = lazy(() => import('./tabs/RequestsTab'));
 const AuditTab = lazy(() => import('./tabs/AuditTab'));
 const RolesTab = lazy(() => import('./tabs/RolesTab'));
 const MediaTab = lazy(() => import('./tabs/MediaTab'));
-const PocRagTab = lazy(() => import('./tabs/PocRagTab'));
+
 
 const TABS = [
   { value: 'overview', label: 'Overview', icon: BarChart3, Component: OverviewTab },
@@ -35,7 +35,6 @@ const TABS = [
   { value: 'audit', label: 'Audit', icon: ScrollText, Component: AuditTab },
   { value: 'roles', label: 'Roles', icon: ShieldCheck, Component: RolesTab },
   { value: 'media', label: 'Media', icon: ImageIcon, Component: MediaTab },
-  { value: 'poc-rag', label: 'PoC RAG', icon: Sparkles, Component: PocRagTab },
 ] as const;
 
 

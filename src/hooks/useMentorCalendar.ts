@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { log } from '@/lib/log';
 
 export interface AvailabilitySlot {
   id: string;
@@ -103,7 +104,7 @@ export function useMentorCalendar(mentorId: string | null) {
         candidate_name: s.profiles?.full_name || s.profiles?.name || 'Anonymous'
       })));
     } catch (err: any) {
-      console.error('[useMentorCalendar] Error:', err);
+      log.error('[useMentorCalendar] Error:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -346,7 +347,7 @@ export function useMentorCalendar(mentorId: string | null) {
         meta: log.meta as Record<string, any>
       }));
     } catch (err) {
-      console.error('[fetchAuditLogs] Error:', err);
+      log.error('[fetchAuditLogs] Error:', err);
       return [];
     }
   };

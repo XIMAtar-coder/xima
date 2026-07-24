@@ -7,6 +7,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { getBusinessLocale, type BusinessLocale } from '@/hooks/useBusinessLocale';
+import { log } from '@/lib/log';
 
 const CACHE_PREFIX = 'xima.ai.translation';
 const CACHE_VERSION = 'v1';
@@ -97,7 +98,7 @@ export async function translateWithCache(
     });
 
     if (error) {
-      console.error('[translateWithCache] Error:', error);
+      log.error('[translateWithCache] Error:', error);
       return text; // Fallback to original
     }
 
@@ -108,7 +109,7 @@ export async function translateWithCache(
     
     return translatedText;
   } catch (err) {
-    console.error('[translateWithCache] Exception:', err);
+    log.error('[translateWithCache] Exception:', err);
     return text;
   }
 }

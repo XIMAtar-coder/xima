@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useUser } from '@/context/UserContext';
+import { log } from '@/lib/log';
 
 interface JobPost {
   id: string;
@@ -54,12 +55,12 @@ export function useCreateL2ChallengeFromJobPost() {
         .single();
 
       if (createError) {
-        console.error('Error creating challenge draft:', createError);
+        log.error('Error creating challenge draft:', createError);
         throw new Error(createError.message);
       }
 
       const challengeId = newChallenge.id;
-      console.log('[useCreateL2Challenge] Challenge draft created:', challengeId);
+      log.debug('[useCreateL2Challenge] Challenge draft created:', challengeId);
 
       // Step 2: Call edge function to generate L2 config
       const locale = jobPost.locale || i18n.language || 'en';
@@ -89,7 +90,7 @@ export function useCreateL2ChallengeFromJobPost() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.error('[useCreateL2Challenge] Edge function error:', response.status, errorData);
+        log.error('[useCreateL2Challenge] Edge function error:', response.status, errorData);
         
         // Update challenge to needs_review status
         await supabase
@@ -113,7 +114,7 @@ export function useCreateL2ChallengeFromJobPost() {
       }
 
       const result = await response.json();
-      console.log('[useCreateL2Challenge] Generation result:', result);
+      log.debug('[useCreateL2Challenge] Generation result:', result);
 
       if (result.status === 'needs_review') {
         toast.warning(t('business.challenges.created_needs_review', 'Challenge created but needs manual configuration.'));
@@ -132,7 +133,7 @@ export function useCreateL2ChallengeFromJobPost() {
       };
 
     } catch (err: any) {
-      console.error('[useCreateL2Challenge] Error:', err);
+      log.error('[useCreateL2Challenge] Error:', err);
       toast.error(err.message || t('common.error'));
       return { success: false, error: err.message };
     } finally {

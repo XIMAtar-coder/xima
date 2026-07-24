@@ -16,6 +16,7 @@ import { useUser } from '@/context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
 import { FileUp, Upload, ClipboardPaste, Loader2, AlertTriangle, X, Plus } from 'lucide-react';
 import XimaHrRequestModal from '@/components/business/XimaHrRequestModal';
+import { log } from '@/lib/log';
 
 // ── Chip list editor ──
 const ChipListEditor: React.FC<{
@@ -153,7 +154,7 @@ const JobImportWizard = () => {
       setRawText(pasteText || '[file upload]');
       setStep(2);
     } catch (err: any) {
-      console.error('[JobImportWizard] Analysis error:', err);
+      log.error('[JobImportWizard] Analysis error:', err);
       toast({ title: 'Error', description: err.message || 'Analysis failed', variant: 'destructive' });
     } finally {
       setAnalyzing(false);

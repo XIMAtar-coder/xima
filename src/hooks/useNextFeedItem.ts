@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import { log } from '@/lib/log';
 
 export interface FeedItemPayload {
   normalized_text?: string;
@@ -55,7 +56,7 @@ export const useNextFeedItem = () => {
       const { data, error: fetchError } = await supabase.rpc('get_next_feed_item');
 
       if (fetchError) {
-        console.error('[useNextFeedItem] Error fetching next item:', fetchError);
+        log.error('[useNextFeedItem] Error fetching next item:', fetchError);
         setError('Failed to load update');
         return;
       }
@@ -78,7 +79,7 @@ export const useNextFeedItem = () => {
         setNoNewItems(true);
       }
     } catch (err) {
-      console.error('[useNextFeedItem] Exception:', err);
+      log.error('[useNextFeedItem] Exception:', err);
       setError('An error occurred');
     } finally {
       setLoading(false);

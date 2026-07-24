@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Target, Calendar, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
+import { log } from '@/lib/log';
 
 interface Challenge {
   id: string;
@@ -43,7 +44,7 @@ export const RecommendedChallenges = () => {
       if (error) throw error;
       setChallenges(data || []);
     } catch (error) {
-      console.error('Error fetching challenges:', error);
+      log.error('Error fetching challenges:', error);
     } finally {
       setLoading(false);
     }

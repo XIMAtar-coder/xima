@@ -1,4 +1,5 @@
 import * as pdfjsLib from 'pdfjs-dist';
+import { log } from '@/lib/log';
 
 // Configure PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs`;
@@ -44,7 +45,7 @@ export async function extractTextFromPdf(file: File): Promise<PdfExtractionResul
       pageCount: pdf.numPages,
     };
   } catch (error: any) {
-    console.error('PDF extraction error:', error);
+    log.error('PDF extraction error:', error);
     return {
       success: false,
       text: '',

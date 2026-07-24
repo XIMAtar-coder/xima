@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Coins, Crown, Zap, Star, Sparkles, Users, ArrowRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 const TIER_ICONS: Record<string, React.ReactNode> = {
   freemium: <Zap className="h-3 w-3" />,
@@ -39,7 +40,7 @@ export const MembershipSummaryCard: React.FC = () => {
         ]);
         if (!profileRes.error && profileRes.data) setTier((profileRes.data as any).membership_tier || 'freemium');
         if (!balanceRes.error && balanceRes.data != null) setCredits(balanceRes.data as number);
-      } catch { } finally { setLoading(false); }
+      } catch (e) { log.warn('[MembershipSummaryCard] load failed', e); } finally { setLoading(false); }
     };
     fetchData();
   }, []);

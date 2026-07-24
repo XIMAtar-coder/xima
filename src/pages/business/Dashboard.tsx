@@ -27,6 +27,7 @@ import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useChallengeStatsMap } from '@/hooks/useChallengeResponsesData';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { HowXimaWorksExplainer } from '@/components/business/HowXimaWorksExplainer';
+import { log } from '@/lib/log';
 
 const isDev = import.meta.env.DEV;
 
@@ -111,7 +112,7 @@ const BusinessDashboard = () => {
         .eq('business_id', user.id)
         .eq('status', 'active')
         .order('created_at', { ascending: false });
-      if (error) { console.error('[Dashboard] Error fetching active challenges:', error); return; }
+      if (error) { log.error('[Dashboard] Error fetching active challenges:', error); return; }
       if (!challenges || challenges.length === 0) { setActiveChallengesBase([]); return; }
       const goalIds = challenges.map(c => c.hiring_goal_id).filter(Boolean) as string[];
       let goalsMap: Record<string, string> = {};
@@ -124,7 +125,7 @@ const BusinessDashboard = () => {
         hiring_goal_title: challenge.hiring_goal_id ? goalsMap[challenge.hiring_goal_id] || null : null,
         created_at: challenge.created_at || '', start_at: challenge.start_at || null, end_at: challenge.end_at || null, status: challenge.status || 'active'
       })));
-    } catch (err) { console.error('[Dashboard] Error loading active challenges:', err); } finally { setActiveChallengesLoading(false); }
+    } catch (err) { log.error('[Dashboard] Error loading active challenges:', err); } finally { setActiveChallengesLoading(false); }
   };
 
   const loadHiringGoalStatus = async () => {
@@ -132,11 +133,11 @@ const BusinessDashboard = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       const { data, error } = await supabase.from('hiring_goal_drafts').select('id, status').eq('business_id', user.id).order('updated_at', { ascending: false }).limit(1).maybeSingle();
-      if (error) { console.error('[Dashboard] Error fetching hiring goal:', error); setHiringGoalStatus('none'); return; }
+      if (error) { log.error('[Dashboard] Error fetching hiring goal:', error); setHiringGoalStatus('none'); return; }
       if (!data) { setHiringGoalStatus('none'); setHiringGoalDraftId(null); }
       else if (['active', 'paused', 'filled', 'closed'].includes(data.status)) { setHiringGoalStatus('active'); setHiringGoalDraftId(data.id); }
       else { setHiringGoalStatus('draft'); setHiringGoalDraftId(data.id); }
-    } catch (err) { console.error('[Dashboard] Error loading hiring goal status:', err); setHiringGoalStatus('none'); setHiringGoalDraftId(null); } finally { setHiringGoalLoading(false); }
+    } catch (err) { log.error('[Dashboard] Error loading hiring goal status:', err); setHiringGoalStatus('none'); setHiringGoalDraftId(null); } finally { setHiringGoalLoading(false); }
   };
 
   const loadDashboardStats = async () => {
@@ -159,16 +160,16 @@ const BusinessDashboard = () => {
         completedCount = count || 0;
       }
       setStats({ totalCandidates: candidatesCount || 0, shortlisted: shortlistedCount, activeChallenges: activeChallengesCount || 0, completedChallenges: completedCount || 0 });
-    } catch (error) { console.error('Error loading dashboard stats:', error); } finally { setLoading(false); }
+    } catch (error) { log.error('Error loading dashboard stats:', error); } finally { setLoading(false); }
   };
 
   const loadCompanyProfile = async () => {
     if (!user?.id) return;
     try {
       const { data, error } = await supabase.from('company_profiles').select('*').eq('company_id', user.id).maybeSingle();
-      if (error && error.code !== 'PGRST116') console.error('Error loading company profile:', error);
+      if (error && error.code !== 'PGRST116') log.error('Error loading company profile:', error);
       else setCompanyProfile(data);
-    } catch (error) { console.error('Error loading company profile:', error); } finally { setProfileLoading(false); }
+    } catch (error) { log.error('Error loading company profile:', error); } finally { setProfileLoading(false); }
   };
 
   const handleGenerateProfile = async () => {
@@ -200,7 +201,7 @@ const BusinessDashboard = () => {
       }
       await loadCompanyProfile();
     } catch (error: any) {
-      console.error('Error generating profile:', error);
+      log.error('Error generating profile:', error);
       toast({ title: t('business.dashboard.generation_failed'), description: error.message || t('business.dashboard.generation_failed_desc'), variant: 'destructive' });
     } finally { setProfileLoading(false); }
   };

@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useStreamingChat } from '@/hooks/useStreamingChat';
 import { toast } from 'sonner';
 import AssistantAvatar from './AssistantAvatar';
+import { log } from '@/lib/log';
 
 interface Message {
   id: string;
@@ -45,7 +46,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
       scrollToBottomFn();
     },
     onError: (err) => {
-      console.error('XIM-AI stream error', err);
+      log.error('XIM-AI stream error', err);
       toast.error(err.message);
       const id = streamingIdRef.current;
       if (id) {
@@ -77,7 +78,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
         .maybeSingle();
 
       if (error) {
-        console.error('Load conversation error', error);
+        log.error('Load conversation error', error);
         return;
       }
 
@@ -96,7 +97,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
           .insert({ user_id: user.id, language: botLang })
           .select('id')
           .single();
-        if (createErr) { console.error(createErr); return; }
+        if (createErr) { log.error(createErr); return; }
         setConversationId(created.id);
 
         // Seed welcome message
@@ -191,7 +192,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
     try {
       fullReply = await streamSend({ message: text, context: contextPayload });
     } catch (e) {
-      console.error('AI stream failed', e);
+      log.error('AI stream failed', e);
     } finally {
       streamingIdRef.current = null;
       setSending(false);

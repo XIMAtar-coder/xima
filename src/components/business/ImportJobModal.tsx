@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Link2, Upload, Search, CheckCircle, Loader2, FileText, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { log } from '@/lib/log';
 
 interface ImportJobModalProps {
   open: boolean;
@@ -185,7 +186,7 @@ export const ImportJobModal: React.FC<ImportJobModalProps> = ({
       onImported();
       handleClose();
     } catch (err: any) {
-      console.error('[ImportJob] Save error:', err);
+      log.error('[ImportJob] Save error:', err);
       toast.error(t('import_job.save_error', 'Failed to save job. Please try again.'));
     } finally {
       setIsLoading(false);

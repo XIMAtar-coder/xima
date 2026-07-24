@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import { log } from '@/lib/log';
 
 interface Invitation {
   id: string;
@@ -36,7 +37,7 @@ export const useChallengeInvitations = () => {
       setInvitations(invitationList);
       setPendingCount(invitationList.filter(i => i.status === 'invited').length);
     } catch (err) {
-      console.error('Error fetching invitations:', err);
+      log.error('Error fetching invitations:', err);
     } finally {
       setLoading(false);
     }
@@ -80,7 +81,7 @@ export const useChallengeInvitations = () => {
 
       return { success: true };
     } catch (err: any) {
-      console.error('Error accepting invitation:', err);
+      log.error('Error accepting invitation:', err);
       return { success: false, error: err.message };
     }
   };
@@ -119,7 +120,7 @@ export const useChallengeInvitations = () => {
 
       return { success: true };
     } catch (err: any) {
-      console.error('Error declining invitation:', err);
+      log.error('Error declining invitation:', err);
       return { success: false, error: err.message };
     }
   };

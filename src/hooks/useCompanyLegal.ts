@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useBusinessProfile } from '@/hooks/useBusinessProfile';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
+import { log } from '@/lib/log';
 
 export interface CompanyLegal {
   id: string;
@@ -41,7 +42,7 @@ export function useCompanyLegal() {
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
-        console.error('[useCompanyLegal] Error:', error);
+        log.error('[useCompanyLegal] Error:', error);
         throw error;
       }
 
@@ -92,7 +93,7 @@ export function useCompanyLegal() {
       });
     },
     onError: (error: Error) => {
-      console.error('[useCompanyLegal] Upsert error:', error);
+      log.error('[useCompanyLegal] Upsert error:', error);
       toast({
         title: t('business.legal.save_error'),
         description: error.message,

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { selectArchetypeFromAssessmentPillars, type AssessmentPillarScores } from '@/lib/ximatarTaxonomy';
+import { log } from '@/lib/log';
 
 export interface OpenAnswerItem {
   question: string;
@@ -162,23 +163,23 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
 
   useEffect(() => {
     const load = async () => {
-      console.log('[useProfileData] LOAD START', { isAuthenticated, userId: user?.id });
+      log.debug('[useProfileData] LOAD START', { isAuthenticated, userId: user?.id });
 
       try {
         const { data: authUser } = await supabase.auth.getUser();
-        console.log('[useProfileData] auth.getUser result', authUser?.user?.id);
+        log.debug('[useProfileData] auth.getUser result', authUser?.user?.id);
       } catch (e) {
-        console.warn('[useProfileData] getUser failed', e);
+        log.warn('[useProfileData] getUser failed', e);
       }
 
       if (!isAuthenticated || !user?.id) {
-        console.log('[useProfileData] No auth or user, stopping');
+        log.debug('[useProfileData] No auth or user, stopping');
         setState((prev) => ({ ...prev, isLoading: false }));
         return;
       }
 
       try {
-        console.log('[useProfileData] Fetching profile for user:', user.id);
+        log.debug('[useProfileData] Fetching profile for user:', user.id);
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select(`
@@ -211,17 +212,17 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           .eq('user_id', user.id)
           .single();
 
-        console.log('[useProfileData] Profile query result:', { profile, profileError });
+        log.debug('[useProfileData] Profile query result:', { profile, profileError });
 
         if (profileError) {
-          console.error('[useProfileData] profile error', profileError);
+          log.error('[useProfileData] profile error', profileError);
           setState((prev) => ({ ...prev, isLoading: false, error: profileError.message }));
           return;
         }
 
         const profileId = profile?.id;
         if (!profileId) {
-          console.error('[useProfileData] No profile ID found');
+          log.error('[useProfileData] No profile ID found');
           setState((prev) => ({ ...prev, isLoading: false, error: 'Profile not found' }));
           return;
         }
@@ -288,9 +289,9 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             avatar_url: m?.avatar_url ?? m?.profile_image_url ?? null,
             calendar_url: m?.calendar_url ?? null,
           };
-          console.log('[useProfileData] Using cached mentor from profile:', mentor_profile.name);
+          log.debug('[useProfileData] Using cached mentor from profile:', mentor_profile.name);
         } else if (mentor_profile_id) {
-          console.log('[useProfileData] Fetching mentor from mentors table:', mentor_profile_id);
+          log.debug('[useProfileData] Fetching mentor from mentors table:', mentor_profile_id);
           const { data: mentorData, error: profError } = await supabase
             .from('mentors_public')
             .select('id, user_id, name, title, profile_image_url, bio, specialties, xima_pillars')
@@ -298,9 +299,9 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
             .maybeSingle();
 
           if (profError) {
-            console.error('[useProfileData] Error fetching mentor:', profError);
+            log.error('[useProfileData] Error fetching mentor:', profError);
           } else if (mentorData) {
-            console.log('[useProfileData] Found mentor:', mentorData.name);
+            log.debug('[useProfileData] Found mentor:', mentorData.name);
             mentor_user_id = mentorData.user_id;
 
             mentor_profile = {
@@ -310,7 +311,7 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
               calendar_url: null,
             };
           } else {
-            console.warn('[useProfileData] Mentor not found for ID:', mentor_profile_id);
+            log.warn('[useProfileData] Mentor not found for ID:', mentor_profile_id);
           }
         }
 
@@ -428,10 +429,10 @@ export const useProfileData = (refreshTrigger?: number): ProfileData => {
           subscriber_no: ((profile as any)?.subscriber_no as number) ?? null,
         };
 
-        console.log('[useProfileData] FINAL STATE UPDATE:', next);
+        log.debug('[useProfileData] FINAL STATE UPDATE:', next);
         setState(next);
       } catch (err: any) {
-        console.error('[useProfileData] UNEXPECTED ERROR', err);
+        log.error('[useProfileData] UNEXPECTED ERROR', err);
         setState((prev) => ({ ...prev, isLoading: false, error: err?.message || 'Unknown error' }));
       }
     };

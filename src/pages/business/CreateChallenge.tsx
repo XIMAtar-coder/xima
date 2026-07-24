@@ -20,6 +20,7 @@ import {
   isCustomL1AiChallenge,
 } from '@/features/challenge-builder/saveChallenge';
 import CustomL1Builder from '@/features/challenge-builder/CustomL1Builder';
+import { log } from '@/lib/log';
 import { 
   ArrowLeft, Sparkles, Loader2, Rocket, Save, Eye, Clock, 
   Target, CheckCircle2, Wand2, AlertCircle, Archive, CalendarClock
@@ -288,11 +289,11 @@ const CreateChallenge = () => {
 
   // Generate with AI
   const handleGenerate = async () => {
-    console.log('[CreateChallenge] handleGenerate called');
-    console.log('[CreateChallenge] hiringGoal:', hiringGoal);
+    log.debug('[CreateChallenge] handleGenerate called');
+    log.debug('[CreateChallenge] hiringGoal:', hiringGoal);
     
     if (!hiringGoal?.task_description) {
-      console.warn('[CreateChallenge] No task description available');
+      log.warn('[CreateChallenge] No task description available');
       toast({
         title: t('common.error'),
         description: t('challenge_builder.no_task_description'),
@@ -303,7 +304,7 @@ const CreateChallenge = () => {
 
     setGenerating(true);
     try {
-      console.log('[CreateChallenge] Invoking generate-challenge function with:', {
+      log.debug('[CreateChallenge] Invoking generate-challenge function with:', {
         task_description: hiringGoal.task_description?.substring(0, 50),
         role_title: hiringGoal.role_title
       });
@@ -319,15 +320,15 @@ const CreateChallenge = () => {
         }
       });
 
-      console.log('[CreateChallenge] Response:', { data, error });
+      log.debug('[CreateChallenge] Response:', { data, error });
 
       if (error) {
-        console.error('[CreateChallenge] Supabase function error:', error);
+        log.error('[CreateChallenge] Supabase function error:', error);
         throw error;
       }
       
       if (data?.error) {
-        console.error('[CreateChallenge] API returned error:', data.error);
+        log.error('[CreateChallenge] API returned error:', data.error);
         throw new Error(data.error);
       }
 
@@ -337,7 +338,7 @@ const CreateChallenge = () => {
       setSuccessCriteria(data.success_criteria?.length ? data.success_criteria : ['', '', '']);
       setTimeEstimate(data.time_estimate_minutes || 45);
 
-      console.log('[CreateChallenge] Form updated with:', {
+      log.debug('[CreateChallenge] Form updated with:', {
         title: data.title_suggestion,
         descriptionLength: data.candidate_facing_description?.length,
         criteriaCount: data.success_criteria?.length,
@@ -349,7 +350,7 @@ const CreateChallenge = () => {
         description: t('challenge_builder.generated_desc'),
       });
     } catch (err: any) {
-      console.error('[CreateChallenge] Generate challenge error:', err);
+      log.error('[CreateChallenge] Generate challenge error:', err);
       toast({
         title: t('common.error'),
         description: err.message || t('challenge_builder.generation_failed') || 'AI generation failed. Please try again.',
@@ -482,7 +483,7 @@ const CreateChallenge = () => {
         navigate('/business/challenges');
       }
     } catch (err: any) {
-      console.error('Save error:', err);
+      log.error('Save error:', err);
       toast({
         title: t('common.error'),
         description: err.message,

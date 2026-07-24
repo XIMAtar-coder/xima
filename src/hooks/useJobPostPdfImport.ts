@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { useToast } from '@/hooks/use-toast';
+import { log } from '@/lib/log';
 import { 
   extractTextFromPdf, 
   validateExtractedText, 
@@ -197,7 +198,7 @@ export function useJobPostPdfImport(options: UseJobPostPdfImportOptions = { redi
 
       return jobId;
     } catch (error: any) {
-      console.error('Import error:', error);
+      log.error('Import error:', error);
       setStatus('error');
       
       // Handle auth errors gracefully

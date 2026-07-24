@@ -21,6 +21,7 @@ import { useUser } from '@/context/UserContext';
 import { toast } from 'sonner';
 import { getSupabaseFunctionErrorMessage } from '@/lib/supabaseFunctionError';
 import { useCvAnalysisJob } from '@/hooks/useCvAnalysisJob';
+import { log } from '@/lib/log';
 
 interface CvTensionGap {
   pillar: string;
@@ -189,7 +190,7 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
       setActiveJobId(data.cv_upload_id as string);
       toast.message('CV uploaded. Analyzing in the background…');
     } catch (error: any) {
-      console.error('CV upload error:', error);
+      log.error('CV upload error:', error);
       const errorMsg = error?.message || 'Failed to analyze CV';
 
       if (errorMsg.includes('Authentication') || errorMsg.includes('log in') || errorMsg.includes('session')) {

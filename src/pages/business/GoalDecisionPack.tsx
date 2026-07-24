@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useBusinessPremium } from '@/hooks/useBusinessPremium';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 import { 
   FileText, Printer, Download, Crown, Lock,
   User, CheckCircle2, Clock, XCircle, MessageSquare,
@@ -146,7 +147,7 @@ const GoalDecisionPack: React.FC = () => {
 
       setCandidates(uniqueItems);
     } catch (error) {
-      console.error('Error loading candidates for decision pack:', error);
+      log.error('Error loading candidates for decision pack:', error);
     } finally {
       setLoading(false);
     }

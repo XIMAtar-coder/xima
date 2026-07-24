@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Target, Sparkles, TrendingUp } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { log } from '@/lib/log';
 
 interface Candidate {
   user_id: string;
@@ -129,7 +130,7 @@ const JobCandidateMatching = () => {
       matchedCandidates.sort((a, b) => b.matchScore - a.matchScore);
       setMatches(matchedCandidates);
     } catch (error) {
-      console.error('Error loading matches:', error);
+      log.error('Error loading matches:', error);
       toast({
         title: 'Error',
         description: 'Failed to load candidate matches',

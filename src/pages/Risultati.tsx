@@ -13,6 +13,7 @@ import { ProgressBar } from '@/components/results/ProgressBar';
 import { OpenAnswerScore } from '@/components/ximatar-journey/OpenAnswerScore';
 import FeaturedProfessionals from '@/components/FeaturedProfessionals';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 const Risultati = () => {
   const { t } = useTranslation();
@@ -31,31 +32,31 @@ const Risultati = () => {
   ] : [];
 
   const handleMentorSelect = async (mentor: any) => {
-    console.log('[Risultati] Mentor selected:', mentor);
-    console.log('[Risultati] user?.id:', user?.id);
+    log.debug('[Risultati] Mentor selected:', mentor);
+    log.debug('[Risultati] user?.id:', user?.id);
     
     setSelectedProfessional(mentor);
     
     // Call assign-mentor edge function to create the mentor match
     if (user?.id) {
-      console.log('[Risultati] Calling assign-mentor edge function...');
+      log.debug('[Risultati] Calling assign-mentor edge function...');
       try {
         const { data, error } = await supabase.functions.invoke('assign-mentor', {
           body: { professional_id: mentor.id },
         });
         
-        console.log('[Risultati] Edge function response:', { data, error });
+        log.debug('[Risultati] Edge function response:', { data, error });
         
         if (error) {
-          console.error('[Risultati] Error assigning mentor:', error);
+          log.error('[Risultati] Error assigning mentor:', error);
         } else if (data?.success) {
-          console.log('[Risultati] Mentor assigned successfully:', data.mentor);
+          log.debug('[Risultati] Mentor assigned successfully:', data.mentor);
         }
       } catch (error) {
-        console.error('[Risultati] Failed to assign mentor:', error);
+        log.error('[Risultati] Failed to assign mentor:', error);
       }
     } else {
-      console.log('[Risultati] Not calling edge function - no user ID');
+      log.debug('[Risultati] Not calling edge function - no user ID');
     }
   };
 

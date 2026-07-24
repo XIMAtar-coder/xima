@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import { log } from '@/lib/log';
 
 export type OnboardingStep =
   | 'welcome_seen'
@@ -46,7 +47,7 @@ export const useOnboardingState = () => {
         .maybeSingle();
 
       if (error) {
-        console.error('[useOnboardingState] fetch error:', error);
+        log.error('[useOnboardingState] fetch error:', error);
       } else if (data) {
         setState({
           completed_steps: (data.completed_steps as string[]) || [],

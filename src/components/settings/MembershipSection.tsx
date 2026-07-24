@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Crown, Zap, Star, Sparkles, Users, MessageSquare, BookOpen, Video, Loader2, Copy, Check, Send, Gift, Clock, Coins } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { log } from '@/lib/log';
 
 interface ReferralRow {
   id: string;
@@ -109,7 +110,7 @@ export const MembershipSection: React.FC = () => {
         setQualifiedCount(qualified);
       }
     } catch (err) {
-      console.error('[MembershipSection] Error:', err);
+      log.error('[MembershipSection] Error:', err);
     } finally {
       setLoading(false);
     }
@@ -148,7 +149,7 @@ export const MembershipSection: React.FC = () => {
         setInviteEmail('');
       }
     } catch (err) {
-      console.error('[MembershipSection] Send invite error:', err);
+      log.error('[MembershipSection] Send invite error:', err);
       toast({ title: t('common.error'), description: t('settings.invite_failed', 'Failed to send invite'), variant: 'destructive' });
     } finally {
       setSendingInvite(false);

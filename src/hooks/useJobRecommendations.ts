@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { Job } from '@/services/jobFeed';
+import { log } from '@/lib/log';
 
 export interface JobRecommendation {
   job: Job;
@@ -41,13 +42,13 @@ export const useJobRecommendations = () => {
                            errorMessage.includes('session');
         
         if (isAuthError) {
-          console.warn('[useJobRecommendations] Auth error - clearing recommendations silently');
+          log.warn('[useJobRecommendations] Auth error - clearing recommendations silently');
           setRecommendations([]);
           return;
         }
         
         // For non-auth errors, log but don't throw
-        console.error('[useJobRecommendations] Error:', error);
+        log.error('[useJobRecommendations] Error:', error);
         setRecommendations([]);
         return;
       }
@@ -56,7 +57,7 @@ export const useJobRecommendations = () => {
       setLastGenerated(data?.generatedAt || new Date().toISOString());
     } catch (error) {
       // Catch any unexpected errors and fail gracefully
-      console.error('[useJobRecommendations] Unexpected error:', error);
+      log.error('[useJobRecommendations] Unexpected error:', error);
       setRecommendations([]);
     } finally {
       setLoading(false);

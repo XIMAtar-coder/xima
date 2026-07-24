@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import { log } from '@/lib/log';
 
 export interface AssessmentData {
   ximatar: any;
@@ -52,12 +53,12 @@ export const useSupabaseAssessmentData = () => {
           .maybeSingle();
 
         if (assessmentError) {
-          console.error('Error fetching assessment:', assessmentError);
+          log.error('Error fetching assessment:', assessmentError);
           throw assessmentError;
         }
 
         if (!assessmentResult) {
-          console.log('No completed assessment found for user');
+          log.debug('No completed assessment found for user');
           setData(prev => ({ ...prev, isLoading: false }));
           return;
         }
@@ -70,7 +71,7 @@ export const useSupabaseAssessmentData = () => {
           .eq('assessment_result_id', assessmentResult.id);
 
         if (pillarError) {
-          console.error('Error fetching pillar scores:', pillarError);
+          log.error('Error fetching pillar scores:', pillarError);
         }
 
         if (pillarData && pillarData.length > 0) {
@@ -79,7 +80,7 @@ export const useSupabaseAssessmentData = () => {
             acc[key] = score;
             return acc;
           }, {});
-          console.log('Fetched pillar scores:', pillars);
+          log.debug('Fetched pillar scores:', pillars);
         }
 
         // Fetch open question scores
@@ -134,13 +135,13 @@ export const useSupabaseAssessmentData = () => {
           progress
         });
 
-        console.log('Assessment data loaded:', {
+        log.debug('Assessment data loaded:', {
           hasXimatar: !!ximatarWithTranslations,
           hasPillars: !!pillars,
           totalScore: assessmentResult.total_score
         });
       } catch (error) {
-        console.error('Error fetching assessment data:', error);
+        log.error('Error fetching assessment data:', error);
         setData(prev => ({ ...prev, isLoading: false }));
       }
     };

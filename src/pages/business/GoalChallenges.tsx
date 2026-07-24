@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { supabase } from '@/integrations/supabase/client';
 import { Plus, Target, Play, Pause, Archive, Edit, Copy, Clock, CheckCircle, Eye } from 'lucide-react';
+import { log } from '@/lib/log';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -59,13 +60,13 @@ const GoalChallenges: React.FC = () => {
         .order('updated_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching challenges:', error);
+        log.error('Error fetching challenges:', error);
         return;
       }
 
       setChallenges(data || []);
     } catch (error) {
-      console.error('Error loading challenges:', error);
+      log.error('Error loading challenges:', error);
     } finally {
       setLoading(false);
     }
@@ -205,11 +206,11 @@ const GoalChallenges: React.FC = () => {
                     },
                   });
                   if (error) {
-                    console.error('[L2 sim] error', error, data);
+                    log.error('[L2 sim] error', error, data);
                     toast({ title: 'L2 Sim failed', description: error.message || JSON.stringify(data), variant: 'destructive' });
                     return;
                   }
-                  console.log('[L2 sim] result', data);
+                  log.debug('[L2 sim] result', data);
                   toast({ title: 'L2 Sim generated', description: `correlation_id: ${(data as any)?.correlation_id ?? 'n/a'}` });
                 }}
               >

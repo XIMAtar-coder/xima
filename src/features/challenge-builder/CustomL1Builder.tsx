@@ -18,6 +18,7 @@ import {
   archiveSiblingsContainsFilter,
 } from '@/features/challenge-builder/saveChallenge';
 import type { Json } from '@/integrations/supabase/types';
+import { log } from '@/lib/log';
 import {
   Brain,
   CalendarClock,
@@ -174,7 +175,7 @@ export default function CustomL1Builder({
         description: t('challenge_builder.generated_desc_l1custom', 'Rivedi scenario e domande, poi attiva.'),
       });
     } catch (err: any) {
-      console.error('[CustomL1Builder] generate failed:', err);
+      log.error('[CustomL1Builder] generate failed:', err);
       toast({
         title: t('common.error', 'Errore'),
         description: err?.message || t('challenge_builder.generation_failed', 'Generazione fallita'),
@@ -274,7 +275,7 @@ export default function CustomL1Builder({
         navigate('/business/challenges');
       }
     } catch (err: any) {
-      console.error('[CustomL1Builder] save failed:', err);
+      log.error('[CustomL1Builder] save failed:', err);
       toast({
         title: t('common.error', 'Errore'),
         description: err?.message || 'Save failed',

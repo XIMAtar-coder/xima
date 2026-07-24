@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 export interface MentorProfile {
   id: string;
@@ -65,7 +66,7 @@ export function useMentorProfile(): UseMentorProfileResult {
         .maybeSingle();
 
       if (fetchError) {
-        console.error('[useMentorProfile] Error fetching mentor:', fetchError);
+        log.error('[useMentorProfile] Error fetching mentor:', fetchError);
         setError('Failed to load mentor profile');
         setIsMentor(false);
         return;
@@ -79,7 +80,7 @@ export function useMentorProfile(): UseMentorProfileResult {
         setMentorProfile(null);
       }
     } catch (err) {
-      console.error('[useMentorProfile] Unexpected error:', err);
+      log.error('[useMentorProfile] Unexpected error:', err);
       setError('An unexpected error occurred');
       setIsMentor(false);
     } finally {
