@@ -126,10 +126,10 @@ const Imprint = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-muted-foreground">
+              <p>{t('legal.imprint.register_court')}: <span className="text-foreground">{COMPANY_LEGAL.registration.court}</span></p>
+              <p>{t('legal.imprint.register_number')}: <span className="text-foreground">{COMPANY_LEGAL.registration.number}</span></p>
               <p>{t('legal.imprint.vat')}: <span className="text-foreground">{COMPANY_LEGAL.registration.vatNumber}</span></p>
-              <p>{t('legal.imprint.rea')}: <span className="text-foreground">{COMPANY_LEGAL.registration.reaNumber}</span></p>
-              <p>{t('legal.imprint.share_capital')}: <span className="text-foreground">{COMPANY_LEGAL.registration.shareCapital}</span></p>
-              <p className="text-sm">{t('legal.imprint.registered_at')}: {COMPANY_LEGAL.registration.registrationOffice}</p>
+              <p>{t('legal.imprint.tax_number')}: <span className="text-foreground">{COMPANY_LEGAL.registration.taxNumber}</span></p>
             </CardContent>
           </Card>
         </div>
