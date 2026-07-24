@@ -17,7 +17,7 @@ export const LandingFooter: React.FC = () => {
       <div className="max-w-[1440px] mx-auto px-6 lg:px-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-5">
-            <img src="/images/xima-full-white.svg" alt="XIMA" style={{ height: 26, width: 'auto' }} />
+            <img src="/images/xima-full-white.svg" alt="XIMA" width={100} height={26} loading="lazy" decoding="async" style={{ height: 26, width: 'auto' }} />
             <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>
               {t('landing.footer.copyright')}
             </span>
