@@ -185,7 +185,7 @@ const CreateChallenge = () => {
       supabase
         .from('hiring_goal_drafts')
         .select('id, role_title, task_description, experience_level, work_model, country')
-        .eq('id', goalId)
+        .eq('id', goalId ?? '')
         .eq('business_id', user?.id ?? '')
         .single(),
       supabase
@@ -217,7 +217,7 @@ const CreateChallenge = () => {
     const { data, error } = await supabase
       .from('business_challenges')
       .select('*')
-      .eq('id', challengeId)
+      .eq('id', challengeId ?? '')
       .eq('business_id', user?.id ?? '')
       .single();
 

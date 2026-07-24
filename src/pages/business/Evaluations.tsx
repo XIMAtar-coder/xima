@@ -14,9 +14,9 @@ interface Evaluation {
   id: string;
   challenge_title: string;
   candidate_name: string;
-  status: string;
-  score?: number;
-  completed_at?: string;
+  status: string | null;
+  score?: number | null;
+  completed_at?: string | null;
 }
 
 const BusinessEvaluations = () => {

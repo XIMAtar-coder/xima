@@ -141,7 +141,7 @@ export const RecommendedChallenges = () => {
                 )}
                 <div className="flex items-center gap-1">
                   <TrendingUp className="h-3 w-3" />
-                  Posted {formatDistanceToNow(new Date(challenge.created_at), { addSuffix: true })}
+                  {challenge.created_at ? `Posted ${formatDistanceToNow(new Date(challenge.created_at), { addSuffix: true })}` : ''}
                 </div>
               </div>
             </div>

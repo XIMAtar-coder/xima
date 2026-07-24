@@ -151,7 +151,7 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
             status: 'offline'
           },
           last_message: lastMsg?.body,
-          last_message_time: lastMsg?.created_at ?? null,
+          last_message_time: lastMsg?.created_at ?? undefined,
         });
       }
 

@@ -135,7 +135,7 @@ const BusinessDashboard = () => {
       const { data, error } = await supabase.from('hiring_goal_drafts').select('id, status').eq('business_id', user.id).order('updated_at', { ascending: false }).limit(1).maybeSingle();
       if (error) { log.error('[Dashboard] Error fetching hiring goal:', error); setHiringGoalStatus('none'); return; }
       if (!data) { setHiringGoalStatus('none'); setHiringGoalDraftId(null); }
-      else if (['active', 'paused', 'filled', 'closed'].includes(data.status)) { setHiringGoalStatus('active'); setHiringGoalDraftId(data.id); }
+      else if (data.status && ['active', 'paused', 'filled', 'closed'].includes(data.status)) { setHiringGoalStatus('active'); setHiringGoalDraftId(data.id); }
       else { setHiringGoalStatus('draft'); setHiringGoalDraftId(data.id); }
     } catch (err) { log.error('[Dashboard] Error loading hiring goal status:', err); setHiringGoalStatus('none'); setHiringGoalDraftId(null); } finally { setHiringGoalLoading(false); }
   };
@@ -243,7 +243,7 @@ const BusinessDashboard = () => {
       <div className="space-y-6">
         {/* Section 1: Company Identity Card (with collapsible AI profile) */}
         <CompanyIdentityCard
-          businessProfile={businessProfile}
+          businessProfile={businessProfile ?? null}
           companyProfile={companyProfile}
           profileStatus={profileLoading ? 'loading' : 'ready'}
           onGenerate={handleGenerateProfile}
