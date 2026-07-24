@@ -319,14 +319,15 @@ const XimaChat = () => {
                               {messages.map((msg, idx) => {
                                 const isSent = msg.sender_id === user?.id;
                                 const showTimestamp = idx === 0 || 
-                                  new Date(msg.created_at).getTime() - new Date(messages[idx-1].created_at).getTime() > 300000;
+                                  (!!msg.created_at && !!messages[idx-1].created_at &&
+                                    new Date(msg.created_at).getTime() - new Date(messages[idx-1].created_at!).getTime() > 300000);
                                 
                                 return (
                                   <React.Fragment key={msg.id}>
                                     {showTimestamp && (
                                       <div className="flex justify-center">
                                         <span className="text-xs text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">
-                                          {formatMessageTime(msg.created_at)}
+                                          {msg.created_at ? formatMessageTime(msg.created_at) : ''}
                                         </span>
                                       </div>
                                     )}
