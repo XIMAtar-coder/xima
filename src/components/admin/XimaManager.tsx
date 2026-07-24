@@ -35,7 +35,6 @@ const TABS = [
   { value: 'audit', label: 'Audit', icon: ScrollText, Component: AuditTab },
   { value: 'roles', label: 'Roles', icon: ShieldCheck, Component: RolesTab },
   { value: 'media', label: 'Media', icon: ImageIcon, Component: MediaTab },
-  { value: 'poc-rag', label: 'PoC RAG', icon: Sparkles, Component: PocRagTab },
 ] as const;
 
 
