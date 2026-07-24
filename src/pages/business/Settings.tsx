@@ -382,7 +382,7 @@ const DnaPillarSection = () => {
 
         {isLocked && (
           <p className="text-xs text-muted-foreground text-center">
-            {t('business.dna.lock_explanation', 'Il prossimo aggiornamento del DNA sarà disponibile dopo il')} {new Date(businessProfile?.dna_locked_until!).toLocaleDateString()}
+            {t('business.dna.lock_explanation', 'Il prossimo aggiornamento del DNA sarà disponibile dopo il')} {businessProfile?.dna_locked_until ? new Date(businessProfile.dna_locked_until).toLocaleDateString() : ''}
           </p>
         )}
 

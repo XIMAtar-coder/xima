@@ -130,7 +130,7 @@ function extractUserKeywords(user: User | null): string[] {
   if (user.avatar?.features) {
     for (const f of user.avatar.features) {
       kws.push(f.name.toLowerCase());
-      f.description && kws.push(...f.description.toLowerCase().split(/[^a-z]+/).filter(Boolean));
+      if (f.description) kws.push(...f.description.toLowerCase().split(/[^a-z]+/).filter(Boolean));
     }
   }
   // If CV text were available, we would parse here.

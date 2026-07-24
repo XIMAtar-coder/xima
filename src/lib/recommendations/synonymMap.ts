@@ -110,7 +110,7 @@ export function tokenize(text: string): string[] {
   
   return text
     .toLowerCase()
-    .replace(/[^\w\s\-\/]/g, ' ') // Keep hyphens and slashes
+    .replace(/[^\w\s\-/]/g, ' ') // Keep hyphens and slashes
     .split(/\s+/)
     .filter(t => t.length > 2) // Skip very short tokens
     .filter(t => !STOP_WORDS.has(t));
