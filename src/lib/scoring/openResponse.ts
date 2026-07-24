@@ -96,7 +96,7 @@ export function scoreOpenResponse(params: {
   const exampleMarkers = ['e.g.', 'for example', 'ad esempio', 'por ejemplo'];
   const hasExample = containsAny(trimmed, exampleMarkers);
   const longWords = tokens.filter(w => w.length >= 8).length; // proxy for specificity
-  let specificityScore = Math.min(20, hasNumbers * 5 + (hasExample ? 5 : 0) + Math.min(10, longWords * 0.7));
+  const specificityScore = Math.min(20, hasNumbers * 5 + (hasExample ? 5 : 0) + Math.min(10, longWords * 0.7));
 
   // 5) Action (0–15): verbs of action/plan/impact
   const actionVerbs = [

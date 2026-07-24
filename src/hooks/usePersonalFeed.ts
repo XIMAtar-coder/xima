@@ -172,7 +172,7 @@ export const usePersonalFeed = (category: FeedCategory = 'for_you') => {
 };
 
 async function fetchExternalContent(archetype: string, pillar?: string): Promise<ExternalContentItem[]> {
-  let query = supabase
+  const query = supabase
     .from('feed_external_content' as any)
     .select('*')
     .eq('is_verified', true)

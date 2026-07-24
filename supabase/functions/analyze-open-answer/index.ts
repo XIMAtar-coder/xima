@@ -107,7 +107,7 @@ serve(async (req) => {
 
 
     const body = await req.json();
-    let { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload, invitation_id } = body;
+    const { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload, invitation_id } = body;
 
     // SECURITY: when called with a user JWT, user_id MUST match the authenticated user.
     // Prevents cross-user data manipulation via spoofed user_id in the request body.
