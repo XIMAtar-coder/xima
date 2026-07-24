@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import LandingLayout from '@/components/landing/LandingLayout';
 import Seo from '@/components/Seo';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Building2, Mail, Phone, MapPin, FileText, User, Shield } from 'lucide-react';
+import { Building2, MapPin, FileText, User, Shield } from 'lucide-react';
 
 /**
  * Legal Imprint / Legal Notice page
