@@ -100,38 +100,6 @@ const Imprint = () => {
             </CardContent>
           </Card>
 
-          {/* Contact Information */}
-          <Card className="bg-gradient-to-br from-card to-card/80 border-border/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-3 text-lg">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Mail className="w-5 h-5 text-primary" />
-                </div>
-                {t('legal.imprint.contact')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Mail className="w-4 h-4" />
-                <a href={`mailto:${COMPANY_LEGAL.contact.email}`} className="hover:text-primary transition-colors">
-                  {COMPANY_LEGAL.contact.email}
-                </a>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Phone className="w-4 h-4" />
-                <a href={`tel:${COMPANY_LEGAL.contact.phone.replace(/\s/g, '')}`} className="hover:text-primary transition-colors">
-                  {COMPANY_LEGAL.contact.phone}
-                </a>
-              </div>
-              {COMPANY_LEGAL.contact.pec && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Shield className="w-4 h-4" />
-                  <span>PEC: {COMPANY_LEGAL.contact.pec}</span>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
           {/* Legal Representative */}
           <Card className="bg-gradient-to-br from-card to-card/80 border-border/50">
             <CardHeader>
