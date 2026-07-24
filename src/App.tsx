@@ -9,7 +9,7 @@ import { LoadingScreen } from "./components/LoadingScreen";
 import { useState, useEffect, lazy, Suspense } from "react";
 import './i18n'; // Initialize i18n
 import { XimAIProvider } from "./context/XimAIProvider";
-import { AssessmentProvider } from "./contexts/AssessmentContext";
+import { AssessmentProvider } from "./context/AssessmentContext";
 import RouteSkeleton from "./components/ui/RouteSkeleton";
 import ChunkErrorBoundary from "./components/ui/ChunkErrorBoundary";
 import { ChatEntry } from "./components/ximai/ChatEntry";

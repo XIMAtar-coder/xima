@@ -10,7 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { scoreOpenResponse, type FieldKey } from '@/lib/scoring/openResponse';
 import { getPillarForQuestion, getQuestionIdsByPillar, type PillarKey } from '@/lib/assessment/getPillarForQuestion';
 import { useToast } from '@/hooks/use-toast';
-import { useAssessment } from '@/contexts/AssessmentContext';
+import { useAssessment } from '@/context/AssessmentContext';
 import QuestionExample from '@/components/QuestionExample';
 import { selectArchetypeFromAssessmentPillars } from '@/lib/ximatarTaxonomy';
 

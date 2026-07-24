@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '../../context/UserContext';
 import LanguageSwitcher from '../LanguageSwitcher';
-import { useAssessment } from '../../contexts/AssessmentContext';
+import { useAssessment } from '../../context/AssessmentContext';
 import { Logo } from '../Logo';
 import { useUserHeaderData } from '@/hooks/useUserHeaderData';
 import { supabase } from '@/integrations/supabase/client';
