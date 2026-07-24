@@ -2,18 +2,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import heroPortrait from '@/assets/hero-portrait.jpg';
+import heroPortrait from '@/assets/hero-portrait.webp';
 import { RadarGlassCard } from './RadarGlassCard';
 import { XimatarGlassCard } from './XimatarGlassCard';
 import { ARCHETYPES } from './archetypes';
 
 const heroSlides = [
   { heroImage: heroPortrait, objectPosition: 'center top' },
-  { heroImage: '/images/heroes/slide-02.png', objectPosition: 'center center' },
-  { heroImage: '/images/heroes/slide-03.png', objectPosition: 'center center' },
-  { heroImage: '/images/heroes/slide-04.png', objectPosition: 'center center' },
-  { heroImage: '/images/heroes/slide-05.png', objectPosition: 'center center' },
-  { heroImage: '/images/heroes/slide-06.png', objectPosition: 'center center' },
+  { heroImage: '/images/heroes/slide-02.webp', objectPosition: 'center center' },
+  { heroImage: '/images/heroes/slide-03.webp', objectPosition: 'center center' },
+  { heroImage: '/images/heroes/slide-04.webp', objectPosition: 'center center' },
+  { heroImage: '/images/heroes/slide-05.webp', objectPosition: 'center center' },
+  { heroImage: '/images/heroes/slide-06.webp', objectPosition: 'center center' },
 ];
 
 const AUTOPLAY_MS = 6000;
