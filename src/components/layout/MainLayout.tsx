@@ -18,6 +18,7 @@ import { XimaJourneyGuideModal } from '../onboarding/XimaJourneyGuideModal';
 import { useOnboardingState } from '@/hooks/useOnboardingState';
 import { ThemeToggle } from '../ThemeToggle';
 import { EmailVerificationBanner } from '../auth/EmailVerificationBanner';
+import { log } from '@/lib/log';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -72,7 +73,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
         });
         setIsAdmin(!!data);
       } catch (error) {
-        console.error('Error checking admin role:', error);
+        log.error('Error checking admin role:', error);
         setIsAdmin(false);
       }
     };
@@ -90,7 +91,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
           .maybeSingle();
         setIsMentor(!!data && !error);
       } catch (error) {
-        console.error('Error checking mentor status:', error);
+        log.error('Error checking mentor status:', error);
         setIsMentor(false);
       }
     };

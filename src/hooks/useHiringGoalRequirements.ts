@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 export interface HiringGoalRequirements {
   id: string;
@@ -39,7 +40,7 @@ export const useHiringGoalRequirements = (hiringGoalId: string | undefined) => {
         .maybeSingle();
 
       if (fetchError && fetchError.code !== 'PGRST116') {
-        console.error('Error fetching requirements:', fetchError);
+        log.error('Error fetching requirements:', fetchError);
         setError(fetchError.message);
         return;
       }
@@ -47,7 +48,7 @@ export const useHiringGoalRequirements = (hiringGoalId: string | undefined) => {
       setRequirements(data as HiringGoalRequirements | null);
       setError(null);
     } catch (err) {
-      console.error('Error in useHiringGoalRequirements:', err);
+      log.error('Error in useHiringGoalRequirements:', err);
       setError('Failed to load requirements');
     } finally {
       setLoading(false);

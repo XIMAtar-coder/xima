@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from 'react-i18next';
+import { log } from '@/lib/log';
 
 export type XimatarCatalogItem = {
   id: string;
@@ -50,7 +51,7 @@ export const useXimatarsCatalog = () => {
         }));
         if (mounted) setData(items);
       } catch (e: any) {
-        console.error('useXimatarsCatalog error', e);
+        log.error('useXimatarsCatalog error', e);
         if (mounted) setError(e?.message || 'Failed to load XIMAtars');
       } finally {
         if (mounted) setLoading(false);

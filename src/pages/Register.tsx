@@ -16,6 +16,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
 import { ConsentCheckboxes } from '@/components/auth/ConsentCheckboxes';
 import { recordUserConsents } from '@/hooks/useConsentRecording';
+import { log } from '@/lib/log';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -114,7 +115,7 @@ const Register = () => {
 
         if (refCode) {
           try { await supabase.rpc('apply_referral_on_signup', { invite_code: refCode }); }
-          catch (refErr) { console.warn('[Register] Referral apply exception:', refErr); }
+          catch (refErr) { log.warn('[Register] Referral apply exception:', refErr); }
         }
 
         // 72h verification window
@@ -126,7 +127,7 @@ const Register = () => {
             verification_required_until: deadline.toISOString(),
             email_verified_at: null,
           }).eq('user_id', newUserId);
-        } catch (e) { console.warn('[Register] verification deadline update failed', e); }
+        } catch (e) { log.warn('[Register] verification deadline update failed', e); }
 
         try {
           const { error: emailErr } = await supabase.functions.invoke('send-verification-email', {
@@ -138,26 +139,26 @@ const Register = () => {
             },
           });
           if (emailErr) {
-            console.error('[Register] Verification email failed:', emailErr);
+            log.error('[Register] Verification email failed:', emailErr);
             toast({ title: 'Account creato', description: 'La mail di verifica potrebbe arrivare con qualche minuto di ritardo.' });
           } else {
             toast({ title: 'Account creato!', description: 'Controlla la tua email per confermare entro 72 ore.' });
           }
-        } catch (emailErr) { console.error('[Register] verification email exception', emailErr); }
+        } catch (emailErr) { log.error('[Register] verification email exception', emailErr); }
 
         const assessmentSynced = await syncGuestAssessmentToProfile(newUserId).catch((e) => {
-          console.error('[Register] assessment sync failed:', e);
+          log.error('[Register] assessment sync failed:', e);
           return false;
         });
         if (!assessmentSynced) {
-          console.error('[Register] assessment sync did not complete for user:', newUserId);
+          log.error('[Register] assessment sync did not complete for user:', newUserId);
         }
 
         const cvSynced = await syncGuestCvToProfile(newUserId).catch((e) => {
-          console.error('[Register] cv sync failed (non-fatal):', e);
+          log.error('[Register] cv sync failed (non-fatal):', e);
           return false;
         });
-        console.log('[Register] guest sync completed before dashboard navigation', {
+        log.debug('[Register] guest sync completed before dashboard navigation', {
           assessmentSynced,
           cvSynced,
         });

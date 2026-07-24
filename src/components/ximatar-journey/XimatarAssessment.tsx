@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAssessment } from '@/context/AssessmentContext';
 import QuestionExample from '@/components/QuestionExample';
 import { selectArchetypeFromAssessmentPillars } from '@/lib/ximatarTaxonomy';
+import { log } from '@/lib/log';
 
 interface XimatarAssessmentProps {
   onComplete: (step: number) => void;
@@ -75,10 +76,10 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
     
     // Verification console log (dev-only)
     if (process.env.NODE_ENV === 'development') {
-      console.info('[XIMA] Using assessment set:', assessmentSetKey, 'locale:', i18n.language);
+      log.info('[XIMA] Using assessment set:', assessmentSetKey, 'locale:', i18n.language);
       const testKey = `assessmentSets.${assessmentSetKey}.questions.q1.question`;
       const testValue = t(testKey);
-      console.info('[XIMA] Test translation for q1:', testValue.includes('assessmentSets') ? '❌ MISSING' : '✅ OK');
+      log.info('[XIMA] Test translation for q1:', testValue.includes('assessmentSets') ? '❌ MISSING' : '✅ OK');
     }
     
     return () => setAssessmentInProgress(false);
@@ -211,8 +212,8 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
         };
         
         if (process.env.NODE_ENV === 'development') {
-          console.info('[XIMA] Guest pillar groups:', pillarGroups);
-          console.info('[XIMA] Guest pillar scores:', mockPillarScores);
+          log.info('[XIMA] Guest pillar groups:', pillarGroups);
+          log.info('[XIMA] Guest pillar scores:', mockPillarScores);
         }
         
         // Determine XIMAtar from pillar scores via shared helper.
@@ -266,7 +267,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
           );
 
           if (aiError) {
-            console.error('AI analysis error:', aiError);
+            log.error('AI analysis error:', aiError);
             // Fallback to local scoring if AI fails
             const fallbackRubric = scoreOpenResponse({
               text: answer,
@@ -316,7 +317,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
         .insert(openResponses);
       
       if (openError) {
-        console.warn('Failed to store open responses:', openError);
+        log.warn('Failed to store open responses:', openError);
       }
 
       // 2. Create assessment result (not yet completed)
@@ -344,7 +345,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
 
         if (process.env.NODE_ENV === 'development') {
           const categoryLabel = t(`${baseKey}.questions.q${questionNum}.category`);
-          console.info(`[XIMA] q${questionNum}: category="${categoryLabel}" → pillar="${pillar}"`);
+          log.info(`[XIMA] q${questionNum}: category="${categoryLabel}" → pillar="${pillar}"`);
         }
 
         return {
@@ -361,7 +362,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
         .insert(answerRecords);
 
       if (answersError) {
-        console.error('Failed to store assessment answers:', answersError);
+        log.error('Failed to store assessment answers:', answersError);
         throw answersError;
       }
 
@@ -372,11 +373,11 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
         .eq('id', resultData.id);
 
       if (completeError) {
-        console.error('Failed to mark assessment complete:', completeError);
+        log.error('Failed to mark assessment complete:', completeError);
         throw completeError;
       }
 
-      console.log('Assessment submitted successfully. Server is computing results...');
+      log.debug('Assessment submitted successfully. Server is computing results...');
 
       // 5. Wait for server computation (poll for computed_at)
       let attempts = 0;
@@ -393,7 +394,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
 
         if (checkResult && checkResult.ximatar_id) {
           computedResult = checkResult;
-          console.log('Computation complete!');
+          log.debug('Computation complete!');
           break;
         }
         
@@ -401,7 +402,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
       }
 
       if (!computedResult) {
-        console.warn('Server computation taking longer than expected');
+        log.warn('Server computation taking longer than expected');
         toast({
           title: t('assessment.computing'),
           description: 'Your results are being processed. This may take a moment...',
@@ -413,7 +414,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
       localStorage.setItem('current_attempt_id', attemptId);
       
     } catch (error) {
-      console.error('Error completing assessment:', error);
+      log.error('Error completing assessment:', error);
       toast({
         title: t('common.error'),
         description: 'Failed to complete assessment. Please try again.',

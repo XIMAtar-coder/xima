@@ -6,6 +6,7 @@ import { Upload, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useCvAnalysisJob } from '@/hooks/useCvAnalysisJob';
+import { log } from '@/lib/log';
 
 interface CvAnalysisUploadProps {
   userId: string;
@@ -111,7 +112,7 @@ export const CvAnalysisUpload: React.FC<CvAnalysisUploadProps> = ({ userId: _use
         description: t('cv_analysis.bg_running', 'Running in the background — you can stay on this page.'),
       });
     } catch (error) {
-      console.error('CV Upload Error:', error);
+      log.error('CV Upload Error:', error);
       const message = error instanceof Error ? error.message : 'Failed to analyze CV';
       setErrorMsg(message);
       toast({ title: t('common.error', 'Error'), description: message, variant: 'destructive' });

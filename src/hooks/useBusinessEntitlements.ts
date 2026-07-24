@@ -6,6 +6,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import { log } from '@/lib/log';
 
 export type PlanTier = 'starter' | 'growth' | 'enterprise';
 
@@ -75,7 +76,7 @@ export const useBusinessEntitlements = () => {
           .maybeSingle();
 
         if (error) {
-          console.error('[entitlements] Error:', error.message);
+          log.error('[entitlements] Error:', error.message);
         }
 
         if (data) {
@@ -93,7 +94,7 @@ export const useBusinessEntitlements = () => {
           });
         }
       } catch (err) {
-        console.error('[entitlements] Fetch error:', err);
+        log.error('[entitlements] Fetch error:', err);
       } finally {
         setLoading(false);
       }

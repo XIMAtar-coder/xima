@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 interface JobPostSummary {
   id: string;
@@ -153,7 +154,7 @@ export function useBusinessJobPostsOverview(businessId: string | undefined): Use
         latestPosts,
       });
     } catch (err: any) {
-      console.error('Error fetching job posts overview:', err);
+      log.error('Error fetching job posts overview:', err);
       setError(err.message || 'Failed to load job posts data');
     } finally {
       setLoading(false);

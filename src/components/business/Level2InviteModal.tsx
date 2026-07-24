@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { getChallengeLevel } from '@/lib/challenges/challengeLevels';
+import { log } from '@/lib/log';
 import {
   LEVEL_2_TEMPLATES,
   Level2Template,
@@ -153,7 +154,7 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
           setSelectedExistingId(level2Challenges[0].id);
         }
       } catch (err) {
-        console.error('Error fetching Level 2 challenges:', err);
+        log.error('Error fetching Level 2 challenges:', err);
       } finally {
         setLoadingExisting(false);
       }
@@ -198,7 +199,7 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
         .single();
 
       if (createError || !newChallenge) {
-        console.error('[L2] business_challenges insert failed', createError, {
+        log.error('[L2] business_challenges insert failed', createError, {
           businessId,
           hiringGoalId,
           payload: challengeData,
@@ -214,7 +215,7 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
       }
 
       if (newChallenge.level !== 2) {
-        console.error('[L2] created challenge has wrong level', newChallenge);
+        log.error('[L2] created challenge has wrong level', newChallenge);
         toast({
           title: t('common.error'),
           description: t('business.level2.create_failed', {
@@ -238,7 +239,7 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
     try {
       // DEV-ONLY: Log invitation check
       if (import.meta.env.DEV) {
-        console.log('[Level2InviteModal] Checking existing invitation:', {
+        log.debug('[Level2InviteModal] Checking existing invitation:', {
           businessId,
           hiringGoalId,
           challengeId,
@@ -284,7 +285,7 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
               }, { onConflict: 'invitation_id' });
 
             if (reviewErr) {
-              console.error('[Level2InviteModal] proceed_level2 review upsert failed:', reviewErr);
+              log.error('[Level2InviteModal] proceed_level2 review upsert failed:', reviewErr);
               toast({
                 title: t('business.level2.review_failed'),
                 description: reviewErr.message,
@@ -293,15 +294,15 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
               return;
             }
             if (import.meta.env.DEV) {
-              console.log('[Level2InviteModal] proceed_level2 review upserted for invitation', l1Inv.id);
+              log.debug('[Level2InviteModal] proceed_level2 review upserted for invitation', l1Inv.id);
             }
           } else if (import.meta.env.DEV) {
-            console.log('[Level2InviteModal] No submitted L1 found — skipping review upsert; Gate A will enforce.');
+            log.debug('[Level2InviteModal] No submitted L1 found — skipping review upsert; Gate A will enforce.');
           }
         }
       } catch (preErr) {
         // Non-fatal — fall through and let Gate A/B return the canonical error if applicable.
-        console.error('[Level2InviteModal] Pre-flight review upsert errored:', preErr);
+        log.error('[Level2InviteModal] Pre-flight review upsert errored:', preErr);
       }
 
       // First, check if an ACTIVE invitation already exists for this exact challenge
@@ -319,7 +320,7 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
       if (existingInvitation) {
         // Already invited to THIS challenge - do NOT send notification, just inform user
         if (import.meta.env.DEV) {
-          console.log('[Level2InviteModal] Already invited to this challenge:', {
+          log.debug('[Level2InviteModal] Already invited to this challenge:', {
             invitationId: existingInvitation.id,
             status: existingInvitation.status,
             challengeId,
@@ -379,7 +380,7 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
 
       // Success - notification is handled by DB trigger, show success toast
       if (import.meta.env.DEV) {
-        console.log('[Level2InviteModal] Invitation created successfully:', newInvitation.id);
+        log.debug('[Level2InviteModal] Invitation created successfully:', newInvitation.id);
       }
 
       toast({
@@ -391,7 +392,7 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
       onInviteSent?.();
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      console.error('[L2] sendInvitation failed', err, {
+      log.error('[L2] sendInvitation failed', err, {
         businessId,
         hiringGoalId,
         challengeId,

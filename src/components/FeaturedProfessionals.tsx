@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { RefreshCw } from 'lucide-react';
+import { log } from '@/lib/log';
 
 
 interface PillarScore {
@@ -80,7 +81,7 @@ export default function FeaturedProfessionals({
     setError(null);
     
     try {
-      console.log('[FeaturedProfessionals] Fetching recommendations with:', { pillarScores, ximatar, refresh_seed: seed });
+      log.debug('[FeaturedProfessionals] Fetching recommendations with:', { pillarScores, ximatar, refresh_seed: seed });
       
       // Call the recommend-mentors edge function
       const { data, error: fnError } = await supabase.functions.invoke('recommend-mentors', {
@@ -92,13 +93,13 @@ export default function FeaturedProfessionals({
       });
 
       if (fnError) {
-        console.error('[FeaturedProfessionals] Error from edge function:', fnError);
+        log.error('[FeaturedProfessionals] Error from edge function:', fnError);
         // Fallback to public view query
         await fetchFromPublicView(seed);
         return;
       }
       
-      console.log('[FeaturedProfessionals] Recommendations received:', data);
+      log.debug('[FeaturedProfessionals] Recommendations received:', data);
       
       if (data?.recommendations && data.recommendations.length > 0) {
         const mapped = data.recommendations.map((m: any) => ({
@@ -125,7 +126,7 @@ export default function FeaturedProfessionals({
         await fetchFromPublicView(seed);
       }
     } catch (err) {
-      console.error('[FeaturedProfessionals] Error:', err);
+      log.error('[FeaturedProfessionals] Error:', err);
       await fetchFromPublicView(seed);
     } finally {
       setLoading(false);
@@ -151,7 +152,7 @@ export default function FeaturedProfessionals({
   }, [selectedId, professionals]);
 
   const fetchFromPublicView = async (seed?: string | null) => {
-    console.log('[FeaturedProfessionals] Fetching from mentors_public view');
+    log.debug('[FeaturedProfessionals] Fetching from mentors_public view');
     
     // Use the public view that is accessible to both anon and authenticated users
     const { data, error: viewError } = await supabase
@@ -160,7 +161,7 @@ export default function FeaturedProfessionals({
       .order('rating', { ascending: false });
 
     if (viewError) {
-      console.error('[FeaturedProfessionals] Error fetching from mentors_public:', viewError);
+      log.error('[FeaturedProfessionals] Error fetching from mentors_public:', viewError);
       setError(t('mentors.fetch_error', 'Unable to load mentors. Please try again.'));
       return;
     }
@@ -190,7 +191,7 @@ export default function FeaturedProfessionals({
       handlePinnedProfessional(mapped);
       setProfessionals(mapped);
     } else {
-      console.log('[FeaturedProfessionals] No mentors found in public view');
+      log.debug('[FeaturedProfessionals] No mentors found in public view');
       setError(t('mentors.no_mentors', 'No mentors available at the moment.'));
     }
   };

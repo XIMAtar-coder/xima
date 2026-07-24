@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 interface AccountDeletionSectionProps {
   variant?: 'candidate' | 'business';
@@ -74,7 +75,7 @@ export function AccountDeletionSection({ variant = 'candidate' }: AccountDeletio
         throw new Error(data?.error || 'Unknown error');
       }
     } catch (err: any) {
-      console.error('Account deletion error:', err);
+      log.error('Account deletion error:', err);
       toast({
         title: t('settings.deletion.error'),
         description: err.message || t('settings.deletion.errorMessage'),

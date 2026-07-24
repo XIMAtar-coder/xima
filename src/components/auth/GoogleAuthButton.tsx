@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
+import { log } from '@/lib/log';
 
 interface GoogleAuthButtonProps {
   mode: 'login' | 'register';
@@ -35,7 +36,7 @@ export const GoogleAuthButton = ({ mode }: GoogleAuthButtonProps) => {
         setIsLoading(false);
       }
     } catch (err) {
-      console.error('Google auth error:', err);
+      log.error('Google auth error:', err);
       toast({
         title: mode === 'login' ? t('login.login_failed') : t('register.registration_failed'),
         description: t('common.something_went_wrong', 'Something went wrong. Please try again.'),

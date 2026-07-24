@@ -30,6 +30,7 @@ import { useOnboardingState } from '@/hooks/useOnboardingState';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import Seo from '@/components/Seo';
+import { log } from '@/lib/log';
 
 const Profile = () => {
   const { user, isAuthenticated } = useUser();
@@ -92,9 +93,9 @@ const Profile = () => {
             locale: pending.locale || 'en',
           },
         },
-      }).catch((e) => console.warn('[Profile] welcome email failed:', e));
+      }).catch((e) => log.warn('[Profile] welcome email failed:', e));
     } catch (e) {
-      console.warn('[Profile] welcome email parse error:', e);
+      log.warn('[Profile] welcome email parse error:', e);
     } finally {
       sessionStorage.removeItem('xima_pending_welcome');
     }
@@ -125,7 +126,7 @@ const Profile = () => {
           setProfileRefreshKey(prev => prev + 1);
         }
       } catch (error) {
-        console.error('[Profile] Failed to process mentor assignment:', error);
+        log.error('[Profile] Failed to process mentor assignment:', error);
       } finally { setProcessingMentor(false); }
     };
     const timeout = setTimeout(() => { processPendingMentorAssignment(); }, 1000);

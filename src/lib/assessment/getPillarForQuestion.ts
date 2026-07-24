@@ -1,3 +1,4 @@
+import { log } from '@/lib/log';
 /**
  * Single source of truth: question → pillar mapping.
  *
@@ -69,7 +70,7 @@ export function getPillarForQuestion(
     if (hit) return hit;
 
     if (process.env.NODE_ENV === 'development') {
-      console.warn(
+      log.warn(
         `[getPillarForQuestion] Unknown category label "${categoryLabel}" for question ${questionId}. Using cyclic fallback.`,
       );
     }
@@ -82,7 +83,7 @@ export function getPillarForQuestion(
 
   if (isNaN(n) || n < 1) {
     if (process.env.NODE_ENV === 'development') {
-      console.warn(
+      log.warn(
         `[getPillarForQuestion] Invalid questionId "${questionId}". Defaulting to creativity.`,
       );
     }

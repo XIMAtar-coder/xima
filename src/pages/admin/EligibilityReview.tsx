@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/hooks/use-toast';
 import { useAdminRole } from '@/hooks/useAdminRole';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 import { 
   Shield, CheckCircle2, XCircle, FileText, Eye, 
   Loader2, ExternalLink, Clock, User, Building2
@@ -107,7 +108,7 @@ const EligibilityReview: React.FC = () => {
 
       setItems(enrichedItems);
     } catch (error) {
-      console.error('Error fetching reviews:', error);
+      log.error('Error fetching reviews:', error);
       toast({
         title: 'Error loading reviews',
         variant: 'destructive'

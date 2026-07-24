@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Sparkles, Loader2, Building2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
+import { log } from '@/lib/log';
 
 interface Challenge {
   id: string;
@@ -54,7 +55,7 @@ export const PersonalizedChallenge: React.FC<PersonalizedChallengeProps> = ({
         });
 
         if (error) {
-          console.error('Edge function error:', error);
+          log.error('Edge function error:', error);
           // Don't show error to user, just show no challenges
           setChallenges([]);
           setLoading(false);
@@ -67,7 +68,7 @@ export const PersonalizedChallenge: React.FC<PersonalizedChallengeProps> = ({
           setChallenges([]);
         }
       } catch (error: any) {
-        console.error('Error fetching challenges:', error);
+        log.error('Error fetching challenges:', error);
         // Don't display error, just show no challenges available
         setChallenges([]);
       } finally {

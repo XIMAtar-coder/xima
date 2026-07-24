@@ -21,6 +21,7 @@ import { useRecommendationDebug, XIMATAR_PROFILES, type XimatarExplanation } fro
 import { runRecommendationTests, type TestResult } from '@/lib/recommendations/__tests__/recommendations.test';
 import { type XimatarRecommendation } from '@/lib/recommendations';
 import { cn } from '@/lib/utils';
+import { log } from '@/lib/log';
 
 interface RecommendationDebugPanelProps {
   businessId: string | undefined;
@@ -59,7 +60,7 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
       const results = runRecommendationTests();
       setTestResults(results);
       setTestRunning(false);
-      console.log('[RecommendationDebug] Test results:', results);
+      log.debug('[RecommendationDebug] Test results:', results);
     }, 100);
   };
 

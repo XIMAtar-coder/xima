@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 interface HiringGoal {
   id: string;
@@ -232,10 +233,10 @@ export const useHiringGoalShortlist = (goalId: string | null) => {
       const thresholds = getExperienceThresholds(goalData.experience_level);
 
       console.group('🔍 [DEV] Shortlist Generation');
-      console.log('Hiring Goal:', goalData);
-      console.log('Extracted keywords:', keywords);
-      console.log('Experience thresholds:', thresholds);
-      console.log('Total candidates:', candidatesData?.length || 0);
+      log.debug('Hiring Goal:', goalData);
+      log.debug('Extracted keywords:', keywords);
+      log.debug('Experience thresholds:', thresholds);
+      log.debug('Total candidates:', candidatesData?.length || 0);
 
       // 4. Score and filter candidates
       const scoredCandidates: CandidateWithMatch[] = (candidatesData || []).map((candidate: any) => {
@@ -246,7 +247,7 @@ export const useHiringGoalShortlist = (goalId: string | null) => {
           const hasLabelImageMismatch = candidate.ximatar_label && candidate.ximatar_image && 
             !candidate.ximatar_image.toLowerCase().includes(candidate.ximatar_label.toLowerCase());
           if (hasLabelImageMismatch) {
-            console.warn('[DEV] Ximatar mismatch:', {
+            log.warn('[DEV] Ximatar mismatch:', {
               user_id: candidate.user_id,
               label: candidate.ximatar_label,
               image: candidate.ximatar_image
@@ -285,7 +286,7 @@ export const useHiringGoalShortlist = (goalId: string | null) => {
         ? sorted 
         : scoredCandidates.sort((a, b) => b.pillar_average - a.pillar_average).slice(0, 8);
 
-      console.log('Final shortlist:', finalShortlist.length, 'candidates');
+      log.debug('Final shortlist:', finalShortlist.length, 'candidates');
       console.table(finalShortlist.map(c => ({
         ximatar: c.ximatar_label,
         matchLevel: c.matchLevel,
@@ -296,7 +297,7 @@ export const useHiringGoalShortlist = (goalId: string | null) => {
 
       setShortlist(finalShortlist);
     } catch (err: any) {
-      console.error('Error generating shortlist:', err);
+      log.error('Error generating shortlist:', err);
       setError(err.message || 'Failed to generate shortlist');
     } finally {
       setLoading(false);

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { getChallengeTimeInfo, ChallengeTimeStatus } from '@/utils/challengeTimeUtils';
+import { log } from '@/lib/log';
 import { 
   ChallengeLevel, 
   CandidateLevelProgress, 
@@ -171,7 +172,7 @@ export const useCandidateChallenges = () => {
       // DEV-ONLY: Log invitation counts
       if (import.meta.env.DEV) {
         const l2Count = challengeList.filter(c => c.level === 2).length;
-        console.log('[useCandidateChallenges] Fetched invitations:', {
+        log.debug('[useCandidateChallenges] Fetched invitations:', {
           total: challengeList.length,
           level2: l2Count,
           active: challengeList.filter(c => c.timeStatus === 'active' && !c.isSubmitted).length,
@@ -185,7 +186,7 @@ export const useCandidateChallenges = () => {
         c.status !== 'declined'
       ).length);
     } catch (err) {
-      console.error('Error fetching candidate challenges:', err);
+      log.error('Error fetching candidate challenges:', err);
     } finally {
       setLoading(false);
     }

@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
+import { log } from '@/lib/log';
 
 export function ProfilingOptOutSection() {
   const { t } = useTranslation();
@@ -32,7 +33,7 @@ export function ProfilingOptOutSection() {
         if (error) throw error;
         setOptedOut(data?.profiling_opt_out ?? false);
       } catch (err) {
-        console.error('Error loading profiling preference:', err);
+        log.error('Error loading profiling preference:', err);
       } finally {
         setLoading(false);
       }
@@ -63,7 +64,7 @@ export function ProfilingOptOutSection() {
           : t('settings.profiling.optInMessage'),
       });
     } catch (err: any) {
-      console.error('Error updating profiling preference:', err);
+      log.error('Error updating profiling preference:', err);
       toast({
         title: t('common.error'),
         description: err.message || t('settings.profiling.errorMessage'),

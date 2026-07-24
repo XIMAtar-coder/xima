@@ -1,4 +1,5 @@
 import React from 'react';
+import { log } from '@/lib/log';
 
 interface State { hasError: boolean; reloaded: boolean }
 
@@ -33,7 +34,7 @@ export class ChunkErrorBoundary extends React.Component<{ children: React.ReactN
       }
     }
     // eslint-disable-next-line no-console
-    console.error('[ChunkErrorBoundary]', error);
+    log.error('[ChunkErrorBoundary]', error);
   }
 
   render() {

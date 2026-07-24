@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getArchetypeEmoji } from '@/utils/anonymousDisplay';
+import { log } from '@/lib/log';
 
 interface PipelineChatListProps {
   role: 'business' | 'candidate';
@@ -31,7 +32,7 @@ export const PipelineChatList: React.FC<PipelineChatListProps> = ({
         .order('last_message_at', { ascending: false, nullsFirst: false });
 
       if (error) {
-        console.error('Failed to load pipeline threads:', error);
+        log.error('Failed to load pipeline threads:', error);
         return [];
       }
       return data || [];

@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Target, Clock, Building2, CheckCircle, ArrowRight, MessageSquare, Hourglass, Sparkles } from 'lucide-react';
 import { useCandidateChallenges, CandidateChallenge } from '@/hooks/useCandidateChallenges';
 import { Skeleton } from '@/components/ui/skeleton';
+import { log } from '@/lib/log';
 
 // Simplified status badge - only show actionable states, never technical terms
 const StatusBadge: React.FC<{ challenge: CandidateChallenge }> = ({ challenge }) => {
@@ -195,7 +196,7 @@ export const ChallengesForYouSection: React.FC = () => {
   
   // DEV-ONLY: Log challenge visibility
   if (import.meta.env.DEV) {
-    console.log('[ChallengesForYouSection] Challenges:', {
+    log.debug('[ChallengesForYouSection] Challenges:', {
       total: challenges.length,
       actionable: actionableChallenges.length,
       byLevel: {

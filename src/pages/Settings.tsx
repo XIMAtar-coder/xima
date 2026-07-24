@@ -13,6 +13,7 @@ import { MentorCVConsentToggle } from '@/components/settings/MentorCVConsentTogg
 import { MembershipSection } from '@/components/settings/MembershipSection';
 import { JobPreferencesSection } from '@/components/settings/JobPreferencesSection';
 import { Separator } from '@/components/ui/separator';
+import { log } from '@/lib/log';
 
 const CandidateSettings = () => {
   const { t } = useTranslation();
@@ -99,7 +100,7 @@ const CandidateSettings = () => {
           profileId: profile.id,
         });
       } catch (err) {
-        console.error('[CandidateSettings] Error fetching data:', err);
+        log.error('[CandidateSettings] Error fetching data:', err);
       }
     };
 

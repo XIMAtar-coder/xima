@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Users, CheckCircle, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { log } from '@/lib/log';
 
 interface XimaHrRequestModalProps {
   open: boolean;
@@ -43,7 +44,7 @@ const XimaHrRequestModal: React.FC<XimaHrRequestModalProps> = ({
       if (data?.error) throw new Error(data.error);
       setScreen('success');
     } catch (err: any) {
-      console.error('[XimaHrRequestModal] Error:', err);
+      log.error('[XimaHrRequestModal] Error:', err);
       setError(err.message || t('business.xima_hr.modal.error_generic'));
     } finally {
       setSubmitting(false);

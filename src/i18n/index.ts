@@ -7,6 +7,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import enTranslations from './locales/en.json';
 import itTranslations from './locales/it.json';
 import esTranslations from './locales/es.json';
+import { log } from '@/lib/log';
 
 const resources = {
   it: {
@@ -61,7 +62,7 @@ i18n
     // Log missing keys in development only
     missingKeyHandler: import.meta.env.DEV 
       ? (lngs, ns, key, fallbackValue) => {
-          console.warn(`[i18n] Missing key: "${key}" for languages: ${lngs.join(', ')}`);
+          log.warn(`[i18n] Missing key: "${key}" for languages: ${lngs.join(', ')}`);
         }
       : undefined,
   });

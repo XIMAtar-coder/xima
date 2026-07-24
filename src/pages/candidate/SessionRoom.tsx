@@ -15,6 +15,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { format, parseISO, isAfter, isBefore, addMinutes, subMinutes } from 'date-fns';
+import { log } from '@/lib/log';
 
 // Video provider configuration - always use public Jitsi for MVP
 const JITSI_DOMAIN = 'meet.jit.si';
@@ -108,7 +109,7 @@ export default function SessionRoom() {
       script.async = true;
       script.onload = () => createJitsiMeeting();
       script.onerror = () => {
-        console.error('[SessionRoom] Failed to load Jitsi API');
+        log.error('[SessionRoom] Failed to load Jitsi API');
         toast({
           title: t('sessions.video_error', 'Video Error'),
           description: t('sessions.failed_to_load_video', 'Failed to load video service. Please refresh.'),
@@ -211,12 +212,12 @@ export default function SessionRoom() {
 
       // Listen for successful join - log for debugging
       api.addListener('videoConferenceJoined', (data: { id: string; displayName: string; roomName: string }) => {
-        console.log('[SessionRoom] Successfully joined conference:', data);
+        log.debug('[SessionRoom] Successfully joined conference:', data);
       });
 
       // When another participant joins, log it
       api.addListener('participantJoined', (data: { id: string; displayName: string }) => {
-        console.log('[SessionRoom] Participant joined:', data);
+        log.debug('[SessionRoom] Participant joined:', data);
       });
 
       // Handle conference exit
@@ -229,7 +230,7 @@ export default function SessionRoom() {
       });
 
     } catch (error) {
-      console.error('[SessionRoom] Failed to create Jitsi meeting:', error);
+      log.error('[SessionRoom] Failed to create Jitsi meeting:', error);
       toast({
         title: t('sessions.video_error', 'Video Error'),
         description: t('sessions.failed_to_create_video', 'Failed to create video meeting. Please refresh.'),
@@ -268,7 +269,7 @@ export default function SessionRoom() {
         .single();
 
       if (sessionError || !sessionData) {
-        console.error('[SessionRoom] Session not found:', sessionError);
+        log.error('[SessionRoom] Session not found:', sessionError);
         setAccessDenied(true);
         setLoading(false);
         return;
@@ -279,7 +280,7 @@ export default function SessionRoom() {
       const isMentor = mentorRecord?.id === sessionData.mentor_id;
 
       if (!isCandidate && !isMentor) {
-        console.warn('[SessionRoom] User is not a participant');
+        log.warn('[SessionRoom] User is not a participant');
         setAccessDenied(true);
         setLoading(false);
         return;
@@ -367,7 +368,7 @@ export default function SessionRoom() {
       setSession(sessionData as SessionData);
       setReadyToJoin(true);
     } catch (error) {
-      console.error('[SessionRoom] Error:', error);
+      log.error('[SessionRoom] Error:', error);
       setAccessDenied(true);
     } finally {
       setLoading(false);

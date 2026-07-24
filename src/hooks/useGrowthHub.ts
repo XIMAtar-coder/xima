@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { getSupabaseFunctionErrorMessage } from '@/lib/supabaseFunctionError';
+import { log } from '@/lib/log';
 
 export interface GrowthResource {
   id: string;
@@ -105,7 +106,7 @@ export function useGrowthHub() {
         setProgress([]);
       }
     } catch (err) {
-      console.error('[GrowthHub] fetch error', err);
+      log.error('[GrowthHub] fetch error', err);
     } finally {
       setLoading(false);
     }

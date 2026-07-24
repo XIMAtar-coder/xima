@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import ChallengeContextSelector from '@/components/business/ChallengeContextSelector';
+import { log } from '@/lib/log';
 
 interface Challenge {
   id: string;
@@ -90,7 +91,7 @@ const BusinessChallenges = () => {
 
       setChallenges(enrichedChallenges);
     } catch (error) {
-      console.error('Error loading challenges:', error);
+      log.error('Error loading challenges:', error);
       toast({
         title: t('common.error'),
         description: t('challenges.load_error'),
@@ -130,7 +131,7 @@ const BusinessChallenges = () => {
       
       loadChallenges();
     } catch (error) {
-      console.error('Error activating challenge:', error);
+      log.error('Error activating challenge:', error);
       toast({
         title: t('common.error'),
         description: t('challenges.activate_error'),
@@ -158,7 +159,7 @@ const BusinessChallenges = () => {
       
       loadChallenges();
     } catch (error) {
-      console.error('Error archiving challenge:', error);
+      log.error('Error archiving challenge:', error);
       toast({
         title: t('common.error'),
         description: t('challenges.archive_error'),
@@ -204,7 +205,7 @@ const BusinessChallenges = () => {
       
       loadChallenges();
     } catch (error) {
-      console.error('Error duplicating challenge:', error);
+      log.error('Error duplicating challenge:', error);
       toast({
         title: t('common.error'),
         description: t('challenges.duplicate_error'),

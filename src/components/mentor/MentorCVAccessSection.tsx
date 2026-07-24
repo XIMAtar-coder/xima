@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { FileText, Eye, User, Loader2, ShieldCheck, AlertCircle } from 'lucide-react';
+import { log } from '@/lib/log';
 
 interface CVAccessCandidate {
   id: string;
@@ -52,7 +53,7 @@ export function MentorCVAccessSection({ mentorId }: MentorCVAccessSectionProps) 
         .order('allowed_at', { ascending: false });
 
       if (error) {
-        console.error('[MentorCVAccessSection] Error fetching access:', error);
+        log.error('[MentorCVAccessSection] Error fetching access:', error);
         return;
       }
 
@@ -78,7 +79,7 @@ export function MentorCVAccessSection({ mentorId }: MentorCVAccessSectionProps) 
         setCandidates([]);
       }
     } catch (err) {
-      console.error('[MentorCVAccessSection] Error:', err);
+      log.error('[MentorCVAccessSection] Error:', err);
     } finally {
       setLoading(false);
     }
@@ -104,7 +105,7 @@ export function MentorCVAccessSection({ mentorId }: MentorCVAccessSectionProps) 
       });
 
       if (error) {
-        console.error('[MentorCVAccessSection] Error fetching CV:', error);
+        log.error('[MentorCVAccessSection] Error fetching CV:', error);
         toast({
           title: t('mentor.cv_error', 'Error loading CV'),
           description: error.message || t('mentor.cv_error_desc', 'Failed to load candidate CV'),
@@ -123,7 +124,7 @@ export function MentorCVAccessSection({ mentorId }: MentorCVAccessSectionProps) 
         });
       }
     } catch (err: any) {
-      console.error('[MentorCVAccessSection] Error:', err);
+      log.error('[MentorCVAccessSection] Error:', err);
       toast({
         title: t('common.error'),
         description: err.message || 'Failed to load CV',

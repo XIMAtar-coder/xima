@@ -8,6 +8,7 @@ import { useUser } from '@/context/UserContext';
 import { toast } from 'sonner';
 import { prepareImageForUpload } from '@/lib/images/prepareImageForUpload';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
+import { log } from '@/lib/log';
 
 interface XimatarHeroCardProps {
   ximatarName: string | null;
@@ -58,7 +59,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
         .eq('user_id', user.id)
         .select('user_id, avatar');
       if (updateError) {
-        console.error('[XimatarHeroCard] profile update failed', updateError);
+        log.error('[XimatarHeroCard] profile update failed', updateError);
         throw updateError;
       }
       if (!updated || updated.length === 0) {
@@ -68,7 +69,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
       toast.success('Profile photo updated');
       onAvatarUpdate?.();
     } catch (error: any) {
-      console.error('Error uploading photo:', error);
+      log.error('Error uploading photo:', error);
       toast.error(error.message || 'Failed to upload photo');
     } finally { setUploading(false); }
   };

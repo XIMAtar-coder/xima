@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { log } from '@/lib/log';
 
 const STORAGE_KEY = 'xima.ximatarJourney.v1';
 
@@ -39,7 +40,7 @@ export function useXimatarJourneyState() {
           return parsed;
         }
       } catch (e) {
-        console.warn('Failed to parse journey state:', e);
+        log.warn('Failed to parse journey state:', e);
       }
     }
     return defaultState;
