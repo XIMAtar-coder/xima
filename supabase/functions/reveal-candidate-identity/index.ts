@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
+import { corsHeaders, errorResponse, forbiddenResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 
 serve(async (req) => {
@@ -26,6 +26,15 @@ serve(async (req) => {
     const { shortlist_id, hiring_goal_id } = body;
 
     if (!shortlist_id) return errorResponse(400, "INVALID_INPUT", "shortlist_id required");
+
+    // Defense-in-depth: explicit business role check (ownership filter below is also required)
+    const { data: isBusiness, error: roleError } = await serviceClient.rpc("has_role", {
+      _user_id: user.id,
+      _role: "business",
+    });
+    if (roleError || !isBusiness) {
+      return forbiddenResponse("Business access required");
+    }
 
     // Verify ownership
     const { data: shortlistEntry, error: slError } = await serviceClient

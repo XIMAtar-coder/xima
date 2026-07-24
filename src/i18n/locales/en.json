@@ -1372,19 +1372,19 @@
       "changes_content": "We may update these Terms of Service from time to time to reflect changes in our services or legal requirements. When we make material changes:\n\n• We will notify you via email or in-app notification\n• The updated terms will be posted with a new 'Last updated' date\n• Continued use of XIMA after changes take effect constitutes acceptance\n\nFor questions about these terms, contact us at info@xima.app."
     },
     "imprint": {
-      "title": "Legal Notice",
-      "subtitle": "Company information and legal disclosures as required by EU regulations",
-      "company_info": "Company Information",
-      "contact": "Contact",
-      "representative": "Legal Representative",
-      "registration": "Registration",
-      "vat": "VAT Number",
-      "rea": "REA Number",
-      "share_capital": "Share Capital",
-      "registered_at": "Registered at",
-      "dpo_title": "Data Protection Officer",
-      "dpo_info": "For any privacy-related inquiries, data access requests, or to exercise your GDPR rights, please contact our Data Protection Officer:",
-      "last_updated": "Last updated"
+      "title": "Impressum",
+      "subtitle": "Angaben gemäß § 5 TMG",
+      "company_info": "Unternehmensangaben",
+      "contact": "Kontakt",
+      "representative": "Geschäftsführer",
+      "registration": "Handelsregister",
+      "vat": "USt-IdNr.",
+      "register_court": "Registergericht",
+      "register_number": "Registernummer",
+      "tax_number": "Steuernummer",
+      "dpo_title": "Datenschutzbeauftragter",
+      "dpo_info": "Für Datenschutzanfragen, Auskunftsersuchen oder zur Ausübung Ihrer DS-GVO-Rechte wenden Sie sich bitte an unseren Datenschutzbeauftragten:",
+      "last_updated": "Letztes Update"
     }
   },
   "business": {

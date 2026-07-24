@@ -1484,19 +1484,19 @@
       "changes_content": "Potremmo aggiornare questi Termini di Servizio di tanto in tanto per riflettere cambiamenti nei nostri servizi o requisiti legali. Quando apportiamo modifiche sostanziali:\n\n• Ti informeremo via email o notifica in-app\n• I termini aggiornati saranno pubblicati con una nuova data di 'Ultimo aggiornamento'\n• L'uso continuato di XIMA dopo l'entrata in vigore delle modifiche costituisce accettazione\n\nPer domande su questi termini, contattaci all'indirizzo info@xima.app."
     },
     "imprint": {
-      "title": "Note Legali",
-      "subtitle": "Informazioni aziendali e divulgazioni legali come richiesto dalle normative UE",
-      "company_info": "Informazioni Aziendali",
-      "contact": "Contatti",
-      "representative": "Rappresentante Legale",
-      "registration": "Registrazione",
-      "vat": "Partita IVA",
-      "rea": "Numero REA",
-      "share_capital": "Capitale Sociale",
-      "registered_at": "Registrato presso",
-      "dpo_title": "Responsabile della Protezione dei Dati",
-      "dpo_info": "Per qualsiasi richiesta relativa alla privacy, richieste di accesso ai dati o per esercitare i tuoi diritti GDPR, contatta il nostro Responsabile della Protezione dei Dati:",
-      "last_updated": "Ultimo aggiornamento"
+      "title": "Impressum",
+      "subtitle": "Angaben gemäß § 5 TMG",
+      "company_info": "Unternehmensangaben",
+      "contact": "Kontakt",
+      "representative": "Geschäftsführer",
+      "registration": "Handelsregister",
+      "vat": "USt-IdNr.",
+      "register_court": "Registergericht",
+      "register_number": "Registernummer",
+      "tax_number": "Steuernummer",
+      "dpo_title": "Datenschutzbeauftragter",
+      "dpo_info": "Für Datenschutzanfragen, Auskunftsersuchen oder zur Ausübung Ihrer DS-GVO-Rechte wenden Sie sich bitte an unseren Datenschutzbeauftragten:",
+      "last_updated": "Letztes Update"
     }
   },
   "business": {
