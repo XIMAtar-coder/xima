@@ -40,7 +40,15 @@ function assertSafePublicUrl(rawUrl: string): URL {
 function sanitizePromptInput(value: unknown, maxLength = 200): string {
   if (typeof value !== "string") throw new Error("Input must be a string");
   const trimmed = value.trim().slice(0, maxLength);
-  return trimmed.replace(/[<>\x00-\x1F\x7F]/g, "").replace(/\s+/g, " ").trim();
+  // Strip C0/C1 control characters (0x00-0x1F, 0x7F) and collapse whitespace,
+  // built via char-code filter to avoid embedding control chars in a regex.
+  const stripped = Array.from(trimmed)
+    .filter((c) => {
+      const code = c.charCodeAt(0);
+      return code >= 0x20 && code !== 0x7f;
+    })
+    .join("");
+  return stripped.replace(/[<>]/g, "").replace(/\s+/g, " ").trim();
 }
 
 function extractJsonSafe(text: string): any {

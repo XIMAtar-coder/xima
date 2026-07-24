@@ -98,7 +98,7 @@ serve(async (req) => {
       });
     } catch (_) { /* ignore */ }
 
-    let textChunks: string[] = [];
+    const textChunks: string[] = [];
     for (const url of pages) {
       try {
         const res = await safeFetch(url, { headers: { "User-Agent": ua() } });

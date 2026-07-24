@@ -180,7 +180,7 @@ serve(async (req) => {
       ? (existingSub.draft_payload as DraftPayload)
       : null;
 
-  let transcript: TranscriptEntry[] = existingDraft?.transcript ? [...existingDraft.transcript] : [];
+  const transcript: TranscriptEntry[] = existingDraft?.transcript ? [...existingDraft.transcript] : [];
   let curveball_fired = !!existingDraft?.curveball_fired;
 
   if (existingDraft?.done) {

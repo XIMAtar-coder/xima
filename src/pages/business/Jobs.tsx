@@ -96,7 +96,7 @@ export default function Jobs() {
       const jobIds = (jobsData || []).map(j => j.id);
 
       // Fetch linked challenges count
-      let challengeCounts: Record<string, number> = {};
+      const challengeCounts: Record<string, number> = {};
       if (jobIds.length > 0) {
         const { data: challenges, error: challengesError } = await supabase
           .from('business_challenges')

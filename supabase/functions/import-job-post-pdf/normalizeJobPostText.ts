@@ -606,7 +606,7 @@ function rewriteIntroSection(
     let clean = line;
     if (metadata.company) {
       // Remove company name if it's just repeated
-      const companyPattern = new RegExp(`^${escapeRegex(metadata.company)}[.,:;]?\s*`, 'i');
+      const companyPattern = new RegExp(`^${escapeRegex(metadata.company)}[.,:;]?\\s*`, 'i');
       clean = clean.replace(companyPattern, '');
     }
     return clean.trim();
