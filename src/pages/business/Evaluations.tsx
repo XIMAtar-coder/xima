@@ -163,7 +163,7 @@ const BusinessEvaluations = () => {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      {getStatusIcon(evaluation.status)}
+                      {getStatusIcon(evaluation.status ?? '')}
                       <div>
                         <CardTitle className="text-white text-lg">
                           {evaluation.challenge_title}
@@ -173,7 +173,7 @@ const BusinessEvaluations = () => {
                         </CardDescription>
                       </div>
                     </div>
-                    {getStatusBadge(evaluation.status)}
+                    {getStatusBadge(evaluation.status ?? '')}
                   </div>
                 </CardHeader>
                 <CardContent>

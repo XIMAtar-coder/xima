@@ -447,7 +447,7 @@ export default function ChallengeCompletion() {
             candidate_profile_id: invitation.candidate_profile_id,
             business_id: invitation.business_id,
             hiring_goal_id: invitation.hiring_goal_id as string,
-            challenge_id: invitation.challenge_id,
+            challenge_id: invitation.challenge_id as string,
             draft_payload: currentPayload as any,
             status: 'draft',
           }, {
@@ -530,7 +530,7 @@ export default function ChallengeCompletion() {
             candidate_profile_id: invitation.candidate_profile_id,
             business_id: invitation.business_id,
             hiring_goal_id: invitation.hiring_goal_id as string,
-            challenge_id: invitation.challenge_id,
+            challenge_id: invitation.challenge_id as string,
             draft_payload: currentPayload as any,
             status: 'draft',
           }, {
