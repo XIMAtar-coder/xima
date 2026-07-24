@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
+import { corsHeaders, errorResponse, forbiddenResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 
 serve(async (req) => {
