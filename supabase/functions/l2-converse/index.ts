@@ -21,6 +21,7 @@ import { callAnthropicApi, streamAnthropicApi, AnthropicError, getModelForFuncti
 import { generateCorrelationId } from "../_shared/aiClient.ts";
 import { corsHeaders, errorResponse, jsonResponse } from "../_shared/errors.ts";
 import { emitAuditEvent } from "../_shared/auditEvents.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 const MAX_CANDIDATE_TURNS = 7; // hard cap: turn_index 0..6 inclusive
 const CONCLUDI_RE = /\bconcludi(amo)?\b/i;
@@ -109,7 +110,12 @@ serve(async (req) => {
   const { data: { user: authUser }, error: authErr } = await authClient.auth.getUser();
   if (authErr || !authUser) return errorResponse(401, "UNAUTHORIZED", "Invalid or expired token");
 
+  // Per-user monthly AI budget cap → 429 before any model turn.
+  const budgetGate = await enforceAiBudget(authUser.id, "l2-converse", corsHeaders);
+  if (budgetGate) return budgetGate;
+
   const supabase = createClient(supabaseUrl, serviceKey);
+
 
   // Resolve caller's profile id (candidate_profile_id is profiles.id, not auth.uid)
   const { data: callerProfile } = await supabase
@@ -366,6 +372,8 @@ ${closing ? `\nQuesto è il tuo turno finale: chiudi la conversazione in 1–2 f
     try {
       const result = await callAnthropicApi(modelOpts);
       raw = result.content;
+      // Accrue per-user cap per conversational turn.
+      await recordAiCallSafe(authUser.id, "l2-converse");
     } catch (e) {
       failed = true;
       errCode = e instanceof AnthropicError ? e.errorCode : "MODEL_ERROR";
@@ -398,6 +406,8 @@ ${closing ? `\nQuesto è il tuo turno finale: chiudi la conversazione in 1–2 f
           raw += delta;
           send("delta", { text: delta });
         });
+        // Accrue per-user cap per conversational turn (streaming variant).
+        await recordAiCallSafe(authUser.id, "l2-converse");
       } catch (e) {
         failed = true;
         errCode = e instanceof AnthropicError ? e.errorCode : "MODEL_ERROR";

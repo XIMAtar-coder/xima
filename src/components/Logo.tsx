@@ -23,7 +23,7 @@ export const Logo: React.FC<LogoProps> = ({
         ? '/images/xima-full-white.svg'
         : '/images/xima-full-dark.svg';
 
-  return <img src={file} alt={alt} className={className} />;
+  return <img src={file} alt={alt} className={className} width={variant === 'symbol' ? 40 : 120} height={40} loading="lazy" decoding="async" />;
 };
 
 export default Logo;

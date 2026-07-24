@@ -12,11 +12,15 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+// Per-tier monthly AI call caps. Now enforced across ~20 LLM edge functions,
+// so freemium/basic caps are raised from the analyze-cv-only defaults to leave
+// room for normal browsing (recommendations, chat, translations) while still
+// bounding worst-case Anthropic spend.
 const TIER_LIMITS: Record<string, number> = {
-  freemium: 1,
-  basic: 15,
-  premium: 50,
-  pro: 500,
+  freemium: 20,
+  basic: 100,
+  premium: 400,
+  pro: 2000,
   enterprise: 999999,
 };
 

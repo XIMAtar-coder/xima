@@ -14,6 +14,7 @@ import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse, forbidd
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES, rankXimatarsByDistance, type XimatarPillars } from "../_shared/ximatarTaxonomy.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 // =====================================================
 // Page discovery & fetching
@@ -396,7 +397,12 @@ Deno.serve(async (req) => {
     }
     const callerUserId = user.id;
 
+    // Per-user monthly AI budget cap → 429 before any model call.
+    const budgetGate = await enforceAiBudget(callerUserId, "generate-company-profile", corsHeaders);
+    if (budgetGate) return budgetGate;
+
     const supabase = createClient(supabaseUrl, serviceKey);
+
 
     const { company_id, company_name, website } = await req.json();
     if (!company_id || !company_name || !website) {
@@ -483,6 +489,9 @@ Deno.serve(async (req) => {
       maxTokens: 4096,
       promptTemplateVersion: "3.0",
     });
+    // Accrue per-user cap after a successful model hit.
+    await recordAiCallSafe(callerUserId, "generate-company-profile");
+
 
     let parsed: unknown;
     try {

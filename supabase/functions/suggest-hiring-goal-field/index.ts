@@ -11,6 +11,7 @@
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 const FIELD_CONFIG: Record<string, { count: number; label: string }> = {
   role_summary: { count: 1, label: "role summary (2-3 sentences)" },
@@ -36,6 +37,10 @@ serve(async (req) => {
     });
     const { data: { user }, error: userError } = await authClient.auth.getUser(jwt);
     if (userError || !user) return unauthorizedResponse("Auth required");
+
+    // Per-user monthly AI budget cap → 429 before any model call.
+    const budgetGate = await enforceAiBudget(user.id, "suggest-hiring-goal-field", corsHeaders);
+    if (budgetGate) return budgetGate;
 
     const body = await req.json();
     const { business_id, field_name, current_values, role_title } = body;
@@ -113,6 +118,8 @@ Generate exactly ${fieldCfg.count} suggestions. Each suggestion should be concis
 
     const data = await response.json();
     const text = data.content?.[0]?.text || "";
+    // Accrue per-user cap after a successful model hit.
+    await recordAiCallSafe(user.id, "suggest-hiring-goal-field");
 
     try {
       const fenceMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);

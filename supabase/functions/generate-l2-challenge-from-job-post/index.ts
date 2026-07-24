@@ -5,6 +5,7 @@ import { extractJsonFromAiContent, generateCorrelationId } from "../_shared/aiCl
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { XIMATAR_PROFILES } from "../_shared/ximatarTaxonomy.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 // =====================================================
 // Types
@@ -134,6 +135,10 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) return unauthorizedResponse('Authentication failed');
 
+    // Per-user monthly AI budget cap → 429 before any model call.
+    const budgetGate = await enforceAiBudget(user.id, 'generate-l2-challenge-from-job-post', corsHeaders);
+    if (budgetGate) return budgetGate;
+
     const body = await req.json();
     const { challenge_id, job_post_id, locale = 'en' } = body;
 
@@ -252,6 +257,9 @@ Return ONLY valid JSON.`;
         temperature: 0.6,
         maxTokens: 4096,
       });
+      // Accrue per-user cap after a successful model hit.
+      await recordAiCallSafe(user.id, 'generate-l2-challenge-from-job-post');
+
 
       const jsonStr = extractJsonFromAiContent(aiResp.content);
       const parsed = JSON.parse(jsonStr);

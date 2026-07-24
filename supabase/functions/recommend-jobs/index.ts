@@ -16,6 +16,7 @@ import { XIMATAR_PROFILES, computePillarDistance, type XimatarPillars } from "..
 import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 import { matchJobsByVector, depositInference } from "../_shared/intelligenceEngine.ts";
 import { withResultCache, buildUserVersionTag } from "../_shared/withResultCache.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 // =====================================================
 // Types
@@ -239,6 +240,10 @@ serve(async (req) => {
 
     const userId = user.id;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Per-user monthly AI budget cap → 429 before any model call.
+    const budgetGate = await enforceAiBudget(userId, "recommend-jobs", corsHeaders);
+    if (budgetGate) return budgetGate;
 
     console.log(JSON.stringify({ type: "recommend_jobs_start", correlation_id: correlationId, user_id: userId }));
 
@@ -488,6 +493,8 @@ Return ONLY a JSON array of strings, one per job:
           maxTokens: 2048,
           temperature: 0.7,
         });
+        // Accrue the per-user monthly cap for the narrative batch call.
+        await recordAiCallSafe(userId, "recommend-jobs");
 
         const extracted = extractJsonFromAiContent(result.content);
         const parsed = JSON.parse(extracted || result.content);

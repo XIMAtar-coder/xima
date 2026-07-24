@@ -20,6 +20,7 @@ import { XIMATAR_PROFILES, type XimatarPillars } from "../_shared/ximatarTaxonom
 import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 import { matchMentorsByGap, depositInference } from "../_shared/intelligenceEngine.ts";
 import { withResultCache, buildUserVersionTag } from "../_shared/withResultCache.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 // =====================================================
 // Types
@@ -221,6 +222,12 @@ serve(async (req) => {
       });
       const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
       if (!authError && user) userId = user.id;
+    }
+
+    // Per-user monthly AI budget cap (guests skip → cache/vector-only path).
+    if (userId) {
+      const budgetGate = await enforceAiBudget(userId, "recommend-mentors", corsHeaders);
+      if (budgetGate) return budgetGate;
     }
 
     // Parse body
@@ -463,6 +470,8 @@ Return ONLY a JSON array of strings:
           maxTokens: 1536,
           temperature: 0.7,
         });
+        // Accrue budget for the narrative batch call (guests exempt).
+        if (userId) await recordAiCallSafe(userId, "recommend-mentors");
 
         const extracted = extractJsonFromAiContent(result.content);
         const parsed = JSON.parse(extracted || result.content);

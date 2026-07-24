@@ -23,6 +23,7 @@ import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { persistTrajectoryEvent, type PillarDeltas } from "../_shared/pillarTrajectory.ts";
 import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 // ---------------------------------------------------------------------
 // Types
@@ -137,7 +138,12 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await userClient.auth.getUser();
     if (authError || !user) return unauthorizedResponse();
 
+    // Per-user monthly AI budget cap → 429 before the Vision call.
+    const budgetGate = await enforceAiBudget(user.id, "analyze-l3-frames", corsHeaders);
+    if (budgetGate) return budgetGate;
+
     const supabase = createClient(supabaseUrl, serviceKey);
+
 
     // Check business/admin role
     const { data: roleRow } = await supabase
@@ -366,6 +372,8 @@ Return ONLY valid JSON:
     const data = await response.json();
     const content = data.content?.[0]?.text;
     if (!content) return errorResponse(502, "EMPTY_RESPONSE", "Empty response from Claude");
+    // Accrue per-user cap after a successful model hit.
+    await recordAiCallSafe(user.id, "analyze-l3-frames");
 
     // ---- Persist audit envelope with token usage + computed cost (fire-and-forget) ----
     const auditClient = createClient(supabaseUrl, serviceKey);

@@ -148,7 +148,7 @@ export const PipelineChatView: React.FC<PipelineChatViewProps> = ({
         )}
         <div className="flex-1">
           <p className="font-medium flex items-center gap-2">
-            {role === 'business' && <img src={getArchetypeImageUrl(thread?.ximatar_archetype)} alt="" className="h-6 w-6 object-contain inline" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />}
+            {role === 'business' && <img src={getArchetypeImageUrl(thread?.ximatar_archetype)} alt="" width={24} height={24} loading="lazy" decoding="async" className="h-6 w-6 object-contain inline" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />}
             {headerName}
           </p>
           <Badge variant="secondary" className="text-xs capitalize mt-0.5">

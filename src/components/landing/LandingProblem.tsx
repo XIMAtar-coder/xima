@@ -71,7 +71,7 @@ export const LandingProblem: React.FC = () => {
 
         {/* Visual */}
         <div className="flex justify-center lg:justify-end">
-          <img src="/images/problem-cv-breaking.png" alt="" className="w-full max-w-lg" />
+          <img src="/images/problem-cv-breaking.png" alt="" width={512} height={512} loading="lazy" decoding="async" className="w-full max-w-lg" />
         </div>
       </div>
     </section>

@@ -20,4 +20,24 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Split eager vendors out of the entry chunk for better caching
+        // and faster cold starts (especially in the Capacitor iOS webview).
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+          if (/[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler)[\\/]/.test(id)) {
+            return 'vendor-react';
+          }
+          if (id.includes('@supabase')) return 'vendor-supabase';
+          if (/[\\/]node_modules[\\/](i18next|react-i18next|i18next-browser-languagedetector)[\\/]/.test(id)) {
+            return 'vendor-i18n';
+          }
+          if (id.includes('@tanstack')) return 'vendor-query';
+          if (id.includes('@radix-ui')) return 'vendor-radix';
+        },
+      },
+    },
+  },
 }));
