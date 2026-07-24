@@ -9,9 +9,10 @@ import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { 
-  Plus, Loader2, Pencil, Archive, CheckCircle, Copy, 
-  Target, Calendar, Briefcase 
+import { useSupabaseQuery } from '@/lib/data/useSupabaseQuery';
+import {
+  Plus, Loader2, Pencil, Archive, CheckCircle, Copy,
+  Target, Calendar, Briefcase
 } from 'lucide-react';
 import { format } from 'date-fns';
 import ChallengeContextSelector from '@/components/business/ChallengeContextSelector';
