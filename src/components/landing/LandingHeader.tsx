@@ -37,7 +37,7 @@ export const LandingHeader: React.FC = () => {
     >
       <div className="max-w-[1440px] mx-auto h-full px-6 lg:px-10 flex items-center justify-between">
         <button onClick={() => navigate('/')} className="flex items-center" aria-label="XIMA Home">
-          <img src={logoSrc} alt="XIMA - Professional Potential Platform" style={{ height: 40, width: 'auto' }} />
+          <img src={logoSrc} alt="XIMA - Professional Potential Platform" width={150} height={40} loading="eager" decoding="async" style={{ height: 40, width: 'auto' }} />
         </button>
 
         <nav className="hidden md:flex items-center gap-10">
