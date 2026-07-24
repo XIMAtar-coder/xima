@@ -121,10 +121,10 @@ export async function testNoCandidateToCandidateChat(): Promise<{
     // Attempt to create a thread with invalid parameters
     const { data, error } = await supabase.rpc('create_chat_thread', {
       p_thread_type: 'business_candidate',
-      p_candidate_profile_id: '00000000-0000-0000-0000-000000000001', // Fake candidate
-      p_business_id: '00000000-0000-0000-0000-000000000002', // Another fake candidate
-      p_mentor_profile_id: null
-    });
+      p_candidate_profile_id: '00000000-0000-0000-0000-000000000001',
+      p_business_id: '00000000-0000-0000-0000-000000000002',
+      p_mentor_profile_id: undefined,
+    } as any);
     
     if (error) {
       // Expected: This should fail because there's no mutual_interest
@@ -169,8 +169,8 @@ export async function testBusinessCandidateChatRequiresMutualInterest(): Promise
       p_thread_type: 'business_candidate',
       p_candidate_profile_id: '00000000-0000-0000-0000-000000000001',
       p_business_id: '00000000-0000-0000-0000-000000000002',
-      p_mentor_profile_id: null
-    });
+      p_mentor_profile_id: undefined,
+    } as any);
     
     if (error && error.message.includes('Mutual interest required')) {
       return {
@@ -219,9 +219,9 @@ export async function testMentorCandidateChatRequiresMentorMatch(): Promise<{
     const { data, error } = await supabase.rpc('create_chat_thread', {
       p_thread_type: 'mentor_candidate',
       p_candidate_profile_id: '00000000-0000-0000-0000-000000000001',
-      p_business_id: null,
-      p_mentor_profile_id: '00000000-0000-0000-0000-000000000003'
-    });
+      p_business_id: undefined,
+      p_mentor_profile_id: '00000000-0000-0000-0000-000000000003',
+    } as any);
     
     if (error && error.message.includes('Mentor match required')) {
       return {

@@ -368,9 +368,9 @@ export const useRealtimeChat = (currentUserId: string | undefined) => {
       const { data, error } = await supabase.rpc('create_chat_thread', {
         p_thread_type: threadType,
         p_candidate_profile_id: candidateProfileId,
-        p_business_id: businessId || null,
-        p_mentor_profile_id: mentorProfileId || null
-      });
+        p_business_id: businessId || undefined,
+        p_mentor_profile_id: mentorProfileId || undefined,
+      } as any);
 
       if (error) {
         log.error('[useRealtimeChat] Error creating secure thread:', error);
