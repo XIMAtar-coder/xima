@@ -22,41 +22,33 @@ import { Building2, Mail, Phone, MapPin, FileText, User, Shield } from 'lucide-r
 // ========================================
 const COMPANY_LEGAL = {
   // Company name (as registered)
-  name: 'XIMA S.r.l.',
-  
+  name: 'AlphaLink Engineering GmbH',
+
   // Registered address
   address: {
-    street: 'Via Torino, 2',
-    city: 'Milano',
-    postalCode: '20123',
-    province: 'MI',
-    country: 'Italia'
+    street: 'Kolonnenstraße 8',
+    city: 'Berlin',
+    postalCode: '10827',
+    country: 'Germany'
   },
-  
-  // Contact information
-  contact: {
-    email: 'info@xima.app',
-    phone: '+39 02 8088 0088',
-    pec: 'xima@pec.it' // Certified email (Italy)
-  },
-  
-  // Legal representative
+
+  // Managing director (German: Geschäftsführer)
   representative: {
-    title: 'Amministratore Unico',
+    title: 'Geschäftsführer',
     name: 'Pietro Cozzi'
   },
-  
-  // Registration information
+
+  // Registration information (German GmbH)
   registration: {
-    vatNumber: 'IT12345678901', // Partita IVA
-    reaNumber: 'MI-2678901', // REA number
-    shareCapital: '€10.000,00 i.v.',
-    registrationOffice: 'Camera di Commercio di Milano'
+    court: 'Amtsgericht Charlottenburg',
+    number: 'HRB 207747 B',
+    vatNumber: 'DE324790558', // USt-IdNr.
+    taxNumber: '27/205/50726' // Steuernummer
   },
-  
+
   // Data Protection Officer
   dpo: {
-    email: 'privacy@xima.app',
+    email: '',
     description: 'dpo_info' // i18n key
   }
 } as const;
