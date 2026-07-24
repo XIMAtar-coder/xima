@@ -213,7 +213,7 @@ serve(async (req) => {
       .filter((c: any) => !c.ximatar && c.ximatar_id && isUuid(c.ximatar_id))
       .map((c: any) => c.ximatar_id);
 
-    let ximatarLookup: Record<string, string> = {};
+    const ximatarLookup: Record<string, string> = {};
     if (uuidXimatarIds.length > 0) {
       const { data: ximatarRows } = await serviceClient
         .from("ximatars")

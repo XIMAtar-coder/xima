@@ -87,7 +87,7 @@ export const useCandidateChallenges = () => {
       const businessIds = [...new Set((invitations || []).map(i => i.business_id).filter(Boolean))];
       
       // Fetch business info
-      let businessMap: Record<string, string> = {};
+      const businessMap: Record<string, string> = {};
       if (businessIds.length > 0) {
         const { data: businesses } = await supabase
           .from('business_profiles')
@@ -101,8 +101,8 @@ export const useCandidateChallenges = () => {
 
       // Check for submitted challenges and fetch reviews
       const invitationIds = (invitations || []).map(i => i.id);
-      let submittedMap: Record<string, boolean> = {};
-      let reviewMap: Record<string, string> = {}; // invitation_id -> decision
+      const submittedMap: Record<string, boolean> = {};
+      const reviewMap: Record<string, string> = {}; // invitation_id -> decision
       
       if (invitationIds.length > 0) {
         const { data: submissions } = await supabase

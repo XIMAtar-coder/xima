@@ -33,7 +33,7 @@ export class ChunkErrorBoundary extends React.Component<{ children: React.ReactN
         return;
       }
     }
-    // eslint-disable-next-line no-console
+     
     log.error('[ChunkErrorBoundary]', error);
   }
 

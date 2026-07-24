@@ -33,7 +33,7 @@ const JobsBrowse = () => {
   const { data: jobs, isLoading: jobsLoading } = useQuery({
     queryKey: ['jobs-browse', filters],
     queryFn: async () => {
-      let query = supabase
+      const query = supabase
         .from('hiring_goal_drafts' as any)
         .select('id, role_title, description, created_at, status')
         .eq('status', 'active')
