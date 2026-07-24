@@ -18,7 +18,7 @@ import {
   Building2
 } from 'lucide-react';
 import { useRecommendationDebug, XIMATAR_PROFILES, type XimatarExplanation } from '@/hooks/useRecommendationDebug';
-import { runRecommendationTests, type TestResult } from '@/lib/recommendations/__tests__/recommendations.test';
+import { runRecommendationTests, type TestResult } from '@/lib/recommendations/__tests__/recommendations.harness';
 import { type XimatarRecommendation } from '@/lib/recommendations';
 import { cn } from '@/lib/utils';
 import { log } from '@/lib/log';
