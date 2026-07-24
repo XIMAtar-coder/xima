@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import LandingLayout from '@/components/landing/LandingLayout';
 import Seo from '@/components/Seo';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Building2, Mail, Phone, MapPin, FileText, User, Shield } from 'lucide-react';
+import { Building2, MapPin, FileText, User, Shield } from 'lucide-react';
 
 /**
  * Legal Imprint / Legal Notice page
@@ -22,41 +22,33 @@ import { Building2, Mail, Phone, MapPin, FileText, User, Shield } from 'lucide-r
 // ========================================
 const COMPANY_LEGAL = {
   // Company name (as registered)
-  name: 'XIMA S.r.l.',
-  
+  name: 'AlphaLink Engineering GmbH',
+
   // Registered address
   address: {
-    street: 'Via Torino, 2',
-    city: 'Milano',
-    postalCode: '20123',
-    province: 'MI',
-    country: 'Italia'
+    street: 'Kolonnenstraße 8',
+    city: 'Berlin',
+    postalCode: '10827',
+    country: 'Germany'
   },
-  
-  // Contact information
-  contact: {
-    email: 'info@xima.app',
-    phone: '+39 02 8088 0088',
-    pec: 'xima@pec.it' // Certified email (Italy)
-  },
-  
-  // Legal representative
+
+  // Managing director (German: Geschäftsführer)
   representative: {
-    title: 'Amministratore Unico',
+    title: 'Geschäftsführer',
     name: 'Pietro Cozzi'
   },
-  
-  // Registration information
+
+  // Registration information (German GmbH)
   registration: {
-    vatNumber: 'IT12345678901', // Partita IVA
-    reaNumber: 'MI-2678901', // REA number
-    shareCapital: '€10.000,00 i.v.',
-    registrationOffice: 'Camera di Commercio di Milano'
+    court: 'Amtsgericht Charlottenburg',
+    number: 'HRB 207747 B',
+    vatNumber: 'DE324790558', // USt-IdNr.
+    taxNumber: '27/205/50726' // Steuernummer
   },
-  
+
   // Data Protection Officer
   dpo: {
-    email: 'privacy@xima.app',
+    email: '',
     description: 'dpo_info' // i18n key
   }
 } as const;
@@ -101,42 +93,10 @@ const Imprint = () => {
                 <MapPin className="w-4 h-4 mt-1 flex-shrink-0" />
                 <span>
                   {COMPANY_LEGAL.address.street}<br />
-                  {COMPANY_LEGAL.address.postalCode} {COMPANY_LEGAL.address.city} ({COMPANY_LEGAL.address.province})<br />
+                  {COMPANY_LEGAL.address.postalCode} {COMPANY_LEGAL.address.city}<br />
                   {COMPANY_LEGAL.address.country}
                 </span>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Contact Information */}
-          <Card className="bg-gradient-to-br from-card to-card/80 border-border/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-3 text-lg">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Mail className="w-5 h-5 text-primary" />
-                </div>
-                {t('legal.imprint.contact')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Mail className="w-4 h-4" />
-                <a href={`mailto:${COMPANY_LEGAL.contact.email}`} className="hover:text-primary transition-colors">
-                  {COMPANY_LEGAL.contact.email}
-                </a>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Phone className="w-4 h-4" />
-                <a href={`tel:${COMPANY_LEGAL.contact.phone.replace(/\s/g, '')}`} className="hover:text-primary transition-colors">
-                  {COMPANY_LEGAL.contact.phone}
-                </a>
-              </div>
-              {COMPANY_LEGAL.contact.pec && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Shield className="w-4 h-4" />
-                  <span>PEC: {COMPANY_LEGAL.contact.pec}</span>
-                </div>
-              )}
             </CardContent>
           </Card>
 
@@ -166,10 +126,10 @@ const Imprint = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-muted-foreground">
+              <p>{t('legal.imprint.register_court')}: <span className="text-foreground">{COMPANY_LEGAL.registration.court}</span></p>
+              <p>{t('legal.imprint.register_number')}: <span className="text-foreground">{COMPANY_LEGAL.registration.number}</span></p>
               <p>{t('legal.imprint.vat')}: <span className="text-foreground">{COMPANY_LEGAL.registration.vatNumber}</span></p>
-              <p>{t('legal.imprint.rea')}: <span className="text-foreground">{COMPANY_LEGAL.registration.reaNumber}</span></p>
-              <p>{t('legal.imprint.share_capital')}: <span className="text-foreground">{COMPANY_LEGAL.registration.shareCapital}</span></p>
-              <p className="text-sm">{t('legal.imprint.registered_at')}: {COMPANY_LEGAL.registration.registrationOffice}</p>
+              <p>{t('legal.imprint.tax_number')}: <span className="text-foreground">{COMPANY_LEGAL.registration.taxNumber}</span></p>
             </CardContent>
           </Card>
         </div>
@@ -188,12 +148,14 @@ const Imprint = () => {
             <p className="text-muted-foreground">
               {t('legal.imprint.dpo_info')}
             </p>
-            <a 
-              href={`mailto:${COMPANY_LEGAL.dpo.email}`}
-              className="text-primary hover:underline mt-2 inline-block"
-            >
-              {COMPANY_LEGAL.dpo.email}
-            </a>
+            {COMPANY_LEGAL.dpo.email && (
+              <a 
+                href={`mailto:${COMPANY_LEGAL.dpo.email}`}
+                className="text-primary hover:underline mt-2 inline-block"
+              >
+                {COMPANY_LEGAL.dpo.email}
+              </a>
+            )}
           </CardContent>
         </Card>
 
