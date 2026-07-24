@@ -72,8 +72,8 @@ const CandidateSettings = () => {
           industry_preferences: (profile as any).industry_preferences || [],
         });
 
-        let mentorId = null;
-        let mentorName = null;
+        let mentorId: string | null = null;
+        let mentorName: string | null = null;
 
         const { data: match } = await supabase
           .from('mentor_matches')

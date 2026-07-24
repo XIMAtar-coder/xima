@@ -109,7 +109,7 @@ export default function JobPostDetailDrawer({
           updated_at: new Date().toISOString()
         })
         .eq('id', job.id)
-        .eq('business_id', user?.id);
+        .eq('business_id', user?.id ?? '');
 
       if (error) throw error;
 
@@ -129,7 +129,7 @@ export default function JobPostDetailDrawer({
         .from('job_posts')
         .update({ status: newStatus, updated_at: new Date().toISOString() })
         .eq('id', job.id)
-        .eq('business_id', user?.id);
+        .eq('business_id', user?.id ?? '');
 
       if (error) throw error;
 

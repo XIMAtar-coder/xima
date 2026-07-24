@@ -61,7 +61,7 @@ const ChallengeTypeSelector = () => {
         .from('job_posts')
         .select('title')
         .eq('id', fromListing)
-        .eq('business_id', user?.id)
+        .eq('business_id', user?.id ?? '')
         .maybeSingle();
 
       if (jobData?.title) setContextLabel(jobData.title);
@@ -80,7 +80,7 @@ const ChallengeTypeSelector = () => {
       .from('hiring_goal_drafts')
       .select('role_title')
       .eq('id', goalId)
-      .eq('business_id', user?.id)
+      .eq('business_id', user?.id ?? '')
       .single();
 
     if (goalData?.role_title) {
@@ -92,7 +92,7 @@ const ChallengeTypeSelector = () => {
     const { data: existingCore } = await supabase
       .from('business_challenges')
       .select('id')
-      .eq('business_id', user?.id)
+      .eq('business_id', user?.id ?? '')
       .eq('hiring_goal_id', goalId)
       .eq('status', 'active')
       .contains('rubric', { isXimaCore: true })

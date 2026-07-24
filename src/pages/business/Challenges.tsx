@@ -52,11 +52,11 @@ const BusinessChallenges = () => {
       const { data: challengesData, error } = await supabase
         .from('business_challenges')
         .select('id, title, description, status, hiring_goal_id, updated_at, created_at')
-        .eq('business_id', user?.id)
+        .eq('business_id', user?.id ?? '')
         .order('updated_at', { ascending: false });
       if (error) return { data: null, error };
 
-      const goalIds = [...new Set((challengesData || []).filter(c => c.hiring_goal_id).map(c => c.hiring_goal_id))];
+      const goalIds = [...new Set((challengesData || []).map(c => c.hiring_goal_id).filter((id): id is string => !!id))];
       const goalsMap: Record<string, string> = {};
       if (goalIds.length > 0) {
         const { data: goalsData } = await supabase
@@ -94,7 +94,7 @@ const BusinessChallenges = () => {
         await supabase
           .from('business_challenges')
           .update({ status: 'archived', updated_at: new Date().toISOString() })
-          .eq('business_id', user?.id)
+          .eq('business_id', user?.id ?? '')
           .eq('hiring_goal_id', hiringGoalId)
           .eq('status', 'active')
           .neq('id', challengeId);
@@ -170,7 +170,7 @@ const BusinessChallenges = () => {
       const { error } = await supabase
         .from('business_challenges')
         .insert({
-          business_id: user?.id,
+          business_id: user?.id ?? '',
           hiring_goal_id: fullChallenge.hiring_goal_id,
           title: `${fullChallenge.title} (Copy)`,
           description: fullChallenge.description,
@@ -251,7 +251,7 @@ const BusinessChallenges = () => {
         </div>
 
         {/* Challenges List */}
-        {challenges.length === 0 ? (
+        {(challenges?.length ?? 0) === 0 ? (
           <Card className="border-dashed">
             <CardContent className="py-12 text-center">
               <Target className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -269,7 +269,7 @@ const BusinessChallenges = () => {
           </Card>
         ) : (
           <div className="grid gap-4">
-            {challenges.map((challenge) => (
+            {challenges?.map((challenge) => (
               <Card key={challenge.id} className="hover:border-primary/30 transition-colors">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between gap-4">

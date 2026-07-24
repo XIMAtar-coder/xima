@@ -25,8 +25,8 @@ interface Challenge {
   status: string;
   difficulty: number | null;
   time_estimate_minutes: number | null;
-  created_at: string;
-  updated_at: string;
+  created_at: string | null;
+  updated_at: string | null;
   level?: number | null;
   generation_status?: string | null;
   job_post_id?: string | null;
@@ -64,7 +64,7 @@ const GoalChallenges: React.FC = () => {
         return;
       }
 
-      setChallenges(data || []);
+      setChallenges((data || []) as unknown as Challenge[]);
     } catch (error) {
       log.error('Error loading challenges:', error);
     } finally {

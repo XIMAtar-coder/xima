@@ -16,7 +16,7 @@ interface CandidateEngagementData {
     name: string;
     avatar: string;
     ximatar: string;
-    status: string;
+    status: string | null;
     matchScore: number;
   }>;
 }

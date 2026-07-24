@@ -135,7 +135,7 @@ const BusinessDashboard = () => {
       const { data, error } = await supabase.from('hiring_goal_drafts').select('id, status').eq('business_id', user.id).order('updated_at', { ascending: false }).limit(1).maybeSingle();
       if (error) { log.error('[Dashboard] Error fetching hiring goal:', error); setHiringGoalStatus('none'); return; }
       if (!data) { setHiringGoalStatus('none'); setHiringGoalDraftId(null); }
-      else if (['active', 'paused', 'filled', 'closed'].includes(data.status)) { setHiringGoalStatus('active'); setHiringGoalDraftId(data.id); }
+      else if (data.status && ['active', 'paused', 'filled', 'closed'].includes(data.status)) { setHiringGoalStatus('active'); setHiringGoalDraftId(data.id); }
       else { setHiringGoalStatus('draft'); setHiringGoalDraftId(data.id); }
     } catch (err) { log.error('[Dashboard] Error loading hiring goal status:', err); setHiringGoalStatus('none'); setHiringGoalDraftId(null); } finally { setHiringGoalLoading(false); }
   };
@@ -145,14 +145,14 @@ const BusinessDashboard = () => {
       const { count: candidatesCount } = await supabase.from('assessment_results').select('*', { count: 'exact', head: true });
       let shortlistedCount = 0;
       if (hiringGoalDraftId && hiringGoalStatus === 'active') {
-        const { count } = await supabase.from('business_shortlists').select('*', { count: 'exact', head: true }).eq('business_id', user?.id).eq('hiring_goal_id', hiringGoalDraftId);
+        const { count } = await supabase.from('business_shortlists').select('*', { count: 'exact', head: true }).eq('business_id', user?.id ?? '').eq('hiring_goal_id', hiringGoalDraftId);
         shortlistedCount = count || 0;
       } else {
-        const { count } = await supabase.from('business_shortlists').select('*', { count: 'exact', head: true }).eq('business_id', user?.id);
+        const { count } = await supabase.from('business_shortlists').select('*', { count: 'exact', head: true }).eq('business_id', user?.id ?? '');
         shortlistedCount = count || 0;
       }
-      const { count: activeChallengesCount } = await supabase.from('business_challenges').select('*', { count: 'exact', head: true }).eq('business_id', user?.id).gte('deadline', new Date().toISOString());
-      const { data: businessChallenges } = await supabase.from('business_challenges').select('id').eq('business_id', user?.id);
+      const { count: activeChallengesCount } = await supabase.from('business_challenges').select('*', { count: 'exact', head: true }).eq('business_id', user?.id ?? '').gte('deadline', new Date().toISOString());
+      const { data: businessChallenges } = await supabase.from('business_challenges').select('id').eq('business_id', user?.id ?? '');
       const cIds = businessChallenges?.map(c => c.id) || [];
       let completedCount = 0;
       if (cIds.length > 0) {
@@ -243,7 +243,7 @@ const BusinessDashboard = () => {
       <div className="space-y-6">
         {/* Section 1: Company Identity Card (with collapsible AI profile) */}
         <CompanyIdentityCard
-          businessProfile={businessProfile}
+          businessProfile={businessProfile ?? null}
           companyProfile={companyProfile}
           profileStatus={profileLoading ? 'loading' : 'ready'}
           onGenerate={handleGenerateProfile}

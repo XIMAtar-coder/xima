@@ -41,14 +41,14 @@ import {
 } from "@/components/ui/alert-dialog";
 
 interface MentorLike {
-  name?: string;
-  full_name?: string;
-  role?: string;
-  bio?: string;
-  avatar_url?: string;
-  photo_url?: string;
-  calendar_url?: string;
-  booking_link?: string;
+  name?: string | null;
+  full_name?: string | null;
+  role?: string | null;
+  bio?: string | null;
+  avatar_url?: string | null;
+  photo_url?: string | null;
+  calendar_url?: string | null;
+  booking_link?: string | null;
 }
 
 interface Slot {

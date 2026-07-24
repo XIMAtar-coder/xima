@@ -87,7 +87,7 @@ export const NotificationsDropdown = () => {
                       </p>
                     )}
                     <p className="text-xs text-muted-foreground mt-1">
-                      {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
+                      {notification.created_at ? formatDistanceToNow(new Date(notification.created_at), { addSuffix: true }) : ''}
                     </p>
                   </div>
                   {!notification.is_read && (

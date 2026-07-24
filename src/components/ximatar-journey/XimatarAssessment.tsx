@@ -393,7 +393,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
           .single();
 
         if (checkResult && checkResult.ximatar_id) {
-          computedResult = checkResult;
+          computedResult = checkResult as any;
           log.debug('Computation complete!');
           break;
         }

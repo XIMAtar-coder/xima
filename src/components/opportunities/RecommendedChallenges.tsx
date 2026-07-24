@@ -12,11 +12,11 @@ import { log } from '@/lib/log';
 interface Challenge {
   id: string;
   title: string;
-  description: string;
-  target_skills: string[];
-  deadline: string;
-  difficulty: number;
-  created_at: string;
+  description: string | null;
+  target_skills: string[] | null;
+  deadline: string | null;
+  difficulty: number | null;
+  created_at: string | null;
   business_id: string;
 }
 
@@ -42,7 +42,7 @@ export const RecommendedChallenges = () => {
         .limit(10);
 
       if (error) throw error;
-      setChallenges(data || []);
+      setChallenges((data || []) as unknown as Challenge[]);
     } catch (error) {
       log.error('Error fetching challenges:', error);
     } finally {
@@ -141,7 +141,7 @@ export const RecommendedChallenges = () => {
                 )}
                 <div className="flex items-center gap-1">
                   <TrendingUp className="h-3 w-3" />
-                  Posted {formatDistanceToNow(new Date(challenge.created_at), { addSuffix: true })}
+                  {challenge.created_at ? `Posted ${formatDistanceToNow(new Date(challenge.created_at), { addSuffix: true })}` : ''}
                 </div>
               </div>
             </div>

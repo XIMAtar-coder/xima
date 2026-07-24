@@ -64,7 +64,7 @@ const CreateJobOffer = () => {
       const { error } = await supabase
         .from('job_posts')
         .insert({
-          business_id: user?.id,
+          business_id: user?.id ?? '',
           title: formData.title,
           description: formData.description || null,
           responsibilities: formData.responsibilities || null,

@@ -50,7 +50,7 @@ import {
 interface Level2Challenge {
   id: string;
   title: string;
-  updated_at: string;
+  updated_at: string | null;
   rubric?: {
     role_family?: string;
     timebox_minutes?: number;
@@ -602,7 +602,7 @@ export const Level2InviteModal: React.FC<Level2InviteModalProps> = ({
                       <div className="font-medium text-foreground">{challenge.title}</div>
                       <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                         <Calendar size={12} />
-                        {t('business.level2.updated')}: {format(new Date(challenge.updated_at), 'MMM d, yyyy')}
+                        {t('business.level2.updated')}: {challenge.updated_at ? format(new Date(challenge.updated_at), 'MMM d, yyyy') : '—'}
                         {challenge.rubric?.timebox_minutes && (
                           <>
                             <span>•</span>

@@ -41,7 +41,7 @@ interface Candidate {
 interface ActiveChallenge {
   id: string;
   title: string;
-  updated_at: string;
+  updated_at: string | null;
   rubric?: unknown;
 }
 
@@ -228,7 +228,7 @@ const GoalCandidates: React.FC = () => {
       .from('business_challenges')
       .select('id, rubric, title, config_json')
       .eq('business_id', userId)
-      .eq('hiring_goal_id', goalId)
+      .eq('hiring_goal_id', goalId ?? '')
       .in('status', ['active', 'published']);
 
     const l1Challenge = allChallenges?.find(c => {

@@ -153,7 +153,7 @@ export default function Jobs() {
         .from('job_posts')
         .update({ status: 'archived', updated_at: new Date().toISOString() })
         .eq('id', jobId)
-        .eq('business_id', user?.id);
+        .eq('business_id', user?.id ?? '');
 
       if (error) throw error;
 

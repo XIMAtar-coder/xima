@@ -75,7 +75,7 @@ export default function ChallengeFollowup() {
       const { data: followupData, error } = await supabase
         .from('challenge_followups')
         .select('*')
-        .eq('invitation_id', invitationId)
+        .eq('invitation_id', invitationId ?? '')
         .eq('candidate_profile_id', profile.id)
         .maybeSingle();
 
@@ -98,7 +98,7 @@ export default function ChallengeFollowup() {
           hiring_goal_id,
           challenge_id
         `)
-        .eq('id', invitationId)
+        .eq('id', invitationId ?? '')
         .single();
 
       if (invData) {

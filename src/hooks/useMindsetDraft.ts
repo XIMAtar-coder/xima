@@ -36,7 +36,7 @@ export function useMindsetDraft(invitationId: string) {
         setState((s) => ({ ...s, loading: false }));
         return;
       }
-      submissionIdRef.current = data.id;
+      submissionIdRef.current = data.id as string;
       statusRef.current = (data.status as 'draft' | 'submitted') || 'draft';
       const raw =
         data.status === 'submitted' ? data.submitted_payload : data.draft_payload;
@@ -46,9 +46,9 @@ export function useMindsetDraft(invitationId: string) {
           : EMPTY_MINDSET_PAYLOAD;
       setState({
         loading: false,
-        submissionId: data.id,
+        submissionId: data.id as string,
         status: (data.status as 'draft' | 'submitted') || 'draft',
-        submittedAt: data.submitted_at,
+        submittedAt: data.submitted_at ?? null,
         initialPayload: payload,
       });
     })();
@@ -84,12 +84,12 @@ export function useMindsetDraft(invitationId: string) {
               draft_payload: payload as any,
               status: 'draft',
               signals_version: 'v1',
-            },
+            } as any,
             { onConflict: 'invitation_id' }
           )
           .select('id')
           .single();
-        if (data?.id) submissionIdRef.current = data.id;
+        if (data?.id) submissionIdRef.current = data.id as string;
       }
     },
     [invitationId]

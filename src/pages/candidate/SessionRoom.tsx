@@ -265,7 +265,7 @@ export default function SessionRoom() {
       const { data: sessionData, error: sessionError } = await supabase
         .from('mentor_sessions')
         .select('id, mentor_id, candidate_profile_id, starts_at, ends_at, status, video_provider, video_room_name, video_room_url')
-        .eq('id', sessionId)
+        .eq('id', sessionId ?? '')
         .single();
 
       if (sessionError || !sessionData) {
@@ -344,11 +344,11 @@ export default function SessionRoom() {
             video_room_url: `https://${JITSI_DOMAIN}/${roomName}`,
             video_room_created_at: new Date().toISOString(),
           })
-          .eq('id', sessionId);
+          .eq('id', sessionId ?? '');
 
         // Log the room creation
         await supabase.from('mentor_session_audit_logs').insert({
-          session_id: sessionId,
+          session_id: sessionId ?? '',
           actor_user_id: user.id,
           actor_role: isMentor ? 'mentor' : 'candidate',
           action: 'video_room_created',
@@ -358,7 +358,7 @@ export default function SessionRoom() {
 
       // Log the room join
       await supabase.from('mentor_session_audit_logs').insert({
-        session_id: sessionId,
+        session_id: sessionId ?? '',
         actor_user_id: user.id,
         actor_role: isMentor ? 'mentor' : 'candidate',
         action: 'video_room_joined',
