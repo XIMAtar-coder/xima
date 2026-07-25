@@ -1690,7 +1690,13 @@
     "pillar_communication": "Communication",
     "pillar_creativity": "Creativity",
     "seo_title": "XIMA for Business — Hire on signals, not on CVs",
-    "seo_description": "Enterprise psychometrics for SMEs. Validated behavioral profiles, AI challenges per role, selection filtered by real fit."
+    "seo_description": "Enterprise psychometrics for SMEs. Validated behavioral profiles, AI challenges per role, selection filtered by real fit.",
+    "responses": {
+      "mindset_facets": "Traits shown",
+      "mindset_debrief": "In their own words",
+      "mindset_instinct_count": "Instinct choices",
+      "mindset_daylog_count": "Day-log entries"
+    }
   },
   "not_found": {
     "title": "404 - Page Not Found",

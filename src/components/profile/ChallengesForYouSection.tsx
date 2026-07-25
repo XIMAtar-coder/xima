@@ -62,7 +62,7 @@ const ChallengeCard: React.FC<{ challenge: CandidateChallenge }> = ({ challenge 
     // Follow-up requested - show answer button
     if (challenge.reviewDecision === 'followup') {
       return (
-        <Button size="sm" onClick={() => navigate(`/candidate/challenge-followup/${challenge.invitationId}`)}>
+        <Button size="sm" onClick={() => navigate(`/candidate/followups/${challenge.invitationId}`)}>
           <MessageSquare className="h-4 w-4 mr-1" />
           {t('candidate.status.answer_followup')}
         </Button>

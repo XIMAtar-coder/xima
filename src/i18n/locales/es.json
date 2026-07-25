@@ -3225,7 +3225,11 @@
       "view_submission": "Ver Respuesta",
       "submission_content": "Contenido de Respuesta",
       "not_submitted_yet": "Aún no enviado",
-      "challenge_context": "Contexto del Desafío"
+      "challenge_context": "Contexto del Desafío",
+      "mindset_facets": "Rasgos mostrados",
+      "mindset_debrief": "En sus propias palabras",
+      "mindset_instinct_count": "Elecciones instintivas",
+      "mindset_daylog_count": "Entradas del diario"
     },
     "compare": {
       "title": "Comparación de Señales XIMA",

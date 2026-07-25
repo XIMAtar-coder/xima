@@ -20,16 +20,41 @@ export const NotificationsDropdown = () => {
   const handleNotificationClick = (notification: any) => {
     markAsRead(notification.id);
     
-    // Check for followup notifications first
-    if (notification.type === 'challenge' && notification.related_id) {
-      // If related_id is an invitation, check if it might be a followup
-      // Route to followup page for followup notifications
-      navigate(`/candidate/followups/${notification.related_id}`);
-    } else if (notification.type === 'challenge_invitation' && notification.related_id) {
-      // Direct invitation - related_id is invitation_id
-      navigate(`/candidate/challenges/${notification.related_id}`);
-    } else if (notification.type === 'job_offer' && notification.related_id) {
-      navigate(`/opportunities/${notification.related_id}`);
+    // Route by the notification types the DB triggers actually emit. Several of
+    // these (followup_requested, advanced_level2, shortlisted, passed,
+    // submission_received) previously fell through and the click did nothing.
+    const relatedId = notification.related_id;
+
+    switch (notification.type) {
+      // A business asked the candidate a follow-up question — the one two-way
+      // interaction in the product. related_id is the invitation id.
+      case 'followup_requested':
+        if (relatedId) navigate(`/candidate/followups/${relatedId}`);
+        break;
+
+      // Invitation, advancement to the next level, or a submission the candidate
+      // can re-open: all keyed by invitation id.
+      case 'challenge_invitation':
+      case 'advanced_level2':
+      case 'advanced_level3':
+      case 'submission_received':
+      case 'challenge':
+        if (relatedId) navigate(`/candidate/challenges/${relatedId}`);
+        break;
+
+      // Decisions with no dedicated screen yet — send them somewhere truthful
+      // rather than leaving the click dead.
+      case 'shortlisted':
+      case 'passed':
+        navigate('/profile');
+        break;
+
+      case 'job_offer':
+        if (relatedId) navigate(`/opportunities/${relatedId}`);
+        break;
+
+      default:
+        break;
     }
   };
 

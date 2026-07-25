@@ -2161,7 +2161,11 @@
       "not_submitted_yet": "Non ancora inviato",
       "challenge_context": "Contesto Challenge",
       "tab_responses": "Risposte",
-      "tab_compare": "Confronta"
+      "tab_compare": "Confronta",
+      "mindset_facets": "Tratti emersi",
+      "mindset_debrief": "Con parole sue",
+      "mindset_instinct_count": "Scelte istintive",
+      "mindset_daylog_count": "Voci del diario"
     },
     "compare": {
       "title": "Confronto Segnali XIMA",
