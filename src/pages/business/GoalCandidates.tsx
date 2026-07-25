@@ -268,7 +268,7 @@ const GoalCandidates: React.FC = () => {
         .maybeSingle();
 
       if (!existingInvitation) {
-        const { error } = await supabase
+        const { data: created, error } = await supabase
           .from('challenge_invitations')
           .insert({
             business_id: user.id,
@@ -277,9 +277,39 @@ const GoalCandidates: React.FC = () => {
             challenge_id: l1Challenge.id,
             status: 'invited',
             sent_via: ['platform']
-          });
+          })
+          .select('id, invite_token')
+          .single();
 
-        if (!error) successCount++;
+        if (!error) {
+          successCount++;
+
+          // Actually notify the candidate. Until now the invitation existed only
+          // in-app: send-challenge-invitation was written but never called, so a
+          // candidate was invited and never told. Email failure must not fail the
+          // invite itself, so this is logged rather than surfaced.
+          if (created?.id && created?.invite_token) {
+            try {
+              const { error: emailError } = await supabase.functions.invoke(
+                'send-challenge-invitation',
+                {
+                  body: {
+                    invitation_id: created.id,
+                    candidate_profile_id: profileId,
+                    invite_token: created.invite_token,
+                    role_title: currentGoal?.role_title ?? undefined,
+                    challenge_type: 'L1',
+                  },
+                }
+              );
+              if (emailError) {
+                log.error('Invitation email failed to send', emailError);
+              }
+            } catch (e) {
+              log.error('Invitation email failed to send', e);
+            }
+          }
+        }
       }
     }
 

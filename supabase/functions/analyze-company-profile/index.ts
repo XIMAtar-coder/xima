@@ -153,7 +153,7 @@ serve(async (req) => {
     let analysis;
     try {
       const jsonStr = extractJsonFromAiContent(aiContent);
-      const parsed = JSON.parse(jsonStr);
+      const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
       analysis = validateCompanyAnalysis(parsed);
     } catch (parseErr) {
       console.error(JSON.stringify({

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { log } from '@/lib/log';
 import { supabase } from '@/integrations/supabase/client';
 import { EMPTY_L2_PAYLOAD, L2DraftPayload } from '@/components/candidate/l2converse/types';
 
@@ -135,10 +136,15 @@ export function useL2ConverseDraft(invitationId: string) {
         if (error) throw error;
       }
 
-      await supabase
+      const { error: invitationStatusError } = await supabase
         .from('challenge_invitations')
         .update({ status: 'submitted', responded_at: now })
         .eq('id', invitationId);
+      // Surfaced, not swallowed: this write failed silently for months,
+      // leaving businesses unable to see who had responded.
+      if (invitationStatusError) {
+        log.error('Failed to mark invitation as submitted', invitationStatusError);
+      }
 
       statusRef.current = 'submitted';
       setState((s) => ({ ...s, status: 'submitted', submittedAt: now, initialPayload: payload }));

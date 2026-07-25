@@ -1365,7 +1365,7 @@ async function handleLegacyGeneration(body: GenerateChallengeRequest, userId: st
     });
 
     const jsonStr = extractJsonFromAiContent(aiResp.content);
-    const parsed = JSON.parse(jsonStr);
+    const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
     if (typeof parsed?.title_suggestion === 'string' && Array.isArray(parsed?.success_criteria)) {
       return jsonResponse(parsed);
     }

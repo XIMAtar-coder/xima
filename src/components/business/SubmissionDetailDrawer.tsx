@@ -158,6 +158,9 @@ export function SubmissionDetailDrawer({
   const submittedFormat = (submission?.submittedPayload as any)?._format
     ?? (submission?.submittedPayload as any)?.format;
   const isCustomL1 = submittedFormat === 'custom_l1_ai';
+  // XIMA Core (the recommended L1) submits format 'mindset'. This drawer had no
+  // branch for it, so the flagship challenge rendered an empty content card.
+  const isMindset = submittedFormat === 'mindset';
 
   // Extract L2 signals from DB/submission (stable reference)
   const signalsFromDb = useMemo((): Level2SignalsPayload | null => {
@@ -940,7 +943,7 @@ export function SubmissionDetailDrawer({
           )}
 
           {/* XIMA Signals Panel - Qualitative Insights (Level 1, non-Custom) */}
-          {currentChallengeLevel === 1 && !isCustomL1 && localSignals ? (
+          {currentChallengeLevel === 1 && !isCustomL1 && !isMindset && localSignals ? (
             <>
               <XimaSignalsPanel signals={localSignals} />
               
@@ -1028,7 +1031,7 @@ export function SubmissionDetailDrawer({
                 </details>
               </TooltipProvider>
             </>
-          ) : currentChallengeLevel === 1 && !isCustomL1 && submission.submissionStatus === 'submitted' ? (
+          ) : currentChallengeLevel === 1 && !isCustomL1 && !isMindset && submission.submissionStatus === 'submitted' ? (
             <Card className="border-dashed">
               <CardContent className="py-6 text-center">
                 <Sparkles className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
@@ -1088,6 +1091,59 @@ export function SubmissionDetailDrawer({
                 )}
                 {isCustomL1 && customL1Questions === null && (
                   <p className="text-sm text-muted-foreground italic">{t('common.loading', 'Caricamento…')}</p>
+                )}
+
+                {/* XIMA Core / mindset submissions. The debrief is the candidate
+                    explaining their own reasoning in their own words — the most
+                    reviewable thing in the payload, previously never displayed. */}
+                {isMindset && (
+                  <div className="space-y-5">
+                    {Array.isArray((payload as any).lit_facets) && (payload as any).lit_facets.length > 0 && (
+                      <div>
+                        <Label className="text-sm font-medium">
+                          {t('business.responses.mindset_facets', 'Traits shown')}
+                        </Label>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {((payload as any).lit_facets as string[]).map((facet, i) => (
+                            <Badge key={`${facet}-${i}`} variant="secondary">{facet}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {Array.isArray((payload as any).debrief) && (payload as any).debrief.length > 0 && (
+                      <div className="space-y-3">
+                        <Label className="text-sm font-medium">
+                          {t('business.responses.mindset_debrief', 'In their own words')}
+                        </Label>
+                        {((payload as any).debrief as Array<{ q?: string; a?: string }>).map((entry, i) => (
+                          <div key={i} className="border-l-2 border-muted pl-3">
+                            <p className="text-xs text-muted-foreground italic">{entry?.q}</p>
+                            <p className="text-sm text-foreground/90 mt-1 whitespace-pre-wrap">
+                              {String(entry?.a || '').trim() || (
+                                <span className="text-muted-foreground italic">
+                                  {t('business.custom_l1.no_answer', '(no answer)')}
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap gap-2">
+                      {Array.isArray((payload as any).instinct_choices) && (
+                        <Badge variant="outline">
+                          {t('business.responses.mindset_instinct_count', 'Instinct choices')}: {(payload as any).instinct_choices.length}
+                        </Badge>
+                      )}
+                      {Array.isArray((payload as any).day_log) && (
+                        <Badge variant="outline">
+                          {t('business.responses.mindset_daylog_count', 'Day-log entries')}: {(payload as any).day_log.length}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
                 )}
                 {/* Candidate preferences - only for Level 1 */}
                 {(payload.tradeoff_priority || payload.confidence) && (

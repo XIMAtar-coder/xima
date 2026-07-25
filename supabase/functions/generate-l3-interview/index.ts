@@ -363,7 +363,7 @@ Return ONLY valid JSON:
     let validated: Record<string, unknown>;
     try {
       const jsonStr = extractJsonFromAiContent(result.content);
-      const parsed = JSON.parse(jsonStr);
+      const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
       if (validate(parsed)) {
         validated = parsed;
       } else {

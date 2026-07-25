@@ -474,7 +474,7 @@ Return ONLY a JSON array of strings:
         if (userId) await recordAiCallSafe(userId, "recommend-mentors");
 
         const extracted = extractJsonFromAiContent(result.content);
-        const parsed = JSON.parse(extracted || result.content);
+        const parsed = extracted ?? JSON.parse(result.content);
         if (Array.isArray(parsed)) narratives = parsed;
       } catch (e) {
         console.warn(JSON.stringify({ type: "mentor_narrative_fallback", correlation_id: correlationId, error: e instanceof Error ? e.message : String(e) }));

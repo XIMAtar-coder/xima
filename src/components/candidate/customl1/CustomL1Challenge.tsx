@@ -162,10 +162,15 @@ export default function CustomL1Challenge({
       if (subRow) setSubmissionId(subRow.id);
 
       // 2) Mark invitation submitted.
-      await supabase
+      const { error: invitationStatusError } = await supabase
         .from('challenge_invitations')
         .update({ status: 'submitted', responded_at: now })
         .eq('id', invitationId);
+      // Surfaced, not swallowed: this write failed silently for months,
+      // leaving businesses unable to see who had responded.
+      if (invitationStatusError) {
+        log.error('Failed to mark invitation as submitted', invitationStatusError);
+      }
 
       // NOTE: scoring is on-demand from the business side via
       // analyze-open-answer (format: 'custom_l1'). We do NOT call AI here:

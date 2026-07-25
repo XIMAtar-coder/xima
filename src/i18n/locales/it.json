@@ -563,7 +563,8 @@
     "confirm": "Conferma",
     "error": "Errore",
     "as_strength": "Come punto di forza",
-    "as_weakness": "Come punto debole"
+    "as_weakness": "Come punto debole",
+    "back_to_profile": "Torna al profilo"
   },
   "tutorial": {
     "dont_show_again": "Non mostrare più"
@@ -2160,7 +2161,11 @@
       "not_submitted_yet": "Non ancora inviato",
       "challenge_context": "Contesto Challenge",
       "tab_responses": "Risposte",
-      "tab_compare": "Confronta"
+      "tab_compare": "Confronta",
+      "mindset_facets": "Tratti emersi",
+      "mindset_debrief": "Con parole sue",
+      "mindset_instinct_count": "Scelte istintive",
+      "mindset_daylog_count": "Voci del diario"
     },
     "compare": {
       "title": "Confronto Segnali XIMA",
@@ -5155,7 +5160,8 @@
         "could_not_read_duration": "Impossibile leggere la durata del video",
         "camera_desktop_hint": "La registrazione con la fotocamera è disponibile sui dispositivi mobili",
         "processing": "Elaborazione del video..."
-      }
+      },
+      "please_wait": "Non chiudere questa pagina."
     },
     "modal": {
       "title": "Invito al Livello 3 — Standing e presenza",

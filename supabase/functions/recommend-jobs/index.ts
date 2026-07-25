@@ -497,7 +497,7 @@ Return ONLY a JSON array of strings, one per job:
         await recordAiCallSafe(userId, "recommend-jobs");
 
         const extracted = extractJsonFromAiContent(result.content);
-        const parsed = JSON.parse(extracted || result.content);
+        const parsed = extracted ?? JSON.parse(result.content);
         if (Array.isArray(parsed)) {
           narratives = parsed;
         }

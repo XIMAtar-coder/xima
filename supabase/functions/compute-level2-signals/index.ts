@@ -331,7 +331,7 @@ Respond with valid JSON only.`;
     let parsedResult;
     try {
       const jsonString = extractJsonFromAiContent(aiResponse.content);
-      const parsed = JSON.parse(jsonString);
+      const parsed = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
       parsedResult = validateLevel2SignalsV2(parsed);
     } catch (parseError) {
       console.error(JSON.stringify({ type: 'parse_error', correlation_id: correlationId, function_name: 'compute-level2-signals', error: 'Failed to parse AI response' }));
