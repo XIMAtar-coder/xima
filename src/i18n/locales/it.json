@@ -563,7 +563,8 @@
     "confirm": "Conferma",
     "error": "Errore",
     "as_strength": "Come punto di forza",
-    "as_weakness": "Come punto debole"
+    "as_weakness": "Come punto debole",
+    "back_to_profile": "Torna al profilo"
   },
   "tutorial": {
     "dont_show_again": "Non mostrare più"
@@ -5155,7 +5156,8 @@
         "could_not_read_duration": "Impossibile leggere la durata del video",
         "camera_desktop_hint": "La registrazione con la fotocamera è disponibile sui dispositivi mobili",
         "processing": "Elaborazione del video..."
-      }
+      },
+      "please_wait": "Non chiudere questa pagina."
     },
     "modal": {
       "title": "Invito al Livello 3 — Standing e presenza",

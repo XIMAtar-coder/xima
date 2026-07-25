@@ -137,7 +137,7 @@ async function generatePersonalizedEmail(
     });
 
     const cleaned = extractJsonFromAiContent(result.content);
-    const parsed = JSON.parse(cleaned);
+    const parsed = typeof cleaned === 'string' ? JSON.parse(cleaned) : cleaned;
     if (parsed.subject && parsed.body_text) {
       return { subject: parsed.subject, body: parsed.body_text };
     }
@@ -300,10 +300,12 @@ serve(async (req: Request): Promise<Response> => {
       console.warn("[send-challenge-invitation] Email queue not available, email not sent:", queueErr instanceof Error ? queueErr.message : queueErr);
     }
 
-    // Update invitation status
+    // Record the delivery channel only. The invitation stays 'invited' until the
+    // candidate acts on it — "sent" is not a candidate state and was rejected by
+    // the status CHECK constraint, so this write used to fail silently.
     await supabase
       .from("challenge_invitations")
-      .update({ sent_via: ["in_app", "email"], status: "sent" })
+      .update({ sent_via: ["in_app", "email"] })
       .eq("id", invitation_id);
 
     // Audit

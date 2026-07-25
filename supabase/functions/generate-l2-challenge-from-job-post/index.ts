@@ -262,7 +262,7 @@ Return ONLY valid JSON.`;
 
 
       const jsonStr = extractJsonFromAiContent(aiResp.content);
-      const parsed = JSON.parse(jsonStr);
+      const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
 
       // Validate
       if (!parsed?.overview || !Array.isArray(parsed?.steps) || parsed.steps.length === 0) {

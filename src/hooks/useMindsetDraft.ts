@@ -141,10 +141,15 @@ export function useMindsetDraft(invitationId: string) {
         if (error) throw error;
       }
 
-      await supabase
+      const { error: invitationStatusError } = await supabase
         .from('challenge_invitations')
         .update({ status: 'submitted', responded_at: now })
         .eq('id', invitationId);
+      // Surfaced, not swallowed: this write failed silently for months,
+      // leaving businesses unable to see who had responded.
+      if (invitationStatusError) {
+        log.error('Failed to mark invitation as submitted', invitationStatusError);
+      }
 
       statusRef.current = 'submitted';
 

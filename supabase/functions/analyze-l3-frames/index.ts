@@ -21,7 +21,7 @@ import {
 } from "../_shared/errors.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
-import { persistTrajectoryEvent, type PillarDeltas } from "../_shared/pillarTrajectory.ts";
+// pillarTrajectory intentionally not imported: L3 does not write pillar scores.
 import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
@@ -69,35 +69,12 @@ interface L3Analysis {
 // Helpers
 // ---------------------------------------------------------------------
 
-function computeL3Deltas(analysis: L3Analysis): PillarDeltas {
-  const deltas: PillarDeltas = { drive: 0, computational_power: 0, communication: 0, creativity: 0, knowledge: 0 };
-  if (!analysis.visual_analysis_available) return deltas;
-
-  let highEngagementCount = 0;
-  for (const obs of analysis.per_question_observations) {
-    if (obs.energy_level === "high") highEngagementCount++;
-    if (obs.engagement_shift === "increasing") highEngagementCount++;
-  }
-
-  // Strong energy arc → Drive
-  if (highEngagementCount >= 2) deltas.drive = 2;
-  else if (highEngagementCount >= 1) deltas.drive = 1;
-
-  // Congruence → Communication (presence/articulation)
-  const congruence = analysis.viewing_guide.congruence_summary?.toLowerCase() || "";
-  if (congruence.includes("align") || congruence.includes("consistent") || congruence.includes("congru")) {
-    deltas.communication = 2;
-  }
-
-  // Per-question high engagement on tension probes → small knowledge/creativity boost
-  const strongQs = analysis.viewing_guide.strongest_engagement_questions?.length || 0;
-  if (strongQs >= 3) {
-    deltas.knowledge = 1;
-    deltas.creativity = 1;
-  }
-
-  return deltas;
-}
+// NOTE: computeL3Deltas() was removed here.
+// It converted video observations into permanent pillar points
+// (energy_level === "high" → +2 Drive; a substring match on "align" →
+// +2 Communication, which also scored "does not align" as positive).
+// Video frames alone are not a defensible basis for scoring a person in a
+// hiring decision, so L3 now contributes an observational viewing guide only.
 
 function validateAnalysis(parsed: Record<string, unknown>): parsed is L3Analysis {
   const obs = parsed.per_question_observations;
@@ -419,7 +396,7 @@ Return ONLY valid JSON:
     let validated: L3Analysis;
     try {
       const jsonStr = extractJsonFromAiContent(content);
-      const parsed = JSON.parse(jsonStr);
+      const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
       if (validateAnalysis(parsed)) {
         validated = parsed as L3Analysis;
         validated.visual_analysis_available = true;
@@ -484,22 +461,13 @@ Return ONLY valid JSON:
       });
     }
 
-    // ---- Pillar trajectory ----
-    if (candidateProfile?.user_id && validated.visual_analysis_available) {
-      const deltas = computeL3Deltas(validated);
-      const hasDeltas = Object.values(deltas).some((d) => d !== 0);
-      if (hasDeltas) {
-        persistTrajectoryEvent({
-          user_id: candidateProfile.user_id,
-          source_function: "analyze-l3-frames",
-          source_type: "l3_challenge",
-          source_entity_id: submission_id,
-          correlation_id: correlationId,
-          deltas,
-          reasoning: validated.viewing_guide.congruence_summary,
-        });
-      }
-    }
+    // ---- Pillar trajectory: intentionally NOT written from video ----
+    // This function observes; it does not score. Inferring pillar points from
+    // posture/energy/engagement in video frames (no transcript, no audio) is
+    // emotion inference in an employment decision — the category the EU AI Act
+    // treats most strictly — and it previously wrote straight to the permanent
+    // profile with no human gate. The viewing guide below is the deliverable:
+    // it supports a human reviewer instead of replacing them.
 
     // ---- Audit ----
     emitAuditEventWithMetric(

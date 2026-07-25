@@ -481,7 +481,8 @@
     "confirm": "Confirm",
     "error": "Error",
     "as_strength": "As a strength",
-    "as_weakness": "As a weakness"
+    "as_weakness": "As a weakness",
+    "back_to_profile": "Back to profile"
   },
   "tutorial": {
     "dont_show_again": "Don't show again"
@@ -3716,7 +3717,51 @@
       "already_active_desc": "Only one XIMA Core Challenge can be active per hiring goal.",
       "activated_title": "XIMA Core activated",
       "activated_desc": "The XIMA Core Challenge is now live and ready for candidates."
-    }
+    },
+    "action_placeholder": "Action {{n}}",
+    "already_submitted": "You've already submitted this challenge.",
+    "approach_label": "Your approach",
+    "approach_placeholder": "Describe how you'd tackle this challenge...",
+    "assumptions_label": "Key assumptions",
+    "assumptions_placeholder": "What assumptions are you making?",
+    "confidence_high": "High",
+    "confidence_label": "Confidence level",
+    "confidence_low": "Low",
+    "confidence_medium": "Medium",
+    "confidence_placeholder": "Select your level",
+    "estimated_time": "Estimated time: {{minutes}} minutes",
+    "expired_message": "This challenge is no longer available.",
+    "fields_remaining": "required fields remaining",
+    "first_actions_hint": "What would your first three concrete steps be?",
+    "first_actions_label": "First 3 actions",
+    "instructions": "Instructions",
+    "not_found": "Challenge not found",
+    "open_challenge": "Open challenge",
+    "progress": "Progress",
+    "saved": "Saved",
+    "saving": "Saving...",
+    "status": {
+      "upcoming": "Upcoming",
+      "active": "Active",
+      "expired": "Expired",
+      "submitted": "Submitted",
+      "declined": "Declined"
+    },
+    "submission_success": "Response received!",
+    "submit_btn": "Submit challenge",
+    "submitted_at": "Submitted on",
+    "submitted_desc": "Your response was submitted successfully.",
+    "submitted_title": "Response received",
+    "success_criteria": "What we're looking for",
+    "tradeoff_alignment": "Stakeholder alignment",
+    "tradeoff_cost": "Cost efficiency",
+    "tradeoff_data": "Data certainty",
+    "tradeoff_label": "Priority trade-off",
+    "tradeoff_quality": "Quality and reliability",
+    "tradeoff_speed": "Speed of execution",
+    "upcoming_message": "This challenge hasn't started yet.",
+    "view_submission": "View response",
+    "your_response": "Your response"
   },
   "notifications": {
     "new_challenge_invitation": "New Challenge Invitation",
@@ -4373,7 +4418,8 @@
         "could_not_read_duration": "Could not read video duration",
         "camera_desktop_hint": "Camera recording is available on mobile devices",
         "processing": "Processing video..."
-      }
+      },
+      "please_wait": "Please don't close this page."
     }
   },
   "interpretation": {

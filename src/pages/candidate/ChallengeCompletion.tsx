@@ -719,10 +719,15 @@ export default function ChallengeCompletion() {
       }
 
       // Also update the invitation status to reflect submission
-      await supabase
+      const { error: invitationStatusError } = await supabase
         .from('challenge_invitations')
         .update({ status: 'submitted', responded_at: now })
         .eq('id', invitationId);
+      // Surfaced, not swallowed: this write failed silently for months,
+      // leaving businesses unable to see who had responded.
+      if (invitationStatusError) {
+        log.error('Failed to mark invitation as submitted', invitationStatusError);
+      }
 
       setSubmissionStatus('submitted');
       setSubmittedAt(now);

@@ -183,7 +183,8 @@
     "confirm": "Confirmar",
     "error": "Error",
     "as_strength": "Como fortaleza",
-    "as_weakness": "Como debilidad"
+    "as_weakness": "Como debilidad",
+    "back_to_profile": "Volver al perfil"
   },
   "nav": {
     "home": "Inicio",
@@ -4443,7 +4444,8 @@
         "could_not_read_duration": "No se pudo leer la duración del video",
         "camera_desktop_hint": "La grabación con cámara está disponible en dispositivos móviles",
         "processing": "Procesando el video..."
-      }
+      },
+      "please_wait": "No cierres esta página."
     },
     "modal": {
       "title": "Invitación al Nivel 3 — Standing y presencia",

@@ -217,7 +217,7 @@ async function qualifyLeadAsync(
     });
 
     const cleaned = extractJsonFromAiContent(result.content);
-    const qualification = JSON.parse(cleaned);
+    const qualification = typeof cleaned === 'string' ? JSON.parse(cleaned) : cleaned;
 
     // Store qualification as metadata on the existing request
     // Using the status field to mark as qualified
