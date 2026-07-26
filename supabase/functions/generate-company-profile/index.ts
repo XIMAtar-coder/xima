@@ -495,11 +495,11 @@ Deno.serve(async (req) => {
 
     let parsed: unknown;
     try {
+      // extractJsonFromAiContent returns the already-parsed payload (or null) —
+      // never re-parse it. On null we retry extraction by hand against the raw content.
       const extracted = extractJsonFromAiContent(result.content);
-      if (extracted && typeof extracted === "object") {
+      if (extracted) {
         parsed = extracted;
-      } else if (typeof extracted === "string") {
-        parsed = JSON.parse(extracted);
       } else {
         // Manual extraction fallback
         let raw = result.content.trim();

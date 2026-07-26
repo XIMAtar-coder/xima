@@ -360,18 +360,17 @@ Return ONLY valid JSON:
 
 
     // ---- Parse and validate ----
+    // extractJsonFromAiContent returns the already-parsed payload (or null) —
+    // never re-parse it. Both failure modes fall back, but log distinctly.
     let validated: Record<string, unknown>;
-    try {
-      const jsonStr = extractJsonFromAiContent(result.content);
-      const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
-      if (validate(parsed)) {
-        validated = parsed;
-      } else {
-        console.warn("[generate-l3-interview] Validation failed, using fallback");
-        validated = buildFallbackQuestions(scores) as Record<string, unknown>;
-      }
-    } catch {
-      console.warn("[generate-l3-interview] JSON parse failed, using fallback");
+    const parsed = extractJsonFromAiContent(result.content);
+    if (!parsed) {
+      console.warn("[generate-l3-interview] AI response contained no parseable JSON, using fallback");
+      validated = buildFallbackQuestions(scores) as Record<string, unknown>;
+    } else if (validate(parsed)) {
+      validated = parsed;
+    } else {
+      console.warn("[generate-l3-interview] Validation failed, using fallback");
       validated = buildFallbackQuestions(scores) as Record<string, unknown>;
     }
 

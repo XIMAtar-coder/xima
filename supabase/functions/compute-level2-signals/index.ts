@@ -327,14 +327,18 @@ Respond with valid JSON only.`;
       throw e;
     }
 
-    // Validate
+    // Validate. extractJsonFromAiContent returns the already-parsed payload (or
+    // null) — never re-parse it. Parse failure and schema mismatch are logged
+    // separately so the two are distinguishable in production.
     let parsedResult;
-    try {
-      const jsonString = extractJsonFromAiContent(aiResponse.content);
-      const parsed = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
+    const parsed = extractJsonFromAiContent(aiResponse.content);
+    if (!parsed) {
+      console.error(JSON.stringify({ type: 'parse_error', correlation_id: correlationId, function_name: 'compute-level2-signals', error: 'AI response contained no parseable JSON' }));
+    } else {
       parsedResult = validateLevel2SignalsV2(parsed);
-    } catch (parseError) {
-      console.error(JSON.stringify({ type: 'parse_error', correlation_id: correlationId, function_name: 'compute-level2-signals', error: 'Failed to parse AI response' }));
+      if (!parsedResult) {
+        console.error(JSON.stringify({ type: 'validation_error', correlation_id: correlationId, function_name: 'compute-level2-signals', error: 'AI JSON did not match the Level 2 signals schema' }));
+      }
     }
 
     if (!parsedResult) {

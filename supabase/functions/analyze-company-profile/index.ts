@@ -150,16 +150,18 @@ serve(async (req) => {
     }
 
     // ===== RELIABILITY: Strict schema validation =====
+    // extractJsonFromAiContent returns the already-parsed payload (or null) —
+    // never re-parse it. validateCompanyAnalysis returns null instead of throwing.
     let analysis;
-    try {
-      const jsonStr = extractJsonFromAiContent(aiContent);
-      const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
-      analysis = validateCompanyAnalysis(parsed);
-    } catch (parseErr) {
+    const parsed = extractJsonFromAiContent(aiContent);
+    if (!parsed) {
       console.error(JSON.stringify({
         type: 'parse_error', correlation_id: correlationId,
         function_name: 'analyze-company-profile',
+        error: 'AI response contained no parseable JSON',
       }));
+    } else {
+      analysis = validateCompanyAnalysis(parsed);
     }
 
     // Fallback if validation fails

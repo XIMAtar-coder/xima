@@ -357,9 +357,38 @@ export async function callAiGateway(
 }
 
 /**
- * Extract JSON from AI response content (handles markdown code blocks)
+ * A JSON payload already parsed out of an AI response: an object or an array.
+ * Deliberately excludes `string` — see {@link extractJsonFromAiContent}.
  */
-export function extractJsonFromAiContent(content: string): any {
+export type ParsedAiJson = Record<string, unknown> | unknown[];
+
+/**
+ * Extract and PARSE the JSON payload from AI response content (handles markdown code fences).
+ *
+ * ⚠️ THE RETURN VALUE IS ALREADY PARSED — never call `JSON.parse()` on it.
+ * `JSON.parse(anObject)` stringifies its argument to "[object Object]" and throws
+ * SyntaxError, which sends the caller down its catch/fallback path on *every*
+ * request and silently discards the model's output. This regression shipped once
+ * (fixed in b56faf51) and cost the L2 AI signals feature five months of runtime.
+ *
+ * The return type never includes `string`, so `typeof result === 'string'` guards
+ * are dead code. The only failure signal is `null`; this function never throws.
+ * Handle `null` explicitly — do not let it fall through to a generic catch, where
+ * a transport-level parse failure becomes indistinguishable from a schema mismatch.
+ *
+ * @param content Raw `content` string from an {@link AiResponse}.
+ * @returns The parsed object/array, or `null` if the content held no parseable
+ *          JSON object/array (including bare primitives such as `42`, which are
+ *          treated as failures rather than payloads).
+ *
+ * @example
+ * const parsed = extractJsonFromAiContent(aiResp.content);
+ * if (!parsed) return errorResponse(502, 'AI_PARSE_FAILED', 'No parseable JSON.');
+ * const validated = validateMySchema(parsed); // use `parsed` directly
+ */
+export function extractJsonFromAiContent<T extends ParsedAiJson = Record<string, unknown>>(
+  content: string,
+): T | null {
   let text = content.trim();
 
   // Strip markdown code fences: ```json\n{...}\n``` or ```\n{...}\n```
@@ -377,12 +406,25 @@ export function extractJsonFromAiContent(content: string): any {
     }
   }
 
+  let parsed: unknown;
   try {
-    return JSON.parse(text);
+    parsed = JSON.parse(text);
   } catch {
     console.error("[extractJsonFromAiContent] Parse failed. Preview:", text.substring(0, 500));
     return null;
   }
+
+  // Enforce the ParsedAiJson contract: a bare primitive is a failure, not a payload.
+  // Returning one would let a `string` escape and tempt callers into a second parse.
+  if (parsed === null || typeof parsed !== "object") {
+    console.error(
+      `[extractJsonFromAiContent] Expected JSON object/array, got ${parsed === null ? "null" : typeof parsed}. Preview:`,
+      text.substring(0, 500),
+    );
+    return null;
+  }
+
+  return parsed as T;
 }
 
 /**

@@ -76,7 +76,12 @@ interface L3Analysis {
 // Video frames alone are not a defensible basis for scoring a person in a
 // hiring decision, so L3 now contributes an observational viewing guide only.
 
-function validateAnalysis(parsed: Record<string, unknown>): parsed is L3Analysis {
+// Takes `unknown` so the `parsed is L3Analysis` predicate is well-formed (L3Analysis
+// has no index signature, so a Record<string, unknown> parameter made the predicate
+// itself a type error). Matches the shape of the other validators in this codebase.
+function validateAnalysis(input: unknown): input is L3Analysis {
+  if (!input || typeof input !== "object") return false;
+  const parsed = input as Record<string, unknown>;
   const obs = parsed.per_question_observations;
   if (!Array.isArray(obs)) return false;
   for (const o of obs) {
@@ -393,37 +398,13 @@ Return ONLY valid JSON:
     })().catch((e: unknown) => console.error("[audit] error:", e));
 
     // ---- Parse and validate ----
+    // extractJsonFromAiContent returns the already-parsed payload (or null) —
+    // never re-parse it. `null` gets its own fallback so an unparseable response
+    // is distinguishable from one that parsed but failed validation.
     let validated: L3Analysis;
-    try {
-      const jsonStr = extractJsonFromAiContent(content);
-      const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
-      if (validateAnalysis(parsed)) {
-        validated = parsed as L3Analysis;
-        validated.visual_analysis_available = true;
-      } else {
-        console.warn("[analyze-l3-frames] Validation failed, partial result");
-        validated = {
-          per_question_observations: frames.map((f) => ({
-            question_id: f.question_id,
-            posture_notes: "Analysis could not be fully validated",
-            energy_level: "unknown",
-            engagement_shift: "unknown",
-            notable_signals: "Review video directly",
-            congruence_with_profile: "unknown",
-          })),
-          viewing_guide: {
-            strongest_engagement_questions: [],
-            potential_discomfort_questions: [],
-            energy_arc: "Analysis validation failed. Review video directly.",
-            congruence_summary: "Could not determine congruence.",
-            recommended_focus_areas: tensionsToResolve,
-            reviewer_notes: (interviewBrief.candidate_summary as string) || "Review all questions carefully.",
-          },
-          visual_analysis_available: false,
-        };
-      }
-    } catch {
-      console.warn("[analyze-l3-frames] JSON parse failed");
+    const parsed = extractJsonFromAiContent(content);
+    if (!parsed) {
+      console.warn("[analyze-l3-frames] AI response contained no parseable JSON");
       validated = {
         per_question_observations: [],
         viewing_guide: {
@@ -433,6 +414,30 @@ Return ONLY valid JSON:
           congruence_summary: "Unable to assess.",
           recommended_focus_areas: tensionsToResolve,
           reviewer_notes: "AI analysis encountered an error. Please review the video manually.",
+        },
+        visual_analysis_available: false,
+      };
+    } else if (validateAnalysis(parsed)) {
+      validated = parsed;
+      validated.visual_analysis_available = true;
+    } else {
+      console.warn("[analyze-l3-frames] Validation failed, partial result");
+      validated = {
+        per_question_observations: frames.map((f) => ({
+          question_id: f.question_id,
+          posture_notes: "Analysis could not be fully validated",
+          energy_level: "unknown",
+          engagement_shift: "unknown",
+          notable_signals: "Review video directly",
+          congruence_with_profile: "unknown",
+        })),
+        viewing_guide: {
+          strongest_engagement_questions: [],
+          potential_discomfort_questions: [],
+          energy_arc: "Analysis validation failed. Review video directly.",
+          congruence_summary: "Could not determine congruence.",
+          recommended_focus_areas: tensionsToResolve,
+          reviewer_notes: (interviewBrief.candidate_summary as string) || "Review all questions carefully.",
         },
         visual_analysis_available: false,
       };

@@ -216,8 +216,10 @@ async function qualifyLeadAsync(
       promptTemplateVersion: "2.0",
     });
 
-    const cleaned = extractJsonFromAiContent(result.content);
-    const qualification = typeof cleaned === 'string' ? JSON.parse(cleaned) : cleaned;
+    // extractJsonFromAiContent returns the already-parsed payload (or null) —
+    // never re-parse it. Qualification is optional, so a null lands in the catch below.
+    const qualification = extractJsonFromAiContent(result.content);
+    if (!qualification) throw new Error('qualification response contained no parseable JSON');
 
     // Store qualification as metadata on the existing request
     // Using the status field to mark as qualified

@@ -136,9 +136,10 @@ async function generatePersonalizedEmail(
       promptTemplateVersion: "2.0",
     });
 
-    const cleaned = extractJsonFromAiContent(result.content);
-    const parsed = typeof cleaned === 'string' ? JSON.parse(cleaned) : cleaned;
-    if (parsed.subject && parsed.body_text) {
+    // extractJsonFromAiContent returns the already-parsed payload (or null) —
+    // never re-parse it. A null falls through to the template path.
+    const parsed = extractJsonFromAiContent(result.content);
+    if (typeof parsed?.subject === 'string' && typeof parsed?.body_text === 'string') {
       return { subject: parsed.subject, body: parsed.body_text };
     }
     return null;

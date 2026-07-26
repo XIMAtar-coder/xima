@@ -282,8 +282,7 @@ Restituisci SOLO JSON valido con ESATTAMENTE questa forma (nessun commento, ness
       temperature: 0.85,
       maxTokens: 1800,
     });
-    const jsonStr = extractJsonFromAiContent(resp.content);
-    const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
+    const parsed = extractJsonFromAiContent(resp.content);
     const validated = validateMindsetBlock(parsed);
     if (!validated) {
       console.warn('[generate-challenge] mindset block failed validation', JSON.stringify({
@@ -449,8 +448,7 @@ async function generateL2Simulation(ctx: L2GenContext): Promise<L2SimulationSpec
       temperature: 0.8,
       maxTokens: 2200,
     });
-    const jsonStr = extractJsonFromAiContent(resp.content);
-    const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
+    const parsed = extractJsonFromAiContent(resp.content);
     const validated = validateL2Simulation(parsed);
     if (!validated) {
       console.warn('[generate-challenge] l2 simulation failed validation', JSON.stringify({
@@ -988,8 +986,7 @@ Restituisci SOLO JSON valido (no commenti, no testo extra):
         });
         // Accrue per-user cap after a successful model hit (skip service-role internal).
         if (!isServiceRoleCall) await recordAiCallSafe(user.id, 'generate-challenge');
-        const jsonStr = extractJsonFromAiContent(aiResp.content);
-        const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
+        const parsed = extractJsonFromAiContent<Record<string, any>>(aiResp.content);
 
         // Validate base xima-core shape (scenario, evaluation_lens, etc.).
         const validatedBase = validateXimaCoreResult(parsed);
@@ -1215,8 +1212,7 @@ Restituisci SOLO JSON valido:
       // Accrue per-user cap after a successful model hit (skip service-role internal).
       if (!isServiceRoleCall) await recordAiCallSafe(user.id, 'generate-challenge');
 
-      const jsonStr = extractJsonFromAiContent(aiResp.content);
-      const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
+      const parsed = extractJsonFromAiContent<Record<string, any>>(aiResp.content);
 
       // QUALITY CHECK: detect when the model echoed the prompt template instead of generating actual content.
       const META_MARKERS = [
@@ -1267,7 +1263,7 @@ Restituisci SOLO JSON valido:
         return errorResponse(422, 'INVALID_AI_RESPONSE', 'Generated scenario response was invalid. Please regenerate.', { correlation_id: correlationId });
       }
 
-      const responseIsFallback = !!parsed.is_fallback;
+      const responseIsFallback = !!parsed?.is_fallback;
       console.log('[generate-challenge] Claude response received, scenario first 100 chars:', validated.scenario?.substring(0, 100));
       console.log('[generate-challenge] Is fallback?', responseIsFallback);
 
@@ -1364,9 +1360,10 @@ async function handleLegacyGeneration(body: GenerateChallengeRequest, userId: st
       maxTokens: 1024,
     });
 
-    const jsonStr = extractJsonFromAiContent(aiResp.content);
-    const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
-    if (typeof parsed?.title_suggestion === 'string' && Array.isArray(parsed?.success_criteria)) {
+    // extractJsonFromAiContent returns the already-parsed payload (or null) —
+    // never re-parse it. `null` falls through to the static fallback below.
+    const parsed = extractJsonFromAiContent(aiResp.content);
+    if (parsed && typeof parsed.title_suggestion === 'string' && Array.isArray(parsed.success_criteria)) {
       return jsonResponse(parsed);
     }
   } catch { /* fall through to fallback */ }

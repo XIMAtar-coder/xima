@@ -261,24 +261,31 @@ Return ONLY valid JSON.`;
       await recordAiCallSafe(user.id, 'generate-l2-challenge-from-job-post');
 
 
-      const jsonStr = extractJsonFromAiContent(aiResp.content);
-      const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
+      // extractJsonFromAiContent returns the already-parsed payload (or null) —
+      // never re-parse it. Parse failure is reported distinctly from schema failure.
+      const parsed = extractJsonFromAiContent(aiResp.content);
+      if (!parsed) {
+        throw new Error('AI response contained no parseable JSON');
+      }
 
       // Validate
-      if (!parsed?.overview || !Array.isArray(parsed?.steps) || parsed.steps.length === 0) {
+      const steps = parsed.steps;
+      if (!parsed.overview || !Array.isArray(steps) || steps.length === 0) {
         throw new Error('Schema validation failed');
       }
 
       // Validate and normalize rubric pillar mappings
-      if (Array.isArray(parsed.scoring_rubric)) {
-        for (const criterion of parsed.scoring_rubric) {
+      const rubric = parsed.scoring_rubric;
+      if (Array.isArray(rubric)) {
+        for (const criterion of rubric) {
           if (!criterion.primary_pillar || !VALID_PILLARS.includes(criterion.primary_pillar)) {
             criterion.primary_pillar = 'knowledge'; // safe default
           }
         }
       }
 
-      config = { ...parsed, language: locale };
+      // Shape is checked above; the spread of a Record needs the cast to satisfy L2Config.
+      config = { ...parsed, language: locale } as L2Config;
     } catch (e) {
       if (e instanceof AnthropicError && e.statusCode === 429) {
         generationError = e.message;
