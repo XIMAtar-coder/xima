@@ -26,10 +26,17 @@ interface EvidenceReflectionCardProps {
 
 /** Dimension → i18n key. Kept explicit so an unknown dimension degrades quietly. */
 const DIMENSION_LABEL_KEYS: Record<string, string> = {
+  // Mindset / XIMA Core rubric dimensions
   framing: 'reflection.dimension.framing',
   execution_bias: 'reflection.dimension.execution_bias',
   impact_thinking: 'reflection.dimension.impact_thinking',
   decision_quality: 'reflection.dimension.decision_quality',
+  // L2 conversation scores against the five pillars instead
+  drive: 'reflection.dimension.drive',
+  computational_power: 'reflection.dimension.computational_power',
+  communication: 'reflection.dimension.communication',
+  creativity: 'reflection.dimension.creativity',
+  knowledge: 'reflection.dimension.knowledge',
 };
 
 const DIMENSION_FALLBACKS: Record<string, string> = {
@@ -37,6 +44,11 @@ const DIMENSION_FALLBACKS: Record<string, string> = {
   execution_bias: 'How you move to action',
   impact_thinking: 'How you weigh consequences',
   decision_quality: 'How consistent your choices are',
+  drive: 'Drive',
+  computational_power: 'Computational Power',
+  communication: 'Communication',
+  creativity: 'Creativity',
+  knowledge: 'Knowledge',
 };
 
 export function EvidenceReflectionCard({ evidence, className = '' }: EvidenceReflectionCardProps) {

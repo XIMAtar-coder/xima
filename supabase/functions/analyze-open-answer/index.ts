@@ -1105,19 +1105,46 @@ Evaluate. Return ONLY the JSON object.`;
   };
   let nudgeSkipped = false;
 
+  // Only the candidate's own turns may be quoted back as evidence — never the
+  // counterpart's lines, and never the scenario text.
+  const candidateOnlyText = transcript
+    .filter((t: any) => t?.role === 'candidate')
+    .map((t: any) => String(t?.text || ''))
+    .join('\n');
+
   for (const entry of parsed.rubric_breakdown) {
     const cid = String(entry?.criterion_id || '');
     gotIds.push(cid);
     const cfg = criterionMap.get(cid);
     if (!cfg) continue;
     const score = clampRound(entry?.score, 0, 100);
+
+    // The model is asked for a verbatim quote; verify it before we show it to
+    // anyone. An unverified quote is dropped rather than displayed unmarked.
+    const claimedQuote = String(entry?.evidence_quote || '').slice(0, 500);
+    const [verifiedForCriterion] = verifyEvidence(
+      [{ dimension: cfg.primary_pillar, quote: claimedQuote, is_strength: score >= 60 }],
+      candidateOnlyText,
+      new Set([cfg.primary_pillar]),
+      (info) => console.warn(JSON.stringify({
+        type: 'evidence_quote_rejected',
+        correlation_id: correlationId,
+        function_name: 'analyze-open-answer',
+        format: 'l2_conversation',
+        criterion_id: cid,
+        reason: info.reason,
+        quote_preview: info.quote.slice(0, 60),
+      })),
+    );
+
     enrichedBreakdown.push({
       criterion_id: cid,
       criterion: cfg.criterion,
       primary_pillar: cfg.primary_pillar,
       weight: cfg.weight,
       score,
-      evidence_quote: String(entry?.evidence_quote || '').slice(0, 500),
+      evidence_quote: verifiedForCriterion?.quote ?? '',
+      evidence_verified: Boolean(verifiedForCriterion),
     });
     const pk = cfg.primary_pillar as PillarKey;
     if ((PILLAR_KEYS_L2 as readonly string[]).includes(pk)) {
@@ -1151,8 +1178,36 @@ Evaluate. Return ONLY the JSON object.`;
   const decision_quality = clampRound(parsed.decision_quality, 0, 100);
   const overall = clampRound(parsed.overall, 0, 100);
 
+  // Normalize the verified rubric quotes into the same `evidence` shape the
+  // mindset path produces, so one candidate-facing component serves both.
+  // Strongest and weakest verified criteria give the candidate a strength and a
+  // growth edge; unverified quotes are excluded entirely.
+  const verifiedCriteria = enrichedBreakdown
+    .filter((b) => b.evidence_verified && b.evidence_quote)
+    .sort((a, b) => (b.score as number) - (a.score as number));
+
+  const evidence: Array<{ dimension: string; quote: string; is_strength: boolean }> = [];
+  if (verifiedCriteria.length > 0) {
+    const strongest = verifiedCriteria[0];
+    evidence.push({
+      dimension: String(strongest.primary_pillar),
+      quote: String(strongest.evidence_quote),
+      is_strength: true,
+    });
+    const weakest = verifiedCriteria[verifiedCriteria.length - 1];
+    // Only show a growth edge when it is a genuinely different moment.
+    if (verifiedCriteria.length > 1 && weakest.evidence_quote !== strongest.evidence_quote) {
+      evidence.push({
+        dimension: String(weakest.primary_pillar),
+        quote: String(weakest.evidence_quote),
+        is_strength: (weakest.score as number) >= 60,
+      });
+    }
+  }
+
   // 9. Persist signals_payload
   const signalsPayload = {
+    evidence,
     format: 'l2_conversation',
     signals_version: 'v1',
     scoring_context: 'l2_challenge',

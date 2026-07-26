@@ -2173,7 +2173,12 @@
         "framing": "Come inquadri un problema",
         "execution_bias": "Come passi all’azione",
         "impact_thinking": "Come valuti le conseguenze",
-        "decision_quality": "Quanto sono coerenti le tue scelte"
+        "decision_quality": "Quanto sono coerenti le tue scelte",
+        "drive": "Drive",
+        "computational_power": "Potenza Computazionale",
+        "communication": "Comunicazione",
+        "creativity": "Creatività",
+        "knowledge": "Conoscenza"
       }
     },
     "compare": {
@@ -6395,7 +6400,12 @@
       "framing": "Come inquadri un problema",
       "execution_bias": "Come passi all’azione",
       "impact_thinking": "Come valuti le conseguenze",
-      "decision_quality": "Quanto sono coerenti le tue scelte"
+      "decision_quality": "Quanto sono coerenti le tue scelte",
+      "drive": "Drive",
+      "computational_power": "Potenza Computazionale",
+      "communication": "Comunicazione",
+      "creativity": "Creatività",
+      "knowledge": "Conoscenza"
     }
   },
   "mindset": {

@@ -3237,7 +3237,12 @@
         "framing": "Cómo planteas un problema",
         "execution_bias": "Cómo pasas a la acción",
         "impact_thinking": "Cómo valoras las consecuencias",
-        "decision_quality": "Qué coherentes son tus decisiones"
+        "decision_quality": "Qué coherentes son tus decisiones",
+        "drive": "Drive",
+        "computational_power": "Potencia Computacional",
+        "communication": "Comunicación",
+        "creativity": "Creatividad",
+        "knowledge": "Conocimiento"
       }
     },
     "compare": {
@@ -6378,7 +6383,12 @@
       "framing": "Cómo planteas un problema",
       "execution_bias": "Cómo pasas a la acción",
       "impact_thinking": "Cómo valoras las consecuencias",
-      "decision_quality": "Qué coherentes son tus decisiones"
+      "decision_quality": "Qué coherentes son tus decisiones",
+      "drive": "Drive",
+      "computational_power": "Potencia Computacional",
+      "communication": "Comunicación",
+      "creativity": "Creatividad",
+      "knowledge": "Conocimiento"
     }
   },
   "mindset": {

@@ -1703,7 +1703,12 @@
         "framing": "How you frame a problem",
         "execution_bias": "How you move to action",
         "impact_thinking": "How you weigh consequences",
-        "decision_quality": "How consistent your choices are"
+        "decision_quality": "How consistent your choices are",
+        "drive": "Drive",
+        "computational_power": "Computational Power",
+        "communication": "Communication",
+        "creativity": "Creativity",
+        "knowledge": "Knowledge"
       }
     }
   },
@@ -5635,7 +5640,12 @@
       "framing": "How you frame a problem",
       "execution_bias": "How you move to action",
       "impact_thinking": "How you weigh consequences",
-      "decision_quality": "How consistent your choices are"
+      "decision_quality": "How consistent your choices are",
+      "drive": "Drive",
+      "computational_power": "Computational Power",
+      "communication": "Communication",
+      "creativity": "Creativity",
+      "knowledge": "Knowledge"
     }
   },
   "mindset": {
