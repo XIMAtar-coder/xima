@@ -1710,6 +1710,11 @@
         "creativity": "Creativity",
         "knowledge": "Knowledge"
       }
+    },
+    "review": {
+      "notes_label": "Internal note",
+      "notes_placeholder": "Why this call? Only your team sees this.",
+      "notes_hint": "Saved with your decision and visible only to your team."
     }
   },
   "not_found": {

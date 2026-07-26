@@ -42,6 +42,11 @@ export const NotificationsDropdown = () => {
         if (relatedId) navigate(`/candidate/challenges/${relatedId}`);
         break;
 
+      // Business-side: a candidate response is waiting to be reviewed.
+      case 'submission_to_review':
+        navigate('/business/challenges');
+        break;
+
       // Decisions with no dedicated screen yet — send them somewhere truthful
       // rather than leaving the click dead.
       case 'shortlisted':

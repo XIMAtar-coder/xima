@@ -3327,7 +3327,10 @@
       "level3_invite_sent": "Invitación Nivel 3 Enviada",
       "l2_pending_review": "L2 pendiente de revisión",
       "l2_rubric_breakdown": "Evaluación de Criterios Nivel 2",
-      "l2_rubric_breakdown_desc": "Puntuaciones por criterio de la rúbrica con evidencia extraída de la conversación."
+      "l2_rubric_breakdown_desc": "Puntuaciones por criterio de la rúbrica con evidencia extraída de la conversación.",
+      "notes_label": "Nota interna",
+      "notes_placeholder": "¿Por qué esta decisión? Solo la ve tu equipo.",
+      "notes_hint": "Se guarda con tu decisión y solo la ve tu equipo."
     },
     "level2": {
       "hard_skills_title": "Nivel 2 — Desafío de Hard Skills para el Rol",
