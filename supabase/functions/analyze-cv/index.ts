@@ -29,7 +29,7 @@ let checkAiBudget: any;
 let recordAiCall: any;
 let cacheAiResult: any;
 let loadUserAiContext: any;
-let buildContextBlock: any;
+let buildBlindContextBlock: any;
 let updateUserAiContext: any;
 let checkCvHash: any;
 let computeFileHash: any;
@@ -77,7 +77,7 @@ try {
 try {
   const mod = await import("../_shared/aiContext.ts");
   loadUserAiContext = mod.loadUserAiContext;
-  buildContextBlock = mod.buildContextBlock;
+  buildBlindContextBlock = mod.buildBlindContextBlock;
   updateUserAiContext = mod.updateUserAiContext;
   checkCvHash = mod.checkCvHash;
   computeFileHash = mod.computeFileHash;
@@ -703,13 +703,11 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
     const detectedLanguage = pdfBase64 ? "auto" : detectLanguage(truncatedText);
 
     let contextBlock = "";
-    if (loadUserAiContext && buildContextBlock) {
-      try {
-        const userContext = await loadUserAiContext(userId);
-        contextBlock = buildContextBlock(userContext);
-      } catch (e) {
-        console.warn("[analyze-cv:bg] AI context load failed:", e instanceof Error ? e.message : e);
-      }
+    // Scored blind: prior pillar scores must not anchor this analysis. (The CV
+    // text itself necessarily carries identity — that is inherent to the
+    // document, not something the context block should compound.)
+    if (buildBlindContextBlock) {
+      contextBlock = buildBlindContextBlock();
     }
 
     const systemPrompt = buildSystemPrompt(ximatarId, ximatarName, ximatarTitle, pillarScores, detectedLanguage) + contextBlock;

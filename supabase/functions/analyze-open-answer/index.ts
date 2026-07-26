@@ -7,7 +7,7 @@ import { verifyEvidence } from "../_shared/evidenceVerification.ts";
 import { emitAuditEventWithMetric, hashForAudit } from "../_shared/auditEvents.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { persistTrajectoryEvent } from "../_shared/pillarTrajectory.ts";
-import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
+import { loadUserAiContext, buildBlindContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 // =====================================================
@@ -286,7 +286,9 @@ This is an L1 challenge response. Use these behavioral signals to evaluate:
 
     // STEP 2: Load AI context & Claude Evaluation
     const userContext = user_id ? await loadUserAiContext(user_id) : {};
-    const contextBlock = buildContextBlock(userContext);
+    // Graded blind: no name, no prior scores. See buildBlindContextBlock.
+    // userContext is still loaded because it is updated after scoring.
+    const contextBlock = buildBlindContextBlock();
 
     const freeTextSystemPrompt = `You are a strict but fair professional assessment evaluator for the XIMA psychometric talent platform.
 

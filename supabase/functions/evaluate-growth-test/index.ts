@@ -13,7 +13,7 @@ import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 import { persistTrajectoryEvent } from "../_shared/pillarTrajectory.ts";
-import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
+import { loadUserAiContext, buildBlindContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
 import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 serve(async (req) => {
@@ -111,7 +111,8 @@ User's answer: ${userAnswer?.answer_text || "(no answer provided)"}`;
 
     // Load AI context
     const userContext = await loadUserAiContext(user.id);
-    const contextBlock = buildContextBlock(userContext);
+    // Graded blind: this produces pillar deltas, so priors must not anchor it.
+    const contextBlock = buildBlindContextBlock();
 
     const systemPrompt = `You are the XIMA Growth Test Evaluator. Score test answers and determine pillar trajectory impact.
 

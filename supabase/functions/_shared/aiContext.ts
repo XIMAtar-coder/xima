@@ -45,8 +45,36 @@ export async function loadUserAiContext(userId: string): Promise<UserAiContext> 
 }
 
 /**
+ * Context that must NEVER reach a prompt that scores a person for a hiring
+ * decision.
+ *
+ * Two separate problems, both live in buildContextBlock():
+ *
+ *  1. Identity. It emits the candidate's full name, which is a direct proxy for
+ *     gender, ethnicity and nationality. A grader that sees it cannot be blind,
+ *     and the product gates identity behind reveal-candidate-identity precisely
+ *     because blindness is the promise.
+ *
+ *  2. Anchoring. It emits prior pillar scores and prior average scores under the
+ *     instruction "use this as baseline". A grader told the candidate previously
+ *     scored well will score them well again, so "growth over time" becomes
+ *     partly self-fulfilling and scores autocorrelate by construction.
+ *
+ * Scoring prompts therefore get no candidate history at all: the submission is
+ * judged on its own merits. Context remains available to assistive, non-scoring
+ * features (recommendations, growth paths, the chat assistant), where knowing
+ * the person is the point and no hiring decision follows.
+ */
+export function buildBlindContextBlock(): string {
+  return "";
+}
+
+/**
  * Build a context string for Claude prompts.
  * Only includes sections that have data.
+ *
+ * ⚠️ Do NOT use this in a prompt that produces a score, rubric or pillar delta.
+ * Use {@link buildBlindContextBlock} there instead.
  */
 export function buildContextBlock(context: UserAiContext): string {
   const sections: string[] = [];
