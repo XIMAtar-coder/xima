@@ -10,7 +10,7 @@
 
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
+import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse, forbiddenResponse } from "../_shared/errors.ts";
 import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 const FIELD_CONFIG: Record<string, { count: number; label: string }> = {
@@ -52,6 +52,23 @@ serve(async (req) => {
     const fieldCfg = FIELD_CONFIG[field_name];
     if (!fieldCfg) {
       return errorResponse(400, "INVALID_FIELD", `field_name must be one of: ${Object.keys(FIELD_CONFIG).join(", ")}`);
+    }
+
+    // business_id arrives in the request body and is then read with the SERVICE
+    // ROLE, which bypasses RLS — so without this check any authenticated user
+    // could pass another company's id and receive an AI summary of their
+    // strategic focus, values, ideal traits and pillar vector. Every comparable
+    // function guards this; this one did not.
+    if (business_id !== user.id) {
+      const { data: adminRole } = await createClient(supabaseUrl, serviceKey)
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (!adminRole) {
+        return forbiddenResponse("You can only request suggestions for your own company");
+      }
     }
 
     const serviceClient = createClient(supabaseUrl, serviceKey);

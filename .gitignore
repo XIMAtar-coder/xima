@@ -25,3 +25,7 @@ dist-ssr
 
 # Supabase CLI scratch
 supabase/.temp/
+
+# Native platform build output (mobile lives on the capacitor-ios branch)
+ios/
+android/
