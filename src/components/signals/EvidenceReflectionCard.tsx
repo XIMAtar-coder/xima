@@ -21,6 +21,12 @@ export interface ReflectionEvidence {
 
 interface EvidenceReflectionCardProps {
   evidence: ReflectionEvidence[];
+  /**
+   * Optional standing against others who answered for the same role. Omitted
+   * whenever the pool is too small for a percentile to be meaningful — in that
+   * case nothing is shown, rather than a number that overstates its own weight.
+   */
+  percentile?: { percentile: number; sampleSize: number } | null;
   className?: string;
 }
 
@@ -51,7 +57,11 @@ const DIMENSION_FALLBACKS: Record<string, string> = {
   knowledge: 'Knowledge',
 };
 
-export function EvidenceReflectionCard({ evidence, className = '' }: EvidenceReflectionCardProps) {
+export function EvidenceReflectionCard({
+  evidence,
+  percentile = null,
+  className = '',
+}: EvidenceReflectionCardProps) {
   const { t } = useTranslation();
 
   // Nothing verified means nothing honest to say. Render nothing rather than
@@ -114,6 +124,18 @@ export function EvidenceReflectionCard({ evidence, className = '' }: EvidenceRef
               {t('reflection.growth', 'Where there is room to grow')}
             </p>
             {edges.map((item, i) => renderItem(item, i, false))}
+          </div>
+        )}
+        {percentile && (
+          <div className="rounded-lg border border-border/60 bg-muted/40 px-4 py-3">
+            <p className="text-sm text-foreground">
+              {t('reflection.percentile', {
+                defaultValue:
+                  'You scored above {{percentile}}% of the {{count}} people who answered for this role.',
+                percentile: percentile.percentile,
+                count: percentile.sampleSize,
+              })}
+            </p>
           </div>
         )}
       </CardContent>
