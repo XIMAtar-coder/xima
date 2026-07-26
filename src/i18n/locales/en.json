@@ -1695,7 +1695,16 @@
       "mindset_facets": "Traits shown",
       "mindset_debrief": "In their own words",
       "mindset_instinct_count": "Instinct choices",
-      "mindset_daylog_count": "Day-log entries"
+      "mindset_daylog_count": "Day-log entries",
+      "evidence_title": "Evidence",
+      "evidence_strength": "strength",
+      "evidence_growth": "growth edge",
+      "dimension": {
+        "framing": "How you frame a problem",
+        "execution_bias": "How you move to action",
+        "impact_thinking": "How you weigh consequences",
+        "decision_quality": "How consistent your choices are"
+      }
     }
   },
   "not_found": {
@@ -5615,5 +5624,28 @@
     "in_pipeline": "In Pipeline",
     "pending_offers": "Pending Offers",
     "hired": "Hired"
+  },
+  "reflection": {
+    "title": "What your answers show",
+    "subtitle": "Taken from what you actually wrote — not a score, and not shared as a verdict.",
+    "strengths": "Where you came through",
+    "growth": "Where there is room to grow",
+    "preparing": "Preparing what your answers show…",
+    "dimension": {
+      "framing": "How you frame a problem",
+      "execution_bias": "How you move to action",
+      "impact_thinking": "How you weigh consequences",
+      "decision_quality": "How consistent your choices are"
+    }
+  },
+  "mindset": {
+    "resolve": {
+      "title": "Recap",
+      "enriched": "Your XIMAtar just grew.",
+      "facets": "Traits lit up",
+      "refining": "XIMAtar being refined",
+      "next_levels": "L1 ✓ — the next levels unlock when the company reviews your profile.",
+      "default_line": "I've seen how you react. Your XIMAtar is taking shape — every trait lit up is a piece of you."
+    }
   }
 }

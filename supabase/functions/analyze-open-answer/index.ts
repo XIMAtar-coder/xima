@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { callAnthropicApi, AnthropicError } from "../_shared/anthropicClient.ts";
 import { extractJsonFromAiContent, computeContentHash, persistEvidenceLedgerEntry } from "../_shared/aiClient.ts";
 import { corsHeaders, errorResponse, jsonResponse, profilingOptOutResponse } from "../_shared/errors.ts";
+import { verifyEvidence } from "../_shared/evidenceVerification.ts";
 import { emitAuditEventWithMetric, hashForAudit } from "../_shared/auditEvents.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { persistTrajectoryEvent } from "../_shared/pillarTrajectory.ts";
@@ -406,8 +407,27 @@ Return ONLY valid JSON:
     "creativity": <-5 to 5>,
     "knowledge": <-5 to 5>
   },
-  "pillar_reasoning": "Brief explanation of pillar impact..."
-}`;
+  "pillar_reasoning": "Brief explanation of pillar impact...",
+  "evidence": [
+    {
+      "dimension": "framing" | "execution_bias" | "impact_thinking" | "decision_quality",
+      "quote": "<VERBATIM excerpt, copied character-for-character from the candidate's own debrief answers>",
+      "is_strength": true | false
+    }
+  ]
+}
+
+EVIDENCE RULES (strict — these are shown to both the candidate and the employer):
+- Give 2 to 4 evidence items. Prefer covering different dimensions.
+- "quote" MUST be copied EXACTLY from the candidate's own words in the debrief
+  section of the submission. Do not paraphrase, translate, correct spelling,
+  reorder, or invent. Copy a contiguous span, max ~160 characters.
+- Quote ONLY the candidate's own answers — never the question text, the facet
+  labels, or your own words.
+- Mark is_strength=true when the quote evidences a strength, false when it marks
+  a growth edge. Include at least one strength when the submission supports it.
+- If the candidate wrote too little to quote honestly, return "evidence": [].
+  An empty list is correct and expected; a fabricated quote is a serious error.`;
 
     const finalSystemPrompt = isMindset ? mindsetSystemPrompt : freeTextSystemPrompt;
 
@@ -542,9 +562,35 @@ Return ONLY the JSON object.`;
     } : null;
 
     // ===== MINDSET: build signals and persist server-side =====
+    // Evidence is only trusted once verified against the candidate's own words.
+    // Implementation and its tests live in _shared/evidenceVerification.ts.
+    const MINDSET_DIMENSIONS = new Set([
+      'framing', 'execution_bias', 'impact_thinking', 'decision_quality',
+    ]);
+
     let mindsetSignals: any = null;
     if (isMindset) {
+      // Match only against the candidate's own debrief answers, so the model
+      // cannot pass off the question text or a facet label as their words.
+      const debriefAnswers = Array.isArray(mindset_payload?.debrief)
+        ? mindset_payload.debrief.map((d: any) => String(d?.a || '')).join('\n')
+        : '';
+      const verifiedEvidence = verifyEvidence(
+        parsedResult.evidence,
+        debriefAnswers,
+        MINDSET_DIMENSIONS,
+        (info) => console.warn(JSON.stringify({
+          type: 'evidence_quote_rejected',
+          correlation_id: correlationId,
+          function_name: 'analyze-open-answer',
+          dimension: info.dimension,
+          reason: info.reason,
+          quote_preview: info.quote.slice(0, 60),
+        })),
+      );
+
       mindsetSignals = {
+        evidence: verifiedEvidence,
         framing: mindsetRubric.framing,
         execution_bias: mindsetRubric.execution_bias,
         impact_thinking: mindsetRubric.impact_thinking,

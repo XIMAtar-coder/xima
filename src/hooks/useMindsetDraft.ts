@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { EMPTY_MINDSET_PAYLOAD, MindsetPayload } from '@/components/candidate/mindset/types';
 import { log } from '@/lib/log';
+import i18n from '@/i18n';
 
 type LoadResult = {
   loading: boolean;
@@ -162,7 +163,9 @@ export function useMindsetDraft(invitationId: string) {
               challenge_id: challengeId,
               invitation_id: invitationId,
               user_id: user?.id,
-              language: 'it',
+              // The candidate's own language — the reflection they get back is
+              // written in it. This used to be hardcoded to Italian.
+              language: (i18n.language || 'en').slice(0, 2),
               scoring_context: 'l1_challenge',
               format: 'mindset',
               mindset_payload: {

@@ -1,10 +1,15 @@
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle2, Sparkles } from 'lucide-react';
+import { CheckCircle2, Sparkles, Loader2 } from 'lucide-react';
+import { EvidenceReflectionCard } from '@/components/signals/EvidenceReflectionCard';
+import { useSubmissionReflection } from '@/hooks/useSubmissionReflection';
 
 type Props = {
+  /** Used to read back the verified evidence for this submission. */
+  invitationId?: string;
   guideName: string;
   litFacets: string[];
   resolveLine?: string;
@@ -13,10 +18,15 @@ type Props = {
   onBack: () => void;
 };
 
-export function ResolveScreen({ guideName, litFacets, resolveLine, growthCue, onBack }: Props) {
+export function ResolveScreen({ invitationId, guideName, litFacets, resolveLine, growthCue, onBack }: Props) {
+  const { t } = useTranslation();
+  const { evidence, isPending } = useSubmissionReflection(invitationId);
   const line =
     resolveLine ||
-    'Ho visto come reagisci. Ora il tuo XIMAtar sta prendendo forma — ogni sfaccettatura accesa è un pezzo di te.';
+    t(
+      'mindset.resolve.default_line',
+      'Ho visto come reagisci. Ora il tuo XIMAtar sta prendendo forma — ogni sfaccettatura accesa è un pezzo di te.'
+    );
 
   return (
     <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
@@ -27,7 +37,7 @@ export function ResolveScreen({ guideName, litFacets, resolveLine, growthCue, on
           </div>
           <div>
             <p className="text-sm text-muted-foreground">{guideName}</p>
-            <h2 className="text-xl font-semibold text-foreground">Resoconto</h2>
+            <h2 className="text-xl font-semibold text-foreground">{t('mindset.resolve.title', 'Resoconto')}</h2>
           </div>
         </div>
 
@@ -36,13 +46,13 @@ export function ResolveScreen({ guideName, litFacets, resolveLine, growthCue, on
         {growthCue === 'xima_strengthened' && (
           <div className="rounded-lg border border-primary/30 bg-primary/10 p-4 flex items-center gap-2 text-sm text-foreground">
             <Sparkles className="h-4 w-4 text-primary" />
-            <span>Il tuo XIMAtar si è arricchito.</span>
+            <span>{t('mindset.resolve.enriched', 'Il tuo XIMAtar si è arricchito.')}</span>
           </div>
         )}
 
         {litFacets.length > 0 && (
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Sfaccettature accese</p>
+            <p className="text-sm text-muted-foreground">{t('mindset.resolve.facets', 'Sfaccettature accese')}</p>
             <div className="flex flex-wrap gap-2">
               {litFacets.map((f) => (
                 <Badge key={f} className="bg-primary/15 text-primary border-primary/30">
@@ -56,14 +66,25 @@ export function ResolveScreen({ guideName, litFacets, resolveLine, growthCue, on
         <div className="rounded-lg border border-border/60 bg-card/60 p-5 space-y-3">
           <div className="flex items-center gap-2 text-sm text-foreground">
             <CheckCircle2 className="h-4 w-4 text-primary" />
-            <span>XIMAtar in fase di affinamento</span>
+            <span>{t('mindset.resolve.refining', 'XIMAtar in fase di affinamento')}</span>
           </div>
           <Progress value={33} className="h-2" />
-          <p className="text-xs text-muted-foreground">L1 ✓ — i prossimi livelli si sbloccheranno quando l'azienda riguarderà il tuo profilo.</p>
+          <p className="text-xs text-muted-foreground">{t('mindset.resolve.next_levels', "L1 ✓ — i prossimi livelli si sbloccheranno quando l'azienda riguarderà il tuo profilo.")}</p>
         </div>
 
+        {/* What the candidate gets back: their own words, quoted. */}
+        {evidence && evidence.length > 0 && (
+          <EvidenceReflectionCard evidence={evidence} className="border-border/60" />
+        )}
+        {!evidence && isPending && (
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            {t('reflection.preparing', 'Preparing what your answers show…')}
+          </p>
+        )}
+
         <div className="pt-2">
-          <Button onClick={onBack} variant="outline">Torna al profilo</Button>
+          <Button onClick={onBack} variant="outline">{t('common.back_to_profile', 'Torna al profilo')}</Button>
         </div>
       </CardContent>
     </Card>
