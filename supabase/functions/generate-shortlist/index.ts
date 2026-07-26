@@ -126,6 +126,10 @@ serve(async (req) => {
       .not("pillar_scores", "is", null)
       // GDPR: exclude candidates who opted out of profiling/shortlisting
       .or('profiling_opt_out.is.null,profiling_opt_out.eq.false')
+      // Ordered before limiting: an unordered .limit(500) meant which candidates
+      // were even considered could differ between two identical runs.
+      .order("created_at", { ascending: true })
+      .order("id", { ascending: true })
       .limit(500);
 
     if (candidateError) {
@@ -145,7 +149,7 @@ serve(async (req) => {
     const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-    const [trajectoryRes, engagementRes] = await Promise.all([
+    const [trajectoryRes, engagementRes, performanceRes] = await Promise.all([
       serviceClient
         .from("pillar_trajectory_log")
         .select("user_id, drive_delta, computational_power_delta, communication_delta, creativity_delta, knowledge_delta")
@@ -158,10 +162,39 @@ serve(async (req) => {
         .in("user_id", candidateUserIds)
         .gte("created_at", thirtyDaysAgo)
         .limit(5000),
+      // What the candidate actually demonstrated. The ranking previously ignored
+      // every challenge they had completed while counting how many feed rows
+      // they had generated.
+      serviceClient
+        .from("challenge_submissions")
+        .select("candidate_profile_id, signals_payload, submitted_at")
+        .in("candidate_profile_id", candidates.map(c => c.id))
+        .eq("status", "submitted")
+        .order("submitted_at", { ascending: false })
+        .limit(2000),
     ]);
 
     const trajectoryData = trajectoryRes.data || [];
     const engagementData = engagementRes.data || [];
+
+    // Mean of a candidate's challenge `overall` scores, plus how many carried
+    // verified evidence — a score backed by the candidate's own words is worth
+    // more than one that is not.
+    const performanceByProfile = new Map<string, { mean: number; count: number; withEvidence: number }>();
+    for (const row of (performanceRes.data || []) as any[]) {
+      const sp = row?.signals_payload as Record<string, unknown> | null;
+      const overall = typeof sp?.overall === 'number' ? sp.overall as number : null;
+      if (overall === null) continue;
+      const key = String(row.candidate_profile_id);
+      const prev = performanceByProfile.get(key) || { mean: 0, count: 0, withEvidence: 0 };
+      const count = prev.count + 1;
+      const hasEvidence = Array.isArray(sp?.evidence) && (sp!.evidence as unknown[]).length > 0;
+      performanceByProfile.set(key, {
+        mean: prev.mean + (overall - prev.mean) / count,
+        count,
+        withEvidence: prev.withEvidence + (hasEvidence ? 1 : 0),
+      });
+    }
 
     // Optional credential data
     let credentialData: any[] = [];
@@ -240,7 +273,10 @@ serve(async (req) => {
           totals.Knowledge += t.knowledge_delta || 0;
         }
         const totalGrowth = Object.values(totals).reduce((a, b) => a + b, 0);
-        trajectoryScore = Math.min(20, Math.max(0, totalGrowth * 2));
+        // Halved (was 0-20). Growth is real signal, but the Growth Hub is
+        // deliberately non-negative, so this axis can only ratchet upward and
+        // must not dominate a hiring rank.
+        trajectoryScore = Math.min(10, Math.max(0, totalGrowth));
 
         const deltas = Object.entries(totals)
           .filter(([, d]) => d !== 0)
@@ -255,13 +291,28 @@ serve(async (req) => {
       let engagementLevel = "low";
       const engCount = engagementByUser.get(candidate.user_id) || 0;
 
-      if (engCount >= 20) { engagementScore = 15; engagementLevel = "highly_active"; }
-      else if (engCount >= 10) { engagementScore = 10; engagementLevel = "active"; }
-      else if (engCount >= 3) { engagementScore = 5; engagementLevel = "moderate"; }
+      // Cut from 0-15 to 0-5. Feed rows read and recency of login measure
+      // platform activity, not job fit; at 15 points they outweighed most of
+      // what a candidate actually demonstrated.
+      if (engCount >= 20) { engagementScore = 5; engagementLevel = "highly_active"; }
+      else if (engCount >= 10) { engagementScore = 3; engagementLevel = "active"; }
+      else if (engCount >= 3) { engagementScore = 2; engagementLevel = "moderate"; }
 
-      if (candidate.profile_completed) engagementScore = Math.min(15, engagementScore + 3);
-      if (candidate.updated_at && Date.now() - new Date(candidate.updated_at).getTime() < 7 * 24 * 60 * 60 * 1000) {
-        engagementScore = Math.min(15, engagementScore + 2);
+      if (candidate.profile_completed) engagementScore = Math.min(5, engagementScore + 1);
+
+      // SIGNAL 2b: Demonstrated performance in challenges (0-20 pts).
+      // This is the axis the product is supposed to be about, and it carried no
+      // weight at all before.
+      let performanceScore = 0;
+      let performanceSummary = "No challenges completed";
+      const perf = performanceByProfile.get(String(candidate.id));
+      if (perf && perf.count > 0) {
+        // Mean challenge score maps 0-100 -> 0-18 ...
+        performanceScore = Math.min(18, Math.max(0, (perf.mean / 100) * 18));
+        // ... plus a small, capped bonus when the scores are backed by verified
+        // quotes from the candidate rather than model assertion alone.
+        if (perf.withEvidence > 0) performanceScore = Math.min(20, performanceScore + 2);
+        performanceSummary = `${perf.count} challenge${perf.count === 1 ? '' : 's'}, avg ${Math.round(perf.mean)}`;
       }
 
       // SIGNAL 4: Location (0-15 pts)
@@ -314,7 +365,8 @@ serve(async (req) => {
         }
       }
 
-      const totalScore = identityScore + trajectoryScore + engagementScore + locationScore + credentialScore;
+      // 40 identity + 20 demonstrated + 10 trajectory + 5 engagement + 15 location + 10 credentials
+      const totalScore = identityScore + performanceScore + trajectoryScore + engagementScore + locationScore + credentialScore;
 
       let availability = "unknown";
       if (candidate.availability_date) {
@@ -329,6 +381,8 @@ serve(async (req) => {
         candidate_user_id: candidate.user_id,
         total_score: Math.round(totalScore * 10) / 10,
         identity_score: Math.round(identityScore * 10) / 10,
+        performance_score: Math.round(performanceScore * 10) / 10,
+        performance_summary: performanceSummary,
         trajectory_score: Math.round(trajectoryScore * 10) / 10,
         engagement_score: Math.round(engagementScore * 10) / 10,
         location_score: Math.round(locationScore * 10) / 10,
@@ -344,8 +398,14 @@ serve(async (req) => {
       };
     });
 
-    // Sort + limit
-    scoredCandidates.sort((a, b) => b.total_score - a.total_score);
+    // Sort + limit. Scores are rounded to one decimal, so ties are common; without
+    // a stable tie-breaker the top-N cut was arbitrary and a re-run could reorder
+    // candidates who had not changed. Falls through to identity score, then id.
+    scoredCandidates.sort((a, b) =>
+      (b.total_score - a.total_score) ||
+      (b.identity_score - a.identity_score) ||
+      String(a.candidate_user_id).localeCompare(String(b.candidate_user_id))
+    );
     const limit = filters?.limit || 20;
     const topCandidates = scoredCandidates.slice(0, limit);
 

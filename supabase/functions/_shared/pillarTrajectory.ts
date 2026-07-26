@@ -10,8 +10,13 @@
  * - Growth Hub tests: lowest per-event (±1 to ±3)
  *   Note: Only test RESULTS produce deltas. Course completion alone does NOT move scores.
  * 
- * POSITIVE BIAS: good performance gives larger deltas than bad takes away.
- * DIMINISHING RETURNS: extreme scores (85+) are harder to grow further.
+ * SYMMETRY: a pillar score that cannot fall is an engagement metric, not a
+ *   measurement — and these scores feed hiring decisions. Gains and losses are
+ *   therefore capped equally, and diminishing returns apply in both directions.
+ *   (Growth Hub remains non-negative by deliberate exception: it is a practice
+ *   space, and punishing practice would be perverse. Its influence on hiring
+ *   signals is limited at the ranking layer instead.)
+ * DIMINISHING RETURNS: extreme scores are harder to move further, up or down.
  * SCORE BOUNDS: 0-100, clamped.
  * 
  * XIMATAR LEVELS:
@@ -60,12 +65,15 @@ export interface TrajectoryEvent {
 // Gradient configuration by source
 // =====================================================
 
+// Symmetric by design: an assessed pillar must be able to move down as far as it
+// can move up, or "growth" is just accumulated participation.
 const GRADIENT_CONFIG: Record<TrajectorySource, { maxPositive: number; maxNegative: number }> = {
-  l1_challenge:     { maxPositive: 5, maxNegative: -3 },
-  l2_challenge:     { maxPositive: 5, maxNegative: -3 },
-  l3_challenge:     { maxPositive: 4, maxNegative: -2 },
-  open_answer:      { maxPositive: 4, maxNegative: -2 },
-  growth_hub_test:  { maxPositive: 3, maxNegative: -1 },
+  l1_challenge:     { maxPositive: 5, maxNegative: -5 },
+  l2_challenge:     { maxPositive: 5, maxNegative: -5 },
+  l3_challenge:     { maxPositive: 4, maxNegative: -4 },
+  open_answer:      { maxPositive: 4, maxNegative: -4 },
+  // Deliberate exception — a practice space should not penalise practising.
+  growth_hub_test:  { maxPositive: 3, maxNegative: 0 },
   mentor_session:   { maxPositive: 0, maxNegative: 0 },
 };
 
@@ -98,9 +106,13 @@ function applyGradient(rawDelta: number, source: TrajectorySource): number {
 }
 
 function applyDiminishingReturns(currentScore: number, rawDelta: number): number {
-  if (rawDelta <= 0) return rawDelta;
-  const headroom = 100 - currentScore;
-  const factor = Math.max(0.2, headroom / 50);
+  if (rawDelta === 0) return 0;
+  // Applied in both directions. Previously gains were damped near the ceiling
+  // while losses passed through at full force, which made the curve asymmetric
+  // in the opposite direction to the caps above. Distance to the relevant bound
+  // is what should slow a move, whichever way it is going.
+  const room = rawDelta > 0 ? 100 - currentScore : currentScore;
+  const factor = Math.max(0.2, room / 50);
   // 2-decimal precision matches pillar_trajectory_log numeric(5,2); avoids drift across many events.
   return Math.round(rawDelta * factor * 100) / 100;
 }

@@ -22,7 +22,7 @@ import {
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
 // pillarTrajectory intentionally not imported: L3 does not write pillar scores.
-import { loadUserAiContext, buildContextBlock, updateUserAiContext } from "../_shared/aiContext.ts";
+import { loadUserAiContext, updateUserAiContext } from "../_shared/aiContext.ts";
 import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
 // ---------------------------------------------------------------------
