@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { CheckCircle2, Sparkles, Loader2 } from 'lucide-react';
 import { EvidenceReflectionCard } from '@/components/signals/EvidenceReflectionCard';
 import { useSubmissionReflection } from '@/hooks/useSubmissionReflection';
+import { useSubmissionPercentile } from '@/hooks/useSubmissionPercentile';
 
 type Props = {
   /** Used to read back the verified evidence for this submission. */
@@ -21,6 +22,7 @@ type Props = {
 export function ResolveScreen({ invitationId, guideName, litFacets, resolveLine, growthCue, onBack }: Props) {
   const { t } = useTranslation();
   const { evidence, isPending } = useSubmissionReflection(invitationId);
+  const { percentile } = useSubmissionPercentile(invitationId);
   const line =
     resolveLine ||
     t(
@@ -74,7 +76,7 @@ export function ResolveScreen({ invitationId, guideName, litFacets, resolveLine,
 
         {/* What the candidate gets back: their own words, quoted. */}
         {evidence && evidence.length > 0 && (
-          <EvidenceReflectionCard evidence={evidence} className="border-border/60" />
+          <EvidenceReflectionCard evidence={evidence} percentile={percentile} className="border-border/60" />
         )}
         {!evidence && isPending && (
           <p className="flex items-center gap-2 text-sm text-muted-foreground">

@@ -5646,7 +5646,8 @@
       "communication": "Communication",
       "creativity": "Creativity",
       "knowledge": "Knowledge"
-    }
+    },
+    "percentile": "You scored above {{percentile}}% of the {{count}} people who answered for this role."
   },
   "mindset": {
     "resolve": {

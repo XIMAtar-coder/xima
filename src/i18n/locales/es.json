@@ -6389,7 +6389,8 @@
       "communication": "Comunicación",
       "creativity": "Creatividad",
       "knowledge": "Conocimiento"
-    }
+    },
+    "percentile": "Has superado al {{percentile}}% de las {{count}} personas que respondieron para este puesto."
   },
   "mindset": {
     "resolve": {

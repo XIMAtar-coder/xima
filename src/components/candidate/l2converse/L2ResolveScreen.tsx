@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2, Sparkles, Share2, Loader2 } from 'lucide-react';
 import { EvidenceReflectionCard } from '@/components/signals/EvidenceReflectionCard';
 import { useSubmissionReflection } from '@/hooks/useSubmissionReflection';
+import { useSubmissionPercentile } from '@/hooks/useSubmissionPercentile';
 
 type Props = {
   /** Used to read back the verified evidence for this submission. */
@@ -15,6 +16,7 @@ type Props = {
 export function L2ResolveScreen({ invitationId, counterpartName, onBack }: Props) {
   const { t } = useTranslation();
   const { evidence, isPending } = useSubmissionReflection(invitationId);
+  const { percentile } = useSubmissionPercentile(invitationId);
   return (
     <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
       <CardContent className="py-10 space-y-6">
@@ -62,7 +64,7 @@ export function L2ResolveScreen({ invitationId, counterpartName, onBack }: Props
         </div>
 
         {evidence && evidence.length > 0 && (
-          <EvidenceReflectionCard evidence={evidence} className="border-border/60" />
+          <EvidenceReflectionCard evidence={evidence} percentile={percentile} className="border-border/60" />
         )}
         {!evidence && isPending && (
           <p className="flex items-center gap-2 text-sm text-muted-foreground">
