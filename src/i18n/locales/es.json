@@ -3229,7 +3229,21 @@
       "mindset_facets": "Rasgos mostrados",
       "mindset_debrief": "En sus propias palabras",
       "mindset_instinct_count": "Elecciones instintivas",
-      "mindset_daylog_count": "Entradas del diario"
+      "mindset_daylog_count": "Entradas del diario",
+      "evidence_title": "Evidencias",
+      "evidence_strength": "punto fuerte",
+      "evidence_growth": "margen de mejora",
+      "dimension": {
+        "framing": "Cómo planteas un problema",
+        "execution_bias": "Cómo pasas a la acción",
+        "impact_thinking": "Cómo valoras las consecuencias",
+        "decision_quality": "Qué coherentes son tus decisiones",
+        "drive": "Drive",
+        "computational_power": "Potencia Computacional",
+        "communication": "Comunicación",
+        "creativity": "Creatividad",
+        "knowledge": "Conocimiento"
+      }
     },
     "compare": {
       "title": "Comparación de Señales XIMA",
@@ -6358,5 +6372,33 @@
   },
   "xima_score": {
     "tooltip": "Tu XIMA Score es la media de las puntuaciones de tus cinco pilares e indica tu nivel general de desarrollo profesional en una escala del 1 al 10."
+  },
+  "reflection": {
+    "title": "Lo que muestran tus respuestas",
+    "subtitle": "Tomado de lo que escribiste realmente — no es una puntuación ni un veredicto.",
+    "strengths": "Dónde destacaste",
+    "growth": "Dónde puedes crecer",
+    "preparing": "Preparando lo que muestran tus respuestas…",
+    "dimension": {
+      "framing": "Cómo planteas un problema",
+      "execution_bias": "Cómo pasas a la acción",
+      "impact_thinking": "Cómo valoras las consecuencias",
+      "decision_quality": "Qué coherentes son tus decisiones",
+      "drive": "Drive",
+      "computational_power": "Potencia Computacional",
+      "communication": "Comunicación",
+      "creativity": "Creatividad",
+      "knowledge": "Conocimiento"
+    }
+  },
+  "mindset": {
+    "resolve": {
+      "title": "Resumen",
+      "enriched": "Tu XIMAtar se ha enriquecido.",
+      "facets": "Rasgos activados",
+      "refining": "XIMAtar en proceso de refinamiento",
+      "next_levels": "L1 ✓ — los siguientes niveles se desbloquean cuando la empresa revise tu perfil.",
+      "default_line": "He visto cómo reaccionas. Tu XIMAtar está tomando forma — cada rasgo activado es una parte de ti."
+    }
   }
 }

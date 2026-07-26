@@ -173,6 +173,7 @@ export function MindsetChallenge({ invitationId, challengeId, config }: Props) {
 
       {step === 'resolve' && (
         <ResolveScreen
+          invitationId={invitationId}
           guideName={guideName}
           litFacets={payload.lit_facets}
           resolveLine={config.guide?.resolve_line}

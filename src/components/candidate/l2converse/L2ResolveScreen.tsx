@@ -1,16 +1,20 @@
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { CheckCircle2, Sparkles, Share2 } from 'lucide-react';
+import { CheckCircle2, Sparkles, Share2, Loader2 } from 'lucide-react';
+import { EvidenceReflectionCard } from '@/components/signals/EvidenceReflectionCard';
+import { useSubmissionReflection } from '@/hooks/useSubmissionReflection';
 
 type Props = {
+  /** Used to read back the verified evidence for this submission. */
+  invitationId?: string;
   counterpartName: string;
   onBack: () => void;
 };
 
-export function L2ResolveScreen({ counterpartName, onBack }: Props) {
+export function L2ResolveScreen({ invitationId, counterpartName, onBack }: Props) {
   const { t } = useTranslation();
+  const { evidence, isPending } = useSubmissionReflection(invitationId);
   return (
     <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
       <CardContent className="py-10 space-y-6">
@@ -41,12 +45,14 @@ export function L2ResolveScreen({ counterpartName, onBack }: Props) {
           <span>{t('candidate.l2_conversation.shared_with_company', 'Condiviso con l\'azienda.')}</span>
         </div>
 
-        <div className="rounded-lg border border-border/60 bg-card/60 p-5 space-y-3">
+        {/* The progress bar here used to be a hardcoded 66% tied to no state.
+            Replaced with the candidate's actual evidence — real information
+            instead of a number that only looked like information. */}
+        <div className="rounded-lg border border-border/60 bg-card/60 p-5 space-y-2">
           <div className="flex items-center gap-2 text-sm text-foreground">
             <CheckCircle2 className="h-4 w-4 text-primary" />
             <span>{t('candidate.l2_conversation.progress_label', 'XIMAtar in fase di affinamento')}</span>
           </div>
-          <Progress value={66} className="h-2" />
           <p className="text-xs text-muted-foreground">
             {t(
               'candidate.l2_conversation.progress_hint',
@@ -54,6 +60,16 @@ export function L2ResolveScreen({ counterpartName, onBack }: Props) {
             )}
           </p>
         </div>
+
+        {evidence && evidence.length > 0 && (
+          <EvidenceReflectionCard evidence={evidence} className="border-border/60" />
+        )}
+        {!evidence && isPending && (
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            {t('reflection.preparing', 'Preparing what your answers show…')}
+          </p>
+        )}
 
         <div className="pt-2">
           <Button onClick={onBack} variant="outline">

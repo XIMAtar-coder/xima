@@ -90,6 +90,7 @@ export function L2ConversationChallenge({ invitationId, challengeId, config }: P
 
       {step === 'resolve' && (
         <L2ResolveScreen
+          invitationId={invitationId}
           counterpartName={simulation.counterpart.name || 'Counterpart'}
           onBack={() => navigate('/profile')}
         />

@@ -2165,7 +2165,21 @@
       "mindset_facets": "Tratti emersi",
       "mindset_debrief": "Con parole sue",
       "mindset_instinct_count": "Scelte istintive",
-      "mindset_daylog_count": "Voci del diario"
+      "mindset_daylog_count": "Voci del diario",
+      "evidence_title": "Evidenze",
+      "evidence_strength": "punto di forza",
+      "evidence_growth": "margine di crescita",
+      "dimension": {
+        "framing": "Come inquadri un problema",
+        "execution_bias": "Come passi all’azione",
+        "impact_thinking": "Come valuti le conseguenze",
+        "decision_quality": "Quanto sono coerenti le tue scelte",
+        "drive": "Drive",
+        "computational_power": "Potenza Computazionale",
+        "communication": "Comunicazione",
+        "creativity": "Creatività",
+        "knowledge": "Conoscenza"
+      }
     },
     "compare": {
       "title": "Confronto Segnali XIMA",
@@ -6375,5 +6389,33 @@
     "pending_offers": "Offerte in attesa",
     "hired": "Assunti"
   },
-  "ximai_preview": {}
+  "ximai_preview": {},
+  "reflection": {
+    "title": "Cosa dicono le tue risposte",
+    "subtitle": "Preso da ciò che hai scritto davvero — non è un punteggio né un giudizio.",
+    "strengths": "Dove sei emerso",
+    "growth": "Dove puoi crescere",
+    "preparing": "Sto preparando cosa dicono le tue risposte…",
+    "dimension": {
+      "framing": "Come inquadri un problema",
+      "execution_bias": "Come passi all’azione",
+      "impact_thinking": "Come valuti le conseguenze",
+      "decision_quality": "Quanto sono coerenti le tue scelte",
+      "drive": "Drive",
+      "computational_power": "Potenza Computazionale",
+      "communication": "Comunicazione",
+      "creativity": "Creatività",
+      "knowledge": "Conoscenza"
+    }
+  },
+  "mindset": {
+    "resolve": {
+      "title": "Resoconto",
+      "enriched": "Il tuo XIMAtar si è arricchito.",
+      "facets": "Sfaccettature accese",
+      "refining": "XIMAtar in fase di affinamento",
+      "next_levels": "L1 ✓ — i prossimi livelli si sbloccheranno quando l'azienda riguarderà il tuo profilo.",
+      "default_line": "Ho visto come reagisci. Ora il tuo XIMAtar sta prendendo forma — ogni sfaccettatura accesa è un pezzo di te."
+    }
+  }
 }

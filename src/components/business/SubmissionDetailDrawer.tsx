@@ -1098,6 +1098,35 @@ export function SubmissionDetailDrawer({
                     reviewable thing in the payload, previously never displayed. */}
                 {isMindset && (
                   <div className="space-y-5">
+                    {/* Verified evidence — the same quotes the candidate sees as
+                        their reflection, shown here as decision support. Each one
+                        was checked server-side to appear verbatim in what they
+                        wrote, so a claim here is always traceable to a sentence. */}
+                    {Array.isArray((submission?.signalsPayload as any)?.evidence) &&
+                      ((submission?.signalsPayload as any).evidence as Array<{ dimension: string; quote: string; is_strength: boolean }>).length > 0 && (
+                        <div className="space-y-3">
+                          <Label className="text-sm font-medium">
+                            {t('business.responses.evidence_title', 'Evidence')}
+                          </Label>
+                          {((submission?.signalsPayload as any).evidence as Array<{ dimension: string; quote: string; is_strength: boolean }>).map((ev, i) => (
+                            <div key={`${ev.dimension}-${i}`} className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <Badge variant={ev.is_strength ? 'secondary' : 'outline'}>
+                                  {t(`business.responses.dimension.${ev.dimension}`, ev.dimension)}
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  {ev.is_strength
+                                    ? t('business.responses.evidence_strength', 'strength')
+                                    : t('business.responses.evidence_growth', 'growth edge')}
+                                </span>
+                              </div>
+                              <blockquote className="border-l-2 border-primary/40 pl-3 text-sm italic text-foreground/90 break-words">
+                                “{ev.quote}”
+                              </blockquote>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     {Array.isArray((payload as any).lit_facets) && (payload as any).lit_facets.length > 0 && (
                       <div>
                         <Label className="text-sm font-medium">
