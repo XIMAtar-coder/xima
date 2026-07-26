@@ -122,6 +122,11 @@ export function SubmissionDetailDrawer({
   const [localSignals, setLocalSignals] = useState<SignalsPayload | null>(null);
   const [localLevel2Signals, setLocalLevel2Signals] = useState<Level2SignalsPayload | null>(null);
   const [followupData, setFollowupData] = useState<ChallengeFollowup | null>(null);
+  // Internal reviewer record — notes/tags live in challenge_review_notes, which is
+  // business-only. They are deliberately NOT on challenge_reviews, because that
+  // row is visible to the candidate.
+  const [reviewNotes, setReviewNotes] = useState('');
+  const [savingNotes, setSavingNotes] = useState(false);
   
   // Level 2 invite state
   const [level2ModalOpen, setLevel2ModalOpen] = useState(false);
@@ -188,6 +193,7 @@ export function SubmissionDetailDrawer({
       setIsGeneratingCustomL1(false);
       setCustomL1Error(null);
       setLocalCustomL1Signals(null);
+      setReviewNotes('');
       setCustomL1Questions(null);
       lastOpenedKeyRef.current = null;
       return;
@@ -245,6 +251,13 @@ export function SubmissionDetailDrawer({
 
       if (reviewData) {
         setCurrentReview(reviewData as ChallengeReview);
+        // Bring back the internal note, if this review already has one.
+        const { data: noteRow } = await (supabase as any)
+          .from('challenge_review_notes')
+          .select('notes')
+          .eq('review_id', (reviewData as ChallengeReview).id)
+          .maybeSingle();
+        if (noteRow?.notes) setReviewNotes(noteRow.notes);
         if (reviewData.decision === 'followup' && reviewData.followup_question) {
           setFollowupQuestion(reviewData.followup_question);
         }
@@ -545,6 +558,24 @@ export function SubmissionDetailDrawer({
             answered_at: null,
           });
         }
+      }
+
+      // Attach the internal note to the review, attributed to the person who
+      // actually made the call rather than to the company.
+      if (persistedReviewId && persistedReviewId !== 'temp' && reviewNotes.trim()) {
+        const { data: { user: reviewer } } = await supabase.auth.getUser();
+        // types.ts is generated and does not yet include challenge_review_notes;
+        // casting here rather than hand-editing a regenerated file.
+        const { error: notesErr } = await (supabase as any)
+          .from('challenge_review_notes')
+          .upsert({
+            review_id: persistedReviewId,
+            business_id: businessId,
+            reviewer_user_id: reviewer?.id ?? null,
+            notes: reviewNotes.trim(),
+            updated_at: new Date().toISOString(),
+          }, { onConflict: 'review_id' });
+        if (notesErr) log.error('Failed to save review note', notesErr);
       }
 
       // Only flip local review state after the DB write actually succeeded.
@@ -1262,6 +1293,32 @@ export function SubmissionDetailDrawer({
                 <CardTitle className="text-base">{t('business.review.actions_title')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Internal note. Stored in challenge_review_notes (business-only
+                    RLS) and attributed to the signed-in reviewer, so a later
+                    reader can tell who decided and why. Never shown to the
+                    candidate. */}
+                <div className="space-y-2">
+                  <Label htmlFor="review-notes">
+                    {t('business.review.notes_label', 'Internal note')}
+                  </Label>
+                  <Textarea
+                    id="review-notes"
+                    value={reviewNotes}
+                    onChange={(e) => setReviewNotes(e.target.value)}
+                    placeholder={t(
+                      'business.review.notes_placeholder',
+                      'Why this call? Only your team sees this.'
+                    )}
+                    rows={2}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {t(
+                      'business.review.notes_hint',
+                      'Saved with your decision and visible only to your team.'
+                    )}
+                  </p>
+                </div>
+
                 {followupMode ? (
                   <div className="space-y-3">
                     <Label>{t('business.review.followup_question_label')}</Label>

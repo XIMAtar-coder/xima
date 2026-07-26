@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useBusinessLocale, LANGUAGE_STORAGE_KEY, VALID_LOCALES } from '@/hooks/useBusinessLocale';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { NotificationsDropdown } from '@/components/NotificationsDropdown';
 
 const languages = [
   { code: 'it', name: 'Italiano', flag: '🇮🇹' },
@@ -242,6 +243,10 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
           </Button>
 
           <div className="flex-1" />
+
+          {/* The business portal had no notification surface at all, so a
+              submission could arrive and nobody was told. */}
+          <NotificationsDropdown />
 
           <ThemeToggle />
 

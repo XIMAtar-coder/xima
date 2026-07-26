@@ -1574,11 +1574,35 @@ The per_question array MUST echo every question_id from the input, exactly once.
     const q = qById.get(qid);
     if (!q) continue;
     const score = clampRound(entry?.score, 0, 100);
-    const evidence_quote = String(entry?.evidence_quote || '').slice(0, 500);
     const primary_pillar = (PILLAR_KEYS_L2 as readonly string[]).includes(String(entry?.primary_pillar))
       ? String(entry.primary_pillar) : undefined;
     const notes = String(entry?.notes || '').slice(0, 160);
-    const answerExcerpt = String(payload?.[qid] || '').slice(0, 400);
+    const candidateAnswer = String(payload?.[qid] || '');
+    const answerExcerpt = candidateAnswer.slice(0, 400);
+
+    // Verify the quote against THIS question's answer specifically — the
+    // tightest source available, so a quote cannot drift in from another
+    // answer or from the question text.
+    const [verifiedQ] = verifyEvidence(
+      [{
+        dimension: primary_pillar || 'communication',
+        quote: String(entry?.evidence_quote || '').slice(0, 500),
+        is_strength: score >= 60,
+      }],
+      candidateAnswer,
+      new Set([primary_pillar || 'communication']),
+      (info) => console.warn(JSON.stringify({
+        type: 'evidence_quote_rejected',
+        correlation_id: correlationId,
+        function_name: 'analyze-open-answer',
+        format: 'custom_l1_ai',
+        question_id: qid,
+        reason: info.reason,
+        quote_preview: info.quote.slice(0, 60),
+      })),
+    );
+    const evidence_quote = verifiedQ?.quote ?? '';
+    const evidence_verified = Boolean(verifiedQ);
     enrichedPerQuestion.push({
       question_id: qid,
       title: q.title,
@@ -1586,6 +1610,7 @@ The per_question array MUST echo every question_id from the input, exactly once.
       answer_excerpt: answerExcerpt,
       score,
       evidence_quote,
+      evidence_verified,
       primary_pillar,
       notes,
     });
@@ -1596,6 +1621,7 @@ The per_question array MUST echo every question_id from the input, exactly once.
       weight: Math.round(100 / questions.length),
       score,
       evidence_quote,
+      evidence_verified,
     });
   }
   const gotIdsSet = new Set(gotIds);
@@ -1617,8 +1643,34 @@ The per_question array MUST echo every question_id from the input, exactly once.
   // Nudge skipped if pre-check failed (fail-safe) OR per_question mismatch (data quality)
   const nudgeSkipped = nudgePreCheckFailed || perQuestionMismatch || nudgePreExists;
 
+  // Normalize the verified per-question quotes into the shared evidence[] shape,
+  // so the candidate reflection card works identically across mindset, L2 and
+  // Custom L1. Strongest verified answer as a strength, weakest as a growth edge.
+  const verifiedQuestions = enrichedPerQuestion
+    .filter((q) => q.evidence_verified && q.evidence_quote)
+    .sort((a, b) => (b.score as number) - (a.score as number));
+
+  const evidence: Array<{ dimension: string; quote: string; is_strength: boolean }> = [];
+  if (verifiedQuestions.length > 0) {
+    const best = verifiedQuestions[0];
+    evidence.push({
+      dimension: String(best.primary_pillar || 'communication'),
+      quote: String(best.evidence_quote),
+      is_strength: true,
+    });
+    const worst = verifiedQuestions[verifiedQuestions.length - 1];
+    if (verifiedQuestions.length > 1 && worst.evidence_quote !== best.evidence_quote) {
+      evidence.push({
+        dimension: String(worst.primary_pillar || 'communication'),
+        quote: String(worst.evidence_quote),
+        is_strength: (worst.score as number) >= 60,
+      });
+    }
+  }
+
   // 10. Persist signals_payload
   const signalsPayload = {
+    evidence,
     format: 'custom_l1_ai',
     signals_version: 'v1',
     scoring_context: 'l1_challenge',

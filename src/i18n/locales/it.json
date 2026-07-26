@@ -2263,7 +2263,10 @@
       "level3_invite_sent": "Invito Livello 3 Inviato",
       "l2_pending_review": "L2 in attesa di revisione",
       "l2_rubric_breakdown": "Valutazione Criteri Livello 2",
-      "l2_rubric_breakdown_desc": "Punteggi per criterio della rubrica con evidenza estratta dalla conversazione."
+      "l2_rubric_breakdown_desc": "Punteggi per criterio della rubrica con evidenza estratta dalla conversazione.",
+      "notes_label": "Nota interna",
+      "notes_placeholder": "Perché questa decisione? La vede solo il tuo team.",
+      "notes_hint": "Salvata insieme alla decisione e visibile solo al tuo team."
     },
     "reports": {
       "title": "Report e Analisi",
