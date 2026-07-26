@@ -9,7 +9,8 @@
 // business_profiles: id, user_id, company_name, manual_industry, snapshot_industry,
 //   team_culture, hiring_approach, manual_hq_city, manual_hq_country
 // shortlist_results: id, hiring_goal_id, business_id, candidate_user_id, total_score,
-//   identity_score, trajectory_score, engagement_score, location_score, credential_score,
+//   identity_score, performance_score, performance_summary, trajectory_score,
+//   engagement_score, location_score, credential_score,
 //   ximatar_archetype, ximatar_level, pillar_scores, trajectory_summary, engagement_level,
 //   location_match, availability, match_narrative, status, anonymous_label,
 //   identity_revealed, pipeline_stage
@@ -430,6 +431,8 @@ serve(async (req) => {
           candidate_user_id: c.candidate_user_id,
           total_score: c.total_score,
           identity_score: c.identity_score,
+          performance_score: c.performance_score,
+          performance_summary: c.performance_summary,
           trajectory_score: c.trajectory_score,
           engagement_score: c.engagement_score,
           location_score: c.location_score,
@@ -466,8 +469,9 @@ serve(async (req) => {
       total_candidates_evaluated: candidates.length,
       scoring_weights: {
         identity: "0-40 pts (pillar match + archetype fit)",
-        trajectory: "0-20 pts (growth in last 90 days)",
-        engagement: "0-15 pts (platform activity + profile completion)",
+        performance: "0-20 pts (demonstrated performance in challenges)",
+        trajectory: "0-10 pts (growth in last 90 days)",
+        engagement: "0-5 pts (platform activity + profile completion)",
         location: "0-15 pts (location + work mode + relocation)",
         credentials: useCredentialFilters ? "0-10 pts (degree + experience + industry)" : "disabled (identity-first mode)",
       },
