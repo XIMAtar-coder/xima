@@ -1,510 +1,55 @@
 /**
- * analyze-l3-frames — L3 Video Frame Analysis + Viewing Guide
+ * WITHDRAWN — this endpoint performed a prohibited practice.
  *
- * Extracts observational signals from candidate video frames and generates
- * a structured viewing guide for the human reviewer.
+ * It sent video frames from a candidate's L3 interview to a vision model and
+ * asked it to report "energy level", "engagement shift", "emotional shifts
+ * between questions", "potential discomfort questions", and whether the
+ * candidate's visual presence was congruent with their profile.
  *
- * The AI does NOT evaluate. It observes. Humans decide.
+ * That is inference of emotional state from biometric data in the context of an
+ * employment decision. EU AI Act Article 5(1)(f) prohibits it outright: it is
+ * not a high-risk practice with a conformity route, it is a banned one, and no
+ * amount of consent, disclosure or human-in-the-loop review makes it lawful.
+ * The file's own header used to argue "the AI does NOT evaluate, it observes" —
+ * that distinction does not exist in the prohibition, which turns on whether
+ * emotion is inferred at all, not on who acts on the output.
+ *
+ * Removing only the offending fields was considered and rejected. The function
+ * had frames and nothing else — no audio, no transcript — so once emotion and
+ * affect inference are taken out, what remains is not a capability worth
+ * keeping. The L3 stage itself is unaffected: candidates still record, and a
+ * human reviewer still watches. What is gone is the machine claiming to read how
+ * they felt while doing it.
+ *
+ * Kept as an explicit refusal rather than deleted, so that any caller appearing
+ * later fails loudly and traceably instead of hitting a 404 that reads like a
+ * deployment error. It had no callers in the app or in any other edge function
+ * when it was withdrawn.
+ *
+ * Do not reinstate without a legal decision. If an L3 signal is genuinely
+ * needed, derive it from what the candidate said — the content of their answers
+ * — which is not emotion inference and is already how L1 and L2 work.
  */
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { AnthropicError } from "../_shared/anthropicClient.ts";
-import { extractJsonFromAiContent } from "../_shared/aiClient.ts";
-import {
-  corsHeaders,
-  errorResponse,
-  jsonResponse,
-  unauthorizedResponse,
-  forbiddenResponse,
-  profilingOptOutResponse,
-} from "../_shared/errors.ts";
-import { extractCorrelationId } from "../_shared/correlationId.ts";
-import { emitAuditEventWithMetric } from "../_shared/auditEvents.ts";
-// pillarTrajectory intentionally not imported: L3 does not write pillar scores.
-import { loadUserAiContext, updateUserAiContext } from "../_shared/aiContext.ts";
-import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
+import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
+import { corsHeaders, errorResponse } from "../_shared/errors.ts";
 
-// ---------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------
-
-interface FrameInput {
-  question_id: string;
-  frame_images: string[];   // base64 JPEG
-  frame_timestamps: number[];
-}
-
-interface AnalyzeL3FramesRequest {
-  submission_id: string;
-  frames?: FrameInput[];
-  locale?: string;
-}
-
-interface QuestionObs {
-  question_id: string;
-  posture_notes: string;
-  energy_level: string;
-  engagement_shift: string;
-  notable_signals: string;
-  congruence_with_profile: string;
-}
-
-interface ViewingGuide {
-  strongest_engagement_questions: string[];
-  potential_discomfort_questions: string[];
-  energy_arc: string;
-  congruence_summary: string;
-  recommended_focus_areas: string[];
-  reviewer_notes: string;
-}
-
-interface L3Analysis {
-  per_question_observations: QuestionObs[];
-  viewing_guide: ViewingGuide;
-  visual_analysis_available: boolean;
-}
-
-// ---------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------
-
-// NOTE: computeL3Deltas() was removed here.
-// It converted video observations into permanent pillar points
-// (energy_level === "high" → +2 Drive; a substring match on "align" →
-// +2 Communication, which also scored "does not align" as positive).
-// Video frames alone are not a defensible basis for scoring a person in a
-// hiring decision, so L3 now contributes an observational viewing guide only.
-
-// Takes `unknown` so the `parsed is L3Analysis` predicate is well-formed (L3Analysis
-// has no index signature, so a Record<string, unknown> parameter made the predicate
-// itself a type error). Matches the shape of the other validators in this codebase.
-function validateAnalysis(input: unknown): input is L3Analysis {
-  if (!input || typeof input !== "object") return false;
-  const parsed = input as Record<string, unknown>;
-  const obs = parsed.per_question_observations;
-  if (!Array.isArray(obs)) return false;
-  for (const o of obs) {
-    if (typeof o !== "object" || !o) return false;
-    const oo = o as Record<string, unknown>;
-    if (!oo.question_id || typeof oo.posture_notes !== "string") return false;
-  }
-  const guide = parsed.viewing_guide as Record<string, unknown> | undefined;
-  if (!guide) return false;
-  if (typeof guide.energy_arc !== "string") return false;
-  if (typeof guide.reviewer_notes !== "string") return false;
-  return true;
-}
-
-// ---------------------------------------------------------------------
-// Handler
-// ---------------------------------------------------------------------
-
-serve(async (req) => {
+serve((req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
-  const correlationId = extractCorrelationId(req);
+  console.warn(
+    JSON.stringify({
+      type: "withdrawn_endpoint_called",
+      function_name: "analyze-l3-frames",
+      reason: "emotion inference in employment — EU AI Act Art. 5(1)(f)",
+    })
+  );
 
-  try {
-    // ---- Auth ----
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader) return unauthorizedResponse();
-
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-
-    const userClient = createClient(supabaseUrl, supabaseKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
-    const { data: { user }, error: authError } = await userClient.auth.getUser();
-    if (authError || !user) return unauthorizedResponse();
-
-    // Per-user monthly AI budget cap → 429 before the Vision call.
-    const budgetGate = await enforceAiBudget(user.id, "analyze-l3-frames", corsHeaders);
-    if (budgetGate) return budgetGate;
-
-    const supabase = createClient(supabaseUrl, serviceKey);
-
-
-    // Check business/admin role
-    const { data: roleRow } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .in("role", ["business", "admin"])
-      .limit(1)
-      .maybeSingle();
-    if (!roleRow) return forbiddenResponse("Business or admin role required");
-
-    // ---- Parse body ----
-    const body: AnalyzeL3FramesRequest = await req.json();
-    const { submission_id, frames, locale = "en" } = body;
-    if (!submission_id) return errorResponse(400, "MISSING_FIELDS", "submission_id is required");
-
-    // ---- Fetch submission ----
-    const { data: submission, error: subErr } = await supabase
-      .from("challenge_submissions")
-      .select("id, challenge_id, candidate_profile_id, hiring_goal_id, business_id, signals_payload, signals_version")
-      .eq("id", submission_id)
-      .single();
-    if (subErr || !submission) return errorResponse(404, "NOT_FOUND", "Submission not found");
-
-    // Ownership check
-    const { data: biz } = await supabase
-      .from("business_profiles")
-      .select("id")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    if (!biz || biz.id !== submission.business_id) {
-      if (roleRow.role !== "admin") return forbiddenResponse("You do not own this submission");
-    }
-
-    // ---- GDPR check ----
-    const { data: candidateProfile } = await supabase
-      .from("profiles")
-      .select("user_id, ximatar_name, ximatar, ximatar_id, ximatar_level, profiling_opt_out")
-      .eq("id", submission.candidate_profile_id)
-      .single();
-    if (candidateProfile?.profiling_opt_out === true) return profilingOptOutResponse();
-
-    // ---- Fetch interview config ----
-    const { data: challenge } = await supabase
-      .from("business_challenges")
-      .select("config_json")
-      .eq("id", submission.challenge_id)
-      .single();
-
-    const configJson = (challenge?.config_json || {}) as Record<string, unknown>;
-    const l3Interview = configJson.l3_interview as Record<string, unknown> | undefined;
-    const interviewQuestions = (l3Interview?.questions || []) as Array<Record<string, unknown>>;
-    const interviewBrief = (l3Interview?.interview_brief || {}) as Record<string, unknown>;
-
-    const archetype = (candidateProfile?.ximatar_name || candidateProfile?.ximatar || candidateProfile?.ximatar_id || "unknown") as string;
-    const level = (candidateProfile?.ximatar_level || 1) as number;
-
-    // ---- Fallback: no frames ----
-    if (!frames || frames.length === 0) {
-      const fallbackAnalysis: L3Analysis = {
-        per_question_observations: interviewQuestions.map((q) => ({
-          question_id: q.id as string || "unknown",
-          posture_notes: "Video frames not available — review video directly",
-          energy_level: "unknown",
-          engagement_shift: "unknown",
-          notable_signals: `This question probes ${q.target_tension || "a key tension"}. Watch for ${q.what_to_watch_for || "behavioral signals"}.`,
-          congruence_with_profile: "unknown",
-        })),
-        viewing_guide: {
-          strongest_engagement_questions: [],
-          potential_discomfort_questions: [],
-          energy_arc: "Video frame analysis not available. Review the full video using the per-question watching guides.",
-          congruence_summary: "Unable to assess visual congruence without video frames.",
-          recommended_focus_areas: (interviewBrief.key_tensions_to_resolve || []) as string[],
-          reviewer_notes: `${interviewBrief.candidate_summary || ""} ${interviewBrief.ideal_outcome || ""}`.trim(),
-        },
-        visual_analysis_available: false,
-      };
-
-      // Save
-      const existingSignals = (submission.signals_payload || {}) as Record<string, unknown>;
-      await supabase
-        .from("challenge_submissions")
-        .update({
-          signals_payload: { ...existingSignals, l3_analysis: fallbackAnalysis },
-          signals_version: "v2_claude_l3",
-        })
-        .eq("id", submission_id);
-
-      emitAuditEventWithMetric(
-        {
-          actorType: "business",
-          actorId: user.id,
-          action: "challenge.l3_frames_analyzed",
-          entityType: "challenge_submission",
-          entityId: submission_id,
-          correlationId,
-          metadata: {
-            candidate_profile_id: submission.candidate_profile_id,
-            questions_analyzed: fallbackAnalysis.per_question_observations.length,
-            frames_provided: 0,
-            visual_analysis: false,
-            locale,
-          },
-        },
-        "l3_frames_analyzed"
-      );
-
-      return jsonResponse({
-        success: true,
-        analysis: fallbackAnalysis,
-        submission_id,
-        visual_analysis_available: false,
-      });
-    }
-
-    // ---- Build Claude vision request ----
-    const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
-    if (!ANTHROPIC_API_KEY) return errorResponse(500, "AI_NOT_CONFIGURED", "ANTHROPIC_API_KEY not set");
-
-    const tensionsToResolve = (interviewBrief.key_tensions_to_resolve || []) as string[];
-
-    const systemContext = `You are the XIMA L3 Video Review Assistant. You analyze video frames from a candidate's L3 interview and generate observational signals for a human reviewer.
-
-CRITICAL RULES:
-- You are NOT evaluating the candidate. You are providing OBSERVATIONS.
-- You CANNOT identify or name the person in the video. Focus only on behavioral signals.
-- Never make a hiring recommendation. The human decides.
-- Report what you observe: posture, energy level, engagement, confidence indicators, eye contact patterns, gesture frequency, emotional shifts between questions.
-- Be factual, not judgmental. "Candidate appears relaxed with open posture" not "Candidate is confident."
-
-INTERVIEW CONTEXT:
-- Candidate XIMAtar: ${archetype} L${level}
-- Key tensions being probed: ${JSON.stringify(tensionsToResolve)}
-- Interview brief: ${JSON.stringify(interviewBrief)}
-
-For each question, analyze the frames and note:
-1. Posture and body language signals
-2. Energy/engagement level compared to other questions
-3. Any notable shifts
-4. Congruence: does their visual presence match what their profile predicts?
-
-Then generate an overall viewing guide.
-
-LANGUAGE: ${locale}
-
-Return ONLY valid JSON:
-{
-  "per_question_observations": [
-    {
-      "question_id": "q1",
-      "posture_notes": "string",
-      "energy_level": "high" | "moderate" | "low",
-      "engagement_shift": "increasing" | "stable" | "decreasing",
-      "notable_signals": "string",
-      "congruence_with_profile": "aligned" | "neutral" | "divergent"
-    }
-  ],
-  "viewing_guide": {
-    "strongest_engagement_questions": ["q2", "q4"],
-    "potential_discomfort_questions": ["q3"],
-    "energy_arc": "string",
-    "congruence_summary": "string",
-    "recommended_focus_areas": ["area 1"],
-    "reviewer_notes": "2-3 sentence executive summary"
-  },
-  "visual_analysis_available": true
-}`;
-
-    // Build content array with images
-    const contentParts: Array<Record<string, unknown>> = [
-      { type: "text", text: systemContext },
-    ];
-
-    // Map question IDs to their text for context
-    const questionMap: Record<string, string> = {};
-    for (const q of interviewQuestions) {
-      questionMap[q.id as string] = q.question_text as string;
-    }
-
-    for (const f of frames) {
-      contentParts.push({
-        type: "text",
-        text: `\n--- Question ${f.question_id}: "${questionMap[f.question_id] || "Unknown question"}" ---\nFrames from the candidate's video response (at ${f.frame_timestamps.map((t) => Math.round(t) + "s").join(", ")}):`,
-      });
-      for (const img of f.frame_images.slice(0, 3)) {
-        contentParts.push({
-          type: "image",
-          source: { type: "base64", media_type: "image/jpeg", data: img },
-        });
-      }
-    }
-
-    contentParts.push({
-      type: "text",
-      text: "\nAnalyze the visual signals across all questions and generate the viewing guide. Return ONLY valid JSON.",
-    });
-
-    // ---- Call Claude Vision ----
-    const requestId = crypto.randomUUID();
-    const start = Date.now();
-
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 3072,
-        messages: [{ role: "user", content: contentParts }],
-        temperature: 0.5,
-      }),
-    });
-
-    const latencyMs = Date.now() - start;
-
-    if (!response.ok) {
-      const errText = await response.text().catch(() => "");
-      console.error("[analyze-l3-frames] Claude error:", response.status, errText.substring(0, 300));
-      return errorResponse(502, "AI_ERROR", "AI service error during frame analysis");
-    }
-
-    const data = await response.json();
-    const content = data.content?.[0]?.text;
-    if (!content) return errorResponse(502, "EMPTY_RESPONSE", "Empty response from Claude");
-    // Accrue per-user cap after a successful model hit.
-    await recordAiCallSafe(user.id, "analyze-l3-frames");
-
-    // ---- Persist audit envelope with token usage + computed cost (fire-and-forget) ----
-    const auditClient = createClient(supabaseUrl, serviceKey);
-    const inputTokens = data.usage?.input_tokens ?? null;
-    const outputTokens = data.usage?.output_tokens ?? null;
-    (async () => {
-      let cost_usd: number | null = null;
-      if ((inputTokens ?? 0) > 0 || (outputTokens ?? 0) > 0) {
-        try {
-          const { data: c } = await auditClient.rpc("compute_ai_cost_usd", {
-            _provider: "anthropic",
-            _model_name: "claude-sonnet-4-6",
-            _input_tokens: inputTokens ?? 0,
-            _output_tokens: outputTokens ?? 0,
-          });
-          if (c !== null && c !== undefined) cost_usd = Number(c);
-        } catch (_) { /* leave NULL */ }
-      }
-      await auditClient.from("ai_invocation_log").insert({
-        request_id: requestId,
-        correlation_id: correlationId,
-        function_name: "analyze-l3-frames",
-        provider: "anthropic",
-        model_name: "claude-sonnet-4-6",
-        model_version: "2025-05-14",
-        temperature: 0.5,
-        max_tokens: 4096,
-        prompt_hash: "vision_frames",
-        prompt_template_version: "1.0",
-        scoring_schema_version: "1.0",
-        input_summary: `submission=${submission_id},frames=${frames.length}`,
-        output_summary: `len=${content.length},tokens:${inputTokens ?? "?"}+${outputTokens ?? "?"}`,
-        status: "success",
-        error_code: null,
-        latency_ms: latencyMs,
-        input_tokens: inputTokens,
-        output_tokens: outputTokens,
-        cost_usd,
-      });
-    })().catch((e: unknown) => console.error("[audit] error:", e));
-
-    // ---- Parse and validate ----
-    // extractJsonFromAiContent returns the already-parsed payload (or null) —
-    // never re-parse it. `null` gets its own fallback so an unparseable response
-    // is distinguishable from one that parsed but failed validation.
-    let validated: L3Analysis;
-    const parsed = extractJsonFromAiContent(content);
-    if (!parsed) {
-      console.warn("[analyze-l3-frames] AI response contained no parseable JSON");
-      validated = {
-        per_question_observations: [],
-        viewing_guide: {
-          strongest_engagement_questions: [],
-          potential_discomfort_questions: [],
-          energy_arc: "Frame analysis failed. Review video directly.",
-          congruence_summary: "Unable to assess.",
-          recommended_focus_areas: tensionsToResolve,
-          reviewer_notes: "AI analysis encountered an error. Please review the video manually.",
-        },
-        visual_analysis_available: false,
-      };
-    } else if (validateAnalysis(parsed)) {
-      validated = parsed;
-      validated.visual_analysis_available = true;
-    } else {
-      console.warn("[analyze-l3-frames] Validation failed, partial result");
-      validated = {
-        per_question_observations: frames.map((f) => ({
-          question_id: f.question_id,
-          posture_notes: "Analysis could not be fully validated",
-          energy_level: "unknown",
-          engagement_shift: "unknown",
-          notable_signals: "Review video directly",
-          congruence_with_profile: "unknown",
-        })),
-        viewing_guide: {
-          strongest_engagement_questions: [],
-          potential_discomfort_questions: [],
-          energy_arc: "Analysis validation failed. Review video directly.",
-          congruence_summary: "Could not determine congruence.",
-          recommended_focus_areas: tensionsToResolve,
-          reviewer_notes: (interviewBrief.candidate_summary as string) || "Review all questions carefully.",
-        },
-        visual_analysis_available: false,
-      };
-    }
-
-    // ---- Save analysis ----
-    const existingSignals = (submission.signals_payload || {}) as Record<string, unknown>;
-    await supabase
-      .from("challenge_submissions")
-      .update({
-        signals_payload: { ...existingSignals, l3_analysis: validated },
-        signals_version: "v2_claude_l3",
-      })
-      .eq("id", submission_id);
-
-    // ---- Update AI context for L3 frames ----
-    if (candidateProfile?.user_id) {
-      await updateUserAiContext(candidateProfile.user_id, {
-        l3_summary: {
-          ...(await loadUserAiContext(candidateProfile.user_id)).l3_summary,
-          engagement_notes: validated.viewing_guide.congruence_summary,
-          visual_analysis: validated.visual_analysis_available,
-          last_l3_frames_at: new Date().toISOString(),
-        },
-        l3_updated_at: new Date().toISOString(),
-      });
-    }
-
-    // ---- Pillar trajectory: intentionally NOT written from video ----
-    // This function observes; it does not score. Inferring pillar points from
-    // posture/energy/engagement in video frames (no transcript, no audio) is
-    // emotion inference in an employment decision — the category the EU AI Act
-    // treats most strictly — and it previously wrote straight to the permanent
-    // profile with no human gate. The viewing guide below is the deliverable:
-    // it supports a human reviewer instead of replacing them.
-
-    // ---- Audit ----
-    emitAuditEventWithMetric(
-      {
-        actorType: "business",
-        actorId: user.id,
-        action: "challenge.l3_frames_analyzed",
-        entityType: "challenge_submission",
-        entityId: submission_id,
-        correlationId,
-        metadata: {
-          candidate_profile_id: submission.candidate_profile_id,
-          questions_analyzed: validated.per_question_observations.length,
-          frames_provided: frames.length,
-          visual_analysis: validated.visual_analysis_available,
-          locale,
-        },
-      },
-      "l3_frames_analyzed"
-    );
-
-    return jsonResponse({
-      success: true,
-      analysis: validated,
-      submission_id,
-      visual_analysis_available: validated.visual_analysis_available,
-    });
-  } catch (err) {
-    console.error("[analyze-l3-frames] Error:", err);
-    if (err instanceof AnthropicError) {
-      return errorResponse(err.statusCode, err.errorCode, "AI provider request failed");
-    }
-    return errorResponse(500, "INTERNAL_ERROR", "Failed to analyze L3 frames");
-  }
+  return errorResponse(
+    410,
+    "ENDPOINT_WITHDRAWN",
+    "Visual emotion analysis has been removed. Inferring emotional state from a " +
+      "candidate's video is prohibited in an employment context under EU AI Act " +
+      "Article 5(1)(f). L3 interviews are reviewed by a human."
+  );
 });

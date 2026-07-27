@@ -77,7 +77,12 @@ function buildFallbackQuestions(scores: Record<string, number> | null): unknown 
       question_type: "tension_probe",
       target_pillar: p,
       target_tension: `Generic probe for ${p}`,
-      what_to_watch_for: "Observe specificity of examples, confidence level, and emotional engagement when discussing this area.",
+      // Points a human reviewer at what the candidate said, not at how they
+      // appeared to feel saying it. "Confidence level" and "emotional
+      // engagement" asked a reviewer to score an emotional read in a hiring
+      // decision — the same judgement Article 5(1)(f) prohibits automating, and
+      // no more defensible for being made by a person.
+      what_to_watch_for: "Observe how specific the examples are, whether the candidate's role in them is clear, and whether the outcome is concrete.",
       time_limit_seconds: 180,
       follow_up_if_weak: `Can you give a more specific example of how you used ${p.replace("_", " ")} in your last role?`,
     })),
@@ -315,6 +320,14 @@ INTERVIEW DESIGN RULES:
 5. Time estimate: each answer should be 2-3 minutes
 6. Questions should be open-ended — no yes/no answers possible
 7. DO NOT ask about demographics, personal life, or anything that could introduce bias
+8. "what_to_watch_for" must describe WHAT THE CANDIDATE SAYS, never how they look
+   or appear to feel. Do not reference confidence, nervousness, comfort, energy,
+   enthusiasm, body language, eye contact, tone or any emotional state. Inferring
+   emotion in a hiring context is prohibited under EU AI Act Article 5(1)(f), and
+   guidance that directs a human reviewer to do it is the same judgement with an
+   extra step. Write about the substance of the answer: how specific the example
+   is, whether the candidate's own role in it is clear, whether the outcome is
+   concrete, whether trade-offs are acknowledged.
 
 LANGUAGE: Generate all questions and viewing guides in ${locale}.
 
