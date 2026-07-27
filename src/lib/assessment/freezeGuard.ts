@@ -17,9 +17,6 @@
  * 3. Commit with message: "chore: bump assessment freeze to vX.Y"
  */
 
-import enTranslations from '@/i18n/locales/en.json';
-import itTranslations from '@/i18n/locales/it.json';
-import esTranslations from '@/i18n/locales/es.json';
 import { log } from '@/lib/log';
 
 export const ASSESSMENT_VERSION = "1.2.1";
@@ -70,14 +67,19 @@ export function computeHash(locale: Record<string, unknown>): string {
 }
 
 /**
- * Compute current hashes for all locales (exported for tests).
+ * Compute hashes for a set of already-loaded locales.
+ *
+ * Takes the locale data as an argument rather than importing it. Importing all
+ * three here is what forced every locale into the entry chunk: this module runs
+ * at startup, so a static import of en/it/es made them unsplittable no matter
+ * how i18n loaded them.
  */
-export function computeAllHashes(): Record<string, string> {
-  return {
-    en: computeHash(enTranslations as Record<string, unknown>),
-    it: computeHash(itTranslations as Record<string, unknown>),
-    es: computeHash(esTranslations as Record<string, unknown>),
-  };
+export function computeAllHashes(
+  locales: Record<string, Record<string, unknown>>
+): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(locales).map(([lang, data]) => [lang, computeHash(data)])
+  );
 }
 
 /**
@@ -86,115 +88,71 @@ export function computeAllHashes(): Record<string, string> {
  * 
  * IMPORTANT: These MUST differ per locale (unless translations are identical).
  */
-const ASSESSMENT_FREEZE_HASHES: Record<string, string> = {
+export const ASSESSMENT_FREEZE_HASHES: Record<string, string> = {
   en: "11ffb15d",
   it: "e7b14a09",
   es: "d7d4491d",
 };
 
-let freezeInitialized = false;
+const validatedLocales = new Set<string>();
 
 /**
- * Validate assessment content integrity at startup.
- * 
- * PRODUCTION: Throws Error on null or mismatched hashes — app will not render.
- * DEVELOPMENT: Self-seals on first run, validates on subsequent runs.
- * 
- * Returns computed hashes for telemetry/debugging.
+ * Validate one locale's assessment content against its sealed hash.
+ *
+ * Called as each locale is loaded, rather than once over all three at startup —
+ * with locales code-split, only the ones actually in use exist at runtime, so
+ * "validate everything" is no longer a question this module can answer. The
+ * complete set is covered at build time instead, by the freezeGuard test that
+ * imports all three and asserts every sealed hash.
+ *
+ * PRODUCTION: throws on a missing subtree or a hash mismatch — the app will not
+ * render with assessment content that has silently drifted.
+ * DEVELOPMENT: logs the violation and continues.
  */
-export function validateAssessmentFreeze(): Record<string, string> | null {
-  const locales = {
-    en: enTranslations,
-    it: itTranslations,
-    es: esTranslations,
-  };
+export function validateLocaleFreeze(
+  lang: string,
+  data: Record<string, unknown>
+): string | null {
+  const subtree = getAssessmentSubtree(data);
 
-  const currentHashes: Record<string, string> = {};
-  const violations: string[] = [];
-
-  for (const [lang, data] of Object.entries(locales)) {
-    const subtree = getAssessmentSubtree(data as Record<string, unknown>);
-    
-    // Fatal: assessmentSets missing from locale
-    if (!subtree) {
-      const msg = `[ASSESSMENT FREEZE] v${ASSESSMENT_VERSION} ${lang.toUpperCase()}: assessmentSets subtree MISSING`;
-      violations.push(msg);
-      continue;
-    }
-
-    const hash = computeHash(data as Record<string, unknown>);
-    currentHashes[lang] = hash;
-
-    const frozenHash = ASSESSMENT_FREEZE_HASHES[lang];
-
-    if (frozenHash !== hash) {
-      violations.push(
-        `[ASSESSMENT FREEZE VIOLATION] v${ASSESSMENT_VERSION} ${lang.toUpperCase()} hash mismatch!\n` +
-        `   Expected: ${frozenHash}\n` +
-        `   Got:      ${hash}\n` +
-        `   Assessment content was modified without updating the version.\n` +
-        `   This BREAKS psychometric validity. Revert or bump to v1.2.`
-      );
-    }
+  if (!subtree) {
+    const msg =
+      `🚨 FATAL: [ASSESSMENT FREEZE] v${ASSESSMENT_VERSION} ` +
+      `${lang.toUpperCase()}: assessmentSets subtree MISSING`;
+    log.error(msg);
+    if (import.meta.env.PROD) throw new Error(msg);
+    return null;
   }
 
-  // If any violations, fail loudly
-  if (violations.length > 0) {
-    const fullMessage = `🚨 FATAL: Assessment Freeze Check Failed\n\n${violations.join('\n\n')}`;
-    log.error(fullMessage);
-    
-    if (import.meta.env.PROD) {
-      // In production, throw to prevent app from starting with corrupted content
-      throw new Error(fullMessage);
-    }
-  }
+  const hash = computeHash(data);
+  const frozenHash = ASSESSMENT_FREEZE_HASHES[lang];
 
-  if (!freezeInitialized) {
-    freezeInitialized = true;
-    log.debug(
-      `✅ [Assessment Freeze] v${ASSESSMENT_VERSION} validated\n` +
-      `   EN: ${currentHashes.en}\n` +
-      `   IT: ${currentHashes.it}\n` +
-      `   ES: ${currentHashes.es}`
+  // An unknown locale has no sealed baseline to compare against. Say so rather
+  // than passing it silently, which would read as "verified".
+  if (!frozenHash) {
+    log.warn(
+      `[ASSESSMENT FREEZE] v${ASSESSMENT_VERSION} ${lang.toUpperCase()}: ` +
+      `no sealed hash for this locale — content is UNVERIFIED (got ${hash})`
     );
+    return hash;
   }
 
-  return currentHashes;
-}
-
-/**
- * Dev-only verification: recompute hashes and assert they match sealed values.
- * Prints PASS/FAIL to console.
- */
-export function verifyFreezeIntegrity(): boolean {
-  const current = computeAllHashes();
-  const results: string[] = [];
-  let allPass = true;
-
-  for (const [lang, hash] of Object.entries(current)) {
-    const frozen = ASSESSMENT_FREEZE_HASHES[lang];
-    if (frozen === hash) {
-      results.push(`  ${lang.toUpperCase()}: PASS (${hash})`);
-    } else {
-      results.push(`  ${lang.toUpperCase()}: FAIL (expected ${frozen}, got ${hash})`);
-      allPass = false;
-    }
+  if (frozenHash !== hash) {
+    const msg =
+      `🚨 FATAL: [ASSESSMENT FREEZE VIOLATION] v${ASSESSMENT_VERSION} ` +
+      `${lang.toUpperCase()} hash mismatch!\n` +
+      `   Expected: ${frozenHash}\n` +
+      `   Got:      ${hash}\n` +
+      `   Assessment content was modified without updating the version.\n` +
+      `   This BREAKS psychometric validity. Revert, or bump the version and reseal.`;
+    log.error(msg);
+    if (import.meta.env.PROD) throw new Error(msg);
+    return hash;
   }
 
-  const status = allPass ? '✅ PASS' : '❌ FAIL';
-  log.debug(`[Freeze Integrity Check] ${status}\n${results.join('\n')}`);
-  return allPass;
-}
-
-/**
- * Utility to regenerate hashes for a new version.
- * Run from browser console: import('/src/lib/assessment/freezeGuard').then(m => m.regenerateHashes())
- */
-export function regenerateHashes(): void {
-  const hashes = computeAllHashes();
-  log.debug('=== Assessment Freeze Hashes (copy into ASSESSMENT_FREEZE_HASHES) ===');
-  for (const [lang, hash] of Object.entries(hashes)) {
-    log.debug(`  ${lang}: "${hash}",`);
+  if (!validatedLocales.has(lang)) {
+    validatedLocales.add(lang);
+    log.debug(`✅ [Assessment Freeze] v${ASSESSMENT_VERSION} ${lang.toUpperCase()}: ${hash}`);
   }
-  log.debug('Replace null values in freezeGuard.ts with these hashes, then commit.');
+  return hash;
 }

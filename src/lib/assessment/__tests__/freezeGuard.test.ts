@@ -13,6 +13,19 @@ import enTranslations from '@/i18n/locales/en.json';
 import itTranslations from '@/i18n/locales/it.json';
 import esTranslations from '@/i18n/locales/es.json';
 
+/**
+ * These static imports are deliberate and must stay. Locales are code-split in
+ * the app, so no runtime path loads all three at once any more — this test is
+ * where the full set gets verified, and it is the only thing standing between a
+ * silent edit to a locale that a given user never loads and a shipped
+ * psychometric drift.
+ */
+const ALL_LOCALES = {
+  en: enTranslations as Record<string, unknown>,
+  it: itTranslations as Record<string, unknown>,
+  es: esTranslations as Record<string, unknown>,
+};
+
 describe('Assessment Freeze Guard v1.2.1 (content-lock)', () => {
   it('version is 1.2.1', () => {
     expect(ASSESSMENT_VERSION).toBe('1.2.1');
@@ -25,7 +38,7 @@ describe('Assessment Freeze Guard v1.2.1 (content-lock)', () => {
   });
 
   it('produces 8-char hex hashes', () => {
-    const hashes = computeAllHashes();
+    const hashes = computeAllHashes(ALL_LOCALES);
     for (const [lang, hash] of Object.entries(hashes)) {
       expect(hash).toMatch(/^[0-9a-f]{8}$/);
       console.log(`CONTENT-HASH ${lang.toUpperCase()}: ${hash}`);
@@ -33,15 +46,15 @@ describe('Assessment Freeze Guard v1.2.1 (content-lock)', () => {
   });
 
   it('produces DIFFERENT hashes per locale (content-lock proof)', () => {
-    const hashes = computeAllHashes();
+    const hashes = computeAllHashes(ALL_LOCALES);
     expect(hashes.en).not.toBe(hashes.it);
     expect(hashes.en).not.toBe(hashes.es);
     expect(hashes.it).not.toBe(hashes.es);
   });
 
   it('is deterministic', () => {
-    const first = computeAllHashes();
-    const second = computeAllHashes();
+    const first = computeAllHashes(ALL_LOCALES);
+    const second = computeAllHashes(ALL_LOCALES);
     expect(first).toEqual(second);
   });
 
@@ -55,7 +68,7 @@ describe('Assessment Freeze Guard v1.2.1 (content-lock)', () => {
 
   it('computed hashes match hard-coded sealed values', () => {
     const SEALED = { en: '11ffb15d', it: 'e7b14a09', es: 'd7d4491d' };
-    const hashes = computeAllHashes();
+    const hashes = computeAllHashes(ALL_LOCALES);
     expect(hashes.en).toBe(SEALED.en);
     expect(hashes.it).toBe(SEALED.it);
     expect(hashes.es).toBe(SEALED.es);
