@@ -30,6 +30,22 @@ export default tseslint.config(
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
     },
+    // The five rules below are deliberately "warn", and there are 1424 existing
+    // violations behind them. That is a debt to pay down, not a reason for the
+    // gate to pass unconditionally, so `npm run lint` pins --max-warnings to the
+    // current count: the number can fall, never rise. Lower the ceiling in
+    // package.json whenever you clear some — it is a ratchet, and it only works
+    // if it is tightened.
+    //
+    // Everything inherited from js/tseslint/react-hooks `recommended` stays at
+    // error severity, including react-hooks/rules-of-hooks. Those are already
+    // enforced and currently clean.
+    //
+    // Worth promoting first, when someone has time to do it properly:
+    // react-hooks/exhaustive-deps (52 violations). It is the only one of the
+    // five that causes real runtime bugs rather than untidiness — a missing
+    // dependency is a stale closure reading last render's state. The other
+    // three are strictness and hygiene.
     rules: {
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": [
