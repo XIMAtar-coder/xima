@@ -21,6 +21,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse } from "../_shared/errors.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 import { XIMATAR_PROFILES, computePillarDistance } from "../_shared/ximatarTaxonomy.ts";
+import { performanceScore } from "../_shared/performanceScore.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -178,13 +179,13 @@ serve(async (req) => {
     const trajectoryData = trajectoryRes.data || [];
     const engagementData = engagementRes.data || [];
 
-    // Mean of a candidate's challenge `overall` scores, plus how many carried
-    // verified evidence — a score backed by the candidate's own words is worth
-    // more than one that is not.
+    // Mean of a candidate's challenge scores, plus how many carried verified
+    // evidence — a score backed by the candidate's own words is worth more than
+    // one that is not.
     const performanceByProfile = new Map<string, { mean: number; count: number; withEvidence: number }>();
     for (const row of (performanceRes.data || []) as any[]) {
       const sp = row?.signals_payload as Record<string, unknown> | null;
-      const overall = typeof sp?.overall === 'number' ? sp.overall as number : null;
+      const overall = performanceScore(sp);
       if (overall === null) continue;
       const key = String(row.candidate_profile_id);
       const prev = performanceByProfile.get(key) || { mean: 0, count: 0, withEvidence: 0 };
