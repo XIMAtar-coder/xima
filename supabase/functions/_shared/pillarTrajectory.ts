@@ -112,7 +112,14 @@ function applyDiminishingReturns(currentScore: number, rawDelta: number): number
   // in the opposite direction to the caps above. Distance to the relevant bound
   // is what should slow a move, whichever way it is going.
   const room = rawDelta > 0 ? 100 - currentScore : currentScore;
-  const factor = Math.max(0.2, room / 50);
+  // Clamped to 1. Without the upper bound this function amplified rather than
+  // damped whenever room > 50: a graded -5 at score 100 moved the pillar -10,
+  // and a graded +5 at score 0 moved it +10. The +/-5 gradient cap above was
+  // therefore not a cap at all, and the damage fell hardest on strong
+  // candidates, who have the most room beneath them for a single bad answer to
+  // eat. A move may now be slowed by proximity to the bound it is approaching,
+  // but never exceeds what the grader actually awarded.
+  const factor = Math.min(1, Math.max(0.2, room / 50));
   // 2-decimal precision matches pillar_trajectory_log numeric(5,2); avoids drift across many events.
   return Math.round(rawDelta * factor * 100) / 100;
 }

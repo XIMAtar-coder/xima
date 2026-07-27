@@ -64,6 +64,25 @@ describe('applyDeltas — symmetry', () => {
     expect(ceiling.creativity).toBeLessThanOrEqual(100);
   });
 
+  it('never moves a pillar further than the grader awarded', () => {
+    // The gradient caps a challenge delta at +/-5. Diminishing returns used to
+    // scale by room/50 with no upper bound, so anywhere with more than 50 points
+    // of room it amplified instead: a graded -5 at 100 landed as -10. The cap has
+    // to hold at every point on the scale, not just the middle.
+    for (const score of [0, 10, 25, 50, 75, 90, 100]) {
+      const gained = applyDeltas(scoresAt(score), { ...zero, drive: 5 }, 'l1_challenge').drive - score;
+      const lost = score - applyDeltas(scoresAt(score), { ...zero, drive: -5 }, 'l1_challenge').drive;
+      expect(gained).toBeLessThanOrEqual(5);
+      expect(lost).toBeLessThanOrEqual(5);
+    }
+  });
+
+  it('applies the full graded delta when the bound is far away', () => {
+    // Damping should express proximity to a bound, not shrink every move.
+    expect(applyDeltas(scoresAt(50), { ...zero, drive: 5 }, 'l1_challenge').drive - 50).toBe(5);
+    expect(50 - applyDeltas(scoresAt(50), { ...zero, drive: -5 }, 'l1_challenge').drive).toBe(5);
+  });
+
   it('leaves the Growth Hub non-negative on purpose — practice is not penalised', () => {
     const after = applyDeltas(scoresAt(50), { ...zero, drive: -3 }, 'growth_hub_test');
     expect(after.drive).toBe(50);
