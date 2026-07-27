@@ -59,7 +59,49 @@ export interface TrajectoryEvent {
   correlation_id: string;
   deltas: PillarDeltas;
   reasoning: string;
+  /**
+   * The candidate's own words for this submission, when the caller has them.
+   *
+   * Supplied so the event can be refused rather than graded. A blank or
+   * near-blank submission is missing data, not demonstrated weakness, and the
+   * grader does not distinguish the two: it reads an empty box as total absence
+   * of ability and returns the maximum penalty on every pillar. Four live
+   * submissions were scored that way, with reasoning recorded as "nessuna
+   * risposta valida" and "totale mancanza di impegno".
+   *
+   * Omit only when there is genuinely no source text to check.
+   */
+  response_text?: string | null;
 }
+
+/**
+ * Shortest submission worth grading, in characters after whitespace collapse.
+ *
+ * Not a quality bar — a bad twenty-character answer still gets graded and can
+ * still lose points. This only separates "answered badly" from "did not answer",
+ * which are different facts about a candidate and should not produce the same
+ * score.
+ */
+export const MIN_GRADABLE_LENGTH = 20;
+
+/**
+ * True when a submission carries too little to assess.
+ *
+ * Exported so callers can skip the model call entirely rather than pay for a
+ * grade they are going to discard.
+ */
+export function isUngradable(responseText: string | null | undefined): boolean {
+  if (responseText === null || responseText === undefined) return false; // nothing claimed, nothing refused
+  return responseText.replace(/\s+/g, " ").trim().length < MIN_GRADABLE_LENGTH;
+}
+
+const ZERO_DELTAS: PillarDeltas = {
+  drive: 0,
+  computational_power: 0,
+  communication: 0,
+  creativity: 0,
+  knowledge: 0,
+};
 
 // =====================================================
 // Gradient configuration by source
@@ -298,6 +340,29 @@ export async function persistTrajectoryEvent(event: TrajectoryEvent): Promise<Le
     if (!supabaseUrl || !serviceKey) return null;
     const client = createClient(supabaseUrl, serviceKey);
 
+    // A submission with nothing in it is refused rather than graded. The row is
+    // still written, with zero deltas and a reason: it is the record that this
+    // submission was seen and deliberately not scored, and the idempotency
+    // pre-checks upstream look for exactly this row to avoid re-grading. Only
+    // the profile write below is skipped.
+    const ungradable = isUngradable(event.response_text);
+    const deltas = ungradable ? ZERO_DELTAS : event.deltas;
+    const reasoning = ungradable
+      ? `NOT GRADED — submission too short to assess (< ${MIN_GRADABLE_LENGTH} chars). ` +
+        `A missing answer is absent evidence, not evidence of absence. Flagged for human review.`
+      : event.reasoning;
+
+    if (ungradable) {
+      console.warn(JSON.stringify({
+        type: "submission_not_graded",
+        correlation_id: event.correlation_id,
+        function_name: event.source_function,
+        source_type: event.source_type,
+        source_entity_id: event.source_entity_id,
+        reason: "below_min_gradable_length",
+      }));
+    }
+
     // 1. Log the trajectory event
     await client.from("pillar_trajectory_log").insert({
       user_id: event.user_id,
@@ -305,13 +370,16 @@ export async function persistTrajectoryEvent(event: TrajectoryEvent): Promise<Le
       source_type: event.source_type,
       source_entity_id: event.source_entity_id,
       correlation_id: event.correlation_id,
-      drive_delta: event.deltas.drive,
-      computational_power_delta: event.deltas.computational_power,
-      communication_delta: event.deltas.communication,
-      creativity_delta: event.deltas.creativity,
-      knowledge_delta: event.deltas.knowledge,
-      reasoning: event.reasoning,
+      drive_delta: deltas.drive,
+      computational_power_delta: deltas.computational_power,
+      communication_delta: deltas.communication,
+      creativity_delta: deltas.creativity,
+      knowledge_delta: deltas.knowledge,
+      reasoning,
     });
+
+    // Nothing was measured, so nothing moves.
+    if (ungradable) return null;
 
     // 2. Fetch current scores and apply deltas with gradient
     const { data: profile } = await client

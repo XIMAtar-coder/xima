@@ -1250,6 +1250,10 @@ Evaluate. Return ONLY the JSON object.`;
         correlation_id: correlationId,
         deltas: { ...pillarImpact },
         reasoning: signalsPayload.summary,
+        // Candidate turns only — the interviewer's prompts are not the
+        // candidate's evidence, and counting them would make an empty
+        // conversation look substantive.
+        response_text: candidateOnlyText,
       });
     } catch (e) {
       console.error('[l2_trajectory] Error:', e instanceof Error ? e.message : e);
@@ -1715,6 +1719,13 @@ The per_question array MUST echo every question_id from the input, exactly once.
         correlation_id: correlationId,
         deltas: { ...pillarImpact },
         reasoning: summary,
+        // The free-text path has guarded non-answers since it was written
+        // (detectNonAnswer, checked before its own trajectory write). This
+        // handler never got that guard, which is how four submissions came to
+        // be scored -5 on all five pillars with reasoning recorded as "nessuna
+        // risposta valida". Everything the candidate actually typed, so an
+        // empty set of answers is refused rather than punished.
+        response_text: questions.map((q) => String(payload?.[q.id] || '')).join(' '),
       });
     } catch (e) {
       console.error('[custom_l1_trajectory] Error:', e instanceof Error ? e.message : e);

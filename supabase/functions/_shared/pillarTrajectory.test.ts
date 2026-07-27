@@ -8,7 +8,7 @@
  * behaviour so it cannot quietly drift back.
  */
 import { describe, expect, it } from 'vitest';
-import { applyDeltas } from './pillarTrajectory.ts';
+import { applyDeltas, isUngradable } from './pillarTrajectory.ts';
 
 const zero = {
   drive: 0,
@@ -102,5 +102,35 @@ describe('applyDeltas — symmetry', () => {
     const after = applyDeltas(scoresAt(42), { ...zero, drive: 3 }, 'l1_challenge');
     expect(after.communication).toBe(42);
     expect(after.knowledge).toBe(42);
+  });
+});
+
+describe('isUngradable — refusing to score a non-answer', () => {
+  it('refuses empty and whitespace-only submissions', () => {
+    expect(isUngradable('')).toBe(true);
+    expect(isUngradable('   \n\t  ')).toBe(true);
+  });
+
+  it('refuses a submission below the minimum length', () => {
+    expect(isUngradable('idk')).toBe(true);
+    expect(isUngradable('no comment')).toBe(true);
+  });
+
+  it('grades a short but real answer — this is not a quality bar', () => {
+    // 20+ chars of genuine content. A bad answer still gets graded, and can
+    // still lose points; only the absence of an answer is refused.
+    expect(isUngradable('We shipped it late.')).toBe(true);
+    expect(isUngradable('We shipped it late and lost the client.')).toBe(false);
+  });
+
+  it('ignores padding — whitespace is collapsed before measuring', () => {
+    expect(isUngradable('a' + ' '.repeat(200))).toBe(true);
+  });
+
+  it('does not refuse when the caller supplies no text to check', () => {
+    // Distinct from an empty submission: the caller is not making a claim
+    // about the response, so there is nothing to refuse.
+    expect(isUngradable(undefined)).toBe(false);
+    expect(isUngradable(null)).toBe(false);
   });
 });
