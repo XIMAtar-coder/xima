@@ -114,34 +114,73 @@ serve(async (req) => {
 
     console.log(`[generate-shortlist] Goal loaded: ${goal.role_title}, experience_level: ${goal.experience_level}`);
 
-    // Fetch candidates with pillar scores
-    const { data: candidates, error: candidateError } = await serviceClient
-      .from("profiles")
-      .select(`
-        user_id, id,
-        ximatar_id, ximatar, ximatar_name, ximatar_level,
-        pillar_scores,
-        desired_locations, work_preference, willing_to_relocate,
-        salary_expectation, availability_date, industry_preferences,
-        profile_completed, created_at, updated_at
-      `)
-      .not("pillar_scores", "is", null)
-      // GDPR: exclude candidates who opted out of profiling/shortlisting
-      .or('profiling_opt_out.is.null,profiling_opt_out.eq.false')
-      // Ordered before limiting: an unordered .limit(500) meant which candidates
-      // were even considered could differ between two identical runs.
-      .order("created_at", { ascending: true })
-      .order("id", { ascending: true })
-      .limit(500);
+    // Fetch candidates with pillar scores.
+    //
+    // This was a flat .limit(500): everyone past the 500th oldest profile was
+    // permanently unrankable, and nothing said so — the shortlist looked like a
+    // search of the whole pool. Paged now, up to a ceiling that still has to
+    // exist because scoring happens in memory in this isolate.
+    //
+    // What changed is that hitting the ceiling is no longer silent. It is
+    // logged, and it comes back on the response, because "the best 20 of your
+    // candidates" and "the best 20 of the first 5000 we looked at" are
+    // different claims and only one of them is true past that point.
+    const MAX_POOL = 5000;
+    const PAGE = 1000;
 
-    if (candidateError) {
-      console.error(`[generate-shortlist] profiles query error:`, JSON.stringify(candidateError));
-      return errorResponse(500, "QUERY_ERROR", "Failed to load candidates");
+    type CandidateRow = Record<string, unknown> & { id: string; user_id: string };
+    const candidates: CandidateRow[] = [];
+    let poolTruncated = false;
+
+    for (let from = 0; from < MAX_POOL; from += PAGE) {
+      const { data: page, error: candidateError } = await serviceClient
+        .from("profiles")
+        .select(`
+          user_id, id,
+          ximatar_id, ximatar, ximatar_name, ximatar_level,
+          pillar_scores,
+          desired_locations, work_preference, willing_to_relocate,
+          salary_expectation, availability_date, industry_preferences,
+          profile_completed, created_at, updated_at
+        `)
+        .not("pillar_scores", "is", null)
+        // GDPR: exclude candidates who opted out of profiling/shortlisting
+        .or('profiling_opt_out.is.null,profiling_opt_out.eq.false')
+        // Ordered before paging: an unordered window meant which candidates were
+        // even considered could differ between two identical runs.
+        .order("created_at", { ascending: true })
+        .order("id", { ascending: true })
+        .range(from, from + PAGE - 1);
+
+      if (candidateError) {
+        console.error(`[generate-shortlist] profiles query error:`, JSON.stringify(candidateError));
+        return errorResponse(500, "QUERY_ERROR", "Failed to load candidates");
+      }
+
+      if (!page || page.length === 0) break;
+      candidates.push(...page);
+
+      if (page.length < PAGE) break;
+      if (candidates.length >= MAX_POOL) {
+        poolTruncated = true;
+        break;
+      }
     }
 
-    console.log(`[generate-shortlist] Candidates loaded: ${candidates?.length ?? 0}`);
+    if (poolTruncated) {
+      console.warn(JSON.stringify({
+        type: "shortlist_pool_truncated",
+        correlation_id: correlationId,
+        hiring_goal_id,
+        pool_considered: candidates.length,
+        max_pool: MAX_POOL,
+        note: "Candidates beyond MAX_POOL were not ranked. Scoring needs to move DB-side before the pool outgrows this.",
+      }));
+    }
 
-    if (!candidates || candidates.length === 0) {
+    console.log(`[generate-shortlist] Candidates loaded: ${candidates.length}${poolTruncated ? " (TRUNCATED)" : ""}`);
+
+    if (candidates.length === 0) {
       return jsonResponse({ success: true, shortlist: [], message: "No candidates found", total_candidates_evaluated: 0 });
     }
 
@@ -468,6 +507,9 @@ serve(async (req) => {
       success: true,
       shortlist: topCandidates,
       total_candidates_evaluated: candidates.length,
+      // True when the pool outgrew MAX_POOL and the ranking therefore covers
+      // only part of it. Surfaced rather than hidden so the caller can say so.
+      pool_truncated: poolTruncated,
       scoring_weights: {
         identity: "0-40 pts (pillar match + archetype fit)",
         performance: "0-20 pts (demonstrated performance in challenges)",

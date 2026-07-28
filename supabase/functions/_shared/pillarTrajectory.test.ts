@@ -8,7 +8,12 @@
  * behaviour so it cannot quietly drift back.
  */
 import { describe, expect, it } from 'vitest';
-import { applyDeltas, isUngradable } from './pillarTrajectory.ts';
+import {
+  applyDeltas,
+  isUngradable,
+  clampGrowthHubLifetime,
+  GROWTH_HUB_LIFETIME_CAP,
+} from './pillarTrajectory.ts';
 
 const zero = {
   drive: 0,
@@ -132,5 +137,64 @@ describe('isUngradable — refusing to score a non-answer', () => {
     // about the response, so there is nothing to refuse.
     expect(isUngradable(undefined)).toBe(false);
     expect(isUngradable(null)).toBe(false);
+  });
+});
+
+describe('growth hub lifetime cap — practice cannot buy rank forever', () => {
+  // Minimal stand-in for the Supabase client: only the one query shape used.
+  const clientWith = (rows: Record<string, number>[]) => ({
+    from: () => ({
+      select: () => ({
+        eq: () => ({
+          eq: async () => ({ data: rows, error: null }),
+        }),
+      }),
+    }),
+  }) as never;
+
+  const award = { ...zero, drive: 3, knowledge: 3 };
+
+  it('lets an award through when there is headroom', async () => {
+    const out = await clampGrowthHubLifetime(clientWith([]), 'u1', award, 'c1');
+    expect(out.drive).toBe(3);
+    expect(out.knowledge).toBe(3);
+  });
+
+  it('trims the award to the remaining headroom', async () => {
+    // 14 of 15 banked on drive -> only 1 left.
+    const out = await clampGrowthHubLifetime(
+      clientWith([{ drive_delta: 14, knowledge_delta: 0 }]), 'u1', award, 'c1');
+    expect(out.drive).toBe(1);
+    expect(out.knowledge).toBe(3);
+  });
+
+  it('refuses any further gain once the cap is reached', async () => {
+    const out = await clampGrowthHubLifetime(
+      clientWith([{ drive_delta: GROWTH_HUB_LIFETIME_CAP }]), 'u1', award, 'c1');
+    expect(out.drive).toBe(0);
+  });
+
+  it('never turns a capped gain into a loss', async () => {
+    // Banked beyond the cap (historical data predating the cap) must clamp to
+    // zero, not to a negative — the Growth Hub does not take points away.
+    const out = await clampGrowthHubLifetime(
+      clientWith([{ drive_delta: 40 }]), 'u1', award, 'c1');
+    expect(out.drive).toBe(0);
+    expect(out.drive).toBeGreaterThanOrEqual(0);
+  });
+
+  it('caps each pillar independently', async () => {
+    const out = await clampGrowthHubLifetime(
+      clientWith([{ drive_delta: 15, knowledge_delta: 0 }]), 'u1', award, 'c1');
+    expect(out.drive).toBe(0);
+    expect(out.knowledge).toBe(3);
+  });
+
+  it('passes deltas through unchanged when the lookup fails', async () => {
+    const broken = {
+      from: () => ({ select: () => ({ eq: () => ({ eq: async () => ({ data: null, error: new Error('x') }) }) }) }),
+    } as never;
+    const out = await clampGrowthHubLifetime(broken, 'u1', award, 'c1');
+    expect(out.drive).toBe(3);
   });
 });

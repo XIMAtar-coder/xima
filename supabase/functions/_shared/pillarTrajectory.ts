@@ -103,6 +103,69 @@ const ZERO_DELTAS: PillarDeltas = {
   knowledge: 0,
 };
 
+/**
+ * Most a pillar can ever gain from the Growth Hub across a candidate's lifetime.
+ *
+ * Five tests' worth at the +3 per-event cap. Enough for practice to register as
+ * real movement, far short of enough to out-rank someone who was actually
+ * assessed.
+ */
+export const GROWTH_HUB_LIFETIME_CAP = 15;
+
+/**
+ * Trim a Growth Hub award so the lifetime total per pillar stays under the cap.
+ *
+ * Reads what this user has already banked from growth_hub_test events and
+ * allows only the remaining headroom. Returns the deltas unchanged when nothing
+ * needs trimming; on a read failure it returns them unchanged too, since
+ * silently zeroing a legitimate award would be the worse error.
+ */
+export async function clampGrowthHubLifetime(
+  client: ReturnType<typeof createClient>,
+  userId: string,
+  deltas: PillarDeltas,
+  correlationId: string
+): Promise<PillarDeltas> {
+  const { data, error } = await client
+    .from("pillar_trajectory_log")
+    .select("drive_delta, computational_power_delta, communication_delta, creativity_delta, knowledge_delta")
+    .eq("user_id", userId)
+    .eq("source_type", "growth_hub_test");
+
+  if (error || !data) return deltas;
+
+  const banked: PillarDeltas = { ...ZERO_DELTAS };
+  for (const row of data as Record<string, number | null>[]) {
+    banked.drive += Number(row.drive_delta) || 0;
+    banked.computational_power += Number(row.computational_power_delta) || 0;
+    banked.communication += Number(row.communication_delta) || 0;
+    banked.creativity += Number(row.creativity_delta) || 0;
+    banked.knowledge += Number(row.knowledge_delta) || 0;
+  }
+
+  const clamped: PillarDeltas = { ...deltas };
+  const trimmed: string[] = [];
+  for (const key of PILLAR_KEYS) {
+    if (clamped[key] <= 0) continue; // only gains ratchet
+    const headroom = Math.max(0, GROWTH_HUB_LIFETIME_CAP - banked[key]);
+    if (clamped[key] > headroom) {
+      trimmed.push(`${key}: ${clamped[key]} -> ${headroom}`);
+      clamped[key] = headroom;
+    }
+  }
+
+  if (trimmed.length > 0) {
+    console.warn(JSON.stringify({
+      type: "growth_hub_lifetime_cap_applied",
+      correlation_id: correlationId,
+      cap: GROWTH_HUB_LIFETIME_CAP,
+      trimmed,
+    }));
+  }
+
+  return clamped;
+}
+
 // =====================================================
 // Gradient configuration by source
 // =====================================================
@@ -346,7 +409,22 @@ export async function persistTrajectoryEvent(event: TrajectoryEvent): Promise<Le
     // pre-checks upstream look for exactly this row to avoid re-grading. Only
     // the profile write below is skipped.
     const ungradable = isUngradable(event.response_text);
-    const deltas = ungradable ? ZERO_DELTAS : event.deltas;
+    let deltas = ungradable ? ZERO_DELTAS : event.deltas;
+
+    // The Growth Hub can only ever add — maxNegative is 0, deliberately, because
+    // a practice space should not punish practising. Unbounded, that makes it a
+    // ratchet into a hiring score: pillar_scores feed the 40-point identity axis
+    // of the shortlist, so enough repetitions would walk a candidate toward any
+    // company's ideal vector without them ever demonstrating anything to an
+    // assessor. Effort would buy rank.
+    //
+    // Capping the lifetime contribution bounds that exactly, and leaves the
+    // feature intact: practice still moves the number, it just cannot move it
+    // forever. Assessed sources (L1/L2) stay uncapped and can still go down.
+    if (!ungradable && event.source_type === "growth_hub_test") {
+      deltas = await clampGrowthHubLifetime(client, event.user_id, deltas, event.correlation_id);
+    }
+
     const reasoning = ungradable
       ? `NOT GRADED — submission too short to assess (< ${MIN_GRADABLE_LENGTH} chars). ` +
         `A missing answer is absent evidence, not evidence of absence. Flagged for human review.`
