@@ -12,7 +12,7 @@
 // feed_items: user_id, created_at
 // ximatars: id, animal
 // business_usage_counters: id, business_id, week_start, challenge_templates_created, pool_detail_views
-// business_entitlements: business_id, plan_tier
+// business_entitlements: business_id (-> business_profiles.id, NOT auth user id), plan_tier
 // SALARY CONVENTION: salary_min/salary_max are ALWAYS gross (RAL). Net-to-gross ×1.4 at import.
 
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
@@ -74,12 +74,28 @@ serve(async (req) => {
 
     console.log("[browse-pool] Filters:", JSON.stringify(filters), "Page:", page);
 
-    // Resolve business plan tier
-    const { data: entitlement } = await serviceClient
-      .from("business_entitlements")
-      .select("plan_tier")
-      .eq("business_id", user.id)
+    // Resolve business plan tier.
+    //
+    // business_entitlements.business_id holds business_profiles.id, NOT the auth
+    // user id. This looked the entitlement up by user.id directly, which matched
+    // nothing — every row missed, every caller silently fell through to "free".
+    // In production that meant 32 businesses on a paid starter tier were served
+    // a 5-candidate pool instead of 50, while the dashboard read "Starter"
+    // because the frontend hook resolves the id correctly. Customers were paying
+    // for a tier the API would not give them.
+    const { data: bizRow } = await serviceClient
+      .from("business_profiles")
+      .select("id")
+      .eq("user_id", user.id)
       .maybeSingle();
+
+    const { data: entitlement } = bizRow
+      ? await serviceClient
+          .from("business_entitlements")
+          .select("plan_tier")
+          .eq("business_id", bizRow.id)
+          .maybeSingle()
+      : { data: null };
 
     const plan = (entitlement?.plan_tier || "free").toLowerCase();
     const planLimit = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
