@@ -373,17 +373,28 @@ serve(async (req) => {
       const needed = SYNTHETIC_THRESHOLD - anonymousCandidates.length;
       const available = ALL_ARCHETYPES.filter(a => !existingArchetypes.has(a));
 
+      // Derived from the archetype name rather than Math.random(). These are
+      // placeholders, but a placeholder whose scores change on every request
+      // reads as a broken profile: the same "Demo" card would show Drive 62 and
+      // then Drive 87 on a refresh. Stable values look like what they are.
+      const stableScore = (archetype: string, pillar: string) => {
+        let h = 0;
+        const seed = `${archetype}:${pillar}`;
+        for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+        return 50 + (h % 40);
+      };
+
       const synthetics = available.slice(0, needed).map((archetype, i) => ({
         id: `synthetic-${archetype}`,
         is_synthetic: true,
         ximatar_archetype: archetype,
-        ximatar_level: Math.floor(Math.random() * 3) + 1,
+        ximatar_level: (stableScore(archetype, 'level') % 3) + 1,
         pillar_scores: {
-          drive: 50 + Math.floor(Math.random() * 40),
-          knowledge: 50 + Math.floor(Math.random() * 40),
-          comp_power: 50 + Math.floor(Math.random() * 40),
-          creativity: 50 + Math.floor(Math.random() * 40),
-          communication: 50 + Math.floor(Math.random() * 40),
+          drive: stableScore(archetype, 'drive'),
+          knowledge: stableScore(archetype, 'knowledge'),
+          comp_power: stableScore(archetype, 'comp_power'),
+          creativity: stableScore(archetype, 'creativity'),
+          communication: stableScore(archetype, 'communication'),
         },
         work_preference: ['remote', 'hybrid', 'onsite'][i % 3],
         availability: ['immediately', '1_month', '3_months'][i % 3],
@@ -400,7 +411,14 @@ serve(async (req) => {
 
     return jsonResponse({
       candidates: anonymousCandidates.slice(0, Math.max(planLimit, SYNTHETIC_THRESHOLD)),
-      total_count: Math.max(count || 0, SYNTHETIC_THRESHOLD),
+      // The real number. This was Math.max(count, SYNTHETIC_THRESHOLD), which
+      // reported at least 12 candidates no matter how many existed — so a
+      // business with 4 real people in the pool was told there were 12. The
+      // individual demo cards are labelled and cannot be invited, which makes
+      // them honest; inflating the headline count was not, because that number
+      // is what a buyer judges the marketplace by.
+      total_count: count || 0,
+      synthetic_count: anonymousCandidates.filter((c: any) => c.is_synthetic).length,
       plan_limit: planLimit,
       plan,
       is_restricted: isRestricted,

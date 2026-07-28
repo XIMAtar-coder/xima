@@ -401,7 +401,9 @@ Respond with valid JSON only.`;
         const payloadStr = JSON.stringify(payload);
         const contentHash = await computeContentHash(payloadStr);
 
-        persistEvidenceLedgerEntry({
+        // Awaited — see analyze-open-answer. An un-awaited ledger write can be
+        // killed when the isolate shuts down after the response.
+        await persistEvidenceLedgerEntry({
           open_response_id: submission_id, // repurposed — this is a submission, not an open response
           subject_profile_id: submission.candidate_profile_id,
           attempt_id: submission_id,

@@ -658,7 +658,12 @@ Return ONLY the JSON object.`;
             .single();
 
           if (openResp) {
-            persistEvidenceLedgerEntry({
+            // Awaited. Fired without await, this raced the Response: the edge
+            // runtime can tear the isolate down once the handler returns, so the
+            // ledger write — the audit record of how a hiring decision was
+            // reached — silently vanished some of the time. It try/catches
+            // internally, so awaiting costs latency, not a new failure mode.
+            await persistEvidenceLedgerEntry({
               open_response_id: openResp.id,
               subject_profile_id: profile.id,
               attempt_id: openResp.attempt_id,

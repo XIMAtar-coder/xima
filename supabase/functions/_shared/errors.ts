@@ -4,6 +4,29 @@
  * Consistent error response format across all functions.
  */
 
+/**
+ * The wildcard origin is deliberate, not an oversight — it gets flagged in every
+ * audit, so the reasoning lives here.
+ *
+ * Auth is a bearer token held in localStorage, never a cookie. Browsers do not
+ * attach Authorization headers to cross-origin requests on their own, and a
+ * hostile page cannot read another origin's localStorage, so "*" does not expose
+ * a session the way it would under cookie auth. There is no CSRF surface to
+ * close here, because there is no ambient credential to ride.
+ *
+ * Against that, an allowlist has to cover the production domain, every rotating
+ * Lovable preview domain, and the Capacitor origins the native build runs under
+ * (capacitor://localhost and friends, since the app bundles its assets rather
+ * than pointing at a server.url). Missing one fails as an opaque CORS error in
+ * the mobile app, which is a poor trade for no gain in credential safety.
+ *
+ * What "*" does allow is anyone calling the public, unauthenticated endpoints
+ * from anywhere. That is an abuse-and-quota question, and the answer to it is
+ * rate limiting and per-user budget caps — enforceAiBudget already does this —
+ * not an origin header.
+ *
+ * Revisit if auth ever moves to cookies. Then this must become an allowlist.
+ */
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
