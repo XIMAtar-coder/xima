@@ -113,6 +113,87 @@ const ZERO_DELTAS: PillarDeltas = {
 export const GROWTH_HUB_LIFETIME_CAP = 15;
 
 /**
+ * Trim an award so one challenge cannot exceed its per-event cap by being graded
+ * in pieces.
+ *
+ * The gradient caps an L1 challenge at ±5. Two grading paths exist and they
+ * disagreed about what "one event" means: the batch path writes a single row per
+ * challenge and respects the cap, while the per-question path writes one row per
+ * question, so a four-question challenge could move a pillar four times as far
+ * as the cap allows. One live submission took −15 drive across three questions
+ * while a four-question challenge on the other path correctly took −5.
+ *
+ * Budgeting per (user, source_type, source_entity_id) makes the cap mean what it
+ * says regardless of how many pieces the grading arrives in. Both directions are
+ * bounded, so this cannot be used to dodge a legitimate penalty either.
+ *
+ * Returns the deltas unchanged on a read failure: silently zeroing a legitimate
+ * award is the worse error.
+ */
+export async function clampToChallengeBudget(
+  client: ReturnType<typeof createClient>,
+  userId: string,
+  sourceType: TrajectorySource,
+  sourceEntityId: string | null,
+  deltas: PillarDeltas,
+  correlationId: string
+): Promise<PillarDeltas> {
+  if (!sourceEntityId) return deltas;
+
+  const { data, error } = await client
+    .from("pillar_trajectory_log")
+    .select("drive_delta, computational_power_delta, communication_delta, creativity_delta, knowledge_delta")
+    .eq("user_id", userId)
+    .eq("source_type", sourceType)
+    .eq("source_entity_id", sourceEntityId);
+
+  if (error || !data || data.length === 0) return deltas;
+
+  const banked = sumDeltaRows(data as Record<string, number | null>[]);
+  const cfg = GRADIENT_CONFIG[sourceType];
+  const clamped: PillarDeltas = { ...deltas };
+  const trimmed: string[] = [];
+
+  for (const key of PILLAR_KEYS) {
+    const d = clamped[key];
+    if (d === 0) continue;
+    // Headroom left in this challenge's budget, in the direction of travel.
+    const headroom = d > 0
+      ? Math.max(0, cfg.maxPositive - banked[key])
+      : Math.min(0, cfg.maxNegative - banked[key]);
+    const next = d > 0 ? Math.min(d, headroom) : Math.max(d, headroom);
+    if (next !== d) {
+      trimmed.push(`${key}: ${d} -> ${next}`);
+      clamped[key] = next;
+    }
+  }
+
+  if (trimmed.length > 0) {
+    console.warn(JSON.stringify({
+      type: "challenge_budget_cap_applied",
+      correlation_id: correlationId,
+      source_type: sourceType,
+      source_entity_id: sourceEntityId,
+      trimmed,
+    }));
+  }
+
+  return clamped;
+}
+
+function sumDeltaRows(rows: Record<string, number | null>[]): PillarDeltas {
+  const banked: PillarDeltas = { ...ZERO_DELTAS };
+  for (const row of rows) {
+    banked.drive += Number(row.drive_delta) || 0;
+    banked.computational_power += Number(row.computational_power_delta) || 0;
+    banked.communication += Number(row.communication_delta) || 0;
+    banked.creativity += Number(row.creativity_delta) || 0;
+    banked.knowledge += Number(row.knowledge_delta) || 0;
+  }
+  return banked;
+}
+
+/**
  * Trim a Growth Hub award so the lifetime total per pillar stays under the cap.
  *
  * Reads what this user has already banked from growth_hub_test events and
@@ -134,14 +215,7 @@ export async function clampGrowthHubLifetime(
 
   if (error || !data) return deltas;
 
-  const banked: PillarDeltas = { ...ZERO_DELTAS };
-  for (const row of data as Record<string, number | null>[]) {
-    banked.drive += Number(row.drive_delta) || 0;
-    banked.computational_power += Number(row.computational_power_delta) || 0;
-    banked.communication += Number(row.communication_delta) || 0;
-    banked.creativity += Number(row.creativity_delta) || 0;
-    banked.knowledge += Number(row.knowledge_delta) || 0;
-  }
+  const banked = sumDeltaRows(data as Record<string, number | null>[]);
 
   const clamped: PillarDeltas = { ...deltas };
   const trimmed: string[] = [];
@@ -421,8 +495,17 @@ export async function persistTrajectoryEvent(event: TrajectoryEvent): Promise<Le
     // Capping the lifetime contribution bounds that exactly, and leaves the
     // feature intact: practice still moves the number, it just cannot move it
     // forever. Assessed sources (L1/L2) stay uncapped and can still go down.
-    if (!ungradable && event.source_type === "growth_hub_test") {
-      deltas = await clampGrowthHubLifetime(client, event.user_id, deltas, event.correlation_id);
+    if (!ungradable) {
+      // Per-challenge budget first: this is the cap the gradient advertises, and
+      // it has to hold however many pieces the grading arrives in.
+      deltas = await clampToChallengeBudget(
+        client, event.user_id, event.source_type, event.source_entity_id, deltas, event.correlation_id
+      );
+      // Then the Growth Hub's separate lifetime ceiling, which spans every test
+      // rather than a single one.
+      if (event.source_type === "growth_hub_test") {
+        deltas = await clampGrowthHubLifetime(client, event.user_id, deltas, event.correlation_id);
+      }
     }
 
     const reasoning = ungradable

@@ -12,6 +12,7 @@ import {
   applyDeltas,
   isUngradable,
   clampGrowthHubLifetime,
+  clampToChallengeBudget,
   GROWTH_HUB_LIFETIME_CAP,
 } from './pillarTrajectory.ts';
 
@@ -196,5 +197,69 @@ describe('growth hub lifetime cap — practice cannot buy rank forever', () => {
     } as never;
     const out = await clampGrowthHubLifetime(broken, 'u1', award, 'c1');
     expect(out.drive).toBe(3);
+  });
+});
+
+describe('per-challenge budget — one challenge, one cap', () => {
+  const clientWith = (rows: Record<string, number>[]) => ({
+    from: () => ({
+      select: () => ({
+        eq: () => ({ eq: () => ({ eq: async () => ({ data: rows, error: null }) }) }),
+      }),
+    }),
+  }) as never;
+
+  it('lets the first question through at full strength', async () => {
+    const out = await clampToChallengeBudget(
+      clientWith([]), 'u1', 'l1_challenge', 'inv1', { ...zero, drive: -5 }, 'c1');
+    expect(out.drive).toBe(-5);
+  });
+
+  it('refuses a second question that would exceed the challenge cap', async () => {
+    // This is the live bug: q2 already took -5, q3 tried to take another -5.
+    const out = await clampToChallengeBudget(
+      clientWith([{ drive_delta: -5 }]), 'u1', 'l1_challenge', 'inv1', { ...zero, drive: -5 }, 'c1');
+    expect(out.drive).toBe(0);
+  });
+
+  it('allows the remainder when the budget is partly spent', async () => {
+    const out = await clampToChallengeBudget(
+      clientWith([{ drive_delta: -3 }]), 'u1', 'l1_challenge', 'inv1', { ...zero, drive: -5 }, 'c1');
+    expect(out.drive).toBe(-2);
+  });
+
+  it('bounds gains the same way, so the cap cannot be farmed either', async () => {
+    const out = await clampToChallengeBudget(
+      clientWith([{ drive_delta: 5 }]), 'u1', 'l1_challenge', 'inv1', { ...zero, drive: 5 }, 'c1');
+    expect(out.drive).toBe(0);
+  });
+
+  it('does not let a later gain be inflated by an earlier loss', async () => {
+    // Banked -5, incoming +5: headroom is maxPositive - (-5) = 10, but the
+    // award itself is 5, so it must pass through at 5 and never above it.
+    const out = await clampToChallengeBudget(
+      clientWith([{ drive_delta: -5 }]), 'u1', 'l1_challenge', 'inv1', { ...zero, drive: 5 }, 'c1');
+    expect(out.drive).toBe(5);
+  });
+
+  it('budgets each challenge independently, not globally', async () => {
+    // No rows for THIS entity means a full budget, regardless of other challenges.
+    const out = await clampToChallengeBudget(
+      clientWith([]), 'u1', 'l1_challenge', 'inv2', { ...zero, drive: -5 }, 'c1');
+    expect(out.drive).toBe(-5);
+  });
+
+  it('passes through when there is no entity to budget against', async () => {
+    const out = await clampToChallengeBudget(
+      clientWith([{ drive_delta: -5 }]), 'u1', 'l1_challenge', null, { ...zero, drive: -5 }, 'c1');
+    expect(out.drive).toBe(-5);
+  });
+
+  it('passes deltas through unchanged when the lookup fails', async () => {
+    const broken = {
+      from: () => ({ select: () => ({ eq: () => ({ eq: () => ({ eq: async () => ({ data: null, error: new Error('x') }) }) }) }) }),
+    } as never;
+    const out = await clampToChallengeBudget(broken, 'u1', 'l1_challenge', 'inv1', { ...zero, drive: -5 }, 'c1');
+    expect(out.drive).toBe(-5);
   });
 });
