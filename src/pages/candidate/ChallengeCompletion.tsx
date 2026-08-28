@@ -20,7 +20,7 @@ import type { MindsetConfig } from '@/components/candidate/mindset/types';
 import { L2ConversationChallenge } from '@/components/candidate/l2converse/L2ConversationChallenge';
 import type { L2ChallengeConfig } from '@/components/candidate/l2converse/types';
 import CustomL1Challenge from '@/components/candidate/customl1/CustomL1Challenge';
-import { computeSignals, SignalsPayload } from '@/lib/signals/computeSignals';
+import type { SignalsPayload } from '@/lib/signals/computeSignals';
 import { ChallengePipelineProgress } from '@/components/candidate/ChallengePipelineProgress';
 import { CandidateReflectionPanel } from '@/components/signals/CandidateReflectionPanel';
 import { ChallengeProgressHeader } from '@/components/candidate/ChallengeProgressHeader';
@@ -642,92 +642,46 @@ export default function ChallengeCompletion() {
         return;
       }
 
-      const now = new Date().toISOString();
-      
       // Determine which payload to use based on level
       const submissionPayload = challenge?.level === 2 ? level2Payload : payload;
-      
-      // Only compute signals for Level 1
-      const signals = challenge?.level === 1 ? computeSignals(payload) : null;
 
-      // Use invitation as the source of truth for all foreign keys
-      // CRITICAL: signals_version must NEVER be null (NOT NULL constraint)
-      const submissionData: Record<string, unknown> = {
-        invitation_id: invitation.id,
-        candidate_profile_id: invitation.candidate_profile_id,
-        business_id: invitation.business_id,
-        hiring_goal_id: invitation.hiring_goal_id,
-        challenge_id: invitation.challenge_id,
-        status: 'submitted',
-        submitted_payload: submissionPayload,
-        submitted_at: now,
-        signals_version: 'v1', // Explicit, never null
-      };
+      // Submission goes through the edge function rather than writing the row
+      // here. signals_payload feeds the shortlist's performance axis, and this
+      // client used to compute and write it — which meant a candidate could set
+      // their own score by editing the request. That column is now locked to the
+      // service role, so the server recomputes the same deterministic heuristic
+      // from the answers and writes it. The function also owns the invitation
+      // status update, so submission is one transaction-shaped call instead of
+      // three writes that could half-succeed.
+      const { data: result, error: submitError } = await supabase.functions.invoke(
+        'submit-challenge',
+        {
+          body: {
+            invitation_id: invitationId,
+            payload: submissionPayload,
+            level: challenge?.level ?? 1,
+          },
+        }
+      );
 
-      // Only include signals_payload if it exists (Level 1 only)
-      if (signals && Object.keys(signals).length > 0) {
-        submissionData.signals_payload = signals;
+      if (submitError) {
+        log.error('Submit error:', submitError);
+        throw submitError;
       }
 
-      if (submissionId) {
-        // Check if already submitted before updating
-        const { data: existing } = await supabase
-          .from('challenge_submissions')
-          .select('status')
-          .eq('id', submissionId)
-          .single();
-
-        if (existing?.status === 'submitted') {
-          toast({
-            title: t('challenge.already_submitted'),
-            variant: 'destructive',
-          });
-          setSubmissionStatus('submitted');
-          return;
-        }
-
-        // Update existing submission
-        const updateData = {
-          ...submissionData,
-          draft_payload: submissionPayload,
-        };
-        const { error: updateError } = await supabase
-          .from('challenge_submissions')
-          .update(updateData as any)
-          .eq('id', submissionId);
-
-        if (updateError) {
-          log.error('Update error:', updateError);
-          throw updateError;
-        }
-      } else {
-        // Insert new submission with upsert on invitation_id
-        const insertData = {
-          ...submissionData,
-          draft_payload: submissionPayload,
-        };
-        const { error: insertError } = await supabase
-          .from('challenge_submissions')
-          .upsert(insertData as any, {
-            onConflict: 'invitation_id',
-          });
-
-        if (insertError) {
-          log.error('Insert error:', insertError);
-          throw insertError;
-        }
+      if (result?.status === 'already_submitted') {
+        toast({ title: t('challenge.already_submitted'), variant: 'destructive' });
+        setSubmissionStatus('submitted');
+        return;
       }
 
-      // Also update the invitation status to reflect submission
-      const { error: invitationStatusError } = await supabase
-        .from('challenge_invitations')
-        .update({ status: 'submitted', responded_at: now })
-        .eq('id', invitationId);
-      // Surfaced, not swallowed: this write failed silently for months,
-      // leaving businesses unable to see who had responded.
-      if (invitationStatusError) {
-        log.error('Failed to mark invitation as submitted', invitationStatusError);
-      }
+      if (result?.submission_id) setSubmissionId(result.submission_id);
+      // Show the reflection straight away using the scores the server just
+      // computed. Previously these were only picked up on a page reload, so a
+      // candidate who submitted and stayed put saw an empty panel.
+      if (result?.signals) setSubmittedSignals(result.signals as SignalsPayload);
+      const now = result?.submitted_at || new Date().toISOString();
+
 
       setSubmissionStatus('submitted');
       setSubmittedAt(now);
