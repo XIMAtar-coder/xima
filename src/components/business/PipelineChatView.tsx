@@ -131,7 +131,7 @@ export const PipelineChatView: React.FC<PipelineChatViewProps> = ({
       {/* Header */}
       <div className="flex items-center gap-3 p-4 border-b border-border flex-shrink-0">
         {onBack && (
-          <Button variant="ghost" size="icon" className="lg:hidden h-8 w-8" onClick={onBack}>
+          <Button variant="ghost" size="icon" className="lg:hidden h-8 w-8" onClick={onBack} aria-label={t('a11y.back')}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
         )}
@@ -218,7 +218,7 @@ export const PipelineChatView: React.FC<PipelineChatViewProps> = ({
             disabled={sending}
             className="flex-1"
           />
-          <Button onClick={sendMessage} disabled={!message.trim() || sending} size="icon">
+          <Button onClick={sendMessage} disabled={!message.trim() || sending} size="icon" aria-label={t('a11y.sending')}>
             {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </Button>
         </div>

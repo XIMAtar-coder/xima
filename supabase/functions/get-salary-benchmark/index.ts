@@ -1,10 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { corsHeadersFor } from "../_shared/errors.ts";
 import { withResultCache } from "../_shared/withResultCache.ts";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
 
 // Salary benchmarks by country and experience level (simplified dataset)
 const benchmarks: Record<string, Record<string, { min: number; max: number; median: number; currency: string }>> = {
@@ -48,6 +45,7 @@ const euAverage: Record<string, { min: number; max: number; median: number; curr
 };
 
 serve(async (req) => {
+  const corsHeaders = corsHeadersFor(req);
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

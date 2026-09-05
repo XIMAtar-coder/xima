@@ -185,7 +185,7 @@ const MentorLogin = () => {
                 <Lock className="absolute left-3 top-3 text-muted-foreground" size={18} />
                 <Input
                   id="password"
-                  type="password"
+                  type="password" autoComplete="current-password"
                   placeholder="••••••••"
                   className="pl-10"
                   value={formData.password}

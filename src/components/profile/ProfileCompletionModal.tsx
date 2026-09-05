@@ -255,7 +255,7 @@ export const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                 onChange={e => setCityInput(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCity(); } }}
               />
-              <Button type="button" variant="outline" size="icon" onClick={addCity}>
+              <Button type="button" variant="outline" size="icon" onClick={addCity} aria-label={t('a11y.add')}>
                 <Plus className="h-4 w-4" />
               </Button>
             </div>

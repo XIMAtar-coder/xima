@@ -108,7 +108,7 @@ const About: React.FC = () => {
           </div>
           <div className="flex justify-center lg:justify-end">
             <img
-              src="/images/assessment-layers.png"
+              src="/images/assessment-layers.webp"
               alt=""
               aria-hidden="true"
               className="w-full max-w-[400px] h-auto"
@@ -210,7 +210,7 @@ const About: React.FC = () => {
             </div>
             <div className="flex justify-center md:justify-end">
               <img
-                src="/images/problem-cv-breaking.png"
+                src="/images/problem-cv-breaking.webp"
                 alt=""
                 aria-hidden="true"
                 className="w-full max-w-[300px] h-auto"

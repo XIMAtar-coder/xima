@@ -1,12 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { corsHeadersFor } from "../_shared/errors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.3";
 import { emitAuditEvent } from "../_shared/auditEvents.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
 
 // Simple in-memory rate limiting (per IP, max 10 requests per minute)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -31,6 +28,7 @@ function checkRateLimit(ip: string): boolean {
 }
 
 serve(async (req) => {
+  const corsHeaders = corsHeadersFor(req);
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

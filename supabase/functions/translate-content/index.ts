@@ -7,7 +7,7 @@ import {
   handleValidationError 
 } from "../_shared/validation.ts";
 import { callAiGateway, generateCorrelationId, AiGatewayError } from "../_shared/aiClient.ts";
-import { corsHeaders, errorResponse, jsonResponse } from "../_shared/errors.ts";
+import { corsHeaders, errorResponse, jsonResponse, corsHeadersFor } from "../_shared/errors.ts";
 import { withResultCache } from "../_shared/withResultCache.ts";
 import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
@@ -16,6 +16,7 @@ const SUPPORTED_LOCALES = ['en', 'it', 'es'] as const;
 const MAX_TEXT_LENGTH = 10000;
 
 serve(async (req) => {
+  const corsHeaders = corsHeadersFor(req);
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

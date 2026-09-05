@@ -71,7 +71,7 @@ const HowItWorks = () => {
           {/* 3D layers PNG with absolute-positioned L1/L2/L3 labels */}
           <div className="relative w-full max-w-md mx-auto">
             <img
-              src="/images/assessment-layers.png"
+              src="/images/assessment-layers.webp"
               alt=""
               className="w-full h-auto select-none"
               draggable={false}

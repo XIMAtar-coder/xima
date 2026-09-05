@@ -142,6 +142,14 @@ i18n.on('languageChanged', (lng) => {
   } catch {
     // Ignore localStorage errors
   }
+  // index.html ships lang="en" and nothing updated it, so screen readers read
+  // Italian UI with English pronunciation rules and search engines were told
+  // the wrong language. WCAG 3.1.1.
+  try {
+    document.documentElement.lang = lng;
+  } catch {
+    // non-DOM environment (tests)
+  }
 });
 
 export default i18n;

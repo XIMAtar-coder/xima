@@ -11,6 +11,7 @@ import './i18n'; // Initialize i18n
 import { XimAIProvider } from "./context/XimAIProvider";
 import { AssessmentProvider } from "./context/AssessmentContext";
 import RouteSkeleton from "./components/ui/RouteSkeleton";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import ChunkErrorBoundary from "./components/ui/ChunkErrorBoundary";
 import { ChatEntry } from "./components/ximai/ChatEntry";
 import { useUser } from "./context/UserContext";
@@ -54,10 +55,6 @@ const MyOffers = lazy(() => import("./pages/candidate/MyOffers"));
 const JobsBrowse = lazy(() => import("./pages/JobsBrowse"));
 
 // ---- Tests ----
-const TestDataAnalysis = lazy(() => import("./pages/TestDataAnalysis"));
-const TestLogicalProblemSolving = lazy(() => import("./pages/TestLogicalProblemSolving"));
-const TestPresentationSkills = lazy(() => import("./pages/TestPresentationSkills"));
-const TestCreativeThinking = lazy(() => import("./pages/TestCreativeThinking"));
 
 // ---- Business ----
 const BusinessRegister = lazy(() => import("./pages/business/Register"));
@@ -152,79 +149,74 @@ const RoutesTree = () => {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
-          <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/onboarding" element={<RequireAuth role="candidate"><Onboarding /></RequireAuth>} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
           {/* Legal Pages */}
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/imprint" element={<Imprint />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<RequireAuth role="candidate"><Profile /></RequireAuth>} />
           <Route path="/ximatar-journey" element={<XimatarJourney />} />
-          <Route path="/xima-chat" element={<XimaChat />} />
-          <Route path="/development-plan" element={<DevelopmentPlan />} />
-          <Route path="/test/data-analysis" element={<TestDataAnalysis />} />
-          <Route path="/test/logical-problem-solving" element={<TestLogicalProblemSolving />} />
-          <Route path="/test/presentation-skills" element={<TestPresentationSkills />} />
-          <Route path="/test/creative-thinking" element={<TestCreativeThinking />} />
+          <Route path="/xima-chat" element={<RequireAuth role="candidate"><XimaChat /></RequireAuth>} />
+          <Route path="/development-plan" element={<RequireAuth role="candidate"><DevelopmentPlan /></RequireAuth>} />
           <Route path="/opportunity/:id" element={<OpportunityDetails />} />
 
           <Route path="/assessment-guide" element={<AssessmentGuide />} />
-          <Route path="/dashboard" element={<Profile />} />
-          <Route path="/chat" element={<XimaChat />} />
-          <Route path="/messages" element={<Messages />} />
-          <Route path="/settings" element={<CandidateSettings />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/eligibility" element={<EligibilityReview />} />
+          <Route path="/dashboard" element={<RequireAuth role="candidate"><Profile /></RequireAuth>} />
+          <Route path="/chat" element={<RequireAuth role="candidate"><XimaChat /></RequireAuth>} />
+          <Route path="/messages" element={<RequireAuth role="candidate"><Messages /></RequireAuth>} />
+          <Route path="/settings" element={<RequireAuth role="candidate"><CandidateSettings /></RequireAuth>} />
+          <Route path="/admin" element={<RequireAuth role="admin"><Admin /></RequireAuth>} />
+          <Route path="/admin/eligibility" element={<RequireAuth role="admin"><EligibilityReview /></RequireAuth>} />
           {/* Mentor Portal Routes */}
-          <Route path="/mentor" element={<MentorPortal />} />
+          <Route path="/mentor" element={<RequireAuth role="mentor"><MentorPortal /></RequireAuth>} />
           <Route path="/mentor/login" element={<MentorLogin />} />
-          <Route path="/mentor/profile" element={<MentorProfileEdit />} />
-          <Route path="/mentor/preview" element={<MentorPreview />} />
-          <Route path="/mentor/sessions" element={<MentorSessions />} />
-          <Route path="/mentor/calendar" element={<MentorCalendar />} />
-          <Route path="/mentor/calendar/:sessionId" element={<MentorSessionDetail />} />
+          <Route path="/mentor/profile" element={<RequireAuth role="mentor"><MentorProfileEdit /></RequireAuth>} />
+          <Route path="/mentor/preview" element={<RequireAuth role="mentor"><MentorPreview /></RequireAuth>} />
+          <Route path="/mentor/sessions" element={<RequireAuth role="mentor"><MentorSessions /></RequireAuth>} />
+          <Route path="/mentor/calendar" element={<RequireAuth role="mentor"><MentorCalendar /></RequireAuth>} />
+          <Route path="/mentor/calendar/:sessionId" element={<RequireAuth role="mentor"><MentorSessionDetail /></RequireAuth>} />
           {/* Business Portal Routes */}
           <Route path="/business/register" element={<BusinessRegister />} />
           <Route path="/business/login" element={<BusinessLogin />} />
-          <Route path="/business/dashboard" element={<BusinessDashboard />} />
-          <Route path="/business/candidates" element={<BusinessCandidates />} />
-          <Route path="/business/challenges" element={<BusinessChallenges />} />
-          <Route path="/business/challenges/select" element={<ChallengeTypeSelector />} />
-          <Route path="/business/challenges/new" element={<CreateChallenge />} />
-          <Route path="/business/challenges/xima-core" element={<CreateXimaCoreChallenge />} />
-          <Route path="/business/challenges/:id/edit" element={<CreateChallenge />} />
-          <Route path="/business/evaluations" element={<BusinessEvaluations />} />
+          <Route path="/business/dashboard" element={<RequireAuth role="business"><BusinessDashboard /></RequireAuth>} />
+          <Route path="/business/candidates" element={<RequireAuth role="business"><BusinessCandidates /></RequireAuth>} />
+          <Route path="/business/challenges" element={<RequireAuth role="business"><BusinessChallenges /></RequireAuth>} />
+          <Route path="/business/challenges/select" element={<RequireAuth role="business"><ChallengeTypeSelector /></RequireAuth>} />
+          <Route path="/business/challenges/new" element={<RequireAuth role="business"><CreateChallenge /></RequireAuth>} />
+          <Route path="/business/challenges/xima-core" element={<RequireAuth role="business"><CreateXimaCoreChallenge /></RequireAuth>} />
+          <Route path="/business/challenges/:id/edit" element={<RequireAuth role="business"><CreateChallenge /></RequireAuth>} />
+          <Route path="/business/evaluations" element={<RequireAuth role="business"><BusinessEvaluations /></RequireAuth>} />
           <Route path="/business/reports" element={<Navigate to="/business/evaluations" replace />} />
-          <Route path="/business/settings" element={<BusinessSettings />} />
-          <Route path="/business/jobs" element={<BusinessJobs />} />
-          <Route path="/business/jobs/new" element={<CreateJobOffer />} />
-          <Route path="/business/jobs/import" element={<JobImportWizard />} />
-          <Route path="/business/jobs/:jobId/matches" element={<JobCandidateMatching />} />
+          <Route path="/business/settings" element={<RequireAuth role="business"><BusinessSettings /></RequireAuth>} />
+          <Route path="/business/jobs" element={<RequireAuth role="business"><BusinessJobs /></RequireAuth>} />
+          <Route path="/business/jobs/new" element={<RequireAuth role="business"><CreateJobOffer /></RequireAuth>} />
+          <Route path="/business/jobs/import" element={<RequireAuth role="business"><JobImportWizard /></RequireAuth>} />
+          <Route path="/business/jobs/:jobId/matches" element={<RequireAuth role="business"><JobCandidateMatching /></RequireAuth>} />
           {/* Goal-scoped routes */}
-          <Route path="/business/hiring-goals/:goalId/shortlist" element={<GoalShortlistPage />} />
-          <Route path="/business/hiring-goals/:goalId/candidates" element={<GoalCandidates />} />
-          <Route path="/business/hiring-goals/:goalId/challenges" element={<GoalChallenges />} />
-          <Route path="/business/hiring-goals/:goalId/settings" element={<GoalSettings />} />
-          <Route path="/business/hiring-goals/:goalId/decision-pack" element={<GoalDecisionPack />} />
-          <Route path="/business/hiring-goals/:goalId/challenges/:challengeId/responses" element={<ChallengeResponses />} />
-          <Route path="/business/hiring-goals" element={<BusinessHiringGoals />} />
-          <Route path="/business/hiring-goals/new" element={<HiringGoalCreate />} />
-          <Route path="/business/hiring-goals/:goalId/edit" element={<HiringGoalCreate />} />
+          <Route path="/business/hiring-goals/:goalId/shortlist" element={<RequireAuth role="business"><GoalShortlistPage /></RequireAuth>} />
+          <Route path="/business/hiring-goals/:goalId/candidates" element={<RequireAuth role="business"><GoalCandidates /></RequireAuth>} />
+          <Route path="/business/hiring-goals/:goalId/challenges" element={<RequireAuth role="business"><GoalChallenges /></RequireAuth>} />
+          <Route path="/business/hiring-goals/:goalId/settings" element={<RequireAuth role="business"><GoalSettings /></RequireAuth>} />
+          <Route path="/business/hiring-goals/:goalId/decision-pack" element={<RequireAuth role="business"><GoalDecisionPack /></RequireAuth>} />
+          <Route path="/business/hiring-goals/:goalId/challenges/:challengeId/responses" element={<RequireAuth role="business"><ChallengeResponses /></RequireAuth>} />
+          <Route path="/business/hiring-goals" element={<RequireAuth role="business"><BusinessHiringGoals /></RequireAuth>} />
+          <Route path="/business/hiring-goals/new" element={<RequireAuth role="business"><HiringGoalCreate /></RequireAuth>} />
+          <Route path="/business/hiring-goals/:goalId/edit" element={<RequireAuth role="business"><HiringGoalCreate /></RequireAuth>} />
           {/* Legacy redirects: /business/goals/* → /business/hiring-goals/* */}
           <Route path="/business/goals/*" element={<LegacyGoalsRedirect />} />
-          <Route path="/business/messages" element={<BusinessPipelineChat />} />
+          <Route path="/business/messages" element={<RequireAuth role="business"><BusinessPipelineChat /></RequireAuth>} />
           <Route path="/analytics" element={<Navigate to="/admin?tab=overview" replace />} />
           <Route path="/challenge/accept" element={<ChallengeAccept />} />
           {/* Candidate challenge completion */}
-          <Route path="/candidate/challenges/:invitationId" element={<ChallengeCompletion />} />
-          <Route path="/candidate/challenges/:invitationId/standing" element={<StandingVideoSession />} />
-          <Route path="/candidate/followups/:invitationId" element={<ChallengeFollowup />} />
+          <Route path="/candidate/challenges/:invitationId" element={<RequireAuth role="candidate"><ChallengeCompletion /></RequireAuth>} />
+          <Route path="/candidate/challenges/:invitationId/standing" element={<RequireAuth role="candidate"><StandingVideoSession /></RequireAuth>} />
+          <Route path="/candidate/followups/:invitationId" element={<RequireAuth role="candidate"><ChallengeFollowup /></RequireAuth>} />
           {/* Candidate session detail */}
-          <Route path="/sessions/:sessionId" element={<CandidateSessionDetail />} />
-          <Route path="/sessions/:sessionId/room" element={<CandidateSessionRoom />} />
-          <Route path="/jobs" element={<JobsBrowse />} />
-          <Route path="/my-offers" element={<MyOffers />} />
-          <Route path="/offers" element={<MyOffers />} />
+          <Route path="/sessions/:sessionId" element={<RequireAuth role="candidate"><CandidateSessionDetail /></RequireAuth>} />
+          <Route path="/sessions/:sessionId/room" element={<RequireAuth role="candidate"><CandidateSessionRoom /></RequireAuth>} />
+          <Route path="/jobs" element={<RequireAuth role="candidate"><JobsBrowse /></RequireAuth>} />
+          <Route path="/my-offers" element={<RequireAuth role="candidate"><MyOffers /></RequireAuth>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

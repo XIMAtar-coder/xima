@@ -206,7 +206,7 @@ const Messages = () => {
                       <Button
                         variant="ghost" size="icon"
                         className="lg:hidden h-8 w-8"
-                        onClick={() => setMobileShowChat(false)}
+                        aria-label={t('a11y.back')} onClick={() => setMobileShowChat(false)}
                       >
                         <ArrowLeft className="h-4 w-4" />
                       </Button>
@@ -281,7 +281,7 @@ const Messages = () => {
                         disabled={sending}
                         className="flex-1"
                       />
-                      <Button onClick={handleSend} disabled={!message.trim() || sending} size="icon">
+                      <Button onClick={handleSend} disabled={!message.trim() || sending} size="icon" aria-label={t('a11y.sending')}>
                         {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                       </Button>
                     </div>

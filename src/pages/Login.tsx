@@ -174,7 +174,7 @@ const Login = () => {
                 </div>
                 <Input
                   id="password"
-                  type="password"
+                  type="password" autoComplete="current-password"
                   placeholder={t('login.password_placeholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

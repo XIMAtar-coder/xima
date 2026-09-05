@@ -98,7 +98,7 @@ export const HeroSection: React.FC = () => {
         <img
           src={typeof currentSlide.heroImage === 'string' ? currentSlide.heroImage : (currentSlide.heroImage as string)}
           alt=""
-          fetchPriority="high"
+          {...({ fetchpriority: 'high' } as Record<string, string>)}
           decoding="async"
           width={1200}
           height={1600}
@@ -174,7 +174,7 @@ export const HeroSection: React.FC = () => {
           <img
             src={typeof currentSlide.heroImage === 'string' ? currentSlide.heroImage : (currentSlide.heroImage as string)}
             alt=""
-            fetchPriority="high"
+            {...({ fetchpriority: 'high' } as Record<string, string>)}
             decoding="async"
             width={800}
             height={280}

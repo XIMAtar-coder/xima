@@ -173,7 +173,7 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
                   : t('businessPortal.dashboard_profile_incomplete', 'Incomplete')}
               </Badge>
             )}
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate('/business/settings')}>
+            <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('a11y.settings')} onClick={() => navigate('/business/settings')}>
               <Settings className="h-4 w-4 text-muted-foreground" />
             </Button>
           </div>

@@ -1,32 +1,37 @@
 name: CI
 
+# Until 2026-08-28 nothing ran on push. The lint script could not fail (every
+# rule at warn), `npm run typecheck` invoked a binary that was not installed,
+# and five production migrations were applied without ever reaching the repo.
+# This is the second reviewer the project did not have.
+
 on:
   push:
-    branches: [main]
+    branches: [main, capacitor-ios]
   pull_request:
 
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v5
-
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          bun-version: latest
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
+          node-version: 20
+          cache: npm
+      - run: npm ci
       - name: Typecheck
-        run: bunx tsc -p tsconfig.app.json --noEmit
-        continue-on-error: false
-
-      - name: Lint
-        run: bun run lint
-
-      - name: Test
-        run: bun run test
-
+        run: npm run typecheck
+      - name: Lint (ratchet — warnings may only go down)
+        run: npx eslint . --max-warnings 1423
+      - name: Tests
+        run: npx vitest run
       - name: Build
-        run: bun run build
+        run: npm run build
+      - name: Dependency audit (production deps, high+)
+        run: npm audit --omit=dev --audit-level=high
+      - name: Migration drift
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: bash scripts/check-migration-drift.sh

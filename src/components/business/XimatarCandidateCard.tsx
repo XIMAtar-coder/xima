@@ -137,7 +137,7 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
                 variant="ghost"
                 size="icon"
                 onClick={onToggleShortlist}
-                className={isShortlisted ? 'text-yellow-500' : 'text-muted-foreground'}
+                className={isShortlisted ? 'text-yellow-500' : 'text-muted-foreground'} aria-label={t('a11y.save_candidate')}
               >
                 <Star size={20} fill={isShortlisted ? 'currentColor' : 'none'} />
               </Button>

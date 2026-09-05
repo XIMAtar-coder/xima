@@ -270,7 +270,7 @@ const SidebarTrigger = React.forwardRef<
       variant="ghost"
       size="icon"
       className={cn("h-7 w-7", className)}
-      onClick={(event) => {
+      aria-label="Toggle sidebar" onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
       }}

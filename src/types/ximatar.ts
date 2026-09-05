@@ -47,7 +47,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Natural leadership', 'Strategic thinking', 'Decision making', 'Goal-oriented'],
     weaknesses: ['Can be overly dominant', 'May overlook details', 'Impatient with others'],
     idealRoles: ['CEO', 'Project Lead', 'Executive', 'Team Leader'],
-    image: '/ximatars/lion.png',
+    image: '/ximatars/lion.webp',
     personality: {
       en: {
         description: 'The Lion XIMAtar represents natural born leaders who thrive in positions of authority. They are strategic thinkers who can see the big picture and make decisive choices under pressure.',
@@ -75,7 +75,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Analysis', 'Insight', 'Focus', 'Data-Driven Decision Making', 'Pattern Recognition'],
     weaknesses: ['May overthink decisions', 'Can struggle with execution speed', 'Sometimes too cautious'],
     idealRoles: ['Research Analyst', 'Data Scientist', 'Strategic Planner', 'Knowledge Manager', 'Risk Analyst', 'Compliance Officer'],
-    image: '/ximatars/owl.png',
+    image: '/ximatars/owl.webp',
     personality: {
       en: {
         description: 'The Owl is a seeker of truth. Quietly powerful, they excel at making sense of complexity and using logic to guide decisions. Knowledge-driven, they transform data into insight and insight into foresight.',
@@ -103,7 +103,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Empathy', 'Collaboration', 'Emotional Insight', 'Team Building', 'Conflict Resolution'],
     weaknesses: ['May avoid confrontation', 'Needs external motivation', 'Can be overly accommodating'],
     idealRoles: ['HR Manager', 'Team Facilitator', 'Customer Support', 'Community Manager', 'Wellness Coach', 'Mediator'],
-    image: '/ximatars/dolphin.png',
+    image: '/ximatars/dolphin.webp',
     personality: {
       en: {
         description: 'The Dolphin radiates positivity. Socially attuned and emotionally intelligent, they thrive in collaborative settings and spread harmony. They are the ultimate team players with a natural touch for relationships.',
@@ -131,7 +131,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Sales ability', 'Adaptability', 'Creative solutions', 'Networking'],
     weaknesses: ['May be overly opportunistic', 'Can lack follow-through', 'Risk of being manipulative'],
     idealRoles: ['Sales', 'Marketing', 'Business Development', 'Entrepreneur'],
-    image: '/ximatars/fox.png',
+    image: '/ximatars/fox.webp',
     personality: {
       en: {
         description: 'The Fox XIMAtar represents clever opportunists who excel at identifying and seizing business opportunities. They are persuasive, adaptable, and skilled at finding creative solutions to challenges.',
@@ -159,7 +159,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Resilience', 'Responsibility', 'Calm Under Pressure', 'Reliability', 'Steadfast'],
     weaknesses: ['Slower to adapt', 'Prefers routine', 'May resist change'],
     idealRoles: ['Operations Lead', 'Team Anchor', 'People Manager', 'Governance', 'Compliance', 'Security'],
-    image: '/ximatars/bear.png',
+    image: '/ximatars/bear.webp',
     personality: {
       en: {
         description: 'Moves slowly but decisively. Provides stability under pressure. Reliable and protective. The Bear acts with patience and stability, moving deliberately while maintaining calm in high-pressure situations.',
@@ -187,7 +187,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Focus', 'Strategic Thinking', 'Autonomy', 'Technical Expertise', 'Creative Problem-Solving'],
     weaknesses: ['May resist collaboration or emotional openness', 'Can be aloof', 'Selective about engagement'],
     idealRoles: ['Analyst', 'Solo Specialist', 'R&D', 'Technical Strategist', 'Creative Problem-Solver', 'Independent Consultant'],
-    image: '/ximatars/cat.png',
+    image: '/ximatars/cat.webp',
     personality: {
       en: {
         description: 'The Cat values freedom and discretion. Curious and highly selective, they invest their energy only where it matters. They excel when trusted to operate independently and follow their instincts. Silent observer. Precision-first. Works best with space and independence.',
@@ -215,7 +215,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Discipline', 'Structure', 'Team Contribution', 'Process Adherence', 'Consistency'],
     weaknesses: ['May resist improvisation', 'Needs a clear mission', 'Less comfortable with ambiguity'],
     idealRoles: ['Operations Coordinator', 'Team Support Specialist', 'Process Manager', 'Customer Success', 'Administrative Roles'],
-    image: '/ximatars/bee.png',
+    image: '/ximatars/bee.webp',
     personality: {
       en: {
         description: 'The Bee works with intention and commitment to the greater good. Thrives in structured environments and contributes tirelessly to shared outcomes. Disciplined and purpose-driven.',
@@ -243,7 +243,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Storytelling', 'Motivation', 'Verbal Agility', 'Social Intelligence'],
     weaknesses: ['May prioritize expression over analysis', 'Can be overly talkative'],
     idealRoles: ['Sales', 'Marketing', 'Public Speaking', 'Community Management', 'Brand Ambassador', 'Content Creator'],
-    image: '/ximatars/parrot.png',
+    image: '/ximatars/parrot.webp',
     personality: {
       en: {
         description: 'Parrots bring energy and color to every conversation. They excel at spreading ideas with passion and connecting people through words. Natural storytellers who thrive in social environments.',
@@ -271,7 +271,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Memory', 'Emotional Intelligence', 'Long-Term Thinking', 'Strategic planning'],
     weaknesses: ['Resistance to rapid change', 'Cautious', 'Slow to act on urgency'],
     idealRoles: ['Chief Strategy Officer', 'Board Member', 'Senior Advisor', 'Executive Coach', 'Governance Director'],
-    image: '/ximatars/elephant.png',
+    image: '/ximatars/elephant.webp',
     personality: {
       en: {
         description: 'The Elephant carries the weight of experience with grace. Slow to speak but deeply reflective, they remember what matters and act with foresight. Others turn to them for stability and perspective.',
@@ -299,7 +299,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Teamwork', 'Strategy', 'Integrity', 'Loyalty'],
     weaknesses: ['Rigidity in hierarchy', 'Difficulty when isolated', 'Group dependency'],
     idealRoles: ['Scrum Master', 'Agile Coach', 'Team Coordinator', 'Project Manager', 'Squad Leader'],
-    image: '/ximatars/wolf.png',
+    image: '/ximatars/wolf.webp',
     personality: {
       en: {
         description: 'The Wolf thrives in packs. They are strategic thinkers who value trust, loyalty, and well-defined roles. Wolves are natural team players, often emerging as respected coordinators or quiet leaders within a group.',
@@ -327,7 +327,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Flexibility', 'Learning Speed', 'Perception', 'Adaptability'],
     weaknesses: ['May over-adapt', 'Lack of assertiveness', 'Identity diffusion'],
     idealRoles: ['Analyst', 'Researcher', 'Consultant', 'Problem Solver', 'Strategic Advisor'],
-    image: '/ximatars/chameleon.png',
+    image: '/ximatars/chameleon.webp',
     personality: {
       en: {
         description: 'The Chameleon blends seamlessly into any context. Curious and analytical, they learn fast and adapt even faster. Their strength lies in spotting patterns others miss and navigating change with ease.',
@@ -355,7 +355,7 @@ export const XIMATAR_TYPES: XIMAtar[] = [
     strengths: ['Reliability', 'Endurance', 'Loyalty', 'Work ethic'],
     weaknesses: ['Risk aversion', 'Low flexibility', 'Difficulty with change'],
     idealRoles: ['Project Manager', 'Operations Lead', 'Logistics Coordinator', 'Quality Assurance'],
-    image: '/ximatars/horse.png',
+    image: '/ximatars/horse.webp',
     personality: {
       en: {
         description: 'The Horse XIMAtar thrives on persistence and duty. Always moving forward, they are driven by goals and a strong work ethic. Others rely on them to carry the team across the finish line, no matter how hard the path.',

@@ -14,7 +14,7 @@ export const XimatarProfileCard: React.FC<XimatarProfileCardProps> = ({ ximatar,
 
   if (!ximatar) return null;
 
-  const imageUrl = ximatar.image_url?.replace(/^public\//, '/') || '/ximatars/fox.png';
+  const imageUrl = ximatar.image_url?.replace(/^public\//, '/') || '/ximatars/fox.webp';
   const translations = ximatar.translations;
   const currentLang = i18n.language || 'it';
 
@@ -39,7 +39,7 @@ export const XimatarProfileCard: React.FC<XimatarProfileCardProps> = ({ ximatar,
               decoding="async"
               className="w-full h-full object-contain rounded-full border-4 border-[#3A9FFF]/30 shadow-lg"
               onError={(e) => {
-                e.currentTarget.src = '/ximatars/fox.png';
+                e.currentTarget.src = '/ximatars/fox.webp';
               }}
             />
             <Badge className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#3A9FFF] hover:bg-[#3A9FFF]/80">

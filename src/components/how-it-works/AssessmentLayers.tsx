@@ -2,7 +2,7 @@ import React from 'react';
 
 /**
  * Stylized 3D "stack of glass platforms" visual representing L1/L2/L3.
- * Pure CSS — themes correctly in light & dark. Replace with /images/assessment-layers.png
+ * Pure CSS — themes correctly in light & dark. Replace with /images/assessment-layers.webp
  * by editing the wrapper if/when the PNG asset is uploaded.
  */
 export const AssessmentLayers: React.FC<{ labels: { l1: string; l2: string; l3: string } }> = ({ labels }) => {

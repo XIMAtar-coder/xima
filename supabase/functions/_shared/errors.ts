@@ -33,6 +33,51 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version, x-guest-consent, x-correlation-id",
 };
 
+/**
+ * Origin-aware CORS for endpoints that accept unauthenticated calls.
+ *
+ * The shared `corsHeaders` above answers `*`, which is defensible where a
+ * bearer token is required: the token, not the origin, is the credential. A
+ * handful of functions take no token at all (guest CV analysis, salary
+ * benchmark, field averages, translation, invitation and email-token
+ * verification). For those, `*` let any site on the web call XIMA from a
+ * visitor's browser. This reflects the caller's origin only when it is one of
+ * ours; otherwise no Allow-Origin header is sent and the browser refuses.
+ * Non-browser callers are unaffected either way.
+ *
+ * ALLOWED_ORIGINS (comma-separated) extends the list without a redeploy.
+ */
+const DEFAULT_ALLOWED_ORIGINS = [
+  "https://ximatar.com",
+  "https://www.ximatar.com",
+  "capacitor://localhost",
+  "ionic://localhost",
+];
+const ALLOWED_ORIGIN_PATTERNS = [
+  /^https:\/\/[a-z0-9-]+\.lovable\.app$/,
+  /^https:\/\/[a-z0-9-]+\.lovableproject\.com$/,
+  /^http:\/\/localhost(:\d+)?$/,
+  /^http:\/\/127\.0\.0\.1(:\d+)?$/,
+];
+
+export function isAllowedOrigin(origin: string | null): boolean {
+  if (!origin) return false;
+  const extra = (Deno.env.get("ALLOWED_ORIGINS") ?? "")
+    .split(",").map((o) => o.trim()).filter(Boolean);
+  if (DEFAULT_ALLOWED_ORIGINS.includes(origin) || extra.includes(origin)) return true;
+  return ALLOWED_ORIGIN_PATTERNS.some((re) => re.test(origin));
+}
+
+export function corsHeadersFor(req: Request): Record<string, string> {
+  const origin = req.headers.get("Origin");
+  const base = { ...corsHeaders };
+  if (isAllowedOrigin(origin)) {
+    return { ...base, "Access-Control-Allow-Origin": origin!, "Vary": "Origin" };
+  }
+  const { "Access-Control-Allow-Origin": _drop, ...withoutOrigin } = base;
+  return { ...withoutOrigin, "Vary": "Origin" };
+}
+
 export interface ErrorResponse {
   error: string;
   error_code: string;

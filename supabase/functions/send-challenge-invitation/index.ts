@@ -9,6 +9,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { callAnthropicApi, AnthropicError } from "../_shared/anthropicClient.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 import { extractJsonFromAiContent, generateCorrelationId } from "../_shared/aiClient.ts";
 import { corsHeaders, errorResponse, jsonResponse, unauthorizedResponse, forbiddenResponse } from "../_shared/errors.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
@@ -125,6 +126,10 @@ async function generatePersonalizedEmail(
     const langName = langNames[locale] || "English";
     const challengeDesc = challengeType === "L2" ? "technical skills assessment" : "behavioral assessment";
 
+    // Per-user monthly AI budget. Every other model-calling function gates on
+    // this; this one did not (audit X-09).
+    const budgetGate = await enforceAiBudget(user.id, "send-challenge-invitation", corsHeaders);
+    if (budgetGate) return budgetGate;
     const result = await callAnthropicApi({
       system: `Write a professional, warm challenge invitation email. Keep it 100-150 words. Be warm but professional. Write in ${langName}. Return ONLY JSON: { "subject": "...", "body_text": "..." }. The body_text should be plain text paragraphs (no HTML).`,
       userMessage: `Candidate: ${candidateName}. Company: ${companyName}. Challenge type: ${challengeDesc}.${personalMessage ? ` Personal note from hiring manager: ${personalMessage}` : ""}\n\nGenerate the invitation email.`,
@@ -135,6 +140,7 @@ async function generatePersonalizedEmail(
       temperature: 0.7,
       promptTemplateVersion: "2.0",
     });
+    await recordAiCallSafe(user.id, "send-challenge-invitation");
 
     // extractJsonFromAiContent returns the already-parsed payload (or null) —
     // never re-parse it. A null falls through to the template path.

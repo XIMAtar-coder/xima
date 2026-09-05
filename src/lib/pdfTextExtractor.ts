@@ -1,8 +1,13 @@
 import * as pdfjsLib from 'pdfjs-dist';
+import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { log } from '@/lib/log';
 
 // Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs`;
+// The worker is bundled from the installed package. It used to be fetched from
+// cdnjs at a pinned 4.4.168 while the library itself was 6.x — a version pair
+// pdf.js refuses at runtime — and a third-party CDN in the parse path for
+// business-uploaded PDFs was a supply-chain exposure with no upside.
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 export interface PdfExtractionResult {
   success: boolean;

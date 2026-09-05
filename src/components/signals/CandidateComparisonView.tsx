@@ -128,7 +128,7 @@ function CandidateColumn({ candidate, onRemove }: { candidate: CandidateForCompa
           </Avatar>
           <span className="font-medium text-sm truncate">{candidate.name}</span>
         </div>
-        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={onRemove}>
+        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={onRemove} aria-label="Remove">
           <X className="h-3 w-3" />
         </Button>
       </div>

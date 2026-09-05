@@ -395,7 +395,7 @@ export default function MentorCalendar() {
                           size="icon" 
                           variant="ghost" 
                           className="h-6 w-6"
-                          onClick={() => deleteSlot(slot.id)}
+                          aria-label={t('a11y.delete')} onClick={() => deleteSlot(slot.id)}
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>

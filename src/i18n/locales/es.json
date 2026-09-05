@@ -187,7 +187,8 @@
     "back_to_profile": "Volver al perfil",
     "login_required": "Inicia sesión para ver tu perfil",
     "login": "Iniciar sesión",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "skip_to_content": "Ir al contenido principal"
   },
   "nav": {
     "home": "Inicio",
@@ -6555,5 +6556,21 @@
     "too_short": "Usa al menos {{n}} caracteres",
     "invalid_link": "Este enlace no es válido o ha caducado. Solicita uno nuevo desde la página de acceso.",
     "back_to_login": "Volver al acceso"
+  },
+  "a11y": {
+    "notifications": "Notificaciones",
+    "toggle_sidebar": "Mostrar u ocultar barra lateral",
+    "confirm": "Confirmar",
+    "sending": "Enviando",
+    "open_menu": "Abrir menú",
+    "remove": "Quitar",
+    "save_candidate": "Guardar candidato",
+    "settings": "Ajustes",
+    "log_out": "Cerrar sesión",
+    "back": "Atrás",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "add": "Añadir",
+    "cancel": "Cancelar"
   }
 }

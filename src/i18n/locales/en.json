@@ -533,7 +533,8 @@
     "back_to_profile": "Back to profile",
     "login_required": "Please log in to see your profile",
     "login": "Log in",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "skip_to_content": "Skip to main content"
   },
   "tutorial": {
     "dont_show_again": "Don't show again"
@@ -6393,5 +6394,21 @@
     "too_short": "Use at least {{n}} characters",
     "invalid_link": "This reset link is invalid or has expired. Request a new one from the login page.",
     "back_to_login": "Back to login"
+  },
+  "a11y": {
+    "notifications": "Notifications",
+    "toggle_sidebar": "Toggle sidebar",
+    "confirm": "Confirm",
+    "sending": "Sending",
+    "open_menu": "Open menu",
+    "remove": "Remove",
+    "save_candidate": "Save candidate",
+    "settings": "Settings",
+    "log_out": "Log out",
+    "back": "Back",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "cancel": "Cancel"
   }
 }

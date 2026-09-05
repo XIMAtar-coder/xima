@@ -595,11 +595,11 @@ export default function CostsTab() {
                           <CostFormDialog
                             initial={row}
                             onDone={refresh}
-                            trigger={<Button size="icon" variant="ghost"><Pencil className="h-4 w-4" /></Button>}
+                            trigger={<Button size="icon" variant="ghost" aria-label="Edit"><Pencil className="h-4 w-4" /></Button>}
                           />
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button size="icon" variant="ghost" className="text-destructive hover:text-destructive">
+                              <Button size="icon" variant="ghost" className="text-destructive hover:text-destructive" aria-label="Delete">
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             </AlertDialogTrigger>

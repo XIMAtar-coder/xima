@@ -290,7 +290,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
               {/* ── Mobile / Tablet menu ── */}
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild className="xl:hidden">
-                  <Button variant="ghost" size="icon" className="min-h-[44px] min-w-[44px]">
+                  <Button variant="ghost" size="icon" className="min-h-[44px] min-w-[44px]" aria-label={t('a11y.open_menu')}>
                     <Menu className="h-5 w-5 text-muted-foreground" strokeWidth={1.5} />
                   </Button>
                 </SheetTrigger>
@@ -381,7 +381,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
         </div>
       </nav>
 
-      <main className={`pt-16 md:pt-[72px] ${isAuthenticated ? 'pb-20 md:pb-0' : ''} ${fullHeight ? 'flex-1 overflow-hidden' : 'flex-1'}`}>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:shadow">{t('common.skip_to_content')}</a>
+      <main id="main-content" className={`pt-16 md:pt-[72px] ${isAuthenticated ? 'pb-20 md:pb-0' : ''} ${fullHeight ? 'flex-1 overflow-hidden' : 'flex-1'}`}>
         <EmailVerificationBanner />
         {children}
       </main>

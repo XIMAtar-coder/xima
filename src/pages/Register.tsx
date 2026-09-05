@@ -226,7 +226,7 @@ const Register = () => {
               <div className="space-y-2">
                 <Label htmlFor="password">{t('register.password')}</Label>
                 <Input
-                  id="password" name="password" type="password"
+                  id="password" name="password" type="password" autoComplete="new-password"
                   placeholder={t('register.password_placeholder')}
                   value={formData.password} onChange={handleChange}
                   className={`min-h-[48px] ${errors.password ? "ring-2 ring-destructive" : ""}`}
@@ -237,7 +237,7 @@ const Register = () => {
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">{t('register.confirm_password')}</Label>
                 <Input
-                  id="confirmPassword" name="confirmPassword" type="password"
+                  id="confirmPassword" name="confirmPassword" type="password" autoComplete="new-password"
                   placeholder={t('register.confirm_placeholder')}
                   value={formData.confirmPassword} onChange={handleChange}
                   className={`min-h-[48px] ${errors.confirmPassword ? "ring-2 ring-destructive" : ""}`}

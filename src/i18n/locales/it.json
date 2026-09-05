@@ -567,7 +567,8 @@
     "back_to_profile": "Torna al profilo",
     "login_required": "Accedi per vedere il tuo profilo",
     "login": "Accedi",
-    "loading": "Caricamento..."
+    "loading": "Caricamento...",
+    "skip_to_content": "Vai al contenuto principale"
   },
   "tutorial": {
     "dont_show_again": "Non mostrare più"
@@ -6393,5 +6394,21 @@
     "too_short": "Usa almeno {{n}} caratteri",
     "invalid_link": "Questo link non è valido o è scaduto. Richiedine uno nuovo dalla pagina di accesso.",
     "back_to_login": "Torna all'accesso"
+  },
+  "a11y": {
+    "notifications": "Notifiche",
+    "toggle_sidebar": "Mostra/nascondi barra laterale",
+    "confirm": "Conferma",
+    "sending": "Invio in corso",
+    "open_menu": "Apri menu",
+    "remove": "Rimuovi",
+    "save_candidate": "Salva candidato",
+    "settings": "Impostazioni",
+    "log_out": "Esci",
+    "back": "Indietro",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "add": "Aggiungi",
+    "cancel": "Annulla"
   }
 }

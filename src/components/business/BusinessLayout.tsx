@@ -137,6 +137,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
               <Button
                 variant="ghost"
                 size="icon"
+                aria-label={t('a11y.open_menu')}
                 onClick={() => {
                   if (mobileDrawerOpen) {
                     setMobileDrawerOpen(false);
@@ -215,7 +216,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
                 variant="ghost"
                 size="icon"
                 onClick={handleSignOut}
-                className="w-full hover:bg-primary/10"
+                className="w-full hover:bg-primary/10" aria-label={t('a11y.log_out')}
               >
                 <LogOut size={20} />
               </Button>
@@ -225,7 +226,8 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
       </aside>
 
       {/* Main Content */}
-      <main
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:shadow">{t('common.skip_to_content')}</a>
+      <main id="main-content"
         className={`transition-all duration-300 min-h-screen ml-0 ${
           sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'
         }`}
@@ -237,7 +239,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
             size="icon"
             onClick={() => setMobileDrawerOpen(true)}
             className="lg:hidden hover:bg-primary/10"
-            aria-label="Open menu"
+            aria-label={t('a11y.open_menu')}
           >
             <Menu size={20} />
           </Button>

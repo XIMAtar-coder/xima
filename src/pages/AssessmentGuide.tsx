@@ -155,18 +155,18 @@ const AssessmentGuide = () => {
   ];
 
   const ximatars = [
-    { name: t('assessmentGuide.archetype_lion_name'), image: '/ximatars/lion.png', strength: t('assessmentGuide.archetype_lion_pillar'), style: t('assessmentGuide.archetype_lion_role') },
-    { name: t('assessmentGuide.archetype_fox_name'), image: '/ximatars/fox.png', strength: t('assessmentGuide.archetype_fox_pillar'), style: t('assessmentGuide.archetype_fox_role') },
-    { name: t('assessmentGuide.archetype_owl_name'), image: '/ximatars/owl.png', strength: t('assessmentGuide.archetype_owl_pillar'), style: t('assessmentGuide.archetype_owl_role') },
-    { name: t('assessmentGuide.archetype_dolphin_name'), image: '/ximatars/dolphin.png', strength: t('assessmentGuide.archetype_dolphin_pillar'), style: t('assessmentGuide.archetype_dolphin_role') },
-    { name: t('assessmentGuide.archetype_cat_name'), image: '/ximatars/cat.png', strength: t('assessmentGuide.archetype_cat_pillar'), style: t('assessmentGuide.archetype_cat_role') },
-    { name: t('assessmentGuide.archetype_bear_name'), image: '/ximatars/bear.png', strength: t('assessmentGuide.archetype_bear_pillar'), style: t('assessmentGuide.archetype_bear_role') },
-    { name: t('assessmentGuide.archetype_bee_name'), image: '/ximatars/bee.png', strength: t('assessmentGuide.archetype_bee_pillar'), style: t('assessmentGuide.archetype_bee_role') },
-    { name: t('assessmentGuide.archetype_wolf_name'), image: '/ximatars/wolf.png', strength: t('assessmentGuide.archetype_wolf_pillar'), style: t('assessmentGuide.archetype_wolf_role') },
-    { name: t('assessmentGuide.archetype_parrot_name'), image: '/ximatars/parrot.png', strength: t('assessmentGuide.archetype_parrot_pillar'), style: t('assessmentGuide.archetype_parrot_role') },
-    { name: t('assessmentGuide.archetype_elephant_name'), image: '/ximatars/elephant.png', strength: t('assessmentGuide.archetype_elephant_pillar'), style: t('assessmentGuide.archetype_elephant_role') },
-    { name: t('assessmentGuide.archetype_horse_name'), image: '/ximatars/horse.png', strength: t('assessmentGuide.archetype_horse_pillar'), style: t('assessmentGuide.archetype_horse_role') },
-    { name: t('assessmentGuide.archetype_chameleon_name'), image: '/ximatars/chameleon.png', strength: t('assessmentGuide.archetype_chameleon_pillar'), style: t('assessmentGuide.archetype_chameleon_role') }
+    { name: t('assessmentGuide.archetype_lion_name'), image: '/ximatars/lion.webp', strength: t('assessmentGuide.archetype_lion_pillar'), style: t('assessmentGuide.archetype_lion_role') },
+    { name: t('assessmentGuide.archetype_fox_name'), image: '/ximatars/fox.webp', strength: t('assessmentGuide.archetype_fox_pillar'), style: t('assessmentGuide.archetype_fox_role') },
+    { name: t('assessmentGuide.archetype_owl_name'), image: '/ximatars/owl.webp', strength: t('assessmentGuide.archetype_owl_pillar'), style: t('assessmentGuide.archetype_owl_role') },
+    { name: t('assessmentGuide.archetype_dolphin_name'), image: '/ximatars/dolphin.webp', strength: t('assessmentGuide.archetype_dolphin_pillar'), style: t('assessmentGuide.archetype_dolphin_role') },
+    { name: t('assessmentGuide.archetype_cat_name'), image: '/ximatars/cat.webp', strength: t('assessmentGuide.archetype_cat_pillar'), style: t('assessmentGuide.archetype_cat_role') },
+    { name: t('assessmentGuide.archetype_bear_name'), image: '/ximatars/bear.webp', strength: t('assessmentGuide.archetype_bear_pillar'), style: t('assessmentGuide.archetype_bear_role') },
+    { name: t('assessmentGuide.archetype_bee_name'), image: '/ximatars/bee.webp', strength: t('assessmentGuide.archetype_bee_pillar'), style: t('assessmentGuide.archetype_bee_role') },
+    { name: t('assessmentGuide.archetype_wolf_name'), image: '/ximatars/wolf.webp', strength: t('assessmentGuide.archetype_wolf_pillar'), style: t('assessmentGuide.archetype_wolf_role') },
+    { name: t('assessmentGuide.archetype_parrot_name'), image: '/ximatars/parrot.webp', strength: t('assessmentGuide.archetype_parrot_pillar'), style: t('assessmentGuide.archetype_parrot_role') },
+    { name: t('assessmentGuide.archetype_elephant_name'), image: '/ximatars/elephant.webp', strength: t('assessmentGuide.archetype_elephant_pillar'), style: t('assessmentGuide.archetype_elephant_role') },
+    { name: t('assessmentGuide.archetype_horse_name'), image: '/ximatars/horse.webp', strength: t('assessmentGuide.archetype_horse_pillar'), style: t('assessmentGuide.archetype_horse_role') },
+    { name: t('assessmentGuide.archetype_chameleon_name'), image: '/ximatars/chameleon.webp', strength: t('assessmentGuide.archetype_chameleon_pillar'), style: t('assessmentGuide.archetype_chameleon_role') }
   ];
 
   const scoringExample = [
@@ -380,7 +380,7 @@ const AssessmentGuide = () => {
             >
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="w-5 h-5 text-primary animate-bounce" />
-                <span className="font-semibold inline-flex items-center gap-2">{t('assessmentGuide.example_result_label')} <img loading="lazy" decoding="async" src="/ximatars/fox.png" alt="XIMAtar Fox" className="h-6 w-6 rounded-full object-cover bg-muted/40 ring-1 ring-border/40 inline-block" /></span>
+                <span className="font-semibold inline-flex items-center gap-2">{t('assessmentGuide.example_result_label')} <img loading="lazy" decoding="async" src="/ximatars/fox.webp" alt="XIMAtar Fox" className="h-6 w-6 rounded-full object-cover bg-muted/40 ring-1 ring-border/40 inline-block" /></span>
               </div>
               <p className="text-sm text-muted-foreground">
                 {t('assessmentGuide.example_result_body')}

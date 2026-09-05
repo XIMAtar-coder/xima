@@ -246,7 +246,7 @@ export default function MentorProfileEdit() {
                   placeholder={t('mentor.specialty_placeholder', 'Add a specialty...')}
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addSpecialty())}
                 />
-                <Button type="button" variant="outline" size="icon" onClick={addSpecialty}>
+                <Button type="button" variant="outline" size="icon" onClick={addSpecialty} aria-label={t('a11y.add')}>
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>

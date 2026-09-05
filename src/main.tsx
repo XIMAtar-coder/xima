@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
 import App from './App.tsx'
+import { RootErrorBoundary } from '@/components/ui/RootErrorBoundary'
 import './index.css'
 // Self-hosted fonts (no render-blocking Google Fonts fetch — works offline in native webview)
 import '@fontsource/inter/400.css'
@@ -35,9 +36,11 @@ void initI18n()
   })
   .then(() => {
     createRoot(document.getElementById("root")!).render(
-      <HelmetProvider>
-        <App />
-      </HelmetProvider>
+      <RootErrorBoundary>
+        <HelmetProvider>
+          <App />
+        </HelmetProvider>
+      </RootErrorBoundary>
     );
   });
 

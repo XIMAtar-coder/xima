@@ -90,7 +90,7 @@ export const HiringGoalOverviewCard: React.FC<HiringGoalOverviewCardProps> = ({
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" aria-label={t('a11y.settings')}>
                   <Settings className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>

@@ -295,7 +295,7 @@ export const MembershipSection: React.FC = () => {
                   value={`https://xima.lovable.app/register?ref=${referralCode}`}
                   className="text-xs bg-muted/50"
                 />
-                <Button variant="outline" size="icon" onClick={handleCopy} className="shrink-0">
+                <Button variant="outline" size="icon" onClick={handleCopy} className="shrink-0" aria-label={t('a11y.confirm')}>
                   {copied ? <Check className="h-4 w-4 text-primary" /> : <Copy className="h-4 w-4" />}
                 </Button>
               </div>
@@ -320,7 +320,7 @@ export const MembershipSection: React.FC = () => {
                 size="icon"
                 onClick={handleSendInvite}
                 disabled={sendingInvite || !inviteEmail.trim()}
-                className="shrink-0"
+                className="shrink-0" aria-label={t('a11y.sending')}
               >
                 {sendingInvite ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               </Button>

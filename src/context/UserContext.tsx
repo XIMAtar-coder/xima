@@ -16,6 +16,8 @@ interface UserContextType {
   signOut: () => Promise<void>;
   updateUser: (updates: Partial<User>) => void;
   isAuthenticated: boolean;
+  /** True until the persisted session has been read. Guards must wait for this. */
+  isAuthLoading: boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -23,12 +25,14 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
+        setIsAuthLoading(false);
         if (session?.user) {
           // Use setTimeout to prevent deadlock in auth state change
           setTimeout(() => {
@@ -43,6 +47,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      setIsAuthLoading(false);
       if (session?.user) {
         loadUserProfile(session.user.id);
       }
@@ -181,7 +186,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         assignMentor,
         signOut,
         updateUser,
-        isAuthenticated: !!session
+        isAuthenticated: !!session,
+        isAuthLoading
       }}
     >
       {children}

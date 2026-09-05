@@ -239,7 +239,7 @@ export function MentorAvatarUpload({
                   variant="ghost"
                   onClick={handleCancel}
                   disabled={uploading}
-                  size="icon"
+                  size="icon" aria-label={t('a11y.cancel')}
                 >
                   <X className="h-4 w-4" />
                 </Button>

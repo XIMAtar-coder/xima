@@ -8,6 +8,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { callAnthropicApi, AnthropicError } from "../_shared/anthropicClient.ts";
+import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 import { extractJsonFromAiContent, generateCorrelationId } from "../_shared/aiClient.ts";
 import { corsHeaders, errorResponse, jsonResponse } from "../_shared/errors.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
@@ -205,6 +206,12 @@ async function qualifyLeadAsync(
   correlationId: string
 ): Promise<void> {
   try {
+    // Per-user monthly AI budget. Every other model-calling function gates on
+    // this; this one did not (audit X-09).
+    if (userId) {
+      const budgetGate = await enforceAiBudget(userId, "contact-sales", corsHeaders);
+      if (budgetGate) return budgetGate;
+    }
     const result = await callAnthropicApi({
       system: `You are a B2B sales qualification assistant for XIMA, a psychometric talent platform. Qualify this sales lead. Return ONLY JSON: { "urgency": "high|medium|low", "fit_score": 1-10, "recommended_plan": "starter|growth|enterprise", "notes": "1 sentence for sales team" }`,
       userMessage: `Company: ${leadInfo.company_name || "Unknown"}. Size: ${leadInfo.company_size || "Unknown"}. Industry: ${leadInfo.industry || "Unknown"}. Desired plan: ${leadInfo.desired_tier || "Not specified"}. Message: ${(leadInfo.message || "").substring(0, 500)}`,
@@ -215,6 +222,7 @@ async function qualifyLeadAsync(
       temperature: 0.3,
       promptTemplateVersion: "2.0",
     });
+    if (userId) await recordAiCallSafe(userId, "contact-sales");
 
     // extractJsonFromAiContent returns the already-parsed payload (or null) —
     // never re-parse it. Qualification is optional, so a null lands in the catch below.

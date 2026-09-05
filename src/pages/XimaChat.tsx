@@ -371,7 +371,7 @@ const XimaChat = () => {
                         <Button 
                           onClick={handleSendMessage} 
                           disabled={!message.trim() || !selectedThread || sending}
-                          size="icon"
+                          size="icon" aria-label={t('a11y.sending')}
                         >
                           {sending ? (
                             <Loader2 className="h-4 w-4 animate-spin" />

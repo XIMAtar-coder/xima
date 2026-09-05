@@ -15,7 +15,7 @@
  * the L2-conversation pattern.
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -104,7 +104,8 @@ export default function CustomL1Challenge({
             | Record<string, string>
             | null;
         if (payload && typeof payload === 'object') {
-          setAnswers((cur) => ({ ...cur, ...payload }));
+          const { _format: _ignored, ...stored } = payload as Record<string, string>;
+          setAnswers((cur) => ({ ...cur, ...stored }));
         }
       }
       setLoading(false);
@@ -117,9 +118,47 @@ export default function CustomL1Challenge({
   const allFilled = questions.every((q) => (answers[q.id] || '').trim().length >= MIN_CHARS);
   const isReadOnly = status === 'submitted';
 
+  // Draft autosave. This runner had none: answers lived only in React state,
+  // so a reload, a closed tab or a native cold start discarded up to four long
+  // answers. Same 2 s debounce as the structured L1 flow; drafts stay drafts
+  // (status 'draft') until the real submit.
+  const saveTimer = useRef<number | null>(null);
+  const answersRef = useRef(answers);
+  answersRef.current = answers;
+
+  const saveDraft = async () => {
+    if (status === 'submitted') return;
+    const draft = { ...answersRef.current, _format: 'custom_l1_ai' };
+    try {
+      const { data, error } = await supabase
+        .from('challenge_submissions')
+        .upsert(
+          {
+            invitation_id: invitationId,
+            candidate_profile_id: candidateProfileId,
+            business_id: businessId,
+            hiring_goal_id: hiringGoalId,
+            challenge_id: challengeId,
+            status: 'draft',
+            draft_payload: draft as any,
+          },
+          { onConflict: 'invitation_id' }
+        )
+        .select('id')
+        .single();
+      if (!error && data) setSubmissionId(data.id);
+    } catch (err) {
+      log.warn('[CustomL1Challenge] draft autosave failed', err);
+    }
+  };
+
   const updateAnswer = (id: string, value: string) => {
     setAnswers((cur) => ({ ...cur, [id]: value }));
+    if (saveTimer.current) window.clearTimeout(saveTimer.current);
+    saveTimer.current = window.setTimeout(saveDraft, 2000);
   };
+
+  useEffect(() => () => { if (saveTimer.current) window.clearTimeout(saveTimer.current); }, []);
 
   const handleSubmit = async () => {
     if (status === 'submitted') return;

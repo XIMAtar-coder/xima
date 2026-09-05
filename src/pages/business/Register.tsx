@@ -226,7 +226,7 @@ const BusinessRegister = () => {
                 <Label>{t('businessRegistration.password', 'Password')}</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 text-muted-foreground" size={18} />
-                  <Input type="password" placeholder="••••••••" className="pl-10" value={formData.password}
+                  <Input type="password" autoComplete="new-password" placeholder="••••••••" className="pl-10" value={formData.password}
                     onChange={e => update('password', e.target.value)} required minLength={6} />
                 </div>
               </div>
