@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 /**
  * Reads back the verified evidence for the candidate's own submission.
  *
@@ -19,16 +20,20 @@ interface UseSubmissionReflectionResult {
   evidence: ReflectionEvidence[] | null;
   /** True while we are still waiting for the scorer to write evidence. */
   isPending: boolean;
+  /** Polling finished without evidence — the scorer has not produced it (yet). */
+  exhausted: boolean;
 }
 
 export function useSubmissionReflection(
   invitationId: string | null | undefined,
   enabled = true
 ): UseSubmissionReflectionResult {
-  const { data, failureCount } = useQuery({
+  const pollsRef = useRef(0);
+  const query = useQuery({
     queryKey: ['submission-reflection', invitationId],
     enabled: Boolean(invitationId) && enabled,
     queryFn: async (): Promise<{ evidence: ReflectionEvidence[] | null; polls: number }> => {
+      pollsRef.current += 1;
       const { data: row, error } = await supabase
         .from('challenge_submissions')
         .select('signals_payload')
@@ -53,11 +58,19 @@ export function useSubmissionReflection(
     staleTime: 0,
   });
 
+  const { data, failureCount } = query;
   const evidence = data?.evidence ?? null;
-  const exhausted = (data ? 1 : 0) + failureCount >= MAX_POLLS;
+  // Counts polls actually made. The previous expression, (data ? 1 : 0) +
+  // failureCount, could never reach MAX_POLLS on a successful-but-empty read —
+  // so when the scorer failed server-side, isPending stayed true forever and
+  // the candidate watched a spinner that had already given up.
+  const polls = pollsRef.current + failureCount;
+  const exhausted = polls >= MAX_POLLS;
 
   return {
     evidence,
     isPending: !evidence && !exhausted,
+    /** Polling finished without evidence — the scorer has not produced it (yet). */
+    exhausted: !evidence && exhausted,
   };
 }

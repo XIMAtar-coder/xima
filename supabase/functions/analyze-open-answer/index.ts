@@ -108,7 +108,8 @@ serve(async (req) => {
 
 
     const body = await req.json();
-    const { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload, invitation_id } = body;
+    // `let`, not `const`: user_id is overwritten below with the authenticated caller's id. Destructuring it as a constant threw "Assignment to constant variable" on every mindset grading (HTTP 500, 2026-09-05).
+    let { text, field, language, openKey, user_id, challenge_id, scoring_context, format, mindset_payload, invitation_id } = body;
 
     // SECURITY: when called with a user JWT, user_id MUST match the authenticated user.
     // Prevents cross-user data manipulation via spoofed user_id in the request body.

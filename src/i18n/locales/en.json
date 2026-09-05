@@ -723,7 +723,8 @@
     "settings": "Settings",
     "messages": "Messages",
     "browse_jobs": "Job Listings",
-    "my_offers": "Your Offers"
+    "my_offers": "Your Offers",
+    "xima_score_label": "XIMA score {{score}} of 50"
   },
   "hero": {
     "eyebrow": "PSYCHOMETRICS · AI HIRING · GDPR ART. 22 COMPLIANT",
@@ -6369,7 +6370,8 @@
       "creativity": "Creativity",
       "knowledge": "Knowledge"
     },
-    "percentile": "You scored above {{percentile}}% of the {{count}} people who answered for this role."
+    "percentile": "You scored above {{percentile}}% of the {{count}} people who answered for this role.",
+    "later": "Your reflection will appear here once your answers have been reviewed — nothing is lost, you can close this page."
   },
   "mindset": {
     "resolve": {

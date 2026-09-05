@@ -543,7 +543,8 @@
     "settings": "Impostazioni",
     "messages": "Messaggi",
     "browse_jobs": "Offerte di lavoro",
-    "my_offers": "Le tue offerte"
+    "my_offers": "Le tue offerte",
+    "xima_score_label": "Punteggio XIMA {{score}} su 50"
   },
   "hero": {
     "eyebrow": "PSICOMETRIA · SELEZIONE CON AI · CONFORME AL GDPR ART. 22",
@@ -6369,7 +6370,8 @@
       "creativity": "Creatività",
       "knowledge": "Conoscenza"
     },
-    "percentile": "Hai ottenuto un risultato superiore al {{percentile}}% delle {{count}} persone che hanno risposto per questo ruolo."
+    "percentile": "Hai ottenuto un risultato superiore al {{percentile}}% delle {{count}} persone che hanno risposto per questo ruolo.",
+    "later": "La tua riflessione comparirà qui quando le risposte saranno state valutate: non si perde nulla, puoi chiudere questa pagina."
   },
   "mindset": {
     "resolve": {

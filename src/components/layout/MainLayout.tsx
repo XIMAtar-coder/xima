@@ -273,8 +273,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                         />
                       )}
                       {!headerData.isLoading && headerData.totalScore > 0 && (
-                        <span className="text-sm font-semibold text-secondary">
-                          {headerData.totalScore}
+                        <span
+                          className="text-sm font-semibold text-secondary"
+                          title={t('nav.xima_score_label', { score: headerData.totalScore })}
+                          aria-label={t('nav.xima_score_label', { score: headerData.totalScore })}
+                        >
+                          {/* The sum of the five pillars (0–50). It used to render as a bare
+                              number next to Help, which reads as noise — "37" with no unit. */}
+                          {headerData.totalScore}<span className="text-xs font-normal text-muted-foreground">/50</span>
                         </span>
                       )}
                     </div>

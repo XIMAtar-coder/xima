@@ -21,7 +21,7 @@ type Props = {
 
 export function ResolveScreen({ invitationId, guideName, litFacets, resolveLine, growthCue, onBack }: Props) {
   const { t } = useTranslation();
-  const { evidence, isPending } = useSubmissionReflection(invitationId);
+  const { evidence, isPending, exhausted } = useSubmissionReflection(invitationId);
   const { percentile } = useSubmissionPercentile(invitationId);
   const line =
     resolveLine ||
@@ -79,9 +79,14 @@ export function ResolveScreen({ invitationId, guideName, litFacets, resolveLine,
           <EvidenceReflectionCard evidence={evidence} percentile={percentile} className="border-border/60" />
         )}
         {!evidence && isPending && (
-          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+          <p className="flex items-center gap-2 text-sm text-muted-foreground" role="status">
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
             {t('reflection.preparing', 'Preparing what your answers show…')}
+          </p>
+        )}
+        {!evidence && exhausted && (
+          <p className="text-sm text-muted-foreground" role="status">
+            {t('reflection.later', 'Your reflection will appear here once your answers have been reviewed — nothing is lost, you can close this page.')}
           </p>
         )}
 

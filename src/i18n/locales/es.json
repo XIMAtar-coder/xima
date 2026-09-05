@@ -213,7 +213,8 @@
     "mentor_portal": "Mentor Portal",
     "messages": "Mensajes",
     "browse_jobs": "Ofertas de empleo",
-    "my_offers": "Tus ofertas"
+    "my_offers": "Tus ofertas",
+    "xima_score_label": "Puntuación XIMA {{score}} de 50"
   },
   "hero": {
     "eyebrow": "PSICOMETRÍA · CONTRATACIÓN CON IA · CONFORME AL ART. 22 DEL RGPD",
@@ -6531,7 +6532,8 @@
       "creativity": "Creatividad",
       "knowledge": "Conocimiento"
     },
-    "percentile": "Has superado al {{percentile}}% de las {{count}} personas que respondieron para este puesto."
+    "percentile": "Has superado al {{percentile}}% de las {{count}} personas que respondieron para este puesto.",
+    "later": "Tu reflexión aparecerá aquí cuando se hayan evaluado tus respuestas: no se pierde nada, puedes cerrar esta página."
   },
   "mindset": {
     "resolve": {

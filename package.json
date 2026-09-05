@@ -13,7 +13,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "render:reviewer-pack": "npx tsx scripts/renderReviewerPack.ts"
+    "render:reviewer-pack": "npx tsx scripts/renderReviewerPack.ts",
+    "typecheck:edge": "bash scripts/typecheck-edge.sh"
   },
   "dependencies": {
     "@fontsource/inter": "^5.3.0",
