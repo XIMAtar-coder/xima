@@ -186,7 +186,8 @@
     "as_weakness": "Como debilidad",
     "back_to_profile": "Volver al perfil",
     "login_required": "Inicia sesión para ver tu perfil",
-    "login": "Iniciar sesión"
+    "login": "Iniciar sesión",
+    "loading": "Cargando..."
   },
   "nav": {
     "home": "Inicio",

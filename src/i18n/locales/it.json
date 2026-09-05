@@ -566,7 +566,8 @@
     "as_weakness": "Come punto debole",
     "back_to_profile": "Torna al profilo",
     "login_required": "Accedi per vedere il tuo profilo",
-    "login": "Accedi"
+    "login": "Accedi",
+    "loading": "Caricamento..."
   },
   "tutorial": {
     "dont_show_again": "Non mostrare più"

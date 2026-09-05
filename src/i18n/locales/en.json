@@ -532,7 +532,8 @@
     "as_weakness": "As a weakness",
     "back_to_profile": "Back to profile",
     "login_required": "Please log in to see your profile",
-    "login": "Log in"
+    "login": "Log in",
+    "loading": "Loading..."
   },
   "tutorial": {
     "dont_show_again": "Don't show again"
