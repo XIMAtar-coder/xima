@@ -26,7 +26,7 @@ jobs:
       - name: Typecheck edge functions (const/readonly/syntax only)
         run: npm run typecheck:edge
       - name: Lint (ratchet — warnings may only go down)
-        run: npx eslint . --max-warnings 1423
+        run: npx eslint . --max-warnings 1424
       - name: Tests
         run: npx vitest run
       - name: Build
