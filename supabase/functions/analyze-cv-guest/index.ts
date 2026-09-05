@@ -22,7 +22,7 @@
 
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { corsHeaders, errorResponse, jsonResponse, corsHeadersFor } from "../_shared/errors.ts";
+import { errorResponse, jsonResponse, corsHeadersFor } from "../_shared/errors.ts";
 import { extractCorrelationId } from "../_shared/correlationId.ts";
 
 // =====================================================

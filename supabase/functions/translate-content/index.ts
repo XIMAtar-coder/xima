@@ -7,7 +7,7 @@ import {
   handleValidationError 
 } from "../_shared/validation.ts";
 import { callAiGateway, generateCorrelationId, AiGatewayError } from "../_shared/aiClient.ts";
-import { corsHeaders, errorResponse, jsonResponse, corsHeadersFor } from "../_shared/errors.ts";
+import { errorResponse, jsonResponse, corsHeadersFor } from "../_shared/errors.ts";
 import { withResultCache } from "../_shared/withResultCache.ts";
 import { enforceAiBudget, recordAiCallSafe } from "../_shared/enforceBudget.ts";
 
