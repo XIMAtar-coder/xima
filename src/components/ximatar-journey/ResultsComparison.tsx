@@ -59,6 +59,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     rubric: Rubric;
   }>>([]);
   const [topPillars, setTopPillars] = useState<Array<{ name: string; score: number }>>([]);
+  const [guestOpenAnswerCount, setGuestOpenAnswerCount] = useState(0);
   const [hasNoAssessment, setHasNoAssessment] = useState(false);
   const [fieldKey, setFieldKey] = useState<string | null>(null);
 
@@ -241,21 +242,13 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     const fetchOpenResponses = async () => {
       const guestData = sessionStorage.getItem('guest_assessment_data');
       if (guestData && !user?.id) {
+        // Guests' written answers are scored by analyze-open-answer only after
+        // registration. This branch used to fabricate a score (70-99) and a
+        // full rubric with Math.random() and render them as if graded. Show
+        // nothing graded; tell them when grading happens instead.
         const data = JSON.parse(guestData);
-        const guestResponses = Object.entries(data.openAnswers || {}).map(([key, answer]) => ({
-          open_key: key as 'open1' | 'open2',
-          answer: answer as string,
-          score: Math.floor(Math.random() * 30) + 70,
-          rubric: {
-            length: Math.floor(Math.random() * 5) + 15,
-            relevance: Math.floor(Math.random() * 5) + 20,
-            structure: Math.floor(Math.random() * 5) + 15,
-            specificity: Math.floor(Math.random() * 5) + 15,
-            action: Math.floor(Math.random() * 5) + 10,
-            total: Math.floor(Math.random() * 30) + 70
-          } as Rubric
-        }));
-        setOpenResponses(guestResponses);
+        setGuestOpenAnswerCount(Object.keys(data.openAnswers || {}).length);
+        setOpenResponses([]);
         return;
       }
       
@@ -671,6 +664,14 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           </div>
         )}
       </Card>
+
+      {!hasCv && !user?.id && guestOpenAnswerCount > 0 && (
+        <Card className="p-6 animate-fade-in" style={{ animationDelay: '1000ms' }}>
+          <p className="text-sm text-muted-foreground text-center">
+            {t('ximatarJourney.open_scores_after_register', { count: guestOpenAnswerCount })}
+          </p>
+        </Card>
+      )}
 
       {!hasCv && openResponses.length > 0 && (
         <div className="space-y-6 animate-fade-in" style={{ animationDelay: '1000ms' }}>

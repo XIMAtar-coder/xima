@@ -25,6 +25,7 @@ const ContactSales = lazy(() => import("./pages/ContactSales"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -107,7 +108,7 @@ const LegacyGoalsRedirect = () => {
 // Public/marketing/auth routes where XIM-AI must NEVER appear (even if a session exists).
 const HIDDEN_AI_ROUTES = new Set([
   '/', '/about', '/how-it-works', '/business', '/pricing', '/contact-sales',
-  '/login', '/register', '/verify-email', '/unsubscribe',
+  '/login', '/register', '/verify-email', '/reset-password', '/unsubscribe',
   '/privacy', '/terms', '/imprint',
   '/business/login', '/business/register',
   '/mentor/login',
@@ -148,6 +149,7 @@ const RoutesTree = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
           <Route path="/onboarding" element={<Onboarding />} />

@@ -27,6 +27,33 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSendingReset, setIsSendingReset] = useState(false);
+
+  // "Forgot password?" had no handler at all until 2026-08-28: the button
+  // rendered and did nothing, and no reset route existed. Recovery mail is
+  // rendered by auth-email-hook (it already has a recovery template); the link
+  // in it returns the user to /reset-password with a recovery session.
+  const handleForgotPassword = async () => {
+    const target = email.trim();
+    if (!target) {
+      toast({ title: t('login.reset_enter_email'), variant: 'destructive' });
+      return;
+    }
+    setIsSendingReset(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(target, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      // Same message whether or not the address exists: do not confirm
+      // account existence to whoever is typing.
+      toast({ title: t('login.reset_sent_title'), description: t('login.reset_sent_desc') });
+    } catch {
+      toast({ title: t('login.reset_sent_title'), description: t('login.reset_sent_desc') });
+    } finally {
+      setIsSendingReset(false);
+    }
+  };
 
   React.useEffect(() => {
     const handleAuthRedirect = async () => {
@@ -135,9 +162,12 @@ const Login = () => {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">{t('login.password')}</Label>
-                  <Button 
-                    variant="link" 
+                  <Button
+                    type="button"
+                    variant="link"
                     className="p-0 h-auto text-xs"
+                    onClick={handleForgotPassword}
+                    disabled={isSendingReset}
                   >
                     {t('login.forgot_password')}
                   </Button>

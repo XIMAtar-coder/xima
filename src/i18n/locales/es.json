@@ -184,7 +184,9 @@
     "error": "Error",
     "as_strength": "Como fortaleza",
     "as_weakness": "Como debilidad",
-    "back_to_profile": "Volver al perfil"
+    "back_to_profile": "Volver al perfil",
+    "login_required": "Inicia sesión para ver tu perfil",
+    "login": "Iniciar sesión"
   },
   "nav": {
     "home": "Inicio",
@@ -2583,7 +2585,10 @@
     "welcome_back": "Qué bien tenerte de vuelta en XIMA.",
     "enter_both": "Introduce el correo y la contraseña",
     "are_you_mentor": "¿Eres mentor?",
-    "mentor_login_link": "Inicia sesión aquí"
+    "mentor_login_link": "Inicia sesión aquí",
+    "reset_enter_email": "Escribe primero tu email arriba",
+    "reset_sent_title": "Revisa tu correo",
+    "reset_sent_desc": "Si existe una cuenta con esa dirección, te hemos enviado un enlace para restablecer la contraseña."
   },
   "auth": {
     "or": "o",
@@ -5383,7 +5388,8 @@
     "open_score_insight": "Ideas",
     "open_score_influence_note": "Las respuestas abiertas pueden influir hasta un 10% en los pilares seleccionados (Creatividad, Comunicación, Conocimiento y Drive).",
     "closing_pullquote": "Un XIMAtar no es una etiqueta — es una brújula. Muestra quién eres, qué da forma a tu progreso y qué elevará tu próximo capítulo.",
-    "closing_cta": "Elige a tu mentor para continuar →"
+    "closing_cta": "Elige a tu mentor para continuar →",
+    "open_scores_after_register": "Tus {{count}} respuestas escritas se evaluarán cuando te registres: antes no inventamos ninguna puntuación."
   },
   "shortlist": {
     "header_title": "Shortlist para: {{role}}",
@@ -6534,5 +6540,19 @@
       "next_levels": "L1 ✓ — los siguientes niveles se desbloquean cuando la empresa revise tu perfil.",
       "default_line": "He visto cómo reaccionas. Tu XIMAtar está tomando forma — cada rasgo activado es una parte de ti."
     }
+  },
+  "resetPassword": {
+    "title": "Crea una nueva contraseña",
+    "subtitle": "Elige una nueva contraseña para tu cuenta XIMA.",
+    "new_password": "Nueva contraseña",
+    "confirm_password": "Confirma la nueva contraseña",
+    "submit": "Guardar nueva contraseña",
+    "saving": "Guardando...",
+    "success": "Contraseña actualizada. Has iniciado sesión.",
+    "failed": "No hemos podido actualizar la contraseña. Solicita un nuevo enlace e inténtalo de nuevo.",
+    "mismatch": "Las dos contraseñas no coinciden",
+    "too_short": "Usa al menos {{n}} caracteres",
+    "invalid_link": "Este enlace no es válido o ha caducado. Solicita uno nuevo desde la página de acceso.",
+    "back_to_login": "Volver al acceso"
   }
 }

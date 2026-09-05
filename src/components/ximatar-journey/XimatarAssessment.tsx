@@ -195,8 +195,12 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
           let count = 0;
           questionIds.forEach(qId => {
             if (submissionAnswers[qId] !== undefined) {
-              // answers are 0-3, scale to 0-10 with some variance
-              total += (submissionAnswers[qId] + 1) * 2.5 + (Math.random() * 1.5 - 0.75);
+              // Answers are 0-3; scale linearly to 2.5-10. Deterministic on
+              // purpose: this used to add Math.random()*1.5-0.75 per answer,
+              // so the same answers could yield a different pillar profile and
+              // a different XIMAtar on a retake. A psychometric result must be
+              // reproducible from its inputs.
+              total += (submissionAnswers[qId] + 1) * 2.5;
               count++;
             }
           });

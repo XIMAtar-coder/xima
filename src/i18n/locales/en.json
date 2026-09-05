@@ -530,7 +530,9 @@
     "error": "Error",
     "as_strength": "As a strength",
     "as_weakness": "As a weakness",
-    "back_to_profile": "Back to profile"
+    "back_to_profile": "Back to profile",
+    "login_required": "Please log in to see your profile",
+    "login": "Log in"
   },
   "tutorial": {
     "dont_show_again": "Don't show again"
@@ -1425,7 +1427,10 @@
     "invalid_credentials": "Invalid email or password",
     "enter_both": "Please enter both email and password",
     "are_you_mentor": "Are you a mentor?",
-    "mentor_login_link": "Login here"
+    "mentor_login_link": "Login here",
+    "reset_enter_email": "Enter your email above first",
+    "reset_sent_title": "Check your inbox",
+    "reset_sent_desc": "If an account exists for that address, we've sent a link to reset your password."
   },
   "auth": {
     "or": "or",
@@ -5956,7 +5961,8 @@
     "open_score_insight": "Insight",
     "open_score_influence_note": "Open answers can influence up to 10% of selected pillars (Creativity, Communication, Knowledge, and Drive).",
     "closing_pullquote": "A XIMAtar is not a label — it is a compass. It shows who you are, what shapes your progress, and what will elevate your next chapter.",
-    "closing_cta": "Choose your mentor to continue →"
+    "closing_cta": "Choose your mentor to continue →",
+    "open_scores_after_register": "Your {{count}} written answers will be scored once you register — we don't guess at a number before then."
   },
   "profile_completion": {
     "title": "Complete your profile for better matches",
@@ -6372,5 +6378,19 @@
       "next_levels": "L1 ✓ — the next levels unlock when the company reviews your profile.",
       "default_line": "I've seen how you react. Your XIMAtar is taking shape — every trait lit up is a piece of you."
     }
+  },
+  "resetPassword": {
+    "title": "Set a new password",
+    "subtitle": "Choose a new password for your XIMA account.",
+    "new_password": "New password",
+    "confirm_password": "Confirm new password",
+    "submit": "Save new password",
+    "saving": "Saving...",
+    "success": "Password updated. You're signed in.",
+    "failed": "We couldn't update your password. Request a new link and try again.",
+    "mismatch": "The two passwords don't match",
+    "too_short": "Use at least {{n}} characters",
+    "invalid_link": "This reset link is invalid or has expired. Request a new one from the login page.",
+    "back_to_login": "Back to login"
   }
 }

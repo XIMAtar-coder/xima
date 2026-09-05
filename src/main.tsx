@@ -41,5 +41,9 @@ void initI18n()
     );
   });
 
-// Force logout on every app restart, but non-blocking so it doesn't delay first paint.
-void supabase.auth.signOut().catch(() => { /* ignore */ });
+// No forced sign-out here. An unconditional supabase.auth.signOut() lived on
+// this line from 2025-10-26 to 2026-08-28: it was written for the native app's
+// cold start and never gated, so on the web every full page load — a refresh,
+// a second tab, every email deep link — silently ended the session, undoing
+// persistSession: true in the client. The native behaviour lives in
+// initNative() on the capacitor-ios branch, where it is platform-gated.

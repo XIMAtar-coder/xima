@@ -17,7 +17,6 @@ interface CandidateEngagementData {
     avatar: string;
     ximatar: string;
     status: string | null;
-    matchScore: number;
   }>;
 }
 
@@ -77,7 +76,10 @@ export const CandidateEngagement = () => {
           avatar: '',
           ximatar: profile?.ximatar || 'wolf',
           status: challenge.status,
-          matchScore: Math.floor(Math.random() * 20 + 80) // Simulated for now
+          // No match score here. This widget used to show a number generated
+          // with Math.random() (80-99) labelled "% match" to paying businesses.
+          // The real ranking lives in shortlist_results.total_score; until this
+          // card reads that, it shows nothing rather than an invented figure.
         };
       }) || [];
 
@@ -177,9 +179,6 @@ export const CandidateEngagement = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Badge variant="outline">
-                      {candidate.matchScore}% match
-                    </Badge>
                     <Badge>
                       {candidate.status}
                     </Badge>

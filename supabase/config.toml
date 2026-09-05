@@ -61,7 +61,10 @@ project_id = "iyckvvnecpnldrxqmzta"
   [functions.mentor-get-candidate-cv]
     verify_jwt = true
   [functions.process-email-outbox]
-    verify_jwt = true
+    # Invoked by pg_cron via pg_net with a Vault-held secret; it verifies that
+    # itself (or the service-role key). The gateway JWT check would otherwise
+    # force the publishable key into the cron command for no security gain.
+    verify_jwt = false
   [functions.recommend-jobs]
     verify_jwt = false
   [functions.recommend-mentors]

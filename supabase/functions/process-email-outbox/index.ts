@@ -32,12 +32,31 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Auth: only service_role
+  // Auth: the service role, or the scheduler.
+  //
+  // Nothing invoked this worker until 2026-08-28 — pg_cron was not installed
+  // and no external scheduler existed — so queued mail never left the outbox
+  // (oldest pending row: 143 days). It now runs every minute from pg_cron via
+  // pg_net. The job cannot present the service-role key without that key being
+  // written into the cron command, so it sends a dedicated secret instead. The
+  // secret is generated inside Postgres, stored in Vault, and read back here
+  // through a service-role-only RPC; it never passes through a human or a
+  // deploy pipeline.
   const authHeader = req.headers.get("Authorization") ?? "";
   const token = authHeader.replace("Bearer ", "");
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 
-  if (token !== serviceKey) {
+  let authorised = token === serviceKey;
+  if (!authorised) {
+    const presented = req.headers.get("x-cron-secret") ?? "";
+    if (presented) {
+      const { data: expected } = await createClient(supabaseUrl, serviceKey)
+        .rpc("get_email_outbox_cron_secret");
+      authorised = typeof expected === "string" && expected.length > 0 && expected === presented;
+    }
+  }
+  if (!authorised) {
     return new Response(JSON.stringify({ error: "Forbidden" }), {
       status: 403,
       headers: { "Content-Type": "application/json", ...corsHeaders },
@@ -53,7 +72,6 @@ Deno.serve(async (req) => {
     );
   }
 
-  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const supabase = createClient(supabaseUrl, serviceKey);
 
   // Fetch batch of processable emails
