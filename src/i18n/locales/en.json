@@ -6371,7 +6371,9 @@
       "knowledge": "Knowledge"
     },
     "percentile": "You scored above {{percentile}}% of the {{count}} people who answered for this role.",
-    "later": "Your reflection will appear here once your answers have been reviewed — nothing is lost, you can close this page."
+    "later": "Your reflection will appear here once your answers have been reviewed — nothing is lost, you can close this page.",
+    "retry": "Try again",
+    "retrying": "Asking again…"
   },
   "mindset": {
     "resolve": {

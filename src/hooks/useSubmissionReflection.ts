@@ -22,6 +22,8 @@ interface UseSubmissionReflectionResult {
   isPending: boolean;
   /** Polling finished without evidence — the scorer has not produced it (yet). */
   exhausted: boolean;
+  /** Start polling again from zero (after a retry has been requested). */
+  restart: () => void;
 }
 
 export function useSubmissionReflection(
@@ -72,5 +74,9 @@ export function useSubmissionReflection(
     isPending: !evidence && !exhausted,
     /** Polling finished without evidence — the scorer has not produced it (yet). */
     exhausted: !evidence && exhausted,
+    restart: () => {
+      pollsRef.current = 0;
+      void query.refetch();
+    },
   };
 }

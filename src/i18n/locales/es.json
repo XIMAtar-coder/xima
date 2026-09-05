@@ -6533,7 +6533,9 @@
       "knowledge": "Conocimiento"
     },
     "percentile": "Has superado al {{percentile}}% de las {{count}} personas que respondieron para este puesto.",
-    "later": "Tu reflexión aparecerá aquí cuando se hayan evaluado tus respuestas: no se pierde nada, puedes cerrar esta página."
+    "later": "Tu reflexión aparecerá aquí cuando se hayan evaluado tus respuestas: no se pierde nada, puedes cerrar esta página.",
+    "retry": "Intentar de nuevo",
+    "retrying": "Solicitando de nuevo…"
   },
   "mindset": {
     "resolve": {

@@ -6371,7 +6371,9 @@
       "knowledge": "Conoscenza"
     },
     "percentile": "Hai ottenuto un risultato superiore al {{percentile}}% delle {{count}} persone che hanno risposto per questo ruolo.",
-    "later": "La tua riflessione comparirà qui quando le risposte saranno state valutate: non si perde nulla, puoi chiudere questa pagina."
+    "later": "La tua riflessione comparirà qui quando le risposte saranno state valutate: non si perde nulla, puoi chiudere questa pagina.",
+    "retry": "Riprova",
+    "retrying": "Nuova richiesta in corso…"
   },
   "mindset": {
     "resolve": {

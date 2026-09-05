@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -17,11 +18,20 @@ type Props = {
   /** Qualitative-only cue from the scorer. We render a friendly string; never numbers. */
   growthCue?: 'xima_strengthened' | null;
   onBack: () => void;
+  /** Re-request scoring; shown when polling gave up without evidence. */
+  onRetry?: () => Promise<void> | void;
 };
 
-export function ResolveScreen({ invitationId, guideName, litFacets, resolveLine, growthCue, onBack }: Props) {
+export function ResolveScreen({ invitationId, guideName, litFacets, resolveLine, growthCue, onBack, onRetry }: Props) {
   const { t } = useTranslation();
-  const { evidence, isPending, exhausted } = useSubmissionReflection(invitationId);
+  const { evidence, isPending, exhausted, restart } = useSubmissionReflection(invitationId);
+  const [retrying, setRetrying] = useState(false);
+  const handleRetry = async () => {
+    if (!onRetry) return;
+    setRetrying(true);
+    try { await onRetry(); } finally { setRetrying(false); }
+    restart();
+  };
   const { percentile } = useSubmissionPercentile(invitationId);
   const line =
     resolveLine ||
@@ -85,9 +95,16 @@ export function ResolveScreen({ invitationId, guideName, litFacets, resolveLine,
           </p>
         )}
         {!evidence && exhausted && (
-          <p className="text-sm text-muted-foreground" role="status">
-            {t('reflection.later', 'Your reflection will appear here once your answers have been reviewed — nothing is lost, you can close this page.')}
-          </p>
+          <div className="space-y-2" role="status">
+            <p className="text-sm text-muted-foreground">
+              {t('reflection.later', 'Your reflection will appear here once your answers have been reviewed — nothing is lost, you can close this page.')}
+            </p>
+            {onRetry && (
+              <Button size="sm" variant="secondary" onClick={handleRetry} disabled={retrying}>
+                {retrying ? t('reflection.retrying', 'Asking again…') : t('reflection.retry', 'Try again')}
+              </Button>
+            )}
+          </div>
         )}
 
         <div className="pt-2">

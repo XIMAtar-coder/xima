@@ -173,6 +173,7 @@ export function MindsetChallenge({ invitationId, challengeId, config }: Props) {
 
       {step === 'resolve' && (
         <ResolveScreen
+        onRetry={() => draft.rescore(challengeId)}
           invitationId={invitationId}
           guideName={guideName}
           litFacets={payload.lit_facets}

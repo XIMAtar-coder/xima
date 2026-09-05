@@ -106,6 +106,45 @@ export function useMindsetDraft(invitationId: string) {
     [upsertDraft]
   );
 
+  /**
+   * Ask the scorer to grade a payload. Fire-and-forget: the candidate is never
+   * blocked on it, and the edge function persists signals_payload itself.
+   * Exposed so the resolve screen can retry when the first attempt failed —
+   * until 2026-09-06 a server-side error here left the submission unscored
+   * with no way for anyone to try again.
+   */
+  const requestScoring = useCallback(async (payload: MindsetPayload, challengeId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      await supabase.functions.invoke('analyze-open-answer', {
+        body: {
+          challenge_id: challengeId,
+          invitation_id: invitationId,
+          user_id: user?.id,
+          // The candidate's own language — the reflection they get back is
+          // written in it. This used to be hardcoded to Italian.
+          language: (i18n.language || 'en').slice(0, 2),
+          scoring_context: 'l1_challenge',
+          format: 'mindset',
+          mindset_payload: {
+            instinct_choices: payload.instinct_choices,
+            day_log: payload.day_log,
+            debrief: payload.debrief,
+          },
+        },
+      });
+    } catch {
+      /* the resolve screen polls for the result and offers a retry */
+    }
+  }, [invitationId]);
+
+  /** Re-run scoring for the already-submitted payload. */
+  const rescore = useCallback(async (challengeId: string) => {
+    const payload = state.initialPayload;
+    if (!payload || state.status !== 'submitted') return;
+    await requestScoring(payload, challengeId);
+  }, [requestScoring, state.initialPayload, state.status]);
+
   const submit = useCallback(
     async (payload: MindsetPayload, challengeId: string) => {
       const { data: invitation, error: invErr } = await supabase
@@ -154,36 +193,12 @@ export function useMindsetDraft(invitationId: string) {
 
       statusRef.current = 'submitted';
 
-      // Fire-and-forget scoring; never block candidate. Edge function persists signals_payload via service role.
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        supabase.functions
-          .invoke('analyze-open-answer', {
-            body: {
-              challenge_id: challengeId,
-              invitation_id: invitationId,
-              user_id: user?.id,
-              // The candidate's own language — the reflection they get back is
-              // written in it. This used to be hardcoded to Italian.
-              language: (i18n.language || 'en').slice(0, 2),
-              scoring_context: 'l1_challenge',
-              format: 'mindset',
-              mindset_payload: {
-                instinct_choices: payload.instinct_choices,
-                day_log: payload.day_log,
-                debrief: payload.debrief,
-              },
-            },
-          })
-          .catch(() => {});
-      } catch {
-        /* ignore */
-      }
+      void requestScoring(payload, challengeId);
 
       return { submittedAt: now };
     },
     [invitationId]
   );
 
-  return { ...state, saveDraftDebounced, submit };
+  return { ...state, saveDraftDebounced, submit, rescore };
 }
