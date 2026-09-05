@@ -18,7 +18,7 @@ const Index = () => {
         path="/"
       />
       <LandingHeader />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         <HeroSection />
         <div className="max-w-[1440px] mx-auto px-6 lg:px-10 -mt-2 mb-12">
           <FeatureStrip />

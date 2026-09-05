@@ -245,7 +245,8 @@ export default function OpportunityDetails() {
         </div>
       </section>
 
-      <main className="grid gap-6 md:grid-cols-3">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:shadow">{t('common.skip_to_content')}</a>
+      <main id="main-content" className="grid gap-6 md:grid-cols-3">
         <article className="md:col-span-2 space-y-6">
           <Card>
             <CardHeader>

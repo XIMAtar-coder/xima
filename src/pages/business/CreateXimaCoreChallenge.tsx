@@ -522,7 +522,8 @@ const CreateXimaCoreChallenge = () => {
 
   return (
     <BusinessLayout>
-      <main className="mx-auto flex max-w-4xl flex-col gap-6 pb-32">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:shadow">{t('common.skip_to_content')}</a>
+      <main id="main-content" className="mx-auto flex max-w-4xl flex-col gap-6 pb-32">
         <Button
           variant="ghost"
           onClick={() => navigate(goalId && returnTo === 'shortlist' ? `/business/hiring-goals/${goalId}/shortlist` : goalId ? `/business/candidates?fromGoal=${goalId}` : '/business/challenges')}

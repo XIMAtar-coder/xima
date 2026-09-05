@@ -88,7 +88,7 @@ export default function OAuthConsent() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 py-10">
+    <main id="main-content" className="min-h-screen flex items-center justify-center px-4 py-10">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Connect to XIMA</CardTitle>
