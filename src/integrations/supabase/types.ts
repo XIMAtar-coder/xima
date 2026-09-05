@@ -1604,6 +1604,47 @@ export type Database = {
           },
         ]
       }
+      challenge_review_notes: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          review_id: string
+          reviewer_user_id: string | null
+          tags: string[]
+          updated_at: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          review_id: string
+          reviewer_user_id?: string | null
+          tags?: string[]
+          updated_at?: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          review_id?: string
+          reviewer_user_id?: string | null
+          tags?: string[]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_review_notes_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: true
+            referencedRelation: "challenge_reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       challenge_reviews: {
         Row: {
           business_id: string
@@ -2636,7 +2677,7 @@ export type Database = {
           id: string
           meta: Json
           type: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           amount?: number
@@ -2644,7 +2685,7 @@ export type Database = {
           id?: string
           meta?: Json
           type: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           amount?: number
@@ -2652,7 +2693,7 @@ export type Database = {
           id?: string
           meta?: Json
           type?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -5342,6 +5383,36 @@ export type Database = {
         }
         Relationships: []
       }
+      scoring_repair_log: {
+        Row: {
+          id: string
+          pillar_scores_after: Json | null
+          pillar_scores_before: Json | null
+          reason: string
+          repaired_at: string
+          trajectory_rows_before: Json | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          pillar_scores_after?: Json | null
+          pillar_scores_before?: Json | null
+          reason: string
+          repaired_at?: string
+          trajectory_rows_before?: Json | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          pillar_scores_after?: Json | null
+          pillar_scores_before?: Json | null
+          reason?: string
+          repaired_at?: string
+          trajectory_rows_before?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       shortlist_results: {
         Row: {
           anonymous_label: string | null
@@ -5361,6 +5432,8 @@ export type Database = {
           location_match: string | null
           location_score: number | null
           match_narrative: string | null
+          performance_score: number | null
+          performance_summary: string | null
           pillar_scores: Json | null
           pipeline_stage: string | null
           status: string | null
@@ -5389,6 +5462,8 @@ export type Database = {
           location_match?: string | null
           location_score?: number | null
           match_narrative?: string | null
+          performance_score?: number | null
+          performance_summary?: string | null
           pillar_scores?: Json | null
           pipeline_stage?: string | null
           status?: string | null
@@ -5417,6 +5492,8 @@ export type Database = {
           location_match?: string | null
           location_score?: number | null
           match_narrative?: string | null
+          performance_score?: number | null
+          performance_summary?: string | null
           pillar_scores?: Json | null
           pipeline_stage?: string | null
           status?: string | null
@@ -6355,6 +6432,7 @@ export type Database = {
           ximatar_label: string
         }[]
       }
+      get_email_outbox_cron_secret: { Args: never; Returns: string }
       get_feed_item_reactions: { Args: { item_id: string }; Returns: Json }
       get_interest_count_for_ximatar: {
         Args: { p_ximatar_id: string }
@@ -6394,6 +6472,13 @@ export type Database = {
       get_profile_id_for_auth_user: {
         Args: { p_auth_uid: string }
         Returns: string
+      }
+      get_submission_percentile: {
+        Args: { p_invitation_id: string }
+        Returns: {
+          percentile: number
+          sample_size: number
+        }[]
       }
       grant_interview_prep_if_3_challenges_completed: {
         Args: { p_business_id: string; p_user_id: string }
@@ -6632,7 +6717,7 @@ export type Database = {
     }
     Enums: {
       ai_message_role: "user" | "assistant" | "system" | "tool"
-      app_role: "admin" | "user" | "business" | "operator"
+      app_role: "admin" | "user" | "business" | "operator" | "candidate"
       audience_type_enum: "candidate" | "business" | "mentor"
       cost_category:
         | "ai"
@@ -6672,12 +6757,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -6701,11 +6786,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -6726,11 +6811,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -6751,11 +6836,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -6768,11 +6853,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -6785,7 +6870,7 @@ export const Constants = {
   public: {
     Enums: {
       ai_message_role: ["user", "assistant", "system", "tool"],
-      app_role: ["admin", "user", "business", "operator"],
+      app_role: ["admin", "user", "business", "operator", "candidate"],
       audience_type_enum: ["candidate", "business", "mentor"],
       cost_category: ["ai", "hosting_site", "database", "development", "other"],
       cost_recurrence: ["monthly", "one_off"],
