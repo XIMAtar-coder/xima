@@ -41,7 +41,7 @@ export function ResolveScreen({ invitationId, guideName, litFacets, resolveLine,
     );
 
   return (
-    <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
+    <Card className="border-primary/30">
       <CardContent className="py-10 space-y-6">
         <div className="flex items-center gap-3">
           <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">

@@ -28,7 +28,7 @@ export function L2MessageBubble({ entry, counterpartName }: Props) {
           <p className="text-xs text-muted-foreground mb-1">{counterpartName}</p>
           <div
             className={cn(
-              'inline-block max-w-full rounded-2xl rounded-tl-md bg-muted text-foreground px-4 py-2.5 text-[15px] leading-relaxed whitespace-pre-line',
+              'inline-block max-w-full rounded-lg rounded-tl-md bg-muted text-foreground px-4 py-2.5 text-[15px] leading-relaxed whitespace-pre-line',
               entry.degraded && 'opacity-80'
             )}
           >
@@ -42,7 +42,7 @@ export function L2MessageBubble({ entry, counterpartName }: Props) {
   return (
     <div className="flex items-start gap-2.5 justify-end">
       <div className="flex-1 min-w-0 flex justify-end">
-        <div className="inline-block max-w-[85%] rounded-2xl rounded-tr-md bg-primary text-primary-foreground px-4 py-2.5 text-[15px] leading-relaxed whitespace-pre-line">
+        <div className="inline-block max-w-[85%] rounded-lg rounded-tr-md bg-primary text-primary-foreground px-4 py-2.5 text-[15px] leading-relaxed whitespace-pre-line">
           {entry.text}
         </div>
       </div>

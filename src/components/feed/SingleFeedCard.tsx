@@ -19,9 +19,9 @@ const getTypeIcon = (type: string) => {
     case 'level_reached':
       return <Trophy className="h-5 w-5 text-amber-500" />;
     case 'badge_unlocked':
-      return <Star className="h-5 w-5 text-violet-500" />;
+      return <Star className="h-5 w-5 text-primary" />;
     case 'skill_validated':
-      return <Zap className="h-5 w-5 text-sky-500" />;
+      return <Zap className="h-5 w-5 text-primary" />;
     default:
       return <Sparkles className="h-5 w-5 text-primary" />;
   }
@@ -96,7 +96,7 @@ export const SingleFeedCard = ({ className, compact }: SingleFeedCardProps) => {
 
   return (
     <Card className={cn(
-      "border-primary/30 bg-gradient-to-br from-primary/5 to-transparent overflow-hidden transition-all",
+      "border-primary/30 overflow-hidden transition-all",
       className
     )}>
       <CardHeader className={cn("pb-2", compact && "py-3")}>

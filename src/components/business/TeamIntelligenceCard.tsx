@@ -123,8 +123,8 @@ export const TeamIntelligenceCard: React.FC<TeamIntelligenceCardProps> = ({
                 </div>
               )}
 
-              <div className="p-3 rounded-lg bg-blue-500/10 dark:bg-blue-950/20 border border-blue-500/20">
-                <p className="text-sm font-medium text-blue-700 dark:text-blue-400">
+              <div className="p-3 rounded-lg bg-muted dark:bg-muted border border-border">
+                <p className="text-sm font-medium text-primary dark:text-primary">
                   Diversity opportunity
                 </p>
                 <p className="text-xs text-muted-foreground">

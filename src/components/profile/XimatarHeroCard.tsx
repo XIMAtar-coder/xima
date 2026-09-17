@@ -91,7 +91,7 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
   const drivePercentage = Math.min(Math.max(driveValue / 10, 0), 1);
 
   return (
-    <div className="glass-surface rounded-[20px] overflow-hidden hover:translate-y-0">
+    <div className="glass-surface rounded-[20px] overflow-hidden">
       <div className="p-6 md:p-8">
         <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
           {/* Left: User Photo */}
@@ -177,14 +177,14 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
                   strokeDashoffset={`${2 * Math.PI * 54 * (1 - drivePercentage)}`}
                   strokeLinecap="round"
                   style={{
-                    stroke: driveLevel === 'high' ? '#34C759' : driveLevel === 'medium' ? '#007AFF' : '#FF9500',
+                    stroke: driveLevel === 'high' ? '#34C759' : driveLevel === 'medium' ? 'hsl(var(--primary))' : '#FF9500',
                     transition: 'stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1)',
                   }}
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center p-3">
                 {ximatarImage ? (
-                  <div className="w-full h-full rounded-full overflow-hidden bg-[rgba(118,118,128,0.08)] border border-[rgba(60,60,67,0.12)] shadow-lg">
+                  <div className="w-full h-full rounded-full overflow-hidden bg-[rgba(118,118,128,0.08)] border border-[rgba(60,60,67,0.12)]">
                     <OptimizedImage
                       src={ximatarImage}
                       alt={ximatarName || 'XIMAtar'}

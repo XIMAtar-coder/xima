@@ -21,7 +21,7 @@ import {
 
 const NAVY = '#071E3A';
 const NAVY_DEEP = '#0A2A5E';
-const BLUE = '#0B6BFF';
+const BLUE = 'var(--xima-blue)';
 
 const XIMATAR_CANDIDATES = [
   { name: 'lion', archetype: 'Lion', code: 'C-2847', score: 92, tier: 'Alto', gender: 'f' as const },
@@ -126,9 +126,9 @@ const Business: React.FC = () => {
             </div>
             <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
               {[
-                'Nessuna carta di credito',
-                'Setup in 2 minuti',
-                'Primo candidato in 24h',
+                t('business.hero_proof_no_card', 'No credit card'),
+                t('business.hero_proof_setup', 'Set up in 2 minutes'),
+                t('business.hero_proof_first_candidate', 'First candidate in 24h'),
               ].map((s) => (
                 <span key={s} className="flex items-center gap-2">
                   <Check size={16} style={{ color: BLUE }} />
@@ -301,7 +301,7 @@ const Business: React.FC = () => {
 
               {/* Bottom stats strip */}
               <div
-                className="mt-4 rounded-2xl p-4 relative z-10 space-y-3"
+                className="mt-4 rounded-lg p-4 relative z-10 space-y-3"
                 style={{
                   background: 'rgba(255,255,255,0.06)',
                   border: '1px solid rgba(255,255,255,0.10)',
@@ -381,7 +381,7 @@ const Business: React.FC = () => {
             ].map(({ Icon, n }) => (
               <div
                 key={n}
-                className="rounded-2xl border border-border bg-card p-6 flex flex-col"
+                className="rounded-lg border border-border bg-card p-6 flex flex-col"
               >
                 <Icon size={28} strokeWidth={1.5} style={{ color: BLUE }} />
                 <h3
@@ -473,7 +473,7 @@ const Business: React.FC = () => {
 
           {/* Candidate list mock */}
           <div
-            className="rounded-2xl border border-border bg-card p-5"
+            className="rounded-lg border border-border bg-card p-5"
             style={{ boxShadow: '0 24px 60px rgba(7,30,58,0.18)' }}
           >
             <div className="flex items-center justify-between pb-3 border-b border-border">
@@ -544,7 +544,7 @@ const Business: React.FC = () => {
               return (
                 <div
                   key={plan}
-                  className="rounded-2xl bg-card p-6 flex flex-col"
+                  className="rounded-lg bg-card p-6 flex flex-col"
                   style={{
                     border: isGrowth ? `2px solid ${BLUE}` : '1px solid hsl(var(--border))',
                     boxShadow: isGrowth ? '0 24px 60px rgba(11,107,255,0.18)' : undefined,
@@ -666,7 +666,7 @@ const Business: React.FC = () => {
       {/* SECTION 6 — Final CTA */}
       <section className="px-6 lg:px-10 pb-16 md:pb-20">
         <div
-          className="max-w-[1200px] mx-auto rounded-2xl overflow-hidden relative"
+          className="max-w-[1200px] mx-auto rounded-lg overflow-hidden relative"
           style={{ background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY_DEEP} 100%)` }}
         >
           <svg
@@ -679,8 +679,8 @@ const Business: React.FC = () => {
           >
             <defs>
               <linearGradient id="biz-cta-wave" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#0B6BFF" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="#0B6BFF" stopOpacity="0" />
+                <stop offset="0%" stopColor="var(--xima-blue)" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="var(--xima-blue)" stopOpacity="0" />
               </linearGradient>
             </defs>
             {Array.from({ length: 18 }).map((_, i) => (

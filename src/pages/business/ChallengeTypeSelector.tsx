@@ -155,7 +155,7 @@ const ChallengeTypeSelector = () => {
         <div className="grid gap-6">
           {/* XIMA Core - Primary Option */}
           <Card 
-            className="relative border-2 border-primary/50 bg-gradient-to-br from-primary/5 to-transparent hover:border-primary hover:shadow-lg transition-all cursor-pointer group"
+            className="relative border-2 border-primary/50 hover:border-primary transition-all cursor-pointer group"
             onClick={handleSelectXimaCore}
           >
             {/* Recommended badge */}
@@ -168,7 +168,7 @@ const ChallengeTypeSelector = () => {
 
             <CardHeader className="pt-8 pb-4">
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/20 group-hover:scale-105 transition-transform">
+                <div className="p-3 rounded-full border border-primary/20 transition-transform">
                   <Brain className="h-7 w-7 text-primary" />
                 </div>
                 <div className="flex-1">
@@ -222,7 +222,7 @@ const ChallengeTypeSelector = () => {
           >
             <CardHeader className="pb-4">
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-muted group-hover:scale-105 transition-transform">
+                <div className="p-3 rounded-full bg-muted transition-transform">
                   <Wrench className="h-7 w-7 text-muted-foreground" />
                 </div>
                 <div className="flex-1">

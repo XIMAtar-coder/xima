@@ -36,7 +36,7 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
 
   if (loading) {
     return (
-      <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-background">
+      <Card className="border-primary/30">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Zap className="h-5 w-5 text-primary" />
@@ -56,7 +56,7 @@ export const ActiveChallengesOverview: React.FC<ActiveChallengesOverviewProps> =
   if (challenges.length === 0) return null;
 
   return (
-    <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-background">
+    <Card className="border-primary/30">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">

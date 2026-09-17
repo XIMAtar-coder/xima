@@ -400,7 +400,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   return (
     <div className="space-y-8">
       {/* Storytelling Introduction */}
-      <Card className="p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 border-primary/10 animate-fade-in">
+      <Card className="p-8 border-primary/10 animate-fade-in">
         <div className="text-center space-y-4">
           <Sparkles className="h-12 w-12 text-primary mx-auto mb-4 animate-scale-in" />
           <h2 className="text-3xl font-bold font-heading animate-fade-in" style={{ animationDelay: '100ms' }}>
@@ -422,7 +422,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       {/* How Your XIMAtar Was Determined */}
       {strongestPillar && weakestPillar && (
-        <Card className="p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20 animate-fade-in" style={{ animationDelay: '400ms' }}>
+        <Card className="p-6 border-primary/20 animate-fade-in" style={{ animationDelay: '400ms' }}>
           <h3 className="text-xl font-bold mb-4 text-center font-heading">{t('ximatarJourney.assignment_logic')}</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '500ms' }}>
@@ -430,7 +430,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                 <CheckCircle className="h-5 w-5 text-green-500 animate-scale-in" />
                 <span className="font-semibold">{t('ximatarJourney.your_edge_label')}</span>
               </div>
-              <Badge variant="default" className="px-4 py-2 text-base capitalize hover-scale">
+              <Badge variant="default" className="px-4 py-2 text-base capitalize">
                 {t(`pillars.${strongestPillar.pillar === 'computational_power' ? 'computational' : strongestPillar.pillar}.name`)} ({strongestPillar.score.toFixed(1)})
               </Badge>
             </div>
@@ -440,7 +440,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                 <AlertCircle className="h-5 w-5 text-orange-500 animate-scale-in" />
                 <span className="font-semibold">{t('ximatarJourney.your_friction_label')}</span>
               </div>
-              <Badge variant="outline" className="px-4 py-2 text-base capitalize hover-scale">
+              <Badge variant="outline" className="px-4 py-2 text-base capitalize">
                 {t(`pillars.${weakestPillar.pillar === 'computational_power' ? 'computational' : weakestPillar.pillar}.name`)} ({weakestPillar.score.toFixed(1)})
               </Badge>
             </div>
@@ -453,10 +453,10 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
               <Badge 
                 variant="secondary" 
                 className={`
-                  px-4 py-2 text-base capitalize hover-scale
+                  px-4 py-2 text-base capitalize
                   transition-all duration-300
                   ${driveLevel === 'high' ? 'bg-green-500/10 text-green-700 dark:text-green-400' :
-                    driveLevel === 'medium' ? 'bg-blue-500/10 text-blue-700 dark:text-blue-400' :
+                    driveLevel === 'medium' ? 'bg-muted text-primary dark:text-primary' :
                     'bg-orange-500/10 text-orange-700 dark:text-orange-400'
                   }
                 `}
@@ -488,7 +488,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
               p-4 rounded-lg border-2 
               transition-all duration-500 ease-out
               ${driveLevel === 'high' 
-                ? 'bg-green-500/5 border-green-500/20 shadow-lg shadow-green-500/10 scale-[1.02] animate-fade-in' 
+                ? 'bg-green-500/5 border-green-500/20 shadow-green-500/10 scale-[1.02] animate-fade-in' 
                 : 'border-border/50 hover:border-green-500/10 hover:bg-green-500/[0.02]'
               }
             `}
@@ -528,8 +528,8 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
               p-4 rounded-lg border-2 
               transition-all duration-500 ease-out
               ${driveLevel === 'medium' 
-                ? 'bg-blue-500/5 border-blue-500/20 shadow-lg shadow-blue-500/10 scale-[1.02] animate-fade-in' 
-                : 'border-border/50 hover:border-blue-500/10 hover:bg-blue-500/[0.02]'
+                ? 'bg-muted border-border shadow-blue-500/10 scale-[1.02] animate-fade-in' 
+                : 'border-border/50 hover:border-border hover:bg-blue-500/[0.02]'
               }
             `}
             style={{
@@ -538,7 +538,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           >
             <div className="flex items-center gap-2 mb-2">
               <span className={`
-                font-semibold text-blue-600 dark:text-blue-400
+                font-semibold text-primary dark:text-primary
                 transition-all duration-300
                 ${driveLevel === 'medium' ? 'scale-105' : ''}
               `}>
@@ -568,7 +568,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
               p-4 rounded-lg border-2 
               transition-all duration-500 ease-out
               ${driveLevel === 'low' 
-                ? 'bg-orange-500/5 border-orange-500/20 shadow-lg shadow-orange-500/10 scale-[1.02] animate-fade-in' 
+                ? 'bg-orange-500/5 border-orange-500/20 shadow-orange-500/10 scale-[1.02] animate-fade-in' 
                 : 'border-border/50 hover:border-orange-500/10 hover:bg-orange-500/[0.02]'
               }
             `}
@@ -684,7 +684,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
           <Button
             size="lg"
             onClick={handleProceedWithSelection}
-            className="px-8 py-4 hover-scale"
+            className="px-8 py-4"
           >
             {isAuthenticated ? t('results.proceed_to_dashboard') : t('results.register_to_continue')}
             <ArrowRight size={20} className="ml-2" />
@@ -728,7 +728,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       )}
 
       {/* Closing Message - The Compass */}
-      <Card className="p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 border-primary/10 animate-fade-in" style={{ animationDelay: '1200ms' }}>
+      <Card className="p-8 border-primary/10 animate-fade-in" style={{ animationDelay: '1200ms' }}>
         <div className="text-center space-y-4">
           <p className="text-lg italic text-muted-foreground max-w-2xl mx-auto animate-scale-in" style={{ animationDelay: '1300ms' }}>
             {t('ximatarJourney.closing_pullquote')}

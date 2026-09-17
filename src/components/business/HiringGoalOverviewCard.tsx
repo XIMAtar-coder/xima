@@ -35,7 +35,7 @@ export const HiringGoalOverviewCard: React.FC<HiringGoalOverviewCardProps> = ({
       case 'closed':
         return <Badge className="bg-muted text-muted-foreground">{t('business.goals.status_closed')}</Badge>;
       default:
-        return <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">{t('business.goals.status_draft')}</Badge>;
+        return <Badge className="bg-muted text-primary border-border">{t('business.goals.status_draft')}</Badge>;
     }
   };
 

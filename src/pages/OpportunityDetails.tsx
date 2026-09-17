@@ -261,7 +261,7 @@ export default function OpportunityDetails() {
                       {match.pillarContributions.map(p => (
                         <div 
                           key={p.pillar} 
-                          className="rounded-lg border border-[hsl(var(--xima-accent))]/20 p-3 bg-gradient-to-br from-background to-[hsl(var(--xima-accent))]/5"
+                          className="rounded-lg border border-[hsl(var(--xima-accent))]/20 p-3 to-[hsl(var(--xima-accent))]/5"
                         >
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium">{pillarName(p.pillar)}</span>
@@ -283,7 +283,7 @@ export default function OpportunityDetails() {
 
                   {/* Why This Role Fits You */}
                   {match.ximatarMatch && (
-                    <div className="mt-6 p-4 bg-gradient-to-r from-[hsl(var(--xima-accent))]/10 to-[hsl(var(--xima-teal))]/10 border border-[hsl(var(--xima-accent))]/30 rounded-xl">
+                    <div className="mt-6 p-4 from-[hsl(var(--xima-accent))]/10 to-[hsl(var(--xima-teal))]/10 border border-[hsl(var(--xima-accent))]/30 rounded-xl">
                       <h3 className="font-heading font-semibold text-lg mb-3 flex items-center gap-2">
                         <span className="text-2xl">✨</span>
                         Why This Role Fits You

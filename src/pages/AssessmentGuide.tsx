@@ -111,9 +111,9 @@ const AssessmentGuide = () => {
       icon: Brain,
       name: t('assessmentGuide.pillar1_name'),
       description: t('assessmentGuide.pillar1_body'),
-      color: 'text-blue-500',
-      bgColor: 'bg-blue-500/10',
-      borderColor: 'border-blue-500/30',
+      color: 'text-primary',
+      bgColor: 'bg-muted',
+      borderColor: 'border-border',
       hoverBorder: 'hover:border-blue-500'
     },
     {
@@ -138,9 +138,9 @@ const AssessmentGuide = () => {
       icon: Lightbulb,
       name: t('assessmentGuide.pillar4_name'),
       description: t('assessmentGuide.pillar4_body'),
-      color: 'text-purple-500',
-      bgColor: 'bg-purple-500/10',
-      borderColor: 'border-purple-500/30',
+      color: 'text-primary',
+      bgColor: 'bg-muted',
+      borderColor: 'border-border',
       hoverBorder: 'hover:border-purple-500'
     },
     {
@@ -213,12 +213,12 @@ const AssessmentGuide = () => {
         >
           <Badge 
             variant="outline" 
-            className="mb-4 px-4 py-1 animate-[fade-in_0.5s_ease-out] hover:scale-105 transition-transform cursor-default"
+            className="mb-4 px-4 py-1 animate-[fade-in_0.5s_ease-out] transition-transform cursor-default"
           >
             <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
             {t('assessmentGuide.eyebrow')}
           </Badge>
-          <h1 className="text-[28px] md:text-[40px] xl:text-[48px] font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent animate-[fade-in_0.6s_ease-out] whitespace-pre-line">
+          <h1 className="text-[28px] md:text-[40px] xl:text-[48px] font-bold mb-4 text-foreground animate-[fade-in_0.6s_ease-out] whitespace-pre-line">
             {t('assessmentGuide.hero_headline')}
           </h1>
           <p className="text-[14px] md:text-[17px] xl:text-xl text-muted-foreground max-w-3xl mx-auto animate-[fade-in_0.7s_ease-out]">
@@ -249,7 +249,7 @@ const AssessmentGuide = () => {
           <div className="relative">
             {/* Animated Connection Line */}
             <div 
-              className={`hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500 transform -translate-y-1/2 z-0 transition-all duration-1000 ${
+              className={`hidden lg:block absolute top-1/2 left-0 right-0 h-px bg-border transform -translate-y-1/2 z-0 transition-all duration-1000 ${
                 visibleSections.has('journey-section') ? 'scale-x-100' : 'scale-x-0'
               }`}
               style={{ transformOrigin: 'left' }}
@@ -259,15 +259,15 @@ const AssessmentGuide = () => {
               {journeySteps.map((step, index) => (
                 <Card 
                   key={index} 
-                  className={`p-6 text-center bg-background transition-all duration-500 hover:shadow-xl hover:-translate-y-2 group ${
+                  className={`p-6 text-center bg-background transition-all duration-500 group ${
                     visibleSections.has('journey-section') 
                       ? 'opacity-100 translate-y-0' 
                       : 'opacity-0 translate-y-8'
                   }`}
                   style={{ transitionDelay: `${index * 150}ms` }}
                 >
-                  <div className={`w-16 h-16 ${step.color} rounded-full flex items-center justify-center mx-auto mb-4 text-white transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg`}>
-                    <step.icon className="w-8 h-8 transition-transform group-hover:scale-110" />
+                  <div className={`w-16 h-16 ${step.color} rounded-full flex items-center justify-center mx-auto mb-4 text-white transition-all duration-300`}>
+                    <step.icon className="w-8 h-8 transition-transform" />
                   </div>
                   <Badge variant="secondary" className="mb-3 transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                     {step.badge}
@@ -309,7 +309,7 @@ const AssessmentGuide = () => {
             {pillars.map((pillar, index) => (
               <Card 
                 key={index} 
-                className={`p-6 border-2 ${pillar.borderColor} ${pillar.bgColor} ${pillar.hoverBorder} transition-all duration-500 hover:shadow-xl hover:-translate-y-1 group cursor-default ${
+                className={`p-6 border-2 ${pillar.borderColor} ${pillar.bgColor} ${pillar.hoverBorder} transition-all duration-500 group cursor-default ${
                   visibleSections.has('pillars-section') 
                     ? 'opacity-100 translate-y-0 scale-100' 
                     : 'opacity-0 translate-y-8 scale-95'
@@ -317,7 +317,7 @@ const AssessmentGuide = () => {
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className={`p-3 rounded-full ${pillar.bgColor} transition-all duration-300 group-hover:scale-110 group-hover:rotate-6`}>
+                  <div className={`p-3 rounded-full ${pillar.bgColor} transition-all duration-300 group-hover:rotate-6`}>
                     <pillar.icon className={`w-6 h-6 ${pillar.color} transition-transform`} />
                   </div>
                   <h3 className="font-semibold">{pillar.name}</h3>
@@ -338,7 +338,7 @@ const AssessmentGuide = () => {
               : 'opacity-0 translate-y-8'
           }`}
         >
-          <Card className="p-8 bg-gradient-to-br from-muted/30 to-muted/10 hover:shadow-lg transition-shadow">
+          <Card className="p-8 transition-shadow">
             <p className="text-xs font-mono tracking-widest text-primary uppercase mb-2">
               {t('assessmentGuide.example_label')}
             </p>
@@ -358,13 +358,13 @@ const AssessmentGuide = () => {
                 <div key={index} className="space-y-2 group">
                   <div className="flex justify-between items-center">
                     <span className="font-medium group-hover:text-primary transition-colors">{item.pillar}</span>
-                    <span className="text-lg font-bold text-primary transition-all group-hover:scale-110">
+                    <span className="text-lg font-bold text-primary transition-all">
                       {(animatedScores[index] / 10).toFixed(1)}/{item.max}
                     </span>
                   </div>
                   <div className="h-3 bg-muted rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-primary to-primary/70 rounded-full transition-all duration-1000 ease-out"
+                      className="h-full rounded-full transition-all duration-1000 ease-out"
                       style={{ width: `${animatedScores[index]}%` }}
                     />
                   </div>
@@ -415,7 +415,7 @@ const AssessmentGuide = () => {
             {ximatars.map((ximatar, index) => (
               <Card 
                 key={index} 
-                className={`p-4 text-center transition-all duration-500 hover:shadow-xl cursor-default group ${
+                className={`p-4 text-center transition-all duration-500 cursor-default group ${
                   visibleSections.has('ximatars-section') 
                     ? 'opacity-100 translate-y-0 scale-100' 
                     : 'opacity-0 translate-y-8 scale-90'
@@ -426,7 +426,7 @@ const AssessmentGuide = () => {
                   <img loading="lazy" decoding="async" 
                     src={ximatar.image} 
                     alt={`XIMAtar ${ximatar.name}`}
-                    className="h-10 w-10 rounded-full object-cover bg-muted/40 ring-1 ring-border/40 p-0.5 transition-transform duration-300 group-hover:scale-125"
+                    className="h-10 w-10 rounded-full object-cover bg-muted/40 ring-1 ring-border/40 p-0.5 transition-transform duration-300"
                   />
                 </div>
                 <h4 className="font-semibold group-hover:text-primary transition-colors">{ximatar.name}</h4>
@@ -449,7 +449,7 @@ const AssessmentGuide = () => {
               : 'opacity-0 translate-y-8'
           }`}
         >
-          <div className="bg-card border border-border rounded-2xl p-8 md:p-12">
+          <div className="bg-card border border-border rounded-lg p-8 md:p-12">
             <p className="text-xs font-mono tracking-widest text-primary uppercase mb-2">
               {t('assessmentGuide.governance_label')}
             </p>
@@ -496,7 +496,7 @@ const AssessmentGuide = () => {
               : 'opacity-0 translate-y-8'
           }`}
         >
-          <Card className="p-8 hover:shadow-lg transition-shadow">
+          <Card className="p-8 transition-shadow">
             <p className="text-xs font-mono tracking-widest text-primary uppercase mb-2">
               {t('assessmentGuide.assignment_label')}
             </p>
@@ -521,7 +521,7 @@ const AssessmentGuide = () => {
                     style={{ transitionDelay: `${idx * 200}ms` }}
                   >
                     <h3 className="font-semibold mb-4 flex items-center gap-2">
-                      <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm transition-transform hover:scale-110">
+                      <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm transition-transform">
                         {item.num}
                       </span>
                       {item.title}
@@ -544,7 +544,7 @@ const AssessmentGuide = () => {
                     style={{ transitionDelay: `${(idx + 2) * 200}ms` }}
                   >
                     <h3 className="font-semibold mb-4 flex items-center gap-2">
-                      <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm transition-transform hover:scale-110">
+                      <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm transition-transform">
                         {item.num}
                       </span>
                       {item.title}
@@ -567,7 +567,7 @@ const AssessmentGuide = () => {
               : 'opacity-0 translate-y-8 scale-95'
           }`}
         >
-          <Card className="p-10 bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20 hover:shadow-xl transition-all duration-300 hover:scale-[1.01]">
+          <Card className="p-10 border-primary/20 transition-all duration-300">
             <Users className="w-12 h-12 mx-auto mb-4 text-primary animate-pulse" />
             <h2 className="text-2xl font-bold mb-4">
               {t('assessmentGuide.cta_headline')}
@@ -576,13 +576,13 @@ const AssessmentGuide = () => {
               {t('assessmentGuide.cta_body')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" asChild className="group transition-all hover:scale-105 hover:shadow-lg">
+              <Button size="lg" asChild className="group transition-all">
                 <Link to="/ximatar-journey">
                   {t('assessmentGuide.cta_primary')}
                   <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
-              <Button variant="outline" size="lg" asChild className="hover:scale-105 transition-transform">
+              <Button variant="outline" size="lg" asChild className="transition-transform">
                 <Link to="/how-it-works">
                   {t('assessmentGuide.cta_secondary')}
                 </Link>

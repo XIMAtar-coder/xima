@@ -35,8 +35,8 @@ const Process = () => {
         {steps.map((step, index) => {
           const Icon = step.icon;
           return (
-            <Card key={index} className="p-6 text-center hover:shadow-lg transition-shadow group premium-card">
-              <div className="w-14 h-14 flex items-center justify-center mx-auto mb-4 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 group-hover:border-primary/40 transition-colors">
+            <Card key={index} className="p-6 text-center transition-shadow group premium-card">
+              <div className="w-14 h-14 flex items-center justify-center mx-auto mb-4 rounded-xl border border-primary/20 group-hover:border-primary/40 transition-colors">
                 <Icon className="w-6 h-6 text-primary" />
               </div>
               <h3 className="text-lg font-semibold mb-3 text-foreground">{step.title}</h3>

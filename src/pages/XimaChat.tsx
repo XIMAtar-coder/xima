@@ -338,7 +338,7 @@ const XimaChat = () => {
                                       )}
                                     >
                                       <div className={cn(
-                                        "max-w-[75%] rounded-2xl px-4 py-2",
+                                        "max-w-[75%] rounded-lg px-4 py-2",
                                         isSent 
                                           ? "bg-primary text-primary-foreground rounded-br-md" 
                                           : "bg-muted rounded-bl-md"

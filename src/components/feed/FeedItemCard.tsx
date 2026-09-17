@@ -30,8 +30,8 @@ const TYPE_CONFIG = {
   },
   skill_validated: {
     icon: Star,
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-500/10',
+    color: 'text-primary',
+    bgColor: 'bg-muted',
   },
   level_reached: {
     icon: TrendingUp,

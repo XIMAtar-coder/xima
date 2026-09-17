@@ -2550,7 +2550,10 @@
       "subtle": "Subtle",
       "strong": "Strong",
       "clear_focus": "Remove focus"
-    }
+    },
+    "hero_proof_no_card": "No credit card",
+    "hero_proof_setup": "Set up in 2 minutes",
+    "hero_proof_first_candidate": "First candidate in 24h"
   },
   "not_found": {
     "title": "404 - Page Not Found",

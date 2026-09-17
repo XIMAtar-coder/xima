@@ -49,7 +49,7 @@ export const BusinessPlanCard: React.FC = () => {
   }
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50">
+    <Card className="border-border/50">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-foreground">

@@ -12,7 +12,7 @@ interface FeedChipProps {
 const variantStyles: Record<FeedChipVariant, string> = {
   level: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/20',
   verified: 'bg-green-500/15 text-green-700 dark:text-green-300 border-green-500/20',
-  category: 'bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/20',
+  category: 'bg-muted text-primary dark:text-primary border-border',
 };
 
 export const FeedChip = ({ variant, children, className }: FeedChipProps) => {

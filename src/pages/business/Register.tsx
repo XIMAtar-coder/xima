@@ -211,8 +211,8 @@ const BusinessRegister = () => {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
-      <Card className="w-full max-w-lg border-border/50 shadow-xl">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-lg border-border/50">
         <CardHeader className="space-y-3 text-center pb-2">
           <div className="mx-auto mb-2 p-3 rounded-full bg-primary/10 border border-primary/20 w-fit">
             <Building2 className="text-primary" size={28} />

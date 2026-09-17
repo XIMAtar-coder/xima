@@ -25,8 +25,8 @@ export const LandingFinalCTA: React.FC = () => {
       >
         <defs>
           <linearGradient id="cta-wave" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#0B6BFF" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#0B6BFF" stopOpacity="0" />
+            <stop offset="0%" stopColor="var(--xima-blue)" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="var(--xima-blue)" stopOpacity="0" />
           </linearGradient>
         </defs>
         {Array.from({ length: 24 }).map((_, i) => (
@@ -69,7 +69,7 @@ export const LandingFinalCTA: React.FC = () => {
             onClick={() => navigate('/ximatar-journey')}
             className="inline-flex items-center justify-center gap-2 transition-all"
             style={{
-              background: '#0B6BFF',
+              background: 'var(--xima-blue)',
               color: '#FFFFFF',
               borderRadius: 14,
               padding: '16px 28px',

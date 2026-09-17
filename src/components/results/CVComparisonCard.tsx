@@ -37,7 +37,7 @@ export const CVComparisonCard: React.FC<CVComparisonCardProps> = ({
   const topImprovement = improvements[0];
 
   return (
-    <Card className={`animate-[fade-in_0.5s_ease-out] hover:shadow-lg transition-shadow duration-300 ${className || ''}`}>
+    <Card className={`animate-[fade-in_0.5s_ease-out] transition-shadow duration-300 ${className || ''}`}>
       <CardHeader>
         <CardTitle className="font-heading">{cvPillars ? t('results.cv_comparison_title') : t('results.assessment_scores')}</CardTitle>
       </CardHeader>

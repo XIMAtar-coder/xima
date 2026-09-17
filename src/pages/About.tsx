@@ -37,7 +37,7 @@ const PILLARS = [
 
 const NAVY = '#071E3A';
 const NAVY_DEEP = '#0A2A5E';
-const BLUE = '#0B6BFF';
+const BLUE = 'var(--xima-blue)';
 
 const Label: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
   <p
@@ -127,7 +127,7 @@ const About: React.FC = () => {
             <img
               src={originEngineering}
               alt={t('about.origin.title')}
-              className="w-full rounded-2xl object-cover"
+              className="w-full rounded-lg object-cover"
               style={{
                 aspectRatio: '4 / 3',
                 boxShadow: '0 24px 60px rgba(7,30,58,0.25)',
@@ -159,7 +159,7 @@ const About: React.FC = () => {
       {/* SECTION 3 — Principles strip */}
       <section className="px-6 lg:px-10 pb-16 md:pb-20">
         <div className="max-w-[1200px] mx-auto">
-          <div className="rounded-2xl border border-border bg-card grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
+          <div className="rounded-lg border border-border bg-card grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
             {[
               { Icon: Columns3, key: 'p1' },
               { Icon: UsersRound, key: 'p2' },
@@ -179,7 +179,7 @@ const About: React.FC = () => {
       {/* SECTION 4 — Il Problema */}
       <section className="px-6 lg:px-10 pb-16 md:pb-20">
         <div
-          className="max-w-[1200px] mx-auto rounded-2xl overflow-hidden"
+          className="max-w-[1200px] mx-auto rounded-lg overflow-hidden"
           style={{ background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY_DEEP} 100%)` }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center px-8 md:px-12 py-10 md:py-12">
@@ -238,7 +238,7 @@ const About: React.FC = () => {
             {PILLARS.map(({ key, Icon }) => (
               <div
                 key={key}
-                className="rounded-2xl border border-border bg-card p-5 flex flex-col"
+                className="rounded-lg border border-border bg-card p-5 flex flex-col"
               >
                 <Icon size={28} strokeWidth={1.5} style={{ color: BLUE }} />
                 <h3 className="mt-4 font-bold text-foreground" style={{ fontSize: 16 }}>
@@ -334,12 +334,12 @@ const About: React.FC = () => {
             {(['pietro', 'daniel'] as const).map((p) => (
               <div
                 key={p}
-                className="rounded-2xl border border-border bg-card p-6 md:p-7 flex gap-5 items-start"
+                className="rounded-lg border border-border bg-card p-6 md:p-7 flex gap-5 items-start"
               >
                 <img
                   src={`/avatars/${p === 'pietro' ? 'pietro-cozzi' : 'daniel-cracau'}.jpg`}
                   alt={t(`about.team.${p}_name`)}
-                  className="w-20 h-20 rounded-2xl object-cover flex-shrink-0"
+                  className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
                   loading="lazy"
                   decoding="async"
                 />
@@ -366,7 +366,7 @@ const About: React.FC = () => {
       {/* SECTION 8 — Stats strip */}
       <section className="px-6 lg:px-10 pb-16 md:pb-20">
         <div className="max-w-[1200px] mx-auto">
-          <div className="rounded-2xl border border-border bg-card grid grid-cols-2 md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-border">
+          <div className="rounded-lg border border-border bg-card grid grid-cols-2 md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-border">
             {[
               { Icon: Users, vKey: 'team_value', lKey: 'team_label' },
               { Icon: Users, vKey: 'people_value', lKey: 'people_label' },
@@ -417,7 +417,7 @@ const About: React.FC = () => {
             {(['candidates', 'business'] as const).map((side) => (
               <div
                 key={side}
-                className="rounded-2xl border border-border bg-card p-6 md:p-7"
+                className="rounded-lg border border-border bg-card p-6 md:p-7"
               >
                 <p
                   className="text-xs font-mono uppercase tracking-[0.2em] mb-4"

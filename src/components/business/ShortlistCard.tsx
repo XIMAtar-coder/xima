@@ -97,7 +97,7 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, l
   }[candidate.availability];
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-200 relative overflow-hidden">
+    <Card className="transition-all duration-200 relative overflow-hidden">
       <CardContent className={`p-5 space-y-4 ${locked ? 'blur-sm pointer-events-none select-none' : ''}`}>
         {/* Header: rank + archetype + score */}
         <div className="flex items-start justify-between">
@@ -212,7 +212,7 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, l
         </div>
       </CardContent>
       {locked && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/70 backdrop-blur-sm p-5">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/70 p-5">
           <div className="text-center space-y-3">
             <Badge variant="secondary">{t('shortlist.upgrade_badge', 'Upgrade')}</Badge>
             <p className="text-sm font-semibold text-foreground">{t('shortlist.upgrade_title', 'Unlock the full shortlist')}</p>

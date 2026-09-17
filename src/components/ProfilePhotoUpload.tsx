@@ -133,7 +133,7 @@ export const ProfilePhotoUpload: React.FC = () => {
           <Button
             onClick={() => document.getElementById('photo-upload')?.click()}
             disabled={uploading}
-            className="bg-[hsl(var(--xima-accent))] hover:bg-[hsl(var(--xima-accent))]/90 transition-all hover:shadow-lg hover:shadow-[hsl(var(--xima-accent))]/30"
+            className="bg-[hsl(var(--xima-accent))] hover:bg-[hsl(var(--xima-accent))]/90 transition-all hover:shadow-[hsl(var(--xima-accent))]/30"
           >
             {uploading ? (
               <>

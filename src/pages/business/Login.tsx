@@ -73,8 +73,8 @@ const BusinessLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
-      <Card className="w-full max-w-md border-border/50 shadow-xl">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-md border-border/50">
         <CardHeader className="space-y-1 text-center">
           <div className="mx-auto mb-4 p-3 rounded-full bg-[#3A9FFF]/10 border border-[#3A9FFF]/20 w-fit">
             <Building2 className="text-[#3A9FFF]" size={32} />

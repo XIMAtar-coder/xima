@@ -152,7 +152,7 @@ const MentorBooking: React.FC = () => {
         {mentors.map((mentor) => (
           <Card 
             key={mentor.id}
-            className={`p-6 cursor-pointer transition-all hover:shadow-lg border-2
+            className={`p-6 cursor-pointer transition-all border-2
               ${selectedMentor === mentor.id 
                 ? 'border-primary bg-primary/5' 
                 : 'border-border hover:border-primary'

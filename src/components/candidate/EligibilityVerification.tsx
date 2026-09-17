@@ -226,7 +226,7 @@ export const EligibilityVerification: React.FC<EligibilityVerificationProps> = (
         {requirements.education_required && !useCvFallback && (
           <div className="space-y-3 p-4 rounded-lg border border-border/50">
             <div className="flex items-center gap-2">
-              <GraduationCap className="h-5 w-5 text-blue-500" />
+              <GraduationCap className="h-5 w-5 text-primary" />
               <Label className="font-medium">{t('eligibility.verification.education_proof')}</Label>
               <Badge variant="outline" className="ml-auto">
                 {t(`eligibility.education_levels.${requirements.min_education_level}`)}

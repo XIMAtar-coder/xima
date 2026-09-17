@@ -118,7 +118,7 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
             />
             {/* User's score bar */}
             <div 
-              className={`h-full bg-gradient-to-r ${rubric.total >= avgScore ? 'from-primary to-emerald-400' : 'from-amber-400 to-primary'} transition-all duration-500`}
+              className={`h-full ${rubric.total >= avgScore ? '' : ''} transition-all duration-500`}
               style={{ width: `${rubric.total}%` }}
             />
           </div>
@@ -139,7 +139,7 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
         <div className="space-y-4 pt-3 border-t border-border/50 animate-in fade-in-0 slide-in-from-top-2 duration-200">
           {/* AI Explanation */}
           {rubric.steveJobsExplanation && (
-            <div className="bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/5 rounded-lg p-4 space-y-2">
+            <div className="dark: dark: rounded-lg p-4 space-y-2">
               <div className="flex items-center gap-2">
                 <Sparkles size={16} className="text-primary" />
                 <p className="text-xs font-semibold text-primary">
@@ -266,7 +266,7 @@ const RubricItem: React.FC<RubricItemProps> = ({ label, score, max, avgScore }) 
           />
         )}
         <div 
-          className={`h-full bg-gradient-to-r ${getBarColor()} transition-all duration-300`}
+          className={`h-full ${getBarColor()} transition-all duration-300`}
           style={{ width: `${percentage}%` }}
         />
       </div>

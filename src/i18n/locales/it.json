@@ -2550,7 +2550,10 @@
       "subtle": "Sottile",
       "strong": "Forte",
       "clear_focus": "Rimuovi focus"
-    }
+    },
+    "hero_proof_no_card": "Nessuna carta di credito",
+    "hero_proof_setup": "Setup in 2 minuti",
+    "hero_proof_first_candidate": "Primo candidato in 24h"
   },
   "not_found": {
     "title": "404 — Pagina non trovata",

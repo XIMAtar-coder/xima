@@ -53,7 +53,7 @@ export function Level2ContextBlock({
   return (
     <div className="space-y-4">
       {/* Scenario Context Block - PRIMARY */}
-      <Card className="border-primary/40 bg-gradient-to-br from-primary/10 to-primary/5 shadow-sm">
+      <Card className="border-primary/40 shadow-sm">
         <CardContent className="pt-6">
           <div className="flex items-start gap-4">
             <div className="p-2.5 rounded-lg bg-primary/20 shrink-0">

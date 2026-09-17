@@ -19,7 +19,7 @@ export const XimatarProfileCard: React.FC<XimatarProfileCardProps> = ({ ximatar,
   const currentLang = i18n.language || 'it';
 
   return (
-    <Card className={`animate-[fade-in_0.4s_ease-out] hover:shadow-lg transition-shadow duration-300 ${className || ''}`}>
+    <Card className={`animate-[fade-in_0.4s_ease-out] transition-shadow duration-300 ${className || ''}`}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 font-heading">
           <Sparkles className="text-[#3A9FFF]" />
@@ -37,7 +37,7 @@ export const XimatarProfileCard: React.FC<XimatarProfileCardProps> = ({ ximatar,
               height={128}
               loading="lazy"
               decoding="async"
-              className="w-full h-full object-contain rounded-full border-4 border-[#3A9FFF]/30 shadow-lg"
+              className="w-full h-full object-contain rounded-full border-4 border-[#3A9FFF]/30"
               onError={(e) => {
                 e.currentTarget.src = '/ximatars/fox.webp';
               }}

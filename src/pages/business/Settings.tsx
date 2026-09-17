@@ -84,7 +84,7 @@ const EditableField = ({ label, impact, value, isOverridden, editing, type, rows
                 {(value || []).map((v: string, i: number) => (
                   <span key={i} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium bg-purple-100 text-purple-900 border border-purple-200 dark:bg-purple-950 dark:text-purple-100 dark:border-purple-800">
                     {v}
-                    <button onClick={() => onChange(value.filter((_: string, j: number) => j !== i))} className="ml-1 hover:text-purple-700 dark:hover:text-purple-300">
+                    <button onClick={() => onChange(value.filter((_: string, j: number) => j !== i))} className="ml-1 hover:text-primary dark:hover:text-purple-300">
                       <X className="w-3 h-3" />
                     </button>
                   </span>
@@ -193,9 +193,9 @@ const EditableAIProfileSection = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="rounded-lg border border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/20 p-4">
+        <div className="rounded-lg border border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-muted p-4">
           <div className="flex gap-3">
-            <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+            <Info className="w-5 h-5 text-primary dark:text-primary flex-shrink-0 mt-0.5" />
             <div>
               <p className="font-medium text-sm text-blue-900 dark:text-blue-100">
                 {t('business.settings.matching_impact_title', 'Come le tue modifiche influenzano il matching')}
@@ -324,9 +324,9 @@ const DnaPillarSection = () => {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Philosophy banner */}
-        <div className="rounded-lg border border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-950/20 p-4">
+        <div className="rounded-lg border border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-muted p-4">
           <div className="flex gap-3">
-            <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
+            <Sparkles className="w-5 h-5 text-primary dark:text-primary flex-shrink-0 mt-0.5" />
             <div>
               <p className="font-medium text-sm text-purple-900 dark:text-purple-100">
                 {t('business.dna.philosophy_title', 'Il DNA è identità, non preferenza')}

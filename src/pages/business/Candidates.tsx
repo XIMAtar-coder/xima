@@ -190,7 +190,7 @@ const BusinessCandidates = () => {
         </div>
 
         {/* Goal selector — required to send L1 invitations from the pool */}
-        <div className="rounded-2xl border border-border bg-background p-4 shadow-sm flex flex-col md:flex-row md:items-center gap-3">
+        <div className="rounded-lg border border-border bg-background p-4 shadow-sm flex flex-col md:flex-row md:items-center gap-3">
           <div className="flex items-center gap-2 text-sm font-medium text-foreground">
             <Target className="w-4 h-4 text-primary" />
             {t('candidate_pool.invite_goal_label', 'Invite candidates to hiring goal')}
@@ -220,7 +220,7 @@ const BusinessCandidates = () => {
 
         {/* Inline gate: selected goal has no active XIMA Core challenge yet */}
         {selectedGoalId && !l1ReadyGoalIds.has(selectedGoalId) && (
-          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 flex flex-col md:flex-row md:items-center gap-3">
+          <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4 flex flex-col md:flex-row md:items-center gap-3">
             <div className="flex-1 text-sm text-foreground">
               <div className="font-medium">{t('candidate_pool.no_l1_title', 'Crea prima una sfida XIMA Core')}</div>
               <div className="text-muted-foreground mt-0.5">
@@ -260,7 +260,7 @@ const BusinessCandidates = () => {
         </div>
 
         {/* Filter bar — card-based layout */}
-        <div className="rounded-2xl border border-border bg-background p-5 shadow-sm">
+        <div className="rounded-lg border border-border bg-background p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Filter className="w-4 h-4 text-muted-foreground" />

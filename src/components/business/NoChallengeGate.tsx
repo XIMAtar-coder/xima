@@ -33,10 +33,10 @@ export const NoChallengeGate: React.FC<NoChallengeGateProps> = ({
   };
 
   return (
-    <Card className="border-primary/40 bg-primary/5 backdrop-blur-sm shadow-lg">
+    <Card className="border-primary/40 bg-primary/5">
       <CardContent className="p-6">
         <div className="flex items-start gap-4">
-          <div className="p-3 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/20">
+          <div className="p-3 rounded-full border border-primary/20">
             <Brain className="h-6 w-6 text-primary" />
           </div>
           <div className="flex-1">

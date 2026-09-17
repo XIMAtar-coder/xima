@@ -248,7 +248,7 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
         }`}
       >
         {/* Top Header */}
-        <header className="sticky top-0 z-30 flex items-center gap-2 px-4 sm:px-6 py-3 bg-background/80 backdrop-blur-sm border-b border-border">
+        <header className="sticky top-0 z-30 flex items-center gap-2 px-4 sm:px-6 py-3 bg-background/80 border-b border-border">
           <Button
             variant="ghost"
             size="icon"

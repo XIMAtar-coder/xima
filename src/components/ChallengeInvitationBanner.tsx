@@ -19,7 +19,7 @@ export const ChallengeInvitationBanner: React.FC = () => {
   const latestInvitation = pendingInvitations[0];
 
   return (
-    <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-primary/30 mb-6">
+    <Card className="border-primary/30 mb-6">
       <CardContent className="p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="p-3 rounded-full bg-primary/20 shrink-0">

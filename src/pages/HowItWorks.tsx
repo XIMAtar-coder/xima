@@ -166,7 +166,7 @@ const HowItWorks = () => {
                   ? 'bg-teal-500 text-white'
                   : 'bg-primary text-primary-foreground';
               return (
-                <Card key={level} className="p-7 hover:shadow-lg transition-shadow glass-surface-static relative">
+                <Card key={level} className="p-7 transition-shadow glass-surface-static relative">
                   <div className="flex items-start justify-between mb-4">
                     <span className={`inline-block text-xs font-mono px-3 py-1 rounded-full ${badgeClass}`}>
                       {t(`howItWorks.pipeline_${level}_badge`)}
@@ -202,7 +202,7 @@ const HowItWorks = () => {
             {[1, 2, 3, 4, 5].map((n) => {
               const Icon = PILLAR_ICONS[n - 1];
               return (
-                <Card key={n} className="p-6 hover:shadow-lg transition-shadow glass-surface-static">
+                <Card key={n} className="p-6 transition-shadow glass-surface-static">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-primary/10 border border-primary/20">
                       <Icon size={20} className="text-primary" strokeWidth={1.5} />
@@ -215,7 +215,7 @@ const HowItWorks = () => {
                     {t(`howItWorks.pillar${n}_body`)}
                   </p>
                   <div className="space-y-2 text-sm">
-                    <p style={{ color: '#0B6BFF' }}>
+                    <p style={{ color: 'var(--xima-blue)' }}>
                       {t(`howItWorks.pillar${n}_strength`)}
                     </p>
                     <p style={{ color: '#D97706' }}>
@@ -252,7 +252,7 @@ const HowItWorks = () => {
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6 justify-items-center mb-8">
             {XIMATAR_ANIMALS.map((animal) => (
               <div key={animal} className="flex flex-col items-center gap-2 group">
-                <div className="w-20 h-20 rounded-full overflow-hidden border border-primary/15 bg-primary/5 transition-all duration-200 group-hover:scale-105 group-hover:shadow-lg">
+                <div className="w-20 h-20 rounded-full overflow-hidden border border-primary/15 bg-primary/5 transition-all duration-200">
                   <img
                     src={`/ximatars/${animal}.png`}
                     alt={animal}
@@ -326,7 +326,7 @@ const HowItWorks = () => {
               <Button
                 asChild
                 size="lg"
-                className="w-full bg-[#0B6BFF] hover:bg-[#0B6BFF]/90 text-white shadow-[0_4px_16px_rgba(11,107,255,0.35)]"
+                className="w-full bg-primary hover:bg-primary/90 text-white shadow-[0_4px_16px_rgba(11,107,255,0.35)]"
               >
                 <Link to="/ximatar-journey">
                   {t('howItWorks.cta_button')}

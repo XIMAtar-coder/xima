@@ -53,7 +53,7 @@ export const BusinessJourneyGuideModal = ({ open, onClose, isAutoOpen = false }:
     // DialogContent already renders the single close button (top right);
     // the modal used to add a second one on top of it.
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(dontShowAgain); }}>
-      <DialogContent className="max-w-lg p-0 rounded-2xl border-border bg-background shadow-2xl overflow-hidden">
+      <DialogContent className="max-w-lg p-0 rounded-lg border-border bg-background overflow-hidden">
         <div className="flex items-center justify-center gap-1.5 pt-6 pb-2" aria-hidden="true">
           {STEPS.map((_, i) => (
             <div

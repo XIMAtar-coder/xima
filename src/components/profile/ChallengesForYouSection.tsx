@@ -16,7 +16,7 @@ const StatusBadge: React.FC<{ challenge: CandidateChallenge }> = ({ challenge })
   // Submitted but awaiting review
   if (challenge.isSubmitted && !challenge.reviewDecision) {
     return (
-      <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/30">
+      <Badge variant="outline" className="bg-muted text-primary border-border">
         <Hourglass className="h-3 w-3 mr-1" />
         {t('candidate.status.awaiting_review')}
       </Badge>

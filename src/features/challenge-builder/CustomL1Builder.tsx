@@ -300,7 +300,7 @@ export default function CustomL1Builder({
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start gap-4">
-        <div className="rounded-2xl border border-primary/20 bg-primary/10 p-3">
+        <div className="rounded-lg border border-primary/20 bg-primary/10 p-3">
           <Wand2 className="h-7 w-7 text-primary" />
         </div>
         <div className="min-w-0 flex-1 space-y-2">

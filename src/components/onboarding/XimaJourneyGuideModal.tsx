@@ -63,7 +63,7 @@ export const XimaJourneyGuideModal = ({ open, onClose, isAutoOpen = false }: Xim
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
-      <DialogContent className="max-w-lg p-0 rounded-2xl border-primary/20 bg-gradient-to-b from-primary/5 to-background overflow-hidden">
+      <DialogContent className="max-w-lg p-0 rounded-lg border-primary/20 overflow-hidden">
         {/* Close button */}
         <button
           onClick={handleClose}

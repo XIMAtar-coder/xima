@@ -25,7 +25,7 @@ export const StrengthFrictionSummary: React.FC<StrengthFrictionSummaryProps> = (
         {strongestPillar && (
           <div className="group p-4 rounded-[16px] bg-[rgba(52,199,89,0.08)] border border-[rgba(52,199,89,0.20)] hover:border-[rgba(52,199,89,0.35)] transition-colors">
             <div className="flex items-start gap-3">
-              <div className="p-2 rounded-[12px] bg-[rgba(52,199,89,0.15)] text-apple-green group-hover:scale-110 transition-transform">
+              <div className="p-2 rounded-[12px] bg-[rgba(52,199,89,0.15)] text-apple-green transition-transform">
                 <TrendingUp className="w-4 h-4" strokeWidth={1.5} />
               </div>
               <div className="flex-1 min-w-0">
@@ -46,7 +46,7 @@ export const StrengthFrictionSummary: React.FC<StrengthFrictionSummaryProps> = (
         {weakestPillar && (
           <div className="group p-4 rounded-[16px] bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.20)] hover:border-[rgba(255,149,0,0.35)] transition-colors">
             <div className="flex items-start gap-3">
-              <div className="p-2 rounded-[12px] bg-[rgba(255,149,0,0.15)] text-apple-orange group-hover:scale-110 transition-transform">
+              <div className="p-2 rounded-[12px] bg-[rgba(255,149,0,0.15)] text-apple-orange transition-transform">
                 <AlertCircle className="w-4 h-4" strokeWidth={1.5} />
               </div>
               <div className="flex-1 min-w-0">

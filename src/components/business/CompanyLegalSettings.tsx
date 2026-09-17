@@ -53,7 +53,7 @@ const CompanyLegalSettings: React.FC = () => {
 
   if (isLoading && !initialized) {
     return (
-      <Card className="bg-gradient-to-br from-card to-card/80 border-border/50">
+      <Card className="border-border/50">
         <CardContent className="py-12 flex items-center justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-primary" />
         </CardContent>
@@ -62,7 +62,7 @@ const CompanyLegalSettings: React.FC = () => {
   }
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50">
+    <Card className="border-border/50">
       <CardHeader>
         <CardTitle className="text-foreground flex items-center gap-2">
           <FileText className="text-primary" />

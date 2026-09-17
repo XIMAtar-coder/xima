@@ -103,7 +103,7 @@ export function ChallengeProgressHeader({
   }, [saving, lastSaveTime, t]);
 
   return (
-    <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
+    <div className="sticky top-0 z-40 bg-background/95 border-b border-border shadow-sm">
       <div className="container max-w-3xl py-3">
         <div className="flex items-center justify-between gap-4">
           {/* Completion progress */}

@@ -131,7 +131,7 @@ export const HeroSection: React.FC = () => {
         </span>
         <button
           onClick={goPrev}
-          className="w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-105"
+          className="w-9 h-9 rounded-full flex items-center justify-center transition-transform"
           style={{
             background: 'var(--xima-surface-soft)',
             border: '1px solid var(--xima-border-strong)',
@@ -143,7 +143,7 @@ export const HeroSection: React.FC = () => {
         </button>
         <button
           onClick={goNext}
-          className="w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-105"
+          className="w-9 h-9 rounded-full flex items-center justify-center transition-transform"
           style={{
             background: 'var(--xima-surface-soft)',
             border: '1px solid var(--xima-border-strong)',

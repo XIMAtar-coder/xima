@@ -253,7 +253,7 @@ const Messages = () => {
                                 )}
                                 <div className={cn("flex", isMine ? "justify-end" : "justify-start")}>
                                   <div className={cn(
-                                    "max-w-[75%] rounded-2xl px-4 py-2",
+                                    "max-w-[75%] rounded-lg px-4 py-2",
                                     isMine
                                       ? "bg-primary text-primary-foreground rounded-br-md"
                                       : "bg-muted rounded-bl-md"

@@ -135,11 +135,11 @@ export function PillarsShowcase() {
                 onClick={() => handleCardClick(pillar)}
                 onKeyDown={(e) => handleKeyDown(e, pillar)}
                 className={cn(
-                  'relative p-6 rounded-3xl border bg-card cursor-pointer',
+                  'relative p-6 rounded-lg border bg-card cursor-pointer',
                   'transition-all duration-200 ease-out',
-                  'hover:scale-[1.02] hover:shadow-lg',
+                  '',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  isExpanded && 'col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-5 shadow-xl'
+                  isExpanded && 'col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-5'
                 )}
                 style={
                   {

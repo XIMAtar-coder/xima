@@ -111,7 +111,7 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
 
   return (
     <>
-      <Card className="bg-slate-900/70 backdrop-blur-sm border border-white/10 hover:border-primary/40 transition-all shadow-lg">
+      <Card className="bg-slate-900/70 border border-white/10 hover:border-primary/40 transition-all">
         <CardContent className="p-6">
           {/* DEV Debug Overlay */}
           {showDebug && process.env.NODE_ENV === 'development' && (
@@ -159,7 +159,7 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
                 }}
               />
             </div>
-            <Badge className={`bg-gradient-to-r ${level.color} text-white mb-2`}>
+            <Badge className={` ${level.color} text-white mb-2`}>
               {level.label}
             </Badge>
             <h3 className="text-lg font-bold text-white capitalize">{displayName || ximatarLabel}</h3>
@@ -243,7 +243,7 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
 
             <div className="w-full bg-muted rounded-full h-2">
               <div
-                className="bg-gradient-to-r from-primary to-purple-500 h-2 rounded-full transition-all"
+                className="h-2 rounded-full transition-all"
                 style={{ width: `${Math.min(100, Math.max(0, roundedEvaluationScore))}%` }}
               />
             </div>
@@ -346,7 +346,7 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
               />
               <div>
                 <div className="capitalize">{ximatarLabel} Profile</div>
-                <Badge className={`bg-gradient-to-r ${level.color} text-white mt-1`}>
+                <Badge className={` ${level.color} text-white mt-1`}>
                   {level.label} Level
                 </Badge>
               </div>

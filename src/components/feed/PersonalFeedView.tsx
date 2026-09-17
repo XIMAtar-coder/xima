@@ -165,8 +165,8 @@ const ForYouTab = ({ feedItems, navigate, t, userId, onMarkRead, onTrackEngageme
 
               {!hasCv && (
                 <div className="flex items-center gap-3 p-3 rounded-lg border hover:bg-secondary/30 transition-colors">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-muted flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-primary dark:text-primary" />
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-sm">{t('feed.upload_cv_title', 'Carica il tuo CV')}</p>
@@ -180,8 +180,8 @@ const ForYouTab = ({ feedItems, navigate, t, userId, onMarkRead, onTrackEngageme
 
               {!hasGrowthPath && (
                 <div className="flex items-center gap-3 p-3 rounded-lg border hover:bg-secondary/30 transition-colors">
-                  <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
-                    <BookOpen className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                  <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-muted flex items-center justify-center">
+                    <BookOpen className="w-5 h-5 text-primary dark:text-primary" />
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-sm">{t('feed.activate_growth_title', 'Attiva il Growth Hub')}</p>
@@ -195,8 +195,8 @@ const ForYouTab = ({ feedItems, navigate, t, userId, onMarkRead, onTrackEngageme
 
               {!profile?.profile_completed && (
                 <div className="flex items-center gap-3 p-3 rounded-lg border hover:bg-secondary/30 transition-colors">
-                  <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center">
-                    <User className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-muted flex items-center justify-center">
+                    <User className="w-5 h-5 text-primary dark:text-primary" />
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-sm">{t('feed.complete_profile_title', 'Completa il tuo profilo')}</p>
@@ -259,8 +259,8 @@ const GrowthTab = ({ feedItems, navigate, t, userId, onMarkRead, onTrackEngageme
     return (
       <Card className="border-border/50">
         <CardContent className="py-12 text-center">
-          <div className="w-14 h-14 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center mx-auto mb-3">
-            <BookOpen className="w-7 h-7 text-teal-600 dark:text-teal-400" />
+          <div className="w-14 h-14 rounded-full bg-teal-100 dark:bg-muted flex items-center justify-center mx-auto mb-3">
+            <BookOpen className="w-7 h-7 text-primary dark:text-primary" />
           </div>
           <h3 className="text-lg font-semibold">
             {t('feed.growth_activate_title', 'Attiva il tuo Growth Hub')}
@@ -296,7 +296,7 @@ const GrowthTab = ({ feedItems, navigate, t, userId, onMarkRead, onTrackEngageme
   return (
     <div className="space-y-3">
       {/* Growth path overview card */}
-      <Card className="border-teal-200/50 dark:border-teal-800/50 bg-teal-50/30 dark:bg-teal-950/20">
+      <Card className="border-border dark:border-border bg-muted dark:bg-muted">
         <CardContent className="py-4">
           <div className="flex items-center justify-between">
             <div>

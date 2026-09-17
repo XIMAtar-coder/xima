@@ -17,7 +17,7 @@ export const ThemeToggle: React.FC = () => {
   return (
     <button
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      className="relative inline-flex items-center justify-center w-9 h-9 rounded-full backdrop-blur-xl bg-[var(--glass-bg)] border border-[var(--glass-border)] shadow-sm hover:bg-[var(--glass-bg-hover)] transition-all duration-200 ease-out active:scale-95"
+      className="relative inline-flex items-center justify-center w-9 h-9 rounded-full bg-[var(--glass-bg)] border border-[var(--glass-border)] shadow-sm hover:bg-[var(--glass-bg-hover)] transition-all duration-200 ease-out"
       aria-label="Toggle theme"
     >
       <Sun
