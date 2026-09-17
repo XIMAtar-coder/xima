@@ -5744,9 +5744,9 @@
     "jobs_page_empty_headline": "No job offers yet.",
     "jobs_page_empty_body": "Create your first job offer to start attracting XIMA-evaluated candidates.",
     "evaluations_page_title": "Evaluations",
-    "evaluations_page_subtitle": "Review and evaluate candidate challenge responses.",
-    "evaluations_empty_headline": "No evaluations yet.",
-    "evaluations_empty_body": "Create challenges and invite candidates to start collecting responses to evaluate.",
+    "evaluations_page_subtitle": "Every candidate you invited to a challenge, and where their response stands.",
+    "evaluations_empty_headline": "No responses yet",
+    "evaluations_empty_body": "When you invite candidates to one of your challenges, each invitation appears here and moves to \"Submitted\" as soon as the candidate sends a response. Open it from here to review it.",
     "reports_page_title": "Reports & Analytics",
     "reports_page_subtitle": "Complete analysis of your hiring pipeline.",
     "reports_export_cta": "Export Report",
@@ -5908,7 +5908,27 @@
           "work_model": "Work model"
         }
       }
-    }
+    },
+    "evaluations_empty_cta": "Go to your challenges",
+    "evaluations_load_error": "Responses could not be loaded.",
+    "evaluations_retry": "Try again",
+    "evaluations_filter_all": "All",
+    "evaluations_filter_submitted": "To review",
+    "evaluations_filter_in_progress": "In progress",
+    "evaluations_filter_invited": "Invited",
+    "evaluations_filter_reviewed": "Reviewed",
+    "evaluations_filter_empty": "Nothing in this view.",
+    "evaluations_status_invited": "Invited",
+    "evaluations_status_in_progress": "In progress",
+    "evaluations_status_submitted": "Submitted",
+    "evaluations_status_reviewed": "Reviewed",
+    "evaluations_status_declined": "Declined",
+    "evaluations_status_expired": "Expired",
+    "evaluations_submitted_on": "Submitted {{date}}",
+    "evaluations_invited_on": "Invited {{date}}",
+    "evaluations_review": "Review",
+    "evaluations_open_review": "Open review",
+    "evaluations_view_challenge": "View challenge"
   },
   "ximatarJourney": {
     "page_title": "Your XIMAtar Journey",

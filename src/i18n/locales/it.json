@@ -5743,9 +5743,9 @@
     "jobs_page_empty_headline": "Ancora nessuna offerta.",
     "jobs_page_empty_body": "Crea la tua prima offerta di lavoro per iniziare ad attrarre candidati valutati da XIMA.",
     "evaluations_page_title": "Valutazioni",
-    "evaluations_page_subtitle": "Esamina e valuta le risposte dei candidati alle challenge.",
-    "evaluations_empty_headline": "Ancora nessuna valutazione.",
-    "evaluations_empty_body": "Crea challenge e invita candidati per iniziare a raccogliere risposte da valutare.",
+    "evaluations_page_subtitle": "Tutti i candidati che hai invitato a una challenge e lo stato della loro risposta.",
+    "evaluations_empty_headline": "Ancora nessuna risposta",
+    "evaluations_empty_body": "Quando inviti candidati a una delle tue challenge, ogni invito compare qui e passa a \"Inviata\" appena il candidato invia la risposta. Da qui puoi aprirla e valutarla.",
     "reports_page_title": "Report e analisi",
     "reports_page_subtitle": "L'analisi completa della tua pipeline di selezione.",
     "reports_export_cta": "Esporta report",
@@ -5907,7 +5907,27 @@
           "work_model": "Modalità di lavoro"
         }
       }
-    }
+    },
+    "evaluations_empty_cta": "Vai alle tue challenge",
+    "evaluations_load_error": "Impossibile caricare le risposte.",
+    "evaluations_retry": "Riprova",
+    "evaluations_filter_all": "Tutte",
+    "evaluations_filter_submitted": "Da valutare",
+    "evaluations_filter_in_progress": "In corso",
+    "evaluations_filter_invited": "Invitati",
+    "evaluations_filter_reviewed": "Valutate",
+    "evaluations_filter_empty": "Niente in questa vista.",
+    "evaluations_status_invited": "Invitato",
+    "evaluations_status_in_progress": "In corso",
+    "evaluations_status_submitted": "Inviata",
+    "evaluations_status_reviewed": "Valutata",
+    "evaluations_status_declined": "Rifiutato",
+    "evaluations_status_expired": "Scaduto",
+    "evaluations_submitted_on": "Inviata il {{date}}",
+    "evaluations_invited_on": "Invitato il {{date}}",
+    "evaluations_review": "Valuta",
+    "evaluations_open_review": "Apri valutazione",
+    "evaluations_view_challenge": "Vedi challenge"
   },
   "ximatarJourney": {
     "page_title": "Il tuo percorso XIMAtar",
