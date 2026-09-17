@@ -6453,5 +6453,53 @@
     "delete": "Elimina",
     "add": "Aggiungi",
     "cancel": "Annulla"
+  },
+  "pricing": {
+    "title": "Piani per ogni fase di crescita",
+    "subtitle": "Tutti i piani includono il modello di assessment XIMA. Passa a un piano superiore quando al tuo team servono strumenti di selezione avanzati.",
+    "most_popular": "Il più scelto",
+    "get_started": "Inizia gratis",
+    "contact_sales": "Contatta il commerciale",
+    "gdpr": "Conforme al GDPR",
+    "no_bias": "Nessun pregiudizio demografico",
+    "ai_powered": "Segnali estratti con l'AI",
+    "tiers": {
+      "starter": {
+        "name": "Starter",
+        "price": "Gratis",
+        "description": "Per piccoli team che iniziano a valutare i talenti",
+        "feature1": "1 utente",
+        "feature2": "Fino a 5 obiettivi di assunzione attivi",
+        "feature3": "Sfide di livello 1 e 2",
+        "feature4": "Segnali di base sui candidati",
+        "feature5": "Supporto via email"
+      },
+      "growth": {
+        "name": "Growth",
+        "price": "Su misura",
+        "description": "Per aziende in crescita con processi di selezione strutturati",
+        "feature1": "Fino a 10 utenti",
+        "feature2": "Obiettivi di assunzione illimitati",
+        "feature3": "Sfide di livello 1, 2 e 3",
+        "feature4": "Segnali avanzati e Decision Pack",
+        "feature5": "Filtro di idoneità e controllo di coerenza",
+        "feature6": "Esportazione dei dati",
+        "feature7": "Supporto prioritario"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "price": "Su misura",
+        "description": "Per organizzazioni che usano tutta la piattaforma",
+        "feature1": "Utenti illimitati",
+        "feature2": "Obiettivi di assunzione illimitati",
+        "feature3": "Tutti i livelli di sfida",
+        "feature4": "Tutte le funzioni avanzate",
+        "feature5": "Accesso al portale mentor",
+        "feature6": "Analisi e report avanzati",
+        "feature7": "Account manager dedicato",
+        "feature8": "SLA personalizzato",
+        "feature9": "SSO / SAML (in arrivo)"
+      }
+    }
   }
 }

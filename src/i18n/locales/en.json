@@ -6453,5 +6453,53 @@
     "delete": "Delete",
     "add": "Add",
     "cancel": "Cancel"
+  },
+  "pricing": {
+    "title": "Plans for every stage of growth",
+    "subtitle": "All plans include the XIMA assessment framework. Upgrade when your team needs advanced hiring intelligence.",
+    "most_popular": "Most Popular",
+    "get_started": "Get Started Free",
+    "contact_sales": "Contact Sales",
+    "gdpr": "GDPR Compliant",
+    "no_bias": "No bias, no scoring",
+    "ai_powered": "AI-powered signals",
+    "tiers": {
+      "starter": {
+        "name": "Starter",
+        "price": "Free",
+        "description": "For small teams getting started with talent assessment",
+        "feature1": "1 seat",
+        "feature2": "Up to 5 active hiring goals",
+        "feature3": "Level 1 + Level 2 challenges",
+        "feature4": "Basic candidate signals",
+        "feature5": "Email support"
+      },
+      "growth": {
+        "name": "Growth",
+        "price": "Custom",
+        "description": "For growing companies with structured hiring processes",
+        "feature1": "Up to 10 seats",
+        "feature2": "Unlimited hiring goals",
+        "feature3": "Level 1 + Level 2 + Level 3 challenges",
+        "feature4": "Premium signals & Decision Pack",
+        "feature5": "Eligibility gate & Consistency guard",
+        "feature6": "Data export",
+        "feature7": "Priority support"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "price": "Custom",
+        "description": "For organizations requiring full platform capabilities",
+        "feature1": "Unlimited seats",
+        "feature2": "Unlimited hiring goals",
+        "feature3": "All challenge levels",
+        "feature4": "All premium features",
+        "feature5": "Mentor portal access",
+        "feature6": "Advanced analytics & reporting",
+        "feature7": "Dedicated account manager",
+        "feature8": "Custom SLA",
+        "feature9": "SSO / SAML (roadmap)"
+      }
+    }
   }
 }

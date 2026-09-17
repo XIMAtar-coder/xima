@@ -6615,5 +6615,53 @@
     "delete": "Eliminar",
     "add": "Añadir",
     "cancel": "Cancelar"
+  },
+  "pricing": {
+    "title": "Planes para cada etapa de crecimiento",
+    "subtitle": "Todos los planes incluyen el modelo de evaluación XIMA. Cambia de plan cuando tu equipo necesite herramientas de selección avanzadas.",
+    "most_popular": "El más elegido",
+    "get_started": "Empieza gratis",
+    "contact_sales": "Contactar con ventas",
+    "gdpr": "Conforme al RGPD",
+    "no_bias": "Sin sesgos demográficos",
+    "ai_powered": "Señales extraídas con IA",
+    "tiers": {
+      "starter": {
+        "name": "Starter",
+        "price": "Gratis",
+        "description": "Para equipos pequeños que empiezan a evaluar talento",
+        "feature1": "1 usuario",
+        "feature2": "Hasta 5 objetivos de contratación activos",
+        "feature3": "Retos de nivel 1 y 2",
+        "feature4": "Señales básicas de candidatos",
+        "feature5": "Soporte por email"
+      },
+      "growth": {
+        "name": "Growth",
+        "price": "A medida",
+        "description": "Para empresas en crecimiento con procesos de selección estructurados",
+        "feature1": "Hasta 10 usuarios",
+        "feature2": "Objetivos de contratación ilimitados",
+        "feature3": "Retos de nivel 1, 2 y 3",
+        "feature4": "Señales avanzadas y Decision Pack",
+        "feature5": "Filtro de idoneidad y control de coherencia",
+        "feature6": "Exportación de datos",
+        "feature7": "Soporte prioritario"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "price": "A medida",
+        "description": "Para organizaciones que usan toda la plataforma",
+        "feature1": "Usuarios ilimitados",
+        "feature2": "Objetivos de contratación ilimitados",
+        "feature3": "Todos los niveles de reto",
+        "feature4": "Todas las funciones avanzadas",
+        "feature5": "Acceso al portal de mentores",
+        "feature6": "Análisis e informes avanzados",
+        "feature7": "Account manager dedicado",
+        "feature8": "SLA personalizado",
+        "feature9": "SSO / SAML (próximamente)"
+      }
+    }
   }
 }

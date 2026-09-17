@@ -8,60 +8,13 @@ import { Check, ArrowRight, Building2, Users, Shield, Sparkles, BarChart3, Zap }
 import LandingLayout from '@/components/landing/LandingLayout';
 import Seo from '@/components/Seo';
 
+// Text lives in the locale files (pricing.tiers.*): this page used to be
+// English-only whatever language the visitor had chosen.
 const TIERS = [
-  {
-    id: 'starter',
-    name: 'Starter',
-    price: 'Free',
-    description: 'For small teams getting started with talent assessment',
-    icon: Zap,
-    color: 'border-border',
-    features: [
-      '1 seat',
-      'Up to 5 active hiring goals',
-      'Level 1 + Level 2 challenges',
-      'Basic candidate signals',
-      'Email support',
-    ],
-  },
-  {
-    id: 'growth',
-    name: 'Growth',
-    price: 'Custom',
-    description: 'For growing companies with structured hiring processes',
-    icon: BarChart3,
-    color: 'border-primary',
-    highlighted: true,
-    features: [
-      'Up to 10 seats',
-      'Unlimited hiring goals',
-      'Level 1 + Level 2 + Level 3 challenges',
-      'Premium signals & Decision Pack',
-      'Eligibility gate & Consistency guard',
-      'Data export',
-      'Priority support',
-    ],
-  },
-  {
-    id: 'enterprise',
-    name: 'Enterprise',
-    price: 'Custom',
-    description: 'For organizations requiring full platform capabilities',
-    icon: Building2,
-    color: 'border-primary',
-    features: [
-      'Unlimited seats',
-      'Unlimited hiring goals',
-      'All challenge levels',
-      'All premium features',
-      'Mentor portal access',
-      'Advanced analytics & reporting',
-      'Dedicated account manager',
-      'Custom SLA',
-      'SSO / SAML (roadmap)',
-    ],
-  },
-];
+  { id: 'starter', icon: Zap, featureCount: 5 },
+  { id: 'growth', icon: BarChart3, highlighted: true, featureCount: 7 },
+  { id: 'enterprise', icon: Building2, featureCount: 9 },
+] as const;
 
 const Pricing: React.FC = () => {
   const { t } = useTranslation();
@@ -89,12 +42,14 @@ const Pricing: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {TIERS.map((tier) => {
             const Icon = tier.icon;
+            const highlighted = 'highlighted' in tier && tier.highlighted;
+            const features = Array.from({ length: tier.featureCount }, (_, i) => t(`pricing.tiers.${tier.id}.feature${i + 1}`));
             return (
               <Card
                 key={tier.id}
-                className={`relative ${tier.highlighted ? 'border-2 border-primary shadow-lg shadow-primary/10' : 'border-border'}`}
+                className={`relative ${highlighted ? 'border-2 border-primary shadow-lg shadow-primary/10' : 'border-border'}`}
               >
-                {tier.highlighted && (
+                {highlighted && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <Badge className="bg-primary text-primary-foreground px-4">
                       {t('pricing.most_popular', 'Most Popular')}
@@ -105,15 +60,15 @@ const Pricing: React.FC = () => {
                   <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                     <Icon className="h-6 w-6 text-primary" />
                   </div>
-                  <CardTitle className="text-2xl">{tier.name}</CardTitle>
+                  <CardTitle className="text-2xl">{t(`pricing.tiers.${tier.id}.name`)}</CardTitle>
                   <div className="mt-2">
-                    <span className="text-3xl font-bold text-foreground">{tier.price}</span>
+                    <span className="text-3xl font-bold text-foreground">{t(`pricing.tiers.${tier.id}.price`)}</span>
                   </div>
-                  <CardDescription className="mt-2">{tier.description}</CardDescription>
+                  <CardDescription className="mt-2">{t(`pricing.tiers.${tier.id}.description`)}</CardDescription>
                 </CardHeader>
                 <CardContent className="pt-4">
                   <ul className="space-y-3 mb-8">
-                    {tier.features.map((feature, idx) => (
+                    {features.map((feature, idx) => (
                       <li key={idx} className="flex items-start gap-3 text-sm">
                         <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
                         <span className="text-foreground">{feature}</span>
@@ -122,8 +77,11 @@ const Pricing: React.FC = () => {
                   </ul>
                   <Button
                     className="w-full"
-                    variant={tier.highlighted ? 'default' : 'outline'}
-                    onClick={() => navigate('/contact-sales', { state: { desiredTier: tier.id } })}
+                    variant={highlighted ? 'default' : 'outline'}
+                    onClick={() => tier.id === 'starter'
+                      // "Get started free" led to the sales contact form.
+                      ? navigate('/business/register')
+                      : navigate('/contact-sales', { state: { desiredTier: tier.id } })}
                   >
                     {tier.id === 'starter'
                       ? t('pricing.get_started', 'Get Started Free')
