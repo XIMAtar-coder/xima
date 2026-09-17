@@ -6151,7 +6151,18 @@
       "potential_desc": "Assumiamo per la traiettoria, non per il curriculum",
       "balanced": "Equilibrato",
       "balanced_desc": "Competenze, cultura e potenziale allo stesso livello"
-    }
+    },
+    "password_show": "Mostra password",
+    "password_hide": "Nascondi password",
+    "password_rule_length": "Almeno {{count}} caratteri",
+    "password_rule_letter": "Contiene una lettera",
+    "password_rule_number": "Contiene un numero",
+    "password_rule_not_common": "Non è una password comune (come \"password123\" o \"qwerty\")",
+    "password_rule_not_personal": "Non contiene il nome della tua email o dell'azienda",
+    "password_rule_met": "(soddisfatto)",
+    "password_rule_unmet": "(non ancora soddisfatto)",
+    "password_rejected_inline": "Questa password è stata rifiutata perché compare negli elenchi di password trapelate o facili da indovinare. Scegline un'altra: le altre risposte restano salvate.",
+    "password_rejected_toast": "La password è stata rifiutata perché troppo facile da indovinare. Ti abbiamo riportato al passaggio 1; tutto il resto che hai inserito è stato mantenuto."
   },
   "import_job": {
     "title": "Importa una posizione",

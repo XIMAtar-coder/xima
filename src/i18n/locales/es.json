@@ -6025,7 +6025,18 @@
       "potential_desc": "Contratamos por la trayectoria, no por el historial",
       "balanced": "Equilibrado",
       "balanced_desc": "Competencias, cultura y potencial a partes iguales"
-    }
+    },
+    "password_show": "Mostrar contraseña",
+    "password_hide": "Ocultar contraseña",
+    "password_rule_length": "Al menos {{count}} caracteres",
+    "password_rule_letter": "Contiene una letra",
+    "password_rule_number": "Contiene un número",
+    "password_rule_not_common": "No es una contraseña común (como \"password123\" o \"qwerty\")",
+    "password_rule_not_personal": "No contiene el nombre de tu email ni de tu empresa",
+    "password_rule_met": "(cumplido)",
+    "password_rule_unmet": "(aún no cumplido)",
+    "password_rejected_inline": "Esta contraseña fue rechazada porque aparece en listas de contraseñas filtradas o fáciles de adivinar. Elige otra: el resto de tus respuestas se conserva.",
+    "password_rejected_toast": "Tu contraseña fue rechazada por ser demasiado fácil de adivinar. Te hemos devuelto al paso 1; todo lo demás que introdujiste se conserva."
   },
   "anonymous": {
     "candidate_label": "Candidato #{{number}}",

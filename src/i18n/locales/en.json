@@ -6152,7 +6152,18 @@
       "potential_desc": "We hire for trajectory, not track record",
       "balanced": "Balanced",
       "balanced_desc": "Skills, culture, and potential equally"
-    }
+    },
+    "password_show": "Show password",
+    "password_hide": "Hide password",
+    "password_rule_length": "At least {{count}} characters",
+    "password_rule_letter": "Contains a letter",
+    "password_rule_number": "Contains a number",
+    "password_rule_not_common": "Not a common password (like \"password123\" or \"qwerty\")",
+    "password_rule_not_personal": "Does not contain your email name or company name",
+    "password_rule_met": "(met)",
+    "password_rule_unmet": "(not met yet)",
+    "password_rejected_inline": "This password was rejected because it appears in lists of leaked or easy-to-guess passwords. Choose a different one — your other answers are kept.",
+    "password_rejected_toast": "Your password was rejected as too easy to guess. We brought you back to step 1; everything else you entered is kept."
   },
   "import_job": {
     "title": "Import a Job Position",
