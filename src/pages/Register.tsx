@@ -17,6 +17,9 @@ import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
 import { ConsentCheckboxes } from '@/components/auth/ConsentCheckboxes';
 import { recordUserConsents } from '@/hooks/useConsentRecording';
 import { log } from '@/lib/log';
+import { Eye, EyeOff, Check } from 'lucide-react';
+
+const PASSWORD_MIN_LENGTH = 6;
 
 const Register = () => {
   const navigate = useNavigate();
@@ -29,9 +32,11 @@ const Register = () => {
   const [formData, setFormData] = useState<RegistrationForm>({
     name: '',
     email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   });
+  // A show/hide toggle replaces the old confirm-password field: the only thing
+  // that field checked was a local match, and seeing the password does that job.
+  const [showPassword, setShowPassword] = useState(false);
   
   const [errors, setErrors] = useState<Partial<RegistrationForm>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,8 +64,7 @@ const Register = () => {
     if (!formData.email.trim()) newErrors.email = t('register.email_required');
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = t('register.email_invalid');
     if (!formData.password) newErrors.password = t('register.password_required');
-    else if (formData.password.length < 6) newErrors.password = t('register.password_length');
-    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = t('register.passwords_match');
+    else if (formData.password.length < PASSWORD_MIN_LENGTH) newErrors.password = t('register.password_length');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -200,6 +204,25 @@ const Register = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {/* Quickest paths first: an existing account, or Google. */}
+            <p className="mb-4 text-sm text-muted-foreground text-center">
+              {t('register.have_account')}{" "}
+              <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/login')}>
+                {t('register.log_in')}
+              </Button>
+            </p>
+
+            <GoogleAuthButton mode="register" />
+
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-[rgba(60,60,67,0.12)]" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">{t('register.or_with_email')}</span>
+              </div>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">{t('register.full_name')}</Label>
@@ -225,24 +248,34 @@ const Register = () => {
               
               <div className="space-y-2">
                 <Label htmlFor="password">{t('register.password')}</Label>
-                <Input
-                  id="password" name="password" type="password" autoComplete="new-password"
-                  placeholder={t('register.password_placeholder')}
-                  value={formData.password} onChange={handleChange}
-                  className={`min-h-[48px] ${errors.password ? "ring-2 ring-destructive" : ""}`}
-                />
+                <div className="relative">
+                  <Input
+                    id="password" name="password" type={showPassword ? 'text' : 'password'} autoComplete="new-password"
+                    placeholder={t('register.password_placeholder')}
+                    value={formData.password} onChange={handleChange}
+                    aria-describedby="password-requirements"
+                    className={`min-h-[48px] pr-12 ${errors.password ? "ring-2 ring-destructive" : ""}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-muted-foreground hover:text-foreground"
+                    aria-label={showPassword ? t('register.hide_password') : t('register.show_password')}
+                    aria-pressed={showPassword}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+                <p
+                  id="password-requirements"
+                  className={`flex items-center gap-1.5 text-xs ${
+                    formData.password.length >= PASSWORD_MIN_LENGTH ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground'
+                  }`}
+                >
+                  {formData.password.length >= PASSWORD_MIN_LENGTH && <Check size={12} className="shrink-0" />}
+                  {t('register.password_requirement', { count: PASSWORD_MIN_LENGTH })}
+                </p>
                 {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">{t('register.confirm_password')}</Label>
-                <Input
-                  id="confirmPassword" name="confirmPassword" type="password" autoComplete="new-password"
-                  placeholder={t('register.confirm_placeholder')}
-                  value={formData.confirmPassword} onChange={handleChange}
-                  className={`min-h-[48px] ${errors.confirmPassword ? "ring-2 ring-destructive" : ""}`}
-                />
-                {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword}</p>}
               </div>
 
               <ConsentCheckboxes
@@ -262,25 +295,8 @@ const Register = () => {
                 )}
               </Button>
             </form>
-            
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-[rgba(60,60,67,0.12)]" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">{t('auth.or', 'or')}</span>
-              </div>
-            </div>
-            
-            <GoogleAuthButton mode="register" />
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <p className="text-sm text-muted-foreground text-center w-full">
-              {t('register.have_account')}{" "}
-              <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/login')}>
-                {t('register.log_in')}
-              </Button>
-            </p>
             <p className="text-center text-sm text-muted-foreground font-medium">
               Matching Quality in Jobs
             </p>

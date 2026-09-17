@@ -2663,7 +2663,11 @@
     "email_invalid": "El email no es válido",
     "password_required": "La contraseña es obligatoria",
     "password_length": "La contraseña debe tener al menos 6 caracteres",
-    "passwords_match": "Las contraseñas no coinciden"
+    "passwords_match": "Las contraseñas no coinciden",
+    "or_with_email": "o regístrate con tu email",
+    "show_password": "Mostrar contraseña",
+    "hide_password": "Ocultar contraseña",
+    "password_requirement": "Al menos {{count}} caracteres"
   },
   "legal": {
     "privacyPolicy": "Política de privacidad",

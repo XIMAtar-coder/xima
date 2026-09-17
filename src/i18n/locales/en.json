@@ -1499,7 +1499,11 @@
     "consentRequired": "You must accept both the Privacy Policy and Terms of Service to continue.",
     "consent_error_title": "Registration Error",
     "consent_error_desc": "Failed to record your consent. Please try registering again.",
-    "assessment_synced": "Your assessment data has been saved to your profile"
+    "assessment_synced": "Your assessment data has been saved to your profile",
+    "or_with_email": "or sign up with email",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "password_requirement": "At least {{count}} characters"
   },
   "legal": {
     "privacyPolicy": "Privacy Policy",

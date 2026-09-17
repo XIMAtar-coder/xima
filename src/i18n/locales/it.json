@@ -1499,7 +1499,11 @@
     "acceptTerms": "Accetto i",
     "consentRequired": "Per continuare devi accettare sia l'Informativa sulla privacy che i Termini di servizio.",
     "consent_error_title": "Errore di registrazione",
-    "consent_error_desc": "Non siamo riusciti a registrare il tuo consenso. Prova a registrarti di nuovo."
+    "consent_error_desc": "Non siamo riusciti a registrare il tuo consenso. Prova a registrarti di nuovo.",
+    "or_with_email": "oppure registrati con l'email",
+    "show_password": "Mostra password",
+    "hide_password": "Nascondi password",
+    "password_requirement": "Almeno {{count}} caratteri"
   },
   "legal": {
     "privacyPolicy": "Informativa sulla privacy",
