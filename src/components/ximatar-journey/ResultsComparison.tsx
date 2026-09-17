@@ -60,6 +60,9 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
   }>>([]);
   const [topPillars, setTopPillars] = useState<Array<{ name: string; score: number }>>([]);
   const [guestOpenAnswerCount, setGuestOpenAnswerCount] = useState(0);
+  // Total characters written in the open answers, to flag a profile resting
+  // mostly on quick multiple-choice clicks.
+  const [openAnswerChars, setOpenAnswerChars] = useState<number | null>(null);
   const [hasNoAssessment, setHasNoAssessment] = useState(false);
   const [fieldKey, setFieldKey] = useState<string | null>(null);
 
@@ -248,6 +251,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         // nothing graded; tell them when grading happens instead.
         const data = JSON.parse(guestData);
         setGuestOpenAnswerCount(Object.keys(data.openAnswers || {}).length);
+        setOpenAnswerChars((Object.values(data.openAnswers || {}) as unknown[]).reduce<number>((sum, a) => sum + String(a ?? '').trim().length, 0));
         setOpenResponses([]);
         return;
       }
@@ -266,6 +270,7 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
       if (!error && data && data.length > 0) {
         setOpenResponses(data as any);
+        setOpenAnswerChars(data.reduce((sum, row: any) => sum + String(row.answer ?? '').trim().length, 0));
         // Set fieldKey from the first response
         setFieldKey(data[0].field_key);
       }
@@ -459,6 +464,15 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
                 {t(`ximatarJourney.drive_${driveLevel}_label`)} ({driveScore.toFixed(1)})
               </Badge>
             </div>
+          </div>
+          {/* The badges alone left open how to read them: what the scale is, and
+              why an archetype described as driven can sit next to "Low Drive". */}
+          <div className="mt-5 space-y-2 text-sm text-muted-foreground max-w-2xl mx-auto">
+            <p>{t('ximatarJourney.result_reading')}</p>
+            {driveLevel !== 'high' && <p>{t('ximatarJourney.result_drive_separate')}</p>}
+            {openAnswerChars !== null && openAnswerChars < 150 && (
+              <p className="text-foreground">{t('ximatarJourney.result_low_evidence')}</p>
+            )}
           </div>
         </Card>
       )}

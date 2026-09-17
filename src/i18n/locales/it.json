@@ -6005,7 +6005,10 @@
     "mentor_match_explained": "La % di compatibilità è una stima: sale quando i pilastri su cui lavora il mentor coprono il tuo pilastro più forte e quello più debole e si adattano al tuo XIMAtar, più la sua valutazione. È un'indicazione, non un voto.",
     "register_value_saved": "Con un account gratuito salvi il tuo XIMAtar, i punteggi dei cinque pilastri e le tue risposte aperte.",
     "register_value_saved_with_cv": "Con un account gratuito salvi il tuo XIMAtar, i punteggi dei cinque pilastri, l'analisi del CV e le tue risposte aperte.",
-    "register_value_next": "Poi le aziende potranno inviarti delle sfide e potrai prenotare una sessione con un mentor."
+    "register_value_next": "Poi le aziende potranno inviarti delle sfide e potrai prenotare una sessione con un mentor.",
+    "result_reading": "I punteggi vanno da 0 a 10. Il tuo XIMAtar nasce dal rapporto tra il pilastro più forte e quello più debole in queste risposte: descrive uno stile di lavoro, non un voto.",
+    "result_drive_separate": "Il Drive si misura a parte e cambia nel tempo. Uno XIMAtar noto per la determinazione può avere oggi un Drive più basso: lo stile c'è, l'energia di crescita non è ancora emersa in queste risposte.",
+    "result_low_evidence": "Le tue risposte scritte erano molto brevi: questo profilo si basa soprattutto sulle domande a scelta ed è meno preciso. Risposte scritte più complete danno un risultato più affidabile."
   },
   "profile_completion": {
     "title": "Completa il tuo profilo per abbinamenti migliori",

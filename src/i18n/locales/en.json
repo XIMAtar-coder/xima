@@ -6006,7 +6006,10 @@
     "mentor_match_explained": "The match % estimates fit: it rises when a mentor's focus pillars cover your strongest and weakest pillars and suit your XIMAtar, plus their rating. It is a guide, not a grade.",
     "register_value_saved": "A free account saves your XIMAtar, your five pillar scores and your written answers.",
     "register_value_saved_with_cv": "A free account saves your XIMAtar, your five pillar scores, your CV analysis and your written answers.",
-    "register_value_next": "Then companies can send you challenges, and you can book a session with a mentor."
+    "register_value_next": "Then companies can send you challenges, and you can book a session with a mentor.",
+    "result_reading": "Scores run from 0 to 10. Your XIMAtar comes from the pattern between your strongest and weakest pillar in these answers; it describes a working style, not a grade.",
+    "result_drive_separate": "Drive is measured on its own and moves over time. A XIMAtar known for determination can show lower Drive today: the style is there, the growth energy has not shown in these answers yet.",
+    "result_low_evidence": "Your written answers were very short, so this profile rests mostly on the multiple-choice questions and is less precise. Fuller written answers give a more reliable result."
   },
   "profile_completion": {
     "title": "Complete your profile for better matches",
