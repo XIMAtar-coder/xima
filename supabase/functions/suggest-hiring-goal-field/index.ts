@@ -44,6 +44,10 @@ serve(async (req) => {
 
     const body = await req.json();
     const { business_id, field_name, current_values, role_title } = body;
+    // Suggestions came back in whatever language the company profile or the
+    // role title happened to be in, mixing Italian and English in one form.
+    const LANGUAGE_NAMES: Record<string, string> = { it: "Italian", en: "English", es: "Spanish" };
+    const outputLanguage = LANGUAGE_NAMES[String(body.language || "").slice(0, 2).toLowerCase()] || "English";
 
     if (!business_id || !field_name || !role_title) {
       return errorResponse(400, "INVALID_INPUT", "business_id, field_name, and role_title are required");
@@ -117,6 +121,8 @@ serve(async (req) => {
         system: `You are a hiring expert helping a company define a job position. Generate contextually relevant ${fieldCfg.label} for the given role, tailored to the company's DNA and culture.
 
 ${companyContext ? `Company context:\n${companyContext}` : "No company context available — use industry best practices."}
+
+Write every suggestion in ${outputLanguage}, even if the company context or the role title is in another language. Keep technical terms and standards (e.g. ISO 26262, ROS2) as they are.
 
 Return ONLY valid JSON: {"suggestions": ["suggestion1", "suggestion2", ...]}
 Generate exactly ${fieldCfg.count} suggestions. Each suggestion should be concise (1-2 sentences for role_summary, 5-15 words for skills/responsibilities).${currentValuesStr}`,

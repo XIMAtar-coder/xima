@@ -20,7 +20,7 @@ interface SuggestFieldButtonProps {
 const SuggestFieldButton: React.FC<SuggestFieldButtonProps> = ({
   fieldName, mode, roleTitle, currentValues, onApply, businessId,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [replacePreview, setReplacePreview] = useState('');
@@ -37,6 +37,7 @@ const SuggestFieldButton: React.FC<SuggestFieldButtonProps> = ({
           field_name: fieldName,
           role_title: roleTitle,
           current_values: Array.isArray(currentValues) ? currentValues : [],
+          language: i18n.language,
         },
       });
       if (error) throw error;
