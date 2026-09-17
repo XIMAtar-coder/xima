@@ -5878,7 +5878,19 @@
         "activate": "Activate with XIMA HR",
         "success": "Goal activated — XIMA HR will contact you within 24 hours",
         "error": "XIMA HR could not process the request. The goal has been saved — you can retry."
-      }
+      },
+      "pay_transparency": {
+        "title": "Pay transparency — RAL and CCNL",
+        "ral_from_yearly": "Taken from the gross annual range above.",
+        "ral_from_monthly": "Calculated from the gross monthly range above over {{months}} monthly payments.",
+        "ccnl_label": "Applicable CCNL",
+        "ccnl_placeholder": "— Select CCNL —"
+      },
+      "draft_found_title": "Resume your draft?",
+      "draft_found_body": "You have an unfinished hiring goal \"{{role}}\" saved on this device ({{date}}).",
+      "draft_untitled": "Untitled",
+      "draft_resume": "Resume draft",
+      "draft_start_over": "Start over"
     },
     "education_levels": {
       "none_required": "No requirement",

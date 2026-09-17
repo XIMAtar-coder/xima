@@ -5877,7 +5877,19 @@
         "activate": "Attiva con XIMA HR",
         "success": "Obiettivo attivato: XIMA HR ti contatterà entro 24 ore",
         "error": "XIMA HR non è riuscito a elaborare la richiesta. L'obiettivo è stato salvato: puoi riprovare."
-      }
+      },
+      "pay_transparency": {
+        "title": "Trasparenza retributiva — RAL e CCNL",
+        "ral_from_yearly": "Ripresa dal range lordo annuo inserito sopra.",
+        "ral_from_monthly": "Calcolata dal range lordo mensile inserito sopra su {{months}} mensilità.",
+        "ccnl_label": "CCNL applicato",
+        "ccnl_placeholder": "— Seleziona CCNL —"
+      },
+      "draft_found_title": "Riprendere la bozza?",
+      "draft_found_body": "Hai un obiettivo di assunzione non completato \"{{role}}\" salvato su questo dispositivo ({{date}}).",
+      "draft_untitled": "Senza titolo",
+      "draft_resume": "Riprendi la bozza",
+      "draft_start_over": "Ricomincia da capo"
     },
     "education_levels": {
       "none_required": "Nessun requisito",

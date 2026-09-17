@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Sparkles, Target, Users, MapPin, DollarSign, FileDown, Info, ChevronDown, X, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,16 @@ import BusinessLayout from '@/components/business/BusinessLayout';
 import SuggestFieldButton from '@/components/business/SuggestFieldButton';
 import { CCNL_OPTIONS, CCNL_HELPER_IT } from '@/lib/business/ccnl';
 import { log } from '@/lib/log';
+import { useBusinessProfile } from '@/hooks/useBusinessProfile';
+import {
+  RAL_MONTHS,
+  clearGoalDraft,
+  countryCodeFromProfile,
+  deriveRal,
+  loadGoalDraft,
+  saveGoalDraft,
+  type StoredGoalDraft,
+} from '@/lib/business/hiringGoalDraft';
 
 
 const TOTAL_STEPS = 5;
@@ -105,12 +115,69 @@ const HiringGoalCreate = () => {
 
   const updateField = (field: keyof FormData, value: any) => setFormData(prev => ({ ...prev, [field]: value }));
 
+  // Draft persistence only applies to a brand-new goal typed by hand: edit mode
+  // saves to the DB, and an imported listing is its own source of truth.
+  const draftEnabled = !isEditMode && !fromListingId;
+  // null = not decided yet (no autosave until then, so an empty form never
+  // overwrites a stored draft before the user chooses).
+  const [draftDecided, setDraftDecided] = useState(!draftEnabled);
+  const [pendingDraft, setPendingDraft] = useState<StoredGoalDraft<FormData> | null>(null);
+  const { businessProfile } = useBusinessProfile();
+  const locationPrefilled = useRef(false);
+
   // Load user id
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) setUserId(user.id);
     });
   }, []);
+
+  // Offer to resume a stored draft.
+  useEffect(() => {
+    if (!draftEnabled || !userId || draftDecided) return;
+    const stored = loadGoalDraft<FormData>(userId);
+    if (stored && (stored.formData.role_title?.trim() || stored.step > 0)) {
+      setPendingDraft(stored);
+    } else {
+      setDraftDecided(true);
+    }
+  }, [draftEnabled, userId, draftDecided]);
+
+  const resumeDraft = () => {
+    if (pendingDraft) {
+      setFormData(prev => ({ ...prev, ...pendingDraft.formData }));
+      setStep(Math.min(Math.max(pendingDraft.step, 0), TOTAL_STEPS - 1));
+    }
+    setPendingDraft(null);
+    setDraftDecided(true);
+  };
+
+  const startOver = () => {
+    clearGoalDraft(userId);
+    setPendingDraft(null);
+    setDraftDecided(true);
+  };
+
+  // Autosave (debounced) once the user has decided about any previous draft.
+  useEffect(() => {
+    if (!draftEnabled || !draftDecided || !userId) return;
+    if (!formData.role_title.trim() && step === 0) return;
+    const handle = window.setTimeout(() => saveGoalDraft(userId, step, formData), 400);
+    return () => window.clearTimeout(handle);
+  }, [draftEnabled, draftDecided, userId, step, formData]);
+
+  // Prefill location from the company profile when the user has not set one.
+  useEffect(() => {
+    if (isEditMode || !draftDecided || !businessProfile || locationPrefilled.current) return;
+    locationPrefilled.current = true;
+    const profileCountry = countryCodeFromProfile(businessProfile.manual_hq_country || businessProfile.snapshot_hq_country);
+    const profileCity = (businessProfile.manual_hq_city || businessProfile.snapshot_hq_city || '').trim();
+    setFormData(prev => ({
+      ...prev,
+      country: prev.country || profileCountry,
+      city_region: prev.city_region || profileCity,
+    }));
+  }, [isEditMode, draftDecided, businessProfile]);
 
   // Pre-fill from ?from_listing=<id> (only in "new" mode)
   useEffect(() => {
@@ -190,8 +257,8 @@ const HiringGoalCreate = () => {
         work_model: d.work_model || '',
         country: d.country || '',
         city_region: d.city_region || '',
-        salary_min: d.salary_min || 0,
-        salary_max: d.salary_max || 0,
+        salary_min: d.salary_min || d.ral_min || 0,
+        salary_max: d.salary_max || d.ral_max || 0,
         salary_currency: d.salary_currency || 'EUR',
         salary_period: d.salary_period || 'yearly',
         ral_min: d.ral_min || 0,
@@ -230,6 +297,8 @@ const HiringGoalCreate = () => {
       if (!user) throw new Error('Not authenticated');
 
       const isXimaHr = formData.xima_hr_requested;
+      // RAL is derived from the single salary range instead of being typed twice.
+      const ral = deriveRal(formData.salary_min, formData.salary_max, formData.salary_period);
 
       const payload = {
         role_title: formData.role_title,
@@ -242,8 +311,8 @@ const HiringGoalCreate = () => {
         salary_max: formData.salary_max,
         salary_currency: formData.salary_currency,
         salary_period: formData.salary_period,
-        ral_min: formData.ral_min || null,
-        ral_max: formData.ral_max || null,
+        ral_min: ral.ral_min || null,
+        ral_max: ral.ral_max || null,
         ccnl: formData.ccnl || null,
         required_skills: formData.required_skills as any,
         nice_to_have_skills: formData.nice_to_have_skills as any,
@@ -280,6 +349,8 @@ const HiringGoalCreate = () => {
         if (error) throw error;
         goal = data;
       }
+
+      if (draftEnabled) clearGoalDraft(user.id);
 
       if (isXimaHr) {
         // XIMA HR flow: call request-xima-hr, do NOT generate shortlist
@@ -397,6 +468,25 @@ const HiringGoalCreate = () => {
             </Button>
           )}
         </div>
+
+        {/* Resume a locally saved draft */}
+        <Dialog open={!!pendingDraft} onOpenChange={(open) => { if (!open) resumeDraft(); }}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t('businessPortal.hiring_goal.draft_found_title')}</DialogTitle>
+            </DialogHeader>
+            <p className="text-sm text-muted-foreground">
+              {t('businessPortal.hiring_goal.draft_found_body', {
+                role: pendingDraft?.formData.role_title?.trim() || t('businessPortal.hiring_goal.draft_untitled'),
+                date: pendingDraft ? new Date(pendingDraft.savedAt).toLocaleString() : '',
+              })}
+            </p>
+            <DialogFooter className="gap-2">
+              <Button variant="ghost" onClick={startOver}>{t('businessPortal.hiring_goal.draft_start_over')}</Button>
+              <Button onClick={resumeDraft}>{t('businessPortal.hiring_goal.draft_resume')}</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Leave confirmation dialog */}
         <Dialog open={showLeaveConfirm} onOpenChange={setShowLeaveConfirm}>
@@ -852,6 +942,7 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
   const salaryLabel = isYearly
     ? t('businessPortal.hiring_goal.gross_salary.ral_label', 'RAL')
     : t('businessPortal.hiring_goal.gross_salary.monthly_label', 'Mensile lordo');
+  const derivedRal = deriveRal(formData.salary_min, formData.salary_max, formData.salary_period);
 
   return (
     <div className="space-y-6">
@@ -904,43 +995,42 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
         </div>
       </div>
 
-      {/* PART 1 — Trasparenza retributiva (D.Lgs. 96/2026, in vigore dal 7 giugno 2026) */}
+      {/* Pay transparency (D.Lgs. 96/2026, in force since 7 June 2026). RAL is
+          derived from the range above — asking for it a second time let the two
+          disagree. */}
       <div className="pt-2">
-        <label className="text-sm font-medium text-foreground mb-2 block">
-          Trasparenza retributiva — RAL e CCNL <span className="text-destructive">*</span>
-        </label>
-        <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-center mb-2">
-          <Input
-            type="number"
-            min={0}
-            step={1000}
-            value={formData.ral_min || ''}
-            onChange={(e) => updateField('ral_min', Number(e.target.value))}
-            placeholder="RAL min (€/anno)"
-          />
-          <span className="text-muted-foreground">—</span>
-          <Input
-            type="number"
-            min={0}
-            step={1000}
-            value={formData.ral_max || ''}
-            onChange={(e) => updateField('ral_max', Number(e.target.value))}
-            placeholder="RAL max (€/anno)"
-          />
+        <p className="text-sm font-medium text-foreground mb-2">
+          {t('businessPortal.hiring_goal.pay_transparency.title')}
+        </p>
+        <div className="rounded-lg bg-secondary/30 px-3 py-2 mb-2 text-sm" aria-live="polite">
+          <span className="text-muted-foreground">{t('businessPortal.hiring_goal.gross_salary.ral_label', 'RAL')}: </span>
+          <span className="font-medium text-foreground">
+            {derivedRal.ral_min > 0
+              ? `${derivedRal.ral_min.toLocaleString()}–${(derivedRal.ral_max || derivedRal.ral_min).toLocaleString()} ${formData.salary_currency}`
+              : '—'}
+          </span>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {isYearly
+              ? t('businessPortal.hiring_goal.pay_transparency.ral_from_yearly')
+              : t('businessPortal.hiring_goal.pay_transparency.ral_from_monthly', { months: RAL_MONTHS })}
+          </p>
         </div>
+        <label htmlFor="goal-ccnl" className="text-sm font-medium text-foreground mb-1.5 block">
+          {t('businessPortal.hiring_goal.pay_transparency.ccnl_label')}
+        </label>
         <select
+          id="goal-ccnl"
           value={formData.ccnl}
           onChange={(e) => updateField('ccnl', e.target.value)}
           className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none"
         >
-          <option value="">— Seleziona CCNL —</option>
+          <option value="">{t('businessPortal.hiring_goal.pay_transparency.ccnl_placeholder')}</option>
           {CCNL_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}
         </select>
         <p className="text-xs text-muted-foreground mt-2">{CCNL_HELPER_IT}</p>
       </div>
-
 
       {/* Review */}
       <div className="pt-6 border-t">
