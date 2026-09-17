@@ -119,7 +119,8 @@ async function generatePersonalizedEmail(
   challengeType: string,
   locale: string,
   personalMessage: string | null,
-  correlationId: string
+  correlationId: string,
+  userId: string
 ): Promise<{ subject: string; body: string } | null> {
   try {
     const langNames: Record<string, string> = { en: "English", it: "Italian", es: "Spanish" };
@@ -127,9 +128,11 @@ async function generatePersonalizedEmail(
     const challengeDesc = challengeType === "L2" ? "technical skills assessment" : "behavioral assessment";
 
     // Per-user monthly AI budget. Every other model-calling function gates on
-    // this; this one did not (audit X-09).
-    const budgetGate = await enforceAiBudget(user.id, "send-challenge-invitation", corsHeaders);
-    if (budgetGate) return budgetGate;
+    // this; this one did not (audit X-09). `user` was referenced here without
+    // being in scope, so this always threw and fell back to the template; and
+    // returning the budget Response would have been used as an email body.
+    const budgetGate = await enforceAiBudget(userId, "send-challenge-invitation", corsHeaders);
+    if (budgetGate) return null;
     const result = await callAnthropicApi({
       system: `Write a professional, warm challenge invitation email. Keep it 100-150 words. Be warm but professional. Write in ${langName}. Return ONLY JSON: { "subject": "...", "body_text": "..." }. The body_text should be plain text paragraphs (no HTML).`,
       userMessage: `Candidate: ${candidateName}. Company: ${companyName}. Challenge type: ${challengeDesc}.${personalMessage ? ` Personal note from hiring manager: ${personalMessage}` : ""}\n\nGenerate the invitation email.`,
@@ -140,7 +143,7 @@ async function generatePersonalizedEmail(
       temperature: 0.7,
       promptTemplateVersion: "2.0",
     });
-    await recordAiCallSafe(user.id, "send-challenge-invitation");
+    await recordAiCallSafe(userId, "send-challenge-invitation");
 
     // extractJsonFromAiContent returns the already-parsed payload (or null) —
     // never re-parse it. A null falls through to the template path.
@@ -245,20 +248,27 @@ serve(async (req: Request): Promise<Response> => {
       return forbiddenResponse("Invitation does not match candidate");
     }
 
-    // Ownership check
-    const { data: bizProfile } = await supabase
-      .from("business_profiles")
-      .select("id")
-      .eq("user_id", user.id)
-      .single();
-
-    if (!hasAdmin && (!bizProfile || invitation.business_id !== bizProfile.id)) {
+    // Ownership check. challenge_invitations.business_id holds the business
+    // user's auth id (every insert path writes user.id), not business_profiles.id
+    // — comparing against the profile id rejected every legitimate caller.
+    if (!hasAdmin && invitation.business_id !== user.id) {
       return forbiddenResponse("Not authorized to send this invitation");
     }
 
     // Duplicate check — skip if already sent
     if (invitation.status === "sent") {
       return jsonResponse({ success: true, message: "Invitation already sent", already_sent: true });
+    }
+
+    // Already queued by the on_challenge_invitation_email DB trigger? Then do
+    // not spend an AI call composing an email that would be discarded.
+    const { data: queued } = await supabase
+      .from("email_outbox")
+      .select("id")
+      .eq("idempotency_key", `challenge_invite_${invitation_id}`)
+      .maybeSingle();
+    if (queued) {
+      return jsonResponse({ success: true, message: "Invitation email already queued", already_sent: true });
     }
 
     // Fetch candidate email server-side
@@ -273,6 +283,16 @@ serve(async (req: Request): Promise<Response> => {
     }
 
     const candidateEmail = profileData.email;
+
+    // Respect unsubscribes/bounces, as send-transactional-email does.
+    const { data: suppressed } = await supabase
+      .from("suppressed_emails")
+      .select("email")
+      .eq("email", candidateEmail.toLowerCase())
+      .maybeSingle();
+    if (suppressed) {
+      return jsonResponse({ success: false, reason: "email_suppressed" });
+    }
     const baseUrl = Deno.env.get("SITE_URL") || "https://xima.lovable.app";
     const inviteLink = `${baseUrl}/challenge/accept?token=${invite_token}`;
 
@@ -281,7 +301,7 @@ serve(async (req: Request): Promise<Response> => {
     let emailHtml: string;
 
     const claudeEmail = await generatePersonalizedEmail(
-      candidate_name, company_name, challenge_type, language, personal_message || null, correlationId
+      candidate_name, company_name, challenge_type, language, personal_message || null, correlationId, user.id
     );
 
     if (claudeEmail) {
@@ -293,7 +313,10 @@ serve(async (req: Request): Promise<Response> => {
       emailHtml = fallback.body;
     }
 
-    // Send via email queue (if available) or direct
+    // The on_challenge_invitation_email trigger already queued the invitation
+    // email under the same idempotency key when the invitation row was
+    // inserted, so this enqueue is normally a no-op (ON CONFLICT DO NOTHING).
+    // It remains for invitations created before that trigger existed.
     try {
       await supabase.rpc("enqueue_email", {
         p_idempotency_key: `challenge_invite_${invitation_id}`,
