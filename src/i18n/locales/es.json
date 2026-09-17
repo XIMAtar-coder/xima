@@ -5935,6 +5935,24 @@
         "body": "Gestiona tus datos legales, los accesos del equipo y la facturación. Mantén todo alineado con los requisitos de tu empresa.",
         "cta": "Abrir configuración →"
       }
+    },
+    "step_counter": "Paso {{current}} de {{total}}",
+    "tour": {
+      "goal": {
+        "title": "1. Crea un objetivo de contratación",
+        "body": "Describe el puesto que buscas: responsabilidades, seniority, ubicación y salario. XIMA lo usa para crear una shortlist de candidatos compatibles.",
+        "cta": "Crear un objetivo →"
+      },
+      "challenge": {
+        "title": "2. Crea el challenge",
+        "body": "Abre el objetivo y crea su challenge. Los candidatos que invites lo completan y sus respuestas te muestran cómo trabajan realmente.",
+        "cta": "Abrir tus objetivos →"
+      },
+      "invite": {
+        "title": "3. Invita desde la shortlist",
+        "body": "Desde la shortlist del objetivo, invita a los candidatos que te interesen. Reciben un email y una notificación; sus respuestas aparecen en Evaluaciones.",
+        "cta": "Ir a tus shortlists →"
+      }
     }
   },
   "pipeline_chat": {

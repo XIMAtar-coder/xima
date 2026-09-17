@@ -5434,6 +5434,24 @@
         "body": "Manage your legal details, team access, and billing preferences. Keep everything aligned with your company's requirements.",
         "cta": "Open settings →"
       }
+    },
+    "step_counter": "Step {{current}} of {{total}}",
+    "tour": {
+      "goal": {
+        "title": "1. Create a hiring goal",
+        "body": "Describe the role you are hiring for: responsibilities, seniority, location and pay. XIMA uses it to build a shortlist of matching candidates.",
+        "cta": "Create a hiring goal →"
+      },
+      "challenge": {
+        "title": "2. Create the challenge",
+        "body": "Open the goal and create its challenge. Candidates you invite complete it, and their responses show you how they actually work.",
+        "cta": "Open your hiring goals →"
+      },
+      "invite": {
+        "title": "3. Invite from the shortlist",
+        "body": "From the goal's shortlist, invite the candidates you like. They get an email and a notification; their responses appear under Evaluations.",
+        "cta": "Go to your shortlists →"
+      }
     }
   },
   "assessmentGuide": {

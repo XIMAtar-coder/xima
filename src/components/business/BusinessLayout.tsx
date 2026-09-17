@@ -62,15 +62,30 @@ const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children }) => {
     refetchInterval: 30000,
   });
 
+  // Closing the tour without "don't show again" hides it for this browser
+  // session only. BusinessLayout remounts on every business page, so without
+  // this the tour reopened on each navigation.
+  const guideSessionKey = `xima:biz-guide-dismissed:${user?.id ?? ''}`;
+
   useEffect(() => {
-    if (shouldAutoShowBusinessGuide && !guideAutoTriggered) {
-      setGuideOpen(true);
-      setGuideAutoTriggered(true);
+    if (!shouldAutoShowBusinessGuide || guideAutoTriggered) return;
+    let dismissedThisSession = false;
+    try {
+      dismissedThisSession = window.sessionStorage.getItem(guideSessionKey) === '1';
+    } catch {
+      // storage blocked: fall through and show it
     }
-  }, [shouldAutoShowBusinessGuide, guideAutoTriggered]);
+    setGuideAutoTriggered(true);
+    if (!dismissedThisSession) setGuideOpen(true);
+  }, [shouldAutoShowBusinessGuide, guideAutoTriggered, guideSessionKey]);
 
   const handleGuideClose = (dontShowAgain: boolean) => {
     setGuideOpen(false);
+    try {
+      window.sessionStorage.setItem(guideSessionKey, '1');
+    } catch {
+      // ignore
+    }
     if (dontShowAgain) {
       completeStep('biz_welcome_seen');
     }
