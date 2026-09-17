@@ -495,7 +495,7 @@
   "open_scoring": {
     "title": "Puntuación de las respuestas abiertas",
     "why": "¿Por qué esta puntuación?",
-    "consider_elaborating": "Desarrolla un poco más tu respuesta para subir la puntuación (te recomendamos 50 palabras como mínimo).",
+    "consider_elaborating": "Desarrolla un poco más tu respuesta para subir la puntuación: el mínimo son 50 caracteres, pero las respuestas más completas puntúan mejor.",
     "rubric_breakdown": "Desglose de la puntuación",
     "expert_insight": "Tu feedback personalizado",
     "suggestions": "Consejos para mejorar",
@@ -1080,7 +1080,10 @@
     ],
     "required": "Este campo es obligatorio",
     "intro_cv_done": "CV analizado: este paso está completado.",
-    "intro_whats_next": "Ahora el cuestionario: {{mc}} preguntas de opción múltiple y después {{open}} respuestas abiertas. Unos {{minutes}} minutos; tu progreso se guarda sobre la marcha."
+    "intro_whats_next": "Ahora el cuestionario: {{mc}} preguntas de opción múltiple y después {{open}} respuestas abiertas. Unos {{minutes}} minutos; tu progreso se guarda sobre la marcha.",
+    "open_min_required": "Mínimo {{count}} caracteres",
+    "open_min_reached": "Mínimo alcanzado. Más detalle ayuda a tu puntuación.",
+    "open_earlier_too_short": "Tu respuesta a la pregunta abierta {{number}} tiene menos de {{count}} caracteres. Vuelve atrás y añade un poco más."
   },
   "assessmentSets": {
     "science_tech": {
@@ -5399,7 +5402,7 @@
     "open_scores_title": "Puntuaciones de las respuestas abiertas",
     "open_question_label": "Pregunta abierta",
     "open_score_why": "¿Por qué esta puntuación? ↑",
-    "open_score_improve_tip": "Para una puntuación más alta, desarrolla más tu respuesta (recomendamos un mínimo de 50 palabras).",
+    "open_score_improve_tip": "Para una puntuación más alta, desarrolla más tu respuesta: el mínimo son 50 caracteres, pero las respuestas más completas puntúan mejor.",
     "open_score_breakdown_label": "Desglose de la puntuación",
     "open_score_clarity": "Claridad",
     "open_score_depth": "Profundidad",

@@ -14,7 +14,7 @@ import { useAssessment } from '@/context/AssessmentContext';
 import QuestionExample from '@/components/QuestionExample';
 import { selectArchetypeFromAssessmentPillars } from '@/lib/ximatarTaxonomy';
 import { log } from '@/lib/log';
-import { ASSESSMENT_MC_COUNT, ASSESSMENT_OPEN_COUNT, ASSESSMENT_ESTIMATED_MINUTES } from './assessmentShape';
+import { ASSESSMENT_MC_COUNT, ASSESSMENT_OPEN_COUNT, ASSESSMENT_ESTIMATED_MINUTES, OPEN_ANSWER_MIN_CHARS } from './assessmentShape';
 
 interface XimatarAssessmentProps {
   onComplete: (step: number) => void;
@@ -437,13 +437,24 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
     }, 500);
   };
 
+  // Written answers need OPEN_ANSWER_MIN_CHARS characters, as the placeholder
+  // has always said. Validation used to accept a single character.
+  const openAnswerLength = (id: string) => (openAnswers[id] || '').trim().length;
+  const isOpenAnswerLongEnough = (id: string) => openAnswerLength(id) >= OPEN_ANSWER_MIN_CHARS;
+
   const canProceed = () => {
     if (currentQuestion < questions.length) {
       return answers[questions[currentQuestion].id] !== undefined;
     }
     const openQ = openQuestions[currentQuestion - questions.length];
-    return openAnswers[openQ.id]?.trim().length > 0;
+    return isOpenAnswerLongEnough(openQ.id);
   };
+
+  // An earlier written answer can be too short if it was saved before the
+  // minimum was enforced; completing must not submit it as it is.
+  const shortEarlierOpenAnswerIndex = openQuestions.findIndex(
+    (q, i) => questions.length + i < currentQuestion && !isOpenAnswerLongEnough(q.id)
+  );
 
   const isOpenQuestion = currentQuestion >= questions.length;
   const currentOpenQuestion = isOpenQuestion ? openQuestions[currentQuestion - questions.length] : null;
@@ -566,12 +577,43 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
               </h3>
             </div>
             
-            <Textarea
-              placeholder={t('assessment.placeholder')}
-              value={openAnswers[currentOpenQuestion.id] || ''}
-              onChange={(e) => handleOpenAnswerChange(currentOpenQuestion.id, e.target.value)}
-              className="min-h-[150px] resize-none"
-            />
+            <div className="space-y-2">
+              {/* The shared Textarea is styled for dark surfaces (10% white
+                  border), which vanished on the light theme. Give this one a
+                  border that reads on both. */}
+              <Textarea
+                id={`open-answer-${currentOpenQuestion.id}`}
+                aria-describedby={`open-answer-${currentOpenQuestion.id}-count`}
+                placeholder={t('assessment.placeholder')}
+                value={openAnswers[currentOpenQuestion.id] || ''}
+                onChange={(e) => handleOpenAnswerChange(currentOpenQuestion.id, e.target.value)}
+                className="min-h-[150px] resize-none border-2 border-foreground/30 bg-background placeholder:text-muted-foreground"
+              />
+              <div
+                id={`open-answer-${currentOpenQuestion.id}-count`}
+                className="flex items-center justify-between gap-3 text-sm"
+                aria-live="polite"
+              >
+                <span className={isOpenAnswerLongEnough(currentOpenQuestion.id) ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground'}>
+                  {isOpenAnswerLongEnough(currentOpenQuestion.id)
+                    ? t('assessment.open_min_reached')
+                    : t('assessment.open_min_required', { count: OPEN_ANSWER_MIN_CHARS })}
+                </span>
+                <span
+                  className={`tabular-nums font-medium ${isOpenAnswerLongEnough(currentOpenQuestion.id) ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground'}`}
+                >
+                  {openAnswerLength(currentOpenQuestion.id)}/{OPEN_ANSWER_MIN_CHARS}
+                </span>
+              </div>
+              {currentQuestion === totalQuestions - 1 && shortEarlierOpenAnswerIndex !== -1 && (
+                <p className="text-sm text-destructive" role="alert">
+                  {t('assessment.open_earlier_too_short', {
+                    number: shortEarlierOpenAnswerIndex + 1,
+                    count: OPEN_ANSWER_MIN_CHARS,
+                  })}
+                </p>
+              )}
+            </div>
             
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
               <div className="flex items-center gap-4">
@@ -583,15 +625,12 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
                   <ArrowLeft size={16} />
                   {t('journey.back', 'Back')}
                 </Button>
-                <p className="text-sm text-muted-foreground">
-                  {openAnswers[currentOpenQuestion.id]?.length || 0} {t('assessment.characters')}
-                </p>
               </div>
 
               {currentQuestion === totalQuestions - 1 ? (
                 <Button
                   onClick={handleComplete}
-                  disabled={!canProceed() || isCompleting}
+                  disabled={!canProceed() || shortEarlierOpenAnswerIndex !== -1 || isCompleting}
                   className="w-full sm:w-auto bg-primary hover:bg-primary/90"
                 >
                   {isCompleting ? (

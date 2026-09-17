@@ -679,7 +679,7 @@
   "open_scoring": {
     "title": "Open Question Scores",
     "why": "Why this score?",
-    "consider_elaborating": "Consider elaborating more for higher scores (minimum 50 words recommended).",
+    "consider_elaborating": "Consider elaborating more for higher scores: 50 characters is the minimum, but fuller answers score better.",
     "rubric_breakdown": "Score Breakdown",
     "expert_insight": "Your Personalized Feedback",
     "suggestions": "Tips to Improve",
@@ -1233,7 +1233,10 @@
       }
     },
     "intro_cv_done": "CV analysed. That step is done.",
-    "intro_whats_next": "Now the questionnaire: {{mc}} multiple-choice questions, then {{open}} written answers. About {{minutes}} minutes; your progress is saved as you go."
+    "intro_whats_next": "Now the questionnaire: {{mc}} multiple-choice questions, then {{open}} written answers. About {{minutes}} minutes; your progress is saved as you go.",
+    "open_min_required": "Minimum {{count}} characters",
+    "open_min_reached": "Minimum reached. More detail helps your score.",
+    "open_earlier_too_short": "Your answer to written question {{number}} is under {{count}} characters. Go back and add a little more."
   },
   "dashboard": {
     "page_label": "DASHBOARD",
@@ -5972,7 +5975,7 @@
     "open_scores_title": "Open Question Scores",
     "open_question_label": "Open Question",
     "open_score_why": "Why this score? ↑",
-    "open_score_improve_tip": "Consider elaborating more for higher scores (minimum 50 words recommended).",
+    "open_score_improve_tip": "Consider elaborating more for higher scores: 50 characters is the minimum, but fuller answers score better.",
     "open_score_breakdown_label": "Score Breakdown",
     "open_score_clarity": "Clarity",
     "open_score_depth": "Depth",
