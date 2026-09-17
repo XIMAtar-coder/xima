@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { 
   Shield, GraduationCap, Award, Languages, 
   CheckCircle2, XCircle, Clock, AlertTriangle,
-  Crown, Lock, Bell
+  Lock, Bell
 } from 'lucide-react';
 
 interface EligibilityStatus {
@@ -80,14 +80,7 @@ function LockedPanel() {
         <div className="text-center p-4">
           <Lock className="h-8 w-8 text-amber-500/50 mx-auto mb-2" />
           <p className="text-sm font-medium text-muted-foreground">{t('premium.eligibility.locked_title')}</p>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="mt-3 border-amber-500/30 text-amber-600 hover:bg-amber-500/10"
-          >
-            <Crown className="h-3.5 w-3.5 mr-1.5" />
-            {t('signals.premium.unlock_cta')}
-          </Button>
+          <p className="mt-2 text-xs text-muted-foreground">{t('premium.paid_plan_note')}</p>
         </div>
       </div>
       <CardHeader className="pb-3 opacity-30">

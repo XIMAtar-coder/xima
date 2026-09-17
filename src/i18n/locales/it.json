@@ -5031,7 +5031,9 @@
       "stage_advanced": "Promosso",
       "stage_passed": "Scartato",
       "print_footer": "Generato da XIMA Premium"
-    }
+    },
+    "paid_plan_note": "Incluso nei piani a pagamento. Il tuo piano è indicato nelle Impostazioni.",
+    "back_to_shortlist": "Torna alla shortlist"
   },
   "decision_pack": {
     "title": "XIMA Decision Pack",
