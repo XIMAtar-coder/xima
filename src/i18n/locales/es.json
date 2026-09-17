@@ -5940,7 +5940,9 @@
     "stage_l2_completed": "L2 completado",
     "stage_l3_invited": "Invitado a L3",
     "stage_offer_pending": "Fase de oferta",
-    "stage_hired": "Contratado"
+    "stage_hired": "Contratado",
+    "no_threads_hint_business": "Invitar a un candidato a un challenge no abre una conversación. Una conversación aparece aquí solo cuando un candidato de la pipeline de shortlist de un objetivo de contratación pasa a la fase \"Invitado L1\". Los candidatos se enteran de las invitaciones por email y con una notificación en la app.",
+    "no_threads_hint_candidate": "Una conversación aparece aquí cuando una empresa te hace avanzar en su pipeline de shortlist. Las invitaciones a challenges llegan por email y como notificaciones."
   },
   "businessRegistration": {
     "title": "Portal de Empresas",

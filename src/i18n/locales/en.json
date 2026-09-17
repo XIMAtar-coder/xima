@@ -6356,7 +6356,9 @@
     "stage_l2_completed": "L2 Completed",
     "stage_l3_invited": "L3 Invited",
     "stage_offer_pending": "Offer Stage",
-    "stage_hired": "Hired"
+    "stage_hired": "Hired",
+    "no_threads_hint_business": "Inviting a candidate to a challenge does not open a conversation. A conversation appears here only when a candidate in a hiring goal's shortlist pipeline is moved to the \"L1 invited\" stage. Candidates learn about challenge invitations by email and in-app notification.",
+    "no_threads_hint_candidate": "A conversation appears here when a company moves you forward in its shortlist pipeline. Challenge invitations arrive by email and as notifications."
   },
   "offers": {
     "title": "Job Offers",

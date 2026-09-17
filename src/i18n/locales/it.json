@@ -6355,7 +6355,9 @@
     "stage_l2_completed": "L2 completato",
     "stage_l3_invited": "Invito L3",
     "stage_offer_pending": "Fase offerta",
-    "stage_hired": "Assunzione"
+    "stage_hired": "Assunzione",
+    "no_threads_hint_business": "Invitare un candidato a una challenge non apre una conversazione. Una conversazione compare qui solo quando un candidato nella pipeline della shortlist di un obiettivo di assunzione passa alla fase \"Invitato L1\". I candidati vengono informati degli inviti via email e con una notifica nell'app.",
+    "no_threads_hint_candidate": "Una conversazione compare qui quando un'azienda ti fa avanzare nella sua pipeline di shortlist. Gli inviti alle challenge arrivano via email e come notifiche."
   },
   "offers": {
     "title": "Offerte di lavoro",

@@ -65,7 +65,12 @@ export const PipelineChatList: React.FC<PipelineChatListProps> = ({
           {t('pipeline_chat.no_threads', 'No active conversations')}
         </p>
         <p className="text-xs text-muted-foreground mt-1">
-          {t('pipeline_chat.no_threads_hint', 'Conversations start when you invite candidates to challenges')}
+          {/* A thread is created only by the trg_pipeline_chat DB trigger, when a
+              shortlist_results row moves to pipeline_stage 'l1_invited'. Challenge
+              invitations do not create one, so the hint must not claim they do. */}
+          {role === 'business'
+            ? t('pipeline_chat.no_threads_hint_business')
+            : t('pipeline_chat.no_threads_hint_candidate')}
         </p>
       </div>
     );
