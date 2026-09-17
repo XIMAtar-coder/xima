@@ -291,7 +291,8 @@
     "confirm": "Conferma la prenotazione",
     "welcome": "Ti diamo il benvenuto",
     "view_dashboard": "Vai alla dashboard",
-    "welcome_description": "Esplora la tua dashboard per scoprire opportunità di crescita professionale e conoscere esperti del settore."
+    "welcome_description": "Esplora la tua dashboard per scoprire opportunità di crescita professionale e conoscere esperti del settore.",
+    "no_challenges": "Nessuna sfida disponibile questa settimana. Controlla più tardi!"
   },
   "sessions": {
     "session_not_found": "Sessione non trovata",
@@ -571,7 +572,16 @@
     "loading": "Caricamento...",
     "skip_to_content": "Vai al contenuto principale",
     "dismiss": "Chiudi",
-    "edit": "Modifica"
+    "edit": "Modifica",
+    "next": "Avanti",
+    "add_tag": "Aggiungi e premi Enter...",
+    "save": "Salva",
+    "back_to_dashboard": "Torna alla dashboard",
+    "finish": "Fine",
+    "reset_to_ai": "Ripristina AI",
+    "empty": "Vuoto",
+    "start": "Inizia",
+    "complete": "Completa"
   },
   "tutorial": {
     "dont_show_again": "Non mostrare più"
@@ -1785,7 +1795,21 @@
       "reset_to_ai": "Ripristina Dati IA",
       "snapshot_saved": "Snapshot aziendale salvato con successo",
       "snapshot_save_failed": "Impossibile salvare lo snapshot aziendale",
-      "snapshot_reset": "Snapshot ripristinato ai valori estratti dall'IA"
+      "snapshot_reset": "Snapshot ripristinato ai valori estratti dall'IA",
+      "ai_profile_hint": "Modifica i campi generati dall'AI. Le tue modifiche si sovrappongono al baseline AI senza alterare il DNA dei pilastri.",
+      "matching_impact_title": "Come le tue modifiche influenzano il matching",
+      "matching_impact_desc": "Il DNA dei pilastri resta ancorato all'analisi AI. Le modifiche qui sotto influenzano come i candidati vedono la tua azienda, il punteggio di affinità culturale e i tratti comportamentali cercati nei XIMAtar.",
+      "operating_impact": "Determina il peso di Drive vs Knowledge nel matching.",
+      "communication_impact": "Influenza il peso del pilastro Communication.",
+      "dna_note": "Il DNA dei pilastri non cambia con le modifiche qui sopra. Per ricalcolarlo, usa la sezione DNA sotto.",
+      "size": "Dimensione azienda",
+      "ai_profile": "Profilo AI Editabile",
+      "summary_impact": "Visibile ai candidati nella shortlist.",
+      "values_impact": "Pesano nel calcolo del culture-fit.",
+      "traits_impact": "Filtro diretto sul matching.",
+      "dna_note_title": "Nota sul DNA dei pilastri",
+      "logo": "Logo aziendale",
+      "country": "Paese"
     },
     "legal": {
       "title": "Informazioni Legali",
@@ -1888,7 +1912,8 @@
           "title": "Attiva XIMA HR",
           "description": "Il nostro team gestisce la selezione per te con le XIMA Challenge — tu ricevi solo i finalisti"
         }
-      }
+      },
+      "profile_generated_partial": "Non siamo riusciti a leggere bene il sito — abbiamo usato i dati che hai inserito; puoi modificare il profilo."
     },
     "candidates": {
       "title": "Pool di candidati",
@@ -2293,7 +2318,13 @@
       "recommended_ximatars": "XIMAtar Consigliati",
       "recommended_ximatars_description": "Questi XIMAtar hanno maggiori probabilità di prosperare nella tua organizzazione in base al tuo profilo aziendale.",
       "alignment_score": "Indice di Allineamento",
-      "not_generated": "Non ancora generato. Clicca 'Rigenera Profilo' per analizzare il sito web della tua azienda."
+      "not_generated": "Non ancora generato. Clicca 'Rigenera Profilo' per analizzare il sito web della tua azienda.",
+      "reset_confirm": "Ripristinare il valore generato dall'AI?",
+      "reset_success": "Ripristinato il valore AI",
+      "identity_section": "Identità e dati di base",
+      "identity_hint": "Dati factuali della tua azienda. Alimentano l'analisi AI e il matching.",
+      "modified": "Modificato",
+      "field_saved": "Modifica salvata"
     },
     "hiring_goal": {
       "title": "Dimmi cosa ti serve. Creerò la tua shortlist.",
@@ -2455,7 +2486,71 @@
     "pillar_communication": "Comunicazione",
     "pillar_creativity": "Creatività",
     "seo_title": "XIMA per le aziende — Assumi sui segnali, non sui CV",
-    "seo_description": "Psicometria enterprise per le PMI. Profili comportamentali validati, challenge AI per ogni ruolo, selezione filtrata sulla compatibilità reale."
+    "seo_description": "Psicometria enterprise per le PMI. Profili comportamentali validati, challenge AI per ogni ruolo, selezione filtrata sulla compatibilità reale.",
+    "custom_l1": {
+      "per_question_breakdown": "Breakdown per domanda",
+      "ready": "Pronto per generare gli insights AI di questa risposta"
+    },
+    "logo": {
+      "too_large": "Il file è troppo grande (max 2MB)",
+      "upload_success": "Logo caricato con successo",
+      "wrong_type": "Formato non supportato (PNG, JPG, SVG, WebP)",
+      "upload_error": "Errore nel caricamento",
+      "upload": "Carica logo"
+    },
+    "how_xima": {
+      "step1_title": "1. Definisci il tuo obiettivo di assunzione",
+      "step1_desc": "Descrivi il ruolo con responsabilità, location, seniority. XIMA analizza il fit culturale con il DNA della tua azienda.",
+      "step2_desc": "Ricevi candidati ordinati per identità comportamentale (XIMAtar), traiettoria di crescita, engagement e località. Nessun nome, nessuna foto, nessun CV: solo segnali.",
+      "step3_title": "3. Pipeline a 3 livelli di sfide",
+      "step3_desc": "L1 valuta i comportamenti, L2 le competenze tecniche, L3 le capacità comunicative. I candidati vedono solo il livello successivo se sblocchi l'avanzamento.",
+      "step4_desc": "Solo quando decidi di fare un'offerta, l'identità del candidato viene rivelata. Zero bias durante tutto il processo.",
+      "subtitle": "Dal brief all'assunzione in 4 passaggi",
+      "create_goal": "Crea il tuo primo obiettivo",
+      "browse_pool": "Esplora il pool",
+      "benefit3_title": "Traiettoria di crescita",
+      "benefit3_desc": "Scegli chi sta crescendo, non solo chi è arrivato",
+      "step4_title": "4. Rivelazione identità e offerta"
+    },
+    "company": {
+      "communication_style": "Stile di Comunicazione",
+      "summary": "Riepilogo Aziendale",
+      "core_values": "Valori Fondamentali",
+      "operating_style": "Stile Operativo",
+      "ideal_candidate_traits": "Tratti Ideali del Candidato"
+    },
+    "dna": {
+      "philosophy_title": "Il DNA è identità, non preferenza",
+      "philosophy_desc": "XIMA non permette di modificare il DNA ogni giorno. Il tuo DNA rappresenta chi sei davvero come azienda. Puoi rigenerare al massimo una volta a trimestre. Tra una rigenerazione e l'altra, puoi dichiarare un \"focus strategico\" temporaneo.",
+      "lock_explanation": "Il prossimo aggiornamento del DNA sarà disponibile dopo il",
+      "reason_too_short": "Spiega in almeno 20 caratteri perché vuoi rigenerare il DNA",
+      "regenerate_title": "Rigenera il DNA aziendale",
+      "regenerate_subtitle": "Questa azione bloccherà il DNA per 90 giorni. Spiega cosa è cambiato.",
+      "warning_desc": "Una volta rigenerato, non potrai modificare il DNA per 90 giorni. Usa il \"focus strategico\" nel frattempo.",
+      "reason_placeholder": "es. Abbiamo aperto una nuova divisione AI/ML...",
+      "focus_subtitle": "Orienta temporaneamente il matching verso un pilastro specifico, senza alterare il DNA permanente.",
+      "focus_expires": "Scade il",
+      "focus_expires_hint": "Dopo questa data, il focus si disattiverà automaticamente",
+      "title": "DNA Pilastri Aziendali",
+      "last_updated": "Ultimo aggiornamento",
+      "update_focus": "Aggiorna focus strategico",
+      "set_focus": "Imposta focus strategico",
+      "regenerate": "Rigenera DNA",
+      "history": "Storico evoluzione",
+      "regenerated": "DNA rigenerato. Prossima rigenerazione disponibile tra 90 giorni.",
+      "warning_title": "Importante",
+      "reason_label": "Cosa è cambiato? (min 20 caratteri)",
+      "regenerating": "Rigenerazione...",
+      "confirm_regenerate": "Conferma e Rigenera",
+      "focus_saved": "Focus strategico salvato",
+      "focus_cleared": "Focus strategico rimosso",
+      "focus_title": "Imposta focus strategico",
+      "focus_pillar": "Pilastro da enfatizzare",
+      "focus_intensity": "Intensità del boost",
+      "subtle": "Sottile",
+      "strong": "Forte",
+      "clear_focus": "Rimuovi focus"
+    }
   },
   "not_found": {
     "title": "404 — Pagina non trovata",
@@ -4333,7 +4428,10 @@
     "xima_core_active_note": "Hai già una XIMA Core attiva. Creandone una nuova, quella esistente verrà archiviata.",
     "custom_title": "Challenge personalizzata",
     "custom_desc": "Crea una challenge specifica per il ruolo o su misura (hard skill, task, esercizi).",
-    "custom_use_cases": "Ideale per: valutazioni tecniche, simulazioni di progetto, esercizi specifici per il ruolo"
+    "custom_use_cases": "Ideale per: valutazioni tecniche, simulazioni di progetto, esercizi specifici per il ruolo",
+    "xima_core_desc_v2": "Sfida soft-skills standard generata da XIMA su obiettivo + DNA aziendale. Comparabile tra candidati. Scegli quando vuoi il benchmark canonico XIMA.",
+    "custom_desc_v2": "Stessa profondità della Core (motore AI + DNA + contesto), ma orientata dal business: scegli pilastri da enfatizzare, scenario specifico, difficoltà, lingua, durata e numero di domande.",
+    "custom_use_cases_v2": "Scegli quando hai un focus specifico (es. ruolo molto particolare o una soft-skill prioritaria). Profilo 5 pilastri sempre completo."
   },
   "challenge_builder": {
     "page_title": "Crea una challenge",
@@ -4391,7 +4489,13 @@
     "l2_needs_steps": "Servono almeno 2 step della challenge",
     "l2_needs_rubric": "Servono almeno 4 criteri di valutazione",
     "l2_needs_time": "Serve un tempo stimato",
-    "l2_needs_review_first": "Risolvi prima i problemi della generazione con l'AI"
+    "l2_needs_review_first": "Risolvi prima i problemi della generazione con l'AI",
+    "generate_first": "Genera prima la sfida",
+    "schedule_title": "Finestra di attivazione",
+    "generated_desc_l1custom": "Rivedi scenario e domande, poi attiva.",
+    "start_at": "Inizio",
+    "end_at": "Fine",
+    "activate": "Attiva sfida"
   },
   "challenges": {
     "page_title": "Challenge",
@@ -4533,6 +4637,29 @@
       "already_active_desc": "Puoi attivare una sola XIMA Core Challenge per ogni obiettivo di assunzione.",
       "activated_title": "XIMA Core attivata",
       "activated_desc": "La XIMA Core Challenge è ora attiva e pronta per i candidati."
+    },
+    "custom_l1": {
+      "candidate_intro": "Leggi lo scenario e rispondi alle domande con esempi concreti. Non c'è una risposta giusta: vogliamo capire come ragioni.",
+      "subtitle": "Stessa profondità della XIMA Core, orientata dalle tue scelte: focus pilastri, scenario specifico, difficoltà, lingua, durata e numero di domande.",
+      "params_desc": "Definisci come orientare la sfida. XIMA genererà scenario e domande coerenti con DNA azienda + obiettivo + queste preferenze.",
+      "hint_placeholder": "Es. \"Il candidato deve affrontare una negoziazione difficile con un fornitore strategico durante una scadenza ravvicinata\"…",
+      "title": "L1 Custom — Sfida soft-skills orientata",
+      "params_title": "Orientamento sfida",
+      "focus_label": "Pilastri da enfatizzare",
+      "focus_hint": "Opzionale. Tutti i 5 pilastri restano valutati; quelli scelti ricevono segnali più ricchi.",
+      "hint_label": "Spunto / contesto specifico (opzionale)",
+      "difficulty_label": "Difficoltà",
+      "diff_low": "Base",
+      "diff_mid": "Media",
+      "diff_high": "Alta",
+      "locale_label": "Lingua",
+      "duration_label": "Durata stimata",
+      "num_questions_label": "Numero domande",
+      "regenerate_btn": "Rigenera sfida",
+      "generate_btn": "Genera sfida",
+      "preview_title": "Anteprima sfida",
+      "tensions_title": "Tensioni attese",
+      "lens_title": "Evaluation lens (5 pilastri)"
     }
   },
   "notifications": {
@@ -4705,7 +4832,9 @@
       "almost_done": "Ci sei quasi!",
       "chars": "caratteri",
       "recommended": "Consigliati",
-      "add_more_detail": "Aggiungi qualche dettaglio in più"
+      "add_more_detail": "Aggiungi qualche dettaglio in più",
+      "custom_l1_desc": "Leggi lo scenario e rispondi alle domande con esempi concreti. Non c'è una risposta giusta: vogliamo capire come ragioni.",
+      "your_answers": "Le tue risposte"
     },
     "briefing": {
       "level_1_badge": "Livello 1 · Decisioni",
@@ -5207,7 +5336,39 @@
     "title": "Il tuo feed",
     "tagline": "La tua crescita professionale, uno spunto alla volta",
     "subtitle": "Aggiornamenti personalizzati, contenuti selezionati e opportunità",
-    "legend": "Solo traguardi verificati · Spunti selezionati · Privacy by design"
+    "legend": "Solo traguardi verificati · Spunti selezionati · Privacy by design",
+    "tab": {
+      "for_you": "Per te",
+      "growth": "Growth",
+      "opportunities": "Opportunità",
+      "discover": "Scopri"
+    },
+    "for_you_welcome_title": "Il tuo Feed personale",
+    "for_you_welcome_subtitle": "Il Feed raccoglie la tua storia di crescita professionale: aggiornamenti sui tuoi pilastri, sfide dalle aziende, contenuti curati per il tuo archetipo e raccomandazioni personalizzate.",
+    "complete_these": "Completa questi passaggi per arricchire il tuo Feed:",
+    "upload_cv_title": "Carica il tuo CV",
+    "upload_cv_hint": "Analizziamo il tuo CV per mostrarti tensioni tra identità e credenziali",
+    "activate_growth_title": "Attiva il Growth Hub",
+    "activate_growth_hint": "Ricevi corsi, libri e podcast su misura per far crescere i tuoi pilastri deboli",
+    "complete_profile_title": "Completa il tuo profilo",
+    "complete_profile_hint": "Aggiungi ruoli desiderati, località e preferenze per ricevere opportunità migliori",
+    "all_set": "Hai completato tutti i passaggi iniziali. Il tuo Feed si popolerà man mano che interagisci con la piattaforma.",
+    "growth_activate_title": "Attiva il tuo Growth Hub",
+    "growth_activate_subtitle": "Il Growth Hub ti offre un percorso personalizzato di corsi, libri e podcast curati dall'AI per far crescere i tuoi pilastri più deboli.",
+    "no_growth_activity": "Inizia a completare risorse nel Growth Hub per vedere i tuoi progressi qui",
+    "your_growth_path": "Il tuo percorso di crescita",
+    "no_opportunities_hint": "Completa il tuo profilo e XIMAtar per ricevere match personalizzati.",
+    "browse_all_jobs": "Esplora tutte le posizioni",
+    "matches_for_you": "Match per te",
+    "see_all_jobs": "Vedi tutte le posizioni",
+    "for_you_chip": "Per te",
+    "discover_empty_description": "Articoli curati e verificati da fonti autorevoli verranno aggiunti a breve, personalizzati per il tuo archetipo e i tuoi pilastri.",
+    "activate_growth_hub": "Attiva Growth Hub",
+    "go_to_hub": "Vai al Hub",
+    "growth_active_hint": "Growth Hub attivo — i progressi appariranno qui",
+    "no_opportunities_yet": "Nessuna opportunità al momento",
+    "latest_on_platform": "Ultime opportunità sulla piattaforma",
+    "discover_empty_title": "Contenuti in arrivo"
   },
   "settings": {
     "page_title": "Impostazioni",
@@ -6374,7 +6535,8 @@
       "experience_above": "{{value}} anni di esperienza, sopra il tuo intervallo",
       "languages_meet": "Parla le lingue richieste",
       "language_missing": "Lingua richiesta non trovata nel CV: {{value}}"
-    }
+    },
+    "create_l1_challenge": "Crea sfida L1 / XIMA Challenge"
   },
   "candidate_pool": {
     "title": "Pool di candidati",
@@ -6421,7 +6583,14 @@
     "any": "Qualsiasi",
     "now": "Subito",
     "month": "1 mese",
-    "three_months": "3 mesi"
+    "three_months": "3 mesi",
+    "sample_profile": "Profilo di esempio",
+    "pick_goal_title": "Seleziona prima un obiettivo di assunzione",
+    "pick_goal_desc": "Scegli uno dei tuoi obiettivi per inviare l'invito.",
+    "no_l1_title": "Crea prima una sfida XIMA Core",
+    "no_l1_desc": "Questo obiettivo non ha ancora una sfida XIMA Core attiva. Creala per inviare candidati.",
+    "no_l1_tag": "crea sfida XIMA Core",
+    "create_xima_core": "Crea sfida XIMA Core"
   },
   "anonymous": {
     "candidate_label": "Candidato #{{number}}",
@@ -6607,5 +6776,51 @@
         "feature9": "SSO / SAML (in arrivo)"
       }
     }
+  },
+  "hiring_goal": {
+    "created": "Obiettivo creato con successo",
+    "edit_title": "Modifica obiettivo di assunzione",
+    "create_title": "Crea un nuovo obiettivo di assunzione",
+    "edit_subtitle": "Aggiorna il brief: XIMA rigenererà la shortlist al salvataggio.",
+    "create_subtitle": "XIMA trasformerà questo brief in una shortlist intelligente di candidati per identità comportamentale.",
+    "create_and_shortlist": "Crea e Genera Shortlist",
+    "step0_subtitle": "Inizia con il titolo. XIMA userà questo come ancora per il matching.",
+    "role_summary_placeholder": "In una frase, qual è la missione di questo ruolo?",
+    "step1_title": "Quali sono le responsabilità chiave?",
+    "step1_subtitle": "Aggiungi 2-5 responsabilità e le competenze richieste.",
+    "seniority_led_others_desc": "7+ anni, esperienza di leadership",
+    "step2_title": "Livello e modalità di lavoro",
+    "step2_subtitle": "Questo influenza la difficoltà delle sfide.",
+    "work_mode": "Modalità di lavoro",
+    "step3_title": "Dove si trova il ruolo?",
+    "load_error": "Impossibile caricare l'obiettivo",
+    "creating": "Creazione...",
+    "step0_title": "Quale ruolo stai cercando?",
+    "role_title": "Titolo del ruolo",
+    "role_title_placeholder": "es. Senior Product Manager, Lead Engineer",
+    "role_summary": "Sintesi del ruolo (opzionale)",
+    "custom_placeholder": "es. Negoziare contratti enterprise",
+    "seniority_first_time": "Prima esperienza",
+    "seniority_first_time_desc": "0-2 anni, in apprendimento",
+    "seniority_independent": "Autonomo",
+    "seniority_independent_desc": "3-7 anni, lavora in autonomia",
+    "seniority_led_others": "Ha guidato altri",
+    "seniority": "Seniority",
+    "remote": "Remoto",
+    "hybrid": "Ibrido",
+    "onsite": "In sede",
+    "step3_subtitle": "Indica paese e città del ruolo.",
+    "country": "Paese",
+    "city": "Città",
+    "city_placeholder": "es. Milano",
+    "salary_range": "Range",
+    "annual": "Annuale",
+    "monthly": "Mensile",
+    "review_title": "Riepilogo",
+    "review_role": "Ruolo",
+    "review_seniority": "Seniority",
+    "review_mode": "Modalità",
+    "review_location": "Località",
+    "review_responsibilities": "Responsabilità"
   }
 }
