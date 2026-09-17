@@ -75,7 +75,9 @@ export const HeroSection: React.FC = () => {
 
   return (
     <section
-      className="relative w-full overflow-hidden"
+      // Column on mobile so the headline and call to action can come before the
+      // example visuals; on desktop the visuals are absolutely positioned.
+      className="relative w-full overflow-hidden flex flex-col lg:block"
       style={{ background: 'var(--xima-bg)', minHeight: 'calc(100vh - 76px)' }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -169,7 +171,7 @@ export const HeroSection: React.FC = () => {
       </div>
 
       {/* Mobile/tablet hero (stacked): image + radar + archetype card + carousel controls */}
-      <div className="lg:hidden w-full">
+      <div className="lg:hidden w-full order-2">
         <div className="relative w-full" style={{ height: 280 }}>
           <img
             src={typeof currentSlide.heroImage === 'string' ? currentSlide.heroImage : (currentSlide.heroImage as string)}
@@ -244,7 +246,7 @@ export const HeroSection: React.FC = () => {
 
 
       {/* Content (left) */}
-      <div className="relative max-w-[1440px] mx-auto px-6 lg:px-10 pt-10 lg:pt-20 pb-20 lg:pb-32">
+      <div className="relative order-1 w-full max-w-[1440px] mx-auto px-6 lg:px-10 pt-10 lg:pt-20 pb-8 lg:pb-32">
         <div className="lg:max-w-[560px] animate-fade-in">
           <p
             className="font-semibold uppercase mb-6"
