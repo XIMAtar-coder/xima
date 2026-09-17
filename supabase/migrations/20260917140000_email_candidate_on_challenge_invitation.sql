@@ -72,10 +72,13 @@ begin
     return new;
   end if;
 
-  select p.email, coalesce(p.preferred_lang::text, 'en'),
+  -- profiles.email is empty for every invited candidate (88 of 88 on
+  -- 2026-09-17): the address lives on the auth account. Fall back to it.
+  select coalesce(nullif(trim(p.email), ''), u.email::text), coalesce(p.preferred_lang::text, 'en'),
          coalesce(nullif(trim(p.first_name), ''), nullif(trim(p.full_name), ''), nullif(trim(p.name), ''))
     into v_email, v_lang, v_name
   from public.profiles p
+  left join auth.users u on u.id = p.user_id
   where p.id = new.candidate_profile_id;
 
   if v_email is null or position('@' in v_email) = 0 then
