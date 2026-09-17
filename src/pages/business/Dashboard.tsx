@@ -118,7 +118,7 @@ const BusinessDashboard = () => {
       let goalsMap: Record<string, string> = {};
       if (goalIds.length > 0) {
         const { data: goals } = await supabase.from('hiring_goal_drafts').select('id, role_title').in('id', goalIds);
-        if (goals) goalsMap = goals.reduce((acc, g) => ({ ...acc, [g.id]: g.role_title || 'Untitled Goal' }), {});
+        if (goals) goalsMap = goals.reduce((acc, g) => ({ ...acc, [g.id]: g.role_title || t('business.goals.untitled', 'Untitled role') }), {});
       }
       setActiveChallengesBase(challenges.map(challenge => ({
         id: challenge.id, title: challenge.title, hiring_goal_id: challenge.hiring_goal_id,
@@ -145,10 +145,11 @@ const BusinessDashboard = () => {
       const { count: candidatesCount } = await supabase.from('assessment_results').select('*', { count: 'exact', head: true });
       let shortlistedCount = 0;
       if (hiringGoalDraftId && hiringGoalStatus === 'active') {
-        const { count } = await supabase.from('business_shortlists').select('*', { count: 'exact', head: true }).eq('business_id', user?.id ?? '').eq('hiring_goal_id', hiringGoalDraftId);
+        const { count } = await supabase.from('shortlist_results').select('*', { count: 'exact', head: true }).eq('business_id', user?.id ?? '').eq('hiring_goal_id', hiringGoalDraftId);
         shortlistedCount = count || 0;
       } else {
-        const { count } = await supabase.from('business_shortlists').select('*', { count: 'exact', head: true }).eq('business_id', user?.id ?? '');
+        // business_shortlists is the legacy table; generate-shortlist writes shortlist_results.
+        const { count } = await supabase.from('shortlist_results').select('*', { count: 'exact', head: true }).eq('business_id', user?.id ?? '');
         shortlistedCount = count || 0;
       }
       const { count: activeChallengesCount } = await supabase.from('business_challenges').select('*', { count: 'exact', head: true }).eq('business_id', user?.id ?? '').gte('deadline', new Date().toISOString());
@@ -206,6 +207,18 @@ const BusinessDashboard = () => {
     } finally { setProfileLoading(false); }
   };
 
+  // "Active challenges" used to count only challenges with a future deadline;
+  // XIMA Core challenges have none, so the dashboard said 0 next to one.
+  const activeChallengesCount = activeChallengesBase.length;
+  const responsesLink = useMemo(() => {
+    if (activeChallengesBase.length !== 1) return activeChallengesBase.length > 1 ? '/business/challenges' : null;
+    const c = activeChallengesBase[0];
+    return c.hiring_goal_id
+      ? `/business/hiring-goals/${c.hiring_goal_id}/challenges/${c.id}/responses`
+      : `/business/challenges/${c.id}/responses`;
+  }, [activeChallengesBase]);
+  const hasActiveWork = activeChallengesBase.length > 0;
+
   const pendingReviewsCount = useMemo(() => activeChallengesWithStats.reduce((sum, c) => sum + c.responses_count, 0), [activeChallengesWithStats]);
   const candidatesInPipelineCount = useMemo(() => activeChallengesWithStats.reduce((sum, c) => sum + c.invited_count, 0), [activeChallengesWithStats]);
 
@@ -241,16 +254,8 @@ const BusinessDashboard = () => {
   return (
     <BusinessLayout>
       <div className="space-y-6">
-        {/* Section 1: Company Identity Card (with collapsible AI profile) */}
-        <CompanyIdentityCard
-          businessProfile={businessProfile ?? null}
-          companyProfile={companyProfile}
-          profileStatus={profileLoading ? 'loading' : 'ready'}
-          onGenerate={handleGenerateProfile}
-        />
-
         {/* Entry points card — visible only when no active hiring goal */}
-        {!hiringGoalLoading && (hiringGoalStatus === 'none' || hiringGoalStatus === 'draft') && (
+        {!hiringGoalLoading && !hasActiveWork && (hiringGoalStatus === 'none' || hiringGoalStatus === 'draft') && (
           <BusinessEntryPointsCard onXimaHrClick={() => setShowXimaHrModal(true)} />
         )}
 
@@ -266,10 +271,17 @@ const BusinessDashboard = () => {
         {/* Discovered positions from website scan */}
         <DiscoveredPositionsBanner businessId={user?.id} />
 
+        {/* Current work first: the challenge and who responded. */}
+        {/* Active Challenges Overview */}
+        <ActiveChallengesOverview 
+          challenges={activeChallengesWithStats} 
+          loading={activeChallengesLoading || statsLoading} 
+        />
+
         {/* Section 2: Hiring Pipeline */}
         <BusinessCommandCenter
           stats={{
-            activeChallenges: stats.activeChallenges,
+            activeChallenges: activeChallengesCount,
             pendingReviews: pendingReviewsCount,
             candidatesInPipeline: candidatesInPipelineCount,
             shortlisted: stats.shortlisted
@@ -277,6 +289,7 @@ const BusinessDashboard = () => {
           attentionItems={attentionItems}
           loading={loading || statsLoading}
           hiringGoalId={hiringGoalDraftId}
+          responsesLink={responsesLink}
           onImportJob={() => setShowImportModal(true)}
           onCreateChallenge={() => setContextSelectorOpen(true)}
         />
@@ -288,6 +301,14 @@ const BusinessDashboard = () => {
           onImported={() => { navigate('/business/jobs'); }}
           businessId={user?.id || ''}
           companyName={businessProfile?.company_name || ''}
+        />
+
+        {/* Section 1: Company Identity Card (with collapsible AI profile) */}
+        <CompanyIdentityCard
+          businessProfile={businessProfile ?? null}
+          companyProfile={companyProfile}
+          profileStatus={profileLoading ? 'loading' : 'ready'}
+          onGenerate={handleGenerateProfile}
         />
 
         {/* Section 3: Team Intelligence + Candidate Engagement side by side */}
@@ -302,12 +323,6 @@ const BusinessDashboard = () => {
             <CandidateEngagement />
           </div>
         </div>
-
-        {/* Active Challenges Overview */}
-        <ActiveChallengesOverview 
-          challenges={activeChallengesWithStats} 
-          loading={activeChallengesLoading || statsLoading} 
-        />
 
         {/* DEV Debug Panel */}
         {isDev && activeChallengesBase.length > 0 && (
@@ -330,7 +345,7 @@ const BusinessDashboard = () => {
         )}
 
         {/* Single CTA → Hiring Goals page */}
-        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-background">
+        <Card>
           <CardContent className="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-1">{t('businessPortal.overview_create_goal_cta')}</h3>
@@ -348,7 +363,7 @@ const BusinessDashboard = () => {
         {isDev && <RecommendationDebugPanel businessId={user?.id} hiringGoalId={hiringGoalDraftId} />}
 
         {/* How XIMA Works — interactive explainer */}
-        <HowXimaWorksExplainer />
+        {!hasActiveWork && <HowXimaWorksExplainer />}
         <ChallengeContextSelector open={contextSelectorOpen} onOpenChange={setContextSelectorOpen} />
       </div>
     </BusinessLayout>

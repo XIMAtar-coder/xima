@@ -33,6 +33,8 @@ interface CommandCenterProps {
   }[];
   loading?: boolean;
   hiringGoalId?: string | null;
+  /** Where "invited" and "responses" lead: the responses of the active challenge. */
+  responsesLink?: string | null;
   onImportJob?: () => void;
   onCreateChallenge?: () => void;
 }
@@ -42,6 +44,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
   attentionItems,
   loading = false,
   hiringGoalId,
+  responsesLink,
   onImportJob,
   onCreateChallenge,
 }) => {
@@ -64,7 +67,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
       icon: MessageSquare,
       color: 'text-amber-500',
       bgColor: 'bg-amber-500/10',
-      link: hiringGoalId ? `/business/hiring-goals/${hiringGoalId}/challenges` : '/business/challenges'
+      link: responsesLink || (hiringGoalId ? `/business/hiring-goals/${hiringGoalId}/challenges` : '/business/challenges')
     },
     {
       key: 'pipeline_candidates',
@@ -73,7 +76,8 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
       icon: Users,
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/10',
-      link: '/business/candidates'
+      // Invited candidates are waited on in the challenge, not in the pool.
+      link: responsesLink || '/business/challenges'
     },
     {
       key: 'shortlisted',

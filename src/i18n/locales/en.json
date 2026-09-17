@@ -535,7 +535,8 @@
     "login": "Log in",
     "loading": "Loading...",
     "skip_to_content": "Skip to main content",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "edit": "Edit"
   },
   "tutorial": {
     "dont_show_again": "Don't show again"

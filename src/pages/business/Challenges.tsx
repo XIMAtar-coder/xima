@@ -276,7 +276,16 @@ const BusinessChallenges = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="font-semibold text-foreground truncate">
-                          {challenge.title}
+                          {/* The title looked clickable and did nothing. */}
+                          <button
+                            type="button"
+                            className="text-left hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+                            onClick={() => navigate(challenge.hiring_goal_id
+                              ? `/business/hiring-goals/${challenge.hiring_goal_id}/challenges/${challenge.id}/responses`
+                              : `/business/challenges/${challenge.id}/responses`)}
+                          >
+                            {challenge.title}
+                          </button>
                         </h3>
                         {getStatusBadge(challenge.status)}
                       </div>
@@ -294,9 +303,21 @@ const BusinessChallenges = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
+                      {challenge.status === 'active' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => navigate(challenge.hiring_goal_id
+                            ? `/business/hiring-goals/${challenge.hiring_goal_id}/challenges/${challenge.id}/responses`
+                            : `/business/challenges/${challenge.id}/responses`)}
+                        >
+                          {t('businessPortal.challenge_view_responses')}
+                        </Button>
+                      )}
                       <Button
                         variant="ghost"
                         size="sm"
+                        aria-label={t('common.edit', 'Edit')}
                         onClick={() => navigate(`/business/challenges/${challenge.id}/edit`)}
                         disabled={actionLoading === challenge.id}
                       >

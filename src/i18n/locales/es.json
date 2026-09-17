@@ -189,7 +189,8 @@
     "login": "Iniciar sesión",
     "loading": "Cargando...",
     "skip_to_content": "Ir al contenido principal",
-    "dismiss": "Cerrar"
+    "dismiss": "Cerrar",
+    "edit": "Editar"
   },
   "nav": {
     "home": "Inicio",

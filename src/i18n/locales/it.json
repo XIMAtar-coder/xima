@@ -570,7 +570,8 @@
     "login": "Accedi",
     "loading": "Caricamento...",
     "skip_to_content": "Vai al contenuto principale",
-    "dismiss": "Chiudi"
+    "dismiss": "Chiudi",
+    "edit": "Modifica"
   },
   "tutorial": {
     "dont_show_again": "Non mostrare più"
