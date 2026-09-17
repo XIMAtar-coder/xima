@@ -120,6 +120,67 @@ Deno.serve(async (req) => {
   // Create Supabase client with service role (bypasses RLS)
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
+  // ===== AUTHORIZATION =====
+  // The gateway's verify_jwt only proves the token is well-formed (the public
+  // anon key satisfies it). Enforce here that the caller is either an internal
+  // service-role caller, or a real signed-in user sending to their OWN address.
+  const callerToken = (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '').trim()
+
+  if (callerToken !== supabaseServiceKey) {
+    if (!callerToken) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    const { data: userData, error: userError } = await supabase.auth.getUser(callerToken)
+    const callerEmail = userData?.user?.email?.toLowerCase()
+
+    if (userError || !userData?.user || !callerEmail) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    // Templates with a fixed recipient (e.g. site-owner notifications) may be
+    // triggered by any signed-in user; all others must target the caller.
+    if (!template.to && effectiveRecipient.toLowerCase() !== callerEmail) {
+      console.warn('Rejected email send to a non-self recipient', { templateName })
+      return new Response(
+        JSON.stringify({ error: 'You can only send this email to your own address' }),
+        {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      )
+    }
+
+    // Per-caller rate limit (fail-closed) — 10 sends/hour.
+    const sinceIso = new Date(Date.now() - 60 * 60 * 1000).toISOString()
+    const { count, error: rateError } = await supabase
+      .from('email_send_log')
+      .select('id', { count: 'exact', head: true })
+      .eq('recipient_email', effectiveRecipient)
+      .gte('created_at', sinceIso)
+
+    if (rateError) {
+      console.error('Rate limit check failed — refusing to send', { error: rateError })
+      return new Response(JSON.stringify({ error: 'Failed to verify rate limit' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    if ((count ?? 0) >= 10) {
+      return new Response(JSON.stringify({ error: 'Rate limit exceeded' }), {
+        status: 429,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+  }
+
   // 2. Check suppression list (fail-closed: if we can't verify, don't send)
   const { data: suppressed, error: suppressionError } = await supabase
     .from('suppressed_emails')
