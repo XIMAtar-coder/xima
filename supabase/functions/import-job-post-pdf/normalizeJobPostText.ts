@@ -908,6 +908,25 @@ export function renderHtmlFromBlocks(content: JobContentBlocks): string {
 
 // ============= MAIN PIPELINE =============
 
+/** First line of the document, cut to a plausible title. */
+export function fallbackTitleFromText(text: string): string | null {
+  const firstLine = (text || '').split(/\n/).map((l) => l.replace(/^[•\-\s]+/, '').trim()).find((l) => l.length >= 5);
+  if (!firstLine) return null;
+  // A parenthesised location usually closes the title: "Role - Area (City)".
+  const paren = firstLine.match(/^(.{5,90}?\))(?=\s|$)/);
+  if (paren) return paren[1].trim();
+  const sentence = firstLine.split(/(?<=[.!?])\s/)[0];
+  if (sentence.length <= 90) return sentence.replace(/[.!?]$/, '').trim();
+  const cut = sentence.slice(0, 90);
+  return cut.slice(0, cut.lastIndexOf(' ') > 30 ? cut.lastIndexOf(' ') : 90).trim();
+}
+
+/** Text that is really the PDF's internal code: extraction failed. */
+export function looksLikeRawPdf(text: string): boolean {
+  const head = (text || '').slice(0, 400);
+  return /^%PDF|ReportLab Generated PDF|\/F\d+ \d+ 0 R|\bendobj\b|\/Type\s*\/(Page|Catalog)/.test(head);
+}
+
 export function normalizeJobPostText(rawText: string): {
   jobPost: NormalizedJobPost;
   preview: CleanedPreview;
@@ -976,7 +995,10 @@ export function normalizeJobPostText(rawText: string): {
     }
   }
 
-  const finalTitle = title || 'Imported Job Position';
+  // "Imported Job Position" was published as the title of every post whose
+  // first line did not look like a heading (e.g. "Lead Engineer - Automotive
+  // Consultancy (Bologna) Cerchiamo un Lead Engineer..." on one line).
+  const finalTitle = title || fallbackTitleFromText(cleanedText) || 'Imported Job Position';
 
   const jobPost: NormalizedJobPost = {
     title: finalTitle,

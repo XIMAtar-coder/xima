@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { normalizeJobPostText } from "./normalizeJobPostText.ts";
+import { normalizeJobPostText, looksLikeRawPdf } from "./normalizeJobPostText.ts";
 import { 
   isValidUUID, 
   validateString, 
@@ -109,7 +109,9 @@ serve(async (req) => {
       .eq('id', importId);
 
     // Validate extracted text
-    if (!extracted_text || extracted_text.length < 50) {
+    // A post titled "% ReportLab Generated PDF document" was published because
+    // the PDF's internal code was accepted as its text.
+    if (!extracted_text || extracted_text.length < 50 || looksLikeRawPdf(extracted_text)) {
       console.error('No extracted text provided or text too short');
       await userClient
         .from('business_job_post_imports')
