@@ -5392,7 +5392,11 @@
     "open_score_influence_note": "Las respuestas abiertas pueden influir hasta un 10% en los pilares seleccionados (Creatividad, Comunicación, Conocimiento y Drive).",
     "closing_pullquote": "Un XIMAtar no es una etiqueta — es una brújula. Muestra quién eres, qué da forma a tu progreso y qué elevará tu próximo capítulo.",
     "closing_cta": "Elige a tu mentor para continuar →",
-    "open_scores_after_register": "Tus {{count}} respuestas escritas se evaluarán cuando te registres: antes no inventamos ninguna puntuación."
+    "open_scores_after_register": "Tus {{count}} respuestas escritas se evaluarán cuando te registres: antes no inventamos ninguna puntuación.",
+    "business_account_title": "Has iniciado sesión como empresa",
+    "business_account_body": "La evaluación XIMAtar es para candidatos. Las respuestas que des ahora se guardarían en la cuenta de empresa. Cierra sesión para hacerla como candidato o vuelve al panel de empresa.",
+    "business_account_dashboard": "Ir al panel de empresa",
+    "business_account_sign_out": "Cerrar sesión y continuar como candidato"
   },
   "shortlist": {
     "header_title": "Shortlist para: {{role}}",

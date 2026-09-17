@@ -39,8 +39,20 @@ export const RequireAuth: React.FC<React.PropsWithChildren<{ role?: Role }>> = (
     const next = encodeURIComponent(location.pathname + location.search);
     return <Navigate to={`${LOGIN_FOR[role]}?next=${next}`} replace />;
   }
-  if (role === 'candidate') return <>{children}</>;
+  if (role === 'candidate') return <CandidateGate>{children}</CandidateGate>;
   return <RoleGate role={role}>{children}</RoleGate>;
+};
+
+/**
+ * Candidate pages used to admit any signed-in user. A company account landing
+ * on /profile saw the candidate dashboard addressed to the company ("Welcome,
+ * niulinx srl") with an XIMAtar it never earned. Send it to its own portal.
+ */
+const CandidateGate: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const business = useBusinessRole();
+  if (business.loading) return <Waiting />;
+  if (business.isBusiness) return <Navigate to="/business/dashboard" replace />;
+  return <>{children}</>;
 };
 
 const RoleGate: React.FC<React.PropsWithChildren<{ role: Role }>> = ({ role, children }) => {

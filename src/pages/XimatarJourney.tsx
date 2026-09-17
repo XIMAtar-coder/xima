@@ -24,11 +24,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import Seo from '@/components/Seo';
+import { useBusinessRole } from '@/hooks/useBusinessRole';
 
 const XimatarJourney = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  useUser();
+  const { isAuthenticated, signOut } = useUser();
+  const { isBusiness, loading: businessRoleLoading } = useBusinessRole();
   const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
   
@@ -87,6 +89,30 @@ const XimatarJourney = () => {
   };
 
   const hasProgress = currentStep > 1 || questionIndex > 0 || Object.keys(mcAnswers).length > 0;
+
+  // The journey saves its answers to whoever is signed in. A company account
+  // that opened it (easy to do: the landing page links here) got a candidate
+  // assessment written onto the business user and was then sent to the
+  // candidate dashboard instead of registration. Stop before the first answer.
+  if (isAuthenticated && !businessRoleLoading && isBusiness) {
+    return (
+      <MainLayout>
+        <Seo title="XIMAtar Journey — XIMA" description="Your personalized assessment journey." path="/ximatar-journey" noindex />
+        <div className="mx-auto max-w-lg px-4 py-16">
+          <Card className="p-6 space-y-4">
+            <h1 className="text-xl font-semibold">{t('ximatarJourney.business_account_title')}</h1>
+            <p className="text-muted-foreground">{t('ximatarJourney.business_account_body')}</p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button onClick={() => navigate('/business/dashboard')}>{t('ximatarJourney.business_account_dashboard')}</Button>
+              <Button variant="outline" onClick={async () => { await signOut(); navigate('/ximatar-journey', { replace: true }); }}>
+                {t('ximatarJourney.business_account_sign_out')}
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>

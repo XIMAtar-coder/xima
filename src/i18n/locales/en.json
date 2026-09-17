@@ -5965,7 +5965,11 @@
     "open_score_influence_note": "Open answers can influence up to 10% of selected pillars (Creativity, Communication, Knowledge, and Drive).",
     "closing_pullquote": "A XIMAtar is not a label — it is a compass. It shows who you are, what shapes your progress, and what will elevate your next chapter.",
     "closing_cta": "Choose your mentor to continue →",
-    "open_scores_after_register": "Your {{count}} written answers will be scored once you register — we don't guess at a number before then."
+    "open_scores_after_register": "Your {{count}} written answers will be scored once you register — we don't guess at a number before then.",
+    "business_account_title": "You're signed in as a company",
+    "business_account_body": "The XIMAtar assessment is for candidates. Answers given now would be saved on your company account. Sign out to take it as a candidate, or go back to your company dashboard.",
+    "business_account_dashboard": "Go to company dashboard",
+    "business_account_sign_out": "Sign out and continue as candidate"
   },
   "profile_completion": {
     "title": "Complete your profile for better matches",
