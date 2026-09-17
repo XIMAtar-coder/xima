@@ -463,16 +463,17 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
   const baseKey = `assessmentSets.${assessmentSetKey}`;
   
   return (
-    <div className="space-y-6">
-      <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold">{t(`${baseKey}.title`)}</h2>
-        <p className="text-muted-foreground">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="text-center space-y-2 sm:space-y-4">
+        <h2 className="text-lg sm:text-3xl font-bold">{t(`${baseKey}.title`)}</h2>
+        {/* The set subtitle is context, not needed on every question on a phone. */}
+        <p className={`text-muted-foreground ${currentQuestion > 0 ? 'hidden sm:block' : ''}`}>
           {t(`${baseKey}.subtitle`)}
         </p>
         
-        <div className="space-y-2">
+        <div className="space-y-1 sm:space-y-2">
           <Progress value={progress} className="h-2" />
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             {t('assessment.question')} {currentQuestion + 1} {t('assessment.of')} {totalQuestions}
           </p>
         </div>
@@ -499,7 +500,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
         </Card>
       )}
 
-      <Card className="p-5 sm:p-8">
+      <Card className="p-4 sm:p-8">
         {currentMultipleChoice && (
           <div className="space-y-6">
             <div className="space-y-3">
@@ -513,7 +514,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
                   categoryLabel={t(`${baseKey}.questions.${currentMultipleChoice.key}.category`)}
                 />
               </div>
-              <h3 className="text-xl font-medium">
+              <h3 className="text-lg sm:text-xl font-medium">
                 {t(`${baseKey}.questions.${currentMultipleChoice.key}.question`)}
               </h3>
             </div>
@@ -572,7 +573,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
                   openFallbackCategory="creativity"
                 />
               </div>
-              <h3 className="text-xl font-medium">
+              <h3 className="text-lg sm:text-xl font-medium">
                 {t(`${baseKey}.questions.${currentOpenQuestion.key}.question`)}
               </h3>
             </div>

@@ -88,6 +88,8 @@ const XimatarJourney = () => {
     }
   };
 
+  const answering = currentStep === 2;
+
   const hasProgress = currentStep > 1 || questionIndex > 0 || Object.keys(mcAnswers).length > 0;
 
   // The journey saves its answers to whoever is signed in. A company account
@@ -139,20 +141,25 @@ const XimatarJourney = () => {
       </AlertDialog>
 
       <div className="container max-w-5xl mx-auto pt-4 px-4 sm:px-6 watermark-bg overflow-x-hidden">
-        <div className="text-center mb-8 relative z-10">
+        {/* While answering, narrow screens get a compact header: logo and
+            subtitle hide, the title shrinks, so the question starts near the
+            top. The step indicator and the question progress bar stay. */}
+        <div className={`text-center relative z-10 ${answering ? 'mb-4 sm:mb-8' : 'mb-8'}`}>
           <Logo 
             variant="full"
             alt="XIMA Logo" 
-            className="h-14 w-auto mx-auto mb-4 logo-hover"
+            className={`h-14 w-auto mx-auto mb-4 logo-hover ${answering ? 'hidden sm:block' : ''}`}
           />
-          <h1 className="text-4xl font-bold mb-2 font-heading">{t('ximatarJourney.page_title')}</h1>
-          <p className="text-muted-foreground text-lg">
+          <h1 className={`font-bold font-heading ${answering ? 'text-xl sm:text-4xl mb-0 sm:mb-2' : 'text-3xl sm:text-4xl mb-2'}`}>
+            {t('ximatarJourney.page_title')}
+          </h1>
+          <p className={`text-muted-foreground text-lg ${answering ? 'hidden sm:block' : ''}`}>
             {t('ximatarJourney.page_subtitle')}
           </p>
         </div>
         
         {/* Progress Steps */}
-        <div className="mb-8">
+        <div className={answering ? 'mb-4 sm:mb-8' : 'mb-8'}>
           <div className="flex justify-between items-start relative gap-2">
             {steps.map((step, index) => (
               <div key={step.number} className="flex flex-col items-center z-10 relative flex-1 min-w-0">
@@ -168,7 +175,7 @@ const XimatarJourney = () => {
                   {currentStep > step.number ? <Check size={20} /> : step.icon}
                 </div>
                 <span 
-                  className={`text-xs sm:text-sm mt-2 text-center break-words
+                  className={`text-xs sm:text-sm mt-2 text-center break-words ${answering ? 'hidden sm:block' : ''}
                     ${currentStep === step.number 
                       ? 'text-primary font-medium' 
                       : currentStep > step.number
@@ -192,7 +199,7 @@ const XimatarJourney = () => {
           </div>
         </div>
         
-        <Card className="p-5 sm:p-8 shadow-lg border-0">
+        <Card className={`${answering ? 'p-3' : 'p-5'} sm:p-8 shadow-lg border-0`}>
           {currentStep === 1 && (
             <BaselineAssessment 
               onComplete={handleStepComplete}
