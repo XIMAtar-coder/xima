@@ -89,6 +89,9 @@ export const useBusinessEntitlements = () => {
 
   const isEnterprise = entitlements?.planTier === 'enterprise';
   const isGrowthOrAbove = entitlements?.planTier === 'growth' || isEnterprise;
+  // No entitlements row, or the starter tier, is the free plan. This is the
+  // same rule the shortlist limit applies (anything below growth is locked).
+  const isFreePlan = !isGrowthOrAbove;
   const isContractActive = entitlements?.contractEnd
     ? new Date(entitlements.contractEnd) >= new Date()
     : true;
@@ -100,6 +103,8 @@ export const useBusinessEntitlements = () => {
     isEnterprise,
     isGrowthOrAbove,
     isContractActive,
+    isFreePlan,
+    hasPlanRecord: !!entitlements,
     planTier: entitlements?.planTier ?? 'starter',
   };
 };

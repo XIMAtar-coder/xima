@@ -5928,7 +5928,9 @@
     "evaluations_invited_on": "Invited {{date}}",
     "evaluations_review": "Review",
     "evaluations_open_review": "Open review",
-    "evaluations_view_challenge": "View challenge"
+    "evaluations_view_challenge": "View challenge",
+    "settings_plan_free": "Free",
+    "settings_plan_free_subtitle": "You are on the free plan. The features below show what a paid plan adds."
   },
   "ximatarJourney": {
     "page_title": "Your XIMAtar Journey",
@@ -6103,7 +6105,7 @@
       "technology": "Technology & Software",
       "finance": "Finance & Banking",
       "consulting": "Consulting",
-      "manufacturing": "Manufacturing & Engineering",
+      "manufacturing": "Manufacturing",
       "automotive": "Automotive & Mobility",
       "energy": "Energy & Sustainability",
       "healthcare": "Healthcare & Pharma",
@@ -6114,7 +6116,8 @@
       "real_estate": "Real Estate & Construction",
       "nonprofit": "Non-profit & NGO",
       "government": "Government & Public Sector",
-      "other": "Other"
+      "other": "Other",
+      "engineering": "Engineering"
     },
     "stages": {
       "startup": "Startup",

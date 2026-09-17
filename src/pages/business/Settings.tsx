@@ -19,6 +19,7 @@ import CompanyLegalSettings from '@/components/business/CompanyLegalSettings';
 import { ProfilingOptOutSection } from '@/components/settings/ProfilingOptOutSection';
 import { AccountDeletionSection } from '@/components/settings/AccountDeletionSection';
 import { BusinessPlanCard } from '@/components/business/BusinessPlanCard';
+import { INDUSTRIES, industryLabelKey, isKnownIndustry, normalizeIndustry } from '@/lib/business/industries';
 import { LogoUploader } from '@/components/business/LogoUploader';
 import { toast as sonnerToast } from 'sonner';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -628,7 +629,7 @@ const BusinessSettings = () => {
         defaultChallengeDifficulty: sharedProfile.default_challenge_difficulty || 3,
         manual_hq_city: sharedProfile.manual_hq_city || sharedProfile.snapshot_hq_city || '',
         manual_hq_country: sharedProfile.manual_hq_country || sharedProfile.snapshot_hq_country || '',
-        manual_industry: sharedProfile.manual_industry || sharedProfile.snapshot_industry || '',
+        manual_industry: normalizeIndustry(sharedProfile.manual_industry || sharedProfile.snapshot_industry),
         manual_employees_count: (sharedProfile.manual_employees_count || sharedProfile.snapshot_employees_count || '').toString(),
         manual_revenue_range: sharedProfile.manual_revenue_range || sharedProfile.snapshot_revenue_range || '',
         manual_founded_year: (sharedProfile.manual_founded_year || sharedProfile.snapshot_founded_year || '').toString(),
@@ -724,15 +725,14 @@ const BusinessSettings = () => {
                   <select value={formData.manual_industry} onChange={(e) => setFormData({ ...formData, manual_industry: e.target.value })}
                     className={inputClass}>
                     <option value="">—</option>
-                    <option value="technology">{t('business.industry.technology', 'Tecnologia')}</option>
-                    <option value="engineering">{t('business.industry.engineering', 'Ingegneria')}</option>
-                    <option value="finance">{t('business.industry.finance', 'Finanza')}</option>
-                    <option value="consulting">{t('business.industry.consulting', 'Consulenza')}</option>
-                    <option value="healthcare">{t('business.industry.healthcare', 'Sanità')}</option>
-                    <option value="manufacturing">{t('business.industry.manufacturing', 'Manifatturiero')}</option>
-                    <option value="retail">{t('business.industry.retail', 'Retail')}</option>
-                    <option value="education">{t('business.industry.education', 'Educazione')}</option>
-                    <option value="other">{t('business.industry.other', 'Altro')}</option>
+                    {/* A stored value outside the shared list (older data, AI snapshot) is
+                        shown as-is so saving does not silently wipe it. */}
+                    {formData.manual_industry && !isKnownIndustry(formData.manual_industry) && (
+                      <option value={formData.manual_industry}>{formData.manual_industry}</option>
+                    )}
+                    {INDUSTRIES.map((ind) => (
+                      <option key={ind} value={ind}>{t(industryLabelKey(ind), ind)}</option>
+                    ))}
                   </select>
                 </FormField>
                 <FormField label={t('business.settings.size', 'Dimensione azienda')}>

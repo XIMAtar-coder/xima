@@ -5355,7 +5355,9 @@
     "evaluations_invited_on": "Invitado el {{date}}",
     "evaluations_review": "Evaluar",
     "evaluations_open_review": "Abrir evaluación",
-    "evaluations_view_challenge": "Ver challenge"
+    "evaluations_view_challenge": "Ver challenge",
+    "settings_plan_free": "Gratuito",
+    "settings_plan_free_subtitle": "Estás en el plan gratuito. Las funciones de abajo muestran lo que añade un plan de pago."
   },
   "ximatarJourney": {
     "page_title": "Tu recorrido XIMAtar",
@@ -5974,7 +5976,7 @@
       "technology": "Tecnología y software",
       "finance": "Finanzas y banca",
       "consulting": "Consultoría",
-      "manufacturing": "Industria e ingeniería",
+      "manufacturing": "Industria manufacturera",
       "automotive": "Automoción y movilidad",
       "energy": "Energía y sostenibilidad",
       "healthcare": "Salud y farmacéutica",
@@ -5985,7 +5987,8 @@
       "real_estate": "Inmobiliaria y construcción",
       "nonprofit": "Sin ánimo de lucro y ONG",
       "government": "Administración pública",
-      "other": "Otro"
+      "other": "Otro",
+      "engineering": "Ingeniería"
     },
     "stages": {
       "startup": "Startup",

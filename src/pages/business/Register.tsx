@@ -14,13 +14,7 @@ import { recordUserConsents } from '@/hooks/useConsentRecording';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { log } from '@/lib/log';
-
-const INDUSTRIES = [
-  'technology', 'finance', 'consulting', 'manufacturing',
-  'automotive', 'energy', 'healthcare', 'education',
-  'media', 'retail', 'food', 'real_estate',
-  'nonprofit', 'government', 'other',
-] as const;
+import { INDUSTRIES, industryLabelKey } from '@/lib/business/industries';
 
 const COMPANY_SIZES = ['1-10', '11-50', '51-200', '201-1000', '1000+'] as const;
 
@@ -257,7 +251,7 @@ const BusinessRegister = () => {
                   <SelectContent>
                     {INDUSTRIES.map(ind => (
                       <SelectItem key={ind} value={ind}>
-                        {t(`businessRegistration.industries.${ind}`, ind)}
+                        {t(industryLabelKey(ind), ind)}
                       </SelectItem>
                     ))}
                   </SelectContent>
