@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { scoreOpenResponse, type FieldKey } from '@/lib/scoring/openResponse';
 import { getPillarForQuestion, getQuestionIdsByPillar, type PillarKey } from '@/lib/assessment/getPillarForQuestion';
@@ -14,6 +14,7 @@ import { useAssessment } from '@/context/AssessmentContext';
 import QuestionExample from '@/components/QuestionExample';
 import { selectArchetypeFromAssessmentPillars } from '@/lib/ximatarTaxonomy';
 import { log } from '@/lib/log';
+import { ASSESSMENT_MC_COUNT, ASSESSMENT_OPEN_COUNT, ASSESSMENT_ESTIMATED_MINUTES, OPEN_ANSWER_MIN_CHARS } from './assessmentShape';
 
 interface XimatarAssessmentProps {
   onComplete: (step: number) => void;
@@ -26,6 +27,8 @@ interface XimatarAssessmentProps {
   onMcAnswerChange?: (questionId: number, answerIndex: number) => void;
   onOpenAnswerChange?: (questionId: string, answer: string) => void;
   onGoBack?: () => void;
+  /** True when the CV step just produced an analysis; the intro then confirms it. */
+  cvAnalysed?: boolean;
 }
 
 const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ 
@@ -38,6 +41,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
   onMcAnswerChange,
   onOpenAnswerChange,
   onGoBack,
+  cvAnalysed = false,
 }) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
@@ -433,13 +437,24 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
     }, 500);
   };
 
+  // Written answers need OPEN_ANSWER_MIN_CHARS characters, as the placeholder
+  // has always said. Validation used to accept a single character.
+  const openAnswerLength = (id: string) => (openAnswers[id] || '').trim().length;
+  const isOpenAnswerLongEnough = (id: string) => openAnswerLength(id) >= OPEN_ANSWER_MIN_CHARS;
+
   const canProceed = () => {
     if (currentQuestion < questions.length) {
       return answers[questions[currentQuestion].id] !== undefined;
     }
     const openQ = openQuestions[currentQuestion - questions.length];
-    return openAnswers[openQ.id]?.trim().length > 0;
+    return isOpenAnswerLongEnough(openQ.id);
   };
+
+  // An earlier written answer can be too short if it was saved before the
+  // minimum was enforced; completing must not submit it as it is.
+  const shortEarlierOpenAnswerIndex = openQuestions.findIndex(
+    (q, i) => questions.length + i < currentQuestion && !isOpenAnswerLongEnough(q.id)
+  );
 
   const isOpenQuestion = currentQuestion >= questions.length;
   const currentOpenQuestion = isOpenQuestion ? openQuestions[currentQuestion - questions.length] : null;
@@ -448,22 +463,44 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
   const baseKey = `assessmentSets.${assessmentSetKey}`;
   
   return (
-    <div className="space-y-6">
-      <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold">{t(`${baseKey}.title`)}</h2>
-        <p className="text-muted-foreground">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="text-center space-y-2 sm:space-y-4">
+        <h2 className="text-lg sm:text-3xl font-bold">{t(`${baseKey}.title`)}</h2>
+        {/* The set subtitle is context, not needed on every question on a phone. */}
+        <p className={`text-muted-foreground ${currentQuestion > 0 ? 'hidden sm:block' : ''}`}>
           {t(`${baseKey}.subtitle`)}
         </p>
         
-        <div className="space-y-2">
+        <div className="space-y-1 sm:space-y-2">
           <Progress value={progress} className="h-2" />
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             {t('assessment.question')} {currentQuestion + 1} {t('assessment.of')} {totalQuestions}
           </p>
         </div>
       </div>
 
-      <Card className="p-5 sm:p-8">
+      {/* Start of the questionnaire: confirms the CV step (when there was one)
+          and says what is ahead. This replaces a separate "baseline complete"
+          screen that cost a click and read as if everything was done. */}
+      {currentQuestion === 0 && (
+        <Card className="p-4 sm:p-5 border-primary/20 bg-primary/5">
+          {cvAnalysed && (
+            <p className="mb-1 flex items-center gap-2 text-sm font-medium text-green-700 dark:text-green-400">
+              <CheckCircle2 size={16} className="shrink-0" />
+              {t('assessment.intro_cv_done')}
+            </p>
+          )}
+          <p className="text-sm text-foreground">
+            {t('assessment.intro_whats_next', {
+              mc: ASSESSMENT_MC_COUNT,
+              open: ASSESSMENT_OPEN_COUNT,
+              minutes: ASSESSMENT_ESTIMATED_MINUTES,
+            })}
+          </p>
+        </Card>
+      )}
+
+      <Card className="p-4 sm:p-8">
         {currentMultipleChoice && (
           <div className="space-y-6">
             <div className="space-y-3">
@@ -477,7 +514,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
                   categoryLabel={t(`${baseKey}.questions.${currentMultipleChoice.key}.category`)}
                 />
               </div>
-              <h3 className="text-xl font-medium">
+              <h3 className="text-lg sm:text-xl font-medium">
                 {t(`${baseKey}.questions.${currentMultipleChoice.key}.question`)}
               </h3>
             </div>
@@ -526,7 +563,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
         {currentOpenQuestion && (
           <div className="space-y-6">
             <div className="space-y-3">
-              <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
                 <div className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full text-sm font-medium">
                   {t('assessment.open_question')} {currentQuestion - questions.length + 1}
                 </div>
@@ -536,17 +573,48 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
                   openFallbackCategory="creativity"
                 />
               </div>
-              <h3 className="text-xl font-medium">
+              <h3 className="text-lg sm:text-xl font-medium">
                 {t(`${baseKey}.questions.${currentOpenQuestion.key}.question`)}
               </h3>
             </div>
             
-            <Textarea
-              placeholder={t('assessment.placeholder')}
-              value={openAnswers[currentOpenQuestion.id] || ''}
-              onChange={(e) => handleOpenAnswerChange(currentOpenQuestion.id, e.target.value)}
-              className="min-h-[150px] resize-none"
-            />
+            <div className="space-y-2">
+              {/* The shared Textarea is styled for dark surfaces (10% white
+                  border), which vanished on the light theme. Give this one a
+                  border that reads on both. */}
+              <Textarea
+                id={`open-answer-${currentOpenQuestion.id}`}
+                aria-describedby={`open-answer-${currentOpenQuestion.id}-count`}
+                placeholder={t('assessment.placeholder')}
+                value={openAnswers[currentOpenQuestion.id] || ''}
+                onChange={(e) => handleOpenAnswerChange(currentOpenQuestion.id, e.target.value)}
+                className="min-h-[150px] resize-none border-2 border-foreground/30 bg-background placeholder:text-muted-foreground"
+              />
+              <div
+                id={`open-answer-${currentOpenQuestion.id}-count`}
+                className="flex items-center justify-between gap-3 text-sm"
+                aria-live="polite"
+              >
+                <span className={isOpenAnswerLongEnough(currentOpenQuestion.id) ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground'}>
+                  {isOpenAnswerLongEnough(currentOpenQuestion.id)
+                    ? t('assessment.open_min_reached')
+                    : t('assessment.open_min_required', { count: OPEN_ANSWER_MIN_CHARS })}
+                </span>
+                <span
+                  className={`tabular-nums font-medium ${isOpenAnswerLongEnough(currentOpenQuestion.id) ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground'}`}
+                >
+                  {openAnswerLength(currentOpenQuestion.id)}/{OPEN_ANSWER_MIN_CHARS}
+                </span>
+              </div>
+              {currentQuestion === totalQuestions - 1 && shortEarlierOpenAnswerIndex !== -1 && (
+                <p className="text-sm text-destructive" role="alert">
+                  {t('assessment.open_earlier_too_short', {
+                    number: shortEarlierOpenAnswerIndex + 1,
+                    count: OPEN_ANSWER_MIN_CHARS,
+                  })}
+                </p>
+              )}
+            </div>
             
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
               <div className="flex items-center gap-4">
@@ -558,15 +626,12 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
                   <ArrowLeft size={16} />
                   {t('journey.back', 'Back')}
                 </Button>
-                <p className="text-sm text-muted-foreground">
-                  {openAnswers[currentOpenQuestion.id]?.length || 0} {t('assessment.characters')}
-                </p>
               </div>
 
               {currentQuestion === totalQuestions - 1 ? (
                 <Button
                   onClick={handleComplete}
-                  disabled={!canProceed() || isCompleting}
+                  disabled={!canProceed() || shortEarlierOpenAnswerIndex !== -1 || isCompleting}
                   className="w-full sm:w-auto bg-primary hover:bg-primary/90"
                 >
                   {isCompleting ? (

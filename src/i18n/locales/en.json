@@ -681,7 +681,7 @@
   "open_scoring": {
     "title": "Open Question Scores",
     "why": "Why this score?",
-    "consider_elaborating": "Consider elaborating more for higher scores (minimum 50 words recommended).",
+    "consider_elaborating": "Consider elaborating more for higher scores: 50 characters is the minimum, but fuller answers score better.",
     "rubric_breakdown": "Score Breakdown",
     "expert_insight": "Your Personalized Feedback",
     "suggestions": "Tips to Improve",
@@ -969,7 +969,22 @@
     "processing": "Processing...",
     "complete_title": "Baseline Assessment Complete!",
     "complete_text": "Your CV has been analyzed and your baseline profile is ready. Let's now create your complete Ximatar through our comprehensive assessment.",
-    "continue_assessment": "Continue to Ximatar Assessment"
+    "continue_assessment": "Continue to Ximatar Assessment",
+    "field_required_note": "Required: your field decides which questions you get.",
+    "field_required_error": "Choose your field first: it decides which questions you get.",
+    "upload_cv_optional": "Upload your CV (optional)",
+    "cv_duration_hint": "The analysis takes about a minute.",
+    "continue_without_cv": "Continue without CV",
+    "cv_stage_reading": "Reading your document",
+    "cv_stage_experience": "Extracting your experience",
+    "cv_stage_pillars": "Mapping it to the five pillars",
+    "cv_stage_finalizing": "Finalizing your analysis",
+    "cv_slow": "This is taking longer than usual. You can keep waiting, try again, or cancel and continue without your CV.",
+    "cv_retry": "Try again",
+    "cv_cancel": "Cancel upload",
+    "cv_done_title": "CV step done",
+    "cv_done_next": "Next is the questionnaire: {{mc}} multiple-choice questions and {{open}} written answers, about {{minutes}} minutes.",
+    "start_questionnaire": "Start the questionnaire"
   },
   "assessment": {
     "title": "Create Your Ximatar",
@@ -999,7 +1014,12 @@
         "knowledge": "Example: to learn a new domain, you map key players and reliable sources, read guidelines, and synthesize notes to share.",
         "creativity": "Example: you generate 10 quick drafts, select 2 options, run a small user test, and iterate on the best one.",
         "drive": "Example: you define weekly goals, track progress, and ask for feedback to unblock bottlenecks."
-      }
+      },
+      "general_title": "About {{category}} questions",
+      "general_title_plain": "General example",
+      "general_note": "A general illustration of this category. It does not describe the answer options below.",
+      "watch_video": "Watch the example video",
+      "open_link": "Open the link"
     },
     "questions": {
       "q1": {
@@ -1218,7 +1238,12 @@
       "open2": {
         "question": "What is your biggest professional challenge or area where you'd like to grow? How do you plan to address it?"
       }
-    }
+    },
+    "intro_cv_done": "CV analysed. That step is done.",
+    "intro_whats_next": "Now the questionnaire: {{mc}} multiple-choice questions, then {{open}} written answers. About {{minutes}} minutes; your progress is saved as you go.",
+    "open_min_required": "Minimum {{count}} characters",
+    "open_min_reached": "Minimum reached. More detail helps your score.",
+    "open_earlier_too_short": "Your answer to written question {{number}} is under {{count}} characters. Go back and add a little more."
   },
   "dashboard": {
     "page_label": "DASHBOARD",
@@ -1476,7 +1501,11 @@
     "consentRequired": "You must accept both the Privacy Policy and Terms of Service to continue.",
     "consent_error_title": "Registration Error",
     "consent_error_desc": "Failed to record your consent. Please try registering again.",
-    "assessment_synced": "Your assessment data has been saved to your profile"
+    "assessment_synced": "Your assessment data has been saved to your profile",
+    "or_with_email": "or sign up with email",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "password_requirement": "At least {{count}} characters"
   },
   "legal": {
     "privacyPolicy": "Privacy Policy",
@@ -5957,7 +5986,7 @@
     "open_scores_title": "Open Question Scores",
     "open_question_label": "Open Question",
     "open_score_why": "Why this score? ↑",
-    "open_score_improve_tip": "Consider elaborating more for higher scores (minimum 50 words recommended).",
+    "open_score_improve_tip": "Consider elaborating more for higher scores: 50 characters is the minimum, but fuller answers score better.",
     "open_score_breakdown_label": "Score Breakdown",
     "open_score_clarity": "Clarity",
     "open_score_depth": "Depth",
@@ -5971,7 +6000,13 @@
     "business_account_title": "You're signed in as a company",
     "business_account_body": "The XIMAtar assessment is for candidates. Answers given now would be saved on your company account. Sign out to take it as a candidate, or go back to your company dashboard.",
     "business_account_dashboard": "Go to company dashboard",
-    "business_account_sign_out": "Sign out and continue as candidate"
+    "business_account_sign_out": "Sign out and continue as candidate",
+    "mentor_optional_hint": "Optional: pick a mentor now, or do it later from your dashboard.",
+    "mentor_choose_later": "No mentor yet? You can choose one later.",
+    "mentor_match_explained": "The match % estimates fit: it rises when a mentor's focus pillars cover your strongest and weakest pillars and suit your XIMAtar, plus their rating. It is a guide, not a grade.",
+    "register_value_saved": "A free account saves your XIMAtar, your five pillar scores and your written answers.",
+    "register_value_saved_with_cv": "A free account saves your XIMAtar, your five pillar scores, your CV analysis and your written answers.",
+    "register_value_next": "Then companies can send you challenges, and you can book a session with a mentor."
   },
   "profile_completion": {
     "title": "Complete your profile for better matches",

@@ -808,7 +808,22 @@
     "processing": "Elaborazione in corso...",
     "complete_title": "Assessment di base completato!",
     "complete_text": "Il tuo CV è stato analizzato e il tuo profilo di base è pronto. Ora creiamo il tuo XIMAtar completo con l'assessment approfondito.",
-    "continue_assessment": "Continua con l'assessment XIMAtar"
+    "continue_assessment": "Continua con l'assessment XIMAtar",
+    "field_required_note": "Obbligatorio: il tuo ambito decide quali domande riceverai.",
+    "field_required_error": "Prima scegli il tuo ambito: decide quali domande riceverai.",
+    "upload_cv_optional": "Carica il tuo CV (facoltativo)",
+    "cv_duration_hint": "L'analisi richiede circa un minuto.",
+    "continue_without_cv": "Continua senza CV",
+    "cv_stage_reading": "Lettura del documento",
+    "cv_stage_experience": "Estrazione delle esperienze",
+    "cv_stage_pillars": "Collegamento ai cinque pilastri",
+    "cv_stage_finalizing": "Ultimi ritocchi all'analisi",
+    "cv_slow": "Ci sta mettendo più del solito. Puoi aspettare ancora, riprovare oppure annullare e continuare senza CV.",
+    "cv_retry": "Riprova",
+    "cv_cancel": "Annulla caricamento",
+    "cv_done_title": "Passaggio del CV completato",
+    "cv_done_next": "Ora il questionario: {{mc}} domande a risposta multipla e {{open}} risposte aperte, circa {{minutes}} minuti.",
+    "start_questionnaire": "Inizia il questionario"
   },
   "assessment": {
     "title": "Crea il tuo Ximatar",
@@ -838,7 +853,12 @@
         "knowledge": "Esempio: per imparare un nuovo dominio, mappi attori chiave e fonti affidabili, leggi le linee guida e sintetizzi il tutto in note da condividere.",
         "creativity": "Esempio: generi 10 bozze rapide, selezioni 2 opzioni, fai un piccolo test con gli utenti e iteri sulla migliore.",
         "drive": "Esempio: definisci obiettivi settimanali, monitori i progressi e chiedi feedback per sbloccare i colli di bottiglia."
-      }
+      },
+      "general_title": "Sulle domande di {{category}}",
+      "general_title_plain": "Esempio generale",
+      "general_note": "Un'illustrazione generale di questa categoria. Non descrive le risposte qui sotto.",
+      "watch_video": "Guarda il video di esempio",
+      "open_link": "Apri il link"
     },
     "questions": {
       "q1": {
@@ -1057,7 +1077,12 @@
       "open2": {
         "question": "Qual è la tua sfida professionale più grande, o l'area in cui vorresti crescere? Come pensi di affrontarla?"
       }
-    }
+    },
+    "intro_cv_done": "CV analizzato: questo passaggio è completato.",
+    "intro_whats_next": "Ora il questionario: {{mc}} domande a risposta multipla, poi {{open}} risposte aperte. Circa {{minutes}} minuti; i progressi vengono salvati mentre procedi.",
+    "open_min_required": "Minimo {{count}} caratteri",
+    "open_min_reached": "Minimo raggiunto. Più dettagli aiutano il punteggio.",
+    "open_earlier_too_short": "La tua risposta alla domanda aperta {{number}} ha meno di {{count}} caratteri. Torna indietro e aggiungi qualcosa."
   },
   "results": {
     "title": "I tuoi risultati",
@@ -1281,7 +1306,7 @@
       "action": "Analisi"
     },
     "note": "Le risposte aperte possono incidere fino al 10% sui pilastri selezionati (Creatività, Comunicazione, Conoscenza e Drive).",
-    "consider_elaborating": "Prova ad approfondire di più per ottenere punteggi più alti (consigliate almeno 50 parole).",
+    "consider_elaborating": "Prova ad approfondire di più per ottenere punteggi più alti: il minimo è 50 caratteri, ma le risposte più complete ottengono di più.",
     "expert_insight": "Il tuo feedback personalizzato",
     "suggestions": "Consigli per migliorare",
     "compared_to_peers": "A confronto con {{count}} professionisti del tuo settore",
@@ -1476,7 +1501,11 @@
     "acceptTerms": "Accetto i",
     "consentRequired": "Per continuare devi accettare sia l'Informativa sulla privacy che i Termini di servizio.",
     "consent_error_title": "Errore di registrazione",
-    "consent_error_desc": "Non siamo riusciti a registrare il tuo consenso. Prova a registrarti di nuovo."
+    "consent_error_desc": "Non siamo riusciti a registrare il tuo consenso. Prova a registrarti di nuovo.",
+    "or_with_email": "oppure registrati con l'email",
+    "show_password": "Mostra password",
+    "hide_password": "Nascondi password",
+    "password_requirement": "Almeno {{count}} caratteri"
   },
   "legal": {
     "privacyPolicy": "Informativa sulla privacy",
@@ -5956,7 +5985,7 @@
     "open_scores_title": "Punteggi delle risposte aperte",
     "open_question_label": "Domanda aperta",
     "open_score_why": "Perché questo punteggio? ↑",
-    "open_score_improve_tip": "Per un punteggio più alto, sviluppa di più la risposta (consigliate almeno 50 parole).",
+    "open_score_improve_tip": "Per un punteggio più alto, sviluppa di più la risposta: il minimo è 50 caratteri, ma le risposte più complete ottengono di più.",
     "open_score_breakdown_label": "Dettaglio del punteggio",
     "open_score_clarity": "Chiarezza",
     "open_score_depth": "Profondità",
@@ -5970,7 +5999,13 @@
     "business_account_title": "Hai effettuato l'accesso come azienda",
     "business_account_body": "L'assessment XIMAtar è per i candidati. Le risposte date ora verrebbero salvate sull'account aziendale. Esci per farlo come candidato, oppure torna alla dashboard aziendale.",
     "business_account_dashboard": "Vai alla dashboard aziendale",
-    "business_account_sign_out": "Esci e continua come candidato"
+    "business_account_sign_out": "Esci e continua come candidato",
+    "mentor_optional_hint": "Facoltativo: scegli un mentor ora oppure più tardi dalla dashboard.",
+    "mentor_choose_later": "Nessun mentor per ora? Potrai sceglierlo più tardi.",
+    "mentor_match_explained": "La % di compatibilità è una stima: sale quando i pilastri su cui lavora il mentor coprono il tuo pilastro più forte e quello più debole e si adattano al tuo XIMAtar, più la sua valutazione. È un'indicazione, non un voto.",
+    "register_value_saved": "Con un account gratuito salvi il tuo XIMAtar, i punteggi dei cinque pilastri e le tue risposte aperte.",
+    "register_value_saved_with_cv": "Con un account gratuito salvi il tuo XIMAtar, i punteggi dei cinque pilastri, l'analisi del CV e le tue risposte aperte.",
+    "register_value_next": "Poi le aziende potranno inviarti delle sfide e potrai prenotare una sessione con un mentor."
   },
   "profile_completion": {
     "title": "Completa il tuo profilo per abbinamenti migliori",

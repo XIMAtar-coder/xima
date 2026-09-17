@@ -6,7 +6,10 @@ const MAP_IT: Record<string, CategoryId> = {
   'Comunicazione': 'communication',
   'Conoscenza': 'knowledge',
   'Creatività': 'creativity',
-  'Motivazione': 'drive'
+  'Motivazione': 'drive',
+  // The sealed question sets label this category 'Drive' in every locale;
+  // without it, IT drive questions got the creativity example.
+  'Drive': 'drive'
 };
 
 const MAP_EN: Record<string, CategoryId> = {
@@ -22,7 +25,9 @@ const MAP_ES: Record<string, CategoryId> = {
   'Comunicación': 'communication',
   'Conocimiento': 'knowledge',
   'Creatividad': 'creativity',
-  'Impulso': 'drive'
+  'Impulso': 'drive',
+  // See MAP_IT: the sealed sets use 'Drive' in Spanish too.
+  'Drive': 'drive'
 };
 
 export function toCategoryId(localizedLabel: string, lang: string): CategoryId {
