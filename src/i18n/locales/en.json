@@ -1012,7 +1012,12 @@
         "knowledge": "Example: to learn a new domain, you map key players and reliable sources, read guidelines, and synthesize notes to share.",
         "creativity": "Example: you generate 10 quick drafts, select 2 options, run a small user test, and iterate on the best one.",
         "drive": "Example: you define weekly goals, track progress, and ask for feedback to unblock bottlenecks."
-      }
+      },
+      "general_title": "About {{category}} questions",
+      "general_title_plain": "General example",
+      "general_note": "A general illustration of this category. It does not describe the answer options below.",
+      "watch_video": "Watch the example video",
+      "open_link": "Open the link"
     },
     "questions": {
       "q1": {

@@ -562,7 +562,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
         {currentOpenQuestion && (
           <div className="space-y-6">
             <div className="space-y-3">
-              <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
                 <div className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full text-sm font-medium">
                   {t('assessment.open_question')} {currentQuestion - questions.length + 1}
                 </div>

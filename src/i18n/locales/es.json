@@ -792,7 +792,12 @@
         "knowledge": "Ejemplo: para aprender un nuevo dominio, mapeas actores clave y fuentes fiables, lees las guías de referencia y lo sintetizas en notas para compartir.",
         "creativity": "Ejemplo: generas 10 borradores rápidos, seleccionas 2 opciones, haces una pequeña prueba con usuarios e iteras sobre la mejor.",
         "drive": "Ejemplo: defines objetivos semanales, sigues tu progreso y pides feedback para desbloquear cuellos de botella."
-      }
+      },
+      "general_title": "Sobre las preguntas de {{category}}",
+      "general_title_plain": "Ejemplo general",
+      "general_note": "Una ilustración general de esta categoría. No describe las opciones de respuesta de abajo.",
+      "watch_video": "Ver el vídeo de ejemplo",
+      "open_link": "Abrir el enlace"
     },
     "question": "Pregunta",
     "of": "de",

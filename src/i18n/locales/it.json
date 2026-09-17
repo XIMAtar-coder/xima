@@ -851,7 +851,12 @@
         "knowledge": "Esempio: per imparare un nuovo dominio, mappi attori chiave e fonti affidabili, leggi le linee guida e sintetizzi il tutto in note da condividere.",
         "creativity": "Esempio: generi 10 bozze rapide, selezioni 2 opzioni, fai un piccolo test con gli utenti e iteri sulla migliore.",
         "drive": "Esempio: definisci obiettivi settimanali, monitori i progressi e chiedi feedback per sbloccare i colli di bottiglia."
-      }
+      },
+      "general_title": "Sulle domande di {{category}}",
+      "general_title_plain": "Esempio generale",
+      "general_note": "Un'illustrazione generale di questa categoria. Non descrive le risposte qui sotto.",
+      "watch_video": "Guarda il video di esempio",
+      "open_link": "Apri il link"
     },
     "questions": {
       "q1": {
