@@ -21,7 +21,9 @@ type Professional = {
   avatar_path: string | null;
   locale_bio: Record<string, string>;
   expertise_tags: string[] | null;
-  compatibility_score: number;
+  // Set only when recommend-mentors scored the mentor against this profile.
+  // null on the mentors_public fallback, which has a rating but no match.
+  compatibility_score: number | null;
   xima_pillars: string[];
   match_reasons: string[];
   updated_at?: string | null;
@@ -110,7 +112,7 @@ export default function FeaturedProfessionals({
           avatar_path: m.profile_image_url,
           locale_bio: { en: m.bio || '', it: m.bio || '', es: m.bio || '' },
           expertise_tags: m.specialties || [],
-          compatibility_score: m.compatibility_score || 85,
+          compatibility_score: typeof m.compatibility_score === 'number' ? m.compatibility_score : null,
           xima_pillars: m.xima_pillars || [],
           match_reasons: m.match_reasons || [],
           updated_at: m.updated_at,
@@ -175,7 +177,10 @@ export default function FeaturedProfessionals({
         avatar_path: m.profile_image_url,
         locale_bio: { en: m.bio || '', it: m.bio || '', es: m.bio || '' },
         expertise_tags: m.specialties || [],
-        compatibility_score: m.rating ? Math.round(m.rating * 20) : 85,
+        // A star rating scaled to 0-100 used to be shown here as "% match"
+        // (and 85 when there was no rating). It says nothing about fit with
+        // this candidate, so the fallback shows no percentage at all.
+        compatibility_score: null,
         xima_pillars: m.xima_pillars || [],
         match_reasons: [],
         updated_at: m.updated_at,
@@ -288,6 +293,11 @@ export default function FeaturedProfessionals({
       <p className="text-xs text-muted-foreground">
         {t('ximatarJourney.mentor_refresh_note')}
       </p>
+      {displayList.slice(0, limit).some((p) => p.compatibility_score !== null) && (
+        <p className="text-xs text-muted-foreground">
+          {t('ximatarJourney.mentor_match_explained')}
+        </p>
+      )}
 
       <div className="grid md:grid-cols-3 gap-4">
       {displayList.slice(0, limit).map((p) => {
@@ -341,9 +351,11 @@ export default function FeaturedProfessionals({
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="text-sm font-medium rounded-full px-3 py-1 bg-primary/10 text-primary">
-                {score}% {t('ximatarJourney.mentor_match_label')}
-              </div>
+              {score !== null && (
+                <div className="text-sm font-medium rounded-full px-3 py-1 bg-primary/10 text-primary">
+                  {score}% {t('ximatarJourney.mentor_match_label')}
+                </div>
+              )}
               {(activeCoachees > 0 || totalCoached > 0) && (
                 <div className="text-xs text-muted-foreground flex items-center gap-1">
                   <span>{t('professionals.active_coachees', 'Active')}: {activeCoachees}</span>

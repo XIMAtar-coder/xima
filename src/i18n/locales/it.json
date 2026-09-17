@@ -5968,7 +5968,13 @@
     "business_account_title": "Hai effettuato l'accesso come azienda",
     "business_account_body": "L'assessment XIMAtar è per i candidati. Le risposte date ora verrebbero salvate sull'account aziendale. Esci per farlo come candidato, oppure torna alla dashboard aziendale.",
     "business_account_dashboard": "Vai alla dashboard aziendale",
-    "business_account_sign_out": "Esci e continua come candidato"
+    "business_account_sign_out": "Esci e continua come candidato",
+    "mentor_optional_hint": "Facoltativo: scegli un mentor ora oppure più tardi dalla dashboard.",
+    "mentor_choose_later": "Nessun mentor per ora? Potrai sceglierlo più tardi.",
+    "mentor_match_explained": "La % di compatibilità è una stima: sale quando i pilastri su cui lavora il mentor coprono il tuo pilastro più forte e quello più debole e si adattano al tuo XIMAtar, più la sua valutazione. È un'indicazione, non un voto.",
+    "register_value_saved": "Con un account gratuito salvi il tuo XIMAtar, i punteggi dei cinque pilastri e le tue risposte aperte.",
+    "register_value_saved_with_cv": "Con un account gratuito salvi il tuo XIMAtar, i punteggi dei cinque pilastri, l'analisi del CV e le tue risposte aperte.",
+    "register_value_next": "Poi le aziende potranno inviarti delle sfide e potrai prenotare una sessione con un mentor."
   },
   "profile_completion": {
     "title": "Completa il tuo profilo per abbinamenti migliori",

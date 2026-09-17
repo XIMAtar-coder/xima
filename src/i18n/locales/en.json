@@ -5969,7 +5969,13 @@
     "business_account_title": "You're signed in as a company",
     "business_account_body": "The XIMAtar assessment is for candidates. Answers given now would be saved on your company account. Sign out to take it as a candidate, or go back to your company dashboard.",
     "business_account_dashboard": "Go to company dashboard",
-    "business_account_sign_out": "Sign out and continue as candidate"
+    "business_account_sign_out": "Sign out and continue as candidate",
+    "mentor_optional_hint": "Optional: pick a mentor now, or do it later from your dashboard.",
+    "mentor_choose_later": "No mentor yet? You can choose one later.",
+    "mentor_match_explained": "The match % estimates fit: it rises when a mentor's focus pillars cover your strongest and weakest pillars and suit your XIMAtar, plus their rating. It is a guide, not a grade.",
+    "register_value_saved": "A free account saves your XIMAtar, your five pillar scores and your written answers.",
+    "register_value_saved_with_cv": "A free account saves your XIMAtar, your five pillar scores, your CV analysis and your written answers.",
+    "register_value_next": "Then companies can send you challenges, and you can book a session with a mentor."
   },
   "profile_completion": {
     "title": "Complete your profile for better matches",

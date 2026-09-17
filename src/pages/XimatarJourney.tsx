@@ -222,15 +222,11 @@ const XimatarJourney = () => {
           )}
         </Card>
         
-        {/* Mentor Selection Required Message */}
-        {currentStep === 3 && (
-          <div className="mt-8 mb-6 text-center">
-            <p className="text-base sm:text-lg font-semibold text-foreground bg-primary/10 border-2 border-primary/30 rounded-lg py-4 px-4 sm:px-6 inline-block max-w-full break-words">
-              {t('ximatarJourney.closing_cta')}
-            </p>
-          </div>
-        )}
-        
+        {/* The results page used to end with a "choose your mentor to continue"
+            banner here. Choosing a mentor is optional now, and the call to
+            action lives next to the register/dashboard button instead. */}
+        {currentStep === 3 && <div className="mb-6" />}
+
         {/* Navigation - only show for step 1 */}
         {currentStep === 1 && (
           <div className="flex justify-between mt-6">

@@ -5396,7 +5396,13 @@
     "business_account_title": "Has iniciado sesión como empresa",
     "business_account_body": "La evaluación XIMAtar es para candidatos. Las respuestas que des ahora se guardarían en la cuenta de empresa. Cierra sesión para hacerla como candidato o vuelve al panel de empresa.",
     "business_account_dashboard": "Ir al panel de empresa",
-    "business_account_sign_out": "Cerrar sesión y continuar como candidato"
+    "business_account_sign_out": "Cerrar sesión y continuar como candidato",
+    "mentor_optional_hint": "Opcional: elige un mentor ahora o más tarde desde tu panel.",
+    "mentor_choose_later": "¿Aún sin mentor? Puedes elegirlo más tarde.",
+    "mentor_match_explained": "El % de compatibilidad es una estimación: sube cuando los pilares en los que trabaja el mentor cubren tu pilar más fuerte y el más débil y encajan con tu XIMAtar, más su valoración. Es una orientación, no una nota.",
+    "register_value_saved": "Con una cuenta gratuita guardas tu XIMAtar, las puntuaciones de tus cinco pilares y tus respuestas abiertas.",
+    "register_value_saved_with_cv": "Con una cuenta gratuita guardas tu XIMAtar, las puntuaciones de tus cinco pilares, el análisis de tu CV y tus respuestas abiertas.",
+    "register_value_next": "Después, las empresas podrán enviarte retos y podrás reservar una sesión con un mentor."
   },
   "shortlist": {
     "header_title": "Shortlist para: {{role}}",

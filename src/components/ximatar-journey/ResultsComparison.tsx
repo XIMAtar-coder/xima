@@ -320,11 +320,14 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
     }
   };
 
+  // Choosing a mentor is optional: the candidate can go on without one and
+  // pick later from the dashboard. Only a mentor chosen on this page is passed
+  // along — selected_professional_data may be left over from an earlier visit.
   const handleProceedWithSelection = () => {
-    if (!selectedProfessional) return;
-    
-    const professionalData = JSON.parse(localStorage.getItem('selected_professional_data') || '{}');
-    
+    const professionalData = selectedProfessional
+      ? JSON.parse(localStorage.getItem('selected_professional_data') || 'null')
+      : null;
+
     if (isAuthenticated) {
       navigate('/profile', { 
         state: { 
@@ -641,28 +644,41 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         <div className="text-center mb-6">
           <h3 className="text-2xl font-bold mb-2 font-heading">{t('ximatarJourney.mentor_section_title')}</h3>
           <p className="text-muted-foreground mb-2">{t('ximatarJourney.mentor_section_subtitle')}</p>
-          <p className="text-sm font-medium text-primary">{t('ximatarJourney.mentor_choose_to_continue')}</p>
+          {!selectedProfessional && (
+            <p className="text-sm font-medium text-primary">{t('ximatarJourney.mentor_optional_hint')}</p>
+          )}
         </div>
-        
-        <FeaturedProfessionals 
+
+        <FeaturedProfessionals
           onSelect={handleMentorSelect}
           selectedId={selectedProfessional || undefined}
           pillarScores={pillarScores}
           ximatar={ximatarData?.label}
         />
 
-        {selectedProfessional && (
-          <div className="text-center mt-8 animate-scale-in">
-            <Button 
-              size="lg"
-              onClick={handleProceedWithSelection}
-              className="px-8 py-4 hover-scale"
-            >
-              {isAuthenticated ? t('results.proceed_to_dashboard') : t('results.register_to_continue')}
-              <ArrowRight size={20} className="ml-2" />
-            </Button>
-          </div>
-        )}
+        <div className="mt-8 flex flex-col items-center gap-3 text-center">
+          {!isAuthenticated && (
+            <div className="max-w-xl space-y-1 text-sm text-muted-foreground">
+              <p>
+                {hasCv
+                  ? t('ximatarJourney.register_value_saved_with_cv')
+                  : t('ximatarJourney.register_value_saved')}
+              </p>
+              <p>{t('ximatarJourney.register_value_next')}</p>
+            </div>
+          )}
+          <Button
+            size="lg"
+            onClick={handleProceedWithSelection}
+            className="px-8 py-4 hover-scale"
+          >
+            {isAuthenticated ? t('results.proceed_to_dashboard') : t('results.register_to_continue')}
+            <ArrowRight size={20} className="ml-2" />
+          </Button>
+          {!selectedProfessional && (
+            <p className="text-xs text-muted-foreground">{t('ximatarJourney.mentor_choose_later')}</p>
+          )}
+        </div>
       </Card>
 
       {!hasCv && !user?.id && guestOpenAnswerCount > 0 && (
