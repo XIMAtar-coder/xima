@@ -188,7 +188,8 @@
     "login_required": "Inicia sesión para ver tu perfil",
     "login": "Iniciar sesión",
     "loading": "Cargando...",
-    "skip_to_content": "Ir al contenido principal"
+    "skip_to_content": "Ir al contenido principal",
+    "dismiss": "Cerrar"
   },
   "nav": {
     "home": "Inicio",
@@ -5417,7 +5418,7 @@
     "ready_title": "Todo listo para crear tu shortlist",
     "ready_desc": "Haz clic en \"Generar shortlist\" para encontrar los candidatos que mejor encajan con este rol usando el motor de scoring multiseñal de XIMA.",
     "scoring_title": "Cómo puntúa XIMA a los candidatos:",
-    "scoring_desc": "Coincidencia de identidad (40%) · Trayectoria de crecimiento (20%) · Engagement en la plataforma (15%) · Ubicación (15%) · Credenciales (10%, opcional)",
+    "scoring_desc": "Afinidad conductual con tu empresa (40) · Resultados en retos (20) · Ubicación (15) · CV frente a tus requisitos (10) · Crecimiento (10) · Actividad (5). «—» significa que aún no hay datos, no un cero.",
     "anonymous_note": "Los candidatos son anónimos: la identidad se revela solo en la fase de oferta o contratación.",
     "tab_label": "Shortlist AI",
     "goal_not_found": "Objetivo de contratación no encontrado",
@@ -5434,7 +5435,8 @@
       "trajectory": "Trayectoria",
       "engagement": "Engagement",
       "location": "Ubicación",
-      "credentials": "Credenciales"
+      "credentials": "Credenciales",
+      "performance": "Retos"
     },
     "engagement": {
       "highly_active": "Muy activo",
@@ -5447,7 +5449,9 @@
       "remote": "Remoto OK",
       "region": "Misma región",
       "relocate": "Disponible para trasladarse",
-      "any": "Cualquier ubicación"
+      "any": "Cualquier ubicación",
+      "unknown": "No indicada",
+      "no_match": "No coincide con la ubicación del puesto"
     },
     "availability": {
       "immediately": "Disponible ahora",
@@ -5465,7 +5469,37 @@
       "any": "Cualquiera (recomendado)"
     },
     "invite_disabled_tooltip": "Crea primero un challenge para este rol",
-    "invite_top5_disabled": "Crea un challenge antes de invitar al top 5"
+    "invite_top5_disabled": "Crea un challenge antes de invitar al top 5",
+    "not_available": "No disponible",
+    "candidate_label": "Candidato #{{label}}",
+    "reasons_label": "Por qué este candidato",
+    "create_challenge_to_invite": "Crea el reto para invitar",
+    "pending_invite": "El reto está listo. ¿Invitas al candidato #{{rank}} que habías elegido?",
+    "pillar": {
+      "drive": "Drive",
+      "comp_power": "Potencia computacional",
+      "communication": "Comunicación",
+      "creativity": "Creatividad",
+      "knowledge": "Conocimiento"
+    },
+    "reason": {
+      "pillar_fit": "Afinidad conductual con el perfil de tu empresa: {{value}}%",
+      "pillar_above": "Más fuerte donde lo necesitas: {{value}}",
+      "pillar_below": "Por debajo de tu perfil en {{value}}",
+      "archetype_recommended": "XIMAtar recomendado para tu empresa",
+      "challenges_done": "Retos completados: {{value}}",
+      "no_challenges": "Aún no ha completado retos",
+      "location": "Ubicación: {{location}}",
+      "wants_remote": "Prefiere teletrabajo, el puesto es presencial",
+      "no_cv": "Sin CV: formación, experiencia e idiomas no verificados",
+      "education_meets": "Tiene la formación requerida",
+      "education_below": "Formación inferior a la requerida",
+      "experience_in_range": "{{value}} años de experiencia, dentro de tu rango",
+      "experience_below": "{{value}} años de experiencia, por debajo del mínimo",
+      "experience_above": "{{value}} años de experiencia, por encima de tu rango",
+      "languages_meet": "Habla los idiomas requeridos",
+      "language_missing": "Idioma requerido no encontrado en el CV: {{value}}"
+    }
   },
   "candidate_pool": {
     "title": "Pool de candidatos",

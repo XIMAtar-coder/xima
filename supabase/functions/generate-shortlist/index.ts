@@ -74,7 +74,7 @@ serve(async (req) => {
     // Goal lookup: in dry_run admin mode skip owner filter; otherwise scope to caller.
     const goalQuery = serviceClient
       .from("hiring_goal_drafts")
-      .select("id, business_id, role_title, task_description, experience_level, work_model, country, city_region, function_area")
+      .select("id, business_id, role_title, task_description, experience_level, work_model, country, city_region, function_area, education_level, years_experience_min, years_experience_max, languages")
       .eq("id", hiring_goal_id);
     const goalRes = isAdminDryRun
       ? await goalQuery.single()
@@ -144,6 +144,9 @@ serve(async (req) => {
           profile_completed, created_at, updated_at
         `)
         .not("pillar_scores", "is", null)
+        // '{}' is the column default: a profile that never took the assessment.
+        // 109 of 320 profiles were like that and all scored the same.
+        .neq("pillar_scores", "{}")
         // GDPR: exclude candidates who opted out of profiling/shortlisting
         .or('profiling_opt_out.is.null,profiling_opt_out.eq.false')
         // Ordered before paging: an unordered window meant which candidates were
@@ -164,6 +167,27 @@ serve(async (req) => {
       if (candidates.length >= MAX_POOL) {
         poolTruncated = true;
         break;
+      }
+    }
+
+    // Company, admin and mentor accounts also have a profiles row, and a company
+    // that once opened the candidate journey had pillar scores written onto it.
+    // They are not candidates and must never be ranked for an employer.
+    {
+      const nonCandidate = new Set<string>();
+      const ids = candidates.map(c => c.user_id);
+      for (let i = 0; i < ids.length; i += 200) {
+        const { data: roleRows } = await serviceClient
+          .from("user_roles")
+          .select("user_id, role")
+          .in("user_id", ids.slice(i, i + 200))
+          .in("role", ["business", "admin"]);
+        for (const r of (roleRows || []) as any[]) nonCandidate.add(r.user_id);
+      }
+      if (nonCandidate.size > 0) {
+        const kept = candidates.filter(c => !nonCandidate.has(c.user_id));
+        candidates.length = 0;
+        candidates.push(...kept);
       }
     }
 
@@ -239,23 +263,32 @@ serve(async (req) => {
 
     // Optional credential data
     let credentialData: any[] = [];
-    const useCredentialFilters = filters?.degree_type || filters?.min_experience || filters?.industry;
+    // The goal's own requirements (education, years, languages) used to be
+    // ignored unless the caller passed ad-hoc filters, which the app never did:
+    // a master's degree and fluent English changed nothing in the ranking.
+    const goalReq = goal as any;
+    const useCredentialFilters = Boolean(
+      filters?.degree_type || filters?.min_experience || filters?.industry ||
+      goalReq.education_level || goalReq.years_experience_min != null ||
+      (Array.isArray(goalReq.languages) && goalReq.languages.length > 0)
+    );
     if (useCredentialFilters) {
-      // Restrict to candidate user_ids already filtered for opt-out above
       const optedInUserIds = (candidates || []).map(c => c.user_id);
-      const { data: creds } = await serviceClient
-        .from("cv_credentials")
-        .select("user_id, education, total_years_experience, industries_worked")
-        .in("user_id", optedInUserIds)
-        .limit(500);
-      credentialData = creds || [];
+      for (let i = 0; i < optedInUserIds.length; i += 200) {
+        const { data: creds } = await serviceClient
+          .from("cv_credentials")
+          .select("user_id, education, total_years_experience, industries_worked, languages")
+          .in("user_id", optedInUserIds.slice(i, i + 200));
+        credentialData.push(...(creds || []));
+      }
     }
 
     // Build company pillar vector
     const companyPillars = (companyProfile?.pillar_vector || { drive: 60, comp_power: 60, communication: 60, creativity: 60, knowledge: 60 }) as Record<string, number>;
     const recommendedXimatars = (companyProfile?.recommended_ximatars || []) as string[];
 
-    const goalLocation = (goal.country || goal.city_region || "").toLowerCase();
+    const goalCity = ((goal.city_region as string) || "").trim().toLowerCase();
+    const goalCountry = ((goal.country as string) || "").trim().toLowerCase();
     const goalWorkMode = (goal.work_model || "").toLowerCase();
 
     // Group trajectory and engagement by user
@@ -276,30 +309,54 @@ serve(async (req) => {
 
       // SIGNAL 1: Identity match (0-40 pts)
       let identityScore = 0;
+      // Why this candidate ranks where they do, as codes the UI translates.
+      const reasons: Array<{ k: string; v?: string | number }> = [];
+      // profiles.pillar_scores are stored 0-10; company pillar_vector is 0-100.
+      // Both used to be divided by 10, so every candidate sat near 0-1 against a
+      // company near 6-9 and the distance was the same for all of them: the
+      // whole shortlist scored 33.6-34.0. Normalise each value to 0-10 instead.
+      const toTen = (v: unknown, fallback: number) => {
+        const n = Number(v);
+        if (!Number.isFinite(n)) return fallback;
+        return n > 10 ? n / 10 : n;
+      };
       const candidatePillars = {
-        drive: (pillarScores.drive || 0) / 10,
-        comp_power: (pillarScores.computational_power || pillarScores.comp_power || 0) / 10,
-        communication: (pillarScores.communication || 0) / 10,
-        creativity: (pillarScores.creativity || 0) / 10,
-        knowledge: (pillarScores.knowledge || 0) / 10,
+        drive: toTen(pillarScores.drive, 0),
+        comp_power: toTen(pillarScores.computational_power ?? pillarScores.comp_power, 0),
+        communication: toTen(pillarScores.communication, 0),
+        creativity: toTen(pillarScores.creativity, 0),
+        knowledge: toTen(pillarScores.knowledge, 0),
       };
       const companyPillarNorm = {
-        drive: (companyPillars.drive || 60) / 10,
-        comp_power: (companyPillars.comp_power || 60) / 10,
-        communication: (companyPillars.communication || 60) / 10,
-        creativity: (companyPillars.creativity || 60) / 10,
-        knowledge: (companyPillars.knowledge || 60) / 10,
+        drive: toTen(companyPillars.drive, 6),
+        comp_power: toTen(companyPillars.comp_power ?? companyPillars.computational_power, 6),
+        communication: toTen(companyPillars.communication, 6),
+        creativity: toTen(companyPillars.creativity, 6),
+        knowledge: toTen(companyPillars.knowledge, 6),
       };
       const distance = computePillarDistance(candidatePillars, companyPillarNorm);
-      const maxDistance = Math.sqrt(5 * (10 ** 2));
-      identityScore += Math.max(0, 25 * (1 - distance / maxDistance));
+      // Real profiles sit within a few points of any company vector, so the
+      // theoretical maximum (10 on every pillar, ~22.4) compressed everyone into
+      // the top of the range. An average gap of 5 points per pillar is treated
+      // as no fit at all.
+      const fitDistance = Math.sqrt(5 * (5 ** 2));
+      const pillarFit = Math.max(0, 1 - distance / fitDistance);
+      identityScore += 25 * pillarFit;
+      reasons.push({ k: "pillar_fit", v: Math.round(pillarFit * 100) });
+      const gaps = (Object.keys(companyPillarNorm) as (keyof typeof companyPillarNorm)[])
+        .map((key) => ({ key, gap: candidatePillars[key] - companyPillarNorm[key] }))
+        .sort((a, b) => a.gap - b.gap);
+      if (gaps[0] && gaps[0].gap <= -1.5) reasons.push({ k: "pillar_below", v: gaps[0].key });
+      const best = gaps[gaps.length - 1];
+      if (best && best.gap >= 0) reasons.push({ k: "pillar_above", v: best.key });
 
       if (recommendedXimatars.includes(ximatarKey)) {
         const rank = recommendedXimatars.indexOf(ximatarKey);
         identityScore += rank === 0 ? 15 : rank === 1 ? 10 : 5;
+        reasons.push({ k: "archetype_recommended", v: ximatarKey });
       }
 
-      // SIGNAL 2: Growth trajectory (0-20 pts)
+      // SIGNAL 2: Growth trajectory (0-10 pts)
       let trajectoryScore = 0;
       let trajectorySummary = "New to platform";
       const userTrajectory = trajectoryByUser.get(candidate.user_id) || [];
@@ -327,7 +384,7 @@ serve(async (req) => {
           : "No recent growth";
       }
 
-      // SIGNAL 3: Engagement (0-15 pts)
+      // SIGNAL 3: Engagement (0-5 pts)
       let engagementScore = 0;
       let engagementLevel = "low";
       const engCount = engagementByUser.get(candidate.user_id) || 0;
@@ -344,7 +401,7 @@ serve(async (req) => {
       // SIGNAL 2b: Demonstrated performance in challenges (0-20 pts).
       // This is the axis the product is supposed to be about, and it carried no
       // weight at all before.
-      let performanceScore = 0;
+      let performanceScore: number | null = null;
       let performanceSummary = "No challenges completed";
       const perf = performanceByProfile.get(String(candidate.id));
       if (perf && perf.count > 0) {
@@ -354,6 +411,9 @@ serve(async (req) => {
         // quotes from the candidate rather than model assertion alone.
         if (perf.withEvidence > 0) performanceScore = Math.min(20, performanceScore + 2);
         performanceSummary = `${perf.count} challenge${perf.count === 1 ? '' : 's'}, avg ${Math.round(perf.mean)}`;
+        reasons.push({ k: "challenges_done", v: perf.count });
+      } else {
+        reasons.push({ k: "no_challenges" });
       }
 
       // SIGNAL 4: Location (0-15 pts)
@@ -363,51 +423,104 @@ serve(async (req) => {
       const workPref = (candidate.work_preference || "") as string;
       const relocate = (candidate.willing_to_relocate || "") as string;
 
-      if (goalWorkMode === "remote" || workPref === "remote") {
-        if (desiredLocations.some((l: any) => l.type === "remote") || workPref === "remote") {
+      const sameCountryWords: Record<string, string[]> = {
+        it: ["it", "italy", "italia"], es: ["es", "spain", "españa", "espana"],
+        de: ["de", "germany", "deutschland"], fr: ["fr", "france"], ch: ["ch", "switzerland", "svizzera", "schweiz"],
+      };
+      const goalCountryWords = sameCountryWords[goalCountry] || (goalCountry ? [goalCountry] : []);
+      // Candidate locations are {city, region} with no country; an unset country
+      // is read as the goal's country only when the goal names one.
+      const locCountryMatches = (l: any) => {
+        const c = ((l?.country as string) || "").trim().toLowerCase();
+        return c ? goalCountryWords.includes(c) : goalCountryWords.length > 0;
+      };
+
+      if (goalWorkMode === "remote") {
+        if (workPref === "remote" || desiredLocations.some((l: any) => l?.type === "remote")) {
           locationScore = 15; locationMatch = "remote";
-        } else if (workPref === "flexible") {
+        } else if (workPref === "flexible" || workPref === "hybrid") {
           locationScore = 10; locationMatch = "remote";
         }
-      } else if (goalLocation) {
-        if (desiredLocations.some((l: any) => goalLocation.includes(((l.city as string) || "").toLowerCase()))) {
+      } else if (goalCity || goalCountry) {
+        const cityMatch = goalCity && desiredLocations.some((l: any) => {
+          const city = ((l?.city as string) || "").trim().toLowerCase();
+          return city.length > 0 && (city === goalCity || goalCity.includes(city) || city.includes(goalCity));
+        });
+        if (cityMatch) {
           locationScore = 15; locationMatch = "exact";
-        } else if (desiredLocations.some((l: any) => goalLocation.includes(((l.country as string) || "").toLowerCase()))) {
-          locationScore = 10; locationMatch = "region";
         } else if (relocate === "yes" || relocate === "international") {
           locationScore = 8; locationMatch = "willing_to_relocate";
-        } else if (relocate === "within_country" || relocate === "within_region") {
-          locationScore = 5; locationMatch = "willing_to_relocate";
+        } else if (relocate === "within_country" && desiredLocations.some(locCountryMatches)) {
+          locationScore = 8; locationMatch = "willing_to_relocate";
+        } else if (desiredLocations.length === 0 && !workPref) {
+          locationMatch = "unknown";
+        }
+        if (workPref === "remote" && goalWorkMode === "onsite") {
+          locationScore = Math.min(locationScore, 3);
+          reasons.push({ k: "wants_remote" });
         }
       } else {
         locationScore = 5; locationMatch = "any";
       }
+      reasons.push({ k: "location", v: locationMatch });
 
-      // SIGNAL 5: Credentials (0-10 pts, optional)
-      let credentialScore = 0;
+      // SIGNAL 5: Credentials (0-10 pts) against the goal's requirements.
+      // null = no CV on file, shown as "not available" rather than a zero.
+      let credentialScore: number | null = useCredentialFilters ? null : 0;
       if (useCredentialFilters) {
         const creds = credentialData.find(c => c.user_id === candidate.user_id);
-        if (creds) {
-          if (filters.degree_type) {
-            const hasMatch = (creds.education || []).some((edu: any) =>
-              ((edu.degree_type || "") as string).toLowerCase().includes(filters.degree_type.toLowerCase()) ||
-              ((edu.field_of_study || "") as string).toLowerCase().includes(filters.degree_type.toLowerCase())
-            );
-            if (hasMatch) credentialScore += 4;
+        if (!creds) {
+          reasons.push({ k: "no_cv" });
+        } else {
+          credentialScore = 0;
+          const degreeRank = (raw: string) => {
+            const d = (raw || "").toLowerCase();
+            if (/phd|dottorato|doctor/.test(d)) return 4;
+            if (/magistrale|master|msc|m\.sc|specialistica/.test(d)) return 3;
+            if (/triennale|bachelor|bsc|b\.sc|laurea/.test(d)) return 2;
+            if (/diploma|high_school|maturit/.test(d)) return 1;
+            return 0;
+          };
+          const requiredDegree = degreeRank(goalReq.education_level || filters?.degree_type || "");
+          if (requiredDegree > 0) {
+            const bestDegree = Math.max(0, ...((creds.education || []) as any[]).map((e) => degreeRank(`${e.degree_type || ""}`)));
+            if (bestDegree >= requiredDegree) { credentialScore += 4; reasons.push({ k: "education_meets" }); }
+            else reasons.push({ k: "education_below" });
           }
-          if (filters.min_experience && (creds.total_years_experience || 0) >= filters.min_experience) {
-            credentialScore += 3;
+          const minYears = goalReq.years_experience_min ?? filters?.min_experience;
+          const maxYears = goalReq.years_experience_max;
+          const years = creds.total_years_experience;
+          if (minYears != null && years != null) {
+            if (years >= minYears && (maxYears == null || years <= maxYears)) { credentialScore += 3; reasons.push({ k: "experience_in_range", v: years }); }
+            else if (years < minYears) reasons.push({ k: "experience_below", v: years });
+            else { credentialScore += 1; reasons.push({ k: "experience_above", v: years }); }
           }
-          if (filters.industry) {
-            if ((creds.industries_worked || []).some((ind: string) => ind.toLowerCase().includes(filters.industry.toLowerCase()))) {
-              credentialScore += 3;
-            }
+          const langAliases: Record<string, string[]> = {
+            english: ["english", "inglese", "inglés", "ingles"], italian: ["italian", "italiano"],
+            spanish: ["spanish", "spagnolo", "español", "espanol"], german: ["german", "tedesco", "deutsch", "alemán"],
+            french: ["french", "francese", "français", "francés"],
+          };
+          const wanted = (Array.isArray(goalReq.languages) ? goalReq.languages : []) as any[];
+          if (wanted.length > 0) {
+            const has = ((creds.languages || []) as any[]).filter((l) => !/basic|base|a1|a2/i.test(`${l.proficiency || ""} ${l.certification || ""}`))
+              .map((l) => `${l.language || ""}`.toLowerCase());
+            const missing = wanted.filter((w) => {
+              const key = `${w.language || ""}`.toLowerCase();
+              const names = langAliases[key] || [key];
+              return !has.some((h) => names.includes(h));
+            });
+            if (missing.length === 0) { credentialScore += 3; reasons.push({ k: "languages_meet" }); }
+            else reasons.push({ k: "language_missing", v: `${missing[0].language}` });
           }
+          if (filters?.industry && ((creds.industries_worked || []) as string[]).some((ind) => ind.toLowerCase().includes(filters.industry.toLowerCase()))) {
+            credentialScore = Math.min(10, credentialScore + 3);
+          }
+          credentialScore = Math.min(10, credentialScore);
         }
       }
 
       // 40 identity + 20 demonstrated + 10 trajectory + 5 engagement + 15 location + 10 credentials
-      const totalScore = identityScore + performanceScore + trajectoryScore + engagementScore + locationScore + credentialScore;
+      const totalScore = identityScore + (performanceScore ?? 0) + trajectoryScore + engagementScore + locationScore + (credentialScore ?? 0);
 
       let availability = "unknown";
       if (candidate.availability_date) {
@@ -422,12 +535,13 @@ serve(async (req) => {
         candidate_user_id: candidate.user_id,
         total_score: Math.round(totalScore * 10) / 10,
         identity_score: Math.round(identityScore * 10) / 10,
-        performance_score: Math.round(performanceScore * 10) / 10,
+        performance_score: performanceScore == null ? null : Math.round(performanceScore * 10) / 10,
         performance_summary: performanceSummary,
         trajectory_score: Math.round(trajectoryScore * 10) / 10,
         engagement_score: Math.round(engagementScore * 10) / 10,
         location_score: Math.round(locationScore * 10) / 10,
-        credential_score: Math.round(credentialScore * 10) / 10,
+        credential_score: credentialScore == null ? null : Math.round(credentialScore * 10) / 10,
+        match_narrative: JSON.stringify(reasons),
         ximatar_archetype: ximatarKey || "unknown",
         ximatar_level: (candidate.ximatar_level as number) || 1,
         pillar_scores: pillarScores,
@@ -477,6 +591,7 @@ serve(async (req) => {
           engagement_score: c.engagement_score,
           location_score: c.location_score,
           credential_score: c.credential_score,
+          match_narrative: c.match_narrative,
           ximatar_archetype: c.ximatar_archetype,
           ximatar_level: c.ximatar_level,
           pillar_scores: c.pillar_scores,
@@ -516,7 +631,7 @@ serve(async (req) => {
         trajectory: "0-10 pts (growth in last 90 days)",
         engagement: "0-5 pts (platform activity + profile completion)",
         location: "0-15 pts (location + work mode + relocation)",
-        credentials: useCredentialFilters ? "0-10 pts (degree + experience + industry)" : "disabled (identity-first mode)",
+        credentials: useCredentialFilters ? "0-10 pts (education + experience + languages vs the goal)" : "disabled (goal has no requirements)",
       },
     });
   } catch (err: any) {

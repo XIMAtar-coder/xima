@@ -16,7 +16,9 @@ interface ShortlistCandidate {
   trajectory_score: number;
   engagement_score: number;
   location_score: number;
-  credential_score: number;
+  credential_score: number | null;
+  performance_score?: number | null;
+  match_narrative?: string | null;
   ximatar_archetype: string;
   ximatar_level: number;
   pillar_scores: Record<string, number>;
@@ -36,16 +38,40 @@ interface ShortlistCardProps {
   locked?: boolean;
   invited?: boolean;
   inviting?: boolean;
+  /** No active XIMA Core challenge for this goal yet: inviting would fail. */
+  needsChallenge?: boolean;
   onInviteToChallenge: (candidateUserId: string) => void;
   onViewProfile: (candidateUserId: string) => void;
 }
 
+type Reason = { k: string; v?: string | number };
+
+// match_narrative holds the scoring reasons as JSON codes (written by
+// generate-shortlist). Older rows hold nothing or free text: show no reasons.
+const parseReasons = (raw?: string | null): Reason[] => {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter((r) => r && typeof r.k === 'string') : [];
+  } catch {
+    return [];
+  }
+};
+
 const getArchetypeImageUrl = (archetype: string) =>
   `/ximatars/${(archetype || 'chameleon').toLowerCase()}.png`;
 
-export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, locked = false, invited = false, inviting = false, onInviteToChallenge, onViewProfile }) => {
+export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, locked = false, invited = false, inviting = false, needsChallenge = false, onInviteToChallenge, onViewProfile }) => {
   const { t } = useTranslation();
   const imageUrl = getArchetypeImageUrl(candidate.ximatar_archetype);
+  const reasons = parseReasons(candidate.match_narrative);
+  const pillarName = (key: string) => t(`shortlist.pillar.${key}`, key);
+  const reasonText = (r: Reason) => t(`shortlist.reason.${r.k}`, {
+    defaultValue: '',
+    value: r.k.startsWith('pillar_') && r.k !== 'pillar_fit' ? pillarName(String(r.v)) : r.v,
+    location: r.k === 'location' ? t(`shortlist.location.${r.v === 'willing_to_relocate' ? 'relocate' : r.v}`, String(r.v)) : undefined,
+  });
+  const unavailable = t('shortlist.not_available', 'Not available');
   const archetypeName = candidate.ximatar_archetype.charAt(0).toUpperCase() + candidate.ximatar_archetype.slice(1);
 
   const engagementLabel = {
@@ -89,7 +115,7 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, l
               <div className="space-y-1">
                 <p className="font-semibold text-sm text-foreground">
                   {candidate.anonymous_label
-                    ? `Candidate #${candidate.anonymous_label} — ${archetypeName}`
+                    ? `${t('shortlist.candidate_label', { label: candidate.anonymous_label, defaultValue: 'Candidate #{{label}}' })} — ${archetypeName}`
                     : archetypeName}
                 </p>
                 <div className="flex items-center gap-2 flex-wrap">
@@ -105,14 +131,25 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, l
           </div>
         </div>
 
-        {/* Score breakdown */}
+        {/* Score breakdown: maxima match generate-shortlist's weights */}
         <div className="space-y-1.5">
           <PillarScoreBar label={t('shortlist.score.identity', 'Identity')} value={candidate.identity_score} max={40} />
-          <PillarScoreBar label={t('shortlist.score.trajectory', 'Trajectory')} value={candidate.trajectory_score} max={20} />
-          <PillarScoreBar label={t('shortlist.score.engagement', 'Engagement')} value={candidate.engagement_score} max={15} />
+          <PillarScoreBar label={t('shortlist.score.performance', 'Challenges')} value={candidate.performance_score ?? null} max={20} unavailableLabel={unavailable} />
           <PillarScoreBar label={t('shortlist.score.location', 'Location')} value={candidate.location_score} max={15} />
-          <PillarScoreBar label={t('shortlist.score.credentials', 'Credentials')} value={candidate.credential_score} max={10} />
+          <PillarScoreBar label={t('shortlist.score.credentials', 'Credentials')} value={candidate.credential_score} max={10} unavailableLabel={unavailable} />
+          <PillarScoreBar label={t('shortlist.score.trajectory', 'Trajectory')} value={candidate.trajectory_score} max={10} />
+          <PillarScoreBar label={t('shortlist.score.engagement', 'Engagement')} value={candidate.engagement_score} max={5} />
         </div>
+
+        {/* Why this rank */}
+        {reasons.length > 0 && (
+          <ul className="space-y-1 text-xs text-muted-foreground" aria-label={t('shortlist.reasons_label', 'Why this candidate')}>
+            {reasons.map((r, i) => {
+              const text = reasonText(r);
+              return text ? <li key={`${r.k}-${i}`}>· {text}</li> : null;
+            })}
+          </ul>
+        )}
 
         {/* Signal badges */}
         <div className="flex flex-wrap gap-1.5">
@@ -148,6 +185,7 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, l
             variant={invited ? 'secondary' : 'default'}
             onClick={() => onInviteToChallenge(candidate.candidate_user_id)}
             disabled={invited || inviting}
+            title={needsChallenge && !invited ? t('shortlist.invite_disabled_tooltip', 'Create a challenge for this role first') : undefined}
           >
             {invited ? (
               <>
@@ -162,7 +200,9 @@ export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, l
             ) : (
               <>
                 <Send className="w-3.5 h-3.5" />
-                {t('shortlist.invite_to_challenge', 'Invite to Challenge')}
+                {needsChallenge
+                  ? t('shortlist.create_challenge_to_invite', 'Create challenge to invite')
+                  : t('shortlist.invite_to_challenge', 'Invite to Challenge')}
               </>
             )}
           </Button>

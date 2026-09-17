@@ -534,7 +534,8 @@
     "login_required": "Please log in to see your profile",
     "login": "Log in",
     "loading": "Loading...",
-    "skip_to_content": "Skip to main content"
+    "skip_to_content": "Skip to main content",
+    "dismiss": "Dismiss"
   },
   "tutorial": {
     "dont_show_again": "Don't show again"
@@ -6188,7 +6189,7 @@
     "ready_title": "Ready to build your shortlist",
     "ready_desc": "Click \"Generate Shortlist\" to find the best-matched candidates for this role using XIMA's multi-signal scoring engine.",
     "scoring_title": "How XIMA scores candidates:",
-    "scoring_desc": "Identity match (40%) · Growth trajectory (20%) · Platform engagement (15%) · Location fit (15%) · Credentials (10%, optional)",
+    "scoring_desc": "Behavioural fit with your company (40) · Challenge results (20) · Location (15) · CV vs your requirements (10) · Growth (10) · Activity (5). \"—\" means no data yet, not a zero.",
     "anonymous_note": "Candidates are anonymous — identity revealed only at hire/offer stage.",
     "tab_label": "AI Shortlist",
     "score": {
@@ -6196,7 +6197,8 @@
       "trajectory": "Trajectory",
       "engagement": "Engagement",
       "location": "Location",
-      "credentials": "Credentials"
+      "credentials": "Credentials",
+      "performance": "Challenges"
     },
     "engagement": {
       "highly_active": "Highly active",
@@ -6209,7 +6211,9 @@
       "remote": "Remote OK",
       "region": "Region match",
       "relocate": "Open to relocate",
-      "any": "Any location"
+      "any": "Any location",
+      "unknown": "Not specified",
+      "no_match": "No match with the role location"
     },
     "availability": {
       "immediately": "Available now",
@@ -6236,7 +6240,37 @@
     "upgrade_cta": "Upgrade plan",
     "invite_from_pipeline": "Open the challenge pipeline to invite candidates",
     "invite_disabled_tooltip": "Create a challenge for this role first",
-    "invite_top5_disabled": "Create a challenge before inviting the top 5"
+    "invite_top5_disabled": "Create a challenge before inviting the top 5",
+    "not_available": "Not available",
+    "candidate_label": "Candidate #{{label}}",
+    "reasons_label": "Why this candidate",
+    "create_challenge_to_invite": "Create challenge to invite",
+    "pending_invite": "The challenge is ready. Invite candidate #{{rank}}, the one you selected?",
+    "pillar": {
+      "drive": "Drive",
+      "comp_power": "Computational power",
+      "communication": "Communication",
+      "creativity": "Creativity",
+      "knowledge": "Knowledge"
+    },
+    "reason": {
+      "pillar_fit": "Behavioural fit with your company profile: {{value}}%",
+      "pillar_above": "Strongest where you need it: {{value}}",
+      "pillar_below": "Below your profile on {{value}}",
+      "archetype_recommended": "XIMAtar recommended for your company",
+      "challenges_done": "Completed challenges: {{value}}",
+      "no_challenges": "No challenges completed yet",
+      "location": "Location: {{location}}",
+      "wants_remote": "Prefers remote work, the role is on-site",
+      "no_cv": "No CV on file: education, experience and languages not checked",
+      "education_meets": "Meets the required education level",
+      "education_below": "Education below the required level",
+      "experience_in_range": "{{value}} years of experience, within your range",
+      "experience_below": "{{value}} years of experience, below your minimum",
+      "experience_above": "{{value}} years of experience, above your range",
+      "languages_meet": "Speaks the required languages",
+      "language_missing": "Required language not found in CV: {{value}}"
+    }
   },
   "candidate_pool": {
     "title": "Candidate Pool",
