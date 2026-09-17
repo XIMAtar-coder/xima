@@ -753,7 +753,22 @@
     "processing": "Procesando...",
     "complete_title": "¡Assessment de base completado!",
     "complete_text": "Hemos analizado tu CV y tu perfil de base ya está listo. Ahora vamos a crear tu XIMAtar completo con el assessment a fondo.",
-    "continue_assessment": "Continuar con el assessment XIMAtar"
+    "continue_assessment": "Continuar con el assessment XIMAtar",
+    "field_required_note": "Obligatorio: tu campo decide qué preguntas recibirás.",
+    "field_required_error": "Primero elige tu campo: decide qué preguntas recibirás.",
+    "upload_cv_optional": "Sube tu CV (opcional)",
+    "cv_duration_hint": "El análisis tarda alrededor de un minuto.",
+    "continue_without_cv": "Continuar sin CV",
+    "cv_stage_reading": "Leyendo tu documento",
+    "cv_stage_experience": "Extrayendo tu experiencia",
+    "cv_stage_pillars": "Relacionándola con los cinco pilares",
+    "cv_stage_finalizing": "Terminando el análisis",
+    "cv_slow": "Está tardando más de lo habitual. Puedes seguir esperando, volver a intentarlo o cancelar y continuar sin CV.",
+    "cv_retry": "Reintentar",
+    "cv_cancel": "Cancelar la subida",
+    "cv_done_title": "Paso del CV completado",
+    "cv_done_next": "Ahora el cuestionario: {{mc}} preguntas de opción múltiple y {{open}} respuestas abiertas, unos {{minutes}} minutos.",
+    "start_questionnaire": "Empezar el cuestionario"
   },
   "assessment": {
     "title": "Crea tu Ximatar",
@@ -1063,7 +1078,9 @@
         "placeholder": "Describe tu enfoque creativo para resolver problemas..."
       }
     ],
-    "required": "Este campo es obligatorio"
+    "required": "Este campo es obligatorio",
+    "intro_cv_done": "CV analizado: este paso está completado.",
+    "intro_whats_next": "Ahora el cuestionario: {{mc}} preguntas de opción múltiple y después {{open}} respuestas abiertas. Unos {{minutes}} minutos; tu progreso se guarda sobre la marcha."
   },
   "assessmentSets": {
     "science_tech": {

@@ -1,36 +1,87 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, FileText, Check, AlertCircle, SkipForward } from 'lucide-react';
+import { Upload, FileText, Check, AlertCircle, SkipForward, Clock, Loader2, RotateCcw, X } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import FieldSelector, { FieldKey } from '@/components/FieldSelector';
 import { CV_PROCESSING_VERSION } from '@/lib/legal/consentVersions';
 import { log } from '@/lib/log';
+import { ASSESSMENT_MC_COUNT, ASSESSMENT_OPEN_COUNT, ASSESSMENT_ESTIMATED_MINUTES } from './assessmentShape';
 
 interface BaselineAssessmentProps {
   onComplete: (step: number) => void;
   onCvUpload: (uploaded: boolean) => void;
 }
 
+/**
+ * Staged progress for the CV analysis. analyze-cv-guest is a single request
+ * that answers after roughly a minute and reports no progress, so these stages
+ * advance on elapsed time only. They say what the analysis does, in order; they
+ * are deliberately not a percentage, which would claim a precision we don't have.
+ */
+const CV_STAGES = [
+  { key: 'reading', startsAt: 0 },
+  { key: 'experience', startsAt: 10 },
+  { key: 'pillars', startsAt: 25 },
+  { key: 'finalizing', startsAt: 45 },
+] as const;
+
+/** After this many seconds the wait is unusual enough to say so and offer a retry. */
+const CV_SLOW_AFTER_SECONDS = 90;
+
 const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onCvUpload }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  // Bumped on every attempt so a retry restarts the staged messages.
+  const [attempt, setAttempt] = useState(0);
   const [uploadComplete, setUploadComplete] = useState(
     typeof window !== 'undefined' && !!sessionStorage.getItem('guest_cv_analysis')
   );
   const [dataConsent, setDataConsent] = useState(false);
   const [field, setField] = useState<FieldKey | null>(null);
+  const [fieldMissing, setFieldMissing] = useState(false);
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fieldCardRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const cached = localStorage.getItem('preferred_field') as FieldKey | null;
     if (cached) setField(cached);
   }, []);
+
+  // Tick once a second while the analysis runs, to drive the staged messages.
+  useEffect(() => {
+    if (!uploading) return;
+    const startedAt = Date.now();
+    setElapsed(0);
+    const id = window.setInterval(() => {
+      setElapsed(Math.floor((Date.now() - startedAt) / 1000));
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [uploading, attempt]);
+
+  // Leaving the page mid-analysis must not leave a request resolving into an
+  // unmounted component.
+  useEffect(() => () => abortRef.current?.abort(), []);
+
+  const handleFieldChange = (value: FieldKey) => {
+    setField(value);
+    setFieldMissing(false);
+  };
+
+  /** The chosen field picks the question set, so nothing can continue without it. */
+  const requireField = (): boolean => {
+    if (field) return true;
+    setFieldMissing(true);
+    fieldCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return false;
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -49,6 +100,12 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
 
   const handleUpload = async () => {
     if (!file || !dataConsent) return;
+    if (!requireField()) return;
+
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    setAttempt((n) => n + 1);
     setUploading(true);
 
     try {
@@ -75,6 +132,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
           'x-guest-consent': '1',
         },
         body: formData,
+        signal: controller.signal,
       });
 
       if (!response.ok) {
@@ -83,6 +141,7 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
       }
 
       const data = await response.json();
+      if (controller.signal.aborted) return;
 
       sessionStorage.setItem('guest_cv_filename', file.name);
       sessionStorage.setItem('guest_cv_analysis', JSON.stringify(data));
@@ -106,7 +165,13 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
         title: t('guestCv.completed', 'CV analizzato'),
         description: t('guestCv.success', 'I risultati saranno collegati al tuo profilo al momento della registrazione.'),
       });
+      // The questionnaire opens with a short "CV done, here is what comes next"
+      // note, so a separate confirmation screen here would only cost a click.
+      saveFieldPreference();
+      onComplete(1);
     } catch (error) {
+      // Cancelled by the user (or superseded by a retry): not an error to report.
+      if (controller.signal.aborted) return;
       log.error('[BaselineAssessment] CV upload error:', error);
       toast({
         title: t('common.error', 'Errore'),
@@ -114,19 +179,29 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
         variant: 'destructive',
       });
     } finally {
-      setUploading(false);
+      if (abortRef.current === controller) {
+        abortRef.current = null;
+        setUploading(false);
+      }
     }
   };
 
+  const cancelUpload = () => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setUploading(false);
+  };
+
   const handleSkip = () => {
-    if (!field) return;
+    if (!requireField()) return;
+    cancelUpload();
     saveFieldPreference();
     onCvUpload(false);
     onComplete(1);
   };
 
   const handleContinue = () => {
-    if (!field) return;
+    if (!requireField()) return;
     saveFieldPreference();
     onComplete(1);
   };
@@ -140,22 +215,42 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
     setDataConsent(checked === true);
   };
 
+  const questionnaireShape = {
+    mc: ASSESSMENT_MC_COUNT,
+    open: ASSESSMENT_OPEN_COUNT,
+    minutes: ASSESSMENT_ESTIMATED_MINUTES,
+  };
+
+  const currentStageIndex = CV_STAGES.reduce(
+    (current, stage, index) => (elapsed >= stage.startsAt ? index : current),
+    0
+  );
+  const isSlow = elapsed >= CV_SLOW_AFTER_SECONDS;
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4 text-foreground">{t('baseline.title')}</h2>
-        <p className="text-muted-foreground text-lg">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4 text-foreground">{t('baseline.title')}</h2>
+        <p className="text-muted-foreground sm:text-lg">
           {t('baseline.subtitle')}
         </p>
       </div>
 
-      <Card className="p-6 border-2">
-        <FieldSelector value={field} onChange={setField} disabled={uploading} />
-      </Card>
+      <div ref={fieldCardRef}>
+        <Card className={`p-4 sm:p-6 border-2 ${fieldMissing ? 'border-destructive' : ''}`}>
+          <p
+            className={`mb-3 text-sm font-medium ${fieldMissing ? 'text-destructive' : 'text-muted-foreground'}`}
+            role={fieldMissing ? 'alert' : undefined}
+          >
+            {fieldMissing ? t('baseline.field_required_error') : t('baseline.field_required_note')}
+          </p>
+          <FieldSelector value={field} onChange={handleFieldChange} disabled={uploading} />
+        </Card>
+      </div>
 
       {!uploadComplete ? (
         <div className="space-y-6">
-          <Card className="p-6 border-2 border-dashed border-border bg-muted/30">
+          <Card className="p-4 sm:p-6 border-2 border-dashed border-border bg-muted/30">
             <input
               type="file"
               ref={fileInputRef}
@@ -163,15 +258,78 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
               accept=".pdf"
               className="hidden"
             />
-            
-            {!file ? (
-              <div className="text-center space-y-4">
-                <FileText size={48} className="text-muted-foreground mx-auto" />
-                <div>
-                  <h3 className="text-lg font-medium text-foreground">{t('baseline.upload_cv')}</h3>
-                  <p className="text-sm text-muted-foreground">{t('baseline.file_format')}</p>
+
+            {/* Going on without a CV is a first-class choice, so it sits at the top
+                of the upload area rather than below the whole form. */}
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="text-left">
+                <h3 className="text-lg font-medium text-foreground">{t('baseline.upload_cv_optional')}</h3>
+                <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <Clock size={14} className="shrink-0" />
+                  {t('baseline.cv_duration_hint')}
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={handleSkip}
+                className="flex items-center gap-2 self-start sm:self-auto"
+              >
+                <SkipForward size={16} />
+                {t('baseline.continue_without_cv')}
+              </Button>
+            </div>
+
+            {uploading ? (
+              <div className="space-y-4" aria-live="polite">
+                <ol className="space-y-2">
+                  {CV_STAGES.map((stage, index) => {
+                    const done = index < currentStageIndex;
+                    const active = index === currentStageIndex;
+                    return (
+                      <li
+                        key={stage.key}
+                        className={`flex items-center gap-2 text-sm ${
+                          active ? 'font-medium text-foreground' : done ? 'text-muted-foreground' : 'text-muted-foreground/60'
+                        }`}
+                      >
+                        {done ? (
+                          <Check size={16} className="shrink-0 text-green-600" />
+                        ) : active ? (
+                          <Loader2 size={16} className="shrink-0 animate-spin text-primary" />
+                        ) : (
+                          <span className="inline-block h-4 w-4 shrink-0 rounded-full border border-muted-foreground/40" />
+                        )}
+                        {t(`baseline.cv_stage_${stage.key}`)}
+                      </li>
+                    );
+                  })}
+                </ol>
+
+                {isSlow && (
+                  <div className="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3" role="status">
+                    <AlertCircle size={16} className="mt-0.5 shrink-0 text-amber-600" />
+                    <p className="text-sm text-foreground">{t('baseline.cv_slow')}</p>
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-2">
+                  {isSlow && (
+                    <Button variant="outline" size="sm" onClick={handleUpload} className="gap-2">
+                      <RotateCcw size={14} />
+                      {t('baseline.cv_retry')}
+                    </Button>
+                  )}
+                  <Button variant="ghost" size="sm" onClick={cancelUpload} className="gap-2">
+                    <X size={14} />
+                    {t('baseline.cv_cancel')}
+                  </Button>
                 </div>
-                <Button 
+              </div>
+            ) : !file ? (
+              <div className="text-center space-y-4">
+                <FileText size={40} className="text-muted-foreground mx-auto" />
+                <p className="text-sm text-muted-foreground">{t('baseline.file_format')}</p>
+                <Button
                   onClick={() => fileInputRef.current?.click()}
                   className="bg-primary hover:bg-primary/90"
                 >
@@ -183,15 +341,14 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
               <div className="text-center space-y-4">
                 <FileText size={32} className="text-primary mx-auto" />
                 <div>
-                  <h3 className="text-lg font-medium text-foreground">{file.name}</h3>
+                  <p className="text-lg font-medium text-foreground break-words">{file.name}</p>
                   <p className="text-sm text-muted-foreground">
                     {(file.size / 1024 / 1024).toFixed(2)} MB
                   </p>
                 </div>
-                <Button 
+                <Button
                   variant="outline"
                   onClick={() => fileInputRef.current?.click()}
-                  disabled={uploading}
                 >
                   {t('baseline.change_file')}
                 </Button>
@@ -199,25 +356,25 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
             )}
           </Card>
 
-          {file && (
+          {file && !uploading && (
             <Card className="p-4 bg-primary/5 border-primary/20">
               <div className="flex items-start space-x-3">
-                <AlertCircle className="text-primary mt-0.5" size={20} />
+                <AlertCircle className="text-primary mt-0.5 shrink-0" size={20} />
                 <div className="space-y-3">
                   <div>
                     <p className="text-sm text-muted-foreground">
                       {t('guestCv.disclaimer', "Il CV è usato solo per calcolare il tuo profilo. Il file non viene conservato sui nostri server: i risultati restano sul tuo dispositivo finché non completi la registrazione.")}
                     </p>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
-                    <Checkbox 
+                    <Checkbox
                       id="data-consent"
                       checked={dataConsent}
                       onCheckedChange={handleConsentChange}
                     />
-                    <label 
-                      htmlFor="data-consent" 
+                    <label
+                      htmlFor="data-consent"
                       className="text-sm text-foreground cursor-pointer"
                     >
                       {t('guestCv.consent_label', 'Acconsento al trattamento del mio CV per il calcolo del profilo XIMAtar.')}
@@ -228,58 +385,40 @@ const BaselineAssessment: React.FC<BaselineAssessmentProps> = ({ onComplete, onC
             </Card>
           )}
 
-          <div className="flex justify-center gap-4">
-            <Button 
-              variant="outline"
-              onClick={handleSkip}
-              disabled={!field || uploading}
-              className="flex items-center gap-2"
-            >
-              <SkipForward size={16} />
-              {t('baseline.skip_for_now')}
-            </Button>
-            
-            {file && (
-              <Button 
+          {file && !uploading && (
+            <div className="flex justify-center">
+              <Button
                 onClick={handleUpload}
-                disabled={!field || uploading || !dataConsent}
+                disabled={!dataConsent}
                 className="bg-primary hover:bg-primary/90"
               >
-                {uploading ? (
-                  <>
-                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    {t('baseline.processing')}
-                  </>
-                ) : (
-                  <>
-                    <Upload size={16} className="mr-2" />
-                    {t('baseline.upload_continue')}
-                  </>
-                )}
+                <Upload size={16} className="mr-2" />
+                {t('baseline.upload_continue')}
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       ) : (
+        // Reached only when coming back to this step with a CV already analysed
+        // in this session; a fresh upload goes straight to the questionnaire.
         <div className="text-center space-y-6">
           <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto">
             <Check size={32} className="text-green-600" />
           </div>
-          
+
           <div>
-            <h3 className="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">{t('baseline.complete_title')}</h3>
+            <h3 className="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">{t('baseline.cv_done_title')}</h3>
             <p className="text-muted-foreground">
-              {t('baseline.complete_text')}
+              {t('baseline.cv_done_next', questionnaireShape)}
             </p>
           </div>
-          
-          <Button 
+
+          <Button
             size="lg"
             onClick={handleContinue}
-            disabled={!field}
             className="bg-primary hover:bg-primary/90"
           >
-            {t('baseline.continue_assessment')}
+            {t('baseline.start_questionnaire')}
           </Button>
         </div>
       )}

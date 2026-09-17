@@ -806,7 +806,22 @@
     "processing": "Elaborazione in corso...",
     "complete_title": "Assessment di base completato!",
     "complete_text": "Il tuo CV è stato analizzato e il tuo profilo di base è pronto. Ora creiamo il tuo XIMAtar completo con l'assessment approfondito.",
-    "continue_assessment": "Continua con l'assessment XIMAtar"
+    "continue_assessment": "Continua con l'assessment XIMAtar",
+    "field_required_note": "Obbligatorio: il tuo ambito decide quali domande riceverai.",
+    "field_required_error": "Prima scegli il tuo ambito: decide quali domande riceverai.",
+    "upload_cv_optional": "Carica il tuo CV (facoltativo)",
+    "cv_duration_hint": "L'analisi richiede circa un minuto.",
+    "continue_without_cv": "Continua senza CV",
+    "cv_stage_reading": "Lettura del documento",
+    "cv_stage_experience": "Estrazione delle esperienze",
+    "cv_stage_pillars": "Collegamento ai cinque pilastri",
+    "cv_stage_finalizing": "Ultimi ritocchi all'analisi",
+    "cv_slow": "Ci sta mettendo più del solito. Puoi aspettare ancora, riprovare oppure annullare e continuare senza CV.",
+    "cv_retry": "Riprova",
+    "cv_cancel": "Annulla caricamento",
+    "cv_done_title": "Passaggio del CV completato",
+    "cv_done_next": "Ora il questionario: {{mc}} domande a risposta multipla e {{open}} risposte aperte, circa {{minutes}} minuti.",
+    "start_questionnaire": "Inizia il questionario"
   },
   "assessment": {
     "title": "Crea il tuo Ximatar",
@@ -1055,7 +1070,9 @@
       "open2": {
         "question": "Qual è la tua sfida professionale più grande, o l'area in cui vorresti crescere? Come pensi di affrontarla?"
       }
-    }
+    },
+    "intro_cv_done": "CV analizzato: questo passaggio è completato.",
+    "intro_whats_next": "Ora il questionario: {{mc}} domande a risposta multipla, poi {{open}} risposte aperte. Circa {{minutes}} minuti; i progressi vengono salvati mentre procedi."
   },
   "results": {
     "title": "I tuoi risultati",

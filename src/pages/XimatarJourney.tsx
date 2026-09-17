@@ -211,6 +211,7 @@ const XimatarJourney = () => {
               onMcAnswerChange={setMcAnswer}
               onOpenAnswerChange={setOpenAnswer}
               onGoBack={goBack}
+              cvAnalysed={cvUploaded}
             />
           )}
           

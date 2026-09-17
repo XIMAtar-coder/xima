@@ -967,7 +967,22 @@
     "processing": "Processing...",
     "complete_title": "Baseline Assessment Complete!",
     "complete_text": "Your CV has been analyzed and your baseline profile is ready. Let's now create your complete Ximatar through our comprehensive assessment.",
-    "continue_assessment": "Continue to Ximatar Assessment"
+    "continue_assessment": "Continue to Ximatar Assessment",
+    "field_required_note": "Required: your field decides which questions you get.",
+    "field_required_error": "Choose your field first: it decides which questions you get.",
+    "upload_cv_optional": "Upload your CV (optional)",
+    "cv_duration_hint": "The analysis takes about a minute.",
+    "continue_without_cv": "Continue without CV",
+    "cv_stage_reading": "Reading your document",
+    "cv_stage_experience": "Extracting your experience",
+    "cv_stage_pillars": "Mapping it to the five pillars",
+    "cv_stage_finalizing": "Finalizing your analysis",
+    "cv_slow": "This is taking longer than usual. You can keep waiting, try again, or cancel and continue without your CV.",
+    "cv_retry": "Try again",
+    "cv_cancel": "Cancel upload",
+    "cv_done_title": "CV step done",
+    "cv_done_next": "Next is the questionnaire: {{mc}} multiple-choice questions and {{open}} written answers, about {{minutes}} minutes.",
+    "start_questionnaire": "Start the questionnaire"
   },
   "assessment": {
     "title": "Create Your Ximatar",
@@ -1216,7 +1231,9 @@
       "open2": {
         "question": "What is your biggest professional challenge or area where you'd like to grow? How do you plan to address it?"
       }
-    }
+    },
+    "intro_cv_done": "CV analysed. That step is done.",
+    "intro_whats_next": "Now the questionnaire: {{mc}} multiple-choice questions, then {{open}} written answers. About {{minutes}} minutes; your progress is saved as you go."
   },
   "dashboard": {
     "page_label": "DASHBOARD",

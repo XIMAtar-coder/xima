@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { scoreOpenResponse, type FieldKey } from '@/lib/scoring/openResponse';
 import { getPillarForQuestion, getQuestionIdsByPillar, type PillarKey } from '@/lib/assessment/getPillarForQuestion';
@@ -14,6 +14,7 @@ import { useAssessment } from '@/context/AssessmentContext';
 import QuestionExample from '@/components/QuestionExample';
 import { selectArchetypeFromAssessmentPillars } from '@/lib/ximatarTaxonomy';
 import { log } from '@/lib/log';
+import { ASSESSMENT_MC_COUNT, ASSESSMENT_OPEN_COUNT, ASSESSMENT_ESTIMATED_MINUTES } from './assessmentShape';
 
 interface XimatarAssessmentProps {
   onComplete: (step: number) => void;
@@ -26,6 +27,8 @@ interface XimatarAssessmentProps {
   onMcAnswerChange?: (questionId: number, answerIndex: number) => void;
   onOpenAnswerChange?: (questionId: string, answer: string) => void;
   onGoBack?: () => void;
+  /** True when the CV step just produced an analysis; the intro then confirms it. */
+  cvAnalysed?: boolean;
 }
 
 const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({ 
@@ -38,6 +41,7 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
   onMcAnswerChange,
   onOpenAnswerChange,
   onGoBack,
+  cvAnalysed = false,
 }) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
@@ -462,6 +466,27 @@ const XimatarAssessment: React.FC<XimatarAssessmentProps> = ({
           </p>
         </div>
       </div>
+
+      {/* Start of the questionnaire: confirms the CV step (when there was one)
+          and says what is ahead. This replaces a separate "baseline complete"
+          screen that cost a click and read as if everything was done. */}
+      {currentQuestion === 0 && (
+        <Card className="p-4 sm:p-5 border-primary/20 bg-primary/5">
+          {cvAnalysed && (
+            <p className="mb-1 flex items-center gap-2 text-sm font-medium text-green-700 dark:text-green-400">
+              <CheckCircle2 size={16} className="shrink-0" />
+              {t('assessment.intro_cv_done')}
+            </p>
+          )}
+          <p className="text-sm text-foreground">
+            {t('assessment.intro_whats_next', {
+              mc: ASSESSMENT_MC_COUNT,
+              open: ASSESSMENT_OPEN_COUNT,
+              minutes: ASSESSMENT_ESTIMATED_MINUTES,
+            })}
+          </p>
+        </Card>
+      )}
 
       <Card className="p-5 sm:p-8">
         {currentMultipleChoice && (
