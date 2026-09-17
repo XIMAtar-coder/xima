@@ -76,7 +76,7 @@
       }
     },
     "problem": {
-      "label": "// THE PROBLEM",
+      "label": "THE PROBLEM",
       "headline_html": "The hiring system is <span style=\"color: var(--xima-blue)\">broken</span>.<br/>Everyone knows it.",
       "body": [
         "For decades we've selected people by reading pages. Degrees, years of experience, keywords.",
@@ -86,7 +86,7 @@
       "quote": "\"What if we could see the person, not the paper?\""
     },
     "pillars": {
-      "label": "// THE FIVE PILLARS OF XIMA INTELLIGENCE",
+      "label": "THE FIVE PILLARS OF XIMA INTELLIGENCE",
       "title": "Five dimensions. One truth.",
       "subtitle": "XIMA measures how you think, decide, communicate, create and grow.",
       "what_label": "What it is",
@@ -137,7 +137,7 @@
       }
     },
     "how_it_works": {
-      "label": "// HOW XIMA WORKS",
+      "label": "HOW XIMA WORKS",
       "title": "Your journey. Five steps.",
       "s1": {
         "title": "Discover who you really are",
@@ -918,11 +918,11 @@
       "title": "Top Job Matches",
       "subtitle": "Jobs tailored to your skills and XIMAtar"
     },
-    "problem_label": "// THE PROBLEM",
+    "problem_label": "THE PROBLEM",
     "problem_headline": "The hiring system is broken.\nEveryone knows it.",
     "problem_body": "Over 80% of SMBs use zero psychometric tooling. The CV is the primary screening instrument — a credential proxy that tells you where someone went to school, not how they think, decide, or work under pressure. Unstructured interviews produce systematic false positives and bias against non-traditional candidates. Enterprise solutions cost $50,000–$500,000 per year. Structurally inaccessible to the businesses where most hiring actually happens.",
     "problem_pullquote": "\"What if we could see the person — not the paper?\"",
-    "pillars_label": "// THE MODEL",
+    "pillars_label": "THE MODEL",
     "pillars_headline": "Five Pillars.\nOne Complete Picture.",
     "pillars_subheadline": "Five orthogonal behavioral dimensions. Each measuring something distinct. Each illuminating what no CV can capture.",
     "pillar_1_name": "Drive",
@@ -946,7 +946,7 @@
     "pillar_5_measures": "Analytical reasoning · pattern recognition · systematic thinking",
     "pillar_5_not": "Not: math ability or coding skill",
     "pillars_pullquote": "\"No demographics in scoring. No credential proxies. Five signals that tell the truth about how someone works.\"",
-    "ximatar_label": "// THE IDENTITY",
+    "ximatar_label": "THE IDENTITY",
     "ximatar_headline": "12 Archetypes.\nOne Is Yours.",
     "ximatar_subheadline": "Every candidate receives a XIMAtar — one of 12 canonical behavioral archetypes, assigned by matching their five-pillar score to the nearest archetype profile. Persistent. Portable. Theirs forever.",
     "ximatar_portability": "Unlike MBTI or Big Five — which reset with every employer — your XIMAtar is yours. You take it once. It travels with you. Every XIMA-connected company sees the same behavioral truth.",
@@ -1330,7 +1330,7 @@
   },
   "about": {
     "hero": {
-      "label": "// ABOUT",
+      "label": "ABOUT",
       "titlePre": "Built by ",
       "titleAccent1": "Engineers",
       "titleMid": ".\nDesigned for ",
@@ -1340,7 +1340,7 @@
       "quote": "\"If you stripped away every credential — every institution, every brand name on a CV — what would you actually know about someone?\""
     },
     "origin": {
-      "label": "// THE ORIGIN",
+      "label": "THE ORIGIN",
       "title": "From Embedded Systems\nto Behavioral Identity.",
       "p1": "AlphaLink Engineering began as a systems-engineering studio — embedded systems for intelligent vehicles, drones, aerospace. The method has always been the same: break complex problems into measurable signals, build systems that work under pressure, never assume what the data doesn't support.",
       "p2": "XIMA was born from the same method — applied to people. When Pietro Cozzi started watching how companies hired, he saw the same systematic error everywhere: decisions based on proxies — the name of the university, the brand of the last employer, the impression from an interview. Noisy signals that don't measure what actually matters.",
@@ -1352,12 +1352,12 @@
       "p3": "Zero demographic proxies"
     },
     "problem": {
-      "label": "// THE PROBLEM",
+      "label": "THE PROBLEM",
       "title": "The Hiring System\nIs Broken. Everyone Knows It.",
       "body": "CVs and interviews measure where you've been — not how you think, decide, or work under pressure."
     },
     "model": {
-      "label": "// THE MODEL",
+      "label": "THE MODEL",
       "title": "Five Signals. One Behavioral Truth.",
       "drive_name": "Drive",
       "drive_body": "The engine behind the person. Persistence toward goals, initiative, internal motivation. The willpower that stays when the situation gets hard.",
@@ -1372,7 +1372,7 @@
       "quote": "\"No demographic data in the score. No credential proxy. Five signals that tell the truth about how someone works.\""
     },
     "archetypes": {
-      "label": "// THE IDENTITY",
+      "label": "THE IDENTITY",
       "title": "12 Archetypes.\nOne Is Yours.",
       "body": "Your five-pillar vector is compared against 12 canonical archetype profiles via Euclidean distance. You're assigned the closest one. Not a label that defines you — a compass that shows the dynamic between your peak potential, your current limit, and your inner willpower. Persistent. Portable. Yours forever.",
       "name_bear": "Bear",
@@ -1389,7 +1389,7 @@
       "name_wolf": "Wolf"
     },
     "team": {
-      "label": "// THE PEOPLE BEHIND XIMA",
+      "label": "THE PEOPLE BEHIND XIMA",
       "title": "Engineers, researchers, builders.",
       "subtitle": "United by the belief that technology can reveal human potential — when it's designed with honesty and rigor.",
       "pietro_name": "Pietro Cozzi",
@@ -1413,7 +1413,7 @@
       "mission_sub": "Reveal human potential."
     },
     "value": {
-      "label": "// THE VALUE",
+      "label": "THE VALUE",
       "title": "Two Entries. One System.",
       "subtitle": "XIMA works because it serves both sides of the problem — with the same depth, the same precision, the same honesty.",
       "candidates_label": "FOR CANDIDATES",
@@ -1894,7 +1894,7 @@
     "hero_subheadline": "XIMA brings enterprise psychometrics to SMEs. Validated behavioral profiles, AI-generated role-specific challenges, selection filtered on real fit — not on credentials.",
     "hero_cta_primary": "Start the Free Trial →",
     "hero_cta_secondary": "Sign In",
-    "why_label": "// WHY XIMA",
+    "why_label": "WHY XIMA",
     "why_headline": "The Problem Isn't\nFinding Candidates. It's Finding the Right Ones.",
     "why_subheadline": "Enterprise solutions cost between €50,000 and €500,000 a year. XIMA starts at €199/month. Same quality of behavioral signal — without the enterprise contract.",
     "feature1_title": "Behavioral Matching",
@@ -1905,7 +1905,7 @@
     "feature3_body": "Every AI decision is logged with SHA-256 hash, model version and latency. Deterministic replay for audit or dispute. GDPR Art. 22 by architecture — not by policy. Zero autonomous decisions: every hire requires human confirmation.",
     "feature4_title": "Accessible to SMEs",
     "feature4_body": "HireVue and enterprise competitors require €50,000+ contracts. XIMA starts at €199/month. No long-term lock-in. No paid onboarding. Behavioral-signal selection — finally within reach of anyone who actually hires.",
-    "pipeline_label": "// THE PIPELINE",
+    "pipeline_label": "THE PIPELINE",
     "pipeline_headline": "How It Works for Companies.",
     "pipeline_subheadline": "From job posting to evaluated candidate — everything in one traceable pipeline.",
     "pipeline_step1_number": "01",
@@ -1920,7 +1920,7 @@
     "pipeline_step4_number": "04",
     "pipeline_step4_title": "Make Data-Driven Decisions",
     "pipeline_step4_body": "Dashboard with behavioral scores, candidate comparison, strength and friction signals on every pillar. Every AI recommendation is advisory — the final decision is always yours.",
-    "pricing_label": "// PRICING",
+    "pricing_label": "PRICING",
     "pricing_headline": "Pricing that Scales with You.",
     "pricing_subheadline": "No long-term contract. No paid onboarding. Start, evaluate, scale.",
     "plan1_badge": "Starter",
@@ -1954,7 +1954,7 @@
     "plan3_feature4": "Dedicated Customer Success Manager",
     "plan3_feature5": "Guaranteed SLA",
     "plan3_cta": "Contact the Team",
-    "trust_label": "// TRUST & COMPLIANCE",
+    "trust_label": "TRUST & COMPLIANCE",
     "trust_headline": "Built to Withstand\nthe Toughest Audit.",
     "trust_1_title": "GDPR Art. 22 by Architecture",
     "trust_1_body": "XIMA is classified as a decision-support tool — not a decision-maker. Every AI output requires human confirmation. Not bolted on at the end: designed into the architecture from day one.",
@@ -5655,7 +5655,7 @@
     "eyebrow": "Assessment Guide",
     "hero_headline": "Not a test.\nA behavioral measurement system.",
     "hero_subheadline": "Designed to be fair, comparable, and auditable. Your XIMAtar is not an opinion — it is the output of a method.",
-    "journey_label": "// THE JOURNEY",
+    "journey_label": "THE JOURNEY",
     "journey_headline": "Your Assessment Journey",
     "journey_subheadline": "Four stages. Each one reveals something the previous one could not see.",
     "step1_badge": "Step 1",
@@ -5670,7 +5670,7 @@
     "step4_badge": "Step 4",
     "step4_title": "XIMAtar Assignment",
     "step4_body": "Your five-pillar vector is compared to 12 canonical archetype profiles via Euclidean distance. The nearest is assigned. Top-3 matches are stored. This is you — not a label, a compass.",
-    "pillars_label": "// THE MODEL",
+    "pillars_label": "THE MODEL",
     "pillars_headline": "The 5 XIMA Pillars",
     "pillars_subheadline": "Five independent dimensions. None more important than the others in isolation — but their unique combination determines your XIMAtar.",
     "pillar1_name": "Computational Power",
@@ -5683,12 +5683,12 @@
     "pillar4_body": "Divergent thinking, novel approaches, and curiosity. Does not measure artistic talent — measures the capacity to see differently.",
     "pillar5_name": "Drive",
     "pillar5_body": "Goal persistence, initiative, and internal motivation. Does not measure aggression — measures the engine behind the person.",
-    "example_label": "// EXAMPLE",
+    "example_label": "EXAMPLE",
     "example_headline": "Pillar Scores — Sample Profile",
     "example_body": "Each pillar is calculated from behavioral responses, situational choices, cognitive patterns, and writing style analysis. Scores range from 0 to 10.",
     "example_result_label": "Result: Fox",
     "example_result_body": "With dominant Creativity (9.1) and high Computational Power (8.2), this profile matches the Fox archetype — strategic adaptability and creative problem solving. Not a category. A direction.",
-    "archetypes_label": "// THE 12 ARCHETYPES",
+    "archetypes_label": "THE 12 ARCHETYPES",
     "archetypes_headline": "The 12 XIMAtar Archetypes",
     "archetypes_subheadline": "Each XIMAtar represents a distinct configuration of dominant strength, friction point, and Drive level. We don't tell you who you are. We show you the dynamic that moves you.",
     "archetype_lion_name": "Lion",
@@ -5727,7 +5727,7 @@
     "archetype_chameleon_name": "Chameleon",
     "archetype_chameleon_role": "Behavioral adaptability and context reading",
     "archetype_chameleon_pillar": "Balanced",
-    "assignment_label": "// THE METHOD",
+    "assignment_label": "THE METHOD",
     "assignment_headline": "How XIMAtar Assignment Works",
     "assignment_step1_title": "Pillar Score Calculation",
     "assignment_step1_body": "Responses to 21 multiple-choice items and 2 open-ended questions are analyzed to calculate a score for each of the 5 pillars. Items follow a fixed cyclic assignment — each pillar receives exactly 4–5 questions. Final blend: 90% MC + 10% open-answer.",
@@ -5737,7 +5737,7 @@
     "assignment_step3_body": "A 25% matching bonus is applied when your strongest pillar aligns with a XIMAtar's primary characteristic. This ensures the assignment reflects your real strength — not just your average score.",
     "assignment_step4_title": "Final Assignment",
     "assignment_step4_body": "The XIMAtar with the closest match to your unique profile becomes your archetype. Top-3 matches are stored. Your full profile includes strengths, friction areas, and a personalized development plan.",
-    "governance_label": "// GOVERNANCE",
+    "governance_label": "GOVERNANCE",
     "governance_headline": "The Most Auditable Hiring System Ever Built.",
     "governance_subheadline": "GDPR Article 22 compliant by architecture. Not by policy — by code.",
     "governance_1_title": "SHA-256 Audit Trail",
@@ -5760,7 +5760,7 @@
     "hero_subheadline": "Not a single test. A progressive pipeline — each level revealing a deeper layer of the candidate. We don't define people with labels. We reveal the dynamic between what moves them, what lifts them, and what holds them back.",
     "hero_pullquote": "\"In XIMA, a XIMAtar is not just a reflection of abilities. It is a living archetype — built from the tension between your highest potential, your current limitation, and your internal force of will.\"",
     "hero_cta": "Assessment Guide →",
-    "journey_label": "// THE JOURNEY",
+    "journey_label": "THE JOURNEY",
     "journey_headline": "Your Assessment Journey",
     "journey_subheadline": "Four stages. Each one reveals something the previous one could not see.",
     "step1_title": "Upload CV",
@@ -5771,7 +5771,7 @@
     "step3_body": "Your five-pillar vector is compared to 12 canonical archetype profiles via Euclidean distance. The nearest is assigned. Top-3 matches are stored. This is you — not a label, a compass.",
     "step4_title": "Connect with Expert",
     "step4_body": "Matched with a mentor based on behavioral signal — not generic availability. The right mentor has complementary strengths to yours. Book a session and start working on your next chapter.",
-    "pipeline_label": "// THE PIPELINE",
+    "pipeline_label": "THE PIPELINE",
     "pipeline_headline": "Three Levels of Depth.",
     "pipeline_subheadline": "Each level reveals what the previous one could not measure. The pipeline stops when there is enough signal — not when an algorithm decides.",
     "pipeline_l1_badge": "L1 · LIVE",
@@ -5783,7 +5783,7 @@
     "pipeline_l3_badge": "L3 · LIVE",
     "pipeline_l3_title": "Standing Video Session",
     "pipeline_l3_body": "Asynchronous video response to structured prompts. Communication, presence, articulation. No AI scoring here — human review only. Because some things still require a human to see.",
-    "pillars_label": "// THE FIVE PILLARS",
+    "pillars_label": "THE FIVE PILLARS",
     "pillars_headline": "The Five Pillars of\nXIMA Intelligence",
     "pillars_subheadline": "Each XIMAtar is assigned based on: your strongest pillar (your edge), your weakest pillar (your friction point), and your Drive level (your inner fuel). Every score is computed from behavioral answers, situational choices, cognitive patterns, and writing style analysis.",
     "pillars_archetype_logic": "This creates 12 archetypes, each expressed in three Drive-paths: High Drive — already activating change. Medium Drive — stable but not leveraged. Low Drive — potential still dormant.",
@@ -5808,7 +5808,7 @@
     "pillar5_body": "Drive measures how fast you improve the skills you don't yet master. It tracks your growth over time — not your starting point.",
     "pillar5_strength": "As strength: you improve rapidly on weak areas — your trajectory is accelerating.",
     "pillar5_friction": "As friction: your growth on weak areas is slow — focus on deliberate practice.",
-    "identity_label": "// YOUR IDENTITY",
+    "identity_label": "YOUR IDENTITY",
     "identity_headline": "12 Archetypes.\nOne Is Yours.",
     "identity_subheadline": "Each XIMAtar represents a distinct configuration of dominant strength, friction point, and Drive level. We don't tell you who you are. We show you the dynamic that moves you.",
     "identity_portability": "Unlike MBTI or Big Five — which reset with every employer — your XIMAtar is yours. You take it once. It travels with you. Every XIMA-connected company sees the same behavioral truth.",
@@ -6169,7 +6169,7 @@
     "results_tagline": "We don't define people with labels. We reveal the dynamic between what moves them, what lifts them, and what holds them back.",
     "results_archetype_body": "In XIMA, a XIMAtar is not just a reflection of abilities. It is a living archetype — built from the tension between your highest potential, your current limitation, and your internal force of will.",
     "your_ximatar_label": "YOUR XIMATAR",
-    "archetype_section_label": "// YOUR ARCHETYPE",
+    "archetype_section_label": "YOUR ARCHETYPE",
     "core_traits_label": "Core Traits",
     "strengths_label": "Strengths",
     "growth_areas_label": "Areas for Growth",

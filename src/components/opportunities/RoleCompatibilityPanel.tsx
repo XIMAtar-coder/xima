@@ -4,7 +4,7 @@ import { useUser } from '@/context/UserContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { TrendingUp, Heart, Brain, Sparkles } from 'lucide-react';
+import { TrendingUp, Heart, Brain } from 'lucide-react';
 import { log } from '@/lib/log';
 
 interface RoleCompatibilityPanelProps {
@@ -97,7 +97,6 @@ export const RoleCompatibilityPanel = ({ jobId, requiredSkills = [] }: RoleCompa
     <Card className="border-2 border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-primary" />
           Role Compatibility Analysis
         </CardTitle>
       </CardHeader>

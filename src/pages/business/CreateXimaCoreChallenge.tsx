@@ -595,7 +595,6 @@ const CreateXimaCoreChallenge = () => {
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
-                <Sparkles className="h-5 w-5 text-primary" />
                 {t('challenge.xima_core.scenario_title')}
               </h2>
               <Badge variant="outline">{displayContextTag}</Badge>
@@ -658,7 +657,6 @@ const CreateXimaCoreChallenge = () => {
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="space-y-2">
               <h2 className="flex items-center gap-2 text-2xl font-semibold text-foreground">
-                <Sparkles className="h-5 w-5 text-primary" />
                 L'esperienza del candidato
               </h2>
               <p className="text-sm text-muted-foreground">Standardizzato · confronto equo</p>

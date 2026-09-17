@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, RefreshCw, Bell, Sparkles, ArrowRight } from 'lucide-react';
+import { Loader2, RefreshCw, Bell, ArrowRight } from 'lucide-react';
 import { useNextFeedItem } from '@/hooks/useNextFeedItem';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -25,7 +25,6 @@ export const BusinessFeedWidget = ({ className }: BusinessFeedWidgetProps) => {
       <Card className={cn("", className)}>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
             {t('feed.widget.title', 'Latest Update')}
           </CardTitle>
         </CardHeader>
@@ -78,7 +77,6 @@ export const BusinessFeedWidget = ({ className }: BusinessFeedWidgetProps) => {
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
             {t('feed.widget.title', 'Latest Update')}
           </CardTitle>
           <Badge variant="secondary" className="text-[10px]">

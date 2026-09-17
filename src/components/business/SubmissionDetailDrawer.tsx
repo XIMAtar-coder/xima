@@ -816,7 +816,6 @@ export function SubmissionDetailDrawer({
               <Card className="border-primary/20">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-primary" />
                     {t('business.custom_l1.signals_title', 'Custom L1 — Insights AI')}
                   </CardTitle>
                 </CardHeader>

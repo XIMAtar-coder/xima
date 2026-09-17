@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { User, Star, Edit, Eye, CalendarClock, AlertTriangle, CheckCircle, Users, Sparkles, UserCheck } from 'lucide-react';
+import { User, Star, Edit, Eye, CalendarClock, AlertTriangle, CheckCircle, Users, UserCheck } from 'lucide-react';
 import { MentorCVAccessSection } from '@/components/mentor/MentorCVAccessSection';
 import NotAMentor from './NotAMentor';
 
@@ -203,7 +203,6 @@ export default function MentorPortal() {
         <Card className="bg-muted/30">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Sparkles className="h-5 w-5 text-primary" />
               {t('mentor.how_it_works_title', 'How It Works')}
             </CardTitle>
           </CardHeader>

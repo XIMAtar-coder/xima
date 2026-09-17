@@ -608,7 +608,6 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
         <Card className="animate-fade-in" style={{ animationDelay: '800ms' }}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-heading">
-              <Sparkles className="text-primary animate-scale-in" />
               {t('ximatarJourney.scores_title')}
             </CardTitle>
             {totalScore !== null && (

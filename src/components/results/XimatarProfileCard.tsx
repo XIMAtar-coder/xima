@@ -22,7 +22,6 @@ export const XimatarProfileCard: React.FC<XimatarProfileCardProps> = ({ ximatar,
     <Card className={`animate-[fade-in_0.4s_ease-out] transition-shadow duration-300 ${className || ''}`}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 font-heading">
-          <Sparkles className="text-[#3A9FFF]" />
           {t('ximatarJourney.your_ximatar_label')}
         </CardTitle>
       </CardHeader>

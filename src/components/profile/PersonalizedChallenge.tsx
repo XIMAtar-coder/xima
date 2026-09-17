@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Loader2, Building2 } from 'lucide-react';
+import { Loader2, Building2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { log } from '@/lib/log';
@@ -99,7 +99,6 @@ export const PersonalizedChallenge: React.FC<PersonalizedChallengeProps> = ({
     <Card className="border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-primary" />
           {t('profile.challenge_for_you', 'Sfida per Te')}
           <Badge variant="secondary" className="ml-auto">
             {t('profile.this_week', 'Questa Settimana')}

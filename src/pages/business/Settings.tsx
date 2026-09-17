@@ -185,7 +185,6 @@ const EditableAIProfileSection = () => {
     <Card className="border-border/50">
       <CardHeader>
         <CardTitle className="text-foreground flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary" />
           {t('business.settings.ai_profile', 'Profilo AI Editabile')}
         </CardTitle>
         <CardDescription>

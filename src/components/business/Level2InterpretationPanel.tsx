@@ -10,7 +10,6 @@ import {
   CheckCircle,
   HelpCircle,
   XCircle,
-  Sparkles,
   Clock,
   Globe,
   RefreshCw,
@@ -125,7 +124,6 @@ export function Level2InterpretationPanel({ signals, onRegenerate, isRegeneratin
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
             {t('business.level2_interpretation.title')}
           </CardTitle>
           <Badge variant="outline" className={readinessColors[signals.overallReadiness]}>

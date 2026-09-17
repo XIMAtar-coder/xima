@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, Building2, FileCheck2, Swords, Sparkles, Gauge } from 'lucide-react';
+import { Users, Building2, FileCheck2, Swords, Gauge, Sparkles } from 'lucide-react';
 import { useAdminOverview } from '../hooks/useAdminRpc';
 import { AdminKpi } from '../AdminKpi';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -91,7 +91,7 @@ export default function OverviewTab() {
       {/* AI usage */}
       <Card className="border-border/50">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Sparkles size={18} /> Uso AI</CardTitle>
+          <CardTitle className="flex items-center gap-2">Uso AI</CardTitle>
           <CardDescription>Invocazioni, modelli, esito, latenza</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

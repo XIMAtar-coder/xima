@@ -238,7 +238,6 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary" />
             {t('shortlist.header_title', 'Shortlist for: {{role}}', { role: roleTitle })}
           </h2>
           {generated && (

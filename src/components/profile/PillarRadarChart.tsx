@@ -29,7 +29,6 @@ export const PillarRadarChart: React.FC<PillarRadarChartProps> = ({ pillars }) =
   return (
     <div className="dashboard-section p-5 md:p-6 space-y-4">
       <h3 className="text-[13px] font-semibold text-foreground uppercase tracking-[0.04em] flex items-center gap-2">
-        <Sparkles className="w-4 h-4 text-secondary" strokeWidth={1.5} />
         {t('profile.pillar_breakdown', 'Your Pillar Profile')}
       </h3>
 

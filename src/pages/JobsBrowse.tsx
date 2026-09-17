@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Briefcase, Sparkles, MapPin, Loader2 } from 'lucide-react';
+import { Briefcase, MapPin, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import Seo from '@/components/Seo';
@@ -120,7 +120,6 @@ const JobsBrowse = () => {
         {hasMatches && (
           <div className="mb-8">
             <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary" />
               {t('jobs.matches_for_you', 'Match per te')}
             </h2>
             <div className="space-y-3">

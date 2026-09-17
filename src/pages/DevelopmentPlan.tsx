@@ -166,7 +166,7 @@ const DevelopmentPlan = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start gap-4 animate-fade-in">
           <div className="space-y-2">
-            <p className="font-mono text-xs uppercase tracking-widest text-primary">// Growth Hub</p>
+            <p className="font-mono text-xs uppercase tracking-widest text-primary">Growth Hub</p>
             <h1 className="text-[28px] md:text-[34px] xl:text-[40px] font-bold text-foreground">
               Growth Hub
             </h1>
