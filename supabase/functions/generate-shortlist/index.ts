@@ -182,7 +182,7 @@ serve(async (req) => {
           .select("user_id, role")
           .in("user_id", ids.slice(i, i + 200))
           .in("role", ["business", "admin"]);
-        for (const r of (roleRows || []) as any[]) nonCandidate.add(r.user_id);
+        for (const r of (roleRows || []) as Array<{ user_id: string }>) nonCandidate.add(r.user_id);
       }
       if (nonCandidate.size > 0) {
         const kept = candidates.filter(c => !nonCandidate.has(c.user_id));
@@ -262,11 +262,23 @@ serve(async (req) => {
     }
 
     // Optional credential data
-    let credentialData: any[] = [];
+    type CredentialRow = {
+      user_id: string;
+      education?: Array<{ degree_type?: string | null }> | null;
+      total_years_experience?: number | null;
+      industries_worked?: string[] | null;
+      languages?: Array<{ language?: string | null; proficiency?: string | null; certification?: string | null }> | null;
+    };
+    const credentialData: CredentialRow[] = [];
     // The goal's own requirements (education, years, languages) used to be
     // ignored unless the caller passed ad-hoc filters, which the app never did:
     // a master's degree and fluent English changed nothing in the ranking.
-    const goalReq = goal as any;
+    const goalReq = goal as typeof goal & {
+      education_level?: string | null;
+      years_experience_min?: number | null;
+      years_experience_max?: number | null;
+      languages?: Array<{ language?: string; level?: string }> | null;
+    };
     const useCredentialFilters = Boolean(
       filters?.degree_type || filters?.min_experience || filters?.industry ||
       goalReq.education_level || goalReq.years_experience_min != null ||
@@ -279,7 +291,7 @@ serve(async (req) => {
           .from("cv_credentials")
           .select("user_id, education, total_years_experience, industries_worked, languages")
           .in("user_id", optedInUserIds.slice(i, i + 200));
-        credentialData.push(...(creds || []));
+        credentialData.push(...((creds || []) as CredentialRow[]));
       }
     }
 
@@ -419,7 +431,7 @@ serve(async (req) => {
       // SIGNAL 4: Location (0-15 pts)
       let locationScore = 0;
       let locationMatch = "no_match";
-      const desiredLocations = (candidate.desired_locations || []) as any[];
+      const desiredLocations = (candidate.desired_locations || []) as Array<{ city?: string; region?: string; country?: string; type?: string } | null>;
       const workPref = (candidate.work_preference || "") as string;
       const relocate = (candidate.willing_to_relocate || "") as string;
 
@@ -430,19 +442,19 @@ serve(async (req) => {
       const goalCountryWords = sameCountryWords[goalCountry] || (goalCountry ? [goalCountry] : []);
       // Candidate locations are {city, region} with no country; an unset country
       // is read as the goal's country only when the goal names one.
-      const locCountryMatches = (l: any) => {
+      const locCountryMatches = (l: (typeof desiredLocations)[number]) => {
         const c = ((l?.country as string) || "").trim().toLowerCase();
         return c ? goalCountryWords.includes(c) : goalCountryWords.length > 0;
       };
 
       if (goalWorkMode === "remote") {
-        if (workPref === "remote" || desiredLocations.some((l: any) => l?.type === "remote")) {
+        if (workPref === "remote" || desiredLocations.some((l) => l?.type === "remote")) {
           locationScore = 15; locationMatch = "remote";
         } else if (workPref === "flexible" || workPref === "hybrid") {
           locationScore = 10; locationMatch = "remote";
         }
       } else if (goalCity || goalCountry) {
-        const cityMatch = goalCity && desiredLocations.some((l: any) => {
+        const cityMatch = goalCity && desiredLocations.some((l) => {
           const city = ((l?.city as string) || "").trim().toLowerCase();
           return city.length > 0 && (city === goalCity || goalCity.includes(city) || city.includes(goalCity));
         });
@@ -483,7 +495,7 @@ serve(async (req) => {
           };
           const requiredDegree = degreeRank(goalReq.education_level || filters?.degree_type || "");
           if (requiredDegree > 0) {
-            const bestDegree = Math.max(0, ...((creds.education || []) as any[]).map((e) => degreeRank(`${e.degree_type || ""}`)));
+            const bestDegree = Math.max(0, ...(creds.education || []).map((e) => degreeRank(`${e.degree_type || ""}`)));
             if (bestDegree >= requiredDegree) { credentialScore += 4; reasons.push({ k: "education_meets" }); }
             else reasons.push({ k: "education_below" });
           }
@@ -500,9 +512,9 @@ serve(async (req) => {
             spanish: ["spanish", "spagnolo", "español", "espanol"], german: ["german", "tedesco", "deutsch", "alemán"],
             french: ["french", "francese", "français", "francés"],
           };
-          const wanted = (Array.isArray(goalReq.languages) ? goalReq.languages : []) as any[];
+          const wanted = Array.isArray(goalReq.languages) ? goalReq.languages : [];
           if (wanted.length > 0) {
-            const has = ((creds.languages || []) as any[]).filter((l) => !/basic|base|a1|a2/i.test(`${l.proficiency || ""} ${l.certification || ""}`))
+            const has = (creds.languages || []).filter((l) => !/basic|base|a1|a2/i.test(`${l.proficiency || ""} ${l.certification || ""}`))
               .map((l) => `${l.language || ""}`.toLowerCase());
             const missing = wanted.filter((w) => {
               const key = `${w.language || ""}`.toLowerCase();
@@ -512,7 +524,7 @@ serve(async (req) => {
             if (missing.length === 0) { credentialScore += 3; reasons.push({ k: "languages_meet" }); }
             else reasons.push({ k: "language_missing", v: `${missing[0].language}` });
           }
-          if (filters?.industry && ((creds.industries_worked || []) as string[]).some((ind) => ind.toLowerCase().includes(filters.industry.toLowerCase()))) {
+          if (filters?.industry && (creds.industries_worked || []).some((ind) => ind.toLowerCase().includes(filters.industry.toLowerCase()))) {
             credentialScore = Math.min(10, credentialScore + 3);
           }
           credentialScore = Math.min(10, credentialScore);
