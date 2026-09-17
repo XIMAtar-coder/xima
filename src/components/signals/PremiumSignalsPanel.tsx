@@ -6,7 +6,6 @@
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Crown, Lock, Sparkles, TrendingUp, Shield, Target } from 'lucide-react';
 import { SignalsPayload } from '@/lib/signals/computeSignals';
 
@@ -162,16 +161,11 @@ export function PremiumSignalsPanel({ signals, isPremium = false, className = ''
             {premiumSignals.slice(0, 2).map((signal) => (
               <LockedSignalCard key={signal.id} signal={signal} />
             ))}
-            <div className="pt-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="w-full border-amber-500/30 text-amber-600 hover:bg-amber-500/10"
-              >
-                <Crown className="h-3.5 w-3.5 mr-1.5" />
-                {t('signals.premium.unlock_cta')}
-              </Button>
-            </div>
+            {/* Upgrade CTAs live only in Settings > Plan and the shortlist limit
+                notice; this button also had no action. */}
+            <p className="pt-2 text-xs text-muted-foreground text-center">
+              {t('premium.paid_plan_note')}
+            </p>
           </>
         )}
       </CardContent>

@@ -13,7 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { XIMATAR_PROFILES } from '@/lib/ximatarTaxonomy';
 import { PoolCandidateCard } from '@/components/business/PoolCandidateCard';
 import { ArchetypeChip } from '@/components/business/ArchetypeChip';
-import { Users, ChevronLeft, ChevronRight, X, Sparkles, Lock, Filter, Target } from 'lucide-react';
+import { Users, ChevronLeft, ChevronRight, X, Lock, Filter, Target } from 'lucide-react';
 import { log } from '@/lib/log';
 
 const PAGE_SIZE = 20;
@@ -360,15 +360,9 @@ const BusinessCandidates = () => {
                   <p className="text-sm font-medium text-foreground">
                     {t('candidate_pool.plan_limit', 'Viewing limited to {{count}} candidates on your plan', { count: planLimit })}
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    {t('candidate_pool.upgrade_hint', 'Upgrade to see the full candidate pool and unlock advanced filters.')}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{t('premium.paid_plan_note')}</p>
                 </div>
               </div>
-              <Button size="sm" variant="outline" onClick={() => navigate('/business/settings')}>
-                <Sparkles className="h-3.5 w-3.5 mr-1" />
-                {t('candidate_pool.upgrade', 'Upgrade Plan')}
-              </Button>
             </CardContent>
           </Card>
         )}

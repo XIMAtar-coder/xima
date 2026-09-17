@@ -16,7 +16,7 @@ import { useBusinessPremium } from '@/hooks/useBusinessPremium';
 import { supabase } from '@/integrations/supabase/client';
 import { log } from '@/lib/log';
 import { 
-  FileText, Printer, Download, Crown, Lock,
+  FileText, Printer, Download, Lock,
   User, CheckCircle2, Clock, XCircle, MessageSquare,
   ArrowRight, TrendingUp, AlertTriangle
 } from 'lucide-react';
@@ -247,10 +247,12 @@ const GoalDecisionPack: React.FC = () => {
               <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                 {t('premium.pack.locked_description')}
               </p>
-              <Button className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                <Crown className="h-4 w-4 mr-2" />
-                {t('signals.premium.unlock_cta')}
-              </Button>
+              <p className="text-xs text-muted-foreground mb-4">{t('premium.paid_plan_note')}</p>
+              {goalId && (
+                <Button variant="outline" onClick={() => navigate(`/business/hiring-goals/${goalId}/shortlist`)}>
+                  {t('premium.back_to_shortlist')}
+                </Button>
+              )}
             </CardContent>
           </Card>
         </div>

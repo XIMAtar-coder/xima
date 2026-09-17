@@ -5165,9 +5165,9 @@
     "jobs_page_empty_headline": "Aún no hay ofertas.",
     "jobs_page_empty_body": "Crea tu primera oferta de empleo para empezar a atraer candidatos evaluados por XIMA.",
     "evaluations_page_title": "Evaluaciones",
-    "evaluations_page_subtitle": "Revisa y evalúa las respuestas de los candidatos a los challenges.",
-    "evaluations_empty_headline": "Aún no hay evaluaciones.",
-    "evaluations_empty_body": "Crea challenges e invita a candidatos para empezar a recibir respuestas que evaluar.",
+    "evaluations_page_subtitle": "Todos los candidatos que invitaste a un challenge y el estado de su respuesta.",
+    "evaluations_empty_headline": "Aún no hay respuestas",
+    "evaluations_empty_body": "Cuando invites candidatos a uno de tus challenges, cada invitación aparecerá aquí y pasará a \"Enviada\" en cuanto el candidato envíe su respuesta. Desde aquí podrás abrirla y evaluarla.",
     "reports_page_title": "Informes y análisis",
     "reports_page_subtitle": "El análisis completo de tu pipeline de contratación.",
     "reports_export_cta": "Exportar informe",
@@ -5299,7 +5299,19 @@
         "activate": "Activar con XIMA HR",
         "success": "Objetivo activado: XIMA HR se pondrá en contacto contigo en 24 horas",
         "error": "XIMA HR no ha podido procesar la solicitud. El objetivo se ha guardado: puedes volver a intentarlo."
-      }
+      },
+      "pay_transparency": {
+        "title": "Transparencia salarial — RAL y CCNL",
+        "ral_from_yearly": "Tomada del rango bruto anual indicado arriba.",
+        "ral_from_monthly": "Calculada a partir del rango bruto mensual indicado arriba sobre {{months}} pagas.",
+        "ccnl_label": "CCNL aplicable",
+        "ccnl_placeholder": "— Selecciona CCNL —"
+      },
+      "draft_found_title": "¿Retomar el borrador?",
+      "draft_found_body": "Tienes un objetivo de contratación sin terminar \"{{role}}\" guardado en este dispositivo ({{date}}).",
+      "draft_untitled": "Sin título",
+      "draft_resume": "Retomar borrador",
+      "draft_start_over": "Empezar de nuevo"
     },
     "education_levels": {
       "none_required": "Sin requisitos",
@@ -5366,7 +5378,29 @@
     "stage_scaleup": "Scale-up",
     "stage_established": "Consolidada",
     "stage_enterprise": "Enterprise",
-    "stage_nonprofit": "Sin ánimo de lucro / Sector público"
+    "stage_nonprofit": "Sin ánimo de lucro / Sector público",
+    "evaluations_empty_cta": "Ir a tus challenges",
+    "evaluations_load_error": "No se pudieron cargar las respuestas.",
+    "evaluations_retry": "Reintentar",
+    "evaluations_filter_all": "Todas",
+    "evaluations_filter_submitted": "Por evaluar",
+    "evaluations_filter_in_progress": "En curso",
+    "evaluations_filter_invited": "Invitados",
+    "evaluations_filter_reviewed": "Evaluadas",
+    "evaluations_filter_empty": "Nada en esta vista.",
+    "evaluations_status_invited": "Invitado",
+    "evaluations_status_in_progress": "En curso",
+    "evaluations_status_submitted": "Enviada",
+    "evaluations_status_reviewed": "Evaluada",
+    "evaluations_status_declined": "Rechazada",
+    "evaluations_status_expired": "Caducada",
+    "evaluations_submitted_on": "Enviada el {{date}}",
+    "evaluations_invited_on": "Invitado el {{date}}",
+    "evaluations_review": "Evaluar",
+    "evaluations_open_review": "Abrir evaluación",
+    "evaluations_view_challenge": "Ver challenge",
+    "settings_plan_free": "Gratuito",
+    "settings_plan_free_subtitle": "Estás en el plan gratuito. Las funciones de abajo muestran lo que añade un plan de pago."
   },
   "ximatarJourney": {
     "page_title": "Tu recorrido XIMAtar",
@@ -5974,6 +6008,24 @@
         "body": "Gestiona tus datos legales, los accesos del equipo y la facturación. Mantén todo alineado con los requisitos de tu empresa.",
         "cta": "Abrir configuración →"
       }
+    },
+    "step_counter": "Paso {{current}} de {{total}}",
+    "tour": {
+      "goal": {
+        "title": "1. Crea un objetivo de contratación",
+        "body": "Describe el puesto que buscas: responsabilidades, seniority, ubicación y salario. XIMA lo usa para crear una shortlist de candidatos compatibles.",
+        "cta": "Crear un objetivo →"
+      },
+      "challenge": {
+        "title": "2. Crea el challenge",
+        "body": "Abre el objetivo y crea su challenge. Los candidatos que invites lo completan y sus respuestas te muestran cómo trabajan realmente.",
+        "cta": "Abrir tus objetivos →"
+      },
+      "invite": {
+        "title": "3. Invita desde la shortlist",
+        "body": "Desde la shortlist del objetivo, invita a los candidatos que te interesen. Reciben un email y una notificación; sus respuestas aparecen en Evaluaciones.",
+        "cta": "Ir a tus shortlists →"
+      }
     }
   },
   "pipeline_chat": {
@@ -5991,7 +6043,9 @@
     "stage_l2_completed": "L2 completado",
     "stage_l3_invited": "Invitado a L3",
     "stage_offer_pending": "Fase de oferta",
-    "stage_hired": "Contratado"
+    "stage_hired": "Contratado",
+    "no_threads_hint_business": "Invitar a un candidato a un challenge no abre una conversación. Una conversación aparece aquí solo cuando un candidato de la pipeline de shortlist de un objetivo de contratación pasa a la fase \"Invitado L1\". Los candidatos se enteran de las invitaciones por email y con una notificación en la app.",
+    "no_threads_hint_candidate": "Una conversación aparece aquí cuando una empresa te hace avanzar en su pipeline de shortlist. Las invitaciones a challenges llegan por email y como notificaciones."
   },
   "businessRegistration": {
     "title": "Portal de Empresas",
@@ -6027,7 +6081,7 @@
       "technology": "Tecnología y software",
       "finance": "Finanzas y banca",
       "consulting": "Consultoría",
-      "manufacturing": "Industria e ingeniería",
+      "manufacturing": "Industria manufacturera",
       "automotive": "Automoción y movilidad",
       "energy": "Energía y sostenibilidad",
       "healthcare": "Salud y farmacéutica",
@@ -6038,7 +6092,8 @@
       "real_estate": "Inmobiliaria y construcción",
       "nonprofit": "Sin ánimo de lucro y ONG",
       "government": "Administración pública",
-      "other": "Otro"
+      "other": "Otro",
+      "engineering": "Ingeniería"
     },
     "stages": {
       "startup": "Startup",
@@ -6073,7 +6128,18 @@
       "potential_desc": "Contratamos por la trayectoria, no por el historial",
       "balanced": "Equilibrado",
       "balanced_desc": "Competencias, cultura y potencial a partes iguales"
-    }
+    },
+    "password_show": "Mostrar contraseña",
+    "password_hide": "Ocultar contraseña",
+    "password_rule_length": "Al menos {{count}} caracteres",
+    "password_rule_letter": "Contiene una letra",
+    "password_rule_number": "Contiene un número",
+    "password_rule_not_common": "No es una contraseña común (como \"password123\" o \"qwerty\")",
+    "password_rule_not_personal": "No contiene el nombre de tu email ni de tu empresa",
+    "password_rule_met": "(cumplido)",
+    "password_rule_unmet": "(aún no cumplido)",
+    "password_rejected_inline": "Esta contraseña fue rechazada porque aparece en listas de contraseñas filtradas o fáciles de adivinar. Elige otra: el resto de tus respuestas se conserva.",
+    "password_rejected_toast": "Tu contraseña fue rechazada por ser demasiado fácil de adivinar. Te hemos devuelto al paso 1; todo lo demás que introdujiste se conserva."
   },
   "anonymous": {
     "candidate_label": "Candidato #{{number}}",
@@ -6558,7 +6624,9 @@
       "stage_advanced": "Avanzado",
       "stage_passed": "Descartado",
       "print_footer": "Generado por XIMA Premium"
-    }
+    },
+    "paid_plan_note": "Incluido en los planes de pago. Tu plan aparece en Ajustes.",
+    "back_to_shortlist": "Volver a la shortlist"
   },
   "decision_pack": {
     "title": "XIMA Decision Pack",

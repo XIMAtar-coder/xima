@@ -36,7 +36,7 @@ const TIER_COLORS: Record<string, string> = {
 export const BusinessPlanCard: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { entitlements, loading, planTier } = useBusinessEntitlements();
+  const { entitlements, loading, planTier, isFreePlan } = useBusinessEntitlements();
 
   if (loading) {
     return (
@@ -56,12 +56,16 @@ export const BusinessPlanCard: React.FC = () => {
             <Crown className="h-5 w-5 text-primary" />
             {t('businessPortal.settings_plan_title')}
           </CardTitle>
-          <Badge className={TIER_COLORS[planTier] || TIER_COLORS.starter}>
-            {planTier.charAt(0).toUpperCase() + planTier.slice(1)}
+          <Badge className={isFreePlan ? TIER_COLORS.starter : TIER_COLORS[planTier] || TIER_COLORS.starter}>
+            {isFreePlan
+              ? t('businessPortal.settings_plan_free')
+              : planTier.charAt(0).toUpperCase() + planTier.slice(1)}
           </Badge>
         </div>
         <CardDescription>
-          {t('businessPortal.settings_plan_subtitle')}
+          {isFreePlan
+            ? t('businessPortal.settings_plan_free_subtitle')
+            : t('businessPortal.settings_plan_subtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

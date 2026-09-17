@@ -71,10 +71,15 @@ export const useOnboardingState = () => {
     const updated = [...new Set([...state.completed_steps, step])];
     setState(prev => ({ ...prev, completed_steps: updated }));
 
-    await supabase
+    // Upsert, not update: if the row insert on first load has not landed (or
+    // failed), an update matches zero rows and "don't show again" is lost.
+    const { error } = await supabase
       .from('user_onboarding_state')
-      .update({ completed_steps: updated as any, updated_at: new Date().toISOString() })
-      .eq('user_id', user.id);
+      .upsert(
+        { user_id: user.id, completed_steps: updated as any, updated_at: new Date().toISOString() },
+        { onConflict: 'user_id' },
+      );
+    if (error) log.error('[useOnboardingState] completeStep error:', error);
   }, [user?.id, state.completed_steps]);
 
   const dismissHint = useCallback(async (hint: OnboardingStep) => {

@@ -7,7 +7,6 @@
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { 
   FileText, 
   AlertTriangle, 
@@ -285,10 +284,7 @@ function LockedDecisionPack() {
             <li>• {t('decision_pack.feature_risk_radar')}</li>
             <li>• {t('decision_pack.feature_next_action')}</li>
           </ul>
-          <Button variant="outline" size="sm" disabled>
-            <Lock className="h-3 w-3 mr-1" />
-            {t('decision_pack.upgrade_cta')}
-          </Button>
+          <p className="text-xs text-muted-foreground">{t('premium.paid_plan_note')}</p>
         </div>
       </CardContent>
     </Card>

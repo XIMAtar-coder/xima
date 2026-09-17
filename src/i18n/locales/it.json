@@ -5062,7 +5062,9 @@
       "stage_advanced": "Promosso",
       "stage_passed": "Scartato",
       "print_footer": "Generato da XIMA Premium"
-    }
+    },
+    "paid_plan_note": "Incluso nei piani a pagamento. Il tuo piano è indicato nelle Impostazioni.",
+    "back_to_shortlist": "Torna alla shortlist"
   },
   "decision_pack": {
     "title": "XIMA Decision Pack",
@@ -5464,6 +5466,24 @@
         "body": "Gestisci dati legali, accessi del team e preferenze di fatturazione. Tieni tutto allineato ai requisiti della tua azienda.",
         "cta": "Apri le impostazioni →"
       }
+    },
+    "step_counter": "Passo {{current}} di {{total}}",
+    "tour": {
+      "goal": {
+        "title": "1. Crea un obiettivo di assunzione",
+        "body": "Descrivi il ruolo che cerchi: responsabilità, seniority, sede e retribuzione. XIMA lo usa per costruire una shortlist di candidati compatibili.",
+        "cta": "Crea un obiettivo →"
+      },
+      "challenge": {
+        "title": "2. Crea la challenge",
+        "body": "Apri l'obiettivo e crea la sua challenge. I candidati che inviti la completano e le loro risposte ti mostrano come lavorano davvero.",
+        "cta": "Apri i tuoi obiettivi →"
+      },
+      "invite": {
+        "title": "3. Invita dalla shortlist",
+        "body": "Dalla shortlist dell'obiettivo, invita i candidati che ti interessano. Ricevono un'email e una notifica; le risposte compaiono in Valutazioni.",
+        "cta": "Vai alle shortlist →"
+      }
     }
   },
   "assessmentGuide": {
@@ -5774,9 +5794,9 @@
     "jobs_page_empty_headline": "Ancora nessuna offerta.",
     "jobs_page_empty_body": "Crea la tua prima offerta di lavoro per iniziare ad attrarre candidati valutati da XIMA.",
     "evaluations_page_title": "Valutazioni",
-    "evaluations_page_subtitle": "Esamina e valuta le risposte dei candidati alle challenge.",
-    "evaluations_empty_headline": "Ancora nessuna valutazione.",
-    "evaluations_empty_body": "Crea challenge e invita candidati per iniziare a raccogliere risposte da valutare.",
+    "evaluations_page_subtitle": "Tutti i candidati che hai invitato a una challenge e lo stato della loro risposta.",
+    "evaluations_empty_headline": "Ancora nessuna risposta",
+    "evaluations_empty_body": "Quando inviti candidati a una delle tue challenge, ogni invito compare qui e passa a \"Inviata\" appena il candidato invia la risposta. Da qui puoi aprirla e valutarla.",
     "reports_page_title": "Report e analisi",
     "reports_page_subtitle": "L'analisi completa della tua pipeline di selezione.",
     "reports_export_cta": "Esporta report",
@@ -5908,7 +5928,19 @@
         "activate": "Attiva con XIMA HR",
         "success": "Obiettivo attivato: XIMA HR ti contatterà entro 24 ore",
         "error": "XIMA HR non è riuscito a elaborare la richiesta. L'obiettivo è stato salvato: puoi riprovare."
-      }
+      },
+      "pay_transparency": {
+        "title": "Trasparenza retributiva — RAL e CCNL",
+        "ral_from_yearly": "Ripresa dal range lordo annuo inserito sopra.",
+        "ral_from_monthly": "Calcolata dal range lordo mensile inserito sopra su {{months}} mensilità.",
+        "ccnl_label": "CCNL applicato",
+        "ccnl_placeholder": "— Seleziona CCNL —"
+      },
+      "draft_found_title": "Riprendere la bozza?",
+      "draft_found_body": "Hai un obiettivo di assunzione non completato \"{{role}}\" salvato su questo dispositivo ({{date}}).",
+      "draft_untitled": "Senza titolo",
+      "draft_resume": "Riprendi la bozza",
+      "draft_start_over": "Ricomincia da capo"
     },
     "education_levels": {
       "none_required": "Nessun requisito",
@@ -5938,7 +5970,29 @@
           "work_model": "Modalità di lavoro"
         }
       }
-    }
+    },
+    "evaluations_empty_cta": "Vai alle tue challenge",
+    "evaluations_load_error": "Impossibile caricare le risposte.",
+    "evaluations_retry": "Riprova",
+    "evaluations_filter_all": "Tutte",
+    "evaluations_filter_submitted": "Da valutare",
+    "evaluations_filter_in_progress": "In corso",
+    "evaluations_filter_invited": "Invitati",
+    "evaluations_filter_reviewed": "Valutate",
+    "evaluations_filter_empty": "Niente in questa vista.",
+    "evaluations_status_invited": "Invitato",
+    "evaluations_status_in_progress": "In corso",
+    "evaluations_status_submitted": "Inviata",
+    "evaluations_status_reviewed": "Valutata",
+    "evaluations_status_declined": "Rifiutato",
+    "evaluations_status_expired": "Scaduto",
+    "evaluations_submitted_on": "Inviata il {{date}}",
+    "evaluations_invited_on": "Invitato il {{date}}",
+    "evaluations_review": "Valuta",
+    "evaluations_open_review": "Apri valutazione",
+    "evaluations_view_challenge": "Vedi challenge",
+    "settings_plan_free": "Gratuito",
+    "settings_plan_free_subtitle": "Stai usando il piano gratuito. Le funzionalità qui sotto mostrano cosa aggiunge un piano a pagamento."
   },
   "ximatarJourney": {
     "page_title": "Il tuo percorso XIMAtar",
@@ -6122,7 +6176,7 @@
       "technology": "Tecnologia e software",
       "finance": "Finanza e banche",
       "consulting": "Consulenza",
-      "manufacturing": "Manifattura e ingegneria",
+      "manufacturing": "Manifattura",
       "automotive": "Automotive e mobilità",
       "energy": "Energia e sostenibilità",
       "healthcare": "Sanità e farmaceutico",
@@ -6133,7 +6187,8 @@
       "real_estate": "Immobiliare ed edilizia",
       "nonprofit": "Non profit e ONG",
       "government": "Pubblica amministrazione",
-      "other": "Altro"
+      "other": "Altro",
+      "engineering": "Ingegneria"
     },
     "stages": {
       "startup": "Startup",
@@ -6168,7 +6223,18 @@
       "potential_desc": "Assumiamo per la traiettoria, non per il curriculum",
       "balanced": "Equilibrato",
       "balanced_desc": "Competenze, cultura e potenziale allo stesso livello"
-    }
+    },
+    "password_show": "Mostra password",
+    "password_hide": "Nascondi password",
+    "password_rule_length": "Almeno {{count}} caratteri",
+    "password_rule_letter": "Contiene una lettera",
+    "password_rule_number": "Contiene un numero",
+    "password_rule_not_common": "Non è una password comune (come \"password123\" o \"qwerty\")",
+    "password_rule_not_personal": "Non contiene il nome della tua email o dell'azienda",
+    "password_rule_met": "(soddisfatto)",
+    "password_rule_unmet": "(non ancora soddisfatto)",
+    "password_rejected_inline": "Questa password è stata rifiutata perché compare negli elenchi di password trapelate o facili da indovinare. Scegline un'altra: le altre risposte restano salvate.",
+    "password_rejected_toast": "La password è stata rifiutata perché troppo facile da indovinare. Ti abbiamo riportato al passaggio 1; tutto il resto che hai inserito è stato mantenuto."
   },
   "import_job": {
     "title": "Importa una posizione",
@@ -6405,7 +6471,9 @@
     "stage_l2_completed": "L2 completato",
     "stage_l3_invited": "Invito L3",
     "stage_offer_pending": "Fase offerta",
-    "stage_hired": "Assunzione"
+    "stage_hired": "Assunzione",
+    "no_threads_hint_business": "Invitare un candidato a una challenge non apre una conversazione. Una conversazione compare qui solo quando un candidato nella pipeline della shortlist di un obiettivo di assunzione passa alla fase \"Invitato L1\". I candidati vengono informati degli inviti via email e con una notifica nell'app.",
+    "no_threads_hint_candidate": "Una conversazione compare qui quando un'azienda ti fa avanzare nella sua pipeline di shortlist. Gli inviti alle challenge arrivano via email e come notifiche."
   },
   "offers": {
     "title": "Offerte di lavoro",
