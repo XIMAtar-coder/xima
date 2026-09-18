@@ -1178,11 +1178,13 @@ Restituisci SOLO JSON valido:
 
             if (body.challenge_id) {
               const supabaseAdmin2 = createClient(supabaseUrl, supabaseServiceKey);
-              await supabaseAdmin2.from("business_challenges").update({
+              let lensQuery = supabaseAdmin2.from("business_challenges").update({
                 evaluation_lens: validated.evaluation_lens,
                 expected_tensions: validated.expected_tensions,
                 context_snapshot: validated.context_snapshot,
               }).eq("id", body.challenge_id);
+              if (!callerIsAdmin) lensQuery = lensQuery.eq('business_id', businessId);
+              await lensQuery;
             }
 
             const mindset = await generateMindsetBlock({
