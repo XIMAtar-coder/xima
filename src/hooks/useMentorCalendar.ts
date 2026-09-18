@@ -78,7 +78,7 @@ export function useMentorCalendar(mentorId: string | null) {
         .from('mentor_sessions')
         .select(`
           id, mentor_id, candidate_profile_id, availability_slot_id,
-          starts_at, ends_at, status, title, notes_private, notes_shared,
+          starts_at, ends_at, status, title, notes_shared,
           created_by, created_at, updated_at,
           proposed_start_at, proposed_end_at, reschedule_status,
           profiles!mentor_sessions_candidate_profile_id_fkey (
@@ -91,6 +91,17 @@ export function useMentorCalendar(mentorId: string | null) {
 
       if (sessionsError) throw sessionsError;
 
+      // Private notes live in a mentor-only table (candidates must never read them)
+      const sessionIds = (sessionsData || []).map((s: any) => s.id);
+      const privateNotes = new Map<string, string | null>();
+      if (sessionIds.length > 0) {
+        const { data: notesData } = await supabase
+          .from('mentor_session_private_notes')
+          .select('session_id, notes')
+          .in('session_id', sessionIds);
+        (notesData || []).forEach((n: any) => privateNotes.set(n.session_id, n.notes));
+      }
+
       // Type cast the data
       setSlots((slotsData || []).map((s: any) => ({
         ...s,
@@ -101,6 +112,7 @@ export function useMentorCalendar(mentorId: string | null) {
         status: s.status as MentorSession['status'],
         created_by: s.created_by as MentorSession['created_by'],
         reschedule_status: (s.reschedule_status || 'none') as MentorSession['reschedule_status'],
+        notes_private: privateNotes.get(s.id) ?? null,
         candidate_name: s.profiles?.full_name || s.profiles?.name || 'Anonymous'
       })));
     } catch (err: any) {
@@ -357,13 +369,17 @@ export function useMentorCalendar(mentorId: string | null) {
     try {
       const { error } = await supabase
         .from('mentor_sessions')
-        .update({
-          notes_private: notesPrivate,
-          notes_shared: notesShared
-        })
+        .update({ notes_shared: notesShared })
         .eq('id', sessionId);
 
       if (error) throw error;
+
+      const { error: privateError } = await supabase
+        .from('mentor_session_private_notes')
+        .upsert({ session_id: sessionId, notes: notesPrivate }, { onConflict: 'session_id' });
+
+      if (privateError) throw privateError;
+
 
       toast({ title: 'Notes saved' });
       await fetchData();

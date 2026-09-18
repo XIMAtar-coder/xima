@@ -4132,6 +4132,35 @@ export type Database = {
           },
         ]
       }
+      mentor_session_private_notes: {
+        Row: {
+          created_at: string
+          notes: string | null
+          session_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          notes?: string | null
+          session_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          notes?: string | null
+          session_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_session_private_notes_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: true
+            referencedRelation: "mentor_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentor_sessions: {
         Row: {
           availability_slot_id: string | null
@@ -4146,7 +4175,6 @@ export type Database = {
             | Database["public"]["Enums"]["membership_tier"]
             | null
           mentor_id: string
-          notes_private: string | null
           notes_shared: string | null
           price_cents: number | null
           proposed_availability_slot_id: string | null
@@ -4179,7 +4207,6 @@ export type Database = {
             | Database["public"]["Enums"]["membership_tier"]
             | null
           mentor_id: string
-          notes_private?: string | null
           notes_shared?: string | null
           price_cents?: number | null
           proposed_availability_slot_id?: string | null
@@ -4212,7 +4239,6 @@ export type Database = {
             | Database["public"]["Enums"]["membership_tier"]
             | null
           mentor_id?: string
-          notes_private?: string | null
           notes_shared?: string | null
           price_cents?: number | null
           proposed_availability_slot_id?: string | null
