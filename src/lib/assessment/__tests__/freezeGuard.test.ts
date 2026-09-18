@@ -67,7 +67,7 @@ describe('Assessment Freeze Guard v1.2.1 (content-lock)', () => {
   });
 
   it('computed hashes match hard-coded sealed values', () => {
-    const SEALED = { en: '11ffb15d', it: 'e7b14a09', es: 'd7d4491d' };
+    const SEALED = { en: '3a641dc8', it: '90528337', es: '09f60860' };
     const hashes = computeAllHashes(ALL_LOCALES);
     expect(hashes.en).toBe(SEALED.en);
     expect(hashes.it).toBe(SEALED.it);

@@ -1323,107 +1323,6 @@
         "open2": {
           "question": "¿Cuál es tu mayor desafío profesional o área donde te gustaría crecer? ¿Cómo planeas abordarlo?"
         }
-      },
-      "examples": {
-        "q1": {
-          "title": "Ejemplo Práctico",
-          "body": "Imagina que recibes un dataset con 50,000 registros de clientes.\n\n**Opción A:** Segmentar en grupos lógicos (por región, suscripción, fecha de registro)\n**Opción B:** Validar la calidad de los datos antes de analizar\n**Opción C:** Identificar patrones usando visualización\n**Opción D:** Combinar todos los enfoques sistemáticamente\n\n**Cómo responder:** Piensa en tu enfoque natural. Los clientes que completan onboarding en 48h tienen 3x mayor retención.\n\nMira este video sobre pensamiento analítico: https://www.youtube.com/watch?v=ua-CiDNNj30"
-        },
-        "q2": {
-          "title": "Ejemplo Práctico",
-          "body": "En una reunión de sprint planning, considera cómo contribuyes mejor.\n\n**Opción A:** Escuchar activamente para entender bloqueos y prioridades\n**Opción B:** Hacer preguntas clarificadoras como '¿Cuál es la métrica de éxito?'\n**Opción C:** Proponer soluciones basadas en experiencia previa\n**Opción D:** Documentar decisiones para alineación del equipo\n\n**Cómo responder:** Reflexiona sobre cómo aseguras alineación y reduces el retrabajo.\n\nAprende más sobre participación efectiva: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-        },
-        "q3": {
-          "title": "Ejemplo Práctico",
-          "body": "Al aprender un nuevo framework como React, considera tu estrategia de aprendizaje.\n\n**Opción A:** Documentación oficial primero, luego proyectos prácticos\n**Opción B:** Construir una pequeña app inmediatamente\n**Opción C:** Buscar feedback de desarrolladores experimentados\n**Opción D:** La Técnica Feynman: explicar conceptos en términos simples\n\n**Cómo responder:** Piensa en cómo equilibras teoría y práctica.\n\nMira: https://www.youtube.com/watch?v=MlJdMr3O5J4"
-        },
-        "q4": {
-          "title": "Ejemplo Práctico",
-          "body": "Para resolver problemas creativamente, los equipos usan diferentes técnicas.\n\n**Opción A:** 'Reverse brainstorming' - ¿cómo empeoraríamos el problema?\n**Opción B:** Buscar inspiración en industrias no relacionadas\n**Opción C:** Método SCAMPER: Sustituir, Combinar, Adaptar, Modificar\n**Opción D:** Combinar múltiples perspectivas del equipo\n\n**Cómo responder:** Considera cómo generas ideas innovadoras naturalmente.\n\nAprende más: https://www.youtube.com/watch?v=G8w0rJhztJ4"
-        },
-        "q5": {
-          "title": "Ejemplo Práctico",
-          "body": "Entender tu motivación principal ayuda a sostener el esfuerzo.\n\n**Opción A:** Motivado por impacto - seguir historias de éxito de clientes\n**Opción B:** Motivado por crecimiento - celebrar cada nueva habilidad\n**Opción C:** Motivado por propósito - conectar trabajo con misión mayor\n**Opción D:** Motivado por autonomía - tener control sobre decisiones\n\n**Cómo responder:** Piensa en qué te energiza cuando enfrentas desafíos.\n\nMira el resumen de Drive de Dan Pink: https://www.youtube.com/watch?v=u6XAPnuFjJc"
-        },
-        "q6": {
-          "title": "Ejemplo Práctico",
-          "body": "Al evaluar el éxito de una nueva feature, considera tu enfoque.\n\n**Opción A:** Métricas cuantitativas (tasas de conversión, tiempo de completado)\n**Opción B:** Feedback cualitativo (entrevistas de usuarios)\n**Opción C:** Análisis comparativo (A/B tests)\n**Opción D:** Combinar múltiples métodos para una visión completa\n\n**Cómo responder:** Reflexiona sobre cómo defines y mides el éxito.\n\nMira: https://www.youtube.com/watch?v=VQKMoT-6XSg"
-        },
-        "q7": {
-          "title": "Ejemplo Práctico",
-          "body": "En conflictos de equipo, los comunicadores expertos usan diferentes enfoques.\n\n**Opción A:** Enfoque 'intereses sobre posiciones' - explorar necesidades subyacentes\n**Opción B:** Método DESC: Describe, Expresa, Especifica, Consecuencias\n**Opción C:** Escucha activa antes de responder\n**Opción D:** Buscar puntos en común como base para soluciones\n\n**Cómo responder:** Piensa en cómo manejas naturalmente los desacuerdos.\n\nAprende más: https://www.youtube.com/watch?v=CsgHMiOWsRA"
-        },
-        "q8": {
-          "title": "Ejemplo Práctico",
-          "body": "Frente a investigaciones contradictorias, considera tu proceso de análisis.\n\n**Opción A:** Verificar credibilidad de fuentes y tamaños de muestra\n**Opción B:** Considerar el contexto de cada estudio\n**Opción C:** Triangular con múltiples fuentes independientes\n**Opción D:** Ejecutar tu propio pequeño experimento para validar\n\n**Cómo responder:** Reflexiona sobre cómo evalúas información conflictiva.\n\nMira sobre pensamiento crítico: https://www.youtube.com/watch?v=6OLPL5p0fMg"
-        },
-        "q9": {
-          "title": "Ejemplo Práctico",
-          "body": "Para generar ideas innovadoras, los equipos usan brainstorming estructurado.\n\n**Opción A:** 10 minutos de ideación silenciosa (cantidad sobre calidad)\n**Opción B:** Agrupación de ideas similares\n**Opción C:** Votación en las top 3 para prototipar\n**Opción D:** Design Sprint de Google con input cross-funcional\n\n**Cómo responder:** Piensa en cómo contribuyes a sesiones de innovación.\n\nMira: https://www.youtube.com/watch?v=K2vSQPh6MCE"
-        },
-        "q10": {
-          "title": "Ejemplo Práctico",
-          "body": "Los proyectos largos se benefician del seguimiento visible del progreso.\n\n**Opción A:** Dividir en sprints de 2 semanas con entregables específicos\n**Opción B:** Celebrar los hitos (primer prototipo, primeros usuarios)\n**Opción C:** Establecer métricas claras de progreso\n**Opción D:** Revisiones regulares para mantener momentum\n\n**Cómo responder:** Considera cómo mantienes motivación en proyectos extensos.\n\nMira: https://www.youtube.com/watch?v=mNeXuCYiE0U"
-        },
-        "q11": {
-          "title": "Ejemplo Práctico",
-          "body": "Antes de automatizar, identifica el ROI de la mejora.\n\n**Opción A:** Calcular tiempo ahorrado (10 min/día = 40+ horas/año)\n**Opción B:** Documentar el proceso manual primero\n**Opción C:** Identificar pasos propensos a errores\n**Opción D:** Usar herramientas apropiadas (Zapier, Python scripts)\n\n**Cómo responder:** Piensa en cómo priorizas oportunidades de automatización.\n\nMira: https://www.youtube.com/watch?v=M576WGiDBdQ"
-        },
-        "q12": {
-          "title": "Ejemplo Práctico",
-          "body": "Los grandes comunicadores adaptan su estilo a la audiencia.\n\n**Opción A:** Con ejecutivos, liderar con outcomes y decisiones\n**Opción B:** Con ingenieros, incluir detalles técnicos y trade-offs\n**Opción C:** Con clientes, enfocarse en beneficios y lenguaje simple\n**Opción D:** Usar el test '¿Y qué?' para cada punto\n\n**Cómo responder:** Reflexiona sobre cómo ajustas tu comunicación.\n\nMira: https://www.youtube.com/watch?v=eIho2S0ZahI"
-        },
-        "q13": {
-          "title": "Ejemplo Práctico",
-          "body": "El intercambio efectivo de conocimiento combina múltiples métodos.\n\n**Opción A:** Crear wikis buscables para referencias\n**Opción B:** Organizar sesiones 'lunch & learn'\n**Opción C:** Emparejar seniors con juniors\n**Opción D:** Modelo 70-20-10: experiencial, social, formal\n\n**Cómo responder:** Piensa en cómo compartes y adquieres conocimiento.\n\nMira: https://www.youtube.com/watch?v=V55rCBT1Ouc"
-        },
-        "q14": {
-          "title": "Ejemplo Práctico",
-          "body": "Para superar bloqueos creativos, diferentes técnicas ayudan.\n\n**Opción A:** Cambiar el contexto (lugar diferente, herramientas analógicas)\n**Opción B:** Imponer restricciones artificiales\n**Opción C:** Tomar pausas estratégicas para incubación\n**Opción D:** Colaborar con perspectivas diferentes\n\n**Cómo responder:** Considera cómo desbloqueas tu creatividad.\n\nMira: https://www.youtube.com/watch?v=f1yQTy1bQmc"
-        },
-        "q15": {
-          "title": "Ejemplo Práctico",
-          "body": "Después de contratiempos, los top performers aprenden sistemáticamente.\n\n**Opción A:** Conducir 'post-mortems sin culpas'\n**Opción B:** Preguntar '¿Qué haremos diferente?'\n**Opción C:** Transformar fracasos en oportunidades de aprendizaje\n**Opción D:** Desarrollar una mentalidad de crecimiento\n\n**Cómo responder:** Reflexiona sobre cómo procesas los contratiempos.\n\nMira: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
-        },
-        "q16": {
-          "title": "Ejemplo Práctico",
-          "body": "Con datasets grandes, la visualización revela patrones ocultos.\n\n**Opción A:** Comenzar con distribuciones simples (histogramas)\n**Opción B:** Explorar relaciones (scatter plots)\n**Opción C:** Usar herramientas como Tableau, Power BI, matplotlib\n**Opción D:** Segmentar datos significativamente (tiempo, geografía, usuario)\n\n**Cómo responder:** Piensa en tu enfoque para explorar datos complejos.\n\nMira: https://www.youtube.com/watch?v=0yCJMt9Mx9c"
-        },
-        "q17": {
-          "title": "Ejemplo Práctico",
-          "body": "Para stakeholders no técnicos, adapta tu presentación.\n\n**Opción A:** Liderar con el '¿y qué?' e impacto en negocio\n**Opción B:** Usar analogías familiares\n**Opción C:** Principio de la Pirámide: conclusión primero\n**Opción D:** Visualizaciones simples sobre tablas de datos\n\n**Cómo responder:** Reflexiona sobre cómo traduces complejidad técnica.\n\nMira: https://www.youtube.com/watch?v=b1iGRaeNfn4"
-        },
-        "q18": {
-          "title": "Ejemplo Práctico",
-          "body": "Mantenerse actualizado requiere hábitos intencionales de aprendizaje.\n\n**Opción A:** Dedicar 'tiempo de aprendizaje' semanal\n**Opción B:** Seguir thought leaders y newsletters\n**Opción C:** Aplicar conocimiento nuevo dentro de 48 horas\n**Opción D:** Desarrollar perfil 'en T': profundidad + amplitud\n\n**Cómo responder:** Considera cómo te mantienes relevante en tu campo.\n\nMira: https://www.youtube.com/watch?v=5MgBikgcWnY"
-        },
-        "q19": {
-          "title": "Ejemplo Práctico",
-          "body": "Balancea innovación con practicidad usando experimentos controlados.\n\n**Opción A:** 'Experimentos safe-to-fail' con pequeñas inversiones\n**Opción B:** Landing page antes de construir el producto\n**Opción C:** Prototipo antes del desarrollo completo\n**Opción D:** '20% time' para exploración libre\n\n**Cómo responder:** Piensa en cómo equilibras riesgo e innovación.\n\nMira: https://www.youtube.com/watch?v=RfWgVWGEXZs"
-        },
-        "q20": {
-          "title": "Ejemplo Práctico",
-          "body": "La definición efectiva de objetivos usa frameworks estructurados.\n\n**Opción A:** Framework SMART: Específico, Medible, Alcanzable, Relevante, Temporal\n**Opción B:** OKRs trimestrales (Objectives and Key Results)\n**Opción C:** Dividir en tareas semanales manejables\n**Opción D:** Revisiones regulares (check-in semanal, deep dive mensual)\n\n**Cómo responder:** Reflexiona sobre cómo defines y persigues tus metas.\n\nMira: https://www.youtube.com/watch?v=L4N1q4RNi9I"
-        },
-        "q21": {
-          "title": "Ejemplo Práctico",
-          "body": "Al evaluar nuevas tecnologías, usa un framework estructurado.\n\n**Opción A:** Definir el problema claramente primero\n**Opción B:** Investigar opciones y casos de estudio\n**Opción C:** Ejecutar un pequeño piloto antes de comprometerte\n**Opción D:** Medir resultados contra la baseline\n\n**Cómo responder:** Considera cómo tomas decisiones tecnológicas informadas.\n\nMira: https://www.youtube.com/watch?v=iVXW1r_ivjw"
-        },
-        "open1": {
-          "title": "Cómo Responder Bien",
-          "body": "Las respuestas fuertes describen una situación específica con impacto medible. Usa el método STAR: Situación (contexto), Tarea (tu responsabilidad), Acción (qué hiciste), Resultado (outcomes con números si es posible). Ejemplo: 'Lideré un equipo de 5 para reducir el tiempo de onboarding de 2 semanas a 3 días, aumentando la activación un 40%.' Sé específico sobre TU contribución, no solo el éxito del equipo. Mira: https://www.youtube.com/watch?v=0vNUxleEyoo"
-        },
-        "open2": {
-          "title": "Cómo Responder Bien",
-          "body": "La autoconciencia es clave aquí. Las respuestas fuertes identifican un área de crecimiento genuina y muestran pasos proactivos para mejorar. Evita respuestas vagas como 'Trabajo demasiado'. En cambio: 'Me cuesta delegar tareas técnicas. Lo estoy abordando empezando con pequeñas delegaciones, creando documentos claros de handoff, y programando check-ins semanales en lugar de diarios.' Demuestra que estás tomando ownership. Mira: https://www.youtube.com/watch?v=tJxFZrMxT3s"
-        }
-      },
-      "examplesByCategory": {
-        "comp_power": "Las preguntas de Potencia Computacional evalúan tu capacidad para analizar datos, resolver problemas sistemáticamente y usar tecnología efectivamente. Los top performers descomponen problemas complejos en pasos, validan suposiciones con datos e iteran basándose en resultados.",
-        "communication": "Las preguntas de Comunicación evalúan cómo expresas ideas, escuchas activamente y adaptas tu estilo a diferentes audiencias. Los comunicadores efectivos lideran con outcomes, usan ejemplos concretos y buscan feedback para asegurar comprensión.",
-        "knowledge": "Las preguntas de Conocimiento miden la profundidad de tu expertise y capacidad de aprender continuamente. Los top performers mantienen hábitos de aprendizaje, comparten conocimiento con otros (lo que refuerza su propia comprensión) y aplican nueva información rápidamente.",
-        "creativity": "Las preguntas de Creatividad evalúan tu capacidad para generar ideas nuevas y encontrar soluciones no convencionales. Los pensadores creativos abrazan restricciones, buscan perspectivas diversas y prototipan rápidamente para probar ideas antes de comprometer recursos.",
-        "drive": "Las preguntas de Impulso miden tu motivación, resiliencia y capacidad de perseguir objetivos a largo plazo. Los individuos de alto impulso establecen hitos claros, aprenden de los contratiempos y mantienen el enfoque a pesar de los obstáculos."
       }
     },
     "business_leadership": {
@@ -1646,43 +1545,6 @@
         "open2": {
           "question": "¿Cuál es tu mayor área de crecimiento como líder y cómo la estás abordando?"
         }
-      },
-      "examples": {
-        "q1": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Detectar anomalías):** Priorizas la detección rápida de problemas.\n\n**Opción B (Profundizar segmentos):** Prefieres entender causas raíz.\n\n**Opción C (Comparar histórico):** Contextualizas el rendimiento actual.\n\n**Opción D (Exportar offline):** Te tomas tiempo para análisis profundo.\n\n**Cómo responder:** Elige lo que REALMENTE haces primero. Mira: https://www.youtube.com/watch?v=d4cKVgpHlCY"
-        },
-        "q2": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Sintetizar):** Lideras encontrando el problema subyacente.\n\n**Opción B (Preguntas para alinear):** Crees que el desalineamiento viene de contextos diferentes.\n\n**Opción C (Resumir decisiones):** Te orientas hacia la acción.\n\n**Opción D (Desescalar):** Priorizas la cohesión del equipo.\n\n**Cómo responder:** Piensa en tus últimas 3 reuniones con conflicto. ¿Qué comportamiento mostraste?"
-        },
-        "q3": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Informes del sector):** Prefieres información curada y sintetizada.\n\n**Opción B (Analistas/competidores):** Quieres inteligencia competitiva basada en datos.\n\n**Opción C (Conferencias/webinars):** Valoras el aprendizaje entre pares.\n\n**Opción D (Entrevistas a clientes):** Priorizas señales de mercado de primera mano."
-        },
-        "q4": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Prototipar rápido):** Crees en probar ideas rápidamente.\n\n**Opción B (Adaptar playbooks):** Prefieres frameworks probados.\n\n**Opción C (Ideas de otros sectores):** Encuentras innovación en cross-polinización.\n\n**Opción D (Cocrear):** Crees que las mejores estrategias emergen del input colaborativo."
-        },
-        "q5": {
-          "title": "Entendiendo Tu Motivación",
-          "body": "**Opción A (Hitos/scorecards):** Te energiza el progreso medible.\n\n**Opción B (Propósito/impacto):** Sacas energía de outcomes significativos.\n\n**Opción C (Aprendizaje/iteración):** Te motiva el crecimiento.\n\n**Opción D (Reconocimiento/victorias):** Prosperas con el reconocimiento."
-        },
-        "open1": {
-          "title": "Cómo Responder Bien",
-          "body": "Sigue el formato STAR-L: Situación, Tarea, Acción, Resultado, Aprendizaje. Describe una decisión específica con stakes reales. Nombra los trade-offs explícitamente. Cuantifica outcomes cuando sea posible. Mira: https://www.youtube.com/watch?v=0vNUxleEyoo"
-        },
-        "open2": {
-          "title": "Cómo Responder Bien",
-          "body": "Muestra autoconciencia nombrando un área de crecimiento genuina. Describe acciones específicas que estás tomando. Ejemplo: 'Tiendo a excederme en datos y retrasar decisiones. Lo estoy abordando poniendo deadlines de decisión por adelantado.' Mira: https://www.youtube.com/watch?v=tJxFZrMxT3s"
-        }
-      },
-      "examplesByCategory": {
-        "comp_power": "Las preguntas de Potencia Computacional de Negocios evalúan tu capacidad de trabajar con datos, métricas y frameworks analíticos. Los top performers segmentan problemas sistemáticamente y validan calidad de datos.",
-        "communication": "Las preguntas de Comunicación de Negocios evalúan cómo influencias stakeholders y gestionas conflictos. Los comunicadores efectivos adaptan su estilo y lideran con outcomes.",
-        "knowledge": "Las preguntas de Conocimiento de Negocios miden cómo adquieres inteligencia de mercado. Los top performers combinan métodos múltiples y comparten conocimiento activamente.",
-        "creativity": "Las preguntas de Creatividad de Negocios evalúan tu capacidad de generar estrategias de crecimiento. Los líderes creativos prueban ideas rápidamente e involucran perspectivas diversas.",
-        "drive": "Las preguntas de Impulso de Negocios miden tu resiliencia y establecimiento de metas. Los líderes de alto impulso aprenden de los fracasos y protegen el foco a largo plazo."
       }
     },
     "arts_creative": {
@@ -1905,31 +1767,6 @@
         "open2": {
           "question": "¿Qué habilidad creativa más quieres mejorar este año y cómo?"
         }
-      },
-      "examples": {
-        "q1": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Comparar objetivos):** Priorizas medir si el creativo cumple metas.\n\n**Opción B (Formatos/ubicaciones):** Analizas qué formatos funcionan mejor.\n\n**Opción C (Segmentos audiencia):** Miras cómo responden diferentes audiencias.\n\n**Opción D (Verificar medición):** Validas calidad de datos primero."
-        },
-        "q2": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Historia de decisiones):** Explicas el razonamiento y lógica creativa.\n\n**Opción B (Antes/después visual):** Muestras transformaciones tangibles.\n\n**Opción C (Objetivos de negocio):** Conectas elecciones a outcomes que importan.\n\n**Opción D (Invitar preguntas):** Construyes comprensión a través del diálogo."
-        },
-        "open1": {
-          "title": "Cómo Responder Bien",
-          "body": "Describe una pieza específica con impacto medible: Qué creaste, El desafío, Tus elecciones creativas, El outcome. Ejemplo: 'Rediseñé las ilustraciones del checkout de abstractas a imágenes concretas. Esto aumentó la conversión un 23%.' Mira: https://www.youtube.com/watch?v=0vNUxleEyoo"
-        },
-        "open2": {
-          "title": "Cómo Responder Bien",
-          "body": "Nombra un gap de habilidad genuino y describe pasos activos. Evita respuestas genéricas. Ejemplo: 'Quiero mejorar en motion design. Estoy tomando un curso de 12 semanas, practico 30 min diarios y comparto progreso en una comunidad online.' Mira: https://www.youtube.com/watch?v=tJxFZrMxT3s"
-        }
-      },
-      "examplesByCategory": {
-        "comp_power": "Las preguntas de Potencia Computacional Creativa evalúan tu capacidad de usar datos para informar decisiones creativas. Los top performers validan suposiciones con evidencia.",
-        "communication": "Las preguntas de Comunicación Creativa evalúan cómo presentas ideas y recibes feedback. Los comunicadores creativos traducen conceptos abstractos en ejemplos tangibles.",
-        "knowledge": "Las preguntas de Conocimiento Creativo miden cómo te mantienes actualizado en tu oficio. Los top performers combinan aprendizaje formal con comunidad.",
-        "creativity": "Las preguntas de Creatividad evalúan tu proceso de generación de ideas. Los performers fuertes abrazan restricciones y prototipan rápidamente.",
-        "drive": "Las preguntas de Impulso Creativo miden resiliencia y capacidad de mantener momentum. Los creativos de alto impulso celebran pequeñas victorias y protegen tiempo para trabajo profundo."
       }
     },
     "service_ops": {
@@ -2152,107 +1989,420 @@
         "open2": {
           "question": "¿Qué área de tu práctica operativa quieres hacer crecer este año y cuál es tu plan?"
         }
-      },
+      }
+    }
+  },
+  "assessmentHelp": {
+    "science_tech": {
       "examples": {
         "q1": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Segmentar por turno/sede):** Priorizas identificar dónde ocurren los problemas desglosando los datos por ubicación o periodo de tiempo. Esto te ayuda a aislar causas raíz rápidamente.\n\n**Opción B (Verificar cumplimiento):** Crees que la mayoría de caídas vienen de desviaciones del proceso. Revisar si los equipos siguieron los procedimientos es tu primer diagnóstico.\n\n**Opción C (Comparar histórico):** Contextualizas el rendimiento actual viendo si el patrón ha ocurrido antes, lo que podría revelar problemas estacionales o cíclicos.\n\n**Opción D (Comprobar integridad):** Desconfías de los datos hasta verificarlos. Datos erróneos llevan a conclusiones equivocadas.\n\n**Cómo responder:** Piensa en las últimas 3 veces que tus métricas bajaron. ¿Qué hiciste REALMENTE primero? Mira: https://www.youtube.com/watch?v=d4cKVgpHlCY"
+          "title": "Tu primer paso con un conjunto de datos complejo",
+          "body": "Tienes delante un conjunto de datos grande y desordenado: la pregunta plantea qué harías de verdad en primer lugar.\n\n**A.** Divides los datos en partes más pequeñas (por periodo, fuente o tipo) y las examinas una a una.\n\n**B.** Miras enseguida los datos en conjunto, buscando tendencias, picos o patrones que se repiten.\n\n**C.** Antes de analizar eliges herramientas o software (una hoja de cálculo, un script, una herramienta de BI) que hagan el trabajo pesado.\n\n**D.** Primero consultas a alguien con experiencia similar en este tipo de datos y le preguntas cómo lo planteó.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q2": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Escuchar y reflejar):** Crees que la mayoría de frustraciones se resuelven sintiéndose comprendido. Reflejar las preocupaciones del cliente baja la tensión.\n\n**Opción B (Explicar políticas):** Te enfocas en clarificar para que el cliente entienda las razones. Transparencia genera confianza.\n\n**Opción C (Ofrecer opciones):** Empoderas al cliente dándole alternativas. Esto transforma quejas en colaboración hacia soluciones.\n\n**Opción D (Escalar adecuadamente):** Sabes cuándo un tema excede tu autoridad y proporcionas contexto para que el siguiente nivel resuelva eficientemente.\n\n**Cómo responder:** Reflexiona sobre interacciones difíciles recientes. ¿Qué enfoque usaste naturalmente? Mira: https://www.youtube.com/watch?v=H4zTJDfMDo8"
+          "title": "Presentar una simulación a un comité mixto",
+          "body": "Tienes 20 minutos para presentar tu simulación a expertos y a directivos sin perfil técnico: la pregunta plantea cómo la organizarías de verdad.\n\n**A.** Recorres la metodología paso a paso con la evidencia técnica y dejas a los ejecutivos un anexo detallado para leer después.\n\n**B.** Empiezas por lo que significan los resultados para la financiación y solo entras en la metodología cuando un experto lo pide.\n\n**C.** Dedicas los dos primeros minutos a preguntar qué espera cada subgrupo de la sesión y luego decides cuánto profundizar.\n\n**D.** Dos días antes envías el paper técnico a los expertos y en la reunión hablas solo de lo que deben decidir los ejecutivos.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q3": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (SOP claras):** Crees que procedimientos documentados previenen errores. Los equipos necesitan referencias escritas.\n\n**Opción B (Micro-formaciones):** Prefieres formación activa sobre documentación pasiva. La gente aprende haciendo.\n\n**Opción C (Base de conocimiento):** Construyes sistemas buscables para que la información esté accesible cuando se necesite.\n\n**Opción D (Feedback de primera línea):** Involucras a quienes ejecutan los procesos en mejorarlos. Esto mejora adopción y calidad.\n\n**Cómo responder:** Elige el método que REALMENTE usas, no el que crees que sería ideal. Mira: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+          "title": "Una limitación en un paper muy citado, para mañana",
+          "body": "La decisión del equipo se apoya en un paper muy citado, pero solo tú has visto una limitación en su método y la entrega es mañana: la pregunta plantea qué harías de verdad.\n\n**A.** Hoy mismo señalas la limitación al equipo y propones comprobar rápidamente cuánto cambia el resultado si varía la asunción clave.\n\n**B.** Sigues adelante con las conclusiones del paper y dejas una nota que describe la limitación para retomarla más adelante.\n\n**C.** Buscas un estudio independiente que llegó a sus resultados con otra metodología y comparas ambos.\n\n**D.** Preguntas a un colega que conoce bien el campo si la limitación afecta de verdad a tu caso concreto.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q4": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Rediseñar flujo):** Crees que los cuellos de botella requieren cambios estructurales. A veces el proceso entero necesita repensar.\n\n**Opción B (Importar soluciones):** Miras cómo otros equipos resolvieron problemas similares. ¿Por qué reinventar la rueda?\n\n**Opción C (Pilotar experimento):** Prefieres tests pequeños antes de hacer grandes cambios. Reducir riesgo de errores costosos.\n\n**Opción D (Codiseñar):** Involucras a personal y usuarios porque crees que las mejores soluciones vienen de quienes experimentan el problema.\n\n**Cómo responder:** Piensa en la última mejora de proceso que hiciste. ¿Cuál de estos enfoques describe mejor tu método? Mira: https://www.youtube.com/watch?v=RfWgVWGEXZs"
+          "title": "Un cuello de botella y una librería sin terminar",
+          "body": "La solución que quieres depende de una librería que llegará en tres meses, pero el pipeline debe estar listo en seis semanas: la pregunta plantea qué harías de verdad.\n\n**A.** Combinas dos librerías estables que ya conoces para acercarte a lo que haría la nueva, aceptando que vaya algo más lenta.\n\n**B.** Cambias el recorrido de los datos en el pipeline para que ya no pasen por la etapa que causa el cuello de botella.\n\n**C.** Escribes tú una versión reducida de la funcionalidad crítica, pensada para quitarla cuando salga la librería.\n\n**D.** Propones entregar ahora una parte del trabajo con las herramientas actuales y el resto cuando la librería esté lista.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q5": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Enfocarte en alto impacto):** Bajo presión, priorizas despiadadamente. Haces primero lo que más importa.\n\n**Opción B (Apoyar al equipo):** Crees que el éxito del equipo importa más que el individual. Ayudar a otros les ayuda a todos.\n\n**Opción C (Rotar tareas):** Evitas el agotamiento variando las actividades. Cambiar de contexto mantiene la energía.\n\n**Opción D (Celebrar victorias):** Mantienes la moral reconociendo el progreso. Las pequeñas celebraciones construyen momentum.\n\n**Cómo responder:** Recuerda tu día de trabajo más estresante recientemente. ¿Cuál de estos comportamientos te describe mejor? Mira: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
+          "title": "Un debugging que falla en sistemas distribuidos",
+          "body": "Tu forma habitual de hacer debugging sigue fallando con un nuevo tipo de errores en sistemas distribuidos: la pregunta plantea qué harías de verdad.\n\n**A.** Trabajas al lado de alguien que conoce bien estos errores mientras depura y sigues cada paso de su método.\n\n**B.** Reservas un hueco fijo cada semana para reproducir estos errores y analizarlos uno por uno.\n\n**C.** Tras cada intento fallido añades un punto a una checklist de lo que se te escapó, para ver qué patrones se repiten.\n\n**D.** Pruebas un framework de debugging totalmente distinto con los mismos errores y comparas lo que encuentra cada uno.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q6": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Modelar demanda):** Usas datos históricos para predecir necesidades de personal. Las decisiones basadas en datos optimizan recursos.\n\n**Opción B (Mezcla de habilidades):** Aseguras que cada turno tenga las competencias necesarias. Diversidad de habilidades crea resiliencia.\n\n**Opción C (Buffers para picos):** Planificas capacidad extra para variabilidad. La preparación previene caos.\n\n**Opción D (Revisar restricciones):** Verificas normativa y contratos primero. El cumplimiento antes de la optimización.\n\n**Cómo responder:** Cuando planificas turnos, ¿cuál es tu punto de partida habitual?"
+          "title": "Cómo saber si una solución técnica funciona",
+          "body": "Se ha construido una solución técnica y tienes que decidir si cumple su función: la pregunta plantea qué comprobarías de verdad primero.\n\n**A.** Mides el rendimiento con métricas concretas, como tiempo de respuesta, tasa de error o uso de recursos, y lo comparas con un objetivo.\n\n**B.** Pones la solución frente a una o dos alternativas, por ejemplo con una prueba A/B con usuarios reales.\n\n**C.** Recopilas comentarios de los usuarios finales que la usan a diario sobre qué les ayuda y qué les estorba.\n\n**D.** Repasas la lista de requisitos uno a uno y compruebas que se cumplen todos.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q7": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Explicar el porqué):** Crees que la gente acepta cambios cuando entiende las razones. El contexto reduce resistencia.\n\n**Opción B (Listas/visuals):** Haces la información fácil de escanear y recordar. La claridad visual acelera adopción.\n\n**Opción C (Canal de preguntas):** Proporcionas espacio seguro para aclarar dudas. Preguntas sin responder crean errores.\n\n**Opción D (Apoyo entre pares):** Usas compañeros experimentados para ayudar a otros. Peer support es más accesible.\n\n**Cómo responder:** Piensa en el último cambio de protocolo que comunicaste. ¿Qué método usaste? Mira: https://www.youtube.com/watch?v=eIho2S0ZahI"
+          "title": "Un ingeniero senior te cuestiona con jerga técnica",
+          "body": "En una revisión, un ingeniero senior cuestiona tu interpretación de los datos con una jerga que casi nadie sigue y se hace el silencio: la pregunta plantea cómo responderías de verdad.\n\n**A.** Respondes primero a las objeciones técnicas del ingeniero en su mismo lenguaje y luego lo explicas al resto de la sala.\n\n**B.** Reformulas la preocupación del ingeniero con palabras sencillas para toda la sala y respondes a ese nivel.\n\n**C.** Pides al ingeniero que concrete qué dato específico está cuestionando y así ganas tiempo para ver si la sala te sigue.\n\n**D.** Reconoces el punto en público, propones seguir la discusión técnica aparte y reconduces la reunión hacia temas comunes.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q8": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Guías paso a paso):** Crees que los nuevos necesitan instrucciones claras. La estructura reduce errores iniciales.\n\n**Opción B (Sombra y autonomía):** Prefieres aprendizaje experiencial con responsabilidad creciente gradual.\n\n**Opción C (Micro-formaciones):** Te enfocas primero en las tareas más críticas. Priorizar previene sobrecarga.\n\n**Opción D (Documentar errores):** Enseñas qué NO hacer para que los nuevos eviten trampas comunes.\n\n**Cómo responder:** Cuando incorporas a alguien nuevo, ¿cuál es tu primera prioridad? Mira: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+          "title": "Dos fuentes fiables que se contradicen",
+          "body": "Dos fuentes de datos que siempre han sido fiables dan ahora lecturas opuestas sobre la salud de un sistema: la pregunta plantea qué harías de verdad.\n\n**A.** Revisas las condiciones de medición de cada fuente (hora, ubicación, carga) para encontrar qué explica la diferencia.\n\n**B.** Das más peso a la fuente que ha acertado más a menudo en situaciones similares.\n\n**C.** Ejecutas tu propio diagnóstico independiente para obtener una tercera lectura con la que comparar las otras dos.\n\n**D.** Contactas con el equipo que mantiene cada fuente y preguntas si ha cambiado algo recientemente en la calibración.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q9": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Rediseñar puntos de contacto):** Crees que las mejoras vienen de repensar cada interacción. Los momentos clave definen la experiencia.\n\n**Opción B (Personalizar momentos):** Te enfocas en hacer que los usuarios se sientan especiales. Las experiencias personalizadas generan lealtad.\n\n**Opción C (Agilizar traspasos):** Mejoras las transiciones entre equipos. Handoffs sin fricciones reducen tiempos de espera.\n\n**Opción D (Probar herramientas):** Buscas nuevas tecnologías que mejoren la capacidad. Las herramientas correctas multiplican el impacto.\n\n**Cómo responder:** Piensa en la última mejora de servicio que propusiste. ¿Cuál de estos enfoques usaste?"
+          "title": "Un sistema de monitoreo con el 60% de sensores",
+          "body": "El presupuesto solo cubre el 60% de los sensores previstos y reducir la cobertura deja puntos ciegos: la pregunta plantea qué harías de verdad.\n\n**A.** Colocas los sensores disponibles en las zonas de alto riesgo y usas estimaciones estadísticas para cubrir las áreas que quedan sin ellos.\n\n**B.** Pones sensores más baratos y menos precisos en las áreas no críticas y los de gama alta solo donde la precisión importa más.\n\n**C.** Cambias el objetivo de cubrirlo todo por detectar anomalías, de modo que el sistema avisa solo cuando los valores se alejan de la baseline.\n\n**D.** Instalas ahora lo que cubre el presupuesto, sobre una arquitectura modular que permite añadir sensores más adelante.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q10": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Metas y progreso):** Crees que la transparencia sobre objetivos construye compromiso. Saber hacia dónde vas motiva.\n\n**Opción B (Reconocer conductas):** Celebras comportamientos específicos, no solo resultados. El reconocimiento refuerza lo que quieres ver.\n\n**Opción C (Rotar responsabilidades):** Mantienes las cosas frescas dando variedad. La diversidad de tareas previene aburrimiento.\n\n**Opción D (Apoyo rápido):** Eliminas obstáculos inmediatamente. Bloqueos sin resolver frustran a los equipos.\n\n**Cómo responder:** Cuando la moral de tu equipo baja, ¿cuál es tu respuesta típica?"
+          "title": "La misma debilidad de diseño en cada code review",
+          "body": "Las code reviews señalan una y otra vez la misma debilidad de diseño y aún no la has corregido: la pregunta plantea qué harías de verdad.\n\n**A.** Pides al reviewer que te enseñe, sobre tu propio código, cómo lo estructuraría de otra forma.\n\n**B.** Coges un módulo antiguo y lo reescribes con el patrón recomendado hasta que te salga de forma natural.\n\n**C.** Te pones un objetivo concreto, por ejemplo ningún comentario sobre ese punto, para tus próximas tres PRs.\n\n**D.** Profundizas en el principio de diseño que hay detrás de los comentarios antes de escribir más código.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q11": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Checklists):** Crees que las listas de verificación previenen olvidos. La estandarización reduce errores humanos.\n\n**Opción B (Estandarizar y 5S):** Te enfocas en crear ambientes organizados. Lugares ordenados facilitan trabajo sin errores.\n\n**Opción C (Automatizar):** Eliminas oportunidades de error humano usando tecnología. La automatización mejora consistencia.\n\n**Opción D (Medir y arreglar causas):** Analizas patrones de error para eliminar causas raíz. Resolver síntomas no es suficiente.\n\n**Cómo responder:** Piensa en errores recurrentes en tu trabajo. ¿Cómo has intentado reducirlos? Mira: https://www.youtube.com/watch?v=M576WGiDBdQ"
+          "title": "Cómo automatizas el trabajo repetitivo",
+          "body": "Hay una tarea que se repite cada día o cada semana y que podría automatizarse: la pregunta plantea cómo la abordarías de verdad.\n\n**A.** Detectas los patrones que se repiten y escribes scripts personalizados, por ejemplo en Python.\n\n**B.** Partes de herramientas existentes, como una macro de la hoja de cálculo o una integración, y las adaptas a la tarea.\n\n**C.** Antes de construir nada, calculas las horas que ahorrarás frente al tiempo que cuesta automatizar y mantenerlo.\n\n**D.** Trabajas con un desarrollador o un experto de sistemas para implementar juntos la automatización.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q12": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Criterios de aceptación):** Defines claramente cuándo un handoff está completo. Expectativas claras previenen disputas.\n\n**Opción B (Plantillas de handoff):** Usas formatos estándar para asegurar que nada se olvide. Las plantillas crean consistencia.\n\n**Opción C (Alineaciones breves):** Prefieres comunicación cara a cara para handoffs. Las conversaciones directas aclaran dudas rápido.\n\n**Opción D (Dashboards compartidos):** Usas herramientas visuales para transparencia. Información compartida reduce fricción.\n\n**Cómo responder:** Piensa en cómo haces traspasos entre turnos o equipos. ¿Cuál es tu método preferido?"
+          "title": "Un fallo crítico 48 horas antes de una auditoría",
+          "body": "Dos días antes de una auditoría descubres un fallo crítico y debes informar a tres personas por escrito en menos de una hora: la pregunta plantea cómo lo gestionarías de verdad.\n\n**A.** Escribes un único informe completo con causa técnica, exposición legal y pasos operativos, y lo envías a los tres.\n\n**B.** Redactas tres mensajes distintos: detalle técnico para tu manager, riesgos para compliance y una checklist de acciones para operaciones.\n\n**C.** Envías a los tres una alerta breve sobre la gravedad y preguntas a cada uno qué necesita antes de escribir más.\n\n**D.** Envías una alerta escrita breve para dejar constancia y pides enseguida una llamada de 15 minutos con los tres.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q13": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Retros breves):** Crees en reflexión regular pero ligera. Mejora continua sin sobrecarga de reuniones.\n\n**Opción B (Resúmenes simples):** Documentas aprendizajes de forma accesible. Información fácil de digerir se usa más.\n\n**Opción C (FAQs buscables):** Construyes recursos auto-servicio. La gente debería poder encontrar respuestas sola.\n\n**Opción D (Responsables de actualizar):** Asignas ownership de documentación. Sin dueños claros, nada se actualiza.\n\n**Cómo responder:** Después de un proyecto o incidente, ¿cómo capturas lo aprendido? Mira: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+          "title": "Un colega junior cuestiona tu framework",
+          "body": "Un colega junior aporta pruebas preliminares de que una asunción básica del framework que usas desde hace meses es incorrecta: la pregunta plantea qué harías de verdad.\n\n**A.** Dejas de usar el framework por ahora y pruebas ambas versiones de la asunción con datos recientes antes de decidir.\n\n**B.** Revisas por tu cuenta la evidencia en bruto del colega para ver cuánto se sostiene antes de implicar a otras personas.\n\n**C.** Dejas constancia formal de la objeción y sigues con el framework, fijando un umbral concreto que te llevaría a revisarlo por completo.\n\n**D.** Pides a dos personas ajenas a ambos análisis que examinen la evidencia por separado.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q14": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Rediseñar secuencia):** Crees que cambiar el orden de pasos puede desbloquear eficiencia. El flujo importa tanto como las tareas individuales.\n\n**Opción B (Reutilizar creativamente):** Encuentras nuevos usos para recursos existentes. La creatividad supera limitaciones presupuestarias.\n\n**Opción C (Reordenar espacio):** Crees que la distribución física impacta el rendimiento. Cambiar layouts puede mejorar flujo.\n\n**Opción D (Simplificar pasos):** Reduces la complejidad para el usuario. Menos pasos = menos errores y mejor experiencia.\n\n**Cómo responder:** Con recursos limitados, ¿cómo has encontrado soluciones? Mira: https://www.youtube.com/watch?v=f1yQTy1bQmc"
+          "title": "Una funcionalidad obligatoria que daña la arquitectura",
+          "body": "El contrato exige una funcionalidad que funciona pero haría más difícil seguir desarrollando la arquitectura del sistema: la pregunta plantea cómo la construirías de verdad.\n\n**A.** La implementas detrás de una capa de abstracción aparte, para poder reemplazarla más adelante sin tocar el resto del sistema.\n\n**B.** Propones una vía técnica distinta que da al cliente el mismo resultado sin comprometer la arquitectura.\n\n**C.** La construyes tal como se especifica y, a la vez, escribes un documento que explica cómo refactorizarla después.\n\n**D.** Negocias el alcance: entregas lo esencial de forma más limpia y aplazas las partes que más dañarían la arquitectura.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q15": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Revisión sin culpas):** Crees en aprender de fallos sin señalar culpables. Ambientes seguros fomentan honestidad.\n\n**Opción B (Aviso transparente):** Comunicas proactivamente a los afectados. La honestidad preserva confianza.\n\n**Opción C (Plan de recuperación):** Te enfocas en solucionar antes que en analizar. Acción rápida minimiza daño.\n\n**Opción D (Seguimiento hasta cierre):** Aseguras que los problemas se resuelvan completamente. Las cosas no arregladas del todo vuelven.\n\n**Cómo responder:** Piensa en el último fallo de servicio que manejaste. ¿Cuál fue tu primera prioridad? Mira: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
+          "title": "Después de un incidente que mostró una laguna",
+          "body": "Un incidente en producción dejó ver una laguna en tus conocimientos de monitoreo y ya está resuelto: la pregunta plantea qué harías de verdad a continuación.\n\n**A.** Anotas con precisión qué señales se te escaparon y las añades a una checklist personal para próximos incidentes.\n\n**B.** Reservas un rato con el ingeniero de guardia y repasáis juntos qué vio él que a ti se te pasó.\n\n**C.** Montas un sandbox donde provocas a propósito fallos similares y practicas la respuesta.\n\n**D.** Ajustas los umbrales de alerta según lo que has aprendido y compruebas durante dos semanas si saltan cuando deben.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q16": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Ajuste a requisitos):** Evalúas si la herramienta hace lo que necesitas. Las features vencen al marketing.\n\n**Opción B (Piloto con grupo pequeño):** Pruebas antes de comprometerte. Los pilotos reducen riesgo de implementación.\n\n**Opción C (Coste/beneficio):** Calculas el ROI antes de decidir. Las inversiones deben justificarse.\n\n**Opción D (Integración):** Verificas que la nueva herramienta funcione con sistemas existentes. Herramientas aisladas crean trabajo extra.\n\n**Cómo responder:** Al evaluar software o herramientas, ¿cuál es tu primer criterio? Mira: https://www.youtube.com/watch?v=iVXW1r_ivjw"
+          "title": "Cómo trabajas con grandes cantidades de datos",
+          "body": "Tienes un gran volumen de datos que analizar: la pregunta plantea cómo empezarías de verdad a trabajar con ellos.\n\n**A.** Usas herramientas de visualización para crear gráficos o paneles y los observas para identificar patrones.\n\n**B.** Divides los datos en categorías lógicas, por ejemplo por cliente, zona o producto, y tratas cada grupo por separado.\n\n**C.** Aplicas técnicas estadísticas, como correlación o regresión, para ver qué variables se mueven juntas.\n\n**D.** Decides primero qué subconjuntos de datos tienen más impacto y analizas esos antes que el resto.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q17": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Dashboards):** Crees que visibilidad compartida alinea equipos. Lo que todos ven, todos entienden.\n\n**Opción B (Reuniones cortas):** Prefieres sincronización presencial regular. Las conversaciones directas resuelven ambigüedades.\n\n**Opción C (Actualizaciones concisas):** Comunicas de forma breve y enfocada. Menos ruido = más señal.\n\n**Opción D (Protocolos de chat):** Usas canales digitales estandarizados. Mensajes claros permiten respuestas rápidas.\n\n**Cómo responder:** ¿Cómo te coordinas típicamente con otros turnos o equipos? Mira: https://www.youtube.com/watch?v=eIho2S0ZahI"
+          "title": "Tu modelo contradice el de un equipo asociado",
+          "body": "El modelo validado de un equipo asociado contradice el tuyo y el entregable conjunto vence en cinco días: la pregunta plantea cómo abordarías de verdad la primera reunión de alineamiento.\n\n**A.** Muestras ambos modelos con sus asunciones una al lado de otra y repasas los datos antes de sugerir cómo reconciliarlos.\n\n**B.** Planteas la diferencia como una cuestión de alcance y llevas la conversación a lo que el entregable conjunto necesita resolver.\n\n**C.** Pides al equipo asociado que explique primero su razonamiento, buscando brechas en sus asunciones antes de presentar tu modelo.\n\n**D.** Propones un documento compartido con los dos modelos lado a lado y las asunciones etiquetadas, en lugar de debatir de palabra.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q18": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Guías oficiales):** Vas a la fuente primaria. La documentación oficial es la referencia definitiva.\n\n**Opción B (Aclaraciones de expertos):** Consultas a quienes ya dominan el tema. Los expertos pueden simplificar lo complejo.\n\n**Opción C (Checklist de cumplimiento):** Traduces la regulación a pasos accionables. Las listas hacen el cumplimiento manejable.\n\n**Opción D (Formación con ejemplos):** Aprendes mejor con casos prácticos. Los ejemplos concretos hacen las reglas reales.\n\n**Cómo responder:** Cuando necesitas aprender nueva normativa, ¿cuál es tu primer recurso? Mira: https://www.youtube.com/watch?v=5MgBikgcWnY"
+          "title": "Benchmarks del proveedor distintos de tu entorno",
+          "body": "Un proveedor muestra benchmarks impresionantes de una nueva tecnología, pero medidos en condiciones distintas de tu entorno de producción: la pregunta plantea qué harías de verdad.\n\n**A.** Preparas una prueba controlada que reproduce tus volúmenes de datos, tu hardware y tus restricciones.\n\n**B.** Buscas usuarios independientes que la usen en condiciones similares a las tuyas y les preguntas por su experiencia.\n\n**C.** Enumeras las diferencias entre las condiciones de prueba del proveedor y las tuyas y estimas cómo cambiaría el rendimiento.\n\n**D.** Pides al proveedor sus datos crudos y repites el análisis con tus parámetros.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q19": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Simplificar formularios):** Crees que lenguaje simple y formularios cortos ayudan a más gente. La claridad es inclusión.\n\n**Opción B (Formatos alternativos):** Ofreces múltiples canales para diferentes necesidades. No todos acceden a la información igual.\n\n**Opción C (Rediseñar espacio):** Te enfocas en accesibilidad física. El entorno determina quién puede participar.\n\n**Opción D (Codiseñar con usuarios):** Involucras a quienes tienen necesidades especiales en el diseño. Nadie entiende mejor sus barreras.\n\n**Cómo responder:** ¿Qué has hecho para hacer tus servicios más accesibles?"
+          "title": "Un algoritmo nuevo difícil de explicar a reguladores",
+          "body": "El nuevo algoritmo de tu equipo supera el enfoque estándar en las pruebas, pero reguladores y stakeholders esperan el método convencional: la pregunta plantea qué harías de verdad.\n\n**A.** Durante un periodo de prueba ejecutas ambos algoritmos, usas el estándar para los informes y comparas con él los resultados del nuevo.\n\n**B.** Mantienes el algoritmo tal cual y reescribes la explicación con los términos y la estructura del marco regulatorio.\n\n**C.** Creas un híbrido sobre la estructura del método estándar e incorporas la innovación clave de tu algoritmo donde más pesa.\n\n**D.** Propones una adopción por fases: en contextos regulados sigue el enfoque convencional y el algoritmo nuevo empieza en usos con menos escrutinio.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q20": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (SLA y auditorías):** Crees que lo que se mide se gestiona. Los estándares formales mantienen consistencia.\n\n**Opción B (Indicadores adelantados):** Buscas señales tempranas de problemas. Prevenir es mejor que curar.\n\n**Opción C (Ciclos de mejora):** Implementas PDCA o similar. La mejora continua es un proceso, no un evento.\n\n**Opción D (Proteger tiempo de foco):** Aseguras espacio para trabajo profundo. Sin tiempo protegido, la calidad sufre.\n\n**Cómo responder:** ¿Cómo mantienes la calidad del servicio a lo largo del tiempo? Mira: https://www.youtube.com/watch?v=L4N1q4RNi9I"
+          "title": "Meses de dificultades con un área técnica",
+          "body": "Llevas meses con dificultades en un área técnica, por ejemplo la optimización de rendimiento: la pregunta plantea cuál sería de verdad tu próximo paso.\n\n**A.** Eliges un proyecto pequeño y específico en el que tengas que usar esa habilidad con plazos y límites reales.\n\n**B.** Cada semana apuntas qué has probado y qué resultado ha dado, para ver si tu enfoque realmente mejora.\n\n**C.** Pides a alguien con experiencia en esa área una opinión franca sobre qué estás haciendo mal exactamente.\n\n**D.** Cambias tu forma de aprender: si leer no funcionó, pruebas a construir; si ibas por tu cuenta, trabajas en pareja.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "q21": {
-          "title": "Entendiendo Tu Enfoque",
-          "body": "**Opción A (Métricas por adelantado):** Defines éxito antes de empezar. Criterios claros permiten evaluación objetiva.\n\n**Opción B (Antes/después):** Comparas resultados con baseline. Sin comparación, no sabes si mejoraste.\n\n**Opción C (Prueba controlada):** Usas grupos de control para aislar el efecto del cambio. El rigor previene atribuciones falsas.\n\n**Opción D (Documentar y próximos pasos):** Registras aprendizajes y defines acciones futuras. Los cambios deben construir sobre anteriores.\n\n**Cómo responder:** Al implementar cambios de proceso, ¿cómo mides su éxito? Mira: https://www.youtube.com/watch?v=iVXW1r_ivjw"
+          "title": "Evaluar una nueva tecnología antes de adoptarla",
+          "body": "Se plantea introducir una nueva tecnología en tu trabajo: la pregunta es qué mirarías de verdad primero para decidir.\n\n**A.** Haces un análisis de costo-beneficio detallado, poniendo cifras a licencias, formación y migración frente a las ventajas esperadas.\n\n**B.** La pruebas primero en un proyecto piloto con un grupo reducido y luego decides si extenderla a todos.\n\n**C.** Valoras cómo cambiarían los procesos existentes y el trabajo diario de los equipos implicados.\n\n**D.** Buscas casos de estudio de otras empresas del sector y las prácticas que se han consolidado en la industria.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
         },
         "open1": {
-          "title": "Cómo Responder Bien",
-          "body": "Describe una mejora específica con impacto medible usando el método STAR: Situación (contexto y desafío), Tarea (tu responsabilidad), Acción (pasos específicos que tomaste), Resultado (outcomes cuantificados). También explica cómo hiciste el cambio duradero: ¿Documentaste? ¿Entrenaste a otros? ¿Creaste sistemas?\n\nEjemplo: 'Vi que los tiempos de espera de clientes eran de 15 minutos de promedio. Analicé los patrones de llegada, reorganicé los turnos del personal y creé un sistema de triage para atención rápida. Los tiempos bajaron a 5 minutos. Para sostenerlo, documenté el proceso y entrené al equipo entrante.'\n\nMira: https://www.youtube.com/watch?v=0vNUxleEyoo"
+          "title": "Un momento de éxito en tu trabajo",
+          "body": "Describe una situación profesional concreta, no tu trayectoria en general. Una respuesta útil suele incluir:\n\n- el contexto y qué estaba en juego\n- qué hiciste tú, separándolo del trabajo del equipo\n- por qué para ti fue un éxito (un resultado, una valoración recibida, algo que aprendiste)\n\nBastan unas pocas frases, al menos 50 caracteres. No hay una respuesta correcta: lo importante es que sea una experiencia tuya."
         },
         "open2": {
-          "title": "Cómo Responder Bien",
-          "body": "Las respuestas fuertes muestran autoconciencia y plan de acción. Nombra un área genuina de crecimiento (no fortalezas disfrazadas como 'soy demasiado perfeccionista'). Describe pasos específicos que estás tomando.\n\nEjemplo: 'Quiero mejorar en gestión de conflictos de equipo. Tiendo a evitar conversaciones difíciles. Mi plan: tomar un curso de comunicación difícil, practicar con role-plays mensuales con mi supervisor, y pedir feedback después de cada conversación complicada.'\n\nMuestra que estás tomando responsabilidad activa de tu desarrollo. Mira: https://www.youtube.com/watch?v=tJxFZrMxT3s"
+          "title": "Un área en la que quieres crecer",
+          "body": "Indica un desafío o una habilidad concreta, no un deseo general. Una respuesta útil suele incluir:\n\n- el área y por qué importa ahora en tu trabajo\n- los pasos concretos que estás dando o piensas dar\n- cómo sabrás que está funcionando\n\nBastan unas pocas frases, al menos 50 caracteres. No hay una respuesta correcta: describe con sinceridad en qué punto estás."
         }
       },
       "examplesByCategory": {
-        "comp_power": "Las preguntas de Potencia Computacional de Servicios evalúan tu capacidad de usar datos y sistemas para mejorar operaciones. Los top performers segmentan problemas sistemáticamente, validan calidad de datos y usan métricas para guiar decisiones. Buscan patrones en datos de servicio y construyen sistemas de medición que previenen errores en lugar de solo detectarlos.",
-        "communication": "Las preguntas de Comunicación de Servicios evalúan cómo interactúas con clientes, equipos y stakeholders. Los comunicadores efectivos escuchan activamente, adaptan su estilo a diferentes audiencias y proporcionan información clara durante cambios. Manejan situaciones difíciles con empatía mientras mantienen límites profesionales.",
-        "knowledge": "Las preguntas de Conocimiento de Servicios miden cómo mantienes y compartes expertise operativo. Los top performers documentan procedimientos claramente, crean sistemas de formación efectivos y capturan lecciones aprendidas. Construyen bases de conocimiento que sobreviven a la rotación de personal.",
-        "creativity": "Las preguntas de Creatividad de Servicios evalúan tu capacidad de mejorar procesos y experiencias con recursos limitados. Los pensadores creativos en servicios reutilizan recursos, simplifican flujos complejos e involucran a usuarios finales en el diseño. Encuentran soluciones innovadoras dentro de restricciones reales.",
-        "drive": "Las preguntas de Impulso de Servicios miden tu resiliencia y capacidad de mantener calidad bajo presión. Los profesionales de alto impulso mantienen la moral del equipo, aprenden de fallos sin culpar, y construyen sistemas de mejora continua. Equilibran la urgencia del día a día con objetivos a largo plazo."
+        "comp_power": "Estas preguntas tratan de cómo manejas datos, cifras y problemas estructurados en el trabajo técnico y científico: por dónde empiezas, cómo desglosas el problema y cómo compruebas que una solución funciona. Cada opción es una forma distinta de trabajar.",
+        "communication": "Estas preguntas describen situaciones en el trabajo técnico y científico en las que tienes que explicar algo, dar una noticia o gestionar un desacuerdo, a menudo con interlocutores distintos a la vez. Te preguntan cómo organizarías y transmitirías realmente el mensaje.",
+        "knowledge": "Estas preguntas tratan de qué haces en el trabajo técnico y científico cuando la información es incompleta, contradictoria o nueva para ti: cómo la compruebas, a quién consultas y cuándo decides.",
+        "creativity": "Estas preguntas te ponen ante una limitación en el trabajo técnico y científico (plazos, presupuesto, normas, peticiones enfrentadas) y te preguntan cómo encontrarías una forma de seguir adelante.",
+        "drive": "Estas preguntas describen una carencia o un tropiezo en el trabajo técnico y científico y te preguntan qué pasos concretos darías para mejorar."
+      }
+    },
+    "business_leadership": {
+      "examples": {
+        "q1": {
+          "title": "Tu primer paso ante un panel de KPIs",
+          "body": "Tienes delante un panel con los KPIs del negocio: la pregunta es qué harías de verdad como primer paso.\n\n**A.** Repasas las cifras frente a los objetivos y apuntas las que se desvían.\n\n**B.** Desglosas los datos por segmentos (zona, producto, tipo de cliente) antes de mirar los totales.\n\n**C.** Comparas las cifras del periodo con meses o años anteriores para ver las tendencias.\n\n**D.** Exportas los datos a una hoja de cálculo para analizarlos aparte, con calma.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q2": {
+          "title": "Preparar 30 minutos de board para un pivote",
+          "body": "Tienes 30 minutos para conseguir que el board apruebe un pivote estratégico, y cada miembro se fija en algo distinto: elige cómo te prepararías de verdad.\n\n**A.** Preparas un único deck completo que recorre por orden finanzas, misión y mitigación de riesgos, sin dejarte nada.\n\n**B.** Organizas todo en torno a la pregunta \"¿Por qué ahora?\", de modo que cifras, misión y riesgos formen un solo relato.\n\n**C.** Antes de la sesión te reúnes a solas con el CFO y con los directores escépticos, y luego dedicas el board solo a las objeciones pendientes.\n\n**D.** Envías tres días antes un memo con el análisis completo y dedicas la sesión en vivo solo a preguntas.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q3": {
+          "title": "Una asunción de mercado puesta en duda",
+          "body": "Tu estrategia se apoya en una asunción de mercado respaldada por un solo informe de analista, y un movimiento de la competencia la pone en duda: elige qué harías de verdad.\n\n**A.** Encargas a alguien ajeno al informe original un análisis rápido e independiente de la asunción.\n\n**B.** Replanteas la estrategia para que funcione tanto con la asunción original como con la alternativa.\n\n**C.** Hablas con algunos vendedores de primera línea y les preguntas qué oyen de los clientes sobre el mercado.\n\n**D.** Dejas por escrito la incertidumbre y fijas un punto de activación concreto (una cifra, una fecha) a partir del cual revisarías la asunción.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q4": {
+          "title": "Entrar en un nuevo segmento en seis meses",
+          "body": "Tu empresa tiene que conseguir tracción en un nuevo segmento de mercado en seis meses, con un producto que no se diseñó para ese público: elige qué harías de verdad.\n\n**A.** Mantienes el producto tal cual, pero cambias posicionamiento, precios y onboarding para hablar el lenguaje del nuevo segmento.\n\n**B.** Buscas una empresa que ya sirve a ese segmento y ofreces tu producto como complemento integrado en su solución.\n\n**C.** Lanzas una versión simplificada que cubre solo el caso de uso en el que tu producto y las necesidades del nuevo segmento más coinciden.\n\n**D.** Buscas un nicho dentro del nuevo segmento donde tu producto actual ya encaja, y a partir de ahí creces.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q5": {
+          "title": "Tras una presentación al board que no convenció",
+          "body": "Tu última presentación al board no convenció porque el relato financiero carecía de profundidad: elige qué harías de verdad a continuación.\n\n**A.** Pides a un CFO de confianza que revise tu próximo deck y te señale los puntos débiles concretos.\n\n**B.** Reconstruyes la misma presentación desde cero con una estructura narrativa diferente, por ejemplo empezando por la conclusión.\n\n**C.** Estudias tres presentaciones de board que consideras ejemplares y apuntas las técnicas que aún no usas.\n\n**D.** Antes del próximo board presentas ante un pequeño grupo interno y recoges feedback en el momento.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q6": {
+          "title": "Ingresos que caen sin una causa clara",
+          "body": "Los ingresos están cayendo y la causa no está clara: elige qué comprobarías de verdad primero.\n\n**A.** Divides los ingresos por canal y por cohorte de clientes para ver dónde se concentra la caída.\n\n**B.** Cruzas las fechas de la caída con los cambios recientes de precios o promociones.\n\n**C.** Compruebas que la medición y la atribución funcionan bien antes de fiarte de las cifras.\n\n**D.** Comparas la caída con el mismo periodo de años anteriores para ver cuánto se debe a la estacionalidad.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q7": {
+          "title": "Comunicar los nuevos roles tras una reestructuración",
+          "body": "Tras una reestructuración, tu equipo reacciona de formas distintas y debes presentar las nuevas responsabilidades en una reunión: elige cómo lo harías de verdad.\n\n**A.** Presentas la nueva estructura con el rol, la línea de reporte y los plazos de cada uno, para que nadie dude de quién hace qué.\n\n**B.** En la reunión hablas de lo que debe lograr el equipo en conjunto y luego tratas los cambios de rol a solas con cada uno.\n\n**C.** Abres preguntando a cada persona qué necesita aclarar y organizas la reunión en torno a esas dudas.\n\n**D.** Envías antes las descripciones escritas de cada rol y dejas la reunión para preguntas y preocupaciones.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q8": {
+          "title": "Entrar en un mercado con datos contradictorios",
+          "body": "Estás entrando en un mercado con datos escasos y contradictorios, y los expertos no se ponen de acuerdo en lo básico: elige qué harías de verdad.\n\n**A.** Lanzas un piloto a pequeña escala (pocos clientes, una sola zona) para generar tus propios datos antes de comprometerte más.\n\n**B.** Mapeas los puntos de desacuerdo entre expertos y anotas qué evidencia resolvería cada uno.\n\n**C.** Sigues al experto cuyo razonamiento es más fácil de reconstruir, atento a las señales que lo contradigan.\n\n**D.** Construyes dos business cases separados, uno para cada uno de los dos escenarios más plausibles.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q9": {
+          "title": "Un competidor lanza antes tu funcionalidad",
+          "body": "A dos semanas de un lanzamiento clave, tu competidor principal lanza una funcionalidad casi idéntica con mucha cobertura en prensa: elige qué harías de verdad.\n\n**A.** Mantienes la fecha pero cambias la narrativa del lanzamiento y la centras en una propuesta de valor que el competidor no abordó.\n\n**B.** Aceleras una capacidad que solo ofreces tú, aceptando menos pulido en las funcionalidades compartidas.\n\n**C.** Combinas el lanzamiento con una oferta añadida, como una prueba gratuita o una integración, para que la comparación se haga en otros términos.\n\n**D.** Retrasas el lanzamiento una semana para añadir un diferenciador pequeño y visible, y preparas una contra-narrativa.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q10": {
+          "title": "Mejorar cómo conduces las sesiones de planificación",
+          "body": "El output de planificación estratégica de tu equipo es más débil que el de otros equipos y sospechas que se debe a cómo conduces las sesiones: elige qué harías de verdad.\n\n**A.** Asistes a la sesión estratégica de un colega y tomas notas estructuradas sobre cómo la conduce.\n\n**B.** Grabas tu próxima sesión y después apuntas qué cambiarías.\n\n**C.** Traes un facilitador externo para una sesión y participas como observador para aprender su técnica.\n\n**D.** Rediseñas tu plantilla de planning a partir de lo que produjo un output débil la última vez.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q11": {
+          "title": "Evaluar un cambio de precio",
+          "body": "Estás evaluando un cambio de precio: elige cómo lo analizarías de verdad.\n\n**A.** Haces análisis de sensibilidad en una hoja de cálculo para ver cómo cambian márgenes y volumen con distintos precios.\n\n**B.** Haces tests A/B con dos o más precios con clientes reales y comparas los resultados.\n\n**C.** Estimas la elasticidad del precio por separado para cada segmento de clientes.\n\n**D.** Validas el cambio mediante entrevistas con un pequeño grupo de clientes.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q12": {
+          "title": "Responder a un cliente que ha acudido al CEO",
+          "body": "Un cliente clave se ha quejado a tu CEO mezclando fallos reales con suposiciones erróneas sobre vuestro proceso, y redactas tú la respuesta: elige cómo manejarías de verdad las inexactitudes.\n\n**A.** Repasas cada punto con hechos: reconoces los fallos reales y corriges las inexactitudes con pruebas, en tono profesional.\n\n**B.** Empiezas reconociendo la experiencia del cliente y luego presentas los puntos inexactos como áreas donde el proceso difiere de lo esperado.\n\n**C.** En el borrador abordas solo los fallos legítimos y señalas aparte a tu CEO las inexactitudes, sugiriendo cómo corregirlas.\n\n**D.** Sugieres a tu CEO proponer una llamada en lugar de responder por escrito, y aclaras las inexactitudes de palabra.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q13": {
+          "title": "Un junior cuestiona tu modelo estratégico",
+          "body": "Un miembro junior del equipo aporta evidencia preliminar de que una asunción fundamental del modelo estratégico que usas desde hace meses es incorrecta: elige qué harías de verdad.\n\n**A.** Pausas el trabajo con el modelo y pruebas ambas versiones con datos de mercado recientes antes de decidir.\n\n**B.** Revisas tú mismo la evidencia en bruto para valorar su solidez antes de involucrar a nadie más.\n\n**C.** Registras formalmente el desafío y sigues usando el modelo, con un punto de activación concreto que obligaría a una reevaluación completa.\n\n**D.** Pides a dos personas ajenas a ambos análisis que valoren de forma independiente la evidencia contradictoria.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q14": {
+          "title": "Un cliente pide el 40% de ingeniería",
+          "body": "Un cliente importante pide una funcionalidad a medida que se llevaría el 40% de tu capacidad de ingeniería y pondría en juego el roadmap: elige qué harías de verdad.\n\n**A.** Propones una versión más general de la funcionalidad que sirva al cliente y al roadmap, aunque lleve más tiempo.\n\n**B.** Ofreces al cliente una solución provisional con las capacidades existentes y programas la funcionalidad completa para el próximo trimestre.\n\n**C.** Reabres el plan trimestral, aplazas los elementos del roadmap de menor impacto y pasas esa capacidad a la funcionalidad del cliente.\n\n**D.** Analizas el problema de fondo del cliente para ver si algo que ya tienes, o que estás construyendo, lo resuelve.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q15": {
+          "title": "Tras un lanzamiento con el timing equivocado",
+          "body": "Un lanzamiento de producto dio peores resultados de lo esperado porque calculaste mal el timing de mercado: elige qué harías de verdad a continuación.\n\n**A.** Entrevistas a cinco clientes para averiguar qué señales leíste mal.\n\n**B.** Construyes un framework de post-mortem que compara las suposiciones iniciales con los datos reales.\n\n**C.** Pasas tiempo con alguien que acertó con el mercado y le pides que te explique su razonamiento.\n\n**D.** Para el próximo producto lanzas antes un test más pequeño y compruebas el timing antes de comprometerte del todo.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q16": {
+          "title": "Cómo construyes la previsión del trimestre",
+          "body": "Tienes que hacer la previsión del próximo trimestre: elige cómo la construirías de verdad.\n\n**A.** Combinas una estimación bottom-up (operación a operación, equipo a equipo) con un modelo top-down basado en el mercado, y las concilias.\n\n**B.** Sometes algunos escenarios a pruebas de estrés, como perder un cliente importante o un cambio brusco de precios.\n\n**C.** Repasas tus hipótesis con el equipo de ventas y las ajustas a lo que ven en el pipeline.\n\n**D.** Simulas las restricciones de capacidad (personas, producción, entregas) para ver cuánto puedes entregar realmente.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q17": {
+          "title": "Comunicar una decisión de recursos a dos equipos",
+          "body": "Dos departamentos que supervisas chocan por recursos, cada responsable culpa al otro y debes comunicar una decisión que no convencerá del todo a ninguno: elige cómo lo harías de verdad.\n\n**A.** Presentas la decisión, con el razonamiento completo y los trade-offs, a ambos responsables a la vez.\n\n**B.** Explicas la decisión a partir de la restricción organizacional que hace necesario un compromiso, sin juzgar el caso de ninguna de las partes.\n\n**C.** Te reúnes primero con cada responsable por separado para adelantar la decisión y ver su reacción, y luego haces una sesión conjunta.\n\n**D.** Comunicas la decisión por escrito con un razonamiento claro y luego ofreces a cada responsable una conversación individual de seguimiento.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q18": {
+          "title": "Una nueva norma de interpretación dudosa",
+          "body": "Un cambio normativo afectará a tu negocio, pero la interpretación es ambigua y otras empresas del sector la leen de forma distinta: elige qué harías de verdad.\n\n**A.** Recurres a un especialista legal y pones a prueba varias interpretaciones frente a tus operaciones reales.\n\n**B.** Esperas a que un organismo del sector publique orientaciones y, mientras tanto, preparas planes de contingencia.\n\n**C.** Aplicas ya la interpretación más conservadora y la relajas a medida que las normas se aclaran.\n\n**D.** Miras cómo se resolvieron en el pasado ambigüedades similares para estimar el resultado probable.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q19": {
+          "title": "Una nueva fuente de ingresos con poco presupuesto",
+          "body": "Tu producto principal ha dejado de crecer y el board quiere una nueva fuente de ingresos, con solo el 15% del gasto actual para I+D: elige qué harías de verdad.\n\n**A.** Localizas activos poco aprovechados (datos, APIs, conocimiento experto) y los empaquetas como oferta para otro tipo de comprador.\n\n**B.** Mueves los límites del producto: una funcionalidad gratuita pasa a un tier premium, o vendes capacidades como productos independientes.\n\n**C.** Lanzas tres experimentos pequeños y acotados en el tiempo sobre distintas hipótesis de ingresos antes de apostar el presupuesto por una sola.\n\n**D.** Te asocias con una empresa complementaria para crear una oferta conjunta que ninguna podría construir sola con este presupuesto.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q20": {
+          "title": "Trabajar en tu forma de delegar",
+          "body": "Te llegan a menudo comentarios de que tu forma de delegar ralentiza al equipo: elige qué harías de verdad.\n\n**A.** Esta semana eliges una tarea que normalmente te quedarías, la delegas por completo y anotas qué pasa.\n\n**B.** Preguntas a las personas que dependen de ti qué necesitan para asumir el ownership de su trabajo.\n\n**C.** Observas cómo delega un compañero de tu mismo nivel: qué pasa a otros, en qué momento y con qué instrucciones.\n\n**D.** Pasas de check-ins diarios a semanales y mides si la calidad se mantiene.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q21": {
+          "title": "Tu primer paso ante un programa de transformación",
+          "body": "Estás evaluando un programa de transformación: elige qué harías de verdad en primer lugar.\n\n**A.** Defines las métricas de éxito (qué debe cambiar, cuánto y para cuándo) antes que nada.\n\n**B.** Haces un piloto del programa en un área y lo comparas con un grupo de control que sigue trabajando como antes.\n\n**C.** Analizas el grado de preparación de la organización y el riesgo que conlleva el cambio.\n\n**D.** Estudias casos de referencia de programas similares en otras empresas.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "open1": {
+          "title": "Una decisión tuya y los compromisos que pesaste",
+          "body": "Cuenta una decisión real que tomaste en un puesto de responsabilidad y explica los compromisos que había detrás. Una respuesta útil incluye:\n\n- la situación y qué estaba en juego\n- las alternativas que valoraste y lo que suponía cada una\n- qué elegiste y por qué\n- qué pasó después\n\nBastan unas pocas frases (al menos 50 caracteres). No hay una respuesta correcta: lo que cuenta es tu razonamiento real."
+        },
+        "open2": {
+          "title": "El área en la que trabajas para crecer",
+          "body": "Indica un área en la que quieres crecer en tu puesto actual y explica cómo estás trabajando en ella. Una respuesta útil incluye:\n\n- el área concreta (una habilidad, un hábito, un tipo de situación)\n- por qué importa para tu trabajo y tu equipo\n- los pasos concretos que estás dando ahora\n- cómo sabrás que está mejorando\n\nBastan unas pocas frases (al menos 50 caracteres). No hay una respuesta correcta: sé concreto/a y sincero/a."
+        }
+      },
+      "examplesByCategory": {
+        "comp_power": "Estas preguntas tratan de cómo manejas datos, cifras y problemas estructurados en las decisiones de negocio y de equipo: por dónde empiezas, cómo desglosas el problema y cómo compruebas que una solución funciona. Cada opción es una forma distinta de trabajar.",
+        "communication": "Estas preguntas describen situaciones en las decisiones de negocio y de equipo en las que tienes que explicar algo, dar una noticia o gestionar un desacuerdo, a menudo con interlocutores distintos a la vez. Te preguntan cómo organizarías y transmitirías realmente el mensaje.",
+        "knowledge": "Estas preguntas tratan de qué haces en las decisiones de negocio y de equipo cuando la información es incompleta, contradictoria o nueva para ti: cómo la compruebas, a quién consultas y cuándo decides.",
+        "creativity": "Estas preguntas te ponen ante una limitación en las decisiones de negocio y de equipo (plazos, presupuesto, normas, peticiones enfrentadas) y te preguntan cómo encontrarías una forma de seguir adelante.",
+        "drive": "Estas preguntas describen una carencia o un tropiezo en las decisiones de negocio y de equipo y te preguntan qué pasos concretos darías para mejorar."
+      }
+    },
+    "arts_creative": {
+      "examples": {
+        "q1": {
+          "title": "Lo primero que miras en los datos de campaña",
+          "body": "Tienes delante los datos de rendimiento de una campaña creativa: la pregunta es qué mirarías de verdad en primer lugar.\n\n**A.** Comparas con los objetivos: pones las cifras de interacción (clics, visualizaciones, guardados) al lado de los objetivos del brief y ves dónde se quedan cortas o los superan.\n\n**B.** Comparas cómo rinde la misma creatividad en distintos formatos y ubicaciones, por ejemplo stories frente a feed o banner frente a vídeo.\n\n**C.** Desglosas los resultados por segmentos de audiencia, como edad, zona o usuarios nuevos frente a recurrentes.\n\n**D.** Antes de leer ninguna cifra compruebas la medición: etiquetas de seguimiento, ventanas de atribución y si los datos están completos.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q2": {
+          "title": "Producción ha malinterpretado el tono del concepto",
+          "body": "Producción ha entregado una versión válida de tu concepto con otro tono, y no hay tiempo para rehacerla: la pregunta es cómo lo gestionarías de verdad.\n\n**A.** Enumeras los elementos tonales que difieren, cada uno con una referencia, y preguntas al equipo cuáles puede ajustar a tiempo.\n\n**B.** Explicas cómo quieres que reaccione o se sienta la audiencia y dejas que el equipo decida cómo llegar al tono correcto.\n\n**C.** Primero pides al equipo que te cuente cómo leyó el brief, para localizar dónde se separan las dos interpretaciones.\n\n**D.** Montas una comparación rápida, lado a lado, entre lo que imaginabas y lo entregado, para que el equipo reaccione a imágenes.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q3": {
+          "title": "Trabajar con un lenguaje visual que no conoces",
+          "body": "Un proyecto nuevo pide un estilo visual que no conoces, con un brief vago y pocas referencias: la pregunta es qué harías de verdad en primer lugar.\n\n**A.** Reúnes los ejemplos existentes más cercanos que encuentras y sacas los principios de diseño que hay detrás, como retícula, contraste o tipografía.\n\n**B.** Haces algunos experimentos rápidos en el nuevo estilo y los enseñas para recibir feedback antes de desarrollar ninguno.\n\n**C.** Organizas conversaciones breves con los stakeholders y les preguntas qué imaginan cuando piensan en el aspecto que buscan.\n\n**D.** Tomas elementos de tu estilo actual, como una paleta o una forma de maquetar, y ves hasta dónde pueden llevarse hacia la nueva dirección.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q4": {
+          "title": "Una campaña audaz con restricciones legales",
+          "body": "Un cliente quiere una campaña audaz, pero el departamento legal prohíbe comparaciones y superlativos y exige los elementos de marca existentes: la pregunta es cómo la plantearías de verdad.\n\n**A.** Construyes la idea en torno a los elementos de marca obligatorios, convirtiendo el logotipo, los colores o la mascota en el centro del concepto.\n\n**B.** Respetas cada límite legal en los mensajes y buscas que la pieza destaque por composición, ritmo y tono.\n\n**C.** Preparas tres conceptos conformes, del más contenido al más atrevido, y dejas que el cliente elija.\n\n**D.** Renuncias a las afirmaciones y construyes la campaña en torno a una historia que busca provocar una emoción.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q5": {
+          "title": "El cliente vio poca estrategia en tu trabajo",
+          "body": "Un cliente ha rechazado tu trabajo por falta de profundidad estratégica, un área que sabes que es débil: la pregunta es qué harías de verdad a continuación.\n\n**A.** Pides al cliente un ejemplo concreto de trabajo con la profundidad que esperaba y estudias qué hace de forma distinta.\n\n**B.** En tu próximo proyecto trabajas junto a un estratega y observas cómo construye la narrativa, del insight al mensaje.\n\n**C.** Reescribes tú la parte estratégica del brief rechazado y pides a alguien una crítica honesta de la nueva versión.\n\n**D.** Reservas tiempo cada semana para ejercicios de estrategia sacados de otra disciplina creativa, como el copywriting o el diseño de producto.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q6": {
+          "title": "En qué te apoyas para elegir un visual",
+          "body": "Tienes que elegir el visual principal de una campaña: la pregunta es en qué te apoyarías de verdad más a menudo.\n\n**A.** Haces tests A/B con dos o tres miniaturas ante un público reducido y te quedas con la que recibe más clics.\n\n**B.** Miras heatmaps o resultados de eye-tracking para ver dónde se detiene la atención en cada opción.\n\n**C.** Revisas los patrones históricos: cómo funcionaron visuales parecidos en campañas anteriores y sigues esos patrones históricos.\n\n**D.** Consultas investigación reciente con usuarios, como entrevistas o encuestas breves, para ver cómo describen las opciones.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q7": {
+          "title": "El feedback del cliente contradice el brief",
+          "body": "Un cliente pide cambios que contradicen el brief que aprobó, sin darse cuenta: la pregunta es cómo lo gestionarías de verdad.\n\n**A.** Sacas el brief original en la reunión, repasas uno a uno los puntos que chocan y preguntas qué dirección prefieren ahora.\n\n**B.** Explicas que el proyecto ha evolucionado desde el brief y tratas la nueva petición como un cambio natural de alcance.\n\n**C.** Pides al cliente que cuente con sus propias palabras qué quiere ahora y solo señalas la contradicción si no la ve él mismo.\n\n**D.** Preparas dos mockups rápidos, uno por dirección, y dejas que el cliente elija mirándolos.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q8": {
+          "title": "Reacciones mixtas en los primeros tests",
+          "body": "Los primeros tests con usuarios de tu dirección creativa dan resultados mixtos, entre quien se entusiasma y quien se confunde: la pregunta es qué harías de verdad a continuación.\n\n**A.** Separas las respuestas por grupos de audiencia, por ejemplo edad o hábitos de uso, para ver si las reacciones dependen de quién contesta.\n\n**B.** Pruebas una versión simplificada para saber si la confusión viene de la idea en sí o de cómo está ejecutada.\n\n**C.** Vuelves a la investigación original y la relees buscando matices que se te hayan escapado.\n\n**D.** Haces una nueva ronda con otros testers y un protocolo más claro, por ejemplo las mismas tareas y preguntas para todos.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q9": {
+          "title": "Una identidad para lujo y mercado asequible",
+          "body": "Diseñas una única identidad visual para una marca presente en el mercado de lujo y en el asequible: la pregunta es cómo la plantearías de verdad.\n\n**A.** Defines unos pocos elementos core compartidos, como logotipo y tipografía, y dejas que color, imágenes y tono cambien según el canal.\n\n**B.** Buscas lo que ambas audiencias valoran a nivel emocional, por ejemplo cuidado o fiabilidad, y construyes la identidad sobre eso y no sobre el precio.\n\n**C.** Diseñas la identidad principal para el segmento de mercado más grande y creas un tratamiento de sub-marca aparte para el otro.\n\n**D.** Preparas tres enfoques diferentes y los pruebas con personas de ambas audiencias antes de elegir.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q10": {
+          "title": "Ponerte al día en motion design",
+          "body": "Tus habilidades de motion design están por debajo de lo que espera el equipo, y se nota en tus proyectos: la pregunta es qué harías de verdad al respecto.\n\n**A.** Te ofreces para un pequeño proyecto interno que requiera motion y acuerdas un plazo que puedas cumplir.\n\n**B.** Pides a un colega con experiencia que trabaje contigo en tu próxima animación y te la comente sobre la marcha.\n\n**C.** Sigues un curso estructurado y aplicas cada lección a un entregable real en un par de días.\n\n**D.** Eliges cinco piezas de motion que admiras y desglosas las técnicas que usan y tú no.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q11": {
+          "title": "Cómo repartes el presupuesto de producción",
+          "body": "Tienes un presupuesto de producción que repartir entre varias piezas creativas: la pregunta es cómo decidirías de verdad adónde va el dinero.\n\n**A.** Para cada pieza estimas el coste y el impacto que esperas en los resultados, y comparas ambos en una hoja de cálculo sencilla.\n\n**B.** Identificas los activos que deberían tener más impacto y los financias primero.\n\n**C.** Primero haces un prototipo barato de cada idea principal y solo comprometes la mayor parte del presupuesto después de probarlo.\n\n**D.** Revisas qué activos existentes puedes reutilizar o adaptar, por ejemplo volviendo a rodar una sola escena o recortando imágenes ya hechas.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q12": {
+          "title": "Comentar el trabajo de un junior en grupo",
+          "body": "En una revisión creativa, con dos colegas senior delante, el trabajo de un junior tiene problemas serios pese a todo su esfuerzo: la pregunta es cómo darías de verdad el feedback.\n\n**A.** Dices con claridad qué funciona y qué no en el trabajo y das indicaciones concretas para la revisión.\n\n**B.** Hablas de lo que pide el brief y de dónde se aleja la pieza, sin juzgar su calidad.\n\n**C.** Primero preguntas al junior qué cambiaría con un día más y luego construyes tus comentarios sobre las carencias que señale.\n\n**D.** En el grupo das solo la dirección general y luego fijas una reunión privada para la crítica detallada y las preguntas.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q13": {
+          "title": "Los datos de un junior cuestionan tu dirección",
+          "body": "Un diseñador junior trae datos preliminares de usuarios que indican que una de tus premisas estéticas de base podría ser errónea: la pregunta es qué harías de verdad.\n\n**A.** Pones en pausa la dirección actual y pruebas ambas versiones con una nueva muestra de audiencia antes de decidir.\n\n**B.** Revisas tú mismo los datos crudos del junior para ver lo sólidos que son antes de implicar a nadie más.\n\n**C.** Dejas constancia de la objeción, sigues con tu dirección y fijas un umbral de feedback que, si se supera, activaría una revisión completa.\n\n**D.** Pides a dos personas ajenas a ambas direcciones que examinen por separado la evidencia contradictoria.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q14": {
+          "title": "De campaña de vídeo a serie de carteles",
+          "body": "En la revisión final el cliente pide pasar tu campaña de vídeo a una serie estática de exterior, con el mismo plazo: la pregunta es cómo lo harías de verdad.\n\n**A.** Eliges los momentos visuales clave del vídeo y los conviertes en carteles estáticos que cuentan la historia en orden.\n\n**B.** Vuelves al insight de partida y rediseñas la idea central para carteles desde cero, sin partir de los fotogramas del vídeo.\n\n**C.** Adaptas los frames clave y añades un elemento escaneable, como un código QR que lleva a una animación corta.\n\n**D.** Propones dos fases: ahora una versión rápida con los activos existentes y, dos semanas después, otra optimizada para el medio.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q15": {
+          "title": "La tipografía es tu punto débil",
+          "body": "La revisión de tu portfolio muestra que la tipografía es siempre tu área más débil: la pregunta es qué harías de verdad al respecto.\n\n**A.** Coges un proyecto pasado, rehaces solo la tipografía y comparas la versión antigua con la nueva.\n\n**B.** Pides a un especialista en tipografía que revise tus trabajos y te diga con precisión qué mejorar.\n\n**C.** Durante el próximo mes anotas cada decisión tipográfica que tomas y luego buscas los errores que se repiten.\n\n**D.** En tu próximo proyecto usas solo elementos tipográficos, sin ilustración ni color, para centrarte en ellos.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q16": {
+          "title": "Desatascar un flujo de trabajo creativo",
+          "body": "Tu flujo de trabajo creativo se ha atascado en un cuello de botella: la pregunta es qué harías de verdad en primer lugar.\n\n**A.** Cronometras cada paso del proceso, del brief a la entrega, para encontrar la etapa más lenta.\n\n**B.** Rediseñas la secuencia de pasos para eliminar traspasos, de modo que archivos y aprobaciones pasen por menos manos.\n\n**C.** Pruebas herramientas alternativas y estimas cuánto tardaría el equipo en aprenderlas, es decir, su curva de aprendizaje.\n\n**D.** Comparas el coste y las licencias de las herramientas de reemplazo con lo que pagas ahora.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q17": {
+          "title": "Comprobar el entendimiento con otra disciplina",
+          "body": "Un colaborador de otra disciplina usa el vocabulario de su campo y sospechas que con las mismas palabras decís cosas distintas: la pregunta es cómo lo comprobarías de verdad.\n\n**A.** Abres un glosario compartido donde cada término clave tiene una definición acordada, para que las diferencias queden por escrito.\n\n**B.** Dejas a un lado las palabras, le preguntas cómo sería para él el éxito y comparas las expectativas concretas.\n\n**C.** En la próxima reunión repites sus ideas con tu propio vocabulario y observas si te corrige o parece confundido.\n\n**D.** Propones una sesión conjunta en la que ambos hacéis sketches o prototipos, para que la intención se vea en lugar de describirse.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q18": {
+          "title": "El gusto del cliente frente a tu investigación",
+          "body": "Un cliente está convencido de que su audiencia quiere una estética concreta, pero tu investigación apunta a lo contrario: la pregunta es qué harías de verdad.\n\n**A.** Propones llevar ambos enfoques a un test A/B con una muestra pequeña antes de la producción completa.\n\n**B.** Compartes abiertamente tu investigación y preguntas al cliente en qué evidencia se basa su postura.\n\n**C.** Buscas una solución creativa que tome elementos de ambas partes, por ejemplo la paleta del cliente con la maquetación que apoya tu investigación.\n\n**D.** Pones por escrito ambas posiciones y acordáis criterios de éxito que zanjarán la cuestión después del lanzamiento.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q19": {
+          "title": "Un estilo nuevo que aleja a los clientes mayores",
+          "body": "El nuevo concepto visual de tu equipo gusta al público joven pero aleja a los clientes mayores de siempre, y el cliente quiere conservar ambos: la pregunta es cómo seguirías de verdad.\n\n**A.** Combinas elementos del nuevo concepto y del lenguaje visual existente en un puente entre los dos.\n\n**B.** Usas el nuevo concepto en canales de adquisición, como las redes sociales, y mantienes el estilo familiar en el email y la fidelización.\n\n**C.** Haces evolucionar poco a poco el lenguaje visual existente con los principios del nuevo concepto en cada touchpoint.\n\n**D.** Pruebas el nuevo concepto con un segmento controlado de clientes mayores para ver cuánto cambio aceptan antes del despliegue.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q20": {
+          "title": "Estancamiento en la dirección creativa",
+          "body": "Sientes que tus habilidades de dirección creativa se han estancado en el mismo nivel: la pregunta es qué harías de verdad para avanzar.\n\n**A.** Aceptas un proyecto en un formato o género que nunca has tocado, como un podcast o una exposición.\n\n**B.** Pides a tres colegas de confianza que te digan cada uno un área concreta en la que tu dirección puede mejorar.\n\n**C.** Pones tu trabajo reciente al lado del de hace un año y anotas qué ha cambiado realmente.\n\n**D.** Te fijas objetivos trimestrales, cada uno ligado a un entregable concreto que demuestre el avance.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q21": {
+          "title": "Controlar la calidad de muchas piezas",
+          "body": "Tienes que juzgar la calidad de muchas piezas creativas a la vez: la pregunta es cómo lo harías de verdad.\n\n**A.** Primero defines criterios medibles, como legibilidad, uso de los colores de marca y especificaciones de archivo, y valoras cada pieza con ellos.\n\n**B.** Haces revisiones por lotes, usando la misma lista de comprobación para cada pieza.\n\n**C.** Haces tests con una muestra de piezas ante una audiencia reducida y ves cómo responde.\n\n**D.** Automatizas los controles que se pueden automatizar, como tamaños, formatos o márgenes de seguridad, y el resto lo revisas a mano.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "open1": {
+          "title": "Una pieza que cambió los resultados",
+          "body": "Cuenta una pieza que creaste y que marcó una diferencia visible o medible. Una respuesta útil incluye:\n\n- el contexto y qué tenía que cambiar\n- qué hiciste y qué decisiones tomaste\n- por qué crees que funcionó\n- el resultado, con cifras o comentarios concretos si los tienes\n\nBastan unas pocas frases (al menos 50 caracteres). No hay una respuesta correcta: elige un ejemplo real que conozcas bien."
+        },
+        "open2": {
+          "title": "La habilidad creativa que quieres mejorar",
+          "body": "Di una habilidad creativa que quieras mejorar este año. Una respuesta útil incluye:\n\n- la habilidad y por qué importa para tu trabajo\n- los pasos concretos que estás dando o piensas dar\n- cómo sabrás que está funcionando\n\nBastan unas pocas frases (al menos 50 caracteres). No hay una respuesta correcta: sé concreto sobre tu propia situación."
+        }
+      },
+      "examplesByCategory": {
+        "comp_power": "Estas preguntas tratan de cómo manejas datos, cifras y problemas estructurados en los proyectos creativos: por dónde empiezas, cómo desglosas el problema y cómo compruebas que una solución funciona. Cada opción es una forma distinta de trabajar.",
+        "communication": "Estas preguntas describen situaciones en los proyectos creativos en las que tienes que explicar algo, dar una noticia o gestionar un desacuerdo, a menudo con interlocutores distintos a la vez. Te preguntan cómo organizarías y transmitirías realmente el mensaje.",
+        "knowledge": "Estas preguntas tratan de qué haces en los proyectos creativos cuando la información es incompleta, contradictoria o nueva para ti: cómo la compruebas, a quién consultas y cuándo decides.",
+        "creativity": "Estas preguntas te ponen ante una limitación en los proyectos creativos (plazos, presupuesto, normas, peticiones enfrentadas) y te preguntan cómo encontrarías una forma de seguir adelante.",
+        "drive": "Estas preguntas describen una carencia o un tropiezo en los proyectos creativos y te preguntan qué pasos concretos darías para mejorar."
+      }
+    },
+    "service_ops": {
+      "examples": {
+        "q1": {
+          "title": "Tu primer paso cuando bajan las métricas",
+          "body": "Las cifras del servicio han bajado y la pregunta es qué mirarías de verdad en primer lugar.\n\n**A.** Separas los datos por turno y por sede para ver dónde se concentra la bajada.\n\n**B.** Compruebas el cumplimiento de procesos, por ejemplo revisando una muestra de casos recientes para ver si el equipo sigue lo establecido.\n\n**C.** Comparas las cifras de esta semana con el histórico, como el mismo periodo del año pasado o las bajadas de temporada.\n\n**D.** Revisas la integridad de los datos: que no falte nada, que no haya duplicados y que nada se registre de forma distinta a antes.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q2": {
+          "title": "El personal vuelve al procedimiento antiguo",
+          "body": "Un proceso nuevo genera confusión y parte del personal vuelve al método anterior: ¿cómo localizarías el fallo de comunicación?\n\n**A.** Vuelves a publicar la documentación con cada paso detallado, las excepciones numeradas y una comparación punto por punto con el proceso antiguo.\n\n**B.** Explicas por qué se hizo el cambio y conectas el nuevo proceso con resultados que le importan al personal.\n\n**C.** Pasas un turno observando dónde la gente vuelve atrás, preguntas qué no se entiende y revisas la comunicación a partir de ahí.\n\n**D.** Reemplazas las instrucciones escritas por un vídeo corto del nuevo proceso en una situación real, junto con una tarjeta de consulta rápida de una página.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q3": {
+          "title": "Un caso que el manual no contempla",
+          "body": "Un caso inusual queda fuera del protocolo estándar y el manual no dice nada: la pregunta es cómo actuarías de verdad.\n\n**A.** Repasas el procedimiento estándar, mantienes los pasos que siguen sirviendo y adaptas el resto, anotando por qué cambias cada uno.\n\n**B.** Consultas a un/a colega que ya haya resuelto casos similares y le preguntas cómo lo hizo antes de actuar.\n\n**C.** Lo elevas a un supervisor con una nota breve que explica qué parte del procedimiento estándar no encaja y por qué.\n\n**D.** Resuelves el caso por tu cuenta y después lo describes por escrito para que el procedimiento pueda actualizarse.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q4": {
+          "title": "Reducir el tiempo sin quitar pasos",
+          "body": "El tiempo medio de gestión debe bajar un 20% con la misma plantilla y sin recortar pasos: ¿qué enfoque elegirías?\n\n**A.** Rediseñas el flujo de servicio para que lo rutinario siga un camino más corto y solo los casos complejos pasen por todos los pasos.\n\n**B.** Localizas el paso más lento y organizas el trabajo para que se haga en paralelo con otro, en vez de esperar su turno.\n\n**C.** Trasladas algunos pasos, como confirmaciones o resúmenes, a un seguimiento tras la llamada, para acortar la parte en vivo.\n\n**D.** Preparas respuestas plantilla para las solicitudes más frecuentes y así los agentes tienen más tiempo para las complejas.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q5": {
+          "title": "Responder más rápido a los incidentes",
+          "body": "Tu equipo va más lento que el objetivo con los incidentes y tú formas parte del motivo: la pregunta es qué harías para ganar rapidez.\n\n**A.** Acompañas durante un turno a quien responde más rápido y anotas qué hace en otro orden o qué se salta.\n\n**B.** Revisas paso a paso tus últimos cinco incidentes y marcas exactamente dónde perdiste minutos.\n\n**C.** Practicas con incidentes simulados y un cronómetro, y los repites hasta que tu tiempo baja.\n\n**D.** Rediseñas tu checklist personal de triaje, reordenando o quitando los puntos que de verdad te han frenado.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q6": {
+          "title": "Cómo organizas los turnos del personal",
+          "body": "Tienes que planificar los turnos del equipo: la pregunta es en qué te centrarías primero.\n\n**A.** Estimas la demanda hora por hora a partir de los volúmenes pasados y colocas a la gente donde hay más carga.\n\n**B.** Tienes en cuenta la mezcla de habilidades de cada turno, para que en cada franja haya alguien capaz de atender las solicitudes más difíciles.\n\n**C.** Incluyes buffers para los picos, con personas de refuerzo o de guardia para las horas en que sube el volumen.\n\n**D.** Revisas primero las restricciones y normas: contratos, descansos, vacaciones y límites legales.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q7": {
+          "title": "Un cliente molesto que se equivoca en los hechos",
+          "body": "Un cliente está escalando una queja: se equivoca sobre los hechos, pero su experiencia fue realmente mala. La pregunta es cómo responderías.\n\n**A.** Reconoces su frustración y después explicas lo que ocurrió de verdad, con horas y detalles concretos.\n\n**B.** Centras la respuesta en que el resultado no estuvo a la altura, dejas a un lado la secuencia de los hechos y propones una solución.\n\n**C.** Pides al cliente que confirme algunos detalles concretos de lo sucedido, de modo que los errores salgan a la luz en sus propias respuestas.\n\n**D.** Respondes por escrito con una disculpa y una solución, y luego ofreces una llamada para hablar de los detalles.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q8": {
+          "title": "Dos compañeros, dos consejos opuestos",
+          "body": "Dos compañeros con experiencia te dicen que gestiones una situación de servicio de formas opuestas: la pregunta es cómo decidirías.\n\n**A.** Pides a cada uno que te explique el razonamiento detrás de su consejo, no solo lo que haría.\n\n**B.** Analizas qué tiene de diferente esta situación respecto a las veces en que cada enfoque funcionó.\n\n**C.** Pruebas el enfoque que menos daño haría si sale mal y después evalúas cómo ha ido.\n\n**D.** Verificas si existe un precedente documentado para este tipo de situación antes de elegir.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q9": {
+          "title": "Un componente clave falta tres semanas",
+          "body": "Un proveedor no puede entregarte durante tres semanas un componente que usas a diario y no puedes cambiar de proveedor de forma definitiva: la pregunta es qué harías.\n\n**A.** Buscas una alternativa temporal parecida y ajustas tu proceso para trabajar con las diferencias.\n\n**B.** Rediseñas el flujo de servicio afectado para que funcione sin el componente durante tres semanas, con una experiencia distinta pero aceptable para los clientes.\n\n**C.** Negocias con el proveedor entregas parciales o sustitutivas, pidiendo primero las variantes que necesitas con más urgencia.\n\n**D.** Construyes una pequeña reserva usando menos material en las tareas secundarias y llevando las existencias a las líneas de servicio críticas.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q10": {
+          "title": "Guiones sobre cortes que confunden a los clientes",
+          "body": "Los clientes dicen que las explicaciones del equipo durante los cortes son confusas, y los guiones los escribiste tú: la pregunta es cómo lo arreglarías.\n\n**A.** Grabas llamadas o mensajes reales y los revisas para localizar las frases que los clientes no entienden.\n\n**B.** Reescribes los guiones en lenguaje sencillo y practicas con escenarios simulados hasta que te salgan con naturalidad.\n\n**C.** Pides a un/a formador/a de comunicación que observe una interacción y te dé indicaciones concretas.\n\n**D.** Creas una biblioteca de plantillas para las explicaciones más habituales y la pruebas con algunos usuarios antes de adoptarla.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q11": {
+          "title": "Tu forma habitual de reducir errores",
+          "body": "En el trabajo se siguen produciendo errores y la pregunta es qué método usarías primero para reducirlos.\n\n**A.** Introduces checklists que las personas marcan en los puntos clave de la tarea.\n\n**B.** Estandarizas la forma de trabajar y ordenas el puesto con las 5S (clasificar, ordenar, limpiar, estandarizar, mantener).\n\n**C.** Automatizas pasos repetitivos, como introducir datos o copiar información, para que ya no se hagan a mano.\n\n**D.** Trazas cada error hasta el paso donde empieza, los agrupas por tipo y corriges la causa en ese punto.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q12": {
+          "title": "Comunicar un recorte de servicio a clientes antiguos",
+          "body": "Tienes que comunicar a clientes de largo plazo una reducción permanente del servicio sin perder la relación: ¿cómo darías la noticia?\n\n**A.** Declaras el cambio de forma directa, con las fechas de entrada en vigor y el impacto concreto para cada segmento de cliente.\n\n**B.** Presentas la reducción como parte de una evolución más amplia del servicio que también trae mejoras en otras áreas.\n\n**C.** Contactas primero, uno a uno, a los clientes más afectados, escuchas sus preocupaciones y las usas para preparar el anuncio general.\n\n**D.** Descartas un anuncio masivo y haces revisiones individuales de cada cuenta, para que cada cliente reciba la noticia según su propio uso.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q13": {
+          "title": "Datos de un júnior que cuestionan un procedimiento",
+          "body": "Un compañero júnior presenta datos preliminares que indican que una premisa básica del procedimiento que usas desde hace meses es incorrecta: la pregunta es cómo reaccionarías.\n\n**A.** Pausas el procedimiento en los casos afectados y pruebas ambos enfoques con casos recientes antes de elegir.\n\n**B.** Examinas tú mismo/a los datos crudos para ver lo sólidos que son antes de implicar a nadie más.\n\n**C.** Registras formalmente la objeción y sigues con el procedimiento, pero fijas un umbral de resultado que activaría una revisión completa.\n\n**D.** Pides a dos personas ajenas a ambos análisis que evalúen la evidencia de forma independiente.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q14": {
+          "title": "Un autoservicio que los clientes abandonan",
+          "body": "La dirección quiere que el autoservicio reduzca las llamadas un 30%, pero la mayoría de quienes lo prueban acaban llamando igualmente: ¿qué propondrías?\n\n**A.** Rediseñas el flujo de autoservicio para que cubra solo los casos que resuelve bien y envías los complejos directamente a los agentes.\n\n**B.** Creas un sistema híbrido: el cliente empieza en el autoservicio y puede pasar a un agente que ya ve lo que ha introducido.\n\n**C.** Reencuadras el objetivo en torno a las llamadas repetidas, usando el autoservicio para seguimientos y consultas de estado.\n\n**D.** Pruebas tres enfoques de autoservicio diferentes en distintos tipos de caso para ver qué categorías se benefician antes de ampliarlos.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q15": {
+          "title": "Lagunas repetidas en tu documentación de compliance",
+          "body": "Una auditoría encontró una y otra vez las mismas lagunas en tu documentación de compliance: la pregunta es cómo desarrollarías esta habilidad.\n\n**A.** Identificas las dos lagunas más comunes y creas una checklist personal breve que cubre justo esos puntos.\n\n**B.** Pides al auditor que te enseñe con un ejemplo cómo es una documentación completa.\n\n**C.** Pones tu documentación al lado de la de un/a colega que puntuó bien y anotas las diferencias.\n\n**D.** Rehaces desde cero un documento reciente según el estándar correcto y te cronometras mientras lo haces.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q16": {
+          "title": "Cómo eliges una herramienta nueva",
+          "body": "Tienes que elegir una herramienta nueva para el equipo: la pregunta es en qué te basarías más para decidir.\n\n**A.** Haces una lista de requisitos y puntúas cada opción según su ajuste a ellos.\n\n**B.** Haces un piloto con un grupo pequeño durante unas semanas antes de decidir.\n\n**C.** Comparas el coste con el beneficio esperado y valoras el riesgo, como depender del proveedor o sufrir caídas.\n\n**D.** Compruebas la integración con los sistemas que ya usas, como el CRM o el software de incidencias.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q17": {
+          "title": "Una sola sesión para un grupo mixto",
+          "body": "Tienes una sola sesión para formar a un grupo en el que la mitad tiene experiencia relacionada y la otra mitad es principiante: ¿cómo la organizarías?\n\n**A.** Enseñas el flujo completo a nivel principiante y después ofreces una sesión avanzada opcional para los experimentados.\n\n**B.** Empiezas por el modelo conceptual, es decir, por qué existe el flujo, y dejas que cada persona lo relacione con lo que ya sabe.\n\n**C.** Abres con un breve ejercicio diagnóstico y luego ajustas la profundidad de cada parte según las carencias que aparezcan.\n\n**D.** Formas parejas de miembros experimentados y principiantes, les das un escenario de práctica guiada y circulas respondiendo preguntas.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q18": {
+          "title": "Una directriz nueva frente a una práctica probada",
+          "body": "Una nueva directriz del sector, con evidencia limitada pero creciente, contradice una práctica que tu equipo usa desde hace años: la pregunta es cómo actuarías.\n\n**A.** Revisas la evidencia en la que se basa la directriz y la comparas con los datos de resultados de tu equipo.\n\n**B.** Aplicas la directriz en un subconjunto de casos mientras el resto sigue con la práctica antigua para poder comparar.\n\n**C.** Adoptas la directriz y sigues de cerca los resultados para comprobar que cumple lo que promete.\n\n**D.** Consultas a colegas de otras organizaciones para saber cómo la están interpretando y aplicando.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q19": {
+          "title": "Más papeleo en cada cambio de turno",
+          "body": "Una nueva regulación añade documentación en cada cambio de turno de una operación 24/7, lo que dejaría 15 minutos sin cobertura: la pregunta es cómo lo resolverías.\n\n**A.** Rediseñas el formato de traspaso y sustituyes el papel por un registro digital que se rellena con los datos de actividad del turno.\n\n**B.** Solapas los turnos 15 minutos y usas ese tiempo tanto para el traspaso como para la documentación.\n\n**C.** Divides el requisito: los elementos críticos se anotan durante el traspaso y las notas detalladas se escriben después, en un momento más tranquilo.\n\n**D.** Trabajas con el equipo de compliance para definir la documentación mínima que sigue cumpliendo la regulación.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q20": {
+          "title": "Respaldar tus propuestas con datos",
+          "body": "Te han dicho que tus propuestas de mejora de procesos no tienen datos que las respalden: la pregunta es cómo desarrollarías esta habilidad.\n\n**A.** Adjuntas a tu próxima propuesta datos de partida medibles, como la tasa de errores o los tiempos actuales, aunque recogerlos lleve más tiempo.\n\n**B.** Trabajas un tiempo junto a un/a analista para ver cómo construye un argumento basado en datos.\n\n**C.** Haces un curso corto de análisis de datos operativos y lo aplicas enseguida a un caso real de mejora.\n\n**D.** Revisas tres propuestas aprobadas para averiguar qué datos las hicieron convincentes.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "q21": {
+          "title": "Cómo valoras un cambio de proceso",
+          "body": "Tienes que valorar si un cambio de proceso ha funcionado: la pregunta es en qué te basarías más.\n\n**A.** Defines las métricas de éxito antes de empezar, por ejemplo el tiempo de gestión o la tasa de errores que quieres alcanzar.\n\n**B.** Comparas los mismos datos antes y después del cambio, en periodos parecidos.\n\n**C.** Haces una prueba controlada: aplicas el cambio a un grupo y dejas otro como estaba.\n\n**D.** Documentas el impacto observado y pones por escrito los siguientes pasos para el equipo.\n\nNo hay una respuesta correcta: elige lo que harías de verdad con más frecuencia."
+        },
+        "open1": {
+          "title": "Un proceso de servicio que mejoraste",
+          "body": "Elige un proceso real que cambiaste y cuéntalo:\n\n- cómo era el proceso y qué fallaba\n- qué cambiaste y por qué\n- qué hiciste para que el cambio se mantuviera (formación, controles, seguimiento)\n- cuál fue el resultado, con un dato si lo tienes\n\nBastan unas pocas frases (al menos 50 caracteres). No hay una respuesta correcta: describe lo que ocurrió de verdad."
+        },
+        "open2": {
+          "title": "El área operativa en la que quieres crecer",
+          "body": "Indica un área concreta de tu trabajo operativo y explica:\n\n- por qué es importante ahora para ti o para tu equipo\n- los pasos concretos que piensas dar este año\n- cómo sabrás que está funcionando (un resultado, una cifra, una opinión)\n\nBastan unas pocas frases (al menos 50 caracteres). No hay una respuesta correcta: escribe sobre el área en la que de verdad quieres trabajar."
+        }
+      },
+      "examplesByCategory": {
+        "comp_power": "Estas preguntas tratan de cómo manejas datos, cifras y problemas estructurados en el trabajo de servicio y operaciones: por dónde empiezas, cómo desglosas el problema y cómo compruebas que una solución funciona. Cada opción es una forma distinta de trabajar.",
+        "communication": "Estas preguntas describen situaciones en el trabajo de servicio y operaciones en las que tienes que explicar algo, dar una noticia o gestionar un desacuerdo, a menudo con interlocutores distintos a la vez. Te preguntan cómo organizarías y transmitirías realmente el mensaje.",
+        "knowledge": "Estas preguntas tratan de qué haces en el trabajo de servicio y operaciones cuando la información es incompleta, contradictoria o nueva para ti: cómo la compruebas, a quién consultas y cuándo decides.",
+        "creativity": "Estas preguntas te ponen ante una limitación en el trabajo de servicio y operaciones (plazos, presupuesto, normas, peticiones enfrentadas) y te preguntan cómo encontrarías una forma de seguir adelante.",
+        "drive": "Estas preguntas describen una carencia o un tropiezo en el trabajo de servicio y operaciones y te preguntan qué pasos concretos darías para mejorar."
       }
     }
   },

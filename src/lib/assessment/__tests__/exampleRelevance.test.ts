@@ -1,35 +1,50 @@
 import { describe, it, expect } from 'vitest';
 import enTranslations from '@/i18n/locales/en.json';
 import itTranslations from '@/i18n/locales/it.json';
+import esTranslations from '@/i18n/locales/es.json';
 import { exampleMatchesOptions } from '../exampleRelevance';
 
-type Sets = Record<string, {
-  questions: Record<string, { options?: string[] }>;
-  examples?: Record<string, { body?: string }>;
-}>;
+type Locale = {
+  assessmentSets: Record<string, { questions: Record<string, { options?: string[] }> } | string>;
+  assessmentHelp: Record<string, { examples: Record<string, { body: string }> }>;
+};
 
-const en = (enTranslations as unknown as { assessmentSets: Sets }).assessmentSets;
-const it_ = (itTranslations as unknown as { assessmentSets: Sets }).assessmentSets;
+const locales = { en: enTranslations, it: itTranslations, es: esTranslations } as unknown as Record<string, Locale>;
 
-const check = (sets: Sets, set: string, q: string) =>
-  exampleMatchesOptions(sets[set].examples?.[q]?.body ?? '', sets[set].questions[q].options);
+describe('rewritten help examples (assessmentHelp)', () => {
+  it('describe the options actually shown, for every question and language', () => {
+    const stale: string[] = [];
+    for (const [lang, loc] of Object.entries(locales)) {
+      for (const [set, value] of Object.entries(loc.assessmentSets)) {
+        if (typeof value !== 'object') continue;
+        for (const [q, question] of Object.entries(value.questions)) {
+          const body = loc.assessmentHelp[set]?.examples?.[q]?.body;
+          if (!body) { stale.push(`${lang}.${set}.${q}: missing`); continue; }
+          if (!exampleMatchesOptions(body, question.options)) stale.push(`${lang}.${set}.${q}`);
+        }
+      }
+    }
+    expect(stale).toEqual([]);
+  });
+
+  it('carry no links', () => {
+    for (const loc of Object.values(locales)) {
+      expect(JSON.stringify(loc.assessmentHelp)).not.toMatch(/https?:/);
+    }
+  });
+});
 
 describe('exampleMatchesOptions', () => {
-  it('accepts an example that walks through the same options', () => {
-    expect(check(en, 'science_tech', 'q1')).toBe(true);
-    expect(check(en, 'service_ops', 'q1')).toBe(true);
-    expect(check(it_, 'science_tech', 'q1')).toBe(true);
+  const options = ['Break it into parts', 'Look for patterns', 'Search software tools', 'Consult others'];
+
+  it('reads the plain **A.** markers', () => {
+    const body = '**A.** You break the work into parts.\n\n**B.** You look for patterns.\n\n**C.** You search software.\n\n**D.** You consult colleagues.';
+    expect(exampleMatchesOptions(body, options)).toBe(true);
   });
 
-  it('rejects an example written for options the question no longer has', () => {
-    // q5 asks how to fix a debugging weakness; its example describes motivation.
-    expect(check(en, 'science_tech', 'q5')).toBe(false);
-    expect(check(it_, 'science_tech', 'q5')).toBe(false);
-  });
-
-  it('rejects an example where only one option was changed', () => {
-    // Option D became "Map dependencies and failure modes"; example still says "Case studies".
-    expect(check(en, 'science_tech', 'q21')).toBe(false);
+  it('rejects an example written for other options', () => {
+    const body = '**Option A (Challenging goals):** x\n**Option B (Positive impact):** x\n**Option C (Learning):** x\n**Option D (Recognition):** x';
+    expect(exampleMatchesOptions(body, options)).toBe(false);
   });
 
   it('treats examples without option markers, and open questions, as fine', () => {
@@ -39,8 +54,8 @@ describe('exampleMatchesOptions', () => {
 
   it('reads unbracketed markers from the text that follows', () => {
     const body = '**Opción A:** Dividir en partes\n**Opción B:** Buscar patrones\n**Opción C:** Herramientas software\n**Opción D:** Consultar otros';
-    const options = ['Dividirlo en partes', 'Buscar patrones', 'Buscar herramientas', 'Consultar con otros'];
-    expect(exampleMatchesOptions(body, options)).toBe(true);
+    const opts = ['Dividirlo en partes', 'Buscar patrones', 'Buscar herramientas', 'Consultar con otros'];
+    expect(exampleMatchesOptions(body, opts)).toBe(true);
     expect(exampleMatchesOptions(body, ['x', 'y', 'z', 'w'])).toBe(false);
   });
 });

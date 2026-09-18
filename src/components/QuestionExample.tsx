@@ -95,6 +95,9 @@ export default function QuestionExample({
   React.useEffect(() => setOpen(false), [assessmentSetKey, qKey]);
 
   const base = `assessmentSets.${assessmentSetKey}`;
+  // Examples are help text, kept outside the sealed assessmentSets block so
+  // they can be corrected without touching questions or scoring content.
+  const helpBase = `assessmentHelp.${assessmentSetKey}`;
   const lng = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0];
 
   // Read examples from the active language only. Through the normal fallback
@@ -106,7 +109,7 @@ export default function QuestionExample({
     return typeof value === 'string' && value.trim() ? value : undefined;
   };
 
-  const specificBody = ownString(`${base}.examples.${qKey}.body`);
+  const specificBody = ownString(`${helpBase}.examples.${qKey}.body`);
   const ownOptions = own(`${base}.questions.${qKey}.options`);
   const options = Array.isArray(ownOptions)
     ? (ownOptions as string[])
@@ -117,7 +120,7 @@ export default function QuestionExample({
   let title: string;
   let body: string;
   if (useSpecific && specificBody) {
-    title = ownString(`${base}.examples.${qKey}.title`) ?? t('assessment.example.fallbackTitle');
+    title = ownString(`${helpBase}.examples.${qKey}.title`) ?? t('assessment.example.fallbackTitle');
     body = specificBody;
   } else {
     const catId: CategoryId = categoryLabel
@@ -127,7 +130,7 @@ export default function QuestionExample({
       ? t('assessment.example.general_title', { category: categoryLabel })
       : t('assessment.example.general_title_plain');
     body =
-      ownString(`${base}.examplesByCategory.${catId}`) ??
+      ownString(`${helpBase}.examplesByCategory.${catId}`) ??
       t(`assessment.example.fallback.${catId}`, { defaultValue: '' });
   }
 

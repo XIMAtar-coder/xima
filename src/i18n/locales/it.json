@@ -3066,107 +3066,6 @@
         "open2": {
           "question": "Qual è la tua sfida professionale più grande o l'area in cui vorresti crescere? Come pensi di affrontarla?"
         }
-      },
-      "examples": {
-        "q1": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Scomporre in parti):** Dai priorità alla decomposizione sistematica. Suddividere dataset complessi in segmenti logici (per regione, tipo cliente, periodo) permette di identificare pattern più facilmente.\n\n**Opzione B (Cercare pattern):** Ti fidi della tua intuizione per individuare trend rapidamente. Funziona bene quando hai esperienza nel dominio.\n\n**Opzione C (Cercare strumenti):** Sfrutti la tecnologia per gestire la complessità. Usare gli strumenti giusti moltiplica la tua potenza analitica.\n\n**Opzione D (Consultare altri):** Valorizzi il problem-solving collaborativo. Imparare dall'esperienza altrui accelera la comprensione.\n\n**Come rispondere:** Scegli cosa FAI realmente per primo quando affronti nuovi dati. Guarda: https://www.youtube.com/watch?v=ua-CiDNNj30"
-        },
-        "q2": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Ascoltare e chiarire):** Dai priorità alla comprensione prima di contribuire. Fare domande chiarificatrici assicura allineamento.\n\n**Opzione B (Condividere e costruire):** Contribuisci attivamente con idee e migliori i suggerimenti altrui. L'ideazione collaborativa ti energizza.\n\n**Opzione C (Prendere note e riassumere):** Aiuti il team catturando e sintetizzando informazioni. La documentazione crea comprensione condivisa.\n\n**Opzione D (Focus sui prossimi passi):** Sei orientato all'azione. Tradurre discussioni in task concreti guida il progresso.\n\n**Come rispondere:** Pensa alle tue ultime 3 riunioni di team. Che ruolo hai naturalmente ricoperto? Guarda: https://www.youtube.com/watch?v=TP5xDjAMhQk"
-        },
-        "q3": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Pratica hands-on):** Impari facendo. Costruire progetti e sperimentare consolida la comprensione più velocemente della lettura.\n\n**Opzione B (Guide e documentazione):** Preferisci una comprensione approfondita prima dell'applicazione. La lettura accurata costruisce fondamenta solide.\n\n**Opzione C (Corsi strutturati):** Valorizzi percorsi formativi formali. I corsi forniscono copertura sistematica e validazione.\n\n**Opzione D (Mentor e colleghi):** Impari meglio dalle persone. La guida umana fornisce contesto che la documentazione non ha.\n\n**Come rispondere:** Pensa all'ultima skill che hai imparato con successo. Quale metodo hai usato? Guarda: https://www.youtube.com/watch?v=MlJdMr3O5J4"
-        },
-        "q4": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Soluzioni non convenzionali):** Pensi naturalmente fuori dagli schemi. Generare molteplici idee nuove prima di valutare è il tuo punto di forza.\n\n**Opzione B (Combinare idee esistenti):** Sei abile nella sintesi. Remixare concetti provati crea risultati innovativi con minor rischio.\n\n**Opzione C (Migliorare metodi provati):** Costruisci su ciò che funziona. Il miglioramento incrementale è spesso più pratico della reinvenzione.\n\n**Opzione D (Ispirazione cross-industry):** Guardi oltre il tuo campo per idee. Prospettive fresche da altri domini sbloccano breakthrough.\n\n**Come rispondere:** Ricorda un problema recente che hai risolto creativamente. Quale approccio hai usato? Guarda: https://www.youtube.com/watch?v=G8w0rJhztJ4"
-        },
-        "q5": {
-          "title": "Capire la Tua Motivazione",
-          "body": "**Opzione A (Obiettivi sfidanti):** Il raggiungimento ti energizza. Colpire target ambiziosi ti dà profonda soddisfazione.\n\n**Opzione B (Impatto positivo):** Lo scopo ti guida. Sapere che il tuo lavoro aiuta altri sostiene la tua motivazione.\n\n**Opzione C (Apprendimento e crescita):** La padronanza ti motiva. Sviluppare nuove skill è intrinsecamente gratificante.\n\n**Opzione D (Riconoscimento e avanzamento):** La validazione esterna ti alimenta. Il progresso di carriera e il riconoscimento contano per te.\n\n**Come rispondere:** Tutte le motivazioni sono valide. Scegli quella che ti energizza di PIÙ nei momenti difficili. Guarda: https://www.youtube.com/watch?v=u6XAPnuFjJc"
-        },
-        "q6": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Misurare metriche):** Ti affidi ai dati quantitativi. Numeri di performance specifici ti dicono se qualcosa funziona.\n\n**Opzione B (A/B test):** Credi nell'analisi comparativa. Testare alternative rivela empiricamente l'opzione migliore.\n\n**Opzione C (Feedback utenti):** Dai priorità agli insight qualitativi. Capire l'esperienza utente conta più dei numeri grezzi.\n\n**Opzione D (Verifica requisiti):** Controlli rispetto alle specifiche. La conformità ai requisiti è la tua baseline per il successo.\n\n**Come rispondere:** Pensa a una feature o soluzione recente che hai valutato. Quale metodo hai usato per primo? Guarda: https://www.youtube.com/watch?v=VQKMoT-6XSg"
-        },
-        "q7": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Trovare terreno comune):** Sei un mediatore naturale. Identificare interessi condivisi dissolve i conflitti.\n\n**Opzione B (Presentare fatti):** Ti affidi all'evidenza. Dati e fatti tagliano attraverso i disaccordi emotivi.\n\n**Opzione C (Facilitare discussione):** Aiuti gli altri a trovare soluzioni. Creare spazio per il dialogo abilita la risoluzione.\n\n**Opzione D (Proporre compromessi):** Sei pragmatico. Trovare una via di mezzo fa andare avanti le cose.\n\n**Come rispondere:** Ricorda il tuo ultimo disaccordo sul lavoro. Qual è stato il tuo approccio istintivo? Guarda: https://www.youtube.com/watch?v=CsgHMiOWsRA"
-        },
-        "q8": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Ricercare più fonti):** Triangoli le informazioni. Fonti multiple riducono il rischio di essere fuorviati.\n\n**Opzione B (Analizzare credibilità):** Valuti le fonti criticamente. Capire da dove viene l'informazione conta.\n\n**Opzione C (Consultare esperti):** Ti affidi all'autorità. La conoscenza esperta taglia attraverso affermazioni conflittuali.\n\n**Opzione D (Testare empiricamente):** Credi nell'evidenza. Quando possibile, condurre il proprio esperimento è lo standard d'oro.\n\n**Come rispondere:** Pensa a informazioni conflittuali che hai incontrato di recente. Come le hai risolte? Guarda: https://www.youtube.com/watch?v=6OLPL5p0fMg"
-        },
-        "q9": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Sessioni di brainstorming):** Prosperi in setting di gruppo creativi. L'ideazione strutturata genera quantità prima della qualità.\n\n**Opzione B (Studiare casi di successo):** Impari da ciò che funziona altrove. I casi studio forniscono template provati.\n\n**Opzione C (Prototipi e mockup):** Pensi costruendo. Artefatti tangibili rivelano possibilità più velocemente della discussione.\n\n**Opzione D (Team diversificati):** Valorizzi prospettive varie. L'input cross-funzionale produce idee rivoluzionarie.\n\n**Come rispondere:** Quando hai bisogno di idee fresche, quale approccio scegli per primo? Guarda: https://www.youtube.com/watch?v=K2vSQPh6MCE"
-        },
-        "q10": {
-          "title": "Capire la Tua Motivazione",
-          "body": "**Opzione A (Fissare traguardi):** Resti motivato attraverso il progresso visibile. Suddividere progetti in parti con celebrazioni mantiene alta l'energia.\n\n**Opzione B (Focus sull'obiettivo finale):** Sei guidato dalla visione. Tenere a mente il risultato finale ti sostiene nelle difficoltà.\n\n**Opzione C (Variare attività):** Hai bisogno di novità. Alternare tra task previene il burnout.\n\n**Opzione D (Cercare supporto del team):** Sei energizzato dalla collaborazione. Feedback e incoraggiamento dagli altri ti fanno andare avanti.\n\n**Come rispondere:** Pensa a un progetto lungo che hai completato con successo. Cosa ti ha tenuto motivato? Guarda: https://www.youtube.com/watch?v=mNeXuCYiE0U"
-        },
-        "q11": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Identificare pattern, creare script):** Sei un costruttore. Creare soluzioni di automazione custom da zero si adatta alla tua mentalità tecnica.\n\n**Opzione B (Usare e adattare strumenti):** Sfrutti soluzioni esistenti. Adattare strumenti provati è più veloce che costruire da zero.\n\n**Opzione C (Analizzare costi-benefici):** Sei strategico. Non tutte le automazioni valgono l'investimento, e valuti prima di agire.\n\n**Opzione D (Collaborare con esperti):** Sai quando chiedere aiuto. Gli esperti tecnici possono implementare ciò che immagini.\n\n**Come rispondere:** Pensa a un task ripetitivo che hai automatizzato (o volevi automatizzare). Quale approccio hai preso? Guarda: https://www.youtube.com/watch?v=M576WGiDBdQ"
-        },
-        "q12": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Studiare il pubblico):** Fai ricerca prima di comunicare. Capire background ed esigenze plasma il tuo messaggio.\n\n**Opzione B (Usare esempi rilevanti):** Ti connetti attraverso contenuti relazionabili. Analogie appropriate al contesto colmano gap di comprensione.\n\n**Opzione C (Modificare livello tecnico):** Calibri la complessità. Adeguare il livello di dettaglio all'expertise del pubblico assicura comprensione.\n\n**Opzione D (Chiedere feedback):** Verifichi la comprensione. Controllare la comprensione previene miscomunicazioni.\n\n**Come rispondere:** Come ti prepari tipicamente per presentare a pubblici diversi? Guarda: https://www.youtube.com/watch?v=eIho2S0ZahI"
-        },
-        "q13": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Documentazione strutturata):** Crei record ricercabili. Documentazione ben organizzata abilita l'accesso self-service alla conoscenza.\n\n**Opzione B (Sessioni formative):** Insegni attivamente. L'apprendimento interattivo trasferisce conoscenza più efficacemente della lettura.\n\n**Opzione C (Guide pratiche):** Ti focalizzi sull'applicazione. Contenuti how-to aiutano gli altri a eseguire immediatamente.\n\n**Opzione D (Database best practice):** Sistematizzi la conoscenza. Collezioni curate di approcci provati beneficiano tutto il team.\n\n**Come rispondere:** Quando impari qualcosa di valore, come lo condividi tipicamente? Guarda: https://www.youtube.com/watch?v=V55rCBT1Ouc"
-        },
-        "q14": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Cambiare ambiente):** Sblocchi i blocchi cambiando contesto. Nuovi setting stimolano pensiero fresco.\n\n**Opzione B (Brainstorming con colleghi):** Sblocchi la creatività attraverso la collaborazione. Le idee altrui accendono le tue.\n\n**Opzione C (Campi non correlati):** Cerchi cross-pollination. Ispirazione da domini distanti crea soluzioni uniche.\n\n**Opzione D (Pause strategiche):** Ti fidi dell'incubazione. Allontanarsi permette al subconscio di elaborare.\n\n**Come rispondere:** Ricorda l'ultima volta che ti sei sentito creativamente bloccato. Cosa ti ha aiutato a sbloccarti? Guarda: https://www.youtube.com/watch?v=f1yQTy1bQmc"
-        },
-        "q15": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Analizzare per imparare):** Conduci post-mortem. Capire cosa è andato storto previene errori futuri.\n\n**Opzione B (Passare alla prossima opportunità):** Sei resiliente. Pivotare rapidamente mantiene il momentum.\n\n**Opzione C (Cercare feedback):** Impari dagli altri. Mentor e colleghi forniscono prospettive che potresti perdere.\n\n**Opzione D (Riadattare strategia):** Sei flessibile ma persistente. Cambiare approccio mantenendo gli obiettivi mostra drive adattivo.\n\n**Come rispondere:** Pensa al tuo ultimo significativo contrattempo. Qual è stata la tua prima risposta? Guarda: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
-        },
-        "q16": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Strumenti di visualizzazione):** Usi visivi per individuare pattern. Grafici rivelano insight che le tabelle nascondono.\n\n**Opzione B (Segmentare in categorie):** Organizzi prima di analizzare. Raggruppamenti logici rendono gestibili dataset grandi.\n\n**Opzione C (Tecniche statistiche):** Applichi metodi formali. L'analisi statistica trova correlazioni nascoste.\n\n**Opzione D (Dashboard automatizzate):** Costruisci sistemi di monitoraggio. Visibilità continua abilita risposte proattive.\n\n**Come rispondere:** Quando ricevi un grande dataset, qual è il tuo primo passo? Guarda: https://www.youtube.com/watch?v=0yCJMt9Mx9c"
-        },
-        "q17": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Grafici e visualizzazioni):** Credi nella comunicazione visiva. Grafiche intuitive trasmettono idee complesse rapidamente.\n\n**Opzione B (Focus sui risultati business):** Parti dagli outcome. I pubblici non tecnici si interessano all'impatto, non ai metodi.\n\n**Opzione C (Raccontare una storia):** Usi la narrazione. Storie che connettono dati a impatti reali sono memorabili e persuasive.\n\n**Opzione D (Riassunti esecutivi):** Dai priorità alla brevità. Punti chiave prima, dettagli disponibili se necessario.\n\n**Come rispondere:** Quando presenti ai dirigenti, quale approccio usi di default? Guarda: https://www.youtube.com/watch?v=b1iGRaeNfn4"
-        },
-        "q18": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Pubblicazioni e ricerca):** Segui il thought leadership del settore. La lettura ti tiene informato su trend e sviluppi.\n\n**Opzione B (Conferenze e webinar):** Impari dagli eventi. Le sessioni live forniscono networking e opportunità di Q&A.\n\n**Opzione C (Community e forum):** Ti coinvolgi con i peer. I forum di discussione fanno emergere insight pratici e problemi.\n\n**Opzione D (Sperimentare strumenti):** Impari provando. L'esplorazione hands-on di nuove tecnologie costruisce skill reali.\n\n**Come rispondere:** Come resti tipicamente aggiornato nel tuo campo? Guarda: https://www.youtube.com/watch?v=5MgBikgcWnY"
-        },
-        "q19": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Test su piccola scala):** De-rischi l'innovazione. Testare idee in piccolo prima di impegnarsi riduce gli sprechi.\n\n**Opzione B (Approccio portfolio):** Bilanci il rischio. Mantenere progetti a diversi livelli di rischio assicura sia stabilità che crescita.\n\n**Opzione C (Feedback continuo):** Validi presto e spesso. Feedback regolare mantiene il lavoro creativo allineato alla realtà.\n\n**Opzione D (Criteri di valutazione chiari):** Stabilisci standard. Criteri definiti aiutano a valutare oggettivamente quali idee perseguire.\n\n**Come rispondere:** Quando proponi qualcosa di innovativo, come bilanci il rischio? Guarda: https://www.youtube.com/watch?v=RfWgVWGEXZs"
-        },
-        "q20": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Roadmap dettagliate):** Pianifichi in modo completo. Suddividere obiettivi in milestone con timeline assicura progresso costante.\n\n**Opzione B (Metriche quantificabili):** Misuri il progresso. I numeri ti dicono se sei in carreggiata.\n\n**Opzione C (Review regolari):** Adatti la strategia. La valutazione periodica permette correzioni di rotta.\n\n**Opzione D (Mantenere focus):** Sei disciplinato. Proteggere i tuoi obiettivi dalle distrazioni è la tua forza.\n\n**Come rispondere:** Pensa a un obiettivo a lungo termine che hai raggiunto. Quale approccio ti ha aiutato di più? Guarda: https://www.youtube.com/watch?v=L4N1q4RNi9I"
-        },
-        "q21": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Analisi costi-benefici):** Valuti il ROI. Capire costo totale e beneficio atteso guida le decisioni.\n\n**Opzione B (Progetti pilota):** Testi prima di impegnarti. Trial su piccola scala rivelano le performance nel mondo reale.\n\n**Opzione C (Impatto sui processi):** Consideri gli effetti a cascata. Le nuove tecnologie influenzano workflow e team esistenti.\n\n**Opzione D (Casi studio):** Impari dagli altri. Esempi del settore mostrano cosa funziona in pratica.\n\n**Come rispondere:** Quando valuti una nuova tecnologia per l'adozione, qual è il tuo primo passo? Guarda: https://www.youtube.com/watch?v=iVXW1r_ivjw"
-        },
-        "open1": {
-          "title": "Come Rispondere Bene",
-          "body": "Le risposte forti descrivono una situazione specifica con impatto misurabile. Usa il metodo STAR:\n\n**Situazione:** Imposta il contesto (qual era la sfida?)\n**Task:** La tua responsabilità specifica\n**Azione:** Cosa HAI fatto (sii specifico sul tuo contributo)\n**Risultato:** Outcome con numeri se possibile\n\nEsempio: 'Ho guidato un team di 5 persone per ridurre il tempo di onboarding da 2 settimane a 3 giorni, aumentando l'activation del 40%.'\n\nSii specifico sul TUO contributo, non solo sul successo del team. Guarda: https://www.youtube.com/watch?v=0vNUxleEyoo"
-        },
-        "open2": {
-          "title": "Come Rispondere Bene",
-          "body": "L'autoconsapevolezza è chiave qui. Le risposte forti identificano un'area di crescita genuina e mostrano passi proattivi per migliorare.\n\nEvita risposte vaghe come 'Lavoro troppo'. Invece, sii specifico:\n\n'Faccio fatica a delegare i task tecnici. Sto affrontando questo:\n- Iniziando con piccole deleghe\n- Creando documenti di handoff chiari\n- Schedulando check-in settimanali invece che giornalieri'\n\nMostra che stai prendendo ownership del tuo sviluppo. Guarda: https://www.youtube.com/watch?v=tJxFZrMxT3s"
-        }
-      },
-      "examplesByCategory": {
-        "comp_power": "Le domande sulla Potenza Computazionale valutano la tua capacità di analizzare dati, risolvere problemi sistematicamente e usare la tecnologia efficacemente. I top performer scompongono i problemi complessi in passaggi, validano le assunzioni con i dati e iterano basandosi sui risultati.",
-        "communication": "Le domande sulla Comunicazione valutano come esprimi idee, ascolti attivamente e adatti il tuo stile a pubblici diversi. I comunicatori efficaci partono dagli outcome, usano esempi concreti e cercano feedback per assicurare la comprensione.",
-        "knowledge": "Le domande sulla Conoscenza misurano la profondità della tua expertise e la capacità di apprendere continuamente. I top performer mantengono abitudini di apprendimento, condividono la conoscenza con altri (che rinforza la loro stessa comprensione) e applicano rapidamente le nuove informazioni.",
-        "creativity": "Le domande sulla Creatività valutano la tua capacità di generare idee nuove e trovare soluzioni non convenzionali. I pensatori creativi abbracciano i vincoli, cercano prospettive diverse e prototipano rapidamente per testare le idee prima di impegnare risorse.",
-        "drive": "Le domande sulla Motivazione misurano la tua spinta, resilienza e capacità di perseguire obiettivi a lungo termine. Gli individui ad alta motivazione definiscono milestone chiari, imparano dalle battute d'arresto e mantengono il focus nonostante gli ostacoli."
       }
     },
     "business_leadership": {
@@ -3389,107 +3288,6 @@
         "open2": {
           "question": "Qual è la tua maggiore area di crescita come leader e come la stai affrontando?"
         }
-      },
-      "examples": {
-        "q1": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Cercare anomalie):** Dai priorità al rilevamento rapido di problemi che richiedono attenzione immediata.\n\n**Opzione B (Approfondire i segmenti):** Preferisci capire le cause profonde scomponendo i dati in gruppi significativi.\n\n**Opzione C (Confrontare con lo storico):** Contestualizzi le performance attuali rispetto ai trend passati.\n\n**Opzione D (Esportare offline):** Ti prendi tempo per un'analisi approfondita prima di trarre conclusioni.\n\n**Come rispondere:** Scegli l'opzione che descrive cosa FAI realmente per primo. Guarda: https://www.youtube.com/watch?v=d4cKVgpHlCY"
-        },
-        "q2": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Sintetizzare/riformulare):** Guidi trovando la questione sottostante ai disaccordi.\n\n**Opzione B (Domande per allineare):** Credi che il disallineamento derivi spesso da contesti diversi.\n\n**Opzione C (Riepilogare decisioni):** Ti orienti verso l'azione e la chiusura.\n\n**Opzione D (Ridurre la tensione):** Dai priorità alla coesione del team.\n\n**Come rispondere:** Pensa alle tue ultime 3 riunioni con conflitti. Quale comportamento hai mostrato? Guarda: https://www.youtube.com/watch?v=TP5xDjAMhQk"
-        },
-        "q3": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Report di settore):** Preferisci informazioni curate e sintetizzate.\n\n**Opzione B (Analisti e concorrenti):** Vuoi intelligence competitiva basata sui dati.\n\n**Opzione C (Conferenze/webinar):** Valorizzi l'apprendimento tra pari.\n\n**Opzione D (Interviste ai clienti):** Dai priorità ai segnali di mercato di prima mano.\n\n**Come rispondere:** Dove hai dedicato più tempo a studiare il mercato nell'ultimo trimestre? Guarda: https://www.youtube.com/watch?v=MnIPpUiTcRc"
-        },
-        "q4": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Prototipare velocemente):** Credi nel testare idee rapidamente con feedback reali.\n\n**Opzione B (Adattare playbook):** Preferisci framework collaudati adattati al tuo contesto.\n\n**Opzione C (Spunto da altri settori):** Trovi innovazione nella cross-pollinazione delle idee.\n\n**Opzione D (Co-creare):** Credi che le migliori strategie emergano dall'input collaborativo.\n\n**Come rispondere:** In un'iniziativa go-to-market recente, quale approccio hai naturalmente adottato? Guarda: https://www.youtube.com/watch?v=QoAOzMTLP5s"
-        },
-        "q5": {
-          "title": "Capire la Tua Motivazione",
-          "body": "**Opzione A (Milestone/scorecard):** Sei energizzato da progressi misurabili.\n\n**Opzione B (Impatto/purpose):** Trai energia da outcome significativi.\n\n**Opzione C (Apprendimento/iterazione):** Resti motivato dalla crescita.\n\n**Opzione D (Riconoscimento/vittorie):** Prosperi con il riconoscimento.\n\n**Come rispondere:** Durante il tuo trimestre più difficile, cosa ti ha davvero fatto andare avanti? Guarda: https://www.youtube.com/watch?v=u6XAPnuFjJc"
-        },
-        "q6": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Segmentare):** Scomponi i problemi per isolare le cause.\n\n**Opzione B (Correlare):** Cerchi la causalità esaminando cosa è cambiato.\n\n**Opzione C (Verificare attribuzione):** Validi la qualità dei dati prima di trarre conclusioni.\n\n**Opzione D (Confrontare stagionalità):** Contestualizzi rispetto ai pattern attesi.\n\n**Come rispondere:** Quando i ricavi sono calati inaspettatamente, qual è stato il tuo primo istinto? Guarda: https://www.youtube.com/watch?v=HCDP1rjy0Lk"
-        },
-        "q7": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Storia con evidenze):** Influenzi attraverso la narrativa.\n\n**Opzione B (Far emergere obiezioni):** Affronti la resistenza creando spazio per il dialogo.\n\n**Opzione C (Mappare stakeholder):** Adatti il tuo approccio alle motivazioni individuali.\n\n**Opzione D (Adozione per fasi):** Riduci la resistenza rendendo il cambiamento incrementale.\n\n**Come rispondere:** L'ultima volta che un team ha resistito alla tua proposta, come hai risposto? Guarda: https://www.youtube.com/watch?v=wV1FrqwZyKw"
-        },
-        "q8": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Modello finanziario):** Impari costruendo l'economia dai principi primi.\n\n**Opzione B (Casi studio):** Impari dai successi e fallimenti altrui.\n\n**Opzione C (Affiancare operatori):** Impari osservando e facendo.\n\n**Opzione D (Pilot):** Impari sperimentando e ottenendo feedback diretto.\n\n**Come rispondere:** Quale metodo ha funzionato meglio quando sei entrato in un nuovo settore? Guarda: https://www.youtube.com/watch?v=MlJdMr3O5J4"
-        },
-        "q9": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Posizionamento innovativo):** Ti differenzi attraverso messaggi e angolazioni uniche.\n\n**Opzione B (Riconfezione creativa):** Trovi valore combinando elementi esistenti.\n\n**Opzione C (Partnership):** Sblocchi crescita attraverso alleanze strategiche.\n\n**Opzione D (Reinventare onboarding):** Ti concentri sulla riduzione dell'attrito.\n\n**Come rispondere:** In un mercato competitivo, quale strategia hai effettivamente impiegato? Guarda: https://www.youtube.com/watch?v=BzAdXyPYKQo"
-        },
-        "q10": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Priorità spietata):** Ti concentri sui pochi task vitali.\n\n**Opzione B (Energizzare il team):** Guidi mantenendo il morale.\n\n**Opzione C (Time-box esperimenti):** Bilanci urgenza con apprendimento.\n\n**Opzione D (Assicurare risorse):** Rimuovi ostacoli per il team.\n\n**Come rispondere:** Sotto la tua scadenza più stretta recente, quale comportamento ha dominato? Guarda: https://www.youtube.com/watch?v=ZK-nFLFk4dA"
-        },
-        "q11": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Analisi sensibilità):** Modelli diversi scenari per capire rischi e upside.\n\n**Opzione B (A/B test):** Preferisci evidenze empiriche da esperimenti controllati.\n\n**Opzione C (Elasticità per segmento):** Analizzi come diversi segmenti rispondono ai prezzi.\n\n**Opzione D (Validazione cliente):** Testi con feedback reali prima di implementare.\n\n**Come rispondere:** Valutando i prezzi, quale metodo ti dà più fiducia? Guarda: https://www.youtube.com/watch?v=Gj5L9SYhoSE"
-        },
-        "q12": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Visual/analogie):** Traduci la complessità in concetti intuitivi.\n\n**Opzione B (Narrativa/outcome):** Connetti le informazioni a storie con implicazioni chiare.\n\n**Opzione C (Sintesi esecutive):** Distilli le informazioni in punti chiave.\n\n**Opzione D (CTA chiare):** Includi sempre prossimi passi specifici.\n\n**Come rispondere:** Com'è stata la tua ultima presentazione a non esperti? Guarda: https://www.youtube.com/watch?v=eIho2S0ZahI"
-        },
-        "q13": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Documentazione strutturata):** Credi in documentazione ricercabile e ben organizzata.\n\n**Opzione B (Sessioni di formazione):** Preferisci trasferimento interattivo.\n\n**Opzione C (Playbook vivi):** Mantieni risorse dinamiche con ownership chiara.\n\n**Opzione D (Community of practice):** Costruisci network dove la conoscenza fluisce organicamente.\n\n**Come rispondere:** Quale sistema ha funzionato meglio per preservare la conoscenza? Guarda: https://www.youtube.com/watch?v=V55rCBT1Ouc"
-        },
-        "q14": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Sprint di ideazione):** Generi idee con sessioni focalizzate.\n\n**Opzione B (Workshop interfunzionali):** Porti prospettive diverse.\n\n**Opzione C (Reverse-engineering competitor):** Impari da cosa funziona altrove.\n\n**Opzione D (Prospettive contrarie):** Inviti devil's advocate.\n\n**Come rispondere:** Quando i piani si sono bloccati, quale approccio ti ha aiutato? Guarda: https://www.youtube.com/watch?v=K2vSQPh6MCE"
-        },
-        "q15": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Post-mortem senza colpe):** Ti concentri sull'apprendimento senza colpevolizzare.\n\n**Opzione B (Pivot rapido):** Ti sposti rapidamente alla prossima opportunità.\n\n**Opzione C (Cercare mentoring):** Ti rivolgi a consulenti esperti.\n\n**Opzione D (Raffinare e persistere):** Iteri sulla visione invece di abbandonarla.\n\n**Come rispondere:** Dopo il tuo ultimo fallimento significativo, quale risposta ti è sembrata naturale? Guarda: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
-        },
-        "q16": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Bottom-up + top-down):** Combini dettagli granulari con visioni macro.\n\n**Opzione B (Stress-test scenari):** Modelli casi migliori/peggiori/probabili.\n\n**Opzione C (Validare con vendite):** Fai reality-check con insight dal fronte.\n\n**Opzione D (Simulare vincoli):** Modelli limiti operativi.\n\n**Come rispondere:** Quale metodo produce previsioni di cui ti fidi di più? Guarda: https://www.youtube.com/watch?v=TDyB4eEzYE0"
-        },
-        "q17": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Storia/impatto):** Guidi con narrativa connessa a outcome di business.\n\n**Opzione B (Visual semplici):** Ti affidi a grafici puliti.\n\n**Opzione C (Trade-off/scelte):** Inquadri decisioni chiaramente con pro e contro.\n\n**Opzione D (One-pager):** Distilli tutto in una pagina.\n\n**Come rispondere:** Come hai presentato la tua ultima raccomandazione strategica? Guarda: https://www.youtube.com/watch?v=b1iGRaeNfn4"
-        },
-        "q18": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Regolamentazione/economia):** Parti dalle forze strutturali del settore.\n\n**Opzione B (Interviste stakeholder):** Impari da chi conosce lo spazio.\n\n**Opzione C (Mappa catena del valore):** Mappi come fluisce il valore.\n\n**Opzione D (Jobs-to-be-done):** Ti concentri sui bisogni del cliente.\n\n**Come rispondere:** Nell'onboarding nel tuo ultimo nuovo settore, quale approccio ha funzionato? Guarda: https://www.youtube.com/watch?v=Stc0beAxavY"
-        },
-        "q19": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Voce/POV distintivo):** Ti differenzi attraverso prospettiva unica.\n\n**Opzione B (Esperienze firma):** Crei momenti memorabili.\n\n**Opzione C (Co-creazione community):** Coinvolgi i clienti nel plasmare l'identità.\n\n**Opzione D (Canali innovativi):** Raggiungi audience attraverso distribuzioni inaspettate.\n\n**Come rispondere:** Quale strategia di differenziazione hai implementato con successo? Guarda: https://www.youtube.com/watch?v=BzAdXyPYKQo"
-        },
-        "q20": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Roadmap/checkpoint):** Pianifichi con milestone chiari.\n\n**Opzione B (Indicatori anticipatori/ritardati):** Tracci metriche predittive e di outcome.\n\n**Opzione C (Review trimestrali):** Adatti la strategia regolarmente.\n\n**Opzione D (Proteggere il focus):** Proteggi gli obiettivi a lungo termine dalle distrazioni.\n\n**Come rispondere:** Per un obiettivo pluriennale raggiunto, quale pratica è stata critica? Guarda: https://www.youtube.com/watch?v=L4N1q4RNi9I"
-        },
-        "q21": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Definire metriche):** Inizi chiarendo come si misurerà il successo.\n\n**Opzione B (Pilot con controllo):** Testi cambiamenti in condizioni controllate.\n\n**Opzione C (Valutare readiness/rischio):** Valuti capacità organizzativa e ostacoli.\n\n**Opzione D (Studiare riferimenti):** Impari da altri che hanno fatto trasformazioni simili.\n\n**Come rispondere:** Valutando una trasformazione importante, quale step dai priorità? Guarda: https://www.youtube.com/watch?v=iVXW1r_ivjw"
-        },
-        "open1": {
-          "title": "Come Rispondere Bene",
-          "body": "Le risposte forti seguono il formato STAR-L: Situazione, Task, Azione, Risultato, Apprendimento. Descrivi una decisione specifica con posta in gioco reale. Nomina i trade-off esplicitamente (es. 'velocità vs. approfondimento'). Quantifica gli outcome quando possibile. Esempio: 'Ho scelto di ritardare un lancio di 6 settimane per risolvere problemi di qualità, scambiando ricavi a breve per fiducia nel brand. Risultato: 40% meno ticket di supporto e 15% NPS più alto.' Guarda: https://www.youtube.com/watch?v=0vNUxleEyoo"
-        },
-        "open2": {
-          "title": "Come Rispondere Bene",
-          "body": "Mostra autoconsapevolezza nominando un'area di crescita genuina, non un humble-brag. Descrivi azioni specifiche che stai intraprendendo. Esempio: 'Tendo a eccedere sui dati e ritardare le decisioni. Lo sto affrontando impostando deadline decisionali in anticipo, praticando il pensiero delle decisioni reversibili, e chiedendo al mio team di segnalare quando sono analysis-paralyzed.' Guarda: https://www.youtube.com/watch?v=tJxFZrMxT3s"
-        }
-      },
-      "examplesByCategory": {
-        "comp_power": "Le domande di Potenza Computazionale del Business valutano la tua capacità di lavorare con dati, metriche e framework analitici. I top performer segmentano i problemi sistematicamente, validano la qualità dei dati e usano approcci analitici multipli.",
-        "communication": "Le domande di Comunicazione del Business valutano come influenzi stakeholder, gestisci conflitti e traduci idee complesse. I comunicatori efficaci adattano il loro stile, guidano con outcome e creano allineamento.",
-        "knowledge": "Le domande di Conoscenza del Business misurano come acquisisci market intelligence e impari nuovi domini. I top performer combinano metodi multipli e condividono attivamente la conoscenza.",
-        "creativity": "Le domande di Creatività del Business valutano la tua capacità di generare strategie di crescita e trovare soluzioni innovative. I leader creativi testano idee rapidamente e coinvolgono prospettive diverse.",
-        "drive": "Le domande di Motivazione del Business misurano la tua resilienza, goal-setting e capacità di mantenere momentum. I leader ad alta motivazione imparano dai fallimenti e proteggono il focus a lungo termine."
       }
     },
     "arts_creative": {
@@ -3712,107 +3510,6 @@
         "open2": {
           "question": "Quale abilità creativa vuoi migliorare quest'anno e come?"
         }
-      },
-      "examples": {
-        "q1": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Confronto con obiettivi):** Dai priorità a misurare se il creativo raggiunge gli obiettivi prefissati.\n\n**Opzione B (Confronto formati/placement):** Analizzi quali formati e contesti performano meglio.\n\n**Opzione C (Analisi segmenti):** Guardi come diverse audience rispondono.\n\n**Opzione D (Verifica misurazione):** Validi la qualità dei dati prima di trarre conclusioni.\n\n**Come rispondere:** Guardando le performance di una campagna, cosa guardi PRIMA? Guarda: https://www.youtube.com/watch?v=0yCJMt9Mx9c"
-        },
-        "q2": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Storia delle scelte):** Spieghi il ragionamento e la logica creativa.\n\n**Opzione B (Prima/dopo visivo):** Mostri trasformazioni tangibili.\n\n**Opzione C (Obiettivi di business):** Colleghi le scelte creative a outcome che interessano.\n\n**Opzione D (Inviti domande):** Costruisci comprensione attraverso dialogo.\n\n**Come rispondere:** Nella tua ultima presentazione a stakeholder non creativi, quale approccio hai usato? Guarda: https://www.youtube.com/watch?v=eIho2S0ZahI"
-        },
-        "q3": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Maestri/case study):** Impari studiando l'eccellenza.\n\n**Opzione B (Nuovi tool/workflow):** Resti aggiornato padroneggiando le ultime tecnologie.\n\n**Opzione C (Corsi/critiche):** Preferisci apprendimento strutturato con feedback.\n\n**Opzione D (Community/condivisione):** Cresci attraverso scambio tra pari.\n\n**Come rispondere:** Dove hai dedicato tempo a imparare nell'ultimo mese? Guarda: https://www.youtube.com/watch?v=MlJdMr3O5J4"
-        },
-        "q4": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Molte bozze rapide):** Credi nella quantità per trovare qualità.\n\n**Opzione B (Remixare riferimenti):** Combini ispirazioni esistenti in qualcosa di nuovo.\n\n**Opzione C (Iterare una direzione):** Preferisci profondità, raffinando un concetto forte.\n\n**Opzione D (Co-creazione team):** Coinvolgi altri presto per arricchire le idee.\n\n**Come rispondere:** Iniziando un nuovo progetto, quale approccio è più naturale? Guarda: https://www.youtube.com/watch?v=K2vSQPh6MCE"
-        },
-        "q5": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Time-box/consegnare):** Bilanci qualità con realtà delle scadenze.\n\n**Opzione B (Narrativa centrale):** Ti spogli degli elementi essenziali.\n\n**Opzione C (Ridimensionare):** Tagli feature preservando l'impatto.\n\n**Opzione D (Chiedere supporto):** Cerchi aiuto per rimuovere ostacoli.\n\n**Come rispondere:** Sotto la tua ultima scadenza stretta, quale strategia hai usato? Guarda: https://www.youtube.com/watch?v=mNeXuCYiE0U"
-        },
-        "q6": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (A/B test):** Lasci che i dati da esperimenti controllati guidino.\n\n**Opzione B (Heatmap/eye-tracking):** Usi dati sull'attenzione visiva.\n\n**Opzione C (Pattern storici):** Ti affidi a cosa ha funzionato prima.\n\n**Opzione D (Ricerca utenti):** Basi decisioni sulla comprensione qualitativa.\n\n**Come rispondere:** Scegliendo tra opzioni creative, quale evidenza ti convince di più? Guarda: https://www.youtube.com/watch?v=VQKMoT-6XSg"
-        },
-        "q7": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Parafrasare):** Confermi la comprensione riformulando.\n\n**Opzione B (Chiedere esempi):** Cerchi specificità per capire profondamente.\n\n**Opzione C (Discutere vincoli):** Contestualizzi il feedback nelle realtà del progetto.\n\n**Opzione D (Piano di revisione):** Ti muovi velocemente all'azione.\n\n**Come rispondere:** Ricevendo feedback critico, qual è la tua prima reazione istintiva? Guarda: https://www.youtube.com/watch?v=wtl5UrrgU8c"
-        },
-        "q8": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Intervistare stakeholder):** Impari direttamente da chi conosce il mondo del cliente.\n\n**Opzione B (Brand guideline):** Ti immergi profondamente nell'identità visiva e verbale.\n\n**Opzione C (Personas audience):** Ti concentri sul capire per chi stai creando.\n\n**Opzione D (Report trend/mercato):** Contestualizzi il cliente nel panorama competitivo.\n\n**Come rispondere:** Iniziando un nuovo progetto cliente, dove investi tempo prima? Guarda: https://www.youtube.com/watch?v=Stc0beAxavY"
-        },
-        "q9": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Cambiare medium/vincoli):** Rompi i blocchi cambiando regole o strumenti.\n\n**Opzione B (Ispirazione altre arti):** Cerchi ispirazione in discipline creative adiacenti.\n\n**Opzione C (Brainstorm eterogeneo):** Porti prospettive diverse.\n\n**Opzione D (Pausa per resettare):** Ti allontani per lasciare lavorare il subconscio.\n\n**Come rispondere:** L'ultima volta che eri creativamente bloccato, quale approccio ha aiutato? Guarda: https://www.youtube.com/watch?v=f1yQTy1bQmc"
-        },
-        "q10": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Tracciare progressi):** Resti motivato vedendo avanzamenti visibili.\n\n**Opzione B (Celebrare vittorie):** Mantieni l'energia riconoscendo piccoli successi.\n\n**Opzione C (Alternare compiti):** Previeni il burnout variando attività.\n\n**Opzione D (Condividere bozze):** Ottieni incoraggiamento e accountability dagli altri.\n\n**Come rispondere:** Su progetti lunghi, cosa ti fa andare avanti? Guarda: https://www.youtube.com/watch?v=mNeXuCYiE0U"
-        },
-        "q11": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Modello costo vs impatto):** Analizzi il ROI per allocare risorse.\n\n**Opzione B (Priorità alto impatto):** Ti concentri sugli asset che contano di più.\n\n**Opzione C (Prototipo prima):** Testi a basso costo prima di impegnare risorse.\n\n**Opzione D (Riusare/adattare):** Massimizzi il valore riutilizzando asset esistenti.\n\n**Come rispondere:** Con budget limitati, quale approccio prendi istintivamente? Guarda: https://www.youtube.com/watch?v=M576WGiDBdQ"
-        },
-        "q12": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Riformulare outcome):** Chiarisci cosa significa successo in termini condivisi.\n\n**Opzione B (Mostrare reference):** Allinei aspettative visivamente con esempi concreti.\n\n**Opzione C (Tradurre in criteri):** Converti obiettivi astratti in requisiti misurabili.\n\n**Opzione D (Riscrivere brief insieme):** Coinvolgi stakeholder nel definire il problema.\n\n**Come rispondere:** Quando i brief causano confusione, come risolvi? Guarda: https://www.youtube.com/watch?v=eIho2S0ZahI"
-        },
-        "q13": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Template riutilizzabili):** Crei sistemi che scalano la tua conoscenza.\n\n**Opzione B (Guide interne):** Documenti processi in forma scritta.\n\n**Opzione C (Video how-to):** Catturi conoscenza in formati visivi accessibili.\n\n**Opzione D (Libreria reference):** Curi esempi ispiratori e risorse.\n\n**Come rispondere:** Come preservi e condividi effettivamente ciò che impari? Guarda: https://www.youtube.com/watch?v=V55rCBT1Ouc"
-        },
-        "q14": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Sistema firma):** Crei un linguaggio visivo unico riconoscibile.\n\n**Opzione B (Tipografia/motion):** Ti differenzi attraverso dettagli di craft.\n\n**Opzione C (Motivo narrativo):** Costruisci identità di brand attraverso storytelling.\n\n**Opzione D (Elementi sensoriali):** Esplori texture, suono e design multisensoriale.\n\n**Come rispondere:** Quale strategia di differenziazione hai implementato? Guarda: https://www.youtube.com/watch?v=G8w0rJhztJ4"
-        },
-        "q15": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Estrarre lezioni):** Analizzi cosa fare diversamente.\n\n**Opzione B (Proporre alternativa veloce):** Ti riprendi rapidamente con nuova direzione.\n\n**Opzione C (Chiedere criteri mancati):** Cerchi chiarezza sui criteri di valutazione.\n\n**Opzione D (Raffinare/ri-presentare):** Credi che il concept fosse giusto ma serve polish.\n\n**Come rispondere:** Quando il tuo lavoro è stato rifiutato, qual è stata la tua risposta naturale? Guarda: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
-        },
-        "q16": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Velocità/compatibilità):** Dai priorità all'efficienza del workflow.\n\n**Opzione B (Collaborazione):** Valorizzi quanto bene gli strumenti supportano il teamwork.\n\n**Opzione C (Curva di apprendimento):** Consideri quanto velocemente puoi adottarli.\n\n**Opzione D (Costo/licenze):** Valuti le implicazioni finanziarie e legali.\n\n**Come rispondere:** Scegliendo nuovi strumenti, quale fattore pesa di più? Guarda: https://www.youtube.com/watch?v=M576WGiDBdQ"
-        },
-        "q17": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Archi narrativi):** Strutturi la comunicazione come storia avvincente.\n\n**Opzione B (Opzioni con pro/contro):** Presenti scelte con trade-off chiari.\n\n**Opzione C (Impatto audience):** Inquadri tutto in termini di beneficio utente/cliente.\n\n**Opzione D (One-pager):** Distilli la complessità in un documento singolo.\n\n**Come rispondere:** Come strutturi tipicamente le presentazioni agli stakeholder? Guarda: https://www.youtube.com/watch?v=b1iGRaeNfn4"
-        },
-        "q18": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Panorama/competitor):** Mappi il contesto competitivo.\n\n**Opzione B (Insight audience):** Ti concentri sul capire le persone per cui stai progettando.\n\n**Opzione C (Esperti del dominio):** Impari da chi ha conoscenza profonda.\n\n**Opzione D (Osservare utenti):** Osservi comportamenti reali in contesti naturali.\n\n**Come rispondere:** Entrando in un nuovo dominio, quale approccio accelera il tuo apprendimento? Guarda: https://www.youtube.com/watch?v=Stc0beAxavY"
-        },
-        "q19": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Vincoli creativi):** Usi limitazioni per forzare soluzioni innovative.\n\n**Opzione B (Reference improbabili):** Combini fonti inaspettate per originalità.\n\n**Opzione C (Prototipo/test):** Validi idee velocemente con feedback reali.\n\n**Opzione D (Collaborazione cross-disciplina):** Porti prospettive esterne al tuo campo.\n\n**Come rispondere:** Quale approccio ha prodotto il tuo lavoro più originale? Guarda: https://www.youtube.com/watch?v=G8w0rJhztJ4"
-        },
-        "q20": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (North-star board):** Mantieni promemoria visivi della tua direzione creativa.\n\n**Opzione B (Temi trimestrali):** Imposti obiettivi creativi periodici.\n\n**Opzione C (Finestre di riflessione):** Scheduli tempo per valutare e aggiustare.\n\n**Opzione D (Proteggere tempo profondo):** Difendi il deep work dalle interruzioni.\n\n**Come rispondere:** Quale pratica ti aiuta a mantenere la visione creativa a lungo termine? Guarda: https://www.youtube.com/watch?v=L4N1q4RNi9I"
-        },
-        "q21": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Criteri misurabili):** Definisci standard oggettivi per valutare la qualità.\n\n**Opzione B (Revisioni a lotti/checklist):** Usi processi sistematici per coerenza.\n\n**Opzione C (Test campione audience):** Validi la qualità con feedback reali.\n\n**Opzione D (Automatizzare controlli):** Usi la tecnologia per catturare problemi su scala.\n\n**Come rispondere:** Gestendo grandi volumi di lavoro creativo, su cosa ti affidi? Guarda: https://www.youtube.com/watch?v=VQKMoT-6XSg"
-        },
-        "open1": {
-          "title": "Come Rispondere Bene",
-          "body": "Le risposte forti descrivono un pezzo specifico con impatto misurabile. Struttura: Cosa hai creato, La sfida affrontata, Le tue scelte creative, L'outcome misurabile. Esempio: 'Ho ridisegnato le illustrazioni del checkout passando da astratte a immagini concrete del prodotto. Questo ha aumentato la conversione del 23% perché gli utenti potevano visualizzare cosa stavano acquistando.' Sii specifico sulle TUE decisioni creative. Guarda: https://www.youtube.com/watch?v=0vNUxleEyoo"
-        },
-        "open2": {
-          "title": "Come Rispondere Bene",
-          "body": "Nomina un gap di competenza genuino e descrivi passi attivi per colmarlo. Evita risposte generiche come 'migliorare nel design'. Invece: 'Voglio migliorare le mie competenze di motion design. Sto seguendo un corso di animazione di 12 settimane, pratico 30 minuti al giorno e condivido i progressi in una community online per feedback.' Mostra azioni specifiche e accountability. Guarda: https://www.youtube.com/watch?v=tJxFZrMxT3s"
-        }
-      },
-      "examplesByCategory": {
-        "comp_power": "Le domande di Potenza Computazionale Creativa valutano la tua capacità di usare dati e analytics per informare le decisioni creative. I top performer validano assunzioni con evidenze e bilanciano intuizione con insight misurabili.",
-        "communication": "Le domande di Comunicazione Creativa valutano come presenti idee, ricevi feedback e allinei stakeholder. I comunicatori creativi traducono concetti astratti in esempi tangibili.",
-        "knowledge": "Le domande di Conoscenza Creativa misurano come resti aggiornato sul tuo craft. I top performer combinano apprendimento formale con community e applicano nuove tecniche rapidamente.",
-        "creativity": "Le domande di Creatività valutano il tuo processo di generazione idee. I performer forti abbracciano i vincoli, cercano ispirazione diversa e prototipano velocemente.",
-        "drive": "Le domande di Motivazione Creativa misurano resilienza e capacità di mantenere momentum. I creativi ad alta motivazione celebrano piccole vittorie e proteggono tempo per deep work."
       }
     },
     "service_ops": {
@@ -4035,107 +3732,420 @@
         "open2": {
           "question": "Quale area della tua pratica operativa vuoi far crescere quest'anno e qual è il tuo piano?"
         }
-      },
+      }
+    }
+  },
+  "assessmentHelp": {
+    "science_tech": {
       "examples": {
         "q1": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Segmentare per turno/sede):** Scomponi i problemi per isolare dove si verificano.\n\n**Opzione B (Verificare conformità):** Verifichi se le procedure standard sono seguite.\n\n**Opzione C (Confrontare storico):** Contestualizzi le performance attuali rispetto ai trend.\n\n**Opzione D (Verificare integrità dati):** Validi che le metriche stesse siano accurate.\n\n**Come rispondere:** Quando i KPI di servizio sono calati, qual è stato il tuo primo istinto? Guarda: https://www.youtube.com/watch?v=HCDP1rjy0Lk"
+          "title": "La prima mossa con un set di dati complesso",
+          "body": "Hai davanti un set di dati ampio e disordinato: la domanda chiede cosa faresti davvero per prima cosa.\n\n**A.** Dividi i dati in parti più piccole (per periodo, fonte o tipo) e le esamini una alla volta.\n\n**B.** Guardi subito i dati nel loro insieme, cercando tendenze, picchi o modelli che si ripetono.\n\n**C.** Prima di analizzare scegli strumenti o software (un foglio di calcolo, uno script, uno strumento di BI) che facciano il grosso del lavoro.\n\n**D.** Per prima cosa consulti chi ha un'esperienza simile con dati di questo tipo e chiedi come ha impostato l'analisi.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q2": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Ascoltare/riflettere):** Dai priorità a capire l'esperienza ed emozioni del cliente.\n\n**Opzione B (Spiegare policy):** Spieghi regole in linguaggio accessibile.\n\n**Opzione C (Offrire opzioni):** Fornisci scelte e prossimi passi chiari.\n\n**Opzione D (Escalare con contesto):** Coinvolgi altri quando necessario, con info complete.\n\n**Come rispondere:** Pensa alla tua ultima interazione difficile. Quale approccio hai usato? Guarda: https://www.youtube.com/watch?v=CsgHMiOWsRA"
+          "title": "Presentare una simulazione a un comitato misto",
+          "body": "Hai 20 minuti per presentare due mesi di lavoro su una simulazione a esperti e a dirigenti che decidono i finanziamenti: la domanda chiede come imposteresti davvero l'intervento.\n\n**A.** Ripercorri la metodologia passo per passo con le prove tecniche e lasci ai dirigenti un allegato dettagliato da leggere dopo.\n\n**B.** Parti da cosa significano i risultati per le decisioni sui finanziamenti ed entri nella metodologia solo quando un esperto lo chiede.\n\n**C.** Dedichi i primi due minuti a chiedere cosa si aspetta ciascun sottogruppo dalla sessione, poi decidi quanto scendere nel dettaglio.\n\n**D.** Due giorni prima mandi il paper tecnico agli esperti e in sala parli solo della decisione che spetta ai dirigenti.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q3": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (SOP chiare):** Mantieni procedure ben documentate e aggiornate.\n\n**Opzione B (Micro-training):** Fai aggiornamenti periodici delle competenze.\n\n**Opzione C (Knowledge base):** Registri i cambiamenti in sistemi ricercabili.\n\n**Opzione D (Feedback dal fronte):** Raccogli input da chi fa il lavoro quotidianamente.\n\n**Come rispondere:** Come tieni effettivamente aggiornate le procedure? Guarda: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+          "title": "Un limite in un paper molto citato, scadenza domani",
+          "body": "La decisione del team si basa su un paper molto citato, ma solo tu hai notato un limite nel metodo e la scadenza è domani: la domanda chiede cosa faresti davvero.\n\n**A.** Segnali oggi il limite al team e proponi una verifica rapida di quanto cambia il risultato se l'assunzione chiave varia.\n\n**B.** Vai avanti con le conclusioni del paper e scrivi una nota che descrive il limite, così da poterlo riprendere in futuro.\n\n**C.** Cerchi uno studio indipendente arrivato ai suoi risultati con una metodologia diversa e confronti i due.\n\n**D.** Chiedi a un collega che conosce bene il settore se il limite pesa davvero nel tuo caso specifico.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q4": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Ridisegnare il flusso):** Ripensi fondamentalmente come scorre il lavoro.\n\n**Opzione B (Importare soluzioni):** Adatti approcci che funzionano in altri contesti.\n\n**Opzione C (Pilotare esperimento):** Testi piccoli cambiamenti prima dell'implementazione.\n\n**Opzione D (Co-creare):** Coinvolgi staff e utenti nello sviluppo soluzioni.\n\n**Come rispondere:** Di fronte a un collo di bottiglia ricorrente, quale approccio provi prima? Guarda: https://www.youtube.com/watch?v=K2vSQPh6MCE"
+          "title": "Un collo di bottiglia e una libreria non pronta",
+          "body": "La soluzione che vorresti dipende da una libreria disponibile tra tre mesi, ma la pipeline va consegnata tra sei settimane: la domanda chiede cosa faresti davvero.\n\n**A.** Combini due librerie stabili che già conosci per avvicinarti a ciò che farebbe quella nuova, accettando che sia un po' più lenta.\n\n**B.** Cambi il percorso dei dati nella pipeline in modo che non passino più dalla fase che crea il collo di bottiglia.\n\n**C.** Scrivi tu una versione ridotta della funzionalità critica, pensata per essere tolta quando la libreria sarà rilasciata.\n\n**D.** Proponi di consegnare ora una parte del lavoro con gli strumenti attuali e il resto quando la libreria sarà pronta.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q5": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Task alto impatto):** Dai priorità spietatamente a ciò che conta di più.\n\n**Opzione B (Supportare colleghi):** Aiuti gli altri sapendo che beneficia tutti.\n\n**Opzione C (Ruotare compiti):** Previeni il burnout variando le attività.\n\n**Opzione D (Celebrare vittorie):** Mantieni l'energia riconoscendo i progressi.\n\n**Come rispondere:** Nel tuo giorno più stressante recente, quale comportamento hai mostrato? Guarda: https://www.youtube.com/watch?v=ZK-nFLFk4dA"
+          "title": "Un debugging che non funziona sui sistemi distribuiti",
+          "body": "Il tuo modo abituale di fare debugging continua a fallire su un nuovo tipo di errori nei sistemi distribuiti: la domanda chiede cosa faresti davvero.\n\n**A.** Ti affianchi a un esperto di questi errori mentre fa debugging e segui ogni passaggio del suo metodo.\n\n**B.** Blocchi in agenda uno spazio fisso ogni settimana per riprodurre questi errori e analizzarli uno alla volta.\n\n**C.** Dopo ogni tentativo fallito aggiungi una voce a una checklist di ciò che ti è sfuggito, così le lacune diventano visibili.\n\n**D.** Provi un framework di debugging completamente diverso sugli stessi errori e confronti cosa trova ciascuno.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q6": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Modellare domanda):** Usi dati per predire i bisogni di staff nel tempo.\n\n**Opzione B (Mix competenze):** Assicuri la giusta combinazione di capacità.\n\n**Opzione C (Buffer per picchi):** Costruisci capacità per imprevisti.\n\n**Opzione D (Revisione vincoli):** Consideri regole e limitazioni.\n\n**Come rispondere:** Creando turni, quale fattore prioritizzi di più? Guarda: https://www.youtube.com/watch?v=M576WGiDBdQ"
+          "title": "Come capire se una soluzione tecnica funziona",
+          "body": "Una soluzione tecnica è stata realizzata e devi capire se fa il suo lavoro: la domanda chiede cosa controlleresti davvero per primo.\n\n**A.** Misuri prestazioni e metriche concrete, come tempi di risposta, tasso di errore o uso di risorse, e le confronti con un obiettivo.\n\n**B.** Metti la soluzione a confronto con una o due alternative, per esempio con un test A/B su utenti reali.\n\n**C.** Raccogli il feedback degli utenti finali che la usano ogni giorno su cosa li aiuta e cosa li ostacola.\n\n**D.** Scorri l'elenco dei requisiti uno per uno e controlli che ciascuno sia soddisfatto.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q7": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Spiegare perché/impatto):** Aiuti a capire il ragionamento dietro i cambiamenti.\n\n**Opzione B (Checklist/visual):** Fornisci guide chiare e facili da seguire.\n\n**Opzione C (Canale Q&A):** Crei spazio per domande e chiarimenti.\n\n**Opzione D (Supporto tra pari):** Abbini staff esperti con chi impara.\n\n**Come rispondere:** Introducendo un nuovo protocollo, quale approccio funziona meglio? Guarda: https://www.youtube.com/watch?v=wV1FrqwZyKw"
+          "title": "Un ingegnere senior ti contesta con il gergo tecnico",
+          "body": "In una revisione tra più funzioni un ingegnere senior contesta la tua lettura dei dati con un gergo che quasi nessuno segue, e cala il silenzio: la domanda chiede come risponderesti davvero.\n\n**A.** Rispondi prima ai rilievi tecnici dell'ingegnere nello stesso linguaggio e solo dopo spieghi lo scambio al resto della sala.\n\n**B.** Riformuli prima la preoccupazione dell'ingegnere in parole semplici per tutta la sala, poi rispondi a quel livello.\n\n**C.** Chiedi all'ingegnere quale dato specifico sta contestando, e intanto hai un momento per capire se la sala ti segue.\n\n**D.** Riconosci il punto davanti a tutti, proponi di proseguire la discussione tecnica a parte e riporti la riunione sui temi comuni.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q8": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Guide passo-passo):** Fornisci istruzioni dettagliate e sequenziali.\n\n**Opzione B (Affiancamento):** Usi osservazione seguita da pratica supervisionata.\n\n**Opzione C (Micro-training):** Ti concentri su sessioni brevi e specifiche.\n\n**Opzione D (Documentare errori):** Avvisi sugli errori comuni in anticipo.\n\n**Come rispondere:** Come porti tipicamente i nuovi membri del team a regime? Guarda: https://www.youtube.com/watch?v=MlJdMr3O5J4"
+          "title": "Due fonti affidabili che si contraddicono",
+          "body": "Due fonti di dati che sono sempre state affidabili ora danno letture opposte sullo stato di un sistema: la domanda chiede cosa faresti davvero.\n\n**A.** Verifichi le condizioni di misurazione di ciascuna fonte (orari, posizione, carico) per trovare cosa spiega la differenza.\n\n**B.** Dai più peso alla fonte che in situazioni simili ha avuto ragione più spesso.\n\n**C.** Esegui un tuo test diagnostico indipendente per avere una terza lettura da confrontare con le altre due.\n\n**D.** Contatti il team che gestisce ciascuna fonte e chiedi se di recente è cambiato qualcosa nella calibrazione.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q9": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Ridisegnare touchpoint):** Ripensi come i clienti interagiscono nei momenti chiave.\n\n**Opzione B (Personalizzare momenti):** Rendi le esperienze personalizzate.\n\n**Opzione C (Snellire passaggi):** Riduci l'attrito tra le fasi del servizio.\n\n**Opzione D (Testare nuovi strumenti):** Sperimenta con tecnologia per migliorare l'esperienza.\n\n**Come rispondere:** Per migliorare il servizio, quale approccio hai trovato più efficace? Guarda: https://www.youtube.com/watch?v=BzAdXyPYKQo"
+          "title": "Un monitoraggio con il 60% dei sensori",
+          "body": "Il budget copre solo il 60% dei sensori previsti e ridurre la copertura lascia punti ciechi: la domanda chiede cosa faresti davvero.\n\n**A.** Collochi i sensori disponibili nelle zone ad alto rischio e usi stime statistiche per coprire le aree rimaste scoperte.\n\n**B.** Metti sensori più economici e meno precisi nelle aree non critiche e quelli di fascia alta solo dove la precisione conta di più.\n\n**C.** Cambi obiettivo, dal coprire tutto al rilevare anomalie, così il sistema avvisa solo quando i valori si allontanano dalla baseline.\n\n**D.** Installi ora ciò che il budget permette, su un'architettura modulare che consente di aggiungere sensori in seguito.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q10": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Condividere obiettivi/progressi):** Tieni il team informato su obiettivi e avanzamenti.\n\n**Opzione B (Riconoscere comportamenti):** Riconosci e premi azioni utili.\n\n**Opzione C (Ruotare equamente):** Assicuri distribuzione equa del carico.\n\n**Opzione D (Supporto rapido):** Rimuovi ostacoli che frustrano lo staff.\n\n**Come rispondere:** Cosa funziona effettivamente per mantenere il morale nel tuo team? Guarda: https://www.youtube.com/watch?v=mNeXuCYiE0U"
+          "title": "La stessa debolezza di design in ogni code review",
+          "body": "Le code review segnalano sempre la stessa debolezza progettuale e non l'hai ancora corretta: la domanda chiede cosa faresti davvero.\n\n**A.** Chiedi al reviewer di mostrarti, direttamente sul tuo codice, come lo imposterebbe in modo diverso.\n\n**B.** Prendi un vecchio modulo e lo riscrivi con il pattern consigliato finché non ti viene naturale.\n\n**C.** Ti dai un obiettivo concreto, per esempio nessun commento su quel punto, per le prossime tre PR.\n\n**D.** Approfondisci il principio di design alla base dei commenti prima di scrivere altro codice.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q11": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Checklist):** Usi verifica passo-passo per prevenire errori.\n\n**Opzione B (Standardizzare/5S):** Organizzi l'ambiente per chiarezza ed efficienza.\n\n**Opzione C (Automatizzare):** Usi tecnologia per eliminare errori umani su task ripetitivi.\n\n**Opzione D (Misurare/risolvere cause):** Analizzi pattern di errore e affronti le cause radice.\n\n**Come rispondere:** Quale metodo di riduzione errori ha funzionato meglio? Guarda: https://www.youtube.com/watch?v=M576WGiDBdQ"
+          "title": "Come automatizzi i lavori ripetitivi",
+          "body": "C'è un'attività che si ripete ogni giorno o settimana e che si potrebbe automatizzare: la domanda chiede come la affronteresti davvero.\n\n**A.** Individui i passaggi che si ripetono e scrivi script personalizzati, per esempio in Python.\n\n**B.** Parti da strumenti esistenti, come una macro del foglio di calcolo o un'integrazione, e li adatti al compito.\n\n**C.** Prima di costruire qualcosa stimi le ore risparmiate rispetto al tempo necessario per automatizzare e mantenere il tutto.\n\n**D.** Lavori con uno sviluppatore o un esperto dell'IT per implementare insieme l'automazione.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q12": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Criteri accettazione):** Definisci standard chiari per lavoro completo.\n\n**Opzione B (Template handoff):** Usi formati consistenti per trasferire lavoro.\n\n**Opzione C (Allineamenti brevi):** Ti riunisci brevemente per assicurare che tutti siano allineati.\n\n**Opzione D (Dashboard condivise):** Rendi lo status visibile a tutti.\n\n**Come rispondere:** Come assicuri passaggi fluidi tra team o turni? Guarda: https://www.youtube.com/watch?v=eIho2S0ZahI"
+          "title": "Un difetto critico 48 ore prima di un audit",
+          "body": "Due giorni prima di un audit scopri un difetto critico e devi informare tre persone per iscritto entro un'ora: la domanda chiede come gestiresti davvero la situazione.\n\n**A.** Scrivi un unico report completo con la causa tecnica, l'esposizione legale e i passi operativi, e lo mandi a tutti e tre.\n\n**B.** Prepari tre messaggi distinti: dettagli tecnici per il responsabile, rischi per la compliance, una checklist di azioni per le operations.\n\n**C.** Mandi a tutti e tre un breve alert sulla gravità, poi chiedi a ciascuno cosa gli serve prima di scrivere il resto.\n\n**D.** Mandi un breve alert scritto per lasciare traccia, poi chiedi subito una call di 15 minuti con tutti e tre.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q13": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Retro brevi):** Conduci sessioni regolari di riflessione.\n\n**Opzione B (Sintesi semplici):** Documenti takeaway chiave in formati accessibili.\n\n**Opzione C (FAQ ricercabili):** Costruisci knowledge base facili da navigare.\n\n**Opzione D (Assegnare owner):** Assicuri che qualcuno sia responsabile di tenere aggiornato.\n\n**Come rispondere:** Come cattura effettivamente le lezioni apprese il tuo team? Guarda: https://www.youtube.com/watch?v=V55rCBT1Ouc"
+          "title": "Un collega junior mette in dubbio il tuo framework",
+          "body": "Un collega junior porta prove preliminari che un'assunzione fondamentale del framework che usi da mesi è sbagliata: la domanda chiede cosa faresti davvero.\n\n**A.** Sospendi per ora l'uso del framework e testi entrambe le versioni dell'assunzione sui dati recenti prima di decidere.\n\n**B.** Esamini personalmente le evidenze grezze del collega per capire quanto sono solide prima di coinvolgere altre persone.\n\n**C.** Registri formalmente l'obiezione e continui con il framework, fissando una soglia precisa oltre la quale lo rivaluti da capo.\n\n**D.** Chiedi a due persone estranee a entrambe le analisi di esaminare le evidenze in modo indipendente.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q14": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Sequenze più intelligenti):** Riordini il lavoro per fluire più efficientemente.\n\n**Opzione B (Riusare risorse):** Trovi modi creativi per ottenere di più con quello che hai.\n\n**Opzione C (Riorganizzare flusso):** Ottimizzi layout fisico o digitale.\n\n**Opzione D (Semplificare passaggi):** Riduci complessità per utenti e staff.\n\n**Come rispondere:** Di fronte a vincoli, quale approccio è più naturale? Guarda: https://www.youtube.com/watch?v=G8w0rJhztJ4"
+          "title": "Una funzionalità da contratto che danneggia l'architettura",
+          "body": "Il contratto richiede una funzionalità che funziona ma renderebbe l'architettura del sistema più difficile da far evolvere: la domanda chiede come la realizzeresti davvero.\n\n**A.** La implementi dietro un layer di astrazione separato, così da poterla sostituire in futuro senza toccare il resto del sistema.\n\n**B.** Proponi una strada tecnica diversa che dà al cliente lo stesso risultato senza compromettere l'architettura.\n\n**C.** La costruisci esattamente come specificato e intanto scrivi un documento che spiega come refactorizzarla più avanti.\n\n**D.** Negozi lo scope: consegni il nucleo di ciò che serve in forma più pulita e rimandi le parti che farebbero più danni.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q15": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Review senza colpe):** Analizzi cosa è successo senza assegnare colpe.\n\n**Opzione B (Informare trasparentemente):** Comunichi con stakeholder onestamente e prontamente.\n\n**Opzione C (Piano recovery rapido):** Ti muovi velocemente a risolvere la situazione.\n\n**Opzione D (Tracciare fino chiusura):** Segui fino a che il problema è completamente risolto.\n\n**Come rispondere:** Dopo un disservizio, qual è la tua priorità? Guarda: https://www.youtube.com/watch?v=hiiEeMN7vbQ"
+          "title": "Dopo un incidente che ha mostrato una lacuna",
+          "body": "Un incidente in produzione ha messo in luce una lacuna nelle tue conoscenze di monitoring e ora è risolto: la domanda chiede cosa faresti davvero dopo.\n\n**A.** Annoti con precisione quali segnali ti sono sfuggiti e li aggiungi a una checklist personale per i prossimi incidenti.\n\n**B.** Fissi un momento con l'ingegnere di turno e ripercorrete insieme cosa ha notato che a te è sfuggito.\n\n**C.** Prepari un ambiente sandbox in cui provochi di proposito guasti simili e ti eserciti a rispondere.\n\n**D.** Ridefinisci le soglie di alert in base a ciò che hai imparato, poi verifichi per due settimane se scattano quando previsto.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q16": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Valutare requisiti):** Valuti gli strumenti rispetto a una lista chiara di bisogni.\n\n**Opzione B (Pilotare piccolo):** Testi con un sottoinsieme prima del rollout ampio.\n\n**Opzione C (Costi/benefici/rischio):** Analizzi implicazioni finanziarie e operative.\n\n**Opzione D (Verificare integrazione):** Assicuri che lo strumento funzioni con sistemi esistenti.\n\n**Come rispondere:** Selezionando nuovi strumenti, quale criterio conta di più? Guarda: https://www.youtube.com/watch?v=iVXW1r_ivjw"
+          "title": "Come lavori su grandi quantità di dati",
+          "body": "Hai un grande volume di dati da analizzare: la domanda chiede come inizieresti davvero a lavorarci.\n\n**A.** Usi strumenti di visualizzazione per creare grafici o dashboard e li osservi per individuare modelli ricorrenti.\n\n**B.** Dividi i dati in categorie logiche, per esempio per cliente, area o prodotto, e tratti ogni gruppo a parte.\n\n**C.** Applichi tecniche statistiche, come correlazione o regressione, per capire quali variabili si muovono insieme.\n\n**D.** Decidi per prima cosa quali sottoinsiemi di dati hanno più impatto e analizzi quelli prima del resto.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q17": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Dashboard chiare):** Usi display visivi per tenere tutti informati.\n\n**Opzione B (Standup brevi):** Tieni riunioni regolari brevi di allineamento.\n\n**Opzione C (Aggiornamenti puntuali):** Mandi comunicazioni scritte concise.\n\n**Opzione D (Protocolli radio/chat):** Usi canali di comunicazione in tempo reale.\n\n**Come rispondere:** Come tieni tipicamente allineati turni o team? Guarda: https://www.youtube.com/watch?v=b1iGRaeNfn4"
+          "title": "Il tuo modello contraddice quello di un team partner",
+          "body": "Il modello validato di un team partner contraddice il tuo e il deliverable congiunto scade tra cinque giorni: la domanda chiede come affronteresti davvero il primo incontro di allineamento.\n\n**A.** Mostri entrambi i modelli con le assunzioni affiancate e ripercorri i dati prima di suggerire come riconciliarli.\n\n**B.** Presenti la differenza come una questione di scope e porti la discussione su ciò che il deliverable congiunto deve risolvere.\n\n**C.** Chiedi al team partner di spiegare per primo il suo ragionamento, cercando gap nelle assunzioni prima di presentare il tuo modello.\n\n**D.** Proponi un documento condiviso in cui i due modelli sono affiancati con le assunzioni etichettate, al posto di una discussione a voce.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q18": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Linee guida ufficiali):** Parti da fonti autorevoli.\n\n**Opzione B (Chiarimenti esperti):** Consulti chi capisce la normativa.\n\n**Opzione C (Checklist compliance):** Crei strumenti pratici per l'implementazione.\n\n**Opzione D (Formare con esempi):** Aiuti il team a capire attraverso casi concreti.\n\n**Come rispondere:** Imparando una nuova normativa, quale approccio funziona meglio? Guarda: https://www.youtube.com/watch?v=Stc0beAxavY"
+          "title": "Benchmark del fornitore diversi dal tuo ambiente",
+          "body": "Un fornitore mostra benchmark impressionanti per una nuova tecnologia, ma misurati in condizioni diverse dal tuo ambiente di produzione: la domanda chiede cosa faresti davvero.\n\n**A.** Prepari un test controllato che riproduce i tuoi volumi di dati, il tuo hardware e i tuoi vincoli.\n\n**B.** Cerchi utenti indipendenti che la usano in condizioni simili alle tue e chiedi com'è andata.\n\n**C.** Elenchi le differenze tra le condizioni di test del fornitore e le tue e stimi come cambierebbero le performance.\n\n**D.** Chiedi al fornitore i dati grezzi e rifai l'analisi con i tuoi parametri.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q19": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Semplificare moduli/linguaggio):** Rendi le informazioni più facili da capire per tutti.\n\n**Opzione B (Formati alternativi):** Offri modi multipli per accedere a info o servizi.\n\n**Opzione C (Riprogettare spazi/segnaletica):** Migliori navigazione fisica e chiarezza.\n\n**Opzione D (Co-design con utenti):** Coinvolgi chi userà il servizio nel progettarlo.\n\n**Come rispondere:** Quale approccio hai usato per rendere servizi più accessibili? Guarda: https://www.youtube.com/watch?v=BzAdXyPYKQo"
+          "title": "Un algoritmo nuovo difficile da spiegare ai regolatori",
+          "body": "Il nuovo algoritmo del tuo team supera l'approccio standard nei test, ma regolatori e stakeholder si aspettano il metodo convenzionale: la domanda chiede cosa faresti davvero.\n\n**A.** Per un periodo di prova esegui entrambi gli algoritmi, usi quello standard per i report e confronti con esso i risultati del nuovo.\n\n**B.** Lasci l'algoritmo com'è e riscrivi la spiegazione con i termini e la struttura del framework normativo.\n\n**C.** Crei un ibrido sulla struttura del metodo standard, inserendo l'innovazione chiave del tuo algoritmo dove conta di più.\n\n**D.** Proponi un'adozione graduale: nei contesti regolamentati resta l'approccio convenzionale, mentre l'algoritmo nuovo parte da usi meno sorvegliati.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q20": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (SLA/audit):** Imposti standard e verifichi conformità sistematicamente.\n\n**Opzione B (Indicatori anticipatori):** Tracci segnali di allarme prima che i problemi si manifestino.\n\n**Opzione C (Cicli miglioramento):** Conduci processi di miglioramento continuo.\n\n**Opzione D (Proteggere tempo focus):** Difendi il tempo dello staff per lavoro di qualità.\n\n**Come rispondere:** Cosa sostiene la qualità nel lungo termine nella tua esperienza? Guarda: https://www.youtube.com/watch?v=L4N1q4RNi9I"
+          "title": "Da mesi in difficoltà su un'area tecnica",
+          "body": "Da mesi fai fatica con un'area tecnica, per esempio l'ottimizzazione delle performance: la domanda chiede quale sarebbe davvero il tuo prossimo passo.\n\n**A.** Scegli un progetto piccolo e specifico in cui devi usare quella skill con scadenze e limiti reali.\n\n**B.** Ogni settimana annoti cosa hai provato e cosa ne è uscito, per vedere se il tuo approccio sta migliorando.\n\n**C.** Chiedi a qualcuno esperto in quell'area un parere franco su cosa stai sbagliando, nello specifico.\n\n**D.** Cambi modo di imparare: se leggere non è servito provi a costruire, se lavoravi da solo provi in coppia.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "q21": {
-          "title": "Capire il Tuo Approccio",
-          "body": "**Opzione A (Definire metriche in anticipo):** Stabilisci criteri di successo prima di fare cambiamenti.\n\n**Opzione B (Confrontare prima/dopo):** Misuri l'impatto dei cambiamenti con dati.\n\n**Opzione C (Trial controllato):** Testi cambiamenti in condizioni limitate prima.\n\n**Opzione D (Documentare impatto):** Registri cosa è cambiato e pianifichi prossimi passi.\n\n**Come rispondere:** Valutando un cambiamento di processo, quale step prioritizzi? Guarda: https://www.youtube.com/watch?v=VQKMoT-6XSg"
+          "title": "Valutare una nuova tecnologia prima di adottarla",
+          "body": "Si valuta di introdurre una nuova tecnologia nel tuo lavoro: la domanda chiede cosa guarderesti davvero per primo per decidere.\n\n**A.** Conduci un'analisi costi-benefici dettagliata, mettendo in cifre licenze, formazione e migrazione a confronto con i vantaggi attesi.\n\n**B.** La provi prima su un progetto pilota con un gruppo ristretto, poi decidi se estenderla a tutti.\n\n**C.** Valuti come cambierebbero i processi esistenti e il lavoro quotidiano dei team coinvolti.\n\n**D.** Prima di adottarla mappi le sue dipendenze e le possibili modalità di guasto, e cosa ne verrebbe toccato.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
         },
         "open1": {
-          "title": "Come Rispondere Bene",
-          "body": "Le risposte forti descrivono un miglioramento di processo specifico con risultati misurabili. Struttura: Il problema (collo di bottiglia, tasso di errore, reclamo cliente), La tua soluzione (cosa hai cambiato), Come l'hai reso stabile (training, documentazione, metriche), L'outcome (miglioramento quantificato). Esempio: 'Ho ridotto il tempo medio di attesa da 12 a 4 minuti ridisegnando il flusso di triage e creando indicatori visivi per lo staff. L'abbiamo sostenuto aggiungendo il tempo di attesa alla nostra dashboard giornaliera.' Guarda: https://www.youtube.com/watch?v=0vNUxleEyoo"
+          "title": "Un momento di successo nel tuo lavoro",
+          "body": "Descrivi una situazione professionale precisa, non la tua carriera in generale. Una risposta utile di solito contiene:\n\n- il contesto e cosa c'era in gioco\n- cosa hai fatto tu, distinguendolo dal lavoro del team\n- perché per te è stato un successo (un risultato, un riscontro, qualcosa che hai imparato)\n\nBastano poche frasi, almeno 50 caratteri. Non esiste una risposta giusta: conta che sia un'esperienza tua."
         },
         "open2": {
-          "title": "Come Rispondere Bene",
-          "body": "Nomina una competenza operativa genuina che vuoi sviluppare e descrivi azioni specifiche. Evita risposte vaghe come 'migliorare nelle operations'. Invece: 'Voglio migliorare le mie competenze di analisi dati per prendere decisioni migliori sullo staffing. Mi sono iscritto a un corso di Tableau, pratico costruendo dashboard settimanalmente, e incontro mensilmente il team analytics per rivedere il mio lavoro.' Mostra apprendimento attivo. Guarda: https://www.youtube.com/watch?v=tJxFZrMxT3s"
+          "title": "Un'area in cui vuoi crescere",
+          "body": "Indica una sfida o una competenza precisa, non un desiderio generico. Una risposta utile di solito contiene:\n\n- l'area e perché conta adesso nel tuo lavoro\n- i passi concreti che stai facendo o che pensi di fare\n- come capirai che sta funzionando\n\nBastano poche frasi, almeno 50 caratteri. Non esiste una risposta giusta: descrivi con sincerità il punto in cui sei."
         }
       },
       "examplesByCategory": {
-        "comp_power": "Le domande di Potenza Computazionale nelle Operations valutano la tua capacità di usare dati per scheduling, riduzione errori e ottimizzazione processi. I top performer segmentano i problemi sistematicamente e validano i cambiamenti con esperimenti controllati.",
-        "communication": "Le domande di Comunicazione nelle Operations valutano come gestisci situazioni difficili, comunichi cambiamenti e coordini team. I comunicatori efficaci spiegano il 'perché' dietro i cambiamenti.",
-        "knowledge": "Le domande di Conoscenza nelle Operations misurano come mantieni procedure, fai onboarding e catturi lezioni apprese. I top performer creano documentazione ricercabile e raccolgono feedback dal fronte.",
-        "creativity": "Le domande di Creatività nelle Operations valutano la tua capacità di risolvere problemi ricorrenti. I professionisti creativi testano piccoli cambiamenti e coinvolgono lo staff nello sviluppo miglioramenti.",
-        "drive": "Le domande di Motivazione nelle Operations misurano la tua resilienza sotto pressione. I professionisti ad alta motivazione prioritizzano spietatamente e seguono sistematicamente dopo i fallimenti."
+        "comp_power": "Queste domande riguardano come gestisci dati, numeri e problemi strutturati nel lavoro tecnico e scientifico: da dove parti, come scomponi il problema e come verifichi che una soluzione funzioni. Ogni opzione è un modo diverso di lavorare.",
+        "communication": "Queste domande descrivono situazioni nel lavoro tecnico e scientifico in cui devi spiegare qualcosa, dare una notizia o gestire un disaccordo, spesso con interlocutori diversi allo stesso tempo. Ti chiedono come organizzeresti e comunicheresti davvero il messaggio.",
+        "knowledge": "Queste domande riguardano cosa fai nel lavoro tecnico e scientifico quando le informazioni sono incomplete, contraddittorie o nuove per te: come le verifichi, a chi chiedi e quando decidi.",
+        "creativity": "Queste domande ti mettono davanti a un vincolo nel lavoro tecnico e scientifico (tempi, budget, regole, richieste in conflitto) e ti chiedono come troveresti una strada per andare avanti.",
+        "drive": "Queste domande descrivono una lacuna o un passo falso nel lavoro tecnico e scientifico e ti chiedono quali passi concreti faresti per migliorare."
+      }
+    },
+    "business_leadership": {
+      "examples": {
+        "q1": {
+          "title": "Il primo passo su una dashboard di KPI",
+          "body": "Apri una dashboard con i KPI dell'azienda: la domanda chiede cosa faresti davvero come primo passo.\n\n**A.** Scorri i valori confrontandoli con gli obiettivi e annoti quelli che se ne discostano.\n\n**B.** Approfondisci la suddivisione per segmenti (area, prodotto, tipo di cliente) prima di guardare i totali.\n\n**C.** Confronti i numeri del periodo con i mesi o gli anni precedenti per vedere l'andamento storico.\n\n**D.** Esporti i dati in un foglio di calcolo per analizzarli a parte, con calma.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q2": {
+          "title": "Preparare 30 minuti di board per un pivot",
+          "body": "Hai 30 minuti per ottenere dal board l'approvazione di un pivot strategico, e ogni membro guarda a un aspetto diverso: scegli come ti prepareresti davvero.\n\n**A.** Prepari un unico deck completo che tocca in ordine finanza, missione e mitigazione dei rischi, senza tralasciare nulla.\n\n**B.** Organizzi tutto attorno alla domanda \"Perché ora?\", così numeri, missione e rischi confluiscono in un'unica storia.\n\n**C.** Prima della riunione incontri a tu per tu il CFO e i consiglieri scettici, poi dedichi la sessione del board solo alle obiezioni ancora aperte.\n\n**D.** Invii tre giorni prima un memo con l'analisi completa e usi lo slot dal vivo solo per le domande.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q3": {
+          "title": "Un'assunzione di mercato messa in dubbio",
+          "body": "La tua strategia si fonda su un'assunzione di mercato sostenuta da un solo report di analista, e la mossa di un competitor ora la mette in dubbio: scegli cosa faresti davvero.\n\n**A.** Commissioni a qualcuno esterno al report originale un'analisi rapida e indipendente dell'assunzione.\n\n**B.** Rivedi la strategia perché regga sia con l'assunzione originale sia con quella alternativa.\n\n**C.** Senti alcuni venditori in prima linea e chiedi cosa riportano i clienti sul mercato.\n\n**D.** Metti per iscritto l'incertezza e fissi un punto di innesco concreto (un valore, una data) oltre il quale rivaluteresti l'assunzione.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q4": {
+          "title": "Entrare in un nuovo segmento in sei mesi",
+          "body": "La tua azienda deve ottenere traction in un nuovo segmento di mercato entro sei mesi, con un prodotto non pensato per quel pubblico: scegli cosa faresti davvero.\n\n**A.** Lasci il prodotto com'è ma cambi posizionamento, pricing e onboarding per parlare il linguaggio del nuovo segmento.\n\n**B.** Cerchi un'azienda che serve già quel segmento e proponi il tuo prodotto come add-on integrato nella loro soluzione.\n\n**C.** Lanci una versione ridotta che copre solo il caso d'uso in cui il prodotto e le esigenze del nuovo segmento si sovrappongono di più.\n\n**D.** Cerchi una nicchia nel nuovo segmento in cui il prodotto attuale funziona già, e da lì ti allarghi.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q5": {
+          "title": "Dopo una presentazione al board andata male",
+          "body": "La tua ultima presentazione al board non ha convinto perché il racconto finanziario mancava di profondità: scegli cosa faresti davvero dopo.\n\n**A.** Chiedi a un CFO di cui ti fidi di rivedere il tuo prossimo deck e indicarti i punti deboli specifici.\n\n**B.** Ricostruisci la stessa presentazione da zero con una struttura narrativa diversa, per esempio partendo dalla conclusione.\n\n**C.** Studi tre presentazioni al board che consideri esemplari e annoti le tecniche che non stai ancora usando.\n\n**D.** Prima del prossimo board presenti a un piccolo gruppo interno e raccogli feedback sul momento.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q6": {
+          "title": "Ricavi in calo senza una causa evidente",
+          "body": "I ricavi stanno calando e la causa non è chiara: scegli cosa verificheresti davvero per prima cosa.\n\n**A.** Suddividi i ricavi per canale e per coorte di clienti per capire dove si concentra il calo.\n\n**B.** Metti a confronto le date del calo con le recenti variazioni di prezzi o promozioni.\n\n**C.** Controlli che tracciamento e attribuzione funzionino prima di fidarti dei numeri.\n\n**D.** Confronti il calo con lo stesso periodo degli anni precedenti per capire quanto dipende dalla stagionalità.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q7": {
+          "title": "Comunicare i nuovi ruoli dopo una riorganizzazione",
+          "body": "Dopo una riorganizzazione le persone del tuo team reagiscono in modi diversi e devi presentare le nuove responsabilità in una riunione: scegli come la affronteresti davvero.\n\n**A.** Presenti la nuova struttura spiegando per ciascuno ruolo, linee di riporto e tempistiche, così nessuno resta con dubbi su chi fa cosa.\n\n**B.** In riunione parli di ciò che il team deve ottenere nel suo insieme, poi discuti i cambi di ruolo individualmente, a tu per tu.\n\n**C.** Apri chiedendo a ogni persona cosa ha più bisogno di chiarire, poi imposti la riunione su quelle domande.\n\n**D.** Invii prima della riunione le descrizioni scritte dei ruoli e dedichi l'incontro solo a domande e preoccupazioni.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q8": {
+          "title": "Entrare in un mercato con dati contraddittori",
+          "body": "Stai entrando in un mercato dove i dati sono pochi e contraddittori e gli esperti non concordano sui fondamentali: scegli cosa faresti davvero.\n\n**A.** Lanci un pilot su piccola scala (pochi clienti, una sola area) per generare dati tuoi prima di impegnarti oltre.\n\n**B.** Mappi i punti di disaccordo tra gli esperti e annoti quale evidenza chiuderebbe ciascuno.\n\n**C.** Segui l'esperto il cui ragionamento è più facile da ricostruire, tenendo d'occhio i segnali che lo smentiscono.\n\n**D.** Costruisci due business case separati, uno per ciascuno dei due scenari più plausibili.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q9": {
+          "title": "Un competitor lancia prima la tua feature",
+          "body": "A due settimane da un lancio chiave, il principale competitor rilascia una feature quasi identica con ampia copertura stampa: scegli cosa faresti davvero.\n\n**A.** Mantieni la data ma cambi la narrativa del lancio, centrandola su una value proposition che il competitor non ha toccato.\n\n**B.** Acceleri una capability che solo tu offri, accettando meno rifinitura sulle feature in comune.\n\n**C.** Abbini al lancio un'offerta in più, come un trial gratuito o un'integrazione, così il confronto avviene su altri termini.\n\n**D.** Rimandi il lancio di una settimana per aggiungere un differenziatore piccolo e visibile e preparare una contro-narrativa.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q10": {
+          "title": "Migliorare come conduci le sessioni di pianificazione",
+          "body": "L'output di pianificazione strategica del tuo team è più debole di quello di altri team e sospetti che dipenda da come conduci le sessioni: scegli cosa faresti davvero.\n\n**A.** Assisti alla sessione strategica di un collega e prendi appunti strutturati su come la conduce.\n\n**B.** Registri la tua prossima sessione e poi annoti cosa cambieresti.\n\n**C.** Porti un facilitatore esterno per una sessione e partecipi come osservatore per imparare la sua tecnica.\n\n**D.** Ridisegni il tuo template di planning partendo da ciò che l'ultima volta ha prodotto un output debole.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q11": {
+          "title": "Valutare un cambio di prezzo",
+          "body": "Stai valutando un cambio di prezzo: scegli come lo valuteresti davvero.\n\n**A.** Fai analisi di sensibilità su un foglio di calcolo per vedere come variano margini e volumi a prezzi diversi.\n\n**B.** Testi A/B due o più price point con clienti reali e confronti i risultati.\n\n**C.** Modelli l'elasticità del prezzo separatamente per ogni segmento di clienti.\n\n**D.** Confermi la scelta con interviste a un piccolo gruppo di clienti.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q12": {
+          "title": "Rispondere a un cliente che scrive al CEO",
+          "body": "Un cliente chiave si è lamentato con il tuo CEO mescolando lacune reali e assunzioni sbagliate sul vostro processo, e scrivi tu la risposta: scegli come gestiresti davvero le inaccuratezze.\n\n**A.** Affronti ogni punto con i fatti: ammetti le lacune valide e correggi le inaccuratezze con evidenze, in tono professionale.\n\n**B.** Apri riconoscendo l'esperienza del cliente, poi presenti i punti inaccurati come aree in cui il processo differisce da quanto atteso.\n\n**C.** Nella bozza tratti solo le lacune legittime e segnali a parte al CEO le inaccuratezze, suggerendo come correggerle.\n\n**D.** Suggerisci al CEO di proporre una call invece di una risposta scritta, e chiarisci le inaccuratezze a voce.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q13": {
+          "title": "Un junior mette in dubbio il tuo modello",
+          "body": "Un membro junior del team porta evidenze preliminari che un'assunzione di fondo del modello strategico che usi da mesi è sbagliata: scegli cosa faresti davvero.\n\n**A.** Metti in pausa il lavoro con il modello e testi entrambe le versioni sui dati di mercato recenti prima di decidere.\n\n**B.** Esamini tu stesso le evidenze grezze per capire quanto sono solide prima di coinvolgere altri.\n\n**C.** Registri formalmente la contestazione e continui a usare il modello, fissando un punto di innesco che imporrebbe una rivalutazione completa.\n\n**D.** Chiedi a due persone estranee a entrambe le analisi di valutare in modo indipendente le evidenze contrastanti.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q14": {
+          "title": "Un cliente chiede il 40% dell'engineering",
+          "body": "Un cliente importante chiede una feature custom che assorbirebbe il 40% della capacità engineering, mettendo in gioco la roadmap del trimestre: scegli cosa faresti davvero.\n\n**A.** Proponi di costruire una versione più generale della feature, utile sia al cliente sia alla roadmap, anche se richiede un po' più di tempo.\n\n**B.** Offri al cliente una soluzione provvisoria con le funzioni esistenti e pianifichi la feature completa per il prossimo trimestre.\n\n**C.** Riapri il piano trimestrale, rimandi gli elementi della roadmap a minor impatto e sposti quella capacità sulla feature del cliente.\n\n**D.** Approfondisci il problema che sta dietro alla richiesta per capire se qualcosa che hai già, o che stai costruendo, lo risolve.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q15": {
+          "title": "Dopo un lancio sbagliato nei tempi",
+          "body": "Un lancio di prodotto è andato sotto le attese perché hai valutato male il timing di mercato: scegli cosa faresti davvero dopo.\n\n**A.** Intervisti cinque clienti per capire quali segnali hai letto male.\n\n**B.** Costruisci un framework di post-mortem che mette a confronto le assunzioni iniziali con i dati reali.\n\n**C.** Passi del tempo con qualcuno che aveva previsto correttamente il mercato e ti fai spiegare il suo ragionamento.\n\n**D.** Per il prossimo prodotto lanci prima un test più piccolo per verificare il timing, e solo dopo ti impegni del tutto.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q16": {
+          "title": "Come costruisci la previsione del trimestre",
+          "body": "Devi fare la previsione del prossimo trimestre: scegli come la costruiresti davvero.\n\n**A.** Unisci una stima bottom-up (trattativa per trattativa, team per team) con un modello top-down basato sul mercato, e le riconcili.\n\n**B.** Metti sotto stress alcuni scenari, come la perdita di un cliente importante o un forte cambio di prezzo.\n\n**C.** Rivedi le tue ipotesi con il team sales e le correggi in base a ciò che vedono nella pipeline.\n\n**D.** Simuli i vincoli di capacità (persone, produzione, consegne) per vedere quanto puoi realmente erogare.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q17": {
+          "title": "Comunicare una decisione sulle risorse a due team",
+          "body": "Due dipartimenti che supervisioni sono in conflitto sulle risorse, ognuno dei due responsabili accusa l'altro, e devi comunicare una decisione che non piacerà del tutto a nessuno: scegli come la presenteresti davvero.\n\n**A.** Presenti la decisione, con il ragionamento completo e i trade-off, a entrambi i responsabili nello stesso momento.\n\n**B.** Spieghi la decisione partendo dal vincolo organizzativo che rende necessario un compromesso, senza giudicare le ragioni dell'una o dell'altra parte.\n\n**C.** Incontri prima ogni responsabile separatamente per anticipare la decisione e valutarne la reazione, poi tieni una sessione congiunta.\n\n**D.** Comunichi la decisione per iscritto con una motivazione chiara, poi offri a ciascun responsabile un colloquio individuale di follow-up.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q18": {
+          "title": "Una nuova norma dall'interpretazione incerta",
+          "body": "Un cambiamento normativo avrà effetti sulla tua azienda, ma l'interpretazione è ambigua e le altre aziende del settore la leggono in modi diversi: scegli cosa faresti davvero.\n\n**A.** Coinvolgi un legale specializzato e metti alla prova più interpretazioni rispetto alle tue operazioni concrete.\n\n**B.** Aspetti che un ente di settore pubblichi una guida e intanto prepari piani di contingenza.\n\n**C.** Applichi subito l'interpretazione più conservativa e la allenti man mano che le regole si chiariscono.\n\n**D.** Guardi come sono state risolte in passato ambiguità simili per stimare l'esito probabile.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q19": {
+          "title": "Un nuovo flusso di ricavi con poco budget",
+          "body": "Il prodotto core non cresce più e il board vuole un nuovo flusso di ricavi, con un budget R&D pari al 15% della spesa attuale: scegli cosa faresti davvero.\n\n**A.** Elenchi gli asset che l'azienda usa poco, come dati, API o competenze, e li impacchetti in un'offerta per un tipo di acquirente diverso.\n\n**B.** Sposti il confine del prodotto: una feature gratuita diventa un tier premium, oppure alcune capacità diventano prodotti a sé.\n\n**C.** Lanci tre piccoli esperimenti con una scadenza fissa su ipotesi di ricavo diverse, prima di destinare budget a una sola scommessa.\n\n**D.** Fai partnership con un'azienda complementare per sviluppare un'offerta congiunta che nessuna delle due potrebbe costruire da sola con questo budget.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q20": {
+          "title": "Lavorare sul modo in cui deleghi",
+          "body": "Ricevi spesso il feedback che il tuo modo di delegare rallenta il team: scegli cosa faresti davvero.\n\n**A.** Questa settimana scegli un task che di solito terresti per te, lo affidi del tutto e annoti cosa succede.\n\n**B.** Chiedi ai tuoi riporti diretti di cosa hanno bisogno da te per prendersi la piena ownership del lavoro.\n\n**C.** Osservi come delega un collega di pari livello: cosa passa ad altri, in che momento e con quali istruzioni.\n\n**D.** Passi da check-in giornalieri a settimanali e verifichi se la qualità regge.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q21": {
+          "title": "Il primo passo su un programma di trasformazione",
+          "body": "Stai valutando un programma di trasformazione: scegli cosa faresti davvero per prima cosa.\n\n**A.** Definisci le metriche di successo (cosa deve cambiare, di quanto, entro quando) prima di tutto il resto.\n\n**B.** Piloti il programma in un'area e lo confronti con un gruppo di controllo che continua a lavorare come prima.\n\n**C.** Valuti quanto l'organizzazione è pronta al cambiamento (la readiness) e quali rischi comporta.\n\n**D.** Studi casi di riferimento di programmi simili in altre aziende.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "open1": {
+          "title": "Una tua decisione e i compromessi valutati",
+          "body": "Racconta una decisione reale presa in un ruolo di responsabilità e spiega i compromessi che c'erano dietro. Una risposta utile indica:\n\n- la situazione e cosa era in gioco\n- le alternative che hai valutato e cosa avrebbe comportato ciascuna\n- cosa hai scelto e perché\n- cosa è successo dopo\n\nBastano poche frasi (almeno 50 caratteri). Non esiste una risposta giusta: conta il tuo ragionamento reale."
+        },
+        "open2": {
+          "title": "L'area in cui stai lavorando per crescere",
+          "body": "Indica un'area in cui vuoi crescere nel tuo ruolo attuale e mostra come ci stai lavorando. Una risposta utile indica:\n\n- l'area precisa (una competenza, un'abitudine, un tipo di situazione)\n- perché conta per il tuo lavoro e per il tuo team\n- i passi concreti che stai facendo ora\n- come capirai che sta migliorando\n\nBastano poche frasi (almeno 50 caratteri). Non esiste una risposta giusta: sii concreto/a e sincero/a."
+        }
+      },
+      "examplesByCategory": {
+        "comp_power": "Queste domande riguardano come gestisci dati, numeri e problemi strutturati nelle decisioni di business e di gruppo: da dove parti, come scomponi il problema e come verifichi che una soluzione funzioni. Ogni opzione è un modo diverso di lavorare.",
+        "communication": "Queste domande descrivono situazioni nelle decisioni di business e di gruppo in cui devi spiegare qualcosa, dare una notizia o gestire un disaccordo, spesso con interlocutori diversi allo stesso tempo. Ti chiedono come organizzeresti e comunicheresti davvero il messaggio.",
+        "knowledge": "Queste domande riguardano cosa fai nelle decisioni di business e di gruppo quando le informazioni sono incomplete, contraddittorie o nuove per te: come le verifichi, a chi chiedi e quando decidi.",
+        "creativity": "Queste domande ti mettono davanti a un vincolo nelle decisioni di business e di gruppo (tempi, budget, regole, richieste in conflitto) e ti chiedono come troveresti una strada per andare avanti.",
+        "drive": "Queste domande descrivono una lacuna o un passo falso nelle decisioni di business e di gruppo e ti chiedono quali passi concreti faresti per migliorare."
+      }
+    },
+    "arts_creative": {
+      "examples": {
+        "q1": {
+          "title": "La prima verifica sui dati di una campagna",
+          "body": "Hai davanti i dati di performance di una campagna creativa: la domanda chiede cosa guarderesti davvero per prima cosa.\n\n**A.** Metti a confronto i dati di engagement (clic, visualizzazioni, salvataggi) con gli obiettivi del brief e vedi dove sono sotto o sopra.\n\n**B.** Metti a confronto i risultati della stessa creatività nei diversi formati e placement, per esempio storie contro feed o banner contro video.\n\n**C.** Scomponi i risultati per segmenti di pubblico, come età, area geografica o utenti nuovi e abituali.\n\n**D.** Prima di leggere qualsiasi numero controlli la misurazione: tag di tracciamento, finestre di attribuzione e completezza dei dati.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q2": {
+          "title": "La produzione ha frainteso il tono del concept",
+          "body": "La produzione ha consegnato una versione valida del concept ma con un altro tono, e non c'è tempo per rifarla: la domanda chiede come lo gestiresti davvero.\n\n**A.** Elenchi gli elementi tonali che differiscono, ognuno con un riferimento, e chiedi al team quali può correggere in tempo.\n\n**B.** Spieghi come vuoi che il pubblico si senta o reagisca, e lasci al team decidere come arrivare al tono giusto.\n\n**C.** Per prima cosa chiedi al team come ha letto il brief, per capire dove le interpretazioni divergono.\n\n**D.** Prepari un rapido confronto affiancato tra ciò che avevi in mente e ciò che è arrivato, così il team reagisce a immagini.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q3": {
+          "title": "Lavorare in un linguaggio visivo che non conosci",
+          "body": "Un nuovo progetto richiede uno stile visivo che non conosci, con un brief vago e pochi riferimenti: la domanda chiede cosa faresti davvero per prima cosa.\n\n**A.** Raccogli gli esempi esistenti più vicini che trovi e ricavi i principi di design che li reggono, come griglia, contrasti o scelte tipografiche.\n\n**B.** Abbozzi qualche esperimento veloce nel nuovo stile e lo mostri per avere feedback prima di svilupparlo.\n\n**C.** Organizzi brevi colloqui con gli stakeholder e chiedi cosa immaginano quando pensano all'aspetto che vogliono.\n\n**D.** Prendi elementi del tuo stile attuale, come una palette o un'impaginazione ricorrente, e vedi fin dove possono spingersi verso la nuova direzione.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q4": {
+          "title": "Una campagna audace con vincoli legali",
+          "body": "Un cliente vuole una campagna audace, ma l'ufficio legale vieta confronti e superlativi e impone gli elementi del brand esistenti: la domanda chiede come la imposteresti davvero.\n\n**A.** Costruisci l'idea attorno agli elementi del brand obbligatori, facendo di logo, colori o mascotte il centro del concept.\n\n**B.** Rispetti ogni vincolo legale sui messaggi e cerchi di far risaltare il lavoro con composizione, ritmo e tono.\n\n**C.** Prepari tre concept conformi, dal più misurato al più audace, e lasci scegliere il cliente.\n\n**D.** Rinunci alle affermazioni e costruisci la campagna attorno a una storia che punta a suscitare un'emozione.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q5": {
+          "title": "Il cliente ha trovato debole la strategia",
+          "body": "Un cliente ha rifiutato il tuo lavoro per mancanza di profondità strategica, un'area che sai essere debole: la domanda chiede cosa faresti davvero dopo.\n\n**A.** Chiedi al cliente un esempio concreto di lavoro con la profondità che si aspettava e studi cosa fa di diverso.\n\n**B.** Nel prossimo progetto lavori accanto a uno strategist e osservi come costruisce la narrativa, dall'insight al messaggio.\n\n**C.** Riscrivi tu la parte strategica del brief rifiutato e chiedi a qualcuno una critica onesta sulla nuova versione.\n\n**D.** Ogni settimana ti ritagli del tempo per esercizi di strategia presi da un'altra disciplina creativa, come il copywriting o il product design.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q6": {
+          "title": "Su cosa ti basi per scegliere un visual",
+          "body": "Devi scegliere il visual principale di una campagna: la domanda chiede su cosa ti baseresti davvero di più.\n\n**A.** Fai un A/B test su due o tre anteprime con un piccolo pubblico e tieni quella che riceve più clic.\n\n**B.** Guardi heatmap o risultati di eye-tracking per vedere dove si ferma l'attenzione su ciascuna opzione.\n\n**C.** Guardi i pattern storici: come hanno reso visual simili nelle campagne passate e segui quei pattern storici.\n\n**D.** Consulti ricerche recenti sugli utenti, come interviste o brevi sondaggi, per sentire come descrivono le opzioni.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q7": {
+          "title": "Un feedback del cliente contraddice il brief",
+          "body": "Un cliente chiede modifiche che contraddicono il brief che ha approvato, senza accorgersene: la domanda chiede come gestiresti davvero la situazione.\n\n**A.** Riprendi il brief originale in riunione, passi in rassegna uno per uno i punti in conflitto e chiedi quale direzione vogliono seguire adesso.\n\n**B.** Dici che il progetto si è evoluto rispetto al brief e tratti la nuova richiesta come un normale cambio di perimetro.\n\n**C.** Chiedi al cliente di descrivere con parole sue cosa vuole ora e fai notare la contraddizione solo se non la vede da solo.\n\n**D.** Prepari due mockup rapidi, uno per ciascuna direzione, e lasci che il cliente scelga guardandoli.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q8": {
+          "title": "Reazioni contrastanti nei primi test utente",
+          "body": "I primi test utente sulla tua direzione creativa danno risultati misti, tra chi è entusiasta e chi è confuso: la domanda chiede cosa faresti davvero dopo.\n\n**A.** Dividi le risposte per gruppi di audience, per esempio età o abitudini d'uso, per vedere se le reazioni dipendono da chi ha risposto.\n\n**B.** Testi una versione semplificata per capire se la confusione nasce dall'idea in sé o da come è stata realizzata.\n\n**C.** Torni alla ricerca originale e la rileggi cercando sfumature che potresti aver trascurato.\n\n**D.** Fai un nuovo giro con tester diversi e un protocollo più chiaro, per esempio stessi compiti e stesse domande per tutti.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q9": {
+          "title": "Un'unica identità per lusso e fascia accessibile",
+          "body": "Devi progettare un'unica identità visiva per un brand presente sia nel mercato del lusso sia in quello accessibile: la domanda chiede come la imposteresti davvero.\n\n**A.** Definisci pochi elementi core condivisi, come logo e carattere tipografico, e lasci che colori, immagini e tono cambino a seconda del canale.\n\n**B.** Cerchi ciò che entrambi i pubblici apprezzano sul piano emotivo, per esempio cura o affidabilità, e costruisci l'identità su quello invece che sul prezzo.\n\n**C.** Progetti l'identità principale per il segmento di mercato più grande e crei un trattamento sub-brand separato per l'altro.\n\n**D.** Prepari tre approcci diversi e li testi con persone di entrambi i pubblici prima di scegliere.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q10": {
+          "title": "Recuperare terreno nel motion design",
+          "body": "Le tue competenze di motion design sono sotto le aspettative del team e si vede nei tuoi progetti: la domanda chiede cosa faresti davvero.\n\n**A.** Ti proponi per un piccolo progetto interno che richiede motion e concordi una scadenza che puoi rispettare.\n\n**B.** Chiedi a un collega esperto di lavorare con te sulla prossima animazione e di commentarla man mano.\n\n**C.** Segui un corso strutturato e metti in pratica ogni lezione su un deliverable reale entro due giorni.\n\n**D.** Scegli cinque pezzi di motion che ammiri e scomponi le tecniche che usano e che tu non usi.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q11": {
+          "title": "Come ripartisci il budget di produzione",
+          "body": "Hai un budget di produzione da ripartire tra i vari asset creativi: la domanda chiede come decideresti davvero dove investirlo.\n\n**A.** Per ogni asset stimi il costo e l'impatto atteso sui risultati, poi li metti a confronto in un semplice foglio di calcolo.\n\n**B.** Individui gli asset che dovrebbero avere più impatto e li finanzi per primi.\n\n**C.** Prima realizzi prototipi a basso costo delle idee principali e impegni la maggior parte del budget solo dopo averli verificati.\n\n**D.** Verifichi quali asset esistenti puoi riusare o adattare, per esempio rigirando una sola scena o ritagliando immagini già pronte.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q12": {
+          "title": "Commentare il lavoro di un junior in revisione",
+          "body": "In una revisione creativa, con due colleghi senior presenti, il lavoro di un junior ha problemi seri nonostante il grande impegno: la domanda chiede come daresti davvero il feedback.\n\n**A.** Dici chiaramente cosa funziona e cosa no nel lavoro e dai indicazioni precise per la revisione.\n\n**B.** Parli di ciò che il brief richiede e di dove il lavoro se ne discosta, senza giudicarne la qualità.\n\n**C.** Prima chiedi al junior cosa cambierebbe con un giorno in più, poi costruisci i tuoi commenti sulle lacune che indica.\n\n**D.** Nel gruppo dai solo la direzione generale, poi fissi un incontro privato per la critica dettagliata e le domande.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q13": {
+          "title": "I dati di un junior smentiscono la tua direzione",
+          "body": "Un designer junior porta dati utente preliminari secondo cui una tua assunzione estetica di fondo potrebbe essere sbagliata: la domanda chiede cosa faresti davvero.\n\n**A.** Metti in pausa la direzione attuale e testi entrambe le versioni su un nuovo campione di audience prima di decidere.\n\n**B.** Esamini tu stesso i dati grezzi del junior per capire quanto sono solidi prima di coinvolgere altre persone.\n\n**C.** Metti per iscritto l'obiezione, prosegui con la tua direzione e fissi una soglia di feedback che, se superata, fa scattare una revisione completa.\n\n**D.** Chiedi a due persone estranee a entrambe le direzioni di esaminare le evidenze contrastanti ciascuna per conto proprio.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q14": {
+          "title": "Da campagna video a serie di manifesti",
+          "body": "Alla revisione finale il cliente chiede di adattare la tua campagna video in una serie statica per l'affissione, con la stessa scadenza: la domanda chiede come lo faresti davvero.\n\n**A.** Scegli i momenti visivi chiave del video e li disponi in una serie di manifesti statici che raccontano la storia in sequenza.\n\n**B.** Torni all'insight di partenza e riprogetti l'idea centrale per i manifesti da zero, senza partire dai frame del video.\n\n**C.** Adatti i frame chiave e aggiungi un elemento da scansionare, come un QR code che porta a una breve animazione.\n\n**D.** Proponi due fasi: subito una versione rapida con gli asset esistenti e, due settimane dopo, una versione ottimizzata per il medium.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q15": {
+          "title": "La tipografia è il tuo punto debole",
+          "body": "Dalla revisione del portfolio emerge che la tipografia è sempre la tua area più debole: la domanda chiede cosa faresti davvero.\n\n**A.** Prendi un progetto passato, rifai solo la parte tipografica e metti a confronto la vecchia e la nuova versione.\n\n**B.** Chiedi a uno specialista di tipografia di esaminare i tuoi lavori e indicarti con precisione cosa migliorare.\n\n**C.** Per il prossimo mese annoti ogni scelta tipografica che fai e poi cerchi gli errori che si ripetono.\n\n**D.** Nel prossimo progetto usi solo elementi tipografici, senza illustrazioni né colore, per concentrarti su quelli.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q16": {
+          "title": "Come scegli strumenti e pipeline",
+          "body": "Devi scegliere gli strumenti e la pipeline per il lavoro creativo: la domanda chiede a cosa guarderesti davvero per primo.\n\n**A.** Confronti la velocità dei vari strumenti e la loro compatibilità con i file e i formati che usi già.\n\n**B.** Verifichi quanto ogni strumento facilita la collaborazione, per esempio commenti condivisi o lavoro simultaneo sullo stesso file.\n\n**C.** Valuti quanto tempo servirebbe al team per imparare a usarli, cioè la curva di apprendimento.\n\n**D.** Consideri costi e licenze, confrontando le alternative con quello che paghi oggi.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q17": {
+          "title": "Verificare l'intesa con un'altra disciplina",
+          "body": "Un collaboratore di un'altra disciplina usa il lessico del suo campo e sospetti che con le stesse parole intendiate cose diverse: la domanda chiede come lo verificheresti davvero.\n\n**A.** Avvii un glossario condiviso del progetto in cui ogni termine chiave ha una definizione concordata, così le differenze emergono per iscritto.\n\n**B.** Metti da parte le parole, chiedi che aspetto avrebbe per lui il successo e confronti le aspettative concrete.\n\n**C.** Nella prossima riunione riformuli i suoi punti nel tuo vocabolario e osservi se ti corregge o sembra confuso.\n\n**D.** Proponi una sessione congiunta in cui entrambi fate sketch o prototipi, così l'intento si vede invece di essere descritto.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q18": {
+          "title": "Il gusto del cliente contro la tua ricerca",
+          "body": "Un cliente è convinto che il suo pubblico voglia una certa estetica, ma la tua ricerca indica il contrario: la domanda chiede cosa faresti davvero.\n\n**A.** Proponi di mettere entrambi gli approcci in un A/B test su un piccolo campione prima della produzione completa.\n\n**B.** Condividi apertamente la tua ricerca e chiedi al cliente su quali evidenze si basa la sua idea.\n\n**C.** Cerchi una soluzione creativa che prenda elementi da entrambe le parti, per esempio la palette del cliente con l'impaginazione indicata dalla ricerca.\n\n**D.** Metti per iscritto le due posizioni e concordate criteri di successo che chiuderanno la questione dopo il lancio.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q19": {
+          "title": "Un nuovo stile che allontana i clienti storici",
+          "body": "Il nuovo concept visivo del team piace ai giovani ma allontana i clienti storici più anziani, e il cliente vuole tenere entrambi: la domanda chiede come procederesti davvero.\n\n**A.** Scegli elementi del nuovo concept e del linguaggio visivo esistente che possono stare insieme, creando un ponte tra i due.\n\n**B.** Usi il nuovo concept nei canali di acquisizione, come i social, e mantieni lo stile familiare in email e comunicazioni fedeltà.\n\n**C.** Fai evolvere gradualmente il linguaggio visivo esistente, inserendo i principi del nuovo concept un po' alla volta nei vari touchpoint.\n\n**D.** Provi il nuovo concept su un segmento controllato di clienti più anziani per capire quanto cambiamento accettano prima del rollout completo.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q20": {
+          "title": "Un plateau nella direzione creativa",
+          "body": "Senti che le tue competenze di direzione creativa si sono fermate allo stesso livello: la domanda chiede cosa faresti davvero per andare avanti.\n\n**A.** Accetti un progetto in un formato o genere mai affrontato, come un podcast o una mostra.\n\n**B.** Chiedi a tre colleghi di fiducia di indicarti ciascuno un'area precisa in cui la tua direzione può migliorare.\n\n**C.** Metti il tuo lavoro recente accanto a quello di un anno fa ed elenchi cosa è cambiato davvero.\n\n**D.** Fissi obiettivi trimestrali, ciascuno legato a un deliverable concreto che mostri i progressi.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q21": {
+          "title": "Controllare la qualità di molti asset",
+          "body": "Devi giudicare la qualità di molti asset creativi insieme: la domanda chiede come lo faresti davvero.\n\n**A.** Prima definisci criteri misurabili, come leggibilità, uso dei colori del brand e specifiche dei file, e valuti ogni asset su quelli.\n\n**B.** Esamini gli asset a lotti, usando per ciascuno la stessa checklist.\n\n**C.** Fai un test su un campione di asset con un piccolo pubblico e osservi come reagisce.\n\n**D.** Automatizzi i controlli che si possono automatizzare, come dimensioni, formati o aree di sicurezza, e il resto lo guardi a mano.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "open1": {
+          "title": "Un lavoro che ha cambiato i risultati",
+          "body": "Racconta un lavoro che hai creato e che ha fatto una differenza visibile o misurabile. Una risposta utile contiene:\n\n- il contesto e cosa doveva cambiare\n- cosa hai realizzato e le scelte che hai fatto\n- perché secondo te ha funzionato\n- il risultato, con numeri o riscontri concreti se li hai\n\nBastano poche frasi (almeno 50 caratteri). Non esiste una risposta giusta: scegli un esempio reale che conosci bene."
+        },
+        "open2": {
+          "title": "L'abilità creativa che vuoi migliorare",
+          "body": "Indica un'abilità creativa che vuoi migliorare quest'anno. Una risposta utile contiene:\n\n- l'abilità e perché conta per il tuo lavoro\n- i passi concreti che stai facendo o che hai in programma\n- come capirai che sta funzionando\n\nBastano poche frasi (almeno 50 caratteri). Non esiste una risposta giusta: sii concreto sulla tua situazione."
+        }
+      },
+      "examplesByCategory": {
+        "comp_power": "Queste domande riguardano come gestisci dati, numeri e problemi strutturati nei progetti creativi: da dove parti, come scomponi il problema e come verifichi che una soluzione funzioni. Ogni opzione è un modo diverso di lavorare.",
+        "communication": "Queste domande descrivono situazioni nei progetti creativi in cui devi spiegare qualcosa, dare una notizia o gestire un disaccordo, spesso con interlocutori diversi allo stesso tempo. Ti chiedono come organizzeresti e comunicheresti davvero il messaggio.",
+        "knowledge": "Queste domande riguardano cosa fai nei progetti creativi quando le informazioni sono incomplete, contraddittorie o nuove per te: come le verifichi, a chi chiedi e quando decidi.",
+        "creativity": "Queste domande ti mettono davanti a un vincolo nei progetti creativi (tempi, budget, regole, richieste in conflitto) e ti chiedono come troveresti una strada per andare avanti.",
+        "drive": "Queste domande descrivono una lacuna o un passo falso nei progetti creativi e ti chiedono quali passi concreti faresti per migliorare."
+      }
+    },
+    "service_ops": {
+      "examples": {
+        "q1": {
+          "title": "La prima mossa quando le metriche calano",
+          "body": "I numeri del servizio sono scesi e la domanda chiede cosa guarderesti davvero per prima cosa.\n\n**A.** Dividi i dati per turno e per sede, così vedi dove si concentra il calo.\n\n**B.** Verifichi se il team segue il processo come previsto, per esempio controllando un campione di pratiche recenti, cioè la conformità ai processi.\n\n**C.** Confronti i numeri di questa settimana con lo storico, come lo stesso periodo dell'anno scorso o i cali stagionali ricorrenti.\n\n**D.** Controlli l'integrità dei dati: che non manchi nulla, che non ci siano doppioni e che nulla venga registrato in modo diverso da prima.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q2": {
+          "title": "Il personale torna alla vecchia procedura",
+          "body": "Un nuovo processo crea confusione e parte del personale torna al vecchio metodo: come individueresti il problema di comunicazione?\n\n**A.** Riemetti la documentazione con ogni passaggio spiegato, le eccezioni numerate e un confronto punto per punto con il vecchio processo.\n\n**B.** Spieghi perché è stato fatto il cambiamento, collegando il nuovo processo a risultati che stanno a cuore allo staff.\n\n**C.** Passi un turno a osservare dove le persone tornano indietro, chiedi cosa non è chiaro e poi rivedi la comunicazione partendo da quei punti.\n\n**D.** Sostituisci le istruzioni scritte con un breve video del nuovo processo in una situazione reale, più una scheda di riferimento di una pagina.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q3": {
+          "title": "Un caso che il manuale non prevede",
+          "body": "Un caso insolito esce dal protocollo standard e il manuale non ne parla: la domanda chiede come procederesti davvero.\n\n**A.** Ripercorri la procedura standard, tieni i passaggi che si applicano ancora e adatti il resto, annotando il motivo di ogni modifica.\n\n**B.** Consulti un/a collega che ha già gestito casi simili e chiedi come si è mosso/a prima di agire.\n\n**C.** Porti la questione a un supervisore con una breve nota che spiega quale parte della procedura standard non funziona e perché.\n\n**D.** Gestisci il caso da solo/a e poi lo descrivi per iscritto, così la procedura può essere aggiornata per la prossima volta.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q4": {
+          "title": "Ridurre i tempi senza togliere passaggi",
+          "body": "Il tempo medio di gestione deve scendere del 20% con lo stesso personale e senza tagliare passaggi: quale strada prenderesti?\n\n**A.** Ridisegni il flusso di servizio in modo che le richieste di routine seguano un percorso più corto e solo i casi complessi passino per tutti gli step.\n\n**B.** Individui il passaggio più lento e fai in modo che si svolga in parallelo con un altro, invece di aspettare il suo turno.\n\n**C.** Sposti alcuni passaggi, come conferme o riepiloghi, in un follow-up successivo alla chiamata, così la parte dal vivo si accorcia.\n\n**D.** Prepari risposte template per le richieste più frequenti, così gli agenti hanno più tempo per quelle complesse.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q5": {
+          "title": "Diventare più rapido/a negli incidenti",
+          "body": "Il team è più lento del target sugli incidenti e tu ne sei parte: la domanda chiede cosa faresti per accelerare.\n\n**A.** Affianchi per un turno il responder più veloce e annoti cosa fa in un ordine diverso o cosa salta.\n\n**B.** Rivedi passo per passo i tuoi ultimi cinque incidenti e segni esattamente dove hai perso minuti.\n\n**C.** Ti eserciti su incidenti simulati con il cronometro e li ripeti finché il tuo tempo non scende.\n\n**D.** Ridisegni la tua checklist di triage personale, riordinando o togliendo le voci che ti hanno davvero rallentato.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q6": {
+          "title": "Come costruisci i turni del personale",
+          "body": "Devi organizzare i turni del team: la domanda chiede su cosa ti concentreresti per primo.\n\n**A.** Stimi la domanda ora per ora in base ai volumi passati e metti le persone dove c'è più carico.\n\n**B.** Consideri il mix di competenze di ogni turno, così in ogni fascia c'è qualcuno in grado di gestire le richieste più difficili.\n\n**C.** Inserisci buffer per i picchi, tenendo persone in più o reperibili per le ore in cui i volumi salgono.\n\n**D.** Rivedi prima vincoli e regole: contratti, riposi, ferie e limiti di legge.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q7": {
+          "title": "Un cliente scontento che sbaglia sui fatti",
+          "body": "Un cliente porta avanti un reclamo: ha torto sui fatti ma ha davvero vissuto un'esperienza negativa. La domanda chiede come risponderesti.\n\n**A.** Riconosci la sua frustrazione e poi ricostruisci ciò che è successo davvero, con orari e dettagli.\n\n**B.** Concentri la risposta sul fatto che il risultato non è stato all'altezza, lasci da parte la sequenza degli eventi e proponi una soluzione.\n\n**C.** Chiedi al cliente di confermare alcuni dettagli specifici di quanto accaduto, così gli errori sui fatti emergono dalle sue stesse risposte.\n\n**D.** Rispondi per iscritto scusandoti e proponendo una soluzione, poi offri una telefonata per parlare dei dettagli.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q8": {
+          "title": "Due colleghi, due consigli opposti",
+          "body": "Due colleghi esperti ti suggeriscono di gestire una situazione di servizio in modi opposti: la domanda chiede come decideresti.\n\n**A.** Chiedi a ciascuno di spiegarti il ragionamento dietro il consiglio, non solo cosa farebbe.\n\n**B.** Analizzi cosa c'è di diverso in questa situazione rispetto alle volte in cui ciascun approccio ha funzionato.\n\n**C.** Provi l'approccio che, se va male, fa meno danni, poi valuti com'è andata.\n\n**D.** Verifichi se esiste un precedente documentato per questo tipo di situazione prima di scegliere.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q9": {
+          "title": "Un componente chiave manca per tre settimane",
+          "body": "Un fornitore non può consegnare per tre settimane un componente che usi ogni giorno e non puoi cambiare fornitore in modo definitivo: la domanda chiede cosa faresti.\n\n**A.** Trovi un'alternativa temporanea abbastanza simile e adatti il processo per lavorare con le differenze.\n\n**B.** Ridisegni il flusso di servizio interessato perché funzioni senza il componente per tre settimane, con un'esperienza diversa ma accettabile per i clienti.\n\n**C.** Negozi con il fornitore consegne parziali o sostitutive, chiedendo per prime le varianti che ti servono con più urgenza.\n\n**D.** Costruisci una piccola riserva usando meno materiale nelle attività secondarie e spostando le scorte sulle linee di servizio critiche.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q10": {
+          "title": "Script sui disservizi che confondono i clienti",
+          "body": "I clienti trovano confuse le spiegazioni del team durante i disservizi, e gli script li hai scritti tu: la domanda chiede come interverresti.\n\n**A.** Registri chiamate o messaggi reali e li rivedi per individuare le frasi che i clienti non capiscono.\n\n**B.** Riscrivi gli script in linguaggio semplice e fai pratica su scenari simulati finché non ti vengono naturali.\n\n**C.** Chiedi a un/a formatore/trice di comunicazione di osservare un'interazione e darti indicazioni precise.\n\n**D.** Crei una libreria di template per le spiegazioni più comuni e la provi con alcuni utenti prima di adottarla.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q11": {
+          "title": "Il tuo metodo per ridurre gli errori",
+          "body": "Nel lavoro continuano a verificarsi errori e la domanda chiede quale metodo useresti per primo per ridurli.\n\n**A.** Introduci checklist che le persone spuntano nei punti chiave dell'attività.\n\n**B.** Standardizzi il modo di lavorare e riordini la postazione con le 5S (separare, sistemare, splendere, standardizzare, sostenere).\n\n**C.** Automatizzi i passaggi ripetitivi, come l'inserimento dati o la copia di informazioni, così non si fanno più a mano.\n\n**D.** Misuri gli errori raggruppandoli per tipologie, risali al punto in cui nascono e risolvi le cause lì.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q12": {
+          "title": "Annunciare un taglio del servizio a clienti storici",
+          "body": "Devi comunicare a clienti di lunga data una riduzione permanente del servizio, mantenendo il rapporto: come daresti la notizia?\n\n**A.** Dichiari il cambiamento in modo diretto, con le date di decorrenza e l'impatto specifico per ogni segmento di clienti.\n\n**B.** Presenti la riduzione come parte di un'evoluzione del servizio più ampia, che porta anche miglioramenti in altre aree.\n\n**C.** Contatti per primi, uno per uno, i clienti più colpiti, ascolti le loro preoccupazioni e le usi per preparare l'annuncio generale.\n\n**D.** Rinunci a un annuncio di massa e organizzi revisioni individuali per ogni account, così ogni cliente riceve la notizia in base al proprio utilizzo.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q13": {
+          "title": "Dati di un junior contro una procedura collaudata",
+          "body": "Un collega junior porta dati preliminari secondo cui un'assunzione di base della procedura che usi da mesi è sbagliata: la domanda chiede come reagiresti.\n\n**A.** Metti in pausa la procedura nei casi interessati e provi entrambi gli approcci sui casi recenti prima di scegliere.\n\n**B.** Esamini tu stesso/a i dati grezzi per capire quanto sono solidi prima di coinvolgere altre persone.\n\n**C.** Registri formalmente l'obiezione e continui con la procedura, fissando una soglia di risultato che farebbe partire una revisione completa.\n\n**D.** Chiedi a due persone estranee a entrambe le analisi di valutare le evidenze in modo indipendente.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q14": {
+          "title": "Un self-service che i clienti abbandonano",
+          "body": "La direzione vuole un self-service che riduca le chiamate del 30%, ma la maggior parte di chi lo prova poi chiama comunque: la domanda chiede cosa proporresti.\n\n**A.** Ridisegni il flusso self-service perché copra solo i casi che risolve bene e mandi subito agli agenti quelli complessi.\n\n**B.** Crei un sistema ibrido: il cliente parte dal self-service e può passare a un agente che vede già ciò che ha inserito.\n\n**C.** Ridefinisci l'obiettivo puntando sulle chiamate ripetute, usando il self-service per aggiornamenti e controlli di stato.\n\n**D.** Sperimenti tre approcci self-service diversi su vari tipi di caso per capire quali categorie ne traggono vantaggio prima di estenderli.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q15": {
+          "title": "Lacune ricorrenti nella documentazione di compliance",
+          "body": "Un audit ha trovato più volte le stesse lacune nella tua documentazione di compliance: la domanda chiede come svilupperesti questa competenza.\n\n**A.** Individui le due lacune più comuni e crei una breve checklist personale che copre proprio quei punti.\n\n**B.** Chiedi all'auditor di mostrarti con un esempio com'è fatta una documentazione completa.\n\n**C.** Metti la tua documentazione accanto a quella di un/a collega che ha avuto buoni risultati e annoti le differenze.\n\n**D.** Rifai da zero un documento recente secondo lo standard corretto, cronometrandoti mentre lo fai.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q16": {
+          "title": "Come scegli un nuovo strumento",
+          "body": "Devi scegliere un nuovo strumento per il team: la domanda chiede su cosa ti baseresti di più per decidere.\n\n**A.** Elenchi i requisiti e valuti ogni candidato in base all'aderenza a ciascuno di essi.\n\n**B.** Piloti lo strumento con un piccolo gruppo per qualche settimana prima di decidere.\n\n**C.** Metti a confronto costi e benefici attesi e consideri il rischio, come la dipendenza dal fornitore o i fermi.\n\n**D.** Controlli l'integrazione con i sistemi che usi già, come il CRM o il software di ticketing.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q17": {
+          "title": "Una sola sessione per un gruppo misto",
+          "body": "Hai una sola sessione per formare un gruppo in cui metà ha esperienza affine e metà è alle prime armi: la domanda chiede come la organizzeresti.\n\n**A.** Insegni l'intero flusso dall'inizio alla fine a livello principiante e poi offri una sessione avanzata facoltativa per i membri esperti.\n\n**B.** Parti dal modello concettuale, cioè perché esiste il flusso, e lasci che ognuno lo colleghi a ciò che sa già.\n\n**C.** Inizi con un breve esercizio diagnostico e poi regoli la profondità di ogni parte in base alle lacune che emergono.\n\n**D.** Metti in coppia membri esperti e principianti, dai loro uno scenario di pratica guidata e giri tra i gruppi rispondendo alle domande.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q18": {
+          "title": "Una nuova linea guida contro una pratica collaudata",
+          "body": "Una nuova linea guida di settore, con evidenze limitate ma in crescita, contraddice una pratica che il team usa da anni: la domanda chiede come ti comporteresti.\n\n**A.** Rivedi le evidenze alla base della linea guida e le metti a confronto con i dati di risultato del tuo team.\n\n**B.** Applichi la linea guida su un sottoinsieme di casi, mentre gli altri proseguono con la vecchia pratica per avere un confronto.\n\n**C.** Adotti la linea guida e segui da vicino i risultati per verificare che mantenga quanto promette.\n\n**D.** Consulti colleghi di altre organizzazioni per sentire come la stanno interpretando e applicando.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q19": {
+          "title": "Più documenti a ogni cambio turno",
+          "body": "Una nuova normativa aggiunge documentazione a ogni cambio turno in un'attività 24/7, lasciando un vuoto di copertura di 15 minuti: la domanda chiede come lo gestiresti.\n\n**A.** Ridisegni il formato del passaggio di consegne, sostituendo la carta con un log digitale che si compila dai dati di attività del turno.\n\n**B.** Sovrapponi i turni di 15 minuti e usi quel tempo sia per il passaggio di consegne sia per la documentazione.\n\n**C.** Dividi il requisito: gli elementi critici vengono registrati durante il passaggio e le note dettagliate si scrivono dopo, in un momento più tranquillo.\n\n**D.** Lavori con l'ufficio compliance per definire la documentazione minima che soddisfa comunque la normativa.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q20": {
+          "title": "Sostenere le proposte con i dati",
+          "body": "Ti hanno detto che le tue proposte di miglioramento dei processi non hanno dati a supporto: la domanda chiede come svilupperesti questa competenza.\n\n**A.** Alleghi alla prossima proposta dati di partenza misurabili, come il tasso di errore o i tempi attuali, anche se raccoglierli richiede più tempo.\n\n**B.** Lavori per un periodo accanto a un/a analyst per vedere come costruisce un'argomentazione basata sui dati.\n\n**C.** Segui un corso breve di analisi dei dati operativi e lo applichi subito a un caso reale di miglioramento.\n\n**D.** Rivedi tre proposte approvate per capire quali dati le hanno rese convincenti.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "q21": {
+          "title": "Come valuti un cambiamento di processo",
+          "body": "Devi valutare se un cambiamento di processo ha funzionato: la domanda chiede su cosa ti baseresti di più.\n\n**A.** Definisci le metriche di successo prima di partire, per esempio il tempo di gestione o il tasso di errore da raggiungere.\n\n**B.** Confronti gli stessi dati prima e dopo il cambiamento, su periodi simili.\n\n**C.** Fai un test controllato, applicando il cambiamento a un gruppo e lasciando un altro com'era.\n\n**D.** Documenti l'impatto osservato e metti per iscritto i prossimi passi per il team.\n\nNon esiste una risposta giusta: scegli quello che faresti davvero più spesso."
+        },
+        "open1": {
+          "title": "Un processo di servizio che hai migliorato",
+          "body": "Scegli un processo reale che hai cambiato e raccontalo:\n\n- com'era il processo e cosa non funzionava\n- cosa hai cambiato e perché\n- cosa hai fatto perché il cambiamento durasse (formazione, controlli, verifiche successive)\n- qual è stato il risultato, con un dato se ce l'hai\n\nBastano poche frasi (almeno 50 caratteri). Non esiste una risposta giusta: descrivi quello che è successo davvero."
+        },
+        "open2": {
+          "title": "L'area operativa in cui vuoi crescere",
+          "body": "Indica un'area precisa del tuo lavoro operativo e spiega:\n\n- perché è importante ora per te o per il tuo team\n- i passi concreti che pensi di fare quest'anno\n- come capirai che sta funzionando (un risultato, un numero, un riscontro)\n\nBastano poche frasi (almeno 50 caratteri). Non esiste una risposta giusta: scrivi dell'area su cui vuoi davvero lavorare."
+        }
+      },
+      "examplesByCategory": {
+        "comp_power": "Queste domande riguardano come gestisci dati, numeri e problemi strutturati nel lavoro di servizio e nelle operazioni: da dove parti, come scomponi il problema e come verifichi che una soluzione funzioni. Ogni opzione è un modo diverso di lavorare.",
+        "communication": "Queste domande descrivono situazioni nel lavoro di servizio e nelle operazioni in cui devi spiegare qualcosa, dare una notizia o gestire un disaccordo, spesso con interlocutori diversi allo stesso tempo. Ti chiedono come organizzeresti e comunicheresti davvero il messaggio.",
+        "knowledge": "Queste domande riguardano cosa fai nel lavoro di servizio e nelle operazioni quando le informazioni sono incomplete, contraddittorie o nuove per te: come le verifichi, a chi chiedi e quando decidi.",
+        "creativity": "Queste domande ti mettono davanti a un vincolo nel lavoro di servizio e nelle operazioni (tempi, budget, regole, richieste in conflitto) e ti chiedono come troveresti una strada per andare avanti.",
+        "drive": "Queste domande descrivono una lacuna o un passo falso nel lavoro di servizio e nelle operazioni e ti chiedono quali passi concreti faresti per migliorare."
       }
     }
   },

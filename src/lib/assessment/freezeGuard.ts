@@ -88,10 +88,15 @@ export function computeAllHashes(
  * 
  * IMPORTANT: These MUST differ per locale (unless translations are identical).
  */
+// Resealed 2026-09-18: the per-question help examples moved out of
+// assessmentSets into assessmentHelp (they described options the questions no
+// longer had and could not be fixed under the seal). Questions, options and
+// categories are byte-identical to the v1.2.1 seal (en 11ffb15d, it e7b14a09,
+// es d7d4491d); only the examples left the hashed subtree.
 export const ASSESSMENT_FREEZE_HASHES: Record<string, string> = {
-  en: "11ffb15d",
-  it: "e7b14a09",
-  es: "d7d4491d",
+  en: "3a641dc8",
+  it: "90528337",
+  es: "09f60860",
 };
 
 const validatedLocales = new Set<string>();

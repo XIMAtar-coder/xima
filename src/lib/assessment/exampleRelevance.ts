@@ -16,7 +16,9 @@
  * of answers that are not on screen.
  */
 
-const OPTION_MARKER = /\*\*(?:Option|Opzione|Opción)\s+([A-D])\b([^*]*)\*\*([^\n]*)/giu;
+// "**Option A (label):**", "**Opzione A:**" and the plain "**A.**" used by the
+// rewritten examples in assessmentHelp.
+const OPTION_MARKER = /\*\*(?:(?:Option|Opzione|Opción)\s+)?([A-D])(?:[.:)]|\b(?![\p{L}]))([^*]*)\*\*([^\n]*)/giu;
 const LETTERS = 'ABCD';
 
 function stems(text: string): Set<string> {
