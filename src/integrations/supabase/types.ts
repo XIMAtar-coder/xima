@@ -6327,6 +6327,7 @@ export type Database = {
         Returns: string
       }
       delete_user_account: { Args: { p_user_id: string }; Returns: Json }
+      email_html_escape: { Args: { p: string }; Returns: string }
       emit_audit_event: {
         Args: {
           p_action: string
