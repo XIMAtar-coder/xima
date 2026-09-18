@@ -59,7 +59,8 @@ const getDecisionPriority = (inv: InvitationWithSubmission): number => {
 };
 
 export default function ChallengeResponses() {
-  const { goalId, challengeId } = useParams<{ goalId: string; challengeId: string }>();
+  const { goalId: routeGoalId, challengeId } = useParams<{ goalId: string; challengeId: string }>();
+  const [goalId, setGoalId] = useState<string | undefined>(routeGoalId);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -89,7 +90,7 @@ export default function ChallengeResponses() {
 
   useEffect(() => {
     async function loadChallengeData() {
-      if (!challengeId || !goalId) return;
+      if (!challengeId) return;
 
       try {
         const { data: { user } } = await supabase.auth.getUser();
