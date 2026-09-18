@@ -5,35 +5,34 @@
 
 @layer base {
   :root {
-    /* ── XIMA report system (light): paper background, ink text, petrol accent ──
-       Replaces the translucent "liquid glass" look, read as generic/AI-made. */
-    --background: 90 11% 96%;
-    --foreground: 159 26% 13%;
+    /* ── XIMA palette (light): original blue kept; surfaces flat, no glass ── */
+    --background: 240 5% 96%;
+    --foreground: 240 6% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 159 26% 13%;
+    --card-foreground: 240 6% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 159 26% 13%;
+    --popover-foreground: 240 6% 12%;
 
-    --primary: 172 63% 25%;
+    --primary: 211 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 135 12% 94%;
-    --secondary-foreground: 159 26% 13%;
+    --secondary: 243 54% 57%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 135 12% 94%;
-    --muted-foreground: 148 9% 38%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 3% 45%;
 
-    --accent: 155 30% 92%;
-    --accent-foreground: 159 26% 13%;
+    --accent: 211 100% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 53% 44%;
+    --destructive: 4 100% 59%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 135 11% 86%;
-    --input: 145 8% 55%;
-    --ring: 172 63% 25%;
+    --border: 240 5% 75%;
+    --input: 240 5% 75%;
+    --ring: 211 100% 50%;
 
     --radius: 0.5rem;                    /* 8px panels, 6px controls, 4px badges */
 
@@ -48,29 +47,29 @@
     --glass-blur-strong: none;
     
     /* Text colors */
-    --text-primary: #182923;
-    --text-secondary: #586960;
-    --text-body: #182923;
-    --text-label: #586960;
+    --text-primary: #1c1c1e;
+    --text-secondary: #6e6e73;
+    --text-body: #1c1c1e;
+    --text-label: #aeaeb2;
     
     /* Apple system colors */
-    --apple-blue: #17665B;
+    --apple-blue: #007AFF;
     --apple-indigo: #5856D6;
     --apple-green: #34C759;
     --apple-orange: #FF9500;
     --apple-red: #FF3B30;
     
     /* Dividers */
-    --divider: #D8E0DA;
+    --divider: rgba(60,60,67,0.12);
 
     /* Landing (homepage) tokens */
-    --xima-bg: #F6F7F5;
+    --xima-bg: #F7FAFF;
     --xima-surface: #FFFFFF;
     --xima-surface-soft: rgba(255,255,255,0.92);
-    --xima-text: #182923;
-    --xima-text-muted: #586960;
+    --xima-text: #071E3A;
+    --xima-text-muted: #607089;
     --xima-text-faint: #8794A8;
-    --xima-blue: #17665B;
+    --xima-blue: #0B6BFF;
     --xima-border: rgba(10,40,80,0.08);
     --xima-border-strong: rgba(10,40,80,0.10);
     --xima-header-bg: rgba(255,255,255,0.82);
@@ -78,45 +77,45 @@
     /* Sidebar */
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 6% 12%;
-    --sidebar-primary: 172 63% 25%;
+    --sidebar-primary: 211 100% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 155 30% 92%;
+    --sidebar-accent: 240 5% 96%;
     --sidebar-accent-foreground: 240 6% 12%;
-    --sidebar-border: 135 11% 86%;
-    --sidebar-ring: 172 63% 25%;
+    --sidebar-border: 240 5% 75%;
+    --sidebar-ring: 211 100% 50%;
   }
 
   /* ── Dark Mode ── */
   .dark {
     color-scheme: dark;
 
-    --background: 165 19% 8%;
-    --foreground: 140 20% 94%;
+    --background: 240 10% 4%;
+    --foreground: 240 5% 96%;
 
-    --card: 158 18% 12%;
-    --card-foreground: 140 20% 94%;
+    --card: 240 10% 6%;
+    --card-foreground: 240 5% 96%;
 
-    --popover: 158 18% 12%;
-    --popover-foreground: 140 20% 94%;
+    --popover: 240 10% 8%;
+    --popover-foreground: 240 5% 96%;
 
-    --primary: 164 49% 68%;
-    --primary-foreground: 159 42% 11%;
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 156 18% 16%;
-    --secondary-foreground: 140 20% 94%;
+    --secondary: 243 54% 57%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 156 18% 16%;
-    --muted-foreground: 143 11% 72%;
+    --muted: 240 6% 12%;
+    --muted-foreground: 240 5% 55%;
 
-    --accent: 157 30% 19%;
-    --accent-foreground: 140 20% 94%;
+    --accent: 239 84% 67%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 75% 79%;
-    --destructive-foreground: 0 35% 12%;
+    --destructive: 4 100% 59%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 148 15% 25%;
-    --input: 146 10% 49%;
-    --ring: 164 49% 68%;
+    --border: 240 6% 14%;
+    --input: 240 6% 12%;
+    --ring: 239 84% 67%;
 
     --radius: 0.5rem;                    /* 8px panels, 6px controls, 4px badges */
 
@@ -131,39 +130,39 @@
     --glass-blur-strong: none;
 
     /* Dark text */
-    --text-primary: #EDF3EF;
-    --text-secondary: #AFBFB5;
-    --text-body: #EDF3EF;
-    --text-label: #AFBFB5;
+    --text-primary: #f5f5f7;
+    --text-secondary: rgba(255,255,255,0.55);
+    --text-body: #f5f5f7;
+    --text-label: rgba(255,255,255,0.4);
 
     /* Dark dividers */
-    --divider: #35483E;
+    --divider: rgba(255,255,255,0.06);
 
     /* Dark apple colors */
-    --apple-blue: #85D5BF;
+    --apple-blue: #6366f1;
     --apple-indigo: #818cf8;
 
     /* Landing dark tokens */
-    --xima-bg: #111917;
-    --xima-surface: #192420;
+    --xima-bg: #0A0F1C;
+    --xima-surface: #11182A;
     --xima-surface-soft: rgba(255,255,255,0.04);
-    --xima-text: #EDF3EF;
+    --xima-text: #F2F5FB;
     --xima-text-muted: rgba(242,245,251,0.62);
     --xima-text-faint: rgba(242,245,251,0.42);
-    --xima-blue: #85D5BF;
+    --xima-blue: #5B8DFF;
     --xima-border: rgba(255,255,255,0.08);
     --xima-border-strong: rgba(255,255,255,0.14);
     --xima-header-bg: rgba(8,12,22,0.78);
 
     /* Sidebar dark */
-    --sidebar-background: 158 18% 12%;
+    --sidebar-background: 240 10% 6%;
     --sidebar-foreground: 240 5% 96%;
-    --sidebar-primary: 164 49% 68%;
+    --sidebar-primary: 239 84% 67%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 157 30% 19%;
+    --sidebar-accent: 240 10% 10%;
     --sidebar-accent-foreground: 240 5% 96%;
-    --sidebar-border: 148 15% 25%;
-    --sidebar-ring: 164 49% 68%;
+    --sidebar-border: 240 5% 18%;
+    --sidebar-ring: 239 84% 67%;
   }
 }
 
@@ -185,15 +184,16 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: var(--text-primary);
-    background: hsl(var(--background));
+    background: #f2f2f7;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, #ffffff, #eeeef3 70%);
     min-height: 100vh;
     overflow-x: hidden;
   }
 
   html.dark body {
-    background-color: hsl(var(--background)) !important;
-    background-image: none !important;
-    color: hsl(var(--foreground)) !important;
+    background-color: #08080d !important;
+    background-image: radial-gradient(ellipse at center, #0d0d1a 0%, #08080d 100%) !important;
+    color: #f5f5f7 !important;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -282,7 +282,7 @@ html.dark .glass-input {
 .glass-modal {
   background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
-  box-shadow: 0 16px 48px #18292329;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.16);
   border-radius: 12px;
 }
 
