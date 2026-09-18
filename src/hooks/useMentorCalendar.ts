@@ -369,13 +369,17 @@ export function useMentorCalendar(mentorId: string | null) {
     try {
       const { error } = await supabase
         .from('mentor_sessions')
-        .update({
-          notes_private: notesPrivate,
-          notes_shared: notesShared
-        })
+        .update({ notes_shared: notesShared })
         .eq('id', sessionId);
 
       if (error) throw error;
+
+      const { error: privateError } = await supabase
+        .from('mentor_session_private_notes')
+        .upsert({ session_id: sessionId, notes: notesPrivate }, { onConflict: 'session_id' });
+
+      if (privateError) throw privateError;
+
 
       toast({ title: 'Notes saved' });
       await fetchData();
