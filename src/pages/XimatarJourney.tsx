@@ -199,7 +199,7 @@ const XimatarJourney = () => {
           </div>
         </div>
         
-        <Card className={`${answering ? 'p-3' : 'p-5'} sm:p-8 border-0`}>
+        <Card className={`${answering ? 'p-3' : 'p-5'} sm:p-8 shadow-lg border-0`}>
           {currentStep === 1 && (
             <BaselineAssessment 
               onComplete={handleStepComplete}

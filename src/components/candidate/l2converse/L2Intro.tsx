@@ -19,7 +19,7 @@ export function L2Intro({ simulation, contextSlot, onStart }: Props) {
   const scenario = typeof simulation.scenario === 'string' ? simulation.scenario : '';
 
   return (
-    <Card className="border-primary/30">
+    <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
       <CardContent className="py-10 space-y-6">
         {/* Header — frame as a conversation, not a test */}
         <div className="flex items-start gap-3">

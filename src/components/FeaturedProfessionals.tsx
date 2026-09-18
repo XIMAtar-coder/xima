@@ -317,8 +317,8 @@ export default function FeaturedProfessionals({
         return (
           <Card 
             key={p.id} 
-            className={`p-6 flex flex-col gap-4 transition-all ${
-              isSelected ? 'ring-2 ring-primary' : ''
+            className={`p-6 flex flex-col gap-4 hover:shadow-lg transition-all ${
+              isSelected ? 'ring-2 ring-primary shadow-xl' : ''
             } ${isPinned ? 'border-primary/50' : ''}`}
           >
             {/* Pinned/Selected badge for mentors no longer in refreshed list */}

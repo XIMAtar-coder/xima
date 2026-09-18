@@ -80,7 +80,7 @@ export const MyOpportunitiesSection: React.FC = () => {
   const renderOpportunityCard = (opp: Opportunity) => (
     <div 
       key={opp.id} 
-      className="p-5 border border-[hsl(var(--xima-accent))]/20 rounded-lg to-[hsl(var(--xima-accent))]/5 transition-all duration-300"
+      className="p-5 border border-[hsl(var(--xima-accent))]/20 rounded-lg bg-gradient-to-br from-background to-[hsl(var(--xima-accent))]/5 hover:shadow-lg transition-all duration-300"
     >
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="min-w-0 flex-1">
@@ -145,7 +145,7 @@ export const MyOpportunitiesSection: React.FC = () => {
   ) => (
     <div 
       key={jobId} 
-      className="p-4 border border-[hsl(var(--xima-accent))]/20 rounded-lg to-[hsl(var(--xima-accent))]/5 transition-all duration-300"
+      className="p-4 border border-[hsl(var(--xima-accent))]/20 rounded-lg bg-gradient-to-br from-background to-[hsl(var(--xima-accent))]/5 hover:shadow-lg transition-all duration-300"
     >
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="min-w-0 flex-1">

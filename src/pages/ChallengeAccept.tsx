@@ -282,7 +282,7 @@ const ChallengeAccept = () => {
     <MainLayout>
       <div className="max-w-2xl mx-auto mt-8 px-4">
         <Card className="overflow-hidden">
-          <div className="p-6">
+          <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-transparent p-6">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-full bg-primary/20">
                 <Target className="h-8 w-8 text-primary" />

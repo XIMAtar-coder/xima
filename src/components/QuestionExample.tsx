@@ -151,7 +151,7 @@ export default function QuestionExample({
       {open && (
         <Card
           id={panelId}
-          className="mt-2 p-3 sm:p-4 space-y-2 border-blue-200 bg-muted dark:bg-white/5 max-w-full overflow-hidden"
+          className="mt-2 p-3 sm:p-4 space-y-2 border-blue-200 bg-blue-50/60 dark:bg-white/5 max-w-full overflow-hidden"
         >
           <div className="flex items-start justify-between gap-4 min-w-0">
             <div className="text-sm font-semibold break-words min-w-0">{title}</div>

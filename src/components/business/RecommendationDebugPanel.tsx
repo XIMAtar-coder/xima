@@ -91,7 +91,7 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
       className={cn(
         "p-3 rounded-lg border bg-card space-y-2",
         rec.source === 'company_constraint' ? "border-green-500/50 bg-green-500/5" :
-        rec.source === 'hiring_goal_match' ? "border-border bg-muted" :
+        rec.source === 'hiring_goal_match' ? "border-blue-500/50 bg-blue-500/5" :
         "border-muted"
       )}
     >
@@ -128,7 +128,7 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
           className={cn(
             "text-xs",
             rec.source === 'company_constraint' ? "bg-green-500/10 text-green-700" :
-            rec.source === 'hiring_goal_match' ? "bg-muted text-primary" :
+            rec.source === 'hiring_goal_match' ? "bg-blue-500/10 text-blue-700" :
             "bg-muted"
           )}
         >
@@ -137,7 +137,7 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
            '📊 Taxonomy Fallback'}
         </Badge>
         {rec.seniority_compatible && (
-          <Badge variant="outline" className="text-xs bg-muted text-primary">
+          <Badge variant="outline" className="text-xs bg-purple-500/10 text-purple-700">
             ✓ Seniority
           </Badge>
         )}
@@ -249,10 +249,10 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
             onOpenChange={() => toggleSection('tests')}
             defaultOpen
           >
-            <CollapsibleTrigger className="flex items-center gap-2 w-full p-2 rounded-lg bg-muted border border-border hover:bg-muted transition-colors">
+            <CollapsibleTrigger className="flex items-center gap-2 w-full p-2 rounded-lg bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 transition-colors">
               {expandedSections.has('tests') ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-              <FlaskConical className="h-4 w-4 text-primary" />
-              <span className="font-medium text-primary dark:text-primary">
+              <FlaskConical className="h-4 w-4 text-purple-500" />
+              <span className="font-medium text-purple-700 dark:text-purple-300">
                 Test Results: {testResults.filter(t => t.passed).length}/{testResults.length} passed
               </span>
             </CollapsibleTrigger>
@@ -331,8 +331,8 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
                     <div className="text-2xl font-bold text-green-600">{debugData.engineResult.company_constraint_count}</div>
                     <div className="text-xs text-muted-foreground">Company Constraint</div>
                   </div>
-                  <div className="p-2 rounded bg-muted">
-                    <div className="text-2xl font-bold text-primary">{debugData.engineResult.goal_match_count}</div>
+                  <div className="p-2 rounded bg-blue-500/10">
+                    <div className="text-2xl font-bold text-blue-600">{debugData.engineResult.goal_match_count}</div>
                     <div className="text-xs text-muted-foreground">Goal Match</div>
                   </div>
                   <div className="p-2 rounded bg-muted">

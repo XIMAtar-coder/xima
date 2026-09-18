@@ -51,7 +51,7 @@ const BusinessEntryPointsCard: React.FC<BusinessEntryPointsCardProps> = ({ onXim
         {cards.map((card, i) => (
           <Card
             key={i}
-            className="cursor-pointer border-border hover:border-primary/50 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="cursor-pointer border-border hover:border-primary/50 hover:shadow-lg hover:translate-y-[-3px] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             tabIndex={0}
             role="button"
             onClick={card.onClick}

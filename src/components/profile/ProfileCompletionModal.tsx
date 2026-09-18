@@ -237,7 +237,7 @@ export const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto bg-background border">
+      <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto bg-background border shadow-2xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">{t('profile_completion.title')}</DialogTitle>
           <DialogDescription className="text-base">{t('profile_completion.subtitle')}</DialogDescription>

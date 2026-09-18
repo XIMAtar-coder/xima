@@ -88,7 +88,7 @@ function LockedSignalCard({ signal }: { signal: PremiumSignal }) {
   
   return (
     <div className="p-3 rounded-lg bg-muted/20 border border-border/30 relative overflow-hidden">
-      <div className="absolute inset-0 bg-background/90 flex items-center justify-center">
+      <div className="absolute inset-0 bg-gradient-to-br from-muted/80 to-muted/40 backdrop-blur-sm flex items-center justify-center">
         <Lock className="h-5 w-5 text-muted-foreground/50" />
       </div>
       <div className="flex items-center gap-2 opacity-30">
@@ -112,7 +112,7 @@ function PremiumSignalCard({ signal }: { signal: PremiumSignal }) {
   };
   
   return (
-    <div className="p-3 rounded-lg border border-amber-500/20 space-y-2">
+    <div className="p-3 rounded-lg bg-gradient-to-br from-amber-500/5 to-orange-500/5 border border-amber-500/20 space-y-2">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-amber-600">
           {signal.icon}
@@ -134,14 +134,14 @@ export function PremiumSignalsPanel({ signals, isPremium = false, className = ''
   const premiumSignals = computePremiumSignals(signals);
   
   return (
-    <Card className={`border-amber-500/30 ${className}`}>
+    <Card className={`border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-transparent ${className}`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm flex items-center gap-2">
             <Crown className="h-4 w-4 text-amber-500" />
             {t('signals.premium.title')}
           </CardTitle>
-          <Badge className="text-white text-[10px]">
+          <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px]">
             XIMA Premium
           </Badge>
         </div>

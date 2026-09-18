@@ -78,7 +78,7 @@ const Imprint = () => {
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Company Information */}
-          <Card className="border-border/50">
+          <Card className="bg-gradient-to-br from-card to-card/80 border-border/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-lg">
                 <div className="p-2 rounded-lg bg-primary/10">
@@ -101,7 +101,7 @@ const Imprint = () => {
           </Card>
 
           {/* Legal Representative */}
-          <Card className="border-border/50">
+          <Card className="bg-gradient-to-br from-card to-card/80 border-border/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-lg">
                 <div className="p-2 rounded-lg bg-primary/10">
@@ -116,7 +116,7 @@ const Imprint = () => {
           </Card>
 
           {/* Registration Info */}
-          <Card className="border-border/50">
+          <Card className="bg-gradient-to-br from-card to-card/80 border-border/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-lg">
                 <div className="p-2 rounded-lg bg-primary/10">
@@ -135,7 +135,7 @@ const Imprint = () => {
         </div>
 
         {/* Data Protection Officer */}
-        <Card className="mt-6 border-border/50">
+        <Card className="mt-6 bg-gradient-to-br from-card to-card/80 border-border/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-3 text-lg">
               <div className="p-2 rounded-lg bg-primary/10">

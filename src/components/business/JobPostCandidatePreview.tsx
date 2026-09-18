@@ -326,7 +326,7 @@ export default function JobPostCandidatePreview({ job }: Props) {
       )}
 
       {/* Hero Section */}
-      <Card className="border-0 shadow-none">
+      <Card className="border-0 shadow-none bg-gradient-to-br from-primary/5 to-primary/10">
         <CardContent className="pt-6">
           <h1 className="text-2xl font-bold text-foreground mb-4">
             {hero?.title || job.title}

@@ -52,13 +52,13 @@ export const AssessmentLayers: React.FC<{ labels: { l1: string; l2: string; l3: 
       />
 
       {/* Labels */}
-      <span className="absolute right-[6%] top-[14%] text-xs font-mono font-semibold text-primary px-2 py-1 rounded-full bg-background/70 border border-primary/30">
+      <span className="absolute right-[6%] top-[14%] text-xs font-mono font-semibold text-primary px-2 py-1 rounded-full bg-background/70 backdrop-blur border border-primary/30">
         {labels.l3}
       </span>
-      <span className="absolute right-[2%] top-[40%] text-xs font-mono font-semibold text-primary px-2 py-1 rounded-full bg-background/70 border border-primary/30">
+      <span className="absolute right-[2%] top-[40%] text-xs font-mono font-semibold text-primary px-2 py-1 rounded-full bg-background/70 backdrop-blur border border-primary/30">
         {labels.l2}
       </span>
-      <span className="absolute right-[-2%] top-[66%] text-xs font-mono font-semibold text-primary px-2 py-1 rounded-full bg-background/70 border border-primary/30">
+      <span className="absolute right-[-2%] top-[66%] text-xs font-mono font-semibold text-primary px-2 py-1 rounded-full bg-background/70 backdrop-blur border border-primary/30">
         {labels.l1}
       </span>
     </div>

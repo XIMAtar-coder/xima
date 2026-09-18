@@ -535,7 +535,7 @@ const CreateXimaCoreChallenge = () => {
 
         <header className="space-y-5">
           <div className="flex items-start gap-4">
-            <div className="rounded-lg border border-primary/20 bg-primary/10 p-3">
+            <div className="rounded-2xl border border-primary/20 bg-primary/10 p-3">
               <Brain className="h-7 w-7 text-primary" />
             </div>
             <div className="min-w-0 flex-1 space-y-3">
@@ -840,7 +840,7 @@ const CreateXimaCoreChallenge = () => {
         </section>
       </main>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/85 p-4">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/85 p-4 backdrop-blur-xl">
         <div className="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-muted-foreground">{t('challenge.xima_core.scenario_locked_note')}</p>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">

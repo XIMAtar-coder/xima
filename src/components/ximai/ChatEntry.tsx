@@ -33,7 +33,8 @@ export const ChatEntry: React.FC = () => {
       <button
         ref={launcherRef}
         aria-label="XIM-AI"
-        className="group fixed z-40 bottom-5 right-5 md:bottom-6 md:right-6 h-14 w-14
+        className="group fixed z-40 bottom-5 right-5 md:bottom-6 md:right-6
+                   h-14 w-14
                    flex items-center justify-center
                    bg-transparent border-0
                    cursor-pointer
@@ -45,7 +46,7 @@ export const ChatEntry: React.FC = () => {
         onClick={openChat}
       >
         {/* Brand mark — XIMA symbol, theme-aware for contrast */}
-        <span className="block h-10 w-auto transition-transform duration-200 ximai-logo-pulse">
+        <span className="block h-10 w-auto transition-transform duration-200 group-hover:scale-110 ximai-logo-pulse">
           <Logo
             variant="symbol"
             tone={logoTone}
@@ -60,7 +61,7 @@ export const ChatEntry: React.FC = () => {
           className={`
             absolute right-full mr-3
             whitespace-nowrap px-3.5 py-1.5 rounded-full
-            bg-white/90 dark:bg-[#0b1e3f]/90
+            bg-white/90 dark:bg-[#0b1e3f]/90 backdrop-blur-sm
             text-sm font-semibold text-foreground
             shadow-[0_4px_16px_-4px_rgba(0,0,0,0.15)]
             transition-all duration-200 ease-out

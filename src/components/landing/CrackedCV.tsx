@@ -46,13 +46,13 @@ export const CrackedCV: React.FC<{ className?: string }> = ({ className = '' }) 
           <radialGradient id="ccv-glow-grad" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
             <stop offset="25%" stopColor="#7FB4FF" stopOpacity="0.95" />
-            <stop offset="55%" stopColor="var(--xima-blue)" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="var(--xima-blue)" stopOpacity="0" />
+            <stop offset="55%" stopColor="#0B6BFF" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#0B6BFF" stopOpacity="0" />
           </radialGradient>
           <linearGradient id="ccv-tear-edge" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="var(--xima-blue)" stopOpacity="0" />
-            <stop offset="50%" stopColor="var(--xima-blue)" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="var(--xima-blue)" stopOpacity="0" />
+            <stop offset="0%" stopColor="#0B6BFF" stopOpacity="0" />
+            <stop offset="50%" stopColor="#0B6BFF" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="#0B6BFF" stopOpacity="0" />
           </linearGradient>
         </defs>
 
@@ -158,7 +158,7 @@ export const CrackedCV: React.FC<{ className?: string }> = ({ className = '' }) 
             height="6"
             rx="1"
             fill="#FFFFFF"
-            stroke="var(--xima-blue)"
+            stroke="#0B6BFF"
             strokeWidth="0.5"
             className="ccv-particle"
             style={{ ['--ccv-dx' as any]: '-18px', animationDelay: '0s' }}
@@ -169,7 +169,7 @@ export const CrackedCV: React.FC<{ className?: string }> = ({ className = '' }) 
             width="4"
             height="4"
             rx="1"
-            fill="var(--xima-blue)"
+            fill="#0B6BFF"
             opacity="0.8"
             className="ccv-particle"
             style={{ ['--ccv-dx' as any]: '14px', animationDelay: '1.2s' }}
@@ -181,7 +181,7 @@ export const CrackedCV: React.FC<{ className?: string }> = ({ className = '' }) 
             height="5"
             rx="1"
             fill="#FFFFFF"
-            stroke="var(--xima-blue)"
+            stroke="#0B6BFF"
             strokeWidth="0.5"
             className="ccv-particle"
             style={{ ['--ccv-dx' as any]: '-10px', animationDelay: '2.1s' }}

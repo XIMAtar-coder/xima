@@ -165,7 +165,7 @@ const GoalDecisionPack: React.FC = () => {
     const config: Record<string, { icon: React.ReactNode; className: string; label: string }> = {
       invited: {
         icon: <Clock className="h-3 w-3" />,
-        className: 'bg-muted text-primary border-border',
+        className: 'bg-blue-500/10 text-blue-600 border-blue-500/30',
         label: t('premium.pack.stage_invited'),
       },
       in_progress: {
@@ -180,7 +180,7 @@ const GoalDecisionPack: React.FC = () => {
       },
       reviewed: {
         icon: <MessageSquare className="h-3 w-3" />,
-        className: 'bg-muted text-primary border-border',
+        className: 'bg-purple-500/10 text-purple-600 border-purple-500/30',
         label: t('premium.pack.stage_reviewed'),
       },
       advanced: {
@@ -240,7 +240,7 @@ const GoalDecisionPack: React.FC = () => {
             onGoalSwitch={handleGoalSwitch}
           />
 
-          <Card className="border-amber-500/30">
+          <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-transparent">
             <CardContent className="py-12 text-center">
               <Lock className="h-16 w-16 text-amber-500/50 mx-auto mb-4" />
               <h2 className="text-xl font-semibold mb-2">{t('premium.pack.locked_title')}</h2>

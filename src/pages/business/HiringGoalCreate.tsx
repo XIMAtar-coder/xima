@@ -551,7 +551,7 @@ const Step0Role = ({ formData, updateField, userId }: StepProps) => {
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950 flex items-center justify-center">
-          <Target className="w-5 h-5 text-primary dark:text-primary" />
+          <Target className="w-5 h-5 text-blue-600 dark:text-blue-400" />
         </div>
         <div>
           <h2 className="text-xl font-semibold text-foreground">{t('hiring_goal.step0_title', 'Quale ruolo stai cercando?')}</h2>
@@ -663,7 +663,7 @@ const Step1Responsibilities = ({ formData, updateField, userId }: StepProps) => 
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950 flex items-center justify-center">
-          <Target className="w-5 h-5 text-primary dark:text-primary" />
+          <Target className="w-5 h-5 text-purple-600 dark:text-purple-400" />
         </div>
         <div>
           <h2 className="text-xl font-semibold text-foreground">{t('hiring_goal.step1_title', 'Quali sono le responsabilità chiave?')}</h2>
@@ -761,9 +761,9 @@ const Step2SeniorityWorkMode = ({ formData, updateField }: StepProps) => {
         </div>
         {/* Original seniority note */}
         {formData.original_seniority && (
-          <div className="flex items-start gap-2 mt-2 p-2.5 rounded-lg bg-blue-50 dark:bg-muted border border-blue-200 dark:border-blue-800">
-            <Info className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-            <p className="text-xs text-primary dark:text-primary">
+          <div className="flex items-start gap-2 mt-2 p-2.5 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
+            <Info className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+            <p className="text-xs text-blue-700 dark:text-blue-300">
               {t('businessPortal.hiring_goal.original_seniority_note', 'Importato come "{{original}}" (mappato a "{{mapped}}")', {
                 original: formData.original_seniority,
                 mapped: SENIORITY_DISPLAY[formData.experience_level] || formData.experience_level,
@@ -899,7 +899,7 @@ const Step3Location = ({ formData, updateField }: StepProps) => {
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-950 flex items-center justify-center">
-          <MapPin className="w-5 h-5 text-primary dark:text-primary" />
+          <MapPin className="w-5 h-5 text-teal-600 dark:text-teal-400" />
         </div>
         <div>
           <h2 className="text-xl font-semibold text-foreground">{t('hiring_goal.step3_title', 'Dove si trova il ruolo?')}</h2>

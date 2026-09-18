@@ -45,7 +45,7 @@ export function PreChallengeBriefing({
         {/* Briefing Sections */}
         <div className="space-y-6">
           {/* Company Context - NEW SECTION */}
-          <Card className="border-primary/30">
+          <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
             <CardContent className="pt-6">
               <div className="flex items-start gap-4">
                 <div className="p-2 rounded-lg bg-primary/20">

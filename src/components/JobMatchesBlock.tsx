@@ -78,7 +78,7 @@ export const JobMatchesBlock: React.FC = () => {
                     <div className="text-xs text-muted-foreground mb-1">{t('opportunities.match')}</div>
                     <div className={`text-2xl font-bold ${
                       recommendation.matchScore >= 85 ? 'text-green-600' :
-                      recommendation.matchScore >= 70 ? 'text-primary' :
+                      recommendation.matchScore >= 70 ? 'text-blue-600' :
                       'text-orange-600'
                     }`}>
                       {recommendation.matchScore}%

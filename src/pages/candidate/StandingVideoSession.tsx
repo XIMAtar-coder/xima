@@ -847,7 +847,7 @@ export default function StandingVideoSession() {
       <div className="min-h-screen flex flex-col bg-background">
         {/* Header - only show during recording */}
         {sessionState === 'recording' && (
-          <div className="border-b bg-card/50">
+          <div className="border-b bg-card/50 backdrop-blur">
             <div className="container max-w-4xl mx-auto p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Badge variant="destructive" className="animate-pulse">

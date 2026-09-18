@@ -239,7 +239,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
       {!hideLauncher && (
         <button
           aria-label={t('ximai.aria_open')}
-          className={`${positionClasses} ${btnPosition}`}
+          className={`${positionClasses} ${btnPosition} shadow-lg`}
           onClick={() => setOpen(true)}
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground hover:opacity-90 transition">
@@ -252,7 +252,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
       <Dialog open={open} onOpenChange={(v) => { setOpen(v); onOpenChange?.(v); }}>
         <DialogContent 
           aria-label={t('ximai.aria_dialog')} 
-          className="max-w-xl p-0 overflow-hidden ximai-premium-shadow bg-background/98"
+          className="max-w-xl p-0 overflow-hidden ximai-premium-shadow bg-background/98 backdrop-blur-sm"
           style={{ borderRadius: '24px' }}
         >
           <DialogHeader className="border-b border-border/10 px-5 py-4">
@@ -266,7 +266,8 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                 <select
                   id="ximai-lang"
                   aria-label={t('ximai.bot_language')}
-                  className="border border-border/20 rounded-xl px-3 py-1.5 text-sm bg-background/50 focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all duration-150"
+                  className="border border-border/20 rounded-xl px-3 py-1.5 text-sm bg-background/50 
+                             focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all duration-150"
                   value={botLang}
                   onChange={(e) => xim.setLang(e.target.value)}
                 >
@@ -302,7 +303,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                 {messages.map((m) => (
                   <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     {m.kind === 'auth-cta' ? (
-                      <div className="max-w-[85%] rounded-lg px-4 py-3 text-sm bg-muted/50 ximai-message-shadow">
+                      <div className="max-w-[85%] rounded-3xl px-4 py-3 text-sm bg-muted/50 ximai-message-shadow">
                         <div className="flex gap-2">
                           <Button 
                             size="sm" 
@@ -323,7 +324,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                       </div>
                     ) : (
                       <div 
-                        className={`max-w-[85%] rounded-lg px-4 py-3 text-sm font-normal leading-relaxed ximai-message-shadow
+                        className={`max-w-[85%] rounded-3xl px-4 py-3 text-sm font-normal leading-relaxed ximai-message-shadow
                           ${m.role === 'user' 
                             ? 'bg-primary text-primary-foreground ml-8' 
                             : 'bg-muted/40 text-foreground/90 mr-8'
@@ -356,14 +357,16 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') sendMessage(); }}
                   aria-label={t('ximai.input_placeholder')}
-                  className="rounded-lg border-border/20 bg-background/80 px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all duration-150
+                  className="rounded-2xl border-border/20 bg-background/80 px-4 py-2.5 text-sm
+                             focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all duration-150
                              placeholder:text-muted-foreground/60"
                 />
                 <Button 
                   onClick={sendMessage} 
                   disabled={!input.trim() || sending} 
                   aria-label={t('ximai.send')}
-                  className="rounded-lg px-4 py-2.5 ximai-tap-scale bg-primary hover:bg-primary/90 transition-all duration-150 disabled:opacity-50"
+                  className="rounded-2xl px-4 py-2.5 ximai-tap-scale bg-primary hover:bg-primary/90 
+                             transition-all duration-150 disabled:opacity-50"
                 >
                   <MessageSquareIcon className="w-4 h-4" />
                 </Button>
@@ -376,7 +379,8 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                       variant="outline" 
                       size="sm" 
                       onClick={() => navigate('/ximatar-journey?open=booking')}
-                      className="rounded-lg text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 ximai-tap-scale transition-all duration-150"
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
                     >
                       {t('ximai.action_booking')}
                     </Button>
@@ -384,7 +388,8 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                       variant="outline" 
                       size="sm" 
                       onClick={() => navigate('/development-plan')}
-                      className="rounded-lg text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 ximai-tap-scale transition-all duration-150"
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
                     >
                       {t('ximai.action_tests')}
                     </Button>
@@ -392,7 +397,8 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                       variant="outline" 
                       size="sm" 
                       onClick={() => navigate('/chat')}
-                      className="rounded-lg text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 ximai-tap-scale transition-all duration-150"
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
                     >
                       {t('ximai.action_chat')}
                     </Button>
@@ -400,7 +406,8 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                       variant="outline" 
                       size="sm" 
                       onClick={() => navigate('/dashboard')}
-                      className="rounded-lg text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 ximai-tap-scale transition-all duration-150"
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
                     >
                       {t('dashboard.title')}
                     </Button>
@@ -411,7 +418,8 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                       variant="outline" 
                       size="sm" 
                       onClick={() => navigate('/about')}
-                      className="rounded-lg text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 ximai-tap-scale transition-all duration-150"
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
                     >
                       {t('nav.about')}
                     </Button>
@@ -419,7 +427,8 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                       variant="outline" 
                       size="sm" 
                       onClick={() => navigate('/how-it-works')}
-                      className="rounded-lg text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 ximai-tap-scale transition-all duration-150"
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
                     >
                       {t('nav.how_it_works')}
                     </Button>
@@ -427,7 +436,8 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                       variant="outline" 
                       size="sm" 
                       onClick={() => navigate('/login')}
-                      className="rounded-lg text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 ximai-tap-scale transition-all duration-150"
+                      className="rounded-2xl text-xs font-medium border-border/20 bg-background/60 hover:bg-muted/50 
+                                 ximai-tap-scale transition-all duration-150"
                     >
                       {t('nav.login')}
                     </Button>
@@ -435,7 +445,7 @@ export const ChatWidget: React.FC<{ controlledOpen?: boolean; onOpenChange?: (op
                       variant="default" 
                       size="sm" 
                       onClick={() => navigate('/register')}
-                      className="rounded-lg text-xs font-medium ximai-tap-scale transition-all duration-150"
+                      className="rounded-2xl text-xs font-medium ximai-tap-scale transition-all duration-150"
                     >
                       {t('nav.register')}
                     </Button>

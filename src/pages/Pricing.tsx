@@ -47,7 +47,7 @@ const Pricing: React.FC = () => {
             return (
               <Card
                 key={tier.id}
-                className={`relative ${highlighted ? 'border-2 border-primary' : 'border-border'}`}
+                className={`relative ${highlighted ? 'border-2 border-primary shadow-lg shadow-primary/10' : 'border-border'}`}
               >
                 {highlighted && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">

@@ -76,8 +76,8 @@ const Unsubscribe = () => {
     <LandingLayout>
       <Seo title="Unsubscribe — XIMA" description="Manage your email preferences." path="/unsubscribe" />
       <section className="px-6 lg:px-10 py-20">
-        <div className="max-w-[560px] mx-auto rounded-lg border border-border bg-card p-8 text-center">
-          <p className="text-xs font-mono uppercase tracking-[0.2em] mb-3" style={{ color: 'var(--xima-blue)' }}>
+        <div className="max-w-[560px] mx-auto rounded-2xl border border-border bg-card p-8 text-center">
+          <p className="text-xs font-mono uppercase tracking-[0.2em] mb-3" style={{ color: '#0B6BFF' }}>
             XIMA
           </p>
           <h1 className="text-2xl font-bold text-foreground">Email preferences</h1>

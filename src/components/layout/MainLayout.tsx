@@ -300,7 +300,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, requireAuth = false, 
                     <Menu className="h-5 w-5 text-muted-foreground" strokeWidth={1.5} />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[280px] sm:w-[340px]]">
+                <SheetContent side="right" className="w-[280px] sm:w-[340px] backdrop-blur-[40px]">
                   <nav className="flex flex-col gap-1 mt-8">
                     {/* Public links for logged-out, auth links for logged-in */}
                     {!isAuthenticated ? (

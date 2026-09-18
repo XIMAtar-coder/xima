@@ -96,7 +96,7 @@ export const RecommendedChallenges = () => {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {challenges.map((challenge) => (
-        <Card key={challenge.id} className="transition-shadow">
+        <Card key={challenge.id} className="hover:shadow-lg transition-shadow">
           <CardHeader>
             <div className="flex items-start justify-between">
               <div>

@@ -46,7 +46,7 @@ function StatusBadge({ status }: { status: string }) {
     },
     self_declared: { 
       icon: <AlertTriangle className="h-3 w-3" />, 
-      className: 'bg-muted text-primary border-border',
+      className: 'bg-blue-500/10 text-blue-600 border-blue-500/30',
       label: t('premium.eligibility.self_declared')
     },
     not_provided: { 
@@ -75,8 +75,8 @@ function LockedPanel() {
   const { t } = useTranslation();
   
   return (
-    <Card className="border-amber-500/30 relative overflow-hidden">
-      <div className="absolute inset-0 bg-background/90 flex items-center justify-center z-10">
+    <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-transparent relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-muted/60 to-muted/30 backdrop-blur-[2px] flex items-center justify-center z-10">
         <div className="text-center p-4">
           <Lock className="h-8 w-8 text-amber-500/50 mx-auto mb-2" />
           <p className="text-sm font-medium text-muted-foreground">{t('premium.eligibility.locked_title')}</p>
@@ -130,7 +130,7 @@ export function EligibilityGatePanel({
             <Shield className="h-4 w-4 text-primary" />
             {t('premium.eligibility.title')}
           </CardTitle>
-          <Badge className="text-white text-[10px]">
+          <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px]">
             XIMA Premium
           </Badge>
         </div>
@@ -142,7 +142,7 @@ export function EligibilityGatePanel({
         {/* Education */}
         <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
           <div className="flex items-center gap-2">
-            <GraduationCap className="h-4 w-4 text-primary" />
+            <GraduationCap className="h-4 w-4 text-blue-500" />
             <div>
               <p className="text-sm font-medium">{t('premium.eligibility.education')}</p>
               {status.educationLevel && (

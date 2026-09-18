@@ -14,13 +14,13 @@ export const HowXimaWorksExplainer = () => {
   const steps = [
     {
       icon: Target,
-      colorClasses: 'bg-blue-50 text-primary border-blue-200 dark:bg-blue-950 dark:text-primary dark:border-blue-800',
+      colorClasses: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800',
       title: t('business.how_xima.step1_title', '1. Definisci il tuo obiettivo di assunzione'),
       description: t('business.how_xima.step1_desc', 'Descrivi il ruolo con responsabilità, location, seniority. XIMA analizza il fit culturale con il DNA della tua azienda.'),
     },
     {
       icon: Users,
-      colorClasses: 'bg-purple-50 text-primary border-purple-200 dark:bg-purple-950 dark:text-primary dark:border-purple-800',
+      colorClasses: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800',
       title: t('business.how_xima.step2_title', '2. Shortlist intelligente e anonima'),
       description: t('business.how_xima.step2_desc', 'Ricevi candidati ordinati per identità comportamentale (XIMAtar), traiettoria di crescita, engagement e località. Nessun nome, nessuna foto, nessun CV: solo segnali.'),
     },

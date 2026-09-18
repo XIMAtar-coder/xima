@@ -56,8 +56,8 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
       labelKey: 'businessPortal.pipeline_stat_challenges',
       value: stats.activeChallenges,
       icon: Target,
-      color: 'text-primary',
-      bgColor: 'bg-muted',
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-500/10',
       link: '/business/challenges'
     },
     {
@@ -74,8 +74,8 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
       labelKey: 'businessPortal.pipeline_stat_pipeline',
       value: stats.candidatesInPipeline,
       icon: Users,
-      color: 'text-primary',
-      bgColor: 'bg-muted',
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-500/10',
       // Invited candidates are waited on in the challenge, not in the pool.
       link: responsesLink || '/business/challenges'
     },
@@ -126,7 +126,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
   return (
     <div className="space-y-4">
       {/* Quick Actions */}
-      <Card className="border-primary/20">
+      <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-medium flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-primary" />
@@ -206,7 +206,7 @@ export const BusinessCommandCenter: React.FC<CommandCenterProps> = ({
                   <div className="flex items-center gap-3">
                     {item.type === 'review' && <MessageSquare className="h-4 w-4 text-amber-500" />}
                     {item.type === 'expiring' && <Clock className="h-4 w-4 text-orange-500" />}
-                    {item.type === 'followup' && <Users className="h-4 w-4 text-primary" />}
+                    {item.type === 'followup' && <Users className="h-4 w-4 text-blue-500" />}
                     <span className="text-sm text-foreground">{item.label}</span>
                   </div>
                   <Badge variant="secondary" className="text-xs">{item.count}</Badge>

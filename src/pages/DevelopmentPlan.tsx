@@ -18,10 +18,10 @@ import GrowthTestResultModal from '@/components/growth/GrowthTestResultModal';
 
 const PILLAR_COLORS: Record<string, string> = {
   drive: 'text-orange-600 bg-orange-500/10 border-orange-500/20',
-  computational_power: 'text-primary bg-muted border-border',
+  computational_power: 'text-blue-600 bg-blue-500/10 border-blue-500/20',
   communication: 'text-green-600 bg-green-500/10 border-green-500/20',
-  creativity: 'text-primary bg-muted border-border',
-  knowledge: 'text-primary bg-muted border-border',
+  creativity: 'text-purple-600 bg-purple-500/10 border-purple-500/20',
+  knowledge: 'text-cyan-600 bg-cyan-500/10 border-cyan-500/20',
 };
 
 const PILLAR_LABELS: Record<string, string> = {
@@ -68,7 +68,7 @@ const ResourceCard: React.FC<{
     <Headphones className="h-4 w-4" />;
 
   return (
-    <Card className={`group transition-all duration-300 ${isPassed ? 'border-green-300 bg-green-50/50 dark:bg-green-900/10' : ''}`}>
+    <Card className={`group transition-all duration-300 hover:shadow-lg ${isPassed ? 'border-green-300 bg-green-50/50 dark:bg-green-900/10' : ''}`}>
       {isPassed && (
         <div className="absolute top-3 right-3 z-10">
           <div className="p-1.5 rounded-full bg-green-500"><CheckCircle className="h-4 w-4 text-white" /></div>
@@ -167,7 +167,7 @@ const DevelopmentPlan = () => {
         <div className="flex flex-col md:flex-row justify-between items-start gap-4 animate-fade-in">
           <div className="space-y-2">
             <p className="font-mono text-xs uppercase tracking-widest text-primary">Growth Hub</p>
-            <h1 className="text-[28px] md:text-[34px] xl:text-[40px] font-bold text-foreground">
+            <h1 className="text-[28px] md:text-[34px] xl:text-[40px] font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               Growth Hub
             </h1>
             <p className="text-[14px] md:text-[15px] text-muted-foreground max-w-xl">
@@ -206,7 +206,7 @@ const DevelopmentPlan = () => {
           <>
             {/* Progress overview */}
             <Card className="overflow-hidden animate-fade-in">
-              <CardHeader className="border-b">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 border-b">
                 <CardTitle className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-primary/10"><Target className="h-5 w-5 text-primary" /></div>
                   {activePath.path_title}

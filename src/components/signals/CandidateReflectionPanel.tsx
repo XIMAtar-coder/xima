@@ -35,7 +35,7 @@ export function CandidateReflectionPanel({ signals, className = '' }: CandidateR
   const reflection = getCandidateReflectionSignals(signals);
   
   return (
-    <Card className={`border-primary/20 ${className}`}>
+    <Card className={`border-primary/20 bg-gradient-to-br from-primary/5 to-transparent ${className}`}>
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <Eye className="h-4 w-4 text-primary" />

@@ -105,7 +105,7 @@ const SnapshotField: React.FC<{
         <PopoverContent 
           side="top" 
           align="center" 
-          className="w-72 p-3 bg-card/95 border-primary/20"
+          className="w-72 p-3 bg-card/95 backdrop-blur-sm border-primary/20"
         >
           <div className="space-y-3">
             <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
@@ -127,10 +127,10 @@ const SnapshotField: React.FC<{
             </div>
             
             {/* Callout 2: Turnover reduction */}
-            <div className="flex items-start gap-2 p-2 rounded-md bg-muted border border-border">
-              <TrendingUp className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+            <div className="flex items-start gap-2 p-2 rounded-md bg-blue-500/10 border border-blue-500/20">
+              <TrendingUp className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
               <div>
-                <span className="text-xs font-medium text-primary dark:text-primary block">
+                <span className="text-xs font-medium text-blue-600 dark:text-blue-400 block">
                   {t('business.overview.reduce_turnover')}
                 </span>
                 <span className="text-xs text-muted-foreground">
@@ -140,10 +140,10 @@ const SnapshotField: React.FC<{
             </div>
             
             {/* Callout 3: Workforce readiness */}
-            <div className="flex items-start gap-2 p-2 rounded-md bg-muted border border-border">
-              <Target className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+            <div className="flex items-start gap-2 p-2 rounded-md bg-purple-500/10 border border-purple-500/20">
+              <Target className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
               <div>
-                <span className="text-xs font-medium text-primary dark:text-primary block">
+                <span className="text-xs font-medium text-purple-600 dark:text-purple-400 block">
                   {t('business.overview.workforce_readiness')}
                 </span>
                 <span className="text-xs text-muted-foreground">
@@ -192,7 +192,7 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
   const hasMissingData = !snapshot.hq_location && !snapshot.industry && !snapshot.employees_count;
   
   return (
-    <Card className="border-border/50 overflow-hidden">
+    <Card className="border-border/50 bg-gradient-to-br from-card via-card to-primary/5 overflow-hidden">
       <CardContent className="p-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column: How XIMA works */}
@@ -210,7 +210,7 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
             {/* Pipeline Stepper */}
             <div className="flex items-start justify-between gap-2 relative">
               {/* Connecting line */}
-              <div className="absolute top-6 left-8 right-8 h-px bg-border hidden sm:block" />
+              <div className="absolute top-6 left-8 right-8 h-px bg-gradient-to-r from-primary/30 via-primary/50 to-primary/30 hidden sm:block" />
               
               <PipelineStep
                 level={1}

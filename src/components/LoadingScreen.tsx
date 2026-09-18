@@ -31,7 +31,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading = true }
         <div className="animate-[scale-in_0.6s_ease-out,pulse_2s_ease-in-out_infinite_0.6s]">
           <Logo 
             variant="symbol" 
-            className="w-24 h-24 md:w-32 md:h-32 drop-"
+            className="w-24 h-24 md:w-32 md:h-32 drop-shadow-lg"
             alt="XIMA Loading"
           />
         </div>

@@ -246,7 +246,7 @@ export default function CustomL1Challenge({
           <Card>
             <CardContent className="py-8 text-center">
               <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-              <Badge variant="outline" className="mb-4 bg-muted text-primary border-border">
+              <Badge variant="outline" className="mb-4 bg-blue-500/10 text-blue-600 border-blue-500/30">
                 {t('candidate.status.awaiting_review', 'In review')}
               </Badge>
               <h2 className="text-xl font-bold mb-2">{t('candidate.challenge.submitted_title', 'Risposte inviate')}</h2>
@@ -269,7 +269,7 @@ export default function CustomL1Challenge({
     <MainLayout>
       <div className="container max-w-3xl py-8 space-y-6">
         {/* Custom L1 Intro */}
-        <Card className="border-primary/30">
+        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
           <CardContent className="py-6">
             <div className="flex items-start gap-4">
               <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">

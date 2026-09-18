@@ -31,7 +31,7 @@ export function MindsetIntro({ guideName, intro, introContext, onStart }: Props)
     'Completare questa sfida arricchisce il tuo XIMAtar e rende il tuo profilo più rilevante per le aziende.';
 
   return (
-    <Card className="border-primary/30">
+    <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
       <CardContent className="py-10 space-y-6">
         {/* Aria's greeting */}
         <div className="flex items-start gap-3">

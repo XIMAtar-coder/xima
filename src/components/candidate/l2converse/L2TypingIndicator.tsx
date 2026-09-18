@@ -15,7 +15,7 @@ export function L2TypingIndicator({ counterpartName }: Props) {
         <p className="text-xs text-muted-foreground mb-1">
           {counterpartName} sta scrivendo…
         </p>
-        <div className="inline-flex items-center gap-1 rounded-lg rounded-tl-md bg-muted px-4 py-3">
+        <div className="inline-flex items-center gap-1 rounded-2xl rounded-tl-md bg-muted px-4 py-3">
           <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-bounce [animation-delay:-0.3s]" />
           <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-bounce [animation-delay:-0.15s]" />
           <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-bounce" />

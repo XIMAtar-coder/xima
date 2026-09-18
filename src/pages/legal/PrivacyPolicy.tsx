@@ -56,7 +56,7 @@ const PrivacyPolicy = () => {
           </p>
         </div>
 
-        <Card className="mb-8 border-border/50">
+        <Card className="mb-8 bg-gradient-to-br from-card to-card/80 border-border/50">
           <CardContent className="pt-6">
             <p className="text-muted-foreground leading-relaxed">
               {t('legal.privacy.intro')}
@@ -68,7 +68,7 @@ const PrivacyPolicy = () => {
           {sections.map((section, index) => {
             const Icon = section.icon;
             return (
-              <Card key={index} className="border-border/50">
+              <Card key={index} className="bg-gradient-to-br from-card to-card/80 border-border/50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 text-lg">
                     <div className="p-2 rounded-lg bg-primary/10">

@@ -310,7 +310,7 @@ export function XimaDecisionPack({
   const nextAction = getSuggestedNextAction(signals, level2Payload);
   
   return (
-    <Card className={`border-primary/20 ${className}`}>
+    <Card className={`border-primary/20 bg-gradient-to-br from-primary/5 to-transparent ${className}`}>
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <FileText className="h-4 w-4 text-primary" />

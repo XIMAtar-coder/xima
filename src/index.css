@@ -5,46 +5,46 @@
 
 @layer base {
   :root {
-    /* ── XIMA palette (light): original blue kept; surfaces flat, no glass ── */
-    --background: 240 5% 96%;
-    --foreground: 240 6% 12%;
-
-    --card: 0 0% 100%;
+    /* ── Apple Liquid Glass Design System (Light) ── */
+    --background: 240 5% 96%;            /* #f2f2f7 */
+    --foreground: 240 6% 12%;            /* #1c1c1e */
+    
+    --card: 0 0% 100%;                   /* white glass — use glass-surface class */
     --card-foreground: 240 6% 12%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 240 6% 12%;
 
-    --primary: 211 100% 50%;
+    --primary: 211 100% 50%;             /* #007AFF Apple blue */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 243 54% 57%;
+    --secondary: 243 54% 57%;            /* #5856D6 Apple indigo */
     --secondary-foreground: 0 0% 100%;
 
     --muted: 240 5% 96%;
-    --muted-foreground: 240 3% 45%;
+    --muted-foreground: 240 3% 45%;      /* #6e6e73 */
 
     --accent: 211 100% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 4 100% 59%;
+    --destructive: 4 100% 59%;           /* #FF3B30 */
     --destructive-foreground: 0 0% 100%;
 
     --border: 240 5% 75%;
     --input: 240 5% 75%;
     --ring: 211 100% 50%;
 
-    --radius: 0.5rem;                    /* 8px panels, 6px controls, 4px badges */
+    --radius: 1.25rem;                   /* 20px default */
 
     /* Glass tokens */
-    --glass-bg: hsl(var(--card));
-    --glass-bg-hover: hsl(var(--card));
-    --glass-border: hsl(var(--border));
-    --glass-border-hover: hsl(var(--border));
-    --glass-shadow: none;
-    --glass-shadow-hover: none;
-    --glass-blur: none;
-    --glass-blur-strong: none;
+    --glass-bg: rgba(255,255,255,0.72);
+    --glass-bg-hover: rgba(255,255,255,0.88);
+    --glass-border: rgba(255,255,255,0.90);
+    --glass-border-hover: rgba(255,255,255,0.95);
+    --glass-shadow: 0 2px 24px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,1.0);
+    --glass-shadow-hover: 0 8px 32px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,1.0);
+    --glass-blur: blur(28px) saturate(200%);
+    --glass-blur-strong: blur(40px) saturate(200%);
     
     /* Text colors */
     --text-primary: #1c1c1e;
@@ -89,8 +89,8 @@
   .dark {
     color-scheme: dark;
 
-    --background: 240 10% 4%;
-    --foreground: 240 5% 96%;
+    --background: 240 10% 4%;              /* #08080d */
+    --foreground: 240 5% 96%;              /* #f5f5f7 */
 
     --card: 240 10% 6%;
     --card-foreground: 240 5% 96%;
@@ -98,7 +98,7 @@
     --popover: 240 10% 8%;
     --popover-foreground: 240 5% 96%;
 
-    --primary: 239 84% 67%;
+    --primary: 239 84% 67%;               /* #6366f1 indigo for dark */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 243 54% 57%;
@@ -117,17 +117,17 @@
     --input: 240 6% 12%;
     --ring: 239 84% 67%;
 
-    --radius: 0.5rem;                    /* 8px panels, 6px controls, 4px badges */
+    --radius: 1.25rem;
 
     /* Dark glass tokens */
-    --glass-bg: hsl(var(--card));
-    --glass-bg-hover: hsl(var(--card));
-    --glass-border: hsl(var(--border));
-    --glass-border-hover: hsl(var(--border));
-    --glass-shadow: none;
-    --glass-shadow-hover: none;
-    --glass-blur: none;
-    --glass-blur-strong: none;
+    --glass-bg: rgba(255,255,255,0.06);
+    --glass-bg-hover: rgba(255,255,255,0.09);
+    --glass-border: rgba(255,255,255,0.10);
+    --glass-border-hover: rgba(255,255,255,0.16);
+    --glass-shadow: 0 8px 32px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.10);
+    --glass-shadow-hover: 0 16px 48px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.10);
+    --glass-blur: blur(24px) saturate(180%);
+    --glass-blur-strong: blur(40px) saturate(180%);
 
     /* Dark text */
     --text-primary: #f5f5f7;
@@ -179,8 +179,7 @@
   }
 
   body {
-    font-family: 'Inter', system-ui, sans-serif;
-    font-variant-numeric: tabular-nums;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: var(--text-primary);
@@ -197,7 +196,7 @@
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
     color: var(--text-primary);
   }
 
@@ -232,12 +231,14 @@
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
-  border-radius: 8px;
-  transition: border-color 120ms ease-out;
+  transition: all 240ms ease-out;
 }
 
 .glass-surface:hover {
-  border-color: hsl(var(--input));
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+  transform: translateY(-2px);
 }
 
 .glass-surface-static {
@@ -250,8 +251,10 @@
 
 /* ── GLASS NAVBAR ── */
 .glass-nav {
-  background: hsl(var(--card));
-  border-bottom: 1px solid hsl(var(--border));
+  background: rgba(242,242,247,0.82);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border-bottom: 1px solid rgba(60,60,67,0.12);
 }
 
 /* ── GLASS DARK OVERRIDES (comprehensive) ── */
@@ -259,69 +262,85 @@ html.dark .glass-surface,
 html.dark .glass-surface-static,
 html.dark .glass-card,
 html.dark [class*="glass-surface"],
-html.dark [class*="glass-card"],
-html.dark .glass-modal,
-html.dark .glass-badge {
-  background: hsl(var(--card)) !important;
-  border-color: hsl(var(--border)) !important;
-  box-shadow: none !important;
+html.dark [class*="glass-card"] {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.06) !important;
 }
 
 html.dark .glass-nav {
-  background: hsl(var(--card)) !important;
-  border-bottom-color: hsl(var(--border)) !important;
+  background: rgba(8, 8, 13, 0.85) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .glass-modal {
+  background: rgba(20, 20, 30, 0.92) !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
 }
 
 html.dark .glass-input {
-  background: hsl(var(--card)) !important;
-  border-color: hsl(var(--input)) !important;
-  color: hsl(var(--foreground)) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+  color: #f5f5f7 !important;
+}
+
+html.dark .glass-badge {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 /* ── GLASS MODAL ── */
 .glass-modal {
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  box-shadow: 0 16px 48px rgba(0,0,0,0.16);
-  border-radius: 12px;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: var(--glass-blur-strong);
+  -webkit-backdrop-filter: var(--glass-blur-strong);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 28px;
 }
 
 /* ── BUTTONS ── */
 .btn-primary-glow {
-  box-shadow: none;
-  transition: background-color 120ms ease-out;
+  box-shadow: 0 4px 16px rgba(0,122,255,0.30);
+  transition: all 200ms ease-out;
+}
+.btn-primary-glow:hover {
+  box-shadow: 0 6px 24px rgba(0,122,255,0.40);
+  transform: scale(1.01);
+}
+.btn-primary-glow:active {
+  transform: scale(0.97);
 }
 
 /* ── INPUTS ── */
 .glass-input {
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--input));
-  border-radius: 6px;
-  padding: 10px 12px;
-  font-size: 15px;
+  background: rgba(118,118,128,0.12);
+  border: none;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 17px;
   color: var(--text-primary);
   transition: all 200ms ease-out;
 }
 .glass-input::placeholder {
-  color: hsl(var(--muted-foreground));
+  color: #aeaeb2;
 }
 .glass-input:focus {
-  border: 1px solid hsl(var(--primary));
-  outline: 2px solid hsl(var(--primary));
-  outline-offset: 2px;
+  background: rgba(118,118,128,0.08);
+  border: 2px solid #007AFF;
   box-shadow: none;
   outline: none;
 }
 
 /* ── BADGE / PILL ── */
 .glass-badge {
-  border-radius: 4px;
-  padding: 2px 8px;
-  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 13px;
   font-weight: 500;
-  background: hsl(var(--muted));
-  border: 1px solid hsl(var(--border));
-  color: hsl(var(--foreground));
+  background: rgba(0,122,255,0.10);
+  border: 1px solid rgba(0,122,255,0.20);
+  color: #007AFF;
 }
 
 /* ── TYPOGRAPHY ── */

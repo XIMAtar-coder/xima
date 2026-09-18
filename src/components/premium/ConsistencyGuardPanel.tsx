@@ -150,8 +150,8 @@ function LockedPanel() {
   const { t } = useTranslation();
   
   return (
-    <Card className="border-amber-500/30 relative overflow-hidden">
-      <div className="absolute inset-0 bg-background/90 flex items-center justify-center z-10">
+    <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-transparent relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-muted/60 to-muted/30 backdrop-blur-[2px] flex items-center justify-center z-10">
         <div className="text-center p-4">
           <Lock className="h-8 w-8 text-amber-500/50 mx-auto mb-2" />
           <p className="text-sm font-medium text-muted-foreground">{t('premium.guard.locked_title')}</p>
@@ -210,7 +210,7 @@ export function ConsistencyGuardPanel({
             <ShieldCheck className="h-4 w-4 text-primary" />
             {t('premium.guard.title')}
           </CardTitle>
-          <Badge className="text-white text-[10px]">
+          <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px]">
             XIMA Premium
           </Badge>
         </div>

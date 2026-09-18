@@ -170,7 +170,7 @@ export const MembershipSection: React.FC = () => {
     switch (s) {
       case 'rewarded': return 'bg-primary/10 text-primary';
       case 'qualified': return 'bg-green-500/10 text-green-600';
-      case 'signed_up': return 'bg-muted text-primary';
+      case 'signed_up': return 'bg-blue-500/10 text-blue-600';
       default: return 'bg-muted text-muted-foreground';
     }
   };

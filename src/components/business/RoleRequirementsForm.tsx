@@ -118,7 +118,7 @@ export const RoleRequirementsForm: React.FC<RoleRequirementsFormProps> = ({ hiri
         <div className="space-y-4 p-4 rounded-lg border border-border/50">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <GraduationCap className="h-5 w-5 text-primary" />
+              <GraduationCap className="h-5 w-5 text-blue-500" />
               <Label className="font-medium">{t('eligibility.requirements.education_required')}</Label>
             </div>
             <Switch

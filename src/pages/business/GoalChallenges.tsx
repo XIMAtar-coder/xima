@@ -156,7 +156,7 @@ const GoalChallenges: React.FC = () => {
       case 'archived':
         return <Badge className="bg-muted text-muted-foreground">{t('business.challenges.status_archived')}</Badge>;
       default:
-        return <Badge className="bg-muted text-primary border-border">{t('business.challenges.status_draft')}</Badge>;
+        return <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">{t('business.challenges.status_draft')}</Badge>;
     }
   };
 
@@ -254,7 +254,7 @@ const GoalChallenges: React.FC = () => {
         {draftChallenges.length > 0 && (
           <div>
             <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-              <Edit className="h-5 w-5 text-primary" />
+              <Edit className="h-5 w-5 text-blue-500" />
               {t('business.challenges.draft_section')} ({draftChallenges.length})
             </h2>
             <div className="space-y-3">
@@ -342,7 +342,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <h3 className="font-semibold text-foreground truncate">{challenge.title}</h3>
               {challenge.level === 2 && (
-                <Badge variant="outline" className="bg-muted text-primary border-border text-xs">
+                <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/30 text-xs">
                   L2
                 </Badge>
               )}

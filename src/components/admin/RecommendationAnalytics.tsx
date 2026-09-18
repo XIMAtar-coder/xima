@@ -62,7 +62,7 @@ const RecommendationAnalytics = () => {
             </div>
 
             <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-              <MousePointerClick className="text-primary" size={24} />
+              <MousePointerClick className="text-blue-600" size={24} />
               <div>
                 <p className="text-sm text-muted-foreground">Click-Through Rate</p>
                 <p className="text-2xl font-bold">{metrics.clickThroughRate.toFixed(1)}%</p>
@@ -78,7 +78,7 @@ const RecommendationAnalytics = () => {
             </div>
 
             <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-              <TrendingUp className="text-primary" size={24} />
+              <TrendingUp className="text-purple-600" size={24} />
               <div>
                 <p className="text-sm text-muted-foreground">Total Applied</p>
                 <p className="text-2xl font-bold">{metrics.totalApplied}</p>

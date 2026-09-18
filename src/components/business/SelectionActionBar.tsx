@@ -25,7 +25,7 @@ export const SelectionActionBar: React.FC<SelectionActionBarProps> = ({
   if (selectedCount === 0) return null;
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 border border-white/20 rounded-full px-6 py-3 flex items-center gap-4">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 backdrop-blur-md border border-white/20 rounded-full px-6 py-3 shadow-2xl flex items-center gap-4">
       <div className="flex items-center gap-2 text-white">
         <Users size={18} className="text-primary" />
         <span className="font-medium">

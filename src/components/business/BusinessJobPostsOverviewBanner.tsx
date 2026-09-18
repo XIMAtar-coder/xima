@@ -54,8 +54,8 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
       labelKey: 'businessPortal.jobs_stat_open',
       value: stats.openCount,
       icon: FileText,
-      color: 'text-primary',
-      bgColor: 'bg-muted'
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-500/10'
     },
     {
       key: 'active_job_posts',
@@ -70,8 +70,8 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
       labelKey: 'businessPortal.jobs_stat_applications',
       value: stats.applicationsLast30d,
       icon: Users,
-      color: 'text-primary',
-      bgColor: 'bg-muted'
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-500/10'
     },
     {
       key: 'pending_reviews',
@@ -121,7 +121,7 @@ export const BusinessJobPostsOverviewBanner: React.FC<BusinessJobPostsOverviewBa
   };
 
   return (
-    <Card className="border-primary/20">
+    <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
       <CardHeader className="pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">

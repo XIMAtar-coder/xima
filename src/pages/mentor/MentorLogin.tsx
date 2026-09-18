@@ -131,15 +131,15 @@ const MentorLogin = () => {
 
   if (checkingMentor) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-md border-border/50">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
+      <Card className="w-full max-w-md border-border/50 shadow-xl">
         <CardHeader className="space-y-1 text-center">
           <div className="mx-auto mb-4 p-3 rounded-full bg-primary/10 border border-primary/20 w-fit">
             <GraduationCap className="text-primary" size={32} />

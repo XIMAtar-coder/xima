@@ -247,7 +247,7 @@ const Onboarding = () => {
           </div>
         </div>
         
-        <Card className="p-6 border-0">
+        <Card className="p-6 shadow-lg border-0">
           {step === 'upload-cv' && (
             <div className="max-w-md mx-auto">
               <CvUploader onCvUploaded={handleCvUploaded} />

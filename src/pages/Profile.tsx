@@ -168,7 +168,7 @@ const Profile = () => {
       <MainLayout>
         <div className="container max-w-4xl mx-auto py-12 space-y-8">
           <XimaJourneyGuideModal open={guideOpen} onClose={handleGuideClose} isAutoOpen={shouldAutoShowGuide} />
-          <div className="glass-surface rounded-[20px] text-center py-16 px-6">
+          <div className="glass-surface rounded-[20px] text-center py-16 px-6 hover:translate-y-0">
             <div className="flex justify-center mb-6">
               <div className="w-20 h-20 rounded-[20px] bg-primary/10 flex items-center justify-center">
                 <Sparkles className="h-10 w-10 text-primary" strokeWidth={1.5} />

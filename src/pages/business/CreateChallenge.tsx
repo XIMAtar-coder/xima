@@ -579,7 +579,7 @@ const CreateChallenge = () => {
                   </Badge>
                 )}
                 {isEditMode && existingChallenge?.level === 2 && (
-                  <Badge variant="outline" className="bg-muted text-primary border-border">
+                  <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/30">
                     {t('challenge_builder.level_2')}
                   </Badge>
                 )}
@@ -915,7 +915,7 @@ const CreateChallenge = () => {
 
       {/* Fixed CTA bar - always visible at viewport bottom */}
       <div 
-        className="fixed bottom-0 inset-x-0 bg-slate-900/95 border-t border-white/10 p-4"
+        className="fixed bottom-0 inset-x-0 bg-slate-900/95 backdrop-blur-md border-t border-white/10 p-4"
         style={{ zIndex: 9999 }}
       >
         <div className="max-w-5xl mx-auto flex flex-wrap gap-3 justify-center sm:justify-end">

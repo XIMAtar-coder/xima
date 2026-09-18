@@ -3864,10 +3864,7 @@
       "subtle": "Sutil",
       "strong": "Fuerte",
       "clear_focus": "Quitar foco"
-    },
-    "hero_proof_no_card": "Sin tarjeta de crédito",
-    "hero_proof_setup": "Configuración en 2 minutos",
-    "hero_proof_first_candidate": "Primer candidato en 24 h"
+    }
   },
   "not_found": {
     "title": "404 — Página no encontrada",

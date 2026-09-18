@@ -61,7 +61,7 @@ export const InterestSignalsCard = ({ onChatOpen }: InterestSignalsCardProps) =>
   }
 
   return (
-    <Card className="border-primary/30 overflow-hidden">
+    <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-transparent overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">

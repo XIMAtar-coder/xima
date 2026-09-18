@@ -47,7 +47,7 @@ export const PoolCandidateCard: React.FC<PoolCandidateCardProps> = ({ candidate,
   };
 
   return (
-    <Card className={` transition-shadow relative ${candidate.is_synthetic ? 'border-dashed border-2 border-border opacity-80' : ''}`}>
+    <Card className={`hover:shadow-lg transition-shadow relative ${candidate.is_synthetic ? 'border-dashed border-2 border-border opacity-80' : ''}`}>
       {candidate.is_synthetic && (
         <div className="absolute top-2 right-2 z-10">
           <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200 dark:bg-amber-950 dark:text-amber-100 font-medium">

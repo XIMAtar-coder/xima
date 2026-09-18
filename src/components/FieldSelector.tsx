@@ -34,10 +34,10 @@ export default function FieldSelector({ value, onChange, disabled }: Props) {
               disabled={disabled}
               onClick={() => onChange(key)}
               className={[
-                'text-left rounded-lg border px-5 py-4 transition focus:outline-none focus:ring-2 focus:ring-primary/20',
+                'text-left rounded-2xl border px-5 py-4 transition focus:outline-none focus:ring-2 focus:ring-[#2C6CFF]/20',
                 selected
-                  ? 'border-primary bg-muted dark:bg-white/5'
-                  : 'border-border hover:border-primary hover:bg-accent/50'
+                  ? 'border-[#2C6CFF] bg-blue-50/50 dark:bg-white/5'
+                  : 'border-border hover:border-[#2C6CFF] hover:bg-accent/50'
               ].join(' ')}
               aria-pressed={selected}
             >
@@ -49,7 +49,7 @@ export default function FieldSelector({ value, onChange, disabled }: Props) {
                 <div
                   className={[
                     'mt-1 h-5 w-5 rounded-full border-2 transition-all',
-                    selected ? 'border-primary bg-primary shadow-sm' : 'border-border'
+                    selected ? 'border-[#2C6CFF] bg-[#2C6CFF] shadow-sm' : 'border-border'
                   ].join(' ')}
                   aria-hidden
                 />

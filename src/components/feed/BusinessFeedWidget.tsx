@@ -73,7 +73,7 @@ export const BusinessFeedWidget = ({ className }: BusinessFeedWidgetProps) => {
   const payload = item.payload;
 
   return (
-    <Card className={cn("border-primary/20", className)}>
+    <Card className={cn("border-primary/20 bg-gradient-to-r from-primary/5 to-transparent", className)}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm flex items-center gap-2">
