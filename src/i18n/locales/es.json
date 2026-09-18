@@ -6987,5 +6987,11 @@
     "review_mode": "Modalidad",
     "review_location": "Ubicación",
     "review_responsibilities": "Responsabilidades"
+  },
+  "consent_gate": {
+    "title": "Un paso antes de continuar",
+    "body": "Para usar XIMA necesitamos que aceptes la política de privacidad y los términos del servicio.",
+    "continue": "Aceptar y continuar",
+    "decline": "Ahora no, cerrar sesión"
   }
 }

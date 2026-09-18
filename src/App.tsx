@@ -27,6 +27,7 @@ const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const ConsentRequired = lazy(() => import("./pages/ConsentRequired"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -148,6 +149,7 @@ const RoutesTree = () => {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/consent" element={<RequireAuth role="candidate"><ConsentRequired /></RequireAuth>} />
           <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
           <Route path="/onboarding" element={<RequireAuth role="candidate"><Onboarding /></RequireAuth>} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />

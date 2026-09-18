@@ -6,6 +6,30 @@ import { syncGuestAssessmentToProfile } from '@/utils/assessmentSync';
 import { getPostLoginRedirectPath } from '@/hooks/usePostLoginRedirect';
 import Seo from '@/components/Seo';
 import { log } from '@/lib/log';
+import { recordUserConsents } from '@/hooks/useConsentRecording';
+import { PENDING_CONSENT_KEY } from '@/components/auth/GoogleAuthButton';
+
+/**
+ * Google sign-ups skipped the privacy/terms checkboxes. Record the consent
+ * given on the register page before the redirect; if there is none on file
+ * (e.g. a first Google sign-in from the login page), ask for it before entry.
+ * Returns the path to go to when consent is still missing.
+ */
+const ensureConsent = async (userId: string): Promise<string | null> => {
+  let pendingLocale: string | null = null;
+  try { pendingLocale = sessionStorage.getItem(PENDING_CONSENT_KEY); } catch { /* storage unavailable */ }
+  if (pendingLocale) {
+    const res = await recordUserConsents(userId, pendingLocale);
+    try { sessionStorage.removeItem(PENDING_CONSENT_KEY); } catch { /* storage unavailable */ }
+    if (res.success) return null;
+  }
+  const { count, error } = await supabase
+    .from('user_consents')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId);
+  if (error) return null; // do not lock people out on a read error
+  return (count ?? 0) > 0 ? null : '/consent';
+};
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -60,7 +84,8 @@ const AuthCallback = () => {
             if (isMounted) {
               setIsProcessing(false);
               const redirectPath = await getPostLoginRedirectPath(session.user.id);
-              navigate(redirectPath, { replace: true });
+              const consentPath = await ensureConsent(session.user.id);
+              navigate(consentPath ? `${consentPath}?next=${encodeURIComponent(redirectPath)}` : redirectPath, { replace: true });
             }
           }
         }
@@ -89,7 +114,8 @@ const AuthCallback = () => {
 
           setIsProcessing(false);
           const redirectPath = await getPostLoginRedirectPath(session.user.id);
-          navigate(redirectPath, { replace: true });
+          const consentPath = await ensureConsent(session.user.id);
+          navigate(consentPath ? `${consentPath}?next=${encodeURIComponent(redirectPath)}` : redirectPath, { replace: true });
           return;
         }
       } catch (err) {

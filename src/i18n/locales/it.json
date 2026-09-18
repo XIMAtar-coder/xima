@@ -6825,5 +6825,11 @@
     "review_mode": "Modalità",
     "review_location": "Località",
     "review_responsibilities": "Responsabilità"
+  },
+  "consent_gate": {
+    "title": "Un passaggio prima di continuare",
+    "body": "Per usare XIMA ci serve il tuo consenso all'informativa privacy e ai termini di servizio.",
+    "continue": "Accetta e continua",
+    "decline": "Non ora, esci"
   }
 }

@@ -7,16 +7,22 @@ import { log } from '@/lib/log';
 
 interface GoogleAuthButtonProps {
   mode: 'login' | 'register';
+  /** Runs before leaving for Google; return false to stay (e.g. consents unticked). */
+  beforeStart?: () => boolean;
 }
 
-export const GoogleAuthButton = ({ mode }: GoogleAuthButtonProps) => {
+/** Set before the Google redirect; AuthCallback records the consent on return. */
+export const PENDING_CONSENT_KEY = 'xima_pending_consent_locale';
+
+export const GoogleAuthButton = ({ mode, beforeStart }: GoogleAuthButtonProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { t } = useTranslation();
 
   const handleGoogleAuth = async () => {
     if (isLoading) return;
-    
+    if (beforeStart && !beforeStart()) return;
+
     setIsLoading(true);
     
     try {

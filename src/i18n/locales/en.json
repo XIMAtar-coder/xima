@@ -6825,5 +6825,11 @@
     "review_mode": "Work mode",
     "review_location": "Location",
     "review_responsibilities": "Responsibilities"
+  },
+  "consent_gate": {
+    "title": "One step before you continue",
+    "body": "To use XIMA we need your agreement to the privacy policy and the terms of service.",
+    "continue": "Accept and continue",
+    "decline": "Not now, sign out"
   }
 }

@@ -13,7 +13,7 @@ import LandingLayout from '@/components/landing/LandingLayout';
 import Seo from '@/components/Seo';
 import { syncGuestAssessmentToProfile, syncGuestCvToProfile } from '@/utils/assessmentSync';
 import { supabase } from '@/integrations/supabase/client';
-import { GoogleAuthButton } from '@/components/auth/GoogleAuthButton';
+import { GoogleAuthButton, PENDING_CONSENT_KEY } from '@/components/auth/GoogleAuthButton';
 import { ConsentCheckboxes } from '@/components/auth/ConsentCheckboxes';
 import { recordUserConsents } from '@/hooks/useConsentRecording';
 import { log } from '@/lib/log';
@@ -212,7 +212,21 @@ const Register = () => {
               </Button>
             </p>
 
-            <GoogleAuthButton mode="register" />
+            {/* Consent applies to both ways of signing up: Google used to skip it. */}
+            <ConsentCheckboxes
+              privacyAccepted={privacyAccepted} termsAccepted={termsAccepted}
+              onPrivacyChange={setPrivacyAccepted} onTermsChange={setTermsAccepted}
+              showError={showConsentError} className="mb-4"
+            />
+
+            <GoogleAuthButton
+              mode="register"
+              beforeStart={() => {
+                if (!validateConsents()) return false;
+                try { sessionStorage.setItem(PENDING_CONSENT_KEY, i18n.language); } catch { /* storage unavailable */ }
+                return true;
+              }}
+            />
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
@@ -278,12 +292,6 @@ const Register = () => {
                 {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
               </div>
 
-              <ConsentCheckboxes
-                privacyAccepted={privacyAccepted} termsAccepted={termsAccepted}
-                onPrivacyChange={setPrivacyAccepted} onTermsChange={setTermsAccepted}
-                showError={showConsentError} className="pt-2"
-              />
-              
               <Button type="submit" className="w-full min-h-[48px]" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
