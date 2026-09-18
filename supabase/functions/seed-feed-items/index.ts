@@ -96,7 +96,7 @@ serve(async (req) => {
       
       const basePayload = {
         ximatar_name: ximatar.label || `XIMAtar ${index + 1}`,
-        ximatar_image: ximatar.image_url || `/ximatars/default.png`,
+        ximatar_image: ximatar.image_url || `/ximatars/chameleon.webp`,
         ...demoMeta,
       };
 

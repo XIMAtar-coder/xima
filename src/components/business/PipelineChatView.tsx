@@ -137,7 +137,7 @@ export const PipelineChatView: React.FC<PipelineChatViewProps> = ({
         )}
         {role === 'business' ? (
           <img loading="lazy" decoding="async"
-            src={`/ximatars/${(thread?.ximatar_archetype || 'chameleon').toLowerCase()}.png`}
+            src={`/ximatars/${(thread?.ximatar_archetype || 'chameleon').toLowerCase()}.webp`}
             className="w-10 h-10 rounded-full"
             alt=""
           />

@@ -59,7 +59,7 @@ const parseReasons = (raw?: string | null): Reason[] => {
 };
 
 const getArchetypeImageUrl = (archetype: string) =>
-  `/ximatars/${(archetype || 'chameleon').toLowerCase()}.png`;
+  `/ximatars/${(archetype || 'chameleon').toLowerCase()}.webp`;
 
 export const ShortlistCard: React.FC<ShortlistCardProps> = ({ candidate, rank, locked = false, invited = false, inviting = false, needsChallenge = false, onInviteToChallenge, onViewProfile }) => {
   const { t } = useTranslation();

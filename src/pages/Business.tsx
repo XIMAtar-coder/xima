@@ -159,7 +159,7 @@ const Business: React.FC = () => {
                     }}
                   >
                     <img
-                      src={`/ximatars/${HERO_CANDIDATE.name}.png`}
+                      src={`/ximatars/${HERO_CANDIDATE.name}.webp`}
                       alt={HERO_CANDIDATE.archetype}
                       className="w-full h-full object-cover"
                       loading="lazy"
@@ -485,7 +485,7 @@ const Business: React.FC = () => {
                 <li key={c.code} className="flex items-center gap-3 py-3">
                   <div className="w-10 h-10 rounded-full overflow-hidden border border-border bg-muted shrink-0">
                     <img
-                      src={`/ximatars/${c.name}.png`}
+                      src={`/ximatars/${c.name}.webp`}
                       alt={c.archetype}
                       className="w-full h-full object-cover"
                       loading="lazy"

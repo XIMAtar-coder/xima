@@ -98,7 +98,7 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <img
-            src={`/ximatars/${rec.ximatar_id}.png`}
+            src={`/ximatars/${rec.ximatar_id}.webp`}
             alt={rec.ximatar_id}
             width={32}
             height={32}

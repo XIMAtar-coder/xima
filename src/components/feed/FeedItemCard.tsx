@@ -248,7 +248,7 @@ export const FeedItemCard = ({ item, onReact, isBusiness }: FeedItemCardProps) =
             <Avatar className="h-11 w-11 border-2 border-primary/20">
               {ximatar.image && (
                 <AvatarImage
-                  src={ximatar.image.startsWith('/') ? ximatar.image : `/ximatars/${ximatar.image}.png`}
+                  src={ximatar.image.startsWith('/') ? ximatar.image : `/ximatars/${ximatar.image}.webp`}
                   alt={ximatar.name}
                   loading="lazy"
                   decoding="async"

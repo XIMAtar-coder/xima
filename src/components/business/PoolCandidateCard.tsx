@@ -59,7 +59,7 @@ export const PoolCandidateCard: React.FC<PoolCandidateCardProps> = ({ candidate,
         {/* Header: archetype identity with real image */}
         <div className="flex items-center gap-3">
           <img
-            src={`/ximatars/${candidate.ximatar_archetype}.png`}
+            src={`/ximatars/${candidate.ximatar_archetype}.webp`}
             alt={profile?.name || candidate.ximatar_archetype}
             className="w-10 h-10 rounded-full object-cover border-2 border-primary/20"
             onError={(e) => {

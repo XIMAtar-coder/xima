@@ -21,7 +21,7 @@ export const FeedChatThreadCard = ({ thread, threadType, contextLabel, onOpen }:
     name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
   const ximatarSrc = thread.other_user.ximatar
-    ? `/ximatars/${thread.other_user.ximatar}.png`
+    ? `/ximatars/${thread.other_user.ximatar}.webp`
     : undefined;
 
   return (

@@ -254,7 +254,7 @@ const HowItWorks = () => {
               <div key={animal} className="flex flex-col items-center gap-2 group">
                 <div className="w-20 h-20 rounded-full overflow-hidden border border-primary/15 bg-primary/5 transition-all duration-200">
                   <img
-                    src={`/ximatars/${animal}.png`}
+                    src={`/ximatars/${animal}.webp`}
                     alt={animal}
                     className="w-full h-full object-contain"
                     loading="lazy"

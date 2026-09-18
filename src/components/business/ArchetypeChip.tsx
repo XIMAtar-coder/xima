@@ -25,7 +25,7 @@ export const ArchetypeChip: React.FC<ArchetypeChipProps> = ({ id, label, selecte
         <span className="w-5 h-5 flex items-center justify-center text-xs">★</span>
       ) : (
         <img
-          src={`/ximatars/${id}.png`}
+          src={`/ximatars/${id}.webp`}
           alt={label}
           className="w-5 h-5 rounded-full object-cover"
           onError={(e) => {

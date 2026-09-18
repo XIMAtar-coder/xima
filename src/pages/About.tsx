@@ -290,7 +290,7 @@ const About: React.FC = () => {
                   }}
                 >
                   <img
-                    src={`/ximatars/${name}.png`}
+                    src={`/ximatars/${name}.webp`}
                     alt={t(`about.archetypes.name_${name}`)}
                     className="w-full h-full object-cover"
                     loading="lazy"

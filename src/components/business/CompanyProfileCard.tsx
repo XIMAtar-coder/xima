@@ -229,7 +229,7 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted border border-border"
                 >
                   <img
-                    src={`/ximatars/${ximatar}.png`}
+                    src={`/ximatars/${ximatar}.webp`}
                     alt={ximatar}
                     className="h-8 w-8 object-contain"
                   />

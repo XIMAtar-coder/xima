@@ -41,14 +41,14 @@ export function getArchetypeEmoji(archetype: string | null | undefined): string 
 
 /** Returns the public URL for a XIMAtar archetype image */
 export function getArchetypeImageUrl(archetype: string | null | undefined): string {
-  return `/ximatars/${(archetype || 'chameleon').toLowerCase()}.png`;
+  return `/ximatars/${(archetype || 'chameleon').toLowerCase()}.webp`;
 }
 
 export function getDisplayAvatar(candidate: AnonymousCandidate): string {
   if (candidate.identity_revealed && candidate.photo_url) {
     return candidate.photo_url;
   }
-  return `/ximatars/${(candidate.ximatar_archetype || 'chameleon').toLowerCase()}.png`;
+  return `/ximatars/${(candidate.ximatar_archetype || 'chameleon').toLowerCase()}.webp`;
 }
 
 export function canRevealIdentity(pipelineStage: string | null | undefined): boolean {

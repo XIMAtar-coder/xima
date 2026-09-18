@@ -78,7 +78,7 @@ export const TeamIntelligenceCard: React.FC<TeamIntelligenceCardProps> = ({
                 {pipelineByArchetype.slice(0, 8).map((item) => (
                   <div key={item.archetype} className="flex items-center gap-2">
                     <img
-                      src={`/ximatars/${item.archetype}.png`}
+                      src={`/ximatars/${item.archetype}.webp`}
                       className="w-5 h-5"
                       alt=""
                       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}

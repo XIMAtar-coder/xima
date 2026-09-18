@@ -505,7 +505,7 @@ const JobImportWizard = () => {
                   <h3 className="font-semibold text-foreground mb-3">{t('business.jobs.import.step2.archetype_section')}</h3>
                   <div className="flex items-start gap-4">
                     <img
-                      src={`/ximatars/${extracted.suggested_ximatar}.png`}
+                      src={`/ximatars/${extracted.suggested_ximatar}.webp`}
                       alt={extracted.suggested_ximatar}
                       className="w-16 h-16 rounded-xl object-cover"
                       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}

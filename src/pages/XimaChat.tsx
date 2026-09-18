@@ -136,7 +136,7 @@ const XimaChat = () => {
 
   const getXimatarImage = (ximatar?: string) => {
     if (!ximatar) return null;
-    return `/ximatars/${ximatar}.png`;
+    return `/ximatars/${ximatar}.webp`;
   };
 
   if (!user) {

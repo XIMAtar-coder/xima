@@ -105,7 +105,7 @@ export const PipelineChatList: React.FC<PipelineChatListProps> = ({
             >
               {role === 'business' ? (
                 <img
-                  src={`/ximatars/${(thread.ximatar_archetype || 'chameleon').toLowerCase()}.png`}
+                  src={`/ximatars/${(thread.ximatar_archetype || 'chameleon').toLowerCase()}.webp`}
                   className="w-10 h-10 rounded-full"
                   alt=""
                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
