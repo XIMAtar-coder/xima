@@ -112,6 +112,7 @@ export function useMentorCalendar(mentorId: string | null) {
         status: s.status as MentorSession['status'],
         created_by: s.created_by as MentorSession['created_by'],
         reschedule_status: (s.reschedule_status || 'none') as MentorSession['reschedule_status'],
+        notes_private: privateNotes.get(s.id) ?? null,
         candidate_name: s.profiles?.full_name || s.profiles?.name || 'Anonymous'
       })));
     } catch (err: any) {
