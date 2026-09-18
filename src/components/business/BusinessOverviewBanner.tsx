@@ -15,7 +15,7 @@ import {
   Globe, 
   TrendingUp,
   Clock,
-  Sparkles,
+  Compass,
   ChevronRight,
   Settings
 } from 'lucide-react';
@@ -97,7 +97,7 @@ const SnapshotField: React.FC<{
               </span>
               <span className="text-sm font-bold text-primary group-hover:text-primary/80 flex items-center gap-1">
                 {formatNumber(employeeCount)}
-                <Sparkles className="h-3 w-3 text-amber-500" />
+                <Compass className="h-3 w-3 text-amber-500" />
               </span>
             </div>
           </div>
@@ -109,7 +109,6 @@ const SnapshotField: React.FC<{
         >
           <div className="space-y-3">
             <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-amber-500" />
               {t('business.overview.xima_impact_title')}
             </h4>
             
@@ -240,7 +239,6 @@ export const BusinessOverviewBanner: React.FC<BusinessOverviewBannerProps> = ({
             
             {/* Business control note */}
             <div className="text-xs text-muted-foreground bg-muted/50 rounded-md p-2 flex items-start gap-2">
-              <Sparkles className="h-3 w-3 mt-0.5 flex-shrink-0 text-amber-500" />
               <span>{t('businessPortal.how_xima_works_privacy')}</span>
             </div>
           </div>

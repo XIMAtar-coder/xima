@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, RefreshCw, Sparkles, CheckCircle, Trophy, Star, Zap, Bell } from 'lucide-react';
+import { Loader2, RefreshCw, Compass, CheckCircle, Trophy, Star, Zap, Bell } from 'lucide-react';
 import { useNextFeedItem, SingleFeedItem } from '@/hooks/useNextFeedItem';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -23,7 +23,7 @@ const getTypeIcon = (type: string) => {
     case 'skill_validated':
       return <Zap className="h-5 w-5 text-sky-500" />;
     default:
-      return <Sparkles className="h-5 w-5 text-primary" />;
+      return <Compass className="h-5 w-5 text-primary" />;
   }
 };
 

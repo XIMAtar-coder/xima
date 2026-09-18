@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Sparkles } from 'lucide-react';
 import { DayGesture, DayItem, DebriefEntry } from './types';
 import { VoiceDictateButton } from '@/components/candidate/audio/VoiceDictateButton';
 import { AriaSpeakButton } from '@/components/candidate/audio/AriaSpeakButton';
@@ -39,7 +38,6 @@ export function GuideDebrief({ guideName, focusItem, chosenGesture, onComplete }
       <CardContent className="py-8 space-y-5">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-            <Sparkles className="h-5 w-5 text-primary" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">

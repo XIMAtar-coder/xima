@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
-  Sparkles,
+  Compass,
   Loader2,
   Star,
   MessageSquare,
@@ -800,10 +800,8 @@ export function SubmissionDetailDrawer({
           {currentChallengeLevel === 2 && !effectiveLevel2Signals && !isGeneratingLevel2 && !level2Error && submission.submissionStatus === 'submitted' && (
             <Card className="border-dashed">
               <CardContent className="py-6 text-center">
-                <Sparkles className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                 <p className="text-muted-foreground mb-3">{t('business.level2_interpretation.ready_to_generate')}</p>
                 <Button onClick={handleGenerateLevel2Signals} variant="default" size="sm">
-                  <Sparkles className="h-4 w-4 mr-2" />
                   {t('business.level2_interpretation.generate_button')}
                 </Button>
               </CardContent>
@@ -960,10 +958,8 @@ export function SubmissionDetailDrawer({
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                     <p className="text-muted-foreground mb-3">{t('business.custom_l1.ready', 'Pronto per generare gli insights AI di questa risposta')}</p>
                     <Button onClick={handleGenerateCustomL1Signals}>
-                      <Sparkles className="h-4 w-4 mr-2" />
                       {t('business.custom_l1.generate_signals', 'Genera segnali')}
                     </Button>
                   </>
@@ -994,7 +990,6 @@ export function SubmissionDetailDrawer({
               <TooltipProvider>
                 <details className="group">
                   <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground flex items-center gap-1.5 py-2">
-                    <Sparkles className="h-3.5 w-3.5" />
                     {t('business.insights.view_detailed_scores')}
                   </summary>
                   <Card className="mt-2 border-dashed">
@@ -1064,7 +1059,6 @@ export function SubmissionDetailDrawer({
           ) : currentChallengeLevel === 1 && !isCustomL1 && !isMindset && submission.submissionStatus === 'submitted' ? (
             <Card className="border-dashed">
               <CardContent className="py-6 text-center">
-                <Sparkles className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                 <p className="text-muted-foreground mb-3">{t('business.compare.signals_not_generated')}</p>
                 <Button
                   onClick={handleGenerateSignals}
@@ -1073,7 +1067,7 @@ export function SubmissionDetailDrawer({
                   {generatingSignals ? (
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   ) : (
-                    <Sparkles className="h-4 w-4 mr-2" />
+                    <Compass className="h-4 w-4 mr-2" />
                   )}
                   {t('business.compare.generate_signals')}
                 </Button>

@@ -9,7 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useHiringGoals } from '@/hooks/useHiringGoals';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Sparkles, Users } from 'lucide-react';
+import { Users } from 'lucide-react';
 
 const GoalShortlistPage: React.FC = () => {
   const { goalId } = useParams<{ goalId: string }>();
@@ -73,7 +73,7 @@ const GoalShortlistPage: React.FC = () => {
 
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">{t('shortlist.page_title', 'AI Shortlist')}</h1>
+            <h1 className="text-3xl font-bold text-foreground">{t('shortlist.page_title', 'Shortlist')}</h1>
             <p className="text-muted-foreground mt-1">
               {t('shortlist.page_subtitle', 'The 12 candidates matched to this hiring goal and your company DNA.')}
             </p>
@@ -84,7 +84,6 @@ const GoalShortlistPage: React.FC = () => {
               {t('candidate_pool.title', 'Candidate Pool')}
             </Button>
             <Button onClick={() => navigate(`/business/challenges/select?goal=${goalId}&returnTo=shortlist`)} className="gap-2">
-              <Sparkles className="h-4 w-4" />
               {t('shortlist.create_l1_challenge', 'Crea sfida L1 / XIMA Challenge')}
             </Button>
           </div>
@@ -92,7 +91,6 @@ const GoalShortlistPage: React.FC = () => {
 
         <Card className="border-border/50 bg-muted/30">
           <CardContent className="p-4 flex items-start gap-3">
-            <Sparkles className="w-5 h-5 text-primary mt-0.5 shrink-0" />
             <div className="space-y-1">
               <p className="text-sm font-semibold text-foreground">{t('shortlist.explanation_title', 'Shortlist and Pool are separate')}</p>
               <p className="text-sm text-muted-foreground">

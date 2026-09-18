@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Target } from 'lucide-react';
+import { Target } from 'lucide-react';
 
 export const JobMatchesBlock: React.FC = () => {
   const { user } = useUser();
@@ -27,7 +27,6 @@ export const JobMatchesBlock: React.FC = () => {
           onClick={() => generateRecommendations(true)}
           disabled={loading}
         >
-          <Sparkles className="mr-1 h-3 w-3" />
           {t('profile.refresh')}
         </Button>
       </CardHeader>
@@ -62,7 +61,6 @@ export const JobMatchesBlock: React.FC = () => {
                       <div className="font-medium truncate">{recommendation.job.title}</div>
                       {recommendation.ximatarMatch && (
                         <Badge variant="secondary" className="bg-primary/10 text-primary">
-                          <Sparkles className="h-3 w-3 mr-1" />
                           {t('opportunities.ximatar_match')}
                         </Badge>
                       )}

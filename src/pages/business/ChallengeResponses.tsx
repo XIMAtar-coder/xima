@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from '@/hooks/use-toast';
-import { ArrowLeft, Eye, Clock, FileText, Loader2, BarChart3, ArrowUpDown, Sparkles, Bug, Star, MessageSquare, XCircle, AlertCircle, Filter, Info, Scale } from 'lucide-react';
+import { ArrowLeft, Eye, Clock, FileText, Loader2, BarChart3, ArrowUpDown, Compass, Bug, Star, MessageSquare, XCircle, AlertCircle, Filter, Info, Scale } from 'lucide-react';
 import { getChallengeTimeInfo } from '@/utils/challengeTimeUtils';
 import { GoalContextHeader } from '@/components/business/GoalContextHeader';
 import { SubmissionDetailDrawer } from '@/components/business/SubmissionDetailDrawer';
@@ -642,7 +642,7 @@ export default function ChallengeResponses() {
                                       {generatingSignals === inv.invitationId ? (
                                         <Loader2 className="h-3 w-3 animate-spin mr-1" />
                                       ) : (
-                                        <Sparkles className="h-3 w-3 mr-1" />
+                                        <Compass className="h-3 w-3 mr-1" />
                                       )}
                                       {t('business.compare.generate')}
                                     </Button>

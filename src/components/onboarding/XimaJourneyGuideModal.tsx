@@ -5,7 +5,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
-  Sparkles, ArrowRight, ArrowLeft, X,
+  Compass, ArrowRight, ArrowLeft, X,
   BarChart3, GraduationCap, Calendar,
   MessageCircle, Gift, Settings
 } from 'lucide-react';
@@ -18,7 +18,7 @@ interface XimaJourneyGuideModalProps {
 }
 
 const STEPS = [
-  { key: 'welcome', icon: Sparkles, route: undefined },
+  { key: 'welcome', icon: Compass, route: undefined },
   { key: 'ximatar', icon: BarChart3, route: '/ximatar-journey' },
   { key: 'mentor', icon: GraduationCap, route: '/profile' },
   { key: 'session', icon: Calendar, route: '/profile' },

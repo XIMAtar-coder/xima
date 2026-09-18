@@ -26,7 +26,7 @@ import {
   Loader2,
   Rocket,
   Save,
-  Sparkles,
+  Compass,
   Target,
   Wand2,
 } from 'lucide-react';
@@ -437,7 +437,7 @@ export default function CustomL1Builder({
           </div>
 
           <Button onClick={handleGenerate} disabled={generating} className="w-full sm:w-auto">
-            {generating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+            {generating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Compass className="mr-2 h-4 w-4" />}
             {generated
               ? t('challenge.custom_l1.regenerate_btn', 'Rigenera sfida')
               : t('challenge.custom_l1.generate_btn', 'Genera sfida')}

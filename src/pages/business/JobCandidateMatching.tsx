@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Target, Sparkles, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Target, TrendingUp } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { log } from '@/lib/log';
 
@@ -233,7 +233,6 @@ const JobCandidateMatching = () => {
                             <h3 className="text-lg font-semibold capitalize">{match.ximatar_label}</h3>
                             {match.ximatarMatch && (
                               <Badge className="bg-primary/10 text-primary">
-                                <Sparkles className="h-3 w-3 mr-1" />
                                 XIMAtar Match
                               </Badge>
                             )}

@@ -22,7 +22,7 @@ import {
 import CustomL1Builder from '@/features/challenge-builder/CustomL1Builder';
 import { log } from '@/lib/log';
 import { 
-  ArrowLeft, Sparkles, Loader2, Rocket, Save, Eye, Clock, 
+  ArrowLeft, Loader2, Rocket, Save, Eye, Clock, 
   Target, CheckCircle2, Wand2, AlertCircle, Archive, CalendarClock
 } from 'lucide-react';
 interface HiringGoal {
@@ -704,7 +704,6 @@ const CreateChallenge = () => {
                         </>
                       ) : (
                         <>
-                          <Sparkles className="h-4 w-4" />
                           {title ? t('challenge_builder.regenerate') : t('challenge_builder.generate')}
                         </>
                       )}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, ChevronUp, Lightbulb, Sparkles, TrendingUp, TrendingDown, Minus, Users } from 'lucide-react';
+import { ChevronDown, ChevronUp, Lightbulb, TrendingUp, TrendingDown, Minus, Users } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import type { Rubric } from '@/lib/scoring/openResponse';
@@ -141,7 +141,6 @@ export const OpenAnswerScore: React.FC<OpenAnswerScoreProps> = ({ openKey, rubri
           {rubric.steveJobsExplanation && (
             <div className="bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/5 rounded-lg p-4 space-y-2">
               <div className="flex items-center gap-2">
-                <Sparkles size={16} className="text-primary" />
                 <p className="text-xs font-semibold text-primary">
                   {t('open_scoring.expert_insight')}
                 </p>

@@ -11,7 +11,7 @@
  */
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, TrendingUp, Compass } from 'lucide-react';
+import { Compass, TrendingUp } from 'lucide-react';
 
 export interface ReflectionEvidence {
   dimension: string;
@@ -80,7 +80,7 @@ export function EvidenceReflectionCard({
       <div key={`${item.dimension}-${idx}`} className="space-y-1.5">
         <div className="flex items-center gap-2">
           {strength ? (
-            <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
+            <Compass className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
           ) : (
             <Compass className="h-3.5 w-3.5 text-muted-foreground shrink-0" aria-hidden="true" />
           )}

@@ -12,7 +12,7 @@ import {
   ArrowRight,
   FileText,
   ClipboardCheck,
-  Sparkles,
+  Compass,
   BarChart3,
   Globe2,
   UserCheck,
@@ -422,7 +422,7 @@ const Business: React.FC = () => {
 
             {/* Icon row */}
             <div className="mt-8 flex items-center gap-2">
-              {[FileText, ClipboardCheck, Sparkles, BarChart3].map((Ic, i) => (
+              {[FileText, ClipboardCheck, Compass, BarChart3].map((Ic, i) => (
                 <div key={i} className="flex items-center gap-2 flex-1 last:flex-none">
                   <div
                     className="flex items-center justify-center rounded-xl shrink-0"

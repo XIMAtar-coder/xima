@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle2, Sparkles, Loader2 } from 'lucide-react';
+import { CheckCircle2, Loader2 } from 'lucide-react';
 import { EvidenceReflectionCard } from '@/components/signals/EvidenceReflectionCard';
 import { useSubmissionReflection } from '@/hooks/useSubmissionReflection';
 import { useSubmissionPercentile } from '@/hooks/useSubmissionPercentile';
@@ -45,7 +45,6 @@ export function ResolveScreen({ invitationId, guideName, litFacets, resolveLine,
       <CardContent className="py-10 space-y-6">
         <div className="flex items-center gap-3">
           <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
-            <Sparkles className="h-6 w-6 text-primary" />
           </div>
           <div>
             <p className="text-sm text-muted-foreground">{guideName}</p>
@@ -57,7 +56,6 @@ export function ResolveScreen({ invitationId, guideName, litFacets, resolveLine,
 
         {growthCue === 'xima_strengthened' && (
           <div className="rounded-lg border border-primary/30 bg-primary/10 p-4 flex items-center gap-2 text-sm text-foreground">
-            <Sparkles className="h-4 w-4 text-primary" />
             <span>{t('mindset.resolve.enriched', 'Il tuo XIMAtar si è arricchito.')}</span>
           </div>
         )}

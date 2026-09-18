@@ -8,7 +8,7 @@ import { ShortlistFilters, type ShortlistFilterValues } from './ShortlistFilters
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useBusinessEntitlements } from '@/hooks/useBusinessEntitlements';
-import { RefreshCw, Sparkles, Info, Users, Zap } from 'lucide-react';
+import { RefreshCw, Info, Users, Zap } from 'lucide-react';
 
 interface ShortlistCandidate {
   candidate_user_id: string;
@@ -347,11 +347,9 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ goalId, roleTitle,
       {!loading && !generated && (
         <Card className="border-dashed">
           <CardContent className="p-8 text-center space-y-3">
-            <Sparkles className="w-10 h-10 text-primary mx-auto" />
             <p className="font-medium text-foreground">{t('shortlist.ready_title', 'Ready to build your shortlist')}</p>
             <p className="text-sm text-muted-foreground">{t('shortlist.ready_desc', 'Click "Generate Shortlist" to find the best-matched candidates for this role using XIMA\'s multi-signal scoring engine.')}</p>
             <Button onClick={generateShortlist} className="gap-2 mt-2">
-              <Sparkles className="w-4 h-4" />
               {t('shortlist.generate', 'Generate Shortlist')}
             </Button>
           </CardContent>

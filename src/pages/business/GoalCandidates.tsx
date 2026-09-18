@@ -17,7 +17,7 @@ import { useHiringGoalRequirements } from '@/hooks/useHiringGoalRequirements';
 import { supabase } from '@/integrations/supabase/client';
 import { getChallengeLevel } from '@/lib/challenges/challengeLevels';
 import { computeXimatarRecommendations, type XimatarRecommendation } from '@/lib/recommendations';
-import { Users, Target, RefreshCw, Bookmark, Sparkles, Zap, GitBranch } from 'lucide-react';
+import { Users, Target, RefreshCw, Bookmark, Zap, GitBranch } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ShortlistView } from '@/components/business/ShortlistView';
 import { log } from '@/lib/log';
@@ -487,7 +487,7 @@ const GoalCandidates: React.FC = () => {
           <TabsList>
             <TabsTrigger value="shortlist" className="gap-2">
               <Zap className="h-4 w-4" />
-              {t('shortlist.tab_label', 'AI Shortlist')}
+              {t('shortlist.tab_label', 'Shortlist')}
             </TabsTrigger>
             <TabsTrigger value="pipeline" className="gap-2">
               <GitBranch className="h-4 w-4" />
@@ -529,7 +529,6 @@ const GoalCandidates: React.FC = () => {
           <TabsContent value="all" className="mt-6">
             {/* Recommendation label */}
             <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
-              <Sparkles className="h-4 w-4 text-primary" />
               <span>
                 {t('business.recommendations.based_on_label', 'Recommended based on your Company Profile + this Hiring Goal')}
               </span>

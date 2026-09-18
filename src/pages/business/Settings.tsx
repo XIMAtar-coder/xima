@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Building2, Globe, Mail, Save, Clock, TrendingUp, 
-  Sparkles, Loader2, Edit2, RotateCcw, X, Info, Target, Dna
+  Loader2, Edit2, RotateCcw, X, Info, Target, Dna
 } from 'lucide-react';
 import CompanyLegalSettings from '@/components/business/CompanyLegalSettings';
 import { ProfilingOptOutSection } from '@/components/settings/ProfilingOptOutSection';
@@ -325,7 +325,6 @@ const DnaPillarSection = () => {
         {/* Philosophy banner */}
         <div className="rounded-lg border border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-950/20 p-4">
           <div className="flex gap-3">
-            <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
             <div>
               <p className="font-medium text-sm text-purple-900 dark:text-purple-100">
                 {t('business.dna.philosophy_title', 'Il DNA è identità, non preferenza')}
@@ -375,7 +374,6 @@ const DnaPillarSection = () => {
             {strategicFocus ? t('business.dna.update_focus', 'Aggiorna focus strategico') : t('business.dna.set_focus', 'Imposta focus strategico')}
           </Button>
           <Button variant={isLocked ? 'ghost' : 'default'} onClick={() => !isLocked && setShowRegenerateModal(true)} disabled={isLocked} className="flex-1">
-            <Sparkles className="w-4 h-4 mr-2" />
             {isLocked ? t('business.dna.locked_for_days', `Bloccato per ${daysUntilUnlock} giorni`) : t('business.dna.regenerate', 'Rigenera DNA')}
           </Button>
         </div>

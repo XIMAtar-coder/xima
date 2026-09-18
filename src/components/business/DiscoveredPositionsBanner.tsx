@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Sparkles, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface DiscoveredPositionsBannerProps {
@@ -72,7 +72,6 @@ export const DiscoveredPositionsBanner: React.FC<DiscoveredPositionsBannerProps>
       <div className="flex items-start justify-between">
         <div>
           <h4 className="font-medium flex items-center gap-2 text-foreground">
-            <Sparkles className="w-4 h-4 text-primary" />
             {t('import_job.positions_discovered', { count: jobDrafts.length })}
           </h4>
           <p className="text-sm text-muted-foreground mt-1">

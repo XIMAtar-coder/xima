@@ -9,7 +9,7 @@ import { useJobInteractions } from '@/hooks/useJobInteractions';
 import { useJobRecommendations } from '@/hooks/useJobRecommendations';
 import { useUser } from '@/context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Bookmark, CheckCircle2, TrendingUp, ExternalLink, Sparkles, MapPin, Briefcase, RefreshCw, AlertCircle } from 'lucide-react';
+import { Bookmark, CheckCircle2, TrendingUp, ExternalLink, MapPin, Briefcase, RefreshCw, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { log } from '@/lib/log';
 
@@ -210,7 +210,6 @@ export const MyOpportunitiesSection: React.FC = () => {
           disabled={recommendationsLoading || opportunitiesLoading}
           className="gap-2"
         >
-          <Sparkles className="w-4 h-4" />
           {t('dashboard.opportunities_refresh')}
         </Button>
       </CardHeader>
@@ -218,7 +217,6 @@ export const MyOpportunitiesSection: React.FC = () => {
         <Tabs defaultValue="recommended" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="recommended">
-              <Sparkles className="w-4 h-4 mr-2" />
                {t('dashboard.opportunities_tab_for_you')}
             </TabsTrigger>
             <TabsTrigger value="saved">

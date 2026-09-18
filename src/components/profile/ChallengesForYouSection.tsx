@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Target, Clock, Building2, CheckCircle, ArrowRight, MessageSquare, Hourglass, Sparkles } from 'lucide-react';
+import { Target, Clock, Building2, CheckCircle, ArrowRight, MessageSquare, Hourglass } from 'lucide-react';
 import { useCandidateChallenges, CandidateChallenge } from '@/hooks/useCandidateChallenges';
 import { Skeleton } from '@/components/ui/skeleton';
 import { log } from '@/lib/log';
@@ -227,7 +227,6 @@ export const ChallengesForYouSection: React.FC = () => {
 
       {actionableChallenges.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          <Sparkles className="h-10 w-10 mx-auto mb-3 opacity-50" />
            <p className="font-medium mb-1">{t('dashboard.challenges_empty_headline')}</p>
           <p className="text-sm">{t('dashboard.challenges_empty_body')}</p>
         </div>

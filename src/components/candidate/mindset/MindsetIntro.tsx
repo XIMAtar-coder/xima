@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Building2, Target, Euro, TrendingUp } from 'lucide-react';
+import { Building2, Target, Euro, TrendingUp } from 'lucide-react';
 import { AriaSpeakButton } from '@/components/candidate/audio/AriaSpeakButton';
 import type { IntroContext } from './types';
 import { labelForCcnl } from '@/lib/business/ccnl';
@@ -36,7 +36,6 @@ export function MindsetIntro({ guideName, intro, introContext, onStart }: Props)
         {/* Aria's greeting */}
         <div className="flex items-start gap-3">
           <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-            <Sparkles className="h-6 w-6 text-primary" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">

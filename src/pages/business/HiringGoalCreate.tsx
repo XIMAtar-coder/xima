@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Sparkles, Target, Users, MapPin, DollarSign, FileDown, Info, ChevronDown, X, Plus } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Target, Users, MapPin, DollarSign, FileDown, Info, ChevronDown, X, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -464,7 +464,6 @@ const HiringGoalCreate = () => {
             </Button>
           ) : (
             <Button onClick={handleSubmit} disabled={submitting || !canProceed()}>
-              <Sparkles className="w-4 h-4 mr-2" />
               {submitting
                 ? t('hiring_goal.creating', 'Creazione...')
                 : formData.xima_hr_requested

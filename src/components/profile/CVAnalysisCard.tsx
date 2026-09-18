@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import {
   FileText,
   TrendingUp,
-  Sparkles,
   Upload,
   Loader2,
   AlertCircle,
@@ -351,7 +350,6 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
         {cvAnalysis?.strengths && cvAnalysis.strengths.length > 0 && (
           <div>
             <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary" />
               {t('profile.cv_strengths', 'Key Strengths from CV')}
             </h4>
             <div className="flex flex-wrap gap-2">
@@ -429,7 +427,6 @@ export const CVAnalysisCard: React.FC<CVAnalysisCardProps> = ({
         {cvAnalysis?.identityImprovements && cvAnalysis.identityImprovements.length > 0 && (
           <div className="space-y-3 pt-4 border-t">
             <h4 className="text-sm font-semibold flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary" />
               Identity-aligned suggestions
             </h4>
             <div className="space-y-3">

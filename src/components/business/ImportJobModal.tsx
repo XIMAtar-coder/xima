@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Link2, Upload, Search, CheckCircle, Loader2, FileText, Sparkles } from 'lucide-react';
+import { Link2, Upload, Search, CheckCircle, Loader2, FileText } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { log } from '@/lib/log';
@@ -291,7 +291,6 @@ export const ImportJobModal: React.FC<ImportJobModalProps> = ({
               <div className="space-y-4">
                 <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
                   <div className="flex items-center gap-2 mb-2">
-                    <Sparkles className="h-4 w-4 text-primary" />
                     <span className="text-sm font-medium text-foreground">
                       {t('import_job.search_title', 'AI-Powered Job Search')}
                     </span>

@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select';
 import { useUser } from '@/context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Target, FileText, Sparkles, Loader2, ExternalLink } from 'lucide-react';
+import { Target, FileText, Loader2, ExternalLink } from 'lucide-react';
 
 interface Props {
   open: boolean;
@@ -235,7 +235,6 @@ const ChallengeContextSelector = ({ open, onOpenChange }: Props) => {
             <CardContent className="p-5 space-y-3">
               <div className="flex items-start gap-3">
                 <div className="rounded-lg bg-muted p-2 mt-0.5">
-                  <Sparkles className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-foreground">

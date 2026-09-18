@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
-import { Upload, ClipboardCheck, Sparkles, Calendar } from 'lucide-react';
+import { Upload, ClipboardCheck, Compass, Calendar } from 'lucide-react';
 
 const Process = () => {
   const { t } = useTranslation();
@@ -18,7 +18,7 @@ const Process = () => {
       description: t('process.step2.description')
     },
     {
-      icon: Sparkles,
+      icon: Compass,
       title: t('process.step3.title'),
       description: t('process.step3.description')
     },

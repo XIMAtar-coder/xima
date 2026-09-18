@@ -6,7 +6,7 @@
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Crown, Lock, Sparkles, TrendingUp, Shield, Target } from 'lucide-react';
+import { Crown, Lock, Compass, TrendingUp, Shield, Target } from 'lucide-react';
 import { SignalsPayload } from '@/lib/signals/computeSignals';
 
 interface PremiumSignalsPanelProps {
@@ -72,7 +72,7 @@ function computePremiumSignals(signals: SignalsPayload): PremiumSignal[] {
   const hasStrategicDepth = impact_thinking >= 65 && framing >= 55;
   premiumSignals.push({
     id: 'strategic_depth',
-    icon: <Sparkles className="h-4 w-4" />,
+    icon: <Compass className="h-4 w-4" />,
     label: 'signals.premium.strategic_depth',
     interpretation: hasStrategicDepth
       ? 'Connects immediate actions to broader implications and second-order effects.'

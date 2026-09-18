@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Loader2, Sparkles, Compass, BookOpen, FileText, User, Briefcase } from 'lucide-react';
+import { Loader2, Compass, BookOpen, FileText, User, Briefcase } from 'lucide-react';
 import { usePersonalFeed, FeedCategory } from '@/hooks/usePersonalFeed';
 import { PersonalFeedCard } from './PersonalFeedCard';
 import { useUser } from '@/context/UserContext';
@@ -147,7 +147,6 @@ const ForYouTab = ({ feedItems, navigate, t, userId, onMarkRead, onTrackEngageme
         <CardContent className="py-8">
           <div className="text-center mb-6">
             <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-              <Sparkles className="w-7 h-7 text-primary" />
             </div>
             <h3 className="text-lg font-semibold">
               {t('feed.for_you_welcome_title', 'Il tuo Feed personale')}

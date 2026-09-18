@@ -9,7 +9,6 @@ import {
   Check, 
   MessageCircle, 
   Loader2,
-  Sparkles,
   Eye
 } from 'lucide-react';
 import { useMutualInterest, PendingInterest } from '@/hooks/useMutualInterest';
@@ -66,7 +65,6 @@ export const InterestSignalsCard = ({ onChatOpen }: InterestSignalsCardProps) =>
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-primary/10">
-              <Sparkles className="h-4 w-4 text-primary" />
             </div>
             {t('feed.interest.title', 'Interest Signals')}
           </CardTitle>

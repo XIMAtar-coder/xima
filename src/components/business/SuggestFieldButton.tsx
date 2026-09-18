@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sparkles, Loader2, Check, X } from 'lucide-react';
+import { Compass, Loader2, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -88,7 +88,7 @@ const SuggestFieldButton: React.FC<SuggestFieldButtonProps> = ({
       disabled={loading || !roleTitle}
       className="text-xs gap-1.5 h-7 text-primary hover:text-primary"
     >
-      {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+      {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Compass className="h-3.5 w-3.5" />}
       {t('businessPortal.hiring_goal.suggest.button', 'Suggerisci con AI')}
     </Button>
   );
@@ -136,7 +136,7 @@ const SuggestFieldButton: React.FC<SuggestFieldButtonProps> = ({
           disabled={loading || !roleTitle}
           className="text-xs gap-1.5 h-7 text-primary hover:text-primary"
         >
-          {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+          {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Compass className="h-3.5 w-3.5" />}
           {t('businessPortal.hiring_goal.suggest.button', 'Suggerisci con AI')}
         </Button>
       </PopoverTrigger>

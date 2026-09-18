@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowRight, Building2, Users, Shield, Sparkles, BarChart3, Zap } from 'lucide-react';
+import { Check, ArrowRight, Building2, Users, Shield, BarChart3, Zap } from 'lucide-react';
 import LandingLayout from '@/components/landing/LandingLayout';
 import Seo from '@/components/Seo';
 
@@ -106,7 +106,6 @@ const Pricing: React.FC = () => {
               <span className="text-sm">{t('pricing.no_bias', 'No bias, no scoring')}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5" />
               <span className="text-sm">{t('pricing.ai_powered', 'AI-powered signals')}</span>
             </div>
           </div>

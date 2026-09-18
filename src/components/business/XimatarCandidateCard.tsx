@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Star, Target, TrendingUp, Bookmark, BookmarkCheck, Send, CheckCircle2, Loader2, ChevronDown, Sparkles } from 'lucide-react';
+import { Star, Target, TrendingUp, Bookmark, BookmarkCheck, Send, CheckCircle2, Loader2, ChevronDown } from 'lucide-react';
 import { CandidateLevelBadge } from './CandidateLevelBadge';
 import { CandidateLevelProgress } from '@/lib/challenges/challengeLevels';
 import { formatRoundedScore } from './PillarScoreBar';
@@ -172,7 +172,6 @@ export const XimatarCandidateCard: React.FC<XimatarCandidateCardProps> = ({
           {recommendationExplanation && (
             <div className="mb-3">
               <div className="flex items-center justify-center gap-1.5 text-xs text-primary/80">
-                <Sparkles className="h-3 w-3" />
                 <span>{recommendationExplanation.shortReason}</span>
               </div>
               

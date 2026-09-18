@@ -8,7 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { OpenAnswerScore } from './OpenAnswerScore';
 import FeaturedProfessionals from '../FeaturedProfessionals';
 import { XimatarProfileCard } from '../results/XimatarProfileCard';
-import { ArrowRight, CheckCircle, Sparkles, AlertCircle } from 'lucide-react';
+import { ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useXimatarsCatalog } from '@/hooks/useXimatarsCatalog';
@@ -402,7 +402,6 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
       {/* Storytelling Introduction */}
       <Card className="p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 border-primary/10 animate-fade-in">
         <div className="text-center space-y-4">
-          <Sparkles className="h-12 w-12 text-primary mx-auto mb-4 animate-scale-in" />
           <h2 className="text-3xl font-bold font-heading animate-fade-in" style={{ animationDelay: '100ms' }}>
             {t('ximatarJourney.results_title')}
           </h2>
@@ -447,7 +446,6 @@ const ResultsComparison: React.FC<ResultsComparisonProps> = ({ onComplete, hasCv
 
             <div className="flex items-center justify-center gap-3 flex-wrap animate-scale-in" style={{ animationDelay: '700ms' }}>
               <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary animate-scale-in" />
                 <span className="font-semibold">{t('ximatarJourney.your_trajectory_label')}</span>
               </div>
               <Badge 

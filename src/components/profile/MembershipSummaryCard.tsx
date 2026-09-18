@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Coins, Crown, Zap, Star, Sparkles, Users, ArrowRight } from 'lucide-react';
+import { Coins, Crown, Zap, Star, Compass, Users, ArrowRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { log } from '@/lib/log';
 
@@ -12,7 +12,7 @@ const TIER_ICONS: Record<string, React.ReactNode> = {
   freemium: <Zap className="h-3 w-3" />,
   basic: <Star className="h-3 w-3" />,
   premium: <Crown className="h-3 w-3" />,
-  pro: <Sparkles className="h-3 w-3" />,
+  pro: <Compass className="h-3 w-3" />,
 };
 
 const TIER_COLORS: Record<string, string> = {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Sparkles, TrendingUp, AlertCircle, Upload, Loader2, Flame, Zap, Target } from 'lucide-react';
+import { TrendingUp, AlertCircle, Upload, Loader2, Flame, Zap, Target } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUser } from '@/context/UserContext';
 import { toast } from 'sonner';
@@ -196,7 +196,6 @@ export const XimatarHeroCard: React.FC<XimatarHeroCardProps> = ({
                   </div>
                 ) : (
                   <div className="w-full h-full rounded-full bg-[rgba(118,118,128,0.08)] flex items-center justify-center border border-[rgba(60,60,67,0.12)]">
-                    <Sparkles className="w-10 h-10 text-muted-foreground" />
                   </div>
                 )}
               </div>

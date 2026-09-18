@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { useUser } from '@/context/UserContext';
 import { useBusinessRole } from '@/hooks/useBusinessRole';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Loader2, Brain, Wrench, Sparkles, CheckCircle2, Star } from 'lucide-react';
+import { ArrowLeft, Loader2, Brain, Wrench, CheckCircle2, Star } from 'lucide-react';
 
 const ChallengeTypeSelector = () => {
   const navigate = useNavigate();
@@ -194,7 +194,6 @@ const ChallengeTypeSelector = () => {
                   <span>{t('challenge_type.xima_feature_1', 'Domande standard XIMA')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <Sparkles className="h-4 w-4 text-amber-500 shrink-0" />
                   <span>{t('challenge_type.xima_feature_2', 'Scenario AI su DNA azienda')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">

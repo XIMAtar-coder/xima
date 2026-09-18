@@ -13,7 +13,6 @@ import {
   RefreshCw,
   Database,
   Target,
-  Sparkles,
   FlaskConical,
   Building2
 } from 'lucide-react';
@@ -321,7 +320,6 @@ export const RecommendationDebugPanel: React.FC<RecommendationDebugPanelProps> =
               <div className="p-3 rounded-lg border border-primary/30 bg-primary/5">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold text-sm flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-primary" />
                     Recommendation Engine Result
                   </h4>
                   <Badge variant="default">{debugData.engineResult.strategy_used}</Badge>

@@ -8,7 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  ArrowLeft, Sparkles, Target, TrendingUp, CheckCircle, Clock,
+  ArrowLeft, Compass, Target, TrendingUp, CheckCircle, Clock,
   BookOpen, Headphones, Play, ExternalLink, Loader2, Brain,
   Award, RefreshCw, GraduationCap
 } from 'lucide-react';
@@ -194,7 +194,7 @@ const DevelopmentPlan = () => {
                 </p>
               </div>
               <Button size="lg" className="gap-2" onClick={generatePath} disabled={generating}>
-                {generating ? <Loader2 className="h-5 w-5 animate-spin" /> : <Sparkles className="h-5 w-5" />}
+                {generating ? <Loader2 className="h-5 w-5 animate-spin" /> : <Compass className="h-5 w-5" />}
                 {generating ? 'Generating your path...' : 'Generate Growth Path'}
               </Button>
             </CardContent>
@@ -252,7 +252,6 @@ const DevelopmentPlan = () => {
                 {activePath.growth_insight && (
                   <div className="p-4 rounded-xl bg-primary/5 border border-primary/10">
                     <div className="flex items-start gap-2">
-                      <Sparkles className="h-4 w-4 text-primary mt-0.5 shrink-0" />
                       <p className="text-sm text-foreground">{activePath.growth_insight}</p>
                     </div>
                   </div>

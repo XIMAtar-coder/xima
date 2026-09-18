@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Sparkles, Settings, ChevronRight } from 'lucide-react';
+import { MapPin, Settings, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getCompanyDisplayField } from '@/utils/companyProfileDisplay';
 
@@ -300,7 +300,6 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
                   onClick={onGenerate}
                   className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 mt-2"
                 >
-                  <Sparkles className="w-3.5 h-3.5" />
                   {t('businessPortal.regenerate_profile', 'Regenerate Profile')}
                 </button>
               </div>
@@ -311,12 +310,10 @@ export const CompanyIdentityCard: React.FC<CompanyIdentityCardProps> = ({
         {/* Generate profile CTA if no AI profile */}
         {!companyProfile && (
           <div className="mt-6 p-4 rounded-lg border border-dashed border-primary/30 bg-primary/5 text-center">
-            <Sparkles className="h-6 w-6 text-primary mx-auto mb-2" />
             <p className="text-sm text-muted-foreground mb-3">
               {t('business.profile.generate_description')}
             </p>
             <Button onClick={onGenerate} size="sm" className="gap-2">
-              <Sparkles className="h-4 w-4" />
               {t('business.profile.generate_cta')}
             </Button>
           </div>

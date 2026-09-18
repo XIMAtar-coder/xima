@@ -13,12 +13,12 @@ import { Separator } from '@/components/ui/separator';
 import { useBusinessEntitlements, type FeatureFlag } from '@/hooks/useBusinessEntitlements';
 import {
   Crown, Users, Calendar, Check, X, ArrowRight, Loader2,
-  Shield, BarChart3, FileText, MessageSquare, Sparkles, Eye
+  Shield, BarChart3, FileText, MessageSquare, Compass, Eye
 } from 'lucide-react';
 
 const FEATURE_KEYS: Record<FeatureFlag, { labelKey: string; icon: React.ReactNode }> = {
   mentor_portal: { labelKey: 'businessPortal.settings_plan_feature_mentor_portal', icon: <MessageSquare className="h-4 w-4" /> },
-  level3_challenges: { labelKey: 'businessPortal.settings_plan_feature_l3_challenges', icon: <Sparkles className="h-4 w-4" /> },
+  level3_challenges: { labelKey: 'businessPortal.settings_plan_feature_l3_challenges', icon: <Compass className="h-4 w-4" /> },
   data_export: { labelKey: 'businessPortal.settings_plan_feature_data_export', icon: <FileText className="h-4 w-4" /> },
   premium_signals: { labelKey: 'businessPortal.settings_plan_feature_premium_signals', icon: <BarChart3 className="h-4 w-4" /> },
   eligibility_gate: { labelKey: 'businessPortal.settings_plan_feature_eligibility_gate', icon: <Shield className="h-4 w-4" /> },

@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { Crown, Zap, Star, Sparkles, Users, MessageSquare, BookOpen, Video, Loader2, Copy, Check, Send, Gift, Clock, Coins } from 'lucide-react';
+import { Crown, Zap, Star, Compass, Users, MessageSquare, BookOpen, Video, Loader2, Copy, Check, Send, Gift, Clock, Coins } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { log } from '@/lib/log';
@@ -51,12 +51,12 @@ const TIER_CONFIG: Record<string, {
     benefits: [
       { icon: <Video className="h-4 w-4" />, textKey: 'settings.benefit_monthly_session', fallback: '1 mentor session per month' },
       { icon: <MessageSquare className="h-4 w-4" />, textKey: 'settings.benefit_unlimited_chat', fallback: 'Unlimited chat with mentor' },
-      { icon: <Sparkles className="h-4 w-4" />, textKey: 'settings.benefit_interview_prep', fallback: 'Interview prep after 3 challenges' },
+      { icon: <Compass className="h-4 w-4" />, textKey: 'settings.benefit_interview_prep', fallback: 'Interview prep after 3 challenges' },
     ],
   },
   pro: {
     label: 'Pro',
-    icon: <Sparkles className="h-5 w-5" />,
+    icon: <Compass className="h-5 w-5" />,
     price: '€39.99/month',
     color: 'bg-primary text-primary-foreground',
     benefits: [

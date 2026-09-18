@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, Building2, FileCheck2, Swords, Gauge, Sparkles } from 'lucide-react';
+import { Users, Building2, FileCheck2, Swords, Gauge, Compass } from 'lucide-react';
 import { useAdminOverview } from '../hooks/useAdminRpc';
 import { AdminKpi } from '../AdminKpi';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -27,7 +27,7 @@ export default function OverviewTab() {
         <AdminKpi label="Assessment" value={data.assessments_completed} sub="completati" icon={FileCheck2} accent="success" />
         <AdminKpi label="Challenge attive" value={data.challenges_active} sub={`${data.challenges_total} totali`} icon={Swords} accent="muted" />
         <AdminKpi label="Avg score" value={Math.round(data.avg_score || 0)} sub="su 5 pilastri" icon={Gauge} accent="muted" />
-        <AdminKpi label="Signup 30g" value={data.signups_30d} sub={`pending: ${data.candidates_pending}`} icon={Sparkles} accent="muted" />
+        <AdminKpi label="Signup 30g" value={data.signups_30d} sub={`pending: ${data.candidates_pending}`} icon={Compass} accent="muted" />
       </div>
 
       {/* Business model */}

@@ -2,7 +2,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
-import { Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface TeamIntelligenceCardProps {
@@ -65,7 +64,6 @@ export const TeamIntelligenceCard: React.FC<TeamIntelligenceCardProps> = ({
     <Card className="border-border/50">
       <CardContent className="p-6">
         <div className="flex items-center gap-2 mb-4">
-          <Sparkles className="w-5 h-5 text-primary" />
           <h3 className="text-lg font-semibold text-foreground">Team Intelligence</h3>
         </div>
 

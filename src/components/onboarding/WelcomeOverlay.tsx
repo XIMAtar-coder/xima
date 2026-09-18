@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface WelcomeOverlayProps {
   open: boolean;
@@ -17,7 +17,6 @@ export const WelcomeOverlay = ({ open, onStart, onSkip }: WelcomeOverlayProps) =
       <DialogContent className="max-w-md text-center p-8 rounded-3xl border-primary/20 bg-gradient-to-b from-primary/5 to-background">
         <div className="flex justify-center mb-6">
           <div className="p-4 rounded-full bg-primary/10 animate-onboarding-fade-in">
-            <Sparkles className="h-10 w-10 text-primary" />
           </div>
         </div>
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Building2, Target, TrendingUp, AlertTriangle, Sparkles } from 'lucide-react';
+import { Building2, Target, TrendingUp, AlertTriangle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface CompanyProfile {
@@ -66,12 +66,10 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           <CardDescription>{t('business.profile.no_profile')}</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-4 py-8">
-          <Sparkles className="h-16 w-16 text-muted-foreground/50" />
           <p className="text-center text-muted-foreground max-w-md">
             {t('business.profile.generate_description')}
           </p>
           <Button onClick={onGenerate} className="gap-2">
-            <Sparkles className="h-4 w-4" />
             {t('business.profile.generate_cta')}
           </Button>
         </CardContent>
@@ -245,7 +243,6 @@ export const CompanyProfileCard: React.FC<CompanyProfileCardProps> = ({
           {/* Regenerate Button */}
           <div className="pt-4 border-t border-border">
             <Button onClick={onGenerate} variant="outline" className="gap-2">
-              <Sparkles className="h-4 w-4" />
               {t('businessPortal.company_regenerate_profile')}
             </Button>
           </div>

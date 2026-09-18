@@ -18,7 +18,6 @@ import {
   Zap,
   Target,
   Users,
-  Sparkles,
   ChevronRight,
   TrendingUp,
   BarChart3,
@@ -215,7 +214,6 @@ const AssessmentGuide = () => {
             variant="outline" 
             className="mb-4 px-4 py-1 animate-[fade-in_0.5s_ease-out] hover:scale-105 transition-transform cursor-default"
           >
-            <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
             {t('assessmentGuide.eyebrow')}
           </Badge>
           <h1 className="text-[28px] md:text-[40px] xl:text-[48px] font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent animate-[fade-in_0.6s_ease-out] whitespace-pre-line">

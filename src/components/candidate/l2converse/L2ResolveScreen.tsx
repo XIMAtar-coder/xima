@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Sparkles, Share2, Loader2 } from 'lucide-react';
+import { CheckCircle2, Share2, Loader2 } from 'lucide-react';
 import { EvidenceReflectionCard } from '@/components/signals/EvidenceReflectionCard';
 import { useSubmissionReflection } from '@/hooks/useSubmissionReflection';
 import { useSubmissionPercentile } from '@/hooks/useSubmissionPercentile';
@@ -22,7 +22,6 @@ export function L2ResolveScreen({ invitationId, counterpartName, onBack }: Props
       <CardContent className="py-10 space-y-6">
         <div className="flex items-center gap-3">
           <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
-            <Sparkles className="h-6 w-6 text-primary" />
           </div>
           <div>
             <p className="text-sm text-muted-foreground">

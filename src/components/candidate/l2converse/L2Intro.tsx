@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MessageSquare, Sparkles, User } from 'lucide-react';
+import { MessageSquare, User } from 'lucide-react';
 import type { L2SimulationConfig } from './types';
 
 type Props = {
@@ -64,7 +64,6 @@ export function L2Intro({ simulation, contextSlot, onStart }: Props) {
 
         {/* Qualitative framing — no score language */}
         <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 flex items-start gap-3">
-          <Sparkles className="h-4 w-4 text-primary mt-0.5 shrink-0" />
           <p className="text-sm text-foreground leading-relaxed">
             {t(
               'candidate.l2_conversation.frame_line',

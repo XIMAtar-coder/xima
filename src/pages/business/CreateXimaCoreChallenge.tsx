@@ -30,28 +30,7 @@ import { XIMA_CORE_CHALLENGE } from '@/lib/challenges/ximaCoreChallenge';
 import { buildChallengePayload } from '@/features/challenge-builder/saveChallenge';
 import { labelForCcnl } from '@/lib/business/ccnl';
 import { log } from '@/lib/log';
-import {
-  ArrowLeft,
-  Brain,
-  CalendarClock,
-  CheckCircle2,
-  ChevronDown,
-  Clock,
-  Compass,
-  Euro,
-  Eye,
-  EyeOff,
-  FileText,
-  Heart,
-  Loader2,
-  Lock,
-  MessageCircle,
-  Rocket,
-  Shield,
-  Sparkles,
-  Target,
-  Zap,
-} from 'lucide-react';
+import { ArrowLeft, Brain, CalendarClock, CheckCircle2, ChevronDown, Clock, Compass, Euro, Eye, EyeOff, FileText, Heart, Loader2, Lock, MessageCircle, Rocket, Shield, Target, Zap } from 'lucide-react';
 
 interface HiringGoal {
   id: string;
@@ -554,7 +533,6 @@ const CreateXimaCoreChallenge = () => {
         {showNoContextWarning && (
           <Card className="border-amber-500/40 bg-amber-500/5">
             <CardContent className="flex items-start gap-3 p-4">
-              <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
               <p className="text-sm text-foreground">
                 {t('business.challenges.context_selector.no_context.warning')}
               </p>
@@ -606,7 +584,6 @@ const CreateXimaCoreChallenge = () => {
 
           {!generating && (generationError || isFallbackScenario) && (
             <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm text-foreground flex items-start gap-2">
-              <Sparkles className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
               <span>{generationError ? t('challenge.xima_core.scenario_generation_failed') : t('challenge.xima_core.fallback_warning')}</span>
             </div>
           )}
@@ -633,7 +610,7 @@ const CreateXimaCoreChallenge = () => {
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant={!hasValidScenario ? 'default' : 'outline'} className="gap-2" disabled={generating}>
-                    {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                    {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Compass className="h-4 w-4" />}
                     {t('challenge.xima_core.scenario_regenerate')}
                   </Button>
                 </AlertDialogTrigger>

@@ -5,7 +5,7 @@ import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Loader2, User, Sparkles, ArrowRight, X } from 'lucide-react';
+import { Calendar, Loader2, User, ArrowRight, X } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { useProfileData } from '@/hooks/useProfileData';
 import { XimatarProfileCard } from '@/components/results/XimatarProfileCard';
@@ -171,13 +171,11 @@ const Profile = () => {
           <div className="glass-surface rounded-[20px] text-center py-16 px-6 hover:translate-y-0">
             <div className="flex justify-center mb-6">
               <div className="w-20 h-20 rounded-[20px] bg-primary/10 flex items-center justify-center">
-                <Sparkles className="h-10 w-10 text-primary" strokeWidth={1.5} />
               </div>
             </div>
             <h2 className="text-[28px] md:text-[34px] font-bold mb-4 text-foreground">{t('profile.no_assessment_title')}</h2>
             <p className="text-muted-foreground text-[17px] mb-8 max-w-md mx-auto">{t('profile.no_assessment_desc')}</p>
             <Button size="lg" onClick={() => navigate('/ximatar-journey')} className="challenge-active-ring">
-              <Sparkles className="mr-2 h-5 w-5" strokeWidth={1.5} />
               {t('profile.start_assessment')}
             </Button>
             <div className="h-1 momentum-bar mt-8 rounded-[999px] max-w-xs mx-auto" />
@@ -212,7 +210,6 @@ const Profile = () => {
             <p className="text-[15px] text-muted-foreground max-w-lg">{t('dashboard.welcome_subheadline')}</p>
           </div>
           <Button variant="outline" size="sm" onClick={() => setGuideOpen(true)} className="shrink-0">
-            <Sparkles className="mr-2 h-4 w-4" strokeWidth={1.5} />
             {t('dashboard.guided_tour', 'Tour guidato')}
           </Button>
         </div>
