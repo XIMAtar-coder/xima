@@ -59,7 +59,8 @@ const getDecisionPriority = (inv: InvitationWithSubmission): number => {
 };
 
 export default function ChallengeResponses() {
-  const { goalId, challengeId } = useParams<{ goalId: string; challengeId: string }>();
+  const { goalId: routeGoalId, challengeId } = useParams<{ goalId: string; challengeId: string }>();
+  const [goalId, setGoalId] = useState<string | undefined>(routeGoalId);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -89,7 +90,7 @@ export default function ChallengeResponses() {
 
   useEffect(() => {
     async function loadChallengeData() {
-      if (!challengeId || !goalId) return;
+      if (!challengeId) return;
 
       try {
         const { data: { user } } = await supabase.auth.getUser();
@@ -103,16 +104,20 @@ export default function ChallengeResponses() {
         // Load challenge info only (responses come from the hook)
         const { data: challengeData, error: challengeError } = await supabase
           .from('business_challenges')
-          .select('id, title, description, success_criteria, start_at, end_at, status, rubric')
+          .select('id, title, description, success_criteria, start_at, end_at, status, rubric, hiring_goal_id')
           .eq('id', challengeId)
           .eq('business_id', user.id)
           .single();
 
         if (challengeError || !challengeData) {
           toast({ title: t('common.error'), description: 'Challenge not found', variant: 'destructive' });
-          navigate(`/business/hiring-goals/${goalId}/challenges`);
+          navigate(routeGoalId ? `/business/hiring-goals/${routeGoalId}/challenges` : '/business/challenges');
           return;
         }
+
+        // Derive the hiring goal from the challenge when the route doesn't carry one
+        const effectiveGoalId = routeGoalId ?? challengeData.hiring_goal_id ?? undefined;
+        setGoalId(effectiveGoalId);
 
         setChallenge({
           id: challengeData.id,
@@ -133,7 +138,7 @@ export default function ChallengeResponses() {
           .eq('status', 'active');
 
         setAllGoals((goalsData || []) as HiringGoal[]);
-        const goal = goalsData?.find(g => g.id === goalId);
+        const goal = goalsData?.find(g => g.id === effectiveGoalId);
         setCurrentGoal((goal || null) as HiringGoal | null);
 
       } catch (error) {
@@ -145,7 +150,7 @@ export default function ChallengeResponses() {
     }
 
     loadChallengeData();
-  }, [challengeId, goalId, navigate, t]);
+  }, [challengeId, routeGoalId, navigate, t]);
 
   const timeInfo = challenge ? getChallengeTimeInfo(challenge.startAt, challenge.endAt, challenge.status) : null;
 
@@ -364,7 +369,7 @@ export default function ChallengeResponses() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigate(`/business/hiring-goals/${goalId}/challenges`)}
+                  onClick={() => navigate(goalId ? `/business/hiring-goals/${goalId}/challenges` : '/business/challenges')}
                   className="mb-2 -ml-2"
                 >
                   <ArrowLeft className="h-4 w-4 mr-1" />

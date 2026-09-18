@@ -573,6 +573,7 @@ serve(async (req) => {
       bearerToken === supabaseServiceKey && req.headers.get('x-internal-admin') === '1';
 
     let user: { id: string } | null = null;
+    let callerIsAdmin = false;
     if (isServiceRoleCall) {
       console.log('[generate-challenge] service-role internal call accepted', JSON.stringify({ correlation_id: correlationId }));
     } else {
@@ -585,6 +586,7 @@ serve(async (req) => {
       const hasBusiness = roles?.some(r => r.role === 'business');
       const hasAdmin = roles?.some(r => r.role === 'admin');
       if (!hasBusiness && !hasAdmin) return forbiddenResponse('Business role required to generate challenges');
+      callerIsAdmin = !!hasAdmin;
       user = { id: authUser.id };
     }
 
@@ -594,6 +596,12 @@ serve(async (req) => {
       return errorResponse(400, 'MISSING_BUSINESS_ID', 'business_id is required for service-role internal calls', { correlation_id: correlationId });
     }
     if (!user) user = { id: body.business_id! };
+
+    // IDOR guard: a client-supplied business_id may only ever be the caller's own
+    // business (admins and internal service-role calls excepted).
+    if (!isServiceRoleCall && !callerIsAdmin && body.business_id && body.business_id !== user.id) {
+      return forbiddenResponse('business_id does not belong to the caller');
+    }
 
     // Per-user monthly AI budget cap → 429 before any model call.
     // Service-role internal calls bypass the per-user cap (batched/system flows).
@@ -722,11 +730,12 @@ serve(async (req) => {
       }
 
       // Load existing challenge to check (1) it exists, (2) level matches, (3) skip-if-present.
-      const { data: existingChallenge, error: loadErr } = await supabaseAdmin
+      let existingQuery = supabaseAdmin
         .from('business_challenges')
         .select('id, level, config_json, hiring_goal_id')
-        .eq('id', body.challenge_id)
-        .maybeSingle();
+        .eq('id', body.challenge_id);
+      if (!callerIsAdmin) existingQuery = existingQuery.eq('business_id', businessId);
+      const { data: existingChallenge, error: loadErr } = await existingQuery.maybeSingle();
       if (loadErr || !existingChallenge) {
         return errorResponse(404, 'CHALLENGE_NOT_FOUND', 'Target challenge not found', { correlation_id: correlationId });
       }
@@ -829,11 +838,13 @@ serve(async (req) => {
         l2_simulation: l2SimulationPayload,
       };
 
-      const { error: updateErr } = await supabaseAdmin
+      let l2UpdateQuery = supabaseAdmin
         .from('business_challenges')
         .update({ config_json: nextConfig })
         .eq('id', body.challenge_id)
         .eq('level', 2);
+      if (!callerIsAdmin) l2UpdateQuery = l2UpdateQuery.eq('business_id', businessId);
+      const { error: updateErr } = await l2UpdateQuery;
       if (updateErr) {
         console.error('[generate-challenge] L2 persist failed', JSON.stringify({ correlation_id: correlationId, error: updateErr.message }));
         return errorResponse(500, 'L2_PERSIST_FAILED', updateErr.message, { correlation_id: correlationId });
@@ -1167,11 +1178,13 @@ Restituisci SOLO JSON valido:
 
             if (body.challenge_id) {
               const supabaseAdmin2 = createClient(supabaseUrl, supabaseServiceKey);
-              await supabaseAdmin2.from("business_challenges").update({
+              let lensQuery = supabaseAdmin2.from("business_challenges").update({
                 evaluation_lens: validated.evaluation_lens,
                 expected_tensions: validated.expected_tensions,
                 context_snapshot: validated.context_snapshot,
               }).eq("id", body.challenge_id);
+              if (!callerIsAdmin) lensQuery = lensQuery.eq('business_id', businessId);
+              await lensQuery;
             }
 
             const mindset = await generateMindsetBlock({
@@ -1269,11 +1282,13 @@ Restituisci SOLO JSON valido:
 
       // Store evaluation_lens on the challenge
       if (body.challenge_id) {
-        await supabaseAdmin.from('business_challenges').update({
+        let lensQuery2 = supabaseAdmin.from('business_challenges').update({
           evaluation_lens: validated.evaluation_lens,
           expected_tensions: validated.expected_tensions,
           context_snapshot: validated.context_snapshot,
         }).eq('id', body.challenge_id);
+        if (!callerIsAdmin) lensQuery2 = lensQuery2.eq('business_id', businessId);
+        await lensQuery2;
       }
 
       // Deposit into intelligence engine
