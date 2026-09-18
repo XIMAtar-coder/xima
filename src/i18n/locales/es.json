@@ -5464,7 +5464,10 @@
         "ral_from_yearly": "Tomada del rango bruto anual indicado arriba.",
         "ral_from_monthly": "Calculada a partir del rango bruto mensual indicado arriba sobre {{months}} pagas.",
         "ccnl_label": "CCNL aplicable",
-        "ccnl_placeholder": "— Selecciona CCNL —"
+        "ccnl_placeholder": "— Selecciona CCNL —",
+        "pay_months_label": "Pagas al año",
+        "pay_months_default": "{{months}} según el convenio / país",
+        "pay_months_custom": "fijadas por ti (p. ej. acuerdo de empresa)"
       },
       "draft_found_title": "¿Retomar el borrador?",
       "draft_found_body": "Tienes un objetivo de contratación sin terminar \"{{role}}\" guardado en este dispositivo ({{date}}).",

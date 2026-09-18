@@ -13,11 +13,10 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
 import SuggestFieldButton from '@/components/business/SuggestFieldButton';
-import { CCNL_OPTIONS, CCNL_HELPER_IT } from '@/lib/business/ccnl';
+import { CCNL_OPTIONS, CCNL_HELPER_IT, defaultPayMonths } from '@/lib/business/ccnl';
 import { log } from '@/lib/log';
 import { useBusinessProfile } from '@/hooks/useBusinessProfile';
 import {
-  RAL_MONTHS,
   clearGoalDraft,
   countryCodeFromProfile,
   deriveRal,
@@ -46,6 +45,8 @@ interface FormData {
   ral_min: number;
   ral_max: number;
   ccnl: string;
+  /** Monthly payments per year chosen by the business; null = from the CCNL/country. */
+  pay_months: number | null;
   years_experience_min: number | null;
   years_experience_max: number | null;
   education_level: string;
@@ -103,6 +104,7 @@ const HiringGoalCreate = () => {
     ral_min: 0,
     ral_max: 0,
     ccnl: '',
+    pay_months: null,
     years_experience_min: null,
     years_experience_max: null,
     education_level: '',
@@ -214,6 +216,7 @@ const HiringGoalCreate = () => {
         ral_min: raw.salary_min ? Math.round(raw.salary_min) : 0,
         ral_max: raw.salary_max ? Math.round(raw.salary_max) : 0,
         ccnl: raw.ccnl || '',
+        pay_months: null,
         years_experience_min: raw.years_experience_min ?? null,
         years_experience_max: raw.years_experience_max ?? null,
         education_level: raw.education_level || '',
@@ -264,6 +267,7 @@ const HiringGoalCreate = () => {
         ral_min: d.ral_min || 0,
         ral_max: d.ral_max || 0,
         ccnl: d.ccnl || '',
+        pay_months: null,
         years_experience_min: d.years_experience_min ?? null,
         years_experience_max: d.years_experience_max ?? null,
         education_level: d.education_level || '',
@@ -298,7 +302,8 @@ const HiringGoalCreate = () => {
 
       const isXimaHr = formData.xima_hr_requested;
       // RAL is derived from the single salary range instead of being typed twice.
-      const ral = deriveRal(formData.salary_min, formData.salary_max, formData.salary_period);
+      const ral = deriveRal(formData.salary_min, formData.salary_max, formData.salary_period,
+        formData.pay_months ?? defaultPayMonths(formData.country, formData.ccnl));
 
       const payload = {
         role_title: formData.role_title,
@@ -942,7 +947,9 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
   const salaryLabel = isYearly
     ? t('businessPortal.hiring_goal.gross_salary.ral_label', 'RAL')
     : t('businessPortal.hiring_goal.gross_salary.monthly_label', 'Mensile lordo');
-  const derivedRal = deriveRal(formData.salary_min, formData.salary_max, formData.salary_period);
+  const contractMonths = defaultPayMonths(formData.country, formData.ccnl);
+  const payMonths = formData.pay_months ?? contractMonths;
+  const derivedRal = deriveRal(formData.salary_min, formData.salary_max, formData.salary_period, payMonths);
 
   return (
     <div className="space-y-6">
@@ -1012,8 +1019,31 @@ const Step4SalaryReview = ({ formData, updateField }: StepProps) => {
           <p className="text-xs text-muted-foreground mt-0.5">
             {isYearly
               ? t('businessPortal.hiring_goal.pay_transparency.ral_from_yearly')
-              : t('businessPortal.hiring_goal.pay_transparency.ral_from_monthly', { months: RAL_MONTHS })}
+              : t('businessPortal.hiring_goal.pay_transparency.ral_from_monthly', { months: payMonths })}
           </p>
+          {!isYearly && (
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <label htmlFor="goal-pay-months" className="text-xs text-muted-foreground">
+                {t('businessPortal.hiring_goal.pay_transparency.pay_months_label')}
+              </label>
+              <select
+                id="goal-pay-months"
+                value={payMonths}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  updateField('pay_months', v === contractMonths ? null : v);
+                }}
+                className="rounded-md border border-border bg-background px-2 py-1 text-xs text-foreground"
+              >
+                {[12, 13, 14].map((m) => <option key={m} value={m}>{m}</option>)}
+              </select>
+              <span className="text-xs text-muted-foreground">
+                {formData.pay_months == null
+                  ? t('businessPortal.hiring_goal.pay_transparency.pay_months_default', { months: contractMonths })
+                  : t('businessPortal.hiring_goal.pay_transparency.pay_months_custom')}
+              </span>
+            </div>
+          )}
         </div>
         <label htmlFor="goal-ccnl" className="text-sm font-medium text-foreground mb-1.5 block">
           {t('businessPortal.hiring_goal.pay_transparency.ccnl_label')}

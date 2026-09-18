@@ -6,6 +6,7 @@ import {
   loadGoalDraft,
   saveGoalDraft,
 } from '../hiringGoalDraft';
+import { defaultPayMonths } from '../ccnl';
 
 describe('deriveRal', () => {
   it('uses the yearly range as RAL', () => {
@@ -16,6 +17,25 @@ describe('deriveRal', () => {
   });
   it('treats empty values as 0', () => {
     expect(deriveRal(0, NaN, 'yearly')).toEqual({ ral_min: 0, ral_max: 0 });
+  });
+  it('uses 14 payments when the contract has a quattordicesima', () => {
+    expect(deriveRal(2000, 2500, 'monthly', 14)).toEqual({ ral_min: 28000, ral_max: 35000 });
+  });
+});
+
+describe('defaultPayMonths', () => {
+  it('follows the Italian CCNL', () => {
+    expect(defaultPayMonths('IT', 'commercio_terziario')).toBe(14);
+    expect(defaultPayMonths('IT', 'metalmeccanico_industria')).toBe(13);
+    expect(defaultPayMonths('IT', 'assicurazioni_ania')).toBe(14);
+    expect(defaultPayMonths('IT', 'credito_abi')).toBe(13);
+    expect(defaultPayMonths('IT', 'altro')).toBe(13);
+    expect(defaultPayMonths('IT', '')).toBe(13);
+  });
+  it('uses the statutory 14 pagas in Spain and 12 elsewhere', () => {
+    expect(defaultPayMonths('ES', '')).toBe(14);
+    expect(defaultPayMonths('DE', '')).toBe(12);
+    expect(defaultPayMonths('FR', 'commercio_terziario')).toBe(12);
   });
 });
 

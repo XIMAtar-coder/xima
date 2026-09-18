@@ -5,18 +5,17 @@
  */
 
 /**
- * Monthly payments per year used to turn a gross monthly figure into RAL.
- * The 13th month (tredicesima) is due under every Italian CCNL; a 14th only
- * under some, so 13 is the conservative floor.
+ * RAL from the single salary input. A monthly figure is multiplied by the
+ * number of monthly payments, which depends on the contract (13 or 14 in
+ * Italy, see defaultPayMonths in ccnl.ts) and can be overridden.
  */
-export const RAL_MONTHS = 13;
-
 export function deriveRal(
   salaryMin: number,
   salaryMax: number,
   period: string,
+  payMonths = 13,
 ): { ral_min: number; ral_max: number } {
-  const factor = period === 'monthly' ? RAL_MONTHS : 1;
+  const factor = period === 'monthly' ? payMonths : 1;
   const toRal = (v: number) => (Number.isFinite(v) && v > 0 ? Math.round(v * factor) : 0);
   return { ral_min: toRal(salaryMin), ral_max: toRal(salaryMax) };
 }
