@@ -104,16 +104,20 @@ export default function ChallengeResponses() {
         // Load challenge info only (responses come from the hook)
         const { data: challengeData, error: challengeError } = await supabase
           .from('business_challenges')
-          .select('id, title, description, success_criteria, start_at, end_at, status, rubric')
+          .select('id, title, description, success_criteria, start_at, end_at, status, rubric, hiring_goal_id')
           .eq('id', challengeId)
           .eq('business_id', user.id)
           .single();
 
         if (challengeError || !challengeData) {
           toast({ title: t('common.error'), description: 'Challenge not found', variant: 'destructive' });
-          navigate(`/business/hiring-goals/${goalId}/challenges`);
+          navigate(routeGoalId ? `/business/hiring-goals/${routeGoalId}/challenges` : '/business/challenges');
           return;
         }
+
+        // Derive the hiring goal from the challenge when the route doesn't carry one
+        const effectiveGoalId = routeGoalId ?? challengeData.hiring_goal_id ?? undefined;
+        setGoalId(effectiveGoalId);
 
         setChallenge({
           id: challengeData.id,
@@ -134,7 +138,7 @@ export default function ChallengeResponses() {
           .eq('status', 'active');
 
         setAllGoals((goalsData || []) as HiringGoal[]);
-        const goal = goalsData?.find(g => g.id === goalId);
+        const goal = goalsData?.find(g => g.id === effectiveGoalId);
         setCurrentGoal((goal || null) as HiringGoal | null);
 
       } catch (error) {
