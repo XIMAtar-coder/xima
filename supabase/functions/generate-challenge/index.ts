@@ -573,6 +573,7 @@ serve(async (req) => {
       bearerToken === supabaseServiceKey && req.headers.get('x-internal-admin') === '1';
 
     let user: { id: string } | null = null;
+    let callerIsAdmin = false;
     if (isServiceRoleCall) {
       console.log('[generate-challenge] service-role internal call accepted', JSON.stringify({ correlation_id: correlationId }));
     } else {
@@ -585,6 +586,7 @@ serve(async (req) => {
       const hasBusiness = roles?.some(r => r.role === 'business');
       const hasAdmin = roles?.some(r => r.role === 'admin');
       if (!hasBusiness && !hasAdmin) return forbiddenResponse('Business role required to generate challenges');
+      callerIsAdmin = !!hasAdmin;
       user = { id: authUser.id };
     }
 
@@ -594,6 +596,12 @@ serve(async (req) => {
       return errorResponse(400, 'MISSING_BUSINESS_ID', 'business_id is required for service-role internal calls', { correlation_id: correlationId });
     }
     if (!user) user = { id: body.business_id! };
+
+    // IDOR guard: a client-supplied business_id may only ever be the caller's own
+    // business (admins and internal service-role calls excepted).
+    if (!isServiceRoleCall && !callerIsAdmin && body.business_id && body.business_id !== user.id) {
+      return forbiddenResponse('business_id does not belong to the caller');
+    }
 
     // Per-user monthly AI budget cap → 429 before any model call.
     // Service-role internal calls bypass the per-user cap (batched/system flows).
