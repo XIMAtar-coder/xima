@@ -730,11 +730,12 @@ serve(async (req) => {
       }
 
       // Load existing challenge to check (1) it exists, (2) level matches, (3) skip-if-present.
-      const { data: existingChallenge, error: loadErr } = await supabaseAdmin
+      let existingQuery = supabaseAdmin
         .from('business_challenges')
         .select('id, level, config_json, hiring_goal_id')
-        .eq('id', body.challenge_id)
-        .maybeSingle();
+        .eq('id', body.challenge_id);
+      if (!callerIsAdmin) existingQuery = existingQuery.eq('business_id', businessId);
+      const { data: existingChallenge, error: loadErr } = await existingQuery.maybeSingle();
       if (loadErr || !existingChallenge) {
         return errorResponse(404, 'CHALLENGE_NOT_FOUND', 'Target challenge not found', { correlation_id: correlationId });
       }
