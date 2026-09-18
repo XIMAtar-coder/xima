@@ -700,7 +700,21 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
       ? await hashForAudit(ipSource || "unknown")
       : await hashForAuditFallback(ipSource || "unknown");
 
-    const detectedLanguage = pdfBase64 ? "auto" : detectLanguage(truncatedText);
+    // The narrative used to follow the CV's language: an English interface
+    // showed an Italian analysis. Prefer the candidate's chosen language.
+    const cvLanguage = pdfBase64 ? "auto" : detectLanguage(truncatedText);
+    let detectedLanguage = cvLanguage;
+    try {
+      const { data: langRow } = await serviceClient
+        .from("profiles")
+        .select("preferred_lang, content_language")
+        .eq("user_id", userId)
+        .maybeSingle();
+      const pref = String(langRow?.content_language || langRow?.preferred_lang || "").split("-")[0].toLowerCase();
+      if (["it", "en", "es", "de", "fr", "pt"].includes(pref)) detectedLanguage = pref;
+    } catch (e) {
+      console.warn("[analyze-cv:bg] preferred language lookup failed:", e instanceof Error ? e.message : e);
+    }
 
     let contextBlock = "";
     // Scored blind: prior pillar scores must not anchor this analysis. (The CV
@@ -880,7 +894,7 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
         seniority_level: credentials.seniority_level || null,
         industries_worked: credentials.industries_worked || [],
         career_trajectory: credentials.career_trajectory || null,
-        cv_language: detectedLanguage,
+        cv_language: cvLanguage,
         publications: credentials.publications || [],
         patents: credentials.patents || [],
         awards: credentials.awards || [],
@@ -917,7 +931,7 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
         growth_bridge_roles: roleFit.growth_bridge_roles || [],
         mentor_suggested_focus: mentorHook.suggested_focus || null,
         mentor_key_question: mentorHook.key_question || null,
-        cv_language: detectedLanguage,
+        cv_language: cvLanguage,
         analysis_model: aiResult.model,
         correlation_id: correlationId,
       }, { onConflict: "user_id" });
@@ -1014,7 +1028,7 @@ async function runAnalysis(ctx: RunAnalysisCtx): Promise<void> {
             top_tensions: tension.primary_gaps?.slice(0, 3)?.map((g: any) => `${g.pillar} ${g.gap_direction} (CV ${g.cv_score} vs Assessment ${g.ximatar_score})`),
             narrative_snippet: tension.overall_narrative?.substring(0, 200),
           },
-          cv_language: detectedLanguage,
+          cv_language: cvLanguage,
           cv_analyzed_at: new Date().toISOString(),
           cv_extracted_text: truncatedText.substring(0, 3000),
           cv_extraction_method: extractionMethod,

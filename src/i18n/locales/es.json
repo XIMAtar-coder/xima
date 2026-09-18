@@ -2829,7 +2829,14 @@
     "or_with_email": "o regístrate con tu email",
     "show_password": "Mostrar contraseña",
     "hide_password": "Ocultar contraseña",
-    "password_requirement": "Al menos {{count}} caracteres"
+    "password_requirement": "Al menos {{count}} caracteres",
+    "password_rule_length": "Al menos {{count}} caracteres",
+    "password_rule_letter": "Contiene una letra",
+    "password_rule_number": "Contiene un número",
+    "password_rule_not_common": "No es una contraseña común (como \"password123\")",
+    "password_rule_not_personal": "No contiene el nombre de tu correo",
+    "password_rules_unmet": "La contraseña no cumple los requisitos de abajo.",
+    "password_rejected": "Esta contraseña aparece en listas de contraseñas filtradas o fáciles de adivinar. Elige otra."
   },
   "legal": {
     "privacyPolicy": "Política de privacidad",
@@ -4034,7 +4041,7 @@
     "page_label": "GROWTH HUB",
     "page_title": "Growth Hub",
     "page_subtitle": "Tu camino de crecimiento personalizado: construido sobre tus pilares y calibrado según tus puntos de fricción.",
-    "back_button": "← Dashboard",
+    "back_button": "Dashboard",
     "progress_title": "Progreso general",
     "progress_tests_completed_label": "Tests completados",
     "stat_completed_label": "Tests completados",

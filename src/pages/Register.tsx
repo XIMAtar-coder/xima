@@ -16,10 +16,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { GoogleAuthButton, PENDING_CONSENT_KEY } from '@/components/auth/GoogleAuthButton';
 import { ConsentCheckboxes } from '@/components/auth/ConsentCheckboxes';
 import { recordUserConsents } from '@/hooks/useConsentRecording';
+import { checkPassword, isPasswordAuthError, PASSWORD_MIN_LENGTH } from '@/lib/auth/passwordPolicy';
 import { log } from '@/lib/log';
 import { Eye, EyeOff, Check } from 'lucide-react';
 
-const PASSWORD_MIN_LENGTH = 6;
 
 const Register = () => {
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ const Register = () => {
     if (!formData.email.trim()) newErrors.email = t('register.email_required');
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = t('register.email_invalid');
     if (!formData.password) newErrors.password = t('register.password_required');
-    else if (formData.password.length < PASSWORD_MIN_LENGTH) newErrors.password = t('register.password_length');
+    else if (!checkPassword(formData.password, { email: formData.email }).valid) newErrors.password = t('register.password_rules_unmet', 'The password does not meet the requirements below.');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -91,6 +91,12 @@ const Register = () => {
     try {
       const { data, error } = await signUp(formData.email, formData.password, formData.name);
       if (error) {
+        if (isPasswordAuthError(error)) {
+          // Supabase also rejects leaked passwords; say so at the field.
+          setErrors(prev => ({ ...prev, password: t('register.password_rejected', 'This password appears in lists of leaked or easy-to-guess passwords. Choose a different one.') }));
+          document.getElementById('password')?.focus();
+          return;
+        }
         toast({ title: t('register.registration_failed'), description: error.message, variant: "destructive" });
         return;
       }
@@ -280,15 +286,17 @@ const Register = () => {
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                <p
-                  id="password-requirements"
-                  className={`flex items-center gap-1.5 text-xs ${
-                    formData.password.length >= PASSWORD_MIN_LENGTH ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground'
-                  }`}
-                >
-                  {formData.password.length >= PASSWORD_MIN_LENGTH && <Check size={12} className="shrink-0" />}
-                  {t('register.password_requirement', { count: PASSWORD_MIN_LENGTH })}
-                </p>
+                <ul id="password-requirements" className="space-y-0.5" aria-live="polite">
+                  {checkPassword(formData.password, { email: formData.email }).rules.map((rule) => (
+                    <li
+                      key={rule.id}
+                      className={`flex items-center gap-1.5 text-xs ${rule.ok ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground'}`}
+                    >
+                      {rule.ok ? <Check size={12} className="shrink-0" /> : <span className="w-3 shrink-0 text-center">•</span>}
+                      {t(`register.password_rule_${rule.id}`, { count: PASSWORD_MIN_LENGTH })}
+                    </li>
+                  ))}
+                </ul>
                 {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
               </div>
 

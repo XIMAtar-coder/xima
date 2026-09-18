@@ -85,7 +85,10 @@ export const OptimizedImage = React.forwardRef<HTMLImageElement, OptimizedImageP
     return (
       <span
         className={cn('relative inline-block overflow-hidden', className)}
-        style={{ width, height }}
+        // width/height reserve space against layout shift; when the caller
+        // sizes the wrapper itself (w-full/h-full), let that win — a fixed
+        // 144px box inside a 120px circle pushed the XIMAtar off-centre.
+        style={/\b(w-full|h-full|w-\[|h-\[)/.test(className ?? '') ? undefined : { width, height }}
       >
         {!showFallback && !loaded && (
           <span

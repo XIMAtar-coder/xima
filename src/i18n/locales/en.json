@@ -1515,7 +1515,14 @@
     "or_with_email": "or sign up with email",
     "show_password": "Show password",
     "hide_password": "Hide password",
-    "password_requirement": "At least {{count}} characters"
+    "password_requirement": "At least {{count}} characters",
+    "password_rule_length": "At least {{count}} characters",
+    "password_rule_letter": "Contains a letter",
+    "password_rule_number": "Contains a number",
+    "password_rule_not_common": "Not a common password (like \"password123\")",
+    "password_rule_not_personal": "Does not contain your email name",
+    "password_rules_unmet": "The password does not meet the requirements below.",
+    "password_rejected": "This password appears in lists of leaked or easy-to-guess passwords. Choose a different one."
   },
   "legal": {
     "privacyPolicy": "Privacy Policy",
@@ -2741,7 +2748,7 @@
     "page_label": "GROWTH HUB",
     "page_title": "Growth Hub",
     "page_subtitle": "Your personalized growth path — built on your pillars, calibrated on your friction points.",
-    "back_button": "← Dashboard",
+    "back_button": "Dashboard",
     "progress_title": "Overall Progress",
     "progress_tests_completed_label": "Tests Completed",
     "stat_completed_label": "Tests Completed",
