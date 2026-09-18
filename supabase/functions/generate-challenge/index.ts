@@ -1282,11 +1282,13 @@ Restituisci SOLO JSON valido:
 
       // Store evaluation_lens on the challenge
       if (body.challenge_id) {
-        await supabaseAdmin.from('business_challenges').update({
+        let lensQuery2 = supabaseAdmin.from('business_challenges').update({
           evaluation_lens: validated.evaluation_lens,
           expected_tensions: validated.expected_tensions,
           context_snapshot: validated.context_snapshot,
         }).eq('id', body.challenge_id);
+        if (!callerIsAdmin) lensQuery2 = lensQuery2.eq('business_id', businessId);
+        await lensQuery2;
       }
 
       // Deposit into intelligence engine
