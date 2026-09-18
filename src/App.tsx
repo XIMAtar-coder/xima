@@ -202,6 +202,7 @@ const RoutesTree = () => {
           <Route path="/business/hiring-goals/:goalId/settings" element={<RequireAuth role="business"><GoalSettings /></RequireAuth>} />
           <Route path="/business/hiring-goals/:goalId/decision-pack" element={<RequireAuth role="business"><GoalDecisionPack /></RequireAuth>} />
           <Route path="/business/hiring-goals/:goalId/challenges/:challengeId/responses" element={<RequireAuth role="business"><ChallengeResponses /></RequireAuth>} />
+          <Route path="/business/challenges/:challengeId/responses" element={<RequireAuth role="business"><ChallengeResponses /></RequireAuth>} />
           <Route path="/business/hiring-goals" element={<RequireAuth role="business"><BusinessHiringGoals /></RequireAuth>} />
           <Route path="/business/hiring-goals/new" element={<RequireAuth role="business"><HiringGoalCreate /></RequireAuth>} />
           <Route path="/business/hiring-goals/:goalId/edit" element={<RequireAuth role="business"><HiringGoalCreate /></RequireAuth>} />
