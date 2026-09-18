@@ -150,7 +150,7 @@ export default function ChallengeResponses() {
     }
 
     loadChallengeData();
-  }, [challengeId, goalId, navigate, t]);
+  }, [challengeId, routeGoalId, navigate, t]);
 
   const timeInfo = challenge ? getChallengeTimeInfo(challenge.startAt, challenge.endAt, challenge.status) : null;
 
@@ -369,7 +369,7 @@ export default function ChallengeResponses() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigate(`/business/hiring-goals/${goalId}/challenges`)}
+                  onClick={() => navigate(goalId ? `/business/hiring-goals/${goalId}/challenges` : '/business/challenges')}
                   className="mb-2 -ml-2"
                 >
                   <ArrowLeft className="h-4 w-4 mr-1" />
