@@ -549,7 +549,9 @@
     "complete": "Complete",
     "collapse": "Collapse",
     "add": "Add",
-    "select": "Select"
+    "select": "Select",
+    "previous": "Previous",
+    "retry": "Try again"
   },
   "tutorial": {
     "dont_show_again": "Don't show again"
@@ -7154,7 +7156,10 @@
     "no_l1_title": "Create a XIMA Core challenge first",
     "no_l1_desc": "This goal has no active XIMA Core challenge yet. Create one to invite candidates.",
     "no_l1_tag": "create XIMA Core challenge",
-    "create_xima_core": "Create XIMA Core challenge"
+    "create_xima_core": "Create XIMA Core challenge",
+    "invite_goal_label": "Invite candidates to a hiring goal",
+    "select_goal": "Choose a hiring goal…",
+    "invite_failed": "The invitation could not be sent."
   },
   "anonymous": {
     "candidate_label": "Candidate #{{number}}",

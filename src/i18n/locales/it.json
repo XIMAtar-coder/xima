@@ -585,7 +585,9 @@
     "complete": "Completa",
     "collapse": "Riduci",
     "add": "Aggiungi",
-    "select": "Seleziona"
+    "select": "Seleziona",
+    "previous": "Indietro",
+    "retry": "Riprova"
   },
   "tutorial": {
     "dont_show_again": "Non mostrare più"
@@ -7153,7 +7155,10 @@
     "no_l1_title": "Crea prima una sfida XIMA Core",
     "no_l1_desc": "Questo obiettivo non ha ancora una sfida XIMA Core attiva. Creala per inviare candidati.",
     "no_l1_tag": "crea sfida XIMA Core",
-    "create_xima_core": "Crea sfida XIMA Core"
+    "create_xima_core": "Crea sfida XIMA Core",
+    "invite_goal_label": "Invita i candidati a un obiettivo di assunzione",
+    "select_goal": "Scegli un obiettivo…",
+    "invite_failed": "Non è stato possibile inviare l’invito."
   },
   "anonymous": {
     "candidate_label": "Candidato #{{number}}",

@@ -202,7 +202,9 @@
     "complete": "Completar",
     "collapse": "Contraer",
     "add": "Añadir",
-    "select": "Selecciona"
+    "select": "Selecciona",
+    "previous": "Anterior",
+    "retry": "Reintentar"
   },
   "nav": {
     "home": "Inicio",
@@ -6482,7 +6484,10 @@
     "no_l1_title": "Crea primero un reto XIMA Core",
     "no_l1_desc": "Este objetivo aún no tiene un reto XIMA Core activo. Créalo para invitar candidatos.",
     "no_l1_tag": "crear reto XIMA Core",
-    "create_xima_core": "Crear reto XIMA Core"
+    "create_xima_core": "Crear reto XIMA Core",
+    "invite_goal_label": "Invita a los candidatos a un objetivo de contratación",
+    "select_goal": "Elige un objetivo…",
+    "invite_failed": "No se ha podido enviar la invitación."
   },
   "candidate": {
     "l2_conversation": {
