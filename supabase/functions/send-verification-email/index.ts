@@ -91,8 +91,8 @@ serve(async (req) => {
     const callerId = claims.claims.sub as string;
 
     const body = await req.json().catch(() => ({}));
-    const { user_id, email, name, verification_deadline } = body || {};
-    if (!user_id || !email || !verification_deadline) {
+    const { user_id, email, name } = body || {};
+    if (!user_id || !email) {
       return new Response(JSON.stringify({ error: "Missing required fields" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -108,7 +108,17 @@ serve(async (req) => {
     // Generate random token + hash
     const rawToken = crypto.randomUUID() + "-" + crypto.randomUUID();
     const tokenHash = await sha256Hex(rawToken);
-    const expiresAt = new Date(verification_deadline);
+    // Deadline is computed server-side (72h window); never trusted from the client.
+    const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000);
+
+    // Verification window is a protected column: only the service role may set it.
+    const { error: deadlineErr } = await admin
+      .from("profiles")
+      .update({ verification_required_until: expiresAt.toISOString(), email_verified_at: null })
+      .eq("user_id", user_id)
+      .is("email_verified_at", null);
+    if (deadlineErr) console.error("Deadline update error:", deadlineErr.message);
+
 
     const { error: insertErr } = await admin
       .from("email_verification_tokens")
