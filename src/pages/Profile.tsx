@@ -289,8 +289,8 @@ const Profile = () => {
         </Panel>
       </div>
 
-      {/* Next step + CV alignment */}
-      <div className="mt-5 grid gap-5 lg:grid-cols-[1.3fr_1fr]">
+      {/* Next step + CV alignment (the score only once an analysis exists) */}
+      <div className={cn('mt-5 grid gap-5', cv && 'lg:grid-cols-[1.3fr_1fr]')}>
         <Panel className="border-l-4 border-l-primary">
           <Eyebrow className="!text-primary">{t('dashboard.next_step_label', 'The next step')}</Eyebrow>
           {profileCompleted ? (
@@ -313,20 +313,20 @@ const Profile = () => {
           )}
         </Panel>
 
-        <Panel className="flex items-start gap-5">
-          <div className="xs-num shrink-0 font-mono text-[40px] font-medium leading-none text-primary">
-            {alignment !== null ? alignment : '—'}<span className="text-[14px] text-muted-foreground">/100</span>
-          </div>
-          <div className="flex min-h-full flex-col">
-            <h3 className="text-[16px] font-semibold text-foreground">{t('dashboard.cv_and_assessment', 'CV and assessment')}</h3>
-            <p className="mt-1 text-[13px] text-muted-foreground">
-              {cv ? t('dashboard.cv_differences', 'There are differences to explore.') : t('dashboard.cv_missing', 'Upload your CV to compare it with the assessment.')}
-            </p>
-            <button type="button" onClick={() => openSection('cv')} className={linkClass}>
-              {cv ? t('dashboard.read_analysis', 'Read the analysis') : t('dashboard.cv_upload')} <span aria-hidden="true">→</span>
-            </button>
-          </div>
-        </Panel>
+        {cv && (
+          <Panel className="flex items-start gap-5">
+            <div className="xs-num shrink-0 font-mono text-[40px] font-medium leading-none text-primary">
+              {alignment !== null ? alignment : '—'}<span className="text-[14px] text-muted-foreground">/100</span>
+            </div>
+            <div className="flex min-h-full flex-col">
+              <h3 className="text-[16px] font-semibold text-foreground">{t('dashboard.cv_and_assessment', 'CV and assessment')}</h3>
+              <p className="mt-1 text-[13px] text-muted-foreground">{t('dashboard.cv_differences', 'There are differences to explore.')}</p>
+              <button type="button" onClick={() => openSection('cv')} className={linkClass}>
+                {t('dashboard.read_analysis', 'Read the analysis')} <span aria-hidden="true">→</span>
+              </button>
+            </div>
+          </Panel>
+        )}
       </div>
 
       {/* Challenges · mentor · opportunities */}
