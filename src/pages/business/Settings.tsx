@@ -1,20 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import BusinessLayout from '@/components/business/BusinessLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageHeader, Eyebrow } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useUser } from '@/context/UserContext';
 import { useBusinessProfile } from '@/hooks/useBusinessProfile';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { 
-  Building2, Globe, Mail, Save, Clock, TrendingUp, 
-  Loader2, Edit2, RotateCcw, X, Info, Target, Dna
-} from 'lucide-react';
+import { Save, Loader2, Edit2, RotateCcw, X } from 'lucide-react';
 import CompanyLegalSettings from '@/components/business/CompanyLegalSettings';
 import { ProfilingOptOutSection } from '@/components/settings/ProfilingOptOutSection';
 import { AccountDeletionSection } from '@/components/settings/AccountDeletionSection';
@@ -23,6 +17,10 @@ import { INDUSTRIES, industryLabelKey, isKnownIndustry, normalizeIndustry } from
 import { LogoUploader } from '@/components/business/LogoUploader';
 import { toast as sonnerToast } from 'sonner';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { cn } from '@/lib/utils';
+import { SettingsSectionHeader } from '@/components/business/SettingsSectionHeader';
+
+const inputClass = "w-full rounded-lg border border-[hsl(var(--xs-line))] bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-colors";
 
 // ─── Editable Field Sub-Component ───
 const EditableField = ({ label, impact, value, isOverridden, editing, type, rows, onEdit, onCancel, onChange, onSave, onReset }: any) => {
@@ -30,29 +28,29 @@ const EditableField = ({ label, impact, value, isOverridden, editing, type, rows
   const [tagInput, setTagInput] = useState('');
 
   return (
-    <div className="border-b border-border pb-6 last:border-b-0 last:pb-0">
-      <div className="flex items-start justify-between mb-2">
+    <article className="border-b border-[hsl(var(--xs-line))] py-5 first:pt-0 last:border-b-0 last:pb-0">
+      <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <p className="text-sm font-medium text-foreground">{label}</p>
+            <h3 className="text-sm font-semibold text-foreground">{label}</h3>
             {isOverridden && (
-              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200 dark:bg-amber-950 dark:text-amber-100 dark:border-amber-800">
+              <span className="rounded-full border border-[hsl(var(--xs-line))] px-2 py-0.5 text-xs text-muted-foreground">
                 {t('business.profile.modified', 'Modificato')}
               </span>
             )}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">{impact}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{impact}</p>
         </div>
         {!editing && (
           <div className="flex gap-1">
             {isOverridden && (
               <Button variant="ghost" size="sm" onClick={onReset} className="h-7 text-xs">
-                <RotateCcw className="w-3 h-3 mr-1" />
+                <RotateCcw className="w-3 h-3 mr-1" aria-hidden="true" />
                 {t('common.reset_to_ai', 'Ripristina AI')}
               </Button>
             )}
-            <Button variant="outline" size="sm" onClick={onEdit} className="h-7 text-xs">
-              <Edit2 className="w-3 h-3 mr-1" />
+            <Button variant="ghost" size="sm" onClick={onEdit} className="h-7 text-xs text-primary">
+              <Edit2 className="w-3 h-3 mr-1" aria-hidden="true" />
               {t('common.edit', 'Modifica')}
             </Button>
           </div>
@@ -63,7 +61,7 @@ const EditableField = ({ label, impact, value, isOverridden, editing, type, rows
         type === 'tags' ? (
           <div className="flex flex-wrap gap-2 mt-2">
             {(value || []).map((v: string, i: number) => (
-              <span key={i} className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-purple-100 text-purple-900 border border-purple-200 dark:bg-purple-950 dark:text-purple-100 dark:border-purple-800">{v}</span>
+              <span key={i} className="inline-flex items-center rounded-full border border-[hsl(var(--xs-line))] bg-muted/40 px-3 py-1 text-sm text-foreground">{v}</span>
             ))}
             {(!value || value.length === 0) && <p className="text-sm text-muted-foreground italic">{t('common.empty', 'Vuoto')}</p>}
           </div>
@@ -75,17 +73,17 @@ const EditableField = ({ label, impact, value, isOverridden, editing, type, rows
       ) : (
         <div className="space-y-3 mt-2">
           {type === 'textarea' && (
-            <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={rows || 3}
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none" />
+            <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={rows || 3} aria-label={label}
+              className={inputClass} />
           )}
           {type === 'tags' && (
             <>
               <div className="flex flex-wrap gap-2">
                 {(value || []).map((v: string, i: number) => (
-                  <span key={i} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium bg-purple-100 text-purple-900 border border-purple-200 dark:bg-purple-950 dark:text-purple-100 dark:border-purple-800">
+                  <span key={i} className="inline-flex items-center gap-1 rounded-full border border-[hsl(var(--xs-line))] bg-muted/40 px-3 py-1 text-sm text-foreground">
                     {v}
-                    <button onClick={() => onChange(value.filter((_: string, j: number) => j !== i))} className="ml-1 hover:text-purple-700 dark:hover:text-purple-300">
-                      <X className="w-3 h-3" />
+                    <button type="button" onClick={() => onChange(value.filter((_: string, j: number) => j !== i))} className="ml-1 text-muted-foreground hover:text-foreground" aria-label={`${v} ×`}>
+                      <X className="w-3 h-3" aria-hidden="true" />
                     </button>
                   </span>
                 ))}
@@ -94,7 +92,8 @@ const EditableField = ({ label, impact, value, isOverridden, editing, type, rows
                 <input type="text" value={tagInput} onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter' && tagInput.trim()) { e.preventDefault(); onChange([...(value || []), tagInput.trim()]); setTagInput(''); } }}
                   placeholder={t('common.add_tag', 'Aggiungi e premi Enter...')}
-                  className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none" />
+                  aria-label={label}
+                  className={cn(inputClass, 'flex-1')} />
               </div>
             </>
           )}
@@ -104,7 +103,7 @@ const EditableField = ({ label, impact, value, isOverridden, editing, type, rows
           </div>
         </div>
       )}
-    </div>
+    </article>
   );
 };
 
@@ -182,30 +181,23 @@ const EditableAIProfileSection = () => {
   if (!companyProfile) return null;
 
   return (
-    <Card className="border-border/50">
-      <CardHeader>
-        <CardTitle className="text-foreground flex items-center gap-2">
-          {t('business.settings.ai_profile', 'Profilo AI Editabile')}
-        </CardTitle>
-        <CardDescription>
-          {t('business.settings.ai_profile_hint', "Modifica i campi generati dall'AI. Le tue modifiche si sovrappongono al baseline AI senza alterare il DNA dei pilastri.")}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="rounded-lg border border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/20 p-4">
-          <div className="flex gap-3">
-            <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="font-medium text-sm text-blue-900 dark:text-blue-100">
-                {t('business.settings.matching_impact_title', 'Come le tue modifiche influenzano il matching')}
-              </p>
-              <p className="text-xs text-blue-800 dark:text-blue-200 mt-1 leading-relaxed">
-                {t('business.settings.matching_impact_desc', 'Il DNA dei pilastri resta ancorato all\'analisi AI. Le modifiche qui sotto influenzano come i candidati vedono la tua azienda, il punteggio di affinità culturale e i tratti comportamentali cercati nei XIMAtar.')}
-              </p>
-            </div>
-          </div>
-        </div>
+    <section id="profilo" className="xs-panel scroll-mt-20" aria-labelledby="settings-profile-title">
+      <SettingsSectionHeader
+        index="02"
+        eyebrow={t('businessPortal.settings_eyebrow_profile')}
+        title={t('business.settings.ai_profile', 'Profilo AI Editabile')}
+        subtitle={t('business.settings.ai_profile_hint', "Modifica i campi generati dall'AI. Le tue modifiche si sovrappongono al baseline AI senza alterare il DNA dei pilastri.")}
+      />
+      <aside className="mb-5 border-l-2 border-primary pl-4">
+        <p className="text-sm font-medium text-foreground">
+          {t('business.settings.matching_impact_title', 'Come le tue modifiche influenzano il matching')}
+        </p>
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+          {t('business.settings.matching_impact_desc', 'Il DNA dei pilastri resta ancorato all\'analisi AI. Le modifiche qui sotto influenzano come i candidati vedono la tua azienda, il punteggio di affinità culturale e i tratti comportamentali cercati nei XIMAtar.')}
+        </p>
+      </aside>
 
+      <div>
         <EditableField label={t('business.company.summary', 'Riepilogo Aziendale')} impact={t('business.settings.summary_impact', 'Visibile ai candidati nella shortlist.')} value={drafts.summary} isOverridden={isOverridden('summary')} editing={editing.summary} type="textarea" rows={4}
           onEdit={() => setEditing({ ...editing, summary: true })}
           onCancel={() => { setEditing({ ...editing, summary: false }); setDrafts({ ...drafts, summary: (companyProfile as any).summary_override ?? companyProfile.summary ?? '' }); }}
@@ -235,15 +227,13 @@ const EditableAIProfileSection = () => {
           onCancel={() => { setEditing({ ...editing, traits: false }); setDrafts({ ...drafts, traits: (companyProfile as any).ideal_traits_override ?? companyProfile.ideal_traits ?? [] }); }}
           onChange={(v: string[]) => setDrafts({ ...drafts, traits: v })}
           onSave={() => saveField('traits', drafts.traits)} onReset={() => resetField('traits')} />
+      </div>
 
-        <div className="pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground">
-            <strong className="text-foreground">{t('business.settings.dna_note_title', 'Nota sul DNA dei pilastri')}: </strong>
-            {t('business.settings.dna_note', "Il DNA dei pilastri non cambia con le modifiche qui sopra. Per ricalcolarlo, usa la sezione DNA sotto.")}
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+      <p className="mt-5 border-t border-[hsl(var(--xs-line))] pt-4 text-xs text-muted-foreground">
+        <strong className="text-foreground">{t('business.settings.dna_note_title', 'Nota sul DNA dei pilastri')}: </strong>
+        {t('business.settings.dna_note', "Il DNA dei pilastri non cambia con le modifiche qui sopra. Per ricalcolarlo, usa la sezione DNA sotto.")}
+      </p>
+    </section>
   );
 };
 
@@ -299,6 +289,7 @@ const DnaPillarSection = () => {
 
   const isLocked = daysUntilUnlock > 0;
   const pillarVector = companyProfile?.pillar_vector as Record<string, number> | null;
+  const recommended = (companyProfile?.recommended_ximatars as string[] | null) || [];
   const strategicFocus = businessProfile?.strategic_focus as { pillar?: string; weight_boost?: number; expires_at?: string } | null;
 
   const PILLAR_LABELS: Record<string, string> = {
@@ -307,102 +298,102 @@ const DnaPillarSection = () => {
   };
 
   return (
-    <Card className="border-border/50">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-foreground flex items-center gap-2">
-            <Dna className="w-5 h-5 text-primary" />
-            {t('business.dna.title', 'DNA Pilastri Aziendali')}
-          </CardTitle>
-          {businessProfile?.dna_last_regenerated_at && (
-            <span className="text-xs text-muted-foreground">
-              {t('business.dna.last_updated', 'Ultimo aggiornamento')}: {new Date(businessProfile.dna_last_regenerated_at).toLocaleDateString()}
-            </span>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Philosophy banner */}
-        <div className="rounded-lg border border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-950/20 p-4">
-          <div className="flex gap-3">
-            <div>
-              <p className="font-medium text-sm text-purple-900 dark:text-purple-100">
-                {t('business.dna.philosophy_title', 'Il DNA è identità, non preferenza')}
-              </p>
-              <p className="text-xs text-purple-800 dark:text-purple-200 mt-1 leading-relaxed">
-                {t('business.dna.philosophy_desc', 'XIMA non permette di modificare il DNA ogni giorno. Il tuo DNA rappresenta chi sei davvero come azienda. Puoi rigenerare al massimo una volta a trimestre. Tra una rigenerazione e l\'altra, puoi dichiarare un "focus strategico" temporaneo.')}
-              </p>
-            </div>
-          </div>
-        </div>
+    <section id="pilastri" className="xs-panel scroll-mt-20">
+      <SettingsSectionHeader
+        index="03"
+        eyebrow={t('businessPortal.settings_eyebrow_dna')}
+        title={t('business.dna.title', 'DNA Pilastri Aziendali')}
+        subtitle={businessProfile?.dna_last_regenerated_at
+          ? `${t('business.dna.last_updated', 'Ultimo aggiornamento')}: ${new Date(businessProfile.dna_last_regenerated_at).toLocaleDateString()}`
+          : undefined}
+      />
 
-        {/* DNA pillars display */}
-        {pillarVector && Object.keys(pillarVector).length > 0 && (
-          <div className="grid grid-cols-5 gap-4">
-            {Object.entries(pillarVector).map(([key, value]) => {
-              const score = typeof value === 'number' ? value : 0;
-              const label = PILLAR_LABELS[key] || key.replace(/_/g, ' ');
-              const focusBoost = strategicFocus?.pillar === key ? strategicFocus.weight_boost || 0 : 0;
-              return (
-                <div key={key} className="text-center">
-                  <div className="relative w-16 h-16 mx-auto mb-2">
-                    <svg className="w-full h-full -rotate-90" viewBox="0 0 80 80">
-                      <circle cx="40" cy="40" r="32" fill="none" stroke="hsl(var(--secondary))" strokeWidth="6" />
-                      <circle cx="40" cy="40" r="32" fill="none" stroke="hsl(var(--primary))" strokeWidth="6"
-                        strokeDasharray={`${(score / 100) * 201} 201`} strokeLinecap="round" />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-lg font-semibold text-foreground">{score}</span>
-                    </div>
+      {/* Philosophy note */}
+      <p className="flex items-start gap-2 text-sm">
+        <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" aria-hidden="true" />
+        <span>
+          <strong className="text-foreground">{t('business.dna.philosophy_title', 'Il DNA è identità, non preferenza')}</strong>
+          <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">
+            {t('business.dna.philosophy_desc', 'XIMA non permette di modificare il DNA ogni giorno. Il tuo DNA rappresenta chi sei davvero come azienda. Puoi rigenerare al massimo una volta a trimestre. Tra una rigenerazione e l\'altra, puoi dichiarare un "focus strategico" temporaneo.')}
+          </span>
+        </span>
+      </p>
+
+      {/* DNA pillars as bars */}
+      {pillarVector && Object.keys(pillarVector).length > 0 && (
+        <ul className="mt-5 space-y-3">
+          {Object.entries(pillarVector).map(([key, value]) => {
+            const score = typeof value === 'number' ? Math.max(0, Math.min(100, value)) : 0;
+            const label = PILLAR_LABELS[key] || key.replace(/_/g, ' ');
+            const focusBoost = strategicFocus?.pillar === key ? strategicFocus.weight_boost || 0 : 0;
+            return (
+              <li key={key}>
+                <div className="flex items-baseline justify-between text-sm">
+                  <span className="capitalize text-muted-foreground">
+                    {label}
                     {focusBoost > 0 && (
-                      <span className="absolute -top-1 -right-1 text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200 dark:bg-amber-950 dark:text-amber-100">
-                        +{Math.round(focusBoost * 100)}%
-                      </span>
+                      <span className="ml-2 rounded-full border border-primary/30 px-1.5 text-[11px] text-primary">+{Math.round(focusBoost * 100)}%</span>
                     )}
-                  </div>
-                  <p className="text-xs font-medium text-muted-foreground capitalize">{label}</p>
+                  </span>
+                  <span className="xs-num font-semibold text-foreground">{score}<span className="text-xs font-normal text-muted-foreground">/100</span></span>
                 </div>
-              );
-            })}
-          </div>
-        )}
+                <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label={label} aria-valuenow={score} aria-valuemin={0} aria-valuemax={100}>
+                  <div className="h-full rounded-full bg-primary" style={{ width: `${score}%` }} />
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
-        {/* Action buttons */}
-        <div className="flex flex-wrap gap-2 pt-4 border-t border-border">
-          <Button variant="outline" onClick={() => setShowFocusModal(true)} className="flex-1">
-            <Target className="w-4 h-4 mr-2" />
-            {strategicFocus ? t('business.dna.update_focus', 'Aggiorna focus strategico') : t('business.dna.set_focus', 'Imposta focus strategico')}
-          </Button>
-          <Button variant={isLocked ? 'ghost' : 'default'} onClick={() => !isLocked && setShowRegenerateModal(true)} disabled={isLocked} className="flex-1">
-            {isLocked ? t('business.dna.locked_for_days', `Bloccato per ${daysUntilUnlock} giorni`) : t('business.dna.regenerate', 'Rigenera DNA')}
-          </Button>
+      {/* Recommended XIMAtars */}
+      {recommended.length > 0 && (
+        <div className="mt-5 border-t border-[hsl(var(--xs-line))] pt-4">
+          <Eyebrow>{t('businessPortal.settings_dna_recommended')}</Eyebrow>
+          <ul className="mt-3 flex flex-wrap gap-4">
+            {recommended.map((x) => (
+              <li key={x} className="flex flex-col items-center gap-1 text-xs text-muted-foreground">
+                <img loading="lazy" decoding="async" src={`/ximatars/${x}.webp`} alt="" className="h-10 w-10 rounded-full object-cover"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+                <span className="capitalize">{x}</span>
+              </li>
+            ))}
+          </ul>
         </div>
+      )}
 
-        {isLocked && (
-          <p className="text-xs text-muted-foreground text-center">
-            {t('business.dna.lock_explanation', 'Il prossimo aggiornamento del DNA sarà disponibile dopo il')} {businessProfile?.dna_locked_until ? new Date(businessProfile.dna_locked_until).toLocaleDateString() : ''}
-          </p>
-        )}
+      {/* Action buttons */}
+      <div className="mt-5 flex flex-wrap gap-2 border-t border-[hsl(var(--xs-line))] pt-4">
+        <Button variant="outline" onClick={() => setShowFocusModal(true)} className="flex-1">
+          {strategicFocus ? t('business.dna.update_focus', 'Aggiorna focus strategico') : t('business.dna.set_focus', 'Imposta focus strategico')}
+        </Button>
+        <Button variant={isLocked ? 'ghost' : 'default'} onClick={() => !isLocked && setShowRegenerateModal(true)} disabled={isLocked} className="flex-1">
+          {isLocked ? t('business.dna.locked_for_days', `Bloccato per ${daysUntilUnlock} giorni`) : t('business.dna.regenerate', 'Rigenera DNA')}
+        </Button>
+      </div>
 
-        {/* DNA history */}
-        {dnaHistory && dnaHistory.length > 0 && (
-          <div className="pt-4 border-t border-border">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
-              {t('business.dna.history', 'Storico evoluzione')}
-            </p>
-            <div className="space-y-2">
-              {dnaHistory.slice(0, 3).map((entry: any) => (
-                <div key={entry.id} className="flex items-center justify-between text-xs p-2 rounded-lg bg-secondary/20">
-                  <span className="text-muted-foreground">{new Date(entry.created_at).toLocaleDateString()}</span>
-                  {entry.regeneration_reason && (
-                    <span className="text-muted-foreground italic flex-1 ml-3 truncate">"{entry.regeneration_reason}"</span>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </CardContent>
+      {isLocked && (
+        <p className="mt-3 text-xs text-muted-foreground">
+          {t('business.dna.lock_explanation', 'Il prossimo aggiornamento del DNA sarà disponibile dopo il')} {businessProfile?.dna_locked_until ? new Date(businessProfile.dna_locked_until).toLocaleDateString() : ''}
+        </p>
+      )}
+
+      {/* DNA history */}
+      {dnaHistory && dnaHistory.length > 0 && (
+        <div className="mt-5 border-t border-[hsl(var(--xs-line))] pt-4">
+          <Eyebrow className="mb-3">{t('business.dna.history', 'Storico evoluzione')}</Eyebrow>
+          <ul className="divide-y divide-[hsl(var(--xs-line))]">
+            {dnaHistory.slice(0, 3).map((entry: any) => (
+              <li key={entry.id} className="flex items-center justify-between gap-3 py-2 text-xs">
+                <span className="text-muted-foreground">{new Date(entry.created_at).toLocaleDateString()}</span>
+                {entry.regeneration_reason && (
+                  <span className="min-w-0 flex-1 truncate text-muted-foreground italic">"{entry.regeneration_reason}"</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Regenerate DNA Modal */}
       {showRegenerateModal && (
@@ -427,7 +418,7 @@ const DnaPillarSection = () => {
           onSuccess={() => queryClient.invalidateQueries({ queryKey: ['business-profile-dna'] })}
         />
       )}
-    </Card>
+    </section>
   );
 };
 
@@ -491,19 +482,17 @@ const RegenerateDnaModal = ({ onClose, pillarScores, bestFitXimatars, onSuccess 
           <DialogTitle>{t('business.dna.regenerate_title', 'Rigenera il DNA aziendale')}</DialogTitle>
           <DialogDescription>{t('business.dna.regenerate_subtitle', 'Questa azione bloccherà il DNA per 90 giorni. Spiega cosa è cambiato.')}</DialogDescription>
         </DialogHeader>
-        <div className="rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/20 p-3 my-3">
-          <p className="text-xs text-amber-900 dark:text-amber-100">
-            <strong>{t('business.dna.warning_title', 'Importante')}: </strong>
-            {t('business.dna.warning_desc', 'Una volta rigenerato, non potrai modificare il DNA per 90 giorni. Usa il "focus strategico" nel frattempo.')}
-          </p>
-        </div>
+        <p className="my-3 border-l-2 border-primary pl-3 text-xs text-muted-foreground">
+          <strong className="text-foreground">{t('business.dna.warning_title', 'Importante')}: </strong>
+          {t('business.dna.warning_desc', 'Una volta rigenerato, non potrai modificare il DNA per 90 giorni. Usa il "focus strategico" nel frattempo.')}
+        </p>
         <div>
-          <label className="text-sm font-medium text-foreground mb-1.5 block">
+          <label htmlFor="dna-reason" className="text-sm font-medium text-foreground mb-1.5 block">
             {t('business.dna.reason_label', 'Cosa è cambiato? (min 20 caratteri)')}
           </label>
-          <textarea value={reason} onChange={e => setReason(e.target.value)}
+          <textarea id="dna-reason" value={reason} onChange={e => setReason(e.target.value)}
             placeholder={t('business.dna.reason_placeholder', 'es. Abbiamo aperto una nuova divisione AI/ML...')}
-            rows={4} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none" />
+            rows={4} className={inputClass} />
           <p className="text-xs text-muted-foreground mt-1">{reason.length}/500</p>
         </div>
         <DialogFooter>
@@ -551,9 +540,8 @@ const StrategicFocusModal = ({ onClose, currentFocus, onSuccess }: { onClose: ()
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">{t('business.dna.focus_pillar', 'Pilastro da enfatizzare')}</label>
-            <select value={pillar} onChange={e => setPillar(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none">
+            <label htmlFor="focus-pillar" className="text-sm font-medium text-foreground mb-1.5 block">{t('business.dna.focus_pillar', 'Pilastro da enfatizzare')}</label>
+            <select id="focus-pillar" value={pillar} onChange={e => setPillar(e.target.value)} className={inputClass}>
               <option value="drive">Drive</option>
               <option value="knowledge">Knowledge</option>
               <option value="comp_power">Comp. Power</option>
@@ -562,10 +550,10 @@ const StrategicFocusModal = ({ onClose, currentFocus, onSuccess }: { onClose: ()
             </select>
           </div>
           <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">
+            <label htmlFor="focus-boost" className="text-sm font-medium text-foreground mb-1.5 block">
               {t('business.dna.focus_intensity', 'Intensità del boost')}: +{Math.round(boostLevel * 100)}%
             </label>
-            <input type="range" min="0.05" max="0.25" step="0.05" value={boostLevel}
+            <input id="focus-boost" type="range" min="0.05" max="0.25" step="0.05" value={boostLevel}
               onChange={e => setBoostLevel(Number(e.target.value))} className="w-full" />
             <div className="flex justify-between text-xs text-muted-foreground mt-1">
               <span>+5% ({t('business.dna.subtle', 'Sottile')})</span>
@@ -573,11 +561,11 @@ const StrategicFocusModal = ({ onClose, currentFocus, onSuccess }: { onClose: ()
             </div>
           </div>
           <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">{t('business.dna.focus_expires', 'Scade il')}</label>
-            <input type="date" value={expiresAt} onChange={e => setExpiresAt(e.target.value)}
+            <label htmlFor="focus-expires" className="text-sm font-medium text-foreground mb-1.5 block">{t('business.dna.focus_expires', 'Scade il')}</label>
+            <input id="focus-expires" type="date" value={expiresAt} onChange={e => setExpiresAt(e.target.value)}
               min={new Date().toISOString().slice(0, 10)}
               max={new Date(Date.now() + 180 * 86400000).toISOString().slice(0, 10)}
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none" />
+              className={inputClass} />
             <p className="text-xs text-muted-foreground mt-1">{t('business.dna.focus_expires_hint', 'Dopo questa data, il focus si disattiverà automaticamente')}</p>
           </div>
         </div>
@@ -593,22 +581,52 @@ const StrategicFocusModal = ({ onClose, currentFocus, onSuccess }: { onClose: ()
 
 // ─── Form Field Helper ───
 const FormField = ({ label, children }: { label: string; children: React.ReactNode }) => (
-  <div>
-    <label className="text-sm font-medium text-foreground mb-1.5 block">{label}</label>
+  <label className="block">
+    <span className="text-sm font-medium text-foreground mb-1.5 block">{label}</span>
     {children}
-  </div>
+  </label>
 );
+
+// ─── Section index ───
+const SECTION_IDS = ['azienda', 'profilo', 'pilastri', 'legale', 'privacy', 'piano'] as const;
+type SectionId = typeof SECTION_IDS[number];
+
+const useActiveSection = () => {
+  const [active, setActive] = useState<SectionId>('azienda');
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return;
+    const visible = new Map<string, number>();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e) => visible.set(e.target.id, e.isIntersecting ? e.intersectionRatio : 0));
+      let best: string | null = null;
+      let bestRatio = 0;
+      // First section in page order with the largest visible share wins.
+      SECTION_IDS.forEach((id) => {
+        const r = visible.get(id) ?? 0;
+        if (r > bestRatio) { best = id; bestRatio = r; }
+      });
+      if (best) setActive(best as SectionId);
+    }, { rootMargin: '-80px 0px -55% 0px', threshold: [0, 0.25, 0.5, 1] });
+    SECTION_IDS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
+  return active;
+};
 
 // ─── Main Settings Page ───
 const BusinessSettings = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user } = useUser();
-  const { businessProfile: sharedProfile, invalidate: invalidateBusinessProfile, updateOptimistically } = useBusinessProfile();
+  const { businessProfile: sharedProfile, invalidate: invalidateBusinessProfile } = useBusinessProfile();
   const [loading, setLoading] = useState(false);
   const [initialized, setInitialized] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  
+  const activeSection = useActiveSection();
+
   const [formData, setFormData] = useState({
     companyName: '', website: '', hrContactEmail: '',
     defaultChallengeDuration: 7, defaultChallengeDifficulty: 3,
@@ -669,34 +687,64 @@ const BusinessSettings = () => {
     }
   };
 
-  const inputClass = "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-colors";
+  const sections: { id: SectionId; label: string }[] = [
+    { id: 'azienda', label: t('businessPortal.settings_nav_company') },
+    { id: 'profilo', label: t('businessPortal.settings_nav_profile') },
+    { id: 'pilastri', label: t('businessPortal.settings_nav_dna') },
+    { id: 'legale', label: t('businessPortal.settings_nav_legal') },
+    { id: 'privacy', label: t('businessPortal.settings_nav_privacy') },
+    { id: 'piano', label: t('businessPortal.settings_nav_plan') },
+  ];
 
   return (
     <BusinessLayout>
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">{t('businessPortal.settings_page_title')}</h1>
-          <p className="text-muted-foreground">{t('businessPortal.settings_page_subtitle')}</p>
-        </div>
+      <PageHeader
+        eyebrow={t('businessPortal.settings_eyebrow')}
+        title={t('businessPortal.settings_page_title')}
+        subtitle={t('businessPortal.settings_page_subtitle')}
+      />
 
-        <BusinessPlanCard />
+      <div className="grid gap-6 lg:grid-cols-[190px_minmax(0,1fr)_340px]">
+        {/* Index */}
+        <nav aria-label={t('businessPortal.settings_go_to_section')} className="lg:sticky lg:top-20 lg:self-start">
+          <Eyebrow className="mb-2 hidden lg:block">{t('businessPortal.settings_page_title')}</Eyebrow>
+          <ol className="no-scrollbar flex gap-1 overflow-x-auto lg:flex-col lg:gap-0.5">
+            {sections.map((s, i) => {
+              const active = activeSection === s.id;
+              return (
+                <li key={s.id} className="shrink-0">
+                  <a
+                    href={`#${s.id}`}
+                    aria-current={active ? 'location' : undefined}
+                    className={cn(
+                      'flex items-center gap-3 rounded-md px-3 py-2 text-[14px] transition-colors',
+                      active ? 'bg-primary/10 font-semibold text-foreground' : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground',
+                    )}
+                  >
+                    <span className={cn('xs-eyebrow !text-[11px]', active && '!text-primary')}>{String(i + 1).padStart(2, '0')}</span>
+                    {s.label}
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
 
-        {/* ─── Company Identity & Basics ─── */}
-        <form onSubmit={handleSubmit}>
-          <Card className="border-border/50 mb-6">
-            <CardHeader>
-              <CardTitle className="text-foreground flex items-center gap-2">
-                <Building2 className="text-primary" />
-                {t('business.profile.identity_section', 'Identità e dati di base')}
-              </CardTitle>
-              <CardDescription>{t('business.profile.identity_hint', 'Dati factuali della tua azienda. Alimentano l\'analisi AI e il matching.')}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label className="text-foreground">{t('business.settings.logo', 'Logo aziendale')}</Label>
+        {/* Main stack */}
+        <div className="min-w-0 space-y-6">
+          {/* ─── 01 Company Identity & Basics ─── */}
+          <section id="azienda" className="xs-panel scroll-mt-20">
+            <SettingsSectionHeader
+              index="01"
+              eyebrow={t('businessPortal.settings_eyebrow_company')}
+              title={t('business.profile.identity_section', 'Identità e dati di base')}
+              subtitle={t('business.profile.identity_hint', 'Dati factuali della tua azienda. Alimentano l\'analisi AI e il matching.')}
+            />
+            <form onSubmit={handleSubmit}>
+              <div className="mb-6 border-b border-[hsl(var(--xs-line))] pb-6">
+                <p className="text-sm font-medium text-foreground mb-2">{t('business.settings.logo', 'Logo aziendale')}</p>
                 <LogoUploader currentLogo={logoUrl} onUpload={(url) => { setLogoUrl(url); invalidateBusinessProfile(); }} />
               </div>
-              <Separator />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField label={t('businessPortal.settings_company_name_label', 'Nome azienda')}>
                   <input type="text" value={formData.companyName} onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
@@ -759,44 +807,52 @@ const BusinessSettings = () => {
                   </select>
                 </FormField>
               </div>
-              <Separator />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField label={t('businessPortal.settings_challenge_duration_label', 'Durata sfida predefinita (giorni)')}>
-                  <input type="number" min="1" max="30" value={formData.defaultChallengeDuration}
-                    onChange={(e) => setFormData({ ...formData, defaultChallengeDuration: parseInt(e.target.value) })}
-                    className={inputClass} />
-                </FormField>
-                <FormField label={t('businessPortal.settings_challenge_difficulty_label', 'Difficoltà predefinita (1-5)')}>
-                  <input type="number" min="1" max="5" value={formData.defaultChallengeDifficulty}
-                    onChange={(e) => setFormData({ ...formData, defaultChallengeDifficulty: parseInt(e.target.value) })}
-                    className={inputClass} />
-                </FormField>
+
+              <div className="mt-6 border-t border-[hsl(var(--xs-line))] pt-5">
+                <h3 className="text-sm font-semibold text-foreground">{t('businessPortal.settings_challenge_defaults_title')}</h3>
+                <p className="mt-0.5 mb-4 text-xs text-muted-foreground">{t('businessPortal.settings_challenge_defaults_subtitle')}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField label={t('businessPortal.settings_challenge_duration_label', 'Durata sfida predefinita (giorni)')}>
+                    <input type="number" min="1" max="30" value={formData.defaultChallengeDuration}
+                      onChange={(e) => setFormData({ ...formData, defaultChallengeDuration: parseInt(e.target.value) })}
+                      className={inputClass} />
+                  </FormField>
+                  <FormField label={t('businessPortal.settings_challenge_difficulty_label', 'Difficoltà predefinita (1-5)')}>
+                    <input type="number" min="1" max="5" value={formData.defaultChallengeDifficulty}
+                      onChange={(e) => setFormData({ ...formData, defaultChallengeDifficulty: parseInt(e.target.value) })}
+                      className={inputClass} />
+                  </FormField>
+                </div>
               </div>
-            </CardContent>
-          </Card>
 
-          <Button type="submit" className="w-full" disabled={loading}>
-            <Save className="mr-2" size={16} />
-            {loading ? t('business_portal.saving') : t('businessPortal.settings_save_cta')}
-          </Button>
-        </form>
+              <div className="mt-6 flex flex-col gap-3 border-t border-[hsl(var(--xs-line))] pt-5 sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-xs text-muted-foreground">{t('businessPortal.settings_save_hint')}</span>
+                <Button type="submit" disabled={loading}>
+                  {loading ? <Loader2 className="mr-2 animate-spin" size={16} aria-hidden="true" /> : <Save className="mr-2" size={16} aria-hidden="true" />}
+                  {loading ? t('business_portal.saving') : t('businessPortal.settings_save_cta')}
+                </Button>
+              </div>
+            </form>
+          </section>
 
-        <Separator className="my-8" />
+          {/* ─── 02 Editable AI Profile ─── */}
+          <EditableAIProfileSection />
 
-        {/* ─── Editable AI Profile ─── */}
-        <EditableAIProfileSection />
+          {/* ─── 04 Legal ─── */}
+          <CompanyLegalSettings />
 
-        <Separator className="my-8" />
+          {/* ─── 05 Privacy (shared section, wrapped for the index) ─── */}
+          <div id="privacy" className="scroll-mt-20 space-y-6">
+            <ProfilingOptOutSection />
+            <AccountDeletionSection variant="business" />
+          </div>
+        </div>
 
-        {/* ─── DNA Pillar Section ─── */}
-        <DnaPillarSection />
-
-        <Separator className="my-8" />
-        <CompanyLegalSettings />
-        <Separator className="my-8" />
-        <ProfilingOptOutSection />
-        <Separator className="my-8" />
-        <AccountDeletionSection variant="business" />
+        {/* Context column */}
+        <aside className="space-y-6 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto">
+          <BusinessPlanCard />
+          <DnaPillarSection />
+        </aside>
       </div>
     </BusinessLayout>
   );
