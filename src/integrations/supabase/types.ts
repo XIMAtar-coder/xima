@@ -6297,6 +6297,10 @@ export type Database = {
         Args: { p_result_id: string }
         Returns: undefined
       }
+      business_has_candidate_relationship: {
+        Args: { p_business_uid: string; p_recipient_uid: string }
+        Returns: boolean
+      }
       candidate_accept_reschedule: {
         Args: { p_session_id: string }
         Returns: Json
