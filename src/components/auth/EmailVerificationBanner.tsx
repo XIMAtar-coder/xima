@@ -71,7 +71,6 @@ export const EmailVerificationBanner: React.FC<{ slim?: boolean }> = ({ slim = f
           user_id: user.id,
           email: user.email,
           name: (user as any).name || '',
-          verification_deadline: deadline.toISOString(),
         },
       });
       if (error) throw error;

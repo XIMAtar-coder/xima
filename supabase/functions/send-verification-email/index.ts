@@ -116,7 +116,8 @@ serve(async (req) => {
       .from("profiles")
       .update({ verification_required_until: expiresAt.toISOString(), email_verified_at: null })
       .eq("user_id", user_id)
-      .is("email_verified_at", null);
+      .is("email_verified_at", null)
+      .is("verification_required_until", null);
     if (deadlineErr) console.error("Deadline update error:", deadlineErr.message);
 
 
